@@ -4,8 +4,8 @@
   "description": "Shows when to leave for your next train",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
+    "start": "node dev-server.js",
+    "dev": "node dev-server.js",
     "vercel:dev": "vercel dev"
   },
   "dependencies": {
