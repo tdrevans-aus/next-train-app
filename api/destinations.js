@@ -1,6 +1,11 @@
 import { fetchTripsForStation, uniqueDestinations } from "../lib/train-times.js";
+import { applyCors } from "../lib/api-cors.js";
 
 export default async function handler(req, res) {
+  if (applyCors(req, res)) {
+    return;
+  }
+
   const station = req.query?.station;
 
   if (!station) {

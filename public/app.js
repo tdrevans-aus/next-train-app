@@ -46,6 +46,14 @@ const PERTH_API_STATIONS = ["Perth Underground Stn", "Perth Stn"];
 
 const CANONICAL_PERTH_STATION = "Perth Underground Stn";
 
+const API_ORIGIN = window.Capacitor?.isNativePlatform?.()
+  ? "https://next-train-app.vercel.app"
+  : "";
+
+function apiUrl(path) {
+  return `${API_ORIGIN}${path}`;
+}
+
 function normalizeStation(station) {
   if (!station) {
     return station;
@@ -309,7 +317,7 @@ function render(data) {
 
 async function fetchNextTrain() {
   try {
-    const result = await fetchJson(`/api/next-train?${buildApiParams()}`);
+    const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`));
 
     if (!result.ok) {
       throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
@@ -343,13 +351,13 @@ async function loadStations() {
 }
 
 async function fetchDirectionsFromApi(station) {
-  const primary = await fetchJson(`/api/directions?station=${encodeURIComponent(station)}`);
+  const primary = await fetchJson(apiUrl(`/api/directions?station=${encodeURIComponent(station)}`));
 
   if (primary.ok && Array.isArray(primary.data.directions)) {
     return primary.data.directions;
   }
 
-  const fallback = await fetchJson(`/api/destinations?station=${encodeURIComponent(station)}`);
+  const fallback = await fetchJson(apiUrl(`/api/destinations?station=${encodeURIComponent(station)}`));
   if (fallback.ok && Array.isArray(fallback.data.destinations)) {
     return fallback.data.destinations;
   }

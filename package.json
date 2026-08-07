@@ -8,7 +8,8 @@
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",
     "cap:sync": "npx cap sync android",
-    "cap:open": "npx cap open android"
+    "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@capacitor-community/admob": "^8.0.0",
@@ -16,5 +17,8 @@
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
     "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1"
   }
 }

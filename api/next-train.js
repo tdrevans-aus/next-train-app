@@ -1,4 +1,5 @@
 import { getNextTrainData } from "../lib/train-times.js";
+import { applyCors } from "../lib/api-cors.js";
 
 const DEFAULTS = {
   leaveBeforeMinutes: 3,
@@ -25,6 +26,10 @@ function readParams(query = {}) {
 }
 
 export default async function handler(req, res) {
+  if (applyCors(req, res)) {
+    return;
+  }
+
   const config = readParams(req.query);
 
   if (!config) {
