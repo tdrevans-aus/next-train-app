@@ -1,6 +1,8 @@
 const CONSENT_KEY = "nextTrainAdConsent";
 const ADS_LOADED_KEY = "nextTrainAdsLoaded";
 
+const GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
+
 function getConsent() {
   return localStorage.getItem(CONSENT_KEY);
 }
@@ -9,8 +11,16 @@ function setConsent(value) {
   localStorage.setItem(CONSENT_KEY, value);
 }
 
-function isConfigured(config) {
+function isNativeApp() {
+  return Boolean(window.Capacitor?.isNativePlatform?.());
+}
+
+function isAdSenseConfigured(config) {
   return Boolean(config.adsenseClient && config.adsenseSlot);
+}
+
+function isAdMobConfigured(config) {
+  return Boolean(config.admobAppId && config.admobBannerId);
 }
 
 function renderPlaceholderAd(container) {
@@ -59,7 +69,7 @@ function renderAdUnit(container, config) {
   }
 }
 
-function showConsentBanner(onAccept, onDecline) {
+function showConsentBanner({ onAccept, onDecline, adNetwork }) {
   if (document.getElementById("consent-banner")) {
     return;
   }
@@ -69,7 +79,7 @@ function showConsentBanner(onAccept, onDecline) {
   banner.className = "consent-banner";
   banner.innerHTML = `
     <p class="consent-text">
-      We use cookies for ads (Google AdSense) to keep this app free.
+      We use ads (${adNetwork}) to keep this app free.
       <a href="/privacy.html">Privacy policy</a>
     </p>
     <div class="consent-actions">
@@ -91,6 +101,105 @@ function showConsentBanner(onAccept, onDecline) {
   });
 }
 
+async function showNativeBanner(config) {
+  const AdMob = window.Capacitor?.Plugins?.AdMob;
+  if (!AdMob) {
+    throw new Error("AdMob plugin not available");
+  }
+
+  await AdMob.initialize({
+    initializeForTesting: Boolean(config.admobTestMode),
+  });
+
+  const adId = config.admobTestMode ? GOOGLE_TEST_BANNER_ID : config.admobBannerId;
+
+  await AdMob.showBanner({
+    adId,
+    adSize: "ADAPTIVE_BANNER",
+    position: "BOTTOM_CENTER",
+    margin: 0,
+    isTesting: Boolean(config.admobTestMode),
+  });
+
+  localStorage.setItem(ADS_LOADED_KEY, "1");
+}
+
+async function initWebAds(container, config) {
+  if (!isAdSenseConfigured(config)) {
+    renderPlaceholderAd(container);
+    return;
+  }
+
+  const enableAds = () => {
+    setConsent("accepted");
+    loadAdSenseScript(config.adsenseClient);
+    renderAdUnit(container, config);
+  };
+
+  const disableAds = () => {
+    setConsent("declined");
+    container.hidden = true;
+  };
+
+  const consent = getConsent();
+  if (consent === "accepted") {
+    enableAds();
+  } else if (consent === "declined") {
+    disableAds();
+  } else {
+    showConsentBanner({
+      onAccept: enableAds,
+      onDecline: disableAds,
+      adNetwork: "Google AdSense",
+    });
+  }
+}
+
+async function initNativeAds(container, config) {
+  if (!isAdMobConfigured(config)) {
+    renderPlaceholderAd(container);
+    return;
+  }
+
+  container.hidden = true;
+
+  const enableAds = async () => {
+    setConsent("accepted");
+    try {
+      await showNativeBanner(config);
+    } catch (error) {
+      console.warn("AdMob failed to load", error);
+      renderPlaceholderAd(container);
+    }
+  };
+
+  const disableAds = async () => {
+    setConsent("declined");
+    const AdMob = window.Capacitor?.Plugins?.AdMob;
+    if (AdMob?.hideBanner) {
+      await AdMob.hideBanner();
+    }
+    container.hidden = true;
+  };
+
+  const consent = getConsent();
+  if (consent === "accepted") {
+    await enableAds();
+  } else if (consent === "declined") {
+    await disableAds();
+  } else {
+    showConsentBanner({
+      onAccept: () => {
+        enableAds();
+      },
+      onDecline: () => {
+        disableAds();
+      },
+      adNetwork: "Google AdMob",
+    });
+  }
+}
+
 async function initAds() {
   const container = document.getElementById("ad-container");
   if (!container) {
@@ -101,30 +210,12 @@ async function initAds() {
     const response = await fetch("/site-config.json");
     const config = await response.json();
 
-    if (!isConfigured(config)) {
-      renderPlaceholderAd(container);
+    if (isNativeApp()) {
+      await initNativeAds(container, config);
       return;
     }
 
-    const enableAds = () => {
-      setConsent("accepted");
-      loadAdSenseScript(config.adsenseClient);
-      renderAdUnit(container, config);
-    };
-
-    const disableAds = () => {
-      setConsent("declined");
-      container.hidden = true;
-    };
-
-    const consent = getConsent();
-    if (consent === "accepted") {
-      enableAds();
-    } else if (consent === "declined") {
-      disableAds();
-    } else {
-      showConsentBanner(enableAds, disableAds);
-    }
+    await initWebAds(container, config);
   } catch (error) {
     console.warn("Could not load ad config", error);
     container.hidden = true;

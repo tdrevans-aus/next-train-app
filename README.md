@@ -77,3 +77,36 @@ The app includes an ad slot below the train details (not in the hero card), a co
 4. Deploy. On first visit, users see **Accept** / **No thanks** — ads load only after Accept.
 
 With empty `site-config.json` values, no ads or consent banner appear (fine for local dev).
+
+## Android app (Capacitor + AdMob)
+
+The Play Store build uses **Capacitor** to wrap the app and **Google AdMob** for ads (not AdSense).
+
+Ad IDs live in `public/site-config.json`:
+
+```json
+{
+  "admobAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY",
+  "admobBannerId": "ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ",
+  "admobTestMode": true
+}
+```
+
+Set `admobTestMode` to `false` before a production Play Store release.
+
+### Build on your PC
+
+Prerequisites: [Android Studio](https://developer.android.com/studio) with SDK installed.
+
+```bash
+npm install
+npm run cap:sync
+npm run cap:open
+```
+
+In Android Studio: **Run** on a connected phone or emulator. The app loads the hosted Vercel URL (`capacitor.config.ts`).
+
+### First run
+
+1. Accept the ad consent banner to show a test banner at the bottom.
+2. Train times come from your live Vercel API.

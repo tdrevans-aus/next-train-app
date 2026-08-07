@@ -1,4 +1,7 @@
 {
   "adsenseClient": "ca-pub-XXXXXXXXXXXXXXXX",
-  "adsenseSlot": "XXXXXXXXXX"
+  "adsenseSlot": "XXXXXXXXXX",
+  "admobAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY",
+  "admobBannerId": "ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ",
+  "admobTestMode": true
 }

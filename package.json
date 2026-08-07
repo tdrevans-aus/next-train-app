@@ -6,9 +6,15 @@
   "scripts": {
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
-    "vercel:dev": "vercel dev"
+    "vercel:dev": "vercel dev",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android"
   },
   "dependencies": {
+    "@capacitor-community/admob": "^8.0.0",
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
     "express": "^4.21.2"
   }
 }
