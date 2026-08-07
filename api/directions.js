@@ -1,20 +1,18 @@
 import { fetchTripsForStation, uniqueDestinations } from "../lib/train-times.js";
 
-export default async function handler(request) {
-  const station = new URL(request.url).searchParams.get("station");
+export default async function handler(req, res) {
+  const station = req.query.station;
 
   if (!station) {
-    return Response.json({ error: "Missing station parameter" }, { status: 400 });
+    res.status(400).json({ error: "Missing station parameter" });
+    return;
   }
 
   try {
     const { trips } = await fetchTripsForStation(station);
-    return Response.json({ directions: uniqueDestinations(trips) });
+    res.status(200).json({ directions: uniqueDestinations(trips) });
   } catch (error) {
     console.error(error);
-    return Response.json(
-      { error: error.message ?? "Failed to fetch directions" },
-      { status: 500 }
-    );
+    res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
   }
 }
