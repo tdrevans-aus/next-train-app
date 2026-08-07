@@ -22,13 +22,20 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Deploy to Vercel (recommended)
 
-1. Push this repo to GitHub.
-2. Go to [vercel.com](https://vercel.com) → **Add New Project** → import the repo.
-3. Vercel auto-detects the setup (`public` folder + `api` functions).
-4. Click **Deploy**.
-5. Open your URL on your phone → Chrome menu → **Add to Home screen**.
+**Repo:** [github.com/tdrevans-aus/next-train-app](https://github.com/tdrevans-aus/next-train-app)
 
-No environment variables needed.
+1. Go to [vercel.com/new](https://vercel.com/new) → import **tdrevans-aus/next-train-app**.
+2. Framework preset: **Other** (no build step). Root directory: project root. Publish directory: leave default (`public` is auto-detected).
+3. Click **Deploy** (no environment variables needed).
+4. Open your production URL on your phone → Chrome menu → **Add to Home screen**.
+
+Or from this folder after `npx vercel login`:
+
+```bash
+npx vercel --prod
+```
+
+`vercel.json` sets short cache headers on `/api/*` so live times stay fresh.
 
 ## Deploy to Netlify
 
