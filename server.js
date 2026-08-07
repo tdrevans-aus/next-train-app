@@ -76,6 +76,10 @@ app.get("/api/destinations", async (req, res) => {
   }
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Next Train App running at http://localhost:${PORT}`);
-});
+export default app;
+
+if (process.env.VERCEL !== "1") {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Next Train App running at http://localhost:${PORT}`);
+  });
+}
