@@ -1,7 +1,7 @@
 import { fetchTripsForStation, uniqueDestinations } from "../lib/train-times.js";
 
 export default async function handler(req, res) {
-  const station = req.query.station;
+  const station = req.query?.station;
 
   if (!station) {
     res.status(400).json({ error: "Missing station parameter" });

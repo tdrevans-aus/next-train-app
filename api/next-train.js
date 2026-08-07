@@ -5,7 +5,7 @@ const DEFAULTS = {
   refreshSeconds: 30,
 };
 
-function readParams(query) {
+function readParams(query = {}) {
   const station = query.station;
   const direction = query.direction ?? query.destination;
   const leaveBefore = query.leaveBefore ?? query.leaveBeforeMinutes;
