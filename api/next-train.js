@@ -1,4 +1,4 @@
-import { getNextTrainData } from "../../lib/train-times.js";
+import { getNextTrainData } from "../lib/train-times.js";
 
 const DEFAULTS = {
   leaveBeforeMinutes: 3,

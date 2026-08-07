@@ -1,4 +1,4 @@
-import { fetchTripsForStation, uniqueDestinations } from "../../lib/train-times.js";
+import { fetchTripsForStation, uniqueDestinations } from "../lib/train-times.js";
 
 export default async function handler(request) {
   const station = new URL(request.url).searchParams.get("station");
