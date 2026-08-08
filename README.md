@@ -9,7 +9,7 @@ Open the app and see when to leave for your next train. Pick your station and di
 - **Settings** (⚙) — station, direction, display label, leave-before minutes
 - Settings saved in **localStorage** (per device)
 - **URL parameters** to pre-fill or share a commute:
-  `?station=Edgewater%20Stn&direction=Perth&leaveBefore=3`
+  `?station=Edgewater%20Stn&direction=Perth&leaveBefore=10`
 
 ## Local development
 
@@ -46,7 +46,9 @@ npx vercel --prod
 
 ## Default commute
 
-Out of the box defaults to **Edgewater → Perth** (Murdoch via Perth), leave 3 minutes before the train.
+On first launch, the app asks you to pick **station** and **direction**. You can tap **Use nearest station** (location permission) to pre-fill the closest Transperth station, then choose your direction and save.
+
+There is no built-in default route — every user sets their own commute.
 
 ## How it works
 
@@ -61,7 +63,7 @@ Out of the box defaults to **Edgewater → Perth** (Murdoch via Perth), leave 3 
 
 ## Advertising (Google AdSense)
 
-The app includes an ad slot below the train details (not in the hero card), a cookie consent banner, and Privacy / About pages.
+The app includes an ad slot below the train details (not in the hero card), a one-time notice before ads load, and Privacy / About pages. The free version always shows ads; an ad-free upgrade is planned for later.
 
 ### Setup
 
@@ -74,9 +76,9 @@ The app includes an ad slot below the train details (not in the hero card), a co
    }
    ```
 3. Add your contact details on `public/about.html` before going live.
-4. Deploy. On first visit, users see **Accept** / **No thanks** — ads load only after Accept.
+4. Deploy. On first visit, users tap **Continue** and ads load.
 
-With empty `site-config.json` values, no ads or consent banner appear (fine for local dev).
+With empty `site-config.json` values, no ads or notice appear (fine for local dev).
 
 ## Android app (Capacitor + AdMob)
 
@@ -108,5 +110,9 @@ In Android Studio: **Run** on a connected phone or emulator. The app loads the h
 
 ### First run
 
-1. Accept the ad consent banner to show a test banner at the bottom.
+1. Tap **Continue** on the ad notice to load a test banner at the bottom.
 2. Train times come from your live Vercel API.
+
+### Changing trains
+
+Swipe left on the departure card for a later train, or swipe right for an earlier one. A one-time hint appears the first time you use the app.

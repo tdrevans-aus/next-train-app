@@ -1,16 +1,16 @@
-import { getNextTrainData } from "../lib/train-times.js";
+import {
+  DEFAULT_LEAVE_BEFORE_MINUTES,
+  DEFAULT_REFRESH_SECONDS,
+  getNextTrainData,
+} from "../lib/train-times.js";
 import { applyCors } from "../lib/api-cors.js";
-
-const DEFAULTS = {
-  leaveBeforeMinutes: 3,
-  refreshSeconds: 30,
-};
 
 function readParams(query = {}) {
   const station = query.station;
   const direction = query.direction ?? query.destination;
   const leaveBefore = query.leaveBefore ?? query.leaveBeforeMinutes;
   const refresh = query.refresh ?? query.refreshSeconds;
+  const skipTrains = query.skipTrains ?? query.skip;
 
   if (!station || !direction) {
     return null;
@@ -20,8 +20,9 @@ function readParams(query = {}) {
     station,
     destination: direction,
     destinationLabel: direction,
-    leaveBeforeMinutes: Number(leaveBefore) || DEFAULTS.leaveBeforeMinutes,
-    refreshSeconds: Number(refresh) || DEFAULTS.refreshSeconds,
+    leaveBeforeMinutes: Number(leaveBefore) || DEFAULT_LEAVE_BEFORE_MINUTES,
+    refreshSeconds: Number(refresh) || DEFAULT_REFRESH_SECONDS,
+    skipTrains: Math.max(0, Math.floor(Number(skipTrains) || 0)),
   };
 }
 

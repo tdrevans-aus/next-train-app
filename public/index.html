@@ -13,43 +13,98 @@
   <body>
     <main class="app">
       <header class="header">
-        <button type="button" class="settings-btn" id="settings-btn" aria-label="Settings">
-          <svg class="settings-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <div class="header-actions">
+          <button type="button" class="settings-btn" id="settings-btn" aria-label="Settings">
+            <svg class="settings-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                stroke="currentColor"
+                stroke-width="1.75"
+              />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <button type="button" class="help-btn" id="help-btn" aria-label="Help">
+            <span class="help-btn-label" aria-hidden="true">?</span>
+          </button>
+        </div>
+        <p class="route" id="route">Loading…</p>
+        <button
+          type="button"
+          class="journey-switcher"
+          id="journey-switcher"
+          hidden
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-label="Switch journey"
+        >
+          <span class="journey-switcher-label" id="journey-switcher-name">Journey</span>
+          <svg class="journey-switcher-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
-              d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+              d="M6 9l6 6 6-6"
               stroke="currentColor"
-              stroke-width="1.75"
-            />
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
-              stroke="currentColor"
-              stroke-width="1.75"
+              stroke-width="2.25"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
         </button>
-        <p class="route" id="route">Loading…</p>
-        <p class="updated" id="updated">Updating…</p>
+        <div class="journey-switcher-menu" id="journey-switcher-menu" hidden></div>
       </header>
 
       <section class="hero" id="hero">
-        <p class="label">Leave by</p>
-        <p class="time leave-time" id="leave-time">—</p>
-        <p class="countdown" id="leave-countdown"></p>
+        <span class="hero-swipe-cue hero-swipe-cue--prev" id="hero-swipe-prev" hidden aria-hidden="true">‹</span>
+        <span class="hero-swipe-cue hero-swipe-cue--next" id="hero-swipe-next" hidden aria-hidden="true">›</span>
+        <p class="label" id="hero-depart-label">Train departs in</p>
+        <p class="time depart-countdown" id="depart-countdown">—</p>
+        <p class="depart-time-sub" id="depart-display-time">—</p>
+        <p class="detail-sub" id="hero-scheduled-time" hidden></p>
+        <p class="swipe-hint" id="swipe-hint" hidden>
+          Swipe left for a later train · Swipe right for an earlier train
+        </p>
       </section>
 
-      <section class="details">
-        <div class="detail-card">
-          <p class="detail-label">Train arrives</p>
-          <p class="detail-value" id="arrival-time">—</p>
-          <p class="detail-sub" id="scheduled-time" hidden></p>
-        </div>
-        <div class="detail-card">
+      <section class="leave-card calm" id="leave-card">
+        <button
+          type="button"
+          class="leave-buffer-edit-btn"
+          id="leave-buffer-edit-btn"
+          hidden
+          aria-label="Edit leave-home buffer"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M4 7h6M14 7h6M4 12h3M11 12h9M4 17h8M16 17h4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <circle cx="12" cy="7" r="2" fill="currentColor" />
+            <circle cx="9" cy="12" r="2" fill="currentColor" />
+            <circle cx="15" cy="17" r="2" fill="currentColor" />
+          </svg>
+        </button>
+        <p class="label" id="leave-card-label">Leave by</p>
+        <p class="leave-card-time" id="leave-time">—</p>
+        <p class="leave-card-countdown" id="leave-countdown"></p>
+        <button type="button" class="leave-ack-btn" id="leave-ack-btn" hidden>I've left</button>
+        <p class="leave-hint" id="leave-hint" hidden>
+          Tap the sliders icon to adjust your leave-home buffer
+        </p>
+      </section>
+
+      <section class="detail-strip" id="detail-strip">
+        <div class="detail-strip-cell">
           <p class="detail-label">Platform</p>
           <p class="detail-value" id="platform">—</p>
         </div>
-        <div class="detail-card">
+        <div class="detail-strip-cell">
           <p class="detail-label">Status</p>
           <p class="detail-value status" id="status">—</p>
         </div>
@@ -57,8 +112,10 @@
 
       <section class="following" id="following-section" hidden>
         <p class="following-label">Then</p>
-        <p class="following-value" id="following"></p>
+        <p class="following-next" id="following-next"></p>
       </section>
+
+      <p class="updated" id="updated">Updating…</p>
 
       <section class="ad-slot" id="ad-container" hidden aria-label="Advertisement"></section>
 
@@ -72,38 +129,212 @@
     </main>
 
     <dialog class="settings-dialog" id="settings-dialog">
-      <form method="dialog" class="settings-form" id="settings-form">
-        <h2>Your commute</h2>
-        <p class="settings-hint">Saved on this device only.</p>
-
-        <label class="field">
-          <span>Station</span>
-          <select id="station-select" required></select>
-        </label>
-
-        <label class="field">
-          <span>Direction</span>
-          <select id="direction-select" required></select>
-        </label>
-
-        <label class="field">
-          <span>Leave house before train (minutes)</span>
-          <input
-            type="number"
-            id="leave-before-input"
-            min="1"
-            max="30"
-            required
-          />
-        </label>
-
-        <div class="settings-actions">
-          <button type="button" class="btn-secondary" id="settings-cancel">Cancel</button>
-          <button type="submit" class="btn-primary">Save</button>
+      <div class="settings-dialog-body">
+        <div class="settings-view" id="settings-list-view">
+          <div class="settings-list-main">
+            <div class="settings-view-header">
+              <h2>My Journeys</h2>
+              <p class="settings-hint">Tap a journey to edit. Use Rename to change the name.</p>
+            </div>
+            <ul class="journey-list" id="journey-list"></ul>
+            <button type="button" class="btn-secondary settings-add-journey" id="add-journey-btn">
+              Add journey
+            </button>
+          </div>
+          <div class="settings-dialog-footer" id="settings-dialog-footer">
+            <button type="button" class="btn-primary settings-done-btn" id="settings-cancel">Done</button>
+            <button type="button" class="settings-clear-data" id="clear-all-data-btn">Clear all data</button>
+          </div>
         </div>
-      </form>
+
+        <form class="settings-view settings-form" id="settings-detail-view" hidden>
+        <button type="button" class="settings-back" id="settings-back">← My Journeys</button>
+
+        <p class="journey-detail-heading" id="detail-journey-heading"></p>
+
+        <section class="settings-section">
+          <h3 class="settings-section-title">Route</h3>
+          <label class="field">
+            <span>Departure station</span>
+            <select id="detail-station-select" required></select>
+            <button type="button" class="btn-link settings-location-btn" id="detail-nearest-btn">
+              Use nearest station
+            </button>
+            <p class="settings-location-hint" id="detail-nearest-hint" hidden></p>
+          </label>
+          <label class="field">
+            <span>Direction of travel</span>
+            <select id="detail-direction-select" required></select>
+            <p class="settings-section-hint">
+              The direction of travel shown on platform signs — not necessarily where you get off.
+            </p>
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3 class="settings-section-title">Timing</h3>
+          <label class="field leave-before-field" id="leave-before-field">
+            <div class="field-label-row">
+              <label class="checkbox-label leave-before-toggle">
+                <input type="checkbox" id="detail-use-leave-before" checked />
+                <span>Leave-home buffer</span>
+              </label>
+              <span class="field-value" id="detail-leave-before-value">10 min</span>
+            </div>
+            <div class="leave-before-controls" id="leave-before-controls">
+              <input
+                type="range"
+                class="leave-before-slider"
+                id="detail-leave-before-input"
+                min="1"
+                max="30"
+                step="1"
+              />
+              <div class="range-ticks" aria-hidden="true">
+                <span>1 min</span>
+                <span>30 min</span>
+              </div>
+            </div>
+          </label>
+          <div class="journey-window">
+            <label class="field optional-time-field" id="detail-default-from-field" data-empty="true">
+              <span>Default from</span>
+              <div class="optional-time-control">
+                <button type="button" class="optional-time-display" id="detail-default-from-display">
+                  Not set
+                </button>
+                <input
+                  type="time"
+                  id="detail-default-from"
+                  class="optional-time-input"
+                  tabindex="-1"
+                  aria-hidden="true"
+                />
+                <button
+                  type="button"
+                  class="optional-time-clear"
+                  id="detail-default-from-clear"
+                  hidden
+                  aria-label="Clear default from time"
+                >
+                  ×
+                </button>
+              </div>
+            </label>
+            <label class="field optional-time-field" id="detail-default-until-field" data-empty="true">
+              <span>Default until</span>
+              <div class="optional-time-control">
+                <button type="button" class="optional-time-display" id="detail-default-until-display">
+                  Not set
+                </button>
+                <input
+                  type="time"
+                  id="detail-default-until"
+                  class="optional-time-input"
+                  tabindex="-1"
+                  aria-hidden="true"
+                />
+                <button
+                  type="button"
+                  class="optional-time-clear"
+                  id="detail-default-until-clear"
+                  hidden
+                  aria-label="Clear default until time"
+                >
+                  ×
+                </button>
+              </div>
+            </label>
+          </div>
+          <p class="settings-section-hint">
+            The journey is selected automatically during these hours.
+          </p>
+        </section>
+
+        <div class="settings-detail-footer">
+          <div class="settings-actions settings-actions-detail">
+            <button type="button" class="btn-secondary" id="detail-cancel-btn">Cancel</button>
+            <button type="submit" class="btn-primary" id="detail-done-btn">Done</button>
+          </div>
+          <button
+            type="button"
+            class="journey-delete-icon-btn"
+            id="delete-journey-btn"
+            hidden
+            aria-label="Delete journey"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12Z"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M10 11v5M14 11v5"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+        </form>
+      </div>
     </dialog>
 
+    <dialog class="help-dialog" id="help-dialog">
+      <div class="help-dialog-body">
+        <h2>How it works</h2>
+        <ul class="help-list">
+          <li>
+            <strong>Train departs</strong> — Live countdown to your train. Swipe the card
+            left or right to see later or earlier departures.
+          </li>
+          <li>
+            <strong>Leave by</strong> — When leave-home buffer is on, shows when to head
+            out. Tap the sliders icon on that card to change it.
+          </li>
+          <li>
+            <strong>Direction</strong> — Pick what the platform sign says (the end of the
+            line), not necessarily where you get off.
+          </li>
+          <li>
+            <strong>Leave-home buffer</strong> — Minutes you need to reach the platform
+            before the train. Untick to hide the leave card.
+          </li>
+          <li>
+            <strong>Default hours</strong> — Optional times when a journey is selected
+            automatically (e.g. morning 6:00–9:00). Leave blank for manual only.
+          </li>
+          <li>
+            <strong>Then</strong> — The next train after the one you are viewing.
+          </li>
+        </ul>
+      </div>
+      <div class="help-dialog-footer">
+        <button type="button" class="btn-primary help-close-btn" id="help-close-btn">Got it</button>
+      </div>
+    </dialog>
+
+    <script>
+      (function () {
+        if (typeof require !== "undefined") {
+          return;
+        }
+
+        window.require = function (name) {
+          if (name === "@capacitor/core" && window.Capacitor) {
+            return window.Capacitor;
+          }
+
+          throw new Error('Dynamic require of "' + name + '" is not supported');
+        };
+      })();
+    </script>
+    <script src="ads-bundle.js"></script>
+    <script src="train-times-bundle.js"></script>
     <script src="app.js"></script>
     <script src="ads.js"></script>
   </body>

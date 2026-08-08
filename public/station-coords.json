@@ -1,0 +1,278 @@
+{
+  "Airport Central Stn": {
+    "lat": -31.9439611,
+    "lng": 115.9748456
+  },
+  "Ashfield Stn": {
+    "lat": -31.9128121,
+    "lng": 115.9360911
+  },
+  "Bassendean Stn": {
+    "lat": -31.9037199,
+    "lng": 115.9469973
+  },
+  "Bayswater Stn": {
+    "lat": -31.9184008,
+    "lng": 115.9118699
+  },
+  "Beckenham Stn": {
+    "lat": -32.0224724,
+    "lng": 115.9542272
+  },
+  "Bull Creek Stn": {
+    "lat": -32.047092,
+    "lng": 115.8541087
+  },
+  "Burswood Stn": {
+    "lat": -31.9599043,
+    "lng": 115.8999547
+  },
+  "Canning Bridge Stn": {
+    "lat": -32.0097373,
+    "lng": 115.8561307
+  },
+  "Cannington Stn": {
+    "lat": -32.0134373,
+    "lng": 115.9449495
+  },
+  "Carlisle Stn": {
+    "lat": -31.9798827,
+    "lng": 115.9100391
+  },
+  "Claisebrook Stn": {
+    "lat": -31.9494024,
+    "lng": 115.8725124
+  },
+  "Daglish Stn": {
+    "lat": -31.9517991,
+    "lng": 115.8134022
+  },
+  "East Perth Stn": {
+    "lat": -31.9439495,
+    "lng": 115.8770742
+  },
+  "Elizabeth Quay Stn": {
+    "lat": -31.9570924,
+    "lng": 115.8552188
+  },
+  "Fremantle Stn": {
+    "lat": -32.0295158,
+    "lng": 115.7518458
+  },
+  "Glendalough Stn": {
+    "lat": -31.9151316,
+    "lng": 115.8231889
+  },
+  "Gosnells Stn": {
+    "lat": -32.0712793,
+    "lng": 115.9996758
+  },
+  "Grant Street Stn": {
+    "lat": -31.9870428,
+    "lng": 115.7647403
+  },
+  "Greenwood Stn": {
+    "lat": -31.818598,
+    "lng": 115.7832431
+  },
+  "Guildford Stn": {
+    "lat": -31.898949,
+    "lng": 115.9657928
+  },
+  "High Wycombe Stn": {
+    "lat": -31.954628,
+    "lng": 115.9921995
+  },
+  "Karrakatta Stn": {
+    "lat": -31.9683896,
+    "lng": 115.7962415
+  },
+  "Kenwick Stn": {
+    "lat": -32.0363799,
+    "lng": 115.9697212
+  },
+  "Leederville Stn": {
+    "lat": -31.9390124,
+    "lng": 115.8403245
+  },
+  "Loch Street Stn": {
+    "lat": -31.9717094,
+    "lng": 115.791612
+  },
+  "Maddington Stn": {
+    "lat": -32.0493729,
+    "lng": 115.982936
+  },
+  "Maylands Stn": {
+    "lat": -31.9283061,
+    "lng": 115.8917195
+  },
+  "McIver Stn": {
+    "lat": -31.9517794,
+    "lng": 115.8663954
+  },
+  "Meltham Stn": {
+    "lat": -31.9224658,
+    "lng": 115.9003208
+  },
+  "Midland Stn": {
+    "lat": -31.8923777,
+    "lng": 116.0037349
+  },
+  "Mosman Park Stn": {
+    "lat": -32.0069488,
+    "lng": 115.7574017
+  },
+  "Mt Lawley Stn": {
+    "lat": -31.9347687,
+    "lng": 115.8808712
+  },
+  "Murdoch Stn": {
+    "lat": -32.066493,
+    "lng": 115.8504648
+  },
+  "North Fremantle Stn": {
+    "lat": -32.0295158,
+    "lng": 115.7518458
+  },
+  "Oats Street Stn": {
+    "lat": -31.9878994,
+    "lng": 115.9163301
+  },
+  "Perth Stadium Stn": {
+    "lat": -31.9502818,
+    "lng": 115.8929019
+  },
+  "Perth Underground Stn": {
+    "lat": -31.9519389,
+    "lng": 115.8580047
+  },
+  "Queens Park Stn": {
+    "lat": -32.0065762,
+    "lng": 115.9378802
+  },
+  "Redcliffe Stn": {
+    "lat": -31.93359,
+    "lng": 115.9497086
+  },
+  "Seaforth Stn": {
+    "lat": -32.0847527,
+    "lng": 116.0111271
+  },
+  "Shenton Park Stn": {
+    "lat": -31.959639,
+    "lng": 115.8054615
+  },
+  "Showgrounds Stn": {
+    "lat": -31.9770638,
+    "lng": 115.7868832
+  },
+  "Stirling Stn": {
+    "lat": -31.894558,
+    "lng": 115.8050873
+  },
+  "Subiaco Stn": {
+    "lat": -31.9446986,
+    "lng": 115.8240044
+  },
+  "Success Hill Stn": {
+    "lat": -31.9001853,
+    "lng": 115.9558721
+  },
+  "Swanbourne Stn": {
+    "lat": -31.9827521,
+    "lng": 115.7706183
+  },
+  "Thornlie Stn": {
+    "lat": -32.0473367,
+    "lng": 115.9523821
+  },
+  "Victoria Park Stn": {
+    "lat": -31.9716144,
+    "lng": 115.9022179
+  },
+  "Victoria Street Stn": {
+    "lat": -32.0119878,
+    "lng": 115.7549676
+  },
+  "Warwick Stn": {
+    "lat": -31.8448271,
+    "lng": 115.7963953
+  },
+  "Woodbridge Stn": {
+    "lat": -31.8915181,
+    "lng": 115.992868
+  },
+  "Lakelands Stn": {
+    "lat": -32.4737802,
+    "lng": 115.7705695
+  },
+  "Whitfords Stn": {
+    "lat": -31.797233,
+    "lng": 115.7829808
+  },
+  "Armadale Stn": {
+    "lat": -32.1508,
+    "lng": 116.0092
+  },
+  "Aubin Grove Stn": {
+    "lat": -32.1578,
+    "lng": 115.8564
+  },
+  "Butler Stn": {
+    "lat": -31.6353,
+    "lng": 115.7108
+  },
+  "Challis Stn": {
+    "lat": -32.0661,
+    "lng": 115.9678
+  },
+  "Cockburn Central Stn": {
+    "lat": -32.1203,
+    "lng": 115.8431
+  },
+  "Currambine Stn": {
+    "lat": -31.7361,
+    "lng": 115.7364
+  },
+  "Edgewater Stn": {
+    "lat": -31.7872,
+    "lng": 115.7723
+  },
+  "Joondalup Stn": {
+    "lat": -31.7444,
+    "lng": 115.7656
+  },
+  "Kelmscott Stn": {
+    "lat": -32.1189,
+    "lng": 116.0178
+  },
+  "Kwinana Stn": {
+    "lat": -32.2297,
+    "lng": 115.8142
+  },
+  "Mandurah Stn": {
+    "lat": -32.5369,
+    "lng": 115.7494
+  },
+  "Rockingham Stn": {
+    "lat": -32.2867,
+    "lng": 115.7572
+  },
+  "Sherwood Stn": {
+    "lat": -32.0578,
+    "lng": 115.9447
+  },
+  "Warnbro Stn": {
+    "lat": -32.3403,
+    "lng": 115.7569
+  },
+  "Wellard Stn": {
+    "lat": -32.2694,
+    "lng": 115.8128
+  },
+  "Yanchep Stn": {
+    "lat": -31.5486,
+    "lng": 115.6317
+  }
+}

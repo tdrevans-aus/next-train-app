@@ -7,7 +7,9 @@
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",
-    "cap:sync": "npx cap sync android",
+    "build:ads": "esbuild public/ads-native.mjs --bundle --format=iife --global-name=NextTrainAds --outfile=public/ads-bundle.js --platform=browser --external:@capacitor/core",
+    "build:train-times": "esbuild public/train-times-client.mjs --bundle --format=iife --global-name=NextTrainTimes --outfile=public/train-times-bundle.js --platform=browser",
+    "cap:sync": "npm run build:ads && npm run build:train-times && npx cap sync android",
     "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
     "postinstall": "patch-package"
   },
@@ -19,6 +21,7 @@
     "express": "^4.21.2"
   },
   "devDependencies": {
+    "esbuild": "^0.28.1",
     "patch-package": "^8.0.1"
   }
 }
