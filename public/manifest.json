@@ -4,8 +4,8 @@
   "description": "When to leave for your next train",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#eef3f2",
+  "theme_color": "#eef3f2",
   "icons": [
     {
       "src": "icon.svg",

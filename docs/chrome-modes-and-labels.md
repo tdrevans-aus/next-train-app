@@ -75,10 +75,10 @@ Next Train                         [optional status]
 | Control | Caption | Do not call it |
 |--------|---------|----------------|
 | Crosshair | **Near me** | Mode, Nearby, GPS, Location |
-| Route (two nodes + path) | **Journeys** | Sheet title is also **Journeys** (not My Journeys) |
+| Route (two nodes + path) | **My Journeys** | Sheet title is also **My Journeys** |
 | Hamburger | **Menu** | Settings, More, Burger |
 
-**Chrome + sheet:** both say **Journeys** (as shipped). “My Journeys” was considered for warmth but not used — keeps chrome and dialog aligned and avoids label crowding.
+**Chrome + sheet:** both say **My Journeys**.
 
 **Why “Near me” on the default tab is OK:** destination label — re-tap recenters; it does not mean “go somewhere else.”
 
@@ -100,21 +100,21 @@ Next Train                         [optional status]
 
 **Shows:** existing commute experience — leave / depart hero, platform, Then, journey switcher if ≥2, leave-buffer controls, etc.
 
-**Manage journeys:** from Journey mode — **second tap on Journeys** chrome, or **Manage journeys** in the journey switcher when ≥2 configured journeys. Do not add a persistent route-line manage button (removed — it cluttered the canvas).
+**Manage journeys:** from Journey mode — **second tap on My Journeys** chrome (power shortcut), **pencil edit icon** beside the journey name / switcher (see `jim-brief-journey-edit-icon.md`), or **Manage journeys** in the journey switcher when ≥2 configured journeys. Do not use a text “Manage journeys” link under the route. Do not make the route line tappable.
 
 Minimum for v1 of this chrome:
 
 - Tap **Journeys** with **≥1 configured journey** → show Journey mode for the appropriate journey (active window / last selected / only journey).  
-- Access to full list/edit: **second tap Journeys** while in Journey mode, or **Manage journeys** from switcher (≥2 journeys).
+- Access to full list/edit: **pencil edit icon** beside journey name / switcher (≥1 journey), **second tap Journeys** while in Journey mode, or **Manage journeys** from switcher (≥2 journeys).
 
-**Recommended v1 simplicity (as built):**
+**Recommended v1 simplicity (as built + edit icon brief):**
 
 1. Tap **Journeys** + has journeys → Journey mode immediately (smart pick via active hours / last selected / only journey).  
 2. Tap **Journeys** + zero journeys → empty setup state (§5).  
-3. **Manage / edit journeys** — no inline button under the route line. Use either:
-   - **Tap Journeys again** while already in Journey mode → opens the **Journeys** dialog (list + edit). If no configured journey yet, template chips are shown.  
+3. **Manage / edit journeys** — **pencil edit icon** beside the journey name (1 journey) or trailing the switcher pill (≥2). Also:
+   - **Tap Journeys again** while already in Journey mode → opens the **Journeys** dialog (list + edit).  
    - **Journey switcher** (visible when ≥2 configured journeys) → **Manage journeys** at the bottom of the dropdown.  
-4. **Leave-home buffer** on the live leave card: sliders icon (top-right of leave card) opens journey detail focused on buffer — not only via the journeys editor.
+4. **Time to station** on the live leave card: sliders icon (top-right of leave card) opens journey detail focused on that setting — not only via the journeys editor.
 
 ---
 
@@ -134,11 +134,11 @@ Tapping **Add a journey** (empty-state CTA or **Add journey** in the list) → c
 - **Template chips:** Morning into town · Evening home · Custom  
 - **Morning / Evening:** auto-pick route (nearest station + direction towards Perth, or Perth → homeward line), then a **3-step coach** inside the Journeys dialog:
   1. Route picked (changeable below)  
-  2. Leave-home buffer explained (highlights slider)  
+  2. Time to station explained (highlights slider)  
   3. Active from / until explained (highlights time fields; template preset times shown)  
 - **Custom:** blank journey — user picks everything; no template coach  
 
-Sheet title stays **Journeys** (not “My Journeys”). List heading copy: *Choose a journey to edit its station, direction, and timing.*
+Sheet title stays **My Journeys**. List heading copy: *Choose a journey to edit its station, direction, and timing.*
 
 This is the spiritual successor of “Tap to get started,” not a dead end and not Menu.
 
@@ -188,7 +188,7 @@ Pseudo-structure for Jim:
 </g>
 ```
 
-Chrome **Journeys** icon remains the route (nodes + path), not the train silhouette.
+Chrome **My Journeys** icon is **A3** (curved A→B + arrow), not a train silhouette.
 
 ---
 

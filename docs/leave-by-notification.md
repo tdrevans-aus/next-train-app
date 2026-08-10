@@ -6,7 +6,7 @@
 **Related:** `docs/jim-brief-leave-reminders-v2.md`, `docs/widget-homescreen.md` (shared journey + leave-by logic), quiet hours (#9)  
 **Job:** Nudge Journey-savers at the moment they should walk out — without opening the app  
 
-**v2 behaviour:** Active from/until = UI journey selection only. Reminders target the **first train at or after preferred train time** on selected **remind days**, at most **once per journey per day**, with optional **Get ready** minutes before leave-by. **Pause all** in Menu → Reminders cancels all pending alarms.  
+**v2 behaviour:** Active from/until = UI journey selection only. Reminders target the **first train at or after preferred train time** on selected **remind days**, at most **once per journey per day**, with optional **Nudge early** minutes before leave-by. **Pause reminders** (Menu → Reminders → More options) cancels all pending alarms.  
 
 ---
 
@@ -52,23 +52,25 @@ Tap → app opens **Journey mode** for that journey (same deep link spirit as th
 
 ### In-app control (Menu → Reminders)
 
-**Leave reminders** (master toggle) — default **Off** until user enables.
+**Reminders** (master toggle) — default **Off** until user enables.
 
-When On, sub-options (v1 keep minimal):
+When On, advanced options live under **More options** (collapsed by default):
 
 | Setting | Default | Notes |
 |---------|---------|--------|
 | **Remind at leave-by** | On (when master on) | The core product |
-| **Early heads-up** | Off | Optional single earlier ping (see §5) |
-| Early heads-up offset | **10 minutes** before leave-by | Fixed in v1; no slider unless cheap |
+| **Nudge early** | Off | Toggle + **5 / 10 / 15** minute chips when on |
+| Nudge early offset | **5 minutes** before leave-by | Default chip; stored when toggled off |
+| **Pause reminders** | Off | Timed chips: **1 day**, **1 week**, **2 weeks**, or **Until I turn back on** |
+| Timed pause | — | Auto-resumes after `pauseUntil` (Perth); status shows **Paused until …** |
 
 Per-journey override (v1.1): optional. **v1 = global toggle** applies to whichever journey is active.
 
-Copy in settings:
+Copy in Reminders dialog:
 
-- Title: **Leave reminders**  
-- Sub: **Get a notification when it’s time to leave for your train**  
-- Restore/permission helper: **Notifications are off in system settings**
+- Master: **Reminders**  
+- Lead: **Get a notification when it’s time to leave for your train.**  
+- Restore/permission helper: **Turn on notifications**
 
 ---
 
@@ -98,7 +100,7 @@ Example Tim: journey **Active 6:00–9:00**, typically catches ~**7:20**.
 
 Use the **same journey selection rules as the widget** (`docs/widget-homescreen.md` §3). If none → schedule nothing.
 
-### Leave-home buffer off
+### Time to station off
 
 **Do not** fire leave-by reminders for that journey (there is no leave-by).  
 Optional later: “Train departing” reminder — **out of scope for #2 v1**.
@@ -246,7 +248,7 @@ Do **not** fork two divergent rule sets.
 
 ## 10. Acceptance criteria
 
-1. Master **Leave reminders** defaults off; enabling requests OS permission.  
+1. Master **Reminders** defaults off; enabling requests OS permission.  
 2. With buffer on + permission + upcoming leave-by → **Leave now** notification near leave-by.  
 3. Early heads-up off by default; when on, fires ~10 min before leave-by.  
 4. Buffer off → no leave reminders for that journey.  

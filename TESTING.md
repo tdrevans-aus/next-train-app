@@ -19,7 +19,7 @@ http://localhost:3000/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=
 | Query param | Purpose |
 |-------------|---------|
 | `reset=1` | Clears `localStorage` + `sessionStorage` once, then removes itself from the URL |
-| `test=1` | Skips geolocation auto-setup so the first-run hero is reachable (for QA) |
+| `test=1` | Skips geolocation auto-setup and **defers the onboarding coach timer** (use for most automated smoke tests) |
 | `fixture=<name>` | Uses deterministic mock train data (see table below) |
 | `station` + `direction` | Seeds a configured journey (same as share links) |
 
@@ -63,12 +63,267 @@ curl "http://localhost:3000/api/next-train?fixture=normal&station=Edgewater%20St
 
 Run against `http://localhost:3000` unless noted. Report each as **PASS** / **FAIL** with steps and what you observed.
 
-### 1. First launch (no journey)
+### 1. First launch — Nearby mode (no journey)
 
-1. Open `http://localhost:3000/?reset=1&test=1` (no `station` / `direction`).
-2. **Expect:** Setup hero — “Tap to get started”. Leave card hidden. Journey switcher hidden. Settings opens when hero is tapped.
+1. Open `http://localhost:3000/?reset=1&test=1&fixture=normal` (no `station` / `direction`).
+2. **Expect:** App in **Near me** mode (`#nearby-btn` pressed). Route shows **Near you** (nearest station board). Leave card hidden. Journey switcher hidden. Hero shows nearby departures (not “Tap to get started”). Journeys dialog does **not** auto-open.
 
 `test=1` skips geolocation auto-configuration so this flow is reliable in automation.
+
+### 12. Onboarding coach (first run)
+
+Manual only (omit `test=1`; allow location or pick a fallback station if prompted):
+
+1. Open `http://localhost:3000/?reset=1&fixture=normal`.
+2. Wait until the nearby board has loaded (~6s after populate).
+3. **Expect:** Floating coach step 1 — **Near you** + “Got it”. After **Got it**, step 2 — **Saved commutes** with **Set up a journey** / **Maybe later**.
+4. Tap **Maybe later**. **Expect:** Coach dismisses; app stays in Nearby mode; coach does not return on refresh (stored in `localStorage` key `nextTrainOnboardingDone`).
+
+With `test=1`, the coach timer does not run — use this test for the timed coach only.
+
+### 13. Journey templates (create from wizard or Add journey)
+
+1. From test 12 step 2, tap **Set up a journey** (or: `?reset=1&test=1&fixture=normal` → **Journeys** twice → template chips visible).
+2. **Expect:** Journeys dialog with template chips (Morning into town / Evening home / Custom). **Add journey** hidden while chips are shown.
+3. Tap **Morning into town**.
+4. **Expect:** Brief wait while nearest station is detected. Detail view opens with name **Morning into town**, default window **06:00–09:00**, **nearest suburban station** selected, direction **towards Perth**. Three-step coach: (1) route picked, (2) time to station, (3) active hours **06:00–09:00**. Dismiss with **Got it** on step 3.
+
+Repeat with **Evening home** (15:00–18:00, **Perth** departure towards your line home) and **Custom** (no auto route, user picks station/direction).
+
+### 13b. Double wizard / double template (duplicate morning)
+
+1. `?reset=1&test=1&fixture=normal` → wizard **Set up a journey** → **Morning into town** → wait for detail / route coach.
+2. **← Journeys** → pick **Morning into town** again (chips visible via **Add journey** if needed).
+3. **Expect (ideal):** Reuses existing row or blocks second morning — **one** “Morning into town” in the list.
+4. **Current known bug:** Two rows; saving the second shows overlap with **"Morning into town"** (06:00–09:00) — looks like self-overlap but is a duplicate journey. See `docs/jim-brief-duplicate-morning-template.md`.
+
+### 15. Remove ads (web vs Android)
+
+**Web (`localhost` / browser):**
+
+1. Open app with ads visible (placeholder or AdSense).
+2. Open **Menu**.
+3. **Expect:** **Remove ads** buy row **hidden**; hint **Ad-free is available in the Android app**. Link under ad slot **hidden**. Tapping a visible **Remove ads** control should not silently do nothing (if shown, should toast or open Menu).
+
+**Android (device / emulator with Play Store):**
+
+1. Open **Menu** → **Remove ads** (or link under banner).
+2. **Expect:** Google Play purchase sheet **or** toast (*Couldn't complete purchase. Try again.* / cancel silent).
+3. If buy row missing: billing may be unavailable (emulator without Play) — **Restore purchase** may still show.
+4. If native purchase bridge failed to load: under-ad link **hidden**; any purchase tap shows *Purchases aren't available right now. Try updating the app.*
+
+### 16. Button visibility (viewport regression)
+
+Automated on **390×844** mobile viewport:
+
+```bash
+node qa/button-visibility.mjs
+```
+
+**Expect:** Every visible interactive control on each screen is **fully inside** its dialog or the viewport (2px tolerance):
+
+| Screen | Key controls |
+|--------|----------------|
+| Main | Near me, Journeys, Menu |
+| Journeys list | Done, Add journey / template chips |
+| Journey detail | ← Journeys, Cancel, Save, **Delete** (with 2+ journeys) |
+| Menu | Done, Clear all data, How it works |
+| Help | Got it |
+| Widget help | **Add widget** (primary), **Done**; pin-first copy; manual steps only after unsupported pin |
+
+**Manual (optional):** Repeat on Android device after `cap:sync` — same checks; journey detail **Delete** must not clip below dialog bottom.
+
+### 20b. Widget help dialog (pin-first)
+
+Automated (web layout):
+
+```bash
+node qa/button-visibility.mjs
+```
+
+**Expect:** widget help row **PASS** — **Add widget** primary, **Done** secondary; manual block hidden on open; lead is one benefit line (no “Tap Add widget”, no size/leave-in copy).
+
+**Manual (Android):**
+
+1. **Menu → Add home screen widget** (or widget coach → **How**).
+2. **Expect:** Single sentence — **Add widget** puts your next train…; no long-press steps visible yet.
+3. Tap **Add widget** → system pin sheet (supported device).
+4. If pin unsupported → manual **Or add manually** block appears after attempt; dialog stays open.
+
+Jim brief: `docs/jim-brief-widget-help-pin-first.md`
+
+### 20. Stickiness coach gating (logic regression)
+
+Pure Node — **no browser**, no `npm start`:
+
+```bash
+node qa/stickiness-coaches-logic.mjs
+```
+
+**Expect:** `8 PASS · 0 FAIL`. Mirrors stagger rules in `docs/jim-brief-stagger-stickiness-coaches.md` (widget coach before leave-reminder coach; never same session).
+
+| Automated case | Rule under test |
+|----------------|-----------------|
+| open 1: no widget | 1st app open — widget coach **not** eligible |
+| open 2: widget pending | 2nd open — widget coach **eligible** |
+| open 2: no reminder while widget pending | Reminder coach **blocked** while widget arc unfinished |
+| open 3: reminder after widget done | 3rd open + widget `done` — reminder coach **eligible** |
+| widget snoozed blocks reminder | Widget `snoozed` (within 7-day window) — reminder **blocked** |
+| weekday after config day opens reminder gate | First **weekday** (Mon–Fri Perth) **after** config calendar day opens reminder OR-gate |
+| same config day weekday does not open gate | Config day itself — weekday gate **closed** |
+| second not now exhausts coach | After snooze expires, one more show; 2nd **Not now** → `exhausted`, no auto-show |
+
+**Manual (Android, optional):** End-to-end coach UI is **not** covered by this script. After `cap:sync`, cold-launch on device:
+
+1. **Session 1** — save first Journey → **no** widget or reminder auto-coach that session.
+2. **2nd cold open** — widget coach only (if not done).
+3. **3rd cold open** (widget resolved) — leave-reminder coach only; **not** stacked with widget same session.
+
+Web: no widget/reminder coaches (native Android only).
+
+**Widget coach Not now → Menu hint (manual, Android):**
+
+1. 2nd cold open after first journey configured → widget coach visible.
+2. Tap **Not now**.
+3. **Expect:** Coach dismisses; toast *You can add a widget anytime from **Menu*** (~3s); Menu icon pulses briefly; Menu does **not** auto-open.
+4. Open **Menu** → **Add home screen widget** still works.
+
+Jim brief: `docs/jim-brief-widget-not-now-menu-hint.md`
+
+### 21. Reminders dialog (Menu)
+
+Automated (web):
+
+```bash
+node qa/reminders-dialog.mjs
+```
+
+**Expect:** `PASS` — Menu → **Reminders** opens `#reminders-dialog`; Menu closes; **Done** visible.
+
+| Platform | Expect in dialog |
+|----------|------------------|
+| **Web** (`localhost`) | Hint: *Leave reminders are available in the Android app.* Native controls **hidden**. |
+| **Android** (after `cap:sync`) | Lead + master **Reminders** toggle; per-journey **Reminder** + **Usual train time** + **Days**; **More options** → **Nudge early** (toggle + 5/10/15 chips) and **Pause reminders** (timed chips + **Resume reminders**); schedule line when native bridge works. |
+
+**Manual (Android) — More options:**
+
+1. **More options** → turn **Nudge early** on → **5 / 10 / 15** chips appear; tap **10** → reschedule uses 10 min offset.
+2. **Pause reminders** → tap **1 day** → status **Paused until …** + **Resume reminders**; schedule line matches.
+3. Tap **Resume reminders** → pause clears; next-reminder line returns.
+4. **Timed auto-resume:** set `pauseUntil` in the past (or wait for expiry) → open app or Reminders → pause cleared without manual resume (native `getSchedule` / `getSettings` path).
+
+**Manual (Android) — core:**
+
+1. Configure a journey (e.g. Morning into town).
+2. **Menu** → **Reminders**.
+3. **Expect:** Reminders dialog opens (not silent no-op).
+4. Enable **Reminders** → permission prompt; journey cards and **More options** appear.
+5. **Done** saves and closes.
+
+**Known bug (2026-08-10):** If **Reminders** does nothing, check console for `DEFAULT_REMIND_DAYS has already been declared` — `leave-reminders.js` fails to load (duplicate `const` in `app.js` + `leave-reminders.js`). Until fixed, `window.nextTrainLeaveReminders` is undefined.
+
+### 22. Widget homescreen — times & refresh (Android manual)
+
+**Not automatable** on the launcher (no Playwright for pinned widgets). Run on device after `cap:sync` with a **configured journey** and widget pinned.
+
+**Read the widget:**
+
+| Line | Meaning |
+|------|---------|
+| Big number (`12 min` / `NOW`) | Minutes until **live** departure (from last good fetch + local repaint) |
+| Small clock (`09:13`) | **Scheduled** platform time — not “next train in the timetable at 9:13” by itself |
+| Leave line (`Leave 8 min ago`, red) | Overdue leave-by — **not** bare `8 min late` (reads as train delay) |
+| `Updated …` | Last **successful network** refresh — must be **fully readable** (not ellipsized) |
+
+**Regression — truncated Updated line (2026-08-10):**
+
+- **Fail:** `Updated 9:10 A…` or similar — time cut off on **2×1** (and tight **4×1**) widget.
+- **Pass:** Full line visible, e.g. `Updated 9:10 am` or shorter copy (`Updated 19m ago`) that fits the crumb.
+- **Cause (layout):** `widget_updated` uses `wrap_content` + `ellipsize="end"` in a narrow weighted column; `PerthTime.formatUpdatedLine` produces `Updated h:mm a` (long on some locales).
+
+**Sanity (compare app vs widget):**
+
+1. Open app → note hero countdown, scheduled time, leave strip, **Updated** time.
+2. Read home-screen widget at the **same moment**.
+3. **Expect:** Big number and leave line **match** app (within ~1 min). **Updated** on widget should be **recent** (not many minutes behind while app is fresh).
+
+**Regression — stale / wrong train (2026-08-10):**
+
+- Phone time **after** scheduled departure (e.g. 9:29) but widget still shows scheduled **09:13** with **NOW** and **Updated** stuck ~10+ min ago.
+- **Fail:** Looks like “next train 9:13” when cache is stale or departure-advance refresh did not run.
+- **Pass:** After scheduled/live departure passes, widget shows **next train** countdown, brief **Updating…** / **Fetching next train…**, or network refresh — **never** silent **NOW** + old scheduled clock for many minutes.
+
+Jim brief: `docs/jim-brief-widget-post-departure-staleness.md`
+
+**Automated helper (logic only, not launcher UI):**
+
+```bash
+./gradlew :app:testDebugUnitTest --tests com.tdrevans.nexttrain.CommuteScheduleTest
+```
+
+Covers local repaint, `needsNetworkRefresh` after departure minute, late leave copy — not alarm delivery or API fetch on device.
+
+See `docs/widget-homescreen.md` and `CommuteSchedule.java` (`WidgetDepartureAdvanceScheduler`).
+
+### 23. Other directions hidden in My Journeys (regression)
+
+Automated:
+
+```bash
+node qa/other-directions-journey-repro.mjs
+```
+
+**Expect:** **PASS** — in My Journeys mode, `#nearby-directions` is **hidden** (no “Other directions” label).
+
+**Repro steps (what the script does):**
+
+1. Configured journey (e.g. Armadale → Perth).
+2. Open **Journeys** dialog → tap **Near me** (nearby board loads) → **Done** on dialog.
+3. **Fail:** Other directions + nearby-style meta still visible under hero in Journey mode.
+4. **Pass:** Journey layout only — hero, leave card, platform/status, **Then** (no Other directions).
+
+**Manual:** Any path into My Journeys after using Near me — label must not appear.
+
+Jim brief: `docs/jim-brief-other-directions-in-journey-mode.md`
+
+### 24. Journey edit icon (manage entry)
+
+1. Configured journey, Journey mode — **no** “Manage journeys” text link under the route.
+2. **1 journey:** muted journey name + pencil icon on the same row; tap pencil → **My Journeys** list.
+3. **≥2 journeys:** switcher unchanged; pencil trails the switcher pill; switcher menu still has **Manage journeys**.
+4. Nearby / empty setup: pencil hidden. Leave-card sliders still edit time to station only.
+
+Jim brief: `docs/jim-brief-journey-edit-icon.md`
+
+### 25. Journey name on detail (Custom + edit)
+
+1. **Custom** template → detail shows **Name** field empty with placeholder `e.g. School run` (not `Journey N`).
+2. Type a name → set station + direction → **Save** → live board / switcher show that name.
+3. Leave name blank → set station + direction → **Save** → name is **Station → direction** (e.g. `Armadale → Perth`), not `Journey N`.
+4. Edit existing journey → name field shows current name; change + **Save** updates list and switcher.
+5. **Morning** / **Evening** templates still open with preset names in the field.
+
+Jim brief: `docs/jim-brief-journey-name-on-detail.md`
+
+### 26. Custom template route wizard (open bugs #7)
+
+Automated:
+
+```bash
+node qa/custom-template-no-wizard-repro.mjs
+```
+
+**Expect:** **PASS** — onboarding → **Custom** shows 3-step template coach (“Pick your route” / time to station / active hours), same flow as Morning/Evening.
+
+Jim brief: `docs/jim-brief-open-bugs.md` (#7)
+
+### 17–19. Leave reminders v2 (native scheduling)
+
+Plan: `docs/qa-leave-reminders-v2-testing.md`
+
+- **17** — Superseded by **21** for Menu UI; native plugin mocks optional  
+- **18** — `PreferredTrainReminder` JUnit (train pick, days, once/day)  
+- **19** — Android device roleplay (Jim brief §4: no 5:50 spam, one ping ~7:15, no Saturday)
 
 ### 2. Configured journey (fixture)
 
@@ -123,7 +378,7 @@ Run against `http://localhost:3000` unless noted. Report each as **PASS** / **FA
 1. Edit leave-before minutes, tap **Done** without Save, reopen journey.
 2. **Expect:** Value unchanged. After **Save**, value persists.
 
-### 12. Live API (optional)
+### 14. Live API (optional)
 
 1. Open `http://localhost:3000/?reset=1&station=Edgewater%20Stn&direction=Perth` (no `fixture`).
 2. **Expect:** Real Transperth times load. Countdowns change over time.
@@ -132,7 +387,7 @@ Run against `http://localhost:3000` unless noted. Report each as **PASS** / **FA
 
 Paste into a **fresh** Cursor agent chat (not the coding session):
 
-> You are a QA agent. Follow `TESTING.md` in this repo. Run `npm start` if needed. Execute smoke tests 1–11 using fixture URLs. Use the browser tools. Output a table: test #, PASS/FAIL, notes. Do not fix code unless I ask.
+> You are a QA agent. Follow `TESTING.md` in this repo. Run `npm start` if needed. Execute smoke tests 1–11, 13, 15 (web), **16** (`node qa/button-visibility.mjs`), **20** (`node qa/stickiness-coaches-logic.mjs`), and **21** (`node qa/reminders-dialog.mjs`). Use fixture URLs with `test=1` where noted. Output a table: test #, PASS/FAIL, notes. Do not fix code unless I ask.
 
 ## Android / Capacitor
 
@@ -149,6 +404,10 @@ The native app loads the hosted Vercel API — **fixtures do not apply**. After 
 | `nextTrainSettings` | localStorage | Journeys + active journey |
 | `nextTrainSkip:<journeyId>` | sessionStorage | Client-side train skip offset |
 | `nextTrainManualJourneyOverride` | localStorage | Manual journey picker override |
+| `nextTrainOnboardingDone` | localStorage | Onboarding coach completed |
 | `nextTrainSwipeHintSeen` | localStorage | Swipe hint dismissed |
+| `nextTrainAppEngagement` | localStorage | App open count + first journey configured timestamp (stickiness) |
+| `nextTrainWidgetCoach` | localStorage | Widget coach status (`pending` / `snoozed` / `done` / `exhausted`) |
+| `nextTrainLeaveReminderCoach` | localStorage | Leave-reminder coach status (same shape) |
 
 Clear everything: `/?reset=1` or DevTools → Application → Clear site data.

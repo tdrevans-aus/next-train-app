@@ -1,0 +1,12 @@
+{
+  "id": "j-morning",
+  "name": "Morning into town",
+  "station": "Edgewater Stn",
+  "direction": "Perth",
+  "leaveBeforeMinutes": 10,
+  "useLeaveBefore": true,
+  "preferredTrainTime": "07:20",
+  "defaultFrom": "06:00",
+  "defaultUntil": "09:00",
+  "remindDays": [1, 2, 3, 4, 5]
+}

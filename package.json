@@ -1,6 +1,6 @@
 {
   "name": "next-train-app",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Shows when to leave for your next train",
   "type": "module",
   "scripts": {
@@ -8,8 +8,9 @@
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",
     "build:ads": "esbuild public/ads-native.mjs --bundle --format=iife --global-name=NextTrainAds --outfile=public/ads-bundle.js --platform=browser --external:@capacitor/core",
+    "build:ad-free": "esbuild public/ad-free-native.mjs --bundle --format=iife --global-name=NextTrainAdFreeNative --outfile=public/ad-free-bundle.js --platform=browser --external:@capacitor/core",
     "build:train-times": "esbuild public/train-times-client.mjs --bundle --format=iife --global-name=NextTrainTimes --outfile=public/train-times-bundle.js --platform=browser",
-    "cap:sync": "npm run build:ads && npm run build:train-times && npx cap sync android",
+    "cap:sync": "npm run build:ads && npm run build:ad-free && npm run build:train-times && npx cap sync android",
     "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
     "postinstall": "patch-package"
   },
@@ -18,10 +19,12 @@
     "@capacitor/android": "^8.5.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
+    "@capgo/native-purchases": "^8.6.5",
     "express": "^4.21.2"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
-    "patch-package": "^8.0.1"
+    "patch-package": "^8.0.1",
+    "playwright": "^1.62.1"
   }
 }

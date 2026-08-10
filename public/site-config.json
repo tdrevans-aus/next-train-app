@@ -3,5 +3,6 @@
   "adsenseSlot": "",
   "admobAppId": "ca-app-pub-2659068072900088~2367537790",
   "admobBannerId": "ca-app-pub-2659068072900088/7567893589",
-  "admobTestMode": true
+  "admobTestMode": true,
+  "adFreeProductId": "com.tdrevans.nexttrain.adfree"
 }

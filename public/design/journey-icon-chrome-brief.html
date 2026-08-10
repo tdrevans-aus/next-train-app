@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Journeys icon — chrome strip options (Simon round 2)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #eef3f2;
+        --card: #fff;
+        --text: #1a2b2a;
+        --muted: #5c6f6d;
+        --accent: #0b6e6a;
+        --accent-wash: rgba(11, 110, 106, 0.1);
+        --line: #d5e3e1;
+        --line-strong: #b8ccc9;
+        --surface-soft: rgba(255, 255, 255, 0.72);
+        --ink: #12201f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Figtree, system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.45;
+      }
+
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 3rem;
+      }
+
+      h1 {
+        font-family: Syne, Figtree, sans-serif;
+        font-size: 1.4rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.35rem;
+      }
+
+      h2 {
+        font-size: 1.05rem;
+        margin: 1.75rem 0 0.5rem;
+      }
+
+      h3 {
+        font-size: 0.92rem;
+        margin: 0 0 0.35rem;
+      }
+
+      .lede,
+      .note {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .brief-box,
+      .pick-box {
+        padding: 1rem 1.1rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--card);
+        margin-bottom: 1.25rem;
+      }
+
+      .pick-box {
+        border-color: rgba(11, 110, 106, 0.35);
+        background: var(--accent-wash);
+      }
+
+      .brief-box ul,
+      .pick-box ul {
+        margin: 0.4rem 0 0;
+        padding-left: 1.15rem;
+      }
+
+      .brief-box li,
+      .pick-box li {
+        margin: 0.25rem 0;
+        font-size: 0.9rem;
+      }
+
+      .brief-box strong.out {
+        color: #9a3412;
+      }
+
+      code {
+        font-size: 0.82em;
+        background: var(--bg);
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+      }
+
+      .phone-chrome {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--card);
+        padding: 0.85rem 0.75rem 0.65rem;
+        box-shadow: 0 1px 0 rgba(18, 32, 31, 0.04);
+      }
+
+      .brand-mark {
+        font-family: Syne, Figtree, sans-serif;
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: -0.035em;
+        margin: 0 0 0.75rem;
+        color: var(--ink);
+      }
+
+      .chrome-modes {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        gap: 0.25rem;
+        margin-left: auto;
+      }
+
+      .topbar-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .chrome-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.18rem;
+        min-width: 3.35rem;
+        max-width: 4.25rem;
+        flex: 1 1 0;
+      }
+
+      .chrome-action-label {
+        font-size: 0.58rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        line-height: 1.1;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .icon-btn {
+        width: 2.55rem;
+        height: 2.55rem;
+        border: 1px solid var(--line);
+        border-radius: 0.9rem;
+        background: var(--surface-soft);
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+
+      .icon-btn svg {
+        width: 1.38rem;
+        height: 1.38rem;
+      }
+
+      .chrome-action--active .chrome-action-label {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .chrome-action--active .icon-btn {
+        color: var(--accent);
+        border-color: rgba(11, 110, 106, 0.35);
+        background: var(--accent-wash);
+      }
+
+      .strip-card {
+        margin: 0.85rem 0 1.25rem;
+        padding: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--card);
+      }
+
+      .strip-card.is-rec {
+        border-color: rgba(11, 110, 106, 0.45);
+        box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.12);
+      }
+
+      .strip-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        align-items: baseline;
+        margin-bottom: 0.75rem;
+      }
+
+      .strip-id {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      .strip-family {
+        font-size: 0.8rem;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .strip-badge {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #fff;
+        background: var(--accent);
+        padding: 0.12rem 0.45rem;
+        border-radius: 999px;
+      }
+
+      .strip-desc {
+        margin: 0;
+        font-size: 0.88rem;
+        color: var(--muted);
+        width: 100%;
+      }
+
+      .strip-pair {
+        display: grid;
+        gap: 0.65rem;
+      }
+
+      @media (min-width: 560px) {
+        .strip-pair {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .strip-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin: 0 0 0.35rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .dark-chrome {
+        background: #0f1716;
+        border-color: #243332;
+      }
+
+      .dark-chrome .brand-mark {
+        color: #e8f2f0;
+      }
+
+      .dark-chrome .chrome-action-label {
+        color: #8aa39f;
+      }
+
+      .dark-chrome .icon-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: #2a3d3b;
+        color: #9bb5b1;
+      }
+
+      .dark-chrome .chrome-action--active .chrome-action-label {
+        color: #3dd9c9;
+      }
+
+      .dark-chrome .chrome-action--active .icon-btn {
+        color: #3dd9c9;
+        border-color: rgba(61, 217, 201, 0.4);
+        background: rgba(61, 217, 201, 0.12);
+      }
+
+      .howto {
+        margin-top: 2rem;
+        padding: 1rem;
+        border-radius: 14px;
+        border: 1px dashed var(--line-strong);
+        background: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+      }
+
+      .howto ol {
+        margin: 0.4rem 0 0;
+        padding-left: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>My Journeys icon — judge in the chrome strip</h1>
+      <p class="lede">
+        Full brief: <code>docs/simon-brief-journeys-icon.md</code>. Round 1 trains are out of scope.
+        <strong>Never judge a lone icon</strong> — always the full Near me · My Journeys · Menu strip.
+      </p>
+
+      <div class="brief-box">
+        <h3>Brief (short)</h3>
+        <ul>
+          <li><strong>Near me</strong> = location (crosshair kept).</li>
+          <li><strong>My Journeys</strong> = my saved routes / commute — <em>not</em> “train.”</li>
+          <li><strong>Menu</strong> = hamburger (kept).</li>
+          <li>
+            Families: <strong>A→B route</strong>, <strong>saved / bookmark</strong>,
+            <strong>stack / list of trips</strong> — 3 each below.
+          </li>
+          <li><strong class="out">Out of scope:</strong> front-facing train faces.</li>
+        </ul>
+      </div>
+
+      <div class="pick-box">
+        <h3>Simon’s recommendation</h3>
+        <p class="note" style="margin: 0">
+          <strong>A3</strong> — curved A→B with arrow. Reads as “route / commute” at chrome size, stays
+          distinct from Near me’s crosshair and Menu’s lines, and keeps the old journey metaphor without
+          looking like another train board. Runner-up: <strong>A1</strong> (simpler) if A3 feels busy.
+        </p>
+      </div>
+
+      <div id="strips"></div>
+
+      <h2>Dark strip check (recommended: A3)</h2>
+      <p class="note">Same chrome grammar on dark — optional smoke test.</p>
+      <div id="dark-strip"></div>
+
+      <div class="howto">
+        <h3>Presentation rule</h3>
+        <ol>
+          <li>Always show the <strong>full strip</strong> (idle + Journeys active).</li>
+          <li>Only the middle SVG changes — Near me + Menu stay fixed.</li>
+          <li>Reply with option IDs (e.g. <code>A3</code>) once you’ve browsed in a browser.</li>
+        </ol>
+        <p class="note" style="margin-top: 0.75rem; margin-bottom: 0">
+          Brief: <code>docs/simon-brief-journeys-icon.md</code> · Archive trains:
+          <code>public/design/journey-icon-pick.html</code>
+        </p>
+      </div>
+    </main>
+
+    <script>
+      const NEARBY = `
+        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.75" />
+        <path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+      `;
+
+      const MENU = `
+        <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+      `;
+
+      const CURRENT = `
+        <path d="M12 5 17.5 9.5V17H6.5V9.5 12 5z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+        <path d="M7.5 11.5h9" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+        <circle cx="9" cy="15.25" r="1" stroke="currentColor" stroke-width="1.75" />
+        <circle cx="15" cy="15.25" r="1" stroke="currentColor" stroke-width="1.75" />
+        <path d="M3 20h18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+      `;
+
+      /** Round 2 candidates — stroke 1.75, 24×24, currentColor */
+      const OPTIONS = [
+        {
+          id: "Current",
+          family: "Train face (shipping)",
+          section: "0 — Current (as shipped)",
+          sectionNote: "Baseline. Feels “train,” not “saved journey.” Comparison only.",
+          desc: "Front-facing cab — competes with product name; weak “mine / saved” signal.",
+          svg: CURRENT,
+        },
+        {
+          id: "A1",
+          family: "Route A→B",
+          section: "Family A — Route A→B",
+          sectionNote: "Goal: reads as a route at ~22px, not decoration.",
+          desc: "Two nodes + straight path — clearest A→B at tiny size.",
+          svg: `
+            <circle cx="5.5" cy="12" r="2.4" stroke="currentColor" stroke-width="1.75" />
+            <circle cx="18.5" cy="12" r="2.4" stroke="currentColor" stroke-width="1.75" />
+            <path d="M8.2 12h7.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+          `,
+        },
+        {
+          id: "A2",
+          family: "Route A→B",
+          desc: "Diagonal home → city — motion / commute direction.",
+          svg: `
+            <circle cx="6.5" cy="16.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
+            <circle cx="17.5" cy="7.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
+            <path d="M8.4 14.8 15.6 9.2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+          `,
+        },
+        {
+          id: "A3",
+          family: "Route A→B",
+          desc: "Curved path + arrow — “my route” with direction (recommended).",
+          recommended: true,
+          svg: `
+            <circle cx="5.5" cy="14.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
+            <circle cx="18.5" cy="9.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
+            <path d="M7.7 13.2c2.2-0.2 4.2-2.4 6.6-3.2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" fill="none" />
+            <path d="M13.2 8.6l1.9-0.1-0.7 1.8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+          `,
+        },
+        {
+          id: "B1",
+          family: "Saved / bookmark",
+          section: "Family B — Saved / bookmark",
+          sectionNote: "Should feel personal / “mine.” Must not look like Near me.",
+          desc: "Classic bookmark — “saved,” but less “route.”",
+          svg: `
+            <path d="M7 3.75h10v16.5l-5-3.4-5 3.4V3.75z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+          `,
+        },
+        {
+          id: "B2",
+          family: "Saved / bookmark",
+          desc: "Bookmark + mini A→B — saved commute hybrid.",
+          svg: `
+            <path d="M7 3.75h10v16.5l-5-3.4-5 3.4V3.75z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+            <circle cx="9.5" cy="10" r="1.15" fill="currentColor" />
+            <circle cx="14.5" cy="10" r="1.15" fill="currentColor" />
+            <path d="M10.7 10h2.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          `,
+        },
+        {
+          id: "B3",
+          family: "Saved / bookmark",
+          desc: "Flag / marker — “pinned journey.” Risk: feels like location.",
+          svg: `
+            <path d="M7 20.5V4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+            <path d="M7 4.5h9.5l-2.2 3.4 2.2 3.4H7" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+          `,
+        },
+        {
+          id: "C1",
+          family: "Stack / list",
+          section: "Family C — Stack / list of trips",
+          sectionNote: "Multiple journeys. Keep distinct from Menu’s three lines.",
+          desc: "Two stacked cards — “list of trips.”",
+          svg: `
+            <rect x="4.5" y="5.5" width="12.5" height="5.25" rx="1.35" stroke="currentColor" stroke-width="1.75" />
+            <rect x="7" y="12.75" width="12.5" height="5.25" rx="1.35" stroke="currentColor" stroke-width="1.75" />
+          `,
+        },
+        {
+          id: "C2",
+          family: "Stack / list",
+          desc: "Three short routes with end-dots — trips, not hamburger.",
+          svg: `
+            <circle cx="5" cy="7" r="1.35" fill="currentColor" />
+            <path d="M7.2 7h11.3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+            <circle cx="5" cy="12" r="1.35" fill="currentColor" />
+            <path d="M7.2 12h9" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+            <circle cx="5" cy="17" r="1.35" fill="currentColor" />
+            <path d="M7.2 17h11.3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+          `,
+        },
+        {
+          id: "C3",
+          family: "Stack / list",
+          desc: "Two parallel A→B rows — morning + evening at a glance.",
+          svg: `
+            <circle cx="5.5" cy="8" r="1.9" stroke="currentColor" stroke-width="1.75" />
+            <circle cx="18.5" cy="8" r="1.9" stroke="currentColor" stroke-width="1.75" />
+            <path d="M7.7 8h8.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+            <circle cx="5.5" cy="16" r="1.9" stroke="currentColor" stroke-width="1.75" />
+            <circle cx="18.5" cy="16" r="1.9" stroke="currentColor" stroke-width="1.75" />
+            <path d="M7.7 16h8.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+          `,
+        },
+      ];
+
+      function svgWrap(inner) {
+        return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${inner}</svg>`;
+      }
+
+      function chrome(journeysInner, { active = false, dark = false } = {}) {
+        const journeysClass = active ? "chrome-action chrome-action--active" : "chrome-action";
+        const darkClass = dark ? " phone-chrome dark-chrome" : " phone-chrome";
+        return `
+          <div class="${darkClass.trim()}">
+            <div class="topbar-row">
+              <p class="brand-mark">Next Train</p>
+              <nav class="chrome-modes" aria-hidden="true">
+                <div class="chrome-action">
+                  <button type="button" class="icon-btn" tabindex="-1">${svgWrap(NEARBY)}</button>
+                  <span class="chrome-action-label">Near me</span>
+                </div>
+                <div class="${journeysClass}">
+                  <button type="button" class="icon-btn" tabindex="-1">${svgWrap(journeysInner)}</button>
+                  <span class="chrome-action-label">My Journeys</span>
+                </div>
+                <div class="chrome-action">
+                  <button type="button" class="icon-btn" tabindex="-1">${svgWrap(MENU)}</button>
+                  <span class="chrome-action-label">Menu</span>
+                </div>
+              </nav>
+            </div>
+          </div>
+        `;
+      }
+
+      function render() {
+        const root = document.getElementById("strips");
+        let lastSection = null;
+        const html = [];
+
+        for (const opt of OPTIONS) {
+          if (opt.section && opt.section !== lastSection) {
+            lastSection = opt.section;
+            html.push(`<h2>${opt.section}</h2>`);
+            if (opt.sectionNote) html.push(`<p class="note">${opt.sectionNote}</p>`);
+          }
+
+          const badge = opt.recommended ? `<span class="strip-badge">Simon pick</span>` : "";
+          html.push(`
+            <article class="strip-card${opt.recommended ? " is-rec" : ""}" id="${opt.id}">
+              <div class="strip-meta">
+                <span class="strip-id">${opt.id}</span>
+                <span class="strip-family">${opt.family}</span>
+                ${badge}
+                <p class="strip-desc">${opt.desc}</p>
+              </div>
+              <div class="strip-pair">
+                <div>
+                  <p class="strip-label">Idle</p>
+                  ${chrome(opt.svg, { active: false })}
+                </div>
+                <div>
+                  <p class="strip-label">Journeys active</p>
+                  ${chrome(opt.svg, { active: true })}
+                </div>
+              </div>
+            </article>
+          `);
+        }
+
+        root.innerHTML = html.join("");
+
+        const a3 = OPTIONS.find((o) => o.id === "A3");
+        document.getElementById("dark-strip").innerHTML = chrome(a3.svg, { active: true, dark: true });
+      }
+
+      render();
+    </script>
+  </body>
+</html>

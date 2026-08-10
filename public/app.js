@@ -18,6 +18,9 @@ const updatedEl = document.getElementById("updated");
 const journeySwitcherEl = document.getElementById("journey-switcher");
 const journeySwitcherNameEl = document.getElementById("journey-switcher-name");
 const journeySwitcherMenuEl = document.getElementById("journey-switcher-menu");
+const journeyContextNameEl = document.getElementById("journey-context-name");
+const journeyContextRowEl = document.getElementById("journey-context-row");
+const journeyEditBtn = document.getElementById("journey-edit-btn");
 const heroEl = document.getElementById("hero");
 const heroDepartLabelEl = document.getElementById("hero-depart-label");
 const departCountdownEl = document.getElementById("depart-countdown");
@@ -63,10 +66,9 @@ const menuDoneBtn = document.getElementById("menu-done-btn");
 const detailCancelBtn = document.getElementById("detail-cancel-btn");
 const settingsBackBtn = document.getElementById("settings-back");
 const journeyListEl = document.getElementById("journey-list");
-const addJourneyBtn = document.getElementById("add-journey-btn");
 const clearAllDataBtn = document.getElementById("clear-all-data-btn");
 const deleteJourneyBtn = document.getElementById("delete-journey-btn");
-const detailJourneyHeadingEl = document.getElementById("detail-journey-heading");
+const detailJourneyNameInput = document.getElementById("detail-journey-name");
 const detailStationSelect = document.getElementById("detail-station-select");
 const detailDirectionSelect = document.getElementById("detail-direction-select");
 const detailLeaveBeforeInput = document.getElementById("detail-leave-before-input");
@@ -92,6 +94,7 @@ const onboardingSetupBtn = document.getElementById("onboarding-setup-btn");
 const onboardingLaterBtn = document.getElementById("onboarding-later-btn");
 const journeysChromeAction = document.getElementById("journeys-chrome-action");
 const journeyTemplatesEl = document.getElementById("journey-templates");
+const journeyTemplatesLoadingEl = document.getElementById("journey-templates-loading");
 const templateRouteCoach = document.getElementById("template-route-coach");
 const templateRouteCoachBody = document.getElementById("template-route-coach-body");
 const templateWizardHoursBody = document.getElementById("template-wizard-hours-body");
@@ -130,6 +133,7 @@ let journeyModeActive = false;
 let deferJourneyAutoSelect = false;
 let onboardingShowTimer = null;
 let onboardingPopulatedAt = null;
+let templateCreateInFlight = false;
 
 const STATION_ARRIVAL_KM = 0.35;
 const TRAVELING_SPEED_MS = 2.5;
@@ -264,6 +268,18 @@ function collapseStationList(stations) {
   }
 
   return collapsed;
+}
+
+function formatRouteBasedJourneyName(station, direction) {
+  return `${formatStationLabel(station)} → ${direction}`;
+}
+
+function readJourneyNameFromForm(station, direction) {
+  const trimmed = detailJourneyNameInput?.value?.trim() ?? "";
+  if (trimmed) {
+    return trimmed.slice(0, 40);
+  }
+  return formatRouteBasedJourneyName(station, direction);
 }
 
 function formatStationLabel(name) {
@@ -464,6 +480,34 @@ function getConfiguredJourneys() {
 
 function shouldShowJourneySwitcher() {
   return getConfiguredJourneys().length >= 2;
+}
+
+function syncJourneyContextChrome() {
+  const configuredCount = getConfiguredJourneys().length;
+  const inEmptySetup = heroEl?.classList.contains("hero-setup");
+  const showManage =
+    journeyModeActive && configuredCount >= 1 && !inEmptySetup && !isNearbyModeActive();
+  const showName = showManage && configuredCount === 1;
+  const showSwitcher = showManage && shouldShowJourneySwitcher();
+
+  if (journeyContextRowEl) {
+    journeyContextRowEl.hidden = !showManage;
+    journeyContextRowEl.classList.toggle("journey-context-row--multi", showSwitcher);
+    journeyContextRowEl.classList.toggle("journey-context-row--single", showName);
+  }
+
+  if (journeyContextNameEl) {
+    journeyContextNameEl.hidden = !showName;
+    journeyContextNameEl.textContent = getActiveJourney()?.name ?? "Journey";
+  }
+
+  if (journeySwitcherEl) {
+    journeySwitcherEl.hidden = !showSwitcher;
+  }
+
+  if (journeyEditBtn) {
+    journeyEditBtn.hidden = !showManage;
+  }
 }
 
 function getJourneyById(id) {
@@ -1028,7 +1072,11 @@ function findJourneyDefaultWindowConflict(journey, journeys) {
   }
 
   for (const other of journeys) {
-    if (other.id === journey.id || !hasDefaultWindow(other)) {
+    if (
+      other.id === journey.id ||
+      !hasDefaultWindow(other) ||
+      isUnconfiguredJourney(other)
+    ) {
       continue;
     }
     if (journeyDefaultWindowsOverlap(journey, other)) {
@@ -1424,6 +1472,7 @@ function formatJourneyRoute(journey) {
 
 function renderJourneySwitcher() {
   if (!journeySwitcherEl || !journeySwitcherMenuEl) {
+    syncJourneyContextChrome();
     return;
   }
 
@@ -1432,6 +1481,7 @@ function renderJourneySwitcher() {
     journeySwitcherMenuEl.hidden = true;
     journeySwitcherOpen = false;
     syncJourneySwitcherA11y();
+    syncJourneyContextChrome();
     return;
   }
 
@@ -1440,6 +1490,7 @@ function renderJourneySwitcher() {
     journeySwitcherMenuEl.hidden = true;
     journeySwitcherOpen = false;
     syncJourneySwitcherA11y();
+    syncJourneyContextChrome();
     return;
   }
 
@@ -1476,6 +1527,7 @@ function renderJourneySwitcher() {
 
   journeySwitcherMenuEl.hidden = !journeySwitcherOpen;
   syncJourneySwitcherA11y();
+  syncJourneyContextChrome();
 }
 
 function syncJourneySwitcherA11y() {
@@ -2156,6 +2208,10 @@ function initHeroSwipe() {
 function render(data, { stale = false } = {}) {
   lastLiveDisplayMinute = getPerthMinutesSinceMidnight();
 
+  if (nearbyDirectionsEl) {
+    nearbyDirectionsEl.hidden = true;
+  }
+
   if (!stale) {
     errorEl.hidden = true;
   }
@@ -2165,7 +2221,7 @@ function render(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   const journey = getActiveJourney();
-  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up your commute";
+  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up a journey";
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -2276,7 +2332,7 @@ function renderRefreshErrorState() {
   leaveCardEl?.classList.remove("stale");
 
   const journey = getActiveJourney();
-  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up your commute";
+  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up a journey";
   updatedEl.textContent = "Update failed";
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
@@ -2344,7 +2400,7 @@ function enterJourneyMode() {
   closeJourneySwitcherMenu();
 
   if (journeyModeActive) {
-    openJourneys({ showTemplates: !hasConfiguredCommute() });
+    openJourneys();
     return;
   }
 
@@ -2407,13 +2463,13 @@ function renderJourneyEmptyState() {
 
     const text = document.createElement("span");
     text.className = "hero-empty-text";
-    text.textContent = "Save a regular commute — station, direction, and when to leave.";
+    text.textContent = "Save a regular journey — station, direction, and when to leave.";
 
     const addBtn = document.createElement("button");
     addBtn.type = "button";
     addBtn.className = "btn-primary hero-empty-primary";
     addBtn.textContent = "Add a journey";
-    addBtn.addEventListener("click", () => openJourneys({ showTemplates: true }));
+    addBtn.addEventListener("click", () => openJourneys());
 
     const backBtn = document.createElement("button");
     backBtn.type = "button";
@@ -2633,6 +2689,14 @@ async function findNearestStation() {
     return { station: "Edgewater Stn", distanceKm: 0.2 };
   }
 
+  if (nearbySession?.station) {
+    return {
+      station: nearbySession.station,
+      distanceKm:
+        typeof nearbySession.distanceKm === "number" ? nearbySession.distanceKm : 0,
+    };
+  }
+
   const coords = await loadStationCoords();
   const position = await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, {
@@ -2685,6 +2749,7 @@ function syncChromeMode() {
   journeysBtn?.classList.toggle("icon-btn--active", journeyActive);
   journeysBtn?.setAttribute("aria-pressed", journeyActive ? "true" : "false");
 
+  syncJourneyContextChrome();
 }
 
 function syncNearbyChrome() {
@@ -2875,6 +2940,10 @@ function renderNearbyDirectionsList() {
 }
 
 function renderNearbyBoard({ stale = false } = {}) {
+  if (!isNearbyModeActive()) {
+    return;
+  }
+
   syncNearbyChrome();
   errorEl.hidden = true;
   clearHeroSetupState();
@@ -3339,7 +3408,7 @@ function showSettingsListView() {
   settingsDetailView.hidden = true;
   editingJourneyId = null;
   editingJourneySnapshot = null;
-  hideJourneyTemplatePicker();
+  updateJourneyTemplatesVisibility();
 }
 
 function showSettingsDetailView() {
@@ -3463,6 +3532,59 @@ function startJourneyNameEdit(nameEl, journey, openBtn, renameBtn) {
 let templateWizardStep = 1;
 let templateWizardContext = null;
 
+function syncTemplateWizardCoachPosition() {
+  const card = templateRouteCoach?.querySelector(".onboarding-coach-card");
+  if (!card || !templateRouteCoach || templateRouteCoach.hidden) {
+    return;
+  }
+
+  const target =
+    templateWizardStep === 1
+      ? detailRouteSection
+      : templateWizardStep === 2
+        ? leaveBeforeField
+        : templateWizardStep === 3
+          ? detailJourneyWindow
+          : null;
+
+  if (!target) {
+    return;
+  }
+
+  const coachRect = templateRouteCoach.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const cardHeight = card.offsetHeight;
+  const gap = 10;
+  const padding = 12;
+
+  let top = targetRect.top - coachRect.top - cardHeight - gap;
+  if (top < padding) {
+    top = targetRect.bottom - coachRect.top + gap;
+  }
+
+  const maxTop = coachRect.height - cardHeight - padding;
+  top = Math.max(padding, Math.min(top, maxTop));
+
+  card.style.top = `${top}px`;
+  card.style.bottom = "auto";
+  card.style.left = "50%";
+  card.style.right = "auto";
+  card.style.transform = "translateX(-50%)";
+}
+
+function clearTemplateWizardCoachPosition() {
+  const card = templateRouteCoach?.querySelector(".onboarding-coach-card");
+  if (!card) {
+    return;
+  }
+
+  card.style.removeProperty("top");
+  card.style.removeProperty("bottom");
+  card.style.removeProperty("left");
+  card.style.removeProperty("right");
+  card.style.removeProperty("transform");
+}
+
 function syncTemplateWizardHighlight(step = templateWizardStep) {
   detailRouteSection?.classList.remove("template-wizard-highlight");
   leaveBeforeField?.classList.remove("template-wizard-highlight");
@@ -3473,8 +3595,31 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
   if (target) {
     target.classList.add("template-wizard-highlight");
     window.requestAnimationFrame(() => {
-      target.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      target.scrollIntoView({
+        block: step === 3 ? "center" : "nearest",
+        behavior: "smooth",
+      });
+      window.setTimeout(() => syncTemplateWizardCoachPosition(), 320);
     });
+  }
+}
+
+function syncTemplateWizardChrome() {
+  const active = Boolean(templateRouteCoach && !templateRouteCoach.hidden);
+  journeysDialog?.classList.toggle("template-wizard-active", active);
+
+  if (!templateRouteCoach) {
+    return;
+  }
+
+  templateRouteCoach.classList.remove(
+    "template-route-coach--step-1",
+    "template-route-coach--step-2",
+    "template-route-coach--step-3"
+  );
+  if (active) {
+    templateRouteCoach.classList.add(`template-route-coach--step-${templateWizardStep}`);
+    window.requestAnimationFrame(() => syncTemplateWizardCoachPosition());
   }
 }
 
@@ -3501,15 +3646,18 @@ function renderTemplateWizardStep() {
   }
 
   syncTemplateWizardHighlight();
+  syncTemplateWizardChrome();
 }
 
 function dismissTemplateRouteCoach() {
   if (templateRouteCoach) {
     templateRouteCoach.hidden = true;
   }
+  clearTemplateWizardCoachPosition();
   templateWizardStep = 1;
   templateWizardContext = null;
   syncTemplateWizardHighlight(0);
+  syncTemplateWizardChrome();
 }
 
 function advanceTemplateWizard() {
@@ -3530,14 +3678,29 @@ function showTemplateRouteCoach({ templateKey, journey, nearest, configured, err
   templateWizardContext = { templateKey, journey, nearest, configured, error };
   templateWizardStep = 1;
 
-  const templateLabel =
-    templateKey === "evening" ? "Evening home" : "Morning into town";
+  const step1Title = document.getElementById("template-wizard-step-1-title");
+  if (step1Title) {
+    step1Title.textContent =
+      templateKey === "custom" ? "Pick your route" : "Route picked for you";
+  }
 
-  if (configured && journey?.station && journey?.direction) {
-    const route = formatJourneyRoute(journey);
-    const nearestLine =
-      nearest?.distanceKm != null ? ` (${nearest.distanceKm.toFixed(1)} km away)` : "";
-    templateRouteCoachBody.textContent = `For ${templateLabel.toLowerCase()}, we set ${route}${nearestLine}. You can change the station or direction.`;
+  const templateLabel =
+    templateKey === "evening"
+      ? "Evening home"
+      : templateKey === "custom"
+        ? "custom journey"
+        : "Morning into town";
+
+  if (templateKey === "custom") {
+    templateRouteCoachBody.textContent =
+      "Pick your station and direction above. You can tap Use nearest station for a shortcut.";
+  } else if (configured && journey?.station && journey?.direction) {
+    const station = formatStationLabel(journey.station);
+    const distance =
+      typeof nearest?.distanceKm === "number"
+        ? ` (${nearest.distanceKm.toFixed(1)} km)`
+        : "";
+    templateRouteCoachBody.textContent = `For ${templateLabel.toLowerCase()} we defaulted to your nearest station ${station}${distance} → ${journey.direction}. Change station or direction above.`;
   } else if (error?.code === 1) {
     templateRouteCoachBody.textContent =
       "Location permission was denied, so we couldn't pick your nearest station. Choose your station and direction — you can tap Use nearest station if you change your mind.";
@@ -3550,12 +3713,22 @@ function showTemplateRouteCoach({ templateKey, journey, nearest, configured, err
   }
 
   if (templateWizardHoursBody) {
-    const windowLabel = formatJourneyDefaultWindow(journey);
-    templateWizardHoursBody.textContent = `Active from and Active until (${windowLabel}) control when this journey appears on the main screen.`;
+    if (templateKey === "custom") {
+      templateWizardHoursBody.textContent =
+        "Optional: limit when this journey appears on your home screen (e.g. weekday mornings).";
+    } else {
+      const windowLabel = formatJourneyDefaultWindow(journey);
+      const period = templateKey === "evening" ? "evenings" : "mornings";
+      const example =
+        windowLabel && windowLabel !== "Not set" ? ` — e.g. ${period} ${windowLabel}` : "";
+      templateWizardHoursBody.textContent = `This journey shows on your screen during these hours${example}.`;
+    }
   }
 
   renderTemplateWizardStep();
   templateRouteCoach.hidden = false;
+  syncTemplateWizardChrome();
+  window.requestAnimationFrame(() => syncTemplateWizardCoachPosition());
 }
 
 async function applyTemplateRoute(journey, templateKey) {
@@ -3605,83 +3778,168 @@ const JOURNEY_TEMPLATE_PRESETS = {
   },
 };
 
-function showJourneyTemplatePicker() {
-  if (!journeyTemplatesEl || settingsDraftJourneys.length >= 6) {
+function shouldAutoRouteJourney(journey) {
+  if (!journey || !isUnconfiguredJourney(journey)) {
+    return false;
+  }
+
+  if (journey.templateKey === "custom" || journey.autoRoute === false) {
+    return false;
+  }
+
+  return true;
+}
+
+function findReusableTemplateJourney(templateKey) {
+  const preset = JOURNEY_TEMPLATE_PRESETS[templateKey];
+  if (!preset) {
+    return null;
+  }
+
+  return (
+    settingsDraftJourneys.find(
+      (journey) =>
+        isUnconfiguredJourney(journey) &&
+        journey.name === preset.name &&
+        journey.defaultFrom === preset.defaultFrom &&
+        journey.defaultUntil === preset.defaultUntil
+    ) ?? null
+  );
+}
+
+function setJourneyTemplateLoading(active, message = "Finding nearest station…") {
+  if (journeyTemplatesLoadingEl) {
+    journeyTemplatesLoadingEl.textContent = message;
+    journeyTemplatesLoadingEl.hidden = !active;
+  }
+
+  document.querySelectorAll(".journey-template-chip").forEach((chip) => {
+    chip.disabled = active;
+    chip.setAttribute("aria-busy", active ? "true" : "false");
+  });
+}
+
+async function syncJourneyDetailRouteFields(journey, nearestHint = null) {
+  if (!journey) {
     return;
   }
 
-  journeyTemplatesEl.hidden = false;
-  if (addJourneyBtn) {
-    addJourneyBtn.hidden = true;
+  renderStationOptions(detailStationSelect, journey.station);
+  if (journey.station) {
+    detailStationSelect.value = journey.station;
+  }
+  await loadDirectionsForSelect(detailDirectionSelect, journey.station, journey.direction);
+
+  if (detailNearestHint) {
+    if (nearestHint) {
+      detailNearestHint.hidden = false;
+      detailNearestHint.textContent = nearestHint;
+    } else {
+      detailNearestHint.hidden = true;
+    }
   }
 }
 
-function hideJourneyTemplatePicker() {
-  if (journeyTemplatesEl) {
-    journeyTemplatesEl.hidden = true;
+function formatJourneyOverlapError(updated, conflict) {
+  if (conflict.name === updated.name && conflict.id !== updated.id) {
+    return `Another journey already uses these hours (${updated.name}). Delete the duplicate from Journeys or change the times.`;
   }
 
-  if (addJourneyBtn && settingsDraftJourneys.length < 6) {
-    addJourneyBtn.hidden = false;
+  return `Default times overlap with "${conflict.name}" (${formatJourneyDefaultWindow(conflict)}). Adjust the times so only one journey is the default at any moment.`;
+}
+
+function updateJourneyTemplatesVisibility() {
+  if (!journeyTemplatesEl) {
+    return;
   }
+
+  journeyTemplatesEl.hidden = settingsDraftJourneys.length >= 6;
 }
 
 function createJourneyFromTemplate(templateKey) {
   if (templateKey === "custom") {
     const journey = createDefaultJourney({
-      name: `Journey ${settingsDraftJourneys.length + 1}`,
+      name: "",
+      templateKey: "custom",
+      autoRoute: false,
     });
     settingsDraftJourneys.push(journey);
     // Draft only until Save with station + direction — do not persist shells.
-    hideJourneyTemplatePicker();
-    return openJourneyDetail(journey.id);
+    return openJourneyDetail(journey.id).then(() => {
+      showTemplateRouteCoach({
+        templateKey: "custom",
+        journey,
+        nearest: null,
+        configured: false,
+        error: null,
+      });
+    });
   }
 
   return createJourneyFromCommuteTemplate(templateKey);
 }
 
-async function createJourneyFromCommuteTemplate(templateKey) {
-  const preset = JOURNEY_TEMPLATE_PRESETS[templateKey] ?? {};
-  const journey = createDefaultJourney({
-    name: preset.name ?? `Journey ${settingsDraftJourneys.length + 1}`,
-    defaultFrom: preset.defaultFrom ?? "",
-    defaultUntil: preset.defaultUntil ?? "",
-    preferredTrainTime: preset.preferredTrainTime ?? "",
-    remindDays: preset.remindDays ?? [...DEFAULT_REMIND_DAYS],
-  });
-  settingsDraftJourneys.push(journey);
+async function completeTemplateRouteSetup(journeyId, templateKey) {
+  let journey = settingsDraftJourneys.find((entry) => entry.id === journeyId);
+  if (!journey) {
+    return;
+  }
 
   const routeResult = await applyTemplateRoute(journey, templateKey);
   if (routeResult.configured && routeResult.journey) {
-    const index = settingsDraftJourneys.findIndex((entry) => entry.id === journey.id);
+    const index = settingsDraftJourneys.findIndex((entry) => entry.id === journeyId);
     if (index >= 0) {
       settingsDraftJourneys[index] = routeResult.journey;
     }
+    journey = routeResult.journey;
+    if (!isUnconfiguredJourney(journey)) {
+      saveJourneyListToSettings();
+    }
   }
 
-  // Persist only if route auto-fill succeeded; shells stay draft-only until Save.
-  if (!isUnconfiguredJourney(
-    settingsDraftJourneys.find((entry) => entry.id === journey.id) ?? journey
-  )) {
-    saveJourneyListToSettings();
-  }
-  hideJourneyTemplatePicker();
+  const nearestHint =
+    routeResult.nearest && routeResult.configured
+      ? `Nearest: ${formatStationLabel(routeResult.nearest.station)} (${routeResult.nearest.distanceKm.toFixed(1)} km away)`
+      : null;
 
-  const activeJourney = settingsDraftJourneys.find((entry) => entry.id === journey.id) ?? journey;
-  await openJourneyDetail(activeJourney.id);
-
-  if (routeResult.nearest && routeResult.configured && detailNearestHint) {
-    detailNearestHint.hidden = false;
-    detailNearestHint.textContent = `Nearest: ${formatStationLabel(routeResult.nearest.station)} (${routeResult.nearest.distanceKm.toFixed(1)} km away)`;
+  if (editingJourneyId === journeyId) {
+    await syncJourneyDetailRouteFields(journey, nearestHint);
   }
 
   showTemplateRouteCoach({
     templateKey,
-    journey: activeJourney,
+    journey,
     nearest: routeResult.nearest,
     configured: routeResult.configured,
     error: routeResult.error,
   });
+}
+
+async function createJourneyFromCommuteTemplate(templateKey) {
+  const reusable = findReusableTemplateJourney(templateKey);
+  if (reusable) {
+    await openJourneyDetail(reusable.id, { skipAutoRoute: true });
+    if (isUnconfiguredJourney(reusable)) {
+      await completeTemplateRouteSetup(reusable.id, templateKey);
+    }
+    return;
+  }
+
+  const preset = JOURNEY_TEMPLATE_PRESETS[templateKey] ?? {};
+  const journey = createDefaultJourney({
+    name: preset.name ?? "",
+    defaultFrom: preset.defaultFrom ?? "",
+    defaultUntil: preset.defaultUntil ?? "",
+    preferredTrainTime: preset.preferredTrainTime ?? "",
+    remindDays: preset.remindDays ?? [...DEFAULT_REMIND_DAYS],
+    remindMe: preset.remindMe === true,
+    templateKey,
+    autoRoute: true,
+  });
+  settingsDraftJourneys.push(journey);
+
+  await openJourneyDetail(journey.id, { skipAutoRoute: true });
+  await completeTemplateRouteSetup(journey.id, templateKey);
 }
 
 function renderJourneyListView() {
@@ -3749,9 +4007,7 @@ function renderJourneyListView() {
     journeyListEl.appendChild(item);
   }
 
-  if (addJourneyBtn) {
-    addJourneyBtn.hidden = settingsDraftJourneys.length >= 6;
-  }
+  updateJourneyTemplatesVisibility();
 }
 
 async function populateJourneyListView() {
@@ -3759,11 +4015,10 @@ async function populateJourneyListView() {
   settingsDraftJourneys = normalizeJourneyList(settings.journeys).map((journey) => ({
     ...journey,
   }));
-  hideJourneyTemplatePicker();
   renderJourneyListView();
 }
 
-async function populateJourneyDetailForm(journeyId) {
+async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = {}) {
   await getStationsList();
   let journey =
     settingsDraftJourneys.find((entry) => entry.id === journeyId) ??
@@ -3775,7 +4030,12 @@ async function populateJourneyDetailForm(journeyId) {
 
   let nearestHint = null;
 
-  if (isUnconfiguredJourney(journey)) {
+  if (!skipAutoRoute && shouldAutoRouteJourney(journey)) {
+    if (detailNearestHint) {
+      detailNearestHint.hidden = false;
+      detailNearestHint.textContent = "Finding nearest station…";
+    }
+
     const routeResult = await applyDefaultJourneyRoute(journey);
     if (routeResult.configured && routeResult.journey) {
       const index = settingsDraftJourneys.findIndex((entry) => entry.id === journey.id);
@@ -3793,8 +4053,8 @@ async function populateJourneyDetailForm(journeyId) {
 
   editingJourneyId = journey.id;
   editingJourneySnapshot = normalizeJourney({ ...journey });
-  if (detailJourneyHeadingEl) {
-    detailJourneyHeadingEl.textContent = journey.name;
+  if (detailJourneyNameInput) {
+    detailJourneyNameInput.value = journey.name || "";
   }
   detailLeaveBeforeInput.value = journey.leaveBeforeMinutes;
   if (detailUseLeaveBeforeInput) {
@@ -3909,6 +4169,7 @@ function saveJourneyDetailFromForm() {
   }
 
   const { station, direction } = requireJourneyRouteFromForm();
+  const name = readJourneyNameFromForm(station, direction);
 
   const defaultFrom = readOptionalTimeField(detailDefaultFromField);
   const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
@@ -3919,7 +4180,7 @@ function saveJourneyDetailFromForm() {
   const existing = settingsDraftJourneys.find((entry) => entry.id === editingJourneyId);
   const updated = normalizeJourney({
     id: editingJourneyId,
-    name: existing?.name || "Journey",
+    name,
     station,
     direction,
     leaveBeforeMinutes: Number(detailLeaveBeforeInput.value),
@@ -3933,9 +4194,7 @@ function saveJourneyDetailFromForm() {
 
   const conflict = findJourneyDefaultWindowConflict(updated, settingsDraftJourneys);
   if (conflict) {
-    throw new Error(
-      `Default times overlap with "${conflict.name}" (${formatJourneyDefaultWindow(conflict)}). Adjust the times so only one journey is the default at any moment.`
-    );
+    throw new Error(formatJourneyOverlapError(updated, conflict));
   }
 
   const index = settingsDraftJourneys.findIndex((journey) => journey.id === editingJourneyId);
@@ -4019,14 +4278,8 @@ function closeJourneysDialog() {
   }
 
   journeyModeActive = true;
+  exitNearbyMode();
   syncChromeMode();
-
-  if (isNearbyModeActive()) {
-    fetchNearbyBoard()
-      .then(() => renderNearbyBoard())
-      .catch(() => renderNearbyBoard({ stale: true }));
-    return;
-  }
 
   fetchNextTrain();
 }
@@ -4118,28 +4371,25 @@ function handleClearAllData() {
   }
 }
 
-function openJourneys({ showTemplates = false } = {}) {
+function openJourneys() {
   dismissLeaveHint();
   completeOnboarding();
-  hideJourneyTemplatePicker();
+  dismissTemplateRouteCoach();
   populateJourneyListView().then(() => {
     showSettingsListView();
     journeysDialog.showModal();
-    if (showTemplates) {
-      showJourneyTemplatePicker();
-    }
   });
 }
 
 function openJourneysForSetup() {
   completeOnboarding();
   enterJourneyMode();
-  openJourneys({ showTemplates: true });
+  openJourneys();
 }
 
-function openJourneyDetail(journeyId) {
+function openJourneyDetail(journeyId, options = {}) {
   return ensureSettingsDraftLoaded()
-    .then(() => populateJourneyDetailForm(journeyId))
+    .then(() => populateJourneyDetailForm(journeyId, options))
     .then(() => {
       showSettingsDetailView();
       if (!journeysDialog.open) {
@@ -4152,6 +4402,7 @@ function openJourneyDetail(journeyId) {
 }
 
 journeysBtn?.addEventListener("click", () => enterJourneyMode());
+journeyEditBtn?.addEventListener("click", () => openJourneys());
 menuBtn?.addEventListener("click", () => openMenu());
 nearbyBtn?.addEventListener("click", () => {
   nearbyBtn?.classList.add("icon-btn--refreshing");
@@ -4248,23 +4499,20 @@ detailCancelBtn?.addEventListener("click", () => {
   cancelJourneyDetailEdit();
 });
 
-addJourneyBtn?.addEventListener("click", () => {
-  showJourneyTemplatePicker();
-});
-
 document.querySelectorAll(".journey-template-chip").forEach((button) => {
   button.addEventListener("click", async () => {
-    const chips = document.querySelectorAll(".journey-template-chip");
-    chips.forEach((chip) => {
-      chip.disabled = true;
-    });
+    if (templateCreateInFlight) {
+      return;
+    }
+
+    templateCreateInFlight = true;
+    setJourneyTemplateLoading(true);
 
     try {
       await createJourneyFromTemplate(button.dataset.template);
     } finally {
-      chips.forEach((chip) => {
-        chip.disabled = false;
-      });
+      templateCreateInFlight = false;
+      setJourneyTemplateLoading(false);
     }
   });
 });
@@ -4421,6 +4669,7 @@ init();
 window.nextTrainApp = {
   migrateSettings,
   getConfiguredJourneys,
+  formatJourneyRoute,
   persistReminderJourneys,
   getActiveLegCommute() {
     return getActiveJourney();

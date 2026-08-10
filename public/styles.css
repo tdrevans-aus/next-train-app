@@ -183,6 +183,15 @@ body {
   animation: onboarding-pulse 1.1s ease-in-out infinite;
 }
 
+#menu-chrome-action.chrome-action--pulse .chrome-action-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+#menu-chrome-action.chrome-action--pulse #menu-btn {
+  animation: onboarding-pulse 0.65s ease-in-out 2;
+}
+
 .icon-btn.icon-btn--refreshing {
   animation: nearby-refresh 300ms ease-out;
 }
@@ -246,8 +255,11 @@ body {
   height: 1.15rem;
 }
 
-.journeys-icon,
-.route-icon,
+.journeys-icon {
+  width: 1.38rem;
+  height: 1.38rem;
+}
+
 .menu-icon {
   width: 1.15rem;
   height: 1.15rem;
@@ -370,9 +382,82 @@ body {
 }
 
 .app.nearby-mode .leave-card,
-.app.nearby-mode #journey-switcher,
+.app.nearby-mode .journey-context-row,
 .app.nearby-mode #journey-switcher-menu {
   display: none !important;
+}
+
+.journey-context-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  margin: 0.4rem auto 0;
+  max-width: 100%;
+}
+
+.journey-context-row[hidden] {
+  display: none !important;
+}
+
+.journey-context-row--multi .journey-context-name {
+  display: none;
+}
+
+.journey-context-row--single .journey-context-name {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(11, 110, 106, 0.28);
+  background: var(--accent-wash);
+  color: var(--accent-strong);
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.journey-context-name {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.journey-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.journey-edit-btn svg {
+  width: 0.935rem;
+  height: 0.935rem;
+}
+
+.journey-edit-btn:hover,
+.journey-edit-btn:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
+.journey-edit-btn[hidden] {
+  display: none !important;
+}
+
+.journey-context-row .journey-switcher {
+  margin: 0;
 }
 
 .journey-switcher {
@@ -788,8 +873,8 @@ body {
 
 .setup-settings-icon .settings-icon,
 .setup-settings-icon .journeys-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
   color: var(--muted);
 }
 
@@ -874,8 +959,8 @@ body {
 
 .setup-settings-icon-large .settings-icon,
 .setup-settings-icon-large .journeys-icon {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2.1rem;
+  height: 2.1rem;
 }
 
 /* —— Platform / status / Then / updated —— */
@@ -1268,6 +1353,13 @@ body {
 .app-toast--visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.app-toast strong {
+  font-weight: 700;
+  color: var(--accent-strong);
 }
 
 /* —— Dialogs —— */
@@ -1355,8 +1447,8 @@ body {
 .help-inline-icon .nearby-icon,
 .help-inline-icon .journeys-icon,
 .help-inline-icon .settings-icon {
-  width: 0.95rem;
-  height: 0.95rem;
+  width: 1.14rem;
+  height: 1.14rem;
 }
 
 .help-inline-journey-switcher {
@@ -1406,12 +1498,25 @@ body {
 }
 
 .reminders-dialog-body {
-  padding: 1.2rem 1.2rem 0.5rem;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  padding: 1.2rem 1.2rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: flex-start;
 }
 
-.reminders-section + .reminders-section {
-  margin-top: 1.1rem;
+.reminders-dialog-header h2 {
+  margin-bottom: 0.35rem;
+}
+
+.reminders-lead {
+  margin: 0 0 1rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
 }
 
 .reminders-web-hint {
@@ -1421,39 +1526,204 @@ body {
   color: var(--muted);
 }
 
+.reminders-master-card {
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f7faf9;
+}
+
+.reminders-master-card .menu-toggle-row {
+  margin: 0;
+}
+
 .reminders-schedule-line {
-  margin: 0.55rem 0 0;
+  margin: 0;
   font-size: 0.82rem;
   line-height: 1.4;
   color: var(--muted);
 }
 
-.reminders-commute-card {
-  margin-top: 0.85rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--line);
+.reminders-journey-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.reminders-commute-card:first-child {
-  margin-top: 0.35rem;
-  padding-top: 0;
-  border-top: 0;
+.reminders-commute-card {
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f7faf9;
+}
+
+.reminders-commute-header {
+  margin-bottom: 0.55rem;
 }
 
 .reminders-commute-name {
-  margin: 0 0 0.45rem;
+  margin: 0;
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--ink);
 }
 
-.reminders-commute-card--disabled .reminders-preferred-field,
-.reminders-commute-card--disabled .remind-days-field {
+.reminders-commute-route {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.reminders-commute-toggle-row {
+  margin: 0;
+}
+
+.reminders-commute-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.reminders-commute-expanded[hidden] {
+  display: none !important;
+}
+
+.reminders-preferred-hint {
+  margin: -0.35rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.reminders-preferred-hint[hidden] {
+  display: none;
+}
+
+.reminders-days-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.reminders-commute-card--inactive .reminders-commute-expanded {
   opacity: 0.55;
 }
 
+.reminders-more-options {
+  margin-top: 0.25rem;
+}
+
+.reminders-more-options-summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+  list-style: none;
+}
+
+.reminders-more-options-summary::-webkit-details-marker {
+  display: none;
+}
+
+.reminders-more-options-summary::before {
+  content: "▸ ";
+  color: var(--muted);
+}
+
+.reminders-more-options[open] .reminders-more-options-summary::before {
+  content: "▾ ";
+}
+
+.reminders-more-options-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f7faf9;
+}
+
+.reminders-more-option {
+  align-items: stretch;
+  margin: 0;
+}
+
+.reminders-more-option-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.reminders-nudge-chips-wrap {
+  margin-top: 0.75rem;
+}
+
+.reminders-chips-hint {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.reminders-offset-chips,
+.reminders-pause-chips {
+  flex-wrap: wrap;
+}
+
+.reminders-pause-active {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.reminders-pause-status {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.reminders-resume-btn {
+  width: 100%;
+}
+
+.reminders-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.reminders-more-option-copy {
+  flex: 1;
+  min-width: 0;
+  padding-right: 0.5rem;
+}
+
+.reminders-option-hint {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
 .reminders-empty {
-  margin-top: 0.35rem;
+  margin-top: 0;
   text-align: center;
 }
 
@@ -1570,6 +1840,10 @@ body {
   overflow: hidden;
 }
 
+#settings-detail-view.settings-view {
+  overflow: hidden;
+}
+
 .settings-detail-scroll {
   flex: 1 1 auto;
   min-height: 0;
@@ -1581,13 +1855,13 @@ body {
   padding: 0.75rem 1rem 0.4rem;
 }
 
-.journey-detail-heading {
+.journey-name-field {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
+}
+
+#settings-detail-view .field input[type="text"] {
+  padding: 0.6rem 0.7rem;
+  font-size: 0.95rem;
 }
 
 #settings-detail-view .settings-section {
@@ -1867,6 +2141,14 @@ body {
   color: var(--muted);
 }
 
+.journey-templates-loading {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--accent);
+}
+
 .journey-template-chips {
   display: flex;
   flex-wrap: wrap;
@@ -1899,7 +2181,7 @@ body {
   display: block;
   margin-bottom: 0.35rem;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--muted);
 }
 
@@ -2052,21 +2334,6 @@ body {
   position: relative;
 }
 
-.journeys-dialog .template-route-coach {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-}
-
-.journeys-dialog .template-route-coach .onboarding-coach-card {
-  bottom: calc(1.1rem + env(safe-area-inset-bottom, 0px));
-  top: auto;
-  left: 50%;
-  right: auto;
-  transform: translateX(-50%);
-}
-
 .template-wizard-step h2 {
   margin: 0 0 0.45rem;
   font-family: var(--font-display);
@@ -2082,16 +2349,43 @@ body {
   line-height: 1.45;
 }
 
+.template-wizard-step p strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
 #template-wizard-primary-btn {
   width: 100%;
 }
 
 .template-wizard-highlight {
   position: relative;
-  z-index: 3;
   border-radius: 0.75rem;
   box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.45);
   background: rgba(255, 255, 255, 0.98);
+}
+
+.journeys-dialog.template-wizard-active .settings-detail-footer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.journeys-dialog .template-route-coach {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+}
+
+.journeys-dialog .template-route-coach .onboarding-coach-scrim {
+  z-index: 0;
+}
+
+.journeys-dialog .template-route-coach .onboarding-coach-card {
+  z-index: 1;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
 }
 
 #leave-before-field.template-wizard-highlight,
@@ -2109,26 +2403,29 @@ body {
   bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }
 
-.widget-help-steps {
-  padding-left: 0;
-}
-
-.widget-help-after-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  align-items: stretch;
-}
-
-.widget-help-note {
+.widget-help-lead {
   margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.widget-help-manual {
+  margin: 0.75rem 0 0;
   font-size: 0.86rem;
   line-height: 1.45;
   color: var(--muted);
 }
 
-#widget-help-dialog #widget-help-pin-btn {
+.widget-help-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+#widget-help-dialog #widget-help-pin-btn,
+#widget-help-dialog #widget-help-done-btn {
   width: 100%;
+  min-height: 44px;
   box-sizing: border-box;
 }
 
@@ -2376,9 +2673,6 @@ body {
   padding: 0;
 }
 
-.settings-add-journey {
-  width: 100%;
-}
 
 .settings-clear-data {
   border: 0;
@@ -2476,8 +2770,13 @@ body {
 
 .field span {
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text);
+}
+
+.checkbox-label span,
+.leave-before-toggle span {
+  font-weight: 700;
 }
 
 .field small,

@@ -1,0 +1,130 @@
+package com.tdrevans.nexttrain;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
+public final class PerthTime {
+
+  private static final ZoneId ZONE = ZoneId.of("Australia/Perth");
+
+  private PerthTime() {}
+
+  public static ZoneId zone() {
+    return ZONE;
+  }
+
+  public static int minutesSinceMidnight() {
+    ZonedDateTime now = ZonedDateTime.now(ZONE);
+    return now.getHour() * 60 + now.getMinute();
+  }
+
+  public static int dayOfWeekIso() {
+    return ZonedDateTime.now(ZONE).getDayOfWeek().getValue();
+  }
+
+  public static String localDateKey() {
+    return ZonedDateTime.now(ZONE).format(DateTimeFormatter.ISO_LOCAL_DATE);
+  }
+
+  public static int parseClockMinutes(String value) {
+    if (value == null || value.isEmpty()) {
+      return -1;
+    }
+    String[] parts = value.split(":");
+    if (parts.length < 2) {
+      return -1;
+    }
+    try {
+      int hour = Integer.parseInt(parts[0]);
+      int minute = Integer.parseInt(parts[1]);
+      return hour * 60 + minute;
+    } catch (NumberFormatException error) {
+      return -1;
+    }
+  }
+
+  public static int minutesFromIso(String iso) {
+    if (iso == null || iso.isEmpty()) {
+      return -1;
+    }
+    try {
+      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.parse(iso), ZONE);
+      return time.getHour() * 60 + time.getMinute();
+    } catch (Exception error) {
+      return -1;
+    }
+  }
+
+  public static long epochMillisFromIso(String iso) {
+    if (iso == null || iso.isEmpty()) {
+      return 0L;
+    }
+    try {
+      return Instant.parse(iso).toEpochMilli();
+    } catch (Exception error) {
+      return 0L;
+    }
+  }
+
+  public static String formatClockFromIso(String iso) {
+    if (iso == null || iso.isEmpty()) {
+      return "—";
+    }
+    try {
+      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.parse(iso), ZONE);
+      return time.format(DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault()));
+    } catch (Exception error) {
+      return "—";
+    }
+  }
+
+  public static String formatClockFromEpochMs(long epochMs) {
+    if (epochMs <= 0) {
+      return "—";
+    }
+    try {
+      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE);
+      return time.format(DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault()));
+    } catch (Exception error) {
+      return "—";
+    }
+  }
+
+  public static String formatIsoFromEpochMs(long epochMs) {
+    if (epochMs <= 0) {
+      return "";
+    }
+    try {
+      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE);
+      return time.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    } catch (Exception error) {
+      return "";
+    }
+  }
+
+  public static String formatUpdatedLine(long updatedAtMs) {
+    if (updatedAtMs <= 0) {
+      return "Updating…";
+    }
+    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(updatedAtMs), ZONE);
+    return "Updated " + time.format(DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault()));
+  }
+
+  public static String formatUpdatedAgo(long updatedAtMs) {
+    if (updatedAtMs <= 0) {
+      return "Updating…";
+    }
+    long minutes = Math.max(0, (System.currentTimeMillis() - updatedAtMs) / 60_000L);
+    if (minutes < 1) {
+      return "Updated just now";
+    }
+    if (minutes < 60) {
+      return "Updated " + minutes + "m ago";
+    }
+    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(updatedAtMs), ZONE);
+    return time.format(DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault()));
+  }
+}

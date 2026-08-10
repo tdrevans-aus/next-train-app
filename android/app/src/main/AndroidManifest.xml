@@ -26,7 +26,51 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="nexttrain" android:host="journey" />
+            </intent-filter>
+
         </activity>
+
+        <receiver
+            android:name=".NextTrainWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/next_train_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".LeaveReminderReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".WidgetRefreshReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".WidgetLocalPaintReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".WidgetDepartureAdvanceReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".WidgetUnlockReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".CommuteNotificationService"
@@ -52,4 +96,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 </manifest>
