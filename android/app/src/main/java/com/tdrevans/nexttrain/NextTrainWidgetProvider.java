@@ -11,12 +11,9 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
 
   @Override
   public void onUpdate(Context context, AppWidgetManager manager, int[] appWidgetIds) {
-    CommuteRefreshService.refreshAll(context);
-    JSONObject snapshot = WidgetSettingsStore.readSnapshot(context);
-    if (snapshot != null) {
-      updateWidgets(context, manager, appWidgetIds, snapshot);
-    }
+    CommuteRefreshService.paintFromCache(context);
     WidgetRefreshScheduler.ensureScheduled(context);
+    CommuteRefreshService.refreshAll(context);
   }
 
   @Override

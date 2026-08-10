@@ -8,6 +8,7 @@ import org.json.JSONObject;
 public final class CommuteSchedule {
 
   public static final long STALE_THRESHOLD_MS = 120L * 60L * 1000L;
+  public static final long UPDATING_TIMEOUT_MS = 3L * 60L * 1000L;
 
   public static final class Result {
 
@@ -246,6 +247,7 @@ public final class CommuteSchedule {
       "leaveBeforeMinutes",
       journey.optInt("leaveBeforeMinutes", 10)
     );
+    snapshot.put("updatingSinceMs", 0L);
     putFollowingCache(snapshot, resolveFollowingTrip(result.payload, next));
     return snapshot;
   }
@@ -380,6 +382,18 @@ public final class CommuteSchedule {
   }
 
   private static JSONObject applyUpdatingState(JSONObject cached) throws Exception {
+    long now = System.currentTimeMillis();
+    long updatingSince = cached.optLong("updatingSinceMs", 0L);
+    long refreshedAtMs = cached.optLong("refreshedAtMs", 0L);
+    if (updatingSince <= 0L) {
+      if (refreshedAtMs > 0L && now - refreshedAtMs >= UPDATING_TIMEOUT_MS) {
+        return applyStaleRefreshState(cached);
+      }
+      updatingSince = now;
+    } else if (now - updatingSince >= UPDATING_TIMEOUT_MS) {
+      return applyStaleRefreshState(cached);
+    }
+
     JSONObject snapshot = new JSONObject(cached.toString());
     snapshot.put("label", "NEXT TRAIN");
     snapshot.put("primary", "Updating…");
@@ -388,12 +402,27 @@ public final class CommuteSchedule {
     snapshot.put("urgent", false);
     snapshot.put("late", false);
     snapshot.put("statusCrumb", "");
+    snapshot.put("updatingSinceMs", updatingSince);
     boolean stale = cached.optBoolean("stale", false);
-    long refreshedAtMs = cached.optLong("refreshedAtMs", 0L);
     snapshot.put(
       "updatedLine",
       stale ? "Times may be out of date" : PerthTime.formatUpdatedAgo(refreshedAtMs)
     );
+    return snapshot;
+  }
+
+  private static JSONObject applyStaleRefreshState(JSONObject cached) throws Exception {
+    JSONObject snapshot = new JSONObject(cached.toString());
+    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("primary", "—");
+    snapshot.put("trainClock", "");
+    snapshot.put("secondary", "Tap to refresh");
+    snapshot.put("urgent", false);
+    snapshot.put("late", false);
+    snapshot.put("statusCrumb", "");
+    snapshot.put("stale", true);
+    snapshot.put("updatingSinceMs", 0L);
+    snapshot.put("updatedLine", "Times may be out of date");
     return snapshot;
   }
 
@@ -436,6 +465,7 @@ public final class CommuteSchedule {
       "updatedLine",
       stale ? "Times may be out of date" : PerthTime.formatUpdatedAgo(refreshedAtMs)
     );
+    snapshot.put("updatingSinceMs", 0L);
     return snapshot;
   }
 
@@ -465,6 +495,10 @@ public final class CommuteSchedule {
     }
 
     if (needsNetworkRefresh(snapshot)) {
+      long updatingSince = snapshot.optLong("updatingSinceMs", 0L);
+      if (updatingSince > 0L && System.currentTimeMillis() - updatingSince < UPDATING_TIMEOUT_MS) {
+        return true;
+      }
       return false;
     }
 

@@ -19,6 +19,7 @@ public final class WidgetUiBuilder {
       return views;
     }
 
+    boolean compact = layoutId == R.layout.widget_small;
     boolean empty = snapshot.optBoolean("empty", false);
     String label = snapshot.optString("label", "");
     String primary = snapshot.optString("primary", "—");
@@ -32,15 +33,27 @@ public final class WidgetUiBuilder {
       stationLabel = arrow >= 0 ? route.substring(0, arrow).trim() : route;
     }
     String updated = snapshot.optString("updatedLine", "Updating…");
+    boolean showTrainClock = !trainClock.isEmpty() && !empty;
+    if (compact) {
+      updated = compactUpdatedLine(updated);
+      secondary = compactLeaveSecondary(secondary);
+      primary = compactPrimary(primary);
+    }
     String status = snapshot.optString("statusCrumb", "");
     boolean late = snapshot.optBoolean("late", false);
     boolean urgent = snapshot.optBoolean("urgent", false);
 
     views.setTextViewText(R.id.widget_label, label);
     views.setTextViewText(R.id.widget_primary, primary);
-    views.setTextViewText(R.id.widget_train_clock, trainClock);
     views.setTextViewText(R.id.widget_secondary, secondary);
     views.setTextViewText(R.id.widget_updated, updated);
+
+    if (showTrainClock) {
+      views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
+      views.setTextViewText(R.id.widget_train_clock, trainClock);
+    } else {
+      views.setViewVisibility(R.id.widget_train_clock, android.view.View.GONE);
+    }
 
     // Train number stays brand accent; leave line carries urgency (matches main screen).
     views.setTextColor(R.id.widget_primary, context.getColor(R.color.widget_accent));
@@ -52,27 +65,25 @@ public final class WidgetUiBuilder {
     }
     views.setTextColor(R.id.widget_secondary, context.getColor(leaveColor));
 
-    if (trainClock.isEmpty() || empty) {
-      views.setViewVisibility(R.id.widget_train_clock, android.view.View.GONE);
-    } else {
-      views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
-    }
-
     if (secondary.isEmpty()) {
       views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
     } else {
       views.setViewVisibility(R.id.widget_secondary, android.view.View.VISIBLE);
     }
 
-    // Station only (not full route) — fits 2×1; no swipe between trains.
-    if (!stationLabel.isEmpty() && !empty) {
-      views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
-      views.setTextViewText(R.id.widget_route, stationLabel);
-    } else if (layoutId == R.layout.widget_medium && !empty) {
-      String fallback = snapshot.optString("journeyName", "");
-      if (!fallback.isEmpty()) {
+    // Station / journey name only on medium — 2×1 keeps leave + updated on the right.
+    if (layoutId == R.layout.widget_medium) {
+      if (!stationLabel.isEmpty() && !empty) {
         views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
-        views.setTextViewText(R.id.widget_route, fallback);
+        views.setTextViewText(R.id.widget_route, stationLabel);
+      } else if (!empty) {
+        String fallback = snapshot.optString("journeyName", "");
+        if (!fallback.isEmpty()) {
+          views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
+          views.setTextViewText(R.id.widget_route, fallback);
+        } else {
+          views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
+        }
       } else {
         views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
       }
@@ -132,5 +143,49 @@ public final class WidgetUiBuilder {
     }
     // Wide or tall enough → medium; default 2×1 strip stays small.
     return minWidth >= 250 || minHeight >= 110 ? R.layout.widget_medium : R.layout.widget_small;
+  }
+
+  static String compactUpdatedLine(String updated) {
+    if (updated == null || updated.isEmpty()) {
+      return updated;
+    }
+    if ("Times may be out of date".equals(updated)) {
+      return "Out of date";
+    }
+    if ("Updated just now".equals(updated)) {
+      return "Just now";
+    }
+    if (updated.startsWith("Updated ") && updated.endsWith("m ago")) {
+      return updated.substring("Updated ".length());
+    }
+    return updated;
+  }
+
+  static String compactLeaveSecondary(String secondary) {
+    if (secondary == null || secondary.isEmpty()) {
+      return secondary;
+    }
+    if ("Fetching next train…".equals(secondary)) {
+      return "Fetching…";
+    }
+    if ("Tap to refresh".equals(secondary)) {
+      return "Tap app";
+    }
+    if (secondary.startsWith("Leave in ") && secondary.endsWith(" min")) {
+      String minutes = secondary.substring("Leave in ".length(), secondary.length() - " min".length());
+      return "In " + minutes + "m";
+    }
+    if (secondary.startsWith("Leave ") && secondary.endsWith(" min ago")) {
+      String minutes = secondary.substring("Leave ".length(), secondary.length() - " min ago".length());
+      return minutes + "m ago";
+    }
+    return secondary;
+  }
+
+  static String compactPrimary(String primary) {
+    if ("Updating…".equals(primary)) {
+      return "…";
+    }
+    return primary;
   }
 }

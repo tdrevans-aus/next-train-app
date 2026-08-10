@@ -44,7 +44,6 @@ public class MainActivity extends BridgeActivity {
   @Override
   public void onResume() {
     super.onResume();
-    NextTrainWidgetProvider.requestRefresh(this);
     CommuteRefreshService.refreshAll(this);
   }
 }

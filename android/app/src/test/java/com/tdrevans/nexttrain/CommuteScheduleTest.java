@@ -188,6 +188,62 @@ public class CommuteScheduleTest {
     assertEquals("Updating…", repainted.optString("primary"));
     assertEquals("", repainted.optString("trainClock"));
     assertEquals("Fetching next train…", repainted.optString("secondary"));
+    assertTrue(repainted.optLong("updatingSinceMs", 0L) > 0L);
+  }
+
+  @Test
+  public void repaintSnapshot_showsStaleRefreshWhenUpdatingTimedOut() throws Exception {
+    long nowMs = System.currentTimeMillis();
+    long departureMs = nowMs - 2L * 60_000L;
+
+    JSONObject cached = new JSONObject();
+    cached.put("empty", false);
+    cached.put("journeyId", "j1");
+    cached.put("departureIso", PerthTime.formatIsoFromEpochMs(departureMs));
+    cached.put("leaveByIso", PerthTime.formatIsoFromEpochMs(departureMs - 11L * 60_000L));
+    cached.put("departMode", false);
+    cached.put("refreshedAtMs", nowMs - 5L * 60_000L);
+    cached.put("updatingSinceMs", nowMs - 4L * 60_000L);
+
+    JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
+
+    assertEquals("—", repainted.optString("primary"));
+    assertEquals("Tap to refresh", repainted.optString("secondary"));
+    assertEquals("Times may be out of date", repainted.optString("updatedLine"));
+    assertTrue(repainted.optBoolean("stale"));
+    assertEquals(0L, repainted.optLong("updatingSinceMs", -1L));
+  }
+
+  @Test
+  public void repaintSnapshot_showsStaleRefreshWhenRefreshAgeExceeded() throws Exception {
+    long nowMs = System.currentTimeMillis();
+    long departureMs = nowMs - 2L * 60_000L;
+
+    JSONObject cached = new JSONObject();
+    cached.put("empty", false);
+    cached.put("journeyId", "j1");
+    cached.put("departureIso", PerthTime.formatIsoFromEpochMs(departureMs));
+    cached.put("leaveByIso", PerthTime.formatIsoFromEpochMs(departureMs - 11L * 60_000L));
+    cached.put("departMode", false);
+    cached.put("refreshedAtMs", nowMs - 58L * 60_000L);
+
+    JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
+
+    assertEquals("—", repainted.optString("primary"));
+    assertEquals("Tap to refresh", repainted.optString("secondary"));
+    assertTrue(repainted.optBoolean("stale"));
+  }
+
+  @Test
+  public void needsLocalRepaint_trueWhileUpdating() throws Exception {
+    long departureMs = System.currentTimeMillis() - 90_000L;
+
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("empty", false);
+    snapshot.put("departureIso", PerthTime.formatIsoFromEpochMs(departureMs));
+    snapshot.put("updatingSinceMs", System.currentTimeMillis() - 60_000L);
+
+    assertTrue(CommuteSchedule.needsLocalRepaint(snapshot));
   }
 
   @Test

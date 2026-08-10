@@ -1,13 +1,30 @@
 package com.tdrevans.nexttrain;
 
 import android.content.Context;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.json.JSONObject;
 
 public final class CommuteRefreshService {
 
+  private static final ExecutorService REFRESH_EXECUTOR =
+    Executors.newSingleThreadExecutor(
+      runnable -> {
+        Thread thread = new Thread(runnable, "commute-refresh");
+        thread.setDaemon(true);
+        return thread;
+      }
+    );
+
   private CommuteRefreshService() {}
 
+  /** Network refresh on a background thread — safe from Activity / UI thread. */
   public static void refreshAll(Context context) {
+    Context appContext = context.getApplicationContext();
+    REFRESH_EXECUTOR.execute(() -> refreshAllOnWorker(appContext));
+  }
+
+  static void refreshAllOnWorker(Context context) {
     CommuteSchedule.Result result = CommuteSchedule.load(context, true);
     try {
       JSONObject snapshot = buildWidgetSnapshot(context, result);
@@ -23,16 +40,24 @@ public final class CommuteRefreshService {
 
   /** Local countdown repaint from cached ISO times — no network. */
   public static void repaintFromCache(Context context) {
+    paintFromCache(context);
+    try {
+      JSONObject cached = WidgetSettingsStore.readSnapshot(context);
+      if (cached != null && CommuteSchedule.needsNetworkRefresh(cached)) {
+        refreshAll(context);
+      }
+    } catch (Exception error) {
+      // Keep last paint.
+    }
+  }
+
+  /** Repaint widgets from cache only — never blocks on network. */
+  public static void paintFromCache(Context context) {
     try {
       JSONObject cached = WidgetSettingsStore.readSnapshot(context);
       if (cached == null) {
         WidgetLocalPaintScheduler.cancel(context);
         WidgetDepartureAdvanceScheduler.cancel(context);
-        return;
-      }
-
-      if (CommuteSchedule.needsNetworkRefresh(cached)) {
-        refreshAll(context);
         return;
       }
 
@@ -61,9 +86,14 @@ public final class CommuteRefreshService {
     JSONObject cached = WidgetSettingsStore.readSnapshot(context);
     if (cached != null && !cached.optString("departureIso", "").isEmpty()) {
       long refreshedAt = cached.optLong("refreshedAtMs", WidgetSettingsStore.readLastRefreshMs(context));
+      JSONObject snapshot = CommuteSchedule.repaintSnapshot(cached);
+      if ("Tap to refresh".equals(snapshot.optString("secondary"))) {
+        snapshot.put("refreshedAtMs", refreshedAt);
+        snapshot.put("updatedAtMs", refreshedAt);
+        return snapshot;
+      }
       long age = System.currentTimeMillis() - refreshedAt;
       boolean stale = refreshedAt > 0 && age > CommuteSchedule.STALE_THRESHOLD_MS;
-      JSONObject snapshot = CommuteSchedule.repaintSnapshot(cached);
       snapshot.put("stale", stale);
       snapshot.put("refreshedAtMs", refreshedAt);
       if (stale) {
