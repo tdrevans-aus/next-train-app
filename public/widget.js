@@ -246,7 +246,7 @@ function initWidgetUi() {
   });
 
   document.getElementById("menu-widget-btn")?.addEventListener("click", () => {
-    document.getElementById("menu-dialog")?.close();
+    window.nextTrainApp?.closeMenuDialogOnly?.();
     window.nextTrainStickinessCoaches?.markCoachDone?.("widget");
     openWidgetHelpDialog();
   });

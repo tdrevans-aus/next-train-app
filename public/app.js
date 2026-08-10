@@ -1914,6 +1914,16 @@ function isLeaveAcknowledged(next) {
   return sessionStorage.getItem(leaveAckStorageKey(next)) === "1";
 }
 
+function getLeaveAckTarget() {
+  if (lastRenderedNext) {
+    return lastRenderedNext;
+  }
+  if (!lastApiData) {
+    return null;
+  }
+  return prepareDisplayData(lastApiData).next ?? null;
+}
+
 function acknowledgeLeave(next) {
   if (!next) {
     return;
@@ -4504,13 +4514,15 @@ function closeJourneysDialog() {
   fetchNextTrain();
 }
 
-function closeMenuDialog() {
+function closeMenuDialogOnly() {
   if (isAppDialogOpen(menuDialog)) {
     closeAppDialog(menuDialog);
   }
   menuBtn?.setAttribute("aria-expanded", "false");
   menuChromeAction?.classList.remove("chrome-action--open");
+}
 
+function resumeAfterMenuClose() {
   if (!hasConfiguredCommute()) {
     return;
   }
@@ -4523,6 +4535,11 @@ function closeMenuDialog() {
   }
 
   fetchNextTrain();
+}
+
+function closeMenuDialog() {
+  closeMenuDialogOnly();
+  resumeAfterMenuClose();
 }
 
 function openMenu() {
@@ -4669,8 +4686,9 @@ helpDialog?.addEventListener("click", (event) => {
 });
 leaveAckBtn?.addEventListener("click", (event) => {
   event.stopPropagation();
-  if (lastRenderedNext) {
-    acknowledgeLeave(lastRenderedNext);
+  const next = getLeaveAckTarget();
+  if (next) {
+    acknowledgeLeave(next);
   }
 });
 leaveBufferEditBtn?.addEventListener("click", (event) => {
@@ -4912,6 +4930,7 @@ window.nextTrainApp = {
   switchJourney,
   fetchNextTrain,
   hasConfiguredCommute,
+  closeMenuDialogOnly,
 };
 
 document.addEventListener("visibilitychange", () => {

@@ -3,6 +3,7 @@ const DEFAULT_GET_READY_MINUTES = 5;
 const NUDGE_OFFSET_OPTIONS = [5, 10, 15];
 
 let commuteDraft = [];
+let remindersSaveInFlight = false;
 
 function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
@@ -770,12 +771,8 @@ function showLeaveReminderCoach() {
 
 function openRemindersDialog() {
   window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
-
-  const menuDialog = document.getElementById("menu-dialog");
-  if (menuDialog?.open) {
-    menuDialog.close();
-    menuDialog.removeAttribute("open");
-  }
+  window.nextTrainApp?.closeMenuDialogOnly?.();
+  clearRemindersValidationError();
 
   const moreOptions = document.getElementById("reminders-more-options");
   if (moreOptions) {
@@ -797,6 +794,46 @@ function closeRemindersDialog() {
   }
 }
 
+function setRemindersDoneBusy(busy) {
+  const button = document.getElementById("reminders-done-btn");
+  if (!button) {
+    return;
+  }
+
+  button.disabled = busy;
+  button.textContent = busy ? "Saving…" : "Done";
+  button.setAttribute("aria-busy", busy ? "true" : "false");
+}
+
+function showRemindersValidationError(message) {
+  const errorEl = document.getElementById("reminders-validation-error");
+  if (!errorEl) {
+    return;
+  }
+
+  if (!message) {
+    errorEl.hidden = true;
+    errorEl.textContent = "";
+    return;
+  }
+
+  errorEl.textContent = message;
+  errorEl.hidden = false;
+}
+
+function clearRemindersValidationError() {
+  showRemindersValidationError("");
+}
+
+function dismissRemindersDialog() {
+  if (remindersSaveInFlight) {
+    return;
+  }
+
+  clearRemindersValidationError();
+  closeRemindersDialog();
+}
+
 function validateCommuteDraft() {
   syncCommuteDraftFromDom();
 
@@ -814,6 +851,12 @@ function validateCommuteDraft() {
 }
 
 async function saveRemindersDialog() {
+  if (remindersSaveInFlight) {
+    return;
+  }
+
+  clearRemindersValidationError();
+
   if (!isNativeApp()) {
     closeRemindersDialog();
     return;
@@ -821,17 +864,23 @@ async function saveRemindersDialog() {
 
   const error = validateCommuteDraft();
   if (error) {
-    alert(error);
+    showRemindersValidationError(error);
     return;
   }
 
-  window.nextTrainApp?.persistReminderJourneys?.(commuteDraft);
-  getLeaveRemindersPlugin()?.reschedule?.();
-
-  const settings = await loadReminderSettings();
-  const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-  await updateRemindersDialogUi(settings, schedule);
+  remindersSaveInFlight = true;
+  setRemindersDoneBusy(true);
   closeRemindersDialog();
+
+  try {
+    window.nextTrainApp?.persistReminderJourneys?.(commuteDraft);
+    getLeaveRemindersPlugin()?.reschedule?.();
+  } catch (saveError) {
+    console.warn("Could not save reminder settings", saveError);
+  } finally {
+    remindersSaveInFlight = false;
+    setRemindersDoneBusy(false);
+  }
 }
 
 function initLeaveReminderUi() {
@@ -931,6 +980,22 @@ function initLeaveReminderUi() {
 
   remindersDialog?.addEventListener("close", () => {
     remindersDialog.removeAttribute("open");
+    setRemindersDoneBusy(false);
+  });
+
+  remindersDialog?.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    dismissRemindersDialog();
+  });
+
+  remindersDialog?.addEventListener("click", (event) => {
+    if (event.target === remindersDialog) {
+      dismissRemindersDialog();
+    }
+  });
+
+  document.getElementById("reminders-commutes-list")?.addEventListener("change", () => {
+    clearRemindersValidationError();
   });
 
   document.addEventListener("nexttrain:settings-persisted", async () => {
@@ -970,7 +1035,7 @@ if (document.readyState === "loading") {
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     const dialog = document.getElementById("reminders-dialog");
-    if (dialog?.open) {
+    if (dialog?.open && !remindersSaveInFlight) {
       renderRemindersDialog();
     }
     getLeaveRemindersPlugin()?.reschedule?.();
