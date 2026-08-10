@@ -104,6 +104,9 @@ const templateWizardStep2 = document.getElementById("template-wizard-step-2");
 const templateWizardStep3 = document.getElementById("template-wizard-step-3");
 const detailRouteSection = document.getElementById("detail-route-section");
 const detailJourneyWindow = document.getElementById("detail-journey-window");
+const heroEmptyStateEl = document.getElementById("hero-empty-state");
+const heroEmptyAddBtn = document.getElementById("hero-empty-add-btn");
+const heroEmptyBackBtn = document.getElementById("hero-empty-back-btn");
 
 let settings = createDefaultStore();
 let refreshSeconds = DEFAULT_SETTINGS.refreshSeconds;
@@ -153,6 +156,146 @@ const DEFAULT_REMIND_DAYS = [1, 2, 3, 4, 5];
 const API_ORIGIN = window.Capacitor?.isNativePlatform?.()
   ? "https://next-train-app.vercel.app"
   : "";
+
+function isNativeApp() {
+  return Boolean(window.Capacitor?.isNativePlatform?.());
+}
+
+async function ensureGeoBridge() {
+  if (!isNativeApp() || window.NextTrainGeo?.getCurrentPosition) {
+    return;
+  }
+
+  const { loadScriptOnce, waitForCapacitor } = window.NextTrainScripts ?? {};
+  if (!loadScriptOnce || !waitForCapacitor) {
+    throw Object.assign(new Error("Native geolocation bridge unavailable"), { code: 2 });
+  }
+
+  await waitForCapacitor();
+  await loadScriptOnce("geo-bundle.js");
+}
+
+async function getAppGeolocationPosition(options = {}) {
+  if (isNativeApp()) {
+    await ensureGeoBridge();
+    if (!window.NextTrainGeo?.getCurrentPosition) {
+      throw Object.assign(new Error("Native geolocation bridge unavailable"), { code: 2 });
+    }
+
+    return window.NextTrainGeo.getCurrentPosition(options);
+  }
+
+  if (!navigator.geolocation) {
+    throw Object.assign(new Error("Geolocation unavailable"), { code: 2 });
+  }
+
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+}
+
+function isJourneysDialogOpen() {
+  return Boolean(journeysDialog && !journeysDialog.hidden);
+}
+
+function isAppDialogOpen(dialog) {
+  if (dialog === journeysDialog) {
+    return isJourneysDialogOpen();
+  }
+
+  return Boolean(dialog?.open || dialog?.hasAttribute("open"));
+}
+
+function getDialogBackdrop(dialog) {
+  const backdropId = dialog?.dataset?.backdropId;
+  if (!backdropId) {
+    return null;
+  }
+
+  return document.getElementById(backdropId);
+}
+
+function ensureDialogBackdrop(dialog) {
+  if (!dialog) {
+    return null;
+  }
+
+  let backdrop = getDialogBackdrop(dialog);
+  if (backdrop) {
+    return backdrop;
+  }
+
+  const backdropId = `${dialog.id}-backdrop`;
+  dialog.dataset.backdropId = backdropId;
+
+  backdrop = document.createElement("div");
+  backdrop.id = backdropId;
+  backdrop.className = "app-dialog-backdrop";
+  backdrop.hidden = true;
+  backdrop.addEventListener("click", () => {
+    if (dialog === menuDialog) {
+      closeMenuDialog();
+      return;
+    }
+
+    if (dialog === helpDialog) {
+      closeAppDialog(dialog);
+    }
+  });
+
+  dialog.parentNode?.insertBefore(backdrop, dialog);
+  return backdrop;
+}
+
+function openAppDialog(dialog) {
+  if (!dialog || isAppDialogOpen(dialog)) {
+    return;
+  }
+
+  if (isNativeApp()) {
+    const backdrop = ensureDialogBackdrop(dialog);
+    if (backdrop) {
+      backdrop.hidden = false;
+    }
+    dialog.classList.add("app-native-dialog");
+    dialog.setAttribute("open", "");
+    document.body.classList.add("app-dialog-open");
+    return;
+  }
+
+  try {
+    dialog.showModal();
+  } catch (error) {
+    console.warn("showModal failed, using open attribute fallback", error);
+    dialog.setAttribute("open", "");
+  }
+}
+
+function closeAppDialog(dialog) {
+  if (!dialog) {
+    return;
+  }
+
+  const backdrop = getDialogBackdrop(dialog);
+  if (backdrop) {
+    backdrop.hidden = true;
+  }
+
+  try {
+    if (dialog.open) {
+      dialog.close();
+    }
+  } catch {
+    // Ignore close errors on fallback dialogs.
+  }
+
+  dialog.removeAttribute("open");
+  dialog.classList.remove("app-native-dialog");
+
+  if (!document.querySelector("dialog[open], .app-native-dialog[open]")) {
+    document.body.classList.remove("app-dialog-open");
+  }
+}
 
 function apiUrl(path) {
   return `${API_ORIGIN}${path}`;
@@ -547,13 +690,13 @@ async function applyCommuteMode({ coldStart = false } = {}) {
 
   if (shouldDefaultToNearby()) {
     journeyModeActive = false;
+    if (coldStart) {
+      maybeScheduleOnboarding();
+    }
     if (!nearbySession) {
       await enterNearbyMode();
     } else {
       syncChromeMode();
-    }
-    if (coldStart) {
-      maybeScheduleOnboarding();
     }
     return;
   }
@@ -629,7 +772,7 @@ function deferOnboardingForSession() {
 }
 
 function maybeScheduleOnboarding() {
-  if (!isNearbyModeActive() || nearbyLoading) {
+  if (!isNearbyModeActive()) {
     return;
   }
 
@@ -641,18 +784,34 @@ function maybeScheduleOnboarding() {
     return;
   }
 
-  if (isTestMode() || onboardingShowTimer || onboardingPopulatedAt) {
+  if (isTestMode()) {
     return;
   }
 
-  onboardingPopulatedAt = Date.now();
+  const now = Date.now();
+  if (!onboardingPopulatedAt) {
+    onboardingPopulatedAt = now;
+  }
+
+  const elapsed = now - onboardingPopulatedAt;
+  if (elapsed >= 6000) {
+    clearTimeout(onboardingShowTimer);
+    onboardingShowTimer = null;
+    showOnboardingStep1();
+    return;
+  }
+
+  if (onboardingShowTimer) {
+    return;
+  }
+
   onboardingShowTimer = window.setTimeout(() => {
     onboardingShowTimer = null;
     if (sessionStorage.getItem(ONBOARDING_DEFER_KEY) || hasCompletedOnboarding()) {
       return;
     }
     showOnboardingStep1();
-  }, 6000);
+  }, 6000 - elapsed);
 }
 
 function showOnboardingStep1() {
@@ -1790,7 +1949,7 @@ async function maybeAutoAcknowledgeLeave(next) {
   leaveAutoCheckDeparture = departure;
 
   const journey = getActiveJourney();
-  if (!journey?.station || !navigator.geolocation) {
+  if (!journey?.station || (!isNativeApp() && !navigator.geolocation)) {
     return;
   }
 
@@ -1801,12 +1960,10 @@ async function maybeAutoAcknowledgeLeave(next) {
       return;
     }
 
-    const position = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        enableHighAccuracy: false,
-        timeout: 6000,
-        maximumAge: 60_000,
-      });
+    const position = await getAppGeolocationPosition({
+      enableHighAccuracy: false,
+      timeout: 6000,
+      maximumAge: 60_000,
     });
 
     const distance = distanceKm(
@@ -2043,13 +2200,13 @@ function openLeaveBufferSettings() {
     return;
   }
 
+  openJourneysDialogSync();
+
   ensureSettingsDraftLoaded()
     .then(() => populateJourneyDetailForm(journey.id))
     .then(() => {
       showSettingsDetailView();
-      if (!journeysDialog.open) {
-        journeysDialog.showModal();
-      }
+      openJourneysDialogSync();
 
       requestAnimationFrame(() => {
         leaveBeforeField?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2380,6 +2537,9 @@ function clearHeroSetupState() {
     departCountdownEl.classList.remove("hero-setup-message");
     departCountdownEl.textContent = "—";
   }
+  if (heroEmptyStateEl) {
+    heroEmptyStateEl.hidden = true;
+  }
   if (departDisplayTimeEl) {
     departDisplayTimeEl.hidden = false;
   }
@@ -2454,30 +2614,11 @@ function renderJourneyEmptyState() {
   }
 
   if (departCountdownEl) {
-    departCountdownEl.classList.add("hero-setup-message");
-    departCountdownEl.replaceChildren();
-
-    const title = document.createElement("span");
-    title.className = "hero-empty-title";
-    title.textContent = "No journeys yet";
-
-    const text = document.createElement("span");
-    text.className = "hero-empty-text";
-    text.textContent = "Save a regular journey — station, direction, and when to leave.";
-
-    const addBtn = document.createElement("button");
-    addBtn.type = "button";
-    addBtn.className = "btn-primary hero-empty-primary";
-    addBtn.textContent = "Add a journey";
-    addBtn.addEventListener("click", () => openJourneys());
-
-    const backBtn = document.createElement("button");
-    backBtn.type = "button";
-    backBtn.className = "btn-link hero-empty-secondary";
-    backBtn.textContent = "Back to Near me";
-    backBtn.addEventListener("click", () => enterNearbyMode());
-
-    departCountdownEl.append(title, text, addBtn, backBtn);
+    departCountdownEl.hidden = true;
+    departCountdownEl.classList.remove("hero-setup-message");
+  }
+  if (heroEmptyStateEl) {
+    heroEmptyStateEl.hidden = false;
   }
 
   heroEl.removeAttribute("role");
@@ -2519,8 +2660,13 @@ async function loadStationCoords() {
     return stationCoords;
   }
 
-  const response = await fetch("/station-coords.json");
-  stationCoords = await response.json();
+  try {
+    stationCoords = await fetchLocalJson("/station-coords.json");
+  } catch (error) {
+    console.warn("Could not load station-coords.json", error);
+    stationCoords = {};
+  }
+
   return stationCoords;
 }
 
@@ -2698,12 +2844,11 @@ async function findNearestStation() {
   }
 
   const coords = await loadStationCoords();
-  const position = await new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 60000,
-    });
+  const geoTimeoutMs = isNativeApp() ? 6000 : 15000;
+  const position = await getAppGeolocationPosition({
+    enableHighAccuracy: !isNativeApp(),
+    timeout: geoTimeoutMs,
+    maximumAge: 60000,
   });
 
   const { latitude, longitude } = position.coords;
@@ -3311,13 +3456,39 @@ function scheduleRefresh() {
   scheduleLiveDisplayRefresh();
 }
 
+async function fetchLocalJson(path, timeoutMs = 4000) {
+  const fetchPromise = (async () => {
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`Failed to load ${path}`);
+    }
+    return await response.json();
+  })();
+
+  const timeoutPromise = new Promise((_, reject) => {
+    window.setTimeout(() => reject(new Error(`Timed out loading ${path}`)), timeoutMs);
+  });
+
+  return Promise.race([fetchPromise, timeoutPromise]);
+}
+
 async function getStationsList() {
   if (stationsCache) {
     return stationsCache;
   }
 
-  const response = await fetch("/stations.json");
-  stationsCache = collapseStationList(await response.json());
+  try {
+    stationsCache = collapseStationList(await fetchLocalJson("/stations.json"));
+  } catch (error) {
+    console.warn("Could not load stations.json", error);
+    stationsCache = collapseStationList([
+      "Edgewater Stn",
+      "Joondalup Stn",
+      "Perth Underground Stn",
+      "Mandurah Stn",
+    ]);
+  }
+
   return stationsCache;
 }
 
@@ -3400,6 +3571,38 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
 
   if (requestId === directionsRequestId) {
     selectEl.disabled = false;
+  }
+}
+
+function openJourneysDialogSync() {
+  if (!journeysDialog || isJourneysDialogOpen()) {
+    return;
+  }
+
+  const backdrop = document.getElementById("journeys-dialog-backdrop");
+  if (backdrop) {
+    backdrop.hidden = false;
+  }
+
+  journeysDialog.hidden = false;
+  document.body.classList.add("app-dialog-open");
+}
+
+function closeJourneysSheet() {
+  const backdrop = document.getElementById("journeys-dialog-backdrop");
+  if (backdrop) {
+    backdrop.hidden = true;
+  }
+
+  if (journeysDialog) {
+    journeysDialog.hidden = true;
+  }
+
+  if (
+    !isJourneysDialogOpen() &&
+    !document.querySelector("dialog[open], .app-native-dialog[open]")
+  ) {
+    document.body.classList.remove("app-dialog-open");
   }
 }
 
@@ -4011,44 +4214,26 @@ function renderJourneyListView() {
 }
 
 async function populateJourneyListView() {
-  await getStationsList();
   settingsDraftJourneys = normalizeJourneyList(settings.journeys).map((journey) => ({
     ...journey,
   }));
   renderJourneyListView();
+
+  try {
+    await getStationsList();
+    renderJourneyListView();
+  } catch (error) {
+    console.warn("Could not refresh journey list stations", error);
+  }
 }
 
 async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = {}) {
-  await getStationsList();
   let journey =
     settingsDraftJourneys.find((entry) => entry.id === journeyId) ??
     getJourneyById(journeyId);
 
   if (!journey) {
     return;
-  }
-
-  let nearestHint = null;
-
-  if (!skipAutoRoute && shouldAutoRouteJourney(journey)) {
-    if (detailNearestHint) {
-      detailNearestHint.hidden = false;
-      detailNearestHint.textContent = "Finding nearest station…";
-    }
-
-    const routeResult = await applyDefaultJourneyRoute(journey);
-    if (routeResult.configured && routeResult.journey) {
-      const index = settingsDraftJourneys.findIndex((entry) => entry.id === journey.id);
-      if (index >= 0) {
-        settingsDraftJourneys[index] = routeResult.journey;
-      }
-      journey = routeResult.journey;
-      saveJourneyListToSettings();
-    }
-
-    if (routeResult.configured && routeResult.nearest) {
-      nearestHint = `Nearest: ${formatStationLabel(routeResult.nearest.station)} (${routeResult.nearest.distanceKm.toFixed(1)} km away)`;
-    }
   }
 
   editingJourneyId = journey.id;
@@ -4077,6 +4262,36 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
     journey.defaultUntil
   );
 
+  renderStationOptions(detailStationSelect, journey.station);
+  if (journey.station) {
+    detailStationSelect.value = journey.station;
+  }
+  detailDirectionSelect.innerHTML = '<option value="">Loading…</option>';
+  detailDirectionSelect.disabled = true;
+
+  let nearestHint = null;
+
+  if (!skipAutoRoute && shouldAutoRouteJourney(journey)) {
+    if (detailNearestHint) {
+      detailNearestHint.hidden = false;
+      detailNearestHint.textContent = "Finding nearest station…";
+    }
+
+    const routeResult = await applyDefaultJourneyRoute(journey);
+    if (routeResult.configured && routeResult.journey) {
+      const index = settingsDraftJourneys.findIndex((entry) => entry.id === journey.id);
+      if (index >= 0) {
+        settingsDraftJourneys[index] = routeResult.journey;
+      }
+      journey = routeResult.journey;
+      saveJourneyListToSettings();
+    }
+
+    if (routeResult.configured && routeResult.nearest) {
+      nearestHint = `Nearest: ${formatStationLabel(routeResult.nearest.station)} (${routeResult.nearest.distanceKm.toFixed(1)} km away)`;
+    }
+  }
+
   if (detailNearestHint) {
     if (nearestHint) {
       detailNearestHint.hidden = false;
@@ -4084,6 +4299,12 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
     } else {
       detailNearestHint.hidden = true;
     }
+  }
+
+  try {
+    await getStationsList();
+  } catch (error) {
+    console.warn("Could not load stations for journey detail", error);
   }
 
   renderStationOptions(detailStationSelect, journey.station);
@@ -4263,10 +4484,9 @@ function closeJourneysDialog() {
     }
   }
 
-  if (journeysDialog?.open) {
-    journeysDialog.close();
+  if (isJourneysDialogOpen()) {
+    closeJourneysSheet();
   }
-  journeysDialog?.removeAttribute("open");
 
   if (!configured) {
     if (journeyModeActive) {
@@ -4285,10 +4505,9 @@ function closeJourneysDialog() {
 }
 
 function closeMenuDialog() {
-  if (menuDialog?.open) {
-    menuDialog.close();
+  if (isAppDialogOpen(menuDialog)) {
+    closeAppDialog(menuDialog);
   }
-  menuDialog?.removeAttribute("open");
   menuBtn?.setAttribute("aria-expanded", "false");
   menuChromeAction?.classList.remove("chrome-action--open");
 
@@ -4309,7 +4528,7 @@ function closeMenuDialog() {
 function openMenu() {
   dismissLeaveHint();
   window.NextTrainAdFree?.renderMenuAdFree?.();
-  menuDialog?.showModal();
+  openAppDialog(menuDialog);
   menuBtn?.setAttribute("aria-expanded", "true");
   menuChromeAction?.classList.add("chrome-action--open");
 }
@@ -4361,13 +4580,11 @@ function handleClearAllData() {
 
   clearAllAppData();
 
-  if (journeysDialog?.open) {
-    journeysDialog.close();
-    journeysDialog.removeAttribute("open");
+  if (isJourneysDialogOpen()) {
+    closeJourneysSheet();
   }
-  if (menuDialog?.open) {
-    menuDialog.close();
-    menuDialog.removeAttribute("open");
+  if (isAppDialogOpen(menuDialog)) {
+    closeAppDialog(menuDialog);
   }
 }
 
@@ -4375,10 +4592,9 @@ function openJourneys() {
   dismissLeaveHint();
   completeOnboarding();
   dismissTemplateRouteCoach();
-  populateJourneyListView().then(() => {
-    showSettingsListView();
-    journeysDialog.showModal();
-  });
+  showSettingsListView();
+  openJourneysDialogSync();
+  void populateJourneyListView();
 }
 
 function openJourneysForSetup() {
@@ -4388,13 +4604,12 @@ function openJourneysForSetup() {
 }
 
 function openJourneyDetail(journeyId, options = {}) {
+  openJourneysDialogSync();
+
   return ensureSettingsDraftLoaded()
     .then(() => populateJourneyDetailForm(journeyId, options))
     .then(() => {
       showSettingsDetailView();
-      if (!journeysDialog.open) {
-        journeysDialog.showModal();
-      }
     })
     .catch((error) => {
       console.warn("Could not open journey detail", error);
@@ -4438,18 +4653,18 @@ nearbyStationBtn?.addEventListener("click", async () => {
 });
 menuHelpBtn?.addEventListener("click", () => {
   closeMenuDialog();
-  helpDialog?.showModal();
+  openAppDialog(helpDialog);
 });
 helpCloseBtn?.addEventListener("click", () => {
-  helpDialog?.close();
+  closeAppDialog(helpDialog);
 });
 helpDialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
-  helpDialog?.close();
+  closeAppDialog(helpDialog);
 });
 helpDialog?.addEventListener("click", (event) => {
   if (event.target === helpDialog) {
-    helpDialog.close();
+    closeAppDialog(helpDialog);
   }
 });
 leaveAckBtn?.addEventListener("click", (event) => {
@@ -4462,18 +4677,12 @@ leaveBufferEditBtn?.addEventListener("click", (event) => {
   event.stopPropagation();
   openLeaveBufferSettings();
 });
+document.getElementById("journeys-dialog-backdrop")?.addEventListener("click", () => {
+  closeJourneysDialog();
+});
 journeysDoneBtn?.addEventListener("click", (event) => {
   event.preventDefault();
   closeJourneysDialog();
-});
-journeysDialog?.addEventListener("cancel", (event) => {
-  event.preventDefault();
-  closeJourneysDialog();
-});
-journeysDialog?.addEventListener("click", (event) => {
-  if (event.target === journeysDialog) {
-    closeJourneysDialog();
-  }
 });
 menuDoneBtn?.addEventListener("click", (event) => {
   event.preventDefault();
@@ -4507,6 +4716,8 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
 
     templateCreateInFlight = true;
     setJourneyTemplateLoading(true);
+    showSettingsListView();
+    openJourneysDialogSync();
 
     try {
       await createJourneyFromTemplate(button.dataset.template);
@@ -4515,6 +4726,18 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
       setJourneyTemplateLoading(false);
     }
   });
+});
+
+heroEmptyAddBtn?.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  openJourneys();
+});
+
+heroEmptyBackBtn?.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  enterNearbyMode();
 });
 
 templateWizardPrimaryBtn?.addEventListener("click", () => {
@@ -4646,6 +4869,8 @@ async function init() {
   }
 
   scheduleRefresh();
+  void getStationsList();
+  void loadStationCoords();
 
   if (urlSettings) {
     journeyModeActive = true;
@@ -4691,6 +4916,8 @@ window.nextTrainApp = {
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
+    maybeScheduleOnboarding();
+
     if (journeyModeActive) {
       skipTrains = readSkipState().count;
       refreshLiveDisplay(true);

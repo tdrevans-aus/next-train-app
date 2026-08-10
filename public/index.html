@@ -130,7 +130,19 @@
           >›</span
         >
         <p class="label" id="hero-depart-label">Next Train</p>
-        <p class="time depart-countdown" id="depart-countdown">—</p>
+        <div class="time depart-countdown" id="depart-countdown">—</div>
+        <div id="hero-empty-state" class="hero-empty-state" hidden>
+          <span class="hero-empty-title">No journeys yet</span>
+          <span class="hero-empty-text"
+            >Save a regular journey — station, direction, and when to leave.</span
+          >
+          <button type="button" class="btn-primary hero-empty-primary" id="hero-empty-add-btn">
+            Add a journey
+          </button>
+          <button type="button" class="btn-link hero-empty-secondary" id="hero-empty-back-btn">
+            Back to Near me
+          </button>
+        </div>
         <p class="depart-time-sub" id="depart-display-time">—</p>
         <p class="detail-sub" id="hero-scheduled-time" hidden></p>
         <p class="swipe-hint" id="swipe-hint" hidden>
@@ -279,7 +291,8 @@
       </div>
     </dialog>
 
-    <dialog class="journeys-dialog" id="journeys-dialog">
+    <div class="app-dialog-backdrop" id="journeys-dialog-backdrop" hidden></div>
+    <div class="journeys-dialog" id="journeys-dialog" role="dialog" aria-modal="true" hidden>
       <div class="journeys-dialog-body">
         <div class="settings-view" id="settings-list-view">
           <div class="settings-list-main">
@@ -483,7 +496,7 @@
           </div>
         </div>
       </div>
-    </dialog>
+    </div>
 
     <dialog class="reminders-dialog" id="reminders-dialog">
       <div class="reminders-dialog-body">

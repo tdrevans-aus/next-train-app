@@ -923,6 +923,22 @@ body {
   text-align: center;
 }
 
+.hero-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 7rem;
+  margin: 0.4rem 0 0.25rem;
+  padding: 0 0.5rem;
+  text-align: center;
+}
+
+.hero-empty-state[hidden] {
+  display: none !important;
+}
+
 .hero-empty-title {
   font-family: var(--font-display);
   font-size: 1.2rem;
@@ -939,6 +955,9 @@ body {
 .hero-empty-primary {
   width: min(100%, 14rem);
   margin-top: 0.15rem;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .hero-empty-secondary {
@@ -1363,8 +1382,34 @@ body {
 }
 
 /* —— Dialogs —— */
+.app-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(19, 37, 35, 0.42);
+}
+
+.app-dialog-backdrop[hidden] {
+  display: none !important;
+}
+
+body.app-dialog-open {
+  overflow: hidden;
+}
+
+dialog.app-native-dialog[open] {
+  display: flex !important;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10001;
+  margin: 0;
+  max-height: 90dvh;
+  width: min(92vw, 400px);
+}
+
 .help-dialog,
-.journeys-dialog,
 .menu-dialog,
 .reminders-dialog {
   border: 1px solid var(--line);
@@ -1380,15 +1425,41 @@ body {
   box-shadow: 0 24px 60px rgba(19, 37, 35, 0.18);
 }
 
+.journeys-dialog {
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  width: min(92vw, 400px);
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(19, 37, 35, 0.18);
+}
+
+.journeys-dialog[hidden] {
+  display: none !important;
+}
+
+.journeys-dialog:not([hidden]) {
+  display: flex !important;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10001;
+  margin: 0;
+}
+
 .help-dialog:not([open]),
-.journeys-dialog:not([open]),
 .menu-dialog:not([open]),
 .reminders-dialog:not([open]) {
   display: none !important;
 }
 
 .help-dialog::backdrop,
-.journeys-dialog::backdrop,
 .menu-dialog::backdrop,
 .reminders-dialog::backdrop {
   background: rgba(19, 37, 35, 0.42);

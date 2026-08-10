@@ -170,17 +170,17 @@ function isBlockingUiVisible() {
   }
 
   const journeysDialog = document.getElementById("journeys-dialog");
-  if (journeysDialog?.open) {
+  if (journeysDialog && !journeysDialog.hidden) {
     return true;
   }
 
   const menuDialog = document.getElementById("menu-dialog");
-  if (menuDialog?.open) {
+  if (menuDialog?.open || menuDialog?.hasAttribute("open")) {
     return true;
   }
 
   const remindersDialog = document.getElementById("reminders-dialog");
-  if (remindersDialog?.open) {
+  if (remindersDialog?.open || remindersDialog?.hasAttribute("open")) {
     return true;
   }
 
