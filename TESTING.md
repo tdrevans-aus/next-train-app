@@ -619,6 +619,18 @@ Plan: `docs/qa-leave-reminders-v2-testing.md`
 - **18** — `PreferredTrainReminder` JUnit (train pick, days, once/day)  
 - **19** — Android device roleplay (Jim brief §4: no 5:50 spam, one ping ~7:15, no Saturday)
 
+### 20. Commute strip notification (non-FGS)
+
+Jim brief: `docs/jim-brief-commute-strip-notification.md`
+
+1. **Menu → Reminder settings** → toggle **Show commute countdown in notifications** (default off). Subtitle mentions separate from leave reminders.
+2. Journey with Reminder on, preferred train, remind day, leave-before on. Strip **on**, reminders master **off** → ongoing shade notif in leave window without opening app; **no** FGS / `startForeground` in logcat.
+3. Strip **off** → no commute strip notif; leave reminders still work if enabled.
+4. Reminders **on**, strip **off** → reminder fires; no strip.
+5. **Dismiss** on strip → notif clears; strip toggle still on; reminders unchanged.
+6. Window start: Early Reminder **on** → strip from early offset before leave-by; Early **off** → strip from leave-by. End: departure + ~10 min grace or 90 min from start (whichever sooner).
+7. `CommuteStripSchedulerTest` JUnit for start/end math.
+
 ### 2. Configured journey (fixture)
 
 1. Open the quick-start URL above (`fixture=normal`).

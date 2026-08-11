@@ -278,7 +278,7 @@ public class CommuteScheduleTest {
   }
 
   @Test
-  public void repaintSnapshot_showsUpdatingWhenDeparturePassedWithoutFollowing() throws Exception {
+  public void repaintSnapshot_showsStaleFaceWhenDeparturePassedWithoutFollowing() throws Exception {
     long nowMs = System.currentTimeMillis();
     long departureMs = nowMs - 2L * 60_000L;
 
@@ -294,10 +294,32 @@ public class CommuteScheduleTest {
 
     JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
 
-    assertEquals("Updating…", repainted.optString("primary"));
-    assertEquals("", repainted.optString("trainClock"));
-    assertEquals("Fetching next train…", repainted.optString("secondary"));
+    assertEquals("10:47 am", repainted.optString("primary"));
+    assertEquals("", repainted.optString("secondary"));
+    assertEquals("Refreshing…", repainted.optString("updatedLine"));
+    assertTrue(repainted.optBoolean("staleWhileFetching"));
     assertTrue(repainted.optLong("updatingSinceMs", 0L) > 0L);
+  }
+
+  @Test
+  public void repaintSnapshot_showsBriefUpdatingWhenNoStaleClockYet() throws Exception {
+    long nowMs = System.currentTimeMillis();
+    long departureMs = nowMs - 2L * 60_000L;
+
+    JSONObject cached = new JSONObject();
+    cached.put("empty", false);
+    cached.put("journeyId", "j1");
+    cached.put("departureIso", PerthTime.formatIsoFromEpochMs(departureMs));
+    cached.put("leaveByIso", PerthTime.formatIsoFromEpochMs(departureMs - 11L * 60_000L));
+    cached.put("trainClock", "");
+    cached.put("departMode", false);
+    cached.put("refreshedAtMs", nowMs - 2L * 60_000L);
+
+    JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
+
+    assertEquals("Updating…", repainted.optString("primary"));
+    assertEquals("Fetching next train…", repainted.optString("secondary"));
+    assertFalse(repainted.optBoolean("staleWhileFetching"));
   }
 
   @Test
@@ -343,8 +365,10 @@ public class CommuteScheduleTest {
 
     JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
 
-    assertEquals("Updating…", repainted.optString("primary"));
-    assertEquals("Fetching next train…", repainted.optString("secondary"));
+    assertEquals("10:47 am", repainted.optString("primary"));
+    assertEquals("", repainted.optString("secondary"));
+    assertEquals("Refreshing…", repainted.optString("updatedLine"));
+    assertTrue(repainted.optBoolean("staleWhileFetching"));
     assertTrue(repainted.optBoolean("updatingRetried"));
     assertTrue(repainted.optBoolean("triggerFetchRetry"));
   }
@@ -508,7 +532,7 @@ public class CommuteScheduleTest {
   }
 
   @Test
-  public void repaintSnapshot_hidesUpdatedLineWhileFetching() throws Exception {
+  public void repaintSnapshot_showsRefreshingLineWhileStaleFetching() throws Exception {
     long nowMs = System.currentTimeMillis();
     long departureMs = nowMs - 2L * 60_000L;
 
@@ -524,9 +548,10 @@ public class CommuteScheduleTest {
 
     JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
 
-    assertEquals("Updating…", repainted.optString("primary"));
-    assertEquals("Fetching next train…", repainted.optString("secondary"));
-    assertEquals("", repainted.optString("updatedLine"));
+    assertEquals("10:47 am", repainted.optString("primary"));
+    assertEquals("", repainted.optString("secondary"));
+    assertEquals("Refreshing…", repainted.optString("updatedLine"));
+    assertTrue(repainted.optBoolean("staleWhileFetching"));
   }
 
   @Test

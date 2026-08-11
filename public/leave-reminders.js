@@ -48,6 +48,7 @@ async function loadReminderSettings() {
         pauseUntil: null,
         earlyHeadsUp: false,
         earlyOffsetMinutes: DEFAULT_GET_READY_MINUTES,
+        commuteStripEnabled: false,
       }
     );
   }
@@ -65,6 +66,7 @@ async function loadReminderSettings() {
         pauseUntil: null,
         earlyHeadsUp: false,
         earlyOffsetMinutes: DEFAULT_GET_READY_MINUTES,
+        commuteStripEnabled: false,
       }
     );
   }
@@ -243,6 +245,14 @@ function setNudgeOffsetChips(minutes) {
     chip.classList.toggle("remind-day-chip--active", active);
     chip.setAttribute("aria-pressed", active ? "true" : "false");
   });
+}
+
+function updateCommuteStripUi(settings) {
+  const stripInput = document.getElementById("leave-reminders-commute-strip");
+  if (!stripInput) {
+    return;
+  }
+  stripInput.checked = Boolean(settings?.commuteStripEnabled);
 }
 
 function updateNudgeEarlyUi(settings) {
@@ -581,6 +591,7 @@ async function updateRemindersDialogUi(settings, schedule) {
   if (armedLead) {
     armedLead.hidden = !remindersLive;
   }
+  updateCommuteStripUi(settings);
   updateNudgeEarlyUi(settings);
   updatePauseUi(settings);
   if (sharedOptions) {
@@ -751,6 +762,7 @@ async function saveRemindersDialog() {
 
 function initLeaveReminderUi() {
   const earlyInput = document.getElementById("leave-reminders-early");
+  const stripInput = document.getElementById("leave-reminders-commute-strip");
   const remindersDialog = document.getElementById("reminders-dialog");
 
   document.getElementById("menu-reminders-btn")?.addEventListener("click", () => {
@@ -771,6 +783,12 @@ function initLeaveReminderUi() {
       patch.earlyOffsetMinutes = readSelectedNudgeOffset();
     }
     const settings = await saveReminderSettings(patch);
+    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+    await updateRemindersDialogUi(settings, schedule);
+  });
+
+  stripInput?.addEventListener("change", async () => {
+    const settings = await saveReminderSettings({ commuteStripEnabled: stripInput.checked });
     const schedule = settings?.enabled ? await loadReminderSchedule() : null;
     await updateRemindersDialogUi(settings, schedule);
   });

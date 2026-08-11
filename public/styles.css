@@ -3367,15 +3367,3 @@ dialog.app-native-dialog[open] {
 .header {
   display: contents;
 }
-
-.train-action,
-.skip-train-btn,
-.earlier-train-btn,
-.commute-mode,
-.details,
-.detail-card,
-.leg-toggle,
-.journey-toggle,
-.settings-leg {
-  /* retained for unused markup/JS paths */
-}

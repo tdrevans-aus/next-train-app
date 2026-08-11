@@ -12,6 +12,7 @@ public final class LeaveReminderSettingsStore {
   private static final String KEY_FIRED_PREFIX = "fired:";
   private static final String KEY_DAY_LEAVE_PREFIX = "day_leave:";
   private static final String KEY_DAY_GET_READY_PREFIX = "day_get_ready:";
+  private static final String KEY_STRIP_DISMISSED_PREFIX = "strip_dismissed:";
 
   private LeaveReminderSettingsStore() {}
 
@@ -44,6 +45,7 @@ public final class LeaveReminderSettingsStore {
       settings.put("remindAtLeaveBy", true);
       settings.put("earlyHeadsUp", false);
       settings.put("earlyOffsetMinutes", 5);
+      settings.put("commuteStripEnabled", false);
     } catch (Exception ignored) {
       // Unreachable.
     }
@@ -155,6 +157,24 @@ public final class LeaveReminderSettingsStore {
       .edit()
       .putBoolean(KEY_DAY_GET_READY_PREFIX + journeyId + ":" + localDate, true)
       .apply();
+  }
+
+  public static boolean isCommuteStripEnabled(Context context) {
+    return readSettingsResolved(context).optBoolean("commuteStripEnabled", false);
+  }
+
+  public static boolean hasStripDismissedForDay(Context context, String journeyId, String localDate) {
+    if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
+      return false;
+    }
+    return prefs(context).getBoolean(KEY_STRIP_DISMISSED_PREFIX + journeyId + ":" + localDate, false);
+  }
+
+  public static void markStripDismissedForDay(Context context, String journeyId, String localDate) {
+    if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
+      return;
+    }
+    prefs(context).edit().putBoolean(KEY_STRIP_DISMISSED_PREFIX + journeyId + ":" + localDate, true).apply();
   }
 
   public static void clearPendingForDeparture(Context context, String departureKey) {

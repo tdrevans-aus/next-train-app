@@ -65,6 +65,9 @@ public class LeaveReminderPlugin extends Plugin {
       if (input.has("earlyOffsetMinutes")) {
         current.put("earlyOffsetMinutes", input.getInt("earlyOffsetMinutes"));
       }
+      if (input.has("commuteStripEnabled")) {
+        current.put("commuteStripEnabled", input.getBool("commuteStripEnabled"));
+      }
       LeaveReminderSettingsStore.saveSettings(getContext(), current);
       CommuteRefreshService.refreshAll(getContext());
       call.resolve(settingsToJs(current));
@@ -224,6 +227,7 @@ public class LeaveReminderPlugin extends Plugin {
     result.put("remindAtLeaveBy", settings.optBoolean("remindAtLeaveBy", true));
     result.put("earlyHeadsUp", settings.optBoolean("earlyHeadsUp", false));
     result.put("earlyOffsetMinutes", settings.optInt("earlyOffsetMinutes", 5));
+    result.put("commuteStripEnabled", settings.optBoolean("commuteStripEnabled", false));
     result.put("permissionGranted", !needsNotificationPermission());
     return result;
   }

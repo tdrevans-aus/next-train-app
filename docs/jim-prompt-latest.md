@@ -37,13 +37,13 @@
 
 ## Task — next (stand by + optional)
 
+0. **P0 Console unblock (do first if Tim sends this brief):** `docs/jim-brief-remove-commute-fgs.md` — delete dead Heading-to-station FGS / `FOREGROUND_SERVICE_DATA_SYNC`. Other dead artefacts are listed in `docs/dead-code-inventory.md` (**D-02+**) for closed-testing **v2** — do not expand scope into that batch on this AAB.
 1. **Stand by** for Tim device fails on TESTING.md **22** (widget) and **17–19** (reminders). Fix only what Tim reports red.
 2. **Optional:** full web `qa/` regression after security batch; fix any new FAIL before Tim’s closed AAB.
 3. When Tim clears or parks LB-02/03, P2 is unblocked:
 
 ### P2 — Backup glance
-docs/jim-brief-commute-strip-notification.md
+`docs/jim-brief-commute-strip-notification.md` — **ready** (non-FGS ongoing notif; Tim prioritising). Do **not** resurrect Heading FGS / `CommuteNotificationService`.
 
 ### P2
-docs/jim-brief-station-picker-list-first.md
-```
+docs/jim-brief-station-picker-list-first.md```

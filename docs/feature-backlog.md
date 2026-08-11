@@ -37,6 +37,14 @@
 
 ---
 
+## Release / Play ship
+
+| ID | Idea | Notes | Status |
+|----|------|-------|--------|
+| **FB-09** | **R8 + Play deobfuscation mapping (release hygiene)** | **For:** Simon (process) + Jim (Gradle/ProGuard when enabled). Play warns on AAB upload: no deobfuscation file. Today `minifyEnabled false` — safe to ignore for closed test. **Before public launch or if we enable R8:** (1) decide minify on/off; (2) if on — Capacitor/AdMob/IAP keep rules + device smoke; (3) each `versionCode` upload `android/app/build/outputs/mapping/release/mapping.txt` in Play → App bundle explorer → Downloads; (4) archive mapping with release notes (decode old crashes). Add to Tim AAB checklist / launch-program when promoted. | Backlog — **Simon to track** |
+
+---
+
 ## Also parked elsewhere (pointers)
 
 | Topic | Where |
@@ -45,7 +53,7 @@
 | Widget later (Live Activity, etc.) | `docs/widget-homescreen.md` §13 |
 | Widget preferred-or-later live (FB-06) | `docs/feature-backlog.md` |
 | Direction line groups (one-off merges) | `docs/jim-brief-direction-line-groups.md` |
-| City #2 research links | `docs/city-2-bookmarks.md` |
+| R8 / mapping file on Play upload | `docs/feature-backlog.md` **FB-09** · `docs/aab-signing-closed-testing.md` |
 
 ---
 

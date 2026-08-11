@@ -12,7 +12,9 @@
     "build:train-times": "esbuild public/train-times-client.mjs --bundle --format=iife --global-name=NextTrainTimes --outfile=public/train-times-bundle.js --platform=browser",
     "build:geo": "esbuild public/geo-native.mjs --bundle --format=iife --global-name=NextTrainGeo --outfile=public/geo-bundle.js --platform=browser --external:@capacitor/core",
     "cap:sync": "npm run build:ads && npm run build:ad-free && npm run build:train-times && npm run build:geo && npx cap sync android",
+    "cap:sync:ios": "npm run build:ads && npm run build:ad-free && npm run build:train-times && npm run build:geo && npx cap sync ios",
     "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
+    "cap:open:ios": "npx cap open ios",
     "postinstall": "patch-package"
   },
   "dependencies": {

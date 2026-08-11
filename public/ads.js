@@ -1,5 +1,3 @@
-const ADS_LOADED_KEY = "nextTrainAdsLoaded";
-
 function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
 }
@@ -67,7 +65,6 @@ function renderAdUnit(container, config) {
 
   try {
     (window.adsbygoogle = window.adsbygoogle || []).push({});
-    localStorage.setItem(ADS_LOADED_KEY, "1");
   } catch (error) {
     console.warn("AdSense failed to load", error);
   }
@@ -118,7 +115,6 @@ async function showNativeBanner(config) {
   }
 
   await window.NextTrainAds.showNativeBanner(config);
-  localStorage.setItem(ADS_LOADED_KEY, "1");
   syncAdRemoveLink();
 }
 

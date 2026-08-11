@@ -6451,11 +6451,7 @@ function clearAllAppData() {
   const localKeysToRemove = [];
   for (let index = 0; index < localStorage.length; index += 1) {
     const key = localStorage.key(index);
-    if (
-      key?.startsWith("nextTrain") &&
-      key !== "nextTrainAdsLoaded" &&
-      key !== "nextTrainAdFreeCache"
-    ) {
+    if (key?.startsWith("nextTrain") && key !== "nextTrainAdFreeCache") {
       localKeysToRemove.push(key);
     }
   }

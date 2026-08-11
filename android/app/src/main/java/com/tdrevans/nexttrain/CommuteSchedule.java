@@ -8,6 +8,7 @@ import org.json.JSONObject;
 public final class CommuteSchedule {
 
   public static final long STALE_THRESHOLD_MS = 120L * 60L * 1000L;
+  public static final long STALE_FETCH_VISIBLE_MS = 45L * 1000L;
   public static final long UPDATING_TIMEOUT_MS = 90L * 1000L;
   public static final long OPPORTUNISTIC_REFRESH_AGE_MS = 12L * 60L * 1000L;
   public static final long OPPORTUNISTIC_REFRESH_DEBOUNCE_MS = 5L * 60L * 1000L;
@@ -651,17 +652,25 @@ public final class CommuteSchedule {
   private static JSONObject applyUpdatingState(JSONObject cached) throws Exception {
     long now = System.currentTimeMillis();
     long updatingSince = cached.optLong("updatingSinceMs", 0L);
-    long refreshedAtMs = cached.optLong("refreshedAtMs", 0L);
     if (updatingSince <= 0L) {
-      if (refreshedAtMs > 0L && now - refreshedAtMs >= UPDATING_TIMEOUT_MS) {
-        return finishUpdatingEpisode(cached, now);
-      }
       updatingSince = now;
-    } else if (now - updatingSince >= UPDATING_TIMEOUT_MS) {
+    }
+
+    long elapsed = now - updatingSince;
+    if (elapsed >= UPDATING_TIMEOUT_MS) {
       return finishUpdatingEpisode(cached, now);
     }
 
+    if (
+      cached.optBoolean("staleWhileFetching", false) ||
+      hasUsefulStaleClock(cached) ||
+      elapsed >= STALE_FETCH_VISIBLE_MS
+    ) {
+      return applyStaleWhileFetching(cached, updatingSince);
+    }
+
     JSONObject snapshot = new JSONObject(cached.toString());
+    snapshot.put("staleWhileFetching", false);
     snapshot.put("label", "NEXT TRAIN");
     snapshot.put("primary", "Updating…");
     snapshot.put("trainClock", "");
@@ -674,20 +683,48 @@ public final class CommuteSchedule {
     return snapshot;
   }
 
+  private static JSONObject applyStaleWhileFetching(JSONObject cached, long updatingSince)
+    throws Exception {
+    JSONObject snapshot = new JSONObject(cached.toString());
+    String trainClock = cached.optString("trainClock", "");
+    String primary = degradedPrimary(cached);
+
+    snapshot.put("staleWhileFetching", true);
+    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("primary", primary);
+    snapshot.put(
+      "trainClock",
+      !trainClock.isEmpty() && primary.equals(trainClock) ? "" : trainClock
+    );
+    snapshot.put("secondary", "");
+    snapshot.put("urgent", false);
+    snapshot.put("late", false);
+    snapshot.put("statusCrumb", "");
+    snapshot.put("stale", true);
+    snapshot.put("updatingSinceMs", updatingSince);
+    snapshot.put("updatedLine", "Refreshing…");
+    return snapshot;
+  }
+
+  static boolean hasUsefulStaleClock(JSONObject cached) {
+    if (cached == null) {
+      return false;
+    }
+
+    String trainClock = cached.optString("trainClock", "");
+    if (trainClock.isEmpty()) {
+      return false;
+    }
+
+    String departureIso = cached.optString("departureIso", "");
+    return !departureIso.isEmpty() && hasDepartureMinutePassed(departureIso);
+  }
+
   private static JSONObject finishUpdatingEpisode(JSONObject cached, long now) throws Exception {
     if (!cached.optBoolean("updatingRetried", false)) {
-      JSONObject snapshot = new JSONObject(cached.toString());
+      JSONObject snapshot = applyStaleWhileFetching(cached, now);
       snapshot.put("updatingRetried", true);
-      snapshot.put("updatingSinceMs", now);
       snapshot.put("triggerFetchRetry", true);
-      snapshot.put("label", "NEXT TRAIN");
-      snapshot.put("primary", "Updating…");
-      snapshot.put("trainClock", "");
-      snapshot.put("secondary", "Fetching next train…");
-      snapshot.put("urgent", false);
-      snapshot.put("late", false);
-      snapshot.put("statusCrumb", "");
-      snapshot.put("updatedLine", "");
       return snapshot;
     }
     return applyStaleRefreshState(cached);
@@ -781,6 +818,8 @@ public final class CommuteSchedule {
       stale ? "Times may be out of date" : PerthTime.formatUpdatedAgo(refreshedAtMs)
     );
     snapshot.put("updatingSinceMs", 0L);
+    snapshot.put("updatingRetried", false);
+    snapshot.put("staleWhileFetching", false);
     return snapshot;
   }
 
@@ -815,10 +854,13 @@ public final class CommuteSchedule {
     }
 
     if (needsNetworkRefresh(snapshot)) {
-      // Keep ticking while Fetching so the 90s → retry → degraded path can finish
-      // even if the exact timeout falls between minute alarms.
+      // Keep ticking during handoff fetch (brief Updating or staleWhileFetching).
       String primary = snapshot.optString("primary", "");
-      if ("Updating…".equals(primary) || snapshot.optLong("updatingSinceMs", 0L) > 0L) {
+      if (
+        "Updating…".equals(primary) ||
+        snapshot.optBoolean("staleWhileFetching", false) ||
+        snapshot.optLong("updatingSinceMs", 0L) > 0L
+      ) {
         return true;
       }
       return false;

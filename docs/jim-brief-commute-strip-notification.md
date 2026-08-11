@@ -1,20 +1,22 @@
-# Jim brief: Backup glance — ongoing preferred-train commute strip
+# Jim brief: Backup glance — preferred-train commute strip (non-FGS)
 
 **For:** Jim (implement)  
 **From:** Simon (design) / Tim (product)  
-**Status:** Ready to code — **P2 backup** (after widget Near me live-cache; widget stays primary)  
-**Related:** `CommuteNotificationService` / `CommuteModePlugin` / `public/commute-mode.js`; leave reminders v2; `docs/stickiness-ideas.md` #4  
-**Out of scope:** All-day Near me ongoing notif; PiP / draw-over-apps bubbles; iOS Live Activities (separate later); replacing the homescreen widget
+**Date:** 11 Aug 2026  
+**Status:** Ready to code — Tim prioritising now  
+**Related:** leave reminders v2 · widget · `docs/stickiness-ideas.md` #4 · dead Heading FGS already removed (`docs/jim-brief-remove-commute-fgs.md`)  
+**Out of scope:** Foreground service / `FOREGROUND_SERVICE*` / `DATA_SYNC`; all-day Near me notif; PiP / overlays; iOS Live Activities; replacing the homescreen widget; resurrecting `CommuteNotificationService`
 
 ---
 
 ## 1. Why
 
-Homescreen widget is still the bet — but Tim is **hopeful, not confident** we’ll nail OEM widget reliability. Need a **plan B glance** that works without living in the app.
+Homescreen widget is still the bet — Tim wants a **plan B glance** for walk-out that works with the app closed.
 
-Phone timers show a countdown near the status bar via an **ongoing notification** (+ foreground service), not a custom status-bar API. Videos float via PiP/overlays — **rejected** for Next Train (policy + spam feel).
+Leave reminder = one interrupt at notify-at.  
+**Commute strip** = persistent shade notification for the **preferred-train leave window only** — countdown you can keep glancing at while leaving.
 
-**Backup track:** lean harder on the existing **Heading to station** ongoing notification — but only for the **preferred-train / leave window**, never all day.
+**Architecture lock (11 Aug 2026):** build this **without** a foreground service. Dead Heading-to-station FGS is gone for Play Console; do **not** bring FGS back for the strip. Use alarms + an ongoing notification + system chronometer (same family as leave reminders).
 
 ---
 
@@ -22,89 +24,110 @@ Phone timers show a countdown near the status bar via an **ongoing notification*
 
 | Rule | Lock |
 |------|------|
-| **What** | Ongoing (persistent) notification with live-feeling countdown for the **preferred train** commute strip |
-| **When** | Only around that journey’s leave window on **remind days** — same spirit as leave reminders, not Near me |
-| **When not** | Outside Active hours; no preferred train; user opted out; all-day “next train anywhere” |
-| **vs widget** | Widget remains primary stickiness; this is **backup / complement** for walk-out |
-| **vs leave reminder** | Reminder = one interrupt at notify-at; strip = **persistent** from ~leave window until train departed / user dismisses |
-| **PiP / overlay** | **Do not build** |
+| **What** | Ongoing (persistent, non-dismiss-by-swipe if possible) notification with leave/train countdown for the **preferred train** |
+| **How** | **No FGS** — `AlarmManager` (or existing leave-reminder scheduler hooks) posts / updates / cancels the notif; chronometer paints the tick |
+| **When** | Remind day + leave window only — same spirit as leave reminders, not Near me |
+| **When not** | Strip toggle off; outside window; no preferred train; notification permission denied; all-day “next train anywhere” |
+| **vs widget** | Widget stays primary; strip is backup / complement |
+| **vs leave reminder** | Independent controls. Reminder = one ping; strip = persistent companion. User can want reminders **without** strip |
+| **PiP / overlay / FGS** | **Do not build** |
 
 ---
 
-## 3. Behaviour
+## 3. Real-life behaviour
 
-### Start (auto, opt-in)
+**Morning (remind day):** User has Edgewater → Perth, preferred train, Reminder path on, and **Commute strip** on (default **off**). Around Early Reminder time (or leave-by − N if Early off), an ongoing notification appears **without opening the app**.
 
-When **all** are true:
+They glance while getting ready:
 
-1. User enabled **Commute strip** (name TBD in UI — see §5; default **off** until coach/settings).  
-2. Journey has **Reminder** path usable: remind days + preferred train (same targeting as leave reminders v2 — first train at/after preferred time).  
-3. Device is on a **remind day** and within a start window: lean **from Early Reminder time** (or leave-by − N if Early off) **until** departure minute passed (+ small grace).  
-4. That journey is the one that would fire leave reminders (not every journey at once — **one strip**).
+- Title: **Leave in 8 min** → **Leave now** (prefer leave-by when `useLeaveBefore`; else departure countdown)
+- Body: **Edgewater → Perth** · train clock · optional status if already known
+- System chronometer / countdown where API fits (Samsung may show a timer-like chip — OEM-dependent; shade is the guarantee)
 
-Reuse `LeaveReminderScheduler` / preferred-train resolution where possible — don’t invent a second “which train” brain.
+Leave reminder can still fire once at notify-at. Strip **stays** until end conditions.
 
-### Content
+**End** when any of:
 
-- Title: e.g. **Leave in 8 min** / **Leave now** / **Next train 12 min** (pick one primary — prefer **leave-by** when `useLeaveBefore`, else departure).  
-- Body: **Edgewater → Perth** · train clock · optional status.  
-- Use notification **chronometer / countdown** where it helps Samsung show a timer-like chip (`setUsesChronometer` / count-down when API fits). Update on **wall-clock minutes** (same honesty as widget B0).  
-- Actions: **Open app** · **Dismiss** (stops service).
+- Preferred departure minute + grace (~5–10 min)
+- User taps **Dismiss** (cancels strip only — **does not** disable leave reminders or the strip toggle)
+- Max window ~**90 min** from start
+- Journey no longer eligible / strip toggled off (reschedule clears)
 
-### End
-
-Stop when any of:
-
-- Preferred train departure minute passed (or user caught a later train — v1: stop at scheduled departure + grace ~5–10 min)  
-- User dismisses  
-- Max runtime (keep/adjust today’s **90 min** cap)  
-- Journey no longer eligible  
-
-### Manual start
-
-Keep today’s **commute mode** manual start if it exists in UI — should use the **same** notification service/copy so we don’t have two competing strips.
-
-### Data
-
-- Prefer shared commute snapshot / same API client as widget + reminders.  
-- Poll less aggressively than today’s 30s if local paint from absolute ISO is enough (minute boundary + occasional network). Don’t drain battery chasing Near me GPS.
+**One strip at a time** — the journey that would get leave reminders that day, not every journey.
 
 ---
 
-## 4. Implementation sketch
+## 4. Trigger (exact)
 
-- Extend `CommuteNotificationService` rather than a third notifier.  
-- Native scheduler (AlarmManager / WorkManager) or hook from existing leave-reminder alarm: **start strip** at Early/leave window, not only from WebView button.  
-- Mirror opt-in in settings JSON (Capacitor sync) so native can start when app is dead.  
-- Notification permission already required for reminders — reuse; if denied, don’t start strip.  
-- Channel: existing `commute_mode` or rename description to “Commute countdown while you leave” (low annoyance, ongoing).  
-- Tests: window gate (remind day + preferred train); stop after departure; opt-out never starts.  
-- `TESTING.md`: enable strip → wait for window (or debug trigger) → see ongoing notif + shade/status chip on Samsung → dismiss.
+**Auto only** — no manual “Heading to station” start UI.
 
----
+Start when **all** are true:
 
-## 5. Settings / copy (lean)
+1. **Commute strip** enabled (settings; default **off**)
+2. Journey has Reminder path usable: remind days + preferred train (same targeting as leave reminders v2 — first train at/after preferred time)
+3. Today is a **remind day**
+4. Wall clock enters: **Early Reminder time** → departure + grace (if Early off: from leave-by − same Early offset default / leave-by itself — match reminder lead spirit; document chosen edge in TESTING)
+5. `POST_NOTIFICATIONS` granted (if denied: never start strip)
 
-**Menu → Reminder settings** (or Journey reminder block):
+Reuse `LeaveReminderScheduler` / preferred-train resolution — **don’t invent a second “which train” brain.** Prefer: when reminders are scheduled, also schedule **strip show** + **strip cancel** alarms (or one show + chronometer end + cancel alarm).
 
-- Toggle: **Show commute countdown in notifications** (subtitle: *While you’re leaving for your preferred train — not all day.*)  
-- Default: **off** until user turns on (or a later soft coach — **no coach in this brief** unless Tim asks).
-
-Don’t bury next to unrelated ads. Don’t imply it replaces the widget.
+Boot / time-change: same reschedule path as leave reminders.
 
 ---
 
-## 6. Acceptance
+## 5. Implementation (non-FGS)
 
-1. With strip **on**, on a remind morning near preferred train: ongoing notification shows leave/train countdown without opening the app.  
-2. Outside that window / strip **off**: no ongoing commute notif.  
-3. Dismiss stops it; doesn’t disable leave reminders unless we explicitly share a control (v1: independent).  
-4. No PiP / overlay.  
-5. Widget Near me live-cache work is **not** blocked by this — ship strip after or in parallel only if Tim prioritises.  
-6. APK + TESTING notes for Tim’s Samsung (status-bar chip appearance is OEM-dependent — document “shade always; chip if system shows it”).
+### Do
+
+| Piece | Approach |
+| --- | --- |
+| Show | `NotificationManager.notify` from `BroadcastReceiver` / existing alarm receiver — **not** `startForeground` |
+| Feel live | `setOngoing(true)` + `setUsesChronometer` / count-down to leave-by or departure ISO when API fits |
+| Title honesty | On show (and rare refresh alarms if needed): wall-clock minutes, same honesty as widget B0 |
+| Hide | Cancel notification from dismiss action PendingIntent + scheduled end alarm + max-runtime alarm |
+| Opt-in storage | Mirror strip toggle into native-readable prefs (same pattern as reminder settings) so alarms work with WebView dead |
+| Channel | New or renamed low-annoyance channel e.g. “Commute countdown” — **not** a high-importance interrupt channel; don’t steal leave-reminder importance |
+| Data | Prefer absolute times already resolved for reminders / commute snapshot; **no** GPS; **no** 30s poll loop |
+
+### Do not
+
+- `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_DATA_SYNC`, `foregroundServiceType`
+- Restore `CommuteNotificationService` / `CommuteModePlugin` / `commute-mode.js`
+- All-day Near me ongoing notif
+- PiP / draw-over-apps
+- Tie “Dismiss” to turning off leave reminders
+
+### Optional later (out of this brief)
+
+If Tim’s Samsung feels “dead” without process-held updates, open a **separate** brief for FGS + Play declaration — don’t sneak it into this build.
 
 ---
 
-## 7. Summary for Jim
+## 6. Settings / copy
 
-> Plan B glance: **ongoing notification strip for preferred-train leave window only** (extend `CommuteNotificationService`; opt-in; no all-day Near me; no PiP). Widget stays primary. Brief: `docs/jim-brief-commute-strip-notification.md`.
+**Menu → Reminder settings** (near leave-reminder controls, not ads):
+
+- Toggle: **Show commute countdown in notifications**  
+- Subtitle: *While you’re leaving for your preferred train — not all day. Separate from leave reminders.*  
+- Default: **off**  
+- No coach in this brief unless Tim asks
+
+Dismiss on the notification ≠ toggle off (toggle stays on for tomorrow unless they change settings).
+
+---
+
+## 7. Acceptance
+
+1. Strip **on**, remind morning in window → ongoing notif with countdown **without** opening the app; **no** FGS in logcat / manifest for this feature.  
+2. Strip **off** or outside window → no commute strip notif (leave reminders still work if enabled).  
+3. User with reminders **on** + strip **off** → reminder fires; no strip.  
+4. **Dismiss** clears strip only; reminders and strip toggle unchanged.  
+5. No PiP / overlay / `FOREGROUND_SERVICE*`.  
+6. `TESTING.md`: enable strip → window or debug trigger → shade notif → chronometer if OEM shows → dismiss; confirm reminders still scheduled.  
+7. Grep ship tree: zero new FGS for strip.
+
+---
+
+## 8. Slack / Jim one-liner
+
+> Jim — `docs/jim-brief-commute-strip-notification.md`: preferred-train leave-window **ongoing notification**, opt-in, independent of reminders, **no FGS**. Alarm show/cancel + chronometer; reuse leave-reminder targeting. Don’t resurrect Heading service.

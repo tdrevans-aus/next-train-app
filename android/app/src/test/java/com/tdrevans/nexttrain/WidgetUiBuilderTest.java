@@ -115,6 +115,10 @@ public class WidgetUiBuilderTest {
       WidgetUiBuilder.resolveMediumUpdatedLine("Updated 3m ago", "Open", "Open app", true)
     );
     assertEquals(
+      "Refreshing…",
+      WidgetUiBuilder.resolveMediumUpdatedLine("Refreshing…", "10:47 am", "", true)
+    );
+    assertEquals(
       "Updated just now",
       WidgetUiBuilder.resolveMediumUpdatedLine("Updated just now", "14 min", "Leave in 4 min", false)
     );

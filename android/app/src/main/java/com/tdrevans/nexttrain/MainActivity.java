@@ -10,7 +10,6 @@ public class MainActivity extends BridgeActivity {
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    registerPlugin(CommuteModePlugin.class);
     registerPlugin(WidgetSyncPlugin.class);
     registerPlugin(LeaveReminderPlugin.class);
     super.onCreate(savedInstanceState);

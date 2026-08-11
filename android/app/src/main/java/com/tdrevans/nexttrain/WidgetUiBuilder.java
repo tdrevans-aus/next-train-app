@@ -650,6 +650,9 @@ public final class WidgetUiBuilder {
     if ("Updating…".equals(primary) || "Fetching next train…".equals(secondary)) {
       return "";
     }
+    if ("Refreshing…".equals(updated)) {
+      return updated;
+    }
     if (CommuteSchedule.DEGRADED_SECONDARY.equals(secondary) || stale) {
       return "Times may be out of date";
     }

@@ -40,6 +40,7 @@ public final class CommuteRefreshService {
         WidgetDebugLog.refreshDone(snapshot);
         result = CommuteSchedule.load(context, true);
         LeaveReminderScheduler.reschedule(context, result);
+        CommuteStripScheduler.reschedule(context, result);
         return;
       }
 
@@ -55,6 +56,7 @@ public final class CommuteRefreshService {
     WidgetDebugLog.refreshDone(snapshot);
     if (result != null) {
       LeaveReminderScheduler.reschedule(context, result);
+      CommuteStripScheduler.reschedule(context, result);
     }
   }
 
