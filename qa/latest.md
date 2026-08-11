@@ -111,6 +111,8 @@ Jim fix this docs/jim-brief-delete-last-journey.md — regression FAIL: finishAf
 | Script | Result | Notes |
 |--------|--------|-------|
 | `smoke-browser.mjs` | **FAIL** | Timeout — looks for journey list `out` (legacy name; journeys now template names) |
+
+**Fixed (11 Aug ~14:30 AWST):** Test bug — single `#journeys-btn` tap when app is on Near me (outside active hours). Patched `openJourneysDialog()` + `data-journey-id="j-out"`; `closeJourneysDialog()` now clears backdrop. **12 PASS · 0 FAIL** · `smoke-11-13.mjs` **2 PASS**.
 | `smoke-11-13.mjs` | **FAIL** | Same class of journey-list naming / flow |
 | `button-visibility.mjs` | **PASS** | |
 | `stickiness-coaches-logic.mjs` | **PASS** | |

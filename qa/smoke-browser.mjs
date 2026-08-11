@@ -22,9 +22,19 @@ async function clickJourneysDone(page) {
 
 async function closeJourneysDialog(page) {
   await page.evaluate(() => {
+    if (window.nextTrainApp?.closeJourneysDialog) {
+      window.nextTrainApp.closeJourneysDialog();
+      return;
+    }
+    const backdrop = document.getElementById("journeys-dialog-backdrop");
+    if (backdrop) backdrop.hidden = true;
     const d = document.getElementById("journeys-dialog");
-    if (d?.open) d.close();
-    d?.removeAttribute("open");
+    if (d) {
+      if (d.open) d.close();
+      d.removeAttribute("open");
+      d.hidden = true;
+    }
+    document.body.classList.remove("app-dialog-open");
   });
   await page.waitForTimeout(300);
 }
@@ -32,6 +42,25 @@ async function closeJourneysDialog(page) {
 async function clickMenuDone(page) {
   await page.evaluate(() => document.getElementById("menu-done-btn")?.click());
   await page.waitForTimeout(500);
+}
+
+async function openJourneysDialog(page) {
+  await closeJourneysDialog(page);
+  const inJourneyMode = await page.locator("#journeys-btn").getAttribute("aria-pressed");
+  if (inJourneyMode === "true") {
+    await page.evaluate(() => window.nextTrainApp?.openJourneys?.());
+  } else {
+    await page.locator("#journeys-btn").click();
+    await page.waitForTimeout(500);
+    await page.locator("#journeys-btn").click();
+  }
+  await page.waitForTimeout(800);
+}
+
+async function openJourneyDetail(page, journeyId) {
+  await openJourneysDialog(page);
+  await page.locator(`.journey-list-item[data-journey-id="${journeyId}"] .journey-list-open-btn`).click();
+  await page.waitForTimeout(1500);
 }
 
 async function swipeHero(page, direction, { diagonal = false } = {}) {
@@ -281,10 +310,7 @@ async function run() {
   await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.waitForTimeout(1000);
   page.on("dialog", (d) => d.accept());
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(1500);
-  await page.locator(".journey-list-open-btn").filter({ hasText: "out" }).click();
-  await page.waitForTimeout(1500);
+  await openJourneyDetail(page, "j-out");
   await page.evaluate(() => {
     document.getElementById("detail-default-from").value = "06:00";
     document.getElementById("detail-default-until").value = "09:00";
@@ -320,10 +346,7 @@ async function run() {
   // 11 — Save vs Done
   await page.keyboard.press("Escape");
   await page.waitForTimeout(300);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(1500);
-  await page.locator(".journey-list-open-btn").first().click();
-  await page.waitForTimeout(1500);
+  await openJourneyDetail(page, "j-in");
   await page.locator("#detail-leave-before-input").fill("15");
   await page.locator("#settings-back").click();
   await page.waitForTimeout(300);
@@ -334,10 +357,7 @@ async function run() {
   const doneOk = lb === 10;
   await page.keyboard.press("Escape");
   await page.waitForTimeout(300);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(1500);
-  await page.locator(".journey-list-open-btn").first().click();
-  await page.waitForTimeout(1500);
+  await openJourneyDetail(page, "j-in");
   await page.locator("#detail-leave-before-input").fill("15");
   await page.locator("#detail-done-btn").click();
   await page.waitForTimeout(500);
@@ -354,10 +374,7 @@ async function run() {
   // 13 — Journey templates
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(1500);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(300);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(800);
+  await openJourneysDialog(page);
   const templatesVisible = await page.locator("#journey-templates").isVisible();
   await page.locator('[data-template="morning"]').click();
   await page.waitForTimeout(3000);

@@ -52,11 +52,12 @@ You can **layout captions + feature graphic** now from current UI. **Final scree
 
 ## Feature graphic (Play — 1024 × 500)
 
-- **Left / centre:** wordmark **Next Train** + locked E3 Band icon tile  
-- **Line:** **Know when to walk out.**  
+- **Left / centre:** wordmark **Next Train** (no icon lockup)  
+- **Line:** **Know when to walk out.** (single line, no wrap)  
 - **Right:** phone fragment mirroring the **real** Journey view (see accuracy rules below)  
 - **Background:** track band echoing the app icon, low opacity  
 - **Dropped 11 Aug (Tim):** the `Perth · Unofficial` badge line  
+- **Locked:** V1 Rails → `store-assets/exports/play-feature-graphic-1024x500.png` (source `feature-graphic.html`)  
 - **Export:** `node store-assets/export-feature-graphics.mjs`; ~48px safe margin for key type  
 - **No** PTA marks
 
@@ -66,20 +67,12 @@ The mock may simplify, but must not imply behaviour the app doesn't have.
 
 | Element | Real app | Use |
 | --- | --- | --- |
-| Route line | `formatJourneyRoute()` → `Station, towards Direction` | `Joondalup, towards Perth` — **not** `Joondalup → Perth` |
+| Route line | `formatJourneyRoute()` → `Station, towards Direction` | `Joondalup, towards Perth` — **not** `Joondalup → Perth` (centered) |
 | Hero | label `Next Train`, big minutes, sub = departure clock time | `NEXT TRAIN` · `24 mins` · `7:54` |
 | Leave card | label `Leave in`, big minutes, sub = leave-by clock time | `LEAVE IN` · `12 mins` · `7:42` |
 | Detail strip | Platform · Status | `2` · `On time` |
 
 Station choice: use **Joondalup** (recognisable) over Edgewater.
-
-### Options (11 Aug 2026 — with Tim)
-
-| # | File | Idea |
-| - | ---- | ---- |
-| V1 | `play-feature-graphic-v1-rails.png` | Mist/light, icon lockup, feature pills, tilted phone |
-| V2 | `play-feature-graphic-v2-night.png` | Deep teal night; light phone glows — strongest shelf contrast |
-| V3 | `play-feature-graphic-v3-bignumber.png` | Editorial `LEAVE IN 12 mins` as hero type |
 
 ---
 

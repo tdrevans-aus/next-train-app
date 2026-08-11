@@ -23,7 +23,7 @@ Visual language = calm teal / mist from the app — **not** Transperth livery, *
 | ----- | ---------------- | ------------------ | ----- | ---------------- |
 | **App icon** | Play **512×512** PNG ≤1 MB (+ adaptive / Apple later) | From `public/icon.svg` | Simon | **Ready** — E3 Band locked · `store-assets/exports/play-icon-512.png` |
 | **Screenshots (phone)** | Portrait; ≥1080 wide; **4–8** frames | Tim capture **8–15 Sep** on prod-like build; Simon captions | Tim → Simon | **Kit ready** — `store-assets/captions.md`; pixels wait for Tim |
-| **Feature graphic (Play)** | **1024 × 500** PNG | `store-assets/feature-graphic-v{1,2,3}.html` → `node store-assets/export-feature-graphics.mjs` | Simon | **3 options with Tim** — `play-feature-graphic-v1-rails` / `-v2-night` / `-v3-bignumber`. Winner exports to `play-feature-graphic-1024x500.png` |
+| **Feature graphic (Play)** | **1024 × 500** PNG | `store-assets/feature-graphic.html` → export | Simon | **Locked** — `store-assets/exports/play-feature-graphic-1024x500.png` |
 | **Store copy** | Title, subtitle, short/full description, keywords | `docs/store-listing.md` | Ruth | **Yes** |
 | **Privacy / About URLs** | Live HTTPS | Production domain | Tim | Confirm |
 | **iOS screenshots** | Same story when iOS exists | Same pipeline | Tim + Simon | Wait |

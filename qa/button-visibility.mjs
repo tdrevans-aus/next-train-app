@@ -35,11 +35,16 @@ async function auditButtons(page, rootSelector, containerMode = "dialog", option
           bottom: window.innerHeight,
         };
       } else if (containerMode === "dialog") {
-        const dialog = root.closest("dialog[open]") ?? document.querySelector("dialog[open]");
-        if (!dialog) {
-          return { error: "no open dialog" };
+        const journeysSheet = root.closest("#journeys-dialog");
+        if (journeysSheet && !journeysSheet.hidden) {
+          containerRect = journeysSheet.getBoundingClientRect();
+        } else {
+          const dialog = root.closest("dialog[open]") ?? document.querySelector("dialog[open]");
+          if (!dialog) {
+            return { error: "no open dialog" };
+          }
+          containerRect = dialog.getBoundingClientRect();
         }
-        containerRect = dialog.getBoundingClientRect();
       } else {
         containerRect = root.getBoundingClientRect();
       }
@@ -93,11 +98,20 @@ async function auditButtons(page, rootSelector, containerMode = "dialog", option
 
 async function closeAllDialogs(page) {
   await page.evaluate(() => {
-    for (const id of ["journeys-dialog", "menu-dialog", "help-dialog"]) {
+    const journeys = document.getElementById("journeys-dialog");
+    if (journeys) {
+      journeys.hidden = true;
+    }
+    const journeysBackdrop = document.getElementById("journeys-dialog-backdrop");
+    if (journeysBackdrop) {
+      journeysBackdrop.hidden = true;
+    }
+    for (const id of ["menu-dialog", "help-dialog"]) {
       const d = document.getElementById(id);
       if (d?.open) d.close();
       d?.removeAttribute("open");
     }
+    document.body.classList.remove("app-dialog-open");
     const coach = document.getElementById("template-route-coach");
     if (coach) coach.hidden = true;
   });

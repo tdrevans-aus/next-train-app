@@ -1,9 +1,13 @@
 const LEAVE_REMINDER_SETTINGS_KEY = "nextTrainLeaveReminders";
 const PAUSE_DURATION_KEY = "nextTrainPauseDuration";
+const PAUSE_CUSTOM_DAYS_KEY = "nextTrainPauseCustomDays";
 const DEFAULT_GET_READY_MINUTES = 5;
 const NUDGE_OFFSET_OPTIONS = [5, 10, 15];
-const PAUSE_DURATION_OPTIONS = ["1day", "1week", "2weeks"];
+const PAUSE_DURATION_OPTIONS = ["1day", "1week", "2weeks", "custom"];
 const DEFAULT_PAUSE_DURATION = "1week";
+const MIN_CUSTOM_PAUSE_DAYS = 1;
+const MAX_CUSTOM_PAUSE_DAYS = 90;
+const DEFAULT_CUSTOM_PAUSE_DAYS = 3;
 
 let remindersSaveInFlight = false;
 
@@ -155,7 +159,7 @@ function pauseUntilPerthDaysFromNow(days) {
   return `${targetKey}T${parts.hour}:${parts.minute}:${parts.second}+08:00`;
 }
 
-function computePauseUntilIso(duration) {
+function computePauseUntilIso(duration, customDays = readCustomPauseDays()) {
   if (duration === "1day") {
     return pauseUntilEndOfPerthDay();
   }
@@ -164,6 +168,9 @@ function computePauseUntilIso(duration) {
   }
   if (duration === "2weeks") {
     return pauseUntilPerthDaysFromNow(14);
+  }
+  if (duration === "custom") {
+    return pauseUntilPerthDaysFromNow(clampCustomPauseDays(customDays));
   }
   return null;
 }
@@ -252,6 +259,31 @@ function updateNudgeEarlyUi(settings) {
   setNudgeOffsetChips(offset);
 }
 
+function clampCustomPauseDays(value) {
+  const days = Math.round(Number(value));
+  if (!Number.isFinite(days)) {
+    return DEFAULT_CUSTOM_PAUSE_DAYS;
+  }
+  return Math.min(MAX_CUSTOM_PAUSE_DAYS, Math.max(MIN_CUSTOM_PAUSE_DAYS, days));
+}
+
+function formatCustomPauseChipLabel(days) {
+  const n = clampCustomPauseDays(days);
+  return n === 1 ? "1 day" : `${n} days`;
+}
+
+function readCustomPauseDays() {
+  const raw = localStorage.getItem(PAUSE_CUSTOM_DAYS_KEY);
+  if (raw == null || raw === "") {
+    return DEFAULT_CUSTOM_PAUSE_DAYS;
+  }
+  return clampCustomPauseDays(raw);
+}
+
+function writeCustomPauseDays(days) {
+  localStorage.setItem(PAUSE_CUSTOM_DAYS_KEY, String(clampCustomPauseDays(days)));
+}
+
 function readLastPauseDuration() {
   const value = localStorage.getItem(PAUSE_DURATION_KEY);
   return PAUSE_DURATION_OPTIONS.includes(value) ? value : DEFAULT_PAUSE_DURATION;
@@ -265,8 +297,14 @@ function writeLastPauseDuration(duration) {
 
 function setPauseDurationChips(activeDuration) {
   const container = document.getElementById("leave-reminders-pause-chips");
+  const customChip = document.getElementById("leave-reminders-pause-custom-chip");
   if (!container) {
     return;
+  }
+
+  if (customChip) {
+    customChip.textContent =
+      activeDuration === "custom" ? formatCustomPauseChipLabel(readCustomPauseDays()) : "Custom";
   }
 
   container.querySelectorAll(".reminder-pause-chip").forEach((chip) => {
@@ -274,6 +312,17 @@ function setPauseDurationChips(activeDuration) {
     chip.classList.toggle("remind-day-chip--active", active);
     chip.setAttribute("aria-pressed", active ? "true" : "false");
   });
+}
+
+function syncPauseCustomField(show, days = readCustomPauseDays()) {
+  const customWrap = document.getElementById("leave-reminders-pause-custom");
+  const daysInput = document.getElementById("leave-reminders-pause-days");
+  if (!customWrap || !daysInput) {
+    return;
+  }
+
+  customWrap.hidden = !show;
+  daysInput.value = String(clampCustomPauseDays(days));
 }
 
 function updatePauseUi(settings) {
@@ -289,6 +338,7 @@ function updatePauseUi(settings) {
   pauseInput.checked = paused;
   pauseExpanded.hidden = !paused;
   setPauseDurationChips(duration);
+  syncPauseCustomField(paused && duration === "custom");
 
   if (paused) {
     const label = formatPauseUntilLabel(settings.pauseUntil, true);
@@ -546,13 +596,35 @@ async function healAfterJourneySave() {
   return settings;
 }
 
-async function activatePause(duration) {
+async function activatePause(duration, customDays = readCustomPauseDays()) {
   const resolved = PAUSE_DURATION_OPTIONS.includes(duration) ? duration : DEFAULT_PAUSE_DURATION;
+  if (resolved === "custom") {
+    writeCustomPauseDays(customDays);
+  }
   writeLastPauseDuration(resolved);
 
-  const pauseUntil = computePauseUntilIso(resolved);
+  const pauseUntil = computePauseUntilIso(resolved, customDays);
   const settings = await saveReminderSettings({ paused: true, pauseUntil });
   getLeaveRemindersPlugin()?.reschedule?.();
+  return settings;
+}
+
+async function applyCustomPauseFromInput({ focusInput = false } = {}) {
+  const daysInput = document.getElementById("leave-reminders-pause-days");
+  const days = clampCustomPauseDays(daysInput?.value || readCustomPauseDays());
+  if (daysInput) {
+    daysInput.value = String(days);
+  }
+
+  const settings = await activatePause("custom", days);
+  const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+  await updateRemindersDialogUi(settings, schedule);
+
+  if (focusInput) {
+    daysInput?.focus();
+    daysInput?.select();
+  }
+
   return settings;
 }
 
@@ -728,9 +800,28 @@ function initLeaveReminderUi() {
       return;
     }
 
-    const settings = await activatePause(chip.dataset.pause);
+    const duration = chip.dataset.pause;
+    if (duration === "custom") {
+      await applyCustomPauseFromInput({ focusInput: true });
+      return;
+    }
+
+    syncPauseCustomField(false);
+    const settings = await activatePause(duration);
     const schedule = settings?.enabled ? await loadReminderSchedule() : null;
     await updateRemindersDialogUi(settings, schedule);
+  });
+
+  document.getElementById("leave-reminders-pause-custom-apply")?.addEventListener("click", async () => {
+    await applyCustomPauseFromInput();
+  });
+
+  document.getElementById("leave-reminders-pause-days")?.addEventListener("keydown", async (event) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+    event.preventDefault();
+    await applyCustomPauseFromInput();
   });
 
   document.getElementById("leave-reminders-pause")?.addEventListener("change", async (event) => {

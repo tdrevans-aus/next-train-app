@@ -44,7 +44,7 @@ async function run() {
   const page = await browser.newPage();
   const preferredMinutes = perthMinutesFromNow(90);
   const preferredTrainTime = formatTimeField(preferredMinutes);
-  const preferredLabel = `Target ${formatClock(preferredMinutes)}`;
+  const preferredLabel = `Target Train ${formatClock(preferredMinutes)}`;
   const activeHours = activeHoursAroundNow();
 
   await page.goto(`${BASE}/?test=1&fixture=normal`);

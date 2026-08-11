@@ -159,6 +159,13 @@ async function run() {
   const nearbyPage = await nearbyContext.newPage();
   await nearbyPage.goto(`${BASE}/?reset=1&fixture=normal`);
   await nearbyPage.waitForTimeout(7500);
+  await nearbyPage.evaluate(() => {
+    localStorage.setItem("nextTrainOnboardingDone", "1");
+    const coach = document.getElementById("onboarding-coach");
+    if (coach) {
+      coach.hidden = true;
+    }
+  });
   await nearbyPage.evaluate(() => document.getElementById("nearby-dont-wait-btn")?.click());
   await nearbyPage.waitForFunction(
     () => document.getElementById("nearby-fallback")?.hidden === false,

@@ -4,7 +4,7 @@
 **Program:** [launch-program.md](launch-program.md) · Gantt canvas `store-launch-gantt`  
 **Rule:** Slip date before shipping red. Fix in priority order.
 
-**Last ranked:** 11 Aug 2026 (~11:40 — LB-01 code done)
+**Last ranked:** 11 Aug 2026 (~13:36)
 
 ---
 
@@ -12,58 +12,64 @@
 
 | ID | Item | Owner | Status | Evidence / action |
 | --- | --- | --- | --- | --- |
-| LB-01 | Security ship gate (XSS, AdMob prod gate, privacy copy, API harden, Android backup, IAP accept) | Jim | **DONE (code)** | S-01→S-06 landed 11 Aug. Tim still: Vercel deploy; verify release AAB gets prod ads |
-| LB-02 | Widget trust on device (stuck Updating / tap / post-departure stale) | Tim device (+ Jim if red) | **Needs device sign-off** | TESTING.md **22** on rebuild / closed AAB |
-| LB-03 | Leave reminders fire on real device | Tim device | **Needs device sign-off** | TESTING.md **17–19** |
-| LB-04 | Prod AdMob + IAP path | Tim | **Jim gate done; Tim console** | Create IAP product; confirm prod ad on **release** AAB |
-| LB-05 | Privacy HTTPS + contact email + accurate privacy/About | Tim | **Copy done; deploy** | Email in About/Privacy. Deploy Vercel → `https://next-train-app.vercel.app/privacy.html` in Play |
-| LB-06 | Signed AAB + Play closed track + Data safety | Tim | **Tim** | [aab-signing-closed-testing.md](aab-signing-closed-testing.md) · [play-data-safety-cheatsheet.md](play-data-safety-cheatsheet.md) |
+| LB-01 | Security ship gate (S-01→S-06) | Jim | **DONE** | Code landed 11 Aug |
+| LB-05 | Privacy HTTPS + contact + About | Tim / deploy | **DONE** | Live: [privacy](https://next-train-app.vercel.app/privacy.html) · [about](https://next-train-app.vercel.app/about.html) — email + AdMob/location copy match |
+| LB-04 | Prod AdMob + IAP path | Tim | **Console** | Create IAP `com.tdrevans.nexttrain.adfree` @ A$3.99; confirm prod ads on **release** AAB |
+| LB-06 | Signed AAB + closed track + Data safety | Tim | **In progress** | Finish Play Console leftovers + [aab-signing-closed-testing.md](aab-signing-closed-testing.md) |
+| LB-02 | Widget trust on device | Tim device | **Needs sign-off** | TESTING.md **22** |
+| LB-03 | Leave reminders on device | Tim device | **Needs sign-off** | TESTING.md **17–19** |
 
-## P1 — block public / Ruth-Dwayne sign-off confidence
+## P1 — block public (not closed testing)
 
 | ID | Item | Owner | Status | Evidence / action |
 | --- | --- | --- | --- | --- |
-| LB-07 | Delete last journey empty-state regression | Jim | **PASS (11 Aug retest)** | `node qa/delete-last-journey.mjs` |
-| LB-08 | Full web regression green | Jim / QA | **Re-run after S-batch** | Quick `qa/` pass before closed AAB |
-| LB-09 | Dwayne lean security review + sign-off | Dwayne | **Brief ready** | [dwayne-brief-security-signoff.md](dwayne-brief-security-signoff.md) — vs closed build |
-| LB-10 | Ruth Play listing + creative sign-off | Ruth + Simon | **Briefs out** | Ruth + [simon-brief-play-creative.md](simon-brief-play-creative.md) |
+| LB-07 | Delete last journey | Jim | **PASS** | qa script |
+| LB-08 | Web regression after S-batch | Jim / QA | Optional before closed | |
+| LB-09 | Dwayne security sign-off | Dwayne | Brief ready | Before **public**, not before closed |
+| LB-10 | Ruth Play listing + creative sign-off | Ruth + Simon | **Waiting Ruth** | Needed for **public**; closed testing can proceed with draft listing |
 
-## P2 — should before holiday; can slip past soft launch if needed
+## P2 — park
 
 | ID | Item | Owner | Notes |
 | --- | --- | --- | --- |
-| LB-11 | Min analytics (5 events) | Jim | SHOULD — after Tim device feedback |
-| LB-12 | CI smoke on main | PM / Jim | SHOULD |
-| LB-13 | Commute strip notification | Jim | Unblocked when Tim clears or parks LB-02/03 |
-| LB-14 | iOS scaffold start | PM | Parallel from ~8 Sep |
+| LB-11–14 | Analytics, CI, commute strip, iOS scaffold | various | After closed build is up |
 
 ---
 
-## Right now (post LB-01)
+## Critical path right now (11 Aug afternoon)
 
-### Tim (critical path)
-1. **Deploy Vercel** so privacy/About HTTPS match S-02 (**LB-05**).
-2. Play Console: Data safety + privacy URL + IAP + closed track (**LB-06** / **LB-04**).
-3. `npm run cap:sync` → signed closed AAB ([aab-signing-closed-testing.md](aab-signing-closed-testing.md)); include template-wizard z-index fix if still local-only.
-4. Device: widget **22** + reminders **17–19** (**LB-02**, **LB-03**).
-5. Send Dwayne brief if not sent.
+```text
+You (Play Console finish) ──► Closed AAB upload ──► Device smoke (22 + 17–19)
+         │
+         └── Ruth (listing/creative) ──► only blocks PUBLIC, not closed test
+```
 
-### Jim
-- Stand by for device fails on widget/reminders.
-- Optional: full `qa/` regression after S-batch.
-- P2 commute-strip only when Tim parks or clears LB-02/03.
+**Do not wait on Ruth** to finish closed testing setup.
 
-### PM
-- Board updated; checklists ready.
-- Next on request: Jon packet / CI sketch.
+### Tim — finish Play Console (the “2 steps” list)
 
----
+Paste these URLs where Play asks:
 
-## Explicitly not on the bull path
+- Privacy: `https://next-train-app.vercel.app/privacy.html`
+- About / contact site: `https://next-train-app.vercel.app/about.html`
+- Support email: `EvansAppStudio@gmail.com`
 
-- City #2, paid UA, press send, wide QR  
-- iOS App Store submit (post-holiday; TF can start 26 Sep)  
-- Full pen test / UMP / tablet layouts  
+Then tick:
+
+1. **Store listing (draft OK for closed)** — title Next Train; short desc from `store-listing.md`; full description; “unofficial”; no login  
+2. **Privacy policy URL** — paste above  
+3. **Data safety** — [play-data-safety-cheatsheet.md](play-data-safety-cheatsheet.md) (location, ads, no account)  
+4. **IAP** — product id `com.tdrevans.nexttrain.adfree`, one-time **A$3.99**, activate for closed testers / license testers  
+5. **Closed testing track** — create release, upload signed AAB, add tester emails, copy opt-in link  
+6. **App access** — no login required  
+7. **Ads declaration** — yes, AdMob  
+
+**Ruth is for:** final listing polish + screenshots/feature graphic sign-off before **public** (~mid-Sep). Not a gate for closed AAB.
+
+### After Console
+1. `npm run cap:sync` → signed AAB → upload closed ([aab-signing-closed-testing.md](aab-signing-closed-testing.md))  
+2. Device: widget **22** + reminders **17–19**  
+3. Ping Dwayne when closed build exists  
 
 ---
 
@@ -71,5 +77,6 @@
 
 | Date | Note |
 | --- | --- |
-| 2026-08-11 | First ranked backlog; bull target Play before Tim OOO; delete-last retested PASS |
-| 2026-08-11 | **LB-01 code DONE** (S-01→S-06); Tim path = deploy + console + closed AAB + device |
+| 2026-08-11 | First ranked backlog |
+| 2026-08-11 | LB-01 code DONE |
+| 2026-08-11 | **LB-05 DONE** — Vercel privacy/About live with new copy; critical path = Console finish → closed AAB → device |

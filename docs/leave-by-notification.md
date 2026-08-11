@@ -58,7 +58,7 @@ Per-journey **Reminder** + **Preferred train** live on journey setup. This scree
 |---------|---------|--------|
 | **Early Reminder** | Off | Toggle + **5 / 10 / 15** minute chips when on |
 | Early Reminder offset | **5 minutes** before leave-by | Default chip; stored when toggled off |
-| **Pause reminders** | Off | Timed chips: **1 day**, **1 week**, **2 weeks** |
+| **Pause reminders** | Off | Timed chips: **1 day**, **1 week**, **2 weeks**, **Custom** (1–90 days) |
 | Timed pause | — | Auto-resumes after `pauseUntil` (Perth); status shows **Paused until …** |
 
 Lead when live: **Early Reminder and Pause apply to every journey with Reminder on.**

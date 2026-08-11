@@ -860,6 +860,21 @@ function shouldShowJourneySwitcher() {
   return getConfiguredJourneys().length >= 2;
 }
 
+function syncJourneyContextEditOffset() {
+  if (!journeyContextRowEl || !journeyEditBtn || journeyEditBtn.hidden) {
+    journeyContextRowEl?.style.removeProperty("--journey-context-anchor-width");
+    return;
+  }
+
+  const anchorEl = journeyContextNameEl?.hidden ? journeySwitcherEl : journeyContextNameEl;
+  if (!anchorEl || anchorEl.hidden) {
+    journeyContextRowEl.style.removeProperty("--journey-context-anchor-width");
+    return;
+  }
+
+  journeyContextRowEl.style.setProperty("--journey-context-anchor-width", `${anchorEl.offsetWidth}px`);
+}
+
 function syncJourneyContextChrome() {
   const configuredCount = getConfiguredJourneys().length;
   const inEmptySetup = heroEl?.classList.contains("hero-setup");
@@ -886,6 +901,8 @@ function syncJourneyContextChrome() {
   if (journeyEditBtn) {
     journeyEditBtn.hidden = !showManage;
   }
+
+  requestAnimationFrame(syncJourneyContextEditOffset);
 }
 
 function getJourneyById(id) {
@@ -1963,7 +1980,7 @@ function preferredHintForJourney(journey = getActiveJourney()) {
     return "";
   }
 
-  return `Target ${formatPreferredClock(preferredMinutes)}`;
+  return `Target Train ${formatPreferredClock(preferredMinutes)}`;
 }
 
 function getLeavePhase(minutesUntilLeave, minutesUntilDeparture) {
@@ -6549,6 +6566,16 @@ function openJourneyDetail(journeyId, options = {}) {
 
 journeysBtn?.addEventListener("click", () => enterJourneyMode());
 journeyEditBtn?.addEventListener("click", () => openJourneys());
+if (journeyContextRowEl && typeof ResizeObserver !== "undefined") {
+  const journeyContextLayoutObserver = new ResizeObserver(() => syncJourneyContextEditOffset());
+  journeyContextLayoutObserver.observe(journeyContextRowEl);
+  if (journeyContextNameEl) {
+    journeyContextLayoutObserver.observe(journeyContextNameEl);
+  }
+  if (journeySwitcherEl) {
+    journeyContextLayoutObserver.observe(journeySwitcherEl);
+  }
+}
 menuBtn?.addEventListener("click", () => openMenu());
 nearbyBtn?.addEventListener("click", () => {
   nearbyBtn?.classList.add("icon-btn--refreshing");
@@ -6688,6 +6715,7 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
       await createJourneyFromTemplate(button.dataset.template);
     } finally {
       templateCreateInFlight = false;
+      setJourneyTemplateLoading(false);
     }
   });
 });

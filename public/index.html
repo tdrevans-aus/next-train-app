@@ -740,6 +740,36 @@
                   <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1day">1 day</button>
                   <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1week">1 week</button>
                   <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="2weeks">2 weeks</button>
+                  <button
+                    type="button"
+                    class="remind-day-chip reminder-pause-chip"
+                    data-pause="custom"
+                    id="leave-reminders-pause-custom-chip"
+                  >
+                    Custom
+                  </button>
+                </div>
+                <div class="reminders-pause-custom" id="leave-reminders-pause-custom" hidden>
+                  <label class="reminders-pause-custom-label" for="leave-reminders-pause-days">
+                    Number of days
+                  </label>
+                  <div class="reminders-pause-custom-row">
+                    <input
+                      type="number"
+                      id="leave-reminders-pause-days"
+                      class="reminders-pause-days-input"
+                      min="1"
+                      max="90"
+                      step="1"
+                      inputmode="numeric"
+                      enterkeyhint="done"
+                      aria-describedby="leave-reminders-pause-days-hint"
+                    />
+                    <span class="reminders-pause-days-unit" id="leave-reminders-pause-days-hint">days</span>
+                    <button type="button" class="btn-secondary reminders-pause-custom-apply" id="leave-reminders-pause-custom-apply">
+                      Set
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

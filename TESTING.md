@@ -328,8 +328,9 @@ node qa/reminders-dialog.mjs
 
 1. With Reminder live → turn **Early Reminder** on → **5 / 10 / 15** chips appear; tap **10** → reschedule uses 10 min offset.
 2. **Pause reminders** → tap **1 day** → status **Paused until …** + **Resume reminders**; schedule line matches.
-3. Tap **Resume reminders** → pause clears; next-reminder line returns.
-4. **Timed auto-resume:** set `pauseUntil` in the past (or wait for expiry) → open app or Reminder settings → pause cleared without manual resume (native `getSchedule` / `getSettings` path).
+3. Tap **Custom** → days field appears; set e.g. **5** → **Set** → chip reads **5 days**, status **Paused until …**.
+4. Tap **Resume reminders** → pause clears; next-reminder line returns.
+5. **Timed auto-resume:** set `pauseUntil` in the past (or wait for expiry) → open app or Reminder settings → pause cleared without manual resume (native `getSchedule` / `getSettings` path).
 
 **Manual (Android) — core:**
 

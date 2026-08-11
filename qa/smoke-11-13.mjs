@@ -17,9 +17,19 @@ function fail(id, notes) {
 
 async function closeJourneysDialog(page) {
   await page.evaluate(() => {
+    if (window.nextTrainApp?.closeJourneysDialog) {
+      window.nextTrainApp.closeJourneysDialog();
+      return;
+    }
+    const backdrop = document.getElementById("journeys-dialog-backdrop");
+    if (backdrop) backdrop.hidden = true;
     const d = document.getElementById("journeys-dialog");
-    if (d?.open) d.close();
-    d?.removeAttribute("open");
+    if (d) {
+      if (d.open) d.close();
+      d.removeAttribute("open");
+      d.hidden = true;
+    }
+    document.body.classList.remove("app-dialog-open");
   });
   await page.waitForTimeout(300);
 }
@@ -35,9 +45,9 @@ async function openJourneysDialog(page) {
   if (inJourneyMode === "true") {
     await page.evaluate(() => window.nextTrainApp?.openJourneys?.());
   } else {
-    await page.evaluate(() => document.getElementById("journeys-btn")?.click());
+    await page.locator("#journeys-btn").click();
     await page.waitForTimeout(500);
-    await page.evaluate(() => document.getElementById("journeys-btn")?.click());
+    await page.locator("#journeys-btn").click();
   }
   await page.waitForTimeout(800);
 }
