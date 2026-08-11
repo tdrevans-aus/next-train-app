@@ -28,7 +28,7 @@ public final class WidgetDataService {
 
   static String formatRoute(JSONObject journey) {
     String station = formatStationLabel(journey);
-    String direction = journey.optString("direction", "");
+    String direction = formatDisplayName(journey != null ? journey.optString("direction", "") : "");
     if (station.isEmpty()) {
       return direction;
     }
@@ -43,6 +43,34 @@ public final class WidgetDataService {
     if (journey == null) {
       return "";
     }
-    return journey.optString("station", "").replace(" Stn", "").trim();
+    return formatDisplayName(journey.optString("station", ""));
+  }
+
+  /**
+   * Match app display aliases: Perth Underground / Perth Stn → Perth, Cockburn Central → Cockburn,
+   * drop trailing " Stn".
+   */
+  static String formatDisplayName(String raw) {
+    if (raw == null || raw.isEmpty()) {
+      return "";
+    }
+    String trimmed = raw.trim();
+    String withoutStn = trimmed.replaceAll("(?i) Stn$", "").trim();
+
+    if (
+      "Perth Underground".equalsIgnoreCase(withoutStn) ||
+      "Perth Underground Stn".equalsIgnoreCase(trimmed) ||
+      "Perth Stn".equalsIgnoreCase(trimmed) ||
+      "Perth".equalsIgnoreCase(withoutStn)
+    ) {
+      return "Perth";
+    }
+    if (
+      "Cockburn Central".equalsIgnoreCase(withoutStn) ||
+      "Cockburn Central Stn".equalsIgnoreCase(trimmed)
+    ) {
+      return "Cockburn";
+    }
+    return withoutStn;
   }
 }

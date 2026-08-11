@@ -2,7 +2,7 @@
 
 **For:** Jim (implement)  
 **From:** Simon (design) / Tim (product)  
-**Status:** Ready to code  
+**Status:** Superseded by `docs/jim-brief-widget-hide-leave-when-late.md` (U-03 option 1 — hide leave after 1-min grace; no “ago”)  
 **Related:** `android/.../CommuteSchedule.java` (`formatLeaveSecondary`), `docs/widget-homescreen.md` § right/secondary  
 **Out of scope:** Widget layout, refresh timing, train delay badges
 

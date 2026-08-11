@@ -25,9 +25,26 @@ public final class CommuteRefreshService {
   }
 
   static void refreshAllOnWorker(Context context) {
-    CommuteSchedule.Result result = CommuteSchedule.load(context, true);
+    WidgetDebugLog.refreshStart("network");
+    JSONObject snapshot = null;
+    CommuteSchedule.Result result = null;
     try {
-      JSONObject snapshot = buildWidgetSnapshot(context, result);
+      // Outside Active hours: designed idle only — never network, never stale live cache.
+      JSONObject outsideHours = CommuteSchedule.nearbyFallbackIfOutsideHours(context);
+      if (outsideHours != null) {
+        snapshot = outsideHours;
+        WidgetSettingsStore.saveSnapshot(context, snapshot);
+        NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
+        WidgetLocalPaintScheduler.cancel(context);
+        WidgetDepartureAdvanceScheduler.cancel(context);
+        WidgetDebugLog.refreshDone(snapshot);
+        result = CommuteSchedule.load(context, true);
+        LeaveReminderScheduler.reschedule(context, result);
+        return;
+      }
+
+      result = CommuteSchedule.load(context, true);
+      snapshot = buildWidgetSnapshot(context, result);
       WidgetSettingsStore.saveSnapshot(context, snapshot);
       NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
       WidgetLocalPaintScheduler.scheduleIfNeeded(context, snapshot);
@@ -35,33 +52,63 @@ public final class CommuteRefreshService {
     } catch (Exception error) {
       // Keep widget showing last snapshot if formatting fails.
     }
-    LeaveReminderScheduler.reschedule(context, result);
+    WidgetDebugLog.refreshDone(snapshot);
+    if (result != null) {
+      LeaveReminderScheduler.reschedule(context, result);
+    }
   }
 
   /** Local countdown repaint from cached ISO times — no network. */
   public static void repaintFromCache(Context context) {
     paintFromCache(context);
-    try {
-      JSONObject cached = WidgetSettingsStore.readSnapshot(context);
-      if (cached != null && CommuteSchedule.needsNetworkRefresh(cached)) {
-        refreshAll(context);
-      }
-    } catch (Exception error) {
-      // Keep last paint.
-    }
   }
 
   /** Repaint widgets from cache only — never blocks on network. */
   public static void paintFromCache(Context context) {
+    boolean triggerFetchRetry = false;
+    boolean departureJustPassed = false;
+    boolean opportunisticRefresh = false;
+    boolean preDeparturePrefetch = false;
+    String paintReason = "local";
+    JSONObject snapshot = null;
     try {
       JSONObject cached = WidgetSettingsStore.readSnapshot(context);
       if (cached == null) {
         WidgetLocalPaintScheduler.cancel(context);
         WidgetDepartureAdvanceScheduler.cancel(context);
+        NextTrainWidgetProvider.updateAllWidgets(context, null);
         return;
       }
 
-      JSONObject snapshot = CommuteSchedule.repaintSnapshot(cached);
+      // Outside Active hours: drop stale commute Fetching/live face for Near me idle.
+      JSONObject outsideHours = CommuteSchedule.nearbyFallbackIfOutsideHours(context);
+      if (outsideHours != null) {
+        WidgetSettingsStore.saveSnapshot(context, outsideHours);
+        NextTrainWidgetProvider.updateAllWidgets(context, outsideHours);
+        WidgetLocalPaintScheduler.cancel(context);
+        WidgetDepartureAdvanceScheduler.cancel(context);
+        return;
+      }
+
+      departureJustPassed =
+        CommuteSchedule.needsNetworkRefresh(cached) &&
+        cached.optLong("updatingSinceMs", 0L) == 0L;
+
+      snapshot = CommuteSchedule.repaintSnapshot(cached);
+      triggerFetchRetry = snapshot.optBoolean("triggerFetchRetry", false);
+      if (triggerFetchRetry) {
+        snapshot.remove("triggerFetchRetry");
+      }
+
+      if (CommuteSchedule.shouldOpportunisticRefresh(snapshot)) {
+        opportunisticRefresh = true;
+        snapshot.put("lastOpportunisticRefreshMs", System.currentTimeMillis());
+      }
+      if (CommuteSchedule.needsPreDeparturePrefetch(snapshot)) {
+        preDeparturePrefetch = true;
+        snapshot.put("prefetchDepartureIso", snapshot.optString("departureIso", ""));
+      }
+
       WidgetSettingsStore.saveSnapshot(context, snapshot);
       NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
       WidgetLocalPaintScheduler.scheduleIfNeeded(context, snapshot);
@@ -69,11 +116,28 @@ public final class CommuteRefreshService {
     } catch (Exception error) {
       // Keep last paint.
     }
+
+    if (triggerFetchRetry) {
+      paintReason = "retry";
+    } else if (departureJustPassed) {
+      paintReason = "departure-passed";
+    } else if (opportunisticRefresh) {
+      paintReason = "opportunistic";
+    } else if (preDeparturePrefetch) {
+      paintReason = "prefetch";
+    }
+    WidgetDebugLog.paintDone(snapshot, paintReason);
+
+    if (triggerFetchRetry || departureJustPassed || opportunisticRefresh || preDeparturePrefetch) {
+      refreshAll(context);
+    }
   }
 
   private static JSONObject buildWidgetSnapshot(Context context, CommuteSchedule.Result result)
     throws Exception {
-    if (result.empty) {
+    // Outside Active hours / no journey: always idle preview or empty — never keep a stale
+    // commute "Fetching…" / departure clock from an earlier window.
+    if (result.empty || result.nearbyFallback) {
       return CommuteSchedule.toWidgetSnapshot(result);
     }
 
@@ -83,11 +147,22 @@ public final class CommuteRefreshService {
       return snapshot;
     }
 
+    // Network failed — recompute from last good commute cache if we have one.
+    // Never replay a live departure face once Active hours have ended.
+    JSONObject outsideHours = CommuteSchedule.nearbyFallbackIfOutsideHours(context);
+    if (outsideHours != null) {
+      return outsideHours;
+    }
     JSONObject cached = WidgetSettingsStore.readSnapshot(context);
-    if (cached != null && !cached.optString("departureIso", "").isEmpty()) {
+    if (
+      cached != null &&
+      !cached.optBoolean("outsideHoursIdle", false) &&
+      !cached.optString("departureIso", "").isEmpty()
+    ) {
       long refreshedAt = cached.optLong("refreshedAtMs", WidgetSettingsStore.readLastRefreshMs(context));
       JSONObject snapshot = CommuteSchedule.repaintSnapshot(cached);
-      if ("Tap to refresh".equals(snapshot.optString("secondary"))) {
+      snapshot.remove("triggerFetchRetry");
+      if (CommuteSchedule.DEGRADED_SECONDARY.equals(snapshot.optString("secondary"))) {
         snapshot.put("refreshedAtMs", refreshedAt);
         snapshot.put("updatedAtMs", refreshedAt);
         return snapshot;

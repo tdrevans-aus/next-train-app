@@ -39,8 +39,8 @@ body {
 
 body {
   min-height: 100dvh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  height: 100dvh;
+  overflow: hidden;
   position: relative;
 }
 
@@ -75,16 +75,34 @@ body {
   z-index: 1;
   max-width: 440px;
   margin: 0 auto;
-  padding: calc(var(--safe-top) + 0.35rem) 1.35rem calc(var(--safe-bottom) + 1rem);
+  padding: calc(var(--safe-top) + 0.35rem) 1.35rem 0;
+  height: 100dvh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.app-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+  padding-bottom: calc(var(--safe-bottom) + 1rem);
 }
 
 @media (max-height: 760px) {
   .app {
     gap: 0.65rem;
+  }
+
+  .app-body {
     padding-bottom: calc(var(--safe-bottom) + 0.75rem);
   }
 
@@ -111,6 +129,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-shrink: 0;
   animation: rise-in 0.55s ease both;
 }
 
@@ -189,7 +208,10 @@ body {
 }
 
 #menu-chrome-action.chrome-action--pulse #menu-btn {
-  animation: onboarding-pulse 0.65s ease-in-out 2;
+  color: var(--accent);
+  border-color: rgba(11, 110, 106, 0.55);
+  background: var(--accent-wash);
+  animation: menu-hint-glow 0.7s ease-in-out 3;
 }
 
 .icon-btn.icon-btn--refreshing {
@@ -368,7 +390,8 @@ body {
   color: var(--muted);
 }
 
-.nearby-station-field select {
+.nearby-station-field select,
+.nearby-station-field .station-combobox-input {
   border: 1px solid var(--line);
   border-radius: 0.65rem;
   background: var(--surface);
@@ -377,11 +400,98 @@ body {
   font: inherit;
 }
 
+.station-combobox {
+  position: relative;
+  width: 100%;
+}
+
+.station-combobox-input {
+  width: 100%;
+}
+
+.station-combobox-input[readonly] {
+  cursor: pointer;
+  caret-color: transparent;
+}
+
+.station-combobox-dropdown {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+}
+
+.station-combobox-dropdown[hidden] {
+  display: none !important;
+}
+
+.station-combobox-search-input {
+  width: 100%;
+  margin: 0 0 0.25rem;
+  box-sizing: border-box;
+}
+
+.station-combobox-list {
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  max-height: 11rem;
+  overflow-y: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+#settings-detail-view.station-picker-open .settings-detail-footer {
+  display: none;
+}
+
+#settings-detail-view.station-picker-open .station-combobox-list {
+  max-height: min(24rem, 52vh);
+}
+
+.station-combobox-list[hidden] {
+  display: none !important;
+}
+
+.station-combobox-option,
+.station-combobox-empty,
+.station-combobox-search {
+  padding: 0.55rem 0.7rem;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.station-combobox-search {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+
+.station-combobox-option {
+  cursor: pointer;
+  color: var(--text);
+}
+
+.station-combobox-option:hover,
+.station-combobox-option--active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.station-combobox-empty {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
 .nearby-station-btn {
   width: 100%;
 }
 
 .app.nearby-mode .leave-card,
+.app.nearby-mode .preferred-hint,
 .app.nearby-mode .journey-context-row,
 .app.nearby-mode #journey-switcher-menu {
   display: none !important;
@@ -542,13 +652,6 @@ body {
   color: var(--muted);
 }
 
-.journey-switcher-option--manage {
-  margin-top: 0.35rem;
-  border-style: dashed;
-  font-weight: 600;
-  color: var(--accent-strong);
-}
-
 /* —— Hero —— */
 .hero {
   position: relative;
@@ -601,6 +704,41 @@ body {
   transition: color 0.35s ease, transform 0.35s ease;
 }
 
+.locate-spinner {
+  display: inline-block;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: locate-spin 0.8s linear infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.locate-spinner--hero {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-width: 3px;
+  margin: 0.1rem auto;
+}
+
+.hero.locating .depart-countdown {
+  justify-content: center;
+}
+
+.template-route-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@keyframes locate-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .depart-countdown-value {
   letter-spacing: inherit;
 }
@@ -628,6 +766,16 @@ body {
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ink);
+}
+
+.nearby-dont-wait-btn {
+  margin: 0.85rem auto 0;
+  display: block;
+  min-width: 9.5rem;
+}
+
+.nearby-dont-wait-btn[hidden] {
+  display: none !important;
 }
 
 .hero .detail-sub {
@@ -724,7 +872,7 @@ body {
   align-self: center;
 }
 
-.leave-card.leave-card--context .leave-ack-btn,
+.leave-card.leave-card--context .leave-card-actions,
 .leave-card.leave-card--context .leave-hint {
   grid-column: 1 / -1;
 }
@@ -821,38 +969,76 @@ body {
   color: var(--muted);
 }
 
+.preferred-hint {
+  margin: -0.35rem 0 0.85rem;
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.preferred-hint[hidden] {
+  display: none;
+}
+
 .leave-card--acknowledged {
   border-color: var(--line);
   background: var(--surface-soft);
 }
 
-.leave-ack-btn {
+.leave-card-actions {
   display: none;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
   width: 100%;
-  max-width: 14rem;
-  margin: 0.75rem auto 0;
-  padding: 0.65rem 1rem;
+  max-width: 22rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.leave-card-actions--visible {
+  display: flex;
+}
+
+.leave-card.leave-card--context .leave-card-actions {
+  max-width: none;
+  margin-top: 0.55rem;
+}
+
+.leave-ack-btn,
+.leave-next-train-btn {
+  flex: 1 1 0;
+  display: block;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0.65rem 0.85rem;
   border-radius: 999px;
-  border: 1px solid rgba(190, 18, 60, 0.35);
-  background: rgba(190, 18, 60, 0.08);
-  color: var(--bad);
   font-size: 0.88rem;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
 }
 
-.leave-card.leave-card--context .leave-ack-btn {
-  max-width: none;
-  margin-top: 0.55rem;
+.leave-ack-btn {
+  border: 1px solid rgba(190, 18, 60, 0.35);
+  background: rgba(190, 18, 60, 0.08);
+  color: var(--bad);
 }
 
-.leave-ack-btn--visible {
-  display: block;
+.leave-next-train-btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
 }
 
 .leave-ack-btn:hover {
   background: rgba(190, 18, 60, 0.14);
+}
+
+.leave-next-train-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .leave-card.late .leave-card-countdown {
@@ -962,6 +1148,13 @@ body {
 
 .hero-empty-secondary {
   font-size: 0.86rem;
+}
+
+.hero-empty-hint {
+  font-size: 0.84rem;
+  color: var(--muted);
+  max-width: 18rem;
+  line-height: 1.35;
 }
 
 .hero-setup-text {
@@ -1185,7 +1378,8 @@ body {
 
 .menu-ad-free[hidden],
 .menu-purchase-row[hidden],
-.menu-restore-btn[hidden] {
+.menu-restore-btn[hidden],
+.menu-ad-free-web-hint[hidden] {
   display: none !important;
 }
 
@@ -1350,19 +1544,21 @@ body {
 
 .app-toast {
   position: fixed;
-  left: 50%;
-  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  top: calc(var(--safe-top) + 4.6rem);
+  right: max(0.85rem, env(safe-area-inset-right, 0px));
+  left: auto;
+  bottom: auto;
   z-index: 60;
-  transform: translateX(-50%) translateY(0.75rem);
-  max-width: min(92vw, 22rem);
+  transform: translateY(-0.45rem);
+  max-width: min(78vw, 18.5rem);
   padding: 0.7rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.97);
   color: var(--ink);
   font-size: 0.86rem;
   font-weight: 600;
-  text-align: center;
+  text-align: left;
   box-shadow: 0 10px 28px rgba(19, 37, 35, 0.12);
   opacity: 0;
   pointer-events: none;
@@ -1371,7 +1567,7 @@ body {
 
 .app-toast--visible {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
   pointer-events: auto;
   cursor: pointer;
 }
@@ -1501,6 +1697,19 @@ dialog.app-native-dialog[open] {
   font-weight: 700;
 }
 
+.widget-debug-panel {
+  margin: 0.9rem 0 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.55rem;
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .help-inline-icon {
   display: inline-flex;
   align-items: center;
@@ -1547,27 +1756,34 @@ dialog.app-native-dialog[open] {
 
 .help-dialog-footer,
 .journeys-dialog-footer,
-.menu-dialog-footer,
-.reminders-dialog-footer {
+.menu-dialog-footer {
   flex-shrink: 0;
   padding: 0.85rem 1rem 1rem;
   border-top: 1px solid var(--line);
   background: var(--surface);
 }
 
+.reminders-dialog-footer {
+  flex-shrink: 0;
+  padding: 0.65rem 1rem 0.85rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
 .reminders-validation-error {
   flex-shrink: 0;
-  margin: 0 1rem;
-  padding: 0.55rem 0.75rem;
-  border-radius: 8px;
-  background: rgba(220, 38, 38, 0.12);
-  color: #b91c1c;
-  font-size: 0.9rem;
-  line-height: 1.35;
+  margin: 0 1rem 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(180, 35, 24, 0.08);
+  border: 1px solid rgba(180, 35, 24, 0.18);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text);
 }
 
 .reminders-validation-error[hidden] {
-  display: none !important;
+  display: none;
 }
 
 .menu-dialog-footer {
@@ -1587,22 +1803,27 @@ dialog.app-native-dialog[open] {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 1.2rem 1.2rem 0.5rem;
+  padding: 1rem 1.1rem 0.35rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.55rem;
   justify-content: flex-start;
 }
 
 .reminders-dialog-header h2 {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.2rem;
 }
 
-.reminders-lead {
-  margin: 0 0 1rem;
+.reminders-lead,
+.reminders-armed-lead {
+  margin: 0;
   font-size: 0.88rem;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--muted);
+}
+
+.reminders-armed-lead {
+  margin-top: 0.15rem;
 }
 
 .reminders-web-hint {
@@ -1612,14 +1833,22 @@ dialog.app-native-dialog[open] {
   color: var(--muted);
 }
 
-.reminders-master-card {
-  padding: 0.85rem;
-  border: 1px solid var(--line);
-  border-radius: 0.9rem;
-  background: #f7faf9;
+.detail-remind-toggle-row {
+  margin: 0 0 0.35rem;
 }
 
-.reminders-master-card .menu-toggle-row {
+.detail-remind-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+}
+
+.detail-remind-expanded[hidden] {
+  display: none !important;
+}
+
+.detail-remind-hint {
   margin: 0;
 }
 
@@ -1630,119 +1859,66 @@ dialog.app-native-dialog[open] {
   color: var(--muted);
 }
 
-.reminders-journey-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.reminders-empty {
+  margin: 0.35rem 0 0.15rem;
 }
 
-.reminders-commute-card {
+.reminders-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  width: 100%;
   padding: 0.85rem;
   border: 1px solid var(--line);
   border-radius: 0.9rem;
   background: #f7faf9;
 }
 
-.reminders-commute-header {
-  margin-bottom: 0.55rem;
-}
-
-.reminders-commute-name {
+.reminders-empty-title {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 700;
+  line-height: 1.35;
   color: var(--ink);
 }
 
-.reminders-commute-route {
-  margin: 0.2rem 0 0;
-  font-size: 0.8rem;
-  line-height: 1.35;
+.reminders-empty-body {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
   color: var(--muted);
 }
 
-.reminders-commute-toggle-row {
-  margin: 0;
+.reminders-open-journeys-btn {
+  margin-top: 0.15rem;
+  width: 100%;
 }
 
-.reminders-commute-expanded {
+.reminders-shared-options {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--line);
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f7faf9;
 }
 
-.reminders-commute-expanded[hidden] {
+.reminders-shared-options[hidden] {
   display: none !important;
 }
 
-.reminders-preferred-hint {
-  margin: -0.35rem 0 0;
-  font-size: 0.78rem;
-  line-height: 1.35;
-  color: var(--muted);
-}
-
-.reminders-preferred-hint[hidden] {
-  display: none;
-}
-
-.reminders-days-label {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.reminders-commute-card--inactive .reminders-commute-expanded {
-  opacity: 0.55;
-}
-
-.reminders-more-options {
-  margin-top: 0.25rem;
-}
-
-.reminders-more-options-summary {
-  cursor: pointer;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--ink);
-  list-style: none;
-}
-
-.reminders-more-options-summary::-webkit-details-marker {
-  display: none;
-}
-
-.reminders-more-options-summary::before {
-  content: "▸ ";
-  color: var(--muted);
-}
-
-.reminders-more-options[open] .reminders-more-options-summary::before {
-  content: "▾ ";
-}
-
-.reminders-more-options-body {
+.reminders-shared-option {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-  padding: 0.85rem;
-  border: 1px solid var(--line);
-  border-radius: 0.9rem;
-  background: #f7faf9;
-}
-
-.reminders-more-option {
+  gap: 0.45rem;
   align-items: stretch;
   margin: 0;
 }
 
-.reminders-more-option-header {
+.reminders-shared-option-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1765,11 +1941,17 @@ dialog.app-native-dialog[open] {
   flex-wrap: wrap;
 }
 
-.reminders-pause-active {
+.reminders-nudge-chips-wrap[hidden],
+.reminders-pause-expanded[hidden],
+.reminders-pause-status[hidden] {
+  display: none !important;
+}
+
+.reminders-pause-expanded {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 0.75rem;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
 }
 
 .reminders-pause-status {
@@ -1777,10 +1959,6 @@ dialog.app-native-dialog[open] {
   font-size: 0.84rem;
   font-weight: 700;
   color: var(--ink);
-}
-
-.reminders-resume-btn {
-  width: 100%;
 }
 
 .reminders-sr-only {
@@ -1795,7 +1973,7 @@ dialog.app-native-dialog[open] {
   border: 0;
 }
 
-.reminders-more-option-copy {
+.reminders-shared-option-copy {
   flex: 1;
   min-width: 0;
   padding-right: 0.5rem;
@@ -1808,24 +1986,9 @@ dialog.app-native-dialog[open] {
   color: var(--muted);
 }
 
-.reminders-empty {
-  margin-top: 0;
-  text-align: center;
-}
-
-.reminders-empty p {
-  margin: 0 0 0.75rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-}
-
 .menu-dialog-body {
   padding: 1.2rem 1.2rem 0.5rem;
   overflow-y: auto;
-}
-
-.menu-dialog-hint {
-  margin-bottom: 0;
 }
 
 .menu-dialog-links {
@@ -1833,6 +1996,13 @@ dialog.app-native-dialog[open] {
   flex-direction: column;
   gap: 0.45rem;
   margin-top: 0.85rem;
+}
+
+.menu-dialog-divider {
+  height: 0;
+  margin: 0.35rem 0;
+  border: 0;
+  border-top: 1px solid var(--line);
 }
 
 .menu-dialog-links a,
@@ -1859,6 +2029,37 @@ dialog.app-native-dialog[open] {
   border-color: var(--line-strong);
   background: var(--surface);
   outline: none;
+}
+
+.menu-dialog-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.55rem;
+  margin: 0.85rem 0 0.15rem;
+  padding: 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.menu-dialog-legal a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+  font-weight: 500;
+}
+
+.menu-dialog-legal a:hover,
+.menu-dialog-legal a:focus-visible {
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.menu-dialog-legal-sep {
+  color: var(--line-strong);
 }
 
 .journeys-dialog-body {
@@ -1938,7 +2139,7 @@ dialog.app-native-dialog[open] {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  padding: 0.75rem 1rem 0.4rem;
+  padding: 0.75rem 1rem calc(5.75rem + env(safe-area-inset-bottom, 0px));
 }
 
 .journey-name-field {
@@ -1981,6 +2182,11 @@ dialog.app-native-dialog[open] {
   color: var(--muted);
 }
 
+.detail-target-outside-hint {
+  color: #9a4a12;
+  font-weight: 600;
+}
+
 #settings-detail-view .field {
   gap: 0.28rem;
   font-size: 0.88rem;
@@ -1989,6 +2195,7 @@ dialog.app-native-dialog[open] {
 #settings-detail-view .field select,
 #settings-detail-view .field input[type="number"],
 #settings-detail-view .field input[type="time"],
+#settings-detail-view .field .station-combobox-input,
 #settings-detail-view .optional-time-display {
   padding: 0.6rem 0.7rem;
   font-size: 0.95rem;
@@ -2227,6 +2434,14 @@ dialog.app-native-dialog[open] {
   color: var(--muted);
 }
 
+.journey-templates-cap-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
 .journey-templates-loading {
   margin: 0;
   font-size: 0.82rem;
@@ -2312,11 +2527,11 @@ dialog.app-native-dialog[open] {
   gap: 0.55rem;
 }
 
-.remind-me-train-field {
+.detail-preferred-field {
   margin: 0;
 }
 
-#settings-detail-view .remind-me-train-field .optional-time-display {
+#settings-detail-view .detail-preferred-field .optional-time-display {
   min-width: 7.5rem;
 }
 
@@ -2444,8 +2659,21 @@ dialog.app-native-dialog[open] {
   width: 100%;
 }
 
+.template-wizard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#template-wizard-skip-btn {
+  width: 100%;
+  min-height: 44px;
+}
+
 .template-wizard-highlight {
   position: relative;
+  z-index: 21;
+  pointer-events: auto;
   border-radius: 0.75rem;
   box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.45);
   background: rgba(255, 255, 255, 0.98);
@@ -2459,18 +2687,25 @@ dialog.app-native-dialog[open] {
 .journeys-dialog .template-route-coach {
   position: absolute;
   inset: 0;
-  z-index: 20;
+  z-index: auto;
   border-radius: inherit;
+  pointer-events: none;
+}
+
+.journeys-dialog .template-route-coach:not([hidden]) {
+  pointer-events: none;
 }
 
 .journeys-dialog .template-route-coach .onboarding-coach-scrim {
-  z-index: 0;
+  z-index: 20;
+  pointer-events: none;
 }
 
 .journeys-dialog .template-route-coach .onboarding-coach-card {
-  z-index: 1;
+  z-index: 22;
   left: 50%;
   right: auto;
+  pointer-events: auto;
   transform: translateX(-50%);
 }
 
@@ -2485,6 +2720,16 @@ dialog.app-native-dialog[open] {
   margin-inline: -0.65rem;
 }
 
+#detail-reminder-section.template-wizard-highlight {
+  padding: 0.55rem 0.65rem;
+  margin-inline: -0.65rem;
+}
+
+.journey-name-field.template-wizard-highlight {
+  padding: 0.55rem 0.65rem;
+  margin-inline: -0.65rem;
+}
+
 #leave-reminder-coach .onboarding-coach-card {
   bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }
@@ -2493,6 +2738,13 @@ dialog.app-native-dialog[open] {
   margin: 0;
   font-size: 0.92rem;
   line-height: 1.45;
+}
+
+.widget-help-tip {
+  margin: 0.65rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--muted);
 }
 
 .widget-help-manual {
@@ -2509,10 +2761,48 @@ dialog.app-native-dialog[open] {
 }
 
 #widget-help-dialog #widget-help-pin-btn,
+#widget-help-dialog #widget-help-add-another-btn,
 #widget-help-dialog #widget-help-done-btn {
   width: 100%;
   min-height: 44px;
   box-sizing: border-box;
+}
+
+.journey-overlap-error {
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(180, 35, 24, 0.08);
+  border: 1px solid rgba(180, 35, 24, 0.18);
+}
+
+.journey-overlap-error--fixed {
+  background: rgba(30, 120, 90, 0.08);
+  border-color: rgba(30, 120, 90, 0.22);
+}
+
+.journey-overlap-error p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.journey-overlap-fix-btn {
+  margin-top: 0.55rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(180, 35, 24, 0.28);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.optional-time-field--overlap .optional-time-display {
+  border-color: rgba(180, 35, 24, 0.45);
+  box-shadow: 0 0 0 1px rgba(180, 35, 24, 0.12);
 }
 
 .help-dialog-footer {
@@ -2588,6 +2878,21 @@ dialog.app-native-dialog[open] {
   }
 }
 
+@keyframes menu-hint-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(11, 110, 106, 0.5);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 0.55rem rgba(11, 110, 106, 0.2),
+      0 0 1.4rem rgba(11, 110, 106, 0.4);
+    transform: scale(1.1);
+  }
+}
+
 .journey-list-item {
   border: 1px solid var(--line);
   border-radius: 0.9rem;
@@ -2639,29 +2944,6 @@ dialog.app-native-dialog[open] {
   color: var(--ink);
 }
 
-.journey-list-rename-btn {
-  border: 0;
-  background: transparent;
-  color: var(--accent);
-  font-size: 0.78rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  padding: 0.75rem 0.65rem;
-  align-self: stretch;
-}
-
-.journey-list-rename-btn:hover,
-.journey-list-rename-btn:focus-visible {
-  background: rgba(11, 110, 106, 0.06);
-  outline: none;
-}
-
-.journey-list-rename-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
 .journey-list-route {
   font-size: 0.78rem;
   color: var(--muted);
@@ -2678,18 +2960,6 @@ dialog.app-native-dialog[open] {
   color: var(--muted);
   font-size: 1.1rem;
   line-height: 1;
-}
-
-.journey-list-name-input {
-  width: 100%;
-  padding: 0.2rem 0.4rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--accent);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
 }
 
 .settings-view[hidden] {
@@ -2919,13 +3189,30 @@ dialog.app-native-dialog[open] {
   background: rgba(11, 110, 106, 0.06);
 }
 
-.settings-location-btn {
-  align-self: flex-start;
+.settings-location-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.55rem;
   margin-top: 0.1rem;
 }
 
+.settings-location-btn {
+  align-self: baseline;
+  margin-top: 0;
+  padding: 0;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.settings-location-btn:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
 .settings-location-hint {
-  margin: 0.35rem 0 0;
+  margin: 0;
   font-size: 0.8rem;
   color: var(--muted);
 }

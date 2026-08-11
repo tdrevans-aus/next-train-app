@@ -68,7 +68,7 @@ async function run() {
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
   await page.waitForFunction(() => {
     const t = document.getElementById("depart-countdown")?.textContent ?? "";
-    return /\d+\s*minute/.test(t);
+    return /\d+\s*min/i.test(t);
   });
   results.push(await countSwipesUntilChange(page, "fresh-load-1"));
 
@@ -76,19 +76,19 @@ async function run() {
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
   await page.waitForFunction(() => {
     const t = document.getElementById("depart-countdown")?.textContent ?? "";
-    return /\d+\s*minute/.test(t);
+    return /\d+\s*min/i.test(t);
   });
   results.push(await countSwipesUntilChange(page, "fresh-load-2"));
 
   // Short swipe (under 48px threshold)
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForFunction(() => /\d+\s*minute/.test(document.getElementById("depart-countdown")?.textContent ?? ""));
+  await page.waitForFunction(() => /\d+\s*min/i.test(document.getElementById("depart-countdown")?.textContent ?? ""));
   const short = await swipeVariant(page, { deltaX: -40, deltaY: 0, releaseOn: "hero" });
   results.push({ label: "short-swipe-40px", ...short });
 
   // Release outside hero (simulates finger lifting off card edge)
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForFunction(() => /\d+\s*minute/.test(document.getElementById("depart-countdown")?.textContent ?? ""));
+  await page.waitForFunction(() => /\d+\s*min/i.test(document.getElementById("depart-countdown")?.textContent ?? ""));
   const outside = await swipeVariant(page, { deltaX: -80, deltaY: 50, releaseOn: "document" });
   results.push({ label: "release-outside-hero", ...outside });
 

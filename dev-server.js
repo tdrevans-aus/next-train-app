@@ -14,6 +14,8 @@ import {
   getFixtureNextTrainData,
   listFixtures,
 } from "./lib/fixtures.js";
+import { checkRateLimit } from "./lib/api-rate-limit.js";
+import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -32,8 +34,13 @@ function readQueryParams(query) {
     return null;
   }
 
+  const allowedStation = resolveAllowedStation(station);
+  if (!allowedStation) {
+    return { error: "Unknown station" };
+  }
+
   return {
-    station,
+    station: allowedStation,
     destination: direction,
     destinationLabel: direction,
     leaveBeforeMinutes: Number(leaveBefore) || DEFAULT_LEAVE_BEFORE_MINUTES,
@@ -52,9 +59,18 @@ app.get("/api/fixtures", (_req, res) => {
 });
 
 app.get("/api/next-train", async (req, res) => {
+  if (!checkRateLimit(req, res)) {
+    return;
+  }
+
   const config = readQueryParams(req.query);
   if (!config) {
     res.status(400).json({ error: "Missing required parameters: station, direction" });
+    return;
+  }
+
+  if (config.error) {
+    res.status(400).json({ error: config.error });
     return;
   }
 
@@ -85,9 +101,15 @@ app.get("/api/next-train", async (req, res) => {
 });
 
 app.get("/api/directions", async (req, res) => {
-  const station = req.query.station;
+  if (!checkRateLimit(req, res)) {
+    return;
+  }
+
+  const station = resolveAllowedStation(req.query.station);
   if (!station) {
-    res.status(400).json({ error: "Missing station parameter" });
+    res.status(400).json({
+      error: req.query.station ? "Unknown station" : "Missing station parameter",
+    });
     return;
   }
 
@@ -107,9 +129,15 @@ app.get("/api/directions", async (req, res) => {
 });
 
 app.get("/api/destinations", async (req, res) => {
-  const station = req.query.station;
+  if (!checkRateLimit(req, res)) {
+    return;
+  }
+
+  const station = resolveAllowedStation(req.query.station);
   if (!station) {
-    res.status(400).json({ error: "Missing station parameter" });
+    res.status(400).json({
+      error: req.query.station ? "Unknown station" : "Missing station parameter",
+    });
     return;
   }
 

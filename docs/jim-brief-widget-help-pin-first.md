@@ -38,9 +38,14 @@ On supported devices (typical modern Android), the manual steps are **wrong for 
 
 > **Add widget** puts your next train on the home screen without opening the app.
 
+Then one tip line:
+
+> Long-press to resize for a roomier layout.
+
 - Bold **Add widget** to match the button label.  
 - Do **not** say “Tap Add widget.”  
-- Do **not** mention leave-in, active journey, or default 2×1 / cell size.
+- Do **not** mention leave-in, active journey, or default 2×1 / cell size.  
+- Do **teach resize** (not a second pin size in the dialog).
 
 ### Body — manual fallback
 
@@ -104,6 +109,9 @@ No native `WidgetSyncPlugin` changes unless required.
     <p class="widget-help-lead">
       <strong>Add widget</strong> puts your next train on the home screen without opening the app.
     </p>
+    <p class="widget-help-tip">
+      Long-press to resize for a roomier layout.
+    </p>
     <p id="widget-help-manual" class="widget-help-manual" hidden>…manual fallback…</p>
   </div>
   <div class="help-dialog-footer">
@@ -119,7 +127,7 @@ Remove `<ol class="widget-help-steps">` and the long `.widget-help-note` size pa
 
 ## 6. CSS
 
-- `.widget-help-manual`: muted, `margin-top` ~0.75rem.  
+- `.widget-help-tip` / `.widget-help-manual`: muted, small top margin.  
 - Footer: primary = Add widget.  
 - Remove orphaned `.widget-help-steps` / old note styles if unused.
 

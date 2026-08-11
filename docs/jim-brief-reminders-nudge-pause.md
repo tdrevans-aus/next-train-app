@@ -1,8 +1,8 @@
-# Jim brief: Reminders — Nudge early control + timed Pause
+# Jim brief: Reminders — Early Reminder control + timed Pause
 
 **For:** Jim (implement)  
 **From:** Simon (design) / Tim (product)  
-**Status:** Ready to code  
+**Status:** Shipped (behaviour); **copy locked 2026-08-10** — row title **Early Reminder** (was Nudge early)  
 **Depends on:** `docs/jim-brief-reminders-ux-redesign.md` (More options shell)  
 **Related:** `docs/jim-brief-leave-reminders-v2.md`, native `LeaveReminderSettingsStore` / scheduler pause gate  
 **Out of scope:** Per-journey pause, public holidays calendar, changing notify title strings
@@ -13,7 +13,7 @@
 
 Inside **More options**:
 
-1. **Nudge early · 5 min** as a bare toggle is weak — users can’t see *what* 5 min means or change it.  
+1. **Early Reminder** (formerly *Nudge early · 5 min*) as a bare toggle is weak — users can’t see *what* 5 min means or change it.  
 2. **Pause reminders** as an indefinite toggle is functionally “turn off until I remember.” People pause for holiday / WFH and **forget to unpause** → silent churn, stickiness dies.
 
 ---
@@ -22,31 +22,32 @@ Inside **More options**:
 
 | Topic | Decision |
 |-------|----------|
-| Nudge early | **Not** a free-range slider. **On/off + minute chips** (clearer than a tiny slider in a sheet). |
+| Early Reminder | **Not** a free-range slider. **On/off + minute chips** (clearer than a tiny slider in a sheet). |
 | Pause | **Timed pause** with presets. Indefinite only as an explicit last option. |
-| Copy | Restore holiday / time-off language under Pause. |
+| Copy | **Reminder** is the only feature word. Early offset row = **Early Reminder** (not “Nudge”). Restore holiday / time-off language under Pause. |
 
 ---
 
-## 3. Nudge early
+## 3. Early Reminder
 
 ### UI (inside More options)
 
 ```
-Nudge early                         [on/off]
+Early Reminder                      [on/off]
 When on, show:
-  Notify me this many minutes before leave time:
+  Remind me this many minutes before leave time:
   ( Off is the master toggle above — chips only when on )
   [ 5 ] [ 10 ] [ 15 ]     ← single-select chips; default 5
 ```
 
-**Copy**
+**Copy (locked)**
 
 | Element | Text |
 |---------|------|
-| Row title | **Nudge early** |
-| Hint (always under title when More options open) | **Notify a few minutes before leave time — time to grab keys, not just the leave-by moment.** |
+| Row title | **Early Reminder** |
+| Hint (always under title when More options open) | **Remind me a few minutes before leave time — time to grab keys, not just the leave-by moment.** |
 | Chip group label (sr-only or small) | Minutes before leave |
+| Coach body (Leave Now Reminders) | **Get a reminder when it’s time to leave for your train.** |
 
 **Behaviour**
 
@@ -59,26 +60,28 @@ Maps to existing: `earlyHeadsUp`, `earlyOffsetMinutes`.
 
 ---
 
-## 4. Timed pause
+## 4. Timed pause (Option A — toggle)
 
 ### UI (inside More options)
 
-Replace the Pause toggle with:
+Mirror **Early Reminder**:
 
 ```
-Pause reminders
+Pause reminders                         [on/off]
 For holidays, time off, or working from home.
 
-[ 1 day ] [ 1 week ] [ 2 weeks ] [ Until I turn back on ]
+When on:
+  Paused until Mon 18 Aug   ← status when a timed/indefinite pause is active
+  Pause for:
+  [ 1 day ] [ 1 week ] [ 2 weeks ]
 ```
 
-When a timed pause is active, replace chips with status + clear action:
+**Behaviour**
 
-```
-Paused until Mon 18 Aug
-[ Resume reminders ]
-```
-
+- Toggle **off** → resume (`paused: false`, clear `pauseUntil`).  
+- Toggle **on** → pause immediately using last chosen duration (default **1 week**); show chips + status.  
+- Chip tap → set that duration and keep paused.  
+- No separate **Resume** button — toggle off is resume.
 (Or keep chips and show status line above: `Paused until Mon 18 Aug` + Resume as primary text button.)
 
 ### Copy
@@ -143,8 +146,8 @@ Native scheduler: treat as paused while `paused === true`; auto-clear path can l
 
 ## 5. Acceptance
 
-1. More options: Nudge early = toggle + 5/10/15 chips when on; hint explains leave-time.  
-2. No continuous nudge slider.  
+1. More options: **Early Reminder** = toggle + 5/10/15 chips when on; hint explains leave-time.  
+2. No continuous early-offset slider.  
 3. Pause = duration chips, not a lone forever toggle (indefinite is one explicit chip).  
 4. Hint mentions holidays / time off / WFH.  
 5. Timed pause shows **Paused until …** and **Resume reminders**.  
@@ -158,15 +161,15 @@ Native scheduler: treat as paused while `paused === true`; auto-clear path can l
 
 | File | Change |
 |------|--------|
-| `public/index.html` | More options markup: nudge chips, pause chips / resume |
+| `public/index.html` | More options markup: Early Reminder chips, pause chips / resume |
 | `public/leave-reminders.js` | Settings shape, UI, auto-unpause on open |
 | `public/styles.css` | Chip row styles (reuse journey day chips if possible) |
 | Android settings store + scheduler | Persist `pauseUntil`; auto-clear when expired before schedule |
-| `docs/leave-by-notification.md` | Pause = timed; nudge = chips |
+| `docs/leave-by-notification.md` | Pause = timed; Early Reminder = chips |
 | `TESTING.md` | Timed pause + auto-resume case |
 
 ---
 
 ## 7. Summary for Jim
 
-> In Reminders → More options: replace weak **Nudge early · 5 min** toggle with **Nudge early** on/off + **5 / 10 / 15** chips. Replace indefinite **Pause** toggle with **Pause reminders** + hint (holidays / time off / WFH) and chips **1 day / 1 week / 2 weeks / Until I turn back on**, plus auto-resume when a timed pause ends. Persist `pauseUntil`; keep `paused` boolean for the scheduler gate.
+> In Reminders → More options: **Early Reminder** on/off + **5 / 10 / 15** chips (locked copy; was “Nudge early”). Replace indefinite **Pause** toggle with **Pause reminders** + hint (holidays / time off / WFH) and chips **1 day / 1 week / 2 weeks**, plus auto-resume when a timed pause ends. Persist `pauseUntil`; keep `paused` boolean for the scheduler gate.

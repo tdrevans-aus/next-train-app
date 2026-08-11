@@ -38,7 +38,21 @@ function shouldShowWidgetCoach(engagement, widgetState) {
   return (engagement.appOpenCount || 0) >= 2;
 }
 
-function shouldShowReminderCoach(engagement, widgetState, reminderState, perthDayKey, perthWeekdayIso) {
+function shouldShowReminderCoach(
+  engagement,
+  widgetState,
+  reminderState,
+  perthDayKey,
+  perthWeekdayIso,
+  remindersAlreadyOn = false,
+  skippedTemplateWizard = true
+) {
+  if (remindersAlreadyOn) {
+    return false;
+  }
+  if (!skippedTemplateWizard) {
+    return false;
+  }
   if (!coachCanAutoShow(reminderState)) {
     return false;
   }
@@ -85,14 +99,42 @@ const tests = [
       ),
   },
   {
-    name: "open 3: reminder after widget done",
+    name: "open 3: reminder after skip + widget done",
     run: () =>
       shouldShowReminderCoach(
         { appOpenCount: 3, firstConfiguredJourneyAtMs: Date.parse("2026-08-09T08:00:00+08:00") },
         { status: "done" },
         { status: "pending" },
         () => monday,
-        () => 1
+        () => 1,
+        false,
+        true
+      ),
+  },
+  {
+    name: "open 3: no reminder coach if wizard completed (not skip)",
+    run: () =>
+      !shouldShowReminderCoach(
+        { appOpenCount: 3, firstConfiguredJourneyAtMs: Date.parse("2026-08-09T08:00:00+08:00") },
+        { status: "done" },
+        { status: "pending" },
+        () => monday,
+        () => 1,
+        false,
+        false
+      ),
+  },
+  {
+    name: "open 3: silence reminder coach if already on",
+    run: () =>
+      !shouldShowReminderCoach(
+        { appOpenCount: 3, firstConfiguredJourneyAtMs: Date.parse("2026-08-09T08:00:00+08:00") },
+        { status: "done" },
+        { status: "pending" },
+        () => monday,
+        () => 1,
+        true,
+        true
       ),
   },
   {

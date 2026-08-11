@@ -164,6 +164,7 @@ var NextTrainAds = (() => {
   var ads_native_exports = {};
   __export(ads_native_exports, {
     hideNativeBanner: () => hideNativeBanner,
+    resolveEffectiveTestMode: () => resolveEffectiveTestMode,
     showNativeBanner: () => showNativeBanner
   });
 
@@ -262,17 +263,46 @@ var NextTrainAds = (() => {
 
   // public/ads-native.mjs
   var GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
+  var cachedReleaseBuild = null;
+  async function isNativeReleaseBuild() {
+    if (!window.Capacitor?.isNativePlatform?.()) {
+      return false;
+    }
+    if (cachedReleaseBuild !== null) {
+      return cachedReleaseBuild;
+    }
+    try {
+      const plugin = window.Capacitor.Plugins?.WidgetSync ?? window.Capacitor.registerPlugin?.("WidgetSync");
+      const result = await plugin?.isDebugBuild?.();
+      cachedReleaseBuild = result ? !result.debug : false;
+    } catch {
+      cachedReleaseBuild = false;
+    }
+    return cachedReleaseBuild;
+  }
+  async function resolveEffectiveTestMode(config) {
+    const fromConfig = Boolean(config.admobTestMode);
+    if (!window.Capacitor?.isNativePlatform?.()) {
+      return fromConfig;
+    }
+    if (await isNativeReleaseBuild()) {
+      return false;
+    }
+    return true;
+  }
   async function showNativeBanner(config) {
+    const admobTestMode = await resolveEffectiveTestMode(config);
+    const bannerConfig = { ...config, admobTestMode };
     await AdMob.initialize({
-      initializeForTesting: Boolean(config.admobTestMode)
+      initializeForTesting: admobTestMode
     });
-    const adId = config.admobTestMode ? GOOGLE_TEST_BANNER_ID : config.admobBannerId;
+    const adId = admobTestMode ? GOOGLE_TEST_BANNER_ID : bannerConfig.admobBannerId;
     await AdMob.showBanner({
       adId,
       adSize: "ADAPTIVE_BANNER",
       position: "BOTTOM_CENTER",
       margin: 72,
-      isTesting: Boolean(config.admobTestMode)
+      isTesting: admobTestMode
     });
   }
   async function hideNativeBanner() {

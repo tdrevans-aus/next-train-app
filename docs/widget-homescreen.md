@@ -2,7 +2,7 @@
 
 **For:** Jim (implement) / Tim (product) / Simon (design)  
 **Backlog:** Rank **#1** in `docs/stickiness-ideas.md`  
-**Status:** **Shipped (Android)** — redesign: train-first + 2×1 default  
+**Status:** **Shipped (Android)** — redesign: train-first + 2×1 default · **v2 rethink in progress:** `docs/widget-redesign-v2.md`  
 **Job:** Let Journey-savers see **next train** and **when to leave** without opening the app  
 
 **As-shipped notes:** Coach *“See your next train — and when to leave — on your home screen.”* Menu **Add home screen widget**. Shared `CommuteSchedule`; 120‑min stale trust; deep link `nexttrain://journey/{id}`. Widget shows **next** train/leave for the selected journey (not preferred-train reminder targeting).  
@@ -42,16 +42,15 @@ Not aimed at Nearby-only users — those people open the app for Near me; widget
 
 ## 3. Which journey does the widget show?
 
-Same rules as Journey mode cold start / in-app active journey:
+**Locked (Tim — see `docs/jim-brief-outside-hours-nearby.md`):**
 
-1. If current time falls in a journey’s **active hours** → that journey  
-2. Else if user has a **last-selected / manual override** journey (same spirit as in-app) → that one  
-3. Else if exactly **one** journey exists → that one  
-4. Else (multiple, none in window) → last selected / first configured journey — still show **next** leave/train if computable; **do not** fall back to Nearby; **do not** show “Outside active hours” on the widget (quiet; journey still visible)
+1. If current time falls in a journey’s **Active hours** (+ Active days) → that journey (commute widget).  
+2. Else → **Near me idle** on the widget (not last `activeJourneyId` / first journey). Tap opens app in **Near me**.  
+3. Zero journeys → existing empty / set-up journey state.
 
-**Shipped pick:** Active-hours match → else `activeJourneyId` → else sole journey without a window → else first configured.
+In-app: same clock rule — outside all Active hours → **Near me** (manual journey pick still allowed via My Journeys / switcher).
 
-**Time to station** off: hide the leave line; right side can show route only.
+~~Older v1:~~ active-hours → else last selected → else sole / first configured (superseded).
 
 ---
 
@@ -60,15 +59,16 @@ Same rules as Journey mode cold start / in-app active journey:
 ### Left / primary — brand + train
 
 - Label: **`NEXT TRAIN`** (same words as in-app hero label)  
-- Big number: relative **`12 min`** / **`NOW`** (minutes until **departure**)  
+- Big number: relative minutes until **departure** — **large digit(s)** + **small `min`/`mins`** when space is tight on 2×1 (never drop the unit or clip to a bare digit); **`NOW`** unchanged  
 - Train clock under number: `3:52` (device time format)
 
 ### Right / secondary — leave (buffer on)
 
-- **`Leave in 8 min`** / **`Leave now`** / **`Leave 8 min ago`** (overdue leave-by — not bare “8 min late”, so it isn’t read as a delayed train)  
+- **`Leave in 8 min`** / **`Leave now`** (through **1 minute after** leave-by). After that grace, **hide** the leave line — never **`Leave N min ago`**.  
+- On **2×1**: prefer **station** under leave (or under clock when leave is hidden). **No Updated** on small — bare **`Just now`** is not allowed.  
+- On **medium+** (user resized): station **and** full **`Updated just now`** / **`Updated 3m ago`** return.  
 - Urgency colour on the **leave line only** (teal stays on the train number — mirrors main screen)  
-- Station crumb under leave: **`Edgewater`** only (not `Edgewater → Perth` — fits 2×1)  
-- Tiny: `Updated 3:41` (or stale warning)
+- Tiny Updated line: medium+ only (or stale warning there)  
 - **No** swipe between trains on the widget (in-app only)
 
 ### Buffer off
@@ -89,8 +89,8 @@ Same rules as Journey mode cold start / in-app active journey:
 
 | Size | Cells | Role |
 |------|-------|------|
-| **Small (default)** | **2×1** | Horizontal strip: left Next Train + countdown + clock · right leave + route + updated |
-| **Medium** | Resize up (wider/taller) | Same hierarchy, more breathing room + delay status crumb |
+| **Small (default)** | **2×1** | Left **NEXT TRAIN** + countdown + clock; right **Leave in** + **Updated**. Outside Active hours: **NEAR ME** idle — tap opens **Near me**. |
+| **Medium** | Resize up (wider/taller) | Same hierarchy + full **Updated …** + more breathing room / delay crumb |
 | **Large** | Optional later | Still no “Then” |
 
 **Default add size is 2×1** (`targetCellWidth=2`, `targetCellHeight=1`) — two icon slots, not a 2×2 square.
@@ -113,7 +113,7 @@ Visual language: light surface, teal accent on the **train** number, urgency on 
 |-------|----------------|-----------|
 | **Loading / first paint** | Journey route if known · `…` · no fake times | App → Journey mode |
 | **Live OK** | §4 content | App → that journey in Journey mode |
-| **Stale** (cached times, refresh failed) | Last times + dimmed or warning updated line | Same |
+| **Stale** (cached times, refresh failed) | Last times + **Open app** on medium; **Times may be out of date** on Updated line | Same |
 | **No upcoming trains** | Route · `No trains` · updated | Same |
 | **No journeys** | `Next Train` · `Add a journey` · short subcopy | App → Journey empty / add flow |
 | **Location/API N/A** | N/A for journey widget — uses saved station, not GPS | — |
@@ -151,9 +151,9 @@ Deep link: `nexttrain://journey/{id}` and `nexttrain://journey/new`.
 |---------|-----------|
 | Widget added / unlock / app open | Network refresh ASAP |
 | Periodic network | ~**15 minutes** |
-| Local paint (countdown) | **Every 1 minute** when leave-in / train-in ≤ ~45–60 min (recompute from cached absolutes; no API) |
+| Local paint (countdown) | **Every wall-clock minute** whenever a live numeric countdown is shown (recompute from cached absolutes; no API). Must stay aligned with status-bar clock: phone time + **X** ≈ train clock. (Was gated to ~60 min — that caused drift; see Phase B **B0** / **W-05**.) |
 | Departure minute passed | Promote cached **following** train locally, or show **Updating…** until network refresh; missed advance alarm triggers refresh |
-| Far from leave / idle | No extra local tick — next network refresh is enough |
+| Live countdown shown | **Every wall-clock minute** local paint (see §8); opportunistic network refresh when data ages |
 
 Show honest **Updated** timestamps. Never pretend second-level accuracy.
 
@@ -166,7 +166,7 @@ Network fail → keep last good times + stale line. Don’t blank the big number
 ## 9. Discovery in product (so people add it)
 
 1. After first journey save → **do not** auto-prompt widget/reminders that session. Stagger per `docs/jim-brief-stagger-stickiness-coaches.md` (2nd open → widget; 3rd / weekday → reminders).  
-2. Menu → **Add home screen widget** (always) — help dialog: one-line benefit + **Add widget** button (Android request-pin); long-press widget-picker steps only if pin fails or is unsupported.  
+2. Menu → **Add home screen widget** (always) — help dialog: one-line benefit + *Long-press to resize for a roomier layout.* + **Add widget** button (Android request-pin); long-press widget-picker steps only if pin fails or is unsupported. Same resize tip in Menu → Help.  
 3. Do **not** block Nearby board or spam daily.
 
 ---
@@ -191,7 +191,7 @@ Network fail → keep last good times + stale line. Don’t blank the big number
 
 1. Default add size is **2×1**; user can resize up to a roomier layout.  
 2. Hierarchy matches main screen: **Next Train** primary, leave secondary (hidden if buffer off).  
-3. **Updated** (or stale) line present after first successful load.  
+3. **Updated** (or stale) line on **medium+** after first successful load; **2×1** prefers station and omits Updated.  
 4. Tap → **Journey mode** for that journey (not Nearby).  
 5. Zero journeys → empty CTA → tap to add.  
 6. No “Outside active hours” / packed secondary sausage.  
@@ -213,4 +213,4 @@ Network fail → keep last good times + stale line. Don’t blank the big number
 
 ## 14. Summary for Jim
 
-> Android widget default **2×1**: **Next Train** countdown + clock on the left; **Leave in** + **station** + Updated on the right. Station only (not full route). No swipe. Match main-screen hierarchy and label. Network ~15 min; local 1‑min paint near leave from cached absolutes. Next train for display; preferred train stays reminders-only. Tap → Journey mode. No Nearby, no ads.
+> Android widget default **2×1**: **Next Train** countdown + clock on the left; **Leave in** + **station** on the right (no Updated on small — bare **Just now** not allowed). Resize to **medium** → full **Updated …** returns. No swipe. Match main-screen hierarchy and label. Network ~15 min; local 1‑min paint near leave from cached absolutes. Next train for display; preferred train stays reminders-only. Tap → Journey mode. No Nearby, no ads.

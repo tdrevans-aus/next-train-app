@@ -16,7 +16,7 @@ async function coachState(page) {
 }
 
 async function dismissTemplateCoach(page) {
-  for (let step = 0; step < 3; step++) {
+  for (let step = 0; step < 6; step++) {
     const visible = await page.evaluate(
       () => !document.getElementById("template-route-coach").hidden
     );

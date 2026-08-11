@@ -32,7 +32,7 @@ Replace static `#detail-journey-heading` with:
 ← My Journeys
 
 Name
-[ e.g. School run                    ]
+[ e.g. Weekend into town             ]
 
 Route
   …
@@ -44,7 +44,7 @@ Timing
 |---------|------|
 | Label | **Name** |
 | Control | Text `<input type="text">` matching other fields |
-| Placeholder | `e.g. School run` |
+| Placeholder | `e.g. Weekend into town` |
 | `id` | `#detail-journey-name` |
 | Max length | ~40 chars (trim on save) |
 

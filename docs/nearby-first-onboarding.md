@@ -43,10 +43,13 @@ Journeys answer a second job: *my repeat commute.* Lead with the first; introduc
 ### Timing
 
 1. Nearby board reaches a **useful populated state** (station + departure, or clear empty/error).  
+   On return visits, **last Near me station** may paint departures immediately while GPS refines in the background (`nextTrainLastNearbyStation` in `localStorage`).  
 2. Wait **6 seconds** of calm (`setTimeout` 6000 ms in app) with no meaningful tap — then show step 1.  
    Gives the board time to feel useful before the coach asks for attention.  
 3. If the user taps meaningfully before that, **defer** for the session (`sessionStorage`).  
 4. Never show over a loading spinner / while Nearby is still resolving.
+
+**Unsupported region:** If nearest station is **> 50 km** away, Near me shows a **Perth rail only** empty state instead of a board. Onboarding step 1 uses softer copy: *Near me works when you're near Transperth stations.* See `docs/jim-brief-unsupported-region.md`.
 
 *(Earlier builds used ~1.5–2.5s then 4s; current is **6s** so first open isn’t pushy.)*
 

@@ -21,7 +21,8 @@ public final class DeepLinkHelper {
       return;
     }
 
-    if (!"journey".equals(data.getHost())) {
+    String host = data.getHost();
+    if (!"journey".equals(host) && !"nearby".equals(host) && !"home".equals(host)) {
       return;
     }
 

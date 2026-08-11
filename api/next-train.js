@@ -4,6 +4,8 @@ import {
   getNextTrainData,
 } from "../lib/train-times.js";
 import { applyCors } from "../lib/api-cors.js";
+import { checkRateLimit } from "../lib/api-rate-limit.js";
+import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
 
 function readParams(query = {}) {
   const station = query.station;
@@ -31,12 +33,24 @@ export default async function handler(req, res) {
     return;
   }
 
+  if (!checkRateLimit(req, res)) {
+    return;
+  }
+
   const config = readParams(req.query);
 
   if (!config) {
     res.status(400).json({ error: "Missing required parameters: station, direction" });
     return;
   }
+
+  const station = resolveAllowedStation(config.station);
+  if (!station) {
+    res.status(400).json({ error: "Unknown station" });
+    return;
+  }
+
+  config.station = station;
 
   try {
     const data = await getNextTrainData(config);

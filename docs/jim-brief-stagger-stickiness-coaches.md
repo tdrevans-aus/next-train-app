@@ -159,7 +159,7 @@ Keep Menu entry points unchanged.
 
 **Widget:** *See your next train — and when to leave — on your home screen.* · **How** / **Not now**  
 
-**Reminders:** *Get a nudge when it’s time to leave for your train.* · **Turn on** / **Not now**  
+**Reminders:** *Get a reminder when it’s time to leave for your train.* · **Turn on** / **Not now**  
 
 No combined “Make this commute stick” sheet (Ruth Option E — avoid).
 

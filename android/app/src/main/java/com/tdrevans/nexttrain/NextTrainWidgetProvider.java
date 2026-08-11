@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import org.json.JSONObject;
 
 public class NextTrainWidgetProvider extends AppWidgetProvider {
@@ -14,6 +15,17 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
     CommuteRefreshService.paintFromCache(context);
     WidgetRefreshScheduler.ensureScheduled(context);
     CommuteRefreshService.refreshAll(context);
+  }
+
+  @Override
+  public void onAppWidgetOptionsChanged(
+    Context context,
+    AppWidgetManager manager,
+    int appWidgetId,
+    Bundle newOptions
+  ) {
+    // Resize 2×1 ↔ 3×1 / 2×2 must rebind layout + Updated visibility immediately.
+    CommuteRefreshService.paintFromCache(context);
   }
 
   @Override

@@ -63,11 +63,21 @@ Tim: after first 30 soft-launch users, write **actual** D1/D7 numbers into this 
 
 ## 5. Weekly ritual (15 min)
 
+**Purpose:** After Play is public, decide each week whether soft-launch health is good enough to **keep going** (stay public / expand / later green-light iOS submit), or to **pause** and fix. Not a full status meeting — five facts, one written verdict.
+
+**Cadence:** Same weekday each week (suggest Monday AWST). Starts first week of Play public (~22 Sep 2026).  
+**Owners:** Tim + PM; Ruth when channel metrics matter.  
+**Holiday rule:** Tim OOO **27 Sep – 9 Oct** → PM runs **watch-only** (log the five checks; no rollout expand; no iOS submit). Full ritual resumes with Tim from **13 Oct**.
+
 1. Installs + Journey saves this week  
 2. D7 for cohort that saved 7+ days ago  
 3. Top 3 bugs from beta/friends  
-4. AdMob not in test mode? IAP still buys?  
-5. One line in a running log: go / lean-go / no-go instinct  
+4. AdMob not in test mode? IAP still buys? **AdMob:** production web `admobTestMode: false`; Play release build forces test mode off (verify one prod ad request in log / AdMob console).  
+5. One line in a running log: **go** / **lean-go** / **no-go** instinct  
+
+**Verdicts:** **go** = continue plan · **lean-go** = OK but watch a named risk · **no-go** = pause expansion / open a fix train.
+
+Full holiday blackout + freeze checklist: [launch-program.md](launch-program.md).
 
 ---
 
@@ -76,3 +86,4 @@ Tim: after first 30 soft-launch users, write **actual** D1/D7 numbers into this 
 | Date | Note |
 |------|------|
 | 2026-08-09 | Measurement draft for Ruth Do-now |
+| 2026-08-11 | Ritual clarified; Tim OOO watch-only rule added |

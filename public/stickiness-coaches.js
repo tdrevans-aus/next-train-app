@@ -141,11 +141,28 @@ function shouldShowWidgetCoach(engagement = readEngagement(), widgetState = read
   return (engagement.appOpenCount || 0) >= 2;
 }
 
+function anyJourneyHasRemindersOn() {
+  const journeys = window.nextTrainApp?.getConfiguredJourneys?.() ?? [];
+  return journeys.some((journey) => journey?.remindMe === true);
+}
+
+function hasSkippedTemplateWizard() {
+  return Boolean(window.nextTrainApp?.hasSkippedTemplateWizard?.());
+}
+
 function shouldShowReminderCoach(
   engagement = readEngagement(),
   widgetState = readCoachState("widget"),
-  reminderState = readCoachState("reminder")
+  reminderState = readCoachState("reminder"),
+  remindersAlreadyOn = anyJourneyHasRemindersOn(),
+  skippedTemplateWizard = hasSkippedTemplateWizard()
 ) {
+  if (remindersAlreadyOn) {
+    return false;
+  }
+  if (!skippedTemplateWizard) {
+    return false;
+  }
   if (!coachCanAutoShow(reminderState)) {
     return false;
   }
@@ -216,7 +233,7 @@ function markCoachNotNow(kind) {
   });
 }
 
-function evaluateStickinessCoaches() {
+async function evaluateStickinessCoaches() {
   if (!isNativeApp()) {
     return;
   }
@@ -233,12 +250,24 @@ function evaluateStickinessCoaches() {
   const widgetState = readCoachState("widget");
 
   if (shouldShowWidgetCoach(engagement, widgetState)) {
-    window.nextTrainWidget?.showWidgetCoach?.();
+    const shown = await window.nextTrainWidget?.showWidgetCoach?.();
+    if (shown) {
+      return;
+    }
+  }
+
+  if (anyJourneyHasRemindersOn()) {
+    markCoachDone("reminder");
+    return;
+  }
+
+  if (!hasSkippedTemplateWizard()) {
     return;
   }
 
   const reminderState = readCoachState("reminder");
-  if (shouldShowReminderCoach(engagement, widgetState, reminderState)) {
+  const latestWidgetState = readCoachState("widget");
+  if (shouldShowReminderCoach(engagement, latestWidgetState, reminderState, false, true)) {
     window.nextTrainLeaveReminders?.showLeaveReminderCoach?.();
   }
 }
@@ -264,6 +293,7 @@ window.nextTrainStickinessCoaches = {
   recordFirstConfiguredJourney,
   shouldShowWidgetCoach,
   shouldShowReminderCoach,
+  anyJourneyHasRemindersOn,
   markCoachDone,
   markCoachNotNow,
   evaluateStickinessCoaches,

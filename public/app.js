@@ -11,6 +11,10 @@ const SWIPE_HINT_KEY = "nextTrainSwipeHintSeen";
 const LEAVE_HINT_KEY = "nextTrainLeaveHintSeen";
 const ONBOARDING_KEY = "nextTrainOnboardingDone";
 const ONBOARDING_DEFER_KEY = "nextTrainOnboardingDeferred";
+const TEMPLATE_WIZARD_SEEN_KEY = "nextTrainTemplateWizardSeen";
+const TEMPLATE_WIZARD_SKIPPED_KEY = "nextTrainTemplateWizardSkipped";
+const LAST_NEARBY_STATION_KEY = "nextTrainLastNearbyStation";
+const LAST_NEARBY_STATION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 const SWIPE_THRESHOLD_PX = 48;
 
 const routeEl = document.getElementById("route");
@@ -35,7 +39,10 @@ const leaveCardLabelEl = document.getElementById("leave-card-label");
 const leaveTimeEl = document.getElementById("leave-time");
 const leaveCountdownEl = document.getElementById("leave-countdown");
 const leaveHintEl = document.getElementById("leave-hint");
+const preferredHintEl = document.getElementById("preferred-hint");
 const leaveAckBtn = document.getElementById("leave-ack-btn");
+const leaveNextTrainBtn = document.getElementById("leave-next-train-btn");
+const leaveCardActionsEl = document.getElementById("leave-card-actions");
 const platformEl = document.getElementById("platform");
 const statusEl = document.getElementById("status");
 const followingSectionEl = document.getElementById("following-section");
@@ -51,8 +58,10 @@ const nearbyDirectionsEl = document.getElementById("nearby-directions");
 const nearbyDirectionsListEl = document.getElementById("nearby-directions-list");
 const nearbyFallbackEl = document.getElementById("nearby-fallback");
 const nearbyFallbackTextEl = document.getElementById("nearby-fallback-text");
-const nearbyStationSelect = document.getElementById("nearby-station-select");
+const nearbyStationComboboxRoot = document.getElementById("nearby-station-combobox");
+const nearbyStationInput = document.getElementById("nearby-station-input");
 const nearbyStationBtn = document.getElementById("nearby-station-btn");
+const nearbyDontWaitBtn = document.getElementById("nearby-dont-wait-btn");
 const appEl = document.querySelector(".app");
 const helpDialog = document.getElementById("help-dialog");
 const helpCloseBtn = document.getElementById("help-close-btn");
@@ -69,7 +78,8 @@ const journeyListEl = document.getElementById("journey-list");
 const clearAllDataBtn = document.getElementById("clear-all-data-btn");
 const deleteJourneyBtn = document.getElementById("delete-journey-btn");
 const detailJourneyNameInput = document.getElementById("detail-journey-name");
-const detailStationSelect = document.getElementById("detail-station-select");
+const detailStationComboboxRoot = document.getElementById("detail-station-combobox");
+const detailStationInput = document.getElementById("detail-station-input");
 const detailDirectionSelect = document.getElementById("detail-direction-select");
 const detailLeaveBeforeInput = document.getElementById("detail-leave-before-input");
 const detailLeaveBeforeValueEl = document.getElementById("detail-leave-before-value");
@@ -95,6 +105,9 @@ const onboardingLaterBtn = document.getElementById("onboarding-later-btn");
 const journeysChromeAction = document.getElementById("journeys-chrome-action");
 const journeyTemplatesEl = document.getElementById("journey-templates");
 const journeyTemplatesLoadingEl = document.getElementById("journey-templates-loading");
+const journeyTemplatesCapHintEl = document.getElementById("journey-templates-cap-hint");
+const journeyTemplateChipsEl = document.querySelector(".journey-template-chips");
+const journeyTemplatesAddHintEl = document.querySelector(".journey-templates-hint");
 const templateRouteCoach = document.getElementById("template-route-coach");
 const templateRouteCoachBody = document.getElementById("template-route-coach-body");
 const templateWizardHoursBody = document.getElementById("template-wizard-hours-body");
@@ -102,11 +115,36 @@ const templateWizardPrimaryBtn = document.getElementById("template-wizard-primar
 const templateWizardStep1 = document.getElementById("template-wizard-step-1");
 const templateWizardStep2 = document.getElementById("template-wizard-step-2");
 const templateWizardStep3 = document.getElementById("template-wizard-step-3");
+const templateWizardStepReminder = document.getElementById("template-wizard-step-reminder");
+const templateWizardStepName = document.getElementById("template-wizard-step-name");
+const templateWizardNameBody = document.getElementById("template-wizard-name-body");
+const templateWizardSkipBtn = document.getElementById("template-wizard-skip-btn");
+const detailJourneyNameField = document.querySelector(".journey-name-field");
 const detailRouteSection = document.getElementById("detail-route-section");
 const detailJourneyWindow = document.getElementById("detail-journey-window");
 const heroEmptyStateEl = document.getElementById("hero-empty-state");
 const heroEmptyAddBtn = document.getElementById("hero-empty-add-btn");
 const heroEmptyBackBtn = document.getElementById("hero-empty-back-btn");
+const detailActiveDayChips = document.getElementById("detail-active-day-chips");
+const detailActiveDaysHint = document.querySelector(".detail-active-days-hint");
+const DEFAULT_ACTIVE_DAYS_HINT = "Which days to you travel this journey?";
+const CUSTOM_ACTIVE_DAYS_HINT =
+  "Starts on today — add more days if this repeats more often.";
+const detailActiveHoursErrorEl = document.getElementById("detail-active-hours-error");
+const detailActiveHoursErrorTextEl = document.getElementById("detail-active-hours-error-text");
+const detailActiveHoursFixBtn = document.getElementById("detail-active-hours-fix-btn");
+const detailActiveHoursHint = document.getElementById("detail-active-hours-hint");
+const detailTargetOutsideActiveHint = document.getElementById("detail-target-outside-active-hint");
+const detailComboBHint = document.getElementById("detail-combo-b-hint");
+const detailComboDHint = document.getElementById("detail-combo-d-hint");
+const detailReminderSection = document.getElementById("detail-reminder-section");
+const detailRemindMeInput = document.getElementById("detail-remind-me");
+const detailRemindExpandedEl = document.getElementById("detail-remind-expanded");
+const detailPreferredInput = document.getElementById("detail-preferred-input");
+const detailPreferredDisplay = document.getElementById("detail-preferred-display");
+const detailPreferredField = document.getElementById("detail-preferred-field");
+const detailPreferredClear = document.getElementById("detail-preferred-clear");
+const detailRemindPermissionHint = document.getElementById("detail-remind-permission-hint");
 
 let settings = createDefaultStore();
 let refreshSeconds = DEFAULT_SETTINGS.refreshSeconds;
@@ -123,7 +161,6 @@ let settingsDraftJourneys = [];
 let editingJourneyId = null;
 let editingJourneySnapshot = null;
 let journeySwitcherOpen = false;
-let activeJourneyNameEdit = null;
 let swipeStartX = 0;
 let swipeStartY = 0;
 let heroSwipePointerId = null;
@@ -131,12 +168,20 @@ let leaveAutoCheckDeparture = null;
 let nearbySession = null;
 let nearbyBoard = null;
 let nearbyLoading = false;
+let nearbyBoardInflight = null;
+let nearbyLocateStartedAt = 0;
+let nearbyLocateTimer = null;
+let nearbyLocatePickerVisible = false;
+let nearbyDontWaitVisible = false;
+let nearbyUserPickedStation = false;
 let nearbyError = null;
 let journeyModeActive = false;
 let deferJourneyAutoSelect = false;
 let onboardingShowTimer = null;
 let onboardingPopulatedAt = null;
 let templateCreateInFlight = false;
+let helpOpenedFromMenu = false;
+let journeyOverlapState = null;
 
 const STATION_ARRIVAL_KM = 0.35;
 const TRAVELING_SPEED_MS = 2.5;
@@ -145,6 +190,13 @@ const DIRECTION_ALIASES = {
   "Perth Underground": "Perth",
   "Perth Underground Stn": "Perth",
   "Perth Stn": "Perth",
+  "Cockburn Central": "Cockburn",
+  "Cockburn Central Stn": "Cockburn",
+};
+
+const LINE_DIRECTION_GROUPS = {
+  Yanchep: ["Yanchep", "Whitfords", "Clarkson"],
+  Mandurah: ["Mandurah", "Cockburn"],
 };
 
 const PERTH_STATIONS = new Set(["Perth Stn", "Perth Underground Stn"]);
@@ -152,6 +204,28 @@ const PERTH_API_STATIONS = ["Perth Underground Stn", "Perth Stn"];
 const CANONICAL_PERTH_STATION = "Perth Underground Stn";
 const DEFAULT_DIRECTION_LABEL = "Perth";
 const DEFAULT_REMIND_DAYS = [1, 2, 3, 4, 5];
+const MAX_JOURNEYS = 6;
+const JOURNEY_CAP_HINT = `${MAX_JOURNEYS} journeys — that's the limit for now. Delete one to add another.`;
+const JOURNEY_TEMPLATE_PRESETS = {
+  morning: {
+    name: "Morning into town",
+    defaultFrom: "06:00",
+    defaultUntil: "09:00",
+    preferredTrainTime: "07:30",
+    remindDays: [1, 2, 3, 4, 5],
+    remindMe: false,
+  },
+  evening: {
+    name: "Evening home",
+    defaultFrom: "15:00",
+    defaultUntil: "18:00",
+    preferredTrainTime: "17:30",
+    remindDays: [1, 2, 3, 4, 5],
+    remindMe: false,
+  },
+};
+const DELETE_LAST_JOURNEY_CONFIRM =
+  "Delete your only journey? You can add a new one anytime.";
 
 const API_ORIGIN = window.Capacitor?.isNativePlatform?.()
   ? "https://next-train-app.vercel.app"
@@ -425,6 +499,14 @@ function readJourneyNameFromForm(station, direction) {
   return formatRouteBasedJourneyName(station, direction);
 }
 
+function formatNearestDistanceHint(nearest) {
+  if (!nearest || typeof nearest.distanceKm !== "number") {
+    return null;
+  }
+
+  return `${nearest.distanceKm.toFixed(1)} km away`;
+}
+
 function formatStationLabel(name) {
   if (PERTH_STATIONS.has(name)) {
     return "Perth";
@@ -438,16 +520,23 @@ function normalizeDirection(direction) {
   }
 
   const trimmed = direction.trim();
+  let aliased = trimmed;
   if (DIRECTION_ALIASES[trimmed]) {
-    return DIRECTION_ALIASES[trimmed];
+    aliased = DIRECTION_ALIASES[trimmed];
+  } else {
+    const withoutStn = trimmed.replace(/ Stn$/i, "");
+    if (DIRECTION_ALIASES[withoutStn]) {
+      aliased = DIRECTION_ALIASES[withoutStn];
+    }
   }
 
-  const withoutStn = trimmed.replace(/ Stn$/i, "");
-  if (DIRECTION_ALIASES[withoutStn]) {
-    return DIRECTION_ALIASES[withoutStn];
+  for (const [canonical, members] of Object.entries(LINE_DIRECTION_GROUPS)) {
+    if (members.some((member) => member.toLowerCase() === aliased.toLowerCase())) {
+      return canonical;
+    }
   }
 
-  return trimmed;
+  return aliased;
 }
 
 function dedupeDirections(directions) {
@@ -485,11 +574,147 @@ function normalizeRemindDays(raw) {
   return days.length ? [...new Set(days)].sort((a, b) => a - b) : [...DEFAULT_REMIND_DAYS];
 }
 
+function getPerthDayOfWeekIso(date = new Date()) {
+  const weekday = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Australia/Perth",
+    weekday: "long",
+  }).format(date);
+  const map = {
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+    Sunday: 7,
+  };
+  return map[weekday] ?? 1;
+}
+
+function getJourneyRemindDays(journey) {
+  return normalizeRemindDays(journey?.remindDays);
+}
+
+function setDetailActiveDayChips(days) {
+  if (!detailActiveDayChips) {
+    return;
+  }
+
+  const selected = new Set(normalizeRemindDays(days));
+  detailActiveDayChips.querySelectorAll(".remind-day-chip").forEach((chip) => {
+    const day = Number(chip.dataset.day);
+    const active = selected.has(day);
+    chip.classList.toggle("remind-day-chip--active", active);
+    chip.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+
+function syncDetailActiveDaysHint(journey) {
+  if (!detailActiveDaysHint) {
+    return;
+  }
+
+  detailActiveDaysHint.textContent =
+    journey?.templateKey === "custom" ? CUSTOM_ACTIVE_DAYS_HINT : DEFAULT_ACTIVE_DAYS_HINT;
+}
+
+function isTargetOutsideActiveWindow(defaultFrom, defaultUntil, preferredTrainTime) {
+  if (!defaultFrom || !defaultUntil || !preferredTrainTime) {
+    return false;
+  }
+
+  const targetMinutes = parseTimeToMinutes(preferredTrainTime);
+  const from = parseTimeToMinutes(defaultFrom);
+  const until = parseTimeToMinutes(defaultUntil);
+
+  // Inclusive of Active from/until (unlike live auto-show, which uses until exclusive).
+  if (from === until) {
+    return false;
+  }
+  if (from < until) {
+    return targetMinutes < from || targetMinutes > until;
+  }
+  // Overnight window: inside if at/after from OR at/before until.
+  return targetMinutes < from && targetMinutes > until;
+}
+
+function syncDetailComboHints() {
+  const defaultFrom = readOptionalTimeField(detailDefaultFromField);
+  const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
+  const preferredTrainTime = readOptionalTimeField(detailPreferredField);
+  const hasWindow = Boolean(defaultFrom && defaultUntil);
+  const hasTarget = Boolean(preferredTrainTime);
+
+  const outsideTarget = isTargetOutsideActiveWindow(
+    defaultFrom,
+    defaultUntil,
+    preferredTrainTime
+  );
+  const showComboB = !hasWindow && hasTarget;
+  const showComboD = !hasWindow && !hasTarget;
+  const showDefault = !outsideTarget && !showComboB && !showComboD;
+
+  if (detailTargetOutsideActiveHint) {
+    const wasHidden = detailTargetOutsideActiveHint.hidden;
+    detailTargetOutsideActiveHint.hidden = !outsideTarget;
+    if (outsideTarget && wasHidden) {
+      detailTargetOutsideActiveHint.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }
+  if (detailComboBHint) {
+    detailComboBHint.hidden = !showComboB;
+  }
+  if (detailComboDHint) {
+    detailComboDHint.hidden = !showComboD;
+  }
+  if (detailActiveHoursHint) {
+    detailActiveHoursHint.hidden = !showDefault;
+  }
+}
+
+function readDetailActiveDays() {
+  if (!detailActiveDayChips) {
+    return [];
+  }
+
+  const days = [];
+  detailActiveDayChips.querySelectorAll(".remind-day-chip--active").forEach((chip) => {
+    days.push(Number(chip.dataset.day));
+  });
+  return [...new Set(days)].sort((a, b) => a - b);
+}
+
+function journeyMatchesActiveDay(journey, dayOfWeek = getPerthDayOfWeekIso()) {
+  return getJourneyRemindDays(journey).includes(dayOfWeek);
+}
+
+function journeyMatchesSchedule(
+  journey,
+  minutes = getPerthMinutesSinceMidnight(),
+  dayOfWeek = getPerthDayOfWeekIso()
+) {
+  return journeyMatchesActiveDay(journey, dayOfWeek) && journeyMatchesTime(journey, minutes);
+}
+
 function journeyRemindMeEnabled(raw = {}) {
   if (typeof raw.remindMe === "boolean") {
     return raw.remindMe;
   }
   return Boolean(raw.preferredTrainTime);
+}
+
+function inferTemplateKey(raw = {}) {
+  if (raw.templateKey) {
+    return String(raw.templateKey);
+  }
+
+  for (const [key, preset] of Object.entries(JOURNEY_TEMPLATE_PRESETS)) {
+    if (raw.name === preset.name) {
+      return key;
+    }
+  }
+
+  return "";
 }
 
 function normalizeJourney(raw = {}) {
@@ -520,7 +745,8 @@ function normalizeJourney(raw = {}) {
     preferredTrainTime = defaultFrom;
   }
 
-  return {
+  const templateKey = inferTemplateKey(raw);
+  const journey = {
     id: raw.id || createJourneyId(),
     name: String(raw.name || "Journey").trim() || "Journey",
     station: raw.station ? normalizeStation(raw.station) : "",
@@ -534,6 +760,15 @@ function normalizeJourney(raw = {}) {
     remindDays: normalizeRemindDays(raw.remindDays),
     remindMe: journeyRemindMeEnabled(raw),
   };
+
+  if (templateKey) {
+    journey.templateKey = templateKey;
+  }
+  if (raw.autoRoute === false) {
+    journey.autoRoute = false;
+  }
+
+  return journey;
 }
 
 function legToJourney(leg, name, defaultFrom, defaultUntil) {
@@ -776,6 +1011,10 @@ function maybeScheduleOnboarding() {
     return;
   }
 
+  if (shouldShowNearbyLoadingState()) {
+    return;
+  }
+
   if (hasCompletedOnboarding()) {
     return;
   }
@@ -819,6 +1058,13 @@ function showOnboardingStep1() {
     return;
   }
 
+  const step1Text = onboardingStep1?.querySelector("p");
+  if (step1Text) {
+    step1Text.textContent = nearbySession?.unsupportedRegion
+      ? "Near me works when you're near Transperth stations."
+      : "By default, Next Train shows departures at the station nearest you.";
+  }
+
   if (onboardingStep1) {
     onboardingStep1.hidden = false;
   }
@@ -840,7 +1086,7 @@ function showOnboardingStep2() {
 
 function installOnboardingInteractionTracking() {
   const selector =
-    "#hero, #nearby-btn, #journeys-btn, #menu-btn, #journey-switcher, .nearby-direction-row, #nearby-station-btn, #nearby-station-select, #onboarding-coach, #onboarding-coach *";
+    "#hero, #nearby-btn, #journeys-btn, #menu-btn, #journey-switcher, .nearby-direction-row, #nearby-station-btn, #nearby-station-input, #detail-station-input, #onboarding-coach, #onboarding-coach *";
 
   document.addEventListener(
     "pointerdown",
@@ -917,10 +1163,34 @@ function persistReminderJourneys(patches) {
       ...journey,
       remindMe: patch.remindMe === true,
       preferredTrainTime: patch.preferredTrainTime || "",
-      remindDays: normalizeRemindDays(patch.remindDays),
     });
   });
+
+  for (const patch of patches) {
+    const draftIndex = settingsDraftJourneys.findIndex((journey) => journey.id === patch.id);
+    if (draftIndex >= 0) {
+      settingsDraftJourneys[draftIndex] = normalizeJourney({
+        ...settingsDraftJourneys[draftIndex],
+        remindMe: patch.remindMe === true,
+        preferredTrainTime: patch.preferredTrainTime || "",
+      });
+    }
+  }
+
   persistSettings({ journeys });
+
+  if (patches.some((patch) => patch.remindMe === true)) {
+    window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
+  }
+
+  if (editingJourneyId && !settingsDetailView.hidden) {
+    const journey =
+      settingsDraftJourneys.find((entry) => entry.id === editingJourneyId) ??
+      getJourneyById(editingJourneyId);
+    if (journey) {
+      populateDetailReminderFields(journey);
+    }
+  }
 }
 
 function formatOptionalTimeDisplay(value) {
@@ -956,6 +1226,55 @@ function readOptionalTimeField(field) {
   return field.querySelector(".optional-time-input")?.value ?? "";
 }
 
+function normalizeActiveHoursFieldsForSave() {
+  let defaultFrom = readOptionalTimeField(detailDefaultFromField);
+  let defaultUntil = readOptionalTimeField(detailDefaultUntilField);
+
+  if (defaultFrom && !defaultUntil) {
+    defaultUntil = "";
+    setOptionalTimeField(
+      detailDefaultUntilInput,
+      detailDefaultUntilDisplay,
+      detailDefaultUntilField,
+      detailDefaultUntilClear,
+      ""
+    );
+  } else if (!defaultFrom && defaultUntil) {
+    defaultFrom = "";
+    setOptionalTimeField(
+      detailDefaultFromInput,
+      detailDefaultFromDisplay,
+      detailDefaultFromField,
+      detailDefaultFromClear,
+      ""
+    );
+  }
+
+  return { defaultFrom, defaultUntil };
+}
+
+function clearPairedActiveHourField(clearedSide) {
+  if (clearedSide === "from") {
+    setOptionalTimeField(
+      detailDefaultUntilInput,
+      detailDefaultUntilDisplay,
+      detailDefaultUntilField,
+      detailDefaultUntilClear,
+      ""
+    );
+  } else if (clearedSide === "until") {
+    setOptionalTimeField(
+      detailDefaultFromInput,
+      detailDefaultFromDisplay,
+      detailDefaultFromField,
+      detailDefaultFromClear,
+      ""
+    );
+  }
+  clearJourneyOverlapError();
+  syncDetailComboHints();
+}
+
 function bindOptionalTimeField(input, display, field, clearBtn) {
   if (!input || !display || !field) {
     return;
@@ -969,14 +1288,20 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
     input.click();
   });
 
-  input.addEventListener("change", () => {
+  const syncFromInput = () => {
     setOptionalTimeField(input, display, field, clearBtn, input.value);
-  });
+    syncDetailComboHints();
+  };
+
+  // Android WebView often fires `input` when the picker commits; `change` alone can miss.
+  input.addEventListener("input", syncFromInput);
+  input.addEventListener("change", syncFromInput);
 
   clearBtn?.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
     setOptionalTimeField(input, display, field, clearBtn, "");
+    syncDetailComboHints();
   });
 }
 
@@ -1156,6 +1481,20 @@ function parseTimeToMinutes(time) {
   return hour * 60 + (minute || 0);
 }
 
+function formatMinutesAsTime(totalMinutes) {
+  const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
+  const hour = Math.floor(wrapped / 60);
+  const minute = wrapped % 60;
+  return `${pad2(hour)}:${pad2(minute)}`;
+}
+
+function addMinutesToTimeString(time, minutesToAdd) {
+  if (!time) {
+    return "";
+  }
+  return formatMinutesAsTime(parseTimeToMinutes(time) + minutesToAdd);
+}
+
 function journeyMatchesTime(journey, minutes) {
   if (!hasDefaultWindow(journey)) {
     return false;
@@ -1216,6 +1555,17 @@ function formatJourneyDefaultWindow(journey) {
   return `${journey.defaultFrom}–${journey.defaultUntil}`;
 }
 
+function journeyActiveDaysOverlap(left, right) {
+  const leftDays = new Set(getJourneyRemindDays(left));
+  const rightDays = new Set(getJourneyRemindDays(right));
+  for (const day of leftDays) {
+    if (rightDays.has(day)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function findJourneyDefaultWindowConflict(journey, journeys) {
   if (!hasDefaultWindow(journey)) {
     return null;
@@ -1224,7 +1574,9 @@ function findJourneyDefaultWindowConflict(journey, journeys) {
   if (
     parseTimeToMinutes(journey.defaultFrom) === parseTimeToMinutes(journey.defaultUntil)
   ) {
-    const other = journeys.find((entry) => entry.id !== journey.id);
+    const other = journeys.find(
+      (entry) => entry.id !== journey.id && journeyActiveDaysOverlap(journey, entry)
+    );
     if (other) {
       return other;
     }
@@ -1238,7 +1590,10 @@ function findJourneyDefaultWindowConflict(journey, journeys) {
     ) {
       continue;
     }
-    if (journeyDefaultWindowsOverlap(journey, other)) {
+    if (
+      journeyDefaultWindowsOverlap(journey, other) &&
+      journeyActiveDaysOverlap(journey, other)
+    ) {
       return other;
     }
   }
@@ -1253,13 +1608,9 @@ function findScheduledJourneyId() {
   }
 
   const minutes = getPerthMinutesSinceMidnight();
-  const match = configured.find((journey) => journeyMatchesTime(journey, minutes));
+  const match = configured.find((journey) => journeyMatchesSchedule(journey, minutes));
   if (match) {
     return match.id;
-  }
-
-  if (configured.length === 1 && !hasDefaultWindow(configured[0])) {
-    return configured[0].id;
   }
 
   return null;
@@ -1267,13 +1618,13 @@ function findScheduledJourneyId() {
 
 function findDefaultWindowJourneyAt(minutes = getPerthMinutesSinceMidnight()) {
   return (
-    getConfiguredJourneys().find((journey) => journeyMatchesTime(journey, minutes)) ?? null
+    getConfiguredJourneys().find((journey) => journeyMatchesSchedule(journey, minutes)) ?? null
   );
 }
 
 function getDefaultWindowJourneyIds(minutes = getPerthMinutesSinceMidnight()) {
   return getConfiguredJourneys()
-    .filter((journey) => journeyMatchesTime(journey, minutes))
+    .filter((journey) => journeyMatchesSchedule(journey, minutes))
     .map((journey) => journey.id);
 }
 
@@ -1327,7 +1678,8 @@ function isManualOverrideBlockingAuto(scheduledId) {
   }
 
   if (!scheduledId) {
-    return true;
+    clearManualJourneyOverride();
+    return false;
   }
 
   if (scheduledId === override.journeyId) {
@@ -1358,19 +1710,38 @@ function maybeAutoSelectJourney() {
   skipTrains = readSkipState().count;
 }
 
-function readUrlSettings() {
+async function readUrlSettings() {
   const params = new URLSearchParams(window.location.search);
-  const station = params.get("station");
-  const direction = params.get("direction") ?? params.get("destination");
+  const rawStation = params.get("station");
+  const rawDirection = params.get("direction") ?? params.get("destination");
 
-  if (!station || !direction) {
+  if (!rawStation || !rawDirection) {
     return null;
   }
+
+  const stationText = String(rawStation).trim();
+  const directionText = String(rawDirection).trim();
+  if (!stationText || !directionText) {
+    return null;
+  }
+
+  if (stationText.length > 120 || directionText.length > 120) {
+    return null;
+  }
+
+  const stations = await getStationsList();
+  const catalog = new Set(stations);
+  const normalizedStation = normalizeStation(stationText);
+  if (!catalog.has(normalizedStation) && !catalog.has(stationText)) {
+    return null;
+  }
+
+  const station = catalog.has(normalizedStation) ? normalizedStation : stationText;
 
   const journey = createDefaultJourney({
     name: "To work",
     station,
-    direction,
+    direction: directionText,
     leaveBeforeMinutes:
       Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
       DEFAULT_SETTINGS.leaveBeforeMinutes,
@@ -1520,6 +1891,81 @@ function prepareDisplayData(data) {
   return applyClientSkip(normalized);
 }
 
+function preferredMinutesForLiveGlance(journey) {
+  const raw = journey?.preferredTrainTime || "";
+  if (!raw) {
+    return -1;
+  }
+
+  const minutes = parseTimeToMinutes(raw);
+  return Number.isNaN(minutes) ? -1 : minutes;
+}
+
+function liveHorizonMinutes(journey) {
+  const untilRaw = journey?.defaultUntil || "";
+  if (!untilRaw) {
+    return 24 * 60;
+  }
+
+  const minutes = parseTimeToMinutes(untilRaw);
+  return Number.isNaN(minutes) ? 24 * 60 : minutes;
+}
+
+function formatPreferredClock(totalMinutes) {
+  const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
+  const hour = Math.floor(wrapped / 60);
+  const minute = wrapped % 60;
+  return `${hour}:${String(minute).padStart(2, "0")}`;
+}
+
+function tripMatchesPreferredOrLater(trip, preferredMinutes, horizonMinutes) {
+  const iso = trip?.departure ?? trip?.arrival;
+  if (!iso) {
+    return false;
+  }
+
+  const departureMinutes = getPerthMinutesSinceMidnight(new Date(iso));
+  if (departureMinutes < preferredMinutes) {
+    return false;
+  }
+
+  if (
+    horizonMinutes < 24 * 60 &&
+    preferredMinutes < horizonMinutes &&
+    departureMinutes >= horizonMinutes
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function leaveByArmedForDisplayedTrip(trip, journey = getActiveJourney(), skipCount = skipTrains) {
+  if (skipCount !== 0) {
+    return true;
+  }
+
+  const preferredMinutes = preferredMinutesForLiveGlance(journey);
+  if (preferredMinutes < 0) {
+    return true;
+  }
+
+  if (!trip) {
+    return false;
+  }
+
+  return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey));
+}
+
+function preferredHintForJourney(journey = getActiveJourney()) {
+  const preferredMinutes = preferredMinutesForLiveGlance(journey);
+  if (preferredMinutes < 0) {
+    return "";
+  }
+
+  return `Target ${formatPreferredClock(preferredMinutes)}`;
+}
+
 function getLeavePhase(minutesUntilLeave, minutesUntilDeparture) {
   if (minutesUntilDeparture <= 0) {
     return "missed";
@@ -1666,23 +2112,16 @@ function renderJourneySwitcher() {
     if (journey.id === settings.activeJourneyId) {
       button.classList.add("active");
     }
-    button.innerHTML = `${journey.name}<span class="journey-switcher-option-route">${formatJourneyRoute(journey)}</span>`;
+    const routeSpan = document.createElement("span");
+    routeSpan.className = "journey-switcher-option-route";
+    routeSpan.textContent = formatJourneyRoute(journey);
+    button.append(document.createTextNode(journey.name), routeSpan);
     button.addEventListener("click", () => {
       closeJourneySwitcherMenu();
       switchJourney(journey.id);
     });
     journeySwitcherMenuEl.appendChild(button);
   }
-
-  const manageBtn = document.createElement("button");
-  manageBtn.type = "button";
-  manageBtn.className = "journey-switcher-option journey-switcher-option--manage";
-  manageBtn.textContent = "Manage journeys";
-  manageBtn.addEventListener("click", () => {
-    closeJourneySwitcherMenu();
-    openJourneys();
-  });
-  journeySwitcherMenuEl.appendChild(manageBtn);
 
   journeySwitcherMenuEl.hidden = !journeySwitcherOpen;
   syncJourneySwitcherA11y();
@@ -1915,6 +2354,7 @@ function isLeaveAcknowledged(next) {
 }
 
 function getLeaveAckTarget() {
+  // Leave card can outlive lastRenderedNext during refresh; fall back to cached API data.
   if (lastRenderedNext) {
     return lastRenderedNext;
   }
@@ -1932,9 +2372,9 @@ function acknowledgeLeave(next) {
   const journey = getActiveJourney();
   const departure = resolveTripDeparture(next);
   window.nextTrainLeaveReminders?.acknowledgeDeparture?.(journey?.id, departure);
-  if (leaveAckBtn) {
-    leaveAckBtn.hidden = true;
-    leaveAckBtn.classList.remove("leave-ack-btn--visible");
+  if (leaveCardActionsEl) {
+    leaveCardActionsEl.hidden = true;
+    leaveCardActionsEl.classList.remove("leave-card-actions--visible");
   }
   if (lastApiData) {
     render(prepareDisplayData(lastApiData));
@@ -2277,7 +2717,12 @@ function updateSwipeCues() {
 }
 
 function updateSwipeHint() {
-  if (!swipeHintEl || hasSeenSwipeHint() || heroEl?.classList.contains("hero-setup")) {
+  if (
+    !swipeHintEl ||
+    hasSeenSwipeHint() ||
+    heroEl?.classList.contains("hero-setup") ||
+    !lastRenderedNext
+  ) {
     if (swipeHintEl) {
       swipeHintEl.hidden = true;
     }
@@ -2414,8 +2859,12 @@ function render(data, { stale = false } = {}) {
       leaveCardEl.hidden = true;
       leaveCardEl.classList.remove("leave-card--context");
     }
-    if (leaveAckBtn) {
-      leaveAckBtn.hidden = true;
+    if (preferredHintEl) {
+      preferredHintEl.hidden = true;
+    }
+    if (leaveCardActionsEl) {
+      leaveCardActionsEl.hidden = true;
+      leaveCardActionsEl.classList.remove("leave-card-actions--visible");
     }
     platformEl.textContent = "—";
     statusEl.textContent = "—";
@@ -2430,7 +2879,14 @@ function render(data, { stale = false } = {}) {
   lastRenderedNext = next;
   const live = getLiveTiming(next);
   const leaveAcknowledged = isLeaveAcknowledged(next);
-  const showLeaveCard = journeyUsesLeaveBefore(journey) && !leaveAcknowledged;
+  const leaveArmed = leaveByArmedForDisplayedTrip(next, journey);
+  const showLeaveCard = journeyUsesLeaveBefore(journey) && !leaveAcknowledged && leaveArmed;
+  const showPreferredHint =
+    journeyUsesLeaveBefore(journey) &&
+    !leaveAcknowledged &&
+    !leaveArmed &&
+    skipTrains === 0 &&
+    preferredMinutesForLiveGlance(journey) >= 0;
   const showLateNag =
     showLeaveCard && (live.leavePhase === "late" || live.leavePhase === "missed");
 
@@ -2460,6 +2916,15 @@ function render(data, { stale = false } = {}) {
     leaveCardEl.classList.remove("leave-card--context", "leave-card--acknowledged");
   }
 
+  if (preferredHintEl) {
+    if (showPreferredHint) {
+      preferredHintEl.textContent = preferredHintForJourney(journey);
+      preferredHintEl.hidden = false;
+    } else {
+      preferredHintEl.hidden = true;
+    }
+  }
+
   if (showLeaveCard) {
     if (leaveCardLabelEl) {
       leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase);
@@ -2473,9 +2938,9 @@ function render(data, { stale = false } = {}) {
     updateLeaveCardState(live.leavePhase);
   }
 
-  if (leaveAckBtn) {
-    leaveAckBtn.hidden = !showLateNag;
-    leaveAckBtn.classList.toggle("leave-ack-btn--visible", showLateNag);
+  if (leaveCardActionsEl) {
+    leaveCardActionsEl.hidden = !showLateNag;
+    leaveCardActionsEl.classList.toggle("leave-card-actions--visible", showLateNag);
   }
 
   if (showLateNag) {
@@ -2495,6 +2960,7 @@ function render(data, { stale = false } = {}) {
 
 function renderRefreshErrorState() {
   clearHeroSetupState();
+  lastRenderedNext = null;
   heroEl?.classList.remove("stale");
   leaveCardEl?.classList.remove("stale");
 
@@ -2840,12 +3306,32 @@ async function configureOutboundJourney(journey, nearestStation, inboundJourney 
   });
 }
 
-async function findNearestStation() {
+async function getGeolocationPosition() {
+  const options = { timeout: 15000, maximumAge: 60000 };
+
+  try {
+    return await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        ...options,
+        enableHighAccuracy: false,
+      });
+    });
+  } catch {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        ...options,
+        enableHighAccuracy: true,
+      });
+    });
+  }
+}
+
+async function findNearestStation({ forceFresh = false } = {}) {
   if (isTestMode()) {
     return { station: "Edgewater Stn", distanceKm: 0.2 };
   }
 
-  if (nearbySession?.station) {
+  if (!forceFresh && nearbySession?.station) {
     return {
       station: nearbySession.station,
       distanceKm:
@@ -2878,6 +3364,89 @@ async function findNearestStation() {
   }
 
   return { station: nearest, distanceKm: bestDistance };
+}
+
+function isUnsupportedRegion(distanceKm) {
+  return typeof distanceKm === "number" && distanceKm > UNSUPPORTED_REGION_KM;
+}
+
+function renderUnsupportedRegionBoard() {
+  lastRenderedNext = null;
+  errorEl.hidden = true;
+  routeEl.textContent = "Near me";
+  updatedEl.textContent = "";
+  updatedEl.hidden = true;
+  setHeroUrgency("calm");
+  heroEl?.classList.remove("locating");
+  heroEl.classList.add("hero-setup");
+
+  if (heroDepartLabelEl) {
+    heroDepartLabelEl.hidden = true;
+  }
+  if (departDisplayTimeEl) {
+    departDisplayTimeEl.hidden = true;
+  }
+  if (heroScheduledTimeEl) {
+    heroScheduledTimeEl.hidden = true;
+  }
+  if (leaveCardEl) {
+    leaveCardEl.hidden = true;
+    leaveCardEl.classList.remove("leave-card--context");
+  }
+  if (nearbyDirectionsEl) {
+    nearbyDirectionsEl.hidden = true;
+  }
+  if (nearbyFallbackEl) {
+    nearbyFallbackEl.hidden = true;
+  }
+  if (nearbyDirectionsListEl) {
+    nearbyDirectionsListEl.innerHTML = "";
+  }
+
+  if (departCountdownEl) {
+    departCountdownEl.classList.add("hero-setup-message");
+    departCountdownEl.replaceChildren();
+
+    const title = document.createElement("span");
+    title.className = "hero-empty-title";
+    title.textContent = "Perth rail only";
+
+    const text = document.createElement("span");
+    text.className = "hero-empty-text";
+    text.textContent =
+      "Next Train's Near me board works near Transperth stations. You're outside that area right now.";
+
+    const hint = document.createElement("span");
+    hint.className = "hero-empty-hint";
+    hint.textContent =
+      "You can still save journeys under My Journeys for when you're in Perth.";
+
+    const journeysBtn = document.createElement("button");
+    journeysBtn.type = "button";
+    journeysBtn.className = "btn-primary hero-empty-primary";
+    journeysBtn.textContent = "My Journeys";
+    journeysBtn.addEventListener("click", () => enterJourneyMode());
+
+    departCountdownEl.append(title, text, hint, journeysBtn);
+  }
+
+  heroEl.removeAttribute("role");
+  heroEl.removeAttribute("tabindex");
+  heroEl.removeAttribute("aria-label");
+  heroEl.onclick = null;
+  heroEl.onkeydown = null;
+  platformEl.textContent = "—";
+  statusEl.textContent = "—";
+  followingSectionEl.hidden = true;
+  if (journeySwitcherEl) {
+    journeySwitcherEl.hidden = true;
+  }
+  if (journeySwitcherMenuEl) {
+    journeySwitcherMenuEl.hidden = true;
+  }
+  updateSwipeHint();
+  updateSwipeCues();
+  updateLeaveHint();
 }
 
 function isNearbyModeActive() {
@@ -2921,6 +3490,50 @@ function formatNearbyRouteLine() {
     return `Near you · ${label} (${nearbySession.distanceKm.toFixed(1)} km)`;
   }
   return `Near you · ${label}`;
+}
+
+function readLastNearbyStationCache() {
+  try {
+    const raw = localStorage.getItem(LAST_NEARBY_STATION_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const data = JSON.parse(raw);
+    if (!data?.station) {
+      return null;
+    }
+
+    if (
+      typeof data.savedAtMs === "number" &&
+      Date.now() - data.savedAtMs > LAST_NEARBY_STATION_MAX_AGE_MS
+    ) {
+      return null;
+    }
+
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function writeLastNearbyStationCache({ station, distanceKm = null } = {}) {
+  if (!station) {
+    return;
+  }
+
+  localStorage.setItem(
+    LAST_NEARBY_STATION_KEY,
+    JSON.stringify({
+      station,
+      distanceKm: typeof distanceKm === "number" ? distanceKm : null,
+      savedAtMs: Date.now(),
+    })
+  );
+}
+
+function clearLastNearbyStationCache() {
+  localStorage.removeItem(LAST_NEARBY_STATION_KEY);
 }
 
 function getNearbySkip(direction) {
@@ -3048,13 +3661,233 @@ function formatNearbyDirectionRow(entry) {
   return `to ${entry.direction} · ${minuteLabel} · ${platform}`;
 }
 
-async function ensureNearbyStationOptions() {
-  if (!nearbyStationSelect) {
+async function ensureNearbyStationOptions({ force = false } = {}) {
+  if (!nearbyStationCombobox) {
+    return;
+  }
+
+  if (!force && stationsCache?.length) {
+    setStationComboboxValue(nearbyStationCombobox, nearbySession?.station ?? "");
     return;
   }
 
   await getStationsList();
-  renderStationOptions(nearbyStationSelect, nearbySession?.station ?? "");
+  setStationComboboxValue(nearbyStationCombobox, nearbySession?.station ?? "");
+}
+
+const NEARBY_LOCATE_COPY = "Finding your nearest station…";
+const NEARBY_BOARD_LOADING_COPY = "Loading departures…";
+/** Nearest catalog station farther than this → Perth-rail-only empty state (Near me blocked). */
+const UNSUPPORTED_REGION_KM = 50;
+
+/** Keep calm on a normal GPS fix (~1–4s). Offer escape only when it is actually slow. */
+const NEARBY_LOCATE_DONT_WAIT_MS = 7000;
+
+function stopNearbyLocateTimers() {
+  if (nearbyLocateTimer) {
+    clearInterval(nearbyLocateTimer);
+    nearbyLocateTimer = null;
+  }
+}
+
+function syncNearbyDontWaitButton() {
+  if (!nearbyDontWaitBtn) {
+    return;
+  }
+
+  const show = nearbyLoading && nearbyDontWaitVisible && !nearbyLocatePickerVisible;
+  nearbyDontWaitBtn.hidden = !show;
+}
+
+function showNearbyDontWaitOffer() {
+  if (nearbyDontWaitVisible || nearbyLocatePickerVisible) {
+    return;
+  }
+
+  nearbyDontWaitVisible = true;
+  syncNearbyDontWaitButton();
+}
+
+function showNearbyEarlyPicker() {
+  if (!nearbyDirectionsEl || nearbyLocatePickerVisible) {
+    return;
+  }
+
+  nearbyLocatePickerVisible = true;
+  nearbyDontWaitVisible = false;
+  syncNearbyDontWaitButton();
+  nearbyDirectionsEl.hidden = false;
+  if (nearbyDirectionsListEl) {
+    nearbyDirectionsListEl.innerHTML = "";
+  }
+  const directionsLabel = nearbyDirectionsEl.querySelector(".nearby-directions-label");
+  if (directionsLabel) {
+    directionsLabel.hidden = true;
+  }
+  nearbyFallbackEl.hidden = false;
+  if (nearbyFallbackTextEl) {
+    nearbyFallbackTextEl.textContent = "Choose a station — we’ll show the next train.";
+  }
+  ensureNearbyStationOptions();
+}
+
+function dismissNearbyLocatePicker() {
+  nearbyLocatePickerVisible = false;
+}
+
+function shouldShowNearbyLoadingState() {
+  if (nearbySession?.unsupportedRegion) {
+    return false;
+  }
+
+  if (nearbyLocatePickerVisible && !nearbySession?.station && !nearbyUserPickedStation) {
+    return false;
+  }
+
+  if (nearbyError && !nearbySession?.station) {
+    return false;
+  }
+
+  return (
+    nearbyLoading ||
+    Boolean(nearbyBoardInflight) ||
+    (Boolean(nearbySession?.station) && !nearbyBoard && !nearbyError)
+  );
+}
+
+function nearbyLoadingRouteCopy() {
+  return nearbySession?.station ? formatNearbyRouteLine() : NEARBY_LOCATE_COPY;
+}
+
+function nearbyLoadingHeroCopy() {
+  return nearbySession?.station ? NEARBY_BOARD_LOADING_COPY : NEARBY_LOCATE_COPY;
+}
+
+function startNearbyLocateTimers() {
+  stopNearbyLocateTimers();
+  nearbyLocateStartedAt = Date.now();
+  nearbyLocatePickerVisible = false;
+  nearbyDontWaitVisible = false;
+  syncNearbyDontWaitButton();
+
+  nearbyLocateTimer = window.setInterval(() => {
+    const elapsed = Date.now() - nearbyLocateStartedAt;
+    if (
+      elapsed >= NEARBY_LOCATE_DONT_WAIT_MS &&
+      !nearbyDontWaitVisible &&
+      !nearbyLocatePickerVisible
+    ) {
+      showNearbyDontWaitOffer();
+      if (isNearbyModeActive() && nearbyLoading) {
+        renderNearbyBoard();
+      }
+    }
+  }, 400);
+}
+
+async function locateNearbyInBackground() {
+  const previousStation = nearbySession?.station ?? null;
+
+  try {
+    const nearest = await findNearestStation({ forceFresh: true });
+    if (nearbyUserPickedStation) {
+      writeLastNearbyStationCache({
+        station: nearbySession?.station,
+        distanceKm: nearbySession?.distanceKm,
+      });
+      stopNearbyLocateTimers();
+      nearbyLoading = false;
+      nearbySession.gpsRefining = false;
+      dismissNearbyLocatePicker();
+      nearbyDontWaitVisible = false;
+      syncNearbyDontWaitButton();
+      renderNearbyBoard();
+      return;
+    }
+
+    if (nearbyLocatePickerVisible) {
+      stopNearbyLocateTimers();
+      nearbyLoading = false;
+      nearbySession.gpsRefining = false;
+      syncNearbyDontWaitButton();
+      renderNearbyBoard();
+      return;
+    }
+
+    if (isUnsupportedRegion(nearest.distanceKm)) {
+      nearbySession.unsupportedRegion = true;
+      nearbySession.station = null;
+      nearbySession.distanceKm = nearest.distanceKm;
+      nearbySession.fromCache = false;
+      nearbySession.gpsRefining = false;
+      nearbyBoard = null;
+      nearbyLoading = false;
+      stopNearbyLocateTimers();
+      nearbyLocatePickerVisible = false;
+      nearbyDontWaitVisible = false;
+      syncNearbyDontWaitButton();
+      renderNearbyBoard();
+      return;
+    }
+
+    const stationChanged = Boolean(previousStation && nearest.station !== previousStation);
+
+    nearbySession.unsupportedRegion = false;
+    nearbySession.fromCache = false;
+    nearbySession.gpsRefining = false;
+    nearbySession.station = nearest.station;
+    nearbySession.distanceKm = nearest.distanceKm;
+    if (stationChanged) {
+      nearbySession.refineNotice = "Updated to nearest station";
+    }
+    writeLastNearbyStationCache({
+      station: nearest.station,
+      distanceKm: nearest.distanceKm,
+    });
+    stopNearbyLocateTimers();
+    nearbyLocatePickerVisible = false;
+    nearbyDontWaitVisible = false;
+    syncNearbyDontWaitButton();
+    try {
+      if (stationChanged || !nearbyBoard) {
+        await fetchNearbyBoard();
+      }
+      nearbyError = null;
+    } catch (error) {
+      nearbyError = error.message ?? "Could not load departures for this station";
+    } finally {
+      nearbyLoading = false;
+    }
+    renderNearbyBoard();
+  } catch (error) {
+    stopNearbyLocateTimers();
+    nearbySession.gpsRefining = false;
+    nearbyLoading = false;
+    nearbyDontWaitVisible = false;
+    syncNearbyDontWaitButton();
+    if (!nearbySession.station && !nearbyUserPickedStation) {
+      nearbyError =
+        error.code === 1
+          ? "Location permission is needed for Near me. Choose a station below instead."
+          : (error.message ?? "Could not find a nearby station");
+      renderNearbyBoard();
+      return;
+    }
+
+    if (nearbySession.station) {
+      try {
+        if (!nearbyBoard) {
+          await fetchNearbyBoard();
+        }
+        nearbyError = null;
+        renderNearbyBoard();
+      } catch (fetchError) {
+        errorEl.textContent = fetchError.message;
+        errorEl.hidden = false;
+        renderNearbyBoard({ stale: true });
+      }
+    }
+  }
 }
 
 function showNearbyFallback(message) {
@@ -3075,6 +3908,10 @@ function renderNearbyDirectionsList() {
 
   nearbyFallbackEl.hidden = true;
   nearbyDirectionsListEl.innerHTML = "";
+  const directionsLabel = nearbyDirectionsEl?.querySelector(".nearby-directions-label");
+  if (directionsLabel) {
+    directionsLabel.hidden = false;
+  }
   const focused = nearbySession?.focusedDirection;
 
   for (const entry of nearbyBoard.entries) {
@@ -3103,8 +3940,63 @@ function renderNearbyBoard({ stale = false } = {}) {
   errorEl.hidden = true;
   clearHeroSetupState();
 
-  if (nearbyLoading) {
-    routeEl.textContent = "Finding nearest station…";
+  if (shouldShowNearbyLoadingState()) {
+    lastRenderedNext = null;
+    routeEl.textContent = nearbyLoadingRouteCopy();
+    setHeroUrgency("calm");
+    heroEl?.classList.add("locating");
+    if (heroDepartLabelEl) {
+      heroDepartLabelEl.textContent = "Next Train";
+    }
+    if (departCountdownEl) {
+      departCountdownEl.innerHTML =
+        '<span class="locate-spinner locate-spinner--hero" aria-hidden="true"></span>';
+    }
+    if (departDisplayTimeEl) {
+      departDisplayTimeEl.textContent = nearbyLoadingHeroCopy();
+    }
+    if (heroScheduledTimeEl) {
+      heroScheduledTimeEl.hidden = true;
+    }
+    if (leaveCardEl) {
+      leaveCardEl.hidden = true;
+    }
+    if (nearbyLocatePickerVisible) {
+      nearbyDirectionsEl.hidden = false;
+      if (nearbyDirectionsListEl) {
+        nearbyDirectionsListEl.innerHTML = "";
+      }
+      const directionsLabel = nearbyDirectionsEl.querySelector(".nearby-directions-label");
+      if (directionsLabel) {
+        directionsLabel.hidden = true;
+      }
+      nearbyFallbackEl.hidden = false;
+      if (nearbyFallbackTextEl) {
+        nearbyFallbackTextEl.textContent = "Choose a station — we’ll show the next train.";
+      }
+      void ensureNearbyStationOptions();
+    } else {
+      nearbyDirectionsEl.hidden = true;
+    }
+    syncNearbyDontWaitButton();
+    followingSectionEl.hidden = true;
+    if (nearbySession?.gpsRefining) {
+      updatedEl.textContent = "Checking location…";
+    } else {
+      updatedEl.textContent = "Updating…";
+    }
+    updateSwipeHint();
+    updateSwipeCues();
+    return;
+  }
+
+  heroEl?.classList.remove("locating");
+  nearbyDontWaitVisible = false;
+  syncNearbyDontWaitButton();
+
+  if (nearbyLocatePickerVisible && !nearbySession?.station && !nearbyUserPickedStation) {
+    lastRenderedNext = null;
+    routeEl.textContent = "Near me";
     setHeroUrgency("calm");
     if (heroDepartLabelEl) {
       heroDepartLabelEl.textContent = "Next Train";
@@ -3113,7 +4005,7 @@ function renderNearbyBoard({ stale = false } = {}) {
       departCountdownEl.textContent = "—";
     }
     if (departDisplayTimeEl) {
-      departDisplayTimeEl.textContent = "Locating you";
+      departDisplayTimeEl.textContent = "Choose a station below";
     }
     if (heroScheduledTimeEl) {
       heroScheduledTimeEl.hidden = true;
@@ -3121,11 +4013,25 @@ function renderNearbyBoard({ stale = false } = {}) {
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
     }
-    nearbyDirectionsEl.hidden = true;
+    nearbyDirectionsEl.hidden = false;
+    nearbyFallbackEl.hidden = false;
+    if (nearbyFallbackTextEl) {
+      nearbyFallbackTextEl.textContent = "Choose a station below";
+    }
+    void ensureNearbyStationOptions();
+    platformEl.textContent = "—";
+    statusEl.textContent = "—";
     followingSectionEl.hidden = true;
-    updatedEl.textContent = "Updating…";
+    updatedEl.textContent = "Choose a station below";
     updateSwipeHint();
     updateSwipeCues();
+    maybeScheduleOnboarding();
+    return;
+  }
+
+  if (nearbySession?.unsupportedRegion) {
+    renderUnsupportedRegionBoard();
+    maybeScheduleOnboarding();
     return;
   }
 
@@ -3161,13 +4067,23 @@ function renderNearbyBoard({ stale = false } = {}) {
   const focusedEntry = getNearbyFocusedEntry();
   const next = focusedEntry?.data?.next ?? null;
   routeEl.textContent = formatNearbyRouteLine();
-  updatedEl.textContent = stale
-    ? "Update failed — times may be out of date"
-    : nearbyBoard?.lastUpdated
-      ? `Updated ${nearbyBoard.lastUpdated}`
-      : "Updated just now";
+  if (nearbySession?.refineNotice) {
+    updatedEl.textContent = nearbySession.refineNotice;
+    nearbySession.refineNotice = null;
+  } else {
+    updatedEl.textContent = stale
+      ? "Update failed — times may be out of date"
+      : nearbyBoard?.lastUpdated
+        ? `Updated ${nearbyBoard.lastUpdated}`
+        : "Updated just now";
+  }
 
   if (!next) {
+    if (shouldShowNearbyLoadingState()) {
+      return;
+    }
+
+    lastRenderedNext = null;
     setHeroUrgency("calm");
     if (heroDepartLabelEl) {
       heroDepartLabelEl.textContent = "Next Train";
@@ -3232,27 +4148,48 @@ async function fetchNearbyBoard() {
     return;
   }
 
-  const directions = await fetchDirectionsFromApi(nearbySession.station);
-  const entries = [];
+  if (nearbyBoardInflight) {
+    return nearbyBoardInflight;
+  }
 
-  for (const direction of directions) {
-    try {
-      const data = await fetchNearbyDirectionData(
-        nearbySession.station,
-        direction,
-        getNearbySkip(direction)
-      );
-      entries.push({ direction, data });
-    } catch (error) {
-      console.warn(`Nearby fetch failed for ${direction}`, error);
-    }
+  nearbyBoardInflight = fetchNearbyBoardOnce().finally(() => {
+    nearbyBoardInflight = null;
+  });
+  return nearbyBoardInflight;
+}
+
+async function fetchNearbyBoardOnce() {
+  const station = nearbySession?.station;
+  if (!station) {
+    return;
+  }
+
+  const directions = await fetchDirectionsFromApi(station);
+  const settled = await Promise.all(
+    directions.map(async (direction) => {
+      try {
+        const data = await fetchNearbyDirectionData(station, direction, getNearbySkip(direction));
+        return { direction, data };
+      } catch (error) {
+        console.warn(`Nearby fetch failed for ${direction}`, error);
+        return null;
+      }
+    })
+  );
+  const entries = settled.filter(Boolean);
+
+  if (!nearbySession || nearbySession.station !== station) {
+    return;
   }
 
   if (!entries.length) {
     throw new Error("Could not load departures for this station");
   }
 
-  if (!nearbySession.focusedDirection || !entries.some((entry) => entry.direction === nearbySession.focusedDirection)) {
+  if (
+    !nearbySession.focusedDirection ||
+    !entries.some((entry) => entry.direction === nearbySession.focusedDirection)
+  ) {
     nearbySession.focusedDirection = pickSoonestNearbyDirection(entries);
   }
 
@@ -3284,49 +4221,87 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
   clearManualJourneyOverride();
   dismissLeaveHint();
   closeJourneySwitcherMenu();
+  stopNearbyLocateTimers();
+  nearbyUserPickedStation = Boolean(manualStation);
+  nearbyLocatePickerVisible = false;
+  nearbyDontWaitVisible = false;
+  nearbyBoard = null;
+  nearbyError = null;
+  nearbyLoading = true;
+
+  if (manualStation) {
+    nearbySession = {
+      station: manualStation,
+      distanceKm,
+      focusedDirection: null,
+      skipByDirection: {},
+    };
+    syncNearbyChrome();
+    renderNearbyBoard();
+
+    try {
+      await fetchNearbyBoard();
+      nearbyError = null;
+      writeLastNearbyStationCache({ station: manualStation, distanceKm });
+    } catch (error) {
+      nearbyError = error.message ?? "Could not load departures for this station";
+    } finally {
+      nearbyLoading = false;
+    }
+    renderNearbyBoard();
+    return;
+  }
+
+  const cachedStation = readLastNearbyStationCache();
+  if (cachedStation?.station) {
+    nearbySession = {
+      station: cachedStation.station,
+      distanceKm: null,
+      fromCache: true,
+      gpsRefining: true,
+      focusedDirection: null,
+      skipByDirection: {},
+    };
+    syncNearbyChrome();
+    renderNearbyBoard();
+
+    void (async () => {
+      try {
+        await fetchNearbyBoard();
+        nearbyError = null;
+      } catch (error) {
+        nearbyError = error.message ?? "Could not load departures for this station";
+      } finally {
+        nearbyLoading = false;
+        renderNearbyBoard();
+      }
+    })();
+
+    void locateNearbyInBackground();
+    return;
+  }
+
   nearbySession = {
-    station: manualStation ?? null,
-    distanceKm,
+    station: null,
+    distanceKm: null,
     focusedDirection: null,
     skipByDirection: {},
   };
-  nearbyBoard = null;
-  nearbyError = null;
-  nearbyLoading = !manualStation;
   syncNearbyChrome();
   renderNearbyBoard();
-
-  try {
-    if (!manualStation) {
-      const nearest = await findNearestStation();
-      nearbySession.station = nearest.station;
-      nearbySession.distanceKm = nearest.distanceKm;
-    }
-
-    nearbyLoading = false;
-    await fetchNearbyBoard();
-    nearbyError = null;
-    renderNearbyBoard();
-  } catch (error) {
-    nearbyLoading = false;
-    if (!nearbySession.station) {
-      nearbyError =
-        error.code === 1
-          ? "Location permission is needed for Near me. Choose a station below instead."
-          : (error.message ?? "Could not find a nearby station");
-      renderNearbyBoard();
-      return;
-    }
-
-    errorEl.textContent = error.message;
-    errorEl.hidden = false;
-    renderNearbyBoard({ stale: true });
-  }
+  startNearbyLocateTimers();
+  void locateNearbyInBackground();
 }
 
 function exitNearbyMode() {
+  stopNearbyLocateTimers();
+  dismissNearbyLocatePicker();
+  nearbyDontWaitVisible = false;
+  syncNearbyDontWaitButton();
+  nearbyUserPickedStation = false;
   nearbySession = null;
   nearbyBoard = null;
+  nearbyBoardInflight = null;
   nearbyLoading = false;
   nearbyError = null;
   syncNearbyChrome();
@@ -3383,6 +4358,11 @@ async function fetchNextTrain() {
   }
 
   if (isNearbyModeActive()) {
+    if (nearbySession?.unsupportedRegion) {
+      renderNearbyBoard();
+      return;
+    }
+
     try {
       await fetchNearbyBoard();
       renderNearbyBoard();
@@ -3401,6 +4381,8 @@ async function fetchNextTrain() {
 
   clearHeroSetupState();
   maybeAutoSelectJourney();
+  updateSwipeHint();
+  updateSwipeCues();
 
   try {
     const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`));
@@ -3502,19 +4484,386 @@ async function getStationsList() {
   return stationsCache;
 }
 
+function replaceSelectOptions(selectEl, options) {
+  selectEl.replaceChildren();
+
+  for (const { value, label, disabled, selected } of options) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    if (disabled) {
+      option.disabled = true;
+    }
+    if (selected) {
+      option.selected = true;
+    }
+    selectEl.appendChild(option);
+  }
+}
+
 function renderStationOptions(selectEl, selectedStation) {
   const stations = stationsCache ?? [];
-  const parts = [
-    `<option value="" disabled${selectedStation ? "" : " selected"}>Choose station…</option>`,
-  ];
+  replaceSelectOptions(selectEl, [
+    {
+      value: "",
+      label: "Choose station…",
+      disabled: true,
+      selected: !selectedStation,
+    },
+    ...stations.map((name) => ({
+      value: name,
+      label: formatStationLabel(name),
+      selected: name === selectedStation,
+    })),
+  ]);
+}
 
-  for (const name of stations) {
-    const label = formatStationLabel(name);
-    const selected = name === selectedStation ? " selected" : "";
-    parts.push(`<option value="${name}"${selected}>${label}</option>`);
+function filterStationsByQuery(query) {
+  const stations = stationsCache ?? [];
+  const normalized = String(query || "").trim().toLowerCase();
+  if (!normalized) {
+    return stations;
   }
 
-  selectEl.innerHTML = parts.join("");
+  return stations.filter((name) => formatStationLabel(name).toLowerCase().includes(normalized));
+}
+
+function createStationCombobox(root, { onChange, required = false, hideFooterOnOpen = false } = {}) {
+  const trigger = root?.querySelector(".station-combobox-input");
+  const list = root?.querySelector(".station-combobox-list");
+  if (!trigger || !list) {
+    return null;
+  }
+
+  const shouldHideFooter =
+    hideFooterOnOpen || root.id === "detail-station-combobox";
+
+  let dropdown = root.querySelector(".station-combobox-dropdown");
+  if (!dropdown) {
+    dropdown = document.createElement("div");
+    dropdown.className = "station-combobox-dropdown";
+    list.parentNode.insertBefore(dropdown, list);
+    dropdown.appendChild(list);
+  }
+
+  let searchInput = dropdown.querySelector(".station-combobox-search-input");
+  if (!searchInput) {
+    searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.className = "station-combobox-search-input";
+    searchInput.placeholder = "Type a station";
+    searchInput.setAttribute("autocomplete", "off");
+    searchInput.setAttribute("aria-label", "Search stations");
+    searchInput.hidden = true;
+    dropdown.insertBefore(searchInput, list);
+  }
+
+  let selectedValue = "";
+  let activeIndex = -1;
+  let suppressBlurClose = false;
+  let suppressOpenUntil = 0;
+  let mode = "closed";
+
+  function canOpenPicker() {
+    return Date.now() >= suppressOpenUntil;
+  }
+
+  function markPickerJustClosed() {
+    suppressOpenUntil = Date.now() + 350;
+  }
+
+  function setFooterHidden(hidden) {
+    if (!shouldHideFooter) {
+      return;
+    }
+    const detailView = document.getElementById("settings-detail-view");
+    if (!detailView) {
+      return;
+    }
+    detailView.classList.toggle("station-picker-open", Boolean(hidden));
+  }
+
+  function setExpanded(expanded) {
+    trigger.setAttribute("aria-expanded", expanded ? "true" : "false");
+    root.classList.toggle("station-combobox--open", expanded);
+    dropdown.hidden = !expanded;
+    list.hidden = !expanded;
+  }
+
+  function updateTriggerLabel() {
+    trigger.value = selectedValue ? formatStationLabel(selectedValue) : "";
+    trigger.placeholder = selectedValue ? "" : "Choose station";
+  }
+
+  function closeList({ restoreSelection = true } = {}) {
+    mode = "closed";
+    setExpanded(false);
+    activeIndex = -1;
+    searchInput.hidden = true;
+    searchInput.value = "";
+    setFooterHidden(false);
+    if (restoreSelection) {
+      updateTriggerLabel();
+    }
+  }
+
+  function renderList(query = "") {
+    const matches = filterStationsByQuery(query);
+    list.innerHTML = "";
+
+    if (mode === "browse") {
+      const searchRow = document.createElement("li");
+      searchRow.className = "station-combobox-search";
+      searchRow.setAttribute("role", "option");
+      searchRow.textContent = "Search stations";
+      searchRow.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+        suppressBlurClose = true;
+      });
+      searchRow.addEventListener("click", () => {
+        enterSearchMode();
+      });
+      list.appendChild(searchRow);
+    }
+
+    if (!matches.length) {
+      const empty = document.createElement("li");
+      empty.className = "station-combobox-empty";
+      empty.textContent = mode === "search" ? "No stations match" : "No stations available";
+      empty.setAttribute("aria-disabled", "true");
+      list.appendChild(empty);
+      activeIndex = -1;
+      return;
+    }
+
+    const optionOffset = mode === "browse" ? 1 : 0;
+    matches.forEach((name, index) => {
+      const item = document.createElement("li");
+      item.className = "station-combobox-option";
+      item.setAttribute("role", "option");
+      item.dataset.value = name;
+      item.textContent = formatStationLabel(name);
+      if (name === selectedValue) {
+        item.setAttribute("aria-selected", "true");
+      }
+      const optionIndex = index + optionOffset;
+      if (optionIndex === activeIndex) {
+        item.classList.add("station-combobox-option--active");
+      }
+      item.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressBlurClose = true;
+      });
+      item.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressBlurClose = true;
+      });
+      item.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        selectStation(name);
+      });
+      list.appendChild(item);
+    });
+  }
+
+  function openBrowse() {
+    mode = "browse";
+    activeIndex = -1;
+    searchInput.hidden = true;
+    searchInput.value = "";
+    setExpanded(true);
+    setFooterHidden(true);
+    renderList("");
+  }
+
+  function enterSearchMode() {
+    mode = "search";
+    activeIndex = 0;
+    searchInput.hidden = false;
+    searchInput.value = "";
+    renderList("");
+    window.setTimeout(() => {
+      searchInput.focus();
+    }, 0);
+  }
+
+  function selectStation(name, { silent = false } = {}) {
+    selectedValue = name || "";
+    updateTriggerLabel();
+    closeList({ restoreSelection: false });
+    markPickerJustClosed();
+    if (shouldHideFooter) {
+      document.getElementById("settings-detail-view")?.classList.remove("station-picker-open");
+    }
+    if (!silent && typeof onChange === "function") {
+      onChange(selectedValue);
+    }
+  }
+
+  function setValue(name, { silent = false } = {}) {
+    selectStation(name, { silent });
+  }
+
+  function getValue() {
+    return selectedValue;
+  }
+
+  function focus() {
+    openBrowse();
+  }
+
+  function getFocusableOptions() {
+    return [...list.querySelectorAll(".station-combobox-option, .station-combobox-search")];
+  }
+
+  trigger.readOnly = true;
+  updateTriggerLabel();
+
+  trigger.addEventListener("pointerdown", (event) => {
+    if (mode === "closed" && canOpenPicker()) {
+      event.preventDefault();
+      openBrowse();
+    }
+  });
+
+  trigger.addEventListener("click", (event) => {
+    if (mode === "closed" && canOpenPicker()) {
+      event.preventDefault();
+      openBrowse();
+    }
+  });
+
+  trigger.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && mode !== "closed") {
+      event.preventDefault();
+      closeList();
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
+      event.preventDefault();
+      if (mode === "closed") {
+        openBrowse();
+      }
+    }
+  });
+
+  searchInput.addEventListener("input", () => {
+    activeIndex = 0;
+    renderList(searchInput.value);
+  });
+
+  searchInput.addEventListener("keydown", (event) => {
+    const options = getFocusableOptions();
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeList();
+      trigger.focus();
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      if (!options.length) {
+        return;
+      }
+      activeIndex = Math.min(activeIndex + 1, options.length - 1);
+      renderList(searchInput.value);
+      options[activeIndex]?.scrollIntoView({ block: "nearest" });
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      if (!options.length) {
+        return;
+      }
+      activeIndex = Math.max(activeIndex - 1, 0);
+      renderList(searchInput.value);
+      options[activeIndex]?.scrollIntoView({ block: "nearest" });
+      return;
+    }
+
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const pick = options[activeIndex >= 0 ? activeIndex : 0];
+      if (pick?.classList.contains("station-combobox-search")) {
+        return;
+      }
+      if (pick?.dataset.value) {
+        selectStation(pick.dataset.value);
+      }
+    }
+  });
+
+  searchInput.addEventListener("blur", () => {
+    window.setTimeout(() => {
+      if (suppressBlurClose) {
+        suppressBlurClose = false;
+        return;
+      }
+      if (mode !== "closed" && !root.contains(document.activeElement)) {
+        closeList();
+      }
+    }, 120);
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!root.contains(event.target)) {
+      closeList();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && mode !== "closed") {
+      event.preventDefault();
+      closeList();
+      trigger.focus();
+    }
+  });
+
+  return {
+    getValue,
+    setValue,
+    focus,
+    openBrowse,
+    closeList,
+    enterSearchMode,
+    required,
+    trigger,
+    searchInput,
+    list,
+  };
+}
+
+let detailStationCombobox = null;
+let nearbyStationCombobox = null;
+
+function initStationComboboxes() {
+  if (detailStationComboboxRoot) {
+    detailStationCombobox = createStationCombobox(detailStationComboboxRoot, {
+      required: true,
+      hideFooterOnOpen: true,
+      onChange: (station) => loadDirectionsForSelect(detailDirectionSelect, station),
+    });
+  }
+
+  if (nearbyStationComboboxRoot) {
+    nearbyStationCombobox = createStationCombobox(nearbyStationComboboxRoot, {
+      onChange: (station) => {
+        if (station && isNearbyModeActive()) {
+          void applyNearbyManualStation(station);
+        }
+      },
+    });
+  }
+}
+
+function setStationComboboxValue(combobox, station) {
+  combobox?.setValue(station || "", { silent: true });
 }
 
 async function fetchDirectionsFromApi(station) {
@@ -3542,12 +4891,12 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
   const requestId = ++directionsRequestId;
 
   if (!station) {
-    selectEl.innerHTML = '<option value="">Choose station first</option>';
+    replaceSelectOptions(selectEl, [{ value: "", label: "Choose station first" }]);
     selectEl.disabled = true;
     return;
   }
 
-  selectEl.innerHTML = "<option value=\"\">Loading…</option>";
+  replaceSelectOptions(selectEl, [{ value: "", label: "Loading…" }]);
   selectEl.disabled = true;
 
   try {
@@ -3564,9 +4913,10 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
     }
 
     const directions = dedupeDirections(directionLists.flat());
-    selectEl.innerHTML = directions
-      .map((dir) => `<option value="${dir}">${dir}</option>`)
-      .join("");
+    replaceSelectOptions(
+      selectEl,
+      directions.map((dir) => ({ value: dir, label: dir }))
+    );
 
     const normalizedPreferred = normalizeDirection(preferredDirection);
     if (normalizedPreferred && directions.includes(normalizedPreferred)) {
@@ -3576,7 +4926,7 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
     if (requestId !== directionsRequestId) {
       return;
     }
-    selectEl.innerHTML = `<option value="">${error.message}</option>`;
+    replaceSelectOptions(selectEl, [{ value: "", label: error.message }]);
   }
 
   if (requestId === directionsRequestId) {
@@ -3663,85 +5013,6 @@ function cancelJourneyDetailEdit() {
   showSettingsListView();
 }
 
-function commitActiveJourneyNameEdit() {
-  if (!activeJourneyNameEdit) {
-    return;
-  }
-
-  const session = activeJourneyNameEdit;
-  activeJourneyNameEdit = null;
-  session.finish();
-}
-
-function startJourneyNameEdit(nameEl, journey, openBtn, renameBtn) {
-  commitActiveJourneyNameEdit();
-
-  if (nameEl.dataset.editing === "true") {
-    return;
-  }
-
-  nameEl.dataset.editing = "true";
-  if (openBtn) {
-    openBtn.disabled = true;
-  }
-  if (renameBtn) {
-    renameBtn.disabled = true;
-  }
-
-  const input = document.createElement("input");
-  input.type = "text";
-  input.className = "journey-list-name-input";
-  input.maxLength = 24;
-  input.value = journey.name;
-  input.setAttribute("aria-label", "Journey name");
-
-  let finished = false;
-  const finish = () => {
-    if (finished) {
-      return;
-    }
-    finished = true;
-
-    if (activeJourneyNameEdit?.input === input) {
-      activeJourneyNameEdit = null;
-    }
-
-    journey.name = input.value.trim() || journey.name;
-    nameEl.textContent = journey.name;
-    nameEl.dataset.editing = "false";
-    if (openBtn) {
-      openBtn.disabled = false;
-    }
-    if (renameBtn) {
-      renameBtn.disabled = false;
-    }
-    if (input.isConnected) {
-      input.remove();
-    }
-    nameEl.hidden = false;
-    saveJourneyListToSettings();
-  };
-
-  activeJourneyNameEdit = { input, finish };
-
-  nameEl.hidden = true;
-  nameEl.parentNode.insertBefore(input, nameEl.nextSibling);
-  input.focus();
-  input.select();
-
-  input.addEventListener("blur", finish, { once: true });
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      input.blur();
-    }
-    if (event.key === "Escape") {
-      input.value = journey.name;
-      input.blur();
-    }
-  });
-}
-
 let templateWizardStep = 1;
 let templateWizardContext = null;
 
@@ -3751,14 +5022,7 @@ function syncTemplateWizardCoachPosition() {
     return;
   }
 
-  const target =
-    templateWizardStep === 1
-      ? detailRouteSection
-      : templateWizardStep === 2
-        ? leaveBeforeField
-        : templateWizardStep === 3
-          ? detailJourneyWindow
-          : null;
+  const target = getTemplateWizardHighlightTarget();
 
   if (!target) {
     return;
@@ -3785,116 +5049,136 @@ function syncTemplateWizardCoachPosition() {
   card.style.transform = "translateX(-50%)";
 }
 
-function clearTemplateWizardCoachPosition() {
-  const card = templateRouteCoach?.querySelector(".onboarding-coach-card");
-  if (!card) {
+function templateWizardUsesNameStep(context = templateWizardContext) {
+  return context?.useNameStep === true;
+}
+
+function getTemplateWizardRouteStep(context = templateWizardContext) {
+  return templateWizardUsesNameStep(context) ? 2 : 1;
+}
+
+function getTemplateWizardTimeStep(context = templateWizardContext) {
+  return templateWizardUsesNameStep(context) ? 3 : 2;
+}
+
+function getTemplateWizardHoursStep(context = templateWizardContext) {
+  return templateWizardUsesNameStep(context) ? 4 : 3;
+}
+
+function getTemplateWizardReminderStep(context = templateWizardContext) {
+  return getTemplateWizardHoursStep(context) + 1;
+}
+
+function getTemplateWizardMaxStep(context = templateWizardContext) {
+  return getTemplateWizardReminderStep(context);
+}
+
+function getTemplateWizardHighlightTarget(
+  step = templateWizardStep,
+  context = templateWizardContext
+) {
+  if (templateWizardUsesNameStep(context) && step === 1) {
+    return detailJourneyNameField;
+  }
+
+  if (step === getTemplateWizardRouteStep(context)) {
+    return detailRouteSection;
+  }
+  if (step === getTemplateWizardTimeStep(context)) {
+    return leaveBeforeField;
+  }
+  if (step === getTemplateWizardHoursStep(context)) {
+    return detailJourneyWindow;
+  }
+  if (step === getTemplateWizardReminderStep(context)) {
+    return detailReminderSection;
+  }
+
+  return null;
+}
+
+function getTemplateWizardStepTitleId(
+  step = templateWizardStep,
+  context = templateWizardContext
+) {
+  if (templateWizardUsesNameStep(context) && step === 1) {
+    return "template-wizard-step-name-title";
+  }
+  if (step === getTemplateWizardRouteStep(context)) {
+    return "template-wizard-step-1-title";
+  }
+  if (step === getTemplateWizardTimeStep(context)) {
+    return "template-wizard-step-2-title";
+  }
+  if (step === getTemplateWizardHoursStep(context)) {
+    return "template-wizard-step-3-title";
+  }
+  if (step === getTemplateWizardReminderStep(context)) {
+    return "template-wizard-step-reminder-title";
+  }
+  return "template-wizard-step-1-title";
+}
+
+function escapeTemplateHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function populateTemplateWizardNameBody(journey, templateKey) {
+  if (!templateWizardNameBody) {
     return;
   }
 
-  card.style.removeProperty("top");
-  card.style.removeProperty("bottom");
-  card.style.removeProperty("left");
-  card.style.removeProperty("right");
-  card.style.removeProperty("transform");
+  const label =
+    templateKey === "evening"
+      ? "Evening home"
+      : templateKey === "custom"
+        ? "custom journey"
+        : "Morning into town";
+  const name = journey?.name || label;
+  templateWizardNameBody.innerHTML = `We've called this <strong>${escapeTemplateHtml(name)}</strong>. Change it anytime.`;
 }
 
-function syncTemplateWizardHighlight(step = templateWizardStep) {
-  detailRouteSection?.classList.remove("template-wizard-highlight");
-  leaveBeforeField?.classList.remove("template-wizard-highlight");
-  detailJourneyWindow?.classList.remove("template-wizard-highlight");
-
-  const target =
-    step === 1 ? detailRouteSection : step === 2 ? leaveBeforeField : step === 3 ? detailJourneyWindow : null;
-  if (target) {
-    target.classList.add("template-wizard-highlight");
-    window.requestAnimationFrame(() => {
-      target.scrollIntoView({
-        block: step === 3 ? "center" : "nearest",
-        behavior: "smooth",
-      });
-      window.setTimeout(() => syncTemplateWizardCoachPosition(), 320);
-    });
-  }
-}
-
-function syncTemplateWizardChrome() {
-  const active = Boolean(templateRouteCoach && !templateRouteCoach.hidden);
-  journeysDialog?.classList.toggle("template-wizard-active", active);
-
-  if (!templateRouteCoach) {
+function populateTemplateWizardHoursBody(journey, templateKey) {
+  if (!templateWizardHoursBody) {
     return;
   }
 
-  templateRouteCoach.classList.remove(
-    "template-route-coach--step-1",
-    "template-route-coach--step-2",
-    "template-route-coach--step-3"
-  );
-  if (active) {
-    templateRouteCoach.classList.add(`template-route-coach--step-${templateWizardStep}`);
-    window.requestAnimationFrame(() => syncTemplateWizardCoachPosition());
-  }
+  const windowLabel = formatJourneyDefaultWindow(journey);
+  const period =
+    templateKey === "evening"
+      ? "evenings"
+      : templateKey === "custom"
+        ? "weekday mornings"
+        : "mornings";
+  const example =
+    windowLabel && windowLabel !== "Not set"
+      ? ` — e.g. ${period} ${windowLabel}`
+      : templateKey === "custom"
+        ? " — e.g. weekday mornings"
+        : "";
+  templateWizardHoursBody.textContent = `This journey shows on your main screen during these hours${example}.`;
 }
 
-function renderTemplateWizardStep() {
-  if (templateWizardStep1) {
-    templateWizardStep1.hidden = templateWizardStep !== 1;
-  }
-  if (templateWizardStep2) {
-    templateWizardStep2.hidden = templateWizardStep !== 2;
-  }
-  if (templateWizardStep3) {
-    templateWizardStep3.hidden = templateWizardStep !== 3;
-  }
-
-  if (templateRouteCoach) {
-    templateRouteCoach.setAttribute(
-      "aria-labelledby",
-      `template-wizard-step-${templateWizardStep}-title`
-    );
-  }
-
-  if (templateWizardPrimaryBtn) {
-    templateWizardPrimaryBtn.textContent = templateWizardStep === 3 ? "Got it" : "Next";
-  }
-
-  syncTemplateWizardHighlight();
-  syncTemplateWizardChrome();
-}
-
-function dismissTemplateRouteCoach() {
-  if (templateRouteCoach) {
-    templateRouteCoach.hidden = true;
-  }
-  clearTemplateWizardCoachPosition();
-  templateWizardStep = 1;
-  templateWizardContext = null;
-  syncTemplateWizardHighlight(0);
-  syncTemplateWizardChrome();
-}
-
-function advanceTemplateWizard() {
-  if (templateWizardStep < 3) {
-    templateWizardStep += 1;
-    renderTemplateWizardStep();
+function populateTemplateRouteCoachBody(context = templateWizardContext) {
+  if (!templateRouteCoachBody || !context) {
     return;
   }
 
-  dismissTemplateRouteCoach();
-}
-
-function showTemplateRouteCoach({ templateKey, journey, nearest, configured, error }) {
-  if (!templateRouteCoach || !templateRouteCoachBody) {
-    return;
-  }
-
-  templateWizardContext = { templateKey, journey, nearest, configured, error };
-  templateWizardStep = 1;
-
+  const { templateKey, journey, nearest, configured, error, routeLoading } = context;
   const step1Title = document.getElementById("template-wizard-step-1-title");
   if (step1Title) {
     step1Title.textContent =
       templateKey === "custom" ? "Pick your route" : "Route picked for you";
+  }
+
+  if (routeLoading && templateKey !== "custom") {
+    templateRouteCoachBody.innerHTML =
+      '<span class="template-route-loading"><span class="locate-spinner" aria-hidden="true"></span> Finding your nearest station…</span>';
+    return;
   }
 
   const templateLabel =
@@ -3917,26 +5201,225 @@ function showTemplateRouteCoach({ templateKey, journey, nearest, configured, err
   } else if (error?.code === 1) {
     templateRouteCoachBody.textContent =
       "Location permission was denied, so we couldn't pick your nearest station. Choose your station and direction — you can tap Use nearest station if you change your mind.";
-  } else if (templateKey === "morning" && nearest?.station && PERTH_STATIONS.has(normalizeStation(nearest.station))) {
+  } else if (
+    templateKey === "morning" &&
+    nearest?.station &&
+    PERTH_STATIONS.has(normalizeStation(nearest.station))
+  ) {
     templateRouteCoachBody.textContent =
       "You're near the city centre, so we couldn't guess a suburban departure station. Pick your station and direction — morning trips are usually from your local station towards Perth.";
   } else {
     templateRouteCoachBody.textContent =
       "We couldn't auto-fill your route just now. Pick your station and direction — you can tap Use nearest station for a shortcut.";
   }
+}
 
-  if (templateWizardHoursBody) {
-    if (templateKey === "custom") {
-      templateWizardHoursBody.textContent =
-        "Optional: limit when this journey appears on your home screen (e.g. weekday mornings).";
-    } else {
-      const windowLabel = formatJourneyDefaultWindow(journey);
-      const period = templateKey === "evening" ? "evenings" : "mornings";
-      const example =
-        windowLabel && windowLabel !== "Not set" ? ` — e.g. ${period} ${windowLabel}` : "";
-      templateWizardHoursBody.textContent = `This journey shows on your screen during these hours${example}.`;
-    }
+function updateTemplateRouteCoachState(patch) {
+  if (!templateWizardContext) {
+    return;
   }
+
+  templateWizardContext = { ...templateWizardContext, ...patch };
+  if (templateWizardContext.journey) {
+    populateTemplateWizardHoursBody(
+      templateWizardContext.journey,
+      templateWizardContext.templateKey
+    );
+  }
+
+  if (templateWizardStep === getTemplateWizardRouteStep()) {
+    populateTemplateRouteCoachBody();
+  }
+}
+
+function clearTemplateWizardCoachPosition() {
+  const card = templateRouteCoach?.querySelector(".onboarding-coach-card");
+  if (!card) {
+    return;
+  }
+
+  card.style.removeProperty("top");
+  card.style.removeProperty("bottom");
+  card.style.removeProperty("left");
+  card.style.removeProperty("right");
+  card.style.removeProperty("transform");
+}
+
+function syncTemplateWizardHighlight(step = templateWizardStep) {
+  detailJourneyNameField?.classList.remove("template-wizard-highlight");
+  detailRouteSection?.classList.remove("template-wizard-highlight");
+  leaveBeforeField?.classList.remove("template-wizard-highlight");
+  detailJourneyWindow?.classList.remove("template-wizard-highlight");
+  detailReminderSection?.classList.remove("template-wizard-highlight");
+
+  const target = getTemplateWizardHighlightTarget(step);
+  if (target) {
+    target.classList.add("template-wizard-highlight");
+    const scrollBlock =
+      step === getTemplateWizardHoursStep() || step === getTemplateWizardReminderStep()
+        ? "center"
+        : "nearest";
+    window.requestAnimationFrame(() => {
+      target.scrollIntoView({
+        block: scrollBlock,
+        behavior: "smooth",
+      });
+      window.setTimeout(() => syncTemplateWizardCoachPosition(), 320);
+    });
+  }
+}
+
+function syncTemplateWizardChrome() {
+  const active = Boolean(templateRouteCoach && !templateRouteCoach.hidden);
+  journeysDialog?.classList.toggle("template-wizard-active", active);
+
+  if (!templateRouteCoach) {
+    return;
+  }
+
+  templateRouteCoach.classList.remove(
+    "template-route-coach--step-1",
+    "template-route-coach--step-2",
+    "template-route-coach--step-3",
+    "template-route-coach--step-4",
+    "template-route-coach--step-5"
+  );
+  if (active) {
+    templateRouteCoach.classList.add(`template-route-coach--step-${templateWizardStep}`);
+    window.requestAnimationFrame(() => syncTemplateWizardCoachPosition());
+  }
+}
+
+function renderTemplateWizardStep() {
+  const useName = templateWizardUsesNameStep();
+  const routeStep = getTemplateWizardRouteStep();
+  const timeStep = getTemplateWizardTimeStep();
+  const hoursStep = getTemplateWizardHoursStep();
+  const reminderStep = getTemplateWizardReminderStep();
+
+  if (templateWizardStepName) {
+    templateWizardStepName.hidden = !(useName && templateWizardStep === 1);
+  }
+  if (templateWizardStep1) {
+    templateWizardStep1.hidden = templateWizardStep !== routeStep;
+  }
+  if (templateWizardStep2) {
+    templateWizardStep2.hidden = templateWizardStep !== timeStep;
+  }
+  if (templateWizardStep3) {
+    templateWizardStep3.hidden = templateWizardStep !== hoursStep;
+  }
+  if (templateWizardStepReminder) {
+    templateWizardStepReminder.hidden = templateWizardStep !== reminderStep;
+  }
+
+  if (templateRouteCoach) {
+    templateRouteCoach.setAttribute("aria-labelledby", getTemplateWizardStepTitleId());
+  }
+
+  if (templateWizardPrimaryBtn) {
+    templateWizardPrimaryBtn.textContent =
+      templateWizardStep === getTemplateWizardMaxStep() ? "Got it" : "Next";
+  }
+
+  syncTemplateWizardHighlight();
+  syncTemplateWizardChrome();
+}
+
+function hasSeenTemplateWizard() {
+  return localStorage.getItem(TEMPLATE_WIZARD_SEEN_KEY) === "1";
+}
+
+function hasSkippedTemplateWizard() {
+  return localStorage.getItem(TEMPLATE_WIZARD_SKIPPED_KEY) === "1";
+}
+
+function markTemplateWizardSeen() {
+  localStorage.setItem(TEMPLATE_WIZARD_SEEN_KEY, "1");
+}
+
+function markTemplateWizardCompleted() {
+  markTemplateWizardSeen();
+  localStorage.removeItem(TEMPLATE_WIZARD_SKIPPED_KEY);
+}
+
+function skipTemplateWizard() {
+  markTemplateWizardSeen();
+  localStorage.setItem(TEMPLATE_WIZARD_SKIPPED_KEY, "1");
+  dismissTemplateRouteCoach();
+}
+
+function shouldShowTemplateRouteCoach() {
+  if (hasSeenTemplateWizard()) {
+    return false;
+  }
+
+  // Already set up a journey — fields are familiar; skip the 3-step coach.
+  return getConfiguredJourneys().length === 0;
+}
+
+function dismissTemplateRouteCoach() {
+  if (templateRouteCoach) {
+    templateRouteCoach.hidden = true;
+  }
+  clearTemplateWizardCoachPosition();
+  templateWizardStep = 1;
+  templateWizardContext = null;
+  detailJourneyNameField?.classList.remove("template-wizard-highlight");
+  detailReminderSection?.classList.remove("template-wizard-highlight");
+  syncTemplateWizardHighlight(0);
+  syncTemplateWizardChrome();
+}
+
+function advanceTemplateWizard() {
+  const maxStep = getTemplateWizardMaxStep();
+  if (templateWizardStep < maxStep) {
+    templateWizardStep += 1;
+    if (templateWizardStep === getTemplateWizardRouteStep()) {
+      populateTemplateRouteCoachBody();
+    }
+    renderTemplateWizardStep();
+    return;
+  }
+
+  markTemplateWizardCompleted();
+  dismissTemplateRouteCoach();
+}
+
+function showTemplateRouteCoach({
+  templateKey,
+  journey,
+  nearest,
+  configured,
+  error,
+  routeLoading = false,
+}) {
+  if (!templateRouteCoach || !templateRouteCoachBody) {
+    return;
+  }
+
+  if (!shouldShowTemplateRouteCoach()) {
+    return;
+  }
+
+  const useNameStep = templateKey !== "custom";
+  templateWizardContext = {
+    templateKey,
+    journey,
+    nearest,
+    configured,
+    error,
+    routeLoading,
+    useNameStep,
+  };
+  templateWizardStep = 1;
+
+  if (useNameStep) {
+    populateTemplateWizardNameBody(journey, templateKey);
+  } else {
+    populateTemplateRouteCoachBody();
+  }
+  populateTemplateWizardHoursBody(journey, templateKey);
 
   renderTemplateWizardStep();
   templateRouteCoach.hidden = false;
@@ -3971,25 +5454,6 @@ async function applyTemplateRoute(journey, templateKey) {
 
   return { configured: true, journey: configured, nearest, error: null };
 }
-
-const JOURNEY_TEMPLATE_PRESETS = {
-  morning: {
-    name: "Morning into town",
-    defaultFrom: "06:00",
-    defaultUntil: "09:00",
-    preferredTrainTime: "07:20",
-    remindDays: [1, 2, 3, 4, 5],
-    remindMe: true,
-  },
-  evening: {
-    name: "Evening home",
-    defaultFrom: "15:00",
-    defaultUntil: "18:00",
-    preferredTrainTime: "17:30",
-    remindDays: [1, 2, 3, 4, 5],
-    remindMe: true,
-  },
-};
 
 function shouldAutoRouteJourney(journey) {
   if (!journey || !isUnconfiguredJourney(journey)) {
@@ -4037,10 +5501,7 @@ async function syncJourneyDetailRouteFields(journey, nearestHint = null) {
     return;
   }
 
-  renderStationOptions(detailStationSelect, journey.station);
-  if (journey.station) {
-    detailStationSelect.value = journey.station;
-  }
+  setStationComboboxValue(detailStationCombobox, journey.station);
   await loadDirectionsForSelect(detailDirectionSelect, journey.station, journey.direction);
 
   if (detailNearestHint) {
@@ -4055,10 +5516,346 @@ async function syncJourneyDetailRouteFields(journey, nearestHint = null) {
 
 function formatJourneyOverlapError(updated, conflict) {
   if (conflict.name === updated.name && conflict.id !== updated.id) {
-    return `Another journey already uses these hours (${updated.name}). Delete the duplicate from Journeys or change the times.`;
+    return `Only one journey can be active at one time. Another ${conflict.name} already uses these hours.`;
   }
 
-  return `Default times overlap with "${conflict.name}" (${formatJourneyDefaultWindow(conflict)}). Adjust the times so only one journey is the default at any moment.`;
+  return `Only one journey can be active at one time. These hours overlap ${conflict.name} (${formatJourneyDefaultWindow(conflict)}).`;
+}
+
+function clearJourneyOverlapError() {
+  journeyOverlapState = null;
+  if (detailActiveHoursErrorEl) {
+    detailActiveHoursErrorEl.hidden = true;
+    detailActiveHoursErrorEl.classList.remove("journey-overlap-error--fixed");
+  }
+  if (detailActiveHoursFixBtn) {
+    detailActiveHoursFixBtn.hidden = false;
+  }
+  detailDefaultFromField?.classList.remove("optional-time-field--overlap");
+  detailDefaultUntilField?.classList.remove("optional-time-field--overlap");
+  detailJourneyWindow?.classList.remove("template-wizard-highlight");
+}
+
+function showJourneyOverlapError(updated, conflict) {
+  journeyOverlapState = { updated, conflict };
+  if (detailActiveHoursErrorEl) {
+    detailActiveHoursErrorEl.classList.remove("journey-overlap-error--fixed");
+  }
+  if (detailActiveHoursFixBtn) {
+    detailActiveHoursFixBtn.hidden = false;
+  }
+  if (detailActiveHoursErrorTextEl) {
+    detailActiveHoursErrorTextEl.textContent = formatJourneyOverlapError(updated, conflict);
+  }
+  if (detailActiveHoursErrorEl) {
+    detailActiveHoursErrorEl.hidden = false;
+    requestAnimationFrame(() => {
+      detailActiveHoursErrorEl.scrollIntoView({ block: "center", behavior: "smooth" });
+    });
+  }
+  detailDefaultFromField?.classList.add("optional-time-field--overlap");
+  detailDefaultUntilField?.classList.add("optional-time-field--overlap");
+  detailJourneyWindow?.classList.add("template-wizard-highlight");
+}
+
+function showJourneyOverlapFixApplied(adjustedJourney, keptJourney, cleared) {
+  journeyOverlapState = null;
+  detailDefaultFromField?.classList.remove("optional-time-field--overlap");
+  detailDefaultUntilField?.classList.remove("optional-time-field--overlap");
+  detailJourneyWindow?.classList.remove("template-wizard-highlight");
+  if (detailActiveHoursFixBtn) {
+    detailActiveHoursFixBtn.hidden = true;
+  }
+  if (detailActiveHoursErrorTextEl) {
+    detailActiveHoursErrorTextEl.textContent = cleared
+      ? `Cleared Active hours on ${adjustedJourney.name} so yours can keep ${formatJourneyDefaultWindow(keptJourney)}. Tap Save.`
+      : `Adjusted ${adjustedJourney.name} to ${formatJourneyDefaultWindow(adjustedJourney)} so yours can keep ${formatJourneyDefaultWindow(keptJourney)}. Tap Save.`;
+  }
+  if (detailActiveHoursErrorEl) {
+    detailActiveHoursErrorEl.classList.add("journey-overlap-error--fixed");
+    detailActiveHoursErrorEl.hidden = false;
+  }
+}
+
+function scoreActiveHoursChange(before, after) {
+  if (!hasDefaultWindow(after)) {
+    return 24 * 60 * 4;
+  }
+  if (!hasDefaultWindow(before)) {
+    return 0;
+  }
+  return (
+    Math.abs(parseTimeToMinutes(after.defaultFrom) - parseTimeToMinutes(before.defaultFrom)) +
+    Math.abs(parseTimeToMinutes(after.defaultUntil) - parseTimeToMinutes(before.defaultUntil))
+  );
+}
+
+function buildConflictFixCandidates(editing, conflict) {
+  const editingStart = parseTimeToMinutes(editing.defaultFrom);
+  const editingEnd = parseTimeToMinutes(editing.defaultUntil);
+  const conflictStart = parseTimeToMinutes(conflict.defaultFrom);
+  const conflictEnd = parseTimeToMinutes(conflict.defaultUntil);
+  const candidates = [];
+
+  // Overnight windows: clearing the older journey is safer than inventing a preset.
+  if (editingStart >= editingEnd || conflictStart >= conflictEnd) {
+    return [{ defaultFrom: "", defaultUntil: "" }];
+  }
+
+  const duration = conflictEnd - conflictStart;
+
+  if (conflictStart < editingStart && conflictEnd > editingStart && editingStart - conflictStart >= 1) {
+    candidates.push({
+      defaultFrom: formatMinutesAsTime(conflictStart),
+      defaultUntil: formatMinutesAsTime(editingStart),
+    });
+  }
+
+  if (conflictStart < editingEnd && conflictEnd > editingEnd && conflictEnd - editingEnd >= 1) {
+    candidates.push({
+      defaultFrom: formatMinutesAsTime(editingEnd),
+      defaultUntil: formatMinutesAsTime(conflictEnd),
+    });
+  }
+
+  if (duration >= 1 && editingStart - duration >= 0) {
+    candidates.push({
+      defaultFrom: formatMinutesAsTime(editingStart - duration),
+      defaultUntil: formatMinutesAsTime(editingStart),
+    });
+  }
+
+  if (duration >= 1 && editingEnd + duration <= 24 * 60) {
+    candidates.push({
+      defaultFrom: formatMinutesAsTime(editingEnd),
+      defaultUntil: formatMinutesAsTime(editingEnd + duration),
+    });
+  }
+
+  candidates.push({ defaultFrom: "", defaultUntil: "" });
+  return candidates;
+}
+
+function conflictFixCreatesOtherClash(proposedConflict, editing, journeys) {
+  if (!hasDefaultWindow(proposedConflict)) {
+    return false;
+  }
+
+  for (const other of journeys) {
+    if (
+      other.id === proposedConflict.id ||
+      other.id === editing.id ||
+      !hasDefaultWindow(other) ||
+      isUnconfiguredJourney(other)
+    ) {
+      continue;
+    }
+    if (
+      journeyDefaultWindowsOverlap(proposedConflict, other) &&
+      journeyActiveDaysOverlap(proposedConflict, other)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * New journey (being edited) keeps its hours. Adjust the conflicting journey
+ * by the smallest time change that removes the overlap.
+ */
+function suggestOverlapFixForConflict(editing, conflict, journeys) {
+  let best = null;
+  let bestScore = Infinity;
+  let bestStart = Infinity;
+
+  for (const window of buildConflictFixCandidates(editing, conflict)) {
+    const proposed = {
+      ...conflict,
+      defaultFrom: window.defaultFrom,
+      defaultUntil: window.defaultUntil,
+    };
+    if (hasDefaultWindow(proposed) && journeyDefaultWindowsOverlap(editing, proposed)) {
+      continue;
+    }
+    if (conflictFixCreatesOtherClash(proposed, editing, journeys)) {
+      continue;
+    }
+
+    const score = scoreActiveHoursChange(conflict, proposed);
+    const start = hasDefaultWindow(proposed)
+      ? parseTimeToMinutes(proposed.defaultFrom)
+      : Infinity;
+    if (score < bestScore || (score === bestScore && start < bestStart)) {
+      bestScore = score;
+      bestStart = start;
+      best = {
+        defaultFrom: window.defaultFrom,
+        defaultUntil: window.defaultUntil,
+        cleared: !hasDefaultWindow(proposed),
+      };
+    }
+  }
+
+  return best;
+}
+
+function applyJourneyOverlapFix() {
+  if (!journeyOverlapState?.conflict || !journeyOverlapState?.updated) {
+    return;
+  }
+
+  const kept = journeyOverlapState.updated;
+  const conflict = journeyOverlapState.conflict;
+  const fix = suggestOverlapFixForConflict(kept, conflict, settingsDraftJourneys);
+  if (!fix) {
+    return;
+  }
+
+  const index = settingsDraftJourneys.findIndex((journey) => journey.id === conflict.id);
+  if (index < 0) {
+    return;
+  }
+
+  settingsDraftJourneys[index] = {
+    ...settingsDraftJourneys[index],
+    defaultFrom: fix.defaultFrom,
+    defaultUntil: fix.defaultUntil,
+  };
+
+  const stillConflicts = findJourneyDefaultWindowConflict(kept, settingsDraftJourneys);
+  if (stillConflicts) {
+    showJourneyOverlapError(kept, stillConflicts);
+    return;
+  }
+
+  showJourneyOverlapFixApplied(settingsDraftJourneys[index], kept, fix.cleared);
+}
+
+function showDetailRemindPermissionHint(show) {
+  if (detailRemindPermissionHint) {
+    detailRemindPermissionHint.hidden = !show;
+  }
+  if (detailRemindExpandedEl) {
+    detailRemindExpandedEl.hidden = !show;
+  }
+}
+
+function highlightDetailReminderSection() {
+  if (!detailReminderSection) {
+    return;
+  }
+
+  detailReminderSection.classList.add("template-wizard-highlight");
+  detailReminderSection.scrollIntoView({ block: "center", behavior: "smooth" });
+  window.setTimeout(() => {
+    detailReminderSection.classList.remove("template-wizard-highlight");
+  }, 3200);
+}
+
+async function handleDetailRemindToggleChange() {
+  const remindOn = detailRemindMeInput?.checked ?? false;
+  showDetailRemindPermissionHint(false);
+
+  if (!remindOn) {
+    return;
+  }
+
+  if (detailPreferredField?.dataset.empty !== "false") {
+    detailPreferredDisplay?.focus();
+  }
+
+  window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
+
+  const settings = await window.nextTrainLeaveReminders?.enableLeaveReminders?.();
+  if (settings?.permissionGranted === false) {
+    if (detailRemindMeInput) {
+      detailRemindMeInput.checked = false;
+    }
+    showDetailRemindPermissionHint(true);
+  }
+}
+
+function populateDetailReminderFields(journey) {
+  const remindOn = journey?.remindMe === true;
+  if (detailRemindMeInput) {
+    detailRemindMeInput.checked = remindOn;
+  }
+  setOptionalTimeField(
+    detailPreferredInput,
+    detailPreferredDisplay,
+    detailPreferredField,
+    detailPreferredClear,
+    journey?.preferredTrainTime || ""
+  );
+  showDetailRemindPermissionHint(false);
+}
+
+function readJourneyDetailDraft() {
+  if (!editingJourneyId) {
+    return null;
+  }
+
+  const { station, direction } = requireJourneyRouteFromForm();
+  const name = readJourneyNameFromForm(station, direction);
+  const { defaultFrom, defaultUntil } = normalizeActiveHoursFieldsForSave();
+
+  const remindDays = readDetailActiveDays();
+  if (!remindDays.length) {
+    detailActiveDayChips?.querySelector(".remind-day-chip")?.focus?.();
+    throw new Error("Pick at least one active day.");
+  }
+
+  const remindMe = detailRemindMeInput?.checked ?? false;
+  const preferredTrainTime = readOptionalTimeField(detailPreferredField);
+  if (remindMe && !preferredTrainTime) {
+    detailPreferredDisplay?.focus();
+    throw new Error("Choose your target train.");
+  }
+
+  const existing = settingsDraftJourneys.find((entry) => entry.id === editingJourneyId);
+  return normalizeJourney({
+    id: editingJourneyId,
+    name,
+    station,
+    direction,
+    leaveBeforeMinutes: Number(detailLeaveBeforeInput.value),
+    useLeaveBefore: detailUseLeaveBeforeInput?.checked ?? true,
+    defaultFrom,
+    defaultUntil,
+    preferredTrainTime,
+    remindDays,
+    remindMe,
+    templateKey: existing?.templateKey,
+    autoRoute: existing?.autoRoute,
+  });
+}
+
+function journeyMatchesTemplate(journey, templateKey) {
+  if (!journey || !templateKey || templateKey === "custom") {
+    return false;
+  }
+
+  if (journey.templateKey === templateKey) {
+    return true;
+  }
+
+  if (journey.templateKey && journey.templateKey !== templateKey) {
+    return false;
+  }
+
+  const preset = JOURNEY_TEMPLATE_PRESETS[templateKey];
+  if (!preset) {
+    return false;
+  }
+
+  // Preset journeys stay matched by name even if Active hours were edited after Save.
+  return journey.name === preset.name;
+}
+
+function hasJourneyForTemplate(templateKey) {
+  return settingsDraftJourneys.some((journey) => journeyMatchesTemplate(journey, templateKey));
 }
 
 function updateJourneyTemplatesVisibility() {
@@ -4066,15 +5863,46 @@ function updateJourneyTemplatesVisibility() {
     return;
   }
 
-  journeyTemplatesEl.hidden = settingsDraftJourneys.length >= 6;
+  const atCap = isAtJourneyCap();
+  let anyChipVisible = false;
+
+  document.querySelectorAll(".journey-template-chip").forEach((chip) => {
+    const templateKey = chip.dataset.template;
+    const taken =
+      templateKey === "morning" || templateKey === "evening"
+        ? hasJourneyForTemplate(templateKey)
+        : false;
+    chip.hidden = taken || atCap;
+    if (!taken && !atCap) {
+      anyChipVisible = true;
+    }
+  });
+
+  if (journeyTemplatesCapHintEl) {
+    journeyTemplatesCapHintEl.textContent = JOURNEY_CAP_HINT;
+    journeyTemplatesCapHintEl.hidden = !atCap;
+  }
+  if (journeyTemplatesAddHintEl) {
+    journeyTemplatesAddHintEl.hidden = atCap;
+  }
+  if (journeyTemplateChipsEl) {
+    journeyTemplateChipsEl.hidden = atCap || !anyChipVisible;
+  }
+
+  journeyTemplatesEl.hidden = !atCap && !anyChipVisible;
 }
 
 function createJourneyFromTemplate(templateKey) {
+  if (isAtJourneyCap()) {
+    return;
+  }
+
   if (templateKey === "custom") {
     const journey = createDefaultJourney({
       name: "",
       templateKey: "custom",
       autoRoute: false,
+      remindDays: [getPerthDayOfWeekIso()],
     });
     settingsDraftJourneys.push(journey);
     // Draft only until Save with station + direction — do not persist shells.
@@ -4098,6 +5926,18 @@ async function completeTemplateRouteSetup(journeyId, templateKey) {
     return;
   }
 
+  const showCoach = shouldShowTemplateRouteCoach();
+  if (showCoach) {
+    showTemplateRouteCoach({
+      templateKey,
+      journey,
+      nearest: null,
+      configured: false,
+      error: null,
+      routeLoading: templateKey !== "custom",
+    });
+  }
+
   const routeResult = await applyTemplateRoute(journey, templateKey);
   if (routeResult.configured && routeResult.journey) {
     const index = settingsDraftJourneys.findIndex((entry) => entry.id === journeyId);
@@ -4112,23 +5952,41 @@ async function completeTemplateRouteSetup(journeyId, templateKey) {
 
   const nearestHint =
     routeResult.nearest && routeResult.configured
-      ? `Nearest: ${formatStationLabel(routeResult.nearest.station)} (${routeResult.nearest.distanceKm.toFixed(1)} km away)`
+      ? formatNearestDistanceHint(routeResult.nearest)
       : null;
 
   if (editingJourneyId === journeyId) {
     await syncJourneyDetailRouteFields(journey, nearestHint);
   }
 
-  showTemplateRouteCoach({
-    templateKey,
-    journey,
-    nearest: routeResult.nearest,
-    configured: routeResult.configured,
-    error: routeResult.error,
-  });
+  if (showCoach) {
+    updateTemplateRouteCoachState({
+      journey,
+      nearest: routeResult.nearest,
+      configured: routeResult.configured,
+      error: routeResult.error,
+      routeLoading: false,
+    });
+  }
 }
 
 async function createJourneyFromCommuteTemplate(templateKey) {
+  if (isAtJourneyCap()) {
+    return;
+  }
+
+  if (hasJourneyForTemplate(templateKey)) {
+    const existing =
+      settingsDraftJourneys.find((journey) => journeyMatchesTemplate(journey, templateKey)) ?? null;
+    if (existing) {
+      await openJourneyDetail(existing.id, { skipAutoRoute: true });
+      if (isUnconfiguredJourney(existing)) {
+        await completeTemplateRouteSetup(existing.id, templateKey);
+      }
+    }
+    return;
+  }
+
   const reusable = findReusableTemplateJourney(templateKey);
   if (reusable) {
     await openJourneyDetail(reusable.id, { skipAutoRoute: true });
@@ -4197,25 +6055,13 @@ function renderJourneyListView() {
     chevron.setAttribute("aria-hidden", "true");
     chevron.textContent = "›";
 
-    const renameBtn = document.createElement("button");
-    renameBtn.type = "button";
-    renameBtn.className = "journey-list-rename-btn";
-    renameBtn.setAttribute("aria-label", `Rename ${journey.name}`);
-    renameBtn.textContent = "Rename";
-
     textStack.append(nameEl, route);
     openBtn.append(textStack, chevron);
     openBtn.addEventListener("click", () => {
       openJourneyDetail(journey.id);
     });
 
-    renameBtn.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      startJourneyNameEdit(nameEl, journey, openBtn, renameBtn);
-    });
-
-    card.append(openBtn, renameBtn);
+    card.append(openBtn);
     item.appendChild(card);
     journeyListEl.appendChild(item);
   }
@@ -4246,8 +6092,32 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
     return;
   }
 
+  let nearestHint = null;
+
+  if (!skipAutoRoute && shouldAutoRouteJourney(journey)) {
+    if (detailNearestHint) {
+      detailNearestHint.hidden = false;
+      detailNearestHint.textContent = "Finding nearest station…";
+    }
+
+    const routeResult = await applyDefaultJourneyRoute(journey);
+    if (routeResult.configured && routeResult.journey) {
+      const index = settingsDraftJourneys.findIndex((entry) => entry.id === journey.id);
+      if (index >= 0) {
+        settingsDraftJourneys[index] = routeResult.journey;
+      }
+      journey = routeResult.journey;
+      saveJourneyListToSettings();
+    }
+
+    if (routeResult.configured && routeResult.nearest) {
+      nearestHint = formatNearestDistanceHint(routeResult.nearest);
+    }
+  }
+
   editingJourneyId = journey.id;
   editingJourneySnapshot = normalizeJourney({ ...journey });
+  clearJourneyOverlapError();
   if (detailJourneyNameInput) {
     detailJourneyNameInput.value = journey.name || "";
   }
@@ -4271,36 +6141,13 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
     detailDefaultUntilClear,
     journey.defaultUntil
   );
+  setDetailActiveDayChips(journey.remindDays);
+  syncDetailActiveDaysHint(journey);
+  populateDetailReminderFields(journey);
+  syncDetailComboHints();
 
-  renderStationOptions(detailStationSelect, journey.station);
-  if (journey.station) {
-    detailStationSelect.value = journey.station;
-  }
   detailDirectionSelect.innerHTML = '<option value="">Loading…</option>';
   detailDirectionSelect.disabled = true;
-
-  let nearestHint = null;
-
-  if (!skipAutoRoute && shouldAutoRouteJourney(journey)) {
-    if (detailNearestHint) {
-      detailNearestHint.hidden = false;
-      detailNearestHint.textContent = "Finding nearest station…";
-    }
-
-    const routeResult = await applyDefaultJourneyRoute(journey);
-    if (routeResult.configured && routeResult.journey) {
-      const index = settingsDraftJourneys.findIndex((entry) => entry.id === journey.id);
-      if (index >= 0) {
-        settingsDraftJourneys[index] = routeResult.journey;
-      }
-      journey = routeResult.journey;
-      saveJourneyListToSettings();
-    }
-
-    if (routeResult.configured && routeResult.nearest) {
-      nearestHint = `Nearest: ${formatStationLabel(routeResult.nearest.station)} (${routeResult.nearest.distanceKm.toFixed(1)} km away)`;
-    }
-  }
 
   if (detailNearestHint) {
     if (nearestHint) {
@@ -4317,23 +6164,20 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
     console.warn("Could not load stations for journey detail", error);
   }
 
-  renderStationOptions(detailStationSelect, journey.station);
-  if (journey.station) {
-    detailStationSelect.value = journey.station;
-  }
+  setStationComboboxValue(detailStationCombobox, journey.station);
   await loadDirectionsForSelect(detailDirectionSelect, journey.station, journey.direction);
 
   if (deleteJourneyBtn) {
-    const editing = settingsDraftJourneys.find((journey) => journey.id === editingJourneyId);
-    const canDelete =
-      settingsDraftJourneys.length > 1 ||
-      (editing && isUnconfiguredJourney(editing));
-    deleteJourneyBtn.hidden = !canDelete;
+    deleteJourneyBtn.hidden = !editingJourneyId;
   }
 }
 
 function countConfiguredJourneys(journeys) {
   return journeys.filter((journey) => !isUnconfiguredJourney(journey)).length;
+}
+
+function isAtJourneyCap(journeys = settingsDraftJourneys) {
+  return countConfiguredJourneys(journeys) >= MAX_JOURNEYS;
 }
 
 function reloadSettingsDraftFromStorage() {
@@ -4346,18 +6190,26 @@ function reloadSettingsDraftFromStorage() {
   }));
 }
 
-function saveJourneyListToSettings() {
+function saveJourneyListToSettings({ allowEmpty = false } = {}) {
   // Never persist shells without station + direction (template/Custom mid-create).
   const draftConfigured = settingsDraftJourneys.filter(
     (journey) => !isUnconfiguredJourney(journey)
   );
   const persistedConfiguredCount = countConfiguredJourneys(settings.journeys);
 
-  if (draftConfigured.length === 0 && persistedConfiguredCount > 0) {
+  if (draftConfigured.length === 0 && persistedConfiguredCount > 0 && !allowEmpty) {
     return;
   }
 
-  if (persistedConfiguredCount > 0 && draftConfigured.length < persistedConfiguredCount) {
+  if (countConfiguredJourneys(draftConfigured) > MAX_JOURNEYS) {
+    return;
+  }
+
+  if (
+    persistedConfiguredCount > 0 &&
+    draftConfigured.length < persistedConfiguredCount &&
+    !allowEmpty
+  ) {
     return;
   }
 
@@ -4375,14 +6227,34 @@ function saveJourneyListToSettings() {
     activeJourneyId = journeys[0]?.id ?? null;
   }
   persistSettings({ journeys, activeJourneyId });
+  if (journeys.length === 0) {
+    clearManualJourneyOverride();
+  }
+}
+
+function finishAfterAllJourneysDeleted() {
+  dismissTemplateRouteCoach();
+  editingJourneyId = null;
+  editingJourneySnapshot = null;
+  showSettingsListView();
+
+  if (journeysDialog?.open) {
+    journeysDialog.close();
+    journeysDialog.removeAttribute("open");
+  }
+
+  clearManualJourneyOverride();
+  renderJourneySwitcher();
+  renderJourneyEmptyState();
+  void window.nextTrainWidget?.syncWidgetSettings?.();
 }
 
 function requireJourneyRouteFromForm() {
-  const station = detailStationSelect?.value?.trim?.() || detailStationSelect?.value || "";
+  const station = detailStationCombobox?.getValue?.() || "";
   const direction = normalizeDirection(detailDirectionSelect?.value || "");
 
   if (!station) {
-    detailStationSelect?.focus?.();
+    detailStationCombobox?.focus?.();
     throw new Error("Choose a departure station before saving.");
   }
 
@@ -4399,33 +6271,24 @@ function saveJourneyDetailFromForm() {
     return;
   }
 
-  const { station, direction } = requireJourneyRouteFromForm();
-  const name = readJourneyNameFromForm(station, direction);
-
-  const defaultFrom = readOptionalTimeField(detailDefaultFromField);
-  const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
-  if (Boolean(defaultFrom) !== Boolean(defaultUntil)) {
-    throw new Error("Set both default from and until times, or leave both blank.");
-  }
-
-  const existing = settingsDraftJourneys.find((entry) => entry.id === editingJourneyId);
-  const updated = normalizeJourney({
-    id: editingJourneyId,
-    name,
-    station,
-    direction,
-    leaveBeforeMinutes: Number(detailLeaveBeforeInput.value),
-    useLeaveBefore: detailUseLeaveBeforeInput?.checked ?? true,
-    defaultFrom,
-    defaultUntil,
-    preferredTrainTime: existing?.preferredTrainTime ?? "",
-    remindDays: existing?.remindDays ?? [...DEFAULT_REMIND_DAYS],
-    remindMe: existing?.remindMe ?? false,
-  });
-
+  const updated = readJourneyDetailDraft();
   const conflict = findJourneyDefaultWindowConflict(updated, settingsDraftJourneys);
   if (conflict) {
-    throw new Error(formatJourneyOverlapError(updated, conflict));
+    const overlapError = new Error(formatJourneyOverlapError(updated, conflict));
+    overlapError.code = "journey-overlap";
+    overlapError.conflict = conflict;
+    overlapError.updated = updated;
+    throw overlapError;
+  }
+
+  const wasConfiguredBeforeSave = settings.journeys.some(
+    (journey) => journey.id === editingJourneyId && !isUnconfiguredJourney(journey)
+  );
+  const isNewJourneySave = !wasConfiguredBeforeSave;
+  if (isNewJourneySave && countConfiguredJourneys(settings.journeys) >= MAX_JOURNEYS) {
+    const capError = new Error(JOURNEY_CAP_HINT);
+    capError.code = "journey-cap";
+    throw capError;
   }
 
   const index = settingsDraftJourneys.findIndex((journey) => journey.id === editingJourneyId);
@@ -4454,18 +6317,27 @@ function saveJourneyDetailFromForm() {
     document.dispatchEvent(new CustomEvent("nexttrain:journey-configured-first"));
   }
 
+  if (isNewJourneySave) {
+    activeJourneyId = editingJourneyId;
+    setManualJourneyOverride(editingJourneyId);
+  }
+
+  if (updated.remindMe === true) {
+    window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
+  }
+
   persistSettings({
     journeys: settingsDraftJourneys
       .filter((journey) => !isUnconfiguredJourney(journey))
       .map((journey) => normalizeJourney(journey)),
     activeJourneyId,
   });
+  void window.nextTrainLeaveReminders?.healAfterJourneySave?.();
   editingJourneySnapshot = null;
 }
 
 function closeJourneysDialog() {
   dismissTemplateRouteCoach();
-  commitActiveJourneyNameEdit();
 
   if (!settingsDetailView.hidden) {
     cancelJourneyDetailEdit();
@@ -4550,6 +6422,14 @@ function openMenu() {
   menuChromeAction?.classList.add("chrome-action--open");
 }
 
+function closeHelpDialog() {
+  helpDialog?.close();
+  if (helpOpenedFromMenu) {
+    helpOpenedFromMenu = false;
+    openMenu();
+  }
+}
+
 function clearAllAppData() {
   const localKeysToRemove = [];
   for (let index = 0; index < localStorage.length; index += 1) {
@@ -4620,6 +6500,34 @@ function openJourneysForSetup() {
   openJourneys();
 }
 
+function openMainScreenFromWidget() {
+  dismissLeaveHint();
+  closeMenuDialogOnly();
+  if (journeysDialog?.open || !settingsDetailView.hidden) {
+    closeJourneysDialog();
+  }
+
+  if (hasConfiguredCommute()) {
+    if (!journeyModeActive) {
+      journeyModeActive = true;
+      exitNearbyMode();
+    }
+    syncChromeMode();
+    clearHeroSetupState();
+    const journey = getActiveJourney();
+    if (journey) {
+      setManualJourneyOverride(journey.id);
+    }
+    maybeAutoSelectJourney();
+    skipTrains = readSkipState().count;
+    renderJourneySwitcher();
+    fetchNextTrain();
+    return;
+  }
+
+  void enterNearbyMode();
+}
+
 function openJourneyDetail(journeyId, options = {}) {
   openJourneysDialogSync();
 
@@ -4627,6 +6535,12 @@ function openJourneyDetail(journeyId, options = {}) {
     .then(() => populateJourneyDetailForm(journeyId, options))
     .then(() => {
       showSettingsDetailView();
+      if (!journeysDialog.open) {
+        journeysDialog.showModal();
+      }
+      if (options.highlightReminder) {
+        highlightDetailReminderSection();
+      }
     })
     .catch((error) => {
       console.warn("Could not open journey detail", error);
@@ -4642,15 +6556,20 @@ nearbyBtn?.addEventListener("click", () => {
     window.setTimeout(() => nearbyBtn?.classList.remove("icon-btn--refreshing"), 300);
   });
 });
-nearbyStationBtn?.addEventListener("click", async () => {
-  const station = nearbyStationSelect?.value;
-  if (!station) {
+async function applyNearbyManualStation(station) {
+  const normalized = normalizeStation(station);
+  if (!normalized || !PERTH_STATIONS.has(normalized)) {
     return;
   }
 
+  nearbyUserPickedStation = true;
   nearbyError = null;
+  stopNearbyLocateTimers();
+  dismissNearbyLocatePicker();
+  nearbyDontWaitVisible = false;
+  syncNearbyDontWaitButton();
   nearbySession = {
-    station,
+    station: normalized,
     distanceKm: null,
     focusedDirection: null,
     skipByDirection: {},
@@ -4661,27 +6580,51 @@ nearbyStationBtn?.addEventListener("click", async () => {
   try {
     await fetchNearbyBoard();
     nearbyLoading = false;
+    nearbyError = null;
+    writeLastNearbyStationCache({ station: normalized });
     renderNearbyBoard();
   } catch (error) {
     nearbyLoading = false;
     nearbyError = error.message ?? "Could not load departures for this station";
     renderNearbyBoard();
   }
+}
+
+nearbyDontWaitBtn?.addEventListener("click", () => {
+  if (!nearbyLoading || nearbyLocatePickerVisible) {
+    return;
+  }
+
+  showNearbyEarlyPicker();
+  if (isNearbyModeActive() && nearbyLoading) {
+    renderNearbyBoard();
+  }
+});
+
+nearbyStationBtn?.addEventListener("click", async () => {
+  const station = nearbyStationCombobox?.getValue?.();
+  if (!station) {
+    return;
+  }
+
+  await applyNearbyManualStation(station);
 });
 menuHelpBtn?.addEventListener("click", () => {
+  helpOpenedFromMenu = true;
   closeMenuDialog();
+  void window.nextTrainWidget?.refreshWidgetDebugPanel?.();
   openAppDialog(helpDialog);
 });
 helpCloseBtn?.addEventListener("click", () => {
-  closeAppDialog(helpDialog);
+  closeHelpDialog();
 });
 helpDialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
-  closeAppDialog(helpDialog);
+  closeHelpDialog();
 });
 helpDialog?.addEventListener("click", (event) => {
   if (event.target === helpDialog) {
-    closeAppDialog(helpDialog);
+    closeHelpDialog();
   }
 });
 leaveAckBtn?.addEventListener("click", (event) => {
@@ -4690,6 +6633,10 @@ leaveAckBtn?.addEventListener("click", (event) => {
   if (next) {
     acknowledgeLeave(next);
   }
+});
+leaveNextTrainBtn?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  skipToNextTrain();
 });
 leaveBufferEditBtn?.addEventListener("click", (event) => {
   event.stopPropagation();
@@ -4741,7 +6688,6 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
       await createJourneyFromTemplate(button.dataset.template);
     } finally {
       templateCreateInFlight = false;
-      setJourneyTemplateLoading(false);
     }
   });
 });
@@ -4762,8 +6708,8 @@ templateWizardPrimaryBtn?.addEventListener("click", () => {
   advanceTemplateWizard();
 });
 
-templateRouteCoach?.querySelector(".onboarding-coach-scrim")?.addEventListener("click", () => {
-  dismissTemplateRouteCoach();
+templateWizardSkipBtn?.addEventListener("click", () => {
+  skipTemplateWizard();
 });
 
 onboardingGotItBtn?.addEventListener("click", () => {
@@ -4786,17 +6732,32 @@ deleteJourneyBtn?.addEventListener("click", () => {
   }
 
   const editing = settingsDraftJourneys.find((journey) => journey.id === editingJourneyId);
-  const onlyConfiguredSole =
-    settingsDraftJourneys.length <= 1 && editing && !isUnconfiguredJourney(editing);
-  if (onlyConfiguredSole) {
+  if (!editing) {
     return;
+  }
+
+  const soleConfiguredJourney =
+    !isUnconfiguredJourney(editing) && countConfiguredJourneys(settingsDraftJourneys) === 1;
+  if (soleConfiguredJourney) {
+    const confirmed = confirm(DELETE_LAST_JOURNEY_CONFIRM);
+    if (!confirmed) {
+      return;
+    }
   }
 
   settingsDraftJourneys = settingsDraftJourneys.filter((journey) => journey.id !== editingJourneyId);
   editingJourneySnapshot = null;
   editingJourneyId = null;
-  saveJourneyListToSettings();
+
+  const hasConfiguredJourneysLeft = countConfiguredJourneys(settingsDraftJourneys) > 0;
+  saveJourneyListToSettings({ allowEmpty: true });
   renderJourneyListView();
+
+  if (!hasConfiguredJourneysLeft) {
+    finishAfterAllJourneysDeleted();
+    return;
+  }
+
   showSettingsListView();
 });
 
@@ -4820,9 +6781,77 @@ bindOptionalTimeField(
   detailDefaultUntilField,
   detailDefaultUntilClear
 );
+bindOptionalTimeField(
+  detailPreferredInput,
+  detailPreferredDisplay,
+  detailPreferredField,
+  detailPreferredClear
+);
+detailRemindMeInput?.addEventListener("change", () => {
+  void handleDetailRemindToggleChange();
+});
+detailDefaultFromClear?.addEventListener("click", () => {
+  clearPairedActiveHourField("from");
+});
+detailDefaultUntilClear?.addEventListener("click", () => {
+  clearPairedActiveHourField("until");
+});
+detailDefaultFromInput?.addEventListener("change", () => {
+  clearJourneyOverlapError();
+  const fromValue = detailDefaultFromInput.value;
+  if (!fromValue) {
+    clearPairedActiveHourField("from");
+    return;
+  }
 
-detailStationSelect?.addEventListener("change", () => {
-  loadDirectionsForSelect(detailDirectionSelect, detailStationSelect.value);
+  setOptionalTimeField(
+    detailDefaultUntilInput,
+    detailDefaultUntilDisplay,
+    detailDefaultUntilField,
+    detailDefaultUntilClear,
+    addMinutesToTimeString(fromValue, 180)
+  );
+  syncDetailComboHints();
+});
+detailDefaultFromInput?.addEventListener("input", () => {
+  clearJourneyOverlapError();
+  const fromValue = detailDefaultFromInput.value;
+  if (!fromValue) {
+    return;
+  }
+  setOptionalTimeField(
+    detailDefaultUntilInput,
+    detailDefaultUntilDisplay,
+    detailDefaultUntilField,
+    detailDefaultUntilClear,
+    addMinutesToTimeString(fromValue, 180)
+  );
+  syncDetailComboHints();
+});
+detailDefaultUntilInput?.addEventListener("change", () => {
+  clearJourneyOverlapError();
+  syncDetailComboHints();
+  if (!detailDefaultUntilInput.value) {
+    clearPairedActiveHourField("until");
+  }
+});
+detailDefaultUntilInput?.addEventListener("input", () => {
+  clearJourneyOverlapError();
+  syncDetailComboHints();
+});
+detailActiveHoursFixBtn?.addEventListener("click", applyJourneyOverlapFix);
+
+detailActiveDayChips?.addEventListener("click", (event) => {
+  const chip = event.target.closest(".remind-day-chip");
+  if (!chip) {
+    return;
+  }
+
+  chip.classList.toggle("remind-day-chip--active");
+  chip.setAttribute(
+    "aria-pressed",
+    chip.classList.contains("remind-day-chip--active") ? "true" : "false"
+  );
 });
 
 detailNearestBtn?.addEventListener("click", async () => {
@@ -4831,7 +6860,7 @@ detailNearestBtn?.addEventListener("click", async () => {
 
   try {
     const { station, distanceKm: km } = await findNearestStation();
-    detailStationSelect.value = station;
+    detailStationCombobox?.setValue(station);
     detailNearestHint.textContent = `Selected ${formatStationLabel(station)} (${km.toFixed(1)} km away)`;
     await loadDirectionsForSelect(detailDirectionSelect, station);
     const direction = await pickPerthDirection(station);
@@ -4852,10 +6881,16 @@ settingsDetailView?.addEventListener("submit", (event) => {
   try {
     saveJourneyDetailFromForm();
   } catch (error) {
+    if (error.code === "journey-overlap") {
+      showJourneyOverlapError(error.updated, error.conflict);
+      return;
+    }
+    clearJourneyOverlapError();
     alert(error.message);
     return;
   }
 
+  clearJourneyOverlapError();
   closeJourneysDialog();
 });
 
@@ -4877,7 +6912,7 @@ async function init() {
   initHeroSwipe();
   installOnboardingInteractionTracking();
 
-  const urlSettings = readUrlSettings();
+  const urlSettings = await readUrlSettings();
   if (urlSettings) {
     persistSettings(urlSettings);
   } else {
@@ -4907,6 +6942,7 @@ async function init() {
   await window.nextTrainWidget?.consumeLaunchDeepLink?.();
 }
 
+initStationComboboxes();
 init();
 
 window.nextTrainApp = {
@@ -4914,6 +6950,10 @@ window.nextTrainApp = {
   getConfiguredJourneys,
   formatJourneyRoute,
   persistReminderJourneys,
+  getPerthDayOfWeekIso,
+  journeyMatchesSchedule,
+  findScheduledJourneyId,
+  shouldDefaultToNearby,
   getActiveLegCommute() {
     return getActiveJourney();
   },
@@ -4926,16 +6966,39 @@ window.nextTrainApp = {
     }
   },
   enterJourneyMode,
+  enterNearbyMode,
   openJourneys,
+  openJourneyDetail,
+  hasSkippedTemplateWizard,
   switchJourney,
   fetchNextTrain,
   hasConfiguredCommute,
   closeMenuDialogOnly,
+  closeJourneysDialog,
+  openMainScreenFromWidget,
+  isUnsupportedRegion,
+  UNSUPPORTED_REGION_KM,
+  readLastNearbyStationCache,
+  writeLastNearbyStationCache,
+  clearLastNearbyStationCache,
+  leaveByArmedForDisplayedTrip,
+  preferredHintForJourney,
+  tripMatchesPreferredOrLater,
+  isTargetOutsideActiveWindow,
+  syncDetailComboHints,
+  prepareDisplayData,
+  skipToNextTrain,
+  skipToEarlierTrain,
 };
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     maybeScheduleOnboarding();
+
+    if (shouldDefaultToNearby()) {
+      void applyCommuteMode();
+      return;
+    }
 
     if (journeyModeActive) {
       skipTrains = readSkipState().count;
@@ -4944,6 +7007,6 @@ document.addEventListener("visibilitychange", () => {
       return;
     }
 
-    applyCommuteMode();
+    void applyCommuteMode();
   }
 });

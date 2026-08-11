@@ -140,23 +140,42 @@ async function initNativeAds(container, config) {
 
   container.hidden = true;
 
+  let effectiveTestMode = Boolean(config.admobTestMode);
+  if (window.NextTrainAds?.resolveEffectiveTestMode) {
+    effectiveTestMode = await window.NextTrainAds.resolveEffectiveTestMode(config);
+  }
+
+  const effectiveConfig = { ...config, admobTestMode: effectiveTestMode };
+
   try {
-    await showNativeBanner(config);
+    await showNativeBanner(effectiveConfig);
   } catch (error) {
     console.warn("AdMob failed to load", error);
     container.hidden = false;
     const detail =
-      config.admobTestMode && error.message === "AdMob bundle not loaded"
+      effectiveTestMode && error.message === "AdMob bundle not loaded"
         ? "Restart the app after rebuilding. Test ads use Google’s sample banner ID."
         : (error.message ?? "Try restarting the app");
 
-    container.innerHTML = `
-      <div class="ad-placeholder" aria-label="Advertisement">
-        <span class="ad-placeholder-badge">Ad</span>
-        <p class="ad-placeholder-title">Ad could not load</p>
-        <p class="ad-placeholder-sub">${detail}</p>
-      </div>
-    `;
+    container.replaceChildren();
+    const placeholder = document.createElement("div");
+    placeholder.className = "ad-placeholder";
+    placeholder.setAttribute("aria-label", "Advertisement");
+
+    const badge = document.createElement("span");
+    badge.className = "ad-placeholder-badge";
+    badge.textContent = "Ad";
+
+    const title = document.createElement("p");
+    title.className = "ad-placeholder-title";
+    title.textContent = "Ad could not load";
+
+    const sub = document.createElement("p");
+    sub.className = "ad-placeholder-sub";
+    sub.textContent = detail;
+
+    placeholder.append(badge, title, sub);
+    container.appendChild(placeholder);
     syncAdRemoveLink();
   }
 }

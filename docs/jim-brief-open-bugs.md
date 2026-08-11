@@ -29,6 +29,9 @@
 | 6 | **Widget stale times + truncated Updated** | Medium | NOW + old scheduled clock + Updated stuck; `Updated 9:10 A…` on 2×1 | TESTING.md **22** · `docs/widget-homescreen.md` · `android/.../CommuteSchedule.java`, `WidgetDepartureAdvanceScheduler`, `widget_small.xml` | Manual on device: fresh Updated, readable crumb, next train after departure passes |
 | 7 | **Custom — no route wizard; Morning shows it later** | Medium | First setup: Custom skips 3-step coach; Morning later shows it | `qa/latest.md` (~10:28) · `node qa/custom-template-no-wizard-repro.mjs` | Custom first-setup shows same coach flow (custom copy) |
 | 8 | **Widget NOW + old clock after departure** | **High** | Post-departure minute: **NOW** + stale scheduled clock, not next train | `docs/jim-brief-widget-post-departure-staleness.md` · TESTING.md **22** | Next train or **Updating…** after departure; never stale **NOW** + old clock |
+| 9 | **Widget 2×1 train clock clipped** | Medium | Scheduled time under countdown cut off; **Updated** truncated | `qa/latest.md` (~12:23) · `widget_small.xml` | Full **12:34** readable; **Updated just now** not clipped |
+| 10 | **Widget stuck Updating + tap won’t open** | **High** | **Upd** / Fetching / **58m ago** after ~1h; tap fails | `docs/jim-brief-widget-stuck-updating-tap.md` · test **22** | Tap opens app; widget recovers or shows honest stale |
+| 11 | **Journey cap not enforced (7–8+ journeys)** | Medium | Cap hides chips only; no save/create guard; Morning chip wrong; no cap hint | `docs/jim-brief-journey-cap.md` · `node qa/journey-cap-repro.mjs` | Cannot save 7th; Morning chip hidden; cap hint at 6 |
 
 **Regression (keep green):**
 

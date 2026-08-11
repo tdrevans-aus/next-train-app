@@ -200,26 +200,19 @@ function formatOneTimeSubtitle(price) {
   return "One-time purchase";
 }
 
-function setMenuPurchaseVisibility(removeBtn, statusRow, restoreBtn, { showPurchase }) {
-  if (removeBtn) {
-    if (showPurchase) {
-      removeBtn.removeAttribute("hidden");
-    } else {
-      removeBtn.setAttribute("hidden", "");
-    }
+function setHidden(el, hidden) {
+  if (!el) {
+    return;
   }
+  if (hidden) {
+    el.setAttribute("hidden", "");
+  } else {
+    el.removeAttribute("hidden");
+  }
+}
 
-  if (statusRow) {
-    statusRow.setAttribute("hidden", "");
-  }
-
-  if (restoreBtn) {
-    if (showPurchase && hasNativePurchaseBridge()) {
-      restoreBtn.removeAttribute("hidden");
-    } else {
-      restoreBtn.setAttribute("hidden", "");
-    }
-  }
+function canRestorePurchases() {
+  return Boolean(window.NextTrainAdFreeNative?.restoreInAppPurchases);
 }
 
 function renderMenuAdFree() {
@@ -228,43 +221,42 @@ function renderMenuAdFree() {
   const statusRow = document.getElementById("menu-ad-free-status");
   const restoreBtn = document.getElementById("menu-restore-purchase-btn");
   const webHint = document.getElementById("menu-ad-free-web-hint");
+  const billingHint = document.getElementById("menu-ad-free-billing-hint");
   const section = document.getElementById("menu-ad-free-section");
 
   if (!removeBtn || !statusRow || !restoreBtn) {
     return;
   }
 
+  // Always keep the section in Menu — never vanish when entitled or billing fails.
+  setHidden(section, false);
+
   if (!isNativeApp()) {
-    setMenuPurchaseVisibility(removeBtn, statusRow, restoreBtn, { showPurchase: false });
-    if (webHint) {
-      webHint.hidden = false;
-    }
-    if (section) {
-      section.hidden = false;
-    }
+    setHidden(removeBtn, true);
+    setHidden(statusRow, true);
+    setHidden(restoreBtn, true);
+    setHidden(webHint, false);
+    setHidden(billingHint, true);
     syncPurchaseLinkVisibility();
     return;
   }
 
-  if (webHint) {
-    webHint.hidden = true;
-  }
+  setHidden(webHint, true);
 
   if (entitled) {
-    setMenuPurchaseVisibility(removeBtn, statusRow, restoreBtn, { showPurchase: false });
-    if (section) {
-      section.hidden = true;
-    }
+    setHidden(removeBtn, true);
+    setHidden(statusRow, false);
+    setHidden(billingHint, true);
+    setHidden(restoreBtn, !canRestorePurchases());
     syncPurchaseLinkVisibility();
     return;
-  }
-
-  if (section) {
-    section.hidden = false;
   }
 
   const showPurchase = billingAvailable && hasNativePurchaseBridge();
-  setMenuPurchaseVisibility(removeBtn, statusRow, restoreBtn, { showPurchase });
+  setHidden(removeBtn, !showPurchase);
+  setHidden(statusRow, true);
+  setHidden(billingHint, showPurchase);
+  setHidden(restoreBtn, !canRestorePurchases());
   if (removeSubtitle) {
     removeSubtitle.textContent = formatOneTimeSubtitle(localizedPrice);
   }
@@ -311,10 +303,11 @@ async function loadProductPrice() {
   }
 }
 
+/** @returns {Promise<boolean|null>} true/false when store answered; null if unknown */
 async function queryStoreEntitlement() {
   const native = await ensureNativeBridge();
   if (!native?.getInAppPurchases || !native?.purchaseIncludesProduct) {
-    return readCache();
+    return null;
   }
 
   try {
@@ -322,7 +315,7 @@ async function queryStoreEntitlement() {
     return native.purchaseIncludesProduct(purchases, productId);
   } catch (error) {
     console.warn("Could not query ad-free entitlement", error);
-    return readCache();
+    return null;
   }
 }
 
@@ -333,6 +326,12 @@ async function refreshEntitlement({ silent = false } = {}) {
   }
 
   const owned = await queryStoreEntitlement();
+  if (owned === null) {
+    // Keep optimistic cache for ads; still refresh Menu visibility.
+    renderMenuAdFree();
+    return entitled;
+  }
+
   applyEntitlement(owned, { notifyAds: !silent });
   return owned;
 }
@@ -410,7 +409,7 @@ async function purchaseAdFree() {
     }
 
     const alreadyOwned = await queryStoreEntitlement();
-    if (alreadyOwned) {
+    if (alreadyOwned === true) {
       applyEntitlement(true);
       showToast("You're already ad-free");
       return;
@@ -462,7 +461,7 @@ function wireUi() {
     purchaseAdFree();
   });
   document.getElementById("menu-ad-free-status")?.addEventListener("click", () => {
-    showToast("Restored on this device");
+    showToast("You're ad-free on this device");
   });
 
   document.addEventListener("visibilitychange", () => {

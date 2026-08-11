@@ -7,7 +7,7 @@ import { chromium } from "playwright";
 const BASE = "http://localhost:3000";
 
 async function dismissCoach(page) {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     const open = await page.evaluate(
       () => !document.getElementById("template-route-coach").hidden
     );

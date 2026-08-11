@@ -1,3 +1,657 @@
+**Tim follow-up (~17:22):** Intermittent — **did not reproduce** on next open. When it **did** happen: **Near me** chrome first (not My Journeys). Confirms nearby cold-start path (`shouldDefaultToNearby` → `enterNearbyMode` → locate → board render) before journey times, not a pure journey-mode race.
+
+---
+
+## Template wizard Active hours coach z-index (~10:05 AWST 11 Aug)
+
+**Report:** Tim — Active hours coach still hidden behind Active from/until on device during AAB prep.
+
+**Root cause:** Same as `docs/jim-brief-template-wizard-z-index.md` — coach overlay `z-index: 20` vs highlight `z-index: 21`.
+
+**Fix (local):** `public/styles.css` — scrim `z-index: 20`, highlight stays `21`, coach card `z-index: 22`; coach shell `z-index: auto` so card can stack above highlight.
+
+**QA:** `template-wizard-skip.mjs` PASS · `template-wizard-hours-zindex.mjs` PASS (new — overlap paint order).
+
+**Before closed AAB:** `npm run cap:sync` + rebuild signed bundle. Jim brief can close after device spot-check.
+
+---
+
+# QA Report — Tuesday 11 Aug 2026 (~08:25 AWST)
+
+## Full web regression (post P1/P2 batch)
+
+**28 scripts** on `localhost:3000`. Summary: **25 PASS · 1 FAIL (Jim) · 2 PASS\*** (exit 1 = good) · swipe repro informational.
+
+### PASS (22 exit 0)
+
+| Script | Notes |
+|--------|-------|
+| `smoke-browser.mjs` | Tests 1–11, 13 |
+| `smoke-11-13.mjs` | |
+| `button-visibility.mjs` | 6 PASS |
+| `stickiness-coaches-logic.mjs` | 10 PASS |
+| `reminders-dialog.mjs` | |
+| `other-directions-journey-repro.mjs` | |
+| `custom-template-no-wizard-repro.mjs` | |
+| `morning-template-wizard-repro.mjs` | ~296 ms open |
+| `duplicate-morning-template-repro.mjs` | |
+| `remove-ads-check.mjs` | |
+| `unsupported-region.mjs` | |
+| `yanchep-whitfords-direction.mjs` | |
+| `mandurah-cockburn-direction.mjs` | |
+| `custom-active-days-today.mjs` | P1 |
+| `new-journey-show-now.mjs` | P1 |
+| `outside-hours-nearby.mjs` | P1 |
+| `template-wizard-skip.mjs` | P1 |
+| `journey-cap-repro.mjs` | Cap hint + 6 max |
+| `active-hours-clear-pair.mjs` | Clear from → clear until |
+| `template-chip-edited-hours.mjs` | Morning/Evening chips |
+| `station-typeahead.mjs` | P2 #6 |
+| `nearby-cache-last-station.mjs` | |
+| `nearby-cold-start-no-empty-flash.mjs` | |
+| `nearby-dont-wait-manual-pick.mjs` | |
+
+### PASS\* (exit 1 = expected good)
+
+| Script | Meaning |
+|--------|---------|
+| `custom-template-delay-repro.mjs` | Custom opens fast (~not slow) |
+| `done-double-tap-repro.mjs` | No stuck dialog in automation |
+
+### FAIL — Jim
+
+| Script | Issue |
+|--------|-------|
+| `delete-last-journey.mjs` | Storage cleared (`journeys: 0`) but **Journeys dialog stays open**; hero still shows route, not **No journeys yet** |
+
+```
+Jim fix this docs/jim-brief-delete-last-journey.md — regression FAIL: finishAfterAllJourneysDeleted → enterJourneyMode re-opens dialog when journeyModeActive.
+```
+
+### Informational
+
+| Script | Notes |
+|--------|-------|
+| `swipe-repro.mjs` | Runs; headless pointer swipe did not change countdown (manual TESTING.md 4–5 still required). Updated regex `min` vs `minute`. |
+
+**Not automated:** widget P2 #7 on device, native reminders 17–19.
+
+**Re-verify (~08:50 AWST):** `delete-last-journey.mjs` still **FAIL** — same symptoms. Ros summary accurate.
+
+---
+
+# QA Report — Tuesday 11 Aug 2026 (~09:40 AWST)
+
+## Clarkson → Yanchep line group (confirmed + merged)
+
+**Tim:** Clarkson / Yanchep merge like Whitfords / Yanchep.
+
+**Live check** (`/api/directions?station=Perth Underground Stn`): directions included **Clarkson** and **Yanchep** separately — same-line duplicate.
+
+**Merged:** `Yanchep: ["Yanchep", "Whitfords", "Clarkson"]` in `lib/train-times.js`, `public/app.js`, bundle rebuilt. `node qa/yanchep-whitfords-direction.mjs` **PASS**.
+
+**Deploy:** run `npx vercel --prod` again so production API drops Clarkson from Perth picker (local change only until deploy).
+
+---
+
+
+## Post P2 #6 / #7 regression (local working tree)
+
+**Trigger:** Tim asked for full regression after Jim finishes P2 **#6** (station typeahead) and **#7** (widget 2×1 empty-leave layout).
+
+**P2 status in repo (uncommitted local):**
+
+| Item | Evidence |
+|------|----------|
+| **#6 Station typeahead** | `createStationCombobox()` in `public/app.js`; combobox markup in `index.html` (journey + Near me) |
+| **#7 Widget empty-leave** | `WidgetUiBuilder.shouldParkUpdatedOnLeft()` + `WidgetUiBuilderTest` |
+
+**Web regression** (`localhost:3000`, 21 scripts):
+
+| Script | Result | Notes |
+|--------|--------|-------|
+| `smoke-browser.mjs` | **FAIL** | Timeout — looks for journey list `out` (legacy name; journeys now template names) |
+| `smoke-11-13.mjs` | **FAIL** | Same class of journey-list naming / flow |
+| `button-visibility.mjs` | **PASS** | |
+| `stickiness-coaches-logic.mjs` | **PASS** | |
+| `reminders-dialog.mjs` | **PASS** | |
+| `other-directions-journey-repro.mjs` | **PASS** | |
+| `custom-template-no-wizard-repro.mjs` | **PASS** | |
+| `custom-template-delay-repro.mjs` | **PASS*** | exit 1 = Custom fast (~not slow) |
+| `morning-template-wizard-repro.mjs` | **PASS** | |
+| `duplicate-morning-template-repro.mjs` | **PASS** | |
+| `done-double-tap-repro.mjs` | **PASS*** | exit 1 = did not reproduce stuck dialog |
+| `remove-ads-check.mjs` | **PASS** | |
+| `unsupported-region.mjs` | **PASS** | |
+| `yanchep-whitfords-direction.mjs` | **PASS** | |
+| `mandurah-cockburn-direction.mjs` | **PASS** | |
+| `custom-active-days-today.mjs` | **PASS** | P1 |
+| `new-journey-show-now.mjs` | **PASS** | P1 |
+| `outside-hours-nearby.mjs` | **PASS** | P1 |
+| `template-wizard-skip.mjs` | **PASS** | P1 |
+| `journey-cap-repro.mjs` | **PASS** | Cap hint + 6 max enforced |
+| `delete-last-journey.mjs` | **PASS** | Can delete sole journey |
+
+**Android unit tests:** `WidgetUiBuilderTest` not run here (no JAVA_HOME on QA machine). Tim/Jim: run on device after `cap:sync`.
+
+**Follow-up:** Update `smoke-browser.mjs` / `smoke-11-13.mjs` for current journey names. Manual widget **#7** on 2×1 after APK rebuild.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~20:21 AWST)
+
+## Template wizard — Active hours step under highlighted fields
+
+**Tim:** On **Active hours** wizard step, **Active from / until** overlap the coach **Next** button — wizard appears under the feature.
+
+**Cause:** `#detail-journey-window.template-wizard-highlight` is `z-index: 21`; `.template-route-coach` is `z-index: 20` — coach card trapped below highlight.
+
+**Jim:** `Jim fix this docs/jim-brief-template-wizard-z-index.md`
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~23:25 AWST)
+
+## Active from cleared alone → error on Save
+
+**Tim:** Clear **Active from**, **Save** → alert *Set both default from and until times, or leave both blank.*
+
+**Wanted:** Auto-clear **Active until** and save (no active hours = manual journey only).
+
+**Jim:** `Jim fix this docs/jim-brief-active-hours-clear-pair.md`
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~17:51 AWST)
+
+## Morning template chip visible when “Morning into town” already exists
+
+**Tim:** Four journeys including **Morning into town** (Warwick → Perth) but **Morning into town** template chip still shown. **Evening home** chip correctly hidden.
+
+### Root cause (confirmed)
+
+Template chip hiding uses `journeyMatchesTemplate()`:
+
+1. `journey.templateKey === "morning"` → hide chip, **or**
+2. Legacy: name **exactly** `"Morning into town"` **and** `defaultFrom === "06:00"` **and** `defaultUntil === "09:00"`
+
+**`templateKey` is not persisted** — `normalizeJourney()` omits `templateKey` / `autoRoute`, so every **Save** strips them from `localStorage`. After reload, matching is legacy-only (name + exact preset hours).
+
+If you kept the name but changed active hours (e.g. **05:30–09:00**), legacy match **fails** → chip stays visible. Evening chip hides because **Evening home** still has preset **15:00–18:00**.
+
+### Web repro
+
+Morning template → change active hours to **05:30–09:00** → Save → reopen Journeys:
+
+- `templateKey: undefined` in storage
+- `morningChipHidden: false` (bug)
+- Name still `"Morning into town"`
+
+### Jim fix direction
+
+1. **Persist** `templateKey` (and `autoRoute`) in `normalizeJourney`.
+2. **Broaden match:** hide morning/evening chip when `templateKey` matches **or** journey name matches preset name (hours may differ after edit).
+3. Related: `docs/jim-brief-duplicate-morning-template.md` — same chip logic allows duplicate morning rows.
+
+**Jim:** `Jim fix this docs/jim-brief-duplicate-morning-template.md` (extend with persist + name match)
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~17:56 AWST)
+
+## Seven journeys — cap is UI-only, not enforced on save
+
+**Tim:** **7** configured journeys (last row **Warwick → Perth** duplicates **Morning into town** route). Expected 6 cap to block 7th.
+
+### Clarification on earlier QA note
+
+Web test “7th blocked” = **Add journey chips hidden** at 6. **Not** a hard limit. `createJourneyFromTemplate` and `saveJourneyDetailFromForm` have **no max check** — saves can exceed 6.
+
+### How 7 is possible
+
+| Factor | Detail |
+|--------|--------|
+| Cap check | `atCap = settingsDraftJourneys.length >= 6` — **hides chips only** |
+| Persist | No trim on save — 7 rows can land in `localStorage` |
+| Morning chip bug | Chip visible when hours ≠ preset → extra adds while draft &lt; 6 |
+| Warwick → Perth | Same route as Morning — likely Custom or duplicate Morning create |
+
+Jim: `MAX_JOURNEYS` + guard on create/save (count **configured** journeys) + cap hint UX.
+
+---
+
+
+## “System UI isn’t responding” after adding 4th journey (overlap test)
+
+**Tim:** Android showed **System UI isn’t responding** while on journey detail — **Canning Bridge**, native **time picker** open (5:34 AM), Reminder section visible. Context: adding **fourth journey** to test overlap.
+
+### Repro attempt (web)
+
+**Script:** `node qa/journey-cap-repro.mjs` → **could not reproduce hang** on Chromium.
+
+| Check | Result |
+|-------|--------|
+| Add 4 Custom journeys with **overlapping** active hours (06–09 ×2, 15–18 ×2) | Saves **~850 ms** each; **no** main-thread block |
+| Overlap guard on save | J2 blocks vs J1; J4 blocks vs J3 — overlap error shown, **not saved** |
+| Persisted count after overlap batch | **2** journeys (only non-conflicting saves) |
+
+**Overlap on 4th save is expected** if hours match an existing journey — in-app error, not a crash.
+
+### Likely cause of System UI ANR (device)
+
+**System UI isn’t responding** = Android **ANR** (system shell thread blocked), not an in-app toast.
+
+Screenshot shows the **native Material time picker** over the journey form — common WebView/Capacitor trigger when the picker + dialog stack misbehaves on emulator or under load. **Not reproduced** by overlap validation alone on web (~850 ms saves).
+
+**Also possible:** emulator stress + widget/refresh work after journey save (separate from overlap logic). Correlation with “4th journey” may be coincidence with overlap editing + time picker, not count-specific.
+
+**Jim:** No code fix identified from web repro. If Tim can reproduce on device: grab **adb logcat** during ANR; note whether picker was open and whether overlap error was on screen. Optional hardening: avoid blocking work on save path on Android (widget sync already flagged in widget briefs).
+
+---
+
+## Journey count limit
+
+**Code:** `updateJourneyTemplatesVisibility()` — cap when `settingsDraftJourneys.length >= 6`.
+
+| At 6 journeys | Behaviour |
+|-----------------|-----------|
+| **Add a journey** chips (Morning / Evening / Custom) | **Hidden** — entire `#journey-templates` block |
+| **Explicit message** | **None** — section disappears silently |
+| **7th attempt** | Templates already hidden — **cannot add** via UI |
+| **Backend guard** | **No** — `createJourneyFromTemplate` does not check cap (UI-only) |
+
+**Web test:** Six non-overlapping Custom journeys → **6 persisted**, templates hidden, 7th attempt `templates-hidden` → **PASS**.
+
+**UX gap:** User at cap sees list + **Done** only — no “You’ve reached the maximum (6 journeys)” hint. Worth a one-line message when `atCap` (Jim polish, not blocking).
+
+**Script:** `qa/journey-cap-repro.mjs`
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~17:15 AWST)
+
+## First load flash: Updating → “No upcoming trains” → data (~2s)
+
+**Tim:** On first open — loading, then **No upcoming trains** for a few seconds, then screen populates correctly.
+
+**Likely cause (code review):**
+
+1. **Initial HTML** shows `Updating…` + `—` before any fetch completes.
+2. **First `fetchNextTrain` finishes with `next === null`** → `render()` sets **No upcoming trains** (journey mode) or nearby board empty state.
+3. **~2s later** a **second fetch** succeeds (common triggers: `visibilitychange` on app foreground also calls `fetchNextTrain`; or Vercel API empty then live-times client / retry).
+
+**Contributing factors:**
+
+- No **in-flight guard** on `fetchNextTrain` — overlapping calls can race; slower call wins last.
+- **No “still loading”** state during journey fetch — empty API response is shown as final empty, not as loading.
+- **Direction filter** on first API response can yield zero trips (e.g. Whitfords-terminated vs journey saved as Yanchep before line groups on server) → false empty until retry/client path.
+
+**Not a regression catch** in web suite (smoke uses fixtures with immediate data).
+
+**Jim fix direction:** Hold loading UI until first successful fetch OR stale cache; debounce/single-flight `fetchNextTrain`; don’t show **No upcoming trains** until fetch confirmed empty + optional short delay.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~17:09 AWST)
+
+## Full web regression run
+
+All scripts **PASS** (15/15). Dev server `localhost:3000`.
+
+| Script | Result | Notes |
+|--------|--------|-------|
+| `qa/smoke-browser.mjs` | **PASS** | |
+| `qa/smoke-11-13.mjs` | **PASS** | |
+| `qa/button-visibility.mjs` | **PASS** | |
+| `qa/stickiness-coaches-logic.mjs` | **PASS** | |
+| `qa/reminders-dialog.mjs` | **PASS** | |
+| `qa/other-directions-journey-repro.mjs` | **PASS** | |
+| `qa/custom-template-no-wizard-repro.mjs` | **PASS** | |
+| `qa/custom-template-delay-repro.mjs` | **PASS** | Custom ~312 ms with 4 s geo sim (exit 1 = not slow) |
+| `qa/morning-template-wizard-repro.mjs` | **PASS** | |
+| `qa/duplicate-morning-template-repro.mjs` | **PASS** | |
+| `qa/done-double-tap-repro.mjs` | **PASS** | exit 1 = did not reproduce |
+| `qa/remove-ads-check.mjs` | **PASS** | |
+| `qa/unsupported-region.mjs` | **PASS** | |
+| `qa/yanchep-whitfords-direction.mjs` | **PASS** | |
+| `qa/mandurah-cockburn-direction.mjs` | **PASS** | |
+
+**Not automated:** TESTING.md **22** widget on device, **17–19** native reminders, manual journeys UX.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~16:18 AWST)
+
+## Direction line groups — Tim approved
+
+| Group? | Canonical | Also include | Notes |
+|--------|-----------|--------------|-------|
+| ✅ | **Yanchep** | Whitfords, **Butler** | Northbound Yanchep line |
+| ✅ | **Mandurah** | Cockburn Central | Southbound Mandurah line |
+| ✅ | **Fremantle** | Claremont | Westbound Fremantle line |
+| ❌ | — | High Wycombe + Ellenbrook | Branched lines — do **not** group |
+
+**Jim:** `docs/jim-brief-direction-line-groups.md`
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~16:02 AWST)
+
+## Bull Creek — Cockburn + Mandurah same line
+
+**Tim:** Bull Creek shows 3 directions: Cockburn, Mandurah, Perth — Cockburn/Mandurah duplicate same southbound line (Whitfords/Yanchep pattern).
+
+**Fix:** `Mandurah: ["Mandurah", "Cockburn"]` in `LINE_DESTINATION_GROUPS` + client mirror; `Cockburn Central` → Cockburn alias.
+
+**Test:** `node qa/mandurah-cockburn-direction.mjs` → **PASS**
+
+**Brief:** `docs/jim-brief-mandurah-cockburn-direction.md`
+
+**Manual:** Bull Creek → direction picker shows **Perth** + **Mandurah** only (no Cockburn). Mandurah journey includes Cockburn-short trains.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:53 AWST)
+
+## I've left — double tap (Leave by card)
+
+**Tim:** **I've left** on Leave by card needed **2 clicks** once in a session (intermittent).
+
+**Root cause:** `fetchNextTrain()` set `lastRenderedNext = null` **before** the network `await`. UI still showed buttons from prior render; click handler no-oped until fetch finished.
+
+**Fix (local):** `getLeaveAckTarget()` falls back to `lastApiData`; removed early `lastRenderedNext = null` on fetch start.
+
+**Retest:** While **Updating…** or mid-refresh, tap **I've left** once when late — card should dismiss immediately.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:44 AWST)
+
+## Overlap error scroll fix (local)
+
+**Change:** `showJourneyOverlapError` → `scrollIntoView({ block: "center" })` after reveal; removed focus on Active from (was scrolling error off-screen).
+
+**Retest:** Journeys → edit journey → set overlapping Active hours → Save → error + Fix for me visible without manual scroll.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:40 AWST)
+
+## Overlap error hidden under Save footer
+
+**Tim:** On Save with overlapping Active hours, inline error (pink box + **Fix for me**) sits **under** sticky Cancel/Save — barely visible unless scroll.
+
+**Cause:** `#detail-active-hours-error` at bottom of `.settings-detail-scroll`; footer steals viewport; no `scrollIntoView` on show.
+
+**Jim brief:** `docs/jim-brief-journey-overlap-friendly.md` §8
+
+**Fix:** Scroll error into view and/or relocate above footer.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~13:25 AWST)
+
+## Yanchep line — collapse Whitfords (`docs/jim-brief-yanchep-whitfords-direction.md`)
+
+| Test | Script | Result |
+|------|--------|--------|
+| Line grouping + trip filter | `node qa/yanchep-whitfords-direction.mjs` | **PASS** |
+| Smoke regression | `node qa/smoke-browser.mjs` | **PASS** (12 PASS · 0 FAIL) |
+
+**Shipped:** `LINE_DESTINATION_GROUPS` in `lib/train-times.js`; mirrored `LINE_DIRECTION_GROUPS` in `public/app.js`; bundle rebuilt + `cap:sync`.
+
+**Manual:** Tim spot-check Perth outbound during mixed short/long period — Yanchep journey should include Whitfords-terminated trains.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:30 AWST)
+
+## Done double-tap (`docs/jim-brief-done-double-tap.md`)
+
+| Fix | Area |
+|-----|------|
+| `closeMenuDialogOnly()` shared helper | `app.js` — exported for sub-screens |
+| Reminders closes immediately; native save in background | `leave-reminders.js` |
+| Inline validation (no alert dead-tap) | `#reminders-validation-error` |
+| Cancel + backdrop dismiss | `#reminders-dialog` |
+| Menu chrome reset from Reminders / widget entry | `leave-reminders.js`, `widget.js` |
+
+`node qa/done-double-tap-repro.mjs` → web scenarios pass.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:15 AWST)
+
+## Jim prompt latest — widget already-have + overlap Fix for me
+
+| Brief | Result |
+|-------|--------|
+| `docs/jim-brief-widget-already-have.md` | **Shipped** — `getWidgetInstanceCount`; help dialog branches on count |
+| `docs/jim-brief-journey-overlap-friendly.md` | **Shipped** — locked copy, inline error, **Fix for me** |
+
+Regression: `node qa/smoke-browser.mjs` (test 10 overlap inline).
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~14:50 AWST)
+
+## Widget stuck Updating… + tap (`docs/jim-brief-widget-stuck-updating-tap.md`)
+
+| Fix | Area |
+|-----|------|
+| `refreshAll` on background executor | `CommuteRefreshService` |
+| `onResume` no longer blocks UI thread | `MainActivity` |
+| Updating timeout → stale **Tap to refresh** | `CommuteSchedule.applyUpdatingState` |
+| 1-min local retry while fetching | `needsLocalRepaint` during updating window |
+| 2×1 **…** not **Upd** | `WidgetUiBuilder.compactPrimary` |
+
+**Manual:** Re-pin widget after rebuild; confirm tap opens app; leave emulator through departure + failed network.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:28 AWST)
+
+## Widget idle crash + stuck Updating (Tim screenshot)
+
+**Tim:** Left emulator on homescreen; **“Next Train keeps stopping”** system dialog. Both widgets stuck **Updating…** / **Upd**, **Fetching…**, **17m ago** (Fremantle).
+
+**Matches:** `docs/jim-brief-widget-stuck-updating-tap.md` (#10) — post-departure **Updating** state, network refresh not succeeding, stale timestamp.
+
+**Why idle hurts (committed APK on `a9e52cb`):**
+
+| Trigger while idle | What runs |
+|--------------------|-----------|
+| **15 min** `WidgetRefreshReceiver` | `refreshAll` → **sync HTTP on broadcast thread** (up to 15s) |
+| Departure passes | `WidgetDepartureAdvanceReceiver` → same |
+| Unlock / boot | `WidgetUnlockReceiver` → same |
+| Open app / widget tap | `MainActivity.onResume` → `requestRefresh` + **sync** `refreshAll` on **UI thread** |
+
+Stuck **Updating** + failed fetch → widget never recovers; opening app or periodic alarms can **ANR / crash** → **“keeps stopping”**.
+
+**Jim fix in working tree (not committed):** async `refreshAll`, 3 min updating timeout → **Tap to refresh**, compact **…** primary. **Tim needs commit + `cap:sync`** before retest.
+
+**Tim now:** Force-stop → reopen from launcher (not widget). After rebuild, retest idle + tap per brief.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:23 AWST)
+
+## Done needs two taps — Tim repro again (still open)
+
+**Tim:** Happened again on device — intermittent **Done ×2** on Menu or Reminders.
+
+**Status:** **No Jim fix yet** — same code paths as brief. Web repro still clean; **native async Reminders save** remains top suspect.
+
+**Next capture when it happens:**
+1. **Menu or Reminders?**
+2. First tap: **nothing** vs **alert** vs dialog closes **after ~1–2s**?
+3. **Backdrop** still dimmed after first tap?
+4. Any toggles right before (nudge/pause, journey reminder)?
+
+**Jim brief:** `docs/jim-brief-done-double-tap.md` (still accurate)
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~15:11 AWST)
+
+## Widget stuck Updating (#10) — Jim fix in working tree, retest
+
+**Brief:** `docs/jim-brief-widget-stuck-updating-tap.md`
+
+**Code status:** Fix present in **uncommitted** local changes (`CommuteRefreshService`, `CommuteSchedule`, `MainActivity`, tests). **Not on `git HEAD`** yet — Tim needs Jim to commit + `cap:sync` before emulator retest.
+
+### What Jim shipped (code review)
+
+| Brief item | Status |
+|------------|--------|
+| Async `refreshAll` (no UI-thread network) | ✅ `ExecutorService` + `refreshAllOnWorker` |
+| `onResume` doesn’t block WebView | ✅ `refreshAll` async only (removed sync `requestRefresh` on resume) |
+| Escape perpetual Updating | ✅ `UPDATING_TIMEOUT_MS` = **3 min** → **Tap to refresh** + **Times may be out of date** |
+| Tim’s **58m ago** case | ✅ If `refreshedAtMs` ≥ 3 min old at updating entry → **stale state immediately** (not Updating + 58m ago) |
+| **Upd** truncation | ✅ `compactPrimary("Updating…")` → **"…"** on 2×1 |
+| Local ticks while updating | ✅ `needsLocalRepaint` true while `updatingSinceMs` &lt; 3 min |
+
+### Automated retest
+
+| Test | Result |
+|------|--------|
+| JUnit `CommuteScheduleTest` + `WidgetUiBuilderTest` | **Not run** — no `JAVA_HOME` on this machine |
+| Web regression | N/A (native widget) |
+
+### Manual retest for Tim (emulator, after `cap:sync`)
+
+1. Pin widget, wait for departure to pass → brief **…** / **Fetching…** (not **Upd**).
+2. Kill network or block API → within **~3 min** should show **Tap to refresh** + **Times may be out of date** (not stuck Updating + old “Xm ago” forever).
+3. **Tap widget** → app opens immediately (WebView visible); refresh happens in background.
+4. Restore network → widget recovers to next train or **No trains**.
+
+**Verdict:** **Code looks fixed** — **manual device confirm pending** after Jim commits + APK rebuild.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~14:41 AWST)
+
+## Widget stuck Updating… + tap won’t open app (emulator ~1h)
+
+**Reported by Tim:** Emulator left ~1h. Widget shows truncated **Upd**, **Fetching…**, **58m ago**. Tap widget — app fails to open.
+
+**Verdict:** **FAIL** (test 22) — stuck in `applyUpdatingState` after departure; network refresh not recovering; **58m ago** proves no successful fetch in ~1h.
+
+| Observation | Detail |
+|---------------|--------|
+| **Upd** | **Updating…** clipped on 2×1 (26sp primary) |
+| **Fetching…** | `applyUpdatingState` secondary (compact) |
+| **58m ago** | Last good `refreshedAtMs`; stuck waiting on network |
+| Tap fails | Suspect `MainActivity.onResume` → `refreshAll` **sync HTTP on UI thread** (ANR / no WebView) |
+
+**Jim brief:** `docs/jim-brief-widget-stuck-updating-tap.md`
+
+**Tim now:** Force-stop app → reopen from launcher; check emulator network; don’t rely on widget tap until fix.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~13:30 AWST)
+
+## Done needs two taps (Menu / Reminders)
+
+**Reported by Tim:** Occasionally must tap **Done** twice on Menu or Reminders; seems random, often after activity.
+
+**Repro:** `node qa/done-double-tap-repro.mjs` → **did not reproduce on web** (single Done closes all scenarios).
+
+**Likely causes (code review):** Reminders Done calls async `saveRemindersDialog()` on native (dialog stays open during save); validation alert blocks close if reminder on without train time; menu chrome not fully reset when opening Reminders from Menu.
+
+**Jim brief:** `docs/jim-brief-done-double-tap.md`
+
+**Tim manual:** Repro on Android after toggling reminder options; note alert vs slow save vs stuck backdrop.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~13:19 AWST)
+
+## Perth directions — Whitfords vs Yanchep (same line)
+
+**Reported by Tim:** From Perth, direction picker lists **Whitfords** and **Yanchep** separately; should feel like one **Yanchep line** direction.
+
+**Verdict:** Product / data UX — not a crash. Tim approved **small line group** approach (no exception DB).
+
+**Jim brief:** `docs/jim-brief-yanchep-whitfords-direction.md`
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~12:56 AWST)
+
+## Open bugs batch — `docs/jim-brief-open-bugs.md`
+
+**Verdict:** All **automated** items **PASS**. Widget **#6 / #8 / #9** code shipped — **#9** layout fixed; **#8** post-departure logic covered by `CommuteScheduleTest` (manual device confirm for test **22**).
+
+| # | Bug | Automated | Status |
+|---|-----|-----------|--------|
+| 1 | Menu → Reminders silent | `node qa/reminders-dialog.mjs` | **PASS** |
+| 2 | Other directions in My Journeys | `node qa/other-directions-journey-repro.mjs` | **PASS** |
+| 3 | Custom template slow | `node qa/custom-template-delay-repro.mjs` | **PASS** |
+| 4 | Morning template dead first tap | `node qa/morning-template-wizard-repro.mjs` | **PASS** |
+| 5 | Duplicate Morning + overlap | `node qa/duplicate-morning-template-repro.mjs` | **PASS** |
+| 6 | Widget stale + truncated Updated | TESTING.md **22** (manual) | **Code shipped** (#9 layout + `formatUpdatedAgo`) |
+| 7 | Custom — no route wizard | `node qa/custom-template-no-wizard-repro.mjs` | **PASS** |
+| 8 | Widget NOW + old clock after departure | `CommuteScheduleTest` | **Code shipped** — manual device |
+| 9 | Widget 2×1 train clock clipped | `WidgetUiBuilderTest` + manual | **PASS** (layout) |
+
+Regression: `node qa/button-visibility.mjs` → **PASS**
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~12:32 AWST)
+
+## Regression run (automated)
+
+**Branch:** `cursor/reminders-dialog-p1` (local; may be behind `origin` iOS commit `f927d81`)  
+**Server:** `localhost:3000`
+
+| Test | Script / ref | Result |
+|------|----------------|--------|
+| Smoke 1–11, 13 | `qa/smoke-browser.mjs` | **PASS** (12 PASS · 0 FAIL) |
+| Smoke 11, 13 | `qa/smoke-11-13.mjs` | **PASS** (2 PASS · 0 FAIL) |
+| 15 Remove ads (web) | `qa/remove-ads-check.mjs` | **PASS** (console: `registerPlugin` error on mock native) |
+| 16 Button visibility | `qa/button-visibility.mjs` | **PASS** (6 PASS · 0 FAIL) |
+| 20 Stickiness coaches | `qa/stickiness-coaches-logic.mjs` | **PASS** (8 PASS · 0 FAIL) |
+| 21 Reminders dialog | `qa/reminders-dialog.mjs` | **PASS** |
+| 23 Other directions | `qa/other-directions-journey-repro.mjs` | **PASS** |
+| 26 Custom wizard | `qa/custom-template-no-wizard-repro.mjs` | **PASS** |
+| Custom template delay | `qa/custom-template-delay-repro.mjs` | **PASS** (detail ~340 ms with 4 s geo; script exit 1 = not slow) |
+| Morning wizard UX | `qa/morning-template-wizard-repro.mjs` | **PASS** (detail ~280–298 ms even with 5 s geo) |
+| 13b Duplicate Morning | `qa/duplicate-morning-template-repro.mjs` | **PASS** |
+
+**Not automated (manual / device):** **22** widget homescreen (#8 post-departure staleness, #9 2×1 clock clip), **17–19** native reminders scheduling, **24–27** journey edit icon, name on detail, active days.
+
+**Verdict:** All **web-automatable** regressions **PASS** on this branch snapshot.
+
+---
+
+# QA Report — Monday 10 Aug 2026 (~12:23 AWST)
+
+## Widget 2×1 — train clock clipped / “disappeared”
+
+**Status (Jim):** **PASS** — `widget_small.xml` tightened (4dp padding, 22sp primary, `includeFontPadding=false`); `WidgetUiBuilder` inlines countdown + clock on 2×1 (`11 min · 12:34`), hides station on small, shortens Updated crumb (`Just now` / `3m ago`). JUnit: `WidgetUiBuilderTest`.
+
+**Reported by Tim:** Scheduled train time under the big countdown is missing or cut off (**11 min** + half-visible **12:34**); **Updated just** truncated at bottom.
+
+**Screenshot:** Warwick journey — **Leave in 1 min**, station **Warwick**, primary **11 min**, clock clipped at widget bottom edge.
+
+**Verdict:** **Layout bug (FAIL test 22)** — data is present (`trainClock` set); **2×1** cell too tall for current stack.
+
+| Column | Lines in `widget_small.xml` |
+|--------|------------------------------|
+| Left | NEXT TRAIN + **26sp** primary + train clock |
+| Right | Leave line + **station** (`widget_route`) + Updated |
+
+Six text rows + 8dp padding in **40dp** min height (`next_train_widget_info.xml` 2×1) → bottom row(s) clip. Train clock is often the casualty on the left.
+
+**Jim fix (suggested):** Tighten 2×1 — e.g. smaller primary on small layout, inline clock with countdown (`11 min · 12:34`), hide station on 2×1 (medium only), or reduce padding / line count. See `docs/widget-homescreen.md` §5 (2×1 strip).
+
+**Not** the post-departure staleness bug — times are live (**11 min**, **Leave in 1 min**).
+
+---
+
 # QA Report — Monday 10 Aug 2026 (~10:52 AWST)
 
 ## Widget — NOW + old clock after departure (regression)

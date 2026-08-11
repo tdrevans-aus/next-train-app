@@ -86,9 +86,35 @@ With `test=1`, the coach timer does not run — use this test for the timed coac
 1. From test 12 step 2, tap **Set up a journey** (or: `?reset=1&test=1&fixture=normal` → **Journeys** twice → template chips visible).
 2. **Expect:** Journeys dialog with template chips (Morning into town / Evening home / Custom). **Add journey** hidden while chips are shown.
 3. Tap **Morning into town**.
-4. **Expect:** Brief wait while nearest station is detected. Detail view opens with name **Morning into town**, default window **06:00–09:00**, **nearest suburban station** selected, direction **towards Perth**. Three-step coach: (1) route picked, (2) time to station, (3) active hours **06:00–09:00**. Dismiss with **Got it** on step 3.
+4. **Expect:** Brief wait while nearest station is detected. Detail view opens with name **Morning into town**, default window **06:00–09:00**, **nearest suburban station** selected, direction **towards Perth**. Setup coach: **Name** → **Route** → **Time to station** → **Active hours** → **Reminder** (5 steps). **Got it** on Reminder. Scrim tap does **not** dismiss; **Skip tour** marks seen same as Got it. On Name step you can edit the journey name while the coach stays open.
 
-Repeat with **Evening home** (15:00–18:00, **Perth** departure towards your line home) and **Custom** (no auto route, user picks station/direction).
+Repeat with **Evening home** (15:00–18:00, **Perth** departure towards your line home) and **Custom** (4 steps: route → time → hours → reminder, no Name step). **Custom** Active days: **today's Perth weekday only** (e.g. Friday → **F** only); hint *Starts on today — add more days if this repeats more often.* Morning/Evening stay Mon–Fri.
+
+**Custom Active days (automated):**
+
+```bash
+node qa/custom-active-days-today.mjs
+```
+
+**New journey shows on main screen (automated):**
+
+```bash
+node qa/new-journey-show-now.mjs
+```
+
+**Manual:** Evening home active by hours → add **Custom** (no Active from/until) → **Save** → main shows **Custom**, not Evening home. Re-save Evening home → no forced switch.
+
+### 13c. Outside Active hours → Near me
+
+Morning 6–9 + Evening 15–18; at midday (no journey in window):
+
+```bash
+node qa/outside-hours-nearby.mjs
+```
+
+**Expect:** No scheduled journey at noon; sole Custom with no Active hours never auto-selects; manual override cleared when nothing is in-hours → **Near me** default.
+
+**Widget (Android, rebuild APK):** Same settings at midday → **NEXT COMMUTE** preview (e.g. **Today 15:00–18:00** + route), **not** a live countdown or stuck **Updating…**. Tap → app opens **Near me**. No journeys configured → calm **NEAR ME** idle.
 
 ### 13b. Double wizard / double template (duplicate morning)
 
@@ -126,7 +152,7 @@ node qa/button-visibility.mjs
 |--------|----------------|
 | Main | Near me, Journeys, Menu |
 | Journeys list | Done, Add journey / template chips |
-| Journey detail | ← Journeys, Cancel, Save, **Delete** (with 2+ journeys) |
+| Journey detail | ← Journeys, Cancel, Save, **Delete** |
 | Menu | Done, Clear all data, **Reminders** (first), How it works |
 | Help | Got it |
 | Widget help | **Add widget** (primary), **Done**; pin-first copy; manual steps only after unsupported pin |
@@ -182,6 +208,22 @@ node qa/custom-template-no-wizard-repro.mjs
 
 Jim brief: `docs/jim-brief-location-wait-ux.md`
 
+### 34. Unsupported region (outside Perth rail)
+
+```bash
+node qa/unsupported-region.mjs
+```
+
+**Manual (Android adb):**
+
+1. Set location far from WA (e.g. Sydney): `adb emu geo fix 151.2093 -33.8688`
+2. Open app with no saved journeys → **Near me**.
+3. **Expect:** Hero **Perth rail only**; no direction chips or departures board. **My Journeys** CTA opens journey mode / setup.
+4. Deny location → existing permission / station-picker UX (not Perth rail only).
+5. Set Perth location → **Near me** loads normal nearby board.
+
+Jim brief: `docs/jim-brief-unsupported-region.md`
+
 ### 30. Yanchep line — collapse Whitfords direction
 
 ```bash
@@ -206,16 +248,17 @@ Jim brief: `docs/jim-brief-yanchep-whitfords-direction.md`
 cd android && ./gradlew :app:testDebugUnitTest --tests "com.tdrevans.nexttrain.CommuteScheduleTest" --tests "com.tdrevans.nexttrain.WidgetUiBuilderTest"
 ```
 
-**Expect:** `repaintSnapshot_showsStaleRefreshWhenUpdatingTimedOut`, `repaintSnapshot_showsStaleRefreshWhenRefreshAgeExceeded`, `needsLocalRepaint_trueWhileUpdating`, `compactPrimary_shortensUpdatingForNarrowWidget` all pass.
+**Expect:** `repaintSnapshot_showsDegradedWhenUpdatingRetryExhausted`, `repaintSnapshot_retriesOnceBeforeDegraded`, `repaintSnapshot_showsDegradedWhenRefreshAgeExceeded`, `degradedPrimary_keepsCountdownWhileDepartureStillFuture`, `needsLocalRepaint_trueWhileUpdating`, `compactPrimary_shortensUpdatingForNarrowWidget` all pass.
 
 **Manual (emulator/device):**
 
 1. Pin widget; let a departure pass without network → brief **Updating…** / **Fetching…** (2×1 primary shows **…**, not clipped **Upd**).
-2. After ~3 min without network → **—** / **Tap to refresh** / **Out of date** (not endless Updating + old **Nm ago**).
-3. **Tap widget** → app opens within ~1s (no ANR from sync on main thread).
-4. Restore network → widget recovers next train.
+2. After ~90s without network → one automatic retry, then degraded: **last train clock** (if &lt;20 min past) or **Open** + **Open app** / **Times may be out of date** — never **—** / **Tap app**.
+3. **Tap widget** → app opens within ~1s and triggers refresh (`onResume` / `onNewIntent`).
+4. **Near me idle widget** tap → app opens **Near me** (`nexttrain://nearby` deep link).
+5. Restore network → widget recovers next train.
 
-Jim brief: `docs/jim-brief-widget-stuck-updating-tap.md`
+Jim brief: `docs/jim-brief-widget-phase-a-trust.md` (supersedes stuck-updating brief for degraded copy)
 
 ### 20. Stickiness coach gating (logic regression)
 
@@ -225,14 +268,16 @@ Pure Node — **no browser**, no `npm start`:
 node qa/stickiness-coaches-logic.mjs
 ```
 
-**Expect:** `8 PASS · 0 FAIL`. Mirrors stagger rules in `docs/jim-brief-stagger-stickiness-coaches.md` (widget coach before leave-reminder coach; never same session).
+**Expect:** `10 PASS · 0 FAIL`. Mirrors stagger rules in `docs/jim-brief-stagger-stickiness-coaches.md`. Reminder coach only if user **Skipped** the template wizard **and** no journey has Reminder on; silenced if Reminder already on.
 
 | Automated case | Rule under test |
 |----------------|-----------------|
 | open 1: no widget | 1st app open — widget coach **not** eligible |
 | open 2: widget pending | 2nd open — widget coach **eligible** |
 | open 2: no reminder while widget pending | Reminder coach **blocked** while widget arc unfinished |
-| open 3: reminder after widget done | 3rd open + widget `done` — reminder coach **eligible** |
+| open 3: reminder after skip + widget done | 3rd open + widget `done` + **Skipped** tour — reminder coach **eligible** |
+| open 3: no reminder coach if wizard completed | Finished tour with **Got it** — coach **not** shown |
+| open 3: silence reminder coach if already on | Any journey `remindMe` → coach **not** shown |
 | widget snoozed blocks reminder | Widget `snoozed` (within 7-day window) — reminder **blocked** |
 | weekday after config day opens reminder gate | First **weekday** (Mon–Fri Perth) **after** config calendar day opens reminder OR-gate |
 | same config day weekday does not open gate | Config day itself — weekday gate **closed** |
@@ -241,8 +286,10 @@ node qa/stickiness-coaches-logic.mjs
 **Manual (Android, optional):** End-to-end coach UI is **not** covered by this script. After `cap:sync`, cold-launch on device:
 
 1. **Session 1** — save first Journey → **no** widget or reminder auto-coach that session.
-2. **2nd cold open** — widget coach only (if not done).
+2. **2nd cold open** — widget coach only (if not done and **no** widget pinned yet).
 3. **3rd cold open** (widget resolved) — leave-reminder coach only; **not** stacked with widget same session.
+
+If a Next Train widget is **already on the home screen**, the widget coach must **not** appear (coach marked `done` via native `getWidgetInstanceCount`).
 
 Web: no widget/reminder coaches (native Android only).
 
@@ -263,27 +310,35 @@ Automated (web):
 node qa/reminders-dialog.mjs
 ```
 
-**Expect:** `PASS` — Menu → **Reminders** opens `#reminders-dialog`; Menu closes; **Done** visible. **No** master **Reminders** toggle — only per-journey **Reminder** switches. **More options** (Early Reminder / Pause) visible when ≥1 journey Reminder is on.
+**Expect:** `PASS` — Menu → **Reminder settings** opens `#reminders-dialog`; Menu closes; **Done** visible. **No** master **Reminders** toggle. **No** per-journey cards / **More options** accordion (Early Reminder + Pause sit directly when live). **Remind me** on journey detail is **above Timing** (after Route). Reminder + Preferred train live on **journey detail**.
 
 | Platform | Expect in dialog |
 |----------|------------------|
 | **Web** (`localhost`) | Hint: *Leave reminders are available in the Android app.* Native controls **hidden**. |
-| **Android** (after `cap:sync`) | Lead copy; per-journey **Reminder** + **Usual train time**; **More options** when ≥1 Reminder on → **Early Reminder** (toggle + 5/10/15 chips) and **Pause reminders** (timed chips + **Resume reminders**); schedule line when native bridge works. No master toggle. |
+| **Android** (after `cap:sync`) | Empty state: lead line + card (*No leave alerts on yet* / *No journeys yet*) + **Open My Journeys** CTA. When ≥1 Reminder on → armed lead + schedule + **Early Reminder** + **Pause reminders** directly. No master toggle. No journey cards. |
 
-**Manual (Android) — More options:**
+**Journey detail (Android):**
 
-1. **More options** → turn **Early Reminder** on → **5 / 10 / 15** chips appear; tap **10** → reschedule uses 10 min offset.
+1. Open a journey → **Remind me** section **above Timing** (after Route).
+2. Turn **Remind me** on → **Preferred train** expands; permission prompt on first enable.
+3. Save without preferred train → blocked with clear error.
+4. Save with Reminder on + time → native `enabled` heals on.
+
+**Manual (Android) — Early Reminder / Pause:**
+
+1. With Reminder live → turn **Early Reminder** on → **5 / 10 / 15** chips appear; tap **10** → reschedule uses 10 min offset.
 2. **Pause reminders** → tap **1 day** → status **Paused until …** + **Resume reminders**; schedule line matches.
 3. Tap **Resume reminders** → pause clears; next-reminder line returns.
-4. **Timed auto-resume:** set `pauseUntil` in the past (or wait for expiry) → open app or Reminders → pause cleared without manual resume (native `getSchedule` / `getSettings` path).
+4. **Timed auto-resume:** set `pauseUntil` in the past (or wait for expiry) → open app or Reminder settings → pause cleared without manual resume (native `getSchedule` / `getSettings` path).
 
 **Manual (Android) — core:**
 
 1. Configure a journey (e.g. Morning into town).
-2. **Menu** → **Reminders**.
-3. **Expect:** Reminders dialog opens (not silent no-op).
-4. Enable **Reminders** → permission prompt; journey cards and **More options** appear.
-5. **Done** dismisses immediately (native saves in background after close).
+2. **Menu** → **Reminder settings**.
+3. **Expect:** dialog opens (not silent no-op).
+4. With no Reminder on any journey → lead line + empty card + **Open My Journeys** (opens Journeys, dismisses dialog).
+5. Turn **Remind me** on in journey detail → Early Reminder + Pause appear in Reminder settings.
+6. **Done** dismisses immediately.
 
 **Done double-tap (web):**
 
@@ -293,7 +348,7 @@ node qa/done-double-tap-repro.mjs
 
 **Expect:** All scenarios `PASS (1 Done closes all)` — Menu, Menu→Reminders→Done, after Journeys activity.
 
-**Manual (Android):** Reminder on without usual train time → inline error (not silent first tap); fix time → **Done** once closes.
+**Manual (Android):** Reminder on without preferred train → inline error (not silent first tap); fix time → **Done** once closes.
 
 Jim brief: `docs/jim-brief-done-double-tap.md`
 
@@ -309,8 +364,8 @@ Jim brief: `docs/jim-brief-done-double-tap.md`
 |------|---------|
 | Big number (`12 min` / `NOW`) | Minutes until **live** departure (from last good fetch + local repaint) |
 | Small clock (`09:13`) | **Scheduled** platform time — not “next train in the timetable at 9:13” by itself |
-| Leave line (`Leave 8 min ago`, red) | Overdue leave-by — **not** bare `8 min late` (reads as train delay) |
-| `Updated …` | Last **successful network** refresh — must be **fully readable** (not ellipsized) |
+| Leave line (`Leave in` / `Leave now`) | Through **1 min** after leave-by show **Leave now**; then **hide** leave — never `Leave N min ago` |
+| `Updated …` | **Medium+** only — full line (`Updated just now`, etc.). **2×1** omits Updated and shows **station** instead |
 
 **Regression — truncated Updated / clipped train clock (2026-08-10):**
 
@@ -403,13 +458,157 @@ Jim brief: `docs/jim-brief-open-bugs.md` (#7)
 ### 27. Active days (journey Timing)
 
 1. Open **My Journeys** → edit a configured journey → **Timing** shows **Active days** chips above **Active from/until**.
-2. **Menu → Reminders** → per-journey card has **Reminder** + **Usual train time** only (no day chips).
+2. Same journey detail → **Reminder** section has **Reminder** toggle + **Preferred train** (no day chips on Reminder).
+3. **Menu → Reminder settings** has no per-journey cards — only schedule / Early Reminder / Pause when a Reminder is on.
 3. Mon–Fri journey with active hours covering “now” on a **weekday** → main screen auto-shows that journey (or stays on it).
 4. Same journey on **Saturday** (in active hours) → defaults to **Near me** unless user picks the journey manually.
 5. Deselect all active days → **Save** → alert **Pick at least one active day.**
 6. Two journeys, same hours, **Sat–Sun** vs **Mon–Fri** → **Save** allowed. Same hours + overlapping days → overlap error.
 
 Jim brief: `docs/jim-brief-active-days-display.md`
+
+### 35. Station picker — list-first (journey detail + Near me)
+
+Automated:
+
+```bash
+node qa/station-typeahead.mjs
+```
+
+**Manual:**
+
+1. **My Journeys → Custom** (or edit journey) → tap **Departure station** → **station list opens, keyboard stays down**.
+2. Tap **Search stations** → keyboard up → type `War` → **Warwick** in list → pick → **Direction of travel** loads.
+3. While list is open on journey detail: **Cancel / Save / Delete footer hidden**; returns after pick or dismiss.
+4. **Use nearest station** still fills the field and loads directions.
+5. Clear station → **Save** → blocked until a station is chosen.
+6. **Near me** with slow GPS → **Don't wait** → same list-first / Search pattern; **Show departures** works.
+
+Jim brief: `docs/jim-brief-station-picker-list-first.md` (supersedes type-first open in `docs/jim-brief-station-typeahead.md`)
+
+### 36. Widget 2×1 empty-leave layout (Android manual)
+
+**Not automatable** on the launcher. Rebuild APK after native changes.
+
+1. Pin widget at default **2×1** with a configured journey in active hours.
+2. **Leave showing:** Right column = **Leave in** + **station** underneath. **No** Updated line (never bare **Just now**).
+3. **Leave hidden** (after grace): leave line gone; **station** still readable on the right — not a lonely freshness crumb.
+4. Resize wider/taller to **medium:** full **Updated just now** / **Updated 3m ago** returns with station.
+5. Countdown on 2×1: **large digit(s)** + small **min** unit (e.g. `5` + `min`); **NOW** stays one word.
+
+**Automated (logic only):**
+
+```bash
+cd android && ./gradlew :app:testDebugUnitTest
+```
+
+Jim brief: `docs/jim-brief-widget-empty-leave-layout.md`
+
+### 38. Widget Phase B — advance reliability (Android)
+
+**Automated (JUnit):**
+
+```bash
+cd android && ./gradlew :app:testDebugUnitTest --tests "com.tdrevans.nexttrain.CommuteScheduleTest" --tests "com.tdrevans.nexttrain.PerthTimeTest"
+```
+
+**Expect:** `needsLocalRepaint_trueForFarFutureCountdown`, `resolveFollowingTrip_*`, `shouldOpportunisticRefresh_*`, `needsPreDeparturePrefetch_*`, `minutesUntilWallClock_statusBarExample_843To856` pass.
+
+**Manual — wall-clock alignment (B0):**
+
+1. Pin widget with train **90+ min** out (e.g. status bar `8:43`, train clock `9:56` → primary **`13`**).
+2. Watch status bar minute roll → widget **X min** drops within ~1 min (or immediately on unlock/tap).
+3. Do **not** expect sub-minute precision — wall-clock minutes only.
+
+**Manual — departure advance (B1/B2):**
+
+| Case | Expect |
+|------|--------|
+| Departure passes, following cached, airplane briefly | Promote locally → live next train |
+| Departure passes, no following, network OK | Updating → live next within ~90s (Phase A) |
+| Departure in ≤3 min, following thin | Background prefetch warms cache before minute rolls |
+
+**Manual — opportunistic refresh (B3):**
+
+- Live commute, phone unlocked, network data **12+ min** old → widget refreshes without waiting for 15‑min alarm alone.
+
+**Doze note:** `setExactAndAllowWhileIdle` at Perth minute boundaries can slip under deep Doze; unlock/tap/`USER_PRESENT` repaints from cache immediately then refreshes.
+
+Jim brief: `docs/jim-brief-widget-phase-b-advance.md`
+
+### 39. Widget Phase C — trust polish (Android)
+
+**Automated (JUnit):**
+
+```bash
+cd android && ./gradlew :app:testDebugUnitTest --tests "com.tdrevans.nexttrain.WidgetUiBuilderTest" --tests "com.tdrevans.nexttrain.CommuteScheduleTest.repaintSnapshot_hidesUpdatedLineWhileFetching"
+```
+
+**Expect:** `resolveMediumUpdatedLine_*` pass; Updating state has empty `updatedLine` (no conflicting Updated while Fetching).
+
+**Logcat (Tim builds):**
+
+```bash
+adb logcat -s NextTrainWidget
+```
+
+Look for `refresh start`, `refresh done`, `paint reason=` lines with `primary`, `secondary`, `stale`, `refreshedAtMs`, `following`.
+
+**In-app debug panel (`?widgetDebug=1`):**
+
+1. Open app with `?widgetDebug=1` on the URL (debug builds / sideload).
+2. **Menu → Help** — one-line monospace panel shows cached widget snapshot fields.
+3. Panel hidden without the flag (not shown to normal users).
+
+**Manual — medium stale copy:**
+
+| State | Medium Updated line |
+|-------|---------------------|
+| Fresh | `Updated just now` / `Updated Nm ago` |
+| Degraded | **Times may be out of date** + secondary **Open app** |
+| Fetching | Updated **hidden** (only **Fetching next train…**) |
+
+Jim brief: `docs/jim-brief-widget-phase-c-polish.md`
+
+### 40. Widget outside hours — designed idle / next commute (Android)
+
+**Automated (JUnit):**
+
+```bash
+cd android && ./gradlew :app:testDebugUnitTest --tests "com.tdrevans.nexttrain.NextCommutePreviewTest" --tests "com.tdrevans.nexttrain.CommuteScheduleTest.outsideHoursSnapshot_showsNextCommutePreview" --tests "com.tdrevans.nexttrain.CommuteScheduleTest.needsLocalRepaint_falseForOutsideHoursIdle"
+```
+
+**Expect:** `findNext_fridayEveningJumpsToMondayMorning`, `outsideHoursSnapshot_showsNextCommutePreview`, `needsLocalRepaint_falseForOutsideHoursIdle` pass.
+
+**Manual — midday with Morning + Evening journeys:**
+
+1. Rebuild/install APK after `cap:sync`.
+2. Pin widget at **12:00** (no journey in Active hours).
+3. **Expect:** Label **NEXT COMMUTE**; primary like **Today 15:00–18:00** or **Today 7:30** (preferred train); route on secondary line; **no** live **N min** countdown; **no** **Updating…** / **Fetching…**.
+4. Tap widget → app opens **Near me** (`nexttrain://nearby`).
+5. Enter Active hours (or wait until window) → widget switches to live countdown within one refresh/paint.
+6. Leave Active hours → preview returns immediately (no stuck Fetching).
+7. **No journeys** → calm **NEAR ME** / **See trains near you** idle.
+
+Jim brief: `docs/jim-brief-widget-designed-idle.md` (supersedes `docs/jim-brief-widget-nearby-live-cache.md`)
+
+### 37. Near me — cached last station (P1)
+
+Automated:
+
+```bash
+node qa/nearby-cache-last-station.mjs
+```
+
+**Manual:**
+
+1. Open Near me once with location → board loads for nearest station.
+2. Close app, reopen (or tap **Near me** again) → **same station’s departures** start loading immediately (route shows station name; hero **Loading departures…**, not only *Finding your nearest station…*).
+3. GPS refines in background — distance km appears when ready; if nearest changed, board swaps quietly (*Updated to nearest station*).
+4. First install / `?reset=1` → no cache → original locate UX + **Don't wait** at ~7s.
+5. Manual station pick via Don't wait → saved to cache; late GPS must not overwrite pick.
+
+Jim brief: `docs/jim-brief-nearby-cache-last-station.md`
 
 ### 17–19. Leave reminders v2 (native scheduling)
 
@@ -465,7 +664,7 @@ Plan: `docs/qa-leave-reminders-v2-testing.md`
 ### 10. Settings — overlap validation
 
 1. Open settings → edit a journey → set default window **06:00–09:00** on journey A and overlapping window on journey B → Save.
-2. **Expect:** Inline error under Active hours: *Only one journey can be active at one time. These hours overlap …* plus **Fix for me** chip. Invalid window not saved.
+2. **Expect:** Inline error under Active hours: *Only one journey can be active at one time. These hours overlap …* plus **Fix for me** chip. Invalid window not saved. **Fix for me** keeps the journey you’re saving and minimally adjusts the other.
 
 ### 32. Widget already on home screen (Android manual)
 
@@ -476,9 +675,9 @@ Jim brief: `docs/jim-brief-widget-already-have.md`
 
 ### 33. Journey overlap — Fix for me
 
-1. Two journeys with overlapping Active hours on shared days → Save second journey.
-2. **Expect:** Inline error (no “default times” wording); **Fix for me** snaps this journey to Morning **06:00–09:00** or Evening **15:00–18:00** when template/conflict fits.
-3. Other journey unchanged; user still taps **Save**.
+1. Two journeys with the same Active hours (e.g. both **15:00–18:00**) on shared days → Save second journey.
+2. **Expect:** Inline overlap error; **Fix for me** keeps the editing journey at **15:00–18:00** and adjusts the *other* journey (e.g. to **12:00–15:00**), with a confirmation line.
+3. Save succeeds; editing journey hours unchanged. Never snaps the editing journey to **06:00–09:00**.
 
 Jim brief: `docs/jim-brief-journey-overlap-friendly.md`
 
@@ -513,6 +712,7 @@ The native app loads the hosted Vercel API — **fixtures do not apply**. After 
 | `nextTrainSettings` | localStorage | Journeys + active journey |
 | `nextTrainSkip:<journeyId>` | sessionStorage | Client-side train skip offset |
 | `nextTrainManualJourneyOverride` | localStorage | Manual journey picker override |
+| `nextTrainLastNearbyStation` | localStorage | Last successful Near me station (optimistic paint) |
 | `nextTrainOnboardingDone` | localStorage | Onboarding coach completed |
 | `nextTrainSwipeHintSeen` | localStorage | Swipe hint dismissed |
 | `nextTrainAppEngagement` | localStorage | App open count + first journey configured timestamp (stickiness) |

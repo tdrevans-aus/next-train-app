@@ -282,24 +282,17 @@ async function run() {
   await page.waitForTimeout(1000);
   page.on("dialog", (d) => d.accept());
   await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(500);
-  await page.locator("#journeys-btn").click();
   await page.waitForTimeout(1500);
   await page.locator(".journey-list-open-btn").filter({ hasText: "out" }).click();
   await page.waitForTimeout(1500);
   await page.evaluate(() => {
     document.getElementById("detail-default-from").value = "06:00";
     document.getElementById("detail-default-until").value = "09:00";
-    let alertMsg = null;
-    const orig = window.alert;
-    window.alert = (m) => {
-      alertMsg = m;
-    };
+    document.getElementById("detail-default-from-field").dataset.empty = "false";
+    document.getElementById("detail-default-until-field").dataset.empty = "false";
     document.getElementById("settings-detail-view").dispatchEvent(
       new Event("submit", { cancelable: true, bubbles: true })
     );
-    window.alert = orig;
-    window.__overlapAlert = alertMsg;
   });
   await page.waitForTimeout(500);
   const outWindow = await page.evaluate(() => {
@@ -307,8 +300,18 @@ async function run() {
     return `${j.defaultFrom}-${j.defaultUntil}`;
   });
   if (outWindow === "15:00-18:00") {
-    const alertMsg = await page.evaluate(() => window.__overlapAlert);
-    pass(10, `Overlap blocked (${alertMsg?.slice(0, 40)}…); out window stayed 15:00-18:00`);
+    const overlapMsg = await page.evaluate(() => {
+      const el = document.getElementById("detail-active-hours-error-text");
+      return el?.textContent ?? "";
+    });
+    const overlapVisible = await page.evaluate(
+      () => !document.getElementById("detail-active-hours-error")?.hidden
+    );
+    if (overlapVisible && overlapMsg.includes("Only one journey can be active")) {
+      pass(10, `Overlap blocked (${overlapMsg.slice(0, 48)}…); out window stayed 15:00-18:00`);
+    } else {
+      fail(10, `overlap UI missing (${overlapMsg || "hidden"})`);
+    }
   } else {
     fail(10, `out window ${outWindow}`);
   }

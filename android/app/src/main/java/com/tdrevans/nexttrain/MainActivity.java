@@ -39,11 +39,14 @@ public class MainActivity extends BridgeActivity {
     super.onNewIntent(intent);
     setIntent(intent);
     DeepLinkHelper.capture(intent);
+    CommuteRefreshService.repaintFromCache(this);
+    CommuteRefreshService.refreshAll(this);
   }
 
   @Override
   public void onResume() {
     super.onResume();
+    CommuteRefreshService.repaintFromCache(this);
     CommuteRefreshService.refreshAll(this);
   }
 }

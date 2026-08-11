@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#eef3f2" />
+    <meta
+      name="description"
+      content="Privacy policy for Next Train — Perth Transperth leave-by companion by Evans Studios."
+    />
     <title>Privacy Policy — Next Train</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,77 +22,180 @@
     <main class="page">
       <a class="page-back" href="/">← Back to app</a>
       <h1>Privacy Policy</h1>
-      <p class="page-updated">Last updated: August 2026</p>
+      <p class="page-updated">Last updated: 11 August 2026</p>
+
+      <section class="page-section">
+        <h2>Who we are</h2>
+        <p>
+          Next Train is operated by <strong>Evans Studios</strong> (“we”, “us”).
+          Contact:
+          <a href="mailto:EvansAppStudio@gmail.com">EvansAppStudio@gmail.com</a>
+          · also listed on the <a href="/about.html">About</a> page.
+        </p>
+        <p>
+          This is an <strong>unofficial</strong> app — not affiliated with
+          Transperth or the Public Transport Authority of Western Australia
+          (PTA).
+        </p>
+      </section>
 
       <section class="page-section">
         <h2>Overview</h2>
         <p>
-          Next Train (“the app”) helps you see live train departure times for
-          Perth public transport. This policy explains what data we collect and
-          how it is used.
+          Next Train shows live Perth (Transperth) train departure times and
+          leave-by times for journeys you save. We do <strong>not</strong> require
+          an account. We aim to keep personal data on your device wherever
+          possible.
+        </p>
+      </section>
+
+      <section class="page-section">
+        <h2>Location</h2>
+        <p>
+          On Android and in browsers that allow it, <strong>Near me</strong> may
+          use your device location (precise or approximate)
+          <strong>only on the device</strong> to pick the nearest Transperth
+          station.
+        </p>
+        <p>
+          We <strong>do not upload GPS coordinates</strong> to our servers. We
+          may send the <strong>station name</strong> (and direction) to our API
+          to fetch live times.
+        </p>
+        <p>
+          You can deny location permission; Near me will not auto-detect, and
+          you can still pick a station or use Journeys.
         </p>
       </section>
 
       <section class="page-section">
         <h2>Data stored on your device</h2>
         <p>
-          Your station, direction, and timing preferences are saved in your
-          browser’s <strong>localStorage</strong>. This data stays on your
-          device and is not sent to our servers.
+          <strong>Web / WebView:</strong> preferences and journeys in
+          <strong>localStorage</strong> (and similar browser storage).
+        </p>
+        <p>
+          <strong>Android app:</strong> additional preferences for features such
+          as the <strong>home-screen widget</strong> and
+          <strong>leave reminders</strong> (Android storage /
+          SharedPreferences), including reminder settings you choose (for
+          example target train time and remind days).
+        </p>
+        <p>
+          Leave reminders are <strong>local notifications</strong> scheduled on
+          your device. We do not send marketing push notifications from our
+          servers.
+        </p>
+        <p>
+          This data stays on your device unless you clear app or site data, or
+          use <strong>Clear all data</strong> in Menu. Purchases are separate —
+          see Purchases below.
         </p>
       </section>
 
       <section class="page-section">
         <h2>Train times</h2>
         <p>
-          Live train data is fetched from Transperth’s public live-times
-          service via our API. We do not receive your personal identity as part
-          of that request.
+          Live data is fetched from Transperth’s public live-times service
+          <strong>via our API</strong> (hosted with the website). Requests
+          include station and direction — not your name or account (we do not
+          have accounts).
         </p>
       </section>
 
       <section class="page-section">
-        <h2>Advertising (Google AdSense)</h2>
+        <h2>Advertising</h2>
         <p>
-          If you accept cookies/ads, we use <strong>Google AdSense</strong> to
-          display advertisements. Google may use cookies and similar technologies
-          to serve ads based on your visits to this and other websites.
+          <strong>Android:</strong> Google <strong>AdMob</strong> may show a
+          banner when you are not ad-free.
         </p>
         <p>
-          The free version shows ads. Remove ads with a one-time purchase from Menu in the
-          Android app (handled by Google Play — we do not receive your card details).
+          <strong>Web:</strong> Google <strong>AdSense</strong> may show ads
+          when configured and allowed.
+        </p>
+        <p>
+          Google may use cookies, advertising IDs, or similar technologies per
+          their policies. We do not control Google’s advertising systems.
         </p>
         <p>
           Learn how Google uses data:
-          <a href="https://policies.google.com/technologies/partner-sites" rel="noopener noreferrer">
-            Google partner sites policy
-          </a>
+          <a
+            href="https://policies.google.com/technologies/partner-sites"
+            rel="noopener noreferrer"
+            >Google partner sites policy</a
+          >
+          ·
+          <a href="https://policies.google.com/privacy" rel="noopener noreferrer"
+            >Google Privacy Policy</a
+          >
         </p>
       </section>
 
       <section class="page-section">
-        <h2>Hosting</h2>
+        <h2>Purchases (Remove ads)</h2>
         <p>
-          The app is hosted on a cloud provider (e.g. Vercel or Netlify). Standard
-          server logs (IP address, browser type, request time) may be collected
-          by the host for security and operations.
+          Optional <strong>one-time</strong> “Remove ads” unlock (currently
+          A$3.99) via <strong>Google Play Billing</strong> in the Android app.
+          When the iOS app ships, the same unlock will use
+          <strong>Apple In-App Purchase</strong>.
+        </p>
+        <p>
+          We do <strong>not</strong> receive your card number or full payment
+          details — Google or Apple handles payment.
+        </p>
+        <p>
+          Entitlement is checked with the store on the device; a local cache may
+          remember ad-free status offline. Use <strong>Restore</strong> in Menu
+          after reinstall.
+        </p>
+      </section>
+
+      <section class="page-section">
+        <h2>Hosting &amp; logs</h2>
+        <p>
+          The website and API are hosted on a cloud provider
+          (<strong>Vercel</strong> today). Standard server logs may include
+          <strong>IP address</strong>, time, user agent, and
+          <strong>request path/query</strong> (for example station and
+          direction). Used for security and operations, not for building a
+          personal profile in the app.
+        </p>
+      </section>
+
+      <section class="page-section">
+        <h2>Children</h2>
+        <p>
+          Next Train is a general-audience utility. It is not directed at
+          children under 13. We do not knowingly collect personal information
+          from children.
+        </p>
+      </section>
+
+      <section class="page-section">
+        <h2>Changes</h2>
+        <p>
+          We may update this policy from time to time. The “Last updated” date
+          at the top will change when we do. Continued use of the app or site
+          after an update means you accept the revised policy.
         </p>
       </section>
 
       <section class="page-section">
         <h2>Contact</h2>
         <p>
-          For privacy questions, contact the site operator via the details on
-          the <a href="/about.html">About</a> page.
+          Privacy questions:
+          <a href="mailto:EvansAppStudio@gmail.com">EvansAppStudio@gmail.com</a>
+          or see <a href="/about.html">About</a>.
         </p>
       </section>
 
       <section class="page-section">
         <h2>Disclaimer</h2>
         <p>
-          This app is not affiliated with or endorsed by Transperth or the Public
-          Transport Authority of Western Australia. Train times are unofficial
-          and provided without guarantee.
+          This app is not affiliated with or endorsed by Transperth or the
+          Public Transport Authority of Western Australia. Train times are
+          unofficial and provided without guarantee. Always verify at the
+          station.
         </p>
       </section>
     </main>

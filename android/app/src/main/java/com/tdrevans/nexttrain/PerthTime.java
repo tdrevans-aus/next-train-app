@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 public final class PerthTime {
@@ -17,8 +18,35 @@ public final class PerthTime {
   }
 
   public static int minutesSinceMidnight() {
+    return minutesSinceMidnight(System.currentTimeMillis());
+  }
+
+  public static int minutesSinceMidnight(long epochMs) {
+    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE);
+    return time.getHour() * 60 + time.getMinute();
+  }
+
+  /** Minutes from now until target ISO, using clock-face minutes (ignores seconds). */
+  public static int minutesUntilWallClock(String targetIso, long nowMs) {
+    int target = minutesFromIso(targetIso);
+    if (target < 0) {
+      return 0;
+    }
+
+    int nowMinute = minutesSinceMidnight(nowMs);
+    int diff = target - nowMinute;
+    if (diff < -12 * 60) {
+      diff += 24 * 60;
+    } else if (diff > 12 * 60) {
+      diff -= 24 * 60;
+    }
+    return diff;
+  }
+
+  /** Next wall-clock minute in Perth — aligns widget repaints with the status-bar clock. */
+  public static long nextMinuteBoundaryMs() {
     ZonedDateTime now = ZonedDateTime.now(ZONE);
-    return now.getHour() * 60 + now.getMinute();
+    return now.truncatedTo(ChronoUnit.MINUTES).plusMinutes(1).toInstant().toEpochMilli();
   }
 
   public static int dayOfWeekIso() {

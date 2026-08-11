@@ -7,13 +7,11 @@ import android.content.Intent;
 import android.os.Build;
 import org.json.JSONObject;
 
-/** 1-minute local widget repaint when train/leave is within ~60 minutes. */
+/** 1-minute local widget repaint aligned to Perth wall-clock minute boundaries. */
 public final class WidgetLocalPaintScheduler {
 
   private static final String ACTION_LOCAL_PAINT = "com.tdrevans.nexttrain.action.WIDGET_LOCAL_PAINT";
   private static final int REQUEST_CODE = 73002;
-  private static final long INTERVAL_MS = 60L * 1000L;
-
   private WidgetLocalPaintScheduler() {}
 
   public static void scheduleIfNeeded(Context context, JSONObject snapshot) {
@@ -27,7 +25,7 @@ public final class WidgetLocalPaintScheduler {
       return;
     }
 
-    long triggerAt = System.currentTimeMillis() + INTERVAL_MS;
+    long triggerAt = PerthTime.nextMinuteBoundaryMs();
     PendingIntent pending = buildPendingIntent(context);
 
     try {

@@ -3,10 +3,7 @@ package com.tdrevans.nexttrain;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Widget journey pick (v1): active-hours match → else last activeJourneyId → else sole
- * journey without a window → else first configured journey.
- */
+/** Widget / schedule journey pick: in Active hours (+ days) only — no activeId / first fallbacks. */
 public final class JourneySelector {
 
   private JourneySelector() {}
@@ -34,17 +31,18 @@ public final class JourneySelector {
       }
     }
 
-    String activeId = settings.optString("activeJourneyId", null);
-    JSONObject active = findById(configured, activeId);
-    if (active != null) {
-      return active;
-    }
+    return null;
+  }
 
-    if (configured.length() == 1 && !hasWindow(configured.getJSONObject(0))) {
-      return configured.getJSONObject(0);
+  public static boolean hasConfiguredJourneys(JSONObject settings) throws Exception {
+    if (settings == null) {
+      return false;
     }
-
-    return configured.getJSONObject(0);
+    JSONArray journeys = settings.optJSONArray("journeys");
+    if (journeys == null) {
+      return false;
+    }
+    return configuredJourneys(journeys).length() > 0;
   }
 
   public static boolean isOutsideActiveHours(JSONObject journey) {
@@ -67,19 +65,6 @@ public final class JourneySelector {
     return configured;
   }
 
-  private static JSONObject findById(JSONArray journeys, String id) throws Exception {
-    if (id == null || id.isEmpty()) {
-      return null;
-    }
-    for (int index = 0; index < journeys.length(); index += 1) {
-      JSONObject journey = journeys.getJSONObject(index);
-      if (id.equals(journey.optString("id"))) {
-        return journey;
-      }
-    }
-    return null;
-  }
-
   static boolean hasWindow(JSONObject journey) {
     String from = journey.optString("defaultFrom", "");
     String until = journey.optString("defaultUntil", "");
@@ -88,6 +73,9 @@ public final class JourneySelector {
 
   static boolean matchesWindow(JSONObject journey, int minutes) {
     if (!hasWindow(journey)) {
+      return false;
+    }
+    if (!PreferredTrainReminder.isRemindDay(journey)) {
       return false;
     }
     int from = parseTime(journey.optString("defaultFrom"));

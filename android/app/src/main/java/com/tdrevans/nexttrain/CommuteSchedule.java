@@ -8,7 +8,12 @@ import org.json.JSONObject;
 public final class CommuteSchedule {
 
   public static final long STALE_THRESHOLD_MS = 120L * 60L * 1000L;
-  public static final long UPDATING_TIMEOUT_MS = 3L * 60L * 1000L;
+  public static final long UPDATING_TIMEOUT_MS = 90L * 1000L;
+  public static final long OPPORTUNISTIC_REFRESH_AGE_MS = 12L * 60L * 1000L;
+  public static final long OPPORTUNISTIC_REFRESH_DEBOUNCE_MS = 5L * 60L * 1000L;
+  static final int PRE_DEPARTURE_PREFETCH_MINUTES = 3;
+  static final int DEGRADED_CLOCK_MINUTES_PAST = 20;
+  public static final String DEGRADED_SECONDARY = "Open app";
 
   public static final class Result {
 
@@ -19,6 +24,7 @@ public final class CommuteSchedule {
     public boolean departMode;
     public boolean stale;
     public boolean empty;
+    public boolean nearbyFallback;
     public long refreshedAtMs;
     public String journeyId;
     public String route;
@@ -46,7 +52,12 @@ public final class CommuteSchedule {
       result.settings = new JSONObject(settingsJson);
       result.journey = JourneySelector.selectJourney(result.settings);
       if (result.journey == null) {
-        result.empty = true;
+        if (JourneySelector.hasConfiguredJourneys(result.settings)) {
+          result.nearbyFallback = true;
+          result.empty = false;
+        } else {
+          result.empty = true;
+        }
         return result;
       }
 
@@ -63,7 +74,7 @@ public final class CommuteSchedule {
       result.refreshedAtMs = System.currentTimeMillis();
       WidgetSettingsStore.saveLastRefreshMs(context, result.refreshedAtMs);
       result.stale = false;
-      result.next = resolveActiveNextTrip(result.payload);
+      result.next = resolveActiveNextTrip(result.payload, result.journey);
       fillTripFields(result);
       return result;
     } catch (Exception error) {
@@ -127,6 +138,10 @@ public final class CommuteSchedule {
   }
 
   public static JSONObject toWidgetSnapshot(Result result) throws Exception {
+    if (result.nearbyFallback) {
+      return outsideHoursSnapshot(result.settings);
+    }
+
     if (result.empty) {
       return emptyState();
     }
@@ -140,7 +155,12 @@ public final class CommuteSchedule {
       snapshot.put("empty", false);
       snapshot.put("journeyId", result.journeyId);
       snapshot.put("route", result.route);
-      snapshot.put("stationLabel", WidgetDataService.formatStationLabel(result.journey));
+      snapshot.put(
+        "stationLabel",
+        result.route != null && !result.route.isEmpty()
+          ? result.route
+          : WidgetDataService.formatRoute(result.journey)
+      );
       snapshot.put("label", "NEXT TRAIN");
       snapshot.put("primary", "No trains");
       snapshot.put("trainClock", "");
@@ -156,14 +176,111 @@ public final class CommuteSchedule {
     return buildLiveSnapshot(result);
   }
 
+  /**
+   * When settings exist but no journey is in Active hours, return next-commute preview
+   * (or soft Near me if preview cannot be built).
+   */
+  public static JSONObject nearbyFallbackIfOutsideHours(Context context) {
+    try {
+      String settingsJson = WidgetSettingsStore.readSettings(context);
+      if (settingsJson == null || settingsJson.isEmpty()) {
+        return null;
+      }
+      JSONObject settings = new JSONObject(settingsJson);
+      if (!JourneySelector.hasConfiguredJourneys(settings)) {
+        return null;
+      }
+      if (JourneySelector.selectJourney(settings) != null) {
+        return null;
+      }
+      return outsideHoursSnapshot(settings);
+    } catch (Exception error) {
+      return null;
+    }
+  }
+
+  /** Designed idle / next commute preview from settings — no network. */
+  public static JSONObject outsideHoursSnapshot(JSONObject settings) throws Exception {
+    return outsideHoursSnapshot(
+      settings,
+      PerthTime.minutesSinceMidnight(),
+      PerthTime.dayOfWeekIso()
+    );
+  }
+
+  static JSONObject outsideHoursSnapshot(
+    JSONObject settings,
+    int nowMinutes,
+    int dayOfWeekIso
+  ) throws Exception {
+    NextCommutePreview.Preview preview = NextCommutePreview.findNext(
+      settings,
+      nowMinutes,
+      dayOfWeekIso
+    );
+    if (preview == null || preview.journey == null) {
+      return nearbyFallbackState();
+    }
+
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("empty", false);
+    snapshot.put("outsideHoursIdle", true);
+    snapshot.put("openNearbyOnTap", true);
+    snapshot.put("nearbyFallback", false);
+    snapshot.put("journeyId", preview.journey.optString("id", "nearby"));
+    String route = WidgetDataService.formatRoute(preview.journey);
+    snapshot.put("route", route);
+    // Full route on both fields so the bottom bar still paints if a binder uses stationLabel.
+    snapshot.put("stationLabel", route);
+    snapshot.put("journeyName", preview.journey.optString("name", ""));
+    // textAllCaps on the face → TARGET TRAIN or NEXT JOURNEY
+    snapshot.put("label", NextCommutePreview.idleWidgetLabel(preview.journey));
+    // Big primary slot is for a short clock, not "Tomorrow 7:30".
+    snapshot.put("primary", preview.preferredOrFromClock);
+    // Day word only — never a leftover live departure clock.
+    snapshot.put("trainClock", NextCommutePreview.formatDayWord(preview));
+    snapshot.put("secondary", "");
+    snapshot.put("preferredHint", "");
+    snapshot.put("leaveByArmed", false);
+    snapshot.put("updatedLine", "");
+    snapshot.put("statusCrumb", "");
+    snapshot.put("departureIso", "");
+    snapshot.put("leaveByIso", "");
+    snapshot.put("followingDepartureIso", "");
+    snapshot.put("followingLeaveByIso", "");
+    snapshot.put("followingDisplayTime", "");
+    snapshot.put("followingStatus", "");
+    snapshot.put("stale", false);
+    snapshot.put("urgent", false);
+    snapshot.put("late", false);
+    snapshot.put("updatingSinceMs", 0L);
+    return snapshot;
+  }
+
+  private static JSONObject nearbyFallbackState() throws Exception {
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("nearbyFallback", true);
+    snapshot.put("empty", false);
+    snapshot.put("journeyId", "nearby");
+    snapshot.put("label", "NEAR ME");
+    snapshot.put("primary", "Near me");
+    snapshot.put("trainClock", "See trains near you");
+    snapshot.put("secondary", "");
+    snapshot.put("updatedLine", "");
+    snapshot.put("stale", false);
+    snapshot.put("urgent", false);
+    snapshot.put("late", false);
+    return snapshot;
+  }
+
   private static JSONObject emptyState() throws Exception {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", true);
     snapshot.put("journeyId", "new");
     snapshot.put("label", "NEXT TRAIN");
-    snapshot.put("primary", "Add journey");
-    snapshot.put("trainClock", "");
-    snapshot.put("secondary", "Save your journey");
+    snapshot.put("primary", WidgetUiBuilder.EMPTY_SETUP_PRIMARY);
+    snapshot.put("trainClock", WidgetUiBuilder.EMPTY_SETUP_SUB);
+    snapshot.put("secondary", "");
     snapshot.put("updatedLine", "");
     snapshot.put("stale", false);
     snapshot.put("urgent", false);
@@ -177,13 +294,13 @@ public final class CommuteSchedule {
     if (journey != null) {
       snapshot.put("journeyId", journey.optString("id"));
       snapshot.put("route", WidgetDataService.formatRoute(journey));
-      snapshot.put("stationLabel", WidgetDataService.formatStationLabel(journey));
+      snapshot.put("stationLabel", WidgetDataService.formatRoute(journey));
     }
     snapshot.put("label", "NEXT TRAIN");
     snapshot.put("primary", "…");
     snapshot.put("trainClock", "");
     snapshot.put("secondary", "");
-    snapshot.put("updatedLine", "Updating…");
+    snapshot.put("updatedLine", "");
     snapshot.put("stale", false);
     snapshot.put("urgent", false);
     snapshot.put("late", false);
@@ -199,7 +316,8 @@ public final class CommuteSchedule {
     snapshot.put("empty", false);
     snapshot.put("journeyId", result.journeyId);
     snapshot.put("route", result.route);
-    snapshot.put("stationLabel", WidgetDataService.formatStationLabel(journey));
+    // Same bottom-bar shape as idle: Station → Direction.
+    snapshot.put("stationLabel", result.route != null ? result.route : WidgetDataService.formatRoute(journey));
     snapshot.put("journeyName", journey.optString("name", "Journey"));
     snapshot.put("stale", result.stale);
 
@@ -209,10 +327,9 @@ public final class CommuteSchedule {
     String displayTime = result.displayTime;
     String status = result.status;
 
-    boolean leaveLate = "late".equals(leavePhase) || "missed".equals(leavePhase);
+    boolean leaveLate = false;
     boolean leaveUrgent =
-      leaveLate
-        || "now".equals(leavePhase)
+      "now".equals(leavePhase)
         || "urgent".equals(leavePhase)
         || "soon".equals(leavePhase);
 
@@ -225,11 +342,30 @@ public final class CommuteSchedule {
       snapshot.put("secondary", "");
       snapshot.put("urgent", false);
       snapshot.put("late", false);
+      snapshot.put("leaveByArmed", false);
+      snapshot.put("preferredHint", "");
     } else {
-      snapshot.put("secondary", formatLeaveSecondary(leavePhase, minutesUntilLeave));
-      snapshot.put("urgent", leaveUrgent);
-      snapshot.put("late", leaveLate);
+      boolean leaveArmed = leaveByArmedForTrip(next, journey);
+      snapshot.put("leaveByArmed", leaveArmed);
+      if (leaveArmed) {
+        String secondary = formatLeaveSecondary(leavePhase, minutesUntilLeave);
+        snapshot.put("secondary", secondary);
+        snapshot.put("preferredHint", "");
+        // Grace "Leave now" (≤1 min past leave-by) stays urgent, not late-red.
+        if ("Leave now".equals(secondary) && minutesUntilLeave <= 0) {
+          leaveUrgent = true;
+        }
+        snapshot.put("urgent", leaveUrgent && !secondary.isEmpty());
+        snapshot.put("late", leaveLate);
+      } else {
+        snapshot.put("secondary", "");
+        snapshot.put("preferredHint", preferredHintForJourney(journey));
+        snapshot.put("urgent", false);
+        snapshot.put("late", false);
+      }
     }
+
+    snapshot.put("preferredTrainTime", journey != null ? journey.optString("preferredTrainTime", "") : "");
 
     snapshot.put("statusCrumb", formatStatusCrumb(status));
     snapshot.put("departureIso", result.departureIso != null ? result.departureIso : "");
@@ -254,7 +390,12 @@ public final class CommuteSchedule {
 
   /** Recompute countdown copy from cached absolute ISO times (no network). */
   public static JSONObject repaintSnapshot(JSONObject cached) throws Exception {
-    if (cached == null || cached.optBoolean("empty", false)) {
+    if (
+      cached == null ||
+      cached.optBoolean("empty", false) ||
+      cached.optBoolean("nearbyFallback", false) ||
+      cached.optBoolean("outsideHoursIdle", false)
+    ) {
       return cached;
     }
 
@@ -276,17 +417,26 @@ public final class CommuteSchedule {
   }
 
   static JSONObject resolveActiveNextTrip(JSONObject payload) {
+    return resolveActiveNextTrip(payload, null);
+  }
+
+  /**
+   * Next live trip for the widget/commute face = true soonest not-yet-departed train
+   * (U-11 lock B). Preferred only gates Leave By + medium hint — not which train is shown.
+   */
+  static JSONObject resolveActiveNextTrip(JSONObject payload, JSONObject journey) {
     if (payload == null) {
       return null;
     }
 
-    JSONArray upcoming = payload.optJSONArray("upcoming");
-    if (upcoming != null && upcoming.length() > 0) {
+    JSONArray upcoming = collectUpcomingTrips(payload);
+    if (upcoming.length() > 0) {
       for (int index = 0; index < upcoming.length(); index += 1) {
         JSONObject trip = upcoming.optJSONObject(index);
-        if (trip != null && !hasDepartureMinutePassed(trip)) {
-          return trip;
+        if (trip == null || hasDepartureMinutePassed(trip)) {
+          continue;
         }
+        return trip;
       }
       return null;
     }
@@ -304,6 +454,87 @@ public final class CommuteSchedule {
     return null;
   }
 
+  /** Leave By / leave twin only when no preferred, or this trip is at/after preferred. */
+  static boolean leaveByArmedForTrip(JSONObject trip, JSONObject journey) {
+    int preferredMinutes = preferredMinutesForLiveGlance(journey);
+    if (preferredMinutes < 0) {
+      return true;
+    }
+    if (trip == null) {
+      return false;
+    }
+    return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey));
+  }
+
+  /** Medium widget orientation when Leave By is hidden for an earlier train. */
+  static String preferredHintForJourney(JSONObject journey) {
+    int preferredMinutes = preferredMinutesForLiveGlance(journey);
+    if (preferredMinutes < 0) {
+      return "";
+    }
+    return "Target " + NextCommutePreview.formatClock(preferredMinutes);
+  }
+
+  /** Explicit preferred only — do not fall back to Active from (unlike reminders legacy). */
+  static int preferredMinutesForLiveGlance(JSONObject journey) {
+    if (journey == null) {
+      return -1;
+    }
+    return PerthTime.parseClockMinutes(journey.optString("preferredTrainTime", ""));
+  }
+
+  static int liveHorizonMinutes(JSONObject journey) {
+    if (journey == null) {
+      return 24 * 60;
+    }
+    int untilMinutes = PerthTime.parseClockMinutes(journey.optString("defaultUntil", ""));
+    if (untilMinutes >= 0) {
+      return untilMinutes;
+    }
+    return 24 * 60;
+  }
+
+  static boolean tripMatchesPreferredOrLater(
+    JSONObject trip,
+    int preferredMinutes,
+    int horizonMinutes
+  ) {
+    String departureIso = tripDepartureIso(trip);
+    int departureMinutes = PerthTime.minutesFromIso(departureIso);
+    if (departureMinutes < 0) {
+      return false;
+    }
+    if (departureMinutes < preferredMinutes) {
+      return false;
+    }
+    // Same-day Active until only (preferred before until). Overnight windows skip horizon clip.
+    if (
+      horizonMinutes < 24 * 60 &&
+      preferredMinutes < horizonMinutes &&
+      departureMinutes >= horizonMinutes
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  static JSONArray collectUpcomingTrips(JSONObject payload) {
+    JSONArray upcoming = payload.optJSONArray("upcoming");
+    if (upcoming != null && upcoming.length() > 0) {
+      return upcoming;
+    }
+    JSONArray built = new JSONArray();
+    JSONObject next = payload.optJSONObject("next");
+    if (next != null) {
+      built.put(next);
+    }
+    JSONObject following = payload.optJSONObject("following");
+    if (following != null) {
+      built.put(following);
+    }
+    return built;
+  }
+
   static JSONObject resolveFollowingTrip(JSONObject payload, JSONObject activeNext) {
     if (payload == null || activeNext == null) {
       return null;
@@ -311,19 +542,10 @@ public final class CommuteSchedule {
 
     String activeDeparture = tripDepartureIso(activeNext);
     JSONArray upcoming = payload.optJSONArray("upcoming");
-    if (upcoming != null) {
-      for (int index = 0; index < upcoming.length(); index += 1) {
-        JSONObject trip = upcoming.optJSONObject(index);
-        if (trip == null) {
-          continue;
-        }
-        if (tripDepartureIso(trip).equals(activeDeparture) && index + 1 < upcoming.length()) {
-          JSONObject candidate = upcoming.optJSONObject(index + 1);
-          if (candidate != null && !hasDepartureMinutePassed(candidate)) {
-            return candidate;
-          }
-          return null;
-        }
+    if (upcoming != null && upcoming.length() > 0) {
+      JSONObject fromArray = followingFromUpcoming(upcoming, activeDeparture);
+      if (fromArray != null) {
+        return fromArray;
       }
     }
 
@@ -334,6 +556,51 @@ public final class CommuteSchedule {
       !hasDepartureMinutePassed(following)
     ) {
       return following;
+    }
+
+    return null;
+  }
+
+  static JSONObject followingFromUpcoming(JSONArray upcoming, String activeDeparture) {
+    int activeIndex = findTripIndex(upcoming, activeDeparture);
+    if (activeIndex >= 0 && activeIndex + 1 < upcoming.length()) {
+      JSONObject candidate = upcoming.optJSONObject(activeIndex + 1);
+      if (candidate != null && !hasDepartureMinutePassed(candidate)) {
+        return candidate;
+      }
+    }
+
+    return firstUpcomingAfter(upcoming, activeDeparture);
+  }
+
+  static int findTripIndex(JSONArray upcoming, String activeDeparture) {
+    for (int index = 0; index < upcoming.length(); index += 1) {
+      JSONObject trip = upcoming.optJSONObject(index);
+      if (trip != null && tripDepartureIso(trip).equals(activeDeparture)) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  static JSONObject firstUpcomingAfter(JSONArray upcoming, String activeDeparture) {
+    long activeMs = PerthTime.epochMillisFromIso(activeDeparture);
+    if (activeMs <= 0L) {
+      return null;
+    }
+
+    for (int index = 0; index < upcoming.length(); index += 1) {
+      JSONObject trip = upcoming.optJSONObject(index);
+      if (trip == null || hasDepartureMinutePassed(trip)) {
+        continue;
+      }
+      String departureIso = tripDepartureIso(trip);
+      if (departureIso.equals(activeDeparture)) {
+        continue;
+      }
+      if (PerthTime.epochMillisFromIso(departureIso) > activeMs) {
+        return trip;
+      }
     }
 
     return null;
@@ -387,11 +654,11 @@ public final class CommuteSchedule {
     long refreshedAtMs = cached.optLong("refreshedAtMs", 0L);
     if (updatingSince <= 0L) {
       if (refreshedAtMs > 0L && now - refreshedAtMs >= UPDATING_TIMEOUT_MS) {
-        return applyStaleRefreshState(cached);
+        return finishUpdatingEpisode(cached, now);
       }
       updatingSince = now;
     } else if (now - updatingSince >= UPDATING_TIMEOUT_MS) {
-      return applyStaleRefreshState(cached);
+      return finishUpdatingEpisode(cached, now);
     }
 
     JSONObject snapshot = new JSONObject(cached.toString());
@@ -403,45 +670,82 @@ public final class CommuteSchedule {
     snapshot.put("late", false);
     snapshot.put("statusCrumb", "");
     snapshot.put("updatingSinceMs", updatingSince);
-    boolean stale = cached.optBoolean("stale", false);
-    snapshot.put(
-      "updatedLine",
-      stale ? "Times may be out of date" : PerthTime.formatUpdatedAgo(refreshedAtMs)
-    );
+    snapshot.put("updatedLine", "");
     return snapshot;
+  }
+
+  private static JSONObject finishUpdatingEpisode(JSONObject cached, long now) throws Exception {
+    if (!cached.optBoolean("updatingRetried", false)) {
+      JSONObject snapshot = new JSONObject(cached.toString());
+      snapshot.put("updatingRetried", true);
+      snapshot.put("updatingSinceMs", now);
+      snapshot.put("triggerFetchRetry", true);
+      snapshot.put("label", "NEXT TRAIN");
+      snapshot.put("primary", "Updating…");
+      snapshot.put("trainClock", "");
+      snapshot.put("secondary", "Fetching next train…");
+      snapshot.put("urgent", false);
+      snapshot.put("late", false);
+      snapshot.put("statusCrumb", "");
+      snapshot.put("updatedLine", "");
+      return snapshot;
+    }
+    return applyStaleRefreshState(cached);
   }
 
   private static JSONObject applyStaleRefreshState(JSONObject cached) throws Exception {
     JSONObject snapshot = new JSONObject(cached.toString());
     snapshot.put("label", "NEXT TRAIN");
-    snapshot.put("primary", "—");
+    snapshot.put("primary", degradedPrimary(cached));
     snapshot.put("trainClock", "");
-    snapshot.put("secondary", "Tap to refresh");
+    snapshot.put("secondary", DEGRADED_SECONDARY);
     snapshot.put("urgent", false);
     snapshot.put("late", false);
     snapshot.put("statusCrumb", "");
     snapshot.put("stale", true);
     snapshot.put("updatingSinceMs", 0L);
+    snapshot.put("updatingRetried", false);
     snapshot.put("updatedLine", "Times may be out of date");
     return snapshot;
   }
 
+  static String degradedPrimary(JSONObject cached) {
+    long now = System.currentTimeMillis();
+    String departureIso = cached.optString("departureIso", "");
+    String trainClock = cached.optString("trainClock", "");
+
+    if (!departureIso.isEmpty()) {
+      int minutesUntilDeparture = PerthTime.minutesUntilWallClock(departureIso, now);
+      if (minutesUntilDeparture >= 0) {
+        return formatMinutesPrimary(minutesUntilDeparture);
+      }
+      int minutesPastDeparture = -minutesUntilDeparture;
+      if (minutesPastDeparture < DEGRADED_CLOCK_MINUTES_PAST && !trainClock.isEmpty()) {
+        return trainClock;
+      }
+    } else if (!trainClock.isEmpty()) {
+      return trainClock;
+    }
+
+    return "Open";
+  }
+
   private static JSONObject repaintActiveSnapshot(JSONObject snapshot, long now) throws Exception {
     String departureIso = snapshot.optString("departureIso", "");
-    long departureMs = PerthTime.epochMillisFromIso(departureIso);
     String leaveByIso = snapshot.optString("leaveByIso", "");
-    long leaveByMs = leaveByIso.isEmpty() ? 0L : PerthTime.epochMillisFromIso(leaveByIso);
 
-    int minutesUntilDeparture = roundMinutes(departureMs - now);
-    int minutesUntilLeave = leaveByMs > 0 ? roundMinutes(leaveByMs - now) : minutesUntilDeparture;
+    int minutesUntilDeparture = PerthTime.minutesUntilWallClock(departureIso, now);
+    int minutesUntilLeave =
+      leaveByIso.isEmpty()
+        ? minutesUntilDeparture
+        : PerthTime.minutesUntilWallClock(leaveByIso, now);
     String leavePhase = getLeavePhase(minutesUntilLeave, minutesUntilDeparture);
     boolean departMode = snapshot.optBoolean("departMode", false);
     String status = snapshot.optString("status", "On Time");
 
-    boolean leaveLate = "late".equals(leavePhase) || "missed".equals(leavePhase);
+    boolean leaveLate = false;
     boolean leaveUrgent =
-      leaveLate
-        || "now".equals(leavePhase)
+      "now".equals(leavePhase)
         || "urgent".equals(leavePhase)
         || "soon".equals(leavePhase);
 
@@ -452,9 +756,20 @@ public final class CommuteSchedule {
       snapshot.put("secondary", "");
       snapshot.put("urgent", false);
       snapshot.put("late", false);
+      snapshot.put("preferredHint", "");
+    } else if (!snapshot.optBoolean("leaveByArmed", true)) {
+      snapshot.put("secondary", "");
+      snapshot.put("urgent", false);
+      snapshot.put("late", false);
+      // Keep preferredHint from buildLiveSnapshot.
     } else {
-      snapshot.put("secondary", formatLeaveSecondary(leavePhase, minutesUntilLeave));
-      snapshot.put("urgent", leaveUrgent);
+      String secondary = formatLeaveSecondary(leavePhase, minutesUntilLeave);
+      snapshot.put("secondary", secondary);
+      snapshot.put("preferredHint", "");
+      if ("Leave now".equals(secondary) && minutesUntilLeave <= 0) {
+        leaveUrgent = true;
+      }
+      snapshot.put("urgent", leaveUrgent && !secondary.isEmpty());
       snapshot.put("late", leaveLate);
     }
 
@@ -488,31 +803,112 @@ public final class CommuteSchedule {
     snapshot.put("followingStatus", "");
   }
 
-  /** True when a 1-minute local repaint is useful (within ~60 min of train or leave-by). */
+  /** True when a 1-minute local repaint should keep the countdown aligned with wall-clock minutes. */
   public static boolean needsLocalRepaint(JSONObject snapshot) {
-    if (snapshot == null || snapshot.optBoolean("empty", false)) {
+    if (
+      snapshot == null ||
+      snapshot.optBoolean("empty", false) ||
+      snapshot.optBoolean("nearbyFallback", false) ||
+      snapshot.optBoolean("outsideHoursIdle", false)
+    ) {
       return false;
     }
 
     if (needsNetworkRefresh(snapshot)) {
-      long updatingSince = snapshot.optLong("updatingSinceMs", 0L);
-      if (updatingSince > 0L && System.currentTimeMillis() - updatingSince < UPDATING_TIMEOUT_MS) {
+      // Keep ticking while Fetching so the 90s → retry → degraded path can finish
+      // even if the exact timeout falls between minute alarms.
+      String primary = snapshot.optString("primary", "");
+      if ("Updating…".equals(primary) || snapshot.optLong("updatingSinceMs", 0L) > 0L) {
         return true;
       }
       return false;
     }
 
-    String departureIso = snapshot.optString("departureIso", "");
-    if (departureIso.isEmpty()) {
+    return hasLiveCountdown(snapshot);
+  }
+
+  /** Live commute face with a departure still ahead on the wall clock. */
+  public static boolean isLiveCommuteSnapshot(JSONObject snapshot) {
+    if (
+      snapshot == null ||
+      snapshot.optBoolean("empty", false) ||
+      snapshot.optBoolean("nearbyFallback", false) ||
+      snapshot.optBoolean("outsideHoursIdle", false)
+    ) {
       return false;
     }
 
-    long now = System.currentTimeMillis();
-    long departureMs = PerthTime.epochMillisFromIso(departureIso);
-    String leaveByIso = snapshot.optString("leaveByIso", "");
-    long leaveByMs = leaveByIso.isEmpty() ? departureMs : PerthTime.epochMillisFromIso(leaveByIso);
-    long nearestMs = Math.min(departureMs, leaveByMs) - now;
-    return nearestMs <= 60L * 60L * 1000L && nearestMs >= -15L * 60L * 1000L;
+    if (DEGRADED_SECONDARY.equals(snapshot.optString("secondary"))) {
+      return false;
+    }
+
+    if ("No trains".equals(snapshot.optString("primary"))) {
+      return false;
+    }
+
+    String departureIso = snapshot.optString("departureIso", "");
+    return !departureIso.isEmpty() && !hasDepartureMinutePassed(departureIso);
+  }
+
+  static boolean hasLiveCountdown(JSONObject snapshot) {
+    if (!isLiveCommuteSnapshot(snapshot)) {
+      return false;
+    }
+
+    String primary = snapshot.optString("primary", "");
+    if (!primary.isEmpty()) {
+      if (
+        "Open".equals(primary) ||
+        "Updating…".equals(primary) ||
+        "…".equals(primary) ||
+        WidgetUiBuilder.EMPTY_SETUP_PRIMARY.equals(primary) ||
+        "—".equals(primary)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /** Kick a background refresh when cached network data is getting old during a live commute. */
+  public static boolean shouldOpportunisticRefresh(JSONObject snapshot) {
+    if (!isLiveCommuteSnapshot(snapshot) || needsNetworkRefresh(snapshot)) {
+      return false;
+    }
+
+    long refreshedAtMs = snapshot.optLong("refreshedAtMs", 0L);
+    if (refreshedAtMs <= 0L) {
+      return false;
+    }
+
+    long age = System.currentTimeMillis() - refreshedAtMs;
+    if (age < OPPORTUNISTIC_REFRESH_AGE_MS) {
+      return false;
+    }
+
+    long lastOpportunistic = snapshot.optLong("lastOpportunisticRefreshMs", 0L);
+    return System.currentTimeMillis() - lastOpportunistic >= OPPORTUNISTIC_REFRESH_DEBOUNCE_MS;
+  }
+
+  /** Warm following-train cache shortly before the active departure minute rolls. */
+  public static boolean needsPreDeparturePrefetch(JSONObject snapshot) {
+    if (!isLiveCommuteSnapshot(snapshot)) {
+      return false;
+    }
+
+    if (!snapshot.optString("followingDepartureIso", "").isEmpty()) {
+      return false;
+    }
+
+    String departureIso = snapshot.optString("departureIso", "");
+    if (departureIso.equals(snapshot.optString("prefetchDepartureIso", ""))) {
+      return false;
+    }
+
+    int minutesUntilDeparture =
+      PerthTime.minutesUntilWallClock(departureIso, System.currentTimeMillis());
+    return minutesUntilDeparture >= 0 && minutesUntilDeparture <= PRE_DEPARTURE_PREFETCH_MINUTES;
   }
 
   /** First instant after the scheduled departure minute — time to fetch the next train. */
@@ -540,10 +936,6 @@ public final class CommuteSchedule {
 
     long advanceAt = departureAdvanceAtMs(departureIso);
     return advanceAt > 0L && System.currentTimeMillis() >= advanceAt;
-  }
-
-  static int roundMinutes(long deltaMs) {
-    return (int) Math.round(deltaMs / 60_000.0);
   }
 
   static String getLeavePhase(int minutesUntilLeave, int minutesUntilDeparture) {
@@ -578,13 +970,11 @@ public final class CommuteSchedule {
   private static String formatLeaveSecondary(String leavePhase, int minutesUntilLeave) {
     if ("late".equals(leavePhase) || "missed".equals(leavePhase)) {
       int minutesLate = minutesUntilLeave < 0 ? Math.abs(minutesUntilLeave) : 0;
-      if (minutesLate == 1) {
-        return "Leave 1 min ago";
+      // One-minute grace after leave-by: keep "Leave now", then hide (no "ago").
+      if (minutesLate <= 1) {
+        return "Leave now";
       }
-      if (minutesLate > 1) {
-        return "Leave " + minutesLate + " min ago";
-      }
-      return "Leave now";
+      return "";
     }
     if ("now".equals(leavePhase)) {
       return "Leave now";

@@ -25,7 +25,7 @@ Impact & effort use: **Very high / High / Medium / Low**.
 | 1 | **Homescreen widget** (leave-by + next train for active journey; tap → app) | Very high | Medium | **Shipped (Android)** — design: `docs/widget-homescreen.md` |
 | 2 | **Leave-by local notification** (opt-in; preferred train + days; once/window) | Very high *if correct* | **High** | v1 shipped naive; **v2 brief: `docs/jim-brief-leave-reminders-v2.md`** |
 | 3 | **Disruption push** (only when *their* journey’s service is delayed/cancelled) | Very high | Medium–high | Trust + “open when it matters”; needs reliable change detection; don’t spam |
-| 4 | **Lock-screen / Live Activity (iOS) + Android ongoing / shade strip** | High | Medium | Keeps countdown visible while getting ready; iOS Live Activity is a strong habit hook |
+| 4 | **Lock-screen / Live Activity (iOS) + Android ongoing / shade strip** | High | Medium | **Android backup briefed:** `docs/jim-brief-commute-strip-notification.md` — preferred-train window only, not all-day Near me |
 | 5 | **Morning briefing notification** (fixed wake window: “Leave by 7:42 · Edgewater → Perth”) | High | Low–medium | Cheap ritual anchor on weekdays; easy to over-notify — respect active hours |
 | 6 | **Deep links + Shortcuts / Siri / Google Assistant** (“When do I leave?”) | Medium | Low–medium | Low effort sticky for power users; good store/marketing demos |
 | 7 | **CarPlay / Android Auto “Leave by” glance** | Medium–high | High | Real car path for park-&-ride; broader than Tesla-only |

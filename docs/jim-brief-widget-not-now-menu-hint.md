@@ -4,7 +4,9 @@
 **From:** Simon (design) / Tim (product)  
 **Status:** Ready to code  
 **Related:** `public/widget.js` (`widget-coach-later-btn`), `public/stickiness-coaches.js`, `public/index.html` (`#menu-btn` / `#menu-chrome-action`), `docs/jim-brief-stagger-stickiness-coaches.md`  
-**Out of scope:** Reminder coach “Not now” (unless trivial to mirror later), changing Menu contents
+**Out of scope:** Changing Menu contents
+
+**Also:** Reminder coach **Not now** uses the same tip + Menu pulse pattern (`showReminderCoachNotNowHint`) — copy: *You can turn on reminders anytime from **Menu**.*
 
 ---
 
@@ -38,16 +40,14 @@ Optional second beat (skip if crowded): nothing else.
 
 ### Placement
 
-Prefer a **small toast** near the bottom of the main canvas (above ads if present), auto-dismiss ~**3s**, or dismiss on tap. Same visual family as other light tips (not a full coach card).
-
-Alternative if toast infra is missing: tiny tip card anchored under the header pointing at Menu — only if cheaper than toast. **Prefer toast.**
+Small tip **under the Menu chrome control** (top-right), not the bottom of the canvas. Auto-dismiss ~**3.5s**, or dismiss on tap.
 
 ### Menu flash
 
 On `#menu-chrome-action` / `#menu-btn`:
 
-- Add a short CSS class e.g. `chrome-action--pulse` for **~1.2–1.5s** (1–2 pulses).  
-- Accent wash / border flash matching Journeys onboarding pulse if one exists — reuse pattern.  
+- Class `chrome-action--pulse` for ~**2.2s** (stronger glow + scale, ~3 pulses).  
+- Accent wash / border + glow — more visible than the light Journeys onboarding pulse.  
 - Then remove the class.
 
 Accessible: toast text is enough; pulse is reinforcement. `aria-live="polite"` on the toast.
@@ -71,10 +71,11 @@ Do **not** chain into the reminder coach in the same session (already gated by s
 
 1. Widget coach → **Not now** → coach gone.  
 2. Toast/tip visible with Menu copy.  
-3. Menu icon pulses once/briefly.  
-4. Menu does not open by itself.  
-5. User can still open Menu → **Add home screen widget** as today.  
-6. Web: no widget coach (unchanged) — no work if coach never shows.
+3. Menu icon pulses / glows briefly (~2s).  
+4. Tip sits under Menu (top-right), not bottom of screen.  
+5. Menu does not open by itself.  
+6. User can still open Menu → **Add home screen widget** as today.  
+7. Web: no widget coach (unchanged) — no work if coach never shows.
 
 ---
 

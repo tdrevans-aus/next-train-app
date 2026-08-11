@@ -77,6 +77,7 @@
         </nav>
       </header>
 
+      <div class="app-body">
       <section class="context">
         <p class="route" id="route">Loading…</p>
         <div class="journey-context-row" id="journey-context-row" hidden>
@@ -145,6 +146,9 @@
         </div>
         <p class="depart-time-sub" id="depart-display-time">—</p>
         <p class="detail-sub" id="hero-scheduled-time" hidden></p>
+        <button type="button" class="btn-secondary nearby-dont-wait-btn" id="nearby-dont-wait-btn" hidden>
+          Don&rsquo;t wait
+        </button>
         <p class="swipe-hint" id="swipe-hint" hidden>
           Swipe for another train
         </p>
@@ -157,7 +161,26 @@
           <p class="nearby-fallback-text" id="nearby-fallback-text"></p>
           <label class="nearby-station-field">
             <span>Choose station</span>
-            <select id="nearby-station-select"></select>
+            <div class="station-combobox" id="nearby-station-combobox">
+              <input
+                type="text"
+                id="nearby-station-input"
+                class="station-combobox-input"
+                placeholder="Choose station"
+                autocomplete="off"
+                readonly
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-controls="nearby-station-listbox"
+              />
+              <ul
+                id="nearby-station-listbox"
+                class="station-combobox-list"
+                role="listbox"
+                hidden
+              ></ul>
+            </div>
           </label>
           <button type="button" class="btn-secondary nearby-station-btn" id="nearby-station-btn">
             Show departures
@@ -188,11 +211,16 @@
         <p class="label" id="leave-card-label">Leave by</p>
         <p class="leave-card-time" id="leave-time">—</p>
         <p class="leave-card-countdown" id="leave-countdown"></p>
-        <button type="button" class="leave-ack-btn" id="leave-ack-btn" hidden>I've left</button>
+        <div class="leave-card-actions" id="leave-card-actions" hidden>
+          <button type="button" class="leave-ack-btn" id="leave-ack-btn">I've left</button>
+          <button type="button" class="leave-next-train-btn" id="leave-next-train-btn">Next Train</button>
+        </div>
         <p class="leave-hint" id="leave-hint" hidden>
           Adjust your time to station with the sliders
         </p>
       </section>
+
+      <p class="preferred-hint" id="preferred-hint" hidden></p>
 
       <div class="train-meta">
         <section class="detail-strip" id="detail-strip">
@@ -220,6 +248,7 @@
       </p>
 
       <p class="error" id="error" hidden></p>
+      </div>
     </main>
 
     <div class="onboarding-coach" id="onboarding-coach" hidden>
@@ -265,7 +294,7 @@
       <div class="onboarding-coach-scrim" aria-hidden="true"></div>
       <div class="onboarding-coach-card" role="dialog" aria-labelledby="leave-reminder-coach-title">
         <h2 id="leave-reminder-coach-title">Leave Now Reminders</h2>
-        <p>Get a nudge when it&rsquo;s time to leave for your train.</p>
+        <p>Get a reminder when it&rsquo;s time to leave for your train.</p>
         <div class="onboarding-actions">
           <button type="button" class="btn-primary" id="leave-reminder-turn-on-btn">Turn on</button>
           <button type="button" class="btn-secondary" id="leave-reminder-later-btn">Not now</button>
@@ -275,10 +304,23 @@
 
     <dialog class="help-dialog" id="widget-help-dialog">
       <div class="help-dialog-body">
-        <h2>Add home screen widget</h2>
-        <p class="widget-help-lead">
-          <strong>Add widget</strong> puts your next train on the home screen without opening the app.
-        </p>
+        <h2 id="widget-help-title">Add home screen widget</h2>
+        <div id="widget-help-pin-first">
+          <p class="widget-help-lead">
+            <strong>Add widget</strong> puts your next train on the home screen without you even having to open the app.
+          </p>
+          <p class="widget-help-tip">
+            Long-press to resize for a roomier layout.
+          </p>
+        </div>
+        <div id="widget-help-already-have" hidden>
+          <p class="widget-help-lead">
+            You already have a Next Train widget on your home screen.
+          </p>
+          <p class="widget-help-tip">
+            Long-press the widget to move, resize, or remove it.
+          </p>
+        </div>
         <p id="widget-help-manual" class="widget-help-manual" hidden>
           <strong>Or add manually:</strong> Go to your Android home screen. Long-press an empty area
           and choose <strong>Widgets</strong>. Find <strong>Next Train</strong> and drag the widget
@@ -287,6 +329,9 @@
       </div>
       <div class="help-dialog-footer widget-help-footer">
         <button type="button" class="btn-primary" id="widget-help-pin-btn">Add widget</button>
+        <button type="button" class="btn-secondary" id="widget-help-add-another-btn" hidden>
+          Add another
+        </button>
         <button type="button" class="btn-secondary" id="widget-help-done-btn">Done</button>
       </div>
     </dialog>
@@ -302,9 +347,17 @@
             </div>
             <ul class="journey-list" id="journey-list"></ul>
             <div class="journey-templates" id="journey-templates">
-              <p class="settings-hint journey-templates-hint">Pick a template or build your own</p>
+              <p class="settings-hint journey-templates-hint">Add a journey</p>
               <p class="journey-templates-loading" id="journey-templates-loading" hidden>
                 Finding nearest station…
+              </p>
+              <p
+                class="settings-hint journey-templates-cap-hint"
+                id="journey-templates-cap-hint"
+                data-journey-cap
+                hidden
+              >
+                6 journeys — that's the limit for now. Delete one to add another.
               </p>
               <div class="journey-template-chips">
                 <button type="button" class="journey-template-chip" data-template="morning">
@@ -332,7 +385,7 @@
                 type="text"
                 id="detail-journey-name"
                 maxlength="40"
-                placeholder="e.g. School run"
+                placeholder="e.g. Weekend into town"
                 autocomplete="off"
               />
             </label>
@@ -341,11 +394,32 @@
               <h3 class="settings-section-title">Route</h3>
               <label class="field">
                 <span>Departure station</span>
-                <select id="detail-station-select" required></select>
-                <button type="button" class="btn-link settings-location-btn" id="detail-nearest-btn">
-                  Use nearest station
-                </button>
-                <p class="settings-location-hint" id="detail-nearest-hint" hidden></p>
+                <div class="station-combobox" id="detail-station-combobox">
+                  <input
+                    type="text"
+                    id="detail-station-input"
+                    class="station-combobox-input"
+                    placeholder="Choose station"
+                    autocomplete="off"
+                    readonly
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-expanded="false"
+                    aria-controls="detail-station-listbox"
+                  />
+                  <ul
+                    id="detail-station-listbox"
+                    class="station-combobox-list"
+                    role="listbox"
+                    hidden
+                  ></ul>
+                </div>
+                <div class="settings-location-row">
+                  <button type="button" class="btn-link settings-location-btn" id="detail-nearest-btn">
+                    Use nearest station
+                  </button>
+                  <span class="settings-location-hint" id="detail-nearest-hint" hidden></span>
+                </div>
               </label>
               <label class="field">
                 <span>Direction of travel</span>
@@ -354,6 +428,55 @@
                   Platform sign direction — not where you get off.
                 </p>
               </label>
+            </section>
+
+            <section class="settings-section" id="detail-preferred-section">
+              <label
+                class="field optional-time-field detail-preferred-field"
+                id="detail-preferred-field"
+                data-empty="true"
+              >
+                <span>Target train</span>
+                <div class="optional-time-control">
+                  <button type="button" class="optional-time-display" id="detail-preferred-display">
+                    Not set
+                  </button>
+                  <input
+                    type="time"
+                    id="detail-preferred-input"
+                    class="optional-time-input"
+                    tabindex="-1"
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    class="optional-time-clear"
+                    id="detail-preferred-clear"
+                    hidden
+                    aria-label="Clear target train"
+                  >
+                    ×
+                  </button>
+                </div>
+              </label>
+              <p class="settings-section-hint">
+                First train at or after this time.
+              </p>
+            </section>
+
+            <section class="settings-section" id="detail-reminder-section">
+              <div class="menu-toggle-row detail-remind-toggle-row">
+                <span class="menu-toggle-title">Remind me</span>
+                <label class="menu-toggle-switch">
+                  <input type="checkbox" id="detail-remind-me" />
+                  <span class="menu-toggle-track" aria-hidden="true"></span>
+                </label>
+              </div>
+              <div class="detail-remind-expanded" id="detail-remind-expanded" hidden>
+                <p class="settings-section-hint detail-remind-permission-hint" id="detail-remind-permission-hint" hidden>
+                  Notifications are off — enable in system settings to get leave reminders.
+                </p>
+              </div>
             </section>
 
             <section class="settings-section">
@@ -381,6 +504,21 @@
                   </div>
                 </div>
               </label>
+              <div class="remind-days-field" id="detail-active-days-field">
+                <span class="field-label">Active days</span>
+                <p class="settings-section-hint detail-active-days-hint">
+                  Which days to you travel this journey?
+                </p>
+                <div class="remind-day-chips remind-day-chips--row" id="detail-active-day-chips">
+                  <button type="button" class="remind-day-chip" data-day="1" aria-label="Monday" aria-pressed="false">M</button>
+                  <button type="button" class="remind-day-chip" data-day="2" aria-label="Tuesday" aria-pressed="false">T</button>
+                  <button type="button" class="remind-day-chip" data-day="3" aria-label="Wednesday" aria-pressed="false">W</button>
+                  <button type="button" class="remind-day-chip" data-day="4" aria-label="Thursday" aria-pressed="false">T</button>
+                  <button type="button" class="remind-day-chip" data-day="5" aria-label="Friday" aria-pressed="false">F</button>
+                  <button type="button" class="remind-day-chip" data-day="6" aria-label="Saturday" aria-pressed="false">S</button>
+                  <button type="button" class="remind-day-chip" data-day="7" aria-label="Sunday" aria-pressed="false">S</button>
+                </div>
+              </div>
               <div class="journey-window" id="detail-journey-window">
                 <label class="field optional-time-field" id="detail-default-from-field" data-empty="true">
                   <span>Active from</span>
@@ -431,8 +569,28 @@
                   </div>
                 </label>
               </div>
+              <div
+                class="journey-overlap-error"
+                id="detail-active-hours-error"
+                hidden
+                role="alert"
+              >
+                <p id="detail-active-hours-error-text"></p>
+                <button type="button" class="journey-overlap-fix-btn" id="detail-active-hours-fix-btn">
+                  Fix for me
+                </button>
+              </div>
               <p class="settings-section-hint" id="detail-active-hours-hint">
-                When this journey auto-selects on the main screen.
+                Active hours for auto-select on the main screen.
+              </p>
+              <p class="settings-section-hint detail-target-outside-hint" id="detail-target-outside-active-hint" hidden>
+                Target train is outside Active hours.
+              </p>
+              <p class="settings-section-hint" id="detail-combo-b-hint" hidden>
+                Set Active hours so this journey can show automatically.
+              </p>
+              <p class="settings-section-hint" id="detail-combo-d-hint" hidden>
+                Add Active hours to show this journey on a schedule.
               </p>
             </section>
 
@@ -477,6 +635,10 @@
             aria-modal="true"
             aria-labelledby="template-wizard-step-1-title"
           >
+            <div class="template-wizard-step" id="template-wizard-step-name" hidden>
+              <h2 id="template-wizard-step-name-title">Name</h2>
+              <p id="template-wizard-name-body"></p>
+            </div>
             <div class="template-wizard-step" id="template-wizard-step-1">
               <h2 id="template-wizard-step-1-title">Route picked for you</h2>
               <p id="template-route-coach-body"></p>
@@ -492,7 +654,16 @@
               <h2 id="template-wizard-step-3-title">Active hours</h2>
               <p id="template-wizard-hours-body"></p>
             </div>
-            <button type="button" class="btn-primary" id="template-wizard-primary-btn">Next</button>
+            <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>
+              <h2 id="template-wizard-step-reminder-title">Reminder</h2>
+              <p>
+                Turn on to get a leave notification. Uses your target train when set.
+              </p>
+            </div>
+            <div class="template-wizard-actions">
+              <button type="button" class="btn-primary" id="template-wizard-primary-btn">Next</button>
+              <button type="button" class="btn-secondary" id="template-wizard-skip-btn">Skip tour</button>
+            </div>
           </div>
         </div>
       </div>
@@ -501,87 +672,78 @@
     <dialog class="reminders-dialog" id="reminders-dialog">
       <div class="reminders-dialog-body">
         <div class="settings-view-header reminders-dialog-header">
-          <h2>Reminders</h2>
+          <h2>Reminder settings</h2>
           <p class="reminders-lead" id="reminders-lead" hidden>
             Get a notification when it&rsquo;s time to leave for your train.
+          </p>
+          <p class="reminders-armed-lead" id="reminders-armed-lead" hidden>
+            Early Reminder and Pause apply to every journey with Reminder on.
           </p>
         </div>
 
         <p class="reminders-web-hint" id="reminders-web-hint" hidden>
-          Leave reminders are available in the Android app.
+          Leave reminders are available in the Android app. Turn Reminder on for a journey under My Journeys.
         </p>
 
         <div id="reminders-native-content" hidden>
-          <div class="reminders-master-card">
-            <div class="menu-toggle-row">
-              <span class="menu-toggle-title">Reminders</span>
-              <label class="menu-toggle-switch">
-                <input type="checkbox" id="leave-reminders-enabled" />
-                <span class="menu-toggle-track" aria-hidden="true"></span>
-              </label>
+          <p class="reminders-schedule-line" id="leave-reminders-schedule" hidden></p>
+
+          <div class="reminders-empty" id="reminders-empty" hidden>
+            <div class="reminders-empty-card">
+              <p class="reminders-empty-title" id="reminders-empty-title"></p>
+              <p class="reminders-empty-body" id="reminders-empty-body"></p>
+              <button type="button" class="btn-secondary reminders-open-journeys-btn" id="reminders-open-journeys-btn">
+                Open My Journeys
+              </button>
             </div>
           </div>
 
-          <p class="reminders-schedule-line" id="leave-reminders-schedule" hidden></p>
-          <button type="button" class="menu-permission-hint" id="leave-reminders-permission-hint" hidden>
-            Turn on notifications
-          </button>
-
-          <div class="reminders-journey-list" id="reminders-commutes-list"></div>
-          <div class="reminders-empty" id="reminders-empty" hidden>
-            <p>Save a journey first to set reminders.</p>
-            <button type="button" class="btn-secondary" id="reminders-open-journeys-btn">Journeys</button>
-          </div>
-
-          <details class="reminders-more-options" id="reminders-more-options" hidden>
-            <summary class="reminders-more-options-summary">More options</summary>
-            <div class="reminders-more-options-body">
-              <div class="reminders-more-option reminders-nudge-option" id="leave-reminders-nudge-wrap">
-                <div class="reminders-more-option-header">
-                  <div class="reminders-more-option-copy">
-                    <span class="menu-toggle-title">Nudge early</span>
-                    <p class="reminders-option-hint">
-                      Notify a few minutes before leave time — time to grab keys, not just the leave-by
-                      moment.
-                    </p>
-                  </div>
-                  <label class="menu-toggle-switch">
-                    <input type="checkbox" id="leave-reminders-early" />
-                    <span class="menu-toggle-track" aria-hidden="true"></span>
-                  </label>
+          <div class="reminders-shared-options" id="reminders-shared-options" hidden>
+            <div class="reminders-shared-option reminders-nudge-option" id="leave-reminders-nudge-wrap">
+              <div class="reminders-shared-option-header">
+                <div class="reminders-shared-option-copy">
+                  <span class="menu-toggle-title">Early Reminder</span>
+                  <p class="reminders-option-hint">
+                    A heads-up a few minutes before leave time — time to grab keys.
+                  </p>
                 </div>
-                <div class="reminders-nudge-chips-wrap" id="leave-reminders-nudge-chips-wrap" hidden>
-                  <span class="reminders-sr-only">Minutes before leave</span>
-                  <p class="reminders-chips-hint">Notify me this many minutes before leave time:</p>
-                  <div class="remind-day-chips reminders-offset-chips" id="leave-reminders-nudge-chips">
-                    <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="5" aria-pressed="false">5</button>
-                    <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="10" aria-pressed="false">10</button>
-                    <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="15" aria-pressed="false">15</button>
-                  </div>
+                <label class="menu-toggle-switch">
+                  <input type="checkbox" id="leave-reminders-early" />
+                  <span class="menu-toggle-track" aria-hidden="true"></span>
+                </label>
+              </div>
+              <div class="reminders-nudge-chips-wrap" id="leave-reminders-nudge-chips-wrap" hidden>
+                <span class="reminders-sr-only">Minutes before leave</span>
+                <p class="reminders-chips-hint">Minutes before leave time:</p>
+                <div class="remind-day-chips reminders-offset-chips" id="leave-reminders-nudge-chips">
+                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="5" aria-pressed="false">5</button>
+                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="10" aria-pressed="false">10</button>
+                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="15" aria-pressed="false">15</button>
                 </div>
               </div>
-              <div class="reminders-more-option reminders-pause-option" id="leave-reminders-pause-wrap">
-                <div class="reminders-more-option-copy">
+            </div>
+            <div class="reminders-shared-option reminders-pause-option" id="leave-reminders-pause-wrap">
+              <div class="reminders-shared-option-header">
+                <div class="reminders-shared-option-copy">
                   <span class="menu-toggle-title">Pause reminders</span>
                   <p class="reminders-option-hint">For holidays, time off, or working from home.</p>
                 </div>
-                <div class="reminders-pause-active" id="leave-reminders-pause-active" hidden>
-                  <p class="reminders-pause-status" id="leave-reminders-pause-status"></p>
-                  <button type="button" class="btn-secondary reminders-resume-btn" id="leave-reminders-resume-btn">
-                    Resume reminders
-                  </button>
-                </div>
+                <label class="menu-toggle-switch">
+                  <input type="checkbox" id="leave-reminders-pause" />
+                  <span class="menu-toggle-track" aria-hidden="true"></span>
+                </label>
+              </div>
+              <div class="reminders-pause-expanded" id="leave-reminders-pause-expanded" hidden>
+                <p class="reminders-pause-status" id="leave-reminders-pause-status" hidden></p>
+                <p class="reminders-chips-hint">Pause for:</p>
                 <div class="remind-day-chips reminders-pause-chips" id="leave-reminders-pause-chips">
                   <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1day">1 day</button>
                   <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1week">1 week</button>
                   <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="2weeks">2 weeks</button>
-                  <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="indefinite">
-                    Until I turn back on
-                  </button>
                 </div>
               </div>
             </div>
-          </details>
+          </div>
         </div>
       </div>
       <div
@@ -599,14 +761,10 @@
       <div class="menu-dialog-body">
         <div class="settings-view-header">
           <h2>Menu</h2>
-          <p class="settings-hint menu-dialog-hint">
-            Near me shows nearby trains. My Journeys holds the routes you save.
-          </p>
         </div>
         <nav class="menu-dialog-links" aria-label="Menu">
-          <button type="button" class="menu-dialog-link" id="menu-help-btn">How it works</button>
+          <button type="button" class="menu-dialog-link" id="menu-reminders-btn">Reminder settings</button>
           <button type="button" class="menu-dialog-link" id="menu-widget-btn" hidden>Add home screen widget</button>
-          <button type="button" class="menu-dialog-link" id="menu-reminders-btn">Reminders</button>
           <div class="menu-ad-free" id="menu-ad-free-section">
             <button type="button" class="menu-purchase-row" id="menu-remove-ads-btn" hidden>
               <span class="menu-purchase-title">Remove ads</span>
@@ -622,10 +780,18 @@
             <p class="menu-ad-free-web-hint" id="menu-ad-free-web-hint" hidden>
               Ad-free is available in the Android app.
             </p>
+            <p class="menu-ad-free-web-hint" id="menu-ad-free-billing-hint" hidden>
+              Purchases aren't available on this install.
+            </p>
           </div>
-          <a href="/about.html">About</a>
-          <a href="/privacy.html">Privacy</a>
+          <div class="menu-dialog-divider" aria-hidden="true"></div>
+          <button type="button" class="menu-dialog-link" id="menu-help-btn">Help</button>
         </nav>
+        <p class="menu-dialog-legal">
+          <a href="/about.html">About</a>
+          <span class="menu-dialog-legal-sep" aria-hidden="true">·</span>
+          <a href="/privacy.html">Privacy</a>
+        </p>
       </div>
       <div class="menu-dialog-footer">
         <button type="button" class="btn-primary menu-done-btn" id="menu-done-btn">Done</button>
@@ -635,7 +801,7 @@
 
     <dialog class="help-dialog" id="help-dialog">
       <div class="help-dialog-body">
-        <h2>How it works</h2>
+        <h2>Help</h2>
         <ul class="help-list">
           <li>
             <strong>Journeys</strong> — A saved regular trip: your station, direction, and time to
@@ -682,8 +848,8 @@
           </li>
           <li>
             <strong>Leave by</strong> — When time to station is on, the card below shows when
-            to head out. Tap the sliders icon on that card to change it. Untick time to station in
-            the journey editor to hide it.
+            to head out. If you’re late, tap <strong>I've left</strong> or <strong>Next Train</strong>
+            (same as swiping left on the departure card). Tap the sliders icon to change time to station.
           </li>
           <li>
             <strong>Near me</strong> — Tap
@@ -713,7 +879,12 @@
             <strong>Active hours</strong> — Optional times when a journey is selected
             automatically (e.g. morning 6:00–9:00).
           </li>
+          <li>
+            <strong>Home screen widget</strong> — Add from <strong>Menu</strong> so your next
+            train shows without opening the app. Long-press to resize for a roomier layout.
+          </li>
         </ul>
+        <pre class="widget-debug-panel" id="widget-debug-panel" hidden></pre>
       </div>
       <div class="help-dialog-footer">
         <button type="button" class="btn-primary help-close-btn" id="help-close-btn">Got it</button>

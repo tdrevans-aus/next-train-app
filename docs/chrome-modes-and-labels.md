@@ -100,12 +100,12 @@ Next Train                         [optional status]
 
 **Shows:** existing commute experience — leave / depart hero, platform, Then, journey switcher if ≥2, leave-buffer controls, etc.
 
-**Manage journeys:** from Journey mode — **second tap on My Journeys** chrome (power shortcut), **pencil edit icon** beside the journey name / switcher (see `jim-brief-journey-edit-icon.md`), or **Manage journeys** in the journey switcher when ≥2 configured journeys. Do not use a text “Manage journeys” link under the route. Do not make the route line tappable.
+**Manage journeys:** from Journey mode — **second tap on My Journeys** chrome (power shortcut), or **pencil edit icon** beside the journey name / switcher (see `jim-brief-journey-edit-icon.md`). Do not use a text “Manage journeys” link under the route. Do not make the route line tappable.
 
 Minimum for v1 of this chrome:
 
 - Tap **Journeys** with **≥1 configured journey** → show Journey mode for the appropriate journey (active window / last selected / only journey).  
-- Access to full list/edit: **pencil edit icon** beside journey name / switcher (≥1 journey), **second tap Journeys** while in Journey mode, or **Manage journeys** from switcher (≥2 journeys).
+- Access to full list/edit: **pencil edit icon** beside journey name / switcher (≥1 journey), or **second tap Journeys** while in Journey mode.
 
 **Recommended v1 simplicity (as built + edit icon brief):**
 
@@ -113,7 +113,7 @@ Minimum for v1 of this chrome:
 2. Tap **Journeys** + zero journeys → empty setup state (§5).  
 3. **Manage / edit journeys** — **pencil edit icon** beside the journey name (1 journey) or trailing the switcher pill (≥2). Also:
    - **Tap Journeys again** while already in Journey mode → opens the **Journeys** dialog (list + edit).  
-   - **Journey switcher** (visible when ≥2 configured journeys) → **Manage journeys** at the bottom of the dropdown.  
+   - **Journey switcher** (≥2 journeys) → pick which journey is active (no manage row).  
 4. **Time to station** on the live leave card: sliders icon (top-right of leave card) opens journey detail focused on that setting — not only via the journeys editor.
 
 ---
@@ -148,13 +148,15 @@ This is the spiritual successor of “Tap to get started,” not a dead end and 
 
 Sheet / dialog contents (**as built**):
 
-- One-liner: *Near me shows nearby trains. Journeys are saved commutes.*  
-- **How it works** (opens help dialog)  
-- **Add home screen widget** (Android app only — hidden on web)  
-- **Reminders** — opens Reminders dialog (master toggle, get ready, pause, per-commute settings; Android app only)  
-- **Remove ads** / **Restore purchase** (Android app only; one-time IAP)  
-- **About** / **Privacy** (links)  
-- **Clear all data** (footer)  
+- **Title only** — no Near me / Journeys subtitle (that copy lives in **Help**)
+- **Actions tier** (top):
+  - **Reminders** — opens Reminders dialog (master toggle, get ready, pause, per-commute settings; Android app only)
+  - **Add home screen widget** (Android app only — hidden on web)
+- **Info tier** (below a light divider):
+  - **Help** (opens help dialog)
+  - **Remove ads** / **Restore purchase** (Android app only; one-time IAP)
+- **Legal (quiet text links):** **About** · **Privacy**
+- **Footer:** **Done** + **Clear all data**
 
 No journey list here — journeys live under **Journeys** chrome + dialog.
 

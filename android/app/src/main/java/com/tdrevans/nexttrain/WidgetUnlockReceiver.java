@@ -18,6 +18,7 @@ public class WidgetUnlockReceiver extends BroadcastReceiver {
       Intent.ACTION_USER_PRESENT.equals(action) ||
       Intent.ACTION_BOOT_COMPLETED.equals(action)
     ) {
+      CommuteRefreshService.repaintFromCache(context);
       CommuteRefreshService.refreshAll(context);
       WidgetRefreshScheduler.ensureScheduled(context);
     }

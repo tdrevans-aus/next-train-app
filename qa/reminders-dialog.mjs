@@ -33,9 +33,22 @@ async function run() {
     remindersOpen: document.getElementById("reminders-dialog").open,
     webHintHidden: document.getElementById("reminders-web-hint").hidden,
     nativeHidden: document.getElementById("reminders-native-content").hidden,
-    masterTitle:
-      document.querySelector("#reminders-native-content .menu-toggle-title")?.textContent ?? "",
-    moreOptionsHidden: document.getElementById("reminders-more-options")?.hidden ?? true,
+    masterTogglePresent: Boolean(document.getElementById("leave-reminders-enabled")),
+    commuteListPresent: Boolean(document.getElementById("reminders-commutes-list")),
+    detailReminderPresent: Boolean(document.getElementById("detail-remind-me")),
+    moreOptionsPresent: Boolean(document.getElementById("reminders-more-options")),
+    journeysCtaPresent: Boolean(document.getElementById("reminders-open-journeys-btn")),
+    detailRemindAboveTiming: (() => {
+      const reminder = document.getElementById("detail-reminder-section");
+      const sections = [...document.querySelectorAll("#settings-detail-view .settings-section")];
+      const reminderIdx = sections.indexOf(reminder);
+      const timingIdx = sections.findIndex(
+        (section) => section.querySelector(".settings-section-title")?.textContent?.trim() === "Timing"
+      );
+      return reminderIdx >= 0 && timingIdx >= 0 && reminderIdx < timingIdx;
+    })(),
+    sharedOptionsPresent: Boolean(document.getElementById("reminders-shared-options")),
+    title: document.querySelector("#reminders-dialog h2")?.textContent?.trim() || "",
     doneVisible: !document.getElementById("reminders-done-btn").hidden,
   }));
 
@@ -51,6 +64,13 @@ async function run() {
     !ui.menuOpen &&
     ui.webHintHidden === false &&
     ui.nativeHidden === true &&
+    !ui.masterTogglePresent &&
+    !ui.commuteListPresent &&
+    ui.detailReminderPresent &&
+    !ui.moreOptionsPresent &&
+    ui.detailRemindAboveTiming &&
+    ui.sharedOptionsPresent &&
+    ui.title === "Reminder settings" &&
     ui.doneVisible;
 
   console.log("\nReminders dialog check (web)\n");

@@ -4,9 +4,9 @@
 **Backlog:** Rank **#2** in `docs/stickiness-ideas.md`  
 **Status:** **Shipped v2 (Android)** — preferred train + remind days + once/day + pause + get ready  
 **Related:** `docs/jim-brief-leave-reminders-v2.md`, `docs/widget-homescreen.md` (shared journey + leave-by logic), quiet hours (#9)  
-**Job:** Nudge Journey-savers at the moment they should walk out — without opening the app  
+**Job:** Remind Journey-savers at the moment they should walk out — without opening the app  
 
-**v2 behaviour:** Active from/until = UI journey selection only. Reminders target the **first train at or after preferred train time** on selected **remind days**, at most **once per journey per day**, with optional **Nudge early** minutes before leave-by. **Pause reminders** (Menu → Reminders → More options) cancels all pending alarms.  
+**v2 behaviour:** Active from/until = UI journey selection only. **Active days** (journey detail → Timing) gate auto-display and reminders. Reminders target the **first train at or after preferred train time** on those **remind days**, at most **once per journey per day**, with optional **Early Reminder** minutes before leave-by. **Pause reminders** (Menu → Reminder settings) cancels all pending alarms.  
 
 ---
 
@@ -50,27 +50,22 @@ Tap → app opens **Journey mode** for that journey (same deep link spirit as th
 - Request notification permission **only after** user turns the feature on (or from a clear post-journey-save prompt) — not cold on first Nearby paint.  
 - If denied: setting stays off; short explanation + link to system settings.
 
-### In-app control (Menu → Reminders)
+### In-app control (Menu → Reminder settings)
 
-**Reminders** (master toggle) — default **Off** until user enables.
-
-When On, advanced options live under **More options** (collapsed by default):
+Per-journey **Reminder** + **Preferred train** live on journey setup. This screen is shared settings only:
 
 | Setting | Default | Notes |
 |---------|---------|--------|
-| **Remind at leave-by** | On (when master on) | The core product |
-| **Nudge early** | Off | Toggle + **5 / 10 / 15** minute chips when on |
-| Nudge early offset | **5 minutes** before leave-by | Default chip; stored when toggled off |
-| **Pause reminders** | Off | Timed chips: **1 day**, **1 week**, **2 weeks**, or **Until I turn back on** |
+| **Early Reminder** | Off | Toggle + **5 / 10 / 15** minute chips when on |
+| Early Reminder offset | **5 minutes** before leave-by | Default chip; stored when toggled off |
+| **Pause reminders** | Off | Timed chips: **1 day**, **1 week**, **2 weeks** |
 | Timed pause | — | Auto-resumes after `pauseUntil` (Perth); status shows **Paused until …** |
 
-Per-journey override (v1.1): optional. **v1 = global toggle** applies to whichever journey is active.
+Lead when live: **Early Reminder and Pause apply to every journey with Reminder on.**
 
-Copy in Reminders dialog:
+Quiet empty copy points people to turn Reminder on under **My Journeys** (no Journeys button here).
 
-- Master: **Reminders**  
-- Lead: **Get a notification when it’s time to leave for your train.**  
-- Restore/permission helper: **Turn on notifications**
+Restore/permission helper: **Turn on notifications**
 
 ---
 
@@ -78,7 +73,7 @@ Copy in Reminders dialog:
 
 Same light touch as widget — **not** a heavy modal.
 
-1. **Do not** prompt on first journey save. Staggered auto-coach per **`docs/jim-brief-stagger-stickiness-coaches.md`**: widget tip from **2nd app open**; reminder tip from **3rd open** or first **weekday** after journey exists (never same open as widget). Copy: *Get a nudge when it’s time to leave* · **Turn on** / **Not now**.  
+1. **Do not** prompt on first journey save. Staggered auto-coach per **`docs/jim-brief-stagger-stickiness-coaches.md`**: widget tip from **2nd app open**; reminder tip from **3rd open** or first **weekday** after journey exists (never same open as widget). Copy: *Get a reminder when it’s time to leave* · **Turn on** / **Not now**.  
 2. Prefer **separate tips** (widget vs reminder). **Do not** stack both the same session after Journey setup. **Not now** = 7-day snooze, one retry, then Menu only.  
 3. Menu always has **Reminders** (opens the unified Reminders dialog).
 

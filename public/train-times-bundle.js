@@ -29,12 +29,15 @@ var NextTrainTimes = (() => {
   var DESTINATION_ALIASES = {
     "Perth Underground": "Perth",
     "Perth Underground Stn": "Perth",
-    "Perth Stn": "Perth"
+    "Perth Stn": "Perth",
+    "Cockburn Central": "Cockburn",
+    "Cockburn Central Stn": "Cockburn"
   };
-  function normalizeDestination(destination) {
-    if (!destination) {
-      return destination;
-    }
+  var LINE_DESTINATION_GROUPS = {
+    Yanchep: ["Yanchep", "Whitfords", "Clarkson"],
+    Mandurah: ["Mandurah", "Cockburn"]
+  };
+  function applyDestinationAliases(destination) {
     const trimmed = destination.trim();
     if (DESTINATION_ALIASES[trimmed]) {
       return DESTINATION_ALIASES[trimmed];
@@ -44,6 +47,32 @@ var NextTrainTimes = (() => {
       return DESTINATION_ALIASES[withoutStn];
     }
     return trimmed;
+  }
+  function normalizeDestination(destination) {
+    if (!destination) {
+      return destination;
+    }
+    const aliased = applyDestinationAliases(destination);
+    for (const [canonical, members] of Object.entries(LINE_DESTINATION_GROUPS)) {
+      if (members.some((member) => member.toLowerCase() === aliased.toLowerCase())) {
+        return canonical;
+      }
+    }
+    return aliased;
+  }
+  function destinationMatchesFilter(tripDestination, filterDestination) {
+    const trip = normalizeDestination(tripDestination);
+    const filter = normalizeDestination(filterDestination);
+    if (trip.toLowerCase() === filter.toLowerCase()) {
+      return true;
+    }
+    for (const members of Object.values(LINE_DESTINATION_GROUPS)) {
+      const memberSet = new Set(members.map((member) => member.toLowerCase()));
+      if (memberSet.has(trip.toLowerCase()) && memberSet.has(filter.toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
   }
   var PERTH_OFFSET = "+08:00";
   function pad2(value) {
@@ -212,8 +241,7 @@ var NextTrainTimes = (() => {
     };
   }
   function pickUpcomingTrips(trips, destination, now = /* @__PURE__ */ new Date()) {
-    const normalizedDestination = normalizeDestination(destination);
-    return trips.filter((trip) => trip.destination === normalizedDestination).filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture);
+    return trips.filter((trip) => destinationMatchesFilter(trip.destination, destination)).filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture);
   }
   function roundMinutes(ms) {
     return Math.round(ms / 6e4);

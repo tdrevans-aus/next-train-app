@@ -35,13 +35,21 @@ function parseWidgetDeepLink(uri) {
     return null;
   }
 
+  if (/^nexttrain:\/\/nearby\/?$/i.test(String(uri))) {
+    return { type: "nearby" };
+  }
+
+  if (/^nexttrain:\/\/home\/?$/i.test(String(uri))) {
+    return { type: "home" };
+  }
+
   const match = String(uri).match(/^nexttrain:\/\/journey(\/.*)?$/i);
   if (!match) {
     return null;
   }
 
   const path = (match[1] ?? "").replace(/^\//, "");
-  return path || "new";
+  return { type: "journey", journeyId: path || "new" };
 }
 
 async function handleWidgetDeepLink(uri) {
@@ -50,17 +58,26 @@ async function handleWidgetDeepLink(uri) {
     return;
   }
 
-  if (target === "new") {
+  if (target.type === "nearby") {
+    await window.nextTrainApp?.enterNearbyMode?.();
+    return;
+  }
+
+  if (target.type === "home") {
+    await window.nextTrainApp?.openMainScreenFromWidget?.();
+    return;
+  }
+
+  if (target.journeyId === "new") {
     window.nextTrainApp?.enterJourneyMode?.();
     window.nextTrainApp?.openJourneys?.();
     return;
   }
 
-  window.nextTrainApp?.enterJourneyMode?.();
+  await window.nextTrainApp?.openMainScreenFromWidget?.();
   if (typeof window.nextTrainApp?.switchJourney === "function") {
-    window.nextTrainApp.switchJourney(target);
+    window.nextTrainApp.switchJourney(target.journeyId);
   }
-  window.nextTrainApp?.fetchNextTrain?.();
 }
 
 async function consumeWidgetLaunchDeepLink() {
@@ -83,6 +100,64 @@ function hideWidgetCoach() {
   const coach = document.getElementById("widget-coach");
   if (coach) {
     coach.hidden = true;
+  }
+}
+
+function isWidgetDebugEnabled() {
+  return new URLSearchParams(window.location.search).get("widgetDebug") === "1";
+}
+
+function formatWidgetDebugAge(epochMs) {
+  if (!epochMs) {
+    return "never";
+  }
+  const minutes = Math.max(0, Math.floor((Date.now() - epochMs) / 60000));
+  if (minutes < 1) {
+    return "just now";
+  }
+  if (minutes < 60) {
+    return `${minutes}m ago`;
+  }
+  return new Date(epochMs).toLocaleTimeString();
+}
+
+async function refreshWidgetDebugPanel() {
+  const panel = document.getElementById("widget-debug-panel");
+  if (!panel) {
+    return;
+  }
+
+  if (!isWidgetDebugEnabled() || !isNativeApp()) {
+    panel.hidden = true;
+    panel.textContent = "";
+    return;
+  }
+
+  const plugin = getWidgetSyncPlugin();
+  if (!plugin?.getDebugState) {
+    panel.hidden = false;
+    panel.textContent = "Widget debug: rebuild APK with getDebugState support.";
+    return;
+  }
+
+  try {
+    const state = await plugin.getDebugState();
+    panel.hidden = false;
+    panel.textContent = [
+      "Widget debug",
+      `primary: ${state.primary ?? "—"}`,
+      `secondary: ${state.secondary ?? ""}`,
+      `stale: ${state.stale}`,
+      `refreshed: ${formatWidgetDebugAge(state.refreshedAtMs)}`,
+      `last refresh: ${formatWidgetDebugAge(state.lastRefreshMs)}`,
+      `updating: ${state.updatingSinceMs ? formatWidgetDebugAge(state.updatingSinceMs) : "no"}`,
+      `retry: ${state.updatingRetried}`,
+      `following cached: ${state.followingDepartureIso ? "yes" : "no"}`,
+      `updated line: ${state.updatedLine || "(hidden)"}`,
+    ].join("\n");
+  } catch (error) {
+    panel.hidden = false;
+    panel.textContent = `Widget debug error: ${error?.message ?? error}`;
   }
 }
 
@@ -109,16 +184,29 @@ function dismissWidgetMenuHintToast() {
 
   toast.classList.remove("app-toast--visible");
   toast.hidden = true;
+  toast.style.top = "";
+  toast.style.right = "";
+  toast.style.left = "";
   if (widgetMenuHintToastTimer) {
     clearTimeout(widgetMenuHintToastTimer);
     widgetMenuHintToastTimer = null;
   }
 }
 
-function showWidgetMenuHintToast() {
+function showMenuChromeHintToast(messageHtml) {
   const toast = ensureAppToast();
-  toast.innerHTML = 'You can add a widget anytime from <strong>Menu</strong>.';
+  toast.innerHTML = messageHtml;
   toast.hidden = false;
+
+  const menuChrome = document.getElementById("menu-chrome-action");
+  if (menuChrome) {
+    const rect = menuChrome.getBoundingClientRect();
+    const gap = 10;
+    toast.style.top = `${Math.round(rect.bottom + gap)}px`;
+    toast.style.right = `${Math.max(12, Math.round(window.innerWidth - rect.right))}px`;
+    toast.style.left = "auto";
+  }
+
   toast.classList.add("app-toast--visible");
 
   if (widgetMenuHintToastTimer) {
@@ -135,7 +223,7 @@ function showWidgetMenuHintToast() {
   widgetMenuHintToastTimer = window.setTimeout(() => {
     toast.removeEventListener("click", dismiss);
     dismissWidgetMenuHintToast();
-  }, 3000);
+  }, 3500);
 }
 
 function pulseMenuChrome() {
@@ -144,32 +232,97 @@ function pulseMenuChrome() {
     return;
   }
 
+  menuChrome.classList.remove("chrome-action--pulse");
+  // Restart animation if Not now is tapped again quickly.
+  void menuChrome.offsetWidth;
   menuChrome.classList.add("chrome-action--pulse");
   window.setTimeout(() => {
     menuChrome.classList.remove("chrome-action--pulse");
-  }, 1400);
+  }, 2200);
 }
 
-function showWidgetCoachNotNowHint() {
-  showWidgetMenuHintToast();
+function showMenuChromeHint(messageHtml) {
+  showMenuChromeHintToast(messageHtml);
   pulseMenuChrome();
 }
 
-function showWidgetCoach() {
+function showWidgetCoachNotNowHint() {
+  showMenuChromeHint('You can add a widget anytime from <strong>Menu</strong>.');
+}
+
+function showReminderCoachNotNowHint() {
+  showMenuChromeHint('You can turn on reminders anytime from <strong>Menu</strong>.');
+}
+
+async function showWidgetCoach() {
   if (!isNativeApp()) {
-    return;
+    return false;
+  }
+
+  if ((await getWidgetInstanceCount()) >= 1) {
+    window.nextTrainStickinessCoaches?.markCoachDone?.("widget");
+    hideWidgetCoach();
+    return false;
   }
 
   const coach = document.getElementById("widget-coach");
   if (coach) {
     coach.hidden = false;
+    return true;
   }
+
+  return false;
 }
 
 function resetWidgetHelpDialog() {
   const manual = document.getElementById("widget-help-manual");
   if (manual) {
     manual.hidden = true;
+  }
+}
+
+function setWidgetHelpMode(mode) {
+  const pinFirst = document.getElementById("widget-help-pin-first");
+  const alreadyHave = document.getElementById("widget-help-already-have");
+  const title = document.getElementById("widget-help-title");
+  const pinBtn = document.getElementById("widget-help-pin-btn");
+  const addAnotherBtn = document.getElementById("widget-help-add-another-btn");
+  const doneBtn = document.getElementById("widget-help-done-btn");
+
+  const hasWidget = mode === "already-have";
+  if (title) {
+    title.textContent = hasWidget ? "Home screen widget" : "Add home screen widget";
+  }
+  if (pinFirst) {
+    pinFirst.hidden = hasWidget;
+  }
+  if (alreadyHave) {
+    alreadyHave.hidden = !hasWidget;
+  }
+  if (pinBtn) {
+    pinBtn.hidden = hasWidget;
+    pinBtn.className = "btn-primary";
+  }
+  if (addAnotherBtn) {
+    addAnotherBtn.hidden = !hasWidget;
+  }
+  if (doneBtn) {
+    doneBtn.className = hasWidget ? "btn-primary" : "btn-secondary";
+  }
+}
+
+async function getWidgetInstanceCount() {
+  const plugin = getWidgetSyncPlugin();
+  if (!plugin?.getWidgetInstanceCount) {
+    return 0;
+  }
+
+  try {
+    const result = await plugin.getWidgetInstanceCount();
+    return Number(result?.count) || 0;
+  } catch (error) {
+    console.warn("Could not read widget instance count", error);
+    return 0;
   }
 }
 
@@ -180,7 +333,7 @@ function showWidgetHelpManual() {
   }
 }
 
-function openWidgetHelpDialog({ showManual = false } = {}) {
+async function openWidgetHelpDialog({ showManual = false } = {}) {
   hideWidgetCoach();
   const dialog = document.getElementById("widget-help-dialog");
   if (!dialog) {
@@ -188,6 +341,8 @@ function openWidgetHelpDialog({ showManual = false } = {}) {
   }
 
   resetWidgetHelpDialog();
+  const count = await getWidgetInstanceCount();
+  setWidgetHelpMode(count >= 1 ? "already-have" : "pin-first");
   if (showManual) {
     showWidgetHelpManual();
   }
@@ -252,6 +407,7 @@ function initWidgetUi() {
   });
 
   document.getElementById("widget-help-pin-btn")?.addEventListener("click", requestPinWidget);
+  document.getElementById("widget-help-add-another-btn")?.addEventListener("click", requestPinWidget);
   document.getElementById("widget-help-done-btn")?.addEventListener("click", () => {
     document.getElementById("widget-help-dialog")?.close();
   });
@@ -272,9 +428,14 @@ window.nextTrainWidget = {
   syncWidgetSettings,
   handleWidgetDeepLink,
   consumeLaunchDeepLink: consumeWidgetLaunchDeepLink,
+  getWidgetInstanceCount,
   showWidgetCoach,
   openWidgetHelpDialog,
   requestPinWidget,
+  showMenuChromeHint,
+  showReminderCoachNotNowHint,
+  refreshWidgetDebugPanel,
+  isWidgetDebugEnabled,
 };
 
 if (document.readyState === "loading") {

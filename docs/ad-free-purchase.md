@@ -194,3 +194,15 @@ No PII. Optional for v1.
 ## 10. Summary for Jim
 
 > Ship a **one-time A$3.99 “Remove ads”** unlock via Play Billing. Gate all ads on entitlement. Put buy + restore in **Menu**, tiny link near the banner, restore always available. Web: don’t fake IAP. No subscription.
+
+---
+
+## 11. Risk accept (v1)
+
+**Accepted for v1 — no server-side receipt verification:**
+
+- Entitlement comes from **Google Play Billing** on the device, plus a **localStorage** cache (`nextTrainAdFreeCache`).
+- Someone who spoofs the local cache may hide ads until the next successful Play re-query says otherwise.
+- That is normal for offline-capable one-time IAP without a backend.
+- **Do not** add server receipt verify unless Tim reopens it later.
+- Launch and resume still call **`refreshEntitlement`** when billing is available — store wins over cache when queried.
