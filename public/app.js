@@ -83,6 +83,7 @@ const helpDialog = document.getElementById("help-dialog");
 const helpCloseBtn = document.getElementById("help-close-btn");
 const journeysDialog = document.getElementById("journeys-dialog");
 const menuDialog = document.getElementById("menu-dialog");
+const menuAppVersionEl = document.getElementById("menu-app-version");
 const menuHelpBtn = document.getElementById("menu-help-btn");
 const settingsListView = document.getElementById("settings-list-view");
 const settingsDetailView = document.getElementById("settings-detail-view");
@@ -295,6 +296,19 @@ function locationErrorFrom(error) {
     return Object.assign(
       new Error(
         "Turn on Location in your phone settings, then try Near me again — or choose a station below."
+      ),
+      { code: 2, cause: error }
+    );
+  }
+
+  if (
+    lower.includes("timeout") ||
+    lower.includes("could not obtain location in time") ||
+    lower.includes("location unavailable")
+  ) {
+    return Object.assign(
+      new Error(
+        "Couldn’t get your location. On an emulator, set a mock GPS (Extended controls → Location). On a phone, turn on Location — or choose a station below."
       ),
       { code: 2, cause: error }
     );
@@ -1094,12 +1108,39 @@ function deferOnboardingForSession() {
   sessionStorage.setItem(ONBOARDING_DEFER_KEY, "1");
 }
 
+/** Nearby coach only after station + board loaded without error (not locate/error shells). */
+function isNearbyWidgetLoaded() {
+  if (!isNearbyModeActive()) {
+    return false;
+  }
+
+  if (!nearbySession?.station || !nearbyBoard) {
+    return false;
+  }
+
+  if (nearbyError || nearbyLoading || nearbyBoardInflight) {
+    return false;
+  }
+
+  return true;
+}
+
+function clearOnboardingSchedule() {
+  if (onboardingShowTimer) {
+    clearTimeout(onboardingShowTimer);
+    onboardingShowTimer = null;
+  }
+  onboardingPopulatedAt = null;
+}
+
 function maybeScheduleOnboarding() {
   if (!isNearbyModeActive()) {
+    clearOnboardingSchedule();
     return;
   }
 
-  if (shouldShowNearbyLoadingState()) {
+  if (!isNearbyWidgetLoaded()) {
+    clearOnboardingSchedule();
     return;
   }
 
@@ -3606,11 +3647,12 @@ async function findNearestStation({ forceFresh = false } = {}) {
   }
 
   const coords = await loadStationCoords();
-  const geoTimeoutMs = isNativeApp() ? 6000 : 15000;
+  const geoTimeoutMs = 15000;
   const position = await getAppGeolocationPosition({
-    enableHighAccuracy: !isNativeApp(),
+    // forceFresh = GPS refine / locate pass — don’t reuse a stale fused fix (emulator mock moves).
+    enableHighAccuracy: forceFresh ? true : !isNativeApp(),
     timeout: geoTimeoutMs,
-    maximumAge: 60000,
+    maximumAge: forceFresh ? 0 : 60000,
   });
 
   const { latitude, longitude } = position.coords;
@@ -4081,6 +4123,7 @@ async function locateNearbyInBackground() {
     }
 
     if (isUnsupportedRegion(nearest.distanceKm)) {
+      clearLastNearbyStationCache();
       nearbySession.unsupportedRegion = true;
       nearbySession.station = null;
       nearbySession.distanceKm = nearest.distanceKm;
@@ -4485,6 +4528,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
   dismissLeaveHint();
   closeJourneySwitcherMenu();
   stopNearbyLocateTimers();
+  clearOnboardingSchedule();
   nearbyUserPickedStation = Boolean(manualStation);
   nearbyLocatePickerVisible = false;
   nearbyDontWaitVisible = false;
@@ -6702,9 +6746,42 @@ function closeMenuDialog() {
   resumeAfterMenuClose();
 }
 
+function formatAppVersionLabel(config) {
+  if (!config) {
+    return "";
+  }
+  const version = String(config.appVersion || "").trim();
+  const code = Number(config.appVersionCode);
+  if (version && Number.isFinite(code)) {
+    return `Version ${version} (${code})`;
+  }
+  return version ? `Version ${version}` : "";
+}
+
+async function refreshMenuAppVersionLabel() {
+  if (!menuAppVersionEl) {
+    return;
+  }
+  try {
+    const response = await fetch("/site-config.json", { cache: "no-store" });
+    if (!response.ok) {
+      return;
+    }
+    const config = await response.json();
+    const label = formatAppVersionLabel(config);
+    if (label) {
+      menuAppVersionEl.textContent = label;
+      menuAppVersionEl.hidden = false;
+    }
+  } catch {
+    // Non-fatal — menu still works without version label.
+  }
+}
+
 function openMenu() {
   dismissLeaveHint();
   window.NextTrainAdFree?.renderMenuAdFree?.();
+  void refreshMenuAppVersionLabel();
   openAppDialog(menuDialog);
   menuBtn?.setAttribute("aria-expanded", "true");
   menuChromeAction?.classList.add("chrome-action--open");

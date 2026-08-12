@@ -1376,17 +1376,33 @@ body {
   font-weight: 600;
 }
 
-.menu-ad-free {
+.menu-ad-free,
+.menu-pro {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
 }
 
 .menu-ad-free[hidden],
+.menu-pro[hidden],
 .menu-purchase-row[hidden],
 .menu-restore-btn[hidden],
 .menu-ad-free-web-hint[hidden] {
   display: none !important;
+}
+
+.menu-purchase-row--cta {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.menu-purchase-row--cta .menu-purchase-title {
+  color: #fff;
+}
+
+.menu-purchase-row--cta .menu-purchase-subtitle {
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .menu-purchase-row {
@@ -1438,6 +1454,145 @@ body {
 .menu-restore-btn:focus-visible {
   color: var(--ink);
   outline: none;
+}
+
+.pro-sheet-dialog,
+.pro-paywall-dialog {
+  border: 0;
+  border-radius: 1rem;
+  padding: 0;
+  max-width: min(92vw, 22rem);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 12px 40px rgba(19, 37, 35, 0.18);
+}
+
+.pro-sheet-dialog::backdrop,
+.pro-paywall-dialog::backdrop {
+  background: rgba(19, 37, 35, 0.28);
+}
+
+.pro-sheet-body,
+.pro-paywall-body {
+  padding: 1.25rem 1.15rem 1.1rem;
+}
+
+.pro-sheet-body h2,
+.pro-paywall-body h2 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.pro-sheet-body p,
+.pro-paywall-lede {
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.pro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(11, 110, 106, 0.12);
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  margin-bottom: 0.65rem;
+}
+
+.pro-badge-mark {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--mist);
+  border: 1.5px solid var(--accent);
+  position: relative;
+}
+
+.pro-badge-mark::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 5px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  box-shadow: 0 3px 0 var(--accent);
+}
+
+.pro-sheet-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pro-paywall-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.9rem;
+}
+
+.pro-paywall-benefits li {
+  font-size: 0.86rem;
+  padding: 0.35rem 0;
+  color: var(--ink);
+  display: flex;
+  gap: 0.45rem;
+  align-items: flex-start;
+}
+
+.pro-paywall-benefits li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 0.45rem;
+  flex-shrink: 0;
+}
+
+.pro-paywall-price {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.pro-paywall-price-sub {
+  margin: 0 0 0.85rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.pro-paywall-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pro-paywall-restore {
+  align-self: center;
+  margin-top: 0.15rem;
+}
+
+.pro-paywall-founding-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.pro-paywall-close {
+  margin-top: 0.65rem;
+  width: 100%;
 }
 
 .menu-ad-free-web-hint {
@@ -2121,6 +2276,23 @@ dialog.app-native-dialog[open] {
   color: var(--line-strong);
 }
 
+.menu-dialog-version {
+  margin: 0.35rem 0 0;
+  padding: 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.page-version {
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+}
+
 .journeys-dialog-body {
   flex: 1;
   min-height: 0;
@@ -2197,8 +2369,8 @@ dialog.app-native-dialog[open] {
   -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  padding: 0.75rem 1rem calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem 0.35rem;
 }
 
 .journey-name-field {
@@ -2206,13 +2378,13 @@ dialog.app-native-dialog[open] {
 }
 
 #settings-detail-view .field input[type="text"] {
-  padding: 0.6rem 0.7rem;
-  font-size: 0.95rem;
+  padding: 0.48rem 0.65rem;
+  font-size: 0.9rem;
 }
 
 #settings-detail-view .settings-section {
-  gap: 0.5rem;
-  padding: 0.68rem;
+  gap: 0.35rem;
+  padding: 0.5rem 0.55rem;
 }
 
 .settings-section {
@@ -2247,8 +2419,8 @@ dialog.app-native-dialog[open] {
 }
 
 #settings-detail-view .field {
-  gap: 0.28rem;
-  font-size: 0.88rem;
+  gap: 0.2rem;
+  font-size: 0.84rem;
 }
 
 #settings-detail-view .field select,
@@ -2256,8 +2428,63 @@ dialog.app-native-dialog[open] {
 #settings-detail-view .field input[type="time"],
 #settings-detail-view .field .station-combobox-input,
 #settings-detail-view .optional-time-display {
-  padding: 0.6rem 0.7rem;
-  font-size: 0.95rem;
+  padding: 0.48rem 0.6rem;
+  font-size: 0.88rem;
+}
+
+#settings-detail-view .settings-section-title {
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+}
+
+#settings-detail-view .settings-section-hint {
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+#settings-detail-view .settings-back {
+  margin-bottom: 0;
+  font-size: 0.82rem;
+  min-height: 1.75rem;
+}
+
+#settings-detail-view .leave-before-slider {
+  margin: 0.05rem 0 0;
+}
+
+#settings-detail-view .range-ticks {
+  font-size: 0.65rem;
+}
+
+#settings-detail-view .remind-day-chip {
+  min-width: 1.7rem;
+  padding: 0.26rem 0.15rem;
+  font-size: 0.68rem;
+}
+
+#settings-detail-view .journey-window {
+  gap: 0.35rem;
+}
+
+#settings-detail-view .settings-location-row {
+  margin-top: 0.1rem;
+  gap: 0.35rem;
+}
+
+#settings-detail-view .menu-toggle-row {
+  padding: 0.15rem 0;
+}
+
+/* Default journey detail (Remind collapsed) should fit one phone viewport.
+   Scroll remains for expanded reminder / errors / station picker / tiny screens. */
+@media (max-height: 820px) {
+  #settings-detail-view .settings-section-hint:not([hidden]):not([role="alert"]):not(.detail-remind-permission-hint):not(.detail-target-outside-hint) {
+    display: none;
+  }
+
+  #settings-detail-view .detail-active-days-hint {
+    display: none;
+  }
 }
 
 .field-label-row {
@@ -2390,8 +2617,8 @@ dialog.app-native-dialog[open] {
   margin-left: 0;
   margin-right: 0;
   width: 100%;
-  padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
-  gap: 0.65rem;
+  padding: 0.45rem 0.85rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+  gap: 0.4rem;
   border-top: 1px solid var(--line);
   background: var(--surface);
   box-shadow: 0 -4px 14px rgba(19, 37, 35, 0.06);
@@ -2430,8 +2657,13 @@ dialog.app-native-dialog[open] {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  padding: 0.65rem 0.5rem;
-  font-size: 0.95rem;
+  padding: 0.55rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+#settings-detail-view .journey-delete-icon-btn {
+  width: 2.4rem;
+  height: 2.4rem;
 }
 
 #settings-detail-view .journey-window {

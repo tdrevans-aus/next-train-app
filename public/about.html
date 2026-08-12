@@ -88,6 +88,30 @@
       <p class="page-links">
         <a href="/privacy.html">Privacy policy</a>
       </p>
+      <p class="page-version" id="about-app-version" hidden></p>
     </main>
+    <script>
+      fetch("/site-config.json", { cache: "no-store" })
+        .then((response) => (response.ok ? response.json() : null))
+        .then((config) => {
+          if (!config) {
+            return;
+          }
+          const version = String(config.appVersion || "").trim();
+          const code = Number(config.appVersionCode);
+          const label =
+            version && Number.isFinite(code)
+              ? `Version ${version} (${code})`
+              : version
+                ? `Version ${version}`
+                : "";
+          const el = document.getElementById("about-app-version");
+          if (el && label) {
+            el.textContent = label;
+            el.hidden = false;
+          }
+        })
+        .catch(() => {});
+    </script>
   </body>
 </html>

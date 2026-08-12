@@ -4,7 +4,7 @@
 **From:** Tim  
 **Date:** 12 Aug 2026  
 **Priority:** **P0** — closed Alpha 2.1.0 (versionCode **5**) shipped **without** location prompt or E3 icon; blocks friend blast  
-**Status:** Shipped (Jim — commit + gate); Tim uploads v6 after pre-upload green  
+**Status:** v6 shipped; **v7 ready** — onboarding gate + 15s locate (commit `7`, Tim uploads)  
 **Supersedes:** `docs/jim-brief-closed-aab-v5-tonight.md` (v5 shipped broken — do not reuse v5 checklist alone)
 
 **Related:** `docs/aab-signing-closed-testing.md` · `docs/simon-brief-app-icon.md` (E3 Band) · `qa/pre-upload-check.mjs` · `docs/closed-test-opt-in-blast.md`
@@ -172,3 +172,88 @@ After Jim’s PR / commit:
 | Date | Note |
 |------|------|
 | 2026-08-12 | Brief created — v6 ship gate after v5 regression |
+| 2026-08-12 | **v7 addendum** — onboarding gate + locate timeout (Tim QA on v6 emulator) |
+
+---
+
+## v7 addendum — nearby onboarding gate + locate timeout
+
+**For:** Jim  
+**Priority:** P1 — v6 (versionCode **6**) is live but Tim still sees two UX bugs on emulator  
+**Status:** Ready — commit + bump **7** + `cap:sync`; Tim uploads  
+**Supersedes:** nothing in v6 — additive patch release
+
+### What v6 fixed vs what’s still wrong
+
+| | v6 (shipped) | v7 (this addendum) |
+|---|--------------|-------------------|
+| Permission prompt on Near me | ✅ Fixed | — |
+| E3 launcher icon | ✅ Fixed | — |
+| **“Could not obtain location in time”** on emulator | Still happens (GPS timeout, not permission) | 15s timeout + clearer error copy |
+| **“Near you” onboarding coach on error screen** | Still happens | Coach only after board loads |
+
+Tim confirmed Menu shows **Version 2.1.0 (6)** — this is not a stale v5 build.
+
+### A. Onboarding coach — only after widget loaded
+
+**Bug:** `maybeScheduleOnboarding()` ran from `renderNearbyBoard` error paths (`Location needed`, locate failure). After 6s the “Near you / Got it” coach appeared even when station + board never loaded.
+
+**Spec (already in `docs/jim-brief-location-wait-ux.md` §3):** Do **not** fire Nearby onboarding while hung locate with no board.
+
+**Implement (verify in `public/app.js`):**
+
+1. `isNearbyWidgetLoaded()` — `nearbySession.station` + `nearbyBoard` + no `nearbyError` + not loading/inflight.
+2. `clearOnboardingSchedule()` — cancel timer + reset `onboardingPopulatedAt`.
+3. `maybeScheduleOnboarding()` — only schedule when `isNearbyWidgetLoaded()`; otherwise `clearOnboardingSchedule()`.
+4. `enterNearbyMode()` — call `clearOnboardingSchedule()` on entry.
+
+**6s delay after successful load** — unchanged.
+
+**Acceptance:**
+
+- Locate fails / “Location needed” → **no** onboarding coach (ever, unless user later gets a successful board).
+- Board loads with departures → coach may appear ~6s later (if onboarding not completed).
+- “No upcoming trains” with station + board loaded → coach may still appear (board loaded = OK).
+
+### B. Native locate timeout + error copy
+
+**Bug:** `findNearestStation` used **6s** timeout on native; emulator without mock GPS hits Capacitor *“Could not obtain location in time”* quickly.
+
+**Implement:**
+
+1. `findNearestStation` — `geoTimeoutMs = 15000` for **all** platforms (match web; align with location-wait brief).
+2. `locationErrorFrom()` — map timeout / *could not obtain location in time* to user copy mentioning emulator mock GPS + choose station below.
+
+**Do not** change `enableHighAccuracy: false` on native (keep as today).
+
+**Emulator QA note for Tim:** Extended controls → **Location** → set Perth coords → Send. Manual **Choose station** still valid fallback.
+
+### C. Version bump
+
+| Field | Value |
+|-------|--------|
+| `versionCode` | **7** |
+| `versionName` | `2.1.0` (or `2.1.0-closed3`) |
+| `site-config.json` | `appVersionCode: 7` |
+
+### D. Ship steps (same gate as v6)
+
+```powershell
+npm run export:icon   # only if icon touched
+npm run cap:sync
+npm run test:pre-upload
+# Tim: signed bundleRelease → Play closed → versionCode 7
+```
+
+No new `pre-upload-check` rules required unless you want a grep for `isNearbyWidgetLoaded` in synced `app.js` (optional).
+
+### v7 acceptance
+
+1. Emulator **without** mock GPS → error message + **no** onboarding coach.
+2. Emulator **with** mock GPS → board loads → coach ~6s later (first visit).
+3. Real device with location on → Near me works; no regression on permission prompt.
+
+### Slack / one-liner (v7)
+
+> Jim — v6 is live (Tim on **2.1.0 (6)**) but emulator QA found two bugs: onboarding coach fires on failed Near me, and 6s GPS timeout is too aggressive. Addendum in `docs/jim-brief-closed-aab-v6-ship-gate.md` §v7. Commit `isNearbyWidgetLoaded` / `clearOnboardingSchedule` + 15s timeout + error copy in `app.js`, bump **versionCode 7**, `cap:sync`, Tim uploads.
+
