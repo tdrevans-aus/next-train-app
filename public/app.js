@@ -18,6 +18,22 @@ const LAST_NEARBY_STATION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 const SWIPE_THRESHOLD_PX = 48;
 
 const routeEl = document.getElementById("route");
+
+function setRouteDisplay(text) {
+  if (!routeEl) {
+    return;
+  }
+  routeEl.textContent = text;
+  routeEl.setAttribute("aria-label", text);
+}
+
+function setAccessibleText(el, text) {
+  if (!el) {
+    return;
+  }
+  el.textContent = text;
+  el.setAttribute("aria-label", text);
+}
 const updatedEl = document.getElementById("updated");
 const journeySwitcherEl = document.getElementById("journey-switcher");
 const journeySwitcherNameEl = document.getElementById("journey-switcher-name");
@@ -204,6 +220,10 @@ const PERTH_API_STATIONS = ["Perth Underground Stn", "Perth Stn"];
 const CANONICAL_PERTH_STATION = "Perth Underground Stn";
 const DEFAULT_DIRECTION_LABEL = "Perth";
 const DEFAULT_REMIND_DAYS = [1, 2, 3, 4, 5];
+
+function trackProductEvent(name, props) {
+  window.NextTrainAnalytics?.track?.(name, props);
+}
 const MAX_JOURNEYS = 6;
 const JOURNEY_CAP_HINT = `${MAX_JOURNEYS} journeys — that's the limit for now. Delete one to add another.`;
 const JOURNEY_TEMPLATE_PRESETS = {
@@ -249,6 +269,46 @@ async function ensureGeoBridge() {
   await loadScriptOnce("geo-bundle.js");
 }
 
+function locationErrorFrom(error) {
+  const code = Number(error?.code);
+  const message = String(error?.message || error || "");
+  const lower = message.toLowerCase();
+
+  if (
+    code === 1 ||
+    lower.includes("denied") ||
+    lower.includes("permission")
+  ) {
+    return Object.assign(
+      new Error(
+        "Location permission is needed for Near me. Open Settings → Apps → Next Train → Location → Allow, or choose a station below."
+      ),
+      { code: 1, cause: error }
+    );
+  }
+
+  if (
+    lower.includes("disabled") ||
+    lower.includes("location services") ||
+    lower.includes("not enabled")
+  ) {
+    return Object.assign(
+      new Error(
+        "Turn on Location in your phone settings, then try Near me again — or choose a station below."
+      ),
+      { code: 2, cause: error }
+    );
+  }
+
+  if (error instanceof Error) {
+    return error;
+  }
+
+  return Object.assign(new Error(message || "Could not find a nearby station"), {
+    code: code || 2,
+  });
+}
+
 async function getAppGeolocationPosition(options = {}) {
   if (isNativeApp()) {
     await ensureGeoBridge();
@@ -256,16 +316,27 @@ async function getAppGeolocationPosition(options = {}) {
       throw Object.assign(new Error("Native geolocation bridge unavailable"), { code: 2 });
     }
 
-    return window.NextTrainGeo.getCurrentPosition(options);
+    try {
+      if (typeof window.NextTrainGeo.ensureLocationPermission === "function") {
+        await window.NextTrainGeo.ensureLocationPermission();
+      }
+      return await window.NextTrainGeo.getCurrentPosition(options);
+    } catch (error) {
+      throw locationErrorFrom(error);
+    }
   }
 
   if (!navigator.geolocation) {
     throw Object.assign(new Error("Geolocation unavailable"), { code: 2 });
   }
 
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject, options);
-  });
+  try {
+    return await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+  } catch (error) {
+    throw locationErrorFrom(error);
+  }
 }
 
 function isJourneysDialogOpen() {
@@ -891,7 +962,7 @@ function syncJourneyContextChrome() {
 
   if (journeyContextNameEl) {
     journeyContextNameEl.hidden = !showName;
-    journeyContextNameEl.textContent = getActiveJourney()?.name ?? "Journey";
+    setAccessibleText(journeyContextNameEl, getActiveJourney()?.name ?? "Journey");
   }
 
   if (journeySwitcherEl) {
@@ -1773,6 +1844,180 @@ async function readUrlSettings() {
   });
 }
 
+function getWidgetSyncPluginForMaestro() {
+  const native = window.Capacitor?.Plugins?.WidgetSync;
+  if (native) {
+    return native;
+  }
+  if (!window.Capacitor?.registerPlugin) {
+    return null;
+  }
+  return window.Capacitor.registerPlugin("WidgetSync");
+}
+
+async function waitForWidgetSyncPlugin(maxMs = 8000) {
+  const waitFn =
+    window.NextTrainScripts?.waitForCapacitor ?? window.NextTrainAdFreeNative?.waitForCapacitor;
+  if (waitFn) {
+    await waitFn(maxMs);
+  } else {
+    const started = Date.now();
+    while (!window.Capacitor && Date.now() - started < maxMs) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  }
+
+  const started = Date.now();
+  while (Date.now() - started < maxMs) {
+    const plugin = getWidgetSyncPluginForMaestro();
+    if (plugin) {
+      try {
+        await plugin.isDebugBuild();
+        return plugin;
+      } catch {
+        // Native bridge not ready yet.
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  return getWidgetSyncPluginForMaestro();
+}
+
+async function peekMaestroSeedDeepLink(plugin, maxMs = 5000) {
+  const started = Date.now();
+  while (Date.now() - started < maxMs) {
+    try {
+      const peek = await plugin.peekLaunchDeepLink();
+      if (peek?.uri) {
+        return String(peek.uri);
+      }
+    } catch {
+      // Bridge may still be starting.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return null;
+}
+
+function buildMaestroSeedSettingsFromParams(stationText, directionText, params = new URLSearchParams()) {
+  const station = normalizeStation(String(stationText).trim()) || String(stationText).trim();
+  const direction = String(directionText).trim();
+  if (!station || !direction) {
+    return null;
+  }
+
+  const preset =
+    params.get("fixture") === "normal" || params.get("preset") === "morning"
+      ? JOURNEY_TEMPLATE_PRESETS.morning
+      : {};
+
+  const journey = createDefaultJourney({
+    ...preset,
+    name: params.get("name") || preset.name || "Morning into town",
+    station,
+    direction,
+    leaveBeforeMinutes:
+      Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
+      DEFAULT_SETTINGS.leaveBeforeMinutes,
+  });
+
+  return migrateSettings({
+    journeys: [journey],
+    activeJourneyId: journey.id,
+    refreshSeconds:
+      Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
+      DEFAULT_SETTINGS.refreshSeconds,
+  });
+}
+
+async function buildMaestroSeedSettings(stationText, directionText, params = new URLSearchParams()) {
+  const stations = await getStationsList();
+  const catalog = new Set(stations);
+  const normalizedStation = normalizeStation(String(stationText).trim());
+  const station = catalog.has(normalizedStation) ? normalizedStation : String(stationText).trim();
+  const direction = String(directionText).trim();
+  if (!station || !direction) {
+    return null;
+  }
+
+  const preset =
+    params.get("fixture") === "normal" || params.get("preset") === "morning"
+      ? JOURNEY_TEMPLATE_PRESETS.morning
+      : {};
+
+  const journey = createDefaultJourney({
+    ...preset,
+    name: params.get("name") || preset.name || "Morning into town",
+    station,
+    direction,
+    leaveBeforeMinutes:
+      Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
+      DEFAULT_SETTINGS.leaveBeforeMinutes,
+  });
+
+  return migrateSettings({
+    journeys: [journey],
+    activeJourneyId: journey.id,
+    refreshSeconds:
+      Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
+      DEFAULT_SETTINGS.refreshSeconds,
+  });
+}
+
+async function applyMaestroTestSeedFromDeepLink() {
+  if (!isNativeApp()) {
+    return false;
+  }
+
+  const plugin = await waitForWidgetSyncPlugin();
+  if (!plugin) {
+    return false;
+  }
+
+  try {
+    const debugResult = await plugin.isDebugBuild();
+    if (!debugResult?.debug) {
+      return false;
+    }
+
+    const uri = await peekMaestroSeedDeepLink(plugin);
+    if (!uri || !/^nexttrain:\/\/test\/seed(?:\?(.*))?$/i.test(uri)) {
+      return false;
+    }
+
+    const match = String(uri).match(/^nexttrain:\/\/test\/seed(?:\?(.*))?$/i);
+    const params = new URLSearchParams(match?.[1] ?? "");
+
+    if (params.get("reset") === "1") {
+      localStorage.clear();
+      sessionStorage.clear();
+    }
+    sessionStorage.setItem("nextTrainTestMode", "1");
+
+    const station = params.get("station");
+    const direction = params.get("direction");
+    let seedSettings = null;
+
+    if (station && direction) {
+      seedSettings = buildMaestroSeedSettingsFromParams(station, direction, params);
+    } else if (params.get("preset") === "morning" || params.get("fixture") === "normal") {
+      seedSettings = buildMaestroSeedSettingsFromParams("Edgewater Stn", "Perth", params);
+    }
+
+    if (!seedSettings) {
+      return false;
+    }
+
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(seedSettings));
+    await plugin.clearLaunchDeepLink();
+    return true;
+  } catch (error) {
+    console.warn("Maestro test seed failed", error);
+    return false;
+  }
+}
+
 function skipStorageKey() {
   const journey = getActiveJourney();
   return `${SKIP_KEY}:${journey?.id ?? "none"}`;
@@ -2118,7 +2363,11 @@ function renderJourneySwitcher() {
 
   const active = getActiveJourney();
   journeySwitcherEl.hidden = false;
-  journeySwitcherNameEl.textContent = active?.name ?? "Journey";
+  setAccessibleText(journeySwitcherNameEl, active?.name ?? "Journey");
+  journeySwitcherEl.setAttribute(
+    "aria-label",
+    `Switch journey: ${active?.name ?? "Journey"}`
+  );
 
   journeySwitcherMenuEl.innerHTML = "";
 
@@ -2850,7 +3099,7 @@ function render(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   const journey = getActiveJourney();
-  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up a journey";
+  setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -2982,7 +3231,7 @@ function renderRefreshErrorState() {
   leaveCardEl?.classList.remove("stale");
 
   const journey = getActiveJourney();
-  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up a journey";
+  setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
   updatedEl.textContent = "Update failed";
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
@@ -3084,7 +3333,7 @@ function renderJourneyEmptyState() {
   syncChromeMode();
 
   errorEl.hidden = true;
-  routeEl.textContent = "Journeys";
+  setRouteDisplay("Journeys");
   updatedEl.textContent = "";
   updatedEl.hidden = true;
   setHeroUrgency("calm");
@@ -3390,7 +3639,7 @@ function isUnsupportedRegion(distanceKm) {
 function renderUnsupportedRegionBoard() {
   lastRenderedNext = null;
   errorEl.hidden = true;
-  routeEl.textContent = "Near me";
+  setRouteDisplay("Near me");
   updatedEl.textContent = "";
   updatedEl.hidden = true;
   setHeroUrgency("calm");
@@ -3883,10 +4132,7 @@ async function locateNearbyInBackground() {
     nearbyDontWaitVisible = false;
     syncNearbyDontWaitButton();
     if (!nearbySession.station && !nearbyUserPickedStation) {
-      nearbyError =
-        error.code === 1
-          ? "Location permission is needed for Near me. Choose a station below instead."
-          : (error.message ?? "Could not find a nearby station");
+      nearbyError = locationErrorFrom(error).message;
       renderNearbyBoard();
       return;
     }
@@ -3959,7 +4205,7 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   if (shouldShowNearbyLoadingState()) {
     lastRenderedNext = null;
-    routeEl.textContent = nearbyLoadingRouteCopy();
+    setRouteDisplay(nearbyLoadingRouteCopy());
     setHeroUrgency("calm");
     heroEl?.classList.add("locating");
     if (heroDepartLabelEl) {
@@ -4013,7 +4259,7 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   if (nearbyLocatePickerVisible && !nearbySession?.station && !nearbyUserPickedStation) {
     lastRenderedNext = null;
-    routeEl.textContent = "Near me";
+    setRouteDisplay("Near me");
     setHeroUrgency("calm");
     if (heroDepartLabelEl) {
       heroDepartLabelEl.textContent = "Next Train";
@@ -4053,7 +4299,7 @@ function renderNearbyBoard({ stale = false } = {}) {
   }
 
   if (nearbyError) {
-    routeEl.textContent = formatNearbyRouteLine();
+    setRouteDisplay(formatNearbyRouteLine());
     setHeroUrgency("calm");
     if (heroDepartLabelEl) {
       heroDepartLabelEl.textContent = "Near me";
@@ -4083,7 +4329,7 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   const focusedEntry = getNearbyFocusedEntry();
   const next = focusedEntry?.data?.next ?? null;
-  routeEl.textContent = formatNearbyRouteLine();
+  setRouteDisplay(formatNearbyRouteLine());
   if (nearbySession?.refineNotice) {
     updatedEl.textContent = nearbySession.refineNotice;
     nearbySession.refineNotice = null;
@@ -4269,6 +4515,28 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
     return;
   }
 
+  // Preload Cap Geolocation + request system permission before first fix.
+  if (isNativeApp()) {
+    try {
+      await ensureGeoBridge();
+      if (typeof window.NextTrainGeo?.ensureLocationPermission === "function") {
+        await window.NextTrainGeo.ensureLocationPermission();
+      }
+    } catch (error) {
+      nearbySession = {
+        station: null,
+        distanceKm: null,
+        focusedDirection: null,
+        skipByDirection: {},
+      };
+      nearbyLoading = false;
+      nearbyError = locationErrorFrom(error).message;
+      syncNearbyChrome();
+      renderNearbyBoard();
+      return;
+    }
+  }
+
   const cachedStation = readLastNearbyStationCache();
   if (cachedStation?.station) {
     nearbySession = {
@@ -4414,6 +4682,7 @@ async function fetchNextTrain() {
   } catch (error) {
     errorEl.textContent = error.message;
     errorEl.hidden = false;
+    trackProductEvent("api_error_shown", { surface: "journey" });
 
     if (lastApiData?.next) {
       render(prepareDisplayData(lastApiData), { stale: true });
@@ -5217,7 +5486,7 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
     templateRouteCoachBody.textContent = `For ${templateLabel.toLowerCase()} we defaulted to your nearest station ${station}${distance} → ${journey.direction}. Change station or direction above.`;
   } else if (error?.code === 1) {
     templateRouteCoachBody.textContent =
-      "Location permission was denied, so we couldn't pick your nearest station. Choose your station and direction — you can tap Use nearest station if you change your mind.";
+      "Location permission was denied, so we couldn't pick your nearest station. Open Settings → Apps → Next Train → Location → Allow, or choose your station and direction — you can tap Use nearest station if you change your mind.";
   } else if (
     templateKey === "morning" &&
     nearest?.station &&
@@ -6341,6 +6610,7 @@ function saveJourneyDetailFromForm() {
 
   if (updated.remindMe === true) {
     window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
+    trackProductEvent("reminder_enabled", { journeyId: updated.id });
   }
 
   persistSettings({
@@ -6350,6 +6620,7 @@ function saveJourneyDetailFromForm() {
     activeJourneyId,
   });
   void window.nextTrainLeaveReminders?.healAfterJourneySave?.();
+  trackProductEvent("journey_saved", { configuredCount: countConfiguredJourneys(settings.journeys) });
   editingJourneySnapshot = null;
 }
 
@@ -6375,7 +6646,7 @@ function closeJourneysDialog() {
     clearHeroSetupState();
     const journey = getActiveJourney();
     if (journey && routeEl) {
-      routeEl.textContent = formatJourneyRoute(journey);
+      setRouteDisplay(formatJourneyRoute(journey));
     }
     if (updatedEl) {
       updatedEl.textContent = "Updating…";
@@ -6478,6 +6749,7 @@ function clearAllAppData() {
   renderJourneySwitcher();
   applyCommuteMode({ coldStart: true });
   window.NextTrainAdFree?.refreshEntitlement?.({ silent: true });
+  window.NextTrainPro?.onSettingsCleared?.();
 }
 
 function handleClearAllData() {
@@ -6892,10 +7164,7 @@ detailNearestBtn?.addEventListener("click", async () => {
       detailDirectionSelect.value = direction;
     }
   } catch (error) {
-    detailNearestHint.textContent =
-      error.code === 1
-        ? "Location permission denied. Pick your station from the list."
-        : "Could not use location. Pick your station from the list.";
+    detailNearestHint.textContent = locationErrorFrom(error).message;
   }
 });
 
@@ -6932,9 +7201,30 @@ document.addEventListener("click", () => {
 });
 
 async function init() {
-  applyTestQueryParams();
+  const seedApplied = await applyMaestroTestSeedFromDeepLink();
+  if (!seedApplied) {
+    applyTestQueryParams();
+  }
+
   initHeroSwipe();
   installOnboardingInteractionTracking();
+
+  if (seedApplied) {
+    settings = readStoredSettings();
+    refreshSeconds = settings.refreshSeconds ?? DEFAULT_SETTINGS.refreshSeconds;
+    journeyModeActive = true;
+    scheduleRefresh();
+    void getStationsList();
+    void loadStationCoords();
+    renderJourneySwitcher();
+    clearHeroSetupState();
+    maybeAutoSelectJourney();
+    skipTrains = readSkipState().count;
+    fetchNextTrain();
+    window.nextTrainWidget?.syncWidgetSettings?.(settings);
+    await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+    return;
+  }
 
   const urlSettings = await readUrlSettings();
   if (urlSettings) {
@@ -7015,22 +7305,53 @@ window.nextTrainApp = {
   skipToEarlierTrain,
 };
 
+async function resumeMaestroSeedIfNeeded() {
+  const seedApplied = await applyMaestroTestSeedFromDeepLink();
+  if (!seedApplied) {
+    return false;
+  }
+
+  settings = readStoredSettings();
+  refreshSeconds = settings.refreshSeconds ?? DEFAULT_SETTINGS.refreshSeconds;
+  journeyModeActive = true;
+  scheduleRefresh();
+  void getStationsList();
+  void loadStationCoords();
+  renderJourneySwitcher();
+  clearHeroSetupState();
+  maybeAutoSelectJourney();
+  skipTrains = readSkipState().count;
+  fetchNextTrain();
+  window.nextTrainWidget?.syncWidgetSettings?.(settings);
+  await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+  return true;
+}
+
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     maybeScheduleOnboarding();
 
-    if (shouldDefaultToNearby()) {
+    void (async () => {
+      if (!journeyModeActive) {
+        const seeded = await resumeMaestroSeedIfNeeded();
+        if (seeded) {
+          return;
+        }
+      }
+
+      if (shouldDefaultToNearby()) {
+        void applyCommuteMode();
+        return;
+      }
+
+      if (journeyModeActive) {
+        skipTrains = readSkipState().count;
+        refreshLiveDisplay(true);
+        fetchNextTrain();
+        return;
+      }
+
       void applyCommuteMode();
-      return;
-    }
-
-    if (journeyModeActive) {
-      skipTrains = readSkipState().count;
-      refreshLiveDisplay(true);
-      fetchNextTrain();
-      return;
-    }
-
-    void applyCommuteMode();
+    })();
   }
 });

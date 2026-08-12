@@ -1,8 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <clipPath id="e3tile"><rect width="512" height="512" rx="112"/></clipPath>
-  <!-- E3 Band: track running clean through the tile -->
-  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
-  <g clip-path="url(#e3tile)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" fill="none">
+  <!-- Adaptive foreground: E3 band track, transparent (mist is background layer) -->
+  <!-- Source 512 � 108 scale H 0.2109; content fills the full adaptive canvas -->
+  <g transform="scale(0.2109375)">
     <path d="M-186 614 L614 -186" stroke="#0B6E6A" stroke-width="30" fill="none"/>
     <path d="M-102 698 L698 -102" stroke="#0B6E6A" stroke-width="30" fill="none"/>
     <g fill="#0B6E6A">

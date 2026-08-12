@@ -11,10 +11,23 @@
     "build:ad-free": "esbuild public/ad-free-native.mjs --bundle --format=iife --global-name=NextTrainAdFreeNative --outfile=public/ad-free-bundle.js --platform=browser --external:@capacitor/core",
     "build:train-times": "esbuild public/train-times-client.mjs --bundle --format=iife --global-name=NextTrainTimes --outfile=public/train-times-bundle.js --platform=browser",
     "build:geo": "esbuild public/geo-native.mjs --bundle --format=iife --global-name=NextTrainGeo --outfile=public/geo-bundle.js --platform=browser --external:@capacitor/core",
-    "cap:sync": "npm run build:ads && npm run build:ad-free && npm run build:train-times && npm run build:geo && npx cap sync android",
-    "cap:sync:ios": "npm run build:ads && npm run build:ad-free && npm run build:train-times && npm run build:geo && npx cap sync ios",
+    "build:analytics": "esbuild public/analytics-native.mjs --bundle --format=iife --global-name=NextTrainAnalyticsNative --outfile=public/analytics-bundle.js --platform=browser --external:@capacitor/core",
+    "export:icon": "node store-assets/export-locked-icon.mjs",
+    "cap:sync": "npm run build:ads && npm run build:ad-free && npm run build:train-times && npm run build:geo && npm run build:analytics && npx cap sync android",
+    "cap:sync:ios": "npm run build:ads && npm run build:ad-free && npm run build:train-times && npm run build:geo && npm run build:analytics && npx cap sync ios",
     "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
     "cap:open:ios": "npx cap open ios",
+    "test:smoke": "node qa/run-all.mjs --smoke",
+    "test:web": "node qa/run-all.mjs",
+    "test:full": "node qa/run-all.mjs",
+    "test:android:unit": "node qa/run-android-unit.mjs",
+    "test:maestro": "node qa/run-maestro.mjs",
+    "test:pre-upload": "node qa/pre-upload-check.mjs",
+    "probe:brisbane": "node scripts/probe-brisbane-board.mjs",
+    "probe:sydney": "node scripts/probe-sydney-board.mjs",
+    "probe:melbourne": "node scripts/probe-melbourne-board.mjs",
+    "probe:adelaide": "node scripts/probe-adelaide-board.mjs",
+    "probe:canberra": "node scripts/probe-canberra-board.mjs",
     "postinstall": "patch-package"
   },
   "dependencies": {
@@ -25,7 +38,11 @@
     "@capacitor/geolocation": "^8.2.1",
     "@capacitor/ios": "^8.5.0",
     "@capgo/native-purchases": "^8.6.5",
-    "express": "^4.21.2"
+    "@sentry/browser": "10.69.0",
+    "@sentry/capacitor": "^4.3.0",
+    "express": "^4.21.2",
+    "fflate": "^0.8.3",
+    "gtfs-realtime-bindings": "^2.2.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",

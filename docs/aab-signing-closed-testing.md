@@ -3,7 +3,7 @@
 **For:** Tim  
 **Purpose:** Cut and upload a signed Android App Bundle to Play **closed testing** (not production).  
 **When:** After you can build the app; **before** inviting 5–15 friends. Full public QA sign-off is **not** required yet.  
-**App ID:** `com.tdrevans.nexttrain` · current `versionName` **2.1.0** · `versionCode` **2** ([`android/app/build.gradle`](../android/app/build.gradle))
+**App ID:** `com.tdrevans.nexttrain` · current `versionName` **2.1.0** · `versionCode` **5** ([`android/app/build.gradle`](../android/app/build.gradle))
 
 **Related:** [launch-blockers.md](launch-blockers.md) · [play-data-safety-cheatsheet.md](play-data-safety-cheatsheet.md) · AdMob gate `docs/jim-brief-security-admob-ship-gate.md`
 
@@ -48,10 +48,12 @@ Do this the first time only. Store passwords in a password manager — **never c
 ## 1. Pre-flight (every closed-test build)
 
 - [ ] Web assets you care about are in `public/` (Jim’s latest synced work).
+- [ ] Launcher icon: after any icon change run `npm run export:icon` (E3 Band → `mipmap-*` + `store-assets/exports/play-icon-512.png`). Confirm home-screen mipmaps exist before bundling — don’t ship Capacitor’s default foreground.
 - [ ] From repo root: `npm run cap:sync`
 - [ ] `applicationId` is still `com.tdrevans.nexttrain`
-- [ ] Bump **`versionCode`** (integer, must increase every Play upload). For first closed upload if `2` was never uploaded, `2` is fine; every later upload → `3`, `4`, …
+- [ ] Bump **`versionCode`** (integer, must increase every Play upload). Current is **5**; next upload → **6**, …
 - [ ] Set **`versionName`** if you want a human label (e.g. keep `2.1.0` or `2.1.0-closed1`)
+- [ ] Also bump `appVersion` / `appVersionCode` in `public/site-config.json` to match when you bump Gradle.
 - [ ] AdMob: release/closed builds should use **prod ads path** once Jim’s ship gate lands (debug APK may stay test mode). Don’t invite friends on a build that only shows Google test banners if you’re trying to validate real ads/IAP.
 - [ ] IAP product `com.tdrevans.nexttrain.adfree` exists in Play Console (can be inactive until license testers are set — create it before expecting purchases to work)
 - [ ] Privacy URL ready to paste on listing: `https://next-train-app.vercel.app/privacy.html` (after deploy)

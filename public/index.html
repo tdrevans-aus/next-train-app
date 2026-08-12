@@ -79,9 +79,9 @@
 
       <div class="app-body">
       <section class="context">
-        <p class="route" id="route">Loading…</p>
+        <p class="route" id="route" role="heading" aria-level="2" tabindex="0" aria-live="polite">Loading…</p>
         <div class="journey-context-row" id="journey-context-row" hidden>
-          <p class="journey-context-name" id="journey-context-name">Journey</p>
+          <p class="journey-context-name" id="journey-context-name" role="heading" aria-level="2" tabindex="0">Journey</p>
           <button
             type="button"
             class="journey-switcher"
@@ -244,7 +244,7 @@
 
       <section class="ad-slot" id="ad-container" hidden aria-label="Advertisement"></section>
       <p class="ad-remove-link-wrap" id="ad-remove-link-wrap" hidden>
-        <button type="button" class="btn-link ad-remove-link" id="ad-remove-link">Remove ads</button>
+        <button type="button" class="btn-link ad-remove-link" id="ad-remove-link">Unlock Pro</button>
       </p>
 
       <p class="error" id="error" hidden></p>
@@ -802,6 +802,57 @@
       </div>
     </dialog>
 
+    <dialog class="pro-sheet-dialog" id="pro-founding-sheet">
+      <div class="pro-sheet-body">
+        <div class="pro-badge" aria-hidden="true">
+          <span class="pro-badge-mark"></span>
+          Founding 200
+        </div>
+        <h2>You&rsquo;re Founding 200</h2>
+        <p>Pro unlocked forever — full home-screen widget and no ads. Thank you for being early.</p>
+        <div class="pro-sheet-actions">
+          <button type="button" class="btn-primary" id="pro-founding-add-widget-btn">Add widget</button>
+          <button type="button" class="btn-secondary" id="pro-founding-got-it-btn">Got it</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="pro-sheet-dialog" id="pro-trial-started-sheet">
+      <div class="pro-sheet-body">
+        <h2>Pro trial — 30 days</h2>
+        <p>
+          Full widget and no ads while you try it. After that, unlock Pro once to keep the widget —
+          no subscription.
+        </p>
+        <div class="pro-sheet-actions">
+          <button type="button" class="btn-primary" id="pro-trial-got-it-btn">Got it</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="pro-paywall-dialog" id="pro-paywall-dialog">
+      <div class="pro-paywall-body">
+        <h2>Keep the full widget</h2>
+        <p class="pro-paywall-lede">One-time unlock. No subscription.</p>
+        <ul class="pro-paywall-benefits">
+          <li>Full-quality home-screen widget</li>
+          <li>No ads in the app</li>
+        </ul>
+        <p class="pro-paywall-price" id="pro-paywall-price">A$X.XX</p>
+        <p class="pro-paywall-price-sub">Lifetime · one-time</p>
+        <div class="pro-paywall-actions">
+          <button type="button" class="btn-primary" id="pro-paywall-unlock-btn">Unlock Pro</button>
+          <button type="button" class="btn-link pro-paywall-restore" id="pro-paywall-restore-btn">
+            Restore purchases
+          </button>
+        </div>
+        <p class="pro-paywall-founding-note" id="pro-paywall-founding-note" hidden>
+          Founding 200 is full — new users get the 30-day trial, then Pro.
+        </p>
+        <button type="button" class="btn-secondary pro-paywall-close" id="pro-paywall-close-btn">Not now</button>
+      </div>
+    </dialog>
+
     <dialog class="menu-dialog" id="menu-dialog">
       <div class="menu-dialog-body">
         <div class="settings-view-header">
@@ -810,23 +861,26 @@
         <nav class="menu-dialog-links" aria-label="Menu">
           <button type="button" class="menu-dialog-link" id="menu-reminders-btn">Reminder settings</button>
           <button type="button" class="menu-dialog-link" id="menu-widget-btn" hidden>Add home screen widget</button>
-          <div class="menu-ad-free" id="menu-ad-free-section">
-            <button type="button" class="menu-purchase-row" id="menu-remove-ads-btn" hidden>
-              <span class="menu-purchase-title">Remove ads</span>
-              <span class="menu-purchase-subtitle" id="menu-remove-ads-subtitle">One-time purchase</span>
+          <div class="menu-pro" id="menu-pro-section">
+            <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-pro-cta-btn" hidden>
+              <span class="menu-purchase-title" id="menu-pro-cta-title">Unlock Pro</span>
+              <span class="menu-purchase-subtitle" id="menu-pro-cta-subtitle">One-time purchase</span>
             </button>
-            <div class="menu-purchase-row menu-purchase-row--status" id="menu-ad-free-status" hidden>
-              <span class="menu-purchase-title">Ad-free</span>
-              <span class="menu-purchase-subtitle">You're ad-free</span>
+            <div class="menu-purchase-row menu-purchase-row--status" id="menu-pro-status-row" hidden>
+              <span class="menu-purchase-title" id="menu-pro-status-title">Pro</span>
+              <span class="menu-purchase-subtitle" id="menu-pro-status-subtitle">Ads off · full widget</span>
             </div>
             <button type="button" class="menu-restore-btn" id="menu-restore-purchase-btn" hidden>
-              Restore purchase
+              Restore purchases
             </button>
-            <p class="menu-ad-free-web-hint" id="menu-ad-free-web-hint" hidden>
-              Ad-free is available in the Android app.
+            <button type="button" class="menu-restore-btn" id="menu-pro-nudge-dismiss" hidden>
+              Not now
+            </button>
+            <p class="menu-ad-free-web-hint" id="menu-pro-web-hint" hidden>
+              Pro is available in the Android app.
             </p>
-            <p class="menu-ad-free-web-hint" id="menu-ad-free-billing-hint" hidden>
-              Purchases aren't available on this install.
+            <p class="menu-ad-free-web-hint" id="menu-pro-billing-hint" hidden>
+              Purchases aren&rsquo;t available on this install.
             </p>
           </div>
           <div class="menu-dialog-divider" aria-hidden="true"></div>
@@ -938,20 +992,52 @@
 
     <script>
       (function () {
-        if (typeof require !== "undefined") {
-          return;
+        // esbuild marks @capacitor/core external; bundles expect the ESM module shape
+        // ({ Capacitor, registerPlugin }), not the Capacitor global object alone.
+        const previousRequire = typeof require === "function" ? require : null;
+
+        function capacitorCoreModule() {
+          const Cap = window.Capacitor;
+          if (!Cap) {
+            return null;
+          }
+          // Native bridge has Plugins.* but not registerPlugin (that lives in @capacitor/core JS).
+          function registerPlugin(name) {
+            if (Cap.Plugins && Cap.Plugins[name]) {
+              return Cap.Plugins[name];
+            }
+            if (typeof Cap.withPlugin === "function") {
+              return Cap.withPlugin(name);
+            }
+            throw new Error('Capacitor plugin "' + name + '" is not available');
+          }
+          return {
+            Capacitor: Cap,
+            registerPlugin,
+            WebPlugin: Cap.WebPlugin,
+            Plugins: Cap.Plugins,
+          };
         }
 
         window.require = function (name) {
-          if (name === "@capacitor/core" && window.Capacitor) {
-            return window.Capacitor;
+          if (name === "@capacitor/core") {
+            const mod = capacitorCoreModule();
+            if (mod) {
+              return mod;
+            }
           }
-
+          if (previousRequire) {
+            return previousRequire.apply(this, arguments);
+          }
           throw new Error('Dynamic require of "' + name + '" is not supported');
         };
       })();
     </script>
+    <script src="pro-entitlement.js"></script>
     <script src="ad-free-purchase.js"></script>
+    <script src="analytics-bundle.js"></script>
+    <script src="analytics.js"></script>
+    <script src="geo-bundle.js"></script>
     <script src="train-times-bundle.js"></script>
     <script src="app.js"></script>
     <script src="widget.js"></script>
