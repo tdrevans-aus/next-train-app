@@ -51,15 +51,16 @@ async function run() {
     { key: CACHE_KEY }
   );
   await page.reload();
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(1500);
 
-  const refining = await page.evaluate(() => {
-    const updated = document.getElementById("updated")?.textContent?.trim() ?? "";
-    return updated.includes("Checking location");
-  });
+  const beforeExit = await page.evaluate(() => ({
+    route: document.getElementById("route")?.textContent?.trim() ?? "",
+    pendingGeo: window.__pendingGeoQueue?.length ?? 0,
+    journeyMode: document.getElementById("app")?.classList.contains("journey-mode"),
+  }));
 
   // Leave Near me while background GPS is still held.
-  await page.evaluate(() => document.getElementById("journeys-btn")?.click());
+  await page.click("#journeys-btn");
   await page.waitForTimeout(400);
 
   await page.evaluate(() => {
@@ -80,11 +81,15 @@ async function run() {
     /Cannot set properties of null \(setting 'gpsRefining'\)/i.test(message)
   );
 
-  if (refining && !gpsRefiningCrash && pageErrors.length === 0) {
+  const setupOk =
+    beforeExit.route.includes("Perth") && beforeExit.pendingGeo > 0 && !beforeExit.journeyMode;
+
+  if (setupOk && !gpsRefiningCrash && pageErrors.length === 0) {
     console.log("PASS — late GPS after leaving Near me did not crash on gpsRefining");
   } else {
     console.error("FAIL — nearby exit during GPS refine", {
-      refining,
+      beforeExit,
+      setupOk,
       gpsRefiningCrash,
       pageErrors,
     });
