@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <clipPath id="d9tile"><rect width="512" height="512" rx="112"/></clipPath>
+  <!-- D9  Track band: full-bleed rails cut by the tile -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <g clip-path="url(#d9tile)">
+    <path d="M-60 380 L420 -100" stroke="#0B6E6A" stroke-width="34" fill="none"/>
+    <path d="M25 465 L505 -15" stroke="#0B6E6A" stroke-width="34" fill="none"/>
+    <g fill="#0B6E6A">
+      <rect x="25" y="284" width="170" height="22" rx="7" transform="rotate(45 110 295)"/>
+      <rect x="109" y="199" width="170" height="22" rx="7" transform="rotate(45 194 210)"/>
+      <rect x="194" y="114" width="170" height="22" rx="7" transform="rotate(45 279 125)"/>
+      <rect x="279" y="29" width="170" height="22" rx="7" transform="rotate(45 364 40)"/>
+    </g>
+  </g>
+</svg>

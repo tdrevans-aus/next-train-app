@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" fill="none">
+  <!-- Adaptive foreground: E3 band track, transparent (mist is background layer) -->
+  <!-- Source 512 � 108 scale H 0.2109; content fills the full adaptive canvas -->
+  <g transform="scale(0.2109375)">
+    <path d="M-186 614 L614 -186" stroke="#0B6E6A" stroke-width="30" fill="none"/>
+    <path d="M-102 698 L698 -102" stroke="#0B6E6A" stroke-width="30" fill="none"/>
+    <g fill="#0B6E6A">
+      <rect x="61" y="366" width="150" height="20" rx="7" transform="rotate(45 136 376)"/>
+      <rect x="121" y="306" width="150" height="20" rx="7" transform="rotate(45 196 316)"/>
+      <rect x="181" y="246" width="150" height="20" rx="7" transform="rotate(45 256 256)"/>
+      <rect x="241" y="186" width="150" height="20" rx="7" transform="rotate(45 316 196)"/>
+      <rect x="301" y="126" width="150" height="20" rx="7" transform="rotate(45 376 136)"/>
+    </g>
+  </g>
+</svg>

@@ -79,9 +79,9 @@
 
       <div class="app-body">
       <section class="context">
-        <p class="route" id="route">Loading…</p>
+        <p class="route" id="route" role="heading" aria-level="2" tabindex="0" aria-live="polite">Loading…</p>
         <div class="journey-context-row" id="journey-context-row" hidden>
-          <p class="journey-context-name" id="journey-context-name">Journey</p>
+          <p class="journey-context-name" id="journey-context-name" role="heading" aria-level="2" tabindex="0">Journey</p>
           <button
             type="button"
             class="journey-switcher"
@@ -244,7 +244,7 @@
 
       <section class="ad-slot" id="ad-container" hidden aria-label="Advertisement"></section>
       <p class="ad-remove-link-wrap" id="ad-remove-link-wrap" hidden>
-        <button type="button" class="btn-link ad-remove-link" id="ad-remove-link">Remove ads</button>
+        <button type="button" class="btn-link ad-remove-link" id="ad-remove-link">Unlock Pro</button>
       </p>
 
       <p class="error" id="error" hidden></p>
@@ -430,56 +430,7 @@
               </label>
             </section>
 
-            <section class="settings-section" id="detail-preferred-section">
-              <label
-                class="field optional-time-field detail-preferred-field"
-                id="detail-preferred-field"
-                data-empty="true"
-              >
-                <span>Target train</span>
-                <div class="optional-time-control">
-                  <button type="button" class="optional-time-display" id="detail-preferred-display">
-                    Not set
-                  </button>
-                  <input
-                    type="time"
-                    id="detail-preferred-input"
-                    class="optional-time-input"
-                    tabindex="-1"
-                    aria-hidden="true"
-                  />
-                  <button
-                    type="button"
-                    class="optional-time-clear"
-                    id="detail-preferred-clear"
-                    hidden
-                    aria-label="Clear target train"
-                  >
-                    ×
-                  </button>
-                </div>
-              </label>
-              <p class="settings-section-hint">
-                First train at or after this time.
-              </p>
-            </section>
-
-            <section class="settings-section" id="detail-reminder-section">
-              <div class="menu-toggle-row detail-remind-toggle-row">
-                <span class="menu-toggle-title">Remind me</span>
-                <label class="menu-toggle-switch">
-                  <input type="checkbox" id="detail-remind-me" />
-                  <span class="menu-toggle-track" aria-hidden="true"></span>
-                </label>
-              </div>
-              <div class="detail-remind-expanded" id="detail-remind-expanded" hidden>
-                <p class="settings-section-hint detail-remind-permission-hint" id="detail-remind-permission-hint" hidden>
-                  Notifications are off — enable in system settings to get leave reminders.
-                </p>
-              </div>
-            </section>
-
-            <section class="settings-section">
+            <section class="settings-section" id="detail-timing-section">
               <h3 class="settings-section-title">Timing</h3>
               <label class="field leave-before-field" id="leave-before-field">
                 <div class="field-label-row">
@@ -507,7 +458,7 @@
               <div class="remind-days-field" id="detail-active-days-field">
                 <span class="field-label">Active days</span>
                 <p class="settings-section-hint detail-active-days-hint">
-                  Which days to you travel this journey?
+                  Which days do you travel this journey?
                 </p>
                 <div class="remind-day-chips remind-day-chips--row" id="detail-active-day-chips">
                   <button type="button" class="remind-day-chip" data-day="1" aria-label="Monday" aria-pressed="false">M</button>
@@ -581,7 +532,7 @@
                 </button>
               </div>
               <p class="settings-section-hint" id="detail-active-hours-hint">
-                Active hours for auto-select on the main screen.
+                When this journey shows on the home screen.
               </p>
               <p class="settings-section-hint detail-target-outside-hint" id="detail-target-outside-active-hint" hidden>
                 Target train is outside Active hours.
@@ -592,6 +543,68 @@
               <p class="settings-section-hint" id="detail-combo-d-hint" hidden>
                 Add Active hours to show this journey on a schedule.
               </p>
+            </section>
+
+            <section class="settings-section" id="detail-preferred-section">
+              <label
+                class="field optional-time-field detail-preferred-field"
+                id="detail-preferred-field"
+                data-empty="true"
+              >
+                <span>Target train</span>
+                <div class="optional-time-control">
+                  <button type="button" class="optional-time-display" id="detail-preferred-display">
+                    Not set
+                  </button>
+                  <input
+                    type="time"
+                    id="detail-preferred-input"
+                    class="optional-time-input"
+                    tabindex="-1"
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    class="optional-time-clear"
+                    id="detail-preferred-clear"
+                    hidden
+                    aria-label="Clear target train"
+                  >
+                    ×
+                  </button>
+                </div>
+              </label>
+              <p class="settings-section-hint">
+                First train at or after this time.
+              </p>
+
+              <div class="detail-remind-controls" id="detail-remind-controls" hidden>
+                <div class="detail-remind-toggles" id="detail-remind-toggles">
+                  <div
+                    class="menu-toggle-row detail-remind-toggle-row"
+                    id="detail-reminder-section"
+                  >
+                    <span class="menu-toggle-title">Remind me</span>
+                    <label class="menu-toggle-switch">
+                      <input type="checkbox" id="detail-remind-me" />
+                      <span class="menu-toggle-track" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div
+                    class="menu-toggle-row detail-remind-toggle-row reminders-strip-option"
+                    id="leave-reminders-strip-wrap"
+                  >
+                    <span class="menu-toggle-title">Live countdown</span>
+                    <label class="menu-toggle-switch">
+                      <input type="checkbox" id="leave-reminders-commute-strip" />
+                      <span class="menu-toggle-track" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+                <p class="settings-section-hint detail-remind-permission-hint" id="detail-remind-permission-hint" hidden>
+                  Notifications are off — enable in system settings to get leave reminders.
+                </p>
+              </div>
             </section>
 
           </div>
@@ -655,9 +668,11 @@
               <p id="template-wizard-hours-body"></p>
             </div>
             <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>
-              <h2 id="template-wizard-step-reminder-title">Reminder</h2>
+              <h2 id="template-wizard-step-reminder-title">Leave alerts</h2>
               <p>
-                Turn on to get a leave notification. Uses your target train when set.
+                <strong>Remind me</strong> sends a leave notification for your target train.
+                Optional <strong>Live countdown</strong> keeps a running leave countdown in
+                notifications.
               </p>
             </div>
             <div class="template-wizard-actions">
@@ -669,79 +684,70 @@
       </div>
     </div>
 
-    <dialog class="reminders-dialog" id="reminders-dialog">
-      <div class="reminders-dialog-body">
-        <div class="settings-view-header reminders-dialog-header">
-          <h2>Reminder settings</h2>
-          <p class="reminders-lead" id="reminders-lead" hidden>
-            Get a notification when it&rsquo;s time to leave for your train.
-          </p>
-          <p class="reminders-armed-lead" id="reminders-armed-lead" hidden>
-            Early Reminder and Pause apply to every journey with Reminder on.
-          </p>
+    <dialog class="pro-sheet-dialog" id="pro-founding-sheet">
+      <div class="pro-sheet-body">
+        <div class="pro-badge" aria-hidden="true">
+          <span class="pro-badge-mark"></span>
+          Founding 200
         </div>
+        <h2>You&rsquo;re Founding 200</h2>
+        <p>Pro unlocked forever — full home-screen widget and no ads. Thank you for being early.</p>
+        <div class="pro-sheet-actions">
+          <button type="button" class="btn-primary" id="pro-founding-add-widget-btn">Add widget</button>
+          <button type="button" class="btn-secondary" id="pro-founding-got-it-btn">Got it</button>
+        </div>
+      </div>
+    </dialog>
 
-        <p class="reminders-web-hint" id="reminders-web-hint" hidden>
-          Leave reminders are available in the Android app. Turn Reminder on for a journey under My Journeys.
+    <dialog class="pro-sheet-dialog" id="pro-trial-started-sheet">
+      <div class="pro-sheet-body">
+        <h2>Pro trial — 30 days</h2>
+        <p>
+          Full widget and no ads while you try it. After that, unlock Pro once to keep the widget —
+          no subscription.
         </p>
+        <div class="pro-sheet-actions">
+          <button type="button" class="btn-primary" id="pro-trial-got-it-btn">Got it</button>
+        </div>
+      </div>
+    </dialog>
 
-        <div id="reminders-native-content" hidden>
-          <p class="reminders-schedule-line" id="leave-reminders-schedule" hidden></p>
+    <dialog class="pro-paywall-dialog" id="pro-paywall-dialog">
+      <div class="pro-paywall-body">
+        <h2>Keep the full widget</h2>
+        <p class="pro-paywall-lede">One-time unlock. No subscription.</p>
+        <ul class="pro-paywall-benefits">
+          <li>Full-quality home-screen widget</li>
+          <li>No ads in the app</li>
+        </ul>
+        <p class="pro-paywall-price" id="pro-paywall-price">A$X.XX</p>
+        <p class="pro-paywall-price-sub">Lifetime · one-time</p>
+        <div class="pro-paywall-actions">
+          <button type="button" class="btn-primary" id="pro-paywall-unlock-btn">Unlock Pro</button>
+          <button type="button" class="btn-link pro-paywall-restore" id="pro-paywall-restore-btn">
+            Restore purchases
+          </button>
+        </div>
+        <p class="pro-paywall-founding-note" id="pro-paywall-founding-note" hidden>
+          Founding 200 is full — new users get the 30-day trial, then Pro.
+        </p>
+        <button type="button" class="btn-secondary pro-paywall-close" id="pro-paywall-close-btn">Not now</button>
+      </div>
+    </dialog>
 
-          <div class="reminders-shared-option reminders-strip-option" id="leave-reminders-strip-wrap">
-            <div class="reminders-shared-option-header">
-              <div class="reminders-shared-option-copy">
-                <span class="menu-toggle-title">Show commute countdown in notifications</span>
-                <p class="reminders-option-hint">
-                  While you&rsquo;re leaving for your preferred train &mdash; not all day. Separate from leave reminders.
-                </p>
-              </div>
-              <label class="menu-toggle-switch">
-                <input type="checkbox" id="leave-reminders-commute-strip" />
-                <span class="menu-toggle-track" aria-hidden="true"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="reminders-empty" id="reminders-empty" hidden>
-            <div class="reminders-empty-card">
-              <p class="reminders-empty-title" id="reminders-empty-title"></p>
-              <p class="reminders-empty-body" id="reminders-empty-body"></p>
-              <button type="button" class="btn-secondary reminders-open-journeys-btn" id="reminders-open-journeys-btn">
-                Open My Journeys
-              </button>
-            </div>
-          </div>
-
-          <div class="reminders-shared-options" id="reminders-shared-options" hidden>
-            <div class="reminders-shared-option reminders-nudge-option" id="leave-reminders-nudge-wrap">
-              <div class="reminders-shared-option-header">
-                <div class="reminders-shared-option-copy">
-                  <span class="menu-toggle-title">Early Reminder</span>
-                  <p class="reminders-option-hint">
-                    A heads-up a few minutes before leave time — time to grab keys.
-                  </p>
-                </div>
-                <label class="menu-toggle-switch">
-                  <input type="checkbox" id="leave-reminders-early" />
-                  <span class="menu-toggle-track" aria-hidden="true"></span>
-                </label>
-              </div>
-              <div class="reminders-nudge-chips-wrap" id="leave-reminders-nudge-chips-wrap" hidden>
-                <span class="reminders-sr-only">Minutes before leave</span>
-                <p class="reminders-chips-hint">Minutes before leave time:</p>
-                <div class="remind-day-chips reminders-offset-chips" id="leave-reminders-nudge-chips">
-                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="5" aria-pressed="false">5</button>
-                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="10" aria-pressed="false">10</button>
-                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="15" aria-pressed="false">15</button>
-                </div>
-              </div>
-            </div>
+    <dialog class="menu-dialog" id="menu-dialog">
+      <div class="menu-dialog-body">
+        <div class="settings-view-header">
+          <h2>Menu</h2>
+        </div>
+        <nav class="menu-dialog-links" aria-label="Menu">
+          <button type="button" class="menu-dialog-link" id="menu-widget-btn" hidden>Add home screen widget</button>
+          <div class="menu-pause-block" id="menu-pause-block" hidden>
             <div class="reminders-shared-option reminders-pause-option" id="leave-reminders-pause-wrap">
               <div class="reminders-shared-option-header">
                 <div class="reminders-shared-option-copy">
-                  <span class="menu-toggle-title">Pause reminders</span>
-                  <p class="reminders-option-hint">For holidays, time off, or working from home.</p>
+                  <span class="menu-toggle-title">Pause Reminders</span>
+                  <p class="reminders-option-hint">Holidays, time off, or working from home.</p>
                 </div>
                 <label class="menu-toggle-switch">
                   <input type="checkbox" id="leave-reminders-pause" />
@@ -781,52 +787,37 @@
                       aria-describedby="leave-reminders-pause-days-hint"
                     />
                     <span class="reminders-pause-days-unit" id="leave-reminders-pause-days-hint">days</span>
-                    <button type="button" class="btn-secondary reminders-pause-custom-apply" id="leave-reminders-pause-custom-apply">
+                    <button type="button" class="btn-primary reminders-pause-custom-apply" id="leave-reminders-pause-custom-apply">
                       Set
                     </button>
                   </div>
                 </div>
               </div>
             </div>
+            <p class="menu-pause-web-hint" id="menu-pause-web-hint" hidden>
+              Leave alerts are available in the Android app. Turn Remind me on for a journey under My Journeys.
+            </p>
           </div>
-        </div>
-      </div>
-      <div
-        class="reminders-validation-error"
-        id="reminders-validation-error"
-        hidden
-        role="alert"
-      ></div>
-      <div class="reminders-dialog-footer">
-        <button type="button" class="btn-primary reminders-done-btn" id="reminders-done-btn">Done</button>
-      </div>
-    </dialog>
-
-    <dialog class="menu-dialog" id="menu-dialog">
-      <div class="menu-dialog-body">
-        <div class="settings-view-header">
-          <h2>Menu</h2>
-        </div>
-        <nav class="menu-dialog-links" aria-label="Menu">
-          <button type="button" class="menu-dialog-link" id="menu-reminders-btn">Reminder settings</button>
-          <button type="button" class="menu-dialog-link" id="menu-widget-btn" hidden>Add home screen widget</button>
-          <div class="menu-ad-free" id="menu-ad-free-section">
-            <button type="button" class="menu-purchase-row" id="menu-remove-ads-btn" hidden>
-              <span class="menu-purchase-title">Remove ads</span>
-              <span class="menu-purchase-subtitle" id="menu-remove-ads-subtitle">One-time purchase</span>
+          <div class="menu-pro" id="menu-pro-section">
+            <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-pro-cta-btn" hidden>
+              <span class="menu-purchase-title" id="menu-pro-cta-title">Unlock Pro</span>
+              <span class="menu-purchase-subtitle" id="menu-pro-cta-subtitle">One-time purchase</span>
             </button>
-            <div class="menu-purchase-row menu-purchase-row--status" id="menu-ad-free-status" hidden>
-              <span class="menu-purchase-title">Ad-free</span>
-              <span class="menu-purchase-subtitle">You're ad-free</span>
+            <div class="menu-purchase-row menu-purchase-row--status" id="menu-pro-status-row" hidden>
+              <span class="menu-purchase-title" id="menu-pro-status-title">Pro</span>
+              <span class="menu-purchase-subtitle" id="menu-pro-status-subtitle">Ads off · full widget</span>
             </div>
             <button type="button" class="menu-restore-btn" id="menu-restore-purchase-btn" hidden>
-              Restore purchase
+              Restore purchases
             </button>
-            <p class="menu-ad-free-web-hint" id="menu-ad-free-web-hint" hidden>
-              Ad-free is available in the Android app.
+            <button type="button" class="menu-restore-btn" id="menu-pro-nudge-dismiss" hidden>
+              Not now
+            </button>
+            <p class="menu-ad-free-web-hint" id="menu-pro-web-hint" hidden>
+              Pro is available in the Android app.
             </p>
-            <p class="menu-ad-free-web-hint" id="menu-ad-free-billing-hint" hidden>
-              Purchases aren't available on this install.
+            <p class="menu-ad-free-web-hint" id="menu-pro-billing-hint" hidden>
+              Purchases aren&rsquo;t available on this install.
             </p>
           </div>
           <div class="menu-dialog-divider" aria-hidden="true"></div>
@@ -837,6 +828,7 @@
           <span class="menu-dialog-legal-sep" aria-hidden="true">·</span>
           <a href="/privacy.html">Privacy</a>
         </p>
+        <p class="menu-dialog-version" id="menu-app-version" hidden></p>
       </div>
       <div class="menu-dialog-footer">
         <button type="button" class="btn-primary menu-done-btn" id="menu-done-btn">Done</button>
@@ -913,6 +905,11 @@
             for other departures. Tap again to refresh your location.
           </li>
           <li>
+            <strong>Leave alerts</strong> — Set a <strong>target train</strong>, then turn on
+            <strong>Remind me</strong>. Optional <strong>Live countdown</strong> keeps a running
+            leave countdown in notifications. Pause from <strong>Menu → Pause reminders</strong>.
+          </li>
+          <li>
             <strong>Platform &amp; status</strong> — Live platform and delay info for the train
             you’re viewing.
           </li>
@@ -938,20 +935,52 @@
 
     <script>
       (function () {
-        if (typeof require !== "undefined") {
-          return;
+        // esbuild marks @capacitor/core external; bundles expect the ESM module shape
+        // ({ Capacitor, registerPlugin }), not the Capacitor global object alone.
+        const previousRequire = typeof require === "function" ? require : null;
+
+        function capacitorCoreModule() {
+          const Cap = window.Capacitor;
+          if (!Cap) {
+            return null;
+          }
+          // Native bridge has Plugins.* but not registerPlugin (that lives in @capacitor/core JS).
+          function registerPlugin(name) {
+            if (Cap.Plugins && Cap.Plugins[name]) {
+              return Cap.Plugins[name];
+            }
+            if (typeof Cap.withPlugin === "function") {
+              return Cap.withPlugin(name);
+            }
+            throw new Error('Capacitor plugin "' + name + '" is not available');
+          }
+          return {
+            Capacitor: Cap,
+            registerPlugin,
+            WebPlugin: Cap.WebPlugin,
+            Plugins: Cap.Plugins,
+          };
         }
 
         window.require = function (name) {
-          if (name === "@capacitor/core" && window.Capacitor) {
-            return window.Capacitor;
+          if (name === "@capacitor/core") {
+            const mod = capacitorCoreModule();
+            if (mod) {
+              return mod;
+            }
           }
-
+          if (previousRequire) {
+            return previousRequire.apply(this, arguments);
+          }
           throw new Error('Dynamic require of "' + name + '" is not supported');
         };
       })();
     </script>
+    <script src="pro-entitlement.js"></script>
     <script src="ad-free-purchase.js"></script>
+    <script src="analytics-bundle.js"></script>
+    <script src="analytics.js"></script>
+    <script src="geo-bundle.js"></script>
     <script src="train-times-bundle.js"></script>
     <script src="app.js"></script>
     <script src="widget.js"></script>

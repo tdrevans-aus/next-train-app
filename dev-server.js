@@ -16,6 +16,9 @@ import {
 } from "./lib/fixtures.js";
 import { checkRateLimit } from "./lib/api-rate-limit.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
+import { listCities, assertCityLive } from "./lib/providers/registry.js";
+import { getFoundingStatus, tryClaimFounding } from "./lib/founding-counter.js";
+import { isCityProbeAllowed, fetchDevCityBoard } from "./lib/dev-city-board.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -29,18 +32,15 @@ function readQueryParams(query) {
   const leaveBefore = query.leaveBefore ?? query.leaveBeforeMinutes;
   const refresh = query.refresh ?? query.refreshSeconds;
   const skipTrains = query.skipTrains ?? query.skip;
+  const city = query.city ?? "perth";
 
   if (!station || !direction) {
     return null;
   }
 
-  const allowedStation = resolveAllowedStation(station);
-  if (!allowedStation) {
-    return { error: "Unknown station" };
-  }
-
   return {
-    station: allowedStation,
+    city,
+    station,
     destination: direction,
     destinationLabel: direction,
     leaveBeforeMinutes: Number(leaveBefore) || DEFAULT_LEAVE_BEFORE_MINUTES,
@@ -58,6 +58,24 @@ app.get("/api/fixtures", (_req, res) => {
   res.json({ fixtures: listFixtures() });
 });
 
+app.get("/api/health", (_req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.status(200).json({
+    ok: true,
+    service: "next-train-api",
+    ts: new Date().toISOString(),
+  });
+});
+
+app.get("/api/cities", (_req, res) => {
+  res.setHeader("Cache-Control", "public, s-maxage=300");
+  res.json({
+    contractVersion: 1,
+    cities: listCities(),
+    docs: "docs/multi-city-provider-design.md",
+  });
+});
+
 app.get("/api/next-train", async (req, res) => {
   if (!checkRateLimit(req, res)) {
     return;
@@ -69,10 +87,22 @@ app.get("/api/next-train", async (req, res) => {
     return;
   }
 
-  if (config.error) {
-    res.status(400).json({ error: config.error });
+  const cityGate = assertCityLive(config.city);
+  if (!cityGate.ok) {
+    res.status(cityGate.status).json({
+      error: cityGate.error,
+      city: cityGate.city,
+      integration: cityGate.integration,
+    });
     return;
   }
+
+  const station = resolveAllowedStation(config.station);
+  if (!station) {
+    res.status(400).json({ error: "Unknown station" });
+    return;
+  }
+  config.station = station;
 
   const fixtureId = readFixtureId(req.query);
   if (fixtureId) {
@@ -154,6 +184,34 @@ app.get("/api/destinations", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
   }
+});
+
+app.get("/api/founding-status", (_req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.status(200).json(getFoundingStatus());
+});
+
+app.post("/api/founding-claim", (_req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.status(200).json(tryClaimFounding());
+});
+
+app.get("/api/dev/board", async (req, res) => {
+  if (!isCityProbeAllowed()) {
+    res.status(404).json({ error: "Not found" });
+    return;
+  }
+
+  if (!checkRateLimit(req, res)) {
+    return;
+  }
+
+  const city = req.query.city ?? "perth";
+  const list = req.query.list === "1" || req.query.list === "true";
+  const station = req.query.station;
+  const result = await fetchDevCityBoard(city, station, { list });
+  res.setHeader("Cache-Control", "no-store");
+  res.status(result.status).json(result.body);
 });
 
 export default app;

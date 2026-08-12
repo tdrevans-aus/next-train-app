@@ -23,13 +23,16 @@ public final class CommuteStripNotifier {
     String route,
     String trainTime,
     long leaveByMs,
+    long departureMs,
     boolean stale
   ) {
     createChannel(context);
 
     long now = System.currentTimeMillis();
-    long minutesUntilLeave = Math.max(0, (leaveByMs - now + 59_999L) / 60_000L);
-    String title = minutesUntilLeave <= 0 ? "Leave now" : "Leave in " + minutesUntilLeave + " min";
+    boolean leaveNow = leaveByMs <= now;
+    // Before leave-by: chronometer → leave-by. After: chronometer → train departure.
+    String title = leaveNow ? "Target train" : "Leave";
+    long chronometerToMs = leaveNow ? departureMs : leaveByMs;
 
     String body = route + " · Train " + trainTime;
     if (stale) {
@@ -61,7 +64,7 @@ public final class CommuteStripNotifier {
     );
 
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-      .setSmallIcon(R.mipmap.ic_launcher)
+      .setSmallIcon(R.drawable.ic_stat_next_train)
       .setContentTitle(title)
       .setContentText(body)
       .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
@@ -71,13 +74,16 @@ public final class CommuteStripNotifier {
       .setAutoCancel(false)
       .setPriority(NotificationCompat.PRIORITY_LOW)
       .setCategory(NotificationCompat.CATEGORY_STATUS)
-      .setWhen(leaveByMs)
-      .setShowWhen(false)
-      .setUsesChronometer(true)
       .addAction(0, "Dismiss", dismissPending);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      builder.setChronometerCountDown(true);
+    if (chronometerToMs > now) {
+      builder
+        .setWhen(chronometerToMs)
+        .setShowWhen(false)
+        .setUsesChronometer(true);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        builder.setChronometerCountDown(true);
+      }
     }
 
     Notification notification = builder.build();

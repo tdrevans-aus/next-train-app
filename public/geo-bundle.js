@@ -138,6 +138,7 @@ var NextTrainGeo = (() => {
   // public/geo-native.mjs
   var geo_native_exports = {};
   __export(geo_native_exports, {
+    ensureLocationPermission: () => ensureLocationPermission,
     getCurrentPosition: () => getCurrentPosition
   });
 
@@ -198,19 +199,86 @@ var NextTrainGeo = (() => {
   f();
 
   // public/geo-native.mjs
+  function permissionGranted(status) {
+    const location = status?.location ?? status?.coarseLocation;
+    return location === "granted";
+  }
+  function permissionDenied(status) {
+    const location = status?.location ?? status?.coarseLocation;
+    return location === "denied";
+  }
+  async function ensureLocationPermission() {
+    let status;
+    try {
+      status = await Geolocation2.checkPermissions();
+    } catch {
+      status = null;
+    }
+    if (permissionGranted(status)) {
+      return { granted: true, status };
+    }
+    if (permissionDenied(status)) {
+      const error = new Error(
+        "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
+      );
+      error.code = 1;
+      throw error;
+    }
+    try {
+      status = await Geolocation2.requestPermissions();
+    } catch (error) {
+      const denied = new Error(
+        "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
+      );
+      denied.code = 1;
+      denied.cause = error;
+      throw denied;
+    }
+    if (!permissionGranted(status)) {
+      const error = new Error(
+        "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
+      );
+      error.code = 1;
+      throw error;
+    }
+    return { granted: true, status };
+  }
   async function getCurrentPosition(options = {}) {
-    const position = await Geolocation2.getCurrentPosition({
-      enableHighAccuracy: Boolean(options.enableHighAccuracy),
-      timeout: options.timeout ?? 1e4,
-      maximumAge: options.maximumAge ?? 6e4
-    });
-    return {
-      coords: {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        speed: position.coords.speed ?? null
+    await ensureLocationPermission();
+    try {
+      const position = await Geolocation2.getCurrentPosition({
+        enableHighAccuracy: Boolean(options.enableHighAccuracy),
+        timeout: options.timeout ?? 1e4,
+        maximumAge: options.maximumAge ?? 6e4
+      });
+      return {
+        coords: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          speed: position.coords.speed ?? null
+        }
+      };
+    } catch (error) {
+      const message = String(error?.message || error || "");
+      const lower = message.toLowerCase();
+      if (lower.includes("disabled") || lower.includes("location services") || lower.includes("not enabled") || lower.includes("location unavailable")) {
+        const disabled = new Error(
+          "Turn on Location in your phone settings, then try Near me again \u2014 or choose a station below."
+        );
+        disabled.code = 2;
+        disabled.cause = error;
+        throw disabled;
       }
-    };
+      if (Number(error?.code) === 1 || lower.includes("denied") || lower.includes("permission")) {
+        const denied = new Error(
+          "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
+        );
+        denied.code = 1;
+        denied.cause = error;
+        throw denied;
+      }
+      throw error;
+    }
   }
   return __toCommonJS(geo_native_exports);
 })();

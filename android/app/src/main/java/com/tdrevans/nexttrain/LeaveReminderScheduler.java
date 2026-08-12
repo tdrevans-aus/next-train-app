@@ -59,9 +59,17 @@ public final class LeaveReminderScheduler {
     cancelAllScheduled(context);
     LeaveReminderSettingsStore.clearExpiredPauseIfNeeded(context);
 
-    if (!LeaveReminderSettingsStore.isEnabled(context) || LeaveReminderSettingsStore.isPaused(context)) {
+    if (!LeaveReminderSettingsStore.isEnabled(context)) {
+      cancelPauseResumeAlarm(context);
       return;
     }
+
+    if (LeaveReminderSettingsStore.isPaused(context)) {
+      schedulePauseResumeAlarm(context);
+      return;
+    }
+
+    cancelPauseResumeAlarm(context);
 
     long refreshedAt = widgetResult != null && widgetResult.refreshedAtMs > 0
       ? widgetResult.refreshedAtMs
@@ -459,6 +467,67 @@ public final class LeaveReminderScheduler {
 
   public static void cancelAll(Context context) {
     cancelAllScheduled(context);
+    cancelPauseResumeAlarm(context);
+  }
+
+  static final String ACTION_PAUSE_RESUME = "com.tdrevans.nexttrain.action.PAUSE_RESUME";
+  private static final int PAUSE_RESUME_REQUEST_CODE = 74001;
+
+  static void schedulePauseResumeAlarm(Context context) {
+    JSONObject settings = LeaveReminderSettingsStore.readSettings(context);
+    String pauseUntil = settings.optString("pauseUntil", "");
+    long untilMs = PerthTime.epochMillisFromIso(pauseUntil);
+    long now = System.currentTimeMillis();
+    if (untilMs <= now) {
+      cancelPauseResumeAlarm(context);
+      return;
+    }
+
+    AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    if (manager == null) {
+      return;
+    }
+
+    Intent intent = new Intent(context, PauseResumeReceiver.class);
+    intent.setAction(ACTION_PAUSE_RESUME);
+    PendingIntent pending = PendingIntent.getBroadcast(
+      context,
+      PAUSE_RESUME_REQUEST_CODE,
+      intent,
+      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+    );
+
+    try {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, untilMs, pending);
+      } else {
+        manager.setExact(AlarmManager.RTC_WAKEUP, untilMs, pending);
+      }
+    } catch (Exception error) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        manager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, untilMs, pending);
+      } else {
+        manager.set(AlarmManager.RTC_WAKEUP, untilMs, pending);
+      }
+    }
+  }
+
+  static void cancelPauseResumeAlarm(Context context) {
+    AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    if (manager == null) {
+      return;
+    }
+
+    Intent intent = new Intent(context, PauseResumeReceiver.class);
+    intent.setAction(ACTION_PAUSE_RESUME);
+    PendingIntent pending = PendingIntent.getBroadcast(
+      context,
+      PAUSE_RESUME_REQUEST_CODE,
+      intent,
+      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+    );
+    manager.cancel(pending);
+    pending.cancel();
   }
 
   private static void cancelAllScheduled(Context context) {

@@ -18,6 +18,22 @@ const LAST_NEARBY_STATION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 const SWIPE_THRESHOLD_PX = 48;
 
 const routeEl = document.getElementById("route");
+
+function setRouteDisplay(text) {
+  if (!routeEl) {
+    return;
+  }
+  routeEl.textContent = text;
+  routeEl.setAttribute("aria-label", text);
+}
+
+function setAccessibleText(el, text) {
+  if (!el) {
+    return;
+  }
+  el.textContent = text;
+  el.setAttribute("aria-label", text);
+}
 const updatedEl = document.getElementById("updated");
 const journeySwitcherEl = document.getElementById("journey-switcher");
 const journeySwitcherNameEl = document.getElementById("journey-switcher-name");
@@ -67,6 +83,7 @@ const helpDialog = document.getElementById("help-dialog");
 const helpCloseBtn = document.getElementById("help-close-btn");
 const journeysDialog = document.getElementById("journeys-dialog");
 const menuDialog = document.getElementById("menu-dialog");
+const menuAppVersionEl = document.getElementById("menu-app-version");
 const menuHelpBtn = document.getElementById("menu-help-btn");
 const settingsListView = document.getElementById("settings-list-view");
 const settingsDetailView = document.getElementById("settings-detail-view");
@@ -127,7 +144,7 @@ const heroEmptyAddBtn = document.getElementById("hero-empty-add-btn");
 const heroEmptyBackBtn = document.getElementById("hero-empty-back-btn");
 const detailActiveDayChips = document.getElementById("detail-active-day-chips");
 const detailActiveDaysHint = document.querySelector(".detail-active-days-hint");
-const DEFAULT_ACTIVE_DAYS_HINT = "Which days to you travel this journey?";
+const DEFAULT_ACTIVE_DAYS_HINT = "Which days do you travel this journey?";
 const CUSTOM_ACTIVE_DAYS_HINT =
   "Starts on today — add more days if this repeats more often.";
 const detailActiveHoursErrorEl = document.getElementById("detail-active-hours-error");
@@ -138,8 +155,8 @@ const detailTargetOutsideActiveHint = document.getElementById("detail-target-out
 const detailComboBHint = document.getElementById("detail-combo-b-hint");
 const detailComboDHint = document.getElementById("detail-combo-d-hint");
 const detailReminderSection = document.getElementById("detail-reminder-section");
+const detailRemindControls = document.getElementById("detail-remind-controls");
 const detailRemindMeInput = document.getElementById("detail-remind-me");
-const detailRemindExpandedEl = document.getElementById("detail-remind-expanded");
 const detailPreferredInput = document.getElementById("detail-preferred-input");
 const detailPreferredDisplay = document.getElementById("detail-preferred-display");
 const detailPreferredField = document.getElementById("detail-preferred-field");
@@ -204,6 +221,10 @@ const PERTH_API_STATIONS = ["Perth Underground Stn", "Perth Stn"];
 const CANONICAL_PERTH_STATION = "Perth Underground Stn";
 const DEFAULT_DIRECTION_LABEL = "Perth";
 const DEFAULT_REMIND_DAYS = [1, 2, 3, 4, 5];
+
+function trackProductEvent(name, props) {
+  window.NextTrainAnalytics?.track?.(name, props);
+}
 const MAX_JOURNEYS = 6;
 const JOURNEY_CAP_HINT = `${MAX_JOURNEYS} journeys — that's the limit for now. Delete one to add another.`;
 const JOURNEY_TEMPLATE_PRESETS = {
@@ -249,6 +270,59 @@ async function ensureGeoBridge() {
   await loadScriptOnce("geo-bundle.js");
 }
 
+function locationErrorFrom(error) {
+  const code = Number(error?.code);
+  const message = String(error?.message || error || "");
+  const lower = message.toLowerCase();
+
+  if (
+    code === 1 ||
+    lower.includes("denied") ||
+    lower.includes("permission")
+  ) {
+    return Object.assign(
+      new Error(
+        "Location permission is needed for Near me. Open Settings → Apps → Next Train → Location → Allow, or choose a station below."
+      ),
+      { code: 1, cause: error }
+    );
+  }
+
+  if (
+    lower.includes("disabled") ||
+    lower.includes("location services") ||
+    lower.includes("not enabled")
+  ) {
+    return Object.assign(
+      new Error(
+        "Turn on Location in your phone settings, then try Near me again — or choose a station below."
+      ),
+      { code: 2, cause: error }
+    );
+  }
+
+  if (
+    lower.includes("timeout") ||
+    lower.includes("could not obtain location in time") ||
+    lower.includes("location unavailable")
+  ) {
+    return Object.assign(
+      new Error(
+        "Couldn’t get your location. On an emulator, set a mock GPS (Extended controls → Location). On a phone, turn on Location — or choose a station below."
+      ),
+      { code: 2, cause: error }
+    );
+  }
+
+  if (error instanceof Error) {
+    return error;
+  }
+
+  return Object.assign(new Error(message || "Could not find a nearby station"), {
+    code: code || 2,
+  });
+}
+
 async function getAppGeolocationPosition(options = {}) {
   if (isNativeApp()) {
     await ensureGeoBridge();
@@ -256,16 +330,27 @@ async function getAppGeolocationPosition(options = {}) {
       throw Object.assign(new Error("Native geolocation bridge unavailable"), { code: 2 });
     }
 
-    return window.NextTrainGeo.getCurrentPosition(options);
+    try {
+      if (typeof window.NextTrainGeo.ensureLocationPermission === "function") {
+        await window.NextTrainGeo.ensureLocationPermission();
+      }
+      return await window.NextTrainGeo.getCurrentPosition(options);
+    } catch (error) {
+      throw locationErrorFrom(error);
+    }
   }
 
   if (!navigator.geolocation) {
     throw Object.assign(new Error("Geolocation unavailable"), { code: 2 });
   }
 
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject, options);
-  });
+  try {
+    return await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+  } catch (error) {
+    throw locationErrorFrom(error);
+  }
 }
 
 function isJourneysDialogOpen() {
@@ -891,7 +976,7 @@ function syncJourneyContextChrome() {
 
   if (journeyContextNameEl) {
     journeyContextNameEl.hidden = !showName;
-    journeyContextNameEl.textContent = getActiveJourney()?.name ?? "Journey";
+    setAccessibleText(journeyContextNameEl, getActiveJourney()?.name ?? "Journey");
   }
 
   if (journeySwitcherEl) {
@@ -1023,12 +1108,39 @@ function deferOnboardingForSession() {
   sessionStorage.setItem(ONBOARDING_DEFER_KEY, "1");
 }
 
+/** Nearby coach only after station + board loaded without error (not locate/error shells). */
+function isNearbyWidgetLoaded() {
+  if (!isNearbyModeActive()) {
+    return false;
+  }
+
+  if (!nearbySession?.station || !nearbyBoard) {
+    return false;
+  }
+
+  if (nearbyError || nearbyLoading || nearbyBoardInflight) {
+    return false;
+  }
+
+  return true;
+}
+
+function clearOnboardingSchedule() {
+  if (onboardingShowTimer) {
+    clearTimeout(onboardingShowTimer);
+    onboardingShowTimer = null;
+  }
+  onboardingPopulatedAt = null;
+}
+
 function maybeScheduleOnboarding() {
   if (!isNearbyModeActive()) {
+    clearOnboardingSchedule();
     return;
   }
 
-  if (shouldShowNearbyLoadingState()) {
+  if (!isNearbyWidgetLoaded()) {
+    clearOnboardingSchedule();
     return;
   }
 
@@ -1308,6 +1420,9 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
   const syncFromInput = () => {
     setOptionalTimeField(input, display, field, clearBtn, input.value);
     syncDetailComboHints();
+    if (field === detailPreferredField) {
+      syncDetailTargetRemindVisibility();
+    }
   };
 
   // Android WebView often fires `input` when the picker commits; `change` alone can miss.
@@ -1319,6 +1434,9 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
     event.stopPropagation();
     setOptionalTimeField(input, display, field, clearBtn, "");
     syncDetailComboHints();
+    if (field === detailPreferredField) {
+      syncDetailTargetRemindVisibility();
+    }
   });
 }
 
@@ -1773,6 +1891,180 @@ async function readUrlSettings() {
   });
 }
 
+function getWidgetSyncPluginForMaestro() {
+  const native = window.Capacitor?.Plugins?.WidgetSync;
+  if (native) {
+    return native;
+  }
+  if (!window.Capacitor?.registerPlugin) {
+    return null;
+  }
+  return window.Capacitor.registerPlugin("WidgetSync");
+}
+
+async function waitForWidgetSyncPlugin(maxMs = 8000) {
+  const waitFn =
+    window.NextTrainScripts?.waitForCapacitor ?? window.NextTrainAdFreeNative?.waitForCapacitor;
+  if (waitFn) {
+    await waitFn(maxMs);
+  } else {
+    const started = Date.now();
+    while (!window.Capacitor && Date.now() - started < maxMs) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  }
+
+  const started = Date.now();
+  while (Date.now() - started < maxMs) {
+    const plugin = getWidgetSyncPluginForMaestro();
+    if (plugin) {
+      try {
+        await plugin.isDebugBuild();
+        return plugin;
+      } catch {
+        // Native bridge not ready yet.
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  return getWidgetSyncPluginForMaestro();
+}
+
+async function peekMaestroSeedDeepLink(plugin, maxMs = 5000) {
+  const started = Date.now();
+  while (Date.now() - started < maxMs) {
+    try {
+      const peek = await plugin.peekLaunchDeepLink();
+      if (peek?.uri) {
+        return String(peek.uri);
+      }
+    } catch {
+      // Bridge may still be starting.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return null;
+}
+
+function buildMaestroSeedSettingsFromParams(stationText, directionText, params = new URLSearchParams()) {
+  const station = normalizeStation(String(stationText).trim()) || String(stationText).trim();
+  const direction = String(directionText).trim();
+  if (!station || !direction) {
+    return null;
+  }
+
+  const preset =
+    params.get("fixture") === "normal" || params.get("preset") === "morning"
+      ? JOURNEY_TEMPLATE_PRESETS.morning
+      : {};
+
+  const journey = createDefaultJourney({
+    ...preset,
+    name: params.get("name") || preset.name || "Morning into town",
+    station,
+    direction,
+    leaveBeforeMinutes:
+      Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
+      DEFAULT_SETTINGS.leaveBeforeMinutes,
+  });
+
+  return migrateSettings({
+    journeys: [journey],
+    activeJourneyId: journey.id,
+    refreshSeconds:
+      Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
+      DEFAULT_SETTINGS.refreshSeconds,
+  });
+}
+
+async function buildMaestroSeedSettings(stationText, directionText, params = new URLSearchParams()) {
+  const stations = await getStationsList();
+  const catalog = new Set(stations);
+  const normalizedStation = normalizeStation(String(stationText).trim());
+  const station = catalog.has(normalizedStation) ? normalizedStation : String(stationText).trim();
+  const direction = String(directionText).trim();
+  if (!station || !direction) {
+    return null;
+  }
+
+  const preset =
+    params.get("fixture") === "normal" || params.get("preset") === "morning"
+      ? JOURNEY_TEMPLATE_PRESETS.morning
+      : {};
+
+  const journey = createDefaultJourney({
+    ...preset,
+    name: params.get("name") || preset.name || "Morning into town",
+    station,
+    direction,
+    leaveBeforeMinutes:
+      Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
+      DEFAULT_SETTINGS.leaveBeforeMinutes,
+  });
+
+  return migrateSettings({
+    journeys: [journey],
+    activeJourneyId: journey.id,
+    refreshSeconds:
+      Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
+      DEFAULT_SETTINGS.refreshSeconds,
+  });
+}
+
+async function applyMaestroTestSeedFromDeepLink() {
+  if (!isNativeApp()) {
+    return false;
+  }
+
+  const plugin = await waitForWidgetSyncPlugin();
+  if (!plugin) {
+    return false;
+  }
+
+  try {
+    const debugResult = await plugin.isDebugBuild();
+    if (!debugResult?.debug) {
+      return false;
+    }
+
+    const uri = await peekMaestroSeedDeepLink(plugin);
+    if (!uri || !/^nexttrain:\/\/test\/seed(?:\?(.*))?$/i.test(uri)) {
+      return false;
+    }
+
+    const match = String(uri).match(/^nexttrain:\/\/test\/seed(?:\?(.*))?$/i);
+    const params = new URLSearchParams(match?.[1] ?? "");
+
+    if (params.get("reset") === "1") {
+      localStorage.clear();
+      sessionStorage.clear();
+    }
+    sessionStorage.setItem("nextTrainTestMode", "1");
+
+    const station = params.get("station");
+    const direction = params.get("direction");
+    let seedSettings = null;
+
+    if (station && direction) {
+      seedSettings = buildMaestroSeedSettingsFromParams(station, direction, params);
+    } else if (params.get("preset") === "morning" || params.get("fixture") === "normal") {
+      seedSettings = buildMaestroSeedSettingsFromParams("Edgewater Stn", "Perth", params);
+    }
+
+    if (!seedSettings) {
+      return false;
+    }
+
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(seedSettings));
+    await plugin.clearLaunchDeepLink();
+    return true;
+  } catch (error) {
+    console.warn("Maestro test seed failed", error);
+    return false;
+  }
+}
+
 function skipStorageKey() {
   const journey = getActiveJourney();
   return `${SKIP_KEY}:${journey?.id ?? "none"}`;
@@ -2118,7 +2410,11 @@ function renderJourneySwitcher() {
 
   const active = getActiveJourney();
   journeySwitcherEl.hidden = false;
-  journeySwitcherNameEl.textContent = active?.name ?? "Journey";
+  setAccessibleText(journeySwitcherNameEl, active?.name ?? "Journey");
+  journeySwitcherEl.setAttribute(
+    "aria-label",
+    `Switch journey: ${active?.name ?? "Journey"}`
+  );
 
   journeySwitcherMenuEl.innerHTML = "";
 
@@ -2850,7 +3146,7 @@ function render(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   const journey = getActiveJourney();
-  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up a journey";
+  setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -2982,7 +3278,7 @@ function renderRefreshErrorState() {
   leaveCardEl?.classList.remove("stale");
 
   const journey = getActiveJourney();
-  routeEl.textContent = journey ? formatJourneyRoute(journey) : "Set up a journey";
+  setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
   updatedEl.textContent = "Update failed";
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
@@ -3084,7 +3380,7 @@ function renderJourneyEmptyState() {
   syncChromeMode();
 
   errorEl.hidden = true;
-  routeEl.textContent = "Journeys";
+  setRouteDisplay("Journeys");
   updatedEl.textContent = "";
   updatedEl.hidden = true;
   setHeroUrgency("calm");
@@ -3357,11 +3653,12 @@ async function findNearestStation({ forceFresh = false } = {}) {
   }
 
   const coords = await loadStationCoords();
-  const geoTimeoutMs = isNativeApp() ? 6000 : 15000;
+  const geoTimeoutMs = 15000;
   const position = await getAppGeolocationPosition({
-    enableHighAccuracy: !isNativeApp(),
+    // forceFresh = GPS refine / locate pass — don’t reuse a stale fused fix (emulator mock moves).
+    enableHighAccuracy: forceFresh ? true : !isNativeApp(),
     timeout: geoTimeoutMs,
-    maximumAge: 60000,
+    maximumAge: forceFresh ? 0 : 60000,
   });
 
   const { latitude, longitude } = position.coords;
@@ -3390,7 +3687,7 @@ function isUnsupportedRegion(distanceKm) {
 function renderUnsupportedRegionBoard() {
   lastRenderedNext = null;
   errorEl.hidden = true;
-  routeEl.textContent = "Near me";
+  setRouteDisplay("Near me");
   updatedEl.textContent = "";
   updatedEl.hidden = true;
   setHeroUrgency("calm");
@@ -3832,6 +4129,7 @@ async function locateNearbyInBackground() {
     }
 
     if (isUnsupportedRegion(nearest.distanceKm)) {
+      clearLastNearbyStationCache();
       nearbySession.unsupportedRegion = true;
       nearbySession.station = null;
       nearbySession.distanceKm = nearest.distanceKm;
@@ -3883,10 +4181,7 @@ async function locateNearbyInBackground() {
     nearbyDontWaitVisible = false;
     syncNearbyDontWaitButton();
     if (!nearbySession.station && !nearbyUserPickedStation) {
-      nearbyError =
-        error.code === 1
-          ? "Location permission is needed for Near me. Choose a station below instead."
-          : (error.message ?? "Could not find a nearby station");
+      nearbyError = locationErrorFrom(error).message;
       renderNearbyBoard();
       return;
     }
@@ -3959,7 +4254,7 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   if (shouldShowNearbyLoadingState()) {
     lastRenderedNext = null;
-    routeEl.textContent = nearbyLoadingRouteCopy();
+    setRouteDisplay(nearbyLoadingRouteCopy());
     setHeroUrgency("calm");
     heroEl?.classList.add("locating");
     if (heroDepartLabelEl) {
@@ -4013,7 +4308,7 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   if (nearbyLocatePickerVisible && !nearbySession?.station && !nearbyUserPickedStation) {
     lastRenderedNext = null;
-    routeEl.textContent = "Near me";
+    setRouteDisplay("Near me");
     setHeroUrgency("calm");
     if (heroDepartLabelEl) {
       heroDepartLabelEl.textContent = "Next Train";
@@ -4053,7 +4348,7 @@ function renderNearbyBoard({ stale = false } = {}) {
   }
 
   if (nearbyError) {
-    routeEl.textContent = formatNearbyRouteLine();
+    setRouteDisplay(formatNearbyRouteLine());
     setHeroUrgency("calm");
     if (heroDepartLabelEl) {
       heroDepartLabelEl.textContent = "Near me";
@@ -4083,7 +4378,7 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   const focusedEntry = getNearbyFocusedEntry();
   const next = focusedEntry?.data?.next ?? null;
-  routeEl.textContent = formatNearbyRouteLine();
+  setRouteDisplay(formatNearbyRouteLine());
   if (nearbySession?.refineNotice) {
     updatedEl.textContent = nearbySession.refineNotice;
     nearbySession.refineNotice = null;
@@ -4239,6 +4534,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
   dismissLeaveHint();
   closeJourneySwitcherMenu();
   stopNearbyLocateTimers();
+  clearOnboardingSchedule();
   nearbyUserPickedStation = Boolean(manualStation);
   nearbyLocatePickerVisible = false;
   nearbyDontWaitVisible = false;
@@ -4267,6 +4563,28 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
     }
     renderNearbyBoard();
     return;
+  }
+
+  // Preload Cap Geolocation + request system permission before first fix.
+  if (isNativeApp()) {
+    try {
+      await ensureGeoBridge();
+      if (typeof window.NextTrainGeo?.ensureLocationPermission === "function") {
+        await window.NextTrainGeo.ensureLocationPermission();
+      }
+    } catch (error) {
+      nearbySession = {
+        station: null,
+        distanceKm: null,
+        focusedDirection: null,
+        skipByDirection: {},
+      };
+      nearbyLoading = false;
+      nearbyError = locationErrorFrom(error).message;
+      syncNearbyChrome();
+      renderNearbyBoard();
+      return;
+    }
   }
 
   const cachedStation = readLastNearbyStationCache();
@@ -4414,6 +4732,7 @@ async function fetchNextTrain() {
   } catch (error) {
     errorEl.textContent = error.message;
     errorEl.hidden = false;
+    trackProductEvent("api_error_shown", { surface: "journey" });
 
     if (lastApiData?.next) {
       render(prepareDisplayData(lastApiData), { stale: true });
@@ -4930,20 +5249,39 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
     }
 
     const directions = dedupeDirections(directionLists.flat());
-    replaceSelectOptions(
-      selectEl,
-      directions.map((dir) => ({ value: dir, label: dir }))
-    );
-
     const normalizedPreferred = normalizeDirection(preferredDirection);
-    if (normalizedPreferred && directions.includes(normalizedPreferred)) {
-      selectEl.value = normalizedPreferred;
+    const options = directions.map((dir) => ({ value: dir, label: dir }));
+
+    if (normalizedPreferred && !directions.includes(normalizedPreferred)) {
+      options.unshift({ value: normalizedPreferred, label: normalizedPreferred });
+    }
+
+    if (options.length === 0) {
+      replaceSelectOptions(selectEl, [
+        { value: "", label: "No live directions right now" },
+      ]);
+    } else {
+      replaceSelectOptions(selectEl, options);
+      if (normalizedPreferred && options.some((opt) => opt.value === normalizedPreferred)) {
+        selectEl.value = normalizedPreferred;
+      }
     }
   } catch (error) {
     if (requestId !== directionsRequestId) {
       return;
     }
-    replaceSelectOptions(selectEl, [{ value: "", label: error.message }]);
+    const normalizedPreferred = normalizeDirection(preferredDirection);
+    if (normalizedPreferred) {
+      replaceSelectOptions(selectEl, [
+        { value: normalizedPreferred, label: normalizedPreferred },
+      ]);
+      selectEl.value = normalizedPreferred;
+    } else {
+      replaceSelectOptions(selectEl, [
+        { value: "", label: "Couldn’t load directions — try again" },
+      ]);
+    }
+    console.warn("Could not load directions", error);
   }
 
   if (requestId === directionsRequestId) {
@@ -5033,6 +5371,22 @@ function cancelJourneyDetailEdit() {
 let templateWizardStep = 1;
 let templateWizardContext = null;
 
+function templateWizardShouldDockCoachBottom(step = templateWizardStep) {
+  return (
+    step === getTemplateWizardHoursStep() ||
+    step === getTemplateWizardReminderStep()
+  );
+}
+
+function templateWizardRectsOverlap(rectA, rectB, gap = 8) {
+  return (
+    rectA.left < rectB.right - gap &&
+    rectA.right > rectB.left + gap &&
+    rectA.top < rectB.bottom - gap &&
+    rectA.bottom > rectB.top + gap
+  );
+}
+
 function syncTemplateWizardCoachPosition() {
   const card = templateRouteCoach?.querySelector(".onboarding-coach-card");
   if (!card || !templateRouteCoach || templateRouteCoach.hidden) {
@@ -5051,6 +5405,15 @@ function syncTemplateWizardCoachPosition() {
   const gap = 10;
   const padding = 12;
 
+  if (templateWizardShouldDockCoachBottom()) {
+    card.style.top = "auto";
+    card.style.bottom = `${padding}px`;
+    card.style.left = "50%";
+    card.style.right = "auto";
+    card.style.transform = "translateX(-50%)";
+    return;
+  }
+
   let top = targetRect.top - coachRect.top - cardHeight - gap;
   if (top < padding) {
     top = targetRect.bottom - coachRect.top + gap;
@@ -5064,6 +5427,12 @@ function syncTemplateWizardCoachPosition() {
   card.style.left = "50%";
   card.style.right = "auto";
   card.style.transform = "translateX(-50%)";
+
+  const cardRect = card.getBoundingClientRect();
+  if (templateWizardRectsOverlap(cardRect, targetRect)) {
+    card.style.top = "auto";
+    card.style.bottom = `${padding}px`;
+  }
 }
 
 function templateWizardUsesNameStep(context = templateWizardContext) {
@@ -5108,7 +5477,7 @@ function getTemplateWizardHighlightTarget(
     return detailJourneyWindow;
   }
   if (step === getTemplateWizardReminderStep(context)) {
-    return detailReminderSection;
+    return detailRemindControls || detailReminderSection;
   }
 
   return null;
@@ -5192,7 +5561,7 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
       templateKey === "custom" ? "Pick your route" : "Route picked for you";
   }
 
-  if (routeLoading && templateKey !== "custom") {
+  if (routeLoading) {
     templateRouteCoachBody.innerHTML =
       '<span class="template-route-loading"><span class="locate-spinner" aria-hidden="true"></span> Finding your nearest station…</span>';
     return;
@@ -5206,8 +5575,25 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
         : "Morning into town";
 
   if (templateKey === "custom") {
-    templateRouteCoachBody.textContent =
-      "Pick your station and direction above. You can tap Use nearest station for a shortcut.";
+    if (journey?.station) {
+      const station = formatStationLabel(journey.station);
+      const distance =
+        typeof nearest?.distanceKm === "number"
+          ? ` (${nearest.distanceKm.toFixed(1)} km)`
+          : "";
+      templateRouteCoachBody.textContent = journey.direction
+        ? `We filled in your nearest station ${station}${distance} → ${journey.direction}. Change station or direction above.`
+        : `We filled in your nearest station ${station}${distance}. Pick a direction above (or change station).`;
+    } else if (error?.code === 1) {
+      templateRouteCoachBody.textContent =
+        "Location permission was denied, so we couldn't pick your nearest station. Open Settings → Apps → Next Train → Location → Allow, or choose your station and direction — you can tap Use nearest station if you change your mind.";
+    } else if (error) {
+      templateRouteCoachBody.textContent =
+        "We couldn't find your nearest station just now. Pick your station and direction — you can tap Use nearest station for a shortcut.";
+    } else {
+      templateRouteCoachBody.textContent =
+        "Pick your station and direction above. You can tap Use nearest station for a shortcut.";
+    }
   } else if (configured && journey?.station && journey?.direction) {
     const station = formatStationLabel(journey.station);
     const distance =
@@ -5217,7 +5603,7 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
     templateRouteCoachBody.textContent = `For ${templateLabel.toLowerCase()} we defaulted to your nearest station ${station}${distance} → ${journey.direction}. Change station or direction above.`;
   } else if (error?.code === 1) {
     templateRouteCoachBody.textContent =
-      "Location permission was denied, so we couldn't pick your nearest station. Choose your station and direction — you can tap Use nearest station if you change your mind.";
+      "Location permission was denied, so we couldn't pick your nearest station. Open Settings → Apps → Next Train → Location → Allow, or choose your station and direction — you can tap Use nearest station if you change your mind.";
   } else if (
     templateKey === "morning" &&
     nearest?.station &&
@@ -5268,13 +5654,14 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
   leaveBeforeField?.classList.remove("template-wizard-highlight");
   detailJourneyWindow?.classList.remove("template-wizard-highlight");
   detailReminderSection?.classList.remove("template-wizard-highlight");
+  detailRemindControls?.classList.remove("template-wizard-highlight");
 
   const target = getTemplateWizardHighlightTarget(step);
   if (target) {
     target.classList.add("template-wizard-highlight");
     const scrollBlock =
       step === getTemplateWizardHoursStep() || step === getTemplateWizardReminderStep()
-        ? "center"
+        ? "start"
         : "nearest";
     window.requestAnimationFrame(() => {
       target.scrollIntoView({
@@ -5288,7 +5675,9 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
 
 function syncTemplateWizardChrome() {
   const active = Boolean(templateRouteCoach && !templateRouteCoach.hidden);
+  const reminderStep = active && templateWizardStep === getTemplateWizardReminderStep();
   journeysDialog?.classList.toggle("template-wizard-active", active);
+  journeysDialog?.classList.toggle("template-wizard-reminder-step", reminderStep);
 
   if (!templateRouteCoach) {
     return;
@@ -5303,7 +5692,13 @@ function syncTemplateWizardChrome() {
   );
   if (active) {
     templateRouteCoach.classList.add(`template-route-coach--step-${templateWizardStep}`);
+    templateRouteCoach.classList.toggle(
+      "template-route-coach--dock-bottom",
+      templateWizardShouldDockCoachBottom()
+    );
     window.requestAnimationFrame(() => syncTemplateWizardCoachPosition());
+  } else {
+    templateRouteCoach.classList.remove("template-route-coach--dock-bottom");
   }
 }
 
@@ -5384,6 +5779,7 @@ function dismissTemplateRouteCoach() {
   templateWizardContext = null;
   detailJourneyNameField?.classList.remove("template-wizard-highlight");
   detailReminderSection?.classList.remove("template-wizard-highlight");
+  detailRemindControls?.classList.remove("template-wizard-highlight");
   syncTemplateWizardHighlight(0);
   syncTemplateWizardChrome();
 }
@@ -5750,37 +6146,65 @@ function applyJourneyOverlapFix() {
   showJourneyOverlapFixApplied(settingsDraftJourneys[index], kept, fix.cleared);
 }
 
+function hasDetailTargetTrain() {
+  return detailPreferredField?.dataset.empty === "false";
+}
+
+function syncDetailTargetRemindVisibility() {
+  const controls = detailRemindControls || document.getElementById("detail-remind-controls");
+  const hasTarget = hasDetailTargetTrain();
+
+  if (controls) {
+    controls.hidden = !hasTarget;
+  }
+
+  if (!hasTarget) {
+    if (detailRemindMeInput?.checked) {
+      detailRemindMeInput.checked = false;
+    }
+    if (detailRemindPermissionHint) {
+      detailRemindPermissionHint.hidden = true;
+    }
+  } else {
+    void window.nextTrainLeaveReminders?.refreshJourneyRemindExtras?.();
+  }
+}
+
 function showDetailRemindPermissionHint(show) {
   if (detailRemindPermissionHint) {
     detailRemindPermissionHint.hidden = !show;
   }
-  if (detailRemindExpandedEl) {
-    detailRemindExpandedEl.hidden = !show;
-  }
 }
 
 function highlightDetailReminderSection() {
-  if (!detailReminderSection) {
+  const target = detailRemindControls || detailReminderSection;
+  if (!target) {
     return;
   }
 
-  detailReminderSection.classList.add("template-wizard-highlight");
-  detailReminderSection.scrollIntoView({ block: "center", behavior: "smooth" });
+  target.classList.add("template-wizard-highlight");
+  target.scrollIntoView({ block: "center", behavior: "smooth" });
   window.setTimeout(() => {
-    detailReminderSection.classList.remove("template-wizard-highlight");
+    target.classList.remove("template-wizard-highlight");
   }, 3200);
 }
 
 async function handleDetailRemindToggleChange() {
-  const remindOn = detailRemindMeInput?.checked ?? false;
-  showDetailRemindPermissionHint(false);
-
-  if (!remindOn) {
+  if (!hasDetailTargetTrain()) {
+    if (detailRemindMeInput) {
+      detailRemindMeInput.checked = false;
+    }
+    syncDetailTargetRemindVisibility();
+    detailPreferredDisplay?.focus();
     return;
   }
 
-  if (detailPreferredField?.dataset.empty !== "false") {
-    detailPreferredDisplay?.focus();
+  const remindOn = detailRemindMeInput?.checked ?? false;
+  showDetailRemindPermissionHint(false);
+  syncDetailTargetRemindVisibility();
+
+  if (!remindOn) {
+    return;
   }
 
   window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
@@ -5791,7 +6215,10 @@ async function handleDetailRemindToggleChange() {
       detailRemindMeInput.checked = false;
     }
     showDetailRemindPermissionHint(true);
+    return;
   }
+
+  void window.nextTrainLeaveReminders?.refreshJourneyRemindExtras?.();
 }
 
 function populateDetailReminderFields(journey) {
@@ -5807,6 +6234,7 @@ function populateDetailReminderFields(journey) {
     journey?.preferredTrainTime || ""
   );
   showDetailRemindPermissionHint(false);
+  syncDetailTargetRemindVisibility();
 }
 
 function readJourneyDetailDraft() {
@@ -5923,6 +6351,7 @@ function createJourneyFromTemplate(templateKey) {
     });
     settingsDraftJourneys.push(journey);
     // Draft only until Save with station + direction — do not persist shells.
+    // Open immediately; nearest station prefills in the background (no geo gate).
     return openJourneyDetail(journey.id).then(() => {
       showTemplateRouteCoach({
         templateKey: "custom",
@@ -5930,11 +6359,115 @@ function createJourneyFromTemplate(templateKey) {
         nearest: null,
         configured: false,
         error: null,
+        routeLoading: true,
       });
+      void prefillCustomNearestStation(journey.id);
     });
   }
 
   return createJourneyFromCommuteTemplate(templateKey);
+}
+
+async function prefillCustomNearestStation(journeyId) {
+  if (!journeyId) {
+    return;
+  }
+
+  if (detailNearestHint) {
+    detailNearestHint.hidden = false;
+    detailNearestHint.textContent = "Finding nearest station…";
+  }
+
+  if (templateWizardContext?.templateKey === "custom") {
+    updateTemplateRouteCoachState({ routeLoading: true });
+  }
+
+  let nearest = null;
+  let error = null;
+  try {
+    nearest = await findNearestStation();
+  } catch (err) {
+    error = err;
+  }
+
+  if (editingJourneyId !== journeyId) {
+    return;
+  }
+
+  const journeyIndex = settingsDraftJourneys.findIndex((entry) => entry.id === journeyId);
+  const journey = journeyIndex >= 0 ? settingsDraftJourneys[journeyIndex] : null;
+  if (!journey) {
+    return;
+  }
+
+  const formStation = String(detailStationCombobox?.getValue?.() || "").trim();
+  if (formStation || journey.station) {
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        routeLoading: false,
+        configured: Boolean(journey.station && journey.direction),
+      });
+    }
+    return;
+  }
+
+  if (error || !nearest?.station) {
+    if (detailNearestHint) {
+      detailNearestHint.hidden = false;
+      detailNearestHint.textContent = error
+        ? locationErrorFrom(error).message
+        : "Couldn't find nearest station";
+    }
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        nearest: null,
+        configured: false,
+        error: error || { message: "Couldn't find nearest station" },
+        routeLoading: false,
+      });
+    }
+    return;
+  }
+
+  const formDirection = String(detailDirectionSelect?.value || "").trim();
+  let direction = formDirection || journey.direction || "";
+  if (!direction) {
+    direction = (await pickPerthDirection(nearest.station)) || "";
+  }
+
+  if (editingJourneyId !== journeyId) {
+    return;
+  }
+
+  // User may have typed a station while geo was in flight — don't overwrite.
+  if (String(detailStationCombobox?.getValue?.() || "").trim()) {
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({ routeLoading: false });
+    }
+    return;
+  }
+
+  const updated = normalizeJourney({
+    ...journey,
+    station: nearest.station,
+    direction,
+  });
+  settingsDraftJourneys[journeyIndex] = updated;
+
+  const nearestHint = `Selected ${formatStationLabel(nearest.station)} (${nearest.distanceKm.toFixed(1)} km away)`;
+  await syncJourneyDetailRouteFields(updated, nearestHint);
+
+  if (templateWizardContext?.templateKey === "custom") {
+    updateTemplateRouteCoachState({
+      journey: updated,
+      nearest,
+      configured: Boolean(updated.station && updated.direction),
+      error: null,
+      routeLoading: false,
+    });
+  }
 }
 
 async function completeTemplateRouteSetup(journeyId, templateKey) {
@@ -6341,6 +6874,7 @@ function saveJourneyDetailFromForm() {
 
   if (updated.remindMe === true) {
     window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
+    trackProductEvent("reminder_enabled", { journeyId: updated.id });
   }
 
   persistSettings({
@@ -6350,6 +6884,7 @@ function saveJourneyDetailFromForm() {
     activeJourneyId,
   });
   void window.nextTrainLeaveReminders?.healAfterJourneySave?.();
+  trackProductEvent("journey_saved", { configuredCount: countConfiguredJourneys(settings.journeys) });
   editingJourneySnapshot = null;
 }
 
@@ -6375,7 +6910,7 @@ function closeJourneysDialog() {
     clearHeroSetupState();
     const journey = getActiveJourney();
     if (journey && routeEl) {
-      routeEl.textContent = formatJourneyRoute(journey);
+      setRouteDisplay(formatJourneyRoute(journey));
     }
     if (updatedEl) {
       updatedEl.textContent = "Updating…";
@@ -6431,12 +6966,46 @@ function closeMenuDialog() {
   resumeAfterMenuClose();
 }
 
+function formatAppVersionLabel(config) {
+  if (!config) {
+    return "";
+  }
+  const version = String(config.appVersion || "").trim();
+  const code = Number(config.appVersionCode);
+  if (version && Number.isFinite(code)) {
+    return `Version ${version} (${code})`;
+  }
+  return version ? `Version ${version}` : "";
+}
+
+async function refreshMenuAppVersionLabel() {
+  if (!menuAppVersionEl) {
+    return;
+  }
+  try {
+    const response = await fetch("/site-config.json", { cache: "no-store" });
+    if (!response.ok) {
+      return;
+    }
+    const config = await response.json();
+    const label = formatAppVersionLabel(config);
+    if (label) {
+      menuAppVersionEl.textContent = label;
+      menuAppVersionEl.hidden = false;
+    }
+  } catch {
+    // Non-fatal — menu still works without version label.
+  }
+}
+
 function openMenu() {
   dismissLeaveHint();
   window.NextTrainAdFree?.renderMenuAdFree?.();
+  void refreshMenuAppVersionLabel();
   openAppDialog(menuDialog);
   menuBtn?.setAttribute("aria-expanded", "true");
   menuChromeAction?.classList.add("chrome-action--open");
+  document.dispatchEvent(new CustomEvent("nexttrain:menu-open"));
 }
 
 function closeHelpDialog() {
@@ -6478,6 +7047,7 @@ function clearAllAppData() {
   renderJourneySwitcher();
   applyCommuteMode({ coldStart: true });
   window.NextTrainAdFree?.refreshEntitlement?.({ silent: true });
+  window.NextTrainPro?.onSettingsCleared?.();
 }
 
 function handleClearAllData() {
@@ -6892,10 +7462,7 @@ detailNearestBtn?.addEventListener("click", async () => {
       detailDirectionSelect.value = direction;
     }
   } catch (error) {
-    detailNearestHint.textContent =
-      error.code === 1
-        ? "Location permission denied. Pick your station from the list."
-        : "Could not use location. Pick your station from the list.";
+    detailNearestHint.textContent = locationErrorFrom(error).message;
   }
 });
 
@@ -6932,9 +7499,30 @@ document.addEventListener("click", () => {
 });
 
 async function init() {
-  applyTestQueryParams();
+  const seedApplied = await applyMaestroTestSeedFromDeepLink();
+  if (!seedApplied) {
+    applyTestQueryParams();
+  }
+
   initHeroSwipe();
   installOnboardingInteractionTracking();
+
+  if (seedApplied) {
+    settings = readStoredSettings();
+    refreshSeconds = settings.refreshSeconds ?? DEFAULT_SETTINGS.refreshSeconds;
+    journeyModeActive = true;
+    scheduleRefresh();
+    void getStationsList();
+    void loadStationCoords();
+    renderJourneySwitcher();
+    clearHeroSetupState();
+    maybeAutoSelectJourney();
+    skipTrains = readSkipState().count;
+    fetchNextTrain();
+    window.nextTrainWidget?.syncWidgetSettings?.(settings);
+    await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+    return;
+  }
 
   const urlSettings = await readUrlSettings();
   if (urlSettings) {
@@ -6961,9 +7549,10 @@ async function init() {
     return;
   }
 
+  // Paywall / journey deep links must not wait on nearby locate (can take many seconds).
+  await window.nextTrainWidget?.consumeLaunchDeepLink?.();
   await applyCommuteMode({ coldStart: true });
   window.nextTrainWidget?.syncWidgetSettings?.(settings);
-  await window.nextTrainWidget?.consumeLaunchDeepLink?.();
 }
 
 initStationComboboxes();
@@ -6993,6 +7582,8 @@ window.nextTrainApp = {
   enterNearbyMode,
   openJourneys,
   openJourneyDetail,
+  openAppDialog,
+  closeAppDialog,
   hasSkippedTemplateWizard,
   switchJourney,
   fetchNextTrain,
@@ -7015,22 +7606,53 @@ window.nextTrainApp = {
   skipToEarlierTrain,
 };
 
+async function resumeMaestroSeedIfNeeded() {
+  const seedApplied = await applyMaestroTestSeedFromDeepLink();
+  if (!seedApplied) {
+    return false;
+  }
+
+  settings = readStoredSettings();
+  refreshSeconds = settings.refreshSeconds ?? DEFAULT_SETTINGS.refreshSeconds;
+  journeyModeActive = true;
+  scheduleRefresh();
+  void getStationsList();
+  void loadStationCoords();
+  renderJourneySwitcher();
+  clearHeroSetupState();
+  maybeAutoSelectJourney();
+  skipTrains = readSkipState().count;
+  fetchNextTrain();
+  window.nextTrainWidget?.syncWidgetSettings?.(settings);
+  await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+  return true;
+}
+
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     maybeScheduleOnboarding();
 
-    if (shouldDefaultToNearby()) {
+    void (async () => {
+      if (!journeyModeActive) {
+        const seeded = await resumeMaestroSeedIfNeeded();
+        if (seeded) {
+          return;
+        }
+      }
+
+      if (shouldDefaultToNearby()) {
+        void applyCommuteMode();
+        return;
+      }
+
+      if (journeyModeActive) {
+        skipTrains = readSkipState().count;
+        refreshLiveDisplay(true);
+        fetchNextTrain();
+        return;
+      }
+
       void applyCommuteMode();
-      return;
-    }
-
-    if (journeyModeActive) {
-      skipTrains = readSkipState().count;
-      refreshLiveDisplay(true);
-      fetchNextTrain();
-      return;
-    }
-
-    void applyCommuteMode();
+    })();
   }
 });

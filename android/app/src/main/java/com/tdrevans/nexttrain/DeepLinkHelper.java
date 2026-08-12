@@ -22,7 +22,12 @@ public final class DeepLinkHelper {
     }
 
     String host = data.getHost();
-    if (!"journey".equals(host) && !"nearby".equals(host) && !"home".equals(host)) {
+    if (BuildConfig.DEBUG && "test".equals(host) && "/seed".equals(data.getPath())) {
+      WidgetSyncPlugin.setPendingDeepLink(data.toString());
+      return;
+    }
+
+    if (!"journey".equals(host) && !"nearby".equals(host) && !"home".equals(host) && !"paywall".equals(host)) {
       return;
     }
 

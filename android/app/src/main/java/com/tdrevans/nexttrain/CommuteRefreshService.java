@@ -29,6 +29,16 @@ public final class CommuteRefreshService {
     JSONObject snapshot = null;
     CommuteSchedule.Result result = null;
     try {
+      if (!CommuteSchedule.hasWidgetAccessFromContext(context)) {
+        snapshot = CommuteSchedule.widgetLockedSnapshot();
+        WidgetSettingsStore.saveSnapshot(context, snapshot);
+        NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
+        WidgetLocalPaintScheduler.cancel(context);
+        WidgetDepartureAdvanceScheduler.cancel(context);
+        WidgetDebugLog.refreshDone(snapshot);
+        return;
+      }
+
       // Outside Active hours: designed idle only — never network, never stale live cache.
       JSONObject outsideHours = CommuteSchedule.nearbyFallbackIfOutsideHours(context);
       if (outsideHours != null) {
@@ -74,6 +84,15 @@ public final class CommuteRefreshService {
     String paintReason = "local";
     JSONObject snapshot = null;
     try {
+      if (!CommuteSchedule.hasWidgetAccessFromContext(context)) {
+        JSONObject locked = CommuteSchedule.widgetLockedSnapshot();
+        WidgetSettingsStore.saveSnapshot(context, locked);
+        NextTrainWidgetProvider.updateAllWidgets(context, locked);
+        WidgetLocalPaintScheduler.cancel(context);
+        WidgetDepartureAdvanceScheduler.cancel(context);
+        return;
+      }
+
       JSONObject cached = WidgetSettingsStore.readSnapshot(context);
       if (cached == null) {
         WidgetLocalPaintScheduler.cancel(context);

@@ -57,7 +57,7 @@ public final class LeaveReminderNotifier {
     );
 
     Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-      .setSmallIcon(R.mipmap.ic_launcher)
+      .setSmallIcon(R.drawable.ic_stat_next_train)
       .setContentTitle(title)
       .setContentText(body)
       .setStyle(new NotificationCompat.BigTextStyle().bigText(body))

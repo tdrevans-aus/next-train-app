@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- E9  Horizon line: the track meets a distant horizon, never itself -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M112 420 L152 420 L232 208 L210 208 Z" fill="#0B6E6A"/>
+  <path d="M400 420 L360 420 L280 208 L302 208 Z" fill="#0B6E6A"/>
+  <g fill="#0B6E6A">
+    <rect x="110" y="372" width="292" height="26" rx="9"/>
+    <rect x="140" y="300" width="232" height="22" rx="8"/>
+    <rect x="166" y="242" width="180" height="18" rx="7"/>
+  </g>
+  <path d="M118 150 C186 128 326 128 394 150" stroke="#0B6E6A" stroke-width="26" stroke-linecap="round" fill="none"/>
+</svg>

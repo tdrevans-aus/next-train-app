@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- E2  Headlight: rails stop short, the arriving train sits in the gap -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M104 420 L144 420 L228 196 L204 196 Z" fill="#0B6E6A"/>
+  <path d="M408 420 L368 420 L284 196 L308 196 Z" fill="#0B6E6A"/>
+  <g fill="#0B6E6A">
+    <rect x="103" y="374" width="306" height="26" rx="9"/>
+    <rect x="132" y="300" width="248" height="22" rx="8"/>
+    <rect x="158" y="238" width="196" height="19" rx="7"/>
+  </g>
+  <circle cx="256" cy="132" r="38" fill="#0B6E6A"/>
+</svg>

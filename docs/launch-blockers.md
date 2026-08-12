@@ -35,26 +35,30 @@
 
 | ID | Item | Owner | Notes |
 | --- | --- | --- | --- |
-| LB-11–13 | Analytics, CI, commute strip | Jim / PM | After closed is live |
-| LB-14 | iOS / Jon | Tim ASC + Jon Mac | **PC prep done:** [jon-handoff-ios.md](jon-handoff-ios.md). `ios/` exists. Tim can do App Store Connect in browser without Mac |
+| LB-11–13 | Analytics, CI, commute strip | Jim / PM | Ops: `docs/go-live-ops.md`; crash brief; strip non-FGS |
+| LB-14 | iOS / Jon | Tim ASC + Jon Mac | **ASC gated ~days** — Apple fee after closed-test first reactions (target: this weekend if OK). [jon-handoff-ios.md](jon-handoff-ios.md) |
 
 ---
 
-## Critical path right now (11 Aug ~16:30)
+## Critical path right now (12 Aug)
 
 ```text
-Google reviews closed Alpha 2.1.0 (usually hours–few days)
-    → Release available to testers
-    → Send opt-in link; chase until Console shows 12+ opted-in
-    → 14-day clock can start
-    → Device smoke 22 + 17–19 (you + friends)
+Google reviews closed Alpha 2.1.0 (if still pending) / release available
+    → Opt-ins + downloads
+    → First reactions by weekend
+    → If not dumpster fire: Apple Developer fee + ASC shell + IAP
+    → Device smoke 22 + 17–19
 Ruth ──► public only
-iOS PC prep ──► Tim ASC shell anytime; Xcode waits for Mac
+Jon / Mac ──► still waiting on Mac access
 ```
 
 **Managed publishing is OFF** — when review passes, the closed release goes live to the track automatically (testers still must opt in).
 
-**Testers:** 13 on email list ≠ opted-in. After review: share opt-in link; they join + install from Play.
+**Testers:** Email list ≠ opted-in. After review: share opt-in link; they join + install from Play.
+
+**ASC:** Not a long defer — green light after this weekend’s closed-test reactions. Bars: `docs/closed-test-feedback-asc-gate.md`.
+
+**Do now (not blocked on Google):** Tim Console check + blast when live · Tim venue list · Simon feature graphic concept · Dwayne calendar hold · Day-2 feedback sheet ready.
 
 ---
 
@@ -66,4 +70,4 @@ iOS PC prep ──► Tim ASC shell anytime; Xcode waits for Mac
 | 2026-08-11 | LB-01 / LB-05 DONE |
 | 2026-08-11 | Closed AAB error → Jim fix → **2.1.0 in review**; Console done; 13 on list |
 | 2026-08-11 | **LB-15 DONE** — dead FGS DATA_SYNC confirmed gone in this AAB |
-| 2026-08-11 | Jon iOS handoff + parity: [jon-handoff-ios.md](jon-handoff-ios.md); ASC can start without Mac |
+| 2026-08-12 | ASC / Apple Developer fee: **short hold** — green light after closed-test first reactions (~this weekend), not a long defer |

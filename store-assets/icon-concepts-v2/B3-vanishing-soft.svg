@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- B3 — Soft vanishing, open apex -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M168 404 L216 140 h32 L200 404 z" fill="#0B6E6A"/>
+  <path d="M312 404 L264 140 h32 L344 404 z" fill="#0B6E6A"/>
+  <rect x="144" y="356" width="224" height="22" rx="6" fill="#0B6E6A"/>
+  <rect x="172" y="292" width="168" height="18" rx="5" fill="#0B6E6A"/>
+  <rect x="200" y="236" width="112" height="14" rx="4" fill="#0B6E6A"/>
+</svg>

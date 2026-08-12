@@ -9,7 +9,7 @@ Jim fix this docs/jim-brief-template-wizard-z-index.md
 **For:** Jim  
 **From:** QA (Tim)  
 **Date:** 10 Aug 2026  
-**Status:** **Fixed locally** (11 Aug ~10:05 AWST) — see `public/styles.css` + `qa/template-wizard-hours-zindex.mjs`. Jim can close after Tim device spot-check on rebuilt APK/AAB.
+**Status:** **Fixed locally** (12 Aug) — dock-bottom coach + overlap fallback; verify on device in v7
 
 **Related:** `docs/jim-brief-template-wizard-skip.md`, `docs/jim-brief-journey-reminder-polish.md`
 

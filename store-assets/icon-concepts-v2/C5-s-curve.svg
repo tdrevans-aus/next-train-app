@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- C5  Soft S twin rails + sleepers -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M120 120 C200 120 200 256 280 256 C360 256 360 392 440 392"
+        stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <path d="M120 180 C180 180 180 300 280 300 C380 300 380 420 440 420"
+        stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <rect x="148" y="132" width="64" height="18" rx="5" fill="#0B6E6A" transform="rotate(8 180 141)"/>
+  <rect x="200" y="210" width="64" height="18" rx="5" fill="#0B6E6A" transform="rotate(28 232 219)"/>
+  <rect x="248" y="278" width="64" height="18" rx="5" fill="#0B6E6A" transform="rotate(8 280 287)"/>
+  <rect x="312" y="350" width="64" height="18" rx="5" fill="#0B6E6A" transform="rotate(28 344 359)"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- C10 — Sweep vanish: curved pair tapering to open tip -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M120 420 C170 340 210 250 250 160 C268 118 278 96 288 80"
+        stroke="#0B6E6A" stroke-width="34" stroke-linecap="round" fill="none"/>
+  <path d="M220 430 C280 350 330 260 370 170 C388 130 400 108 412 90"
+        stroke="#0B6E6A" stroke-width="34" stroke-linecap="round" fill="none"/>
+  <rect x="112" y="372" width="128" height="22" rx="6" fill="#0B6E6A" transform="rotate(-28 176 383)"/>
+  <rect x="168" y="300" width="108" height="18" rx="5" fill="#0B6E6A" transform="rotate(-32 222 309)"/>
+  <rect x="220" y="232" width="92" height="16" rx="5" fill="#0B6E6A" transform="rotate(-36 266 240)"/>
+  <rect x="268" y="172" width="76" height="14" rx="4" fill="#0B6E6A" transform="rotate(-40 306 179)"/>
+</svg>

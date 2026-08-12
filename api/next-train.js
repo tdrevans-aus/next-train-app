@@ -6,6 +6,7 @@ import {
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
+import { assertCityLive } from "../lib/providers/registry.js";
 
 function readParams(query = {}) {
   const station = query.station;
@@ -13,12 +14,14 @@ function readParams(query = {}) {
   const leaveBefore = query.leaveBefore ?? query.leaveBeforeMinutes;
   const refresh = query.refresh ?? query.refreshSeconds;
   const skipTrains = query.skipTrains ?? query.skip;
+  const city = query.city ?? "perth";
 
   if (!station || !direction) {
     return null;
   }
 
   return {
+    city,
     station,
     destination: direction,
     destinationLabel: direction,
@@ -41,6 +44,16 @@ export default async function handler(req, res) {
 
   if (!config) {
     res.status(400).json({ error: "Missing required parameters: station, direction" });
+    return;
+  }
+
+  const cityGate = assertCityLive(config.city);
+  if (!cityGate.ok) {
+    res.status(cityGate.status).json({
+      error: cityGate.error,
+      city: cityGate.city,
+      integration: cityGate.integration,
+    });
     return;
   }
 

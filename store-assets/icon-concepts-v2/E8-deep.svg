@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <clipPath id="e8tile"><rect width="512" height="512" rx="112"/></clipPath>
+  <!-- E8  Deep: cinematic perspective, track runs off the bottom edge -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <g clip-path="url(#e8tile)">
+    <path d="M40 530 L96 530 L234 150 L212 150 Z" fill="#0B6E6A"/>
+    <path d="M472 530 L416 530 L278 150 L300 150 Z" fill="#0B6E6A"/>
+    <g fill="#0B6E6A">
+      <rect x="55" y="455" width="402" height="30" rx="10"/>
+      <rect x="96" y="368" width="320" height="25" rx="9"/>
+      <rect x="132" y="290" width="248" height="21" rx="8"/>
+      <rect x="162" y="226" width="188" height="18" rx="7"/>
+      <rect x="184" y="178" width="144" height="15" rx="6"/>
+    </g>
+  </g>
+</svg>

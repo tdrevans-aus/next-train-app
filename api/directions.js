@@ -2,6 +2,7 @@ import { fetchTripsForStation, uniqueDestinations } from "../lib/train-times.js"
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
+import { assertCityLive } from "../lib/providers/registry.js";
 
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
@@ -9,6 +10,16 @@ export default async function handler(req, res) {
   }
 
   if (!checkRateLimit(req, res)) {
+    return;
+  }
+
+  const cityGate = assertCityLive(req.query?.city ?? "perth");
+  if (!cityGate.ok) {
+    res.status(cityGate.status).json({
+      error: cityGate.error,
+      city: cityGate.city,
+      integration: cityGate.integration,
+    });
     return;
   }
 

@@ -125,6 +125,30 @@ public class PreferredTrainReminderTest {
   }
 
   @Test
+  public void pastLeaveBy_stillTargetsUpcomingPreferredTrain() throws Exception {
+    // 07:25 — leave-by for 7:30 train was 07:20 (10 min walk); strip must still arm.
+    JSONObject journey = loadFixture("journey-morning.json");
+    JSONObject payload = loadFixture("payload-710-730.json");
+    PreferredTrainReminder.ScheduleClock afterLeaveBy = new PreferredTrainReminder.ScheduleClock(
+      Instant.parse("2026-08-10T07:25:00+08:00").toEpochMilli(),
+      MONDAY_ISO,
+      MONDAY_DATE,
+      false
+    );
+
+    PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
+      journey,
+      payload,
+      false,
+      afterLeaveBy
+    );
+
+    assertNotNull(target);
+    assertEquals("2026-08-10T07:30:00+08:00", target.departureIso);
+    assertEquals(Instant.parse("2026-08-10T07:20:00+08:00").toEpochMilli(), target.leaveByMs);
+  }
+
+  @Test
   public void getReadyOffsetMath() {
     long leaveByMs = Instant.parse("2026-08-10T07:20:00+08:00").toEpochMilli();
 

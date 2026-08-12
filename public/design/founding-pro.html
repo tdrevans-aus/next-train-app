@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Founding Pro — Simon design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --mist:#eef3f2;--mist-mid:#e2ece9;--accent:#0b6e6a;--accent-soft:rgba(11,110,106,.12);
+  --ink:#132523;--muted:#5c726d;--surface:#fff;--line:rgba(19,37,35,.1);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Figtree,system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,#f5f8f7 0%,var(--mist) 40%,var(--mist-mid) 100%);
+  min-height:100vh;padding:1.75rem 1.1rem 4rem}
+main{max-width:1080px;margin:0 auto}
+h1{font-family:Syne,sans-serif;font-size:1.65rem;margin:0 0 .35rem;letter-spacing:-.02em}
+.lede{color:var(--muted);max-width:40rem;line-height:1.45;margin:0 0 1rem;font-size:.95rem}
+.callout{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1.75rem;font-size:.88rem;color:var(--muted);line-height:1.45}
+.callout strong{color:var(--ink)}
+h2{font-family:Syne,sans-serif;font-size:1.1rem;margin:2rem 0 .65rem}
+h3{font:600 .78rem/1.2 Figtree,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 .55rem}
+.row{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;align-items:flex-start}
+.phone{width:280px;background:var(--surface);border-radius:22px;border:1px solid var(--line);overflow:hidden;box-shadow:0 1px 0 rgba(19,37,35,.04)}
+.phone-bar{height:28px;background:var(--mist);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--muted)}
+.phone-body{padding:1rem 1rem 1.15rem;min-height:320px;display:flex;flex-direction:column}
+.scrim{position:relative}
+.scrim::before{content:"";position:absolute;inset:0;background:rgba(19,37,35,.28);z-index:1;pointer-events:none}
+.sheet{position:relative;z-index:2;margin-top:auto;background:var(--surface);border-radius:16px 16px 12px 12px;padding:1.15rem 1rem 1rem;border:1px solid var(--line)}
+.sheet h4{font-family:Syne,sans-serif;font-size:1.15rem;margin:0 0 .4rem;letter-spacing:-.02em}
+.sheet p{margin:0 0 .85rem;font-size:.88rem;color:var(--muted);line-height:1.4}
+.badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:.28rem .55rem;border-radius:999px;margin-bottom:.65rem}
+.badge-mark{width:14px;height:14px;border-radius:4px;background:var(--mist);border:1.5px solid var(--accent);position:relative}
+.badge-mark::after{content:"";position:absolute;left:3px;right:3px;top:5px;height:2px;background:var(--accent);border-radius:1px;box-shadow:0 3px 0 var(--accent)}
+.btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:.65rem .9rem;font:600 .88rem Figtree,sans-serif;cursor:default}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-secondary{background:var(--mist);color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--muted);font-weight:500;padding:.5rem .4rem}
+.fake-app{opacity:.55;pointer-events:none}
+.fake-app .hero{font-family:Syne,sans-serif;font-size:2.4rem;color:var(--accent);line-height:1;margin:.2rem 0}
+.fake-app .label{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fake-app .route{font-size:.82rem;color:var(--muted);margin-top:.35rem}
+.cap{font-size:.75rem;color:var(--muted);max-width:280px;line-height:1.35;margin:.35rem 0 0}
+.state{font-size:.7rem;font-weight:600;color:var(--accent);margin-bottom:.35rem}
+
+/* Menu mock */
+.menu{width:300px;background:var(--surface);border-radius:16px;border:1px solid var(--line);padding:.85rem;box-shadow:0 1px 0 rgba(19,37,35,.04)}
+.menu-title{font-family:Syne,sans-serif;font-size:1rem;margin:0 0 .65rem}
+.menu-row{display:flex;flex-direction:column;align-items:flex-start;gap:.15rem;width:100%;text-align:left;padding:.75rem .7rem;border-radius:12px;border:1px solid var(--line);background:var(--mist);margin-bottom:.45rem}
+.menu-row strong{font-size:.9rem}
+.menu-row span{font-size:.78rem;color:var(--muted)}
+.menu-row.cta{background:var(--accent);border-color:var(--accent);color:#fff}
+.menu-row.cta span{color:rgba(255,255,255,.82)}
+.menu-row.quiet{background:var(--surface)}
+.menu-restore{font-size:.78rem;color:var(--muted);padding:.35rem .5rem;border:0;background:transparent}
+
+/* Widget */
+.home{width:320px;background:#1a2220;border-radius:18px;padding:1rem;border:1px solid #2a3331}
+.home-label{font-size:.65rem;color:#8a9a96;margin-bottom:.55rem;letter-spacing:.04em}
+.widgets{display:flex;flex-direction:column;gap:.65rem}
+.widget{width:100%;aspect-ratio:2.15/1;border-radius:18px;padding:.75rem .85rem;display:grid;grid-template-columns:1.1fr 1fr;gap:.4rem;align-items:center}
+.widget-live{background:linear-gradient(145deg,#f7faf9 0%,var(--mist) 100%);color:var(--ink)}
+.widget-locked{background:linear-gradient(145deg,#f4f7f6 0%,#e8efed 100%);color:var(--ink);grid-template-columns:1fr}
+.w-label{font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.w-num{font-family:Syne,sans-serif;font-size:1.85rem;color:var(--accent);line-height:1;margin:.1rem 0}
+.w-clock{font-size:.78rem;color:var(--muted)}
+.w-leave{font-size:.82rem;font-weight:600;color:var(--ink)}
+.w-route{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.w-lock-title{font-family:Syne,sans-serif;font-size:1.05rem;margin:.15rem 0 .25rem;letter-spacing:-.02em}
+.w-lock-body{font-size:.78rem;color:var(--muted);line-height:1.35;max-width:16rem}
+.w-unlock{margin-top:.55rem;display:inline-flex;align-items:center;font-size:.78rem;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:.4rem .7rem;border-radius:999px}
+
+.paywall .benefit{list-style:none;padding:0;margin:0 0 .9rem}
+.paywall .benefit li{font-size:.86rem;padding:.35rem 0;color:var(--ink);display:flex;gap:.45rem;align-items:flex-start}
+.paywall .benefit li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:.45rem;flex-shrink:0}
+.price{font-family:Syne,sans-serif;font-size:1.35rem;margin:0 0 .15rem}
+.price-sub{font-size:.8rem;color:var(--muted);margin:0 0 .85rem}
+
+.copy{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin:1rem 0 2rem;font-size:.86rem;line-height:1.45}
+.copy table{width:100%;border-collapse:collapse}
+.copy th,.copy td{text-align:left;padding:.45rem .35rem;border-bottom:1px solid var(--line);vertical-align:top}
+.copy th{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.copy code{font-size:.8em;background:var(--mist);padding:.1rem .3rem;border-radius:4px}
+
+.states{font-size:.8rem;color:var(--muted);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Founding Pro — design lock</h1>
+  <p class="lede">Free app with ads. Full widget = Pro. Founding 200 forever free; everyone else 30-day trial from first widget add, then one-time lifetime. No subscription. Calm — never a broken widget.</p>
+  <div class="callout">
+    <strong>Brand line:</strong> Free with ads. Full home-screen widget — Founding 200 free forever, then 30-day trial, then one-time Pro. No subscription.<br />
+    <strong>Hand-off:</strong> <code>docs/jim-brief-founding-pro.md</code> · brief <code>docs/simon-brief-founding-pro.md</code>
+  </div>
+
+  <!-- 1 Founding -->
+  <h2>1 · Founding 200 unlock</h2>
+  <h3>State <code>founding_unlock</code></h3>
+  <div class="row">
+    <div>
+      <div class="phone scrim">
+        <div class="phone-bar">Near me</div>
+        <div class="phone-body">
+          <div class="fake-app">
+            <div class="label">Next train</div>
+            <div class="hero">12</div>
+            <div class="route">Edgewater → Perth</div>
+          </div>
+          <div class="sheet">
+            <div class="badge"><span class="badge-mark" aria-hidden="true"></span> Founding 200</div>
+            <h4>You’re Founding 200</h4>
+            <p>Pro unlocked forever — full home-screen widget and no ads. Thank you for being early.</p>
+            <div class="btns">
+              <button type="button" class="btn btn-primary">Add widget</button>
+              <button type="button" class="btn btn-secondary">Got it</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="cap">Primary = Add widget if none; else Got it. No hard sell.</p>
+    </div>
+  </div>
+
+  <!-- 2 Trial start -->
+  <h2>2 · Trial started (non-founding)</h2>
+  <h3>State <code>trial_started</code> — after first widget add</h3>
+  <div class="row">
+    <div>
+      <div class="phone scrim">
+        <div class="phone-bar">Home screen</div>
+        <div class="phone-body" style="background:var(--mist)">
+          <div class="fake-app" style="opacity:.4;margin-bottom:.5rem">
+            <div class="label">Widget just added</div>
+          </div>
+          <div class="sheet">
+            <h4>Pro trial — 30 days</h4>
+            <p>Full widget and no ads while you try it. After that, unlock Pro once to keep the widget — no subscription.</p>
+            <div class="btns">
+              <button type="button" class="btn btn-primary">Got it</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="cap">Don’t block the widget. One dismiss.</p>
+    </div>
+  </div>
+
+  <!-- 3 Trial nudge -->
+  <h2>3 · Trial ending nudge</h2>
+  <h3>State <code>trial_nudge</code> · day 21–25 (firm at day 30)</h3>
+  <div class="row">
+    <div>
+      <div class="menu">
+        <p class="menu-title">Menu</p>
+        <div class="menu-row cta">
+          <strong>7 days left on Pro trial</strong>
+          <span>Unlock Pro — one-time · keep widget + no ads</span>
+        </div>
+        <button type="button" class="menu-restore">Not now</button>
+      </div>
+      <p class="cap">Also optional one coach; never trap Near me / leave-by.</p>
+    </div>
+  </div>
+
+  <!-- 4 Paywall -->
+  <h2>4 · Paywall / upgrade</h2>
+  <h3>State <code>paywall</code> — Menu + widget Unlock deep link</h3>
+  <div class="row">
+    <div>
+      <div class="phone">
+        <div class="phone-bar">Unlock Pro</div>
+        <div class="phone-body paywall">
+          <h4 style="font-family:Syne,sans-serif;font-size:1.25rem;margin:0 0 .35rem">Keep the full widget</h4>
+          <p style="margin:0 0 .75rem;font-size:.88rem;color:var(--muted);line-height:1.4">One-time unlock. No subscription.</p>
+          <ul class="benefit">
+            <li>Full-quality home-screen widget</li>
+            <li>No ads in the app</li>
+          </ul>
+          <p class="price">A$X.XX</p>
+          <p class="price-sub">Lifetime · one-time</p>
+          <div class="btns" style="flex-direction:column">
+            <button type="button" class="btn btn-primary" style="width:100%">Unlock Pro</button>
+            <button type="button" class="btn btn-ghost" style="width:100%;text-align:center">Restore purchases</button>
+          </div>
+          <p style="margin:.75rem 0 0;font-size:.75rem;color:var(--muted);line-height:1.35">Founding 200 is full — new users get the 30-day trial, then Pro.</p>
+        </div>
+      </div>
+      <p class="cap">Founding-full line only when cohort closed. Price from Console.</p>
+    </div>
+  </div>
+
+  <!-- 5 Widget locked -->
+  <h2>5 · Widget locked (after trial, not Pro)</h2>
+  <h3>State <code>widget_locked</code> — intentional premium, not broken</h3>
+  <div class="row">
+    <div class="home">
+      <div class="home-label">PHONE HOME · 2×1</div>
+      <div class="widgets">
+        <div class="widget widget-live" aria-hidden="true">
+          <div>
+            <div class="w-label">Next train</div>
+            <div class="w-num">12</div>
+            <div class="w-clock">7:52</div>
+          </div>
+          <div>
+            <div class="w-leave">Leave in 8 min</div>
+            <div class="w-route">Edgewater → Perth</div>
+          </div>
+        </div>
+        <div class="widget widget-locked">
+          <div>
+            <div class="w-label">Next Train</div>
+            <div class="w-lock-title">Widget paused</div>
+            <div class="w-lock-body">Your Pro trial ended. Unlock once to keep leave-by on your home screen.</div>
+            <span class="w-unlock">Unlock Pro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="cap" style="align-self:flex-end;max-width:14rem">Top = Pro/trial live (reference). Bottom = locked. Mist/teal; no red; no fake times; Unlock → paywall.</p>
+  </div>
+
+  <!-- 6 Menu statuses -->
+  <h2>6 · Menu — Pro status row</h2>
+  <div class="row">
+    <div class="menu">
+      <p class="state">free_no_trial</p>
+      <p class="menu-title">Menu</p>
+      <div class="menu-row cta"><strong>Try the widget</strong><span>30-day Pro trial · then one-time</span></div>
+      <button type="button" class="menu-restore">Restore purchases</button>
+    </div>
+    <div class="menu">
+      <p class="state">founding</p>
+      <p class="menu-title">Menu</p>
+      <div class="menu-row quiet"><strong>Founding 200 · Pro</strong><span>Widget + ads off · forever</span></div>
+      <button type="button" class="menu-restore">Restore purchases</button>
+    </div>
+    <div class="menu">
+      <p class="state">trial_active</p>
+      <p class="menu-title">Menu</p>
+      <div class="menu-row quiet"><strong>Pro trial · 18 days left</strong><span>Unlock Pro anytime — one-time</span></div>
+      <button type="button" class="menu-restore">Restore purchases</button>
+    </div>
+    <div class="menu">
+      <p class="state">trial_expired</p>
+      <p class="menu-title">Menu</p>
+      <div class="menu-row cta"><strong>Unlock Pro</strong><span>One-time · keep widget + no ads</span></div>
+      <button type="button" class="menu-restore">Restore purchases</button>
+    </div>
+    <div class="menu">
+      <p class="state">pro_paid</p>
+      <p class="menu-title">Menu</p>
+      <div class="menu-row quiet"><strong>Pro</strong><span>Ads off · full widget</span></div>
+      <button type="button" class="menu-restore">Restore purchases</button>
+    </div>
+  </div>
+
+  <h2>Copy deck</h2>
+  <div class="copy">
+    <table>
+      <thead><tr><th>Surface</th><th>Copy (locked for Jim; Ruth may line-edit)</th></tr></thead>
+      <tbody>
+        <tr><td>Founding title</td><td>You’re Founding 200</td></tr>
+        <tr><td>Founding body</td><td>Pro unlocked forever — full home-screen widget and no ads. Thank you for being early.</td></tr>
+        <tr><td>Trial start title</td><td>Pro trial — 30 days</td></tr>
+        <tr><td>Trial start body</td><td>Full widget and no ads while you try it. After that, unlock Pro once to keep the widget — no subscription.</td></tr>
+        <tr><td>Nudge</td><td>N days left on Pro trial</td></tr>
+        <tr><td>Paywall title</td><td>Keep the full widget</td></tr>
+        <tr><td>Paywall sub</td><td>One-time unlock. No subscription.</td></tr>
+        <tr><td>Benefits</td><td>Full-quality home-screen widget · No ads in the app</td></tr>
+        <tr><td>Widget locked title</td><td>Widget paused</td></tr>
+        <tr><td>Widget locked body</td><td>Your Pro trial ended. Unlock once to keep leave-by on your home screen.</td></tr>
+        <tr><td>Widget CTA</td><td>Unlock Pro</td></tr>
+        <tr><td>Founding full note</td><td>Founding 200 is full — new users get the 30-day trial, then Pro.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="states">Open this file in the app/browser: <code>public/design/founding-pro.html</code>. Mist #EEF3F2 · teal #0B6E6A · Figtree + Syne.</p>
+</main>
+</body>
+</html>

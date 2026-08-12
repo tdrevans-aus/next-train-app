@@ -25,14 +25,14 @@
 
 ---
 
-## This week — suggested order
+## Tonight / this week (12 Aug) — while closed review / installs land
 
-1. Tim reviews **store listing** copy → lock title/subtitle  
-2. Tim films **demo** from storyboard (or Simon specifies stills if UI not filmable yet)  
-3. Lock **QR card** layout; Tim adds real short URLs when known  
-4. Tim starts **Apple / Play / ads / IAP** console path in parallel  
-5. Agree **go/no-go** numbers in metrics doc (placeholders → real after week 1 of beta)  
-6. Tim fills **venue** names + **press** contacts into the drafts  
+1. **Tim:** Play Console — release available? → send `docs/closed-test-opt-in-blast.md`  
+2. **Tim:** Track ASC gate in `docs/closed-test-feedback-asc-gate.md` (Day-2 ping ready)  
+3. **Tim:** Fill ~10 **venue** names in QR kit (contacts can wait)  
+4. **Simon:** Feature graphic concept + screenshot caption layouts (final pixels later)  
+5. **Ruth:** Listing copy already shippable — creative is the remaining public gate  
+6. Demo film / go-no-go numbers / press contacts — this week if energy; not on critical path for ASC  
 
 ---
 

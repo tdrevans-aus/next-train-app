@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- B5  Angled / slight isometric track -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M120 340 L200 140 h40 L240 340 z" fill="#0B6E6A"/>
+  <path d="M272 340 L352 140 h40 L392 340 z" fill="#0B6E6A"/>
+  <rect x="108" y="300" width="296" height="26" rx="7" fill="#0B6E6A" transform="rotate(-4 256 313)"/>
+  <rect x="132" y="236" width="248" height="24" rx="6" fill="#0B6E6A" transform="rotate(-4 256 248)"/>
+  <rect x="156" y="176" width="200" height="22" rx="6" fill="#0B6E6A" transform="rotate(-4 256 187)"/>
+</svg>

@@ -1,0 +1,12 @@
+appId: com.tdrevans.nexttrain
+---
+- stopApp
+- openLink: "nexttrain://test/seed?fixture=normal&station=Edgewater%20Stn&direction=Perth&reset=1&test=1"
+- extendedWaitUntil:
+    visible: "My Journeys"
+    timeout: 90000
+- tapOn: "My Journeys"
+- tapOn: "My Journeys"
+- extendedWaitUntil:
+    visible: "Morning into town"
+    timeout: 20000

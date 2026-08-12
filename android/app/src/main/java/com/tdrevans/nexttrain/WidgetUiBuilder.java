@@ -29,6 +29,10 @@ public final class WidgetUiBuilder {
 
   public static RemoteViews build(Context context, JSONObject snapshot, int layoutId) {
     RemoteViews views = new RemoteViews(context.getPackageName(), layoutId);
+    if (snapshot != null && snapshot.optBoolean("widgetLocked", false)) {
+      bindWidgetLocked(views, context, layoutId, snapshot);
+      return views;
+    }
     if (snapshot == null || snapshot.optBoolean("empty", false)) {
       bindEmpty(views, context, layoutId);
       return views;
@@ -552,6 +556,61 @@ public final class WidgetUiBuilder {
     views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.TOP);
   }
 
+  /** Pro trial expired — calm locked face, not stale/error. */
+  private static void bindWidgetLocked(
+    RemoteViews views,
+    Context context,
+    int layoutId,
+    JSONObject snapshot
+  ) {
+    boolean medium = isMedium(layoutId);
+    restoreLiveLayoutChrome(views);
+    views.setTextViewText(R.id.widget_label, "NEXT TRAIN");
+    views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, medium ? 12f : 11f);
+    views.setViewVisibility(R.id.widget_primary_unit, android.view.View.GONE);
+    String primary =
+      snapshot != null ? snapshot.optString("primary", "").trim() : "";
+    if (primary.isEmpty()) {
+      primary = "Widget paused";
+    }
+    views.setTextViewText(R.id.widget_primary_value, primary);
+    views.setTextViewTextSize(
+      R.id.widget_primary_value,
+      TypedValue.COMPLEX_UNIT_SP,
+      medium ? 18f : 16f
+    );
+    views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_text));
+    hideLeaveTwin(views);
+    hideStatusIfPresent(views, layoutId);
+    bindPreferredHint(views, "", layoutId);
+    views.setViewVisibility(R.id.widget_right_column, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_updated, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_updated_left, android.view.View.GONE);
+    String body =
+      snapshot != null ? snapshot.optString("trainClock", "").trim() : "";
+    if (body.isEmpty()) {
+      body = "Your Pro trial ended. Unlock once to keep leave-by on your home screen.";
+    }
+    views.setTextViewText(R.id.widget_train_clock, body);
+    views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
+    views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, medium ? 13f : 12f);
+    views.setTextColor(R.id.widget_train_clock, context.getColor(R.color.widget_muted));
+    views.setInt(R.id.widget_train_clock, "setMaxLines", 3);
+    views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
+    String route =
+      snapshot != null ? snapshot.optString("route", "").trim() : "";
+    if (route.isEmpty()) {
+      route = "Unlock Pro";
+    }
+    views.setTextViewText(R.id.widget_route, route);
+    views.setTextColor(R.id.widget_route, context.getColor(R.color.widget_accent));
+    views.setTextViewTextSize(R.id.widget_route, TypedValue.COMPLEX_UNIT_SP, medium ? 13f : 12f);
+    setBottomRouteGravity(views, true);
+    setTrainStackCentered(views, true);
+    views.setOnClickPendingIntent(R.id.widget_root, buildPaywallTapIntent(context));
+  }
+
   private static void bindNearbyFallback(RemoteViews views, Context context, int layoutId) {
     boolean medium = isMedium(layoutId);
     views.setTextViewText(R.id.widget_label, "NEAR ME");
@@ -574,6 +633,19 @@ public final class WidgetUiBuilder {
     setTrainStackCentered(views, true);
     views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER);
     views.setOnClickPendingIntent(R.id.widget_root, buildHomeTapIntent(context));
+  }
+
+  public static PendingIntent buildPaywallTapIntent(Context context) {
+    Intent intent = new Intent(context, MainActivity.class);
+    intent.setAction(Intent.ACTION_VIEW);
+    intent.setData(Uri.parse("nexttrain://paywall"));
+    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return PendingIntent.getActivity(
+      context,
+      "paywall".hashCode(),
+      intent,
+      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+    );
   }
 
   public static PendingIntent buildHomeTapIntent(Context context) {

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- C2 � B2�B4 hybrid: stroke curved rails, open apex -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M168 420 C188 300 210 200 228 128" stroke="#0B6E6A" stroke-width="36" stroke-linecap="round" fill="none"/>
+  <path d="M344 420 C324 300 302 200 284 128" stroke="#0B6E6A" stroke-width="36" stroke-linecap="round" fill="none"/>
+  <rect x="128" y="360" width="256" height="24" rx="7" fill="#0B6E6A"/>
+  <rect x="152" y="296" width="208" height="20" rx="6" fill="#0B6E6A"/>
+  <rect x="176" y="240" width="160" height="16" rx="5" fill="#0B6E6A"/>
+  <rect x="200" y="192" width="112" height="14" rx="4" fill="#0B6E6A"/>
+</svg>

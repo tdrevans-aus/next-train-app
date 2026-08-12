@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- E7  Sideline: the line runs off to the right -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M92 144 L92 180 L404 240 L404 228 Z" fill="#0B6E6A"/>
+  <path d="M92 368 L92 332 L404 272 L404 284 Z" fill="#0B6E6A"/>
+  <g fill="#0B6E6A">
+    <rect x="109" y="140" width="22" height="232" rx="8"/>
+    <rect x="180" y="158" width="20" height="196" rx="7"/>
+    <rect x="243" y="175" width="18" height="162" rx="6"/>
+    <rect x="298" y="190" width="16" height="133" rx="6"/>
+    <rect x="345" y="202" width="14" height="108" rx="5"/>
+  </g>
+</svg>

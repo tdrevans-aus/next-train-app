@@ -1,12 +1,26 @@
 # Next Train — Store Launch Program
 
-**Program manager:** Cursor agent (PC)  
+**Program manager:** Cursor agent (PC) / Ros  
 **Anchor date:** 11 Aug 2026  
 **Tim holiday (OOO):** **27 Sep – 9 Oct 2026** (returns **10 Oct**)  
-**Target:** Play public ~18 Sep 2026 · App Store submit ~24 Oct 2026 · both live ~7 Nov 2026  
-**Visual Gantt:** open [store-launch-gantt.canvas.tsx](/Users/tdrev/.cursor/projects/c-Users-tdrev-Next-Train-App/canvases/store-launch-gantt.canvas.tsx) beside the chat  
+**Store targets:** Play public ~18 Sep 2026 · App Store submit ~24 Oct 2026 · both live ~7 Nov 2026  
+**Revenue north-star (program expansion):** **A$20,000 / year net profit** (after opex) — see [revenue-program-20k.md](revenue-program-20k.md)  
+**Visual plan:** [store-launch-plan canvas](/Users/tdrev/.cursor/projects/c-Users-tdrev-Next-Train-App/canvases/store-launch-plan.canvas.tsx)
 
-**Related:** [store-listing.md](store-listing.md) · [pre-launch-do-now.md](pre-launch-do-now.md) · [go-no-go-metrics.md](go-no-go-metrics.md) · [business-marketing-plan.md](business-marketing-plan.md)
+**Related:** [store-listing.md](store-listing.md) · [pre-launch-do-now.md](pre-launch-do-now.md) · [go-no-go-metrics.md](go-no-go-metrics.md) · [business-marketing-plan.md](business-marketing-plan.md) · [ruth-brief-marketing-launch.md](ruth-brief-marketing-launch.md)
+
+---
+
+## Objectives
+
+| ID | Objective |
+| --- | --- |
+| **O1** | Live on **Play + App Store** with quality gates (Tim + Dwayne + Ruth) |
+| **O2** | **A$20k / year net profit** (after store fees **and** opex) |
+| **O3** | Opex controlled; founder salary separate |
+| **O4** | Expand city #2+ only after Perth go/no-go + monetization proof |
+
+O1 is the store-launch critical path. O2–O4 are the **revenue program** ([revenue-program-20k.md](revenue-program-20k.md)): monetisation, marketing budget, expansion, financial model.
 
 ---
 

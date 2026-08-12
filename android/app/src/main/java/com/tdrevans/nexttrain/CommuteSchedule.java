@@ -26,6 +26,7 @@ public final class CommuteSchedule {
     public boolean stale;
     public boolean empty;
     public boolean nearbyFallback;
+    public boolean widgetLocked;
     public long refreshedAtMs;
     public String journeyId;
     public String route;
@@ -51,6 +52,11 @@ public final class CommuteSchedule {
       }
 
       result.settings = new JSONObject(settingsJson);
+      if (!hasWidgetAccess(result.settings)) {
+        result.widgetLocked = true;
+        result.empty = false;
+        return result;
+      }
       result.journey = JourneySelector.selectJourney(result.settings);
       if (result.journey == null) {
         if (JourneySelector.hasConfiguredJourneys(result.settings)) {
@@ -139,6 +145,10 @@ public final class CommuteSchedule {
   }
 
   public static JSONObject toWidgetSnapshot(Result result) throws Exception {
+    if (result.widgetLocked) {
+      return widgetLockedSnapshot();
+    }
+
     if (result.nearbyFallback) {
       return outsideHoursSnapshot(result.settings);
     }
@@ -289,6 +299,49 @@ public final class CommuteSchedule {
     return snapshot;
   }
 
+  public static boolean hasWidgetAccess(JSONObject settings) {
+    if (settings == null) {
+      return true;
+    }
+    JSONObject pro = settings.optJSONObject("pro");
+    if (pro == null) {
+      return true;
+    }
+    return pro.optBoolean("hasWidgetAccess", true);
+  }
+
+  public static boolean hasWidgetAccessFromContext(Context context) {
+    try {
+      String json = WidgetSettingsStore.readSettings(context);
+      if (json == null || json.isEmpty()) {
+        return true;
+      }
+      return hasWidgetAccess(new JSONObject(json));
+    } catch (Exception error) {
+      return true;
+    }
+  }
+
+  public static JSONObject widgetLockedSnapshot() throws Exception {
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("widgetLocked", true);
+    snapshot.put("empty", false);
+    snapshot.put("journeyId", "pro");
+    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("primary", "Widget paused");
+    snapshot.put(
+      "trainClock",
+      "Your Pro trial ended. Unlock once to keep leave-by on your home screen."
+    );
+    snapshot.put("route", "Unlock Pro");
+    snapshot.put("secondary", "");
+    snapshot.put("updatedLine", "");
+    snapshot.put("stale", false);
+    snapshot.put("urgent", false);
+    snapshot.put("late", false);
+    return snapshot;
+  }
+
   private static JSONObject loadingState(JSONObject journey) throws Exception {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", false);
@@ -395,7 +448,8 @@ public final class CommuteSchedule {
       cached == null ||
       cached.optBoolean("empty", false) ||
       cached.optBoolean("nearbyFallback", false) ||
-      cached.optBoolean("outsideHoursIdle", false)
+      cached.optBoolean("outsideHoursIdle", false) ||
+      cached.optBoolean("widgetLocked", false)
     ) {
       return cached;
     }

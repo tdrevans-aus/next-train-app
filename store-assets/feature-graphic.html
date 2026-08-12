@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Next Train — feature graphic V1 (Rails)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #1a2a28;
+      }
+      #stage {
+        width: 1024px;
+        height: 500px;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse 60% 90% at 78% 30%, rgba(11, 110, 106, 0.16), transparent 60%),
+          linear-gradient(135deg, #f3f7f6 0%, #e2ece9 55%, #cfe2de 100%);
+        font-family: Figtree, system-ui, sans-serif;
+        color: #123532;
+      }
+      /* Track band echoing the app icon */
+      .rails {
+        position: absolute;
+        width: 1250px;
+        height: 1250px;
+        right: -360px;
+        top: -390px;
+        opacity: 0.1;
+        z-index: 0;
+      }
+      .safe {
+        position: absolute;
+        inset: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+        z-index: 2;
+      }
+      .copy {
+        flex: 1;
+        max-width: 500px;
+      }
+      .brand {
+        font-family: Syne, sans-serif;
+        font-weight: 800;
+        font-size: 62px;
+        letter-spacing: -0.035em;
+        line-height: 1;
+        color: #0b6e6a;
+      }
+      .tag {
+        margin-top: 22px;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #14322f;
+        letter-spacing: -0.015em;
+        white-space: nowrap;
+      }
+      .pills {
+        display: flex;
+        gap: 10px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+      }
+      .pill {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        color: #0b6e6a;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(11, 110, 106, 0.18);
+        border-radius: 999px;
+        padding: 8px 15px;
+      }
+
+      /* —— Phone: mirrors the real Journey view —— */
+      .phone {
+        width: 272px;
+        height: 410px;
+        border-radius: 38px;
+        background: #eef3f2;
+        border: 3px solid rgba(18, 53, 50, 0.12);
+        box-shadow:
+          0 30px 60px rgba(11, 70, 66, 0.22),
+          0 2px 0 rgba(255, 255, 255, 0.6) inset;
+        padding: 26px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        position: relative;
+        flex-shrink: 0;
+        transform: rotate(-3.5deg);
+      }
+      .phone::before {
+        content: "";
+        position: absolute;
+        top: 11px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 64px;
+        height: 7px;
+        border-radius: 99px;
+        background: rgba(18, 53, 50, 0.12);
+      }
+      .ph-route {
+        width: 100%;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #1a2f2c;
+        letter-spacing: -0.01em;
+        margin-top: 3px;
+        padding: 0 4px;
+        text-align: center;
+      }
+      .ph-card {
+        text-align: center;
+        border-radius: 15px;
+        border: 1px solid rgba(19, 37, 35, 0.1);
+        background: rgba(255, 255, 255, 0.6);
+        padding: 11px 12px 13px;
+      }
+      .ph-card.leave {
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(19, 37, 35, 0.07);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .ph-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #5c726d;
+      }
+      .ph-countdown {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 0.12em;
+        margin: 5px 0 2px;
+        font-family: Syne, sans-serif;
+        font-weight: 800;
+        letter-spacing: -0.045em;
+        line-height: 0.98;
+        color: #0b6e6a;
+      }
+      .ph-card.hero .ph-countdown {
+        font-size: 38px;
+      }
+      .ph-card.leave .ph-countdown {
+        font-size: 54px;
+      }
+      .ph-countdown .unit {
+        font-size: 0.44em;
+        font-weight: 700;
+      }
+      .ph-sub {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #132523;
+      }
+      .ph-card.leave .ph-sub {
+        margin-top: 4px;
+        color: #0b6e6a;
+      }
+      .ph-strip {
+        display: flex;
+        gap: 8px;
+      }
+      .ph-strip-cell {
+        flex: 1;
+        text-align: center;
+        border-radius: 12px;
+        border: 1px solid rgba(19, 37, 35, 0.09);
+        background: rgba(255, 255, 255, 0.5);
+        padding: 7px 4px 8px;
+      }
+      .ph-strip-cell .ph-label {
+        font-size: 8.5px;
+      }
+      .ph-strip-val {
+        margin-top: 3px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #132523;
+      }
+      .ph-strip-val.ok {
+        color: #0b6e6a;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <svg class="rails" viewBox="-400 -400 1300 1300" aria-hidden="true">
+        <g stroke="#0B6E6A" stroke-width="30" fill="none">
+          <path d="M-386 814 L814 -386" />
+          <path d="M-302 898 L898 -302" />
+        </g>
+        <g fill="#0B6E6A">
+          <rect x="-119" y="546" width="150" height="20" rx="7" transform="rotate(45 -44 556)" />
+          <rect x="-59" y="486" width="150" height="20" rx="7" transform="rotate(45 16 496)" />
+          <rect x="1" y="426" width="150" height="20" rx="7" transform="rotate(45 76 436)" />
+          <rect x="61" y="366" width="150" height="20" rx="7" transform="rotate(45 136 376)" />
+          <rect x="121" y="306" width="150" height="20" rx="7" transform="rotate(45 196 316)" />
+          <rect x="181" y="246" width="150" height="20" rx="7" transform="rotate(45 256 256)" />
+          <rect x="241" y="186" width="150" height="20" rx="7" transform="rotate(45 316 196)" />
+          <rect x="301" y="126" width="150" height="20" rx="7" transform="rotate(45 376 136)" />
+          <rect x="361" y="66" width="150" height="20" rx="7" transform="rotate(45 436 76)" />
+          <rect x="421" y="6" width="150" height="20" rx="7" transform="rotate(45 496 16)" />
+          <rect x="481" y="-54" width="150" height="20" rx="7" transform="rotate(45 556 -44)" />
+        </g>
+      </svg>
+
+      <div class="safe">
+        <div class="copy">
+          <div class="brand">Next Train</div>
+          <p class="tag">Know when to walk out.</p>
+          <div class="pills">
+            <span class="pill">Leave-by countdown</span>
+            <span class="pill">Live delays</span>
+            <span class="pill">Home-screen widget</span>
+          </div>
+        </div>
+
+        <div class="phone" aria-hidden="true">
+          <p class="ph-route">Joondalup, towards Perth</p>
+          <div class="ph-card hero">
+            <p class="ph-label">Next Train</p>
+            <div class="ph-countdown">24<span class="unit">mins</span></div>
+            <p class="ph-sub">7:54</p>
+          </div>
+          <div class="ph-card leave">
+            <p class="ph-label">Leave in</p>
+            <div class="ph-countdown">12<span class="unit">mins</span></div>
+            <p class="ph-sub">7:42</p>
+          </div>
+          <div class="ph-strip">
+            <div class="ph-strip-cell">
+              <p class="ph-label">Platform</p>
+              <p class="ph-strip-val">2</p>
+            </div>
+            <div class="ph-strip-cell">
+              <p class="ph-label">Status</p>
+              <p class="ph-strip-val ok">On time</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

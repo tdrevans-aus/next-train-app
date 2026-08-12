@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D4  Points: track splits, chosen route stays bold -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M186 420 C186 340 196 300 236 250 C272 204 300 168 316 116"
+        stroke="#0B6E6A" stroke-width="34" stroke-linecap="round" fill="none"/>
+  <path d="M290 420 C290 348 300 306 340 258 C374 216 398 184 412 148"
+        stroke="#0B6E6A" stroke-width="34" stroke-linecap="round" fill="none"/>
+  <path d="M186 340 C170 288 146 236 112 190"
+        stroke="#0B6E6A" stroke-width="20" stroke-linecap="round" fill="none" opacity="0.42"/>
+  <g fill="#0B6E6A">
+    <rect x="160" y="378" width="156" height="24" rx="8"/>
+    <rect x="168" y="316" width="150" height="22" rx="7"/>
+    <rect x="196" y="256" width="146" height="20" rx="7" transform="rotate(-14 269 266)"/>
+    <rect x="242" y="196" width="134" height="18" rx="6" transform="rotate(-22 309 205)"/>
+  </g>
+</svg>

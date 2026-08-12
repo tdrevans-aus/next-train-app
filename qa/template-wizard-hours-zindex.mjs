@@ -1,5 +1,5 @@
 /**
- * Active hours wizard step — coach card must paint above highlighted fields.
+ * Active hours wizard step — coach card must not overlap highlighted fields.
  */
 import { chromium } from "playwright";
 
@@ -58,14 +58,17 @@ async function run() {
   if (!result.step3Visible) {
     console.error("FAIL — not on Active hours step", result);
     process.exitCode = 1;
+  } else if (result.overlap) {
+    console.error("FAIL — coach card overlaps Active hours fields", result);
+    process.exitCode = 1;
   } else if (result.cardZ !== "22") {
     console.error("FAIL — card z-index expected 22", result);
     process.exitCode = 1;
-  } else if (result.overlap && !result.cardAboveFields) {
+  } else if (result.overlap && result.cardAboveFields) {
     console.error("FAIL — fields paint above coach card at overlap", result);
     process.exitCode = 1;
   } else {
-    console.log("PASS — Active hours coach stacks above highlighted fields", result);
+    console.log("PASS — Active hours coach does not cover fields", result);
   }
 
   await browser.close();

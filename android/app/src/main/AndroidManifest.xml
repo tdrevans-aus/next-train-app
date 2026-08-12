@@ -47,6 +47,20 @@
                 <data android:scheme="nexttrain" android:host="home" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="nexttrain" android:host="paywall" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="nexttrain" android:host="test" android:path="/seed" />
+            </intent-filter>
+
         </activity>
 
         <receiver
@@ -67,6 +81,10 @@
 
         <receiver
             android:name=".CommuteStripReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".PauseResumeReceiver"
             android:exported="false" />
 
         <receiver

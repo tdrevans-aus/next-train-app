@@ -68,6 +68,19 @@ public class WidgetSyncPlugin extends Plugin {
   }
 
   @PluginMethod
+  public void peekLaunchDeepLink(PluginCall call) {
+    JSObject result = new JSObject();
+    result.put("uri", pendingDeepLink);
+    call.resolve(result);
+  }
+
+  @PluginMethod
+  public void clearLaunchDeepLink(PluginCall call) {
+    pendingDeepLink = null;
+    call.resolve();
+  }
+
+  @PluginMethod
   public void isAvailable(PluginCall call) {
     JSObject result = new JSObject();
     result.put("available", true);

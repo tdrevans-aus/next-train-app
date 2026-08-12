@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D6  Countdown track: sleepers tighten as the train gets close -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M150 420 L190 420 L206 150 L178 150 Z" fill="#0B6E6A"/>
+  <path d="M362 420 L322 420 L306 150 L334 150 Z" fill="#0B6E6A"/>
+  <g fill="#0B6E6A">
+    <rect x="144" y="388" width="224" height="24" rx="8"/>
+    <rect x="151" y="320" width="210" height="22" rx="7"/>
+    <rect x="157" y="262" width="198" height="20" rx="7"/>
+    <rect x="162" y="217" width="188" height="18" rx="6"/>
+    <rect x="166" y="182" width="180" height="16" rx="5"/>
+    <rect x="169" y="155" width="174" height="14" rx="5"/>
+  </g>
+</svg>

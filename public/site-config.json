@@ -4,5 +4,9 @@
   "admobAppId": "ca-app-pub-2659068072900088~2367537790",
   "admobBannerId": "ca-app-pub-2659068072900088/7567893589",
   "admobTestMode": false,
-  "adFreeProductId": "com.tdrevans.nexttrain.adfree"
+  "adFreeProductId": "com.tdrevans.nexttrain.adfree",
+  "proTrialDays": 30,
+  "appVersion": "2.1.0",
+  "appVersionCode": 7,
+  "sentryDsn": "https://fe6d3f1d51c5a06be0ec973f8590af0b@o4511892388773888.ingest.us.sentry.io/4511892415643648"
 }

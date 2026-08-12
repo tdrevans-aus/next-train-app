@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- B2 — Vanishing rails, open apex (rails never meet) -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <!-- Left rail -->
+  <path d="M156 412 L208 124 h40 L196 412 z" fill="#0B6E6A"/>
+  <!-- Right rail — clear gap at top (~56px) -->
+  <path d="M316 412 L264 124 h40 L356 412 z" fill="#0B6E6A"/>
+  <rect x="132" y="360" width="248" height="26" rx="7" fill="#0B6E6A"/>
+  <rect x="156" y="300" width="200" height="22" rx="6" fill="#0B6E6A"/>
+  <rect x="180" y="248" width="152" height="18" rx="5" fill="#0B6E6A"/>
+  <rect x="200" y="204" width="112" height="14" rx="4" fill="#0B6E6A"/>
+</svg>

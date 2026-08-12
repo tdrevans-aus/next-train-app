@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D5  Clock chord: dial ring with a track running straight through it -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <circle cx="256" cy="256" r="150" stroke="#0B6E6A" stroke-width="26" fill="none" opacity="0.35"/>
+  <g transform="rotate(-32 256 256)">
+    <rect x="216" y="76" width="26" height="360" rx="12" fill="#0B6E6A"/>
+    <rect x="270" y="76" width="26" height="360" rx="12" fill="#0B6E6A"/>
+    <g fill="#0B6E6A">
+      <rect x="196" y="344" width="120" height="22" rx="7"/>
+      <rect x="196" y="278" width="120" height="22" rx="7"/>
+      <rect x="196" y="212" width="120" height="22" rx="7"/>
+      <rect x="196" y="146" width="120" height="22" rx="7"/>
+    </g>
+  </g>
+</svg>

@@ -256,17 +256,79 @@ function updateCommuteStripUi(settings) {
 }
 
 function updateNudgeEarlyUi(settings) {
-  const earlyInput = document.getElementById("leave-reminders-early");
-  const chipsWrap = document.getElementById("leave-reminders-nudge-chips-wrap");
-  if (!earlyInput || !chipsWrap) {
-    return;
-  }
+  // Early Reminder UI removed from journey detail (product cut 12 Aug 2026).
+  // Native earlyHeadsUp stays off unless already set; strip starts at leave-by.
+  void settings;
+}
 
-  const enabled = Boolean(settings?.earlyHeadsUp);
-  const offset = Number(settings?.earlyOffsetMinutes) || DEFAULT_GET_READY_MINUTES;
-  earlyInput.checked = enabled;
-  chipsWrap.hidden = !enabled;
-  setNudgeOffsetChips(offset);
+function initLeaveReminderUi() {
+  const stripInput = document.getElementById("leave-reminders-commute-strip");
+
+  stripInput?.addEventListener("change", async () => {
+    const settings = await saveReminderSettings({ commuteStripEnabled: stripInput.checked });
+    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+    await updateRemindersDialogUi(settings, schedule);
+  });
+
+  document.getElementById("leave-reminders-pause-chips")?.addEventListener("click", async (event) => {
+    const chip = event.target.closest(".reminder-pause-chip");
+    if (!chip) {
+      return;
+    }
+
+    const duration = chip.dataset.pause;
+    if (duration === "custom") {
+      await applyCustomPauseFromInput({ focusInput: true });
+      return;
+    }
+
+    syncPauseCustomField(false);
+    const settings = await activatePause(duration);
+    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+    await updateRemindersDialogUi(settings, schedule);
+  });
+
+  document.getElementById("leave-reminders-pause-custom-apply")?.addEventListener("click", async () => {
+    await applyCustomPauseFromInput();
+  });
+
+  document.getElementById("leave-reminders-pause-days")?.addEventListener("keydown", async (event) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+    event.preventDefault();
+    await applyCustomPauseFromInput();
+  });
+
+  document.getElementById("leave-reminders-pause")?.addEventListener("change", async (event) => {
+    const on = event.target.checked;
+    const settings = on
+      ? await activatePause(readLastPauseDuration())
+      : await resumeReminders();
+    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+    await updateRemindersDialogUi(settings, schedule);
+  });
+
+  document.getElementById("leave-reminder-turn-on-btn")?.addEventListener("click", async () => {
+    hideLeaveReminderCoach();
+    window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
+    window.nextTrainApp?.openJourneys?.();
+  });
+
+  document.getElementById("leave-reminder-later-btn")?.addEventListener("click", () => {
+    window.nextTrainStickinessCoaches?.markCoachNotNow?.("reminder");
+    hideLeaveReminderCoach();
+    window.nextTrainWidget?.showReminderCoachNotNowHint?.();
+  });
+
+  document.addEventListener("nexttrain:settings-persisted", async () => {
+    getLeaveRemindersPlugin()?.reschedule?.();
+    await renderLeaveAlertSurfaces();
+  });
+
+  document.addEventListener("nexttrain:menu-open", () => {
+    void refreshMenuPauseUi();
+  });
 }
 
 function clampCustomPauseDays(value) {
@@ -275,11 +337,6 @@ function clampCustomPauseDays(value) {
     return DEFAULT_CUSTOM_PAUSE_DAYS;
   }
   return Math.min(MAX_CUSTOM_PAUSE_DAYS, Math.max(MIN_CUSTOM_PAUSE_DAYS, days));
-}
-
-function formatCustomPauseChipLabel(days) {
-  const n = clampCustomPauseDays(days);
-  return n === 1 ? "1 day" : `${n} days`;
 }
 
 function readCustomPauseDays() {
@@ -307,14 +364,8 @@ function writeLastPauseDuration(duration) {
 
 function setPauseDurationChips(activeDuration) {
   const container = document.getElementById("leave-reminders-pause-chips");
-  const customChip = document.getElementById("leave-reminders-pause-custom-chip");
   if (!container) {
     return;
-  }
-
-  if (customChip) {
-    customChip.textContent =
-      activeDuration === "custom" ? formatCustomPauseChipLabel(readCustomPauseDays()) : "Custom";
   }
 
   container.querySelectorAll(".reminder-pause-chip").forEach((chip) => {
@@ -516,94 +567,87 @@ async function healRemindersPermissionState(settings) {
 }
 
 function updateRemindersEmptyState() {
-  const empty = document.getElementById("reminders-empty");
-  const emptyTitle = document.getElementById("reminders-empty-title");
-  const emptyBody = document.getElementById("reminders-empty-body");
-  if (!empty || !emptyTitle || !emptyBody) {
-    return false;
-  }
-
-  const journeys = getConfiguredJourneys();
-  if (!journeys.length) {
-    emptyTitle.textContent = "No journeys yet";
-    emptyBody.textContent = "Save a journey, then turn Remind me on.";
-    empty.hidden = false;
-    return true;
-  }
-
-  if (!deriveReminderEnabled()) {
-    emptyTitle.textContent = "No leave alerts on yet";
-    emptyBody.textContent =
-      "Turn Remind me on when you edit a journey — then Early Reminder and Pause show up here.";
-    empty.hidden = false;
-    return true;
-  }
-
-  empty.hidden = true;
   return false;
 }
 
-function openMyJourneysFromReminders() {
-  closeRemindersDialog();
-  window.nextTrainApp?.closeMenuDialogOnly?.();
-  window.nextTrainApp?.openJourneys?.();
+async function refreshJourneyRemindExtras() {
+  if (!isNativeApp()) {
+    return null;
+  }
+  let settings = await loadReminderSettings();
+  // Product cut: Early Reminder UI gone — force off so strip/reminders use leave-by.
+  if (settings?.earlyHeadsUp) {
+    settings = await saveReminderSettings({ earlyHeadsUp: false });
+  }
+  settings = await healRemindersPermissionState(settings);
+  updateCommuteStripUi(settings);
+  updateNudgeEarlyUi(settings);
+  return settings;
 }
 
-async function updateRemindersDialogUi(settings, schedule) {
-  const nativeContent = document.getElementById("reminders-native-content");
-  const lead = document.getElementById("reminders-lead");
-  const armedLead = document.getElementById("reminders-armed-lead");
-  const webHint = document.getElementById("reminders-web-hint");
-  const sharedOptions = document.getElementById("reminders-shared-options");
+async function refreshMenuPauseUi() {
+  const block = document.getElementById("menu-pause-block");
+  const webHint = document.getElementById("menu-pause-web-hint");
+  const pauseWrap = document.getElementById("leave-reminders-pause-wrap");
 
-  if (!nativeContent) {
-    return;
+  if (!block) {
+    return null;
   }
 
   if (!isNativeApp()) {
-    if (nativeContent) {
-      nativeContent.hidden = true;
-    }
-    if (lead) {
-      lead.hidden = true;
-    }
-    if (armedLead) {
-      armedLead.hidden = true;
-    }
+    block.hidden = false;
     if (webHint) {
       webHint.hidden = false;
     }
-    updateReminderScheduleLine(null, settings);
-    return;
+    if (pauseWrap) {
+      pauseWrap.hidden = true;
+    }
+    return null;
   }
 
   if (webHint) {
     webHint.hidden = true;
   }
-  nativeContent.hidden = false;
 
-  const anyReminderOn = deriveReminderEnabled();
-  const remindersLive = Boolean(settings?.enabled) && anyReminderOn;
-  const showEmpty = updateRemindersEmptyState();
-  if (lead) {
-    lead.hidden = !showEmpty;
+  if (!deriveReminderEnabled()) {
+    block.hidden = true;
+    return null;
   }
-  if (armedLead) {
-    armedLead.hidden = !remindersLive;
+
+  block.hidden = false;
+  if (pauseWrap) {
+    pauseWrap.hidden = false;
   }
+
+  let settings = await loadReminderSettings();
+  settings = await healRemindersPermissionState(settings);
+  updatePauseUi(settings);
+  return settings;
+}
+
+async function renderLeaveAlertSurfaces() {
+  await refreshJourneyRemindExtras();
+  await refreshMenuPauseUi();
+}
+
+function openMyJourneysFromReminders() {
+  window.nextTrainApp?.closeMenuDialogOnly?.();
+  window.nextTrainApp?.openJourneys?.();
+}
+
+async function updateRemindersDialogUi(settings, schedule) {
   updateCommuteStripUi(settings);
   updateNudgeEarlyUi(settings);
   updatePauseUi(settings);
-  if (sharedOptions) {
-    sharedOptions.hidden = !remindersLive;
-  }
   updateReminderScheduleLine(schedule, settings);
+  await refreshMenuPauseUi();
 }
 
 async function healAfterJourneySave() {
   let settings = await loadReminderSettings();
   settings = await healRemindersPermissionState(settings);
   getLeaveRemindersPlugin()?.reschedule?.();
+  await renderLeaveAlertSurfaces();
   return settings;
 }
 
@@ -646,10 +690,7 @@ async function resumeReminders() {
 }
 
 async function renderRemindersDialog() {
-  let settings = await loadReminderSettings();
-  settings = await healRemindersPermissionState(settings);
-  const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-  await updateRemindersDialogUi(settings, schedule);
+  await renderLeaveAlertSurfaces();
 }
 
 function hideLeaveReminderCoach() {
@@ -675,220 +716,42 @@ function showLeaveReminderCoach() {
   }
 }
 
+/** @deprecated Reminder settings sheet removed — open Journeys instead. */
 function openRemindersDialog() {
   window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
   window.nextTrainApp?.closeMenuDialogOnly?.();
-  clearRemindersValidationError();
-
-  renderRemindersDialog().then(() => {
-    const dialog = document.getElementById("reminders-dialog");
-    document.dispatchEvent(new CustomEvent("nexttrain:reminders-open"));
-    dialog?.showModal();
-  });
+  window.nextTrainApp?.openJourneys?.();
 }
 
 function closeRemindersDialog() {
-  const dialog = document.getElementById("reminders-dialog");
-  if (dialog?.open) {
-    dialog.close();
-    dialog.removeAttribute("open");
-  }
+  // no-op — sheet removed
 }
 
-function setRemindersDoneBusy(busy) {
-  const button = document.getElementById("reminders-done-btn");
-  if (!button) {
-    return;
-  }
-
-  button.disabled = busy;
-  button.textContent = busy ? "Saving…" : "Done";
-  button.setAttribute("aria-busy", busy ? "true" : "false");
+function setRemindersDoneBusy() {
+  // no-op
 }
 
-function showRemindersValidationError(message) {
-  const errorEl = document.getElementById("reminders-validation-error");
-  if (!errorEl) {
-    return;
-  }
-
-  if (!message) {
-    errorEl.hidden = true;
-    errorEl.textContent = "";
-    return;
-  }
-
-  errorEl.textContent = message;
-  errorEl.hidden = false;
+function showRemindersValidationError() {
+  // no-op
 }
 
 function clearRemindersValidationError() {
-  showRemindersValidationError("");
+  // no-op
 }
 
 function dismissRemindersDialog() {
-  if (remindersSaveInFlight) {
-    return;
-  }
-
-  clearRemindersValidationError();
-  closeRemindersDialog();
+  // no-op
 }
 
 async function saveRemindersDialog() {
-  if (remindersSaveInFlight) {
-    return;
-  }
-
-  clearRemindersValidationError();
-  closeRemindersDialog();
-
   if (!isNativeApp()) {
     return;
   }
-
-  remindersSaveInFlight = true;
-  setRemindersDoneBusy(true);
-
   try {
     getLeaveRemindersPlugin()?.reschedule?.();
   } catch (saveError) {
     console.warn("Could not refresh reminder schedule", saveError);
-  } finally {
-    remindersSaveInFlight = false;
-    setRemindersDoneBusy(false);
   }
-}
-
-function initLeaveReminderUi() {
-  const earlyInput = document.getElementById("leave-reminders-early");
-  const stripInput = document.getElementById("leave-reminders-commute-strip");
-  const remindersDialog = document.getElementById("reminders-dialog");
-
-  document.getElementById("menu-reminders-btn")?.addEventListener("click", () => {
-    openRemindersDialog();
-  });
-
-  document.getElementById("reminders-open-journeys-btn")?.addEventListener("click", () => {
-    openMyJourneysFromReminders();
-  });
-
-  document.getElementById("reminders-done-btn")?.addEventListener("click", () => {
-    saveRemindersDialog();
-  });
-
-  earlyInput?.addEventListener("change", async () => {
-    const patch = { earlyHeadsUp: earlyInput.checked };
-    if (earlyInput.checked) {
-      patch.earlyOffsetMinutes = readSelectedNudgeOffset();
-    }
-    const settings = await saveReminderSettings(patch);
-    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-    await updateRemindersDialogUi(settings, schedule);
-  });
-
-  stripInput?.addEventListener("change", async () => {
-    const settings = await saveReminderSettings({ commuteStripEnabled: stripInput.checked });
-    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-    await updateRemindersDialogUi(settings, schedule);
-  });
-
-  document.getElementById("leave-reminders-nudge-chips")?.addEventListener("click", async (event) => {
-    const chip = event.target.closest(".reminder-offset-chip");
-    if (!chip) {
-      return;
-    }
-
-    const minutes = Number(chip.dataset.minutes);
-    if (!NUDGE_OFFSET_OPTIONS.includes(minutes)) {
-      return;
-    }
-
-    const settings = await saveReminderSettings({
-      earlyHeadsUp: true,
-      earlyOffsetMinutes: minutes,
-    });
-    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-    await updateRemindersDialogUi(settings, schedule);
-  });
-
-  document.getElementById("leave-reminders-pause-chips")?.addEventListener("click", async (event) => {
-    const chip = event.target.closest(".reminder-pause-chip");
-    if (!chip) {
-      return;
-    }
-
-    const duration = chip.dataset.pause;
-    if (duration === "custom") {
-      await applyCustomPauseFromInput({ focusInput: true });
-      return;
-    }
-
-    syncPauseCustomField(false);
-    const settings = await activatePause(duration);
-    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-    await updateRemindersDialogUi(settings, schedule);
-  });
-
-  document.getElementById("leave-reminders-pause-custom-apply")?.addEventListener("click", async () => {
-    await applyCustomPauseFromInput();
-  });
-
-  document.getElementById("leave-reminders-pause-days")?.addEventListener("keydown", async (event) => {
-    if (event.key !== "Enter") {
-      return;
-    }
-    event.preventDefault();
-    await applyCustomPauseFromInput();
-  });
-
-  document.getElementById("leave-reminders-pause")?.addEventListener("change", async (event) => {
-    const on = event.target.checked;
-    const settings = on
-      ? await activatePause(readLastPauseDuration())
-      : await resumeReminders();
-    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-    await updateRemindersDialogUi(settings, schedule);
-  });
-
-  document.getElementById("leave-reminder-turn-on-btn")?.addEventListener("click", async () => {
-    hideLeaveReminderCoach();
-    window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
-    window.nextTrainApp?.openJourneys?.();
-  });
-
-  document.getElementById("leave-reminder-later-btn")?.addEventListener("click", () => {
-    window.nextTrainStickinessCoaches?.markCoachNotNow?.("reminder");
-    hideLeaveReminderCoach();
-    window.nextTrainWidget?.showReminderCoachNotNowHint?.();
-  });
-
-  remindersDialog?.addEventListener("close", () => {
-    remindersDialog.removeAttribute("open");
-    setRemindersDoneBusy(false);
-  });
-
-  remindersDialog?.addEventListener("cancel", (event) => {
-    event.preventDefault();
-    dismissRemindersDialog();
-  });
-
-  remindersDialog?.addEventListener("click", (event) => {
-    if (event.target === remindersDialog) {
-      dismissRemindersDialog();
-    }
-  });
-
-  document.addEventListener("nexttrain:settings-persisted", async () => {
-    getLeaveRemindersPlugin()?.reschedule?.();
-    if (!remindersDialog?.open) {
-      return;
-    }
-
-    const settings = await healRemindersPermissionState(await loadReminderSettings());
-    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-    await updateRemindersDialogUi(settings, schedule);
-  });
 }
 
 function initLeaveRemindersBridge() {
@@ -902,6 +765,9 @@ window.nextTrainLeaveReminders = {
   acknowledgeDeparture,
   loadReminderSchedule,
   renderRemindersDialog,
+  renderLeaveAlertSurfaces,
+  refreshJourneyRemindExtras,
+  refreshMenuPauseUi,
   openRemindersDialog,
   showLeaveReminderCoach,
   healAfterJourneySave,
@@ -915,10 +781,7 @@ if (document.readyState === "loading") {
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
-    const dialog = document.getElementById("reminders-dialog");
-    if (dialog?.open && !remindersSaveInFlight) {
-      renderRemindersDialog();
-    }
+    void renderLeaveAlertSurfaces();
     getLeaveRemindersPlugin()?.reschedule?.();
   }
 });

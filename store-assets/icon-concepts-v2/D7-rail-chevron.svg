@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D7  Rail chevron: track folds into a forward mark -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M104 316 L256 158 L408 316" stroke="#0B6E6A" stroke-width="34"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M104 398 L256 240 L408 398" stroke="#0B6E6A" stroke-width="34"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <g fill="#0B6E6A">
+    <rect x="90" y="308" width="104" height="20" rx="6" transform="rotate(-46 142 318)"/>
+    <rect x="146" y="250" width="104" height="20" rx="6" transform="rotate(-46 198 260)"/>
+    <rect x="318" y="308" width="104" height="20" rx="6" transform="rotate(46 370 318)"/>
+    <rect x="262" y="250" width="104" height="20" rx="6" transform="rotate(46 314 260)"/>
+  </g>
+</svg>

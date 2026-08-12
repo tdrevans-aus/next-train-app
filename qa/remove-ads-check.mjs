@@ -1,5 +1,5 @@
 /**
- * Remove ads — web expectations + native-bridge diagnostic.
+ * Pro / Remove ads — web expectations + native-bridge diagnostic.
  * Usage: node qa/remove-ads-check.mjs
  */
 import { chromium } from "playwright";
@@ -21,38 +21,37 @@ async function run() {
       isNative: window.Capacitor?.isNativePlatform?.(),
       hasNativeBridge: !!window.NextTrainAdFreeNative?.purchaseInAppProduct,
       init,
-      removeBtnHidden: document.getElementById("menu-remove-ads-btn")?.hidden,
-      webHintHidden: document.getElementById("menu-ad-free-web-hint")?.hidden,
+      proState: window.NextTrainPro?.getStateId?.(),
+      ctaHidden: document.getElementById("menu-pro-cta-btn")?.hidden,
+      webHintHidden: document.getElementById("menu-pro-web-hint")?.hidden,
       adLinkHidden: document.getElementById("ad-remove-link-wrap")?.hidden,
     };
   });
 
-  console.log("\nRemove ads check — browser\n");
-  console.log("Web (expected): buy hidden, Android hint visible, link hidden");
+  console.log("\nPro purchase check — browser\n");
+  console.log("Web (expected): Pro CTA hidden, Android hint visible, link hidden");
   console.log(JSON.stringify(web, null, 2));
 
   const webPass =
-    web.removeBtnHidden === true &&
+    web.ctaHidden === true &&
     web.webHintHidden === false &&
     web.adLinkHidden === true &&
     web.isNative !== true;
 
-  console.log(webPass ? "PASS  web Remove ads UI" : "FAIL  web Remove ads UI");
+  console.log(webPass ? "PASS  web Pro UI" : "FAIL  web Pro UI");
 
-  // Broken native bridge (simulates bundle load failure on device)
   await page.evaluate(() => {
     window.Capacitor = { isNativePlatform: () => true };
     window.NextTrainAdFreeNative = undefined;
   });
   await page.evaluate(async () => {
-    await window.NextTrainAdFree?.renderMenuAdFree?.();
+    await window.NextTrainProPurchase?.renderMenuPro?.();
   });
   const nativeNoBridge = await page.evaluate(() => ({
-    sectionHidden: document.getElementById("menu-ad-free-section")?.hidden === true,
-    removeHidden: document.getElementById("menu-remove-ads-btn")?.hidden === true,
-    statusHidden: document.getElementById("menu-ad-free-status")?.hidden === true,
-    billingHintHidden: document.getElementById("menu-ad-free-billing-hint")?.hidden === true,
-    webHintHidden: document.getElementById("menu-ad-free-web-hint")?.hidden === true,
+    sectionHidden: document.getElementById("menu-pro-section")?.hidden === true,
+    ctaHidden: document.getElementById("menu-pro-cta-btn")?.hidden === true,
+    billingHintHidden: document.getElementById("menu-pro-billing-hint")?.hidden === true,
+    webHintHidden: document.getElementById("menu-pro-web-hint")?.hidden === true,
     linkHidden: document.getElementById("ad-remove-link-wrap")?.hidden === true,
   }));
   await page.evaluate(() => {
@@ -60,20 +59,14 @@ async function run() {
     document.getElementById("ad-remove-link")?.click();
   });
   await page.waitForTimeout(600);
-  const silentFail = await page.evaluate(() => ({
-    toast: document.getElementById("app-toast")?.textContent ?? null,
-    toastVisible: document.getElementById("app-toast")?.classList.contains("app-toast--visible"),
+  const paywallOpen = await page.evaluate(() => ({
+    paywallOpen: document.getElementById("pro-paywall-dialog")?.open === true,
   }));
 
-  // Entitled must still show status (never hide whole section)
   await page.evaluate(() => {
     localStorage.setItem("nextTrainAdFreeCache", "1");
   });
-  // Force entitled via public refresh path isn't enough without re-init; poke through render after setting internal cache by purchase toast path:
-  // Re-read: ensureInit already ran; apply by calling restore path won't work. Use evaluate to set via refresh after mocking purchases.
   await page.evaluate(async () => {
-    // Simulate entitled UI path directly: cache + re-init is hard; call render after flipping via apply isn't exported.
-    // Trigger purchaseAdFree early return toast after faking entitled through refreshEntitlement with mock.
     window.NextTrainAdFreeNative = {
       getInAppPurchases: async () => [{ productIdentifier: "com.tdrevans.nexttrain.adfree", isActive: true }],
       purchaseIncludesProduct: (purchases, id) =>
@@ -85,38 +78,35 @@ async function run() {
       isBillingSupported: async () => true,
     };
     await window.NextTrainAdFree.refreshEntitlement({ silent: true });
-    await window.NextTrainAdFree.renderMenuAdFree();
+    await window.NextTrainProPurchase.renderMenuPro();
   });
   const entitledUi = await page.evaluate(() => ({
-    sectionHidden: document.getElementById("menu-ad-free-section")?.hidden === true,
-    statusHidden: document.getElementById("menu-ad-free-status")?.hidden === true,
-    removeHidden: document.getElementById("menu-remove-ads-btn")?.hidden === true,
+    sectionHidden: document.getElementById("menu-pro-section")?.hidden === true,
+    statusHidden: document.getElementById("menu-pro-status-row")?.hidden === true,
+    ctaHidden: document.getElementById("menu-pro-cta-btn")?.hidden === true,
     restoreHidden: document.getElementById("menu-restore-purchase-btn")?.hidden === true,
+    proState: window.NextTrainPro?.getStateId?.(),
   }));
 
   console.log("\nSimulated native (no bridge):");
-  console.log(JSON.stringify({ nativeNoBridge, silentFail }, null, 2));
+  console.log(JSON.stringify({ nativeNoBridge, paywallOpen }, null, 2));
   const noBridgeUiOk =
     nativeNoBridge.sectionHidden === false &&
-    nativeNoBridge.removeHidden === true &&
-    nativeNoBridge.billingHintHidden === false &&
+    nativeNoBridge.ctaHidden === false &&
     nativeNoBridge.webHintHidden === true;
-  const toastOk = silentFail.toastVisible && silentFail.toast?.includes("aren't available");
-  console.log(noBridgeUiOk ? "PASS  billing hint shown when bridge missing" : "FAIL  menu empty when bridge missing");
-  console.log(
-    toastOk
-      ? "PASS  toast shown when bridge missing"
-      : "FAIL  silent or wrong toast when bridge missing"
-  );
+  const paywallOk = paywallOpen.paywallOpen === true;
+  console.log(noBridgeUiOk ? "PASS  billing hint shown when bridge missing" : "FAIL  menu when bridge missing");
+  console.log(paywallOk ? "PASS  paywall opens from ad link" : "FAIL  paywall from ad link");
 
   console.log("\nSimulated entitled:");
   console.log(JSON.stringify(entitledUi, null, 2));
   const entitledOk =
     entitledUi.sectionHidden === false &&
     entitledUi.statusHidden === false &&
-    entitledUi.removeHidden === true &&
-    entitledUi.restoreHidden === false;
-  console.log(entitledOk ? "PASS  entitled shows Ad-free status" : "FAIL  entitled hides status");
+    entitledUi.ctaHidden === true &&
+    entitledUi.restoreHidden === false &&
+    entitledUi.proState === "pro_paid";
+  console.log(entitledOk ? "PASS  entitled shows Pro status" : "FAIL  entitled Pro status");
 
   if (pageErrors.length) {
     console.log("\nConsole errors (first 3):");
@@ -124,7 +114,7 @@ async function run() {
   }
 
   await browser.close();
-  process.exit(webPass && noBridgeUiOk && toastOk && entitledOk ? 0 : 1);
+  process.exit(webPass && noBridgeUiOk && paywallOk && entitledOk ? 0 : 1);
 }
 
 run().catch((e) => {

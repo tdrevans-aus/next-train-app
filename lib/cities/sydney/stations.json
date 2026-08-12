@@ -1,0 +1,84 @@
+{
+  "stations": [
+    {
+      "name": "Central",
+      "aliases": ["Sydney Central", "Central Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Town Hall",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Wynyard",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Circular Quay",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Martin Place",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "North Sydney",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Chatswood",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Parramatta",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Bondi Junction",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Sydenham",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Redfern",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Strathfield",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Hornsby",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Macquarie University",
+      "aliases": ["Macquarie Uni"],
+      "stopIds": []
+    },
+    {
+      "name": "Tallawong",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Sydenham Metro",
+      "aliases": ["Sydenham (Metro)"],
+      "stopIds": []
+    }
+  ]
+}

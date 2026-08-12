@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- B1  Rails + sleepers (plan) -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <rect x="118" y="168" width="276" height="28" rx="8" fill="#0B6E6A"/>
+  <rect x="118" y="242" width="276" height="28" rx="8" fill="#0B6E6A"/>
+  <rect x="118" y="316" width="276" height="28" rx="8" fill="#0B6E6A"/>
+  <rect x="156" y="118" width="40" height="276" rx="12" fill="#0B6E6A"/>
+  <rect x="316" y="118" width="40" height="276" rx="12" fill="#0B6E6A"/>
+</svg>
