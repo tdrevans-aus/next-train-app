@@ -16,6 +16,23 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9582B6822FE993A50072D4E8 /* SceneDelegate.swift */; };
+		NTWA001FED79650016851F /* WidgetAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS001FED79650016851F /* WidgetAppGroup.swift */; };
+		NTWW001FED79650016851F /* WidgetAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS001FED79650016851F /* WidgetAppGroup.swift */; };
+		NTWA011FED79650016851F /* WidgetSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS011FED79650016851F /* WidgetSettingsStore.swift */; };
+		NTWW011FED79650016851F /* WidgetSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS011FED79650016851F /* WidgetSettingsStore.swift */; };
+		NTWA021FED79650016851F /* PerthTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS021FED79650016851F /* PerthTime.swift */; };
+		NTWW021FED79650016851F /* PerthTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS021FED79650016851F /* PerthTime.swift */; };
+		NTWA031FED79650016851F /* JourneySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS031FED79650016851F /* JourneySelector.swift */; };
+		NTWW031FED79650016851F /* JourneySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS031FED79650016851F /* JourneySelector.swift */; };
+		NTWA041FED79650016851F /* NextTrainApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS041FED79650016851F /* NextTrainApiClient.swift */; };
+		NTWW041FED79650016851F /* NextTrainApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS041FED79650016851F /* NextTrainApiClient.swift */; };
+		NTWA051FED79650016851F /* NextCommutePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS051FED79650016851F /* NextCommutePreview.swift */; };
+		NTWW051FED79650016851F /* NextCommutePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS051FED79650016851F /* NextCommutePreview.swift */; };
+		NTWA061FED79650016851F /* CommuteSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS061FED79650016851F /* CommuteSchedule.swift */; };
+		NTWW061FED79650016851F /* CommuteSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS061FED79650016851F /* CommuteSchedule.swift */; };
+		NTWG00041FED79650016851F /* WidgetSyncPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWG00031FED79650016851F /* WidgetSyncPlugin.swift */; };
+		NTWG00061FED79650016851F /* NextTrainWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWG00051FED79650016851F /* NextTrainWidget.swift */; };
+		NTWG00121FED79650016851F /* NextTrainWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = NTWG000A1FED79650016851F /* NextTrainWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +47,19 @@
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		9582B6822FE993A50072D4E8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		NTWS001FED79650016851F /* WidgetAppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAppGroup.swift; sourceTree = "<group>"; };
+		NTWS011FED79650016851F /* WidgetSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSettingsStore.swift; sourceTree = "<group>"; };
+		NTWS021FED79650016851F /* PerthTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerthTime.swift; sourceTree = "<group>"; };
+		NTWS031FED79650016851F /* JourneySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneySelector.swift; sourceTree = "<group>"; };
+		NTWS041FED79650016851F /* NextTrainApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextTrainApiClient.swift; sourceTree = "<group>"; };
+		NTWS051FED79650016851F /* NextCommutePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextCommutePreview.swift; sourceTree = "<group>"; };
+		NTWS061FED79650016851F /* CommuteSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteSchedule.swift; sourceTree = "<group>"; };
+		NTWG00031FED79650016851F /* WidgetSyncPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSyncPlugin.swift; sourceTree = "<group>"; };
+		NTWG00051FED79650016851F /* NextTrainWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextTrainWidget.swift; sourceTree = "<group>"; };
+		NTWG00071FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		NTWG00081FED79650016851F /* NextTrainWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NextTrainWidget.entitlements; sourceTree = "<group>"; };
+		NTWG00091FED79650016851F /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		NTWG000A1FED79650016851F /* NextTrainWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NextTrainWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +77,8 @@
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
+				NTWG00011FED79650016851F /* Shared */,
+				NTWG00021FED79650016851F /* NextTrainWidget */,
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
@@ -57,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				NTWG000A1FED79650016851F /* NextTrainWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,6 +97,8 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				NTWG00091FED79650016851F /* App.entitlements */,
+				NTWG00031FED79650016851F /* WidgetSyncPlugin.swift */,
 				9582B6822FE993A50072D4E8 /* SceneDelegate.swift */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
@@ -77,6 +112,31 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+
+		NTWG00011FED79650016851F /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				NTWS001FED79650016851F /* WidgetAppGroup.swift */,
+				NTWS011FED79650016851F /* WidgetSettingsStore.swift */,
+				NTWS021FED79650016851F /* PerthTime.swift */,
+				NTWS031FED79650016851F /* JourneySelector.swift */,
+				NTWS041FED79650016851F /* NextTrainApiClient.swift */,
+				NTWS051FED79650016851F /* NextCommutePreview.swift */,
+				NTWS061FED79650016851F /* CommuteSchedule.swift */,
+			);
+			path = ../Shared;
+			sourceTree = "<group>";
+		};
+		NTWG00021FED79650016851F /* NextTrainWidget */ = {
+			isa = PBXGroup;
+			children = (
+				NTWG00051FED79650016851F /* NextTrainWidget.swift */,
+				NTWG00071FED79650016851F /* Info.plist */,
+				NTWG00081FED79650016851F /* NextTrainWidget.entitlements */,
+			);
+			path = ../NextTrainWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -87,10 +147,12 @@
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
+				NTWG00111FED79650016851F /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				NTWG000F1FED79650016851F /* PBXTargetDependency */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -99,6 +161,24 @@
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* App.app */;
 			productType = "com.apple.product-type.application";
+		};
+
+		NTWG000B1FED79650016851F /* NextTrainWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = NTWG00131FED79650016851F /* Build configuration list for PBXNativeTarget "NextTrainWidgetExtension" */;
+			buildPhases = (
+				NTWG000C1FED79650016851F /* Sources */,
+				NTWG000D1FED79650016851F /* Frameworks */,
+				NTWG000E1FED79650016851F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NextTrainWidgetExtension;
+			productName = NextTrainWidgetExtension;
+			productReference = NTWG000A1FED79650016851F /* NextTrainWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -112,6 +192,10 @@
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
+						ProvisioningStyle = Automatic;
+					};
+					NTWG000B1FED79650016851F = {
+						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -133,6 +217,7 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				NTWG000B1FED79650016851F /* NextTrainWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -153,6 +238,76 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		NTWG00111FED79650016851F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				NTWG00121FED79650016851F /* NextTrainWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		NTWG00101FED79650016851F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = NTWG000B1FED79650016851F;
+			remoteInfo = NextTrainWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		NTWG000F1FED79650016851F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = NTWG000B1FED79650016851F /* NextTrainWidgetExtension */;
+			targetProxy = NTWG00101FED79650016851F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		NTWG000D1FED79650016851F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		NTWG000E1FED79650016851F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		NTWG000C1FED79650016851F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				NTWG00061FED79650016851F /* NextTrainWidget.swift in Sources */,
+				NTWW001FED79650016851F /* WidgetAppGroup.swift in Sources */,
+				NTWW011FED79650016851F /* WidgetSettingsStore.swift in Sources */,
+				NTWW021FED79650016851F /* PerthTime.swift in Sources */,
+				NTWW031FED79650016851F /* JourneySelector.swift in Sources */,
+				NTWW041FED79650016851F /* NextTrainApiClient.swift in Sources */,
+				NTWW051FED79650016851F /* NextCommutePreview.swift in Sources */,
+				NTWW061FED79650016851F /* CommuteSchedule.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		504EC3001FED79650016851F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -160,6 +315,14 @@
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */,
+				NTWG00041FED79650016851F /* WidgetSyncPlugin.swift in Sources */,
+				NTWA001FED79650016851F /* WidgetAppGroup.swift in Sources */,
+				NTWA011FED79650016851F /* WidgetSettingsStore.swift in Sources */,
+				NTWA021FED79650016851F /* PerthTime.swift in Sources */,
+				NTWA031FED79650016851F /* JourneySelector.swift in Sources */,
+				NTWA041FED79650016851F /* NextTrainApiClient.swift in Sources */,
+				NTWA051FED79650016851F /* NextCommutePreview.swift in Sources */,
+				NTWA061FED79650016851F /* CommuteSchedule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +462,7 @@
 			baseConfigurationReference = 958DCC722DB07C7200EA8C5F /* debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TQU93NZ6Z5;
@@ -322,6 +486,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TQU93NZ6Z5;
@@ -340,7 +505,63 @@
 			};
 			name = Release;
 		};
-/* End XCBuildConfiguration section */
+
+		NTWG00141FED79650016851F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ../NextTrainWidget/NextTrainWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQU93NZ6Z5;
+				INFOPLIST_FILE = ../NextTrainWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tdrevans.nexttrain.NextTrainWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		NTWG00151FED79650016851F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ../NextTrainWidget/NextTrainWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQU93NZ6Z5;
+				INFOPLIST_FILE = ../NextTrainWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tdrevans.nexttrain.NextTrainWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		NTWG00131FED79650016851F /* Build configuration list for PBXNativeTarget "NextTrainWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				NTWG00141FED79650016851F /* Debug */,
+				NTWG00151FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+
 
 /* Begin XCConfigurationList section */
 		504EC2FF1FED79650016851F /* Build configuration list for PBXProject "App" */ = {
