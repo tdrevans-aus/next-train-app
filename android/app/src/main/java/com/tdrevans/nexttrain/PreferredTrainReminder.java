@@ -125,7 +125,14 @@ public final class PreferredTrainReminder {
 
     String leaveByIso = trip.optString("leaveBy", "");
     long leaveByMs = PerthTime.epochMillisFromIso(leaveByIso);
-    if (leaveByMs <= clock.nowMs) {
+    long departureMs = PerthTime.epochMillisFromIso(departureIso);
+    // Leave-by may already be past while the train is still upcoming (e.g. 10 min walk,
+    // train in 5). Reminders only schedule future leave-by; the commute strip must still
+    // arm through departure so "Leave now" can show.
+    if (departureMs <= clock.nowMs) {
+      return null;
+    }
+    if (leaveByMs <= 0) {
       return null;
     }
 
@@ -248,8 +255,15 @@ public final class PreferredTrainReminder {
     }
 
     long leaveByMs = PerthTime.epochMillisFromIso(trip.optString("leaveBy", ""));
+    long departureMs = PerthTime.epochMillisFromIso(trip.optString("departure", ""));
+    if (departureMs <= 0) {
+      departureMs = PerthTime.epochMillisFromIso(trip.optString("arrival", ""));
+    }
+    if (departureMs <= clock.nowMs) {
+      return "departure_in_past";
+    }
     if (leaveByMs <= clock.nowMs) {
-      return "leave_in_past";
+      return "leave_in_past_strip_ok";
     }
 
     return "already_fired";
