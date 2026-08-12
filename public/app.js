@@ -144,7 +144,7 @@ const heroEmptyAddBtn = document.getElementById("hero-empty-add-btn");
 const heroEmptyBackBtn = document.getElementById("hero-empty-back-btn");
 const detailActiveDayChips = document.getElementById("detail-active-day-chips");
 const detailActiveDaysHint = document.querySelector(".detail-active-days-hint");
-const DEFAULT_ACTIVE_DAYS_HINT = "Which days to you travel this journey?";
+const DEFAULT_ACTIVE_DAYS_HINT = "Which days do you travel this journey?";
 const CUSTOM_ACTIVE_DAYS_HINT =
   "Starts on today — add more days if this repeats more often.";
 const detailActiveHoursErrorEl = document.getElementById("detail-active-hours-error");
@@ -5542,7 +5542,7 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
       templateKey === "custom" ? "Pick your route" : "Route picked for you";
   }
 
-  if (routeLoading && templateKey !== "custom") {
+  if (routeLoading) {
     templateRouteCoachBody.innerHTML =
       '<span class="template-route-loading"><span class="locate-spinner" aria-hidden="true"></span> Finding your nearest station…</span>';
     return;
@@ -5556,8 +5556,25 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
         : "Morning into town";
 
   if (templateKey === "custom") {
-    templateRouteCoachBody.textContent =
-      "Pick your station and direction above. You can tap Use nearest station for a shortcut.";
+    if (journey?.station) {
+      const station = formatStationLabel(journey.station);
+      const distance =
+        typeof nearest?.distanceKm === "number"
+          ? ` (${nearest.distanceKm.toFixed(1)} km)`
+          : "";
+      templateRouteCoachBody.textContent = journey.direction
+        ? `We filled in your nearest station ${station}${distance} → ${journey.direction}. Change station or direction above.`
+        : `We filled in your nearest station ${station}${distance}. Pick a direction above (or change station).`;
+    } else if (error?.code === 1) {
+      templateRouteCoachBody.textContent =
+        "Location permission was denied, so we couldn't pick your nearest station. Open Settings → Apps → Next Train → Location → Allow, or choose your station and direction — you can tap Use nearest station if you change your mind.";
+    } else if (error) {
+      templateRouteCoachBody.textContent =
+        "We couldn't find your nearest station just now. Pick your station and direction — you can tap Use nearest station for a shortcut.";
+    } else {
+      templateRouteCoachBody.textContent =
+        "Pick your station and direction above. You can tap Use nearest station for a shortcut.";
+    }
   } else if (configured && journey?.station && journey?.direction) {
     const station = formatStationLabel(journey.station);
     const distance =
@@ -6315,6 +6332,7 @@ function createJourneyFromTemplate(templateKey) {
     });
     settingsDraftJourneys.push(journey);
     // Draft only until Save with station + direction — do not persist shells.
+    // Open immediately; nearest station prefills in the background (no geo gate).
     return openJourneyDetail(journey.id).then(() => {
       showTemplateRouteCoach({
         templateKey: "custom",
@@ -6322,11 +6340,115 @@ function createJourneyFromTemplate(templateKey) {
         nearest: null,
         configured: false,
         error: null,
+        routeLoading: true,
       });
+      void prefillCustomNearestStation(journey.id);
     });
   }
 
   return createJourneyFromCommuteTemplate(templateKey);
+}
+
+async function prefillCustomNearestStation(journeyId) {
+  if (!journeyId) {
+    return;
+  }
+
+  if (detailNearestHint) {
+    detailNearestHint.hidden = false;
+    detailNearestHint.textContent = "Finding nearest station…";
+  }
+
+  if (templateWizardContext?.templateKey === "custom") {
+    updateTemplateRouteCoachState({ routeLoading: true });
+  }
+
+  let nearest = null;
+  let error = null;
+  try {
+    nearest = await findNearestStation();
+  } catch (err) {
+    error = err;
+  }
+
+  if (editingJourneyId !== journeyId) {
+    return;
+  }
+
+  const journeyIndex = settingsDraftJourneys.findIndex((entry) => entry.id === journeyId);
+  const journey = journeyIndex >= 0 ? settingsDraftJourneys[journeyIndex] : null;
+  if (!journey) {
+    return;
+  }
+
+  const formStation = String(detailStationCombobox?.getValue?.() || "").trim();
+  if (formStation || journey.station) {
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        routeLoading: false,
+        configured: Boolean(journey.station && journey.direction),
+      });
+    }
+    return;
+  }
+
+  if (error || !nearest?.station) {
+    if (detailNearestHint) {
+      detailNearestHint.hidden = false;
+      detailNearestHint.textContent = error
+        ? locationErrorFrom(error).message
+        : "Couldn't find nearest station";
+    }
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        nearest: null,
+        configured: false,
+        error: error || { message: "Couldn't find nearest station" },
+        routeLoading: false,
+      });
+    }
+    return;
+  }
+
+  const formDirection = String(detailDirectionSelect?.value || "").trim();
+  let direction = formDirection || journey.direction || "";
+  if (!direction) {
+    direction = (await pickPerthDirection(nearest.station)) || "";
+  }
+
+  if (editingJourneyId !== journeyId) {
+    return;
+  }
+
+  // User may have typed a station while geo was in flight — don't overwrite.
+  if (String(detailStationCombobox?.getValue?.() || "").trim()) {
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({ routeLoading: false });
+    }
+    return;
+  }
+
+  const updated = normalizeJourney({
+    ...journey,
+    station: nearest.station,
+    direction,
+  });
+  settingsDraftJourneys[journeyIndex] = updated;
+
+  const nearestHint = `Selected ${formatStationLabel(nearest.station)} (${nearest.distanceKm.toFixed(1)} km away)`;
+  await syncJourneyDetailRouteFields(updated, nearestHint);
+
+  if (templateWizardContext?.templateKey === "custom") {
+    updateTemplateRouteCoachState({
+      journey: updated,
+      nearest,
+      configured: Boolean(updated.station && updated.direction),
+      error: null,
+      routeLoading: false,
+    });
+  }
 }
 
 async function completeTemplateRouteSetup(journeyId, templateKey) {
