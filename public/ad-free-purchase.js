@@ -259,12 +259,18 @@ function renderMenuPro() {
   setHidden(restoreBtn, !showRestore);
 
   if (state === "free_no_trial") {
-    // v7: hide free Try Pro CTA (broken open path). Restore in v8 — FB-13.
-    setHidden(ctaBtn, true);
+    setHidden(ctaBtn, false);
+    ctaBtn?.classList.add("menu-purchase-row--cta");
+    if (ctaTitle) {
+      ctaTitle.textContent = "Try Pro free";
+    }
+    if (ctaSubtitle) {
+      ctaSubtitle.textContent = "30 days · widget + no ads · then one-time";
+    }
     setHidden(statusRow, true);
     setHidden(nudgeDismiss, true);
     setHidden(billingHint, true);
-    setHidden(section, !canRestorePurchases());
+    setHidden(section, false);
     setHidden(restoreBtn, !canRestorePurchases());
     syncPurchaseLinkVisibility();
     return;
@@ -638,13 +644,14 @@ async function restoreProPurchase() {
 
 function wireUi() {
   document.getElementById("menu-pro-cta-btn")?.addEventListener("click", () => {
-    const state = window.NextTrainPro?.getStateId?.();
+    const state = window.NextTrainPro?.getStateId?.() ?? "free_no_trial";
     if (state === "free_no_trial") {
-      // Same as Menu → Add home screen widget: close Menu first or the
-      // widget sheet never appears (nested dialogs fail in Capacitor WebView).
+      // Close Menu first — nested dialogs fail in Capacitor WebView.
       window.nextTrainApp?.closeMenuDialogOnly?.();
       window.nextTrainStickinessCoaches?.markCoachDone?.("widget");
-      window.nextTrainWidget?.openWidgetHelpDialog?.();
+      window.setTimeout(() => {
+        window.nextTrainWidget?.openWidgetHelpDialog?.();
+      }, 0);
       return;
     }
     openPaywallDialog();

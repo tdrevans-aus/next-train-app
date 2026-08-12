@@ -33,8 +33,9 @@ var NextTrainTimes = (() => {
     "Cockburn Central Stn": "Cockburn"
   };
   var LINE_DESTINATION_GROUPS = {
-    Yanchep: ["Yanchep", "Whitfords", "Clarkson"],
-    Mandurah: ["Mandurah", "Cockburn"]
+    Yanchep: ["Yanchep", "Whitfords", "Clarkson", "Butler"],
+    Mandurah: ["Mandurah", "Cockburn"],
+    Fremantle: ["Fremantle", "Claremont"]
   };
   function applyDestinationAliases(destination) {
     const trimmed = destination.trim();
@@ -389,7 +390,8 @@ var NextTrainTimes = (() => {
     return {
       stationName: board.stationName,
       lastUpdate: board.lastUpdate ?? lastUpdated,
-      trips: board.trips.map(toProviderTrip)
+      trips: board.trips.map(toProviderTrip),
+      scheduleSource: "live"
     };
   }
   async function fetchTripsForStation(stationName) {

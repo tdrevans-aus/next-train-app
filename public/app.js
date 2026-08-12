@@ -193,6 +193,7 @@ let nearbyLocatePickerVisible = false;
 let nearbyDontWaitVisible = false;
 let nearbyUserPickedStation = false;
 let nearbyError = null;
+let nearbyErrorKind = null; // "location" | "board" | null
 let journeyModeActive = false;
 let deferJourneyAutoSelect = false;
 let onboardingShowTimer = null;
@@ -213,8 +214,9 @@ const DIRECTION_ALIASES = {
 };
 
 const LINE_DIRECTION_GROUPS = {
-  Yanchep: ["Yanchep", "Whitfords", "Clarkson"],
+  Yanchep: ["Yanchep", "Whitfords", "Clarkson", "Butler"],
   Mandurah: ["Mandurah", "Cockburn"],
+  Fremantle: ["Fremantle", "Claremont"],
 };
 
 const PERTH_STATIONS = new Set(["Perth Stn", "Perth Underground Stn"]);
@@ -322,6 +324,30 @@ function locationErrorFrom(error) {
   return Object.assign(new Error(message || "Could not find a nearby station"), {
     code: code || 2,
   });
+}
+
+function classifyNearbyError(message) {
+  const lower = String(message || "").toLowerCase();
+  if (
+    lower.includes("departures") ||
+    lower.includes("times") ||
+    lower.includes("board") ||
+    lower.includes("directions") ||
+    lower.includes("unavailable")
+  ) {
+    return "board";
+  }
+  return "location";
+}
+
+function setNearbyError(message, kind = null) {
+  nearbyError = message;
+  nearbyErrorKind = kind || (message ? classifyNearbyError(message) : null);
+}
+
+function clearNearbyError() {
+  nearbyError = null;
+  nearbyErrorKind = null;
 }
 
 async function getAppGeolocationPosition(options = {}) {
@@ -2267,10 +2293,33 @@ function leaveByArmedForDisplayedTrip(trip, journey = getActiveJourney(), skipCo
   return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey));
 }
 
+const TARGET_TRAIN_GAP_WARN_MINUTES = 25;
+
+function targetTrainGapMinutes(journey = getActiveJourney()) {
+  const preferredMinutes = preferredMinutesForLiveGlance(journey);
+  if (preferredMinutes < 0 || !lastApiData?.next?.departure) {
+    return null;
+  }
+  if (!leaveByArmedForDisplayedTrip(lastApiData.next, journey, skipTrains)) {
+    return null;
+  }
+  const departureMinutes = getPerthMinutesSinceMidnight(new Date(lastApiData.next.departure));
+  let gap = departureMinutes - preferredMinutes;
+  if (gap < 0) {
+    gap += 24 * 60;
+  }
+  return gap;
+}
+
 function preferredHintForJourney(journey = getActiveJourney()) {
   const preferredMinutes = preferredMinutesForLiveGlance(journey);
   if (preferredMinutes < 0) {
     return "";
+  }
+
+  const gapMinutes = targetTrainGapMinutes(journey);
+  if (gapMinutes != null && gapMinutes >= TARGET_TRAIN_GAP_WARN_MINUTES) {
+    return `Target ${formatPreferredClock(preferredMinutes)} · next is ${gapMinutes} min later`;
   }
 
   return `Target Train ${formatPreferredClock(preferredMinutes)}`;
@@ -4181,12 +4230,12 @@ async function locateNearbyInBackground() {
       if (!isNearbyLocateCurrent(generation)) {
         return;
       }
-      nearbyError = null;
+      clearNearbyError();
     } catch (error) {
       if (!isNearbyLocateCurrent(generation)) {
         return;
       }
-      nearbyError = error.message ?? "Could not load departures for this station";
+      setNearbyError(error.message ?? "Could not load departures for this station", "board");
     } finally {
       if (isNearbyLocateCurrent(generation)) {
         nearbyLoading = false;
@@ -4206,7 +4255,7 @@ async function locateNearbyInBackground() {
     nearbyDontWaitVisible = false;
     syncNearbyDontWaitButton();
     if (!nearbySession.station && !nearbyUserPickedStation) {
-      nearbyError = locationErrorFrom(error).message;
+      setNearbyError(locationErrorFrom(error).message, "location");
       renderNearbyBoard();
       return;
     }
@@ -4219,7 +4268,7 @@ async function locateNearbyInBackground() {
         if (!isNearbyLocateCurrent(generation)) {
           return;
         }
-        nearbyError = null;
+        clearNearbyError();
         renderNearbyBoard();
       } catch (fetchError) {
         if (!isNearbyLocateCurrent(generation)) {
@@ -4234,7 +4283,7 @@ async function locateNearbyInBackground() {
 }
 
 function showNearbyFallback(message) {
-  nearbyError = message;
+  setNearbyError(message);
   nearbyDirectionsEl.hidden = false;
   nearbyDirectionsListEl.innerHTML = "";
   nearbyFallbackEl.hidden = false;
@@ -4388,7 +4437,9 @@ function renderNearbyBoard({ stale = false } = {}) {
       departCountdownEl.textContent = "—";
     }
     if (departDisplayTimeEl) {
-      departDisplayTimeEl.textContent = "Location needed";
+      const kind = nearbyErrorKind || classifyNearbyError(nearbyError);
+      departDisplayTimeEl.textContent =
+        kind === "board" ? "Times unavailable" : "Location needed";
     }
     if (heroScheduledTimeEl) {
       heroScheduledTimeEl.hidden = true;
@@ -4526,7 +4577,29 @@ async function fetchNearbyBoardOnce() {
   }
 
   if (!entries.length) {
-    throw new Error("Could not load departures for this station");
+    // Station known but no live/scheduled trips (overnight). Not a location failure.
+    nearbyBoard = {
+      lastUpdated: new Date().toLocaleString("en-AU", {
+        timeZone: "Australia/Perth",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      entries: directions.map((direction) => ({
+        direction,
+        data: { next: null, following: [], scheduleSource: "empty" },
+      })),
+    };
+    if (
+      !nearbySession.focusedDirection ||
+      !directions.includes(nearbySession.focusedDirection)
+    ) {
+      nearbySession.focusedDirection = directions[0] ?? null;
+    }
+    return;
   }
 
   if (
@@ -4570,7 +4643,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
   nearbyLocatePickerVisible = false;
   nearbyDontWaitVisible = false;
   nearbyBoard = null;
-  nearbyError = null;
+  clearNearbyError();
   nearbyLoading = true;
 
   if (manualStation) {
@@ -4585,10 +4658,10 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
 
     try {
       await fetchNearbyBoard();
-      nearbyError = null;
+      clearNearbyError();
       writeLastNearbyStationCache({ station: manualStation, distanceKm });
     } catch (error) {
-      nearbyError = error.message ?? "Could not load departures for this station";
+      setNearbyError(error.message ?? "Could not load departures for this station", "board");
     } finally {
       nearbyLoading = false;
     }
@@ -4611,7 +4684,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
         skipByDirection: {},
       };
       nearbyLoading = false;
-      nearbyError = locationErrorFrom(error).message;
+      setNearbyError(locationErrorFrom(error).message, "location");
       syncNearbyChrome();
       renderNearbyBoard();
       return;
@@ -4634,9 +4707,9 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
     void (async () => {
       try {
         await fetchNearbyBoard();
-        nearbyError = null;
+        clearNearbyError();
       } catch (error) {
-        nearbyError = error.message ?? "Could not load departures for this station";
+        setNearbyError(error.message ?? "Could not load departures for this station", "board");
       } finally {
         nearbyLoading = false;
         renderNearbyBoard();
@@ -4670,7 +4743,7 @@ function exitNearbyMode() {
   nearbyBoard = null;
   nearbyBoardInflight = null;
   nearbyLoading = false;
-  nearbyError = null;
+  clearNearbyError();
   syncNearbyChrome();
   if (nearbyDirectionsEl) {
     nearbyDirectionsEl.hidden = true;
@@ -5290,7 +5363,7 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
 
     if (options.length === 0) {
       replaceSelectOptions(selectEl, [
-        { value: "", label: "No live directions right now" },
+        { value: "", label: "No directions available" },
       ]);
     } else {
       replaceSelectOptions(selectEl, options);
@@ -7189,7 +7262,7 @@ async function applyNearbyManualStation(station) {
   }
 
   nearbyUserPickedStation = true;
-  nearbyError = null;
+  clearNearbyError();
   stopNearbyLocateTimers();
   dismissNearbyLocatePicker();
   nearbyDontWaitVisible = false;
@@ -7206,12 +7279,12 @@ async function applyNearbyManualStation(station) {
   try {
     await fetchNearbyBoard();
     nearbyLoading = false;
-    nearbyError = null;
+    clearNearbyError();
     writeLastNearbyStationCache({ station: normalized });
     renderNearbyBoard();
   } catch (error) {
     nearbyLoading = false;
-    nearbyError = error.message ?? "Could not load departures for this station";
+    setNearbyError(error.message ?? "Could not load departures for this station", "board");
     renderNearbyBoard();
   }
 }

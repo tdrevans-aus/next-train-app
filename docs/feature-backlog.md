@@ -33,7 +33,7 @@
 | **FB-02** | **Other Australian cities** | Expand beyond Perth Transperth. First candidate research: Sydney vs Melbourne — see `docs/city-2-bookmarks.md`. Same product job (leave / next train / journeys); local API + ToS + competition checks. **Depends on** station typeahead (`docs/jim-brief-station-typeahead.md`) shipping first or with city 2. | Backlog |
 | **FB-03** | **Any city with a train API** | Longer-term: city pack / adapter model for any metro that exposes a reliable live (or schedule) train API. Needs multi-city architecture, station graphs, and store listing strategy per region — not a quick locale swap. | Backlog |
 | **FB-05** | ~~Station type-to-filter~~ | **Promoted** → `docs/jim-brief-station-typeahead.md` (P2) | Briefed |
-| **FB-07** | **Process: find + merge same-line directions** | Transperth returns **per-train terminals** (e.g. Whitfords / Clarkson / Butler / Yanchep), so pickers show duplicate “directions” that are one line. We already patch via `LINE_DESTINATION_GROUPS` / briefs (`jim-brief-yanchep-whitfords-direction.md`, `jim-brief-direction-line-groups.md`). **Need a repeatable process:** audit live `/api/directions` per major hub; detect co-listed terminals on the same corridor; decide canonical label + members; update server + client groups + QA; revisit when lines extend or short-works change. Without this, journey setup and live filters keep confusing riders. | Backlog |
+| **FB-07** | **Process: find + merge same-line directions** | **v8:** heuristic + Perth line map shipped (`docs/direction-collapse-heuristic.md`, `lib/cities/perth/line-map.json`). Groups now include Butler + Fremantle←Claremont. Re-run when expanding cities. | Done — **v8** (process); city-2 still backlog |
 
 ---
 
@@ -51,8 +51,8 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-12** | **Target train gap warning / smarter pick** | Today: first live train **at or after** target time (e.g. 7:00 → 7:40). Usually fine; painful when the gap is large (user thinks “7am train”, app arms 7:40). **v8 candidate:** warn when next-at-or-after is ≫ N min past target, and/or offer “nearest to target” / confirm train. Touches journey detail, leave reminders, Live countdown, widget leave-by gate. **Not v7.** | Backlog — **v8** |
-| **FB-13** | **Menu Try Pro CTA** | Free-state Menu teal CTA (**Try Pro free**) hidden for v7 — open path was a no-op (nested dialog / widget sheet). **v8:** fix open (close Menu → widget help or trial sheet), de-dupe vs **Add home screen widget**, drop “full widget” copy. Re-enable `free_no_trial` CTA in `renderMenuPro`. | Backlog — **v8** |
+| **FB-12** | **Target train gap warning / smarter pick** | **v8 shipped (option A):** keep at-or-after; warn when gap ≥ 25 min (`preferredHintForJourney`). Options B/C (nearest / confirm) still open if Tim wants. | Done — **v8** (warn); B/C backlog |
+| **FB-13** | **Menu Try Pro CTA** | **v8 shipped:** re-enabled Try Pro free; close Menu → `setTimeout(0)` → widget help. | Done — **v8** |
 
 ---
 
