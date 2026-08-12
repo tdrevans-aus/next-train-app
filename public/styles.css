@@ -1391,20 +1391,6 @@ body {
   display: none !important;
 }
 
-.menu-purchase-row--cta {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.menu-purchase-row--cta .menu-purchase-title {
-  color: #fff;
-}
-
-.menu-purchase-row--cta .menu-purchase-subtitle {
-  color: rgba(255, 255, 255, 0.82);
-}
-
 .menu-purchase-row {
   display: flex;
   flex-direction: column;
@@ -1419,6 +1405,20 @@ body {
   font: inherit;
   text-align: left;
   cursor: pointer;
+}
+
+.menu-purchase-row--cta {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.menu-purchase-row--cta .menu-purchase-title {
+  color: #fff;
+}
+
+.menu-purchase-row--cta .menu-purchase-subtitle {
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .menu-purchase-row--status {
