@@ -1,5 +1,5 @@
 /**
- * TESTING.md test 21 — Reminders dialog from Menu.
+ * TESTING.md — Leave alerts IA (nuclear): no Reminder settings sheet.
  * Usage: node qa/reminders-dialog.mjs
  */
 import { chromium } from "playwright";
@@ -18,64 +18,63 @@ async function run() {
   await page.waitForTimeout(2000);
 
   const bridge = await page.evaluate(() => ({
-    hasLeaveRemindersApi: typeof window.nextTrainLeaveReminders?.openRemindersDialog === "function",
+    hasLeaveRemindersApi: typeof window.nextTrainLeaveReminders?.refreshMenuPauseUi === "function",
     isNative: window.Capacitor?.isNativePlatform?.(),
   }));
 
   await page.evaluate(() => document.getElementById("menu-btn").click());
   await page.waitForTimeout(500);
 
-  await page.evaluate(() => document.getElementById("menu-reminders-btn").click());
-  await page.waitForTimeout(1500);
-
-  const ui = await page.evaluate(() => ({
-    menuOpen: document.getElementById("menu-dialog").open,
-    remindersOpen: document.getElementById("reminders-dialog").open,
-    webHintHidden: document.getElementById("reminders-web-hint").hidden,
-    nativeHidden: document.getElementById("reminders-native-content").hidden,
-    masterTogglePresent: Boolean(document.getElementById("leave-reminders-enabled")),
-    commuteListPresent: Boolean(document.getElementById("reminders-commutes-list")),
+  const menuUi = await page.evaluate(() => ({
+    menuOpen: document.getElementById("menu-dialog")?.open || document.getElementById("menu-dialog")?.hasAttribute("open"),
+    remindersBtnPresent: Boolean(document.getElementById("menu-reminders-btn")),
+    remindersDialogPresent: Boolean(document.getElementById("reminders-dialog")),
+    pauseBlockPresent: Boolean(document.getElementById("menu-pause-block")),
+    pauseInputPresent: Boolean(document.getElementById("leave-reminders-pause")),
     detailReminderPresent: Boolean(document.getElementById("detail-remind-me")),
-    moreOptionsPresent: Boolean(document.getElementById("reminders-more-options")),
-    journeysCtaPresent: Boolean(document.getElementById("reminders-open-journeys-btn")),
-    detailRemindAboveTiming: (() => {
+    earlyOnJourney: Boolean(document.getElementById("leave-reminders-early")),
+    stripOnJourney: Boolean(document.getElementById("leave-reminders-commute-strip")),
+    stripLabel:
+      document.querySelector("#leave-reminders-strip-wrap .menu-toggle-title")?.textContent?.trim() ||
+      "",
+    detailTimingBeforePreferred: (() => {
+      const preferred = document.getElementById("detail-preferred-section");
       const reminder = document.getElementById("detail-reminder-section");
       const sections = [...document.querySelectorAll("#settings-detail-view .settings-section")];
-      const reminderIdx = sections.indexOf(reminder);
+      const preferredIdx = sections.indexOf(preferred);
       const timingIdx = sections.findIndex(
         (section) => section.querySelector(".settings-section-title")?.textContent?.trim() === "Timing"
       );
-      return reminderIdx >= 0 && timingIdx >= 0 && reminderIdx < timingIdx;
+      return (
+        Boolean(reminder) &&
+        preferredIdx >= 0 &&
+        timingIdx >= 0 &&
+        timingIdx < preferredIdx &&
+        preferred?.contains(reminder)
+      );
     })(),
-    sharedOptionsPresent: Boolean(document.getElementById("reminders-shared-options")),
-    title: document.querySelector("#reminders-dialog h2")?.textContent?.trim() || "",
-    doneVisible: !document.getElementById("reminders-done-btn").hidden,
   }));
 
   await browser.close();
 
-  const duplicateConstBug = pageErrors.some((m) =>
-    m.includes("DEFAULT_REMIND_DAYS")
-  );
+  const duplicateConstBug = pageErrors.some((m) => m.includes("DEFAULT_REMIND_DAYS"));
 
   const webPass =
     bridge.hasLeaveRemindersApi &&
-    ui.remindersOpen &&
-    !ui.menuOpen &&
-    ui.webHintHidden === false &&
-    ui.nativeHidden === true &&
-    !ui.masterTogglePresent &&
-    !ui.commuteListPresent &&
-    ui.detailReminderPresent &&
-    !ui.moreOptionsPresent &&
-    ui.detailRemindAboveTiming &&
-    ui.sharedOptionsPresent &&
-    ui.title === "Reminder settings" &&
-    ui.doneVisible;
+    menuUi.menuOpen &&
+    !menuUi.remindersBtnPresent &&
+    !menuUi.remindersDialogPresent &&
+    menuUi.pauseBlockPresent &&
+    menuUi.pauseInputPresent &&
+    menuUi.detailReminderPresent &&
+    !menuUi.earlyOnJourney &&
+    menuUi.stripOnJourney &&
+    menuUi.stripLabel === "Live countdown" &&
+    menuUi.detailTimingBeforePreferred;
 
-  console.log("\nReminders dialog check (web)\n");
+  console.log("\nLeave alerts IA check (web)\n");
   console.log("Bridge:", JSON.stringify(bridge, null, 2));
-  console.log("UI after Menu → Reminders:", JSON.stringify(ui, null, 2));
+  console.log("Menu / journey UI:", JSON.stringify(menuUi, null, 2));
   if (pageErrors.length) {
     console.log("Page errors:", pageErrors.slice(0, 3));
   }
@@ -87,7 +86,7 @@ async function run() {
     process.exit(1);
   }
 
-  console.log(webPass ? "\nPASS  Reminders dialog (web)\n" : "\nFAIL  Reminders dialog (web)\n");
+  console.log(webPass ? "\nPASS  Leave alerts IA (web)\n" : "\nFAIL  Leave alerts IA (web)\n");
   process.exit(webPass ? 0 : 1);
 }
 

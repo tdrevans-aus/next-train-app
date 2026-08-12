@@ -23,7 +23,11 @@ async function syncWidgetSettings(settings = window.settings) {
   }
 
   try {
-    const payload = settings ?? JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
+    const payload =
+      settings ?? JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
+    if (window.NextTrainPro?.mergeIntoSettings) {
+      window.NextTrainPro.mergeIntoSettings(payload);
+    }
     await plugin.syncSettings({ settingsJson: JSON.stringify(payload) });
   } catch (error) {
     console.warn("Could not sync widget settings", error);
@@ -41,6 +45,10 @@ function parseWidgetDeepLink(uri) {
 
   if (/^nexttrain:\/\/home\/?$/i.test(String(uri))) {
     return { type: "home" };
+  }
+
+  if (/^nexttrain:\/\/paywall\/?$/i.test(String(uri))) {
+    return { type: "paywall" };
   }
 
   const match = String(uri).match(/^nexttrain:\/\/journey(\/.*)?$/i);
@@ -68,6 +76,17 @@ async function handleWidgetDeepLink(uri) {
     return;
   }
 
+  if (target.type === "paywall") {
+    const openPaywall = () => window.NextTrainProPurchase?.openPaywallDialog?.();
+    openPaywall();
+    // Native boot can race script init — retry once shortly after.
+    if (!document.getElementById("pro-paywall-dialog")?.open &&
+        !document.getElementById("pro-paywall-dialog")?.hasAttribute("open")) {
+      setTimeout(openPaywall, 250);
+    }
+    return;
+  }
+
   if (target.journeyId === "new") {
     window.nextTrainApp?.enterJourneyMode?.();
     window.nextTrainApp?.openJourneys?.();
@@ -87,6 +106,14 @@ async function consumeWidgetLaunchDeepLink() {
   }
 
   try {
+    if (plugin.peekLaunchDeepLink) {
+      const peek = await plugin.peekLaunchDeepLink();
+      const peekUri = peek?.uri;
+      if (peekUri && /^nexttrain:\/\/test\/seed/i.test(String(peekUri))) {
+        return;
+      }
+    }
+
     const result = await plugin.getLaunchDeepLink();
     if (result?.uri) {
       await handleWidgetDeepLink(result.uri);
@@ -376,7 +403,11 @@ async function requestPinWidget() {
     }
 
     window.nextTrainStickinessCoaches?.markCoachDone?.("widget");
+    window.NextTrainAnalytics?.track?.("widget_pin_requested");
     dialog?.close();
+    window.setTimeout(() => {
+      window.NextTrainPro?.pollWidgetAdded?.();
+    }, 1500);
   } catch (error) {
     console.warn("Could not request widget pin", error);
     if (!dialogOpen) {
@@ -420,7 +451,6 @@ function initWidgetUi() {
 
 function initWidgetBridge() {
   initWidgetUi();
-  consumeWidgetLaunchDeepLink();
   syncWidgetSettings();
 }
 

@@ -46,28 +46,25 @@ async function run() {
   await page.waitForTimeout(800);
 
   const initial = await page.evaluate(() => {
-    const sections = [...document.querySelectorAll("#settings-detail-view .settings-section")];
-    const preferredIdx = sections.findIndex((section) => section.id === "detail-preferred-section");
-    const reminderIdx = sections.findIndex((section) => section.id === "detail-reminder-section");
     const preferredField = document.getElementById("detail-preferred-field");
-    const expanded = document.getElementById("detail-remind-expanded");
+    const preferredSection = document.getElementById("detail-preferred-section");
+    const reminder = document.getElementById("detail-reminder-section");
+    const controls = document.getElementById("detail-remind-controls");
     return {
-      preferredIdx,
-      reminderIdx,
-      preferredBeforeReminder: preferredIdx >= 0 && reminderIdx >= 0 && preferredIdx < reminderIdx,
-      preferredVisible: Boolean(document.getElementById("detail-preferred-section")),
+      preferredVisible: Boolean(preferredSection),
       preferredInExpanded: Boolean(preferredField?.closest("#detail-remind-expanded")),
-      remindExpandedHidden: expanded?.hidden ?? true,
+      reminderInsidePreferred: Boolean(preferredSection?.contains(reminder)),
+      remindControlsHidden: controls?.hidden ?? true,
       remindOff: !document.getElementById("detail-remind-me")?.checked,
     };
   });
 
-  if (!initial.preferredBeforeReminder) {
-    console.error("FAIL — Target section should sit before Remind me", initial);
+  if (!initial.preferredVisible || !initial.reminderInsidePreferred) {
+    console.error("FAIL — Target section should contain Remind me", initial);
     process.exitCode = 1;
   }
 
-  if (!initial.preferredVisible || initial.preferredInExpanded || !initial.remindOff) {
+  if (initial.preferredInExpanded || !initial.remindOff) {
     console.error("FAIL — Target should be visible with Remind me off", initial);
     process.exitCode = 1;
   }

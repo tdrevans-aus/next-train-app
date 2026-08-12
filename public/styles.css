@@ -1467,6 +1467,12 @@ body {
   box-shadow: 0 12px 40px rgba(19, 37, 35, 0.18);
 }
 
+.pro-sheet-dialog.app-native-dialog[open],
+.pro-paywall-dialog.app-native-dialog[open] {
+  width: min(92vw, 22rem);
+  flex-direction: column;
+}
+
 .pro-sheet-dialog::backdrop,
 .pro-paywall-dialog::backdrop {
   background: rgba(19, 37, 35, 0.28);
@@ -1784,12 +1790,13 @@ dialog.app-native-dialog[open] {
 
 .journeys-dialog {
   border: 1px solid var(--line);
-  border-radius: 1.25rem;
+  border-radius: 1.1rem;
   padding: 0;
   background: var(--surface);
   color: var(--text);
-  width: min(92vw, 400px);
-  max-height: 90dvh;
+  width: min(96vw, 420px);
+  max-height: 96dvh;
+  height: min(96dvh, 900px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1995,18 +2002,67 @@ dialog.app-native-dialog[open] {
 }
 
 .detail-remind-toggle-row {
-  margin: 0 0 0.35rem;
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 0;
 }
 
-.detail-remind-expanded {
+.detail-remind-controls {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  margin-top: 0.15rem;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--line);
 }
 
-.detail-remind-expanded[hidden] {
+.detail-remind-controls[hidden] {
   display: none !important;
+}
+
+.detail-remind-toggles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.75rem;
+  align-items: center;
+}
+
+.detail-remind-globals-hint {
+  margin: 0;
+}
+
+#settings-detail-view .reminders-option-hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+}
+
+#settings-detail-view .reminders-nudge-chips-wrap {
+  margin-top: 0.35rem;
+}
+
+.menu-pause-block {
+  margin: 0.35rem 0 0.55rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: #f7faf9;
+}
+
+.menu-pause-block[hidden] {
+  display: none !important;
+}
+
+.menu-pause-web-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.menu-pause-block .reminders-shared-option {
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .detail-remind-hint {
@@ -2145,17 +2201,18 @@ dialog.app-native-dialog[open] {
 }
 
 .reminders-pause-days-input {
-  width: 4.5rem;
+  width: 3.25rem;
   margin: 0;
-  padding: 0.55rem 0.65rem;
+  padding: 0.4rem 0.45rem;
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border-radius: 0.65rem;
   background: var(--surface);
   color: var(--ink);
   font: inherit;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.82rem;
   letter-spacing: -0.02em;
+  text-align: center;
 }
 
 .reminders-pause-days-input:focus {
@@ -2164,15 +2221,17 @@ dialog.app-native-dialog[open] {
 }
 
 .reminders-pause-days-unit {
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--muted);
 }
 
 .reminders-pause-custom-apply {
   margin: 0;
-  padding: 0.5rem 0.9rem;
+  padding: 0.4rem 0.75rem;
   min-width: auto;
+  font-size: 0.78rem;
+  border-radius: 0.65rem;
 }
 
 .reminders-sr-only {
@@ -2345,7 +2404,9 @@ dialog.app-native-dialog[open] {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-height: 85dvh;
+  max-height: none;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -2354,7 +2415,7 @@ dialog.app-native-dialog[open] {
   min-height: 0;
   gap: 0;
   padding: 0;
-  max-height: 90dvh;
+  max-height: none;
   overflow: hidden;
 }
 
@@ -2369,8 +2430,8 @@ dialog.app-native-dialog[open] {
   -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.55rem 0.85rem 0.35rem;
+  gap: 0.3rem;
+  padding: 0.4rem 0.75rem 0.25rem;
 }
 
 .journey-name-field {
@@ -2383,8 +2444,8 @@ dialog.app-native-dialog[open] {
 }
 
 #settings-detail-view .settings-section {
-  gap: 0.35rem;
-  padding: 0.5rem 0.55rem;
+  gap: 0.3rem;
+  padding: 0.4rem 0.5rem;
 }
 
 .settings-section {
@@ -2473,10 +2534,21 @@ dialog.app-native-dialog[open] {
 
 #settings-detail-view .menu-toggle-row {
   padding: 0.15rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
-/* Default journey detail (Remind collapsed) should fit one phone viewport.
-   Scroll remains for expanded reminder / errors / station picker / tiny screens. */
+/* Match journey field labels (.field span), not Menu purchase rows */
+#settings-detail-view .menu-toggle-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  color: var(--text);
+}
+
+/* Default journey detail should fit one phone viewport.
+   Scroll remains for errors / station picker / tiny screens. */
 @media (max-height: 820px) {
   #settings-detail-view .settings-section-hint:not([hidden]):not([role="alert"]):not(.detail-remind-permission-hint):not(.detail-target-outside-hint) {
     display: none;
@@ -2840,7 +2912,7 @@ dialog.app-native-dialog[open] {
 
 .remind-day-chip {
   min-width: 1.85rem;
-  padding: 0.32rem 0.2rem;
+  padding: 0.32rem 0.45rem;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface);
@@ -2849,6 +2921,10 @@ dialog.app-native-dialog[open] {
   font-weight: 700;
   cursor: pointer;
   text-align: center;
+}
+
+.reminders-pause-chips .remind-day-chip {
+  min-width: 4.1rem;
 }
 
 .remind-day-chip:disabled {
@@ -3000,6 +3076,18 @@ dialog.app-native-dialog[open] {
   transform: translateX(-50%);
 }
 
+/* Active hours / Reminder: dock coach at bottom so card never covers highlighted fields */
+.journeys-dialog .template-route-coach.template-route-coach--dock-bottom .onboarding-coach-card {
+  top: auto;
+  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* Reminder step sits at the bottom of the form — leave room to scroll it above the docked coach */
+.journeys-dialog.template-wizard-reminder-step .settings-detail-scroll {
+  scroll-padding-bottom: 12rem;
+  padding-bottom: 12rem;
+}
+
 #leave-before-field.template-wizard-highlight,
 #detail-journey-window.template-wizard-highlight {
   padding: 0.55rem 0.65rem;
@@ -3011,6 +3099,7 @@ dialog.app-native-dialog[open] {
   margin-inline: -0.65rem;
 }
 
+#detail-remind-controls.template-wizard-highlight,
 #detail-reminder-section.template-wizard-highlight {
   padding: 0.55rem 0.65rem;
   margin-inline: -0.65rem;

@@ -27,6 +27,13 @@ List fixtures:
 
 ```bash
 curl http://localhost:3000/api/fixtures
+curl http://localhost:3000/api/health
+```
+
+Production liveness (after Vercel deploy of `api/health.js`):
+
+```bash
+curl https://next-train-app.vercel.app/api/health
 ```
 
 ## Fixtures
@@ -310,7 +317,7 @@ Automated (web):
 node qa/reminders-dialog.mjs
 ```
 
-**Expect:** `PASS` — Menu → **Reminder settings** opens `#reminders-dialog`; Menu closes; **Done** visible. **No** master **Reminders** toggle. **No** per-journey cards / **More options** accordion (Early Reminder + Pause sit directly when live). **Remind me** on journey detail is **above Timing** (after Route). Reminder + Preferred train live on **journey detail**.
+**Expect:** `PASS` — Menu has **no** Reminder settings sheet. Pause reminders lives in Menu (when a journey has Remind me). Journey detail order: Route → **Timing** → **Target train** (+ Remind me / Live countdown when target set).
 
 | Platform | Expect in dialog |
 |----------|------------------|
@@ -319,10 +326,10 @@ node qa/reminders-dialog.mjs
 
 **Journey detail (Android):**
 
-1. Open a journey → **Remind me** section **above Timing** (after Route).
-2. Turn **Remind me** on → **Preferred train** expands; permission prompt on first enable.
-3. Save without preferred train → blocked with clear error.
-4. Save with Reminder on + time → native `enabled` heals on.
+1. Open a journey → order is Route → **Timing** → **Target train** (Remind me / Live countdown appear when a target is set).
+2. Set **Target train**, turn **Remind me** on → Live countdown available; permission prompt on first enable.
+3. Save with Remind me on but no target → blocked with clear error.
+4. Save with Remind me on + target → native `enabled` heals on.
 
 **Manual (Android) — Early Reminder / Pause:**
 
@@ -593,6 +600,51 @@ cd android && ./gradlew :app:testDebugUnitTest --tests "com.tdrevans.nexttrain.N
 
 Jim brief: `docs/jim-brief-widget-designed-idle.md` (supersedes `docs/jim-brief-widget-nearby-live-cache.md`)
 
+### 41. Maestro Android smoke (device / emulator)
+
+Jim brief: `docs/jim-brief-maestro-android-qa.md` · setup: `qa/maestro/README.md`
+
+**Prereqs:** debug APK installed (or Play closed build); Maestro CLI; Android emulator or device (`adb devices`).
+
+```bash
+npm run cap:sync
+cd android && ./gradlew :app:assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+npm run test:maestro
+```
+
+**Flows:**
+
+| Flow | Covers |
+|------|--------|
+| `smoke-app-opens` | Cold start → nearby board (`Near you` / `Near me`) |
+| `journeys-dialog` | Debug seed deep link → double-tap **My Journeys** → journey list |
+| `menu-reminders` | Menu → **Reminder settings** → **Done** |
+| `widget-face` | Home widget tap → app foreground (pin widget once; see README) |
+
+Complements §22 widget manual matrix — does not replace stale-face / clipping checks (JVM + manual).
+
+### 42. Adelaide provider probe (adapter only — not live)
+
+Jim brief: `docs/jim-brief-adelaide-provider.md`
+
+1. `assertCityLive("adelaide")` still returns **501** (`status: planned`, `adapterReady: true`).
+2. `npm run probe:adelaide -- Adelaide` → JSON board with upcoming rail trips (no API key required).
+3. `npm run probe:adelaide -- --list` → catalog station names.
+4. Dev board: `GET /api/dev/board?city=adelaide&station=Adelaide` with `ALLOW_CITY_PROBES=1`.
+5. `/api/next-train?city=adelaide&station=…` still **501** on production paths.
+
+### 43. Canberra provider probe (adapter only — not live)
+
+Jim brief: `docs/jim-brief-canberra-provider.md`
+
+1. `assertCityLive("canberra")` still returns **501** (`status: planned`, `adapterReady: true`).
+2. Without ACT credentials: `npm run probe:canberra -- Gungahlin` exits with a clear message.
+3. With `ACT_GTFS_BASIC` or `ACT_GTFS_CLIENT_ID` + `ACT_GTFS_CLIENT_SECRET`: probe returns light-rail departures.
+4. `npm run probe:canberra -- --list` → catalog station names (no keys required).
+5. Dev board: `GET /api/dev/board?city=canberra&station=Gungahlin` with `ALLOW_CITY_PROBES=1` + ACT env; without keys → **503**.
+6. `/api/next-train?city=canberra&station=…` still **501** on production paths.
+
 ### 37. Near me — cached last station (P1)
 
 Automated:
@@ -623,13 +675,65 @@ Plan: `docs/qa-leave-reminders-v2-testing.md`
 
 Jim brief: `docs/jim-brief-commute-strip-notification.md`
 
-1. **Menu → Reminder settings** → toggle **Show commute countdown in notifications** (default off). Subtitle mentions separate from leave reminders.
-2. Journey with Reminder on, preferred train, remind day, leave-before on. Strip **on**, reminders master **off** → ongoing shade notif in leave window without opening app; **no** FGS / `startForeground` in logcat.
-3. Strip **off** → no commute strip notif; leave reminders still work if enabled.
-4. Reminders **on**, strip **off** → reminder fires; no strip.
+1. **Journey detail → Remind me on** → Early Reminder + Shade countdown visible under Remind me.
+2. **Menu** → **Pause reminders** only when a journey has Remind me (no Reminder settings row).
+3. Strip **on**, remind morning in window → ongoing shade notif without opening app; **no** FGS.
+4. Strip **off** → no commute strip notif; leave reminders still work if enabled.
 5. **Dismiss** on strip → notif clears; strip toggle still on; reminders unchanged.
 6. Window start: Early Reminder **on** → strip from early offset before leave-by; Early **off** → strip from leave-by. End: departure + ~10 min grace or 90 min from start (whichever sooner).
 7. `CommuteStripSchedulerTest` JUnit for start/end math.
+
+### 21. Crash reporting + min analytics (config-gated)
+
+Jim brief: `docs/jim-brief-crash-analytics.md`
+
+1. Default build: `sentryDsn` empty in `site-config.json` → no Sentry init; `window.NextTrainAnalytics.isEnabled()` false.
+2. Paste release DSN into `site-config.json` → rebuild (`npm run cap:sync`) → cold start sends session to Sentry; events as breadcrumbs (`journey_saved`, `reminder_enabled`, `api_error_shown`, `iap_*`, `widget_pin_requested`).
+3. **Debug only:** with DSN set, in WebView console run `await window.NextTrainAnalytics.testCrash()` → confirm event in Sentry (not on production user builds).
+
+### 22. Brisbane provider probe (adapter only — not live)
+
+Jim brief: `docs/jim-brief-brisbane-provider.md`
+
+1. `assertCityLive("brisbane")` still returns **501** (`status: planned`, `adapterReady: true`).
+2. `npm run probe:brisbane -- Central` → JSON board with upcoming rail trips (ISO departures, destination, platform).
+3. `npm run probe:brisbane -- --list` → catalog station names.
+4. **Mark dogfood:** `docs/mark-dogfood-brisbane.md` — gated `GET /api/dev/board?city=brisbane&station=…` (Vercel `ALLOW_CITY_PROBES=1`). Without env → **404**.
+5. `/api/next-train?city=brisbane&station=…` still **501** on production paths.
+6. Perth `/api/next-train` unchanged (default city).
+
+### 23. Sydney provider probe (adapter only — not live)
+
+Jim brief: `docs/jim-brief-sydney-provider.md`
+
+1. `assertCityLive("sydney")` still returns **501** (`status: planned`, `adapterReady: true`).
+2. Without `TFNSW_API_KEY`: `npm run probe:sydney -- Central` exits with a clear message (no silent empty board).
+3. With key: `TFNSW_API_KEY=... npm run probe:sydney -- Central` → JSON board with upcoming Trains/Metro trips.
+4. `npm run probe:sydney -- --list` → catalog station names (no key required).
+5. Dev board (optional): `GET /api/dev/board?city=sydney&station=Central` with `ALLOW_CITY_PROBES=1` + `TFNSW_API_KEY` on server; without key → **503** with message.
+6. `/api/next-train?city=sydney&station=…` still **501** on production paths.
+
+### 24. Melbourne provider probe (adapter only — not live)
+
+Jim brief: `docs/jim-brief-melbourne-provider.md`
+
+1. `assertCityLive("melbourne")` still returns **501** (`status: planned`, `adapterReady: true`).
+2. Without `PTV_DEVID` / `PTV_API_KEY`: `npm run probe:melbourne -- "Flinders Street"` exits with a clear message.
+3. With keys: probe returns metro departures with ISO times, destination, optional platform.
+4. `npm run probe:melbourne -- --list` → catalog station names (no keys required).
+5. Dev board: `GET /api/dev/board?city=melbourne&station=Flinders%20Street` with `ALLOW_CITY_PROBES=1` + PTV env; without keys → **503**.
+6. `/api/next-train?city=melbourne&station=…` still **501** on production paths.
+
+### 25. Founding Pro (widget + no ads)
+
+Jim brief: `docs/jim-brief-founding-pro.md` · design: `public/design/founding-pro.html`
+
+1. Menu **Try the widget** when no trial (`free_no_trial`); **Unlock Pro** after trial expiry.
+2. First widget add → founding claim or **30-day trial** sheet (non-blocking).
+3. Trial nudge (day **21–25**; firm at day 30) dismissible via **Not now** in Menu.
+4. After trial without purchase: widget shows **Widget paused** + **Unlock Pro** (not Updating/stale).
+5. Paywall: one-time, restore, benefits = widget + no ads.
+6. Free in-app leave-by still works with ads when trial expired.
 
 ### 2. Configured journey (fixture)
 

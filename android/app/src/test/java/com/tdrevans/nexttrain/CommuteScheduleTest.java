@@ -11,6 +11,35 @@ import org.junit.Test;
 public class CommuteScheduleTest {
 
   @Test
+  public void widgetLockedSnapshot_usesPausedCopy() throws Exception {
+    CommuteSchedule.Result result = new CommuteSchedule.Result();
+    result.widgetLocked = true;
+    result.empty = false;
+
+    JSONObject snapshot = CommuteSchedule.toWidgetSnapshot(result);
+
+    assertTrue(snapshot.optBoolean("widgetLocked"));
+    assertEquals("Widget paused", snapshot.optString("primary"));
+    assertEquals("Unlock Pro", snapshot.optString("route"));
+    assertFalse(snapshot.optBoolean("stale"));
+  }
+
+  @Test
+  public void hasWidgetAccess_readsProBlob() throws Exception {
+    JSONObject settings = new JSONObject();
+    settings.put(
+      "pro",
+      new JSONObject().put("hasWidgetAccess", false)
+    );
+    assertFalse(CommuteSchedule.hasWidgetAccess(settings));
+
+    JSONObject open = new JSONObject();
+    open.put("pro", new JSONObject().put("hasWidgetAccess", true));
+    assertTrue(CommuteSchedule.hasWidgetAccess(open));
+    assertTrue(CommuteSchedule.hasWidgetAccess(new JSONObject()));
+  }
+
+  @Test
   public void emptyWidgetSnapshot_promptsTapToSetUp() throws Exception {
     CommuteSchedule.Result result = new CommuteSchedule.Result();
     result.empty = true;

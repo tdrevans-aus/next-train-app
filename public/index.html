@@ -430,56 +430,7 @@
               </label>
             </section>
 
-            <section class="settings-section" id="detail-preferred-section">
-              <label
-                class="field optional-time-field detail-preferred-field"
-                id="detail-preferred-field"
-                data-empty="true"
-              >
-                <span>Target train</span>
-                <div class="optional-time-control">
-                  <button type="button" class="optional-time-display" id="detail-preferred-display">
-                    Not set
-                  </button>
-                  <input
-                    type="time"
-                    id="detail-preferred-input"
-                    class="optional-time-input"
-                    tabindex="-1"
-                    aria-hidden="true"
-                  />
-                  <button
-                    type="button"
-                    class="optional-time-clear"
-                    id="detail-preferred-clear"
-                    hidden
-                    aria-label="Clear target train"
-                  >
-                    ×
-                  </button>
-                </div>
-              </label>
-              <p class="settings-section-hint">
-                First train at or after this time.
-              </p>
-            </section>
-
-            <section class="settings-section" id="detail-reminder-section">
-              <div class="menu-toggle-row detail-remind-toggle-row">
-                <span class="menu-toggle-title">Remind me</span>
-                <label class="menu-toggle-switch">
-                  <input type="checkbox" id="detail-remind-me" />
-                  <span class="menu-toggle-track" aria-hidden="true"></span>
-                </label>
-              </div>
-              <div class="detail-remind-expanded" id="detail-remind-expanded" hidden>
-                <p class="settings-section-hint detail-remind-permission-hint" id="detail-remind-permission-hint" hidden>
-                  Notifications are off — enable in system settings to get leave reminders.
-                </p>
-              </div>
-            </section>
-
-            <section class="settings-section">
+            <section class="settings-section" id="detail-timing-section">
               <h3 class="settings-section-title">Timing</h3>
               <label class="field leave-before-field" id="leave-before-field">
                 <div class="field-label-row">
@@ -581,7 +532,7 @@
                 </button>
               </div>
               <p class="settings-section-hint" id="detail-active-hours-hint">
-                Active hours for auto-select on the main screen.
+                When this journey shows on the home screen.
               </p>
               <p class="settings-section-hint detail-target-outside-hint" id="detail-target-outside-active-hint" hidden>
                 Target train is outside Active hours.
@@ -592,6 +543,68 @@
               <p class="settings-section-hint" id="detail-combo-d-hint" hidden>
                 Add Active hours to show this journey on a schedule.
               </p>
+            </section>
+
+            <section class="settings-section" id="detail-preferred-section">
+              <label
+                class="field optional-time-field detail-preferred-field"
+                id="detail-preferred-field"
+                data-empty="true"
+              >
+                <span>Target train</span>
+                <div class="optional-time-control">
+                  <button type="button" class="optional-time-display" id="detail-preferred-display">
+                    Not set
+                  </button>
+                  <input
+                    type="time"
+                    id="detail-preferred-input"
+                    class="optional-time-input"
+                    tabindex="-1"
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    class="optional-time-clear"
+                    id="detail-preferred-clear"
+                    hidden
+                    aria-label="Clear target train"
+                  >
+                    ×
+                  </button>
+                </div>
+              </label>
+              <p class="settings-section-hint">
+                First train at or after this time.
+              </p>
+
+              <div class="detail-remind-controls" id="detail-remind-controls" hidden>
+                <div class="detail-remind-toggles" id="detail-remind-toggles">
+                  <div
+                    class="menu-toggle-row detail-remind-toggle-row"
+                    id="detail-reminder-section"
+                  >
+                    <span class="menu-toggle-title">Remind me</span>
+                    <label class="menu-toggle-switch">
+                      <input type="checkbox" id="detail-remind-me" />
+                      <span class="menu-toggle-track" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div
+                    class="menu-toggle-row detail-remind-toggle-row reminders-strip-option"
+                    id="leave-reminders-strip-wrap"
+                  >
+                    <span class="menu-toggle-title">Live countdown</span>
+                    <label class="menu-toggle-switch">
+                      <input type="checkbox" id="leave-reminders-commute-strip" />
+                      <span class="menu-toggle-track" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+                <p class="settings-section-hint detail-remind-permission-hint" id="detail-remind-permission-hint" hidden>
+                  Notifications are off — enable in system settings to get leave reminders.
+                </p>
+              </div>
             </section>
 
           </div>
@@ -655,9 +668,11 @@
               <p id="template-wizard-hours-body"></p>
             </div>
             <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>
-              <h2 id="template-wizard-step-reminder-title">Reminder</h2>
+              <h2 id="template-wizard-step-reminder-title">Leave alerts</h2>
               <p>
-                Turn on to get a leave notification. Uses your target train when set.
+                <strong>Remind me</strong> sends a leave notification for your target train.
+                Optional <strong>Live countdown</strong> keeps a running leave countdown in
+                notifications.
               </p>
             </div>
             <div class="template-wizard-actions">
@@ -668,139 +683,6 @@
         </div>
       </div>
     </div>
-
-    <dialog class="reminders-dialog" id="reminders-dialog">
-      <div class="reminders-dialog-body">
-        <div class="settings-view-header reminders-dialog-header">
-          <h2>Reminder settings</h2>
-          <p class="reminders-lead" id="reminders-lead" hidden>
-            Get a notification when it&rsquo;s time to leave for your train.
-          </p>
-          <p class="reminders-armed-lead" id="reminders-armed-lead" hidden>
-            Early Reminder and Pause apply to every journey with Reminder on.
-          </p>
-        </div>
-
-        <p class="reminders-web-hint" id="reminders-web-hint" hidden>
-          Leave reminders are available in the Android app. Turn Reminder on for a journey under My Journeys.
-        </p>
-
-        <div id="reminders-native-content" hidden>
-          <p class="reminders-schedule-line" id="leave-reminders-schedule" hidden></p>
-
-          <div class="reminders-shared-option reminders-strip-option" id="leave-reminders-strip-wrap">
-            <div class="reminders-shared-option-header">
-              <div class="reminders-shared-option-copy">
-                <span class="menu-toggle-title">Show commute countdown in notifications</span>
-                <p class="reminders-option-hint">
-                  While you&rsquo;re leaving for your preferred train &mdash; not all day. Separate from leave reminders.
-                </p>
-              </div>
-              <label class="menu-toggle-switch">
-                <input type="checkbox" id="leave-reminders-commute-strip" />
-                <span class="menu-toggle-track" aria-hidden="true"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="reminders-empty" id="reminders-empty" hidden>
-            <div class="reminders-empty-card">
-              <p class="reminders-empty-title" id="reminders-empty-title"></p>
-              <p class="reminders-empty-body" id="reminders-empty-body"></p>
-              <button type="button" class="btn-secondary reminders-open-journeys-btn" id="reminders-open-journeys-btn">
-                Open My Journeys
-              </button>
-            </div>
-          </div>
-
-          <div class="reminders-shared-options" id="reminders-shared-options" hidden>
-            <div class="reminders-shared-option reminders-nudge-option" id="leave-reminders-nudge-wrap">
-              <div class="reminders-shared-option-header">
-                <div class="reminders-shared-option-copy">
-                  <span class="menu-toggle-title">Early Reminder</span>
-                  <p class="reminders-option-hint">
-                    A heads-up a few minutes before leave time — time to grab keys.
-                  </p>
-                </div>
-                <label class="menu-toggle-switch">
-                  <input type="checkbox" id="leave-reminders-early" />
-                  <span class="menu-toggle-track" aria-hidden="true"></span>
-                </label>
-              </div>
-              <div class="reminders-nudge-chips-wrap" id="leave-reminders-nudge-chips-wrap" hidden>
-                <span class="reminders-sr-only">Minutes before leave</span>
-                <p class="reminders-chips-hint">Minutes before leave time:</p>
-                <div class="remind-day-chips reminders-offset-chips" id="leave-reminders-nudge-chips">
-                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="5" aria-pressed="false">5</button>
-                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="10" aria-pressed="false">10</button>
-                  <button type="button" class="remind-day-chip reminder-offset-chip" data-minutes="15" aria-pressed="false">15</button>
-                </div>
-              </div>
-            </div>
-            <div class="reminders-shared-option reminders-pause-option" id="leave-reminders-pause-wrap">
-              <div class="reminders-shared-option-header">
-                <div class="reminders-shared-option-copy">
-                  <span class="menu-toggle-title">Pause reminders</span>
-                  <p class="reminders-option-hint">For holidays, time off, or working from home.</p>
-                </div>
-                <label class="menu-toggle-switch">
-                  <input type="checkbox" id="leave-reminders-pause" />
-                  <span class="menu-toggle-track" aria-hidden="true"></span>
-                </label>
-              </div>
-              <div class="reminders-pause-expanded" id="leave-reminders-pause-expanded" hidden>
-                <p class="reminders-pause-status" id="leave-reminders-pause-status" hidden></p>
-                <p class="reminders-chips-hint">Pause for:</p>
-                <div class="remind-day-chips reminders-pause-chips" id="leave-reminders-pause-chips">
-                  <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1day">1 day</button>
-                  <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1week">1 week</button>
-                  <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="2weeks">2 weeks</button>
-                  <button
-                    type="button"
-                    class="remind-day-chip reminder-pause-chip"
-                    data-pause="custom"
-                    id="leave-reminders-pause-custom-chip"
-                  >
-                    Custom
-                  </button>
-                </div>
-                <div class="reminders-pause-custom" id="leave-reminders-pause-custom" hidden>
-                  <label class="reminders-pause-custom-label" for="leave-reminders-pause-days">
-                    Number of days
-                  </label>
-                  <div class="reminders-pause-custom-row">
-                    <input
-                      type="number"
-                      id="leave-reminders-pause-days"
-                      class="reminders-pause-days-input"
-                      min="1"
-                      max="90"
-                      step="1"
-                      inputmode="numeric"
-                      enterkeyhint="done"
-                      aria-describedby="leave-reminders-pause-days-hint"
-                    />
-                    <span class="reminders-pause-days-unit" id="leave-reminders-pause-days-hint">days</span>
-                    <button type="button" class="btn-secondary reminders-pause-custom-apply" id="leave-reminders-pause-custom-apply">
-                      Set
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="reminders-validation-error"
-        id="reminders-validation-error"
-        hidden
-        role="alert"
-      ></div>
-      <div class="reminders-dialog-footer">
-        <button type="button" class="btn-primary reminders-done-btn" id="reminders-done-btn">Done</button>
-      </div>
-    </dialog>
 
     <dialog class="pro-sheet-dialog" id="pro-founding-sheet">
       <div class="pro-sheet-body">
@@ -859,8 +741,63 @@
           <h2>Menu</h2>
         </div>
         <nav class="menu-dialog-links" aria-label="Menu">
-          <button type="button" class="menu-dialog-link" id="menu-reminders-btn">Reminder settings</button>
           <button type="button" class="menu-dialog-link" id="menu-widget-btn" hidden>Add home screen widget</button>
+          <div class="menu-pause-block" id="menu-pause-block" hidden>
+            <div class="reminders-shared-option reminders-pause-option" id="leave-reminders-pause-wrap">
+              <div class="reminders-shared-option-header">
+                <div class="reminders-shared-option-copy">
+                  <span class="menu-toggle-title">Pause reminders</span>
+                  <p class="reminders-option-hint">Holidays, time off, or working from home.</p>
+                </div>
+                <label class="menu-toggle-switch">
+                  <input type="checkbox" id="leave-reminders-pause" />
+                  <span class="menu-toggle-track" aria-hidden="true"></span>
+                </label>
+              </div>
+              <div class="reminders-pause-expanded" id="leave-reminders-pause-expanded" hidden>
+                <p class="reminders-pause-status" id="leave-reminders-pause-status" hidden></p>
+                <p class="reminders-chips-hint">Pause for:</p>
+                <div class="remind-day-chips reminders-pause-chips" id="leave-reminders-pause-chips">
+                  <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1day">1 day</button>
+                  <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="1week">1 week</button>
+                  <button type="button" class="remind-day-chip reminder-pause-chip" data-pause="2weeks">2 weeks</button>
+                  <button
+                    type="button"
+                    class="remind-day-chip reminder-pause-chip"
+                    data-pause="custom"
+                    id="leave-reminders-pause-custom-chip"
+                  >
+                    Custom
+                  </button>
+                </div>
+                <div class="reminders-pause-custom" id="leave-reminders-pause-custom" hidden>
+                  <label class="reminders-pause-custom-label" for="leave-reminders-pause-days">
+                    Number of days
+                  </label>
+                  <div class="reminders-pause-custom-row">
+                    <input
+                      type="number"
+                      id="leave-reminders-pause-days"
+                      class="reminders-pause-days-input"
+                      min="1"
+                      max="90"
+                      step="1"
+                      inputmode="numeric"
+                      enterkeyhint="done"
+                      aria-describedby="leave-reminders-pause-days-hint"
+                    />
+                    <span class="reminders-pause-days-unit" id="leave-reminders-pause-days-hint">days</span>
+                    <button type="button" class="btn-primary reminders-pause-custom-apply" id="leave-reminders-pause-custom-apply">
+                      Set
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="menu-pause-web-hint" id="menu-pause-web-hint" hidden>
+              Leave alerts are available in the Android app. Turn Remind me on for a journey under My Journeys.
+            </p>
+          </div>
           <div class="menu-pro" id="menu-pro-section">
             <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-pro-cta-btn" hidden>
               <span class="menu-purchase-title" id="menu-pro-cta-title">Unlock Pro</span>
@@ -966,6 +903,11 @@
             </span>
             in the top bar for the nearest-station board. Pick a direction from the list, or swipe
             for other departures. Tap again to refresh your location.
+          </li>
+          <li>
+            <strong>Leave alerts</strong> — Set a <strong>target train</strong>, then turn on
+            <strong>Remind me</strong>. Optional <strong>Live countdown</strong> keeps a running
+            leave countdown in notifications. Pause from <strong>Menu → Pause reminders</strong>.
           </li>
           <li>
             <strong>Platform &amp; status</strong> — Live platform and delay info for the train

@@ -155,8 +155,8 @@ const detailTargetOutsideActiveHint = document.getElementById("detail-target-out
 const detailComboBHint = document.getElementById("detail-combo-b-hint");
 const detailComboDHint = document.getElementById("detail-combo-d-hint");
 const detailReminderSection = document.getElementById("detail-reminder-section");
+const detailRemindControls = document.getElementById("detail-remind-controls");
 const detailRemindMeInput = document.getElementById("detail-remind-me");
-const detailRemindExpandedEl = document.getElementById("detail-remind-expanded");
 const detailPreferredInput = document.getElementById("detail-preferred-input");
 const detailPreferredDisplay = document.getElementById("detail-preferred-display");
 const detailPreferredField = document.getElementById("detail-preferred-field");
@@ -1420,6 +1420,9 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
   const syncFromInput = () => {
     setOptionalTimeField(input, display, field, clearBtn, input.value);
     syncDetailComboHints();
+    if (field === detailPreferredField) {
+      syncDetailTargetRemindVisibility();
+    }
   };
 
   // Android WebView often fires `input` when the picker commits; `change` alone can miss.
@@ -1431,6 +1434,9 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
     event.stopPropagation();
     setOptionalTimeField(input, display, field, clearBtn, "");
     syncDetailComboHints();
+    if (field === detailPreferredField) {
+      syncDetailTargetRemindVisibility();
+    }
   });
 }
 
@@ -5346,6 +5352,22 @@ function cancelJourneyDetailEdit() {
 let templateWizardStep = 1;
 let templateWizardContext = null;
 
+function templateWizardShouldDockCoachBottom(step = templateWizardStep) {
+  return (
+    step === getTemplateWizardHoursStep() ||
+    step === getTemplateWizardReminderStep()
+  );
+}
+
+function templateWizardRectsOverlap(rectA, rectB, gap = 8) {
+  return (
+    rectA.left < rectB.right - gap &&
+    rectA.right > rectB.left + gap &&
+    rectA.top < rectB.bottom - gap &&
+    rectA.bottom > rectB.top + gap
+  );
+}
+
 function syncTemplateWizardCoachPosition() {
   const card = templateRouteCoach?.querySelector(".onboarding-coach-card");
   if (!card || !templateRouteCoach || templateRouteCoach.hidden) {
@@ -5364,6 +5386,15 @@ function syncTemplateWizardCoachPosition() {
   const gap = 10;
   const padding = 12;
 
+  if (templateWizardShouldDockCoachBottom()) {
+    card.style.top = "auto";
+    card.style.bottom = `${padding}px`;
+    card.style.left = "50%";
+    card.style.right = "auto";
+    card.style.transform = "translateX(-50%)";
+    return;
+  }
+
   let top = targetRect.top - coachRect.top - cardHeight - gap;
   if (top < padding) {
     top = targetRect.bottom - coachRect.top + gap;
@@ -5377,6 +5408,12 @@ function syncTemplateWizardCoachPosition() {
   card.style.left = "50%";
   card.style.right = "auto";
   card.style.transform = "translateX(-50%)";
+
+  const cardRect = card.getBoundingClientRect();
+  if (templateWizardRectsOverlap(cardRect, targetRect)) {
+    card.style.top = "auto";
+    card.style.bottom = `${padding}px`;
+  }
 }
 
 function templateWizardUsesNameStep(context = templateWizardContext) {
@@ -5421,7 +5458,7 @@ function getTemplateWizardHighlightTarget(
     return detailJourneyWindow;
   }
   if (step === getTemplateWizardReminderStep(context)) {
-    return detailReminderSection;
+    return detailRemindControls || detailReminderSection;
   }
 
   return null;
@@ -5581,13 +5618,14 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
   leaveBeforeField?.classList.remove("template-wizard-highlight");
   detailJourneyWindow?.classList.remove("template-wizard-highlight");
   detailReminderSection?.classList.remove("template-wizard-highlight");
+  detailRemindControls?.classList.remove("template-wizard-highlight");
 
   const target = getTemplateWizardHighlightTarget(step);
   if (target) {
     target.classList.add("template-wizard-highlight");
     const scrollBlock =
       step === getTemplateWizardHoursStep() || step === getTemplateWizardReminderStep()
-        ? "center"
+        ? "start"
         : "nearest";
     window.requestAnimationFrame(() => {
       target.scrollIntoView({
@@ -5601,7 +5639,9 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
 
 function syncTemplateWizardChrome() {
   const active = Boolean(templateRouteCoach && !templateRouteCoach.hidden);
+  const reminderStep = active && templateWizardStep === getTemplateWizardReminderStep();
   journeysDialog?.classList.toggle("template-wizard-active", active);
+  journeysDialog?.classList.toggle("template-wizard-reminder-step", reminderStep);
 
   if (!templateRouteCoach) {
     return;
@@ -5616,7 +5656,13 @@ function syncTemplateWizardChrome() {
   );
   if (active) {
     templateRouteCoach.classList.add(`template-route-coach--step-${templateWizardStep}`);
+    templateRouteCoach.classList.toggle(
+      "template-route-coach--dock-bottom",
+      templateWizardShouldDockCoachBottom()
+    );
     window.requestAnimationFrame(() => syncTemplateWizardCoachPosition());
+  } else {
+    templateRouteCoach.classList.remove("template-route-coach--dock-bottom");
   }
 }
 
@@ -5697,6 +5743,7 @@ function dismissTemplateRouteCoach() {
   templateWizardContext = null;
   detailJourneyNameField?.classList.remove("template-wizard-highlight");
   detailReminderSection?.classList.remove("template-wizard-highlight");
+  detailRemindControls?.classList.remove("template-wizard-highlight");
   syncTemplateWizardHighlight(0);
   syncTemplateWizardChrome();
 }
@@ -6063,37 +6110,65 @@ function applyJourneyOverlapFix() {
   showJourneyOverlapFixApplied(settingsDraftJourneys[index], kept, fix.cleared);
 }
 
+function hasDetailTargetTrain() {
+  return detailPreferredField?.dataset.empty === "false";
+}
+
+function syncDetailTargetRemindVisibility() {
+  const controls = detailRemindControls || document.getElementById("detail-remind-controls");
+  const hasTarget = hasDetailTargetTrain();
+
+  if (controls) {
+    controls.hidden = !hasTarget;
+  }
+
+  if (!hasTarget) {
+    if (detailRemindMeInput?.checked) {
+      detailRemindMeInput.checked = false;
+    }
+    if (detailRemindPermissionHint) {
+      detailRemindPermissionHint.hidden = true;
+    }
+  } else {
+    void window.nextTrainLeaveReminders?.refreshJourneyRemindExtras?.();
+  }
+}
+
 function showDetailRemindPermissionHint(show) {
   if (detailRemindPermissionHint) {
     detailRemindPermissionHint.hidden = !show;
   }
-  if (detailRemindExpandedEl) {
-    detailRemindExpandedEl.hidden = !show;
-  }
 }
 
 function highlightDetailReminderSection() {
-  if (!detailReminderSection) {
+  const target = detailRemindControls || detailReminderSection;
+  if (!target) {
     return;
   }
 
-  detailReminderSection.classList.add("template-wizard-highlight");
-  detailReminderSection.scrollIntoView({ block: "center", behavior: "smooth" });
+  target.classList.add("template-wizard-highlight");
+  target.scrollIntoView({ block: "center", behavior: "smooth" });
   window.setTimeout(() => {
-    detailReminderSection.classList.remove("template-wizard-highlight");
+    target.classList.remove("template-wizard-highlight");
   }, 3200);
 }
 
 async function handleDetailRemindToggleChange() {
-  const remindOn = detailRemindMeInput?.checked ?? false;
-  showDetailRemindPermissionHint(false);
-
-  if (!remindOn) {
+  if (!hasDetailTargetTrain()) {
+    if (detailRemindMeInput) {
+      detailRemindMeInput.checked = false;
+    }
+    syncDetailTargetRemindVisibility();
+    detailPreferredDisplay?.focus();
     return;
   }
 
-  if (detailPreferredField?.dataset.empty !== "false") {
-    detailPreferredDisplay?.focus();
+  const remindOn = detailRemindMeInput?.checked ?? false;
+  showDetailRemindPermissionHint(false);
+  syncDetailTargetRemindVisibility();
+
+  if (!remindOn) {
+    return;
   }
 
   window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
@@ -6104,7 +6179,10 @@ async function handleDetailRemindToggleChange() {
       detailRemindMeInput.checked = false;
     }
     showDetailRemindPermissionHint(true);
+    return;
   }
+
+  void window.nextTrainLeaveReminders?.refreshJourneyRemindExtras?.();
 }
 
 function populateDetailReminderFields(journey) {
@@ -6120,6 +6198,7 @@ function populateDetailReminderFields(journey) {
     journey?.preferredTrainTime || ""
   );
   showDetailRemindPermissionHint(false);
+  syncDetailTargetRemindVisibility();
 }
 
 function readJourneyDetailDraft() {
@@ -6785,6 +6864,7 @@ function openMenu() {
   openAppDialog(menuDialog);
   menuBtn?.setAttribute("aria-expanded", "true");
   menuChromeAction?.classList.add("chrome-action--open");
+  document.dispatchEvent(new CustomEvent("nexttrain:menu-open"));
 }
 
 function closeHelpDialog() {
@@ -7328,9 +7408,10 @@ async function init() {
     return;
   }
 
+  // Paywall / journey deep links must not wait on nearby locate (can take many seconds).
+  await window.nextTrainWidget?.consumeLaunchDeepLink?.();
   await applyCommuteMode({ coldStart: true });
   window.nextTrainWidget?.syncWidgetSettings?.(settings);
-  await window.nextTrainWidget?.consumeLaunchDeepLink?.();
 }
 
 initStationComboboxes();
@@ -7360,6 +7441,8 @@ window.nextTrainApp = {
   enterNearbyMode,
   openJourneys,
   openJourneyDetail,
+  openAppDialog,
+  closeAppDialog,
   hasSkippedTemplateWizard,
   switchJourney,
   fetchNextTrain,

@@ -42,6 +42,8 @@
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
 | **FB-09** | **R8 + Play deobfuscation mapping (release hygiene)** | **For:** Simon (process) + Jim (Gradle/ProGuard when enabled). Play warns on AAB upload: no deobfuscation file. Today `minifyEnabled false` — safe to ignore for closed test. **Before public launch or if we enable R8:** (1) decide minify on/off; (2) if on — Capacitor/AdMob/IAP keep rules + device smoke; (3) each `versionCode` upload `android/app/build/outputs/mapping/release/mapping.txt` in Play → App bundle explorer → Downloads; (4) archive mapping with release notes (decode old crashes). Add to Tim AAB checklist / launch-program when promoted. | Backlog — **Simon to track** |
+| **FB-10** | **Play native debug symbols (Capacitor `.so`)** | Play warns: native code in AAB, no debug symbols. **Not** FB-09 (Java mapping). **Jim:** `ndk { debugSymbolLevel 'SYMBOL_TABLE' }` in release — `docs/jim-brief-play-native-symbols-v3.md`. Safe to ignore closed Alpha 2.1.0; **required v3.0.0 public**. | Briefed — Jim |
+| **FB-11** | **v7: Nearby onboarding gate + 15s locate timeout** | v6 live but coach fires on locate error; 6s native GPS timeout too short. **Jim:** `docs/jim-brief-closed-aab-v6-ship-gate.md` §v7 addendum — commit app.js fixes, **versionCode 7**. | Briefed — Jim |
 
 ---
 
@@ -54,6 +56,8 @@
 | Widget preferred-or-later live (FB-06) | `docs/feature-backlog.md` |
 | Direction line groups (one-off merges) | `docs/jim-brief-direction-line-groups.md` |
 | R8 / mapping file on Play upload | `docs/feature-backlog.md` **FB-09** · `docs/aab-signing-closed-testing.md` |
+| Native debug symbols on Play upload | `docs/feature-backlog.md` **FB-10** · `docs/jim-brief-play-native-symbols-v3.md` |
+| QA infrastructure (CI, run-all, helpers) | `docs/qa-infrastructure-plan.md` |
 
 ---
 
