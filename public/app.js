@@ -188,6 +188,7 @@ let nearbyLoading = false;
 let nearbyBoardInflight = null;
 let nearbyLocateStartedAt = 0;
 let nearbyLocateTimer = null;
+let nearbyLocateGeneration = 0;
 let nearbyLocatePickerVisible = false;
 let nearbyDontWaitVisible = false;
 let nearbyUserPickedStation = false;
@@ -4099,11 +4100,21 @@ function startNearbyLocateTimers() {
   }, 400);
 }
 
+function isNearbyLocateCurrent(generation) {
+  return generation === nearbyLocateGeneration && Boolean(nearbySession);
+}
+
 async function locateNearbyInBackground() {
+  const generation = ++nearbyLocateGeneration;
   const previousStation = nearbySession?.station ?? null;
 
   try {
     const nearest = await findNearestStation({ forceFresh: true });
+    // User may have left Near me (or started a newer locate) while GPS resolved.
+    if (!isNearbyLocateCurrent(generation)) {
+      return;
+    }
+
     if (nearbyUserPickedStation) {
       writeLastNearbyStationCache({
         station: nearbySession?.station,
@@ -4167,15 +4178,29 @@ async function locateNearbyInBackground() {
       if (stationChanged || !nearbyBoard) {
         await fetchNearbyBoard();
       }
+      if (!isNearbyLocateCurrent(generation)) {
+        return;
+      }
       nearbyError = null;
     } catch (error) {
+      if (!isNearbyLocateCurrent(generation)) {
+        return;
+      }
       nearbyError = error.message ?? "Could not load departures for this station";
     } finally {
-      nearbyLoading = false;
+      if (isNearbyLocateCurrent(generation)) {
+        nearbyLoading = false;
+      }
+    }
+    if (!isNearbyLocateCurrent(generation)) {
+      return;
     }
     renderNearbyBoard();
   } catch (error) {
     stopNearbyLocateTimers();
+    if (!isNearbyLocateCurrent(generation)) {
+      return;
+    }
     nearbySession.gpsRefining = false;
     nearbyLoading = false;
     nearbyDontWaitVisible = false;
@@ -4191,9 +4216,15 @@ async function locateNearbyInBackground() {
         if (!nearbyBoard) {
           await fetchNearbyBoard();
         }
+        if (!isNearbyLocateCurrent(generation)) {
+          return;
+        }
         nearbyError = null;
         renderNearbyBoard();
       } catch (fetchError) {
+        if (!isNearbyLocateCurrent(generation)) {
+          return;
+        }
         errorEl.textContent = fetchError.message;
         errorEl.hidden = false;
         renderNearbyBoard({ stale: true });
@@ -4634,6 +4665,7 @@ function exitNearbyMode() {
   nearbyDontWaitVisible = false;
   syncNearbyDontWaitButton();
   nearbyUserPickedStation = false;
+  nearbyLocateGeneration += 1;
   nearbySession = null;
   nearbyBoard = null;
   nearbyBoardInflight = null;
