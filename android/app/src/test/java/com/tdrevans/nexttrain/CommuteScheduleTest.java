@@ -20,6 +20,10 @@ public class CommuteScheduleTest {
 
     assertTrue(snapshot.optBoolean("widgetLocked"));
     assertEquals("Widget paused", snapshot.optString("primary"));
+    assertEquals(
+      "Your Pro trial ended. Unlock once to keep leave-by on your home screen.",
+      snapshot.optString("trainClock")
+    );
     assertEquals("Unlock Pro", snapshot.optString("route"));
     assertFalse(snapshot.optBoolean("stale"));
   }

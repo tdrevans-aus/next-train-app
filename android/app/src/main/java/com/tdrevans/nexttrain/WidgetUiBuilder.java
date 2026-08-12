@@ -30,7 +30,7 @@ public final class WidgetUiBuilder {
   public static RemoteViews build(Context context, JSONObject snapshot, int layoutId) {
     RemoteViews views = new RemoteViews(context.getPackageName(), layoutId);
     if (snapshot != null && snapshot.optBoolean("widgetLocked", false)) {
-      bindWidgetLocked(views, context, layoutId);
+      bindWidgetLocked(views, context, layoutId, snapshot);
       return views;
     }
     if (snapshot == null || snapshot.optBoolean("empty", false)) {
@@ -557,13 +557,23 @@ public final class WidgetUiBuilder {
   }
 
   /** Pro trial expired — calm locked face, not stale/error. */
-  private static void bindWidgetLocked(RemoteViews views, Context context, int layoutId) {
+  private static void bindWidgetLocked(
+    RemoteViews views,
+    Context context,
+    int layoutId,
+    JSONObject snapshot
+  ) {
     boolean medium = isMedium(layoutId);
     restoreLiveLayoutChrome(views);
     views.setTextViewText(R.id.widget_label, "NEXT TRAIN");
     views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, medium ? 12f : 11f);
     views.setViewVisibility(R.id.widget_primary_unit, android.view.View.GONE);
-    views.setTextViewText(R.id.widget_primary_value, "Widget paused");
+    String primary =
+      snapshot != null ? snapshot.optString("primary", "").trim() : "";
+    if (primary.isEmpty()) {
+      primary = "Widget paused";
+    }
+    views.setTextViewText(R.id.widget_primary_value, primary);
     views.setTextViewTextSize(
       R.id.widget_primary_value,
       TypedValue.COMPLEX_UNIT_SP,
@@ -577,16 +587,23 @@ public final class WidgetUiBuilder {
     views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
     views.setViewVisibility(R.id.widget_updated, android.view.View.GONE);
     views.setViewVisibility(R.id.widget_updated_left, android.view.View.GONE);
-    views.setTextViewText(
-      R.id.widget_train_clock,
-      "Your Pro trial ended. Unlock once to keep leave-by on your home screen."
-    );
+    String body =
+      snapshot != null ? snapshot.optString("trainClock", "").trim() : "";
+    if (body.isEmpty()) {
+      body = "Your Pro trial ended. Unlock once to keep leave-by on your home screen.";
+    }
+    views.setTextViewText(R.id.widget_train_clock, body);
     views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
     views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, medium ? 13f : 12f);
     views.setTextColor(R.id.widget_train_clock, context.getColor(R.color.widget_muted));
     views.setInt(R.id.widget_train_clock, "setMaxLines", 3);
     views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
-    views.setTextViewText(R.id.widget_route, "Unlock Pro");
+    String route =
+      snapshot != null ? snapshot.optString("route", "").trim() : "";
+    if (route.isEmpty()) {
+      route = "Unlock Pro";
+    }
+    views.setTextViewText(R.id.widget_route, route);
     views.setTextColor(R.id.widget_route, context.getColor(R.color.widget_accent));
     views.setTextViewTextSize(R.id.widget_route, TypedValue.COMPLEX_UNIT_SP, medium ? 13f : 12f);
     setBottomRouteGravity(views, true);
