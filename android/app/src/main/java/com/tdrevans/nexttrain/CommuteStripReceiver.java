@@ -77,5 +77,20 @@ public class CommuteStripReceiver extends BroadcastReceiver {
     }
 
     CommuteStripNotifier.show(appContext, journeyId, route, trainTime, leaveByMs, departureMs, stale);
+
+    // Before leave-by the chronometer tracks leave; at leave-by switch to train countdown.
+    long refreshNow = System.currentTimeMillis();
+    if (leaveByMs > refreshNow && departureMs > leaveByMs) {
+      CommuteStripScheduler.scheduleShowRefresh(
+        appContext,
+        journeyId,
+        route,
+        trainTime,
+        leaveByMs,
+        departureMs,
+        endAtMs,
+        stale
+      );
+    }
   }
 }

@@ -124,12 +124,15 @@ public final class CommuteStripScheduler {
         );
         // When leave-by is still ahead, refresh at leave-by so chronometer switches to train.
         if (best.target.leaveByMs > now && departureMs > best.target.leaveByMs) {
-          scheduleAlarm(
+          scheduleShowRefresh(
             context,
-            ACTION_SHOW,
+            best.target.journeyId,
+            best.target.route,
+            best.target.trainTime,
             best.target.leaveByMs,
-            best,
-            alarmRequestCode(best.target.journeyId, "leave")
+            departureMs,
+            best.endAtMs,
+            best.target.stale
           );
         }
       } else {
@@ -290,6 +293,60 @@ public final class CommuteStripScheduler {
     StripPlan plan,
     int requestCode
   ) {
+    scheduleAlarm(
+      context,
+      action,
+      triggerAtMs,
+      plan.target.journeyId,
+      plan.target.route,
+      plan.target.trainTime,
+      plan.target.leaveByMs,
+      PerthTime.epochMillisFromIso(plan.target.departureIso),
+      plan.endAtMs,
+      plan.target.stale,
+      requestCode
+    );
+  }
+
+  /** Re-post the strip at leave-by so chronometer switches from leave → train. */
+  static void scheduleShowRefresh(
+    Context context,
+    String journeyId,
+    String route,
+    String trainTime,
+    long leaveByMs,
+    long departureMs,
+    long endAtMs,
+    boolean stale
+  ) {
+    scheduleAlarm(
+      context,
+      ACTION_SHOW,
+      leaveByMs,
+      journeyId,
+      route,
+      trainTime,
+      leaveByMs,
+      departureMs,
+      endAtMs,
+      stale,
+      alarmRequestCode(journeyId, "leave")
+    );
+  }
+
+  private static void scheduleAlarm(
+    Context context,
+    String action,
+    long triggerAtMs,
+    String journeyId,
+    String route,
+    String trainTime,
+    long leaveByMs,
+    long departureMs,
+    long endAtMs,
+    boolean stale,
+    int requestCode
+  ) {
     AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     if (manager == null) {
       return;
@@ -297,14 +354,14 @@ public final class CommuteStripScheduler {
 
     Intent intent = new Intent(context, CommuteStripReceiver.class);
     intent.setAction(action);
-    intent.putExtra(EXTRA_JOURNEY_ID, plan.target.journeyId);
-    intent.putExtra(EXTRA_ROUTE, plan.target.route);
-    intent.putExtra(EXTRA_TRAIN_TIME, plan.target.trainTime);
+    intent.putExtra(EXTRA_JOURNEY_ID, journeyId);
+    intent.putExtra(EXTRA_ROUTE, route);
+    intent.putExtra(EXTRA_TRAIN_TIME, trainTime);
     intent.putExtra(EXTRA_DAY_KEY, PerthTime.localDateKey());
-    intent.putExtra(EXTRA_LEAVE_BY_MS, plan.target.leaveByMs);
-    intent.putExtra(EXTRA_DEPARTURE_MS, PerthTime.epochMillisFromIso(plan.target.departureIso));
-    intent.putExtra(EXTRA_END_AT_MS, plan.endAtMs);
-    intent.putExtra(EXTRA_STALE, plan.target.stale);
+    intent.putExtra(EXTRA_LEAVE_BY_MS, leaveByMs);
+    intent.putExtra(EXTRA_DEPARTURE_MS, departureMs);
+    intent.putExtra(EXTRA_END_AT_MS, endAtMs);
+    intent.putExtra(EXTRA_STALE, stale);
 
     PendingIntent pending = PendingIntent.getBroadcast(
       context,
