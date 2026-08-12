@@ -82,12 +82,15 @@ async function ensureNativeAdsBridge() {
   }
 
   const { loadScriptOnce, waitForCapacitor } = window.NextTrainScripts ?? {};
-  if (!loadScriptOnce || !waitForCapacitor) {
+  if (waitForCapacitor) {
+    await waitForCapacitor();
+  }
+
+  if (window.NextTrainAds?.showNativeBanner) {
     return;
   }
 
-  await waitForCapacitor();
-  if (!window.Capacitor) {
+  if (!loadScriptOnce) {
     return;
   }
 
