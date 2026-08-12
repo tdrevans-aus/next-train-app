@@ -7001,6 +7001,7 @@ async function refreshMenuAppVersionLabel() {
 function openMenu() {
   dismissLeaveHint();
   window.NextTrainAdFree?.renderMenuAdFree?.();
+  window.NextTrainProPurchase?.renderMenuPro?.();
   void refreshMenuAppVersionLabel();
   openAppDialog(menuDialog);
   menuBtn?.setAttribute("aria-expanded", "true");
