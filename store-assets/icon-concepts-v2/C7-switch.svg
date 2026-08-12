@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- C7  Switch / fork open (two paths ahead) -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <!-- stem -->
+  <rect x="232" y="280" width="48" height="140" rx="14" fill="#0B6E6A"/>
+  <rect x="200" y="320" width="112" height="22" rx="6" fill="#0B6E6A"/>
+  <rect x="200" y="372" width="112" height="22" rx="6" fill="#0B6E6A"/>
+  <!-- left branch -->
+  <path d="M232 300 C200 240 150 190 120 140" stroke="#0B6E6A" stroke-width="36" stroke-linecap="round" fill="none"/>
+  <!-- right branch -->
+  <path d="M280 300 C312 240 362 190 392 140" stroke="#0B6E6A" stroke-width="36" stroke-linecap="round" fill="none"/>
+  <rect x="128" y="168" width="56" height="18" rx="5" fill="#0B6E6A" transform="rotate(-40 156 177)"/>
+  <rect x="328" y="168" width="56" height="18" rx="5" fill="#0B6E6A" transform="rotate(40 356 177)"/>
+</svg>

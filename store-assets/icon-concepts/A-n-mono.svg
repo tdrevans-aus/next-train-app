@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- A — Bold geometric N -->
+  <rect width="512" height="512" rx="112" fill="#0B6E6A"/>
+  <path
+    d="M140 120h64v168L340 120h72v272h-64V224L204 392h-64V120z"
+    fill="#EEF3F2"
+  />
+</svg>

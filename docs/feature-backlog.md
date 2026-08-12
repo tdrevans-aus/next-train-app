@@ -47,6 +47,14 @@
 
 ---
 
+## Journeys / leave alerts
+
+| ID | Idea | Notes | Status |
+|----|------|-------|--------|
+| **FB-12** | **Target train gap warning / smarter pick** | Today: first live train **at or after** target time (e.g. 7:00 → 7:40). Usually fine; painful when the gap is large (user thinks “7am train”, app arms 7:40). **v8 candidate:** warn when next-at-or-after is ≫ N min past target, and/or offer “nearest to target” / confirm train. Touches journey detail, leave reminders, Live countdown, widget leave-by gate. **Not v7.** | Backlog — **v8** |
+
+---
+
 ## Also parked elsewhere (pointers)
 
 | Topic | Where |
@@ -57,6 +65,7 @@
 | Direction line groups (one-off merges) | `docs/jim-brief-direction-line-groups.md` |
 | R8 / mapping file on Play upload | `docs/feature-backlog.md` **FB-09** · `docs/aab-signing-closed-testing.md` |
 | Native debug symbols on Play upload | `docs/feature-backlog.md` **FB-10** · `docs/jim-brief-play-native-symbols-v3.md` |
+| Target train large gap (FB-12) | `docs/feature-backlog.md` **FB-12** (v8) |
 | QA infrastructure (CI, run-all, helpers) | `docs/qa-infrastructure-plan.md` |
 
 ---

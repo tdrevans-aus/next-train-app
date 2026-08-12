@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- C1  Track clock: twin ring rails + sleeper ticks + short hand -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <circle cx="256" cy="256" r="148" stroke="#0B6E6A" stroke-width="28" fill="none"/>
+  <circle cx="256" cy="256" r="100" stroke="#0B6E6A" stroke-width="28" fill="none"/>
+  <!-- hour ticks (sleepers) -->
+  <rect x="242" y="78" width="28" height="44" rx="8" fill="#0B6E6A"/>
+  <rect x="242" y="390" width="28" height="44" rx="8" fill="#0B6E6A"/>
+  <rect x="78" y="242" width="44" height="28" rx="8" fill="#0B6E6A"/>
+  <rect x="390" y="242" width="44" height="28" rx="8" fill="#0B6E6A"/>
+  <!-- hand = short rail from hub -->
+  <rect x="242" y="150" width="28" height="120" rx="10" fill="#0B6E6A"/>
+  <circle cx="256" cy="256" r="18" fill="#0B6E6A"/>
+</svg>

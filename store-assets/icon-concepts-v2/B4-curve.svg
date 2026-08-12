@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- B4 — Parallel curve, clear gap end-to-end -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path
+    d="M100 360
+       C170 290 260 240 350 200
+       C390 180 420 155 436 120"
+    stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <path
+    d="M172 420
+       C240 340 330 284 420 242
+       C456 224 480 200 496 172"
+    stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <rect x="116" y="340" width="96" height="22" rx="6" fill="#0B6E6A" transform="rotate(-48 164 351)"/>
+  <rect x="196" y="280" width="88" height="20" rx="6" fill="#0B6E6A" transform="rotate(-40 240 290)"/>
+  <rect x="276" y="232" width="80" height="18" rx="5" fill="#0B6E6A" transform="rotate(-32 316 241)"/>
+  <rect x="352" y="192" width="72" height="16" rx="5" fill="#0B6E6A" transform="rotate(-28 388 200)"/>
+</svg>

@@ -1,0 +1,9 @@
+appId: com.tdrevans.nexttrain
+---
+- openLink: "nexttrain://nearby"
+- extendedWaitUntil:
+    visible: "Menu"
+    timeout: 60000
+- tapOn: "Menu"
+- assertVisible: "Done"
+- assertNotVisible: "Reminder settings"

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <clipPath id="e4face"><circle cx="256" cy="256" r="146"/></clipPath>
+  <!-- E4  Dial track: the clock face is a window onto the line -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <circle cx="256" cy="256" r="158" stroke="#0B6E6A" stroke-width="24" fill="none"/>
+  <g clip-path="url(#e4face)">
+    <path d="M132 402 L166 402 L238 186 L218 186 Z" fill="#0B6E6A"/>
+    <path d="M380 402 L346 402 L274 186 L294 186 Z" fill="#0B6E6A"/>
+    <g fill="#0B6E6A">
+      <rect x="136" y="360" width="240" height="22" rx="8"/>
+      <rect x="162" y="296" width="188" height="19" rx="7"/>
+      <rect x="182" y="244" width="148" height="16" rx="6"/>
+    </g>
+  </g>
+</svg>

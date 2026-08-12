@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D — Clean side train, nose right -->
+  <rect width="512" height="512" rx="112" fill="#0B6E6A"/>
+  <path d="M72 292h280c8 0 14-2 22-10l58-62c6-6 4-16-4-16H176L72 292z" fill="#EEF3F2"/>
+  <rect x="72" y="292" width="368" height="32" rx="8" fill="#EEF3F2"/>
+  <rect x="140" y="232" width="44" height="48" rx="8" fill="#0B6E6A"/>
+  <rect x="208" y="232" width="44" height="48" rx="8" fill="#0B6E6A"/>
+  <rect x="276" y="232" width="44" height="48" rx="8" fill="#0B6E6A"/>
+  <circle cx="160" cy="360" r="30" fill="#D9E8E5"/>
+  <circle cx="320" cy="360" r="30" fill="#D9E8E5"/>
+</svg>

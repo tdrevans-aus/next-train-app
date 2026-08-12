@@ -23,6 +23,7 @@ public final class CommuteStripScheduler {
   public static final String EXTRA_TRAIN_TIME = "strip_train_time";
   public static final String EXTRA_DAY_KEY = "strip_day_key";
   public static final String EXTRA_LEAVE_BY_MS = "strip_leave_by_ms";
+  public static final String EXTRA_DEPARTURE_MS = "strip_departure_ms";
   public static final String EXTRA_END_AT_MS = "strip_end_at_ms";
   public static final String EXTRA_STALE = "strip_stale";
 
@@ -111,14 +112,26 @@ public final class CommuteStripScheduler {
       }
 
       if (now >= best.startAtMs) {
+        long departureMs = PerthTime.epochMillisFromIso(best.target.departureIso);
         CommuteStripNotifier.show(
           context,
           best.target.journeyId,
           best.target.route,
           best.target.trainTime,
           best.target.leaveByMs,
+          departureMs,
           best.target.stale
         );
+        // When leave-by is still ahead, refresh at leave-by so chronometer switches to train.
+        if (best.target.leaveByMs > now && departureMs > best.target.leaveByMs) {
+          scheduleAlarm(
+            context,
+            ACTION_SHOW,
+            best.target.leaveByMs,
+            best,
+            alarmRequestCode(best.target.journeyId, "leave")
+          );
+        }
       } else {
         scheduleAlarm(
           context,
@@ -289,6 +302,7 @@ public final class CommuteStripScheduler {
     intent.putExtra(EXTRA_TRAIN_TIME, plan.target.trainTime);
     intent.putExtra(EXTRA_DAY_KEY, PerthTime.localDateKey());
     intent.putExtra(EXTRA_LEAVE_BY_MS, plan.target.leaveByMs);
+    intent.putExtra(EXTRA_DEPARTURE_MS, PerthTime.epochMillisFromIso(plan.target.departureIso));
     intent.putExtra(EXTRA_END_AT_MS, plan.endAtMs);
     intent.putExtra(EXTRA_STALE, plan.target.stale);
 

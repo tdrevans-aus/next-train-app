@@ -1,0 +1,8 @@
+appId: com.tdrevans.nexttrain
+---
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible: "Near you"
+    timeout: 60000
+- assertVisible: "Near you"

@@ -1,0 +1,16 @@
+appId: com.tdrevans.nexttrain
+---
+- pressHome
+- assertVisible:
+    text: "min"
+    optional: true
+- assertVisible:
+    text: "NEAR ME"
+    optional: true
+- assertVisible:
+    id: "com.tdrevans.nexttrain:id/widget_primary_value"
+    optional: true
+- tapOn: "Next Train"
+- extendedWaitUntil:
+    visible: "Near you"
+    timeout: 45000

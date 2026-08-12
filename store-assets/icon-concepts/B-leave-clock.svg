@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- B  Leave-by: mist field + teal badge + clock + train -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <circle cx="256" cy="256" r="168" fill="#0B6E6A"/>
+  <!-- clock arc -->
+  <circle cx="256" cy="236" r="78" stroke="#EEF3F2" stroke-width="22" fill="none"/>
+  <path d="M256 180v62l42 28" stroke="#EEF3F2" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- tiny train under clock -->
+  <rect x="188" y="330" width="136" height="36" rx="10" fill="#EEF3F2"/>
+  <rect x="208" y="338" width="28" height="20" rx="4" fill="#0B6E6A"/>
+  <rect x="252" y="338" width="28" height="20" rx="4" fill="#0B6E6A"/>
+  <circle cx="214" cy="374" r="10" fill="#D9E8E5"/>
+  <circle cx="298" cy="374" r="10" fill="#D9E8E5"/>
+</svg>

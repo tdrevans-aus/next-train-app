@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- E6 — Sweep: concentric rails turning like a minute hand -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M102 400 C102 262 214 150 352 150" stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <path d="M192 400 C192 312 264 240 352 240" stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <g stroke="#0B6E6A" stroke-width="20" stroke-linecap="round">
+    <line x1="214" y1="400" x2="80" y2="400"/>
+    <line x1="225" y1="347" x2="101" y2="296"/>
+    <line x1="254" y1="302" x2="160" y2="208"/>
+    <line x1="299" y1="273" x2="248" y2="149"/>
+    <line x1="352" y1="262" x2="352" y2="128"/>
+  </g>
+</svg>

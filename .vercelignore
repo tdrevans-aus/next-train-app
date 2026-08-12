@@ -1,0 +1,14 @@
+# Keep Vercel uploads lean — static web + api/ only
+node_modules
+.vercel
+android
+ios
+store-assets
+qa
+.git
+*.apk
+*.aab
+*.jks
+*.keystore
+agent-transcripts
+canvases

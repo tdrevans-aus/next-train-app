@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <clipPath id="e3tile"><rect width="512" height="512" rx="112"/></clipPath>
+  <!-- E3  Band: track running clean through the tile -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <g clip-path="url(#e3tile)">
+    <path d="M-186 614 L614 -186" stroke="#0B6E6A" stroke-width="30" fill="none"/>
+    <path d="M-102 698 L698 -102" stroke="#0B6E6A" stroke-width="30" fill="none"/>
+    <g fill="#0B6E6A">
+      <rect x="61" y="366" width="150" height="20" rx="7" transform="rotate(45 136 376)"/>
+      <rect x="121" y="306" width="150" height="20" rx="7" transform="rotate(45 196 316)"/>
+      <rect x="181" y="246" width="150" height="20" rx="7" transform="rotate(45 256 256)"/>
+      <rect x="241" y="186" width="150" height="20" rx="7" transform="rotate(45 316 196)"/>
+      <rect x="301" y="126" width="150" height="20" rx="7" transform="rotate(45 376 136)"/>
+    </g>
+  </g>
+</svg>

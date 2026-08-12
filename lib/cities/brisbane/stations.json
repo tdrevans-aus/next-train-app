@@ -1,0 +1,54 @@
+{
+  "stations": [
+    {
+      "name": "Central",
+      "aliases": ["Brisbane Central", "Central Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Roma Street",
+      "aliases": ["Roma St"],
+      "stopIds": []
+    },
+    {
+      "name": "South Bank",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Park Road",
+      "aliases": ["Park Rd"],
+      "stopIds": []
+    },
+    {
+      "name": "Beenleigh",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Cleveland",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Gold Coast",
+      "aliases": ["Varsity Lakes"],
+      "stopIds": []
+    },
+    {
+      "name": "Airport",
+      "aliases": ["Brisbane Airport", "Domestic Airport"],
+      "stopIds": []
+    },
+    {
+      "name": "Ferny Grove",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Caboolture",
+      "aliases": [],
+      "stopIds": []
+    }
+  ]
+}

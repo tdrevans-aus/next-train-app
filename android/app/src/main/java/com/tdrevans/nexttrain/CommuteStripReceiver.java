@@ -65,12 +65,17 @@ public class CommuteStripReceiver extends BroadcastReceiver {
     String route = intent.getStringExtra(CommuteStripScheduler.EXTRA_ROUTE);
     String trainTime = intent.getStringExtra(CommuteStripScheduler.EXTRA_TRAIN_TIME);
     long leaveByMs = intent.getLongExtra(CommuteStripScheduler.EXTRA_LEAVE_BY_MS, 0L);
+    long departureMs = intent.getLongExtra(CommuteStripScheduler.EXTRA_DEPARTURE_MS, 0L);
     boolean stale = intent.getBooleanExtra(CommuteStripScheduler.EXTRA_STALE, false);
 
     if (journeyId == null || route == null || trainTime == null || leaveByMs <= 0) {
       return;
     }
 
-    CommuteStripNotifier.show(appContext, journeyId, route, trainTime, leaveByMs, stale);
+    if (departureMs <= 0) {
+      departureMs = leaveByMs;
+    }
+
+    CommuteStripNotifier.show(appContext, journeyId, route, trainTime, leaveByMs, departureMs, stale);
   }
 }

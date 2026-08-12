@@ -2197,22 +2197,33 @@ dialog.app-native-dialog[open] {
 .reminders-pause-custom-row {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.45rem;
 }
 
 .reminders-pause-days-input {
-  width: 3.25rem;
+  width: 2.65rem;
+  height: 2.125rem;
+  flex: 0 0 auto;
   margin: 0;
-  padding: 0.4rem 0.45rem;
+  padding: 0;
   border: 1px solid var(--line);
   border-radius: 0.65rem;
   background: var(--surface);
   color: var(--ink);
   font: inherit;
   font-weight: 700;
-  font-size: 0.82rem;
-  letter-spacing: -0.02em;
+  font-size: 0.88rem;
+  line-height: 1;
   text-align: center;
+  box-sizing: border-box;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.reminders-pause-days-input::-webkit-outer-spin-button,
+.reminders-pause-days-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .reminders-pause-days-input:focus {
@@ -2221,17 +2232,17 @@ dialog.app-native-dialog[open] {
 }
 
 .reminders-pause-days-unit {
-  font-size: 0.78rem;
+  flex: 0 0 auto;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--muted);
+  line-height: 1;
 }
 
 .reminders-pause-custom-apply {
+  flex: 0 0 auto;
   margin: 0;
-  padding: 0.4rem 0.75rem;
   min-width: auto;
-  font-size: 0.78rem;
-  border-radius: 0.65rem;
 }
 
 .reminders-sr-only {
@@ -2514,12 +2525,15 @@ dialog.app-native-dialog[open] {
 }
 
 #settings-detail-view .range-ticks {
+  margin-top: 0;
   font-size: 0.65rem;
+  line-height: 1;
 }
 
-#settings-detail-view .remind-day-chip {
-  min-width: 1.7rem;
-  padding: 0.26rem 0.15rem;
+#settings-detail-view .remind-day-chips--row .remind-day-chip {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.26rem 0.1rem;
   font-size: 0.68rem;
 }
 
@@ -2743,7 +2757,7 @@ dialog.app-native-dialog[open] {
 }
 
 #settings-detail-view .remind-days-field {
-  margin-top: 0;
+  margin-top: 0.2rem;
 }
 
 #settings-detail-view .remind-days-field .field-label {
@@ -2857,8 +2871,8 @@ dialog.app-native-dialog[open] {
 
 .remind-day-chips--row {
   flex-wrap: nowrap;
-  justify-content: space-between;
-  gap: 0.2rem;
+  justify-content: flex-start;
+  gap: 0.25rem;
 }
 
 .remind-me-toggle {
@@ -2898,10 +2912,6 @@ dialog.app-native-dialog[open] {
   min-width: 7.5rem;
 }
 
-#settings-detail-view .remind-days-field {
-  margin-top: 0;
-}
-
 .detail-remind-permission-hint {
   align-self: flex-start;
   margin-top: 0.15rem;
@@ -2910,7 +2920,15 @@ dialog.app-native-dialog[open] {
   font-weight: 600;
 }
 
+.remind-day-chips--row .remind-day-chip {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .remind-day-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 1.85rem;
   padding: 0.32rem 0.45rem;
   border: 1px solid var(--line);
@@ -2919,6 +2937,7 @@ dialog.app-native-dialog[open] {
   color: var(--text);
   font-size: 0.72rem;
   font-weight: 700;
+  line-height: 1;
   cursor: pointer;
   text-align: center;
 }
@@ -3557,6 +3576,31 @@ dialog.app-native-dialog[open] {
 
 .btn-primary:hover {
   background: var(--accent-strong);
+}
+
+/* Inline pause-custom row: beat .btn-primary padding so Set matches the days input height */
+.reminders-pause-custom-apply.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.125rem;
+  min-height: 0;
+  padding: 0 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1;
+  border-radius: 0.65rem;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.reminders-pause-custom-apply.btn-primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #ffffff;
 }
 
 .btn-secondary {

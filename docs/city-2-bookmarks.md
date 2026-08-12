@@ -1,8 +1,7 @@
 # City #2 — bookmarks only (no build)
 
-**Owner:** Tim  
-**Status:** Homework shelf — **no engineering spike** that delays iOS/store  
-**Related:** Business plan §2.2 · §3.4  
+**Superseded for depth by:** [`docs/multi-city-provider-design.md`](multi-city-provider-design.md) (per-capital API picks + provider registry).  
+This file stays as Tim’s **go/no-go homework** shelf for city #2 choice.
 
 ---
 

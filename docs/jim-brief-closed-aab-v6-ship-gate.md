@@ -215,18 +215,27 @@ Tim confirmed Menu shows **Version 2.1.0 (6)** — this is not a stale v5 build.
 - Board loads with departures → coach may appear ~6s later (if onboarding not completed).
 - “No upcoming trains” with station + board loaded → coach may still appear (board loaded = OK).
 
-### B. Native locate timeout + error copy
+### B. Native locate timeout + error copy + stale GPS cache
 
-**Bug:** `findNearestStation` used **6s** timeout on native; emulator without mock GPS hits Capacitor *“Could not obtain location in time”* quickly.
+**Bug:** `findNearestStation` used **6s** timeout on native (v6); emulator without mock GPS hits Capacitor *“Could not obtain location in time”* quickly.
+
+**Also (Tim emulator QA):** After setting mock GPS in Extended controls, app still failed because `maximumAge: 60000` reused the **old** fused location (e.g. emulator default near **Sydney**). User sets Perth coords → app still reads stale Sydney-area fix → nearest Perth station is thousands of km away → **unsupported region** or timeout confusion.
 
 **Implement:**
 
-1. `findNearestStation` — `geoTimeoutMs = 15000` for **all** platforms (match web; align with location-wait brief).
-2. `locationErrorFrom()` — map timeout / *could not obtain location in time* to user copy mentioning emulator mock GPS + choose station below.
+1. `findNearestStation` — `geoTimeoutMs = 15000` for all platforms.
+2. When `forceFresh: true` (background locate / refine): `maximumAge: 0` and `enableHighAccuracy: true` on native.
+3. `locationErrorFrom()` — map timeout / *could not obtain location in time* to user copy mentioning emulator mock GPS + choose station below.
+4. On **unsupported region** (`> 50 km` from nearest Perth catalog station): `clearLastNearbyStationCache()` so next open doesn’t paint a Perth station from cache while GPS is still overseas.
 
-**Do not** change `enableHighAccuracy: false` on native (keep as today).
+**“Defaulted to Sydney” (Tim):** App has **no Sydney stations** — only Transperth catalog. Emulator default/mock is often **Sydney coords** before you set Perth. App picks mathematically nearest **Perth** station (thousands of km) or shows **Perth rail only** — not a Sydney stop name. Brief Tim: set mock GPS to Perth **and press Send**; or `adb emu geo fix 115.86 -31.95`.
 
-**Emulator QA note for Tim:** Extended controls → **Location** → set Perth coords → Send. Manual **Choose station** still valid fallback.
+**Emulator QA checklist:**
+
+1. Extended controls → Location → lat `-31.95`, lon `115.86` → **Send** (not just type coords).
+2. Or: `adb emu geo fix 115.86 -31.95` (lon lat order for adb).
+3. Uninstall app or **Clear all data** if testing cold start (drops stale cache + permission state).
+4. Optional: cold boot emulator after changing mock location.
 
 ### C. Version bump
 
@@ -247,11 +256,29 @@ npm run test:pre-upload
 
 No new `pre-upload-check` rules required unless you want a grep for `isNearbyWidgetLoaded` in synced `app.js` (optional).
 
-### v7 acceptance
+### E. Active hours coach covering fields (Tim v6 emulator)
+
+**Bug:** Previous z-index fix (card z-22 > highlight z-21) stopped fields painting over **Next**, but when `syncTemplateWizardCoachPosition` placed the card on top of `#detail-journey-window`, the white coach card **covered** Active from/until.
+
+**Implement:**
+
+1. Active hours + Reminder steps: dock coach card to **bottom** of dialog (`template-route-coach--dock-bottom`).
+2. Scroll highlight with `block: "start"` (not `center`).
+3. Other steps: if card still overlaps target after position math, fall back to bottom dock.
+4. QA: `qa/template-wizard-hours-zindex.mjs` — **no overlap** with Active from button.
+
+### F. Commute strip — chronometer only (no duplicate countdown)
+
+**Bug:** Title said `Leave in 8 min` while Android chronometer ticked `06:51 → 06:50` (MM:SS remaining) — two countdowns, confusing.
+
+**Fix:** `CommuteStripNotifier` — title **`Leave`** (+ live chronometer) or **`Leave now`** when past leave-by; remove `Leave in X min` from title.
+
 
 1. Emulator **without** mock GPS → error message + **no** onboarding coach.
-2. Emulator **with** mock GPS → board loads → coach ~6s later (first visit).
-3. Real device with location on → Near me works; no regression on permission prompt.
+2. Emulator **with** mock GPS (Perth, **Send** pressed) → board loads → coach ~6s later (first visit).
+3. Change mock from Sydney → Perth **without** reinstall → second Near me open picks Perth (no 60s stale Sydney fix).
+4. GPS overseas (>50 km from Perth rail) → **Perth rail only** + cache cleared; no stale Perth station on next cold start.
+5. Real device with location on → Near me works; no regression on permission prompt.
 
 ### Slack / one-liner (v7)
 

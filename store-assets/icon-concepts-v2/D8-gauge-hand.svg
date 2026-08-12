@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D8  Gauge: half-ring of track, rail hand marks the moment -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M100 344 A156 156 0 0 1 412 344" stroke="#0B6E6A" stroke-width="28" stroke-linecap="round" fill="none"/>
+  <path d="M156 344 A100 100 0 0 1 356 344" stroke="#0B6E6A" stroke-width="28" stroke-linecap="round" fill="none"/>
+  <g fill="#0B6E6A">
+    <rect x="90" y="332" width="86" height="22" rx="7"/>
+    <rect x="336" y="332" width="86" height="22" rx="7"/>
+    <rect x="245" y="164" width="22" height="86" rx="7"/>
+    <rect x="128" y="212" width="86" height="22" rx="7" transform="rotate(-45 171 223)"/>
+    <rect x="298" y="212" width="86" height="22" rx="7" transform="rotate(45 341 223)"/>
+  </g>
+  <g transform="rotate(38 256 344)">
+    <rect x="238" y="200" width="18" height="148" rx="8" fill="#0B6E6A"/>
+    <rect x="264" y="200" width="18" height="148" rx="8" fill="#0B6E6A"/>
+  </g>
+  <circle cx="256" cy="344" r="26" fill="#0B6E6A"/>
+</svg>

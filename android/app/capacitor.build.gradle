@@ -12,6 +12,7 @@ dependencies {
     implementation project(':capacitor-community-admob')
     implementation project(':capacitor-geolocation')
     implementation project(':capgo-native-purchases')
+    implementation project(':sentry-capacitor')
 
 }
 

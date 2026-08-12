@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D3  Departure arc: quarter-turn track sweeping up and away -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M96 372 A260 260 0 0 1 356 112" stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <path d="M96 292 A180 180 0 0 1 276 112" stroke="#0B6E6A" stroke-width="30" stroke-linecap="round" fill="none"/>
+  <g stroke="#0B6E6A" stroke-width="20" stroke-linecap="round">
+    <line x1="96" y1="272" x2="96" y2="392"/>
+    <line x1="157" y1="260" x2="203" y2="371"/>
+    <line x1="209" y1="225" x2="294" y2="310"/>
+    <line x1="244" y1="173" x2="355" y2="219"/>
+    <line x1="256" y1="112" x2="376" y2="112"/>
+  </g>
+</svg>

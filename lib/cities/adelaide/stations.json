@@ -1,0 +1,54 @@
+{
+  "stations": [
+    {
+      "name": "Adelaide",
+      "aliases": ["Adelaide Railway Station", "Adelaide Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Goodwood",
+      "aliases": ["Goodwood Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Salisbury",
+      "aliases": ["Salisbury Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Gawler Central",
+      "aliases": ["Gawler", "Gawler Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Noarlunga Centre",
+      "aliases": ["Noarlunga", "Noarlunga Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Belair",
+      "aliases": ["Belair Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Seaford",
+      "aliases": ["Seaford Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Flinders Street",
+      "aliases": ["Flinders St"],
+      "stopIds": []
+    },
+    {
+      "name": "Mawson Lakes",
+      "aliases": ["Mawson Lakes Station"],
+      "stopIds": []
+    },
+    {
+      "name": "Oaklands",
+      "aliases": ["Oaklands Station"],
+      "stopIds": []
+    }
+  ]
+}

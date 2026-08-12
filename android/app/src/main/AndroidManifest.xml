@@ -84,6 +84,10 @@
             android:exported="false" />
 
         <receiver
+            android:name=".PauseResumeReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".WidgetRefreshReceiver"
             android:exported="false" />
 

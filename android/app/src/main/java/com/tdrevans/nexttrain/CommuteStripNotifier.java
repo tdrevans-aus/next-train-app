@@ -23,14 +23,16 @@ public final class CommuteStripNotifier {
     String route,
     String trainTime,
     long leaveByMs,
+    long departureMs,
     boolean stale
   ) {
     createChannel(context);
 
     long now = System.currentTimeMillis();
     boolean leaveNow = leaveByMs <= now;
-    // Chronometer-only countdown — no duplicate "Leave in X min" title (ticks MM:SS on device).
+    // Before leave-by: chronometer → leave-by. After: chronometer → train departure.
     String title = leaveNow ? "Leave now" : "Leave";
+    long chronometerToMs = leaveNow ? departureMs : leaveByMs;
 
     String body = route + " · Train " + trainTime;
     if (stale) {
@@ -74,9 +76,9 @@ public final class CommuteStripNotifier {
       .setCategory(NotificationCompat.CATEGORY_STATUS)
       .addAction(0, "Dismiss", dismissPending);
 
-    if (!leaveNow) {
+    if (chronometerToMs > now) {
       builder
-        .setWhen(leaveByMs)
+        .setWhen(chronometerToMs)
         .setShowWhen(false)
         .setUsesChronometer(true);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

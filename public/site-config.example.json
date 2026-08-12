@@ -3,5 +3,10 @@
   "adsenseSlot": "XXXXXXXXXX",
   "admobAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY",
   "admobBannerId": "ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ",
-  "admobTestMode": true
+  "admobTestMode": true,
+  "adFreeProductId": "com.tdrevans.nexttrain.adfree",
+  "proTrialDays": 30,
+  "appVersion": "2.1.0",
+  "appVersionCode": 4,
+  "sentryDsn": ""
 }

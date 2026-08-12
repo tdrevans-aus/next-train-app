@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- E10  Platform: you, standing at the edge, line running out -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <path d="M140 392 L176 392 L234 180 L214 180 Z" fill="#0B6E6A"/>
+  <path d="M372 392 L336 392 L278 180 L298 180 Z" fill="#0B6E6A"/>
+  <g fill="#0B6E6A">
+    <rect x="142" y="341" width="228" height="22" rx="8"/>
+    <rect x="164" y="281" width="184" height="19" rx="7"/>
+    <rect x="181" y="232" width="150" height="16" rx="6"/>
+    <rect x="88" y="392" width="336" height="34" rx="14"/>
+  </g>
+</svg>

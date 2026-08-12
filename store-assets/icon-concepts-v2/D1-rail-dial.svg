@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- D1  Rail dial: ring track, sleepers double as clock ticks -->
+  <rect width="512" height="512" rx="112" fill="#EEF3F2"/>
+  <circle cx="256" cy="256" r="150" stroke="#0B6E6A" stroke-width="26" fill="none"/>
+  <circle cx="256" cy="256" r="104" stroke="#0B6E6A" stroke-width="26" fill="none"/>
+  <g fill="#0B6E6A">
+    <rect x="245" y="92" width="22" height="76" rx="8"/>
+    <rect x="245" y="92" width="22" height="76" rx="8" transform="rotate(45 256 256)"/>
+    <rect x="245" y="92" width="22" height="76" rx="8" transform="rotate(90 256 256)"/>
+    <rect x="245" y="92" width="22" height="76" rx="8" transform="rotate(135 256 256)"/>
+    <rect x="245" y="92" width="22" height="76" rx="8" transform="rotate(180 256 256)"/>
+    <rect x="245" y="92" width="22" height="76" rx="8" transform="rotate(225 256 256)"/>
+    <rect x="245" y="92" width="22" height="76" rx="8" transform="rotate(270 256 256)"/>
+    <rect x="245" y="92" width="22" height="76" rx="8" transform="rotate(315 256 256)"/>
+  </g>
+</svg>
