@@ -5249,20 +5249,39 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
     }
 
     const directions = dedupeDirections(directionLists.flat());
-    replaceSelectOptions(
-      selectEl,
-      directions.map((dir) => ({ value: dir, label: dir }))
-    );
-
     const normalizedPreferred = normalizeDirection(preferredDirection);
-    if (normalizedPreferred && directions.includes(normalizedPreferred)) {
-      selectEl.value = normalizedPreferred;
+    const options = directions.map((dir) => ({ value: dir, label: dir }));
+
+    if (normalizedPreferred && !directions.includes(normalizedPreferred)) {
+      options.unshift({ value: normalizedPreferred, label: normalizedPreferred });
+    }
+
+    if (options.length === 0) {
+      replaceSelectOptions(selectEl, [
+        { value: "", label: "No live directions right now" },
+      ]);
+    } else {
+      replaceSelectOptions(selectEl, options);
+      if (normalizedPreferred && options.some((opt) => opt.value === normalizedPreferred)) {
+        selectEl.value = normalizedPreferred;
+      }
     }
   } catch (error) {
     if (requestId !== directionsRequestId) {
       return;
     }
-    replaceSelectOptions(selectEl, [{ value: "", label: error.message }]);
+    const normalizedPreferred = normalizeDirection(preferredDirection);
+    if (normalizedPreferred) {
+      replaceSelectOptions(selectEl, [
+        { value: normalizedPreferred, label: normalizedPreferred },
+      ]);
+      selectEl.value = normalizedPreferred;
+    } else {
+      replaceSelectOptions(selectEl, [
+        { value: "", label: "Couldn’t load directions — try again" },
+      ]);
+    }
+    console.warn("Could not load directions", error);
   }
 
   if (requestId === directionsRequestId) {
