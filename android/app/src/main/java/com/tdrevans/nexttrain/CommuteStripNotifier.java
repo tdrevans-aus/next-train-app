@@ -31,7 +31,7 @@ public final class CommuteStripNotifier {
     long now = System.currentTimeMillis();
     boolean leaveNow = leaveByMs <= now;
     // Before leave-by: chronometer → leave-by. After: chronometer → train departure.
-    String title = leaveNow ? "Leave now" : "Leave";
+    String title = leaveNow ? "Target train" : "Leave";
     long chronometerToMs = leaveNow ? departureMs : leaveByMs;
 
     String body = route + " · Train " + trainTime;
