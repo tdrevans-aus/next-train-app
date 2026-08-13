@@ -35,6 +35,27 @@ function appPid() {
   return adbOk("shell", "pidof", PKG).split(/\s+/)[0];
 }
 
+async function ensureAppRunning() {
+  let pid = appPid();
+  if (pid) {
+    return pid;
+  }
+
+  adbOk("shell", "am", "start", "-n", `${PKG}/.MainActivity`);
+  for (let attempt = 0; attempt < 24; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    pid = appPid();
+    if (pid) {
+      return pid;
+    }
+  }
+
+  throw new Error(
+    "App not running — install a debug build on the emulator (release builds may block CDP). " +
+      `Try: adb -s ${ADB_SERIAL} shell am start -n ${PKG}/.MainActivity`
+  );
+}
+
 function forwardCdp(pid) {
   adb("forward", "--remove", `tcp:${CDP_PORT}`);
   adbOk("forward", `tcp:${CDP_PORT}`, `localabstract:webview_devtools_remote_${pid}`);
@@ -112,10 +133,7 @@ async function reconnectAfterPermissionChange() {
 }
 
 async function run() {
-  let pid = appPid();
-  if (!pid) {
-    throw new Error("App not running — start Next Train on the emulator first");
-  }
+  const pid = await ensureAppRunning();
 
   console.log("\nNative reminders permission CDP probe\n");
   console.log(`adb serial=${ADB_SERIAL}`);

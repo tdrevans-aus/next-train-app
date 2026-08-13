@@ -3405,7 +3405,8 @@ body.app-dialog-open .ad-remove-link-wrap {
 }
 
 /* Active hours / Reminder: dock coach at bottom so card never covers highlighted fields */
-.journeys-dialog .template-route-coach.template-route-coach--dock-bottom .onboarding-coach-card {
+.journeys-dialog .template-route-coach.template-route-coach--dock-bottom .onboarding-coach-card,
+.journeys-dialog .template-route-coach.template-route-coach--step-3 .onboarding-coach-card {
   top: auto;
   bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
 }

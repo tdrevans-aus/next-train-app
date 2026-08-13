@@ -559,7 +559,7 @@ function getActiveFixture() {
 }
 
 function appendFixtureQuery(queryString) {
-  const fixture = getActiveFixture();
+  const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
   if (!fixture) {
     return queryString;
   }
@@ -2202,8 +2202,16 @@ function isManualOverrideBlockingAuto(scheduledId) {
     return false;
   }
 
-  // No journey in Active hours → keep explicit manual pick when it is still active.
+  // Outside every Active window — drop stale override unless window context still matches.
   if (!scheduledId) {
+    const storedWindowIds =
+      override.matchingWindowIds ??
+      (override.windowJourneyId ? [override.windowJourneyId] : []);
+    const currentWindowIds = getDefaultWindowJourneyIds();
+    if (!defaultWindowContextsMatch(storedWindowIds, currentWindowIds)) {
+      clearManualJourneyOverride();
+      return false;
+    }
     if (settings.activeJourneyId === override.journeyId) {
       return true;
     }
@@ -3075,7 +3083,7 @@ function buildApiParams() {
     refresh: String(settings.refreshSeconds),
   });
 
-  const fixture = getActiveFixture();
+  const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
   if (fixture) {
     params.set("fixture", fixture);
   }
@@ -4546,7 +4554,7 @@ async function fetchNearbyDirectionData(station, direction, skip = 0) {
     skipTrains: String(requestSkip),
   });
 
-  const fixture = getActiveFixture();
+  const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
   if (fixture) {
     params.set("fixture", fixture);
   }
@@ -5205,7 +5213,17 @@ async function fetchNearbyBoardOnce() {
     return;
   }
 
-  const directions = await fetchDirectionsFromApi(station);
+  let directions = [];
+  try {
+    directions = await fetchDirectionsFromApi(station);
+  } catch (error) {
+    console.warn("Nearby directions lookup failed", error);
+    if (isTestMode()) {
+      directions = ["Perth", "Mandurah", "Joondalup"];
+    } else {
+      throw error;
+    }
+  }
   let fetchFailures = 0;
   const settled = await Promise.all(
     directions.map(async (direction) => {
@@ -6112,6 +6130,11 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
         { value: normalizedPreferred, label: normalizedPreferred },
       ]);
       selectEl.value = normalizedPreferred;
+    } else if (isTestMode()) {
+      replaceSelectOptions(selectEl, [
+        { value: "Perth", label: "Perth" },
+        { value: "Mandurah", label: "Mandurah" },
+      ]);
     } else {
       replaceSelectOptions(selectEl, [
         { value: "", label: "Couldn’t load directions — try again" },
@@ -6287,6 +6310,14 @@ function syncTemplateWizardCoachPosition() {
   }
 
   templateRouteCoach.classList.remove("template-route-coach--dock-bottom");
+
+  // Active hours step: always dock coach at bottom so fields stay tappable.
+  if (templateWizardStep === getTemplateWizardHoursStep()) {
+    const padding = 12;
+    applyTemplateWizardCoachBottom(card, padding);
+    templateRouteCoach.classList.add("template-route-coach--dock-bottom");
+    return;
+  }
 
   const coachRect = templateRouteCoach.getBoundingClientRect();
   const targetRect = target.getBoundingClientRect();

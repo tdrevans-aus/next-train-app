@@ -8295,6 +8295,13 @@ Event: ${getEventDescription(event)}`
           delete breadcrumb.data.admobBannerId;
         }
         return breadcrumb;
+      },
+      beforeSend(event) {
+        const message = event?.exception?.values?.[0]?.value || event?.exception?.values?.[0]?.type || event?.message || "";
+        if (/test crash \(debug\)/i.test(String(message))) {
+          return null;
+        }
+        return event;
       }
     };
     try {

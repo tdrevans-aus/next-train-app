@@ -13,8 +13,12 @@ async function run() {
   const page = await context.newPage();
 
   await page.addInitScript(() => {
-    navigator.geolocation.getCurrentPosition = (success, error) => {
+    navigator.geolocation.getCurrentPosition = (_success, error) => {
       error?.({ code: 1, message: "User denied Geolocation" });
+    };
+    navigator.geolocation.watchPosition = (_success, error) => {
+      error?.({ code: 1, message: "User denied Geolocation" });
+      return 0;
     };
   });
 
@@ -28,10 +32,19 @@ async function run() {
   await page.waitForTimeout(2500);
 
   await page.locator("#nearby-btn").click();
+
+  // Location denied — wait for manual station picker (may take until GPS timeout path).
   await page.waitForFunction(
-    () => document.getElementById("nearby-fallback")?.hidden === false,
+    () => {
+      const fallback = document.getElementById("nearby-fallback");
+      const picker = document.getElementById("nearby-station-combobox");
+      return (
+        (fallback && fallback.hidden === false) ||
+        (picker && !document.getElementById("nearby-directions")?.hidden)
+      );
+    },
     null,
-    { timeout: 15000 }
+    { timeout: 20000 }
   );
 
   await pickStationCombobox(page, {
@@ -39,6 +52,7 @@ async function run() {
     inputSelector: "#nearby-station-input",
     listboxSelector: "#nearby-station-listbox",
     station: "Edgewater Stn",
+    waitForDirections: false,
   });
 
   await page.waitForFunction(

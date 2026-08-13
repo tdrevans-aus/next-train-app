@@ -35,14 +35,23 @@ export async function waitForDirectionSelectReady(page, { selectId = "detail-dir
   await page.waitForFunction(
     (id) => {
       const select = document.getElementById(id);
-      return select && !select.disabled && select.options.length > 1;
+      if (!select || select.disabled) {
+        return false;
+      }
+      const realOptions = [...select.options].filter(
+        (option) => option.value && !option.disabled
+      );
+      return realOptions.length >= 1;
     },
     selectId,
     { timeout }
   );
 }
 
-export async function pickStationCombobox(page, { rootSelector, inputSelector, listboxSelector, station }) {
+export async function pickStationCombobox(
+  page,
+  { rootSelector, inputSelector, listboxSelector, station, waitForDirections = null }
+) {
   const label = stationDisplayLabel(station);
   const query = label.slice(0, Math.min(4, label.length));
 
@@ -62,7 +71,14 @@ export async function pickStationCombobox(page, { rootSelector, inputSelector, l
     null,
     { timeout: 5000 }
   ).catch(() => {});
-  await waitForDirectionSelectReady(page);
+
+  const shouldWaitForDirections =
+    waitForDirections ??
+    Boolean(await page.locator("#detail-direction-select").isVisible().catch(() => false));
+
+  if (shouldWaitForDirections) {
+    await waitForDirectionSelectReady(page);
+  }
   await page.waitForTimeout(200);
 }
 

@@ -14,7 +14,7 @@ Proportionate for an indie Capacitor app + Vercel `/api` → Transperth. Not ent
 | # | Item | Who | Status | Notes |
 | --- | --- | --- | --- | --- |
 | 1 | **Uptime** — health + ready + synthetic next-train | Tim | **In progress** — health live; add ready + next-train monitors | See § Uptime |
-| 2 | **Crash reporting** on release builds | Tim + agent | **Done** — DSN live, Issues receiving events, Cursor Sentry→fix automation | High-priority email optional; GitHub-create alert off |
+| 2 | **Crash reporting** on release builds | Jim (SDK) + Tim (Sentry UI) | **App done** — DSN in bundle, events in Issues. **Todo:** GitHub integration + “new issue → GitHub issue” alert (`docs/sentry-integration-now.md`) |
 | 3 | **Second Play Console admin** + review email alerts | Tim | **Skipped** (no human buddy yet) | Rely on Uptime + own phone |
 | 4 | **Gmail cover** (vacation + forward + templates) | Tim | **Skipped** (Tim 11 Aug) | Templates still in § Support cover if needed later |
 | 5 | **Pre-freeze** 24–26 Sep | Tim | Todo | No risky deploys day-of leave |
@@ -163,5 +163,5 @@ See `docs/support-reply-templates.md`.
 
 | Date | Note |
 | --- | --- |
-| 2026-08-13 | `/api/ready` + UptimeRobot 3-monitor playbook (health / ready / synthetic next-train) |
+| 2026-08-13 | Sentry app integration verified; `docs/sentry-integration-now.md` for GitHub alert + Cursor automation |
 | 2026-08-11 | First ops doc; `/api/health` added; support templates + Jim crash/analytics brief |

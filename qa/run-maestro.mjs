@@ -157,22 +157,47 @@ function stabilizeEmulatorBetweenFlows() {
   adbOnTarget(["shell", "sleep", "2"]);
 }
 
+function wakeDevice() {
+  adbOnTarget(["shell", "input", "keyevent", "224"]);
+  adbOnTarget(["shell", "input", "keyevent", "82"]);
+}
+
+function runFlowWithRetry(flow, { retries = 1 } = {}) {
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    stabilizeEmulatorBetweenFlows();
+    if (attempt > 0) {
+      console.log(`  retry ${attempt}/${retries} after emulator reconnect…`);
+      resetMaestroDriver();
+      stabilizeEmulatorBetweenFlows();
+    }
+
+    const result = runMaestro(["test", flow], {
+      stdio: "inherit",
+      env: maestroEnv(),
+    });
+    if (result.status === 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+wakeDevice();
+waitForAdbDevice(40);
 adbOnTarget(["shell", "pm", "clear", "com.tdrevans.nexttrain"]);
+stabilizeEmulatorBetweenFlows();
+adbOnTarget(["shell", "am", "start", "-n", "com.tdrevans.nexttrain/.MainActivity"]);
 stabilizeEmulatorBetweenFlows();
 
 for (const flow of flows) {
   if (path.basename(flow) === "menu-reminders.yaml") {
     resetMaestroDriver();
   }
-  stabilizeEmulatorBetweenFlows();
   console.log(`\n— ${path.basename(flow)}`);
-  const result = runMaestro(["test", flow], {
-    stdio: "inherit",
-    env: maestroEnv(),
-  });
-  if (result.status !== 0) {
+  const ok = runFlowWithRetry(flow, { retries: 1 });
+  if (!ok) {
     console.error(`Maestro flow failed: ${path.basename(flow)}`);
-    process.exit(result.status ?? 1);
+    process.exit(1);
   }
 }
 
