@@ -16,14 +16,8 @@ async function run() {
   const page = await context.newPage();
 
   const pageErrors = [];
-  const rejectionMessages = [];
   page.on("pageerror", (error) => {
     pageErrors.push(String(error?.message ?? error));
-  });
-  page.on("console", (msg) => {
-    if (msg.type() === "error") {
-      rejectionMessages.push(msg.text());
-    }
   });
 
   await page.route("**/api/**", async (route) => {
@@ -32,6 +26,13 @@ async function run() {
       contentType: "application/json",
       headers: { "Retry-After": "60" },
       body: JSON.stringify({ error: "Too many requests" }),
+    });
+  });
+
+  await page.addInitScript(() => {
+    window.__unhandled = [];
+    window.addEventListener("unhandledrejection", (event) => {
+      window.__unhandled.push(String(event.reason?.message ?? event.reason));
     });
   });
 
@@ -84,24 +85,29 @@ async function run() {
     await page.waitForTimeout(800);
   }
 
+  const unhandled = await page.evaluate(() => window.__unhandled || []);
+
+  // pageerror / unhandledrejection are what Sentry GlobalHandlers capture.
+  // Browser network console lines for 429 are expected under this mock.
   const tooManyPage = pageErrors.filter((msg) => /too many requests/i.test(msg));
-  const tooManyConsole = rejectionMessages.filter((msg) => /too many requests/i.test(msg));
+  const tooManyUnhandled = unhandled.filter((msg) => /too many requests/i.test(msg));
 
   await browser.close();
   if (spawned) {
     spawned.kill("SIGTERM");
   }
 
-  if (tooManyPage.length || tooManyConsole.length) {
+  if (tooManyPage.length || tooManyUnhandled.length) {
     console.error("FAIL: Too many requests escaped as unhandled error", {
       pageErrors,
-      rejectionMessages,
+      unhandled,
     });
     process.exit(1);
   }
 
   console.log("PASS: rate-limit 429 did not surface unhandled Too many requests", {
     pageErrors,
+    unhandled,
   });
 }
 
