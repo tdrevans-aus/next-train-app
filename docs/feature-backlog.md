@@ -52,7 +52,20 @@
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
 | **FB-12** | **Target train gap warning / smarter pick** | **v8 shipped (option A):** keep at-or-after; warn when gap ≥ 25 min (`preferredHintForJourney`). Options B/C (nearest / confirm) still open if Tim wants. | Done — **v8** (warn); B/C backlog |
-| **FB-13** | **Menu Try Pro CTA** | **v8 shipped:** re-enabled Try Pro free; close Menu → `setTimeout(0)` → widget help. | Done — **v8** |
+| **FB-13** | **Menu Try Pro CTA** | **Parked for 2.1.1 ship:** `PRO_MONETIZATION_SHIPPED = false` in `public/pro-entitlement.js` — hide Try Pro / trial / paywall / founding sheets; widget stays free; ads unless ad-free purchase. Flip `true` next release. | Parked — **next after 2.1.1** |
+| **FB-14** | **Near me: Leave By on pinned train** | Pin already holds a Near me departure (+1 min after left). Next: show leave card while pinned, using a **Near me walk buffer** (default 10 min, editable via existing leave-card slider; remember last Near me value). Not journey time-to-station; don’t invent walk time from GPS km. | Backlog — **post 2.1.1** |
+| **FB-15** | **Leave now → Live Countdown morph-in-place** | Today: Live Countdown on ⇒ skip Leave now ping (strip owns leave-by). Later: one notification that heads-up as Leave now then *updates in place* into the ongoing countdown (same ID). | Backlog — **post 2.1.1** |
+| **FB-16** | **Lock-screen / ongoing “on the way” glance** | Inspired by Google Maps lock-screen ETA while navigating. Could surface leave-by / time-to-train on lock screen (and/or richer ongoing notification). Open question (don’t design yet): do we need an explicit **Start** (I’m leaving now) to enter that mode? | Backlog — **post 2.1.1** |
+| **FB-17** | **Target flag icon + on/off state** | Replace target hint glyph with a **flag** (filled = target set/active, outline = off/inactive) in app hero and widget — same chrome active-state pattern as Near me / Journeys. Brief: `docs/jim-brief-target-flag-icon.md`, design: `public/design/target-icon-pick.html`. Parked for current release; keep text-only `preferred-hint` for now. | Backlog — **post 2.1.1** |
+| **FB-18** | **Bury Menu → Send feedback before production** | Tester-prominent **Send feedback** sits under Menu (above Help) for closed test. **Before public / Play production:** move to About footer or legal row, or behind a quiet “Contact” path — not a top Menu action. Keep Formspree/`FEEDBACK_WEBHOOK_URL` working. | Backlog — **before public** |
+
+---
+
+## Ops / monitoring
+
+| ID | Idea | Notes | Status |
+|----|------|-------|--------|
+| **FB-19** | **UptimeRobot: add ready + synthetic next-train monitors** | `/api/ready` deployed (Aug 2026). Monitor 1 (`/api/health`) already live. **Tim:** add monitors 2 + 3 in UptimeRobot UI (~10 min) — see `docs/go-live-ops.md` § Uptime (keywords `"ready":true` and `"displayTime"`; synthetic alert after 2 failures; emails tdrevans + EvansAppStudio). | Backlog — **Tim after tonight’s release** |
 
 ---
 
@@ -67,7 +80,13 @@
 | R8 / mapping file on Play upload | `docs/feature-backlog.md` **FB-09** · `docs/aab-signing-closed-testing.md` |
 | Native debug symbols on Play upload | `docs/feature-backlog.md` **FB-10** · `docs/jim-brief-play-native-symbols-v3.md` |
 | Target train large gap (FB-12) | `docs/feature-backlog.md` **FB-12** (v8) |
-| Menu Try Pro CTA (FB-13) | `docs/feature-backlog.md` **FB-13** (v8) |
+| Menu Try Pro CTA (FB-13) | Parked for **2.1.1** — flip `PRO_MONETIZATION_SHIPPED` next release |
+| Near me Leave By on pin (FB-14) | `docs/feature-backlog.md` **FB-14** |
+| Leave now → strip morph (FB-15) | `docs/feature-backlog.md` **FB-15** |
+| Lock-screen on-the-way glance (FB-16) | `docs/feature-backlog.md` **FB-16** |
+| Target flag icon + on/off state (FB-17) | `docs/feature-backlog.md` **FB-17** · `docs/jim-brief-target-flag-icon.md` |
+| Bury Menu Send feedback (FB-18) | `docs/feature-backlog.md` **FB-18** — before public production |
+| UptimeRobot ready + synthetic monitors (FB-19) | `docs/feature-backlog.md` **FB-19** · `docs/go-live-ops.md` § Uptime |
 | QA infrastructure (CI, run-all, helpers) | `docs/qa-infrastructure-plan.md` |
 
 ---

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design — Tester feedback form</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --mist: #eef3f2;
+        --mist-mid: #e2ece9;
+        --accent: #0b6e6a;
+        --accent-strong: #085a57;
+        --accent-wash: rgba(11, 110, 106, 0.12);
+        --ink: #132523;
+        --muted: #5c726d;
+        --surface: #fff;
+        --line: rgba(19, 37, 35, 0.1);
+        --line-strong: rgba(19, 37, 35, 0.18);
+        --font-display: "Syne", "Segoe UI", sans-serif;
+        --font: "Figtree", "Segoe UI", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font);
+        color: var(--ink);
+        background: #dfe8e5;
+        min-height: 100vh;
+        padding: 2rem 1.25rem 4rem;
+      }
+
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-family: var(--font-display);
+        font-size: 1.75rem;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.35rem;
+      }
+
+      .lede {
+        color: var(--muted);
+        max-width: 40rem;
+        line-height: 1.5;
+        margin: 0 0 1.5rem;
+        font-size: 0.95rem;
+      }
+
+      .rec {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 1rem 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 40rem;
+      }
+
+      .rec h2 {
+        font-family: var(--font-display);
+        font-size: 1rem;
+        margin: 0 0 0.45rem;
+        letter-spacing: -0.02em;
+      }
+
+      .rec p,
+      .rec li {
+        margin: 0;
+        font-size: 0.88rem;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      .rec ul {
+        margin: 0.55rem 0 0;
+        padding-left: 1.1rem;
+      }
+
+      .rec strong {
+        color: var(--ink);
+      }
+
+      .phones {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        align-items: start;
+      }
+
+      .phone-block h3 {
+        margin: 0 0 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .phone {
+        width: min(100%, 320px);
+        background: linear-gradient(180deg, #f5f8f7 0%, var(--mist) 50%, var(--mist-mid) 100%);
+        border: 1px solid var(--line-strong);
+        border-radius: 28px;
+        padding: 1.1rem 1rem 1.25rem;
+        box-shadow: 0 12px 32px rgba(19, 37, 35, 0.08);
+      }
+
+      .brand {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 1.05rem;
+        letter-spacing: -0.03em;
+        margin: 0 0 1rem;
+      }
+
+      .page h2 {
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.85rem;
+      }
+
+      .page-section {
+        margin-bottom: 1.1rem;
+      }
+
+      .page-section p {
+        margin: 0 0 0.55rem;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        color: var(--ink);
+      }
+
+      .page-section h3 {
+        font-size: 0.95rem;
+        margin: 0 0 0.35rem;
+        font-weight: 700;
+      }
+
+      a.inline {
+        color: var(--accent-strong);
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      .feedback-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+        padding: 0.85rem 0.95rem;
+        border: 1px solid rgba(11, 110, 106, 0.28);
+        border-radius: 12px;
+        background: var(--accent-wash);
+        color: var(--accent-strong);
+        font-weight: 700;
+        font-size: 0.92rem;
+        text-decoration: none;
+      }
+
+      .feedback-link span.meta {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      .done {
+        display: block;
+        margin-top: 1.25rem;
+        text-align: center;
+        padding: 0.85rem 1rem;
+        border-radius: 999px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      /* Form screen */
+      .form-top {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .back {
+        border: 0;
+        background: transparent;
+        color: var(--accent-strong);
+        font: inherit;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 0;
+        cursor: default;
+      }
+
+      .form-title {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.35rem;
+      }
+
+      .form-lede {
+        margin: 0 0 1.1rem;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+
+      label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin: 0 0 0.4rem;
+      }
+
+      .field {
+        margin-bottom: 0.95rem;
+      }
+
+      textarea,
+      input[type="email"] {
+        width: 100%;
+        border: 1px solid var(--line-strong);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--ink);
+        font: inherit;
+        font-size: 0.95rem;
+        padding: 0.85rem 0.9rem;
+      }
+
+      textarea {
+        min-height: 9.5rem;
+        resize: vertical;
+        line-height: 1.4;
+      }
+
+      input[type="email"]::placeholder,
+      textarea::placeholder {
+        color: #8a9e99;
+      }
+
+      .hint {
+        margin: 0.35rem 0 0;
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .auto {
+        margin: 0.2rem 0 1.1rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid var(--line);
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .auto strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .send {
+        display: block;
+        width: 100%;
+        border: 0;
+        border-radius: 999px;
+        background: var(--accent);
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.9rem 1rem;
+        cursor: default;
+      }
+
+      .thanks {
+        margin-top: 2.5rem;
+        text-align: center;
+      }
+
+      .thanks h2 {
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        margin: 0 0 0.4rem;
+        letter-spacing: -0.03em;
+      }
+
+      .thanks p {
+        margin: 0 0 1.25rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.45;
+      }
+
+      .note {
+        margin-top: 2rem;
+        max-width: 40rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Tester feedback — design</h1>
+      <p class="lede">
+        About → one link → one short form. No screenshots, no categories, no
+        accounts. Built for friends / closed testers, not App Store review spam.
+      </p>
+
+      <div class="rec">
+        <h2>Delivery recommendation</h2>
+        <p>
+          <strong>Use a hosted form endpoint that emails you</strong> (Formspree /
+          Getform / Basin, or a tiny Vercel route → email). Not a database, not
+          Sentry User Feedback, not raw <code>mailto:</code>.
+        </p>
+        <ul>
+          <li>
+            <strong>mailto:</strong> opens Gmail/Outlook, loses context, high
+            abandon — fine as a fallback link only.
+          </li>
+          <li>
+            <strong>Google Form:</strong> fastest to ship for testing, but leaves
+            the app and looks off-brand.
+          </li>
+          <li>
+            <strong>Own DB / Notion / Sheet:</strong> overkill until volume
+            hurts; email inbox is enough for &lt;50 testers.
+          </li>
+          <li>
+            <strong>Auto-attach:</strong> app version + platform (Android/web).
+            No location, no journey names unless they type them.
+          </li>
+        </ul>
+      </div>
+
+      <div class="phones">
+        <div class="phone-block">
+          <h3>1 · About entry</h3>
+          <div class="phone page">
+            <p class="brand">Next Train</p>
+            <h2>About Next Train</h2>
+            <div class="page-section">
+              <p>
+                Next Train is the leave-by companion for Perth rail…
+              </p>
+            </div>
+            <div class="page-section">
+              <h3>Contact</h3>
+              <p>
+                Questions or support:
+                <a class="inline" href="#">EvansAppStudio@gmail.com</a>
+              </p>
+              <a class="feedback-link" href="#form">
+                Send tester feedback
+                <span class="meta">beta</span>
+              </a>
+            </div>
+            <a class="done" href="#">Done</a>
+          </div>
+        </div>
+
+        <div class="phone-block" id="form">
+          <h3>2 · Form (keep this thin)</h3>
+          <div class="phone">
+            <div class="form-top">
+              <button type="button" class="back">← About</button>
+            </div>
+            <h2 class="form-title">Send feedback</h2>
+            <p class="form-lede">
+              What’s broken, confusing, or missing? A couple of sentences is
+              enough.
+            </p>
+
+            <div class="field">
+              <label for="note">Your note</label>
+              <textarea
+                id="note"
+                placeholder="e.g. Near Me stuck on Loading… after I denied location"
+              ></textarea>
+            </div>
+
+            <div class="field">
+              <label for="email">Email (optional)</label>
+              <input id="email" type="email" placeholder="If you want a reply" />
+              <p class="hint">Leave blank for anonymous notes.</p>
+            </div>
+
+            <p class="auto">
+              We’ll include <strong>version 2.1.1 (debug)</strong> and
+              <strong>Android</strong> automatically.
+            </p>
+
+            <button type="button" class="send">Send</button>
+          </div>
+        </div>
+
+        <div class="phone-block">
+          <h3>3 · Done</h3>
+          <div class="phone">
+            <div class="thanks">
+              <h2>Thanks</h2>
+              <p>Got it — that helps ship night.</p>
+              <a class="done" href="#">Back to About</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="note">
+        Fields deliberately omitted: severity, screenshots, category chips,
+        name, phone model picker. Testers can paste a model in the note if it
+        matters. If you want one more control later, add a single optional
+        “Can we contact you?” checkbox instead of growing the form.
+      </p>
+    </div>
+  </body>
+</html>

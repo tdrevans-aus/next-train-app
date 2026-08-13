@@ -17,6 +17,7 @@ function hideAdSlotCompletely(container) {
 
   container.hidden = true;
   container.innerHTML = "";
+  syncAdBannerScrollPadding();
   window.NextTrainAdFree?.syncPurchaseLinkVisibility?.();
 }
 
@@ -77,7 +78,7 @@ async function ensureNativeAdsBridge() {
     return;
   }
 
-  if (window.NextTrainAds?.showNativeBanner) {
+  if (window.NextTrainAdsNative?.showNativeBanner) {
     return;
   }
 
@@ -86,7 +87,7 @@ async function ensureNativeAdsBridge() {
     await waitForCapacitor();
   }
 
-  if (window.NextTrainAds?.showNativeBanner) {
+  if (window.NextTrainAdsNative?.showNativeBanner) {
     return;
   }
 
@@ -94,31 +95,182 @@ async function ensureNativeAdsBridge() {
     return;
   }
 
-  const reload = window.NextTrainAds?.reload;
   try {
     await loadScriptOnce("ads-bundle.js");
   } catch (error) {
     console.warn("Could not load AdMob native bridge", error);
+  }
+}
+
+let adsInitInFlight = null;
+let cachedAdConfig = null;
+let nativeBannerPrepared = false;
+let nativeBannerShown = false;
+let overlaySuppressed = false;
+let overlaySuppressionSyncInFlight = null;
+let bannerOpChain = Promise.resolve();
+
+function queueBannerOp(label, fn) {
+  bannerOpChain = bannerOpChain
+    .then(() => fn())
+    .catch((error) => {
+      console.warn(`Native banner op failed (${label})`, error);
+    });
+  return bannerOpChain;
+}
+
+function syncAdBannerScrollPadding() {
+  const entitled = window.NextTrainAdFree?.isEntitled?.();
+  const suppressed = document.body.classList.contains("app-dialog-open");
+  const nativeActive =
+    isNativeApp() && nativeBannerShown && !suppressed && !entitled;
+  const hasClass = document.body.classList.contains("native-ad-banner");
+
+  if (nativeActive === hasClass) {
     return;
   }
 
-  if (reload) {
-    window.NextTrainAds = {
-      ...window.NextTrainAds,
-      reload,
-    };
+  if (nativeActive) {
+    document.body.classList.add("native-ad-banner");
+  } else {
+    document.body.classList.remove("native-ad-banner");
   }
+}
+
+async function hideNativeBannerSafe(options = {}) {
+  const force = Boolean(options.force);
+  await ensureNativeAdsBridge();
+  const native = window.NextTrainAdsNative;
+  if (
+    !native?.hideNativeBanner ||
+    (!force && (!nativeBannerPrepared || !nativeBannerShown))
+  ) {
+    syncAdBannerScrollPadding();
+    return bannerOpChain;
+  }
+
+  return queueBannerOp("hide", async () => {
+    if (!force && !nativeBannerShown) {
+      return;
+    }
+
+    try {
+      // force → removeBanner (hideBanner still jumps over the keyboard on Android).
+      await native.hideNativeBanner({ force });
+      nativeBannerShown = false;
+      if (force) {
+        nativeBannerPrepared = false;
+      }
+    } catch (error) {
+      console.warn("Could not hide native banner", error);
+    }
+
+    syncAdBannerScrollPadding();
+  });
+}
+
+function isAdOverlaySuppressed() {
+  return document.body.classList.contains("app-dialog-open");
+}
+
+async function restoreNativeBannerSafe() {
+  if (nativeBannerShown) {
+    syncAdBannerScrollPadding();
+    return bannerOpChain;
+  }
+
+  if (isAdOverlaySuppressed()) {
+    syncAdBannerScrollPadding();
+    return bannerOpChain;
+  }
+
+  if (!cachedAdConfig || !isAdMobConfigured(cachedAdConfig)) {
+    return bannerOpChain;
+  }
+
+  await ensureNativeAdsBridge();
+  const native = window.NextTrainAdsNative;
+  if (!native?.showNativeBanner) {
+    throw new Error("AdMob bundle not loaded");
+  }
+
+  return queueBannerOp("restore", async () => {
+    if (nativeBannerShown || isAdOverlaySuppressed()) {
+      return;
+    }
+
+    try {
+      if (nativeBannerPrepared && native.resumeNativeBanner) {
+        await native.resumeNativeBanner();
+      } else {
+        await native.showNativeBanner(cachedAdConfig);
+        nativeBannerPrepared = true;
+      }
+
+      if (isAdOverlaySuppressed()) {
+        try {
+          await native.hideNativeBanner?.({ force: true });
+        } catch {
+          // Dialog won the race — leave banner off.
+        }
+        nativeBannerShown = false;
+        nativeBannerPrepared = false;
+        syncAdBannerScrollPadding();
+        return;
+      }
+
+      nativeBannerShown = true;
+      syncAdRemoveLink();
+      syncAdBannerScrollPadding();
+    } catch (error) {
+      console.warn("Could not restore native banner", error);
+      throw error;
+    }
+  });
 }
 
 async function showNativeBanner(config) {
   await ensureNativeAdsBridge();
 
-  if (!window.NextTrainAds?.showNativeBanner) {
+  const native = window.NextTrainAdsNative;
+  if (!native?.showNativeBanner) {
     throw new Error("AdMob bundle not loaded");
   }
 
-  await window.NextTrainAds.showNativeBanner(config);
-  syncAdRemoveLink();
+  if (nativeBannerShown) {
+    syncAdBannerScrollPadding();
+    return bannerOpChain;
+  }
+
+  if (isAdOverlaySuppressed()) {
+    syncAdBannerScrollPadding();
+    return bannerOpChain;
+  }
+
+  return queueBannerOp("show", async () => {
+    if (nativeBannerShown || isAdOverlaySuppressed()) {
+      return;
+    }
+
+    await native.showNativeBanner(config);
+
+    if (isAdOverlaySuppressed()) {
+      try {
+        await native.hideNativeBanner?.({ force: true });
+      } catch {
+        // Dialog won the race — leave banner off.
+      }
+      nativeBannerShown = false;
+      nativeBannerPrepared = false;
+      syncAdBannerScrollPadding();
+      return;
+    }
+
+    nativeBannerPrepared = true;
+    nativeBannerShown = true;
+    syncAdBannerScrollPadding();
+    syncAdRemoveLink();
+  });
 }
 
 async function initWebAds(container, config) {
@@ -140,8 +292,8 @@ async function initNativeAds(container, config) {
   container.hidden = true;
 
   let effectiveTestMode = Boolean(config.admobTestMode);
-  if (window.NextTrainAds?.resolveEffectiveTestMode) {
-    effectiveTestMode = await window.NextTrainAds.resolveEffectiveTestMode(config);
+  if (window.NextTrainAdsNative?.resolveEffectiveTestMode) {
+    effectiveTestMode = await window.NextTrainAdsNative.resolveEffectiveTestMode(config);
   }
 
   const effectiveConfig = { ...config, admobTestMode: effectiveTestMode };
@@ -185,7 +337,73 @@ async function waitForAdFreeInit() {
   }
 }
 
-let adsInitInFlight = null;
+async function syncAdOverlaySuppression() {
+  const suppressed = document.body.classList.contains("app-dialog-open");
+  const container = document.getElementById("ad-container");
+
+  if (!container || window.NextTrainAdFree?.isEntitled?.()) {
+    overlaySuppressed = suppressed;
+    syncAdBannerScrollPadding();
+    return;
+  }
+
+  if (suppressed) {
+    overlaySuppressed = true;
+    if (isNativeApp()) {
+      await hideNativeBannerSafe({ force: true });
+    }
+    if (!container.hidden && container.innerHTML.trim()) {
+      container.dataset.overlaySuppressed = "1";
+      container.hidden = true;
+    }
+    syncAdBannerScrollPadding();
+    return;
+  }
+
+  overlaySuppressed = false;
+
+  if (container.dataset.overlaySuppressed === "1") {
+    delete container.dataset.overlaySuppressed;
+    container.hidden = false;
+  }
+
+  if (isNativeApp() && cachedAdConfig && isAdMobConfigured(cachedAdConfig)) {
+    try {
+      await restoreNativeBannerSafe();
+    } catch (error) {
+      console.warn("Could not restore native banner", error);
+    }
+  }
+
+  syncAdBannerScrollPadding();
+}
+
+function queueAdOverlaySuppressionSync() {
+  if (overlaySuppressionSyncInFlight) {
+    return overlaySuppressionSyncInFlight;
+  }
+
+  overlaySuppressionSyncInFlight = syncAdOverlaySuppression().finally(() => {
+    overlaySuppressionSyncInFlight = null;
+  });
+  return overlaySuppressionSyncInFlight;
+}
+
+function installOverlayAdGuard() {
+  const rehideForOverlay = () => {
+    if (!document.body.classList.contains("app-dialog-open")) {
+      return;
+    }
+    queueAdOverlaySuppressionSync();
+    if (isNativeApp()) {
+      void hideNativeBannerSafe({ force: true });
+    }
+  };
+
+  window.addEventListener("resize", rehideForOverlay);
+  window.visualViewport?.addEventListener("resize", rehideForOverlay);
+  window.visualViewport?.addEventListener("scroll", rehideForOverlay);
+}
 
 async function initAdsWork() {
   const container = document.getElementById("ad-container");
@@ -203,6 +421,7 @@ async function initAdsWork() {
   try {
     const response = await fetch("/site-config.json");
     const config = await response.json();
+    cachedAdConfig = config;
 
     if (isNativeApp()) {
       await initNativeAds(container, config);
@@ -214,6 +433,8 @@ async function initAdsWork() {
     console.warn("Could not load ad config", error);
     hideAdSlotCompletely(container);
   }
+
+  syncAdBannerScrollPadding();
 }
 
 function initAds() {
@@ -230,9 +451,12 @@ function initAds() {
 window.NextTrainAds = {
   ...(window.NextTrainAds ?? {}),
   reload: initAds,
+  hideNativeBanner: hideNativeBannerSafe,
+  syncOverlaySuppression: queueAdOverlaySuppressionSync,
 };
 
 window.addEventListener("load", () => {
+  installOverlayAdGuard();
   const { waitForCapacitor } = window.NextTrainScripts ?? {};
   if (waitForCapacitor) {
     waitForCapacitor().then(initAds);
@@ -246,6 +470,7 @@ document.addEventListener("nexttrain:adfree-changed", (event) => {
   if (event.detail?.entitled) {
     const container = document.getElementById("ad-container");
     hideAdSlotCompletely(container);
+    syncAdBannerScrollPadding();
     return;
   }
 

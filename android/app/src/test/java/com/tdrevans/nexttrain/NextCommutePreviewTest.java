@@ -70,6 +70,23 @@ public class NextCommutePreviewTest {
   }
 
   @Test
+  public void findNext_keepsTodayWhenTargetIsLaterOutsideWindow() throws Exception {
+    JSONObject settings = settingsWithJourney(
+      journey("j-morning", "Morning", "Edgewater Stn", "Perth", "06:00", "09:00", "16:00")
+    );
+
+    NextCommutePreview.Preview preview =
+      NextCommutePreview.findNext(settings, 10 * 60, 2);
+
+    assertNotNull(preview);
+    assertEquals(0, preview.dayOffset);
+    assertEquals("Today 16:00", NextCommutePreview.formatPrimary(preview));
+    assertEquals("Today", NextCommutePreview.formatDayWord(preview));
+    assertEquals("16:00", preview.preferredOrFromClock);
+    assertEquals("Target Train", NextCommutePreview.idleWidgetLabel(preview.journey));
+  }
+
+  @Test
   public void outsideHoursSnapshot_fitsSmallWidgetSlots() throws Exception {
     JSONObject settings = settingsWithJourney(
       journey("j-morning", "Morning", "Warwick Stn", "Perth", "06:00", "09:00", "07:30")

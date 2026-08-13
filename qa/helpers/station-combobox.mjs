@@ -31,6 +31,17 @@ export async function openStationSearch(page, { rootSelector, inputSelector, lis
   });
 }
 
+export async function waitForDirectionSelectReady(page, { selectId = "detail-direction-select", timeout = 15000 } = {}) {
+  await page.waitForFunction(
+    (id) => {
+      const select = document.getElementById(id);
+      return select && !select.disabled && select.options.length > 1;
+    },
+    selectId,
+    { timeout }
+  );
+}
+
 export async function pickStationCombobox(page, { rootSelector, inputSelector, listboxSelector, station }) {
   const label = stationDisplayLabel(station);
   const query = label.slice(0, Math.min(4, label.length));
@@ -51,6 +62,7 @@ export async function pickStationCombobox(page, { rootSelector, inputSelector, l
     null,
     { timeout: 5000 }
   ).catch(() => {});
+  await waitForDirectionSelectReady(page);
   await page.waitForTimeout(200);
 }
 

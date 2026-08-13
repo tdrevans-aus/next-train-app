@@ -7,7 +7,7 @@ let productId = DEFAULT_PRODUCT_ID;
 let entitled = false;
 let localizedPrice = null;
 let billingAvailable = false;
-let initPromise = null;
+let adFreeInitPromise = null;
 let nativeBridgePromise = null;
 let toastTimer = null;
 
@@ -21,6 +21,10 @@ function hasNativePurchaseBridge() {
 
 function shouldShowPurchaseControls() {
   if (!isNativeApp()) {
+    return false;
+  }
+  // Pro Menu / Unlock Pro parked for 2.1.1 closed test.
+  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
     return false;
   }
   if (window.NextTrainPro?.hasNoAds?.()) {
@@ -239,6 +243,19 @@ function renderMenuPro() {
     return;
   }
 
+  // Hold Pro for the next Play release — keep widget free and Menu quiet for testers.
+  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
+    setHidden(section, true);
+    setHidden(ctaBtn, true);
+    setHidden(statusRow, true);
+    setHidden(nudgeDismiss, true);
+    setHidden(restoreBtn, true);
+    setHidden(webHint, true);
+    setHidden(billingHint, true);
+    syncPurchaseLinkVisibility();
+    return;
+  }
+
   setHidden(section, false);
   setHidden(ctaBtn, true);
   setHidden(statusRow, true);
@@ -451,10 +468,10 @@ async function initAdFreePurchase() {
 }
 
 async function ensureInit() {
-  if (!initPromise) {
-    initPromise = initAdFreePurchase();
+  if (!adFreeInitPromise) {
+    adFreeInitPromise = initAdFreePurchase();
   }
-  return initPromise;
+  return adFreeInitPromise;
 }
 
 function openNativeStyleDialog(dialog) {
@@ -472,6 +489,7 @@ function openNativeStyleDialog(dialog) {
     dialog.classList.add("app-native-dialog");
     dialog.setAttribute("open", "");
     document.body.classList.add("app-dialog-open");
+    window.NextTrainAds?.syncOverlaySuppression?.();
     return;
   }
 
@@ -484,6 +502,9 @@ function openNativeStyleDialog(dialog) {
 }
 
 function openPaywallDialog() {
+  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
+    return;
+  }
   const dialog = document.getElementById("pro-paywall-dialog");
   const priceEl = document.getElementById("pro-paywall-price");
   const foundingNote = document.getElementById("pro-paywall-founding-note");
@@ -504,7 +525,7 @@ function openPaywallDialog() {
   }
 
   // Widget → paywall: close competing sheets so this isn't buried.
-  for (const id of ["menu-dialog", "journeys-dialog", "help-dialog"]) {
+  for (const id of ["menu-dialog", "journeys-dialog", "help-dialog", "feedback-dialog"]) {
     const open = document.getElementById(id);
     if (open?.open || open?.hasAttribute("open")) {
       try {
@@ -520,6 +541,9 @@ function openPaywallDialog() {
 }
 
 function showFoundingUnlockSheet() {
+  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
+    return;
+  }
   if (localStorage.getItem("nextTrainFoundingUnlockShown") === "1") {
     return;
   }
@@ -532,6 +556,9 @@ function showFoundingUnlockSheet() {
 }
 
 function showTrialStartedSheet() {
+  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
+    return;
+  }
   if (localStorage.getItem("nextTrainTrialStartedShown") === "1") {
     return;
   }
@@ -562,6 +589,7 @@ function closeNativeStyleDialog(dialog) {
   dialog.classList.remove("app-native-dialog");
   if (!document.querySelector("dialog.app-native-dialog[open], dialog[open]")) {
     document.body.classList.remove("app-dialog-open");
+    window.NextTrainAds?.syncOverlaySuppression?.();
   }
 }
 

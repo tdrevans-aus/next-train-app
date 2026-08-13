@@ -22,9 +22,18 @@ const EXIT_INVERT_PASS = new Set([
 
 const SMOKE_SCRIPTS = [
   "stickiness-coaches-logic.mjs",
+  "fremantle-claremont-direction.mjs",
   "smoke-browser.mjs",
   "smoke-11-13.mjs",
   "reminders-dialog.mjs",
+  "reminders-permission-gate.mjs",
+  "template-wizard-coach-overlap.mjs",
+  "journey-detail-footer-above-ad.mjs",
+  "nearby-content-above-ad.mjs",
+  "static-page-above-ad.mjs",
+  "dialog-above-ad.mjs",
+  "onboarding-not-on-overlay.mjs",
+  "onboarding-scrim-dismiss.mjs",
 ];
 
 const RUNNER_EXCLUDE = new Set(["run-all.mjs", "pre-upload-check.mjs"]);

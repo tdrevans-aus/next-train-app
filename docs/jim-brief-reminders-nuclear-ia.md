@@ -3,7 +3,7 @@
 **For:** Jim / Tim  
 **From:** Simon (design) / Tim (product)  
 **Date:** 12 Aug 2026  
-**Status:** Implemented in tree — no separate Reminder settings sheet  
+**Status:** Implemented — later superseded in part by `docs/jim-brief-target-train-master.md` (Target = leave/remind gate; Schedule above Catch your train)  
 **Supersedes:** empty Reminder settings polish; Menu → Reminder settings as a destination
 
 ---

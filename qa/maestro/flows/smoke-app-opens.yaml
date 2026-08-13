@@ -2,7 +2,8 @@ appId: com.tdrevans.nexttrain
 ---
 - launchApp:
     clearState: false
+# Chrome label is always "Near me"; route line may say "Near you" after GPS.
 - extendedWaitUntil:
-    visible: "Near you"
+    visible: "Near me"
     timeout: 60000
-- assertVisible: "Near you"
+- assertVisible: "Near me"

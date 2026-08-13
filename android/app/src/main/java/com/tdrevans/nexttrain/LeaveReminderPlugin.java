@@ -8,6 +8,7 @@ import android.os.Build;
 import android.provider.Settings;
 import androidx.core.content.ContextCompat;
 import com.getcapacitor.JSObject;
+import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
@@ -78,13 +79,22 @@ public class LeaveReminderPlugin extends Plugin {
 
   @PluginMethod
   public void enableReminders(PluginCall call) {
-    if (needsNotificationPermission()) {
-      pendingEnableCall = call;
-      requestPermissionForAlias("notifications", call, "notificationsPermsCallback");
+    if (!needsNotificationPermission()) {
+      resolveEnable(call);
       return;
     }
 
-    resolveEnable(call);
+    // Already permanently denied — system dialog will not show; JS should open Settings.
+    if (getPermissionState("notifications") == PermissionState.DENIED) {
+      JSObject result = settingsToJs(LeaveReminderSettingsStore.readSettings(getContext()));
+      result.put("permissionGranted", false);
+      result.put("shouldOpenSettings", true);
+      call.resolve(result);
+      return;
+    }
+
+    pendingEnableCall = call;
+    requestPermissionForAlias("notifications", call, "notificationsPermsCallback");
   }
 
   @PermissionCallback
@@ -99,6 +109,11 @@ public class LeaveReminderPlugin extends Plugin {
     if (needsNotificationPermission()) {
       JSObject result = settingsToJs(LeaveReminderSettingsStore.readSettings(getContext()));
       result.put("permissionGranted", false);
+      // After a deny, further toggles need Settings — dialog often will not reappear.
+      result.put(
+        "shouldOpenSettings",
+        getPermissionState("notifications") == PermissionState.DENIED
+      );
       target.resolve(result);
       return;
     }

@@ -78,15 +78,27 @@ public final class NextCommutePreview {
           if (from <= nowMinutes) {
             // Window started earlier today and we're past it (or overnight edge handled by matches).
             if (from < until && nowMinutes >= until) {
-              continue;
-            }
-            if (from < until) {
+              int targetMinutes =
+                PerthTime.parseClockMinutes(journey.optString("preferredTrainTime", ""));
+              if (targetMinutes < 0 || targetMinutes <= nowMinutes) {
+                continue;
+              }
+            } else if (from < until) {
               continue;
             }
           }
         }
 
-        int sortKey = dayOffset * 24 * 60 + from;
+        int sortMinutes = from;
+        if (dayOffset == 0 && from < until && nowMinutes >= until) {
+          int targetMinutes =
+            PerthTime.parseClockMinutes(journey.optString("preferredTrainTime", ""));
+          if (targetMinutes >= 0 && targetMinutes > nowMinutes) {
+            sortMinutes = targetMinutes;
+          }
+        }
+
+        int sortKey = dayOffset * 24 * 60 + sortMinutes;
         if (sortKey >= bestSort) {
           continue;
         }

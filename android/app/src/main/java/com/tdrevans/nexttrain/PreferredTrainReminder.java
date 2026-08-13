@@ -43,6 +43,19 @@ public final class PreferredTrainReminder {
         LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, journeyId, localDate)
       );
     }
+
+    /**
+     * Strip is independent of whether the leave-now ping already fired. Mid-window late-arm
+     * (toggle/save after leave-by) must still resolve the upcoming preferred train.
+     */
+    public static ScheduleClock liveForStrip(Context context) {
+      return new ScheduleClock(
+        System.currentTimeMillis(),
+        PerthTime.dayOfWeekIso(),
+        PerthTime.localDateKey(),
+        false
+      );
+    }
   }
 
   private PreferredTrainReminder() {}
@@ -109,7 +122,7 @@ public final class PreferredTrainReminder {
       }
     }
 
-    int horizonMinutes = reminderHorizonMinutes(journey);
+    int horizonMinutes = reminderHorizonMinutes(journey, preferredMinutes);
     JSONObject trip = pickTripAtOrAfter(upcoming, preferredMinutes, horizonMinutes);
     if (trip == null) {
       return null;
@@ -184,10 +197,23 @@ public final class PreferredTrainReminder {
   }
 
   static int reminderHorizonMinutes(JSONObject journey) {
+    return reminderHorizonMinutes(journey, -1);
+  }
+
+  /**
+   * Trains at/after preferred must be before this clock minute.
+   * Active-until when set; otherwise preferred+3h (not all day — empty until was
+   * incorrectly arming afternoon trains for a morning target).
+   */
+  static int reminderHorizonMinutes(JSONObject journey, int preferredMinutes) {
     String until = journey.optString("defaultUntil", "");
     int untilMinutes = PerthTime.parseClockMinutes(until);
     if (untilMinutes > 0) {
       return untilMinutes;
+    }
+    if (preferredMinutes >= 0) {
+      int capped = preferredMinutes + 180;
+      return Math.min(24 * 60, Math.max(preferredMinutes + 1, capped));
     }
     return 24 * 60;
   }
@@ -249,7 +275,7 @@ public final class PreferredTrainReminder {
       return "no_preferred";
     }
 
-    JSONObject trip = pickTripAtOrAfter(upcoming, preferredMinutes, reminderHorizonMinutes(journey));
+    JSONObject trip = pickTripAtOrAfter(upcoming, preferredMinutes, reminderHorizonMinutes(journey, preferredMinutes));
     if (trip == null) {
       return "no_trip";
     }

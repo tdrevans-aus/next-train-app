@@ -67,6 +67,33 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+app.get("/api/ready", (_req, res) => {
+  import("./lib/train-times-server.js")
+    .then(async () => {
+      const { unzipSync } = await import("./lib/vendor/fflate.mjs");
+      if (typeof unzipSync !== "function") {
+        res.status(500).json({ ok: false, ready: false, error: "gtfs unzip unavailable" });
+        return;
+      }
+      const station = resolveAllowedStation("Edgewater Stn");
+      if (!station) {
+        res.status(500).json({ ok: false, ready: false, error: "station allowlist unavailable" });
+        return;
+      }
+      res.setHeader("Cache-Control", "no-store");
+      res.status(200).json({
+        ok: true,
+        ready: true,
+        service: "next-train-api",
+        checks: ["train-times-server", "gtfs-static-cache", "fflate-vendor", "allowlist"],
+        ts: new Date().toISOString(),
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ ok: false, ready: false, error: error.message ?? "ready check failed" });
+    });
+});
+
 app.get("/api/cities", (_req, res) => {
   res.setHeader("Cache-Control", "public, s-maxage=300");
   res.json({

@@ -96,6 +96,19 @@ var NextTrainTimes = (() => {
     }
     return /* @__PURE__ */ new Date(`${trimmed}${PERTH_OFFSET}`);
   }
+  function parseLiveBoardTimestamp(value) {
+    if (!value) {
+      return null;
+    }
+    const trimmed = String(value).trim();
+    if (!trimmed) {
+      return null;
+    }
+    if (trimmed.includes("/")) {
+      return parsePerthDateTime(trimmed);
+    }
+    return parsePerthIsoDateTime(trimmed);
+  }
   var ON_TIME_TOLERANCE_MINUTES = 1;
   function timingOffsetMinutesBetween(scheduledDisplayTime, displayTime) {
     if (!scheduledDisplayTime || !displayTime || scheduledDisplayTime === displayTime) {
@@ -417,7 +430,7 @@ var NextTrainTimes = (() => {
   }) {
     const { stationName, lastUpdate, trips } = await fetchTripsForStation(station);
     const upcoming = pickUpcomingTrips(trips, destination, now);
-    const lastUpdated = lastUpdate ? lastUpdate.includes("/") ? parsePerthIsoDateTime(lastUpdate) : new Date(lastUpdate) : null;
+    const lastUpdated = parseLiveBoardTimestamp(lastUpdate);
     return buildNextTrainResponse({
       station: stationName,
       destination,
