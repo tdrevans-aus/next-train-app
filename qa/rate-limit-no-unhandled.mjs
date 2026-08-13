@@ -1,6 +1,6 @@
 /**
- * CAPACITOR-5: API 429 ("Too many requests") must not become an unhandled
- * pageerror / Sentry crash during refresh or journey template setup.
+ * CAPACITOR-5 / CAPACITOR-7: API 429 ("Too many requests") must not become an
+ * unhandled pageerror / Sentry crash during refresh or journey template setup.
  * Usage: node qa/rate-limit-no-unhandled.mjs
  */
 import { chromium } from "playwright";
