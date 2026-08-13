@@ -3,6 +3,13 @@
  * @see docs/jim-brief-founding-pro.md · public/design/founding-pro.html
  */
 
+/**
+ * Ship kill-switch for Pro monetization (trial / Try Pro / widget lock / founding sheets).
+ * false = closed-test / 2.1.1: widget free, ads normal, no Pro Menu CTA.
+ * Flip to true for the following Play release when Pro is ready for testers.
+ */
+const PRO_MONETIZATION_SHIPPED = false;
+
 const TRIAL_STARTED_KEY = "nextTrainProTrialStartedAt";
 const FOUNDING_KEY = "nextTrainFoundingPro";
 const WIDGET_ADDED_KEY = "nextTrainWidgetEverAdded";
@@ -18,6 +25,10 @@ const SOFT_NUDGE_DAY = 21;
 
 let trialDays = DEFAULT_TRIAL_DAYS;
 let foundingFull = false;
+
+function isProMonetizationShipped() {
+  return PRO_MONETIZATION_SHIPPED === true;
+}
 
 function readTrialStartedAt() {
   const raw = localStorage.getItem(TRIAL_STARTED_KEY);
@@ -68,6 +79,10 @@ function isTrialActive() {
 }
 
 function hasProAccess() {
+  if (!isProMonetizationShipped()) {
+    // Parked: only a completed ad-free / Pro purchase counts — no trial lock-in for testers.
+    return isPaid();
+  }
   if (isPaid()) {
     return true;
   }
@@ -81,12 +96,20 @@ function hasWidgetAccess() {
   if (hasProAccess()) {
     return true;
   }
+  if (readTrialStartedAt() && !isTrialActive()) {
+    return false;
+  }
+  if (!isProMonetizationShipped()) {
+    return true;
+  }
   // Trial never started → not expired. First widget add starts the 30-day trial.
-  // Fresh installs were syncing hasWidgetAccess:false and showing "Your Pro trial ended".
   return !readTrialStartedAt();
 }
 
 function hasNoAds() {
+  if (!isProMonetizationShipped()) {
+    return isPaid();
+  }
   return hasProAccess();
 }
 
@@ -191,12 +214,18 @@ function markWidgetEverAdded() {
 }
 
 function startTrial() {
+  if (!isProMonetizationShipped()) {
+    return;
+  }
   if (!readTrialStartedAt()) {
     localStorage.setItem(TRIAL_STARTED_KEY, new Date().toISOString());
   }
 }
 
 function grantFounding() {
+  if (!isProMonetizationShipped()) {
+    return;
+  }
   localStorage.setItem(FOUNDING_KEY, "1");
 }
 
@@ -206,6 +235,12 @@ async function onWidgetFirstAdded() {
   }
 
   markWidgetEverAdded();
+
+  // Pro parked for this Play release — widget stays free; no trial / founding sheets.
+  if (!isProMonetizationShipped()) {
+    await syncWidgetProState();
+    return { state: "pro_parked", parked: true };
+  }
 
   if (isPaid() || isFounding()) {
     await syncWidgetProState();
@@ -286,6 +321,7 @@ window.NextTrainPro = {
   hasProAccess,
   hasWidgetAccess,
   hasNoAds,
+  isProMonetizationShipped,
   isFounding,
   isPaid,
   isTrialActive,

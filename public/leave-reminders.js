@@ -95,20 +95,61 @@ async function saveReminderSettings(patch) {
   }
 }
 
-async function enableLeaveReminders() {
+async function enableLeaveReminders({ userInitiated = false } = {}) {
   const plugin = getLeaveRemindersPlugin();
   if (!plugin?.enableReminders) {
-    return saveReminderSettings({ enabled: true, paused: false, pauseUntil: null });
+    return saveReminderSettings({
+      enabled: true,
+      paused: false,
+      pauseUntil: null,
+      commuteStripEnabled: true,
+    });
   }
 
   try {
-    const saved = await plugin.enableReminders();
+    // Single path: native enableReminders shows the POST_NOTIFICATIONS prompt when allowed.
+    // Do not also call plugin.requestPermissions first — a prior deny makes the second
+    // request return immediately with no dialog, which flips Remind me back off.
+    let saved = await plugin.enableReminders();
+
+    if (saved?.permissionGranted !== false) {
+      const withStrip =
+        saved?.commuteStripEnabled === true
+          ? saved
+          : await saveReminderSettings({ ...saved, commuteStripEnabled: true });
+      writeLocalReminderSettings(withStrip);
+      return withStrip;
+    }
+
+    if (userInitiated && saved?.shouldOpenSettings && plugin.openNotificationSettings) {
+      try {
+        await plugin.openNotificationSettings();
+      } catch (error) {
+        console.warn("Could not open notification settings", error);
+      }
+    }
+
     writeLocalReminderSettings(saved);
     return saved;
   } catch (error) {
     console.warn("Could not enable leave reminders", error);
     return loadReminderSettings();
   }
+}
+
+async function ensureLiveCountdownDefaultOn() {
+  const settings = await loadReminderSettings();
+  // Don't silently arm — and clear an orphan strip if notifications were revoked.
+  if (isNativeApp() && settings?.permissionGranted === false) {
+    if (settings?.commuteStripEnabled) {
+      return saveReminderSettings({ commuteStripEnabled: false });
+    }
+    return settings;
+  }
+  if (settings?.commuteStripEnabled) {
+    return settings;
+  }
+  return saveReminderSettings({ commuteStripEnabled: true });
 }
 
 async function acknowledgeDeparture(journeyId, departure) {
@@ -252,7 +293,10 @@ function updateCommuteStripUi(settings) {
   if (!stripInput) {
     return;
   }
-  stripInput.checked = Boolean(settings?.commuteStripEnabled);
+  // Never show Live countdown on if notifications can't fire.
+  const allowed =
+    !isNativeApp() || settings?.permissionGranted !== false;
+  stripInput.checked = Boolean(settings?.commuteStripEnabled) && allowed;
 }
 
 function updateNudgeEarlyUi(settings) {
@@ -265,7 +309,29 @@ function initLeaveReminderUi() {
   const stripInput = document.getElementById("leave-reminders-commute-strip");
 
   stripInput?.addEventListener("change", async () => {
-    const settings = await saveReminderSettings({ commuteStripEnabled: stripInput.checked });
+    if (!stripInput.checked) {
+      const settings = await saveReminderSettings({ commuteStripEnabled: false });
+      const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+      await updateRemindersDialogUi(settings, schedule);
+      return;
+    }
+
+    // Live countdown is a notification — require POST_NOTIFICATIONS like Remind me.
+    const enabled = await enableLeaveReminders({ userInitiated: true });
+    if (enabled?.permissionGranted === false) {
+      stripInput.checked = false;
+      const settings = await saveReminderSettings({
+        commuteStripEnabled: false,
+      });
+      const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+      await updateRemindersDialogUi(settings, schedule);
+      return;
+    }
+
+    const settings = await saveReminderSettings({
+      ...enabled,
+      commuteStripEnabled: true,
+    });
     const schedule = settings?.enabled ? await loadReminderSchedule() : null;
     await updateRemindersDialogUi(settings, schedule);
   });
@@ -536,11 +602,15 @@ async function healReminderSettings(settings) {
 }
 
 /**
- * Journey Reminder on ⇔ notifications can fire.
- * If permission is denied (or enable fails), turn journey Reminder(s) off — no orphan “on” state.
+ * Journey Reminder / Live countdown on ⇔ notifications can fire.
+ * If permission is denied (or enable fails), turn them off — no orphan “on” state.
  */
 async function healRemindersPermissionState(settings) {
   let next = settings;
+
+  if (next?.permissionGranted === false && next?.commuteStripEnabled) {
+    next = await saveReminderSettings({ commuteStripEnabled: false });
+  }
 
   if (!deriveReminderEnabled()) {
     return healReminderSettings(next);
@@ -550,7 +620,12 @@ async function healRemindersPermissionState(settings) {
     if (clearAllJourneyRemindMe()) {
       // Journeys updated via persistReminderJourneys.
     }
-    return saveReminderSettings({ enabled: false, paused: false, pauseUntil: null });
+    return saveReminderSettings({
+      enabled: false,
+      commuteStripEnabled: false,
+      paused: false,
+      pauseUntil: null,
+    });
   }
 
   if (!next?.enabled) {
@@ -559,7 +634,12 @@ async function healRemindersPermissionState(settings) {
       if (clearAllJourneyRemindMe()) {
         // Journeys updated via persistReminderJourneys.
       }
-      return saveReminderSettings({ enabled: false, paused: false, pauseUntil: null });
+      return saveReminderSettings({
+        enabled: false,
+        commuteStripEnabled: false,
+        paused: false,
+        pauseUntil: null,
+      });
     }
   }
 
@@ -646,6 +726,11 @@ async function updateRemindersDialogUi(settings, schedule) {
 async function healAfterJourneySave() {
   let settings = await loadReminderSettings();
   settings = await healRemindersPermissionState(settings);
+  // Native strip/reminders read WidgetSettingsStore — sync journeys before reschedule so
+  // mid-window late-arm sees the just-saved target train.
+  if (typeof window.nextTrainWidget?.syncWidgetSettings === "function") {
+    await window.nextTrainWidget.syncWidgetSettings();
+  }
   getLeaveRemindersPlugin()?.reschedule?.();
   await renderLeaveAlertSurfaces();
   return settings;
@@ -771,6 +856,7 @@ window.nextTrainLeaveReminders = {
   openRemindersDialog,
   showLeaveReminderCoach,
   healAfterJourneySave,
+  ensureLiveCountdownDefaultOn,
 };
 
 if (document.readyState === "loading") {

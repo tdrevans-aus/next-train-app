@@ -29,6 +29,14 @@ public class LeaveReminderReceiver extends BroadcastReceiver {
       return;
     }
 
+    // Defense: Live Countdown on ⇒ Leave now is redundant (strip posts at leave-by).
+    if (
+      LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type) &&
+      LeaveReminderSettingsStore.isCommuteStripEnabled(context)
+    ) {
+      return;
+    }
+
     if (LeaveReminderSettingsStore.isAcknowledged(context, departureKey)) {
       return;
     }
@@ -46,11 +54,20 @@ public class LeaveReminderReceiver extends BroadcastReceiver {
       return;
     }
 
-    LeaveReminderNotifier.show(context, type, journeyId, route, trainTime, stale, getReadyMinutes);
+    LeaveReminderNotifier.show(
+      context,
+      type,
+      journeyId,
+      route,
+      trainTime,
+      stale,
+      getReadyMinutes,
+      departureKey
+    );
     LeaveReminderSettingsStore.markFired(context, departureKey, type);
 
     if (LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type)) {
-      LeaveReminderSettingsStore.markLeaveNowFiredForDay(context, journeyId, localDate);
+      LeaveReminderSettingsStore.markLeaveNowFiredForDay(context, journeyId, localDate, departureKey);
     } else if (LeaveReminderScheduler.TYPE_GET_READY.equals(type)) {
       LeaveReminderSettingsStore.markGetReadyFiredForDay(context, journeyId, localDate);
     }

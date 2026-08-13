@@ -562,6 +562,12 @@ public class CommuteScheduleTest {
     JSONObject withoutPreferred = CommuteSchedule.resolveActiveNextTrip(payload, new JSONObject());
     assertEquals(PerthTime.formatIsoFromEpochMs(earlyMs), CommuteSchedule.tripDepartureIso(withoutPreferred));
     assertTrue(CommuteSchedule.leaveByArmedForTrip(withoutPreferred, new JSONObject()));
+
+    assertEquals("NEXT TRAIN", CommuteSchedule.liveWidgetLabel(journey, active));
+    JSONObject targetTrip = new JSONObject();
+    targetTrip.put("departure", PerthTime.formatIsoFromEpochMs(preferredMs));
+    assertEquals("Target Train", CommuteSchedule.liveWidgetLabel(journey, targetTrip));
+    assertEquals("NEXT TRAIN", CommuteSchedule.liveWidgetLabel(new JSONObject(), active));
   }
 
   @Test

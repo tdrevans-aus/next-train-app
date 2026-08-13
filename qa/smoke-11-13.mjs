@@ -7,6 +7,7 @@ import {
   closeJourneysDialog,
   openJourneysDialog,
   clickJourneysDone,
+  enableTargetTrainOnDetail,
 } from "./helpers/journeys-dialog.mjs";
 
 const BASE = "http://localhost:3000";
@@ -55,6 +56,7 @@ async function run() {
   await openJourneysDialog(page);
   await page.locator(".journey-list-open-btn").first().click();
   await page.waitForTimeout(1500);
+  await enableTargetTrainOnDetail(page);
   await page.locator("#detail-leave-before-input").fill("15");
   await page.locator("#settings-back").click();
   await page.waitForTimeout(300);
@@ -68,6 +70,7 @@ async function run() {
   await openJourneysDialog(page);
   await page.locator(".journey-list-open-btn").first().click();
   await page.waitForTimeout(1500);
+  await enableTargetTrainOnDetail(page);
   await page.locator("#detail-leave-before-input").fill("15");
   await page.locator("#detail-done-btn").click();
   await page.waitForTimeout(500);

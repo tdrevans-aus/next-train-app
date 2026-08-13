@@ -260,7 +260,7 @@
         aria-labelledby="onboarding-step-title"
       >
         <div id="onboarding-step-1" class="onboarding-coach-step">
-          <h2 id="onboarding-step-title">Near you</h2>
+          <h2 id="onboarding-step-title">Near Me</h2>
           <p>By default, Next Train shows departures at the station nearest you.</p>
           <button type="button" class="btn-primary" id="onboarding-got-it-btn">Got it</button>
         </div>
@@ -379,19 +379,19 @@
           <div class="settings-detail-scroll">
             <button type="button" class="settings-back" id="settings-back">← Journeys</button>
 
-            <label class="field journey-name-field">
-              <span>Name</span>
-              <input
-                type="text"
-                id="detail-journey-name"
-                maxlength="40"
-                placeholder="e.g. Weekend into town"
-                autocomplete="off"
-              />
-            </label>
-
             <section class="settings-section" id="detail-route-section">
-              <h3 class="settings-section-title">Route</h3>
+              <label class="field journey-name-field journey-name-field--inline">
+                <div class="field-label-row journey-name-row">
+                  <span>Name</span>
+                  <input
+                    type="text"
+                    id="detail-journey-name"
+                    maxlength="40"
+                    placeholder="e.g. Weekend into town"
+                    autocomplete="off"
+                  />
+                </div>
+              </label>
               <label class="field">
                 <span>Departure station</span>
                 <div class="station-combobox" id="detail-station-combobox">
@@ -431,30 +431,7 @@
             </section>
 
             <section class="settings-section" id="detail-timing-section">
-              <h3 class="settings-section-title">Timing</h3>
-              <label class="field leave-before-field" id="leave-before-field">
-                <div class="field-label-row">
-                  <label class="checkbox-label leave-before-toggle">
-                    <input type="checkbox" id="detail-use-leave-before" checked />
-                    <span>Time to station</span>
-                  </label>
-                  <span class="field-value" id="detail-leave-before-value">10 min</span>
-                </div>
-                <div class="leave-before-controls" id="leave-before-controls">
-                  <input
-                    type="range"
-                    class="leave-before-slider"
-                    id="detail-leave-before-input"
-                    min="1"
-                    max="30"
-                    step="1"
-                  />
-                  <div class="range-ticks" aria-hidden="true">
-                    <span>1 min</span>
-                    <span>30 min</span>
-                  </div>
-                </div>
-              </label>
+              <h3 class="settings-section-title">Schedule</h3>
               <div class="remind-days-field" id="detail-active-days-field">
                 <span class="field-label">Active days</span>
                 <p class="settings-section-hint detail-active-days-hint">
@@ -546,74 +523,148 @@
             </section>
 
             <section class="settings-section" id="detail-preferred-section">
-              <label
-                class="field optional-time-field detail-preferred-field"
-                id="detail-preferred-field"
-                data-empty="true"
-              >
-                <span>Target train</span>
-                <div class="optional-time-control">
-                  <button type="button" class="optional-time-display" id="detail-preferred-display">
-                    Not set
-                  </button>
-                  <input
-                    type="time"
-                    id="detail-preferred-input"
-                    class="optional-time-input"
-                    tabindex="-1"
-                    aria-hidden="true"
-                  />
-                  <button
-                    type="button"
-                    class="optional-time-clear"
-                    id="detail-preferred-clear"
-                    hidden
-                    aria-label="Clear target train"
-                  >
-                    ×
-                  </button>
-                </div>
-              </label>
-              <p class="settings-section-hint">
-                First train at or after this time.
+              <h3 class="settings-section-title">Catch your train</h3>
+              <div class="detail-target-master" id="detail-target-master">
+                <label class="checkbox-label detail-target-master-toggle">
+                  <input type="checkbox" id="detail-use-target-train" />
+                  <span>Target train</span>
+                </label>
+                <label
+                  class="field optional-time-field detail-preferred-field"
+                  id="detail-preferred-field"
+                  data-empty="true"
+                  hidden
+                >
+                  <span class="reminders-sr-only">Target train time</span>
+                  <div class="optional-time-control">
+                    <button type="button" class="optional-time-display" id="detail-preferred-display">
+                      Not set
+                    </button>
+                    <input
+                      type="time"
+                      id="detail-preferred-input"
+                      class="optional-time-input"
+                      tabindex="-1"
+                      aria-hidden="true"
+                    />
+                    <button
+                      type="button"
+                      class="optional-time-clear"
+                      id="detail-preferred-clear"
+                      hidden
+                      aria-label="Clear target train"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </label>
+              </div>
+              <p class="settings-section-hint" id="detail-target-master-hint">
+                Pick the train you aim for. Walk time, reminders, and Live countdown sit under this.
               </p>
 
-              <div class="detail-remind-controls" id="detail-remind-controls" hidden>
-                <div class="detail-remind-toggles" id="detail-remind-toggles">
-                  <div
-                    class="menu-toggle-row detail-remind-toggle-row"
-                    id="detail-reminder-section"
-                  >
-                    <span class="menu-toggle-title">Remind me</span>
-                    <label class="menu-toggle-switch">
-                      <input type="checkbox" id="detail-remind-me" />
-                      <span class="menu-toggle-track" aria-hidden="true"></span>
-                    </label>
+              <div class="detail-target-nest" id="detail-target-nest" hidden>
+                <!-- Synced from Target master; leave-by only exists with a target. -->
+                <input type="checkbox" id="detail-use-leave-before" checked hidden />
+                <label class="field leave-before-field" id="leave-before-field">
+                  <div class="field-label-row">
+                    <span class="field-label">Time to station</span>
+                    <span class="field-value" id="detail-leave-before-value">10 min</span>
                   </div>
-                  <div
-                    class="menu-toggle-row detail-remind-toggle-row reminders-strip-option"
-                    id="leave-reminders-strip-wrap"
-                  >
-                    <span class="menu-toggle-title">Live countdown</span>
-                    <label class="menu-toggle-switch">
-                      <input type="checkbox" id="leave-reminders-commute-strip" />
-                      <span class="menu-toggle-track" aria-hidden="true"></span>
-                    </label>
+                  <div class="leave-before-controls" id="leave-before-controls">
+                    <input
+                      type="range"
+                      class="leave-before-slider"
+                      id="detail-leave-before-input"
+                      min="1"
+                      max="30"
+                      step="1"
+                    />
+                    <div class="range-ticks" aria-hidden="true">
+                      <span>1 min</span>
+                      <span>30 min</span>
+                    </div>
+                  </div>
+                </label>
+
+                <div class="detail-remind-controls" id="detail-remind-controls" hidden>
+                  <div class="detail-remind-toggles" id="detail-remind-toggles">
+                    <div
+                      class="menu-toggle-row detail-remind-toggle-row"
+                      id="detail-reminder-section"
+                    >
+                      <span class="menu-toggle-title">Remind me</span>
+                      <label class="menu-toggle-switch">
+                        <input type="checkbox" id="detail-remind-me" />
+                        <span class="menu-toggle-track" aria-hidden="true"></span>
+                      </label>
+                    </div>
+                    <div
+                      class="menu-toggle-row detail-remind-toggle-row reminders-strip-option"
+                      id="leave-reminders-strip-wrap"
+                    >
+                      <span class="menu-toggle-title">Live countdown</span>
+                      <label class="menu-toggle-switch">
+                        <input type="checkbox" id="leave-reminders-commute-strip" />
+                        <span class="menu-toggle-track" aria-hidden="true"></span>
+                      </label>
+                    </div>
                   </div>
                 </div>
-                <p class="settings-section-hint detail-remind-permission-hint" id="detail-remind-permission-hint" hidden>
-                  Notifications are off — enable in system settings to get leave reminders.
-                </p>
               </div>
             </section>
 
           </div>
+        </form>
 
-          <div class="settings-detail-footer">
-            <div class="settings-actions settings-actions-detail">
-              <button type="button" class="btn-secondary" id="detail-cancel-btn">Cancel</button>
-              <button type="submit" class="btn-primary" id="detail-done-btn">Save</button>
+        <div class="onboarding-coach template-route-coach" id="template-route-coach" hidden>
+          <div class="onboarding-coach-scrim" aria-hidden="true"></div>
+          <div
+            class="onboarding-coach-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="template-wizard-step-1-title"
+          >
+            <div class="template-wizard-step" id="template-wizard-step-name" hidden>
+              <h2 id="template-wizard-step-name-title">Name</h2>
+              <p id="template-wizard-name-body"></p>
             </div>
+            <div class="template-wizard-step" id="template-wizard-step-1">
+              <h2 id="template-wizard-step-1-title">Route picked for you</h2>
+              <p id="template-route-coach-body"></p>
+            </div>
+            <div class="template-wizard-step" id="template-wizard-step-2" hidden>
+              <h2 id="template-wizard-step-2-title">Target train</h2>
+              <p>
+                Turn on <strong>Target train</strong> for the departure you aim for.
+                We&rsquo;ll look for the first train at or after the time you set.
+              </p>
+            </div>
+            <div class="template-wizard-step" id="template-wizard-step-3" hidden>
+              <h2 id="template-wizard-step-3-title">Active hours</h2>
+              <p id="template-wizard-hours-body"></p>
+            </div>
+            <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>
+              <h2 id="template-wizard-step-reminder-title">Reminders</h2>
+              <p>
+                We&rsquo;ll nudge you when it&rsquo;s time to leave for your train.
+              </p>
+              <p>
+                <strong>Live Countdown</strong><br />
+                stays in your notifications so you can glance on the way.
+              </p>
+            </div>
+            <div class="template-wizard-actions">
+              <button type="button" class="btn-primary" id="template-wizard-primary-btn">Next</button>
+              <button type="button" class="btn-secondary" id="template-wizard-skip-btn">Skip tour</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="journeys-detail-chrome" id="journeys-detail-chrome" hidden>
+        <div class="settings-detail-footer">
+          <div class="settings-actions settings-actions-detail">
+            <button type="button" class="btn-secondary" id="detail-cancel-btn">Cancel</button>
             <button
               type="button"
               class="journey-delete-icon-btn"
@@ -637,48 +688,9 @@
                 />
               </svg>
             </button>
-          </div>
-        </form>
-
-        <div class="onboarding-coach template-route-coach" id="template-route-coach" hidden>
-          <div class="onboarding-coach-scrim" aria-hidden="true"></div>
-          <div
-            class="onboarding-coach-card"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="template-wizard-step-1-title"
-          >
-            <div class="template-wizard-step" id="template-wizard-step-name" hidden>
-              <h2 id="template-wizard-step-name-title">Name</h2>
-              <p id="template-wizard-name-body"></p>
-            </div>
-            <div class="template-wizard-step" id="template-wizard-step-1">
-              <h2 id="template-wizard-step-1-title">Route picked for you</h2>
-              <p id="template-route-coach-body"></p>
-            </div>
-            <div class="template-wizard-step" id="template-wizard-step-2" hidden>
-              <h2 id="template-wizard-step-2-title">Time to station</h2>
-              <p>
-                We can tell you when to leave for your train. Slide to change your time to
-                station, or untick if you don&rsquo;t need it.
-              </p>
-            </div>
-            <div class="template-wizard-step" id="template-wizard-step-3" hidden>
-              <h2 id="template-wizard-step-3-title">Active hours</h2>
-              <p id="template-wizard-hours-body"></p>
-            </div>
-            <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>
-              <h2 id="template-wizard-step-reminder-title">Leave alerts</h2>
-              <p>
-                <strong>Remind me</strong> sends a leave notification for your target train.
-                Optional <strong>Live countdown</strong> keeps a running leave countdown in
-                notifications.
-              </p>
-            </div>
-            <div class="template-wizard-actions">
-              <button type="button" class="btn-primary" id="template-wizard-primary-btn">Next</button>
-              <button type="button" class="btn-secondary" id="template-wizard-skip-btn">Skip tour</button>
-            </div>
+            <button type="submit" class="btn-primary" id="detail-done-btn" form="settings-detail-view">
+              Save
+            </button>
           </div>
         </div>
       </div>
@@ -795,11 +807,11 @@
               </div>
             </div>
             <p class="menu-pause-web-hint" id="menu-pause-web-hint" hidden>
-              Leave alerts are available in the Android app. Turn Remind me on for a journey under My Journeys.
+              Reminders are available in the Android app. Turn Remind me on for a journey under My Journeys.
             </p>
           </div>
-          <div class="menu-pro" id="menu-pro-section">
-            <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-pro-cta-btn" hidden>
+          <div class="menu-pro" id="menu-pro-section" hidden>
+            <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-pro-cta-btn">
               <span class="menu-purchase-title" id="menu-pro-cta-title">Try Pro free</span>
               <span class="menu-purchase-subtitle" id="menu-pro-cta-subtitle">30 days · widget + no ads · then one-time</span>
             </button>
@@ -821,6 +833,8 @@
             </p>
           </div>
           <div class="menu-dialog-divider" aria-hidden="true"></div>
+          <!-- FB-18: bury Send feedback before public production (tester-prominent for now). -->
+          <button type="button" class="menu-dialog-link" id="menu-feedback-btn">Send feedback</button>
           <button type="button" class="menu-dialog-link" id="menu-help-btn">Help</button>
         </nav>
         <p class="menu-dialog-legal">
@@ -833,6 +847,49 @@
       <div class="menu-dialog-footer">
         <button type="button" class="btn-primary menu-done-btn" id="menu-done-btn">Done</button>
         <button type="button" class="settings-clear-data" id="clear-all-data-btn">Clear all data</button>
+      </div>
+    </dialog>
+
+    <dialog class="help-dialog feedback-dialog" id="feedback-dialog">
+      <div class="help-dialog-body">
+        <h2 id="feedback-dialog-title">Send feedback</h2>
+        <p class="feedback-lede">
+          What’s broken, confusing, or missing? A couple of sentences is enough.
+        </p>
+        <form id="feedback-form" class="feedback-form" novalidate>
+          <label class="field" for="feedback-note">
+            <span>Your note</span>
+            <textarea
+              id="feedback-note"
+              name="note"
+              rows="6"
+              maxlength="4000"
+              required
+              placeholder="e.g. Near Me stuck on Loading… after I denied location"
+            ></textarea>
+          </label>
+          <label class="field" for="feedback-email">
+            <span>Email (optional)</span>
+            <input
+              id="feedback-email"
+              name="email"
+              type="email"
+              maxlength="200"
+              autocomplete="email"
+              placeholder="If you want a reply"
+            />
+            <small class="field-hint">Leave blank for anonymous notes.</small>
+          </label>
+          <p class="feedback-status" id="feedback-status" hidden role="status"></p>
+          <div class="feedback-actions">
+            <button type="submit" class="btn-primary" id="feedback-send-btn">Send</button>
+            <button type="button" class="btn-secondary" id="feedback-cancel-btn">Cancel</button>
+          </div>
+        </form>
+        <div class="feedback-thanks" id="feedback-thanks" hidden>
+          <p>Thanks — that helps.</p>
+          <button type="button" class="btn-primary" id="feedback-done-btn">Done</button>
+        </div>
       </div>
     </dialog>
 
@@ -884,8 +941,9 @@
             Swipe left or right for later or earlier departures.
           </li>
           <li>
-            <strong>Leave by</strong> — When time to station is on, the card below shows when
-            to head out. If you’re late, tap <strong>I've left</strong> or <strong>Next Train</strong>
+            <strong>Leave by</strong> — When a <strong>target train</strong> is on, the card below
+            shows when to head out (from your time to station). If you&rsquo;re late, tap
+            <strong>I've left</strong> or <strong>Next Train</strong>
             (same as swiping left on the departure card). Tap the sliders icon to change time to station.
           </li>
           <li>
@@ -905,9 +963,12 @@
             for other departures. Tap again to refresh your location.
           </li>
           <li>
-            <strong>Leave alerts</strong> — Set a <strong>target train</strong>, then turn on
-            <strong>Remind me</strong>. Optional <strong>Live countdown</strong> keeps a running
-            leave countdown in notifications. Pause from <strong>Menu → Pause reminders</strong>.
+            <strong>Reminders</strong> — Turn on <strong>Target train</strong>, set the time, then
+            use <strong>Remind me</strong>. We&rsquo;ll send a notification when it&rsquo;s time to leave.
+            <strong>Live countdown</strong> keeps the countdown in your notifications
+            (and replaces the Leave now notification while it&rsquo;s on). Pause anytime
+            from <strong>Menu → Pause reminders</strong>.
+            We pick the first train at or after your target time.
           </li>
           <li>
             <strong>Platform &amp; status</strong> — Live platform and delay info for the train
@@ -929,7 +990,7 @@
         <pre class="widget-debug-panel" id="widget-debug-panel" hidden></pre>
       </div>
       <div class="help-dialog-footer">
-        <button type="button" class="btn-primary help-close-btn" id="help-close-btn">Got it</button>
+        <button type="button" class="btn-primary help-close-btn" id="help-close-btn">Done</button>
       </div>
     </dialog>
 
@@ -937,6 +998,26 @@
       (function () {
         // esbuild marks @capacitor/core external; bundles expect the ESM module shape
         // ({ Capacitor, registerPlugin }), not the Capacitor global object alone.
+        if (!window.Capacitor) {
+          class WebPlugin {
+            unavailable(message) {
+              return new Error(message || "Unavailable");
+            }
+            unimplemented(message) {
+              return new Error(message || "Not implemented");
+            }
+          }
+          window.Capacitor = {
+            isNativePlatform: () => false,
+            getPlatform: () => "web",
+            WebPlugin,
+            Plugins: {},
+            withPlugin(name) {
+              return this.Plugins?.[name] ?? {};
+            },
+          };
+        }
+
         const previousRequire = typeof require === "function" ? require : null;
 
         function capacitorCoreModule() {

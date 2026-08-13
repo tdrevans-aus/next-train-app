@@ -116,9 +116,11 @@ If you’re happy for me to use a short anonymous quote later (e.g. Reddit / pre
 Paste into closed-testing release notes (short):
 
 ```
-Closed beta — Next Train (unofficial Perth Transperth leave-by).
+2.1.0 (7) — v7 closed Alpha
 
-Please try: Near me, save a Journey + leave-by for your real commute, optional home-screen widget, optional leave reminders.
+Simon review fixes (ads, a11y, widget), Near me GPS crash fix, reminders & journey polish, location gate, E3 icon.
+
+Please try: Near me, save a Journey + leave reminders for your real commute, optional home-screen widget.
 
 Report anything wrong, confusing, or untrustworthy for a real morning. Support: EvansAppStudio@gmail.com
 ```

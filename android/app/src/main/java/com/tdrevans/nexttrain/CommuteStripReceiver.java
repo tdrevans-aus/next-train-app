@@ -28,6 +28,7 @@ public class CommuteStripReceiver extends BroadcastReceiver {
 
     if (CommuteStripScheduler.ACTION_END.equals(action)) {
       CommuteStripNotifier.cancel(appContext);
+      LeaveReminderNotifier.cancel(appContext);
       return;
     }
 

@@ -11,6 +11,7 @@ public final class LeaveReminderSettingsStore {
   private static final String KEY_ACK_PREFIX = "ack:";
   private static final String KEY_FIRED_PREFIX = "fired:";
   private static final String KEY_DAY_LEAVE_PREFIX = "day_leave:";
+  private static final String KEY_DAY_LEAVE_DEP_PREFIX = "day_leave_dep:";
   private static final String KEY_DAY_GET_READY_PREFIX = "day_get_ready:";
   private static final String KEY_STRIP_DISMISSED_PREFIX = "strip_dismissed:";
 
@@ -141,11 +142,34 @@ public final class LeaveReminderSettingsStore {
     return prefs(context).getBoolean(KEY_DAY_LEAVE_PREFIX + journeyId + ":" + localDate, false);
   }
 
+  public static String getLeaveNowDepartureKeyForDay(
+    Context context,
+    String journeyId,
+    String localDate
+  ) {
+    if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
+      return null;
+    }
+    return prefs(context).getString(KEY_DAY_LEAVE_DEP_PREFIX + journeyId + ":" + localDate, null);
+  }
+
   public static void markLeaveNowFiredForDay(Context context, String journeyId, String localDate) {
-    prefs(context)
+    markLeaveNowFiredForDay(context, journeyId, localDate, null);
+  }
+
+  public static void markLeaveNowFiredForDay(
+    Context context,
+    String journeyId,
+    String localDate,
+    String departureKey
+  ) {
+    SharedPreferences.Editor editor = prefs(context)
       .edit()
-      .putBoolean(KEY_DAY_LEAVE_PREFIX + journeyId + ":" + localDate, true)
-      .apply();
+      .putBoolean(KEY_DAY_LEAVE_PREFIX + journeyId + ":" + localDate, true);
+    if (departureKey != null && !departureKey.isEmpty()) {
+      editor.putString(KEY_DAY_LEAVE_DEP_PREFIX + journeyId + ":" + localDate, departureKey);
+    }
+    editor.apply();
   }
 
   public static boolean hasGetReadyFiredForDay(Context context, String journeyId, String localDate) {

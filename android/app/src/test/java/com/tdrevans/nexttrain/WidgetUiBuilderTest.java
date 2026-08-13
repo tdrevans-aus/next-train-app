@@ -9,6 +9,26 @@ import org.junit.Test;
 public class WidgetUiBuilderTest {
 
   @Test
+  public void isOutsideHoursIdleFace_liveTargetTrainKeepsLiveFace() throws Exception {
+    org.json.JSONObject live = new org.json.JSONObject();
+    live.put("label", "Target Train");
+    live.put("outsideHoursIdle", false);
+    live.put("trainClock", "5:42 pm");
+    live.put("primary", "3 min");
+    assertFalse(WidgetUiBuilder.isOutsideHoursIdleFace(live));
+
+    org.json.JSONObject idle = new org.json.JSONObject();
+    idle.put("label", "Target Train");
+    idle.put("outsideHoursIdle", true);
+    idle.put("primary", "7:30");
+    assertTrue(WidgetUiBuilder.isOutsideHoursIdleFace(idle));
+
+    org.json.JSONObject nextJourney = new org.json.JSONObject();
+    nextJourney.put("label", "Next Journey");
+    assertTrue(WidgetUiBuilder.isOutsideHoursIdleFace(nextJourney));
+  }
+
+  @Test
   public void splitMinutesPrimary_splitsNumberAndUnit() {
     WidgetUiBuilder.PrimaryParts five = WidgetUiBuilder.splitMinutesPrimary("5 min");
     assertEquals("5", five.value);
@@ -94,14 +114,31 @@ public class WidgetUiBuilderTest {
   @Test
   public void layoutForSizeDp_keepsDefaultTwoByOneSmall() {
     assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(110, 40));
-    assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(180, 70));
+    assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(170, 70));
   }
 
   @Test
   public void layoutForSizeDp_usesMediumForThreeByOneOrTwoByTwo() {
+    assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(180, 40));
     assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(250, 40));
     assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(110, 110));
     assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(300, 140));
+  }
+
+  @Test
+  public void resolveMediumUpdatedLine_showsFreshUpdatedOnMediumLayout() {
+    assertEquals(
+      "Updated just now",
+      WidgetUiBuilder.resolveMediumUpdatedLine("Updated just now", "14 min", "Leave in 4 min", false)
+    );
+    assertEquals(
+      "",
+      WidgetUiBuilder.visibleUpdatedLine("Updated 3m ago", R.layout.widget_small)
+    );
+    assertEquals(
+      "Updated 3m ago",
+      WidgetUiBuilder.visibleUpdatedLine("Updated 3m ago", R.layout.widget_medium)
+    );
   }
 
   @Test

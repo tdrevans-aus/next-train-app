@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Widget “target time” icon — 4 options</title>
+    <style>
+      :root {
+        --mist: #eef3f2;
+        --mist-mid: #e2ece9;
+        --accent: #0b6e6a;
+        --ink: #132523;
+        --muted: #5c726d;
+        --surface: #fff;
+        --line: rgba(19, 37, 35, 0.1);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, #f5f8f7 0%, var(--mist) 45%, var(--mist-mid) 100%);
+        min-height: 100vh;
+        padding: 2rem 1.25rem 4rem;
+      }
+      main { max-width: 1000px; margin: 0 auto; }
+      h1 { font-size: 1.6rem; margin: 0 0 0.35rem; }
+      .lede { color: var(--muted); max-width: 48rem; line-height: 1.5; margin: 0 0 1.25rem; }
+      .callout {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-bottom: 1.75rem;
+      }
+      .callout strong { color: var(--ink); }
+      .compare { display: flex; align-items: center; gap: 1.25rem; margin-top: 0.6rem; }
+      .compare div { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+        gap: 1rem;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1rem;
+      }
+      .card h2 { font-size: 1rem; margin: 0 0 0.2rem; }
+      .card p { margin: 0 0 1rem; font-size: 0.8rem; color: var(--muted); line-height: 1.4; min-height: 3.9em; }
+      .sizes { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.75rem; }
+      .ico { color: var(--accent); display: block; }
+      .s48 { width: 48px; height: 48px; }
+      .s24 { width: 24px; height: 24px; }
+      .s16 { width: 16px; height: 16px; }
+      .strip {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--mist);
+        padding: 0.6rem 0.7rem;
+      }
+      .strip .label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+      .strip .big { font-size: 1.3rem; font-weight: 800; color: var(--accent); letter-spacing: -0.02em; margin: 0.1rem 0 0.3rem; }
+      .strip .targetline { display: flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; font-weight: 600; color: var(--muted); }
+      .strip .targetline .ico { width: 13px; height: 13px; color: var(--muted); }
+      .dark { background: #1a2422; border-color: rgba(255,255,255,.08); margin-top: 0.5rem; }
+      .dark .label, .dark .targetline { color: #93a9a5; }
+      .dark .targetline .ico { color: #93a9a5; }
+      .dark .big { color: #6fc6c1; }
+      .note { margin-top: 2rem; font-size: 0.85rem; color: var(--muted); line-height: 1.55; max-width: 48rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Widget “target time” icon — 4 options</h1>
+      <p class="lede">
+        Shown at 48 / 24 / 16px, then inline at true widget scale (~13px) on mist and dark.
+      </p>
+
+      <div class="callout">
+        <strong>Why no crosshair:</strong> the chrome control <em>Near me</em> is already a
+        crosshair, and the widget line means <em>the train time you’re aiming for</em> —
+        not a location. These four say “goal / preferred time” instead.
+        <div class="compare">
+          <div>
+            <svg class="ico s24" viewBox="0 0 24 24" fill="none" style="color:#9aa8a5">
+              <circle cx="12" cy="12" r="6.25" stroke="currentColor" stroke-width="1.8" />
+              <circle cx="12" cy="12" r="2" fill="currentColor" />
+              <path d="M12 1.75v3M12 19.25v3M1.75 12h3M19.25 12h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span>= Near me (taken)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- 1 Flag -->
+        <article class="card">
+          <h2>1 · Flag</h2>
+          <p>The universal “goal / the time I’m aiming for”. Reads instantly, nothing else in the app uses it.</p>
+          <div class="sizes">
+            <svg class="ico s48" viewBox="0 0 24 24" fill="none">
+              <path d="M6 21V4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+              <path d="M6 4.6h10.8l-2.4 3.7 2.4 3.7H6z" fill="currentColor" />
+            </svg>
+            <svg class="ico s24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 21V4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+              <path d="M6 4.6h10.8l-2.4 3.7 2.4 3.7H6z" fill="currentColor" />
+            </svg>
+            <svg class="ico s16" viewBox="0 0 24 24" fill="none">
+              <path d="M6 21V4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+              <path d="M6 4.4h11l-2.4 3.9 2.4 3.9H6z" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="strip">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <path d="M6 21V4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M6 4.4h11l-2.4 3.9 2.4 3.9H6z" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+          <div class="strip dark">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <path d="M6 21V4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M6 4.4h11l-2.4 3.9 2.4 3.9H6z" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2 Clock with marker -->
+        <article class="card">
+          <h2>2 · Clock with marker</h2>
+          <p>A clock face with one filled tick on the rim — “this specific time matters”. Ties the icon to time, not aim.</p>
+          <div class="sizes">
+            <svg class="ico s48" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.8" />
+              <path d="M12 7.4V12l3.1 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="12" cy="3.6" r="2.1" fill="currentColor" />
+            </svg>
+            <svg class="ico s24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.8" />
+              <path d="M12 7.4V12l3.1 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="12" cy="3.6" r="2.1" fill="currentColor" />
+            </svg>
+            <svg class="ico s16" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="2.2" />
+              <path d="M12 7.6V12l3 1.9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="12" cy="3.4" r="2.4" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="strip">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="2.2" />
+                <path d="M12 7.6V12l3 1.9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="12" cy="3.4" r="2.4" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+          <div class="strip dark">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="2.2" />
+                <path d="M12 7.6V12l3 1.9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="12" cy="3.4" r="2.4" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3 Bookmark -->
+        <article class="card">
+          <h2>3 · Bookmark</h2>
+          <p>“The train I’ve chosen.” Very legible solid shape at tiny sizes. Slight overlap with saved-journey language.</p>
+          <div class="sizes">
+            <svg class="ico s48" viewBox="0 0 24 24" fill="none">
+              <path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.4L5.5 20.5v-16a1 1 0 0 1 1-1z" fill="currentColor" />
+            </svg>
+            <svg class="ico s24" viewBox="0 0 24 24" fill="none">
+              <path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.4L5.5 20.5v-16a1 1 0 0 1 1-1z" fill="currentColor" />
+            </svg>
+            <svg class="ico s16" viewBox="0 0 24 24" fill="none">
+              <path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.4L5.5 20.5v-16a1 1 0 0 1 1-1z" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="strip">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.4L5.5 20.5v-16a1 1 0 0 1 1-1z" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+          <div class="strip dark">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4.4L5.5 20.5v-16a1 1 0 0 1 1-1z" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4 Marker on timeline -->
+        <article class="card">
+          <h2>4 · Marker on timeline</h2>
+          <p>A pointer sitting on a time bar — “this point on the schedule”. The most literal, and unlike anything else in the UI.</p>
+          <div class="sizes">
+            <svg class="ico s48" viewBox="0 0 24 24" fill="none">
+              <path d="M3 16.5h18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+              <path d="M12 13.4L8.8 8.2h6.4z" fill="currentColor" />
+              <path d="M12 4.2v3.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+            </svg>
+            <svg class="ico s24" viewBox="0 0 24 24" fill="none">
+              <path d="M3 16.5h18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+              <path d="M12 13.4L8.8 8.2h6.4z" fill="currentColor" />
+              <path d="M12 4.2v3.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+            </svg>
+            <svg class="ico s16" viewBox="0 0 24 24" fill="none">
+              <path d="M3 16.8h18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+              <path d="M12 13.6L8.4 7.8h7.2z" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="strip">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <path d="M3 16.8h18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M12 13.6L8.4 7.8h7.2z" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+          <div class="strip dark">
+            <div class="label">Leave in</div>
+            <div class="big">12 min</div>
+            <div class="targetline">
+              <svg class="ico" viewBox="0 0 24 24" fill="none">
+                <path d="M3 16.8h18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                <path d="M12 13.6L8.4 7.8h7.2z" fill="currentColor" />
+              </svg>
+              <span>Target 7:30</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <p class="note">
+        Colour: the target line is supporting information, so the icon is muted grey-green
+        beside the label rather than accent teal — the leave-by number stays the only loud
+        thing on the widget. If you want it to pop, promote it to accent teal
+        <code>#0B6E6A</code> rather than introducing a new hue; a second brand colour for
+        one small label costs more consistency than it buys attention.
+      </p>
+    </main>
+  </body>
+</html>

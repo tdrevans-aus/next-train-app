@@ -37,20 +37,19 @@ async function run() {
     stripLabel:
       document.querySelector("#leave-reminders-strip-wrap .menu-toggle-title")?.textContent?.trim() ||
       "",
-    detailTimingBeforePreferred: (() => {
-      const preferred = document.getElementById("detail-preferred-section");
+    detailReminderInCatchSection: (() => {
+      const catchSection = document.getElementById("detail-preferred-section");
       const reminder = document.getElementById("detail-reminder-section");
+      const schedule = document.getElementById("detail-timing-section");
       const sections = [...document.querySelectorAll("#settings-detail-view .settings-section")];
-      const preferredIdx = sections.indexOf(preferred);
-      const timingIdx = sections.findIndex(
-        (section) => section.querySelector(".settings-section-title")?.textContent?.trim() === "Timing"
-      );
+      const catchIdx = sections.indexOf(catchSection);
+      const scheduleIdx = sections.indexOf(schedule);
       return (
         Boolean(reminder) &&
-        preferredIdx >= 0 &&
-        timingIdx >= 0 &&
-        timingIdx < preferredIdx &&
-        preferred?.contains(reminder)
+        catchIdx >= 0 &&
+        scheduleIdx >= 0 &&
+        scheduleIdx < catchIdx &&
+        catchSection?.contains(reminder)
       );
     })(),
   }));
@@ -70,7 +69,7 @@ async function run() {
     !menuUi.earlyOnJourney &&
     menuUi.stripOnJourney &&
     menuUi.stripLabel === "Live countdown" &&
-    menuUi.detailTimingBeforePreferred;
+    menuUi.detailReminderInCatchSection;
 
   console.log("\nLeave alerts IA check (web)\n");
   console.log("Bridge:", JSON.stringify(bridge, null, 2));
