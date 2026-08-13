@@ -2609,14 +2609,61 @@ function buildApiParams() {
   return params;
 }
 
+let rateLimitPauseUntil = 0;
+
+function parseRetryAfterSec(response) {
+  const raw = response.headers?.get?.("Retry-After");
+  const seconds = Number(raw);
+  if (Number.isFinite(seconds) && seconds > 0) {
+    return Math.min(Math.ceil(seconds), 300);
+  }
+  return undefined;
+}
+
+function noteRateLimited(retryAfterSec = 60) {
+  const pauseMs = Math.max(1, Number(retryAfterSec) || 60) * 1000;
+  rateLimitPauseUntil = Math.max(rateLimitPauseUntil, Date.now() + pauseMs);
+}
+
+function isRateLimitPaused() {
+  return Date.now() < rateLimitPauseUntil;
+}
+
+function isRateLimitedResult(result) {
+  return (
+    result?.status === 429 ||
+    result?.data?.error === "Too many requests" ||
+    result?.error === "Too many requests"
+  );
+}
+
+function apiResultError(result, fallback = "Could not load train times") {
+  if (isRateLimitedResult(result)) {
+    noteRateLimited(result?.retryAfterSec ?? 60);
+    const error = new Error("Live times are busy. Trying again shortly.");
+    error.code = "RATE_LIMITED";
+    return error;
+  }
+
+  return new Error(result?.data?.error ?? result?.error ?? fallback);
+}
+
 async function fetchJson(url) {
   const response = await fetch(url);
   const text = await response.text();
+  const retryAfterSec = parseRetryAfterSec(response);
   try {
-    return { ok: response.ok, data: JSON.parse(text) };
+    return {
+      ok: response.ok,
+      status: response.status,
+      retryAfterSec,
+      data: JSON.parse(text),
+    };
   } catch {
     return {
       ok: false,
+      status: response.status,
+      retryAfterSec,
       error: "Server returned an invalid response. Restart with: npm start",
     };
   }
@@ -2977,6 +3024,9 @@ function openLeaveBufferSettings() {
         detailUseLeaveBeforeInput?.focus({ preventScroll: true });
         window.setTimeout(highlightLeaveBeforeField, 400);
       });
+    })
+    .catch((error) => {
+      console.warn("Could not open leave buffer settings", error);
     });
 }
 
@@ -3543,33 +3593,38 @@ async function applyDefaultJourneyRoute(journey) {
     return { configured: false, nearest: null, error: null, journey };
   }
 
-  if (journey.station && !journey.direction) {
-    const direction = await pickPerthDirection(journey.station);
-    if (!direction) {
-      return { configured: false, nearest: null, error: null, journey };
+  try {
+    if (journey.station && !journey.direction) {
+      const direction = await pickPerthDirection(journey.station);
+      if (!direction) {
+        return { configured: false, nearest: null, error: null, journey };
+      }
+
+      return {
+        configured: true,
+        nearest: null,
+        error: null,
+        journey: normalizeJourney({ ...journey, direction }),
+      };
     }
 
-    return {
-      configured: true,
-      nearest: null,
-      error: null,
-      journey: normalizeJourney({ ...journey, direction }),
-    };
-  }
+    let nearest = null;
+    try {
+      nearest = await findNearestStation();
+    } catch (error) {
+      return { configured: false, nearest: null, error, journey };
+    }
 
-  let nearest = null;
-  try {
-    nearest = await findNearestStation();
+    const configured = await configureInboundJourney(journey, nearest.station);
+    if (!configured) {
+      return { configured: false, nearest, error: null, journey };
+    }
+
+    return { configured: true, nearest, error: null, journey: configured };
   } catch (error) {
+    // Direction API 429/failures must not reject journey-detail openers (unhandled → Sentry).
     return { configured: false, nearest: null, error, journey };
   }
-
-  const configured = await configureInboundJourney(journey, nearest.station);
-  if (!configured) {
-    return { configured: false, nearest, error: null, journey };
-  }
-
-  return { configured: true, nearest, error: null, journey: configured };
 }
 
 async function configureOutboundFromInbound(journey, inboundJourney) {
@@ -3911,7 +3966,7 @@ async function fetchNearbyDirectionData(station, direction, skip = 0) {
 
   const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
   if (!result.ok) {
-    throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+    throw apiResultError(result, "Could not load train times");
   }
 
   let payload = result.data;
@@ -4507,6 +4562,10 @@ async function fetchNearbyBoardOnce() {
     return;
   }
 
+  if (isRateLimitPaused()) {
+    return;
+  }
+
   const directions = await fetchDirectionsFromApi(station);
   const settled = await Promise.all(
     directions.map(async (direction) => {
@@ -4730,6 +4789,11 @@ async function fetchNextTrain() {
       return;
     }
 
+    if (isRateLimitPaused()) {
+      renderNearbyBoard({ stale: Boolean(nearbyBoard) });
+      return;
+    }
+
     try {
       await fetchNearbyBoard();
       renderNearbyBoard();
@@ -4751,11 +4815,18 @@ async function fetchNextTrain() {
   updateSwipeHint();
   updateSwipeCues();
 
+  if (isRateLimitPaused()) {
+    if (lastApiData?.next) {
+      render(prepareDisplayData(lastApiData), { stale: true });
+    }
+    return;
+  }
+
   try {
     const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`));
 
     if (!result.ok) {
-      throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+      throw apiResultError(result, "Could not load train times");
     }
 
     const payload = await resolveNextTrainPayload(result.data);
@@ -4764,7 +4835,10 @@ async function fetchNextTrain() {
   } catch (error) {
     errorEl.textContent = error.message;
     errorEl.hidden = false;
-    trackProductEvent("api_error_shown", { surface: "journey" });
+    trackProductEvent("api_error_shown", {
+      surface: "journey",
+      code: error?.code || "api_error",
+    });
 
     if (lastApiData?.next) {
       render(prepareDisplayData(lastApiData), { stale: true });
@@ -5247,12 +5321,14 @@ async function fetchDirectionsFromApi(station) {
     return fallback.data.destinations;
   }
 
-  throw new Error(
-    primary.data?.error ??
-      fallback.data?.error ??
-      primary.error ??
+  if (isRateLimitedResult(primary) || isRateLimitedResult(fallback)) {
+    throw apiResultError(
+      isRateLimitedResult(primary) ? primary : fallback,
       "Could not load directions"
-  );
+    );
+  }
+
+  throw apiResultError(primary.ok ? fallback : primary, "Could not load directions");
 }
 
 async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
@@ -5888,16 +5964,21 @@ async function applyTemplateRoute(journey, templateKey) {
     return { configured: false, nearest: null, error };
   }
 
-  const inbound = getInboundJourney(
-    settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
-  );
-  const configured = await configureOutboundJourney(journey, nearest.station, inbound);
+  try {
+    const inbound = getInboundJourney(
+      settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
+    );
+    const configured = await configureOutboundJourney(journey, nearest.station, inbound);
 
-  if (!configured) {
-    return { configured: false, nearest, error: null };
+    if (!configured) {
+      return { configured: false, nearest, error: null };
+    }
+
+    return { configured: true, journey: configured, nearest, error: null };
+  } catch (error) {
+    // Direction API 429/failures must not reject template creators (unhandled → Sentry).
+    return { configured: false, nearest, error };
   }
-
-  return { configured: true, journey: configured, nearest, error: null };
 }
 
 function shouldAutoRouteJourney(journey) {
@@ -7312,6 +7393,8 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
 
     try {
       await createJourneyFromTemplate(button.dataset.template);
+    } catch (error) {
+      console.warn("Could not create journey from template", error);
     } finally {
       templateCreateInFlight = false;
       setJourneyTemplateLoading(false);
