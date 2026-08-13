@@ -112,7 +112,12 @@ async function run() {
     await page.waitForTimeout(800);
   }
 
-  const customChip = page.locator('.journey-template-chip[data-template="custom"]');
+  // Re-open list so custom chip is interactable after evening wizard.
+  await page.evaluate(async () => {
+    await window.nextTrainApp?.openJourneys?.();
+  });
+  await page.waitForTimeout(300);
+  const customChip = page.locator('.journey-template-chip[data-template="custom"]:not([hidden])');
   if (await customChip.count()) {
     await customChip.click({ force: true });
     await page.waitForTimeout(1000);
