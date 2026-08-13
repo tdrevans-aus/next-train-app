@@ -559,7 +559,7 @@ function getActiveFixture() {
 }
 
 function appendFixtureQuery(queryString) {
-  const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
+  const fixture = getActiveFixture();
   if (!fixture) {
     return queryString;
   }
@@ -2202,16 +2202,8 @@ function isManualOverrideBlockingAuto(scheduledId) {
     return false;
   }
 
-  // Outside every Active window — drop stale override unless window context still matches.
+  // No journey in Active hours → keep explicit manual pick when it is still active.
   if (!scheduledId) {
-    const storedWindowIds =
-      override.matchingWindowIds ??
-      (override.windowJourneyId ? [override.windowJourneyId] : []);
-    const currentWindowIds = getDefaultWindowJourneyIds();
-    if (!defaultWindowContextsMatch(storedWindowIds, currentWindowIds)) {
-      clearManualJourneyOverride();
-      return false;
-    }
     if (settings.activeJourneyId === override.journeyId) {
       return true;
     }
@@ -3083,7 +3075,7 @@ function buildApiParams() {
     refresh: String(settings.refreshSeconds),
   });
 
-  const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
+  const fixture = getActiveFixture();
   if (fixture) {
     params.set("fixture", fixture);
   }
@@ -3091,14 +3083,77 @@ function buildApiParams() {
   return params;
 }
 
+let rateLimitPauseUntil = 0;
+
+function parseRetryAfterSec(response) {
+  const raw = response.headers?.get?.("Retry-After");
+  const seconds = Number(raw);
+  if (Number.isFinite(seconds) && seconds > 0) {
+    return Math.min(Math.ceil(seconds), 300);
+  }
+  return undefined;
+}
+
+function noteRateLimited(retryAfterSec = 60) {
+  const pauseMs = Math.max(1, Number(retryAfterSec) || 60) * 1000;
+  rateLimitPauseUntil = Math.max(rateLimitPauseUntil, Date.now() + pauseMs);
+}
+
+function isRateLimitPaused() {
+  return Date.now() < rateLimitPauseUntil;
+}
+
+function isRateLimitedResult(result) {
+  return (
+    result?.status === 429 ||
+    result?.data?.error === "Too many requests" ||
+    result?.error === "Too many requests"
+  );
+}
+
+function isRateLimitedError(error) {
+  return (
+    error?.code === "RATE_LIMITED" ||
+    /live times are busy/i.test(String(error?.message || "")) ||
+    // Raw provider/API copy before apiResultError mapping (CAPACITOR-5/9).
+    /too many requests/i.test(String(error?.message || ""))
+  );
+}
+
+function isNearbyBoardUnavailableError(error) {
+  return (
+    error?.code === "NEARBY_BOARD_UNAVAILABLE" ||
+    /could not load departures for this station/i.test(String(error?.message || ""))
+  );
+}
+
+function apiResultError(result, fallback = "Could not load train times") {
+  if (isRateLimitedResult(result)) {
+    noteRateLimited(result?.retryAfterSec ?? 60);
+    const error = new Error("Live times are busy. Trying again shortly.");
+    error.code = "RATE_LIMITED";
+    return error;
+  }
+
+  return new Error(result?.data?.error ?? result?.error ?? fallback);
+}
+
 async function fetchJson(url) {
   const response = await fetch(url);
   const text = await response.text();
+  const retryAfterSec = parseRetryAfterSec(response);
   try {
-    return { ok: response.ok, data: JSON.parse(text) };
+    return {
+      ok: response.ok,
+      status: response.status,
+      retryAfterSec,
+      data: JSON.parse(text),
+    };
   } catch {
     return {
       ok: false,
+      status: response.status,
+      retryAfterSec,
       error: "Server returned an invalid response. Restart with: npm start",
     };
   }
@@ -3459,6 +3514,9 @@ function openLeaveBufferSettings() {
         detailLeaveBeforeInput?.focus({ preventScroll: true });
         window.setTimeout(highlightLeaveBeforeField, 400);
       });
+    })
+    .catch((error) => {
+      console.warn("Could not open leave buffer settings", error);
     });
 }
 
@@ -4036,33 +4094,38 @@ async function applyDefaultJourneyRoute(journey) {
     return { configured: false, nearest: null, error: null, journey };
   }
 
-  if (journey.station && !journey.direction) {
-    const direction = await pickPerthDirection(journey.station);
-    if (!direction) {
-      return { configured: false, nearest: null, error: null, journey };
+  try {
+    if (journey.station && !journey.direction) {
+      const direction = await pickPerthDirection(journey.station);
+      if (!direction) {
+        return { configured: false, nearest: null, error: null, journey };
+      }
+
+      return {
+        configured: true,
+        nearest: null,
+        error: null,
+        journey: normalizeJourney({ ...journey, direction }),
+      };
     }
 
-    return {
-      configured: true,
-      nearest: null,
-      error: null,
-      journey: normalizeJourney({ ...journey, direction }),
-    };
-  }
+    let nearest = null;
+    try {
+      nearest = await findNearestStation();
+    } catch (error) {
+      return { configured: false, nearest: null, error, journey };
+    }
 
-  let nearest = null;
-  try {
-    nearest = await findNearestStation();
+    const configured = await configureInboundJourney(journey, nearest.station);
+    if (!configured) {
+      return { configured: false, nearest, error: null, journey };
+    }
+
+    return { configured: true, nearest, error: null, journey: configured };
   } catch (error) {
+    // Direction API 429/failures must not reject journey-detail openers (unhandled → Sentry).
     return { configured: false, nearest: null, error, journey };
   }
-
-  const configured = await configureInboundJourney(journey, nearest.station);
-  if (!configured) {
-    return { configured: false, nearest, error: null, journey };
-  }
-
-  return { configured: true, nearest, error: null, journey: configured };
 }
 
 async function configureOutboundFromInbound(journey, inboundJourney) {
@@ -4554,14 +4617,14 @@ async function fetchNearbyDirectionData(station, direction, skip = 0) {
     skipTrains: String(requestSkip),
   });
 
-  const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
+  const fixture = getActiveFixture();
   if (fixture) {
     params.set("fixture", fixture);
   }
 
   const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
   if (!result.ok) {
-    throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+    throw apiResultError(result, "Could not load train times");
   }
 
   let payload = result.data;
@@ -5191,14 +5254,37 @@ async function fetchNearbyBoard() {
     return nearbyBoardInflight;
   }
 
-  nearbyBoardInflight = fetchNearbyBoardOnce().finally(() => {
-    nearbyBoardInflight = null;
-    renderNearbyBoard();
-    if (nearbyBoardRefetchPending) {
-      nearbyBoardRefetchPending = false;
-      void fetchNearbyBoard();
-    }
-  });
+  nearbyBoardInflight = fetchNearbyBoardOnce()
+    .catch((error) => {
+      // Soft-protect responses must not reject fire-and-forget Near me refresh
+      // (CAPACITOR-8 busy message, CAPACITOR-9 aggregated board failure under 429).
+      if (isRateLimitedError(error)) {
+        return;
+      }
+      throw error;
+    })
+    .finally(() => {
+      nearbyBoardInflight = null;
+      renderNearbyBoard();
+      if (nearbyBoardRefetchPending) {
+        nearbyBoardRefetchPending = false;
+        // Coalesced refresh is fire-and-forget — always catch so board-total
+        // failures cannot become Sentry unhandled rejections (CAPACITOR-9).
+        void fetchNearbyBoard().catch((error) => {
+          if (
+            !isRateLimitedError(error) &&
+            isNearbyBoardUnavailableError(error) &&
+            !nearbyBoardHasDepartures()
+          ) {
+            setNearbyError(
+              error.message ?? "Could not load departures for this station",
+              "board"
+            );
+          }
+          renderNearbyBoard({ stale: true });
+        });
+      }
+    });
 
   if (nearbyBoardLooksEmpty()) {
     renderNearbyBoard();
@@ -5213,18 +5299,22 @@ async function fetchNearbyBoardOnce() {
     return;
   }
 
-  let directions = [];
+  if (isRateLimitPaused()) {
+    return;
+  }
+
+  let directions;
   try {
     directions = await fetchDirectionsFromApi(station);
   } catch (error) {
-    console.warn("Nearby directions lookup failed", error);
-    if (isTestMode()) {
-      directions = ["Perth", "Mandurah", "Joondalup"];
-    } else {
-      throw error;
+    if (isRateLimitedError(error)) {
+      return;
     }
+    throw error;
   }
+
   let fetchFailures = 0;
+  let rateLimitedFailures = 0;
   const settled = await Promise.all(
     directions.map(async (direction) => {
       try {
@@ -5232,6 +5322,9 @@ async function fetchNearbyBoardOnce() {
         return { direction, data };
       } catch (error) {
         fetchFailures += 1;
+        if (isRateLimitedError(error)) {
+          rateLimitedFailures += 1;
+        }
         console.warn(`Nearby fetch failed for ${direction}`, error);
         return null;
       }
@@ -5245,7 +5338,14 @@ async function fetchNearbyBoardOnce() {
 
   if (!entries.length) {
     if (fetchFailures > 0) {
-      throw new Error("Could not load departures for this station");
+      // All direction boards failed under rate limit — keep stale UI, do not crash.
+      // Without this, callers see Error("Could not load departures…") (CAPACITOR-9).
+      if (rateLimitedFailures > 0 && rateLimitedFailures === fetchFailures) {
+        return;
+      }
+      const error = new Error("Could not load departures for this station");
+      error.code = "NEARBY_BOARD_UNAVAILABLE";
+      throw error;
     }
 
     // Station known but no live/scheduled trips (overnight). Not a location failure.
@@ -5537,6 +5637,11 @@ async function fetchNextTrain() {
       return;
     }
 
+    if (isRateLimitPaused()) {
+      renderNearbyBoard({ stale: Boolean(nearbyBoard) });
+      return;
+    }
+
     try {
       await fetchNearbyBoard();
       renderNearbyBoard();
@@ -5558,11 +5663,18 @@ async function fetchNextTrain() {
   updateSwipeHint();
   updateSwipeCues();
 
+  if (isRateLimitPaused()) {
+    if (lastApiData?.next) {
+      render(prepareDisplayData(lastApiData), { stale: true });
+    }
+    return;
+  }
+
   try {
     const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`));
 
     if (!result.ok) {
-      throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+      throw apiResultError(result, "Could not load train times");
     }
 
     const payload = await resolveNextTrainPayload(result.data);
@@ -5571,7 +5683,10 @@ async function fetchNextTrain() {
   } catch (error) {
     errorEl.textContent = error.message;
     errorEl.hidden = false;
-    trackProductEvent("api_error_shown", { surface: "journey" });
+    trackProductEvent("api_error_shown", {
+      surface: "journey",
+      code: error?.code || "api_error",
+    });
 
     if (lastApiData?.next) {
       render(prepareDisplayData(lastApiData), { stale: true });
@@ -6069,12 +6184,14 @@ async function fetchDirectionsFromApi(station) {
     return fallback.data.destinations;
   }
 
-  throw new Error(
-    primary.data?.error ??
-      fallback.data?.error ??
-      primary.error ??
+  if (isRateLimitedResult(primary) || isRateLimitedResult(fallback)) {
+    throw apiResultError(
+      isRateLimitedResult(primary) ? primary : fallback,
       "Could not load directions"
-  );
+    );
+  }
+
+  throw apiResultError(primary.ok ? fallback : primary, "Could not load directions");
 }
 
 async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
@@ -6130,11 +6247,6 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
         { value: normalizedPreferred, label: normalizedPreferred },
       ]);
       selectEl.value = normalizedPreferred;
-    } else if (isTestMode()) {
-      replaceSelectOptions(selectEl, [
-        { value: "Perth", label: "Perth" },
-        { value: "Mandurah", label: "Mandurah" },
-      ]);
     } else {
       replaceSelectOptions(selectEl, [
         { value: "", label: "Couldn’t load directions — try again" },
@@ -6310,14 +6422,6 @@ function syncTemplateWizardCoachPosition() {
   }
 
   templateRouteCoach.classList.remove("template-route-coach--dock-bottom");
-
-  // Active hours step: always dock coach at bottom so fields stay tappable.
-  if (templateWizardStep === getTemplateWizardHoursStep()) {
-    const padding = 12;
-    applyTemplateWizardCoachBottom(card, padding);
-    templateRouteCoach.classList.add("template-route-coach--dock-bottom");
-    return;
-  }
 
   const coachRect = templateRouteCoach.getBoundingClientRect();
   const targetRect = target.getBoundingClientRect();
@@ -6916,16 +7020,21 @@ async function applyTemplateRoute(journey, templateKey) {
     return { configured: false, nearest: null, error };
   }
 
-  const inbound = getInboundJourney(
-    settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
-  );
-  const configured = await configureOutboundJourney(journey, nearest.station, inbound);
+  try {
+    const inbound = getInboundJourney(
+      settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
+    );
+    const configured = await configureOutboundJourney(journey, nearest.station, inbound);
 
-  if (!configured) {
-    return { configured: false, nearest, error: null };
+    if (!configured) {
+      return { configured: false, nearest, error: null };
+    }
+
+    return { configured: true, journey: configured, nearest, error: null };
+  } catch (error) {
+    // Direction API 429/failures must not reject template creators (unhandled → Sentry).
+    return { configured: false, nearest, error };
   }
-
-  return { configured: true, journey: configured, nearest, error: null };
 }
 
 function shouldAutoRouteJourney(journey) {
@@ -7433,7 +7542,9 @@ function createJourneyFromTemplate(templateKey) {
         error: null,
         routeLoading: true,
       });
-      void prefillCustomNearestStation(journey.id);
+      void prefillCustomNearestStation(journey.id).catch((error) => {
+        console.warn("Custom nearest prefill failed", error);
+      });
     });
   }
 
@@ -7505,40 +7616,61 @@ async function prefillCustomNearestStation(journeyId) {
 
   const formDirection = String(detailDirectionSelect?.value || "").trim();
   let direction = formDirection || journey.direction || "";
-  if (!direction) {
-    direction = (await pickPerthDirection(nearest.station)) || "";
-  }
-
-  if (editingJourneyId !== journeyId) {
-    return;
-  }
-
-  // User may have typed a station while geo was in flight — don't overwrite.
-  if (String(detailStationCombobox?.getValue?.() || "").trim()) {
-    if (templateWizardContext?.templateKey === "custom") {
-      updateTemplateRouteCoachState({ routeLoading: false });
+  try {
+    if (!direction) {
+      direction = (await pickPerthDirection(nearest.station)) || "";
     }
-    return;
-  }
 
-  const updated = normalizeJourney({
-    ...journey,
-    station: nearest.station,
-    direction,
-  });
-  settingsDraftJourneys[journeyIndex] = updated;
+    if (editingJourneyId !== journeyId) {
+      return;
+    }
 
-  const nearestHint = `Selected ${formatStationLabel(nearest.station)} (${nearest.distanceKm.toFixed(1)} km away)`;
-  await syncJourneyDetailRouteFields(updated, nearestHint);
+    // User may have typed a station while geo was in flight — don't overwrite.
+    if (String(detailStationCombobox?.getValue?.() || "").trim()) {
+      if (templateWizardContext?.templateKey === "custom") {
+        updateTemplateRouteCoachState({ routeLoading: false });
+      }
+      return;
+    }
 
-  if (templateWizardContext?.templateKey === "custom") {
-    updateTemplateRouteCoachState({
-      journey: updated,
-      nearest,
-      configured: Boolean(updated.station && updated.direction),
-      error: null,
-      routeLoading: false,
+    const updated = normalizeJourney({
+      ...journey,
+      station: nearest.station,
+      direction,
     });
+    settingsDraftJourneys[journeyIndex] = updated;
+
+    const nearestHint = `Selected ${formatStationLabel(nearest.station)} (${nearest.distanceKm.toFixed(1)} km away)`;
+    await syncJourneyDetailRouteFields(updated, nearestHint);
+
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey: updated,
+        nearest,
+        configured: Boolean(updated.station && updated.direction),
+        error: null,
+        routeLoading: false,
+      });
+    }
+  } catch (routeError) {
+    if (editingJourneyId !== journeyId) {
+      return;
+    }
+    if (detailNearestHint) {
+      detailNearestHint.hidden = false;
+      detailNearestHint.textContent = isRateLimitedError(routeError)
+        ? routeError.message
+        : "Couldn't load directions for nearest station";
+    }
+    if (templateWizardContext?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        nearest,
+        configured: false,
+        error: routeError,
+        routeLoading: false,
+      });
+    }
   }
 }
 
@@ -8553,6 +8685,8 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
 
     try {
       await createJourneyFromTemplate(button.dataset.template);
+    } catch (error) {
+      console.warn("Could not create journey from template", error);
     } finally {
       templateCreateInFlight = false;
       setJourneyTemplateLoading(false);
