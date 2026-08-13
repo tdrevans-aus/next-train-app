@@ -1,10 +1,14 @@
 /**
- * CAPACITOR-5 / CAPACITOR-7: API 429 ("Too many requests") must not become an
- * unhandled pageerror / Sentry crash during refresh or journey template setup.
+ * CAPACITOR-5 / CAPACITOR-7 / CAPACITOR-8: API 429 must not become an
+ * unhandled pageerror / Sentry crash. Covers raw "Too many requests" and the
+ * client-mapped "Live times are busy. Trying again shortly." message.
  * Usage: node qa/rate-limit-no-unhandled.mjs
  */
 import { chromium } from "playwright";
 import { ensureDevServer, BASE } from "./helpers/dev-server.mjs";
+
+const RATE_LIMIT_RE = /too many requests|live times are busy/i;
+const NEARBY_CACHE_KEY = "nextTrainLastNearbyStation";
 
 async function run() {
   const spawned = await ensureDevServer();
@@ -36,8 +40,31 @@ async function run() {
     });
   });
 
+  // Near me cold path: cached station + directions/next-train all 429.
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(400);
+  await page.evaluate(
+    ({ key }) => {
+      localStorage.setItem("nextTrainOnboardingDone", "1");
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          station: "Edgewater Stn",
+          distanceKm: 0.4,
+          savedAtMs: Date.now(),
+        })
+      );
+    },
+    { key: NEARBY_CACHE_KEY }
+  );
+  await page.reload();
+  await page.waitForTimeout(1000);
+
+  await page.evaluate(async () => {
+    await window.nextTrainApp?.enterNearbyMode?.();
+    await window.nextTrainApp?.fetchNextTrain?.();
+  });
+  await page.waitForTimeout(500);
 
   // Journey mode + configured journey so fetchNextTrain hits /api/next-train.
   await page.evaluate(() => {
@@ -85,27 +112,33 @@ async function run() {
     await page.waitForTimeout(800);
   }
 
+  const customChip = page.locator('.journey-template-chip[data-template="custom"]');
+  if (await customChip.count()) {
+    await customChip.click({ force: true });
+    await page.waitForTimeout(1000);
+  }
+
   const unhandled = await page.evaluate(() => window.__unhandled || []);
 
   // pageerror / unhandledrejection are what Sentry GlobalHandlers capture.
   // Browser network console lines for 429 are expected under this mock.
-  const tooManyPage = pageErrors.filter((msg) => /too many requests/i.test(msg));
-  const tooManyUnhandled = unhandled.filter((msg) => /too many requests/i.test(msg));
+  const rateLimitPage = pageErrors.filter((msg) => RATE_LIMIT_RE.test(msg));
+  const rateLimitUnhandled = unhandled.filter((msg) => RATE_LIMIT_RE.test(msg));
 
   await browser.close();
   if (spawned) {
     spawned.kill("SIGTERM");
   }
 
-  if (tooManyPage.length || tooManyUnhandled.length) {
-    console.error("FAIL: Too many requests escaped as unhandled error", {
+  if (rateLimitPage.length || rateLimitUnhandled.length) {
+    console.error("FAIL: rate-limit message escaped as unhandled error", {
       pageErrors,
       unhandled,
     });
     process.exit(1);
   }
 
-  console.log("PASS: rate-limit 429 did not surface unhandled Too many requests", {
+  console.log("PASS: rate-limit 429 did not surface unhandled crash messages", {
     pageErrors,
     unhandled,
   });
