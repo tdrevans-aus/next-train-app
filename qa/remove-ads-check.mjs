@@ -1,6 +1,8 @@
 /**
  * Pro / Remove ads — web expectations + native-bridge diagnostic.
  * Usage: node qa/remove-ads-check.mjs
+ *
+ * Respects NextTrainPro.isProMonetizationShipped() (currently parked = false).
  */
 import { chromium } from "playwright";
 
@@ -16,12 +18,24 @@ async function run() {
   await page.waitForTimeout(5000);
 
   const web = await page.evaluate(async () => {
-    const init = await window.NextTrainAdFree?.ensureInit?.();
+    const api = window.NextTrainAdFree;
+    if (!api?.ensureInit || typeof api.refreshEntitlement !== "function") {
+      return {
+        error: "NextTrainAdFree.refreshEntitlement missing",
+        hasAdFree: Boolean(api),
+        keys: api ? Object.keys(api) : [],
+      };
+    }
+
+    const init = await api.ensureInit();
+    await api.refreshEntitlement({ silent: true });
     return {
       isNative: window.Capacitor?.isNativePlatform?.(),
       hasNativeBridge: !!window.NextTrainAdFreeNative?.purchaseInAppProduct,
+      proShipped: window.NextTrainPro?.isProMonetizationShipped?.() === true,
       init,
       proState: window.NextTrainPro?.getStateId?.(),
+      sectionHidden: document.getElementById("menu-pro-section")?.hidden,
       ctaHidden: document.getElementById("menu-pro-cta-btn")?.hidden,
       webHintHidden: document.getElementById("menu-pro-web-hint")?.hidden,
       adLinkHidden: document.getElementById("ad-remove-link-wrap")?.hidden,
@@ -29,20 +43,39 @@ async function run() {
   });
 
   console.log("\nPro purchase check — browser\n");
-  console.log("Web (expected): Pro CTA hidden, Android hint visible, link hidden");
+  if (web.error) {
+    console.error(JSON.stringify(web, null, 2));
+    await browser.close();
+    process.exit(1);
+  }
+
   console.log(JSON.stringify(web, null, 2));
 
-  const webPass =
-    web.ctaHidden === true &&
-    web.webHintHidden === false &&
-    web.adLinkHidden === true &&
-    web.isNative !== true;
+  // Parked Pro: Menu stays quiet on web. Shipped Pro: CTA hidden, Android hint visible.
+  const webPass = web.proShipped
+    ? web.ctaHidden === true &&
+      web.webHintHidden === false &&
+      web.adLinkHidden === true &&
+      web.isNative !== true
+    : web.sectionHidden === true &&
+      web.ctaHidden === true &&
+      web.webHintHidden === true &&
+      web.adLinkHidden === true &&
+      web.isNative !== true;
 
-  console.log(webPass ? "PASS  web Pro UI" : "FAIL  web Pro UI");
+  console.log(
+    webPass
+      ? `PASS  web Pro UI (${web.proShipped ? "shipped" : "parked"})`
+      : "FAIL  web Pro UI"
+  );
 
+  // Force shipped path for Menu / paywall assertions.
   await page.evaluate(() => {
     window.Capacitor = { isNativePlatform: () => true };
     window.NextTrainAdFreeNative = undefined;
+    if (window.NextTrainPro) {
+      window.NextTrainPro.isProMonetizationShipped = () => true;
+    }
   });
   await page.evaluate(async () => {
     await window.NextTrainProPurchase?.renderMenuPro?.();
@@ -68,7 +101,9 @@ async function run() {
   });
   await page.evaluate(async () => {
     window.NextTrainAdFreeNative = {
-      getInAppPurchases: async () => [{ productIdentifier: "com.tdrevans.nexttrain.adfree", isActive: true }],
+      getInAppPurchases: async () => [
+        { productIdentifier: "com.tdrevans.nexttrain.adfree", isActive: true },
+      ],
       purchaseIncludesProduct: (purchases, id) =>
         purchases.some((p) => p.productIdentifier === id),
       restoreInAppPurchases: async () => [
@@ -77,6 +112,9 @@ async function run() {
       purchaseInAppProduct: async () => ({}),
       isBillingSupported: async () => true,
     };
+    if (typeof window.NextTrainAdFree?.refreshEntitlement !== "function") {
+      throw new Error("refreshEntitlement undefined");
+    }
     await window.NextTrainAdFree.refreshEntitlement({ silent: true });
     await window.NextTrainProPurchase.renderMenuPro();
   });
@@ -88,7 +126,7 @@ async function run() {
     proState: window.NextTrainPro?.getStateId?.(),
   }));
 
-  console.log("\nSimulated native (no bridge):");
+  console.log("\nSimulated native (shipped + no bridge):");
   console.log(JSON.stringify({ nativeNoBridge, paywallOpen }, null, 2));
   const noBridgeUiOk =
     nativeNoBridge.sectionHidden === false &&

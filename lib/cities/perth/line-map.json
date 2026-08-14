@@ -1,0 +1,182 @@
+{
+  "city": "perth",
+  "source": "Transperth rail network (manual audit 2026-08-13 from public/stations.json + line topology)",
+  "notes": [
+    "Stations use LiveTimes naming (* Stn).",
+    "Directions for journey setup = far termini of lines serving the station.",
+    "Short-turn groups collapse intermediate terminals into the line canonical (see shortTurnGroups)."
+  ],
+  "shortTurnGroups": {
+    "Yanchep": ["Yanchep", "Whitfords", "Clarkson", "Butler"],
+    "Mandurah": ["Mandurah", "Cockburn"],
+    "Fremantle": ["Fremantle", "Claremont"]
+  },
+  "doNotGroup": [
+    {
+      "a": "High Wycombe",
+      "b": "Ellenbrook",
+      "reason": "Branched lines — only share Bayswater; different travel directions"
+    },
+    {
+      "a": "Byford",
+      "b": "Cockburn",
+      "reason": "Different lines (Armadale vs Mandurah)"
+    },
+    {
+      "a": "Claremont",
+      "b": "High Wycombe",
+      "reason": "Different lines at inner stations"
+    }
+  ],
+  "lines": [
+    {
+      "id": "yanchep",
+      "name": "Yanchep Line",
+      "termini": ["Yanchep", "Perth"],
+      "stations": [
+        "Yanchep Stn",
+        "Butler Stn",
+        "Clarkson Stn",
+        "Currambine Stn",
+        "Joondalup Stn",
+        "Edgewater Stn",
+        "Whitfords Stn",
+        "Greenwood Stn",
+        "Warwick Stn",
+        "Stirling Stn",
+        "Glendalough Stn",
+        "Leederville Stn",
+        "Perth Underground Stn",
+        "Perth Stn"
+      ]
+    },
+    {
+      "id": "mandurah",
+      "name": "Mandurah Line",
+      "termini": ["Mandurah", "Perth"],
+      "stations": [
+        "Mandurah Stn",
+        "Lakelands Stn",
+        "Warnbro Stn",
+        "Wellard Stn",
+        "Rockingham Stn",
+        "Kwinana Stn",
+        "Cockburn Central Stn",
+        "Aubin Grove Stn",
+        "Murdoch Stn",
+        "Bull Creek Stn",
+        "Canning Bridge Stn",
+        "Elizabeth Quay Stn",
+        "Perth Underground Stn",
+        "Perth Stn"
+      ]
+    },
+    {
+      "id": "fremantle",
+      "name": "Fremantle Line",
+      "termini": ["Fremantle", "Perth"],
+      "stations": [
+        "Fremantle Stn",
+        "North Fremantle Stn",
+        "Victoria Street Stn",
+        "Mosman Park Stn",
+        "Grant Street Stn",
+        "Swanbourne Stn",
+        "Claremont Stn",
+        "Loch Street Stn",
+        "Karrakatta Stn",
+        "Showgrounds Stn",
+        "Daglish Stn",
+        "Shenton Park Stn",
+        "Subiaco Stn",
+        "Perth Stn",
+        "Perth Underground Stn"
+      ]
+    },
+    {
+      "id": "midland",
+      "name": "Midland Line",
+      "termini": ["Midland", "Perth"],
+      "stations": [
+        "Midland Stn",
+        "Woodbridge Stn",
+        "Success Hill Stn",
+        "Guildford Stn",
+        "Bassendean Stn",
+        "Ashfield Stn",
+        "Bayswater Stn",
+        "Meltham Stn",
+        "Maylands Stn",
+        "Mt Lawley Stn",
+        "East Perth Stn",
+        "Claisebrook Stn",
+        "McIver Stn",
+        "Perth Stn",
+        "Perth Underground Stn"
+      ]
+    },
+    {
+      "id": "airport",
+      "name": "Airport Line",
+      "termini": ["High Wycombe", "Perth"],
+      "stations": [
+        "High Wycombe Stn",
+        "Airport Central Stn",
+        "Redcliffe Stn",
+        "Bayswater Stn",
+        "Meltham Stn",
+        "Maylands Stn",
+        "Mt Lawley Stn",
+        "Claisebrook Stn",
+        "McIver Stn",
+        "Perth Stn",
+        "Perth Underground Stn"
+      ]
+    },
+    {
+      "id": "armadale",
+      "name": "Armadale / Byford Line",
+      "termini": ["Armadale", "Perth"],
+      "stations": [
+        "Armadale Stn",
+        "Sherwood Stn",
+        "Challis Stn",
+        "Kelmscott Stn",
+        "Seaforth Stn",
+        "Gosnells Stn",
+        "Maddington Stn",
+        "Kenwick Stn",
+        "Beckenham Stn",
+        "Cannington Stn",
+        "Queens Park Stn",
+        "Oats Street Stn",
+        "Carlisle Stn",
+        "Victoria Park Stn",
+        "Burswood Stn",
+        "Perth Stadium Stn",
+        "Claisebrook Stn",
+        "McIver Stn",
+        "Perth Stn",
+        "Perth Underground Stn"
+      ]
+    },
+    {
+      "id": "thornlie",
+      "name": "Thornlie–Cockburn Line",
+      "termini": ["Thornlie", "Cockburn"],
+      "stations": [
+        "Thornlie Stn",
+        "Kenwick Stn",
+        "Beckenham Stn",
+        "Cannington Stn",
+        "Cockburn Central Stn"
+      ]
+    }
+  ],
+  "coverageGaps": [
+    "Ellenbrook Line stations not yet in public/stations.json (Ellenbrook, Whiteman Park, etc.) — add when LiveTimes allowlists them.",
+    "Alkimos / Eglinton (Yanchep extension) not in stations.json yet.",
+    "Byford Stn not in stations.json yet — Armadale terminus used until Byford ships.",
+    "Cottesloe naming may appear as Mosman Park / Grant Street corridor in LiveTimes."
+  ]
+}

@@ -27,6 +27,21 @@ public final class WidgetUiBuilder {
 
   private WidgetUiBuilder() {}
 
+  /**
+   * Outside-hours idle twin (preferred clock / next window). Live "Target Train" must not
+   * match here — same label, different face ({@code outsideHoursIdle} flag is required).
+   */
+  static boolean isOutsideHoursIdleFace(JSONObject snapshot) {
+    if (snapshot == null) {
+      return false;
+    }
+    if (snapshot.optBoolean("outsideHoursIdle", false)) {
+      return true;
+    }
+    // Legacy idle without the flag — "Next Journey" is idle-only; "Target Train" is not.
+    return "Next Journey".equalsIgnoreCase(snapshot.optString("label", ""));
+  }
+
   public static RemoteViews build(Context context, JSONObject snapshot, int layoutId) {
     RemoteViews views = new RemoteViews(context.getPackageName(), layoutId);
     if (snapshot != null && snapshot.optBoolean("widgetLocked", false)) {
@@ -81,10 +96,9 @@ public final class WidgetUiBuilder {
       leaveColor = R.color.widget_urgent;
     }
 
-    boolean outsideHoursIdle =
-      snapshot.optBoolean("outsideHoursIdle", false) ||
-      "Next Journey".equalsIgnoreCase(label) ||
-      "Target Train".equalsIgnoreCase(label);
+    // Idle outside-hours face only — do NOT key off "Target Train" label: that label is also
+    // used on the live face when the shown trip is at/after preferred (would hide train clock).
+    boolean outsideHoursIdle = isOutsideHoursIdleFace(snapshot);
     if (outsideHoursIdle) {
       hideLeaveTwin(views);
       views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
@@ -689,26 +703,32 @@ public final class WidgetUiBuilder {
   }
 
   public static int layoutForWidget(Context context, AppWidgetManager manager, int widgetId) {
-    int minWidth = 110;
-    int minHeight = 40;
+    int widthDp = 110;
+    int heightDp = 40;
     try {
       android.os.Bundle options = manager.getAppWidgetOptions(widgetId);
       if (options != null) {
-        minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, minWidth);
-        minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, minHeight);
+        widthDp = Math.max(
+          options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, widthDp),
+          options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+        );
+        heightDp = Math.max(
+          options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, heightDp),
+          options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, heightDp)
+        );
       }
     } catch (Exception ignored) {
       // Use compact layout.
     }
-    return layoutForSizeDp(minWidth, minHeight);
+    return layoutForSizeDp(widthDp, heightDp);
   }
 
   /**
-   * Size → layout. Default 2×1 is small. ≈3×1 (wide) or ≈2×2 (tall) → medium
-   * with Updated line and larger type.
+   * Size → layout. Default 2×1 is small. ≈3×1 (180dp+) or ≈2×2 (110dp+ tall) → medium
+   * with Updated line and larger type. Cell formula: (70 × n) − 30.
    */
   static int layoutForSizeDp(int minWidthDp, int minHeightDp) {
-    return minWidthDp >= 250 || minHeightDp >= 110
+    return minWidthDp >= 180 || minHeightDp >= 110
       ? R.layout.widget_medium
       : R.layout.widget_small;
   }

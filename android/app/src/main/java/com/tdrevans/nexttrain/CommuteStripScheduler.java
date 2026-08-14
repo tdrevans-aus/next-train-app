@@ -62,14 +62,8 @@ public final class CommuteStripScheduler {
       return;
     }
 
-    long refreshedAt = widgetResult != null && widgetResult.refreshedAtMs > 0
-      ? widgetResult.refreshedAtMs
-      : WidgetSettingsStore.readLastRefreshMs(context);
-    long age = System.currentTimeMillis() - refreshedAt;
-    boolean stale = refreshedAt > 0 && age > CommuteSchedule.STALE_THRESHOLD_MS;
-    if (stale) {
-      return;
-    }
+    // Widget cache age is irrelevant here — computeStripPlanForJourney fetches its own trips.
+    // Do not stamp "Times may be out of date" from widget refresh age.
 
     try {
       String settingsJson = WidgetSettingsStore.readSettings(context);
@@ -88,7 +82,8 @@ public final class CommuteStripScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
-        StripPlan plan = computeStripPlanForJourney(context, journey, stale);
+        // Fresh fetch per journey — do not inherit widget-cache "stale" into the strip body.
+        StripPlan plan = computeStripPlanForJourney(context, journey, false);
         if (plan == null || plan.endAtMs <= now) {
           continue;
         }
@@ -98,6 +93,7 @@ public final class CommuteStripScheduler {
       }
 
       if (best == null) {
+        LeaveReminderNotifier.cancel(context);
         return;
       }
 
@@ -111,7 +107,8 @@ public final class CommuteStripScheduler {
         return;
       }
 
-      if (now >= best.startAtMs) {
+      // Late-arm: already inside the leave window → post immediately (Leave now / countdown).
+      if (isInsideStripWindow(now, best.startAtMs, best.endAtMs)) {
         long departureMs = PerthTime.epochMillisFromIso(best.target.departureIso);
         CommuteStripNotifier.show(
           context,
@@ -182,16 +179,33 @@ public final class CommuteStripScheduler {
     int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
     JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore);
     PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
-      context,
       journey,
       payload,
-      stale
+      stale,
+      PreferredTrainReminder.ScheduleClock.liveForStrip(context)
     );
     if (target == null) {
       return null;
     }
 
     String localDate = PerthTime.localDateKey();
+    // After leave-now for today: only keep strip for that same departure (mid-window),
+    // never chain to the next afternoon train.
+    if (LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate)) {
+      String firedDepartureKey = LeaveReminderSettingsStore.getLeaveNowDepartureKeyForDay(
+        context,
+        target.journeyId,
+        localDate
+      );
+      if (
+        firedDepartureKey == null ||
+        firedDepartureKey.isEmpty() ||
+        !firedDepartureKey.equals(target.departureKey)
+      ) {
+        return null;
+      }
+    }
+
     if (LeaveReminderSettingsStore.hasStripDismissedForDay(context, target.journeyId, localDate)) {
       return null;
     }
@@ -231,6 +245,11 @@ public final class CommuteStripScheduler {
     long graceEnd = departureMs > 0 ? departureMs + GRACE_MS : startAtMs + MAX_RUNTIME_MS;
     long maxEnd = startAtMs + MAX_RUNTIME_MS;
     return Math.min(graceEnd, maxEnd);
+  }
+
+  /** True when Live countdown should post immediately (mid-window late-arm). */
+  static boolean isInsideStripWindow(long nowMs, long startAtMs, long endAtMs) {
+    return nowMs >= startAtMs && nowMs < endAtMs;
   }
 
   public static void cancelScheduledAlarms(Context context) {

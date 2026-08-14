@@ -37,14 +37,29 @@ async function run() {
   await page.locator('[data-template="custom"]').click();
   await page.waitForTimeout(800);
   await dismissCoach(page);
-  await waitForDetailStationCombobox(page);
+  await page.evaluate(() => {
+    const coach = document.getElementById("template-route-coach");
+    if (coach) {
+      coach.hidden = true;
+    }
+  });
+  await page.locator("#detail-station-input").waitFor({ state: "visible", timeout: 15000 });
 
+  // Wait for optional geo prefill, then clear so Save-without-station is meaningful.
+  await page.waitForTimeout(2500);
+  await page.evaluate(() => window.nextTrainApp.clearDetailStation());
+  await page.waitForTimeout(200);
+
+  page.once("dialog", async (dialog) => {
+    await dialog.dismiss();
+  });
   await page.locator("#detail-done-btn").click();
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(400);
 
   const saveBlocked = await page.evaluate(() => {
     const detailOpen = !document.getElementById("settings-detail-view").hidden;
-    const stationValue = document.getElementById("detail-station-input")?.value?.trim() ?? "";
+    const stationValue =
+      document.getElementById("detail-station-input")?.value?.trim() ?? "";
     return detailOpen && !stationValue;
   });
 
@@ -54,6 +69,8 @@ async function run() {
     console.error("FAIL — Save allowed without station");
     process.exitCode = 1;
   }
+
+  await waitForDetailStationCombobox(page);
 
   await page.locator("#detail-station-input").click();
   await page.waitForTimeout(200);
@@ -187,6 +204,30 @@ async function run() {
     );
     return labels.includes("Edgewater");
   });
+
+  const pickerAboveTrainMeta = await nearbyPage.evaluate(() => {
+    const listbox = document.getElementById("nearby-station-listbox");
+    const strip = document.getElementById("detail-strip");
+    if (!listbox || listbox.hidden || !strip) {
+      return false;
+    }
+    const listRect = listbox.getBoundingClientRect();
+    const stripRect = strip.getBoundingClientRect();
+    const overlaps =
+      listRect.left < stripRect.right &&
+      listRect.right > stripRect.left &&
+      listRect.top < stripRect.bottom &&
+      listRect.bottom > stripRect.top;
+    const stripHidden = getComputedStyle(document.querySelector(".train-meta")).visibility === "hidden";
+    return !overlaps && stripHidden;
+  });
+
+  if (pickerAboveTrainMeta) {
+    console.log("PASS — Near me station list above Platform/Status");
+  } else {
+    console.error("FAIL — station picker overlaps Platform/Status strip");
+    process.exitCode = 1;
+  }
 
   if (edgewaterNearby) {
     console.log("PASS — Near me picker filters by typed query");

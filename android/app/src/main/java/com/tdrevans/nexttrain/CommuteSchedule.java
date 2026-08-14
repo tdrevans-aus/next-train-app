@@ -387,8 +387,8 @@ public final class CommuteSchedule {
         || "urgent".equals(leavePhase)
         || "soon".equals(leavePhase);
 
-    // Match main screen: Next Train primary, leave secondary.
-    snapshot.put("label", "NEXT TRAIN");
+    // Match main screen: Next Train vs Target Train when the face is the preferred trip.
+    snapshot.put("label", liveWidgetLabel(journey, next));
     snapshot.put("primary", formatMinutesPrimary(minutesUntilDeparture));
     snapshot.put("trainClock", displayTime != null ? displayTime : "");
 
@@ -519,6 +519,50 @@ public final class CommuteSchedule {
       return false;
     }
     return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey));
+  }
+
+  /**
+   * Live face label: Target Train when the shown trip is at/after preferred; otherwise Next Train.
+   * (Idle outside-hours uses {@link NextCommutePreview#idleWidgetLabel}.)
+   */
+  static String liveWidgetLabel(JSONObject journey, JSONObject trip) {
+    int preferredMinutes = preferredMinutesForLiveGlance(journey);
+    if (preferredMinutes < 0 || trip == null) {
+      return "NEXT TRAIN";
+    }
+    if (tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey))) {
+      return "Target Train";
+    }
+    return "NEXT TRAIN";
+  }
+
+  static String liveWidgetLabelFromSnapshot(JSONObject snapshot) {
+    if (snapshot == null) {
+      return "NEXT TRAIN";
+    }
+    int preferredMinutes = PerthTime.parseClockMinutes(snapshot.optString("preferredTrainTime", ""));
+    if (preferredMinutes < 0) {
+      return "NEXT TRAIN";
+    }
+    if (snapshot.optBoolean("leaveByArmed", false)) {
+      return "Target Train";
+    }
+    return "NEXT TRAIN";
+  }
+
+  /** Preserve Target Train / Next Train across Updating… / stale paints. */
+  static String preservedLiveLabel(JSONObject cached) {
+    if (cached == null) {
+      return "NEXT TRAIN";
+    }
+    String label = cached.optString("label", "");
+    if ("Target Train".equalsIgnoreCase(label) || "TARGET TRAIN".equalsIgnoreCase(label)) {
+      return "Target Train";
+    }
+    if (!label.isEmpty()) {
+      return label;
+    }
+    return liveWidgetLabelFromSnapshot(cached);
   }
 
   /** Medium widget orientation when Leave By is hidden for an earlier train. */
@@ -725,7 +769,7 @@ public final class CommuteSchedule {
 
     JSONObject snapshot = new JSONObject(cached.toString());
     snapshot.put("staleWhileFetching", false);
-    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("label", preservedLiveLabel(cached));
     snapshot.put("primary", "Updating…");
     snapshot.put("trainClock", "");
     snapshot.put("secondary", "Fetching next train…");
@@ -744,7 +788,7 @@ public final class CommuteSchedule {
     String primary = degradedPrimary(cached);
 
     snapshot.put("staleWhileFetching", true);
-    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("label", preservedLiveLabel(cached));
     snapshot.put("primary", primary);
     snapshot.put(
       "trainClock",
@@ -786,7 +830,7 @@ public final class CommuteSchedule {
 
   private static JSONObject applyStaleRefreshState(JSONObject cached) throws Exception {
     JSONObject snapshot = new JSONObject(cached.toString());
-    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("label", preservedLiveLabel(cached));
     snapshot.put("primary", degradedPrimary(cached));
     snapshot.put("trainClock", "");
     snapshot.put("secondary", DEGRADED_SECONDARY);
@@ -840,7 +884,7 @@ public final class CommuteSchedule {
         || "urgent".equals(leavePhase)
         || "soon".equals(leavePhase);
 
-    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("label", liveWidgetLabelFromSnapshot(snapshot));
     snapshot.put("primary", formatMinutesPrimary(minutesUntilDeparture));
 
     if (departMode) {

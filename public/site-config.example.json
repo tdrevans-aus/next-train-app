@@ -6,7 +6,7 @@
   "admobTestMode": true,
   "adFreeProductId": "com.tdrevans.nexttrain.adfree",
   "proTrialDays": 30,
-  "appVersion": "2.1.0",
-  "appVersionCode": 4,
+  "appVersion": "2.1.2",
+  "appVersionCode": 9,
   "sentryDsn": ""
 }

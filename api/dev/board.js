@@ -1,6 +1,6 @@
-import { applyCors } from "../lib/api-cors.js";
-import { checkRateLimit } from "../lib/api-rate-limit.js";
-import { isCityProbeAllowed, fetchDevCityBoard } from "../lib/dev-city-board.js";
+import { applyCors } from "../../lib/api-cors.js";
+import { checkRateLimit } from "../../lib/api-rate-limit.js";
+import { isCityProbeAllowed, fetchDevCityBoard } from "../../lib/dev-city-board.js";
 
 /**
  * Internal dogfood board for planned cities. Hidden unless ALLOW_CITY_PROBES=1.

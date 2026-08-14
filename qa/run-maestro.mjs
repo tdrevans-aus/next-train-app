@@ -1,11 +1,14 @@
 /**
  * Run Maestro Android smoke flows on a connected emulator/device.
  * Usage: npm run test:maestro
+ *
+ * With multiple adb devices, prefers an emulator. Override with ANDROID_SERIAL.
  */
 import { spawnSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { adb, listAdbDevices, resolveAdbSerial } from "./helpers/adb.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const flowsDir = path.resolve(__dirname, "maestro", "flows");
@@ -52,6 +55,11 @@ function resolveJavaHome() {
 }
 
 const javaHome = resolveJavaHome();
+const adbSerial = resolveAdbSerial({ preferEmulator: true });
+
+function adbOnTarget(args) {
+  return adb(args, { serial: adbSerial });
+}
 
 function runMaestro(args, options = {}) {
   if (process.platform === "win32" && maestroCommand.toLowerCase().endsWith(".bat")) {
@@ -72,6 +80,7 @@ function maestroEnv() {
   return {
     ...process.env,
     ...(javaHome ? { JAVA_HOME: javaHome } : {}),
+    ...(adbSerial ? { ANDROID_SERIAL: adbSerial } : {}),
     MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: "true",
   };
 }
@@ -82,18 +91,7 @@ function commandOk(args = []) {
 }
 
 function countAdbDevices() {
-  const result = spawnSync("adb", ["devices"], {
-    encoding: "utf8",
-    shell: false,
-  });
-  if (result.error || result.status !== 0) {
-    return 0;
-  }
-  return result.stdout
-    .split("\n")
-    .slice(1)
-    .map((line) => line.trim())
-    .filter((line) => line.endsWith("device")).length;
+  return listAdbDevices().length;
 }
 
 function listFlows(names) {
@@ -113,9 +111,15 @@ if (!commandOk(["--version"])) {
 }
 
 const deviceCount = countAdbDevices();
-if (deviceCount < 1) {
+if (deviceCount < 1 || !adbSerial) {
   console.error("No Android device/emulator found. Run `adb devices` and start an emulator.");
   process.exit(1);
+}
+
+if (deviceCount > 1) {
+  console.log(
+    `Multiple adb devices — using ${adbSerial} (set ANDROID_SERIAL to override).`
+  );
 }
 
 const flows = [...listFlows(coreFlows)];
@@ -127,48 +131,73 @@ if (flows.length === 0) {
   process.exit(1);
 }
 
-console.log(`Running ${flows.length} Maestro flow(s) on ${deviceCount} device(s)...`);
+console.log(`Running ${flows.length} Maestro flow(s) on ${adbSerial}...`);
 
 function waitForAdbDevice(maxAttempts = 20) {
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-    spawnSync("adb", ["wait-for-device"], { shell: false });
-    if (countAdbDevices() > 0) {
+    adbOnTarget(["wait-for-device"]);
+    if (listAdbDevices().includes(adbSerial) || countAdbDevices() > 0) {
       return true;
     }
-    spawnSync("adb", ["shell", "sleep", "1"], { shell: false });
+    adbOnTarget(["shell", "sleep", "1"]);
   }
   return countAdbDevices() > 0;
 }
 
 function resetMaestroDriver() {
-  spawnSync("adb", ["uninstall", "dev.mobile.maestro.test"], { shell: false });
-  spawnSync("adb", ["uninstall", "dev.mobile.maestro"], { shell: false });
-  spawnSync("adb", ["reconnect"], { shell: false });
+  adbOnTarget(["uninstall", "dev.mobile.maestro.test"]);
+  adbOnTarget(["uninstall", "dev.mobile.maestro"]);
+  adbOnTarget(["reconnect"]);
   waitForAdbDevice();
-  spawnSync("adb", ["shell", "sleep", "3"], { shell: false });
+  adbOnTarget(["shell", "sleep", "3"]);
 }
 
 function stabilizeEmulatorBetweenFlows() {
   waitForAdbDevice();
-  spawnSync("adb", ["shell", "sleep", "2"], { shell: false });
+  adbOnTarget(["shell", "sleep", "2"]);
 }
 
-spawnSync("adb", ["shell", "pm", "clear", "com.tdrevans.nexttrain"], { shell: false });
+function wakeDevice() {
+  adbOnTarget(["shell", "input", "keyevent", "224"]);
+  adbOnTarget(["shell", "input", "keyevent", "82"]);
+}
+
+function runFlowWithRetry(flow, { retries = 1 } = {}) {
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    stabilizeEmulatorBetweenFlows();
+    if (attempt > 0) {
+      console.log(`  retry ${attempt}/${retries} after emulator reconnect…`);
+      resetMaestroDriver();
+      stabilizeEmulatorBetweenFlows();
+    }
+
+    const result = runMaestro(["test", flow], {
+      stdio: "inherit",
+      env: maestroEnv(),
+    });
+    if (result.status === 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+wakeDevice();
+waitForAdbDevice(40);
+adbOnTarget(["shell", "pm", "clear", "com.tdrevans.nexttrain"]);
+stabilizeEmulatorBetweenFlows();
+adbOnTarget(["shell", "am", "start", "-n", "com.tdrevans.nexttrain/.MainActivity"]);
 stabilizeEmulatorBetweenFlows();
 
 for (const flow of flows) {
   if (path.basename(flow) === "menu-reminders.yaml") {
     resetMaestroDriver();
   }
-  stabilizeEmulatorBetweenFlows();
   console.log(`\n— ${path.basename(flow)}`);
-  const result = runMaestro(["test", flow], {
-    stdio: "inherit",
-    env: maestroEnv(),
-  });
-  if (result.status !== 0) {
+  const ok = runFlowWithRetry(flow, { retries: 1 });
+  if (!ok) {
     console.error(`Maestro flow failed: ${path.basename(flow)}`);
-    process.exit(result.status ?? 1);
+    process.exit(1);
   }
 }
 

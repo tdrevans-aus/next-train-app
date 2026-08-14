@@ -24,6 +24,7 @@ async function swipeVariant(page, { deltaX, deltaY, releaseOn }) {
           bubbles: true,
           pointerId: 1,
           pointerType: "touch",
+          isPrimary: true,
         })
       );
 
@@ -35,6 +36,7 @@ async function swipeVariant(page, { deltaX, deltaY, releaseOn }) {
           bubbles: true,
           pointerId: 1,
           pointerType: "touch",
+          isPrimary: true,
         })
       );
 

@@ -374,7 +374,18 @@ async function openWidgetHelpDialog({ showManual = false } = {}) {
     showWidgetHelpManual();
   }
 
-  dialog.showModal();
+  // Prefer app dialog opener — showModal is unreliable in Capacitor WebView.
+  if (typeof window.nextTrainApp?.openAppDialog === "function") {
+    window.nextTrainApp.openAppDialog(dialog);
+    return;
+  }
+
+  try {
+    dialog.showModal();
+  } catch (error) {
+    console.warn("widget help showModal failed", error);
+    dialog.setAttribute("open", "");
+  }
 }
 
 async function requestPinWidget() {
@@ -404,7 +415,11 @@ async function requestPinWidget() {
 
     window.nextTrainStickinessCoaches?.markCoachDone?.("widget");
     window.NextTrainAnalytics?.track?.("widget_pin_requested");
-    dialog?.close();
+    if (typeof window.nextTrainApp?.closeAppDialog === "function") {
+      window.nextTrainApp.closeAppDialog(dialog);
+    } else {
+      dialog?.close();
+    }
     window.setTimeout(() => {
       window.NextTrainPro?.pollWidgetAdded?.();
     }, 1500);
@@ -440,7 +455,12 @@ function initWidgetUi() {
   document.getElementById("widget-help-pin-btn")?.addEventListener("click", requestPinWidget);
   document.getElementById("widget-help-add-another-btn")?.addEventListener("click", requestPinWidget);
   document.getElementById("widget-help-done-btn")?.addEventListener("click", () => {
-    document.getElementById("widget-help-dialog")?.close();
+    const dialog = document.getElementById("widget-help-dialog");
+    if (typeof window.nextTrainApp?.closeAppDialog === "function") {
+      window.nextTrainApp.closeAppDialog(dialog);
+      return;
+    }
+    dialog?.close();
   });
 
   const menuWidgetBtn = document.getElementById("menu-widget-btn");

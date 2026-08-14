@@ -33,8 +33,9 @@ var NextTrainTimes = (() => {
     "Cockburn Central Stn": "Cockburn"
   };
   var LINE_DESTINATION_GROUPS = {
-    Yanchep: ["Yanchep", "Whitfords", "Clarkson"],
-    Mandurah: ["Mandurah", "Cockburn"]
+    Yanchep: ["Yanchep", "Whitfords", "Clarkson", "Butler"],
+    Mandurah: ["Mandurah", "Cockburn"],
+    Fremantle: ["Fremantle", "Claremont"]
   };
   function applyDestinationAliases(destination) {
     const trimmed = destination.trim();
@@ -94,6 +95,19 @@ var NextTrainTimes = (() => {
       return new Date(trimmed);
     }
     return /* @__PURE__ */ new Date(`${trimmed}${PERTH_OFFSET}`);
+  }
+  function parseLiveBoardTimestamp(value) {
+    if (!value) {
+      return null;
+    }
+    const trimmed = String(value).trim();
+    if (!trimmed) {
+      return null;
+    }
+    if (trimmed.includes("/")) {
+      return parsePerthDateTime(trimmed);
+    }
+    return parsePerthIsoDateTime(trimmed);
   }
   var ON_TIME_TOLERANCE_MINUTES = 1;
   function timingOffsetMinutesBetween(scheduledDisplayTime, displayTime) {
@@ -389,7 +403,8 @@ var NextTrainTimes = (() => {
     return {
       stationName: board.stationName,
       lastUpdate: board.lastUpdate ?? lastUpdated,
-      trips: board.trips.map(toProviderTrip)
+      trips: board.trips.map(toProviderTrip),
+      scheduleSource: "live"
     };
   }
   async function fetchTripsForStation(stationName) {
@@ -415,7 +430,7 @@ var NextTrainTimes = (() => {
   }) {
     const { stationName, lastUpdate, trips } = await fetchTripsForStation(station);
     const upcoming = pickUpcomingTrips(trips, destination, now);
-    const lastUpdated = lastUpdate ? lastUpdate.includes("/") ? parsePerthIsoDateTime(lastUpdate) : new Date(lastUpdate) : null;
+    const lastUpdated = parseLiveBoardTimestamp(lastUpdate);
     return buildNextTrainResponse({
       station: stationName,
       destination,

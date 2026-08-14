@@ -7,7 +7,12 @@ const BASE = "http://localhost:3000";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  const context = await browser.newContext({
+    viewport: { width: 412, height: 915 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  const page = await context.newPage();
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(800);
@@ -16,12 +21,25 @@ async function run() {
   await page.locator("#journeys-btn").click();
   await page.waitForTimeout(400);
   await page.locator('[data-template="morning"]').click();
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(2200);
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i += 1) {
+    const onHoursStep = await page.evaluate(
+      () => !document.getElementById("template-wizard-step-3")?.hidden
+    );
+    if (onHoursStep) {
+      break;
+    }
     await page.locator("#template-wizard-primary-btn").click();
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(550);
   }
+
+  await page.waitForFunction(
+    () => !document.getElementById("template-wizard-step-3")?.hidden,
+    null,
+    { timeout: 8000 }
+  );
+  await page.waitForTimeout(400);
 
   const result = await page.evaluate(() => {
     const card = document.querySelector("#template-route-coach .onboarding-coach-card");
@@ -74,4 +92,7 @@ async function run() {
   await browser.close();
 }
 
-run();
+run().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

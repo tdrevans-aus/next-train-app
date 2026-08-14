@@ -149,6 +149,76 @@ public class PreferredTrainReminderTest {
   }
 
   @Test
+  public void pastLeaveBy_stripClockIgnoresLeaveNowAlreadyFired() throws Exception {
+    // Reminder ping already fired; Live countdown toggled on mid-window must still resolve.
+    JSONObject journey = loadFixture("journey-morning.json");
+    JSONObject payload = loadFixture("payload-710-730.json");
+    PreferredTrainReminder.ScheduleClock stripClock = new PreferredTrainReminder.ScheduleClock(
+      Instant.parse("2026-08-10T07:25:00+08:00").toEpochMilli(),
+      MONDAY_ISO,
+      MONDAY_DATE,
+      true
+    );
+
+    PreferredTrainReminder.Target blocked = PreferredTrainReminder.computeForJourney(
+      journey,
+      payload,
+      false,
+      stripClock
+    );
+    assertNull(blocked);
+
+    PreferredTrainReminder.ScheduleClock forStrip = new PreferredTrainReminder.ScheduleClock(
+      Instant.parse("2026-08-10T07:25:00+08:00").toEpochMilli(),
+      MONDAY_ISO,
+      MONDAY_DATE,
+      false
+    );
+    PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
+      journey,
+      payload,
+      false,
+      forStrip
+    );
+    assertNotNull(target);
+    assertEquals("2026-08-10T07:30:00+08:00", target.departureIso);
+  }
+
+  @Test
+  public void emptyActiveUntil_doesNotArmAfternoonForMorningPreferred() throws Exception {
+    JSONObject journey = loadFixture("journey-morning.json");
+    journey.put("defaultFrom", "");
+    journey.put("defaultUntil", "");
+    journey.put("preferredTrainTime", "07:30");
+
+    // Afternoon payload — same shape as morning but 15:12 / 17:13 style times.
+    JSONObject payload = new JSONObject(
+      "{"
+        + "\"upcoming\":["
+        + "{\"departure\":\"2026-08-10T15:12:00+08:00\",\"leaveBy\":\"2026-08-10T15:02:00+08:00\",\"displayTime\":\"3:12 pm\"},"
+        + "{\"departure\":\"2026-08-10T17:13:00+08:00\",\"leaveBy\":\"2026-08-10T17:03:00+08:00\",\"displayTime\":\"5:13 pm\"}"
+        + "]"
+        + "}"
+    );
+
+    PreferredTrainReminder.ScheduleClock afternoon = new PreferredTrainReminder.ScheduleClock(
+      Instant.parse("2026-08-10T17:11:00+08:00").toEpochMilli(),
+      MONDAY_ISO,
+      MONDAY_DATE,
+      false
+    );
+
+    PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
+      journey,
+      payload,
+      false,
+      afternoon
+    );
+
+    assertNull(target);
+  }
+
+  @Test
   public void getReadyOffsetMath() {
     long leaveByMs = Instant.parse("2026-08-10T07:20:00+08:00").toEpochMilli();
 

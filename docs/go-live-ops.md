@@ -13,8 +13,8 @@ Proportionate for an indie Capacitor app + Vercel `/api` → Transperth. Not ent
 
 | # | Item | Who | Status | Notes |
 | --- | --- | --- | --- | --- |
-| 1 | **Uptime** on `GET /api/health` (+ optional synthetic next-train) | Tim | **Done** (UptimeRobot + activate emails) | See § Uptime |
-| 2 | **Crash reporting** on release builds | Tim + agent | **Done** — DSN live, Issues receiving events, Cursor Sentry→fix automation | High-priority email optional; GitHub-create alert off |
+| 1 | **Uptime** — health + ready + synthetic next-train | Tim | **In progress** — health live; add ready + next-train monitors | See § Uptime |
+| 2 | **Crash reporting** on release builds | Jim (SDK) + Tim (Sentry UI) | **App done** — DSN in bundle, events in Issues. **Todo:** GitHub integration + “new issue → GitHub issue” alert (`docs/sentry-integration-now.md`) |
 | 3 | **Second Play Console admin** + review email alerts | Tim | **Skipped** (no human buddy yet) | Rely on Uptime + own phone |
 | 4 | **Gmail cover** (vacation + forward + templates) | Tim | **Skipped** (Tim 11 Aug) | Templates still in § Support cover if needed later |
 | 5 | **Pre-freeze** 24–26 Sep | Tim | Todo | No risky deploys day-of leave |
@@ -37,22 +37,71 @@ Proportionate for an indie Capacitor app + Vercel `/api` → Transperth. Not ent
 
 ## Uptime
 
-**Liveness (always):**  
-`https://next-train-app.vercel.app/api/health`  
-Expect **200** + JSON `{ "ok": true, ... }`. No Transperth call — tells you the function platform is up.
+Three monitors on **UptimeRobot** (free tier is fine). All hit production:
 
-**Synthetic (recommended second check):** every 5–15 min  
-`https://next-train-app.vercel.app/api/next-train?station=Edgewater%20Stn&direction=Perth`  
-Expect **200**. Catches upstream / parser breaks. Tolerate rare 5xx (don’t page on single blip — alert on consecutive fails).
+`https://next-train-app.vercel.app`
 
-**Do not monitor (until city is live):**  
-`/api/dev/board?city=brisbane`, `?city=sydney`, or `?city=melbourne` (internal dogfood — gated by `ALLOW_CITY_PROBES=1`; Sydney needs `TFNSW_API_KEY`, Melbourne needs `PTV_DEVID` + `PTV_API_KEY`).  
-`/api/next-train?city=brisbane`, `?city=sydney`, or `?city=melbourne` (returns **501** while `planned`).  
-No UptimeRobot / synthetic checks for non-Perth cities until Tim flips them live — see `docs/mark-dogfood-brisbane.md`.
+### Monitor 1 — Liveness (platform up)
 
-**Setup (Tim, ~15 min):** Better Stack, Checkly, or UptimeRobot → ping health 1–5 min → SMS/email/Slack to Tim **and** cover person.
+| Field | Value |
+| --- | --- |
+| **Type** | HTTP(s) |
+| **URL** | `/api/health` |
+| **Interval** | 5 minutes |
+| **Keyword** | `"ok":true` (alert if **not** found) |
+| **Alert when** | Down / keyword missing |
+
+Cheap ping — Vercel function runs. Does **not** load GTFS or call Transperth.
 
 **Local:** `curl http://localhost:3000/api/health`
+
+### Monitor 2 — Readiness (deploy bundle)
+
+| Field | Value |
+| --- | --- |
+| **Type** | HTTP(s) |
+| **URL** | `/api/ready` |
+| **Interval** | 5 minutes |
+| **Keyword** | `"ready":true` (alert if **not** found) |
+| **Alert when** | Down / keyword missing |
+
+Loads Perth server stack + vendored GTFS unzip (`fflate`) + station allowlist — **no Transperth network call**. Catches missing dependencies in the serverless bundle (e.g. Aug 2026 `fflate` outage where health was green but next-train crashed).
+
+**Local:** `curl http://localhost:3000/api/ready`
+
+### Monitor 3 — Synthetic train (live data path)
+
+| Field | Value |
+| --- | --- |
+| **Type** | HTTP(s) |
+| **URL** | `/api/next-train?station=Edgewater%20Stn&direction=Perth&destination=Perth&leaveBefore=0&refresh=30&skipTrains=0` |
+| **Interval** | 10 minutes |
+| **Keyword** | `"displayTime"` (alert if **not** found) |
+| **Alert when** | Down / keyword missing |
+| **Consecutive failures before alert** | **2** (ignore single blips) |
+
+Full Perth path through Transperth live times. Catches upstream / parser breaks.
+
+### Alert contacts
+
+- **tdrevans@gmail.com**
+- **EvansAppStudio@gmail.com**
+
+Enable email on all three monitors. SMS optional on monitor 3 only if you want faster pages.
+
+### UptimeRobot setup checklist (~10 min)
+
+1. Log in → **Monitors** → confirm monitor 1 (`/api/health`) exists.
+2. **Add monitor** — paste monitor 2 settings from table above → Save.
+3. **Add monitor** — paste monitor 3 settings → set **Alert After** = 2 failures → Save.
+4. **My Settings** → confirm both emails receive alerts.
+5. **Test:** open `/api/ready` and `/api/next-train?...` in browser — both should return 200.
+
+### Do not monitor (until city is live)
+
+`/api/dev/board?city=brisbane`, `?city=sydney`, or `?city=melbourne` (internal dogfood — gated by `ALLOW_CITY_PROBES=1`; Sydney needs `TFNSW_API_KEY`, Melbourne needs `PTV_DEVID` + `PTV_API_KEY`).  
+`/api/next-train?city=brisbane`, `?city=sydney`, or `?city=melbourne` (returns **501** while `planned`).  
+No synthetic checks for non-Perth cities until Tim flips them live — see `docs/mark-dogfood-brisbane.md`.
 
 ---
 
@@ -67,8 +116,8 @@ See `docs/jim-brief-crash-analytics.md`. Tim picks tool + pastes DSN/keys; Jim i
 ### Gmail vacation (paste)
 
 > Thanks for contacting Next Train / Evans App Studio.  
-> I’m away **27 Sep – 9 Oct** and replies will be slower. Urgent Play / crash issues are monitored by the team — include your device model and app version if reporting a bug.  
-> Otherwise I’ll reply after **10 Oct**.
+> I'm away **27 Sep – 9 Oct** and replies will be slower. Urgent Play / crash issues are monitored by the team — include your device model and app version if reporting a bug.  
+> Otherwise I'll reply after **10 Oct**.
 
 ### Forward / filters
 
@@ -101,11 +150,12 @@ See `docs/support-reply-templates.md`.
 | Fail | Detect | Respond |
 | --- | --- | --- |
 | Vercel /api down | Health uptime | Rollback / redeploy; auto-reply note |
+| Deploy bundle broken (missing deps) | **Ready** uptime | Fix bundle + redeploy (e.g. vendored `fflate`) |
 | Transperth / parser | Synthetic next-train | Fix + deploy; graceful empty in app |
 | App crash / ANR | Play + Sentry | Hotfix AAB; halt rollout if early |
 | OEM kills alarms | Mail / reviews | FAQ battery; commute strip later |
 | Billing / ads | Consoles + events | Restore path; known-issue reply |
-| Policy / Data safety | Play email | Buddy escalates; don’t invent answers |
+| Policy / Data safety | Play email | Buddy escalates; don't invent answers |
 
 ---
 
@@ -113,4 +163,5 @@ See `docs/support-reply-templates.md`.
 
 | Date | Note |
 | --- | --- |
+| 2026-08-13 | Sentry app integration verified; `docs/sentry-integration-now.md` for GitHub alert + Cursor automation |
 | 2026-08-11 | First ops doc; `/api/health` added; support templates + Jim crash/analytics brief |

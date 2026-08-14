@@ -1,13 +1,13 @@
 {
   "name": "next-train-app",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "Shows when to leave for your next train",
   "type": "module",
   "scripts": {
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",
-    "build:ads": "esbuild public/ads-native.mjs --bundle --format=iife --global-name=NextTrainAds --outfile=public/ads-bundle.js --platform=browser --external:@capacitor/core",
+    "build:ads": "esbuild public/ads-native.mjs --bundle --format=iife --global-name=NextTrainAdsNative --outfile=public/ads-bundle.js --platform=browser --external:@capacitor/core",
     "build:ad-free": "esbuild public/ad-free-native.mjs --bundle --format=iife --global-name=NextTrainAdFreeNative --outfile=public/ad-free-bundle.js --platform=browser --external:@capacitor/core",
     "build:train-times": "esbuild public/train-times-client.mjs --bundle --format=iife --global-name=NextTrainTimes --outfile=public/train-times-bundle.js --platform=browser",
     "build:geo": "esbuild public/geo-native.mjs --bundle --format=iife --global-name=NextTrainGeo --outfile=public/geo-bundle.js --platform=browser --external:@capacitor/core",

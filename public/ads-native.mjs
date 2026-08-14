@@ -3,6 +3,8 @@ import { AdMob } from "@capacitor-community/admob";
 const GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
 
 let cachedReleaseBuild = null;
+let bannerMounted = false;
+let bannerVisible = false;
 
 async function isNativeReleaseBuild() {
   if (!window.Capacitor?.isNativePlatform?.()) {
@@ -42,6 +44,16 @@ export async function resolveEffectiveTestMode(config) {
 }
 
 export async function showNativeBanner(config) {
+  if (bannerVisible) {
+    return;
+  }
+
+  if (bannerMounted) {
+    await AdMob.resumeBanner();
+    bannerVisible = true;
+    return;
+  }
+
   const admobTestMode = await resolveEffectiveTestMode(config);
   const bannerConfig = { ...config, admobTestMode };
 
@@ -58,8 +70,60 @@ export async function showNativeBanner(config) {
     margin: 72,
     isTesting: admobTestMode,
   });
+
+  bannerMounted = true;
+  bannerVisible = true;
 }
 
-export async function hideNativeBanner() {
+export async function resumeNativeBanner() {
+  if (!bannerMounted || bannerVisible) {
+    return;
+  }
+
+  await AdMob.resumeBanner();
+  bannerVisible = true;
+}
+
+/**
+ * Tear the banner out of the Activity. Prefer this over hideBanner when the
+ * keyboard may open — Android keyboard resize can yank a "hidden" AdMob view
+ * to the top of the WebView and cover the sheet.
+ */
+export async function removeNativeBanner() {
+  if (!bannerMounted) {
+    bannerVisible = false;
+    return;
+  }
+
+  try {
+    await AdMob.removeBanner();
+  } catch (error) {
+    try {
+      await AdMob.hideBanner();
+    } catch {
+      // Best-effort — banner may already be gone.
+    }
+    console.warn("AdMob removeBanner failed; fell back to hide", error);
+  }
+
+  bannerMounted = false;
+  bannerVisible = false;
+}
+
+export async function hideNativeBanner(options = {}) {
+  const force = Boolean(options.force);
+  if (!bannerMounted) {
+    return;
+  }
+  if (!force && !bannerVisible) {
+    return;
+  }
+
+  if (force) {
+    await removeNativeBanner();
+    return;
+  }
+
   await AdMob.hideBanner();
+  bannerVisible = false;
 }

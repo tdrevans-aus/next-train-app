@@ -33,10 +33,35 @@ export async function openJourneysDialog(page) {
   await page.waitForTimeout(800);
 }
 
-export async function openJourneyDetail(page, journeyId) {
+export async function dismissTemplateCoach(page) {
+  await page.evaluate(() => {
+    const coach = document.getElementById("template-route-coach");
+    if (coach) {
+      coach.hidden = true;
+    }
+  });
+}
+
+/** Time-to-station slider only appears when Target train is on. */
+export async function enableTargetTrainOnDetail(page) {
+  await dismissTemplateCoach(page);
+  await page.evaluate(() => {
+    const checkbox = document.getElementById("detail-use-target-train");
+    if (checkbox && !checkbox.checked) {
+      checkbox.click();
+    }
+  });
+  await page.waitForTimeout(400);
+  await page.locator("#detail-leave-before-input").waitFor({ state: "visible", timeout: 5000 });
+}
+
+export async function openJourneyDetail(page, journeyId, options = {}) {
   await openJourneysDialog(page);
   await page.locator(`.journey-list-item[data-journey-id="${journeyId}"] .journey-list-open-btn`).click();
   await page.waitForTimeout(1500);
+  if (options.enableTargetTrain) {
+    await enableTargetTrainOnDetail(page);
+  }
 }
 
 export async function clickJourneysDone(page) {

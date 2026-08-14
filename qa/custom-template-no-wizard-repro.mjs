@@ -3,6 +3,7 @@
  * Usage: node qa/custom-template-no-wizard-repro.mjs
  */
 import { chromium } from "playwright";
+import { waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -35,13 +36,7 @@ async function run() {
   const page = await context.newPage();
 
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
-  await page.waitForTimeout(7000);
-
-  if (!(await page.locator("#onboarding-step-1").isVisible())) {
-    await browser.close();
-    console.error("FAIL: onboarding step 1 never appeared");
-    process.exit(1);
-  }
+  await waitForOnboardingStep1(page);
 
   await page.locator("#onboarding-got-it-btn").click();
   await page.waitForTimeout(300);

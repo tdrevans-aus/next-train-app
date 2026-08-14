@@ -14,6 +14,8 @@ public final class LeaveReminderNotifier {
 
   private static final String CHANNEL_ID = "leave_reminders";
   private static final int NOTIFICATION_ID = 52001;
+  /** Keep Leave now visible briefly after the train leaves, then drop it. */
+  private static final long LEAVE_NOW_HOLD_AFTER_DEPARTURE_MS = 10 * 60_000L;
 
   private LeaveReminderNotifier() {}
 
@@ -25,6 +27,19 @@ public final class LeaveReminderNotifier {
     String trainTime,
     boolean stale,
     int getReadyMinutes
+  ) {
+    show(context, type, journeyId, route, trainTime, stale, getReadyMinutes, null);
+  }
+
+  public static void show(
+    Context context,
+    String type,
+    String journeyId,
+    String route,
+    String trainTime,
+    boolean stale,
+    int getReadyMinutes,
+    String departureKey
   ) {
     createChannel(context);
 
@@ -56,7 +71,7 @@ public final class LeaveReminderNotifier {
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
     );
 
-    Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
       .setSmallIcon(R.drawable.ic_stat_next_train)
       .setContentTitle(title)
       .setContentText(body)
@@ -64,8 +79,19 @@ public final class LeaveReminderNotifier {
       .setContentIntent(openPending)
       .setAutoCancel(true)
       .setPriority(NotificationCompat.PRIORITY_HIGH)
-      .setCategory(NotificationCompat.CATEGORY_REMINDER)
-      .build();
+      .setCategory(NotificationCompat.CATEGORY_REMINDER);
+
+    if (
+      LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type) &&
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    ) {
+      long timeoutMs = leaveNowTimeoutMs(departureKey);
+      if (timeoutMs > 0) {
+        builder.setTimeoutAfter(timeoutMs);
+      }
+    }
+
+    Notification notification = builder.build();
 
     NotificationManager manager = (NotificationManager) context.getSystemService(
       Context.NOTIFICATION_SERVICE
@@ -73,6 +99,35 @@ public final class LeaveReminderNotifier {
     if (manager != null) {
       manager.notify(NOTIFICATION_ID, notification);
     }
+  }
+
+  public static void cancel(Context context) {
+    NotificationManager manager = (NotificationManager) context.getSystemService(
+      Context.NOTIFICATION_SERVICE
+    );
+    if (manager != null) {
+      manager.cancel(NOTIFICATION_ID);
+    }
+  }
+
+  /**
+   * departureKey is journeyId:ISO — expire ~10 min after departure so shade doesn't keep
+   * a Leave now from hours ago.
+   */
+  private static long leaveNowTimeoutMs(String departureKey) {
+    if (departureKey == null || departureKey.isEmpty()) {
+      return 30 * 60_000L;
+    }
+    int colon = departureKey.indexOf(':');
+    if (colon < 0 || colon >= departureKey.length() - 1) {
+      return 30 * 60_000L;
+    }
+    long departureMs = PerthTime.epochMillisFromIso(departureKey.substring(colon + 1));
+    if (departureMs <= 0) {
+      return 30 * 60_000L;
+    }
+    long until = departureMs + LEAVE_NOW_HOLD_AFTER_DEPARTURE_MS - System.currentTimeMillis();
+    return Math.max(60_000L, until);
   }
 
   private static void createChannel(Context context) {

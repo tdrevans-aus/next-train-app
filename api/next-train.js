@@ -2,7 +2,7 @@ import {
   DEFAULT_LEAVE_BEFORE_MINUTES,
   DEFAULT_REFRESH_SECONDS,
   getNextTrainData,
-} from "../lib/train-times.js";
+} from "../lib/train-times-server.js";
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";

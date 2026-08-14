@@ -9,6 +9,7 @@ import {
   openJourneyDetail,
   clickJourneysDone,
   clickMenuDone,
+  enableTargetTrainOnDetail,
 } from "./helpers/journeys-dialog.mjs";
 
 const BASE = "http://localhost:3000";
@@ -306,6 +307,7 @@ async function run() {
   await page.keyboard.press("Escape");
   await page.waitForTimeout(300);
   await openJourneyDetail(page, "j-in");
+  await enableTargetTrainOnDetail(page);
   await page.locator("#detail-leave-before-input").fill("15");
   await page.locator("#settings-back").click();
   await page.waitForTimeout(300);
@@ -317,6 +319,7 @@ async function run() {
   await page.keyboard.press("Escape");
   await page.waitForTimeout(300);
   await openJourneyDetail(page, "j-in");
+  await enableTargetTrainOnDetail(page);
   await page.locator("#detail-leave-before-input").fill("15");
   await page.locator("#detail-done-btn").click();
   await page.waitForTimeout(500);

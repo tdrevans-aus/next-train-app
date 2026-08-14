@@ -28,12 +28,14 @@ List fixtures:
 ```bash
 curl http://localhost:3000/api/fixtures
 curl http://localhost:3000/api/health
+curl http://localhost:3000/api/ready
 ```
 
-Production liveness (after Vercel deploy of `api/health.js`):
+Production liveness (after Vercel deploy of `api/health.js` / `api/ready.js`):
 
 ```bash
 curl https://next-train-app.vercel.app/api/health
+curl https://next-train-app.vercel.app/api/ready
 ```
 
 ## Fixtures
@@ -315,9 +317,18 @@ Automated (web):
 
 ```bash
 node qa/reminders-dialog.mjs
+node qa/reminders-permission-gate.mjs
 ```
 
 **Expect:** `PASS` — Menu has **no** Reminder settings sheet. Pause reminders lives in Menu (when a journey has Remind me). Journey detail order: Route → **Timing** → **Target train** (+ Remind me / Live countdown when target set).
+
+**Permission gate (web, mocked native):** `node qa/reminders-permission-gate.mjs` — Remind me / Live countdown cannot stay on without notification permission; deny shows hint; grant then toggle works; heal clears orphan Live countdown when permission is later denied.
+
+**Native emulator CDP (optional):** with debug WebView attached,
+
+```bash
+node qa/reminders-permission-native-cdp.mjs
+```
 
 | Platform | Expect in dialog |
 |----------|------------------|

@@ -373,10 +373,16 @@ public final class LeaveReminderScheduler {
     if (plan.leaveNowScheduled) {
       leaveNow.put("notifyAtIso", PerthTime.formatIsoFromEpochMs(target.leaveByMs));
       leaveNow.put("notifyAtClock", PerthTime.formatClockFromEpochMs(target.leaveByMs));
+    } else if (LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
+      leaveNow.put("skippedReason", "commute_strip");
     }
     result.put("leaveNow", leaveNow);
 
     boolean scheduled = plan.getReadyScheduled || plan.leaveNowScheduled;
+    // Live countdown still covers leave-by even when Leave now alarm is skipped.
+    if (!scheduled && LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
+      scheduled = true;
+    }
     result.put("scheduled", scheduled);
     if (!scheduled) {
       String localDate = PerthTime.localDateKey();
@@ -401,9 +407,12 @@ public final class LeaveReminderScheduler {
     ) {
       primaryMs = plan.getReadyAtMs;
       primaryType = TYPE_GET_READY;
-    } else {
+    } else if (plan.leaveNowScheduled) {
       primaryMs = target.leaveByMs;
       primaryType = TYPE_LEAVE_NOW;
+    } else {
+      primaryMs = target.leaveByMs;
+      primaryType = "commute_strip";
     }
 
     result.put("primaryNotifyAtIso", PerthTime.formatIsoFromEpochMs(primaryMs));
@@ -461,6 +470,11 @@ public final class LeaveReminderScheduler {
       target.leaveByMs > now &&
       !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
       !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW);
+
+    // Live Countdown owns leave-by — don't also fire a Leave now ping.
+    if (LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
+      leaveNowScheduled = false;
+    }
 
     return new AlarmPlan(target, getReadyScheduled, getReadyAtMs, getReadyMinutes, leaveNowScheduled);
   }

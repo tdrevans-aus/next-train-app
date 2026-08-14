@@ -1,4 +1,4 @@
-var NextTrainAds = (() => {
+var NextTrainAdsNative = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -164,7 +164,9 @@ var NextTrainAds = (() => {
   var ads_native_exports = {};
   __export(ads_native_exports, {
     hideNativeBanner: () => hideNativeBanner,
+    removeNativeBanner: () => removeNativeBanner,
     resolveEffectiveTestMode: () => resolveEffectiveTestMode,
+    resumeNativeBanner: () => resumeNativeBanner,
     showNativeBanner: () => showNativeBanner
   });
 
@@ -264,6 +266,8 @@ var NextTrainAds = (() => {
   // public/ads-native.mjs
   var GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
   var cachedReleaseBuild = null;
+  var bannerMounted = false;
+  var bannerVisible = false;
   async function isNativeReleaseBuild() {
     if (!window.Capacitor?.isNativePlatform?.()) {
       return false;
@@ -291,6 +295,14 @@ var NextTrainAds = (() => {
     return true;
   }
   async function showNativeBanner(config) {
+    if (bannerVisible) {
+      return;
+    }
+    if (bannerMounted) {
+      await AdMob.resumeBanner();
+      bannerVisible = true;
+      return;
+    }
     const admobTestMode = await resolveEffectiveTestMode(config);
     const bannerConfig = { ...config, admobTestMode };
     await AdMob.initialize({
@@ -304,9 +316,47 @@ var NextTrainAds = (() => {
       margin: 72,
       isTesting: admobTestMode
     });
+    bannerMounted = true;
+    bannerVisible = true;
   }
-  async function hideNativeBanner() {
+  async function resumeNativeBanner() {
+    if (!bannerMounted || bannerVisible) {
+      return;
+    }
+    await AdMob.resumeBanner();
+    bannerVisible = true;
+  }
+  async function removeNativeBanner() {
+    if (!bannerMounted) {
+      bannerVisible = false;
+      return;
+    }
+    try {
+      await AdMob.removeBanner();
+    } catch (error) {
+      try {
+        await AdMob.hideBanner();
+      } catch {
+      }
+      console.warn("AdMob removeBanner failed; fell back to hide", error);
+    }
+    bannerMounted = false;
+    bannerVisible = false;
+  }
+  async function hideNativeBanner(options = {}) {
+    const force = Boolean(options.force);
+    if (!bannerMounted) {
+      return;
+    }
+    if (!force && !bannerVisible) {
+      return;
+    }
+    if (force) {
+      await removeNativeBanner();
+      return;
+    }
     await AdMob.hideBanner();
+    bannerVisible = false;
   }
   return __toCommonJS(ads_native_exports);
 })();

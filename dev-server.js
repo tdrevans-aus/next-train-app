@@ -15,6 +15,7 @@ import {
   listFixtures,
 } from "./lib/fixtures.js";
 import { checkRateLimit } from "./lib/api-rate-limit.js";
+import { staticDirectionsForStation } from "./lib/cities/perth/static-directions.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
 import { listCities, assertCityLive } from "./lib/providers/registry.js";
 import { getFoundingStatus, tryClaimFounding } from "./lib/founding-counter.js";
@@ -65,6 +66,33 @@ app.get("/api/health", (_req, res) => {
     service: "next-train-api",
     ts: new Date().toISOString(),
   });
+});
+
+app.get("/api/ready", (_req, res) => {
+  import("./lib/train-times-server.js")
+    .then(async () => {
+      const { unzipSync } = await import("./lib/vendor/fflate.mjs");
+      if (typeof unzipSync !== "function") {
+        res.status(500).json({ ok: false, ready: false, error: "gtfs unzip unavailable" });
+        return;
+      }
+      const station = resolveAllowedStation("Edgewater Stn");
+      if (!station) {
+        res.status(500).json({ ok: false, ready: false, error: "station allowlist unavailable" });
+        return;
+      }
+      res.setHeader("Cache-Control", "no-store");
+      res.status(200).json({
+        ok: true,
+        ready: true,
+        service: "next-train-api",
+        checks: ["train-times-server", "gtfs-static-cache", "fflate-vendor", "allowlist"],
+        ts: new Date().toISOString(),
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ ok: false, ready: false, error: error.message ?? "ready check failed" });
+    });
 });
 
 app.get("/api/cities", (_req, res) => {
@@ -131,7 +159,8 @@ app.get("/api/next-train", async (req, res) => {
 });
 
 app.get("/api/directions", async (req, res) => {
-  if (!checkRateLimit(req, res)) {
+  const fixtureId = readFixtureId(req.query);
+  if (!checkRateLimit(req, res) && !fixtureId) {
     return;
   }
 
@@ -143,7 +172,6 @@ app.get("/api/directions", async (req, res) => {
     return;
   }
 
-  const fixtureId = readFixtureId(req.query);
   if (fixtureId) {
     res.json({ directions: getFixtureDirections(fixtureId) });
     return;
@@ -151,9 +179,18 @@ app.get("/api/directions", async (req, res) => {
 
   try {
     const { trips } = await fetchTripsForStation(station);
-    res.json({ directions: uniqueDestinations(trips) });
+    let directions = uniqueDestinations(trips);
+    if (!directions.length) {
+      directions = staticDirectionsForStation(station);
+    }
+    res.json({ directions });
   } catch (error) {
     console.error(error);
+    const fallback = staticDirectionsForStation(station);
+    if (fallback.length) {
+      res.json({ directions: fallback, source: "static-line-map" });
+      return;
+    }
     res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
   }
 });
