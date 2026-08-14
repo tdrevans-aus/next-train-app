@@ -444,12 +444,12 @@ Run after `cap:sync` with widget pinned (**2×1** and **medium** if you use both
 **Automated helper (logic only, not launcher UI):**
 
 ```bash
-./gradlew :app:testDebugUnitTest --tests com.tdrevans.nexttrain.CommuteScheduleTest --tests com.tdrevans.nexttrain.WidgetUiBuilderTest
+./gradlew :app:testDebugUnitTest --tests com.tdrevans.nexttrain.CommuteScheduleTest --tests com.tdrevans.nexttrain.WidgetUiBuilderTest --tests com.tdrevans.nexttrain.WidgetUiBuilderRobolectricTest
 ```
 
 Also run via `npm run test:pre-release` (widget JVM tests; skips if Java not installed locally). CI runs the full Android unit suite on every PR.
 
-Covers local repaint, `needsNetworkRefresh` after departure minute, late leave copy, compact strings — not launcher pixels. **FB-28** (Robolectric) targets rendered widget layout regression.
+Covers local repaint, compact strings, and **Robolectric widget bind regression** (fixture snapshots → RemoteViews text/visibility + layout id smoke checks on 2×1 + medium) — not launcher pixels. See **FB-28**.
 
 See `docs/widget-homescreen.md` and `CommuteSchedule.java` (`WidgetDepartureAdvanceScheduler`).
 

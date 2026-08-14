@@ -1,6 +1,6 @@
 /**
  * Journey detail: content-sized sheet (no stretched white card), ad suppressed
- * while open, footer tight under form, Cancel | Delete | Save on one row.
+ * while open, footer tight under form, Cancel | Save row with Delete stacked below.
  * Usage: node qa/journey-detail-footer-above-ad.mjs
  */
 import { chromium } from "playwright";
@@ -24,8 +24,8 @@ const REMIND_TOGGLE_IDS = [
 ];
 /** Max gap between last form content and footer top (px). */
 const MAX_FORM_TO_FOOTER_GAP_PX = 28;
-/** Footer action row should be a single band (delete not stacked under). */
-const MAX_FOOTER_ROW_HEIGHT_PX = 64;
+/** Footer stacks Cancel|Save row + delete button below. */
+const MAX_FOOTER_ROW_HEIGHT_PX = 120;
 
 async function seedJourney(page) {
   await page.evaluate(() => {
@@ -183,17 +183,28 @@ async function auditJourneyDetailLayout(page) {
         const d = deleteBtn.getBoundingClientRect();
         const c = cancelBtn.getBoundingClientRect();
         const s = saveBtn.getBoundingClientRect();
-        const sameRow =
-          Math.abs(d.top - c.top) < 12 &&
-          Math.abs(d.top - s.top) < 12 &&
-          d.left > c.right - gap &&
-          d.right < s.left + gap;
-        if (!sameRow) {
+        const primaryRowBottom = Math.max(c.bottom, s.bottom);
+        const deleteBelowPrimaryRow = d.top >= primaryRowBottom - 8;
+        const cancelSaveSameRow =
+          Math.abs(c.top - s.top) < 12 && c.left < s.left;
+        const deleteCentered =
+          Math.abs(d.left + d.width / 2 - (footerRect.left + footerRect.width / 2)) <
+          footerRect.width * 0.2;
+        if (!deleteBelowPrimaryRow || !cancelSaveSameRow) {
           issues.push({
-            id: "delete-not-inline",
+            id: "delete-below-primary-row",
             cancelTop: Math.round(c.top),
+            cancelBottom: Math.round(c.bottom),
             deleteTop: Math.round(d.top),
             saveTop: Math.round(s.top),
+            saveBottom: Math.round(s.bottom),
+          });
+        }
+        if (!deleteCentered) {
+          issues.push({
+            id: "delete-not-centered-below",
+            deleteCenter: Math.round(d.left + d.width / 2),
+            footerCenter: Math.round(footerRect.left + footerRect.width / 2),
           });
         }
       }

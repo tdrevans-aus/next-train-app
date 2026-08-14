@@ -83,7 +83,7 @@
 | **FB-25** | **Code review Phase 2 — split `app.js`** | One PR per module: combobox → journey-model → train-navigation → nearby-mode → template-wizard → journey-detail. esbuild or ESM bundle decision once. Full web QA each PR. ~3–5 days. | Backlog — **after FB-24** |
 | **FB-26** | **Code review Phase 3 — pin / display contract** | Single web `pin-state` module; shared JSON fixtures for web + Android + iOS unit tests; native naming cleanup (`resolveActiveNextTrip` vs true next). ~2–3 days. | Backlog — **after FB-25** (or sooner if pin regressions) |
 | **FB-27** | **Code review Phase 4 — pre major product** | Journey `kind` in model (feeds FB-23 later); split `styles.css` by domain; APK packaging (move `design/` + `.mjs` sources out of `webDir`, D-05); optional `CommuteSchedule.java` decomposition. ~1–2 weeks. | Backlog — **before FB-23 or city #2** |
-| **FB-28** | **Robolectric widget layout regression** | Render `WidgetUiBuilder.build()` RemoteViews from fixture snapshots (2×1 + medium): assert text set, visibility flags, no empty primary/leave when live. Complements JVM string tests + manual TESTING.md **§22** pin checklist; does not replace launcher screenshot QA. | Backlog — **after v2.2.0 ship** |
+| **FB-28** | **Robolectric widget layout regression** | `WidgetUiBuilderRobolectricTest` builds RemoteViews from fixture snapshots (2×1 + medium); asserts bound text/visibility and layout view ids (leave twin, Updated line, Updating… ellipsis). Complements JVM string tests + manual TESTING.md **§22**. | Done — **v2.2.0** |
 
 ---
 

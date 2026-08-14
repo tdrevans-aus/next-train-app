@@ -31,6 +31,8 @@ if (widgetOnly) {
     "--tests",
     "com.tdrevans.nexttrain.WidgetUiBuilderTest",
     "--tests",
+    "com.tdrevans.nexttrain.WidgetUiBuilderRobolectricTest",
+    "--tests",
     "com.tdrevans.nexttrain.CommuteScheduleTest"
   );
 }
