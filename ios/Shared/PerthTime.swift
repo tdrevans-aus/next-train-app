@@ -93,6 +93,16 @@ enum PerthTime {
         return ISO8601DateFormatter().string(from: date)
     }
 
+    static func localDateKey(nowMs: Int64 = Int64(Date().timeIntervalSince1970 * 1000)) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(nowMs) / 1000)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = zone
+        let year = calendar.component(.year, from: date)
+        let month = calendar.component(.month, from: date)
+        let day = calendar.component(.day, from: date)
+        return String(format: "%04d-%02d-%02d", year, month, day)
+    }
+
     private static func nowMs() -> Int64 {
         Int64(Date().timeIntervalSince1970 * 1000)
     }

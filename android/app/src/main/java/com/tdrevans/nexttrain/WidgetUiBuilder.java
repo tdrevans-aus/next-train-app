@@ -15,17 +15,70 @@ public final class WidgetUiBuilder {
   public static final String EMPTY_SETUP_PRIMARY = "Add a journey";
   public static final String EMPTY_SETUP_SUB = "Tap to set up";
 
-  /** Outside-hours idle face — ~12% smaller than the live twin stack. */
-  private static final float IDLE_LABEL_SP = 11f;
-  private static final float IDLE_PRIMARY_SP = 31f;
-  private static final float IDLE_DAY_WORD_SP = 13f;
-  private static final float IDLE_ROUTE_SCALE = 0.88f;
+  /** Outside-hours idle — sized for default 2×1; same on larger cells (no upscale). */
+  private static final float IDLE_LABEL_SP = 8f;
+  private static final float IDLE_PRIMARY_SP = 24f;
+  private static final float IDLE_PRIMARY_WITH_DAY_SP = 22f;
+  private static final float IDLE_DAY_WORD_SP = 9f;
+  private static final float IDLE_ROUTE_FLOOR_SP = 9f;
 
-  private static final float IDLE_LABEL_MEDIUM_SP = 12f;
-  private static final float IDLE_PRIMARY_MEDIUM_SP = 36f;
-  private static final float IDLE_DAY_WORD_MEDIUM_SP = 15f;
+  /** Cell dimensions used when painting RemoteViews (dp from AppWidgetManager options). */
+  public static final class WidgetSize {
+    public final int widthDp;
+    public final int heightDp;
+    public final int layoutId;
+
+    public WidgetSize(int widthDp, int heightDp, int layoutId) {
+      this.widthDp = widthDp;
+      this.heightDp = heightDp;
+      this.layoutId = layoutId;
+    }
+
+    public boolean isMedium() {
+      return WidgetUiBuilder.isMedium(layoutId);
+    }
+
+    public boolean isTallCell() {
+      return heightDp >= 100;
+    }
+
+    public boolean isShortCell() {
+      return heightDp < 55;
+    }
+
+    /** Bump type on tall medium cells (≈2×2); 3×1 wide stays at 1.0. */
+    public float typeScale() {
+      if (!isMedium()) {
+        return 1f;
+      }
+      if (heightDp >= 140) {
+        return 1.45f;
+      }
+      if (heightDp >= 120) {
+        return 1.35f;
+      }
+      if (heightDp >= 100) {
+        return 1.28f;
+      }
+      if (heightDp >= 80) {
+        return 1.08f;
+      }
+      return 1f;
+    }
+
+    public boolean useTallIdleLayout() {
+      return false;
+    }
+  }
 
   private WidgetUiBuilder() {}
+
+  private static float scaleSp(float baseSp, float scale) {
+    if (scale <= 1f) {
+      return baseSp;
+    }
+    return baseSp * scale;
+  }
 
   /**
    * Outside-hours idle twin (preferred clock / next window). Live "Target Train" must not
@@ -42,23 +95,24 @@ public final class WidgetUiBuilder {
     return "Next Journey".equalsIgnoreCase(snapshot.optString("label", ""));
   }
 
-  public static RemoteViews build(Context context, JSONObject snapshot, int layoutId) {
-    RemoteViews views = new RemoteViews(context.getPackageName(), layoutId);
+  public static RemoteViews build(Context context, JSONObject snapshot, WidgetSize size) {
+    RemoteViews views = new RemoteViews(context.getPackageName(), size.layoutId);
     if (snapshot != null && snapshot.optBoolean("widgetLocked", false)) {
-      bindWidgetLocked(views, context, layoutId, snapshot);
+      bindWidgetLocked(views, context, size, snapshot);
       return views;
     }
     if (snapshot == null || snapshot.optBoolean("empty", false)) {
-      bindEmpty(views, context, layoutId);
+      bindEmpty(views, context, size);
       return views;
     }
 
     if (snapshot.optBoolean("nearbyFallback", false)) {
-      bindNearbyFallback(views, context, layoutId);
+      bindNearbyFallback(views, context, size);
       return views;
     }
 
-    boolean medium = isMedium(layoutId);
+    int layoutId = size.layoutId;
+    boolean medium = size.isMedium();
     boolean stale = snapshot.optBoolean("stale", false);
     String label = snapshot.optString("label", "");
     String primary = snapshot.optString("primary", "—");
@@ -76,7 +130,7 @@ public final class WidgetUiBuilder {
       ? resolveMediumUpdatedLine(updatedRaw, primary, secondary, stale)
       : "";
 
-    restoreLiveLayoutChrome(views);
+    restoreLiveLayoutChrome(views, size);
     views.setTextViewText(R.id.widget_label, label);
 
     if (!trainClock.isEmpty()) {
@@ -102,22 +156,23 @@ public final class WidgetUiBuilder {
     if (outsideHoursIdle) {
       hideLeaveTwin(views);
       views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
-      bindOutsideHoursIdleFace(views, snapshot, layoutId);
+      bindOutsideHoursIdleFace(views, snapshot, size);
       bindPreferredHint(views, "", layoutId);
-      bindUpdatedFooter(views, "", layoutId);
+      bindUpdatedFooter(views, "", layoutId, size);
     } else {
       views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
       bindLiveFace(
         views,
         secondary,
         routeLine,
+        trainClock,
         false,
         context.getColor(leaveColor),
         status,
-        layoutId
+        size
       );
       bindPreferredHint(views, snapshot.optString("preferredHint", ""), layoutId);
-      bindUpdatedFooter(views, updated, layoutId);
+      bindUpdatedFooter(views, updated, layoutId, size);
     }
 
     views.setOnClickPendingIntent(R.id.widget_root, buildHomeTapIntent(context));
@@ -128,7 +183,7 @@ public final class WidgetUiBuilder {
   private static void bindOutsideHoursIdleFace(
     RemoteViews views,
     JSONObject snapshot,
-    int layoutId
+    WidgetSize size
   ) {
     String route = snapshot.optString("route", "");
     if (route.isEmpty()) {
@@ -138,10 +193,11 @@ public final class WidgetUiBuilder {
     hideLeaveTwin(views);
     views.setViewVisibility(R.id.widget_right_column, android.view.View.GONE);
     views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
-    hideStatusIfPresent(views, layoutId);
+    hideStatusIfPresent(views, size.layoutId);
     String primary = snapshot.optString("primary", "");
-    applyIdleType(views, layoutId, primary);
-    if (!dayWord.isEmpty() && dayWord.indexOf(':') < 0) {
+    boolean hasDayWord = !dayWord.isEmpty() && dayWord.indexOf(':') < 0;
+    applyIdleType(views, primary, hasDayWord);
+    if (hasDayWord) {
       views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
       views.setTextViewText(R.id.widget_train_clock, dayWord);
     } else {
@@ -156,12 +212,19 @@ public final class WidgetUiBuilder {
       views.setTextViewTextSize(
         R.id.widget_route,
         TypedValue.COMPLEX_UNIT_SP,
-        idleRouteLineTextSizeSp(route, layoutId)
+        idleRouteLineTextSizeSp(route, size.layoutId)
       );
     } else {
       views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
       views.setTextViewText(R.id.widget_route, "");
     }
+    bindOutsideHoursIdleLayoutChrome(views);
+  }
+
+  /** Idle: compact centered stack — no spacer, no resize upscale. */
+  private static void bindOutsideHoursIdleLayoutChrome(RemoteViews views) {
+    views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
+    views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER);
   }
 
   /**
@@ -172,15 +235,17 @@ public final class WidgetUiBuilder {
     RemoteViews views,
     String leaveSecondary,
     String routeLine,
+    String trainClock,
     boolean empty,
     int leaveColor,
     String status,
-    int layoutId
+    WidgetSize size
   ) {
+    int layoutId = size.layoutId;
     views.setViewVisibility(R.id.widget_updated_left, android.view.View.GONE);
-    applyLiveTwinType(views, layoutId);
+    applyLiveTwinType(views, size);
     setTrainStackCentered(views, true);
-    bindStatusCrumb(views, status, layoutId);
+    bindStatusCrumb(views, status, layoutId, size);
 
     LeaveParts leave = parseLeaveParts(empty ? "" : leaveSecondary);
     if (leave.visible) {
@@ -209,14 +274,25 @@ public final class WidgetUiBuilder {
     }
 
     setBottomRouteGravity(views, true);
-    if (!empty && routeLine != null && !routeLine.isEmpty()) {
+    boolean shortCellRouteFold =
+      size.isShortCell() && !empty && routeLine != null && !routeLine.isEmpty();
+    if (shortCellRouteFold) {
+      views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
+      views.setTextViewText(R.id.widget_route, "");
+      if (trainClock != null && !trainClock.isEmpty()) {
+        String folded =
+          foldRouteIntoTrainClock(trainClock, abbreviateRouteLine(routeLine));
+        views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
+        views.setTextViewText(R.id.widget_train_clock, folded);
+      }
+    } else if (!empty && routeLine != null && !routeLine.isEmpty()) {
       views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
       views.setTextViewText(R.id.widget_route, routeLine);
-      float floor = isMedium(layoutId) ? 14f : 13f;
+      float floor = scaleSp(size.isMedium() ? 14f : 13f, size.typeScale());
       views.setTextViewTextSize(
         R.id.widget_route,
         TypedValue.COMPLEX_UNIT_SP,
-        Math.max(floor, routeLineTextSizeSp(routeLine, layoutId))
+        Math.max(floor, scaleSp(routeLineTextSizeSp(routeLine, layoutId), size.typeScale()))
       );
     } else {
       views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
@@ -224,7 +300,7 @@ public final class WidgetUiBuilder {
     }
   }
 
-  private static void bindUpdatedFooter(RemoteViews views, String updated, int layoutId) {
+  private static void bindUpdatedFooter(RemoteViews views, String updated, int layoutId, WidgetSize size) {
     if (!shouldShowUpdatedLine(layoutId) || updated == null || updated.isEmpty()) {
       views.setViewVisibility(R.id.widget_updated, android.view.View.GONE);
       views.setTextViewText(R.id.widget_updated, "");
@@ -232,6 +308,13 @@ public final class WidgetUiBuilder {
     }
     views.setViewVisibility(R.id.widget_updated, android.view.View.VISIBLE);
     views.setTextViewText(R.id.widget_updated, updated);
+    if (size.typeScale() > 1f) {
+      views.setTextViewTextSize(
+        R.id.widget_updated,
+        TypedValue.COMPLEX_UNIT_SP,
+        scaleSp(11f, size.typeScale())
+      );
+    }
   }
 
   /** Medium only — quiet “Target 7:30” when Leave By is gated off for an earlier train. */
@@ -248,7 +331,7 @@ public final class WidgetUiBuilder {
     views.setTextViewText(R.id.widget_preferred_hint, hint);
   }
 
-  private static void bindStatusCrumb(RemoteViews views, String status, int layoutId) {
+  private static void bindStatusCrumb(RemoteViews views, String status, int layoutId, WidgetSize size) {
     if (!isMedium(layoutId)) {
       return;
     }
@@ -258,6 +341,13 @@ public final class WidgetUiBuilder {
     } else {
       views.setViewVisibility(R.id.widget_status, android.view.View.VISIBLE);
       views.setTextViewText(R.id.widget_status, status);
+      if (size.typeScale() > 1f) {
+        views.setTextViewTextSize(
+          R.id.widget_status,
+          TypedValue.COMPLEX_UNIT_SP,
+          scaleSp(11f, size.typeScale())
+        );
+      }
     }
   }
 
@@ -268,61 +358,61 @@ public final class WidgetUiBuilder {
     }
   }
 
-  private static void applyIdleType(RemoteViews views, int layoutId, String primary) {
-    boolean medium = isMedium(layoutId);
+  private static void applyIdleType(RemoteViews views, String primary, boolean hasDayWord) {
     views.setTextViewTextSize(
       R.id.widget_label,
       TypedValue.COMPLEX_UNIT_SP,
-      medium ? IDLE_LABEL_MEDIUM_SP : IDLE_LABEL_SP
+      IDLE_LABEL_SP
     );
     views.setTextViewTextSize(
       R.id.widget_primary_value,
       TypedValue.COMPLEX_UNIT_SP,
-      idlePrimaryTextSizeSp(primary, layoutId)
+      idlePrimaryTextSizeSp(primary, hasDayWord)
     );
     views.setTextViewTextSize(
       R.id.widget_train_clock,
       TypedValue.COMPLEX_UNIT_SP,
-      medium ? IDLE_DAY_WORD_MEDIUM_SP : IDLE_DAY_WORD_SP
+      IDLE_DAY_WORD_SP
     );
     setTrainClockTopMargin(views, 0);
   }
 
   /** Window ranges (6:00–9:00) need a smaller primary than a short preferred clock (7:30). */
   static float idlePrimaryTextSizeSp(String primary, int layoutId) {
-    boolean medium = isMedium(layoutId);
-    float defaultSp = medium ? IDLE_PRIMARY_MEDIUM_SP : IDLE_PRIMARY_SP;
-    if (primary == null || primary.isEmpty()) {
-      return defaultSp;
-    }
-    if (primary.indexOf('–') < 0 && primary.indexOf('-') < 0) {
-      return defaultSp;
-    }
-    int length = primary.length();
-    if (medium) {
-      if (length <= 9) {
-        return 28f;
-      }
-      if (length <= 11) {
-        return 24f;
-      }
-      return 22f;
-    }
-    if (length <= 9) {
-      return 24f;
-    }
-    if (length <= 11) {
-      return 20f;
-    }
-    return 18f;
+    return idlePrimaryTextSizeSp(primary, false);
   }
 
-  private static void applyLiveTwinType(RemoteViews views, int layoutId) {
-    boolean medium = isMedium(layoutId);
-    float labelSp = medium ? 12f : 11f;
-    float valueSp = medium ? 34f : 28f;
-    float unitSp = medium ? 12f : 10f;
-    float clockSp = medium ? 14f : 12f;
+  static float idlePrimaryTextSizeSp(String primary, boolean hasDayWord) {
+    if (primary == null || primary.isEmpty()) {
+      return capIdlePrimaryForDayWord(IDLE_PRIMARY_SP, hasDayWord);
+    }
+    if (primary.indexOf('–') < 0 && primary.indexOf('-') < 0) {
+      return capIdlePrimaryForDayWord(IDLE_PRIMARY_SP, hasDayWord);
+    }
+    int length = primary.length();
+    if (length <= 9) {
+      return capIdlePrimaryForDayWord(17f, hasDayWord);
+    }
+    if (length <= 11) {
+      return capIdlePrimaryForDayWord(15f, hasDayWord);
+    }
+    return capIdlePrimaryForDayWord(14f, hasDayWord);
+  }
+
+  private static float capIdlePrimaryForDayWord(float sp, boolean hasDayWord) {
+    if (!hasDayWord) {
+      return sp;
+    }
+    return Math.min(sp, IDLE_PRIMARY_WITH_DAY_SP);
+  }
+
+  private static void applyLiveTwinType(RemoteViews views, WidgetSize size) {
+    boolean medium = size.isMedium();
+    float scale = size.typeScale();
+    float labelSp = scaleSp(medium ? 12f : 11f, scale);
+    float valueSp = scaleSp(medium ? 34f : 28f, scale);
+    float unitSp = scaleSp(medium ? 12f : 10f, scale);
+    float clockSp = scaleSp(medium ? 14f : 12f, scale);
     views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, labelSp);
     views.setTextViewTextSize(R.id.widget_leave_label, TypedValue.COMPLEX_UNIT_SP, labelSp);
     views.setTextViewTextSize(R.id.widget_primary_value, TypedValue.COMPLEX_UNIT_SP, valueSp);
@@ -338,15 +428,24 @@ public final class WidgetUiBuilder {
   }
 
   static float idleRouteLineTextSizeSp(String route, int layoutId) {
-    float scale = isMedium(layoutId) ? 1f : IDLE_ROUTE_SCALE;
-    float floor = isMedium(layoutId) ? 12f : 11f;
-    return Math.max(floor, routeLineTextSizeSp(route, layoutId) * scale);
+    return Math.max(IDLE_ROUTE_FLOOR_SP, routeLineTextSizeSp(route, layoutId) * 0.85f);
   }
 
   private static void setTrainClockTopMargin(RemoteViews views, int marginDp) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       views.setViewLayoutMargin(
         R.id.widget_train_clock,
+        RemoteViews.MARGIN_TOP,
+        marginDp,
+        TypedValue.COMPLEX_UNIT_DIP
+      );
+    }
+  }
+
+  private static void setRouteTopMargin(RemoteViews views, int marginDp) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      views.setViewLayoutMargin(
+        R.id.widget_route,
         RemoteViews.MARGIN_TOP,
         marginDp,
         TypedValue.COMPLEX_UNIT_DIP
@@ -469,6 +568,31 @@ public final class WidgetUiBuilder {
     return snapshot.optString("stationLabel", "").trim();
   }
 
+  /** Destination-only crumb for short cells (e.g. "Warwick → Perth" → "Perth"). */
+  static String abbreviateRouteLine(String routeLine) {
+    if (routeLine == null || routeLine.isEmpty()) {
+      return "";
+    }
+    int arrow = routeLine.indexOf('→');
+    if (arrow < 0) {
+      arrow = routeLine.indexOf("->");
+    }
+    if (arrow >= 0) {
+      return routeLine.substring(arrow + (routeLine.charAt(arrow) == '→' ? 1 : 2)).trim();
+    }
+    return routeLine.trim();
+  }
+
+  static String foldRouteIntoTrainClock(String clockLine, String route) {
+    if (route == null || route.isEmpty()) {
+      return clockLine == null ? "" : clockLine;
+    }
+    if (clockLine == null || clockLine.isEmpty()) {
+      return route;
+    }
+    return clockLine + " · " + route;
+  }
+
   static String compactLeaveSecondary(String secondary) {
     if (secondary == null || secondary.isEmpty()) {
       return secondary;
@@ -536,20 +660,30 @@ public final class WidgetUiBuilder {
     }
   }
 
-  private static void bindEmpty(RemoteViews views, Context context, int layoutId) {
-    boolean medium = isMedium(layoutId);
+  private static void bindEmpty(RemoteViews views, Context context, WidgetSize size) {
+    int layoutId = size.layoutId;
+    boolean medium = size.isMedium();
+    float scale = size.typeScale();
     views.setTextViewText(R.id.widget_label, "NEXT TRAIN");
-    views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, medium ? 12f : 11f);
+    views.setTextViewTextSize(
+      R.id.widget_label,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 12f : 11f, scale)
+    );
     bindCompactPrimary(views, EMPTY_SETUP_PRIMARY);
     views.setTextViewTextSize(
       R.id.widget_primary_value,
       TypedValue.COMPLEX_UNIT_SP,
-      medium ? 20f : 16f
+      scaleSp(medium ? 20f : 16f, scale)
     );
     views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_accent));
     views.setTextViewText(R.id.widget_train_clock, EMPTY_SETUP_SUB);
     views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
-    views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, medium ? 14f : 12f);
+    views.setTextViewTextSize(
+      R.id.widget_train_clock,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 14f : 12f, scale)
+    );
     views.setTextColor(R.id.widget_train_clock, context.getColor(R.color.widget_muted));
     hideLeaveTwin(views);
     hideStatusIfPresent(views, layoutId);
@@ -565,22 +699,33 @@ public final class WidgetUiBuilder {
     views.setOnClickPendingIntent(R.id.widget_root, buildTapIntent(context, "new"));
   }
 
-  private static void restoreLiveLayoutChrome(RemoteViews views) {
-    views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
-    views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.TOP);
+  private static void restoreLiveLayoutChrome(RemoteViews views, WidgetSize size) {
+    if (size.isShortCell()) {
+      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
+      views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER_VERTICAL);
+    } else {
+      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
+      views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.TOP);
+    }
   }
 
   /** Pro trial expired — calm locked face, not stale/error. */
   private static void bindWidgetLocked(
     RemoteViews views,
     Context context,
-    int layoutId,
+    WidgetSize size,
     JSONObject snapshot
   ) {
-    boolean medium = isMedium(layoutId);
-    restoreLiveLayoutChrome(views);
+    int layoutId = size.layoutId;
+    boolean medium = size.isMedium();
+    float scale = size.typeScale();
+    restoreLiveLayoutChrome(views, size);
     views.setTextViewText(R.id.widget_label, "NEXT TRAIN");
-    views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, medium ? 12f : 11f);
+    views.setTextViewTextSize(
+      R.id.widget_label,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 12f : 11f, scale)
+    );
     views.setViewVisibility(R.id.widget_primary_unit, android.view.View.GONE);
     String primary =
       snapshot != null ? snapshot.optString("primary", "").trim() : "";
@@ -591,7 +736,7 @@ public final class WidgetUiBuilder {
     views.setTextViewTextSize(
       R.id.widget_primary_value,
       TypedValue.COMPLEX_UNIT_SP,
-      medium ? 18f : 16f
+      scaleSp(medium ? 18f : 16f, scale)
     );
     views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_text));
     hideLeaveTwin(views);
@@ -608,7 +753,11 @@ public final class WidgetUiBuilder {
     }
     views.setTextViewText(R.id.widget_train_clock, body);
     views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
-    views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, medium ? 13f : 12f);
+    views.setTextViewTextSize(
+      R.id.widget_train_clock,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 13f : 12f, scale)
+    );
     views.setTextColor(R.id.widget_train_clock, context.getColor(R.color.widget_muted));
     views.setInt(R.id.widget_train_clock, "setMaxLines", 3);
     views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
@@ -619,18 +768,32 @@ public final class WidgetUiBuilder {
     }
     views.setTextViewText(R.id.widget_route, route);
     views.setTextColor(R.id.widget_route, context.getColor(R.color.widget_accent));
-    views.setTextViewTextSize(R.id.widget_route, TypedValue.COMPLEX_UNIT_SP, medium ? 13f : 12f);
+    views.setTextViewTextSize(
+      R.id.widget_route,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 13f : 12f, scale)
+    );
     setBottomRouteGravity(views, true);
     setTrainStackCentered(views, true);
     views.setOnClickPendingIntent(R.id.widget_root, buildPaywallTapIntent(context));
   }
 
-  private static void bindNearbyFallback(RemoteViews views, Context context, int layoutId) {
-    boolean medium = isMedium(layoutId);
+  private static void bindNearbyFallback(RemoteViews views, Context context, WidgetSize size) {
+    int layoutId = size.layoutId;
+    boolean medium = size.isMedium();
+    float scale = size.typeScale();
     views.setTextViewText(R.id.widget_label, "NEAR ME");
     bindCompactPrimary(views, "Near me");
-    views.setTextViewTextSize(R.id.widget_primary_value, TypedValue.COMPLEX_UNIT_SP, medium ? 28f : 22f);
-    views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, medium ? 12f : 11f);
+    views.setTextViewTextSize(
+      R.id.widget_primary_value,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 28f : 22f, scale)
+    );
+    views.setTextViewTextSize(
+      R.id.widget_label,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 12f : 11f, scale)
+    );
     views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_accent));
     hideLeaveTwin(views);
     hideStatusIfPresent(views, layoutId);
@@ -643,7 +806,11 @@ public final class WidgetUiBuilder {
     views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
     views.setTextViewText(R.id.widget_train_clock, "See trains near you");
     views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
-    views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, medium ? 14f : 12f);
+    views.setTextViewTextSize(
+      R.id.widget_train_clock,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 14f : 12f, scale)
+    );
     setTrainStackCentered(views, true);
     views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER);
     views.setOnClickPendingIntent(R.id.widget_root, buildHomeTapIntent(context));
@@ -702,7 +869,7 @@ public final class WidgetUiBuilder {
     );
   }
 
-  public static int layoutForWidget(Context context, AppWidgetManager manager, int widgetId) {
+  public static WidgetSize widgetSizeFor(Context context, AppWidgetManager manager, int widgetId) {
     int widthDp = 110;
     int heightDp = 40;
     try {
@@ -720,17 +887,34 @@ public final class WidgetUiBuilder {
     } catch (Exception ignored) {
       // Use compact layout.
     }
-    return layoutForSizeDp(widthDp, heightDp);
+    return new WidgetSize(widthDp, heightDp, layoutForSizeDp(widthDp, heightDp));
+  }
+
+  public static int layoutForWidget(Context context, AppWidgetManager manager, int widgetId) {
+    return widgetSizeFor(context, manager, widgetId).layoutId;
+  }
+
+  /** @deprecated Use {@link #widgetSizeFor} — kept for tests that only need layout id. */
+  static WidgetSize defaultSizeForLayout(int layoutId) {
+    if (isMedium(layoutId)) {
+      return new WidgetSize(180, 110, layoutId);
+    }
+    return new WidgetSize(110, 40, layoutId);
   }
 
   /**
-   * Size → layout. Default 2×1 is small. ≈3×1 (180dp+) or ≈2×2 (110dp+ tall) → medium
-   * with Updated line and larger type. Cell formula: (70 × n) − 30.
+   * Size → layout. Default 2×1 is small. ≈2×2 (110dp+ tall) → medium with Updated line.
+   * Wide 3×1 (180dp+) uses medium only when tall enough (≥55dp); short 3×1 stays small.
+   * Cell formula: (70 × n) − 30.
    */
   static int layoutForSizeDp(int minWidthDp, int minHeightDp) {
-    return minWidthDp >= 180 || minHeightDp >= 110
-      ? R.layout.widget_medium
-      : R.layout.widget_small;
+    if (minHeightDp >= 110) {
+      return R.layout.widget_medium;
+    }
+    if (minWidthDp >= 180 && minHeightDp >= 55) {
+      return R.layout.widget_medium;
+    }
+    return R.layout.widget_small;
   }
 
   static String resolveMediumUpdatedLine(

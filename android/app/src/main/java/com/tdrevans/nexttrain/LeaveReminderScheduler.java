@@ -87,6 +87,10 @@ public final class LeaveReminderScheduler {
       }
 
       JSONObject settings = new JSONObject(settingsJson);
+      if (scheduleNearbyPinIfNeeded(context, settings, stale)) {
+        return;
+      }
+
       JSONArray journeys = settings.optJSONArray("journeys");
       if (journeys == null) {
         return;
@@ -98,6 +102,51 @@ public final class LeaveReminderScheduler {
       }
     } catch (Exception error) {
       // Keep last scheduled alarms cleared.
+    }
+  }
+
+  private static boolean scheduleNearbyPinIfNeeded(
+    Context context,
+    JSONObject settings,
+    boolean stale
+  ) {
+    try {
+      JSONObject pin = settings.optJSONObject("nearbyPin");
+      if (!NearbyPinHelper.isHolding(pin) || !pin.optBoolean("notifyMe", false)) {
+        return false;
+      }
+
+      int leaveBefore = settings.optInt("nearbyLeaveBeforeMinutes", 10);
+      PreferredTrainReminder.Target target = NearbyPinHelper.computeTarget(pin, leaveBefore, stale);
+      if (target == null) {
+        return false;
+      }
+
+      if (LeaveReminderSettingsStore.isAcknowledged(context, target.departureKey)) {
+        return false;
+      }
+
+      long now = System.currentTimeMillis();
+      String localDate = PerthTime.localDateKey();
+      boolean leaveNowScheduled =
+        target.leaveByMs > now &&
+        !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
+        !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW);
+
+      if (leaveNowScheduled) {
+        scheduleAlarm(
+          context,
+          TYPE_LEAVE_NOW,
+          target.leaveByMs,
+          target,
+          0,
+          alarmRequestCode(target.journeyId, localDate, TYPE_LEAVE_NOW)
+        );
+      }
+
+      return true;
+    } catch (Exception error) {
+      return false;
     }
   }
 

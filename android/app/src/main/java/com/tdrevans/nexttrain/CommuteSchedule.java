@@ -57,6 +57,15 @@ public final class CommuteSchedule {
         result.empty = false;
         return result;
       }
+
+      Result pinnedResult = WidgetPinResolver.loadBestPinnedResult(context, result.settings);
+      if (pinnedResult != null) {
+        pinnedResult.refreshedAtMs = System.currentTimeMillis();
+        WidgetSettingsStore.saveLastRefreshMs(context, pinnedResult.refreshedAtMs);
+        pinnedResult.stale = false;
+        return pinnedResult;
+      }
+
       result.journey = JourneySelector.selectJourney(result.settings);
       if (result.journey == null) {
         if (JourneySelector.hasConfiguredJourneys(result.settings)) {
@@ -81,7 +90,7 @@ public final class CommuteSchedule {
       result.refreshedAtMs = System.currentTimeMillis();
       WidgetSettingsStore.saveLastRefreshMs(context, result.refreshedAtMs);
       result.stale = false;
-      result.next = resolveActiveNextTrip(result.payload, result.journey);
+      result.next = JourneyPinHelper.resolvePinnedTrip(result.payload, result.journey);
       fillTripFields(result);
       return result;
     } catch (Exception error) {
@@ -108,7 +117,44 @@ public final class CommuteSchedule {
     }
   }
 
-  private static void fillTripFields(Result result) {
+  static Result tryLoadNearbyPin(Context context, JSONObject settings) throws Exception {
+    JSONObject pin = settings.optJSONObject("nearbyPin");
+    if (!NearbyPinHelper.isHolding(pin)) {
+      return null;
+    }
+
+    int leaveBefore = settings.optInt("nearbyLeaveBeforeMinutes", 10);
+    PreferredTrainReminder.Target target = NearbyPinHelper.computeTarget(pin, leaveBefore, false);
+    if (target == null) {
+      return null;
+    }
+
+    JSONObject payload = NextTrainApiClient.fetchNextTrain(
+      pin.optString("station", ""),
+      pin.optString("direction", ""),
+      leaveBefore
+    );
+
+    Result result = new Result();
+    result.settings = settings;
+    result.journeyId = NearbyPinHelper.JOURNEY_ID;
+    result.route = target.route;
+    result.departMode = false;
+    result.payload = payload;
+    result.refreshedAtMs = System.currentTimeMillis();
+    WidgetSettingsStore.saveLastRefreshMs(context, result.refreshedAtMs);
+    result.stale = false;
+
+    JSONObject trip = NearbyPinHelper.findTripByDeparture(payload, target.departureIso);
+    if (trip == null) {
+      trip = NearbyPinHelper.buildSyntheticTrip(pin, leaveBefore);
+    }
+    result.next = trip;
+    fillTripFields(result);
+    return result;
+  }
+
+  static void fillTripFields(Result result) {
     if (result.next == null) {
       return;
     }
@@ -134,14 +180,10 @@ public final class CommuteSchedule {
   }
 
   public static long parseLeaveByMs(Result result) {
-    if (result == null || result.leaveByIso == null || result.leaveByIso.isEmpty()) {
+    if (result == null) {
       return 0L;
     }
-    try {
-      return java.time.Instant.parse(result.leaveByIso).toEpochMilli();
-    } catch (Exception error) {
-      return 0L;
-    }
+    return PerthTime.epochMillisFromIso(result.leaveByIso);
   }
 
   public static JSONObject toWidgetSnapshot(Result result) throws Exception {
@@ -198,6 +240,10 @@ public final class CommuteSchedule {
         return null;
       }
       JSONObject settings = new JSONObject(settingsJson);
+      JSONObject nearbyPin = settings.optJSONObject("nearbyPin");
+      if (NearbyPinHelper.isHolding(nearbyPin)) {
+        return null;
+      }
       if (!JourneySelector.hasConfiguredJourneys(settings)) {
         return null;
       }
@@ -372,7 +418,10 @@ public final class CommuteSchedule {
     snapshot.put("route", result.route);
     // Same bottom-bar shape as idle: Station → Direction.
     snapshot.put("stationLabel", result.route != null ? result.route : WidgetDataService.formatRoute(journey));
-    snapshot.put("journeyName", journey.optString("name", "Journey"));
+    snapshot.put(
+      "journeyName",
+      journey != null ? journey.optString("name", "Journey") : "Journey"
+    );
     snapshot.put("stale", result.stale);
 
     String leavePhase = result.leavePhase;
@@ -435,7 +484,7 @@ public final class CommuteSchedule {
     );
     snapshot.put(
       "leaveBeforeMinutes",
-      journey.optInt("leaveBeforeMinutes", 10)
+      journey != null ? journey.optInt("leaveBeforeMinutes", 10) : 10
     );
     snapshot.put("updatingSinceMs", 0L);
     putFollowingCache(snapshot, resolveFollowingTrip(result.payload, next));
@@ -476,8 +525,15 @@ public final class CommuteSchedule {
   }
 
   /**
+   * True soonest not-yet-departed train (classic next).
+   */
+  static JSONObject resolveTrueNextTrip(JSONObject payload) {
+    return resolveActiveNextTrip(payload, null);
+  }
+
+  /**
    * Next live trip for the widget/commute face = true soonest not-yet-departed train
-   * (U-11 lock B). Preferred only gates Leave By + medium hint — not which train is shown.
+   * when no journey pin context. With journey, use {@link JourneyPinHelper#resolvePinnedTrip}.
    */
   static JSONObject resolveActiveNextTrip(JSONObject payload, JSONObject journey) {
     if (payload == null) {
@@ -511,12 +567,18 @@ public final class CommuteSchedule {
 
   /** Leave By / leave twin only when no preferred, or this trip is at/after preferred. */
   static boolean leaveByArmedForTrip(JSONObject trip, JSONObject journey) {
-    int preferredMinutes = preferredMinutesForLiveGlance(journey);
-    if (preferredMinutes < 0) {
-      return true;
+    if (journey == null || !journey.optBoolean("useLeaveBefore", true)) {
+      return false;
     }
     if (trip == null) {
       return false;
+    }
+    if (JourneyPinHelper.isOverrideActiveToday(journey)) {
+      return true;
+    }
+    int preferredMinutes = preferredMinutesForLiveGlance(journey);
+    if (preferredMinutes < 0) {
+      return true;
     }
     return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey));
   }
@@ -526,8 +588,17 @@ public final class CommuteSchedule {
    * (Idle outside-hours uses {@link NextCommutePreview#idleWidgetLabel}.)
    */
   static String liveWidgetLabel(JSONObject journey, JSONObject trip) {
+    if (trip == null) {
+      return "NEXT TRAIN";
+    }
+    if (journey != null && NearbyPinHelper.JOURNEY_ID.equals(journey.optString("id", ""))) {
+      return "Pinned Train";
+    }
+    if (JourneyPinHelper.isOverrideActiveToday(journey)) {
+      return "Target Train";
+    }
     int preferredMinutes = preferredMinutesForLiveGlance(journey);
-    if (preferredMinutes < 0 || trip == null) {
+    if (preferredMinutes < 0) {
       return "NEXT TRAIN";
     }
     if (tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey))) {

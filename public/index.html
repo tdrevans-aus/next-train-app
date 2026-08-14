@@ -124,13 +124,41 @@
       </section>
 
       <section class="hero" id="hero">
+        <button
+          type="button"
+          class="hero-pin-btn"
+          id="hero-pin-btn"
+          hidden
+          aria-label="Pin train"
+          aria-pressed="false"
+        >
+          <svg class="hero-pin-icon hero-pin-icon--outline" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M8.3 2.85h7.4c.6 0 1.08.45 1.08 1.05v.75l2.35 4.55c.2.38.09.85-.28 1.08-.14.09-.3.15-.46.15H6.7c-.55 0-1-.42-1-.95 0-.15.05-.3.13-.43L7.65 4.95v-.75c0-.6.48-1.05 1.08-1.05Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.65"
+              stroke-linejoin="round"
+            />
+            <path d="M12 11.2V20.35" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" />
+          </svg>
+          <svg class="hero-pin-icon hero-pin-icon--filled" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M8.3 2.85h7.4c.6 0 1.08.45 1.08 1.05v.75l2.35 4.55c.2.38.09.85-.28 1.08-.14.09-.3.15-.46.15H6.7c-.55 0-1-.42-1-.95 0-.15.05-.3.13-.43L7.65 4.95v-.75c0-.6.48-1.05 1.08-1.05Z"
+              fill="currentColor"
+            />
+            <path d="M12 11.2V20.35" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" />
+          </svg>
+        </button>
         <span class="hero-swipe-cue hero-swipe-cue--prev" id="hero-swipe-prev" hidden aria-hidden="true"
           >‹</span
         >
         <span class="hero-swipe-cue hero-swipe-cue--next" id="hero-swipe-next" hidden aria-hidden="true"
           >›</span
         >
-        <p class="label" id="hero-depart-label">Next Train</p>
+        <div class="hero-label-row">
+          <p class="label" id="hero-depart-label">Next Train</p>
+        </div>
         <div class="time depart-countdown" id="depart-countdown">—</div>
         <div id="hero-empty-state" class="hero-empty-state" hidden>
           <span class="hero-empty-title">No journeys yet</span>
@@ -218,9 +246,46 @@
         <p class="leave-hint" id="leave-hint" hidden>
           Adjust your time to station with the sliders
         </p>
+        <div class="nearby-pin-leave-controls" id="nearby-pin-leave-controls" hidden>
+          <label class="field leave-before-field" id="nearby-leave-before-field">
+            <div class="field-label-row">
+              <span class="field-label">Time to station</span>
+              <span class="field-value" id="nearby-leave-before-value">10 min</span>
+            </div>
+            <div class="leave-before-controls" id="nearby-leave-before-controls">
+              <input
+                type="range"
+                class="leave-before-slider"
+                id="nearby-leave-before-input"
+                min="1"
+                max="30"
+                step="1"
+                value="10"
+              />
+              <div class="range-ticks" aria-hidden="true">
+                <span>1 min</span>
+                <span>30 min</span>
+              </div>
+            </div>
+          </label>
+          <div class="nearby-pin-leave-footer" id="nearby-pin-leave-footer">
+            <div class="nearby-notify-row" id="nearby-notify-section">
+              <span class="nearby-notify-label">Notify me</span>
+              <label class="menu-toggle-switch">
+                <input type="checkbox" id="nearby-notify-me" />
+                <span class="menu-toggle-track" aria-hidden="true"></span>
+              </label>
+            </div>
+            <button type="button" class="btn-link nearby-leave-hide-btn" id="nearby-leave-hide-btn">
+              Hide
+            </button>
+          </div>
+        </div>
       </section>
 
-      <p class="preferred-hint" id="preferred-hint" hidden></p>
+      <button type="button" class="preferred-hint" id="preferred-hint" hidden>
+        Jump to target train
+      </button>
 
       <div class="train-meta">
         <section class="detail-strip" id="detail-strip">
@@ -235,7 +300,7 @@
         </section>
 
         <section class="following" id="following-section" hidden>
-          <p class="following-label">Then</p>
+          <p class="following-label" id="following-label">Then</p>
           <p class="following-next" id="following-next"></p>
         </section>
 
@@ -392,6 +457,7 @@
                   />
                 </div>
               </label>
+              <div id="detail-route-core">
               <label class="field">
                 <span>Departure station</span>
                 <div class="station-combobox" id="detail-station-combobox">
@@ -428,6 +494,7 @@
                   Platform sign direction — not where you get off.
                 </p>
               </label>
+              </div>
             </section>
 
             <section class="settings-section" id="detail-timing-section">
@@ -512,7 +579,7 @@
                 When this journey shows on the home screen.
               </p>
               <p class="settings-section-hint detail-target-outside-hint" id="detail-target-outside-active-hint" hidden>
-                Target train is outside Active hours.
+                Preferred target is outside Active hours.
               </p>
               <p class="settings-section-hint" id="detail-combo-b-hint" hidden>
                 Set Active hours so this journey can show automatically.
@@ -527,7 +594,7 @@
               <div class="detail-target-master" id="detail-target-master">
                 <label class="checkbox-label detail-target-master-toggle">
                   <input type="checkbox" id="detail-use-target-train" />
-                  <span>Target train</span>
+                  <span>Preferred target</span>
                 </label>
                 <label
                   class="field optional-time-field detail-preferred-field"
@@ -665,33 +732,33 @@
         <div class="settings-detail-footer">
           <div class="settings-actions settings-actions-detail">
             <button type="button" class="btn-secondary" id="detail-cancel-btn">Cancel</button>
-            <button
-              type="button"
-              class="journey-delete-icon-btn"
-              id="delete-journey-btn"
-              hidden
-              aria-label="Delete journey"
-            >
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12Z"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M10 11v5M14 11v5"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </button>
             <button type="submit" class="btn-primary" id="detail-done-btn" form="settings-detail-view">
               Save
             </button>
           </div>
+          <button
+            type="button"
+            class="journey-delete-icon-btn"
+            id="delete-journey-btn"
+            hidden
+            aria-label="Delete journey"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12Z"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M10 11v5M14 11v5"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -878,7 +945,6 @@
               autocomplete="email"
               placeholder="If you want a reply"
             />
-            <small class="field-hint">Leave blank for anonymous notes.</small>
           </label>
           <p class="feedback-status" id="feedback-status" hidden role="status"></p>
           <div class="feedback-actions">
@@ -941,10 +1007,20 @@
             Swipe left or right for later or earlier departures.
           </li>
           <li>
-            <strong>Leave by</strong> — When a <strong>target train</strong> is on, the card below
-            shows when to head out (from your time to station). If you&rsquo;re late, tap
+            <strong>Pin</strong> — On <strong>Near me</strong>, tap the pin (top right of the
+            departure card) to hold that train on screen until about a minute after it leaves
+            (or until you unpin). While pinned, a <strong>Leave by</strong> card appears with
+            <strong>Time to station</strong>, and <strong>Other directions</strong> hides to
+            free space. Turn on <strong>Tell me when to leave</strong> if you want a
+            leave reminder and Live countdown — pin alone does not ask for notification
+            permission. A pinned train also shows on the home screen widget while the pin holds.
+          </li>
+          <li>
+            <strong>Leave by</strong> — On a journey, when a <strong>target train</strong> is on,
+            the card below shows when to head out (from your time to station). If you&rsquo;re late, tap
             <strong>I've left</strong> or <strong>Next Train</strong>
-            (same as swiping left on the departure card). Tap the sliders icon to change time to station.
+            (same as swiping left on the departure card). On Near me, Leave by appears when a train
+            is pinned (see <strong>Pin</strong> above).
           </li>
           <li>
             <strong>Near me</strong> — Tap
@@ -960,7 +1036,8 @@
               </svg>
             </span>
             in the top bar for the nearest-station board. Pick a direction from the list, or swipe
-            for other departures. Tap again to refresh your location.
+            for other departures. Use the <strong>pin</strong> to lock one departure (see
+            <strong>Pin</strong> above). Tap Near me again to refresh your location.
           </li>
           <li>
             <strong>Reminders</strong> — Turn on <strong>Target train</strong>, set the time, then

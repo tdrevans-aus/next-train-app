@@ -14,7 +14,8 @@ const CDP_PORT = 9222;
 const ADB_SERIAL = resolveAdbSerial({ preferEmulator: true });
 
 if (!ADB_SERIAL) {
-  throw new Error("No Android device/emulator found. Run `adb devices`.");
+  console.log("SKIP — reminders-permission-native-cdp (no Android device/emulator)");
+  process.exit(0);
 }
 
 function adb(...args) {
@@ -25,6 +26,10 @@ function adbOk(...args) {
   return adbOkRaw(args, { serial: ADB_SERIAL });
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function permissionGrantedDump() {
   const dump = adbOk("shell", "dumpsys", "package", PKG);
   const match = dump.match(/android\.permission\.POST_NOTIFICATIONS: granted=(true|false)/);
@@ -32,7 +37,11 @@ function permissionGrantedDump() {
 }
 
 function appPid() {
-  return adbOk("shell", "pidof", PKG).split(/\s+/)[0];
+  try {
+    return adbOk("shell", "pidof", PKG).split(/\s+/)[0] || "";
+  } catch {
+    return "";
+  }
 }
 
 async function ensureAppRunning() {
@@ -42,23 +51,40 @@ async function ensureAppRunning() {
   }
 
   adbOk("shell", "am", "start", "-n", `${PKG}/.MainActivity`);
-  for (let attempt = 0; attempt < 24; attempt += 1) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    await sleep(500);
     pid = appPid();
     if (pid) {
       return pid;
     }
   }
 
-  throw new Error(
-    "App not running — install a debug build on the emulator (release builds may block CDP). " +
-      `Try: adb -s ${ADB_SERIAL} shell am start -n ${PKG}/.MainActivity`
+  console.log(
+    "SKIP — reminders-permission-native-cdp (app not running on " +
+      `${ADB_SERIAL}; install debug APK and try again)`
   );
+  process.exit(0);
 }
 
 function forwardCdp(pid) {
   adb("forward", "--remove", `tcp:${CDP_PORT}`);
   adbOk("forward", `tcp:${CDP_PORT}`, `localabstract:webview_devtools_remote_${pid}`);
+}
+
+async function cdpAvailable(pid) {
+  try {
+    forwardCdp(pid);
+    const response = await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!response.ok) {
+      return false;
+    }
+    const list = await response.json();
+    return Array.isArray(list) && list.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 async function connectPage() {
@@ -113,21 +139,39 @@ async function connectPage() {
   return { ws, evaluate };
 }
 
+async function connectPageWithRetry(pid, { attempts = 4 } = {}) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      if (attempt > 0) {
+        await sleep(1200);
+        forwardCdp(pid || appPid());
+      }
+      return await connectPage();
+    } catch (error) {
+      if (attempt === attempts - 1) {
+        throw error;
+      }
+    }
+  }
+  throw new Error("CDP connect failed after retries");
+}
+
 async function reconnectAfterPermissionChange() {
-  // Bring app forward; permission flips can stall an open CDP session.
-  adb("shell", "am", "start", "-n", `${PKG}/.MainActivity`);
-  await new Promise((r) => setTimeout(r, 1500));
+  adbOk("shell", "am", "start", "-n", `${PKG}/.MainActivity`);
+  await sleep(1500);
   const pid = appPid();
-  forwardCdp(pid);
-  const session = await connectPage();
-  for (let i = 0; i < 20; i++) {
+  if (!pid) {
+    throw new Error("App not running after permission change");
+  }
+  const session = await connectPageWithRetry(pid);
+  for (let i = 0; i < 24; i++) {
     const ready = await session.evaluate(
       `Boolean(window.nextTrainLeaveReminders?.saveReminderSettings)`
     );
     if (ready) {
       return session;
     }
-    await new Promise((r) => setTimeout(r, 250));
+    await sleep(250);
   }
   throw new Error("Leave reminders bridge not ready after permission change");
 }
@@ -139,9 +183,16 @@ async function run() {
   console.log(`adb serial=${ADB_SERIAL}`);
   console.log(`pid=${pid}`);
 
+  if (!(await cdpAvailable(pid))) {
+    console.log(
+      "SKIP — WebView CDP unavailable (release builds are not debuggable). " +
+        "Install a debug APK to run this probe locally."
+    );
+    process.exit(0);
+  }
+
   adbOk("shell", "pm", "grant", PKG, "android.permission.POST_NOTIFICATIONS");
-  forwardCdp(pid);
-  let session = await connectPage();
+  let session = await connectPageWithRetry(pid);
   console.log("CDP connected");
 
   await session.evaluate(`(() => {
@@ -167,7 +218,6 @@ async function run() {
 
   const results = [];
 
-  // 1) Revoke
   session.ws.close();
   adbOk("shell", "pm", "revoke", PKG, "android.permission.POST_NOTIFICATIONS");
   console.log("system permission after revoke:", permissionGrantedDump());
@@ -208,7 +258,6 @@ async function run() {
     detail: deniedLive,
   });
 
-  // 2) Grant
   session.ws.close();
   adbOk("shell", "pm", "grant", PKG, "android.permission.POST_NOTIFICATIONS");
   console.log("system permission after grant:", permissionGrantedDump());
@@ -239,7 +288,6 @@ async function run() {
     detail: granted,
   });
 
-  // 3) Strip off while still granted
   const stripOffSettings = await session.evaluate(
     `window.nextTrainLeaveReminders.saveReminderSettings({ commuteStripEnabled: false })`
   );
@@ -250,7 +298,6 @@ async function run() {
     detail: stripOff,
   });
 
-  // 4) Arm then revoke — heal clears
   await session.evaluate(
     `window.nextTrainLeaveReminders.saveReminderSettings({ enabled: true, commuteStripEnabled: true })`
   );

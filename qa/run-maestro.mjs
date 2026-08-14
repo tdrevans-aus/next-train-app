@@ -62,14 +62,15 @@ function adbOnTarget(args) {
 }
 
 function runMaestro(args, options = {}) {
+  const deviceArgs = adbSerial ? ["--device", adbSerial] : [];
   if (process.platform === "win32" && maestroCommand.toLowerCase().endsWith(".bat")) {
-    return spawnSync("cmd.exe", ["/c", maestroCommand, ...args], {
+    return spawnSync("cmd.exe", ["/c", maestroCommand, ...deviceArgs, ...args], {
       encoding: "utf8",
       shell: false,
       ...options,
     });
   }
-  return spawnSync(maestroCommand, args, {
+  return spawnSync(maestroCommand, [...deviceArgs, ...args], {
     encoding: "utf8",
     shell: false,
     ...options,
@@ -184,9 +185,8 @@ function runFlowWithRetry(flow, { retries = 1 } = {}) {
 
 wakeDevice();
 waitForAdbDevice(40);
-adbOnTarget(["shell", "pm", "clear", "com.tdrevans.nexttrain"]);
-stabilizeEmulatorBetweenFlows();
-adbOnTarget(["shell", "am", "start", "-n", "com.tdrevans.nexttrain/.MainActivity"]);
+// Flows own cold start (smoke uses stopApp + nearby deep link). Avoid pm clear here —
+// it breaks the native CDP probe when run in the same full regression batch.
 stabilizeEmulatorBetweenFlows();
 
 for (const flow of flows) {

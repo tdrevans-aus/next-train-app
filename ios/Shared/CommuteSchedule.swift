@@ -34,16 +34,28 @@ enum CommuteSchedule {
         }
 
         result.settings = settings
-        result.journey = JourneySelector.selectJourney(settings)
 
-        if result.journey == nil {
-            if JourneySelector.hasConfiguredJourneys(settings) {
-                return outsideHoursSnapshot(settings)
+        do {
+            if let pinned = try WidgetPinResolver.loadBestPinnedResult(settings: settings) {
+                var pinnedResult = pinned
+                pinnedResult.refreshedAtMs = Int64(Date().timeIntervalSince1970 * 1000)
+                WidgetSettingsStore.saveLastRefreshMs(pinnedResult.refreshedAtMs)
+                pinnedResult.stale = false
+                let snapshot = buildLiveSnapshot(pinnedResult)
+                WidgetSettingsStore.saveSnapshot(snapshot)
+                return snapshot
             }
-            return emptyState()
-        }
 
-        guard let journey = result.journey else { return emptyState() }
+            result.journey = JourneySelector.selectJourney(settings)
+
+            if result.journey == nil {
+                if JourneySelector.hasConfiguredJourneys(settings) {
+                    return outsideHoursSnapshot(settings)
+                }
+                return emptyState()
+            }
+
+            guard let journey = result.journey else { return emptyState() }
         result.journeyId = journey["id"] as? String ?? ""
         result.route = WidgetDataService.formatRoute(journey)
         result.departMode = !(journey["useLeaveBefore"] as? Bool ?? true)
@@ -181,7 +193,7 @@ enum CommuteSchedule {
             "stationLabel": result.route,
             "journeyName": journey["name"] as? String ?? "Journey",
             "stale": result.stale,
-            "label": "NEXT TRAIN",
+            "label": liveWidgetLabel(journey: journey, trip: next),
             "primary": formatMinutesPrimary(minutesUntilDeparture),
             "trainClock": result.displayTime,
             "secondary": secondary,
@@ -329,10 +341,25 @@ enum CommuteSchedule {
     }
 
     private static func leaveByArmedForTrip(_ trip: [String: Any], journey: [String: Any]) -> Bool {
+        if JourneyPinHelper.isOverrideActiveToday(journey) { return true }
         let preferredMinutes = PerthTime.parseClockMinutes(journey["preferredTrainTime"] as? String ?? "")
         if preferredMinutes < 0 { return true }
         let departureMinutes = PerthTime.minutesFromIso(tripDepartureIso(trip))
         return departureMinutes >= preferredMinutes
+    }
+
+    private static func liveWidgetLabel(journey: [String: Any]?, trip: [String: Any]?) -> String {
+        guard trip != nil else { return "NEXT TRAIN" }
+        if let journey, (journey["id"] as? String) == NearbyPinHelper.journeyId {
+            return "Pinned Train"
+        }
+        if JourneyPinHelper.isOverrideActiveToday(journey) {
+            return "Target Train"
+        }
+        let preferredMinutes = PerthTime.parseClockMinutes(journey?["preferredTrainTime"] as? String ?? "")
+        if preferredMinutes < 0 { return "NEXT TRAIN" }
+        let departureMinutes = PerthTime.minutesFromIso(tripDepartureIso(trip!))
+        return departureMinutes >= preferredMinutes ? "Target Train" : "NEXT TRAIN"
     }
 
     private static func preferredHintForJourney(_ journey: [String: Any]) -> String {

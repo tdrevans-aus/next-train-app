@@ -60,7 +60,7 @@ async function seedManyDirectionNearby(page) {
       following.hidden = false;
     }
     if (followingNext) {
-      followingNext.textContent = "18:07 · Platform 7 · On Time";
+      followingNext.textContent = "18:07";
     }
 
     const updated = document.getElementById("updated");

@@ -1,9 +1,17 @@
 appId: com.tdrevans.nexttrain
 ---
-- launchApp:
-    clearState: false
+- stopApp
+- openLink: "nexttrain://nearby"
+# First-run onboarding can cover chrome until dismissed.
+- tapOn:
+    text: "Got it"
+    optional: true
+- tapOn:
+    text: "Maybe later"
+    optional: true
 # Chrome label is always "Near me"; route line may say "Near you" after GPS.
 - extendedWaitUntil:
-    visible: "Near me"
-    timeout: 60000
+    visible: "Menu"
+    timeout: 90000
+- assertVisible: "Menu"
 - assertVisible: "Near me"

@@ -94,7 +94,7 @@ public final class PreferredTrainReminder {
       preferred = fallback.isEmpty() ? "" : fallback;
     }
     int preferredMinutes = PerthTime.parseClockMinutes(preferred);
-    if (preferredMinutes < 0) {
+    if (preferredMinutes < 0 && !JourneyPinHelper.isOverrideActiveToday(journey)) {
       return null;
     }
 
@@ -111,19 +111,7 @@ public final class PreferredTrainReminder {
       return null;
     }
 
-    JSONArray upcoming = payload.optJSONArray("upcoming");
-    if (upcoming == null || upcoming.length() == 0) {
-      JSONObject next = payload.optJSONObject("next");
-      if (next != null) {
-        upcoming = new JSONArray();
-        upcoming.put(next);
-      } else {
-        return null;
-      }
-    }
-
-    int horizonMinutes = reminderHorizonMinutes(journey, preferredMinutes);
-    JSONObject trip = pickTripAtOrAfter(upcoming, preferredMinutes, horizonMinutes);
+    JSONObject trip = JourneyPinHelper.pickTripForReminders(journey, payload, clock);
     if (trip == null) {
       return null;
     }

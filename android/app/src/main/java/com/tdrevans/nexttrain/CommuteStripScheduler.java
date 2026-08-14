@@ -54,10 +54,6 @@ public final class CommuteStripScheduler {
 
     LeaveReminderSettingsStore.clearExpiredPauseIfNeeded(context);
 
-    if (!LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
-      return;
-    }
-
     if (!hasNotificationPermission(context)) {
       return;
     }
@@ -72,6 +68,16 @@ public final class CommuteStripScheduler {
       }
 
       JSONObject settings = new JSONObject(settingsJson);
+      StripPlan nearbyPlan = computeStripPlanForNearbyPin(context, settings);
+      if (nearbyPlan != null) {
+        scheduleStripPlan(context, nearbyPlan);
+        return;
+      }
+
+      if (!LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
+        return;
+      }
+
       JSONArray journeys = settings.optJSONArray("journeys");
       if (journeys == null) {
         return;
@@ -97,62 +103,97 @@ public final class CommuteStripScheduler {
         return;
       }
 
-      if (
-        LeaveReminderSettingsStore.hasStripDismissedForDay(
-          context,
-          best.target.journeyId,
-          PerthTime.localDateKey()
-        )
-      ) {
-        return;
-      }
-
-      // Late-arm: already inside the leave window → post immediately (Leave now / countdown).
-      if (isInsideStripWindow(now, best.startAtMs, best.endAtMs)) {
-        long departureMs = PerthTime.epochMillisFromIso(best.target.departureIso);
-        CommuteStripNotifier.show(
-          context,
-          best.target.journeyId,
-          best.target.route,
-          best.target.trainTime,
-          best.target.leaveByMs,
-          departureMs,
-          best.target.stale
-        );
-        // When leave-by is still ahead, refresh at leave-by so chronometer switches to train.
-        if (best.target.leaveByMs > now && departureMs > best.target.leaveByMs) {
-          scheduleShowRefresh(
-            context,
-            best.target.journeyId,
-            best.target.route,
-            best.target.trainTime,
-            best.target.leaveByMs,
-            departureMs,
-            best.endAtMs,
-            best.target.stale
-          );
-        }
-      } else {
-        scheduleAlarm(
-          context,
-          ACTION_SHOW,
-          best.startAtMs,
-          best,
-          alarmRequestCode(best.target.journeyId, "show")
-        );
-      }
-
-      if (best.endAtMs > now) {
-        scheduleAlarm(
-          context,
-          ACTION_END,
-          best.endAtMs,
-          best,
-          alarmRequestCode(best.target.journeyId, "end")
-        );
-      }
+      scheduleStripPlan(context, best);
     } catch (Exception error) {
       // Keep alarms cleared.
+    }
+  }
+
+  static StripPlan computeStripPlanForNearbyPin(Context context, JSONObject settings)
+    throws Exception {
+    JSONObject pin = settings.optJSONObject("nearbyPin");
+    if (!NearbyPinHelper.isHolding(pin) || !pin.optBoolean("notifyMe", false)) {
+      return null;
+    }
+
+    int leaveBefore = settings.optInt("nearbyLeaveBeforeMinutes", 10);
+    PreferredTrainReminder.Target target = NearbyPinHelper.computeTarget(pin, leaveBefore, false);
+    if (target == null) {
+      return null;
+    }
+
+    String localDate = PerthTime.localDateKey();
+    if (LeaveReminderSettingsStore.hasStripDismissedForDay(context, target.journeyId, localDate)) {
+      return null;
+    }
+
+    long startAtMs = computeStripStartMs(context, target.leaveByMs);
+    long endAtMs = computeStripEndMs(startAtMs, target.departureIso);
+    if (endAtMs <= startAtMs) {
+      return null;
+    }
+
+    return new StripPlan(target, startAtMs, endAtMs);
+  }
+
+  private static void scheduleStripPlan(Context context, StripPlan plan) {
+    long now = System.currentTimeMillis();
+    if (plan == null || plan.endAtMs <= now) {
+      LeaveReminderNotifier.cancel(context);
+      return;
+    }
+
+    if (
+      LeaveReminderSettingsStore.hasStripDismissedForDay(
+        context,
+        plan.target.journeyId,
+        PerthTime.localDateKey()
+      )
+    ) {
+      return;
+    }
+
+    if (isInsideStripWindow(now, plan.startAtMs, plan.endAtMs)) {
+      long departureMs = PerthTime.epochMillisFromIso(plan.target.departureIso);
+      CommuteStripNotifier.show(
+        context,
+        plan.target.journeyId,
+        plan.target.route,
+        plan.target.trainTime,
+        plan.target.leaveByMs,
+        departureMs,
+        plan.target.stale
+      );
+      if (plan.target.leaveByMs > now && departureMs > plan.target.leaveByMs) {
+        scheduleShowRefresh(
+          context,
+          plan.target.journeyId,
+          plan.target.route,
+          plan.target.trainTime,
+          plan.target.leaveByMs,
+          departureMs,
+          plan.endAtMs,
+          plan.target.stale
+        );
+      }
+    } else {
+      scheduleAlarm(
+        context,
+        ACTION_SHOW,
+        plan.startAtMs,
+        plan,
+        alarmRequestCode(plan.target.journeyId, "show")
+      );
+    }
+
+    if (plan.endAtMs > now) {
+      scheduleAlarm(
+        context,
+        ACTION_END,
+        plan.endAtMs,
+        plan,
+        alarmRequestCode(plan.target.journeyId, "end")
+      );
     }
   }
 

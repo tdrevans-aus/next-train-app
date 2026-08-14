@@ -11,6 +11,8 @@
 | ID | Topic | Options / notes | Related |
 |----|-------|-----------------|--------|
 | **U-01** | **Overlap — Fix for me: whose hours change?** | **Two options (keep both until locked):** (A) Keep the journey being saved; minimally adjust the *other* journey (current default). (B) Offer a second control to adjust *these* hours instead (minimal trim/slide on the editing journey). May ship as two chips, e.g. **Keep these hours** / **Adjust these hours**. | `docs/jim-brief-journey-overlap-friendly.md` |
+| **U-14** | **Target train must sit inside Active hours?** | **Likely superseded by FB-23** (Route vs Commute): commutes get derived window from usual train; routes have no window. Until then: U-13 soft hint only. | **FB-23**, **FB-21**, **FB-22** |
+| **U-15** | **Route vs Commute — product locks** | **Locked (Tim, Aug 2026):** See **FB-23** — upgrade if cheap; ads-only monetization; widget any route. **Padding:** keep explicit Active from/until for now; revisit hidden usual-train band **after** Route/Commute split. **Overlap:** two commutes same morning → switch at **midpoint** between usual trains. **Copy:** keep **Target train** (not “usual train”) for now. | **FB-23** |
 
 ---
 
@@ -25,6 +27,6 @@
 | **U-08** | **Station picker — keyboard vs list** | **Resolved** — List-first (no keyboard on first tap); **Search stations** for typing; hide journey footer while open. Brief: `docs/jim-brief-station-picker-list-first.md` | 2026-08-10 |
 | **U-09** | **Widget trust / staleness redesign** | **Resolved / pivoted** — A/B/C shipped; outside hours = **designed idle / next commute** (not all-day live Near me). Brief: `docs/jim-brief-widget-designed-idle.md` | 2026-08-10 |
 | **U-10** | **Widget / app — live vs preferred train** | **Superseded 2026-08-11 → U-11** — was preferred-or-later (FB-06). | 2026-08-11 |
-| **U-11** | **Next train vs Leave By (preferred)** | **Locked B** — Hero = **true next**; Leave By only for preferred or after swipe/Next. Brief: `docs/jim-brief-leave-by-preferred-gate.md` | 2026-08-11 |
-| **U-12** | **App Leave By vs widget preferred gate** | **Locked 1** — Gate app Leave By like widget (no Catch this train). Same brief as U-11: `docs/jim-brief-leave-by-preferred-gate.md`. FB-08 promoted. | 2026-08-11 |
+| **U-11** | **Next train vs Leave By (preferred)** | **Superseded 2026-08-14 → FB-20** — Journey hero/widget = pin (default Preferred target); secondary Next only if next ≠ pin. Brief: `docs/jim-brief-journey-pin-preferred-target.md`. Old lock B / `jim-brief-leave-by-preferred-gate.md` retired for face. | 2026-08-11 / 2026-08-14 |
+| **U-12** | **App Leave By vs widget preferred gate** | **Superseded with U-11 → FB-20** — Leave by follows pin; widget follows pin in Active window. | 2026-08-11 / 2026-08-14 |
 | **U-13** | **Target train UI placement + rename** | **Locked** — Always visible; Preferred→Target; idle **TARGET TRAIN**. Soft hint if Target outside Active hours (no Save block). Brief: `docs/jim-brief-preferred-always-visible.md` | 2026-08-11 |

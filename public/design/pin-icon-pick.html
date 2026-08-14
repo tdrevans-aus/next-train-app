@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hero pin icons — 5 options</title>
+    <style>
+      :root {
+        --mist: #eef3f2;
+        --accent: #0b6e6a;
+        --ink: #132523;
+        --muted: #5c726d;
+        --surface: #fff;
+        --line: rgba(19, 37, 35, 0.1);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, #f5f8f7 0%, var(--mist) 100%);
+        min-height: 100vh;
+        padding: 2rem 1.25rem 4rem;
+      }
+      main { max-width: 920px; margin: 0 auto; }
+      h1 { font-size: 1.5rem; margin: 0 0 0.35rem; }
+      .lede { color: var(--muted); line-height: 1.5; margin: 0 0 1.5rem; max-width: 40rem; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 1rem 0.85rem 1.1rem;
+        text-align: center;
+      }
+      .card h2 { font-size: 0.95rem; margin: 0 0 0.25rem; }
+      .card p { margin: 0 0 0.85rem; font-size: 0.75rem; color: var(--muted); line-height: 1.35; }
+      .pair {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .chip {
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--muted);
+      }
+      .chip.on {
+        color: var(--accent);
+        border-color: rgba(11, 110, 106, 0.45);
+        background: rgba(11, 110, 106, 0.08);
+      }
+      .chip svg { width: 1.35rem; height: 1.35rem; }
+      .caption { display: block; font-size: 0.65rem; color: var(--muted); margin-top: 0.35rem; }
+      .note {
+        margin-top: 1.5rem;
+        padding: 0.85rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Push-pin icons (not map markers)</h1>
+      <p class="lede">
+        Today’s control reads as a location teardrop. Pick a <strong>push pin / thumbtack</strong>
+        that stays clear outline vs filled at ~17px on the hero.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h2>1 · Classic thumbtack</h2>
+          <p>Round head + needle. Most “pin” at a glance.</p>
+          <div class="pair">
+            <div>
+              <span class="chip">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="7" r="3.25" stroke="currentColor" stroke-width="1.75" />
+                  <path d="M12 10.25V20" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                  <path d="M9.2 10.4h5.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">Off</span>
+            </div>
+            <div>
+              <span class="chip on">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="7" r="3.25" fill="currentColor" />
+                  <path d="M12 10.25V20" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                  <path d="M9.2 10.4h5.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">On</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>2 · Flat-head pin</h2>
+          <p>Cylinder top — office corkboard vibe.</p>
+          <div class="pair">
+            <div>
+              <span class="chip">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="8.5" y="3.5" width="7" height="5" rx="1.2" stroke="currentColor" stroke-width="1.75" />
+                  <path d="M12 8.5V20" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                  <path d="M9.5 8.5h5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">Off</span>
+            </div>
+            <div>
+              <span class="chip on">
+                <svg viewBox="0 0 24 24">
+                  <rect x="8.5" y="3.5" width="7" height="5" rx="1.2" fill="currentColor" />
+                  <path d="M12 8.5V20" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                  <path d="M9.5 8.5h5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">On</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>3 · Material pushpin</h2>
+          <p>Teardrop head + stick — common Android glyph.</p>
+          <div class="pair">
+            <div>
+              <span class="chip">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M16 4H8l1.2 5.2A4.2 4.2 0 0 0 12 16a4.2 4.2 0 0 0 2.8-6.8L16 4Z"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linejoin="round"
+                  />
+                  <path d="M12 16v4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">Off</span>
+            </div>
+            <div>
+              <span class="chip on">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M16 4H8l1.2 5.2A4.2 4.2 0 0 0 12 16a4.2 4.2 0 0 0 2.8-6.8L16 4Z"
+                    fill="currentColor"
+                  />
+                  <path d="M12 16v4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">On</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>4 · Angled stuck</h2>
+          <p>Tilted pin — reads “stuck in” when on.</p>
+          <div class="pair">
+            <div>
+              <span class="chip">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <g transform="rotate(-28 12 12)">
+                    <circle cx="12" cy="7.2" r="3.1" stroke="currentColor" stroke-width="1.75" />
+                    <path d="M12 10.3V19.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                    <path d="M9.4 10.5h5.2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                  </g>
+                </svg>
+              </span>
+              <span class="caption">Off</span>
+            </div>
+            <div>
+              <span class="chip on">
+                <svg viewBox="0 0 24 24">
+                  <g transform="rotate(-28 12 12)">
+                    <circle cx="12" cy="7.2" r="3.1" fill="currentColor" />
+                    <path d="M12 10.3V19.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                    <path d="M9.4 10.5h5.2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                  </g>
+                </svg>
+              </span>
+              <span class="caption">On</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>5 · Needle + disc</h2>
+          <p>Minimal disc head — clearest at tiny sizes.</p>
+          <div class="pair">
+            <div>
+              <span class="chip">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="6.5" r="2.6" stroke="currentColor" stroke-width="1.75" />
+                  <path d="M12 9.2V20" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">Off</span>
+            </div>
+            <div>
+              <span class="chip on">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="6.5" r="2.6" fill="currentColor" />
+                  <path d="M12 9.2V20" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="caption">On</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <p class="note">
+        Shipping interim: <strong>1 · Classic thumbtack</strong> until you pick.
+        Open this file in a browser: <code>public/design/pin-icon-pick.html</code>
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,5 +1,7 @@
 # Jim brief — Target flag icon + on/off state
 
+**Status:** **Superseded 2026-08-14** — pin chrome (FB-14 Near me, FB-20 journey) replaces flag; FB-17 removed from backlog. Kept for history only.
+
 **For:** Jim (implement)
 **From:** Tim (product) via Ruth
 **Date:** 13 Aug 2026
@@ -139,3 +141,4 @@ The home-screen widget can't use CSS, so:
 | --- | --- |
 | 2026-08-13 | Flag chosen over crosshair (collided with Near me); on/off state added |
 | 2026-08-13 | **Parked** — deferred from current release; see `docs/feature-backlog.md` **FB-17** |
+| 2026-08-14 | **Superseded** — pin chrome (FB-14 Near me, FB-20 journey) replaces flag; **FB-17** removed from backlog |

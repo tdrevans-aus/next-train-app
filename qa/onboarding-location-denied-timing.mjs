@@ -1,11 +1,11 @@
 /**
- * Location denied — onboarding waits 5s after fallback UI, not during locate spinner.
+ * Location denied — onboarding waits 4s after fallback UI, not during locate spinner.
  * Usage: node qa/onboarding-location-denied-timing.mjs
  */
 import { chromium } from "playwright";
 
 const BASE = "http://localhost:3000";
-const QUIET_MS = 5000;
+const QUIET_MS = 4000;
 
 async function run() {
   const browser = await chromium.launch({ headless: true });
