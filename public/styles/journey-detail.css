@@ -317,15 +317,6 @@ body.app-dialog-open .ad-remove-link-wrap {
   gap: 0.4rem;
 }
 
-.journey-list-empty {
-  margin: 0;
-  padding: 0.15rem 0.1rem 0;
-  font-size: 0.82rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--muted);
-}
-
 .journey-templates {
   display: flex;
   flex-direction: column;
