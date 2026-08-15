@@ -1221,6 +1221,8 @@ function jumpToTargetTrain() {
 }
 
 async function toggleHeroPin() {
+  resetHeroSwipePointer();
+
   if (isNearbyModeActive()) {
     const entry = getNearbyFocusedEntry();
     const next = entry?.data?.next ?? getLastRenderedNext();
