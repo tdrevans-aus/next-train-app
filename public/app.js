@@ -84,18 +84,17 @@ const nearbyStationComboboxRoot = document.getElementById("nearby-station-combob
 const nearbyStationInput = document.getElementById("nearby-station-input");
 const nearbyStationBtn = document.getElementById("nearby-station-btn");
 const nearbyDontWaitBtn = document.getElementById("nearby-dont-wait-btn");
-/** Near me pin leave-by controls (present when pin-leave UI shipped). */
-const nearbyPinLeaveControlsEl = document.getElementById("nearby-pin-leave-controls");
 const appEl = document.querySelector(".app");
 
 /**
  * Hide Near me pin leave-by surfaces (slider / Notify me / hide footer).
- * Defined early: render / fetch paths must never hit ReferenceError if a build
- * calls this before later helpers are edited in (CAPACITOR-C / CAPACITOR-D).
+ * Defined early so render / fetchNextTrain never hit ReferenceError (CAPACITOR-C/D).
+ * Looks up the node each call so this stays safe before/after pin-leave markup ships.
  */
 function hideNearbyPinLeaveSurfaces() {
-  if (nearbyPinLeaveControlsEl) {
-    nearbyPinLeaveControlsEl.hidden = true;
+  const controls = document.getElementById("nearby-pin-leave-controls");
+  if (controls) {
+    controls.hidden = true;
   }
 }
 const helpDialog = document.getElementById("help-dialog");
