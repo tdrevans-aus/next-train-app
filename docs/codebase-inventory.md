@@ -11,7 +11,7 @@
 
 The codebase is **large but not messy** — growth tracks real product surface (Near me, journeys, pin, reminders, widget, onboarding, template wizard). The main pain is **concentration**, not junk:
 
-1. **`public/app.js` (~5,355 lines after FB-25 2.1–2.5; was ~8,800)** holds most client logic. FB-25 Phase 2 extraction in progress — five modules extracted Aug 2026 (`station-combobox.js`, `journey-model.js`, `train-navigation.js`, `nearby-mode.js`, `template-wizard.js`).
+1. **`public/app.js` (~5,076 lines after FB-25 2.1–2.6; was ~8,800)** holds most client logic. FB-25 Phase 2 extraction complete — six modules extracted Aug 2026 (`station-combobox.js`, `journey-model.js`, `train-navigation.js`, `nearby-mode.js`, `template-wizard.js`, `journey-detail.js`).
 2. **Commute/pin rules exist in three places** (web, Android widget, iOS widget) by design — maintenance cost is real; unification is not free.
 3. **QA is strong for a solo/small team** (66 web scripts, 11 Android unit test classes, Maestro) — use it as the gate for any refactor.
 4. **Runtime efficiency is fine** for now; refactors should target **bug prevention and change velocity**, not micro-optimisation.
@@ -23,12 +23,13 @@ The codebase is **large but not messy** — growth tracks real product surface (
 
 | Layer | Size | Notes |
 |-------|------|-------|
-| `public/app.js` | ~5,355 lines | Monolith (shrinking); journey settings, detail form, dialogs, init |
+| `public/app.js` | ~5,076 lines | Monolith (shrinking); init, commute routing, dialogs glue |
 | `public/station-combobox.js` | ~413 lines | Station typeahead/combobox (FB-25 2.1) |
 | `public/journey-model.js` | ~433 lines | Journey settings normalize/migrate/persist (FB-25 2.2) |
 | `public/train-navigation.js` | ~1,095 lines | Skip/swipe/pin navigation + journey pin state (FB-25 2.3) |
 | `public/nearby-mode.js` | ~1,770 lines | Near me locate, board, pin session, chrome (FB-25 2.4) |
 | `public/template-wizard.js` | ~640 lines | Template route coach + wizard steps (FB-25 2.5) |
+| `public/journey-detail.js` | ~1,790 lines | Journey list/detail form, overlap UI, directions select (FB-25 2.6) |
 | `public/styles.css` | ~3,700 lines | Sectioned by comment headers; ~130 nearby/journey/leave selectors |
 | `public/index.html` | ~1,120 lines | Main shell + settings/journeys dialogs |
 | `public/leave-reminders.js` | ~750 lines | Reminders UI + native bridge (reasonable split) |
@@ -208,9 +209,9 @@ Do **one PR per module**; run full web QA each time.
 | 2.3 | `train-navigation.js` | 1,320 | Pin, skip, swipe; `render()` via deps | **Done** (Aug 2026) |
 | 2.4 | `nearby-mode.js` | 1,770 | Geo, board, pin session, chrome | **Done** (Aug 2026) |
 | 2.5 | `template-wizard.js` | 640 | Journey detail DOM via deps, coach positioning | **Done** (Aug 2026) |
-| 2.6 | `journey-detail.js` | ~900+ | `populateJourneyDetailForm`, overlap UI, `createJourneyFromTemplate` | **Blocked** — interleaved with template apply + overlap fix |
+| 2.6 | `journey-detail.js` | ~1,790 | `populateJourneyDetailForm`, overlap UI, list/detail chrome | **Done** (Aug 2026) |
 
-**Tooling:** Option A for now (no bundle). Revisit esbuild when 2.6 unblocked.
+**Tooling:** Option A for now (no bundle). Phase 2 complete (6/6 modules).
 
 ### Phase 3 — Pin / display contract (2–3 days, high value)
 
