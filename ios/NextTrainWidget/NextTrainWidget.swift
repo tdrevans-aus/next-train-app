@@ -55,8 +55,9 @@ struct NextTrainWidgetView: View {
     let snapshot: [String: Any]
 
     private var accentColor: Color { Color(red: 0.0, green: 0.55, blue: 0.52) }
-    private var urgentColor: Color { Color(red: 0.85, green: 0.45, blue: 0.0) }
-    private var lateColor: Color { Color.red }
+    private var leaveCalmColor: Color { Color(red: 0.36, green: 0.45, blue: 0.43) }
+    private var leaveAmberColor: Color { Color(red: 0.71, green: 0.33, blue: 0.04) }
+    private var lateColor: Color { Color(red: 0.75, green: 0.07, blue: 0.24) }
 
     var body: some View {
         let label = snapshot["label"] as? String ?? "NEXT TRAIN"
@@ -68,7 +69,7 @@ struct NextTrainWidgetView: View {
         let urgent = snapshot["urgent"] as? Bool ?? false
         let late = snapshot["late"] as? Bool ?? false
         let outsideHours = snapshot["outsideHoursIdle"] as? Bool ?? false
-        let leaveColor = late ? lateColor : (urgent ? urgentColor : Color.primary)
+        let leaveColor = late ? lateColor : (urgent ? leaveAmberColor : leaveCalmColor)
 
         Link(destination: widgetURL()) {
             VStack(alignment: .leading, spacing: 6) {
