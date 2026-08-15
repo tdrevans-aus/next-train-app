@@ -359,6 +359,20 @@ function parseTimeToMinutes(time) {
   return hour * 60 + (minute || 0);
 }
 
+function formatMinutesAsTime(totalMinutes) {
+  const wrapped = ((Number(totalMinutes) % (24 * 60)) + 24 * 60) % (24 * 60);
+  const hour = Math.floor(wrapped / 60);
+  const minute = wrapped % 60;
+  return `${pad2(hour)}:${pad2(minute)}`;
+}
+
+function addMinutesToTimeString(time, minutesToAdd) {
+  if (!time) {
+    return "";
+  }
+  return formatMinutesAsTime(parseTimeToMinutes(time) + minutesToAdd);
+}
+
 function journeyMatchesTime(journey, minutes) {
   if (!hasDefaultWindow(journey)) {
     return false;
@@ -473,6 +487,8 @@ function getPerthLocalDateKey(date = new Date()) {
     getPerthLocalDateKey,
     hasDefaultWindow,
     parseTimeToMinutes,
+    formatMinutesAsTime,
+    addMinutesToTimeString,
     journeyMatchesTime,
     pad2,
     getPerthDateParts,
