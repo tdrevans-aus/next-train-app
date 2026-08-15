@@ -13,12 +13,8 @@ const ONBOARDING_DEFER_KEY = "nextTrainOnboardingDeferred";
 const ONBOARDING_STEP_KEY = "nextTrainOnboardingStep";
 const TEMPLATE_WIZARD_SEEN_KEY = "nextTrainTemplateWizardSeen";
 const TEMPLATE_WIZARD_SKIPPED_KEY = "nextTrainTemplateWizardSkipped";
-const LAST_NEARBY_STATION_KEY = "nextTrainLastNearbyStation";
-const LAST_NEARBY_STATION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 /** Instant reopen paint — refresh in background after this. */
-const LAST_NEARBY_BOARD_MAX_AGE_MS = 15 * 60 * 1000;
 /** Soft GPS refine may reuse a recent fused fix (station-level accuracy). */
-const NEARBY_SOFT_LOCATION_MAX_AGE_MS = 2 * 60 * 1000;
 const SWIPE_THRESHOLD_PX = 48;
 const ONBOARDING_QUIET_MS = 4000;
 
@@ -65,13 +61,6 @@ const leaveAckBtn = document.getElementById("leave-ack-btn");
 const leaveNextTrainBtn = document.getElementById("leave-next-train-btn");
 const leaveCardActionsEl = document.getElementById("leave-card-actions");
 const heroPinBtn = document.getElementById("hero-pin-btn");
-const nearbyPinLeaveControlsEl = document.getElementById("nearby-pin-leave-controls");
-const nearbyPinLeaveFooterEl = document.getElementById("nearby-pin-leave-footer");
-const nearbyNotifySectionEl = document.getElementById("nearby-notify-section");
-const nearbyLeaveHideBtn = document.getElementById("nearby-leave-hide-btn");
-const nearbyLeaveBeforeInput = document.getElementById("nearby-leave-before-input");
-const nearbyLeaveBeforeValueEl = document.getElementById("nearby-leave-before-value");
-const nearbyNotifyMeInput = document.getElementById("nearby-notify-me");
 const platformEl = document.getElementById("platform");
 const statusEl = document.getElementById("status");
 const followingSectionEl = document.getElementById("following-section");
@@ -81,17 +70,7 @@ const errorEl = document.getElementById("error");
 
 const menuBtn = document.getElementById("menu-btn");
 const journeysBtn = document.getElementById("journeys-btn");
-const nearbyBtn = document.getElementById("nearby-btn");
-const nearbyChromeAction = document.getElementById("nearby-chrome-action");
 const menuChromeAction = document.getElementById("menu-chrome-action");
-const nearbyDirectionsEl = document.getElementById("nearby-directions");
-const nearbyDirectionsListEl = document.getElementById("nearby-directions-list");
-const nearbyFallbackEl = document.getElementById("nearby-fallback");
-const nearbyFallbackTextEl = document.getElementById("nearby-fallback-text");
-const nearbyStationComboboxRoot = document.getElementById("nearby-station-combobox");
-const nearbyStationInput = document.getElementById("nearby-station-input");
-const nearbyStationBtn = document.getElementById("nearby-station-btn");
-const nearbyDontWaitBtn = document.getElementById("nearby-dont-wait-btn");
 const appEl = document.querySelector(".app");
 const helpDialog = document.getElementById("help-dialog");
 const helpCloseBtn = document.getElementById("help-close-btn");
@@ -200,6 +179,7 @@ let refreshSeconds = DEFAULT_SETTINGS.refreshSeconds;
 let skipTrains = 0;
 /** Near me: hold a pinned departure until 1 minute after it leaves. */
 const NEARBY_PIN_HOLD_MS = 60_000;
+const NEARBY_SOFT_LOCATION_MAX_AGE_MS = 2 * 60 * 1000;
 let lastResumeRefreshAt = 0;
 let lastRenderedNext = null;
 let lastApiData = null;
@@ -213,20 +193,6 @@ let editingJourneyId = null;
 let editingJourneySnapshot = null;
 let journeySwitcherOpen = false;
 let leaveAutoCheckDeparture = null;
-let nearbySession = null;
-let nearbyBoard = null;
-let nearbyLoading = false;
-let nearbyBoardInflight = null;
-let nearbyBoardRefetchPending = false;
-let nearbyLocateStartedAt = 0;
-let nearbyLocateTimer = null;
-let nearbyLocateDontWaitTimer = null;
-let nearbyLocateGeneration = 0;
-let nearbyLocatePickerVisible = false;
-let nearbyDontWaitVisible = false;
-let nearbyUserPickedStation = false;
-let nearbyError = null;
-let nearbyErrorKind = null; // "location" | "board" | null
 let journeyModeActive = false;
 let deferJourneyAutoSelect = false;
 let onboardingShowTimer = null;
@@ -358,30 +324,6 @@ function locationErrorFrom(error) {
   return Object.assign(new Error(message || "Could not find a nearby station"), {
     code: code || 2,
   });
-}
-
-function classifyNearbyError(message) {
-  const lower = String(message || "").toLowerCase();
-  if (
-    lower.includes("departures") ||
-    lower.includes("times") ||
-    lower.includes("board") ||
-    lower.includes("directions") ||
-    lower.includes("unavailable")
-  ) {
-    return "board";
-  }
-  return "location";
-}
-
-function setNearbyError(message, kind = null) {
-  nearbyError = message;
-  nearbyErrorKind = kind || (message ? classifyNearbyError(message) : null);
-}
-
-function clearNearbyError() {
-  nearbyError = null;
-  nearbyErrorKind = null;
 }
 
 async function getAppGeolocationPosition(options = {}) {
@@ -942,7 +884,7 @@ async function applyCommuteMode({ coldStart = false } = {}) {
     if (coldStart) {
       maybeScheduleOnboarding();
     }
-    if (!nearbySession) {
+    if (!nearbyMode().getNearbySession()) {
       await enterNearbyMode();
     } else {
       syncChromeMode();
@@ -985,7 +927,6 @@ function hideOnboardingCoach() {
   onboardingCoach.hidden = true;
   onboardingCoach.classList.remove("onboarding-coach--step-1", "onboarding-coach--step-2");
   journeysChromeAction?.classList.remove("onboarding-highlight");
-  nearbyChromeAction?.classList.remove("onboarding-highlight");
   clearOnboardingCoachPosition();
   notifyAdOverlaySuppression();
 }
@@ -1082,7 +1023,6 @@ function showOnboardingCoach(step) {
 
   onboardingCoach.classList.remove("onboarding-coach--step-1", "onboarding-coach--step-2");
   onboardingCoach.classList.add(step === 2 ? "onboarding-coach--step-2" : "onboarding-coach--step-1");
-  nearbyChromeAction?.classList.toggle("onboarding-highlight", step === 1);
   journeysChromeAction?.classList.toggle("onboarding-highlight", step === 2);
   onboardingCoach.hidden = false;
   // Native AdMob sits above the WebView — hide while bottom coaches are up.
@@ -1136,39 +1076,7 @@ function deferOnboardingForSession() {
 
 /** Nearby coach only after the face is settled — not locate spinners or permission in flight. */
 function isNearbyFaceReadyForOnboarding() {
-  if (!isNearbyModeActive()) {
-    return false;
-  }
-
-  if (nearbyLoading || nearbyBoardInflight || shouldShowNearbyLoadingState()) {
-    return false;
-  }
-
-  // Cached board can paint before the user answers the location permission sheet.
-  if (nearbySession?.gpsRefining) {
-    return false;
-  }
-
-  if (!nearbySession?.station) {
-    if (nearbyLocatePickerVisible && !nearbyUserPickedStation) {
-      return true;
-    }
-
-    if (
-      nearbyError &&
-      (nearbyErrorKind === "location" || classifyNearbyError(nearbyError) === "location")
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
-  if (!nearbyBoard || nearbyError) {
-    return false;
-  }
-
-  return true;
+  return nearbyMode().isNearbyFaceReadyForOnboarding();
 }
 
 function clearOnboardingSchedule() {
@@ -1261,7 +1169,7 @@ function showOnboardingStep1() {
 
   const step1Text = onboardingStep1?.querySelector("p");
   if (step1Text) {
-    step1Text.textContent = nearbySession?.unsupportedRegion
+    step1Text.textContent = nearbyMode().getNearbySession()?.unsupportedRegion
       ? "Near me works when you're near Transperth stations."
       : "By default, Next Train shows departures at the station nearest you.";
   }
@@ -1515,35 +1423,6 @@ function journeyLeaveCardArmed(journey, pinTrip) {
   return journeyMatchesSchedule(journeyClean);
 }
 
-function getNearbyLeaveBeforeMinutes() {
-  return Number(settings.nearbyLeaveBeforeMinutes) || DEFAULT_SETTINGS.leaveBeforeMinutes;
-}
-
-function updateNearbyLeaveBeforeLabel(minutes = nearbyLeaveBeforeInput?.value) {
-  if (nearbyLeaveBeforeValueEl) {
-    nearbyLeaveBeforeValueEl.textContent = formatLeaveBeforeLabel(minutes);
-  }
-  syncNearbyLeaveBeforeSliderFill(minutes);
-}
-
-function syncNearbyLeaveBeforeSliderFill(minutes = nearbyLeaveBeforeInput?.value) {
-  if (!nearbyLeaveBeforeInput) {
-    return;
-  }
-  const min = Number(nearbyLeaveBeforeInput.min) || 1;
-  const max = Number(nearbyLeaveBeforeInput.max) || 30;
-  const value = Number(minutes);
-  const clamped = Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : min;
-  const pct = max === min ? 0 : ((clamped - min) / (max - min)) * 100;
-  nearbyLeaveBeforeInput.style.setProperty("--leave-before-pct", `${pct}%`);
-}
-
-function rescheduleNearbyPinReminders() {
-  if (!isNativeApp()) {
-    return;
-  }
-  window.nextTrainLeaveReminders?.reschedule?.();
-}
 
 function getEffectiveLeaveBeforeMinutes(journey) {
   if (!journeyUsesLeaveBefore(journey)) {
@@ -2635,21 +2514,6 @@ function isLeavePhasePastLeaveBy(leavePhase) {
   return leavePhase === "late" || leavePhase === "missed" || leavePhase === "now";
 }
 
-function dismissNearbyPinLeaveCard() {
-  if (nearbySession) {
-    nearbySession.pinLeaveCardHidden = true;
-  }
-  if (leaveCardEl) {
-    leaveCardEl.hidden = true;
-  }
-  hideNearbyPinLeaveSurfaces();
-}
-
-function clearNearbyPinLeaveCardDismissed() {
-  if (nearbySession) {
-    nearbySession.pinLeaveCardHidden = false;
-  }
-}
 
 function formatLeaveCardSubline(next) {
   const { leavePhase } = getLiveTiming(next);
@@ -2906,7 +2770,9 @@ function updateLeaveHint() {
     leavePhase === "missed" ||
     (leaveTarget && isLeaveAcknowledged(leaveTarget));
   const hideForNearbyPinControls =
-    isNearbyModeActive() && nearbyPinLeaveControlsEl && !nearbyPinLeaveControlsEl.hidden;
+    isNearbyModeActive() &&
+    document.getElementById("nearby-pin-leave-controls") &&
+    !document.getElementById("nearby-pin-leave-controls").hidden;
 
   if (
     !leaveHintEl ||
@@ -2973,6 +2839,7 @@ function render(data, { stale = false } = {}) {
   lastLiveDisplayMinute = getPerthMinutesSinceMidnight();
   hideNearbyPinLeaveSurfaces();
 
+  const nearbyDirectionsEl = document.getElementById("nearby-directions");
   if (nearbyDirectionsEl) {
     nearbyDirectionsEl.hidden = true;
   }
@@ -3250,9 +3117,6 @@ function renderJourneyEmptyState() {
     leaveCardEl.hidden = true;
     leaveCardEl.classList.remove("leave-card--context");
   }
-  if (nearbyDirectionsEl) {
-    nearbyDirectionsEl.hidden = true;
-  }
 
   if (departCountdownEl) {
     departCountdownEl.hidden = true;
@@ -3497,11 +3361,12 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   }
 
   // Only skip GPS when caller explicitly allows it (not the background refine path).
-  if (allowSessionShortcut && !forceFresh && nearbySession?.station) {
+  if (allowSessionShortcut && !forceFresh && nearbyMode().getNearbySession()?.station) {
+    const session = nearbyMode().getNearbySession();
     return {
-      station: nearbySession.station,
+      station: session.station,
       distanceKm:
-        typeof nearbySession.distanceKm === "number" ? nearbySession.distanceKm : 0,
+        typeof session.distanceKm === "number" ? session.distanceKm : 0,
     };
   }
 
@@ -3536,396 +3401,9 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   return { station: nearest, distanceKm: bestDistance };
 }
 
-function isUnsupportedRegion(distanceKm) {
-  return typeof distanceKm === "number" && distanceKm > UNSUPPORTED_REGION_KM;
-}
-
-function renderUnsupportedRegionBoard() {
-  lastRenderedNext = null;
-  errorEl.hidden = true;
-  setRouteDisplay("Near me");
-  updatedEl.textContent = "";
-  updatedEl.hidden = true;
-  setHeroUrgency("calm");
-  heroEl?.classList.remove("locating");
-  heroEl.classList.add("hero-setup");
-
-  if (heroDepartLabelEl) {
-    heroDepartLabelEl.hidden = true;
-  }
-  if (departDisplayTimeEl) {
-    departDisplayTimeEl.hidden = true;
-  }
-  if (heroScheduledTimeEl) {
-    heroScheduledTimeEl.hidden = true;
-  }
-  if (leaveCardEl) {
-    leaveCardEl.hidden = true;
-    leaveCardEl.classList.remove("leave-card--context");
-  }
-  if (nearbyDirectionsEl) {
-    nearbyDirectionsEl.hidden = true;
-  }
-  if (nearbyFallbackEl) {
-    nearbyFallbackEl.hidden = true;
-  }
-  if (nearbyDirectionsListEl) {
-    nearbyDirectionsListEl.innerHTML = "";
-  }
-
-  if (departCountdownEl) {
-    departCountdownEl.classList.add("hero-setup-message");
-    departCountdownEl.replaceChildren();
-
-    const title = document.createElement("span");
-    title.className = "hero-empty-title";
-    title.textContent = "Perth rail only";
-
-    const text = document.createElement("span");
-    text.className = "hero-empty-text";
-    text.textContent =
-      "Next Train's Near me board works near Transperth stations. You're outside that area right now.";
-
-    const hint = document.createElement("span");
-    hint.className = "hero-empty-hint";
-    hint.textContent =
-      "You can still save journeys under My Journeys for when you're in Perth.";
-
-    const journeysBtn = document.createElement("button");
-    journeysBtn.type = "button";
-    journeysBtn.className = "btn-primary hero-empty-primary";
-    journeysBtn.textContent = "My Journeys";
-    journeysBtn.addEventListener("click", () => enterJourneyMode());
-
-    departCountdownEl.append(title, text, hint, journeysBtn);
-  }
-
-  heroEl.removeAttribute("role");
-  heroEl.removeAttribute("tabindex");
-  heroEl.removeAttribute("aria-label");
-  heroEl.onclick = null;
-  heroEl.onkeydown = null;
-  platformEl.textContent = "—";
-  statusEl.textContent = "—";
-  followingSectionEl.hidden = true;
-  if (journeySwitcherEl) {
-    journeySwitcherEl.hidden = true;
-  }
-  if (journeySwitcherMenuEl) {
-    journeySwitcherMenuEl.hidden = true;
-  }
-  updateSwipeHint();
-  updateSwipeCues();
-  updateLeaveHint();
-}
-
-function isNearbyModeActive() {
-  return !journeyModeActive;
-}
 
 function isJourneyModeActive() {
   return journeyModeActive;
-}
-
-function syncChromeMode() {
-  const nearbyActive = isNearbyModeActive();
-  const journeyActive = isJourneyModeActive();
-
-  appEl?.classList.toggle("nearby-mode", nearbyActive && Boolean(nearbySession));
-  appEl?.classList.toggle("journey-mode", journeyActive);
-
-  nearbyChromeAction?.classList.toggle("chrome-action--active", nearbyActive);
-  nearbyBtn?.classList.toggle("icon-btn--active", nearbyActive);
-  nearbyBtn?.setAttribute("aria-pressed", nearbyActive ? "true" : "false");
-  nearbyBtn?.setAttribute("aria-label", "Near me");
-
-  journeysChromeAction?.classList.toggle("chrome-action--active", journeyActive);
-  journeysBtn?.classList.toggle("icon-btn--active", journeyActive);
-  journeysBtn?.setAttribute("aria-pressed", journeyActive ? "true" : "false");
-
-  syncJourneyContextChrome();
-}
-
-function syncNearbyChrome() {
-  syncChromeMode();
-}
-
-function formatNearbyRouteLine() {
-  if (!nearbySession?.station) {
-    return "Near you";
-  }
-
-  const label = formatStationLabel(nearbySession.station);
-  if (typeof nearbySession.distanceKm === "number") {
-    return `Near you · ${label} (${nearbySession.distanceKm.toFixed(1)} km)`;
-  }
-  return `Near you · ${label}`;
-}
-
-function readLastNearbyStationCache() {
-  try {
-    const raw = localStorage.getItem(LAST_NEARBY_STATION_KEY);
-    if (!raw) {
-      return null;
-    }
-
-    const data = JSON.parse(raw);
-    if (!data?.station) {
-      return null;
-    }
-
-    if (
-      typeof data.savedAtMs === "number" &&
-      Date.now() - data.savedAtMs > LAST_NEARBY_STATION_MAX_AGE_MS
-    ) {
-      return null;
-    }
-
-    return data;
-  } catch {
-    return null;
-  }
-}
-
-function readCachedNearbyBoard(cache = readLastNearbyStationCache()) {
-  if (!cache?.station || !cache?.board?.entries?.length) {
-    return null;
-  }
-  if (
-    typeof cache.boardSavedAtMs !== "number" ||
-    Date.now() - cache.boardSavedAtMs > LAST_NEARBY_BOARD_MAX_AGE_MS
-  ) {
-    return null;
-  }
-  return cache.board;
-}
-
-function writeLastNearbyStationCache({ station, distanceKm = null, board = undefined } = {}) {
-  if (!station) {
-    return;
-  }
-
-  let previous = null;
-  try {
-    previous = JSON.parse(localStorage.getItem(LAST_NEARBY_STATION_KEY) || "null");
-  } catch {
-    previous = null;
-  }
-
-  const nextBoard = board === undefined ? previous?.board ?? null : board;
-  const nextBoardSavedAtMs =
-    board === undefined
-      ? previous?.boardSavedAtMs ?? null
-      : board
-        ? Date.now()
-        : null;
-
-  const payload = {
-    station,
-    distanceKm: typeof distanceKm === "number" ? distanceKm : null,
-    savedAtMs: Date.now(),
-    board: nextBoard,
-    boardSavedAtMs: nextBoardSavedAtMs,
-  };
-
-  try {
-    localStorage.setItem(LAST_NEARBY_STATION_KEY, JSON.stringify(payload));
-  } catch {
-    // Board snapshots can be large — fall back to station-only so reopen still skips GPS wait.
-    try {
-      localStorage.setItem(
-        LAST_NEARBY_STATION_KEY,
-        JSON.stringify({
-          station: payload.station,
-          distanceKm: payload.distanceKm,
-          savedAtMs: payload.savedAtMs,
-          board: null,
-          boardSavedAtMs: null,
-        })
-      );
-    } catch {
-      // Ignore — cache is best-effort.
-    }
-  }
-}
-
-function clearLastNearbyStationCache() {
-  localStorage.removeItem(LAST_NEARBY_STATION_KEY);
-}
-
-function getNearbySkip(direction) {
-  return nearbySession?.skipByDirection?.[direction] ?? 0;
-}
-
-function setNearbySkip(direction, skip) {
-  if (!nearbySession) {
-    return;
-  }
-
-  if (!nearbySession.skipByDirection) {
-    nearbySession.skipByDirection = {};
-  }
-
-  if (skip <= 0) {
-    delete nearbySession.skipByDirection[direction];
-  } else {
-    nearbySession.skipByDirection[direction] = skip;
-  }
-}
-
-function getNearbyPin() {
-  return nearbySession?.pin ?? null;
-}
-
-function clearNearbyPin() {
-  if (nearbySession) {
-    nearbySession.pin = null;
-    clearNearbyPinLeaveCardDismissed();
-  }
-  if (settings.nearbyPin) {
-    persistSettings({ nearbyPin: null });
-    rescheduleNearbyPinReminders();
-  }
-  syncNearbyPinChrome();
-}
-
-function buildNearbyPinSettingsSnapshot() {
-  const pin = getNearbyPin();
-  if (!pin || !isNearbyPinHolding(pin)) {
-    return null;
-  }
-
-  return {
-    station: pin.station,
-    direction: pin.direction,
-    departureIso: pin.departureIso,
-    notifyMe: nearbySession?.pinNotifyMe === true,
-    holdingUntilMs: nearbyPinExpiryMs(pin),
-    displayTime: pin.trip?.displayTime ?? "",
-    platform: pin.trip?.platform ?? "—",
-    status: pin.trip?.status ?? "On Time",
-  };
-}
-
-function syncNearbyPinSettings() {
-  const snapshot = buildNearbyPinSettingsSnapshot();
-  const current = settings.nearbyPin;
-  const same =
-    (!snapshot && !current) ||
-    (snapshot &&
-      current &&
-      JSON.stringify(snapshot) === JSON.stringify(current));
-  if (!same) {
-    persistSettings({ nearbyPin: snapshot });
-    rescheduleNearbyPinReminders();
-  }
-}
-
-function restoreNearbySessionPinFromSettings() {
-  const pin = settings.nearbyPin;
-  if (!pin || !nearbySession?.station || pin.station !== nearbySession.station) {
-    return;
-  }
-
-  if (!isNearbyPinSettingsHolding(pin)) {
-    if (settings.nearbyPin) {
-      persistSettings({ nearbyPin: null });
-    }
-    return;
-  }
-
-  nearbySession.pin = {
-    station: pin.station,
-    direction: pin.direction,
-    departureIso: pin.departureIso,
-    trip: {
-      displayTime: pin.displayTime,
-      departure: pin.departureIso,
-      arrival: pin.departureIso,
-      platform: pin.platform,
-      status: pin.status,
-    },
-  };
-  nearbySession.pinNotifyMe = pin.notifyMe === true;
-}
-
-function buildNearbyLeaveNext(trip) {
-  return buildNextFromFollowing(trip, getNearbyLeaveBeforeMinutes(), resolveTripDeparture(trip));
-}
-
-function hideNearbyPinLeaveSurfaces() {
-  if (nearbyPinLeaveControlsEl) {
-    nearbyPinLeaveControlsEl.hidden = true;
-  }
-}
-
-function renderNearbyPinLeaveSurfaces(next, pinned) {
-  if (!pinned || !next) {
-    if (leaveCardEl) {
-      leaveCardEl.hidden = true;
-    }
-    hideNearbyPinLeaveSurfaces();
-    syncNearbyPinChrome();
-    return;
-  }
-
-  if (nearbySession?.pinLeaveCardHidden) {
-    if (leaveCardEl) {
-      leaveCardEl.hidden = true;
-    }
-    syncNearbyPinChrome();
-    return;
-  }
-
-  const leaveNext = buildNearbyLeaveNext(next);
-  const live = getLiveTiming(leaveNext);
-  const pastLeaveBy = isLeavePhasePastLeaveBy(live.leavePhase);
-
-  if (leaveCardEl) {
-    leaveCardEl.hidden = false;
-    leaveCardEl.classList.remove("leave-card--context", "leave-card--acknowledged");
-  }
-  if (nearbyPinLeaveControlsEl) {
-    nearbyPinLeaveControlsEl.hidden = false;
-  }
-  if (nearbyNotifySectionEl) {
-    nearbyNotifySectionEl.hidden = pastLeaveBy;
-  }
-  if (nearbyPinLeaveFooterEl) {
-    nearbyPinLeaveFooterEl.classList.toggle("nearby-pin-leave-footer--hide-only", pastLeaveBy);
-  }
-  if (nearbyLeaveHideBtn) {
-    nearbyLeaveHideBtn.hidden = false;
-  }
-  if (leaveCardLabelEl) {
-    leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase);
-  }
-  if (leaveTimeEl) {
-    renderLeaveMinutesCountdown(leaveTimeEl, leaveNext);
-  }
-  if (leaveCountdownEl) {
-    leaveCountdownEl.textContent = formatLeaveCardSubline(leaveNext);
-  }
-  updateLeaveCardState(live.leavePhase);
-
-  const showLateNag = live.leavePhase === "late" || live.leavePhase === "missed";
-  if (leaveCardActionsEl) {
-    leaveCardActionsEl.hidden = !showLateNag;
-    leaveCardActionsEl.classList.toggle("leave-card-actions--visible", showLateNag);
-  }
-  if (leaveBufferEditBtn) {
-    leaveBufferEditBtn.hidden = true;
-  }
-
-  if (nearbyLeaveBeforeInput) {
-    nearbyLeaveBeforeInput.value = String(getNearbyLeaveBeforeMinutes());
-    updateNearbyLeaveBeforeLabel(getNearbyLeaveBeforeMinutes());
-  }
-  if (nearbyNotifyMeInput) {
-    nearbyNotifyMeInput.checked = nearbySession?.pinNotifyMe === true;
-  }
-
-  syncNearbyPinChrome();
 }
 
 function syncHeroPinChrome() {
@@ -3936,7 +3414,7 @@ function syncHeroPinChrome() {
   if (heroPinBtn) {
     if (nearbyActive) {
       const showPin =
-        Boolean(nearbySession?.station) &&
+        Boolean(nearbyMode().getNearbySession()?.station) &&
         !shouldShowNearbyLoadingState() &&
         Boolean(lastRenderedNext);
       heroPinBtn.hidden = !showPin;
@@ -3977,1119 +3455,6 @@ function syncNearbyPinChrome() {
 }
 
 
-async function handleNearbyNotifyToggle() {
-  if (!nearbySession) {
-    return;
-  }
-
-  const notifyOn = nearbyNotifyMeInput?.checked ?? false;
-  nearbySession.pinNotifyMe = notifyOn;
-
-  if (notifyOn) {
-    const reminderSettings = await window.nextTrainLeaveReminders?.enableLeaveReminders?.({
-      userInitiated: true,
-    });
-    if (reminderSettings?.permissionGranted === false) {
-      nearbySession.pinNotifyMe = false;
-      if (nearbyNotifyMeInput) {
-        nearbyNotifyMeInput.checked = false;
-      }
-    }
-  }
-
-  if (isNearbyPinHolding()) {
-    syncNearbyPinSettings();
-  }
-}
-
-function nearbyPinExpiryMs(pin = getNearbyPin()) {
-  if (!pin?.departureIso) {
-    return 0;
-  }
-  const departureMs = Date.parse(pin.departureIso);
-  if (!Number.isFinite(departureMs)) {
-    return 0;
-  }
-  return departureMs + NEARBY_PIN_HOLD_MS;
-}
-
-function isNearbyPinHolding(pin = getNearbyPin()) {
-  if (!pin || !nearbySession?.station) {
-    return false;
-  }
-  if (pin.station !== nearbySession.station) {
-    return false;
-  }
-  return Date.now() < nearbyPinExpiryMs(pin);
-}
-
-function isNearbyPinShowing(direction = nearbySession?.focusedDirection) {
-  const pin = getNearbyPin();
-  return Boolean(isNearbyPinHolding(pin) && pin.direction === direction);
-}
-
-function setNearbyPinFromTrip(direction, trip) {
-  if (!nearbySession?.station || !direction || !trip) {
-    return;
-  }
-
-  const departureIso = resolveTripDeparture(trip);
-  if (!departureIso) {
-    return;
-  }
-
-  nearbySession.pin = {
-    station: nearbySession.station,
-    direction,
-    departureIso,
-    trip: {
-      ...trip,
-      departure: departureIso,
-      arrival: departureIso,
-      platform: trip.platform ?? "—",
-      status: trip.status ?? "On Time",
-    },
-  };
-  clearNearbyPinLeaveCardDismissed();
-}
-
-/**
- * When a Near me pin is active for this direction, keep that departure selected
- * (and hold a snapshot for up to 1 minute after it leaves).
- */
-function applyNearbyPinToData(direction, data) {
-  const pin = getNearbyPin();
-  if (!pin || pin.direction !== direction || pin.station !== nearbySession?.station) {
-    return applyNearbySkip(data, getNearbySkip(direction));
-  }
-
-  if (!isNearbyPinHolding(pin)) {
-    clearNearbyPin();
-    setNearbySkip(direction, 0);
-    return applyNearbySkip(data, 0);
-  }
-
-  const normalized = normalizeApiTrainData(data);
-  const upcoming = getUpcomingTrips(normalized);
-  const idx = upcoming.findIndex(
-    (trip) => resolveTripDeparture(trip) === pin.departureIso
-  );
-
-  if (idx >= 0) {
-    const live = upcoming[idx];
-    setNearbySkip(direction, idx);
-    nearbySession.pin = {
-      ...pin,
-      trip: { ...live, departure: pin.departureIso, arrival: pin.departureIso },
-    };
-    return applyNearbySkip(normalized, idx);
-  }
-
-  // Train already dropped from the board — keep showing it through the hold window.
-  const snapshot = ensureFullNext(
-    pin.trip ?? { departure: pin.departureIso, arrival: pin.departureIso },
-    0,
-    pin.departureIso
-  );
-  const realNext = normalized.next;
-  return {
-    ...normalized,
-    next: snapshot,
-    following: realNext ? slimFollowing(realNext) : null,
-  };
-}
-
-function applyNearbySkip(data, skip) {
-  if (!data || skip <= 0) {
-    return data;
-  }
-
-  const normalized = normalizeApiTrainData(data);
-  if (!normalized.upcoming?.length) {
-    return normalized;
-  }
-
-  const cappedSkip = Math.min(skip, normalized.upcoming.length - 1);
-  const referenceIso = normalized.next?.departure ?? normalized.next?.arrival;
-  const next = ensureFullNext(normalized.upcoming[cappedSkip] ?? normalized.next, 0, referenceIso);
-  const followingTrip = normalized.upcoming[cappedSkip + 1] ?? null;
-  const following = getNextThenTrain(normalized, cappedSkip) ?? (followingTrip ? slimFollowing(followingTrip) : null);
-
-  return {
-    ...normalized,
-    next,
-    following,
-  };
-}
-
-async function fetchNearbyDirectionData(station, direction, skip = 0) {
-  const pinHolds =
-    isNearbyPinHolding() &&
-    getNearbyPin()?.direction === direction &&
-    getNearbyPin()?.station === station;
-  const requestSkip = pinHolds ? 0 : skip;
-
-  const params = new URLSearchParams({
-    station,
-    direction,
-    destination: direction,
-    leaveBefore: "0",
-    refresh: String(settings.refreshSeconds),
-    skipTrains: String(requestSkip),
-  });
-
-  const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
-  if (fixture) {
-    params.set("fixture", fixture);
-  }
-
-  const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
-  if (!result.ok) {
-    throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
-  }
-
-  let payload = result.data;
-  if (!Array.isArray(payload?.upcoming) || payload.upcoming.length === 0) {
-    const client = window.NextTrainTimes;
-    if (client?.getNextTrainData) {
-      try {
-        payload =
-          (await client.getNextTrainData({
-            station,
-            destination: direction,
-            destinationLabel: direction,
-            leaveBeforeMinutes: 0,
-            refreshSeconds: settings.refreshSeconds,
-            skipTrains: requestSkip,
-          })) ?? payload;
-      } catch (error) {
-        console.warn("Nearby live-times fallback failed", error);
-      }
-    }
-  }
-
-  const normalized = normalizeApiTrainData(payload);
-  if (pinHolds) {
-    return applyNearbyPinToData(direction, normalized);
-  }
-  return applyNearbySkip(normalized, skip);
-}
-
-function pickSoonestNearbyDirection(entries) {
-  let best = null;
-
-  for (const entry of entries) {
-    if (!entry.data?.next) {
-      continue;
-    }
-
-    const minutes = getLiveTiming(entry.data.next).minutesUntilDeparture;
-    if (!best || minutes < best.minutes) {
-      best = { direction: entry.direction, minutes };
-    }
-  }
-
-  return best?.direction ?? entries[0]?.direction ?? null;
-}
-
-function getNearbyFocusedEntry() {
-  if (!nearbyBoard?.entries?.length) {
-    return null;
-  }
-
-  const focused = nearbySession?.focusedDirection;
-  const match = nearbyBoard.entries.find((entry) => entry.direction === focused);
-  return match ?? nearbyBoard.entries.find((entry) => entry.data?.next) ?? nearbyBoard.entries[0];
-}
-
-function formatNearbyDirectionRow(entry) {
-  const next = entry.data?.next;
-  if (!next) {
-    return `to ${entry.direction} · —`;
-  }
-
-  const minutes = getLiveTiming(next).minutesUntilDeparture;
-  const minuteLabel = minutes <= 0 ? "now" : minutes === 1 ? "1 min" : `${minutes} min`;
-  const platform = next.platform ? `Pl ${next.platform}` : "—";
-  return `to ${entry.direction} · ${minuteLabel} · ${platform}`;
-}
-
-async function ensureNearbyStationOptions({ force = false } = {}) {
-  if (!getNearbyStationCombobox()) {
-    return;
-  }
-
-  if (!force && window.nextTrainStationCombobox?.getStationsCache?.()?.length) {
-    setStationComboboxValue(getNearbyStationCombobox(), nearbySession?.station ?? "");
-    return;
-  }
-
-  await getStationsList();
-  setStationComboboxValue(getNearbyStationCombobox(), nearbySession?.station ?? "");
-}
-
-const NEARBY_LOCATE_COPY = "Finding your nearest station…";
-const NEARBY_BOARD_LOADING_COPY = "Loading departures…";
-/** Nearest catalog station farther than this → Perth-rail-only empty state (Near me blocked). */
-const UNSUPPORTED_REGION_KM = 50;
-
-/** Keep calm on a normal GPS fix (~1–4s). Offer escape only when it is actually slow. */
-const NEARBY_LOCATE_DONT_WAIT_MS = 7000;
-/** While the system permission sheet is up, offer escape sooner so the 7s GPS wait is fair. */
-const NEARBY_LOCATE_PERMISSION_ESCAPE_MS = 2500;
-
-function stopNearbyLocateTimers() {
-  if (nearbyLocateTimer) {
-    clearInterval(nearbyLocateTimer);
-    nearbyLocateTimer = null;
-  }
-  if (nearbyLocateDontWaitTimer) {
-    clearTimeout(nearbyLocateDontWaitTimer);
-    nearbyLocateDontWaitTimer = null;
-  }
-}
-
-function syncNearbyDontWaitButton() {
-  if (!nearbyDontWaitBtn) {
-    return;
-  }
-
-  const show = nearbyLoading && nearbyDontWaitVisible && !nearbyLocatePickerVisible;
-  nearbyDontWaitBtn.hidden = !show;
-}
-
-function showNearbyDontWaitOffer() {
-  if (nearbyDontWaitVisible || nearbyLocatePickerVisible) {
-    return;
-  }
-
-  nearbyDontWaitVisible = true;
-  syncNearbyDontWaitButton();
-}
-
-function showNearbyEarlyPicker() {
-  if (!nearbyDirectionsEl || nearbyLocatePickerVisible) {
-    return;
-  }
-
-  nearbyLocatePickerVisible = true;
-  nearbyDontWaitVisible = false;
-  syncNearbyDontWaitButton();
-  nearbyDirectionsEl.hidden = false;
-  if (nearbyDirectionsListEl) {
-    nearbyDirectionsListEl.innerHTML = "";
-  }
-  const directionsLabel = nearbyDirectionsEl.querySelector(".nearby-directions-label");
-  if (directionsLabel) {
-    directionsLabel.hidden = true;
-  }
-  nearbyFallbackEl.hidden = false;
-  if (nearbyFallbackTextEl) {
-    nearbyFallbackTextEl.textContent = "Choose a station — we’ll show the next train.";
-  }
-  ensureNearbyStationOptions();
-}
-
-function dismissNearbyLocatePicker() {
-  nearbyLocatePickerVisible = false;
-}
-
-function shouldShowNearbyLoadingState() {
-  if (nearbySession?.unsupportedRegion) {
-    return false;
-  }
-
-  if (nearbyLocatePickerVisible && !nearbySession?.station && !nearbyUserPickedStation) {
-    return false;
-  }
-
-  if (nearbyError && !nearbySession?.station) {
-    return false;
-  }
-
-  return (
-    nearbyLoading ||
-    Boolean(nearbyBoardInflight) ||
-    (Boolean(nearbySession?.station) && !nearbyBoard && !nearbyError)
-  );
-}
-
-function nearbyLoadingRouteCopy() {
-  return nearbySession?.station ? formatNearbyRouteLine() : NEARBY_LOCATE_COPY;
-}
-
-function nearbyLoadingHeroCopy() {
-  return nearbySession?.station ? NEARBY_BOARD_LOADING_COPY : NEARBY_LOCATE_COPY;
-}
-
-function startNearbyLocateTimers(delayMs = NEARBY_LOCATE_DONT_WAIT_MS) {
-  stopNearbyLocateTimers();
-  nearbyLocateStartedAt = Date.now();
-  nearbyLocatePickerVisible = false;
-  nearbyDontWaitVisible = false;
-  syncNearbyDontWaitButton();
-
-  nearbyLocateDontWaitTimer = window.setTimeout(() => {
-    nearbyLocateDontWaitTimer = null;
-    if (
-      !isNearbyModeActive() ||
-      !nearbyLoading ||
-      nearbyLocatePickerVisible ||
-      nearbyUserPickedStation
-    ) {
-      return;
-    }
-    showNearbyDontWaitOffer();
-    renderNearbyBoard();
-  }, delayMs);
-}
-
-function isNearbyLocateCurrent(generation) {
-  return generation === nearbyLocateGeneration && Boolean(nearbySession);
-}
-
-async function locateNearbyInBackground({ forceFresh = false } = {}) {
-  const generation = ++nearbyLocateGeneration;
-  const previousStation = nearbySession?.station ?? null;
-
-  try {
-    // Soft by default: reuse a recent fused fix. Never short-circuit on session station —
-    // that's what the optimistic cache paint sets, and we still need a real nearest check.
-    const nearest = await findNearestStation({
-      forceFresh,
-      allowSessionShortcut: false,
-    });
-    // User may have left Near me (or started a newer locate) while GPS resolved.
-    if (!isNearbyLocateCurrent(generation)) {
-      return;
-    }
-
-    if (nearbyUserPickedStation) {
-      writeLastNearbyStationCache({
-        station: nearbySession?.station,
-        distanceKm: nearbySession?.distanceKm,
-      });
-      stopNearbyLocateTimers();
-      nearbyLoading = false;
-      setNearbyGpsRefining(false);
-      dismissNearbyLocatePicker();
-      nearbyDontWaitVisible = false;
-      syncNearbyDontWaitButton();
-      renderNearbyBoard();
-      return;
-    }
-
-    if (nearbyLocatePickerVisible) {
-      stopNearbyLocateTimers();
-      nearbyLoading = false;
-      setNearbyGpsRefining(false);
-      syncNearbyDontWaitButton();
-      renderNearbyBoard();
-      return;
-    }
-
-    if (isUnsupportedRegion(nearest.distanceKm)) {
-      clearLastNearbyStationCache();
-      nearbySession.unsupportedRegion = true;
-      nearbySession.station = null;
-      nearbySession.distanceKm = nearest.distanceKm;
-      nearbySession.fromCache = false;
-      setNearbyGpsRefining(false);
-      nearbyBoard = null;
-      nearbyLoading = false;
-      stopNearbyLocateTimers();
-      nearbyLocatePickerVisible = false;
-      nearbyDontWaitVisible = false;
-      syncNearbyDontWaitButton();
-      renderNearbyBoard();
-      return;
-    }
-
-    const stationChanged = Boolean(previousStation && nearest.station !== previousStation);
-
-    nearbySession.unsupportedRegion = false;
-    nearbySession.fromCache = false;
-    setNearbyGpsRefining(false);
-    nearbySession.station = nearest.station;
-    nearbySession.distanceKm = nearest.distanceKm;
-    if (stationChanged) {
-      clearNearbyPin();
-      nearbySession.refineNotice = "Updated to nearest station";
-    }
-    writeLastNearbyStationCache({
-      station: nearest.station,
-      distanceKm: nearest.distanceKm,
-    });
-    stopNearbyLocateTimers();
-    nearbyLocatePickerVisible = false;
-    nearbyDontWaitVisible = false;
-    syncNearbyDontWaitButton();
-    try {
-      if (stationChanged || !nearbyBoard) {
-        await fetchNearbyBoard();
-      }
-      if (!isNearbyLocateCurrent(generation)) {
-        return;
-      }
-      clearNearbyError();
-    } catch (error) {
-      if (!isNearbyLocateCurrent(generation)) {
-        return;
-      }
-      setNearbyError(error.message ?? "Could not load departures for this station", "board");
-    } finally {
-      if (isNearbyLocateCurrent(generation)) {
-        nearbyLoading = false;
-      }
-    }
-    if (!isNearbyLocateCurrent(generation)) {
-      return;
-    }
-    renderNearbyBoard();
-  } catch (error) {
-    stopNearbyLocateTimers();
-    if (!isNearbyLocateCurrent(generation)) {
-      return;
-    }
-    setNearbyGpsRefining(false);
-    nearbyLoading = false;
-    nearbyDontWaitVisible = false;
-    syncNearbyDontWaitButton();
-    if (!nearbySession.station && !nearbyUserPickedStation) {
-      setNearbyError(locationErrorFrom(error).message, "location");
-      renderNearbyBoard();
-      return;
-    }
-
-    if (nearbySession.station) {
-      try {
-        if (!nearbyBoard) {
-          await fetchNearbyBoard();
-        }
-        if (!isNearbyLocateCurrent(generation)) {
-          return;
-        }
-        clearNearbyError();
-        renderNearbyBoard();
-      } catch (fetchError) {
-        if (!isNearbyLocateCurrent(generation)) {
-          return;
-        }
-        errorEl.textContent = fetchError.message;
-        errorEl.hidden = false;
-        renderNearbyBoard({ stale: true });
-      }
-    }
-  }
-}
-
-function showNearbyFallback(message) {
-  setNearbyError(message);
-  nearbyDirectionsEl.hidden = false;
-  nearbyDirectionsListEl.innerHTML = "";
-  nearbyFallbackEl.hidden = false;
-  if (nearbyFallbackTextEl) {
-    nearbyFallbackTextEl.textContent = message;
-  }
-  ensureNearbyStationOptions();
-}
-
-function renderNearbyDirectionsList() {
-  if (!nearbyDirectionsListEl || !nearbyBoard?.entries?.length) {
-    return;
-  }
-
-  nearbyFallbackEl.hidden = true;
-  nearbyDirectionsListEl.innerHTML = "";
-  const directionsLabel = nearbyDirectionsEl?.querySelector(".nearby-directions-label");
-  if (directionsLabel) {
-    directionsLabel.hidden = false;
-  }
-  const focused = nearbySession?.focusedDirection;
-
-  for (const entry of nearbyBoard.entries) {
-    const item = document.createElement("li");
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "nearby-direction-row";
-    if (entry.direction === focused) {
-      button.classList.add("active");
-    }
-    button.textContent = formatNearbyDirectionRow(entry);
-    button.addEventListener("click", () => {
-      focusNearbyDirection(entry.direction);
-    });
-    item.appendChild(button);
-    nearbyDirectionsListEl.appendChild(item);
-  }
-}
-
-function renderNearbyBoard({ stale = false } = {}) {
-  if (!isNearbyModeActive()) {
-    return;
-  }
-
-  syncNearbyChrome();
-  errorEl.hidden = true;
-  clearHeroSetupState();
-
-  if (shouldShowNearbyLoadingState()) {
-    lastRenderedNext = null;
-    setRouteDisplay(nearbyLoadingRouteCopy());
-    setHeroUrgency("calm");
-    heroEl?.classList.add("locating");
-    if (heroDepartLabelEl) {
-      heroDepartLabelEl.textContent = "Next Train";
-    }
-    if (departCountdownEl) {
-      departCountdownEl.innerHTML =
-        '<span class="locate-spinner locate-spinner--hero" aria-hidden="true"></span>';
-    }
-    if (departDisplayTimeEl) {
-      departDisplayTimeEl.textContent = nearbyLoadingHeroCopy();
-    }
-    if (heroScheduledTimeEl) {
-      heroScheduledTimeEl.hidden = true;
-    }
-    if (leaveCardEl) {
-      leaveCardEl.hidden = true;
-    }
-    if (nearbyLocatePickerVisible) {
-      nearbyDirectionsEl.hidden = false;
-      if (nearbyDirectionsListEl) {
-        nearbyDirectionsListEl.innerHTML = "";
-      }
-      const directionsLabel = nearbyDirectionsEl.querySelector(".nearby-directions-label");
-      if (directionsLabel) {
-        directionsLabel.hidden = true;
-      }
-      nearbyFallbackEl.hidden = false;
-      if (nearbyFallbackTextEl) {
-        nearbyFallbackTextEl.textContent = "Choose a station — we’ll show the next train.";
-      }
-      void ensureNearbyStationOptions();
-    } else {
-      nearbyDirectionsEl.hidden = true;
-    }
-    syncNearbyDontWaitButton();
-    followingSectionEl.hidden = true;
-    if (nearbySession?.gpsRefining) {
-      updatedEl.textContent = "Checking location…";
-    } else {
-      updatedEl.textContent = "Updating…";
-    }
-    updateSwipeHint();
-    updateSwipeCues();
-    return;
-  }
-
-  heroEl?.classList.remove("locating");
-  nearbyDontWaitVisible = false;
-  syncNearbyDontWaitButton();
-
-  if (nearbyLocatePickerVisible && !nearbySession?.station && !nearbyUserPickedStation) {
-    lastRenderedNext = null;
-    setRouteDisplay("Near me");
-    setHeroUrgency("calm");
-    if (heroDepartLabelEl) {
-      heroDepartLabelEl.textContent = "Next Train";
-    }
-    if (departCountdownEl) {
-      departCountdownEl.textContent = "—";
-    }
-    if (departDisplayTimeEl) {
-      departDisplayTimeEl.textContent = "Choose a station below";
-    }
-    if (heroScheduledTimeEl) {
-      heroScheduledTimeEl.hidden = true;
-    }
-    if (leaveCardEl) {
-      leaveCardEl.hidden = true;
-    }
-    nearbyDirectionsEl.hidden = false;
-    nearbyFallbackEl.hidden = false;
-    if (nearbyFallbackTextEl) {
-      nearbyFallbackTextEl.textContent = "Choose a station below";
-    }
-    void ensureNearbyStationOptions();
-    platformEl.textContent = "—";
-    statusEl.textContent = "—";
-    followingSectionEl.hidden = true;
-    updatedEl.textContent = "Choose a station below";
-    updateSwipeHint();
-    updateSwipeCues();
-    maybeScheduleOnboarding();
-    return;
-  }
-
-  if (nearbySession?.unsupportedRegion) {
-    renderUnsupportedRegionBoard();
-    maybeScheduleOnboarding();
-    return;
-  }
-
-  if (nearbyError) {
-    setRouteDisplay(formatNearbyRouteLine());
-    setHeroUrgency("calm");
-    if (heroDepartLabelEl) {
-      heroDepartLabelEl.textContent = "Near me";
-    }
-    if (departCountdownEl) {
-      departCountdownEl.textContent = "—";
-    }
-    if (departDisplayTimeEl) {
-      const kind = nearbyErrorKind || classifyNearbyError(nearbyError);
-      departDisplayTimeEl.textContent =
-        kind === "board" ? "Times unavailable" : "Location needed";
-    }
-    if (heroScheduledTimeEl) {
-      heroScheduledTimeEl.hidden = true;
-    }
-    if (leaveCardEl) {
-      leaveCardEl.hidden = true;
-    }
-    showNearbyFallback(nearbyError);
-    platformEl.textContent = "—";
-    statusEl.textContent = "—";
-    followingSectionEl.hidden = true;
-    updatedEl.textContent = stale ? "Update failed — times may be out of date" : "Choose a station below";
-    updateSwipeHint();
-    updateSwipeCues();
-    maybeScheduleOnboarding();
-    return;
-  }
-
-  const focusedEntry = getNearbyFocusedEntry();
-  let boardData = focusedEntry?.data ?? null;
-  if (focusedEntry?.direction && boardData && isNearbyPinShowing(focusedEntry.direction)) {
-    // Re-apply pin against the cached board so skip stays locked between fetches.
-    boardData = applyNearbyPinToData(focusedEntry.direction, boardData);
-    focusedEntry.data = boardData;
-  } else if (getNearbyPin() && !isNearbyPinHolding()) {
-    const expiredDirection = getNearbyPin()?.direction;
-    clearNearbyPin();
-    if (expiredDirection) {
-      setNearbySkip(expiredDirection, 0);
-      void fetchNearbyBoard()
-        .then(() => renderNearbyBoard())
-        .catch(() => renderNearbyBoard({ stale: true }));
-      return;
-    }
-  }
-
-  const next = boardData?.next ?? null;
-  setRouteDisplay(formatNearbyRouteLine());
-  if (nearbySession?.refineNotice) {
-    updatedEl.textContent = nearbySession.refineNotice;
-    nearbySession.refineNotice = null;
-  } else if (nearbySession?.gpsRefining) {
-    updatedEl.textContent = "Checking location…";
-  } else {
-    updatedEl.textContent = stale
-      ? "Update failed — times may be out of date"
-      : nearbyBoard?.lastUpdated
-        ? `Updated ${nearbyBoard.lastUpdated}`
-        : "Updated just now";
-  }
-
-  if (!next) {
-    if (shouldShowNearbyLoadingState()) {
-      return;
-    }
-
-    lastRenderedNext = null;
-    setHeroUrgency("calm");
-    if (heroDepartLabelEl) {
-      heroDepartLabelEl.textContent = "Next Train";
-    }
-    if (departCountdownEl) {
-      departCountdownEl.textContent = "—";
-    }
-    if (departDisplayTimeEl) {
-      departDisplayTimeEl.textContent = "No upcoming trains";
-    }
-    if (heroScheduledTimeEl) {
-      heroScheduledTimeEl.hidden = true;
-    }
-    platformEl.textContent = "—";
-    statusEl.textContent = "—";
-    followingSectionEl.hidden = true;
-    nearbyDirectionsEl.hidden = false;
-    renderNearbyDirectionsList();
-    updateSwipeHint();
-    updateSwipeCues();
-    maybeScheduleOnboarding();
-    return;
-  }
-
-  lastRenderedNext = next;
-  setHeroUrgency("calm");
-  heroEl?.classList.toggle("stale", stale);
-
-  const pinned = isNearbyPinShowing(focusedEntry?.direction);
-  const nearbySkip = getNearbySkip(focusedEntry?.direction);
-  if (heroDepartLabelEl) {
-    heroDepartLabelEl.textContent = getHeroDepartLabel({
-      pinned,
-      skipCount: nearbySkip,
-    });
-  }
-  if (departCountdownEl) {
-    renderDepartureCountdown(departCountdownEl, next);
-  }
-  if (departDisplayTimeEl) {
-    departDisplayTimeEl.textContent = `${next.displayTime} · towards ${focusedEntry.direction}`;
-  }
-
-  const scheduledLine = formatScheduledLine(next);
-  if (heroScheduledTimeEl) {
-    if (scheduledLine) {
-      heroScheduledTimeEl.textContent = scheduledLine;
-      heroScheduledTimeEl.hidden = false;
-    } else {
-      heroScheduledTimeEl.hidden = true;
-    }
-  }
-
-  platformEl.textContent = next.platform;
-  renderStatusDisplay(next);
-  if (pinned) {
-    const normalizedBoard = normalizeApiTrainData(boardData);
-    const trueNextTrip = getTrueNextTrip(normalizedBoard);
-    if (!renderJourneySecondaryNextLine(trueNextTrip, next)) {
-      renderThenTrains(boardData, nearbySkip);
-    }
-  } else {
-    renderThenTrains(boardData, nearbySkip);
-  }
-  nearbyDirectionsEl.hidden = false;
-  renderNearbyDirectionsList();
-  updateSwipeHint();
-  updateSwipeCues();
-  renderNearbyPinLeaveSurfaces(next, pinned);
-  maybeScheduleOnboarding();
-}
-
-function nearbyBoardHasDepartures(board = nearbyBoard) {
-  return Boolean(board?.entries?.some((entry) => entry.data?.next));
-}
-
-function nearbyBoardLooksEmpty(board = nearbyBoard) {
-  return Boolean(board?.entries?.length) && !nearbyBoardHasDepartures(board);
-}
-
-async function fetchNearbyBoard() {
-  if (!nearbySession?.station) {
-    return;
-  }
-
-  if (nearbyBoardInflight) {
-    nearbyBoardRefetchPending = true;
-    return nearbyBoardInflight;
-  }
-
-  nearbyBoardInflight = fetchNearbyBoardOnce().finally(() => {
-    nearbyBoardInflight = null;
-    renderNearbyBoard();
-    if (nearbyBoardRefetchPending) {
-      nearbyBoardRefetchPending = false;
-      void fetchNearbyBoard();
-    }
-  });
-
-  if (nearbyBoardLooksEmpty()) {
-    renderNearbyBoard();
-  }
-
-  return nearbyBoardInflight;
-}
-
-async function fetchNearbyBoardOnce() {
-  const station = nearbySession?.station;
-  if (!station) {
-    return;
-  }
-
-  let directions = [];
-  try {
-    directions = await fetchDirectionsFromApi(station);
-  } catch (error) {
-    console.warn("Nearby directions lookup failed", error);
-    if (isTestMode()) {
-      directions = ["Perth", "Mandurah", "Joondalup"];
-    } else {
-      throw error;
-    }
-  }
-  let fetchFailures = 0;
-  const settled = await Promise.all(
-    directions.map(async (direction) => {
-      try {
-        const data = await fetchNearbyDirectionData(station, direction, getNearbySkip(direction));
-        return { direction, data };
-      } catch (error) {
-        fetchFailures += 1;
-        console.warn(`Nearby fetch failed for ${direction}`, error);
-        return null;
-      }
-    })
-  );
-  const entries = settled.filter(Boolean);
-
-  if (!nearbySession || nearbySession.station !== station) {
-    return;
-  }
-
-  if (!entries.length) {
-    if (fetchFailures > 0) {
-      throw new Error("Could not load departures for this station");
-    }
-
-    // Station known but no live/scheduled trips (overnight). Not a location failure.
-    nearbyBoard = {
-      lastUpdated: new Date().toLocaleString("en-AU", {
-        timeZone: "Australia/Perth",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }),
-      entries: directions.map((direction) => ({
-        direction,
-        data: { next: null, following: [], scheduleSource: "empty" },
-      })),
-    };
-    if (
-      !nearbySession.focusedDirection ||
-      !directions.includes(nearbySession.focusedDirection)
-    ) {
-      nearbySession.focusedDirection = directions[0] ?? null;
-    }
-    writeLastNearbyStationCache({
-      station,
-      distanceKm: nearbySession.distanceKm,
-      board: nearbyBoard,
-    });
-    return;
-  }
-
-  if (
-    !nearbySession.focusedDirection ||
-    !entries.some((entry) => entry.direction === nearbySession.focusedDirection)
-  ) {
-    nearbySession.focusedDirection = pickSoonestNearbyDirection(entries);
-  }
-
-  nearbyBoard = {
-    lastUpdated: new Date().toLocaleString("en-AU", {
-      timeZone: "Australia/Perth",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }),
-    entries,
-  };
-  writeLastNearbyStationCache({
-    station,
-    distanceKm: nearbySession.distanceKm,
-    board: nearbyBoard,
-  });
-}
-
-function focusNearbyDirection(direction) {
-  if (!nearbySession || nearbySession.focusedDirection === direction) {
-    return;
-  }
-
-  nearbySession.focusedDirection = direction;
-  renderNearbyBoard();
-}
-
-function setNearbyGpsRefining(value) {
-  if (nearbySession) {
-    nearbySession.gpsRefining = value;
-  }
-}
-
-async function enterNearbyMode({ station: manualStation, distanceKm = null } = {}) {
-  journeyModeActive = false;
-  clearManualJourneyOverride();
-  dismissLeaveHint();
-  closeJourneySwitcherMenu();
-  stopNearbyLocateTimers();
-  clearOnboardingSchedule();
-  nearbyUserPickedStation = Boolean(manualStation);
-  nearbyLocatePickerVisible = false;
-  nearbyDontWaitVisible = false;
-  nearbyBoard = null;
-  clearNearbyError();
-  nearbyLoading = true;
-
-  if (manualStation) {
-    nearbySession = {
-      station: manualStation,
-      distanceKm,
-      focusedDirection: null,
-      skipByDirection: {},
-    };
-    restoreNearbySessionPinFromSettings();
-    syncNearbyChrome();
-    renderNearbyBoard();
-
-    try {
-      await fetchNearbyBoard();
-      clearNearbyError();
-      writeLastNearbyStationCache({ station: manualStation, distanceKm });
-    } catch (error) {
-      setNearbyError(error.message ?? "Could not load departures for this station", "board");
-    } finally {
-      nearbyLoading = false;
-    }
-    renderNearbyBoard();
-    return;
-  }
-
-  // Paint last Near me station (+ board if fresh) immediately — don't wait on GPS / permission.
-  // 9/10 visits the station is unchanged; GPS refine swaps if it moved.
-  const cachedStation = readLastNearbyStationCache();
-  if (cachedStation?.station) {
-    const cachedBoard = readCachedNearbyBoard(cachedStation);
-    nearbySession = {
-      station: cachedStation.station,
-      // Don't show a stale km crumb until GPS refine returns.
-      distanceKm: null,
-      fromCache: true,
-      gpsRefining: true,
-      focusedDirection: cachedBoard?.focusedDirection ?? null,
-      skipByDirection: {},
-    };
-    restoreNearbySessionPinFromSettings();
-    if (cachedBoard) {
-      nearbyBoard = {
-        lastUpdated: cachedBoard.lastUpdated ?? "just now",
-        entries: cachedBoard.entries,
-      };
-      if (
-        !nearbySession.focusedDirection ||
-        !nearbyBoard.entries.some((entry) => entry.direction === nearbySession.focusedDirection)
-      ) {
-        nearbySession.focusedDirection = pickSoonestNearbyDirection(nearbyBoard.entries);
-      }
-      nearbyLoading = false;
-    }
-    syncNearbyChrome();
-    renderNearbyBoard();
-
-    void (async () => {
-      try {
-        await fetchNearbyBoard();
-        clearNearbyError();
-      } catch (error) {
-        // Keep a useful cached board; surface failure when the face would be misleading empty.
-        if (!nearbyBoardHasDepartures()) {
-          setNearbyError(error.message ?? "Could not load departures for this station", "board");
-        }
-      } finally {
-        nearbyLoading = false;
-        renderNearbyBoard();
-      }
-    })();
-
-    void (async () => {
-      if (isNativeApp()) {
-        try {
-          await ensureGeoBridge();
-          if (typeof window.NextTrainGeo?.ensureLocationPermission === "function") {
-            await window.NextTrainGeo.ensureLocationPermission();
-          }
-        } catch (error) {
-          // Keep cached board; permission / geo failures shouldn't blank a useful face.
-          if (nearbySession) {
-            setNearbyGpsRefining(false);
-          }
-          renderNearbyBoard();
-          return;
-        }
-      }
-      void locateNearbyInBackground({ forceFresh: false });
-    })();
-    return;
-  }
-
-  // No cache — show locating UI immediately. Don’t wait uses a short delay during
-  // permission, then a fresh 7s after permission so GPS wait isn’t “already due”.
-  nearbySession = {
-    station: null,
-    distanceKm: null,
-    focusedDirection: null,
-    skipByDirection: {},
-  };
-  syncNearbyChrome();
-  renderNearbyBoard();
-  startNearbyLocateTimers(NEARBY_LOCATE_PERMISSION_ESCAPE_MS);
-
-  void (async () => {
-    if (isNativeApp()) {
-      try {
-        await ensureGeoBridge();
-        if (typeof window.NextTrainGeo?.ensureLocationPermission === "function") {
-          await window.NextTrainGeo.ensureLocationPermission();
-        }
-      } catch (error) {
-        if (!isNearbyModeActive()) {
-          return;
-        }
-        nearbyLoading = false;
-        stopNearbyLocateTimers();
-        setNearbyError(locationErrorFrom(error).message, "location");
-        syncNearbyChrome();
-        renderNearbyBoard();
-        return;
-      }
-    }
-
-    if (!isNearbyModeActive() || nearbyUserPickedStation || nearbyLocatePickerVisible) {
-      return;
-    }
-
-    // Permission done — start the real 7s GPS clock unless escape is already up.
-    if (!nearbyDontWaitVisible) {
-      startNearbyLocateTimers(NEARBY_LOCATE_DONT_WAIT_MS);
-    }
-    void locateNearbyInBackground();
-  })();
-}
-
-function exitNearbyMode() {
-  clearNearbyPin();
-  hideNearbyPinLeaveSurfaces();
-  stopNearbyLocateTimers();
-  dismissNearbyLocatePicker();
-  nearbyDontWaitVisible = false;
-  syncNearbyDontWaitButton();
-  nearbyUserPickedStation = false;
-  nearbyLocateGeneration += 1;
-  nearbySession = null;
-  nearbyBoard = null;
-  nearbyBoardInflight = null;
-  nearbyLoading = false;
-  clearNearbyError();
-  syncNearbyChrome();
-  if (nearbyDirectionsEl) {
-    nearbyDirectionsEl.hidden = true;
-  }
-  if (nearbyFallbackEl) {
-    nearbyFallbackEl.hidden = true;
-  }
-  if (nearbyDirectionsListEl) {
-    nearbyDirectionsListEl.innerHTML = "";
-  }
-}
 
 async function fetchNextTrainFromLiveTimesClient() {
   const client = window.NextTrainTimes;
@@ -5133,7 +3498,7 @@ async function fetchNextTrain() {
   }
 
   if (isNearbyModeActive()) {
-    if (nearbySession?.unsupportedRegion) {
+    if (nearbyMode().getNearbySession()?.unsupportedRegion) {
       renderNearbyBoard();
       return;
     }
@@ -7561,71 +5926,6 @@ if (journeyContextRowEl && typeof ResizeObserver !== "undefined") {
   }
 }
 menuBtn?.addEventListener("click", () => openMenu());
-nearbyBtn?.addEventListener("click", () => {
-  nearbyBtn?.classList.add("icon-btn--refreshing");
-  Promise.resolve(enterNearbyMode()).finally(() => {
-    window.setTimeout(() => nearbyBtn?.classList.remove("icon-btn--refreshing"), 300);
-  });
-});
-async function applyNearbyManualStation(station) {
-  await getStationsList();
-  const normalized = normalizeStation(station);
-  if (!normalized || !isCatalogStation(station)) {
-    return;
-  }
-
-  nearbyUserPickedStation = true;
-  clearNearbyError();
-  clearNearbyPin();
-  stopNearbyLocateTimers();
-  dismissNearbyLocatePicker();
-  nearbyDontWaitVisible = false;
-  syncNearbyDontWaitButton();
-  nearbySession = {
-    station: normalized,
-    distanceKm: null,
-    focusedDirection: null,
-    skipByDirection: {},
-  };
-  nearbyLoading = true;
-  renderNearbyBoard();
-
-  try {
-    await fetchNearbyBoard();
-    nearbyLoading = false;
-    clearNearbyError();
-    writeLastNearbyStationCache({ station: normalized });
-    renderNearbyBoard();
-  } catch (error) {
-    nearbyLoading = false;
-    setNearbyError(error.message ?? "Could not load departures for this station", "board");
-    renderNearbyBoard();
-  }
-}
-
-nearbyDontWaitBtn?.addEventListener("click", () => {
-  if (!nearbyLoading || nearbyLocatePickerVisible) {
-    return;
-  }
-
-  showNearbyEarlyPicker();
-  if (isNearbyModeActive() && nearbyLoading) {
-    renderNearbyBoard();
-  }
-});
-
-nearbyStationBtn?.addEventListener("click", async () => {
-  const station = getNearbyStationCombobox()?.getValue?.();
-  if (!station) {
-    if (nearbyFallbackTextEl) {
-      nearbyFallbackTextEl.textContent = "Pick a station from the list first.";
-    }
-    getNearbyStationCombobox()?.focus?.();
-    return;
-  }
-
-  await applyNearbyManualStation(station);
-});
 menuFeedbackBtn?.addEventListener("click", () => {
   feedbackOpenedFromMenu = true;
   closeMenuDialog();
@@ -7636,37 +5936,6 @@ menuHelpBtn?.addEventListener("click", () => {
   closeMenuDialog();
   void window.nextTrainWidget?.refreshWidgetDebugPanel?.();
   openAppDialog(helpDialog);
-});
-feedbackNoteInput?.addEventListener("focus", () => {
-  if (isNativeApp()) {
-    void window.NextTrainAds?.hideNativeBanner?.({ force: true });
-  }
-});
-feedbackEmailInput?.addEventListener("focus", () => {
-  if (isNativeApp()) {
-    void window.NextTrainAds?.hideNativeBanner?.({ force: true });
-  }
-});
-feedbackForm?.addEventListener("submit", (event) => {
-  void submitFeedback(event);
-});
-feedbackCancelBtn?.addEventListener("click", () => {
-  closeFeedbackDialog({ resumeMenu: true });
-});
-feedbackDoneBtn?.addEventListener("click", () => {
-  closeFeedbackDialog({ resumeMenu: true });
-});
-feedbackDialog?.addEventListener("cancel", (event) => {
-  event.preventDefault();
-  closeFeedbackDialog({ resumeMenu: true });
-});
-feedbackDialog?.addEventListener("click", (event) => {
-  if (event.target === feedbackDialog) {
-    closeFeedbackDialog({ resumeMenu: true });
-  }
-});
-helpCloseBtn?.addEventListener("click", () => {
-  closeHelpDialog();
 });
 helpDialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
@@ -7822,26 +6091,6 @@ detailLeaveBeforeInput?.addEventListener("input", () => {
   updateLeaveBeforeLabel();
 });
 
-nearbyLeaveBeforeInput?.addEventListener("input", () => {
-  updateNearbyLeaveBeforeLabel();
-  const minutes = Number(nearbyLeaveBeforeInput.value);
-  if (!Number.isFinite(minutes)) {
-    return;
-  }
-  persistSettings({ nearbyLeaveBeforeMinutes: minutes });
-  if (isNearbyPinHolding()) {
-    syncNearbyPinSettings();
-    renderNearbyBoard();
-  }
-});
-
-nearbyNotifyMeInput?.addEventListener("change", () => {
-  void handleNearbyNotifyToggle();
-});
-
-nearbyLeaveHideBtn?.addEventListener("click", () => {
-  dismissNearbyPinLeaveCard();
-});
 
 heroPinBtn?.addEventListener("pointerdown", (event) => {
   event.stopPropagation();
@@ -8113,7 +6362,6 @@ function initStationComboboxesFromModule() {
     loadDirectionsForSelect,
     syncDetailNearestStationChrome,
     detailNearestState,
-    nearbyStationComboboxRoot,
     isNearbyModeActive,
     applyNearbyManualStation,
   });
@@ -8153,6 +6401,135 @@ function hasDefaultWindow(journey) { return journeyModel().hasDefaultWindow(jour
 function parseTimeToMinutes(time) { return journeyModel().parseTimeToMinutes(time); }
 function journeyMatchesTime(journey, minutes) { return journeyModel().journeyMatchesTime(journey, minutes); }
 
+
+
+const nearbyMode = () => window.nextTrainNearby;
+
+function classifyNearbyError(message) { return nearbyMode().classifyNearbyError(message); }
+function setNearbyError(message, kind) { return nearbyMode().setNearbyError(message, kind); }
+function clearNearbyError() { return nearbyMode().clearNearbyError(); }
+function getNearbyLeaveBeforeMinutes() { return nearbyMode().getNearbyLeaveBeforeMinutes(); }
+function updateNearbyLeaveBeforeLabel(minutes) { return nearbyMode().updateNearbyLeaveBeforeLabel(minutes); }
+function syncNearbyLeaveBeforeSliderFill(minutes) { return nearbyMode().syncNearbyLeaveBeforeSliderFill(minutes); }
+function rescheduleNearbyPinReminders() { return nearbyMode().rescheduleNearbyPinReminders(); }
+function dismissNearbyPinLeaveCard() { return nearbyMode().dismissNearbyPinLeaveCard(); }
+function clearNearbyPinLeaveCardDismissed() { return nearbyMode().clearNearbyPinLeaveCardDismissed(); }
+function isUnsupportedRegion(distanceKm) { return nearbyMode().isUnsupportedRegion(distanceKm); }
+function renderUnsupportedRegionBoard() { return nearbyMode().renderUnsupportedRegionBoard(); }
+function isNearbyModeActive() { return nearbyMode().isNearbyModeActive(); }
+function syncChromeMode() { return nearbyMode().syncChromeMode(); }
+function syncNearbyChrome() { return nearbyMode().syncNearbyChrome(); }
+function formatNearbyRouteLine() { return nearbyMode().formatNearbyRouteLine(); }
+function getNearbySkip(direction) { return nearbyMode().getNearbySkip(direction); }
+function setNearbySkip(direction, skip) { return nearbyMode().setNearbySkip(direction, skip); }
+function getNearbyPin() { return nearbyMode().getNearbyPin(); }
+function clearNearbyPin() { return nearbyMode().clearNearbyPin(); }
+function syncNearbyPinSettings() { return nearbyMode().syncNearbyPinSettings(); }
+function isNearbyPinHolding(pin) { return nearbyMode().isNearbyPinHolding(pin); }
+function isNearbyPinShowing(direction) { return nearbyMode().isNearbyPinShowing(direction); }
+function setNearbyPinFromTrip(direction, trip) { return nearbyMode().setNearbyPinFromTrip(direction, trip); }
+function applyNearbySkip(data, skip) { return nearbyMode().applyNearbySkip(data, skip); }
+function getNearbyFocusedEntry() { return nearbyMode().getNearbyFocusedEntry(); }
+function renderNearbyBoard(options) { return nearbyMode().renderNearbyBoard(options); }
+function fetchNearbyBoard() { return nearbyMode().fetchNearbyBoard(); }
+function enterNearbyMode(options) { return nearbyMode().enterNearbyMode(options); }
+function exitNearbyMode() { return nearbyMode().exitNearbyMode(); }
+function applyNearbyManualStation(station) { return nearbyMode().applyNearbyManualStation(station); }
+function handleNearbyNotifyToggle() { return nearbyMode().handleNearbyNotifyToggle(); }
+function shouldShowNearbyLoadingState() { return nearbyMode().shouldShowNearbyLoadingState(); }
+function hideNearbyPinLeaveSurfaces() { return nearbyMode().hideNearbyPinLeaveSurfaces(); }
+function readLastNearbyStationCache() { return nearbyMode().readLastNearbyStationCache(); }
+function writeLastNearbyStationCache(cache) { return nearbyMode().writeLastNearbyStationCache(cache); }
+function clearLastNearbyStationCache() { return nearbyMode().clearLastNearbyStationCache(); }
+
+function initNearbyModeFromModule() {
+  nearbyMode()?.init?.({
+    getSettings: () => settings,
+    getJourneyModeActive: () => journeyModeActive,
+    setJourneyModeActive: (value) => {
+      journeyModeActive = value;
+    },
+    getLastRenderedNext: () => lastRenderedNext,
+    setLastRenderedNext: (value) => {
+      lastRenderedNext = value;
+    },
+    persistSettings,
+    formatStationLabel,
+    normalizeStation,
+    isCatalogStation,
+    getStationsList,
+    getNearbyStationCombobox,
+    setStationComboboxValue,
+    isNativeApp,
+    ensureGeoBridge,
+    locationErrorFrom,
+    isTestMode,
+    fetchDirectionsFromApi,
+    normalizeApiTrainData,
+    resolveTripDeparture,
+    getLiveTiming,
+    formatLeaveBeforeLabel,
+    formatLeaveCardLabel,
+    formatLeaveCardSubline,
+    isLeavePhasePastLeaveBy,
+    updateLeaveCardState,
+    renderLeaveMinutesCountdown,
+    buildNextFromFollowing,
+    getHeroDepartLabel,
+    getTrueNextTrip,
+    renderJourneySecondaryNextLine,
+    renderThenTrains,
+    formatScheduledLine,
+    renderStatusDisplay,
+    renderDepartureCountdown,
+    setRouteDisplay,
+    setHeroUrgency,
+    clearHeroSetupState,
+    updateSwipeHint,
+    updateSwipeCues,
+    updateLeaveHint,
+    maybeScheduleOnboarding,
+    apiUrl,
+    appendFixtureQuery,
+    enrichTrip,
+    findNearestStation,
+    getGeolocationPosition,
+    enterJourneyMode,
+    clearManualJourneyOverride,
+    dismissLeaveHint,
+    closeJourneySwitcherMenu,
+    clearOnboardingSchedule,
+    isJourneyModeActive,
+    syncJourneyContextChrome,
+    syncNearbyPinChrome,
+    isNearbyPinSettingsHolding: (pin) => {
+      const holdingUntil = Number(pin?.holdingUntilMs);
+      return Number.isFinite(holdingUntil) && Date.now() < holdingUntil;
+    },
+    errorEl,
+    heroEl,
+    heroDepartLabelEl,
+    departCountdownEl,
+    departDisplayTimeEl,
+    heroScheduledTimeEl,
+    leaveCardEl,
+    leaveCardLabelEl,
+    leaveTimeEl,
+    leaveCountdownEl,
+    leaveCardActionsEl,
+    leaveBufferEditBtn,
+    platformEl,
+    statusEl,
+    followingSectionEl,
+    updatedEl,
+    journeySwitcherEl,
+    journeySwitcherMenuEl,
+    appEl,
+    journeysBtn,
+    journeysChromeAction,
+  });
+  nearbyMode()?.initNearbyListeners?.();
+}
 
 const trainNavigation = () => window.nextTrainNavigation;
 
@@ -8234,8 +6611,8 @@ function initTrainNavigationFromModule() {
       journeyModeActive = value;
     },
     getSettings: () => settings,
-    getNearbySession: () => nearbySession,
-    getNearbyBoard: () => nearbyBoard,
+    getNearbySession: () => nearbyMode().getNearbySession(),
+    getNearbyBoard: () => nearbyMode().getNearbyBoard(),
     getActiveJourney,
     normalizeJourney,
     persistSettings,
@@ -8293,6 +6670,7 @@ function initJourneyModelFromModule() {
   });
 }
 
+initNearbyModeFromModule();
 initTrainNavigationFromModule();
 initJourneyModelFromModule();
 initStationComboboxesFromModule();
@@ -8341,7 +6719,7 @@ window.nextTrainApp = {
     }
   },
   isUnsupportedRegion,
-  UNSUPPORTED_REGION_KM,
+  UNSUPPORTED_REGION_KM: nearbyMode().UNSUPPORTED_REGION_KM,
   readLastNearbyStationCache,
   writeLastNearbyStationCache,
   clearLastNearbyStationCache,
