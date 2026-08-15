@@ -4509,6 +4509,9 @@ function getPerthMinutesSinceMidnight(date) { return journeyModel().getPerthMinu
 function getPerthLocalDateKey(date) { return journeyModel().getPerthLocalDateKey(date); }
 function hasDefaultWindow(journey) { return journeyModel().hasDefaultWindow(journey); }
 function parseTimeToMinutes(time) { return journeyModel().parseTimeToMinutes(time); }
+function formatMinutesAsTime(totalMinutes) {
+  return journeyModel().formatMinutesAsTime(totalMinutes);
+}
 function journeyMatchesTime(journey, minutes) { return journeyModel().journeyMatchesTime(journey, minutes); }
 
 
@@ -4586,6 +4589,7 @@ function initJourneyDetailFromModule() {
     getJourneyById,
     hasDefaultWindow,
     parseTimeToMinutes,
+    formatMinutesAsTime,
     normalizeRemindDays,
     getJourneyRemindDays,
     formatJourneyDefaultWindow,

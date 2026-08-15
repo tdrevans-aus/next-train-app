@@ -101,6 +101,10 @@
     return deps.parseTimeToMinutes?.(time) ?? 0;
   }
 
+  function formatMinutesAsTime(totalMinutes) {
+    return deps.formatMinutesAsTime?.(totalMinutes) ?? "";
+  }
+
   function normalizeRemindDays(raw) {
     return deps.normalizeRemindDays?.(raw) ?? [];
   }
@@ -611,13 +615,6 @@ function syncDetailTargetRemindVisibility() {
     void window.nextTrainLeaveReminders?.refreshJourneyRemindExtras?.();
     void window.nextTrainLeaveReminders?.ensureLiveCountdownDefaultOn?.();
   }
-}
-
-function formatMinutesAsTime(totalMinutes) {
-  const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
-  const hour = Math.floor(wrapped / 60);
-  const minute = wrapped % 60;
-  return `${pad2(hour)}:${pad2(minute)}`;
 }
 
 function getJourneyWindowRanges(journey) {
