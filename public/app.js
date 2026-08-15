@@ -4234,27 +4234,65 @@ detailLeaveBeforeInput?.addEventListener("input", () => {
 });
 
 
-heroPinBtn?.addEventListener(
-  "pointerdown",
-  (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  },
-  { capture: true }
-);
+let heroPinPointerDown = false;
+let heroPinToggleHandled = false;
 
-heroPinBtn?.addEventListener(
-  "pointerup",
-  (event) => {
-    event.stopPropagation();
-  },
-  { capture: true }
-);
+function activateHeroPinFromPointer(event) {
+  if (!event || event.button !== 0) {
+    return;
+  }
 
-heroPinBtn?.addEventListener("click", (event) => {
   event.stopPropagation();
+  heroPinPointerDown = false;
+  heroPinToggleHandled = true;
+  trainNavigation().resetHeroSwipePointer?.(event);
   void toggleHeroPin();
-});
+}
+
+if (heroPinBtn) {
+  heroPinBtn.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (event.button !== 0) {
+        return;
+      }
+      heroPinPointerDown = true;
+      event.stopPropagation();
+      trainNavigation().resetHeroSwipePointer?.(event);
+    },
+    { capture: true }
+  );
+
+  heroPinBtn.addEventListener(
+    "pointerup",
+    (event) => {
+      if (!heroPinPointerDown || event.button !== 0) {
+        return;
+      }
+      activateHeroPinFromPointer(event);
+    },
+    { capture: true }
+  );
+
+  heroPinBtn.addEventListener(
+    "pointercancel",
+    () => {
+      heroPinPointerDown = false;
+    },
+    { capture: true }
+  );
+
+  heroPinBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (heroPinToggleHandled) {
+      heroPinToggleHandled = false;
+      event.preventDefault();
+      return;
+    }
+    trainNavigation().resetHeroSwipePointer?.();
+    void toggleHeroPin();
+  });
+}
 
 preferredHintEl?.addEventListener("click", () => {
   jumpToTargetTrain();
