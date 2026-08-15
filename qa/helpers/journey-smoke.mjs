@@ -202,6 +202,24 @@ export async function waitForLeaveCard(page, { optional = true, timeout = 5000 }
   }
 }
 
+export async function waitForLeaveCardPhase(page, phase, { timeout = 15000 } = {}) {
+  await page.waitForFunction(
+    (expected) => {
+      const card = document.getElementById("leave-card");
+      const msg = document.getElementById("leave-countdown")?.textContent?.toLowerCase() ?? "";
+      if (!card || card.hidden) {
+        return false;
+      }
+      if (expected === "late") {
+        return card.classList.contains("late") && msg.includes("late");
+      }
+      return card.classList.contains(expected);
+    },
+    phase,
+    { timeout }
+  );
+}
+
 export function parseLeaveMinutes(text) {
   return parseInt(text?.match(/\d+/)?.[0] ?? "0", 10);
 }
