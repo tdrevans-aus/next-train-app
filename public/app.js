@@ -67,7 +67,8 @@ const followingNextEl = document.getElementById("following-next");
 const errorEl = document.getElementById("error");
 
 const menuBtn = document.getElementById("menu-btn");
-const journeysBtn = document.getElementById("journeys-btn");
+const routesBtn = document.getElementById("routes-btn");
+const commutesBtn = document.getElementById("commutes-btn");
 const menuChromeAction = document.getElementById("menu-chrome-action");
 const appEl = document.querySelector(".app");
 const helpDialog = document.getElementById("help-dialog");
@@ -96,6 +97,12 @@ const settingsBackBtn = document.getElementById("settings-back");
 const journeyListEl = document.getElementById("journey-list");
 const clearAllDataBtn = document.getElementById("clear-all-data-btn");
 const deleteJourneyBtn = document.getElementById("delete-journey-btn");
+const deleteJourneyDialog = document.getElementById("delete-journey-dialog");
+const deleteJourneyDialogTitle = document.getElementById("delete-journey-dialog-title");
+const deleteJourneyDialogBody = document.getElementById("delete-journey-dialog-body");
+const deleteJourneyConfirmBtn = document.getElementById("delete-journey-confirm-btn");
+const deleteJourneyCancelBtn = document.getElementById("delete-journey-cancel-btn");
+let pendingDeleteJourneyId = null;
 const detailJourneyNameInput = document.getElementById("detail-journey-name");
 const detailStationComboboxRoot = document.getElementById("detail-station-combobox");
 const detailStationInput = document.getElementById("detail-station-input");
@@ -127,7 +134,8 @@ const onboardingStep2 = document.getElementById("onboarding-step-2");
 const onboardingGotItBtn = document.getElementById("onboarding-got-it-btn");
 const onboardingSetupBtn = document.getElementById("onboarding-setup-btn");
 const onboardingLaterBtn = document.getElementById("onboarding-later-btn");
-const journeysChromeAction = document.getElementById("journeys-chrome-action");
+const routesChromeAction = document.getElementById("routes-chrome-action");
+const commutesChromeAction = document.getElementById("commutes-chrome-action");
 const journeyTemplatesEl = document.getElementById("journey-templates");
 const journeyTemplatesLoadingEl = document.getElementById("journey-templates-loading");
 const journeyTemplatesCapHintEl = document.getElementById("journey-templates-cap-hint");
@@ -141,6 +149,8 @@ const detailRouteSection = document.getElementById("detail-route-section");
 const detailRouteCore = document.getElementById("detail-route-core");
 const detailJourneyWindow = document.getElementById("detail-journey-window");
 const heroEmptyStateEl = document.getElementById("hero-empty-state");
+const heroEmptyTitleEl = document.querySelector(".hero-empty-title");
+const heroEmptyTextEl = document.querySelector(".hero-empty-text");
 const heroEmptyAddBtn = document.getElementById("hero-empty-add-btn");
 const heroEmptyBackBtn = document.getElementById("hero-empty-back-btn");
 const detailActiveDayChips = document.getElementById("detail-active-day-chips");
@@ -181,6 +191,8 @@ let settingsDraftJourneys = [];
 let journeySwitcherOpen = false;
 let leaveAutoCheckDeparture = null;
 let journeyModeActive = false;
+/** @type {'nearby' | 'routes' | 'commutes'} */
+let chromeTravelTab = "nearby";
 let deferJourneyAutoSelect = false;
 let onboardingShowTimer = null;
 let onboardingPopulatedAt = null;
@@ -641,8 +653,74 @@ function dedupeDirections(directions) {
 
 
 
+function getChromeTravelTab() {
+  return chromeTravelTab;
+}
+
+function getRouteJourneys() {
+  return getConfiguredJourneys().filter((journey) => isRouteJourney(journey));
+}
+
+function getCommuteJourneys() {
+  return getConfiguredJourneys().filter((journey) => isCommuteJourney(journey));
+}
+
+function hasConfiguredRoute() {
+  return getRouteJourneys().length > 0;
+}
+
+function hasConfiguredForActiveTab() {
+  if (chromeTravelTab === "routes") {
+    return hasConfiguredRoute();
+  }
+  if (chromeTravelTab === "commutes") {
+    return hasConfiguredCommute();
+  }
+  return hasConfiguredRoute() || hasConfiguredCommute();
+}
+
+function getActiveTabJourneys() {
+  if (chromeTravelTab === "routes") {
+    return getRouteJourneys();
+  }
+  if (chromeTravelTab === "commutes") {
+    return getCommuteJourneys();
+  }
+  return getConfiguredJourneys();
+}
+
+function ensureActiveJourneyForTab(tab) {
+  const pool = tab === "routes" ? getRouteJourneys() : getCommuteJourneys();
+  if (!pool.length) {
+    return;
+  }
+
+  if (tab === "commutes") {
+    const scheduledId = findScheduledJourneyId();
+    if (
+      scheduledId &&
+      !isManualOverrideBlockingAuto(scheduledId) &&
+      pool.some((journey) => journey.id === scheduledId)
+    ) {
+      if (settings.activeJourneyId !== scheduledId) {
+        persistSettings({ activeJourneyId: scheduledId });
+        skipTrains = readSkipState().count;
+      }
+      return;
+    }
+  }
+
+  const active = getActiveJourney();
+  if (active && pool.some((journey) => journey.id === active.id)) {
+    return;
+  }
+
+  persistSettings({ activeJourneyId: pool[0].id });
+  skipTrains = readSkipState().count;
+}
+
 function shouldShowJourneySwitcher() {
-  return getConfiguredJourneys().length >= 2;
+  return getActiveTabJourneys().length >= 2;
 }
 
 function syncJourneyContextEditOffset() {
@@ -661,7 +739,7 @@ function syncJourneyContextEditOffset() {
 }
 
 function syncJourneyContextChrome() {
-  const configuredCount = getConfiguredJourneys().length;
+  const configuredCount = getActiveTabJourneys().length;
   const inEmptySetup = heroEl?.classList.contains("hero-setup");
   const showManage =
     journeyModeActive && configuredCount >= 1 && !inEmptySetup && !isNearbyModeActive();
@@ -738,6 +816,7 @@ async function applyCommuteMode({ coldStart = false } = {}) {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
   }
 
+  chromeTravelTab = "commutes";
   journeyModeActive = true;
   exitNearbyMode();
   maybeAutoSelectJourney();
@@ -762,7 +841,7 @@ function hideOnboardingCoach() {
 
   onboardingCoach.hidden = true;
   onboardingCoach.classList.remove("onboarding-coach--step-1", "onboarding-coach--step-2");
-  journeysChromeAction?.classList.remove("onboarding-highlight");
+  commutesChromeAction?.classList.remove("onboarding-highlight");
   clearOnboardingCoachPosition();
   notifyAdOverlaySuppression();
 }
@@ -838,7 +917,7 @@ function syncOnboardingCoachPosition() {
 
   const anchor = isStep1
     ? document.getElementById("hero")
-    : document.getElementById("journeys-chrome-action");
+    : document.getElementById("commutes-chrome-action");
   if (!anchor) {
     return;
   }
@@ -859,7 +938,7 @@ function showOnboardingCoach(step) {
 
   onboardingCoach.classList.remove("onboarding-coach--step-1", "onboarding-coach--step-2");
   onboardingCoach.classList.add(step === 2 ? "onboarding-coach--step-2" : "onboarding-coach--step-1");
-  journeysChromeAction?.classList.toggle("onboarding-highlight", step === 2);
+  commutesChromeAction?.classList.toggle("onboarding-highlight", step === 2);
   onboardingCoach.hidden = false;
   // Native AdMob sits above the WebView — hide while bottom coaches are up.
   void window.NextTrainAds?.hideNativeBanner?.({ force: true });
@@ -1038,7 +1117,7 @@ function showOnboardingStep2() {
 function installOnboardingInteractionTracking() {
   // Defer only when the user taps the app beneath the coach — not coach buttons/scrim.
   const selector =
-    "#hero, #nearby-btn, #journeys-btn, #menu-btn, #journey-switcher, .nearby-direction-row, #nearby-station-btn, #nearby-station-input, #detail-station-input";
+    "#hero, #nearby-btn, #routes-btn, #commutes-btn, #menu-btn, #journey-switcher, .nearby-direction-row, #nearby-station-btn, #nearby-station-input, #detail-station-input";
 
   document.addEventListener(
     "pointerdown",
@@ -1065,7 +1144,7 @@ function installOnboardingInteractionTracking() {
 }
 
 function hasConfiguredCommute() {
-  return getConfiguredJourneys().length > 0;
+  return getCommuteJourneys().length > 0;
 }
 
 
@@ -1195,9 +1274,50 @@ function journeyUsesLeaveBefore(journey) {
   return journey?.useLeaveBefore !== false;
 }
 
+function getRoutePinnedLeaveBeforeMinutes(journey = getActiveJourney()) {
+  const routeMinutes = Number(journey?.leaveBeforeMinutes);
+  if (
+    isRouteJourney(journey) &&
+    Number.isFinite(routeMinutes) &&
+    routeMinutes >= 1 &&
+    routeMinutes <= 30
+  ) {
+    return routeMinutes;
+  }
+  return Number(settings?.nearbyLeaveBeforeMinutes) || DEFAULT_SETTINGS.leaveBeforeMinutes;
+}
+
+function persistRoutePinSettings(journeyId, patch = {}) {
+  if (!journeyId) {
+    return;
+  }
+
+  const journeys = settings.journeys.map((journey) => {
+    if (journey.id !== journeyId || !isRouteJourney(journey)) {
+      return journey;
+    }
+    return journeyModel().normalizeJourney({
+      ...journey,
+      ...patch,
+      kind: "route",
+    });
+  });
+
+  persistSettings({ journeys });
+  rescheduleNearbyPinReminders();
+}
+
+function isRoutePinnedToday(journey) {
+  if (!isRouteJourney(journey)) {
+    return false;
+  }
+  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  return isJourneyOverrideActiveToday(journeyClean);
+}
+
 function journeyLeaveCardArmed(journey, pinTrip) {
   if (isRouteJourney(journey)) {
-    return false;
+    return isRoutePinnedToday(journey);
   }
   if (!pinTrip || !journeyUsesLeaveBefore(journey)) {
     return false;
@@ -1219,7 +1339,13 @@ function journeyLeaveCardArmed(journey, pinTrip) {
 
 
 function getEffectiveLeaveBeforeMinutes(journey) {
-  if (isRouteJourney(journey) || !journeyUsesLeaveBefore(journey)) {
+  if (isRouteJourney(journey)) {
+    if (!isRoutePinnedToday(journey)) {
+      return 0;
+    }
+    return getRoutePinnedLeaveBeforeMinutes(journey);
+  }
+  if (!journeyUsesLeaveBefore(journey)) {
     return 0;
   }
 
@@ -1501,13 +1627,15 @@ function isManualOverrideBlockingAuto(scheduledId) {
     return false;
   }
 
+  const storedWindowIds =
+    override.matchingWindowIds ??
+    (override.windowJourneyId ? [override.windowJourneyId] : []);
+  const currentWindowIds = getDefaultWindowJourneyIds();
+  const windowContextMatches = defaultWindowContextsMatch(storedWindowIds, currentWindowIds);
+
   // Outside every Active window — drop stale override unless window context still matches.
   if (!scheduledId) {
-    const storedWindowIds =
-      override.matchingWindowIds ??
-      (override.windowJourneyId ? [override.windowJourneyId] : []);
-    const currentWindowIds = getDefaultWindowJourneyIds();
-    if (!defaultWindowContextsMatch(storedWindowIds, currentWindowIds)) {
+    if (!windowContextMatches) {
       clearManualJourneyOverride();
       return false;
     }
@@ -1518,31 +1646,18 @@ function isManualOverrideBlockingAuto(scheduledId) {
     return false;
   }
 
+  // Morning → evening (etc.): override was tied to a different active-window set.
+  if (!windowContextMatches) {
+    clearManualJourneyOverride();
+    return false;
+  }
+
   if (settings.activeJourneyId !== override.journeyId) {
     settings.activeJourneyId = override.journeyId;
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
   }
 
-  const storedWindowIds =
-    override.matchingWindowIds ??
-    (override.windowJourneyId ? [override.windowJourneyId] : []);
-  const currentWindowIds = getDefaultWindowJourneyIds();
-
-  if (defaultWindowContextsMatch(storedWindowIds, currentWindowIds)) {
-    return true;
-  }
-
-  if (settings.activeJourneyId === override.journeyId) {
-    return true;
-  }
-
-  if (scheduledId === override.journeyId) {
-    clearManualJourneyOverride();
-    return false;
-  }
-
-  clearManualJourneyOverride();
-  return false;
+  return true;
 }
 
 function maybeAutoSelectJourney() {
@@ -1922,40 +2037,33 @@ function renderJourneySwitcher() {
 
   journeySwitcherMenuEl.innerHTML = "";
 
-  for (const journey of getConfiguredJourneys()) {
+  for (const journey of getActiveTabJourneys()) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "journey-switcher-option";
     if (journey.id === settings.activeJourneyId) {
       button.classList.add("active");
     }
-    const outsideCommute =
-      isCommuteJourney(journey) &&
-      !journeyMatchesSchedule(journey, getPerthMinutesSinceMidnight());
-    if (outsideCommute) {
-      button.classList.add("journey-switcher-option--outside");
-    }
 
     const titleRow = document.createElement("span");
     titleRow.className = "journey-switcher-option-title";
     const kindBadge = document.createElement("span");
     kindBadge.className = "journey-switcher-option-kind";
-    kindBadge.textContent = isCommuteJourney(journey) ? "Commute" : "Route";
+    kindBadge.textContent = isCommuteJourney(journey) ? "Journey" : "Route";
     const nameSpan = document.createElement("span");
     nameSpan.className = "journey-switcher-option-name";
-    nameSpan.textContent = journey.name;
+    const routeIsRoute = isRouteJourney(journey);
+    nameSpan.textContent = routeIsRoute
+      ? `${formatStationLabel(journey.station)} → ${journey.direction}`
+      : journey.name;
     titleRow.append(kindBadge, nameSpan);
 
-    const routeSpan = document.createElement("span");
-    routeSpan.className = "journey-switcher-option-route";
-    routeSpan.textContent = formatJourneyRoute(journey);
-
-    button.append(titleRow, routeSpan);
-    if (outsideCommute) {
-      const hint = document.createElement("span");
-      hint.className = "journey-switcher-option-hint";
-      hint.textContent = "Outside active hours";
-      button.appendChild(hint);
+    button.append(titleRow);
+    if (!routeIsRoute) {
+      const routeSpan = document.createElement("span");
+      routeSpan.className = "journey-switcher-option-route";
+      routeSpan.textContent = formatJourneyRoute(journey);
+      button.appendChild(routeSpan);
     }
     button.addEventListener("click", () => {
       closeJourneySwitcherMenu();
@@ -1995,6 +2103,8 @@ function closeJourneySwitcherMenu() {
 }
 
 function switchJourney(journeyId) {
+  const journey = getJourneyById(journeyId);
+  chromeTravelTab = journey && isRouteJourney(journey) ? "routes" : "commutes";
   journeyModeActive = true;
   exitNearbyMode();
 
@@ -2003,7 +2113,6 @@ function switchJourney(journeyId) {
     return;
   }
 
-  const journey = getJourneyById(journeyId);
   if (!journey?.station || !journey?.direction) {
     openJourneyDetail(journeyId);
     return;
@@ -2260,11 +2369,15 @@ function setHeroUrgency(leavePhase) {
     return;
   }
 
-  const stale = heroEl.classList.contains("stale");
+  const preserve = [...heroEl.classList].filter(
+    (className) =>
+      className === "stale" ||
+      className === "hero-setup" ||
+      className === "hero--target-train" ||
+      className === "locating"
+  );
   heroEl.className = `hero ${urgencyPhaseClass(leavePhase)}`;
-  if (stale) {
-    heroEl.classList.add("stale");
-  }
+  preserve.forEach((className) => heroEl.classList.add(className));
 }
 
 function formatScheduledLine(next) {
@@ -2422,8 +2535,8 @@ function openLeaveBufferSettings() {
   dismissLeaveHint();
   const journey = getActiveJourney();
   if (!journey) {
-    enterJourneyMode();
-    openJourneys();
+    enterCommuteMode();
+    openCommutesLibrary();
     return;
   }
 
@@ -2560,11 +2673,14 @@ function renderRouteDepartureBoard(data, skipCount = skipTrains) {
 }
 
 function renderRouteJourney(data, { stale = false } = {}) {
-  hideNearbyPinLeaveSurfaces();
+  const journey = getActiveJourney();
+  if (!isRoutePinnedToday(journey)) {
+    hideNearbyPinLeaveSurfaces();
+    nearbyMode().clearRoutePinLeaveCardDismissed?.();
+  }
   hideRouteDepartureBoard();
 
   const { next, lastUpdated } = data;
-  const journey = getActiveJourney();
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
@@ -2603,12 +2719,32 @@ function renderRouteJourney(data, { stale = false } = {}) {
     return;
   }
 
-  const heroTrip = next;
+  const pinTrip = resolveJourneyPinTrip(lastApiData ?? data, journey);
+  const heroTrip = skipTrains > 0 ? next : pinTrip ?? next;
   lastRenderedNext = heroTrip;
+  const referenceIso = next?.departure ?? next?.arrival;
+  const routePinned = isRoutePinnedToday(journey);
+  const leaveTripBase = pinTrip ?? heroTrip;
+  const leaveTrip =
+    routePinned && leaveTripBase
+      ? ensureFullNext(
+          leaveTripBase,
+          getRoutePinnedLeaveBeforeMinutes(journey),
+          referenceIso
+        ) ?? leaveTripBase
+      : leaveTripBase;
+  const heroShowsPin =
+    pinTrip && journeysDepartureMatch(heroTrip, pinTrip) && skipTrains === 0;
+  const leaveForDifferentTrain =
+    routePinned && pinTrip && !journeysDepartureMatch(heroTrip, leaveTrip);
 
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
-    heroDepartLabelEl.textContent = "Next Train";
+    heroDepartLabelEl.textContent = getHeroDepartLabel({
+      pinned: isRouteJourney(journey) && heroShowsPin,
+      heroShowsPin: !isRouteJourney(journey) && heroShowsPin,
+      skipCount: skipTrains,
+    });
   }
   if (departCountdownEl) {
     renderDepartureCountdown(departCountdownEl, heroTrip);
@@ -2627,20 +2763,34 @@ function renderRouteJourney(data, { stale = false } = {}) {
     }
   }
 
-  if (leaveCardEl) {
-    leaveCardEl.hidden = true;
+  if (routePinned) {
+    nearbyMode().renderRoutePinLeaveSurfaces?.(leaveTrip, journey, {
+      forTarget: leaveForDifferentTrain,
+    });
+  } else {
+    if (leaveCardEl) {
+      leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
   }
   if (preferredHintEl) {
     preferredHintEl.hidden = true;
-  }
-  if (leaveCardActionsEl) {
-    leaveCardActionsEl.hidden = true;
   }
 
   platformEl.textContent = heroTrip.platform;
   renderStatusDisplay(heroTrip);
   followingSectionEl.hidden = true;
-  renderRouteDepartureBoard(data);
+  let boardSkip = skipTrains;
+  if (heroShowsPin && pinTrip) {
+    const pinIndex = trainNavigation().findTripIndexInUpcoming(
+      normalizeApiTrainData(lastApiData ?? data),
+      pinTrip
+    );
+    if (pinIndex >= 0) {
+      boardSkip = Math.max(boardSkip, pinIndex);
+    }
+  }
+  renderRouteDepartureBoard(data, boardSkip);
   updateSwipeHint();
   updateSwipeCues();
   updateLeaveHint();
@@ -2882,44 +3032,103 @@ function clearHeroSetupState() {
   }
 }
 
-function enterJourneyMode() {
+function openTravelLibrary(tab) {
+  chromeTravelTab = tab;
+  journeyModeActive = true;
+  exitNearbyMode();
+  journeyDetail().setLibraryKind?.(tab);
+  dismissLeaveHint();
+  dismissTemplateRouteCoach();
+  showSettingsListView();
+  openJourneysDialogSync();
+  void populateJourneyListView();
+  syncChromeMode();
+}
+
+function openRoutesLibrary() {
+  openTravelLibrary("routes");
+}
+
+function openCommutesLibrary() {
+  commuteTemplatesExpanded = false;
+  openTravelLibrary("commutes");
+}
+
+function enterRouteMode() {
   dismissLeaveHint();
   closeJourneySwitcherMenu();
 
-  if (journeyModeActive) {
-    openJourneys();
+  if (journeyModeActive && chromeTravelTab === "routes") {
+    openRoutesLibrary();
     return;
   }
 
+  chromeTravelTab = "routes";
   journeyModeActive = true;
   exitNearbyMode();
   syncChromeMode();
 
-  if (!hasConfiguredCommute()) {
-    renderJourneyEmptyState();
+  if (!hasConfiguredRoute()) {
+    openRoutesLibrary();
     return;
   }
 
+  ensureActiveJourneyForTab("routes");
   const journey = getActiveJourney();
   if (journey) {
     setManualJourneyOverride(journey.id);
   }
 
   clearHeroSetupState();
-  maybeAutoSelectJourney();
   skipTrains = readSkipState().count;
   renderJourneySwitcher();
   fetchNextTrain();
 }
 
-function renderJourneyEmptyState() {
+function enterCommuteMode() {
+  dismissLeaveHint();
+  closeJourneySwitcherMenu();
+
+  if (journeyModeActive && chromeTravelTab === "commutes") {
+    openCommutesLibrary();
+    return;
+  }
+
+  chromeTravelTab = "commutes";
+  journeyModeActive = true;
+  exitNearbyMode();
+  syncChromeMode();
+
+  if (!hasConfiguredCommute()) {
+    openCommutesLibrary();
+    return;
+  }
+
+  ensureActiveJourneyForTab("commutes");
+  clearHeroSetupState();
+  maybeAutoSelectJourney();
+  const journey = getActiveJourney();
+  if (journey) {
+    setManualJourneyOverride(journey.id);
+  }
+
+  skipTrains = readSkipState().count;
+  renderJourneySwitcher();
+  fetchNextTrain();
+}
+
+function enterJourneyMode() {
+  enterCommuteMode();
+}
+
+function renderTravelTabEmptyState() {
   journeyModeActive = true;
   exitNearbyMode();
   hideNearbyPinLeaveSurfaces();
   syncChromeMode();
 
   errorEl.hidden = true;
-  setRouteDisplay("Journeys");
+  setRouteDisplay(chromeTravelTab === "routes" ? "Routes" : "My Journeys");
   updatedEl.textContent = "";
   updatedEl.hidden = true;
   setHeroUrgency("calm");
@@ -2941,6 +3150,20 @@ function renderJourneyEmptyState() {
   if (departCountdownEl) {
     departCountdownEl.hidden = true;
     departCountdownEl.classList.remove("hero-setup-message");
+  }
+  if (heroEmptyTitleEl) {
+    heroEmptyTitleEl.textContent =
+      chromeTravelTab === "routes" ? "No routes yet" : "No journeys yet";
+  }
+  if (heroEmptyTextEl) {
+    heroEmptyTextEl.textContent =
+      chromeTravelTab === "routes"
+        ? "Pick a station and direction to check the next trains anytime."
+        : "Save a trip you take often. Set your usual train and when you travel — we'll nudge you when it's time to leave.";
+  }
+  if (heroEmptyAddBtn) {
+    heroEmptyAddBtn.textContent =
+      chromeTravelTab === "routes" ? "Add a route" : "Add a journey";
   }
   if (heroEmptyStateEl) {
     heroEmptyStateEl.hidden = false;
@@ -2964,6 +3187,10 @@ function renderJourneyEmptyState() {
   updateSwipeCues();
   updateLeaveHint();
   renderJourneySwitcher();
+}
+
+function renderJourneyEmptyState() {
+  renderTravelTabEmptyState();
 }
 
 function toRadians(value) {
@@ -3229,7 +3456,26 @@ function isJourneyModeActive() {
 function syncHeroPinChrome() {
   const nearbyActive = isNearbyModeActive();
   const pinHolding = isNearbyPinHolding();
+  const journey = getActiveJourney();
+  const routePinActive = journeyModeActive && isRoutePinnedToday(journey);
   appEl?.classList.toggle("nearby-pin-active", nearbyActive && pinHolding);
+  appEl?.classList.toggle("route-pin-active", routePinActive);
+
+  let showTargetTrainChrome = false;
+  if (
+    journeyModeActive &&
+    journey &&
+    isCommuteJourney(journey) &&
+    lastRenderedNext &&
+    skipTrains === 0 &&
+    preferredMinutesForLiveGlance(journey) >= 0
+  ) {
+    const pinTrip = resolveJourneyPinTrip(lastApiData, journey);
+    showTargetTrainChrome = Boolean(
+      pinTrip && journeysDepartureMatch(lastRenderedNext, pinTrip)
+    );
+  }
+  heroEl?.classList.toggle("hero--target-train", showTargetTrainChrome);
 
   if (heroPinBtn) {
     if (nearbyActive) {
@@ -3244,22 +3490,22 @@ function syncHeroPinChrome() {
       heroPinBtn.setAttribute("aria-pressed", pinActive ? "true" : "false");
       heroPinBtn.setAttribute("aria-label", pinActive ? "Unpin train" : "Pin train");
     } else {
-      const journey = getActiveJourney();
+      const journeyPin = getActiveJourney();
       const showJourneyPin =
         journeyModeActive &&
-        journey &&
-        isCommuteJourney(journey) &&
-        !isUnconfiguredJourney(journey) &&
+        journeyPin &&
+        (isCommuteJourney(journeyPin) || isRouteJourney(journeyPin)) &&
+        !isUnconfiguredJourney(journeyPin) &&
         Boolean(lastRenderedNext);
       heroPinBtn.hidden = !showJourneyPin;
       if (showJourneyPin) {
-        const pinTrip = resolveJourneyPinTrip(lastApiData, journey);
+        const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPin);
         const heroShowsPin =
           pinTrip &&
           journeysDepartureMatch(lastRenderedNext, pinTrip) &&
           skipTrains === 0;
         const pinActive =
-          isJourneyTargetPinnedToday(journey) && heroShowsPin && skipTrains === 0;
+          isJourneyTargetPinnedToday(journeyPin) && heroShowsPin && skipTrains === 0;
         heroPinBtn.classList.toggle("hero-pin-btn--active", pinActive);
         heroPinBtn.setAttribute("aria-pressed", pinActive ? "true" : "false");
         heroPinBtn.setAttribute("aria-label", pinActive ? "Unpin train" : "Pin train");
@@ -3335,8 +3581,8 @@ async function fetchNextTrain() {
     return;
   }
 
-  if (!hasConfiguredCommute()) {
-    renderJourneyEmptyState();
+  if (!hasConfiguredForActiveTab()) {
+    renderTravelTabEmptyState();
     return;
   }
 
@@ -3542,6 +3788,7 @@ function createJourneyFromRoute() {
     return;
   }
 
+  journeyDetail().setLibraryKind?.("routes");
   const journey = createDefaultJourney({
     name: "",
     kind: "route",
@@ -3556,9 +3803,12 @@ function createJourneyFromTemplate(templateKey) {
     return;
   }
 
+  journeyDetail().setLibraryKind?.("commutes");
+
   if (templateKey === "custom") {
     const journey = createDefaultJourney({
       name: "",
+      kind: "commute",
       templateKey: "custom",
       autoRoute: false,
       remindDays: [getPerthDayOfWeekIso()],
@@ -3850,7 +4100,7 @@ function finishAfterAllJourneysDeleted() {
 
   clearManualJourneyOverride();
   renderJourneySwitcher();
-  renderJourneyEmptyState();
+  void applyCommuteMode();
   void window.nextTrainWidget?.syncWidgetSettings?.();
 }
 
@@ -3895,36 +4145,41 @@ function closeJourneysDialog() {
 
   saveJourneyListToSettings();
 
-  const configured = hasConfiguredCommute();
-  if (configured) {
-    clearHeroSetupState();
-    const journey = getActiveJourney();
-    if (journey && routeEl) {
-      setRouteDisplay(formatJourneyRoute(journey));
-    }
-    if (updatedEl) {
-      updatedEl.textContent = "Updating…";
-      updatedEl.hidden = false;
-    }
-  }
-
   if (isJourneysDialogOpen()) {
     closeJourneysSheet();
   }
 
-  if (!configured) {
-    if (journeyModeActive) {
-      renderJourneyEmptyState();
+  if (chromeTravelTab === "routes") {
+    if (!hasConfiguredRoute()) {
+      if (hasConfiguredCommute()) {
+        chromeTravelTab = "commutes";
+        ensureActiveJourneyForTab("commutes");
+      } else {
+        void applyCommuteMode();
+        return;
+      }
     } else {
-      applyCommuteMode();
+      ensureActiveJourneyForTab("routes");
+      clearHeroSetupState();
     }
-    return;
+  } else if (chromeTravelTab === "commutes") {
+    if (!hasConfiguredCommute()) {
+      if (hasConfiguredRoute()) {
+        chromeTravelTab = "routes";
+        ensureActiveJourneyForTab("routes");
+      } else {
+        void applyCommuteMode();
+        return;
+      }
+    } else {
+      ensureActiveJourneyForTab("commutes");
+      clearHeroSetupState();
+    }
   }
 
   journeyModeActive = true;
   exitNearbyMode();
   syncChromeMode();
-
   fetchNextTrain();
 }
 
@@ -3937,7 +4192,7 @@ function closeMenuDialogOnly() {
 }
 
 function resumeAfterMenuClose() {
-  if (!hasConfiguredCommute()) {
+  if (!hasConfiguredForActiveTab()) {
     return;
   }
 
@@ -4215,23 +4470,20 @@ function handleClearAllData() {
 }
 
 function openJourneys() {
-  dismissLeaveHint();
-  dismissTemplateRouteCoach();
-  showSettingsListView();
-  openJourneysDialogSync();
-  void populateJourneyListView();
+  openTravelLibrary(chromeTravelTab === "commutes" ? "commutes" : "routes");
 }
 
 async function startFirstJourneySetup() {
-  if (templateCreateInFlight || isAtJourneyCap() || hasConfiguredCommute()) {
+  if (templateCreateInFlight || isAtJourneyCap()) {
     return;
   }
 
   completeOnboarding();
+  chromeTravelTab = "commutes";
   journeyModeActive = true;
   exitNearbyMode();
   syncChromeMode();
-  await startJourneyCreateFromTemplate("morning");
+  await startJourneyCreateFromTemplate("custom");
 }
 
 function openJourneysForSetup() {
@@ -4241,6 +4493,7 @@ function openJourneysForSetup() {
   }
 
   completeOnboarding();
+  chromeTravelTab = "commutes";
   journeyModeActive = true;
   exitNearbyMode();
   syncChromeMode();
@@ -4255,17 +4508,38 @@ function openMainScreenFromWidget() {
   }
 
   if (hasConfiguredCommute()) {
-    if (!journeyModeActive) {
+    if (!journeyModeActive || chromeTravelTab !== "commutes") {
+      chromeTravelTab = "commutes";
       journeyModeActive = true;
       exitNearbyMode();
     }
     syncChromeMode();
     clearHeroSetupState();
+    ensureActiveJourneyForTab("commutes");
+    maybeAutoSelectJourney();
     const journey = getActiveJourney();
     if (journey) {
       setManualJourneyOverride(journey.id);
     }
-    maybeAutoSelectJourney();
+    skipTrains = readSkipState().count;
+    renderJourneySwitcher();
+    fetchNextTrain();
+    return;
+  }
+
+  if (hasConfiguredRoute()) {
+    if (!journeyModeActive || chromeTravelTab !== "routes") {
+      chromeTravelTab = "routes";
+      journeyModeActive = true;
+      exitNearbyMode();
+    }
+    syncChromeMode();
+    clearHeroSetupState();
+    ensureActiveJourneyForTab("routes");
+    const journey = getActiveJourney();
+    if (journey) {
+      setManualJourneyOverride(journey.id);
+    }
     skipTrains = readSkipState().count;
     renderJourneySwitcher();
     fetchNextTrain();
@@ -4276,8 +4550,19 @@ function openMainScreenFromWidget() {
 }
 
 
-journeysBtn?.addEventListener("click", () => enterJourneyMode());
-journeyEditBtn?.addEventListener("click", () => openJourneys());
+routesBtn?.addEventListener("click", () => enterRouteMode());
+commutesBtn?.addEventListener("click", () => enterCommuteMode());
+journeyEditBtn?.addEventListener("click", () => {
+  if (chromeTravelTab === "routes") {
+    openRoutesLibrary();
+    return;
+  }
+  if (chromeTravelTab === "commutes") {
+    openCommutesLibrary();
+    return;
+  }
+  openJourneys();
+});
 if (journeyContextRowEl && typeof ResizeObserver !== "undefined") {
   const journeyContextLayoutObserver = new ResizeObserver(() => syncJourneyContextEditOffset());
   journeyContextLayoutObserver.observe(journeyContextRowEl);
@@ -4382,6 +4667,7 @@ journeySaveRouteBtnEl?.addEventListener("click", async () => {
 
   templateCreateInFlight = true;
   setJourneyTemplateLoading(true);
+  journeyDetail().setLibraryKind?.("routes");
   openJourneysDialogSync();
 
   try {
@@ -4392,14 +4678,21 @@ journeySaveRouteBtnEl?.addEventListener("click", async () => {
   }
 });
 
-journeySetupCommuteBtnEl?.addEventListener("click", () => {
-  if (isAtJourneyCap()) {
+journeySetupCommuteBtnEl?.addEventListener("click", async () => {
+  if (templateCreateInFlight || isAtJourneyCap()) {
     return;
   }
 
-  commuteTemplatesExpanded = true;
-  updateJourneyTemplatesVisibility();
-  journeyTemplateShortcutsEl?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+  templateCreateInFlight = true;
+  setJourneyTemplateLoading(true);
+  journeyDetail().setLibraryKind?.("commutes");
+  openJourneysDialogSync();
+  try {
+    await createJourneyFromTemplate("custom");
+  } finally {
+    templateCreateInFlight = false;
+    setJourneyTemplateLoading(false);
+  }
 });
 
 document.querySelectorAll(".journey-template-chip").forEach((button) => {
@@ -4411,11 +4704,11 @@ document.querySelectorAll(".journey-template-chip").forEach((button) => {
 heroEmptyAddBtn?.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
-  if (!hasConfiguredCommute()) {
-    void startFirstJourneySetup();
+  if (chromeTravelTab === "routes") {
+    void createJourneyFromRoute();
     return;
   }
-  openJourneys();
+  void createJourneyFromTemplate("custom");
 });
 
 heroEmptyBackBtn?.addEventListener("click", (event) => {
@@ -4443,28 +4736,47 @@ window.addEventListener("resize", () => {
   }
 });
 
-clearAllDataBtn?.addEventListener("click", handleClearAllData);
+function getDeleteJourneyDialogCopy(journey) {
+  const isRoute = isRouteJourney(journey);
+  const soleConfigured =
+    !isUnconfiguredJourney(journey) && countConfiguredJourneys(settingsDraftJourneys) === 1;
+  const title = isRoute ? "Delete Route?" : "Delete Journey?";
+  let body = isRoute
+    ? "Are you sure you want to delete this route? This action cannot be undone."
+    : "Are you sure you want to delete this journey? This action cannot be undone.";
+  if (soleConfigured) {
+    body += " This is your only saved journey.";
+  }
+  return { title, body };
+}
 
-deleteJourneyBtn?.addEventListener("click", () => {
-  if (!journeyDetail().getEditingJourneyId?.()) {
+function openDeleteJourneyDialog(journey) {
+  if (!deleteJourneyDialog || !journey) {
     return;
   }
 
-  const editing = settingsDraftJourneys.find((journey) => journey.id === journeyDetail().getEditingJourneyId?.());
-  if (!editing) {
+  const { title, body } = getDeleteJourneyDialogCopy(journey);
+  if (deleteJourneyDialogTitle) {
+    deleteJourneyDialogTitle.textContent = title;
+  }
+  if (deleteJourneyDialogBody) {
+    deleteJourneyDialogBody.textContent = body;
+  }
+  pendingDeleteJourneyId = journey.id;
+  openAppDialog(deleteJourneyDialog);
+}
+
+function closeDeleteJourneyDialog() {
+  pendingDeleteJourneyId = null;
+  closeAppDialog(deleteJourneyDialog);
+}
+
+function performDeleteJourney(journeyId) {
+  if (!journeyId) {
     return;
   }
 
-  const soleConfiguredJourney =
-    !isUnconfiguredJourney(editing) && countConfiguredJourneys(settingsDraftJourneys) === 1;
-  if (soleConfiguredJourney) {
-    const confirmed = confirm(DELETE_LAST_JOURNEY_CONFIRM);
-    if (!confirmed) {
-      return;
-    }
-  }
-
-  settingsDraftJourneys = settingsDraftJourneys.filter((journey) => journey.id !== journeyDetail().getEditingJourneyId?.());
+  settingsDraftJourneys = settingsDraftJourneys.filter((journey) => journey.id !== journeyId);
   journeyDetail().clearEditingState?.();
 
   const hasConfiguredJourneysLeft = countConfiguredJourneys(settingsDraftJourneys) > 0;
@@ -4477,6 +4789,36 @@ deleteJourneyBtn?.addEventListener("click", () => {
   }
 
   showSettingsListView();
+}
+
+clearAllDataBtn?.addEventListener("click", handleClearAllData);
+
+deleteJourneyBtn?.addEventListener("click", () => {
+  if (!journeyDetail().getEditingJourneyId?.()) {
+    return;
+  }
+
+  const editing = settingsDraftJourneys.find((journey) => journey.id === journeyDetail().getEditingJourneyId?.());
+  if (!editing || isUnconfiguredJourney(editing)) {
+    return;
+  }
+
+  openDeleteJourneyDialog(editing);
+});
+
+deleteJourneyCancelBtn?.addEventListener("click", () => {
+  closeDeleteJourneyDialog();
+});
+
+deleteJourneyConfirmBtn?.addEventListener("click", () => {
+  const journeyId = pendingDeleteJourneyId;
+  closeDeleteJourneyDialog();
+  performDeleteJourney(journeyId);
+});
+
+deleteJourneyDialog?.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeDeleteJourneyDialog();
 });
 
 detailLeaveBeforeInput?.addEventListener("input", () => {
@@ -4637,19 +4979,6 @@ detailDefaultUntilInput?.addEventListener("input", () => {
   syncDetailComboHints();
 });
 detailActiveHoursFixBtn?.addEventListener("click", applyJourneyOverlapFix);
-
-detailActiveDayChips?.addEventListener("click", (event) => {
-  const chip = event.target.closest(".remind-day-chip");
-  if (!chip) {
-    return;
-  }
-
-  chip.classList.toggle("remind-day-chip--active");
-  chip.setAttribute(
-    "aria-pressed",
-    chip.classList.contains("remind-day-chip--active") ? "true" : "false"
-  );
-});
 
 detailNearestBtn?.addEventListener("click", async () => {
   syncDetailNearestStationChrome({ loading: true, error: false, hint: "" });
@@ -4879,7 +5208,12 @@ function fetchDirectionsFromApi(station) { return journeyDetail().fetchDirection
 function loadDirectionsForSelect(selectEl, station, preferredDirection) {
   return journeyDetail().loadDirectionsForSelect(selectEl, station, preferredDirection);
 }
-function openJourneysDialogSync() { return journeyDetail().openJourneysDialogSync(); }
+function openJourneysDialogSync() {
+  if (heroEmptyStateEl) {
+    heroEmptyStateEl.hidden = true;
+  }
+  return journeyDetail().openJourneysDialogSync();
+}
 function syncJourneysDetailChrome() { return journeyDetail().syncJourneysDetailChrome(); }
 function syncJourneysDialogSheetMode() { return journeyDetail().syncJourneysDialogSheetMode(); }
 function showSettingsListView() { return journeyDetail().showSettingsListView(); }
@@ -5074,7 +5408,11 @@ function initNearbyModeFromModule() {
     getJourneyModeActive: () => journeyModeActive,
     setJourneyModeActive: (value) => {
       journeyModeActive = value;
+      if (!value) {
+        chromeTravelTab = "nearby";
+      }
     },
+    getChromeTravelTab,
     getLastRenderedNext: () => lastRenderedNext,
     setLastRenderedNext: (value) => {
       lastRenderedNext = value;
@@ -5097,6 +5435,7 @@ function initNearbyModeFromModule() {
     formatLeaveBeforeLabel,
     formatLeaveCardLabel,
     formatLeaveCardSubline,
+    formatLeaveCardTargetSubline,
     isLeavePhasePastLeaveBy,
     updateLeaveCardState,
     renderLeaveMinutesCountdown,
@@ -5120,12 +5459,25 @@ function initNearbyModeFromModule() {
     enrichTrip,
     findNearestStation,
     getGeolocationPosition,
+    enterRouteMode,
+    enterCommuteMode,
     enterJourneyMode,
     clearManualJourneyOverride,
     dismissLeaveHint,
     closeJourneySwitcherMenu,
     clearOnboardingSchedule,
     isJourneyModeActive,
+    getActiveJourney,
+    isRouteJourney,
+    isRoutePinnedToday,
+    getRoutePinnedLeaveBeforeMinutes,
+    persistRoutePinSettings,
+    renderCurrentJourney: () => {
+      if (lastApiData) {
+        render(prepareDisplayData(lastApiData));
+      }
+    },
+    syncHeroPinChrome,
     syncJourneyContextChrome,
     syncNearbyPinChrome,
     isNearbyPinSettingsHolding: (pin) => {
@@ -5151,8 +5503,10 @@ function initNearbyModeFromModule() {
     journeySwitcherEl,
     journeySwitcherMenuEl,
     appEl,
-    journeysBtn,
-    journeysChromeAction,
+    routesBtn,
+    commutesBtn,
+    routesChromeAction,
+    commutesChromeAction,
   });
   nearbyMode()?.initNearbyListeners?.();
 }
@@ -5271,6 +5625,8 @@ function initTrainNavigationFromModule() {
     dismissSwipeHint,
     rescheduleNearbyPinReminders,
     isUnconfiguredJourney,
+    isRouteJourney,
+    clearRoutePinLeaveCardDismissed: () => nearbyMode().clearRoutePinLeaveCardDismissed?.(),
     errorEl,
     heroEl,
     heroPinBtn,
@@ -5346,9 +5702,13 @@ window.nextTrainApp = {
       render(prepareDisplayData(lastApiData));
     }
   },
+  enterRouteMode,
+  enterCommuteMode,
   enterJourneyMode,
   enterNearbyMode,
   openJourneys,
+  openRoutesLibrary,
+  openCommutesLibrary,
   openJourneyDetail,
   openAppDialog,
   closeAppDialog,
@@ -5356,6 +5716,8 @@ window.nextTrainApp = {
   switchJourney,
   fetchNextTrain,
   hasConfiguredCommute,
+  hasConfiguredRoute,
+  getChromeTravelTab,
   closeMenuDialogOnly,
   closeJourneysDialog,
   openMainScreenFromWidget,
