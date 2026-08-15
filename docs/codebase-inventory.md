@@ -11,7 +11,7 @@
 
 The codebase is **large but not messy** — growth tracks real product surface (Near me, journeys, pin, reminders, widget, onboarding, template wizard). The main pain is **concentration**, not junk:
 
-1. **`public/app.js` (~8,100 lines after FB-25 2.1–2.2; was ~8,800)** holds most client logic. FB-25 Phase 2 extraction in progress (`station-combobox.js`, `journey-model.js` extracted Aug 2026).
+1. **`public/app.js` (~8,430 lines after FB-25 2.1–2.3; was ~8,800)** holds most client logic. FB-25 Phase 2 extraction in progress (`station-combobox.js`, `journey-model.js`, `train-navigation.js` extracted Aug 2026).
 2. **Commute/pin rules exist in three places** (web, Android widget, iOS widget) by design — maintenance cost is real; unification is not free.
 3. **QA is strong for a solo/small team** (66 web scripts, 11 Android unit test classes, Maestro) — use it as the gate for any refactor.
 4. **Runtime efficiency is fine** for now; refactors should target **bug prevention and change velocity**, not micro-optimisation.
@@ -23,9 +23,10 @@ The codebase is **large but not messy** — growth tracks real product surface (
 
 | Layer | Size | Notes |
 |-------|------|-------|
-| `public/app.js` | ~8,100 lines | Monolith (shrinking); journey + nearby + pin + settings + wizards |
+| `public/app.js` | ~8,430 lines | Monolith (shrinking); journey + nearby + pin + settings + wizards |
 | `public/station-combobox.js` | ~470 lines | Station typeahead/combobox (FB-25 2.1) |
 | `public/journey-model.js` | ~485 lines | Journey settings normalize/migrate/persist (FB-25 2.2) |
+| `public/train-navigation.js` | ~1,320 lines | Skip/swipe/pin navigation + journey pin state (FB-25 2.3) |
 | `public/styles.css` | ~3,700 lines | Sectioned by comment headers; ~130 nearby/journey/leave selectors |
 | `public/index.html` | ~1,120 lines | Main shell + settings/journeys dialogs |
 | `public/leave-reminders.js` | ~750 lines | Reminders UI + native bridge (reasonable split) |
@@ -202,7 +203,7 @@ Do **one PR per module**; run full web QA each time.
 |---|--------|--------|------------|--------|
 | 2.1 | `station-combobox.js` | 470 | DOM root, `formatStationLabel` via deps | **Done** (Aug 2026) |
 | 2.2 | `journey-model.js` | 485 | Settings normalize/migrate; station/direction via deps | **Done** (Aug 2026) |
-| 2.3 | `train-navigation.js` | 400 | Pin, skip, swipe; `render()` pipeline | **Blocked** - coupled to display (~2244-3937) |
+| 2.3 | `train-navigation.js` | 1,320 | Pin, skip, swipe; `render()` via deps | **Done** (Aug 2026) |
 | 2.4 | `nearby-mode.js` | 1,400 | Geo, board, pin session | **Blocked** - geo + chrome + journey mode |
 | 2.5 | `template-wizard.js` | 1,400 | Journey detail, coach DOM | **Blocked** - interleaved with detail form |
 | 2.6 | `journey-detail.js` | 400 | Combobox, directions API | **Blocked** - overlaps wizard + reminders |
