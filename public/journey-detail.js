@@ -1342,13 +1342,6 @@ function updateJourneyTemplatesVisibility() {
 function renderJourneyListView() {
   journeyListEl.innerHTML = "";
 
-  if (!getSettingsDraftJourneys().length) {
-    const empty = document.createElement("li");
-    empty.className = "journey-list-empty";
-    empty.textContent = "No journeys yet";
-    journeyListEl.appendChild(empty);
-  }
-
   for (const journey of getSettingsDraftJourneys()) {
     const item = document.createElement("li");
     item.className = "journey-list-item";
