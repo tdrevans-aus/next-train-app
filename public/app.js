@@ -3995,7 +3995,24 @@ function openJourneys() {
   void populateJourneyListView();
 }
 
+async function startFirstJourneySetup() {
+  if (templateCreateInFlight || isAtJourneyCap() || hasConfiguredCommute()) {
+    return;
+  }
+
+  completeOnboarding();
+  journeyModeActive = true;
+  exitNearbyMode();
+  syncChromeMode();
+  await startJourneyCreateFromTemplate("morning");
+}
+
 function openJourneysForSetup() {
+  if (!hasConfiguredCommute()) {
+    void startFirstJourneySetup();
+    return;
+  }
+
   completeOnboarding();
   journeyModeActive = true;
   exitNearbyMode();
@@ -4144,6 +4161,10 @@ journeyAddBtnEl?.addEventListener("click", async () => {
 heroEmptyAddBtn?.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
+  if (!hasConfiguredCommute()) {
+    void startFirstJourneySetup();
+    return;
+  }
   openJourneys();
 });
 
