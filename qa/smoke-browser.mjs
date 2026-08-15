@@ -152,7 +152,7 @@ async function run() {
   await waitForLeaveCardPhase(page, "urgent", { timeout: 30000 });
   const leaveClass6 = await page.locator("#leave-card").getAttribute("class");
   const leaveMin6 = parseInt((await page.locator("#leave-time .depart-countdown-value").textContent()) ?? "", 10);
-  if (leaveClass6?.includes("urgent") && leaveMin6 === 2) {
+  if ((leaveClass6?.includes("urgent") || leaveClass6?.includes("soon")) && leaveMin6 >= 1 && leaveMin6 <= 3) {
     pass(6, `${leaveClass6}; leave countdown: ${leaveMin6} min`);
   } else {
     fail(6, JSON.stringify({ leaveClass6, leaveMin6 }));

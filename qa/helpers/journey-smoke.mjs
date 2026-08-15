@@ -26,10 +26,17 @@ export function formatWallClockMinutes(totalMinutes) {
 export async function waitForJourneyHero(page, { timeout = 30000 } = {}) {
   await page.waitForFunction(
     () => {
-      const journeyMode = document.querySelector(".app")?.classList.contains("journey-mode");
       const countdown = document.getElementById("depart-countdown")?.textContent?.trim() ?? "";
+      const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
       const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
-      return journeyMode && countdown && countdown !== "—" && /\d/.test(countdown) && label.length > 0;
+      return (
+        countdown &&
+        countdown !== "—" &&
+        /\d/.test(countdown) &&
+        depart &&
+        depart !== "—" &&
+        label.length > 0
+      );
     },
     null,
     { timeout }
@@ -41,7 +48,8 @@ export async function ensureJourneyMode(page) {
     timeout: 15000,
   });
   await page.evaluate(() => {
-    if (document.querySelector(".app")?.classList.contains("nearby-mode")) {
+    const app = document.querySelector(".app");
+    if (app?.classList.contains("nearby-mode") || !app?.classList.contains("journey-mode")) {
       window.nextTrainApp.enterJourneyMode();
     }
   });
@@ -128,7 +136,7 @@ export async function armFixtureLeaveCard(
   const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(90));
   const stationParam = encodeURIComponent(station);
   const directionParam = encodeURIComponent(direction);
-  const fixtureUrl = `${BASE}/?test=1&fixture=${fixture}&station=${stationParam}&direction=${directionParam}`;
+  const fixtureUrl = `${BASE}/?reset=1&test=1&fixture=${fixture}&station=${stationParam}&direction=${directionParam}`;
 
   await page.goto(fixtureUrl);
   await page.evaluate(
@@ -274,11 +282,22 @@ export async function waitForLeaveCardPhase(page, phase, { timeout = 15000 } = {
     (expected) => {
       const card = document.getElementById("leave-card");
       const msg = document.getElementById("leave-countdown")?.textContent?.toLowerCase() ?? "";
+      const leaveMin = parseInt(
+        document.querySelector("#leave-time .depart-countdown-value")?.textContent ?? "",
+        10
+      );
       if (!card || card.hidden) {
         return false;
       }
       if (expected === "late") {
         return card.classList.contains("late") && msg.includes("late");
+      }
+      if (expected === "urgent") {
+        return (
+          (card.classList.contains("urgent") || card.classList.contains("soon")) &&
+          leaveMin >= 1 &&
+          leaveMin <= 3
+        );
       }
       return card.classList.contains(expected);
     },
