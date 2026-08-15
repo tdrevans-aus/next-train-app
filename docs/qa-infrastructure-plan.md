@@ -26,7 +26,8 @@
 ```bash
 npm run test:smoke          # fast gate (Jim commits, CI on PR)
 npm run test:web            # full web regression (local; includes Maestro tail if device up)
-npm run test:web:ci         # full web regression without Maestro/native CDP (CI on main)
+npm run test:web:ci         # full web regression without Maestro/native CDP (nightly)
+npm run test:web:release    # smoke + pin/leave gates — CI on main pushes
 npm run test:android:unit   # JVM unit tests
 npm run test:maestro        # Maestro Android smoke (device/emulator)
 npm run test:pre-upload     # before Play AAB upload
@@ -61,6 +62,7 @@ npm run test:pre-upload     # before Play AAB upload
 | **QA-P2-01** | **Repo template** `evans-capacitor-app` | Tim/PM | 1–2 days | Copy `qa/`, `TESTING.md` skeleton, fixture server, CI workflow |
 | **QA-P2-02** | **Migrate more scripts** to `qa/helpers/` | Jim/QA | Ongoing | `openJourneysDialog` pattern; station combobox already shared |
 | **QA-P2-03** | **CI: full suite on main** only; smoke on PR | PM | ½ day | **Done Aug 2026** — `.github/workflows/ci.yml`; `npm run test:web:ci` (`--no-native`) |
+| **QA-P2-09** | **Three-tier web QA** (smoke / release / nightly full) | PM | ½ day | **In progress Aug 2026** — `test:web:release` on `master` CI; nightly `test:web:ci` |
 | **QA-P2-04** | **Native reminder fast-test mode** | Jim | 1 day | Alarm ~60s after enable; doc in `qa-leave-reminders-v2-testing.md` |
 | **QA-P2-05** | **`DEVICE-SMOKE.md`** one-pager | Tim | ½ day | 15 checks, 30 min, Play install only |
 | **QA-P2-06** | **`npm run release:prep`** | Jim | ½ day | Bump `versionCode`, `cap:sync`, print AAB path |

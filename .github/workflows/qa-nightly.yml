@@ -1,0 +1,22 @@
+# FB-33 QA-P2-09: full web regression off the merge critical path.
+name: QA nightly
+
+on:
+  schedule:
+    # 02:00 UTC ≈ 10:00 Perth — off-peak for GitHub Actions.
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  web-full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - run: npm run test:web:ci
