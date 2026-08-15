@@ -9,6 +9,7 @@ on:
 jobs:
   web-qa:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,9 +21,9 @@ jobs:
       - name: Web smoke (pull requests)
         if: github.event_name == 'pull_request'
         run: npm run test:smoke
-      - name: Full web suite (main, no Maestro/native CDP)
+      - name: Release web suite (main)
         if: github.event_name == 'push'
-        run: npm run test:web:ci
+        run: npm run test:web:release
 
   android-unit:
     runs-on: ubuntu-latest

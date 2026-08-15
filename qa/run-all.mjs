@@ -4,6 +4,7 @@
  * Usage:
  *   node qa/run-all.mjs              # full suite
  *   node qa/run-all.mjs --smoke      # fast gate (~2–5 min)
+ *   node qa/run-all.mjs --release    # smoke + pin/leave gates (~5–8 min) — CI on main
  *   node qa/run-all.mjs --no-native  # full web only (no Maestro / native CDP tail)
  *   node qa/run-all.mjs --list       # list scripts in suite
  */
@@ -37,6 +38,17 @@ const SMOKE_SCRIPTS = [
   "onboarding-scrim-dismiss.mjs",
 ];
 
+/** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
+const RELEASE_EXTRA_SCRIPTS = [
+  "leave-by-preferred-gate.mjs",
+  "pin-swipe-notify.mjs",
+];
+
+const RELEASE_SCRIPTS = [
+  ...SMOKE_SCRIPTS,
+  ...RELEASE_EXTRA_SCRIPTS.filter((name) => !SMOKE_SCRIPTS.includes(name)),
+];
+
 const RUNNER_EXCLUDE = new Set([
   "run-all.mjs",
   "pre-upload-check.mjs",
@@ -61,13 +73,21 @@ function listFullScripts() {
 
 function parseArgs(argv) {
   const smoke = argv.includes("--smoke");
+  const release = argv.includes("--release");
   const list = argv.includes("--list");
   const noNative = argv.includes("--no-native");
-  return { smoke, list, noNative };
+  return { smoke, release, list, noNative };
 }
 
-function resolveScripts({ smoke, noNative }) {
-  let scripts = smoke ? SMOKE_SCRIPTS : listFullScripts();
+function resolveScripts({ smoke, release, noNative }) {
+  let scripts;
+  if (smoke) {
+    scripts = SMOKE_SCRIPTS;
+  } else if (release) {
+    scripts = RELEASE_SCRIPTS;
+  } else {
+    scripts = listFullScripts();
+  }
   if (noNative) {
     scripts = scripts.filter((name) => !NATIVE_TAIL_SCRIPTS.includes(name));
   }
@@ -122,11 +142,17 @@ function tailOutput(text, maxLines = 8) {
 }
 
 async function main() {
-  const { smoke, list, noNative } = parseArgs(process.argv.slice(2));
-  const scripts = resolveScripts({ smoke, noNative });
+  const { smoke, release, list, noNative } = parseArgs(process.argv.slice(2));
+  const scripts = resolveScripts({ smoke, release, noNative });
 
   if (list) {
-    const label = smoke ? "Smoke scripts:" : noNative ? "Full scripts (no native tail):" : "Full scripts:";
+    const label = smoke
+      ? "Smoke scripts:"
+      : release
+        ? "Release scripts:"
+        : noNative
+          ? "Full scripts (no native tail):"
+          : "Full scripts:";
     console.log(label);
     for (const name of scripts) {
       const invert = EXIT_INVERT_PASS.has(name) ? " (PASS* on exit 1)" : "";
@@ -172,7 +198,13 @@ async function main() {
   const elapsedSec = Math.round((Date.now() - started) / 1000);
 
   console.log("\n--- Summary ---");
-  const suiteLabel = smoke ? "smoke" : noNative ? "full (no native)" : "full";
+  const suiteLabel = smoke
+    ? "smoke"
+    : release
+      ? "release"
+      : noNative
+        ? "full (no native)"
+        : "full";
   console.log(
     `Suite: ${suiteLabel} · ${pass} PASS · ${passStar} PASS* · ${fail} FAIL · ${elapsedSec}s`
   );
