@@ -443,6 +443,9 @@ function getTrueNextTrip(data) {
 }
 
 function isJourneyOverrideActiveToday(journey) {
+  if (global.nextTrainPinState?.isJourneyOverrideActiveToday) {
+    return global.nextTrainPinState.isJourneyOverrideActiveToday(journey);
+  }
   return Boolean(
     journey?.journeyPinOverrideIso &&
       journey?.journeyPinOverrideDate === getPerthLocalDateKey()
@@ -450,10 +453,16 @@ function isJourneyOverrideActiveToday(journey) {
 }
 
 function isJourneyPinDismissedToday(journey) {
+  if (global.nextTrainPinState?.isJourneyPinDismissedToday) {
+    return global.nextTrainPinState.isJourneyPinDismissedToday(journey);
+  }
   return journey?.journeyPinDismissedDate === getPerthLocalDateKey();
 }
 
 function isJourneyTargetPinnedToday(journey) {
+  if (global.nextTrainPinState?.isJourneyPinnedToday) {
+    return global.nextTrainPinState.isJourneyPinnedToday(journey);
+  }
   const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
   if (isJourneyOverrideActiveToday(journeyClean)) {
     return true;
@@ -465,6 +474,9 @@ function isJourneyTargetPinnedToday(journey) {
 }
 
 function sanitizeJourneyPinOverride(journey) {
+  if (global.nextTrainPinState?.sanitizeJourneyPinFields) {
+    return global.nextTrainPinState.sanitizeJourneyPinFields(journey);
+  }
   if (!journey?.journeyPinOverrideDate) {
     return journey;
   }
@@ -479,6 +491,9 @@ function sanitizeJourneyPinOverride(journey) {
 }
 
 function sanitizeJourneyPinDismissed(journey) {
+  if (global.nextTrainPinState?.sanitizeJourneyPinFields) {
+    return global.nextTrainPinState.sanitizeJourneyPinFields(journey);
+  }
   if (!journey?.journeyPinDismissedDate) {
     return journey;
   }
@@ -525,6 +540,21 @@ function resolveJourneyPreferredTargetTrip(data, journey = getActiveJourney()) {
 function resolveJourneyPinTrip(data, journey = getActiveJourney()) {
   if (!data || !journey) {
     return null;
+  }
+
+  if (global.nextTrainPinState?.resolveJourneyPinDeparture) {
+    const departure = global.nextTrainPinState.resolveJourneyPinDeparture(data, journey);
+    if (!departure) {
+      return null;
+    }
+    const normalized = normalizeApiTrainData(data);
+    const trip = findTripByDepartureIso(normalized, departure);
+    if (!trip || tripHasDeparted(trip)) {
+      return null;
+    }
+    const leaveBefore = getEffectiveLeaveBeforeMinutes(journey);
+    const referenceIso = normalized.next?.departure ?? normalized.next?.arrival;
+    return ensureFullNext(trip, leaveBefore, referenceIso);
   }
 
   const normalized = normalizeApiTrainData(data);

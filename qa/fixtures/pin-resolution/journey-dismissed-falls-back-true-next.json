@@ -1,0 +1,62 @@
+{
+  "id": "journey-dismissed-falls-back-true-next",
+  "description": "Dismissed preferred today → no pin; hero and widget follow true next (native contract).",
+  "tags": ["journey", "dismissed", "native-parity"],
+  "clock": {
+    "perthDateKey": "2026-08-15",
+    "nowIso": "2026-08-15T06:00:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 0,
+    "journey": {
+      "id": "j-fixture-3",
+      "station": "Edgewater Stn",
+      "direction": "Perth",
+      "preferredTrainTime": "07:30",
+      "journeyPinDismissedDate": "2026-08-15",
+      "defaultFrom": "00:00",
+      "defaultUntil": "23:59",
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-15T06:30:00+08:00",
+        "displayTime": "6:30",
+        "platform": "1"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-15T06:30:00+08:00",
+          "displayTime": "6:30",
+          "platform": "1"
+        },
+        {
+          "departure": "2026-08-15T07:30:00+08:00",
+          "displayTime": "7:30",
+          "platform": "1"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-15T06:30:00+08:00",
+    "pinDeparture": null,
+    "heroDeparture": "2026-08-15T06:30:00+08:00",
+    "leaveDeparture": "2026-08-15T06:30:00+08:00",
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": "2026-08-15T06:30:00+08:00",
+    "isPinnedToday": false,
+    "heroShowsPin": false,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": true,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": false,
+    "showSecondaryNext": false,
+    "leaveCardArmed": false,
+    "heroLabel": "Next Train"
+  },
+  "notes": "Web resolveJourneyPinTrip currently returns null when dismissed; app.js still shows true next via pinTrip ?? next. FB-26 should make this explicit in pin-state.js."
+}

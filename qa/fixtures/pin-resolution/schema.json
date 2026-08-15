@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://next-train.app/schemas/pin-resolution-fixture.json",
+  "title": "Pin resolution fixture",
+  "description": "Shared test vector for web pin-state.js, Android JourneyPinHelper, and iOS JourneyPinHelper.",
+  "type": "object",
+  "required": ["id", "description", "clock", "input", "expected"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "journey",
+          "nearby",
+          "widget",
+          "override",
+          "dismissed",
+          "preferred",
+          "skip",
+          "secondary-next",
+          "native-parity"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "clock": {
+      "type": "object",
+      "required": ["perthDateKey", "nowIso"],
+      "additionalProperties": false,
+      "properties": {
+        "perthDateKey": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "nowIso": {
+          "type": "string",
+          "description": "Fixed Perth-offset instant for deterministic departed checks."
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["mode"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["journey", "nearby"]
+        },
+        "journeyModeActive": { "type": "boolean" },
+        "nearbyModeActive": { "type": "boolean" },
+        "skipTrains": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "journey": {
+          "type": "object",
+          "description": "Journey settings object (subset of nextTrainSettings.journeys[])."
+        },
+        "nearbyPin": {
+          "type": "object",
+          "description": "nearbyPin snapshot from settings."
+        },
+        "payload": {
+          "type": "object",
+          "description": "Train board payload after normalizeApiTrainData.",
+          "properties": {
+            "next": { "$ref": "#/$defs/trip" },
+            "following": { "$ref": "#/$defs/trip" },
+            "upcoming": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/trip" }
+            }
+          }
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trueNextDeparture": { "$ref": "#/$defs/departureOrNull" },
+        "pinDeparture": { "$ref": "#/$defs/departureOrNull" },
+        "heroDeparture": { "$ref": "#/$defs/departureOrNull" },
+        "leaveDeparture": { "$ref": "#/$defs/departureOrNull" },
+        "secondaryNextDeparture": { "$ref": "#/$defs/departureOrNull" },
+        "widgetFaceDeparture": { "$ref": "#/$defs/departureOrNull" },
+        "isPinnedToday": { "type": "boolean" },
+        "heroShowsPin": { "type": "boolean" },
+        "isOverrideActiveToday": { "type": "boolean" },
+        "isPinDismissedToday": { "type": "boolean" },
+        "isSkipPreview": { "type": "boolean" },
+        "isHeroPinLockingSwipe": { "type": "boolean" },
+        "showSecondaryNext": { "type": "boolean" },
+        "leaveCardArmed": { "type": "boolean" },
+        "heroLabel": {
+          "type": "string",
+          "enum": ["Next Train", "Target train", "Later train", "Pinned Train"]
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional implementer notes (e.g. known web/native divergence)."
+    }
+  },
+  "$defs": {
+    "departureOrNull": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "trip": {
+      "type": "object",
+      "required": ["departure", "displayTime"],
+      "additionalProperties": true,
+      "properties": {
+        "departure": { "type": "string" },
+        "arrival": { "type": "string" },
+        "displayTime": { "type": "string" },
+        "platform": { "type": "string" },
+        "leaveBy": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    }
+  }
+}
