@@ -183,9 +183,25 @@
   display: none !important;
 }
 
+.journeys-dialog:has(#settings-detail-view.station-picker-open) {
+  overflow: visible;
+}
+
+.journeys-dialog:has(#settings-detail-view.station-picker-open) .journeys-dialog-body {
+  overflow: visible;
+}
+
+#settings-detail-view.station-picker-open .settings-detail-scroll {
+  overflow: visible;
+}
+
 #settings-detail-view.station-picker-open #detail-route-section {
   position: relative;
   z-index: 30;
+}
+
+#settings-detail-view.station-picker-open .station-combobox-dropdown {
+  z-index: 10002;
 }
 
 #settings-detail-view.station-picker-open .station-combobox-list {
@@ -427,18 +443,6 @@
   min-width: 0;
 }
 
-.journey-switcher-option-hint {
-  display: block;
-  margin-top: 0.2rem;
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.journey-switcher-option--outside {
-  opacity: 0.82;
-}
-
 .route-departures-item {
   display: flex;
   justify-content: space-between;
@@ -447,6 +451,10 @@
   border: 1px solid var(--line);
   border-radius: 0.85rem;
   background: var(--surface-soft);
+}
+
+.leave-card:not([hidden]) + .nearby-directions.route-departures {
+  margin-top: 0.45rem;
 }
 
 .route-departures-time {

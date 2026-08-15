@@ -70,7 +70,7 @@ async function run() {
     chips.morningHidden && chips.eveningHidden && chips.customHidden && chips.saveRouteVisible;
   if (pass) {
     console.log(
-      "PASS — Morning/Evening shortcuts hidden; Save a route visible (edited hours OK)"
+      "PASS — Morning/Evening shortcuts hidden; Add a route visible (edited hours OK)"
     );
   } else {
     console.error("FAIL — template chip visibility wrong", chips);

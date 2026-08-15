@@ -53,7 +53,7 @@
     "isSkipPreview": false,
     "isHeroPinLockingSwipe": false,
     "showSecondaryNext": false,
-    "leaveCardArmed": true,
+    "leaveCardArmed": false,
     "heroLabel": "Next Train"
   }
 }

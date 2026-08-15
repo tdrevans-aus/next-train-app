@@ -125,26 +125,25 @@ function syncTemplateWizardCoachPosition() {
 
   templateRouteCoach.classList.remove("template-route-coach--dock-bottom");
 
-  // Active hours step: always dock coach at bottom so fields stay tappable.
-  if (templateWizardStep === getTemplateWizardHoursStep()) {
-    const padding = 12;
-    applyTemplateWizardCoachBottom(card, padding);
-    templateRouteCoach.classList.add("template-route-coach--dock-bottom");
-    return;
-  }
-
   const coachRect = templateRouteCoach.getBoundingClientRect();
   const targetRect = target.getBoundingClientRect();
   const cardHeight = card.offsetHeight;
   const gap = 10;
   const padding = 12;
   const maxTop = coachRect.height - cardHeight - padding;
+  const isHoursStep = templateWizardStep === getTemplateWizardHoursStep();
 
-  const candidates = [
-    { top: targetRect.top - coachRect.top - cardHeight - gap },
-    { top: targetRect.bottom - coachRect.top + gap },
-    { bottom: padding },
-  ];
+  const candidates = isHoursStep
+    ? [
+        { top: targetRect.top - coachRect.top - cardHeight - gap },
+        { bottom: padding },
+        { top: targetRect.bottom - coachRect.top + gap },
+      ]
+    : [
+        { top: targetRect.top - coachRect.top - cardHeight - gap },
+        { top: targetRect.bottom - coachRect.top + gap },
+        { bottom: padding },
+      ];
 
   for (const candidate of candidates) {
     if (candidate.top !== undefined) {
@@ -537,7 +536,7 @@ async function requestTemplateWizardReminderPermission() {
   syncDetailTargetRemindVisibility();
 }
 
-/** Default Remind me + Live Countdown on, and ask for notification permission once. */
+/** Default Remind me on, and ask for notification permission once. */
 function armRemindersForWizardStep({ animate = false } = {}) {
   const generation = cancelTemplateWizardReminderArm();
 
@@ -561,9 +560,6 @@ function armRemindersForWizardStep({ animate = false } = {}) {
       if (deps.detailRemindMeInput) {
         deps.detailRemindMeInput.checked = false;
       }
-      if (deps.detailLeaveRemindersCommuteStripInput) {
-        deps.detailLeaveRemindersCommuteStripInput.checked = false;
-      }
       syncDetailTargetRemindVisibility();
 
       try {
@@ -572,12 +568,6 @@ function armRemindersForWizardStep({ animate = false } = {}) {
           deps.detailRemindMeInput.checked = true;
         }
         pulseTemplateWizardToggleRow(deps.detailReminderSection);
-
-        await templateWizardReminderDelay(220, generation);
-        if (deps.detailLeaveRemindersCommuteStripInput) {
-          deps.detailLeaveRemindersCommuteStripInput.checked = true;
-        }
-        pulseTemplateWizardToggleRow(deps.detailLeaveRemindersStripWrap);
       } catch (error) {
         if (error?.name !== "AbortError") {
           throw error;
@@ -590,9 +580,6 @@ function armRemindersForWizardStep({ animate = false } = {}) {
       }
     } else if (deps.detailRemindMeInput) {
       deps.detailRemindMeInput.checked = true;
-      if (deps.detailLeaveRemindersCommuteStripInput) {
-        deps.detailLeaveRemindersCommuteStripInput.checked = true;
-      }
       syncDetailTargetRemindVisibility();
     }
 

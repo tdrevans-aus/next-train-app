@@ -9,6 +9,21 @@
   let journeyOverlapState = null;
   let editingJourneyId = null;
   let editingJourneySnapshot = null;
+  /** @type {'routes' | 'commutes'} */
+  let libraryKind = "routes";
+
+  const LIBRARY_COPY = {
+    routes: {
+      title: "Routes",
+      hint: "See the next train for a station and direction you check often.",
+      back: "← Routes",
+    },
+    commutes: {
+      title: "Commutes",
+      hint: "For trips you make regularly — save your station, usual train, and when you travel. We'll remind you when it's time to leave.",
+      back: "← Commutes",
+    },
+  };
 
   const detailNearestState = {
     loading: false,
@@ -24,6 +39,7 @@
   const journeyListEl = document.getElementById("journey-list");
   const deleteJourneyBtn = document.getElementById("delete-journey-btn");
   const detailJourneyNameInput = document.getElementById("detail-journey-name");
+  const detailJourneyNameField = document.querySelector(".journey-name-field");
   const detailDirectionSelect = document.getElementById("detail-direction-select");
   const detailLeaveBeforeInput = document.getElementById("detail-leave-before-input");
   const detailUseLeaveBeforeInput = document.getElementById("detail-use-leave-before");
@@ -47,12 +63,14 @@
   const journeyTemplateShortcutsEl = document.getElementById("journey-template-shortcuts");
   const journeySaveRouteBtnEl = document.getElementById("journey-save-route-btn");
   const journeySetupCommuteBtnEl = document.getElementById("journey-setup-commute-btn");
-  const journeyCreateActionsEl = document.getElementById("journey-create-actions");
+  const routesCreateActionsEl = document.getElementById("routes-create-actions");
+  const commutesCreateActionsEl = document.getElementById("commutes-create-actions");
+  const journeysLibraryTitleEl = document.getElementById("journeys-library-title");
+  const journeysLibraryHintEl = document.getElementById("journeys-library-hint");
+  const settingsBackBtnEl = document.getElementById("settings-back");
   const journeyTemplateChipsEl = document.querySelector(".journey-template-chips");
   const journeyTemplatesAddHintEl = document.querySelector(".journey-templates-hint");
   const detailTimingSectionEl = document.getElementById("detail-timing-section");
-  const detailUpgradeCommuteWrapEl = document.getElementById("detail-upgrade-commute-wrap");
-  const detailUpgradeCommuteBtnEl = document.getElementById("detail-upgrade-commute-btn");
   const detailActiveDayChips = document.getElementById("detail-active-day-chips");
   const detailActiveDaysHint = document.querySelector(".detail-active-days-hint");
   const detailActiveHoursErrorEl = document.getElementById("detail-active-hours-error");
@@ -65,7 +83,6 @@
   const detailReminderSection = document.getElementById("detail-reminder-section");
   const detailRemindControls = document.getElementById("detail-remind-controls");
   const detailRemindMeInput = document.getElementById("detail-remind-me");
-  const detailLeaveRemindersCommuteStripInput = document.getElementById("leave-reminders-commute-strip");
   const detailPreferredInput = document.getElementById("detail-preferred-input");
   const detailPreferredDisplay = document.getElementById("detail-preferred-display");
   const detailPreferredField = document.getElementById("detail-preferred-field");
@@ -124,6 +141,48 @@
     return deps.formatJourneyRoute?.(journey) ?? "";
   }
 
+  function syncLibraryChrome() {
+    const copy = LIBRARY_COPY[libraryKind] ?? LIBRARY_COPY.routes;
+    if (journeysLibraryTitleEl) {
+      journeysLibraryTitleEl.textContent = copy.title;
+    }
+    if (journeysLibraryHintEl) {
+      journeysLibraryHintEl.textContent = copy.hint;
+    }
+    if (settingsBackBtnEl) {
+      settingsBackBtnEl.textContent = copy.back;
+    }
+    if (routesCreateActionsEl) {
+      routesCreateActionsEl.hidden = libraryKind !== "routes";
+    }
+    if (commutesCreateActionsEl) {
+      commutesCreateActionsEl.hidden = libraryKind !== "commutes";
+    }
+  }
+
+  function setLibraryKind(kind) {
+    libraryKind = kind === "commutes" ? "commutes" : "routes";
+    syncLibraryChrome();
+    renderJourneyListView();
+    updateJourneyTemplatesVisibility();
+    if (editingJourneyId) {
+      const journey =
+        getSettingsDraftJourneys().find((entry) => entry.id === editingJourneyId) ??
+        getJourneyById(editingJourneyId);
+      if (journey) {
+        syncDetailFormForJourneyKind(journey);
+      }
+    }
+  }
+
+  function getLibraryKind() {
+    return libraryKind;
+  }
+
+  function journeyMatchesLibraryKind(journey) {
+    return libraryKind === "routes" ? isRouteJourney(journey) : isCommuteJourney(journey);
+  }
+
   function isCommuteJourney(journey) {
     return deps.isCommuteJourney?.(journey) ?? false;
   }
@@ -153,18 +212,38 @@
     return parts.join(" · ");
   }
 
-  function syncDetailFormForJourneyKind(journey) {
-    const route = isRouteJourney(journey);
+  function isRouteEditorContext(journey = null) {
+    if (libraryKind === "routes") {
+      return true;
+    }
+    return journey ? isRouteJourney(journey) : false;
+  }
 
+  function syncDetailFormForJourneyKind(journey) {
+    const route = isRouteEditorContext(journey);
+
+    if (settingsDetailView) {
+      settingsDetailView.classList.toggle("settings-detail-view--route", route);
+      settingsDetailView.classList.toggle("settings-detail-view--commute", !route);
+    }
+
+    if (detailJourneyNameField) {
+      detailJourneyNameField.hidden = route;
+    }
     if (detailTimingSectionEl) {
       detailTimingSectionEl.hidden = route;
     }
     if (detailPreferredSection) {
       detailPreferredSection.hidden = route;
     }
-    if (detailUpgradeCommuteWrapEl) {
-      detailUpgradeCommuteWrapEl.hidden =
-        !route || !journey?.station || !journey?.direction;
+    if (detailReminderSection) {
+      detailReminderSection.hidden = route;
+    }
+    if (detailJourneyWindow) {
+      detailJourneyWindow.hidden = route;
+    }
+    if (detailRemindControls) {
+      detailRemindControls.hidden = route;
     }
   }
 
@@ -380,6 +459,10 @@
   }
 
 function readJourneyNameFromForm(station, direction) {
+  if (libraryKind === "routes") {
+    return formatRouteBasedJourneyName(station, direction);
+  }
+
   const trimmed = detailJourneyNameInput?.value?.trim() ?? "";
   if (trimmed) {
     return trimmed.slice(0, 40);
@@ -391,6 +474,41 @@ function readJourneyNameFromForm(station, direction) {
 
 function wasEditingConfiguredJourney() {
   return Boolean(editingJourneySnapshot && !isUnconfiguredJourney(editingJourneySnapshot));
+}
+
+function shouldShowDetailDeleteButton(journey = null) {
+  if (!editingJourneyId) {
+    return false;
+  }
+
+  const draft =
+    journey ??
+    getSettingsDraftJourneys().find((entry) => entry.id === editingJourneyId) ??
+    getJourneyById(editingJourneyId);
+  if (!draft || isUnconfiguredJourney(draft)) {
+    return false;
+  }
+
+  return libraryKind === "routes" ? isRouteJourney(draft) : isCommuteJourney(draft);
+}
+
+function syncDetailDeleteChrome(journey = null) {
+  if (!deleteJourneyBtn) {
+    return;
+  }
+
+  const show = shouldShowDetailDeleteButton(journey);
+  deleteJourneyBtn.hidden = !show;
+  if (!show) {
+    return;
+  }
+
+  const draft =
+    journey ??
+    getSettingsDraftJourneys().find((entry) => entry.id === editingJourneyId) ??
+    getJourneyById(editingJourneyId);
+  const isRoute = libraryKind === "routes" || isRouteJourney(draft);
+  deleteJourneyBtn.setAttribute("aria-label", isRoute ? "Delete route" : "Delete journey");
 }
 
 function syncDetailNearestStationChrome(patch = {}) {
@@ -410,26 +528,34 @@ function syncDetailNearestStationChrome(patch = {}) {
 
   const showButton = loading || error || !hasStation;
   const showHint = loading || error || Boolean(hint);
+  const nearestLabel = detailNearestBtn?.querySelector(".route-nearest-btn__label");
 
   if (detailNearestBtn) {
     detailNearestBtn.hidden = !showButton;
-    detailNearestBtn.textContent = wasEditingConfiguredJourney()
+    const labelText = wasEditingConfiguredJourney()
       ? "Use my current location"
       : "Use nearest station";
+    if (nearestLabel) {
+      nearestLabel.textContent = labelText;
+    } else {
+      detailNearestBtn.textContent = labelText;
+    }
   }
 
   if (detailNearestHint) {
     if (showHint) {
       detailNearestHint.hidden = false;
       detailNearestHint.textContent = loading ? "Finding nearest station…" : hint;
+      detailNearestHint.classList.toggle("route-nearest-hint--error", error);
       detailNearestHint.classList.toggle("settings-location-hint--error", error);
     } else {
       detailNearestHint.hidden = true;
-      detailNearestHint.classList.remove("settings-location-hint--error");
+      detailNearestHint.classList.remove("route-nearest-hint--error", "settings-location-hint--error");
     }
   }
 
-  const locationRow = detailNearestBtn?.closest(".settings-location-row");
+  const locationRow =
+    document.getElementById("detail-nearest-row") || detailNearestBtn?.closest(".route-nearest-row");
   if (locationRow) {
     locationRow.hidden = !showButton && !showHint;
   }
@@ -918,6 +1044,7 @@ function showSettingsListView() {
   settingsDetailView.hidden = true;
   editingJourneyId = null;
   editingJourneySnapshot = null;
+  syncLibraryChrome();
   syncJourneysDialogSheetMode();
   updateJourneyTemplatesVisibility();
 }
@@ -925,7 +1052,10 @@ function showSettingsListView() {
 function showSettingsDetailView() {
   settingsListView.hidden = true;
   settingsDetailView.hidden = false;
+  syncLibraryChrome();
   syncJourneysDialogSheetMode();
+  syncDetailFormForJourneyKind({ kind: libraryKind === "routes" ? "route" : "commute" });
+  syncDetailDeleteChrome();
   if (isNativeApp()) {
     void window.NextTrainAds?.hideNativeBanner?.({ force: true });
     notifyAdOverlaySuppression();
@@ -1205,9 +1335,6 @@ async function revertDetailRemindersForDeniedPermission() {
     detailRemindMeInput.checked = false;
     detailRemindMeInput.dataset.userTouched = "1";
   }
-  if (detailLeaveRemindersCommuteStripInput) {
-    detailLeaveRemindersCommuteStripInput.checked = false;
-  }
   await window.nextTrainLeaveReminders?.saveReminderSettings?.({
     enabled: false,
     commuteStripEnabled: false,
@@ -1242,6 +1369,16 @@ async function handleDetailRemindToggleChange() {
   const remindOn = detailRemindMeInput?.checked ?? false;
 
   if (!remindOn) {
+    if (editingJourneyId) {
+      const preferredTrainTime = readOptionalTimeField(detailPreferredField);
+      await window.nextTrainApp?.persistReminderJourneys?.([
+        {
+          id: editingJourneyId,
+          remindMe: false,
+          preferredTrainTime: preferredTrainTime || "",
+        },
+      ]);
+    }
     syncDetailTargetRemindVisibility();
     return;
   }
@@ -1254,6 +1391,17 @@ async function handleDetailRemindToggleChange() {
   if (settings?.permissionGranted === false) {
     await revertDetailRemindersForDeniedPermission();
     return;
+  }
+
+  if (editingJourneyId) {
+    const preferredTrainTime = readOptionalTimeField(detailPreferredField);
+    await window.nextTrainApp?.persistReminderJourneys?.([
+      {
+        id: editingJourneyId,
+        remindMe: true,
+        preferredTrainTime: preferredTrainTime || "",
+      },
+    ]);
   }
 
   syncDetailTargetRemindVisibility();
@@ -1296,6 +1444,21 @@ function readJourneyDetailDraft() {
 
   const { station, direction } = requireJourneyRouteFromForm();
   const name = readJourneyNameFromForm(station, direction);
+  const existing = getSettingsDraftJourneys().find((entry) => entry.id === editingJourneyId);
+  const route = existing ? isRouteJourney(existing) : libraryKind === "routes";
+
+  if (route) {
+    return normalizeJourney({
+      id: editingJourneyId,
+      name,
+      station,
+      direction,
+      kind: "route",
+      templateKey: existing?.templateKey,
+      autoRoute: existing?.autoRoute,
+    });
+  }
+
   const { defaultFrom, defaultUntil } = normalizeActiveHoursFieldsForSave();
 
   const remindDays = readDetailActiveDays();
@@ -1325,7 +1488,6 @@ function readJourneyDetailDraft() {
   const remindMe = remindWanted;
   const useLeaveBefore = isDetailTargetMasterOn();
 
-  const existing = getSettingsDraftJourneys().find((entry) => entry.id === editingJourneyId);
   return normalizeJourney({
     id: editingJourneyId,
     name,
@@ -1338,6 +1500,7 @@ function readJourneyDetailDraft() {
     preferredTrainTime,
     remindDays,
     remindMe,
+    kind: "commute",
     templateKey: existing?.templateKey,
     autoRoute: existing?.autoRoute,
   });
@@ -1349,8 +1512,43 @@ function updateJourneyTemplatesVisibility() {
   }
 
   const atCap = isAtJourneyCap();
+
+  if (journeyTemplatesCapHintEl) {
+    journeyTemplatesCapHintEl.textContent = getJourneyCapHint();
+    journeyTemplatesCapHintEl.hidden = !atCap;
+  }
+  if (journeySaveRouteBtnEl) {
+    journeySaveRouteBtnEl.hidden = atCap || libraryKind !== "routes";
+  }
+  if (journeySetupCommuteBtnEl) {
+    journeySetupCommuteBtnEl.hidden = atCap || libraryKind !== "commutes";
+  }
+  if (routesCreateActionsEl) {
+    routesCreateActionsEl.hidden = atCap || libraryKind !== "routes";
+  }
+  if (commutesCreateActionsEl) {
+    commutesCreateActionsEl.hidden = atCap || libraryKind !== "commutes";
+  }
+
+  if (libraryKind === "routes") {
+    if (journeyTemplatesAddHintEl) {
+      journeyTemplatesAddHintEl.hidden = true;
+    }
+    if (journeyTemplateShortcutsEl) {
+      journeyTemplateShortcutsEl.hidden = true;
+    }
+    if (journeyTemplateChipsEl) {
+      journeyTemplateChipsEl.hidden = true;
+    }
+    document.querySelectorAll(".journey-template-chip").forEach((chip) => {
+      chip.hidden = true;
+    });
+    journeyTemplatesEl.hidden = false;
+    return;
+  }
+
   let anyShortcutVisible = false;
-  const commuteExpanded = deps.getCommuteTemplatesExpanded?.() ?? false;
+  const showTemplatePicker = libraryKind === "commutes";
 
   document.querySelectorAll(".journey-template-chip").forEach((chip) => {
     const templateKey = chip.dataset.template;
@@ -1369,23 +1567,11 @@ function updateJourneyTemplatesVisibility() {
     }
   });
 
-  if (journeyTemplatesCapHintEl) {
-    journeyTemplatesCapHintEl.textContent = getJourneyCapHint();
-    journeyTemplatesCapHintEl.hidden = !atCap;
-  }
-  if (journeySaveRouteBtnEl) {
-    journeySaveRouteBtnEl.hidden = atCap;
-  }
-  if (journeySetupCommuteBtnEl) {
-    journeySetupCommuteBtnEl.hidden = atCap;
-  }
-  if (journeyCreateActionsEl) {
-    journeyCreateActionsEl.hidden = atCap;
-  }
   if (journeyTemplatesAddHintEl) {
-    journeyTemplatesAddHintEl.hidden = atCap || !commuteExpanded || !anyShortcutVisible;
+    journeyTemplatesAddHintEl.hidden =
+      atCap || !showTemplatePicker || !anyShortcutVisible;
   }
-  const showShortcuts = !atCap && commuteExpanded && anyShortcutVisible;
+  const showShortcuts = !atCap && showTemplatePicker && anyShortcutVisible;
   if (journeyTemplateShortcutsEl) {
     journeyTemplateShortcutsEl.hidden = !showShortcuts;
   }
@@ -1400,6 +1586,9 @@ function renderJourneyListView() {
   journeyListEl.innerHTML = "";
 
   for (const journey of getSettingsDraftJourneys()) {
+    if (!journeyMatchesLibraryKind(journey)) {
+      continue;
+    }
     const item = document.createElement("li");
     item.className = "journey-list-item";
     item.dataset.journeyId = journey.id;
@@ -1418,22 +1607,17 @@ function renderJourneyListView() {
     const nameRow = document.createElement("span");
     nameRow.className = "journey-list-name-row";
 
+    const routeLabel = formatJourneyListSubtitle(journey);
+    const isRouteCard = libraryKind === "routes" || isRouteJourney(journey);
     const nameEl = document.createElement("span");
     nameEl.className = "journey-list-name";
-    nameEl.textContent = journey.name;
+    nameEl.textContent = isRouteCard ? routeLabel : journey.name;
 
     const badge = document.createElement("span");
     badge.className = `journey-kind-badge journey-kind-badge--${
       isCommuteJourney(journey) ? "commute" : "route"
     }`;
-    badge.textContent = isCommuteJourney(journey) ? "Commute" : "Route";
-
-    const route = document.createElement("span");
-    route.className = "journey-list-route";
-    if (!journey.station || !journey.direction) {
-      route.classList.add("journey-list-route--empty");
-    }
-    route.textContent = formatJourneyListSubtitle(journey);
+    badge.textContent = isCommuteJourney(journey) ? "Journey" : "Route";
 
     const chevron = document.createElement("span");
     chevron.className = "journey-list-chevron";
@@ -1441,7 +1625,17 @@ function renderJourneyListView() {
     chevron.textContent = "›";
 
     nameRow.append(nameEl, badge);
-    textStack.append(nameRow, route);
+    if (isRouteCard) {
+      textStack.append(nameRow);
+    } else {
+      const route = document.createElement("span");
+      route.className = "journey-list-route";
+      if (!journey.station || !journey.direction) {
+        route.classList.add("journey-list-route--empty");
+      }
+      route.textContent = routeLabel;
+      textStack.append(nameRow, route);
+    }
     openBtn.append(textStack, chevron);
     openBtn.addEventListener("click", () => {
       openJourneyDetail(journey.id);
@@ -1456,6 +1650,7 @@ function renderJourneyListView() {
 }
 
 async function populateJourneyListView() {
+  syncLibraryChrome();
   setSettingsDraftJourneys(normalizeJourneyList(getSettings().journeys).map((journey) => ({
     ...journey,
   })));
@@ -1481,40 +1676,42 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
   journey = normalizeJourney(journey);
   editingJourneyId = journey.id;
   editingJourneySnapshot = normalizeJourney({ ...journey });
+  syncDetailFormForJourneyKind(journey);
   resetDetailNearestState();
   clearJourneyOverlapError();
   if (detailJourneyNameInput) {
     detailJourneyNameInput.value = journey.name || "";
   }
-  detailLeaveBeforeInput.value = journey.leaveBeforeMinutes;
-  if (detailUseLeaveBeforeInput) {
-    detailUseLeaveBeforeInput.checked = Boolean(journey.preferredTrainTime);
+  const routeEditor = isRouteEditorContext(journey);
+  if (!routeEditor) {
+    detailLeaveBeforeInput.value = journey.leaveBeforeMinutes;
+    if (detailUseLeaveBeforeInput) {
+      detailUseLeaveBeforeInput.checked = Boolean(journey.preferredTrainTime);
+    }
+    syncLeaveBeforeControlsState();
+    updateLeaveBeforeLabel(journey.leaveBeforeMinutes);
+    setOptionalTimeField(
+      detailDefaultFromInput,
+      detailDefaultFromDisplay,
+      detailDefaultFromField,
+      detailDefaultFromClear,
+      journey.defaultFrom
+    );
+    setOptionalTimeField(
+      detailDefaultUntilInput,
+      detailDefaultUntilDisplay,
+      detailDefaultUntilField,
+      detailDefaultUntilClear,
+      journey.defaultUntil
+    );
+    setDetailActiveDayChips(journey.remindDays);
+    syncDetailActiveDaysHint(journey);
+    populateDetailReminderFields(journey);
+    syncDetailComboHints();
   }
-  syncLeaveBeforeControlsState();
-  updateLeaveBeforeLabel(journey.leaveBeforeMinutes);
-  setOptionalTimeField(
-    detailDefaultFromInput,
-    detailDefaultFromDisplay,
-    detailDefaultFromField,
-    detailDefaultFromClear,
-    journey.defaultFrom
-  );
-  setOptionalTimeField(
-    detailDefaultUntilInput,
-    detailDefaultUntilDisplay,
-    detailDefaultUntilField,
-    detailDefaultUntilClear,
-    journey.defaultUntil
-  );
-  setDetailActiveDayChips(journey.remindDays);
-  syncDetailActiveDaysHint(journey);
-  populateDetailReminderFields(journey);
-  syncDetailComboHints();
   detailDirectionSelect.innerHTML = '<option value="">Loading…</option>';
   detailDirectionSelect.disabled = true;
-  if (deleteJourneyBtn) {
-    deleteJourneyBtn.hidden = !editingJourneyId;
-  }
+  syncDetailDeleteChrome(journey);
   setStationComboboxValue(getDetailStationCombobox(), journey.station || "");
 
   let nearestHint = null;
@@ -1586,13 +1783,15 @@ function saveJourneyDetailFromForm() {
   }
 
   const updated = readJourneyDetailDraft();
-  const conflict = findJourneyDefaultWindowConflict(updated, getSettingsDraftJourneys());
-  if (conflict) {
-    const overlapError = new Error(formatJourneyOverlapError(updated, conflict));
-    overlapError.code = "journey-overlap";
-    overlapError.conflict = conflict;
-    overlapError.updated = updated;
-    throw overlapError;
+  if (!isRouteJourney(updated)) {
+    const conflict = findJourneyDefaultWindowConflict(updated, getSettingsDraftJourneys());
+    if (conflict) {
+      const overlapError = new Error(formatJourneyOverlapError(updated, conflict));
+      overlapError.code = "journey-overlap";
+      overlapError.conflict = conflict;
+      overlapError.updated = updated;
+      throw overlapError;
+    }
   }
 
   const wasConfiguredBeforeSave = getSettings().journeys.some(
@@ -1788,10 +1987,6 @@ function initJourneyDetailListeners() {
     }
   });
 
-  detailUpgradeCommuteBtnEl?.addEventListener("click", () => {
-    // Phase 2 UI only — upgradeRouteToCommute ships with Phase 1 model merge.
-  });
-
   settingsDetailView?.addEventListener("submit", (event) => {
     event.preventDefault();
     try {
@@ -1844,6 +2039,8 @@ const api = {
   resetDetailNearestState,
   revertDetailRemindersForDeniedPermission,
   saveJourneyDetailFromForm,
+  setLibraryKind,
+  getLibraryKind,
   setDetailActiveDayChips,
   showJourneyOverlapError,
   showSettingsDetailView,
@@ -1851,6 +2048,7 @@ const api = {
   syncDetailComboHints,
   syncDetailActiveDaysHint,
   syncDetailNearestStationChrome,
+  syncDetailDeleteChrome,
   syncDetailTargetMasterVisibility,
   syncDetailTargetRemindVisibility,
   syncDetailFormForJourneyKind,

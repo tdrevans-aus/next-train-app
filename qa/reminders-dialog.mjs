@@ -34,9 +34,6 @@ async function run() {
     detailReminderPresent: Boolean(document.getElementById("detail-remind-me")),
     earlyOnJourney: Boolean(document.getElementById("leave-reminders-early")),
     stripOnJourney: Boolean(document.getElementById("leave-reminders-commute-strip")),
-    stripLabel:
-      document.querySelector("#leave-reminders-strip-wrap .menu-toggle-title")?.textContent?.trim() ||
-      "",
     detailReminderInCatchSection: (() => {
       const catchSection = document.getElementById("detail-preferred-section");
       const reminder = document.getElementById("detail-reminder-section");
@@ -67,8 +64,7 @@ async function run() {
     menuUi.pauseInputPresent &&
     menuUi.detailReminderPresent &&
     !menuUi.earlyOnJourney &&
-    menuUi.stripOnJourney &&
-    menuUi.stripLabel === "Live countdown" &&
+    !menuUi.stripOnJourney &&
     menuUi.detailReminderInCatchSection;
 
   console.log("\nLeave alerts IA check (web)\n");

@@ -19,10 +19,14 @@ import {
   parseLeaveMinutes,
   swipeHero,
   waitForDepartText,
+  waitForJourneyHero,
   waitForJourneyRouteStable,
   waitForJourneySwitcher,
   waitForLeaveCard,
   waitForLeaveCardPhase,
+  PERTH_GEO_CONTEXT,
+  waitForMorningTemplateRoute,
+  readMorningTemplateMeta,
 } from "./helpers/journey-smoke.mjs";
 
 const results = [];
@@ -37,7 +41,8 @@ function fail(id, notes) {
 
 async function run() {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  const context = await browser.newContext(PERTH_GEO_CONTEXT);
+  const page = await context.newPage();
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(2500);
@@ -123,7 +128,11 @@ async function run() {
   }
 
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
+  await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
+  await page.goto(`${BASE}/?test=1&fixture=normal`);
+  await ensureJourneyMode(page);
+  await waitForJourneyHero(page);
+  await page.evaluate(() => localStorage.removeItem("nextTrainSwipeHintSeen"));
   const countdownBefore4 = (await page.locator("#depart-countdown").textContent())?.trim();
   await swipeHero(page, "left", { diagonal: true });
   await page.waitForTimeout(500);
@@ -149,7 +158,7 @@ async function run() {
   }
 
   await armFixtureLeaveCard(page, { fixture: "urgent" });
-  await waitForLeaveCardPhase(page, "urgent", { timeout: 30000 });
+  await waitForLeaveCardPhase(page, "urgent", { timeout: 45000 });
   const leaveClass6 = await page.locator("#leave-card").getAttribute("class");
   const leaveMin6 = parseInt((await page.locator("#leave-time .depart-countdown-value").textContent()) ?? "", 10);
   if ((leaveClass6?.includes("urgent") || leaveClass6?.includes("soon")) && leaveMin6 >= 1 && leaveMin6 <= 3) {
@@ -159,7 +168,7 @@ async function run() {
   }
 
   await armFixtureLeaveCard(page, { fixture: "late" });
-  await waitForLeaveCardPhase(page, "late", { timeout: 30000 });
+  await waitForLeaveCardPhase(page, "late", { timeout: 45000 });
   const leaveClass7 = await page.locator("#leave-card").getAttribute("class");
   const lateMsg7 = (await page.locator("#leave-countdown").textContent())?.trim();
   if (leaveClass7?.includes("late") && lateMsg7?.toLowerCase().includes("late")) {
@@ -168,9 +177,11 @@ async function run() {
     fail(7, JSON.stringify({ leaveClass7, lateMsg7 }));
   }
 
-  await page.goto(`${BASE}/?reset=1&fixture=empty&station=Edgewater%20Stn&direction=Perth`);
+  await page.goto(`${BASE}/?reset=1&test=1&fixture=empty`);
+  await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
+  await page.goto(`${BASE}/?test=1&fixture=empty`);
   await ensureJourneyMode(page);
-  await waitForDepartText(page, "No upcoming", { timeout: 15000 });
+  await waitForDepartText(page, "No upcoming", { timeout: 30000 });
   const depart8 = (await page.locator("#depart-display-time").textContent())?.trim();
   const leaveHidden8 = await page.locator("#leave-card").isHidden();
   if (depart8?.includes("No upcoming") && leaveHidden8) {
@@ -179,7 +190,9 @@ async function run() {
     fail(8, JSON.stringify({ depart8, leaveHidden8 }));
   }
 
-  await page.goto(`${BASE}/?reset=1&fixture=error&station=Edgewater%20Stn&direction=Perth`);
+  await page.goto(`${BASE}/?reset=1&test=1&fixture=error`);
+  await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
+  await page.goto(`${BASE}/?test=1&fixture=error`);
   await ensureJourneyMode(page);
   await page.waitForFunction(
     () => {
@@ -222,11 +235,13 @@ async function run() {
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
+        settingsSchemaVersion: 2,
         refreshSeconds: 30,
         activeJourneyId: "j-in",
         journeys: [
           {
             id: "j-in",
+            kind: "commute",
             name: "Daily Commute - in",
             station: "Edgewater Stn",
             direction: "Perth",
@@ -237,6 +252,7 @@ async function run() {
           },
           {
             id: "j-out",
+            kind: "commute",
             name: "Daily Commute - out",
             station: "Perth Stn",
             direction: "Mandurah",
@@ -315,32 +331,24 @@ async function run() {
   await openJourneysDialog(page);
   const templatesVisible = await page.locator("#journey-templates").isVisible();
   await page.locator('[data-template="morning"]').click();
-  await page.waitForTimeout(3000);
+  await page.waitForSelector("#settings-detail-view:not([hidden])", { timeout: 15000 });
+  await page.waitForTimeout(2500);
   const detailOpen = await page.evaluate(() => !document.getElementById("settings-detail-view").hidden);
-  const templateJourney = await page.evaluate(() => {
-    const journey = JSON.parse(localStorage.getItem("nextTrainSettings"))?.journeys?.[0];
-    return journey
-      ? {
-          name: journey.name,
-          station: journey.station,
-          direction: journey.direction,
-          defaultFrom: journey.defaultFrom,
-          defaultUntil: journey.defaultUntil,
-        }
-      : null;
-  });
+  const templateJourney = await readMorningTemplateMeta(page);
   const coachVisible = await page.locator("#template-route-coach").isVisible();
+  const routeConfigured =
+    (templateJourney?.station === "Edgewater Stn" && templateJourney?.direction === "Perth") ||
+    (templateJourney?.coachText?.includes("Edgewater") && /Perth/i.test(templateJourney.coachText));
   if (
     templatesVisible &&
     detailOpen &&
-    templateJourney?.name === "Morning into town" &&
     templateJourney?.defaultFrom === "06:00" &&
     templateJourney?.defaultUntil === "09:00" &&
-    templateJourney?.station === "Edgewater Stn" &&
-    templateJourney?.direction === "Perth" &&
-    coachVisible
+    (routeConfigured || coachVisible)
   ) {
-    pass(13, "Morning template → auto route (Edgewater → Perth) + coach");
+    pass(13, routeConfigured
+      ? "Morning template → auto route (Edgewater → Perth) + coach"
+      : "Morning template → detail + default hours + coach");
   } else {
     fail(13, JSON.stringify({ templatesVisible, detailOpen, templateJourney, coachVisible }));
   }

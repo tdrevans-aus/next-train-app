@@ -33,6 +33,12 @@ async function run() {
       preferredTrainTime: "07:30",
       remindMe: true,
     });
+    const customTemplate = jm.normalizeJourney({
+      templateKey: "custom",
+      station: "Joondalup",
+      direction: "Perth",
+      remindDays: [1],
+    });
     const explicitRoute = jm.normalizeJourney({
       kind: "route",
       station: "Edgewater Stn",
@@ -51,6 +57,7 @@ async function run() {
       route: route.kind,
       commutePreferred: commutePreferred.kind,
       commuteTemplate: commuteTemplate.kind,
+      customTemplate: customTemplate.kind,
       explicitRoute: explicitRoute.kind,
       strippedPreferred: strippedRoute.preferredTrainTime,
       isCommute: jm.isCommuteJourney(commutePreferred),
@@ -64,6 +71,7 @@ async function run() {
     results.route === "route" &&
     results.commutePreferred === "commute" &&
     results.commuteTemplate === "commute" &&
+    results.customTemplate === "commute" &&
     results.explicitRoute === "route" &&
     results.strippedPreferred === "" &&
     results.isCommute &&

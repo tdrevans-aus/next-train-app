@@ -38,9 +38,24 @@
             </button>
             <span class="chrome-action-label">Near me</span>
           </div>
-          <div class="chrome-action" id="journeys-chrome-action">
-            <button type="button" class="icon-btn" id="journeys-btn" aria-label="My Journeys" aria-pressed="false">
-              <svg class="journeys-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <div class="chrome-action" id="routes-chrome-action">
+            <button type="button" class="icon-btn" id="routes-btn" aria-label="Routes" aria-pressed="false">
+              <svg class="routes-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M4 12h11M12 9l4 3-4 3"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path d="M4 7h6M4 17h8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" opacity="0.45" />
+              </svg>
+            </button>
+            <span class="chrome-action-label">Routes</span>
+          </div>
+          <div class="chrome-action" id="commutes-chrome-action">
+            <button type="button" class="icon-btn" id="commutes-btn" aria-label="Commutes" aria-pressed="false">
+              <svg class="commutes-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="5.5" cy="14.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
                 <circle cx="18.5" cy="9.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
                 <path
@@ -59,7 +74,7 @@
                 />
               </svg>
             </button>
-            <span class="chrome-action-label">My Journeys</span>
+            <span class="chrome-action-label">Commutes</span>
           </div>
           <div class="chrome-action" id="menu-chrome-action">
             <button type="button" class="icon-btn" id="menu-btn" aria-label="Menu" aria-expanded="false">
@@ -182,6 +197,73 @@
         </p>
       </section>
 
+      <section class="leave-card calm" id="leave-card" hidden>
+        <button
+          type="button"
+          class="leave-buffer-edit-btn"
+          id="leave-buffer-edit-btn"
+          hidden
+          aria-label="Edit time to station"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M4 7h6M14 7h6M4 12h3M11 12h9M4 17h8M16 17h4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <circle cx="12" cy="7" r="2" fill="currentColor" />
+            <circle cx="9" cy="12" r="2" fill="currentColor" />
+            <circle cx="15" cy="17" r="2" fill="currentColor" />
+          </svg>
+        </button>
+        <p class="label" id="leave-card-label">Leave by</p>
+        <p class="leave-card-time" id="leave-time">—</p>
+        <p class="leave-card-countdown" id="leave-countdown"></p>
+        <p class="leave-hint" id="leave-hint" hidden>
+          Adjust your time to station with the sliders
+        </p>
+        <div class="nearby-pin-leave-controls" id="nearby-pin-leave-controls" hidden>
+          <label class="field leave-before-field" id="nearby-leave-before-field">
+            <div class="field-label-row">
+              <span class="field-label">Time to station</span>
+              <span class="field-value" id="nearby-leave-before-value">10 min</span>
+            </div>
+            <div class="leave-before-controls" id="nearby-leave-before-controls">
+              <input
+                type="range"
+                class="leave-before-slider"
+                id="nearby-leave-before-input"
+                min="1"
+                max="30"
+                step="1"
+                value="10"
+              />
+              <div class="range-ticks" aria-hidden="true">
+                <span>1 min</span>
+                <span>30 min</span>
+              </div>
+            </div>
+          </label>
+          <div class="nearby-pin-leave-footer" id="nearby-pin-leave-footer">
+            <div class="nearby-notify-row" id="nearby-notify-section">
+              <span class="nearby-notify-label" id="nearby-notify-label">Remind me when to leave</span>
+              <label class="menu-toggle-switch">
+                <input type="checkbox" id="nearby-notify-me" aria-labelledby="nearby-notify-label" />
+                <span class="menu-toggle-track" aria-hidden="true"></span>
+              </label>
+            </div>
+            <button type="button" class="btn-link nearby-leave-hide-btn" id="nearby-leave-hide-btn">
+              Hide
+            </button>
+          </div>
+        </div>
+        <div class="leave-card-actions" id="leave-card-actions" hidden>
+          <button type="button" class="leave-ack-btn" id="leave-ack-btn">I've left</button>
+          <button type="button" class="leave-next-train-btn" id="leave-next-train-btn">Next Train</button>
+        </div>
+      </section>
+
       <section class="nearby-directions" id="nearby-directions" hidden>
         <p class="nearby-directions-label">Other directions</p>
         <ul class="nearby-directions-list" id="nearby-directions-list"></ul>
@@ -213,73 +295,6 @@
           <button type="button" class="btn-secondary nearby-station-btn" id="nearby-station-btn">
             Show departures
           </button>
-        </div>
-      </section>
-
-      <section class="leave-card calm" id="leave-card">
-        <button
-          type="button"
-          class="leave-buffer-edit-btn"
-          id="leave-buffer-edit-btn"
-          hidden
-          aria-label="Edit time to station"
-        >
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M4 7h6M14 7h6M4 12h3M11 12h9M4 17h8M16 17h4"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <circle cx="12" cy="7" r="2" fill="currentColor" />
-            <circle cx="9" cy="12" r="2" fill="currentColor" />
-            <circle cx="15" cy="17" r="2" fill="currentColor" />
-          </svg>
-        </button>
-        <p class="label" id="leave-card-label">Leave by</p>
-        <p class="leave-card-time" id="leave-time">—</p>
-        <p class="leave-card-countdown" id="leave-countdown"></p>
-        <div class="leave-card-actions" id="leave-card-actions" hidden>
-          <button type="button" class="leave-ack-btn" id="leave-ack-btn">I've left</button>
-          <button type="button" class="leave-next-train-btn" id="leave-next-train-btn">Next Train</button>
-        </div>
-        <p class="leave-hint" id="leave-hint" hidden>
-          Adjust your time to station with the sliders
-        </p>
-        <div class="nearby-pin-leave-controls" id="nearby-pin-leave-controls" hidden>
-          <label class="field leave-before-field" id="nearby-leave-before-field">
-            <div class="field-label-row">
-              <span class="field-label">Time to station</span>
-              <span class="field-value" id="nearby-leave-before-value">10 min</span>
-            </div>
-            <div class="leave-before-controls" id="nearby-leave-before-controls">
-              <input
-                type="range"
-                class="leave-before-slider"
-                id="nearby-leave-before-input"
-                min="1"
-                max="30"
-                step="1"
-                value="10"
-              />
-              <div class="range-ticks" aria-hidden="true">
-                <span>1 min</span>
-                <span>30 min</span>
-              </div>
-            </div>
-          </label>
-          <div class="nearby-pin-leave-footer" id="nearby-pin-leave-footer">
-            <div class="nearby-notify-row" id="nearby-notify-section">
-              <span class="nearby-notify-label">Notify me</span>
-              <label class="menu-toggle-switch">
-                <input type="checkbox" id="nearby-notify-me" />
-                <span class="menu-toggle-track" aria-hidden="true"></span>
-              </label>
-            </div>
-            <button type="button" class="btn-link nearby-leave-hide-btn" id="nearby-leave-hide-btn">
-              Hide
-            </button>
-          </div>
         </div>
       </section>
 
@@ -332,11 +347,11 @@
         <div id="onboarding-step-2" class="onboarding-coach-step" hidden>
           <h2 id="onboarding-step-2-title">My Journeys</h2>
           <p>
-            For a trip you take often, save a journey (station, direction, when to leave). Open it
-            anytime from My Journeys.
+            For a trip you take regularly, save your station, target train, active hours, and when to
+            leave. Open <strong>My Journeys</strong> anytime from the tab above.
           </p>
           <div class="onboarding-actions">
-            <button type="button" class="btn-primary" id="onboarding-setup-btn">Set up a journey</button>
+            <button type="button" class="btn-primary" id="onboarding-setup-btn">Add a journey</button>
             <button type="button" class="btn-secondary" id="onboarding-later-btn">Maybe later</button>
           </div>
         </div>
@@ -407,17 +422,19 @@
         <div class="settings-view" id="settings-list-view">
           <div class="settings-list-main">
             <div class="settings-view-header">
-              <h2>My Journeys</h2>
-              <p class="settings-hint">Edit a journey’s station, direction, and timing.</p>
+              <h2 id="journeys-library-title">Routes</h2>
+              <p class="settings-hint" id="journeys-library-hint">See the next train for a station and direction you check often.</p>
             </div>
             <ul class="journey-list" id="journey-list"></ul>
             <div class="journey-templates" id="journey-templates">
-              <div class="journey-create-actions" id="journey-create-actions">
+              <div class="journey-create-actions" id="routes-create-actions" hidden>
                 <button type="button" class="btn-primary journey-create-btn" id="journey-save-route-btn">
-                  Save a route
+                  Add a route
                 </button>
-                <button type="button" class="btn-secondary journey-create-btn" id="journey-setup-commute-btn">
-                  Set up a commute
+              </div>
+              <div class="journey-create-actions" id="commutes-create-actions" hidden>
+                <button type="button" class="btn-primary journey-create-btn" id="journey-setup-commute-btn">
+                  Add a journey
                 </button>
               </div>
               <p class="journey-templates-loading" id="journey-templates-loading" hidden>
@@ -454,7 +471,32 @@
 
         <form class="settings-view settings-form" id="settings-detail-view" hidden>
           <div class="settings-detail-scroll">
-            <button type="button" class="settings-back" id="settings-back">← Journeys</button>
+            <div class="settings-detail-header">
+              <button type="button" class="settings-back" id="settings-back">← Routes</button>
+              <button
+                type="button"
+                class="settings-detail-delete-btn"
+                id="delete-journey-btn"
+                hidden
+                aria-label="Delete route"
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12Z"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M10 11v5M14 11v5"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
 
             <section class="settings-section" id="detail-route-section">
               <label class="field journey-name-field journey-name-field--inline">
@@ -470,39 +512,54 @@
                 </div>
               </label>
               <div id="detail-route-core">
-              <label class="field">
-                <span>Departure station</span>
-                <div class="station-combobox" id="detail-station-combobox">
-                  <input
-                    type="text"
-                    id="detail-station-input"
-                    class="station-combobox-input"
-                    placeholder="Choose station"
-                    autocomplete="off"
-                    readonly
-                    role="combobox"
-                    aria-autocomplete="list"
-                    aria-expanded="false"
-                    aria-controls="detail-station-listbox"
-                  />
-                  <ul
-                    id="detail-station-listbox"
-                    class="station-combobox-list"
-                    role="listbox"
-                    hidden
-                  ></ul>
-                </div>
-                <div class="settings-location-row">
-                  <button type="button" class="btn-link settings-location-btn" id="detail-nearest-btn">
-                    Use nearest station
+              <div class="route-station-group">
+                <label class="field route-field">
+                  <span>Departure station</span>
+                  <div class="station-combobox" id="detail-station-combobox">
+                    <input
+                      type="text"
+                      id="detail-station-input"
+                      class="station-combobox-input"
+                      placeholder="Choose station"
+                      autocomplete="off"
+                      readonly
+                      role="combobox"
+                      aria-autocomplete="list"
+                      aria-expanded="false"
+                      aria-controls="detail-station-listbox"
+                    />
+                    <ul
+                      id="detail-station-listbox"
+                      class="station-combobox-list"
+                      role="listbox"
+                      hidden
+                    ></ul>
+                  </div>
+                </label>
+                <div class="route-nearest-row" id="detail-nearest-row">
+                  <button type="button" class="route-nearest-btn" id="detail-nearest-btn" hidden>
+                    <svg class="route-nearest-btn__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z"
+                        stroke="currentColor"
+                        stroke-width="1.75"
+                        stroke-linejoin="round"
+                      />
+                      <circle cx="12" cy="11" r="2.25" stroke="currentColor" stroke-width="1.75" />
+                    </svg>
+                    <span class="route-nearest-btn__label">Use nearest station</span>
                   </button>
-                  <span class="settings-location-hint" id="detail-nearest-hint" hidden></span>
+                  <p class="route-nearest-hint" id="detail-nearest-hint" hidden></p>
                 </div>
-              </label>
-              <label class="field">
-                <span>Direction of travel</span>
+              </div>
+              <label class="field route-field">
+                <span class="detail-direction-label detail-direction-label--route">Trains to</span>
+                <span class="detail-direction-label detail-direction-label--commute">Direction of travel</span>
                 <select id="detail-direction-select" required></select>
-                <p class="settings-section-hint">
+                <p class="settings-section-hint detail-direction-hint detail-direction-hint--route">
+                  Match the destination on the platform sign.
+                </p>
+                <p class="settings-section-hint detail-direction-hint detail-direction-hint--commute">
                   Platform sign direction — not where you get off.
                 </p>
               </label>
@@ -639,7 +696,7 @@
                 </label>
               </div>
               <p class="settings-section-hint" id="detail-target-master-hint">
-                Pick the train you aim for. Walk time, reminders, and Live countdown sit under this.
+                Pick the train you aim for. Walk time and reminders sit under this.
               </p>
 
               <div class="detail-target-nest" id="detail-target-nest" hidden>
@@ -678,29 +735,10 @@
                         <span class="menu-toggle-track" aria-hidden="true"></span>
                       </label>
                     </div>
-                    <div
-                      class="menu-toggle-row detail-remind-toggle-row reminders-strip-option"
-                      id="leave-reminders-strip-wrap"
-                    >
-                      <span class="menu-toggle-title">Live countdown</span>
-                      <label class="menu-toggle-switch">
-                        <input type="checkbox" id="leave-reminders-commute-strip" />
-                        <span class="menu-toggle-track" aria-hidden="true"></span>
-                      </label>
-                    </div>
                   </div>
                 </div>
               </div>
             </section>
-
-            <div class="detail-upgrade-commute" id="detail-upgrade-commute-wrap" hidden>
-              <button type="button" class="btn-secondary detail-upgrade-commute-btn" id="detail-upgrade-commute-btn">
-                Turn into a commute
-              </button>
-              <p class="settings-section-hint detail-upgrade-commute-hint">
-                Add active hours, target train, and reminders when you&rsquo;re ready.
-              </p>
-            </div>
 
           </div>
         </form>
@@ -735,11 +773,8 @@
             <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>
               <h2 id="template-wizard-step-reminder-title">Reminders</h2>
               <p>
-                We&rsquo;ll nudge you when it&rsquo;s time to leave for your train.
-              </p>
-              <p>
-                <strong>Live Countdown</strong><br />
-                stays in your notifications so you can glance on the way.
+                We&rsquo;ll nudge you when it&rsquo;s time to leave for your train, with a
+                countdown in your notifications on the way.
               </p>
             </div>
             <div class="template-wizard-actions">
@@ -757,29 +792,6 @@
               Save
             </button>
           </div>
-          <button
-            type="button"
-            class="journey-delete-icon-btn"
-            id="delete-journey-btn"
-            hidden
-            aria-label="Delete journey"
-          >
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12Z"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M10 11v5M14 11v5"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-              />
-            </svg>
-          </button>
         </div>
       </div>
     </div>
@@ -938,6 +950,19 @@
       </div>
     </dialog>
 
+    <dialog class="confirm-dialog" id="delete-journey-dialog" aria-labelledby="delete-journey-dialog-title">
+      <div class="confirm-dialog-body">
+        <h2 id="delete-journey-dialog-title">Delete Route?</h2>
+        <p id="delete-journey-dialog-body">
+          Are you sure you want to delete this route? This action cannot be undone.
+        </p>
+        <div class="confirm-dialog-actions">
+          <button type="button" class="btn-secondary" id="delete-journey-cancel-btn">Cancel</button>
+          <button type="button" class="btn-danger" id="delete-journey-confirm-btn">Delete</button>
+        </div>
+      </div>
+    </dialog>
+
     <dialog class="help-dialog feedback-dialog" id="feedback-dialog">
       <div class="help-dialog-body">
         <h2 id="feedback-dialog-title">Send feedback</h2>
@@ -1033,7 +1058,7 @@
             (or until you unpin). While pinned, a <strong>Leave by</strong> card appears with
             <strong>Time to station</strong>, and <strong>Other directions</strong> hides to
             free space. Turn on <strong>Tell me when to leave</strong> if you want a
-            leave reminder and Live countdown — pin alone does not ask for notification
+            leave reminder — pin alone does not ask for notification
             permission. A pinned train also shows on the home screen widget while the pin holds.
           </li>
           <li>
@@ -1062,10 +1087,9 @@
           </li>
           <li>
             <strong>Reminders</strong> — Turn on <strong>Target train</strong>, set the time, then
-            use <strong>Remind me</strong>. We&rsquo;ll send a notification when it&rsquo;s time to leave.
-            <strong>Live countdown</strong> keeps the countdown in your notifications
-            (and replaces the Leave now notification while it&rsquo;s on). Pause anytime
-            from <strong>Menu → Pause reminders</strong>.
+            <strong>Remind me</strong> sends a leave notification and keeps a live countdown in
+            your notifications (replaces the separate Leave now ping while it&rsquo;s running).
+            Pause anytime from <strong>Menu → Pause reminders</strong>.
             We pick the first train at or after your target time.
           </li>
           <li>

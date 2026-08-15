@@ -1,4 +1,6 @@
-/** Click Save a route (FB-23 route create). */
+/** Open Commutes library and start a custom commute. */
 export async function openCustomJourneyCreate(page) {
-  await page.locator("#journey-save-route-btn").click();
+  await page.evaluate(() => window.nextTrainApp.openCommutesLibrary?.());
+  await page.waitForTimeout(400);
+  await page.locator("#journey-setup-commute-btn").click();
 }

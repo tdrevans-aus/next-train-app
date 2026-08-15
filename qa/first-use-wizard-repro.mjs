@@ -1,5 +1,5 @@
 /**
- * Full first-use: onboarding coach → Set up → Morning template wizard.
+ * Full first-use: onboarding coach → Add a journey → custom template wizard.
  * Usage: node qa/first-use-wizard-repro.mjs
  */
 import { chromium } from "playwright";
@@ -40,26 +40,31 @@ async function run() {
   await page.locator("#onboarding-setup-btn").click();
   await page.waitForTimeout(2500);
 
-  const afterMorning = await page.evaluate(() => ({
+  const afterSetup = await page.evaluate(() => ({
     coachOpen: !document.getElementById("template-route-coach").hidden,
     detailOpen: !document.getElementById("settings-detail-view").hidden,
     wizardSeen: localStorage.getItem("nextTrainTemplateWizardSeen"),
     configuredCount: JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.filter(
       (j) => j.station && j.direction
     ).length,
-    coachTitle: document.getElementById("template-wizard-step-name-title")?.textContent?.trim(),
+    coachTitle: document.getElementById("template-wizard-step-1-title")?.textContent?.trim(),
   }));
 
-  console.log("After Morning tap:", afterMorning);
+  console.log("After Add a journey:", afterSetup);
 
   await browser.close();
 
-  if (!afterMorning.coachOpen) {
-    console.error("FAIL — template wizard did not appear on first Morning setup");
+  if (!afterSetup.coachOpen || !afterSetup.detailOpen) {
+    console.error("FAIL — custom journey wizard did not open from onboarding");
     process.exit(1);
   }
 
-  console.log("PASS — full first-use wizard flow");
+  if (afterSetup.coachTitle !== "Pick your route") {
+    console.error("FAIL — expected custom route wizard, got:", afterSetup.coachTitle);
+    process.exit(1);
+  }
+
+  console.log("PASS — full first-use custom journey wizard");
 }
 
 run().catch((error) => {

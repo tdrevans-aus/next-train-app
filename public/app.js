@@ -1585,8 +1585,9 @@ function preferredMinutesFromJourney(journey) {
 }
 
 function getCommutesMatchingSchedule(minutes = getPerthMinutesSinceMidnight()) {
+  const day = getPerthDayOfWeekIso();
   return getConfiguredJourneys().filter(
-    (journey) => isCommuteJourney(journey) && journeyMatchesSchedule(journey, minutes)
+    (journey) => isCommuteJourney(journey) && journeyMatchesSchedule(journey, minutes, day)
   );
 }
 
@@ -2419,6 +2420,7 @@ function setHeroUrgency(leavePhase) {
       className === "stale" ||
       className === "hero-setup" ||
       className === "hero--target-train" ||
+      className === "hero--pinned-train" ||
       className === "locating"
   );
   heroEl.className = `hero ${urgencyPhaseClass(leavePhase)}`;
@@ -3526,7 +3528,34 @@ function syncHeroPinChrome() {
       !isJourneyOverrideActiveToday(journeyPinClean);
     showTargetTrainChrome = Boolean(heroShowsTargetPin);
   }
+
+  let showPinnedTrainChrome = false;
+  if (!showTargetTrainChrome && lastRenderedNext) {
+    if (nearbyActive && pinHolding) {
+      const entry = getNearbyFocusedEntry();
+      showPinnedTrainChrome =
+        Boolean(entry?.direction) &&
+        getNearbySkip(entry.direction) === 0 &&
+        isNearbyPinShowing(entry.direction);
+    } else if (journeyModeActive && journey) {
+      const pinTrip = resolveJourneyPinTrip(lastApiData, journey);
+      const heroOnPin =
+        pinTrip &&
+        journeysDepartureMatch(lastRenderedNext, pinTrip) &&
+        skipTrains === 0;
+      if (heroOnPin) {
+        if (isRouteJourney(journey) && isRoutePinnedToday(journey)) {
+          showPinnedTrainChrome = true;
+        } else if (isCommuteJourney(journey)) {
+          const journeyPinClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+          showPinnedTrainChrome = isJourneyOverrideActiveToday(journeyPinClean);
+        }
+      }
+    }
+  }
+
   heroEl?.classList.toggle("hero--target-train", showTargetTrainChrome);
+  heroEl?.classList.toggle("hero--pinned-train", showPinnedTrainChrome);
 
   if (heroPinBtn) {
     if (nearbyActive) {
@@ -5211,7 +5240,11 @@ function getPerthDayOfWeekIso(date) {
 }
 function getJourneyRemindDays(journey) { return journeyModel().getJourneyRemindDays(journey); }
 function journeyMatchesActiveDay(journey, day) { return journeyModel().journeyMatchesActiveDay(journey, day); }
-function journeyMatchesSchedule(journey, minutes, day) { return journeyModel().journeyMatchesSchedule(journey, minutes, day); }
+function journeyMatchesSchedule(journey, minutes, day) {
+  const resolvedMinutes = minutes === undefined ? getPerthMinutesSinceMidnight() : minutes;
+  const resolvedDay = day === undefined ? getPerthDayOfWeekIso() : day;
+  return journeyModel().journeyMatchesSchedule(journey, resolvedMinutes, resolvedDay);
+}
 function journeyRemindMeEnabled(raw) { return journeyModel().journeyRemindMeEnabled(raw); }
 function inferTemplateKey(raw) { return journeyModel().inferTemplateKey(raw); }
 function isCommuteJourney(journey) { return journeyModel().isCommuteJourney(journey); }
@@ -5745,10 +5778,12 @@ window.nextTrainApp = {
   formatJourneyRoute,
   persistReminderJourneys,
   getPerthDayOfWeekIso,
+  getPerthMinutesSinceMidnight,
   journeyMatchesSchedule,
   findScheduledJourneyId,
   pickScheduledCommute,
   getCommutesMatchingSchedule,
+  maybeAutoSelectJourney,
   isRouteJourney,
   renderRouteJourney,
   shouldDefaultToNearby,

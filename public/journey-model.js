@@ -7,7 +7,7 @@
   const DEFAULT_REMIND_DAYS = [1, 2, 3, 4, 5];
   const JOURNEY_KIND_ROUTE = "route";
   const JOURNEY_KIND_COMMUTE = "commute";
-  const COMMUTE_TEMPLATE_KEYS = new Set(["morning", "evening"]);
+  const COMMUTE_TEMPLATE_KEYS = new Set(["morning", "evening", "custom"]);
   /** FB-23: one-time journey reset + route vs commute schema. */
   const SETTINGS_SCHEMA_VERSION = 2;
   const COMMUTE_UPGRADE_DEFAULTS = {
@@ -62,9 +62,6 @@ function stripCommuteFieldsForRoute(journey) {
   journey.defaultUntil = "";
   journey.preferredTrainTime = "";
   journey.remindMe = false;
-  journey.journeyPinOverrideIso = "";
-  journey.journeyPinOverrideDate = "";
-  journey.journeyPinDismissedDate = "";
   delete journey.templateKey;
   return journey;
 }
@@ -284,6 +281,7 @@ function normalizeJourney(raw = {}) {
     journeyPinDismissedDate,
     remindDays: normalizeRemindDays(raw.remindDays),
     remindMe: journeyRemindMeEnabled(raw),
+    pinNotifyMe: raw.pinNotifyMe === true,
     kind: inferJourneyKind(raw, { templateKey, preferredTrainTime }),
   };
 

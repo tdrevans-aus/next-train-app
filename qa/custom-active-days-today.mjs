@@ -63,6 +63,22 @@ async function run() {
     process.exitCode = 1;
   }
 
+  const toggleDay = today === 7 ? 6 : 7;
+  await page.locator(`#detail-active-day-chips [data-day="${toggleDay}"]`).click();
+  const afterToggle = await page.evaluate((day) => {
+    const active = [...document.querySelectorAll("#detail-active-day-chips .remind-day-chip--active")].map(
+      (chip) => Number(chip.dataset.day)
+    );
+    return { active, toggledDay: day };
+  }, toggleDay);
+
+  if (!afterToggle.active.includes(toggleDay)) {
+    console.error("FAIL — Active day chip did not toggle", afterToggle);
+    process.exitCode = 1;
+  } else {
+    console.log(`PASS — Active day chip toggles (day ${toggleDay})`);
+  }
+
   await page.evaluate(() => window.nextTrainApp.openJourneys());
   await page.waitForTimeout(400);
   await page.locator('[data-template="morning"]').click();

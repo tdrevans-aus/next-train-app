@@ -1,0 +1,66 @@
+{
+  "id": "journey-skip-past-target-slot",
+  "description": "Target at upcoming[1]; skip preview must not reuse the same departure.",
+  "tags": ["journey", "skip", "preferred"],
+  "clock": {
+    "perthDateKey": "2026-08-15",
+    "nowIso": "2026-08-15T06:45:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 2,
+    "journey": {
+      "id": "j-fixture-skip-slot",
+      "station": "Edgewater Stn",
+      "direction": "Perth",
+      "preferredTrainTime": "07:30",
+      "defaultFrom": "00:00",
+      "defaultUntil": "23:59",
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-15T07:00:00+08:00",
+        "displayTime": "7:00",
+        "platform": "2"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-15T07:00:00+08:00",
+          "displayTime": "7:00",
+          "platform": "2"
+        },
+        {
+          "departure": "2026-08-15T07:30:00+08:00",
+          "displayTime": "7:30",
+          "platform": "1"
+        },
+        {
+          "departure": "2026-08-15T08:00:00+08:00",
+          "displayTime": "8:00",
+          "platform": "1"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-15T07:00:00+08:00",
+    "pinDeparture": "2026-08-15T07:30:00+08:00",
+    "heroDeparture": "2026-08-15T08:00:00+08:00",
+    "leaveDeparture": "2026-08-15T07:30:00+08:00",
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": "2026-08-15T07:30:00+08:00",
+    "isPinnedToday": true,
+    "heroShowsPin": false,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": true,
+    "isHeroPinLockingSwipe": false,
+    "showSecondaryNext": false,
+    "leaveCardArmed": true,
+    "heroLabel": "Later train"
+  },
+  "notes": "After swiping from target at index 1, skipTrains should be 2 (8:00), not 1 (same 7:30)."
+}

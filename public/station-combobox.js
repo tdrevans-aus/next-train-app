@@ -128,11 +128,70 @@
       dropdown.insertBefore(searchInput, list);
     }
 
+    const isDetailPicker = root.id === "detail-station-combobox";
     let selectedValue = "";
     let activeIndex = -1;
     let suppressBlurClose = false;
     let suppressOpenUntil = 0;
     let mode = "closed";
+    let detailPositionListeners = [];
+
+    function clearDetailDropdownPositionListeners() {
+      for (const [target, event, handler] of detailPositionListeners) {
+        target.removeEventListener(event, handler);
+      }
+      detailPositionListeners = [];
+    }
+
+    function resetDetailDropdownPosition() {
+      if (!isDetailPicker) {
+        return;
+      }
+      clearDetailDropdownPositionListeners();
+      dropdown.style.position = "";
+      dropdown.style.left = "";
+      dropdown.style.width = "";
+      dropdown.style.right = "";
+      dropdown.style.top = "";
+      dropdown.style.zIndex = "";
+    }
+
+    function syncDetailDropdownPosition() {
+      if (!isDetailPicker || mode === "closed" || dropdown.hidden) {
+        return;
+      }
+
+      const rect = trigger.getBoundingClientRect();
+      const gap = 4;
+      dropdown.style.position = "fixed";
+      dropdown.style.left = `${rect.left}px`;
+      dropdown.style.width = `${rect.width}px`;
+      dropdown.style.right = "auto";
+      dropdown.style.top = `${Math.round(rect.bottom + gap)}px`;
+      dropdown.style.zIndex = "10002";
+    }
+
+    function bindDetailDropdownPositionListeners() {
+      if (!isDetailPicker) {
+        return;
+      }
+
+      clearDetailDropdownPositionListeners();
+      const handler = () => syncDetailDropdownPosition();
+      const scrollRoot = document.querySelector("#settings-detail-view .settings-detail-scroll");
+      const dialog = document.getElementById("journeys-dialog");
+
+      for (const target of [window, scrollRoot, dialog]) {
+        if (!target) {
+          continue;
+        }
+        target.addEventListener("scroll", handler, { passive: true });
+        detailPositionListeners.push([target, "scroll", handler]);
+      }
+
+      window.addEventListener("resize", handler);
+      detailPositionListeners.push([window, "resize", handler]);
+    }
 
     function canOpenPicker() {
       return Date.now() >= suppressOpenUntil;
@@ -172,6 +231,7 @@
       searchInput.hidden = true;
       searchInput.value = "";
       setFooterHidden(false);
+      resetDetailDropdownPosition();
       if (restoreSelection) {
         updateTriggerLabel();
       }
@@ -246,7 +306,14 @@
       searchInput.value = "";
       setExpanded(true);
       setFooterHidden(true);
-      void ensureStationsLoaded().then(() => renderList(""));
+      void ensureStationsLoaded().then(() => {
+        renderList("");
+        if (isDetailPicker) {
+          syncDetailDropdownPosition();
+          bindDetailDropdownPositionListeners();
+          window.requestAnimationFrame(syncDetailDropdownPosition);
+        }
+      });
     }
 
     function enterSearchMode() {
@@ -256,6 +323,10 @@
       searchInput.value = "";
       void ensureStationsLoaded().then(() => {
         renderList("");
+        if (isDetailPicker) {
+          syncDetailDropdownPosition();
+          window.requestAnimationFrame(syncDetailDropdownPosition);
+        }
         window.setTimeout(() => {
           searchInput.focus();
         }, 0);

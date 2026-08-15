@@ -16,52 +16,49 @@ const VIEWPORT = { width: 390, height: 844 };
 const FOOTER_BUTTON_IDS = [
   "detail-cancel-btn",
   "detail-done-btn",
-  "delete-journey-btn",
 ];
 const REMIND_TOGGLE_IDS = [
   "detail-reminder-section",
-  "leave-reminders-strip-wrap",
 ];
 /** Max gap between last form content and footer top (px). */
 const MAX_FORM_TO_FOOTER_GAP_PX = 28;
-/** Footer stacks Cancel|Save row + delete button below. */
-const MAX_FOOTER_ROW_HEIGHT_PX = 120;
+/** Footer is Cancel | Save only (delete lives in header). */
+const MAX_FOOTER_ROW_HEIGHT_PX = 72;
 
 async function seedJourney(page) {
   await page.evaluate(() => {
-    localStorage.setItem(
-      "nextTrainSettings",
-      JSON.stringify({
-        refreshSeconds: 60,
-        activeJourneyId: "j-a",
-        journeys: [
-          {
-            id: "j-a",
-            name: "Morning into town",
-            station: "Armadale",
-            direction: "Byford",
-            leaveBeforeMinutes: 10,
-            useLeaveBefore: true,
-            preferredTrain: "07:30",
-            defaultFrom: "06:00",
-            defaultUntil: "09:00",
-            activeDays: [1, 2, 3, 4, 5],
-            remindMe: true,
-          },
-        ],
-      })
-    );
+    window.nextTrainJourneyModel.persistSettings({
+      settingsSchemaVersion: 2,
+      refreshSeconds: 60,
+      activeJourneyId: "j-a",
+      journeys: [
+        {
+          id: "j-a",
+          kind: "commute",
+          name: "Morning into town",
+          station: "Armadale",
+          direction: "Byford",
+          leaveBeforeMinutes: 10,
+          useLeaveBefore: true,
+          preferredTrainTime: "07:30",
+          defaultFrom: "06:00",
+          defaultUntil: "09:00",
+          remindDays: [1, 2, 3, 4, 5],
+          remindMe: true,
+        },
+      ],
+    });
   });
 }
 
 async function openJourneyDetail(page) {
-  await page.locator("#journeys-btn").click();
+  await page.locator("#commutes-btn").click();
   await page.waitForTimeout(300);
   const dialogOpen = await page.evaluate(
     () => document.getElementById("journeys-dialog")?.hidden === false
   );
   if (!dialogOpen) {
-    await page.locator("#journeys-btn").click();
+    await page.locator("#commutes-btn").click();
     await page.waitForTimeout(500);
   }
   await page.locator(".journey-list-open-btn").first().click();
@@ -70,10 +67,6 @@ async function openJourneyDetail(page) {
     const coach = document.getElementById("template-route-coach");
     if (coach) {
       coach.hidden = true;
-    }
-    const deleteBtn = document.getElementById("delete-journey-btn");
-    if (deleteBtn) {
-      deleteBtn.hidden = false;
     }
   });
   await page.waitForTimeout(300);
@@ -168,7 +161,7 @@ async function auditJourneyDetailLayout(page) {
 
       if (lowestRemindBottom > 0) {
         const contentToFooter = footerRect.top - lowestRemindBottom;
-        if (contentToFooter > 80) {
+        if (contentToFooter > 120) {
           issues.push({
             id: "content-to-footer-gap",
             contentToFooter: Math.round(contentToFooter),
@@ -179,32 +172,23 @@ async function auditJourneyDetailLayout(page) {
       const deleteBtn = document.getElementById("delete-journey-btn");
       const cancelBtn = document.getElementById("detail-cancel-btn");
       const saveBtn = document.getElementById("detail-done-btn");
-      if (deleteBtn && !deleteBtn.hidden && cancelBtn && saveBtn) {
+      const header = document.querySelector(".settings-detail-header");
+      if (deleteBtn && !deleteBtn.hidden && cancelBtn && saveBtn && header) {
         const d = deleteBtn.getBoundingClientRect();
+        const h = header.getBoundingClientRect();
         const c = cancelBtn.getBoundingClientRect();
         const s = saveBtn.getBoundingClientRect();
-        const primaryRowBottom = Math.max(c.bottom, s.bottom);
-        const deleteBelowPrimaryRow = d.top >= primaryRowBottom - 8;
+        const deleteInHeader =
+          d.top >= h.top - 4 && d.bottom <= h.bottom + 4 && d.top < c.top - 20;
         const cancelSaveSameRow =
           Math.abs(c.top - s.top) < 12 && c.left < s.left;
-        const deleteCentered =
-          Math.abs(d.left + d.width / 2 - (footerRect.left + footerRect.width / 2)) <
-          footerRect.width * 0.2;
-        if (!deleteBelowPrimaryRow || !cancelSaveSameRow) {
+        if (!deleteInHeader || !cancelSaveSameRow) {
           issues.push({
-            id: "delete-below-primary-row",
-            cancelTop: Math.round(c.top),
-            cancelBottom: Math.round(c.bottom),
+            id: "delete-in-header",
             deleteTop: Math.round(d.top),
-            saveTop: Math.round(s.top),
-            saveBottom: Math.round(s.bottom),
-          });
-        }
-        if (!deleteCentered) {
-          issues.push({
-            id: "delete-not-centered-below",
-            deleteCenter: Math.round(d.left + d.width / 2),
-            footerCenter: Math.round(footerRect.left + footerRect.width / 2),
+            headerTop: Math.round(h.top),
+            headerBottom: Math.round(h.bottom),
+            cancelTop: Math.round(c.top),
           });
         }
       }

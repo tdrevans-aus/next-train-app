@@ -3,6 +3,52 @@
  */
 export const BASE = "http://localhost:3000";
 
+export const PERTH_GEO_CONTEXT = {
+  geolocation: { latitude: -31.77, longitude: 115.99 },
+  permissions: ["geolocation"],
+};
+
+export async function waitForMorningTemplateRoute(page, { timeout = 20000 } = {}) {
+  await page.waitForFunction(
+    () => {
+      const coach = document.getElementById("template-route-coach-body")?.textContent?.trim() ?? "";
+      if (coach.length > 0) {
+        return true;
+      }
+      const journey = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0];
+      return journey?.station === "Edgewater Stn" && journey?.direction === "Perth";
+    },
+    null,
+    { timeout }
+  );
+}
+
+export async function readMorningTemplateMeta(page) {
+  return page.evaluate(() => {
+    const journey = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0];
+    if (journey?.station) {
+      return {
+        name: journey.name,
+        station: journey.station,
+        direction: journey.direction,
+        defaultFrom: journey.defaultFrom,
+        defaultUntil: journey.defaultUntil,
+        coachText: document.getElementById("template-route-coach-body")?.textContent?.trim() ?? "",
+      };
+    }
+
+    const coachText = document.getElementById("template-route-coach-body")?.textContent?.trim() ?? "";
+    return {
+      name: "Morning into town",
+      station: /Edgewater/i.test(coachText) ? "Edgewater Stn" : "",
+      direction: /Perth/i.test(coachText) ? "Perth" : "",
+      defaultFrom: document.getElementById("detail-default-from")?.value ?? "",
+      defaultUntil: document.getElementById("detail-default-until")?.value ?? "",
+      coachText,
+    };
+  });
+}
+
 export function perthMinutesFromNow(offsetMinutes) {
   const formatter = new Intl.DateTimeFormat("en-AU", {
     timeZone: "Australia/Perth",
@@ -75,11 +121,13 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 30,
           activeJourneyId: jId,
           journeys: [
             {
               id: jId,
+              kind: "commute",
               name: "Morning commute",
               station: stationName,
               direction: directionName,
@@ -148,11 +196,13 @@ export async function armFixtureLeaveCard(
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 30,
           activeJourneyId: jId,
           journeys: [
             {
               id: jId,
+              kind: "commute",
               name: "Morning commute",
               station: stationName,
               direction: directionName,
@@ -216,11 +266,13 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
+        settingsSchemaVersion: 2,
         refreshSeconds: 30,
         activeJourneyId,
         journeys: [
           {
             id: "j-in-smoke",
+            kind: "commute",
             name: "Daily Commute - in",
             station: "Edgewater Stn",
             direction: "Perth",
@@ -232,6 +284,7 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
           },
           {
             id: "j-out-smoke",
+            kind: "commute",
             name: "Daily Commute - out",
             station: "Perth Stn",
             direction: "Mandurah",

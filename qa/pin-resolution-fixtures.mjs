@@ -44,6 +44,7 @@ const TAGS = new Set([
   "preferred",
   "skip",
   "secondary-next",
+  "outside-hours",
   "native-parity",
 ]);
 

@@ -98,6 +98,59 @@ public final class JourneyPinHelper {
     return null;
   }
 
+  public static PreferredTrainReminder.Target computeRoutePinTarget(
+    JSONObject journey,
+    int leaveBeforeMinutes,
+    boolean stale
+  ) throws Exception {
+    if (journey == null || !JourneySelector.isRouteJourney(journey) || !isOverrideActiveToday(journey)) {
+      return null;
+    }
+
+    String station = journey.optString("station", "");
+    String direction = journey.optString("direction", "");
+    String departureIso = journey.optString("journeyPinOverrideIso", "");
+    if (station.isEmpty() || direction.isEmpty() || departureIso.isEmpty()) {
+      return null;
+    }
+
+    long departureMs = PerthTime.epochMillisFromIso(departureIso);
+    long now = System.currentTimeMillis();
+    if (departureMs <= 0 || departureMs <= now) {
+      return null;
+    }
+
+    JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes);
+    JSONObject trip = findTripByDeparture(CommuteSchedule.collectUpcomingTrips(payload), departureIso);
+    if (trip == null) {
+      return null;
+    }
+
+    String leaveByIso = trip.optString("leaveBy", "");
+    long leaveByMs = PerthTime.epochMillisFromIso(leaveByIso);
+    if (leaveByMs <= 0) {
+      leaveByMs = departureMs - leaveBeforeMinutes * 60_000L;
+    }
+
+    String journeyId = journey.optString("id", "");
+    if (journeyId.isEmpty()) {
+      return null;
+    }
+
+    PreferredTrainReminder.Target target = new PreferredTrainReminder.Target();
+    target.journeyId = journeyId;
+    target.route = WidgetDataService.formatRoute(journey);
+    target.trainTime =
+      trip.optString("displayTime", PerthTime.formatClockFromEpochMs(departureMs));
+    target.departureIso = departureIso;
+    String localDate = PerthTime.localDateKey();
+    target.dayKey = journeyId + ":" + localDate;
+    target.departureKey = journeyId + ":" + departureIso;
+    target.leaveByMs = leaveByMs;
+    target.stale = stale;
+    return target;
+  }
+
   /** Reminder / strip targeting uses the same pin resolution as the widget face. */
   public static JSONObject pickTripForReminders(
     JSONObject journey,

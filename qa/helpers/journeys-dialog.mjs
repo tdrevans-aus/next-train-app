@@ -20,17 +20,15 @@ export async function closeJourneysDialog(page) {
   await page.waitForTimeout(300);
 }
 
-export async function openJourneysDialog(page) {
+/** Open Commutes library sheet. */
+export async function openCommutesLibraryDialog(page) {
   await closeJourneysDialog(page);
-  const inJourneyMode = await page.locator("#journeys-btn").getAttribute("aria-pressed");
-  if (inJourneyMode === "true") {
-    await page.evaluate(() => window.nextTrainApp?.openJourneys?.());
-  } else {
-    await page.locator("#journeys-btn").click();
-    await page.waitForTimeout(500);
-    await page.locator("#journeys-btn").click();
-  }
+  await page.evaluate(() => window.nextTrainApp.openCommutesLibrary?.());
   await page.waitForTimeout(800);
+}
+
+export async function openJourneysDialog(page) {
+  await openCommutesLibraryDialog(page);
 }
 
 export async function dismissTemplateCoach(page) {
@@ -57,8 +55,20 @@ export async function enableTargetTrainOnDetail(page) {
 
 export async function openJourneyDetail(page, journeyId, options = {}) {
   await openJourneysDialog(page);
-  await page.locator(`.journey-list-item[data-journey-id="${journeyId}"] .journey-list-open-btn`).click();
-  await page.waitForTimeout(1500);
+  const opened = await page.evaluate(async (id) => {
+    if (typeof window.nextTrainApp?.openJourneyDetail !== "function") {
+      return false;
+    }
+    await window.nextTrainApp.openJourneyDetail(id);
+    return true;
+  }, journeyId);
+  if (!opened) {
+    await page
+      .locator(`.journey-list-item[data-journey-id="${journeyId}"] .journey-list-open-btn`)
+      .click({ timeout: 15000 });
+  }
+  await page.waitForSelector("#settings-detail-view", { state: "visible", timeout: 15000 });
+  await page.waitForTimeout(400);
   if (options.enableTargetTrain) {
     await enableTargetTrainOnDetail(page);
   }

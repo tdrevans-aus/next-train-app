@@ -24,8 +24,8 @@
 | Topic | Lock |
 |-------|------|
 | Storage | Same `settings.journeys[]`; add/use `kind: "route"` \| `"commute"` |
-| Chrome | One **My Journeys** tab (no second tab) |
-| **Route** | Station + direction; board-style face; **no** Active hours, Target train, Remind me, or leave-by card |
+| Chrome | **Four** top icons: **Near me · Routes · Commutes · Menu** (Q7) |
+| **Route** | Station + **platform destination** (Q8); board-style face; **no** Active hours, Target train, Remind me, or leave-by card |
 | **Commute** | Full existing commute form: Active hours, Target train, Remind me, pin, leave-by, template wizard |
 | Upgrade | Route → Commute in one action if cheap (**yes** — ship v1) |
 | Widget | **Any** saved route **or** active commute (not commute-only) |
@@ -60,7 +60,7 @@
 - Clears journey-related widget snapshot / pin session keys as needed
 - Bumps a `settingsMigrationVersion` (or equivalent) so it runs once
 
-**Release notes:** tell closed testers their saved journeys were reset — set up again with **Save a route** or **Set up a commute**.
+**Release notes:** tell closed testers their saved journeys were reset — set up again with **Add a route** or **Set up a commute**.
 
 **Public launch later:** if real users exist before FB-23, revisit inference backfill (old Q3 A/B) — not needed for current closed-test cohort.
 
@@ -156,7 +156,52 @@ Priority order (proposal — confirm or edit):
 
 ---
 
-### Sign-off
+### Q7 — Main chrome: how do users reach routes vs commutes? (Tim, 15 Aug 2026)
+
+| | Option | Implication |
+|---|--------|-------------|
+| ☑ | **A** — **Four top icons:** Near me · **Routes** · **Commutes** · Menu | Routes and commutes are peers; route create/edit is **not** inside My Journeys |
+| ☐ | **B** — Single **My Journeys** sheet with Save a route / Set up a commute | Shipped in Phase 2; **superseded** |
+
+**Tim’s lock:** **A**
+
+**Chrome order (LTR):** Near me · Routes · Commutes · Menu
+
+| Tab | Job |
+|-----|-----|
+| **Near me** | Unchanged — ephemeral nearest-station board |
+| **Routes** | Saved routes list + **dedicated route screen** (departure station + direction only). Selecting a route shows route hero (departure board). |
+| **Commutes** | Commute list + setup (wizard / full form). Selecting a commute shows commute hero (pin, leave-by). |
+| **Menu** | Unchanged — settings, help, pro, etc. |
+
+**Route screen fields (only):** Departure station · **Trains to** (platform destination) · Save / Delete.  
+**No name field** — list and hero label auto from `Station → Direction`.  
+**No commute templates** on Routes library — **Add a route** only.
+
+**Supersedes:** `docs/chrome-modes-and-labels.md` §1 “3 icons” and FB-23 §5.1 “My Journeys list header” create buttons.
+
+---
+
+### Q8 — Route filter: what does “direction” mean? (Tim, 15 Aug 2026)
+
+| | Option | Implication |
+|---|--------|-------------|
+| ☑ | **A** — **Platform destination (strict)** — filter by what the **departure board sign** shows for each train; collapse **short-turn groups only** (e.g. Whitfords→Yanchep, Claremont→Fremantle) | Saved board matches the platform; **Perth ≠ Fremantle** |
+| ☐ | **B** — **Corridor direction** — merge everything heading the same way (e.g. Airport “toward city” = Perth + Fremantle) | Fewer routes; shows trains you can’t use |
+| ☐ | **C** — Destination + optional “include shorter runs” | Extra toggle; deferred |
+| ☐ | **D** — **Alighting station** (e.g. North Fremantle) — only trains that **stop** there | Needs GTFS stop patterns LiveTimes doesn’t expose; **deferred** |
+
+**Tim’s lock:** **A**
+
+**Rules (Jim):**
+
+- Route editor label: **Trains to** (not “Direction of travel”). Hint: *Match the destination on the platform sign.*
+- Commute editor unchanged: **Direction of travel** + *Platform sign direction — not where you get off.*
+- Filter uses existing `destinationMatchesFilter` / `LINE_DIRECTION_GROUPS` — **do not** add Perth↔Fremantle or other cross-terminus merges.
+- Direction picker: list destinations that appear on **this station’s live board** (static line-map fallback only when live is empty).
+- Storage field stays `journey.direction` (API name unchanged).
+
+---
 
 | Role | Name | Date |
 |------|------|------|
@@ -168,34 +213,43 @@ Priority order (proposal — confirm or edit):
 
 ## 5. UX spec (after §4 locked)
 
-### 5.1 Create entry (replaces ambiguous template row)
+> **Update (Tim, 15 Aug 2026):** Q7 splits chrome into **Routes** and **Commutes** tabs. §5.1–5.3 below describe list/detail behaviour **per type**; entry is via the relevant tab, not a combined My Journeys create row.
 
-**My Journeys** list header:
+### 5.1 Routes tab
 
-```
-[ Save a route ]          → blank route: name, station, direction, save
-[ Set up a commute ]      → Morning / Evening chips → existing template wizard
-```
+- **List:** saved routes with **Route** badge; single line `Station → Direction` (no separate name).
+- **Create:** **Add a route** → route screen (station + **Trains to** per Q8) → Save.
+- **Edit route:** same route screen.
+- No wizard, no templates, no Active hours, no Target train, no Remind me, no **Turn into a commute** on this screen (v1).
+- **Board filter:** strict platform destination (Q8) — e.g. Fremantle route excludes Perth-terminating trains.
 
-- Remove standalone **Custom** chip (FB-29 Add journey stays; shortcuts become commute-only).
-- **Route** create: no wizard, no Active hours step.
+### 5.2 Commutes tab
 
-### 5.2 List
+- **List:** saved commutes with **Commute** badge; subtitle window + Target summary.
+- **Create:** **Set up a commute** → Morning / Evening chips → existing template wizard.
+- **Edit:** full commute detail form (unchanged).
+
+### 5.3 Create entry (superseded — was My Journeys header)
+
+~~**My Journeys** list header: Add a route / Set up a commute~~ → see §5.1 / §5.2.
+
+### 5.4 List (legacy — now per-tab)
 
 - Badge on each row: **Route** | **Commute**
 - Route subtitle: `Station → Direction` only
 - Commute subtitle: window + Target summary (today’s copy)
 
-### 5.3 Detail form
+### 5.5 Detail form
 
 | Section | Route | Commute |
 |---------|-------|---------|
-| Name, station, direction | ✓ | ✓ |
+| Name | hidden (auto `Station → Direction`) | ✓ |
+| Station, direction | ✓ | ✓ |
 | Active from / until | hidden | ✓ |
 | Target train | hidden | ✓ |
 | Remind me | hidden | ✓ |
 | Time to station / leave sliders | hidden | ✓ |
-| **Turn into a commute** | ✓ (upgrade CTA) | — |
+| **Turn into a commute** | hidden (v1) | — |
 
 ### 5.4 Commute hero
 
@@ -205,10 +259,11 @@ Unchanged from v2.2.x pin + Target train + leave-by (FB-14 / FB-20).
 
 Per **Q1** lock. **No** leave card, **no** pin, **no** Remind me. Swipe/browse per existing train-navigation patterns.
 
-### 5.6 Switcher (≥2 journeys)
+### 5.6 Switcher (≥2 journeys of same type)
 
-- Both types listed; commute outside window shown disabled with “Outside active hours”
-- Route always selectable
+- **Route live:** other **routes** only
+- **Commute live:** other **commutes** only; outside window → disabled + “Outside active hours”
+- Never mix route and commute in one switcher
 
 ---
 
@@ -248,7 +303,8 @@ Per **Q1** lock. **No** leave card, **no** pin, **no** Remind me. Swipe/browse p
 
 | Check | Route | Commute |
 |-------|-------|---------|
-| Create | Station + direction only; no commute fields saved | Wizard + full form |
+| Create | Station + **Trains to** (Q8 platform destination); auto label; no commute fields saved | Wizard + full form |
+| Board filter | Strict sign destination + short-turn groups only (Q8) | Unchanged direction filter |
 | Hero | Board per Q1; no leave/pin | Unchanged pin/leave |
 | Auto-show | Per Q2 | In Active window |
 | Widget | Per Q5 | In window / pin |
@@ -268,16 +324,16 @@ Per **Q1** lock. **No** leave card, **no** pin, **no** Remind me. Swipe/browse p
 
 Important: saved journeys were cleared — please set up again.
 
-My Journeys
-• Save a route — station and direction only, for a quick departure board
-• Set up a commute — morning/evening templates with Target train, active hours, and reminders (unchanged job)
+Routes & Commutes tabs
+• Add a route — station and direction only, for a quick departure board
+• Set up a commute — morning/evening templates with Target train, active hours, and reminders
 • Routes and commutes show a type badge in the list
-• Turn a route into a commute when you're ready
 
 Widget
 • Can show a saved route when you don't have an active commute
 
-Please try: create one route and one commute, check the widget, and confirm reminders only apply to commutes.
+Please try: create one route and one commute from the new tabs, check the widget,
+and confirm reminders only apply to commutes.
 ```
 
 ---
@@ -287,4 +343,6 @@ Please try: create one route and one commute, check the widget, and confirm remi
 | Date | Note |
 |------|------|
 | 2026-08-15 | Brief created — six decisions for Tim lock; phases 1–5 for 2.4.0 |
-| 2026-08-15 | Tim locked Q1–Q6; Q3 = closed-test journey reset on 2.4.0 upgrade |
+| 2026-08-15 | Tim locked Q7 — **4-icon chrome** (Near me · Routes · Commutes · Menu); route = dedicated screen (station + direction) |
+| 2026-08-15 | Tim locked route UX — **Add a route** (not Save); **no name field**; **no templates** on Routes library |
+| 2026-08-15 | Tim locked Q8 — routes filter by **platform destination** (Option A); alighting station deferred |

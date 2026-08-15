@@ -3,6 +3,7 @@
  * Usage: node qa/template-wizard-coach-overlap.mjs
  */
 import { chromium } from "playwright";
+import { openCommutesLibrary } from "./helpers/travel-library.mjs";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 
 const BASE = "http://localhost:3000";
@@ -47,10 +48,7 @@ function evaluateCoachOverlap() {
 async function openMorningWizard(page) {
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(800);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(200);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(400);
+  await openCommutesLibrary(page);
   await page.locator('[data-template="morning"]').click();
   await page.waitForTimeout(2200);
 }
@@ -62,10 +60,7 @@ async function openCustomWizard(page) {
     localStorage.setItem("nextTrainTemplateWizardSeen", "0");
     localStorage.removeItem("nextTrainTemplateWizardSkipped");
   });
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(200);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(400);
+  await openCommutesLibrary(page);
   await openCustomJourneyCreate(page);
   await page.waitForTimeout(2200);
 }

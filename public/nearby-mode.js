@@ -270,6 +270,25 @@ function getNearbyLeaveBeforeMinutes() {
   return Number(getSettings().nearbyLeaveBeforeMinutes) || DEFAULT_LEAVE_BEFORE.leaveBeforeMinutes;
 }
 
+function getRoutePinLeaveBeforeMinutes(journey = deps.getActiveJourney?.()) {
+  return deps.getRoutePinnedLeaveBeforeMinutes?.(journey) ?? getNearbyLeaveBeforeMinutes();
+}
+
+function isRoutePinLeaveContext() {
+  const journey = deps.getActiveJourney?.();
+  return Boolean(
+    deps.isJourneyModeActive?.() &&
+      deps.isRouteJourney?.(journey) &&
+      deps.isRoutePinnedToday?.(journey)
+  );
+}
+
+let routePinLeaveCardHidden = false;
+
+function clearRoutePinLeaveCardDismissed() {
+  routePinLeaveCardHidden = false;
+}
+
 function updateNearbyLeaveBeforeLabel(minutes = nearbyLeaveBeforeInput?.value) {
   if (nearbyLeaveBeforeValueEl) {
     nearbyLeaveBeforeValueEl.textContent = formatLeaveBeforeLabel(minutes);
@@ -297,6 +316,16 @@ function rescheduleNearbyPinReminders() {
 }
 
 function dismissNearbyPinLeaveCard() {
+  if (isRoutePinLeaveContext()) {
+    routePinLeaveCardHidden = true;
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    deps.syncHeroPinChrome?.();
+    return;
+  }
+
   if (nearbySession) {
     nearbySession.pinLeaveCardHidden = true;
   }
@@ -365,15 +394,15 @@ function renderUnsupportedRegionBoard() {
     const hint = document.createElement("span");
     hint.className = "hero-empty-hint";
     hint.textContent =
-      "You can still save journeys under My Journeys for when you're in Perth.";
+      "You can still save routes and commutes when you're back in Perth.";
 
     const emptyJourneysBtn = document.createElement("button");
     emptyJourneysBtn.type = "button";
     emptyJourneysBtn.className = "btn-primary hero-empty-primary";
     emptyJourneysBtn.textContent = "My Journeys";
-    emptyJourneysBtn.addEventListener("click", () => deps.enterJourneyMode?.());
+    emptyJourneysBtn.addEventListener("click", () => deps.enterCommuteMode?.());
 
-    deps.departCountdownEl.append(title, text, hint, deps.journeysBtn);
+    deps.departCountdownEl.append(title, text, hint, emptyJourneysBtn);
   }
 
   deps.heroEl.removeAttribute("role");
@@ -436,7 +465,10 @@ function isNearbyFaceReadyForOnboarding() {
 
 function syncChromeMode() {
   const nearbyActive = isNearbyModeActive();
-  const journeyActive = isJourneyModeActive();
+  const travelTab = deps.getChromeTravelTab?.() ?? "nearby";
+  const routesActive = travelTab === "routes";
+  const commutesActive = travelTab === "commutes";
+  const journeyActive = routesActive || commutesActive;
 
   deps.appEl?.classList.toggle("nearby-mode", nearbyActive && Boolean(nearbySession));
   deps.appEl?.classList.toggle("journey-mode", journeyActive);
@@ -446,9 +478,13 @@ function syncChromeMode() {
   nearbyBtn?.setAttribute("aria-pressed", nearbyActive ? "true" : "false");
   nearbyBtn?.setAttribute("aria-label", "Near me");
 
-  deps.journeysChromeAction?.classList.toggle("chrome-action--active", journeyActive);
-  deps.journeysBtn?.classList.toggle("icon-btn--active", journeyActive);
-  deps.journeysBtn?.setAttribute("aria-pressed", journeyActive ? "true" : "false");
+  deps.routesChromeAction?.classList.toggle("chrome-action--active", routesActive);
+  deps.routesBtn?.classList.toggle("icon-btn--active", routesActive);
+  deps.routesBtn?.setAttribute("aria-pressed", routesActive ? "true" : "false");
+
+  deps.commutesChromeAction?.classList.toggle("chrome-action--active", commutesActive);
+  deps.commutesBtn?.classList.toggle("icon-btn--active", commutesActive);
+  deps.commutesBtn?.setAttribute("aria-pressed", commutesActive ? "true" : "false");
 
   syncJourneyContextChrome();
 }
@@ -666,25 +702,7 @@ function hideNearbyPinLeaveSurfaces() {
   }
 }
 
-function renderNearbyPinLeaveSurfaces(next, pinned) {
-  if (!pinned || !next) {
-    if (deps.leaveCardEl) {
-      deps.leaveCardEl.hidden = true;
-    }
-    hideNearbyPinLeaveSurfaces();
-    syncNearbyPinChrome();
-    return;
-  }
-
-  if (nearbySession?.pinLeaveCardHidden) {
-    if (deps.leaveCardEl) {
-      deps.leaveCardEl.hidden = true;
-    }
-    syncNearbyPinChrome();
-    return;
-  }
-
-  const leaveNext = buildNearbyLeaveNext(next);
+function renderPinLeaveCardContent(leaveNext, { forTarget = false } = {}) {
   const live = getLiveTiming(leaveNext);
   const pastLeaveBy = isLeavePhasePastLeaveBy(live.leavePhase);
 
@@ -705,13 +723,15 @@ function renderNearbyPinLeaveSurfaces(next, pinned) {
     nearbyLeaveHideBtn.hidden = false;
   }
   if (deps.leaveCardLabelEl) {
-    deps.leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase);
+    deps.leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase, { forTarget });
   }
   if (deps.leaveTimeEl) {
     renderLeaveMinutesCountdown(deps.leaveTimeEl, leaveNext);
   }
   if (deps.leaveCountdownEl) {
-    deps.leaveCountdownEl.textContent = formatLeaveCardSubline(leaveNext);
+    deps.leaveCountdownEl.textContent = forTarget
+      ? deps.formatLeaveCardTargetSubline?.(leaveNext) ?? formatLeaveCardSubline(leaveNext)
+      : formatLeaveCardSubline(leaveNext);
   }
   updateLeaveCardState(live.leavePhase);
 
@@ -724,19 +744,96 @@ function renderNearbyPinLeaveSurfaces(next, pinned) {
     deps.leaveBufferEditBtn.hidden = true;
   }
 
+  return { live, showLateNag };
+}
+
+function syncPinLeaveControlValues(journey) {
+  const leaveBeforeMinutes = isRoutePinLeaveContext()
+    ? getRoutePinLeaveBeforeMinutes(journey)
+    : getNearbyLeaveBeforeMinutes();
   if (nearbyLeaveBeforeInput) {
-    nearbyLeaveBeforeInput.value = String(getNearbyLeaveBeforeMinutes());
-    updateNearbyLeaveBeforeLabel(getNearbyLeaveBeforeMinutes());
+    nearbyLeaveBeforeInput.value = String(leaveBeforeMinutes);
+    updateNearbyLeaveBeforeLabel(leaveBeforeMinutes);
   }
   if (nearbyNotifyMeInput) {
-    nearbyNotifyMeInput.checked = nearbySession?.pinNotifyMe === true;
+    nearbyNotifyMeInput.checked = isRoutePinLeaveContext()
+      ? journey?.pinNotifyMe === true
+      : nearbySession?.pinNotifyMe === true;
+  }
+}
+
+function renderRoutePinLeaveSurfaces(leaveNext, journey, { forTarget = false } = {}) {
+  if (!leaveNext || !journey || routePinLeaveCardHidden) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    deps.syncHeroPinChrome?.();
+    return;
   }
 
+  const leaveBeforeMinutes = getRoutePinLeaveBeforeMinutes(journey);
+  const leaveTrip = buildNextFromFollowing(
+    leaveNext,
+    leaveBeforeMinutes,
+    resolveTripDeparture(leaveNext)
+  );
+  renderPinLeaveCardContent(leaveTrip, { forTarget });
+  syncPinLeaveControlValues(journey);
+  deps.syncHeroPinChrome?.();
+}
+
+function renderNearbyPinLeaveSurfaces(next, pinned) {
+  if (!pinned || !next) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    syncNearbyPinChrome();
+    return;
+  }
+
+  if (nearbySession?.pinLeaveCardHidden) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    syncNearbyPinChrome();
+    return;
+  }
+
+  const leaveNext = buildNearbyLeaveNext(next);
+  renderPinLeaveCardContent(leaveNext);
+  syncPinLeaveControlValues();
   syncNearbyPinChrome();
 }
 
 
 async function handleNearbyNotifyToggle() {
+  if (isRoutePinLeaveContext()) {
+    const journey = deps.getActiveJourney?.();
+    if (!journey?.id) {
+      return;
+    }
+
+    const notifyOn = nearbyNotifyMeInput?.checked ?? false;
+    deps.persistRoutePinSettings?.(journey.id, { pinNotifyMe: notifyOn });
+
+    if (notifyOn) {
+      const reminderSettings = await window.nextTrainLeaveReminders?.enableLeaveReminders?.({
+        userInitiated: true,
+      });
+      if (reminderSettings?.permissionGranted === false) {
+        deps.persistRoutePinSettings?.(journey.id, { pinNotifyMe: false });
+        if (nearbyNotifyMeInput) {
+          nearbyNotifyMeInput.checked = false;
+        }
+      }
+    }
+
+    deps.renderCurrentJourney?.();
+    return;
+  }
+
   if (!nearbySession) {
     return;
   }
@@ -1914,6 +2011,14 @@ function initNearbyListeners() {
     if (!Number.isFinite(minutes)) {
       return;
     }
+    if (isRoutePinLeaveContext()) {
+      const journey = deps.getActiveJourney?.();
+      if (journey?.id) {
+        deps.persistRoutePinSettings?.(journey.id, { leaveBeforeMinutes: minutes });
+        deps.renderCurrentJourney?.();
+      }
+      return;
+    }
     persistSettings({ nearbyLeaveBeforeMinutes: minutes });
     if (isNearbyPinHolding()) {
       syncNearbyPinSettings();
@@ -1946,6 +2051,7 @@ function initNearbyListeners() {
     clearNearbyError,
     clearNearbyPin,
     clearNearbyPinLeaveCardDismissed,
+    clearRoutePinLeaveCardDismissed,
     dismissNearbyLocatePicker,
     dismissNearbyPinLeaveCard,
     ensureNearbyStationOptions,
@@ -1984,6 +2090,7 @@ function initNearbyListeners() {
     renderNearbyBoard,
     renderNearbyDirectionsList,
     renderNearbyPinLeaveSurfaces,
+    renderRoutePinLeaveSurfaces,
     renderUnsupportedRegionBoard,
     rescheduleNearbyPinReminders,
     restoreNearbySessionPinFromSettings,

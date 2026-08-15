@@ -73,7 +73,7 @@ async function run() {
   });
 
   await page.evaluate(() => {
-    window.nextTrainApp?.enterJourneyMode?.();
+    window.nextTrainApp?.enterRouteMode?.();
   });
 
   await page.waitForTimeout(1200);
@@ -93,8 +93,8 @@ async function run() {
     schedule.routeHasWindow &&
     schedule.pickEarly === "j-morning" &&
     schedule.pickLate === "j-later" &&
-    routeUi.pinHidden &&
-    routeUi.leaveHidden;
+    routeUi.leaveHidden &&
+    routeUi.boardVisible;
 
   if (pass) {
     console.log("PASS — FB-23 phase 3 hero", { schedule, routeUi });
