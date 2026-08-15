@@ -412,7 +412,9 @@
             </div>
             <ul class="journey-list" id="journey-list"></ul>
             <div class="journey-templates" id="journey-templates">
-              <p class="settings-hint journey-templates-hint">Add a journey</p>
+              <button type="button" class="btn-primary journey-add-btn" id="journey-add-btn">
+                Add journey
+              </button>
               <p class="journey-templates-loading" id="journey-templates-loading" hidden>
                 Finding nearest station…
               </p>
@@ -424,14 +426,19 @@
               >
                 6 journeys — that's the limit for now. Delete one to add another.
               </p>
-              <div class="journey-template-chips">
-                <button type="button" class="journey-template-chip" data-template="morning">
-                  Morning into town
-                </button>
-                <button type="button" class="journey-template-chip" data-template="evening">
-                  Evening home
-                </button>
-                <button type="button" class="journey-template-chip" data-template="custom">Custom</button>
+              <div class="journey-template-shortcuts" id="journey-template-shortcuts" hidden>
+                <p class="settings-hint journey-templates-hint">Or use a template</p>
+                <div class="journey-template-chips">
+                  <button type="button" class="journey-template-chip" data-template="morning">
+                    Morning into town
+                  </button>
+                  <button type="button" class="journey-template-chip" data-template="evening">
+                    Evening home
+                  </button>
+                  <button type="button" class="journey-template-chip" data-template="custom" hidden>
+                    Custom
+                  </button>
+                </div>
               </div>
             </div>
           </div>

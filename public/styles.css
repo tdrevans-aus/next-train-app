@@ -3296,9 +3296,20 @@ body.app-dialog-open .ad-remove-link-wrap {
 .journey-templates {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.55rem;
   margin-top: 0.15rem;
   padding-top: 0.15rem;
+}
+
+.journey-add-btn {
+  width: 100%;
+  margin: 0;
+}
+
+.journey-template-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
 .journey-templates-hint {

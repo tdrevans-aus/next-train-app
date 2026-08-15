@@ -131,6 +131,8 @@ const journeysChromeAction = document.getElementById("journeys-chrome-action");
 const journeyTemplatesEl = document.getElementById("journey-templates");
 const journeyTemplatesLoadingEl = document.getElementById("journey-templates-loading");
 const journeyTemplatesCapHintEl = document.getElementById("journey-templates-cap-hint");
+const journeyTemplateShortcutsEl = document.getElementById("journey-template-shortcuts");
+const journeyAddBtnEl = document.getElementById("journey-add-btn");
 const journeyTemplateChipsEl = document.querySelector(".journey-template-chips");
 const journeyTemplatesAddHintEl = document.querySelector(".journey-templates-hint");
 const detailJourneyNameField = document.querySelector(".journey-name-field");
@@ -3278,6 +3280,11 @@ function setJourneyTemplateLoading(active, message = "Finding nearest station…
     chip.disabled = active;
     chip.setAttribute("aria-busy", active ? "true" : "false");
   });
+
+  if (journeyAddBtnEl) {
+    journeyAddBtnEl.disabled = active;
+    journeyAddBtnEl.setAttribute("aria-busy", active ? "true" : "false");
+  }
 }
 
 
@@ -4098,23 +4105,31 @@ detailCancelBtn?.addEventListener("click", () => {
   cancelJourneyDetailEdit();
 });
 
+async function startJourneyCreateFromTemplate(templateKey) {
+  if (templateCreateInFlight || isAtJourneyCap()) {
+    return;
+  }
+
+  templateCreateInFlight = true;
+  setJourneyTemplateLoading(true);
+  openJourneysDialogSync();
+
+  try {
+    await createJourneyFromTemplate(templateKey);
+  } finally {
+    templateCreateInFlight = false;
+    setJourneyTemplateLoading(false);
+  }
+}
+
 document.querySelectorAll(".journey-template-chip").forEach((button) => {
   button.addEventListener("click", async () => {
-    if (templateCreateInFlight) {
-      return;
-    }
-
-    templateCreateInFlight = true;
-    setJourneyTemplateLoading(true);
-    openJourneysDialogSync();
-
-    try {
-      await createJourneyFromTemplate(button.dataset.template);
-    } finally {
-      templateCreateInFlight = false;
-      setJourneyTemplateLoading(false);
-    }
+    await startJourneyCreateFromTemplate(button.dataset.template);
   });
+});
+
+journeyAddBtnEl?.addEventListener("click", async () => {
+  await startJourneyCreateFromTemplate("custom");
 });
 
 heroEmptyAddBtn?.addEventListener("click", (event) => {
