@@ -8,6 +8,9 @@
   --accent: #0b6e6a;
   --accent-strong: #085a57;
   --accent-wash: rgba(11, 110, 106, 0.12);
+  --leave: #b45309;
+  --leave-strong: #92400e;
+  --leave-wash: rgba(180, 83, 9, 0.12);
   --surface: #ffffff;
   --surface-soft: rgba(255, 255, 255, 0.72);
   --line: rgba(19, 37, 35, 0.1);
@@ -1088,7 +1091,7 @@ body.native-ad-banner .app-body {
   justify-content: flex-start;
   margin: 0.1rem 0 0;
   font-size: 1.75rem;
-  color: var(--accent);
+  color: var(--leave);
 }
 
 .leave-card.leave-card--context .leave-card-countdown {
@@ -1108,6 +1111,11 @@ body.native-ad-banner .app-body {
 .leave-card.leave-card--context .leave-card-actions,
 .leave-card.leave-card--context .leave-hint {
   grid-column: 1 / -1;
+}
+
+.leave-card.calm {
+  border-color: rgba(180, 83, 9, 0.22);
+  background: linear-gradient(160deg, var(--leave-wash), var(--surface) 72%);
 }
 
 .leave-card.soon {
@@ -1166,7 +1174,7 @@ body.native-ad-banner .app-body {
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 0.98;
-  color: var(--accent);
+  color: var(--leave);
   transition: color 0.35s ease;
 }
 
