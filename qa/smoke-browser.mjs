@@ -4,107 +4,26 @@
  */
 import { chromium } from "playwright";
 import {
-  closeJourneysDialog,
   openJourneysDialog,
   openJourneyDetail,
   clickJourneysDone,
   clickMenuDone,
   enableTargetTrainOnDetail,
 } from "./helpers/journeys-dialog.mjs";
+import {
+  BASE,
+  armJourneyLeaveCard,
+  ensureJourneyMode,
+  injectSwitcherJourneys,
+  parseLeaveMinutes,
+  swipeHero,
+  waitForDepartText,
+  waitForJourneyRouteStable,
+  waitForJourneySwitcher,
+  waitForLeaveCard,
+} from "./helpers/journey-smoke.mjs";
 
-const BASE = "http://localhost:3000";
 const results = [];
-
-function perthMinutesFromNow(offsetMinutes) {
-  const formatter = new Intl.DateTimeFormat("en-AU", {
-    timeZone: "Australia/Perth",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: false,
-  });
-  const parts = formatter.formatToParts(new Date(Date.now() + offsetMinutes * 60_000));
-  const hour = Number(parts.find((part) => part.type === "hour")?.value ?? 0);
-  const minute = Number(parts.find((part) => part.type === "minute")?.value ?? 0);
-  return hour * 60 + minute;
-}
-
-function formatWallClockMinutes(totalMinutes) {
-  const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
-  const hour = Math.floor(wrapped / 60);
-  const minute = wrapped % 60;
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-}
-
-async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } = {}) {
-  const url = new URL(page.url());
-  const fixture = url.searchParams.get("fixture") || "normal";
-  const station = url.searchParams.get("station") || "Edgewater Stn";
-  const direction = url.searchParams.get("direction") || "Perth";
-  const journeyId = "j-smoke";
-  const placeholderPreferred = formatWallClockMinutes(
-    perthMinutesFromNow(Math.max(1, minutesFromNowFallback - 5))
-  );
-
-  await page.evaluate(
-    ({ preferred, stationName, directionName, jId }) => {
-      localStorage.setItem(
-        "nextTrainSettings",
-        JSON.stringify({
-          refreshSeconds: 30,
-          activeJourneyId: jId,
-          journeys: [
-            {
-              id: jId,
-              name: "Morning commute",
-              station: stationName,
-              direction: directionName,
-              leaveBeforeMinutes: 10,
-              useLeaveBefore: true,
-              defaultFrom: "00:00",
-              defaultUntil: "00:00",
-              preferredTrainTime: preferred,
-              remindDays: [1, 2, 3, 4, 5, 6, 7],
-              remindMe: false,
-            },
-          ],
-        })
-      );
-      localStorage.setItem("nextTrainOnboardingDone", "1");
-      sessionStorage.setItem(
-        "nextTrainManualJourneyOverride",
-        JSON.stringify({ journeyId: jId, matchingWindowIds: [jId] })
-      );
-    },
-    { preferred: placeholderPreferred, stationName: station, directionName: direction, jId: journeyId }
-  );
-
-  const query = new URLSearchParams({
-    test: "1",
-    fixture,
-  });
-  await page.goto(`${BASE}/?${query}`);
-  await page.waitForFunction(
-    () => {
-      const t = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
-      return t && t !== "—" && !t.includes("No upcoming");
-    },
-    null,
-    { timeout: 15000 }
-  );
-
-  await page.evaluate(async (jId) => {
-    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
-    if (!preferred || preferred === "—") {
-      return;
-    }
-    await window.nextTrainApp?.persistReminderJourneys?.([
-      { id: jId, preferredTrainTime: preferred, remindMe: false },
-    ]);
-    await window.nextTrainApp?.fetchNextTrain?.();
-  }, journeyId);
-
-  await page.waitForTimeout(1500);
-}
 
 function pass(id, notes) {
   results.push({ id, result: "PASS", notes });
@@ -114,28 +33,10 @@ function fail(id, notes) {
   results.push({ id, result: "FAIL", notes });
 }
 
-async function swipeHero(page, direction, { diagonal = false } = {}) {
-  const box = await page.locator("#hero").boundingBox();
-  if (!box) {
-    throw new Error("hero not found");
-  }
-
-  const x = box.x + box.width / 2;
-  const y = box.y + box.height / 2;
-  const deltaX = direction === "left" ? (diagonal ? -75 : -80) : diagonal ? 75 : 80;
-  const deltaY = diagonal ? 35 : 0;
-
-  await page.mouse.move(x, y);
-  await page.mouse.down();
-  await page.mouse.move(x + deltaX, y + deltaY);
-  await page.mouse.up();
-}
-
 async function run() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
-  // 1 — First launch (nearby-first)
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(2500);
   const nearbyMode = await page.evaluate(() => document.querySelector(".app")?.classList.contains("nearby-mode"));
@@ -159,7 +60,6 @@ async function run() {
     fail(1, JSON.stringify({ nearbyMode, heroSetup, route1, leaveHidden, switcherHidden, journeysOpen, nearbyPressed }));
   }
 
-  // 2 — Configured journey
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
   const route = (await page.locator("#route").textContent())?.trim();
@@ -170,7 +70,7 @@ async function run() {
   const status = (await page.locator("#status").textContent())?.trim();
   const leaveTime = (await page.locator("#leave-time").textContent())?.trim();
   const thenVisible = await page.locator("#following-section").isVisible();
-  const countdownMin = parseInt(countdown?.match(/\d+/)?.[0] ?? "0", 10);
+  const countdownMin = parseLeaveMinutes(countdown);
   if (
     route?.includes("Edgewater") &&
     route?.includes("Perth") &&
@@ -190,110 +90,76 @@ async function run() {
     fail(2, JSON.stringify({ route, countdown, depart, leaveVisible, platform, status, thenVisible }));
   }
 
-  // 3 — Journey switcher (inject second journey)
-  await page.evaluate(() => {
-    localStorage.setItem(
-      "nextTrainSettings",
-      JSON.stringify({
-        refreshSeconds: 30,
-        activeJourneyId: "j-in-smoke",
-        journeys: [
-          {
-            id: "j-in-smoke",
-            name: "Daily Commute - in",
-            station: "Edgewater Stn",
-            direction: "Perth",
-            leaveBeforeMinutes: 10,
-            useLeaveBefore: true,
-            defaultFrom: "00:00",
-            defaultUntil: "12:00",
-            remindDays: [1, 2, 3, 4, 5, 6, 7],
-          },
-          {
-            id: "j-out-smoke",
-            name: "Daily Commute - out",
-            station: "Perth Stn",
-            direction: "Mandurah",
-            leaveBeforeMinutes: 10,
-            useLeaveBefore: true,
-            defaultFrom: "12:00",
-            defaultUntil: "23:59",
-            remindDays: [1, 2, 3, 4, 5, 6, 7],
-          },
-        ],
-      })
-    );
-  });
+  await injectSwitcherJourneys(page);
   await page.goto(`${BASE}/?test=1&fixture=normal`);
-  await page.waitForTimeout(1500);
+  await ensureJourneyMode(page);
+  await waitForJourneySwitcher(page);
   await page.locator("#journey-switcher").click();
   await page.locator("#journey-switcher-menu button").filter({ hasText: "Daily Commute - out" }).click();
-  await page.waitForTimeout(2000);
+  await page.waitForFunction(
+    () => (document.getElementById("route")?.textContent?.trim() ?? "").includes("Mandurah"),
+    null,
+    { timeout: 10000 }
+  );
   const switcher = (await page.locator("#journey-switcher-name").textContent())?.trim();
   const route3 = (await page.locator("#route").textContent())?.trim();
-  await page.waitForTimeout(35000);
-  const switcherAfter = (await page.locator("#journey-switcher-name").textContent())?.trim();
-  const routeAfter = (await page.locator("#route").textContent())?.trim();
+  const stable = await waitForJourneyRouteStable(page, {
+    switcherIncludes: "out",
+    routeIncludes: "Mandurah",
+    stableMs: 3000,
+    timeoutMs: 45000,
+  });
   if (
     switcher?.includes("out") &&
     route3?.includes("Mandurah") &&
-    switcherAfter?.includes("out") &&
-    routeAfter?.includes("Mandurah")
+    stable.switcher.includes("out") &&
+    stable.route.includes("Mandurah")
   ) {
-    pass(3, `Switched to out; after 35s still ${switcherAfter} / ${routeAfter}`);
+    pass(3, `Switched to out; stable after poll ${stable.switcher} / ${stable.route}`);
   } else {
-    fail(3, JSON.stringify({ switcher, route3, switcherAfter, routeAfter }));
+    fail(3, JSON.stringify({ switcher, route3, stable }));
   }
 
-  // 4 — Swipe left (diagonal, finger lifts off hero — pointer capture)
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForTimeout(1500);
+  await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
   const countdownBefore4 = (await page.locator("#depart-countdown").textContent())?.trim();
-  const departBefore4 = (await page.locator("#depart-display-time").textContent())?.trim();
   await swipeHero(page, "left", { diagonal: true });
   await page.waitForTimeout(500);
   const countdown4 = (await page.locator("#depart-countdown").textContent())?.trim();
-  const depart4 = (await page.locator("#depart-display-time").textContent())?.trim();
   const hintHidden = await page.locator("#swipe-hint").isHidden();
   const hintSeen = await page.evaluate(() => localStorage.getItem("nextTrainSwipeHintSeen"));
-  const minBefore = parseInt(countdownBefore4?.match(/\d+/)?.[0] ?? "0", 10);
-  const minAfter = parseInt(countdown4?.match(/\d+/)?.[0] ?? "0", 10);
+  const minBefore = parseLeaveMinutes(countdownBefore4);
+  const minAfter = parseLeaveMinutes(countdown4);
   if (minAfter > minBefore && hintHidden && hintSeen === "1") {
     pass(4, `${countdownBefore4}→${countdown4}; hint dismissed`);
   } else {
-    fail(4, JSON.stringify({ countdown4, depart4, hintHidden, hintSeen }));
+    fail(4, JSON.stringify({ countdown4, hintHidden, hintSeen, minBefore, minAfter }));
   }
 
-  // 5 — Swipe right
   await swipeHero(page, "right");
   await page.waitForTimeout(500);
   const countdown5 = (await page.locator("#depart-countdown").textContent())?.trim();
-  const min5 = parseInt(countdown5?.match(/\d+/)?.[0] ?? "0", 10);
+  const min5 = parseLeaveMinutes(countdown5);
   if (min5 < minAfter && min5 === minBefore) {
     pass(5, `Returned to ${countdown5} (was ${countdownBefore4} before swipe left)`);
   } else {
     fail(5, countdown5);
   }
 
-  // 6 — Urgent
   await page.goto(`${BASE}/?reset=1&fixture=urgent&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 12 });
-  await page.waitForSelector("#leave-card:not([hidden])", { timeout: 5000 }).catch(() => {});
+  await waitForLeaveCard(page, { optional: false, timeout: 5000 });
   const leaveClass6 = await page.locator("#leave-card").getAttribute("class");
-  const leaveMin6 = parseInt(
-    (await page.locator("#leave-time .depart-countdown-value").textContent()) ?? "",
-    10
-  );
+  const leaveMin6 = parseInt((await page.locator("#leave-time .depart-countdown-value").textContent()) ?? "", 10);
   if (leaveClass6?.includes("urgent") && leaveMin6 === 2) {
     pass(6, `${leaveClass6}; leave countdown: ${leaveMin6} min`);
   } else {
     fail(6, JSON.stringify({ leaveClass6, leaveMin6 }));
   }
 
-  // 7 — Late
   await page.goto(`${BASE}/?reset=1&fixture=late&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 7 });
-  await page.waitForSelector("#leave-card:not([hidden])", { timeout: 5000 }).catch(() => {});
+  await waitForLeaveCard(page, { optional: false, timeout: 5000 });
   await page.waitForTimeout(1500);
   const leaveClass7 = await page.locator("#leave-card").getAttribute("class");
   const lateMsg7 = (await page.locator("#leave-countdown").textContent())?.trim();
@@ -303,9 +169,9 @@ async function run() {
     fail(7, JSON.stringify({ leaveClass7, lateMsg7 }));
   }
 
-  // 8 — Empty
   await page.goto(`${BASE}/?reset=1&fixture=empty&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForTimeout(1500);
+  await ensureJourneyMode(page);
+  await waitForDepartText(page, "No upcoming", { timeout: 15000 });
   const depart8 = (await page.locator("#depart-display-time").textContent())?.trim();
   const leaveHidden8 = await page.locator("#leave-card").isHidden();
   if (depart8?.includes("No upcoming") && leaveHidden8) {
@@ -314,17 +180,25 @@ async function run() {
     fail(8, JSON.stringify({ depart8, leaveHidden8 }));
   }
 
-  // 9 — API error (cold + stale)
   await page.goto(`${BASE}/?reset=1&fixture=error&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForTimeout(1500);
+  await ensureJourneyMode(page);
+  await page.waitForFunction(
+    () => {
+      const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
+      const error = document.getElementById("error")?.textContent?.trim() ?? "";
+      return depart.includes("Couldn't refresh") && Boolean(error);
+    },
+    null,
+    { timeout: 15000 }
+  );
   const depart9a = (await page.locator("#depart-display-time").textContent())?.trim();
   const error9a = (await page.locator("#error").textContent())?.trim();
   const coldOk = depart9a?.includes("Couldn't refresh") && error9a;
 
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForTimeout(1500);
+  await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
   const countdown9b = (await page.locator("#depart-countdown").textContent())?.trim();
-  const min9b = parseInt(countdown9b?.match(/\d+/)?.[0] ?? "0", 10);
+  const min9b = parseLeaveMinutes(countdown9b);
   await page.evaluate(() => {
     const u = new URL(location.href);
     u.searchParams.set("fixture", "error");
@@ -335,13 +209,9 @@ async function run() {
   await clickMenuDone(page);
   const updated9 = (await page.locator("#updated").textContent())?.trim();
   const countdown9c = (await page.locator("#depart-countdown").textContent())?.trim();
-  const min9c = parseInt(countdown9c?.match(/\d+/)?.[0] ?? "0", 10);
+  const min9c = parseLeaveMinutes(countdown9c);
   const leaveStale = await page.locator("#leave-card").evaluate((el) => el.classList.contains("stale"));
-  const staleOk =
-    updated9?.includes("Update failed") &&
-    min9c === min9b &&
-    min9b > 0 &&
-    leaveStale;
+  const staleOk = updated9?.includes("Update failed") && min9c === min9b && min9b > 0 && leaveStale;
 
   if (coldOk && staleOk) {
     pass(9, `Cold: ${depart9a}; stale: ${updated9}, hero kept ${countdown9c}`);
@@ -349,7 +219,6 @@ async function run() {
     fail(9, JSON.stringify({ coldOk, depart9a, error9a, staleOk, updated9, countdown9c, leaveStale }));
   }
 
-  // 10 — Overlap validation
   await page.evaluate(() => {
     localStorage.setItem(
       "nextTrainSettings",
@@ -382,6 +251,7 @@ async function run() {
     );
   });
   await page.goto(`${BASE}/?test=1&fixture=normal`);
+  await ensureJourneyMode(page);
   await page.waitForTimeout(1000);
   page.on("dialog", (d) => d.accept());
   await openJourneyDetail(page, "j-out");
@@ -400,13 +270,8 @@ async function run() {
     return `${j.defaultFrom}-${j.defaultUntil}`;
   });
   if (outWindow === "15:00-18:00") {
-    const overlapMsg = await page.evaluate(() => {
-      const el = document.getElementById("detail-active-hours-error-text");
-      return el?.textContent ?? "";
-    });
-    const overlapVisible = await page.evaluate(
-      () => !document.getElementById("detail-active-hours-error")?.hidden
-    );
+    const overlapMsg = await page.evaluate(() => document.getElementById("detail-active-hours-error-text")?.textContent ?? "");
+    const overlapVisible = await page.evaluate(() => !document.getElementById("detail-active-hours-error")?.hidden);
     if (overlapVisible && overlapMsg.includes("Only one journey can be active")) {
       pass(10, `Overlap blocked (${overlapMsg.slice(0, 48)}…); out window stayed 15:00-18:00`);
     } else {
@@ -417,7 +282,6 @@ async function run() {
   }
   await page.keyboard.press("Escape");
 
-  // 11 — Save vs Done
   await page.keyboard.press("Escape");
   await page.waitForTimeout(300);
   await openJourneyDetail(page, "j-in");
@@ -447,7 +311,6 @@ async function run() {
     fail(11, JSON.stringify({ doneOk, lb }));
   }
 
-  // 13 — Journey templates
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(1500);
   await openJourneysDialog(page);
