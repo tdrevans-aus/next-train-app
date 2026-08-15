@@ -3,7 +3,11 @@
   "version": "2.2.1",
   "description": "Shows when to leave for your next train",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
+    "setup:mac": "node scripts/setup-mac.mjs",
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",

@@ -87,6 +87,9 @@ enum CommuteSchedule {
             }
             return loadingState(journey)
         }
+        } catch {
+            return emptyState()
+        }
     }
 
     static func repaintSnapshot(_ cached: [String: Any]?) -> [String: Any]? {

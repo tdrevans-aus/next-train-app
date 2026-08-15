@@ -14,6 +14,9 @@ SHARED_FILES = [
     "NextTrainApiClient.swift",
     "NextCommutePreview.swift",
     "CommuteSchedule.swift",
+    "WidgetPinResolver.swift",
+    "JourneyPinHelper.swift",
+    "NearbyPinHelper.swift",
 ]
 
 def main() -> None:

@@ -14,13 +14,29 @@
 cd ~/Projects/next-train-app
 git fetch origin
 git checkout hotfix/2.2.1    # or: git checkout master && git pull
-nvm use 22
-npm install
-npm run cap:sync:ios
+
+# Load Node (required every new terminal on this Mac)
+export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh"
+nvm use                         # reads .nvmrc → Node 22
+
+# One command: npm install + verify plugin paths + cap:sync:ios
+npm run setup:mac
 npx cap open ios
 ```
 
 In Xcode: set **Team** + bundle id **`com.tdrevans.nexttrain`** · confirm version **2.2.1**.
+
+### If something fails
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `npm: command not found` | Node/nvm not loaded in this terminal | `export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use` then retry |
+| `npm install` errors on Capacitor 8 | Node too old (< 22) | `nvm install 22 && nvm use` |
+| Xcode **package dependency** red error | Opened Xcode before `npm install` / `cap:sync:ios` | From repo root: `npm run setup:mac`. Then in Xcode: **File → Packages → Reset Package Caches** → **Resolve Package Versions** |
+| CapApp-SPM can't find `@capacitor-community/admob` etc. | `node_modules` missing or incomplete | `rm -rf node_modules && npm run setup:mac` |
+| `npm install` hangs or gets killed | Rare on slow network; don't open Xcode mid-install | Wait for `patch-package` to finish; rerun if needed |
+
+**Why Xcode depends on npm:** `ios/App/CapApp-SPM/Package.swift` points at local folders under `node_modules/`. No npm install → Xcode can't resolve packages. Always run **`npm run setup:mac` before `npx cap open ios`**.
 
 ---
 
