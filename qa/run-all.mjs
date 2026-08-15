@@ -7,6 +7,10 @@
  *   node qa/run-all.mjs --release    # smoke + pin/leave gates (~5–8 min) — CI on main
  *   node qa/run-all.mjs --no-native  # full web only (no Maestro / native CDP tail)
  *   node qa/run-all.mjs --list       # list scripts in suite
+ *
+ * CI (GITHUB_ACTIONS): per-script timeouts (3–6 min), QA_VERBOSE=1 streams logs,
+ * 30s heartbeats, and dev-server is always spawned fresh on :3000.
+ * Override all script limits with QA_SCRIPT_TIMEOUT_MS.
  */
 import { spawn } from "child_process";
 import fs from "fs";
@@ -94,30 +98,114 @@ function resolveScripts({ smoke, release, noNative }) {
   return scripts;
 }
 
+function isCiVerbose() {
+  return process.env.CI === "true" || process.env.QA_VERBOSE === "1";
+}
+
+/** Per-script ceiling in CI so one stuck Playwright run cannot burn the whole job. */
+const HEAVY_SCRIPT_TIMEOUT_MS = {
+  "smoke-browser.mjs": 6 * 60 * 1000,
+  "smoke-11-13.mjs": 4 * 60 * 1000,
+  "pin-swipe-notify.mjs": 4 * 60 * 1000,
+  "leave-by-preferred-gate.mjs": 3 * 60 * 1000,
+};
+
+function getScriptTimeoutMs(scriptName) {
+  const override = Number(process.env.QA_SCRIPT_TIMEOUT_MS);
+  if (Number.isFinite(override) && override > 0) {
+    return override;
+  }
+  if (process.env.CI !== "true") {
+    return 0;
+  }
+  return HEAVY_SCRIPT_TIMEOUT_MS[scriptName] ?? 3 * 60 * 1000;
+}
+
+function killScriptChild(child) {
+  if (!child || child.killed) {
+    return;
+  }
+  if (process.platform !== "win32" && child.pid) {
+    try {
+      process.kill(-child.pid, "SIGKILL");
+      return;
+    } catch {
+      // Fall through to direct child kill.
+    }
+  }
+  child.kill("SIGKILL");
+}
+
 function runScript(scriptName) {
   const scriptPath = path.join(__dirname, scriptName);
+  const timeoutMs = getScriptTimeoutMs(scriptName);
+  const verbose = isCiVerbose();
+
   return new Promise((resolve) => {
+    const startedAt = Date.now();
     const child = spawn("node", [scriptPath], {
       cwd: REPO_ROOT,
       stdio: ["ignore", "pipe", "pipe"],
       env: { ...process.env },
+      detached: process.platform !== "win32",
     });
 
     let output = "";
-    child.stdout?.on("data", (chunk) => {
-      output += chunk;
-    });
-    child.stderr?.on("data", (chunk) => {
-      output += chunk;
-    });
+    let timedOut = false;
 
-    child.on("close", (code) => {
-      resolve({ scriptName, code: code ?? 1, output });
+    const append = (chunk) => {
+      output += chunk;
+      if (verbose) {
+        process.stderr.write(`[${scriptName}] ${chunk}`);
+      }
+    };
+
+    child.stdout?.on("data", append);
+    child.stderr?.on("data", append);
+
+    let heartbeat = null;
+    if (verbose && timeoutMs > 0) {
+      heartbeat = setInterval(() => {
+        const elapsedSec = Math.round((Date.now() - startedAt) / 1000);
+        const limitSec = Math.round(timeoutMs / 1000);
+        console.error(`[qa] ${scriptName} still running (${elapsedSec}s / ${limitSec}s)`);
+      }, 30_000);
+    }
+
+    let timer = null;
+    if (timeoutMs > 0) {
+      timer = setTimeout(() => {
+        timedOut = true;
+        killScriptChild(child);
+      }, timeoutMs);
+    }
+
+    child.on("close", (code, signal) => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      if (heartbeat) {
+        clearInterval(heartbeat);
+      }
+      resolve({
+        scriptName,
+        code: timedOut ? 124 : (code ?? 1),
+        output,
+        timedOut,
+        signal,
+        elapsedMs: Date.now() - startedAt,
+        timeoutMs,
+      });
     });
   });
 }
 
-function classifyResult(scriptName, code) {
+function classifyResult(scriptName, code, { timedOut = false, timeoutMs = 0 } = {}) {
+  if (timedOut) {
+    const limitSec = Math.round(timeoutMs / 1000);
+    return { status: "FAIL", note: `timeout after ${limitSec}s` };
+  }
+
   if (EXIT_INVERT_PASS.has(scriptName)) {
     if (code === 1) {
       return { status: "PASS*", note: "exit 1 = expected good" };
@@ -165,7 +253,7 @@ async function main() {
   let serverChild = null;
 
   if (needsServer) {
-    serverChild = await ensureDevServer();
+    serverChild = await ensureDevServer({ force: process.env.CI === "true" });
     if (serverChild) {
       console.log("Started dev-server.js on http://localhost:3000\n");
     } else {
@@ -173,17 +261,26 @@ async function main() {
     }
   }
 
+  if (isCiVerbose()) {
+    console.log(
+      `[qa] suite=${smoke ? "smoke" : release ? "release" : noNative ? "full-no-native" : "full"} scripts=${scripts.length} ci=true\n`
+    );
+  }
+
   const results = [];
   const started = Date.now();
 
   for (const scriptName of scripts) {
-    process.stdout.write(`→ ${scriptName} … `);
-    const { code, output } = await runScript(scriptName);
-    const { status, note } = classifyResult(scriptName, code);
-    results.push({ scriptName, status, code, note });
-    console.log(status + (note ? ` (${note})` : ""));
+    const limitSec = getScriptTimeoutMs(scriptName);
+    const limitLabel = limitSec > 0 ? ` (limit ${Math.round(limitSec / 1000)}s)` : "";
+    process.stdout.write(`→ ${scriptName}${limitLabel} … `);
+    const { code, output, timedOut, timeoutMs, elapsedMs } = await runScript(scriptName);
+    const { status, note } = classifyResult(scriptName, code, { timedOut, timeoutMs });
+    const elapsedSec = Math.round(elapsedMs / 1000);
+    results.push({ scriptName, status, code, note, elapsedSec });
+    console.log(`${status}${note ? ` (${note})` : ""} · ${elapsedSec}s`);
     if (status === "FAIL" && output.trim()) {
-      console.log(tailOutput(output));
+      console.log(tailOutput(output, timedOut ? 20 : 8));
       console.log("");
     }
   }
