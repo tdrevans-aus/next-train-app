@@ -55,14 +55,16 @@ npm run test:pre-upload     # before Play AAB upload
 
 ---
 
-## Phase 2 — in progress (FB-33)
+## Phase 2 — FB-33 shipped; soak monitoring (Aug 2026)
+
+See **`docs/fb-33-soak.md`** for soak gate (`npm run soak:status`) before 2.3.0 ship.
 
 | ID | Item | Owner | Effort | Notes |
 | --- | --- | --- | --- | --- |
 | **QA-P2-01** | **Repo template** `evans-capacitor-app` | Tim/PM | 1–2 days | Copy `qa/`, `TESTING.md` skeleton, fixture server, CI workflow |
 | **QA-P2-02** | **Migrate more scripts** to `qa/helpers/` | Jim/QA | Ongoing | `openJourneysDialog` pattern; station combobox already shared |
 | **QA-P2-03** | **CI: full suite on main** only; smoke on PR | PM | ½ day | **Done Aug 2026** — `.github/workflows/ci.yml`; `npm run test:web:ci` (`--no-native`) |
-| **QA-P2-09** | **Three-tier web QA** (smoke / release / nightly full) | PM | ½ day | **In progress Aug 2026** — `test:web:release` on `master` CI; nightly `test:web:ci` |
+| **QA-P2-09** | **Three-tier web QA** (smoke / release / nightly full) | PM | ½ day | **Shipped Aug 2026** — PR/release/nightly tiers live; soak tracked in `docs/fb-33-soak.md` |
 | **QA-P2-04** | **Native reminder fast-test mode** | Jim | 1 day | Alarm ~60s after enable; doc in `qa-leave-reminders-v2-testing.md` |
 | **QA-P2-05** | **`DEVICE-SMOKE.md`** one-pager | Tim | ½ day | 15 checks, 30 min, Play install only |
 | **QA-P2-06** | **`npm run release:prep`** | Jim | ½ day | Bump `versionCode`, `cap:sync`, print AAB path |
@@ -113,6 +115,7 @@ Before **public**:
 
 | Date | Note |
 | --- | --- |
+| 2026-08-15 | FB-33 soak: `docs/fb-33-soak.md`, `npm run soak:status`, smoke-browser 6–7 hardening for release tier |
 | 2026-08-15 | CI smoke hang guard: per-script timeouts, verbose/heartbeat logs, force dev-server on CI (`run-all.mjs`, `dev-server.mjs`, `ci.yml`) |
 | 2026-08-15 | QA-P2-03: CI smoke on PR, full web (`test:web:ci`) + full JVM on main; `run-all.mjs --no-native` |
 | 2026-08-11 | Phase 1 implemented: run-all, helpers, CI, pre-upload check; plan doc created |

@@ -132,13 +132,17 @@ export async function armFixtureLeaveCard(
   page,
   { fixture, station = "Edgewater Stn", direction = "Perth" } = {}
 ) {
+  const FIXTURE_MINUTES = { urgent: 12, late: 7, normal: 18 };
+  const trainMinutes = FIXTURE_MINUTES[fixture] ?? 18;
   const journeyId = "j-smoke";
-  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(90));
-  const stationParam = encodeURIComponent(station);
-  const directionParam = encodeURIComponent(direction);
-  const fixtureUrl = `${BASE}/?reset=1&test=1&fixture=${fixture}&station=${stationParam}&direction=${directionParam}`;
+  const preferredTrainTime = formatWallClockMinutes(
+    perthMinutesFromNow(Math.max(1, trainMinutes - 5))
+  );
+  // Omit station/direction from the URL — init() readUrlSettings() would overwrite seeded journeys.
+  const fixtureUrlReset = `${BASE}/?reset=1&test=1&fixture=${fixture}`;
+  const fixtureUrl = `${BASE}/?test=1&fixture=${fixture}`;
 
-  await page.goto(fixtureUrl);
+  await page.goto(fixtureUrlReset);
   await page.evaluate(
     ({ preferred, stationName, directionName, jId }) => {
       localStorage.setItem(
