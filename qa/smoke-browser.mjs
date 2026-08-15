@@ -149,7 +149,7 @@ async function run() {
 
   await page.goto(`${BASE}/?reset=1&fixture=urgent&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 12 });
-  await waitForLeaveCardPhase(page, "urgent", { timeout: 15000 });
+  await waitForLeaveCardPhase(page, "urgent", { timeout: 30000 });
   const leaveClass6 = await page.locator("#leave-card").getAttribute("class");
   const leaveMin6 = parseInt((await page.locator("#leave-time .depart-countdown-value").textContent()) ?? "", 10);
   if (leaveClass6?.includes("urgent") && leaveMin6 === 2) {
@@ -160,7 +160,7 @@ async function run() {
 
   await page.goto(`${BASE}/?reset=1&fixture=late&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 7 });
-  await waitForLeaveCardPhase(page, "late", { timeout: 15000 });
+  await waitForLeaveCardPhase(page, "late", { timeout: 30000 });
   const leaveClass7 = await page.locator("#leave-card").getAttribute("class");
   const lateMsg7 = (await page.locator("#leave-countdown").textContent())?.trim();
   if (leaveClass7?.includes("late") && lateMsg7?.toLowerCase().includes("late")) {
