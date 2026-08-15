@@ -969,7 +969,7 @@ function advanceNearbyPinToNextTrain() {
   setNearbySkip(direction, 0);
   dismissSwipeHint();
   renderNearbyBoard();
-  void fetchNearbyBoard();
+  void fetchNearbyBoard().catch(() => renderNearbyBoard({ stale: true }));
   return true;
 }
 
