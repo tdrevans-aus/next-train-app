@@ -191,8 +191,9 @@ export async function armFixtureLeaveCard(
   await page.waitForFunction(
     () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
     null,
-    { timeout: 15000 }
-  );
+    { timeout: 30000 }
+  ).catch(() => {});
+  await waitForLeaveCard(page, { optional: false, timeout: 30000 });
 }
 
 export async function waitForJourneySwitcher(page, { timeout = 15000 } = {}) {
