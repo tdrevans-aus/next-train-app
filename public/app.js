@@ -1189,10 +1189,16 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
 }
 
 function journeyUsesLeaveBefore(journey) {
+  if (isRouteJourney(journey)) {
+    return false;
+  }
   return journey?.useLeaveBefore !== false;
 }
 
 function journeyLeaveCardArmed(journey, pinTrip) {
+  if (isRouteJourney(journey)) {
+    return false;
+  }
   if (!pinTrip || !journeyUsesLeaveBefore(journey)) {
     return false;
   }
@@ -1213,7 +1219,7 @@ function journeyLeaveCardArmed(journey, pinTrip) {
 
 
 function getEffectiveLeaveBeforeMinutes(journey) {
-  if (!journeyUsesLeaveBefore(journey)) {
+  if (isRouteJourney(journey) || !journeyUsesLeaveBefore(journey)) {
     return 0;
   }
 
@@ -1399,31 +1405,65 @@ function formatJourneyDefaultWindow(journey) {
 }
 
 
-function findScheduledJourneyId() {
-  const configured = getConfiguredJourneys();
-  if (!configured.length) {
+function preferredMinutesFromJourney(journey) {
+  const raw = journey?.preferredTrainTime;
+  if (!raw) {
     return null;
   }
-
-  const minutes = getPerthMinutesSinceMidnight();
-  const match = configured.find((journey) => journeyMatchesSchedule(journey, minutes));
-  if (match) {
-    return match.id;
-  }
-
-  return null;
+  return parseTimeToMinutes(raw);
 }
 
-function findDefaultWindowJourneyAt(minutes = getPerthMinutesSinceMidnight()) {
-  return (
-    getConfiguredJourneys().find((journey) => journeyMatchesSchedule(journey, minutes)) ?? null
+function getCommutesMatchingSchedule(minutes = getPerthMinutesSinceMidnight()) {
+  return getConfiguredJourneys().filter(
+    (journey) => isCommuteJourney(journey) && journeyMatchesSchedule(journey, minutes)
   );
 }
 
+function pickScheduledCommute(commutes, minutes = getPerthMinutesSinceMidnight()) {
+  if (!commutes.length) {
+    return null;
+  }
+  if (commutes.length === 1) {
+    return commutes[0];
+  }
+
+  const withTarget = commutes.filter((journey) => preferredMinutesFromJourney(journey) != null);
+  if (withTarget.length < 2) {
+    return commutes[0];
+  }
+
+  const sorted = [...withTarget].sort(
+    (left, right) => preferredMinutesFromJourney(left) - preferredMinutesFromJourney(right)
+  );
+
+  for (let index = 0; index < sorted.length - 1; index += 1) {
+    const midpoint = Math.floor(
+      (preferredMinutesFromJourney(sorted[index]) + preferredMinutesFromJourney(sorted[index + 1])) / 2
+    );
+    if (minutes < midpoint) {
+      return sorted[index];
+    }
+  }
+
+  return sorted[sorted.length - 1];
+}
+
+function findScheduledJourneyId() {
+  const matching = getCommutesMatchingSchedule();
+  if (!matching.length) {
+    return null;
+  }
+
+  const picked = pickScheduledCommute(matching);
+  return picked?.id ?? null;
+}
+
+function findDefaultWindowJourneyAt(minutes = getPerthMinutesSinceMidnight()) {
+  return pickScheduledCommute(getCommutesMatchingSchedule(minutes));
+}
+
 function getDefaultWindowJourneyIds(minutes = getPerthMinutesSinceMidnight()) {
-  return getConfiguredJourneys()
-    .filter((journey) => journeyMatchesSchedule(journey, minutes))
-    .map((journey) => journey.id);
+  return getCommutesMatchingSchedule(minutes).map((journey) => journey.id);
 }
 
 function defaultWindowContextsMatch(storedIds, currentIds) {
@@ -1889,10 +1929,34 @@ function renderJourneySwitcher() {
     if (journey.id === settings.activeJourneyId) {
       button.classList.add("active");
     }
+    const outsideCommute =
+      isCommuteJourney(journey) &&
+      !journeyMatchesSchedule(journey, getPerthMinutesSinceMidnight());
+    if (outsideCommute) {
+      button.classList.add("journey-switcher-option--outside");
+    }
+
+    const titleRow = document.createElement("span");
+    titleRow.className = "journey-switcher-option-title";
+    const kindBadge = document.createElement("span");
+    kindBadge.className = "journey-switcher-option-kind";
+    kindBadge.textContent = isCommuteJourney(journey) ? "Commute" : "Route";
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "journey-switcher-option-name";
+    nameSpan.textContent = journey.name;
+    titleRow.append(kindBadge, nameSpan);
+
     const routeSpan = document.createElement("span");
     routeSpan.className = "journey-switcher-option-route";
     routeSpan.textContent = formatJourneyRoute(journey);
-    button.append(document.createTextNode(journey.name), routeSpan);
+
+    button.append(titleRow, routeSpan);
+    if (outsideCommute) {
+      const hint = document.createElement("span");
+      hint.className = "journey-switcher-option-hint";
+      hint.textContent = "Outside active hours";
+      button.appendChild(hint);
+    }
     button.addEventListener("click", () => {
       closeJourneySwitcherMenu();
       switchJourney(journey.id);
@@ -2450,6 +2514,141 @@ function updateSwipeHint() {
 }
 
 
+function hideRouteDepartureBoard() {
+  const sectionEl = document.getElementById("nearby-directions");
+  sectionEl?.classList.remove("route-departures");
+  if (sectionEl) {
+    sectionEl.hidden = true;
+  }
+}
+
+function renderRouteDepartureBoard(data, skipCount = skipTrains) {
+  const sectionEl = document.getElementById("nearby-directions");
+  const listEl = document.getElementById("nearby-directions-list");
+  const labelEl = sectionEl?.querySelector(".nearby-directions-label");
+  if (!sectionEl || !listEl) {
+    return;
+  }
+
+  const upcoming = trainNavigation().getUpcomingTrips(data) ?? [];
+  const rest = upcoming.slice(skipCount + 1);
+  if (!rest.length) {
+    hideRouteDepartureBoard();
+    return;
+  }
+
+  sectionEl.hidden = false;
+  sectionEl.classList.add("route-departures");
+  if (labelEl) {
+    labelEl.textContent = "Upcoming departures";
+    labelEl.hidden = false;
+  }
+
+  listEl.innerHTML = "";
+  for (const trip of rest.slice(0, 8)) {
+    const item = document.createElement("li");
+    item.className = "nearby-directions-item route-departures-item";
+    const time = document.createElement("span");
+    time.className = "route-departures-time";
+    time.textContent = trip.displayTime ?? "—";
+    const meta = document.createElement("span");
+    meta.className = "route-departures-meta";
+    meta.textContent = `Pl ${trip.platform ?? "—"} · ${trip.status ?? "On Time"}`;
+    item.append(time, meta);
+    listEl.appendChild(item);
+  }
+}
+
+function renderRouteJourney(data, { stale = false } = {}) {
+  hideNearbyPinLeaveSurfaces();
+  hideRouteDepartureBoard();
+
+  const { next, lastUpdated } = data;
+  const journey = getActiveJourney();
+  setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+  updatedEl.textContent = stale
+    ? "Update failed — times may be out of date"
+    : lastUpdated
+      ? `Updated ${lastUpdated}`
+      : "Updated just now";
+
+  if (!next) {
+    lastRenderedNext = null;
+    setHeroUrgency("calm");
+    if (heroDepartLabelEl) {
+      heroDepartLabelEl.textContent = "Next Train";
+    }
+    if (departCountdownEl) {
+      departCountdownEl.textContent = "—";
+    }
+    if (departDisplayTimeEl) {
+      departDisplayTimeEl.textContent = "No upcoming trains";
+    }
+    if (heroScheduledTimeEl) {
+      heroScheduledTimeEl.hidden = true;
+    }
+    if (leaveCardEl) {
+      leaveCardEl.hidden = true;
+    }
+    if (preferredHintEl) {
+      preferredHintEl.hidden = true;
+    }
+    platformEl.textContent = "—";
+    statusEl.textContent = "—";
+    followingSectionEl.hidden = true;
+    updateSwipeHint();
+    updateSwipeCues();
+    syncHeroPinChrome();
+    renderJourneySwitcher();
+    return;
+  }
+
+  const heroTrip = next;
+  lastRenderedNext = heroTrip;
+
+  setHeroUrgency("calm");
+  if (heroDepartLabelEl) {
+    heroDepartLabelEl.textContent = "Next Train";
+  }
+  if (departCountdownEl) {
+    renderDepartureCountdown(departCountdownEl, heroTrip);
+  }
+  if (departDisplayTimeEl) {
+    departDisplayTimeEl.textContent = heroTrip.displayTime;
+  }
+
+  const scheduledLine = formatScheduledLine(heroTrip);
+  if (heroScheduledTimeEl) {
+    if (scheduledLine) {
+      heroScheduledTimeEl.textContent = scheduledLine;
+      heroScheduledTimeEl.hidden = false;
+    } else {
+      heroScheduledTimeEl.hidden = true;
+    }
+  }
+
+  if (leaveCardEl) {
+    leaveCardEl.hidden = true;
+  }
+  if (preferredHintEl) {
+    preferredHintEl.hidden = true;
+  }
+  if (leaveCardActionsEl) {
+    leaveCardActionsEl.hidden = true;
+  }
+
+  platformEl.textContent = heroTrip.platform;
+  renderStatusDisplay(heroTrip);
+  followingSectionEl.hidden = true;
+  renderRouteDepartureBoard(data);
+  updateSwipeHint();
+  updateSwipeCues();
+  updateLeaveHint();
+  syncHeroPinChrome();
+  renderJourneySwitcher();
+}
+
+
 function render(data, { stale = false } = {}) {
   lastLiveDisplayMinute = getPerthMinutesSinceMidnight();
   hideNearbyPinLeaveSurfaces();
@@ -2457,6 +2656,7 @@ function render(data, { stale = false } = {}) {
   const nearbyDirectionsEl = document.getElementById("nearby-directions");
   if (nearbyDirectionsEl) {
     nearbyDirectionsEl.hidden = true;
+    nearbyDirectionsEl.classList.remove("route-departures");
   }
 
   if (!stale) {
@@ -2466,8 +2666,13 @@ function render(data, { stale = false } = {}) {
   heroEl?.classList.toggle("stale", stale);
   leaveCardEl?.classList.toggle("stale", stale);
 
-  const { next, lastUpdated } = data;
   const journey = getActiveJourney();
+  if (isRouteJourney(journey)) {
+    renderRouteJourney(data, { stale });
+    return;
+  }
+
+  const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
@@ -3043,6 +3248,7 @@ function syncHeroPinChrome() {
       const showJourneyPin =
         journeyModeActive &&
         journey &&
+        isCommuteJourney(journey) &&
         !isUnconfiguredJourney(journey) &&
         Boolean(lastRenderedNext);
       heroPinBtn.hidden = !showJourneyPin;
@@ -5124,6 +5330,10 @@ window.nextTrainApp = {
   getPerthDayOfWeekIso,
   journeyMatchesSchedule,
   findScheduledJourneyId,
+  pickScheduledCommute,
+  getCommutesMatchingSchedule,
+  isRouteJourney,
+  renderRouteJourney,
   shouldDefaultToNearby,
   getActiveLegCommute() {
     return getActiveJourney();
