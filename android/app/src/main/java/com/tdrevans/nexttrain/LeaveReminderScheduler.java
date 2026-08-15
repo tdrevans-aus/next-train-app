@@ -333,6 +333,11 @@ public final class LeaveReminderScheduler {
         return result;
       }
 
+      if (!JourneySelector.isCommuteJourney(journey)) {
+        result.put("reason", "route_journey");
+        return result;
+      }
+
       if (!journey.optBoolean("useLeaveBefore", true)) {
         result.put("reason", "buffer_off");
         return result;

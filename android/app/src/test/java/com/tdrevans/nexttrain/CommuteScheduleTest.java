@@ -563,7 +563,10 @@ public class CommuteScheduleTest {
 
     JSONObject withoutPreferred = CommuteSchedule.resolveActiveNextTrip(payload, new JSONObject());
     assertEquals(PerthTime.formatIsoFromEpochMs(earlyMs), CommuteSchedule.tripDepartureIso(withoutPreferred));
-    assertTrue(CommuteSchedule.leaveByArmedForTrip(withoutPreferred, new JSONObject()));
+    JSONObject commuteNoPreferred = new JSONObject();
+    commuteNoPreferred.put("kind", "commute");
+    commuteNoPreferred.put("useLeaveBefore", true);
+    assertTrue(CommuteSchedule.leaveByArmedForTrip(withoutPreferred, commuteNoPreferred));
 
     assertEquals("NEXT TRAIN", CommuteSchedule.liveWidgetLabel(journey, active));
     JSONObject targetTrip = new JSONObject();
@@ -584,6 +587,21 @@ public class CommuteScheduleTest {
     trip.put("departure", PerthTime.formatIsoFromEpochMs(System.currentTimeMillis() + 15L * 60_000L));
 
     assertEquals("NEXT TRAIN", CommuteSchedule.liveWidgetLabel(route, trip));
+  }
+
+  @Test
+  public void leaveByArmedForTrip_falseForRouteJourney() throws Exception {
+    JSONObject route = new JSONObject();
+    route.put("kind", "route");
+    route.put("station", "Edgewater Stn");
+    route.put("direction", "Perth");
+    route.put("useLeaveBefore", true);
+    route.put("preferredTrainTime", "07:30");
+
+    JSONObject trip = new JSONObject();
+    trip.put("departure", PerthTime.formatIsoFromEpochMs(System.currentTimeMillis() + 15L * 60_000L));
+
+    assertFalse(CommuteSchedule.leaveByArmedForTrip(trip, route));
   }
 
   @Test

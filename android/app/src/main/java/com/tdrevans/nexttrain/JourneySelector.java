@@ -3,7 +3,7 @@ package com.tdrevans.nexttrain;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/** Widget / schedule journey pick: in Active hours (+ days) only — no activeId / first fallbacks. */
+/** Widget journey pick: commute in Active window (Q5 #3), then active route (Q5 #4). */
 public final class JourneySelector {
 
   private static final String KIND_ROUTE = "route";

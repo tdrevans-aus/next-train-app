@@ -577,7 +577,10 @@ public final class CommuteSchedule {
 
   /** Leave By / leave twin only when no preferred, or this trip is at/after preferred. */
   static boolean leaveByArmedForTrip(JSONObject trip, JSONObject journey) {
-    if (journey == null || !journey.optBoolean("useLeaveBefore", true)) {
+    if (journey == null || JourneySelector.isRouteJourney(journey)) {
+      return false;
+    }
+    if (!journey.optBoolean("useLeaveBefore", true)) {
       return false;
     }
     if (trip == null) {
