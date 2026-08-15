@@ -1,0 +1,58 @@
+{
+  "id": "nearby-pin-expired",
+  "description": "Expired nearby pin does not own hero; face reverts to true next.",
+  "tags": ["nearby"],
+  "clock": {
+    "perthDateKey": "2026-08-15",
+    "nowIso": "2026-08-15T06:00:00+08:00"
+  },
+  "input": {
+    "mode": "nearby",
+    "nearbyModeActive": true,
+    "skipTrains": 0,
+    "nearbyPin": {
+      "station": "Edgewater Stn",
+      "direction": "Perth",
+      "departureIso": "2026-08-15T07:00:00+08:00",
+      "displayTime": "7:00",
+      "platform": "2",
+      "holdingUntilMs": 1
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-15T06:30:00+08:00",
+        "displayTime": "6:30",
+        "platform": "1"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-15T06:30:00+08:00",
+          "displayTime": "6:30",
+          "platform": "1"
+        },
+        {
+          "departure": "2026-08-15T07:00:00+08:00",
+          "displayTime": "7:00",
+          "platform": "2"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-15T06:30:00+08:00",
+    "pinDeparture": null,
+    "heroDeparture": "2026-08-15T06:30:00+08:00",
+    "leaveDeparture": "2026-08-15T06:30:00+08:00",
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": "2026-08-15T06:30:00+08:00",
+    "isPinnedToday": false,
+    "heroShowsPin": false,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": false,
+    "showSecondaryNext": false,
+    "leaveCardArmed": false,
+    "heroLabel": "Next Train"
+  }
+}

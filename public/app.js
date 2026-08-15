@@ -4960,7 +4960,22 @@ function initJourneyModelFromModule() {
   });
 }
 
+function initPinStateFromModule() {
+  window.nextTrainPinState?.init?.({
+    getPerthLocalDateKey,
+    getPerthMinutesSinceMidnight,
+    parseTimeToMinutes,
+    normalizeApiTrainData,
+    resolveTripDeparture,
+    journeyMatchesSchedule,
+    preferredMinutesForLiveGlance: (journey) => trainNavigation().preferredMinutesForLiveGlance(journey),
+    liveHorizonMinutes: (journey) => trainNavigation().liveHorizonMinutes(journey),
+    isNearbyPinHolding: (pin) => nearbyMode().isNearbyPinHolding(pin),
+  });
+}
+
 initJourneyModelFromModule();
+initPinStateFromModule();
 initJourneyDetailFromModule();
 initStationComboboxesFromModule();
 initTemplateWizardFromModule();
