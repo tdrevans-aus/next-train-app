@@ -73,6 +73,14 @@ const nearbyLeaveHideBtn = document.getElementById("nearby-leave-hide-btn");
 const nearbyLeaveBeforeInput = document.getElementById("nearby-leave-before-input");
 const nearbyLeaveBeforeValueEl = document.getElementById("nearby-leave-before-value");
 const nearbyNotifyMeInput = document.getElementById("nearby-notify-me");
+
+/** Hide Near me pin leave-by controls. Defined next to its DOM refs (CAPACITOR-D). */
+function hideNearbyPinLeaveSurfaces() {
+  if (nearbyPinLeaveControlsEl) {
+    nearbyPinLeaveControlsEl.hidden = true;
+  }
+}
+
 const platformEl = document.getElementById("platform");
 const statusEl = document.getElementById("status");
 const followingSectionEl = document.getElementById("following-section");
@@ -5182,6 +5190,7 @@ function clearNearbyPin() {
     nearbySession.pin = null;
     clearNearbyPinLeaveCardDismissed();
   }
+  hideNearbyPinLeaveSurfaces();
   if (settings.nearbyPin) {
     persistSettings({ nearbyPin: null });
     rescheduleNearbyPinReminders();
@@ -5251,12 +5260,6 @@ function restoreNearbySessionPinFromSettings() {
 
 function buildNearbyLeaveNext(trip) {
   return buildNextFromFollowing(trip, getNearbyLeaveBeforeMinutes(), resolveTripDeparture(trip));
-}
-
-function hideNearbyPinLeaveSurfaces() {
-  if (nearbyPinLeaveControlsEl) {
-    nearbyPinLeaveControlsEl.hidden = true;
-  }
 }
 
 function renderNearbyPinLeaveSurfaces(next, pinned) {
