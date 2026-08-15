@@ -208,7 +208,6 @@ let stationCoords = null;
 let refreshTimer = null;
 let countdownTimer = null;
 let lastLiveDisplayMinute = null;
-let stationsCache = null;
 let directionsRequestId = 0;
 let settingsDraftJourneys = [];
 let editingJourneyId = null;
@@ -685,11 +684,11 @@ function isCatalogStation(station) {
   }
 
   const normalized = normalizeStation(trimmed);
-  if (!stationsCache?.length) {
+  if (!window.nextTrainStationCombobox?.getStationsCache?.()?.length) {
     return Boolean(normalized);
   }
 
-  return stationsCache.includes(normalized) || stationsCache.includes(trimmed);
+  return window.nextTrainStationCombobox.getStationsCache().includes(normalized) || stationsCache.includes(trimmed);
 }
 
 function formatRouteBasedJourneyName(station, direction) {
@@ -739,7 +738,7 @@ function syncDetailNearestStationChrome(patch = {}) {
     detailNearestState.hint = patch.hint ? String(patch.hint) : "";
   }
 
-  const station = String(detailStationCombobox?.getValue?.() || "").trim();
+  const station = String(getDetailStationCombobox()?.getValue?.() || "").trim();
   const hasStation = Boolean(station);
   const { loading, error, hint } = detailNearestState;
 
@@ -5698,17 +5697,17 @@ function formatNearbyDirectionRow(entry) {
 }
 
 async function ensureNearbyStationOptions({ force = false } = {}) {
-  if (!nearbyStationCombobox) {
+  if (!getNearbyStationCombobox()) {
     return;
   }
 
-  if (!force && stationsCache?.length) {
-    setStationComboboxValue(nearbyStationCombobox, nearbySession?.station ?? "");
+  if (!force && window.nextTrainStationCombobox?.getStationsCache?.()?.length) {
+    setStationComboboxValue(getNearbyStationCombobox(), nearbySession?.station ?? "");
     return;
   }
 
   await getStationsList();
-  setStationComboboxValue(nearbyStationCombobox, nearbySession?.station ?? "");
+  setStationComboboxValue(getNearbyStationCombobox(), nearbySession?.station ?? "");
 }
 
 const NEARBY_LOCATE_COPY = "Finding your nearest station…";
@@ -6722,430 +6721,6 @@ function scheduleRefresh() {
   scheduleLiveDisplayRefresh();
 }
 
-async function fetchLocalJson(path, timeoutMs = 4000) {
-  const fetchPromise = (async () => {
-    const response = await fetch(path);
-    if (!response.ok) {
-      throw new Error(`Failed to load ${path}`);
-    }
-    return await response.json();
-  })();
-
-  const timeoutPromise = new Promise((_, reject) => {
-    window.setTimeout(() => reject(new Error(`Timed out loading ${path}`)), timeoutMs);
-  });
-
-  return Promise.race([fetchPromise, timeoutPromise]);
-}
-
-async function getStationsList() {
-  if (stationsCache) {
-    return stationsCache;
-  }
-
-  try {
-    stationsCache = collapseStationList(await fetchLocalJson("/stations.json"));
-  } catch (error) {
-    console.warn("Could not load stations.json", error);
-    stationsCache = collapseStationList([
-      "Edgewater Stn",
-      "Joondalup Stn",
-      "Perth Underground Stn",
-      "Mandurah Stn",
-    ]);
-  }
-
-  return stationsCache;
-}
-
-function replaceSelectOptions(selectEl, options) {
-  selectEl.replaceChildren();
-
-  for (const { value, label, disabled, selected } of options) {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = label;
-    if (disabled) {
-      option.disabled = true;
-    }
-    if (selected) {
-      option.selected = true;
-    }
-    selectEl.appendChild(option);
-  }
-}
-
-function renderStationOptions(selectEl, selectedStation) {
-  const stations = stationsCache ?? [];
-  replaceSelectOptions(selectEl, [
-    {
-      value: "",
-      label: "Choose station…",
-      disabled: true,
-      selected: !selectedStation,
-    },
-    ...stations.map((name) => ({
-      value: name,
-      label: formatStationLabel(name),
-      selected: name === selectedStation,
-    })),
-  ]);
-}
-
-function filterStationsByQuery(query) {
-  const stations = stationsCache ?? [];
-  const normalized = String(query || "").trim().toLowerCase();
-  if (!normalized) {
-    return stations;
-  }
-
-  return stations.filter((name) => formatStationLabel(name).toLowerCase().includes(normalized));
-}
-
-function createStationCombobox(root, { onChange, required = false, hideFooterOnOpen = false } = {}) {
-  const trigger = root?.querySelector(".station-combobox-input");
-  const list = root?.querySelector(".station-combobox-list");
-  if (!trigger || !list) {
-    return null;
-  }
-
-  const shouldHideFooter =
-    hideFooterOnOpen || root.id === "detail-station-combobox";
-
-  let dropdown = root.querySelector(".station-combobox-dropdown");
-  if (!dropdown) {
-    dropdown = document.createElement("div");
-    dropdown.className = "station-combobox-dropdown";
-    list.parentNode.insertBefore(dropdown, list);
-    dropdown.appendChild(list);
-  }
-
-  let searchInput = dropdown.querySelector(".station-combobox-search-input");
-  if (!searchInput) {
-    searchInput = document.createElement("input");
-    searchInput.type = "text";
-    searchInput.className = "station-combobox-search-input";
-    searchInput.placeholder = "Type a station";
-    searchInput.setAttribute("autocomplete", "off");
-    searchInput.setAttribute("aria-label", "Search stations");
-    searchInput.hidden = true;
-    dropdown.insertBefore(searchInput, list);
-  }
-
-  let selectedValue = "";
-  let activeIndex = -1;
-  let suppressBlurClose = false;
-  let suppressOpenUntil = 0;
-  let mode = "closed";
-
-  function canOpenPicker() {
-    return Date.now() >= suppressOpenUntil;
-  }
-
-  function markPickerJustClosed() {
-    suppressOpenUntil = Date.now() + 350;
-  }
-
-  function setFooterHidden(hidden) {
-    if (!shouldHideFooter) {
-      return;
-    }
-    const detailView = document.getElementById("settings-detail-view");
-    if (!detailView) {
-      return;
-    }
-    detailView.classList.toggle("station-picker-open", Boolean(hidden));
-  }
-
-  function setExpanded(expanded) {
-    trigger.setAttribute("aria-expanded", expanded ? "true" : "false");
-    root.classList.toggle("station-combobox--open", expanded);
-    dropdown.hidden = !expanded;
-    list.hidden = !expanded;
-  }
-
-  function updateTriggerLabel() {
-    trigger.value = selectedValue ? formatStationLabel(selectedValue) : "";
-    trigger.placeholder = selectedValue ? "" : "Choose station";
-  }
-
-  function closeList({ restoreSelection = true } = {}) {
-    mode = "closed";
-    setExpanded(false);
-    activeIndex = -1;
-    searchInput.hidden = true;
-    searchInput.value = "";
-    setFooterHidden(false);
-    if (restoreSelection) {
-      updateTriggerLabel();
-    }
-  }
-
-  function renderList(query = "") {
-    const matches = filterStationsByQuery(query);
-    list.innerHTML = "";
-
-    if (mode === "browse") {
-      const searchRow = document.createElement("li");
-      searchRow.className = "station-combobox-search";
-      searchRow.setAttribute("role", "option");
-      searchRow.textContent = "Search stations";
-      searchRow.addEventListener("mousedown", (event) => {
-        event.preventDefault();
-        suppressBlurClose = true;
-      });
-      searchRow.addEventListener("click", () => {
-        enterSearchMode();
-      });
-      list.appendChild(searchRow);
-    }
-
-    if (!matches.length) {
-      const empty = document.createElement("li");
-      empty.className = "station-combobox-empty";
-      empty.textContent = mode === "search" ? "No stations match" : "No stations available";
-      empty.setAttribute("aria-disabled", "true");
-      list.appendChild(empty);
-      activeIndex = -1;
-      return;
-    }
-
-    const optionOffset = mode === "browse" ? 1 : 0;
-    matches.forEach((name, index) => {
-      const item = document.createElement("li");
-      item.className = "station-combobox-option";
-      item.setAttribute("role", "option");
-      item.dataset.value = name;
-      item.textContent = formatStationLabel(name);
-      if (name === selectedValue) {
-        item.setAttribute("aria-selected", "true");
-      }
-      const optionIndex = index + optionOffset;
-      if (optionIndex === activeIndex) {
-        item.classList.add("station-combobox-option--active");
-      }
-      item.addEventListener("pointerdown", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        suppressBlurClose = true;
-      });
-      item.addEventListener("mousedown", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        suppressBlurClose = true;
-      });
-      item.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        selectStation(name);
-      });
-      list.appendChild(item);
-    });
-  }
-
-  function openBrowse() {
-    mode = "browse";
-    activeIndex = -1;
-    searchInput.hidden = true;
-    searchInput.value = "";
-    setExpanded(true);
-    setFooterHidden(true);
-    renderList("");
-  }
-
-  function enterSearchMode() {
-    mode = "search";
-    activeIndex = 0;
-    searchInput.hidden = false;
-    searchInput.value = "";
-    renderList("");
-    window.setTimeout(() => {
-      searchInput.focus();
-    }, 0);
-  }
-
-  function selectStation(name, { silent = false } = {}) {
-    selectedValue = name || "";
-    updateTriggerLabel();
-    closeList({ restoreSelection: false });
-    markPickerJustClosed();
-    if (shouldHideFooter) {
-      document.getElementById("settings-detail-view")?.classList.remove("station-picker-open");
-    }
-    if (!silent && typeof onChange === "function") {
-      onChange(selectedValue);
-    }
-  }
-
-  function setValue(name, { silent = false } = {}) {
-    selectStation(name, { silent });
-  }
-
-  function getValue() {
-    return selectedValue;
-  }
-
-  function focus() {
-    openBrowse();
-  }
-
-  function getFocusableOptions() {
-    return [...list.querySelectorAll(".station-combobox-option, .station-combobox-search")];
-  }
-
-  trigger.readOnly = true;
-  updateTriggerLabel();
-
-  trigger.addEventListener("pointerdown", (event) => {
-    if (mode === "closed" && canOpenPicker()) {
-      event.preventDefault();
-      openBrowse();
-    }
-  });
-
-  trigger.addEventListener("click", (event) => {
-    if (mode === "closed" && canOpenPicker()) {
-      event.preventDefault();
-      openBrowse();
-    }
-  });
-
-  trigger.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && mode !== "closed") {
-      event.preventDefault();
-      closeList();
-      return;
-    }
-
-    if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
-      event.preventDefault();
-      if (mode === "closed") {
-        openBrowse();
-      }
-    }
-  });
-
-  searchInput.addEventListener("input", () => {
-    activeIndex = 0;
-    renderList(searchInput.value);
-  });
-
-  searchInput.addEventListener("keydown", (event) => {
-    const options = getFocusableOptions();
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeList();
-      trigger.focus();
-      return;
-    }
-
-    if (event.key === "ArrowDown") {
-      event.preventDefault();
-      if (!options.length) {
-        return;
-      }
-      activeIndex = Math.min(activeIndex + 1, options.length - 1);
-      renderList(searchInput.value);
-      options[activeIndex]?.scrollIntoView({ block: "nearest" });
-      return;
-    }
-
-    if (event.key === "ArrowUp") {
-      event.preventDefault();
-      if (!options.length) {
-        return;
-      }
-      activeIndex = Math.max(activeIndex - 1, 0);
-      renderList(searchInput.value);
-      options[activeIndex]?.scrollIntoView({ block: "nearest" });
-      return;
-    }
-
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const pick = options[activeIndex >= 0 ? activeIndex : 0];
-      if (pick?.classList.contains("station-combobox-search")) {
-        return;
-      }
-      if (pick?.dataset.value) {
-        selectStation(pick.dataset.value);
-      }
-    }
-  });
-
-  searchInput.addEventListener("blur", () => {
-    window.setTimeout(() => {
-      if (suppressBlurClose) {
-        suppressBlurClose = false;
-        return;
-      }
-      if (mode !== "closed" && !root.contains(document.activeElement)) {
-        closeList();
-      }
-    }, 120);
-  });
-
-  document.addEventListener("pointerdown", (event) => {
-    if (!root.contains(event.target)) {
-      closeList();
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && mode !== "closed") {
-      event.preventDefault();
-      closeList();
-      trigger.focus();
-    }
-  });
-
-  return {
-    getValue,
-    setValue,
-    focus,
-    openBrowse,
-    closeList,
-    enterSearchMode,
-    required,
-    trigger,
-    searchInput,
-    list,
-  };
-}
-
-let detailStationCombobox = null;
-let nearbyStationCombobox = null;
-
-function initStationComboboxes() {
-  if (detailStationComboboxRoot) {
-    detailStationCombobox = createStationCombobox(detailStationComboboxRoot, {
-      required: true,
-      hideFooterOnOpen: true,
-      onChange: (station) => {
-        void loadDirectionsForSelect(detailDirectionSelect, station);
-        if (!station) {
-          syncDetailNearestStationChrome({ error: false, hint: "" });
-        } else if (!detailNearestState.loading) {
-          syncDetailNearestStationChrome({ error: false, hint: "" });
-        }
-      },
-    });
-  }
-
-  if (nearbyStationComboboxRoot) {
-    nearbyStationCombobox = createStationCombobox(nearbyStationComboboxRoot, {
-      onChange: (station) => {
-        if (station && isNearbyModeActive()) {
-          void applyNearbyManualStation(station);
-        }
-      },
-    });
-  }
-}
-
-function setStationComboboxValue(combobox, station) {
-  combobox?.setValue(station || "", { silent: true });
-}
 
 async function fetchDirectionsFromApi(station) {
   const query = appendFixtureQuery(`station=${encodeURIComponent(station)}`);
@@ -8066,7 +7641,7 @@ async function syncJourneyDetailRouteFields(journey, nearestHint = null) {
     return;
   }
 
-  setStationComboboxValue(detailStationCombobox, journey.station);
+  setStationComboboxValue(getDetailStationCombobox(), journey.station);
   await loadDirectionsForSelect(detailDirectionSelect, journey.station, journey.direction);
 
   syncDetailNearestStationChrome({
@@ -8558,7 +8133,7 @@ async function prefillCustomNearestStation(journeyId) {
     return;
   }
 
-  const formStation = String(detailStationCombobox?.getValue?.() || "").trim();
+  const formStation = String(getDetailStationCombobox()?.getValue?.() || "").trim();
   if (formStation || journey.station) {
     if (templateWizardContext?.templateKey === "custom") {
       updateTemplateRouteCoachState({
@@ -8602,7 +8177,7 @@ async function prefillCustomNearestStation(journeyId) {
   }
 
   // User may have typed a station while geo was in flight — don't overwrite.
-  if (String(detailStationCombobox?.getValue?.() || "").trim()) {
+  if (String(getDetailStationCombobox()?.getValue?.() || "").trim()) {
     if (templateWizardContext?.templateKey === "custom") {
       updateTemplateRouteCoachState({ routeLoading: false });
     }
@@ -8839,7 +8414,7 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
   if (deleteJourneyBtn) {
     deleteJourneyBtn.hidden = !editingJourneyId;
   }
-  setStationComboboxValue(detailStationCombobox, journey.station || "");
+  setStationComboboxValue(getDetailStationCombobox(), journey.station || "");
 
   let nearestHint = null;
 
@@ -8857,7 +8432,7 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
       if (detailJourneyNameInput && !detailJourneyNameInput.value) {
         detailJourneyNameInput.value = journey.name || "";
       }
-      setStationComboboxValue(detailStationCombobox, journey.station || "");
+      setStationComboboxValue(getDetailStationCombobox(), journey.station || "");
       populateDetailReminderFields(journey);
     }
 
@@ -8881,7 +8456,7 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
     console.warn("Could not load stations for journey detail", error);
   }
 
-  setStationComboboxValue(detailStationCombobox, journey.station);
+  setStationComboboxValue(getDetailStationCombobox(), journey.station);
   await loadDirectionsForSelect(detailDirectionSelect, journey.station, journey.direction);
   syncDetailNearestStationChrome({ hint: nearestHint || detailNearestState.hint });
 }
@@ -8964,11 +8539,11 @@ function finishAfterAllJourneysDeleted() {
 }
 
 function requireJourneyRouteFromForm() {
-  const station = detailStationCombobox?.getValue?.() || "";
+  const station = getDetailStationCombobox()?.getValue?.() || "";
   const direction = normalizeDirection(detailDirectionSelect?.value || "");
 
   if (!station) {
-    detailStationCombobox?.focus?.();
+    getDetailStationCombobox()?.focus?.();
     throw new Error("Choose a departure station before saving.");
   }
 
@@ -9522,12 +9097,12 @@ nearbyDontWaitBtn?.addEventListener("click", () => {
 });
 
 nearbyStationBtn?.addEventListener("click", async () => {
-  const station = nearbyStationCombobox?.getValue?.();
+  const station = getNearbyStationCombobox()?.getValue?.();
   if (!station) {
     if (nearbyFallbackTextEl) {
       nearbyFallbackTextEl.textContent = "Pick a station from the list first.";
     }
-    nearbyStationCombobox?.focus?.();
+    getNearbyStationCombobox()?.focus?.();
     return;
   }
 
@@ -9870,7 +9445,7 @@ detailNearestBtn?.addEventListener("click", async () => {
 
   try {
     const { station, distanceKm: km } = await findNearestStation();
-    detailStationCombobox?.setValue(station);
+    getDetailStationCombobox()?.setValue(station);
     await loadDirectionsForSelect(detailDirectionSelect, station);
     const direction = await pickPerthDirection(station);
     if (direction) {
@@ -9986,7 +9561,46 @@ async function init() {
   window.nextTrainWidget?.syncWidgetSettings?.(settings);
 }
 
-initStationComboboxes();
+
+function getDetailStationCombobox() {
+  return window.nextTrainStationCombobox?.getDetailCombobox?.() ?? null;
+}
+
+function getNearbyStationCombobox() {
+  return window.nextTrainStationCombobox?.getNearbyCombobox?.() ?? null;
+}
+
+function getStationsList() {
+  return window.nextTrainStationCombobox.getStationsList();
+}
+
+function fetchLocalJson(path, timeoutMs) {
+  return window.nextTrainStationCombobox.fetchLocalJson(path, timeoutMs);
+}
+
+function replaceSelectOptions(selectEl, options) {
+  return window.nextTrainStationCombobox.replaceSelectOptions(selectEl, options);
+}
+
+function setStationComboboxValue(combobox, station) {
+  return window.nextTrainStationCombobox.setStationComboboxValue(combobox, station);
+}
+
+function initStationComboboxesFromModule() {
+  window.nextTrainStationCombobox?.init?.({
+    collapseStationList,
+    formatStationLabel,
+    detailStationComboboxRoot,
+    detailDirectionSelect,
+    loadDirectionsForSelect,
+    syncDetailNearestStationChrome,
+    detailNearestState,
+    nearbyStationComboboxRoot,
+    isNearbyModeActive,
+    applyNearbyManualStation,
+  });
+}
+initStationComboboxesFromModule();
 syncLeaveBeforeSliderFill();
 init();
 
@@ -10024,7 +9638,7 @@ window.nextTrainApp = {
   closeJourneysDialog,
   openMainScreenFromWidget,
   clearDetailStation() {
-    detailStationCombobox?.setValue?.("", { silent: true });
+    getDetailStationCombobox()?.setValue?.("", { silent: true });
     if (detailDirectionSelect) {
       detailDirectionSelect.innerHTML = "";
       detailDirectionSelect.value = "";
