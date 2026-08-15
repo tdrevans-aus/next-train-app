@@ -4,6 +4,7 @@
  * Usage:
  *   node qa/run-all.mjs              # full suite
  *   node qa/run-all.mjs --smoke      # fast gate (~2–5 min)
+ *   node qa/run-all.mjs --no-native  # full web only (no Maestro / native CDP tail)
  *   node qa/run-all.mjs --list       # list scripts in suite
  */
 import { spawn } from "child_process";
@@ -48,7 +49,16 @@ function listFullScripts() {
 function parseArgs(argv) {
   const smoke = argv.includes("--smoke");
   const list = argv.includes("--list");
-  return { smoke, list };
+  const noNative = argv.includes("--no-native");
+  return { smoke, list, noNative };
+}
+
+function resolveScripts({ smoke, noNative }) {
+  let scripts = smoke ? SMOKE_SCRIPTS : listFullScripts();
+  if (noNative) {
+    scripts = scripts.filter((name) => !NATIVE_TAIL_SCRIPTS.includes(name));
+  }
+  return scripts;
 }
 
 function runScript(scriptName) {
@@ -99,11 +109,12 @@ function tailOutput(text, maxLines = 8) {
 }
 
 async function main() {
-  const { smoke, list } = parseArgs(process.argv.slice(2));
-  const scripts = smoke ? SMOKE_SCRIPTS : listFullScripts();
+  const { smoke, list, noNative } = parseArgs(process.argv.slice(2));
+  const scripts = resolveScripts({ smoke, noNative });
 
   if (list) {
-    console.log(smoke ? "Smoke scripts:" : "Full scripts:");
+    const label = smoke ? "Smoke scripts:" : noNative ? "Full scripts (no native tail):" : "Full scripts:";
+    console.log(label);
     for (const name of scripts) {
       const invert = EXIT_INVERT_PASS.has(name) ? " (PASS* on exit 1)" : "";
       console.log(`  ${name}${invert}`);
@@ -148,8 +159,9 @@ async function main() {
   const elapsedSec = Math.round((Date.now() - started) / 1000);
 
   console.log("\n--- Summary ---");
+  const suiteLabel = smoke ? "smoke" : noNative ? "full (no native)" : "full";
   console.log(
-    `Suite: ${smoke ? "smoke" : "full"} · ${pass} PASS · ${passStar} PASS* · ${fail} FAIL · ${elapsedSec}s`
+    `Suite: ${suiteLabel} · ${pass} PASS · ${passStar} PASS* · ${fail} FAIL · ${elapsedSec}s`
   );
   console.log("");
 
