@@ -1378,10 +1378,10 @@ function getLiveTiming(next) {
 
 
 function addMinutesToTimeString(time, minutesToAdd) {
-  if (!time) {
-    return "";
-  }
-  return formatMinutesAsTime(parseTimeToMinutes(time) + minutesToAdd);
+  // Shared helper lives on journey-model (FB-25 split). Calling the free
+  // names formatMinutesAsTime / parseTimeToMinutes here threw ReferenceError
+  // in production (CAPACITOR-J / CAPACITOR-H) when Active hours auto-filled.
+  return window.nextTrainJourneyModel.addMinutesToTimeString(time, minutesToAdd);
 }
 
 
@@ -4586,6 +4586,7 @@ function initJourneyDetailFromModule() {
     getJourneyById,
     hasDefaultWindow,
     parseTimeToMinutes,
+    formatMinutesAsTime: (totalMinutes) => journeyModel().formatMinutesAsTime(totalMinutes),
     normalizeRemindDays,
     getJourneyRemindDays,
     formatJourneyDefaultWindow,

@@ -614,10 +614,19 @@ function syncDetailTargetRemindVisibility() {
 }
 
 function formatMinutesAsTime(totalMinutes) {
+  if (typeof deps.formatMinutesAsTime === "function") {
+    return deps.formatMinutesAsTime(totalMinutes);
+  }
+  // Fallback if glue omitted the dep (pad2 is not in this IIFE).
+  const model = global.nextTrainJourneyModel;
+  if (typeof model?.formatMinutesAsTime === "function") {
+    return model.formatMinutesAsTime(totalMinutes);
+  }
   const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
   const hour = Math.floor(wrapped / 60);
   const minute = wrapped % 60;
-  return `${pad2(hour)}:${pad2(minute)}`;
+  const pad = model?.pad2 ?? ((value) => String(value).padStart(2, "0"));
+  return `${pad(hour)}:${pad(minute)}`;
 }
 
 function getJourneyWindowRanges(journey) {
