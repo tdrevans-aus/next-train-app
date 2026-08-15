@@ -257,12 +257,13 @@ function getHeroDepartLabel({
   pinned = false,
   heroShowsPin = false,
   isDayOverridePin = false,
+  showsTargetTrain = false,
   skipCount = 0,
 } = {}) {
   if (pinned || (heroShowsPin && isDayOverridePin)) {
     return "Pinned Train";
   }
-  if (heroShowsPin) {
+  if (heroShowsPin || showsTargetTrain) {
     return "Target train";
   }
   if (skipCount > 0) {
@@ -762,6 +763,26 @@ function findPreferredTripSkipIndex(data, journey = getActiveJourney()) {
     }
   }
   return -1;
+}
+
+function restoreCommuteTargetPinFace(journey = getActiveJourney()) {
+  if (!journey || isRouteJourney(journey) || isUnconfiguredJourney(journey)) {
+    clearSkipState();
+    setSkipTrains(0);
+    return;
+  }
+
+  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  if (isJourneyOverrideActiveToday(journeyClean)) {
+    skipTrains = readSkipState().count;
+    return;
+  }
+
+  if (preferredMinutesForLiveGlance(journeyClean) >= 0) {
+    clearJourneyPinDismissed(journey.id);
+  }
+  clearSkipState();
+  setSkipTrains(0);
 }
 
 function isHeroPinLockingSwipe() {
@@ -1393,9 +1414,23 @@ async function toggleHeroPin() {
     journeysDepartureMatch(getLastRenderedNext(), pinTrip);
 
   if (isPinnedView) {
+    const isOverride = isJourneyOverrideActiveToday(journeyClean);
     clearJourneyPinOverride(journey.id);
-    persistJourneyPinDismissed(journey.id);
-    saveSkipStateForTrip(getLastApiData(), getLastRenderedNext());
+    if (isOverride) {
+      clearJourneyPinDismissed(journey.id);
+      clearSkipState();
+      setSkipTrains(0);
+    } else {
+      persistJourneyPinDismissed(journey.id);
+      const trueNextTrip = getTrueNextTrip(getLastApiData());
+      if (trueNextTrip) {
+        saveSkipStateForTrip(getLastApiData(), trueNextTrip);
+        setSkipTrains(readSkipState().count);
+      } else {
+        clearSkipState();
+        setSkipTrains(0);
+      }
+    }
   } else {
     if (getSkipTrains() > 0) {
       clearSkipState();
@@ -1470,6 +1505,7 @@ async function toggleHeroPin() {
     resetHeroSwipePointer,
     resolveJourneyPinTrip,
     resolveJourneyPreferredTargetTrip,
+    restoreCommuteTargetPinFace,
     sanitizeJourneyPinDismissed,
     sanitizeJourneyPinOverride,
     saveSkipState,

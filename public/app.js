@@ -227,6 +227,7 @@ function trackProductEvent(name, props) {
 }
 const MAX_JOURNEYS = 6;
 const JOURNEY_CAP_HINT = `${MAX_JOURNEYS} journeys — that's the limit for now. Delete one to add another.`;
+const UPCOMING_DEPARTURE_BOARD_LIMIT = 2;
 const JOURNEY_TEMPLATE_PRESETS = {
   morning: {
     name: "Morning into town",
@@ -865,7 +866,7 @@ async function applyCommuteMode({ coldStart = false } = {}) {
   journeyModeActive = true;
   exitNearbyMode();
   maybeAutoSelectJourney();
-  skipTrains = readSkipState().count;
+  trainNavigation().restoreCommuteTargetPinFace?.(getActiveJourney());
   clearHeroSetupState();
   syncChromeMode();
   fetchNextTrain();
@@ -1948,38 +1949,6 @@ async function applyMaestroTestSeedFromDeepLink() {
 }
 
 
-function formatFollowingLine(trip) {
-  return trip?.displayTime ?? "—";
-}
-
-function formatFollowingSecondaryLine(trip) {
-  return trip?.displayTime ?? "—";
-}
-
-
-function renderThenTrains(data, skipCount = skipTrains, options = {}) {
-  if (!followingSectionEl || !followingNextEl) {
-    return;
-  }
-
-  const nextTrain = getNextThenTrain(data, skipCount);
-
-  if (!nextTrain) {
-    followingSectionEl.hidden = true;
-    followingNextEl.textContent = "";
-    return;
-  }
-
-  followingSectionEl.hidden = false;
-  if (followingLabelEl) {
-    followingLabelEl.textContent = options.followingLabel ?? "Then";
-  }
-  followingNextEl.textContent = formatFollowingLine(nextTrain);
-}
-
-
-
-
 function formatPreferredClock(totalMinutes) {
   const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
   const hour = Math.floor(wrapped / 60);
@@ -2017,28 +1986,6 @@ function preferredHintForJourney(journey = getActiveJourney()) {
 
   return `Target ${formatPreferredClock(preferredMinutes)}`;
 }
-
-
-
-function renderJourneySecondaryNextLine(trueNextTrip, pinTrip) {
-  if (!followingSectionEl || !followingNextEl) {
-    return false;
-  }
-
-  const trueDeparture = resolveTripDeparture(trueNextTrip);
-  const pinDeparture = resolveTripDeparture(pinTrip);
-  if (!trueNextTrip || !pinTrip || !trueDeparture || !pinDeparture || trueDeparture === pinDeparture) {
-    return false;
-  }
-
-  followingSectionEl.hidden = false;
-  if (followingLabelEl) {
-    followingLabelEl.textContent = "Then";
-  }
-  followingNextEl.textContent = formatFollowingSecondaryLine(slimFollowing(trueNextTrip));
-  return true;
-}
-
 
 
 
@@ -2674,18 +2621,34 @@ function updateSwipeHint() {
 }
 
 
-function hideRouteDepartureBoard() {
-  const sectionEl = document.getElementById("nearby-directions");
-  sectionEl?.classList.remove("route-departures");
+function hideUpcomingDepartureBoard() {
+  const sectionEl = document.getElementById("upcoming-departures");
   if (sectionEl) {
     sectionEl.hidden = true;
   }
+  const listEl = document.getElementById("upcoming-departures-list");
+  if (listEl) {
+    listEl.innerHTML = "";
+  }
 }
 
-function renderRouteDepartureBoard(data, skipCount = skipTrains) {
-  const sectionEl = document.getElementById("nearby-directions");
-  const listEl = document.getElementById("nearby-directions-list");
-  const labelEl = sectionEl?.querySelector(".nearby-directions-label");
+function resolveDepartureBoardSkip(data, { pinTrip = null, heroShowsPin = false, skipCount = skipTrains } = {}) {
+  let boardSkip = skipCount;
+  if (heroShowsPin && pinTrip) {
+    const pinIndex = trainNavigation().findTripIndexInUpcoming(
+      normalizeApiTrainData(data),
+      pinTrip
+    );
+    if (pinIndex >= 0) {
+      boardSkip = Math.max(boardSkip, pinIndex);
+    }
+  }
+  return boardSkip;
+}
+
+function renderUpcomingDepartureBoard(data, skipCount = skipTrains) {
+  const sectionEl = document.getElementById("upcoming-departures");
+  const listEl = document.getElementById("upcoming-departures-list");
   if (!sectionEl || !listEl) {
     return;
   }
@@ -2693,26 +2656,20 @@ function renderRouteDepartureBoard(data, skipCount = skipTrains) {
   const upcoming = trainNavigation().getUpcomingTrips(data) ?? [];
   const rest = upcoming.slice(skipCount + 1);
   if (!rest.length) {
-    hideRouteDepartureBoard();
+    hideUpcomingDepartureBoard();
     return;
   }
 
   sectionEl.hidden = false;
-  sectionEl.classList.add("route-departures");
-  if (labelEl) {
-    labelEl.textContent = "Upcoming departures";
-    labelEl.hidden = false;
-  }
-
   listEl.innerHTML = "";
-  for (const trip of rest.slice(0, 8)) {
+  for (const trip of rest.slice(0, UPCOMING_DEPARTURE_BOARD_LIMIT)) {
     const item = document.createElement("li");
-    item.className = "nearby-directions-item route-departures-item";
+    item.className = "upcoming-departures-item";
     const time = document.createElement("span");
-    time.className = "route-departures-time";
+    time.className = "upcoming-departures-time";
     time.textContent = trip.displayTime ?? "—";
     const meta = document.createElement("span");
-    meta.className = "route-departures-meta";
+    meta.className = "upcoming-departures-meta";
     meta.textContent = `Pl ${trip.platform ?? "—"} · ${trip.status ?? "On Time"}`;
     item.append(time, meta);
     listEl.appendChild(item);
@@ -2725,7 +2682,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     hideNearbyPinLeaveSurfaces();
     nearbyMode().clearRoutePinLeaveCardDismissed?.();
   }
-  hideRouteDepartureBoard();
+  hideUpcomingDepartureBoard();
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
@@ -2771,19 +2728,16 @@ function renderRouteJourney(data, { stale = false } = {}) {
   lastRenderedNext = heroTrip;
   const referenceIso = next?.departure ?? next?.arrival;
   const routePinned = isRoutePinnedToday(journey);
-  const leaveTripBase = pinTrip ?? heroTrip;
   const leaveTrip =
-    routePinned && leaveTripBase
+    routePinned && heroTrip
       ? ensureFullNext(
-          leaveTripBase,
+          heroTrip,
           getRoutePinnedLeaveBeforeMinutes(journey),
           referenceIso
-        ) ?? leaveTripBase
-      : leaveTripBase;
+        ) ?? heroTrip
+      : heroTrip;
   const heroShowsPin =
     pinTrip && journeysDepartureMatch(heroTrip, pinTrip) && skipTrains === 0;
-  const leaveForDifferentTrain =
-    routePinned && pinTrip && !journeysDepartureMatch(heroTrip, leaveTrip);
 
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
@@ -2811,9 +2765,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
   }
 
   if (routePinned) {
-    nearbyMode().renderRoutePinLeaveSurfaces?.(leaveTrip, journey, {
-      forTarget: leaveForDifferentTrain,
-    });
+    nearbyMode().renderRoutePinLeaveSurfaces?.(leaveTrip, journey);
   } else {
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
@@ -2827,17 +2779,8 @@ function renderRouteJourney(data, { stale = false } = {}) {
   platformEl.textContent = heroTrip.platform;
   renderStatusDisplay(heroTrip);
   followingSectionEl.hidden = true;
-  let boardSkip = skipTrains;
-  if (heroShowsPin && pinTrip) {
-    const pinIndex = trainNavigation().findTripIndexInUpcoming(
-      normalizeApiTrainData(lastApiData ?? data),
-      pinTrip
-    );
-    if (pinIndex >= 0) {
-      boardSkip = Math.max(boardSkip, pinIndex);
-    }
-  }
-  renderRouteDepartureBoard(data, boardSkip);
+  const boardSkip = resolveDepartureBoardSkip(data, { pinTrip, heroShowsPin });
+  renderUpcomingDepartureBoard(data, boardSkip);
   updateSwipeHint();
   updateSwipeCues();
   updateLeaveHint();
@@ -2849,12 +2792,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
 function render(data, { stale = false } = {}) {
   lastLiveDisplayMinute = getPerthMinutesSinceMidnight();
   hideNearbyPinLeaveSurfaces();
-
-  const nearbyDirectionsEl = document.getElementById("nearby-directions");
-  if (nearbyDirectionsEl) {
-    nearbyDirectionsEl.hidden = true;
-    nearbyDirectionsEl.classList.remove("route-departures");
-  }
+  hideUpcomingDepartureBoard();
 
   if (!stale) {
     errorEl.hidden = true;
@@ -2915,27 +2853,28 @@ function render(data, { stale = false } = {}) {
   }
 
   const pinTrip = resolveJourneyPinTrip(lastApiData ?? data, journey);
-  const trueNextTrip = getTrueNextTrip(lastApiData ?? data);
   const heroTrip = skipTrains > 0 ? next : pinTrip ?? next;
   lastRenderedNext = heroTrip;
-  const leaveTrip = pinTrip ?? next;
+  const leaveTrip = heroTrip;
   const live = getLiveTiming(leaveTrip);
   const leaveAcknowledged = isLeaveAcknowledged(leaveTrip);
   const leaveArmed = journeyLeaveCardArmed(journey, pinTrip);
   const showLeaveCard = leaveArmed && !leaveAcknowledged;
   const showLateNag = showLeaveCard && (live.leavePhase === "late" || live.leavePhase === "missed");
-  const heroShowsPin =
-    pinTrip && journeysDepartureMatch(heroTrip, pinTrip) && skipTrains === 0;
-  const leaveForDifferentTrain = showLeaveCard && !journeysDepartureMatch(heroTrip, leaveTrip);
   const journeyPinClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
   const isDayOverridePin = isJourneyOverrideActiveToday(journeyPinClean);
+  const heroShowsPin =
+    pinTrip && journeysDepartureMatch(heroTrip, pinTrip) && skipTrains === 0;
+  const showsTargetTrain =
+    Boolean(pinTrip && journeysDepartureMatch(heroTrip, pinTrip) && !isDayOverridePin);
 
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
     heroDepartLabelEl.textContent = getHeroDepartLabel({
       heroShowsPin,
+      showsTargetTrain,
       isDayOverridePin,
-      skipCount: skipTrains,
+      skipCount: showsTargetTrain ? 0 : skipTrains,
     });
   }
   if (departCountdownEl) {
@@ -2961,26 +2900,18 @@ function render(data, { stale = false } = {}) {
   }
 
   if (preferredHintEl) {
-    const showJump =
-      pinTrip &&
-      preferredMinutesForLiveGlance(journey) >= 0 &&
-      !journeysDepartureMatch(heroTrip, pinTrip);
-    preferredHintEl.hidden = !showJump;
+    preferredHintEl.hidden = true;
   }
 
   if (showLeaveCard) {
     if (leaveCardLabelEl) {
-      leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase, {
-        forTarget: leaveForDifferentTrain,
-      });
+      leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase);
     }
     if (leaveTimeEl) {
       renderLeaveMinutesCountdown(leaveTimeEl, leaveTrip);
     }
     if (leaveCountdownEl) {
-      leaveCountdownEl.textContent = leaveForDifferentTrain
-        ? formatLeaveCardTargetSubline(leaveTrip)
-        : formatLeaveCardSubline(leaveTrip);
+      leaveCountdownEl.textContent = formatLeaveCardTargetSubline(leaveTrip);
     }
     updateLeaveCardState(live.leavePhase);
   }
@@ -2996,10 +2927,12 @@ function render(data, { stale = false } = {}) {
 
   platformEl.textContent = heroTrip.platform;
   renderStatusDisplay(heroTrip);
-
-  if (!renderJourneySecondaryNextLine(trueNextTrip, pinTrip)) {
-    renderThenTrains(lastApiData ?? data);
-  }
+  followingSectionEl.hidden = true;
+  const boardSkip = resolveDepartureBoardSkip(lastApiData ?? data, {
+    pinTrip,
+    heroShowsPin: heroShowsPin || showsTargetTrain,
+  });
+  renderUpcomingDepartureBoard(lastApiData ?? data, boardSkip);
 
   updateSwipeHint();
   updateSwipeCues();
@@ -3162,7 +3095,7 @@ function enterCommuteMode() {
     setManualJourneyOverride(journey.id);
   }
 
-  skipTrains = readSkipState().count;
+  trainNavigation().restoreCommuteTargetPinFace?.(journey);
   renderJourneySwitcher();
   fetchNextTrain();
 }
@@ -3517,7 +3450,6 @@ function syncHeroPinChrome() {
     journey &&
     isCommuteJourney(journey) &&
     lastRenderedNext &&
-    skipTrains === 0 &&
     preferredMinutesForLiveGlance(journey) >= 0
   ) {
     const journeyPinClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
@@ -4601,7 +4533,7 @@ function openMainScreenFromWidget() {
     if (journey) {
       setManualJourneyOverride(journey.id);
     }
-    skipTrains = readSkipState().count;
+    trainNavigation().restoreCommuteTargetPinFace?.(journey);
     renderJourneySwitcher();
     fetchNextTrain();
     return;
@@ -5535,9 +5467,8 @@ function initNearbyModeFromModule() {
     renderLeaveMinutesCountdown,
     buildNextFromFollowing,
     getHeroDepartLabel,
-    getTrueNextTrip,
-    renderJourneySecondaryNextLine,
-    renderThenTrains,
+    renderUpcomingDepartureBoard,
+    hideUpcomingDepartureBoard,
     formatScheduledLine,
     renderStatusDisplay,
     renderDepartureCountdown,

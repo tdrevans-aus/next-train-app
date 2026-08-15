@@ -456,11 +456,12 @@
     isSkipPreview = false,
     pinnedChrome = false,
     isDayOverridePin = false,
+    showsTargetTrain = false,
   } = {}) {
     if (pinnedChrome || (heroShowsPin && isDayOverridePin)) {
       return "Pinned Train";
     }
-    if (heroShowsPin) {
+    if (heroShowsPin || showsTargetTrain) {
       return "Target train";
     }
     if (isSkipPreview) {
@@ -542,8 +543,10 @@
     const secondaryNextDeparture = showSecondaryNext ? trueNextDeparture : null;
 
     const nearbyHolding = mode === "nearby" && isNearbyPinHolding(input.nearbyPin, clock);
-    const isHeroPinLockingSwipe =
-      nearbyHolding || (heroShowsPin && isOverrideActiveToday);
+    const showsTargetTrain = Boolean(
+      pinDeparture && heroDeparture === pinDeparture && !isOverrideActiveToday
+    );
+    const isHeroPinLockingSwipe = nearbyHolding || heroShowsPin;
 
     const leaveCardArmed = resolveLeaveCardArmed(input, {
       pinDeparture,
@@ -551,8 +554,9 @@
     });
 
     const heroLabel = getHeroLabel({
-      heroShowsPin,
-      isSkipPreview,
+      heroShowsPin: heroShowsPin && !isSkipPreview,
+      showsTargetTrain,
+      isSkipPreview: isSkipPreview && !showsTargetTrain,
       pinnedChrome: mode === "nearby" && heroShowsPin,
       isDayOverridePin: isOverrideActiveToday,
     });
