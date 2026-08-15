@@ -4184,11 +4184,25 @@ detailLeaveBeforeInput?.addEventListener("input", () => {
 });
 
 
-heroPinBtn?.addEventListener("pointerdown", (event) => {
-  event.stopPropagation();
-});
+heroPinBtn?.addEventListener(
+  "pointerdown",
+  (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  },
+  { capture: true }
+);
 
-heroPinBtn?.addEventListener("click", () => {
+heroPinBtn?.addEventListener(
+  "pointerup",
+  (event) => {
+    event.stopPropagation();
+  },
+  { capture: true }
+);
+
+heroPinBtn?.addEventListener("click", (event) => {
+  event.stopPropagation();
   void toggleHeroPin();
 });
 
@@ -4368,7 +4382,6 @@ async function init() {
     applyTestQueryParams();
   }
 
-  initHeroSwipe();
   installOnboardingInteractionTracking();
   dismissStaleBlockingLayers();
 
@@ -4916,7 +4929,9 @@ function initTrainNavigationFromModule() {
     errorEl,
     heroEl,
     heroPinBtn,
+    syncHeroPinChrome,
   });
+  initHeroSwipe();
 }
 
 function initJourneyModelFromModule() {

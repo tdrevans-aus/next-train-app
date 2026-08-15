@@ -8,6 +8,7 @@
   let swipeLastX = 0;
   let swipeLastY = 0;
   let heroSwipePointerId = null;
+  let heroSwipeInitialized = false;
 
   function getSkipTrains() {
     return deps.getSkipTrains?.() ?? 0;
@@ -1099,6 +1100,11 @@ function handleHeroSwipeEnd(event) {
     return;
   }
 
+  if (event.target?.closest?.(".hero-pin-btn, .nearby-dont-wait-btn, button, a, input, label")) {
+    resetHeroSwipePointer(event);
+    return;
+  }
+
   swipeLastX = event.clientX;
   swipeLastY = event.clientY;
   const deltaX = swipeLastX - swipeStartX;
@@ -1126,9 +1132,10 @@ function handleHeroSwipeEnd(event) {
 }
 
 function initHeroSwipe() {
-  if (!deps.heroEl) {
+  if (heroSwipeInitialized || !deps.heroEl) {
     return;
   }
+  heroSwipeInitialized = true;
 
   const trackHeroPointer = (event) => {
     if (deps.heroEl.classList.contains("hero-setup") || !event.isPrimary) {
@@ -1251,6 +1258,7 @@ async function toggleHeroPin() {
     render(prepareDisplayData(getLastApiData()));
   }
 
+  deps.syncHeroPinChrome?.();
   deps.heroPinBtn?.blur();
 }
 
