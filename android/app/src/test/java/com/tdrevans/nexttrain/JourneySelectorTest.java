@@ -12,6 +12,9 @@ import org.junit.Test;
 
 public class JourneySelectorTest {
 
+  /** Fixed ISO weekday so CI does not depend on runner clock / Perth calendar day. */
+  private static final int TEST_DAY = 2;
+
   @Test
   public void selectJourney_returnsInWindowJourneyOnly() throws Exception {
     JSONObject settings = new JSONObject();
@@ -25,8 +28,8 @@ public class JourneySelectorTest {
     settings.put("journeys", journeys);
     settings.put("activeJourneyId", "j-evening");
 
-    assertTrue(JourneySelector.matchesWindow(journeys.getJSONObject(0), 7 * 60 + 30));
-    assertTrue(JourneySelector.matchesWindow(journeys.getJSONObject(1), 16 * 60));
+    assertTrue(JourneySelector.matchesWindow(journeys.getJSONObject(0), 7 * 60 + 30, TEST_DAY));
+    assertTrue(JourneySelector.matchesWindow(journeys.getJSONObject(1), 16 * 60, TEST_DAY));
   }
 
   @Test
@@ -48,8 +51,8 @@ public class JourneySelectorTest {
       "18:00"
     );
     int noon = 12 * 60;
-    org.junit.Assert.assertFalse(JourneySelector.matchesWindow(morning, noon));
-    org.junit.Assert.assertFalse(JourneySelector.matchesWindow(evening, noon));
+    org.junit.Assert.assertFalse(JourneySelector.matchesWindow(morning, noon, TEST_DAY));
+    org.junit.Assert.assertFalse(JourneySelector.matchesWindow(evening, noon, TEST_DAY));
   }
 
   @Test
@@ -66,8 +69,8 @@ public class JourneySelectorTest {
     settings.put("activeJourneyId", "j-evening");
 
     int noon = 12 * 60;
-    assertFalse(JourneySelector.matchesWindow(journeys.getJSONObject(0), noon));
-    assertFalse(JourneySelector.matchesWindow(journeys.getJSONObject(1), noon));
+    assertFalse(JourneySelector.matchesWindow(journeys.getJSONObject(0), noon, TEST_DAY));
+    assertFalse(JourneySelector.matchesWindow(journeys.getJSONObject(1), noon, TEST_DAY));
   }
 
   @Test
@@ -100,7 +103,7 @@ public class JourneySelectorTest {
     journey.put("leaveBeforeMinutes", 10);
     journey.put("useLeaveBefore", true);
     JSONArray remindDays = new JSONArray();
-    for (int day = 1; day <= 5; day += 1) {
+    for (int day = 1; day <= 7; day += 1) {
       remindDays.put(day);
     }
     journey.put("remindDays", remindDays);
