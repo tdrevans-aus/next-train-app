@@ -1058,7 +1058,7 @@ function shouldShowNearbyLoadingState() {
 
   return (
     nearbyLoading ||
-    Boolean(nearbyBoardInflight) ||
+    (Boolean(nearbyBoardInflight) && !nearbyBoardHasDepartures()) ||
     (Boolean(nearbySession?.station) && !nearbyBoard && !nearbyError)
   );
 }
@@ -1516,6 +1516,7 @@ function renderNearbyBoard({ stale = false } = {}) {
   updateSwipeHint();
   updateSwipeCues();
   renderNearbyPinLeaveSurfaces(next, pinned);
+  syncNearbyPinChrome();
   maybeScheduleOnboarding();
 }
 

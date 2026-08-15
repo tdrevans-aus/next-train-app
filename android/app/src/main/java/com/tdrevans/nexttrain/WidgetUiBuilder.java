@@ -143,11 +143,11 @@ public final class WidgetUiBuilder {
     views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_accent));
     views.setTextColor(R.id.widget_primary_unit, context.getColor(R.color.widget_accent));
 
-    int leaveColor = R.color.widget_text;
+    int leaveColor = R.color.widget_muted;
     if (late) {
       leaveColor = R.color.widget_late;
     } else if (urgent) {
-      leaveColor = R.color.widget_urgent;
+      leaveColor = R.color.widget_leave;
     }
 
     // Idle outside-hours face only — do NOT key off "Target Train" label: that label is also
