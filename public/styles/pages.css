@@ -1,0 +1,111 @@
+/* —— About / Privacy pages —— */
+body:has(> main.page) {
+  height: auto;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: calc(var(--safe-top) + 0.5rem) 1.25rem 2.5rem;
+  box-sizing: border-box;
+}
+
+body.native-ad-banner main.page {
+  padding-bottom: calc(var(--safe-bottom) + var(--ad-scroll-padding) + 1.5rem);
+}
+
+.page-back {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.page-back:hover {
+  color: var(--accent);
+}
+
+.page-done {
+  margin: 1.75rem 0 0;
+}
+
+.page-done .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  min-width: 8.5rem;
+}
+
+.page h1 {
+  margin: 1.1rem 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.page-updated {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0 0 1.5rem;
+}
+
+.page-section {
+  margin-bottom: 1.5rem;
+}
+
+.page-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+
+.page-section p {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.page-section a,
+.page-links a {
+  color: var(--accent);
+}
+
+.page-links {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* —— Motion —— */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

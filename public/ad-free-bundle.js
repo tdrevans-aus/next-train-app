@@ -110,7 +110,7 @@ var NextTrainAdFreeNative = (() => {
     }
   });
 
-  // public/ad-free-native.mjs
+  // web-sources/ad-free-native.mjs
   var ad_free_native_exports = {};
   __export(ad_free_native_exports, {
     PURCHASE_TYPE: () => PURCHASE_TYPE,
@@ -180,7 +180,7 @@ var NextTrainAdFreeNative = (() => {
     web: () => Promise.resolve().then(() => (init_web(), web_exports)).then((m) => new m.NativePurchasesWeb())
   });
 
-  // public/ad-free-native.mjs
+  // web-sources/ad-free-native.mjs
   async function isBillingSupported() {
     try {
       const { isBillingSupported: supported } = await NativePurchases.isBillingSupported();
