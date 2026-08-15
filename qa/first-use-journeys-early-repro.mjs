@@ -35,9 +35,6 @@ async function run() {
   } else {
     await page.locator("#journeys-btn").click();
   }
-  await page.waitForTimeout(600);
-
-  await page.locator('[data-template="morning"]').click();
   await page.waitForTimeout(2500);
 
   const afterMorning = await page.evaluate(() => ({

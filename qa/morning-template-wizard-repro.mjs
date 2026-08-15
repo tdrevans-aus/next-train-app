@@ -1,5 +1,5 @@
 /**
- * Repro: Morning chip feels dead on first tap (onboarding wizard path).
+ * Repro: Morning template wizard opens on first setup tap (onboarding path).
  * Usage: node qa/morning-template-wizard-repro.mjs
  */
 import { chromium } from "playwright";
@@ -37,20 +37,14 @@ async function runWizardPath({ geoDelayMs = 0, label }) {
   await page.locator("#onboarding-setup-btn").click();
   await page.waitForTimeout(600);
 
-  const morning = page.locator('[data-template="morning"]');
   const events = [];
-
-  // First tap
   const t1 = Date.now();
-  await morning.click();
-  events.push({ event: "first_click_sent", ms: 0 });
 
   for (let ms = 250; ms <= geoDelayMs + 4000; ms += 250) {
     await page.waitForTimeout(250);
     const snap = await page.evaluate(() => ({
       detailOpen: !document.getElementById("settings-detail-view").hidden,
       coachOpen: !document.getElementById("template-route-coach").hidden,
-      chipDisabled: document.querySelector('[data-template="morning"]').disabled,
       listHidden: document.getElementById("settings-list-view").hidden,
     }));
     events.push({ event: "poll", ms: Date.now() - t1, ...snap });
@@ -66,26 +60,13 @@ async function runWizardPath({ geoDelayMs = 0, label }) {
       JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0]?.name ?? null,
   }));
 
-  let secondClickNeeded = false;
-  if (!afterFirst.detailOpen) {
-    secondClickNeeded = true;
-    await morning.click();
-    await page.waitForTimeout(3000);
-  }
-
-  const final = await page.evaluate(() => ({
-    detailOpen: !document.getElementById("settings-detail-view").hidden,
-    coachOpen: !document.getElementById("template-route-coach").hidden,
-    journeyName:
-      JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0]?.name ?? null,
-  }));
+  const final = afterFirst;
 
   await browser.close();
   return {
     label,
     geoDelayMs,
-    afterFirst,
-    secondClickNeeded,
+    afterSetup: afterFirst,
     final,
     events,
   };
@@ -103,8 +84,7 @@ for (const r of results) {
     console.log("ERROR:", r.error);
     continue;
   }
-  console.log("after first click:", r.afterFirst);
-  console.log("second click needed:", r.secondClickNeeded);
+  console.log("after setup:", r.afterSetup);
   console.log("final:", r.final);
   const firstDetail = r.events.find((e) => e.detailOpen);
   console.log(

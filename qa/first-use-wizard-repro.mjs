@@ -38,9 +38,6 @@ async function run() {
   await page.locator("#onboarding-got-it-btn").click();
   await page.waitForTimeout(300);
   await page.locator("#onboarding-setup-btn").click();
-  await page.waitForTimeout(800);
-
-  await page.locator('[data-template="morning"]').click();
   await page.waitForTimeout(2500);
 
   const afterMorning = await page.evaluate(() => ({
