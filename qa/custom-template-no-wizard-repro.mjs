@@ -3,6 +3,7 @@
  * Usage: node qa/custom-template-no-wizard-repro.mjs
  */
 import { chromium } from "playwright";
+import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 import { waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
@@ -43,7 +44,7 @@ async function run() {
   await page.locator("#onboarding-setup-btn").click();
   await page.waitForTimeout(800);
 
-  await page.locator('[data-template="custom"]').click();
+  await openCustomJourneyCreate(page);
   await page.waitForTimeout(1500);
   const afterCustom = await coachState(page);
 

@@ -3,6 +3,7 @@
  * Usage: node qa/template-wizard-coach-overlap.mjs
  */
 import { chromium } from "playwright";
+import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 
 const BASE = "http://localhost:3000";
 const PHONE_VIEWPORT = { width: 412, height: 915 };
@@ -65,7 +66,7 @@ async function openCustomWizard(page) {
   await page.waitForTimeout(200);
   await page.locator("#journeys-btn").click();
   await page.waitForTimeout(400);
-  await page.locator('[data-template="custom"]').click();
+  await openCustomJourneyCreate(page);
   await page.waitForTimeout(2200);
 }
 

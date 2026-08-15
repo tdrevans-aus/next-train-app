@@ -3,6 +3,7 @@
  * Usage: node qa/custom-active-days-today.mjs
  */
 import { chromium } from "playwright";
+import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -38,7 +39,7 @@ async function run() {
   await page.evaluate(() => window.nextTrainApp.openJourneys());
   await page.waitForTimeout(500);
 
-  await page.locator('[data-template="custom"]').click();
+  await openCustomJourneyCreate(page);
   await page.waitForTimeout(800);
   await dismissCoach(page);
 

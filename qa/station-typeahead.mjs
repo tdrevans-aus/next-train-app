@@ -3,6 +3,7 @@
  * Usage: node qa/station-typeahead.mjs
  */
 import { chromium } from "playwright";
+import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 import {
   openStationSearch,
   waitForDetailStationCombobox,
@@ -34,7 +35,7 @@ async function run() {
   await page.evaluate(() => window.nextTrainApp.openJourneys());
   await page.waitForTimeout(500);
 
-  await page.locator('[data-template="custom"]').click();
+  await openCustomJourneyCreate(page);
   await page.waitForTimeout(800);
   await dismissCoach(page);
   await page.evaluate(() => {
