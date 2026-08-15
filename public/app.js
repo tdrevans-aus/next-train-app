@@ -84,7 +84,20 @@ const nearbyStationComboboxRoot = document.getElementById("nearby-station-combob
 const nearbyStationInput = document.getElementById("nearby-station-input");
 const nearbyStationBtn = document.getElementById("nearby-station-btn");
 const nearbyDontWaitBtn = document.getElementById("nearby-dont-wait-btn");
+/** Near me pin leave-by controls (present when pin-leave UI shipped). */
+const nearbyPinLeaveControlsEl = document.getElementById("nearby-pin-leave-controls");
 const appEl = document.querySelector(".app");
+
+/**
+ * Hide Near me pin leave-by surfaces (slider / Notify me / hide footer).
+ * Defined early: render / fetch paths must never hit ReferenceError if a build
+ * calls this before later helpers are edited in (CAPACITOR-C / CAPACITOR-D).
+ */
+function hideNearbyPinLeaveSurfaces() {
+  if (nearbyPinLeaveControlsEl) {
+    nearbyPinLeaveControlsEl.hidden = true;
+  }
+}
 const helpDialog = document.getElementById("help-dialog");
 const helpCloseBtn = document.getElementById("help-close-btn");
 const feedbackDialog = document.getElementById("feedback-dialog");
@@ -3626,6 +3639,7 @@ function initHeroSwipe() {
 
 function render(data, { stale = false } = {}) {
   lastLiveDisplayMinute = getPerthMinutesSinceMidnight();
+  hideNearbyPinLeaveSurfaces();
 
   if (nearbyDirectionsEl) {
     nearbyDirectionsEl.hidden = true;
@@ -3766,6 +3780,7 @@ function render(data, { stale = false } = {}) {
 }
 
 function renderRefreshErrorState() {
+  hideNearbyPinLeaveSurfaces();
   clearHeroSetupState();
   lastRenderedNext = null;
   heroEl?.classList.remove("stale");
@@ -3871,6 +3886,7 @@ function enterJourneyMode() {
 function renderJourneyEmptyState() {
   journeyModeActive = true;
   exitNearbyMode();
+  hideNearbyPinLeaveSurfaces();
   syncChromeMode();
 
   errorEl.hidden = true;
@@ -5467,6 +5483,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
 }
 
 function exitNearbyMode() {
+  hideNearbyPinLeaveSurfaces();
   stopNearbyLocateTimers();
   dismissNearbyLocatePicker();
   nearbyDontWaitVisible = false;
