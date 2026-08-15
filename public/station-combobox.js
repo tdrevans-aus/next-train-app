@@ -91,6 +91,13 @@
     );
   }
 
+  function ensureStationsLoaded() {
+    if (stationsCache?.length) {
+      return Promise.resolve(stationsCache);
+    }
+    return getStationsList();
+  }
+
   function createStationCombobox(root, { onChange, required = false, hideFooterOnOpen = false } = {}) {
     const trigger = root?.querySelector(".station-combobox-input");
     const list = root?.querySelector(".station-combobox-list");
@@ -239,7 +246,7 @@
       searchInput.value = "";
       setExpanded(true);
       setFooterHidden(true);
-      renderList("");
+      void ensureStationsLoaded().then(() => renderList(""));
     }
 
     function enterSearchMode() {
@@ -247,10 +254,12 @@
       activeIndex = 0;
       searchInput.hidden = false;
       searchInput.value = "";
-      renderList("");
-      window.setTimeout(() => {
-        searchInput.focus();
-      }, 0);
+      void ensureStationsLoaded().then(() => {
+        renderList("");
+        window.setTimeout(() => {
+          searchInput.focus();
+        }, 0);
+      });
     }
 
     function selectStation(name, { silent = false } = {}) {
@@ -438,6 +447,8 @@
         },
       });
     }
+
+    void getStationsList();
   }
 
   function setStationComboboxValue(combobox, station) {

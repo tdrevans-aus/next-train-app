@@ -99,6 +99,7 @@ const deleteJourneyBtn = document.getElementById("delete-journey-btn");
 const detailJourneyNameInput = document.getElementById("detail-journey-name");
 const detailStationComboboxRoot = document.getElementById("detail-station-combobox");
 const detailStationInput = document.getElementById("detail-station-input");
+const nearbyStationComboboxRoot = document.getElementById("nearby-station-combobox");
 const detailDirectionSelect = document.getElementById("detail-direction-select");
 const detailLeaveBeforeInput = document.getElementById("detail-leave-before-input");
 const detailLeaveBeforeValueEl = document.getElementById("detail-leave-before-value");
@@ -4042,6 +4043,9 @@ helpDialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
   closeHelpDialog();
 });
+helpCloseBtn?.addEventListener("click", () => {
+  closeHelpDialog();
+});
 helpDialog?.addEventListener("click", (event) => {
   if (event.target === helpDialog) {
     closeHelpDialog();
@@ -4463,6 +4467,7 @@ function initStationComboboxesFromModule() {
     collapseStationList,
     formatStationLabel,
     detailStationComboboxRoot,
+    nearbyStationComboboxRoot,
     detailDirectionSelect,
     loadDirectionsForSelect,
     syncDetailNearestStationChrome,

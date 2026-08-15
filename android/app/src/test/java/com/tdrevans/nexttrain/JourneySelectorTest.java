@@ -100,7 +100,7 @@ public class JourneySelectorTest {
     journey.put("leaveBeforeMinutes", 10);
     journey.put("useLeaveBefore", true);
     JSONArray remindDays = new JSONArray();
-    for (int day = 1; day <= 5; day += 1) {
+    for (int day = 1; day <= 7; day += 1) {
       remindDays.put(day);
     }
     journey.put("remindDays", remindDays);
