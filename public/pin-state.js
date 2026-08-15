@@ -171,6 +171,14 @@
     return Number.isNaN(minutes) ? 24 * 60 : minutes;
   }
 
+  function targetTripHorizonMinutes(journey, clock = resolveClock()) {
+    const journeyClean = sanitizeJourneyPinFields(journey, clock);
+    if (!journeyMatchesSchedule(journeyClean, clock)) {
+      return 24 * 60;
+    }
+    return liveHorizonMinutes(journeyClean);
+  }
+
   function journeyUsesLeaveBefore(journey) {
     return journey?.useLeaveBefore !== false;
   }
@@ -263,9 +271,16 @@
     return sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey, clock), clock);
   }
 
+  function isRouteJourney(journey) {
+    return String(journey?.kind || "").toLowerCase() === "route";
+  }
+
   function isJourneyPinnedToday(journey, clock = resolveClock()) {
     const resolvedClock = resolveClock(clock);
     const journeyClean = sanitizeJourneyPinFields(journey, resolvedClock);
+    if (isRouteJourney(journeyClean)) {
+      return isJourneyOverrideActiveToday(journeyClean, resolvedClock);
+    }
     if (isJourneyOverrideActiveToday(journeyClean, resolvedClock)) {
       return true;
     }
@@ -301,16 +316,13 @@
 
     const normalized = normalizeApiTrainData(payload);
     const journeyClean = sanitizeJourneyPinFields(journey, resolvedClock);
-    if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
-      return null;
-    }
 
     const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
     if (preferredMinutes < 0) {
       return null;
     }
 
-    const horizon = liveHorizonMinutes(journeyClean);
+    const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
     for (const trip of getUpcomingTrips(normalized)) {
       if (tripHasDeparted(trip, resolvedClock)) {
         continue;
@@ -339,7 +351,7 @@
       }
     }
 
-    if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
+    if (isRouteJourney(journeyClean)) {
       return null;
     }
 
@@ -417,25 +429,35 @@
 
   function resolveLeaveCardArmed(input, state) {
     const { pinDeparture, isPinDismissedToday } = state;
+    const clock = resolveClock(input.clock);
 
     if (input.mode === "nearby") {
       return Boolean(pinDeparture);
     }
 
     const journey = input.journey;
-    if (!journeyUsesLeaveBefore(journey) || isPinDismissedToday) {
+    if (isRouteJourney(journey)) {
+      return Boolean(pinDeparture) && !isPinDismissedToday;
+    }
+    if (!journeyUsesLeaveBefore(journey) || isPinDismissedToday || !pinDeparture) {
       return false;
     }
 
-    if (pinDeparture) {
+    const journeyClean = sanitizeJourneyPinFields(journey, clock);
+    if (isJourneyOverrideActiveToday(journeyClean, clock)) {
       return true;
     }
 
-    return preferredMinutesForLiveGlance(journey) < 0;
+    return journeyMatchesSchedule(journeyClean, clock);
   }
 
-  function getHeroLabel({ heroShowsPin = false, isSkipPreview = false, pinnedChrome = false } = {}) {
-    if (pinnedChrome) {
+  function getHeroLabel({
+    heroShowsPin = false,
+    isSkipPreview = false,
+    pinnedChrome = false,
+    isDayOverridePin = false,
+  } = {}) {
+    if (pinnedChrome || (heroShowsPin && isDayOverridePin)) {
       return "Pinned Train";
     }
     if (heroShowsPin) {
@@ -520,7 +542,7 @@
     const secondaryNextDeparture = showSecondaryNext ? trueNextDeparture : null;
 
     const nearbyHolding = mode === "nearby" && isNearbyPinHolding(input.nearbyPin, clock);
-    const isHeroPinLockingSwipe = isOverrideActiveToday || nearbyHolding;
+    const isHeroPinLockingSwipe = nearbyHolding || heroShowsPin;
 
     const leaveCardArmed = resolveLeaveCardArmed(input, {
       pinDeparture,
@@ -531,6 +553,7 @@
       heroShowsPin,
       isSkipPreview,
       pinnedChrome: mode === "nearby" && heroShowsPin,
+      isDayOverridePin: isOverrideActiveToday,
     });
 
     return {

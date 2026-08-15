@@ -388,7 +388,7 @@ enum CommuteSchedule {
             return "Pinned Train"
         }
         if JourneyPinHelper.isOverrideActiveToday(journey) {
-            return "Target Train"
+            return "Pinned Train"
         }
         let preferredMinutes = PerthTime.parseClockMinutes(journey?["preferredTrainTime"] as? String ?? "")
         if preferredMinutes < 0 { return "NEXT TRAIN" }

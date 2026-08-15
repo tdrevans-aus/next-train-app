@@ -259,7 +259,7 @@ async function testJourneyPinTapAfterSwipePreview(page) {
   }));
 
   if (
-    afterPin.heroLabel !== "Target train" ||
+    afterPin.heroLabel !== "Pinned Train" ||
     afterPin.pinPressed !== "true" ||
     afterPin.skipCount !== 0
   ) {

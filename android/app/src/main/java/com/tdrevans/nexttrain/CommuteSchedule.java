@@ -611,7 +611,7 @@ public final class CommuteSchedule {
       return "Pinned Train";
     }
     if (JourneyPinHelper.isOverrideActiveToday(journey)) {
-      return "Target Train";
+      return "Pinned Train";
     }
     int preferredMinutes = preferredMinutesForLiveGlance(journey);
     if (preferredMinutes < 0) {
@@ -645,6 +645,9 @@ public final class CommuteSchedule {
     String label = cached.optString("label", "");
     if ("Target Train".equalsIgnoreCase(label) || "TARGET TRAIN".equalsIgnoreCase(label)) {
       return "Target Train";
+    }
+    if ("Pinned Train".equalsIgnoreCase(label) || "PINNED TRAIN".equalsIgnoreCase(label)) {
+      return "Pinned Train";
     }
     if (!label.isEmpty()) {
       return label;

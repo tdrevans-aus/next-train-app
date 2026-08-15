@@ -167,8 +167,6 @@ const detailComboDHint = document.getElementById("detail-combo-d-hint");
 const detailReminderSection = document.getElementById("detail-reminder-section");
 const detailRemindControls = document.getElementById("detail-remind-controls");
 const detailRemindMeInput = document.getElementById("detail-remind-me");
-const detailLeaveRemindersCommuteStripInput = document.getElementById("leave-reminders-commute-strip");
-const detailLeaveRemindersStripWrap = document.getElementById("leave-reminders-strip-wrap");
 const detailPreferredInput = document.getElementById("detail-preferred-input");
 const detailPreferredDisplay = document.getElementById("detail-preferred-display");
 const detailPreferredField = document.getElementById("detail-preferred-field");
@@ -536,6 +534,53 @@ function applyTestQueryParams() {
 
 function isTestMode() {
   return sessionStorage.getItem("nextTrainTestMode") === "1";
+}
+
+function readTestClockMinutesFromUrl() {
+  if (!isTestMode()) {
+    return null;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const clock = params.get("clock");
+  if (clock) {
+    const match = String(clock).trim().match(/^(\d{1,2}):(\d{2})$/);
+    if (match) {
+      const hour = Number(match[1]);
+      const minute = Number(match[2]);
+      if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) {
+        return hour * 60 + minute;
+      }
+    }
+  }
+
+  const rawMinutes = params.get("perthMinutes");
+  if (rawMinutes != null && rawMinutes !== "") {
+    const minutes = Number(rawMinutes);
+    if (Number.isFinite(minutes) && minutes >= 0 && minutes < 24 * 60) {
+      return Math.floor(minutes);
+    }
+  }
+
+  return null;
+}
+
+function readTestDayIsoFromUrl() {
+  if (!isTestMode()) {
+    return null;
+  }
+
+  const raw = new URLSearchParams(window.location.search).get("day");
+  if (raw == null || raw === "") {
+    return null;
+  }
+
+  const day = Number(raw);
+  if (Number.isInteger(day) && day >= 1 && day <= 7) {
+    return day;
+  }
+
+  return null;
 }
 
 
@@ -2880,11 +2925,14 @@ function render(data, { stale = false } = {}) {
   const heroShowsPin =
     pinTrip && journeysDepartureMatch(heroTrip, pinTrip) && skipTrains === 0;
   const leaveForDifferentTrain = showLeaveCard && !journeysDepartureMatch(heroTrip, leaveTrip);
+  const journeyPinClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  const isDayOverridePin = isJourneyOverrideActiveToday(journeyPinClean);
 
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
     heroDepartLabelEl.textContent = getHeroDepartLabel({
       heroShowsPin,
+      isDayOverridePin,
       skipCount: skipTrains,
     });
   }
@@ -3470,10 +3518,13 @@ function syncHeroPinChrome() {
     skipTrains === 0 &&
     preferredMinutesForLiveGlance(journey) >= 0
   ) {
+    const journeyPinClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
     const pinTrip = resolveJourneyPinTrip(lastApiData, journey);
-    showTargetTrainChrome = Boolean(
-      pinTrip && journeysDepartureMatch(lastRenderedNext, pinTrip)
-    );
+    const heroShowsTargetPin =
+      pinTrip &&
+      journeysDepartureMatch(lastRenderedNext, pinTrip) &&
+      !isJourneyOverrideActiveToday(journeyPinClean);
+    showTargetTrainChrome = Boolean(heroShowsTargetPin);
   }
   heroEl?.classList.toggle("hero--target-train", showTargetTrainChrome);
 
@@ -5151,7 +5202,13 @@ function normalizeJourneyList(rawJourneys = []) { return journeyModel().normaliz
 function isDefaultCommuteJourneyName(name) { return journeyModel().isDefaultCommuteJourneyName(name); }
 function isLegacyBlankDefaultWindow(a, b) { return journeyModel().isLegacyBlankDefaultWindow(a, b); }
 function normalizeRemindDays(raw) { return journeyModel().normalizeRemindDays(raw); }
-function getPerthDayOfWeekIso(date) { return journeyModel().getPerthDayOfWeekIso(date); }
+function getPerthDayOfWeekIso(date) {
+  const testDay = readTestDayIsoFromUrl();
+  if (testDay != null) {
+    return testDay;
+  }
+  return journeyModel().getPerthDayOfWeekIso(date);
+}
 function getJourneyRemindDays(journey) { return journeyModel().getJourneyRemindDays(journey); }
 function journeyMatchesActiveDay(journey, day) { return journeyModel().journeyMatchesActiveDay(journey, day); }
 function journeyMatchesSchedule(journey, minutes, day) { return journeyModel().journeyMatchesSchedule(journey, minutes, day); }
@@ -5170,7 +5227,13 @@ function readStoredSettings() { return journeyModel().readStoredSettings(); }
 function persistSettings(next) { return journeyModel().persistSettings(next); }
 function pad2(value) { return journeyModel().pad2(value); }
 function getPerthDateParts(date) { return journeyModel().getPerthDateParts(date); }
-function getPerthMinutesSinceMidnight(date) { return journeyModel().getPerthMinutesSinceMidnight(date); }
+function getPerthMinutesSinceMidnight(date) {
+  const testMinutes = readTestClockMinutesFromUrl();
+  if (testMinutes != null) {
+    return testMinutes;
+  }
+  return journeyModel().getPerthMinutesSinceMidnight(date);
+}
 function getPerthLocalDateKey(date) { return journeyModel().getPerthLocalDateKey(date); }
 function hasDefaultWindow(journey) { return journeyModel().hasDefaultWindow(journey); }
 function parseTimeToMinutes(time) { return journeyModel().parseTimeToMinutes(time); }
@@ -5356,8 +5419,6 @@ function initTemplateWizardFromModule() {
     leaveBeforeField,
     detailRemindMeInput,
     detailUseTargetTrainInput,
-    detailLeaveRemindersCommuteStripInput,
-    detailLeaveRemindersStripWrap,
     journeysDialog,
   });
   templateWizard()?.initTemplateWizardListeners?.();

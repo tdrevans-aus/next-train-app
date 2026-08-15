@@ -590,6 +590,19 @@ public class CommuteScheduleTest {
   }
 
   @Test
+  public void liveWidgetLabel_dayOverrideUsesPinnedTrain() throws Exception {
+    JSONObject journey = new JSONObject();
+    journey.put("preferredTrainTime", "07:30");
+    journey.put("journeyPinOverrideDate", PerthTime.localDateKey());
+    journey.put("journeyPinOverrideIso", PerthTime.formatIsoFromEpochMs(System.currentTimeMillis() + 45L * 60_000L));
+
+    JSONObject trip = new JSONObject();
+    trip.put("departure", journey.optString("journeyPinOverrideIso"));
+
+    assertEquals("Pinned Train", CommuteSchedule.liveWidgetLabel(journey, trip));
+  }
+
+  @Test
   public void leaveByArmedForTrip_falseForRouteJourney() throws Exception {
     JSONObject route = new JSONObject();
     route.put("kind", "route");
