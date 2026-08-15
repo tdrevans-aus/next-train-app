@@ -31,16 +31,60 @@ enum JourneySelector {
     }
 
     static func selectJourney(_ settings: [String: Any]) -> [String: Any]? {
-        guard let journeys = settings["journeys"] as? [[String: Any]] else {
+        let matching = commutesInActiveWindow(settings)
+        guard !matching.isEmpty else { return nil }
+        return pickScheduledCommute(matching, minutes: PerthTime.minutesSinceMidnight())
+    }
+
+    static func selectActiveRoute(_ settings: [String: Any]) -> [String: Any]? {
+        let activeId = (settings["activeJourneyId"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !activeId.isEmpty,
+              let journeys = settings["journeys"] as? [[String: Any]] else {
             return nil
         }
         let configured = configuredJourneys(journeys)
-        guard !configured.isEmpty else { return nil }
-        let minutes = PerthTime.minutesSinceMidnight()
-        for journey in configured where isCommuteJourney(journey) && matchesWindow(journey, minutes: minutes) {
-            return journey
+        for journey in configured where (journey["id"] as? String ?? "") == activeId {
+            return isRouteJourney(journey) ? journey : nil
         }
         return nil
+    }
+
+    static func commutesInActiveWindow(_ settings: [String: Any]) -> [[String: Any]] {
+        guard let journeys = settings["journeys"] as? [[String: Any]] else {
+            return []
+        }
+        let configured = configuredJourneys(journeys)
+        let minutes = PerthTime.minutesSinceMidnight()
+        return configured.filter { isCommuteJourney($0) && matchesWindow($0, minutes: minutes) }
+    }
+
+    static func pickScheduledCommute(_ commutes: [[String: Any]], minutes: Int = PerthTime.minutesSinceMidnight()) -> [String: Any]? {
+        guard !commutes.isEmpty else { return nil }
+        if commutes.count == 1 {
+            return commutes[0]
+        }
+
+        let withTarget = commutes.filter { preferredMinutesFromJourney($0) >= 0 }
+        if withTarget.count < 2 {
+            return commutes[0]
+        }
+
+        let sorted = withTarget.sorted {
+            preferredMinutesFromJourney($0) < preferredMinutesFromJourney($1)
+        }
+
+        for index in 0..<(sorted.count - 1) {
+            let midpoint = (preferredMinutesFromJourney(sorted[index]) + preferredMinutesFromJourney(sorted[index + 1])) / 2
+            if minutes < midpoint {
+                return sorted[index]
+            }
+        }
+
+        return sorted.last
+    }
+
+    private static func preferredMinutesFromJourney(_ journey: [String: Any]) -> Int {
+        PerthTime.parseClockMinutes(journey["preferredTrainTime"] as? String ?? "")
     }
 
     static func hasConfiguredJourneys(_ settings: [String: Any]) -> Bool {

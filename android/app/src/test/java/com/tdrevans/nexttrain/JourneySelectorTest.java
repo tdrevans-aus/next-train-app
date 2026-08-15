@@ -117,6 +117,44 @@ public class JourneySelectorTest {
     assertNull(JourneySelector.selectJourney(settings));
   }
 
+  @Test
+  public void pickScheduledCommute_switchesAtMidpoint() throws Exception {
+    JSONArray commutes = new JSONArray();
+    JSONObject morning = journey("j-morning", "Morning", "Edgewater Stn", "Perth", "06:00", "09:00");
+    morning.put("preferredTrainTime", "07:00");
+    JSONObject later = journey("j-later", "Later", "Edgewater Stn", "Perth", "06:00", "09:00");
+    later.put("preferredTrainTime", "08:00");
+    commutes.put(morning);
+    commutes.put(later);
+
+    assertEquals(
+      "j-morning",
+      JourneySelector.pickScheduledCommute(commutes, 7 * 60 + 20).optString("id")
+    );
+    assertEquals(
+      "j-later",
+      JourneySelector.pickScheduledCommute(commutes, 7 * 60 + 40).optString("id")
+    );
+  }
+
+  @Test
+  public void selectActiveRoute_returnsActiveRouteOnly() throws Exception {
+    JSONObject settings = new JSONObject();
+    JSONArray journeys = new JSONArray();
+    JSONObject route = journey("j-route", "Route", "Edgewater Stn", "Perth", "", "");
+    route.put("kind", "route");
+    route.remove("preferredTrainTime");
+    route.remove("defaultFrom");
+    route.remove("defaultUntil");
+    journeys.put(route);
+    settings.put("journeys", journeys);
+    settings.put("activeJourneyId", "j-route");
+
+    assertNotNull(JourneySelector.selectActiveRoute(settings));
+    settings.put("activeJourneyId", "missing");
+    assertNull(JourneySelector.selectActiveRoute(settings));
+  }
+
   private static JSONObject journey(
     String id,
     String name,

@@ -82,6 +82,7 @@ public class CommuteScheduleTest {
     morning.put("defaultFrom", "06:00");
     morning.put("defaultUntil", "09:00");
     morning.put("preferredTrainTime", "07:30");
+    morning.put("kind", "commute");
     morning.put("remindDays", new JSONArray(new int[] { 1, 2, 3, 4, 5 }));
     JSONObject evening = new JSONObject();
     evening.put("id", "j-evening");
@@ -91,6 +92,7 @@ public class CommuteScheduleTest {
     evening.put("defaultFrom", "15:00");
     evening.put("defaultUntil", "18:00");
     evening.put("preferredTrainTime", "");
+    evening.put("kind", "commute");
     evening.put("remindDays", new JSONArray(new int[] { 1, 2, 3, 4, 5 }));
     journeys.put(morning);
     journeys.put(evening);
@@ -568,6 +570,50 @@ public class CommuteScheduleTest {
     targetTrip.put("departure", PerthTime.formatIsoFromEpochMs(preferredMs));
     assertEquals("Target Train", CommuteSchedule.liveWidgetLabel(journey, targetTrip));
     assertEquals("NEXT TRAIN", CommuteSchedule.liveWidgetLabel(new JSONObject(), active));
+  }
+
+  @Test
+  public void liveWidgetLabel_routeJourneyAlwaysNextTrain() throws Exception {
+    JSONObject route = new JSONObject();
+    route.put("kind", "route");
+    route.put("station", "Edgewater Stn");
+    route.put("direction", "Perth");
+    route.put("preferredTrainTime", "07:30");
+
+    JSONObject trip = new JSONObject();
+    trip.put("departure", PerthTime.formatIsoFromEpochMs(System.currentTimeMillis() + 15L * 60_000L));
+
+    assertEquals("NEXT TRAIN", CommuteSchedule.liveWidgetLabel(route, trip));
+  }
+
+  @Test
+  public void toWidgetSnapshot_routeUsesDepartModeWithoutLeaveBy() throws Exception {
+    CommuteSchedule.Result result = new CommuteSchedule.Result();
+    JSONObject route = new JSONObject();
+    route.put("kind", "route");
+    route.put("id", "j-route");
+    route.put("name", "Evening route");
+    route.put("station", "Edgewater Stn");
+    route.put("direction", "Perth");
+    result.journey = route;
+    result.journeyId = "j-route";
+    result.route = "Edgewater → Perth";
+    result.departMode = true;
+    result.refreshedAtMs = System.currentTimeMillis();
+    result.next = new JSONObject()
+      .put("departure", PerthTime.formatIsoFromEpochMs(System.currentTimeMillis() + 8L * 60_000L))
+      .put("displayTime", "7:30 am")
+      .put("status", "On Time")
+      .put("minutesUntilDeparture", 8)
+      .put("minutesUntilLeave", 8)
+      .put("leavePhase", "calm");
+
+    JSONObject snapshot = CommuteSchedule.toWidgetSnapshot(result);
+
+    assertEquals("NEXT TRAIN", snapshot.optString("label"));
+    assertEquals("", snapshot.optString("secondary"));
+    assertFalse(snapshot.optBoolean("leaveByArmed"));
+    assertTrue(snapshot.optBoolean("departMode"));
   }
 
   @Test

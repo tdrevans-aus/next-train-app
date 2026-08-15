@@ -98,6 +98,9 @@ public final class LeaveReminderScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
+        if (!JourneySelector.isCommuteJourney(journey)) {
+          continue;
+        }
         scheduleForJourney(context, journey, stale);
       }
     } catch (Exception error) {
@@ -245,6 +248,9 @@ public final class LeaveReminderScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
+        if (!JourneySelector.isCommuteJourney(journey)) {
+          continue;
+        }
         JSONObject journeyResult = describeJourneySchedule(context, journey, stale, computedAtMs);
         if (journeyResult.optBoolean("scheduled", false)) {
           long primaryMs = PerthTime.epochMillisFromIso(journeyResult.optString("primaryNotifyAtIso", ""));

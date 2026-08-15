@@ -47,6 +47,9 @@ enum CommuteSchedule {
             }
 
             result.journey = JourneySelector.selectJourney(settings)
+            if result.journey == nil {
+                result.journey = JourneySelector.selectActiveRoute(settings)
+            }
 
             if result.journey == nil {
                 if JourneySelector.hasConfiguredJourneys(settings) {
@@ -56,9 +59,10 @@ enum CommuteSchedule {
             }
 
             guard let journey = result.journey else { return emptyState() }
+            let routeJourney = JourneySelector.isRouteJourney(journey)
         result.journeyId = journey["id"] as? String ?? ""
         result.route = WidgetDataService.formatRoute(journey)
-        result.departMode = !(journey["useLeaveBefore"] as? Bool ?? true)
+        result.departMode = routeJourney || !(journey["useLeaveBefore"] as? Bool ?? true)
         let leaveBefore = result.departMode ? 0 : (journey["leaveBeforeMinutes"] as? Int ?? 10)
 
         do {
@@ -70,7 +74,9 @@ enum CommuteSchedule {
             result.refreshedAtMs = Int64(Date().timeIntervalSince1970 * 1000)
             WidgetSettingsStore.saveLastRefreshMs(result.refreshedAtMs)
             result.stale = false
-            result.next = resolveActiveNextTrip(result.payload, journey: journey)
+            result.next = routeJourney
+                ? resolveActiveNextTrip(result.payload, journey: journey)
+                : JourneyPinHelper.resolvePinnedTrip(result.payload, journey: journey)
             fillTripFields(&result)
             let snapshot = buildLiveSnapshot(result)
             WidgetSettingsStore.saveSnapshot(snapshot)
@@ -350,6 +356,9 @@ enum CommuteSchedule {
 
     private static func liveWidgetLabel(journey: [String: Any]?, trip: [String: Any]?) -> String {
         guard trip != nil else { return "NEXT TRAIN" }
+        if let journey, JourneySelector.isRouteJourney(journey) {
+            return "NEXT TRAIN"
+        }
         if let journey, (journey["id"] as? String) == NearbyPinHelper.journeyId {
             return "Pinned Train"
         }

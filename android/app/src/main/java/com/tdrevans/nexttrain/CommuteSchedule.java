@@ -68,6 +68,9 @@ public final class CommuteSchedule {
 
       result.journey = JourneySelector.selectJourney(result.settings);
       if (result.journey == null) {
+        result.journey = JourneySelector.selectActiveRoute(result.settings);
+      }
+      if (result.journey == null) {
         if (JourneySelector.hasConfiguredJourneys(result.settings)) {
           result.nearbyFallback = true;
           result.empty = false;
@@ -77,9 +80,10 @@ public final class CommuteSchedule {
         return result;
       }
 
+      boolean routeJourney = JourneySelector.isRouteJourney(result.journey);
       result.journeyId = result.journey.optString("id");
       result.route = WidgetDataService.formatRoute(result.journey);
-      result.departMode = !result.journey.optBoolean("useLeaveBefore", true);
+      result.departMode = routeJourney || !result.journey.optBoolean("useLeaveBefore", true);
 
       int leaveBefore = result.departMode ? 0 : result.journey.optInt("leaveBeforeMinutes", 10);
       result.payload = NextTrainApiClient.fetchNextTrain(
@@ -90,7 +94,10 @@ public final class CommuteSchedule {
       result.refreshedAtMs = System.currentTimeMillis();
       WidgetSettingsStore.saveLastRefreshMs(context, result.refreshedAtMs);
       result.stale = false;
-      result.next = JourneyPinHelper.resolvePinnedTrip(result.payload, result.journey);
+      result.next =
+        routeJourney
+          ? resolveActiveNextTrip(result.payload, result.journey)
+          : JourneyPinHelper.resolvePinnedTrip(result.payload, result.journey);
       fillTripFields(result);
       return result;
     } catch (Exception error) {
@@ -248,6 +255,9 @@ public final class CommuteSchedule {
         return null;
       }
       if (JourneySelector.selectJourney(settings) != null) {
+        return null;
+      }
+      if (JourneySelector.selectActiveRoute(settings) != null) {
         return null;
       }
       return outsideHoursSnapshot(settings);
@@ -589,6 +599,9 @@ public final class CommuteSchedule {
    */
   static String liveWidgetLabel(JSONObject journey, JSONObject trip) {
     if (trip == null) {
+      return "NEXT TRAIN";
+    }
+    if (journey != null && JourneySelector.isRouteJourney(journey)) {
       return "NEXT TRAIN";
     }
     if (journey != null && NearbyPinHelper.JOURNEY_ID.equals(journey.optString("id", ""))) {
