@@ -11,7 +11,7 @@
 
 The codebase is **large but not messy** — growth tracks real product surface (Near me, journeys, pin, reminders, widget, onboarding, template wizard). The main pain is **concentration**, not junk:
 
-1. **`public/app.js` (~8,800 lines, ~450 functions)** holds most client logic. This is the #1 refactor target.
+1. **`public/app.js` (~8,100 lines after FB-25 2.1–2.2; was ~8,800)** holds most client logic. FB-25 Phase 2 extraction in progress (`station-combobox.js`, `journey-model.js` extracted Aug 2026).
 2. **Commute/pin rules exist in three places** (web, Android widget, iOS widget) by design — maintenance cost is real; unification is not free.
 3. **QA is strong for a solo/small team** (66 web scripts, 11 Android unit test classes, Maestro) — use it as the gate for any refactor.
 4. **Runtime efficiency is fine** for now; refactors should target **bug prevention and change velocity**, not micro-optimisation.
@@ -23,7 +23,9 @@ The codebase is **large but not messy** — growth tracks real product surface (
 
 | Layer | Size | Notes |
 |-------|------|-------|
-| `public/app.js` | ~8,800 lines | Monolith; journey + nearby + pin + settings + wizards |
+| `public/app.js` | ~8,100 lines | Monolith (shrinking); journey + nearby + pin + settings + wizards |
+| `public/station-combobox.js` | ~470 lines | Station typeahead/combobox (FB-25 2.1) |
+| `public/journey-model.js` | ~485 lines | Journey settings normalize/migrate/persist (FB-25 2.2) |
 | `public/styles.css` | ~3,700 lines | Sectioned by comment headers; ~130 nearby/journey/leave selectors |
 | `public/index.html` | ~1,120 lines | Main shell + settings/journeys dialogs |
 | `public/leave-reminders.js` | ~750 lines | Reminders UI + native bridge (reasonable split) |
@@ -190,20 +192,22 @@ Prioritised by **ROI / risk reduction**, not by “cleanliness”. Effort = Tim+
 | 1.3 | Doc pass: FB-06 references, QA doc dates | S | Onboarding future you | **Done** (Aug 2026) |
 | 1.4 | Add `qa/pin-swipe-notify.mjs` covering pin-lock swipe + Next Train advance | M | Locks recent bug class | **Done** (Aug 2026) |
 
-### Phase 2 — Extract modules from `app.js` (3–5 days, medium risk)
+### Phase 2 - Extract modules from `app.js` (3-5 days, medium risk)
 
 Do **one PR per module**; run full web QA each time.
 
-| # | Module | ~Lines | Depends on |
-|---|--------|--------|------------|
-| 2.1 | `station-combobox.js` | 400 | DOM root only — easiest |
-| 2.2 | `journey-model.js` | 500 | Settings keys, normalize/migrate |
-| 2.3 | `train-navigation.js` | 400 | Pin helpers, skip state |
-| 2.4 | `nearby-mode.js` | 1,400 | Geo, board fetch, pin session |
-| 2.5 | `template-wizard.js` | 1,400 | Journey detail, coach DOM |
-| 2.6 | `journey-detail.js` | 400 | Combobox, directions API |
+**Architecture decision (FB-25, Aug 2026):** Option A - plain script files + `window.nextTrain*` globals, loaded in `index.html` before `app.js`. Shared state (`settings`, DOM refs, timers) stays in `app.js`; modules receive deps via `init(deps)`. Not esbuild bundle yet.
 
-**Tooling:** extend existing esbuild pattern (`build:train-times`) or use native ES modules + one bundled `app-bundle.js` for Capacitor — decide once, don’t mix.
+| # | Module | ~Lines | Depends on | Status |
+|---|--------|--------|------------|--------|
+| 2.1 | `station-combobox.js` | 470 | DOM root, `formatStationLabel` via deps | **Done** (Aug 2026) |
+| 2.2 | `journey-model.js` | 485 | Settings normalize/migrate; station/direction via deps | **Done** (Aug 2026) |
+| 2.3 | `train-navigation.js` | 400 | Pin, skip, swipe; `render()` pipeline | **Blocked** - coupled to display (~2244-3937) |
+| 2.4 | `nearby-mode.js` | 1,400 | Geo, board, pin session | **Blocked** - geo + chrome + journey mode |
+| 2.5 | `template-wizard.js` | 1,400 | Journey detail, coach DOM | **Blocked** - interleaved with detail form |
+| 2.6 | `journey-detail.js` | 400 | Combobox, directions API | **Blocked** - overlaps wizard + reminders |
+
+**Tooling:** Option A for now (no bundle). Revisit esbuild when 2.3+ unblocked.
 
 ### Phase 3 — Pin / display contract (2–3 days, high value)
 
