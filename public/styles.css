@@ -8,6 +8,11 @@
   --accent: #0b6e6a;
   --accent-strong: #085a57;
   --accent-wash: rgba(11, 110, 106, 0.12);
+  --leave-calm: #5c726d;
+  --leave: #b45309;
+  --leave-strong: #92400e;
+  --leave-wash: rgba(180, 83, 9, 0.12);
+  --leave-calm-wash: rgba(92, 114, 109, 0.1);
   --surface: #ffffff;
   --surface-soft: rgba(255, 255, 255, 0.72);
   --line: rgba(19, 37, 35, 0.1);
@@ -1088,7 +1093,7 @@ body.native-ad-banner .app-body {
   justify-content: flex-start;
   margin: 0.1rem 0 0;
   font-size: 1.75rem;
-  color: var(--accent);
+  color: var(--leave-calm);
 }
 
 .leave-card.leave-card--context .leave-card-countdown {
@@ -1110,12 +1115,17 @@ body.native-ad-banner .app-body {
   grid-column: 1 / -1;
 }
 
-.leave-card.soon {
-  border-color: rgba(194, 65, 12, 0.28);
-  background: linear-gradient(160deg, rgba(234, 88, 12, 0.12), var(--surface) 70%);
+.leave-card.calm {
+  border-color: var(--line);
+  background: linear-gradient(160deg, var(--leave-calm-wash), var(--surface) 72%);
 }
 
-.leave-card.urgent,
+.leave-card.soon,
+.leave-card.urgent {
+  border-color: rgba(180, 83, 9, 0.28);
+  background: linear-gradient(160deg, var(--leave-wash), var(--surface) 70%);
+}
+
 .leave-card.now,
 .leave-card.late {
   border-color: rgba(190, 18, 60, 0.3);
@@ -1166,7 +1176,7 @@ body.native-ad-banner .app-body {
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 0.98;
-  color: var(--accent);
+  color: var(--leave-calm);
   transition: color 0.35s ease;
 }
 
@@ -1179,7 +1189,7 @@ body.native-ad-banner .app-body {
 
 .leave-card.soon .leave-card-time,
 .leave-card.urgent .leave-card-time {
-  color: var(--urgent);
+  color: var(--leave);
 }
 
 .leave-card.now .leave-card-time,
