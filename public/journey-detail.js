@@ -44,6 +44,8 @@
   const detailNearestHint = document.getElementById("detail-nearest-hint");
   const journeyTemplatesEl = document.getElementById("journey-templates");
   const journeyTemplatesCapHintEl = document.getElementById("journey-templates-cap-hint");
+  const journeyTemplateShortcutsEl = document.getElementById("journey-template-shortcuts");
+  const journeyAddBtnEl = document.getElementById("journey-add-btn");
   const journeyTemplateChipsEl = document.querySelector(".journey-template-chips");
   const journeyTemplatesAddHintEl = document.querySelector(".journey-templates-hint");
   const detailActiveDayChips = document.getElementById("detail-active-day-chips");
@@ -1298,17 +1300,22 @@ function updateJourneyTemplatesVisibility() {
   }
 
   const atCap = isAtJourneyCap();
-  let anyChipVisible = false;
+  let anyShortcutVisible = false;
 
   document.querySelectorAll(".journey-template-chip").forEach((chip) => {
     const templateKey = chip.dataset.template;
+    if (templateKey === "custom") {
+      chip.hidden = true;
+      return;
+    }
+
     const taken =
       templateKey === "morning" || templateKey === "evening"
         ? hasJourneyForTemplate(templateKey)
         : false;
     chip.hidden = taken || atCap;
     if (!taken && !atCap) {
-      anyChipVisible = true;
+      anyShortcutVisible = true;
     }
   });
 
@@ -1316,14 +1323,20 @@ function updateJourneyTemplatesVisibility() {
     journeyTemplatesCapHintEl.textContent = getJourneyCapHint();
     journeyTemplatesCapHintEl.hidden = !atCap;
   }
+  if (journeyAddBtnEl) {
+    journeyAddBtnEl.hidden = atCap;
+  }
   if (journeyTemplatesAddHintEl) {
-    journeyTemplatesAddHintEl.hidden = atCap;
+    journeyTemplatesAddHintEl.hidden = atCap || !anyShortcutVisible;
+  }
+  if (journeyTemplateShortcutsEl) {
+    journeyTemplateShortcutsEl.hidden = atCap || !anyShortcutVisible;
   }
   if (journeyTemplateChipsEl) {
-    journeyTemplateChipsEl.hidden = atCap || !anyChipVisible;
+    journeyTemplateChipsEl.hidden = atCap || !anyShortcutVisible;
   }
 
-  journeyTemplatesEl.hidden = !atCap && !anyChipVisible;
+  journeyTemplatesEl.hidden = false;
 }
 
 function renderJourneyListView() {

@@ -3,6 +3,7 @@
  * Usage: node qa/format-minutes-as-time-active-hours.mjs
  */
 import { chromium } from "playwright";
+import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -39,7 +40,7 @@ async function run() {
 
   await page.evaluate(() => window.nextTrainApp.enterJourneyMode());
   await page.evaluate(() => window.nextTrainApp.openJourneys());
-  await page.locator('[data-template="custom"]').click();
+  await openCustomJourneyCreate(page);
   const skip = page.locator("#template-wizard-skip-btn");
   if (await skip.isVisible()) {
     await skip.click();

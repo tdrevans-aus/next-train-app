@@ -3,6 +3,7 @@
  * Usage: node qa/journey-cap-repro.mjs
  */
 import { chromium } from "playwright";
+import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 import { pickStationCombobox } from "./helpers/station-combobox.mjs";
 
 const BASE = "http://localhost:3000";
@@ -66,7 +67,7 @@ async function addCustomJourney(page, { name, station, direction, from, until })
     return { added: false, reason: atCap ? "at-cap" : "templates-hidden" };
   }
 
-  await page.locator('[data-template="custom"]').click();
+  await openCustomJourneyCreate(page);
   await page.waitForTimeout(800);
   await dismissCoach(page);
 

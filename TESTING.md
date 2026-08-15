@@ -103,7 +103,7 @@ With `test=1`, the coach timer does not run — use this test for the timed coac
 ### 13. Journey templates (create from wizard or Add journey)
 
 1. From test 12 step 2, tap **Set up a journey** (or: `?reset=1&test=1&fixture=normal` → **Journeys** twice → template chips visible).
-2. **Expect:** Journeys dialog with template chips (Morning into town / Evening home / Custom). **Add journey** hidden while chips are shown.
+2. **Expect:** Journeys dialog with **Add journey** button and template shortcuts (Morning into town / Evening home). **Custom** chip removed — use **Add journey** to create a blank journey.
 3. Tap **Morning into town**.
 4. **Expect:** Brief wait while nearest station is detected. Detail view opens with name **Morning into town**, default window **06:00–09:00**, **nearest suburban station** selected, direction **towards Perth**. Setup coach: **Name** → **Route** → **Time to station** → **Active hours** → **Reminder** (5 steps). **Got it** on Reminder. Scrim tap does **not** dismiss; **Skip tour** marks seen same as Got it. On Name step you can edit the journey name while the coach stays open.
 
