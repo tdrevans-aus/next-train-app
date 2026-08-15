@@ -135,7 +135,7 @@ var NextTrainGeo = (() => {
     }
   });
 
-  // public/geo-native.mjs
+  // web-sources/geo-native.mjs
   var geo_native_exports = {};
   __export(geo_native_exports, {
     ensureLocationPermission: () => ensureLocationPermission,
@@ -198,7 +198,7 @@ var NextTrainGeo = (() => {
   });
   f();
 
-  // public/geo-native.mjs
+  // web-sources/geo-native.mjs
   function permissionGranted(status) {
     const location = status?.location ?? status?.coarseLocation;
     return location === "granted";

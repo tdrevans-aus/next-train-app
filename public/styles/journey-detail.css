@@ -1,0 +1,1260 @@
+/* Default journey detail should fit one phone viewport.
+   Scroll remains for errors / station picker / tiny screens. */
+@media (max-height: 820px) {
+  #settings-detail-view .settings-section-hint:not([hidden]):not([role="alert"]):not(.detail-target-outside-hint) {
+    display: none;
+  }
+
+  #settings-detail-view .detail-active-days-hint {
+    display: none;
+  }
+}
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.field-value {
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.leave-before-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.leave-before-slider {
+  width: 100%;
+  height: 1.125rem;
+  margin: 0.1rem 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  accent-color: var(--accent);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  /* Filled portion left of the thumb — updated from JS on input. */
+  --leave-before-pct: 31.034%;
+}
+
+.leave-before-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.leave-before-slider::-webkit-slider-runnable-track {
+  height: 0.3rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--leave-before-pct),
+    rgba(92, 114, 109, 0.28) var(--leave-before-pct),
+    rgba(92, 114, 109, 0.28) 100%
+  );
+}
+
+.leave-before-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1rem;
+  height: 1rem;
+  margin-top: calc((0.3rem - 1rem) / 2);
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 2px rgba(19, 37, 35, 0.18);
+}
+
+.leave-before-slider::-moz-range-track {
+  height: 0.3rem;
+  border-radius: 999px;
+  background: rgba(92, 114, 109, 0.28);
+  border: 0;
+}
+
+.leave-before-slider::-moz-range-progress {
+  height: 0.3rem;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 0;
+}
+
+.leave-before-slider::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 2px rgba(19, 37, 35, 0.18);
+}
+
+.leave-before-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+}
+
+.leave-before-toggle input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.leave-before-field--disabled .leave-before-controls {
+  opacity: 0.45;
+}
+
+.leave-before-field--disabled .leave-before-slider {
+  cursor: not-allowed;
+}
+
+.leave-before-field--highlight {
+  margin-inline: -0.4rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  animation: leave-before-field-highlight 2.25s ease-out;
+}
+
+@keyframes leave-before-field-highlight {
+  0% {
+    background-color: rgba(11, 110, 106, 0.22);
+    box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.4);
+  }
+  40% {
+    background-color: rgba(11, 110, 106, 0.1);
+    box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.2);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 2px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leave-before-field--highlight {
+    animation: none;
+    background-color: rgba(11, 110, 106, 0.12);
+    box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.28);
+  }
+
+  .topbar,
+  .context,
+  .hero,
+  .leave-card,
+  .detail-strip,
+  .journey-switcher-menu {
+    animation: none;
+  }
+}
+
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0;
+  font-size: 0.72rem;
+  line-height: 1;
+  color: var(--muted);
+}
+
+body.app-dialog-open #ad-container,
+body.app-dialog-open .ad-remove-link-wrap {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.btn-link {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.84rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.15rem 0 0;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+.settings-actions-detail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0;
+  padding: 0 0.35rem;
+  box-sizing: border-box;
+}
+
+.settings-detail-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+#settings-detail-view .settings-detail-footer {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  padding: 0.45rem 0.85rem 0.55rem;
+  gap: 0.4rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 0 -4px 14px rgba(19, 37, 35, 0.06);
+}
+
+.journeys-detail-chrome .settings-detail-footer {
+  border-top: none;
+  box-shadow: none;
+  padding: 0.35rem 0.45rem;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.journeys-detail-chrome .settings-actions-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  width: 100%;
+}
+
+.journeys-detail-chrome .journey-delete-icon-btn {
+  margin: 0;
+}
+
+.journey-delete-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(190, 18, 60, 0.35);
+  background: rgba(190, 18, 60, 0.06);
+  color: var(--bad);
+  cursor: pointer;
+}
+
+.journey-delete-icon-btn svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.journey-delete-icon-btn:hover,
+.journey-delete-icon-btn:focus-visible {
+  background: rgba(190, 18, 60, 0.12);
+  outline: none;
+}
+
+.journey-delete-icon-btn[hidden] {
+  display: none !important;
+}
+
+.settings-actions-detail .btn-primary,
+.settings-actions-detail .btn-secondary {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.55rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+#settings-detail-view .journey-delete-icon-btn {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+#settings-detail-view .journey-window {
+  gap: 0.45rem;
+}
+
+#settings-detail-view .remind-days-field {
+  margin-top: 0.2rem;
+}
+
+#settings-detail-view .remind-days-field .field-label {
+  margin-bottom: 0.3rem;
+  font-size: 0.78rem;
+}
+
+#settings-detail-view .remind-me-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+#settings-detail-view .settings-back {
+  margin-bottom: 0;
+  font-size: 0.88rem;
+}
+
+.journey-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.journey-list-empty {
+  margin: 0;
+  padding: 0.15rem 0.1rem 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.journey-templates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.15rem;
+  padding-top: 0.15rem;
+}
+
+.journey-add-btn {
+  width: 100%;
+  margin: 0;
+}
+
+.journey-template-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.journey-templates-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.journey-templates-cap-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.journey-templates-loading {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--accent);
+}
+
+.journey-template-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.journey-template-chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #f7faf9;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+}
+
+.journey-template-chip:hover,
+.journey-template-chip:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.remind-days-field {
+  margin-top: 0;
+}
+
+.remind-days-field .field-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.remind-day-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.remind-day-chips--row {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 0.25rem;
+}
+
+.remind-me-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.remind-me-toggle input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.remind-me-field--disabled .remind-me-controls {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.remind-me-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.detail-preferred-field {
+  margin: 0;
+}
+
+#settings-detail-view .detail-preferred-field .optional-time-display {
+  min-width: 7.5rem;
+}
+
+.remind-day-chips--row .remind-day-chip {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.remind-day-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.85rem;
+  padding: 0.32rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  text-align: center;
+}
+
+.reminders-pause-chips .remind-day-chip {
+  min-width: 4.1rem;
+}
+
+.remind-day-chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.remind-day-chip--active {
+  border-color: rgba(11, 110, 106, 0.45);
+  background: rgba(11, 110, 106, 0.1);
+  color: var(--accent);
+}
+
+.remind-day-chip:hover,
+.remind-day-chip:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.onboarding-coach {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  pointer-events: none;
+}
+
+.onboarding-coach:not([hidden]) {
+  pointer-events: auto;
+}
+
+.onboarding-coach[hidden] {
+  display: none !important;
+}
+
+.onboarding-coach-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(19, 37, 35, 0.28);
+  cursor: pointer;
+}
+
+.onboarding-coach:not([hidden]) .onboarding-coach-card {
+  opacity: 1;
+  visibility: visible;
+}
+
+.onboarding-coach-card {
+  position: absolute;
+  left: 50%;
+  width: min(92vw, 320px);
+  padding: 0.95rem 1rem 1rem;
+  border: 1px solid rgba(11, 110, 106, 0.18);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  box-shadow: 0 10px 28px rgba(19, 37, 35, 0.1);
+  transform: translateX(-50%);
+  animation: onboarding-coach-in 200ms ease-out;
+}
+
+.onboarding-coach--step-1 .onboarding-coach-card {
+  /* Prefer under-hero; JS sets top from #hero. Fallback if layout not ready. */
+  top: calc(11.5rem + env(safe-area-inset-top, 0px));
+  bottom: auto;
+}
+
+.widget-coach .onboarding-coach-card {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+.onboarding-coach--step-2 .onboarding-coach-card {
+  /* Prefer under My Journeys chrome; JS sets top from #journeys-chrome-action. */
+  top: calc(5.6rem + env(safe-area-inset-top, 0px));
+  right: 0.75rem;
+  left: auto;
+  transform: none;
+  animation-name: onboarding-coach-in-step-2;
+}
+
+.journeys-dialog {
+  position: relative;
+}
+
+.template-wizard-step h2 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.template-wizard-step p {
+  margin: 0 0 0.85rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.template-wizard-step p strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+#template-wizard-primary-btn {
+  width: 100%;
+}
+
+.template-wizard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#template-wizard-skip-btn {
+  width: 100%;
+  min-height: 44px;
+}
+
+.template-wizard-highlight {
+  position: relative;
+  z-index: 21;
+  pointer-events: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.45);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.journeys-dialog.template-wizard-active .journeys-detail-chrome {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.journeys-dialog .template-route-coach {
+  position: absolute;
+  inset: 0;
+  z-index: auto;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.journeys-dialog .template-route-coach:not([hidden]) {
+  pointer-events: none;
+}
+
+.journeys-dialog .template-route-coach .onboarding-coach-scrim {
+  z-index: 20;
+  pointer-events: none;
+}
+
+.journeys-dialog .template-route-coach .onboarding-coach-card {
+  z-index: 22;
+  left: 50%;
+  right: auto;
+  pointer-events: auto;
+  transform: translateX(-50%);
+}
+
+/* Active hours / Reminder: dock coach at bottom so card never covers highlighted fields */
+.journeys-dialog .template-route-coach.template-route-coach--dock-bottom .onboarding-coach-card,
+.journeys-dialog .template-route-coach.template-route-coach--step-3 .onboarding-coach-card {
+  top: auto;
+  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* Leave room to scroll highlighted fields above a bottom-docked coach card */
+.journeys-dialog.template-wizard-active .settings-detail-scroll {
+  scroll-padding-bottom: 12rem;
+  padding-bottom: 12rem;
+}
+
+/* Reminder step sits at the bottom of the form — extra scroll room */
+.journeys-dialog.template-wizard-reminder-step .settings-detail-scroll {
+  scroll-padding-bottom: 13rem;
+  padding-bottom: 13rem;
+}
+
+#leave-before-field.template-wizard-highlight,
+#detail-target-master.template-wizard-highlight,
+#detail-preferred-section.template-wizard-highlight,
+#detail-journey-window.template-wizard-highlight {
+  padding: 0.55rem 0.65rem;
+  margin-inline: -0.65rem;
+}
+
+#detail-route-section.template-wizard-highlight,
+#detail-route-core.template-wizard-highlight {
+  padding: 0.55rem 0.65rem;
+  margin-inline: -0.65rem;
+}
+
+.detail-remind-toggle-row.template-wizard-toggle-on {
+  box-shadow: 0 0 0 2px rgba(11, 110, 106, 0.45);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+#detail-remind-controls.template-wizard-highlight,
+#detail-reminder-section.template-wizard-highlight {
+  padding: 0.55rem 0.65rem;
+  margin-inline: -0.65rem;
+}
+
+.journey-name-field.template-wizard-highlight {
+  padding: 0.55rem 0.65rem;
+  margin-inline: -0.65rem;
+}
+
+#leave-reminder-coach .onboarding-coach-card {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.widget-help-lead {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.widget-help-tip {
+  margin: 0.65rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.widget-help-manual {
+  margin: 0.75rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.widget-help-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+#widget-help-dialog #widget-help-pin-btn,
+#widget-help-dialog #widget-help-add-another-btn,
+#widget-help-dialog #widget-help-done-btn {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.journey-overlap-error {
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(180, 35, 24, 0.08);
+  border: 1px solid rgba(180, 35, 24, 0.18);
+}
+
+.journey-overlap-error--fixed {
+  background: rgba(30, 120, 90, 0.08);
+  border-color: rgba(30, 120, 90, 0.22);
+}
+
+.journey-overlap-error p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.journey-overlap-fix-btn {
+  margin-top: 0.55rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(180, 35, 24, 0.28);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.optional-time-field--overlap .optional-time-display {
+  border-color: rgba(180, 35, 24, 0.45);
+  box-shadow: 0 0 0 1px rgba(180, 35, 24, 0.12);
+}
+
+.help-dialog-footer {
+  padding: 0 1.2rem 1.1rem;
+}
+
+.feedback-lede {
+  margin: 0 0 0.9rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.feedback-form .field textarea {
+  width: 100%;
+  min-height: 8.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  padding: 0.7rem 0.75rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.feedback-status {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--bad);
+}
+
+.feedback-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.feedback-actions .btn-primary,
+.feedback-actions .btn-secondary,
+.feedback-thanks .btn-primary {
+  width: 100%;
+}
+
+.feedback-thanks {
+  margin-top: 0.5rem;
+}
+
+.feedback-thanks p {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.onboarding-coach-step h2 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.onboarding-coach-step p {
+  margin: 0 0 0.85rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.onboarding-coach-step .btn-primary {
+  width: 100%;
+}
+
+.onboarding-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.onboarding-actions .btn-primary,
+.onboarding-actions .btn-secondary {
+  width: 100%;
+}
+
+@keyframes onboarding-coach-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0.65rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+
+@keyframes onboarding-coach-in-step-2 {
+  from {
+    opacity: 0;
+    transform: translateY(-0.45rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes onboarding-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(11, 110, 106, 0.45);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow: 0 0 0 0.45rem rgba(11, 110, 106, 0.12);
+    transform: scale(1.06);
+  }
+}
+
+@keyframes menu-hint-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(11, 110, 106, 0.5);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 0.55rem rgba(11, 110, 106, 0.2),
+      0 0 1.4rem rgba(11, 110, 106, 0.4);
+    transform: scale(1.1);
+  }
+}
+
+.journey-list-item {
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f7faf9;
+  overflow: hidden;
+}
+
+.journey-list-card {
+  display: flex;
+  align-items: stretch;
+}
+
+.journey-list-open-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 0.85rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.journey-list-open-btn:hover,
+.journey-list-open-btn:focus-visible {
+  background: rgba(11, 110, 106, 0.06);
+  outline: none;
+}
+
+.journey-list-open-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.journey-list-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.journey-list-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.journey-list-route {
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.journey-list-route--empty {
+  font-style: italic;
+}
+
+.journey-list-chevron {
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.settings-view[hidden] {
+  display: none !important;
+}
+
+.settings-view {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: calc(90dvh - 4.5rem);
+  overflow-y: auto;
+}
+
+#settings-list-view {
+  gap: 0;
+  padding: 0;
+  max-height: 90dvh;
+  overflow: hidden;
+}
+
+.settings-list-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.8rem;
+}
+
+#settings-list-view .settings-view-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+#settings-list-view h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+#settings-list-view .settings-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+#settings-list-view .btn-secondary {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.9rem;
+}
+
+.settings-back {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+
+.settings-clear-data {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.15rem;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.settings-clear-data:hover,
+.settings-clear-data:focus-visible {
+  color: var(--bad);
+  outline: none;
+}
+
+.journey-window {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.journey-window .field input[type="time"] {
+  width: 100%;
+}
+
+.optional-time-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.optional-time-display {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.optional-time-field[data-empty="true"] .optional-time-display {
+  color: var(--muted);
+}
+
+.optional-time-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.optional-time-clear {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.optional-time-clear[hidden] {
+  display: none !important;
+}
+
+.settings-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.settings-hint-error {
+  color: var(--bad);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.checkbox-label span,
+.leave-before-toggle span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.field small,
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.field select,
+.field input {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  padding: 0.6rem 0.7rem;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  border-radius: 0.85rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+}
+
+/* Inline pause-custom row: beat .btn-primary padding so Set matches the days input height */
+.reminders-pause-custom-apply.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.125rem;
+  min-height: 0;
+  padding: 0 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1;
+  border-radius: 0.65rem;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.reminders-pause-custom-apply.btn-primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #ffffff;
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: rgba(11, 110, 106, 0.06);
+}
+
+.settings-location-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.55rem;
+  margin-top: 0.1rem;
+}
+
+.settings-location-btn[hidden] {
+  display: none !important;
+}
+
+.settings-location-hint--error {
+  color: var(--danger, #c0392b);
+}
+
+.settings-location-btn {
+  align-self: baseline;
+  margin-top: 0;
+  padding: 0;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.settings-location-btn:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.settings-location-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}

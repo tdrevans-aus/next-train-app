@@ -1,5 +1,5 @@
 /**
- * Build public/design/app-icon-pick.html from C1–C10 SVGs.
+ * Build design/app-icon-pick.html from C1–C10 SVGs.
  * Usage: node store-assets/build-app-icon-pick.mjs
  */
 import fs from "fs";
@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const dir = path.join(root, "icon-concepts-v2");
-const out = path.join(root, "..", "public", "design", "app-icon-pick.html");
+const out = path.join(root, "..", "design", "app-icon-pick.html");
 
 const meta = [
   ["E1-horizon.svg", "E1 — Horizon", "Tapered rails, perspective sleeper spacing, open sky."],

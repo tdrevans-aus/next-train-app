@@ -27,6 +27,12 @@ Ship a Jim brief when Tim opens v2. Safe deletes / packaging only — no product
 | **D-03** | Empty legacy CSS hooks in `styles.css` (`.skip-train-btn`, `.earlier-train-btn`, `.commute-mode`, `.details`, `.detail-card`, `.leg-toggle`, `.journey-toggle`, `.settings-leg`, empty `.header`) | Comment admits unused; no JS class usage | High | None | Delete the block |
 | **D-04** | `nextTrainAdsLoaded` (`ADS_LOADED_KEY` in `ads.js`) | Write-only localStorage; never read | High | None | Remove setItem + Clear-all exemption in `app.js` |
 | **D-05** | Ship packaging: `public/design/*.html`, `public/*.mjs` sources, `site-config.example.json` inside APK `webDir` | Design pickers / esbuild sources / example config aren’t product UI | High | Low if moved, not deleted | Prefer `capacitor` `android.webContentsDebuggingEnabled` / asset ignore **or** move sources to `src/` and keep bundles in `public/` |
+
+### Resolved Aug 2026 (FB-27 Phase 4)
+
+| ID | Status | Action taken |
+| --- | --- | --- |
+| **D-05** | **Resolved** | Moved `public/design/` → `design/`, `public/*.mjs` → `web-sources/`, `site-config.example.json` → `config/`; esbuild + dev-server updated |
 | **D-06** | Legacy coach LS keys `nextTrainWidgetCoachDismissed` / `nextTrainLeaveReminderCoachDismissed` | Migration-only in `stickiness-coaches.js` | Med | Loses dismiss state for old installs | Drop after soak, or keep forever (tiny) |
 | **D-07** | Doc hygiene: `qa-leave-reminders-v2-testing.md` may be stale vs implemented v2 | Misleads QA | Med | Docs only | Strip brief rewritten non-FGS (11 Aug); refresh QA doc when convenient |
 | **D-08** | Optional: old store creative drafts under `store-assets/` (superseded icon concept dirs already archived intentionally) | Clutter | Low | None | Declutter only if Tim wants; **keep** locked icon + feature graphic |

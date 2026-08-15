@@ -5,6 +5,9 @@
     refreshSeconds: 30,
   };
   const DEFAULT_REMIND_DAYS = [1, 2, 3, 4, 5];
+  const JOURNEY_KIND_ROUTE = "route";
+  const JOURNEY_KIND_COMMUTE = "commute";
+  const COMMUTE_TEMPLATE_KEYS = new Set(["morning", "evening"]);
 
   let deps = {};
 
@@ -125,6 +128,50 @@ function inferTemplateKey(raw = {}) {
   return "";
 }
 
+function normalizeJourneyKind(rawKind) {
+  const kind = String(rawKind || "").trim().toLowerCase();
+  if (kind === JOURNEY_KIND_ROUTE || kind === JOURNEY_KIND_COMMUTE) {
+    return kind;
+  }
+  return "";
+}
+
+function inferJourneyKind(raw = {}, context = {}) {
+  const explicit = normalizeJourneyKind(raw.kind);
+  if (explicit) {
+    return explicit;
+  }
+
+  const templateKey = context.templateKey ?? inferTemplateKey(raw);
+  if (templateKey && COMMUTE_TEMPLATE_KEYS.has(templateKey)) {
+    return JOURNEY_KIND_COMMUTE;
+  }
+
+  const preferredTrainTime =
+    context.preferredTrainTime === undefined || context.preferredTrainTime === null
+      ? raw.preferredTrainTime === undefined || raw.preferredTrainTime === null
+        ? ""
+        : String(raw.preferredTrainTime)
+      : String(context.preferredTrainTime);
+  if (preferredTrainTime) {
+    return JOURNEY_KIND_COMMUTE;
+  }
+
+  if (journeyRemindMeEnabled(raw)) {
+    return JOURNEY_KIND_COMMUTE;
+  }
+
+  return JOURNEY_KIND_ROUTE;
+}
+
+function isCommuteJourney(journey) {
+  return normalizeJourneyKind(journey?.kind) === JOURNEY_KIND_COMMUTE;
+}
+
+function isRouteJourney(journey) {
+  return normalizeJourneyKind(journey?.kind) === JOURNEY_KIND_ROUTE;
+}
+
 function normalizeJourney(raw = {}) {
   let defaultFrom =
     raw.defaultFrom === undefined || raw.defaultFrom === null
@@ -192,6 +239,7 @@ function normalizeJourney(raw = {}) {
     journeyPinDismissedDate,
     remindDays: normalizeRemindDays(raw.remindDays),
     remindMe: journeyRemindMeEnabled(raw),
+    kind: inferJourneyKind(raw, { templateKey, preferredTrainTime }),
   };
 
   if (templateKey) {
@@ -474,6 +522,11 @@ function getPerthLocalDateKey(date = new Date()) {
     journeyMatchesSchedule,
     journeyRemindMeEnabled,
     inferTemplateKey,
+    inferJourneyKind,
+    isCommuteJourney,
+    isRouteJourney,
+    JOURNEY_KIND_ROUTE,
+    JOURNEY_KIND_COMMUTE,
     normalizeJourney,
     legToJourney,
     pickNearbySettingsFields,
