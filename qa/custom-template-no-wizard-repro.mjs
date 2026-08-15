@@ -41,8 +41,10 @@ async function run() {
 
   await page.locator("#onboarding-got-it-btn").click();
   await page.waitForTimeout(300);
-  await page.locator("#onboarding-setup-btn").click();
-  await page.waitForTimeout(800);
+  await page.locator("#onboarding-later-btn").click();
+  await page.waitForTimeout(300);
+  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await page.waitForTimeout(400);
 
   await openCustomJourneyCreate(page);
   await page.waitForTimeout(1500);
