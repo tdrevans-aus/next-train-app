@@ -6,7 +6,39 @@ import org.json.JSONObject;
 /** Widget / schedule journey pick: in Active hours (+ days) only — no activeId / first fallbacks. */
 public final class JourneySelector {
 
+  private static final String KIND_ROUTE = "route";
+  private static final String KIND_COMMUTE = "commute";
+
   private JourneySelector() {}
+
+  public static String journeyKind(JSONObject journey) {
+    if (journey == null) {
+      return KIND_ROUTE;
+    }
+    String explicit = journey.optString("kind", "").trim().toLowerCase();
+    if (KIND_ROUTE.equals(explicit) || KIND_COMMUTE.equals(explicit)) {
+      return explicit;
+    }
+    String templateKey = journey.optString("templateKey", "");
+    if ("morning".equals(templateKey) || "evening".equals(templateKey)) {
+      return KIND_COMMUTE;
+    }
+    if (!journey.optString("preferredTrainTime", "").isEmpty()) {
+      return KIND_COMMUTE;
+    }
+    if (journey.optBoolean("remindMe", false)) {
+      return KIND_COMMUTE;
+    }
+    return KIND_ROUTE;
+  }
+
+  public static boolean isCommuteJourney(JSONObject journey) {
+    return KIND_COMMUTE.equals(journeyKind(journey));
+  }
+
+  public static boolean isRouteJourney(JSONObject journey) {
+    return KIND_ROUTE.equals(journeyKind(journey));
+  }
 
   public static JSONObject selectJourney(JSONObject settings) throws Exception {
     if (settings == null) {
@@ -26,6 +58,9 @@ public final class JourneySelector {
     int minutes = PerthTime.minutesSinceMidnight();
     for (int index = 0; index < configured.length(); index += 1) {
       JSONObject journey = configured.getJSONObject(index);
+      if (!isCommuteJourney(journey)) {
+        continue;
+      }
       if (matchesWindow(journey, minutes)) {
         return journey;
       }

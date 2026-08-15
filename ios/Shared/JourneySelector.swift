@@ -1,6 +1,35 @@
 import Foundation
 
 enum JourneySelector {
+    private static let kindRoute = "route"
+    private static let kindCommute = "commute"
+
+    static func journeyKind(_ journey: [String: Any]) -> String {
+        let explicit = (journey["kind"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if explicit == kindRoute || explicit == kindCommute {
+            return explicit
+        }
+        let templateKey = journey["templateKey"] as? String ?? ""
+        if templateKey == "morning" || templateKey == "evening" {
+            return kindCommute
+        }
+        if let preferred = journey["preferredTrainTime"] as? String, !preferred.isEmpty {
+            return kindCommute
+        }
+        if journey["remindMe"] as? Bool == true {
+            return kindCommute
+        }
+        return kindRoute
+    }
+
+    static func isCommuteJourney(_ journey: [String: Any]) -> Bool {
+        journeyKind(journey) == kindCommute
+    }
+
+    static func isRouteJourney(_ journey: [String: Any]) -> Bool {
+        journeyKind(journey) == kindRoute
+    }
+
     static func selectJourney(_ settings: [String: Any]) -> [String: Any]? {
         guard let journeys = settings["journeys"] as? [[String: Any]] else {
             return nil
@@ -8,7 +37,7 @@ enum JourneySelector {
         let configured = configuredJourneys(journeys)
         guard !configured.isEmpty else { return nil }
         let minutes = PerthTime.minutesSinceMidnight()
-        for journey in configured where matchesWindow(journey, minutes: minutes) {
+        for journey in configured where isCommuteJourney(journey) && matchesWindow(journey, minutes: minutes) {
             return journey
         }
         return nil

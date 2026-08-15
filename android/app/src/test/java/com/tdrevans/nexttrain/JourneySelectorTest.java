@@ -85,6 +85,38 @@ public class JourneySelectorTest {
     assertTrue(JourneySelector.hasConfiguredJourneys(settings));
   }
 
+  @Test
+  public void journeyKind_infersCommuteFromPreferredTrain() throws Exception {
+    JSONObject journey = new JSONObject();
+    journey.put("station", "Edgewater Stn");
+    journey.put("direction", "Perth");
+    journey.put("preferredTrainTime", "07:30");
+    assertEquals("commute", JourneySelector.journeyKind(journey));
+    assertTrue(JourneySelector.isCommuteJourney(journey));
+  }
+
+  @Test
+  public void journeyKind_explicitRoute() throws Exception {
+    JSONObject journey = new JSONObject();
+    journey.put("kind", "route");
+    journey.put("station", "Edgewater Stn");
+    journey.put("direction", "Perth");
+    journey.put("preferredTrainTime", "07:30");
+    assertTrue(JourneySelector.isRouteJourney(journey));
+  }
+
+  @Test
+  public void selectJourney_skipsRoutesEvenInWindow() throws Exception {
+    JSONObject settings = new JSONObject();
+    JSONArray journeys = new JSONArray();
+    JSONObject route = journey("j-route", "Route", "Edgewater Stn", "Perth", "06:00", "09:00");
+    route.put("kind", "route");
+    route.remove("preferredTrainTime");
+    journeys.put(route);
+    settings.put("journeys", journeys);
+    assertNull(JourneySelector.selectJourney(settings));
+  }
+
   private static JSONObject journey(
     String id,
     String name,
@@ -100,6 +132,8 @@ public class JourneySelectorTest {
     journey.put("direction", direction);
     journey.put("defaultFrom", from);
     journey.put("defaultUntil", until);
+    journey.put("preferredTrainTime", "07:30");
+    journey.put("kind", "commute");
     journey.put("leaveBeforeMinutes", 10);
     journey.put("useLeaveBefore", true);
     JSONArray remindDays = new JSONArray();

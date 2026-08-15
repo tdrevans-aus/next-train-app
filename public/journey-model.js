@@ -8,6 +8,16 @@
   const JOURNEY_KIND_ROUTE = "route";
   const JOURNEY_KIND_COMMUTE = "commute";
   const COMMUTE_TEMPLATE_KEYS = new Set(["morning", "evening"]);
+  /** FB-23: one-time journey reset + route vs commute schema. */
+  const SETTINGS_SCHEMA_VERSION = 2;
+  const COMMUTE_UPGRADE_DEFAULTS = {
+    templateKey: "morning",
+    defaultFrom: "06:00",
+    defaultUntil: "09:00",
+    preferredTrainTime: "07:30",
+    remindDays: [...DEFAULT_REMIND_DAYS],
+    remindMe: true,
+  };
 
   let deps = {};
 
@@ -38,12 +48,47 @@ function createDefaultJourney(overrides = {}) {
 
 function createDefaultStore() {
   return {
+    settingsSchemaVersion: SETTINGS_SCHEMA_VERSION,
     refreshSeconds: DEFAULT_SETTINGS.refreshSeconds,
     activeJourneyId: null,
     journeys: [],
     nearbyLeaveBeforeMinutes: DEFAULT_SETTINGS.leaveBeforeMinutes,
     nearbyPin: null,
   };
+}
+
+function stripCommuteFieldsForRoute(journey) {
+  journey.defaultFrom = "";
+  journey.defaultUntil = "";
+  journey.preferredTrainTime = "";
+  journey.remindMe = false;
+  journey.journeyPinOverrideIso = "";
+  journey.journeyPinOverrideDate = "";
+  journey.journeyPinDismissedDate = "";
+  delete journey.templateKey;
+  return journey;
+}
+
+function upgradeRouteToCommute(raw = {}) {
+  const name = String(raw.name || "Morning into town").trim() || "Morning into town";
+  return normalizeJourney({
+    id: raw.id,
+    name,
+    station: raw.station,
+    direction: raw.direction,
+    leaveBeforeMinutes: raw.leaveBeforeMinutes,
+    useLeaveBefore: raw.useLeaveBefore,
+    kind: JOURNEY_KIND_COMMUTE,
+    ...COMMUTE_UPGRADE_DEFAULTS,
+  });
+}
+
+function createRouteJourney(overrides = {}) {
+  return normalizeJourney({
+    name: "Route",
+    kind: JOURNEY_KIND_ROUTE,
+    ...overrides,
+  });
 }
 function isUnconfiguredJourney(journey) {
   return !journey?.station || !journey?.direction;
@@ -249,6 +294,10 @@ function normalizeJourney(raw = {}) {
     journey.autoRoute = false;
   }
 
+  if (isRouteJourney(journey)) {
+    stripCommuteFieldsForRoute(journey);
+  }
+
   return journey;
 }
 
@@ -299,6 +348,17 @@ function isNearbyPinSettingsHolding(pin) {
 }
 function migrateSettings(raw = {}) {
   const nearbyFields = pickNearbySettingsFields(raw);
+  const priorVersion = Number(raw.settingsSchemaVersion) || 0;
+
+  if (priorVersion < SETTINGS_SCHEMA_VERSION) {
+    return {
+      settingsSchemaVersion: SETTINGS_SCHEMA_VERSION,
+      refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
+      activeJourneyId: null,
+      journeys: [],
+      ...nearbyFields,
+    };
+  }
 
   if (Array.isArray(raw.journeys) && raw.journeys.length > 0) {
     const journeys = normalizeJourneyList(raw.journeys).filter(
@@ -309,6 +369,7 @@ function migrateSettings(raw = {}) {
       : (journeys[0]?.id ?? null);
 
     return {
+      settingsSchemaVersion: SETTINGS_SCHEMA_VERSION,
       refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
       activeJourneyId,
       journeys,
@@ -333,6 +394,7 @@ function migrateSettings(raw = {}) {
     }
 
     return {
+      settingsSchemaVersion: SETTINGS_SCHEMA_VERSION,
       refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
       activeJourneyId,
       journeys,
@@ -354,6 +416,7 @@ function migrateSettings(raw = {}) {
     );
 
     return {
+      settingsSchemaVersion: SETTINGS_SCHEMA_VERSION,
       refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
       activeJourneyId: journey?.id ?? null,
       journeys: journey ? [journey] : [],
@@ -362,6 +425,7 @@ function migrateSettings(raw = {}) {
   }
 
   return {
+    settingsSchemaVersion: SETTINGS_SCHEMA_VERSION,
     refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
     activeJourneyId: null,
     journeys: [],
@@ -468,11 +532,15 @@ function getPerthLocalDateKey(date = new Date()) {
       if (!raw) {
         return createDefaultStore();
       }
-      const migrated = migrateSettings(JSON.parse(raw));
+      const parsed = JSON.parse(raw);
+      const migrated = migrateSettings(parsed);
       const resolved = {
         ...migrated,
         journeys: normalizeJourneyList(migrated.journeys),
       };
+      if ((Number(parsed.settingsSchemaVersion) || 0) < SETTINGS_SCHEMA_VERSION) {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(resolved));
+      }
       if (resolved.journeys.length && !resolved.activeJourneyId) {
         resolved.activeJourneyId = resolved.journeys[0].id;
       }
@@ -509,9 +577,12 @@ function getPerthLocalDateKey(date = new Date()) {
     SETTINGS_KEY,
     DEFAULT_SETTINGS,
     DEFAULT_REMIND_DAYS,
+    SETTINGS_SCHEMA_VERSION,
     createJourneyId,
     createDefaultJourney,
     createDefaultStore,
+    createRouteJourney,
+    upgradeRouteToCommute,
     isUnconfiguredJourney,
     resolveInitialJourneys,
     normalizeJourneyList,
