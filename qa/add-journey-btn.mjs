@@ -1,5 +1,5 @@
 /**
- * FB-29 — primary Add journey button replaces the Custom chip.
+ * FB-23 — Save a route button opens blank route detail.
  * Usage: node qa/add-journey-btn.mjs
  */
 import { chromium } from "playwright";
@@ -17,10 +17,11 @@ async function run() {
   await page.waitForTimeout(400);
 
   const listUi = await page.evaluate(() => ({
-    addBtnVisible: !document.getElementById("journey-add-btn")?.hidden,
-    addBtnText: document.getElementById("journey-add-btn")?.textContent?.trim() ?? "",
+    saveRouteVisible: !document.getElementById("journey-save-route-btn")?.hidden,
+    saveRouteText: document.getElementById("journey-save-route-btn")?.textContent?.trim() ?? "",
+    setupCommuteVisible: !document.getElementById("journey-setup-commute-btn")?.hidden,
     customHidden: document.querySelector('[data-template="custom"]')?.hidden === true,
-    morningVisible: document.querySelector('[data-template="morning"]')?.hidden === false,
+    shortcutsHidden: document.getElementById("journey-template-shortcuts")?.hidden === true,
   }));
 
   await openCustomJourneyCreate(page);
@@ -33,16 +34,17 @@ async function run() {
   await browser.close();
 
   const pass =
-    listUi.addBtnVisible &&
-    listUi.addBtnText === "Add journey" &&
+    listUi.saveRouteVisible &&
+    listUi.saveRouteText === "Save a route" &&
+    listUi.setupCommuteVisible &&
     listUi.customHidden &&
-    listUi.morningVisible &&
+    listUi.shortcutsHidden &&
     detailOpen;
 
   if (pass) {
-    console.log("PASS — Add journey button visible; opens custom create flow");
+    console.log("PASS — Save a route opens blank route detail; commute templates stay collapsed");
   } else {
-    console.error("FAIL — Add journey UX", { listUi, detailOpen });
+    console.error("FAIL — route create UX", { listUi, detailOpen });
     process.exitCode = 1;
   }
 }

@@ -325,7 +325,13 @@ body.app-dialog-open .ad-remove-link-wrap {
   padding-top: 0.15rem;
 }
 
-.journey-add-btn {
+.journey-create-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.journey-create-btn {
   width: 100%;
   margin: 0;
 }
@@ -936,10 +942,57 @@ body.app-dialog-open .ad-remove-link-wrap {
   gap: 0.15rem;
 }
 
+.journey-list-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
 .journey-list-name {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--ink);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.journey-kind-badge {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.journey-kind-badge--route {
+  background: rgba(11, 110, 106, 0.1);
+  color: var(--accent);
+}
+
+.journey-kind-badge--commute {
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e40af;
+}
+
+.detail-upgrade-commute {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.detail-upgrade-commute-btn {
+  width: 100%;
+}
+
+.detail-upgrade-commute-hint {
+  margin: 0;
 }
 
 .journey-list-route {

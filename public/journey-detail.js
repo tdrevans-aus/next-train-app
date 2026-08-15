@@ -45,9 +45,14 @@
   const journeyTemplatesEl = document.getElementById("journey-templates");
   const journeyTemplatesCapHintEl = document.getElementById("journey-templates-cap-hint");
   const journeyTemplateShortcutsEl = document.getElementById("journey-template-shortcuts");
-  const journeyAddBtnEl = document.getElementById("journey-add-btn");
+  const journeySaveRouteBtnEl = document.getElementById("journey-save-route-btn");
+  const journeySetupCommuteBtnEl = document.getElementById("journey-setup-commute-btn");
+  const journeyCreateActionsEl = document.getElementById("journey-create-actions");
   const journeyTemplateChipsEl = document.querySelector(".journey-template-chips");
   const journeyTemplatesAddHintEl = document.querySelector(".journey-templates-hint");
+  const detailTimingSectionEl = document.getElementById("detail-timing-section");
+  const detailUpgradeCommuteWrapEl = document.getElementById("detail-upgrade-commute-wrap");
+  const detailUpgradeCommuteBtnEl = document.getElementById("detail-upgrade-commute-btn");
   const detailActiveDayChips = document.getElementById("detail-active-day-chips");
   const detailActiveDaysHint = document.querySelector(".detail-active-days-hint");
   const detailActiveHoursErrorEl = document.getElementById("detail-active-hours-error");
@@ -117,6 +122,50 @@
 
   function formatJourneyRoute(journey) {
     return deps.formatJourneyRoute?.(journey) ?? "";
+  }
+
+  function isCommuteJourney(journey) {
+    return deps.isCommuteJourney?.(journey) ?? false;
+  }
+
+  function isRouteJourney(journey) {
+    return deps.isRouteJourney?.(journey) ?? true;
+  }
+
+  function formatJourneyListSubtitle(journey) {
+    if (isRouteJourney(journey)) {
+      if (!journey?.station || !journey?.direction) {
+        return "Set up...";
+      }
+
+      const station = deps.formatStationLabel?.(journey.station) ?? journey.station;
+      return `${station} → ${journey.direction}`;
+    }
+
+    const parts = [formatJourneyRoute(journey)];
+    const windowLabel = formatJourneyDefaultWindow(journey);
+    if (windowLabel && windowLabel !== "Not set") {
+      parts.push(windowLabel);
+    }
+    if (journey.preferredTrainTime) {
+      parts.push(`Target ${journey.preferredTrainTime}`);
+    }
+    return parts.join(" · ");
+  }
+
+  function syncDetailFormForJourneyKind(journey) {
+    const route = isRouteJourney(journey);
+
+    if (detailTimingSectionEl) {
+      detailTimingSectionEl.hidden = route;
+    }
+    if (detailPreferredSection) {
+      detailPreferredSection.hidden = route;
+    }
+    if (detailUpgradeCommuteWrapEl) {
+      detailUpgradeCommuteWrapEl.hidden =
+        !route || !journey?.station || !journey?.direction;
+    }
   }
 
   function formatRouteBasedJourneyName(station, direction) {
@@ -1301,6 +1350,7 @@ function updateJourneyTemplatesVisibility() {
 
   const atCap = isAtJourneyCap();
   let anyShortcutVisible = false;
+  const commuteExpanded = deps.getCommuteTemplatesExpanded?.() ?? false;
 
   document.querySelectorAll(".journey-template-chip").forEach((chip) => {
     const templateKey = chip.dataset.template;
@@ -1323,17 +1373,24 @@ function updateJourneyTemplatesVisibility() {
     journeyTemplatesCapHintEl.textContent = getJourneyCapHint();
     journeyTemplatesCapHintEl.hidden = !atCap;
   }
-  if (journeyAddBtnEl) {
-    journeyAddBtnEl.hidden = atCap;
+  if (journeySaveRouteBtnEl) {
+    journeySaveRouteBtnEl.hidden = atCap;
+  }
+  if (journeySetupCommuteBtnEl) {
+    journeySetupCommuteBtnEl.hidden = atCap;
+  }
+  if (journeyCreateActionsEl) {
+    journeyCreateActionsEl.hidden = atCap;
   }
   if (journeyTemplatesAddHintEl) {
-    journeyTemplatesAddHintEl.hidden = atCap || !anyShortcutVisible;
+    journeyTemplatesAddHintEl.hidden = atCap || !commuteExpanded || !anyShortcutVisible;
   }
+  const showShortcuts = !atCap && commuteExpanded && anyShortcutVisible;
   if (journeyTemplateShortcutsEl) {
-    journeyTemplateShortcutsEl.hidden = atCap || !anyShortcutVisible;
+    journeyTemplateShortcutsEl.hidden = !showShortcuts;
   }
   if (journeyTemplateChipsEl) {
-    journeyTemplateChipsEl.hidden = atCap || !anyShortcutVisible;
+    journeyTemplateChipsEl.hidden = !showShortcuts;
   }
 
   journeyTemplatesEl.hidden = false;
@@ -1358,23 +1415,33 @@ function renderJourneyListView() {
     const textStack = document.createElement("span");
     textStack.className = "journey-list-text";
 
+    const nameRow = document.createElement("span");
+    nameRow.className = "journey-list-name-row";
+
     const nameEl = document.createElement("span");
     nameEl.className = "journey-list-name";
     nameEl.textContent = journey.name;
+
+    const badge = document.createElement("span");
+    badge.className = `journey-kind-badge journey-kind-badge--${
+      isCommuteJourney(journey) ? "commute" : "route"
+    }`;
+    badge.textContent = isCommuteJourney(journey) ? "Commute" : "Route";
 
     const route = document.createElement("span");
     route.className = "journey-list-route";
     if (!journey.station || !journey.direction) {
       route.classList.add("journey-list-route--empty");
     }
-    route.textContent = formatJourneyRoute(journey);
+    route.textContent = formatJourneyListSubtitle(journey);
 
     const chevron = document.createElement("span");
     chevron.className = "journey-list-chevron";
     chevron.setAttribute("aria-hidden", "true");
     chevron.textContent = "›";
 
-    textStack.append(nameEl, route);
+    nameRow.append(nameEl, badge);
+    textStack.append(nameRow, route);
     openBtn.append(textStack, chevron);
     openBtn.addEventListener("click", () => {
       openJourneyDetail(journey.id);
@@ -1411,6 +1478,7 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
     return;
   }
 
+  journey = normalizeJourney(journey);
   editingJourneyId = journey.id;
   editingJourneySnapshot = normalizeJourney({ ...journey });
   resetDetailNearestState();
@@ -1492,6 +1560,7 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
   setStationComboboxValue(getDetailStationCombobox(), journey.station);
   await loadDirectionsForSelect(detailDirectionSelect, journey.station, journey.direction);
   syncDetailNearestStationChrome({ hint: nearestHint || detailNearestState.hint });
+  syncDetailFormForJourneyKind(journey);
 }
 
 function requireJourneyRouteFromForm() {
@@ -1719,6 +1788,10 @@ function initJourneyDetailListeners() {
     }
   });
 
+  detailUpgradeCommuteBtnEl?.addEventListener("click", () => {
+    // Phase 2 UI only — upgradeRouteToCommute ships with Phase 1 model merge.
+  });
+
   settingsDetailView?.addEventListener("submit", (event) => {
     event.preventDefault();
     try {
@@ -1780,6 +1853,7 @@ const api = {
   syncDetailNearestStationChrome,
   syncDetailTargetMasterVisibility,
   syncDetailTargetRemindVisibility,
+  syncDetailFormForJourneyKind,
   syncJourneyDetailRouteFields,
   syncJourneysDetailChrome,
   syncJourneysDialogSheetMode,

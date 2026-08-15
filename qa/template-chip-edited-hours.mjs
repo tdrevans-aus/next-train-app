@@ -61,16 +61,16 @@ async function run() {
     morningHidden: document.querySelector('[data-template="morning"]')?.hidden === true,
     eveningHidden: document.querySelector('[data-template="evening"]')?.hidden === true,
     customHidden: document.querySelector('[data-template="custom"]')?.hidden === true,
-    addBtnVisible: !document.getElementById("journey-add-btn")?.hidden,
+    saveRouteVisible: !document.getElementById("journey-save-route-btn")?.hidden,
   }));
 
   await browser.close();
 
   const pass =
-    chips.morningHidden && chips.eveningHidden && chips.customHidden && chips.addBtnVisible;
+    chips.morningHidden && chips.eveningHidden && chips.customHidden && chips.saveRouteVisible;
   if (pass) {
     console.log(
-      "PASS — Morning/Evening shortcuts hidden; Add journey button visible (edited hours OK)"
+      "PASS — Morning/Evening shortcuts hidden; Save a route visible (edited hours OK)"
     );
   } else {
     console.error("FAIL — template chip visibility wrong", chips);

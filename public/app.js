@@ -132,7 +132,8 @@ const journeyTemplatesEl = document.getElementById("journey-templates");
 const journeyTemplatesLoadingEl = document.getElementById("journey-templates-loading");
 const journeyTemplatesCapHintEl = document.getElementById("journey-templates-cap-hint");
 const journeyTemplateShortcutsEl = document.getElementById("journey-template-shortcuts");
-const journeyAddBtnEl = document.getElementById("journey-add-btn");
+const journeySaveRouteBtnEl = document.getElementById("journey-save-route-btn");
+const journeySetupCommuteBtnEl = document.getElementById("journey-setup-commute-btn");
 const journeyTemplateChipsEl = document.querySelector(".journey-template-chips");
 const journeyTemplatesAddHintEl = document.querySelector(".journey-templates-hint");
 const detailJourneyNameField = document.querySelector(".journey-name-field");
@@ -185,6 +186,7 @@ let onboardingShowTimer = null;
 let onboardingPopulatedAt = null;
 let onboardingNearbyFaceReady = false;
 let templateCreateInFlight = false;
+let commuteTemplatesExpanded = false;
 let helpOpenedFromMenu = false;
 
 const STATION_ARRIVAL_KM = 0.35;
@@ -3290,9 +3292,13 @@ function setJourneyTemplateLoading(active, message = "Finding nearest station…
     chip.setAttribute("aria-busy", active ? "true" : "false");
   });
 
-  if (journeyAddBtnEl) {
-    journeyAddBtnEl.disabled = active;
-    journeyAddBtnEl.setAttribute("aria-busy", active ? "true" : "false");
+  if (journeySaveRouteBtnEl) {
+    journeySaveRouteBtnEl.disabled = active;
+    journeySaveRouteBtnEl.setAttribute("aria-busy", active ? "true" : "false");
+  }
+  if (journeySetupCommuteBtnEl) {
+    journeySetupCommuteBtnEl.disabled = active;
+    journeySetupCommuteBtnEl.setAttribute("aria-busy", active ? "true" : "false");
   }
 }
 
@@ -3324,6 +3330,20 @@ function hasJourneyForTemplate(templateKey) {
   return settingsDraftJourneys.some((journey) => journeyMatchesTemplate(journey, templateKey));
 }
 
+
+function createJourneyFromRoute() {
+  if (isAtJourneyCap()) {
+    return;
+  }
+
+  const journey = createDefaultJourney({
+    name: "",
+    kind: "route",
+    autoRoute: false,
+  });
+  settingsDraftJourneys.push(journey);
+  return openJourneyDetail(journey.id);
+}
 
 function createJourneyFromTemplate(templateKey) {
   if (isAtJourneyCap()) {
@@ -3653,6 +3673,7 @@ function closeJourneysSheet() {
 
 function closeJourneysDialog() {
   dismissTemplateRouteCoach();
+  commuteTemplatesExpanded = false;
 
   if (!settingsDetailView.hidden) {
     cancelJourneyDetailEdit();
@@ -4148,14 +4169,37 @@ async function startJourneyCreateFromTemplate(templateKey) {
   }
 }
 
+journeySaveRouteBtnEl?.addEventListener("click", async () => {
+  if (templateCreateInFlight || isAtJourneyCap()) {
+    return;
+  }
+
+  templateCreateInFlight = true;
+  setJourneyTemplateLoading(true);
+  openJourneysDialogSync();
+
+  try {
+    await createJourneyFromRoute();
+  } finally {
+    templateCreateInFlight = false;
+    setJourneyTemplateLoading(false);
+  }
+});
+
+journeySetupCommuteBtnEl?.addEventListener("click", () => {
+  if (isAtJourneyCap()) {
+    return;
+  }
+
+  commuteTemplatesExpanded = true;
+  updateJourneyTemplatesVisibility();
+  journeyTemplateShortcutsEl?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+});
+
 document.querySelectorAll(".journey-template-chip").forEach((button) => {
   button.addEventListener("click", async () => {
     await startJourneyCreateFromTemplate(button.dataset.template);
   });
-});
-
-journeyAddBtnEl?.addEventListener("click", async () => {
-  await startJourneyCreateFromTemplate("custom");
 });
 
 heroEmptyAddBtn?.addEventListener("click", (event) => {
@@ -4578,6 +4622,8 @@ function journeyMatchesActiveDay(journey, day) { return journeyModel().journeyMa
 function journeyMatchesSchedule(journey, minutes, day) { return journeyModel().journeyMatchesSchedule(journey, minutes, day); }
 function journeyRemindMeEnabled(raw) { return journeyModel().journeyRemindMeEnabled(raw); }
 function inferTemplateKey(raw) { return journeyModel().inferTemplateKey(raw); }
+function isCommuteJourney(journey) { return journeyModel().isCommuteJourney(journey); }
+function isRouteJourney(journey) { return journeyModel().isRouteJourney(journey); }
 function normalizeJourney(raw) { return journeyModel().normalizeJourney(raw); }
 function legToJourney(leg, name, from, until) { return journeyModel().legToJourney(leg, name, from, until); }
 function pickNearbySettingsFields(raw) { return journeyModel().pickNearbySettingsFields(raw); }
@@ -4675,6 +4721,9 @@ function initJourneyDetailFromModule() {
     getJourneyRemindDays,
     formatJourneyDefaultWindow,
     formatJourneyRoute,
+    isCommuteJourney,
+    isRouteJourney,
+    getCommuteTemplatesExpanded: () => commuteTemplatesExpanded,
     formatRouteBasedJourneyName,
     formatStationLabel,
     formatNearestDistanceHint,

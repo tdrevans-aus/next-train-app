@@ -1,4 +1,4 @@
-/** Click the primary Add journey control (FB-29). */
+/** Click Save a route (FB-23 route create). */
 export async function openCustomJourneyCreate(page) {
-  await page.locator("#journey-add-btn").click();
+  await page.locator("#journey-save-route-btn").click();
 }
