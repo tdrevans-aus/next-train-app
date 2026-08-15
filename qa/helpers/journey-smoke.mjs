@@ -120,6 +120,73 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
   await waitForLeaveCard(page, { optional: true, timeout: 15000 });
 }
 
+export async function armFixtureLeaveCard(
+  page,
+  { fixture, station = "Edgewater Stn", direction = "Perth" } = {}
+) {
+  const journeyId = "j-smoke";
+  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(90));
+  const stationParam = encodeURIComponent(station);
+  const directionParam = encodeURIComponent(direction);
+  const fixtureUrl = `${BASE}/?test=1&fixture=${fixture}&station=${stationParam}&direction=${directionParam}`;
+
+  await page.goto(fixtureUrl);
+  await page.evaluate(
+    ({ preferred, stationName, directionName, jId }) => {
+      localStorage.setItem(
+        "nextTrainSettings",
+        JSON.stringify({
+          refreshSeconds: 30,
+          activeJourneyId: jId,
+          journeys: [
+            {
+              id: jId,
+              name: "Morning commute",
+              station: stationName,
+              direction: directionName,
+              leaveBeforeMinutes: 10,
+              useLeaveBefore: true,
+              defaultFrom: "00:00",
+              defaultUntil: "00:00",
+              preferredTrainTime: preferred,
+              remindDays: [1, 2, 3, 4, 5, 6, 7],
+              remindMe: false,
+            },
+          ],
+        })
+      );
+      localStorage.setItem("nextTrainOnboardingDone", "1");
+      sessionStorage.removeItem(`nextTrainSkip:${jId}`);
+      sessionStorage.setItem(
+        "nextTrainManualJourneyOverride",
+        JSON.stringify({ journeyId: jId, matchingWindowIds: [jId] })
+      );
+    },
+    { preferred: preferredTrainTime, stationName: station, directionName: direction, jId: journeyId }
+  );
+
+  await page.goto(fixtureUrl);
+  await ensureJourneyMode(page);
+  await waitForJourneyHero(page);
+
+  await page.evaluate(async (jId) => {
+    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
+    if (!preferred || preferred === "—") {
+      return;
+    }
+    await window.nextTrainApp?.persistReminderJourneys?.([
+      { id: jId, preferredTrainTime: preferred, remindMe: false },
+    ]);
+    await window.nextTrainApp?.fetchNextTrain?.();
+  }, journeyId);
+
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+    null,
+    { timeout: 15000 }
+  );
+}
+
 export async function waitForJourneySwitcher(page, { timeout = 15000 } = {}) {
   await page.waitForFunction(
     () => {
