@@ -73,6 +73,21 @@ const nearbyLeaveHideBtn = document.getElementById("nearby-leave-hide-btn");
 const nearbyLeaveBeforeInput = document.getElementById("nearby-leave-before-input");
 const nearbyLeaveBeforeValueEl = document.getElementById("nearby-leave-before-value");
 const nearbyNotifyMeInput = document.getElementById("nearby-notify-me");
+
+/**
+ * Hide Near me pin leave-by controls (slider / Notify me / hide footer).
+ * Defined next to its DOM refs and published on globalThis so journey/Near me
+ * teardown never hits ReferenceError (Sentry CAPACITOR-G / CAPACITOR-C–F).
+ */
+function hideNearbyPinLeaveSurfaces() {
+  const controls =
+    nearbyPinLeaveControlsEl || document.getElementById("nearby-pin-leave-controls");
+  if (controls) {
+    controls.hidden = true;
+  }
+}
+globalThis.hideNearbyPinLeaveSurfaces = hideNearbyPinLeaveSurfaces;
+
 const platformEl = document.getElementById("platform");
 const statusEl = document.getElementById("status");
 const followingSectionEl = document.getElementById("following-section");
@@ -5182,6 +5197,7 @@ function clearNearbyPin() {
     nearbySession.pin = null;
     clearNearbyPinLeaveCardDismissed();
   }
+  hideNearbyPinLeaveSurfaces();
   if (settings.nearbyPin) {
     persistSettings({ nearbyPin: null });
     rescheduleNearbyPinReminders();
@@ -5251,12 +5267,6 @@ function restoreNearbySessionPinFromSettings() {
 
 function buildNearbyLeaveNext(trip) {
   return buildNextFromFollowing(trip, getNearbyLeaveBeforeMinutes(), resolveTripDeparture(trip));
-}
-
-function hideNearbyPinLeaveSurfaces() {
-  if (nearbyPinLeaveControlsEl) {
-    nearbyPinLeaveControlsEl.hidden = true;
-  }
 }
 
 function renderNearbyPinLeaveSurfaces(next, pinned) {
