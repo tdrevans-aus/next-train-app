@@ -19,6 +19,7 @@
     "cap:open:ios": "npx cap open ios",
     "test:smoke": "node qa/run-all.mjs --smoke",
     "test:web": "node qa/run-all.mjs",
+    "test:web:ci": "node qa/run-all.mjs --no-native",
     "test:full": "node qa/run-all.mjs",
     "test:android:unit": "node qa/run-android-unit.mjs",
     "test:android:widget": "node qa/run-android-unit.mjs --widget",

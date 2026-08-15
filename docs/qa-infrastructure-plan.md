@@ -14,18 +14,19 @@
 | Piece | Location | Command |
 | --- | --- | --- |
 | **Unified web runner** | `qa/run-all.mjs` | `npm run test:smoke` / `npm run test:web` |
-| **Smoke vs full** | `--smoke` = 4 scripts (~2–5 min); default = all `qa/*.mjs` |
+| **Smoke vs full** | `--smoke` = 13 scripts (~2–5 min); `--no-native` skips Maestro/native CDP tail; default = all `qa/*.mjs` |
 | **Dev server helper** | `qa/helpers/dev-server.mjs` | Auto-starts `dev-server.js` if :3000 free |
 | **Journeys dialog helper** | `qa/helpers/journeys-dialog.mjs` | Double-tap My Journeys + backdrop cleanup |
 | **Play pre-upload checks** | `qa/pre-upload-check.mjs` | `npm run test:pre-upload` |
 | **Android unit runner** | `qa/run-android-unit.mjs` | `npm run test:android:unit` |
-| **GitHub Actions** | `.github/workflows/ci.yml` | Web smoke + `PreferredTrainReminderTest` on PR |
+| **GitHub Actions** | `.github/workflows/ci.yml` | PR: web smoke + widget JVM · main: full web (no native tail) + full JVM |
 
 ### npm scripts
 
 ```bash
-npm run test:smoke          # fast gate (Jim commits, CI)
-npm run test:web            # full web regression
+npm run test:smoke          # fast gate (Jim commits, CI on PR)
+npm run test:web            # full web regression (local; includes Maestro tail if device up)
+npm run test:web:ci         # full web regression without Maestro/native CDP (CI on main)
 npm run test:android:unit   # JVM unit tests
 npm run test:maestro        # Maestro Android smoke (device/emulator)
 npm run test:pre-upload     # before Play AAB upload
@@ -53,13 +54,13 @@ npm run test:pre-upload     # before Play AAB upload
 
 ---
 
-## Phase 2 — next (discuss with Tim)
+## Phase 2 — in progress (FB-33)
 
 | ID | Item | Owner | Effort | Notes |
 | --- | --- | --- | --- | --- |
 | **QA-P2-01** | **Repo template** `evans-capacitor-app` | Tim/PM | 1–2 days | Copy `qa/`, `TESTING.md` skeleton, fixture server, CI workflow |
 | **QA-P2-02** | **Migrate more scripts** to `qa/helpers/` | Jim/QA | Ongoing | `openJourneysDialog` pattern; station combobox already shared |
-| **QA-P2-03** | **CI: full suite on main** only; smoke on PR | PM | ½ day | Full suite ~10+ min; smoke on every PR |
+| **QA-P2-03** | **CI: full suite on main** only; smoke on PR | PM | ½ day | **Done Aug 2026** — `.github/workflows/ci.yml`; `npm run test:web:ci` (`--no-native`) |
 | **QA-P2-04** | **Native reminder fast-test mode** | Jim | 1 day | Alarm ~60s after enable; doc in `qa-leave-reminders-v2-testing.md` |
 | **QA-P2-05** | **`DEVICE-SMOKE.md`** one-pager | Tim | ½ day | 15 checks, 30 min, Play install only |
 | **QA-P2-06** | **`npm run release:prep`** | Jim | ½ day | Bump `versionCode`, `cap:sync`, print AAB path |
@@ -110,4 +111,5 @@ Before **public**:
 
 | Date | Note |
 | --- | --- |
+| 2026-08-15 | QA-P2-03: CI smoke on PR, full web (`test:web:ci`) + full JVM on main; `run-all.mjs --no-native` |
 | 2026-08-11 | Phase 1 implemented: run-all, helpers, CI, pre-upload check; plan doc created |

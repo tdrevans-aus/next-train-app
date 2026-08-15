@@ -72,10 +72,14 @@ public final class JourneySelector {
   }
 
   static boolean matchesWindow(JSONObject journey, int minutes) {
+    return matchesWindow(journey, minutes, PerthTime.dayOfWeekIso());
+  }
+
+  static boolean matchesWindow(JSONObject journey, int minutes, int dayOfWeekIso) {
     if (!hasWindow(journey)) {
       return false;
     }
-    if (!PreferredTrainReminder.isRemindDay(journey)) {
+    if (!PreferredTrainReminder.isRemindDay(journey, dayOfWeekIso)) {
       return false;
     }
     int from = parseTime(journey.optString("defaultFrom"));

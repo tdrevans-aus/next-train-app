@@ -1,3 +1,4 @@
+# FB-33 / QA-P2-03: smoke on every PR; full web + Android unit on main pushes.
 name: CI
 
 on:
@@ -6,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  web-smoke:
+  web-qa:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,7 +17,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install chromium --with-deps
-      - run: npm run test:smoke
+      - name: Web smoke (pull requests)
+        if: github.event_name == 'pull_request'
+        run: npm run test:smoke
+      - name: Full web suite (main, no Maestro/native CDP)
+        if: github.event_name == 'push'
+        run: npm run test:web:ci
 
   android-unit:
     runs-on: ubuntu-latest
@@ -32,5 +38,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - run: cd android && ./gradlew :app:testDebugUnitTest --no-daemon
-
+      - name: Widget unit tests (pull requests)
+        if: github.event_name == 'pull_request'
+        run: node qa/run-android-unit.mjs --widget
+      - name: Full Android unit tests (main)
+        if: github.event_name == 'push'
+        run: node qa/run-android-unit.mjs
