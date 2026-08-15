@@ -1542,7 +1542,7 @@ async function fetchNearbyBoard() {
     renderNearbyBoard();
     if (nearbyBoardRefetchPending) {
       nearbyBoardRefetchPending = false;
-      void fetchNearbyBoard();
+      void fetchNearbyBoard().catch(() => renderNearbyBoard({ stale: true }));
     }
   });
 

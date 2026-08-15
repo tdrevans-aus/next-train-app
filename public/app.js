@@ -1973,8 +1973,17 @@ function buildApiParams() {
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url);
-  const text = await response.text();
+  let response;
+  let text;
+  try {
+    response = await fetch(url);
+    text = await response.text();
+  } catch {
+    return {
+      ok: false,
+      error: "Couldn't reach live times. Check your connection.",
+    };
+  }
   try {
     return { ok: response.ok, data: JSON.parse(text) };
   } catch {
