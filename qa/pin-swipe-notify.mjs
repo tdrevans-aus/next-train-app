@@ -57,11 +57,13 @@ async function armPinnedJourney(page, { fixture = "normal" } = {}) {
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 60,
           activeJourneyId: journeyId,
           journeys: [
             {
               id: journeyId,
+              kind: "commute",
               name: "Morning commute",
               station: "Edgewater Stn",
               direction: "Perth",
@@ -285,9 +287,7 @@ async function testNearbyPinNextTrainAdvance(page) {
   );
 
   const pinBtn = page.locator("#hero-pin-btn");
-  if (await pinBtn.isHidden()) {
-    return { ok: false, label: "nearby pin Next Train advance", detail: "pin button hidden" };
-  }
+  await page.waitForSelector("#hero-pin-btn:not([hidden])", { timeout: 25000 });
 
   await pinBtn.click();
   await page.waitForTimeout(800);

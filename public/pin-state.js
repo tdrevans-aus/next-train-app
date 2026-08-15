@@ -542,7 +542,8 @@
     const secondaryNextDeparture = showSecondaryNext ? trueNextDeparture : null;
 
     const nearbyHolding = mode === "nearby" && isNearbyPinHolding(input.nearbyPin, clock);
-    const isHeroPinLockingSwipe = nearbyHolding || heroShowsPin;
+    const isHeroPinLockingSwipe =
+      nearbyHolding || (heroShowsPin && isOverrideActiveToday);
 
     const leaveCardArmed = resolveLeaveCardArmed(input, {
       pinDeparture,

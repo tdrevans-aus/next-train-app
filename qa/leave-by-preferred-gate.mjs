@@ -76,11 +76,13 @@ async function run() {
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 60,
           activeJourneyId: journeyId,
           journeys: [
             {
               id: journeyId,
+              kind: "commute",
               name: "Morning commute",
               station: "Edgewater Stn",
               direction: "Perth",
@@ -97,10 +99,6 @@ async function run() {
       );
       localStorage.setItem("nextTrainOnboardingDone", "1");
       sessionStorage.removeItem(`nextTrainSkip:${journeyId}`);
-      sessionStorage.setItem(
-        "nextTrainManualJourneyOverride",
-        JSON.stringify({ journeyId, matchingWindowIds: [journeyId] })
-      );
     },
     {
       preferred: preferredTrainTime,
