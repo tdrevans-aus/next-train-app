@@ -26,10 +26,17 @@ export function formatWallClockMinutes(totalMinutes) {
 export async function waitForJourneyHero(page, { timeout = 30000 } = {}) {
   await page.waitForFunction(
     () => {
-      const journeyMode = document.querySelector(".app")?.classList.contains("journey-mode");
       const countdown = document.getElementById("depart-countdown")?.textContent?.trim() ?? "";
+      const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
       const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
-      return journeyMode && countdown && countdown !== "—" && /\d/.test(countdown) && label.length > 0;
+      return (
+        countdown &&
+        countdown !== "—" &&
+        /\d/.test(countdown) &&
+        depart &&
+        depart !== "—" &&
+        label.length > 0
+      );
     },
     null,
     { timeout }
@@ -41,7 +48,8 @@ export async function ensureJourneyMode(page) {
     timeout: 15000,
   });
   await page.evaluate(() => {
-    if (document.querySelector(".app")?.classList.contains("nearby-mode")) {
+    const app = document.querySelector(".app");
+    if (app?.classList.contains("nearby-mode") || !app?.classList.contains("journey-mode")) {
       window.nextTrainApp.enterJourneyMode();
     }
   });
@@ -118,6 +126,78 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
   }, journeyId);
 
   await waitForLeaveCard(page, { optional: true, timeout: 15000 });
+}
+
+export async function armFixtureLeaveCard(
+  page,
+  { fixture, station = "Edgewater Stn", direction = "Perth" } = {}
+) {
+  const FIXTURE_MINUTES = { urgent: 12, late: 7, normal: 18 };
+  const trainMinutes = FIXTURE_MINUTES[fixture] ?? 18;
+  const journeyId = "j-smoke";
+  const preferredTrainTime = formatWallClockMinutes(
+    perthMinutesFromNow(Math.max(1, trainMinutes - 5))
+  );
+  // Omit station/direction from the URL — init() readUrlSettings() would overwrite seeded journeys.
+  const fixtureUrlReset = `${BASE}/?reset=1&test=1&fixture=${fixture}`;
+  const fixtureUrl = `${BASE}/?test=1&fixture=${fixture}`;
+
+  await page.goto(fixtureUrlReset);
+  await page.evaluate(
+    ({ preferred, stationName, directionName, jId }) => {
+      localStorage.setItem(
+        "nextTrainSettings",
+        JSON.stringify({
+          refreshSeconds: 30,
+          activeJourneyId: jId,
+          journeys: [
+            {
+              id: jId,
+              name: "Morning commute",
+              station: stationName,
+              direction: directionName,
+              leaveBeforeMinutes: 10,
+              useLeaveBefore: true,
+              defaultFrom: "00:00",
+              defaultUntil: "00:00",
+              preferredTrainTime: preferred,
+              remindDays: [1, 2, 3, 4, 5, 6, 7],
+              remindMe: false,
+            },
+          ],
+        })
+      );
+      localStorage.setItem("nextTrainOnboardingDone", "1");
+      sessionStorage.removeItem(`nextTrainSkip:${jId}`);
+      sessionStorage.setItem(
+        "nextTrainManualJourneyOverride",
+        JSON.stringify({ journeyId: jId, matchingWindowIds: [jId] })
+      );
+    },
+    { preferred: preferredTrainTime, stationName: station, directionName: direction, jId: journeyId }
+  );
+
+  await page.goto(fixtureUrl);
+  await ensureJourneyMode(page);
+  await waitForJourneyHero(page);
+
+  await page.evaluate(async (jId) => {
+    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
+    if (!preferred || preferred === "—") {
+      return;
+    }
+    await window.nextTrainApp?.persistReminderJourneys?.([
+      { id: jId, preferredTrainTime: preferred, remindMe: false },
+    ]);
+    await window.nextTrainApp?.fetchNextTrain?.();
+  }, journeyId);
+
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+    null,
+    { timeout: 30000 }
+  ).catch(() => {});
+  await waitForLeaveCard(page, { optional: false, timeout: 30000 });
 }
 
 export async function waitForJourneySwitcher(page, { timeout = 15000 } = {}) {
@@ -207,11 +287,22 @@ export async function waitForLeaveCardPhase(page, phase, { timeout = 15000 } = {
     (expected) => {
       const card = document.getElementById("leave-card");
       const msg = document.getElementById("leave-countdown")?.textContent?.toLowerCase() ?? "";
+      const leaveMin = parseInt(
+        document.querySelector("#leave-time .depart-countdown-value")?.textContent ?? "",
+        10
+      );
       if (!card || card.hidden) {
         return false;
       }
       if (expected === "late") {
         return card.classList.contains("late") && msg.includes("late");
+      }
+      if (expected === "urgent") {
+        return (
+          (card.classList.contains("urgent") || card.classList.contains("soon")) &&
+          leaveMin >= 1 &&
+          leaveMin <= 3
+        );
       }
       return card.classList.contains(expected);
     },

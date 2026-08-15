@@ -30,6 +30,7 @@
     "test:pre-upload": "node qa/pre-upload-check.mjs",
     "test:patch-ship": "node qa/patch-ship-gate.mjs",
     "test:pre-release": "node qa/pre-release.mjs",
+    "soak:status": "node qa/soak-status.mjs",
     "probe:brisbane": "node scripts/probe-brisbane-board.mjs",
     "probe:sydney": "node scripts/probe-sydney-board.mjs",
     "probe:melbourne": "node scripts/probe-melbourne-board.mjs",
