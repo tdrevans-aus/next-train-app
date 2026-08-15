@@ -69,7 +69,7 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-19** | **UptimeRobot: add ready + synthetic next-train monitors** | `/api/ready` deployed (Aug 2026). Monitor 1 (`/api/health`) already live. **Tim:** add monitors 2 + 3 in UptimeRobot UI (~10 min) — see `docs/go-live-ops.md` § Uptime (keywords `"ready":true` and `"displayTime"`; synthetic alert after 2 failures; emails tdrevans + EvansAppStudio). | Backlog — **Tim after tonight’s release** |
+| **FB-19** | **UptimeRobot: ready + synthetic next-train monitors** | Three **KEYWORD** monitors on production (`/api/health` → `"ok":true`, `/api/ready` → `"ready":true`, synthetic next-train → `displayTime`). Alerts → **EvansAppStudio@gmail.com** (free tier; second contact skipped). Legacy HTTP health monitor paused. See `docs/go-live-ops.md` § Uptime. | Done — **Aug 2026** |
 
 ---
 
