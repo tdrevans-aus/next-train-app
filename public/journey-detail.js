@@ -614,10 +614,10 @@ function syncDetailTargetRemindVisibility() {
 }
 
 function formatMinutesAsTime(totalMinutes) {
-  const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
-  const hour = Math.floor(wrapped / 60);
-  const minute = wrapped % 60;
-  return `${pad2(hour)}:${pad2(minute)}`;
+  return (
+    deps.formatMinutesAsTime?.(totalMinutes) ??
+    global.nextTrainJourneyModel.formatMinutesAsTime(totalMinutes)
+  );
 }
 
 function getJourneyWindowRanges(journey) {

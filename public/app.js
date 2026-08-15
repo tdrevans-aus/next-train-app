@@ -1377,11 +1377,12 @@ function getLiveTiming(next) {
 }
 
 
+function formatMinutesAsTime(totalMinutes) {
+  return journeyModel().formatMinutesAsTime(totalMinutes);
+}
+
 function addMinutesToTimeString(time, minutesToAdd) {
-  if (!time) {
-    return "";
-  }
-  return formatMinutesAsTime(parseTimeToMinutes(time) + minutesToAdd);
+  return journeyModel().addMinutesToTimeString(time, minutesToAdd);
 }
 
 
@@ -4595,6 +4596,7 @@ function initJourneyDetailFromModule() {
     getJourneyById,
     hasDefaultWindow,
     parseTimeToMinutes,
+    formatMinutesAsTime,
     normalizeRemindDays,
     getJourneyRemindDays,
     formatJourneyDefaultWindow,
