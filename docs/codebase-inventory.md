@@ -1,8 +1,8 @@
 # Codebase inventory — refactor & rationalisation guide
 
 **Owner:** Tim (product)  
-**Date:** 14 Aug 2026  
-**Status:** Inventory only — **no code changes** from this doc  
+**Date:** 15 Aug 2026  
+**Status:** Phase 0 complete · Phase 1 in progress (FB-24)  
 **Related:** `docs/dead-code-inventory.md` · `docs/feature-backlog.md` · `docs/multi-city-provider-design.md` · `docs/release-versioning.md`
 
 ---
@@ -133,9 +133,9 @@ See **`docs/dead-code-inventory.md`** (last trawl 11 Aug 2026). Still accurate; 
 
 | ID | Artefact | Notes |
 |----|----------|-------|
-| **D-09** | `#preferred-hint` + `skipToTargetTrain()` | UI hidden; logic + QA exports remain. Remove or restore when product decides on “jump to target”. |
+| **D-09** | `#preferred-hint` + `jumpToTargetTrain()` / `skipToTargetTrain()` | **Resolved — kept active** (Aug 2026). Jump hint visible when hero preview ≠ pin; `skipToTargetTrain` sets skip index; `jumpToTargetTrain` clears skip. |
 | **D-10** | `PRO_MONETIZATION_SHIPPED = false` branches | Entire pro/paywall UI gated — fine for ship; grep before FB-13. |
-| **D-11** | `applyPreferredOrLaterFilter` | Gone from `app.js`; docs/FB-06 still mention it — doc hygiene only. |
+| **D-11** | `applyPreferredOrLaterFilter` | Gone from `app.js`; FB-06 doc updated Aug 2026 — hygiene closed. |
 | **D-12** | `public/design/*.html` in APK | Design pickers (pin icon, etc.) — same class as D-05. `target-icon-pick.html` obsolete (FB-17 superseded). |
 
 **Confirmed live (do not delete):** `CommuteRefreshService`, `applyCommuteMode()`, strip/reminder schedulers, all widget receivers — see dead-code doc table.
@@ -146,7 +146,7 @@ See **`docs/dead-code-inventory.md`** (last trawl 11 Aug 2026). Still accurate; 
 
 | Layer | What exists | Gaps |
 |-------|-------------|------|
-| Web QA | 66 scripts; `npm run test:web` / `--smoke` | Pin/swipe/notify matrix could be one dedicated script (partially in `leave-by-preferred-gate.mjs`) |
+| Web QA | 67 scripts; `npm run test:web` / `--smoke` | Pin/swipe/notify covered by `qa/pin-swipe-notify.mjs` + `leave-by-preferred-gate.mjs` |
 | Browser smoke | `smoke-browser.mjs`, onboarding, ads-above-content | No automated visual regression |
 | Android unit | Schedule, pin helpers, widget preview, strip scheduler | No tests for `LeaveReminderScheduler` size (~600 lines) |
 | iOS | Maestro preflight | Less unit coverage than Android |
@@ -176,19 +176,19 @@ Prioritised by **ROI / risk reduction**, not by “cleanliness”. Effort = Tim+
 
 ### Phase 0 — Ship gate (now)
 
-| # | Task | Effort | ROI |
-|---|------|--------|-----|
-| 0.1 | Land v2.2.0 pin (FB-14 + FB-20 partial) | — | Product |
-| 0.2 | Run `npm run test:pre-release` before Play upload | Hours | Regression safety — web smoke + `WidgetUiBuilderTest` / `CommuteScheduleTest` |
+| # | Task | Effort | ROI | Status |
+|---|------|--------|-----|--------|
+| 0.1 | Land v2.2.0 pin (FB-14 + FB-20 partial) | — | Product | **Done** (v2.2.0/11) |
+| 0.2 | Run `npm run test:pre-release` before Play upload | Hours | Regression safety — web smoke + `WidgetUiBuilderTest` / `CommuteScheduleTest` | **Done** (Aug 2026 gate) |
 
 ### Phase 1 — Quick wins (1–2 days, low risk)
 
-| # | Task | Effort | ROI |
-|---|------|--------|-----|
-| 1.1 | Execute `docs/dead-code-inventory.md` D-03, D-04 (CSS hooks, ads LS key) | S | Less noise |
-| 1.2 | Resolve D-09: delete or restore preferred-hint UI | S | Less confusion |
-| 1.3 | Doc pass: FB-06 references, QA doc dates | S | Onboarding future you |
-| 1.4 | Add `qa/pin-swipe-notify.mjs` covering pin-lock swipe + Next Train advance | M | Locks recent bug class |
+| # | Task | Effort | ROI | Status |
+|---|------|--------|-----|--------|
+| 1.1 | Execute `docs/dead-code-inventory.md` D-03, D-04 (CSS hooks, ads LS key) | S | Less noise | **Done** (Aug 2026) |
+| 1.2 | Resolve D-09: delete or restore preferred-hint UI | S | Less confusion | **Done — kept active** (Aug 2026) |
+| 1.3 | Doc pass: FB-06 references, QA doc dates | S | Onboarding future you | **Done** (Aug 2026) |
+| 1.4 | Add `qa/pin-swipe-notify.mjs` covering pin-lock swipe + Next Train advance | M | Locks recent bug class | **Done** (Aug 2026) |
 
 ### Phase 2 — Extract modules from `app.js` (3–5 days, medium risk)
 

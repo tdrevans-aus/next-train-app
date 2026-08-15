@@ -4327,7 +4327,3 @@ body.native-ad-banner main.page {
   }
 }
 
-/* Legacy class hooks kept for JS compatibility */
-.header {
-  display: contents;
-}

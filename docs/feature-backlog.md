@@ -12,7 +12,7 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-06** | **Widget/app live = preferred-or-later** | **Superseded 2026-08-11 by U-11 (lock B).** Was: live face = first train at/after preferred. **New:** live face = true next train; Leave By only for preferred or user-chosen (swipe/Next). Revert/replace `resolveActiveNextTrip` / `applyPreferredOrLaterFilter` when briefed. | Superseded — see U-11 |
+| **FB-06** | **Widget/app live = preferred-or-later** | **Superseded 2026-08-11 by U-11 (lock B).** Was: live face = first train at/after preferred. **New:** live face = true next train; Leave By only for preferred or user-chosen (swipe/Next). `applyPreferredOrLaterFilter` removed from app (Aug 2026); native `resolveActiveNextTrip` naming is legacy only. | Superseded — see U-11 |
 | **FB-08** | ~~App Leave By vs widget preferred gate~~ | **Locked U-12 → 1** — Gate app Leave By like widget. **Promoted** → `docs/jim-brief-leave-by-preferred-gate.md` | Briefed |
 
 ---
@@ -79,7 +79,7 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-24** | **Code review Phase 1 — quick wins** | Dead CSS hooks + ads LS key (`docs/dead-code-inventory.md` D-03/D-04); resolve parked `preferred-hint` / `skipToTargetTrain` (D-09); doc hygiene; add `qa/pin-swipe-notify.mjs`. ~1–2 days. | Backlog — **after v2.2.0 ship** |
+| **FB-24** | **Code review Phase 1 — quick wins** | Dead CSS hooks + ads LS key (`docs/dead-code-inventory.md` D-03/D-04); resolve parked `preferred-hint` / `skipToTargetTrain` (D-09); doc hygiene; add `qa/pin-swipe-notify.mjs`. ~1–2 days. | **In progress** (Aug 2026) — D-03/D-04/D-09 done; `qa/pin-swipe-notify.mjs` added |
 | **FB-25** | **Code review Phase 2 — split `app.js`** | One PR per module: combobox → journey-model → train-navigation → nearby-mode → template-wizard → journey-detail. esbuild or ESM bundle decision once. Full web QA each PR. ~3–5 days. | Backlog — **after FB-24** |
 | **FB-26** | **Code review Phase 3 — pin / display contract** | Single web `pin-state` module; shared JSON fixtures for web + Android + iOS unit tests; native naming cleanup (`resolveActiveNextTrip` vs true next). ~2–3 days. | Backlog — **after FB-25** (or sooner if pin regressions) |
 | **FB-27** | **Code review Phase 4 — pre major product** | Journey `kind` in model (feeds FB-23 later); split `styles.css` by domain; APK packaging (move `design/` + `.mjs` sources out of `webDir`, D-05); optional `CommuteSchedule.java` decomposition. ~1–2 weeks. | Backlog — **before FB-23 or city #2** |

@@ -9927,6 +9927,8 @@ async function init() {
     document.body.classList.add("native-app");
   }
 
+  localStorage.removeItem("nextTrainAdsLoaded");
+
   const seedApplied = await applyMaestroTestSeedFromDeepLink();
   if (!seedApplied) {
     applyTestQueryParams();

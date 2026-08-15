@@ -3,7 +3,7 @@
 **Owner:** Tim (product) · Simon keeps list current · Jim removes when briefed  
 **Rule:** **v1 closed AAB** = FGS / Heading-to-station only. Everything else waits for **closed-testing v2** (or later) unless Tim accelerates.
 
-**Last trawl:** 11 Aug 2026
+**Last trawl:** 15 Aug 2026
 
 ---
 
@@ -30,6 +30,15 @@ Ship a Jim brief when Tim opens v2. Safe deletes / packaging only — no product
 | **D-06** | Legacy coach LS keys `nextTrainWidgetCoachDismissed` / `nextTrainLeaveReminderCoachDismissed` | Migration-only in `stickiness-coaches.js` | Med | Loses dismiss state for old installs | Drop after soak, or keep forever (tiny) |
 | **D-07** | Doc hygiene: `qa-leave-reminders-v2-testing.md` may be stale vs implemented v2 | Misleads QA | Med | Docs only | Strip brief rewritten non-FGS (11 Aug); refresh QA doc when convenient |
 | **D-08** | Optional: old store creative drafts under `store-assets/` (superseded icon concept dirs already archived intentionally) | Clutter | Low | None | Declutter only if Tim wants; **keep** locked icon + feature graphic |
+| **D-09** | `#preferred-hint` + `jumpToTargetTrain()` / `skipToTargetTrain()` | Was parked as “hidden UI” | — | — | **Resolved — kept active** (Aug 2026): jump hint wired; `skipToTargetTrain` sets skip to preferred index; `jumpToTargetTrain` clears skip — different QA/API paths. See `qa/leave-by-preferred-gate.mjs`. |
+
+### Resolved Aug 2026 (FB-24 Phase 1)
+
+| ID | Status | Action taken |
+| --- | --- | --- |
+| **D-03** | **Resolved** | Deleted empty legacy CSS hooks (`.header { display: contents }`; other D-03 selectors already absent) |
+| **D-04** | **Resolved** | One-time `localStorage.removeItem("nextTrainAdsLoaded")` in `app.js` `init()` — key was write-only / never read |
+| **D-09** | **Resolved — kept active** | Product decision: keep jump-to-target UX; do not delete `skipToTargetTrain` or `jumpToTargetTrain` |
 
 ---
 
@@ -52,3 +61,4 @@ Ship a Jim brief when Tim opens v2. Safe deletes / packaging only — no product
 | --- | --- |
 | 2026-08-11 | First trawl after Dwayne FGS flag; D-01 briefed for v1; rest parked for closed-testing v2 |
 | 2026-08-11 | Strip brief rewritten **non-FGS**; D-07 strip half closed |
+| 2026-08-15 | FB-24 Phase 1: D-03/D-04 resolved; D-09 resolved — kept active (`jumpToTargetTrain` + `skipToTargetTrain`) |
