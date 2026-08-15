@@ -68,7 +68,7 @@ The app includes an ad slot below the train details (not in the hero card), a on
 ### Setup
 
 1. Apply at [Google AdSense](https://www.google.com/adsense) with your deployed URL.
-2. Copy `public/site-config.example.json` values into `public/site-config.json`:
+2. Copy `config/site-config.example.json` values into `public/site-config.json`:
    ```json
    {
      "adsenseClient": "ca-pub-XXXXXXXXXXXXXXXX",

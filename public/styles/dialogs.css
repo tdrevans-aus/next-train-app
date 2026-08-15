@@ -1,0 +1,984 @@
+/* —— Dialogs —— */
+.app-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(19, 37, 35, 0.42);
+}
+
+.app-dialog-backdrop[hidden] {
+  display: none !important;
+}
+
+body.app-dialog-open {
+  overflow: hidden;
+}
+
+dialog.app-native-dialog[open] {
+  display: flex !important;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10001;
+  margin: 0;
+  max-height: 90dvh;
+  width: min(92vw, 400px);
+}
+
+/*
+ * Dock sheets above the banner only while the banner is actually reserved
+ * (body.native-ad-banner). Dialogs force-hide the ad — do not leave a dead
+ * grey band via body.native-app alone.
+ */
+body.native-ad-banner dialog.help-dialog[open],
+body.native-ad-banner dialog.menu-dialog[open],
+body.native-ad-banner dialog.reminders-dialog[open],
+body.native-ad-banner dialog.feedback-dialog[open],
+body.native-ad-banner .help-dialog.app-native-dialog[open],
+body.native-ad-banner .menu-dialog.app-native-dialog[open],
+body.native-ad-banner .reminders-dialog.app-native-dialog[open],
+body.native-ad-banner .feedback-dialog.app-native-dialog[open] {
+  top: auto;
+  bottom: calc(var(--safe-bottom) + var(--ad-scroll-padding) + 0.35rem);
+  transform: translate(-50%, 0);
+  max-height: calc(
+    100dvh - env(safe-area-inset-top, 0px) - var(--safe-bottom) - var(--ad-scroll-padding) - 1rem
+  );
+}
+
+/*
+ * Journey detail: content-sized sheet (top-aligned). Pinning top+bottom was
+ * stretching the white form card and leaving a dead band above Cancel/Save.
+ */
+.journeys-dialog.journeys-dialog--detail:not([hidden]) {
+  top: max(0.45rem, env(safe-area-inset-top, 0px));
+  bottom: auto;
+  transform: translateX(-50%);
+  height: auto;
+  max-height: calc(
+    100dvh - env(safe-area-inset-top, 0px) - var(--safe-bottom) - 0.7rem
+  );
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
+  max-height: calc(
+    100dvh - env(safe-area-inset-top, 0px) - var(--safe-bottom) - var(--ad-scroll-padding) - 0.7rem
+  );
+}
+.help-dialog,
+.menu-dialog,
+.reminders-dialog {
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  width: min(92vw, 400px);
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(19, 37, 35, 0.18);
+}
+
+.journeys-dialog {
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  width: min(96vw, 420px);
+  /* Detail: grow with content up to the viewport — avoids a near-full sheet with a few px of phantom scroll. */
+  height: auto;
+  max-height: 96dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(19, 37, 35, 0.18);
+}
+
+/* List-only: shorter sheet (My Journeys felt oversized when forced near full-screen). */
+.journeys-dialog.journeys-dialog--list {
+  max-height: min(88dvh, 640px);
+}
+
+.journeys-dialog[hidden] {
+  display: none !important;
+}
+
+.journeys-dialog:not([hidden]) {
+  display: flex !important;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10001;
+  margin: 0;
+}
+
+/* Detail: form card + actions — hug content; scroll only when max-height hits. */
+
+.journeys-dialog.journeys-dialog--list:not([hidden]) {
+  top: 50%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  max-height: min(88dvh, 640px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px rgba(19, 37, 35, 0.18);
+}
+
+.journeys-dialog.journeys-dialog--detail .journeys-dialog-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  box-shadow: 0 18px 40px rgba(19, 37, 35, 0.12);
+  overflow: hidden;
+}
+
+.journeys-detail-chrome {
+  flex-shrink: 0;
+  padding-top: 0.35rem;
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.35rem);
+}
+
+.journeys-detail-chrome[hidden] {
+  display: none !important;
+}
+
+.journeys-detail-chrome .settings-detail-footer {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--surface);
+  box-shadow: 0 12px 28px rgba(19, 37, 35, 0.1);
+}
+
+.help-dialog:not([open]),
+.menu-dialog:not([open]),
+.reminders-dialog:not([open]) {
+  display: none !important;
+}
+
+.help-dialog::backdrop,
+.menu-dialog::backdrop,
+.reminders-dialog::backdrop {
+  background: rgba(19, 37, 35, 0.42);
+  backdrop-filter: blur(4px);
+}
+
+.help-dialog-body {
+  padding: 1.2rem 1.2rem 0.9rem;
+  overflow-y: auto;
+}
+
+.help-dialog-body h2,
+.settings-view-header h2,
+.settings-view h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.help-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.help-list li {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.help-list strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.widget-debug-panel {
+  margin: 0.9rem 0 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.55rem;
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.help-inline-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  margin: 0 0.1rem;
+  vertical-align: -0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.help-inline-icon .nearby-icon,
+.help-inline-icon .journeys-icon,
+.help-inline-icon .settings-icon {
+  width: 1.14rem;
+  height: 1.14rem;
+}
+
+.help-inline-journey-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0 0.1rem;
+  vertical-align: -0.12rem;
+  padding: 0.18rem 0.5rem 0.18rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(11, 110, 106, 0.28);
+  background: var(--accent-wash);
+  color: var(--accent-strong);
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.help-inline-journey-switcher .journey-switcher-chevron {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex-shrink: 0;
+}
+
+.help-dialog-footer,
+.journeys-dialog-footer,
+.menu-dialog-footer {
+  flex-shrink: 0;
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.reminders-dialog-footer {
+  flex-shrink: 0;
+  padding: 0.65rem 1rem 0.85rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.reminders-validation-error {
+  flex-shrink: 0;
+  margin: 0 1rem 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(180, 35, 24, 0.08);
+  border: 1px solid rgba(180, 35, 24, 0.18);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.reminders-validation-error[hidden] {
+  display: none;
+}
+
+.menu-dialog-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+}
+
+.help-close-btn,
+.menu-done-btn,
+.reminders-done-btn {
+  width: 100%;
+}
+
+.reminders-dialog-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem 1.1rem 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  justify-content: flex-start;
+}
+
+.reminders-dialog-header h2 {
+  margin-bottom: 0.2rem;
+}
+
+.reminders-lead,
+.reminders-armed-lead {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.reminders-armed-lead {
+  margin-top: 0.15rem;
+}
+
+.reminders-web-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.detail-target-master {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.detail-target-master-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+}
+
+.detail-target-master-toggle input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.detail-target-master .detail-preferred-field {
+  flex: 1 1 8rem;
+  margin: 0;
+  min-width: 7.5rem;
+}
+
+.detail-target-master .detail-preferred-field[hidden] {
+  display: none !important;
+}
+
+.detail-target-nest {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--line);
+}
+
+.detail-target-nest[hidden] {
+  display: none !important;
+}
+
+.detail-remind-toggle-row {
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.detail-remind-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--line);
+}
+
+.detail-remind-controls[hidden] {
+  display: none !important;
+}
+
+.detail-remind-toggles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.75rem;
+  align-items: center;
+}
+
+.detail-remind-globals-hint {
+  margin: 0;
+}
+
+#settings-detail-view .reminders-option-hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+}
+
+#settings-detail-view .reminders-nudge-chips-wrap {
+  margin-top: 0.35rem;
+}
+
+.menu-pause-block {
+  margin: 0.35rem 0 0.55rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: #f7faf9;
+}
+
+.menu-pause-block[hidden] {
+  display: none !important;
+}
+
+.menu-pause-web-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.menu-pause-block .reminders-shared-option {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.detail-remind-hint {
+  margin: 0;
+}
+
+.reminders-schedule-line {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.reminders-empty {
+  margin: 0.35rem 0 0.15rem;
+}
+
+.reminders-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f7faf9;
+}
+
+.reminders-empty-title {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.reminders-empty-body {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.reminders-open-journeys-btn {
+  margin-top: 0.15rem;
+  width: 100%;
+}
+
+.reminders-shared-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f7faf9;
+}
+
+.reminders-shared-options[hidden] {
+  display: none !important;
+}
+
+.reminders-shared-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  align-items: stretch;
+  margin: 0;
+}
+
+.reminders-shared-option-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.reminders-nudge-chips-wrap {
+  margin-top: 0.75rem;
+}
+
+.reminders-chips-hint {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.reminders-offset-chips,
+.reminders-pause-chips {
+  flex-wrap: wrap;
+}
+
+.reminders-nudge-chips-wrap[hidden],
+.reminders-pause-expanded[hidden],
+.reminders-pause-status[hidden] {
+  display: none !important;
+}
+
+.reminders-pause-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.reminders-pause-status {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.reminders-pause-custom[hidden] {
+  display: none !important;
+}
+
+.reminders-pause-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.reminders-pause-custom-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.reminders-pause-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.reminders-pause-days-input {
+  width: 2.65rem;
+  height: 2.125rem;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  line-height: 1;
+  text-align: center;
+  box-sizing: border-box;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.reminders-pause-days-input::-webkit-outer-spin-button,
+.reminders-pause-days-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.reminders-pause-days-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.reminders-pause-days-unit {
+  flex: 0 0 auto;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.reminders-pause-custom-apply {
+  flex: 0 0 auto;
+  margin: 0;
+  min-width: auto;
+}
+
+.reminders-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.reminders-shared-option-copy {
+  flex: 1;
+  min-width: 0;
+  padding-right: 0.5rem;
+}
+
+.reminders-option-hint {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.menu-dialog-body {
+  padding: 1.2rem 1.2rem 0.5rem;
+  overflow-y: auto;
+}
+
+.menu-dialog-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.85rem;
+}
+
+.menu-dialog-divider {
+  height: 0;
+  margin: 0.35rem 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.menu-dialog-links a,
+.menu-dialog-link {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: #f7faf9;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menu-dialog-links a:hover,
+.menu-dialog-links a:focus-visible,
+.menu-dialog-link:hover,
+.menu-dialog-link:focus-visible {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  outline: none;
+}
+
+.menu-dialog-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.55rem;
+  margin: 0.85rem 0 0.15rem;
+  padding: 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.menu-dialog-legal a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+  font-weight: 500;
+}
+
+.menu-dialog-legal a:hover,
+.menu-dialog-legal a:focus-visible {
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.menu-dialog-legal-sep {
+  color: var(--line-strong);
+}
+
+.menu-dialog-version {
+  margin: 0.35rem 0 0;
+  padding: 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.page-version {
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.journeys-dialog-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.system-settings-body {
+  padding: 1.2rem 1.2rem 0.5rem;
+  overflow-y: auto;
+}
+
+.system-settings-hint {
+  margin-bottom: 0;
+}
+
+.system-settings-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.system-settings-links a {
+  display: block;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.system-settings-links a:hover,
+.system-settings-links a:focus-visible {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  outline: none;
+}
+
+.system-settings-footer {
+  margin-top: 0;
+}
+
+.settings-form {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+#settings-detail-view {
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 0;
+  padding: 0;
+  max-height: none;
+  overflow: hidden;
+}
+
+#settings-detail-view:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+}
+
+#settings-detail-view.settings-view {
+  overflow: hidden;
+}
+
+.settings-detail-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem 0.75rem 0.25rem;
+  scroll-padding-bottom: 1.5rem;
+}
+
+#settings-detail-view .settings-detail-scroll {
+  padding-bottom: 0.75rem;
+  scroll-padding-bottom: 0.75rem;
+}
+
+.journey-name-field {
+  margin: 0;
+}
+
+.journey-name-field--inline .journey-name-row {
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.journey-name-field--inline .journey-name-row span {
+  flex-shrink: 0;
+}
+
+.journey-name-field--inline .journey-name-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+#settings-detail-view .field input[type="text"] {
+  padding: 0.48rem 0.65rem;
+  font-size: 0.9rem;
+}
+
+#settings-detail-view .settings-section {
+  gap: 0.3rem;
+  padding: 0.4rem 0.5rem;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.95rem;
+  background: #f7faf9;
+}
+
+.settings-section-title {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.settings-section-hint {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.detail-target-outside-hint {
+  color: #9a4a12;
+  font-weight: 600;
+}
+
+#settings-detail-view .field {
+  gap: 0.2rem;
+  font-size: 0.84rem;
+}
+
+#settings-detail-view .field select,
+#settings-detail-view .field input[type="number"],
+#settings-detail-view .field input[type="time"],
+#settings-detail-view .field .station-combobox-input,
+#settings-detail-view .optional-time-display {
+  padding: 0.48rem 0.6rem;
+  font-size: 0.88rem;
+}
+
+#settings-detail-view .settings-section-title {
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+}
+
+#settings-detail-view .settings-section-hint {
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+#settings-detail-view .settings-back {
+  margin-bottom: 0;
+  font-size: 0.82rem;
+  min-height: 1.75rem;
+}
+
+#settings-detail-view .leave-before-slider {
+  margin: 0.05rem 0 0;
+}
+
+#settings-detail-view .range-ticks {
+  margin-top: 0;
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+#settings-detail-view .remind-day-chips--row .remind-day-chip {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.26rem 0.1rem;
+  font-size: 0.68rem;
+}
+
+#settings-detail-view .journey-window {
+  gap: 0.35rem;
+}
+
+#settings-detail-view .settings-location-row {
+  margin-top: 0.1rem;
+  gap: 0.35rem;
+}
+
+#settings-detail-view .menu-toggle-row {
+  padding: 0.15rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Match journey field labels (.field span), not Menu purchase rows */
+#settings-detail-view .menu-toggle-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  color: var(--text);
+}

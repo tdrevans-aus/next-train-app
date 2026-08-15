@@ -160,7 +160,7 @@ var NextTrainAdsNative = (() => {
     }
   });
 
-  // public/ads-native.mjs
+  // web-sources/ads-native.mjs
   var ads_native_exports = {};
   __export(ads_native_exports, {
     hideNativeBanner: () => hideNativeBanner,
@@ -263,7 +263,7 @@ var NextTrainAdsNative = (() => {
     web: () => Promise.resolve().then(() => (init_web(), web_exports)).then((m) => new m.AdMobWeb())
   });
 
-  // public/ads-native.mjs
+  // web-sources/ads-native.mjs
   var GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
   var cachedReleaseBuild = null;
   var bannerMounted = false;

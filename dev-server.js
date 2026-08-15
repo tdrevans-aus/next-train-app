@@ -26,6 +26,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(join(__dirname, "public")));
+app.use("/design", express.static(join(__dirname, "design")));
 
 function readQueryParams(query) {
   const station = query.station;

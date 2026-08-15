@@ -17,7 +17,7 @@ var NextTrainTimes = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // public/train-times-client.mjs
+  // web-sources/train-times-client.mjs
   var train_times_client_exports = {};
   __export(train_times_client_exports, {
     getNextTrainData: () => getNextTrainData

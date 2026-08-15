@@ -23,7 +23,7 @@ var NextTrainAnalyticsNative = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // public/analytics-native.mjs
+  // web-sources/analytics-native.mjs
   var analytics_native_exports = {};
   __export(analytics_native_exports, {
     captureTestCrash: () => captureTestCrash,
@@ -8263,7 +8263,7 @@ Event: ${getEventDescription(event)}`
     sdkInit(browserOptions, mobileOptions, originalInit, passedOptions.transport);
   }
 
-  // public/analytics-native.mjs
+  // web-sources/analytics-native.mjs
   var enabled = false;
   var appOpenTracked = false;
   function readReleaseLabel(config) {
