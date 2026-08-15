@@ -969,7 +969,15 @@ function advanceNearbyPinToNextTrain() {
   setNearbySkip(direction, 0);
   dismissSwipeHint();
   renderNearbyBoard();
-  void fetchNearbyBoard();
+  void fetchNearbyBoard()
+    .then(() => renderNearbyBoard())
+    .catch((error) => {
+      if (deps.errorEl) {
+        deps.errorEl.textContent = error?.message ?? "Could not load departures";
+        deps.errorEl.hidden = false;
+      }
+      renderNearbyBoard({ stale: true });
+    });
   return true;
 }
 

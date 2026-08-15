@@ -1542,7 +1542,17 @@ async function fetchNearbyBoard() {
     renderNearbyBoard();
     if (nearbyBoardRefetchPending) {
       nearbyBoardRefetchPending = false;
-      void fetchNearbyBoard();
+      // Coalesced refresh is fire-and-forget; always catch so network /
+      // board-total failures cannot become unhandledrejections (CAPACITOR-K).
+      void fetchNearbyBoard()
+        .then(() => renderNearbyBoard())
+        .catch((error) => {
+          console.warn("Nearby board refresh failed", error);
+          if (nearbyBoardLooksEmpty()) {
+            setNearbyError(error?.message ?? "Could not load departures for this station");
+          }
+          renderNearbyBoard({ stale: true });
+        });
     }
   });
 

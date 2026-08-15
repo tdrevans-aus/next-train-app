@@ -1971,9 +1971,48 @@ function buildApiParams() {
   return params;
 }
 
+function isNetworkFetchFailure(error) {
+  if (!error) {
+    return false;
+  }
+  if (error instanceof TypeError) {
+    return true;
+  }
+  const message = String(error.message ?? error);
+  return /failed to fetch|load failed|networkerror when attempting to fetch|network request failed/i.test(
+    message
+  );
+}
+
 async function fetchJson(url) {
-  const response = await fetch(url);
-  const text = await response.text();
+  let response;
+  try {
+    response = await fetch(url);
+  } catch (error) {
+    // Offline / DNS / WebView connectivity: raw TypeError "Failed to fetch"
+    // must not escape as an unhandledrejection (CAPACITOR-K).
+    if (isNetworkFetchFailure(error)) {
+      return {
+        ok: false,
+        error: "Couldn't reach live times. Check your connection.",
+      };
+    }
+    throw error;
+  }
+
+  let text;
+  try {
+    text = await response.text();
+  } catch (error) {
+    if (isNetworkFetchFailure(error)) {
+      return {
+        ok: false,
+        error: "Couldn't reach live times. Check your connection.",
+      };
+    }
+    throw error;
+  }
+
   try {
     return { ok: response.ok, data: JSON.parse(text) };
   } catch {
