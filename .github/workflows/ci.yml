@@ -9,7 +9,9 @@ on:
 jobs:
   web-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
+    env:
+      QA_VERBOSE: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

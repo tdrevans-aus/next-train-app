@@ -113,5 +113,6 @@ Before **public**:
 
 | Date | Note |
 | --- | --- |
+| 2026-08-15 | CI smoke hang guard: per-script timeouts, verbose/heartbeat logs, force dev-server on CI (`run-all.mjs`, `dev-server.mjs`, `ci.yml`) |
 | 2026-08-15 | QA-P2-03: CI smoke on PR, full web (`test:web:ci`) + full JVM on main; `run-all.mjs --no-native` |
 | 2026-08-11 | Phase 1 implemented: run-all, helpers, CI, pre-upload check; plan doc created |
