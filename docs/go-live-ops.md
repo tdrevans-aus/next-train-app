@@ -13,7 +13,7 @@ Proportionate for an indie Capacitor app + Vercel `/api` → Transperth. Not ent
 
 | # | Item | Who | Status | Notes |
 | --- | --- | --- | --- | --- |
-| 1 | **Uptime** — health + ready + synthetic next-train | Tim | **In progress** — health live; add ready + next-train monitors | See § Uptime |
+| 1 | **Uptime** — health + ready + synthetic next-train | Tim | **Done** (Aug 2026) | Three KEYWORD monitors; alerts → EvansAppStudio@gmail.com — see § Uptime |
 | 2 | **Crash reporting** on release builds | Jim (SDK) + Tim (Sentry UI) | **App done** — DSN in bundle, events in Issues. **Todo:** GitHub integration + “new issue → GitHub issue” alert (`docs/sentry-integration-now.md`) |
 | 3 | **Second Play Console admin** + review email alerts | Tim | **Skipped** (no human buddy yet) | Rely on Uptime + own phone |
 | 4 | **Gmail cover** (vacation + forward + templates) | Tim | **Skipped** (Tim 11 Aug) | Templates still in § Support cover if needed later |
@@ -41,11 +41,13 @@ Three monitors on **UptimeRobot** (free tier is fine). All hit production:
 
 `https://next-train-app.vercel.app`
 
+**As deployed (Aug 2026):** all three are **KEYWORD** monitors (not plain HTTP) — keyword must **exist** in the response body. Alerts go to **EvansAppStudio@gmail.com** only (free-tier one contact; forward from that inbox if needed). Cursor can manage monitors via UptimeRobot MCP (`mcp.uptimerobot.com`).
+
 ### Monitor 1 — Liveness (platform up)
 
 | Field | Value |
 | --- | --- |
-| **Type** | HTTP(s) |
+| **Type** | **KEYWORD** (HTTP 200 + body check) |
 | **URL** | `/api/health` |
 | **Interval** | 5 minutes |
 | **Keyword** | `"ok":true` (alert if **not** found) |
@@ -59,7 +61,7 @@ Cheap ping — Vercel function runs. Does **not** load GTFS or call Transperth.
 
 | Field | Value |
 | --- | --- |
-| **Type** | HTTP(s) |
+| **Type** | **KEYWORD** (HTTP 200 + body check) |
 | **URL** | `/api/ready` |
 | **Interval** | 5 minutes |
 | **Keyword** | `"ready":true` (alert if **not** found) |
@@ -73,7 +75,7 @@ Loads Perth server stack + vendored GTFS unzip (`fflate`) + station allowlist �
 
 | Field | Value |
 | --- | --- |
-| **Type** | HTTP(s) |
+| **Type** | **KEYWORD** (HTTP 200 + body check) |
 | **URL** | `/api/next-train?station=Edgewater%20Stn&direction=Perth&destination=Perth&leaveBefore=0&refresh=30&skipTrains=0` |
 | **Interval** | 10 minutes |
 | **Keyword** | `"displayTime"` (alert if **not** found) |
@@ -84,17 +86,17 @@ Full Perth path through Transperth live times. Catches upstream / parser breaks.
 
 ### Alert contacts
 
-- **tdrevans@gmail.com**
-- **EvansAppStudio@gmail.com**
+- **EvansAppStudio@gmail.com** (active on all three monitors)
+- **tdrevans@gmail.com** — optional; UptimeRobot free tier allows one contact (skipped Aug 2026)
 
 Enable email on all three monitors. SMS optional on monitor 3 only if you want faster pages.
 
 ### UptimeRobot setup checklist (~10 min)
 
-1. Log in → **Monitors** → confirm monitor 1 (`/api/health`) exists.
-2. **Add monitor** — paste monitor 2 settings from table above → Save.
-3. **Add monitor** — paste monitor 3 settings → set **Alert After** = 2 failures → Save.
-4. **My Settings** → confirm both emails receive alerts.
+1. ~~Log in → **Monitors** → confirm monitor 1 (`/api/health`) exists.~~ **Done** — KEYWORD monitors live (Aug 2026).
+2. ~~**Add monitor** — paste monitor 2 settings from table above → Save.~~ **Done**
+3. ~~**Add monitor** — paste monitor 3 settings → set **Alert After** = 2 failures → Save.~~ **Done** (set **Alert after 2 failures** on monitor 3 in Advanced if not already)
+4. **Integrations & API → Alert contacts** — EvansAppStudio@gmail.com on all monitors (free tier: one contact).
 5. **Test:** open `/api/ready` and `/api/next-train?...` in browser — both should return 200.
 
 ### Do not monitor (until city is live)

@@ -91,18 +91,43 @@ public class WidgetUiBuilderTest {
   }
 
   @Test
+  public void widgetSize_typeScale_growsOnTallMediumCells() {
+    WidgetUiBuilder.WidgetSize twoByOne =
+      new WidgetUiBuilder.WidgetSize(110, 40, R.layout.widget_small);
+    WidgetUiBuilder.WidgetSize threeByOne =
+      new WidgetUiBuilder.WidgetSize(250, 40, R.layout.widget_medium);
+    WidgetUiBuilder.WidgetSize twoByTwo =
+      new WidgetUiBuilder.WidgetSize(110, 110, R.layout.widget_medium);
+
+    assertEquals(1f, twoByOne.typeScale(), 0.01f);
+    assertEquals(1f, threeByOne.typeScale(), 0.01f);
+    assertEquals(1.28f, twoByTwo.typeScale(), 0.01f);
+    assertFalse(twoByTwo.useTallIdleLayout());
+    assertFalse(threeByOne.useTallIdleLayout());
+  }
+
+  @Test
   public void idlePrimaryTextSizeSp_shrinksWindowRanges() {
-    assertEquals(31f, WidgetUiBuilder.idlePrimaryTextSizeSp("7:30", R.layout.widget_small), 0.01f);
-    assertEquals(24f, WidgetUiBuilder.idlePrimaryTextSizeSp("6:00–9:00", R.layout.widget_small), 0.01f);
-    assertEquals(20f, WidgetUiBuilder.idlePrimaryTextSizeSp("15:00–18:00", R.layout.widget_small), 0.01f);
-    assertEquals(36f, WidgetUiBuilder.idlePrimaryTextSizeSp("7:30", R.layout.widget_medium), 0.01f);
-    assertEquals(24f, WidgetUiBuilder.idlePrimaryTextSizeSp("15:00–18:00", R.layout.widget_medium), 0.01f);
+    assertEquals(24f, WidgetUiBuilder.idlePrimaryTextSizeSp("7:30", R.layout.widget_small), 0.01f);
+    assertEquals(17f, WidgetUiBuilder.idlePrimaryTextSizeSp("6:00–9:00", R.layout.widget_small), 0.01f);
+    assertEquals(15f, WidgetUiBuilder.idlePrimaryTextSizeSp("15:00–18:00", R.layout.widget_small), 0.01f);
+    assertEquals(24f, WidgetUiBuilder.idlePrimaryTextSizeSp("7:30", R.layout.widget_medium), 0.01f);
+    assertEquals(15f, WidgetUiBuilder.idlePrimaryTextSizeSp("15:00–18:00", R.layout.widget_medium), 0.01f);
+  }
+
+  @Test
+  public void idlePrimaryTextSizeSp_capsFurtherWhenDayWordShows() {
+    assertEquals(
+      22f,
+      WidgetUiBuilder.idlePrimaryTextSizeSp("16:30", true),
+      0.01f
+    );
   }
 
   @Test
   public void idleRouteLineTextSizeSp_scalesDownForOutsideHoursFace() {
-    assertEquals(11.44f, WidgetUiBuilder.idleRouteLineTextSizeSp("Warwick → Perth"), 0.01f);
-    assertEquals(11f, WidgetUiBuilder.idleRouteLineTextSizeSp("Elizabeth Quay → Cockburn Central"), 0.01f);
+    assertEquals(11.05f, WidgetUiBuilder.idleRouteLineTextSizeSp("Warwick → Perth"), 0.01f);
+    assertEquals(9.35f, WidgetUiBuilder.idleRouteLineTextSizeSp("Elizabeth Quay → Cockburn Central"), 0.01f);
   }
 
   @Test
@@ -115,14 +140,39 @@ public class WidgetUiBuilderTest {
   public void layoutForSizeDp_keepsDefaultTwoByOneSmall() {
     assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(110, 40));
     assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(170, 70));
+    assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(180, 40));
+    assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(250, 40));
   }
 
   @Test
-  public void layoutForSizeDp_usesMediumForThreeByOneOrTwoByTwo() {
-    assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(180, 40));
-    assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(250, 40));
+  public void layoutForSizeDp_usesMediumForTallWideOrTwoByTwo() {
+    assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(180, 55));
+    assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(180, 70));
     assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(110, 110));
     assertEquals(R.layout.widget_medium, WidgetUiBuilder.layoutForSizeDp(300, 140));
+  }
+
+  @Test
+  public void widgetSize_isShortCell_belowFiftyFiveDp() {
+    WidgetUiBuilder.WidgetSize shortCell =
+      new WidgetUiBuilder.WidgetSize(180, 40, R.layout.widget_small);
+    WidgetUiBuilder.WidgetSize tallCell =
+      new WidgetUiBuilder.WidgetSize(180, 70, R.layout.widget_medium);
+    assertTrue(shortCell.isShortCell());
+    assertFalse(tallCell.isShortCell());
+  }
+
+  @Test
+  public void foldRouteIntoTrainClock_joinsDayAndRoute() {
+    assertEquals("Monday · Joondalup", WidgetUiBuilder.foldRouteIntoTrainClock("Monday", "Joondalup"));
+    assertEquals("Joondalup", WidgetUiBuilder.foldRouteIntoTrainClock("", "Joondalup"));
+    assertEquals("Monday", WidgetUiBuilder.foldRouteIntoTrainClock("Monday", ""));
+  }
+
+  @Test
+  public void abbreviateRouteLine_keepsDestinationOnly() {
+    assertEquals("Perth", WidgetUiBuilder.abbreviateRouteLine("Warwick → Perth"));
+    assertEquals("Joondalup", WidgetUiBuilder.abbreviateRouteLine("Joondalup"));
   }
 
   @Test

@@ -15,7 +15,7 @@ async function run() {
   const page = await context.newPage();
 
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
-  // Board loads quickly; tap Journeys before 5s onboarding delay.
+  // Board loads quickly; tap Journeys before 4s onboarding delay.
   await page.waitForTimeout(1500);
   await page.locator("#journeys-btn").click();
   await page.waitForTimeout(400);

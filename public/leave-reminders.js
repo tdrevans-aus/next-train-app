@@ -857,6 +857,7 @@ window.nextTrainLeaveReminders = {
   showLeaveReminderCoach,
   healAfterJourneySave,
   ensureLiveCountdownDefaultOn,
+  reschedule: () => getLeaveRemindersPlugin()?.reschedule?.(),
 };
 
 if (document.readyState === "loading") {

@@ -55,10 +55,10 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
     JSONObject snapshot
   ) {
     for (int widgetId : appWidgetIds) {
-      int layoutId = WidgetUiBuilder.layoutForWidget(context, manager, widgetId);
+      WidgetUiBuilder.WidgetSize size = WidgetUiBuilder.widgetSizeFor(context, manager, widgetId);
       manager.updateAppWidget(
         widgetId,
-        WidgetUiBuilder.build(context, snapshot, layoutId)
+        WidgetUiBuilder.build(context, snapshot, size)
       );
     }
   }

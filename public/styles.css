@@ -351,6 +351,11 @@ body.native-ad-banner .app-body {
   display: none !important;
 }
 
+/* Pinned Near me: reclaim space — Other directions list is secondary. */
+.app.nearby-pin-active .nearby-directions {
+  display: none !important;
+}
+
 .nearby-directions-label {
   margin: 0;
   font-size: 0.72rem;
@@ -534,11 +539,18 @@ body.native-ad-banner .app-body {
   width: 100%;
 }
 
-.app.nearby-mode .leave-card,
 .app.nearby-mode .preferred-hint,
 .app.nearby-mode .journey-context-row,
 .app.nearby-mode #journey-switcher-menu {
   display: none !important;
+}
+
+.app.nearby-mode .leave-card {
+  display: none !important;
+}
+
+.app.nearby-mode.nearby-pin-active .leave-card:not([hidden]) {
+  display: block !important;
 }
 
 .journey-context-row {
@@ -864,6 +876,177 @@ body.native-ad-banner .app-body {
   right: 0.65rem;
 }
 
+.hero-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  position: relative;
+}
+
+.hero-label-row .label {
+  margin: 0;
+}
+
+.hero-pin-btn {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.hero-pin-btn:not(.hero-pin-btn--active):hover {
+  color: var(--accent);
+  border-color: rgba(11, 110, 106, 0.35);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.hero-pin-btn:focus {
+  outline: none;
+}
+
+.hero-pin-btn:focus-visible {
+  outline: 2px solid rgba(11, 110, 106, 0.45);
+  outline-offset: 2px;
+}
+
+.hero-pin-btn--active {
+  color: var(--accent);
+  border-color: rgba(11, 110, 106, 0.45);
+  background: var(--accent-wash);
+}
+
+.hero-pin-btn--active:hover {
+  color: var(--accent-strong);
+  border-color: rgba(11, 110, 106, 0.55);
+  background: var(--accent-wash);
+}
+
+.hero-pin-btn[hidden] {
+  display: none !important;
+}
+
+.hero-pin-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.hero-pin-btn .hero-pin-icon--filled {
+  display: none;
+}
+
+.hero-pin-btn.hero-pin-btn--active .hero-pin-icon--outline {
+  display: none;
+}
+
+.hero-pin-btn.hero-pin-btn--active .hero-pin-icon--filled {
+  display: block;
+}
+
+.nearby-pin-leave-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.nearby-pin-leave-controls[hidden] {
+  display: none !important;
+}
+
+.journey-mode #nearby-pin-leave-controls {
+  display: none !important;
+}
+
+.nearby-pin-leave-controls .leave-before-field {
+  margin: 0;
+}
+
+.nearby-pin-leave-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.1rem 0.45rem;
+  margin-top: 0.1rem;
+}
+
+.app.nearby-pin-active .leave-card {
+  padding-left: 1.05rem;
+  padding-right: 1.05rem;
+}
+
+.nearby-pin-leave-footer .nearby-notify-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.nearby-pin-leave-footer .nearby-notify-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.nearby-pin-leave-footer .nearby-notify-row .menu-toggle-switch {
+  transform: scale(0.62);
+  transform-origin: right center;
+}
+
+.nearby-pin-leave-footer .nearby-notify-row[hidden] {
+  display: none !important;
+}
+
+.nearby-pin-leave-footer--hide-only {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nearby-leave-hide-btn {
+  flex: 0 0 auto;
+  justify-self: end;
+  grid-column: 2;
+  min-height: 0;
+  padding: 0.08rem 0.2rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.nearby-pin-leave-controls .detail-remind-toggle-row {
+  margin: 0;
+}
+
 /* —— Leave / secondary train context —— */
 .leave-card {
   position: relative;
@@ -1020,11 +1203,20 @@ body.native-ad-banner .app-body {
 }
 
 .preferred-hint {
+  display: block;
+  width: 100%;
   margin: -0.35rem 0 0.85rem;
+  padding: 0;
+  border: none;
+  background: none;
   text-align: center;
+  font: inherit;
   font-size: 0.82rem;
   line-height: 1.35;
-  color: var(--muted);
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
 }
 
 .preferred-hint[hidden] {
@@ -1938,6 +2130,7 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
 .journeys-detail-chrome {
   flex-shrink: 0;
   padding-top: 0.35rem;
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.35rem);
 }
 
 .journeys-detail-chrome[hidden] {
@@ -2998,6 +3191,8 @@ body.app-dialog-open .ad-remove-link-wrap {
   border-top: none;
   box-shadow: none;
   padding: 0.35rem 0.45rem;
+  gap: 0.45rem;
+  align-items: center;
 }
 
 .journeys-detail-chrome .settings-actions-detail {
@@ -3006,15 +3201,10 @@ body.app-dialog-open .ad-remove-link-wrap {
   align-items: center;
   gap: 0.45rem;
   padding: 0;
-}
-
-.journeys-detail-chrome .settings-actions-detail:has(.journey-delete-icon-btn:not([hidden])) {
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  width: 100%;
 }
 
 .journeys-detail-chrome .journey-delete-icon-btn {
-  width: 2.55rem;
-  height: 2.55rem;
   margin: 0;
 }
 
@@ -3431,7 +3621,8 @@ body.app-dialog-open .ad-remove-link-wrap {
   margin-inline: -0.65rem;
 }
 
-#detail-route-section.template-wizard-highlight {
+#detail-route-section.template-wizard-highlight,
+#detail-route-core.template-wizard-highlight {
   padding: 0.55rem 0.65rem;
   margin-inline: -0.65rem;
 }
@@ -3996,6 +4187,14 @@ body.app-dialog-open .ad-remove-link-wrap {
   margin-top: 0.1rem;
 }
 
+.settings-location-btn[hidden] {
+  display: none !important;
+}
+
+.settings-location-hint--error {
+  color: var(--danger, #c0392b);
+}
+
 .settings-location-btn {
   align-self: baseline;
   margin-top: 0;
@@ -4128,7 +4327,3 @@ body.native-ad-banner main.page {
   }
 }
 
-/* Legacy class hooks kept for JS compatibility */
-.header {
-  display: contents;
-}

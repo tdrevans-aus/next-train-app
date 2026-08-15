@@ -37,13 +37,26 @@ const SMOKE_SCRIPTS = [
   "onboarding-scrim-dismiss.mjs",
 ];
 
-const RUNNER_EXCLUDE = new Set(["run-all.mjs", "pre-upload-check.mjs"]);
+const RUNNER_EXCLUDE = new Set([
+  "run-all.mjs",
+  "pre-upload-check.mjs",
+  "pre-release.mjs",
+]);
+
+/** Native/device scripts run last so they do not disturb each other. */
+const NATIVE_TAIL_SCRIPTS = [
+  "reminders-permission-native-cdp.mjs",
+  "run-maestro.mjs",
+];
 
 function listFullScripts() {
-  return fs
+  const all = fs
     .readdirSync(__dirname)
     .filter((name) => name.endsWith(".mjs") && !RUNNER_EXCLUDE.has(name))
     .sort();
+  const tail = NATIVE_TAIL_SCRIPTS.filter((name) => all.includes(name));
+  const rest = all.filter((name) => !tail.includes(name));
+  return [...rest, ...tail];
 }
 
 function parseArgs(argv) {

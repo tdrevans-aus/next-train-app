@@ -4,6 +4,16 @@ Manual smoke-test playbook and fixture API for local QA (including Cursor testin
 
 Fixture mode works **only with the local dev server** (`npm start`). Production / Vercel always uses live Transperth data.
 
+## Release versioning
+
+We ship **semver** (`versionName`, e.g. `2.1.3`) and a monotonic Play **`versionCode`** (e.g. `10`). Patch = tester bugfixes only; minor = feature backlog (e.g. **2.2.0**). Tag each Play upload (`v2.1.2`, …); hotfix from the tag, features on `develop`. Full rules: **`docs/release-versioning.md`**.
+
+| Shipped | Next patch | Next features |
+|---------|------------|---------------|
+| **2.1.2** (code **9**) | **2.2.1** (code **12**) | **2.3.0** (code **13+**) |
+
+Before every Play upload: bump all version fields (see doc), run ship gate below, tag, upload AAB.
+
 ## Quick start
 
 ```bash
@@ -225,7 +235,11 @@ node qa/unsupported-region.mjs
 
 **Manual (Android adb):**
 
-1. Set location far from WA (e.g. Sydney): `adb emu geo fix 151.2093 -33.8688`
+1. Set location far from WA (e.g. Sydney). On API 35 emulators, plain `adb emu geo fix` often returns OK without updating fused GPS — use:
+   ```powershell
+   .\scripts\emulator-set-location.ps1 -Latitude -33.8688 -Longitude 151.2093
+   ```
+   Or Android Studio → Emulator **…** → **Location** → **Single point** (latitude / longitude fields).
 2. Open app with no saved journeys → **Near me**.
 3. **Expect:** Hero **Perth rail only**; no direction chips or departures board. **My Journeys** CTA opens journey mode / setup.
 4. Deny location → existing permission / station-picker UX (not Perth rail only).
@@ -412,13 +426,30 @@ Jim brief: `docs/jim-brief-done-double-tap.md`
 
 Jim brief: `docs/jim-brief-widget-post-departure-staleness.md`
 
+**Pin checklist (v2.2.0 — manual on device):**
+
+Run after `cap:sync` with widget pinned (**2×1** and **medium** if you use both). Compare app and widget at the same moment.
+
+| Check | Journey mode (FB-20) | Near me pin (FB-14) |
+|-------|----------------------|---------------------|
+| Face | Hero + widget show **pinned** train (default = Preferred target in Active hours), not every true-next | Widget shows **pinned** departure + leave-by; pin **beats** journey Active hours |
+| Countdown | Big number matches app hero (±1 min) | Same |
+| Leave line | Leave in / Leave now matches app leave card when armed | Leave-by uses **Time to station** buffer from pin session |
+| Override | Pin another train → widget follows **today only**; Preferred in settings unchanged | Unpin / hold expiry → widget returns to journey or idle face |
+| Secondary | App may show **Next** when true next ≠ pin; widget stays on pin | — |
+| Clipping | Full primary + inline clock on **2×1**; no `Upd` / truncated `Updated …` on medium | Same |
+
+**Fail:** widget still on old train after pin change; journey face ignores Preferred pin; clipped clock or Updated line (see regressions above).
+
 **Automated helper (logic only, not launcher UI):**
 
 ```bash
-./gradlew :app:testDebugUnitTest --tests com.tdrevans.nexttrain.CommuteScheduleTest --tests com.tdrevans.nexttrain.WidgetUiBuilderTest
+./gradlew :app:testDebugUnitTest --tests com.tdrevans.nexttrain.CommuteScheduleTest --tests com.tdrevans.nexttrain.WidgetUiBuilderTest --tests com.tdrevans.nexttrain.WidgetUiBuilderRobolectricTest
 ```
 
-Covers local repaint, `needsNetworkRefresh` after departure minute, late leave copy — not alarm delivery or API fetch on device.
+Also run via `npm run test:pre-release` (widget JVM tests; skips if Java not installed locally). CI runs the full Android unit suite on every PR.
+
+Covers local repaint, compact strings, and **Robolectric widget bind regression** (fixture snapshots → RemoteViews text/visibility + layout id smoke checks on 2×1 + medium) — not launcher pixels. See **FB-28**.
 
 See `docs/widget-homescreen.md` and `CommuteSchedule.java` (`WidgetDepartureAdvanceScheduler`).
 

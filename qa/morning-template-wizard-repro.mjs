@@ -24,7 +24,7 @@ async function runWizardPath({ geoDelayMs = 0, label }) {
   }, geoDelayMs);
 
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
-  // nearby geo + 5s onboarding delay
+  // nearby geo + 4s onboarding delay
   await page.waitForTimeout(geoDelayMs + 6000);
 
   if (!(await page.locator("#onboarding-step-1").isVisible())) {

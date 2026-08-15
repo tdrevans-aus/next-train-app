@@ -1,6 +1,6 @@
 {
   "name": "next-train-app",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Shows when to leave for your next train",
   "type": "module",
   "scripts": {
@@ -22,10 +22,12 @@
     "test:web:ci": "node qa/run-all.mjs --no-native",
     "test:full": "node qa/run-all.mjs",
     "test:android:unit": "node qa/run-android-unit.mjs",
+    "test:android:widget": "node qa/run-android-unit.mjs --widget",
     "test:maestro": "node qa/run-maestro.mjs",
     "test:ios:preflight": "node qa/check-ios-test-setup.mjs",
     "test:ios:maestro": "node qa/run-ios-maestro.mjs",
     "test:pre-upload": "node qa/pre-upload-check.mjs",
+    "test:pre-release": "node qa/pre-release.mjs",
     "probe:brisbane": "node scripts/probe-brisbane-board.mjs",
     "probe:sydney": "node scripts/probe-sydney-board.mjs",
     "probe:melbourne": "node scripts/probe-melbourne-board.mjs",
