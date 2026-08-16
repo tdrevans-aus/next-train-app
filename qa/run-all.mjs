@@ -44,9 +44,13 @@ const SMOKE_SCRIPTS = [
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
-const RELEASE_EXTRA_SCRIPTS = [
+const RELEASE_PIN_SCRIPTS = [
   "leave-by-preferred-gate.mjs",
   "pin-swipe-notify.mjs",
+];
+
+const RELEASE_EXTRA_SCRIPTS = [
+  ...RELEASE_PIN_SCRIPTS,
   "fb-23-route-destination-filter.mjs",
   "journey-kind.mjs",
   "fb-23-phase-1-model.mjs",
@@ -57,8 +61,24 @@ const RELEASE_EXTRA_SCRIPTS = [
 ];
 
 const RELEASE_SCRIPTS = [
-  ...SMOKE_SCRIPTS,
-  ...RELEASE_EXTRA_SCRIPTS.filter((name) => !SMOKE_SCRIPTS.includes(name)),
+  "stickiness-coaches-logic.mjs",
+  "fremantle-claremont-direction.mjs",
+  ...RELEASE_PIN_SCRIPTS,
+  "smoke-browser.mjs",
+  "smoke-11-13.mjs",
+  "reminders-dialog.mjs",
+  "reminders-permission-gate.mjs",
+  "template-wizard-coach-overlap.mjs",
+  "journey-detail-footer-above-ad.mjs",
+  "nearby-content-above-ad.mjs",
+  "nearby-pin-notify-label.mjs",
+  "static-page-above-ad.mjs",
+  "dialog-above-ad.mjs",
+  "onboarding-not-on-overlay.mjs",
+  "onboarding-scrim-dismiss.mjs",
+  ...RELEASE_EXTRA_SCRIPTS.filter(
+    (name) => !SMOKE_SCRIPTS.includes(name) && !RELEASE_PIN_SCRIPTS.includes(name)
+  ),
 ];
 
 const RUNNER_EXCLUDE = new Set([

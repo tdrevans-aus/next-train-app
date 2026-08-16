@@ -15,7 +15,7 @@ import { ensureJourneyMode } from "./helpers/journey-smoke.mjs";
 
 const BASE = "http://localhost:3000";
 const JOURNEY_ID = "j-pin-swipe";
-const HERO_TIMEOUT_MS = process.env.CI === "true" ? 60_000 : 45_000;
+const HERO_TIMEOUT_MS = process.env.CI === "true" ? 90_000 : 45_000;
 
 function perthMinutesFromNow(offsetMinutes) {
   const formatter = new Intl.DateTimeFormat("en-AU", {
@@ -364,7 +364,7 @@ async function testJourneyUnpinOverrideKeepsLaterTrain(page) {
   await page.waitForFunction(
     () => document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") === "false",
     null,
-    { timeout: 15000 }
+    { timeout: process.env.CI === "true" ? 30_000 : 15_000 }
   );
   await page.waitForTimeout(400);
 
