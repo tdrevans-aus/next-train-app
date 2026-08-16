@@ -225,6 +225,12 @@ async function run() {
     u.searchParams.set("fixture", "error");
     history.replaceState(null, "", u);
   });
+  await page.evaluate(() => {
+    document.getElementById("journeys-dialog")?.close?.();
+    document.getElementById("menu-dialog")?.close?.();
+  });
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
   await page.locator("#menu-btn").click();
   await page.waitForTimeout(1500);
   await clickMenuDone(page);
