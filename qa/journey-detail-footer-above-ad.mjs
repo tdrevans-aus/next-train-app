@@ -160,7 +160,8 @@ async function auditJourneyDetailLayout(page) {
       }
 
       if (lowestRemindBottom > 0) {
-        const contentToFooter = footerRect.top - lowestRemindBottom;
+        const contentBottom = Math.max(scrollRect.bottom, lowestRemindBottom);
+        const contentToFooter = footerRect.top - contentBottom;
         if (contentToFooter > 120) {
           issues.push({
             id: "content-to-footer-gap",

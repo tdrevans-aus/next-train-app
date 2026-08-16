@@ -45,7 +45,7 @@ async function run() {
         Boolean(reminder) &&
         catchIdx >= 0 &&
         scheduleIdx >= 0 &&
-        scheduleIdx < catchIdx &&
+        catchIdx < scheduleIdx &&
         catchSection?.contains(reminder)
       );
     })(),

@@ -63,6 +63,22 @@ async function seedManyDirectionNearby(page) {
       followingNext.textContent = "18:07";
     }
 
+    const upcoming = document.getElementById("upcoming-departures");
+    const upcomingList = document.getElementById("upcoming-departures-list");
+    if (upcoming && upcomingList) {
+      upcoming.hidden = false;
+      upcomingList.innerHTML = "";
+      for (let i = 0; i < 8; i += 1) {
+        const item = document.createElement("li");
+        item.className = "upcoming-departures-item";
+        item.innerHTML =
+          '<span class="upcoming-departures-time">18:0' +
+          i +
+          '</span><span class="upcoming-departures-meta">Pl 2 · On time</span>';
+        upcomingList.appendChild(item);
+      }
+    }
+
     const updated = document.getElementById("updated");
     if (updated) {
       updated.textContent = "Updated 1 min ago";
@@ -105,6 +121,7 @@ async function auditBottomContentAboveAd(page) {
     appBody.scrollTop = appBody.scrollHeight;
     const adRect = sim.getBoundingClientRect();
     const targets = [
+      { id: "upcoming-departures-list", label: "Upcoming departures" },
       { id: "following-next", label: "Then row" },
       { id: "updated", label: "Updated line" },
       { id: "detail-strip", label: "Platform/status strip" },
