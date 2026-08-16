@@ -171,9 +171,73 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
 
 .help-dialog::backdrop,
 .menu-dialog::backdrop,
-.reminders-dialog::backdrop {
+.reminders-dialog::backdrop,
+.confirm-dialog::backdrop {
   background: rgba(19, 37, 35, 0.42);
   backdrop-filter: blur(4px);
+}
+
+.confirm-dialog {
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  width: min(88vw, 360px);
+  max-height: 90dvh;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(19, 37, 35, 0.18);
+}
+
+.confirm-dialog-body {
+  padding: 1.15rem 1.15rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.confirm-dialog-body h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.confirm-dialog-body p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.confirm-dialog-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.65rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(190, 18, 60, 0.45);
+  border-radius: 0.75rem;
+  background: var(--bad);
+  color: #fff;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-danger:hover,
+.btn-danger:focus-visible {
+  filter: brightness(0.95);
+  outline: none;
 }
 
 .help-dialog-body {
@@ -347,6 +411,62 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   color: var(--muted);
 }
 
+.detail-target-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.75rem;
+  align-items: end;
+}
+
+.detail-target-top-row--solo {
+  grid-template-columns: 1fr;
+}
+
+.detail-target-top-row .detail-target-master {
+  display: block;
+  min-width: 0;
+}
+
+.detail-target-top-row .detail-target-master .detail-preferred-field {
+  flex: none;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.detail-target-top-row .detail-remind-controls {
+  margin: 0;
+  padding: 0;
+  border-top: 0;
+  min-width: 0;
+  align-self: end;
+}
+
+.detail-target-top-row .detail-remind-toggle-row {
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0 0.15rem;
+}
+
+.detail-target-top-row .detail-remind-toggle-row .menu-toggle-title {
+  flex: 1 1 0;
+  min-width: 0;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.detail-target-top-row .detail-remind-toggle-row .menu-toggle-switch {
+  flex-shrink: 0;
+}
+
+.detail-target-master-hint,
+#detail-target-master-hint {
+  margin: 0.2rem 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .detail-target-master {
   display: flex;
   align-items: center;
@@ -385,9 +505,17 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  margin-top: 0.55rem;
-  padding-top: 0.35rem;
-  border-top: 1px solid var(--line);
+  margin-top: 0.45rem;
+}
+
+.detail-leave-before-toggle-row {
+  margin: 0;
+  min-width: 0;
+}
+
+.detail-target-nest .leave-before-field {
+  margin: 0;
+  padding-left: 0.15rem;
 }
 
 .detail-target-nest[hidden] {

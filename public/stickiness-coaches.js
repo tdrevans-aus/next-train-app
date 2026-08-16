@@ -238,7 +238,7 @@ async function evaluateStickinessCoaches() {
     return;
   }
 
-  if (!window.nextTrainApp?.hasConfiguredCommute?.()) {
+  if (!window.nextTrainApp?.hasCommuteJourney?.()) {
     return;
   }
 

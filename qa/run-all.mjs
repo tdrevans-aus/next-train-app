@@ -36,6 +36,7 @@ const SMOKE_SCRIPTS = [
   "template-wizard-coach-overlap.mjs",
   "journey-detail-footer-above-ad.mjs",
   "nearby-content-above-ad.mjs",
+  "nearby-pin-notify-label.mjs",
   "static-page-above-ad.mjs",
   "dialog-above-ad.mjs",
   "onboarding-not-on-overlay.mjs",
@@ -46,6 +47,14 @@ const SMOKE_SCRIPTS = [
 const RELEASE_EXTRA_SCRIPTS = [
   "leave-by-preferred-gate.mjs",
   "pin-swipe-notify.mjs",
+  "fb-23-route-destination-filter.mjs",
+  "journey-kind.mjs",
+  "fb-23-phase-1-model.mjs",
+  "fb-23-phase-3-hero.mjs",
+  "fb-23-auto-selection.mjs",
+  "fb-23-web.mjs",
+  "add-journey-btn.mjs",
+  "fb-23-phase-4-native.mjs",
 ];
 
 const RELEASE_SCRIPTS = [
@@ -108,6 +117,7 @@ const HEAVY_SCRIPT_TIMEOUT_MS = {
   "smoke-11-13.mjs": 4 * 60 * 1000,
   "pin-swipe-notify.mjs": 4 * 60 * 1000,
   "leave-by-preferred-gate.mjs": 3 * 60 * 1000,
+  "fb-23-web.mjs": 4 * 60 * 1000,
 };
 
 function getScriptTimeoutMs(scriptName) {

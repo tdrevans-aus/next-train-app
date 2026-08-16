@@ -54,13 +54,29 @@ async function run() {
   const customPass =
     customState.active.length === 1 &&
     customState.active[0] === today &&
-    customState.hint.includes("Starts on today");
+    customState.hint.includes("Which days do you travel");
 
   if (customPass) {
     console.log(`PASS — Custom defaults to today only (day ${today})`);
   } else {
     console.error("FAIL — Custom Active days", customState);
     process.exitCode = 1;
+  }
+
+  const toggleDay = today === 7 ? 6 : 7;
+  await page.locator(`#detail-active-day-chips [data-day="${toggleDay}"]`).click();
+  const afterToggle = await page.evaluate((day) => {
+    const active = [...document.querySelectorAll("#detail-active-day-chips .remind-day-chip--active")].map(
+      (chip) => Number(chip.dataset.day)
+    );
+    return { active, toggledDay: day };
+  }, toggleDay);
+
+  if (!afterToggle.active.includes(toggleDay)) {
+    console.error("FAIL — Active day chip did not toggle", afterToggle);
+    process.exitCode = 1;
+  } else {
+    console.log(`PASS — Active day chip toggles (day ${toggleDay})`);
   }
 
   await page.evaluate(() => window.nextTrainApp.openJourneys());
@@ -80,7 +96,7 @@ async function run() {
   const morningPass =
     morningState.active.length === 5 &&
     morningState.active.every((day) => day >= 1 && day <= 5) &&
-    !morningState.hint.includes("Starts on today");
+    morningState.hint.includes("Which days do you travel");
 
   if (morningPass) {
     console.log("PASS — Morning stays Mon–Fri with default hint");

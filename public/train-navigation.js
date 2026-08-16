@@ -86,6 +86,10 @@
     return deps.journeyMatchesSchedule?.(journey, minutes, day) ?? false;
   }
 
+  function isRouteJourney(journey) {
+    return deps.isRouteJourney?.(journey) ?? false;
+  }
+
   function parseTimeToMinutes(time) {
     return deps.parseTimeToMinutes?.(time) ?? NaN;
   }
@@ -249,11 +253,17 @@ function getUpcomingTrips(data) {
   return normalizeApiTrainData(data).upcoming ?? [];
 }
 
-function getHeroDepartLabel({ pinned = false, heroShowsPin = false, skipCount = 0 } = {}) {
-  if (pinned) {
+function getHeroDepartLabel({
+  pinned = false,
+  heroShowsPin = false,
+  isDayOverridePin = false,
+  showsTargetTrain = false,
+  skipCount = 0,
+} = {}) {
+  if (pinned || (heroShowsPin && isDayOverridePin)) {
     return "Pinned Train";
   }
-  if (heroShowsPin) {
+  if (heroShowsPin || showsTargetTrain) {
     return "Target train";
   }
   if (skipCount > 0) {
@@ -346,6 +356,13 @@ function liveHorizonMinutes(journey) {
   return Number.isNaN(minutes) ? 24 * 60 : minutes;
 }
 
+function targetTripHorizonMinutes(journey) {
+  if (!journeyMatchesSchedule(journey)) {
+    return 24 * 60;
+  }
+  return liveHorizonMinutes(journey);
+}
+
 function formatPreferredClock(totalMinutes) {
   const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
   const hour = Math.floor(wrapped / 60);
@@ -422,6 +439,80 @@ function findTripIndexInUpcoming(data, trip) {
   );
 }
 
+function getCurrentHeroDeparture(data, journey = getActiveJourney()) {
+  if (!data) {
+    return null;
+  }
+
+  const skip = getSkipTrains();
+  const upcoming = getUpcomingTrips(normalizeApiTrainData(data));
+  if (skip > 0) {
+    return resolveTripDeparture(upcoming[skip]);
+  }
+
+  const pinTrip = resolveJourneyPinTrip(data, journey);
+  if (pinTrip) {
+    return resolveTripDeparture(pinTrip);
+  }
+
+  return resolveTripDeparture(getTrueNextTrip(data));
+}
+
+function findNextSkipIndex(data, journey = getActiveJourney()) {
+  if (!data) {
+    return -1;
+  }
+
+  const upcoming = getUpcomingTrips(normalizeApiTrainData(data));
+  const currentDep = getCurrentHeroDeparture(data, journey);
+  if (!currentDep) {
+    return -1;
+  }
+
+  for (let index = getSkipTrains() + 1; index < upcoming.length; index += 1) {
+    if (resolveTripDeparture(upcoming[index]) !== currentDep) {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
+function findPreviousSkipIndex(data, journey = getActiveJourney()) {
+  if (!data || getSkipTrains() <= 0) {
+    return -1;
+  }
+
+  const normalized = normalizeApiTrainData(data);
+  const upcoming = getUpcomingTrips(normalized);
+  const currentSkip = getSkipTrains();
+  const currentDep = resolveTripDeparture(upcoming[currentSkip]);
+  if (!currentDep) {
+    return -1;
+  }
+
+  const pinTrip = resolveJourneyPinTrip(data, journey);
+  const pinDep = pinTrip ? resolveTripDeparture(pinTrip) : null;
+  const hasTargetPin =
+    pinDep && preferredMinutesForLiveGlance(journey) >= 0 && !isRouteJourney(journey);
+
+  for (let index = currentSkip - 1; index >= 0; index -= 1) {
+    const candidateDep = resolveTripDeparture(upcoming[index]);
+    if (candidateDep !== currentDep) {
+      if (hasTargetPin && candidateDep === pinDep) {
+        return 0;
+      }
+      return index;
+    }
+  }
+
+  if (hasTargetPin && currentDep !== pinDep) {
+    return 0;
+  }
+
+  return -1;
+}
+
 function getTrueNextTrip(data) {
   if (!data) {
     return null;
@@ -464,6 +555,9 @@ function isJourneyTargetPinnedToday(journey) {
     return global.nextTrainPinState.isJourneyPinnedToday(journey);
   }
   const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  if (isRouteJourney(journeyClean)) {
+    return isJourneyOverrideActiveToday(journeyClean);
+  }
   if (isJourneyOverrideActiveToday(journeyClean)) {
     return true;
   }
@@ -513,9 +607,6 @@ function resolveJourneyPreferredTargetTrip(data, journey = getActiveJourney()) {
 
   const normalized = normalizeApiTrainData(data);
   const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
-  if (!journeyMatchesSchedule(journeyClean)) {
-    return null;
-  }
 
   const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
   if (preferredMinutes < 0) {
@@ -524,7 +615,7 @@ function resolveJourneyPreferredTargetTrip(data, journey = getActiveJourney()) {
 
   const leaveBefore = getEffectiveLeaveBeforeMinutes(journeyClean);
   const referenceIso = normalized.next?.departure ?? normalized.next?.arrival;
-  const horizon = liveHorizonMinutes(journeyClean);
+  const horizon = targetTripHorizonMinutes(journeyClean);
   for (const trip of getUpcomingTrips(normalized)) {
     if (tripHasDeparted(trip)) {
       continue;
@@ -569,7 +660,7 @@ function resolveJourneyPinTrip(data, journey = getActiveJourney()) {
     }
   }
 
-  if (!journeyMatchesSchedule(journeyClean)) {
+  if (isRouteJourney(journeyClean)) {
     return null;
   }
 
@@ -665,7 +756,7 @@ function findPreferredTripSkipIndex(data, journey = getActiveJourney()) {
   }
 
   const upcoming = getUpcomingTrips(data);
-  const horizon = liveHorizonMinutes(journey);
+  const horizon = targetTripHorizonMinutes(journey);
   for (let index = 0; index < upcoming.length; index += 1) {
     if (tripMatchesPreferredOrLater(upcoming[index], preferredMinutes, horizon)) {
       return index;
@@ -674,16 +765,64 @@ function findPreferredTripSkipIndex(data, journey = getActiveJourney()) {
   return -1;
 }
 
+function restoreCommuteTargetPinFace(journey = getActiveJourney()) {
+  if (!journey || isRouteJourney(journey) || isUnconfiguredJourney(journey)) {
+    clearSkipState();
+    setSkipTrains(0);
+    return;
+  }
+
+  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  if (isJourneyOverrideActiveToday(journeyClean)) {
+    skipTrains = readSkipState().count;
+    return;
+  }
+
+  if (preferredMinutesForLiveGlance(journeyClean) >= 0) {
+    clearJourneyPinDismissed(journey.id);
+  }
+  clearSkipState();
+  setSkipTrains(0);
+}
+
 function isHeroPinLockingSwipe() {
+  if (global.nextTrainPinState?.resolvePinState) {
+    const mode = isNearbyModeActive() ? "nearby" : getJourneyModeActive() ? "journey" : null;
+    if (!mode) {
+      return false;
+    }
+    return Boolean(
+      global.nextTrainPinState.resolvePinState({
+        mode,
+        payload: getLastApiData(),
+        journey: getActiveJourney(),
+        nearbyPin: getNearbyPin(),
+        skipTrains: getSkipTrains(),
+      }).isHeroPinLockingSwipe
+    );
+  }
+
   if (isNearbyModeActive()) {
-    return isNearbyPinHolding();
+    return isNearbyPinHolding(getNearbyPin());
   }
 
-  if (getJourneyModeActive()) {
-    return isJourneyOverrideActiveToday(getActiveJourney());
+  if (!getJourneyModeActive() || getSkipTrains() > 0) {
+    return false;
   }
 
-  return false;
+  const journey = getActiveJourney();
+  const data = getLastApiData();
+  if (!journey || !data) {
+    return false;
+  }
+
+  const pinTrip = resolveJourneyPinTrip(data, journey);
+  const heroTrip = getLastRenderedNext() ?? data.next ?? null;
+  if (!pinTrip || !heroTrip) {
+    return false;
+  }
+
+  return journeysDepartureMatch(heroTrip, pinTrip);
 }
 
 function canSkipToTargetTrain() {
@@ -851,8 +990,7 @@ function canSkipToNextTrain() {
     return false;
   }
 
-  const upcoming = getUpcomingTrips(getLastApiData());
-  return getSkipTrains() < upcoming.length - 1;
+  return findNextSkipIndex(getLastApiData()) >= 0;
 }
 
 function canSkipToEarlierTrain() {
@@ -1037,15 +1175,16 @@ function skipToNextTrain() {
     return;
   }
 
-  if (!canSkipToNextTrain()) {
+  const nextSkip = findNextSkipIndex(getLastApiData());
+  if (nextSkip < 0) {
     return;
   }
 
-  setSkipTrains(getSkipTrains() + 1);
+  setSkipTrains(nextSkip);
   const normalized = normalizeApiTrainData(getLastApiData());
-  const skippedToTrip = normalized.upcoming?.[getSkipTrains()] ?? null;
+  const skippedToTrip = normalized.upcoming?.[nextSkip] ?? null;
   const skippedToDeparture = skippedToTrip ? resolveTripDeparture(skippedToTrip) : null;
-  saveSkipState(getSkipTrains(), null, skippedToDeparture);
+  saveSkipState(nextSkip, null, skippedToDeparture);
   dismissSwipeHint();
 
   if (getLastApiData()) {
@@ -1083,14 +1222,20 @@ function skipToEarlierTrain() {
     return;
   }
 
-  setSkipTrains(getSkipTrains() - 1);
-  if (getSkipTrains() <= 0) {
+  const previousSkip = findPreviousSkipIndex(getLastApiData());
+  if (previousSkip < 0) {
+    return;
+  }
+
+  if (previousSkip <= 0) {
     clearSkipState();
+    setSkipTrains(0);
   } else {
+    setSkipTrains(previousSkip);
     const normalized = normalizeApiTrainData(getLastApiData());
-    const skippedToTrip = normalized.upcoming?.[getSkipTrains()] ?? null;
+    const skippedToTrip = normalized.upcoming?.[previousSkip] ?? null;
     const skippedToDeparture = skippedToTrip ? resolveTripDeparture(skippedToTrip) : null;
-    saveSkipState(getSkipTrains(), null, skippedToDeparture);
+    saveSkipState(previousSkip, null, skippedToDeparture);
   }
 
   dismissSwipeHint();
@@ -1237,7 +1382,7 @@ async function toggleHeroPin() {
       return;
     }
 
-    // Notify me stays off until the user turns it on — pin alone must not
+    // Remind-me-when-to-leave stays off until the user turns it on — pin alone must not
     // trigger the notification permission dialog.
     if (getNearbySession().pinNotifyMe === undefined) {
       getNearbySession().pinNotifyMe = false;
@@ -1269,9 +1414,23 @@ async function toggleHeroPin() {
     journeysDepartureMatch(getLastRenderedNext(), pinTrip);
 
   if (isPinnedView) {
+    const isOverride = isJourneyOverrideActiveToday(journeyClean);
     clearJourneyPinOverride(journey.id);
-    persistJourneyPinDismissed(journey.id);
-    saveSkipStateForTrip(getLastApiData(), getLastRenderedNext());
+    if (isOverride) {
+      clearJourneyPinDismissed(journey.id);
+      clearSkipState();
+      setSkipTrains(0);
+    } else {
+      persistJourneyPinDismissed(journey.id);
+      const trueNextTrip = getTrueNextTrip(getLastApiData());
+      if (trueNextTrip) {
+        saveSkipStateForTrip(getLastApiData(), trueNextTrip);
+        setSkipTrains(readSkipState().count);
+      } else {
+        clearSkipState();
+        setSkipTrains(0);
+      }
+    }
   } else {
     if (getSkipTrains() > 0) {
       clearSkipState();
@@ -1283,6 +1442,9 @@ async function toggleHeroPin() {
       clearJourneyPinOverride(journey.id);
     } else {
       persistJourneyPinOverride(journey.id, heroDeparture);
+      if (isRouteJourney(journey)) {
+        deps.clearRoutePinLeaveCardDismissed?.();
+      }
     }
   }
 
@@ -1313,9 +1475,12 @@ async function toggleHeroPin() {
     clearJourneyPinOverride,
     clearSkipState,
     ensureFullNext,
+    findNextSkipIndex,
     findPreferredTripSkipIndex,
+    findPreviousSkipIndex,
     findTripByDepartureIso,
     findTripIndexInUpcoming,
+    getCurrentHeroDeparture,
     getHeroDepartLabel,
     getNextThenTrain,
     getSkippedEarlierTrain,
@@ -1340,6 +1505,7 @@ async function toggleHeroPin() {
     resetHeroSwipePointer,
     resolveJourneyPinTrip,
     resolveJourneyPreferredTargetTrip,
+    restoreCommuteTargetPinFace,
     sanitizeJourneyPinDismissed,
     sanitizeJourneyPinOverride,
     saveSkipState,

@@ -55,6 +55,7 @@ export function createLeaveRemindersNativeMock(initial = {}) {
         paused: false,
         pauseUntil: null,
         remindAtLeaveBy: true,
+        commuteStripEnabled: true,
       };
       return snapshot();
     },
@@ -143,6 +144,7 @@ export async function installLeaveRemindersNativeMock(page, initial = {}) {
           paused: false,
           pauseUntil: null,
           remindAtLeaveBy: true,
+          commuteStripEnabled: true,
         };
         return snapshot();
       },
@@ -203,12 +205,10 @@ export async function readLeaveRemindersMock(page) {
 export async function readRemindToggleUi(page) {
   return page.evaluate(() => {
     const remind = document.getElementById("detail-remind-me");
-    const strip = document.getElementById("leave-reminders-commute-strip");
     const controls = document.getElementById("detail-remind-controls");
     return {
       controlsHidden: controls?.hidden ?? true,
       remindChecked: Boolean(remind?.checked),
-      stripChecked: Boolean(strip?.checked),
     };
   });
 }

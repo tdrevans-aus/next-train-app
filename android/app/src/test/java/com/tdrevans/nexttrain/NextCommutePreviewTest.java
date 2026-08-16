@@ -104,6 +104,20 @@ public class NextCommutePreviewTest {
   }
 
   @Test
+  public void findNext_skipsRoutesWithoutWindows() throws Exception {
+    JSONObject route = new JSONObject();
+    route.put("id", "j-route");
+    route.put("kind", "route");
+    route.put("name", "Route");
+    route.put("station", "Edgewater Stn");
+    route.put("direction", "Perth");
+
+    JSONObject settings = settingsWithJourney(route);
+
+    assertNull(NextCommutePreview.findNext(settings, 12 * 60, 2));
+  }
+
+  @Test
   public void findNext_returnsNullWithoutConfiguredWindows() throws Exception {
     JSONObject journey = new JSONObject();
     journey.put("id", "j1");
@@ -174,6 +188,7 @@ public class NextCommutePreviewTest {
     journey.put("defaultFrom", from);
     journey.put("defaultUntil", until);
     journey.put("preferredTrainTime", preferred);
+    journey.put("kind", "commute");
     journey.put("remindDays", new JSONArray(new int[] { 1, 2, 3, 4, 5 }));
     return journey;
   }

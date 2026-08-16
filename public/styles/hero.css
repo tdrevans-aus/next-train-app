@@ -26,6 +26,20 @@
   border-color: var(--line);
 }
 
+.hero.hero--target-train.calm {
+  border-color: var(--journey-target-border);
+  background: color-mix(in srgb, var(--journey-target-wash) 55%, rgba(255, 255, 255, 0.55));
+}
+
+.hero.hero--target-train.calm #hero-depart-label,
+.hero.hero--target-train.calm .depart-countdown {
+  color: var(--journey-target);
+}
+
+.hero.hero--pinned-train.calm {
+  border-color: var(--hero-pinned-border);
+}
+
 .label {
   margin: 0;
   font-size: 0.78rem;
@@ -264,6 +278,10 @@
   display: none !important;
 }
 
+.app.route-pin-active #nearby-pin-leave-controls:not([hidden]) {
+  display: flex !important;
+}
+
 .nearby-pin-leave-controls .leave-before-field {
   margin: 0;
 }
@@ -281,21 +299,29 @@
   padding-right: 1.05rem;
 }
 
+.app.route-pin-active .leave-card:not([hidden]) {
+  padding-left: 1.05rem;
+  padding-right: 1.05rem;
+}
+
+/* Near me / route pin leave card — C2 layout lock: jim-brief-nearby-pin-leave-by.md */
 .nearby-pin-leave-footer .nearby-notify-row {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.35rem;
-  width: 100%;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  width: fit-content;
   max-width: 100%;
   margin: 0;
   padding: 0;
   min-width: 0;
   min-height: 0;
+  justify-self: start;
+  grid-column: 1;
 }
 
 .nearby-pin-leave-footer .nearby-notify-label {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
   line-height: 1.2;
   color: var(--muted);
@@ -303,8 +329,9 @@
 }
 
 .nearby-pin-leave-footer .nearby-notify-row .menu-toggle-switch {
+  flex: 0 0 auto;
   transform: scale(0.62);
-  transform-origin: right center;
+  transform-origin: left center;
 }
 
 .nearby-pin-leave-footer .nearby-notify-row[hidden] {
@@ -525,6 +552,12 @@
   max-width: 22rem;
   margin-left: auto;
   margin-right: auto;
+}
+
+.nearby-pin-leave-controls:not([hidden]) + .leave-card-actions.leave-card-actions--visible {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
 }
 
 .leave-card-actions--visible {

@@ -47,6 +47,7 @@ enum NextCommutePreview {
         for dayOffset in 0...7 {
             let day = ((dayOfWeekIso - 1 + dayOffset) % 7) + 1
             for journey in journeys {
+                guard JourneySelector.isCommuteJourney(journey) else { continue }
                 let station = journey["station"] as? String ?? ""
                 let direction = journey["direction"] as? String ?? ""
                 guard !station.isEmpty, !direction.isEmpty, JourneySelector.hasWindow(journey),
@@ -89,6 +90,7 @@ enum NextCommutePreview {
         for dayOffset in 0...7 {
             let day = ((dayOfWeekIso - 1 + dayOffset) % 7) + 1
             for journey in journeys {
+                guard JourneySelector.isCommuteJourney(journey) else { continue }
                 let station = journey["station"] as? String ?? ""
                 let direction = journey["direction"] as? String ?? ""
                 guard !station.isEmpty, !direction.isEmpty,

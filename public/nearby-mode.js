@@ -166,20 +166,20 @@
     return deps.getHeroDepartLabel?.(options) ?? "Next Train";
   }
 
-  function getTrueNextTrip(data) {
-    return deps.getTrueNextTrip?.(data) ?? null;
+  function renderUpcomingDepartureBoard(data, skipCount) {
+    return deps.renderUpcomingDepartureBoard?.(data, skipCount);
   }
 
-  function renderJourneySecondaryNextLine(trueNextTrip, pinTrip) {
-    return deps.renderJourneySecondaryNextLine?.(trueNextTrip, pinTrip) ?? false;
-  }
-
-  function renderThenTrains(data, skipCount, options) {
-    return deps.renderThenTrains?.(data, skipCount, options);
+  function hideUpcomingDepartureBoard() {
+    return deps.hideUpcomingDepartureBoard?.();
   }
 
   function formatScheduledLine(next) {
     return deps.formatScheduledLine?.(next) ?? "";
+  }
+
+  function formatHeroScheduledLine(next) {
+    return deps.formatHeroScheduledLine?.(next) ?? formatScheduledLine(next);
   }
 
   function renderStatusDisplay(next) {
@@ -270,6 +270,25 @@ function getNearbyLeaveBeforeMinutes() {
   return Number(getSettings().nearbyLeaveBeforeMinutes) || DEFAULT_LEAVE_BEFORE.leaveBeforeMinutes;
 }
 
+function getRoutePinLeaveBeforeMinutes(journey = deps.getActiveJourney?.()) {
+  return deps.getRoutePinnedLeaveBeforeMinutes?.(journey) ?? getNearbyLeaveBeforeMinutes();
+}
+
+function isRoutePinLeaveContext() {
+  const journey = deps.getActiveJourney?.();
+  return Boolean(
+    deps.isJourneyModeActive?.() &&
+      deps.isRouteJourney?.(journey) &&
+      deps.isRoutePinnedToday?.(journey)
+  );
+}
+
+let routePinLeaveCardHidden = false;
+
+function clearRoutePinLeaveCardDismissed() {
+  routePinLeaveCardHidden = false;
+}
+
 function updateNearbyLeaveBeforeLabel(minutes = nearbyLeaveBeforeInput?.value) {
   if (nearbyLeaveBeforeValueEl) {
     nearbyLeaveBeforeValueEl.textContent = formatLeaveBeforeLabel(minutes);
@@ -297,6 +316,16 @@ function rescheduleNearbyPinReminders() {
 }
 
 function dismissNearbyPinLeaveCard() {
+  if (isRoutePinLeaveContext()) {
+    routePinLeaveCardHidden = true;
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    deps.syncHeroPinChrome?.();
+    return;
+  }
+
   if (nearbySession) {
     nearbySession.pinLeaveCardHidden = true;
   }
@@ -365,7 +394,7 @@ function renderUnsupportedRegionBoard() {
     const hint = document.createElement("span");
     hint.className = "hero-empty-hint";
     hint.textContent =
-      "You can still save journeys under My Journeys for when you're in Perth.";
+      "You can still save routes and journeys when you're back in Perth.";
 
     const emptyJourneysBtn = document.createElement("button");
     emptyJourneysBtn.type = "button";
@@ -373,7 +402,7 @@ function renderUnsupportedRegionBoard() {
     emptyJourneysBtn.textContent = "My Journeys";
     emptyJourneysBtn.addEventListener("click", () => deps.enterJourneyMode?.());
 
-    deps.departCountdownEl.append(title, text, hint, deps.journeysBtn);
+    deps.departCountdownEl.append(title, text, hint, emptyJourneysBtn);
   }
 
   deps.heroEl.removeAttribute("role");
@@ -384,6 +413,7 @@ function renderUnsupportedRegionBoard() {
   deps.platformEl.textContent = "—";
   deps.statusEl.textContent = "—";
   deps.followingSectionEl.hidden = true;
+  hideUpcomingDepartureBoard();
   if (deps.journeySwitcherEl) {
     deps.journeySwitcherEl.hidden = true;
   }
@@ -436,7 +466,10 @@ function isNearbyFaceReadyForOnboarding() {
 
 function syncChromeMode() {
   const nearbyActive = isNearbyModeActive();
-  const journeyActive = isJourneyModeActive();
+  const travelTab = deps.getChromeTravelTab?.() ?? "nearby";
+  const routesActive = travelTab === "routes";
+  const journeysActive = travelTab === "journeys";
+  const journeyActive = routesActive || journeysActive;
 
   deps.appEl?.classList.toggle("nearby-mode", nearbyActive && Boolean(nearbySession));
   deps.appEl?.classList.toggle("journey-mode", journeyActive);
@@ -446,9 +479,13 @@ function syncChromeMode() {
   nearbyBtn?.setAttribute("aria-pressed", nearbyActive ? "true" : "false");
   nearbyBtn?.setAttribute("aria-label", "Near me");
 
-  deps.journeysChromeAction?.classList.toggle("chrome-action--active", journeyActive);
-  deps.journeysBtn?.classList.toggle("icon-btn--active", journeyActive);
-  deps.journeysBtn?.setAttribute("aria-pressed", journeyActive ? "true" : "false");
+  deps.routesChromeAction?.classList.toggle("chrome-action--active", routesActive);
+  deps.routesBtn?.classList.toggle("icon-btn--active", routesActive);
+  deps.routesBtn?.setAttribute("aria-pressed", routesActive ? "true" : "false");
+
+  deps.journeysChromeAction?.classList.toggle("chrome-action--active", journeysActive);
+  deps.journeysBtn?.classList.toggle("icon-btn--active", journeysActive);
+  deps.journeysBtn?.setAttribute("aria-pressed", journeysActive ? "true" : "false");
 
   syncJourneyContextChrome();
 }
@@ -666,25 +703,7 @@ function hideNearbyPinLeaveSurfaces() {
   }
 }
 
-function renderNearbyPinLeaveSurfaces(next, pinned) {
-  if (!pinned || !next) {
-    if (deps.leaveCardEl) {
-      deps.leaveCardEl.hidden = true;
-    }
-    hideNearbyPinLeaveSurfaces();
-    syncNearbyPinChrome();
-    return;
-  }
-
-  if (nearbySession?.pinLeaveCardHidden) {
-    if (deps.leaveCardEl) {
-      deps.leaveCardEl.hidden = true;
-    }
-    syncNearbyPinChrome();
-    return;
-  }
-
-  const leaveNext = buildNearbyLeaveNext(next);
+function renderPinLeaveCardContent(leaveNext, { forTarget = false } = {}) {
   const live = getLiveTiming(leaveNext);
   const pastLeaveBy = isLeavePhasePastLeaveBy(live.leavePhase);
 
@@ -705,13 +724,15 @@ function renderNearbyPinLeaveSurfaces(next, pinned) {
     nearbyLeaveHideBtn.hidden = false;
   }
   if (deps.leaveCardLabelEl) {
-    deps.leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase);
+    deps.leaveCardLabelEl.textContent = formatLeaveCardLabel(live.leavePhase, { forTarget });
   }
   if (deps.leaveTimeEl) {
     renderLeaveMinutesCountdown(deps.leaveTimeEl, leaveNext);
   }
   if (deps.leaveCountdownEl) {
-    deps.leaveCountdownEl.textContent = formatLeaveCardSubline(leaveNext);
+    deps.leaveCountdownEl.textContent = forTarget
+      ? deps.formatLeaveCardTargetSubline?.(leaveNext) ?? formatLeaveCardSubline(leaveNext)
+      : formatLeaveCardSubline(leaveNext);
   }
   updateLeaveCardState(live.leavePhase);
 
@@ -724,19 +745,96 @@ function renderNearbyPinLeaveSurfaces(next, pinned) {
     deps.leaveBufferEditBtn.hidden = true;
   }
 
+  return { live, showLateNag };
+}
+
+function syncPinLeaveControlValues(journey) {
+  const leaveBeforeMinutes = isRoutePinLeaveContext()
+    ? getRoutePinLeaveBeforeMinutes(journey)
+    : getNearbyLeaveBeforeMinutes();
   if (nearbyLeaveBeforeInput) {
-    nearbyLeaveBeforeInput.value = String(getNearbyLeaveBeforeMinutes());
-    updateNearbyLeaveBeforeLabel(getNearbyLeaveBeforeMinutes());
+    nearbyLeaveBeforeInput.value = String(leaveBeforeMinutes);
+    updateNearbyLeaveBeforeLabel(leaveBeforeMinutes);
   }
   if (nearbyNotifyMeInput) {
-    nearbyNotifyMeInput.checked = nearbySession?.pinNotifyMe === true;
+    nearbyNotifyMeInput.checked = isRoutePinLeaveContext()
+      ? journey?.pinNotifyMe === true
+      : nearbySession?.pinNotifyMe === true;
+  }
+}
+
+function renderRoutePinLeaveSurfaces(leaveNext, journey, { forTarget = false } = {}) {
+  if (!leaveNext || !journey || routePinLeaveCardHidden) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    deps.syncHeroPinChrome?.();
+    return;
   }
 
+  const leaveBeforeMinutes = getRoutePinLeaveBeforeMinutes(journey);
+  const leaveTrip = buildNextFromFollowing(
+    leaveNext,
+    leaveBeforeMinutes,
+    resolveTripDeparture(leaveNext)
+  );
+  renderPinLeaveCardContent(leaveTrip, { forTarget });
+  syncPinLeaveControlValues(journey);
+  deps.syncHeroPinChrome?.();
+}
+
+function renderNearbyPinLeaveSurfaces(next, pinned) {
+  if (!pinned || !next) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    syncNearbyPinChrome();
+    return;
+  }
+
+  if (nearbySession?.pinLeaveCardHidden) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    syncNearbyPinChrome();
+    return;
+  }
+
+  const leaveNext = buildNearbyLeaveNext(next);
+  renderPinLeaveCardContent(leaveNext);
+  syncPinLeaveControlValues();
   syncNearbyPinChrome();
 }
 
 
 async function handleNearbyNotifyToggle() {
+  if (isRoutePinLeaveContext()) {
+    const journey = deps.getActiveJourney?.();
+    if (!journey?.id) {
+      return;
+    }
+
+    const notifyOn = nearbyNotifyMeInput?.checked ?? false;
+    deps.persistRoutePinSettings?.(journey.id, { pinNotifyMe: notifyOn });
+
+    if (notifyOn) {
+      const reminderSettings = await window.nextTrainLeaveReminders?.enableLeaveReminders?.({
+        userInitiated: true,
+      });
+      if (reminderSettings?.permissionGranted === false) {
+        deps.persistRoutePinSettings?.(journey.id, { pinNotifyMe: false });
+        if (nearbyNotifyMeInput) {
+          nearbyNotifyMeInput.checked = false;
+        }
+      }
+    }
+
+    deps.renderCurrentJourney?.();
+    return;
+  }
+
   if (!nearbySession) {
     return;
   }
@@ -1322,6 +1420,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     }
     syncNearbyDontWaitButton();
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     if (nearbySession?.gpsRefining) {
       deps.updatedEl.textContent = "Checking location…";
     } else {
@@ -1364,6 +1463,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.platformEl.textContent = "—";
     deps.statusEl.textContent = "—";
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     deps.updatedEl.textContent = "Choose a station below";
     updateSwipeHint();
     updateSwipeCues();
@@ -1401,6 +1501,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.platformEl.textContent = "—";
     deps.statusEl.textContent = "—";
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     deps.updatedEl.textContent = stale ? "Update failed — times may be out of date" : "Choose a station below";
     updateSwipeHint();
     updateSwipeCues();
@@ -1463,6 +1564,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.platformEl.textContent = "—";
     deps.statusEl.textContent = "—";
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     nearbyDirectionsEl.hidden = false;
     renderNearbyDirectionsList();
     updateSwipeHint();
@@ -1490,7 +1592,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.departDisplayTimeEl.textContent = `${next.displayTime} · towards ${focusedEntry.direction}`;
   }
 
-  const scheduledLine = formatScheduledLine(next);
+  const scheduledLine = formatHeroScheduledLine(next);
   if (deps.heroScheduledTimeEl) {
     if (scheduledLine) {
       deps.heroScheduledTimeEl.textContent = scheduledLine;
@@ -1502,15 +1604,8 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   deps.platformEl.textContent = next.platform;
   renderStatusDisplay(next);
-  if (pinned) {
-    const normalizedBoard = normalizeApiTrainData(boardData);
-    const trueNextTrip = getTrueNextTrip(normalizedBoard);
-    if (!renderJourneySecondaryNextLine(trueNextTrip, next)) {
-      renderThenTrains(boardData, nearbySkip);
-    }
-  } else {
-    renderThenTrains(boardData, nearbySkip);
-  }
+  deps.followingSectionEl.hidden = true;
+  renderUpcomingDepartureBoard(boardData, nearbySkip);
   nearbyDirectionsEl.hidden = false;
   renderNearbyDirectionsList();
   updateSwipeHint();
@@ -1914,6 +2009,14 @@ function initNearbyListeners() {
     if (!Number.isFinite(minutes)) {
       return;
     }
+    if (isRoutePinLeaveContext()) {
+      const journey = deps.getActiveJourney?.();
+      if (journey?.id) {
+        deps.persistRoutePinSettings?.(journey.id, { leaveBeforeMinutes: minutes });
+        deps.renderCurrentJourney?.();
+      }
+      return;
+    }
     persistSettings({ nearbyLeaveBeforeMinutes: minutes });
     if (isNearbyPinHolding()) {
       syncNearbyPinSettings();
@@ -1946,6 +2049,7 @@ function initNearbyListeners() {
     clearNearbyError,
     clearNearbyPin,
     clearNearbyPinLeaveCardDismissed,
+    clearRoutePinLeaveCardDismissed,
     dismissNearbyLocatePicker,
     dismissNearbyPinLeaveCard,
     ensureNearbyStationOptions,
@@ -1984,6 +2088,7 @@ function initNearbyListeners() {
     renderNearbyBoard,
     renderNearbyDirectionsList,
     renderNearbyPinLeaveSurfaces,
+    renderRoutePinLeaveSurfaces,
     renderUnsupportedRegionBoard,
     rescheduleNearbyPinReminders,
     restoreNearbySessionPinFromSettings,

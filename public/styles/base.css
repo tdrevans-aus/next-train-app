@@ -8,6 +8,11 @@
   --accent: #0b6e6a;
   --accent-strong: #085a57;
   --accent-wash: rgba(11, 110, 106, 0.12);
+  --journey-target: #1e40af;
+  --journey-target-strong: #1e3a8a;
+  --journey-target-wash: rgba(30, 64, 175, 0.1);
+  --journey-target-border: rgba(30, 64, 175, 0.32);
+  --hero-pinned-border: color-mix(in srgb, var(--accent) 58%, var(--line));
   --leave-calm: #5c726d;
   --leave: #b45309;
   --leave-strong: #92400e;
@@ -173,18 +178,25 @@ body.native-ad-banner .app-body {
   justify-content: flex-start;
   gap: 0.18rem;
   flex: 1 1 0;
-  min-width: 3.35rem;
-  max-width: 4.25rem;
+  min-width: 2.75rem;
+  max-width: 3.65rem;
 }
 
 .chrome-action-label {
-  font-size: 0.58rem;
+  font-size: 0.52rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   line-height: 1.1;
   color: var(--muted);
   text-align: center;
   max-width: 100%;
+}
+
+#routes-chrome-action .chrome-action-label,
+#journeys-chrome-action .chrome-action-label {
+  font-size: 0.44rem;
+  line-height: 1.05;
+  white-space: normal;
 }
 
 .chrome-action--active .chrome-action-label {
@@ -210,6 +222,15 @@ body.native-ad-banner .app-body {
 }
 
 #journeys-chrome-action.onboarding-highlight #journeys-btn {
+  animation: onboarding-pulse 1.1s ease-in-out infinite;
+}
+
+#routes-chrome-action.onboarding-highlight .chrome-action-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+#routes-chrome-action.onboarding-highlight #routes-btn {
   animation: onboarding-pulse 1.1s ease-in-out infinite;
 }
 

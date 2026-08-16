@@ -1,9 +1,9 @@
 /**
- * FB-29 — primary Add journey button replaces the Custom chip.
+ * FB-23 Q7 — Routes library + two-field route editor.
  * Usage: node qa/add-journey-btn.mjs
  */
 import { chromium } from "playwright";
-import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
+import { openRouteCreate, openRoutesLibrary } from "./helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -13,36 +13,49 @@ async function run() {
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(800);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
-  await page.waitForTimeout(400);
+  await openRoutesLibrary(page);
 
   const listUi = await page.evaluate(() => ({
-    addBtnVisible: !document.getElementById("journey-add-btn")?.hidden,
-    addBtnText: document.getElementById("journey-add-btn")?.textContent?.trim() ?? "",
-    customHidden: document.querySelector('[data-template="custom"]')?.hidden === true,
-    morningVisible: document.querySelector('[data-template="morning"]')?.hidden === false,
+    libraryTitle: document.getElementById("journeys-library-title")?.textContent?.trim() ?? "",
+    saveRouteVisible: !document.getElementById("journey-save-route-btn")?.hidden,
+    saveRouteText: document.getElementById("journey-save-route-btn")?.textContent?.trim() ?? "",
+    setupJourneyVisible: !document.getElementById("journey-setup-btn")?.hidden,
+    shortcutsHidden: document.getElementById("journey-template-shortcuts")?.hidden === true,
+    morningChipHidden: document.querySelector('[data-template="morning"]')?.hidden === true,
   }));
 
-  await openCustomJourneyCreate(page);
-  await page.waitForTimeout(600);
+  await openRouteCreate(page);
 
-  const detailOpen = await page.evaluate(
-    () => !document.getElementById("settings-detail-view")?.hidden
-  );
+  const detailUi = await page.evaluate(() => ({
+    detailOpen: !document.getElementById("settings-detail-view")?.hidden,
+    deleteHidden: document.getElementById("delete-journey-btn")?.hidden === true,
+    nameFieldHidden: document.querySelector(".journey-name-field")?.hidden === true,
+    timingHidden: document.getElementById("detail-timing-section")?.hidden === true,
+    preferredHidden: document.getElementById("detail-preferred-section")?.hidden === true,
+    trainsToLabel:
+      document.querySelector(".detail-direction-label--route")?.textContent?.trim() ?? "",
+  }));
 
   await browser.close();
 
   const pass =
-    listUi.addBtnVisible &&
-    listUi.addBtnText === "Add journey" &&
-    listUi.customHidden &&
-    listUi.morningVisible &&
-    detailOpen;
+    listUi.libraryTitle === "Routes" &&
+    listUi.saveRouteVisible &&
+    listUi.saveRouteText === "Add a route" &&
+    !listUi.setupJourneyVisible &&
+    listUi.shortcutsHidden &&
+    listUi.morningChipHidden &&
+    detailUi.detailOpen &&
+    detailUi.deleteHidden &&
+    detailUi.nameFieldHidden &&
+    detailUi.timingHidden &&
+    detailUi.preferredHidden &&
+    detailUi.trainsToLabel === "Trains to";
 
   if (pass) {
-    console.log("PASS — Add journey button visible; opens custom create flow");
+    console.log("PASS — Routes library + two-field route editor");
   } else {
-    console.error("FAIL — Add journey UX", { listUi, detailOpen });
+    console.error("FAIL — route create UX", { listUi, detailUi });
     process.exitCode = 1;
   }
 }

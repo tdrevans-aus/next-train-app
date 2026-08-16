@@ -62,6 +62,6 @@
     "isHeroPinLockingSwipe": true,
     "showSecondaryNext": true,
     "leaveCardArmed": true,
-    "heroLabel": "Target train"
+    "heroLabel": "Pinned Train"
   }
 }

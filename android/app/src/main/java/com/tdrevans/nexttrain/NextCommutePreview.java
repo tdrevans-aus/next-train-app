@@ -52,6 +52,9 @@ public final class NextCommutePreview {
         if (journey == null) {
           continue;
         }
+        if (!JourneySelector.isCommuteJourney(journey)) {
+          continue;
+        }
         String station = journey.optString("station", "");
         String direction = journey.optString("direction", "");
         if (station.isEmpty() || direction.isEmpty()) {
@@ -140,6 +143,9 @@ public final class NextCommutePreview {
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.optJSONObject(index);
         if (journey == null) {
+          continue;
+        }
+        if (!JourneySelector.isCommuteJourney(journey)) {
           continue;
         }
         String station = journey.optString("station", "");

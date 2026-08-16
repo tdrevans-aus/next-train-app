@@ -57,11 +57,13 @@ async function armPinnedJourney(page, { fixture = "normal" } = {}) {
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 60,
           activeJourneyId: journeyId,
           journeys: [
             {
               id: journeyId,
+              kind: "commute",
               name: "Morning commute",
               station: "Edgewater Stn",
               direction: "Perth",
@@ -259,7 +261,7 @@ async function testJourneyPinTapAfterSwipePreview(page) {
   }));
 
   if (
-    afterPin.heroLabel !== "Target train" ||
+    afterPin.heroLabel !== "Pinned Train" ||
     afterPin.pinPressed !== "true" ||
     afterPin.skipCount !== 0
   ) {
@@ -285,9 +287,7 @@ async function testNearbyPinNextTrainAdvance(page) {
   );
 
   const pinBtn = page.locator("#hero-pin-btn");
-  if (await pinBtn.isHidden()) {
-    return { ok: false, label: "nearby pin Next Train advance", detail: "pin button hidden" };
-  }
+  await page.waitForSelector("#hero-pin-btn:not([hidden])", { timeout: 25000 });
 
   await pinBtn.click();
   await page.waitForTimeout(800);
@@ -362,6 +362,11 @@ async function testPinLockDoesNotBlockAdvancePath(page) {
   }
 
   await page.goto(`${BASE}/?test=1&fixture=late`);
+  await page.evaluate(() => {
+    if (document.querySelector(".app")?.classList.contains("nearby-mode")) {
+      window.nextTrainApp.enterJourneyMode();
+    }
+  });
   await waitForJourneyHero(page);
   await page.evaluate(async (journeyId) => {
     const preferred = document.getElementById("depart-display-time")?.textContent?.trim();

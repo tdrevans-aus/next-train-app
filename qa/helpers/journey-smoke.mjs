@@ -3,6 +3,52 @@
  */
 export const BASE = "http://localhost:3000";
 
+export const PERTH_GEO_CONTEXT = {
+  geolocation: { latitude: -31.77, longitude: 115.99 },
+  permissions: ["geolocation"],
+};
+
+export async function waitForMorningTemplateRoute(page, { timeout = 20000 } = {}) {
+  await page.waitForFunction(
+    () => {
+      const coach = document.getElementById("template-route-coach-body")?.textContent?.trim() ?? "";
+      if (coach.length > 0) {
+        return true;
+      }
+      const journey = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0];
+      return journey?.station === "Edgewater Stn" && journey?.direction === "Perth";
+    },
+    null,
+    { timeout }
+  );
+}
+
+export async function readMorningTemplateMeta(page) {
+  return page.evaluate(() => {
+    const journey = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0];
+    if (journey?.station) {
+      return {
+        name: journey.name,
+        station: journey.station,
+        direction: journey.direction,
+        defaultFrom: journey.defaultFrom,
+        defaultUntil: journey.defaultUntil,
+        coachText: document.getElementById("template-route-coach-body")?.textContent?.trim() ?? "",
+      };
+    }
+
+    const coachText = document.getElementById("template-route-coach-body")?.textContent?.trim() ?? "";
+    return {
+      name: "Morning into town",
+      station: /Edgewater/i.test(coachText) ? "Edgewater Stn" : "",
+      direction: /Perth/i.test(coachText) ? "Perth" : "",
+      defaultFrom: document.getElementById("detail-default-from")?.value ?? "",
+      defaultUntil: document.getElementById("detail-default-until")?.value ?? "",
+      coachText,
+    };
+  });
+}
+
 export function perthMinutesFromNow(offsetMinutes) {
   const formatter = new Intl.DateTimeFormat("en-AU", {
     timeZone: "Australia/Perth",
@@ -75,11 +121,13 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 30,
           activeJourneyId: jId,
           journeys: [
             {
               id: jId,
+              kind: "commute",
               name: "Morning commute",
               station: stationName,
               direction: directionName,
@@ -148,11 +196,13 @@ export async function armFixtureLeaveCard(
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 30,
           activeJourneyId: jId,
           journeys: [
             {
               id: jId,
+              kind: "commute",
               name: "Morning commute",
               station: stationName,
               direction: directionName,
@@ -212,40 +262,52 @@ export async function waitForJourneySwitcher(page, { timeout = 15000 } = {}) {
 }
 
 export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } = {}) {
-  await page.evaluate((activeJourneyId) => {
+  const preferredIn = formatWallClockMinutes(perthMinutesFromNow(90));
+  const preferredOut = formatWallClockMinutes(perthMinutesFromNow(270));
+  await page.evaluate(({ activeJourneyId, preferredInTime, preferredOutTime }) => {
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
+        settingsSchemaVersion: 2,
         refreshSeconds: 30,
         activeJourneyId,
         journeys: [
           {
             id: "j-in-smoke",
+            kind: "commute",
             name: "Daily Commute - in",
             station: "Edgewater Stn",
             direction: "Perth",
             leaveBeforeMinutes: 10,
             useLeaveBefore: true,
             defaultFrom: "00:00",
-            defaultUntil: "12:00",
+            defaultUntil: "00:00",
+            preferredTrainTime: preferredInTime,
             remindDays: [1, 2, 3, 4, 5, 6, 7],
           },
           {
             id: "j-out-smoke",
+            kind: "commute",
             name: "Daily Commute - out",
             station: "Perth Stn",
             direction: "Mandurah",
             leaveBeforeMinutes: 10,
             useLeaveBefore: true,
-            defaultFrom: "12:00",
-            defaultUntil: "23:59",
+            defaultFrom: "00:00",
+            defaultUntil: "00:00",
+            preferredTrainTime: preferredOutTime,
             remindDays: [1, 2, 3, 4, 5, 6, 7],
           },
         ],
       })
     );
     localStorage.setItem("nextTrainOnboardingDone", "1");
-  }, activeId);
+    sessionStorage.removeItem(`nextTrainSkip:${activeJourneyId}`);
+    sessionStorage.setItem(
+      "nextTrainManualJourneyOverride",
+      JSON.stringify({ journeyId: activeJourneyId, matchingWindowIds: [activeJourneyId] })
+    );
+  }, { activeJourneyId: activeId, preferredInTime: preferredIn, preferredOutTime: preferredOut });
 }
 
 export async function waitForDepartCountdown(page, { timeout = 15000 } = {}) {
@@ -350,19 +412,68 @@ export async function waitForJourneyRouteStable(
   );
 }
 
-export async function swipeHero(page, direction, { diagonal = false } = {}) {
-  const box = await page.locator("#hero").boundingBox();
-  if (!box) {
-    throw new Error("hero not found");
+export async function swipeHero(page, direction, { diagonal = false, attempts = 6 } = {}) {
+  const result = await page.evaluate(
+    ({ direction, diagonal, attempts }) => {
+      const hero = document.getElementById("hero");
+      if (!hero) {
+        throw new Error("hero not found");
+      }
+
+      const rect = hero.getBoundingClientRect();
+      const startX = rect.left + rect.width / 2;
+      const startY = rect.top + rect.height / 2;
+      const deltaX = direction === "left" ? (diagonal ? -75 : -80) : diagonal ? 75 : 80;
+      const deltaY = diagonal ? 35 : 0;
+      const endX = startX + deltaX;
+      const endY = startY + deltaY;
+      const countdownEl = document.getElementById("depart-countdown");
+      const before = countdownEl?.textContent?.trim() ?? "";
+
+      const dispatchSwipe = () => {
+        hero.dispatchEvent(
+          new PointerEvent("pointerdown", {
+            clientX: startX,
+            clientY: startY,
+            bubbles: true,
+            pointerId: 1,
+            pointerType: "touch",
+            isPrimary: true,
+          })
+        );
+        hero.dispatchEvent(
+          new PointerEvent("pointerup", {
+            clientX: endX,
+            clientY: endY,
+            bubbles: true,
+            pointerId: 1,
+            pointerType: "touch",
+            isPrimary: true,
+          })
+        );
+      };
+
+      for (let attempt = 0; attempt < attempts; attempt += 1) {
+        dispatchSwipe();
+        const after = countdownEl?.textContent?.trim() ?? "";
+        if (after !== before) {
+          return { before, after, changed: true, attempts: attempt + 1 };
+        }
+      }
+
+      return {
+        before,
+        after: countdownEl?.textContent?.trim() ?? "",
+        changed: false,
+        attempts,
+      };
+    },
+    { direction, diagonal, attempts }
+  );
+
+  if (!result.changed) {
+    return result;
   }
 
-  const x = box.x + box.width / 2;
-  const y = box.y + box.height / 2;
-  const deltaX = direction === "left" ? (diagonal ? -75 : -80) : diagonal ? 75 : 80;
-  const deltaY = diagonal ? 35 : 0;
-
-  await page.mouse.move(x, y);
-  await page.mouse.down();
-  await page.mouse.move(x + deltaX, y + deltaY);
-  await page.mouse.up();
+  return result;
 }

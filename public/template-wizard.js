@@ -125,26 +125,25 @@ function syncTemplateWizardCoachPosition() {
 
   templateRouteCoach.classList.remove("template-route-coach--dock-bottom");
 
-  // Active hours step: always dock coach at bottom so fields stay tappable.
-  if (templateWizardStep === getTemplateWizardHoursStep()) {
-    const padding = 12;
-    applyTemplateWizardCoachBottom(card, padding);
-    templateRouteCoach.classList.add("template-route-coach--dock-bottom");
-    return;
-  }
-
   const coachRect = templateRouteCoach.getBoundingClientRect();
   const targetRect = target.getBoundingClientRect();
   const cardHeight = card.offsetHeight;
   const gap = 10;
   const padding = 12;
   const maxTop = coachRect.height - cardHeight - padding;
+  const isHoursStep = templateWizardStep === getTemplateWizardHoursStep();
 
-  const candidates = [
-    { top: targetRect.top - coachRect.top - cardHeight - gap },
-    { top: targetRect.bottom - coachRect.top + gap },
-    { bottom: padding },
-  ];
+  const candidates = isHoursStep
+    ? [
+        { top: targetRect.top - coachRect.top - cardHeight - gap },
+        { bottom: padding },
+        { top: targetRect.bottom - coachRect.top + gap },
+      ]
+    : [
+        { top: targetRect.top - coachRect.top - cardHeight - gap },
+        { top: targetRect.bottom - coachRect.top + gap },
+        { bottom: padding },
+      ];
 
   for (const candidate of candidates) {
     if (candidate.top !== undefined) {
@@ -173,22 +172,22 @@ function getTemplateWizardRouteStep(context = templateWizardContext) {
   return templateWizardUsesNameStep(context) ? 2 : 1;
 }
 
-/** Active hours / days — before Target train. */
-function getTemplateWizardHoursStep(context = templateWizardContext) {
+/** Target train — before Reminders and Journey window. */
+function getTemplateWizardTimeStep(context = templateWizardContext) {
   return templateWizardUsesNameStep(context) ? 3 : 2;
 }
 
-/** Target train nest (walk buffer + reminders unlock). */
-function getTemplateWizardTimeStep(context = templateWizardContext) {
-  return templateWizardUsesNameStep(context) ? 4 : 3;
-}
-
+/** Reminders — after target train, before Journey window (matches form layout). */
 function getTemplateWizardReminderStep(context = templateWizardContext) {
   return getTemplateWizardTimeStep(context) + 1;
 }
 
+function getTemplateWizardHoursStep(context = templateWizardContext) {
+  return getTemplateWizardReminderStep(context) + 1;
+}
+
 function getTemplateWizardMaxStep(context = templateWizardContext) {
-  return getTemplateWizardReminderStep(context);
+  return getTemplateWizardHoursStep(context);
 }
 
 function getTemplateWizardHighlightTarget(
@@ -278,7 +277,7 @@ function populateTemplateWizardHoursBody(journey, templateKey) {
       : templateKey === "custom"
         ? " — e.g. weekday mornings"
         : "";
-  templateWizardHoursBody.textContent = `This journey shows on your main screen during these hours${example}.`;
+  templateWizardHoursBody.textContent = `When this journey shows on your home screen${example}. Your target train must be within these hours.`;
 }
 
 function populateTemplateRouteCoachBody(context = templateWizardContext) {
@@ -290,7 +289,7 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
   const step1Title = document.getElementById("template-wizard-step-1-title");
   if (step1Title) {
     step1Title.textContent =
-      templateKey === "custom" ? "Pick your route" : "Route picked for you";
+      templateKey === "custom" ? "Station & direction" : "Station picked for you";
   }
 
   if (routeLoading) {
@@ -412,8 +411,10 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
 function syncTemplateWizardChrome() {
   const active = Boolean(templateRouteCoach && !templateRouteCoach.hidden);
   const reminderStep = active && templateWizardStep === getTemplateWizardReminderStep();
+  const hoursStep = active && templateWizardStep === getTemplateWizardHoursStep();
   deps.journeysDialog?.classList.toggle("template-wizard-active", active);
   deps.journeysDialog?.classList.toggle("template-wizard-reminder-step", reminderStep);
+  deps.journeysDialog?.classList.toggle("template-wizard-hours-step", hoursStep);
 
   if (!templateRouteCoach) {
     return;
@@ -424,7 +425,8 @@ function syncTemplateWizardChrome() {
     "template-route-coach--step-2",
     "template-route-coach--step-3",
     "template-route-coach--step-4",
-    "template-route-coach--step-5"
+    "template-route-coach--step-5",
+    "template-route-coach--step-6"
   );
   if (active) {
     templateRouteCoach.classList.add(`template-route-coach--step-${templateWizardStep}`);
@@ -537,7 +539,7 @@ async function requestTemplateWizardReminderPermission() {
   syncDetailTargetRemindVisibility();
 }
 
-/** Default Remind me + Live Countdown on, and ask for notification permission once. */
+/** Default Remind me on, and ask for notification permission once. */
 function armRemindersForWizardStep({ animate = false } = {}) {
   const generation = cancelTemplateWizardReminderArm();
 
@@ -561,9 +563,6 @@ function armRemindersForWizardStep({ animate = false } = {}) {
       if (deps.detailRemindMeInput) {
         deps.detailRemindMeInput.checked = false;
       }
-      if (deps.detailLeaveRemindersCommuteStripInput) {
-        deps.detailLeaveRemindersCommuteStripInput.checked = false;
-      }
       syncDetailTargetRemindVisibility();
 
       try {
@@ -572,12 +571,6 @@ function armRemindersForWizardStep({ animate = false } = {}) {
           deps.detailRemindMeInput.checked = true;
         }
         pulseTemplateWizardToggleRow(deps.detailReminderSection);
-
-        await templateWizardReminderDelay(220, generation);
-        if (deps.detailLeaveRemindersCommuteStripInput) {
-          deps.detailLeaveRemindersCommuteStripInput.checked = true;
-        }
-        pulseTemplateWizardToggleRow(deps.detailLeaveRemindersStripWrap);
       } catch (error) {
         if (error?.name !== "AbortError") {
           throw error;
@@ -590,9 +583,6 @@ function armRemindersForWizardStep({ animate = false } = {}) {
       }
     } else if (deps.detailRemindMeInput) {
       deps.detailRemindMeInput.checked = true;
-      if (deps.detailLeaveRemindersCommuteStripInput) {
-        deps.detailLeaveRemindersCommuteStripInput.checked = true;
-      }
       syncDetailTargetRemindVisibility();
     }
 
@@ -628,12 +618,8 @@ function skipTemplateWizard() {
 }
 
 function shouldShowTemplateRouteCoach() {
-  if (hasSeenTemplateWizard()) {
-    return false;
-  }
-
-  // Already set up a journey — fields are familiar; skip the 3-step coach.
-  return getConfiguredJourneys().length === 0;
+  // Journey setup tour — once per install (complete or Skip tour). Routes do not consume it.
+  return !hasSeenTemplateWizard();
 }
 
 function dismissTemplateRouteCoach() {

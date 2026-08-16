@@ -1,6 +1,6 @@
 /**
  * Journey pin + Leave By (FB-20 / superseded U-11 B hero face).
- * Hero defaults to preferred pin; swipe previews later trains; Leave By follows pin.
+ * Hero defaults to target pin; hero and leave card always share the same departure.
  *
  * Nearby pin leave-card NEXT TRAIN (late/missed): manual QA — pin a Near me train,
  * wait until leave card shows late/missed, tap NEXT TRAIN on leave card; pin should
@@ -56,8 +56,9 @@ async function readState(page) {
   return page.evaluate(() => ({
     leaveHidden: document.getElementById("leave-card")?.hidden ?? true,
     jumpHidden: document.getElementById("preferred-hint")?.hidden ?? true,
-    jumpText: document.getElementById("preferred-hint")?.textContent?.trim() ?? "",
     heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
+    heroDepart: document.getElementById("depart-display-time")?.textContent?.trim() ?? "",
+    leaveSubline: document.getElementById("leave-countdown")?.textContent?.trim() ?? "",
     countdown: document.getElementById("depart-countdown")?.textContent?.trim() ?? "",
     followingHidden: document.getElementById("following-section")?.hidden ?? true,
     followingText: document.getElementById("following-next")?.textContent?.trim() ?? "",
@@ -76,11 +77,13 @@ async function run() {
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 60,
           activeJourneyId: journeyId,
           journeys: [
             {
               id: journeyId,
+              kind: "commute",
               name: "Morning commute",
               station: "Edgewater Stn",
               direction: "Perth",
@@ -97,10 +100,6 @@ async function run() {
       );
       localStorage.setItem("nextTrainOnboardingDone", "1");
       sessionStorage.removeItem(`nextTrainSkip:${journeyId}`);
-      sessionStorage.setItem(
-        "nextTrainManualJourneyOverride",
-        JSON.stringify({ journeyId, matchingWindowIds: [journeyId] })
-      );
     },
     {
       preferred: preferredTrainTime,
@@ -152,12 +151,17 @@ async function run() {
   const afterSwipe = await readState(page);
 
   if (afterSwipe.leaveHidden) {
-    console.error("FAIL — Leave By should stay on pin after swipe preview", afterSwipe);
+    console.error("FAIL — Leave card should stay visible after swipe preview", afterSwipe);
     process.exitCode = 1;
   }
 
-  if (afterSwipe.jumpHidden || !afterSwipe.jumpText.includes("Jump to target")) {
-    console.error("FAIL — Jump to target should appear when hero preview ≠ pin", afterSwipe);
+  if (!afterSwipe.leaveSubline.includes(afterSwipe.heroDepart)) {
+    console.error("FAIL — leave card should track the same train as the hero", afterSwipe);
+    process.exitCode = 1;
+  }
+
+  if (!afterSwipe.jumpHidden) {
+    console.error("FAIL — Jump to target should stay hidden (hero and leave stay in sync)", afterSwipe);
     process.exitCode = 1;
   }
 
@@ -181,7 +185,7 @@ async function run() {
   }
 
   if (!afterBack.jumpHidden) {
-    console.error("FAIL — Jump to target should hide after swipe back to pin", afterBack);
+    console.error("FAIL — Jump to target should stay hidden after swipe back", afterBack);
     process.exitCode = 1;
   }
 
@@ -190,7 +194,7 @@ async function run() {
     return;
   }
 
-  console.log("PASS — pin hero, Leave By on pin, jump hint on swipe preview");
+  console.log("PASS — pin hero, leave card synced with hero on swipe");
   await browser.close();
 }
 

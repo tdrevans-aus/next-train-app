@@ -91,6 +91,10 @@ public final class LeaveReminderScheduler {
         return;
       }
 
+      if (scheduleRoutePinIfNeeded(context, settings, stale)) {
+        return;
+      }
+
       JSONArray journeys = settings.optJSONArray("journeys");
       if (journeys == null) {
         return;
@@ -98,6 +102,9 @@ public final class LeaveReminderScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
+        if (!JourneySelector.isCommuteJourney(journey)) {
+          continue;
+        }
         scheduleForJourney(context, journey, stale);
       }
     } catch (Exception error) {
@@ -145,6 +152,64 @@ public final class LeaveReminderScheduler {
       }
 
       return true;
+    } catch (Exception error) {
+      return false;
+    }
+  }
+
+  private static boolean scheduleRoutePinIfNeeded(
+    Context context,
+    JSONObject settings,
+    boolean stale
+  ) {
+    try {
+      JSONArray journeys = settings.optJSONArray("journeys");
+      if (journeys == null) {
+        return false;
+      }
+
+      for (int index = 0; index < journeys.length(); index += 1) {
+        JSONObject journey = journeys.optJSONObject(index);
+        if (journey == null || !JourneySelector.isRouteJourney(journey)) {
+          continue;
+        }
+        if (!journey.optBoolean("pinNotifyMe", false)) {
+          continue;
+        }
+
+        int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
+        PreferredTrainReminder.Target target =
+          JourneyPinHelper.computeRoutePinTarget(journey, leaveBefore, stale);
+        if (target == null) {
+          continue;
+        }
+
+        if (LeaveReminderSettingsStore.isAcknowledged(context, target.departureKey)) {
+          continue;
+        }
+
+        long now = System.currentTimeMillis();
+        String localDate = PerthTime.localDateKey();
+        boolean leaveNowScheduled =
+          target.leaveByMs > now &&
+          !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
+          !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW);
+
+        if (leaveNowScheduled) {
+          scheduleAlarm(
+            context,
+            TYPE_LEAVE_NOW,
+            target.leaveByMs,
+            target,
+            0,
+            alarmRequestCode(target.journeyId, localDate, TYPE_LEAVE_NOW)
+          );
+        }
+
+        return true;
+      }
+
+      return false;
     } catch (Exception error) {
       return false;
     }
@@ -245,6 +310,9 @@ public final class LeaveReminderScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
+        if (!JourneySelector.isCommuteJourney(journey)) {
+          continue;
+        }
         JSONObject journeyResult = describeJourneySchedule(context, journey, stale, computedAtMs);
         if (journeyResult.optBoolean("scheduled", false)) {
           long primaryMs = PerthTime.epochMillisFromIso(journeyResult.optString("primaryNotifyAtIso", ""));
@@ -324,6 +392,11 @@ public final class LeaveReminderScheduler {
       String direction = journey.optString("direction", "");
       if (station.isEmpty() || direction.isEmpty()) {
         result.put("reason", "no_journey");
+        return result;
+      }
+
+      if (!JourneySelector.isCommuteJourney(journey)) {
+        result.put("reason", "route_journey");
         return result;
       }
 

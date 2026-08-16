@@ -2,6 +2,7 @@
  * Active hours wizard step — coach card must not overlap highlighted fields.
  */
 import { chromium } from "playwright";
+import { openJourneysLibraryDialog } from "./helpers/journeys-dialog.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -16,14 +17,11 @@ async function run() {
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(800);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(200);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(400);
+  await openJourneysLibraryDialog(page);
   await page.locator('[data-template="morning"]').click();
   await page.waitForTimeout(2200);
 
-  for (let i = 0; i < 5; i += 1) {
+  for (let i = 0; i < 6; i += 1) {
     const onHoursStep = await page.evaluate(
       () => !document.getElementById("template-wizard-step-3")?.hidden
     );

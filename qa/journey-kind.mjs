@@ -1,5 +1,5 @@
 /**
- * FB-27 — journey kind (route vs commute) inferred in journey-model only.
+ * FB-27 / FB-23 — journey kind (route vs commute) in journey-model.
  * Usage: node qa/journey-kind.mjs
  */
 import { chromium } from "playwright";
@@ -33,17 +33,33 @@ async function run() {
       preferredTrainTime: "07:30",
       remindMe: true,
     });
+    const customTemplate = jm.normalizeJourney({
+      templateKey: "custom",
+      station: "Joondalup",
+      direction: "Perth",
+      remindDays: [1],
+    });
     const explicitRoute = jm.normalizeJourney({
       kind: "route",
       station: "Edgewater Stn",
       direction: "Perth",
       preferredTrainTime: "07:30",
     });
+    const strippedRoute = jm.normalizeJourney({
+      kind: "route",
+      station: "Edgewater Stn",
+      direction: "Perth",
+      preferredTrainTime: "07:30",
+      defaultFrom: "06:00",
+      defaultUntil: "09:00",
+    });
     return {
       route: route.kind,
       commutePreferred: commutePreferred.kind,
       commuteTemplate: commuteTemplate.kind,
+      customTemplate: customTemplate.kind,
       explicitRoute: explicitRoute.kind,
+      strippedPreferred: strippedRoute.preferredTrainTime,
       isCommute: jm.isCommuteJourney(commutePreferred),
       isRoute: jm.isRouteJourney(route),
     };
@@ -55,7 +71,9 @@ async function run() {
     results.route === "route" &&
     results.commutePreferred === "commute" &&
     results.commuteTemplate === "commute" &&
+    results.customTemplate === "commute" &&
     results.explicitRoute === "route" &&
+    results.strippedPreferred === "" &&
     results.isCommute &&
     results.isRoute;
 

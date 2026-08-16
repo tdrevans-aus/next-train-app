@@ -1,5 +1,5 @@
 /**
- * Remind me / Live countdown × notification permission matrix.
+ * Remind me × notification permission matrix.
  * Mocks Capacitor LeaveReminders so web can exercise native permission gates.
  *
  * Usage: node qa/reminders-permission-gate.mjs
@@ -17,6 +17,7 @@ const JOURNEY_ID = "j-perm-gate";
 
 const JOURNEY = {
   id: JOURNEY_ID,
+  kind: "commute",
   name: "Permission gate commute",
   station: "Edgewater Stn",
   direction: "Perth",
@@ -71,6 +72,7 @@ async function seedPage(page, { remindMe = false, permissionGranted = false, set
       localStorage.setItem(
         "nextTrainSettings",
         JSON.stringify({
+          settingsSchemaVersion: 2,
           refreshSeconds: 60,
           activeJourneyId: journey.id,
           journeys: [{ ...journey, remindMe: remindMeOn }],
@@ -95,7 +97,6 @@ async function seedPage(page, { remindMe = false, permissionGranted = false, set
   await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.waitForTimeout(1200);
 
-  // Re-install after navigation — Capacitor mock must win before toggles are used.
   await installLeaveRemindersNativeMock(page, {
     permissionGranted,
     settings,
@@ -127,23 +128,8 @@ async function setToggle(page, id, checked) {
   await page.waitForTimeout(400);
 }
 
-async function scenarioLiveCountdownDenied(page) {
-  const name = "Live countdown on without permission → stays off";
-  await seedPage(page, { permissionGranted: false });
-  await openDetail(page);
-
-  await setToggle(page, "leave-reminders-commute-strip", true);
-  const ui = await readRemindToggleUi(page);
-  const mock = await readLeaveRemindersMock(page);
-
-  if (ui.stripChecked || mock?.settings?.commuteStripEnabled || mock?.enableCalls < 1) {
-    return fail(name, { ui, mock });
-  }
-  return pass(name, { enableCalls: mock.enableCalls });
-}
-
 async function scenarioRemindMeDenied(page) {
-  const name = "Remind me on without permission → both off";
+  const name = "Remind me on without permission → stays off";
   await seedPage(page, { permissionGranted: false });
   await openDetail(page);
 
@@ -151,23 +137,17 @@ async function scenarioRemindMeDenied(page) {
   const ui = await readRemindToggleUi(page);
   const mock = await readLeaveRemindersMock(page);
 
-  if (
-    ui.remindChecked ||
-    ui.stripChecked ||
-    mock?.settings?.commuteStripEnabled ||
-    mock?.settings?.enabled
-  ) {
+  if (ui.remindChecked || mock?.settings?.commuteStripEnabled || mock?.settings?.enabled) {
     return fail(name, { ui, mock });
   }
   return pass(name, { enableCalls: mock.enableCalls });
 }
 
-async function scenarioRemindMeGrantedArmsLive(page) {
-  const name = "Remind me on with permission → Live countdown defaults on";
+async function scenarioRemindMeGrantedArmsStrip(page) {
+  const name = "Remind me on with permission → commute strip defaults on";
   await seedPage(page, { permissionGranted: true });
   await openDetail(page);
 
-  // Start from a clean remind-off state (seed has remindMe false; UI may default on).
   await page.evaluate(() => {
     const remind = document.getElementById("detail-remind-me");
     if (remind) {
@@ -175,10 +155,6 @@ async function scenarioRemindMeGrantedArmsLive(page) {
       if (remind.checked) {
         remind.click();
       }
-    }
-    const strip = document.getElementById("leave-reminders-commute-strip");
-    if (strip?.checked) {
-      strip.click();
     }
   });
   await page.waitForTimeout(400);
@@ -193,48 +169,23 @@ async function scenarioRemindMeGrantedArmsLive(page) {
   const ui = await readRemindToggleUi(page);
   const mock = await readLeaveRemindersMock(page);
 
-  if (!ui.remindChecked || !ui.stripChecked || mock?.permissionGranted !== true) {
+  if (!ui.remindChecked || mock?.permissionGranted !== true) {
     return fail(name, { ui, mock });
   }
 
-  // Master `enabled` may stay false until journey Save persists remindMe — strip should still arm.
   if (!mock?.settings?.commuteStripEnabled) {
-    return fail(name, { ui, mock, note: "expected Live countdown armed in settings" });
+    return fail(name, { ui, mock, note: "expected commute strip armed in settings" });
   }
   return pass(name, {
-    stripChecked: ui.stripChecked,
     commuteStripEnabled: mock.settings.commuteStripEnabled,
   });
-}
-
-async function scenarioLiveCountdownGranted(page) {
-  const name = "Live countdown on with permission → stays on";
-  await seedPage(page, { permissionGranted: true });
-  await openDetail(page);
-
-  await page.evaluate(() => {
-    const strip = document.getElementById("leave-reminders-commute-strip");
-    if (strip?.checked) {
-      strip.click();
-    }
-  });
-  await page.waitForTimeout(300);
-
-  await setToggle(page, "leave-reminders-commute-strip", true);
-  const ui = await readRemindToggleUi(page);
-  const mock = await readLeaveRemindersMock(page);
-
-  if (!ui.stripChecked || !mock?.settings?.commuteStripEnabled) {
-    return fail(name, { ui, mock });
-  }
-  return pass(name, { enableCalls: mock.enableCalls });
 }
 
 async function scenarioEnsureDefaultBlockedWithoutPermission(page) {
   const name = "ensureLiveCountdownDefaultOn does not arm without permission";
   await seedPage(page, {
     permissionGranted: false,
-    settings: { commuteStripEnabled: false },
+    settings: { enabled: true, commuteStripEnabled: false },
   });
 
   const result = await page.evaluate(async () => {
@@ -269,7 +220,7 @@ async function scenarioEnsureClearsOrphanStrip(page) {
 }
 
 async function scenarioHealRevokesStrip(page) {
-  const name = "heal clears Live countdown when permission later denied";
+  const name = "heal clears commute strip when permission later denied";
   await seedPage(page, {
     permissionGranted: false,
     settings: {
@@ -278,12 +229,10 @@ async function scenarioHealRevokesStrip(page) {
     },
   });
 
-  // Journeys with remindMe so heal also clears enabled.
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
     raw.journeys = (raw.journeys || []).map((j) => ({ ...j, remindMe: true }));
     localStorage.setItem("nextTrainSettings", JSON.stringify(raw));
-    // Force in-memory settings reload path via persist if available.
     window.nextTrainApp?.persistReminderJourneys?.([
       {
         id: "j-perm-gate",
@@ -315,92 +264,22 @@ async function scenarioHealRevokesStrip(page) {
   return pass(name);
 }
 
-async function scenarioUiNeverShowsStripOnWithoutPermission(page) {
-  const name = "UI never shows Live countdown on when permission denied";
-  await seedPage(page, {
-    permissionGranted: false,
-    settings: { commuteStripEnabled: true },
-  });
-  await openDetail(page);
-  await page.evaluate(async () => {
-    await window.nextTrainLeaveReminders.refreshJourneyRemindExtras();
-  });
-  await page.waitForTimeout(300);
-
-  const ui = await readRemindToggleUi(page);
-  if (ui.stripChecked) {
-    return fail(name, { ui });
-  }
-  return pass(name);
-}
-
 async function scenarioPermanentDenyOpensSettings(page) {
-  const name = "permanent deny opens notification settings on Live countdown";
+  const name = "permanent deny opens notification settings on Remind me";
   await seedPage(page, {
     permissionGranted: false,
   });
   await page.evaluate(() => window.__qaLeaveRemindersDeny?.(true));
   await openDetail(page);
 
-  await setToggle(page, "leave-reminders-commute-strip", true);
+  await setToggle(page, "detail-remind-me", true);
   const mock = await readLeaveRemindersMock(page);
   const ui = await readRemindToggleUi(page);
 
-  if (ui.stripChecked || mock?.openSettingsCalls < 1) {
+  if (ui.remindChecked || mock?.openSettingsCalls < 1) {
     return fail(name, { ui, mock });
   }
   return pass(name, { openSettingsCalls: mock.openSettingsCalls });
-}
-
-async function scenarioToggleOffLiveKeepsRemind(page) {
-  const name = "Live countdown off leaves Remind me on";
-  await seedPage(page, {
-    permissionGranted: true,
-    settings: { enabled: true, commuteStripEnabled: true },
-  });
-  await openDetail(page);
-
-  await page.evaluate(() => {
-    const remind = document.getElementById("detail-remind-me");
-    if (remind && !remind.checked) {
-      remind.checked = true;
-    }
-    const strip = document.getElementById("leave-reminders-commute-strip");
-    if (strip && !strip.checked) {
-      strip.checked = true;
-    }
-  });
-
-  await setToggle(page, "leave-reminders-commute-strip", false);
-  const ui = await readRemindToggleUi(page);
-  const mock = await readLeaveRemindersMock(page);
-
-  if (!ui.remindChecked || ui.stripChecked || mock?.settings?.commuteStripEnabled) {
-    return fail(name, { ui, mock });
-  }
-  return pass(name);
-}
-
-async function scenarioGrantThenLiveOn(page) {
-  const name = "deny → grant → Live countdown can turn on";
-  await seedPage(page, { permissionGranted: false });
-  await openDetail(page);
-
-  await setToggle(page, "leave-reminders-commute-strip", true);
-  let ui = await readRemindToggleUi(page);
-  if (ui.stripChecked) {
-    return fail(name, { stage: "after deny", ui });
-  }
-
-  await page.evaluate(() => window.__qaLeaveRemindersGrant?.());
-  await setToggle(page, "leave-reminders-commute-strip", true);
-  ui = await readRemindToggleUi(page);
-  const mock = await readLeaveRemindersMock(page);
-
-  if (!ui.stripChecked || !mock?.settings?.commuteStripEnabled) {
-    return fail(name, { stage: "after grant", ui, mock });
-  }
-  return pass(name);
 }
 
 async function scenarioSaveWithRemindHealsEnabled(page) {
@@ -474,17 +353,12 @@ async function run() {
   page.on("pageerror", (e) => pageErrors.push(e.message));
 
   const scenarios = [
-    scenarioLiveCountdownDenied,
     scenarioRemindMeDenied,
-    scenarioRemindMeGrantedArmsLive,
-    scenarioLiveCountdownGranted,
+    scenarioRemindMeGrantedArmsStrip,
     scenarioEnsureDefaultBlockedWithoutPermission,
     scenarioEnsureClearsOrphanStrip,
     scenarioHealRevokesStrip,
-    scenarioUiNeverShowsStripOnWithoutPermission,
     scenarioPermanentDenyOpensSettings,
-    scenarioToggleOffLiveKeepsRemind,
-    scenarioGrantThenLiveOn,
     scenarioSaveWithRemindHealsEnabled,
     scenarioRemindOffDoesNotRequirePermission,
   ];

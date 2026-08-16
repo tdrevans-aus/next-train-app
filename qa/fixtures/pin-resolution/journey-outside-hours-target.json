@@ -1,0 +1,65 @@
+{
+  "id": "journey-outside-hours-target",
+  "description": "Outside Active hours, My Journeys still pins hero to target train.",
+  "tags": ["journey", "preferred", "outside-hours"],
+  "clock": {
+    "perthDateKey": "2026-08-15",
+    "nowIso": "2026-08-15T23:28:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 0,
+    "journey": {
+      "id": "j-evening",
+      "kind": "commute",
+      "name": "Evening home",
+      "station": "Perth Underground Stn",
+      "direction": "Mandurah",
+      "preferredTrainTime": "17:30",
+      "defaultFrom": "15:00",
+      "defaultUntil": "18:00",
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-15T23:42:00+08:00",
+        "displayTime": "23:42",
+        "platform": "1",
+        "leaveBy": "2026-08-15T23:32:00+08:00"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-15T23:42:00+08:00",
+          "displayTime": "23:42",
+          "platform": "1",
+          "leaveBy": "2026-08-15T23:32:00+08:00"
+        },
+        {
+          "departure": "2026-08-15T23:58:00+08:00",
+          "displayTime": "23:58",
+          "platform": "2",
+          "leaveBy": "2026-08-15T23:48:00+08:00"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-15T23:42:00+08:00",
+    "pinDeparture": "2026-08-15T23:42:00+08:00",
+    "heroDeparture": "2026-08-15T23:42:00+08:00",
+    "leaveDeparture": "2026-08-15T23:42:00+08:00",
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": "2026-08-15T23:42:00+08:00",
+    "isPinnedToday": true,
+    "heroShowsPin": true,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": true,
+    "showSecondaryNext": false,
+    "leaveCardArmed": false,
+    "heroLabel": "Target train"
+  }
+}

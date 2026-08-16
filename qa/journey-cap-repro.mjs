@@ -200,7 +200,7 @@ async function run() {
       hintText: hint?.textContent?.trim() ?? "",
       listItems: document.querySelectorAll(".journey-list-item").length,
       hasCapMessage:
-        /maximum|limit|up to 6|6 journey/i.test(bodyText) ||
+        /maximum|limit|up to 5|5 journey/i.test(bodyText) ||
         document.querySelector("[data-journey-cap]") !== null,
     };
   });

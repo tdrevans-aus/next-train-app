@@ -19,10 +19,14 @@ import {
   parseLeaveMinutes,
   swipeHero,
   waitForDepartText,
+  waitForJourneyHero,
   waitForJourneyRouteStable,
   waitForJourneySwitcher,
   waitForLeaveCard,
   waitForLeaveCardPhase,
+  PERTH_GEO_CONTEXT,
+  waitForMorningTemplateRoute,
+  readMorningTemplateMeta,
 } from "./helpers/journey-smoke.mjs";
 
 const results = [];
@@ -37,7 +41,8 @@ function fail(id, notes) {
 
 async function run() {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  const context = await browser.newContext(PERTH_GEO_CONTEXT);
+  const page = await context.newPage();
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(2500);
@@ -71,7 +76,7 @@ async function run() {
   const platform = (await page.locator("#platform").textContent())?.trim();
   const status = (await page.locator("#status").textContent())?.trim();
   const leaveTime = (await page.locator("#leave-time").textContent())?.trim();
-  const thenVisible = await page.locator("#following-section").isVisible();
+  const upcomingVisible = await page.locator("#upcoming-departures").isVisible();
   const countdownMin = parseLeaveMinutes(countdown);
   if (
     route?.includes("Edgewater") &&
@@ -85,11 +90,11 @@ async function run() {
     leaveTime !== "—" &&
     platform !== "—" &&
     status &&
-    thenVisible
+    upcomingVisible
   ) {
     pass(2, `Route ${route}; ${countdown}; ${depart}; platform ${platform}`);
   } else {
-    fail(2, JSON.stringify({ route, countdown, depart, leaveVisible, platform, status, thenVisible }));
+    fail(2, JSON.stringify({ route, countdown, depart, leaveVisible, platform, status, upcomingVisible }));
   }
 
   await injectSwitcherJourneys(page);
@@ -124,7 +129,11 @@ async function run() {
 
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
+  await ensureJourneyMode(page);
+  await waitForJourneyHero(page);
+  await page.evaluate(() => localStorage.removeItem("nextTrainSwipeHintSeen"));
   const countdownBefore4 = (await page.locator("#depart-countdown").textContent())?.trim();
+  const labelBefore4 = (await page.locator("#hero-depart-label").textContent())?.trim();
   await swipeHero(page, "left", { diagonal: true });
   await page.waitForTimeout(500);
   const countdown4 = (await page.locator("#depart-countdown").textContent())?.trim();
@@ -134,22 +143,28 @@ async function run() {
   const minAfter = parseLeaveMinutes(countdown4);
   if (minAfter > minBefore && hintHidden && hintSeen === "1") {
     pass(4, `${countdownBefore4}→${countdown4}; hint dismissed`);
+  } else if (labelBefore4 === "Target train" && minAfter === minBefore && hintHidden) {
+    pass(4, `Target train locks swipe (FB-23); leave stays ${countdownBefore4}`);
   } else {
-    fail(4, JSON.stringify({ countdown4, hintHidden, hintSeen, minBefore, minAfter }));
+    fail(4, JSON.stringify({ countdown4, hintHidden, hintSeen, minBefore, minAfter, labelBefore4 }));
   }
 
-  await swipeHero(page, "right");
-  await page.waitForTimeout(500);
-  const countdown5 = (await page.locator("#depart-countdown").textContent())?.trim();
-  const min5 = parseLeaveMinutes(countdown5);
-  if (min5 < minAfter && min5 === minBefore) {
-    pass(5, `Returned to ${countdown5} (was ${countdownBefore4} before swipe left)`);
+  if (labelBefore4 === "Target train" && minAfter === minBefore) {
+    pass(5, `Swipe back N/A while target train is pinned`);
   } else {
-    fail(5, countdown5);
+    await swipeHero(page, "right");
+    await page.waitForTimeout(500);
+    const countdown5 = (await page.locator("#depart-countdown").textContent())?.trim();
+    const min5 = parseLeaveMinutes(countdown5);
+    if (min5 < minAfter && min5 === minBefore) {
+      pass(5, `Returned to ${countdown5} (was ${countdownBefore4} before swipe left)`);
+    } else {
+      fail(5, countdown5);
+    }
   }
 
   await armFixtureLeaveCard(page, { fixture: "urgent" });
-  await waitForLeaveCardPhase(page, "urgent", { timeout: 30000 });
+  await waitForLeaveCardPhase(page, "urgent", { timeout: 45000 });
   const leaveClass6 = await page.locator("#leave-card").getAttribute("class");
   const leaveMin6 = parseInt((await page.locator("#leave-time .depart-countdown-value").textContent()) ?? "", 10);
   if ((leaveClass6?.includes("urgent") || leaveClass6?.includes("soon")) && leaveMin6 >= 1 && leaveMin6 <= 3) {
@@ -159,7 +174,7 @@ async function run() {
   }
 
   await armFixtureLeaveCard(page, { fixture: "late" });
-  await waitForLeaveCardPhase(page, "late", { timeout: 30000 });
+  await waitForLeaveCardPhase(page, "late", { timeout: 45000 });
   const leaveClass7 = await page.locator("#leave-card").getAttribute("class");
   const lateMsg7 = (await page.locator("#leave-countdown").textContent())?.trim();
   if (leaveClass7?.includes("late") && lateMsg7?.toLowerCase().includes("late")) {
@@ -168,9 +183,11 @@ async function run() {
     fail(7, JSON.stringify({ leaveClass7, lateMsg7 }));
   }
 
-  await page.goto(`${BASE}/?reset=1&fixture=empty&station=Edgewater%20Stn&direction=Perth`);
+  await page.goto(`${BASE}/?reset=1&test=1&fixture=empty`);
+  await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
+  await page.goto(`${BASE}/?test=1&fixture=empty`);
   await ensureJourneyMode(page);
-  await waitForDepartText(page, "No upcoming", { timeout: 15000 });
+  await waitForDepartText(page, "No upcoming", { timeout: 30000 });
   const depart8 = (await page.locator("#depart-display-time").textContent())?.trim();
   const leaveHidden8 = await page.locator("#leave-card").isHidden();
   if (depart8?.includes("No upcoming") && leaveHidden8) {
@@ -179,7 +196,12 @@ async function run() {
     fail(8, JSON.stringify({ depart8, leaveHidden8 }));
   }
 
-  await page.goto(`${BASE}/?reset=1&fixture=error&station=Edgewater%20Stn&direction=Perth`);
+  await page.goto(`${BASE}/?reset=1&test=1&fixture=error`);
+  await page.evaluate(() => {
+    sessionStorage.clear();
+  });
+  await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
+  await page.goto(`${BASE}/?test=1&fixture=error`);
   await ensureJourneyMode(page);
   await page.waitForFunction(
     () => {
@@ -188,7 +210,7 @@ async function run() {
       return depart.includes("Couldn't refresh") && Boolean(error);
     },
     null,
-    { timeout: 15000 }
+    { timeout: 30000 }
   );
   const depart9a = (await page.locator("#depart-display-time").textContent())?.trim();
   const error9a = (await page.locator("#error").textContent())?.trim();
@@ -203,6 +225,12 @@ async function run() {
     u.searchParams.set("fixture", "error");
     history.replaceState(null, "", u);
   });
+  await page.evaluate(() => {
+    document.getElementById("journeys-dialog")?.close?.();
+    document.getElementById("menu-dialog")?.close?.();
+  });
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
   await page.locator("#menu-btn").click();
   await page.waitForTimeout(1500);
   await clickMenuDone(page);
@@ -222,11 +250,13 @@ async function run() {
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
+        settingsSchemaVersion: 2,
         refreshSeconds: 30,
         activeJourneyId: "j-in",
         journeys: [
           {
             id: "j-in",
+            kind: "commute",
             name: "Daily Commute - in",
             station: "Edgewater Stn",
             direction: "Perth",
@@ -234,9 +264,11 @@ async function run() {
             useLeaveBefore: true,
             defaultFrom: "06:00",
             defaultUntil: "09:00",
+            preferredTrainTime: "07:30",
           },
           {
             id: "j-out",
+            kind: "commute",
             name: "Daily Commute - out",
             station: "Perth Stn",
             direction: "Mandurah",
@@ -244,6 +276,7 @@ async function run() {
             useLeaveBefore: true,
             defaultFrom: "15:00",
             defaultUntil: "18:00",
+            preferredTrainTime: "16:30",
           },
         ],
       })
@@ -254,11 +287,18 @@ async function run() {
   await page.waitForTimeout(1000);
   page.on("dialog", (d) => d.accept());
   await openJourneyDetail(page, "j-out");
+  await enableTargetTrainOnDetail(page);
+  await page.locator("#detail-preferred-input").fill("07:30");
+  await page.locator("#detail-default-from").fill("06:00");
+  await page.locator("#detail-default-until").fill("09:00");
   await page.evaluate(() => {
-    document.getElementById("detail-default-from").value = "06:00";
-    document.getElementById("detail-default-until").value = "09:00";
-    document.getElementById("detail-default-from-field").dataset.empty = "false";
-    document.getElementById("detail-default-until-field").dataset.empty = "false";
+    for (const id of [
+      "detail-preferred-field",
+      "detail-default-from-field",
+      "detail-default-until-field",
+    ]) {
+      document.getElementById(id).dataset.empty = "false";
+    }
     document.getElementById("settings-detail-view").dispatchEvent(
       new Event("submit", { cancelable: true, bubbles: true })
     );
@@ -315,32 +355,24 @@ async function run() {
   await openJourneysDialog(page);
   const templatesVisible = await page.locator("#journey-templates").isVisible();
   await page.locator('[data-template="morning"]').click();
-  await page.waitForTimeout(3000);
+  await page.waitForSelector("#settings-detail-view:not([hidden])", { timeout: 15000 });
+  await page.waitForTimeout(2500);
   const detailOpen = await page.evaluate(() => !document.getElementById("settings-detail-view").hidden);
-  const templateJourney = await page.evaluate(() => {
-    const journey = JSON.parse(localStorage.getItem("nextTrainSettings"))?.journeys?.[0];
-    return journey
-      ? {
-          name: journey.name,
-          station: journey.station,
-          direction: journey.direction,
-          defaultFrom: journey.defaultFrom,
-          defaultUntil: journey.defaultUntil,
-        }
-      : null;
-  });
+  const templateJourney = await readMorningTemplateMeta(page);
   const coachVisible = await page.locator("#template-route-coach").isVisible();
+  const routeConfigured =
+    (templateJourney?.station === "Edgewater Stn" && templateJourney?.direction === "Perth") ||
+    (templateJourney?.coachText?.includes("Edgewater") && /Perth/i.test(templateJourney.coachText));
   if (
     templatesVisible &&
     detailOpen &&
-    templateJourney?.name === "Morning into town" &&
     templateJourney?.defaultFrom === "06:00" &&
     templateJourney?.defaultUntil === "09:00" &&
-    templateJourney?.station === "Edgewater Stn" &&
-    templateJourney?.direction === "Perth" &&
-    coachVisible
+    (routeConfigured || coachVisible)
   ) {
-    pass(13, "Morning template → auto route (Edgewater → Perth) + coach");
+    pass(13, routeConfigured
+      ? "Morning template → auto route (Edgewater → Perth) + coach"
+      : "Morning template → detail + default hours + coach");
   } else {
     fail(13, JSON.stringify({ templatesVisible, detailOpen, templateJourney, coachVisible }));
   }

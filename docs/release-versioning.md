@@ -37,8 +37,9 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Release | `versionName` | `versionCode` | Git tag | Notes |
 |---------|---------------|---------------|---------|--------|
 | Shipped pin release | **2.2.0** | **11** | `v2.2.0` | Pin release (FB-14 / FB-20) |
-| **Shipping now (patch)** | **2.2.1** | **12** | `v2.2.1` | Reminders hotfix — `npm run test:patch-ship` |
-| Next features | **2.3.0** | **13+** | `v2.3.0` | FB-29, FB-26, CI soak — full `test:pre-release` |
+| Reminders hotfix | **2.2.1** | **12** | `v2.2.1` | Reminders hotfix — `npm run test:patch-ship` |
+| **Shipping now** | **2.3.0** | **13** | `v2.3.0` | FB-23 Journeys / routes split, wizard polish, hero layout |
+| Next | **2.4.0** | **14+** | `v2.4.0` | FB-26, FB-29, CI soak backlog |
 
 Update this table when you ship.
 

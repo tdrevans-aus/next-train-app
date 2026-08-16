@@ -78,6 +78,9 @@ async function saveReminderSettings(patch) {
   if (patch.paused === false) {
     next.pauseUntil = null;
   }
+  if (Object.prototype.hasOwnProperty.call(patch, "enabled")) {
+    next.commuteStripEnabled = patch.enabled === true;
+  }
   writeLocalReminderSettings(next);
 
   const plugin = getLeaveRemindersPlugin();
@@ -139,11 +142,13 @@ async function enableLeaveReminders({ userInitiated = false } = {}) {
 
 async function ensureLiveCountdownDefaultOn() {
   const settings = await loadReminderSettings();
-  // Don't silently arm — and clear an orphan strip if notifications were revoked.
   if (isNativeApp() && settings?.permissionGranted === false) {
     if (settings?.commuteStripEnabled) {
       return saveReminderSettings({ commuteStripEnabled: false });
     }
+    return settings;
+  }
+  if (!settings?.enabled) {
     return settings;
   }
   if (settings?.commuteStripEnabled) {
@@ -288,54 +293,7 @@ function setNudgeOffsetChips(minutes) {
   });
 }
 
-function updateCommuteStripUi(settings) {
-  const stripInput = document.getElementById("leave-reminders-commute-strip");
-  if (!stripInput) {
-    return;
-  }
-  // Never show Live countdown on if notifications can't fire.
-  const allowed =
-    !isNativeApp() || settings?.permissionGranted !== false;
-  stripInput.checked = Boolean(settings?.commuteStripEnabled) && allowed;
-}
-
-function updateNudgeEarlyUi(settings) {
-  // Early Reminder UI removed from journey detail (product cut 12 Aug 2026).
-  // Native earlyHeadsUp stays off unless already set; strip starts at leave-by.
-  void settings;
-}
-
 function initLeaveReminderUi() {
-  const stripInput = document.getElementById("leave-reminders-commute-strip");
-
-  stripInput?.addEventListener("change", async () => {
-    if (!stripInput.checked) {
-      const settings = await saveReminderSettings({ commuteStripEnabled: false });
-      const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-      await updateRemindersDialogUi(settings, schedule);
-      return;
-    }
-
-    // Live countdown is a notification — require POST_NOTIFICATIONS like Remind me.
-    const enabled = await enableLeaveReminders({ userInitiated: true });
-    if (enabled?.permissionGranted === false) {
-      stripInput.checked = false;
-      const settings = await saveReminderSettings({
-        commuteStripEnabled: false,
-      });
-      const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-      await updateRemindersDialogUi(settings, schedule);
-      return;
-    }
-
-    const settings = await saveReminderSettings({
-      ...enabled,
-      commuteStripEnabled: true,
-    });
-    const schedule = settings?.enabled ? await loadReminderSchedule() : null;
-    await updateRemindersDialogUi(settings, schedule);
-  });
-
   document.getElementById("leave-reminders-pause-chips")?.addEventListener("click", async (event) => {
     const chip = event.target.closest(".reminder-pause-chip");
     if (!chip) {
@@ -660,9 +618,14 @@ async function refreshJourneyRemindExtras() {
     settings = await saveReminderSettings({ earlyHeadsUp: false });
   }
   settings = await healRemindersPermissionState(settings);
-  updateCommuteStripUi(settings);
   updateNudgeEarlyUi(settings);
   return settings;
+}
+
+function updateNudgeEarlyUi(settings) {
+  // Early Reminder UI removed from journey detail (product cut 12 Aug 2026).
+  // Native earlyHeadsUp stays off unless already set; strip starts at leave-by.
+  void settings;
 }
 
 async function refreshMenuPauseUi() {
@@ -716,7 +679,6 @@ function openMyJourneysFromReminders() {
 }
 
 async function updateRemindersDialogUi(settings, schedule) {
-  updateCommuteStripUi(settings);
   updateNudgeEarlyUi(settings);
   updatePauseUi(settings);
   updateReminderScheduleLine(schedule, settings);
