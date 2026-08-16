@@ -262,7 +262,9 @@ export async function waitForJourneySwitcher(page, { timeout = 15000 } = {}) {
 }
 
 export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } = {}) {
-  await page.evaluate((activeJourneyId) => {
+  const preferredIn = formatWallClockMinutes(perthMinutesFromNow(90));
+  const preferredOut = formatWallClockMinutes(perthMinutesFromNow(270));
+  await page.evaluate(({ activeJourneyId, preferredInTime, preferredOutTime }) => {
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
@@ -279,7 +281,8 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
             leaveBeforeMinutes: 10,
             useLeaveBefore: true,
             defaultFrom: "00:00",
-            defaultUntil: "12:00",
+            defaultUntil: "00:00",
+            preferredTrainTime: preferredInTime,
             remindDays: [1, 2, 3, 4, 5, 6, 7],
           },
           {
@@ -290,15 +293,21 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
             direction: "Mandurah",
             leaveBeforeMinutes: 10,
             useLeaveBefore: true,
-            defaultFrom: "12:00",
-            defaultUntil: "23:59",
+            defaultFrom: "00:00",
+            defaultUntil: "00:00",
+            preferredTrainTime: preferredOutTime,
             remindDays: [1, 2, 3, 4, 5, 6, 7],
           },
         ],
       })
     );
     localStorage.setItem("nextTrainOnboardingDone", "1");
-  }, activeId);
+    sessionStorage.removeItem(`nextTrainSkip:${activeJourneyId}`);
+    sessionStorage.setItem(
+      "nextTrainManualJourneyOverride",
+      JSON.stringify({ journeyId: activeJourneyId, matchingWindowIds: [activeJourneyId] })
+    );
+  }, { activeJourneyId: activeId, preferredInTime: preferredIn, preferredOutTime: preferredOut });
 }
 
 export async function waitForDepartCountdown(page, { timeout = 15000 } = {}) {
@@ -403,19 +412,68 @@ export async function waitForJourneyRouteStable(
   );
 }
 
-export async function swipeHero(page, direction, { diagonal = false } = {}) {
-  const box = await page.locator("#hero").boundingBox();
-  if (!box) {
-    throw new Error("hero not found");
+export async function swipeHero(page, direction, { diagonal = false, attempts = 6 } = {}) {
+  const result = await page.evaluate(
+    ({ direction, diagonal, attempts }) => {
+      const hero = document.getElementById("hero");
+      if (!hero) {
+        throw new Error("hero not found");
+      }
+
+      const rect = hero.getBoundingClientRect();
+      const startX = rect.left + rect.width / 2;
+      const startY = rect.top + rect.height / 2;
+      const deltaX = direction === "left" ? (diagonal ? -75 : -80) : diagonal ? 75 : 80;
+      const deltaY = diagonal ? 35 : 0;
+      const endX = startX + deltaX;
+      const endY = startY + deltaY;
+      const countdownEl = document.getElementById("depart-countdown");
+      const before = countdownEl?.textContent?.trim() ?? "";
+
+      const dispatchSwipe = () => {
+        hero.dispatchEvent(
+          new PointerEvent("pointerdown", {
+            clientX: startX,
+            clientY: startY,
+            bubbles: true,
+            pointerId: 1,
+            pointerType: "touch",
+            isPrimary: true,
+          })
+        );
+        hero.dispatchEvent(
+          new PointerEvent("pointerup", {
+            clientX: endX,
+            clientY: endY,
+            bubbles: true,
+            pointerId: 1,
+            pointerType: "touch",
+            isPrimary: true,
+          })
+        );
+      };
+
+      for (let attempt = 0; attempt < attempts; attempt += 1) {
+        dispatchSwipe();
+        const after = countdownEl?.textContent?.trim() ?? "";
+        if (after !== before) {
+          return { before, after, changed: true, attempts: attempt + 1 };
+        }
+      }
+
+      return {
+        before,
+        after: countdownEl?.textContent?.trim() ?? "",
+        changed: false,
+        attempts,
+      };
+    },
+    { direction, diagonal, attempts }
+  );
+
+  if (!result.changed) {
+    return result;
   }
 
-  const x = box.x + box.width / 2;
-  const y = box.y + box.height / 2;
-  const deltaX = direction === "left" ? (diagonal ? -75 : -80) : diagonal ? 75 : 80;
-  const deltaY = diagonal ? 35 : 0;
-
-  await page.mouse.move(x, y);
-  await page.mouse.down();
-  await page.mouse.move(x + deltaX, y + deltaY);
-  await page.mouse.up();
+  return result;
 }

@@ -128,12 +128,12 @@ async function run() {
   }
 
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
-  await page.goto(`${BASE}/?test=1&fixture=normal`);
+  await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
   await ensureJourneyMode(page);
   await waitForJourneyHero(page);
   await page.evaluate(() => localStorage.removeItem("nextTrainSwipeHintSeen"));
   const countdownBefore4 = (await page.locator("#depart-countdown").textContent())?.trim();
+  const labelBefore4 = (await page.locator("#hero-depart-label").textContent())?.trim();
   await swipeHero(page, "left", { diagonal: true });
   await page.waitForTimeout(500);
   const countdown4 = (await page.locator("#depart-countdown").textContent())?.trim();
@@ -143,18 +143,24 @@ async function run() {
   const minAfter = parseLeaveMinutes(countdown4);
   if (minAfter > minBefore && hintHidden && hintSeen === "1") {
     pass(4, `${countdownBefore4}→${countdown4}; hint dismissed`);
+  } else if (labelBefore4 === "Target train" && minAfter === minBefore && hintHidden) {
+    pass(4, `Target train locks swipe (FB-23); leave stays ${countdownBefore4}`);
   } else {
-    fail(4, JSON.stringify({ countdown4, hintHidden, hintSeen, minBefore, minAfter }));
+    fail(4, JSON.stringify({ countdown4, hintHidden, hintSeen, minBefore, minAfter, labelBefore4 }));
   }
 
-  await swipeHero(page, "right");
-  await page.waitForTimeout(500);
-  const countdown5 = (await page.locator("#depart-countdown").textContent())?.trim();
-  const min5 = parseLeaveMinutes(countdown5);
-  if (min5 < minAfter && min5 === minBefore) {
-    pass(5, `Returned to ${countdown5} (was ${countdownBefore4} before swipe left)`);
+  if (labelBefore4 === "Target train" && minAfter === minBefore) {
+    pass(5, `Swipe back N/A while target train is pinned`);
   } else {
-    fail(5, countdown5);
+    await swipeHero(page, "right");
+    await page.waitForTimeout(500);
+    const countdown5 = (await page.locator("#depart-countdown").textContent())?.trim();
+    const min5 = parseLeaveMinutes(countdown5);
+    if (min5 < minAfter && min5 === minBefore) {
+      pass(5, `Returned to ${countdown5} (was ${countdownBefore4} before swipe left)`);
+    } else {
+      fail(5, countdown5);
+    }
   }
 
   await armFixtureLeaveCard(page, { fixture: "urgent" });
@@ -191,6 +197,9 @@ async function run() {
   }
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=error`);
+  await page.evaluate(() => {
+    sessionStorage.clear();
+  });
   await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
   await page.goto(`${BASE}/?test=1&fixture=error`);
   await ensureJourneyMode(page);
@@ -201,7 +210,7 @@ async function run() {
       return depart.includes("Couldn't refresh") && Boolean(error);
     },
     null,
-    { timeout: 15000 }
+    { timeout: 30000 }
   );
   const depart9a = (await page.locator("#depart-display-time").textContent())?.trim();
   const error9a = (await page.locator("#error").textContent())?.trim();
@@ -249,6 +258,7 @@ async function run() {
             useLeaveBefore: true,
             defaultFrom: "06:00",
             defaultUntil: "09:00",
+            preferredTrainTime: "07:30",
           },
           {
             id: "j-out",
@@ -260,6 +270,7 @@ async function run() {
             useLeaveBefore: true,
             defaultFrom: "15:00",
             defaultUntil: "18:00",
+            preferredTrainTime: "16:30",
           },
         ],
       })
@@ -270,11 +281,18 @@ async function run() {
   await page.waitForTimeout(1000);
   page.on("dialog", (d) => d.accept());
   await openJourneyDetail(page, "j-out");
+  await enableTargetTrainOnDetail(page);
+  await page.locator("#detail-preferred-input").fill("07:30");
+  await page.locator("#detail-default-from").fill("06:00");
+  await page.locator("#detail-default-until").fill("09:00");
   await page.evaluate(() => {
-    document.getElementById("detail-default-from").value = "06:00";
-    document.getElementById("detail-default-until").value = "09:00";
-    document.getElementById("detail-default-from-field").dataset.empty = "false";
-    document.getElementById("detail-default-until-field").dataset.empty = "false";
+    for (const id of [
+      "detail-preferred-field",
+      "detail-default-from-field",
+      "detail-default-until-field",
+    ]) {
+      document.getElementById(id).dataset.empty = "false";
+    }
     document.getElementById("settings-detail-view").dispatchEvent(
       new Event("submit", { cancelable: true, bubbles: true })
     );

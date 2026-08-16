@@ -49,6 +49,7 @@ async function run() {
             useLeaveBefore: true,
             defaultFrom: "06:00",
             defaultUntil: "09:00",
+            preferredTrainTime: "07:30",
           },
         ],
       })
