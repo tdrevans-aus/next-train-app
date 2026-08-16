@@ -54,7 +54,6 @@ const RELEASE_EXTRA_SCRIPTS = [
   "fb-23-auto-selection.mjs",
   "fb-23-web.mjs",
   "add-journey-btn.mjs",
-  "fb-23-phase-4-native.mjs",
 ];
 
 const RELEASE_SCRIPTS = [
@@ -66,6 +65,12 @@ const RUNNER_EXCLUDE = new Set([
   "run-all.mjs",
   "pre-upload-check.mjs",
   "pre-release.mjs",
+  /** Meta health-check — uses gh CLI, not a web regression (see soak:status). */
+  "soak-status.mjs",
+  /** Android JVM — separate CI job (android-unit) runs cap sync + Gradle. */
+  "run-android-unit.mjs",
+  /** FB-23 phase 4 native — covered by android-unit job on main. */
+  "fb-23-phase-4-native.mjs",
 ]);
 
 /** Native/device scripts run last so they do not disturb each other. */
