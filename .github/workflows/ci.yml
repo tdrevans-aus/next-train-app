@@ -27,6 +27,25 @@ jobs:
         if: github.event_name == 'push'
         run: npm run test:web:release
 
+  pin-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'push'
+    env:
+      QA_VERBOSE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - name: Journey pin gates (fresh dev-server)
+        run: |
+          node qa/leave-by-preferred-gate.mjs
+          node qa/pin-swipe-notify.mjs
+
   android-unit:
     runs-on: ubuntu-latest
     steps:
