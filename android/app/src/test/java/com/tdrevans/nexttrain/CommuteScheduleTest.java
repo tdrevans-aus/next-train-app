@@ -29,17 +29,13 @@ public class CommuteScheduleTest {
   }
 
   @Test
-  public void hasWidgetAccess_readsProBlob() throws Exception {
+  public void hasWidgetAccess_alwaysTrue() throws Exception {
     JSONObject settings = new JSONObject();
     settings.put(
       "pro",
       new JSONObject().put("hasWidgetAccess", false)
     );
-    assertFalse(CommuteSchedule.hasWidgetAccess(settings));
-
-    JSONObject open = new JSONObject();
-    open.put("pro", new JSONObject().put("hasWidgetAccess", true));
-    assertTrue(CommuteSchedule.hasWidgetAccess(open));
+    assertTrue(CommuteSchedule.hasWidgetAccess(settings));
     assertTrue(CommuteSchedule.hasWidgetAccess(new JSONObject()));
   }
 

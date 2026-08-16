@@ -12,6 +12,14 @@
   const NEARBY_LOCATE_DONT_WAIT_MS = 7000;
   /** While the system permission sheet is up, offer escape sooner so the 7s GPS wait is fair. */
   const NEARBY_LOCATE_PERMISSION_ESCAPE_MS = 2500;
+  /** Foreground re-locate while Near me is open — idle vs traveling cadence. */
+  const NEARBY_RELOCATE_IDLE_MS = 4 * 60 * 1000;
+  const NEARBY_RELOCATE_TRAVEL_MS = 45 * 1000;
+  const NEARBY_TRAVEL_SPEED_MS = 4;
+  const NEARBY_TRAVEL_MOVE_KM = 0.25;
+  const NEARBY_RELOCATE_MOVE_KM = 0.15;
+  const NEARBY_TRAVEL_QUIET_MOVE_KM = 0.1;
+  const NEARBY_TRAVEL_QUIET_SAMPLES = 2;
   const DEFAULT_LEAVE_BEFORE = { leaveBeforeMinutes: 10 };
 
   let deps = {};
@@ -30,6 +38,11 @@
   let nearbyUserPickedStation = false;
   let nearbyError = null;
   let nearbyErrorKind = null;
+  let nearbyRelocateTimer = null;
+  let nearbyTravelMode = false;
+  let lastRelocateSample = null;
+  let nearbyRelocateQuietSamples = 0;
+  let nearbyRelocateTickInflight = false;
 
   const nearbyPinLeaveControlsEl = document.getElementById("nearby-pin-leave-controls");
   const nearbyPinLeaveFooterEl = document.getElementById("nearby-pin-leave-footer");
@@ -672,9 +685,6 @@ function restoreNearbySessionPinFromSettings() {
   }
 
   if (!deps.isNearbyPinSettingsHolding?.(pin)) {
-    if (getSettings().nearbyPin) {
-      persistSettings({ nearbyPin: null });
-    }
     return;
   }
 
@@ -779,9 +789,24 @@ function renderRoutePinLeaveSurfaces(leaveNext, journey, { forTarget = false } =
     leaveBeforeMinutes,
     resolveTripDeparture(leaveNext)
   );
-  renderPinLeaveCardContent(leaveTrip, { forTarget });
+
+  if (deps.isLeaveAcknowledged?.(leaveTrip)) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    deps.syncHeroPinChrome?.();
+    return;
+  }
+
+  const { showLateNag } = renderPinLeaveCardContent(leaveTrip, { forTarget });
   syncPinLeaveControlValues(journey);
   deps.syncHeroPinChrome?.();
+  if (showLateNag) {
+    void deps.maybeAutoAcknowledgeLeave?.(leaveTrip, {
+      station: journey.station,
+    });
+  }
 }
 
 function renderNearbyPinLeaveSurfaces(next, pinned) {
@@ -803,9 +828,26 @@ function renderNearbyPinLeaveSurfaces(next, pinned) {
   }
 
   const leaveNext = buildNearbyLeaveNext(next);
-  renderPinLeaveCardContent(leaveNext);
+  const ackContext = { nearbyStation: nearbySession.station };
+
+  if (deps.isLeaveAcknowledged?.(leaveNext, ackContext)) {
+    if (deps.leaveCardEl) {
+      deps.leaveCardEl.hidden = true;
+    }
+    hideNearbyPinLeaveSurfaces();
+    syncNearbyPinChrome();
+    return;
+  }
+
+  const { showLateNag } = renderPinLeaveCardContent(leaveNext);
   syncPinLeaveControlValues();
   syncNearbyPinChrome();
+  if (showLateNag) {
+    void deps.maybeAutoAcknowledgeLeave?.(leaveNext, {
+      station: nearbySession.station,
+      ackContext,
+    });
+  }
 }
 
 
@@ -1096,6 +1138,188 @@ function stopNearbyLocateTimers() {
   }
 }
 
+function resetNearbyRelocateState() {
+  nearbyTravelMode = false;
+  lastRelocateSample = null;
+  nearbyRelocateQuietSamples = 0;
+}
+
+function shouldRunNearbyRelocate() {
+  if (typeof document !== "undefined" && document.hidden) {
+    return false;
+  }
+
+  return (
+    isNearbyModeActive() &&
+    !nearbyUserPickedStation &&
+    !nearbySession?.unsupportedRegion &&
+    !nearbyLocatePickerVisible
+  );
+}
+
+function pauseNearbyRelocateLoop() {
+  if (nearbyRelocateTimer) {
+    clearTimeout(nearbyRelocateTimer);
+    nearbyRelocateTimer = null;
+  }
+}
+
+function stopNearbyRelocateLoop() {
+  pauseNearbyRelocateLoop();
+  resetNearbyRelocateState();
+  nearbyRelocateTickInflight = false;
+}
+
+function scheduleNearbyRelocate(delayMs) {
+  pauseNearbyRelocateLoop();
+  if (!shouldRunNearbyRelocate()) {
+    return;
+  }
+
+  nearbyRelocateTimer = window.setTimeout(() => {
+    nearbyRelocateTimer = null;
+    void tickNearbyRelocate();
+  }, delayMs);
+}
+
+function startNearbyRelocateLoop() {
+  stopNearbyRelocateLoop();
+  if (!shouldRunNearbyRelocate()) {
+    return;
+  }
+
+  scheduleNearbyRelocate(NEARBY_RELOCATE_IDLE_MS);
+}
+
+function sampleMovedKm(current, previous) {
+  if (!previous || typeof deps.distanceKm !== "function") {
+    return 0;
+  }
+
+  return deps.distanceKm(
+    previous.latitude,
+    previous.longitude,
+    current.latitude,
+    current.longitude
+  );
+}
+
+function isQuietTravelSample(speed, movedKm) {
+  const speedOk = typeof speed !== "number" || speed < NEARBY_TRAVEL_SPEED_MS;
+  return speedOk && movedKm < NEARBY_TRAVEL_QUIET_MOVE_KM;
+}
+
+async function maybeAutoAckNearbyPinLeaveFromTick({ latitude, longitude, speed, movedKm }) {
+  if (!isNearbyPinHolding() || !nearbySession?.station) {
+    return false;
+  }
+
+  const focusedEntry = getNearbyFocusedEntry();
+  const next = focusedEntry?.data?.next;
+  if (!next) {
+    return false;
+  }
+
+  const leaveNext = buildNearbyLeaveNext(next);
+  const { leavePhase } = getLiveTiming(leaveNext);
+  if (leavePhase !== "late" && leavePhase !== "missed") {
+    return false;
+  }
+
+  const ackContext = { nearbyStation: nearbySession.station };
+  return (
+    (await deps.maybeAutoAcknowledgeLeave?.(leaveNext, {
+      station: nearbySession.station,
+      ackContext,
+      latitude,
+      longitude,
+      speed,
+      movedKm,
+    })) ?? false
+  );
+}
+
+async function tickNearbyRelocate() {
+  if (!shouldRunNearbyRelocate()) {
+    stopNearbyRelocateLoop();
+    return;
+  }
+
+  if (nearbyRelocateTickInflight) {
+    return;
+  }
+
+  nearbyRelocateTickInflight = true;
+  const previousTravelMode = nearbyTravelMode;
+  let nextDelayMs = NEARBY_RELOCATE_IDLE_MS;
+
+  try {
+    const getPosition = deps.getAppGeolocationPosition ?? deps.getGeolocationPosition;
+    if (typeof getPosition !== "function") {
+      return;
+    }
+
+    const position = await getPosition({
+      enableHighAccuracy: false,
+      timeout: 8000,
+      maximumAge: nearbyTravelMode ? 30_000 : 120_000,
+    });
+
+    if (!shouldRunNearbyRelocate()) {
+      stopNearbyRelocateLoop();
+      return;
+    }
+
+    const { latitude, longitude, speed } = position.coords;
+    const movedKm = sampleMovedKm({ latitude, longitude }, lastRelocateSample);
+    const enteringTravel =
+      (typeof speed === "number" && speed >= NEARBY_TRAVEL_SPEED_MS) ||
+      movedKm >= NEARBY_TRAVEL_MOVE_KM;
+
+    if (enteringTravel) {
+      nearbyTravelMode = true;
+      nearbyRelocateQuietSamples = 0;
+    } else if (nearbyTravelMode) {
+      if (isQuietTravelSample(speed, movedKm)) {
+        nearbyRelocateQuietSamples += 1;
+        if (nearbyRelocateQuietSamples >= NEARBY_TRAVEL_QUIET_SAMPLES) {
+          nearbyTravelMode = false;
+          nearbyRelocateQuietSamples = 0;
+        }
+      } else {
+        nearbyRelocateQuietSamples = 0;
+      }
+    }
+
+    lastRelocateSample = { latitude, longitude, at: Date.now() };
+
+    await maybeAutoAckNearbyPinLeaveFromTick({
+      latitude,
+      longitude,
+      speed,
+      movedKm,
+    });
+
+    if (movedKm >= NEARBY_RELOCATE_MOVE_KM || nearbyTravelMode) {
+      void locateNearbyInBackground({ forceFresh: false });
+    }
+
+    nextDelayMs = nearbyTravelMode ? NEARBY_RELOCATE_TRAVEL_MS : NEARBY_RELOCATE_IDLE_MS;
+    if (!previousTravelMode && nearbyTravelMode) {
+      nextDelayMs = NEARBY_RELOCATE_TRAVEL_MS;
+    }
+  } catch {
+    nextDelayMs = nearbyTravelMode ? NEARBY_RELOCATE_TRAVEL_MS : NEARBY_RELOCATE_IDLE_MS;
+  } finally {
+    nearbyRelocateTickInflight = false;
+    if (shouldRunNearbyRelocate()) {
+      scheduleNearbyRelocate(nextDelayMs);
+    } else {
+      stopNearbyRelocateLoop();
+    }
+  }
+}
+
 function syncNearbyDontWaitButton() {
   if (!nearbyDontWaitBtn) {
     return;
@@ -1262,6 +1486,8 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
     if (stationChanged) {
       clearNearbyPin();
       nearbySession.refineNotice = "Updated to nearest station";
+    } else {
+      restoreNearbySessionPinFromSettings();
     }
     writeLastNearbyStationCache({
       station: nearest.station,
@@ -1762,6 +1988,7 @@ function setNearbyGpsRefining(value) {
 }
 
 async function enterNearbyMode({ station: manualStation, distanceKm = null } = {}) {
+  deps.setChromeTravelTab?.("nearby");
   setJourneyModeActive(false);
   deps.clearManualJourneyOverride?.();
   deps.dismissLeaveHint?.();
@@ -1863,6 +2090,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
       }
       void locateNearbyInBackground({ forceFresh: false });
     })();
+    startNearbyRelocateLoop();
     return;
   }
 
@@ -1908,12 +2136,14 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
     }
     void locateNearbyInBackground();
   })();
+  startNearbyRelocateLoop();
 }
 
 function exitNearbyMode() {
-  clearNearbyPin();
+  syncNearbyPinSettings();
   hideNearbyPinLeaveSurfaces();
   stopNearbyLocateTimers();
+  stopNearbyRelocateLoop();
   dismissNearbyLocatePicker();
   nearbyDontWaitVisible = false;
   syncNearbyDontWaitButton();
@@ -1947,6 +2177,7 @@ async function applyNearbyManualStation(station) {
   clearNearbyError();
   clearNearbyPin();
   stopNearbyLocateTimers();
+  stopNearbyRelocateLoop();
   dismissNearbyLocatePicker();
   nearbyDontWaitVisible = false;
   syncNearbyDontWaitButton();
@@ -2075,8 +2306,10 @@ function initNearbyListeners() {
     isNearbyModeActive,
     isNearbyPinHolding,
     isNearbyPinShowing,
+    isNearbyRelocateLoopScheduled: () => nearbyRelocateTimer !== null,
     isUnsupportedRegion,
     locateNearbyInBackground,
+    pauseNearbyRelocateLoop,
     nearbyBoardHasDepartures,
     nearbyBoardLooksEmpty,
     nearbyLoadingHeroCopy,
@@ -2101,12 +2334,15 @@ function initNearbyListeners() {
     showNearbyEarlyPicker,
     showNearbyFallback,
     startNearbyLocateTimers,
+    startNearbyRelocateLoop,
     stopNearbyLocateTimers,
+    stopNearbyRelocateLoop,
     syncChromeMode,
     syncNearbyChrome,
     syncNearbyDontWaitButton,
     syncNearbyLeaveBeforeSliderFill,
     syncNearbyPinSettings,
+    tickNearbyRelocate,
     updateNearbyLeaveBeforeLabel,
     writeLastNearbyStationCache,
     UNSUPPORTED_REGION_KM,

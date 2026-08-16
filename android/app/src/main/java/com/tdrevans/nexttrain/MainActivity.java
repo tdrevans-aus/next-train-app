@@ -8,18 +8,33 @@ import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
 
+  public static final String EXTRA_WIDGET_CONFIGURE = "nexttrain_widget_configure";
+  public static final String EXTRA_WIDGET_CONFIGURE_ID = "nexttrain_widget_configure_id";
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     registerPlugin(WidgetSyncPlugin.class);
     registerPlugin(LeaveReminderPlugin.class);
     super.onCreate(savedInstanceState);
     DeepLinkHelper.capture(getIntent());
+    DeepLinkHelper.applyDebugActions(this, getIntent());
 
     getOnBackPressedDispatcher().addCallback(
       this,
       new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
+          if (WidgetConfigureBridge.isActive()) {
+            WidgetConfigureBridge.finish(false);
+            notifyWidgetConfigureFinished(false);
+            return;
+          }
+
+          if (WidgetSyncPlugin.isWidgetSetupOverlayActive()) {
+            notifyWidgetConfigureFinished(false);
+            return;
+          }
+
           WebView webView = getBridge().getWebView();
           if (webView != null && webView.canGoBack()) {
             webView.goBack();
@@ -38,6 +53,7 @@ public class MainActivity extends BridgeActivity {
     super.onNewIntent(intent);
     setIntent(intent);
     DeepLinkHelper.capture(intent);
+    DeepLinkHelper.applyDebugActions(this, intent);
     CommuteRefreshService.repaintFromCache(this);
     CommuteRefreshService.refreshAll(this);
   }
@@ -47,5 +63,14 @@ public class MainActivity extends BridgeActivity {
     super.onResume();
     CommuteRefreshService.repaintFromCache(this);
     CommuteRefreshService.refreshAll(this);
+  }
+
+  private void notifyWidgetConfigureFinished(boolean ok) {
+    if (getBridge() == null) {
+      return;
+    }
+    com.getcapacitor.JSObject payload = new com.getcapacitor.JSObject();
+    payload.put("ok", ok);
+    getBridge().triggerJSEvent("widgetConfigureFinished", payload.toString());
   }
 }

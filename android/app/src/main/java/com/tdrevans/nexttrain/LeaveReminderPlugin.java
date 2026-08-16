@@ -196,6 +196,29 @@ public class LeaveReminderPlugin extends Plugin {
   }
 
   @PluginMethod
+  public void setFastTestMode(PluginCall call) {
+    if (!isDebuggable()) {
+      call.reject("Fast test is only available in debug builds");
+      return;
+    }
+
+    boolean enabled = Boolean.TRUE.equals(call.getBoolean("enabled", false));
+    LeaveReminderSettingsStore.setFastTestEnabled(getContext(), enabled);
+    CommuteRefreshService.refreshAll(getContext());
+    JSObject result = new JSObject();
+    result.put("enabled", enabled);
+    call.resolve(result);
+  }
+
+  @PluginMethod
+  public void getFastTestMode(PluginCall call) {
+    JSObject result = new JSObject();
+    result.put("enabled", isDebuggable() && LeaveReminderSettingsStore.isFastTestEnabled(getContext()));
+    result.put("available", isDebuggable());
+    call.resolve(result);
+  }
+
+  @PluginMethod
   public void isAvailable(PluginCall call) {
     JSObject result = new JSObject();
     result.put("available", true);
@@ -227,6 +250,10 @@ public class LeaveReminderPlugin extends Plugin {
       ContextCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS) !=
       PackageManager.PERMISSION_GRANTED
     );
+  }
+
+  private boolean isDebuggable() {
+    return (getContext().getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
   }
 
   private JSObject settingsToJs(JSONObject settings) {

@@ -362,6 +362,54 @@
     return resolveJourneyPreferredTargetDeparture(normalized, journeyClean, resolvedClock);
   }
 
+  function resolveDepartedJourneyTargetDeparture(payload, journey, clock = resolveClock()) {
+    const resolvedClock = resolveClock(clock);
+    if (!payload || !journey || isRouteJourney(journey)) {
+      return null;
+    }
+
+    const normalized = normalizeApiTrainData(payload);
+    const journeyClean = sanitizeJourneyPinFields(journey, resolvedClock);
+
+    if (isJourneyOverrideActiveToday(journeyClean, resolvedClock)) {
+      const overrideTrip = findTripByDepartureIso(normalized, journeyClean.journeyPinOverrideIso);
+      if (overrideTrip && tripHasDeparted(overrideTrip, resolvedClock)) {
+        return resolveTripDeparture(overrideTrip);
+      }
+      return null;
+    }
+
+    if (isJourneyPinDismissedToday(journeyClean, resolvedClock)) {
+      return null;
+    }
+
+    const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
+    if (preferredMinutes < 0) {
+      return null;
+    }
+
+    const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
+    for (const trip of getUpcomingTrips(normalized)) {
+      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
+        continue;
+      }
+      if (tripHasDeparted(trip, resolvedClock)) {
+        return resolveTripDeparture(trip);
+      }
+      return null;
+    }
+
+    return null;
+  }
+
+  function resolveJourneyActiveTargetDeparture(payload, journey, clock = resolveClock()) {
+    const pinDeparture = resolveJourneyPinDeparture(payload, journey, clock);
+    if (pinDeparture) {
+      return pinDeparture;
+    }
+    return resolveDepartedJourneyTargetDeparture(payload, journey, clock);
+  }
+
   function nearbyPinExpiryMs(pin) {
     if (!pin?.departureIso) {
       return 0;
@@ -444,11 +492,7 @@
     }
 
     const journeyClean = sanitizeJourneyPinFields(journey, clock);
-    if (isJourneyOverrideActiveToday(journeyClean, clock)) {
-      return true;
-    }
-
-    return journeyMatchesSchedule(journeyClean, clock);
+    return isJourneyPinnedToday(journeyClean, clock);
   }
 
   function getHeroLabel({
@@ -481,6 +525,12 @@
 
     if (skipTrains > 0) {
       return resolveSkippedHeroDeparture(input.payload, skipTrains, clock);
+    }
+    if (input.mode === "journey") {
+      return (
+        resolveJourneyActiveTargetDeparture(input.payload, input.journey, clock) ??
+        trueNextDeparture
+      );
     }
     return pinDeparture ?? trueNextDeparture;
   }
@@ -515,12 +565,18 @@
           ? resolveNearbyPinDeparture(input.payload, input.nearbyPin, clock)
           : null;
 
+    const departedTargetDeparture =
+      mode === "journey"
+        ? resolveDepartedJourneyTargetDeparture(input.payload, input.journey, clock)
+        : null;
+    const activeTargetDeparture = pinDeparture ?? departedTargetDeparture;
+
     const heroDeparture = isSkipPreview
       ? resolveSkippedHeroDeparture(input.payload, skipTrains, clock)
-      : pinDeparture ?? trueNextDeparture;
+      : activeTargetDeparture ?? trueNextDeparture;
 
     const leaveDeparture = pinDeparture ?? trueNextDeparture;
-    const widgetFaceDeparture = pinDeparture ?? trueNextDeparture;
+    const widgetFaceDeparture = activeTargetDeparture ?? trueNextDeparture;
 
     const journeyClean =
       mode === "journey" ? sanitizeJourneyPinFields(input.journey, clock) : null;
@@ -533,7 +589,9 @@
         ? isJourneyPinnedToday(input.journey, clock)
         : Boolean(pinDeparture);
 
-    const heroShowsPin = Boolean(pinDeparture && heroDeparture === pinDeparture);
+    const heroShowsPin = Boolean(
+      activeTargetDeparture && heroDeparture === activeTargetDeparture
+    );
     const showSecondaryNext = Boolean(
       !isSkipPreview &&
         trueNextDeparture &&
@@ -544,7 +602,9 @@
 
     const nearbyHolding = mode === "nearby" && isNearbyPinHolding(input.nearbyPin, clock);
     const showsTargetTrain = Boolean(
-      pinDeparture && heroDeparture === pinDeparture && !isOverrideActiveToday
+      activeTargetDeparture &&
+        heroDeparture === activeTargetDeparture &&
+        !isOverrideActiveToday
     );
     const isHeroPinLockingSwipe = nearbyHolding || heroShowsPin;
 
@@ -586,8 +646,11 @@
     isJourneyOverrideActiveToday,
     isJourneyPinDismissedToday,
     isJourneyPinnedToday,
+    isJourneyTargetPinnedToday: isJourneyPinnedToday,
     sanitizeJourneyPinFields,
     resolveJourneyPinDeparture,
+    resolveDepartedJourneyTargetDeparture,
+    resolveJourneyActiveTargetDeparture,
     resolveTrueNextDeparture,
     resolveNearbyPinDeparture,
     resolveHeroDeparture,

@@ -43,14 +43,32 @@ Pure logic tests on the JVM, no alarms:
 
 `LeaveReminders.getSchedule()` + Reminders dialog line **“Next reminder: 7:15 for 7:30 train”** when reminders are on. Same compute path as the scheduler; `reason` codes for paused / wrong_day / already_fired / etc.
 
-### 3. Optional fast-test mode (debug builds only)
+### 3. Native reminder fast-test mode (debug builds) — **shipped**
 
-When `sessionStorage.nextTrainReminderTest=1` or build flag:
+**Purpose:** Schedule one alarm **~60s** after reschedule so QA can prove Receiver → Notifier → tap without waiting for the next real commute window.
 
-- Schedule alarm **60s** from reschedule (still exercise Receiver → Notifier → tap).
-- Mark day-fired after fire so second alarm doesn’t spam.
+**Arm** (debug APK only — no-op on Play release):
 
-Use for **one** instrumented/manual pass per release; not daily CI.
+| Method | How |
+|--------|-----|
+| **ADB deep link** | `adb shell am start -a android.intent.action.VIEW -d "nexttrain://test/reminder-fast" com.tdrevans.nexttrain` |
+| **sessionStorage** | `sessionStorage.nextTrainReminderTest = "1"` before app load → JS calls `LeaveReminders.setFastTestMode` |
+| **Plugin** | `await Capacitor.Plugins.LeaveReminders.setFastTestMode({ enabled: true })` |
+
+**Disable:** deep link `nexttrain://test/reminder-fast?off=1` or `setFastTestMode({ enabled: false })`.
+
+**Steps:**
+
+1. Journey with **Remind me** on.
+2. Arm fast-test (above).
+3. Menu → enable leave reminders (or toggle off/on) → grant notification permission.
+4. **Reminder settings** → expect **Test reminder ~…** line (`reason: fast_test` from `getSchedule()`).
+5. Wait **~60s** → **one** notification; day-fired gate prevents a second auto ping.
+6. Tap notification → app opens journey mode.
+
+**Device sheet:** `docs/DEVICE-SMOKE.md` check **11b**.
+
+Use for **one** manual pass per release when reminder code changes; not daily CI.
 
 ### 4. Playwright — web smoke (Tim can own now)
 

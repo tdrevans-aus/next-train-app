@@ -209,10 +209,10 @@
   }
 
   function isRouteEditorContext(journey = null) {
-    if (libraryKind === "routes") {
-      return true;
+    if (journey) {
+      return isRouteJourney(journey);
     }
-    return journey ? isRouteJourney(journey) : false;
+    return libraryKind === "routes";
   }
 
   function syncDetailFormForJourneyKind(journey) {
@@ -602,17 +602,7 @@ function isTargetOutsideActiveWindow(defaultFrom, defaultUntil, preferredTrainTi
 
 const JOURNEY_WINDOW_TARGET_PADDING_MINUTES = 90;
 
-function maybeDefaultJourneyWindowFromTarget(preferredTrainTime) {
-  if (!isCommuteDetailEditor() || !preferredTrainTime) {
-    return;
-  }
-
-  const defaultFrom = readOptionalTimeField(detailDefaultFromField);
-  const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
-  if (defaultFrom || defaultUntil) {
-    return;
-  }
-
+function journeyWindowAroundTarget(preferredTrainTime) {
   const from =
     deps.addMinutesToTimeString?.(
       preferredTrainTime,
@@ -621,10 +611,10 @@ function maybeDefaultJourneyWindowFromTarget(preferredTrainTime) {
   const until =
     deps.addMinutesToTimeString?.(preferredTrainTime, JOURNEY_WINDOW_TARGET_PADDING_MINUTES) ??
     "";
-  if (!from || !until) {
-    return;
-  }
+  return { from, until };
+}
 
+function setDetailJourneyWindow(from, until) {
   setOptionalTimeField(
     detailDefaultFromInput,
     detailDefaultFromDisplay,
@@ -641,9 +631,54 @@ function maybeDefaultJourneyWindowFromTarget(preferredTrainTime) {
   );
 }
 
-function syncDetailComboHints() {
+function maybeDefaultJourneyWindowFromTarget(preferredTrainTime) {
+  if (!isCommuteDetailEditor() || !preferredTrainTime) {
+    return;
+  }
+
+  const defaultFrom = readOptionalTimeField(detailDefaultFromField);
+  const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
+  if (defaultFrom || defaultUntil) {
+    return;
+  }
+
+  const { from, until } = journeyWindowAroundTarget(preferredTrainTime);
+  if (!from || !until) {
+    return;
+  }
+
+  setDetailJourneyWindow(from, until);
+}
+
+function amendJourneyWindowFromTargetIfNeeded(preferredTrainTime) {
+  if (!isCommuteDetailEditor() || !preferredTrainTime) {
+    return;
+  }
+
+  const defaultFrom = readOptionalTimeField(detailDefaultFromField);
+  const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
+  if (
+    !defaultFrom ||
+    !defaultUntil ||
+    !isTargetOutsideActiveWindow(defaultFrom, defaultUntil, preferredTrainTime)
+  ) {
+    return;
+  }
+
+  const { from, until } = journeyWindowAroundTarget(preferredTrainTime);
+  if (!from || !until) {
+    return;
+  }
+
+  setDetailJourneyWindow(from, until);
+}
+
+function syncDetailComboHints({ amendWindowFromTarget = false } = {}) {
   const preferredTrainTime = readOptionalTimeField(detailPreferredField);
   maybeDefaultJourneyWindowFromTarget(preferredTrainTime);
+  if (amendWindowFromTarget) {
+    amendJourneyWindowFromTargetIfNeeded(preferredTrainTime);
+  }
 
   const defaultFrom = readOptionalTimeField(detailDefaultFromField);
   const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
@@ -1901,6 +1936,11 @@ function saveJourneyDetailFromForm() {
 }
 
 function openJourneyDetail(journeyId, options = {}) {
+  const persistedJourney = getJourneyById(journeyId);
+  if (persistedJourney) {
+    setLibraryKind(isRouteJourney(persistedJourney) ? "routes" : "journeys");
+  }
+
   openJourneysDialogSync();
   showSettingsDetailView();
   if (detailDirectionSelect) {

@@ -2,7 +2,7 @@
 
 **For:** Jim (implement) / Tim (product)  
 **Status:** **Shipped (Android IAP)** — web shows “available in the Android app” hint; no fake web checkout  
-**Product decision:** **$3.99 AUD · one-time · forever** — not a subscription  
+**Product decision:** **A$7.99 AUD · one-time · forever** — not a subscription  
 **Related:** chrome **Menu** (`docs/chrome-modes-and-labels.md`); no Continue ad gate (`docs/remove-ad-continue-gate.md`)
 
 **Menu order as built:** How it works → Add home screen widget → Leave reminders → Remove ads / Restore → About · Privacy → Clear all data.  
@@ -34,7 +34,7 @@ Let users pay once to permanently remove ads on that store account / purchase en
 
 | Item | Value |
 |------|--------|
-| Price | **A$3.99** (AUD) |
+| Price | **A$7.99** (AUD) |
 | Model | Non-consumable / lifetime unlock (Play Billing one-time; App Store non-consumable if/when iOS exists) |
 | Customer-facing name | **Remove ads** |
 | Store product name (suggested) | `Next Train Ad-free` |

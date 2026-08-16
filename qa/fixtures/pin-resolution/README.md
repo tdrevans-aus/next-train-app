@@ -28,9 +28,13 @@ node qa/pin-resolution-fixtures.mjs --validate-only
 IMPLEMENT_PIN_STATE=1 node qa/pin-resolution-fixtures.mjs
 ```
 
-## Android (planned)
+## Android
 
-Copy fixtures into `android/app/src/test/resources/pin-resolution/` and add `PinResolutionFixtureTest` that parametrizes over files. Gradle can sync from this directory in the implementation PR.
+Fixtures are copied into `android/app/src/test/resources/pin-resolution/` by the `copyPinResolutionFixtures` Gradle task. Run:
+
+```bash
+cd android && ./gradlew :app:testDebugUnitTest --tests "com.tdrevans.nexttrain.PinResolutionFixtureTest"
+```
 
 ## Adding a case
 

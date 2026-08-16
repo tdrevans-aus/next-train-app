@@ -1,6 +1,7 @@
 package com.tdrevans.nexttrain;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -49,6 +50,8 @@ final class WidgetLayoutTestSupport {
   static final class RemoteViewsBinding {
     private final Map<Integer, String> textByViewId = new HashMap<>();
     private final Map<Integer, Integer> visibilityByViewId = new HashMap<>();
+    private final Map<Integer, Bitmap> bitmapByViewId = new HashMap<>();
+    private final Map<Integer, Integer> backgroundColorByViewId = new HashMap<>();
 
     static RemoteViewsBinding from(RemoteViews remoteViews) {
       RemoteViewsBinding binding = new RemoteViewsBinding();
@@ -70,6 +73,18 @@ final class WidgetLayoutTestSupport {
     }
 
     private void applyAction(Object action) {
+      String className = action.getClass().getSimpleName();
+      if (className.contains("Bitmap")) {
+        Integer viewId = asInt(readField(action, "viewId"));
+        if (viewId != null) {
+          Object bitmap = readField(action, "bitmap");
+          if (bitmap instanceof Bitmap) {
+            bitmapByViewId.put(viewId, (Bitmap) bitmap);
+          }
+        }
+        return;
+      }
+
       String methodName = asString(readField(action, "methodName"));
       if (methodName == null) {
         return;
@@ -79,12 +94,25 @@ final class WidgetLayoutTestSupport {
         return;
       }
       Object value = readField(action, "value");
+      Object bitmap = readField(action, "bitmap");
       switch (methodName) {
         case "setText":
           textByViewId.put(viewId, value == null ? "" : value.toString());
           break;
         case "setVisibility":
           visibilityByViewId.put(viewId, value instanceof Integer ? (Integer) value : View.GONE);
+          break;
+        case "setImageViewBitmap":
+          if (bitmap instanceof Bitmap) {
+            bitmapByViewId.put(viewId, (Bitmap) bitmap);
+          } else if (value instanceof Bitmap) {
+            bitmapByViewId.put(viewId, (Bitmap) value);
+          }
+          break;
+        case "setBackgroundColor":
+          if (value instanceof Integer) {
+            backgroundColorByViewId.put(viewId, (Integer) value);
+          }
           break;
         default:
           break;
@@ -119,6 +147,14 @@ final class WidgetLayoutTestSupport {
 
     int visibility(int viewId) {
       return visibilityByViewId.getOrDefault(viewId, View.GONE);
+    }
+
+    Bitmap bitmap(int viewId) {
+      return bitmapByViewId.get(viewId);
+    }
+
+    Integer backgroundColor(int viewId) {
+      return backgroundColorByViewId.get(viewId);
     }
 
     String primaryDisplay() {

@@ -105,6 +105,8 @@ In-app: same clock rule — outside all Active hours → **Near me** (manual jou
 
 Visual language: light surface, teal accent on the **train** number, urgency on leave copy only.
 
+**FB-35 (widget colour presets):** Menu → **Widget appearance** offers eight curated skins plus **Match system** (Android 12+, **FB-38**). **FB-39** adds **Classic / Minimal / Bold** style packs. Only widget **bg**, **text**, **muted**, **accent**, and card border vary by preset — **leave / urgent / late** semantic colours stay fixed. Briefs: `docs/jim-brief-widget-colour-presets.md`, `docs/jim-brief-widget-style-packs.md`.
+
 ---
 
 ## 6. States

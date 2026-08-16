@@ -5,7 +5,7 @@
   "admobBannerId": "ca-app-pub-2659068072900088/7567893589",
   "admobTestMode": false,
   "adFreeProductId": "com.tdrevans.nexttrain.adfree",
-  "proTrialDays": 30,
+  "adFreeListPrice": "A$7.99",
   "appVersion": "2.3.0",
   "appVersionCode": 13,
   "sentryDsn": "https://fe6d3f1d51c5a06be0ec973f8590af0b@o4511892388773888.ingest.us.sentry.io/4511892415643648"

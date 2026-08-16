@@ -1,10 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     namespace = "com.tdrevans.nexttrain"
     compileSdk = rootProject.ext.compileSdkVersion
     buildFeatures {
         buildConfig = true
+    }
+    kotlinOptions {
+        jvmTarget = '21'
     }
     defaultConfig {
         applicationId "com.tdrevans.nexttrain"
@@ -36,6 +40,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk {
+                debugSymbolLevel 'SYMBOL_TABLE'
+            }
             if (signingConfigs.release.storeFile != null) {
                 signingConfig signingConfigs.release
             }
@@ -46,6 +53,26 @@ android {
             includeAndroidResources = true
         }
     }
+}
+
+tasks.register('copyPinResolutionFixtures', Copy) {
+    from("${rootDir}/../qa/fixtures/pin-resolution") {
+        include '*.json'
+        exclude 'schema.json'
+    }
+    into "${projectDir}/src/test/resources/pin-resolution"
+    doLast {
+        def indexFile = file("${projectDir}/src/test/resources/pin-resolution/index.txt")
+        indexFile.parentFile.mkdirs()
+        def names = fileTree("${projectDir}/src/test/resources/pin-resolution") {
+            include '*.json'
+        }.files.collect { it.name }.sort()
+        indexFile.text = names.join('\n')
+    }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn copyPinResolutionFixtures
 }
 
 repositories {
@@ -59,6 +86,11 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation platform("androidx.compose:compose-bom:$composeBomVersion")
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.material3:material3"
+    implementation "androidx.glance:glance-appwidget:$glanceVersion"
+    implementation "androidx.glance:glance-material3:$glanceVersion"
     implementation project(':capacitor-android')
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.json:json:20240303"

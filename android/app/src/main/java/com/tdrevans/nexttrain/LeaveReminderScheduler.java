@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,6 +30,7 @@ public final class LeaveReminderScheduler {
 
   private static final String PREFS = "next_train_leave_reminders";
   private static final String KEY_SCHEDULED_ALARMS = "scheduled_alarm_keys";
+  public static final long FAST_TEST_DELAY_MS = 60_000L;
 
   private static final class AlarmPlan {
 
@@ -55,6 +57,18 @@ public final class LeaveReminderScheduler {
 
   private LeaveReminderScheduler() {}
 
+  public static long computeFastTestTriggerAtMs(long nowMs) {
+    return nowMs + FAST_TEST_DELAY_MS;
+  }
+
+  static boolean isFastTestActive(Context context) {
+    return isDebuggable(context) && LeaveReminderSettingsStore.isFastTestEnabled(context);
+  }
+
+  private static boolean isDebuggable(Context context) {
+    return (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+  }
+
   public static void reschedule(Context context, CommuteSchedule.Result widgetResult) {
     cancelAllScheduled(context);
     LeaveReminderSettingsStore.clearExpiredPauseIfNeeded(context);
@@ -70,6 +84,11 @@ public final class LeaveReminderScheduler {
     }
 
     cancelPauseResumeAlarm(context);
+
+    if (isFastTestActive(context)) {
+      scheduleFastTest(context);
+      return;
+    }
 
     long refreshedAt = widgetResult != null && widgetResult.refreshedAtMs > 0
       ? widgetResult.refreshedAtMs
@@ -250,6 +269,188 @@ public final class LeaveReminderScheduler {
   }
 
   /**
+   * Debug QA path — one alarm ~60s from reschedule. Exercises Receiver → Notifier → tap without
+   * waiting for the next real commute window.
+   */
+  private static void scheduleFastTest(Context context) {
+    try {
+      String settingsJson = WidgetSettingsStore.readSettings(context);
+      if (settingsJson == null || settingsJson.isEmpty()) {
+        return;
+      }
+
+      JSONObject settings = new JSONObject(settingsJson);
+      JSONArray journeys = settings.optJSONArray("journeys");
+      if (journeys == null) {
+        return;
+      }
+
+      long now = System.currentTimeMillis();
+      long triggerAtMs = computeFastTestTriggerAtMs(now);
+      String localDate = PerthTime.localDateKey();
+
+      for (int index = 0; index < journeys.length(); index += 1) {
+        JSONObject journey = journeys.getJSONObject(index);
+        if (!JourneySelector.isCommuteJourney(journey)) {
+          continue;
+        }
+        if (!PreferredTrainReminder.isRemindMeEnabled(journey)) {
+          continue;
+        }
+
+        PreferredTrainReminder.Target target = resolveFastTestTarget(context, journey);
+        if (target == null) {
+          continue;
+        }
+
+        if (LeaveReminderSettingsStore.isAcknowledged(context, target.departureKey)) {
+          continue;
+        }
+
+        String type;
+        int getReadyMinutes = LeaveReminderSettingsStore.getReadyOffsetMinutes(context);
+        if (LeaveReminderSettingsStore.isGetReadyEnabled(context)) {
+          type = TYPE_GET_READY;
+          if (
+            LeaveReminderSettingsStore.hasGetReadyFiredForDay(context, target.journeyId, localDate) ||
+            LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_GET_READY)
+          ) {
+            continue;
+          }
+        } else if (
+          !LeaveReminderSettingsStore.isCommuteStripEnabled(context) &&
+          !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
+          !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW)
+        ) {
+          type = TYPE_LEAVE_NOW;
+          getReadyMinutes = 0;
+        } else {
+          type = TYPE_GET_READY;
+          if (
+            LeaveReminderSettingsStore.hasGetReadyFiredForDay(context, target.journeyId, localDate) ||
+            LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_GET_READY)
+          ) {
+            continue;
+          }
+        }
+
+        scheduleAlarm(
+          context,
+          type,
+          triggerAtMs,
+          target,
+          getReadyMinutes,
+          alarmRequestCode(target.journeyId, localDate, "fast_test:" + type)
+        );
+        return;
+      }
+    } catch (Exception error) {
+      // Best effort — fast test is optional QA.
+    }
+  }
+
+  private static PreferredTrainReminder.Target resolveFastTestTarget(
+    Context context,
+    JSONObject journey
+  ) throws Exception {
+    AlarmPlan plan = computeAlarmPlan(context, journey, false);
+    if (plan != null) {
+      return plan.target;
+    }
+
+    String station = journey.optString("station", "");
+    String direction = journey.optString("direction", "");
+    if (station.isEmpty() || direction.isEmpty()) {
+      return null;
+    }
+
+    int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
+    JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore);
+    PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
+      context,
+      journey,
+      payload,
+      false
+    );
+    if (target != null) {
+      return target;
+    }
+
+    PreferredTrainReminder.Target synthetic = new PreferredTrainReminder.Target();
+    String journeyId = journey.optString("id", "fast-test");
+    long leaveByMs = computeFastTestTriggerAtMs(System.currentTimeMillis());
+    synthetic.journeyId = journeyId;
+    synthetic.route = WidgetDataService.formatRoute(journey);
+    synthetic.trainTime = PerthTime.formatClockFromEpochMs(leaveByMs + leaveBefore * 60_000L);
+    synthetic.departureIso = PerthTime.formatIsoFromEpochMs(leaveByMs + leaveBefore * 60_000L);
+    synthetic.dayKey = PerthTime.localDateKey();
+    synthetic.departureKey = journeyId + ":fast-test:" + synthetic.departureIso;
+    synthetic.leaveByMs = leaveByMs;
+    synthetic.stale = false;
+    return synthetic;
+  }
+
+  private static JSONObject describeFastTestSchedule(Context context, long computedAtMs) {
+    JSONObject result = new JSONObject();
+    try {
+      long triggerAtMs = computeFastTestTriggerAtMs(computedAtMs);
+      result.put("scheduled", true);
+      result.put("reason", "fast_test");
+      result.put("fastTest", true);
+      result.put("primaryNotifyAtIso", PerthTime.formatIsoFromEpochMs(triggerAtMs));
+      result.put("primaryNotifyAtClock", PerthTime.formatClockFromEpochMs(triggerAtMs));
+      result.put(
+        "primaryType",
+        LeaveReminderSettingsStore.isGetReadyEnabled(context) ||
+          LeaveReminderSettingsStore.isCommuteStripEnabled(context)
+          ? TYPE_GET_READY
+          : TYPE_LEAVE_NOW
+      );
+
+      String settingsJson = WidgetSettingsStore.readSettings(context);
+      if (settingsJson != null && !settingsJson.isEmpty()) {
+        JSONObject settings = new JSONObject(settingsJson);
+        JSONArray journeys = settings.optJSONArray("journeys");
+        if (journeys != null) {
+          for (int index = 0; index < journeys.length(); index += 1) {
+            JSONObject journey = journeys.optJSONObject(index);
+            if (journey == null || !JourneySelector.isCommuteJourney(journey)) {
+              continue;
+            }
+            if (!PreferredTrainReminder.isRemindMeEnabled(journey)) {
+              continue;
+            }
+            PreferredTrainReminder.Target target = resolveFastTestTarget(context, journey);
+            if (target == null) {
+              continue;
+            }
+            result.put("journeyId", target.journeyId);
+            result.put("journeyName", journey.optString("name", ""));
+            result.put("route", target.route);
+            result.put("trainTime", target.trainTime);
+            result.put("departureIso", target.departureIso);
+            result.put("leaveByIso", PerthTime.formatIsoFromEpochMs(target.leaveByMs));
+            result.put("leaveByClock", PerthTime.formatClockFromEpochMs(target.leaveByMs));
+            break;
+          }
+        }
+      }
+    } catch (Exception error) {
+      try {
+        result.put("scheduled", false);
+        result.put("reason", "error");
+        result.put(
+          "errorMessage",
+          error.getMessage() != null ? error.getMessage() : "unknown"
+        );
+      } catch (Exception ignored) {
+        // Unreachable.
+      }
+    }
+    return result;
+  }
+
+  /**
    * Idempotent read of the next reminder fire(s) using the same path as {@link #reschedule}.
    * Does not arm or cancel alarms.
    */
@@ -280,6 +481,11 @@ public final class LeaveReminderScheduler {
         if (pauseUntil != null && !pauseUntil.isEmpty() && !"null".equals(pauseUntil)) {
           envelope.put("pauseUntil", pauseUntil);
         }
+        return envelope;
+      }
+
+      if (isFastTestActive(context)) {
+        mergeScheduleFields(envelope, describeFastTestSchedule(context, computedAtMs));
         return envelope;
       }
 

@@ -1,5 +1,5 @@
 /**
- * Fresh install must not lock the widget as "trial ended".
+ * Widget stays free — no Pro trial lock.
  * Usage: node qa/pro-widget-access.mjs
  */
 import { chromium } from "playwright";
@@ -10,56 +10,30 @@ async function run() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(2000);
 
-  const snap = await page.evaluate(() => {
+  const fresh = await page.evaluate(async () => {
+    localStorage.removeItem("nextTrainAdFreeCache");
     localStorage.removeItem("nextTrainProTrialStartedAt");
     localStorage.removeItem("nextTrainFoundingPro");
-    localStorage.removeItem("nextTrainAdFreeCache");
-    localStorage.removeItem("nextTrainWidgetEverAdded");
-    const pro = window.NextTrainPro;
+    await window.NextTrainAdFree?.ensureInit?.();
     return {
-      state: pro?.getStateId?.(),
-      hasWidgetAccess: pro?.hasWidgetAccess?.(),
-      hasProAccess: pro?.hasProAccess?.(),
-      settingsAccess: (() => {
-        const settings = {};
-        pro?.mergeIntoSettings?.(settings);
-        return settings.pro?.hasWidgetAccess;
-      })(),
-    };
-  });
-
-  // Simulate expired trial
-  const expired = await page.evaluate(() => {
-    const started = new Date(Date.now() - 40 * 86400000).toISOString();
-    localStorage.setItem("nextTrainProTrialStartedAt", started);
-    const settings = {};
-    window.NextTrainPro?.mergeIntoSettings?.(settings);
-    return {
-      state: window.NextTrainPro?.getStateId?.(),
-      hasWidgetAccess: window.NextTrainPro?.hasWidgetAccess?.(),
-      settingsAccess: settings.pro?.hasWidgetAccess,
+      proGone: typeof window.NextTrainPro === "undefined",
+      notEntitled: window.NextTrainAdFree?.isEntitled?.() === false,
+      menuCta: document.getElementById("menu-ad-free-cta-title")?.textContent,
     };
   });
 
   await browser.close();
 
-  const freshOk =
-    snap.state === "free_no_trial" &&
-    snap.hasWidgetAccess === true &&
-    snap.hasProAccess === false &&
-    snap.settingsAccess === true;
+  const ok =
+    fresh.proGone === true &&
+    fresh.notEntitled === true &&
+    fresh.menuCta === "Remove ads";
 
-  const expiredOk =
-    expired.state === "trial_expired" &&
-    expired.hasWidgetAccess === false &&
-    expired.settingsAccess === false;
-
-  console.log("Fresh:", JSON.stringify(snap, null, 2));
-  console.log("Expired:", JSON.stringify(expired, null, 2));
-  console.log(freshOk && expiredOk ? "\nPASS  pro widget access\n" : "\nFAIL  pro widget access\n");
-  process.exit(freshOk && expiredOk ? 0 : 1);
+  console.log(JSON.stringify(fresh, null, 2));
+  console.log(ok ? "\nPASS  widget free / no Pro layer\n" : "\nFAIL  widget free check\n");
+  process.exit(ok ? 0 : 1);
 }
 
 run().catch((error) => {

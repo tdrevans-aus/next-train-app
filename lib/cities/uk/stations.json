@@ -1,0 +1,64 @@
+{
+  "stations": [
+    {
+      "name": "Reading",
+      "crs": "RDG",
+      "aliases": ["Reading Station"],
+      "lat": 51.4588,
+      "lng": -0.9718
+    },
+    {
+      "name": "London Paddington",
+      "crs": "PAD",
+      "aliases": ["Paddington"],
+      "lat": 51.5154,
+      "lng": -0.1755
+    },
+    {
+      "name": "London Waterloo",
+      "crs": "WAT",
+      "aliases": ["Waterloo"],
+      "lat": 51.5033,
+      "lng": -0.1133
+    },
+    {
+      "name": "Clapham Junction",
+      "crs": "CLJ",
+      "aliases": [],
+      "lat": 51.4642,
+      "lng": -0.1702
+    },
+    {
+      "name": "Brighton",
+      "crs": "BTN",
+      "aliases": [],
+      "lat": 50.829,
+      "lng": -0.141
+    },
+    {
+      "name": "Manchester Piccadilly",
+      "crs": "MAN",
+      "aliases": ["Manchester"],
+      "lat": 53.4774,
+      "lng": -2.2309
+    },
+    {
+      "name": "Birmingham New Street",
+      "crs": "BHM",
+      "aliases": ["Birmingham"],
+      "lat": 52.4778,
+      "lng": -1.8987
+    },
+    {
+      "name": "Edinburgh",
+      "crs": "EDB",
+      "aliases": ["Edinburgh Waverley"],
+      "lat": 55.952,
+      "lng": -3.189
+    }
+  ],
+  "destinationGroups": {
+    "London Paddington": ["Paddington", "London Paddington"],
+    "London Waterloo": ["Waterloo", "London Waterloo"]
+  }
+}

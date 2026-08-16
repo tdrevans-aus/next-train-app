@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import org.json.JSONObject;
 
+/** Home-screen widget — RemoteViews paint path (stable on all launchers). */
 public class NextTrainWidgetProvider extends AppWidgetProvider {
 
   @Override
@@ -24,7 +25,6 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
     int appWidgetId,
     Bundle newOptions
   ) {
-    // Resize 2×1 ↔ 3×1 / 2×2 must rebind layout + Updated visibility immediately.
     CommuteRefreshService.paintFromCache(context);
   }
 
@@ -41,11 +41,30 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
     WidgetDepartureAdvanceScheduler.cancel(context);
   }
 
+  public static void updateAllWidgets(Context context) {
+    updateAllWidgets(context, WidgetSettingsStore.readSnapshot(context));
+  }
+
   public static void updateAllWidgets(Context context, JSONObject snapshot) {
     AppWidgetManager manager = AppWidgetManager.getInstance(context);
     ComponentName component = new ComponentName(context, NextTrainWidgetProvider.class);
     int[] ids = manager.getAppWidgetIds(component);
     updateWidgets(context, manager, ids, snapshot);
+  }
+
+  public static void updateWidgetId(Context context, int widgetId) {
+    if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+      return;
+    }
+    AppWidgetManager manager = AppWidgetManager.getInstance(context);
+    JSONObject snapshot = WidgetSettingsStore.readSnapshot(context);
+    updateWidgets(context, manager, new int[] { widgetId }, snapshot);
+  }
+
+  public static int widgetInstanceCount(Context context) {
+    AppWidgetManager manager = AppWidgetManager.getInstance(context);
+    ComponentName component = new ComponentName(context, NextTrainWidgetProvider.class);
+    return manager.getAppWidgetIds(component).length;
   }
 
   private static void updateWidgets(
@@ -56,10 +75,7 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
   ) {
     for (int widgetId : appWidgetIds) {
       WidgetUiBuilder.WidgetSize size = WidgetUiBuilder.widgetSizeFor(context, manager, widgetId);
-      manager.updateAppWidget(
-        widgetId,
-        WidgetUiBuilder.build(context, snapshot, size)
-      );
+      manager.updateAppWidget(widgetId, WidgetUiBuilder.build(context, snapshot, size));
     }
   }
 

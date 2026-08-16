@@ -14,6 +14,7 @@ public final class LeaveReminderSettingsStore {
   private static final String KEY_DAY_LEAVE_DEP_PREFIX = "day_leave_dep:";
   private static final String KEY_DAY_GET_READY_PREFIX = "day_get_ready:";
   private static final String KEY_STRIP_DISMISSED_PREFIX = "strip_dismissed:";
+  private static final String KEY_FAST_TEST = "fast_test_enabled";
 
   private LeaveReminderSettingsStore() {}
 
@@ -207,6 +208,15 @@ public final class LeaveReminderSettingsStore {
     editor.remove(KEY_FIRED_PREFIX + departureKey + ":early");
     editor.remove(KEY_FIRED_PREFIX + departureKey + ":leave_now");
     editor.apply();
+  }
+
+  /** Debug QA only — arms {@link LeaveReminderScheduler} fast-test alarms (~60s). */
+  public static boolean isFastTestEnabled(Context context) {
+    return prefs(context).getBoolean(KEY_FAST_TEST, false);
+  }
+
+  public static void setFastTestEnabled(Context context, boolean enabled) {
+    prefs(context).edit().putBoolean(KEY_FAST_TEST, enabled).apply();
   }
 
   private static SharedPreferences prefs(Context context) {

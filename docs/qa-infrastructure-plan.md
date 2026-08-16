@@ -5,7 +5,7 @@
 **Status:** Phase 1 **shipped** in Next Train (11 Aug 2026)  
 **Purpose:** Reusable QA stack so the **next app** (and Next Train releases) ship faster with fewer manual regressions.
 
-**Related:** `TESTING.md` · `qa/run-all.mjs` · `docs/aab-signing-closed-testing.md` · `docs/qa-leave-reminders-v2-testing.md` · `docs/launch-blockers.md` (LB-12 CI)
+**Related:** `TESTING.md` · `qa/run-all.mjs` · `docs/aab-signing-closed-testing.md` · `docs/qa-leave-reminders-v2-testing.md` · `docs/DEVICE-SMOKE.md` · `docs/launch-blockers.md` (LB-12 CI)
 
 ---
 
@@ -65,8 +65,8 @@ See **`docs/fb-33-soak.md`** for soak gate (`npm run soak:status`) before 2.3.0 
 | **QA-P2-02** | **Migrate more scripts** to `qa/helpers/` | Jim/QA | Ongoing | `openJourneysDialog` pattern; station combobox already shared |
 | **QA-P2-03** | **CI: full suite on main** only; smoke on PR | PM | ½ day | **Done Aug 2026** — `.github/workflows/ci.yml`; `npm run test:web:ci` (`--no-native`) |
 | **QA-P2-09** | **Three-tier web QA** (smoke / release / nightly full) | PM | ½ day | **Shipped Aug 2026** — PR/release/nightly tiers live; soak tracked in `docs/fb-33-soak.md` |
-| **QA-P2-04** | **Native reminder fast-test mode** | Jim | 1 day | Alarm ~60s after enable; doc in `qa-leave-reminders-v2-testing.md` |
-| **QA-P2-05** | **`DEVICE-SMOKE.md`** one-pager | Tim | ½ day | 15 checks, 30 min, Play install only |
+| **QA-P2-04** | **Native reminder fast-test mode** | Jim | 1 day | **Shipped Aug 2026** — `LeaveReminderScheduler` fast-test + `docs/DEVICE-SMOKE.md` §11b |
+| **QA-P2-05** | **`DEVICE-SMOKE.md`** one-pager | Tim | ½ day | **Shipped Aug 2026** — `docs/DEVICE-SMOKE.md` — 15 checks, 30 min, Play install |
 | **QA-P2-06** | **`npm run release:prep`** | Jim | ½ day | Bump `versionCode`, `cap:sync`, print AAB path |
 | **QA-P2-07** | **R8 + mapping upload** | Simon + Jim | Backlog **FB-09** | Pre-public if minify enabled |
 | **QA-P2-08** | **Maestro Android smoke** | Jim | **Shipped** | `docs/jim-brief-maestro-android-qa.md` — `npm run test:maestro` |
@@ -96,7 +96,7 @@ Before **public**:
 
 1. `npm run test:web` green
 2. `npm run test:android:unit`
-3. Device sheet (`DEVICE-SMOKE.md` when written)
+3. Device sheet — **`docs/DEVICE-SMOKE.md`** (15 checks, ~30 min)
 4. Dwayne + Ruth sign-offs (launch program)
 
 ---
@@ -115,6 +115,7 @@ Before **public**:
 
 | Date | Note |
 | --- | --- |
+| 2026-08-16 | QA-P2-04 fast-test mode + QA-P2-05 `docs/DEVICE-SMOKE.md` |
 | 2026-08-15 | FB-33 soak: `docs/fb-33-soak.md`, `npm run soak:status`, smoke-browser 6–7 hardening for release tier |
 | 2026-08-15 | CI smoke hang guard: per-script timeouts, verbose/heartbeat logs, force dev-server on CI (`run-all.mjs`, `dev-server.mjs`, `ci.yml`) |
 | 2026-08-15 | QA-P2-03: CI smoke on PR, full web (`test:web:ci`) + full JVM on main; `run-all.mjs --no-native` |

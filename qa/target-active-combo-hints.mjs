@@ -12,6 +12,7 @@ async function openCustomJourneyDetail(page) {
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
+        settingsSchemaVersion: 2,
         refreshSeconds: 60,
         activeJourneyId: "j-custom",
         journeys: [
@@ -37,12 +38,16 @@ async function openCustomJourneyDetail(page) {
     localStorage.setItem("nextTrainTemplateWizardSeen", "1");
   });
   await page.goto(`${BASE}/?test=1&fixture=normal`);
-  await page.waitForTimeout(1200);
+  await page.waitForFunction(
+    () => typeof window.nextTrainApp?.openJourneyDetail === "function",
+    null,
+    { timeout: 15000 }
+  );
   await page.evaluate(async () => {
     window.nextTrainApp.openJourneysLibrary?.();
     await window.nextTrainApp.openJourneyDetail?.("j-custom");
   });
-  await page.waitForTimeout(500);
+  await page.waitForSelector("#detail-done-btn", { state: "visible", timeout: 15000 });
 }
 
 async function setOptionalTime(page, fieldId, value) {
@@ -71,11 +76,21 @@ async function readWindowState(page) {
   }));
 }
 
+async function clearOptionalTime(page, fieldId) {
+  await page.evaluate((fieldId) => {
+    document.getElementById(fieldId)?.querySelector(".optional-time-clear")?.click();
+  }, fieldId);
+  await page.waitForTimeout(150);
+}
+
 async function run() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
   await openCustomJourneyDetail(page);
+  await clearOptionalTime(page, "detail-preferred-field");
+  await clearOptionalTime(page, "detail-default-from-field");
+  await clearOptionalTime(page, "detail-default-until-field");
 
   let state = await readWindowState(page);
   if (state.preferredTrainTime || state.defaultFrom || state.defaultUntil) {
@@ -108,8 +123,39 @@ async function run() {
     process.exitCode = 1;
   }
 
+  await setOptionalTime(page, "detail-preferred-field", "11:00");
+  state = await readWindowState(page);
+  if (state.defaultFrom !== "09:30" || state.defaultUntil !== "12:30" || state.outside) {
+    console.error(
+      "FAIL — changing target outside window should amend journey window to ±90 min",
+      state
+    );
+    process.exitCode = 1;
+  }
+
+  await setOptionalTime(page, "detail-preferred-field", "10:30");
+  state = await readWindowState(page);
+  if (state.defaultFrom !== "09:30" || state.defaultUntil !== "12:30" || state.outside) {
+    console.error(
+      "FAIL — target still inside amended window should leave journey window unchanged",
+      state
+    );
+    process.exitCode = 1;
+  }
+
   await page.locator("#detail-done-btn").click();
-  await page.waitForTimeout(600);
+  await page.waitForFunction(
+    () => {
+      const journey = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0];
+      return (
+        journey?.preferredTrainTime === "10:30" &&
+        journey?.defaultFrom === "09:30" &&
+        journey?.defaultUntil === "12:30"
+      );
+    },
+    null,
+    { timeout: 8000 }
+  );
   const saved = await page.evaluate(() => {
     const journey = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0];
     return {
@@ -118,8 +164,8 @@ async function run() {
       defaultUntil: journey?.defaultUntil ?? "",
     };
   });
-  if (saved.preferredTrainTime !== "07:30" || saved.defaultFrom !== "07:00" || saved.defaultUntil !== "09:00") {
-    console.error("FAIL — save should persist target and journey window", saved);
+  if (saved.preferredTrainTime !== "10:30" || saved.defaultFrom !== "09:30" || saved.defaultUntil !== "12:30") {
+    console.error("FAIL — save should persist amended target and journey window", saved);
     process.exitCode = 1;
   }
 

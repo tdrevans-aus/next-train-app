@@ -473,12 +473,45 @@
   background: var(--surface-soft);
 }
 
-.leave-card:not([hidden]) + .train-meta {
-  margin-top: 0.15rem;
+.train-meta + .leave-card:not([hidden]) {
+  margin-top: -0.2rem;
 }
 
 .leave-card:not([hidden]) + .nearby-directions {
-  margin-top: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.upcoming-departures-list > li {
+  margin: 0;
+  padding: 0;
+}
+
+button.upcoming-departures-item {
+  width: 100%;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+button.upcoming-departures-item:not(:disabled):hover {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+button.upcoming-departures-item:not(:disabled):active {
+  transform: scale(0.99);
+}
+
+button.upcoming-departures-item:disabled {
+  cursor: default;
 }
 
 .upcoming-departures-time,

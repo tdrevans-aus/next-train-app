@@ -4,7 +4,7 @@
 **From:** Tim  
 **Date:** 12 Aug 2026  
 **Priority:** P2 — **not** blocking closed Alpha 2.1.0; **before public v3.0.0** Play upload  
-**Status:** Ready to implement  
+**Status:** Ready to implement → **Superseded by §3** of `docs/jim-brief-play-hygiene.md` (**FB-41**). Keep for history.  
 **Related:** `docs/feature-backlog.md` **FB-09** (Java R8 mapping — separate warning) · `docs/aab-signing-closed-testing.md` · `android/app/build.gradle`
 
 **Out of scope:** Enabling R8/minify · Maestro changes · iOS dSYM upload (Jon later)

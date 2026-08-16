@@ -1,0 +1,69 @@
+{
+  "id": "journey-preferred-default",
+  "description": "Preferred target 7:30 pins hero; sooner true next drives secondary line.",
+  "tags": ["journey", "preferred", "secondary-next"],
+  "clock": {
+    "perthDateKey": "2026-08-15",
+    "nowIso": "2026-08-15T06:00:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 0,
+    "journey": {
+      "id": "j-fixture-1",
+      "station": "Edgewater Stn",
+      "direction": "Perth",
+      "preferredTrainTime": "07:30",
+      "defaultFrom": "00:00",
+      "defaultUntil": "23:59",
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-15T06:30:00+08:00",
+        "displayTime": "6:30",
+        "platform": "1",
+        "leaveBy": "2026-08-15T06:20:00+08:00"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-15T06:30:00+08:00",
+          "displayTime": "6:30",
+          "platform": "1",
+          "leaveBy": "2026-08-15T06:20:00+08:00"
+        },
+        {
+          "departure": "2026-08-15T07:00:00+08:00",
+          "displayTime": "7:00",
+          "platform": "2",
+          "leaveBy": "2026-08-15T06:50:00+08:00"
+        },
+        {
+          "departure": "2026-08-15T07:30:00+08:00",
+          "displayTime": "7:30",
+          "platform": "1",
+          "leaveBy": "2026-08-15T07:20:00+08:00"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-15T06:30:00+08:00",
+    "pinDeparture": "2026-08-15T07:30:00+08:00",
+    "heroDeparture": "2026-08-15T07:30:00+08:00",
+    "leaveDeparture": "2026-08-15T07:30:00+08:00",
+    "secondaryNextDeparture": "2026-08-15T06:30:00+08:00",
+    "widgetFaceDeparture": "2026-08-15T07:30:00+08:00",
+    "isPinnedToday": true,
+    "heroShowsPin": true,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": true,
+    "showSecondaryNext": true,
+    "leaveCardArmed": true,
+    "heroLabel": "Target train"
+  }
+}

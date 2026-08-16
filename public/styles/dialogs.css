@@ -518,6 +518,10 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   padding-left: 0.15rem;
 }
 
+.detail-target-nest .leave-before-field .field-label-row {
+  justify-content: flex-end;
+}
+
 .detail-target-nest[hidden] {
   display: none !important;
 }
@@ -571,6 +575,36 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
 
 .menu-pause-block[hidden] {
   display: none !important;
+}
+
+.menu-widget-block {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: #f7faf9;
+}
+
+.menu-widget-block[hidden] {
+  display: none !important;
+}
+
+.menu-widget-heading {
+  margin: 0 0 0.4rem;
+  padding: 0 0.25rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.menu-widget-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.menu-widget-block .menu-dialog-link {
+  padding: 0.65rem 0.75rem;
+  font-size: 0.88rem;
 }
 
 .menu-pause-web-hint {

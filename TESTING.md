@@ -12,7 +12,7 @@ We ship **semver** (`versionName`, e.g. `2.1.3`) and a monotonic Play **`version
 |---------|------------|---------------|
 | **2.1.2** (code **9**) | **2.2.1** (code **12**) | **2.3.0** (code **13+**) |
 
-Before every Play upload: bump all version fields (see doc), run ship gate below, tag, upload AAB.
+Before every Play upload: bump all version fields (see doc), run **`npm run release:prep`** (or at minimum **`npm run test:pre-upload`**), tag, upload AAB. See `docs/aab-signing-closed-testing.md` and `docs/jim-brief-play-hygiene.md` (**FB-41**).
 
 ## Quick start
 
@@ -150,12 +150,16 @@ node qa/outside-hours-nearby.mjs
 2. Open **Menu**.
 3. **Expect:** **Remove ads** buy row **hidden**; hint **Ad-free is available in the Android app**. Link under ad slot **hidden**. Tapping a visible **Remove ads** control should not silently do nothing (if shown, should toast or open Menu).
 
-**Android (device / emulator with Play Store):**
+**Android (Play closed test / internal test — not sideloaded debug APK):**
 
-1. Open **Menu** → **Remove ads** (or link under banner).
-2. **Expect:** Google Play purchase sheet **or** toast (*Couldn't complete purchase. Try again.* / cancel silent).
-3. If buy row missing: billing may be unavailable (emulator without Play) — **Restore purchase** may still show.
-4. If native purchase bridge failed to load: under-ad link **hidden**; any purchase tap shows *Purchases aren't available right now. Try updating the app.*
+1. **Play Console:** one-time product `com.tdrevans.nexttrain.adfree` at **A$7.99**; your Google account on **License testing**.
+2. Install from the **Play** opt-in link (same track as the uploaded AAB).
+3. Open **Menu** → **Remove ads** → purchase sheet → **Remove ads** → Google Play sheet.
+4. **Expect:** Play purchase UI **or** a clear toast (never silent). Cancel → main screen usable (no stuck grey overlay).
+5. **Restore purchases** is on the purchase sheet (not duplicated in Menu while buying). After purchase, Menu shows **Ads removed**; **Restore** stays in Menu for re-sync.
+6. Sideloaded `debug` APK / emulator without Play: billing often unavailable — toast explains; use a Play test install to validate IAP.
+
+**After code change:** `npm run cap:sync` then upload a new AAB (or local debug only for UI; IAP needs Play).
 
 ### 16. Button visibility (viewport regression)
 
@@ -197,11 +201,93 @@ node qa/button-visibility.mjs
 
 Jim brief: `docs/jim-brief-widget-help-pin-first.md`
 
+### 20c. Widget appearance (colour presets)
+
+Automated:
+
+```bash
+node qa/widget-theme-palettes.mjs
+```
+
+**Manual (Android):**
+
+1. Widget installed. **Menu → Widget → Widget appearance**.
+2. Pick **Midnight** → widget background goes dark within one refresh.
+3. Pick **Ocean** → light blue card, blue accent on train number.
+4. **Leave now** / urgent line still orange (not recoloured to accent).
+5. Kill app, relaunch → choice persists.
+6. API 31+ device: **Match system** follows system dark mode (spot-check).
+7. Web: menu item hidden; no regression.
+
+**Opacity (FB-36):**
+
+1. Slider at **40%** → swatch previews fade; widget card faint after sync.
+2. **Transparent card** ON → slider disabled at 0%; widget has no card fill/border.
+3. Toggle OFF at **50%** → border returns; transparent flag cleared.
+4. Change preset at 40% → opacity preserved.
+5. Kill app → opacity + transparent state persist.
+
+Jim brief: `docs/jim-brief-widget-colour-presets.md`, `docs/jim-brief-widget-appearance-opacity.md`
+
+### 20d. Widget setup on placement (configure + preview)
+
+Automated:
+
+```bash
+node qa/widget-appearance-setup.mjs
+```
+
+**Manual (Android):**
+
+1. Launcher → Widgets → Next Train → drag to home → **Set up your widget** opens before placement.
+2. Pick preset + opacity on **Vibrant** preview → **Add widget** → home widget matches.
+3. Back out of setup → widget **not** placed.
+4. In-app **Add widget** pin → setup opens once after pin sheet.
+5. Menu → Widget appearance still works (edit path regression).
+
+Jim brief: `docs/jim-brief-widget-configure-on-drop.md`
+
+### 20e. Match system — Material You (FB-38)
+
+Automated:
+
+```bash
+node qa/widget-theme-palettes.mjs
+```
+
+**Manual (Android 12+):**
+
+1. Menu → **Widget appearance** → **Match system** → swatch shows live wallpaper colours (not light/dark split).
+2. Change wallpaper → widgets repaint within ~1 refresh cycle.
+3. Toggle system dark mode → widgets repaint; swatch updates when reopening appearance.
+4. API 26–30 device/emulator → Match system uses Default preset (no crash).
+
+Jim brief: `docs/jim-brief-widget-material-you-system.md`
+
+### 20f. Jetpack Glance + blend-first appearance (FB-40)
+
+Automated:
+
+```bash
+node qa/widget-theme-palettes.mjs
+node qa/widget-appearance-setup.mjs
+```
+
+**Manual (Android):**
+
+1. Widget appearance shows **Blend in / Match wallpaper / Brand teal** — no 8-preset grid.
+2. Default = **Blend in** (transparent-friendly).
+3. Blend: opacity + transparent controls; wallpaper/brand hide slider.
+4. Wallpaper mode uses Monet on API 31+ device.
+5. Legacy `widgetThemeId` migrates without crash.
+
+Jim brief: `docs/jim-brief-widget-glance.md`
+
 ### 28. Menu layout (two tiers)
 
 1. Open **Menu**.
 2. **Expect:** Title **Menu** only — no Near me / My Journeys subtitle.
-3. **Expect:** **Reminders** is the first row; **Add home screen widget** directly under it on Android (hidden on web).
+3. **Expect:** **Widget** block (Android only) with **Add home screen widget** and **Widget appearance** underneath; hidden on web.
 4. **Expect:** Light divider, then **How it works**, ad-free block, **About**, **Privacy**.
 5. **How it works** still explains Near me vs Journeys.
 
@@ -666,6 +752,14 @@ npm run test:maestro
 
 Complements §22 widget manual matrix — does not replace stale-face / clipping checks (JVM + manual).
 
+### 44. Device smoke sheet (Play closed test)
+
+**Doc:** `docs/DEVICE-SMOKE.md`
+
+Run after every Play closed-test upload: **15 checks in ~30 min** on a **Play install** (not local debug APK). Covers cold start, journeys, widget face, IAP, reminders readout, outside-hours idle, version.
+
+Reminder **notification delivery** on Play: schedule readout only (**11a**). For ~60s alarm proof use debug APK fast-test (**11b** / TESTING §19b).
+
 ### 42. Adelaide provider probe (adapter only — not live)
 
 Jim brief: `docs/jim-brief-adelaide-provider.md`
@@ -707,11 +801,12 @@ Jim brief: `docs/jim-brief-nearby-cache-last-station.md`
 
 ### 17–19. Leave reminders v2 (native scheduling)
 
-Plan: `docs/qa-leave-reminders-v2-testing.md`
+Plan: `docs/qa-leave-reminders-v2-testing.md` · device sheet: `docs/DEVICE-SMOKE.md`
 
 - **17** — Superseded by **21** for Menu UI; native plugin mocks optional  
-- **18** — `PreferredTrainReminder` JUnit (train pick, days, once/day)  
-- **19** — Android device roleplay (Jim brief §4: no 5:50 spam, one ping ~7:15, no Saturday)
+- **18** — `PreferredTrainReminder` JUnit + `LeaveReminderFastTestTest` (`./gradlew :app:testDebugUnitTest`)  
+- **19** — Android device roleplay (Jim brief §4: no 5:50 spam, one ping ~7:15, no Saturday)  
+- **19b** — **Fast-test** (debug APK): `nexttrain://test/reminder-fast` → notification ~60s — `docs/DEVICE-SMOKE.md` §11b
 
 ### 20. Commute strip notification (non-FGS)
 
@@ -863,6 +958,7 @@ The native app loads the hosted Vercel API — **fixtures do not apply**. After 
 1. `npm run cap:sync`
 2. Run on device/emulator
 3. Manually verify swipe gestures and journey switcher (tests 4–5, 3)
+4. **Play closed test:** complete `docs/DEVICE-SMOKE.md` (~30 min, 15 checks)
 
 ## Storage keys (for debugging)
 

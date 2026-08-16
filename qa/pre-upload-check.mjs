@@ -20,7 +20,37 @@ function readBuildGradle() {
   const applicationId = text.match(/applicationId\s+"([^"]+)"/)?.[1];
   const versionCode = Number(text.match(/versionCode\s+(\d+)/)?.[1]);
   const versionName = text.match(/versionName\s+"([^"]+)"/)?.[1];
-  return { applicationId, versionCode, versionName, gradlePath, text };
+  const minifyEnabled = /minifyEnabled\s+true/.test(text);
+  const nativeSymbolsConfigured =
+    /debugSymbolLevel/.test(text) && /SYMBOL_TABLE/.test(text);
+  return {
+    applicationId,
+    versionCode,
+    versionName,
+    gradlePath,
+    text,
+    minifyEnabled,
+    nativeSymbolsConfigured,
+  };
+}
+
+function checkGlanceWidget() {
+  const manifestPath = path.join(ROOT, "android/app/src/main/AndroidManifest.xml");
+  const manifest = fs.existsSync(manifestPath)
+    ? fs.readFileSync(manifestPath, "utf8")
+    : "";
+  const hasGlanceReceiver = manifest.includes("NextTrainGlanceReceiver");
+  const glanceWidgetPath = path.join(
+    ROOT,
+    "android/app/src/main/java/com/tdrevans/nexttrain/NextTrainGlanceWidget.kt"
+  );
+  const glanceHelperPath = path.join(
+    ROOT,
+    "android/app/src/main/java/com/tdrevans/nexttrain/WidgetGlanceHelper.kt"
+  );
+  const glanceFilesOk =
+    fs.existsSync(glanceWidgetPath) && fs.existsSync(glanceHelperPath);
+  return { hasGlanceReceiver, glanceFilesOk, glanceWidgetPath };
 }
 
 function readSiteConfig() {
@@ -94,6 +124,21 @@ async function main() {
   const privacy = await checkPrivacyUrl();
   const locationGate = checkSyncedLocationGate();
   const iconGate = checkLauncherIconGate();
+  const glanceGate = checkGlanceWidget();
+
+  results.push({
+    check: "native debug symbols (debugSymbolLevel SYMBOL_TABLE)",
+    ok: gradle.nativeSymbolsConfigured,
+    detail: gradle.gradlePath,
+    hint: "Add ndk { debugSymbolLevel 'SYMBOL_TABLE' } to release buildType — see docs/jim-brief-play-hygiene.md §3",
+  });
+
+  results.push({
+    check: "minify / R8 off for v3 public",
+    ok: !gradle.minifyEnabled,
+    detail: gradle.minifyEnabled ? "minifyEnabled true" : "minifyEnabled false",
+    hint: "mapping.txt required — see docs/jim-brief-play-hygiene.md §4",
+  });
 
   results.push({
     check: "applicationId",
@@ -166,6 +211,13 @@ async function main() {
       console.log(`      → ${row.hint}`);
     }
   }
+
+  if (glanceGate.hasGlanceReceiver && !glanceGate.glanceFilesOk) {
+    console.log(
+      `WARN  Glance widget receiver in manifest but Kotlin sources missing: ${glanceGate.glanceWidgetPath}`
+    );
+  }
+
   console.log("");
 
   if (fail > 0) {

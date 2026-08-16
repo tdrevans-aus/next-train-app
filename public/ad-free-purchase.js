@@ -1,9 +1,11 @@
 const AD_FREE_CACHE_KEY = "nextTrainAdFreeCache";
 const DEFAULT_PRODUCT_ID = "com.tdrevans.nexttrain.adfree";
+const DEFAULT_LIST_PRICE = "A$7.99";
 const NATIVE_BRIDGE_UNAVAILABLE_TOAST =
   "Purchases aren't available right now. Try updating the app.";
 
 let productId = DEFAULT_PRODUCT_ID;
+let listPrice = DEFAULT_LIST_PRICE;
 let entitled = false;
 let localizedPrice = null;
 let billingAvailable = false;
@@ -20,17 +22,14 @@ function hasNativePurchaseBridge() {
 }
 
 function shouldShowPurchaseControls() {
-  if (!isNativeApp()) {
-    return false;
-  }
-  // Pro Menu / Unlock Pro parked for 2.1.1 closed test.
-  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
-    return false;
-  }
-  if (window.NextTrainPro?.hasNoAds?.()) {
+  if (!isNativeApp() || entitled) {
     return false;
   }
   return hasNativePurchaseBridge() || billingAvailable;
+}
+
+function displayPrice() {
+  return localizedPrice ?? listPrice;
 }
 
 function readCache() {
@@ -200,15 +199,15 @@ function syncPurchaseLinkVisibility() {
   const showLink = shouldShowPurchaseControls() && adVisible;
   removeWrap.hidden = !showLink;
   if (removeLink) {
-    removeLink.textContent = "Unlock Pro";
+    removeLink.textContent = "Remove ads";
   }
 }
 
 function formatOneTimeSubtitle(price) {
   if (price) {
-    return `One-time · ${price}`;
+    return `${price} · one-time`;
   }
-  return "One-time · keep widget + no ads";
+  return "One-time purchase";
 }
 
 function setHidden(el, hidden) {
@@ -226,136 +225,61 @@ function canRestorePurchases() {
   return Boolean(window.NextTrainAdFreeNative?.restoreInAppPurchases);
 }
 
-function renderMenuPro() {
-  const section = document.getElementById("menu-pro-section");
-  const ctaBtn = document.getElementById("menu-pro-cta-btn");
-  const ctaTitle = document.getElementById("menu-pro-cta-title");
-  const ctaSubtitle = document.getElementById("menu-pro-cta-subtitle");
-  const statusRow = document.getElementById("menu-pro-status-row");
-  const statusTitle = document.getElementById("menu-pro-status-title");
-  const statusSubtitle = document.getElementById("menu-pro-status-subtitle");
-  const nudgeDismiss = document.getElementById("menu-pro-nudge-dismiss");
+function renderMenuAdFree() {
+  const section = document.getElementById("menu-ad-free-section");
+  const ctaBtn = document.getElementById("menu-ad-free-cta-btn");
+  const ctaTitle = document.getElementById("menu-ad-free-cta-title");
+  const ctaSubtitle = document.getElementById("menu-ad-free-cta-subtitle");
+  const statusRow = document.getElementById("menu-ad-free-status-row");
+  const statusTitle = document.getElementById("menu-ad-free-status-title");
+  const statusSubtitle = document.getElementById("menu-ad-free-status-subtitle");
   const restoreBtn = document.getElementById("menu-restore-purchase-btn");
-  const webHint = document.getElementById("menu-pro-web-hint");
-  const billingHint = document.getElementById("menu-pro-billing-hint");
+  const webHint = document.getElementById("menu-ad-free-web-hint");
+  const billingHint = document.getElementById("menu-ad-free-billing-hint");
 
   if (!section) {
     return;
   }
 
-  // Hold Pro for the next Play release — keep widget free and Menu quiet for testers.
-  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
-    setHidden(section, true);
-    setHidden(ctaBtn, true);
-    setHidden(statusRow, true);
-    setHidden(nudgeDismiss, true);
-    setHidden(restoreBtn, true);
-    setHidden(webHint, true);
-    setHidden(billingHint, true);
-    syncPurchaseLinkVisibility();
-    return;
-  }
-
-  setHidden(section, false);
   setHidden(ctaBtn, true);
   setHidden(statusRow, true);
-  setHidden(nudgeDismiss, true);
+  setHidden(billingHint, true);
 
   if (!isNativeApp()) {
+    setHidden(section, false);
     setHidden(webHint, false);
-    setHidden(billingHint, true);
     setHidden(restoreBtn, true);
     syncPurchaseLinkVisibility();
     return;
   }
 
   setHidden(webHint, true);
+  setHidden(section, false);
 
-  const state = window.NextTrainPro?.getStateId?.() ?? "free_no_trial";
-  const showRestore = canRestorePurchases();
-  setHidden(restoreBtn, !showRestore);
-
-  if (state === "free_no_trial") {
-    setHidden(ctaBtn, false);
-    ctaBtn?.classList.add("menu-purchase-row--cta");
-    if (ctaTitle) {
-      ctaTitle.textContent = "Try Pro free";
+  if (entitled) {
+    setHidden(statusRow, false);
+    if (statusTitle) {
+      statusTitle.textContent = "Ads removed";
     }
-    if (ctaSubtitle) {
-      ctaSubtitle.textContent = "30 days · widget + no ads · then one-time";
+    if (statusSubtitle) {
+      statusSubtitle.textContent = "Thanks for supporting Next Train";
     }
-    setHidden(statusRow, true);
-    setHidden(nudgeDismiss, true);
-    setHidden(billingHint, true);
-    setHidden(section, false);
     setHidden(restoreBtn, !canRestorePurchases());
     syncPurchaseLinkVisibility();
     return;
   }
 
-  if (state === "trial_nudge") {
-    const daysLeft = window.NextTrainPro?.getTrialDaysLeft?.() ?? 0;
-    setHidden(ctaBtn, false);
-    ctaBtn?.classList.add("menu-purchase-row--cta");
-    if (ctaTitle) {
-      ctaTitle.textContent = `${daysLeft} days left on Pro trial`;
-    }
-    if (ctaSubtitle) {
-      ctaSubtitle.textContent = "Unlock Pro — one-time · keep widget + no ads";
-    }
-    setHidden(nudgeDismiss, false);
-    setHidden(billingHint, !billingAvailable || !hasNativePurchaseBridge());
-    syncPurchaseLinkVisibility();
-    return;
+  setHidden(ctaBtn, false);
+  if (ctaTitle) {
+    ctaTitle.textContent = "Remove ads";
   }
-
-  if (state === "trial_expired") {
-    setHidden(ctaBtn, false);
-    ctaBtn?.classList.add("menu-purchase-row--cta");
-    if (ctaTitle) {
-      ctaTitle.textContent = "Unlock Pro";
-    }
-    if (ctaSubtitle) {
-      ctaSubtitle.textContent = formatOneTimeSubtitle(localizedPrice);
-    }
-    setHidden(billingHint, billingAvailable && hasNativePurchaseBridge());
-    syncPurchaseLinkVisibility();
-    return;
+  if (ctaSubtitle) {
+    ctaSubtitle.textContent = formatOneTimeSubtitle(displayPrice());
   }
-
-  setHidden(statusRow, false);
-  statusRow?.classList.remove("menu-purchase-row--cta");
-  setHidden(billingHint, true);
-
-  if (state === "founding") {
-    if (statusTitle) {
-      statusTitle.textContent = "Founding 200 · Pro";
-    }
-    if (statusSubtitle) {
-      statusSubtitle.textContent = "Widget + ads off · forever";
-    }
-  } else if (state === "trial_active") {
-    const daysLeft = window.NextTrainPro?.getTrialDaysLeft?.() ?? 0;
-    if (statusTitle) {
-      statusTitle.textContent = `Pro trial · ${daysLeft} days left`;
-    }
-    if (statusSubtitle) {
-      statusSubtitle.textContent = "Unlock Pro anytime — one-time";
-    }
-  } else if (state === "pro_paid") {
-    if (statusTitle) {
-      statusTitle.textContent = "Pro";
-    }
-    if (statusSubtitle) {
-      statusSubtitle.textContent = "Ads off · widget unlocked";
-    }
-  }
-
+  // Restore lives on the purchase sheet — avoid duplicate in Menu while buying.
+  setHidden(restoreBtn, true);
+  setHidden(billingHint, billingAvailable && hasNativePurchaseBridge());
   syncPurchaseLinkVisibility();
-}
-
-function renderMenuAdFree() {
-  renderMenuPro();
 }
 
 function applyEntitlement(nextEntitled, { notifyAds = true } = {}) {
@@ -363,11 +287,7 @@ function applyEntitlement(nextEntitled, { notifyAds = true } = {}) {
   const changed = next !== entitled;
   entitled = next;
   writeCache(entitled);
-  renderMenuPro();
-
-  if (changed) {
-    window.NextTrainPro?.onPurchaseEntitlementChanged?.();
-  }
+  renderMenuAdFree();
 
   if (!changed) {
     return;
@@ -398,7 +318,7 @@ async function loadProductPrice() {
     const product = await native.getInAppProduct(productId);
     localizedPrice = product?.priceString ?? product?.localizedPrice ?? null;
   } catch (error) {
-    console.warn("Could not load Pro product price", error);
+    console.warn("Could not load remove-ads product price", error);
   }
 }
 
@@ -413,7 +333,7 @@ async function queryStoreEntitlement() {
     const purchases = await native.getInAppPurchases();
     return native.purchaseIncludesProduct(purchases, productId);
   } catch (error) {
-    console.warn("Could not query Pro entitlement", error);
+    console.warn("Could not query remove-ads entitlement", error);
     return null;
   }
 }
@@ -426,7 +346,7 @@ async function refreshEntitlement({ silent = false } = {}) {
 
   const owned = await queryStoreEntitlement();
   if (owned === null) {
-    renderMenuPro();
+    renderMenuAdFree();
     return entitled;
   }
 
@@ -442,27 +362,31 @@ async function initAdFreePurchase() {
     const response = await fetch("/site-config.json");
     const config = await response.json();
     productId = config.adFreeProductId || DEFAULT_PRODUCT_ID;
+    if (config.adFreeListPrice) {
+      listPrice = config.adFreeListPrice;
+    }
   } catch {
     productId = DEFAULT_PRODUCT_ID;
+    listPrice = DEFAULT_LIST_PRICE;
   }
 
   if (!isNativeApp()) {
     billingAvailable = false;
-    renderMenuPro();
+    renderMenuAdFree();
     return { entitled: false, billingAvailable: false };
   }
 
   const native = await ensureNativeBridge();
   if (!native?.isBillingSupported) {
     billingAvailable = false;
-    renderMenuPro();
+    renderMenuAdFree();
     await refreshEntitlement({ silent: true });
     return { entitled, billingAvailable };
   }
 
   billingAvailable = await native.isBillingSupported();
   await loadProductPrice();
-  renderMenuPro();
+  renderMenuAdFree();
   await refreshEntitlement({ silent: true });
   return { entitled, billingAvailable };
 }
@@ -474,12 +398,17 @@ async function ensureInit() {
   return adFreeInitPromise;
 }
 
+function hideOrphanDialogBackdrops() {
+  document.querySelectorAll(".app-dialog-backdrop:not([hidden])").forEach((backdrop) => {
+    backdrop.hidden = true;
+  });
+}
+
 function openNativeStyleDialog(dialog) {
   if (!dialog) {
     return;
   }
 
-  // Match Menu / Journeys: Capacitor WebView is unreliable with showModal.
   if (typeof window.nextTrainApp?.openAppDialog === "function") {
     window.nextTrainApp.openAppDialog(dialog);
     return;
@@ -501,73 +430,58 @@ function openNativeStyleDialog(dialog) {
   }
 }
 
-function openPaywallDialog() {
-  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
+async function openRemoveAdsDialog() {
+  await ensureInit();
+
+  if (entitled) {
+    showToast("Ads are already removed");
     return;
   }
-  const dialog = document.getElementById("pro-paywall-dialog");
-  const priceEl = document.getElementById("pro-paywall-price");
-  const foundingNote = document.getElementById("pro-paywall-founding-note");
+
+  const dialog = document.getElementById("ad-free-dialog");
+  const priceEl = document.getElementById("ad-free-price");
+  const purchaseBtn = document.getElementById("ad-free-purchase-btn");
 
   if (!dialog) {
     return;
   }
 
   if (priceEl) {
-    priceEl.textContent = localizedPrice ?? "A$X.XX";
+    priceEl.textContent = displayPrice();
   }
-  if (foundingNote) {
-    const showNote =
-      window.NextTrainPro?.isFoundingFull?.() &&
-      !window.NextTrainPro?.isFounding?.() &&
-      !window.NextTrainPro?.hasProAccess?.();
-    setHidden(foundingNote, !showNote);
+  if (purchaseBtn) {
+    purchaseBtn.textContent = "Remove ads";
+    purchaseBtn.disabled = !shouldShowPurchaseControls();
   }
 
-  // Widget → paywall: close competing sheets so this isn't buried.
-  for (const id of ["menu-dialog", "journeys-dialog", "help-dialog", "feedback-dialog"]) {
+  // Close Menu via app helper so its backdrop is torn down (raw .close() leaves grey scrim).
+  window.nextTrainApp?.closeMenuDialogOnly?.();
+
+  for (const id of ["journeys-dialog", "help-dialog", "feedback-dialog"]) {
     const open = document.getElementById(id);
     if (open?.open || open?.hasAttribute("open")) {
-      try {
-        open.close?.();
-      } catch {
+      if (typeof window.nextTrainApp?.closeAppDialog === "function") {
+        window.nextTrainApp.closeAppDialog(open);
+      } else {
         open.removeAttribute("open");
+        open.classList.remove("app-native-dialog");
       }
-      open.classList.remove("app-native-dialog");
     }
   }
 
-  openNativeStyleDialog(dialog);
-}
+  const showSheet = () => {
+    hideOrphanDialogBackdrops();
+    openNativeStyleDialog(dialog);
+    if (!shouldShowPurchaseControls()) {
+      showToast(
+        isNativeApp()
+          ? "Purchases aren't available on this install. Install from Play and try again."
+          : "Remove ads is available in the Android app."
+      );
+    }
+  };
 
-function showFoundingUnlockSheet() {
-  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
-    return;
-  }
-  if (localStorage.getItem("nextTrainFoundingUnlockShown") === "1") {
-    return;
-  }
-  const sheet = document.getElementById("pro-founding-sheet");
-  if (!sheet) {
-    return;
-  }
-  localStorage.setItem("nextTrainFoundingUnlockShown", "1");
-  openNativeStyleDialog(sheet);
-}
-
-function showTrialStartedSheet() {
-  if (!window.NextTrainPro?.isProMonetizationShipped?.()) {
-    return;
-  }
-  if (localStorage.getItem("nextTrainTrialStartedShown") === "1") {
-    return;
-  }
-  const sheet = document.getElementById("pro-trial-started-sheet");
-  if (!sheet) {
-    return;
-  }
-  localStorage.setItem("nextTrainTrialStartedShown", "1");
-  openNativeStyleDialog(sheet);
+  window.setTimeout(showSheet, 0);
 }
 
 function closeNativeStyleDialog(dialog) {
@@ -576,6 +490,11 @@ function closeNativeStyleDialog(dialog) {
   }
   if (typeof window.nextTrainApp?.closeAppDialog === "function") {
     window.nextTrainApp.closeAppDialog(dialog);
+    hideOrphanDialogBackdrops();
+    if (!document.querySelector("dialog[open], .app-native-dialog[open]")) {
+      document.body.classList.remove("app-dialog-open");
+      window.NextTrainAds?.syncOverlaySuppression?.();
+    }
     return;
   }
   try {
@@ -593,15 +512,16 @@ function closeNativeStyleDialog(dialog) {
   }
 }
 
-async function purchasePro() {
+async function purchaseAdFree() {
   await ensureInit();
 
-  if (window.NextTrainPro?.hasProAccess?.() && entitled) {
-    showToast("You already have Pro");
+  if (entitled) {
+    showToast("Ads are already removed");
     return;
   }
 
   if (!isNativeApp()) {
+    showToast("Remove ads is available in the Android app.");
     return;
   }
 
@@ -612,7 +532,7 @@ async function purchasePro() {
   }
 
   if (!billingAvailable) {
-    showToast("Couldn't complete purchase. Try again.");
+    showToast("Couldn't connect to Google Play billing. Try again from a Play install.");
     return;
   }
 
@@ -620,8 +540,8 @@ async function purchasePro() {
     await native.purchaseInAppProduct(productId);
     applyEntitlement(true);
     window.NextTrainAnalytics?.track?.("iap_purchase_success");
-    closeNativeStyleDialog(document.getElementById("pro-paywall-dialog"));
-    showToast("Pro unlocked — thank you");
+    closeNativeStyleDialog(document.getElementById("ad-free-dialog"));
+    showToast("Ads removed");
   } catch (error) {
     if (isUserCancelled(error)) {
       return;
@@ -630,16 +550,16 @@ async function purchasePro() {
     const alreadyOwned = await queryStoreEntitlement();
     if (alreadyOwned === true) {
       applyEntitlement(true);
-      showToast("You already have Pro");
+      showToast("Ads are already removed");
       return;
     }
 
-    console.warn("Pro purchase failed", error);
+    console.warn("Remove ads purchase failed", error);
     showToast("Couldn't complete purchase. Try again.");
   }
 }
 
-async function restoreProPurchase() {
+async function restoreAdFreePurchase() {
   await ensureInit();
 
   if (!isNativeApp()) {
@@ -665,70 +585,34 @@ async function restoreProPurchase() {
     applyEntitlement(false);
     showToast("No purchase found for this account");
   } catch (error) {
-    console.warn("Pro restore failed", error);
+    console.warn("Remove ads restore failed", error);
     showToast("Couldn't complete purchase. Try again.");
   }
 }
 
 function wireUi() {
-  document.getElementById("menu-pro-cta-btn")?.addEventListener("click", () => {
-    const state = window.NextTrainPro?.getStateId?.() ?? "free_no_trial";
-    if (state === "free_no_trial") {
-      // Close Menu first — nested dialogs fail in Capacitor WebView.
-      window.nextTrainApp?.closeMenuDialogOnly?.();
-      window.nextTrainStickinessCoaches?.markCoachDone?.("widget");
-      window.setTimeout(() => {
-        window.nextTrainWidget?.openWidgetHelpDialog?.();
-      }, 0);
-      return;
-    }
-    openPaywallDialog();
-  });
-
-  document.getElementById("menu-pro-nudge-dismiss")?.addEventListener("click", () => {
-    window.NextTrainPro?.dismissTrialNudge?.();
-  });
-
-  document.getElementById("menu-pro-status-row")?.addEventListener("click", () => {
-    const state = window.NextTrainPro?.getStateId?.();
-    if (state === "trial_active") {
-      openPaywallDialog();
-    } else if (state === "pro_paid" || state === "founding") {
-      showToast("You're on Pro");
-    }
+  document.getElementById("menu-ad-free-cta-btn")?.addEventListener("click", () => {
+    openRemoveAdsDialog();
   });
 
   document.getElementById("menu-restore-purchase-btn")?.addEventListener("click", () => {
-    restoreProPurchase();
+    restoreAdFreePurchase();
   });
 
   document.getElementById("ad-remove-link")?.addEventListener("click", () => {
-    openPaywallDialog();
+    openRemoveAdsDialog();
   });
 
-  document.getElementById("pro-paywall-unlock-btn")?.addEventListener("click", () => {
-    purchasePro();
+  document.getElementById("ad-free-purchase-btn")?.addEventListener("click", () => {
+    purchaseAdFree();
   });
 
-  document.getElementById("pro-paywall-restore-btn")?.addEventListener("click", () => {
-    restoreProPurchase();
+  document.getElementById("ad-free-restore-btn")?.addEventListener("click", () => {
+    restoreAdFreePurchase();
   });
 
-  document.getElementById("pro-paywall-close-btn")?.addEventListener("click", () => {
-    closeNativeStyleDialog(document.getElementById("pro-paywall-dialog"));
-  });
-
-  document.getElementById("pro-founding-got-it-btn")?.addEventListener("click", () => {
-    closeNativeStyleDialog(document.getElementById("pro-founding-sheet"));
-  });
-
-  document.getElementById("pro-founding-add-widget-btn")?.addEventListener("click", () => {
-    closeNativeStyleDialog(document.getElementById("pro-founding-sheet"));
-    window.nextTrainWidget?.openWidgetHelpDialog?.();
-  });
-
-  document.getElementById("pro-trial-got-it-btn")?.addEventListener("click", () => {
-    closeNativeStyleDialog(document.getElementById("pro-trial-started-sheet"));
+  document.getElementById("ad-free-close-btn")?.addEventListener("click", () => {
+    closeNativeStyleDialog(document.getElementById("ad-free-dialog"));
   });
 
   document.addEventListener("visibilitychange", () => {
@@ -738,35 +622,24 @@ function wireUi() {
   });
 }
 
-window.NextTrainProPurchase = {
-  openPaywallDialog,
-  showFoundingUnlockSheet,
-  showTrialStartedSheet,
-  renderMenuPro,
-  purchasePro,
-  restoreProPurchase,
-};
-
 window.NextTrainAdFree = {
   isPurchased() {
     return entitled;
   },
   isEntitled() {
-    if (entitled) {
-      return true;
-    }
-    return window.NextTrainPro?.hasProAccess?.() ?? false;
+    return entitled;
   },
   ensureInit,
   ensureNativeBridge,
   refreshEntitlement,
-  purchaseAdFree: purchasePro,
-  restoreAdFreePurchase: restoreProPurchase,
+  purchaseAdFree,
+  restoreAdFreePurchase,
+  openRemoveAdsDialog,
   renderMenuAdFree,
   syncPurchaseLinkVisibility,
   shouldShowPurchaseControls,
   getLocalizedPrice() {
-    return localizedPrice;
+    return localizedPrice ?? listPrice;
   },
 };
 

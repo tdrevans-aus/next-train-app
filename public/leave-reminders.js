@@ -467,6 +467,17 @@ function formatReminderScheduleLine(schedule) {
     return null;
   }
 
+  if (schedule.reason === "fast_test") {
+    const notifyAt = schedule.primaryNotifyAtClock;
+    if (!notifyAt) {
+      return "Test reminder in ~1 min";
+    }
+    const trainTime = schedule.trainTime;
+    return trainTime
+      ? `Test reminder ~${notifyAt} · ${trainTime} train`
+      : `Test reminder ~${notifyAt}`;
+  }
+
   // Only speak when there is a concrete next ping — otherwise stay silent.
   if (schedule.reason !== "ok") {
     return null;
@@ -803,6 +814,25 @@ async function saveRemindersDialog() {
 
 function initLeaveRemindersBridge() {
   initLeaveReminderUi();
+  initReminderFastTestMode();
+}
+
+async function initReminderFastTestMode() {
+  if (!isNativeApp()) {
+    return;
+  }
+  try {
+    if (sessionStorage.getItem("nextTrainReminderTest") !== "1") {
+      return;
+    }
+    const plugin = getLeaveRemindersPlugin();
+    if (!plugin?.setFastTestMode) {
+      return;
+    }
+    await plugin.setFastTestMode({ enabled: true });
+  } catch (error) {
+    console.warn("Could not arm reminder fast-test mode", error);
+  }
 }
 
 window.nextTrainLeaveReminders = {

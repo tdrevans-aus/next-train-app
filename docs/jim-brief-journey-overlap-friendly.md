@@ -4,7 +4,7 @@
 **From:** Simon (design) / Tim (product)  
 **Status:** Shipped — **Fix for me revised 2026-08-10** (minimal shift; new journey wins)  
 **Related:** `formatJourneyOverlapError`, Save journey detail (`public/app.js`), Active from / until fields  
-**Out of scope:** Dual-chip “adjust mine vs theirs” — parked as **U-01** in `docs/undecided-issues.md` (default remains: new journey wins).
+**Out of scope:** Dual-chip “adjust mine vs theirs” — **closed U-01** (Aug 2026): always adjust the *other* journey.
 
 ---
 

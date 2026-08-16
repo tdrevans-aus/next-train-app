@@ -95,19 +95,33 @@ public final class WidgetUiBuilder {
     return "Next Journey".equalsIgnoreCase(snapshot.optString("label", ""));
   }
 
+  /** FB-40: palette from appearance mode (blend/brand → brand tokens; wallpaper → Monet). */
+  public static WidgetThemePalette resolveAppearancePalette(Context context) {
+    String mode = WidgetAppearanceMode.read(context);
+    if (WidgetAppearanceMode.MODE_WALLPAPER.equals(mode)) {
+      return WidgetThemePalette.resolve(context, WidgetThemePalette.ID_SYSTEM);
+    }
+    return WidgetThemePalette.brandPalette();
+  }
+
   public static RemoteViews build(Context context, JSONObject snapshot, WidgetSize size) {
+    WidgetThemePalette palette = resolveAppearancePalette(context);
+    WidgetAppearanceSettings appearance = WidgetAppearanceSettings.read(context);
     RemoteViews views = new RemoteViews(context.getPackageName(), size.layoutId);
     if (snapshot != null && snapshot.optBoolean("widgetLocked", false)) {
-      bindWidgetLocked(views, context, size, snapshot);
+      bindWidgetLocked(views, context, size, snapshot, palette);
+      applyWidgetBackground(views, context, palette, appearance, size);
       return views;
     }
     if (snapshot == null || snapshot.optBoolean("empty", false)) {
-      bindEmpty(views, context, size);
+      bindEmpty(views, context, size, palette);
+      applyWidgetBackground(views, context, palette, appearance, size);
       return views;
     }
 
     if (snapshot.optBoolean("nearbyFallback", false)) {
-      bindNearbyFallback(views, context, size);
+      bindNearbyFallback(views, context, size, palette);
+      applyWidgetBackground(views, context, palette, appearance, size);
       return views;
     }
 
@@ -140,14 +154,16 @@ public final class WidgetUiBuilder {
       views.setViewVisibility(R.id.widget_train_clock, android.view.View.GONE);
     }
 
-    views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_accent));
-    views.setTextColor(R.id.widget_primary_unit, context.getColor(R.color.widget_accent));
+    views.setTextColor(R.id.widget_label, palette.muted);
+    views.setTextColor(R.id.widget_primary_value, palette.accent);
+    views.setTextColor(R.id.widget_primary_unit, palette.accent);
+    views.setTextColor(R.id.widget_train_clock, palette.text);
 
-    int leaveColor = R.color.widget_muted;
+    int leaveColor = palette.muted;
     if (late) {
-      leaveColor = R.color.widget_late;
+      leaveColor = context.getColor(R.color.widget_late);
     } else if (urgent) {
-      leaveColor = R.color.widget_leave;
+      leaveColor = context.getColor(R.color.widget_leave);
     }
 
     // Idle outside-hours face only — do NOT key off "Target Train" label: that label is also
@@ -167,7 +183,7 @@ public final class WidgetUiBuilder {
         routeLine,
         trainClock,
         false,
-        context.getColor(leaveColor),
+        leaveColor,
         status,
         size
       );
@@ -176,7 +192,28 @@ public final class WidgetUiBuilder {
     }
 
     views.setOnClickPendingIntent(R.id.widget_root, buildHomeTapIntent(context));
+    applyMutedChrome(views, palette);
+    applyWidgetBackground(views, context, palette, appearance, size);
     return views;
+  }
+
+  private static void applyWidgetBackground(
+    RemoteViews views,
+    Context context,
+    WidgetThemePalette palette,
+    WidgetAppearanceSettings appearance,
+    WidgetSize size
+  ) {
+    WidgetBackgroundPainter.apply(views, context, palette, appearance, size);
+  }
+
+  /** Muted labels / crumbs that keep XML defaults unless explicitly themed elsewhere. */
+  private static void applyMutedChrome(RemoteViews views, WidgetThemePalette palette) {
+    views.setTextColor(R.id.widget_leave_label, palette.muted);
+    views.setTextColor(R.id.widget_route, palette.muted);
+    views.setTextColor(R.id.widget_updated, palette.muted);
+    views.setTextColor(R.id.widget_status, palette.muted);
+    views.setTextColor(R.id.widget_preferred_hint, palette.muted);
   }
 
   /** Idle: preferred time + day word; full-width route; no Updated. */
@@ -224,7 +261,7 @@ public final class WidgetUiBuilder {
   /** Idle: compact centered stack — no spacer, no resize upscale. */
   private static void bindOutsideHoursIdleLayoutChrome(RemoteViews views) {
     views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
-    views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER);
+    views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.CENTER);
   }
 
   /**
@@ -660,7 +697,12 @@ public final class WidgetUiBuilder {
     }
   }
 
-  private static void bindEmpty(RemoteViews views, Context context, WidgetSize size) {
+  private static void bindEmpty(
+    RemoteViews views,
+    Context context,
+    WidgetSize size,
+    WidgetThemePalette palette
+  ) {
     int layoutId = size.layoutId;
     boolean medium = size.isMedium();
     float scale = size.typeScale();
@@ -676,7 +718,8 @@ public final class WidgetUiBuilder {
       TypedValue.COMPLEX_UNIT_SP,
       scaleSp(medium ? 20f : 16f, scale)
     );
-    views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_accent));
+    views.setTextColor(R.id.widget_label, palette.muted);
+    views.setTextColor(R.id.widget_primary_value, palette.accent);
     views.setTextViewText(R.id.widget_train_clock, EMPTY_SETUP_SUB);
     views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
     views.setTextViewTextSize(
@@ -684,7 +727,7 @@ public final class WidgetUiBuilder {
       TypedValue.COMPLEX_UNIT_SP,
       scaleSp(medium ? 14f : 12f, scale)
     );
-    views.setTextColor(R.id.widget_train_clock, context.getColor(R.color.widget_muted));
+    views.setTextColor(R.id.widget_train_clock, palette.muted);
     hideLeaveTwin(views);
     hideStatusIfPresent(views, layoutId);
     bindPreferredHint(views, "", layoutId);
@@ -695,17 +738,17 @@ public final class WidgetUiBuilder {
     views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
     views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
     setTrainStackCentered(views, true);
-    views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER);
+    views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.CENTER);
     views.setOnClickPendingIntent(R.id.widget_root, buildTapIntent(context, "new"));
   }
 
   private static void restoreLiveLayoutChrome(RemoteViews views, WidgetSize size) {
     if (size.isShortCell()) {
       views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
-      views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER_VERTICAL);
+      views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.CENTER_VERTICAL);
     } else {
       views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
-      views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.TOP);
+      views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
     }
   }
 
@@ -714,7 +757,8 @@ public final class WidgetUiBuilder {
     RemoteViews views,
     Context context,
     WidgetSize size,
-    JSONObject snapshot
+    JSONObject snapshot,
+    WidgetThemePalette palette
   ) {
     int layoutId = size.layoutId;
     boolean medium = size.isMedium();
@@ -738,7 +782,8 @@ public final class WidgetUiBuilder {
       TypedValue.COMPLEX_UNIT_SP,
       scaleSp(medium ? 18f : 16f, scale)
     );
-    views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_text));
+    views.setTextColor(R.id.widget_label, palette.muted);
+    views.setTextColor(R.id.widget_primary_value, palette.text);
     hideLeaveTwin(views);
     hideStatusIfPresent(views, layoutId);
     bindPreferredHint(views, "", layoutId);
@@ -758,7 +803,7 @@ public final class WidgetUiBuilder {
       TypedValue.COMPLEX_UNIT_SP,
       scaleSp(medium ? 13f : 12f, scale)
     );
-    views.setTextColor(R.id.widget_train_clock, context.getColor(R.color.widget_muted));
+    views.setTextColor(R.id.widget_train_clock, palette.muted);
     views.setInt(R.id.widget_train_clock, "setMaxLines", 3);
     views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
     String route =
@@ -767,7 +812,7 @@ public final class WidgetUiBuilder {
       route = "Unlock Pro";
     }
     views.setTextViewText(R.id.widget_route, route);
-    views.setTextColor(R.id.widget_route, context.getColor(R.color.widget_accent));
+    views.setTextColor(R.id.widget_route, palette.accent);
     views.setTextViewTextSize(
       R.id.widget_route,
       TypedValue.COMPLEX_UNIT_SP,
@@ -778,7 +823,12 @@ public final class WidgetUiBuilder {
     views.setOnClickPendingIntent(R.id.widget_root, buildPaywallTapIntent(context));
   }
 
-  private static void bindNearbyFallback(RemoteViews views, Context context, WidgetSize size) {
+  private static void bindNearbyFallback(
+    RemoteViews views,
+    Context context,
+    WidgetSize size,
+    WidgetThemePalette palette
+  ) {
     int layoutId = size.layoutId;
     boolean medium = size.isMedium();
     float scale = size.typeScale();
@@ -794,7 +844,8 @@ public final class WidgetUiBuilder {
       TypedValue.COMPLEX_UNIT_SP,
       scaleSp(medium ? 12f : 11f, scale)
     );
-    views.setTextColor(R.id.widget_primary_value, context.getColor(R.color.widget_accent));
+    views.setTextColor(R.id.widget_label, palette.muted);
+    views.setTextColor(R.id.widget_primary_value, palette.accent);
     hideLeaveTwin(views);
     hideStatusIfPresent(views, layoutId);
     bindPreferredHint(views, "", layoutId);
@@ -805,6 +856,7 @@ public final class WidgetUiBuilder {
     views.setViewVisibility(R.id.widget_updated_left, android.view.View.GONE);
     views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
     views.setTextViewText(R.id.widget_train_clock, "See trains near you");
+    views.setTextColor(R.id.widget_train_clock, palette.text);
     views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
     views.setTextViewTextSize(
       R.id.widget_train_clock,
@@ -812,61 +864,77 @@ public final class WidgetUiBuilder {
       scaleSp(medium ? 14f : 12f, scale)
     );
     setTrainStackCentered(views, true);
-    views.setInt(R.id.widget_root, "setGravity", android.view.Gravity.CENTER);
+    views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.CENTER);
     views.setOnClickPendingIntent(R.id.widget_root, buildHomeTapIntent(context));
   }
 
-  public static PendingIntent buildPaywallTapIntent(Context context) {
-    Intent intent = new Intent(context, MainActivity.class);
-    intent.setAction(Intent.ACTION_VIEW);
-    intent.setData(Uri.parse("nexttrain://paywall"));
-    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+  public static PendingIntent buildHomeTapIntent(Context context) {
     return PendingIntent.getActivity(
       context,
-      "paywall".hashCode(),
-      intent,
+      "home".hashCode(),
+      homeTapIntent(context),
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
     );
   }
 
-  public static PendingIntent buildHomeTapIntent(Context context) {
+  public static Intent homeTapIntent(Context context) {
     Intent intent = new Intent(context, MainActivity.class);
     intent.setAction(Intent.ACTION_VIEW);
     intent.setData(Uri.parse("nexttrain://home"));
     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
+  }
+
+  public static PendingIntent buildTapIntent(Context context, String journeyId) {
     return PendingIntent.getActivity(
       context,
-      "home".hashCode(),
-      intent,
+      journeyId.hashCode(),
+      journeyTapIntent(context, journeyId),
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
     );
   }
 
-  public static PendingIntent buildTapIntent(Context context, String journeyId) {
+  public static Intent journeyTapIntent(Context context, String journeyId) {
     String path = "new".equals(journeyId) ? "/new" : "/" + journeyId;
     Intent intent = new Intent(context, MainActivity.class);
     intent.setAction(Intent.ACTION_VIEW);
     intent.setData(Uri.parse("nexttrain://journey" + path));
     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
+  }
+
+  public static PendingIntent buildNearbyTapIntent(Context context) {
     return PendingIntent.getActivity(
       context,
-      journeyId.hashCode(),
-      intent,
+      "nearby".hashCode(),
+      nearbyTapIntent(context),
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
     );
   }
 
-  public static PendingIntent buildNearbyTapIntent(Context context) {
+  public static Intent nearbyTapIntent(Context context) {
     Intent intent = new Intent(context, MainActivity.class);
     intent.setAction(Intent.ACTION_VIEW);
     intent.setData(Uri.parse("nexttrain://nearby"));
     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
+  }
+
+  public static PendingIntent buildPaywallTapIntent(Context context) {
     return PendingIntent.getActivity(
       context,
-      "nearby".hashCode(),
-      intent,
+      "paywall".hashCode(),
+      paywallTapIntent(context),
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
     );
+  }
+
+  public static Intent paywallTapIntent(Context context) {
+    Intent intent = new Intent(context, MainActivity.class);
+    intent.setAction(Intent.ACTION_VIEW);
+    intent.setData(Uri.parse("nexttrain://paywall"));
+    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
   }
 
   public static WidgetSize widgetSizeFor(Context context, AppWidgetManager manager, int widgetId) {

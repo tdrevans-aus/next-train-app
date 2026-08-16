@@ -16,6 +16,11 @@ public final class WidgetSettingsStore {
     prefs(context).edit().putString(KEY_SETTINGS, settingsJson).apply();
   }
 
+  /** Synchronous write — use before widget repaint so the worker thread reads the new blob. */
+  public static void saveSettingsSync(Context context, String settingsJson) {
+    prefs(context).edit().putString(KEY_SETTINGS, settingsJson).commit();
+  }
+
   public static String readSettings(Context context) {
     return prefs(context).getString(KEY_SETTINGS, null);
   }

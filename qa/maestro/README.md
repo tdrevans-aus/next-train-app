@@ -33,6 +33,14 @@ nexttrain://test/seed?fixture=normal&station=Edgewater%20Stn&direction=Perth&res
 - Injects a configured journey into `nextTrainSettings` (real Transperth API on device).
 - Ignored on release builds (`BuildConfig.DEBUG` / `isDebugBuild` guard).
 
+**Reminder fast-test** (debug only — notification ~60s):
+
+```
+nexttrain://test/reminder-fast
+```
+
+Disable: `nexttrain://test/reminder-fast?off=1`. See `docs/DEVICE-SMOKE.md` §11b and `docs/qa-leave-reminders-v2-testing.md` §3.
+
 **Option A (manual):** open the app once, add **Morning into town**, then run Maestro with `clearState: false` in flows.
 
 ## Widget flow (flow 4)

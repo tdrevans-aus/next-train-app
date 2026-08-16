@@ -18,6 +18,11 @@ import org.json.JSONObject;
 public class WidgetSyncPlugin extends Plugin {
 
   private static String pendingDeepLink;
+  private static volatile boolean widgetSetupOverlayActive = false;
+
+  static boolean isWidgetSetupOverlayActive() {
+    return widgetSetupOverlayActive;
+  }
 
   public static void setPendingDeepLink(String uri) {
     pendingDeepLink = uri;
@@ -31,8 +36,10 @@ public class WidgetSyncPlugin extends Plugin {
       return;
     }
 
-    WidgetSettingsStore.saveSettings(getContext(), settingsJson);
+    WidgetSettingsStore.saveSettingsSync(getContext(), settingsJson);
+    CommuteRefreshService.repaintFromCache(getContext());
     CommuteRefreshService.refreshAll(getContext());
+    call.resolve();
   }
 
   @PluginMethod
@@ -107,6 +114,61 @@ public class WidgetSyncPlugin extends Plugin {
   }
 
   @PluginMethod
+  public void getSystemWidgetPalette(PluginCall call) {
+    JSObject result = new JSObject();
+    if (!WidgetThemePalette.supportsDynamicSystemColors()) {
+      result.put("available", false);
+      result.put("api31", false);
+      call.resolve(result);
+      return;
+    }
+
+    WidgetThemePalette palette =
+      WidgetThemePalette.resolve(getContext(), WidgetThemePalette.ID_SYSTEM);
+    boolean night = WidgetThemePalette.isNightMode(getContext());
+    result.put("available", true);
+    result.put("api31", true);
+    result.put("night", night);
+    result.put("bg", WidgetThemePalette.colorToArgbHex(palette.bg));
+    result.put("text", WidgetThemePalette.colorToArgbHex(palette.text));
+    result.put("muted", WidgetThemePalette.colorToArgbHex(palette.muted));
+    result.put("accent", WidgetThemePalette.colorToArgbHex(palette.accent));
+    result.put("border", WidgetThemePalette.colorToArgbHex(palette.border));
+    call.resolve(result);
+  }
+
+  @PluginMethod
+  public void setWidgetSetupOverlayActive(PluginCall call) {
+    widgetSetupOverlayActive = call.getBoolean("active", false);
+    call.resolve();
+  }
+
+  @PluginMethod
+  public void getWidgetConfigureContext(PluginCall call) {
+    JSObject result = new JSObject();
+    boolean active = WidgetConfigureBridge.isActive();
+    result.put("active", active);
+    if (active) {
+      result.put("appWidgetId", WidgetConfigureBridge.getAppWidgetId());
+      result.put("cancellable", true);
+    }
+    call.resolve(result);
+  }
+
+  @PluginMethod
+  public void finishWidgetConfigure(PluginCall call) {
+    boolean ok = call.getBoolean("ok", false);
+    if (ok && WidgetConfigureBridge.isActive()) {
+      int widgetId = WidgetConfigureBridge.getAppWidgetId();
+      CommuteRefreshService.paintFromCache(getContext());
+      NextTrainWidgetProvider.updateWidgetId(getContext(), widgetId);
+      CommuteRefreshService.refreshAll(getContext());
+    }
+    WidgetConfigureBridge.finish(ok);
+    call.resolve();
+  }
+
+  @PluginMethod
   public void getDebugState(PluginCall call) {
     try {
       JSONObject snapshot = WidgetSettingsStore.readSnapshot(getContext());
@@ -114,6 +176,10 @@ public class WidgetSyncPlugin extends Plugin {
       if (snapshot == null) {
         result.put("hasSnapshot", false);
         result.put("lastRefreshMs", WidgetSettingsStore.readLastRefreshMs(getContext()));
+        result.put("widgetThemeId", WidgetThemePalette.readWidgetThemeId(getContext()));
+        WidgetAppearanceSettings appearance = WidgetAppearanceSettings.read(getContext());
+        result.put("widgetBgOpacity", appearance.bgOpacity);
+        result.put("widgetTransparentBg", appearance.transparentBg);
         call.resolve(result);
         return;
       }
@@ -129,6 +195,10 @@ public class WidgetSyncPlugin extends Plugin {
       result.put("departureIso", snapshot.optString("departureIso", ""));
       result.put("updatedLine", snapshot.optString("updatedLine", ""));
       result.put("lastRefreshMs", WidgetSettingsStore.readLastRefreshMs(getContext()));
+      result.put("widgetThemeId", WidgetThemePalette.readWidgetThemeId(getContext()));
+      WidgetAppearanceSettings appearance = WidgetAppearanceSettings.read(getContext());
+      result.put("widgetBgOpacity", appearance.bgOpacity);
+      result.put("widgetTransparentBg", appearance.transparentBg);
       call.resolve(result);
     } catch (Exception error) {
       call.reject(error.getMessage());

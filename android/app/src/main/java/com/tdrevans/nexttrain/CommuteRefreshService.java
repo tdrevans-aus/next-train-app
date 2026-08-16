@@ -29,22 +29,12 @@ public final class CommuteRefreshService {
     JSONObject snapshot = null;
     CommuteSchedule.Result result = null;
     try {
-      if (!CommuteSchedule.hasWidgetAccessFromContext(context)) {
-        snapshot = CommuteSchedule.widgetLockedSnapshot();
-        WidgetSettingsStore.saveSnapshot(context, snapshot);
-        NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
-        WidgetLocalPaintScheduler.cancel(context);
-        WidgetDepartureAdvanceScheduler.cancel(context);
-        WidgetDebugLog.refreshDone(snapshot);
-        return;
-      }
-
       // Outside Active hours: designed idle only — never network, never stale live cache.
       JSONObject outsideHours = CommuteSchedule.nearbyFallbackIfOutsideHours(context);
       if (outsideHours != null) {
         snapshot = outsideHours;
         WidgetSettingsStore.saveSnapshot(context, snapshot);
-        NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
+        NextTrainWidgetProvider.updateAllWidgets(context);
         WidgetLocalPaintScheduler.cancel(context);
         WidgetDepartureAdvanceScheduler.cancel(context);
         WidgetDebugLog.refreshDone(snapshot);
@@ -57,7 +47,7 @@ public final class CommuteRefreshService {
       result = CommuteSchedule.load(context, true);
       snapshot = buildWidgetSnapshot(context, result);
       WidgetSettingsStore.saveSnapshot(context, snapshot);
-      NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
+      NextTrainWidgetProvider.updateAllWidgets(context);
       WidgetLocalPaintScheduler.scheduleIfNeeded(context, snapshot);
       WidgetDepartureAdvanceScheduler.scheduleIfNeeded(context, snapshot);
     } catch (Exception error) {
@@ -84,20 +74,11 @@ public final class CommuteRefreshService {
     String paintReason = "local";
     JSONObject snapshot = null;
     try {
-      if (!CommuteSchedule.hasWidgetAccessFromContext(context)) {
-        JSONObject locked = CommuteSchedule.widgetLockedSnapshot();
-        WidgetSettingsStore.saveSnapshot(context, locked);
-        NextTrainWidgetProvider.updateAllWidgets(context, locked);
-        WidgetLocalPaintScheduler.cancel(context);
-        WidgetDepartureAdvanceScheduler.cancel(context);
-        return;
-      }
-
       JSONObject cached = WidgetSettingsStore.readSnapshot(context);
       if (cached == null) {
         WidgetLocalPaintScheduler.cancel(context);
         WidgetDepartureAdvanceScheduler.cancel(context);
-        NextTrainWidgetProvider.updateAllWidgets(context, null);
+        NextTrainWidgetProvider.updateAllWidgets(context);
         return;
       }
 
@@ -105,7 +86,7 @@ public final class CommuteRefreshService {
       JSONObject outsideHours = CommuteSchedule.nearbyFallbackIfOutsideHours(context);
       if (outsideHours != null) {
         WidgetSettingsStore.saveSnapshot(context, outsideHours);
-        NextTrainWidgetProvider.updateAllWidgets(context, outsideHours);
+        NextTrainWidgetProvider.updateAllWidgets(context);
         WidgetLocalPaintScheduler.cancel(context);
         WidgetDepartureAdvanceScheduler.cancel(context);
         return;
@@ -131,7 +112,7 @@ public final class CommuteRefreshService {
       }
 
       WidgetSettingsStore.saveSnapshot(context, snapshot);
-      NextTrainWidgetProvider.updateAllWidgets(context, snapshot);
+      NextTrainWidgetProvider.updateAllWidgets(context);
       WidgetLocalPaintScheduler.scheduleIfNeeded(context, snapshot);
       WidgetDepartureAdvanceScheduler.scheduleIfNeeded(context, snapshot);
     } catch (Exception error) {

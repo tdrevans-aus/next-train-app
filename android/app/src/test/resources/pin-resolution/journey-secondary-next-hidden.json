@@ -1,0 +1,60 @@
+{
+  "id": "journey-secondary-next-hidden",
+  "description": "When pin is the soonest train, secondary Next line is omitted.",
+  "tags": ["journey", "preferred", "secondary-next"],
+  "clock": {
+    "perthDateKey": "2026-08-15",
+    "nowIso": "2026-08-15T06:00:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 0,
+    "journey": {
+      "id": "j-fixture-6",
+      "station": "Edgewater Stn",
+      "direction": "Perth",
+      "preferredTrainTime": "06:30",
+      "defaultFrom": "00:00",
+      "defaultUntil": "23:59",
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-15T06:30:00+08:00",
+        "displayTime": "6:30",
+        "platform": "1"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-15T06:30:00+08:00",
+          "displayTime": "6:30",
+          "platform": "1"
+        },
+        {
+          "departure": "2026-08-15T07:00:00+08:00",
+          "displayTime": "7:00",
+          "platform": "2"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-15T06:30:00+08:00",
+    "pinDeparture": "2026-08-15T06:30:00+08:00",
+    "heroDeparture": "2026-08-15T06:30:00+08:00",
+    "leaveDeparture": "2026-08-15T06:30:00+08:00",
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": "2026-08-15T06:30:00+08:00",
+    "isPinnedToday": true,
+    "heroShowsPin": true,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": true,
+    "showSecondaryNext": false,
+    "leaveCardArmed": true,
+    "heroLabel": "Target train"
+  }
+}

@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.RemoteViews;
 import org.json.JSONObject;
@@ -125,5 +128,65 @@ public class WidgetUiBuilderRobolectricTest {
       WidgetUiBuilder.EMPTY_SETUP_SUB,
       binding.text(R.id.widget_train_clock)
     );
+  }
+
+  @Test
+  public void opacity40_paintsBackgroundWithExpectedAlphaAndScrim() throws Exception {
+    Context context = WidgetLayoutTestSupport.appContext();
+    WidgetSettingsStore.saveSettings(context, "{\"widgetBgOpacity\":40,\"journeys\":[]}");
+    JSONObject snapshot = WidgetSnapshotFixtures.liveJourneyWithLeave();
+    WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetLayoutTestSupport.RemoteViewsBinding binding =
+      WidgetLayoutTestSupport.capture(
+        WidgetUiBuilder.build(context, snapshot, size)
+      );
+
+    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_bg_layer));
+    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_text_scrim));
+    Bitmap bg = binding.bitmap(R.id.widget_bg_layer);
+    assertTrue(bg != null);
+    int centerAlpha = (bg.getPixel(bg.getWidth() / 2, bg.getHeight() / 2) >> 24) & 0xFF;
+    assertTrue(centerAlpha >= 90 && centerAlpha <= 115);
+    assertEquals(Color.TRANSPARENT, binding.backgroundColor(R.id.widget_root).intValue());
+  }
+
+  @Test
+  public void brandModeOpacity40_paintsBackgroundWithExpectedAlpha() throws Exception {
+    Context context = WidgetLayoutTestSupport.appContext();
+    WidgetSettingsStore.saveSettings(
+      context,
+      "{\"widgetAppearanceMode\":\"brand\",\"widgetBgOpacity\":40,\"widgetTransparentBg\":true,\"journeys\":[]}"
+    );
+    JSONObject snapshot = WidgetSnapshotFixtures.liveJourneyWithLeave();
+    WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetLayoutTestSupport.RemoteViewsBinding binding =
+      WidgetLayoutTestSupport.capture(
+        WidgetUiBuilder.build(context, snapshot, size)
+      );
+
+    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_bg_layer));
+    Bitmap bg = binding.bitmap(R.id.widget_bg_layer);
+    assertTrue(bg != null);
+    int centerAlpha = (bg.getPixel(bg.getWidth() / 2, bg.getHeight() / 2) >> 24) & 0xFF;
+    assertTrue(centerAlpha >= 90 && centerAlpha <= 115);
+  }
+
+  @Test
+  public void transparentCard_hidesBackgroundLayer() throws Exception {
+    Context context = WidgetLayoutTestSupport.appContext();
+    WidgetSettingsStore.saveSettings(
+      context,
+      "{\"widgetBgOpacity\":0,\"widgetTransparentBg\":true,\"journeys\":[]}"
+    );
+    JSONObject snapshot = WidgetSnapshotFixtures.emptySetup();
+    WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetLayoutTestSupport.RemoteViewsBinding binding =
+      WidgetLayoutTestSupport.capture(
+        WidgetUiBuilder.build(context, snapshot, size)
+      );
+
+    assertEquals(View.GONE, binding.visibility(R.id.widget_bg_layer));
+    assertEquals(View.GONE, binding.visibility(R.id.widget_text_scrim));
+    assertEquals(Color.TRANSPARENT, binding.backgroundColor(R.id.widget_root).intValue());
   }
 }

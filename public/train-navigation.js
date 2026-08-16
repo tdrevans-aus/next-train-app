@@ -628,6 +628,47 @@ function resolveJourneyPreferredTargetTrip(data, journey = getActiveJourney()) {
   return null;
 }
 
+function resolveDepartedJourneyTargetTrip(data, journey = getActiveJourney()) {
+  if (!data || !journey || isRouteJourney(journey)) {
+    return null;
+  }
+
+  const normalized = normalizeApiTrainData(data);
+  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  const leaveBefore = getEffectiveLeaveBeforeMinutes(journeyClean);
+  const referenceIso = normalized.next?.departure ?? normalized.next?.arrival;
+
+  if (isJourneyOverrideActiveToday(journeyClean)) {
+    const overrideTrip = findTripByDepartureIso(normalized, journeyClean.journeyPinOverrideIso);
+    if (overrideTrip && tripHasDeparted(overrideTrip)) {
+      return ensureFullNext(overrideTrip, leaveBefore, referenceIso);
+    }
+    return null;
+  }
+
+  if (isJourneyPinDismissedToday(journeyClean)) {
+    return null;
+  }
+
+  const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
+  if (preferredMinutes < 0) {
+    return null;
+  }
+
+  const horizon = targetTripHorizonMinutes(journeyClean);
+  for (const trip of getUpcomingTrips(normalized)) {
+    if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon)) {
+      continue;
+    }
+    if (tripHasDeparted(trip)) {
+      return ensureFullNext(trip, leaveBefore, referenceIso);
+    }
+    return null;
+  }
+
+  return null;
+}
+
 function resolveJourneyPinTrip(data, journey = getActiveJourney()) {
   if (!data || !journey) {
     return null;
@@ -1040,7 +1081,9 @@ function advanceLeavePinToNextTrain() {
 
   const normalized = normalizeApiTrainData(getLastApiData());
   const upcoming = getUpcomingTrips(normalized);
-  const pinTrip = resolveJourneyPinTrip(getLastApiData(), journey);
+  const pinTrip =
+    resolveJourneyPinTrip(getLastApiData(), journey) ??
+    resolveDepartedJourneyTargetTrip(getLastApiData(), journey);
   let pinIndex = findTripIndexInUpcoming(normalized, pinTrip);
   if (pinIndex < 0) {
     pinIndex = 0;
@@ -1085,8 +1128,17 @@ function shouldAdvancePinOnNextTrain() {
     return false;
   }
 
-  if (!resolveJourneyPinTrip(getLastApiData(), journey)) {
-    return false;
+  const pinTrip = resolveJourneyPinTrip(getLastApiData(), journey);
+  if (!pinTrip) {
+    const departedTarget = resolveDepartedJourneyTargetTrip(getLastApiData(), journey);
+    if (!departedTarget) {
+      return false;
+    }
+
+    const normalized = normalizeApiTrainData(getLastApiData());
+    const pinIndex = findTripIndexInUpcoming(normalized, departedTarget);
+    const upcoming = getUpcomingTrips(normalized);
+    return pinIndex >= 0 && pinIndex < upcoming.length - 1;
   }
 
   return canSkipToNextTrain() && shouldAdvanceLeavePinOnSkip();
@@ -1191,6 +1243,64 @@ function skipToNextTrain() {
     render(applyClientSkip({ ...getLastApiData() }));
     fetchNextTrain();
   }
+}
+
+function previewUpcomingDepartureAtIndex(tripIndex) {
+  if (isHeroPinLockingSwipe()) {
+    return false;
+  }
+
+  const index = Number(tripIndex);
+  if (!Number.isFinite(index) || index < 0) {
+    return false;
+  }
+
+  if (isNearbyModeActive()) {
+    const entry = getNearbyFocusedEntry();
+    if (!entry) {
+      return false;
+    }
+
+    const upcoming = getUpcomingTrips(normalizeApiTrainData(entry.data));
+    const currentSkip = getNearbySkip(entry.direction);
+    if (index <= currentSkip || index >= upcoming.length) {
+      return false;
+    }
+
+    setNearbySkip(entry.direction, index);
+    dismissSwipeHint();
+    applyNearbySkipOptimistic(entry.direction, index);
+    fetchNearbyBoard()
+      .then(() => renderNearbyBoard())
+      .catch((error) => {
+        deps.errorEl.textContent = error.message;
+        deps.errorEl.hidden = false;
+        renderNearbyBoard({ stale: true });
+      });
+    return true;
+  }
+
+  const data = getLastApiData();
+  if (!data) {
+    return false;
+  }
+
+  const normalized = normalizeApiTrainData(data);
+  const upcoming = getUpcomingTrips(normalized);
+  const currentSkip = getSkipTrains();
+  if (index <= currentSkip || index >= upcoming.length) {
+    return false;
+  }
+
+  setSkipTrains(index);
+  const skippedToTrip = upcoming[index] ?? null;
+  const skippedToDeparture = skippedToTrip ? resolveTripDeparture(skippedToTrip) : null;
+  saveSkipState(index, null, skippedToDeparture);
+  dismissSwipeHint();
+
+  render(applyClientSkip({ ...data }));
+  fetchNextTrain();
+  return true;
 }
 
 function skipToEarlierTrain() {
@@ -1415,13 +1525,19 @@ async function toggleHeroPin() {
 
   if (isPinnedView) {
     const isOverride = isJourneyOverrideActiveToday(journeyClean);
+    const pinnedTrip = getLastRenderedNext();
     clearJourneyPinOverride(journey.id);
+    persistJourneyPinDismissed(journey.id);
     if (isOverride) {
-      clearJourneyPinDismissed(journey.id);
-      clearSkipState();
-      setSkipTrains(0);
+      // Day override unpin: drop today's pin only — stay on the train the user was viewing.
+      if (pinnedTrip) {
+        saveSkipStateForTrip(getLastApiData(), pinnedTrip);
+        setSkipTrains(readSkipState().count);
+      } else {
+        clearSkipState();
+        setSkipTrains(0);
+      }
     } else {
-      persistJourneyPinDismissed(journey.id);
       const trueNextTrip = getTrueNextTrip(getLastApiData());
       if (trueNextTrip) {
         saveSkipStateForTrip(getLastApiData(), trueNextTrip);
@@ -1437,8 +1553,9 @@ async function toggleHeroPin() {
     }
     clearJourneyPinDismissed(journey.id);
     const freshJourney = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(getActiveJourney()));
-    const defaultTarget = resolveJourneyPreferredTargetTrip(getLastApiData(), freshJourney);
-    if (defaultTarget && journeysDepartureMatch(getLastRenderedNext(), defaultTarget)) {
+    const preferredTarget = resolveJourneyPreferredTargetTrip(getLastApiData(), freshJourney);
+    const preferredDeparture = preferredTarget ? resolveTripDeparture(preferredTarget) : null;
+    if (preferredDeparture && heroDeparture === preferredDeparture) {
       clearJourneyPinOverride(journey.id);
     } else {
       persistJourneyPinOverride(journey.id, heroDeparture);
@@ -1498,11 +1615,13 @@ async function toggleHeroPin() {
     liveHorizonMinutes,
     persistJourneyPinDismissed,
     persistJourneyPinOverride,
+    previewUpcomingDepartureAtIndex,
     preferredMinutesForLiveGlance,
     prepareDisplayData,
     readSkipState,
     reconcileSkipWithApi,
     resetHeroSwipePointer,
+    resolveDepartedJourneyTargetTrip,
     resolveJourneyPinTrip,
     resolveJourneyPreferredTargetTrip,
     restoreCommuteTargetPinFace,

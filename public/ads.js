@@ -119,9 +119,16 @@ function queueBannerOp(label, fn) {
   return bannerOpChain;
 }
 
+function isOverlaySuppressedByClass() {
+  return (
+    document.body.classList.contains("app-dialog-open") ||
+    document.body.classList.contains("widget-setup-active")
+  );
+}
+
 function syncAdBannerScrollPadding() {
   const entitled = window.NextTrainAdFree?.isEntitled?.();
-  const suppressed = document.body.classList.contains("app-dialog-open");
+  const suppressed = isOverlaySuppressedByClass();
   const nativeActive =
     isNativeApp() && nativeBannerShown && !suppressed && !entitled;
   const hasClass = document.body.classList.contains("native-ad-banner");
@@ -170,7 +177,7 @@ async function hideNativeBannerSafe(options = {}) {
 }
 
 function isAdOverlaySuppressed() {
-  return document.body.classList.contains("app-dialog-open");
+  return isOverlaySuppressedByClass();
 }
 
 async function restoreNativeBannerSafe() {
@@ -338,7 +345,7 @@ async function waitForAdFreeInit() {
 }
 
 async function syncAdOverlaySuppression() {
-  const suppressed = document.body.classList.contains("app-dialog-open");
+  const suppressed = isOverlaySuppressedByClass();
   const container = document.getElementById("ad-container");
 
   if (!container || window.NextTrainAdFree?.isEntitled?.()) {
@@ -391,7 +398,7 @@ function queueAdOverlaySuppressionSync() {
 
 function installOverlayAdGuard() {
   const rehideForOverlay = () => {
-    if (!document.body.classList.contains("app-dialog-open")) {
+    if (!isOverlaySuppressedByClass()) {
       return;
     }
     queueAdOverlaySuppressionSync();

@@ -1,6 +1,6 @@
 # FB-26: `pin-state.js` API + pin-resolution fixtures
 
-**Status:** Draft (Agent 2) — **do not merge until FB-25 lands**  
+**Status:** Implemented (Aug 2026)  
 **Backlog:** FB-26 (Phase 3 — pin / display contract)  
 **Depends on:** FB-25 module split (`train-navigation.js`, `nearby-mode.js`)  
 **Related:** `docs/jim-brief-journey-pin-preferred-target.md`, `docs/codebase-inventory.md` §3.1–3.2

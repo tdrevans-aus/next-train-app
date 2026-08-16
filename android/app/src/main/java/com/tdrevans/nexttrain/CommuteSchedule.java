@@ -52,11 +52,6 @@ public final class CommuteSchedule {
       }
 
       result.settings = new JSONObject(settingsJson);
-      if (!hasWidgetAccess(result.settings)) {
-        result.widgetLocked = true;
-        result.empty = false;
-        return result;
-      }
 
       Result pinnedResult = WidgetPinResolver.loadBestPinnedResult(context, result.settings);
       if (pinnedResult != null) {
@@ -356,14 +351,7 @@ public final class CommuteSchedule {
   }
 
   public static boolean hasWidgetAccess(JSONObject settings) {
-    if (settings == null) {
-      return true;
-    }
-    JSONObject pro = settings.optJSONObject("pro");
-    if (pro == null) {
-      return true;
-    }
-    return pro.optBoolean("hasWidgetAccess", true);
+    return true;
   }
 
   public static boolean hasWidgetAccessFromContext(Context context) {
@@ -535,15 +523,16 @@ public final class CommuteSchedule {
   }
 
   /**
-   * True soonest not-yet-departed train (classic next).
+   * True soonest not-yet-departed train (classic next). Hero may show a pinned target instead;
+   * use {@link JourneyPinHelper#resolvePinnedTrip} for the active widget/hero face.
    */
   static JSONObject resolveTrueNextTrip(JSONObject payload) {
     return resolveActiveNextTrip(payload, null);
   }
 
   /**
-   * Next live trip for the widget/commute face = true soonest not-yet-departed train
-   * when no journey pin context. With journey, use {@link JourneyPinHelper#resolvePinnedTrip}.
+   * Active next trip for the widget/commute face when no journey pin context.
+   * With journey, prefer {@link JourneyPinHelper#resolvePinnedTrip} (pin may differ from true next).
    */
   static JSONObject resolveActiveNextTrip(JSONObject payload, JSONObject journey) {
     if (payload == null) {

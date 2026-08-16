@@ -169,7 +169,9 @@
 }
 
 body.app-dialog-open #ad-container,
-body.app-dialog-open .ad-remove-link-wrap {
+body.app-dialog-open .ad-remove-link-wrap,
+body.widget-setup-active #ad-container,
+body.widget-setup-active .ad-remove-link-wrap {
   visibility: hidden;
   pointer-events: none;
 }

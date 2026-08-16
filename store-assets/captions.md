@@ -39,7 +39,7 @@ Play Console: upload portrait screenshots **≥1080** wide (device native is fin
 | `04-journeys.png` | My Journeys with **2 named** journeys | **Save the commute you repeat** |
 | `05-setup.png` | Journey detail: station + direction clean | **Set up once** |
 | `06-trust.png` | About / Unofficial honesty | **Unofficial · check station boards** |
-| `07-remove-ads.png` | Menu: Remove ads **A$3.99** | **Ads optional — pay once** |
+| `07-remove-ads.png` | Menu: Remove ads **A$7.99** | **Ads optional — pay once** |
 | `08-widget.png` | Home screen widget leave-by | **Leave-by on your home screen** |
 
 **Minimum if time-crunched:** 01, 02, 03, 04, 06 (+ 08 if widget looks good).

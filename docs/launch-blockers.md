@@ -30,6 +30,7 @@
 | LB-08 | Web regression after S-batch | Jim / QA | Optional | |
 | LB-09 | Dwayne security sign-off | Dwayne | Brief ready | Before **public** |
 | LB-10 | Ruth Play listing + creative sign-off | Ruth + Simon | Waiting Ruth | Before **public** |
+| LB-16 | Play hygiene (native symbols + pre-upload) | Jim | **DONE** | **FB-41** — `debugSymbolLevel 'SYMBOL_TABLE'`, `npm run release:prep`, extended `test:pre-upload` |
 
 ## P2 — park / parallel
 
@@ -47,7 +48,7 @@ Google reviews closed Alpha 2.1.0 (if still pending) / release available
     → Opt-ins + downloads
     → First reactions by weekend
     → If not dumpster fire: Apple Developer fee + ASC shell + IAP
-    → Device smoke 22 + 17–19
+    → Device smoke — `docs/DEVICE-SMOKE.md` (checks 7–9, 11–12, LB-02/LB-03)
 Ruth ──► public only
 Jon / Mac ──► still waiting on Mac access
 ```

@@ -363,6 +363,50 @@ function pickNearbySettingsFields(raw = {}) {
   };
 }
 
+function pickWidgetAppearanceModeFields(raw = {}) {
+  const mode = String(raw.widgetAppearanceMode ?? "").trim();
+  if (mode === "blend" || mode === "wallpaper" || mode === "brand") {
+    return { widgetAppearanceMode: mode };
+  }
+  const legacy = String(raw.widgetThemeId ?? "").trim();
+  if (legacy === "system") {
+    return { widgetAppearanceMode: "wallpaper" };
+  }
+  if (legacy === "default") {
+    return { widgetAppearanceMode: "brand" };
+  }
+  if (legacy) {
+    return { widgetAppearanceMode: "blend" };
+  }
+  return { widgetAppearanceMode: "blend" };
+}
+
+function pickWidgetThemeFields(raw = {}) {
+  return pickWidgetAppearanceModeFields(raw);
+}
+
+function pickWidgetAppearanceFields(raw = {}) {
+  if ("widgetBgOpacity" in raw) {
+    const opacity = Math.max(0, Math.min(100, Math.round(Number(raw.widgetBgOpacity) || 0)));
+    if (opacity > 0) {
+      return { widgetBgOpacity: opacity, widgetTransparentBg: false };
+    }
+    return { widgetBgOpacity: 0, widgetTransparentBg: true };
+  }
+  if (Boolean(raw.widgetTransparentBg)) {
+    return { widgetBgOpacity: 0, widgetTransparentBg: true };
+  }
+  return {};
+}
+
+function pickPersistedRootFields(raw = {}) {
+  return {
+    ...pickNearbySettingsFields(raw),
+    ...pickWidgetThemeFields(raw),
+    ...pickWidgetAppearanceFields(raw),
+  };
+}
+
 function isNearbyPinSettingsHolding(pin) {
   if (!pin?.departureIso) {
     return false;
@@ -376,7 +420,7 @@ function isNearbyPinSettingsHolding(pin) {
   return Date.now() < holdUntil;
 }
 function migrateSettings(raw = {}) {
-  const nearbyFields = pickNearbySettingsFields(raw);
+  const rootFields = pickPersistedRootFields(raw);
   const priorVersion = Number(raw.settingsSchemaVersion) || 0;
 
   if (priorVersion < SETTINGS_SCHEMA_VERSION) {
@@ -385,7 +429,7 @@ function migrateSettings(raw = {}) {
       refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
       activeJourneyId: null,
       journeys: [],
-      ...nearbyFields,
+      ...rootFields,
     };
   }
 
@@ -402,7 +446,7 @@ function migrateSettings(raw = {}) {
       refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
       activeJourneyId,
       journeys,
-      ...nearbyFields,
+      ...rootFields,
     };
   }
 
@@ -427,7 +471,7 @@ function migrateSettings(raw = {}) {
       refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
       activeJourneyId,
       journeys,
-      ...nearbyFields,
+      ...rootFields,
     };
   }
 
@@ -449,7 +493,7 @@ function migrateSettings(raw = {}) {
       refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
       activeJourneyId: journey?.id ?? null,
       journeys: journey ? [journey] : [],
-      ...nearbyFields,
+      ...rootFields,
     };
   }
 
@@ -458,7 +502,7 @@ function migrateSettings(raw = {}) {
     refreshSeconds: Number(raw.refreshSeconds) || DEFAULT_SETTINGS.refreshSeconds,
     activeJourneyId: null,
     journeys: [],
-    ...nearbyFields,
+    ...rootFields,
   };
 }
 function pad2(value) {

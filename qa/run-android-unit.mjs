@@ -28,6 +28,7 @@ if (javaProbe.error || javaProbe.status !== 0) {
 const gradleArgs = [":app:testDebugUnitTest", "--no-daemon"];
 if (widgetOnly) {
   gradleArgs.push("--tests", "com.tdrevans.nexttrain.WidgetUiBuilder*");
+  gradleArgs.push("--tests", "com.tdrevans.nexttrain.WidgetThemePaletteTest");
   gradleArgs.push("--tests", "com.tdrevans.nexttrain.CommuteScheduleTest");
 }
 

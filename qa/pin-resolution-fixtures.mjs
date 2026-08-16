@@ -134,8 +134,13 @@ function validateFixture({ name, fixture }) {
     );
   }
   if (expected.heroShowsPin === true) {
-    assert(expected.pinDeparture !== null, `${prefix} heroShowsPin requires pinDeparture`);
-    assert(expected.heroDeparture === expected.pinDeparture, `${prefix} heroShowsPin requires heroDeparture === pinDeparture`);
+    assert(expected.heroDeparture !== null, `${prefix} heroShowsPin requires heroDeparture`);
+    if (expected.pinDeparture !== null) {
+      assert(
+        expected.heroDeparture === expected.pinDeparture,
+        `${prefix} heroShowsPin requires heroDeparture === pinDeparture`
+      );
+    }
   }
 }
 

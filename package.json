@@ -28,6 +28,7 @@
     "test:ios:preflight": "node qa/check-ios-test-setup.mjs",
     "test:ios:maestro": "node qa/run-ios-maestro.mjs",
     "test:pre-upload": "node qa/pre-upload-check.mjs",
+    "release:prep": "node qa/release-prep.mjs",
     "test:patch-ship": "node qa/patch-ship-gate.mjs",
     "test:pre-release": "node qa/pre-release.mjs",
     "soak:status": "node qa/soak-status.mjs",

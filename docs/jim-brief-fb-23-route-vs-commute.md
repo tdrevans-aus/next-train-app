@@ -6,7 +6,7 @@
 **Release:** **v2.4.0** (after **2.3.0** ships; public go-live may slip to include this)  
 **Backlog:** **FB-23**  
 **Depends on:** FB-27 4.1 (`journeys[].kind` in `journey-model.js` — **done** on master)  
-**Related:** `docs/feature-backlog.md` FB-21/22 (after FB-23) · `docs/fb-27-phase-4-design.md` · `docs/chrome-modes-and-labels.md` · `docs/undecided-issues.md` U-15  
+**Related:** `docs/feature-backlog.md` FB-22 · `docs/fb-27-phase-4-design.md` · `docs/chrome-modes-and-labels.md` · `docs/undecided-issues.md` U-15  
 **Out of scope:** Renaming **Target train** to “usual train”; monetization gating by type; second My Journeys tab; city #2; FB-01 theme
 
 ---
@@ -32,7 +32,7 @@
 | Overlap | Two commutes same morning → auto-switch at **midpoint** between Target train times |
 | Copy | Keep **Target train** in UI (not “usual train”) |
 | Monetization | All features free + ads; lifetime remove-ads only; no route/commute count gating |
-| Active hours UI | Keep explicit Active from/until on **commutes** for v1; hidden padding from Target (±60 / −90+45) = **FB-21 after FB-23** |
+| Active hours UI | Keep explicit Active from/until on **commutes** (locked U-15; no auto-derived hidden window from target) |
 | Near me | Unchanged — ephemeral, not a journey type |
 
 ---

@@ -197,6 +197,26 @@
         </p>
       </section>
 
+      <div class="train-meta">
+        <section class="detail-strip" id="detail-strip">
+          <div class="detail-strip-cell">
+            <p class="detail-label">Platform</p>
+            <p class="detail-value" id="platform">—</p>
+          </div>
+          <div class="detail-strip-cell">
+            <p class="detail-label">Status</p>
+            <p class="detail-value status" id="status">—</p>
+          </div>
+        </section>
+
+        <section class="following" id="following-section" hidden>
+          <p class="following-label" id="following-label">Then</p>
+          <p class="following-next" id="following-next"></p>
+        </section>
+
+        <p class="updated" id="updated">Updating…</p>
+      </div>
+
       <section class="leave-card calm" id="leave-card" hidden>
         <button
           type="button"
@@ -264,26 +284,6 @@
         </div>
       </section>
 
-      <div class="train-meta">
-        <section class="detail-strip" id="detail-strip">
-          <div class="detail-strip-cell">
-            <p class="detail-label">Platform</p>
-            <p class="detail-value" id="platform">—</p>
-          </div>
-          <div class="detail-strip-cell">
-            <p class="detail-label">Status</p>
-            <p class="detail-value status" id="status">—</p>
-          </div>
-        </section>
-
-        <section class="following" id="following-section" hidden>
-          <p class="following-label" id="following-label">Then</p>
-          <p class="following-next" id="following-next"></p>
-        </section>
-
-        <p class="updated" id="updated">Updating…</p>
-      </div>
-
       <section class="nearby-directions" id="nearby-directions" hidden>
         <p class="nearby-directions-label">Other directions</p>
         <ul class="nearby-directions-list" id="nearby-directions-list"></ul>
@@ -329,7 +329,7 @@
 
       <section class="ad-slot" id="ad-container" hidden aria-label="Advertisement"></section>
       <p class="ad-remove-link-wrap" id="ad-remove-link-wrap" hidden>
-        <button type="button" class="btn-link ad-remove-link" id="ad-remove-link">Unlock Pro</button>
+        <button type="button" class="btn-link ad-remove-link" id="ad-remove-link">Remove ads</button>
       </p>
 
       <p class="error" id="error" hidden></p>
@@ -430,6 +430,111 @@
         <button type="button" class="btn-secondary" id="widget-help-done-btn">Done</button>
       </div>
     </dialog>
+
+    <div class="widget-appearance-setup" id="widget-appearance-setup" hidden>
+      <div class="widget-appearance-setup-scroll">
+        <header class="widget-appearance-setup-header">
+          <div class="widget-appearance-setup-header-row">
+            <button
+              type="button"
+              class="widget-appearance-setup-back"
+              id="widget-appearance-setup-back-btn"
+              aria-label="Back"
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+            <h2 id="widget-appearance-setup-title">Set up your widget</h2>
+          </div>
+          <p class="widget-appearance-setup-hint" id="widget-appearance-setup-hint">
+            Preview on different wallpapers, then add to your home screen.
+          </p>
+          <p
+            class="widget-appearance-legibility-hint"
+            id="widget-appearance-legibility-hint"
+            hidden
+          >
+            Only the card background fades. Train times and leave alerts stay solid.
+          </p>
+        </header>
+
+        <div class="widget-appearance-hero" id="widget-appearance-hero">
+          <div
+            class="widget-wallpaper-backdrop"
+            id="widget-wallpaper-backdrop"
+          ></div>
+          <div class="widget-appearance-hero-mock" id="widget-appearance-hero-mock">
+            <div class="widget-hero-mock-card" id="widget-hero-mock-card">
+              <div class="widget-hero-mock-row">
+                <div class="widget-hero-mock-col">
+                  <span class="widget-hero-mock-label">NEXT TRAIN</span>
+                  <div class="widget-hero-mock-primary-row">
+                    <span class="widget-hero-mock-value" id="widget-hero-mock-primary-value">3</span>
+                    <span class="widget-hero-mock-unit" id="widget-hero-mock-primary-unit">min</span>
+                  </div>
+                  <span class="widget-hero-mock-clock" id="widget-hero-mock-clock">5:42 pm · Warwick</span>
+                </div>
+                <div class="widget-hero-mock-col widget-hero-mock-col-right">
+                  <span class="widget-hero-mock-label">LEAVE IN</span>
+                  <div class="widget-hero-mock-primary-row">
+                    <span class="widget-hero-mock-value widget-hero-mock-leave" id="widget-hero-mock-leave-value">8</span>
+                    <span class="widget-hero-mock-unit widget-hero-mock-leave" id="widget-hero-mock-leave-unit">min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="widget-appearance-mode-grid"
+          id="widget-appearance-mode-grid"
+          role="radiogroup"
+          aria-label="Widget appearance"
+        ></div>
+
+        <div class="widget-appearance-opacity-block" id="widget-appearance-opacity-block">
+          <label class="field widget-bg-opacity-field" id="widget-bg-opacity-field">
+            <div class="field-label-row">
+              <span class="field-label">Background opacity</span>
+              <span class="field-value" id="widget-bg-opacity-value">100%</span>
+            </div>
+            <div class="leave-before-controls" id="widget-bg-opacity-controls">
+              <input
+                type="range"
+                class="leave-before-slider widget-bg-opacity-slider"
+                id="widget-bg-opacity-input"
+                min="0"
+                max="100"
+                step="1"
+                value="100"
+                aria-label="Background opacity"
+              />
+              <div class="range-ticks" aria-hidden="true">
+                <span>0%</span>
+                <span>100%</span>
+              </div>
+            </div>
+          </label>
+          <div class="widget-transparent-row" id="widget-transparent-row">
+            <span class="widget-transparent-label" id="widget-transparent-label">Transparent card</span>
+            <label class="menu-toggle-switch">
+              <input
+                type="checkbox"
+                class="widget-transparent-toggle"
+                id="widget-transparent-bg"
+                aria-labelledby="widget-transparent-label"
+              />
+              <span class="menu-toggle-track" aria-hidden="true"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <footer class="widget-appearance-setup-footer">
+        <button type="button" class="btn-secondary" id="widget-appearance-setup-cancel-btn">Cancel</button>
+        <button type="button" class="btn-primary" id="widget-appearance-setup-primary-btn">Done</button>
+      </footer>
+    </div>
 
     <div class="app-dialog-backdrop" id="journeys-dialog-backdrop" hidden></div>
     <div class="journeys-dialog" id="journeys-dialog" role="dialog" aria-modal="true" hidden>
@@ -644,7 +749,6 @@
                 </div>
                 <label class="field leave-before-field" id="leave-before-field">
                   <div class="field-label-row">
-                    <span class="field-label">Walk time</span>
                     <span class="field-value" id="detail-leave-before-value">10 min</span>
                   </div>
                   <div class="leave-before-controls" id="leave-before-controls">
@@ -807,54 +911,22 @@
       </div>
     </div>
 
-    <dialog class="pro-sheet-dialog" id="pro-founding-sheet">
-      <div class="pro-sheet-body">
-        <div class="pro-badge" aria-hidden="true">
-          <span class="pro-badge-mark"></span>
-          Founding 200
-        </div>
-        <h2>You&rsquo;re Founding 200</h2>
-        <p>Pro unlocked forever — full home-screen widget and no ads. Thank you for being early.</p>
-        <div class="pro-sheet-actions">
-          <button type="button" class="btn-primary" id="pro-founding-add-widget-btn">Add widget</button>
-          <button type="button" class="btn-secondary" id="pro-founding-got-it-btn">Got it</button>
-        </div>
-      </div>
-    </dialog>
-
-    <dialog class="pro-sheet-dialog" id="pro-trial-started-sheet">
-      <div class="pro-sheet-body">
-        <h2>Pro trial — 30 days</h2>
-        <p>
-          Full widget and no ads while you try it. After that, unlock Pro once to keep the widget —
-          no subscription.
-        </p>
-        <div class="pro-sheet-actions">
-          <button type="button" class="btn-primary" id="pro-trial-got-it-btn">Got it</button>
-        </div>
-      </div>
-    </dialog>
-
-    <dialog class="pro-paywall-dialog" id="pro-paywall-dialog">
+    <dialog class="pro-paywall-dialog" id="ad-free-dialog">
       <div class="pro-paywall-body">
-        <h2>Keep the widget</h2>
-        <p class="pro-paywall-lede">One-time unlock. No subscription.</p>
+        <h2>Remove ads</h2>
+        <p class="pro-paywall-lede">Pay once. No subscription.</p>
         <ul class="pro-paywall-benefits">
-          <li>Home-screen widget stays unlocked</li>
-          <li>No ads in the app</li>
+          <li>No banner ads in the app</li>
         </ul>
-        <p class="pro-paywall-price" id="pro-paywall-price">A$X.XX</p>
-        <p class="pro-paywall-price-sub">Lifetime · one-time</p>
+        <p class="pro-paywall-price" id="ad-free-price">A$7.99</p>
+        <p class="pro-paywall-price-sub">One-time purchase</p>
         <div class="pro-paywall-actions">
-          <button type="button" class="btn-primary" id="pro-paywall-unlock-btn">Unlock Pro</button>
-          <button type="button" class="btn-link pro-paywall-restore" id="pro-paywall-restore-btn">
+          <button type="button" class="btn-primary" id="ad-free-purchase-btn">Remove ads</button>
+          <button type="button" class="btn-link pro-paywall-restore" id="ad-free-restore-btn">
             Restore purchases
           </button>
         </div>
-        <p class="pro-paywall-founding-note" id="pro-paywall-founding-note" hidden>
-          Founding 200 is full — new users get the 30-day trial, then Pro.
-        </p>
-        <button type="button" class="btn-secondary pro-paywall-close" id="pro-paywall-close-btn">Not now</button>
+        <button type="button" class="btn-secondary pro-paywall-close" id="ad-free-close-btn">Not now</button>
       </div>
     </dialog>
 
@@ -864,7 +936,17 @@
           <h2>Menu</h2>
         </div>
         <nav class="menu-dialog-links" aria-label="Menu">
-          <button type="button" class="menu-dialog-link" id="menu-widget-btn" hidden>Add home screen widget</button>
+          <div class="menu-widget-block" id="menu-widget-block" hidden>
+            <p class="menu-widget-heading">Widget</p>
+            <div class="menu-widget-links">
+              <button type="button" class="menu-dialog-link" id="menu-widget-btn">
+                Add home screen widget
+              </button>
+              <button type="button" class="menu-dialog-link" id="menu-widget-appearance-btn">
+                Widget appearance
+              </button>
+            </div>
+          </div>
           <div class="menu-pause-block" id="menu-pause-block" hidden>
             <div class="reminders-shared-option reminders-pause-option" id="leave-reminders-pause-wrap">
               <div class="reminders-shared-option-header">
@@ -921,37 +1003,34 @@
               Reminders are available in the Android app. Turn Remind me on for a journey under My Journeys.
             </p>
           </div>
-          <div class="menu-pro" id="menu-pro-section" hidden>
-            <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-pro-cta-btn">
-              <span class="menu-purchase-title" id="menu-pro-cta-title">Try Pro free</span>
-              <span class="menu-purchase-subtitle" id="menu-pro-cta-subtitle">30 days · widget + no ads · then one-time</span>
+          <div class="menu-pro" id="menu-ad-free-section" hidden>
+            <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-ad-free-cta-btn">
+              <span class="menu-purchase-title" id="menu-ad-free-cta-title">Remove ads</span>
+              <span class="menu-purchase-subtitle" id="menu-ad-free-cta-subtitle">A$7.99 · one-time</span>
             </button>
-            <div class="menu-purchase-row menu-purchase-row--status" id="menu-pro-status-row" hidden>
-              <span class="menu-purchase-title" id="menu-pro-status-title">Pro</span>
-              <span class="menu-purchase-subtitle" id="menu-pro-status-subtitle">Ads off · widget unlocked</span>
+            <div class="menu-purchase-row menu-purchase-row--status" id="menu-ad-free-status-row" hidden>
+              <span class="menu-purchase-title" id="menu-ad-free-status-title">Ads removed</span>
+              <span class="menu-purchase-subtitle" id="menu-ad-free-status-subtitle">Thanks for supporting Next Train</span>
             </div>
             <button type="button" class="menu-restore-btn" id="menu-restore-purchase-btn" hidden>
               Restore purchases
             </button>
-            <button type="button" class="menu-restore-btn" id="menu-pro-nudge-dismiss" hidden>
-              Not now
-            </button>
-            <p class="menu-ad-free-web-hint" id="menu-pro-web-hint" hidden>
-              Pro is available in the Android app.
+            <p class="menu-ad-free-web-hint" id="menu-ad-free-web-hint" hidden>
+              Remove ads is available in the Android app.
             </p>
-            <p class="menu-ad-free-web-hint" id="menu-pro-billing-hint" hidden>
+            <p class="menu-ad-free-web-hint" id="menu-ad-free-billing-hint" hidden>
               Purchases aren&rsquo;t available on this install.
             </p>
           </div>
           <div class="menu-dialog-divider" aria-hidden="true"></div>
-          <!-- FB-18: bury Send feedback before public production (tester-prominent for now). -->
-          <button type="button" class="menu-dialog-link" id="menu-feedback-btn">Send feedback</button>
           <button type="button" class="menu-dialog-link" id="menu-help-btn">Help</button>
         </nav>
         <p class="menu-dialog-legal">
           <a href="/about.html">About</a>
           <span class="menu-dialog-legal-sep" aria-hidden="true">·</span>
           <a href="/privacy.html">Privacy</a>
+          <span class="menu-dialog-legal-sep" aria-hidden="true">·</span>
+          <a href="#" id="menu-feedback-btn">Send feedback</a>
         </p>
         <p class="menu-dialog-version" id="menu-app-version" hidden></p>
       </div>
@@ -1076,8 +1155,13 @@
             <strong>Leave by</strong> — On a journey, when a <strong>target train</strong> is on,
             the card below shows when to head out (from your time to station). If you&rsquo;re late, tap
             <strong>I've left</strong> or <strong>Next Train</strong>
-            (same as swiping left on the departure card). On Near me, Leave by appears when a train
-            is pinned (see <strong>Pin</strong> above).
+            (same as swiping left on the departure card). On Near me and pinned
+            <strong>Routes</strong>, Leave by appears when a train is pinned (see
+            <strong>Pin</strong> above); tap <strong>Hide</strong> to clear it anytime.
+            If the card says you should have left or leave now, and location is allowed,
+            the app may dismiss it when you&rsquo;re moving or near the station — the same as
+            tapping <strong>I've left</strong>. It checks every so often while that reminder
+            is showing; no extra popup.
           </li>
           <li>
             <strong>Near me</strong> — Tap
@@ -1190,7 +1274,6 @@
         };
       })();
     </script>
-    <script src="pro-entitlement.js"></script>
     <script src="ad-free-purchase.js"></script>
     <script src="analytics-bundle.js"></script>
     <script src="analytics.js"></script>

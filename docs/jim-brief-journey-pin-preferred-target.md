@@ -7,7 +7,7 @@
 **Backlog:** **FB-20**  
 **Supersedes for Journeys hero/widget:** **U-11 B** / `docs/jim-brief-leave-by-preferred-gate.md` (true-next-as-default-face). Leave-by maths and journey detail Target settings remain.  
 **Related:** `docs/jim-brief-nearby-pin-leave-by.md` (Near me pin — same pin chrome language); `docs/jim-brief-preferred-always-visible.md` (Target in journey detail); `docs/jim-brief-target-train-master.md`  
-**Out of scope:** Removing Active from/until (**FB-21** — revisit later); Near me GPS walk time; FB-17 flag glyph (journey uses **pin**, not flag); Pro
+**Out of scope:** Near me GPS walk time; FB-17 flag glyph (journey uses **pin**, not flag); Pro
 
 ---
 
@@ -31,7 +31,7 @@ In **active journey** mode, the big hero (and widget) show the **pinned** train 
 | Hero while pinned | Show **pinned** train (label as Target / Your train — not “Next Train”) |
 | Secondary true next | **Only when true next ≠ pin** — one muted line under hero (e.g. `Next · 7:12 · Pl 2`). When pin *is* the soonest train, **omit** the line |
 | Widget | Same face as hero while journey is active and pin holds — **pinned train**, not true-next spam |
-| Active from / until | **Keep** for v2.2.0 (when journey owns the screen / reminders). Revisit removal = **FB-21** |
+| Active from / until | **Keep** on commutes (explicit journey window; target must sit inside — **U-14**) |
 | Leave by / reminders | Follow **today’s pin** (preferred or day override) + existing walk buffer / Remind me / Live countdown for that journey |
 | Pin icon | Same **map pin** as Near me: outline unpinned / filled accent pinned (**not** the FB-17 flag) |
 
@@ -110,7 +110,7 @@ Document U-11 / leave-by-preferred-gate as **superseded for hero/widget face** i
 
 ## 8. Non-goals
 
-- Removing Active from/until (see **FB-21**)  
+- Removing Active from/until on commutes (locked U-15 / U-14)  
 - Auto-saving day pin into Preferred  
 - Flag icon (FB-17) — use **pin**  
 - Changing Near me FB-14 locks  

@@ -64,6 +64,16 @@
 
         </activity>
 
+        <activity
+            android:name=".WidgetConfigureActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".NextTrainWidgetProvider"
             android:exported="true"
@@ -87,6 +97,15 @@
         <receiver
             android:name=".PauseResumeReceiver"
             android:exported="false" />
+
+        <receiver
+            android:name=".WidgetSystemThemeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.WALLPAPER_CHANGED" />
+                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".WidgetRefreshReceiver"

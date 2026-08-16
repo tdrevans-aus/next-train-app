@@ -3,7 +3,7 @@
 **For:** Tim  
 **Purpose:** Cut and upload a signed Android App Bundle to Play **closed testing** (not production).  
 **When:** After you can build the app; **before** inviting 5–15 friends. Full public QA sign-off is **not** required yet.  
-**App ID:** `com.tdrevans.nexttrain` · current `versionName` **2.1.0** · `versionCode` **5** ([`android/app/build.gradle`](../android/app/build.gradle))
+**App ID:** `com.tdrevans.nexttrain` · current `versionName` **2.3.0** · `versionCode` **13** ([`android/app/build.gradle`](../android/app/build.gradle))
 
 **Related:** [launch-blockers.md](launch-blockers.md) · [play-data-safety-cheatsheet.md](play-data-safety-cheatsheet.md) · AdMob gate `docs/jim-brief-security-admob-ship-gate.md`
 
@@ -47,13 +47,23 @@ Do this the first time only. Store passwords in a password manager — **never c
 
 ## 1. Pre-flight (every closed-test build)
 
+Run from repo root:
+
+```bash
+npm run release:prep
+```
+
+This runs `test:pre-upload` (Play hygiene + version/IAP/privacy checks), web smoke, and `cap:sync`, then prints version summary and AAB path. **Before public v3**, Tim should use this every time; for quick closed bumps, `npm run test:pre-upload` alone is enough if assets are already synced.
+
+Manual checklist:
+
 - [ ] Web assets you care about are in `public/` (Jim’s latest synced work).
 - [ ] Launcher icon: after any icon change run `npm run export:icon` (E3 Band → `mipmap-*` + `store-assets/exports/play-icon-512.png`). Confirm home-screen mipmaps exist before bundling — don’t ship Capacitor’s default foreground.
-- [ ] From repo root: `npm run cap:sync`
 - [ ] `applicationId` is still `com.tdrevans.nexttrain`
-- [ ] Bump **`versionCode`** (integer, must increase every Play upload). Current is **5**; next upload → **6**, …
-- [ ] Set **`versionName`** if you want a human label (e.g. keep `2.1.0` or `2.1.0-closed1`)
+- [ ] Bump **`versionCode`** (integer, must increase every Play upload). Current is **13**; next upload → **14**, …
+- [ ] Set **`versionName`** if you want a human label (e.g. `2.3.0` or `3.0.0`)
 - [ ] Also bump `appVersion` / `appVersionCode` in `public/site-config.json` to match when you bump Gradle.
+- [ ] **Native debug symbols:** release `build.gradle` must have `ndk { debugSymbolLevel 'SYMBOL_TABLE' }` (checked by `test:pre-upload`; clears Play “native debug symbols” warning). See `docs/jim-brief-play-hygiene.md` **FB-41**.
 - [ ] AdMob: release/closed builds should use **prod ads path** once Jim’s ship gate lands (debug APK may stay test mode). Don’t invite friends on a build that only shows Google test banners if you’re trying to validate real ads/IAP.
 - [ ] IAP product `com.tdrevans.nexttrain.adfree` exists in Play Console (can be inactive until license testers are set — create it before expecting purchases to work)
 - [ ] Privacy URL ready to paste on listing: `https://next-train-app.vercel.app/privacy.html` (after deploy)
@@ -80,6 +90,16 @@ Do this the first time only. Store passwords in a password manager — **never c
 2. **Create new release** → upload `app-release.aab`.
 3. Release name / notes: e.g. `2.1.0 closed — leave-by, widget, reminders`.
 4. Review any warnings (missing Data safety, privacy URL, etc.) — fix blockers before rolling out the track.
+
+### Play warnings matrix (public v3)
+
+| Warning | v3 public |
+|---------|-----------|
+| **Native debug symbols** | **Fixed** — `debugSymbolLevel 'SYMBOL_TABLE'` in release AAB (`docs/jim-brief-play-hygiene.md` **FB-41**) |
+| **Deobfuscation file** | **N/A** while `minifyEnabled false` |
+| Data safety / privacy | Tim — `docs/play-data-safety-cheatsheet.md` |
+| Target API level | Keep current `targetSdk` per Gradle |
+
 5. **Save → Review → Start rollout to closed testing**.
 
 ### Testers
@@ -156,3 +176,4 @@ android/keystore.properties
 | Date | Note |
 | --- | --- |
 | 2026-08-11 | First closed-testing AAB/signing checklist |
+| 2026-08-16 | **FB-41:** `release:prep`, native symbols gate, Play warnings matrix |

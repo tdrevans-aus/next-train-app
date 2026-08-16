@@ -1,8 +1,6 @@
 /**
- * Pro / Remove ads — web expectations + native-bridge diagnostic.
+ * Remove ads — web expectations + native-bridge diagnostic.
  * Usage: node qa/remove-ads-check.mjs
- *
- * Respects NextTrainPro.isProMonetizationShipped() (currently parked = false).
  */
 import { chromium } from "playwright";
 
@@ -32,17 +30,16 @@ async function run() {
     return {
       isNative: window.Capacitor?.isNativePlatform?.(),
       hasNativeBridge: !!window.NextTrainAdFreeNative?.purchaseInAppProduct,
-      proShipped: window.NextTrainPro?.isProMonetizationShipped?.() === true,
       init,
-      proState: window.NextTrainPro?.getStateId?.(),
-      sectionHidden: document.getElementById("menu-pro-section")?.hidden,
-      ctaHidden: document.getElementById("menu-pro-cta-btn")?.hidden,
-      webHintHidden: document.getElementById("menu-pro-web-hint")?.hidden,
+      sectionHidden: document.getElementById("menu-ad-free-section")?.hidden,
+      ctaHidden: document.getElementById("menu-ad-free-cta-btn")?.hidden,
+      webHintHidden: document.getElementById("menu-ad-free-web-hint")?.hidden,
       adLinkHidden: document.getElementById("ad-remove-link-wrap")?.hidden,
+      listPrice: api.getLocalizedPrice?.(),
     };
   });
 
-  console.log("\nPro purchase check — browser\n");
+  console.log("\nRemove ads check — browser\n");
   if (web.error) {
     console.error(JSON.stringify(web, null, 2));
     await browser.close();
@@ -51,41 +48,30 @@ async function run() {
 
   console.log(JSON.stringify(web, null, 2));
 
-  // Parked Pro: Menu stays quiet on web. Shipped Pro: CTA hidden, Android hint visible.
-  const webPass = web.proShipped
-    ? web.ctaHidden === true &&
-      web.webHintHidden === false &&
-      web.adLinkHidden === true &&
-      web.isNative !== true
-    : web.sectionHidden === true &&
-      web.ctaHidden === true &&
-      web.webHintHidden === true &&
-      web.adLinkHidden === true &&
-      web.isNative !== true;
+  const webPass =
+    web.ctaHidden === true &&
+    web.webHintHidden === false &&
+    web.adLinkHidden === true &&
+    web.isNative !== true &&
+    web.listPrice === "A$7.99";
 
-  console.log(
-    webPass
-      ? `PASS  web Pro UI (${web.proShipped ? "shipped" : "parked"})`
-      : "FAIL  web Pro UI"
-  );
+  console.log(webPass ? "PASS  web Remove ads UI" : "FAIL  web Remove ads UI");
 
-  // Force shipped path for Menu / paywall assertions.
   await page.evaluate(() => {
     window.Capacitor = { isNativePlatform: () => true };
     window.NextTrainAdFreeNative = undefined;
-    if (window.NextTrainPro) {
-      window.NextTrainPro.isProMonetizationShipped = () => true;
-    }
   });
   await page.evaluate(async () => {
-    await window.NextTrainProPurchase?.renderMenuPro?.();
+    await window.NextTrainAdFree?.renderMenuAdFree?.();
   });
   const nativeNoBridge = await page.evaluate(() => ({
-    sectionHidden: document.getElementById("menu-pro-section")?.hidden === true,
-    ctaHidden: document.getElementById("menu-pro-cta-btn")?.hidden === true,
-    billingHintHidden: document.getElementById("menu-pro-billing-hint")?.hidden === true,
-    webHintHidden: document.getElementById("menu-pro-web-hint")?.hidden === true,
+    sectionHidden: document.getElementById("menu-ad-free-section")?.hidden === true,
+    ctaHidden: document.getElementById("menu-ad-free-cta-btn")?.hidden === true,
+    billingHintHidden: document.getElementById("menu-ad-free-billing-hint")?.hidden === true,
+    webHintHidden: document.getElementById("menu-ad-free-web-hint")?.hidden === true,
     linkHidden: document.getElementById("ad-remove-link-wrap")?.hidden === true,
+    restoreHidden: document.getElementById("menu-restore-purchase-btn")?.hidden === true,
+    ctaTitle: document.getElementById("menu-ad-free-cta-title")?.textContent,
   }));
   await page.evaluate(() => {
     document.getElementById("ad-remove-link-wrap").hidden = false;
@@ -93,7 +79,10 @@ async function run() {
   });
   await page.waitForTimeout(600);
   const paywallOpen = await page.evaluate(() => ({
-    paywallOpen: document.getElementById("pro-paywall-dialog")?.open === true,
+    dialogOpen:
+      document.getElementById("ad-free-dialog")?.open === true ||
+      document.getElementById("ad-free-dialog")?.hasAttribute("open"),
+    headline: document.querySelector("#ad-free-dialog h2")?.textContent,
   }));
 
   await page.evaluate(() => {
@@ -112,29 +101,29 @@ async function run() {
       purchaseInAppProduct: async () => ({}),
       isBillingSupported: async () => true,
     };
-    if (typeof window.NextTrainAdFree?.refreshEntitlement !== "function") {
-      throw new Error("refreshEntitlement undefined");
-    }
     await window.NextTrainAdFree.refreshEntitlement({ silent: true });
-    await window.NextTrainProPurchase.renderMenuPro();
+    await window.NextTrainAdFree.renderMenuAdFree();
   });
   const entitledUi = await page.evaluate(() => ({
-    sectionHidden: document.getElementById("menu-pro-section")?.hidden === true,
-    statusHidden: document.getElementById("menu-pro-status-row")?.hidden === true,
-    ctaHidden: document.getElementById("menu-pro-cta-btn")?.hidden === true,
+    sectionHidden: document.getElementById("menu-ad-free-section")?.hidden === true,
+    statusHidden: document.getElementById("menu-ad-free-status-row")?.hidden === true,
+    ctaHidden: document.getElementById("menu-ad-free-cta-btn")?.hidden === true,
     restoreHidden: document.getElementById("menu-restore-purchase-btn")?.hidden === true,
-    proState: window.NextTrainPro?.getStateId?.(),
+    statusTitle: document.getElementById("menu-ad-free-status-title")?.textContent,
   }));
 
-  console.log("\nSimulated native (shipped + no bridge):");
+  console.log("\nSimulated native (no bridge):");
   console.log(JSON.stringify({ nativeNoBridge, paywallOpen }, null, 2));
   const noBridgeUiOk =
     nativeNoBridge.sectionHidden === false &&
     nativeNoBridge.ctaHidden === false &&
-    nativeNoBridge.webHintHidden === true;
-  const paywallOk = paywallOpen.paywallOpen === true;
-  console.log(noBridgeUiOk ? "PASS  billing hint shown when bridge missing" : "FAIL  menu when bridge missing");
-  console.log(paywallOk ? "PASS  paywall opens from ad link" : "FAIL  paywall from ad link");
+    nativeNoBridge.webHintHidden === true &&
+    nativeNoBridge.restoreHidden === true &&
+    nativeNoBridge.ctaTitle === "Remove ads";
+  const paywallOk =
+    paywallOpen.dialogOpen === true && paywallOpen.headline === "Remove ads";
+  console.log(noBridgeUiOk ? "PASS  menu when bridge missing" : "FAIL  menu when bridge missing");
+  console.log(paywallOk ? "PASS  sheet opens from ad link" : "FAIL  sheet from ad link");
 
   console.log("\nSimulated entitled:");
   console.log(JSON.stringify(entitledUi, null, 2));
@@ -143,8 +132,8 @@ async function run() {
     entitledUi.statusHidden === false &&
     entitledUi.ctaHidden === true &&
     entitledUi.restoreHidden === false &&
-    entitledUi.proState === "pro_paid";
-  console.log(entitledOk ? "PASS  entitled shows Pro status" : "FAIL  entitled Pro status");
+    entitledUi.statusTitle === "Ads removed";
+  console.log(entitledOk ? "PASS  entitled shows Ads removed" : "FAIL  entitled status");
 
   if (pageErrors.length) {
     console.log("\nConsole errors (first 3):");
