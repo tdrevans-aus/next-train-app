@@ -131,8 +131,8 @@ async function run() {
 
   const beforeMidpoint = await page.evaluate(() => ({
     scheduled: window.nextTrainApp.findScheduledJourneyId(),
-    pick: window.nextTrainApp.pickScheduledCommute(
-      window.nextTrainApp.getCommutesMatchingSchedule(),
+    pick: window.nextTrainApp.pickScheduledJourney(
+      window.nextTrainApp.getJourneysMatchingSchedule(),
     )?.id ?? null,
   }));
 
@@ -141,8 +141,8 @@ async function run() {
 
   const afterMidpoint = await page.evaluate(() => ({
     scheduled: window.nextTrainApp.findScheduledJourneyId(),
-    pick: window.nextTrainApp.pickScheduledCommute(
-      window.nextTrainApp.getCommutesMatchingSchedule(),
+    pick: window.nextTrainApp.pickScheduledJourney(
+      window.nextTrainApp.getJourneysMatchingSchedule(),
     )?.id ?? null,
   }));
 

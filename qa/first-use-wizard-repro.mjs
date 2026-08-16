@@ -59,8 +59,8 @@ async function run() {
     process.exit(1);
   }
 
-  if (afterSetup.coachTitle !== "Pick your route") {
-    console.error("FAIL — expected custom route wizard, got:", afterSetup.coachTitle);
+  if (afterSetup.coachTitle !== "Station & direction") {
+    console.error("FAIL — expected custom journey wizard step 1, got:", afterSetup.coachTitle);
     process.exit(1);
   }
 

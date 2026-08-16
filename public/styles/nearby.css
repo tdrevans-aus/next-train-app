@@ -21,20 +21,10 @@
   animation: rise-in 0.55s ease 0.14s both;
 }
 
-/* Dropdown extends below the card — lift above Platform/Status strip underneath. */
+/* Dropdown extends below the card — keep above upcoming departures underneath. */
 .nearby-directions:has(.station-combobox--open) {
   position: relative;
   z-index: 100;
-}
-
-.app.nearby-mode:has(#nearby-fallback:not([hidden])) .train-meta {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.app.nearby-mode:has(#nearby-station-combobox.station-combobox--open) .train-meta {
-  visibility: hidden;
-  pointer-events: none;
 }
 
 .nearby-directions[hidden],
@@ -43,7 +33,7 @@
 }
 
 /* Pinned Near me: reclaim space — Other directions list is secondary. */
-.app.nearby-pin-active .nearby-directions {
+.app.nearby-pin-active #nearby-directions {
   display: none !important;
 }
 
@@ -443,6 +433,36 @@
   min-width: 0;
 }
 
+.upcoming-departures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  animation: rise-in 0.55s ease 0.14s both;
+}
+
+.upcoming-departures[hidden] {
+  display: none !important;
+}
+
+.upcoming-departures-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.upcoming-departures-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.upcoming-departures-item,
 .route-departures-item {
   display: flex;
   justify-content: space-between;
@@ -453,16 +473,22 @@
   background: var(--surface-soft);
 }
 
-.leave-card:not([hidden]) + .nearby-directions.route-departures {
+.leave-card:not([hidden]) + .train-meta {
+  margin-top: 0.15rem;
+}
+
+.leave-card:not([hidden]) + .nearby-directions {
   margin-top: 0.45rem;
 }
 
+.upcoming-departures-time,
 .route-departures-time {
   font-size: 0.92rem;
   font-weight: 700;
   color: var(--ink);
 }
 
+.upcoming-departures-meta,
 .route-departures-meta {
   font-size: 0.78rem;
   font-weight: 500;

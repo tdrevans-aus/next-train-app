@@ -411,6 +411,62 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   color: var(--muted);
 }
 
+.detail-target-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.75rem;
+  align-items: end;
+}
+
+.detail-target-top-row--solo {
+  grid-template-columns: 1fr;
+}
+
+.detail-target-top-row .detail-target-master {
+  display: block;
+  min-width: 0;
+}
+
+.detail-target-top-row .detail-target-master .detail-preferred-field {
+  flex: none;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.detail-target-top-row .detail-remind-controls {
+  margin: 0;
+  padding: 0;
+  border-top: 0;
+  min-width: 0;
+  align-self: end;
+}
+
+.detail-target-top-row .detail-remind-toggle-row {
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0 0.15rem;
+}
+
+.detail-target-top-row .detail-remind-toggle-row .menu-toggle-title {
+  flex: 1 1 0;
+  min-width: 0;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.detail-target-top-row .detail-remind-toggle-row .menu-toggle-switch {
+  flex-shrink: 0;
+}
+
+.detail-target-master-hint,
+#detail-target-master-hint {
+  margin: 0.2rem 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .detail-target-master {
   display: flex;
   align-items: center;
@@ -449,9 +505,17 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  margin-top: 0.55rem;
-  padding-top: 0.35rem;
-  border-top: 1px solid var(--line);
+  margin-top: 0.45rem;
+}
+
+.detail-leave-before-toggle-row {
+  margin: 0;
+  min-width: 0;
+}
+
+.detail-target-nest .leave-before-field {
+  margin: 0;
+  padding-left: 0.15rem;
 }
 
 .detail-target-nest[hidden] {

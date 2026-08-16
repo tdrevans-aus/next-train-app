@@ -47,7 +47,7 @@ async function run() {
   await page.reload();
   await page.waitForTimeout(1500);
 
-  await page.evaluate(() => window.nextTrainApp.openCommutesLibrary?.());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary?.());
   await page.waitForTimeout(500);
   await page.locator(".journey-list-open-btn").click();
   await page.waitForTimeout(800);

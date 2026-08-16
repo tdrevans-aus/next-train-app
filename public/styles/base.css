@@ -192,7 +192,8 @@ body.native-ad-banner .app-body {
   max-width: 100%;
 }
 
-#commutes-chrome-action .chrome-action-label {
+#routes-chrome-action .chrome-action-label,
+#journeys-chrome-action .chrome-action-label {
   font-size: 0.44rem;
   line-height: 1.05;
   white-space: normal;
@@ -215,12 +216,21 @@ body.native-ad-banner .app-body {
   background: var(--surface);
 }
 
-#commutes-chrome-action.onboarding-highlight .chrome-action-label {
+#journeys-chrome-action.onboarding-highlight .chrome-action-label {
   color: var(--accent);
   font-weight: 700;
 }
 
-#commutes-chrome-action.onboarding-highlight #commutes-btn {
+#journeys-chrome-action.onboarding-highlight #journeys-btn {
+  animation: onboarding-pulse 1.1s ease-in-out infinite;
+}
+
+#routes-chrome-action.onboarding-highlight .chrome-action-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+#routes-chrome-action.onboarding-highlight #routes-btn {
   animation: onboarding-pulse 1.1s ease-in-out infinite;
 }
 

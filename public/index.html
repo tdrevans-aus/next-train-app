@@ -39,7 +39,7 @@
             <span class="chrome-action-label">Near me</span>
           </div>
           <div class="chrome-action" id="routes-chrome-action">
-            <button type="button" class="icon-btn" id="routes-btn" aria-label="Routes" aria-pressed="false">
+            <button type="button" class="icon-btn" id="routes-btn" aria-label="My Routes" aria-pressed="false">
               <svg class="routes-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
                   d="M4 12h11M12 9l4 3-4 3"
@@ -51,11 +51,11 @@
                 <path d="M4 7h6M4 17h8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" opacity="0.45" />
               </svg>
             </button>
-            <span class="chrome-action-label">Routes</span>
+            <span class="chrome-action-label">My Routes</span>
           </div>
-          <div class="chrome-action" id="commutes-chrome-action">
-            <button type="button" class="icon-btn" id="commutes-btn" aria-label="Commutes" aria-pressed="false">
-              <svg class="commutes-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <div class="chrome-action" id="journeys-chrome-action">
+            <button type="button" class="icon-btn" id="journeys-btn" aria-label="My Journeys" aria-pressed="false">
+              <svg class="journeys-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="5.5" cy="14.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
                 <circle cx="18.5" cy="9.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
                 <path
@@ -74,7 +74,7 @@
                 />
               </svg>
             </button>
-            <span class="chrome-action-label">Commutes</span>
+            <span class="chrome-action-label">My Journeys</span>
           </div>
           <div class="chrome-action" id="menu-chrome-action">
             <button type="button" class="icon-btn" id="menu-btn" aria-label="Menu" aria-expanded="false">
@@ -264,6 +264,26 @@
         </div>
       </section>
 
+      <div class="train-meta">
+        <section class="detail-strip" id="detail-strip">
+          <div class="detail-strip-cell">
+            <p class="detail-label">Platform</p>
+            <p class="detail-value" id="platform">—</p>
+          </div>
+          <div class="detail-strip-cell">
+            <p class="detail-label">Status</p>
+            <p class="detail-value status" id="status">—</p>
+          </div>
+        </section>
+
+        <section class="following" id="following-section" hidden>
+          <p class="following-label" id="following-label">Then</p>
+          <p class="following-next" id="following-next"></p>
+        </section>
+
+        <p class="updated" id="updated">Updating…</p>
+      </div>
+
       <section class="nearby-directions" id="nearby-directions" hidden>
         <p class="nearby-directions-label">Other directions</p>
         <ul class="nearby-directions-list" id="nearby-directions-list"></ul>
@@ -298,29 +318,14 @@
         </div>
       </section>
 
+      <section class="upcoming-departures" id="upcoming-departures" hidden>
+        <p class="upcoming-departures-label">Upcoming departures</p>
+        <ul class="upcoming-departures-list" id="upcoming-departures-list"></ul>
+      </section>
+
       <button type="button" class="preferred-hint" id="preferred-hint" hidden>
         Jump to target train
       </button>
-
-      <div class="train-meta">
-        <section class="detail-strip" id="detail-strip">
-          <div class="detail-strip-cell">
-            <p class="detail-label">Platform</p>
-            <p class="detail-value" id="platform">—</p>
-          </div>
-          <div class="detail-strip-cell">
-            <p class="detail-label">Status</p>
-            <p class="detail-value status" id="status">—</p>
-          </div>
-        </section>
-
-        <section class="following" id="following-section" hidden>
-          <p class="following-label" id="following-label">Then</p>
-          <p class="following-next" id="following-next"></p>
-        </section>
-
-        <p class="updated" id="updated">Updating…</p>
-      </div>
 
       <section class="ad-slot" id="ad-container" hidden aria-label="Advertisement"></section>
       <p class="ad-remove-link-wrap" id="ad-remove-link-wrap" hidden>
@@ -345,13 +350,23 @@
           <button type="button" class="btn-primary" id="onboarding-got-it-btn">Got it</button>
         </div>
         <div id="onboarding-step-2" class="onboarding-coach-step" hidden>
-          <h2 id="onboarding-step-2-title">My Journeys</h2>
+          <h2 id="onboarding-step-2-title">Routes</h2>
           <p>
-            For a trip you take regularly, save your station, target train, active hours, and when to
-            leave. Open <strong>My Journeys</strong> anytime from the tab above.
+            Save a station and direction to check the next trains anytime — like a departure board you
+            open on demand.
           </p>
+          <p>Open <strong>My Routes</strong> using the button above.</p>
+          <button type="button" class="btn-primary" id="onboarding-routes-got-it-btn">Got it</button>
+        </div>
+        <div id="onboarding-step-3" class="onboarding-coach-step" hidden>
+          <h2 id="onboarding-step-3-title">Journeys</h2>
+          <p>
+            For a trip you take regularly, save your station, target train, and when to
+            leave.
+          </p>
+          <p>Open <strong>My Journeys</strong> anytime using the button above.</p>
           <div class="onboarding-actions">
-            <button type="button" class="btn-primary" id="onboarding-setup-btn">Add a journey</button>
+            <button type="button" class="btn-primary" id="onboarding-setup-btn">Set up a journey</button>
             <button type="button" class="btn-secondary" id="onboarding-later-btn">Maybe later</button>
           </div>
         </div>
@@ -432,8 +447,8 @@
                   Add a route
                 </button>
               </div>
-              <div class="journey-create-actions" id="commutes-create-actions" hidden>
-                <button type="button" class="btn-primary journey-create-btn" id="journey-setup-commute-btn">
+              <div class="journey-create-actions" id="journeys-create-actions" hidden>
+                <button type="button" class="btn-primary journey-create-btn" id="journey-setup-btn">
                   Add a journey
                 </button>
               </div>
@@ -446,7 +461,7 @@
                 data-journey-cap
                 hidden
               >
-                6 journeys — that's the limit for now. Delete one to add another.
+                5 journeys — that's the limit for now. Delete one to add another.
               </p>
               <div class="journey-template-shortcuts" id="journey-template-shortcuts" hidden>
                 <p class="settings-hint journey-templates-hint">Pick a template</p>
@@ -566,8 +581,92 @@
               </div>
             </section>
 
+            <section class="settings-section" id="detail-preferred-section">
+              <h3 class="settings-section-title">Catch your train</h3>
+              <div class="detail-target-top-row detail-target-top-row--solo" id="detail-target-top-row">
+                <div class="detail-target-master" id="detail-target-master">
+                  <label
+                    class="field optional-time-field detail-preferred-field"
+                    id="detail-preferred-field"
+                    data-empty="true"
+                  >
+                    <span class="field-label">Target train</span>
+                    <div class="optional-time-control">
+                      <button type="button" class="optional-time-display" id="detail-preferred-display">
+                        Not set
+                      </button>
+                      <input
+                        type="time"
+                        id="detail-preferred-input"
+                        class="optional-time-input"
+                        tabindex="-1"
+                        aria-hidden="true"
+                      />
+                      <button
+                        type="button"
+                        class="optional-time-clear"
+                        id="detail-preferred-clear"
+                        hidden
+                        aria-label="Clear target train"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </label>
+                </div>
+                <div class="detail-remind-controls" id="detail-remind-controls" hidden>
+                  <div
+                    class="menu-toggle-row detail-remind-toggle-row"
+                    id="detail-reminder-section"
+                  >
+                    <span class="menu-toggle-title">Remind me when to leave</span>
+                    <label class="menu-toggle-switch">
+                      <input type="checkbox" id="detail-remind-me" />
+                      <span class="menu-toggle-track" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <p class="settings-section-hint detail-target-master-hint" id="detail-target-master-hint">
+                First train at or after this time.
+              </p>
+
+              <div class="detail-target-nest" id="detail-target-nest">
+                <div
+                  class="menu-toggle-row detail-leave-before-toggle-row"
+                  id="detail-leave-before-toggle-row"
+                >
+                  <span class="menu-toggle-title">Time to station</span>
+                  <label class="menu-toggle-switch">
+                    <input type="checkbox" id="detail-use-leave-before" checked />
+                    <span class="menu-toggle-track" aria-hidden="true"></span>
+                  </label>
+                </div>
+                <label class="field leave-before-field" id="leave-before-field">
+                  <div class="field-label-row">
+                    <span class="field-label">Walk time</span>
+                    <span class="field-value" id="detail-leave-before-value">10 min</span>
+                  </div>
+                  <div class="leave-before-controls" id="leave-before-controls">
+                    <input
+                      type="range"
+                      class="leave-before-slider"
+                      id="detail-leave-before-input"
+                      min="1"
+                      max="30"
+                      step="1"
+                    />
+                    <div class="range-ticks" aria-hidden="true">
+                      <span>1 min</span>
+                      <span>30 min</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </section>
+
             <section class="settings-section" id="detail-timing-section">
-              <h3 class="settings-section-title">Schedule</h3>
+              <h3 class="settings-section-title">Journey window</h3>
               <div class="remind-days-field" id="detail-active-days-field">
                 <span class="field-label">Active days</span>
                 <p class="settings-section-hint detail-active-days-hint">
@@ -585,7 +684,7 @@
               </div>
               <div class="journey-window" id="detail-journey-window">
                 <label class="field optional-time-field" id="detail-default-from-field" data-empty="true">
-                  <span>Active from</span>
+                  <span>From</span>
                   <div class="optional-time-control">
                     <button type="button" class="optional-time-display" id="detail-default-from-display">
                       Not set
@@ -602,14 +701,14 @@
                       class="optional-time-clear"
                       id="detail-default-from-clear"
                       hidden
-                      aria-label="Clear default from time"
+                      aria-label="Clear journey window start"
                     >
                       ×
                     </button>
                   </div>
                 </label>
                 <label class="field optional-time-field" id="detail-default-until-field" data-empty="true">
-                  <span>Active until</span>
+                  <span>Until</span>
                   <div class="optional-time-control">
                     <button type="button" class="optional-time-display" id="detail-default-until-display">
                       Not set
@@ -626,7 +725,7 @@
                       class="optional-time-clear"
                       id="detail-default-until-clear"
                       hidden
-                      aria-label="Clear default until time"
+                      aria-label="Clear journey window end"
                     >
                       ×
                     </button>
@@ -645,99 +744,11 @@
                 </button>
               </div>
               <p class="settings-section-hint" id="detail-active-hours-hint">
-                When this journey shows on the home screen.
+                When this journey shows on your home screen. Your target train must be within these hours.
               </p>
               <p class="settings-section-hint detail-target-outside-hint" id="detail-target-outside-active-hint" hidden>
-                Preferred target is outside Active hours.
+                Target train is outside your journey window.
               </p>
-              <p class="settings-section-hint" id="detail-combo-b-hint" hidden>
-                Set Active hours so this journey can show automatically.
-              </p>
-              <p class="settings-section-hint" id="detail-combo-d-hint" hidden>
-                Add Active hours to show this journey on a schedule.
-              </p>
-            </section>
-
-            <section class="settings-section" id="detail-preferred-section">
-              <h3 class="settings-section-title">Catch your train</h3>
-              <div class="detail-target-master" id="detail-target-master">
-                <label class="checkbox-label detail-target-master-toggle">
-                  <input type="checkbox" id="detail-use-target-train" />
-                  <span>Preferred target</span>
-                </label>
-                <label
-                  class="field optional-time-field detail-preferred-field"
-                  id="detail-preferred-field"
-                  data-empty="true"
-                  hidden
-                >
-                  <span class="reminders-sr-only">Target train time</span>
-                  <div class="optional-time-control">
-                    <button type="button" class="optional-time-display" id="detail-preferred-display">
-                      Not set
-                    </button>
-                    <input
-                      type="time"
-                      id="detail-preferred-input"
-                      class="optional-time-input"
-                      tabindex="-1"
-                      aria-hidden="true"
-                    />
-                    <button
-                      type="button"
-                      class="optional-time-clear"
-                      id="detail-preferred-clear"
-                      hidden
-                      aria-label="Clear target train"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </label>
-              </div>
-              <p class="settings-section-hint" id="detail-target-master-hint">
-                Pick the train you aim for. Walk time and reminders sit under this.
-              </p>
-
-              <div class="detail-target-nest" id="detail-target-nest" hidden>
-                <!-- Synced from Target master; leave-by only exists with a target. -->
-                <input type="checkbox" id="detail-use-leave-before" checked hidden />
-                <label class="field leave-before-field" id="leave-before-field">
-                  <div class="field-label-row">
-                    <span class="field-label">Time to station</span>
-                    <span class="field-value" id="detail-leave-before-value">10 min</span>
-                  </div>
-                  <div class="leave-before-controls" id="leave-before-controls">
-                    <input
-                      type="range"
-                      class="leave-before-slider"
-                      id="detail-leave-before-input"
-                      min="1"
-                      max="30"
-                      step="1"
-                    />
-                    <div class="range-ticks" aria-hidden="true">
-                      <span>1 min</span>
-                      <span>30 min</span>
-                    </div>
-                  </div>
-                </label>
-
-                <div class="detail-remind-controls" id="detail-remind-controls" hidden>
-                  <div class="detail-remind-toggles" id="detail-remind-toggles">
-                    <div
-                      class="menu-toggle-row detail-remind-toggle-row"
-                      id="detail-reminder-section"
-                    >
-                      <span class="menu-toggle-title">Remind me</span>
-                      <label class="menu-toggle-switch">
-                        <input type="checkbox" id="detail-remind-me" />
-                        <span class="menu-toggle-track" aria-hidden="true"></span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </section>
 
           </div>
@@ -756,18 +767,18 @@
               <p id="template-wizard-name-body"></p>
             </div>
             <div class="template-wizard-step" id="template-wizard-step-1">
-              <h2 id="template-wizard-step-1-title">Route picked for you</h2>
+              <h2 id="template-wizard-step-1-title">Station picked for you</h2>
               <p id="template-route-coach-body"></p>
             </div>
             <div class="template-wizard-step" id="template-wizard-step-2" hidden>
               <h2 id="template-wizard-step-2-title">Target train</h2>
               <p>
-                Turn on <strong>Target train</strong> for the departure you aim for.
+                Choose the departure you aim for.
                 We&rsquo;ll look for the first train at or after the time you set.
               </p>
             </div>
             <div class="template-wizard-step" id="template-wizard-step-3" hidden>
-              <h2 id="template-wizard-step-3-title">Active hours</h2>
+              <h2 id="template-wizard-step-3-title">Journey window</h2>
               <p id="template-wizard-hours-body"></p>
             </div>
             <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>

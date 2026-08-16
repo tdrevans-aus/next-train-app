@@ -1,7 +1,7 @@
 /* Default journey detail should fit one phone viewport.
    Scroll remains for errors / station picker / tiny screens. */
 @media (max-height: 820px) {
-  #settings-detail-view .settings-section-hint:not([hidden]):not([role="alert"]):not(.detail-target-outside-hint) {
+  #settings-detail-view .settings-section-hint:not([hidden]):not([role="alert"]):not(.detail-target-outside-hint):not(.detail-target-master-hint) {
     display: none;
   }
 
@@ -284,9 +284,13 @@ body.app-dialog-open .ad-remove-link-wrap {
   display: none !important;
 }
 
-#settings-detail-view.settings-detail-view--route #detail-route-core {
+#settings-detail-view #detail-route-core {
   display: flex;
   flex-direction: column;
+  gap: 0.85rem;
+}
+
+#settings-detail-view.settings-detail-view--route #detail-route-core {
   gap: 1rem;
 }
 
@@ -687,7 +691,16 @@ body.app-dialog-open .ad-remove-link-wrap {
 }
 
 .onboarding-coach--step-2 .onboarding-coach-card {
-  /* Prefer under My Journeys chrome; JS sets top from #journeys-chrome-action. */
+  /* Prefer under Routes chrome; JS sets top from #routes-chrome-action. */
+  top: calc(5.6rem + env(safe-area-inset-top, 0px));
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  animation-name: onboarding-coach-in-step-2;
+}
+
+.onboarding-coach--step-3 .onboarding-coach-card {
+  /* Prefer under Journeys chrome; JS sets top from #journeys-chrome-action. */
   top: calc(5.6rem + env(safe-area-inset-top, 0px));
   right: 0.75rem;
   left: auto;
@@ -773,9 +786,11 @@ body.app-dialog-open .ad-remove-link-wrap {
   transform: translateX(-50%);
 }
 
-/* Active hours / Reminder: dock coach at bottom so card never covers highlighted fields */
+/* Journey window / Reminders: dock coach at bottom so card never covers highlighted fields */
 .journeys-dialog .template-route-coach.template-route-coach--dock-bottom .onboarding-coach-card,
-.journeys-dialog .template-route-coach.template-route-coach--step-3 .onboarding-coach-card {
+.journeys-dialog .template-route-coach.template-route-coach--step-4 .onboarding-coach-card,
+.journeys-dialog .template-route-coach.template-route-coach--step-5 .onboarding-coach-card,
+.journeys-dialog .template-route-coach.template-route-coach--step-6 .onboarding-coach-card {
   top: auto;
   bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
 }
@@ -786,8 +801,14 @@ body.app-dialog-open .ad-remove-link-wrap {
   padding-bottom: 12rem;
 }
 
-/* Reminder step sits at the bottom of the form — extra scroll room */
+/* Reminder step — extra scroll room below the toggle */
 .journeys-dialog.template-wizard-reminder-step .settings-detail-scroll {
+  scroll-padding-bottom: 11rem;
+  padding-bottom: 11rem;
+}
+
+/* Journey window step sits at the bottom of the form — extra scroll room */
+.journeys-dialog.template-wizard-hours-step .settings-detail-scroll {
   scroll-padding-bottom: 13rem;
   padding-bottom: 13rem;
 }

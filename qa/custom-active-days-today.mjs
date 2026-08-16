@@ -54,7 +54,7 @@ async function run() {
   const customPass =
     customState.active.length === 1 &&
     customState.active[0] === today &&
-    customState.hint.includes("Starts on today");
+    customState.hint.includes("Which days do you travel");
 
   if (customPass) {
     console.log(`PASS — Custom defaults to today only (day ${today})`);
@@ -96,7 +96,7 @@ async function run() {
   const morningPass =
     morningState.active.length === 5 &&
     morningState.active.every((day) => day >= 1 && day <= 5) &&
-    !morningState.hint.includes("Starts on today");
+    morningState.hint.includes("Which days do you travel");
 
   if (morningPass) {
     console.log("PASS — Morning stays Mon–Fri with default hint");

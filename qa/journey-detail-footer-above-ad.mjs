@@ -52,13 +52,13 @@ async function seedJourney(page) {
 }
 
 async function openJourneyDetail(page) {
-  await page.locator("#commutes-btn").click();
+  await page.locator("#journeys-btn").click();
   await page.waitForTimeout(300);
   const dialogOpen = await page.evaluate(
     () => document.getElementById("journeys-dialog")?.hidden === false
   );
   if (!dialogOpen) {
-    await page.locator("#commutes-btn").click();
+    await page.locator("#journeys-btn").click();
     await page.waitForTimeout(500);
   }
   await page.locator(".journey-list-open-btn").first().click();

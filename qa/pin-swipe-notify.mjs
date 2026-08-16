@@ -362,6 +362,11 @@ async function testPinLockDoesNotBlockAdvancePath(page) {
   }
 
   await page.goto(`${BASE}/?test=1&fixture=late`);
+  await page.evaluate(() => {
+    if (document.querySelector(".app")?.classList.contains("nearby-mode")) {
+      window.nextTrainApp.enterJourneyMode();
+    }
+  });
   await waitForJourneyHero(page);
   await page.evaluate(async (journeyId) => {
     const preferred = document.getElementById("depart-display-time")?.textContent?.trim();

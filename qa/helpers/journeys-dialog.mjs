@@ -20,15 +20,15 @@ export async function closeJourneysDialog(page) {
   await page.waitForTimeout(300);
 }
 
-/** Open Commutes library sheet. */
-export async function openCommutesLibraryDialog(page) {
+/** Open Journeys library sheet. */
+export async function openJourneysLibraryDialog(page) {
   await closeJourneysDialog(page);
-  await page.evaluate(() => window.nextTrainApp.openCommutesLibrary?.());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary?.());
   await page.waitForTimeout(800);
 }
 
 export async function openJourneysDialog(page) {
-  await openCommutesLibraryDialog(page);
+  await openJourneysLibraryDialog(page);
 }
 
 export async function dismissTemplateCoach(page) {
@@ -40,16 +40,10 @@ export async function dismissTemplateCoach(page) {
   });
 }
 
-/** Time-to-station slider only appears when Target train is on. */
+/** Target train time + walk buffer are always shown for journey-kind commutes. */
 export async function enableTargetTrainOnDetail(page) {
   await dismissTemplateCoach(page);
-  await page.evaluate(() => {
-    const checkbox = document.getElementById("detail-use-target-train");
-    if (checkbox && !checkbox.checked) {
-      checkbox.click();
-    }
-  });
-  await page.waitForTimeout(400);
+  await page.locator("#detail-target-nest").waitFor({ state: "visible", timeout: 5000 });
   await page.locator("#detail-leave-before-input").waitFor({ state: "visible", timeout: 5000 });
 }
 

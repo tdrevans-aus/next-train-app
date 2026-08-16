@@ -41,11 +41,11 @@ async function run() {
       direction: "Perth",
     });
 
-    const pick = window.nextTrainApp?.pickScheduledCommute?.([
+    const pick = window.nextTrainApp?.pickScheduledJourney?.([
       morning,
       later,
     ], 7 * 60 + 20);
-    const pickLate = window.nextTrainApp?.pickScheduledCommute?.([morning, later], 7 * 60 + 40);
+    const pickLate = window.nextTrainApp?.pickScheduledJourney?.([morning, later], 7 * 60 + 40);
 
     return {
       morningKind: morning.kind,
@@ -82,7 +82,7 @@ async function run() {
     pinHidden: document.getElementById("hero-pin-btn")?.hidden === true,
     leaveHidden: document.getElementById("leave-card")?.hidden === true,
     boardVisible:
-      document.getElementById("nearby-directions")?.classList.contains("route-departures") ||
+      document.getElementById("upcoming-departures")?.hidden === false ||
       document.getElementById("nearby-directions")?.hidden === false,
   }));
 

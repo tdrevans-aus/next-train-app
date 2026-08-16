@@ -166,20 +166,20 @@
     return deps.getHeroDepartLabel?.(options) ?? "Next Train";
   }
 
-  function getTrueNextTrip(data) {
-    return deps.getTrueNextTrip?.(data) ?? null;
+  function renderUpcomingDepartureBoard(data, skipCount) {
+    return deps.renderUpcomingDepartureBoard?.(data, skipCount);
   }
 
-  function renderJourneySecondaryNextLine(trueNextTrip, pinTrip) {
-    return deps.renderJourneySecondaryNextLine?.(trueNextTrip, pinTrip) ?? false;
-  }
-
-  function renderThenTrains(data, skipCount, options) {
-    return deps.renderThenTrains?.(data, skipCount, options);
+  function hideUpcomingDepartureBoard() {
+    return deps.hideUpcomingDepartureBoard?.();
   }
 
   function formatScheduledLine(next) {
     return deps.formatScheduledLine?.(next) ?? "";
+  }
+
+  function formatHeroScheduledLine(next) {
+    return deps.formatHeroScheduledLine?.(next) ?? formatScheduledLine(next);
   }
 
   function renderStatusDisplay(next) {
@@ -394,13 +394,13 @@ function renderUnsupportedRegionBoard() {
     const hint = document.createElement("span");
     hint.className = "hero-empty-hint";
     hint.textContent =
-      "You can still save routes and commutes when you're back in Perth.";
+      "You can still save routes and journeys when you're back in Perth.";
 
     const emptyJourneysBtn = document.createElement("button");
     emptyJourneysBtn.type = "button";
     emptyJourneysBtn.className = "btn-primary hero-empty-primary";
     emptyJourneysBtn.textContent = "My Journeys";
-    emptyJourneysBtn.addEventListener("click", () => deps.enterCommuteMode?.());
+    emptyJourneysBtn.addEventListener("click", () => deps.enterJourneyMode?.());
 
     deps.departCountdownEl.append(title, text, hint, emptyJourneysBtn);
   }
@@ -413,6 +413,7 @@ function renderUnsupportedRegionBoard() {
   deps.platformEl.textContent = "—";
   deps.statusEl.textContent = "—";
   deps.followingSectionEl.hidden = true;
+  hideUpcomingDepartureBoard();
   if (deps.journeySwitcherEl) {
     deps.journeySwitcherEl.hidden = true;
   }
@@ -467,8 +468,8 @@ function syncChromeMode() {
   const nearbyActive = isNearbyModeActive();
   const travelTab = deps.getChromeTravelTab?.() ?? "nearby";
   const routesActive = travelTab === "routes";
-  const commutesActive = travelTab === "commutes";
-  const journeyActive = routesActive || commutesActive;
+  const journeysActive = travelTab === "journeys";
+  const journeyActive = routesActive || journeysActive;
 
   deps.appEl?.classList.toggle("nearby-mode", nearbyActive && Boolean(nearbySession));
   deps.appEl?.classList.toggle("journey-mode", journeyActive);
@@ -482,9 +483,9 @@ function syncChromeMode() {
   deps.routesBtn?.classList.toggle("icon-btn--active", routesActive);
   deps.routesBtn?.setAttribute("aria-pressed", routesActive ? "true" : "false");
 
-  deps.commutesChromeAction?.classList.toggle("chrome-action--active", commutesActive);
-  deps.commutesBtn?.classList.toggle("icon-btn--active", commutesActive);
-  deps.commutesBtn?.setAttribute("aria-pressed", commutesActive ? "true" : "false");
+  deps.journeysChromeAction?.classList.toggle("chrome-action--active", journeysActive);
+  deps.journeysBtn?.classList.toggle("icon-btn--active", journeysActive);
+  deps.journeysBtn?.setAttribute("aria-pressed", journeysActive ? "true" : "false");
 
   syncJourneyContextChrome();
 }
@@ -1419,6 +1420,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     }
     syncNearbyDontWaitButton();
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     if (nearbySession?.gpsRefining) {
       deps.updatedEl.textContent = "Checking location…";
     } else {
@@ -1461,6 +1463,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.platformEl.textContent = "—";
     deps.statusEl.textContent = "—";
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     deps.updatedEl.textContent = "Choose a station below";
     updateSwipeHint();
     updateSwipeCues();
@@ -1498,6 +1501,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.platformEl.textContent = "—";
     deps.statusEl.textContent = "—";
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     deps.updatedEl.textContent = stale ? "Update failed — times may be out of date" : "Choose a station below";
     updateSwipeHint();
     updateSwipeCues();
@@ -1560,6 +1564,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.platformEl.textContent = "—";
     deps.statusEl.textContent = "—";
     deps.followingSectionEl.hidden = true;
+    hideUpcomingDepartureBoard();
     nearbyDirectionsEl.hidden = false;
     renderNearbyDirectionsList();
     updateSwipeHint();
@@ -1587,7 +1592,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     deps.departDisplayTimeEl.textContent = `${next.displayTime} · towards ${focusedEntry.direction}`;
   }
 
-  const scheduledLine = formatScheduledLine(next);
+  const scheduledLine = formatHeroScheduledLine(next);
   if (deps.heroScheduledTimeEl) {
     if (scheduledLine) {
       deps.heroScheduledTimeEl.textContent = scheduledLine;
@@ -1599,15 +1604,8 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   deps.platformEl.textContent = next.platform;
   renderStatusDisplay(next);
-  if (pinned) {
-    const normalizedBoard = normalizeApiTrainData(boardData);
-    const trueNextTrip = getTrueNextTrip(normalizedBoard);
-    if (!renderJourneySecondaryNextLine(trueNextTrip, next)) {
-      renderThenTrains(boardData, nearbySkip);
-    }
-  } else {
-    renderThenTrains(boardData, nearbySkip);
-  }
+  deps.followingSectionEl.hidden = true;
+  renderUpcomingDepartureBoard(boardData, nearbySkip);
   nearbyDirectionsEl.hidden = false;
   renderNearbyDirectionsList();
   updateSwipeHint();

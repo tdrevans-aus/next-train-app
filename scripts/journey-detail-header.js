@@ -1,7 +1,5 @@
 (function (global) {
   const DEFAULT_ACTIVE_DAYS_HINT = "Which days do you travel this journey?";
-  const CUSTOM_ACTIVE_DAYS_HINT =
-    "Starts on today — add more days if this repeats more often.";
 
   let deps = {};
 

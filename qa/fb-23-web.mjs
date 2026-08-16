@@ -1,10 +1,10 @@
 /**
- * FB-23 — Routes & Commutes web QA (Q7 chrome, libraries, switcher, route hero).
+ * FB-23 — Routes & Journeys web QA (Q7 chrome, libraries, switcher, route hero).
  * Usage: node qa/fb-23-web.mjs
  */
 import { chromium } from "playwright";
 import {
-  openCommutesLibrary,
+  openJourneysLibrary,
   openRouteCreate,
   openRoutesLibrary,
   readChromeLabels,
@@ -28,10 +28,10 @@ async function run() {
   const chrome = await readChromeLabels(page);
   if (
     chrome.nearby !== "Near me" ||
-    chrome.routes !== "Routes" ||
-    chrome.commutes !== "Commutes" ||
+    chrome.routes !== "My Routes" ||
+    chrome.journeys !== "My Journeys" ||
     chrome.menu !== "Menu" ||
-    !chrome.journeysBtnGone
+    !chrome.legacyCommutesBtnGone
   ) {
     fail("four-tab chrome labels", chrome);
   }
@@ -41,14 +41,14 @@ async function run() {
     title: document.getElementById("journeys-library-title")?.textContent?.trim() ?? "",
     addRouteVisible: !document.getElementById("journey-save-route-btn")?.hidden,
     addRouteText: document.getElementById("journey-save-route-btn")?.textContent?.trim() ?? "",
-    setupCommuteHidden: document.getElementById("journey-setup-commute-btn")?.hidden === true,
+    setupJourneyHidden: document.getElementById("journey-setup-btn")?.hidden === true,
     shortcutsHidden: document.getElementById("journey-template-shortcuts")?.hidden === true,
   }));
   if (
     routesLibrary.title !== "Routes" ||
     !routesLibrary.addRouteVisible ||
     routesLibrary.addRouteText !== "Add a route" ||
-    !routesLibrary.setupCommuteHidden ||
+    !routesLibrary.setupJourneyHidden ||
     !routesLibrary.shortcutsHidden
   ) {
     fail("routes library", routesLibrary);
@@ -65,7 +65,7 @@ async function run() {
     preferredHidden: document.getElementById("detail-preferred-section")?.hidden === true,
     trainsToLabel:
       document.querySelector(".detail-direction-label--route")?.textContent?.trim() ?? "",
-    commuteLabelHidden:
+    journeyLabelHidden:
       document.querySelector(".detail-direction-label--commute")?.offsetParent === null,
     hint:
       document.querySelector(".detail-direction-hint--route")?.textContent?.trim() ?? "",
@@ -77,7 +77,7 @@ async function run() {
     !routeEditor.timingHidden ||
     !routeEditor.preferredHidden ||
     routeEditor.trainsToLabel !== "Trains to" ||
-    !routeEditor.commuteLabelHidden ||
+    !routeEditor.journeyLabelHidden ||
     !routeEditor.hint.includes("platform sign")
   ) {
     fail("route editor (Q8 Trains to)", routeEditor);
@@ -86,20 +86,20 @@ async function run() {
   await page.evaluate(() => window.nextTrainApp.closeJourneysDialog?.());
   await page.waitForTimeout(300);
 
-  await openCommutesLibrary(page);
-  const commutesLibrary = await page.evaluate(() => ({
+  await openJourneysLibrary(page);
+  const journeysLibrary = await page.evaluate(() => ({
     title: document.getElementById("journeys-library-title")?.textContent?.trim() ?? "",
-    setupVisible: !document.getElementById("journey-setup-commute-btn")?.hidden,
+    setupVisible: !document.getElementById("journey-setup-btn")?.hidden,
     addRouteHidden: document.getElementById("journey-save-route-btn")?.hidden === true,
     morningVisible: !document.querySelector('[data-template="morning"]')?.hidden,
   }));
   if (
-    commutesLibrary.title !== "Commutes" ||
-    !commutesLibrary.setupVisible ||
-    !commutesLibrary.addRouteHidden ||
-    !commutesLibrary.morningVisible
+    journeysLibrary.title !== "Journeys" ||
+    !journeysLibrary.setupVisible ||
+    !journeysLibrary.addRouteHidden ||
+    !journeysLibrary.morningVisible
   ) {
-    fail("commutes library", commutesLibrary);
+    fail("journeys library", journeysLibrary);
   }
 
   await page.evaluate(() => window.nextTrainApp.closeJourneysDialog?.());
@@ -121,9 +121,7 @@ async function run() {
 
   const routeHero = await page.evaluate(() => ({
     leaveHidden: document.getElementById("leave-card")?.hidden === true,
-    boardVisible:
-      document.getElementById("nearby-directions")?.classList.contains("route-departures") ||
-      document.getElementById("nearby-directions")?.hidden === false,
+    boardVisible: document.getElementById("upcoming-departures")?.hidden === false,
     routeLine: document.getElementById("route")?.textContent?.trim() ?? "",
     routeCount: window.nextTrainJourneyModel
       .readStoredSettings()
@@ -140,14 +138,14 @@ async function run() {
   await page.keyboard.press("Escape");
   await page.waitForTimeout(200);
 
-  await page.evaluate(() => window.nextTrainApp.openCommutesLibrary?.());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary?.());
   await page.waitForTimeout(500);
-  const commuteTab = await page.evaluate(() => ({
+  const journeysTab = await page.evaluate(() => ({
     libraryTitle: document.getElementById("journeys-library-title")?.textContent?.trim() ?? "",
     listLabels: [...document.querySelectorAll(".journey-list-item")].map((item) =>
       item.textContent?.replace(/\s+/g, " ").trim()
     ),
-    commuteCount: window.nextTrainJourneyModel
+    journeyCount: window.nextTrainJourneyModel
       .readStoredSettings()
       .journeys.filter((j) => window.nextTrainJourneyModel.isCommuteJourney(j)).length,
   }));
@@ -159,29 +157,29 @@ async function run() {
     routeSwitcher.options.length === 2 &&
     routeHero.routeCount === 2 &&
     routeSwitcher.options.every((line) => line.includes("Route") || line.includes("→"));
-  const routeHasNoCommuteName = !routeSwitcher.options.some((line) => line.includes("Morning"));
-  const commuteOnly =
-    commuteTab.libraryTitle === "Commutes" &&
-    commuteTab.commuteCount === 1 &&
-    commuteTab.listLabels.length === 1 &&
-    commuteTab.listLabels[0].includes("Morning") &&
-    !commuteTab.listLabels.some((line) => line.includes("Mandurah"));
+  const routeHasNoJourneyName = !routeSwitcher.options.some((line) => line.includes("Morning"));
+  const journeysOnly =
+    journeysTab.libraryTitle === "Journeys" &&
+    journeysTab.journeyCount === 1 &&
+    journeysTab.listLabels.length === 1 &&
+    journeysTab.listLabels[0].includes("Morning") &&
+    !journeysTab.listLabels.some((line) => line.includes("Mandurah"));
 
   if (
     !routeHero.leaveHidden ||
     !routeHero.boardVisible ||
     !routeHero.routeLine.includes("Edgewater") ||
     !routeOnly ||
-    !routeHasNoCommuteName ||
-    !commuteOnly
+    !routeHasNoJourneyName ||
+    !journeysOnly
   ) {
     fail("route hero + tab switcher", {
       routeHero,
       routeSwitcher,
-      commuteTab,
+      journeysTab,
       routeOnly,
-      routeHasNoCommuteName,
-      commuteOnly,
+      routeHasNoJourneyName,
+      journeysOnly,
     });
   }
 

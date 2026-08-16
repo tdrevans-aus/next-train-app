@@ -19,7 +19,7 @@ async function run() {
     libraryTitle: document.getElementById("journeys-library-title")?.textContent?.trim() ?? "",
     saveRouteVisible: !document.getElementById("journey-save-route-btn")?.hidden,
     saveRouteText: document.getElementById("journey-save-route-btn")?.textContent?.trim() ?? "",
-    setupCommuteVisible: !document.getElementById("journey-setup-commute-btn")?.hidden,
+    setupJourneyVisible: !document.getElementById("journey-setup-btn")?.hidden,
     shortcutsHidden: document.getElementById("journey-template-shortcuts")?.hidden === true,
     morningChipHidden: document.querySelector('[data-template="morning"]')?.hidden === true,
   }));
@@ -42,7 +42,7 @@ async function run() {
     listUi.libraryTitle === "Routes" &&
     listUi.saveRouteVisible &&
     listUi.saveRouteText === "Add a route" &&
-    !listUi.setupCommuteVisible &&
+    !listUi.setupJourneyVisible &&
     listUi.shortcutsHidden &&
     listUi.morningChipHidden &&
     detailUi.detailOpen &&

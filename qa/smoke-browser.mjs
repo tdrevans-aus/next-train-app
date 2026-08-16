@@ -76,7 +76,7 @@ async function run() {
   const platform = (await page.locator("#platform").textContent())?.trim();
   const status = (await page.locator("#status").textContent())?.trim();
   const leaveTime = (await page.locator("#leave-time").textContent())?.trim();
-  const thenVisible = await page.locator("#following-section").isVisible();
+  const upcomingVisible = await page.locator("#upcoming-departures").isVisible();
   const countdownMin = parseLeaveMinutes(countdown);
   if (
     route?.includes("Edgewater") &&
@@ -90,11 +90,11 @@ async function run() {
     leaveTime !== "—" &&
     platform !== "—" &&
     status &&
-    thenVisible
+    upcomingVisible
   ) {
     pass(2, `Route ${route}; ${countdown}; ${depart}; platform ${platform}`);
   } else {
-    fail(2, JSON.stringify({ route, countdown, depart, leaveVisible, platform, status, thenVisible }));
+    fail(2, JSON.stringify({ route, countdown, depart, leaveVisible, platform, status, upcomingVisible }));
   }
 
   await injectSwitcherJourneys(page);

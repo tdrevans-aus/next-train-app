@@ -1,5 +1,5 @@
 /**
- * Target / Active hours combo soft hints (U-13 §2.1–2.2).
+ * Target train should default journey window on custom commutes (±90 min).
  * Usage: node qa/target-active-combo-hints.mjs
  */
 import { chromium } from "playwright";
@@ -17,6 +17,8 @@ async function openCustomJourneyDetail(page) {
         journeys: [
           {
             id: "j-custom",
+            kind: "commute",
+            templateKey: "custom",
             name: "Custom commute",
             station: "Edgewater Stn",
             direction: "Perth",
@@ -36,9 +38,10 @@ async function openCustomJourneyDetail(page) {
   });
   await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.waitForTimeout(1200);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
-  await page.waitForTimeout(400);
-  await page.locator(".journey-list-open-btn").click();
+  await page.evaluate(async () => {
+    window.nextTrainApp.openJourneysLibrary?.();
+    await window.nextTrainApp.openJourneyDetail?.("j-custom");
+  });
   await page.waitForTimeout(500);
 }
 
@@ -51,6 +54,7 @@ async function setOptionalTime(page, fieldId, value) {
         return;
       }
       input.value = value;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
       input.dispatchEvent(new Event("change", { bubbles: true }));
     },
     { fieldId, value }
@@ -58,15 +62,12 @@ async function setOptionalTime(page, fieldId, value) {
   await page.waitForTimeout(150);
 }
 
-async function readHints(page) {
+async function readWindowState(page) {
   return page.evaluate(() => ({
-    default: !document.getElementById("detail-active-hours-hint")?.hidden,
+    defaultFrom: document.getElementById("detail-default-from")?.value ?? "",
+    defaultUntil: document.getElementById("detail-default-until")?.value ?? "",
+    preferredTrainTime: document.getElementById("detail-preferred-input")?.value ?? "",
     outside: !document.getElementById("detail-target-outside-active-hint")?.hidden,
-    comboB: !document.getElementById("detail-combo-b-hint")?.hidden,
-    comboD: !document.getElementById("detail-combo-d-hint")?.hidden,
-    outsideText:
-      document.getElementById("detail-target-outside-active-hint")?.textContent?.trim() ?? "",
-    comboBText: document.getElementById("detail-combo-b-hint")?.textContent?.trim() ?? "",
   }));
 }
 
@@ -76,36 +77,34 @@ async function run() {
 
   await openCustomJourneyDetail(page);
 
-  let hints = await readHints(page);
-  if (!hints.comboD || hints.outside || hints.comboB || hints.default) {
-    console.error("FAIL — combo D hint expected when neither Active nor Target set", hints);
+  let state = await readWindowState(page);
+  if (state.preferredTrainTime || state.defaultFrom || state.defaultUntil) {
+    console.error("FAIL — custom commute should start with empty target/window", state);
     process.exitCode = 1;
+    await browser.close();
+    return;
   }
 
   await setOptionalTime(page, "detail-preferred-field", "07:30");
-  hints = await readHints(page);
-  if (!hints.comboB || hints.outside || hints.comboD || hints.default) {
-    console.error("FAIL — combo B hint expected when Target set without Active hours", hints);
+  state = await readWindowState(page);
+  if (state.defaultFrom !== "06:00" || state.defaultUntil !== "09:00" || state.outside) {
+    console.error("FAIL — target train should default journey window to 06:00–09:00", state);
     process.exitCode = 1;
   }
 
   await setOptionalTime(page, "detail-default-from-field", "08:00");
   await setOptionalTime(page, "detail-default-until-field", "09:00");
-  hints = await readHints(page);
-  if (!hints.outside || hints.comboB || hints.comboD || hints.default) {
-    console.error("FAIL — outside Active hours hint expected for Target 7:30 in 8–9 window", hints);
-    process.exitCode = 1;
-  }
-  if (!/outside Active hours/i.test(hints.outsideText)) {
-    console.error("FAIL — outside hint copy", hints);
+  state = await readWindowState(page);
+  if (!state.outside) {
+    console.error("FAIL — outside hint expected when target 07:30 is outside 08:00–09:00", state);
     process.exitCode = 1;
   }
 
   await setOptionalTime(page, "detail-default-from-field", "07:00");
   await setOptionalTime(page, "detail-default-until-field", "09:00");
-  hints = await readHints(page);
-  if (hints.outside || !hints.default) {
-    console.error("FAIL — outside hint should clear when Target is inside Active window", hints);
+  state = await readWindowState(page);
+  if (state.outside) {
+    console.error("FAIL — outside hint should clear when target is inside window", state);
     process.exitCode = 1;
   }
 
@@ -120,17 +119,17 @@ async function run() {
     };
   });
   if (saved.preferredTrainTime !== "07:30" || saved.defaultFrom !== "07:00" || saved.defaultUntil !== "09:00") {
-    console.error("FAIL — Save should work with soft hints visible", saved);
+    console.error("FAIL — save should persist target and journey window", saved);
     process.exitCode = 1;
   }
 
+  await browser.close();
+
   if (process.exitCode) {
-    await browser.close();
     return;
   }
 
-  console.log("PASS — Target/Active combo hints show, clear, and do not block Save");
-  await browser.close();
+  console.log("PASS — target train defaults journey window and validation still works");
 }
 
 run().catch((error) => {

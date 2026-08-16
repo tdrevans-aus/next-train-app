@@ -1,11 +1,11 @@
-/** Routes / Commutes library + route editor (FB-23 Q7). */
+/** Routes / Journeys library + route editor (FB-23 Q7). */
 export async function openRoutesLibrary(page) {
   await page.evaluate(() => window.nextTrainApp.openRoutesLibrary?.());
   await page.waitForTimeout(500);
 }
 
-export async function openCommutesLibrary(page) {
-  await page.evaluate(() => window.nextTrainApp.openCommutesLibrary?.());
+export async function openJourneysLibrary(page) {
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary?.());
   await page.waitForTimeout(500);
 }
 
@@ -15,9 +15,9 @@ export async function openRouteCreate(page) {
   await page.waitForTimeout(600);
 }
 
-export async function openCommuteSetup(page) {
-  await openCommutesLibrary(page);
-  await page.locator("#journey-setup-commute-btn").click();
+export async function openJourneySetup(page) {
+  await openJourneysLibrary(page);
+  await page.locator("#journey-setup-btn").click();
   await page.waitForTimeout(600);
 }
 
@@ -25,9 +25,9 @@ export async function readChromeLabels(page) {
   return page.evaluate(() => ({
     nearby: document.querySelector("#nearby-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
     routes: document.querySelector("#routes-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
-    commutes: document.querySelector("#commutes-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
+    journeys: document.querySelector("#journeys-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
     menu: document.querySelector("#menu-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
-    journeysBtnGone: !document.getElementById("journeys-btn"),
+    legacyCommutesBtnGone: !document.getElementById("commutes-btn"),
   }));
 }
 

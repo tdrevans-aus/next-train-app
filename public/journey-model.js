@@ -105,6 +105,37 @@ function isDefaultCommuteJourneyName(name) {
   return normalized === "daily commute - in" || normalized === "daily commute - out";
 }
 
+function normalizeJourneyNameKey(name) {
+  return String(name || "").trim().toLowerCase();
+}
+
+function nextAvailableJourneyName(journeys = [], { prefix = "Journey" } = {}) {
+  const used = new Set(
+    journeys.map((journey) => normalizeJourneyNameKey(journey?.name)).filter(Boolean)
+  );
+  let number = 1;
+  while (used.has(normalizeJourneyNameKey(`${prefix} ${number}`))) {
+    number += 1;
+  }
+  return `${prefix} ${number}`;
+}
+
+function findJourneyNameConflict(name, journeys = [], excludeId = null) {
+  const key = normalizeJourneyNameKey(name);
+  if (!key) {
+    return null;
+  }
+
+  return (
+    journeys.find((journey) => {
+      if (!journey || journey.id === excludeId) {
+        return false;
+      }
+      return normalizeJourneyNameKey(journey.name) === key;
+    }) ?? null
+  );
+}
+
 function isLegacyBlankDefaultWindow(defaultFrom, defaultUntil) {
   return defaultFrom === "00:00" && (defaultUntil === "23:59" || defaultUntil === "24:00");
 }
@@ -483,6 +514,17 @@ function addMinutesToTimeString(time, minutesToAdd) {
   return formatMinutesAsTime(parseTimeToMinutes(time) + minutesToAdd);
 }
 
+const CUSTOM_TARGET_TRAIN_OFFSET_MINUTES = 60;
+const CUSTOM_TARGET_TRAIN_ROUND_MINUTES = 5;
+
+/** Sensible first target for blank custom journeys — about an hour from now, on a 5‑min step. */
+function getDefaultCustomPreferredTrainTime(date = new Date()) {
+  const target = getPerthMinutesSinceMidnight(date) + CUSTOM_TARGET_TRAIN_OFFSET_MINUTES;
+  const rounded =
+    Math.ceil(target / CUSTOM_TARGET_TRAIN_ROUND_MINUTES) * CUSTOM_TARGET_TRAIN_ROUND_MINUTES;
+  return formatMinutesAsTime(rounded);
+}
+
 function journeyMatchesTime(journey, minutes) {
   if (!hasDefaultWindow(journey)) {
     return false;
@@ -611,11 +653,15 @@ function getPerthLocalDateKey(date = new Date()) {
     parseTimeToMinutes,
     formatMinutesAsTime,
     addMinutesToTimeString,
+    getDefaultCustomPreferredTrainTime,
     journeyMatchesTime,
     pad2,
     getPerthDateParts,
     isLegacyBlankDefaultWindow,
     isDefaultCommuteJourneyName,
+    normalizeJourneyNameKey,
+    nextAvailableJourneyName,
+    findJourneyNameConflict,
   };
 
   global.nextTrainJourneyModel = api;

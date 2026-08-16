@@ -110,7 +110,7 @@ public final class CommuteStripNotifier {
       "Commute countdown",
       NotificationManager.IMPORTANCE_LOW
     );
-    channel.setDescription("Persistent leave countdown while heading to your preferred train");
+    channel.setDescription("Persistent leave countdown while heading to your target train");
 
     NotificationManager manager = context.getSystemService(NotificationManager.class);
     if (manager != null) {

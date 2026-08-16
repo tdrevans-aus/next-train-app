@@ -3,16 +3,14 @@
  * Usage: node qa/template-wizard-skip.mjs
  */
 import { chromium } from "playwright";
+import { openJourneysLibraryDialog } from "./helpers/journeys-dialog.mjs";
 
 const BASE = "http://localhost:3000";
 
 async function openMorningWizard(page) {
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(800);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(200);
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(400);
+  await openJourneysLibraryDialog(page);
   await page.locator('[data-template="morning"]').click();
   await page.waitForTimeout(2000);
 }
@@ -54,13 +52,14 @@ async function run() {
     process.exitCode = 1;
   }
 
-  for (let step = 0; step < 4; step++) {
+  for (let step = 0; step < 3; step++) {
     await page.locator("#template-wizard-primary-btn").click();
     await page.waitForTimeout(250);
   }
 
   const reminderStep = await page.evaluate(() => ({
     reminderVisible: !document.getElementById("template-wizard-step-reminder").hidden,
+    hoursHidden: document.getElementById("template-wizard-step-3").hidden,
     primary: document.getElementById("template-wizard-primary-btn")?.textContent?.trim(),
     duplicateLabels: document.querySelectorAll("#detail-reminder-section .menu-toggle-title").length,
     sectionTitles: document.querySelectorAll("#detail-reminder-section .settings-section-title").length,
@@ -68,13 +67,34 @@ async function run() {
 
   if (
     reminderStep.reminderVisible &&
-    reminderStep.primary === "Got it" &&
+    reminderStep.hoursHidden &&
+    reminderStep.primary === "Next" &&
     reminderStep.duplicateLabels === 1 &&
     reminderStep.sectionTitles === 0
   ) {
-    console.log("PASS — Reminder is final wizard step with single label");
+    console.log("PASS — Reminder step before Journey window with single label");
   } else {
     console.error("FAIL — Reminder step / label", reminderStep);
+    process.exitCode = 1;
+  }
+
+  await page.locator("#template-wizard-primary-btn").click();
+  await page.waitForTimeout(250);
+
+  const finalStep = await page.evaluate(() => ({
+    hoursVisible: !document.getElementById("template-wizard-step-3").hidden,
+    reminderHidden: document.getElementById("template-wizard-step-reminder").hidden,
+    primary: document.getElementById("template-wizard-primary-btn")?.textContent?.trim(),
+  }));
+
+  if (
+    finalStep.hoursVisible &&
+    finalStep.reminderHidden &&
+    finalStep.primary === "Got it"
+  ) {
+    console.log("PASS — Journey window is final wizard step");
+  } else {
+    console.error("FAIL — Journey window final step", finalStep);
     process.exitCode = 1;
   }
 
@@ -85,7 +105,7 @@ async function run() {
     seen: localStorage.getItem("nextTrainTemplateWizardSeen"),
   }));
   if (afterGotIt.coachHidden && afterGotIt.seen === "1") {
-    console.log("PASS — Got it on Reminder step marks seen");
+    console.log("PASS — Got it on Journey window step marks seen");
   } else {
     console.error("FAIL — Got it", afterGotIt);
     process.exitCode = 1;
