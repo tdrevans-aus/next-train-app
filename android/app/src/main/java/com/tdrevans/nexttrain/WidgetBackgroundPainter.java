@@ -29,6 +29,7 @@ final class WidgetBackgroundPainter {
     float density = context.getResources().getDisplayMetrics().density;
     int widthPx = Math.max((int) (size.widthDp * density), 1);
     int heightPx = Math.max((int) (size.heightDp * density), 1);
+    String mode = WidgetAppearanceMode.read(context);
 
     if (opacity <= 0) {
       views.setViewVisibility(R.id.widget_bg_layer, View.GONE);
@@ -45,7 +46,7 @@ final class WidgetBackgroundPainter {
     GradientDrawable drawable = new GradientDrawable();
     drawable.setCornerRadius(cornerPx);
     drawable.setColor(fill);
-    if (!appearance.transparentBg && opacity > 0) {
+    if (shouldPaintBorder(mode, appearance, opacity)) {
       drawable.setStroke(strokePx, palette.border);
     }
 
@@ -72,5 +73,20 @@ final class WidgetBackgroundPainter {
     drawable.setBounds(0, 0, width, height);
     drawable.draw(canvas);
     return bitmap;
+  }
+
+  /** Blend: border only when fully opaque; brand/wallpaper: border whenever filled. */
+  private static boolean shouldPaintBorder(
+    String mode,
+    WidgetAppearanceSettings appearance,
+    int opacity
+  ) {
+    if (appearance.transparentBg || opacity <= 0) {
+      return false;
+    }
+    if (WidgetAppearanceMode.MODE_BLEND.equals(mode)) {
+      return opacity >= 100;
+    }
+    return true;
   }
 }

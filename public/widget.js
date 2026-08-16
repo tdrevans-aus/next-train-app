@@ -92,7 +92,13 @@ async function handleWidgetDeepLink(uri) {
     return;
   }
 
-  await window.nextTrainApp?.openMainScreenFromWidget?.();
+  if (target.journeyId === "nearby-pin") {
+    window.nextTrainApp?.prepareMainScreenFromDeepLink?.();
+    await window.nextTrainApp?.enterNearbyMode?.();
+    return;
+  }
+
+  window.nextTrainApp?.prepareMainScreenFromDeepLink?.();
   if (typeof window.nextTrainApp?.switchJourney === "function") {
     window.nextTrainApp.switchJourney(target.journeyId);
   }
@@ -460,6 +466,93 @@ const WIDGET_APPEARANCE_MODES = [
   },
 ];
 
+const WIDGET_BLEND_THEME_DEFAULT = "ocean";
+
+const WIDGET_COLOUR_PRESETS = [
+  {
+    id: "ocean",
+    label: "Ocean",
+    bg: "#E8F4FC",
+    text: "#0F2942",
+    muted: "#4A6B85",
+    accent: "#0369A1",
+    border: "#1A0F2942",
+  },
+  {
+    id: "midnight",
+    label: "Midnight",
+    bg: "#1B3D6B",
+    text: "#E8EDF4",
+    muted: "#8B9CB3",
+    accent: "#93C5FD",
+    border: "#33E8EDF4",
+  },
+  {
+    id: "slate",
+    label: "Slate",
+    bg: "#5A5A63",
+    text: "#F4F4F5",
+    muted: "#A1A1AA",
+    accent: "#E2E8F0",
+    border: "#33F4F4F5",
+  },
+  {
+    id: "lavender",
+    label: "Lavender",
+    bg: "#F3EEFA",
+    text: "#2D2640",
+    muted: "#6B6280",
+    accent: "#7C3AED",
+    border: "#1A2D2640",
+  },
+  {
+    id: "rose",
+    label: "Rose",
+    bg: "#FDF2F4",
+    text: "#3D1F28",
+    muted: "#8B6570",
+    accent: "#D41D6F",
+    border: "#1A3D1F28",
+  },
+  {
+    id: "amoled",
+    label: "AMOLED",
+    bg: "#000000",
+    text: "#F5F5F5",
+    muted: "#A3A3A3",
+    accent: "#14B8A6",
+    border: "#26F5F5F5",
+  },
+  {
+    id: "default",
+    label: "Light",
+    bg: "#FFFFFF",
+    text: "#1A2F2C",
+    muted: "#5C726D",
+    accent: "#0B6E6A",
+    border: "#1A132523",
+  },
+];
+
+function migrateWidgetThemeId(settings = {}) {
+  const raw = String(settings.widgetThemeId ?? "").trim();
+  if (raw === "forest") {
+    return "default";
+  }
+  if (!raw || raw === "system") {
+    return WIDGET_BLEND_THEME_DEFAULT;
+  }
+  if (WIDGET_COLOUR_PRESETS.some((preset) => preset.id === raw)) {
+    return raw;
+  }
+  return WIDGET_BLEND_THEME_DEFAULT;
+}
+
+function resolveColourPresetForId(themeId) {
+  const normalized = migrateWidgetThemeId({ widgetThemeId: themeId });
+  return WIDGET_COLOUR_PRESETS.find((preset) => preset.id === normalized) ?? WIDGET_COLOUR_PRESETS[0];
+}
+
 function migrateWidgetAppearanceMode(settings = {}) {
   const mode = String(settings.widgetAppearanceMode ?? "").trim();
   if (mode === "blend" || mode === "wallpaper" || mode === "brand") {
@@ -506,7 +599,14 @@ function getWidgetAppearanceMode() {
 }
 
 function getWidgetThemeId() {
-  return getWidgetAppearanceMode();
+  const mode = getWidgetAppearanceMode();
+  if (mode === "brand") {
+    return "default";
+  }
+  if (mode === "wallpaper") {
+    return "system";
+  }
+  return migrateWidgetThemeId(readSettingsObject());
 }
 
 function getWidgetBgOpacity() {
@@ -630,11 +730,16 @@ function buildWidgetAppearanceModePatch(mode, priorMode = getWidgetAppearanceMod
 
   if (mode === "blend" && priorMode !== "blend") {
     const opacity = getWidgetBgOpacity();
-    if (getWidgetTransparentBg() || opacity <= 0 || opacity >= 100) {
+    if (getWidgetTransparentBg() || opacity <= 0) {
       patch.widgetBgOpacity = 0;
       patch.widgetTransparentBg = true;
     } else {
       patch.widgetBgOpacity = opacity;
+    }
+    const settings = readSettingsObject();
+    const storedTheme = String(settings.widgetThemeId ?? "").trim();
+    if (!storedTheme || storedTheme === "system" || storedTheme === "forest") {
+      patch.widgetThemeId = migrateWidgetThemeId(settings);
     }
   } else if (mode !== "blend" && (getWidgetTransparentBg() || getWidgetBgOpacity() <= 0)) {
     patch.widgetBgOpacity = 100;
@@ -713,6 +818,36 @@ function shouldShowHeroPreviewBorder(mode, effectiveOpacity) {
   return true;
 }
 
+function applyHeroCardChrome(card, mode, effectiveOpacity, solidBorderColor) {
+  if (effectiveOpacity <= 0) {
+    card.style.borderWidth = "1px";
+    card.style.borderStyle = "solid";
+    card.style.borderColor = "transparent";
+    card.style.boxShadow = "none";
+    return;
+  }
+
+  if (mode === "blend") {
+    if (effectiveOpacity >= 100) {
+      card.style.borderWidth = "2px";
+      card.style.borderStyle = "solid";
+      card.style.borderColor = solidBorderColor ?? "rgba(19, 37, 35, 0.14)";
+      card.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.2)";
+      return;
+    }
+    card.style.borderWidth = "1px";
+    card.style.borderStyle = "solid";
+    card.style.borderColor = "transparent";
+    card.style.boxShadow = "none";
+    return;
+  }
+
+  card.style.borderWidth = "2px";
+  card.style.borderStyle = "solid";
+  card.style.borderColor = solidBorderColor ?? "rgba(19, 37, 35, 0.14)";
+  card.style.boxShadow = "0 10px 28px rgba(19, 37, 35, 0.3)";
+}
+
 function applyHeroPreviewFromArgbPalette(palette, effectiveOpacity, mode = getWidgetAppearanceMode()) {
   const card = document.getElementById("widget-hero-mock-card");
   if (!card || !palette) {
@@ -721,12 +856,13 @@ function applyHeroPreviewFromArgbPalette(palette, effectiveOpacity, mode = getWi
   card.style.color = argbHexToCss(palette.text);
   if (effectiveOpacity <= 0) {
     card.style.background = "transparent";
-    card.style.borderColor = "transparent";
+    applyHeroCardChrome(card, mode, 0);
   } else {
     card.style.background = rgbaFromHex(palette.bg, effectiveOpacity);
-    card.style.borderColor = shouldShowHeroPreviewBorder(mode, effectiveOpacity)
+    const borderColor = shouldShowHeroPreviewBorder(mode, effectiveOpacity)
       ? argbHexToCss(palette.border)
-      : "transparent";
+      : argbHexToCss(palette.border);
+    applyHeroCardChrome(card, mode, effectiveOpacity, borderColor);
   }
   document.getElementById("widget-hero-mock-primary-value").style.color = argbHexToCss(
     palette.accent
@@ -751,20 +887,10 @@ function applyHeroPreviewFromPreset(preset, effectiveOpacity, mode = getWidgetAp
   card.style.color = preset.text;
   if (effectiveOpacity <= 0) {
     card.style.background = "transparent";
-    card.style.borderColor = "transparent";
-    card.style.borderStyle = "solid";
+    applyHeroCardChrome(card, mode, 0);
   } else {
     card.style.background = rgbaFromHex(preset.bg, effectiveOpacity);
-    if (mode === "blend") {
-      card.style.borderStyle = "dashed";
-      card.style.borderColor = "rgba(255, 255, 255, 0.42)";
-    } else if (shouldShowHeroPreviewBorder(mode, effectiveOpacity)) {
-      card.style.borderStyle = "solid";
-      card.style.borderColor = preset.border ?? "transparent";
-    } else {
-      card.style.borderStyle = "solid";
-      card.style.borderColor = "transparent";
-    }
+    applyHeroCardChrome(card, mode, effectiveOpacity, preset.border ?? "rgba(19, 37, 35, 0.14)");
   }
   document.getElementById("widget-hero-mock-primary-value").style.color = preset.accent;
   document.getElementById("widget-hero-mock-primary-unit").style.color = preset.muted;
@@ -813,7 +939,7 @@ function getWidgetTransparentToggles() {
   return document.querySelectorAll(".widget-transparent-toggle");
 }
 
-function updateHeroPreview(opacityOverride, modeOverride) {
+function updateHeroPreview(opacityOverride, modeOverride, themeIdOverride) {
   const card = document.getElementById("widget-hero-mock-card");
   if (!card) {
     return;
@@ -825,9 +951,10 @@ function updateHeroPreview(opacityOverride, modeOverride) {
   if (mode === "wallpaper") {
     applyHeroPreviewFromArgbPalette(resolveWallpaperPreviewPalette(), effectiveOpacity, mode);
   } else if (mode === "brand") {
-    applyHeroPreviewFromPreset(resolveModeForId("brand"), effectiveOpacity, mode);
+    applyHeroPreviewFromPreset(resolveColourPresetForId("default"), effectiveOpacity, mode);
   } else {
-    applyHeroPreviewFromPreset(resolveModeForId("brand"), effectiveOpacity, mode);
+    const themeId = themeIdOverride ?? getWidgetThemeId();
+    applyHeroPreviewFromPreset(resolveColourPresetForId(themeId), effectiveOpacity, mode);
   }
 
   card.classList.toggle("widget-hero-mock-card--blend", mode === "blend");
@@ -877,6 +1004,14 @@ function refreshWidgetAppearanceControls() {
     row.hidden = !showTransparentToggle;
   }
 
+  const colourBlock = document.getElementById("widget-appearance-colour-block");
+  if (colourBlock) {
+    colourBlock.hidden = mode !== "blend";
+  }
+  if (mode === "blend") {
+    renderWidgetColourGrid(getWidgetThemeId());
+  }
+
   updateWidgetModePreviewOpacity(transparent ? 0 : opacity);
 }
 
@@ -913,7 +1048,18 @@ function normalizeWidgetAppearancePatch(patch = {}) {
 }
 
 async function applyWidgetAppearancePatch(patch) {
+  const mode = patch.widgetAppearanceMode ?? getWidgetAppearanceMode();
   const normalized = normalizeWidgetAppearancePatch(patch);
+
+  if ("widgetThemeId" in normalized) {
+    if (mode !== "blend") {
+      delete normalized.widgetThemeId;
+    } else {
+      normalized.widgetThemeId = migrateWidgetThemeId({
+        widgetThemeId: normalized.widgetThemeId,
+      });
+    }
+  }
 
   if (typeof window.nextTrainApp?.persistSettings === "function") {
     const settings = window.nextTrainApp.persistSettings(normalized);
@@ -925,10 +1071,6 @@ async function applyWidgetAppearancePatch(patch) {
   const settings = readSettingsObject();
   if ("widgetAppearanceMode" in normalized) {
     settings.widgetAppearanceMode = normalized.widgetAppearanceMode;
-    delete settings.widgetThemeId;
-  }
-  for (const key of ["widgetBgOpacity", "widgetTransparentBg"]) {
-    delete settings[key];
   }
   if ("widgetBgOpacity" in normalized) {
     settings.widgetBgOpacity = normalized.widgetBgOpacity;
@@ -939,14 +1081,13 @@ async function applyWidgetAppearancePatch(patch) {
   } else if ("widgetBgOpacity" in normalized) {
     delete settings.widgetTransparentBg;
   }
+  if ("widgetThemeId" in normalized) {
+    settings.widgetThemeId = normalized.widgetThemeId;
+  }
   localStorage.setItem("nextTrainSettings", JSON.stringify(settings));
   if (window.settings && typeof window.settings === "object") {
     if ("widgetAppearanceMode" in normalized) {
       window.settings.widgetAppearanceMode = normalized.widgetAppearanceMode;
-      delete window.settings.widgetThemeId;
-    }
-    for (const key of ["widgetBgOpacity", "widgetTransparentBg"]) {
-      delete window.settings[key];
     }
     if ("widgetBgOpacity" in normalized) {
       window.settings.widgetBgOpacity = normalized.widgetBgOpacity;
@@ -956,6 +1097,9 @@ async function applyWidgetAppearancePatch(patch) {
       window.settings.widgetBgOpacity = 0;
     } else if ("widgetBgOpacity" in normalized) {
       delete window.settings.widgetTransparentBg;
+    }
+    if ("widgetThemeId" in normalized) {
+      window.settings.widgetThemeId = normalized.widgetThemeId;
     }
   }
   await syncWidgetSettings(settings);
@@ -1018,26 +1162,76 @@ async function flushWidgetAppearanceSync() {
 }
 
 async function setWidgetAppearanceMode(mode) {
-  const normalized = migrateWidgetAppearanceMode({ widgetAppearanceMode: mode });
-  const patch = { widgetAppearanceMode: normalized };
-  delete patch.widgetThemeId;
+  await applyWidgetAppearancePatch({
+    widgetAppearanceMode: migrateWidgetAppearanceMode({ widgetAppearanceMode: mode }),
+  });
+}
 
-  if (typeof window.nextTrainApp?.persistSettings === "function") {
-    const settings = window.nextTrainApp.persistSettings(patch);
-    delete settings.widgetThemeId;
-    await syncWidgetSettings(settings);
+function buildColourSwatch(preset) {
+  const swatch = document.createElement("div");
+  swatch.className = "widget-colour-swatch-preview";
+  swatch.style.background = preset.bg;
+  swatch.style.borderColor = preset.border ? argbHexToCss(preset.border) : "transparent";
+  const digit = document.createElement("span");
+  digit.className = "widget-colour-swatch-digit";
+  digit.style.color = preset.accent;
+  digit.textContent = "3";
+  const unit = document.createElement("span");
+  unit.className = "widget-colour-swatch-unit";
+  unit.style.color = preset.muted;
+  unit.textContent = "min";
+  swatch.append(digit, unit);
+  return swatch;
+}
+
+function renderWidgetColourGrid(selectedThemeId = getWidgetThemeId()) {
+  const grid = document.getElementById("widget-appearance-colour-grid");
+  if (!grid) {
     return;
   }
-
-  const settings = readSettingsObject();
-  settings.widgetAppearanceMode = normalized;
-  delete settings.widgetThemeId;
-  localStorage.setItem("nextTrainSettings", JSON.stringify(settings));
-  if (window.settings && typeof window.settings === "object") {
-    window.settings.widgetAppearanceMode = normalized;
-    delete window.settings.widgetThemeId;
+  const selected = migrateWidgetThemeId({ widgetThemeId: selectedThemeId });
+  grid.replaceChildren();
+  for (const preset of WIDGET_COLOUR_PRESETS) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "widget-colour-swatch";
+    button.role = "radio";
+    button.dataset.widgetThemeId = preset.id;
+    button.setAttribute("aria-label", preset.label);
+    button.setAttribute("aria-checked", preset.id === selected ? "true" : "false");
+    button.append(buildColourSwatch(preset));
+    const label = document.createElement("span");
+    label.className = "widget-colour-swatch-label";
+    label.textContent = preset.label;
+    button.append(label);
+    button.addEventListener("click", () => {
+      void applyWidgetColourSelection(preset.id);
+    });
+    grid.append(button);
   }
-  await syncWidgetSettings(settings);
+}
+
+async function applyWidgetColourSelection(themeId) {
+  const normalized = migrateWidgetThemeId({ widgetThemeId: themeId });
+  const transparent = getWidgetTransparentBg();
+  const storedOpacity = getWidgetBgOpacity();
+  let patch = { widgetThemeId: normalized };
+
+  if (getWidgetAppearanceMode() === "blend" && (transparent || storedOpacity <= 0)) {
+    patch = {
+      widgetThemeId: normalized,
+      widgetBgOpacity: 100,
+      widgetTransparentBg: false,
+    };
+  }
+
+  updateHeroPreview(
+    patch.widgetBgOpacity ?? (transparent ? 0 : storedOpacity),
+    "blend",
+    normalized
+  );
+  await applyWidgetAppearancePatch(patch);
+  renderWidgetColourGrid(normalized);
 }
 
 function buildModeSwatch(mode) {
@@ -1046,7 +1240,9 @@ function buildModeSwatch(mode) {
   if (mode.id === "blend") {
     swatch.classList.add("widget-mode-swatch-blend");
     swatch.style.background = "transparent";
-    swatch.style.borderColor = "var(--mist-border)";
+    swatch.style.borderWidth = "2px";
+    swatch.style.borderStyle = "dashed";
+    swatch.style.borderColor = "rgba(255, 255, 255, 0.55)";
   } else if (mode.wallpaper) {
     swatch.classList.add("widget-mode-swatch-wallpaper");
     swatch.style.background = "var(--mist-mid)";
@@ -1128,7 +1324,7 @@ async function applyWidgetAppearanceModeSelection(mode) {
 }
 
 async function setWidgetThemeId(themeId) {
-  await setWidgetAppearanceMode(migrateWidgetAppearanceMode({ widgetThemeId: themeId }));
+  await applyWidgetColourSelection(themeId);
 }
 
 function configureWidgetAppearanceChrome(source) {
@@ -1247,6 +1443,11 @@ function openWidgetAppearanceSetup({ appWidgetId = null, source = "pin" } = {}) 
 
   renderWidgetAppearanceGrids(getWidgetAppearanceMode());
   refreshWidgetAppearanceControls();
+
+  const mode = getWidgetAppearanceMode();
+  const transparent = getWidgetTransparentBg();
+  const opacity = transparent ? 0 : getWidgetBgOpacity();
+  updateHeroPreview(opacity, mode, getWidgetThemeId());
 
   setup.hidden = false;
   document.body.classList.add("widget-setup-active");
@@ -1483,6 +1684,7 @@ window.nextTrainWidget = {
   openWidgetAppearanceSetup,
   maybeOpenWidgetConfigureSetup,
   applyWidgetAppearanceModeSelection,
+  applyWidgetColourSelection,
   getWidgetAppearanceMode,
   getWidgetThemeId,
   getWidgetBgOpacity,

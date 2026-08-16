@@ -1,6 +1,7 @@
 package com.tdrevans.nexttrain;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -158,6 +159,24 @@ public class LeaveReminderPlugin extends Plugin {
   }
 
   @PluginMethod
+  public void openAlarmSettings(PluginCall call) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+      intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      try {
+        getContext().startActivity(intent);
+      } catch (Exception ignored) {
+        Intent fallback = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        fallback.setData(Uri.parse("package:" + getContext().getPackageName()));
+        fallback.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(fallback);
+      }
+    }
+    call.resolve();
+  }
+
+  @PluginMethod
   public void reschedule(PluginCall call) {
     CommuteRefreshService.refreshAll(getContext());
     call.resolve();
@@ -171,7 +190,9 @@ public class LeaveReminderPlugin extends Plugin {
       }
       JSObject result = jsonToJs(LeaveReminderScheduler.describeSchedule(getContext()));
       boolean permissionGranted = !needsNotificationPermission();
+      boolean exactAlarmsGranted = canScheduleExactAlarms();
       result.put("permissionGranted", permissionGranted);
+      result.put("exactAlarmsGranted", exactAlarmsGranted);
       if (
         !permissionGranted &&
         result.optBoolean("enabled", false) &&
@@ -179,6 +200,13 @@ public class LeaveReminderPlugin extends Plugin {
       ) {
         result.put("scheduled", false);
         result.put("reason", "no_permission");
+      } else if (
+        !exactAlarmsGranted &&
+        result.optBoolean("enabled", false) &&
+        !result.optBoolean("paused", false) &&
+        !result.optBoolean("scheduled", false)
+      ) {
+        result.put("reason", "no_exact_alarm");
       }
       call.resolve(result);
     } catch (Exception error) {
@@ -236,10 +264,23 @@ public class LeaveReminderPlugin extends Plugin {
       CommuteRefreshService.refreshAll(getContext());
       JSObject result = settingsToJs(settings);
       result.put("permissionGranted", true);
+      boolean exactOk = canScheduleExactAlarms();
+      result.put("exactAlarmsGranted", exactOk);
+      if (!exactOk) {
+        result.put("shouldOpenAlarmSettings", true);
+      }
       call.resolve(result);
     } catch (Exception error) {
       call.reject(error.getMessage());
     }
+  }
+
+  private boolean canScheduleExactAlarms() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+      return true;
+    }
+    AlarmManager manager = (AlarmManager) getContext().getSystemService(android.content.Context.ALARM_SERVICE);
+    return manager != null && manager.canScheduleExactAlarms();
   }
 
   private boolean needsNotificationPermission() {

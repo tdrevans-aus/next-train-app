@@ -29,14 +29,6 @@ public class LeaveReminderReceiver extends BroadcastReceiver {
       return;
     }
 
-    // Defense: Live Countdown on ⇒ Leave now is redundant (strip posts at leave-by).
-    if (
-      LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type) &&
-      LeaveReminderSettingsStore.isCommuteStripEnabled(context)
-    ) {
-      return;
-    }
-
     if (LeaveReminderSettingsStore.isAcknowledged(context, departureKey)) {
       return;
     }

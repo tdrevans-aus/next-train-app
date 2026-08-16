@@ -1,6 +1,6 @@
 # FB-26: `pin-state.js` API + pin-resolution fixtures
 
-**Status:** Implemented (Aug 2026)  
+**Status:** **Complete** (Aug 2026)  
 **Backlog:** FB-26 (Phase 3 — pin / display contract)  
 **Depends on:** FB-25 module split (`train-navigation.js`, `nearby-mode.js`)  
 **Related:** `docs/jim-brief-journey-pin-preferred-target.md`, `docs/codebase-inventory.md` §3.1–3.2
@@ -37,10 +37,9 @@ Non-goals for FB-26: changing product rules, esbuild bundle (FB-35), or deleting
 
 ## 3. Module shape (Option A — matches FB-25)
 
-Plain IIFE on `window.nextTrainPinState`, loaded after `journey-model.js` and before `train-navigation.js`. No `index.html` script tag until implementation PR.
+Plain IIFE on `window.nextTrainPinState`, loaded after `journey-model.js` and before `train-navigation.js`:
 
 ```html
-<!-- FB-26 implementation PR only -->
 <script src="pin-state.js"></script>
 <script src="train-navigation.js"></script>
 ```
@@ -220,21 +219,23 @@ Full resolution assertions run only when `IMPLEMENT_PIN_STATE=1` and `public/pin
 
 ## 11. Acceptance
 
-- [ ] Every fixture passes `schema.json` validation.
-- [ ] `resolvePinState` passes all fixtures with `IMPLEMENT_PIN_STATE=1`.
-- [ ] `train-navigation.js` contains no duplicate pin-resolution logic (delegates only).
-- [ ] Android `PinResolutionFixtureTest` loads same JSON files.
-- [ ] `qa/pin-swipe-notify.mjs` still green (behaviour unchanged).
-- [ ] Hero / widget / leave-by use the same `pinDeparture` for identical inputs.
+- [x] Every fixture passes `schema.json` validation (`node qa/pin-resolution-fixtures.mjs --validate-only`).
+- [x] `resolvePinState` passes all 12 fixtures with `IMPLEMENT_PIN_STATE=1`.
+- [x] `train-navigation.js` delegates pin resolution to `nextTrainPinState` (local fallbacks kept when module absent).
+- [x] Android `PinResolutionFixtureTest` loads same JSON files (`copyPinResolutionFixtures` → `test/resources/pin-resolution/`).
+- [x] `qa/pin-swipe-notify.mjs` green (5 scenarios, behaviour unchanged).
+- [x] Hero / widget / leave-by use the same `pinDeparture` for identical inputs (`app.js` → `resolveJourneyPinState` / `resolvePinState`).
 
 ---
 
-## 12. File map (this draft)
+## 12. File map
 
 | File | Purpose |
 |------|---------|
 | `docs/fb-26-pin-state-design.md` | This document |
-| `public/pin-state.js` | API stub (throws until implemented) |
+| `public/pin-state.js` | Pure resolution module (`window.nextTrainPinState`) |
+| `android/app/src/main/java/.../PinResolutionHelper.java` | Android parity implementation |
+| `android/app/src/test/java/.../PinResolutionFixtureTest.java` | JVM fixture runner |
 | `qa/fixtures/pin-resolution/schema.json` | JSON Schema |
-| `qa/fixtures/pin-resolution/*.json` | Vectors |
+| `qa/fixtures/pin-resolution/*.json` | 12 shared vectors |
 | `qa/pin-resolution-fixtures.mjs` | Schema + optional resolution runner |

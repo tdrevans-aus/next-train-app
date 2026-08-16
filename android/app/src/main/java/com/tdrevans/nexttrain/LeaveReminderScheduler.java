@@ -95,9 +95,6 @@ public final class LeaveReminderScheduler {
       : WidgetSettingsStore.readLastRefreshMs(context);
     long age = System.currentTimeMillis() - refreshedAt;
     boolean stale = refreshedAt > 0 && age > CommuteSchedule.STALE_THRESHOLD_MS;
-    if (stale) {
-      return;
-    }
 
     try {
       String settingsJson = WidgetSettingsStore.readSettings(context);
@@ -106,11 +103,16 @@ public final class LeaveReminderScheduler {
       }
 
       JSONObject settings = new JSONObject(settingsJson);
-      if (scheduleNearbyPinIfNeeded(context, settings, stale)) {
+      // Pin reminders fetch their own trips — widget cache age must not block them.
+      if (scheduleNearbyPinIfNeeded(context, settings, false)) {
         return;
       }
 
-      if (scheduleRoutePinIfNeeded(context, settings, stale)) {
+      if (scheduleRoutePinIfNeeded(context, settings, false)) {
+        return;
+      }
+
+      if (stale) {
         return;
       }
 
@@ -196,7 +198,7 @@ public final class LeaveReminderScheduler {
           continue;
         }
 
-        int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
+        int leaveBefore = JourneyPinHelper.routePinLeaveBeforeMinutes(journey, settings);
         PreferredTrainReminder.Target target =
           JourneyPinHelper.computeRoutePinTarget(journey, leaveBefore, stale);
         if (target == null) {
@@ -701,16 +703,10 @@ public final class LeaveReminderScheduler {
     if (plan.leaveNowScheduled) {
       leaveNow.put("notifyAtIso", PerthTime.formatIsoFromEpochMs(target.leaveByMs));
       leaveNow.put("notifyAtClock", PerthTime.formatClockFromEpochMs(target.leaveByMs));
-    } else if (LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
-      leaveNow.put("skippedReason", "commute_strip");
     }
     result.put("leaveNow", leaveNow);
 
     boolean scheduled = plan.getReadyScheduled || plan.leaveNowScheduled;
-    // Live countdown still covers leave-by even when Leave now alarm is skipped.
-    if (!scheduled && LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
-      scheduled = true;
-    }
     result.put("scheduled", scheduled);
     if (!scheduled) {
       String localDate = PerthTime.localDateKey();
@@ -798,11 +794,6 @@ public final class LeaveReminderScheduler {
       target.leaveByMs > now &&
       !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
       !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW);
-
-    // Live Countdown owns leave-by — don't also fire a Leave now ping.
-    if (LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
-      leaveNowScheduled = false;
-    }
 
     return new AlarmPlan(target, getReadyScheduled, getReadyAtMs, getReadyMinutes, leaveNowScheduled);
   }

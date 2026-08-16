@@ -12,10 +12,11 @@ const ROOT = path.resolve(__dirname, "..");
 
 function runStep(label, command, args) {
   process.stdout.write(`→ ${label} … `);
+  const useShell = process.platform === "win32" && (command === "npm" || command === "npx");
   const result = spawnSync(command, args, {
     cwd: ROOT,
     encoding: "utf8",
-    shell: false,
+    shell: useShell,
   });
   const code = result.status ?? 1;
   if (code === 0) {

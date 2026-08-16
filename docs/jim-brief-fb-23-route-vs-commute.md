@@ -2,8 +2,8 @@
 
 **For:** Jim (implement) · Simon (design) · Mark (QA)  
 **From:** Tim (product)  
-**Status:** **Locked (Tim, 15 Aug 2026)** — Jim Phase 1/2 may start  
-**Release:** **v2.4.0** (after **2.3.0** ships; public go-live may slip to include this)  
+**Status:** **Complete** (Aug 2026)  
+**Release:** **v2.4.0** (routes + commutes split)  
 **Backlog:** **FB-23**  
 **Depends on:** FB-27 4.1 (`journeys[].kind` in `journey-model.js` — **done** on master)  
 **Related:** `docs/feature-backlog.md` FB-22 · `docs/fb-27-phase-4-design.md` · `docs/chrome-modes-and-labels.md` · `docs/undecided-issues.md` U-15  

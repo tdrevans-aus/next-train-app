@@ -2,7 +2,7 @@
 
 **For:** Jim (implement)  
 **From:** Simon (design) / Tim (product) / Holly (marketing)  
-**Status:** Ready to code → **Deferred** — do not implement on RemoteViews; **Glance v2** after **FB-40** (`docs/jim-brief-widget-glance.md`)  
+**Status:** **Dropped** (Tim, Aug 2026) — Classic layout only; Minimal/Bold not planned  
 **Backlog:** **FB-39**  
 **Builds on:** **FB-35** (colour presets), **FB-36** (opacity), **FB-37** (setup + hero preview), **FB-38** (Match system)  
 **Related:** `WidgetUiBuilder.java`, `widget_small.xml`, `widget_medium.xml`, `public/widget.js`, `#widget-appearance-dialog`  
@@ -233,9 +233,9 @@ Pixel + Samsung — Bold leave-line contrast on accent bg.
 
 | Order | Item |
 |-------|------|
-| 1 | **FB-38** Match system fix (optional parallel) |
-| 2 | **FB-39** Style packs — **this brief** |
-| 3 | Holly screenshot pack: same data, 3 styles × 3 wallpapers |
+| — | **FB-39 dropped** (Aug 2026) — do not implement |
+
+Brief retained for history only.
 
 **Future (not FB-39):** fourth style **Compact**; Jetpack Glance migration (**FB-40** backlog).
 

@@ -1,8 +1,8 @@
 # FB-27: Code review Phase 4 — pre major product
 
-**Status:** In progress (Aug 2026)  
+**Status:** Complete (Aug 2026) — 4.4 deferred  
 **Backlog:** FB-27  
-**Feeds:** FB-23 (Route vs Commute product split)
+**Feeds:** FB-23 (Route vs Commute product split) — **FB-23 complete** Aug 2026
 
 ---
 

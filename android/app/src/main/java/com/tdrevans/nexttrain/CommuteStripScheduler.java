@@ -111,6 +111,10 @@ public final class CommuteStripScheduler {
 
   static StripPlan computeStripPlanForNearbyPin(Context context, JSONObject settings)
     throws Exception {
+    if (!LeaveReminderSettingsStore.isCommuteStripEnabled(context)) {
+      return null;
+    }
+
     JSONObject pin = settings.optJSONObject("nearbyPin");
     if (!NearbyPinHelper.isHolding(pin) || !pin.optBoolean("notifyMe", false)) {
       return null;

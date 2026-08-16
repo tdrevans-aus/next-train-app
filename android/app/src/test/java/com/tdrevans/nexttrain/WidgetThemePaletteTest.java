@@ -47,6 +47,29 @@ public class WidgetThemePaletteTest {
   }
 
   @Test
+  public void readBlendWidgetThemeId_defaultsToOceanWhenMissing() {
+    Context context = context();
+    WidgetSettingsStore.saveSettings(context, "{\"journeys\":[]}");
+    assertEquals(
+      WidgetThemePalette.ID_OCEAN,
+      WidgetThemePalette.readBlendWidgetThemeId(context)
+    );
+  }
+
+  @Test
+  public void readBlendWidgetThemeId_readsStoredPreset() {
+    Context context = context();
+    WidgetSettingsStore.saveSettings(
+      context,
+      "{\"widgetThemeId\":\"midnight\",\"journeys\":[]}"
+    );
+    assertEquals(
+      WidgetThemePalette.ID_MIDNIGHT,
+      WidgetThemePalette.readBlendWidgetThemeId(context)
+    );
+  }
+
+  @Test
   public void readWidgetThemeId_defaultsWhenMissing() {
     Context context = context();
     WidgetSettingsStore.saveSettings(context, "{\"journeys\":[]}");
@@ -67,11 +90,11 @@ public class WidgetThemePaletteTest {
   }
 
   @Test
-  public void isSystemThemeActive_whenSystemSelected() {
+  public void isSystemThemeActive_whenWallpaperModeSelected() {
     Context context = context();
     WidgetSettingsStore.saveSettings(
       context,
-      "{\"widgetThemeId\":\"system\",\"journeys\":[]}"
+      "{\"widgetAppearanceMode\":\"wallpaper\",\"journeys\":[]}"
     );
     assertTrue(WidgetThemePalette.isSystemThemeActive(context));
   }

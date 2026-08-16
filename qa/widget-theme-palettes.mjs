@@ -15,8 +15,8 @@ const gradle = process.platform === "win32" ? "gradlew.bat" : "./gradlew";
 const PRESETS = [
   { id: "default", bg: "#FFFFFF", text: "#1A2F2C", accent: "#0B6E6A" },
   { id: "ocean", bg: "#E8F4FC", text: "#0F2942", accent: "#0369A1" },
-  { id: "midnight", bg: "#1A2332", text: "#E8EDF4", accent: "#60A5FA" },
-  { id: "slate", bg: "#1C1C1E", text: "#F2F2F7", accent: "#A1A1AA" },
+  { id: "midnight", bg: "#1B3D6B", text: "#E8EDF4", accent: "#93C5FD" },
+  { id: "slate", bg: "#5A5A63", text: "#F4F4F5", accent: "#E2E8F0" },
   { id: "lavender", bg: "#F3EEFA", text: "#2D2640", accent: "#7C3AED" },
   { id: "rose", bg: "#FDF2F4", text: "#3D1F28", accent: "#D41D6F" },
   { id: "amoled", bg: "#000000", text: "#F5F5F5", accent: "#14B8A6" },
@@ -114,8 +114,10 @@ async function runWebSmoke() {
         ).length ?? 0,
       hasOpacitySlider: Boolean(opacitySlider),
       hasTransparentToggle: Boolean(transparentToggle),
+      hasColourGrid: Boolean(document.getElementById("widget-appearance-colour-grid")),
       canSetTheme:
         typeof window.nextTrainWidget?.getWidgetThemeId === "function" &&
+        typeof window.nextTrainWidget?.applyWidgetColourSelection === "function" &&
         typeof window.nextTrainWidget?.openWidgetAppearanceDialog === "function",
       canReadOpacity: typeof window.nextTrainWidget?.getWidgetBgOpacity === "function",
     };
@@ -171,8 +173,25 @@ async function runWebSmoke() {
     sliderDisabled: Boolean(document.getElementById("widget-bg-opacity-input")?.disabled),
   }));
 
+  const colourRow = await page.evaluate(async () => {
+    await window.nextTrainWidget?.applyWidgetAppearanceModeSelection?.("blend");
+    const block = document.getElementById("widget-appearance-colour-block");
+    const count =
+      document.getElementById("widget-appearance-colour-grid")?.querySelectorAll(
+        ".widget-colour-swatch"
+      ).length ?? 0;
+    await window.nextTrainWidget?.applyWidgetColourSelection?.("rose");
+    const settings = window.settings ?? JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
+    return {
+      visible: block && !block.hidden,
+      count,
+      themeId: settings.widgetThemeId,
+    };
+  });
+  await page.waitForTimeout(300);
+
   await browser.close();
-  return { ...web, opened, opacityInteraction: { ...opacityInteraction, ...transparentState } };
+  return { ...web, opened, opacityInteraction: { ...opacityInteraction, ...transparentState }, colourRow };
 }
 
 function assertJsContrast() {
@@ -207,8 +226,12 @@ async function run() {
       web.presetCount === 3 &&
       web.hasOpacitySlider &&
       web.hasTransparentToggle &&
+      web.hasColourGrid &&
       web.canSetTheme &&
       web.canReadOpacity &&
+      web.colourRow?.visible &&
+      web.colourRow?.count === 7 &&
+      web.colourRow?.themeId === "rose" &&
       web.opacityInteraction?.ok &&
       web.opacityInteraction?.previewUsesAlpha &&
       web.opacityInteraction?.transparentOn &&

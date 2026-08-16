@@ -4,7 +4,7 @@
 **From:** Tim (product) / Simon (design)  
 **Status:** Implemented  
 **Backlog:** **FB-40**  
-**Supersedes:** **FB-35** preset grid UX (native paint stays until cutover); **FB-39** v1 (**deferred** — Minimal/Bold faces ship as **Glance v2** after this lands)  
+**Supersedes:** **FB-35** preset grid UX (native paint stays until cutover); **FB-39** dropped (Aug 2026)  
 **Builds on:** **FB-36** (opacity / transparent), **FB-37** (configure + wallpaper preview), **FB-38** (Monet — folded into **Match wallpaper** mode)  
 **Related:** `WidgetUiBuilder.java` (replace), `WidgetSyncPlugin.java`, `public/widget.js`, `CommuteRefreshService`  
 **Out of scope:** iOS WidgetKit; per-widget-instance themes; Classic/Minimal/Bold layout variants in v1; re-adding 8 named colour presets; ads in widget
@@ -41,7 +41,7 @@ Users see **three greys, several off-whites**, and accent tint on digits only �
 | **G4** | **Match wallpaper** = Material You dynamic colours (API 31+); API &lt; 31 → Brand teal solid. |
 | **G5** | **Brand teal** = current FB-35 Default look (white card, `#0B6E6A` accent) for users who want the app brand on the home screen. |
 | **G6** | Storage: replace `widgetThemeId` with **`widgetAppearanceMode`**: `"blend"` \| `"wallpaper"` \| `"brand"`. Migrate stored `widgetThemeId` on read (see §5). |
-| **G7** | **FB-39** Classic/Minimal/Bold — **not in v1**; schedule as **Glance v2** after blend-first ships. |
+| **G7** | **FB-39** Classic/Minimal/Bold — **dropped** (Aug 2026). Single Classic layout only. |
 | **G8** | Semantic **leave / urgent / late** colours fixed across all modes. |
 | **G9** | **Capacitor sync unchanged** — `WidgetSync.syncSettings` JSON blob; Glance reads same `WidgetSettingsStore`. |
 | **G10** | **Not paywalled.** |
@@ -194,9 +194,9 @@ Pixel + Samsung, Android 12+ and one API 29 device.
 |-------|-------------|
 | **FB-40 v1** | Glance widget + 3-mode appearance + migration + cutover |
 | **FB-38** | Absorbed into `wallpaper` mode (do not ship separately if FB-40 ships first) |
-| **FB-39 v2** | Minimal + Bold as Glance layout variants (separate brief later) |
+| **FB-39** | **Dropped** (Aug 2026) — Classic layout only; no Minimal/Bold variants |
 
-**Do not implement FB-39** on RemoteViews.
+**Do not implement FB-39.**
 
 ---
 
@@ -238,3 +238,9 @@ Pixel + Samsung, Android 12+ and one API 29 device.
 | 8 choices, same layout | **3 intentional jobs** + opacity for blend |
 
 Marketing (Holly): lead with **Blend in** screenshots on curated blue wallpapers — not a preset grid.
+
+---
+
+## 13. Follow-up — FB-42 (background colour row)
+
+**Aug 2026 (Tim):** Three modes stay; users also want **pickable card colours**. **FB-42** adds a **Background colour** swatch row under **Blend** only (FB-35 presets + opacity). Does not reopen the old nine-option top-level grid. See `docs/jim-brief-widget-background-colours.md`.

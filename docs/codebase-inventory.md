@@ -2,7 +2,7 @@
 
 **Owner:** Tim (product)  
 **Date:** 15 Aug 2026  
-**Status:** Phase 0 complete · Phase 1 in progress (FB-24)  
+**Status:** Phase 0 complete · Phase 1 complete (FB-24) · Phase 4 complete (FB-27, 4.4 deferred)  
 **Related:** `docs/dead-code-inventory.md` · `docs/feature-backlog.md` · `docs/multi-city-provider-design.md` · `docs/release-versioning.md`
 
 ---
@@ -15,7 +15,7 @@ The codebase is **large but not messy** — growth tracks real product surface (
 2. **Commute/pin rules exist in three places** (web, Android widget, iOS widget) by design — maintenance cost is real; unification is not free.
 3. **QA is strong for a solo/small team** (66 web scripts, 11 Android unit test classes, Maestro) — use it as the gate for any refactor.
 4. **Runtime efficiency is fine** for now; refactors should target **bug prevention and change velocity**, not micro-optimisation.
-5. **Best timing:** finish **v2.2.0 pin ship**, then slice refactors **before FB-23** (Route vs Commute) or city #2.
+5. **Best timing:** finish **v2.2.0 pin ship**, then slice refactors **before city #2**. **FB-23 shipped Aug 2026.**
 
 ---
 
@@ -213,22 +213,22 @@ Do **one PR per module**; run full web QA each time.
 
 **Tooling:** Option A for now (no bundle). Phase 2 complete (6/6 modules).
 
-### Phase 3 — Pin / display contract (2–3 days, high value)
+### Phase 3 — Pin / display contract — **Complete** (Aug 2026, FB-26)
 
-| # | Task | Effort | ROI |
-|---|------|--------|-----|
-| 3.1 | Single `pin-state.js` (web) documenting all inputs/outputs | M | Fewer swipe/button divergences |
-| 3.2 | Shared fixture file: `qa/fixtures/pin-resolution/*.json` | M | Web + Android + iOS same vectors |
-| 3.3 | Align naming: `resolveActiveNextTrip` vs “true next” in native comments | S | Clarity |
+| # | Task | Effort | ROI | Status |
+|---|------|--------|-----|--------|
+| 3.1 | Single `pin-state.js` (web) documenting all inputs/outputs | M | Fewer swipe/button divergences | **Done** |
+| 3.2 | Shared fixture file: `qa/fixtures/pin-resolution/*.json` | M | Web + Android + iOS same vectors | **Done** (12 fixtures) |
+| 3.3 | Align naming: `resolveActiveNextTrip` vs “true next” in native comments | S | Clarity | **Done** |
 
-### Phase 4 — Before FB-23 or city #2 (1–2 weeks)
+### Phase 4 — Before city #2 (1–2 weeks)
 
-| # | Task | Effort | ROI |
-|---|------|--------|-----|
-| 4.1 | Journey kind (`route` vs `commute`) in model layer only | L | FB-23 foundation |
-| 4.2 | Split `styles.css` by domain (nearby, journey-detail, dialogs) | M | Parallel UI work |
-| 4.3 | Packaging: D-05 move `design/` + `.mjs` sources out of APK `webDir` | M | Smaller AAB |
-| 4.4 | `CommuteSchedule.java` decomposition (preview vs schedule vs pin) | L | Widget maintainability |
+| # | Task | Effort | ROI | Status |
+|---|------|--------|-----|--------|
+| 4.1 | Journey kind (`route` vs `commute`) in model layer only | L | FB-23 foundation | **Done** (shipped FB-23) |
+| 4.2 | Split `styles.css` by domain (nearby, journey-detail, dialogs) | M | Parallel UI work | In progress |
+| 4.3 | Packaging: D-05 move `design/` + `.mjs` sources out of APK `webDir` | M | Smaller AAB | In progress |
+| 4.4 | `CommuteSchedule.java` decomposition (preview vs schedule vs pin) | L | Widget maintainability | Deferred |
 
 ### Phase 5 — Defer / low ROI
 

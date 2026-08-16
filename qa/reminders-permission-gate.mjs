@@ -143,8 +143,8 @@ async function scenarioRemindMeDenied(page) {
   return pass(name, { enableCalls: mock.enableCalls });
 }
 
-async function scenarioRemindMeGrantedArmsStrip(page) {
-  const name = "Remind me on with permission → commute strip defaults on";
+async function scenarioRemindMeGrantedEnablesMaster(page) {
+  const name = "Remind me on with permission → master reminders enabled";
   await seedPage(page, { permissionGranted: true });
   await openDetail(page);
 
@@ -173,10 +173,14 @@ async function scenarioRemindMeGrantedArmsStrip(page) {
     return fail(name, { ui, mock });
   }
 
-  if (!mock?.settings?.commuteStripEnabled) {
-    return fail(name, { ui, mock, note: "expected commute strip armed in settings" });
+  if (!mock?.settings?.enabled) {
+    return fail(name, { ui, mock, note: "expected master reminders enabled" });
+  }
+  if (mock?.settings?.commuteStripEnabled) {
+    return fail(name, { ui, mock, note: "commute strip UI removed — flag must stay off" });
   }
   return pass(name, {
+    enabled: mock.settings.enabled,
     commuteStripEnabled: mock.settings.commuteStripEnabled,
   });
 }
@@ -314,8 +318,8 @@ async function scenarioSaveWithRemindHealsEnabled(page) {
   if (!journeys.some((j) => j.remindMe) || !mock?.settings?.enabled) {
     return fail(name, { mock, journeys });
   }
-  if (!mock?.settings?.commuteStripEnabled) {
-    return fail(name, { mock, journeys, note: "expected strip after remind save" });
+  if (mock?.settings?.commuteStripEnabled) {
+    return fail(name, { mock, journeys, note: "commute strip UI removed — flag must stay off" });
   }
   return pass(name);
 }
@@ -354,7 +358,7 @@ async function run() {
 
   const scenarios = [
     scenarioRemindMeDenied,
-    scenarioRemindMeGrantedArmsStrip,
+    scenarioRemindMeGrantedEnablesMaster,
     scenarioEnsureDefaultBlockedWithoutPermission,
     scenarioEnsureClearsOrphanStrip,
     scenarioHealRevokesStrip,

@@ -381,8 +381,41 @@ function pickWidgetAppearanceModeFields(raw = {}) {
   return { widgetAppearanceMode: "blend" };
 }
 
+function pickWidgetColourIdFields(raw = {}) {
+  const mode = pickWidgetAppearanceModeFields(raw).widgetAppearanceMode;
+  if (!("widgetThemeId" in raw)) {
+    if (mode === "blend") {
+      return { widgetThemeId: "ocean" };
+    }
+    return {};
+  }
+  const id = String(raw.widgetThemeId ?? "").trim();
+  if (!id || id === "system") {
+    return mode === "blend" ? { widgetThemeId: "ocean" } : {};
+  }
+  if (id === "forest") {
+    return { widgetThemeId: "default" };
+  }
+  const valid = new Set([
+    "ocean",
+    "midnight",
+    "slate",
+    "lavender",
+    "rose",
+    "amoled",
+    "default",
+  ]);
+  if (valid.has(id)) {
+    return { widgetThemeId: id };
+  }
+  return mode === "blend" ? { widgetThemeId: "ocean" } : {};
+}
+
 function pickWidgetThemeFields(raw = {}) {
-  return pickWidgetAppearanceModeFields(raw);
+  return {
+    ...pickWidgetAppearanceModeFields(raw),
+    ...pickWidgetColourIdFields(raw),
+  };
 }
 
 function pickWidgetAppearanceFields(raw = {}) {

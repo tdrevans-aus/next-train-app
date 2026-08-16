@@ -40,17 +40,18 @@ object WidgetGlanceTheme {
   }
 
   private fun resolveBlend(context: Context, appearance: WidgetAppearanceSettings): WidgetGlanceColors {
-    val brand = WidgetThemePalette.brandPalette()
+    val palette =
+      WidgetThemePalette.resolve(context, WidgetThemePalette.readBlendWidgetThemeId(context))
     val opacity = appearance.effectiveBgOpacity()
     val alpha = opacity / 100f
     val needsScrim = appearance.needsLegibilityAid()
     return WidgetGlanceColors(
-      surfaceArgb = brand.bg,
+      surfaceArgb = palette.bg,
       surfaceAlpha = alpha,
-      onSurfaceArgb = brand.text,
-      mutedArgb = brand.muted,
-      accentArgb = brand.accent,
-      borderArgb = brand.border,
+      onSurfaceArgb = palette.text,
+      mutedArgb = palette.muted,
+      accentArgb = palette.accent,
+      borderArgb = palette.border,
       needsScrim = needsScrim,
       showBorder = alpha > 0f && opacity >= 100,
     )

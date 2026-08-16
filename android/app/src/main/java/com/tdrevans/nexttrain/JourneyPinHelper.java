@@ -98,6 +98,23 @@ public final class JourneyPinHelper {
     return null;
   }
 
+  /** Matches web {@code getRoutePinnedLeaveBeforeMinutes}: journey walk time, else Near me slider. */
+  public static int routePinLeaveBeforeMinutes(JSONObject journey, JSONObject settings) {
+    if (journey != null) {
+      int leaveBefore = journey.optInt("leaveBeforeMinutes", 0);
+      if (leaveBefore >= 1 && leaveBefore <= 30) {
+        return leaveBefore;
+      }
+    }
+    if (settings != null) {
+      int nearby = settings.optInt("nearbyLeaveBeforeMinutes", 10);
+      if (nearby >= 1 && nearby <= 30) {
+        return nearby;
+      }
+    }
+    return 10;
+  }
+
   public static PreferredTrainReminder.Target computeRoutePinTarget(
     JSONObject journey,
     int leaveBeforeMinutes,
@@ -122,6 +139,9 @@ public final class JourneyPinHelper {
 
     JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes);
     JSONObject trip = findTripByDeparture(CommuteSchedule.collectUpcomingTrips(payload), departureIso);
+    if (trip == null) {
+      trip = buildSyntheticRoutePinTrip(journey, departureIso, leaveBeforeMinutes);
+    }
     if (trip == null) {
       return null;
     }
@@ -149,6 +169,29 @@ public final class JourneyPinHelper {
     target.leaveByMs = leaveByMs;
     target.stale = stale;
     return target;
+  }
+
+  static JSONObject buildSyntheticRoutePinTrip(
+    JSONObject journey,
+    String departureIso,
+    int leaveBeforeMinutes
+  ) throws Exception {
+    long departureMs = PerthTime.epochMillisFromIso(departureIso);
+    if (departureMs <= 0) {
+      return null;
+    }
+
+    long leaveByMs = departureMs - leaveBeforeMinutes * 60_000L;
+    String leaveByIso = PerthTime.formatIsoFromEpochMs(leaveByMs);
+
+    JSONObject trip = new JSONObject();
+    trip.put("departure", departureIso);
+    trip.put("arrival", departureIso);
+    trip.put("leaveBy", leaveByIso);
+    trip.put("displayTime", PerthTime.formatClockFromEpochMs(departureMs));
+    trip.put("platform", "—");
+    trip.put("status", "On Time");
+    return trip;
   }
 
   /** Reminder / strip targeting uses the same pin resolution as the widget face. */

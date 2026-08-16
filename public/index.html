@@ -492,6 +492,19 @@
           aria-label="Widget appearance"
         ></div>
 
+        <div class="widget-appearance-colour-block" id="widget-appearance-colour-block" hidden>
+          <span class="widget-appearance-colour-label">Background colour</span>
+          <p class="widget-appearance-colour-hint" id="widget-appearance-colour-hint">
+            Pick a card colour, then fade it with opacity — or go fully transparent to show your wallpaper.
+          </p>
+          <div
+            class="widget-appearance-colour-grid"
+            id="widget-appearance-colour-grid"
+            role="radiogroup"
+            aria-label="Background colour"
+          ></div>
+        </div>
+
         <div class="widget-appearance-opacity-block" id="widget-appearance-opacity-block">
           <label class="field widget-bg-opacity-field" id="widget-bg-opacity-field">
             <div class="field-label-row">
@@ -1182,9 +1195,8 @@
           </li>
           <li>
             <strong>Reminders</strong> — Turn on <strong>Target train</strong>, set the time, then
-            <strong>Remind me</strong> sends a leave notification and keeps a live countdown in
-            your notifications (replaces the separate Leave now ping while it&rsquo;s running).
-            Pause anytime from <strong>Menu → Pause reminders</strong>.
+            <strong>Remind me</strong> sends a one-shot <strong>Leave now</strong> notification
+            at leave-by time. Pause anytime from <strong>Menu → Pause reminders</strong>.
             We pick the first train at or after your target time.
           </li>
           <li>

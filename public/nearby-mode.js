@@ -321,9 +321,13 @@ function syncNearbyLeaveBeforeSliderFill(minutes = nearbyLeaveBeforeInput?.value
   nearbyLeaveBeforeInput.style.setProperty("--leave-before-pct", `${pct}%`);
 }
 
-function rescheduleNearbyPinReminders() {
+async function rescheduleNearbyPinReminders() {
   if (!isNativeApp()) {
     return;
+  }
+  // Native scheduler reads WidgetSettingsStore — ensure pin notify / walk time are synced first.
+  if (typeof window.nextTrainWidget?.syncWidgetSettings === "function") {
+    await window.nextTrainWidget.syncWidgetSettings();
   }
   window.nextTrainLeaveReminders?.reschedule?.();
 }
@@ -674,8 +678,22 @@ function syncNearbyPinSettings() {
       JSON.stringify(snapshot) === JSON.stringify(current));
   if (!same) {
     persistSettings({ nearbyPin: snapshot });
-    rescheduleNearbyPinReminders();
+    void rescheduleNearbyPinReminders();
   }
+}
+
+async function syncNearbyPinSettingsAndReschedule() {
+  const snapshot = buildNearbyPinSettingsSnapshot();
+  const current = getSettings().nearbyPin;
+  const same =
+    (!snapshot && !current) ||
+    (snapshot &&
+      current &&
+      JSON.stringify(snapshot) === JSON.stringify(current));
+  if (!same) {
+    persistSettings({ nearbyPin: snapshot });
+  }
+  await rescheduleNearbyPinReminders();
 }
 
 function restoreNearbySessionPinFromSettings() {
@@ -870,7 +888,11 @@ async function handleNearbyNotifyToggle() {
         if (nearbyNotifyMeInput) {
           nearbyNotifyMeInput.checked = false;
         }
+      } else {
+        await rescheduleNearbyPinReminders();
       }
+    } else {
+      await rescheduleNearbyPinReminders();
     }
 
     deps.renderCurrentJourney?.();
@@ -897,7 +919,7 @@ async function handleNearbyNotifyToggle() {
   }
 
   if (isNearbyPinHolding()) {
-    syncNearbyPinSettings();
+    await syncNearbyPinSettingsAndReschedule();
   }
 }
 

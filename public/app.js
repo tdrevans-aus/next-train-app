@@ -2213,18 +2213,37 @@ function closeJourneySwitcherMenu() {
 }
 
 function switchJourney(journeyId) {
+  prepareMainScreenFromDeepLink();
+
   const journey = getJourneyById(journeyId);
   chromeTravelTab = journey && isRouteJourney(journey) ? "routes" : "journeys";
   journeyModeActive = true;
   exitNearbyMode();
 
-  if (journeyId === settings.activeJourneyId) {
+  if (!journey) {
+    clearHeroSetupState();
     syncChromeMode();
+    if (hasConfiguredRoute()) {
+      chromeTravelTab = "routes";
+      ensureActiveJourneyForTab("routes");
+    } else if (hasCommuteJourney()) {
+      ensureActiveJourneyForTab("journeys");
+    } else {
+      void enterNearbyMode();
+    }
+    fetchNextTrain();
     return;
   }
 
-  if (!journey?.station || !journey?.direction) {
+  if (!journey.station || !journey.direction) {
     openJourneyDetail(journeyId);
+    return;
+  }
+
+  if (journeyId === settings.activeJourneyId) {
+    syncChromeMode();
+    clearHeroSetupState();
+    fetchNextTrain();
     return;
   }
 
@@ -2233,7 +2252,17 @@ function switchJourney(journeyId) {
   persistSettings({ activeJourneyId: journeyId });
   skipTrains = readSkipState().count;
   closeJourneySwitcherMenu();
+  clearHeroSetupState();
+  syncChromeMode();
   fetchNextTrain();
+}
+
+function prepareMainScreenFromDeepLink() {
+  dismissLeaveHint();
+  closeMenuDialogOnly();
+  if (journeysDialog?.open || !settingsDetailView.hidden) {
+    closeJourneysDialog();
+  }
 }
 
 
@@ -3740,7 +3769,7 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     };
   }
 
-  const geoTimeoutMs = forceFresh ? 15000 : 10000;
+  const geoTimeoutMs = 15000;
   // Load station catalog and GPS in parallel — don't serialise a local JSON read ahead of the fix.
   const [coords, position] = await Promise.all([
     loadStationCoords(),
@@ -4880,11 +4909,7 @@ function openJourneysForSetup() {
 }
 
 function openMainScreenFromWidget() {
-  dismissLeaveHint();
-  closeMenuDialogOnly();
-  if (journeysDialog?.open || !settingsDetailView.hidden) {
-    closeJourneysDialog();
-  }
+  prepareMainScreenFromDeepLink();
 
   if (hasCommuteJourney()) {
     if (!journeyModeActive || chromeTravelTab !== "journeys") {
@@ -6050,6 +6075,7 @@ window.nextTrainApp = {
   getChromeTravelTab,
   closeMenuDialogOnly,
   closeJourneysDialog,
+  prepareMainScreenFromDeepLink,
   openMainScreenFromWidget,
   clearDetailStation() {
     getDetailStationCombobox()?.setValue?.("", { silent: true });

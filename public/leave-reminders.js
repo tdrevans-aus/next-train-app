@@ -75,11 +75,8 @@ async function loadReminderSettings() {
 async function saveReminderSettings(patch) {
   const current = await loadReminderSettings();
   const next = { ...current, ...patch };
-  if (patch.paused === false) {
+  if (Object.prototype.hasOwnProperty.call(patch, "paused") && patch.paused === false) {
     next.pauseUntil = null;
-  }
-  if (Object.prototype.hasOwnProperty.call(patch, "enabled")) {
-    next.commuteStripEnabled = patch.enabled === true;
   }
   writeLocalReminderSettings(next);
 
@@ -105,7 +102,6 @@ async function enableLeaveReminders({ userInitiated = false } = {}) {
       enabled: true,
       paused: false,
       pauseUntil: null,
-      commuteStripEnabled: true,
     });
   }
 
@@ -116,12 +112,15 @@ async function enableLeaveReminders({ userInitiated = false } = {}) {
     let saved = await plugin.enableReminders();
 
     if (saved?.permissionGranted !== false) {
-      const withStrip =
-        saved?.commuteStripEnabled === true
-          ? saved
-          : await saveReminderSettings({ ...saved, commuteStripEnabled: true });
-      writeLocalReminderSettings(withStrip);
-      return withStrip;
+      writeLocalReminderSettings(saved);
+      if (userInitiated && saved?.shouldOpenAlarmSettings && plugin.openAlarmSettings) {
+        try {
+          await plugin.openAlarmSettings();
+        } catch (error) {
+          console.warn("Could not open alarm settings", error);
+        }
+      }
+      return saved;
     }
 
     if (userInitiated && saved?.shouldOpenSettings && plugin.openNotificationSettings) {
@@ -142,19 +141,10 @@ async function enableLeaveReminders({ userInitiated = false } = {}) {
 
 async function ensureLiveCountdownDefaultOn() {
   const settings = await loadReminderSettings();
-  if (isNativeApp() && settings?.permissionGranted === false) {
-    if (settings?.commuteStripEnabled) {
-      return saveReminderSettings({ commuteStripEnabled: false });
-    }
-    return settings;
+  if (isNativeApp() && settings?.permissionGranted === false && settings?.commuteStripEnabled) {
+    return saveReminderSettings({ commuteStripEnabled: false });
   }
-  if (!settings?.enabled) {
-    return settings;
-  }
-  if (settings?.commuteStripEnabled) {
-    return settings;
-  }
-  return saveReminderSettings({ commuteStripEnabled: true });
+  return settings;
 }
 
 async function acknowledgeDeparture(journeyId, departure) {
@@ -535,8 +525,36 @@ function getConfiguredJourneys() {
   return window.nextTrainApp?.getConfiguredJourneys?.() ?? [];
 }
 
+function readAppSettings() {
+  try {
+    return window.settings ?? window.nextTrainApp?.getSettings?.() ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function isNearbyPinNotifyArmed(settings = readAppSettings()) {
+  const pin = settings?.nearbyPin;
+  if (!pin?.notifyMe) {
+    return false;
+  }
+  const departureMs = Date.parse(pin.departureIso ?? "");
+  if (!Number.isFinite(departureMs)) {
+    return false;
+  }
+  const holdingUntil = Number(pin.holdingUntilMs) || departureMs + 60_000;
+  return Date.now() < holdingUntil;
+}
+
 function deriveReminderEnabled() {
-  return getConfiguredJourneys().some((journey) => journey.remindMe);
+  const journeys = getConfiguredJourneys();
+  if (journeys.some((journey) => journey?.remindMe)) {
+    return true;
+  }
+  if (journeys.some((journey) => journey?.pinNotifyMe === true)) {
+    return true;
+  }
+  return isNearbyPinNotifyArmed();
 }
 
 function clearAllJourneyRemindMe() {
@@ -624,11 +642,19 @@ async function refreshJourneyRemindExtras() {
     return null;
   }
   let settings = await loadReminderSettings();
-  // Product cut: Early Reminder UI gone — force off so strip/reminders use leave-by.
+  // Product cut: Early Reminder UI gone — force off so reminders fire at leave-by.
   if (settings?.earlyHeadsUp) {
     settings = await saveReminderSettings({ earlyHeadsUp: false });
   }
+  // Live countdown strip UI removed — clear legacy native flag so Leave now pings fire.
+  if (settings?.commuteStripEnabled) {
+    settings = await saveReminderSettings({ commuteStripEnabled: false });
+    getLeaveRemindersPlugin()?.reschedule?.();
+  }
   settings = await healRemindersPermissionState(settings);
+  if (deriveReminderEnabled()) {
+    getLeaveRemindersPlugin()?.reschedule?.();
+  }
   updateNudgeEarlyUi(settings);
   return settings;
 }
@@ -815,6 +841,9 @@ async function saveRemindersDialog() {
 function initLeaveRemindersBridge() {
   initLeaveReminderUi();
   initReminderFastTestMode();
+  if (isNativeApp()) {
+    void refreshJourneyRemindExtras();
+  }
 }
 
 async function initReminderFastTestMode() {

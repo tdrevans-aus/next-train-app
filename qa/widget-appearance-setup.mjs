@@ -58,31 +58,88 @@ async function runWebSmoke() {
   });
   await page.waitForTimeout(200);
 
-  const brandPreview = await page.evaluate(() => {
-    const primary = document.getElementById("widget-hero-mock-primary-value");
+  await page.evaluate(() => {
+    const slider = document.getElementById("widget-bg-opacity-input");
+    if (slider) {
+      slider.value = "40";
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  });
+  await page.waitForTimeout(400);
+
+  const brandAt40 = await page.evaluate(() => {
     const card = document.getElementById("widget-hero-mock-card");
-    const settings = window.settings ?? JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
+    const style = card ? getComputedStyle(card) : null;
+    const colourBlock = document.getElementById("widget-appearance-colour-block");
     return {
-      mode: settings.widgetAppearanceMode,
-      primaryColor: primary ? getComputedStyle(primary).color : "",
-      cardBg: card ? getComputedStyle(card).backgroundColor : "",
-      isBrandCard: card?.classList.contains("widget-hero-mock-card--brand"),
+      cardBg: style?.backgroundColor ?? "",
+      borderStyle: style?.borderStyle ?? "",
+      colourRowHidden: Boolean(colourBlock?.hidden),
     };
   });
 
   await page.evaluate(async () => {
     await window.nextTrainWidget?.applyWidgetAppearanceModeSelection?.("blend");
   });
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(300);
 
-  const blendPreview = await page.evaluate(() => {
+  const blendAt40 = await page.evaluate(() => {
     const card = document.getElementById("widget-hero-mock-card");
+    const style = card ? getComputedStyle(card) : null;
+    const colourBlock = document.getElementById("widget-appearance-colour-block");
     const settings = window.settings ?? JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
     return {
+      cardBg: style?.backgroundColor ?? "",
+      borderStyle: style?.borderStyle ?? "",
       mode: settings.widgetAppearanceMode,
-      cardBg: card ? getComputedStyle(card).backgroundColor : "",
-      isBlendCard: card?.classList.contains("widget-hero-mock-card--blend"),
-      transparent: Boolean(settings.widgetTransparentBg),
+      opacity: settings.widgetBgOpacity,
+      colourRowVisible: colourBlock && !colourBlock.hidden,
+      colourCount:
+        document.getElementById("widget-appearance-colour-grid")?.querySelectorAll(
+          ".widget-colour-swatch"
+        ).length ?? 0,
+    };
+  });
+
+  await page.evaluate(async () => {
+    await window.nextTrainWidget?.applyWidgetColourSelection?.("midnight");
+  });
+  await page.waitForTimeout(300);
+
+  const midnightBlend = await page.evaluate(() => {
+    const card = document.getElementById("widget-hero-mock-card");
+    const style = card ? getComputedStyle(card) : null;
+    const settings = window.settings ?? JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
+    const selected = document.querySelector(
+      "#widget-appearance-colour-grid .widget-colour-swatch[aria-checked='true']"
+    );
+    return {
+      themeId: settings.widgetThemeId,
+      cardBg: style?.backgroundColor ?? "",
+      selectedLabel: selected?.getAttribute("aria-label") ?? "",
+    };
+  });
+
+  await page.evaluate(async () => {
+    await window.nextTrainWidget?.applyWidgetColourSelection?.("ocean");
+  });
+  await page.waitForTimeout(200);
+
+  await page.evaluate(() => {
+    const slider = document.getElementById("widget-bg-opacity-input");
+    if (slider) {
+      slider.value = "100";
+      slider.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  });
+  await page.waitForTimeout(400);
+
+  const oceanSolid = await page.evaluate(() => {
+    const card = document.getElementById("widget-hero-mock-card");
+    const style = card ? getComputedStyle(card) : null;
+    return {
+      cardBg: style?.backgroundColor ?? "",
+      borderStyle: style?.borderStyle ?? "",
     };
   });
 
@@ -101,7 +158,7 @@ async function runWebSmoke() {
 
   await browser.close();
 
-  return { initial, setup, opacityPreview, brandPreview, blendPreview, dismissed };
+  return { initial, setup, opacityPreview, brandAt40, blendAt40, midnightBlend, oceanSolid, dismissed };
 }
 
 async function run() {
@@ -116,12 +173,19 @@ async function run() {
       web.setup.setupVisible &&
       web.setup.bodyActive &&
       web.opacityPreview.legibility &&
-      web.brandPreview.mode === "brand" &&
-      web.brandPreview.isBrandCard &&
-      web.brandPreview.cardBg.includes("255") &&
-      web.blendPreview.mode === "blend" &&
-      web.blendPreview.isBlendCard &&
-      web.blendPreview.transparent &&
+      web.brandAt40.borderStyle === "solid" &&
+      web.brandAt40.cardBg.includes("255") &&
+      web.brandAt40.colourRowHidden &&
+      web.blendAt40.mode === "blend" &&
+      web.blendAt40.opacity === 40 &&
+      web.blendAt40.colourRowVisible &&
+      web.blendAt40.colourCount === 7 &&
+      web.blendAt40.cardBg !== web.brandAt40.cardBg &&
+      web.midnightBlend.themeId === "midnight" &&
+      web.midnightBlend.selectedLabel === "Midnight" &&
+      web.midnightBlend.cardBg.includes("27") &&
+      web.oceanSolid.cardBg.includes("232") &&
+      web.oceanSolid.borderStyle === "solid" &&
       web.dismissed.setupHidden &&
       !web.dismissed.bodyActive &&
       web.dismissed.cancelLabel === "Skip" &&

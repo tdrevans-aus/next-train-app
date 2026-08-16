@@ -100,6 +100,33 @@ public final class WidgetThemePalette {
     }
   }
 
+  /** Blend paint: curated preset from settings; defaults to ocean when unset (FB-42). */
+  public static String readBlendWidgetThemeId(Context context) {
+    try {
+      String raw = WidgetSettingsStore.readSettings(context);
+      if (raw == null || raw.isEmpty()) {
+        return ID_OCEAN;
+      }
+      JSONObject settings = new JSONObject(raw);
+      String id = settings.optString("widgetThemeId", "").trim();
+      if (id.isEmpty()) {
+        return ID_OCEAN;
+      }
+      if (ID_FOREST_LEGACY.equals(id)) {
+        return ID_DEFAULT;
+      }
+      if (ID_SYSTEM.equals(id)) {
+        return ID_OCEAN;
+      }
+      if (PRESETS.containsKey(id)) {
+        return id;
+      }
+      return ID_OCEAN;
+    } catch (Exception error) {
+      return ID_OCEAN;
+    }
+  }
+
   public static boolean isSystemThemeActive(Context context) {
     return WidgetAppearanceMode.isWallpaperModeActive(context);
   }
@@ -170,10 +197,10 @@ public final class WidgetThemePalette {
       ID_MIDNIGHT,
       new WidgetThemePalette(
         ID_MIDNIGHT,
-        parse("#1A2332"),
+        parse("#1B3D6B"),
         parse("#E8EDF4"),
         parse("#8B9CB3"),
-        parse("#60A5FA"),
+        parse("#93C5FD"),
         parse("#33E8EDF4")
       )
     );
@@ -181,11 +208,11 @@ public final class WidgetThemePalette {
       ID_SLATE,
       new WidgetThemePalette(
         ID_SLATE,
-        parse("#1C1C1E"),
-        parse("#F2F2F7"),
-        parse("#98989D"),
+        parse("#5A5A63"),
+        parse("#F4F4F5"),
         parse("#A1A1AA"),
-        parse("#33F2F2F7")
+        parse("#E2E8F0"),
+        parse("#33F4F4F5")
       )
     );
     map.put(

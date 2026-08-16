@@ -95,13 +95,16 @@ public final class WidgetUiBuilder {
     return "Next Journey".equalsIgnoreCase(snapshot.optString("label", ""));
   }
 
-  /** FB-40: palette from appearance mode (blend/brand → brand tokens; wallpaper → Monet). */
+  /** FB-40: palette from appearance mode (blend → theme id; brand → default; wallpaper → Monet). */
   public static WidgetThemePalette resolveAppearancePalette(Context context) {
     String mode = WidgetAppearanceMode.read(context);
     if (WidgetAppearanceMode.MODE_WALLPAPER.equals(mode)) {
       return WidgetThemePalette.resolve(context, WidgetThemePalette.ID_SYSTEM);
     }
-    return WidgetThemePalette.brandPalette();
+    if (WidgetAppearanceMode.MODE_BRAND.equals(mode)) {
+      return WidgetThemePalette.brandPalette();
+    }
+    return WidgetThemePalette.resolve(context, WidgetThemePalette.readBlendWidgetThemeId(context));
   }
 
   public static RemoteViews build(Context context, JSONObject snapshot, WidgetSize size) {

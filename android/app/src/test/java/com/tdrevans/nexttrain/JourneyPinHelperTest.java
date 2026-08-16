@@ -88,4 +88,40 @@ public class JourneyPinHelperTest {
 
     assertEquals(earlierIso, resolved.optString("departure"));
   }
+
+  @Test
+  public void routePinLeaveBeforeMinutes_prefersJourneyWalkTime() throws Exception {
+    JSONObject journey = new JSONObject();
+    journey.put("leaveBeforeMinutes", 23);
+    JSONObject settings = new JSONObject();
+    settings.put("nearbyLeaveBeforeMinutes", 10);
+
+    assertEquals(23, JourneyPinHelper.routePinLeaveBeforeMinutes(journey, settings));
+  }
+
+  @Test
+  public void routePinLeaveBeforeMinutes_fallsBackToNearbySlider() throws Exception {
+    JSONObject journey = new JSONObject();
+    JSONObject settings = new JSONObject();
+    settings.put("nearbyLeaveBeforeMinutes", 23);
+
+    assertEquals(23, JourneyPinHelper.routePinLeaveBeforeMinutes(journey, settings));
+  }
+
+  @Test
+  public void buildSyntheticRoutePinTrip_computesLeaveByFromWalkTime() throws Exception {
+    long departureMs = System.currentTimeMillis() + 45L * 60_000L;
+    String departureIso = PerthTime.formatIsoFromEpochMs(departureMs);
+    JSONObject journey = new JSONObject();
+    journey.put("station", "Edgewater");
+    journey.put("direction", "towards Perth");
+
+    JSONObject trip = JourneyPinHelper.buildSyntheticRoutePinTrip(journey, departureIso, 23);
+
+    assertEquals(departureIso, trip.optString("departure"));
+    long leaveByMs =
+      PerthTime.epochMillisFromIso(trip.optString("leaveBy")) -
+      (departureMs - 23L * 60_000L);
+    assertEquals(0L, leaveByMs);
+  }
 }
