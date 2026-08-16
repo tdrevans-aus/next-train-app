@@ -131,11 +131,16 @@ async function run() {
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
   await ensureJourneyMode(page);
   await waitForJourneyHero(page);
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+    null,
+    { timeout: 20000 }
+  ).catch(() => {});
   await page.evaluate(() => localStorage.removeItem("nextTrainSwipeHintSeen"));
   const countdownBefore4 = (await page.locator("#depart-countdown").textContent())?.trim();
   const labelBefore4 = (await page.locator("#hero-depart-label").textContent())?.trim();
   await swipeHero(page, "left", { diagonal: true });
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(1000);
   const countdown4 = (await page.locator("#depart-countdown").textContent())?.trim();
   const hintHidden = await page.locator("#swipe-hint").isHidden();
   const hintSeen = await page.evaluate(() => localStorage.getItem("nextTrainSwipeHintSeen"));

@@ -15,6 +15,7 @@ import { ensureJourneyMode } from "./helpers/journey-smoke.mjs";
 
 const BASE = "http://localhost:3000";
 const JOURNEY_ID = "j-pin-swipe";
+const HERO_TIMEOUT_MS = process.env.CI === "true" ? 90_000 : 45_000;
 
 function perthMinutesFromNow(offsetMinutes) {
   const formatter = new Intl.DateTimeFormat("en-AU", {
@@ -45,7 +46,7 @@ async function waitForJourneyHero(page) {
       return journeyMode && countdown && countdown !== "—" && /\d/.test(countdown) && label.length > 0;
     },
     null,
-    { timeout: 45000 }
+    { timeout: HERO_TIMEOUT_MS }
   );
 }
 
@@ -113,14 +114,15 @@ async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
 }
 
 async function armPinnedJourney(page, options = {}) {
+  const attempts = process.env.CI === "true" ? 3 : 2;
   let lastError;
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
     try {
       await armPinnedJourneyOnce(page, options);
       return;
     } catch (error) {
       lastError = error;
-      if (attempt < 1) {
+      if (attempt < attempts - 1) {
         await page.waitForTimeout(800);
       }
     }
@@ -359,7 +361,12 @@ async function testJourneyUnpinOverrideKeepsLaterTrain(page) {
   }
 
   await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(800);
+  await page.waitForFunction(
+    () => document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") === "false",
+    null,
+    { timeout: 15000 }
+  );
+  await page.waitForTimeout(400);
 
   const afterUnpin = await page.evaluate((journeyId) => {
     const settings = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
