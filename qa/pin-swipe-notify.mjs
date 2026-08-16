@@ -15,7 +15,7 @@ import { ensureJourneyMode } from "./helpers/journey-smoke.mjs";
 
 const BASE = "http://localhost:3000";
 const JOURNEY_ID = "j-pin-swipe";
-const HERO_TIMEOUT_MS = process.env.CI === "true" ? 90_000 : 45_000;
+const HERO_TIMEOUT_MS = process.env.CI === "true" ? 60_000 : 45_000;
 
 function perthMinutesFromNow(offsetMinutes) {
   const formatter = new Intl.DateTimeFormat("en-AU", {
@@ -114,7 +114,7 @@ async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
 }
 
 async function armPinnedJourney(page, options = {}) {
-  const attempts = process.env.CI === "true" ? 3 : 2;
+  const attempts = process.env.CI === "true" ? 2 : 2;
   let lastError;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
@@ -347,6 +347,105 @@ async function testNearbyPinNextTrainAdvance(page) {
   return { ok: true, label: "nearby pin Next Train advance" };
 }
 
+async function testJourneyPinNextTrainShowsPinnedLabel(page) {
+  await armPinnedJourney(page, { fixture: "normal" });
+
+  const target = await page.evaluate(() => ({
+    heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
+    pinPressed: document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") ?? "",
+  }));
+
+  if (target.heroLabel !== "Target train" || target.pinPressed !== "true") {
+    return { ok: false, label: "journey pin next train label", detail: { step: "target", target } };
+  }
+
+  await page.locator("#hero-pin-btn").click();
+  await page.waitForTimeout(400);
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Next Train",
+    null,
+    { timeout: 8000 }
+  );
+
+  await page.locator("#hero-pin-btn").click();
+  await page.waitForTimeout(800);
+
+  const afterPin = await page.evaluate((journeyId) => {
+    const settings = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
+    const journey = settings.journeys?.find((j) => j.id === journeyId);
+    return {
+      heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
+      pinPressed: document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") ?? "",
+      overrideIso: journey?.journeyPinOverrideIso || "",
+    };
+  }, JOURNEY_ID);
+
+  if (
+    afterPin.heroLabel !== "Pinned Train" ||
+    afterPin.pinPressed !== "true" ||
+    !afterPin.overrideIso
+  ) {
+    return { ok: false, label: "journey pin next train label", detail: { target, afterPin } };
+  }
+
+  return { ok: true, label: "journey pin next train shows Pinned Train" };
+}
+
+async function testJourneyPinPreferredTargetShowsTargetLabel(page) {
+  await armPinnedJourney(page, { fixture: "normal" });
+
+  await page.locator("#hero-pin-btn").click();
+  await page.waitForTimeout(400);
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Next Train",
+    null,
+    { timeout: 8000 }
+  );
+
+  const targetIndex = await page.evaluate(() => window.nextTrainApp.findPreferredTripSkipIndex());
+  if (targetIndex <= 0) {
+    return {
+      ok: false,
+      label: "journey pin preferred target label",
+      detail: { step: "target index", targetIndex },
+    };
+  }
+
+  for (let step = 0; step < targetIndex; step += 1) {
+    await page.evaluate(() => window.nextTrainApp.skipToNextTrain());
+    await page.waitForTimeout(300);
+  }
+
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Later train",
+    null,
+    { timeout: 8000 }
+  );
+
+  await page.locator("#hero-pin-btn").click();
+  await page.waitForTimeout(800);
+
+  const afterPin = await page.evaluate((journeyId) => {
+    const settings = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
+    const journey = settings.journeys?.find((j) => j.id === journeyId);
+    return {
+      heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
+      pinPressed: document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") ?? "",
+      overrideIso: journey?.journeyPinOverrideIso || "",
+    };
+  }, JOURNEY_ID);
+
+  if (
+    afterPin.heroLabel !== "Target train" ||
+    afterPin.pinPressed !== "true" ||
+    afterPin.overrideIso
+  ) {
+    return { ok: false, label: "journey pin preferred target label", detail: { targetIndex, afterPin } };
+  }
+
+  return { ok: true, label: "journey pin preferred target shows Target train" };
+}
+
 async function testJourneyUnpinOverrideKeepsLaterTrain(page) {
   await armJourneyPinOverride(page, { fixture: "normal" });
 
@@ -468,18 +567,24 @@ async function run() {
   let serverChild = null;
   try {
     serverChild = await ensureDevServer();
+    if (process.env.CI === "true") {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
     const browser = await chromium.launch({ headless: true });
 
     const results = [];
     for (const testFn of [
       testJourneyLateNextTrainAdvancesPin,
       testJourneyPinTapAfterSwipePreview,
+      testJourneyPinNextTrainShowsPinnedLabel,
+      testJourneyPinPreferredTargetShowsTargetLabel,
       testJourneyUnpinOverrideKeepsLaterTrain,
       testNearbyPinNextTrainAdvance,
       testPinLockDoesNotBlockAdvancePath,
     ]) {
       const page = await browser.newPage();
       try {
+        console.log(`→ ${testFn.name}`);
         results.push(await testFn(page));
       } catch (error) {
         results.push({ ok: false, label: testFn.name, detail: String(error) });

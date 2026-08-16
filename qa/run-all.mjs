@@ -120,7 +120,7 @@ function isCiVerbose() {
 const HEAVY_SCRIPT_TIMEOUT_MS = {
   "smoke-browser.mjs": 6 * 60 * 1000,
   "smoke-11-13.mjs": 4 * 60 * 1000,
-  "pin-swipe-notify.mjs": 6 * 60 * 1000,
+  "pin-swipe-notify.mjs": 8 * 60 * 1000,
   "leave-by-preferred-gate.mjs": 3 * 60 * 1000,
   "fb-23-web.mjs": 4 * 60 * 1000,
 };
