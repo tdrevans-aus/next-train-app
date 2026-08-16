@@ -752,12 +752,19 @@ function applyHeroPreviewFromPreset(preset, effectiveOpacity, mode = getWidgetAp
   if (effectiveOpacity <= 0) {
     card.style.background = "transparent";
     card.style.borderColor = "transparent";
+    card.style.borderStyle = "solid";
   } else {
     card.style.background = rgbaFromHex(preset.bg, effectiveOpacity);
-    card.style.borderColor =
-      shouldShowHeroPreviewBorder(mode, effectiveOpacity)
-        ? (preset.border ?? "transparent")
-        : "transparent";
+    if (mode === "blend") {
+      card.style.borderStyle = "dashed";
+      card.style.borderColor = "rgba(255, 255, 255, 0.42)";
+    } else if (shouldShowHeroPreviewBorder(mode, effectiveOpacity)) {
+      card.style.borderStyle = "solid";
+      card.style.borderColor = preset.border ?? "transparent";
+    } else {
+      card.style.borderStyle = "solid";
+      card.style.borderColor = "transparent";
+    }
   }
   document.getElementById("widget-hero-mock-primary-value").style.color = preset.accent;
   document.getElementById("widget-hero-mock-primary-unit").style.color = preset.muted;
@@ -826,6 +833,8 @@ function updateHeroPreview(opacityOverride, modeOverride) {
   card.classList.toggle("widget-hero-mock-card--blend", mode === "blend");
   card.classList.toggle("widget-hero-mock-card--brand", mode === "brand");
   card.classList.toggle("widget-hero-mock-card--wallpaper", mode === "wallpaper");
+  card.classList.toggle("widget-hero-has-fill", effectiveOpacity > 0);
+  card.classList.toggle("widget-hero-fully-opaque", effectiveOpacity >= 100);
   card.classList.toggle("widget-hero-low-opacity", effectiveOpacity > 0 && effectiveOpacity < 100);
   card.classList.toggle(
     "widget-hero-legibility",

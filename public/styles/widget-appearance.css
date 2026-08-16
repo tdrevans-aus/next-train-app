@@ -288,21 +288,21 @@ body.widget-setup-active #widget-appearance-setup {
   box-shadow: 0 8px 24px rgba(19, 37, 35, 0.12);
 }
 
-.widget-hero-mock-card.widget-hero-mock-card--brand {
-  box-shadow: 0 8px 24px rgba(19, 37, 35, 0.16);
+.widget-hero-mock-card.widget-hero-mock-card--brand.widget-hero-has-fill {
+  box-shadow: 0 8px 24px rgba(19, 37, 35, 0.2);
 }
 
 .widget-hero-mock-card.widget-hero-mock-card--blend {
   box-shadow: none;
 }
 
-.widget-hero-mock-card.widget-hero-mock-card--wallpaper .widget-hero-mock-primary-value {
-  transition: color 0.2s ease;
+.widget-hero-mock-card.widget-hero-mock-card--blend.widget-hero-has-fill {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.widget-hero-mock-card.widget-hero-mock-card--blend.widget-hero-low-opacity {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+.widget-hero-mock-card.widget-hero-mock-card--wallpaper .widget-hero-mock-primary-value {
+  transition: color 0.2s ease;
 }
 
 .widget-hero-mock-card.widget-hero-low-opacity {
