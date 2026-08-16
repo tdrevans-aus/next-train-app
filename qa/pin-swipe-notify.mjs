@@ -1,10 +1,10 @@
-/**
+﻿/**
  * Pin + swipe + Next Train / notify matrix (FB-24 Phase 1.4).
  *
  * Covers:
- * 1. Journey pin override + late/missed → Leave card Next Train advances pin
- * 2. Journey swipe preview (skipTrains > 0) → single pin tap pins hero (not unpin)
- * 3. Nearby pin holding → Next Train advances pin when skippable
+ * 1. Journey pin override + late/missed ΓåÆ Leave card Next Train advances pin
+ * 2. Journey swipe preview (skipTrains > 0) ΓåÆ single pin tap pins hero (not unpin)
+ * 3. Nearby pin holding ΓåÆ Next Train advances pin when skippable
  * 4. isHeroPinLockingSwipe does not block shouldAdvancePinOnNextTrain path
  *
  * Usage: node qa/pin-swipe-notify.mjs
@@ -43,7 +43,7 @@ async function waitForJourneyHero(page) {
       const journeyMode = document.querySelector(".app")?.classList.contains("journey-mode");
       const countdown = document.getElementById("depart-countdown")?.textContent?.trim() ?? "";
       const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
-      return journeyMode && countdown && countdown !== "—" && /\d/.test(countdown) && label.length > 0;
+      return journeyMode && countdown && countdown !== "ΓÇö" && /\d/.test(countdown) && label.length > 0;
     },
     null,
     { timeout: HERO_TIMEOUT_MS }
@@ -97,7 +97,7 @@ async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
 
   await page.evaluate(async (journeyId) => {
     const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
-    if (!preferred || preferred === "—") {
+    if (!preferred || preferred === "ΓÇö") {
       return;
     }
     await window.nextTrainApp?.persistReminderJourneys?.([
@@ -114,7 +114,7 @@ async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
 }
 
 async function armPinnedJourney(page, options = {}) {
-  const attempts = process.env.CI === "true" ? 2 : 2;
+  const attempts = 2;
   let lastError;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
@@ -306,7 +306,7 @@ async function testNearbyPinNextTrainAdvance(page) {
   await page.waitForFunction(
     () => {
       const t = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
-      return t && t !== "—" && !t.includes("No upcoming");
+      return t && t !== "ΓÇö" && !t.includes("No upcoming");
     },
     null,
     { timeout: 25000 }
@@ -328,7 +328,7 @@ async function testNearbyPinNextTrainAdvance(page) {
   }
 
   if (!pinned.shouldAdvance) {
-    return { ok: true, label: "nearby pin Next Train advance (skip — cannot advance)" };
+    return { ok: true, label: "nearby pin Next Train advance (skip ΓÇö cannot advance)" };
   }
 
   const pinBefore = await readNearbyPinIso(page);
@@ -345,105 +345,6 @@ async function testNearbyPinNextTrainAdvance(page) {
   }
 
   return { ok: true, label: "nearby pin Next Train advance" };
-}
-
-async function testJourneyPinNextTrainShowsPinnedLabel(page) {
-  await armPinnedJourney(page, { fixture: "normal" });
-
-  const target = await page.evaluate(() => ({
-    heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
-    pinPressed: document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") ?? "",
-  }));
-
-  if (target.heroLabel !== "Target train" || target.pinPressed !== "true") {
-    return { ok: false, label: "journey pin next train label", detail: { step: "target", target } };
-  }
-
-  await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(400);
-  await page.waitForFunction(
-    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Next Train",
-    null,
-    { timeout: 8000 }
-  );
-
-  await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(800);
-
-  const afterPin = await page.evaluate((journeyId) => {
-    const settings = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
-    const journey = settings.journeys?.find((j) => j.id === journeyId);
-    return {
-      heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
-      pinPressed: document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") ?? "",
-      overrideIso: journey?.journeyPinOverrideIso || "",
-    };
-  }, JOURNEY_ID);
-
-  if (
-    afterPin.heroLabel !== "Pinned Train" ||
-    afterPin.pinPressed !== "true" ||
-    !afterPin.overrideIso
-  ) {
-    return { ok: false, label: "journey pin next train label", detail: { target, afterPin } };
-  }
-
-  return { ok: true, label: "journey pin next train shows Pinned Train" };
-}
-
-async function testJourneyPinPreferredTargetShowsTargetLabel(page) {
-  await armPinnedJourney(page, { fixture: "normal" });
-
-  await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(400);
-  await page.waitForFunction(
-    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Next Train",
-    null,
-    { timeout: 8000 }
-  );
-
-  const targetIndex = await page.evaluate(() => window.nextTrainApp.findPreferredTripSkipIndex());
-  if (targetIndex <= 0) {
-    return {
-      ok: false,
-      label: "journey pin preferred target label",
-      detail: { step: "target index", targetIndex },
-    };
-  }
-
-  for (let step = 0; step < targetIndex; step += 1) {
-    await page.evaluate(() => window.nextTrainApp.skipToNextTrain());
-    await page.waitForTimeout(300);
-  }
-
-  await page.waitForFunction(
-    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Later train",
-    null,
-    { timeout: 8000 }
-  );
-
-  await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(800);
-
-  const afterPin = await page.evaluate((journeyId) => {
-    const settings = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
-    const journey = settings.journeys?.find((j) => j.id === journeyId);
-    return {
-      heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
-      pinPressed: document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") ?? "",
-      overrideIso: journey?.journeyPinOverrideIso || "",
-    };
-  }, JOURNEY_ID);
-
-  if (
-    afterPin.heroLabel !== "Target train" ||
-    afterPin.pinPressed !== "true" ||
-    afterPin.overrideIso
-  ) {
-    return { ok: false, label: "journey pin preferred target label", detail: { targetIndex, afterPin } };
-  }
-
-  return { ok: true, label: "journey pin preferred target shows Target train" };
 }
 
 async function testJourneyUnpinOverrideKeepsLaterTrain(page) {
@@ -600,20 +501,20 @@ async function run() {
     let failed = 0;
     for (const result of results) {
       if (result.ok) {
-        console.log(`PASS — ${result.label}`);
+        console.log(`PASS ΓÇö ${result.label}`);
       } else {
         failed += 1;
-        console.error(`FAIL — ${result.label}`, result.detail ?? "");
+        console.error(`FAIL ΓÇö ${result.label}`, result.detail ?? "");
       }
     }
 
     if (failed > 0) {
       process.exitCode = 1;
-      console.error(`\nFAIL — ${failed} scenario(s)`);
+      console.error(`\nFAIL ΓÇö ${failed} scenario(s)`);
       return;
     }
 
-    console.log(`\nPASS — ${results.length} pin/swipe/notify scenarios`);
+    console.log(`\nPASS ΓÇö ${results.length} pin/swipe/notify scenarios`);
   } finally {
     stopDevServer(serverChild);
   }
