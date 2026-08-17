@@ -14,6 +14,7 @@ const BASE = "http://localhost:3000";
 
 const SEED_JOURNEY = {
   id: "j-commute-strip",
+  kind: "journey",
   name: "Commute strip test",
   station: "Edgewater Stn",
   direction: "Perth",
@@ -35,6 +36,7 @@ async function run() {
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
+        settingsSchemaVersion: 2,
         refreshSeconds: 60,
         activeJourneyId: journey.id,
         journeys: [journey],

@@ -27,6 +27,11 @@
   z-index: 100;
 }
 
+/* Near me manual picker: hide Platform/Status while station list is open. */
+.app.nearby-mode:has(#nearby-station-combobox.station-combobox--open) .train-meta {
+  display: none;
+}
+
 .nearby-directions[hidden],
 .nearby-fallback[hidden] {
   display: none !important;
@@ -281,6 +286,20 @@
   font-size: 0.84rem;
   font-weight: 600;
   line-height: 1.2;
+}
+
+.journey-context-row--route-edit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  min-height: 44px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.journey-context-row--route-edit .journey-edit-btn {
+  pointer-events: auto;
 }
 
 .journey-context-name {

@@ -3,6 +3,8 @@
  * Usage: node qa/preferred-always-visible.mjs
  */
 import { chromium } from "playwright";
+import { openJourneyDetail } from "./helpers/journeys-dialog.mjs";
+import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -11,38 +13,26 @@ async function run() {
   const page = await browser.newPage();
 
   await page.goto(`${BASE}/?test=1&fixture=normal`);
-  await page.evaluate(() => {
-    localStorage.setItem(
-      "nextTrainSettings",
-      JSON.stringify({
-        refreshSeconds: 60,
-        activeJourneyId: "j-custom",
-        journeys: [
-          {
-            id: "j-custom",
-            name: "Custom commute",
-            station: "Edgewater Stn",
-            direction: "Perth",
-            leaveBeforeMinutes: 10,
-            useLeaveBefore: true,
-            defaultFrom: "",
-            defaultUntil: "",
-            preferredTrainTime: "",
-            remindDays: [1, 2, 3, 4, 5],
-            remindMe: false,
-          },
-        ],
-      })
-    );
-    localStorage.setItem("nextTrainOnboardingDone", "1");
-    localStorage.setItem("nextTrainTemplateWizardSeen", "1");
-  });
+  await seedPersistedJourneys(page, [
+    {
+      id: "j-custom",
+      kind: "journey",
+      name: "Custom commute",
+      station: "Edgewater Stn",
+      direction: "Perth",
+      leaveBeforeMinutes: 10,
+      useLeaveBefore: true,
+      defaultFrom: "",
+      defaultUntil: "",
+      preferredTrainTime: "",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: false,
+    },
+  ]);
   await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.waitForTimeout(1500);
 
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
-  await page.waitForTimeout(500);
-  await page.locator(".journey-list-open-btn").click();
+  await openJourneyDetail(page, "j-custom");
   await page.waitForTimeout(800);
 
   const initial = await page.evaluate(() => {
@@ -96,35 +86,25 @@ async function run() {
     process.exitCode = 1;
   }
 
-  await page.evaluate(() => {
-    localStorage.setItem(
-      "nextTrainSettings",
-      JSON.stringify({
-        refreshSeconds: 60,
-        activeJourneyId: "j-custom",
-        journeys: [
-          {
-            id: "j-custom",
-            name: "Custom commute",
-            station: "Edgewater Stn",
-            direction: "Perth",
-            leaveBeforeMinutes: 10,
-            useLeaveBefore: true,
-            defaultFrom: "",
-            defaultUntil: "",
-            preferredTrainTime: "",
-            remindDays: [1, 2, 3, 4, 5],
-            remindMe: true,
-          },
-        ],
-      })
-    );
-  });
+  await seedPersistedJourneys(page, [
+    {
+      id: "j-custom",
+      kind: "journey",
+      name: "Custom commute",
+      station: "Edgewater Stn",
+      direction: "Perth",
+      leaveBeforeMinutes: 10,
+      useLeaveBefore: true,
+      defaultFrom: "",
+      defaultUntil: "",
+      preferredTrainTime: "",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: true,
+    },
+  ]);
   await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.waitForTimeout(1500);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
-  await page.waitForTimeout(500);
-  await page.locator(".journey-list-open-btn").click();
+  await openJourneyDetail(page, "j-custom");
   await page.waitForTimeout(500);
 
   let saveBlocked = false;
@@ -151,5 +131,5 @@ async function run() {
 
 run().catch((error) => {
   console.error(error);
-  process.exitCode = 1;
+  process.exit(1);
 });

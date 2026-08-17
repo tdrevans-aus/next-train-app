@@ -5,11 +5,16 @@
  */
 import { chromium } from "playwright";
 import {
+  dismissTemplateCoach,
+  openJourneyDetail,
+} from "./helpers/journeys-dialog.mjs";
+import {
   hideNativeAdSimulatorOverlay,
   installNativeAdSimulator,
   NATIVE_AD_GAP_PX,
   removeNativeAdPaddingClass,
 } from "./helpers/native-ad-sim.mjs";
+import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 const VIEWPORT = { width: 390, height: 844 };
@@ -26,49 +31,27 @@ const MAX_FORM_TO_FOOTER_GAP_PX = 28;
 const MAX_FOOTER_ROW_HEIGHT_PX = 72;
 
 async function seedJourney(page) {
-  await page.evaluate(() => {
-    window.nextTrainJourneyModel.persistSettings({
-      settingsSchemaVersion: 2,
-      refreshSeconds: 60,
-      activeJourneyId: "j-a",
-      journeys: [
-        {
-          id: "j-a",
-          kind: "commute",
-          name: "Morning into town",
-          station: "Armadale",
-          direction: "Byford",
-          leaveBeforeMinutes: 10,
-          useLeaveBefore: true,
-          preferredTrainTime: "07:30",
-          defaultFrom: "06:00",
-          defaultUntil: "09:00",
-          remindDays: [1, 2, 3, 4, 5],
-          remindMe: true,
-        },
-      ],
-    });
-  });
+  await seedPersistedJourneys(page, [
+    {
+      id: "j-a",
+      kind: "journey",
+      name: "Morning into town",
+      station: "Armadale",
+      direction: "Byford",
+      leaveBeforeMinutes: 10,
+      useLeaveBefore: true,
+      preferredTrainTime: "07:30",
+      defaultFrom: "06:00",
+      defaultUntil: "09:00",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: true,
+    },
+  ]);
 }
 
-async function openJourneyDetail(page) {
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(300);
-  const dialogOpen = await page.evaluate(
-    () => document.getElementById("journeys-dialog")?.hidden === false
-  );
-  if (!dialogOpen) {
-    await page.locator("#journeys-btn").click();
-    await page.waitForTimeout(500);
-  }
-  await page.locator(".journey-list-open-btn").first().click();
-  await page.waitForTimeout(900);
-  await page.evaluate(() => {
-    const coach = document.getElementById("template-route-coach");
-    if (coach) {
-      coach.hidden = true;
-    }
-  });
+async function openJourneyDetailSheet(page) {
+  await openJourneyDetail(page, "j-a");
+  await dismissTemplateCoach(page);
   await page.waitForTimeout(300);
 }
 
@@ -251,7 +234,7 @@ async function run() {
   await page.evaluate(() => document.body.classList.add("native-app"));
   await installNativeAdSimulator(page);
 
-  await openJourneyDetail(page);
+  await openJourneyDetailSheet(page);
   await hideNativeAdSimulatorOverlay(page);
   await removeNativeAdPaddingClass(page);
   await page.waitForTimeout(200);

@@ -36,7 +36,7 @@ async function run() {
 
   await page.evaluate(() => window.nextTrainApp.enterJourneyMode());
   await page.waitForTimeout(400);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(500);
 
   await openCustomJourneyCreate(page);
@@ -79,7 +79,7 @@ async function run() {
     console.log(`PASS — Active day chip toggles (day ${toggleDay})`);
   }
 
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(400);
   await page.locator('[data-template="morning"]').click();
   await page.waitForTimeout(2000);

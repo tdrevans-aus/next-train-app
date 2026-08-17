@@ -1,5 +1,5 @@
 /**
- * FB-27 / FB-23 — journey kind (route vs commute) in journey-model.
+ * FB-27 / FB-23 — journey kind (route vs journey) in journey-model.
  * Usage: node qa/journey-kind.mjs
  */
 import { chromium } from "playwright";
@@ -20,12 +20,12 @@ async function run() {
       defaultFrom: "06:00",
       defaultUntil: "09:00",
     });
-    const commutePreferred = jm.normalizeJourney({
+    const journeyPreferred = jm.normalizeJourney({
       station: "Edgewater Stn",
       direction: "Perth",
       preferredTrainTime: "07:30",
     });
-    const commuteTemplate = jm.normalizeJourney({
+    const journeyTemplate = jm.normalizeJourney({
       name: "Morning into town",
       templateKey: "morning",
       station: "Edgewater Stn",
@@ -53,14 +53,21 @@ async function run() {
       defaultFrom: "06:00",
       defaultUntil: "09:00",
     });
+    const legacyCommuteKind = jm.normalizeJourney({
+      kind: "commute",
+      station: "Edgewater Stn",
+      direction: "Perth",
+      preferredTrainTime: "07:30",
+    });
     return {
       route: route.kind,
-      commutePreferred: commutePreferred.kind,
-      commuteTemplate: commuteTemplate.kind,
+      journeyPreferred: journeyPreferred.kind,
+      journeyTemplate: journeyTemplate.kind,
       customTemplate: customTemplate.kind,
       explicitRoute: explicitRoute.kind,
       strippedPreferred: strippedRoute.preferredTrainTime,
-      isCommute: jm.isCommuteJourney(commutePreferred),
+      legacyCommuteKind: legacyCommuteKind.kind,
+      isJourney: jm.isJourneyKind(journeyPreferred),
       isRoute: jm.isRouteJourney(route),
     };
   });
@@ -69,12 +76,13 @@ async function run() {
 
   const pass =
     results.route === "route" &&
-    results.commutePreferred === "commute" &&
-    results.commuteTemplate === "commute" &&
-    results.customTemplate === "commute" &&
+    results.journeyPreferred === "journey" &&
+    results.journeyTemplate === "journey" &&
+    results.customTemplate === "journey" &&
     results.explicitRoute === "route" &&
     results.strippedPreferred === "" &&
-    results.isCommute &&
+    results.legacyCommuteKind === "journey" &&
+    results.isJourney &&
     results.isRoute;
 
   if (pass) {

@@ -21,13 +21,67 @@ export async function openJourneySetup(page) {
   await page.waitForTimeout(600);
 }
 
+/** Click a saved journey/route row in the open library sheet. */
+export async function clickJourneyListItem(page, journeyId) {
+  const opened = await page.evaluate(async (id) => {
+    if (typeof window.nextTrainApp?.openJourneyDetail !== "function") {
+      return false;
+    }
+    await window.nextTrainApp.openJourneyDetail(id);
+    return true;
+  }, journeyId);
+  if (opened) {
+    await page.waitForSelector("#settings-detail-view", { state: "visible", timeout: 15000 });
+    return;
+  }
+  await page
+    .locator(`.journey-list-item[data-journey-id="${journeyId}"] .journey-list-open-btn`)
+    .click({ timeout: 15000 });
+}
+
+/** Persist journeys via the shared model (schema v2 + normalized kind). */
+export async function seedPersistedJourneys(page, journeys, options = {}) {
+  const {
+    activeJourneyId = journeys[0]?.id ?? null,
+    onboardingDone = true,
+    templateWizardSeen = true,
+  } = options;
+
+  await page.evaluate(
+    ({ journeys, activeJourneyId, onboardingDone, templateWizardSeen }) => {
+      const jm = window.nextTrainJourneyModel;
+      jm.persistSettings({
+        settingsSchemaVersion: 2,
+        refreshSeconds: 60,
+        activeJourneyId,
+        journeys: journeys.map((journey) => jm.normalizeJourney(journey)),
+      });
+      if (onboardingDone) {
+        localStorage.setItem("nextTrainOnboardingDone", "1");
+      }
+      if (templateWizardSeen) {
+        localStorage.setItem("nextTrainTemplateWizardSeen", "1");
+      }
+    },
+    { journeys, activeJourneyId, onboardingDone, templateWizardSeen }
+  );
+}
+
+export async function dismissTemplateWizardCoach(page) {
+  const skip = page.locator("#template-wizard-skip-btn");
+  if (await skip.isVisible().catch(() => false)) {
+    await skip.click();
+    await page.waitForTimeout(300);
+  }
+}
+
 export async function readChromeLabels(page) {
   return page.evaluate(() => ({
     nearby: document.querySelector("#nearby-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
     routes: document.querySelector("#routes-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
     journeys: document.querySelector("#journeys-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
     menu: document.querySelector("#menu-chrome-action .chrome-action-label")?.textContent?.trim() ?? "",
-    legacyCommutesBtnGone: !document.getElementById("commutes-btn"),
+    legacyCommutesChromeRemoved: !document.getElementById("commutes-btn"),
   }));
 }
 
@@ -45,8 +99,8 @@ export async function seedMixedJourneys(page) {
           direction: "Perth",
         }),
         jm.normalizeJourney({
-          id: "commute-a",
-          kind: "commute",
+          id: "journey-a",
+          kind: "journey",
           name: "Morning",
           station: "Edgewater Stn",
           direction: "Perth",

@@ -2,11 +2,24 @@ appId: com.tdrevans.nexttrain
 ---
 - stopApp
 - openLink: "nexttrain://test/seed?fixture=normal&station=Edgewater%20Stn&direction=Perth&reset=1&test=1"
+# First-run onboarding can cover chrome until dismissed.
+- tapOn:
+    text: "Got it"
+    optional: true
+- tapOn:
+    text: "Maybe later"
+    optional: true
 - extendedWaitUntil:
     visible: "My Journeys"
     timeout: 90000
+- assertVisible: "Near me"
+- assertVisible: "My Routes"
+- assertVisible: "My Journeys"
+# First tap enters journey live mode; second opens the Journeys library sheet.
 - tapOn: "My Journeys"
 - tapOn: "My Journeys"
 - extendedWaitUntil:
-    visible: "Morning into town"
+    visible: "Journeys"
     timeout: 20000
+- assertVisible: "Add a journey"
+- assertVisible: "Done"

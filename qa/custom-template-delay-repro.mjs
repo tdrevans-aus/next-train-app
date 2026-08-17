@@ -9,7 +9,7 @@ const BASE = "http://localhost:3000";
 const GEO_DELAY_MS = 4000;
 
 async function openTemplatesAndClick(page, template) {
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(700);
   const chip = page.locator(`[data-template="${template}"]`);
   const t0 = Date.now();

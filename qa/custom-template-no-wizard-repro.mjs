@@ -4,7 +4,7 @@
  */
 import { chromium } from "playwright";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
-import { waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
+import { dismissOnboardingMaybeLater, waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -38,12 +38,8 @@ async function run() {
 
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
   await waitForOnboardingStep1(page);
-
-  await page.locator("#onboarding-got-it-btn").click();
-  await page.waitForTimeout(300);
-  await page.locator("#onboarding-later-btn").click();
-  await page.waitForTimeout(300);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await dismissOnboardingMaybeLater(page);
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(400);
 
   await openCustomJourneyCreate(page);

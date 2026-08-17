@@ -65,7 +65,7 @@ async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
           journeys: [
             {
               id: journeyId,
-              kind: "commute",
+              kind: "journey",
               name: "Morning commute",
               station: "Edgewater Stn",
               direction: "Perth",

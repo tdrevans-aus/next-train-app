@@ -18,7 +18,7 @@ async function openCustomJourneyDetail(page) {
         journeys: [
           {
             id: "j-custom",
-            kind: "commute",
+            kind: "journey",
             templateKey: "custom",
             name: "Custom commute",
             station: "Edgewater Stn",

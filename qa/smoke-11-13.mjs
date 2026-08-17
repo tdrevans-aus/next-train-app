@@ -41,7 +41,7 @@ async function run() {
         journeys: [
           {
             id: "j-in",
-            kind: "commute",
+            kind: "journey",
             name: "Daily Commute - in",
             station: "Edgewater Stn",
             direction: "Perth",

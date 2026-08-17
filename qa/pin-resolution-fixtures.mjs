@@ -155,6 +155,8 @@ function buildPinStateInput(fixture) {
     payload: input.payload ?? null,
     journey: input.journey ?? null,
     nearbyPin: input.nearbyPin ?? null,
+    nearbyFocusedDirection:
+      input.nearbyFocusedDirection ?? input.nearbyPin?.direction ?? null,
     skipTrains: input.skipTrains ?? 0,
     journeyModeActive: input.journeyModeActive ?? false,
     nearbyModeActive: input.nearbyModeActive ?? false,

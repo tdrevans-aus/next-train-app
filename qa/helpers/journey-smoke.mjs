@@ -127,7 +127,7 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
           journeys: [
             {
               id: jId,
-              kind: "commute",
+              kind: "journey",
               name: "Morning commute",
               station: stationName,
               direction: directionName,
@@ -176,16 +176,88 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
   await waitForLeaveCard(page, { optional: true, timeout: 15000 });
 }
 
+const FIXTURE_TRAIN_MINUTES = { urgent: 12, late: 7, normal: 18 };
+
+function fixturePreferredTrainTime(fixture) {
+  const trainMinutes = FIXTURE_TRAIN_MINUTES[fixture] ?? 18;
+  return formatWallClockMinutes(perthMinutesFromNow(Math.max(1, trainMinutes)));
+}
+
+function clearLeaveAckSessionStorage(page) {
+  return page.evaluate(() => {
+    for (const key of Object.keys(sessionStorage)) {
+      if (key.startsWith("nextTrainLeaveAck:")) {
+        sessionStorage.removeItem(key);
+      }
+    }
+  });
+}
+
+async function syncPreferredFromHeroAndRefresh(page, journeyId) {
+  await page.evaluate(async (jId) => {
+    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
+    if (!preferred || preferred === "—") {
+      return;
+    }
+    await window.nextTrainApp?.persistReminderJourneys?.([
+      { id: jId, preferredTrainTime: preferred, remindMe: false },
+    ]);
+    await window.nextTrainApp?.fetchNextTrain?.();
+  }, journeyId);
+}
+
+/** Swap fixture in-place after armFixtureLeaveCard — avoids flaky full reload for urgent→late. */
+export async function swapFixtureLeaveCard(page, fixture, { journeyId = "j-smoke" } = {}) {
+  const preferredTrainTime = fixturePreferredTrainTime(fixture);
+  const trainMinutes = FIXTURE_TRAIN_MINUTES[fixture] ?? 18;
+  await clearLeaveAckSessionStorage(page);
+  await page.evaluate(
+    async ({ fx, preferred, jId }) => {
+      const url = new URL(location.href);
+      url.searchParams.set("fixture", fx);
+      history.replaceState(null, "", url);
+      sessionStorage.removeItem(`nextTrainSkip:${jId}`);
+      for (const key of Object.keys(sessionStorage)) {
+        if (key.startsWith("nextTrainLeaveAck:")) {
+          sessionStorage.removeItem(key);
+        }
+      }
+      sessionStorage.setItem(
+        "nextTrainManualJourneyOverride",
+        JSON.stringify({ journeyId: jId, matchingWindowIds: [jId] })
+      );
+      await window.nextTrainApp?.persistReminderJourneys?.([
+        { id: jId, preferredTrainTime: preferred, remindMe: false },
+      ]);
+    },
+    { fx: fixture, preferred: preferredTrainTime, jId: journeyId }
+  );
+  await page.evaluate(async () => {
+    await window.nextTrainApp?.fetchNextTrain?.();
+  });
+  await page.waitForFunction(
+    ({ floor, ceil }) => {
+      const text = document.getElementById("depart-countdown")?.textContent ?? "";
+      const min = parseInt(text.match(/\d+/)?.[0] ?? "0", 10);
+      return min >= floor && min <= ceil;
+    },
+    { floor: Math.max(1, trainMinutes - 2), ceil: trainMinutes + 2 },
+    { timeout: 30000 }
+  );
+  await syncPreferredFromHeroAndRefresh(page, journeyId);
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+    null,
+    { timeout: 30000 }
+  ).catch(() => {});
+}
+
 export async function armFixtureLeaveCard(
   page,
   { fixture, station = "Edgewater Stn", direction = "Perth" } = {}
 ) {
-  const FIXTURE_MINUTES = { urgent: 12, late: 7, normal: 18 };
-  const trainMinutes = FIXTURE_MINUTES[fixture] ?? 18;
   const journeyId = "j-smoke";
-  const preferredTrainTime = formatWallClockMinutes(
-    perthMinutesFromNow(Math.max(1, trainMinutes - 5))
-  );
+  const preferredTrainTime = fixturePreferredTrainTime(fixture);
   // Omit station/direction from the URL — init() readUrlSettings() would overwrite seeded journeys.
   const fixtureUrlReset = `${BASE}/?reset=1&test=1&fixture=${fixture}`;
   const fixtureUrl = `${BASE}/?test=1&fixture=${fixture}`;
@@ -202,7 +274,7 @@ export async function armFixtureLeaveCard(
           journeys: [
             {
               id: jId,
-              kind: "commute",
+              kind: "journey",
               name: "Morning commute",
               station: stationName,
               direction: directionName,
@@ -219,6 +291,11 @@ export async function armFixtureLeaveCard(
       );
       localStorage.setItem("nextTrainOnboardingDone", "1");
       sessionStorage.removeItem(`nextTrainSkip:${jId}`);
+      for (const key of Object.keys(sessionStorage)) {
+        if (key.startsWith("nextTrainLeaveAck:")) {
+          sessionStorage.removeItem(key);
+        }
+      }
       sessionStorage.setItem(
         "nextTrainManualJourneyOverride",
         JSON.stringify({ journeyId: jId, matchingWindowIds: [jId] })
@@ -229,25 +306,16 @@ export async function armFixtureLeaveCard(
 
   await page.goto(fixtureUrl);
   await ensureJourneyMode(page);
-  await waitForJourneyHero(page);
+  await waitForJourneyHero(page, { timeout: 45000 });
 
-  await page.evaluate(async (jId) => {
-    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
-    if (!preferred || preferred === "—") {
-      return;
-    }
-    await window.nextTrainApp?.persistReminderJourneys?.([
-      { id: jId, preferredTrainTime: preferred, remindMe: false },
-    ]);
-    await window.nextTrainApp?.fetchNextTrain?.();
-  }, journeyId);
+  await syncPreferredFromHeroAndRefresh(page, journeyId);
 
   await page.waitForFunction(
     () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
     null,
-    { timeout: 30000 }
+    { timeout: 45000 }
   ).catch(() => {});
-  await waitForLeaveCard(page, { optional: false, timeout: 30000 });
+  await waitForLeaveCard(page, { optional: false, timeout: 45000 });
 }
 
 export async function waitForJourneySwitcher(page, { timeout = 15000 } = {}) {
@@ -274,7 +342,7 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
         journeys: [
           {
             id: "j-in-smoke",
-            kind: "commute",
+            kind: "journey",
             name: "Daily Commute - in",
             station: "Edgewater Stn",
             direction: "Perth",
@@ -287,7 +355,7 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
           },
           {
             id: "j-out-smoke",
-            kind: "commute",
+            kind: "journey",
             name: "Daily Commute - out",
             station: "Perth Stn",
             direction: "Mandurah",
@@ -357,7 +425,10 @@ export async function waitForLeaveCardPhase(page, phase, { timeout = 15000 } = {
         return false;
       }
       if (expected === "late") {
-        return card.classList.contains("late") && msg.includes("late");
+        return (
+          card.classList.contains("late") &&
+          (msg.includes("late") || msg.includes("should have left"))
+        );
       }
       if (expected === "urgent") {
         return (

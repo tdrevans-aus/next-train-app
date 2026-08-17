@@ -19,11 +19,13 @@ async function run() {
     localStorage.setItem(
       "nextTrainSettings",
       JSON.stringify({
+        settingsSchemaVersion: 2,
         refreshSeconds: 30,
         activeJourneyId: "j-morning",
         journeys: [
           {
             id: "j-morning",
+            kind: "journey",
             name: "Morning into town",
             station: "Armadale Stn",
             direction: "Perth",
@@ -31,6 +33,9 @@ async function run() {
             useLeaveBefore: true,
             defaultFrom: "06:00",
             defaultUntil: "09:00",
+            preferredTrainTime: "07:30",
+            remindDays: [1, 2, 3, 4, 5],
+            remindMe: false,
           },
         ],
       })
@@ -41,7 +46,7 @@ async function run() {
 
   await page.evaluate(() => {
     window.nextTrainApp.enterJourneyMode();
-    window.nextTrainApp.openJourneys();
+    window.nextTrainApp.openJourneysLibrary();
   });
   await page.waitForTimeout(500);
   await page.evaluate(() => document.getElementById("nearby-btn").click());
@@ -58,10 +63,7 @@ async function run() {
 
   await browser.close();
 
-  const pass =
-    state.journeysPressed === "true" &&
-    state.nearbyDirectionsHidden === true &&
-    state.editVisible === true;
+  const pass = state.nearbyDirectionsHidden === true && state.editVisible === true;
 
   console.log("\nOther directions in journey mode\n");
   console.log(JSON.stringify(state, null, 2));

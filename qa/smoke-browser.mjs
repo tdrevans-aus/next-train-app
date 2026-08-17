@@ -14,6 +14,7 @@ import {
   BASE,
   armJourneyLeaveCard,
   armFixtureLeaveCard,
+  swapFixtureLeaveCard,
   ensureJourneyMode,
   injectSwitcherJourneys,
   parseLeaveMinutes,
@@ -178,7 +179,7 @@ async function run() {
     fail(6, JSON.stringify({ leaveClass6, leaveMin6 }));
   }
 
-  await armFixtureLeaveCard(page, { fixture: "late" });
+  await swapFixtureLeaveCard(page, "late");
   await waitForLeaveCardPhase(page, "late", { timeout: 45000 });
   const leaveClass7 = await page.locator("#leave-card").getAttribute("class");
   const lateMsg7 = (await page.locator("#leave-countdown").textContent())?.trim();
@@ -261,7 +262,7 @@ async function run() {
         journeys: [
           {
             id: "j-in",
-            kind: "commute",
+            kind: "journey",
             name: "Daily Commute - in",
             station: "Edgewater Stn",
             direction: "Perth",
@@ -273,7 +274,7 @@ async function run() {
           },
           {
             id: "j-out",
-            kind: "commute",
+            kind: "journey",
             name: "Daily Commute - out",
             station: "Perth Stn",
             direction: "Mandurah",

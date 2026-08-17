@@ -1392,6 +1392,12 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
   clearBtn?.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
+    if (field === detailDefaultFromField || field === detailDefaultUntilField) {
+      journeyDetail()?.clearPairedActiveHourField?.(
+        field === detailDefaultFromField ? "from" : "until"
+      );
+      return;
+    }
     setOptionalTimeField(input, display, field, clearBtn, "");
     syncDetailComboHints({ amendWindowFromTarget: field === detailPreferredField });
     if (field === detailPreferredField) {
@@ -1880,6 +1886,7 @@ async function readUrlSettings() {
   });
 
   return migrateSettings({
+    settingsSchemaVersion: 2,
     journeys: [journey],
     activeJourneyId: journey.id,
     refreshSeconds:
@@ -1969,6 +1976,7 @@ function buildMaestroSeedSettingsFromParams(stationText, directionText, params =
   });
 
   return migrateSettings({
+    settingsSchemaVersion: 2,
     journeys: [journey],
     activeJourneyId: journey.id,
     refreshSeconds:
@@ -2003,6 +2011,7 @@ async function buildMaestroSeedSettings(stationText, directionText, params = new
   });
 
   return migrateSettings({
+    settingsSchemaVersion: 2,
     journeys: [journey],
     activeJourneyId: journey.id,
     refreshSeconds:

@@ -3,6 +3,8 @@
  * Usage: node qa/target-outside-active-hint.mjs
  */
 import { chromium } from "playwright";
+import { openJourneyDetail } from "./helpers/journeys-dialog.mjs";
+import { dismissOnboardingIfVisible } from "./helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -12,11 +14,7 @@ async function run() {
   await page.goto(`${BASE}/?reset=1&fixture=normal&test=1&station=Edgewater%20Stn&direction=Perth`);
   await page.waitForTimeout(3000);
 
-  const gotIt = page.locator("#onboarding-got-it-btn");
-  if (await gotIt.isVisible().catch(() => false)) {
-    await gotIt.click();
-    await page.waitForTimeout(300);
-  }
+  await dismissOnboardingIfVisible(page);
 
   // Seed a journey into detail via app APIs if needed
   await page.evaluate(() => {
@@ -26,6 +24,7 @@ async function run() {
       : [
           {
             id: "qa-morning",
+            kind: "journey",
             name: "Morning into town",
             station: "Edgewater Stn",
             direction: "Perth",
@@ -46,14 +45,9 @@ async function run() {
   await page.reload();
   await page.waitForTimeout(2500);
 
-  const gotIt2 = page.locator("#onboarding-got-it-btn");
-  if (await gotIt2.isVisible().catch(() => false)) {
-    await gotIt2.click();
-  }
+  await dismissOnboardingIfVisible(page);
 
-  await page.locator("#journeys-btn").click();
-  await page.waitForTimeout(500);
-  await page.locator(".journey-list-open-btn").first().click();
+  await openJourneyDetail(page, "qa-morning");
   await page.waitForTimeout(800);
 
   const checks = await page.evaluate(() => {

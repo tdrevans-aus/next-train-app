@@ -59,9 +59,9 @@ async function run() {
     routeCount: window.nextTrainApp
       .getConfiguredJourneys?.()
       .filter((j) => window.nextTrainJourneyModel.isRouteJourney(j)).length,
-    commuteCount: window.nextTrainApp
+    journeyKindCount: window.nextTrainApp
       .getConfiguredJourneys?.()
-      .filter((j) => window.nextTrainJourneyModel.isCommuteJourney(j)).length,
+      .filter((j) => window.nextTrainJourneyModel.isJourneyKind(j)).length,
   }));
 
   await browser.close();

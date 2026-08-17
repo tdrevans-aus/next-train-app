@@ -146,7 +146,7 @@ async function run() {
       {
         name: "open_journeys",
         action: async (p) => {
-          await p.evaluate(() => window.nextTrainApp.openJourneys());
+          await p.evaluate(() => window.nextTrainApp.openJourneysLibrary());
           await p.waitForTimeout(600);
         },
       },

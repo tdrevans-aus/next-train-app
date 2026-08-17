@@ -31,7 +31,7 @@ async function run() {
     chrome.routes !== "My Routes" ||
     chrome.journeys !== "My Journeys" ||
     chrome.menu !== "Menu" ||
-    !chrome.legacyCommutesBtnGone
+    !chrome.legacyCommutesChromeRemoved
   ) {
     fail("four-tab chrome labels", chrome);
   }
@@ -66,7 +66,7 @@ async function run() {
     trainsToLabel:
       document.querySelector(".detail-direction-label--route")?.textContent?.trim() ?? "",
     journeyLabelHidden:
-      document.querySelector(".detail-direction-label--commute")?.offsetParent === null,
+      document.querySelector(".detail-direction-label--journey")?.offsetParent === null,
     hint:
       document.querySelector(".detail-direction-hint--route")?.textContent?.trim() ?? "",
   }));
@@ -147,7 +147,7 @@ async function run() {
     ),
     journeyCount: window.nextTrainJourneyModel
       .readStoredSettings()
-      .journeys.filter((j) => window.nextTrainJourneyModel.isCommuteJourney(j)).length,
+      .journeys.filter((j) => window.nextTrainJourneyModel.isJourneyKind(j)).length,
   }));
   await page.evaluate(() => window.nextTrainApp.closeJourneysDialog?.());
 

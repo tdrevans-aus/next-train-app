@@ -38,8 +38,6 @@ async function run() {
     throw new Error(`app.js wrapper got ${helpers.appPlus3h}`);
   }
 
-  await page.evaluate(() => window.nextTrainApp.enterJourneyMode());
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
   await openCustomJourneyCreate(page);
   const skip = page.locator("#template-wizard-skip-btn");
   if (await skip.isVisible()) {

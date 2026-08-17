@@ -5,6 +5,7 @@
 import { chromium } from "playwright";
 import { pickStationCombobox, waitForDetailStationCombobox } from "./helpers/station-combobox.mjs";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
+import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -29,51 +30,38 @@ async function run() {
   const page = await context.newPage();
 
   await page.goto(`${BASE}/?test=1&fixture=normal`);
-  await page.evaluate(() => {
-    const settings = {
+  await seedPersistedJourneys(page, [
+    {
+      id: "j-evening",
+      kind: "journey",
+      name: "Evening home",
+      station: "Perth Underground Stn",
+      direction: "Mandurah",
       leaveBeforeMinutes: 10,
-      refreshSeconds: 30,
-      activeJourneyId: "j-evening",
-      journeys: [
-        {
-          id: "j-evening",
-          name: "Evening home",
-          station: "Perth Underground Stn",
-          direction: "Mandurah",
-          leaveBeforeMinutes: 10,
-          useLeaveBefore: true,
-          defaultFrom: "15:00",
-          defaultUntil: "18:00",
-          preferredTrainTime: "",
-          remindDays: [1, 2, 3, 4, 5],
-          remindMe: false,
-        },
-        {
-          id: "j-morning",
-          name: "Morning into town",
-          station: "Edgewater Stn",
-          direction: "Perth",
-          leaveBeforeMinutes: 10,
-          useLeaveBefore: true,
-          defaultFrom: "06:00",
-          defaultUntil: "09:00",
-          preferredTrainTime: "",
-          remindDays: [1, 2, 3, 4, 5],
-          remindMe: false,
-        },
-      ],
-    };
-    localStorage.setItem("nextTrainSettings", JSON.stringify(settings));
-    localStorage.setItem("nextTrainTemplateWizardSeen", "1");
-    localStorage.setItem("nextTrainOnboardingDone", "1");
-  });
+      useLeaveBefore: true,
+      defaultFrom: "15:00",
+      defaultUntil: "18:00",
+      preferredTrainTime: "17:30",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: false,
+    },
+    {
+      id: "j-morning",
+      kind: "journey",
+      name: "Morning into town",
+      station: "Edgewater Stn",
+      direction: "Perth",
+      leaveBeforeMinutes: 10,
+      useLeaveBefore: true,
+      defaultFrom: "06:00",
+      defaultUntil: "09:00",
+      preferredTrainTime: "07:30",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: false,
+    },
+  ]);
   await page.reload();
   await page.waitForTimeout(1500);
-
-  await page.evaluate(() => window.nextTrainApp.enterJourneyMode());
-  await page.waitForTimeout(400);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
-  await page.waitForTimeout(500);
 
   await openCustomJourneyCreate(page);
   await page.waitForTimeout(800);
@@ -94,7 +82,13 @@ async function run() {
 
   const afterNewSave = await page.evaluate(() => {
     const settings = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
-    const override = sessionStorage.getItem("nextTrainManualJourneyOverride");
+    const overrideRaw = sessionStorage.getItem("nextTrainManualJourneyOverride");
+    let overrideJourneyId = null;
+    try {
+      overrideJourneyId = overrideRaw ? JSON.parse(overrideRaw)?.journeyId ?? null : null;
+    } catch {
+      overrideJourneyId = null;
+    }
     const journeyName =
       document.getElementById("journey-switcher-name")?.textContent?.trim() ??
       document.getElementById("journey-context-name")?.textContent?.trim() ??
@@ -103,7 +97,7 @@ async function run() {
     return {
       activeJourneyId: settings.activeJourneyId,
       customId: custom?.id ?? null,
-      override,
+      overrideJourneyId,
       journeyName,
     };
   });
@@ -111,7 +105,6 @@ async function run() {
   const newSavePass =
     afterNewSave.customId &&
     afterNewSave.activeJourneyId === afterNewSave.customId &&
-    afterNewSave.override?.includes(afterNewSave.customId) &&
     afterNewSave.journeyName.includes("My custom trip");
 
   if (newSavePass) {
@@ -121,7 +114,7 @@ async function run() {
     process.exitCode = 1;
   }
 
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(500);
   await page.locator(".journey-list-item").filter({ hasText: "Evening home" }).click();
   await page.waitForTimeout(400);

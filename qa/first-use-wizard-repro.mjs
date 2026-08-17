@@ -3,7 +3,7 @@
  * Usage: node qa/first-use-wizard-repro.mjs
  */
 import { chromium } from "playwright";
-import { waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
+import { advanceOnboardingToJourneysStep, waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -35,8 +35,7 @@ async function run() {
     process.exit(1);
   }
 
-  await page.locator("#onboarding-got-it-btn").click();
-  await page.waitForTimeout(300);
+  await advanceOnboardingToJourneysStep(page);
   await page.locator("#onboarding-setup-btn").click();
   await page.waitForTimeout(2500);
 

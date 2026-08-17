@@ -1,5 +1,5 @@
 /**
- * FB-23 §4 — commute auto-selection with deterministic test clock.
+ * FB-23 §4 — journey auto-selection with deterministic test clock.
  * Usage: node qa/fb-23-auto-selection.mjs
  */
 import { chromium } from "playwright";
@@ -7,10 +7,10 @@ import { chromium } from "playwright";
 const BASE = "http://localhost:3000";
 const QA_DAY = 1; // Monday
 
-function commute(id, { from, until, target, name = "Commute" }) {
+function journeyItem(id, { from, until, target, name = "Journey" }) {
   return {
     id,
-    kind: "commute",
+    kind: "journey",
     name,
     station: "Edgewater Stn",
     direction: "Perth",
@@ -64,15 +64,15 @@ async function run() {
     }
   }
 
-  // §4.1 Midday, no commute in window — do not auto-select a route.
+  // §4.1 Midday, no journey in window — do not auto-select a route.
   await openWithClock(page, "12:00", {
     settingsSchemaVersion: 2,
     refreshSeconds: 60,
     activeJourneyId: "route-a",
     journeys: [
       route("route-a"),
-      commute("commute-morning", { from: "06:00", until: "09:00", target: "07:00" }),
-      commute("commute-evening", { from: "15:00", until: "18:00", target: "17:00", name: "Evening" }),
+      journeyItem("journey-morning", { from: "06:00", until: "09:00", target: "07:00" }),
+      journeyItem("journey-evening", { from: "15:00", until: "18:00", target: "17:00", name: "Evening" }),
     ],
   });
 
@@ -89,21 +89,21 @@ async function run() {
     };
   });
 
-  assert("midday no scheduled commute", midday.scheduled === null, midday);
+  assert("midday no scheduled journey", midday.scheduled === null, midday);
   assert("midday defaults to Near me", midday.shouldNearby === true, midday);
   assert("midday does not auto-select route", middayAfter.activeAfter === "route-a", {
     ...midday,
     ...middayAfter,
   });
 
-  // §4.2 Commute in active window — auto-select that commute.
+  // §4.2 Journey in active window — auto-select that journey.
   await openWithClock(page, "07:30", {
     settingsSchemaVersion: 2,
     refreshSeconds: 60,
     activeJourneyId: "route-a",
     journeys: [
       route("route-a"),
-      commute("commute-morning", { from: "06:00", until: "09:00", target: "07:00" }),
+      journeyItem("journey-morning", { from: "06:00", until: "09:00", target: "07:00" }),
     ],
   });
 
@@ -115,17 +115,17 @@ async function run() {
     };
   });
 
-  assert("commute in window is scheduled", inWindow.scheduled === "commute-morning", inWindow);
-  assert("commute in window auto-selected", inWindow.active === "commute-morning", inWindow);
+  assert("journey in window is scheduled", inWindow.scheduled === "journey-morning", inWindow);
+  assert("journey in window auto-selected", inWindow.active === "journey-morning", inWindow);
 
-  // §4.3 Two commutes with targets — switch at midpoint (07:30).
+  // §4.3 Two journeys with targets — switch at midpoint (07:30).
   await openWithClock(page, "07:20", {
     settingsSchemaVersion: 2,
     refreshSeconds: 60,
-    activeJourneyId: "commute-early",
+    activeJourneyId: "journey-early",
     journeys: [
-      commute("commute-early", { from: "06:00", until: "09:00", target: "07:00", name: "Early" }),
-      commute("commute-late", { from: "06:00", until: "09:00", target: "08:00", name: "Late" }),
+      journeyItem("journey-early", { from: "06:00", until: "09:00", target: "07:00", name: "Early" }),
+      journeyItem("journey-late", { from: "06:00", until: "09:00", target: "08:00", name: "Late" }),
     ],
   });
 
@@ -146,8 +146,8 @@ async function run() {
     )?.id ?? null,
   }));
 
-  assert("before midpoint picks early commute", beforeMidpoint.scheduled === "commute-early", beforeMidpoint);
-  assert("after midpoint picks late commute", afterMidpoint.scheduled === "commute-late", afterMidpoint);
+  assert("before midpoint picks early journey", beforeMidpoint.scheduled === "journey-early", beforeMidpoint);
+  assert("after midpoint picks late journey", afterMidpoint.scheduled === "journey-late", afterMidpoint);
 
   // §4.4 Route only — no auto-schedule.
   await openWithClock(page, "07:30", {
@@ -166,9 +166,9 @@ async function run() {
     };
   });
 
-  assert("route-only has no scheduled commute", routeOnly.scheduled === null, routeOnly);
+  assert("route-only has no scheduled journey", routeOnly.scheduled === null, routeOnly);
   assert("route-only stays on manual route", routeOnly.active === "route-only", routeOnly);
-  assert("route-only does not imply commute schedule", routeOnly.shouldNearby === true, routeOnly);
+  assert("route-only does not imply journey schedule", routeOnly.shouldNearby === true, routeOnly);
   } finally {
     await browser.close();
   }

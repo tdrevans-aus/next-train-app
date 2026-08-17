@@ -1,5 +1,5 @@
 /**
- * Late leave nag auto-dismisses when GPS shows travel (same as I've left).
+ * Leave card auto-dismisses when GPS shows travel (same as I've left).
  * Usage: node qa/late-leave-auto-ack.mjs
  */
 import { chromium } from "playwright";
@@ -115,10 +115,31 @@ async function run() {
     return acked === true;
   });
 
-  if (movementOk && throttleOk && retryOk) {
-    console.log("PASS — late leave auto-ack on travel; 30s re-check throttle");
+  await page.goto(`${BASE}/?reset=1&test=1`);
+  await page.waitForFunction(
+    () => typeof window.nextTrainApp?.maybeAutoAcknowledgeLeave === "function"
+  );
+
+  const nowPhaseOk = await page.evaluate(async () => {
+    window.__geoCoords = { latitude: -31.7872, longitude: 115.7723, speed: 3 };
+    const leaveNext = {
+      displayTime: "5:00 pm",
+      departure: new Date(Date.now() + 8 * 60_000).toISOString(),
+      arrival: new Date(Date.now() + 8 * 60_000).toISOString(),
+      leaveBy: new Date(Date.now() - 30_000).toISOString(),
+      platform: "1",
+      status: "On Time",
+    };
+    const acked = await window.nextTrainApp.maybeAutoAcknowledgeLeave(leaveNext, {
+      station: "Edgewater Stn",
+    });
+    return acked === true && window.nextTrainApp.isLeaveAcknowledged(leaveNext);
+  });
+
+  if (movementOk && throttleOk && retryOk && nowPhaseOk) {
+    console.log("PASS — leave auto-ack on travel (late + now); 30s re-check throttle");
   } else {
-    console.error("FAIL — late-leave-auto-ack", { movementOk, throttleOk, retryOk });
+    console.error("FAIL — late-leave-auto-ack", { movementOk, throttleOk, retryOk, nowPhaseOk });
     process.exitCode = 1;
   }
 

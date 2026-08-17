@@ -3,6 +3,7 @@
  * Usage: node qa/morning-template-wizard-repro.mjs
  */
 import { chromium } from "playwright";
+import { advanceOnboardingToJourneysStep } from "./helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -32,8 +33,7 @@ async function runWizardPath({ geoDelayMs = 0, label }) {
     return { label, error: "onboarding step 1 never appeared", geoDelayMs };
   }
 
-  await page.locator("#onboarding-got-it-btn").click();
-  await page.waitForTimeout(300);
+  await advanceOnboardingToJourneysStep(page);
   await page.locator("#onboarding-setup-btn").click();
   await page.waitForTimeout(600);
 

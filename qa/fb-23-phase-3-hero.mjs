@@ -16,7 +16,7 @@ async function run() {
     const jm = window.nextTrainJourneyModel;
     const morning = jm.normalizeJourney({
       id: "j-morning",
-      kind: "commute",
+      kind: "journey",
       name: "Morning",
       station: "Edgewater Stn",
       direction: "Perth",
@@ -26,7 +26,7 @@ async function run() {
     });
     const later = jm.normalizeJourney({
       id: "j-later",
-      kind: "commute",
+      kind: "journey",
       name: "Later",
       station: "Edgewater Stn",
       direction: "Perth",

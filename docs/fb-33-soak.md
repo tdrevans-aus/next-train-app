@@ -56,6 +56,7 @@ When soak passes, update `docs/release-versioning.md` — remove “CI soak” f
 
 | Script | Symptom | Fix / PR |
 | --- | --- | --- |
+| `patch-ship-gate.mjs` / `release-prep.mjs` / `widget-theme-palettes.mjs` | Nightly web job has no `cap sync` | Excluded from `run-all.mjs` — run via `release:prep` / `android-unit` |
 | `smoke-browser.mjs` tests 6–7 | Leave card urgent/late timeout in CI | `armFixtureLeaveCard` — fixture-aligned preferred pin; no `station`/`direction` in reload URL (avoids `readUrlSettings()` wipe) |
 | `smoke-browser.mjs` test 8 | Empty fixture race (`—` before “No upcoming”) | `waitForDepartText` — PR #32 |
 

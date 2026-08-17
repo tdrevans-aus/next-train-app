@@ -61,7 +61,7 @@ Does **not** replace `TESTING.md` §22 (stale face, Updated clipping, etc.).
 | File | Covers |
 |------|--------|
 | `smoke-app-opens.yaml` | Cold start → nearby board visible |
-| `journeys-dialog.yaml` | Seed journey → double-tap My Journeys → list |
+| `journeys-dialog.yaml` | Seed journey → chrome (My Routes / My Journeys) → double-tap My Journeys → Journeys library |
 | `menu-reminders.yaml` | Menu → Reminder settings |
 | `widget-face.yaml` | Home screen widget tap → app foreground |
 

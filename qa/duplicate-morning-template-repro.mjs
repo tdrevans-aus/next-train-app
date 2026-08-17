@@ -28,7 +28,7 @@ async function run() {
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(2000);
 
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(600);
 
   await page.locator('[data-template="morning"]').click();

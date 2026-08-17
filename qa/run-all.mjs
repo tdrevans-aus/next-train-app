@@ -71,6 +71,11 @@ const RUNNER_EXCLUDE = new Set([
   "run-all.mjs",
   "pre-upload-check.mjs",
   "pre-release.mjs",
+  /** Hotfix / Play upload gates — need cap sync; run via npm run test:patch-ship / release:prep. */
+  "patch-ship-gate.mjs",
+  "release-prep.mjs",
+  /** Gradle widget palette tests — android-unit job runs cap sync + JVM. */
+  "widget-theme-palettes.mjs",
   /** Meta health-check — uses gh CLI, not a web regression (see soak:status). */
   "soak-status.mjs",
   /** Android JVM — separate CI job (android-unit) runs cap sync + Gradle. */

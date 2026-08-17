@@ -6,6 +6,12 @@
  * scrolling them into view, not every chip in the long form.
  */
 import { chromium } from "playwright";
+import {
+  dismissTemplateCoach,
+  openJourneyDetail,
+  openJourneysLibraryDialog,
+} from "./helpers/journeys-dialog.mjs";
+import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 const VIEWPORT = { width: 390, height: 844 };
@@ -124,55 +130,6 @@ async function clickChrome(page, selector) {
   await page.waitForTimeout(400);
 }
 
-async function openJourneysDialog(page) {
-  await clickChrome(page, "#journeys-btn");
-  await page.evaluate(() => document.getElementById("journeys-btn")?.click());
-  await page.waitForTimeout(700);
-}
-
-async function dismissTemplateCoach(page) {
-  await page.evaluate(() => {
-    const coach = document.getElementById("template-route-coach");
-    if (coach && !coach.hidden) {
-      coach.hidden = true;
-    }
-  });
-}
-
-async function seedTwoJourneys(page) {
-  await page.evaluate(() => {
-    localStorage.setItem(
-      "nextTrainSettings",
-      JSON.stringify({
-        refreshSeconds: 60,
-        activeJourneyId: "j-a",
-        journeys: [
-          {
-            id: "j-a",
-            name: "Morning into town",
-            station: "Burswood",
-            direction: "Perth",
-            leaveBeforeMinutes: 10,
-            useLeaveBefore: true,
-            defaultFrom: "06:00",
-            defaultUntil: "09:00",
-          },
-          {
-            id: "j-b",
-            name: "Evening home",
-            station: "Perth Stn",
-            direction: "Mandurah",
-            leaveBeforeMinutes: 10,
-            useLeaveBefore: true,
-            defaultFrom: "15:00",
-            defaultUntil: "18:00",
-          },
-        ],
-      })
-    );
-  });
-}
-
 async function run() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
@@ -191,8 +148,8 @@ async function run() {
     record("main chrome", true, `${main.checked.length} controls in viewport`);
   }
 
-  // Journeys list
-  await openJourneysDialog(page);
+  // Journeys library
+  await openJourneysLibraryDialog(page);
   const list = await auditButtons(page, "#settings-list-view", "dialog");
   if (list.error) {
     record("journeys list", false, list.error);
@@ -204,12 +161,40 @@ async function run() {
 
   // Journey detail — sticky footer: Cancel/Save visible; back + chips may scroll
   await closeAllDialogs(page);
-  await seedTwoJourneys(page);
+  await seedPersistedJourneys(page, [
+    {
+      id: "j-a",
+      kind: "journey",
+      name: "Morning into town",
+      station: "Burswood",
+      direction: "Perth",
+      leaveBeforeMinutes: 10,
+      useLeaveBefore: true,
+      defaultFrom: "06:00",
+      defaultUntil: "09:00",
+      preferredTrainTime: "07:30",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: false,
+    },
+    {
+      id: "j-b",
+      kind: "journey",
+      name: "Evening home",
+      station: "Perth Stn",
+      direction: "Mandurah",
+      leaveBeforeMinutes: 10,
+      useLeaveBefore: true,
+      defaultFrom: "15:00",
+      defaultUntil: "18:00",
+      preferredTrainTime: "17:30",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: false,
+    },
+  ]);
   await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.waitForTimeout(1500);
-  await openJourneysDialog(page);
-  await page.locator(".journey-list-open-btn").first().click();
-  await page.waitForTimeout(1200);
+  await openJourneyDetail(page, "j-a");
+  await page.waitForTimeout(800);
   await dismissTemplateCoach(page);
 
   const deleteVisible = await page.evaluate(
@@ -235,7 +220,11 @@ async function run() {
   } else if (detail.issues.length) {
     record("journey detail", false, JSON.stringify(detail.issues));
   } else {
-    record("journey detail", true, `Back + Delete + Save + Cancel visible (${detail.checked.length} controls)`);
+    record(
+      "journey detail",
+      true,
+      `Back + Delete + Save + Cancel visible (${detail.checked.length} controls)`
+    );
   }
 
   // Menu

@@ -3,6 +3,7 @@
  * Usage: node qa/delete-last-journey.mjs
  */
 import { chromium } from "playwright";
+import { clickJourneyListItem } from "./helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 const CONFIRM_TEXT = "Are you sure you want to delete this journey? This action cannot be undone.";
@@ -28,7 +29,7 @@ async function run() {
       journeys: [
         {
           id: "j-only",
-          kind: "commute",
+          kind: "journey",
           name: "Solo commute",
           station: "Edgewater Stn",
           direction: "Perth",
@@ -49,7 +50,7 @@ async function run() {
 
   await page.evaluate(() => window.nextTrainApp.openJourneysLibrary?.());
   await page.waitForTimeout(500);
-  await page.locator(".journey-list-open-btn").click();
+  await clickJourneyListItem(page, "j-only");
   await page.waitForTimeout(800);
 
   const deleteVisible = await page.evaluate(

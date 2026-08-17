@@ -29,11 +29,12 @@ async function run() {
   }));
   console.log("After early Journeys tap:", afterEarlyJourneys);
 
-  // Open template picker via hero CTA or second Journeys tap.
   if (afterEarlyJourneys.heroSetup) {
     await page.locator("#hero-empty-add-btn").click();
   } else {
-    await page.locator("#journeys-btn").click();
+    await page.evaluate(() => window.nextTrainApp.openJourneysLibrary?.());
+    await page.waitForTimeout(400);
+    await page.locator('[data-template="morning"]').click();
   }
   await page.waitForTimeout(2500);
 

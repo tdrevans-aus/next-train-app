@@ -1,6 +1,8 @@
 /**
  * Playwright helpers — My Journeys dialog (double-tap chrome, backdrop cleanup).
  */
+import { clickJourneyListItem, openJourneysLibrary } from "./travel-library.mjs";
+
 export async function closeJourneysDialog(page) {
   await page.evaluate(() => {
     if (window.nextTrainApp?.closeJourneysDialog) {
@@ -23,8 +25,8 @@ export async function closeJourneysDialog(page) {
 /** Open Journeys library sheet. */
 export async function openJourneysLibraryDialog(page) {
   await closeJourneysDialog(page);
-  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary?.());
-  await page.waitForTimeout(800);
+  await openJourneysLibrary(page);
+  await page.waitForTimeout(300);
 }
 
 export async function openJourneysDialog(page) {
@@ -40,7 +42,7 @@ export async function dismissTemplateCoach(page) {
   });
 }
 
-/** Target train time + walk buffer are always shown for journey-kind commutes. */
+/** Target train time + walk buffer are always shown for journey-kind items. */
 export async function enableTargetTrainOnDetail(page) {
   await dismissTemplateCoach(page);
   await page.locator("#detail-target-nest").waitFor({ state: "visible", timeout: 5000 });
@@ -57,9 +59,7 @@ export async function openJourneyDetail(page, journeyId, options = {}) {
     return true;
   }, journeyId);
   if (!opened) {
-    await page
-      .locator(`.journey-list-item[data-journey-id="${journeyId}"] .journey-list-open-btn`)
-      .click({ timeout: 15000 });
+    await clickJourneyListItem(page, journeyId);
   }
   await page.waitForSelector("#settings-detail-view", { state: "visible", timeout: 15000 });
   await page.waitForTimeout(400);

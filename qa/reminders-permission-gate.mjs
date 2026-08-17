@@ -17,7 +17,7 @@ const JOURNEY_ID = "j-perm-gate";
 
 const JOURNEY = {
   id: JOURNEY_ID,
-  kind: "commute",
+  kind: "journey",
   name: "Permission gate commute",
   station: "Edgewater Stn",
   direction: "Perth",

@@ -19,7 +19,7 @@ async function run() {
   });
 
   await page.goto(
-    `${BASE}/?test=1&fixture=normal&station=${encodeURIComponent(ATTACK_STATION)}&direction=Perth`
+    `${BASE}/?reset=1&test=1&fixture=normal&station=${encodeURIComponent(ATTACK_STATION)}&direction=Perth`
   );
   await page.waitForTimeout(2000);
 
@@ -51,7 +51,7 @@ async function run() {
   }
 
   await page.goto(
-    `${BASE}/?test=1&fixture=normal&station=${encodeURIComponent(VALID_STATION)}&direction=Perth`
+    `${BASE}/?reset=1&test=1&fixture=normal&station=${encodeURIComponent(VALID_STATION)}&direction=Perth`
   );
   await page.waitForTimeout(2000);
 

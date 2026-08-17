@@ -2,8 +2,10 @@
  * Reproduce unreliable hero swipe-left on fresh load.
  */
 import { chromium } from "playwright";
+import { armJourneyLeaveCard } from "./helpers/journey-smoke.mjs";
 
 const BASE = "http://localhost:3000";
+const FIXTURE_RESET_URL = `${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`;
 
 async function swipeVariant(page, { deltaX, deltaY, releaseOn }) {
   return page.evaluate(
@@ -60,37 +62,28 @@ async function countSwipesUntilChange(page, label) {
   return { label, attempts, before, after: await page.locator("#depart-countdown").textContent(), failed: true };
 }
 
+async function loadFixtureHero(page) {
+  await page.goto(FIXTURE_RESET_URL);
+  await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
+}
+
 async function run() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ hasTouch: true });
   const page = await context.newPage();
   const results = [];
 
-  // Fresh load #1 — swipe immediately when hero shows times
-  await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForFunction(() => {
-    const t = document.getElementById("depart-countdown")?.textContent ?? "";
-    return /\d+\s*min/i.test(t);
-  });
+  await loadFixtureHero(page);
   results.push(await countSwipesUntilChange(page, "fresh-load-1"));
 
-  // Fresh load #2
-  await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForFunction(() => {
-    const t = document.getElementById("depart-countdown")?.textContent ?? "";
-    return /\d+\s*min/i.test(t);
-  });
+  await loadFixtureHero(page);
   results.push(await countSwipesUntilChange(page, "fresh-load-2"));
 
-  // Short swipe (under 48px threshold)
-  await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForFunction(() => /\d+\s*min/i.test(document.getElementById("depart-countdown")?.textContent ?? ""));
+  await loadFixtureHero(page);
   const short = await swipeVariant(page, { deltaX: -40, deltaY: 0, releaseOn: "hero" });
   results.push({ label: "short-swipe-40px", ...short });
 
-  // Release outside hero (simulates finger lifting off card edge)
-  await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
-  await page.waitForFunction(() => /\d+\s*min/i.test(document.getElementById("depart-countdown")?.textContent ?? ""));
+  await loadFixtureHero(page);
   const outside = await swipeVariant(page, { deltaX: -80, deltaY: 50, releaseOn: "document" });
   results.push({ label: "release-outside-hero", ...outside });
 

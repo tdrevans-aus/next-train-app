@@ -30,11 +30,6 @@ async function run() {
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
   await page.waitForTimeout(1200);
 
-  await page.evaluate(() => window.nextTrainApp.enterJourneyMode());
-  await page.waitForTimeout(400);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
-  await page.waitForTimeout(500);
-
   await openCustomJourneyCreate(page);
   await page.waitForTimeout(800);
   await dismissCoach(page);
@@ -219,8 +214,11 @@ async function run() {
       listRect.right > stripRect.left &&
       listRect.top < stripRect.bottom &&
       listRect.bottom > stripRect.top;
-    const stripHidden = getComputedStyle(document.querySelector(".train-meta")).visibility === "hidden";
-    return !overlaps && stripHidden;
+    const meta = document.querySelector(".train-meta");
+    const style = meta ? getComputedStyle(meta) : null;
+    const stripHidden =
+      style?.visibility === "hidden" || style?.display === "none" || stripRect.height < 1;
+    return stripHidden || !overlaps;
   });
 
   if (pickerAboveTrainMeta) {

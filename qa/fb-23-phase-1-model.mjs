@@ -1,5 +1,5 @@
 /**
- * FB-23 Phase 1 — settings reset, route field strip, upgradeRouteToCommute.
+ * FB-23 Phase 1 — settings reset, route field strip, upgradeRouteToJourney.
  * Usage: node qa/fb-23-phase-1-model.mjs
  */
 import { chromium } from "playwright";
@@ -25,7 +25,7 @@ async function run() {
       remindMe: true,
       templateKey: "morning",
     });
-    const upgraded = jm.upgradeRouteToCommute({
+    const upgraded = jm.upgradeRouteToJourney({
       id: "j-up",
       name: "Work",
       station: "Edgewater Stn",
@@ -94,7 +94,7 @@ async function run() {
   const pass =
     modelResults.routeKind === "route" &&
     modelResults.routeStripped &&
-    modelResults.upgradedKind === "commute" &&
+    modelResults.upgradedKind === "journey" &&
     modelResults.upgradedHasTarget &&
     modelResults.createdRouteKind === "route" &&
     resetResults.schemaVersion === 2 &&

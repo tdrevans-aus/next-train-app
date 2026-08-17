@@ -54,7 +54,7 @@ async function run() {
 
   await page.reload();
   await page.waitForTimeout(1200);
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(500);
 
   const chips = await page.evaluate(() => ({

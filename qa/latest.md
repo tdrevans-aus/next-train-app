@@ -2,6 +2,23 @@
 
 ---
 
+## QA nightly triage — 17 Aug 2026 (run [#31994432594](https://github.com/tdrevans-aus/next-train-app/actions/runs/31994432594))
+
+**CI:** 19 FAIL / 73 scripts · ~20 min (job limit 45 min — not a timeout).
+
+| Bucket | Scripts | Action |
+|--------|---------|--------|
+| **Infra false positive** | `patch-ship-gate`, `release-prep`, `widget-theme-palettes` | **Excluded** from `run-all.mjs` nightly suite (need `cap sync` / pre-upload) |
+| **App bug fixed** | `clearPairedActiveHourField` | Clear both active-hour fields; skip auto-refill on explicit clear |
+| **Share URL bug fixed** | `readUrlSettings` | Include `settingsSchemaVersion: 2` so `migrateSettings` does not wipe journeys |
+| **Tests updated** | `active-hours-clear-pair`, `new-journey-show-now`, `other-directions-journey-repro`, `security-xss-share` | Match FB-23 chrome + schema v2 |
+| **CI-only flakes (pass locally)** | `button-visibility`, `first-use-wizard-repro`, `duplicate-morning-template-repro`, `morning-template-wizard-repro`, `preferred-always-visible` | Hardened `clickJourneyListItem` to use `openJourneyDetail` API first |
+| **Fixed (17 Aug follow-up)** | `journey-cap-repro`, `commute-strip-cdp`, `swipe-repro`, `station-typeahead` | Cap at 5 + preferred time; schema v2 seed; `armJourneyLeaveCard`; hide train-meta when combobox open |
+
+**Local re-check (post-fix):** `security-xss-share`, `new-journey-show-now`, `active-hours-clear-pair`, `other-directions-journey-repro`, `journey-cap-repro`, `commute-strip-cdp`, `swipe-repro`, `station-typeahead` → **PASS**.
+
+---
+
 ## Template wizard Active hours coach z-index (~10:05 AWST 11 Aug)
 
 **Report:** Tim — Active hours coach still hidden behind Active from/until on device during AAB prep.

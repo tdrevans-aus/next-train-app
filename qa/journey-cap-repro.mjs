@@ -19,6 +19,23 @@ async function dismissCoach(page) {
   }
 }
 
+async function setOptionalTime(page, fieldId, value) {
+  await page.evaluate(
+    ({ fieldId, value }) => {
+      const field = document.getElementById(fieldId);
+      const input = field?.querySelector(".optional-time-input");
+      if (!input) {
+        return;
+      }
+      input.value = value;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    },
+    { fieldId, value }
+  );
+  await page.waitForTimeout(150);
+}
+
 async function setOptionalTimes(page, from, until) {
   await page.evaluate(
     ({ from, until }) => {
@@ -52,19 +69,25 @@ async function setOptionalTimes(page, from, until) {
   );
 }
 
-async function addCustomJourney(page, { name, station, direction, from, until }) {
-  await page.evaluate(() => window.nextTrainApp.openJourneys());
+async function addCustomJourney(page, { name, station, direction, from, until, preferred }) {
+  await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(500);
 
-  const templatesHidden = await page.evaluate(
-    () => document.getElementById("journey-templates").hidden
-  );
-  const atCap = await page.evaluate(() => {
+  const gate = await page.evaluate(() => {
     const capHint = document.getElementById("journey-templates-cap-hint");
-    return capHint && !capHint.hidden;
+    const setup = document.getElementById("journey-setup-btn");
+    const templates = document.getElementById("journey-templates");
+    const atCap = Boolean(capHint && !capHint.hidden) || Boolean(setup?.hidden);
+    return {
+      atCap,
+      templatesHidden: templates?.hidden ?? true,
+    };
   });
-  if (templatesHidden || atCap) {
-    return { added: false, reason: atCap ? "at-cap" : "templates-hidden" };
+  if (gate.atCap) {
+    return { added: false, reason: "at-cap" };
+  }
+  if (gate.templatesHidden) {
+    return { added: false, reason: "templates-hidden" };
   }
 
   await openCustomJourneyCreate(page);
@@ -78,18 +101,39 @@ async function addCustomJourney(page, { name, station, direction, from, until })
     listboxSelector: "#detail-station-listbox",
     station,
   });
-  await page.selectOption("#detail-direction-select", direction);
+  await page.selectOption("#detail-direction-select", { label: direction });
+  const targetTime = preferred ?? from;
+  await setOptionalTime(page, "detail-preferred-field", targetTime);
   await setOptionalTimes(page, from, until);
+
+  let dialogMessage = "";
+  page.once("dialog", async (dialog) => {
+    dialogMessage = dialog.message();
+    await dialog.dismiss();
+  });
 
   const saveStart = Date.now();
   await page.locator("#detail-done-btn").click();
   await page.waitForTimeout(800);
   const saveMs = Date.now() - saveStart;
 
+  if (dialogMessage) {
+    return { added: false, saveMs, overlapError: "", reason: dialogMessage };
+  }
+
   const overlapError = await page.evaluate(() => {
     const el = document.getElementById("detail-active-hours-error");
     return el && !el.hidden ? el.textContent.trim() : "";
   });
+
+  const persisted = await page.evaluate((journeyName) => {
+    const journeys = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys ?? [];
+    return journeys.some((journey) => journey.name === journeyName);
+  }, name);
+
+  if (!persisted) {
+    return { added: false, saveMs, overlapError, reason: "not-persisted" };
+  }
 
   const onList = await page.evaluate(
     () => !document.getElementById("settings-list-view").hidden
@@ -120,13 +164,15 @@ async function run() {
       direction: "Perth",
       from: "06:00",
       until: "09:00",
+      preferred: "07:30",
     },
     {
       name: "J2 overlap test",
       station: "Warwick Stn",
       direction: "Perth",
-      from: "06:00",
-      until: "09:00",
+      from: "06:30",
+      until: "09:30",
+      preferred: "08:00",
     },
     {
       name: "J3 overlap test",
@@ -134,13 +180,15 @@ async function run() {
       direction: "Mandurah",
       from: "15:00",
       until: "18:00",
+      preferred: "16:30",
     },
     {
       name: "J4 overlap test",
       station: "Bull Creek Stn",
       direction: "Mandurah",
-      from: "15:00",
-      until: "18:00",
+      from: "15:30",
+      until: "18:30",
+      preferred: "17:00",
     },
   ];
 
@@ -160,9 +208,10 @@ async function run() {
   await page.waitForTimeout(1500);
 
   const capResults = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     const from = `${String(6 + i).padStart(2, "0")}:00`;
     const until = `${String(7 + i).padStart(2, "0")}:00`;
+    const preferred = `${String(6 + i).padStart(2, "0")}:30`;
     capResults.push(
       await addCustomJourney(page, {
         name: `Cap journey ${i + 1}`,
@@ -170,23 +219,25 @@ async function run() {
         direction: "Perth",
         from,
         until,
+        preferred,
       })
     );
   }
 
-  const after6 = await page.evaluate(() => ({
+  const after5 = await page.evaluate(() => ({
     persisted: JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.length ?? 0,
     templatesHidden: document.getElementById("journey-templates").hidden,
     capHintVisible: !document.getElementById("journey-templates-cap-hint")?.hidden,
     listItems: document.querySelectorAll(".journey-list-item").length,
   }));
 
-  const seventhAttempt = await addCustomJourney(page, {
-    name: "Cap journey 7",
+  const sixthAttempt = await addCustomJourney(page, {
+    name: "Cap journey 6",
     station: "Murdoch Stn",
     direction: "Perth",
     from: "18:00",
     until: "19:00",
+    preferred: "18:30",
   });
 
   const final = await page.evaluate(() => {
@@ -217,9 +268,9 @@ async function run() {
   console.log("\nJourney cap + 4-journey overlap repro\n");
   console.log("Overlap batch results:", overlapResults);
   console.log("After overlap batch:", afterOverlapBatch);
-  console.log("Cap add results (6):", capResults);
-  console.log("After 6:", after6);
-  console.log("7th attempt:", seventhAttempt);
+  console.log("Cap add results (5):", capResults);
+  console.log("After 5:", after5);
+  console.log("6th attempt:", sixthAttempt);
   console.log("Final:", final);
   console.log(`Max save click duration: ${maxSaveMs}ms`);
   if (overlapOn4th) {
@@ -227,12 +278,11 @@ async function run() {
   }
 
   const capOk =
-    after6.persisted === 6 &&
-    !after6.templatesHidden &&
-    after6.capHintVisible &&
-    seventhAttempt.added === false &&
-    seventhAttempt.reason === "at-cap" &&
-    final.persisted === 6 &&
+    after5.persisted === 5 &&
+    after5.capHintVisible &&
+    sixthAttempt.added === false &&
+    sixthAttempt.reason === "at-cap" &&
+    final.persisted === 5 &&
     final.hasCapMessage;
 
   const webNoHang = maxSaveMs < 5000;
@@ -244,7 +294,7 @@ async function run() {
   );
   console.log(
     capOk
-      ? "PASS  Cap enforced at 6 (cap hint shown, count ≤6).\n"
+      ? "PASS  Cap enforced at 5 (cap hint shown, count ≤5).\n"
       : "FAIL  Cap UX/count unexpected.\n"
   );
   console.log(

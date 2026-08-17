@@ -18,6 +18,7 @@
       "platform": "2",
       "holdingUntilMs": 1786837200000
     },
+    "nearbyFocusedDirection": "Perth",
     "payload": {
       "next": {
         "departure": "2026-08-15T06:30:00+08:00",

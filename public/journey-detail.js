@@ -129,6 +129,10 @@
     return deps.getJourneyRemindDays?.(journey) ?? [];
   }
 
+  function formatJourneyActiveDays(journey) {
+    return deps.formatJourneyActiveDays?.(journey) ?? "";
+  }
+
   function formatJourneyDefaultWindow(journey) {
     return deps.formatJourneyDefaultWindow?.(journey) ?? "";
   }
@@ -176,11 +180,11 @@
   }
 
   function journeyMatchesLibraryKind(journey) {
-    return libraryKind === "routes" ? isRouteJourney(journey) : isCommuteJourney(journey);
+    return libraryKind === "routes" ? isRouteJourney(journey) : isJourneyKind(journey);
   }
 
-  function isCommuteJourney(journey) {
-    return deps.isCommuteJourney?.(journey) ?? false;
+  function isJourneyKind(journey) {
+    return deps.isJourneyKind?.(journey) ?? false;
   }
 
   function isRouteJourney(journey) {
@@ -198,9 +202,9 @@
     }
 
     const parts = [formatJourneyRoute(journey)];
-    const windowLabel = formatJourneyDefaultWindow(journey);
-    if (windowLabel && windowLabel !== "Not set") {
-      parts.push(windowLabel);
+    const daysLabel = formatJourneyActiveDays(journey);
+    if (daysLabel) {
+      parts.push(daysLabel);
     }
     if (journey.preferredTrainTime) {
       parts.push(`Target ${journey.preferredTrainTime}`);
@@ -220,7 +224,7 @@
 
     if (settingsDetailView) {
       settingsDetailView.classList.toggle("settings-detail-view--route", route);
-      settingsDetailView.classList.toggle("settings-detail-view--commute", !route);
+      settingsDetailView.classList.toggle("settings-detail-view--journey", !route);
     }
 
     if (detailJourneyNameField) {
@@ -383,8 +387,8 @@
     return deps.getInboundJourney?.(journeys) ?? null;
   }
 
-  function isOutboundCommuteJourney(journey) {
-    return deps.isOutboundCommuteJourney?.(journey) ?? false;
+  function isOutboundJourney(journey) {
+    return deps.isOutboundJourney?.(journey) ?? false;
   }
 
   function markInitialJourneySetup() {
@@ -485,7 +489,7 @@ function shouldShowDetailDeleteButton(journey = null) {
     return false;
   }
 
-  return libraryKind === "routes" ? isRouteJourney(draft) : isCommuteJourney(draft);
+  return libraryKind === "routes" ? isRouteJourney(draft) : isJourneyKind(draft);
 }
 
 function syncDetailDeleteChrome(journey = null) {
@@ -632,7 +636,7 @@ function setDetailJourneyWindow(from, until) {
 }
 
 function maybeDefaultJourneyWindowFromTarget(preferredTrainTime) {
-  if (!isCommuteDetailEditor() || !preferredTrainTime) {
+  if (!isJourneyDetailEditor() || !preferredTrainTime) {
     return;
   }
 
@@ -651,7 +655,7 @@ function maybeDefaultJourneyWindowFromTarget(preferredTrainTime) {
 }
 
 function amendJourneyWindowFromTargetIfNeeded(preferredTrainTime) {
-  if (!isCommuteDetailEditor() || !preferredTrainTime) {
+  if (!isJourneyDetailEditor() || !preferredTrainTime) {
     return;
   }
 
@@ -673,9 +677,11 @@ function amendJourneyWindowFromTargetIfNeeded(preferredTrainTime) {
   setDetailJourneyWindow(from, until);
 }
 
-function syncDetailComboHints({ amendWindowFromTarget = false } = {}) {
+function syncDetailComboHints({ amendWindowFromTarget = false, skipWindowDefault = false } = {}) {
   const preferredTrainTime = readOptionalTimeField(detailPreferredField);
-  maybeDefaultJourneyWindowFromTarget(preferredTrainTime);
+  if (!skipWindowDefault) {
+    maybeDefaultJourneyWindowFromTarget(preferredTrainTime);
+  }
   if (amendWindowFromTarget) {
     amendJourneyWindowFromTargetIfNeeded(preferredTrainTime);
   }
@@ -740,34 +746,31 @@ function normalizeActiveHoursFieldsForSave() {
   return { defaultFrom, defaultUntil };
 }
 
-function clearPairedActiveHourField(clearedSide) {
-  if (clearedSide === "from") {
-    setOptionalTimeField(
-      detailDefaultUntilInput,
-      detailDefaultUntilDisplay,
-      detailDefaultUntilField,
-      detailDefaultUntilClear,
-      ""
-    );
-  } else if (clearedSide === "until") {
-    setOptionalTimeField(
-      detailDefaultFromInput,
-      detailDefaultFromDisplay,
-      detailDefaultFromField,
-      detailDefaultFromClear,
-      ""
-    );
-  }
+function clearPairedActiveHourField(_clearedSide) {
+  setOptionalTimeField(
+    detailDefaultFromInput,
+    detailDefaultFromDisplay,
+    detailDefaultFromField,
+    detailDefaultFromClear,
+    ""
+  );
+  setOptionalTimeField(
+    detailDefaultUntilInput,
+    detailDefaultUntilDisplay,
+    detailDefaultUntilField,
+    detailDefaultUntilClear,
+    ""
+  );
   clearJourneyOverlapError();
-  syncDetailComboHints();
+  syncDetailComboHints({ skipWindowDefault: true });
 }
 
-function isCommuteDetailEditor() {
+function isJourneyDetailEditor() {
   return !isRouteEditorContext();
 }
 
 function isDetailTargetMasterOn() {
-  return isCommuteDetailEditor();
+  return isJourneyDetailEditor();
 }
 
 function syncDetailTargetMasterVisibility({ seedTime = false } = {}) {
@@ -1106,7 +1109,7 @@ function showSettingsDetailView() {
   settingsDetailView.hidden = false;
   syncLibraryChrome();
   syncJourneysDialogSheetMode();
-  syncDetailFormForJourneyKind({ kind: libraryKind === "routes" ? "route" : "commute" });
+  syncDetailFormForJourneyKind({ kind: libraryKind === "routes" ? "route" : "journey" });
   syncDetailDeleteChrome();
   if (isNativeApp()) {
     void window.NextTrainAds?.hideNativeBanner?.({ force: true });
@@ -1574,7 +1577,7 @@ function readJourneyDetailDraft() {
     preferredTrainTime,
     remindDays,
     remindMe,
-    kind: "commute",
+    kind: "journey",
     templateKey: existing?.templateKey,
     autoRoute: existing?.autoRoute,
   });
@@ -1689,9 +1692,9 @@ function renderJourneyListView() {
 
     const badge = document.createElement("span");
     badge.className = `journey-kind-badge journey-kind-badge--${
-      isCommuteJourney(journey) ? "commute" : "route"
+      isJourneyKind(journey) ? "journey" : "route"
     }`;
-    badge.textContent = isCommuteJourney(journey) ? "Journey" : "Route";
+    badge.textContent = isJourneyKind(journey) ? "Journey" : "Route";
 
     const chevron = document.createElement("span");
     chevron.className = "journey-list-chevron";
@@ -1905,7 +1908,7 @@ function saveJourneyDetailFromForm() {
     setManualJourneyOverride(editingJourneyId);
   } else if (manualOverride?.journeyId) {
     activeJourneyId = manualOverride.journeyId;
-  } else if (!isOutboundCommuteJourney(updated)) {
+  } else if (!isOutboundJourney(updated)) {
     activeJourneyId = editingJourneyId;
   } else if (!getSettingsDraftJourneys().some((journey) => journey.id === activeJourneyId)) {
     activeJourneyId = getInboundJourney(getSettingsDraftJourneys())?.id ?? getSettingsDraftJourneys()[0]?.id ?? null;
@@ -1966,13 +1969,6 @@ function initJourneyDetailListeners() {
       detailRemindMeInput.dataset.userTouched = "1";
     }
     void handleDetailRemindToggleChange();
-  });
-
-  detailDefaultFromClear?.addEventListener("click", () => {
-    clearPairedActiveHourField("from");
-  });
-  detailDefaultUntilClear?.addEventListener("click", () => {
-    clearPairedActiveHourField("until");
   });
 
   detailDefaultFromInput?.addEventListener("change", () => {
