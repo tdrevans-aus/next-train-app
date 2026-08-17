@@ -1,6 +1,6 @@
 {
   "id": "nearby-pin-expired",
-  "description": "Expired nearby pin does not own hero; face reverts to true next.",
+  "description": "Expired nearby pin does not own hero or widget; both revert to journey target / nothing.",
   "tags": ["nearby"],
   "clock": {
     "perthDateKey": "2026-08-15",
@@ -44,7 +44,7 @@
     "heroDeparture": "2026-08-15T06:30:00+08:00",
     "leaveDeparture": "2026-08-15T06:30:00+08:00",
     "secondaryNextDeparture": null,
-    "widgetFaceDeparture": "2026-08-15T06:30:00+08:00",
+    "widgetFaceDeparture": null,
     "isPinnedToday": false,
     "heroShowsPin": false,
     "isOverrideActiveToday": false,

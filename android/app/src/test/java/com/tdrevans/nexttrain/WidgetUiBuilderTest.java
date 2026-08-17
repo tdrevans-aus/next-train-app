@@ -9,9 +9,9 @@ import org.junit.Test;
 public class WidgetUiBuilderTest {
 
   @Test
-  public void isOutsideHoursIdleFace_liveTargetTrainKeepsLiveFace() throws Exception {
+  public void isOutsideHoursIdleFace_liveTargetKeepsLiveFace() throws Exception {
     org.json.JSONObject live = new org.json.JSONObject();
-    live.put("label", "Target Train");
+    live.put("label", "Target");
     live.put("outsideHoursIdle", false);
     live.put("trainClock", "5:42 pm");
     live.put("primary", "3 min");
@@ -56,7 +56,10 @@ public class WidgetUiBuilderTest {
   }
 
   @Test
-  public void liveLeaveValueTextSizeSp_shrinksNowOnSmall2x1() {
+  public void liveLeaveValueTextSizeSp_shrinksOnCompact2x1() {
+    WidgetUiBuilder.WidgetSize compact = WidgetLayoutTestSupport.small2x1();
+    assertEquals(20f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", compact), 0.01f);
+    assertEquals(24f, WidgetUiBuilder.liveLeaveValueTextSizeSp("4", compact), 0.01f);
     assertEquals(24f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", false, 1f), 0.01f);
     assertEquals(28f, WidgetUiBuilder.liveLeaveValueTextSizeSp("4", false, 1f), 0.01f);
     assertEquals(34f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", true, 1f), 0.01f);
@@ -84,6 +87,48 @@ public class WidgetUiBuilderTest {
     assertEquals("Fetching…", WidgetUiBuilder.compactLeaveSecondary("Fetching next train…"));
     assertEquals("Open", WidgetUiBuilder.compactLeaveSecondary("Open app"));
     assertEquals("", WidgetUiBuilder.compactLeaveSecondary(""));
+  }
+
+  @Test
+  public void formatWidgetRouteLine_abbreviatesOnTwoCellWidth() {
+    WidgetUiBuilder.WidgetSize narrow =
+      new WidgetUiBuilder.WidgetSize(110, 110, R.layout.widget_medium);
+    WidgetUiBuilder.WidgetSize wide =
+      new WidgetUiBuilder.WidgetSize(250, 80, R.layout.widget_medium);
+    assertEquals("Perth", WidgetUiBuilder.formatWidgetRouteLine("Edgewater → Perth", narrow));
+    assertEquals(
+      "Edgewater → Perth",
+      WidgetUiBuilder.formatWidgetRouteLine("Edgewater → Perth", wide)
+    );
+  }
+
+  @Test
+  public void liveRouteLineTextSizeSp_doesNotUpscaleOnTallNarrowCell() {
+    WidgetUiBuilder.WidgetSize narrowTwoByTwo =
+      new WidgetUiBuilder.WidgetSize(110, 110, R.layout.widget_medium);
+    assertEquals(
+      13f,
+      WidgetUiBuilder.liveRouteLineTextSizeSp("Perth", narrowTwoByTwo),
+      0.01f
+    );
+    assertEquals(
+      13f,
+      WidgetUiBuilder.liveRouteLineTextSizeSp("Edgewater → Perth", narrowTwoByTwo),
+      0.01f
+    );
+    WidgetUiBuilder.WidgetSize compact2x1 = WidgetLayoutTestSupport.small2x1();
+    assertEquals(
+      10f,
+      WidgetUiBuilder.liveRouteLineTextSizeSp("Edgewater → Perth", compact2x1),
+      0.01f
+    );
+    WidgetUiBuilder.WidgetSize wide =
+      new WidgetUiBuilder.WidgetSize(250, 110, R.layout.widget_medium);
+    assertEquals(
+      14f,
+      WidgetUiBuilder.liveRouteLineTextSizeSp("Warwick → Perth", wide),
+      0.01f
+    );
   }
 
   @Test

@@ -48,20 +48,13 @@ public final class JourneyPinHelper {
 
     PinResolutionHelper.Clock clock =
       new PinResolutionHelper.Clock(System.currentTimeMillis(), PerthTime.localDateKey());
-    PinResolutionHelper.Result state =
-      PinResolutionHelper.resolvePinState("journey", clock, payload, journey, null, 0);
-    String faceDeparture = state.widgetFaceDeparture;
-    if (faceDeparture == null || faceDeparture.isEmpty()) {
-      return CommuteSchedule.resolveTrueNextTrip(payload);
+    String widgetDeparture =
+      PinResolutionHelper.resolveJourneyWidgetFaceDeparture(payload, journey, clock);
+    if (widgetDeparture == null || widgetDeparture.isEmpty()) {
+      return null;
     }
 
-    JSONObject trip =
-      findTripByDeparture(CommuteSchedule.collectUpcomingTrips(payload), faceDeparture);
-    if (trip != null) {
-      return trip;
-    }
-
-    return CommuteSchedule.resolveTrueNextTrip(payload);
+    return findTripByDeparture(CommuteSchedule.collectUpcomingTrips(payload), widgetDeparture);
   }
 
   static JSONObject findTripByDeparture(JSONArray upcoming, String departureIso) throws Exception {

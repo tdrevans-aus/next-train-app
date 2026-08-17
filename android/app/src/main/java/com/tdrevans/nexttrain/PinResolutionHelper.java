@@ -95,7 +95,11 @@ public final class PinResolutionHelper {
     result.leaveDeparture =
       result.pinDeparture != null ? result.pinDeparture : result.trueNextDeparture;
     result.widgetFaceDeparture =
-      activeTargetDeparture != null ? activeTargetDeparture : result.trueNextDeparture;
+      "journey".equals(mode)
+        ? resolveJourneyWidgetFaceDeparture(payload, journey, clock)
+        : "nearby".equals(mode)
+          ? result.pinDeparture
+          : null;
 
     result.isOverrideActiveToday =
       "journey".equals(mode) && isJourneyOverrideActiveToday(journeyClean, clock);
@@ -135,6 +139,80 @@ public final class PinResolutionHelper {
       );
 
     return result;
+  }
+
+  /** Widget face: override or preferred target in Active window; no true-next fallback. */
+  static String resolveJourneyWidgetFaceDeparture(
+    JSONObject payload,
+    JSONObject journey,
+    Clock clock
+  ) throws Exception {
+    if (payload == null || journey == null) {
+      return null;
+    }
+
+    JSONObject journeyClean = sanitizeJourneyPinFields(journey, clock);
+    if (journeyClean == null) {
+      return null;
+    }
+
+    if (isJourneyOverrideActiveToday(journeyClean, clock)) {
+      String overrideIso = journeyClean.optString("journeyPinOverrideIso", "");
+      JSONObject overrideTrip =
+        JourneyPinHelper.findTripByDeparture(
+          CommuteSchedule.collectUpcomingTrips(payload),
+          overrideIso
+        );
+      if (overrideTrip != null && !tripHasDeparted(overrideTrip, clock)) {
+        return CommuteSchedule.tripDepartureIso(overrideTrip);
+      }
+      return null;
+    }
+
+    if (JourneySelector.isRouteJourney(journeyClean)) {
+      return null;
+    }
+
+    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+    if (!JourneySelector.matchesWindow(journeyClean, nowMinutes)) {
+      if (isOvernightActiveWindow(journeyClean)) {
+        return resolveDepartedJourneyTargetDepartureIgnoringDismiss(payload, journeyClean, clock);
+      }
+      return null;
+    }
+
+    String preferredDeparture = resolveJourneyPreferredTargetDeparture(payload, journeyClean, clock);
+    if (preferredDeparture != null && !preferredDeparture.isEmpty()) {
+      return preferredDeparture;
+    }
+
+    return resolveDepartedJourneyTargetDepartureIgnoringDismiss(payload, journeyClean, clock);
+  }
+
+  private static String resolveDepartedJourneyTargetDepartureIgnoringDismiss(
+    JSONObject payload,
+    JSONObject journey,
+    Clock clock
+  ) throws Exception {
+    int preferredMinutes = CommuteSchedule.preferredMinutesForLiveGlance(journey);
+    if (preferredMinutes < 0) {
+      return null;
+    }
+
+    int horizon = targetTripHorizonMinutes(journey, clock);
+    JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
+    for (int index = 0; index < upcoming.length(); index += 1) {
+      JSONObject trip = upcoming.optJSONObject(index);
+      if (trip == null || !tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, clock)) {
+        continue;
+      }
+      if (tripHasDeparted(trip, clock)) {
+        return CommuteSchedule.tripDepartureIso(trip);
+      }
+      return null;
+    }
+
+    return null;
   }
 
   static String resolveTrueNextDeparture(JSONObject payload, Clock clock) throws Exception {

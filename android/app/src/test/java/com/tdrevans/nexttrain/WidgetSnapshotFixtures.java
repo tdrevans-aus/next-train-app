@@ -11,7 +11,7 @@ final class WidgetSnapshotFixtures {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", false);
     snapshot.put("outsideHoursIdle", false);
-    snapshot.put("label", "Target Train");
+    snapshot.put("label", "Target");
     snapshot.put("primary", "11 min");
     snapshot.put("trainClock", "5:42 pm");
     snapshot.put("secondary", "Leave in 4 min");
@@ -28,6 +28,17 @@ final class WidgetSnapshotFixtures {
     snapshot.put("secondary", "Fetching next train…");
     snapshot.put("updatedLine", "Updated 3m ago");
     snapshot.put("stale", true);
+    return snapshot;
+  }
+
+  static JSONObject liveJourneyNoLeave() throws Exception {
+    JSONObject snapshot = liveJourneyWithLeave();
+    snapshot.put("secondary", "");
+    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("primary", "32 min");
+    snapshot.put("trainClock", "23:15");
+    snapshot.put("route", "Edgewater → Perth");
+    snapshot.put("stationLabel", "Edgewater");
     return snapshot;
   }
 

@@ -33,6 +33,11 @@ final class WidgetLayoutTestSupport {
     return new WidgetUiBuilder.WidgetSize(250, 80, R.layout.widget_medium);
   }
 
+  /** Two cells wide, two tall — same width as 2×1; route must not upscale with height. */
+  static WidgetUiBuilder.WidgetSize narrowTwoByTwo() {
+    return new WidgetUiBuilder.WidgetSize(110, 110, R.layout.widget_medium);
+  }
+
   static void assertLayoutDefines(WidgetUiBuilder.WidgetSize size, int... viewIds) {
     Context context = appContext();
     View root = LayoutInflater.from(context).inflate(size.layoutId, null, false);
@@ -104,6 +109,7 @@ final class WidgetLayoutTestSupport {
   static final class RemoteViewsBinding {
     private final Map<Integer, String> textByViewId = new HashMap<>();
     private final Map<Integer, Integer> visibilityByViewId = new HashMap<>();
+    private final Map<Integer, Float> textSizeSpByViewId = new HashMap<>();
     private final Map<Integer, Bitmap> bitmapByViewId = new HashMap<>();
     private final Map<Integer, Integer> backgroundColorByViewId = new HashMap<>();
 
@@ -126,6 +132,21 @@ final class WidgetLayoutTestSupport {
       return binding;
     }
 
+    private void captureTextSize(int viewId, Object action) {
+      Object size = readActionField(action, "mSize");
+      if (size == null) {
+        size = readActionField(action, "size");
+      }
+      if (size == null) {
+        size = readActionField(action, "value");
+      }
+      if (size instanceof Float) {
+        textSizeSpByViewId.put(viewId, (Float) size);
+      } else if (size instanceof Double) {
+        textSizeSpByViewId.put(viewId, ((Double) size).floatValue());
+      }
+    }
+
     private void applyAction(Object action) {
       String className = action.getClass().getSimpleName();
       String methodName = asString(readActionField(action, "methodName"));
@@ -142,6 +163,10 @@ final class WidgetLayoutTestSupport {
         return;
       }
 
+      if (viewId != null && className.contains("TextSize")) {
+        captureTextSize(viewId, action);
+      }
+
       if (methodName == null) {
         return;
       }
@@ -156,6 +181,9 @@ final class WidgetLayoutTestSupport {
           break;
         case "setVisibility":
           visibilityByViewId.put(viewId, value instanceof Integer ? (Integer) value : View.GONE);
+          break;
+        case "setTextViewTextSize":
+          captureTextSize(viewId, action);
           break;
         case "setImageViewBitmap":
         case "setImageBitmap":
@@ -211,6 +239,10 @@ final class WidgetLayoutTestSupport {
 
     int visibility(int viewId) {
       return visibilityByViewId.getOrDefault(viewId, View.GONE);
+    }
+
+    float textSizeSp(int viewId) {
+      return textSizeSpByViewId.getOrDefault(viewId, -1f);
     }
 
     Bitmap bitmap(int viewId) {

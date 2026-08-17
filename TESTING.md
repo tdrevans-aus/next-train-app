@@ -872,6 +872,31 @@ Jim brief: `docs/jim-brief-founding-pro.md` · design: `public/design/founding-p
 5. Paywall: one-time, restore, benefits = widget + no ads.
 6. Free in-app leave-by still works with ads when trial expired.
 
+### 45. Pin exclusivity & tab transitions (automated)
+
+Product rules: **`docs/pin-behavior.md`** (one global pin; tab transitions; hold semantics).
+
+```bash
+node qa/pin-behavior.mjs
+```
+
+**Expect:** 12× **PASS** — journey pin clears nearby/route; route pin dismisses target; nearby pin dismisses target; `enterJourneyMode` does not re-pin dismissed target; persisted nearby survives `exitNearbyMode`; page load keeps `holdingUntilMs` pin; reconcile keeps nearby over journey pins; dismissed target on true next stays **Next Train**; dismissed target on preferred slot shows **Target train** chrome; **enterJourneyMode** selects pinned commute journey.
+
+Included in release gate:
+
+```bash
+npm run test:web:release
+```
+
+Related pin tests (also in release gate):
+
+```bash
+node qa/pin-swipe-notify.mjs      # swipe + Next Train + pin advance matrix
+node qa/pin-resolution-fixtures.mjs --validate-only
+```
+
+**Manual (optional):** Target train pinned → pin in **Near me** → **My Journeys** shows only nearby pin active (target dismissed). Unpin target → **Near me** → **My Journeys** → target stays unpinned.
+
 ### 2. Configured journey (fixture)
 
 1. Open the quick-start URL above (`fixture=normal`).
@@ -949,7 +974,7 @@ Jim brief: `docs/jim-brief-journey-overlap-friendly.md`
 
 Paste into a **fresh** Cursor agent chat (not the coding session):
 
-> You are a QA agent. Follow `TESTING.md` in this repo. Run `npm start` if needed. Execute smoke tests 1–11, 13, 15 (web), **16** (`node qa/button-visibility.mjs`), **20** (`node qa/stickiness-coaches-logic.mjs`), and **21** (`node qa/reminders-dialog.mjs`). Use fixture URLs with `test=1` where noted. Output a table: test #, PASS/FAIL, notes. Do not fix code unless I ask.
+> You are a QA agent. Follow `TESTING.md` in this repo. Run `npm start` if needed. Execute smoke tests 1–11, 13, 15 (web), **16** (`node qa/button-visibility.mjs`), **20** (`node qa/stickiness-coaches-logic.mjs`), **21** (`node qa/reminders-dialog.mjs`), and **45** (`node qa/pin-behavior.mjs`). Use fixture URLs with `test=1` where noted. Output a table: test #, PASS/FAIL, notes. Do not fix code unless I ask.
 
 ## Android / Capacitor
 
@@ -964,7 +989,7 @@ The native app loads the hosted Vercel API — **fixtures do not apply**. After 
 
 | Key | Storage | Purpose |
 |-----|---------|---------|
-| `nextTrainSettings` | localStorage | Journeys + active journey |
+| `nextTrainSettings` | localStorage | Journeys + active journey + `nearbyPin` (see `docs/pin-behavior.md`) |
 | `nextTrainSkip:<journeyId>` | sessionStorage | Client-side train skip offset |
 | `nextTrainManualJourneyOverride` | localStorage | Manual journey picker override |
 | `nextTrainLastNearbyStation` | localStorage | Last successful Near me station (optimistic paint) |

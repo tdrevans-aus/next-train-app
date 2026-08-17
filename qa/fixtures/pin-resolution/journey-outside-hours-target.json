@@ -1,6 +1,6 @@
 {
   "id": "journey-outside-hours-target",
-  "description": "Outside Active hours on a day-bounded journey — no target pin takeover; hero/widget follow true next.",
+  "description": "Outside Active hours on a day-bounded journey — no target pin takeover; hero follows true next; widget shows nothing.",
   "tags": ["journey", "preferred", "outside-hours"],
   "clock": {
     "perthDateKey": "2026-08-15",
@@ -51,7 +51,7 @@
     "heroDeparture": "2026-08-15T23:42:00+08:00",
     "leaveDeparture": "2026-08-15T23:42:00+08:00",
     "secondaryNextDeparture": null,
-    "widgetFaceDeparture": "2026-08-15T23:42:00+08:00",
+    "widgetFaceDeparture": null,
     "isPinnedToday": true,
     "heroShowsPin": false,
     "isOverrideActiveToday": false,

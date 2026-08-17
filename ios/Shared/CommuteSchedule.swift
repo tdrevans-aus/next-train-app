@@ -186,6 +186,7 @@ enum CommuteSchedule {
         let minutesUntilLeave = result.minutesUntilLeave
         let departMode = result.departMode
         let leaveArmed = departMode ? false : leaveByArmedForTrip(next, journey: journey)
+        let widgetFacePinned = isWidgetPinnedFace(journey)
 
         var leaveUrgent = ["now", "urgent", "soon"].contains(leavePhase)
         var secondary = ""
@@ -202,6 +203,7 @@ enum CommuteSchedule {
             "journeyName": journey["name"] as? String ?? "Journey",
             "stale": result.stale,
             "label": liveWidgetLabel(journey: journey, trip: next),
+            "widgetFacePinned": widgetFacePinned,
             "primary": formatMinutesPrimary(minutesUntilDeparture),
             "trainClock": result.displayTime,
             "secondary": secondary,
@@ -357,10 +359,33 @@ enum CommuteSchedule {
         return departureMinutes >= preferredMinutes
     }
 
+    private static func isWidgetPinnedFace(_ journey: [String: Any]?) -> Bool {
+        guard let journey else { return false }
+        if (journey["id"] as? String) == NearbyPinHelper.journeyId { return true }
+        if JourneyPinHelper.isOverrideActiveToday(journey) { return true }
+        if JourneySelector.isRouteJourney(journey) { return false }
+        return JourneyPinHelper.isJourneyPinnedToday(journey)
+    }
+
+    private static func isWidgetLiveFaceLabel(_ label: String) -> Bool {
+        let normalized = label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return normalized == "pinned"
+            || normalized == "target"
+            || normalized == "pinned train"
+            || normalized == "target train"
+    }
+
+    private static func normalizeWidgetLiveFaceLabel(_ label: String) -> String {
+        let normalized = label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if normalized == "pinned" || normalized == "pinned train" { return "Pinned" }
+        if normalized == "target" || normalized == "target train" { return "Target" }
+        return label
+    }
+
     private static func preservedLiveLabel(_ snapshot: [String: Any]) -> String {
         let label = snapshot["label"] as? String ?? ""
-        if label.caseInsensitiveCompare("Target Train") == .orderedSame {
-            return "Target Train"
+        if isWidgetLiveFaceLabel(label) {
+            return normalizeWidgetLiveFaceLabel(label)
         }
         if !label.isEmpty {
             return label
@@ -369,31 +394,18 @@ enum CommuteSchedule {
     }
 
     private static func liveWidgetLabelFromSnapshot(_ snapshot: [String: Any]) -> String {
-        let preferredMinutes = PerthTime.parseClockMinutes(snapshot["preferredTrainTime"] as? String ?? "")
-        if preferredMinutes < 0 {
-            return "NEXT TRAIN"
+        if snapshot["widgetFacePinned"] as? Bool == true {
+            return "Pinned"
         }
-        if snapshot["leaveByArmed"] as? Bool == true {
-            return "Target Train"
-        }
-        return "NEXT TRAIN"
+        return "Target"
     }
 
     private static func liveWidgetLabel(journey: [String: Any]?, trip: [String: Any]?) -> String {
-        guard trip != nil else { return "NEXT TRAIN" }
-        if let journey, JourneySelector.isRouteJourney(journey) {
-            return "NEXT TRAIN"
+        guard trip != nil else { return "" }
+        if isWidgetPinnedFace(journey) {
+            return "Pinned"
         }
-        if let journey, (journey["id"] as? String) == NearbyPinHelper.journeyId {
-            return "Pinned Train"
-        }
-        if JourneyPinHelper.isOverrideActiveToday(journey) {
-            return "Pinned Train"
-        }
-        let preferredMinutes = PerthTime.parseClockMinutes(journey?["preferredTrainTime"] as? String ?? "")
-        if preferredMinutes < 0 { return "NEXT TRAIN" }
-        let departureMinutes = PerthTime.minutesFromIso(tripDepartureIso(trip!))
-        return departureMinutes >= preferredMinutes ? "Target Train" : "NEXT TRAIN"
+        return "Target"
     }
 
     private static func preferredHintForJourney(_ journey: [String: Any]) -> String {

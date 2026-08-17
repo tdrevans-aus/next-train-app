@@ -214,6 +214,7 @@ let journeyModeActive = false;
 /** @type {'nearby' | 'routes' | 'journeys'} */
 let chromeTravelTab = "nearby";
 let deferJourneyAutoSelect = false;
+let pendingJourneyTargetFaceRestore = false;
 let onboardingShowTimer = null;
 let onboardingPopulatedAt = null;
 let onboardingNearbyFaceReady = false;
@@ -794,6 +795,18 @@ function ensureActiveJourneyForTab(tab) {
   }
 
   if (tab === "journeys") {
+    const pinnedCommuteId = findActiveCommuteTargetPinId();
+    if (
+      pinnedCommuteId &&
+      pool.some((journey) => journey.id === pinnedCommuteId)
+    ) {
+      if (settings.activeJourneyId !== pinnedCommuteId) {
+        persistSettings({ activeJourneyId: pinnedCommuteId });
+        skipTrains = readSkipState().count;
+      }
+      return;
+    }
+
     const scheduledId = findScheduledJourneyId();
     if (
       scheduledId &&
@@ -910,6 +923,22 @@ function shouldDefaultToNearby() {
   return !scheduledId;
 }
 
+function requestJourneyTargetFaceRestore() {
+  pendingJourneyTargetFaceRestore = true;
+}
+
+function consumeJourneyTargetFaceRestore(journey, data) {
+  if (!pendingJourneyTargetFaceRestore || !journey || !data?.next) {
+    return;
+  }
+  if (chromeTravelTab !== "journeys" || !isJourneyKind(journey)) {
+    pendingJourneyTargetFaceRestore = false;
+    return;
+  }
+  trainNavigation().restoreJourneyTargetPinFace?.(journey, data);
+  pendingJourneyTargetFaceRestore = false;
+}
+
 async function applyJourneysMode({ coldStart = false } = {}) {
   // Don't yank the user back to Near me while they're setting up a journey.
   if (isJourneysDialogOpen() || isOnboardingVisible()) {
@@ -954,6 +983,7 @@ async function applyJourneysMode({ coldStart = false } = {}) {
   } else {
     reconcileExclusivePinState();
   }
+  requestJourneyTargetFaceRestore();
   trainNavigation().restoreJourneyTargetPinFace?.(journey);
   clearHeroSetupState();
   syncChromeMode();
@@ -1903,6 +1933,11 @@ function isManualOverrideBlockingAuto(scheduledId) {
 
 function maybeAutoSelectJourney() {
   if (deferJourneyAutoSelect) {
+    return;
+  }
+
+  const pinnedCommuteId = findActiveCommuteTargetPinId();
+  if (pinnedCommuteId) {
     return;
   }
 
@@ -3070,9 +3105,13 @@ function renderRouteJourney(data, { stale = false } = {}) {
   }
 
   const journey = getActiveJourney();
-  if (!isRoutePinnedToday(journey)) {
+  const routePinned = isRoutePinnedToday(journey);
+  if (!routePinned) {
     hideNearbyPinLeaveSurfaces();
     nearbyMode().clearRoutePinLeaveCardDismissed?.();
+    if (leaveCardEl) {
+      leaveCardEl.hidden = true;
+    }
   }
   hideUpcomingDepartureBoard();
 
@@ -3127,7 +3166,6 @@ function renderRouteJourney(data, { stale = false } = {}) {
       : pinTrip ?? next;
   lastRenderedNext = heroTrip;
   const referenceIso = next?.departure ?? next?.arrival;
-  const routePinned = isRoutePinnedToday(journey);
   const leaveTrip =
     routePinned && heroTrip
       ? ensureFullNext(
@@ -3267,6 +3305,8 @@ function render(data, { stale = false } = {}) {
     return;
   }
 
+  consumeJourneyTargetFaceRestore(journey, data);
+
   const pinState = resolveJourneyPinState(data, journey);
   const pinTrip = pinState
     ? tripForPinDeparture(data, pinState.pinDeparture, journey)
@@ -3361,7 +3401,7 @@ function render(data, { stale = false } = {}) {
       journeysDepartureMatch(heroTrip, activeTargetTrip) &&
       skipTrains === 0;
   const showsTargetTrain = pinState
-    ? pinState.heroLabel === "Target train"
+    ? Boolean(pinState.showsTargetTrain)
     : Boolean(
         activeTargetTrip && journeysDepartureMatch(heroTrip, activeTargetTrip) && !isDayOverridePin
       );
@@ -3517,7 +3557,6 @@ function clearHeroSetupState() {
     heroScheduledTimeEl.hidden = false;
   }
   if (leaveCardEl) {
-    leaveCardEl.hidden = false;
     leaveCardEl.classList.remove("leave-card--context");
   }
   if (updatedEl) {
@@ -3631,6 +3670,7 @@ function enterJourneyMode() {
     reconcileExclusivePinState();
   }
 
+  requestJourneyTargetFaceRestore();
   trainNavigation().restoreJourneyTargetPinFace?.(journey);
   renderJourneySwitcher();
   fetchNextTrain();
@@ -4007,19 +4047,19 @@ function syncHeroPinChrome() {
   ) {
     const pinState = resolveJourneyPinState(lastApiData, journey);
     if (pinState) {
-      showTargetTrainChrome = pinState.heroLabel === "Target train";
+      showTargetTrainChrome = Boolean(pinState.showsTargetTrain);
     } else {
       const journeyPinClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
-      const pinTrip = resolveJourneyPinTrip(lastApiData, journey);
-      const departedTargetTrip = pinTrip
-        ? null
-        : resolveDepartedJourneyTargetTrip(lastApiData, journey);
-      const activeTargetTrip = pinTrip ?? departedTargetTrip;
-      const heroShowsTargetPin =
-        activeTargetTrip &&
-        journeysDepartureMatch(lastRenderedNext, activeTargetTrip) &&
-        !isJourneyOverrideActiveToday(journeyPinClean);
-      showTargetTrainChrome = Boolean(heroShowsTargetPin);
+      const preferredDeparture = window.nextTrainPinState?.resolveJourneyPreferredTargetDeparture?.(
+        lastApiData,
+        journey
+      );
+      const heroDeparture = resolveTripDeparture(lastRenderedNext);
+      showTargetTrainChrome = Boolean(
+        preferredDeparture &&
+          heroDeparture === preferredDeparture &&
+          !isJourneyOverrideActiveToday(journeyPinClean)
+      );
     }
   }
 
@@ -4083,13 +4123,22 @@ function syncHeroPinChrome() {
         heroHasVisibleTrain();
       heroPinBtn.hidden = !showJourneyPin;
       if (showJourneyPin) {
-        const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPin);
-        const heroShowsPin =
-          pinTrip &&
-          journeysDepartureMatch(lastRenderedNext, pinTrip) &&
-          skipTrains === 0;
-        const pinActive =
-          isJourneyTargetPinnedToday(journeyPin) && heroShowsPin && skipTrains === 0;
+        const journeyPinClean = sanitizeJourneyPinDismissed(
+          sanitizeJourneyPinOverride(journeyPin)
+        );
+        const pinState = resolveJourneyPinState(lastApiData, journeyPinClean);
+        let pinActive = false;
+        if (pinState) {
+          pinActive = Boolean(pinState.isPinnedToday && pinState.heroShowsPin);
+        } else {
+          const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPinClean);
+          const heroShowsPin =
+            pinTrip &&
+            journeysDepartureMatch(lastRenderedNext, pinTrip) &&
+            skipTrains === 0;
+          pinActive =
+            isJourneyTargetPinnedToday(journeyPinClean) && heroShowsPin && skipTrains === 0;
+        }
         heroPinBtn.classList.toggle("hero-pin-btn--active", pinActive);
         heroPinBtn.setAttribute("aria-pressed", pinActive ? "true" : "false");
         heroPinBtn.setAttribute("aria-label", pinActive ? "Unpin train" : "Pin train");
@@ -5118,6 +5167,7 @@ function openMainScreenFromWidget() {
     } else {
       reconcileExclusivePinState();
     }
+    requestJourneyTargetFaceRestore();
     trainNavigation().restoreJourneyTargetPinFace?.(journey);
     renderJourneySwitcher();
     fetchNextTrain();
@@ -6119,15 +6169,20 @@ function findActiveRoutePinId() {
 }
 
 function findActiveCommuteTargetPinId() {
+  const pinned = [];
   for (const journey of settings.journeys) {
     if (isRouteJourney(journey)) {
       continue;
     }
     if (isJourneyTargetPinnedToday(journey)) {
-      return journey.id;
+      pinned.push(journey);
     }
   }
-  return null;
+  if (!pinned.length) {
+    return null;
+  }
+  const inSchedule = pinned.find((journey) => journeyMatchesSchedule(journey));
+  return (inSchedule ?? pinned[0]).id;
 }
 
 function countActivePins() {

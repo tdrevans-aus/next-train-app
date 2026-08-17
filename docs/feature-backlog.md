@@ -14,6 +14,7 @@
 |----|------|-------|--------|
 | **FB-06** | **Widget/app live = preferred-or-later** | **Superseded 2026-08-11 by U-11 (lock B).** Was: live face = first train at/after preferred. **New:** live face = true next train; Leave By only for preferred or user-chosen (swipe/Next). `applyPreferredOrLaterFilter` removed from app (Aug 2026); native `resolveActiveNextTrip` naming is legacy only. | Superseded — see U-11 |
 | **FB-08** | ~~App Leave By vs widget preferred gate~~ | **Locked U-12 → 1** — Gate app Leave By like widget. **Promoted** → `docs/jim-brief-leave-by-preferred-gate.md` | Briefed |
+| **FB-43** | **Widget real estate redesign** | Revisit layout and information hierarchy on **2×1** (default) and **medium** — twin-face columns, station placement, label density, resize behaviour. **Not** second-by-second countdown (stays minute-level; see `docs/widget-homescreen.md` non-goals). Broader trust/staleness contract: `docs/widget-redesign-v2.md`. Promote to Jim brief when Tim + Simon lock a layout direction. | Backlog — **Aug 2026** |
 
 ---
 
@@ -101,6 +102,7 @@
 |-------|--------|
 | Stickiness / notifications / rituals | `docs/stickiness-ideas.md` |
 | Widget later (Live Activity, etc.) | `docs/widget-homescreen.md` §13 |
+| Widget real estate redesign (FB-43) | `docs/feature-backlog.md` **FB-43** · `docs/widget-redesign-v2.md` |
 | Widget preferred-or-later live (FB-06) | `docs/feature-backlog.md` |
 | Direction line groups (one-off merges) | `docs/jim-brief-direction-line-groups.md` |
 | R8 / mapping file on Play upload | `docs/jim-brief-play-hygiene.md` **FB-41** §4 |

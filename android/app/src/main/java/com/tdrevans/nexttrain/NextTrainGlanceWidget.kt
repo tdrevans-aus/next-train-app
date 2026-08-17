@@ -164,18 +164,17 @@ private fun LiveFace(
 ) {
   val medium = size.isMedium()
   val scale = size.typeScale()
-  val labelSp = scaleSp(medium, 12f, 11f, scale)
-  val valueSp = scaleSp(medium, 34f, 28f, scale)
-  val unitSp = scaleSp(medium, 12f, 10f, scale)
-  val clockSp = scaleSp(medium, 14f, 12f, scale)
-  val routeSp = scaleSp(medium, 14f, 13f, scale)
+  val compact = WidgetUiBuilder.isCompactLiveFace(size)
+  val labelSp = if (compact) 10f else scaleSp(medium, 12f, 11f, scale)
+  val valueSp = if (compact) 24f else scaleSp(medium, 34f, 28f, scale)
+  val unitSp = if (compact) 9f else scaleSp(medium, 12f, 10f, scale)
+  val clockSp = if (compact) 10f else scaleSp(medium, 14f, 12f, scale)
 
   val label = snapshot.optString("label", "")
   val primary = snapshot.optString("primary", "—")
   val trainClock = snapshot.optString("trainClock", "")
   val secondary = snapshot.optString("secondary", "")
   val routeLine = WidgetUiBuilder.resolveRouteLine(snapshot)
-  val status = snapshot.optString("statusCrumb", "")
   val stale = snapshot.optBoolean("stale", false)
   val updatedRaw = snapshot.optString("updatedLine", "Updating…")
   val updated =
@@ -197,15 +196,6 @@ private fun LiveFace(
       else -> colors.mutedArgb
     }
 
-  if (medium && status.isNotEmpty()) {
-    GlanceText(
-      text = status,
-      sizeSp = scaleSp(true, 11f, 11f, scale),
-      colorArgb = colors.mutedArgb,
-      align = TextAlign.End,
-    )
-  }
-
   Row(modifier = GlanceModifier.fillMaxWidth()) {
     Column(
       modifier = GlanceModifier.defaultWeight(),
@@ -218,17 +208,8 @@ private fun LiveFace(
           GlanceText(" ${primaryParts.unit}", unitSp, colors.accentArgb, FontWeight.Medium)
         }
       }
-      val foldedClock =
-        if (size.isShortCell() && routeLine.isNotEmpty() && trainClock.isNotEmpty()) {
-          WidgetUiBuilder.foldRouteIntoTrainClock(
-            trainClock,
-            WidgetUiBuilder.abbreviateRouteLine(routeLine),
-          )
-        } else {
-          trainClock
-        }
-      if (foldedClock.isNotEmpty()) {
-        GlanceText(foldedClock, clockSp, colors.onSurfaceArgb)
+      if (trainClock.isNotEmpty()) {
+        GlanceText(trainClock, clockSp, colors.onSurfaceArgb)
       }
     }
 
@@ -241,7 +222,7 @@ private fun LiveFace(
         Row(verticalAlignment = Alignment.CenterVertically) {
           GlanceText(
             leaveParts.value,
-            WidgetUiBuilder.liveLeaveValueTextSizeSp(leaveParts.value, medium, scale),
+            WidgetUiBuilder.liveLeaveValueTextSizeSp(leaveParts.value, size),
             leaveColor,
             FontWeight.Bold,
           )
@@ -253,10 +234,11 @@ private fun LiveFace(
     }
   }
 
-  if (!size.isShortCell() && routeLine.isNotEmpty()) {
+  if (routeLine.isNotEmpty() && (!size.isShortCell() || compact)) {
+    val routeDisplay = WidgetUiBuilder.formatWidgetRouteLine(routeLine, size)
     GlanceText(
-      routeLine,
-      WidgetUiBuilder.routeLineTextSizeSp(routeLine, size.layoutId).coerceAtLeast(routeSp),
+      routeDisplay,
+      WidgetUiBuilder.liveRouteLineTextSizeSp(routeLine, size),
       colors.mutedArgb,
       align = TextAlign.Center,
     )
@@ -411,27 +393,5 @@ private fun scaleSp(medium: Boolean, mediumSp: Float, smallSp: Float, scale: Flo
 }
 
 private fun resolveTapIntent(context: Context, snapshot: org.json.JSONObject?): Intent {
-  if (snapshot == null || snapshot.optBoolean("empty", false)) {
-    return WidgetUiBuilder.journeyTapIntent(context, "new")
-  }
-  if (snapshot.optBoolean("widgetLocked", false)) {
-    return WidgetUiBuilder.paywallTapIntent(context)
-  }
-  if (snapshot.optBoolean("nearbyFallback", false)) {
-    return WidgetUiBuilder.homeTapIntent(context)
-  }
-  if (snapshot.optBoolean("openNearbyOnTap", false)) {
-    return WidgetUiBuilder.nearbyTapIntent(context)
-  }
-  val journeyId = snapshot.optString("journeyId", "").trim()
-  if (journeyId == "nearby") {
-    return WidgetUiBuilder.nearbyTapIntent(context)
-  }
-  if (journeyId == "pro") {
-    return WidgetUiBuilder.paywallTapIntent(context)
-  }
-  if (journeyId.isNotEmpty() && journeyId != "new") {
-    return WidgetUiBuilder.journeyTapIntent(context, journeyId)
-  }
-  return WidgetUiBuilder.homeTapIntent(context)
+  return WidgetUiBuilder.resolveTapIntent(context, snapshot)
 }

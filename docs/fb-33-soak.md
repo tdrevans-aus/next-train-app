@@ -14,7 +14,7 @@ Three automated web QA tiers — no single long suite on every PR:
 | Tier | Trigger | Command | Scripts | ~Duration |
 | --- | --- | --- | --- | --- |
 | **PR smoke** | Every pull request | `npm run test:smoke` | 13 fast scripts | 2–5 min |
-| **Main release** | Push to `master` | `npm run test:web:release` | Smoke + `leave-by-preferred-gate` + `pin-swipe-notify` | 5–8 min |
+| **Main release** | Push to `master` | `npm run test:web:release` | Smoke + `leave-by-preferred-gate` + `pin-swipe-notify` + `pin-behavior` | 5–8 min |
 | **Nightly full** | 02:00 UTC daily (+ manual) | `npm run test:web:ci` | All `qa/*.mjs` except native tail | 15–30 min |
 
 Android JVM mirrors the split: widget-only on PR, full unit on `master`.

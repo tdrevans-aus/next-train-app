@@ -26,6 +26,16 @@ enum JourneyPinHelper {
     static func resolvePinnedTrip(_ payload: [String: Any]?, journey: [String: Any]) -> [String: Any]? {
         guard let payload else { return nil }
         let upcoming = collectUpcomingTrips(payload)
+        guard let widgetDeparture = resolveJourneyWidgetFaceDeparture(upcoming, journey: journey) else {
+            return nil
+        }
+        return findTripByDeparture(upcoming, departureIso: widgetDeparture)
+    }
+
+    private static func resolveJourneyWidgetFaceDeparture(
+        _ upcoming: [[String: Any]],
+        journey: [String: Any]
+    ) -> String? {
         let nowMinutes = PerthTime.minutesSinceMidnight(Int64(Date().timeIntervalSince1970 * 1000))
         let insideActiveWindow = JourneySelector.matchesWindow(journey, minutes: nowMinutes)
 
@@ -33,30 +43,31 @@ enum JourneyPinHelper {
             let overrideIso = journey["journeyPinOverrideIso"] as? String ?? ""
             if let overrideTrip = findTripByDeparture(upcoming, departureIso: overrideIso),
                !hasDepartureMinutePassed(tripDepartureIso(overrideTrip)) {
-                return overrideTrip
+                return tripDepartureIso(overrideTrip)
             }
+            return nil
         }
 
-        if isPinDismissedToday(journey) {
-            return resolveTrueNextTrip(payload)
+        if JourneySelector.isRouteJourney(journey) {
+            return nil
         }
 
-        let pinTrip = insideActiveWindow
-            ? resolveJourneyPinDepartureTrip(upcoming, journey: journey)
-            : nil
-        let departedTrip = resolveDepartedJourneyTargetTrip(upcoming, journey: journey)
-        let outsideActiveWindow = !insideActiveWindow
-        let retainDepartedOutsideWindow =
-            outsideActiveWindow && isOvernightActiveWindow(journey) && departedTrip != nil
-
-        if insideActiveWindow {
-            if let pinTrip { return pinTrip }
-            if let departedTrip { return departedTrip }
-        } else if retainDepartedOutsideWindow, let departedTrip {
-            return departedTrip
+        if !insideActiveWindow {
+            if isOvernightActiveWindow(journey) {
+                return tripDepartureIso(resolveDepartedJourneyTargetTripIgnoringDismiss(upcoming, journey: journey))
+            }
+            return nil
         }
 
-        return resolveTrueNextTrip(payload)
+        if let pinTrip = resolveJourneyPinDepartureTrip(upcoming, journey: journey) {
+            return tripDepartureIso(pinTrip)
+        }
+
+        if let departedTrip = resolveDepartedJourneyTargetTripIgnoringDismiss(upcoming, journey: journey) {
+            return tripDepartureIso(departedTrip)
+        }
+
+        return nil
     }
 
     private static func resolveJourneyPinDepartureTrip(
@@ -75,7 +86,7 @@ enum JourneyPinHelper {
         return nil
     }
 
-    private static func resolveDepartedJourneyTargetTrip(
+    private static func resolveDepartedJourneyTargetTripIgnoringDismiss(
         _ upcoming: [[String: Any]],
         journey: [String: Any]
     ) -> [String: Any]? {
@@ -133,17 +144,6 @@ enum JourneyPinHelper {
             return [next]
         }
         return []
-    }
-
-    private static func resolveTrueNextTrip(_ payload: [String: Any]) -> [String: Any]? {
-        for trip in collectUpcomingTrips(payload) where !hasDepartureMinutePassed(tripDepartureIso(trip)) {
-            return trip
-        }
-        if let following = payload["following"] as? [String: Any],
-           !hasDepartureMinutePassed(tripDepartureIso(following)) {
-            return following
-        }
-        return nil
     }
 
     private static func findTripByDeparture(_ upcoming: [[String: Any]], departureIso: String) -> [String: Any]? {

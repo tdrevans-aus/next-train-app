@@ -434,7 +434,9 @@ public final class CommuteSchedule {
         || "urgent".equals(leavePhase)
         || "soon".equals(leavePhase);
 
-    // Match main screen: Next Train vs Target Train when the face is the preferred trip.
+    // Live face: Pinned when pinned today; otherwise Target (never Next Train).
+    boolean widgetFacePinned = isWidgetPinnedFace(journey);
+    snapshot.put("widgetFacePinned", widgetFacePinned);
     snapshot.put("label", liveWidgetLabel(journey, next));
     snapshot.put("primary", formatMinutesPrimary(minutesUntilDeparture));
     snapshot.put("trainClock", displayTime != null ? displayTime : "");
@@ -585,58 +587,80 @@ public final class CommuteSchedule {
     return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey));
   }
 
+  /** True when the widget live face is an actively pinned train (nearby, override, or commute pin). */
+  static boolean isWidgetPinnedFace(JSONObject journey) {
+    if (journey == null) {
+      return false;
+    }
+    if (NearbyPinHelper.JOURNEY_ID.equals(journey.optString("id", ""))) {
+      return true;
+    }
+    if (JourneyPinHelper.isOverrideActiveToday(journey)) {
+      return true;
+    }
+    if (JourneySelector.isRouteJourney(journey)) {
+      return false;
+    }
+    return JourneyPinHelper.isJourneyPinnedToday(journey);
+  }
+
+  static boolean isWidgetLiveFaceLabel(String label) {
+    if (label == null || label.isEmpty()) {
+      return false;
+    }
+    String normalized = label.trim().toLowerCase(java.util.Locale.US);
+    return normalized.equals("pinned")
+      || normalized.equals("target")
+      || normalized.equals("pinned train")
+      || normalized.equals("target train");
+  }
+
+  static String normalizeWidgetLiveFaceLabel(String label) {
+    if (label == null || label.isEmpty()) {
+      return "Target";
+    }
+    String normalized = label.trim().toLowerCase(java.util.Locale.US);
+    if (normalized.equals("pinned") || normalized.equals("pinned train")) {
+      return "Pinned";
+    }
+    if (normalized.equals("target") || normalized.equals("target train")) {
+      return "Target";
+    }
+    return label;
+  }
+
   /**
-   * Live face label: Target Train when the shown trip is at/after preferred; otherwise Next Train.
+   * Live face label: Pinned or Target only.
    * (Idle outside-hours uses {@link NextCommutePreview#idleWidgetLabel}.)
    */
   static String liveWidgetLabel(JSONObject journey, JSONObject trip) {
     if (trip == null) {
-      return "NEXT TRAIN";
+      return "";
     }
-    if (journey != null && JourneySelector.isRouteJourney(journey)) {
-      return "NEXT TRAIN";
+    if (isWidgetPinnedFace(journey)) {
+      return "Pinned";
     }
-    if (journey != null && NearbyPinHelper.JOURNEY_ID.equals(journey.optString("id", ""))) {
-      return "Pinned Train";
-    }
-    if (JourneyPinHelper.isOverrideActiveToday(journey)) {
-      return "Pinned Train";
-    }
-    int preferredMinutes = preferredMinutesForLiveGlance(journey);
-    if (preferredMinutes < 0) {
-      return "NEXT TRAIN";
-    }
-    if (tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey))) {
-      return "Target Train";
-    }
-    return "NEXT TRAIN";
+    return "Target";
   }
 
   static String liveWidgetLabelFromSnapshot(JSONObject snapshot) {
     if (snapshot == null) {
-      return "NEXT TRAIN";
+      return "Target";
     }
-    int preferredMinutes = PerthTime.parseClockMinutes(snapshot.optString("preferredTrainTime", ""));
-    if (preferredMinutes < 0) {
-      return "NEXT TRAIN";
+    if (snapshot.optBoolean("widgetFacePinned", false)) {
+      return "Pinned";
     }
-    if (snapshot.optBoolean("leaveByArmed", false)) {
-      return "Target Train";
-    }
-    return "NEXT TRAIN";
+    return "Target";
   }
 
-  /** Preserve Target Train / Next Train across Updating… / stale paints. */
+  /** Preserve Pinned / Target across Updating… / stale paints. */
   static String preservedLiveLabel(JSONObject cached) {
     if (cached == null) {
-      return "NEXT TRAIN";
+      return "";
     }
     String label = cached.optString("label", "");
-    if ("Target Train".equalsIgnoreCase(label) || "TARGET TRAIN".equalsIgnoreCase(label)) {
-      return "Target Train";
-    }
-    if ("Pinned Train".equalsIgnoreCase(label) || "PINNED TRAIN".equalsIgnoreCase(label)) {
-      return "Pinned Train";
+    if (isWidgetLiveFaceLabel(label)) {
+      return normalizeWidgetLiveFaceLabel(label);
     }
     if (!label.isEmpty()) {
       return label;
@@ -963,7 +987,7 @@ public final class CommuteSchedule {
         || "urgent".equals(leavePhase)
         || "soon".equals(leavePhase);
 
-    snapshot.put("label", liveWidgetLabelFromSnapshot(snapshot));
+    snapshot.put("label", preservedLiveLabel(snapshot));
     snapshot.put("primary", formatMinutesPrimary(minutesUntilDeparture));
 
     if (departMode) {

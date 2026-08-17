@@ -194,7 +194,7 @@ public final class WidgetUiBuilder {
       bindUpdatedFooter(views, updated, layoutId, size);
     }
 
-    views.setOnClickPendingIntent(R.id.widget_root, buildHomeTapIntent(context));
+    views.setOnClickPendingIntent(R.id.widget_root, buildTapPendingIntent(context, snapshot));
     applyMutedChrome(views, palette);
     applyWidgetBackground(views, context, palette, appearance, size);
     return views;
@@ -269,7 +269,7 @@ public final class WidgetUiBuilder {
 
   /**
    * Live face: NEXT TRAIN | LEAVE IN twins; Station → Direction on the bottom.
-   * Medium also shows delay status + Updated footer (bound separately).
+   * Medium also shows Updated footer (bound separately).
    */
   private static void bindLiveFace(
     RemoteViews views,
@@ -302,7 +302,7 @@ public final class WidgetUiBuilder {
       views.setTextViewTextSize(
         R.id.widget_leave_value,
         TypedValue.COMPLEX_UNIT_SP,
-        liveLeaveValueTextSizeSp(leave.value, size.isMedium(), size.typeScale())
+        liveLeaveValueTextSizeSp(leave.value, size)
       );
       views.setTextColor(R.id.widget_leave_value, leaveColor);
       if (leave.unit.isEmpty()) {
@@ -319,9 +319,10 @@ public final class WidgetUiBuilder {
     }
 
     setBottomRouteGravity(views, true);
-    boolean shortCellRouteFold =
-      size.isShortCell() && !empty && routeLine != null && !routeLine.isEmpty();
-    if (shortCellRouteFold) {
+    boolean showRouteAtBottom = !empty && routeLine != null && !routeLine.isEmpty();
+    boolean foldRouteIntoClock =
+      showRouteAtBottom && size.isShortCell() && !isCompactLiveFace(size);
+    if (foldRouteIntoClock) {
       views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
       views.setTextViewText(R.id.widget_route, "");
       if (trainClock != null && !trainClock.isEmpty()) {
@@ -330,15 +331,16 @@ public final class WidgetUiBuilder {
         views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
         views.setTextViewText(R.id.widget_train_clock, folded);
       }
-    } else if (!empty && routeLine != null && !routeLine.isEmpty()) {
+    } else if (showRouteAtBottom) {
       views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
-      views.setTextViewText(R.id.widget_route, routeLine);
-      float floor = scaleSp(size.isMedium() ? 14f : 13f, size.typeScale());
+      String routeDisplay = formatWidgetRouteLine(routeLine, size);
+      views.setTextViewText(R.id.widget_route, routeDisplay);
       views.setTextViewTextSize(
         R.id.widget_route,
         TypedValue.COMPLEX_UNIT_SP,
-        Math.max(floor, scaleSp(routeLineTextSizeSp(routeLine, layoutId), size.typeScale()))
+        liveRouteLineTextSizeSp(routeLine, size)
       );
+      setRouteTopMargin(views, isCompactLiveFace(size) ? 0 : 1);
     } else {
       views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
       views.setTextViewText(R.id.widget_route, "");
@@ -380,20 +382,9 @@ public final class WidgetUiBuilder {
     if (!isMedium(layoutId)) {
       return;
     }
-    if (status == null || status.isEmpty()) {
-      views.setViewVisibility(R.id.widget_status, android.view.View.GONE);
-      views.setTextViewText(R.id.widget_status, "");
-    } else {
-      views.setViewVisibility(R.id.widget_status, android.view.View.VISIBLE);
-      views.setTextViewText(R.id.widget_status, status);
-      if (size.typeScale() > 1f) {
-        views.setTextViewTextSize(
-          R.id.widget_status,
-          TypedValue.COMPLEX_UNIT_SP,
-          scaleSp(11f, size.typeScale())
-        );
-      }
-    }
+    // No delay crumb on widget — not enough room next to leave twin on 2×1 / medium.
+    views.setViewVisibility(R.id.widget_status, android.view.View.GONE);
+    views.setTextViewText(R.id.widget_status, "");
   }
 
   private static void hideStatusIfPresent(RemoteViews views, int layoutId) {
@@ -452,6 +443,16 @@ public final class WidgetUiBuilder {
   }
 
   private static void applyLiveTwinType(RemoteViews views, WidgetSize size) {
+    if (isCompactLiveFace(size)) {
+      views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, 10f);
+      views.setTextViewTextSize(R.id.widget_leave_label, TypedValue.COMPLEX_UNIT_SP, 10f);
+      views.setTextViewTextSize(R.id.widget_primary_value, TypedValue.COMPLEX_UNIT_SP, 24f);
+      views.setTextViewTextSize(R.id.widget_primary_unit, TypedValue.COMPLEX_UNIT_SP, 9f);
+      views.setTextViewTextSize(R.id.widget_leave_unit, TypedValue.COMPLEX_UNIT_SP, 9f);
+      views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, 10f);
+      setTrainClockTopMargin(views, 0);
+      return;
+    }
     boolean medium = size.isMedium();
     float scale = size.typeScale();
     float labelSp = scaleSp(medium ? 12f : 11f, scale);
@@ -467,7 +468,19 @@ public final class WidgetUiBuilder {
     setTrainClockTopMargin(views, medium ? 2 : 1);
   }
 
+  /** Small default 2×1 — tighter twin row so route fits on the bottom line. */
+  static boolean isCompactLiveFace(WidgetSize size) {
+    return size != null && !size.isMedium() && isNarrowCell(size);
+  }
+
   /** Small 2×1 twin columns — "NOW" needs a tighter size so the W is not clipped. */
+  static float liveLeaveValueTextSizeSp(String leaveValue, WidgetSize size) {
+    if (isCompactLiveFace(size)) {
+      return "NOW".equals(leaveValue) ? 20f : 24f;
+    }
+    return liveLeaveValueTextSizeSp(leaveValue, size.isMedium(), size.typeScale());
+  }
+
   static float liveLeaveValueTextSizeSp(String leaveValue, boolean medium, float scale) {
     float base = medium ? 34f : 28f;
     if (!medium && "NOW".equals(leaveValue)) {
@@ -579,6 +592,33 @@ public final class WidgetUiBuilder {
       return medium ? 13f : 12f;
     }
     return medium ? 12f : 11f;
+  }
+
+  /** Two launcher columns (~110dp) — route must fit like default 2×1. */
+  static boolean isNarrowCell(WidgetSize size) {
+    return size != null && size.widthDp <= 120;
+  }
+
+  /** Route as painted on widget — destination-only when only two cells wide. */
+  static String formatWidgetRouteLine(String routeLine, WidgetSize size) {
+    if (routeLine == null || routeLine.isEmpty()) {
+      return "";
+    }
+    if (isNarrowCell(size)) {
+      return abbreviateRouteLine(routeLine);
+    }
+    return routeLine.trim();
+  }
+
+  /** Live route size — never upscaled for tall cells; narrow width uses small sizing. */
+  static float liveRouteLineTextSizeSp(String routeLine, WidgetSize size) {
+    String display = formatWidgetRouteLine(routeLine, size);
+    int layoutId = isNarrowCell(size) ? R.layout.widget_small : size.layoutId;
+    float base = routeLineTextSizeSp(display, layoutId);
+    if (isCompactLiveFace(size)) {
+      return Math.min(base, 10f);
+    }
+    return base;
   }
 
   static String visibleUpdatedLine(String updated, int layoutId) {
@@ -759,9 +799,14 @@ public final class WidgetUiBuilder {
   }
 
   private static void restoreLiveLayoutChrome(RemoteViews views, WidgetSize size) {
+    if (isCompactLiveFace(size)) {
+      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
+      views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
+      return;
+    }
     if (size.isShortCell()) {
       views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
-      views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.CENTER_VERTICAL);
+      views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
     } else {
       views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
       views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
@@ -881,7 +926,45 @@ public final class WidgetUiBuilder {
     );
     setTrainStackCentered(views, true);
     views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.CENTER);
-    views.setOnClickPendingIntent(R.id.widget_root, buildHomeTapIntent(context));
+    views.setOnClickPendingIntent(R.id.widget_root, buildNearbyTapIntent(context));
+  }
+
+  public static Intent resolveTapIntent(Context context, JSONObject snapshot) {
+    if (snapshot == null || snapshot.optBoolean("empty", false)) {
+      return journeyTapIntent(context, "new");
+    }
+    if (snapshot.optBoolean("widgetLocked", false)) {
+      return paywallTapIntent(context);
+    }
+    if (snapshot.optBoolean("nearbyFallback", false)) {
+      return nearbyTapIntent(context);
+    }
+    String journeyId = snapshot.optString("journeyId", "").trim();
+    if ("nearby".equals(journeyId) || NearbyPinHelper.JOURNEY_ID.equals(journeyId)) {
+      return nearbyTapIntent(context);
+    }
+    if ("pro".equals(journeyId)) {
+      return paywallTapIntent(context);
+    }
+    if (!journeyId.isEmpty() && !"new".equals(journeyId)) {
+      return journeyTapIntent(context, journeyId);
+    }
+    if (snapshot.optBoolean("openNearbyOnTap", false)) {
+      return nearbyTapIntent(context);
+    }
+    return homeTapIntent(context);
+  }
+
+  public static PendingIntent buildTapPendingIntent(Context context, JSONObject snapshot) {
+    Intent intent = resolveTapIntent(context, snapshot);
+    String requestKey =
+      intent.getData() != null ? intent.getData().toString() : intent.getAction();
+    return PendingIntent.getActivity(
+      context,
+      requestKey != null ? requestKey.hashCode() : 0,
+      intent,
+      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+    );
   }
 
   public static PendingIntent buildHomeTapIntent(Context context) {

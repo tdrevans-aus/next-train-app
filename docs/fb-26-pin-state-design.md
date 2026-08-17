@@ -224,6 +224,7 @@ Full resolution assertions run only when `IMPLEMENT_PIN_STATE=1` and `public/pin
 - [x] `train-navigation.js` delegates pin resolution to `nextTrainPinState` (local fallbacks kept when module absent).
 - [x] Android `PinResolutionFixtureTest` loads same JSON files (`copyPinResolutionFixtures` → `test/resources/pin-resolution/`).
 - [x] `qa/pin-swipe-notify.mjs` green (5 scenarios, behaviour unchanged).
+- [x] `qa/pin-behavior.mjs` green (global exclusivity + tab transitions — see `docs/pin-behavior.md`).
 - [x] Hero / widget / leave-by use the same `pinDeparture` for identical inputs (`app.js` → `resolveJourneyPinState` / `resolvePinState`).
 
 ---

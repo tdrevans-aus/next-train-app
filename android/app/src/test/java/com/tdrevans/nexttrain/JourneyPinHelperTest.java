@@ -2,7 +2,10 @@ package com.tdrevans.nexttrain;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -61,13 +64,24 @@ public class JourneyPinHelperTest {
   }
 
   @Test
-  public void resolvePinnedTrip_dismissedUsesTrueNextNotPreferred() throws Exception {
+  public void resolvePinnedTrip_dismissedStillShowsPreferredTarget() throws Exception {
     long departureMs = System.currentTimeMillis() + 45L * 60_000L;
     String preferredIso = PerthTime.formatIsoFromEpochMs(departureMs);
     String earlierIso = PerthTime.formatIsoFromEpochMs(departureMs - 30L * 60_000L);
 
+    int preferredMinutes = PerthTime.minutesFromIso(preferredIso);
+    String preferredTrainTime =
+      String.format(
+        Locale.US,
+        "%02d:%02d",
+        preferredMinutes / 60,
+        preferredMinutes % 60
+      );
+
     JSONObject journey = new JSONObject();
-    journey.put("preferredTrainTime", "07:30");
+    journey.put("preferredTrainTime", preferredTrainTime);
+    journey.put("defaultFrom", "00:00");
+    journey.put("defaultUntil", "23:59");
     journey.put("journeyPinDismissedDate", PerthTime.localDateKey());
 
     JSONArray upcoming = new JSONArray();
@@ -86,7 +100,8 @@ public class JourneyPinHelperTest {
 
     JSONObject resolved = JourneyPinHelper.resolvePinnedTrip(payload, journey);
 
-    assertEquals(earlierIso, resolved.optString("departure"));
+    assertNotNull(resolved);
+    assertEquals(preferredIso, resolved.optString("departure"));
   }
 
   @Test

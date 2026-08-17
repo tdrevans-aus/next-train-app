@@ -27,6 +27,7 @@
 | `fb-23-web.mjs` | §2a chrome/libraries, §2 create, §3 route hero, switcher split | Release |
 | `fb-23-route-destination-filter.mjs` | §2.2 Q8 Fremantle/Perth filter | Release |
 | `nearby-pin-notify-label.mjs` | Pin leave-card copy/layout regression | Smoke |
+| `pin-behavior.mjs` | Global pin exclusivity + tab transitions (`docs/pin-behavior.md`) | Release |
 | `smoke-browser.mjs` | Commute regressions (§7 partial) | Smoke |
 
 **Still manual (Mark):** widget priority table §5, reminders §6, device APK, Maestro.

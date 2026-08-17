@@ -338,6 +338,88 @@
     return null;
   }
 
+  function resolveDepartedJourneyTargetDepartureIgnoringDismiss(
+    payload,
+    journey,
+    clock = resolveClock()
+  ) {
+    const resolvedClock = resolveClock(clock);
+    if (!payload || !journey || isRouteJourney(journey)) {
+      return null;
+    }
+
+    const normalized = normalizeApiTrainData(payload);
+    const journeyClean = sanitizeJourneyPinFields(journey, resolvedClock);
+    const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
+    if (preferredMinutes < 0) {
+      return null;
+    }
+
+    const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
+    for (const trip of getUpcomingTrips(normalized)) {
+      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
+        continue;
+      }
+      if (tripHasDeparted(trip, resolvedClock)) {
+        return resolveTripDeparture(trip);
+      }
+      return null;
+    }
+
+    return null;
+  }
+
+  function resolveJourneyWidgetFaceDeparture(payload, journey, clock = resolveClock()) {
+    const resolvedClock = resolveClock(clock);
+    if (!payload || !journey) {
+      return null;
+    }
+
+    const normalized = normalizeApiTrainData(payload);
+    const journeyClean = sanitizeJourneyPinFields(journey, resolvedClock);
+    if (!journeyClean) {
+      return null;
+    }
+
+    if (isJourneyOverrideActiveToday(journeyClean, resolvedClock)) {
+      const overrideTrip = findTripByDepartureIso(normalized, journeyClean.journeyPinOverrideIso);
+      if (overrideTrip && !tripHasDeparted(overrideTrip, resolvedClock)) {
+        return resolveTripDeparture(overrideTrip);
+      }
+      return null;
+    }
+
+    if (isRouteJourney(journeyClean)) {
+      return null;
+    }
+
+    if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
+      if (isOvernightActiveWindow(journeyClean)) {
+        return resolveDepartedJourneyTargetDepartureIgnoringDismiss(
+          payload,
+          journeyClean,
+          resolvedClock
+        );
+      }
+      return null;
+    }
+
+    const preferredDeparture = resolveJourneyPreferredTargetDeparture(
+      normalized,
+      journeyClean,
+      resolvedClock
+    );
+    if (preferredDeparture) {
+      return preferredDeparture;
+    }
+
+    return resolveDepartedJourneyTargetDepartureIgnoringDismiss(
+      payload,
+      journeyClean,
+      resolvedClock
+    );
+  }
+
   function resolveJourneyPinDeparture(payload, journey, clock = resolveClock()) {
     const resolvedClock = resolveClock(clock);
     if (!payload || !journey) {
@@ -601,7 +683,12 @@
       : activeTargetDeparture ?? trueNextDeparture;
 
     const leaveDeparture = pinDeparture ?? trueNextDeparture;
-    const widgetFaceDeparture = activeTargetDeparture ?? trueNextDeparture;
+    const widgetFaceDeparture =
+      mode === "journey"
+        ? resolveJourneyWidgetFaceDeparture(input.payload, input.journey, clock)
+        : mode === "nearby"
+          ? pinDeparture
+          : null;
 
     const isOverrideActiveToday =
       mode === "journey" && isJourneyOverrideActiveToday(journeyClean, clock);
@@ -623,10 +710,15 @@
     );
     const secondaryNextDeparture = showSecondaryNext ? trueNextDeparture : null;
 
+    const preferredTargetDeparture =
+      mode === "journey" && journeyClean && !isRouteJourney(journeyClean)
+        ? resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
+        : null;
+
     const showsTargetTrain = Boolean(
-      activeTargetDeparture &&
-        heroDeparture === activeTargetDeparture &&
-        !isOverrideActiveToday
+      !isOverrideActiveToday &&
+        preferredTargetDeparture &&
+        heroDeparture === preferredTargetDeparture
     );
     const nearbyPinLocking = Boolean(
       mode === "nearby" &&
@@ -667,6 +759,7 @@
       widgetFaceDeparture,
       isPinnedToday,
       heroShowsPin,
+      showsTargetTrain,
       pinnedChrome,
       isOverrideActiveToday,
       isPinDismissedToday,
@@ -687,6 +780,8 @@
     isJourneyTargetPinnedToday: isJourneyPinnedToday,
     sanitizeJourneyPinFields,
     resolveJourneyPinDeparture,
+    resolveJourneyPreferredTargetDeparture,
+    resolveJourneyWidgetFaceDeparture,
     resolveDepartedJourneyTargetDeparture,
     resolveJourneyActiveTargetDeparture,
     resolveTrueNextDeparture,
