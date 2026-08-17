@@ -795,6 +795,11 @@ function ensureActiveJourneyForTab(tab) {
   }
 
   if (tab === "journeys") {
+    const scheduledId = findScheduledJourneyId();
+    if (isManualOverrideBlockingAuto(scheduledId)) {
+      return;
+    }
+
     const pinnedCommuteId = findActiveCommuteTargetPinId();
     if (
       pinnedCommuteId &&
@@ -807,10 +812,8 @@ function ensureActiveJourneyForTab(tab) {
       return;
     }
 
-    const scheduledId = findScheduledJourneyId();
     if (
       scheduledId &&
-      !isManualOverrideBlockingAuto(scheduledId) &&
       pool.some((journey) => journey.id === scheduledId)
     ) {
       if (settings.activeJourneyId !== scheduledId) {
