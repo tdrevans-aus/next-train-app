@@ -1,6 +1,6 @@
 {
   "name": "next-train-app",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Shows when to leave for your next train",
   "type": "module",
   "scripts": {
