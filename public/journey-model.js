@@ -6,11 +6,12 @@
   };
   const DEFAULT_REMIND_DAYS = [1, 2, 3, 4, 5];
   const JOURNEY_KIND_ROUTE = "route";
-  const JOURNEY_KIND_COMMUTE = "commute";
-  const COMMUTE_TEMPLATE_KEYS = new Set(["morning", "evening", "custom"]);
-  /** FB-23: one-time journey reset + route vs commute schema. */
+  const JOURNEY_KIND_JOURNEY = "journey";
+  const LEGACY_JOURNEY_KIND_COMMUTE = "commute";
+  const JOURNEY_TEMPLATE_KEYS = new Set(["morning", "evening", "custom"]);
+  /** FB-23: one-time journey reset + route vs journey schema. */
   const SETTINGS_SCHEMA_VERSION = 2;
-  const COMMUTE_UPGRADE_DEFAULTS = {
+  const JOURNEY_UPGRADE_DEFAULTS = {
     templateKey: "morning",
     defaultFrom: "06:00",
     defaultUntil: "09:00",
@@ -57,7 +58,7 @@ function createDefaultStore() {
   };
 }
 
-function stripCommuteFieldsForRoute(journey) {
+function stripJourneyFieldsForRoute(journey) {
   journey.defaultFrom = "";
   journey.defaultUntil = "";
   journey.preferredTrainTime = "";
@@ -66,7 +67,7 @@ function stripCommuteFieldsForRoute(journey) {
   return journey;
 }
 
-function upgradeRouteToCommute(raw = {}) {
+function upgradeRouteToJourney(raw = {}) {
   const name = String(raw.name || "Morning into town").trim() || "Morning into town";
   return normalizeJourney({
     id: raw.id,
@@ -75,8 +76,8 @@ function upgradeRouteToCommute(raw = {}) {
     direction: raw.direction,
     leaveBeforeMinutes: raw.leaveBeforeMinutes,
     useLeaveBefore: raw.useLeaveBefore,
-    kind: JOURNEY_KIND_COMMUTE,
-    ...COMMUTE_UPGRADE_DEFAULTS,
+    kind: JOURNEY_KIND_JOURNEY,
+    ...JOURNEY_UPGRADE_DEFAULTS,
   });
 }
 
@@ -100,7 +101,7 @@ function resolveInitialJourneys(rawJourneys = []) {
 function normalizeJourneyList(rawJourneys = []) {
   return rawJourneys.map((journey) => normalizeJourney(journey));
 }
-function isDefaultCommuteJourneyName(name) {
+function isLegacyTemplateJourneyName(name) {
   const normalized = String(name || "").trim().toLowerCase();
   return normalized === "daily commute - in" || normalized === "daily commute - out";
 }
@@ -168,6 +169,40 @@ function getPerthDayOfWeekIso(date = new Date()) {
 function getJourneyRemindDays(journey) {
   return normalizeRemindDays(journey?.remindDays);
 }
+
+const ACTIVE_DAY_SHORT = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+function formatJourneyActiveDays(journey) {
+  const days = getJourneyRemindDays(journey);
+  if (!days.length) {
+    return "";
+  }
+  if (days.length === 7) {
+    return "Every day";
+  }
+
+  const ranges = [];
+  let rangeStart = days[0];
+  let prev = days[0];
+
+  for (let index = 1; index <= days.length; index += 1) {
+    const current = days[index];
+    if (current === prev + 1) {
+      prev = current;
+      continue;
+    }
+
+    ranges.push(
+      rangeStart === prev
+        ? ACTIVE_DAY_SHORT[rangeStart - 1]
+        : `${ACTIVE_DAY_SHORT[rangeStart - 1]}–${ACTIVE_DAY_SHORT[prev - 1]}`
+    );
+    rangeStart = current;
+    prev = current;
+  }
+
+  return ranges.join(", ");
+}
 function journeyMatchesActiveDay(journey, dayOfWeek = getPerthDayOfWeekIso()) {
   return getJourneyRemindDays(journey).includes(dayOfWeek);
 }
@@ -203,8 +238,11 @@ function inferTemplateKey(raw = {}) {
 
 function normalizeJourneyKind(rawKind) {
   const kind = String(rawKind || "").trim().toLowerCase();
-  if (kind === JOURNEY_KIND_ROUTE || kind === JOURNEY_KIND_COMMUTE) {
-    return kind;
+  if (kind === JOURNEY_KIND_ROUTE) {
+    return JOURNEY_KIND_ROUTE;
+  }
+  if (kind === JOURNEY_KIND_JOURNEY || kind === LEGACY_JOURNEY_KIND_COMMUTE) {
+    return JOURNEY_KIND_JOURNEY;
   }
   return "";
 }
@@ -216,8 +254,8 @@ function inferJourneyKind(raw = {}, context = {}) {
   }
 
   const templateKey = context.templateKey ?? inferTemplateKey(raw);
-  if (templateKey && COMMUTE_TEMPLATE_KEYS.has(templateKey)) {
-    return JOURNEY_KIND_COMMUTE;
+  if (templateKey && JOURNEY_TEMPLATE_KEYS.has(templateKey)) {
+    return JOURNEY_KIND_JOURNEY;
   }
 
   const preferredTrainTime =
@@ -227,18 +265,18 @@ function inferJourneyKind(raw = {}, context = {}) {
         : String(raw.preferredTrainTime)
       : String(context.preferredTrainTime);
   if (preferredTrainTime) {
-    return JOURNEY_KIND_COMMUTE;
+    return JOURNEY_KIND_JOURNEY;
   }
 
   if (journeyRemindMeEnabled(raw)) {
-    return JOURNEY_KIND_COMMUTE;
+    return JOURNEY_KIND_JOURNEY;
   }
 
   return JOURNEY_KIND_ROUTE;
 }
 
-function isCommuteJourney(journey) {
-  return normalizeJourneyKind(journey?.kind) === JOURNEY_KIND_COMMUTE;
+function isJourneyKind(journey) {
+  return normalizeJourneyKind(journey?.kind) === JOURNEY_KIND_JOURNEY;
 }
 
 function isRouteJourney(journey) {
@@ -259,7 +297,7 @@ function normalizeJourney(raw = {}) {
 
   if (
     isLegacyBlankDefaultWindow(defaultFrom, defaultUntil) &&
-    !isDefaultCommuteJourneyName(raw.name)
+    !isLegacyTemplateJourneyName(raw.name)
   ) {
     defaultFrom = "";
     defaultUntil = "";
@@ -324,7 +362,7 @@ function normalizeJourney(raw = {}) {
   }
 
   if (isRouteJourney(journey)) {
-    stripCommuteFieldsForRoute(journey);
+    stripJourneyFieldsForRoute(journey);
   }
 
   return journey;
@@ -699,22 +737,23 @@ function getPerthLocalDateKey(date = new Date()) {
     createDefaultJourney,
     createDefaultStore,
     createRouteJourney,
-    upgradeRouteToCommute,
+    upgradeRouteToJourney,
     isUnconfiguredJourney,
     resolveInitialJourneys,
     normalizeJourneyList,
     normalizeRemindDays,
     getPerthDayOfWeekIso,
     getJourneyRemindDays,
+    formatJourneyActiveDays,
     journeyMatchesActiveDay,
     journeyMatchesSchedule,
     journeyRemindMeEnabled,
     inferTemplateKey,
     inferJourneyKind,
-    isCommuteJourney,
+    isJourneyKind,
     isRouteJourney,
     JOURNEY_KIND_ROUTE,
-    JOURNEY_KIND_COMMUTE,
+    JOURNEY_KIND_JOURNEY,
     normalizeJourney,
     legToJourney,
     pickNearbySettingsFields,
@@ -735,7 +774,7 @@ function getPerthLocalDateKey(date = new Date()) {
     pad2,
     getPerthDateParts,
     isLegacyBlankDefaultWindow,
-    isDefaultCommuteJourneyName,
+    isLegacyTemplateJourneyName,
     normalizeJourneyNameKey,
     nextAvailableJourneyName,
     findJourneyNameConflict,

@@ -746,7 +746,7 @@ npm run test:maestro
 | Flow | Covers |
 |------|--------|
 | `smoke-app-opens` | Cold start → nearby board (`Near you` / `Near me`) |
-| `journeys-dialog` | Debug seed deep link → double-tap **My Journeys** → journey list |
+| `journeys-dialog` | Debug seed deep link → **My Routes** / **My Journeys** chrome → double-tap **My Journeys** → **Journeys** library list |
 | `menu-reminders` | Menu → **Reminder settings** → **Done** |
 | `widget-face` | Home widget tap → app foreground (pin widget once; see README) |
 

@@ -357,9 +357,6 @@ function liveHorizonMinutes(journey) {
 }
 
 function targetTripHorizonMinutes(journey) {
-  if (!journeyMatchesSchedule(journey)) {
-    return 24 * 60;
-  }
   return liveHorizonMinutes(journey);
 }
 
@@ -806,7 +803,7 @@ function findPreferredTripSkipIndex(data, journey = getActiveJourney()) {
   return -1;
 }
 
-function restoreCommuteTargetPinFace(journey = getActiveJourney()) {
+function restoreJourneyTargetPinFace(journey = getActiveJourney()) {
   if (!journey || isRouteJourney(journey) || isUnconfiguredJourney(journey)) {
     clearSkipState();
     setSkipTrains(0);
@@ -819,9 +816,6 @@ function restoreCommuteTargetPinFace(journey = getActiveJourney()) {
     return;
   }
 
-  if (preferredMinutesForLiveGlance(journeyClean) >= 0) {
-    clearJourneyPinDismissed(journey.id);
-  }
   clearSkipState();
   setSkipTrains(0);
 }
@@ -832,19 +826,22 @@ function isHeroPinLockingSwipe() {
     if (!mode) {
       return false;
     }
+    const nearbyEntry = mode === "nearby" ? getNearbyFocusedEntry() : null;
     return Boolean(
       global.nextTrainPinState.resolvePinState({
         mode,
-        payload: getLastApiData(),
+        payload: mode === "nearby" ? nearbyEntry?.data ?? null : getLastApiData(),
         journey: getActiveJourney(),
         nearbyPin: getNearbyPin(),
-        skipTrains: getSkipTrains(),
+        nearbyFocusedDirection: nearbyEntry?.direction ?? null,
+        skipTrains:
+          mode === "nearby" ? getNearbySkip(nearbyEntry?.direction) : getSkipTrains(),
       }).isHeroPinLockingSwipe
     );
   }
 
   if (isNearbyModeActive()) {
-    return isNearbyPinHolding(getNearbyPin());
+    return isNearbyPinShowing(getNearbyFocusedEntry()?.direction);
   }
 
   if (!getJourneyModeActive() || getSkipTrains() > 0) {
@@ -1106,6 +1103,7 @@ function advanceLeavePinToNextTrain() {
   clearSkipState();
   setSkipTrains(0);
   clearJourneyPinDismissed(journey.id);
+  deps.clearOtherPinnedTrains?.({ type: "journey", journeyId: journey.id });
   persistJourneyPinOverride(journey.id, targetDeparture);
   dismissSwipeHint();
 
@@ -1184,6 +1182,7 @@ function advanceNearbyPinToNextTrain() {
     return false;
   }
 
+  deps.clearOtherPinnedTrains?.({ type: "nearby" });
   setNearbyPinFromTrip(direction, targetTrip);
   syncNearbyPinSettings();
   setNearbySkip(direction, 0);
@@ -1453,13 +1452,81 @@ function initHeroSwipe() {
     swipeLastY = event.clientY;
   };
 
-  deps.heroEl.addEventListener("pointerdown", trackHeroPointer, { passive: true });
+  deps.heroEl.addEventListener("pointerdown", trackHeroPointer, { capture: true, passive: true });
   deps.heroEl.addEventListener("pointermove", moveHeroPointer, { passive: true });
   deps.heroEl.addEventListener("pointerup", handleHeroSwipeEnd);
   deps.heroEl.addEventListener("pointercancel", handleHeroSwipeEnd);
   deps.heroEl.addEventListener("lostpointercapture", handleHeroSwipeEnd);
   window.addEventListener("pointerup", handleHeroSwipeEnd);
   window.addEventListener("pointercancel", handleHeroSwipeEnd);
+
+  initHeroPinButton();
+}
+
+function initHeroPinButton() {
+  const button = deps.heroPinBtn;
+  if (!button || button.dataset.heroPinBound === "1") {
+    return;
+  }
+  button.dataset.heroPinBound = "1";
+
+  let pointerDown = false;
+  let toggleHandled = false;
+
+  const activate = (event) => {
+    if (event?.button != null && event.button !== 0) {
+      return;
+    }
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    pointerDown = false;
+    toggleHandled = true;
+    resetHeroSwipePointer(event);
+    void toggleHeroPin();
+  };
+
+  button.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (event.button !== 0) {
+        return;
+      }
+      pointerDown = true;
+      toggleHandled = false;
+      event.stopPropagation();
+      resetHeroSwipePointer(event);
+    },
+    { capture: true }
+  );
+
+  button.addEventListener(
+    "pointerup",
+    (event) => {
+      if (!pointerDown || event.button !== 0) {
+        return;
+      }
+      activate(event);
+    },
+    { capture: true }
+  );
+
+  button.addEventListener(
+    "pointercancel",
+    () => {
+      pointerDown = false;
+    },
+    { capture: true }
+  );
+
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (toggleHandled) {
+      toggleHandled = false;
+      event.preventDefault();
+      return;
+    }
+    activate(event);
+  });
 }
 
 function jumpToTargetTrain() {
@@ -1498,6 +1565,7 @@ async function toggleHeroPin() {
       getNearbySession().pinNotifyMe = false;
     }
 
+    deps.clearOtherPinnedTrains?.({ type: "nearby" });
     setNearbyPinFromTrip(entry.direction, next);
     syncNearbyPinSettings();
     renderNearbyBoard();
@@ -1510,12 +1578,26 @@ async function toggleHeroPin() {
     return;
   }
 
+  deps.syncActiveJourneyForCurrentTab?.();
+  let pinJourney = getActiveJourney();
+  if (!pinJourney || isUnconfiguredJourney(pinJourney)) {
+    return;
+  }
+
+  const chromeTab = deps.getChromeTravelTab?.() ?? "journeys";
+  if (chromeTab === "routes" && !deps.isRouteJourney?.(pinJourney)) {
+    return;
+  }
+  if (chromeTab === "journeys" && deps.isRouteJourney?.(pinJourney)) {
+    return;
+  }
+
   const heroDeparture = resolveTripDeparture(getLastRenderedNext());
   if (!heroDeparture) {
     return;
   }
 
-  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(pinJourney));
   const pinTrip = resolveJourneyPinTrip(getLastApiData(), journeyClean);
   const isPinnedView =
     getSkipTrains() === 0 &&
@@ -1526,8 +1608,8 @@ async function toggleHeroPin() {
   if (isPinnedView) {
     const isOverride = isJourneyOverrideActiveToday(journeyClean);
     const pinnedTrip = getLastRenderedNext();
-    clearJourneyPinOverride(journey.id);
-    persistJourneyPinDismissed(journey.id);
+    clearJourneyPinOverride(pinJourney.id);
+    persistJourneyPinDismissed(pinJourney.id);
     if (isOverride) {
       // Day override unpin: drop today's pin only — stay on the train the user was viewing.
       if (pinnedTrip) {
@@ -1548,18 +1630,20 @@ async function toggleHeroPin() {
       }
     }
   } else {
-    if (getSkipTrains() > 0) {
+    const committingSwipePreview = getSkipTrains() > 0;
+    if (committingSwipePreview) {
       clearSkipState();
     }
-    clearJourneyPinDismissed(journey.id);
+    clearJourneyPinDismissed(pinJourney.id);
     const freshJourney = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(getActiveJourney()));
     const preferredTarget = resolveJourneyPreferredTargetTrip(getLastApiData(), freshJourney);
     const preferredDeparture = preferredTarget ? resolveTripDeparture(preferredTarget) : null;
-    if (preferredDeparture && heroDeparture === preferredDeparture) {
-      clearJourneyPinOverride(journey.id);
+    deps.clearOtherPinnedTrains?.({ type: "journey", journeyId: pinJourney.id });
+    if (preferredDeparture && heroDeparture === preferredDeparture && !committingSwipePreview) {
+      clearJourneyPinOverride(pinJourney.id);
     } else {
-      persistJourneyPinOverride(journey.id, heroDeparture);
-      if (isRouteJourney(journey)) {
+      persistJourneyPinOverride(pinJourney.id, heroDeparture);
+      if (isRouteJourney(pinJourney)) {
         deps.clearRoutePinLeaveCardDismissed?.();
       }
     }
@@ -1624,7 +1708,7 @@ async function toggleHeroPin() {
     resolveDepartedJourneyTargetTrip,
     resolveJourneyPinTrip,
     resolveJourneyPreferredTargetTrip,
-    restoreCommuteTargetPinFace,
+    restoreJourneyTargetPinFace,
     sanitizeJourneyPinDismissed,
     sanitizeJourneyPinOverride,
     saveSkipState,

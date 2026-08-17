@@ -78,7 +78,7 @@ public class CommuteScheduleTest {
     morning.put("defaultFrom", "06:00");
     morning.put("defaultUntil", "09:00");
     morning.put("preferredTrainTime", "07:30");
-    morning.put("kind", "commute");
+    morning.put("kind", "journey");
     morning.put("remindDays", new JSONArray(new int[] { 1, 2, 3, 4, 5 }));
     JSONObject evening = new JSONObject();
     evening.put("id", "j-evening");
@@ -88,7 +88,7 @@ public class CommuteScheduleTest {
     evening.put("defaultFrom", "15:00");
     evening.put("defaultUntil", "18:00");
     evening.put("preferredTrainTime", "");
-    evening.put("kind", "commute");
+    evening.put("kind", "journey");
     evening.put("remindDays", new JSONArray(new int[] { 1, 2, 3, 4, 5 }));
     journeys.put(morning);
     journeys.put(evening);
@@ -560,7 +560,7 @@ public class CommuteScheduleTest {
     JSONObject withoutPreferred = CommuteSchedule.resolveActiveNextTrip(payload, new JSONObject());
     assertEquals(PerthTime.formatIsoFromEpochMs(earlyMs), CommuteSchedule.tripDepartureIso(withoutPreferred));
     JSONObject commuteNoPreferred = new JSONObject();
-    commuteNoPreferred.put("kind", "commute");
+    commuteNoPreferred.put("kind", "journey");
     commuteNoPreferred.put("useLeaveBefore", true);
     assertTrue(CommuteSchedule.leaveByArmedForTrip(withoutPreferred, commuteNoPreferred));
 

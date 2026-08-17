@@ -52,7 +52,7 @@ public final class NextCommutePreview {
         if (journey == null) {
           continue;
         }
-        if (!JourneySelector.isCommuteJourney(journey)) {
+        if (!JourneySelector.isJourneyKind(journey)) {
           continue;
         }
         String station = journey.optString("station", "");
@@ -145,7 +145,7 @@ public final class NextCommutePreview {
         if (journey == null) {
           continue;
         }
-        if (!JourneySelector.isCommuteJourney(journey)) {
+        if (!JourneySelector.isJourneyKind(journey)) {
           continue;
         }
         String station = journey.optString("station", "");

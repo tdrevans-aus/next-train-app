@@ -299,6 +299,11 @@ public final class WidgetUiBuilder {
       views.setTextViewText(R.id.widget_leave_label, leave.label);
       views.setViewVisibility(R.id.widget_leave_row, android.view.View.VISIBLE);
       views.setTextViewText(R.id.widget_leave_value, leave.value);
+      views.setTextViewTextSize(
+        R.id.widget_leave_value,
+        TypedValue.COMPLEX_UNIT_SP,
+        liveLeaveValueTextSizeSp(leave.value, size.isMedium(), size.typeScale())
+      );
       views.setTextColor(R.id.widget_leave_value, leaveColor);
       if (leave.unit.isEmpty()) {
         views.setViewVisibility(R.id.widget_leave_unit, android.view.View.GONE);
@@ -456,11 +461,19 @@ public final class WidgetUiBuilder {
     views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, labelSp);
     views.setTextViewTextSize(R.id.widget_leave_label, TypedValue.COMPLEX_UNIT_SP, labelSp);
     views.setTextViewTextSize(R.id.widget_primary_value, TypedValue.COMPLEX_UNIT_SP, valueSp);
-    views.setTextViewTextSize(R.id.widget_leave_value, TypedValue.COMPLEX_UNIT_SP, valueSp);
     views.setTextViewTextSize(R.id.widget_primary_unit, TypedValue.COMPLEX_UNIT_SP, unitSp);
     views.setTextViewTextSize(R.id.widget_leave_unit, TypedValue.COMPLEX_UNIT_SP, unitSp);
     views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, clockSp);
     setTrainClockTopMargin(views, medium ? 2 : 1);
+  }
+
+  /** Small 2×1 twin columns — "NOW" needs a tighter size so the W is not clipped. */
+  static float liveLeaveValueTextSizeSp(String leaveValue, boolean medium, float scale) {
+    float base = medium ? 34f : 28f;
+    if (!medium && "NOW".equals(leaveValue)) {
+      base = 24f;
+    }
+    return scaleSp(base, scale);
   }
 
   static float idleRouteLineTextSizeSp(String route) {

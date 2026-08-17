@@ -63,8 +63,27 @@ public final class PinResolutionHelper {
       "journey".equals(mode)
         ? resolveDepartedJourneyTargetDeparture(payload, journey, clock)
         : null;
-    String activeTargetDeparture =
-      result.pinDeparture != null ? result.pinDeparture : departedTargetDeparture;
+    JSONObject journeyClean =
+      "journey".equals(mode) ? sanitizeJourneyPinFields(journey, clock) : null;
+    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+    boolean insideActiveWindow =
+      "journey".equals(mode)
+        && journeyClean != null
+        && JourneySelector.matchesWindow(journeyClean, nowMinutes);
+    boolean outsideActiveWindow = "journey".equals(mode) && journeyClean != null && !insideActiveWindow;
+    boolean retainDepartedOutsideWindow =
+      outsideActiveWindow
+        && journeyClean != null
+        && isOvernightActiveWindow(journeyClean)
+        && departedTargetDeparture != null;
+    String activeTargetDeparture = result.pinDeparture;
+    if (activeTargetDeparture == null && "journey".equals(mode)) {
+      if (insideActiveWindow) {
+        activeTargetDeparture = departedTargetDeparture;
+      } else if (retainDepartedOutsideWindow) {
+        activeTargetDeparture = departedTargetDeparture;
+      }
+    }
 
     if (isSkipPreview) {
       result.heroDeparture = resolveSkippedHeroDeparture(payload, skipTrains, clock);
@@ -78,8 +97,6 @@ public final class PinResolutionHelper {
     result.widgetFaceDeparture =
       activeTargetDeparture != null ? activeTargetDeparture : result.trueNextDeparture;
 
-    JSONObject journeyClean =
-      "journey".equals(mode) ? sanitizeJourneyPinFields(journey, clock) : null;
     result.isOverrideActiveToday =
       "journey".equals(mode) && isJourneyOverrideActiveToday(journeyClean, clock);
     result.isPinDismissedToday =
@@ -106,7 +123,8 @@ public final class PinResolutionHelper {
         && !result.isOverrideActiveToday;
     result.isHeroPinLockingSwipe = nearbyHolding || result.heroShowsPin;
     result.leaveCardArmed =
-      resolveLeaveCardArmed(mode, journey, result.pinDeparture, result.isPinDismissedToday, clock);
+      ("nearby".equals(mode) || insideActiveWindow)
+        && resolveLeaveCardArmed(mode, journey, result.pinDeparture, result.isPinDismissedToday, clock);
     result.heroLabel =
       getHeroLabel(
         result.heroShowsPin && !isSkipPreview,
@@ -166,6 +184,10 @@ public final class PinResolutionHelper {
     }
 
     if (isJourneyPinDismissedToday(journeyClean, clock)) {
+      return null;
+    }
+
+    if (!JourneySelector.matchesWindow(journeyClean, PerthTime.minutesSinceMidnight(clock.nowMs))) {
       return null;
     }
 
@@ -339,23 +361,13 @@ public final class PinResolutionHelper {
   }
 
   private static int targetTripHorizonMinutes(JSONObject journey, Clock clock) throws Exception {
-    if (!journeyMatchesSchedule(journey, clock)) {
-      return 24 * 60;
-    }
     return CommuteSchedule.liveHorizonMinutes(journey);
   }
 
-  private static boolean journeyMatchesSchedule(JSONObject journey, Clock clock) {
-    int minutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+  private static boolean isOvernightActiveWindow(JSONObject journey) throws Exception {
     int from = PerthTime.parseClockMinutes(journey.optString("defaultFrom", "00:00"));
     int until = PerthTime.parseClockMinutes(journey.optString("defaultUntil", "23:59"));
-    if (from == until) {
-      return true;
-    }
-    if (from < until) {
-      return minutes >= from && minutes < until;
-    }
-    return minutes >= from || minutes < until;
+    return from > until;
   }
 
   private static boolean tripMatchesPreferredOrLater(

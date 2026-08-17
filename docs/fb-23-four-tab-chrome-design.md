@@ -6,6 +6,8 @@
 **Product lock:** `jim-brief-fb-23-route-vs-commute.md` Q7  
 **Date:** 15 Aug 2026
 
+> **Shipped (v2.4.0):** Chrome captions are **Near me · My Routes · My Journeys · Menu**. Library sheet titles are **Routes** and **Journeys**. The draft **Commutes** tab label was never shipped — journey-kind items live under **My Journeys**.
+
 ---
 
 ## 1. Principle
@@ -103,7 +105,7 @@ Accent on icon + caption for the active travel tab (same tokens as today).
 - Primary: **Save**
 - Destructive (edit only): **Delete route** (text, bottom)
 
-**Explicitly absent:** Active days, Active from/until, Target train, Time to station, Remind me, Upgrade to commute on this screen (upgrade lives on row overflow or Commutes tab copy — see §6).
+**Explicitly absent:** Active days, Active from/until, Target train, Time to station, Remind me, Upgrade to journey on this screen (upgrade lives on row overflow or My Journeys library copy — see §6).
 
 ### C. Live route board (main canvas)
 
@@ -178,7 +180,7 @@ Not on the minimal route editor v1.
 1. Chrome shows four labels; no “My Journeys”
 2. Add route: **two fields only** (station + direction), saves, shows on Routes library as `Station → Direction`
 3. Tap route → board hero, no pin/leave
-4. Commute flow unchanged; lives under Commutes tab
+4. Journey flow unchanged; lives under **My Journeys** tab
 5. Menu unchanged; no route/commute list in menu
 
 ---

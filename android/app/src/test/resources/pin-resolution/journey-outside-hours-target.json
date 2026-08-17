@@ -1,6 +1,6 @@
 {
   "id": "journey-outside-hours-target",
-  "description": "Outside Active hours, My Journeys still pins hero to target train.",
+  "description": "Outside Active hours on a day-bounded journey — no target pin takeover; hero/widget follow true next.",
   "tags": ["journey", "preferred", "outside-hours"],
   "clock": {
     "perthDateKey": "2026-08-15",
@@ -12,7 +12,7 @@
     "skipTrains": 0,
     "journey": {
       "id": "j-evening",
-      "kind": "commute",
+      "kind": "journey",
       "name": "Evening home",
       "station": "Perth Underground Stn",
       "direction": "Mandurah",
@@ -47,19 +47,19 @@
   },
   "expected": {
     "trueNextDeparture": "2026-08-15T23:42:00+08:00",
-    "pinDeparture": "2026-08-15T23:42:00+08:00",
+    "pinDeparture": null,
     "heroDeparture": "2026-08-15T23:42:00+08:00",
     "leaveDeparture": "2026-08-15T23:42:00+08:00",
     "secondaryNextDeparture": null,
     "widgetFaceDeparture": "2026-08-15T23:42:00+08:00",
     "isPinnedToday": true,
-    "heroShowsPin": true,
+    "heroShowsPin": false,
     "isOverrideActiveToday": false,
     "isPinDismissedToday": false,
     "isSkipPreview": false,
-    "isHeroPinLockingSwipe": true,
+    "isHeroPinLockingSwipe": false,
     "showSecondaryNext": false,
-    "leaveCardArmed": true,
-    "heroLabel": "Target train"
+    "leaveCardArmed": false,
+    "heroLabel": "Next Train"
   }
 }

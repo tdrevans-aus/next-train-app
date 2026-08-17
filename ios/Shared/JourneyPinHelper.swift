@@ -26,6 +26,9 @@ enum JourneyPinHelper {
     static func resolvePinnedTrip(_ payload: [String: Any]?, journey: [String: Any]) -> [String: Any]? {
         guard let payload else { return nil }
         let upcoming = collectUpcomingTrips(payload)
+        let nowMinutes = PerthTime.minutesSinceMidnight(Int64(Date().timeIntervalSince1970 * 1000))
+        let insideActiveWindow = JourneySelector.matchesWindow(journey, minutes: nowMinutes)
+
         if isOverrideActiveToday(journey) {
             let overrideIso = journey["journeyPinOverrideIso"] as? String ?? ""
             if let overrideTrip = findTripByDeparture(upcoming, departureIso: overrideIso),
@@ -33,22 +36,73 @@ enum JourneyPinHelper {
                 return overrideTrip
             }
         }
+
         if isPinDismissedToday(journey) {
             return resolveTrueNextTrip(payload)
         }
+
+        let pinTrip = insideActiveWindow
+            ? resolveJourneyPinDepartureTrip(upcoming, journey: journey)
+            : nil
+        let departedTrip = resolveDepartedJourneyTargetTrip(upcoming, journey: journey)
+        let outsideActiveWindow = !insideActiveWindow
+        let retainDepartedOutsideWindow =
+            outsideActiveWindow && isOvernightActiveWindow(journey) && departedTrip != nil
+
+        if insideActiveWindow {
+            if let pinTrip { return pinTrip }
+            if let departedTrip { return departedTrip }
+        } else if retainDepartedOutsideWindow, let departedTrip {
+            return departedTrip
+        }
+
+        return resolveTrueNextTrip(payload)
+    }
+
+    private static func resolveJourneyPinDepartureTrip(
+        _ upcoming: [[String: Any]],
+        journey: [String: Any]
+    ) -> [String: Any]? {
         let preferredMinutes = preferredMinutesForLiveGlance(journey)
-        if preferredMinutes >= 0 {
-            let horizon = liveHorizonMinutes(journey)
-            if let preferredTrip = pickTripAtOrAfter(upcoming, preferredMinutes: preferredMinutes, horizonMinutes: horizon),
-               !hasDepartureMinutePassed(tripDepartureIso(preferredTrip)) {
-                return preferredTrip
+        guard preferredMinutes >= 0 else { return nil }
+
+        let horizon = liveHorizonMinutes(journey)
+        for trip in upcoming where !hasDepartureMinutePassed(tripDepartureIso(trip)) {
+            if tripMatchesPreferredOrLater(trip, preferredMinutes: preferredMinutes, horizonMinutes: horizon) {
+                return trip
             }
         }
-        return resolveTrueNextTrip(payload)
+        return nil
+    }
+
+    private static func resolveDepartedJourneyTargetTrip(
+        _ upcoming: [[String: Any]],
+        journey: [String: Any]
+    ) -> [String: Any]? {
+        let preferredMinutes = preferredMinutesForLiveGlance(journey)
+        guard preferredMinutes >= 0 else { return nil }
+
+        let horizon = liveHorizonMinutes(journey)
+        for trip in upcoming {
+            guard tripMatchesPreferredOrLater(trip, preferredMinutes: preferredMinutes, horizonMinutes: horizon) else {
+                continue
+            }
+            if hasDepartureMinutePassed(tripDepartureIso(trip)) {
+                return trip
+            }
+            return nil
+        }
+        return nil
     }
 
     private static func preferredMinutesForLiveGlance(_ journey: [String: Any]) -> Int {
         PerthTime.parseClockMinutes(journey["preferredTrainTime"] as? String ?? "")
+    }
+
+    private static func isOvernightActiveWindow(_ journey: [String: Any]) -> Bool {
+        let from = PerthTime.parseClockMinutes(journey["defaultFrom"] as? String ?? "00:00")
+        let until = PerthTime.parseClockMinutes(journey["defaultUntil"] as? String ?? "23:59")
+        return from > until
     }
 
     private static func liveHorizonMinutes(_ journey: [String: Any]) -> Int {
@@ -56,22 +110,19 @@ enum JourneyPinHelper {
         return until >= 0 ? until : 24 * 60
     }
 
-    private static func pickTripAtOrAfter(
-        _ upcoming: [[String: Any]],
+    private static func tripMatchesPreferredOrLater(
+        _ trip: [String: Any],
         preferredMinutes: Int,
         horizonMinutes: Int
-    ) -> [String: Any]? {
-        for trip in upcoming {
-            let departureMinutes = PerthTime.minutesFromIso(tripDepartureIso(trip))
-            guard departureMinutes >= preferredMinutes else { continue }
-            if horizonMinutes < 24 * 60
-                && preferredMinutes < horizonMinutes
-                && departureMinutes >= horizonMinutes {
-                continue
-            }
-            return trip
+    ) -> Bool {
+        let departureMinutes = PerthTime.minutesFromIso(tripDepartureIso(trip))
+        guard departureMinutes >= preferredMinutes else { return false }
+        if horizonMinutes < 24 * 60
+            && preferredMinutes < horizonMinutes
+            && departureMinutes >= horizonMinutes {
+            return false
         }
-        return nil
+        return true
     }
 
     private static func collectUpcomingTrips(_ payload: [String: Any]) -> [[String: Any]] {

@@ -190,7 +190,7 @@
   position: absolute;
   top: 0.55rem;
   right: 0.55rem;
-  z-index: 2;
+  z-index: 10;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -204,6 +204,7 @@
   color: var(--muted);
   cursor: pointer;
   flex-shrink: 0;
+  pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   transition:

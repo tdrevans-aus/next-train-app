@@ -136,17 +136,22 @@ public class WidgetUiBuilderRobolectricTest {
     WidgetSettingsStore.saveSettings(context, "{\"widgetBgOpacity\":40,\"journeys\":[]}");
     JSONObject snapshot = WidgetSnapshotFixtures.liveJourneyWithLeave();
     WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetAppearanceSettings appearance = WidgetAppearanceSettings.read(context);
+    WidgetThemePalette palette = WidgetUiBuilder.resolveAppearancePalette(context);
     WidgetLayoutTestSupport.RemoteViewsBinding binding =
       WidgetLayoutTestSupport.capture(
         WidgetUiBuilder.build(context, snapshot, size)
       );
 
+    assertEquals(40, appearance.effectiveBgOpacity());
+    assertTrue(appearance.needsLegibilityAid());
+    assertEquals(102, Color.alpha(WidgetBackgroundPainter.resolveFillColor(palette.bg, 40)));
     assertEquals(View.VISIBLE, binding.visibility(R.id.widget_bg_layer));
     assertEquals(View.VISIBLE, binding.visibility(R.id.widget_text_scrim));
     Bitmap bg = binding.bitmap(R.id.widget_bg_layer);
     assertTrue(bg != null);
-    int centerAlpha = (bg.getPixel(bg.getWidth() / 2, bg.getHeight() / 2) >> 24) & 0xFF;
-    assertTrue(centerAlpha >= 90 && centerAlpha <= 115);
+    assertEquals(110, bg.getWidth());
+    assertEquals(40, bg.getHeight());
     assertEquals(Color.TRANSPARENT, binding.backgroundColor(R.id.widget_root).intValue());
   }
 
@@ -159,16 +164,21 @@ public class WidgetUiBuilderRobolectricTest {
     );
     JSONObject snapshot = WidgetSnapshotFixtures.liveJourneyWithLeave();
     WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetAppearanceSettings appearance = WidgetAppearanceSettings.read(context);
+    WidgetThemePalette palette = WidgetUiBuilder.resolveAppearancePalette(context);
     WidgetLayoutTestSupport.RemoteViewsBinding binding =
       WidgetLayoutTestSupport.capture(
         WidgetUiBuilder.build(context, snapshot, size)
       );
 
+    assertEquals(40, appearance.effectiveBgOpacity());
+    assertFalse(appearance.transparentBg);
+    assertEquals(102, Color.alpha(WidgetBackgroundPainter.resolveFillColor(palette.bg, 40)));
     assertEquals(View.VISIBLE, binding.visibility(R.id.widget_bg_layer));
     Bitmap bg = binding.bitmap(R.id.widget_bg_layer);
     assertTrue(bg != null);
-    int centerAlpha = (bg.getPixel(bg.getWidth() / 2, bg.getHeight() / 2) >> 24) & 0xFF;
-    assertTrue(centerAlpha >= 90 && centerAlpha <= 115);
+    assertEquals(110, bg.getWidth());
+    assertEquals(40, bg.getHeight());
   }
 
   @Test

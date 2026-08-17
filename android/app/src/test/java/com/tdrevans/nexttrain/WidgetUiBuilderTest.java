@@ -56,6 +56,13 @@ public class WidgetUiBuilderTest {
   }
 
   @Test
+  public void liveLeaveValueTextSizeSp_shrinksNowOnSmall2x1() {
+    assertEquals(24f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", false, 1f), 0.01f);
+    assertEquals(28f, WidgetUiBuilder.liveLeaveValueTextSizeSp("4", false, 1f), 0.01f);
+    assertEquals(34f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", true, 1f), 0.01f);
+  }
+
+  @Test
   public void parseLeaveParts_splitsCaptionAndMinutes() {
     WidgetUiBuilder.LeaveParts leave = WidgetUiBuilder.parseLeaveParts("Leave in 1 min");
     assertTrue(leave.visible);

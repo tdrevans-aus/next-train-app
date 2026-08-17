@@ -2,28 +2,32 @@ import Foundation
 
 enum JourneySelector {
     private static let kindRoute = "route"
-    private static let kindCommute = "commute"
+    private static let kindJourney = "journey"
+    private static let legacyKindCommute = "commute"
 
     static func journeyKind(_ journey: [String: Any]) -> String {
         let explicit = (journey["kind"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        if explicit == kindRoute || explicit == kindCommute {
+        if explicit == legacyKindCommute {
+            return kindJourney
+        }
+        if explicit == kindRoute || explicit == kindJourney {
             return explicit
         }
         let templateKey = journey["templateKey"] as? String ?? ""
         if templateKey == "morning" || templateKey == "evening" {
-            return kindCommute
+            return kindJourney
         }
         if let preferred = journey["preferredTrainTime"] as? String, !preferred.isEmpty {
-            return kindCommute
+            return kindJourney
         }
         if journey["remindMe"] as? Bool == true {
-            return kindCommute
+            return kindJourney
         }
         return kindRoute
     }
 
-    static func isCommuteJourney(_ journey: [String: Any]) -> Bool {
-        journeyKind(journey) == kindCommute
+    static func isJourneyKind(_ journey: [String: Any]) -> Bool {
+        journeyKind(journey) == kindJourney
     }
 
     static func isRouteJourney(_ journey: [String: Any]) -> Bool {
@@ -31,9 +35,9 @@ enum JourneySelector {
     }
 
     static func selectJourney(_ settings: [String: Any]) -> [String: Any]? {
-        let matching = commutesInActiveWindow(settings)
+        let matching = journeysInActiveWindow(settings)
         guard !matching.isEmpty else { return nil }
-        return pickScheduledCommute(matching, minutes: PerthTime.minutesSinceMidnight())
+        return pickScheduledJourney(matching, minutes: PerthTime.minutesSinceMidnight())
     }
 
     static func selectActiveRoute(_ settings: [String: Any]) -> [String: Any]? {
@@ -49,24 +53,24 @@ enum JourneySelector {
         return nil
     }
 
-    static func commutesInActiveWindow(_ settings: [String: Any]) -> [[String: Any]] {
+    static func journeysInActiveWindow(_ settings: [String: Any]) -> [[String: Any]] {
         guard let journeys = settings["journeys"] as? [[String: Any]] else {
             return []
         }
         let configured = configuredJourneys(journeys)
         let minutes = PerthTime.minutesSinceMidnight()
-        return configured.filter { isCommuteJourney($0) && matchesWindow($0, minutes: minutes) }
+        return configured.filter { isJourneyKind($0) && matchesWindow($0, minutes: minutes) }
     }
 
-    static func pickScheduledCommute(_ commutes: [[String: Any]], minutes: Int = PerthTime.minutesSinceMidnight()) -> [String: Any]? {
-        guard !commutes.isEmpty else { return nil }
-        if commutes.count == 1 {
-            return commutes[0]
+    static func pickScheduledJourney(_ journeys: [[String: Any]], minutes: Int = PerthTime.minutesSinceMidnight()) -> [String: Any]? {
+        guard !journeys.isEmpty else { return nil }
+        if journeys.count == 1 {
+            return journeys[0]
         }
 
-        let withTarget = commutes.filter { preferredMinutesFromJourney($0) >= 0 }
+        let withTarget = journeys.filter { preferredMinutesFromJourney($0) >= 0 }
         if withTarget.count < 2 {
-            return commutes[0]
+            return journeys[0]
         }
 
         let sorted = withTarget.sorted {

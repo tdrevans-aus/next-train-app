@@ -1,6 +1,7 @@
 journey-dismissed-falls-back-true-next.json
 journey-no-preferred-true-next.json
 journey-outside-hours-target.json
+journey-overnight-after-window-departed.json
 journey-override-stale-date.json
 journey-override-wins.json
 journey-preferred-default.json

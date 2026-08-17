@@ -3,11 +3,12 @@ package com.tdrevans.nexttrain;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/** Widget journey pick: commute in Active window (Q5 #3), then active route (Q5 #4). */
+/** Widget journey pick: journey in Active window (Q5 #3), then active route (Q5 #4). */
 public final class JourneySelector {
 
   private static final String KIND_ROUTE = "route";
-  private static final String KIND_COMMUTE = "commute";
+  private static final String KIND_JOURNEY = "journey";
+  private static final String LEGACY_KIND_COMMUTE = "commute";
 
   private JourneySelector() {}
 
@@ -16,24 +17,27 @@ public final class JourneySelector {
       return KIND_ROUTE;
     }
     String explicit = journey.optString("kind", "").trim().toLowerCase();
-    if (KIND_ROUTE.equals(explicit) || KIND_COMMUTE.equals(explicit)) {
+    if (LEGACY_KIND_COMMUTE.equals(explicit)) {
+      return KIND_JOURNEY;
+    }
+    if (KIND_ROUTE.equals(explicit) || KIND_JOURNEY.equals(explicit)) {
       return explicit;
     }
     String templateKey = journey.optString("templateKey", "");
     if ("morning".equals(templateKey) || "evening".equals(templateKey)) {
-      return KIND_COMMUTE;
+      return KIND_JOURNEY;
     }
     if (!journey.optString("preferredTrainTime", "").isEmpty()) {
-      return KIND_COMMUTE;
+      return KIND_JOURNEY;
     }
     if (journey.optBoolean("remindMe", false)) {
-      return KIND_COMMUTE;
+      return KIND_JOURNEY;
     }
     return KIND_ROUTE;
   }
 
-  public static boolean isCommuteJourney(JSONObject journey) {
-    return KIND_COMMUTE.equals(journeyKind(journey));
+  public static boolean isJourneyKind(JSONObject journey) {
+    return KIND_JOURNEY.equals(journeyKind(journey));
   }
 
   public static boolean isRouteJourney(JSONObject journey) {
@@ -41,14 +45,14 @@ public final class JourneySelector {
   }
 
   public static JSONObject selectJourney(JSONObject settings) throws Exception {
-    JSONArray matching = commutesInActiveWindow(settings);
+    JSONArray matching = journeysInActiveWindow(settings);
     if (matching.length() == 0) {
       return null;
     }
-    return pickScheduledCommute(matching, PerthTime.minutesSinceMidnight());
+    return pickScheduledJourney(matching, PerthTime.minutesSinceMidnight());
   }
 
-  /** Widget priority 4 — active route when no commute is in window. */
+  /** Widget priority 4 — active route when no journey is in window. */
   public static JSONObject selectActiveRoute(JSONObject settings) throws Exception {
     if (settings == null) {
       return null;
@@ -79,7 +83,7 @@ public final class JourneySelector {
     return null;
   }
 
-  public static JSONArray commutesInActiveWindow(JSONObject settings) throws Exception {
+  public static JSONArray journeysInActiveWindow(JSONObject settings) throws Exception {
     JSONArray matching = new JSONArray();
     if (settings == null) {
       return matching;
@@ -94,7 +98,7 @@ public final class JourneySelector {
     int minutes = PerthTime.minutesSinceMidnight();
     for (int index = 0; index < configured.length(); index += 1) {
       JSONObject journey = configured.getJSONObject(index);
-      if (!isCommuteJourney(journey)) {
+      if (!isJourneyKind(journey)) {
         continue;
       }
       if (matchesWindow(journey, minutes)) {
@@ -105,24 +109,24 @@ public final class JourneySelector {
     return matching;
   }
 
-  public static JSONObject pickScheduledCommute(JSONArray commutes, int minutes) throws Exception {
-    if (commutes == null || commutes.length() == 0) {
+  public static JSONObject pickScheduledJourney(JSONArray journeys, int minutes) throws Exception {
+    if (journeys == null || journeys.length() == 0) {
       return null;
     }
-    if (commutes.length() == 1) {
-      return commutes.getJSONObject(0);
+    if (journeys.length() == 1) {
+      return journeys.getJSONObject(0);
     }
 
     JSONArray withTarget = new JSONArray();
-    for (int index = 0; index < commutes.length(); index += 1) {
-      JSONObject journey = commutes.getJSONObject(index);
+    for (int index = 0; index < journeys.length(); index += 1) {
+      JSONObject journey = journeys.getJSONObject(index);
       if (preferredMinutesFromJourney(journey) >= 0) {
         withTarget.put(journey);
       }
     }
 
     if (withTarget.length() < 2) {
-      return commutes.getJSONObject(0);
+      return journeys.getJSONObject(0);
     }
 
     JSONArray sorted = new JSONArray();

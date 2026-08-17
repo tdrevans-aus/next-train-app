@@ -46,34 +46,19 @@ public final class JourneyPinHelper {
       return null;
     }
 
-    JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
-    String overrideIso = "";
-    if (isOverrideActiveToday(journey)) {
-      overrideIso = journey.optString("journeyPinOverrideIso", "");
-    }
-
-    if (!overrideIso.isEmpty()) {
-      JSONObject overrideTrip = findTripByDeparture(upcoming, overrideIso);
-      if (overrideTrip != null && !CommuteSchedule.hasDepartureMinutePassed(overrideTrip)) {
-        return overrideTrip;
-      }
-    }
-
-    if (isPinDismissedToday(journey)) {
+    PinResolutionHelper.Clock clock =
+      new PinResolutionHelper.Clock(System.currentTimeMillis(), PerthTime.localDateKey());
+    PinResolutionHelper.Result state =
+      PinResolutionHelper.resolvePinState("journey", clock, payload, journey, null, 0);
+    String faceDeparture = state.widgetFaceDeparture;
+    if (faceDeparture == null || faceDeparture.isEmpty()) {
       return CommuteSchedule.resolveTrueNextTrip(payload);
     }
 
-    int preferredMinutes = CommuteSchedule.preferredMinutesForLiveGlance(journey);
-    if (preferredMinutes >= 0) {
-      int horizon = CommuteSchedule.liveHorizonMinutes(journey);
-      JSONObject preferredTrip = PreferredTrainReminder.pickTripAtOrAfter(
-        upcoming,
-        preferredMinutes,
-        horizon
-      );
-      if (preferredTrip != null && !CommuteSchedule.hasDepartureMinutePassed(preferredTrip)) {
-        return preferredTrip;
-      }
+    JSONObject trip =
+      findTripByDeparture(CommuteSchedule.collectUpcomingTrips(payload), faceDeparture);
+    if (trip != null) {
+      return trip;
     }
 
     return CommuteSchedule.resolveTrueNextTrip(payload);

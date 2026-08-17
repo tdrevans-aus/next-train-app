@@ -39,8 +39,9 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Shipped pin release | **2.2.0** | **11** | `v2.2.0` | Pin release (FB-14 / FB-20) |
 | Reminders hotfix | **2.2.1** | **12** | `v2.2.1` | Reminders hotfix — `npm run test:patch-ship` |
 | Shipped widget + pin | **2.3.0** | **13** | `v2.3.0` | Widget appearance (FB-40/42), **FB-26** pin contract |
-| **Shipping now** | **2.4.0** | **14** | `v2.4.0` | **FB-23** Route vs Commute; FB-24/27/42, FB-11 |
-| Next | **2.5.0** | **15+** | `v2.5.0` | FB-29, CI soak backlog |
+| Shipped routes + journeys | **2.4.0** | **14** | `v2.4.0` | **FB-23** Route vs Journey; FB-24/27/42, FB-11 |
+| **Shipping now** | **2.4.1** | **15** | `v2.4.1` | 2.4.0 closed-test re-upload (Play versionCode bump) |
+| Next | **2.5.0** | **16+** | `v2.5.0` | FB-29, CI soak backlog |
 
 Update this table when you ship.
 

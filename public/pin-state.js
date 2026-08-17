@@ -173,10 +173,13 @@
 
   function targetTripHorizonMinutes(journey, clock = resolveClock()) {
     const journeyClean = sanitizeJourneyPinFields(journey, clock);
-    if (!journeyMatchesSchedule(journeyClean, clock)) {
-      return 24 * 60;
-    }
     return liveHorizonMinutes(journeyClean);
+  }
+
+  function isOvernightActiveWindow(journey) {
+    const from = parseTimeToMinutes(journey?.defaultFrom || "00:00");
+    const until = parseTimeToMinutes(journey?.defaultUntil || "23:59");
+    return from > until;
   }
 
   function journeyUsesLeaveBefore(journey) {
@@ -356,6 +359,10 @@
     }
 
     if (isJourneyPinDismissedToday(journeyClean, resolvedClock)) {
+      return null;
+    }
+
+    if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
       return null;
     }
 
@@ -569,7 +576,25 @@
       mode === "journey"
         ? resolveDepartedJourneyTargetDeparture(input.payload, input.journey, clock)
         : null;
-    const activeTargetDeparture = pinDeparture ?? departedTargetDeparture;
+    const journeyClean =
+      mode === "journey" ? sanitizeJourneyPinFields(input.journey, clock) : null;
+    const insideActiveWindow =
+      mode === "journey" && journeyClean && journeyMatchesSchedule(journeyClean, clock);
+    const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
+    const retainDepartedOutsideWindow = Boolean(
+      outsideActiveWindow &&
+        journeyClean &&
+        isOvernightActiveWindow(journeyClean) &&
+        departedTargetDeparture
+    );
+    let activeTargetDeparture = pinDeparture;
+    if (!activeTargetDeparture && mode === "journey") {
+      if (insideActiveWindow) {
+        activeTargetDeparture = departedTargetDeparture;
+      } else if (retainDepartedOutsideWindow) {
+        activeTargetDeparture = departedTargetDeparture;
+      }
+    }
 
     const heroDeparture = isSkipPreview
       ? resolveSkippedHeroDeparture(input.payload, skipTrains, clock)
@@ -578,8 +603,6 @@
     const leaveDeparture = pinDeparture ?? trueNextDeparture;
     const widgetFaceDeparture = activeTargetDeparture ?? trueNextDeparture;
 
-    const journeyClean =
-      mode === "journey" ? sanitizeJourneyPinFields(input.journey, clock) : null;
     const isOverrideActiveToday =
       mode === "journey" && isJourneyOverrideActiveToday(journeyClean, clock);
     const isPinDismissedToday =
@@ -600,24 +623,38 @@
     );
     const secondaryNextDeparture = showSecondaryNext ? trueNextDeparture : null;
 
-    const nearbyHolding = mode === "nearby" && isNearbyPinHolding(input.nearbyPin, clock);
     const showsTargetTrain = Boolean(
       activeTargetDeparture &&
         heroDeparture === activeTargetDeparture &&
         !isOverrideActiveToday
     );
-    const isHeroPinLockingSwipe = nearbyHolding || heroShowsPin;
+    const nearbyPinLocking = Boolean(
+      mode === "nearby" &&
+        input.nearbyPin &&
+        input.nearbyFocusedDirection &&
+        input.nearbyPin.direction === input.nearbyFocusedDirection &&
+        isNearbyPinHolding(input.nearbyPin, clock)
+    );
+    const isHeroPinLockingSwipe = mode === "nearby" ? nearbyPinLocking : heroShowsPin;
 
-    const leaveCardArmed = resolveLeaveCardArmed(input, {
-      pinDeparture,
-      isPinDismissedToday,
-    });
+    const leaveCardArmed =
+      (mode === "nearby" || insideActiveWindow) &&
+      resolveLeaveCardArmed(input, {
+        pinDeparture,
+        isPinDismissedToday,
+      });
+
+    const pinnedChrome = Boolean(
+      !isSkipPreview &&
+        heroShowsPin &&
+        (mode === "nearby" || (mode === "journey" && isOverrideActiveToday))
+    );
 
     const heroLabel = getHeroLabel({
       heroShowsPin: heroShowsPin && !isSkipPreview,
       showsTargetTrain,
       isSkipPreview: isSkipPreview && !showsTargetTrain,
-      pinnedChrome: mode === "nearby" && heroShowsPin,
+      pinnedChrome,
       isDayOverridePin: isOverrideActiveToday,
     });
 
@@ -630,6 +667,7 @@
       widgetFaceDeparture,
       isPinnedToday,
       heroShowsPin,
+      pinnedChrome,
       isOverrideActiveToday,
       isPinDismissedToday,
       isSkipPreview,

@@ -1,0 +1,71 @@
+{
+  "id": "journey-overnight-after-window-departed",
+  "description": "After overnight Active hours end, hero/widget keep the departed target train — not the next midday train.",
+  "tags": ["journey", "preferred", "outside-hours", "widget"],
+  "clock": {
+    "perthDateKey": "2026-08-17",
+    "nowIso": "2026-08-17T07:07:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 0,
+    "journey": {
+      "id": "j-overnight",
+      "kind": "journey",
+      "name": "Journey 1",
+      "station": "Edgewater Stn",
+      "direction": "Yanchep",
+      "preferredTrainTime": "0:55",
+      "defaultFrom": "23:25",
+      "defaultUntil": "2:25",
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-17T07:11:00+08:00",
+        "displayTime": "07:11",
+        "platform": "2",
+        "leaveBy": "2026-08-17T07:01:00+08:00"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-17T00:55:00+08:00",
+          "displayTime": "0:55",
+          "platform": "2",
+          "leaveBy": "2026-08-17T00:45:00+08:00"
+        },
+        {
+          "departure": "2026-08-17T07:11:00+08:00",
+          "displayTime": "07:11",
+          "platform": "2",
+          "leaveBy": "2026-08-17T07:01:00+08:00"
+        },
+        {
+          "departure": "2026-08-17T07:25:00+08:00",
+          "displayTime": "07:25",
+          "platform": "2",
+          "leaveBy": "2026-08-17T07:15:00+08:00"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-17T07:11:00+08:00",
+    "pinDeparture": null,
+    "heroDeparture": "2026-08-17T00:55:00+08:00",
+    "leaveDeparture": "2026-08-17T07:11:00+08:00",
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": "2026-08-17T00:55:00+08:00",
+    "isPinnedToday": true,
+    "heroShowsPin": true,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": true,
+    "showSecondaryNext": false,
+    "leaveCardArmed": false,
+    "heroLabel": "Target train"
+  }
+}

@@ -239,7 +239,12 @@ private fun LiveFace(
       ) {
         GlanceText(leaveParts.label, labelSp, colors.mutedArgb, FontWeight.Medium)
         Row(verticalAlignment = Alignment.CenterVertically) {
-          GlanceText(leaveParts.value, valueSp, leaveColor, FontWeight.Bold)
+          GlanceText(
+            leaveParts.value,
+            WidgetUiBuilder.liveLeaveValueTextSizeSp(leaveParts.value, medium, scale),
+            leaveColor,
+            FontWeight.Bold,
+          )
           if (leaveParts.unit.isNotEmpty()) {
             GlanceText(" ${leaveParts.unit}", unitSp, leaveColor, FontWeight.Medium)
           }

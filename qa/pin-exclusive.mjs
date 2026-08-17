@@ -154,6 +154,120 @@ async function run() {
     process.exitCode = 1;
   }
 
+  await page.evaluate((dateKey) => {
+    localStorage.setItem(
+      "nextTrainSettings",
+      JSON.stringify({
+        settingsSchemaVersion: 2,
+        refreshSeconds: 60,
+        activeJourneyId: "j-a",
+        nearbyPin: {
+          station: "Edgewater Stn",
+          direction: "Perth",
+          departureIso: "2026-08-17T07:30:00+08:00",
+          notifyMe: false,
+          holdingUntilMs: Date.now() + 60_000,
+          displayTime: "7:30 am",
+          platform: "1",
+          status: "On Time",
+        },
+        journeys: [
+          {
+            id: "j-a",
+            kind: "journey",
+            name: "Morning",
+            station: "Edgewater Stn",
+            direction: "Perth",
+            leaveBeforeMinutes: 10,
+            useLeaveBefore: true,
+            defaultFrom: "00:00",
+            defaultUntil: "23:59",
+            preferredTrainTime: "07:30",
+            remindDays: [1, 2, 3, 4, 5, 6, 7],
+            remindMe: false,
+            journeyPinDismissedDate: "",
+          },
+        ],
+      })
+    );
+  }, todayKey);
+
+  await page.goto(`${BASE}/?test=1`);
+  await page.waitForFunction(
+    () => typeof window.nextTrainApp?.clearOtherPinnedTrains === "function"
+  );
+
+  const nearbyOverTargetOk = await page.evaluate((dateKey) => {
+    window.nextTrainApp.clearOtherPinnedTrains({ type: "nearby" });
+    const settings = JSON.parse(localStorage.getItem("nextTrainSettings"));
+    const journeyA = settings.journeys.find((journey) => journey.id === "j-a");
+    return settings.nearbyPin != null && journeyA.journeyPinDismissedDate === dateKey;
+  }, todayKey);
+
+  if (nearbyOverTargetOk) {
+    console.log("PASS — nearby pin clears target-train pin on commute journey");
+  } else {
+    console.error("FAIL — pin-exclusive nearby vs target train");
+    process.exitCode = 1;
+  }
+
+  await page.evaluate((dateKey) => {
+    localStorage.setItem(
+      "nextTrainSettings",
+      JSON.stringify({
+        settingsSchemaVersion: 2,
+        refreshSeconds: 60,
+        activeJourneyId: "j-a",
+        nearbyPin: {
+          station: "Edgewater Stn",
+          direction: "Perth",
+          departureIso: "2026-08-17T07:30:00+08:00",
+          notifyMe: false,
+          holdingUntilMs: Date.now() + 60_000,
+          displayTime: "7:30 am",
+          platform: "1",
+          status: "On Time",
+        },
+        journeys: [
+          {
+            id: "j-a",
+            kind: "journey",
+            name: "Morning",
+            station: "Edgewater Stn",
+            direction: "Perth",
+            leaveBeforeMinutes: 10,
+            useLeaveBefore: true,
+            defaultFrom: "00:00",
+            defaultUntil: "23:59",
+            preferredTrainTime: "07:30",
+            remindDays: [1, 2, 3, 4, 5, 6, 7],
+            remindMe: false,
+            journeyPinDismissedDate: dateKey,
+          },
+        ],
+      })
+    );
+  }, todayKey);
+
+  await page.goto(`${BASE}/?test=1`);
+  await page.waitForFunction(
+    () => typeof window.nextTrainApp?.enterJourneyMode === "function"
+  );
+
+  const stayUnpinnedOk = await page.evaluate((dateKey) => {
+    window.nextTrainApp.enterJourneyMode();
+    const settings = JSON.parse(localStorage.getItem("nextTrainSettings"));
+    const journeyA = settings.journeys.find((journey) => journey.id === "j-a");
+    return journeyA.journeyPinDismissedDate === dateKey;
+  }, todayKey);
+
+  if (stayUnpinnedOk) {
+    console.log("PASS — returning to journeys does not re-pin dismissed target train");
+  } else {
+    console.error("FAIL — pin-exclusive journeys restore");
+    process.exitCode = 1;
+  }
+
   await browser.close();
 }
 

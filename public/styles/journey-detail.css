@@ -375,8 +375,8 @@ body.widget-setup-active .ad-remove-link-wrap {
   margin-top: 0.15rem;
 }
 
-#settings-detail-view.settings-detail-view--route .detail-direction-label--commute,
-#settings-detail-view.settings-detail-view--route .detail-direction-hint--commute {
+#settings-detail-view.settings-detail-view--route .detail-direction-label--journey,
+#settings-detail-view.settings-detail-view--route .detail-direction-hint--journey {
   display: none !important;
 }
 
@@ -1136,7 +1136,7 @@ body.widget-setup-active .ad-remove-link-wrap {
   color: var(--accent);
 }
 
-.journey-kind-badge--commute {
+.journey-kind-badge--journey {
   background: var(--journey-target-wash);
   color: var(--journey-target);
 }

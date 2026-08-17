@@ -24,7 +24,7 @@
 | Topic | Lock |
 |-------|------|
 | Storage | Same `settings.journeys[]`; add/use `kind: "route"` \| `"commute"` |
-| Chrome | **Four** top icons: **Near me · Routes · Commutes · Menu** (Q7) |
+| Chrome | **Four** top icons: **Near me · My Routes · My Journeys · Menu** (Q7; shipped v2.4.0) |
 | **Route** | Station + **platform destination** (Q8); board-style face; **no** Active hours, Target train, Remind me, or leave-by card |
 | **Commute** | Full existing commute form: Active hours, Target train, Remind me, pin, leave-by, template wizard |
 | Upgrade | Route → Commute in one action if cheap (**yes** — ship v1) |
@@ -160,19 +160,21 @@ Priority order (proposal — confirm or edit):
 
 | | Option | Implication |
 |---|--------|-------------|
-| ☑ | **A** — **Four top icons:** Near me · **Routes** · **Commutes** · Menu | Routes and commutes are peers; route create/edit is **not** inside My Journeys |
+| ☑ | **A** — **Four top icons:** Near me · **My Routes** · **My Journeys** · Menu | Routes and journeys are peers; route create/edit is **not** inside the Journeys library |
 | ☐ | **B** — Single **My Journeys** sheet with Save a route / Set up a commute | Shipped in Phase 2; **superseded** |
 
 **Tim’s lock:** **A**
 
-**Chrome order (LTR):** Near me · Routes · Commutes · Menu
+**Chrome order (LTR):** Near me · My Routes · My Journeys · Menu
 
 | Tab | Job |
 |-----|-----|
 | **Near me** | Unchanged — ephemeral nearest-station board |
-| **Routes** | Saved routes list + **dedicated route screen** (departure station + direction only). Selecting a route shows route hero (departure board). |
-| **Commutes** | Commute list + setup (wizard / full form). Selecting a commute shows commute hero (pin, leave-by). |
+| **My Routes** | Routes library + **dedicated route screen** (departure station + direction only). Selecting a route shows route hero (departure board). |
+| **My Journeys** | Journeys library + setup (wizard / full form). Selecting a journey shows journey hero (pin, leave-by). |
 | **Menu** | Unchanged — settings, help, pro, etc. |
+
+> Draft design docs used a **Commutes** tab label; shipped copy is **My Journeys** with library title **Journeys**.
 
 **Route screen fields (only):** Departure station · **Trains to** (platform destination) · Save / Delete.  
 **No name field** — list and hero label auto from `Station → Direction`.  
@@ -213,7 +215,7 @@ Priority order (proposal — confirm or edit):
 
 ## 5. UX spec (after §4 locked)
 
-> **Update (Tim, 15 Aug 2026):** Q7 splits chrome into **Routes** and **Commutes** tabs. §5.1–5.3 below describe list/detail behaviour **per type**; entry is via the relevant tab, not a combined My Journeys create row.
+> **Update (Tim, 15 Aug 2026):** Q7 splits chrome into **My Routes** and **My Journeys** tabs. §5.1–5.3 below describe list/detail behaviour **per type**; entry is via the relevant tab, not a combined library create row.
 
 ### 5.1 Routes tab
 
@@ -223,7 +225,7 @@ Priority order (proposal — confirm or edit):
 - No wizard, no templates, no Active hours, no Target train, no Remind me, no **Turn into a commute** on this screen (v1).
 - **Board filter:** strict platform destination (Q8) — e.g. Fremantle route excludes Perth-terminating trains.
 
-### 5.2 Commutes tab
+### 5.2 My Journeys tab (journey kind)
 
 - **List:** saved commutes with **Commute** badge; subtitle window + Target summary.
 - **Create:** **Set up a commute** → Morning / Evening chips → existing template wizard.
@@ -319,22 +321,7 @@ Per **Q1** lock. **No** leave card, **no** pin, **no** Remind me. Swipe/browse p
 
 ## 9. Release notes (tester-facing draft)
 
-```
-2.4.0 — Routes and commutes
-
-Important: saved journeys were cleared — please set up again.
-
-Routes & Commutes tabs
-• Add a route — station and direction only, for a quick departure board
-• Set up a commute — morning/evening templates with Target train, active hours, and reminders
-• Routes and commutes show a type badge in the list
-
-Widget
-• Can show a saved route when you don't have an active commute
-
-Please try: create one route and one commute from the new tabs, check the widget,
-and confirm reminders only apply to commutes.
-```
+See `docs/release-notes-2.4.0.md` for Play Console copy-paste.
 
 ---
 
@@ -343,6 +330,6 @@ and confirm reminders only apply to commutes.
 | Date | Note |
 |------|------|
 | 2026-08-15 | Brief created — six decisions for Tim lock; phases 1–5 for 2.4.0 |
-| 2026-08-15 | Tim locked Q7 — **4-icon chrome** (Near me · Routes · Commutes · Menu); route = dedicated screen (station + direction) |
+| 2026-08-15 | Tim locked Q7 — **4-icon chrome** (Near me · My Routes · My Journeys · Menu); route = dedicated screen (station + direction) |
 | 2026-08-15 | Tim locked route UX — **Add a route** (not Save); **no name field**; **no templates** on Routes library |
 | 2026-08-15 | Tim locked Q8 — routes filter by **platform destination** (Option A); alighting station deferred |

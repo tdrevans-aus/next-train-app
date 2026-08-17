@@ -671,6 +671,9 @@ function buildNearbyPinSettingsSnapshot() {
 function syncNearbyPinSettings() {
   const snapshot = buildNearbyPinSettingsSnapshot();
   const current = getSettings().nearbyPin;
+  if (!snapshot && !nearbySession?.pin) {
+    return;
+  }
   const same =
     (!snapshot && !current) ||
     (snapshot &&
@@ -710,6 +713,7 @@ function restoreNearbySessionPinFromSettings() {
     station: pin.station,
     direction: pin.direction,
     departureIso: pin.departureIso,
+    holdingUntilMs: pin.holdingUntilMs,
     trip: {
       displayTime: pin.displayTime,
       departure: pin.departureIso,
@@ -719,6 +723,14 @@ function restoreNearbySessionPinFromSettings() {
     },
   };
   nearbySession.pinNotifyMe = pin.notifyMe === true;
+}
+
+function syncRestoredNearbyPinState() {
+  restoreNearbySessionPinFromSettings();
+  const pin = getSettings().nearbyPin;
+  if (getNearbyPin() || (pin && deps.isNearbyPinSettingsHolding?.(pin))) {
+    deps.reconcileExclusivePinState?.({ type: "nearby" });
+  }
 }
 
 function buildNearbyLeaveNext(trip) {
@@ -765,6 +777,7 @@ function renderPinLeaveCardContent(leaveNext, { forTarget = false } = {}) {
   updateLeaveCardState(live.leavePhase);
 
   const showLateNag = live.leavePhase === "late" || live.leavePhase === "missed";
+  const shouldAutoAckLeave = deps.shouldAutoAckLeavePhase?.(live.leavePhase) ?? false;
   if (deps.leaveCardActionsEl) {
     deps.leaveCardActionsEl.hidden = !showLateNag;
     deps.leaveCardActionsEl.classList.toggle("leave-card-actions--visible", showLateNag);
@@ -773,7 +786,7 @@ function renderPinLeaveCardContent(leaveNext, { forTarget = false } = {}) {
     deps.leaveBufferEditBtn.hidden = true;
   }
 
-  return { live, showLateNag };
+  return { live, showLateNag, shouldAutoAckLeave };
 }
 
 function syncPinLeaveControlValues(journey) {
@@ -817,10 +830,10 @@ function renderRoutePinLeaveSurfaces(leaveNext, journey, { forTarget = false } =
     return;
   }
 
-  const { showLateNag } = renderPinLeaveCardContent(leaveTrip, { forTarget });
+  const { shouldAutoAckLeave } = renderPinLeaveCardContent(leaveTrip, { forTarget });
   syncPinLeaveControlValues(journey);
   deps.syncHeroPinChrome?.();
-  if (showLateNag) {
+  if (shouldAutoAckLeave) {
     void deps.maybeAutoAcknowledgeLeave?.(leaveTrip, {
       station: journey.station,
     });
@@ -857,10 +870,10 @@ function renderNearbyPinLeaveSurfaces(next, pinned) {
     return;
   }
 
-  const { showLateNag } = renderPinLeaveCardContent(leaveNext);
+  const { shouldAutoAckLeave } = renderPinLeaveCardContent(leaveNext);
   syncPinLeaveControlValues();
   syncNearbyPinChrome();
-  if (showLateNag) {
+  if (shouldAutoAckLeave) {
     void deps.maybeAutoAcknowledgeLeave?.(leaveNext, {
       station: nearbySession.station,
       ackContext,
@@ -924,6 +937,12 @@ async function handleNearbyNotifyToggle() {
 }
 
 function nearbyPinExpiryMs(pin = getNearbyPin()) {
+  if (!pin) {
+    return 0;
+  }
+  if (typeof pin.holdingUntilMs === "number") {
+    return pin.holdingUntilMs;
+  }
   if (!pin?.departureIso) {
     return 0;
   }
@@ -1244,7 +1263,7 @@ async function maybeAutoAckNearbyPinLeaveFromTick({ latitude, longitude, speed, 
 
   const leaveNext = buildNearbyLeaveNext(next);
   const { leavePhase } = getLiveTiming(leaveNext);
-  if (leavePhase !== "late" && leavePhase !== "missed") {
+  if (!deps.shouldAutoAckLeavePhase?.(leavePhase)) {
     return false;
   }
 
@@ -1510,6 +1529,7 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
       nearbySession.refineNotice = "Updated to nearest station";
     } else {
       restoreNearbySessionPinFromSettings();
+      deps.reconcileExclusivePinState?.({ type: "nearby" });
     }
     writeLastNearbyStationCache({
       station: nearest.station,
@@ -1676,6 +1696,9 @@ function renderNearbyBoard({ stale = false } = {}) {
     }
     updateSwipeHint();
     updateSwipeCues();
+    if (isNearbyPinHolding()) {
+      syncNearbyPinChrome();
+    }
     return;
   }
 
@@ -1764,14 +1787,25 @@ function renderNearbyBoard({ stale = false } = {}) {
     boardData = applyNearbyPinToData(focusedEntry.direction, boardData);
     focusedEntry.data = boardData;
   } else if (getNearbyPin() && !isNearbyPinHolding()) {
-    const expiredDirection = getNearbyPin()?.direction;
-    clearNearbyPin();
-    if (expiredDirection) {
-      setNearbySkip(expiredDirection, 0);
-      void fetchNearbyBoard()
-        .then(() => renderNearbyBoard())
-        .catch(() => renderNearbyBoard({ stale: true }));
-      return;
+    const settingsPin = getSettings().nearbyPin;
+    if (
+      settingsPin &&
+      deps.isNearbyPinSettingsHolding?.(settingsPin) &&
+      nearbySession?.station === settingsPin.station
+    ) {
+      restoreNearbySessionPinFromSettings();
+    } else if (!settingsPin || !deps.isNearbyPinSettingsHolding?.(settingsPin)) {
+      const expiredDirection = getNearbyPin()?.direction;
+      clearNearbyPin();
+      if (expiredDirection) {
+        setNearbySkip(expiredDirection, 0);
+        void fetchNearbyBoard()
+          .then(() => renderNearbyBoard())
+          .catch(() => renderNearbyBoard({ stale: true }));
+        return;
+      }
+    } else if (nearbySession) {
+      nearbySession.pin = null;
     }
   }
 
@@ -2031,7 +2065,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
       focusedDirection: null,
       skipByDirection: {},
     };
-    restoreNearbySessionPinFromSettings();
+    syncRestoredNearbyPinState();
     syncNearbyChrome();
     renderNearbyBoard();
 
@@ -2062,7 +2096,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
       focusedDirection: cachedBoard?.focusedDirection ?? null,
       skipByDirection: {},
     };
-    restoreNearbySessionPinFromSettings();
+    syncRestoredNearbyPinState();
     if (cachedBoard) {
       nearbyBoard = {
         lastUpdated: cachedBoard.lastUpdated ?? "just now",
@@ -2162,7 +2196,9 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
 }
 
 function exitNearbyMode() {
-  syncNearbyPinSettings();
+  if (nearbySession) {
+    syncNearbyPinSettings();
+  }
   hideNearbyPinLeaveSurfaces();
   stopNearbyLocateTimers();
   stopNearbyRelocateLoop();

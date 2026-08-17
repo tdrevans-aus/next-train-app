@@ -188,7 +188,7 @@ public class NextCommutePreviewTest {
     journey.put("defaultFrom", from);
     journey.put("defaultUntil", until);
     journey.put("preferredTrainTime", preferred);
-    journey.put("kind", "commute");
+    journey.put("kind", "journey");
     journey.put("remindDays", new JSONArray(new int[] { 1, 2, 3, 4, 5 }));
     return journey;
   }

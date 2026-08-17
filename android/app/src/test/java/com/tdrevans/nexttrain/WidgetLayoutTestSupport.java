@@ -47,6 +47,60 @@ final class WidgetLayoutTestSupport {
     return RemoteViewsBinding.from(remoteViews);
   }
 
+  static Bitmap bitmapForView(RemoteViews remoteViews, int targetViewId) {
+    try {
+      Field actionsField = RemoteViews.class.getDeclaredField("mActions");
+      actionsField.setAccessible(true);
+      @SuppressWarnings("unchecked")
+      ArrayList<Object> actions = (ArrayList<Object>) actionsField.get(remoteViews);
+      if (actions == null) {
+        return null;
+      }
+      for (Object action : actions) {
+        Integer viewId = resolveViewId(action);
+        if (viewId == null || viewId != targetViewId) {
+          continue;
+        }
+        Object bitmap = readActionField(action, "bitmap");
+        if (bitmap == null) {
+          bitmap = readActionField(action, "mBitmap");
+        }
+        if (bitmap instanceof Bitmap) {
+          return (Bitmap) bitmap;
+        }
+      }
+    } catch (ReflectiveOperationException e) {
+      throw new AssertionError("Failed to read RemoteViews bitmap action", e);
+    }
+    return null;
+  }
+
+  private static Integer resolveViewId(Object action) {
+    Integer viewId = asInt(readActionField(action, "viewId"));
+    if (viewId != null) {
+      return viewId;
+    }
+    return asInt(readActionField(action, "mViewId"));
+  }
+
+  private static Object readActionField(Object target, String name) {
+    Class<?> clazz = target.getClass();
+    while (clazz != null) {
+      try {
+        Field field = clazz.getDeclaredField(name);
+        field.setAccessible(true);
+        return field.get(target);
+      } catch (ReflectiveOperationException ignored) {
+        clazz = clazz.getSuperclass();
+      }
+    }
+    return null;
+  }
+
+  private static Integer asInt(Object value) {
+    return value instanceof Integer ? (Integer) value : null;
+  }
+
   static final class RemoteViewsBinding {
     private final Map<Integer, String> textByViewId = new HashMap<>();
     private final Map<Integer, Integer> visibilityByViewId = new HashMap<>();
@@ -74,27 +128,28 @@ final class WidgetLayoutTestSupport {
 
     private void applyAction(Object action) {
       String className = action.getClass().getSimpleName();
+      String methodName = asString(readActionField(action, "methodName"));
+      Integer viewId = resolveViewId(action);
+
       if (className.contains("Bitmap")) {
-        Integer viewId = asInt(readField(action, "viewId"));
-        if (viewId != null) {
-          Object bitmap = readField(action, "bitmap");
-          if (bitmap instanceof Bitmap) {
-            bitmapByViewId.put(viewId, (Bitmap) bitmap);
-          }
+        Object bitmap = readActionField(action, "bitmap");
+        if (bitmap == null) {
+          bitmap = readActionField(action, "mBitmap");
+        }
+        if (viewId != null && bitmap instanceof Bitmap) {
+          bitmapByViewId.put(viewId, (Bitmap) bitmap);
         }
         return;
       }
 
-      String methodName = asString(readField(action, "methodName"));
       if (methodName == null) {
         return;
       }
-      Integer viewId = asInt(readField(action, "viewId"));
       if (viewId == null) {
         return;
       }
-      Object value = readField(action, "value");
-      Object bitmap = readField(action, "bitmap");
+      Object value = readActionField(action, "value");
+      Object bitmap = readActionField(action, "bitmap");
       switch (methodName) {
         case "setText":
           textByViewId.put(viewId, value == null ? "" : value.toString());
@@ -103,6 +158,7 @@ final class WidgetLayoutTestSupport {
           visibilityByViewId.put(viewId, value instanceof Integer ? (Integer) value : View.GONE);
           break;
         case "setImageViewBitmap":
+        case "setImageBitmap":
           if (bitmap instanceof Bitmap) {
             bitmapByViewId.put(viewId, (Bitmap) bitmap);
           } else if (value instanceof Bitmap) {
@@ -119,7 +175,7 @@ final class WidgetLayoutTestSupport {
       }
     }
 
-    private static Object readField(Object target, String name) {
+    private static Object readActionField(Object target, String name) {
       Class<?> clazz = target.getClass();
       while (clazz != null) {
         try {
@@ -131,6 +187,14 @@ final class WidgetLayoutTestSupport {
         }
       }
       return null;
+    }
+
+    private static Integer resolveViewId(Object action) {
+      Integer viewId = asInt(readActionField(action, "viewId"));
+      if (viewId != null) {
+        return viewId;
+      }
+      return asInt(readActionField(action, "mViewId"));
     }
 
     private static String asString(Object value) {

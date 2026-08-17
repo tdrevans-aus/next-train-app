@@ -11,7 +11,7 @@
 | In this build | Notes |
 |---------------|--------|
 | Phases 1–4 | Model, list badges, route hero, native/widget |
-| **Q7** | **Near me · Routes · Commutes · Menu** + dedicated route screen |
+| **Q7** | **Near me · My Routes · My Journeys · Menu** + dedicated route screen |
 | **Q8** | Platform destination filter (strict; Perth ≠ Fremantle) |
 
 ### Automated script map
@@ -85,16 +85,16 @@ npm run test:pre-release -- --with-maestro
 
 | # | Check |
 |---|-------|
-| 2a.1 | Top chrome shows **Near me · Routes · Commutes · Menu** (four labelled icons, LTR) |
-| 2a.2 | **Routes** tab — routes list only; **Route** badge; row label `Station → Direction` (single line) |
-| 2a.3 | **Routes** library — primary **Add a route** only; **no** Morning/Evening template chips |
-| 2a.4 | **Add a route** opens route screen: **station + Trains to** (Q8) — **no name**, no Schedule, no Target, no Remind me, no **Turn into a commute** |
+| 2a.1 | Top chrome shows **Near me · My Routes · My Journeys · Menu** (four labelled icons, LTR) |
+| 2a.2 | **My Routes** — Routes library only; **Route** badge; row label `Station → Direction` (single line) |
+| 2a.3 | Routes library title **Routes** — primary **Add a route** only; **no** Morning/Evening template chips |
+| 2a.4 | **Add a route** opens route screen: **station + Trains to** (Q8) — **no name**, no Schedule, no Target, no Remind me |
 | 2a.5 | Edit route → same two-field screen; Save / Delete work |
-| 2a.6 | **Commutes** tab — commutes list only; **Commute** badge; subtitle window + Target summary |
-| 2a.7 | **Commutes** — **Set up a commute** → Morning / Evening chips → wizard |
-| 2a.8 | No **My Journeys** chrome label |
-| 2a.9 | Switching tabs: Near me board vs route hero vs commute hero behave sensibly |
-| 2a.10 | Route switcher shows **routes only**; commute switcher shows **commutes only** |
+| 2a.6 | **My Journeys** — Journeys library only; **Journey** badge; subtitle `Station → Direction` + window/Target summary |
+| 2a.7 | Journeys library title **Journeys** — **Add a journey** + Morning / Evening template chips |
+| 2a.8 | No legacy **Commutes** chrome tab or `#commutes-btn` |
+| 2a.9 | Switching tabs: Near me board vs route hero vs journey hero behave sensibly |
+| 2a.10 | Route switcher shows **routes only**; journey switcher shows **journeys only** |
 
 - [ ] 2a.1–2a.10 all pass
 
@@ -200,18 +200,18 @@ Test small + medium widget if you can.
 ## Tester release notes (closed test blurb)
 
 ```
-2.4.0 — Routes and commutes
+2.4.0 — Routes and journeys
 
 Important: saved journeys were cleared — please set up again.
 
-Routes & Commutes tabs
+Routes & Journeys tabs
 • Add a route — pick station and direction for a quick departure board
-• Set up a commute — morning/evening templates with Target train, active hours, and reminders
-• Routes and commutes show a type badge in the list
+• Add a journey — morning/evening templates with Target train, active hours, and reminders
+• Routes and journeys show a type badge in the list
 
 Widget
-• Can show a saved route when you don't have an active commute
+• Can show a saved route when you don't have an active journey
 
-Please try: create one route and one commute from the new tabs, check the widget,
-and confirm reminders only apply to commutes.
+Please try: create one route and one journey from the new tabs, check the widget,
+and confirm reminders only apply to journeys.
 ```

@@ -145,7 +145,7 @@ ${body}
     pad2,
     getPerthDateParts,
     isLegacyBlankDefaultWindow,
-    isDefaultCommuteJourneyName,
+    isLegacyTemplateJourneyName,
   };
 
   global.nextTrainJourneyModel = api;

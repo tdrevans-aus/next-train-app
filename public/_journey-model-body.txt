@@ -121,7 +121,7 @@ function normalizeJourney(raw = {}) {
 
   if (
     isLegacyBlankDefaultWindow(defaultFrom, defaultUntil) &&
-    !isDefaultCommuteJourneyName(raw.name)
+    !isLegacyTemplateJourneyName(raw.name)
   ) {
     defaultFrom = "";
     defaultUntil = "";

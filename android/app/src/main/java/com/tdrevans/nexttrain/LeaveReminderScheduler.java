@@ -123,7 +123,7 @@ public final class LeaveReminderScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
-        if (!JourneySelector.isCommuteJourney(journey)) {
+        if (!JourneySelector.isJourneyKind(journey)) {
           continue;
         }
         scheduleForJourney(context, journey, stale);
@@ -293,7 +293,7 @@ public final class LeaveReminderScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
-        if (!JourneySelector.isCommuteJourney(journey)) {
+        if (!JourneySelector.isJourneyKind(journey)) {
           continue;
         }
         if (!PreferredTrainReminder.isRemindMeEnabled(journey)) {
@@ -416,7 +416,7 @@ public final class LeaveReminderScheduler {
         if (journeys != null) {
           for (int index = 0; index < journeys.length(); index += 1) {
             JSONObject journey = journeys.optJSONObject(index);
-            if (journey == null || !JourneySelector.isCommuteJourney(journey)) {
+            if (journey == null || !JourneySelector.isJourneyKind(journey)) {
               continue;
             }
             if (!PreferredTrainReminder.isRemindMeEnabled(journey)) {
@@ -518,7 +518,7 @@ public final class LeaveReminderScheduler {
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
-        if (!JourneySelector.isCommuteJourney(journey)) {
+        if (!JourneySelector.isJourneyKind(journey)) {
           continue;
         }
         JSONObject journeyResult = describeJourneySchedule(context, journey, stale, computedAtMs);
@@ -603,7 +603,7 @@ public final class LeaveReminderScheduler {
         return result;
       }
 
-      if (!JourneySelector.isCommuteJourney(journey)) {
+      if (!JourneySelector.isJourneyKind(journey)) {
         result.put("reason", "route_journey");
         return result;
       }

@@ -38,8 +38,7 @@ final class WidgetBackgroundPainter {
       return;
     }
 
-    int alpha = Math.round((opacity / 100f) * 255f);
-    int fill = (alpha << 24) | (palette.bg & 0x00FFFFFF);
+    int fill = resolveFillColor(palette.bg, opacity);
     int cornerPx = (int) (CORNER_RADIUS_DP * density);
     int strokePx = Math.max(1, (int) (STROKE_WIDTH_DP * density));
 
@@ -73,6 +72,12 @@ final class WidgetBackgroundPainter {
     drawable.setBounds(0, 0, width, height);
     drawable.draw(canvas);
     return bitmap;
+  }
+
+  /** Exposed for JVM tests — Robolectric does not paint GradientDrawable pixels reliably. */
+  static int resolveFillColor(int paletteBg, int opacityPercent) {
+    int alpha = Math.round((opacityPercent / 100f) * 255f);
+    return (alpha << 24) | (paletteBg & 0x00FFFFFF);
   }
 
   /** Blend: border only when fully opaque; brand/wallpaper: border whenever filled. */

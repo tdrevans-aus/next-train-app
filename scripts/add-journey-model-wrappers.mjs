@@ -17,7 +17,7 @@ function createDefaultStore() { return journeyModel().createDefaultStore(); }
 function isUnconfiguredJourney(journey) { return journeyModel().isUnconfiguredJourney(journey); }
 function resolveInitialJourneys(rawJourneys = []) { return journeyModel().resolveInitialJourneys(rawJourneys); }
 function normalizeJourneyList(rawJourneys = []) { return journeyModel().normalizeJourneyList(rawJourneys); }
-function isDefaultCommuteJourneyName(name) { return journeyModel().isDefaultCommuteJourneyName(name); }
+function isLegacyTemplateJourneyName(name) { return journeyModel().isLegacyTemplateJourneyName(name); }
 function isLegacyBlankDefaultWindow(a, b) { return journeyModel().isLegacyBlankDefaultWindow(a, b); }
 function normalizeRemindDays(raw) { return journeyModel().normalizeRemindDays(raw); }
 function getPerthDayOfWeekIso(date) { return journeyModel().getPerthDayOfWeekIso(date); }
