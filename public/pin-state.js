@@ -311,6 +311,82 @@
     return null;
   }
 
+  function getPerthDayOfWeekIsoFromDate(date) {
+    if (deps.getPerthDayOfWeekIso) {
+      return deps.getPerthDayOfWeekIso(date);
+    }
+    const weekday = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Australia/Perth",
+      weekday: "long",
+    }).format(date);
+    const map = {
+      Monday: 1,
+      Tuesday: 2,
+      Wednesday: 3,
+      Thursday: 4,
+      Friday: 5,
+      Saturday: 6,
+      Sunday: 7,
+    };
+    return map[weekday] ?? 1;
+  }
+
+  function getJourneyRemindDays(journey) {
+    const days = journey?.remindDays;
+    if (Array.isArray(days) && days.length) {
+      return [...new Set(days.map((value) => Number(value)).filter((value) => value >= 1 && value <= 7))];
+    }
+    return [1, 2, 3, 4, 5];
+  }
+
+  function journeyMatchesActiveDay(journey, clock) {
+    const resolvedClock = resolveClock(clock);
+    const day = getPerthDayOfWeekIsoFromDate(new Date(resolvedClock.nowMs));
+    return getJourneyRemindDays(journey).includes(day);
+  }
+
+  function tripMatchesJourneyRemindDay(trip, journey, clock) {
+    const iso = trip?.departure ?? trip?.arrival;
+    if (!iso) {
+      return false;
+    }
+    const tripDay = getPerthDayOfWeekIsoFromDate(new Date(iso));
+    return getJourneyRemindDays(journey).includes(tripDay);
+  }
+
+  function resolveJourneyPreferredTargetDepartureOnRemindDays(
+    payload,
+    journey,
+    clock = resolveClock()
+  ) {
+    const resolvedClock = resolveClock(clock);
+    if (!payload || !journey) {
+      return null;
+    }
+
+    const normalized = normalizeApiTrainData(payload);
+    const journeyClean = sanitizeJourneyPinFields(journey, resolvedClock);
+    const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
+    if (preferredMinutes < 0) {
+      return null;
+    }
+
+    const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
+    for (const trip of getUpcomingTrips(normalized)) {
+      if (tripHasDeparted(trip, resolvedClock)) {
+        continue;
+      }
+      if (!tripMatchesJourneyRemindDay(trip, journeyClean, resolvedClock)) {
+        continue;
+      }
+      if (tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
+        return resolveTripDeparture(trip);
+      }
+    }
+
+    return null;
+  }
+
   function resolveJourneyPreferredTargetDeparture(payload, journey, clock = resolveClock()) {
     const resolvedClock = resolveClock(clock);
     if (!payload || !journey) {
@@ -401,6 +477,13 @@
           resolvedClock
         );
       }
+      if (!journeyMatchesActiveDay(journeyClean, resolvedClock)) {
+        return resolveJourneyPreferredTargetDepartureOnRemindDays(
+          normalized,
+          journeyClean,
+          resolvedClock
+        );
+      }
       return null;
     }
 
@@ -445,6 +528,13 @@
     }
 
     if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
+      if (!journeyMatchesActiveDay(journeyClean, resolvedClock)) {
+        return resolveJourneyPreferredTargetDepartureOnRemindDays(
+          normalized,
+          journeyClean,
+          resolvedClock
+        );
+      }
       return null;
     }
 

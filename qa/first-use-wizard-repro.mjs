@@ -1,5 +1,5 @@
 /**
- * Full first-use: onboarding coach → Add a journey → custom template wizard.
+ * Full first-use: onboarding coach → Set up a journey → Morning into town wizard.
  * Usage: node qa/first-use-wizard-repro.mjs
  */
 import { chromium } from "playwright";
@@ -54,16 +54,16 @@ async function run() {
   await browser.close();
 
   if (!afterSetup.coachOpen || !afterSetup.detailOpen) {
-    console.error("FAIL — custom journey wizard did not open from onboarding");
+    console.error("FAIL — Morning into town wizard did not open from onboarding");
     process.exit(1);
   }
 
-  if (afterSetup.coachTitle !== "Station & direction") {
-    console.error("FAIL — expected custom journey wizard step 1, got:", afterSetup.coachTitle);
+  if (afterSetup.coachTitle !== "Station picked for you") {
+    console.error("FAIL — expected Morning into town wizard step 1, got:", afterSetup.coachTitle);
     process.exit(1);
   }
 
-  console.log("PASS — full first-use custom journey wizard");
+  console.log("PASS — full first-use Morning into town wizard");
 }
 
 run().catch((error) => {
