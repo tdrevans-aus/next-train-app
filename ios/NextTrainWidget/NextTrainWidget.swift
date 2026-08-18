@@ -14,6 +14,9 @@ struct NextTrainWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: NextTrainTimelineProvider()) { entry in
             NextTrainWidgetView(snapshot: entry.snapshot)
+                .containerBackground(for: .widget) {
+                    Color(.systemBackground)
+                }
         }
         .configurationDisplayName("Next Train")
         .description("See your next train and when to leave.")
