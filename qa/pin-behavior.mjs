@@ -35,6 +35,7 @@ async function run() {
   const page = await browser.newPage();
   const todayKey = perthTodayKey();
 
+  try {
   // --- Exclusivity: journey pin clears nearby + route override ---
   await seedSettings(
     page,
@@ -399,6 +400,17 @@ async function run() {
   );
 
   await page.evaluate(() => window.nextTrainApp.enterRouteMode());
+  await page.evaluate(async () => {
+    await window.nextTrainApp.fetchNextTrain?.();
+  });
+  await page.waitForFunction(
+    () => {
+      const countdown = document.getElementById("depart-countdown")?.textContent?.trim() ?? "";
+      return countdown.length > 0 && countdown !== "—";
+    },
+    null,
+    { timeout: 25000 }
+  );
   await page.waitForSelector("#hero-pin-btn:not([hidden])", { timeout: 25000 });
   await page.locator("#hero-pin-btn").click();
   await page.waitForTimeout(500);
@@ -454,13 +466,14 @@ async function run() {
     JSON.stringify(targetPinUi)
   );
 
-  await browser.close();
-
   const failed = results.filter((row) => !row.ok).length;
   if (failed === 0) {
     console.log(`\n${results.length} pin behaviour checks passed.`);
   } else {
     console.error(`\n${failed} of ${results.length} pin behaviour checks failed.`);
+  }
+  } finally {
+    await browser.close();
   }
 }
 

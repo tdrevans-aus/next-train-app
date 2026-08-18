@@ -15,6 +15,7 @@ async function run() {
 
   await page.evaluate(() => {
     const settings = {
+      settingsSchemaVersion: 2,
       leaveBeforeMinutes: 10,
       refreshSeconds: 30,
       activeJourneyId: "j-evening",
@@ -52,7 +53,7 @@ async function run() {
     localStorage.setItem("nextTrainTemplateWizardSeen", "1");
   });
 
-  await page.reload();
+  await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.waitForTimeout(1200);
   await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(500);
@@ -61,16 +62,16 @@ async function run() {
     morningHidden: document.querySelector('[data-template="morning"]')?.hidden === true,
     eveningHidden: document.querySelector('[data-template="evening"]')?.hidden === true,
     customHidden: document.querySelector('[data-template="custom"]')?.hidden === true,
-    saveRouteVisible: !document.getElementById("journey-save-route-btn")?.hidden,
+    setupVisible: !document.getElementById("journey-setup-btn")?.hidden,
   }));
 
   await browser.close();
 
   const pass =
-    chips.morningHidden && chips.eveningHidden && chips.customHidden && chips.saveRouteVisible;
+    chips.morningHidden && chips.eveningHidden && chips.customHidden && chips.setupVisible;
   if (pass) {
     console.log(
-      "PASS — Morning/Evening shortcuts hidden; Add a route visible (edited hours OK)"
+      "PASS — Morning/Evening shortcuts hidden; Add a journey visible (edited hours OK)"
     );
   } else {
     console.error("FAIL — template chip visibility wrong", chips);

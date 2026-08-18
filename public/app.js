@@ -173,7 +173,6 @@ const heroEmptyStateEl = document.getElementById("hero-empty-state");
 const heroEmptyTitleEl = document.querySelector(".hero-empty-title");
 const heroEmptyTextEl = document.querySelector(".hero-empty-text");
 const heroEmptyAddBtn = document.getElementById("hero-empty-add-btn");
-const heroEmptyBackBtn = document.getElementById("hero-empty-back-btn");
 const detailActiveDayChips = document.getElementById("detail-active-day-chips");
 const detailActiveDaysHint = document.querySelector(".detail-active-days-hint");
 const detailActiveHoursErrorEl = document.getElementById("detail-active-hours-error");
@@ -1941,6 +1940,17 @@ function maybeAutoSelectJourney() {
 
   const pinnedCommuteId = findActiveCommuteTargetPinId();
   if (pinnedCommuteId) {
+    const pinnedInSchedule = settings.journeys.some(
+      (journey) => journey.id === pinnedCommuteId && journeyMatchesSchedule(journey),
+    );
+    if (
+      pinnedInSchedule &&
+      settings.activeJourneyId !== pinnedCommuteId
+    ) {
+      settings.activeJourneyId = pinnedCommuteId;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      skipTrains = readSkipState().count;
+    }
     return;
   }
 
@@ -3612,6 +3622,7 @@ function enterRouteMode() {
     return;
   }
 
+  const switchingFromJourneys = journeyModeActive && chromeTravelTab === "journeys";
   chromeTravelTab = "routes";
   journeyModeActive = true;
   exitNearbyMode();
@@ -3620,6 +3631,10 @@ function enterRouteMode() {
   if (!hasConfiguredRoute()) {
     renderTravelTabEmptyState();
     return;
+  }
+
+  if (switchingFromJourneys) {
+    clearManualJourneyOverride();
   }
 
   ensureActiveJourneyForTab("routes");
@@ -3646,6 +3661,11 @@ function enterJourneyMode() {
   if (journeyModeActive && chromeTravelTab === "journeys") {
     openJourneysLibrary();
     return;
+  }
+
+  const switchingFromRoutes = journeyModeActive && chromeTravelTab === "routes";
+  if (switchingFromRoutes) {
+    clearManualJourneyOverride();
   }
 
   chromeTravelTab = "journeys";
@@ -3724,9 +3744,6 @@ function renderTravelTabEmptyState() {
   if (heroEmptyAddBtn) {
     heroEmptyAddBtn.textContent =
       chromeTravelTab === "routes" ? "Add a route" : "Add a journey";
-  }
-  if (heroEmptyBackBtn) {
-    heroEmptyBackBtn.hidden = chromeTravelTab === "routes";
   }
   if (heroEmptyStateEl) {
     heroEmptyStateEl.hidden = false;
@@ -4132,7 +4149,11 @@ function syncHeroPinChrome() {
         const pinState = resolveJourneyPinState(lastApiData, journeyPinClean);
         let pinActive = false;
         if (pinState) {
-          pinActive = Boolean(pinState.isPinnedToday && pinState.heroShowsPin);
+          pinActive = Boolean(
+            pinState.isPinnedToday &&
+              !pinState.isPinDismissedToday &&
+              (pinState.pinnedChrome || pinState.showsTargetTrain || pinState.heroShowsPin)
+          );
         } else {
           const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPinClean);
           const heroShowsPin =
@@ -5129,7 +5150,7 @@ async function startFirstJourneySetup() {
   journeyModeActive = true;
   exitNearbyMode();
   syncChromeMode();
-  await startJourneyCreateFromTemplate("custom");
+  await startJourneyCreateFromTemplate("morning");
 }
 
 function openJourneysForSetup() {
@@ -5363,12 +5384,6 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
     return;
   }
   void createJourneyFromTemplate("custom");
-});
-
-heroEmptyBackBtn?.addEventListener("click", (event) => {
-  event.preventDefault();
-  event.stopPropagation();
-  enterNearbyMode();
 });
 
 onboardingGotItBtn?.addEventListener("click", () => {
@@ -6375,6 +6390,7 @@ function initPinStateFromModule() {
   window.nextTrainPinState?.init?.({
     getPerthLocalDateKey,
     getPerthMinutesSinceMidnight,
+    getPerthDayOfWeekIso,
     parseTimeToMinutes,
     normalizeApiTrainData,
     resolveTripDeparture,

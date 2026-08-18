@@ -53,6 +53,7 @@ async function run() {
     serverChild = await ensureDevServer();
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
+    try {
     const today = perthTodayKey();
 
     await page.goto("http://localhost:3000/?reset=1&test=1&fixture=normal");
@@ -129,7 +130,6 @@ async function run() {
     await page.waitForTimeout(800);
 
     const afterSwipe = await readHeroState(page);
-    await browser.close();
 
     const gestureWorked =
       afterSwipe.time !== beforeSwipe.time ||
@@ -146,6 +146,9 @@ async function run() {
     }
 
     console.log("PASS — nearby hero swipe after route pin");
+    } finally {
+      await browser.close();
+    }
   } finally {
     stopDevServer(serverChild);
   }

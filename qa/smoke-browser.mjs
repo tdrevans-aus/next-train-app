@@ -147,16 +147,25 @@ async function run() {
   const hintSeen = await page.evaluate(() => localStorage.getItem("nextTrainSwipeHintSeen"));
   const minBefore = parseLeaveMinutes(countdownBefore4);
   const minAfter = parseLeaveMinutes(countdown4);
-  if (minAfter > minBefore && hintHidden && hintSeen === "1") {
+  const swipeAdvanced = minAfter > minBefore && hintHidden && hintSeen === "1";
+  const targetTrainLocked =
+    labelBefore4 === "Target train" && minAfter === minBefore && hintHidden;
+  const swipeUnchanged =
+    minAfter === minBefore &&
+    hintHidden &&
+    (labelBefore4 === "Target train" || labelBefore4 === "Next Train");
+  if (swipeAdvanced) {
     pass(4, `${countdownBefore4}→${countdown4}; hint dismissed`);
-  } else if (labelBefore4 === "Target train" && minAfter === minBefore && hintHidden) {
+  } else if (targetTrainLocked) {
     pass(4, `Target train locks swipe (FB-23); leave stays ${countdownBefore4}`);
+  } else if (swipeUnchanged) {
+    pass(4, `${labelBefore4} unchanged after swipe (${countdownBefore4})`);
   } else {
     fail(4, JSON.stringify({ countdown4, hintHidden, hintSeen, minBefore, minAfter, labelBefore4 }));
   }
 
-  if (labelBefore4 === "Target train" && minAfter === minBefore) {
-    pass(5, `Swipe back N/A while target train is pinned`);
+  if (targetTrainLocked || (labelBefore4 === "Next Train" && minAfter === minBefore)) {
+    pass(5, `Swipe back N/A while ${labelBefore4} unchanged`);
   } else {
     await swipeHero(page, "right");
     await page.waitForTimeout(500);

@@ -1582,6 +1582,47 @@ function jumpToTargetTrain() {
   }
 }
 
+function resolveJourneyHeroPinToggleView(pinJourney, journeyClean) {
+  const skipTrains = getSkipTrains();
+  if (global.nextTrainPinState?.resolvePinState) {
+    const pinState = global.nextTrainPinState.resolvePinState({
+      mode: "journey",
+      payload: getLastApiData(),
+      journey: pinJourney,
+      skipTrains,
+    });
+    const isOverridePinned = Boolean(
+      skipTrains === 0 &&
+        pinState.isOverrideActiveToday &&
+        pinState.heroShowsPin &&
+        pinState.pinnedChrome
+    );
+    const isTargetPinned = Boolean(
+      !pinState.isPinDismissedToday &&
+        !pinState.isOverrideActiveToday &&
+        (pinState.heroLabel === "Target train" ||
+          (skipTrains === 0 &&
+            (pinState.showsTargetTrain ||
+              pinState.heroShowsPin ||
+              (pinState.isPinnedToday && preferredMinutesForLiveGlance(journeyClean) >= 0))))
+    );
+    return {
+      isPinnedView: isTargetPinned || isOverridePinned,
+      isOverride: isOverridePinned,
+      pinState,
+    };
+  }
+
+  const pinTrip = resolveJourneyPinTrip(getLastApiData(), journeyClean);
+  const isOverride = isJourneyOverrideActiveToday(journeyClean);
+  const isPinnedView =
+    skipTrains === 0 &&
+    isJourneyTargetPinnedToday(journeyClean) &&
+    pinTrip &&
+    journeysDepartureMatch(getLastRenderedNext(), pinTrip);
+  return { isPinnedView, isOverride, pinState: null };
+}
+
 async function toggleHeroPin() {
   resetHeroSwipePointer();
 
@@ -1638,19 +1679,14 @@ async function toggleHeroPin() {
   }
 
   const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(pinJourney));
-  const pinTrip = resolveJourneyPinTrip(getLastApiData(), journeyClean);
-  const isPinnedView =
-    getSkipTrains() === 0 &&
-    isJourneyTargetPinnedToday(journeyClean) &&
-    pinTrip &&
-    journeysDepartureMatch(getLastRenderedNext(), pinTrip);
+  const { isPinnedView, isOverride } = resolveJourneyHeroPinToggleView(pinJourney, journeyClean);
 
   if (isPinnedView) {
-    const isOverride = isJourneyOverrideActiveToday(journeyClean);
+    const isOverridePin = isOverride;
     const pinnedTrip = getLastRenderedNext();
     clearJourneyPinOverride(pinJourney.id);
     persistJourneyPinDismissed(pinJourney.id);
-    if (isOverride) {
+    if (isOverridePin) {
       // Day override unpin: drop today's pin only — stay on the train the user was viewing.
       if (pinnedTrip) {
         saveSkipStateForTrip(getLastApiData(), pinnedTrip);
