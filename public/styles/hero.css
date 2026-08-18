@@ -679,6 +679,12 @@
   display: none;
 }
 
+.hero.hero-setup ~ .train-meta,
+.hero.hero-setup ~ .nearby-directions,
+.hero.hero-setup ~ .upcoming-departures {
+  display: none !important;
+}
+
 .hero-setup-message {
   display: flex;
   flex-direction: column;

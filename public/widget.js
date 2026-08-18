@@ -446,18 +446,18 @@ const WIDGET_APPEARANCE_MODES = [
   {
     id: "blend",
     label: "Blend in",
-    description: "Transparent card; your wallpaper shows through. Adjust opacity below.",
+    description: "Transparent card; your wallpaper shows through.",
   },
   {
     id: "wallpaper",
     label: "Match wallpaper",
-    description: "Colours from your wallpaper on Android 12+. Adjust opacity below.",
+    description: "Colours from your wallpaper on Android 12+.",
     wallpaper: true,
   },
   {
     id: "brand",
     label: "Brand teal",
-    description: "White card, Next Train teal — the classic look. Adjust opacity below.",
+    description: "White card, Next Train teal — the classic look.",
     bg: "#FFFFFF",
     text: "#1A2F2C",
     muted: "#5C726D",

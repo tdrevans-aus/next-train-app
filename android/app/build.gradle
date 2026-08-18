@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 android {
     namespace = "com.tdrevans.nexttrain"
     compileSdk = rootProject.ext.compileSdkVersion
+    ndkVersion "28.2.13676358"
     buildFeatures {
         buildConfig = true
     }
@@ -14,13 +15,18 @@ android {
         applicationId "com.tdrevans.nexttrain"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "2.5.0"
+        versionCode 17
+        versionName "2.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
-            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~:!_*.txt'
+        }
+    }
+    packaging {
+        jniLibs {
+            keepDebugSymbols += "**/*.so"
         }
     }
     signingConfigs {

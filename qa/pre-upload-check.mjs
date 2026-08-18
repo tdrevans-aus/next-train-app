@@ -23,6 +23,7 @@ function readBuildGradle() {
   const minifyEnabled = /minifyEnabled\s+true/.test(text);
   const nativeSymbolsConfigured =
     /debugSymbolLevel/.test(text) && /SYMBOL_TABLE/.test(text);
+  const ndkVersionPinned = /ndkVersion\s+"[\d.]+"/.test(text);
   return {
     applicationId,
     versionCode,
@@ -31,14 +32,27 @@ function readBuildGradle() {
     text,
     minifyEnabled,
     nativeSymbolsConfigured,
+    ndkVersionPinned,
   };
 }
 
-function checkGlanceWidget() {
+function readAndroidManifest() {
   const manifestPath = path.join(ROOT, "android/app/src/main/AndroidManifest.xml");
-  const manifest = fs.existsSync(manifestPath)
-    ? fs.readFileSync(manifestPath, "utf8")
-    : "";
+  return {
+    manifestPath,
+    text: fs.existsSync(manifestPath) ? fs.readFileSync(manifestPath, "utf8") : "",
+  };
+}
+
+function checkExactAlarmPermissions(manifestText) {
+  const hasUseExactAlarm = manifestText.includes("USE_EXACT_ALARM");
+  const hasScheduleExactAlarm = manifestText.includes("SCHEDULE_EXACT_ALARM");
+  const scheduleCappedToApi32 =
+    /SCHEDULE_EXACT_ALARM[\s\S]*maxSdkVersion\s*=\s*"32"/.test(manifestText);
+  return { hasUseExactAlarm, hasScheduleExactAlarm, scheduleCappedToApi32 };
+}
+
+function checkGlanceWidget(manifest) {
   const hasGlanceReceiver = manifest.includes("NextTrainGlanceReceiver");
   const glanceWidgetPath = path.join(
     ROOT,
@@ -117,6 +131,49 @@ async function checkPrivacyUrl() {
   return { ok, status: res.status, hasDate: body.includes("August 2026") };
 }
 
+function readLocalSdkDir() {
+  const localPropsPath = path.join(ROOT, "android/local.properties");
+  if (!fs.existsSync(localPropsPath)) {
+    return null;
+  }
+  const text = fs.readFileSync(localPropsPath, "utf8");
+  const match = text.match(/^sdk\.dir=(.+)$/m);
+  if (!match) {
+    return null;
+  }
+  return match[1].trim().replace(/\\:/g, ":").replace(/\\\\/g, "\\");
+}
+
+function checkNdkInstalled(gradleText) {
+  const versionMatch = gradleText.match(/ndkVersion\s+"([^"]+)"/);
+  const ndkVersion = versionMatch?.[1];
+  const sdkDir = readLocalSdkDir();
+  if (!ndkVersion || !sdkDir) {
+    return { ok: false, detail: "ndkVersion or sdk.dir missing" };
+  }
+  const windowsSdkDir = sdkDir;
+  const ndkPath = path.join(windowsSdkDir, "ndk", ndkVersion);
+  return {
+    ok: fs.existsSync(ndkPath),
+    detail: fs.existsSync(ndkPath) ? ndkPath : `missing ${ndkPath}`,
+    ndkVersion,
+  };
+}
+function checkScratchAssets() {
+  const scratch = path.join(ROOT, "public");
+  const scratchFiles = fs
+    .readdirSync(scratch)
+    .filter((name) => name.startsWith("_") && name.endsWith(".txt"));
+  const syncedScratch = path.join(
+    ROOT,
+    "android/app/src/main/assets/public"
+  );
+  const syncedScratchFiles = fs.existsSync(syncedScratch)
+    ? fs.readdirSync(syncedScratch).filter((name) => name.startsWith("_"))
+    : [];
+  return { scratchFiles, syncedScratchFiles };
+}
+
 async function main() {
   const results = [];
   const gradle = readBuildGradle();
@@ -124,7 +181,11 @@ async function main() {
   const privacy = await checkPrivacyUrl();
   const locationGate = checkSyncedLocationGate();
   const iconGate = checkLauncherIconGate();
-  const glanceGate = checkGlanceWidget();
+  const manifest = readAndroidManifest();
+  const exactAlarmGate = checkExactAlarmPermissions(manifest.text);
+  const glanceGate = checkGlanceWidget(manifest.text);
+  const scratchGate = checkScratchAssets();
+  const ndkGate = checkNdkInstalled(gradle.text);
 
   results.push({
     check: "native debug symbols (debugSymbolLevel SYMBOL_TABLE)",
@@ -134,10 +195,50 @@ async function main() {
   });
 
   results.push({
+    check: "NDK version pinned (Play native symbols)",
+    ok: gradle.ndkVersionPinned,
+    detail: gradle.ndkVersionPinned ? "ndkVersion set" : "missing ndkVersion",
+    hint: "Pin ndkVersion in app/build.gradle; install NDK via Android Studio SDK Manager before bundleRelease",
+  });
+
+  results.push({
+    check: "NDK installed locally (native symbols extract)",
+    ok: ndkGate.ok,
+    detail: ndkGate.detail,
+    hint: `Android Studio → SDK Manager → SDK Tools → NDK (Side by side) ${ndkGate.ndkVersion ?? ""}`.trim(),
+  });
+
+  results.push({
+    check: "no scratch _*.txt in public/ or synced assets",
+    ok: scratchGate.scratchFiles.length === 0 && scratchGate.syncedScratchFiles.length === 0,
+    detail:
+      scratchGate.scratchFiles.length || scratchGate.syncedScratchFiles.length
+        ? [...scratchGate.scratchFiles, ...scratchGate.syncedScratchFiles].join(", ")
+        : "clean",
+    hint: "Delete scratch files and run `npm run cap:sync`",
+  });
+
+  results.push({
     check: "minify / R8 off for v3 public",
     ok: !gradle.minifyEnabled,
     detail: gradle.minifyEnabled ? "minifyEnabled true" : "minifyEnabled false",
     hint: "mapping.txt required — see docs/jim-brief-play-hygiene.md §4",
+  });
+
+  results.push({
+    check: "exact alarm permissions (SCHEDULE_EXACT_ALARM only)",
+    ok:
+      exactAlarmGate.hasScheduleExactAlarm &&
+      !exactAlarmGate.hasUseExactAlarm &&
+      !exactAlarmGate.scheduleCappedToApi32,
+    detail: exactAlarmGate.hasUseExactAlarm
+      ? "USE_EXACT_ALARM present — remove per Play policy"
+      : exactAlarmGate.scheduleCappedToApi32
+        ? "SCHEDULE_EXACT_ALARM capped to API 32"
+        : exactAlarmGate.hasScheduleExactAlarm
+          ? "SCHEDULE_EXACT_ALARM"
+          : "missing SCHEDULE_EXACT_ALARM",
+    hint: "Complete Play Console → App content → Exact alarms before upload — docs/aab-signing-closed-testing.md",
   });
 
   results.push({

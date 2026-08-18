@@ -434,9 +434,11 @@ public final class CommuteSchedule {
         || "urgent".equals(leavePhase)
         || "soon".equals(leavePhase);
 
-    // Live face: Pinned when pinned today; otherwise Target (never Next Train).
+    // Live face: Pinned chrome (nearby / day override) vs default Target label.
     boolean widgetFacePinned = isWidgetPinnedFace(journey);
+    boolean widgetPinnedChrome = isWidgetPinnedChromeLabel(journey);
     snapshot.put("widgetFacePinned", widgetFacePinned);
+    snapshot.put("widgetPinnedChrome", widgetPinnedChrome);
     snapshot.put("label", liveWidgetLabel(journey, next));
     snapshot.put("primary", formatMinutesPrimary(minutesUntilDeparture));
     snapshot.put("trainClock", displayTime != null ? displayTime : "");
@@ -604,6 +606,17 @@ public final class CommuteSchedule {
     return JourneyPinHelper.isJourneyPinnedToday(journey);
   }
 
+  /** True when the widget label should read Pinned (nearby or day override — not preferred target). */
+  static boolean isWidgetPinnedChromeLabel(JSONObject journey) {
+    if (journey == null) {
+      return false;
+    }
+    if (NearbyPinHelper.JOURNEY_ID.equals(journey.optString("id", ""))) {
+      return true;
+    }
+    return JourneyPinHelper.isOverrideActiveToday(journey);
+  }
+
   static boolean isWidgetLiveFaceLabel(String label) {
     if (label == null || label.isEmpty()) {
       return false;
@@ -630,14 +643,14 @@ public final class CommuteSchedule {
   }
 
   /**
-   * Live face label: Pinned or Target only.
+   * Live face label: Pinned (nearby / day override) or Target (preferred target + default).
    * (Idle outside-hours uses {@link NextCommutePreview#idleWidgetLabel}.)
    */
   static String liveWidgetLabel(JSONObject journey, JSONObject trip) {
     if (trip == null) {
       return "";
     }
-    if (isWidgetPinnedFace(journey)) {
+    if (isWidgetPinnedChromeLabel(journey)) {
       return "Pinned";
     }
     return "Target";
@@ -647,7 +660,7 @@ public final class CommuteSchedule {
     if (snapshot == null) {
       return "Target";
     }
-    if (snapshot.optBoolean("widgetFacePinned", false)) {
+    if (snapshot.optBoolean("widgetPinnedChrome", false)) {
       return "Pinned";
     }
     return "Target";
@@ -660,7 +673,16 @@ public final class CommuteSchedule {
     }
     String label = cached.optString("label", "");
     if (isWidgetLiveFaceLabel(label)) {
-      return normalizeWidgetLiveFaceLabel(label);
+      String normalized = normalizeWidgetLiveFaceLabel(label);
+      // Legacy snapshots stored preferred-target face as Pinned before widgetPinnedChrome existed.
+      if (
+        "Pinned".equals(normalized) &&
+        !cached.optBoolean("widgetPinnedChrome", false) &&
+        !NearbyPinHelper.JOURNEY_ID.equals(cached.optString("journeyId", ""))
+      ) {
+        return "Target";
+      }
+      return normalized;
     }
     if (!label.isEmpty()) {
       return label;

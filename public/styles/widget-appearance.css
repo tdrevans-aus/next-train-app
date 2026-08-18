@@ -19,6 +19,53 @@
   margin-bottom: 14px;
 }
 
+.widget-appearance-setup .widget-appearance-mode-grid {
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.widget-appearance-setup .widget-appearance-mode-card {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 1px;
+  padding: 7px 10px;
+}
+
+.widget-appearance-setup .widget-mode-swatch {
+  grid-row: 1 / -1;
+  align-self: stretch;
+  min-height: 40px;
+  padding: 6px 8px;
+}
+
+.widget-appearance-setup .widget-mode-swatch-digit {
+  font-size: 1.15rem;
+}
+
+.widget-appearance-setup .widget-appearance-mode-label {
+  font-size: 0.88rem;
+}
+
+.widget-appearance-setup .widget-appearance-mode-desc {
+  font-size: 0.76rem;
+  line-height: 1.3;
+}
+
+.widget-appearance-setup .widget-hero-mock-card {
+  padding: 8px 10px 6px;
+}
+
+.widget-appearance-setup .widget-hero-mock-value {
+  font-size: 1.5rem;
+}
+
+.widget-appearance-setup .widget-appearance-colour-block {
+  margin-bottom: 10px;
+}
+
 .widget-appearance-colour-block {
   margin-bottom: 14px;
 }
@@ -242,6 +289,16 @@
   gap: 12px;
 }
 
+.widget-appearance-setup .widget-appearance-opacity-block {
+  margin-top: 0;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.widget-appearance-setup .widget-transparent-label {
+  font-size: 0.86rem;
+}
+
 .widget-bg-opacity-field {
   margin: 0;
 }
@@ -287,12 +344,12 @@ body.widget-setup-active #widget-appearance-setup {
 .widget-appearance-setup-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: max(16px, env(safe-area-inset-top)) 16px 16px;
+  padding: max(12px, env(safe-area-inset-top)) 16px 12px;
   -webkit-overflow-scrolling: touch;
 }
 
 .widget-appearance-setup-header {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .widget-appearance-setup-header-row {
@@ -330,8 +387,13 @@ body.widget-setup-active #widget-appearance-setup {
 .widget-appearance-setup-hint {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.widget-appearance-setup .widget-appearance-hero {
+  min-height: 128px;
+  margin-bottom: 8px;
 }
 
 .widget-appearance-hero {
@@ -352,6 +414,11 @@ body.widget-setup-active #widget-appearance-setup {
     linear-gradient(165deg, #2a3f5f 0%, #1a2332 45%, #0d1117 100%);
   background-size: cover;
   background-position: center;
+}
+
+.widget-appearance-setup .widget-appearance-hero-mock {
+  min-height: 128px;
+  padding: 12px;
 }
 
 .widget-appearance-hero-mock {

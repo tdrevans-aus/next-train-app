@@ -2222,6 +2222,7 @@ function exitNearbyMode() {
   if (nearbyDirectionsListEl) {
     nearbyDirectionsListEl.innerHTML = "";
   }
+  hideUpcomingDepartureBoard();
 }
 
 async function applyNearbyManualStation(station) {

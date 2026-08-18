@@ -564,10 +564,10 @@ public class CommuteScheduleTest {
     commuteNoPreferred.put("useLeaveBefore", true);
     assertTrue(CommuteSchedule.leaveByArmedForTrip(withoutPreferred, commuteNoPreferred));
 
-    assertEquals("Pinned", CommuteSchedule.liveWidgetLabel(journey, active));
+    assertEquals("Target", CommuteSchedule.liveWidgetLabel(journey, active));
     JSONObject targetTrip = new JSONObject();
     targetTrip.put("departure", PerthTime.formatIsoFromEpochMs(preferredMs));
-    assertEquals("Pinned", CommuteSchedule.liveWidgetLabel(journey, targetTrip));
+    assertEquals("Target", CommuteSchedule.liveWidgetLabel(journey, targetTrip));
 
     JSONObject dismissedJourney = new JSONObject(journey.toString());
     dismissedJourney.put("journeyPinDismissedDate", PerthTime.localDateKey());
@@ -622,7 +622,7 @@ public class CommuteScheduleTest {
   }
 
   @Test
-  public void liveWidgetLabel_pinnedCommuteUsesPinned() throws Exception {
+  public void liveWidgetLabel_preferredTargetCommuteUsesTarget() throws Exception {
     JSONObject journey = new JSONObject();
     journey.put("preferredTrainTime", "07:30");
     journey.put("defaultFrom", "00:00");
@@ -631,7 +631,26 @@ public class CommuteScheduleTest {
     JSONObject trip = new JSONObject();
     trip.put("departure", PerthTime.formatIsoFromEpochMs(System.currentTimeMillis() + 45L * 60_000L));
 
-    assertEquals("Pinned", CommuteSchedule.liveWidgetLabel(journey, trip));
+    assertEquals("Target", CommuteSchedule.liveWidgetLabel(journey, trip));
+  }
+
+  @Test
+  public void preservedLiveLabel_migratesLegacyPreferredTargetPinnedToTarget() throws Exception {
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("label", "Pinned");
+    snapshot.put("widgetFacePinned", true);
+    snapshot.put("journeyId", "j-morning");
+
+    assertEquals("Target", CommuteSchedule.preservedLiveLabel(snapshot));
+  }
+
+  @Test
+  public void preservedLiveLabel_keepsNearbyPinnedLabel() throws Exception {
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("label", "Pinned");
+    snapshot.put("journeyId", NearbyPinHelper.JOURNEY_ID);
+
+    assertEquals("Pinned", CommuteSchedule.preservedLiveLabel(snapshot));
   }
 
   @Test

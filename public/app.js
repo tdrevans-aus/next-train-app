@@ -3739,12 +3739,13 @@ function renderTravelTabEmptyState() {
     heroEmptyTextEl.textContent =
       chromeTravelTab === "routes"
         ? "Pick a station and direction to check the next trains anytime."
-        : "Save a trip you take often. Set your usual train and when you travel — we'll nudge you when it's time to leave.";
+        : "Save a trip you take often. Set your usual train and when you travel — we'll remind you when it's time to leave.";
   }
   if (heroEmptyAddBtn) {
     heroEmptyAddBtn.textContent =
       chromeTravelTab === "routes" ? "Add a route" : "Add a journey";
   }
+  hideUpcomingDepartureBoard();
   if (heroEmptyStateEl) {
     heroEmptyStateEl.hidden = false;
   }

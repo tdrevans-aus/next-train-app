@@ -187,6 +187,7 @@ enum CommuteSchedule {
         let departMode = result.departMode
         let leaveArmed = departMode ? false : leaveByArmedForTrip(next, journey: journey)
         let widgetFacePinned = isWidgetPinnedFace(journey)
+        let widgetPinnedChrome = isWidgetPinnedChromeLabel(journey)
 
         var leaveUrgent = ["now", "urgent", "soon"].contains(leavePhase)
         var secondary = ""
@@ -204,6 +205,7 @@ enum CommuteSchedule {
             "stale": result.stale,
             "label": liveWidgetLabel(journey: journey, trip: next),
             "widgetFacePinned": widgetFacePinned,
+            "widgetPinnedChrome": widgetPinnedChrome,
             "primary": formatMinutesPrimary(minutesUntilDeparture),
             "trainClock": result.displayTime,
             "secondary": secondary,
@@ -367,6 +369,12 @@ enum CommuteSchedule {
         return JourneyPinHelper.isJourneyPinnedToday(journey)
     }
 
+    private static func isWidgetPinnedChromeLabel(_ journey: [String: Any]?) -> Bool {
+        guard let journey else { return false }
+        if (journey["id"] as? String) == NearbyPinHelper.journeyId { return true }
+        return JourneyPinHelper.isOverrideActiveToday(journey)
+    }
+
     private static func isWidgetLiveFaceLabel(_ label: String) -> Bool {
         let normalized = label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         return normalized == "pinned"
@@ -385,7 +393,13 @@ enum CommuteSchedule {
     private static func preservedLiveLabel(_ snapshot: [String: Any]) -> String {
         let label = snapshot["label"] as? String ?? ""
         if isWidgetLiveFaceLabel(label) {
-            return normalizeWidgetLiveFaceLabel(label)
+            let normalized = normalizeWidgetLiveFaceLabel(label)
+            let widgetPinnedChrome = snapshot["widgetPinnedChrome"] as? Bool ?? false
+            let journeyId = snapshot["journeyId"] as? String ?? ""
+            if normalized == "Pinned" && !widgetPinnedChrome && journeyId != NearbyPinHelper.journeyId {
+                return "Target"
+            }
+            return normalized
         }
         if !label.isEmpty {
             return label
@@ -394,7 +408,7 @@ enum CommuteSchedule {
     }
 
     private static func liveWidgetLabelFromSnapshot(_ snapshot: [String: Any]) -> String {
-        if snapshot["widgetFacePinned"] as? Bool == true {
+        if snapshot["widgetPinnedChrome"] as? Bool == true {
             return "Pinned"
         }
         return "Target"
@@ -402,7 +416,7 @@ enum CommuteSchedule {
 
     private static func liveWidgetLabel(journey: [String: Any]?, trip: [String: Any]?) -> String {
         guard trip != nil else { return "" }
-        if isWidgetPinnedFace(journey) {
+        if isWidgetPinnedChromeLabel(journey) {
             return "Pinned"
         }
         return "Target"
