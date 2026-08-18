@@ -95,9 +95,6 @@ enum CommuteSchedule {
             }
             return emptyState()
         }
-        } catch {
-            return emptyState()
-        }
     }
 
     static func repaintSnapshot(_ cached: [String: Any]?) -> [String: Any]? {

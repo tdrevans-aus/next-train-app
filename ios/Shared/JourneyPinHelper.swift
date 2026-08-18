@@ -36,7 +36,7 @@ enum JourneyPinHelper {
         _ upcoming: [[String: Any]],
         journey: [String: Any]
     ) -> String? {
-        let nowMinutes = PerthTime.minutesSinceMidnight(Int64(Date().timeIntervalSince1970 * 1000))
+        let nowMinutes = PerthTime.minutesSinceMidnight()
         let insideActiveWindow = JourneySelector.matchesWindow(journey, minutes: nowMinutes)
 
         if isOverrideActiveToday(journey) {
@@ -53,8 +53,9 @@ enum JourneyPinHelper {
         }
 
         if !insideActiveWindow {
-            if isOvernightActiveWindow(journey) {
-                return tripDepartureIso(resolveDepartedJourneyTargetTripIgnoringDismiss(upcoming, journey: journey))
+            if isOvernightActiveWindow(journey),
+               let departedTrip = resolveDepartedJourneyTargetTripIgnoringDismiss(upcoming, journey: journey) {
+                return tripDepartureIso(departedTrip)
             }
             return nil
         }
