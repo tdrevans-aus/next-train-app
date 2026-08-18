@@ -30,6 +30,12 @@
 		NTWW051FED79650016851F /* NextCommutePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS051FED79650016851F /* NextCommutePreview.swift */; };
 		NTWA061FED79650016851F /* CommuteSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS061FED79650016851F /* CommuteSchedule.swift */; };
 		NTWW061FED79650016851F /* CommuteSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS061FED79650016851F /* CommuteSchedule.swift */; };
+		NTWA071FED79650016851F /* WidgetPinResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS071FED79650016851F /* WidgetPinResolver.swift */; };
+		NTWW071FED79650016851F /* WidgetPinResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS071FED79650016851F /* WidgetPinResolver.swift */; };
+		NTWA081FED79650016851F /* JourneyPinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS081FED79650016851F /* JourneyPinHelper.swift */; };
+		NTWW081FED79650016851F /* JourneyPinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS081FED79650016851F /* JourneyPinHelper.swift */; };
+		NTWA091FED79650016851F /* NearbyPinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS091FED79650016851F /* NearbyPinHelper.swift */; };
+		NTWW091FED79650016851F /* NearbyPinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS091FED79650016851F /* NearbyPinHelper.swift */; };
 		NTWG00041FED79650016851F /* WidgetSyncPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWG00031FED79650016851F /* WidgetSyncPlugin.swift */; };
 		NTWG00061FED79650016851F /* NextTrainWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWG00051FED79650016851F /* NextTrainWidget.swift */; };
 		NTWG00121FED79650016851F /* NextTrainWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = NTWG000A1FED79650016851F /* NextTrainWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -54,6 +60,9 @@
 		NTWS041FED79650016851F /* NextTrainApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextTrainApiClient.swift; sourceTree = "<group>"; };
 		NTWS051FED79650016851F /* NextCommutePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextCommutePreview.swift; sourceTree = "<group>"; };
 		NTWS061FED79650016851F /* CommuteSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommuteSchedule.swift; sourceTree = "<group>"; };
+		NTWS071FED79650016851F /* WidgetPinResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPinResolver.swift; sourceTree = "<group>"; };
+		NTWS081FED79650016851F /* JourneyPinHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyPinHelper.swift; sourceTree = "<group>"; };
+		NTWS091FED79650016851F /* NearbyPinHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPinHelper.swift; sourceTree = "<group>"; };
 		NTWG00031FED79650016851F /* WidgetSyncPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSyncPlugin.swift; sourceTree = "<group>"; };
 		NTWG00051FED79650016851F /* NextTrainWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextTrainWidget.swift; sourceTree = "<group>"; };
 		NTWG00071FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -123,6 +132,9 @@
 				NTWS041FED79650016851F /* NextTrainApiClient.swift */,
 				NTWS051FED79650016851F /* NextCommutePreview.swift */,
 				NTWS061FED79650016851F /* CommuteSchedule.swift */,
+				NTWS071FED79650016851F /* WidgetPinResolver.swift */,
+				NTWS081FED79650016851F /* JourneyPinHelper.swift */,
+				NTWS091FED79650016851F /* NearbyPinHelper.swift */,
 			);
 			path = ../Shared;
 			sourceTree = "<group>";
@@ -303,6 +315,9 @@
 				NTWW041FED79650016851F /* NextTrainApiClient.swift in Sources */,
 				NTWW051FED79650016851F /* NextCommutePreview.swift in Sources */,
 				NTWW061FED79650016851F /* CommuteSchedule.swift in Sources */,
+				NTWW071FED79650016851F /* WidgetPinResolver.swift in Sources */,
+				NTWW081FED79650016851F /* JourneyPinHelper.swift in Sources */,
+				NTWW091FED79650016851F /* NearbyPinHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +338,9 @@
 				NTWA041FED79650016851F /* NextTrainApiClient.swift in Sources */,
 				NTWA051FED79650016851F /* NextCommutePreview.swift in Sources */,
 				NTWA061FED79650016851F /* CommuteSchedule.swift in Sources */,
+				NTWA071FED79650016851F /* WidgetPinResolver.swift in Sources */,
+				NTWA081FED79650016851F /* JourneyPinHelper.swift in Sources */,
+				NTWA091FED79650016851F /* NearbyPinHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,7 +482,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = TQU93NZ6Z5;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -472,7 +490,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.2.1;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tdrevans.nexttrain;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -488,7 +506,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = TQU93NZ6Z5;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -496,7 +514,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tdrevans.nexttrain;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
@@ -511,7 +529,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ../NextTrainWidget/NextTrainWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = TQU93NZ6Z5;
 				INFOPLIST_FILE = ../NextTrainWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -520,7 +538,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tdrevans.nexttrain.NextTrainWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -534,7 +552,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ../NextTrainWidget/NextTrainWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = TQU93NZ6Z5;
 				INFOPLIST_FILE = ../NextTrainWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -543,7 +561,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tdrevans.nexttrain.NextTrainWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

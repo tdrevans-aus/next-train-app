@@ -1,5 +1,7 @@
 # Vijay brief — Next Train iOS v6 + WidgetKit
 
+> **Superseded (15 Aug 2026):** Use **`docs/vijay-brief-ios.md`** for the current Mac session (2.2.1 build + smoke).
+
 **From:** Jon (PM) · **Date:** 12 Aug 2026  
 **Priority:** P0 — Golf Bag on hold  
 **Branch:** `cursor/reminders-dialog-p1` (v6+ baseline — tip `e12eabb` v7)  
