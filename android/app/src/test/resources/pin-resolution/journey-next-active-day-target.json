@@ -1,0 +1,66 @@
+{
+  "id": "journey-next-active-day-target",
+  "description": "Tuesday night — journey active Wednesday only — hero shows Wednesday target train, not tonight.",
+  "tags": ["journey", "preferred", "outside-hours"],
+  "clock": {
+    "perthDateKey": "2026-08-18",
+    "nowIso": "2026-08-18T22:53:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 0,
+    "journey": {
+      "id": "j-wed",
+      "kind": "journey",
+      "name": "Wednesday morning",
+      "station": "Perth Underground Stn",
+      "direction": "Mandurah",
+      "preferredTrainTime": "07:30",
+      "defaultFrom": "06:00",
+      "defaultUntil": "09:00",
+      "remindDays": [3],
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-18T23:15:00+08:00",
+        "displayTime": "23:15",
+        "platform": "1",
+        "leaveBy": "2026-08-18T23:05:00+08:00"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-18T23:15:00+08:00",
+          "displayTime": "23:15",
+          "platform": "1",
+          "leaveBy": "2026-08-18T23:05:00+08:00"
+        },
+        {
+          "departure": "2026-08-19T07:30:00+08:00",
+          "displayTime": "07:30",
+          "platform": "2",
+          "leaveBy": "2026-08-19T07:20:00+08:00"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-18T23:15:00+08:00",
+    "pinDeparture": "2026-08-19T07:30:00+08:00",
+    "heroDeparture": "2026-08-19T07:30:00+08:00",
+    "leaveDeparture": "2026-08-19T07:30:00+08:00",
+    "secondaryNextDeparture": "2026-08-18T23:15:00+08:00",
+    "widgetFaceDeparture": "2026-08-19T07:30:00+08:00",
+    "isPinnedToday": true,
+    "heroShowsPin": true,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": true,
+    "showSecondaryNext": true,
+    "leaveCardArmed": false,
+    "heroLabel": "Target train"
+  }
+}
