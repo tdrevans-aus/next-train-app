@@ -204,6 +204,26 @@ let refreshTimer = null;
 let countdownTimer = null;
 let lastLiveDisplayMinute = null;
 let settingsDraftJourneys = [];
+/**
+ * CAPACITOR-Q: classic-script callers (leave-reminders, widget, pin exclusivity)
+ * expect `getSettings` / `window.settings` after the FB-25 module split.
+ */
+function getSettings() {
+  return settings;
+}
+function getSettingsDraftJourneys() {
+  return settingsDraftJourneys;
+}
+Object.defineProperty(window, "settings", {
+  configurable: true,
+  enumerable: true,
+  get() {
+    return settings;
+  },
+  set(next) {
+    settings = next;
+  },
+});
 let journeySwitcherOpen = false;
 let leaveAutoAckLastAttemptAt = 0;
 let leaveAutoAckLastDeparture = null;
@@ -6414,6 +6434,8 @@ init();
 
 window.nextTrainApp = {
   migrateSettings,
+  getSettings,
+  getSettingsDraftJourneys,
   getConfiguredJourneys,
   formatJourneyRoute,
   persistReminderJourneys,

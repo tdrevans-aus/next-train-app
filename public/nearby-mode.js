@@ -364,13 +364,17 @@ function isUnsupportedRegion(distanceKm) {
 
 function renderUnsupportedRegionBoard() {
   setLastRenderedNext(null);
-  deps.errorEl.hidden = true;
+  if (deps.errorEl) {
+    deps.errorEl.hidden = true;
+  }
   setRouteDisplay("Near me");
-  deps.updatedEl.textContent = "";
-  deps.updatedEl.hidden = true;
+  if (deps.updatedEl) {
+    deps.updatedEl.textContent = "";
+    deps.updatedEl.hidden = true;
+  }
   setHeroUrgency("calm");
   deps.heroEl?.classList.remove("locating");
-  deps.heroEl.classList.add("hero-setup");
+  deps.heroEl?.classList.add("hero-setup");
 
   if (deps.heroDepartLabelEl) {
     deps.heroDepartLabelEl.hidden = true;
@@ -422,14 +426,22 @@ function renderUnsupportedRegionBoard() {
     deps.departCountdownEl.append(title, text, hint, emptyJourneysBtn);
   }
 
-  deps.heroEl.removeAttribute("role");
-  deps.heroEl.removeAttribute("tabindex");
-  deps.heroEl.removeAttribute("aria-label");
-  deps.heroEl.onclick = null;
-  deps.heroEl.onkeydown = null;
-  deps.platformEl.textContent = "—";
-  deps.statusEl.textContent = "—";
-  deps.followingSectionEl.hidden = true;
+  if (deps.heroEl) {
+    deps.heroEl.removeAttribute("role");
+    deps.heroEl.removeAttribute("tabindex");
+    deps.heroEl.removeAttribute("aria-label");
+    deps.heroEl.onclick = null;
+    deps.heroEl.onkeydown = null;
+  }
+  if (deps.platformEl) {
+    deps.platformEl.textContent = "—";
+  }
+  if (deps.statusEl) {
+    deps.statusEl.textContent = "—";
+  }
+  if (deps.followingSectionEl) {
+    deps.followingSectionEl.hidden = true;
+  }
   hideUpcomingDepartureBoard();
   if (deps.journeySwitcherEl) {
     deps.journeySwitcherEl.hidden = true;
@@ -1590,8 +1602,10 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
         if (!isNearbyLocateCurrent(generation)) {
           return;
         }
-        deps.errorEl.textContent = fetchError.message;
-        deps.errorEl.hidden = false;
+        if (deps.errorEl) {
+          deps.errorEl.textContent = fetchError.message;
+          deps.errorEl.hidden = false;
+        }
         renderNearbyBoard({ stale: true });
       }
     }
@@ -1600,9 +1614,15 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
 
 function showNearbyFallback(message) {
   setNearbyError(message);
-  nearbyDirectionsEl.hidden = false;
-  nearbyDirectionsListEl.innerHTML = "";
-  nearbyFallbackEl.hidden = false;
+  if (nearbyDirectionsEl) {
+    nearbyDirectionsEl.hidden = false;
+  }
+  if (nearbyDirectionsListEl) {
+    nearbyDirectionsListEl.innerHTML = "";
+  }
+  if (nearbyFallbackEl) {
+    nearbyFallbackEl.hidden = false;
+  }
   if (nearbyFallbackTextEl) {
     nearbyFallbackTextEl.textContent = message;
   }
@@ -1645,7 +1665,9 @@ function renderNearbyBoard({ stale = false } = {}) {
   }
 
   syncNearbyChrome();
-  deps.errorEl.hidden = true;
+  if (deps.errorEl) {
+    deps.errorEl.hidden = true;
+  }
   clearHeroSetupState();
 
   if (shouldShowNearbyLoadingState()) {
@@ -1670,28 +1692,36 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.leaveCardEl.hidden = true;
     }
     if (nearbyLocatePickerVisible) {
-      nearbyDirectionsEl.hidden = false;
+      if (nearbyDirectionsEl) {
+        nearbyDirectionsEl.hidden = false;
+      }
       if (nearbyDirectionsListEl) {
         nearbyDirectionsListEl.innerHTML = "";
       }
-      const directionsLabel = nearbyDirectionsEl.querySelector(".nearby-directions-label");
+      const directionsLabel = nearbyDirectionsEl?.querySelector?.(".nearby-directions-label");
       if (directionsLabel) {
         directionsLabel.hidden = true;
       }
-      nearbyFallbackEl.hidden = false;
+      if (nearbyFallbackEl) {
+        nearbyFallbackEl.hidden = false;
+      }
       if (nearbyFallbackTextEl) {
         nearbyFallbackTextEl.textContent = "Choose a station — we’ll show the next train.";
       }
       void ensureNearbyStationOptions();
-    } else {
+    } else if (nearbyDirectionsEl) {
       nearbyDirectionsEl.hidden = true;
     }
     syncNearbyDontWaitButton();
-    deps.followingSectionEl.hidden = true;
+    if (deps.followingSectionEl) {
+      deps.followingSectionEl.hidden = true;
+    }
     hideUpcomingDepartureBoard();
     if (nearbySession?.gpsRefining) {
-      deps.updatedEl.textContent = "Checking location…";
-    } else {
+      if (deps.updatedEl) {
+        deps.updatedEl.textContent = "Checking location…";
+      }
+    } else if (deps.updatedEl) {
       deps.updatedEl.textContent = "Updating…";
     }
     updateSwipeHint();
@@ -1725,17 +1755,29 @@ function renderNearbyBoard({ stale = false } = {}) {
     if (deps.leaveCardEl) {
       deps.leaveCardEl.hidden = true;
     }
-    nearbyDirectionsEl.hidden = false;
-    nearbyFallbackEl.hidden = false;
+    if (nearbyDirectionsEl) {
+      nearbyDirectionsEl.hidden = false;
+    }
+    if (nearbyFallbackEl) {
+      nearbyFallbackEl.hidden = false;
+    }
     if (nearbyFallbackTextEl) {
       nearbyFallbackTextEl.textContent = "Choose a station below";
     }
     void ensureNearbyStationOptions();
-    deps.platformEl.textContent = "—";
-    deps.statusEl.textContent = "—";
-    deps.followingSectionEl.hidden = true;
+    if (deps.platformEl) {
+      deps.platformEl.textContent = "—";
+    }
+    if (deps.statusEl) {
+      deps.statusEl.textContent = "—";
+    }
+    if (deps.followingSectionEl) {
+      deps.followingSectionEl.hidden = true;
+    }
     hideUpcomingDepartureBoard();
-    deps.updatedEl.textContent = "Choose a station below";
+    if (deps.updatedEl) {
+      deps.updatedEl.textContent = "Choose a station below";
+    }
     updateSwipeHint();
     updateSwipeCues();
     maybeScheduleOnboarding();
@@ -1769,11 +1811,21 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.leaveCardEl.hidden = true;
     }
     showNearbyFallback(nearbyError);
-    deps.platformEl.textContent = "—";
-    deps.statusEl.textContent = "—";
-    deps.followingSectionEl.hidden = true;
+    if (deps.platformEl) {
+      deps.platformEl.textContent = "—";
+    }
+    if (deps.statusEl) {
+      deps.statusEl.textContent = "—";
+    }
+    if (deps.followingSectionEl) {
+      deps.followingSectionEl.hidden = true;
+    }
     hideUpcomingDepartureBoard();
-    deps.updatedEl.textContent = stale ? "Update failed — times may be out of date" : "Choose a station below";
+    if (deps.updatedEl) {
+      deps.updatedEl.textContent = stale
+        ? "Update failed — times may be out of date"
+        : "Choose a station below";
+    }
     updateSwipeHint();
     updateSwipeCues();
     maybeScheduleOnboarding();
@@ -1811,17 +1863,19 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   const next = boardData?.next ?? null;
   setRouteDisplay(formatNearbyRouteLine());
-  if (nearbySession?.refineNotice) {
-    deps.updatedEl.textContent = nearbySession.refineNotice;
-    nearbySession.refineNotice = null;
-  } else if (nearbySession?.gpsRefining) {
-    deps.updatedEl.textContent = "Checking location…";
-  } else {
-    deps.updatedEl.textContent = stale
-      ? "Update failed — times may be out of date"
-      : nearbyBoard?.lastUpdated
-        ? `Updated ${nearbyBoard.lastUpdated}`
-        : "Updated just now";
+  if (deps.updatedEl) {
+    if (nearbySession?.refineNotice) {
+      deps.updatedEl.textContent = nearbySession.refineNotice;
+      nearbySession.refineNotice = null;
+    } else if (nearbySession?.gpsRefining) {
+      deps.updatedEl.textContent = "Checking location…";
+    } else {
+      deps.updatedEl.textContent = stale
+        ? "Update failed — times may be out of date"
+        : nearbyBoard?.lastUpdated
+          ? `Updated ${nearbyBoard.lastUpdated}`
+          : "Updated just now";
+    }
   }
 
   if (!next) {
@@ -1843,11 +1897,19 @@ function renderNearbyBoard({ stale = false } = {}) {
     if (deps.heroScheduledTimeEl) {
       deps.heroScheduledTimeEl.hidden = true;
     }
-    deps.platformEl.textContent = "—";
-    deps.statusEl.textContent = "—";
-    deps.followingSectionEl.hidden = true;
+    if (deps.platformEl) {
+      deps.platformEl.textContent = "—";
+    }
+    if (deps.statusEl) {
+      deps.statusEl.textContent = "—";
+    }
+    if (deps.followingSectionEl) {
+      deps.followingSectionEl.hidden = true;
+    }
     hideUpcomingDepartureBoard();
-    nearbyDirectionsEl.hidden = false;
+    if (nearbyDirectionsEl) {
+      nearbyDirectionsEl.hidden = false;
+    }
     renderNearbyDirectionsList();
     updateSwipeHint();
     updateSwipeCues();
@@ -1884,11 +1946,17 @@ function renderNearbyBoard({ stale = false } = {}) {
     }
   }
 
-  deps.platformEl.textContent = next.platform;
+  if (deps.platformEl) {
+    deps.platformEl.textContent = next.platform;
+  }
   renderStatusDisplay(next);
-  deps.followingSectionEl.hidden = true;
+  if (deps.followingSectionEl) {
+    deps.followingSectionEl.hidden = true;
+  }
   renderUpcomingDepartureBoard(boardData, nearbySkip);
-  nearbyDirectionsEl.hidden = false;
+  if (nearbyDirectionsEl) {
+    nearbyDirectionsEl.hidden = false;
+  }
   renderNearbyDirectionsList();
   updateSwipeHint();
   updateSwipeCues();

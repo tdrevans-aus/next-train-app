@@ -64,11 +64,11 @@ export async function pickStationCombobox(
     .first()
     .click();
   await page.waitForFunction(
-    () =>
-      !document.querySelector(`${rootSelector}`)?.closest("#settings-detail-view")?.classList.contains(
+    (selector) =>
+      !document.querySelector(selector)?.closest("#settings-detail-view")?.classList.contains(
         "station-picker-open"
       ),
-    null,
+    rootSelector,
     { timeout: 5000 }
   ).catch(() => {});
 
