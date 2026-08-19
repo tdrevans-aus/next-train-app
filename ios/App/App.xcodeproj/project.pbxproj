@@ -69,6 +69,7 @@
 		NTWG00081FED79650016851F /* NextTrainWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NextTrainWidget.entitlements; sourceTree = "<group>"; };
 		NTWG00091FED79650016851F /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		NTWG000A1FED79650016851F /* NextTrainWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NextTrainWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		NTIA001FED79650016851F /* NextTrainProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = NextTrainProducts.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +90,7 @@
 				NTWG00011FED79650016851F /* Shared */,
 				NTWG00021FED79650016851F /* NextTrainWidget */,
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
+				NTIA001FED79650016851F /* NextTrainProducts.storekit */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
 			);
@@ -205,6 +207,11 @@
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					NTWG000B1FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;

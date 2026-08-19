@@ -12,7 +12,22 @@ function getWidgetSyncPlugin() {
   return window.Capacitor.Plugins?.WidgetSync ?? null;
 }
 
-async function syncWidgetSettings(settings = window.settings) {
+function resolveSettingsForWidgetSync(settings) {
+  if (settings && typeof settings === "object") {
+    return settings;
+  }
+  const fromApp = window.nextTrainApp?.getSettings?.();
+  if (fromApp && typeof fromApp === "object") {
+    return fromApp;
+  }
+  try {
+    return JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+async function syncWidgetSettings(settings) {
   if (!isNativeApp()) {
     return;
   }
@@ -23,8 +38,7 @@ async function syncWidgetSettings(settings = window.settings) {
   }
 
   try {
-    const payload =
-      settings ?? JSON.parse(localStorage.getItem("nextTrainSettings") ?? "{}");
+    const payload = resolveSettingsForWidgetSync(settings);
     if (window.NextTrainPro?.mergeIntoSettings) {
       window.NextTrainPro.mergeIntoSettings(payload);
     }
@@ -175,18 +189,39 @@ async function refreshWidgetDebugPanel() {
   try {
     const state = await plugin.getDebugState();
     panel.hidden = false;
-    panel.textContent = [
+    const lines = [
       "Widget debug",
-      `primary: ${state.primary ?? "—"}`,
-      `secondary: ${state.secondary ?? ""}`,
-      `stale: ${state.stale}`,
-      `refreshed: ${formatWidgetDebugAge(state.refreshedAtMs)}`,
-      `last refresh: ${formatWidgetDebugAge(state.lastRefreshMs)}`,
-      `updating: ${state.updatingSinceMs ? formatWidgetDebugAge(state.updatingSinceMs) : "no"}`,
-      `retry: ${state.updatingRetried}`,
-      `following cached: ${state.followingDepartureIso ? "yes" : "no"}`,
-      `updated line: ${state.updatedLine || "(hidden)"}`,
-    ].join("\n");
+      `settings synced: ${state.hasSettings ? "yes" : "no"}`,
+      `configured journeys: ${state.configuredJourneyCount ?? "—"}`,
+      `has snapshot: ${state.hasSnapshot ? "yes" : "no"}`,
+    ];
+    if (state.hasSnapshot) {
+      lines.push(
+        `label: ${state.label || "—"}`,
+        `primary: ${state.primary ?? "—"}`,
+        `secondary: ${state.secondary ?? ""}`,
+        `empty: ${state.empty}`,
+        `outside hours idle: ${state.outsideHoursIdle}`,
+        `nearby fallback: ${state.nearbyFallback}`,
+        `journey id: ${state.journeyId || "—"}`,
+        `stale empty cache: ${state.staleEmptyCache ? "yes" : "no"}`,
+        `stale: ${state.stale}`,
+        `refreshed: ${formatWidgetDebugAge(state.refreshedAtMs)}`,
+        `last refresh: ${formatWidgetDebugAge(state.lastRefreshMs)}`,
+        `departure iso: ${state.departureIso || "—"}`,
+        `updated line: ${state.updatedLine || "(hidden)"}`,
+      );
+    }
+    if (state.updatingSinceMs) {
+      lines.push(`updating: ${formatWidgetDebugAge(state.updatingSinceMs)}`);
+    }
+    if (state.updatingRetried) {
+      lines.push(`retry: ${state.updatingRetried}`);
+    }
+    if (state.followingDepartureIso) {
+      lines.push(`following cached: yes`);
+    }
+    panel.textContent = lines.join("\n");
   } catch (error) {
     panel.hidden = false;
     panel.textContent = `Widget debug error: ${error?.message ?? error}`;
@@ -1660,6 +1695,10 @@ function initWidgetBridge() {
   renderWidgetAppearanceGrids(getWidgetAppearanceMode());
   refreshWidgetAppearanceControls();
   syncWidgetSettings();
+
+  if (isWidgetDebugEnabled()) {
+    void refreshWidgetDebugPanel();
+  }
 
   if (isNativeApp()) {
     void refreshWallpaperModePreviews();

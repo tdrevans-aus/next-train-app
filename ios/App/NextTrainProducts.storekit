@@ -1,0 +1,56 @@
+{
+  "identifier" : "NEXT_TRAIN_IAP",
+  "nonRenewingSubscriptions" : [],
+  "products" : [],
+  "settings" : {
+    "_applicationInternalID" : "0",
+    "_developerTeamID" : "TQU93NZ6Z5",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_AU",
+    "_storefront" : "AUS",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      }
+    ]
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  },
+  "inAppPurchases" : [
+    {
+      "displayPrice" : "7.99",
+      "familyShareable" : false,
+      "internalID" : "NT_ADFREE_799",
+      "localizations" : [
+        {
+          "description" : "Remove banner ads forever.",
+          "displayName" : "Remove ads",
+          "locale" : "en_AU"
+        },
+        {
+          "description" : "Remove banner ads forever.",
+          "displayName" : "Remove ads",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.tdrevans.nexttrain.adfree",
+      "referenceName" : "Ad-free",
+      "type" : "NonConsumable"
+    }
+  ]
+}

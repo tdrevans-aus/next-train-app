@@ -1,5 +1,5 @@
-import { fetchTripsForStation, uniqueDestinations } from "../lib/train-times.js";
-import { staticDirectionsForStation } from "../lib/cities/perth/static-directions.js";
+import { fetchTripsForStation } from "../lib/train-times.js";
+import { resolveDirectionsForStation } from "../lib/cities/perth/static-directions.js";
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
@@ -33,18 +33,13 @@ export default async function handler(req, res) {
 
   try {
     const { trips } = await fetchTripsForStation(station);
-    let directions = uniqueDestinations(trips);
-    let source = "live";
-    if (!directions.length) {
-      directions = staticDirectionsForStation(station);
-      source = directions.length ? "static-line-map" : "empty";
-    }
+    const { directions, source } = resolveDirectionsForStation(station, trips);
     res.status(200).json({ directions, source });
   } catch (error) {
     console.error(error);
-    const fallback = staticDirectionsForStation(station);
-    if (fallback.length) {
-      res.status(200).json({ directions: fallback, source: "static-line-map" });
+    const fallback = resolveDirectionsForStation(station, []);
+    if (fallback.directions.length) {
+      res.status(200).json({ directions: fallback.directions, source: fallback.source });
       return;
     }
     res.status(500).json({ error: error.message ?? "Failed to fetch directions" });

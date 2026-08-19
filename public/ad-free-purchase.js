@@ -17,6 +17,37 @@ function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
 }
 
+function nativePlatform() {
+  const platform = window.Capacitor?.getPlatform?.();
+  if (platform === "ios" || platform === "android") {
+    return platform;
+  }
+  return null;
+}
+
+function nativeStoreName() {
+  return nativePlatform() === "ios" ? "App Store" : "Google Play";
+}
+
+function webAdFreeHint() {
+  return "Remove ads is available in the Android or iOS app.";
+}
+
+function nativeBillingUnavailableToast() {
+  const store = nativeStoreName();
+  if (nativePlatform() === "ios") {
+    return `Couldn't connect to the ${store}. Try again from a TestFlight or App Store install.`;
+  }
+  return `Couldn't connect to ${store} billing. Try again from a Play install.`;
+}
+
+function nativeInstallUnavailableToast() {
+  if (nativePlatform() === "ios") {
+    return "Purchases aren't available on this install. Install from the App Store and try again.";
+  }
+  return "Purchases aren't available on this install. Install from Play and try again.";
+}
+
 function hasNativePurchaseBridge() {
   return Boolean(window.NextTrainAdFreeNative?.purchaseInAppProduct);
 }
@@ -473,11 +504,7 @@ async function openRemoveAdsDialog() {
     hideOrphanDialogBackdrops();
     openNativeStyleDialog(dialog);
     if (!shouldShowPurchaseControls()) {
-      showToast(
-        isNativeApp()
-          ? "Purchases aren't available on this install. Install from Play and try again."
-          : "Remove ads is available in the Android app."
-      );
+      showToast(isNativeApp() ? nativeInstallUnavailableToast() : webAdFreeHint());
     }
   };
 
@@ -521,7 +548,7 @@ async function purchaseAdFree() {
   }
 
   if (!isNativeApp()) {
-    showToast("Remove ads is available in the Android app.");
+    showToast(webAdFreeHint());
     return;
   }
 
@@ -532,7 +559,7 @@ async function purchaseAdFree() {
   }
 
   if (!billingAvailable) {
-    showToast("Couldn't connect to Google Play billing. Try again from a Play install.");
+    showToast(nativeBillingUnavailableToast());
     return;
   }
 

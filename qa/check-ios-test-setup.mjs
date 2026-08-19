@@ -50,7 +50,10 @@ if (!check("npm available", npm.ok, npm.stdout || npm.stderr)) failed += 1;
 for (const rel of [
   "node_modules/@capacitor/ios",
   "node_modules/@capacitor-community/admob",
+  "node_modules/@capgo/native-purchases",
   "ios/App/CapApp-SPM/Package.swift",
+  "ios/App/NextTrainProducts.storekit",
+  "public/site-config.json",
 ]) {
   if (!check(rel, fs.existsSync(path.join(ROOT, rel)))) failed += 1;
 }
@@ -67,8 +70,39 @@ const sim = commandOutput("xcrun", ["simctl", "list", "devices", "booted"]);
 const booted = sim.stdout.split("\n").some((line) => line.includes("(Booted)"));
 check("Booted simulator (optional)", booted, booted ? "yes" : "none — start one in Xcode if running Maestro");
 
-const maestro = commandOutput("maestro", ["--version"]);
-check("Maestro CLI (optional)", maestro.ok, maestro.stdout || "install from https://maestro.mobile.dev");
+const siteConfig = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "public/site-config.json"), "utf8")
+);
+if (
+  !check(
+    "IAP product id",
+    siteConfig.adFreeProductId === "com.tdrevans.nexttrain.adfree",
+    siteConfig.adFreeProductId
+  )
+) {
+  failed += 1;
+}
+if (!check("IAP list price", siteConfig.adFreeListPrice === "A$7.99", siteConfig.adFreeListPrice)) {
+  failed += 1;
+}
+
+const pbxproj = fs.readFileSync(
+  path.join(ROOT, "ios/App/App.xcodeproj/project.pbxproj"),
+  "utf8"
+);
+if (!check("In-App Purchase capability", pbxproj.includes("com.apple.InAppPurchase"))) failed += 1;
+
+const schemePath = path.join(
+  ROOT,
+  "ios/App/App.xcodeproj/xcshareddata/xcschemes/App.xcscheme"
+);
+const scheme = fs.existsSync(schemePath) ? fs.readFileSync(schemePath, "utf8") : "";
+check(
+  "StoreKit scheme config (optional)",
+  scheme.includes("NextTrainProducts.storekit"),
+  scheme.includes("NextTrainProducts.storekit") ? "linked" : "missing — local IAP sim may need manual scheme"
+);
+
 
 console.log(failed ? `\n${failed} required check(s) failed.` : "\nPreflight OK.");
 process.exit(failed ? 1 : 0);

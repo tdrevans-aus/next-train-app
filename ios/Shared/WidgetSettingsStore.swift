@@ -11,6 +11,7 @@ enum WidgetSettingsStore {
 
     static func saveSettings(_ settingsJson: String) {
         defaults?.set(settingsJson, forKey: settingsKey)
+        defaults?.synchronize()
     }
 
     static func readSettings() -> String? {
@@ -23,6 +24,7 @@ enum WidgetSettingsStore {
             return
         }
         defaults?.set(raw, forKey: snapshotKey)
+        defaults?.synchronize()
     }
 
     static func readSnapshot() -> [String: Any]? {

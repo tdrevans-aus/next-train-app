@@ -88,8 +88,23 @@ public class WidgetSyncPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func getDebugState(_ call: CAPPluginCall) {
         let snapshot = WidgetSettingsStore.readSnapshot()
+        let settingsJson = WidgetSettingsStore.readSettings()
+        var configuredJourneyCount = 0
+        if let settingsJson,
+           let data = settingsJson.data(using: .utf8),
+           let settings = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let journeys = settings["journeys"] as? [[String: Any]] {
+            configuredJourneyCount = journeys.filter { journey in
+                let station = journey["station"] as? String ?? ""
+                let direction = journey["direction"] as? String ?? ""
+                return !station.isEmpty && !direction.isEmpty
+            }.count
+        }
+
         var result: [String: Any] = [
             "lastRefreshMs": WidgetSettingsStore.readLastRefreshMs(),
+            "hasSettings": settingsJson != nil && !(settingsJson?.isEmpty ?? true),
+            "configuredJourneyCount": configuredJourneyCount,
         ]
 
         guard let snapshot else {
@@ -101,9 +116,16 @@ public class WidgetSyncPlugin: CAPPlugin, CAPBridgedPlugin {
         result["hasSnapshot"] = true
         result["primary"] = snapshot["primary"] as? String ?? ""
         result["secondary"] = snapshot["secondary"] as? String ?? ""
+        result["label"] = snapshot["label"] as? String ?? ""
+        result["empty"] = snapshot["empty"] as? Bool ?? false
+        result["outsideHoursIdle"] = snapshot["outsideHoursIdle"] as? Bool ?? false
+        result["nearbyFallback"] = snapshot["nearbyFallback"] as? Bool ?? false
+        result["journeyId"] = snapshot["journeyId"] as? String ?? ""
         result["stale"] = snapshot["stale"] as? Bool ?? false
         result["refreshedAtMs"] = snapshot["refreshedAtMs"] as? Int64 ?? 0
+        result["departureIso"] = snapshot["departureIso"] as? String ?? ""
         result["updatedLine"] = snapshot["updatedLine"] as? String ?? ""
+        result["staleEmptyCache"] = CommuteSchedule.isStaleEmptySnapshot(snapshot)
         call.resolve(result)
     }
 }

@@ -35,6 +35,10 @@ const ranford = staticDirectionsForStation("Ranford Road Stn");
 assert(ranford.includes("Perth"), "Ranford Road → Perth");
 assert(ranford.includes("Cockburn"), "Ranford Road → Cockburn");
 
+const elizabethQuay = staticDirectionsForStation("Elizabeth Quay Stn");
+assert(elizabethQuay.includes("Mandurah"), "Elizabeth Quay → Mandurah");
+assert(elizabethQuay.includes("Perth"), "Elizabeth Quay → Perth");
+
 const proposed = proposeDirectionGroups({
   terminals: ["Whitfords", "Clarkson", "Yanchep", "Butler"],
   lineStationsOrdered: [
