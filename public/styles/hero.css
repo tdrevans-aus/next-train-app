@@ -100,10 +100,15 @@
 }
 
 .depart-countdown-value {
-  letter-spacing: inherit;
+  /* Figtree keeps large digits even; Syne ExtraBold makes 3 look heavier than 0. */
+  font-family: var(--font);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .depart-countdown-unit {
+  font-family: var(--font-display);
   font-size: 0.5em;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -487,7 +492,15 @@
   transition: color 0.35s ease;
 }
 
+.leave-card-time .depart-countdown-value {
+  font-family: var(--font);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
 .leave-card-time .depart-countdown-unit {
+  font-family: var(--font-display);
   font-size: 0.5em;
   font-weight: 700;
   letter-spacing: 0.01em;
