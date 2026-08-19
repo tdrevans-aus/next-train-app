@@ -1074,20 +1074,16 @@ function applyNearbySkip(data, skip) {
   };
 }
 
-async function fetchNearbyDirectionData(station, direction, skip = 0) {
-  const pinHolds =
-    isNearbyPinHolding() &&
-    getNearbyPin()?.direction === direction &&
-    getNearbyPin()?.station === station;
-  const requestSkip = pinHolds ? 0 : skip;
-
+async function fetchNearbyDirectionData(station, direction, _skip = 0) {
+  // Always fetch the unskipped board. Skip/pin selection is applied client-side at response
+  // time (and again on every render) so a swipe mid-flight cannot flash a stale train.
   const params = new URLSearchParams({
     station,
     direction,
     destination: direction,
     leaveBefore: "0",
     refresh: String(settings.refreshSeconds),
-    skipTrains: String(requestSkip),
+    skipTrains: "0",
   });
 
   const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
@@ -1112,7 +1108,7 @@ async function fetchNearbyDirectionData(station, direction, skip = 0) {
             destinationLabel: direction,
             leaveBeforeMinutes: 0,
             refreshSeconds: settings.refreshSeconds,
-            skipTrains: requestSkip,
+            skipTrains: 0,
           })) ?? payload;
       } catch (error) {
         console.warn("Nearby live-times fallback failed", error);
@@ -1121,10 +1117,15 @@ async function fetchNearbyDirectionData(station, direction, skip = 0) {
   }
 
   const normalized = normalizeApiTrainData(payload);
-  if (pinHolds) {
+  if (
+    isNearbyPinHolding() &&
+    getNearbyPin()?.direction === direction &&
+    getNearbyPin()?.station === station
+  ) {
     return applyNearbyPinToData(direction, normalized);
   }
-  return applyNearbySkip(normalized, skip);
+  // Apply the live skip at response time (not the value from when the request started).
+  return applyNearbySkip(normalized, getNearbySkip(direction));
 }
 
 function pickSoonestNearbyDirection(entries) {
@@ -1834,11 +1835,8 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   const focusedEntry = getNearbyFocusedEntry();
   let boardData = focusedEntry?.data ?? null;
-  if (focusedEntry?.direction && boardData && isNearbyPinShowing(focusedEntry.direction)) {
-    // Re-apply pin against the cached board so skip stays locked between fetches.
-    boardData = applyNearbyPinToData(focusedEntry.direction, boardData);
-    focusedEntry.data = boardData;
-  } else if (getNearbyPin() && !isNearbyPinHolding()) {
+
+  if (getNearbyPin() && !isNearbyPinHolding()) {
     const settingsPin = getSettings().nearbyPin;
     if (
       settingsPin &&
@@ -1859,6 +1857,13 @@ function renderNearbyBoard({ stale = false } = {}) {
     } else if (nearbySession) {
       nearbySession.pin = null;
     }
+  }
+
+  if (focusedEntry?.direction && boardData) {
+    // Always re-apply pin/skip on paint. Optimistic swipes update skip immediately, but an
+    // in-flight board fetch may still resolve with an older skip and briefly flash the wrong train.
+    boardData = applyNearbyPinToData(focusedEntry.direction, boardData);
+    focusedEntry.data = boardData;
   }
 
   const next = boardData?.next ?? null;
