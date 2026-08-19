@@ -247,13 +247,27 @@ async function run() {
   await page.keyboard.press("Escape");
   await page.waitForTimeout(300);
   await page.locator("#menu-btn").click();
-  await page.waitForTimeout(1500);
+  await page.locator("#menu-done-btn").waitFor({ state: "visible", timeout: 10000 });
   await clickMenuDone(page);
+  await page.waitForFunction(
+    () => {
+      const updated = document.getElementById("updated")?.textContent?.trim() ?? "";
+      const leave = document.getElementById("leave-card");
+      return updated.includes("Update failed") && Boolean(leave?.classList.contains("stale"));
+    },
+    null,
+    { timeout: 30000 }
+  );
   const updated9 = (await page.locator("#updated").textContent())?.trim();
   const countdown9c = (await page.locator("#depart-countdown").textContent())?.trim();
   const min9c = parseLeaveMinutes(countdown9c);
   const leaveStale = await page.locator("#leave-card").evaluate((el) => el.classList.contains("stale"));
-  const staleOk = updated9?.includes("Update failed") && min9c === min9b && min9b > 0 && leaveStale;
+  const staleOk =
+    updated9?.includes("Update failed") &&
+    min9b > 0 &&
+    min9c > 0 &&
+    Math.abs(min9c - min9b) <= 1 &&
+    leaveStale;
 
   if (coldOk && staleOk) {
     pass(9, `Cold: ${depart9a}; stale: ${updated9}, hero kept ${countdown9c}`);

@@ -83,6 +83,8 @@ const RUNNER_EXCLUDE = new Set([
   "run-android-unit.mjs",
   /** FB-23 phase 4 native — covered by android-unit job on main. */
   "fb-23-phase-4-native.mjs",
+  /** Mac/Xcode preflight — `npm run test:ios:preflight`, not Linux web CI. */
+  "check-ios-test-setup.mjs",
 ]);
 
 /** Native/device scripts run last so they do not disturb each other. */
