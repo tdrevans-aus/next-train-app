@@ -30,7 +30,7 @@
 2. Create app record: name **Next Train**, bundle id **`com.tdrevans.nexttrain`** (must match Capacitor `appId`).  
 3. Privacy policy URL: `https://next-train-app.vercel.app/privacy.html`  
 4. Support URL / email: About + `EvansAppStudio@gmail.com`  
-5. **IAP:** one-time non-consumable `com.tdrevans.nexttrain.adfree` @ **A$3.99** (mirror Play).  
+5. **IAP:** one-time non-consumable `com.tdrevans.nexttrain.adfree` @ **A$7.99** (mirror Play). See `docs/asc-iap-setup.md`.  
 6. Age rating / encryption export answers (standard HTTPS = usually exempt questionnaire).  
 7. Draft listing from `docs/store-listing.md` (subtitle locked: *Know when to walk out*).  
 
@@ -60,7 +60,7 @@ Ruth signs off marketing later; Tim creates the empty shell when fee is paid.
 | Live Transperth via Vercel API | Yes | **Ship** | Same web layer |
 | Location (When In Use) | Yes | **Ship** | String already in Info.plist |
 | AdMob banner | Yes | **Ship** | GAD id already in Info.plist |
-| Remove ads IAP (A$3.99) | Play Billing | **Ship** | Capgo native purchases + ASC product |
+| Remove ads IAP (A$7.99) | Play Billing | **Ship** | Capgo native purchases + ASC product |
 | Leave reminders (local) | Native Android scheduler | **Ship if ready** / else **defer** | Needs iOS notification plugin + permission UX; don’t fake Android plugin |
 | Home-screen widget | Yes | **Defer** | Play differentiator; WidgetKit = later |
 | Commute FGS / strip | Removed / P2 | **N/A** | |

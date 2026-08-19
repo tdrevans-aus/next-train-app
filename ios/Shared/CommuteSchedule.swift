@@ -53,7 +53,9 @@ enum CommuteSchedule {
 
             if result.journey == nil {
                 if JourneySelector.hasConfiguredJourneys(settings) {
-                    return outsideHoursSnapshot(settings)
+                    let snapshot = outsideHoursSnapshot(settings)
+                    WidgetSettingsStore.saveSnapshot(snapshot)
+                    return snapshot
                 }
                 return emptyState()
             }
@@ -81,7 +83,9 @@ enum CommuteSchedule {
             WidgetSettingsStore.saveSnapshot(snapshot)
             return snapshot
         } catch {
-            if allowStaleFallback, let cached = WidgetSettingsStore.readSnapshot() {
+            if allowStaleFallback,
+               let cached = WidgetSettingsStore.readSnapshot(),
+               !isStaleEmptySnapshot(cached) {
                 var snapshot = cached
                 let age = Int64(Date().timeIntervalSince1970 * 1000) - result.refreshedAtMs
                 if result.refreshedAtMs > 0 && age > staleThresholdMs {
@@ -91,7 +95,14 @@ enum CommuteSchedule {
                 return repaintSnapshot(snapshot) ?? snapshot
             }
             if let journey = result.journey {
-                return loadingState(journey)
+                let snapshot = loadingState(journey)
+                WidgetSettingsStore.saveSnapshot(snapshot)
+                return snapshot
+            }
+            if let settings = result.settings, JourneySelector.hasConfiguredJourneys(settings) {
+                let snapshot = outsideHoursSnapshot(settings)
+                WidgetSettingsStore.saveSnapshot(snapshot)
+                return snapshot
             }
             return emptyState()
         }
@@ -99,6 +110,9 @@ enum CommuteSchedule {
 
     static func repaintSnapshot(_ cached: [String: Any]?) -> [String: Any]? {
         guard var snapshot = cached else { return nil }
+        if isStaleEmptySnapshot(snapshot) {
+            return nil
+        }
         if snapshot["empty"] as? Bool == true ||
             snapshot["nearbyFallback"] as? Bool == true ||
             snapshot["outsideHoursIdle"] as? Bool == true {
@@ -117,10 +131,22 @@ enum CommuteSchedule {
 
     static func snapshotForDisplay() -> [String: Any] {
         if let cached = WidgetSettingsStore.readSnapshot(),
+           !isStaleEmptySnapshot(cached),
            let repainted = repaintSnapshot(cached) {
             return repainted
         }
         return load(allowStaleFallback: true)
+    }
+
+    /// Cached empty/setup face from before settings sync — journeys now exist in App Group.
+    static func isStaleEmptySnapshot(_ snapshot: [String: Any]) -> Bool {
+        guard snapshot["empty"] as? Bool == true else { return false }
+        guard let settingsJson = WidgetSettingsStore.readSettings(),
+              let data = settingsJson.data(using: .utf8),
+              let settings = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return false
+        }
+        return JourneySelector.hasConfiguredJourneys(settings)
     }
 
     private static func fillTripFields(_ result: inout Result) {

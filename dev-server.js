@@ -6,7 +6,6 @@ import {
   DEFAULT_REFRESH_SECONDS,
   getNextTrainData,
   fetchTripsForStation,
-  uniqueDestinations,
 } from "./lib/train-times.js";
 import {
   FIXTURE_CATALOG,
@@ -15,7 +14,7 @@ import {
   listFixtures,
 } from "./lib/fixtures.js";
 import { checkRateLimit } from "./lib/api-rate-limit.js";
-import { staticDirectionsForStation } from "./lib/cities/perth/static-directions.js";
+import { resolveDirectionsForStation } from "./lib/cities/perth/static-directions.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
 import { listCities, assertCityLive } from "./lib/providers/registry.js";
 import { getFoundingStatus, tryClaimFounding } from "./lib/founding-counter.js";
@@ -189,16 +188,13 @@ app.get("/api/directions", async (req, res) => {
 
   try {
     const { trips } = await fetchTripsForStation(station);
-    let directions = uniqueDestinations(trips);
-    if (!directions.length) {
-      directions = staticDirectionsForStation(station);
-    }
-    res.json({ directions });
+    const { directions, source } = resolveDirectionsForStation(station, trips);
+    res.json({ directions, source });
   } catch (error) {
     console.error(error);
-    const fallback = staticDirectionsForStation(station);
-    if (fallback.length) {
-      res.json({ directions: fallback, source: "static-line-map" });
+    const fallback = resolveDirectionsForStation(station, []);
+    if (fallback.directions.length) {
+      res.json({ directions: fallback.directions, source: fallback.source });
       return;
     }
     res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
@@ -226,9 +222,15 @@ app.get("/api/destinations", async (req, res) => {
 
   try {
     const { trips } = await fetchTripsForStation(station);
-    res.json({ destinations: uniqueDestinations(trips) });
+    const { directions, source } = resolveDirectionsForStation(station, trips);
+    res.json({ destinations: directions, source });
   } catch (error) {
     console.error(error);
+    const fallback = resolveDirectionsForStation(station, []);
+    if (fallback.directions.length) {
+      res.json({ destinations: fallback.directions, source: fallback.source });
+      return;
+    }
     res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
   }
 });
