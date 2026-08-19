@@ -56,7 +56,12 @@ for (const rel of [
 }
 
 const xcode = commandOutput("xcodebuild", ["-version"]);
-if (!check("Xcode CLI", xcode.ok, xcode.stdout.split("\n")[0] || xcode.stderr)) failed += 1;
+const onMac = process.platform === "darwin";
+if (onMac) {
+  if (!check("Xcode CLI", xcode.ok, xcode.stdout.split("\n")[0] || xcode.stderr)) failed += 1;
+} else {
+  check("Xcode CLI (skipped off macOS)", true, process.platform);
+}
 
 const sim = commandOutput("xcrun", ["simctl", "list", "devices", "booted"]);
 const booted = sim.stdout.split("\n").some((line) => line.includes("(Booted)"));

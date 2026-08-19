@@ -215,7 +215,11 @@ async function run() {
 
   // --- Dismissed target: label/chrome only when hero is on preferred slot ---
   await loadApp(page);
-  const targetChrome = await page.evaluate((dateKey) => {
+  const morningClock = {
+    perthDateKey: todayKey,
+    nowMs: Date.parse(`${todayKey}T06:00:00+08:00`),
+  };
+  const targetChrome = await page.evaluate(({ dateKey, clock }) => {
     const journey = {
       id: "j-a",
       kind: "journey",
@@ -224,6 +228,7 @@ async function run() {
       preferredTrainTime: "07:30",
       defaultFrom: "00:00",
       defaultUntil: "23:59",
+      remindDays: [1, 2, 3, 4, 5, 6, 7],
       leaveBeforeMinutes: 10,
       useLeaveBefore: true,
       journeyPinDismissedDate: dateKey,
@@ -239,12 +244,14 @@ async function run() {
       mode: "journey",
       payload,
       journey,
+      clock,
       skipTrains: 0,
     });
     const onTarget = window.nextTrainPinState.resolvePinState({
       mode: "journey",
       payload,
       journey,
+      clock,
       skipTrains: 1,
     });
     return {
@@ -253,7 +260,7 @@ async function run() {
       targetChrome: onTarget.showsTargetTrain,
       targetPinned: onTarget.isPinnedToday,
     };
-  }, todayKey);
+  }, { dateKey: todayKey, clock: morningClock });
   record(
     "dismissed target on true next stays Next Train",
     targetChrome.trueNextLabel === "Next Train"
@@ -263,7 +270,7 @@ async function run() {
     targetChrome.targetLabel === "Target train" && targetChrome.targetChrome && !targetChrome.targetPinned
   );
 
-  const pinnedPreferred = await page.evaluate((dateKey) => {
+  const pinnedPreferred = await page.evaluate(({ dateKey, clock }) => {
     const journey = {
       id: "j-a",
       kind: "journey",
@@ -272,6 +279,7 @@ async function run() {
       preferredTrainTime: "07:30",
       defaultFrom: "00:00",
       defaultUntil: "23:59",
+      remindDays: [1, 2, 3, 4, 5, 6, 7],
       leaveBeforeMinutes: 10,
       useLeaveBefore: true,
       journeyPinDismissedDate: "",
@@ -287,6 +295,7 @@ async function run() {
       mode: "journey",
       payload,
       journey,
+      clock,
       skipTrains: 1,
     });
     return {
@@ -295,7 +304,7 @@ async function run() {
       pinnedChrome: state.pinnedChrome,
       showsTargetTrain: state.showsTargetTrain,
     };
-  }, todayKey);
+  }, { dateKey: todayKey, clock: morningClock });
   record(
     "pinned preferred target keeps Target train label",
     pinnedPreferred.heroLabel === "Target train" &&
