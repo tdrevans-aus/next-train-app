@@ -5915,7 +5915,14 @@ function dismissNearbyPinLeaveCard() { return nearbyMode().dismissNearbyPinLeave
 function clearNearbyPinLeaveCardDismissed() { return nearbyMode().clearNearbyPinLeaveCardDismissed(); }
 function isUnsupportedRegion(distanceKm) { return nearbyMode().isUnsupportedRegion(distanceKm); }
 function renderUnsupportedRegionBoard() { return nearbyMode().renderUnsupportedRegionBoard(); }
-function isNearbyModeActive() { return nearbyMode().isNearbyModeActive(); }
+/**
+ * CAPACITOR-T: never unwrap nextTrainNearby bare — if the Near me module failed to
+ * load or was cleared, reading `.isNearbyModeActive` throws TypeError. Fallback
+ * matches nearby-mode.js (`!journeyModeActive`).
+ */
+function isNearbyModeActive() {
+  return nearbyMode()?.isNearbyModeActive?.() ?? !journeyModeActive;
+}
 function syncChromeMode() { return nearbyMode().syncChromeMode(); }
 function syncNearbyChrome() { return nearbyMode().syncNearbyChrome(); }
 function formatNearbyRouteLine() { return nearbyMode().formatNearbyRouteLine(); }

@@ -78,7 +78,9 @@ function dismissNearbyPinLeaveCard() { return nearbyMode().dismissNearbyPinLeave
 function clearNearbyPinLeaveCardDismissed() { return nearbyMode().clearNearbyPinLeaveCardDismissed(); }
 function isUnsupportedRegion(distanceKm) { return nearbyMode().isUnsupportedRegion(distanceKm); }
 function renderUnsupportedRegionBoard() { return nearbyMode().renderUnsupportedRegionBoard(); }
-function isNearbyModeActive() { return nearbyMode().isNearbyModeActive(); }
+function isNearbyModeActive() {
+  return nearbyMode()?.isNearbyModeActive?.() ?? !journeyModeActive;
+}
 function syncChromeMode() { return nearbyMode().syncChromeMode(); }
 function syncNearbyChrome() { return nearbyMode().syncNearbyChrome(); }
 function formatNearbyRouteLine() { return nearbyMode().formatNearbyRouteLine(); }

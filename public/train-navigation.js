@@ -107,7 +107,7 @@
   }
 
   function isNearbyModeActive() {
-    return deps.isNearbyModeActive?.() ?? false;
+    return deps?.isNearbyModeActive?.() ?? false;
   }
 
   function getNearbyFocusedEntry() {
