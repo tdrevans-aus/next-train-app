@@ -131,6 +131,10 @@
     "lat": -32.066493,
     "lng": 115.8504648
   },
+  "Nicholson Road Stn": {
+    "lat": -32.0613317,
+    "lng": 115.9345861
+  },
   "North Fremantle Stn": {
     "lat": -32.0295158,
     "lng": 115.7518458
@@ -150,6 +154,10 @@
   "Queens Park Stn": {
     "lat": -32.0065762,
     "lng": 115.9378802
+  },
+  "Ranford Road Stn": {
+    "lat": -32.0753994,
+    "lng": 115.896675
   },
   "Redcliffe Stn": {
     "lat": -31.93359,

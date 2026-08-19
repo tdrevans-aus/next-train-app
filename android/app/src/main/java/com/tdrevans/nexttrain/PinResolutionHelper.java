@@ -69,7 +69,7 @@ public final class PinResolutionHelper {
     boolean insideActiveWindow =
       "journey".equals(mode)
         && journeyClean != null
-        && JourneySelector.matchesWindow(journeyClean, nowMinutes);
+        && matchesHoursWindow(journeyClean, nowMinutes);
     boolean outsideActiveWindow = "journey".equals(mode) && journeyClean != null && !insideActiveWindow;
     boolean retainDepartedOutsideWindow =
       outsideActiveWindow
@@ -174,9 +174,12 @@ public final class PinResolutionHelper {
     }
 
     int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
-    if (!JourneySelector.matchesWindow(journeyClean, nowMinutes)) {
+    if (!matchesHoursWindow(journeyClean, nowMinutes)) {
       if (isOvernightActiveWindow(journeyClean)) {
         return resolveDepartedJourneyTargetDepartureIgnoringDismiss(payload, journeyClean, clock);
+      }
+      if (!journeyMatchesActiveDay(journeyClean, clock)) {
+        return resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
       }
       return null;
     }
@@ -265,7 +268,10 @@ public final class PinResolutionHelper {
       return null;
     }
 
-    if (!JourneySelector.matchesWindow(journeyClean, PerthTime.minutesSinceMidnight(clock.nowMs))) {
+    if (!matchesHoursWindow(journeyClean, PerthTime.minutesSinceMidnight(clock.nowMs))) {
+      if (!journeyMatchesActiveDay(journeyClean, clock)) {
+        return resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
+      }
       return null;
     }
 
@@ -436,6 +442,90 @@ public final class PinResolutionHelper {
     }
 
     return null;
+  }
+
+  /**
+   * Outside active days: pick the next preferred (or later) train that lands on a remind day —
+   * matches web pin-state resolveJourneyPreferredTargetDepartureOnRemindDays.
+   */
+  private static String resolveJourneyPreferredTargetDepartureOnRemindDays(
+    JSONObject payload,
+    JSONObject journey,
+    Clock clock
+  ) throws Exception {
+    int preferredMinutes = CommuteSchedule.preferredMinutesForLiveGlance(journey);
+    if (preferredMinutes < 0) {
+      return null;
+    }
+
+    int horizon = targetTripHorizonMinutes(journey, clock);
+    JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
+    for (int index = 0; index < upcoming.length(); index += 1) {
+      JSONObject trip = upcoming.optJSONObject(index);
+      if (trip == null || tripHasDeparted(trip, clock)) {
+        continue;
+      }
+      if (!tripMatchesJourneyRemindDay(trip, journey)) {
+        continue;
+      }
+      if (tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, clock)) {
+        return CommuteSchedule.tripDepartureIso(trip);
+      }
+    }
+
+    return null;
+  }
+
+  /** Hours-only Active window — remind days checked separately (web journeyMatchesSchedule). */
+  private static boolean matchesHoursWindow(JSONObject journey, int minutes) {
+    if (!JourneySelector.hasWindow(journey)) {
+      return false;
+    }
+    int from = PerthTime.parseClockMinutes(journey.optString("defaultFrom", "00:00"));
+    int until = PerthTime.parseClockMinutes(journey.optString("defaultUntil", "23:59"));
+    if (from < 0) {
+      from = 0;
+    }
+    if (until < 0) {
+      until = 24 * 60 - 1;
+    }
+    if (from == until) {
+      return true;
+    }
+    if (from < until) {
+      return minutes >= from && minutes < until;
+    }
+    return minutes >= from || minutes < until;
+  }
+
+  /** Web pin-state default: Mon–Fri when remindDays is empty. */
+  private static boolean journeyMatchesActiveDay(JSONObject journey, Clock clock) {
+    return isPinRemindDay(journey, PerthTime.dayOfWeekIso(clock.nowMs));
+  }
+
+  private static boolean tripMatchesJourneyRemindDay(JSONObject trip, JSONObject journey) {
+    String departureIso = CommuteSchedule.tripDepartureIso(trip);
+    if (departureIso.isEmpty()) {
+      return false;
+    }
+    long departureMs = PerthTime.epochMillisFromIso(departureIso);
+    if (departureMs <= 0) {
+      return false;
+    }
+    return isPinRemindDay(journey, PerthTime.dayOfWeekIso(departureMs));
+  }
+
+  private static boolean isPinRemindDay(JSONObject journey, int dayOfWeekIso) {
+    JSONArray days = journey != null ? journey.optJSONArray("remindDays") : null;
+    if (days == null || days.length() == 0) {
+      return dayOfWeekIso >= 1 && dayOfWeekIso <= 5;
+    }
+    for (int index = 0; index < days.length(); index += 1) {
+      if (days.optInt(index, -1) == dayOfWeekIso) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static int targetTripHorizonMinutes(JSONObject journey, Clock clock) throws Exception {

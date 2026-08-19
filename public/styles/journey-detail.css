@@ -1099,10 +1099,11 @@ body.widget-setup-active .ad-remove-link-wrap {
 
 .journey-list-open-btn {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.8rem 0.85rem;
+  padding: 0.8rem 0.95rem 0.8rem 0.85rem;
   border: 0;
   background: transparent;
   color: inherit;
@@ -1185,9 +1186,13 @@ body.widget-setup-active .ad-remove-link-wrap {
 }
 
 .journey-list-chevron {
+  flex-shrink: 0;
+  align-self: center;
   color: var(--muted);
   font-size: 1.1rem;
   line-height: 1;
+  /* Keep › clear of the card edge — overflow:hidden on .journey-list-item clips otherwise */
+  padding-inline-end: 0.1rem;
 }
 
 .settings-view[hidden] {

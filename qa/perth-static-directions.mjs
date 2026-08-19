@@ -25,6 +25,15 @@ assert(perth.includes("Mandurah"), "Perth → Mandurah");
 assert(perth.includes("Fremantle"), "Perth → Fremantle");
 assert(perth.includes("Midland"), "Perth → Midland");
 assert(perth.includes("Armadale"), "Perth → Armadale");
+assert(perth.includes("Cockburn"), "Perth → Cockburn (Thornlie–Cockburn Line)");
+
+const nicholson = staticDirectionsForStation("Nicholson Road Stn");
+assert(nicholson.includes("Perth"), "Nicholson Road → Perth");
+assert(nicholson.includes("Cockburn"), "Nicholson Road → Cockburn");
+
+const ranford = staticDirectionsForStation("Ranford Road Stn");
+assert(ranford.includes("Perth"), "Ranford Road → Perth");
+assert(ranford.includes("Cockburn"), "Ranford Road → Cockburn");
 
 const proposed = proposeDirectionGroups({
   terminals: ["Whitfords", "Clarkson", "Yanchep", "Butler"],

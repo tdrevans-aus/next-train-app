@@ -1,6 +1,6 @@
 {
   "city": "perth",
-  "source": "Transperth rail network (manual audit 2026-08-13 from public/stations.json + line topology)",
+  "source": "Transperth rail network (manual audit 2026-08-19 from public/stations.json + line topology)",
   "notes": [
     "Stations use LiveTimes naming (* Stn).",
     "Directions for journey setup = far termini of lines serving the station.",
@@ -163,13 +163,25 @@
     {
       "id": "thornlie",
       "name": "Thornlie–Cockburn Line",
-      "termini": ["Thornlie", "Cockburn"],
+      "termini": ["Cockburn", "Perth"],
       "stations": [
+        "Cockburn Central Stn",
+        "Ranford Road Stn",
+        "Nicholson Road Stn",
         "Thornlie Stn",
         "Kenwick Stn",
         "Beckenham Stn",
         "Cannington Stn",
-        "Cockburn Central Stn"
+        "Queens Park Stn",
+        "Oats Street Stn",
+        "Carlisle Stn",
+        "Victoria Park Stn",
+        "Burswood Stn",
+        "Perth Stadium Stn",
+        "Claisebrook Stn",
+        "McIver Stn",
+        "Perth Stn",
+        "Perth Underground Stn"
       ]
     }
   ],

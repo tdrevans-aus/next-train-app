@@ -50,7 +50,11 @@ public final class PerthTime {
   }
 
   public static int dayOfWeekIso() {
-    return ZonedDateTime.now(ZONE).getDayOfWeek().getValue();
+    return dayOfWeekIso(System.currentTimeMillis());
+  }
+
+  public static int dayOfWeekIso(long epochMs) {
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE).getDayOfWeek().getValue();
   }
 
   public static String localDateKey() {
