@@ -29,7 +29,7 @@ Swipe, pin tap, and “Next train” advance can diverge because there is no sin
 
 1. **`public/pin-state.js`** — pure, clock-injectable module exporting one resolution entry point plus small predicates.
 2. **`qa/fixtures/pin-resolution/*.json`** — shared vectors consumed by web QA, Android JVM tests, and (later) iOS XCTest.
-3. **Naming cleanup** — align “true next”, “pin trip”, “hero trip”, and `resolveActiveNextTrip` comments across web + native.
+3. **Naming cleanup** — align “true next”, “pin trip”, “hero trip”; native helper is `resolveTrueNextTrip`.
 
 Non-goals for FB-26: changing product rules, esbuild bundle (FB-35), or deleting native schedule code.
 

@@ -15,6 +15,8 @@ public final class LeaveReminderSettingsStore {
   private static final String KEY_DAY_GET_READY_PREFIX = "day_get_ready:";
   private static final String KEY_STRIP_DISMISSED_PREFIX = "strip_dismissed:";
   private static final String KEY_FAST_TEST = "fast_test_enabled";
+  private static final String KEY_ON_THE_WAY = "on_the_way_json";
+  private static final String KEY_ACTIVE_LEAVE_ALARM = "active_leave_alarm_json";
 
   private LeaveReminderSettingsStore() {}
 
@@ -131,6 +133,17 @@ public final class LeaveReminderSettingsStore {
     prefs(context).edit().putBoolean(KEY_ACK_PREFIX + departureKey, true).apply();
   }
 
+  public static void clearLeaveNowBlock(Context context, String departureKey) {
+    if (departureKey == null || departureKey.isEmpty()) {
+      return;
+    }
+    prefs(context)
+      .edit()
+      .remove(KEY_ACK_PREFIX + departureKey)
+      .remove(KEY_FIRED_PREFIX + departureKey + ":" + LeaveReminderScheduler.TYPE_LEAVE_NOW)
+      .apply();
+  }
+
   public static boolean hasFired(Context context, String departureKey, String type) {
     return prefs(context).getBoolean(KEY_FIRED_PREFIX + departureKey + ":" + type, false);
   }
@@ -200,6 +213,92 @@ public final class LeaveReminderSettingsStore {
       return;
     }
     prefs(context).edit().putBoolean(KEY_STRIP_DISMISSED_PREFIX + journeyId + ":" + localDate, true).apply();
+  }
+
+  public static void clearStripDismissedForDay(Context context, String journeyId, String localDate) {
+    if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
+      return;
+    }
+    prefs(context).edit().remove(KEY_STRIP_DISMISSED_PREFIX + journeyId + ":" + localDate).apply();
+  }
+
+  /** FB-16: active “On my way” session (survives process death until end/dismiss). */
+  public static JSONObject readOnTheWaySession(Context context) {
+    try {
+      String raw = prefs(context).getString(KEY_ON_THE_WAY, null);
+      if (raw == null || raw.isEmpty()) {
+        return null;
+      }
+      JSONObject session = new JSONObject(raw);
+      long endAtMs = session.optLong("endAtMs", 0L);
+      if (endAtMs > 0 && System.currentTimeMillis() >= endAtMs) {
+        clearOnTheWaySession(context);
+        return null;
+      }
+      String dayKey = session.optString("dayKey", "");
+      if (!dayKey.isEmpty() && !dayKey.equals(PerthTime.localDateKey())) {
+        clearOnTheWaySession(context);
+        return null;
+      }
+      return session;
+    } catch (Exception error) {
+      return null;
+    }
+  }
+
+  public static boolean isOnTheWayActive(Context context) {
+    return readOnTheWaySession(context) != null;
+  }
+
+  public static void saveOnTheWaySession(Context context, JSONObject session) {
+    if (session == null) {
+      clearOnTheWaySession(context);
+      return;
+    }
+    prefs(context).edit().putString(KEY_ON_THE_WAY, session.toString()).apply();
+  }
+
+  public static void clearOnTheWaySession(Context context) {
+    prefs(context).edit().remove(KEY_ON_THE_WAY).apply();
+  }
+
+  /** FB-34: ringing leave alarm the web layer can surface while the app is open. */
+  public static JSONObject readActiveLeaveAlarmSession(Context context) {
+    try {
+      String raw = prefs(context).getString(KEY_ACTIVE_LEAVE_ALARM, null);
+      if (raw == null || raw.isEmpty()) {
+        return null;
+      }
+      JSONObject session = new JSONObject(raw);
+      String departureKey = session.optString("departureKey", "");
+      long departureMs = LeaveReminderNotifier.departureMsFromKey(departureKey);
+      if (departureMs > 0) {
+        long endAtMs = departureMs + LeaveReminderNotifier.LEAVE_NOW_HOLD_AFTER_DEPARTURE_MS;
+        if (System.currentTimeMillis() >= endAtMs) {
+          clearActiveLeaveAlarmSession(context);
+          return null;
+        }
+      }
+      return session;
+    } catch (Exception error) {
+      return null;
+    }
+  }
+
+  public static boolean isLeaveAlarmActive(Context context) {
+    return readActiveLeaveAlarmSession(context) != null;
+  }
+
+  public static void saveActiveLeaveAlarmSession(Context context, JSONObject session) {
+    if (session == null) {
+      clearActiveLeaveAlarmSession(context);
+      return;
+    }
+    prefs(context).edit().putString(KEY_ACTIVE_LEAVE_ALARM, session.toString()).apply();
+  }
+
+  public static void clearActiveLeaveAlarmSession(Context context) {
+    prefs(context).edit().remove(KEY_ACTIVE_LEAVE_ALARM).apply();
   }
 
   public static void clearPendingForDeparture(Context context, String departureKey) {

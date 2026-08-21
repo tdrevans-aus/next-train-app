@@ -136,7 +136,12 @@ public final class NearbyPinHelper {
       return null;
     }
 
-    JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes);
+    JSONObject payload = null;
+    try {
+      payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes);
+    } catch (Exception error) {
+      payload = null;
+    }
     JSONObject trip = findTripByDeparture(payload, departureIso);
     if (trip == null) {
       trip = buildSyntheticTrip(pin, leaveBeforeMinutes);

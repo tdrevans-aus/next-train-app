@@ -164,6 +164,69 @@ async function acknowledgeDeparture(journeyId, departure) {
   }
 }
 
+async function isDepartureAcknowledged(journeyId, departure) {
+  if (!journeyId || !departure) {
+    return false;
+  }
+
+  const plugin = getLeaveRemindersPlugin();
+  if (!plugin?.isDepartureAcknowledged) {
+    return false;
+  }
+
+  try {
+    const result = await plugin.isDepartureAcknowledged({ journeyId, departure });
+    return Boolean(result?.acknowledged);
+  } catch (error) {
+    console.warn("Could not read native leave ack", error);
+    return false;
+  }
+}
+
+async function startOnTheWay({ journeyId, route, trainTime, departure, stale = false }) {
+  if (!journeyId || !departure) {
+    return;
+  }
+
+  const plugin = getLeaveRemindersPlugin();
+  if (!plugin?.startOnTheWay) {
+    return;
+  }
+
+  try {
+    await plugin.startOnTheWay({ journeyId, route, trainTime, departure, stale });
+  } catch (error) {
+    console.warn("Could not start on-the-way countdown", error);
+  }
+}
+
+async function getActiveLeaveAlarm() {
+  const plugin = getLeaveRemindersPlugin();
+  if (!plugin?.getActiveLeaveAlarm) {
+    return { active: false };
+  }
+
+  try {
+    return (await plugin.getActiveLeaveAlarm()) ?? { active: false };
+  } catch (error) {
+    console.warn("Could not read active leave alarm", error);
+    return { active: false };
+  }
+}
+
+async function dismissLeaveAlarm() {
+  const plugin = getLeaveRemindersPlugin();
+  if (!plugin?.dismissLeaveAlarm) {
+    return;
+  }
+
+  try {
+    await plugin.dismissLeaveAlarm();
+  } catch (error) {
+    console.warn("Could not dismiss leave alarm", error);
+  }
+}
+
 function getPerthDateParts(date = new Date()) {
   const parts = {};
   new Intl.DateTimeFormat("en-GB", {
@@ -869,6 +932,10 @@ window.nextTrainLeaveReminders = {
   saveReminderSettings,
   enableLeaveReminders,
   acknowledgeDeparture,
+  isDepartureAcknowledged,
+  startOnTheWay,
+  getActiveLeaveAlarm,
+  dismissLeaveAlarm,
   loadReminderSchedule,
   renderRemindersDialog,
   renderLeaveAlertSurfaces,
@@ -890,6 +957,7 @@ if (document.readyState === "loading") {
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     void renderLeaveAlertSurfaces();
+    window.nextTrainApp?.syncLeaveAlarmFromNative?.();
     getLeaveRemindersPlugin()?.reschedule?.();
   }
 });

@@ -76,7 +76,7 @@ enum CommuteSchedule {
             WidgetSettingsStore.saveLastRefreshMs(result.refreshedAtMs)
             result.stale = false
             result.next = routeJourney
-                ? resolveActiveNextTrip(result.payload, journey: journey)
+                ? resolveTrueNextTrip(result.payload)
                 : JourneyPinHelper.resolvePinnedTrip(result.payload, journey: journey)
             fillTripFields(&result)
             let snapshot = buildLiveSnapshot(result)
@@ -162,7 +162,8 @@ enum CommuteSchedule {
         result.minutesUntilLeave = next["minutesUntilLeave"] as? Int ?? 0
     }
 
-    private static func resolveActiveNextTrip(_ payload: [String: Any]?, journey: [String: Any]?) -> [String: Any]? {
+    /// Soonest not-yet-departed train. Commute faces use `JourneyPinHelper.resolvePinnedTrip`.
+    private static func resolveTrueNextTrip(_ payload: [String: Any]?) -> [String: Any]? {
         guard let payload else { return nil }
         let upcoming = payload["upcoming"] as? [[String: Any]] ?? []
         if !upcoming.isEmpty {

@@ -50,13 +50,21 @@ public final class CommuteStripScheduler {
 
   public static void reschedule(Context context, CommuteSchedule.Result widgetResult) {
     cancelScheduledAlarms(context);
-    CommuteStripNotifier.cancel(context);
 
     LeaveReminderSettingsStore.clearExpiredPauseIfNeeded(context);
 
     if (!hasNotificationPermission(context)) {
+      CommuteStripNotifier.cancel(context);
+      LeaveReminderSettingsStore.clearOnTheWaySession(context);
       return;
     }
+
+    // FB-16: explicit On my way session wins over auto strip / toggle-off.
+    if (restoreOnTheWaySession(context)) {
+      return;
+    }
+
+    CommuteStripNotifier.cancel(context);
 
     // Widget cache age is irrelevant here — computeStripPlanForJourney fetches its own trips.
     // Do not stamp "Times may be out of date" from widget refresh age.
@@ -99,7 +107,6 @@ public final class CommuteStripScheduler {
       }
 
       if (best == null) {
-        LeaveReminderNotifier.cancel(context);
         return;
       }
 
@@ -107,6 +114,220 @@ public final class CommuteStripScheduler {
     } catch (Exception error) {
       // Keep alarms cleared.
     }
+  }
+
+  /**
+   * FB-16: user tapped <strong>On my way</strong> on the Leave now alarm.
+   * Quiet ongoing countdown until departure + grace — no FGS, no USE_EXACT_ALARM.
+   */
+  public static void startOnTheWay(
+    Context context,
+    String journeyId,
+    String route,
+    String trainTime,
+    String departureKey,
+    boolean stale
+  ) {
+    if (!hasNotificationPermission(context)) {
+      return;
+    }
+    if (journeyId == null || journeyId.isEmpty()) {
+      return;
+    }
+    if (!isOnTheWayAllowed(context, journeyId, departureKey)) {
+      return;
+    }
+
+    long departureMs = LeaveReminderNotifier.departureMsFromKey(departureKey);
+    if (departureMs <= 0) {
+      return;
+    }
+
+    long now = System.currentTimeMillis();
+    long leaveByMs = Math.min(now, departureMs);
+    long endAtMs = computeStripEndMs(leaveByMs, departureIsoFromKey(departureKey));
+    if (endAtMs <= now) {
+      // Already past grace — nothing to glance at.
+      LeaveReminderNotifier.cancel(context);
+      return;
+    }
+
+    String localDate = PerthTime.localDateKey();
+    // Starting I've left re-opens the glance even if they dismissed an earlier strip today.
+    LeaveReminderSettingsStore.clearStripDismissedForDay(context, journeyId, localDate);
+
+    if (departureKey != null && !departureKey.isEmpty()) {
+      LeaveReminderSettingsStore.acknowledgeDeparture(context, departureKey);
+      LeaveReminderSettingsStore.markLeaveNowFiredForDay(
+        context,
+        journeyId,
+        localDate,
+        departureKey
+      );
+    }
+
+    try {
+      JSONObject session = new JSONObject();
+      session.put("journeyId", journeyId);
+      session.put("route", route != null ? route : "");
+      session.put("trainTime", trainTime != null ? trainTime : "");
+      session.put("leaveByMs", leaveByMs);
+      session.put("departureMs", departureMs);
+      session.put("endAtMs", endAtMs);
+      session.put("stale", stale);
+      session.put("dayKey", localDate);
+      session.put("departureKey", departureKey != null ? departureKey : "");
+      LeaveReminderSettingsStore.saveOnTheWaySession(context, session);
+    } catch (Exception error) {
+      return;
+    }
+
+    cancelScheduledAlarms(context);
+    LeaveReminderSettingsStore.clearActiveLeaveAlarmSession(context);
+
+    // Morph the leave-alarm slot into the quiet lock-screen countdown (same notification id).
+    CommuteStripNotifier.show(
+      context,
+      journeyId,
+      route != null ? route : "",
+      trainTime != null ? trainTime : "",
+      leaveByMs,
+      departureMs,
+      stale,
+      true
+    );
+
+    scheduleOnTheWayPhaseAlarms(
+      context,
+      journeyId,
+      route != null ? route : "",
+      trainTime != null ? trainTime : "",
+      leaveByMs,
+      departureMs,
+      endAtMs,
+      stale
+    );
+
+    scheduleAlarm(
+      context,
+      ACTION_END,
+      endAtMs,
+      journeyId,
+      route != null ? route : "",
+      trainTime != null ? trainTime : "",
+      leaveByMs,
+      departureMs,
+      endAtMs,
+      stale,
+      alarmRequestCode(journeyId, "end")
+    );
+  }
+
+  static String departureIsoFromKey(String departureKey) {
+    if (departureKey == null || departureKey.isEmpty()) {
+      return "";
+    }
+    int colon = departureKey.indexOf(':');
+    if (colon < 0 || colon >= departureKey.length() - 1) {
+      return "";
+    }
+    return departureKey.substring(colon + 1);
+  }
+
+  /** Near-me countdown only for an active pin on that exact departure. */
+  static boolean isOnTheWayAllowed(Context context, String journeyId, String departureKey) {
+    if (!NearbyPinHelper.JOURNEY_ID.equals(journeyId)) {
+      return true;
+    }
+    if (departureKey == null || departureKey.isEmpty()) {
+      return false;
+    }
+    String departureIso = departureIsoFromKey(departureKey);
+    if (departureIso.isEmpty()) {
+      return false;
+    }
+    try {
+      String settingsJson = WidgetSettingsStore.readSettings(context);
+      if (settingsJson == null || settingsJson.isEmpty()) {
+        return false;
+      }
+      JSONObject pin = new JSONObject(settingsJson).optJSONObject("nearbyPin");
+      if (!NearbyPinHelper.isHolding(pin)) {
+        return false;
+      }
+      return departureIso.equals(pin.optString("departureIso", ""));
+    } catch (Exception error) {
+      return false;
+    }
+  }
+
+  private static boolean restoreOnTheWaySession(Context context) {
+    JSONObject session = LeaveReminderSettingsStore.readOnTheWaySession(context);
+    if (session == null) {
+      return false;
+    }
+
+    String journeyId = session.optString("journeyId", "");
+    if (journeyId.isEmpty()) {
+      LeaveReminderSettingsStore.clearOnTheWaySession(context);
+      return false;
+    }
+
+    long leaveByMs = session.optLong("leaveByMs", 0L);
+    long departureMs = session.optLong("departureMs", 0L);
+    long endAtMs = session.optLong("endAtMs", 0L);
+    boolean stale = session.optBoolean("stale", false);
+    String route = session.optString("route", "");
+    String trainTime = session.optString("trainTime", "");
+    String departureKey = session.optString("departureKey", "");
+
+    if (!isOnTheWayAllowed(context, journeyId, departureKey)) {
+      LeaveReminderSettingsStore.clearOnTheWaySession(context);
+      CommuteStripNotifier.cancelOnTheWay(context);
+      return false;
+    }
+
+    long now = System.currentTimeMillis();
+    if (endAtMs <= now) {
+      LeaveReminderSettingsStore.clearOnTheWaySession(context);
+      CommuteStripNotifier.cancel(context);
+      return true;
+    }
+
+    CommuteStripNotifier.show(
+      context,
+      journeyId,
+      route,
+      trainTime,
+      leaveByMs,
+      departureMs,
+      stale,
+      true
+    );
+    scheduleOnTheWayPhaseAlarms(
+      context,
+      journeyId,
+      route,
+      trainTime,
+      leaveByMs,
+      departureMs,
+      endAtMs,
+      stale
+    );
+    scheduleAlarm(
+      context,
+      ACTION_END,
+      endAtMs,
+      journeyId,
+      route,
+      trainTime,
+      leaveByMs,
+      departureMs,
+      endAtMs,
+      stale,
+      alarmRequestCode(journeyId, "end")
+    );
+    return true;
   }
 
   static StripPlan computeStripPlanForNearbyPin(Context context, JSONObject settings)
@@ -370,6 +591,54 @@ public final class CommuteStripScheduler {
       plan.target.stale,
       requestCode
     );
+  }
+
+  /** FB-16: repost at 1-min and departure-minute boundaries (chrono freezes at 1 min). */
+  static void scheduleOnTheWayPhaseAlarms(
+    Context context,
+    String journeyId,
+    String route,
+    String trainTime,
+    long leaveByMs,
+    long departureMs,
+    long endAtMs,
+    boolean stale
+  ) {
+    long now = System.currentTimeMillis();
+    long oneMinPhaseMs = CommuteStripNotifier.computeOneMinPhaseMs(departureMs);
+    long departureMinuteMs = CommuteStripNotifier.computeDepartureMinuteMs(departureMs);
+
+    if (oneMinPhaseMs > now && oneMinPhaseMs < endAtMs) {
+      scheduleAlarm(
+        context,
+        ACTION_SHOW,
+        oneMinPhaseMs,
+        journeyId,
+        route,
+        trainTime,
+        leaveByMs,
+        departureMs,
+        endAtMs,
+        stale,
+        alarmRequestCode(journeyId, "on_the_way_one_min")
+      );
+    }
+
+    if (departureMinuteMs > now && departureMinuteMs < endAtMs) {
+      scheduleAlarm(
+        context,
+        ACTION_SHOW,
+        departureMinuteMs,
+        journeyId,
+        route,
+        trainTime,
+        leaveByMs,
+        departureMs,
+        endAtMs,
+        stale,
+        alarmRequestCode(journeyId, "on_the_way_depart")
+      );
+    }
   }
 
   /** Re-post the strip at leave-by so chronometer switches from leave → train. */

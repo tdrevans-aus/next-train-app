@@ -49,6 +49,15 @@ public final class PerthTime {
     return now.truncatedTo(ChronoUnit.MINUTES).plusMinutes(1).toInstant().toEpochMilli();
   }
 
+  /** Floor to the start of the leave-by minute in Perth — matches in-app wall-clock leave phases. */
+  public static long truncateToMinuteStartMs(long epochMs) {
+    if (epochMs <= 0) {
+      return epochMs;
+    }
+    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE);
+    return time.truncatedTo(ChronoUnit.MINUTES).toInstant().toEpochMilli();
+  }
+
   public static int dayOfWeekIso() {
     return dayOfWeekIso(System.currentTimeMillis());
   }

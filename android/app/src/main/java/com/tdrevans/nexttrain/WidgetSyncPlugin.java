@@ -36,7 +36,13 @@ public class WidgetSyncPlugin extends Plugin {
       return;
     }
 
+    String previousJson = WidgetSettingsStore.readSettings(getContext());
     WidgetSettingsStore.saveSettingsSync(getContext(), settingsJson);
+    LeaveReminderScheduler.rearmNearbyPinIfNotifyTurnedOn(
+      getContext(),
+      previousJson,
+      settingsJson
+    );
     CommuteRefreshService.repaintFromCache(getContext());
     CommuteRefreshService.refreshAll(getContext());
     call.resolve();

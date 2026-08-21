@@ -21,12 +21,16 @@ public class CommuteStripReceiver extends BroadcastReceiver {
       if (journeyId != null && dayKey != null) {
         LeaveReminderSettingsStore.markStripDismissedForDay(appContext, journeyId, dayKey);
       }
+      LeaveReminderSettingsStore.clearOnTheWaySession(appContext);
+      CommuteStripNotifier.cancelOnTheWay(appContext);
       CommuteStripNotifier.cancel(appContext);
       CommuteStripScheduler.cancelScheduledAlarms(appContext);
       return;
     }
 
     if (CommuteStripScheduler.ACTION_END.equals(action)) {
+      LeaveReminderSettingsStore.clearOnTheWaySession(appContext);
+      CommuteStripNotifier.cancelOnTheWay(appContext);
       CommuteStripNotifier.cancel(appContext);
       LeaveReminderNotifier.cancel(appContext);
       return;
@@ -40,7 +44,8 @@ public class CommuteStripReceiver extends BroadcastReceiver {
       return;
     }
 
-    if (!LeaveReminderSettingsStore.isCommuteStripEnabled(appContext)) {
+    boolean onTheWay = LeaveReminderSettingsStore.isOnTheWayActive(appContext);
+    if (!onTheWay && !LeaveReminderSettingsStore.isCommuteStripEnabled(appContext)) {
       CommuteStripNotifier.cancel(appContext);
       return;
     }
@@ -77,7 +82,35 @@ public class CommuteStripReceiver extends BroadcastReceiver {
       departureMs = leaveByMs;
     }
 
-    CommuteStripNotifier.show(appContext, journeyId, route, trainTime, leaveByMs, departureMs, stale);
+    String alignedTrainTime =
+      onTheWay && departureMs > 0
+        ? CommuteStripNotifier.formatTrainClock24(departureMs)
+        : trainTime;
+
+    CommuteStripNotifier.show(
+      appContext,
+      journeyId,
+      route,
+      alignedTrainTime,
+      leaveByMs,
+      departureMs,
+      stale,
+      onTheWay
+    );
+
+    if (onTheWay) {
+      CommuteStripScheduler.scheduleOnTheWayPhaseAlarms(
+        appContext,
+        journeyId,
+        route,
+        alignedTrainTime,
+        leaveByMs,
+        departureMs,
+        endAtMs,
+        stale
+      );
+      return;
+    }
 
     // Before leave-by the chronometer tracks leave; at leave-by switch to train countdown.
     long refreshNow = System.currentTimeMillis();

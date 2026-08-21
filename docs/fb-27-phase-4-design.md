@@ -1,6 +1,6 @@
 # FB-27: Code review Phase 4 — pre major product
 
-**Status:** Complete (Aug 2026) — 4.4 deferred  
+**Status:** Complete (Aug 2026) — 4.4 done  
 **Backlog:** FB-27  
 **Feeds:** FB-23 (Route vs Commute product split) — **FB-23 complete** Aug 2026
 
@@ -13,7 +13,7 @@
 | 4.1 | Journey `kind` (`route` \| `commute`) in model layer | **Done** — `journey-model.js`, `qa/journey-kind.mjs` |
 | 4.2 | Split `styles.css` by domain | **Done** — `public/styles/*.css` + `@import` entry |
 | 4.3 | D-05 packaging — move `design/` + `.mjs` sources out of `webDir` | **Done** — `web-sources/`, `design/`, `config/`, `prune-ship-assets.mjs` |
-| 4.4 | `CommuteSchedule.java` decomposition | Deferred — needs dedicated PR after widget unit soak |
+| 4.4 | `CommuteSchedule.java` decomposition | **Done** — Result / Snapshot / Preview extract; `load()` orchestrator |
 
 ---
 
@@ -51,12 +51,10 @@
 
 ---
 
-## 4.4 CommuteSchedule (deferred)
+## 4.4 CommuteSchedule
 
-Extract when widget tests are green on a dedicated branch:
-
-- `CommuteScheduleResult` — data bag
+- `CommuteScheduleResult` — data bag (`CommuteSchedule.Result` extends it)
 - `CommuteScheduleSnapshot` — `toWidgetSnapshot` / `repaintSnapshot`
 - `CommuteSchedulePreview` — `outsideHoursSnapshot`, degraded clock
 
-Keep `CommuteSchedule.load()` as orchestrator.
+`CommuteSchedule.load()` remains the orchestrator; public callers still go through `CommuteSchedule`.

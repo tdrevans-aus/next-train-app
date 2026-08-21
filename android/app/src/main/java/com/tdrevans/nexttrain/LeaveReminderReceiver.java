@@ -8,11 +8,40 @@ public class LeaveReminderReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    if (intent == null || !LeaveReminderScheduler.ACTION_LEAVE_REMINDER.equals(intent.getAction())) {
+    if (intent == null || intent.getAction() == null) {
       return;
     }
 
-    if (!LeaveReminderSettingsStore.isEnabled(context) || LeaveReminderSettingsStore.isPaused(context)) {
+    Context appContext = context.getApplicationContext();
+
+    if (LeaveReminderNotifier.ACTION_DISMISS_LEAVE_ALARM.equals(intent.getAction())) {
+      LeaveReminderNotifier.cancel(appContext);
+      return;
+    }
+
+    if (LeaveReminderNotifier.ACTION_ON_THE_WAY.equals(intent.getAction())) {
+      String journeyId = intent.getStringExtra(LeaveReminderNotifier.EXTRA_JOURNEY_ID);
+      String route = intent.getStringExtra(LeaveReminderNotifier.EXTRA_ROUTE);
+      String trainTime = intent.getStringExtra(LeaveReminderNotifier.EXTRA_TRAIN_TIME);
+      String departureKey = intent.getStringExtra(LeaveReminderNotifier.EXTRA_DEPARTURE_KEY);
+      boolean stale = intent.getBooleanExtra(LeaveReminderNotifier.EXTRA_STALE, false);
+      CommuteStripScheduler.startOnTheWay(
+        appContext,
+        journeyId,
+        route,
+        trainTime,
+        departureKey,
+        stale
+      );
+      appContext.startActivity(ReminderDeepLink.openPinnedTrainIntent(appContext, journeyId));
+      return;
+    }
+
+    if (!LeaveReminderScheduler.ACTION_LEAVE_REMINDER.equals(intent.getAction())) {
+      return;
+    }
+
+    if (!LeaveReminderSettingsStore.isEnabled(appContext) || LeaveReminderSettingsStore.isPaused(appContext)) {
       return;
     }
 
@@ -29,25 +58,34 @@ public class LeaveReminderReceiver extends BroadcastReceiver {
       return;
     }
 
-    if (LeaveReminderSettingsStore.isAcknowledged(context, departureKey)) {
+    if (LeaveReminderSettingsStore.isAcknowledged(appContext, departureKey)) {
       return;
     }
 
     String localDate = PerthTime.localDateKey();
     if (LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type)) {
-      if (LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, journeyId, localDate)) {
+      if (!LeaveReminderScheduler.isLeaveNowStillArmed(appContext, journeyId)) {
+        return;
+      }
+      if (LeaveReminderSettingsStore.hasFired(appContext, departureKey, type)) {
+        return;
+      }
+      if (
+        !NearbyPinHelper.JOURNEY_ID.equals(journeyId) &&
+        LeaveReminderSettingsStore.hasLeaveNowFiredForDay(appContext, journeyId, localDate)
+      ) {
         return;
       }
     } else if (LeaveReminderScheduler.TYPE_GET_READY.equals(type)) {
-      if (LeaveReminderSettingsStore.hasGetReadyFiredForDay(context, journeyId, localDate)) {
+      if (LeaveReminderSettingsStore.hasGetReadyFiredForDay(appContext, journeyId, localDate)) {
         return;
       }
-    } else if (LeaveReminderSettingsStore.hasFired(context, departureKey, type)) {
+    } else if (LeaveReminderSettingsStore.hasFired(appContext, departureKey, type)) {
       return;
     }
 
     LeaveReminderNotifier.show(
-      context,
+      appContext,
       type,
       journeyId,
       route,
@@ -56,19 +94,19 @@ public class LeaveReminderReceiver extends BroadcastReceiver {
       getReadyMinutes,
       departureKey
     );
-    LeaveReminderSettingsStore.markFired(context, departureKey, type);
+    LeaveReminderSettingsStore.markFired(appContext, departureKey, type);
 
     if (LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type)) {
-      LeaveReminderSettingsStore.markLeaveNowFiredForDay(context, journeyId, localDate, departureKey);
+      LeaveReminderSettingsStore.markLeaveNowFiredForDay(appContext, journeyId, localDate, departureKey);
     } else if (LeaveReminderScheduler.TYPE_GET_READY.equals(type)) {
-      LeaveReminderSettingsStore.markGetReadyFiredForDay(context, journeyId, localDate);
+      LeaveReminderSettingsStore.markGetReadyFiredForDay(appContext, journeyId, localDate);
     }
 
     if (dayKey != null) {
       // No further alarms for this journey today after leave-now fires.
       if (LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type)) {
-        LeaveReminderScheduler.cancelAll(context);
-        CommuteRefreshService.refreshAll(context);
+        LeaveReminderScheduler.cancelAll(appContext);
+        CommuteRefreshService.refreshAll(appContext);
       }
     }
   }

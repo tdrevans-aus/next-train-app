@@ -2,7 +2,7 @@
 
 **Owner:** Tim (product)  
 **Date:** 15 Aug 2026  
-**Status:** Phase 0 complete · Phase 1 complete (FB-24) · Phase 4 complete (FB-27, 4.4 deferred)  
+**Status:** Phase 0 complete · Phase 1 complete (FB-24) · Phase 4 complete (FB-27)  
 **Related:** `docs/dead-code-inventory.md` · `docs/feature-backlog.md` · `docs/multi-city-provider-design.md` · `docs/release-versioning.md`
 
 ---
@@ -36,7 +36,7 @@ The codebase is **large but not messy** — growth tracks real product surface (
 | `public/widget.js` | ~430 lines | Widget sync + deep links (reasonable split) |
 | `lib/` (server/shared) | ~2,400 lines | Providers, train-times core, fixtures — healthier shape |
 | `api/` + Netlify functions | Thin handlers | Delegate to `lib/` |
-| Android `app/src/main/java` | ~5,600 lines | Widget, reminders, schedule — `CommuteSchedule.java` largest (~1,080) |
+| Android `app/src/main/java` | ~5,600 lines | Widget, reminders, schedule — `CommuteSchedule` + Result/Snapshot/Preview split |
 | iOS `Shared/` | ~1,100 lines | Parity subset of Android schedule/pin |
 | QA `*.mjs` | 66 scripts | Smoke + repro + regression |
 | Android unit tests | 11 classes | Pin, schedule, widget, preview |
@@ -127,7 +127,7 @@ Approximate regions (line numbers drift; use search when splitting):
 | Widget face priority | `WidgetPinResolver` (via settings) | `WidgetPinResolver` | `WidgetPinResolver` | Near me pin > journey pin |
 | Perth time / day keys | `getPerthDayOfWeekIso` etc. | `PerthTime.java` | `PerthTime.swift` | |
 | Direction collapse | `LINE_DIRECTION_GROUPS` in app | (widget uses journey direction string) | same | Also in `lib/train-times-core.js` |
-| Preferred-or-later filter | **Removed from app** | `resolveActiveNextTrip` still named in native | same | Widget uses true next + pin; names are legacy |
+| Preferred-or-later filter | **Removed from app** | `resolveTrueNextTrip` | same | Widget uses true next + pin |
 
 **Do not** try to single-source widget logic into JS — widgets must run without WebView. **Do** add **shared JSON fixtures + expected outputs** tested in JS unit tests (new), Java, and Swift.
 
@@ -219,16 +219,16 @@ Do **one PR per module**; run full web QA each time.
 |---|------|--------|-----|--------|
 | 3.1 | Single `pin-state.js` (web) documenting all inputs/outputs | M | Fewer swipe/button divergences | **Done** |
 | 3.2 | Shared fixture file: `qa/fixtures/pin-resolution/*.json` | M | Web + Android + iOS same vectors | **Done** (12 fixtures) |
-| 3.3 | Align naming: `resolveActiveNextTrip` vs “true next” in native comments | S | Clarity | **Done** |
+| 3.3 | Align naming: native `resolveTrueNextTrip` vs pin/hero | S | Clarity | **Done** |
 
 ### Phase 4 — Before city #2 (1–2 weeks)
 
 | # | Task | Effort | ROI | Status |
 |---|------|--------|-----|--------|
 | 4.1 | Journey kind (`route` vs `commute`) in model layer only | L | FB-23 foundation | **Done** (shipped FB-23) |
-| 4.2 | Split `styles.css` by domain (nearby, journey-detail, dialogs) | M | Parallel UI work | In progress |
-| 4.3 | Packaging: D-05 move `design/` + `.mjs` sources out of APK `webDir` | M | Smaller AAB | In progress |
-| 4.4 | `CommuteSchedule.java` decomposition (preview vs schedule vs pin) | L | Widget maintainability | Deferred |
+| 4.2 | Split `styles.css` by domain (nearby, journey-detail, dialogs) | M | Parallel UI work | **Done** |
+| 4.3 | Packaging: D-05 move `design/` + `.mjs` sources out of APK `webDir` | M | Smaller AAB | **Done** |
+| 4.4 | `CommuteSchedule.java` decomposition (preview vs schedule vs pin) | L | Widget maintainability | **Done** |
 
 ### Phase 5 — Defer / low ROI
 

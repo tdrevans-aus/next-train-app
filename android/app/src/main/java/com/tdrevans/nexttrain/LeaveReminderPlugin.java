@@ -138,8 +138,83 @@ public class LeaveReminderPlugin extends Plugin {
       journeyId,
       PerthTime.localDateKey()
     );
+    LeaveReminderNotifier.cancel(getContext());
     LeaveReminderScheduler.cancelAll(getContext());
     CommuteRefreshService.refreshAll(getContext());
+    call.resolve();
+  }
+
+  @PluginMethod
+  public void isDepartureAcknowledged(PluginCall call) {
+    String journeyId = call.getString("journeyId");
+    String departure = call.getString("departure");
+    if (journeyId == null || departure == null) {
+      call.reject("Missing journeyId or departure");
+      return;
+    }
+
+    String departureKey = journeyId + ":" + departure;
+    JSObject result = new JSObject();
+    result.put(
+      "acknowledged",
+      LeaveReminderSettingsStore.isAcknowledged(getContext(), departureKey)
+    );
+    call.resolve(result);
+  }
+
+  @PluginMethod
+  public void startOnTheWay(PluginCall call) {
+    String journeyId = call.getString("journeyId");
+    String route = call.getString("route", "");
+    String trainTime = call.getString("trainTime", "");
+    String departure = call.getString("departure");
+    boolean stale = Boolean.TRUE.equals(call.getBoolean("stale", false));
+    if (journeyId == null || journeyId.isEmpty() || departure == null || departure.isEmpty()) {
+      call.reject("Missing journeyId or departure");
+      return;
+    }
+
+    String departureKey = journeyId + ":" + departure;
+    CommuteStripScheduler.startOnTheWay(
+      getContext(),
+      journeyId,
+      route,
+      trainTime,
+      departureKey,
+      stale
+    );
+    call.resolve();
+  }
+
+  @PluginMethod
+  public void getActiveLeaveAlarm(PluginCall call) {
+    JSONObject session = LeaveReminderSettingsStore.readActiveLeaveAlarmSession(getContext());
+    JSObject result = new JSObject();
+    if (session == null) {
+      result.put("active", false);
+      call.resolve(result);
+      return;
+    }
+
+    String departureKey = session.optString("departureKey", "");
+    String departure = "";
+    int colon = departureKey.indexOf(':');
+    if (colon >= 0 && colon < departureKey.length() - 1) {
+      departure = departureKey.substring(colon + 1);
+    }
+
+    result.put("active", true);
+    result.put("journeyId", session.optString("journeyId", ""));
+    result.put("route", session.optString("route", ""));
+    result.put("trainTime", session.optString("trainTime", ""));
+    result.put("departure", departure);
+    result.put("stale", session.optBoolean("stale", false));
+    call.resolve(result);
+  }
+
+  @PluginMethod
+  public void dismissLeaveAlarm(PluginCall call) {
+    LeaveReminderNotifier.cancel(getContext());
     call.resolve();
   }
 

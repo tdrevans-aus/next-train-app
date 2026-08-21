@@ -80,6 +80,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".LeaveAlarmActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:turnScreenOn="true"
+            android:showWhenLocked="true"
+            android:theme="@style/AppTheme.LeaveAlarm"
+            android:screenOrientation="portrait" />
+
         <receiver
             android:name=".NextTrainWidgetProvider"
             android:exported="true"
@@ -153,5 +162,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- API 31+: user grants via Settings → Alarms & reminders (not App permissions). -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Lock-screen leave-by alarm UI (FB-34). AlarmClock; not the Play-restricted exact-alarm permission. -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

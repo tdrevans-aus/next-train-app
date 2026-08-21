@@ -57,6 +57,132 @@ public final class LeaveReminderScheduler {
 
   private LeaveReminderScheduler() {}
 
+  /** Leave-now still owed while the train has not departed (includes past leave-by). */
+  static boolean isLeaveNowBlockedForTarget(Context context, PreferredTrainReminder.Target target) {
+    if (target == null) {
+      return true;
+    }
+    if (LeaveReminderSettingsStore.isAcknowledged(context, target.departureKey)) {
+      return true;
+    }
+    if (LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW)) {
+      return true;
+    }
+    // Near me pin reuses one journey id — block per departure, not once per day.
+    if (NearbyPinHelper.JOURNEY_ID.equals(target.journeyId)) {
+      return false;
+    }
+    String localDate = PerthTime.localDateKey();
+    return LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate);
+  }
+
+  static boolean shouldScheduleLeaveNow(
+    Context context,
+    PreferredTrainReminder.Target target,
+    long now
+  ) {
+    if (target == null) {
+      return false;
+    }
+    if (isLeaveNowBlockedForTarget(context, target)) {
+      return false;
+    }
+    long departureMs = PerthTime.epochMillisFromIso(target.departureIso);
+    return departureMs > now && target.leaveByMs <= departureMs;
+  }
+
+  /**
+   * Stale AlarmClock can still fire after the user turns Remind me off. Don't ring unless
+   * the matching pin/journey toggle is still on.
+   */
+  static boolean isLeaveNowStillArmed(Context context, String journeyId) {
+    if (context == null || journeyId == null || journeyId.isEmpty()) {
+      return false;
+    }
+    if (!LeaveReminderSettingsStore.isEnabled(context) || LeaveReminderSettingsStore.isPaused(context)) {
+      return false;
+    }
+    try {
+      String raw = WidgetSettingsStore.readSettings(context);
+      if (raw == null || raw.isEmpty()) {
+        return false;
+      }
+      return isLeaveNowStillArmed(new JSONObject(raw), journeyId);
+    } catch (Exception error) {
+      return false;
+    }
+  }
+
+  static boolean isLeaveNowStillArmed(JSONObject widgetSettings, String journeyId) {
+    if (widgetSettings == null || journeyId == null || journeyId.isEmpty()) {
+      return false;
+    }
+    if (NearbyPinHelper.JOURNEY_ID.equals(journeyId)) {
+      JSONObject pin = widgetSettings.optJSONObject("nearbyPin");
+      return pin != null && pin.optBoolean("notifyMe", false);
+    }
+    JSONArray journeys = widgetSettings.optJSONArray("journeys");
+    if (journeys == null) {
+      return false;
+    }
+    for (int index = 0; index < journeys.length(); index += 1) {
+      JSONObject journey = journeys.optJSONObject(index);
+      if (journey == null || !journeyId.equals(journey.optString("id", ""))) {
+        continue;
+      }
+      if (JourneySelector.isRouteJourney(journey)) {
+        return journey.optBoolean("pinNotifyMe", false);
+      }
+      return PreferredTrainReminder.isRemindMeEnabled(journey);
+    }
+    return false;
+  }
+
+  static void rearmNearbyPinIfNotifyTurnedOn(
+    Context context,
+    String previousSettingsJson,
+    String nextSettingsJson
+  ) {
+    try {
+      JSONObject next = new JSONObject(nextSettingsJson);
+      JSONObject pin = next.optJSONObject("nearbyPin");
+      if (pin == null || !pin.optBoolean("notifyMe", false)) {
+        return;
+      }
+      String departureIso = pin.optString("departureIso", "");
+      if (departureIso.isEmpty()) {
+        return;
+      }
+      JSONObject previousPin = null;
+      if (previousSettingsJson != null && !previousSettingsJson.isEmpty()) {
+        previousPin = new JSONObject(previousSettingsJson).optJSONObject("nearbyPin");
+      }
+      boolean samePinAlreadyOn =
+        previousPin != null &&
+        previousPin.optBoolean("notifyMe", false) &&
+        departureIso.equals(previousPin.optString("departureIso", ""));
+      if (samePinAlreadyOn) {
+        return;
+      }
+      LeaveReminderSettingsStore.clearLeaveNowBlock(
+        context,
+        NearbyPinHelper.JOURNEY_ID + ":" + departureIso
+      );
+    } catch (Exception ignored) {
+      // Best effort — scheduling still runs.
+    }
+  }
+
+  static long resolveLeaveNowTriggerAtMs(long leaveByMs, long now) {
+    long alignedLeaveBy = PerthTime.truncateToMinuteStartMs(leaveByMs);
+    if (alignedLeaveBy > now) {
+      return alignedLeaveBy;
+    }
+    // Past leave-by: fire now. A +2s AlarmClock on Samsung often never rings
+    // while the app is already open.
+    return now;
+  }
+
   public static long computeFastTestTriggerAtMs(long nowMs) {
     return nowMs + FAST_TEST_DELAY_MS;
   }
@@ -73,8 +199,9 @@ public final class LeaveReminderScheduler {
     cancelAllScheduled(context);
     LeaveReminderSettingsStore.clearExpiredPauseIfNeeded(context);
 
-    if (!LeaveReminderSettingsStore.isEnabled(context)) {
+    if (!LeaveReminderSettingsStore.isEnabled(context) && !isFastTestActive(context)) {
       cancelPauseResumeAlarm(context);
+      LeaveReminderNotifier.cancel(context);
       return;
     }
 
@@ -156,16 +283,11 @@ public final class LeaveReminderScheduler {
 
       long now = System.currentTimeMillis();
       String localDate = PerthTime.localDateKey();
-      boolean leaveNowScheduled =
-        target.leaveByMs > now &&
-        !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
-        !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW);
-
-      if (leaveNowScheduled) {
+      if (shouldScheduleLeaveNow(context, target, now)) {
         scheduleAlarm(
           context,
           TYPE_LEAVE_NOW,
-          target.leaveByMs,
+          resolveLeaveNowTriggerAtMs(target.leaveByMs, now),
           target,
           0,
           alarmRequestCode(target.journeyId, localDate, TYPE_LEAVE_NOW)
@@ -211,16 +333,11 @@ public final class LeaveReminderScheduler {
 
         long now = System.currentTimeMillis();
         String localDate = PerthTime.localDateKey();
-        boolean leaveNowScheduled =
-          target.leaveByMs > now &&
-          !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
-          !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW);
-
-        if (leaveNowScheduled) {
+        if (shouldScheduleLeaveNow(context, target, now)) {
           scheduleAlarm(
             context,
             TYPE_LEAVE_NOW,
-            target.leaveByMs,
+            resolveLeaveNowTriggerAtMs(target.leaveByMs, now),
             target,
             0,
             alarmRequestCode(target.journeyId, localDate, TYPE_LEAVE_NOW)
@@ -256,10 +373,11 @@ public final class LeaveReminderScheduler {
       }
 
       if (plan.leaveNowScheduled) {
+        long now = System.currentTimeMillis();
         scheduleAlarm(
           context,
           TYPE_LEAVE_NOW,
-          plan.target.leaveByMs,
+          resolveLeaveNowTriggerAtMs(plan.target.leaveByMs, now),
           plan.target,
           plan.getReadyOffsetMinutes,
           alarmRequestCode(plan.target.journeyId, localDate, TYPE_LEAVE_NOW)
@@ -283,13 +401,34 @@ public final class LeaveReminderScheduler {
 
       JSONObject settings = new JSONObject(settingsJson);
       JSONArray journeys = settings.optJSONArray("journeys");
-      if (journeys == null) {
-        return;
-      }
 
       long now = System.currentTimeMillis();
       long triggerAtMs = computeFastTestTriggerAtMs(now);
       String localDate = PerthTime.localDateKey();
+
+      JSONObject pin = settings.optJSONObject("nearbyPin");
+      if (pin != null && NearbyPinHelper.isHolding(pin)) {
+        int leaveBefore = settings.optInt("nearbyLeaveBeforeMinutes", 10);
+        PreferredTrainReminder.Target nearbyTarget = NearbyPinHelper.computeTarget(pin, leaveBefore, false);
+        if (
+          nearbyTarget != null &&
+          !isLeaveNowBlockedForTarget(context, nearbyTarget)
+        ) {
+          scheduleAlarm(
+            context,
+            TYPE_LEAVE_NOW,
+            triggerAtMs,
+            nearbyTarget,
+            0,
+            alarmRequestCode(nearbyTarget.journeyId, localDate, "fast_test:" + TYPE_LEAVE_NOW)
+          );
+          return;
+        }
+      }
+
+      if (journeys == null) {
+        return;
+      }
 
       for (int index = 0; index < journeys.length(); index += 1) {
         JSONObject journey = journeys.getJSONObject(index);
@@ -790,10 +929,7 @@ public final class LeaveReminderScheduler {
       }
     }
 
-    boolean leaveNowScheduled =
-      target.leaveByMs > now &&
-      !LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) &&
-      !LeaveReminderSettingsStore.hasFired(context, target.departureKey, TYPE_LEAVE_NOW);
+    boolean leaveNowScheduled = shouldScheduleLeaveNow(context, target, now);
 
     return new AlarmPlan(target, getReadyScheduled, getReadyAtMs, getReadyMinutes, leaveNowScheduled);
   }
@@ -875,14 +1011,29 @@ public final class LeaveReminderScheduler {
       JSONArray keys = new JSONArray(raw);
       for (int index = 0; index < keys.length(); index += 1) {
         int requestCode = keys.getInt(index);
+        Intent cancelIntent = new Intent(context, LeaveReminderReceiver.class);
+        cancelIntent.setAction(ACTION_LEAVE_REMINDER);
         PendingIntent pending = PendingIntent.getBroadcast(
           context,
           requestCode,
-          new Intent(context, LeaveReminderReceiver.class),
-          PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+          cancelIntent,
+          PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
         );
-        manager.cancel(pending);
-        pending.cancel();
+        if (pending != null) {
+          manager.cancel(pending);
+          pending.cancel();
+        }
+        Intent showIntent = new Intent(context, LeaveAlarmActivity.class);
+        PendingIntent showPending = PendingIntent.getActivity(
+          context,
+          requestCode + 17,
+          showIntent,
+          PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
+        );
+        if (showPending != null) {
+          manager.cancel(showPending);
+          showPending.cancel();
+        }
       }
     } catch (Exception ignored) {
       // Fall through to clear keys.
@@ -900,6 +1051,11 @@ public final class LeaveReminderScheduler {
     } catch (Exception ignored) {
       // Best effort.
     }
+  }
+
+  /** Leave-now uses AlarmClock for reliable wake + status-bar alarm affordance (FB-34). */
+  static boolean shouldUseAlarmClock(String type) {
+    return TYPE_LEAVE_NOW.equals(type);
   }
 
   private static void scheduleAlarm(
@@ -934,7 +1090,24 @@ public final class LeaveReminderScheduler {
     );
 
     try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      if (shouldUseAlarmClock(type) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        Intent showIntent = LeaveReminderNotifier.leaveAlarmActivityIntent(
+          context,
+          target.journeyId,
+          target.route,
+          target.trainTime,
+          target.stale,
+          target.departureKey
+        );
+        PendingIntent showPending = PendingIntent.getActivity(
+          context,
+          requestCode + 17,
+          showIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        AlarmManager.AlarmClockInfo clock = new AlarmManager.AlarmClockInfo(triggerAtMs, showPending);
+        manager.setAlarmClock(clock, pending);
+      } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMs, pending);
       } else {
         manager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMs, pending);

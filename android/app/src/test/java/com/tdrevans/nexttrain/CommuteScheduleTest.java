@@ -478,7 +478,7 @@ public class CommuteScheduleTest {
   }
 
   @Test
-  public void resolveActiveNextTrip_skipsDepartedUpcomingTrain() throws Exception {
+  public void resolveTrueNextTrip_skipsDepartedUpcomingTrain() throws Exception {
     long nowMs = System.currentTimeMillis();
     long departedMs = nowMs - 2L * 60_000L;
     long nextMs = nowMs + 20L * 60_000L;
@@ -496,13 +496,13 @@ public class CommuteScheduleTest {
     JSONObject payload = new JSONObject();
     payload.put("upcoming", upcoming);
 
-    JSONObject active = CommuteSchedule.resolveActiveNextTrip(payload);
+    JSONObject active = CommuteSchedule.resolveTrueNextTrip(payload);
 
     assertEquals(PerthTime.formatIsoFromEpochMs(nextMs), CommuteSchedule.tripDepartureIso(active));
   }
 
   @Test
-  public void resolveActiveNextTrip_trueNext_evenWhenPreferredSet() throws Exception {
+  public void resolveTrueNextTrip_evenWhenPreferredSet() throws Exception {
     long nowMs = System.currentTimeMillis();
     long earlyMs = nowMs + 20L * 60_000L;
     long preferredMs = nowMs + 90L * 60_000L;
@@ -549,7 +549,7 @@ public class CommuteScheduleTest {
     );
 
     // U-11 lock B: hero = true next; preferred only gates Leave By.
-    JSONObject active = CommuteSchedule.resolveActiveNextTrip(payload, journey);
+    JSONObject active = CommuteSchedule.resolveTrueNextTrip(payload);
     assertEquals(PerthTime.formatIsoFromEpochMs(earlyMs), CommuteSchedule.tripDepartureIso(active));
     assertFalse(CommuteSchedule.leaveByArmedForTrip(active, journey));
     assertEquals(
@@ -557,7 +557,7 @@ public class CommuteScheduleTest {
       CommuteSchedule.preferredHintForJourney(journey)
     );
 
-    JSONObject withoutPreferred = CommuteSchedule.resolveActiveNextTrip(payload, new JSONObject());
+    JSONObject withoutPreferred = CommuteSchedule.resolveTrueNextTrip(payload);
     assertEquals(PerthTime.formatIsoFromEpochMs(earlyMs), CommuteSchedule.tripDepartureIso(withoutPreferred));
     JSONObject commuteNoPreferred = new JSONObject();
     commuteNoPreferred.put("kind", "journey");

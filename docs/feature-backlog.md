@@ -12,7 +12,7 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-06** | **Widget/app live = preferred-or-later** | **Superseded 2026-08-11 by U-11 (lock B).** Was: live face = first train at/after preferred. **New:** live face = true next train; Leave By only for preferred or user-chosen (swipe/Next). `applyPreferredOrLaterFilter` removed from app (Aug 2026); native `resolveActiveNextTrip` naming is legacy only. | Superseded — see U-11 |
+| **FB-06** | **Widget/app live = preferred-or-later** | **Superseded 2026-08-11 by U-11 (lock B).** Was: live face = first train at/after preferred. **New:** live face = true next train; Leave By only for preferred or user-chosen (swipe/Next). `applyPreferredOrLaterFilter` removed from app (Aug 2026); native true-next helper is `resolveTrueNextTrip`. | Superseded — see U-11 |
 | **FB-08** | ~~App Leave By vs widget preferred gate~~ | **Locked U-12 → 1** — Gate app Leave By like widget. **Promoted** → `docs/jim-brief-leave-by-preferred-gate.md` | Briefed |
 | **FB-43** | **Widget real estate redesign** | Revisit layout and information hierarchy on **2×1** (default) and **medium** — twin-face columns, station placement, label density, resize behaviour. **Not** second-by-second countdown (stays minute-level; see `docs/widget-homescreen.md` non-goals). Broader trust/staleness contract: `docs/widget-redesign-v2.md`. Promote to Jim brief when Tim + Simon lock a layout direction. | Backlog — **Aug 2026** |
 
@@ -60,16 +60,16 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-12** | **Target train gap warning / smarter pick** | **v8 shipped (option A):** keep at-or-after; warn when gap ≥ 25 min (`preferredHintForJourney`). Options B/C (nearest / confirm) still open if Tim wants. | Done — **v8** (warn); B/C backlog |
+| **FB-12** | **Target train gap warning / smarter pick** | **v8 shipped (option A):** keep at-or-after; warn when gap ≥ 25 min (`preferredHintForJourney`). Options B/C (nearest / confirm) **dropped** 21 Aug 2026 — revisit only if user feedback says the at-or-after pick feels wrong. | **Done** — **v8** |
 | **FB-13** | **Menu Remove ads** | Shipped: one-time **Remove ads** (A$7.99); widget free; no Pro/trial/founding. | Done |
 | **FB-14** | **Near me: Leave By on pinned train** | **v2.2.0.** A1 pin icon + B1 leave card/slider + C2 **Remind me when to leave** + D1 widget follows pin. Brief: `docs/jim-brief-nearby-pin-leave-by.md`. | Briefed — **v2.2.0** |
 | **FB-20** | **Journey mode: pin + Preferred target as default face** | **v2.2.0.** Supersedes U-11 B for journey hero/widget: default pin = Preferred target; day override via pin; secondary **Next** line only when next ≠ pin. Keep Active hours. Brief: `docs/jim-brief-journey-pin-preferred-target.md`. | Briefed — **v2.2.0** |
 | **FB-17** | ~~Target flag icon + on/off state~~ | **Superseded 2026-08-14** — pin chrome (FB-14 Near me, FB-20 journey) replaces flag. Brief archived: `docs/jim-brief-target-flag-icon.md`. | Superseded |
 | **FB-22** | **Enforce Target train inside Active hours** | **Locked U-14:** target time must fall within journey Active from/until; inline hint + Save blocked (`journey-detail.js`). | Done — **Aug 2026** |
 | **FB-23** | **My Journeys: Route vs Journey (two types, one tab)** | **Route** = saved station + direction board; **Journey** = usual train + leave-by, reminders, pin, widget band. Four-tab chrome (Near me · Routes · Journeys · Menu). Storage: `journeys[]` + `kind` (`route` \| `journey`). Brief: `docs/jim-brief-fb-23-route-vs-commute.md`. | **Complete** (Aug 2026) |
-| **FB-15** | **Leave now → Live Countdown morph-in-place** | Today: Live Countdown on ⇒ skip Leave now ping (strip owns leave-by). Later: one notification that heads-up as Leave now then *updates in place* into the ongoing countdown (same ID). | Backlog — **post 2.1.1** |
-| **FB-34** | **Leave alarm (stopwatch-style) instead of / as well as notification** | Optional **alarm at leave-by** — audible + persistent until dismissed (system alarm / full-screen intent), not just a heads-up notification. **Stopwatch** read: in-app countdown running toward leave time (visible while app open or as ongoing glance). **Today:** Get ready + Leave now pings + optional Live Countdown strip (`LeaveReminderScheduler`, `CommuteStripNotifier`). **Open:** alarm *replaces* notify vs user choice; commute-only; DND/battery; Android 12+ exact-alarm + full-screen intent; iOS alarm category / Live Activity overlap with FB-16. **Related:** FB-15, FB-16, stickiness #2/#4/#8. | Backlog |
-| **FB-16** | **Lock-screen / ongoing “on the way” glance** | Inspired by Google Maps lock-screen ETA while navigating. Could surface leave-by / time-to-train on lock screen (and/or richer ongoing notification). Open question (don’t design yet): do we need an explicit **Start** (I’m leaving now) to enter that mode? | Backlog — **post 2.1.1** |
+| **FB-15** | ~~Leave now → Live Countdown morph-in-place~~ | **Dropped** (Tim, Aug 2026) — Leave alarm (FB-34) owns leave-by interrupt; no separate morph-into-strip path. | **Dropped** |
+| **FB-34** | **Leave alarm (stopwatch-style) instead of / as well as notification** | **Leave now** is an audible ongoing alarm until dismiss (CATEGORY_ALARM + chronometer + optional full-screen activity). Scheduled with `setAlarmClock` + existing `SCHEDULE_EXACT_ALARM` — **not** `USE_EXACT_ALARM`. Get-ready stays a heads-up. Open: alarm *replaces* notify (yes for Leave now); DND/battery OEM variance; iOS / FB-16 later. | Implemented — **Aug 2026** |
+| **FB-16** | **Lock-screen / ongoing “on the way” glance** | After **Leave now** (FB-34), tap **I've left** (in-app or on the alarm) → quiet ongoing shade countdown to the train (reuse `CommuteStrip*`, session persists, no FGS). Explicit confirm — not auto all morning. | **Implemented** — Aug 2026 |
 | **FB-18** | **Bury Menu → Send feedback before production** | **Done Aug 2026** — **Send feedback** moved to Menu legal row (About · Privacy · Send feedback), not a primary nav link. Formspree/`/api/feedback` unchanged. | Done |
 
 ---
@@ -84,15 +84,16 @@
 
 ## Engineering / codebase health
 
-**Inventory:** `docs/codebase-inventory.md` (14 Aug 2026). Refactor phases **FB-24 / FB-26 / FB-27** complete (FB-27 4.4 deferred). **FB-23** complete.
+**Inventory:** `docs/codebase-inventory.md` (14 Aug 2026). Refactor phases **FB-24 / FB-26 / FB-27** complete. **FB-23** complete.
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
 | **FB-24** | **Code review Phase 1 — quick wins** | Dead CSS hooks + ads LS key (`docs/dead-code-inventory.md` D-03/D-04); resolve parked `preferred-hint` / `skipToTargetTrain` (D-09); doc hygiene; add `qa/pin-swipe-notify.mjs`. ~1–2 days. | **Done** (Aug 2026) |
 | **FB-25** | **Code review Phase 2 — split `app.js`** | One PR per module: combobox → journey-model → train-navigation → nearby-mode → template-wizard → journey-detail. **Decision (Aug 2026):** Option A — plain script files + `window.nextTrain*` globals loaded before `app.js` (not esbuild bundle yet). **Progress:** 2.1–2.6 ✅ (`station-combobox.js`, `journey-model.js`, `train-navigation.js`, `nearby-mode.js`, `template-wizard.js`, `journey-detail.js`). Branch `cursor/fb-25-split-app-js`. | **Done** (Aug 2026) — 6/6 modules |
-| **FB-26** | **Code review Phase 3 — pin / display contract** | Single web `pin-state` module; shared JSON fixtures for web + Android + iOS unit tests; native naming cleanup (`resolveActiveNextTrip` vs true next). ~2–3 days. | **Complete** (Aug 2026) — `pin-state.js`, 12 fixtures, `app.js` hero via `resolvePinState`, Android `PinResolutionFixtureTest` |
-| **FB-27** | **Code review Phase 4 — pre major product** | Journey `kind` in model; split `styles.css` by domain; APK packaging (D-05: `web-sources/`, `design/`, `prune-ship-assets.mjs`); `CommuteSchedule.java` decomposition deferred (4.4). Design: `docs/fb-27-phase-4-design.md`. | **Done** (Aug 2026) — 4.1–4.3 on master; 4.4 deferred |
+| **FB-26** | **Code review Phase 3 — pin / display contract** | Single web `pin-state` module; shared JSON fixtures for web + Android + iOS unit tests. Native true-next rename finished as **FB-44**. | **Complete** (Aug 2026) — `pin-state.js`, 12 fixtures, `app.js` hero via `resolvePinState`, Android `PinResolutionFixtureTest` |
+| **FB-27** | **Code review Phase 4 — pre major product** | Journey `kind` in model; split `styles.css` by domain; APK packaging (D-05: `web-sources/`, `design/`, `prune-ship-assets.mjs`); `CommuteSchedule.java` split (4.4). Design: `docs/fb-27-phase-4-design.md`. | **Done** (Aug 2026) — 4.1–4.4 |
 | **FB-28** | **Robolectric widget layout regression** | `WidgetUiBuilderRobolectricTest` builds RemoteViews from fixture snapshots (2×1 + medium); asserts bound text/visibility and layout view ids (leave twin, Updated line, Updating… ellipsis). Complements JVM string tests + manual TESTING.md **§22**. | Done — **v2.2.0** |
+| **FB-44** | **Naming hygiene — `resolveTrueNextTrip`** | Dropped leftover `resolveActiveNextTrip` (and unused journey arg) on Android + iOS. True next vs pin is now the method name, not a comment. Inventory §3.3. | **Done** (21 Aug 2026) |
 
 ---
 
@@ -108,7 +109,7 @@
 | R8 / mapping file on Play upload | `docs/jim-brief-play-hygiene.md` **FB-41** §4 |
 | Native debug symbols on Play upload | `docs/jim-brief-play-hygiene.md` **FB-41** §3 |
 | Play hygiene (public gate) | `docs/jim-brief-play-hygiene.md` |
-| Target train large gap (FB-12) | `docs/feature-backlog.md` **FB-12** (v8) |
+| Target train large gap (FB-12) | `docs/feature-backlog.md` **FB-12** (v8 warn shipped; B/C dropped) |
 | Menu Remove ads (FB-13) | Done — A$7.99 one-time; widget free |
 | Near me Leave By on pin (FB-14) | `docs/jim-brief-nearby-pin-leave-by.md` · **v2.2.0** |
 | Journey pin + Preferred target (FB-20) | `docs/jim-brief-journey-pin-preferred-target.md` · **v2.2.0** · supersedes U-11 B face |
@@ -119,14 +120,15 @@
 | Widget style packs (FB-39) | **Dropped** Aug 2026 — `docs/jim-brief-widget-style-packs.md` (archived) |
 | Jetpack Glance blend-first (FB-40) | `docs/jim-brief-widget-glance.md` |
 | Widget background colour row (FB-42) | `docs/jim-brief-widget-background-colours.md` · **Complete** Aug 2026 |
-| Leave now → strip morph (FB-15) | `docs/feature-backlog.md` **FB-15** |
-| Leave alarm / stopwatch at leave-by (FB-34) | `docs/feature-backlog.md` **FB-34** |
-| Lock-screen on-the-way glance (FB-16) | `docs/feature-backlog.md` **FB-16** |
+| Leave now → strip morph (FB-15) | **Dropped** Aug 2026 — see FB-34 / FB-16 |
+| Leave alarm / stopwatch at leave-by (FB-34) | `docs/feature-backlog.md` **FB-34** · Leave now = ongoing alarm (`LeaveReminderNotifier` / `LeaveAlarmActivity`) |
+| Lock-screen on-the-way glance (FB-16) | `docs/feature-backlog.md` **FB-16** · Start from Leave now → commute strip |
 | Bury Menu Send feedback (FB-18) | Done — legal row in Menu (`index.html`) |
 | UptimeRobot ready + synthetic monitors (FB-19) | `docs/feature-backlog.md` **FB-19** · `docs/go-live-ops.md` § Uptime |
 | Route vs Commute (FB-23) | `docs/jim-brief-fb-23-route-vs-commute.md` · **Complete** Aug 2026 |
-| Codebase refactor phases (FB-24–27) | `docs/codebase-inventory.md` · **Complete** (4.4 deferred) |
+| Codebase refactor phases (FB-24–27) | `docs/codebase-inventory.md` · **Complete** |
 | Pin / display contract (FB-26) | `docs/fb-26-pin-state-design.md` · **Complete** Aug 2026 |
+| Native true-next naming (FB-44) | `docs/feature-backlog.md` **FB-44** · **Done** 21 Aug 2026 |
 | Robolectric widget layout tests (FB-28) | `docs/feature-backlog.md` **FB-28** · TESTING.md **§22** |
 | QA infrastructure (CI, run-all, helpers) | `docs/qa-infrastructure-plan.md` |
 

@@ -17,7 +17,11 @@ public class MainActivity extends BridgeActivity {
     registerPlugin(LeaveReminderPlugin.class);
     super.onCreate(savedInstanceState);
     DeepLinkHelper.capture(getIntent());
-    DeepLinkHelper.applyDebugActions(this, getIntent());
+    boolean debugAction = DeepLinkHelper.applyDebugActions(this, getIntent());
+    if (!debugAction) {
+      // Sticky QA latch was skipping real leave-by and arming +60s instead.
+      LeaveReminderSettingsStore.setFastTestEnabled(this, false);
+    }
 
     getOnBackPressedDispatcher().addCallback(
       this,

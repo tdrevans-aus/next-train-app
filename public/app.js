@@ -77,6 +77,10 @@ const preferredHintEl = document.getElementById("preferred-hint");
 const leaveAckBtn = document.getElementById("leave-ack-btn");
 const leaveNextTrainBtn = document.getElementById("leave-next-train-btn");
 const leaveCardActionsEl = document.getElementById("leave-card-actions");
+const leaveAlarmBannerEl = document.getElementById("leave-alarm-banner");
+const leaveAlarmRouteEl = document.getElementById("leave-alarm-route");
+const leaveAlarmTrainEl = document.getElementById("leave-alarm-train");
+const leaveAlarmOkBtn = document.getElementById("leave-alarm-ok-btn");
 const heroPinBtn = document.getElementById("hero-pin-btn");
 const platformEl = document.getElementById("platform");
 const statusEl = document.getElementById("status");
@@ -2508,6 +2512,145 @@ function isLeaveAcknowledged(next, ackContext = null) {
   return sessionStorage.getItem(leaveAckStorageKey(next, ackContext)) === "1";
 }
 
+async function syncLeaveAckFromNative(next, ackContext = null) {
+  if (!next || isLeaveAcknowledged(next, ackContext)) {
+    return false;
+  }
+  if (!isNativeApp()) {
+    return false;
+  }
+
+  const resolvedContext = ackContext ?? getLeaveAckContext();
+  const departure = resolveTripDeparture(next);
+  const journeyId = resolveAckJourneyId(resolvedContext);
+  if (!departure || !journeyId) {
+    return false;
+  }
+
+  const acknowledged = await window.nextTrainLeaveReminders?.isDepartureAcknowledged?.(
+    journeyId,
+    departure
+  );
+  if (!acknowledged) {
+    return false;
+  }
+
+  sessionStorage.setItem(leaveAckStorageKey(next, resolvedContext), "1");
+  return true;
+}
+
+let leaveAckNativeSyncInflight = null;
+
+function maybeSyncLeaveAckFromNative(next, ackContext = null, onSynced) {
+  if (!next || isLeaveAcknowledged(next, ackContext)) {
+    return;
+  }
+
+  if (leaveAckNativeSyncInflight) {
+    return;
+  }
+
+  leaveAckNativeSyncInflight = syncLeaveAckFromNative(next, ackContext)
+    .then((synced) => {
+      leaveAckNativeSyncInflight = null;
+      if (synced) {
+        onSynced?.();
+      }
+      return synced;
+    })
+    .catch(() => {
+      leaveAckNativeSyncInflight = null;
+      return false;
+    });
+}
+
+async function syncActiveLeaveAckFromNative() {
+  if (isNearbyModeActive() && isNearbyPinHolding()) {
+    const next = getNearbyFocusedEntry()?.data?.next ?? lastRenderedNext;
+    const station = nearbyMode().getNearbySession?.()?.station;
+    if (!next || !station) {
+      return false;
+    }
+    const leaveNext = nearbyMode().buildNearbyLeaveNext?.(next);
+    if (!leaveNext) {
+      return false;
+    }
+    return syncLeaveAckFromNative(leaveNext, { nearbyStation: station });
+  }
+
+  const leaveTrip = getLeaveTripForActiveJourney();
+  return syncLeaveAckFromNative(leaveTrip);
+}
+
+function getLeaveAckContext() {
+  if (isNearbyModeActive()) {
+    const session = nearbyMode().getNearbySession?.();
+    if (session?.station) {
+      return { nearbyStation: session.station };
+    }
+  }
+  return null;
+}
+
+function resolveAckJourneyId(ackContext = null) {
+  if (ackContext?.nearbyStation) {
+    return "nearby-pin";
+  }
+  return getActiveJourney()?.id ?? null;
+}
+
+function buildNearbyPinRouteForNative(pin) {
+  if (!pin?.station || !pin?.direction) {
+    return "";
+  }
+  return `${pin.station} → ${pin.direction}`;
+}
+
+function buildLeaveConfirmPayload(next, ackContext = null) {
+  const resolvedContext = ackContext ?? getLeaveAckContext();
+  const departure = resolveTripDeparture(next);
+  if (!departure) {
+    return null;
+  }
+
+  if (resolvedContext?.nearbyStation) {
+    const pin = getNearbyPin();
+    if (!pin) {
+      return null;
+    }
+    const trip = pin.trip ?? next ?? {};
+    const departure = pin.departureIso ?? resolveTripDeparture(trip);
+    if (!departure) {
+      return null;
+    }
+    return {
+      journeyId: "nearby-pin",
+      route: buildNearbyPinRouteForNative(pin),
+      trainTime: trip.displayTime ?? "",
+      departure,
+      stale: false,
+    };
+  }
+
+  const journey = getActiveJourney();
+  if (!journey?.id) {
+    return null;
+  }
+
+  const route =
+    journey.station && journey.direction
+      ? `${journey.station} → ${journey.direction}`
+      : formatJourneyRoute(journey);
+
+  return {
+    journeyId: journey.id,
+    route,
+    trainTime: next.displayTime ?? "",
+    departure,
+    stale: Boolean(lastApiData?.stale),
+  };
+}
+
 function getLeaveTripForActiveJourney(data = lastApiData) {
   const journey = getActiveJourney();
   if (!data || !journey) {
@@ -2525,19 +2668,52 @@ function getLeaveAckTarget() {
   return lastRenderedNext ?? null;
 }
 
-function acknowledgeLeave(next, { ackContext = null } = {}) {
+async function acknowledgeLeave(next, { ackContext = null } = {}) {
   if (!next) {
     return;
   }
-  sessionStorage.setItem(leaveAckStorageKey(next, ackContext), "1");
-  const journey = getActiveJourney();
-  const departure = resolveTripDeparture(next);
-  window.nextTrainLeaveReminders?.acknowledgeDeparture?.(journey?.id, departure);
+  const resolvedContext = ackContext ?? getLeaveAckContext();
+  const payload = buildLeaveConfirmPayload(next, resolvedContext);
+  if (payload && isNativeApp()) {
+    try {
+      await window.nextTrainLeaveReminders?.startOnTheWay?.(payload);
+    } catch (error) {
+      console.warn("Could not start leave countdown after I've left", error);
+    }
+  }
+  applyLeaveAcknowledgedUi(next, resolvedContext);
+}
+
+async function markLeaveAcknowledgedLocally(next, { ackContext = null } = {}) {
+  if (!next) {
+    return;
+  }
+  const resolvedContext = ackContext ?? getLeaveAckContext();
+  const payload = buildLeaveConfirmPayload(next, resolvedContext);
+  if (payload && isNativeApp()) {
+    try {
+      await window.nextTrainLeaveReminders?.acknowledgeDeparture?.({
+        journeyId: payload.journeyId,
+        departure: payload.departure,
+      });
+    } catch (error) {
+      console.warn("Could not sync native leave ack", error);
+    }
+  }
+  applyLeaveAcknowledgedUi(next, resolvedContext);
+}
+
+function applyLeaveAcknowledgedUi(next, resolvedContext) {
+  sessionStorage.setItem(leaveAckStorageKey(next, resolvedContext), "1");
   if (leaveCardActionsEl) {
     leaveCardActionsEl.hidden = true;
     leaveCardActionsEl.classList.remove("leave-card-actions--visible");
   }
-  if (ackContext?.nearbyStation || isNearbyModeActive()) {
+  if (leaveCardEl && (resolvedContext?.nearbyStation || isNearbyModeActive())) {
+    leaveCardEl.hidden = true;
+    hideNearbyPinLeaveSurfaces();
+  }
+  if (resolvedContext?.nearbyStation || isNearbyModeActive()) {
     nearbyMode().renderNearbyBoard?.();
     return;
   }
@@ -2552,21 +2728,124 @@ function acknowledgeLeave(next, { ackContext = null } = {}) {
   }
 }
 
+function hideLeaveAlarmBanner() {
+  if (leaveAlarmBannerEl) {
+    leaveAlarmBannerEl.hidden = true;
+  }
+}
+
+function renderLeaveAlarmBanner(alarm) {
+  if (!leaveAlarmBannerEl) {
+    return;
+  }
+  if (!alarm?.active) {
+    hideLeaveAlarmBanner();
+    return;
+  }
+
+  if (leaveAlarmRouteEl) {
+    leaveAlarmRouteEl.textContent = alarm.route || "Your journey";
+  }
+  if (leaveAlarmTrainEl) {
+    let trainText = alarm.trainTime ? `Train ${alarm.trainTime}` : "";
+    if (alarm.stale && trainText) {
+      trainText += " · Times may be out of date";
+    } else if (alarm.stale) {
+      trainText = "Times may be out of date";
+    }
+    leaveAlarmTrainEl.textContent = trainText;
+  }
+  leaveAlarmBannerEl.hidden = false;
+}
+
+function resolveLeaveAlarmTrip(alarm) {
+  if (!alarm?.departure) {
+    return null;
+  }
+
+  if (alarm.journeyId === "nearby-pin") {
+    const pin = getNearbyPin();
+    if (pin?.trip) {
+      return pin.trip;
+    }
+    if (isNearbyModeActive()) {
+      return {
+        departure: alarm.departure,
+        arrival: alarm.departure,
+        displayTime: alarm.trainTime ?? "",
+        leaveBy: alarm.departure,
+      };
+    }
+  }
+
+  const leaveTrip = getLeaveTripForActiveJourney();
+  if (leaveTrip && resolveTripDeparture(leaveTrip) === alarm.departure) {
+    return leaveTrip;
+  }
+
+  return {
+    departure: alarm.departure,
+    arrival: alarm.departure,
+    displayTime: alarm.trainTime ?? "",
+    leaveBy: alarm.departure,
+  };
+}
+
+async function syncLeaveAlarmFromNative() {
+  if (!isNativeApp()) {
+    hideLeaveAlarmBanner();
+    return false;
+  }
+
+  const alarm = await window.nextTrainLeaveReminders?.getActiveLeaveAlarm?.();
+  renderLeaveAlarmBanner(alarm);
+  return Boolean(alarm?.active);
+}
+
+let leaveAlarmNativeSyncInflight = null;
+
+function maybeSyncLeaveAlarmFromNative() {
+  if (!isNativeApp()) {
+    return Promise.resolve(false);
+  }
+  if (leaveAlarmNativeSyncInflight) {
+    return leaveAlarmNativeSyncInflight;
+  }
+  leaveAlarmNativeSyncInflight = syncLeaveAlarmFromNative().finally(() => {
+    leaveAlarmNativeSyncInflight = null;
+  });
+  return leaveAlarmNativeSyncInflight;
+}
+
+async function handleLeaveAlarmOk() {
+  const alarm = await window.nextTrainLeaveReminders?.getActiveLeaveAlarm?.();
+  if (!alarm?.active) {
+    hideLeaveAlarmBanner();
+    return;
+  }
+
+  const ackContext = alarm.journeyId === "nearby-pin" ? getLeaveAckContext() : null;
+  const next = resolveLeaveAlarmTrip(alarm);
+  if (next) {
+    await acknowledgeLeave(next, { ackContext });
+  } else {
+    await window.nextTrainLeaveReminders?.startOnTheWay?.({
+      journeyId: alarm.journeyId,
+      route: alarm.route,
+      trainTime: alarm.trainTime,
+      departure: alarm.departure,
+      stale: alarm.stale,
+    });
+  }
+  hideLeaveAlarmBanner();
+}
+
 function shouldAutoAckLeavePhase(leavePhase) {
   return leavePhase === "now" || leavePhase === "late" || leavePhase === "missed";
 }
 
-function movementTriggersLeaveAutoAck({ distanceKm: stationDistanceKm, speed, movedKm }) {
-  if (typeof stationDistanceKm === "number" && stationDistanceKm <= STATION_ARRIVAL_KM) {
-    return true;
-  }
-  if (typeof speed === "number" && speed >= TRAVELING_SPEED_MS) {
-    return true;
-  }
-  if (typeof movedKm === "number" && movedKm >= LEAVE_AUTO_ACK_MOVE_KM) {
-    return true;
-  }
-  return false;
+function movementTriggersLeaveAutoAck({ distanceKm: stationDistanceKm }) {
+  return typeof stationDistanceKm === "number" && stationDistanceKm <= STATION_ARRIVAL_KM;
 }
 
 async function maybeAutoAcknowledgeLeave(next, options = {}) {
@@ -2671,11 +2950,9 @@ async function maybeAutoAcknowledgeLeave(next, options = {}) {
       if (
         movementTriggersLeaveAutoAck({
           distanceKm: stationDistance,
-          speed: effectiveSpeed,
-          movedKm: effectiveMovedKm,
         })
       ) {
-        acknowledgeLeave(next, { ackContext: resolvedAckContext });
+        void markLeaveAcknowledgedLocally(next, { ackContext: resolvedAckContext });
         onAcknowledged?.();
         return true;
       }
@@ -3418,13 +3695,21 @@ function render(data, { stale = false } = {}) {
 
   const leaveTrip = heroTrip;
   const live = getLiveTiming(leaveTrip);
+  maybeSyncLeaveAckFromNative(leaveTrip, null, () => {
+    if (lastApiData) {
+      render(prepareDisplayData(lastApiData));
+    }
+  });
   const leaveAcknowledged = isLeaveAcknowledged(leaveTrip);
   const leaveArmed = pinState?.leaveCardArmed ?? journeyLeaveCardArmed(journey, pinTrip);
   const showLeaveCard = leaveArmed && !leaveAcknowledged && !targetDeparted;
   const showTargetDepartedActions = targetDeparted;
-  const showLateNag =
+  const showLeaveAckActions =
     showTargetDepartedActions ||
-    (showLeaveCard && (live.leavePhase === "late" || live.leavePhase === "missed"));
+    (showLeaveCard &&
+      (live.leavePhase === "now" ||
+        live.leavePhase === "late" ||
+        live.leavePhase === "missed"));
   const journeyPinClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
   const isDayOverridePin = pinState?.isOverrideActiveToday ?? isJourneyOverrideActiveToday(journeyPinClean);
   const activeTargetTrip = pinTrip ?? departedTargetTrip;
@@ -3496,8 +3781,8 @@ function render(data, { stale = false } = {}) {
   }
 
   if (leaveCardActionsEl) {
-    leaveCardActionsEl.hidden = !showLateNag;
-    leaveCardActionsEl.classList.toggle("leave-card-actions--visible", showLateNag);
+    leaveCardActionsEl.hidden = !showLeaveAckActions;
+    leaveCardActionsEl.classList.toggle("leave-card-actions--visible", showLeaveAckActions);
   }
   if (leaveAckBtn) {
     leaveAckBtn.hidden = showTargetDepartedActions;
@@ -4295,6 +4580,7 @@ async function fetchNextTrain() {
 
 function refreshLiveDisplay(force = false) {
   maybeAutoAckLeaveFromLiveTick();
+  void maybeSyncLeaveAlarmFromNative();
 
   if (isNearbyModeActive()) {
     const minute = getPerthMinutesSinceMidnight();
@@ -5295,10 +5581,15 @@ helpDialog?.addEventListener("click", (event) => {
 });
 leaveAckBtn?.addEventListener("click", (event) => {
   event.stopPropagation();
+  const ackContext = getLeaveAckContext();
   const next = getLeaveAckTarget();
   if (next) {
-    acknowledgeLeave(next);
+    void acknowledgeLeave(next, { ackContext });
   }
+});
+leaveAlarmOkBtn?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  void handleLeaveAlarmOk();
 });
 leaveNextTrainBtn?.addEventListener("click", (event) => {
   event.stopPropagation();
@@ -5634,6 +5925,9 @@ async function init() {
   await applyJourneysMode({ coldStart: true });
   await deepLinkTask;
   window.nextTrainWidget?.syncWidgetSettings?.(settings);
+  if (isNativeApp()) {
+    void maybeSyncLeaveAlarmFromNative();
+  }
 }
 
 
@@ -6029,6 +6323,10 @@ function initNearbyModeFromModule() {
     getAppGeolocationPosition,
     distanceKm,
     isLeaveAcknowledged,
+    maybeSyncLeaveAckFromNative,
+    syncLeaveAckFromNative,
+    maybeSyncLeaveAlarmFromNative,
+    syncLeaveAlarmFromNative,
     shouldAutoAckLeavePhase,
     maybeAutoAcknowledgeLeave,
     enterRouteMode,
@@ -6519,6 +6817,7 @@ window.nextTrainApp = {
   advanceLeavePinToNextTrain,
   shouldAdvancePinOnNextTrain,
   advanceNearbyPinToNextTrain,
+  syncLeaveAlarmFromNative,
 };
 
 async function resumeMaestroSeedIfNeeded() {
@@ -6551,6 +6850,19 @@ document.addEventListener("visibilitychange", () => {
 
   dismissStaleBlockingLayers();
   maybeScheduleOnboarding();
+  void maybeSyncLeaveAlarmFromNative();
+  void syncActiveLeaveAckFromNative().then((synced) => {
+    if (!synced) {
+      return;
+    }
+    if (isNearbyModeActive()) {
+      renderNearbyBoard();
+      return;
+    }
+    if (lastApiData) {
+      render(prepareDisplayData(lastApiData));
+    }
+  });
 
   void (async () => {
     if (isJourneysDialogOpen() || isOnboardingVisible() || isAppOverlayOpen()) {

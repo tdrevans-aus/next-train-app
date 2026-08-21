@@ -214,6 +214,15 @@
         <p class="updated" id="updated">Updating…</p>
       </div>
 
+      <section class="leave-alarm-banner" id="leave-alarm-banner" hidden aria-live="assertive">
+        <p class="leave-alarm-banner-title">Leave now</p>
+        <p class="leave-alarm-banner-route" id="leave-alarm-route"></p>
+        <p class="leave-alarm-banner-train" id="leave-alarm-train"></p>
+        <div class="leave-alarm-banner-actions">
+          <button type="button" class="leave-alarm-ok-btn" id="leave-alarm-ok-btn">OK</button>
+        </div>
+      </section>
+
       <section class="leave-card calm" id="leave-card" hidden>
         <button
           type="button"
@@ -1192,9 +1201,11 @@
           </li>
           <li>
             <strong>Reminders</strong> — Turn on <strong>Target train</strong>, set the time, then
-            <strong>Remind me</strong> sends a one-shot <strong>Leave now</strong> notification
-            at leave-by time. Pause anytime from <strong>Menu → Pause reminders</strong>.
-            We pick the first train at or after your target time.
+            <strong>Remind me</strong> fires a <strong>Leave now</strong> alarm at leave-by
+            (sound + shade until you dismiss). Tap <strong>I've left</strong> for a quiet
+            countdown while you walk to the station. Pause anytime from
+            <strong>Menu → Pause reminders</strong>. We pick the first train at or after your
+            target time.
           </li>
           <li>
             <strong>Platform &amp; status</strong> — Live platform and delay info for the train
