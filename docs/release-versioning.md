@@ -41,7 +41,9 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Shipped widget + pin | **2.3.0** | **13** | `v2.3.0` | Widget appearance (FB-40/42), **FB-26** pin contract |
 | Shipped routes + journeys | **2.4.0** | **14** | `v2.4.0` | **FB-23** Route vs Journey; FB-24/27/42, FB-11 |
 | Shipped re-upload | **2.4.1** | **15** | `v2.4.1` | 2.4.0 closed-test re-upload (Play versionCode bump) |
-| **Shipping now** | **2.5.0** | **16** | `v2.5.0` | Pin resolution parity, widget layout, pin-behavior QA |
+| Pin / widget QA | **2.5.0** | **16** | `v2.5.0` | Pin resolution parity, widget layout, pin-behavior QA |
+| Play hygiene | **2.5.1** | **17** | `v2.5.1` | Drop `USE_EXACT_ALARM`; closed-test upload |
+| **Shipping now** | **2.5.2** | **18** | `v2.5.2` | Leave-now alarm, cancel, on-the-way countdown |
 
 Update this table when you ship.
 
