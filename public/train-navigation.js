@@ -564,10 +564,14 @@ function isJourneyTargetPinnedToday(journey) {
   return !isJourneyPinDismissedToday(journeyClean);
 }
 
-function sanitizeJourneyPinOverride(journey) {
+function sanitizeJourneyPinFields(journey) {
   if (global.nextTrainPinState?.sanitizeJourneyPinFields) {
     return global.nextTrainPinState.sanitizeJourneyPinFields(journey);
   }
+  return sanitizeJourneyPinDismissedLocal(sanitizeJourneyPinOverrideLocal(journey));
+}
+
+function sanitizeJourneyPinOverrideLocal(journey) {
   if (!journey?.journeyPinOverrideDate) {
     return journey;
   }
@@ -581,10 +585,7 @@ function sanitizeJourneyPinOverride(journey) {
   return journey;
 }
 
-function sanitizeJourneyPinDismissed(journey) {
-  if (global.nextTrainPinState?.sanitizeJourneyPinFields) {
-    return global.nextTrainPinState.sanitizeJourneyPinFields(journey);
-  }
+function sanitizeJourneyPinDismissedLocal(journey) {
   if (!journey?.journeyPinDismissedDate) {
     return journey;
   }
@@ -595,6 +596,20 @@ function sanitizeJourneyPinDismissed(journey) {
     };
   }
   return journey;
+}
+
+function sanitizeJourneyPinOverride(journey) {
+  if (global.nextTrainPinState?.sanitizeJourneyPinFields) {
+    return global.nextTrainPinState.sanitizeJourneyPinFields(journey);
+  }
+  return sanitizeJourneyPinOverrideLocal(journey);
+}
+
+function sanitizeJourneyPinDismissed(journey) {
+  if (global.nextTrainPinState?.sanitizeJourneyPinFields) {
+    return global.nextTrainPinState.sanitizeJourneyPinFields(journey);
+  }
+  return sanitizeJourneyPinDismissedLocal(journey);
 }
 
 function resolveJourneyPreferredTargetTrip(data, journey = getActiveJourney()) {
@@ -1804,6 +1819,7 @@ async function toggleHeroPin() {
     restoreJourneyTargetPinFace,
     sanitizeJourneyPinDismissed,
     sanitizeJourneyPinOverride,
+    sanitizeJourneyPinFields,
     saveSkipState,
     saveSkipStateForTrip,
     shouldAdvanceLeavePinOnSkip,

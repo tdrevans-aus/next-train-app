@@ -171,6 +171,44 @@
     return Number.isNaN(minutes) ? 24 * 60 : minutes;
   }
 
+  /**
+   * Clear stale same-day pin override / dismissed markers (Perth calendar day).
+   * Defined before any caller (incl. targetTripHorizonMinutes) so the binding is
+   * never a free unresolved identifier (Sentry CAPACITOR-V).
+   */
+  function sanitizeJourneyPinOverride(journey, clock = resolveClock()) {
+    const resolvedClock = resolveClock(clock);
+    if (!journey?.journeyPinOverrideDate) {
+      return journey;
+    }
+    if (journey.journeyPinOverrideDate !== getPerthLocalDateKey(resolvedClock)) {
+      return {
+        ...journey,
+        journeyPinOverrideIso: "",
+        journeyPinOverrideDate: "",
+      };
+    }
+    return journey;
+  }
+
+  function sanitizeJourneyPinDismissed(journey, clock = resolveClock()) {
+    const resolvedClock = resolveClock(clock);
+    if (!journey?.journeyPinDismissedDate) {
+      return journey;
+    }
+    if (journey.journeyPinDismissedDate !== getPerthLocalDateKey(resolvedClock)) {
+      return {
+        ...journey,
+        journeyPinDismissedDate: "",
+      };
+    }
+    return journey;
+  }
+
+  function sanitizeJourneyPinFields(journey, clock = resolveClock()) {
+    return sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey, clock), clock);
+  }
+
   function targetTripHorizonMinutes(journey, clock = resolveClock()) {
     const journeyClean = sanitizeJourneyPinFields(journey, clock);
     return liveHorizonMinutes(journeyClean);
@@ -239,39 +277,6 @@
   function isJourneyPinDismissedToday(journey, clock = resolveClock()) {
     const resolvedClock = resolveClock(clock);
     return journey?.journeyPinDismissedDate === getPerthLocalDateKey(resolvedClock);
-  }
-
-  function sanitizeJourneyPinOverride(journey, clock = resolveClock()) {
-    const resolvedClock = resolveClock(clock);
-    if (!journey?.journeyPinOverrideDate) {
-      return journey;
-    }
-    if (journey.journeyPinOverrideDate !== getPerthLocalDateKey(resolvedClock)) {
-      return {
-        ...journey,
-        journeyPinOverrideIso: "",
-        journeyPinOverrideDate: "",
-      };
-    }
-    return journey;
-  }
-
-  function sanitizeJourneyPinDismissed(journey, clock = resolveClock()) {
-    const resolvedClock = resolveClock(clock);
-    if (!journey?.journeyPinDismissedDate) {
-      return journey;
-    }
-    if (journey.journeyPinDismissedDate !== getPerthLocalDateKey(resolvedClock)) {
-      return {
-        ...journey,
-        journeyPinDismissedDate: "",
-      };
-    }
-    return journey;
-  }
-
-  function sanitizeJourneyPinFields(journey, clock = resolveClock()) {
-    return sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey, clock), clock);
   }
 
   function isRouteJourney(journey) {
