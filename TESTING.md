@@ -839,6 +839,15 @@ Jim brief: `docs/jim-brief-brisbane-provider.md`
 5. `/api/next-train?city=brisbane&station=…` still **501** on production paths.
 6. Perth `/api/next-train` unchanged (default city).
 
+### 22b. Brisbane route conformance (offline)
+
+Jim brief: `docs/jim-brief-brisbane-route-conformance.md`
+
+1. `node qa/brisbane-line-map-conformance.mjs` — C1–C7 vs `published-network.json` + `line-map.json`. No network.
+2. C2/C3 extras must be listed in `DOCUMENTED_STATION_DIFFS` (and `line-map.json` `coverageGaps`). Do not guess which oracle is right.
+3. `LABEL_EXPECTATIONS` at the top of the conformance file stays empty until Tim clears D5 labels (§3 is line+terminus).
+4. `assertCityLive("brisbane")` still fails. Perth `qa/perth-static-directions.mjs` unchanged.
+
 ### 23. Sydney provider probe (adapter only — not live)
 
 Jim brief: `docs/jim-brief-sydney-provider.md`

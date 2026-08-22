@@ -94,6 +94,15 @@ const CITY_CONFIG = {
           reason: "H4 branch at Petrie (T2 vs T1)",
         },
       ],
+      coverageGaps: [
+        "C3-3: D1 T1 elides Petrie–Northgate shared stations (Lawnton–Virginia) and some inner-north stops",
+        "C3-T1-rosewood: D1 T1 includes Rosewood branch; mapped T1 GTFS codes stop at Ipswich",
+        "C3-T2-petrie: D1 T2 omits Petrie",
+        "C3-T3-southbank: weekend Doomben patterns continue to Boggo Road; D1 ends at Roma Street",
+        "C3-4: D1 T5 is express-style; GTFS all-stops extras are a pattern variant",
+        "C3-T6-moorooka: D1 lists Moorooka; longest T6 GTFS patterns may skip it",
+        "H2: many GTFS route codes (NAIP, Exhibition, Rosewood shuttle, city shorts) are not on the published T-line route lists",
+      ],
     },
     nameAliases: {
       Central: ["Brisbane Central", "Central Station"],
@@ -520,7 +529,7 @@ function main() {
     junctionStations: [...review.junctionStations].sort((a, b) => a.localeCompare(b)),
     suppressedTermini: suppressed,
     lines,
-    coverageGaps: [],
+    coverageGaps: review.coverageGaps ?? [],
   };
 
   const catalog = buildStationCatalog(staticData, config, published);
