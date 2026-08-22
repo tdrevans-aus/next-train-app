@@ -60,6 +60,7 @@ const RELEASE_EXTRA_SCRIPTS = [
   "fb-23-web.mjs",
   "add-journey-btn.mjs",
   "app-theme.mjs",
+  "sanitize-journey-pin-fields.mjs",
 ];
 
 const RELEASE_SCRIPTS = [

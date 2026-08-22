@@ -599,6 +599,13 @@ function sanitizeJourneyPinDismissed(journey) {
   return journey;
 }
 
+function sanitizeJourneyPinFields(journey) {
+  if (global.nextTrainPinState?.sanitizeJourneyPinFields) {
+    return global.nextTrainPinState.sanitizeJourneyPinFields(journey);
+  }
+  return sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+}
+
 function resolveJourneyPreferredTargetTrip(data, journey = getActiveJourney()) {
   if (!data || !journey) {
     return null;
@@ -1845,6 +1852,7 @@ async function toggleHeroPin() {
     resolveJourneyPreferredTargetTrip,
     restoreJourneyTargetPinFace,
     sanitizeJourneyPinDismissed,
+    sanitizeJourneyPinFields,
     sanitizeJourneyPinOverride,
     saveSkipState,
     saveSkipStateForTrip,

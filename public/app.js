@@ -6480,6 +6480,7 @@ function isJourneyPinDismissedToday(journey) { return trainNavigation().isJourne
 function isJourneyTargetPinnedToday(journey) { return trainNavigation().isJourneyTargetPinnedToday(journey); }
 function sanitizeJourneyPinOverride(journey) { return trainNavigation().sanitizeJourneyPinOverride(journey); }
 function sanitizeJourneyPinDismissed(journey) { return trainNavigation().sanitizeJourneyPinDismissed(journey); }
+function sanitizeJourneyPinFields(journey) { return trainNavigation().sanitizeJourneyPinFields(journey); }
 function resolveJourneyPreferredTargetTrip(data, journey) {
   return trainNavigation().resolveJourneyPreferredTargetTrip(data, journey);
 }
