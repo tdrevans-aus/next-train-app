@@ -37,6 +37,8 @@
     "test:pre-release": "node qa/pre-release.mjs",
     "soak:status": "node qa/soak-status.mjs",
     "probe:brisbane": "node scripts/probe-brisbane-board.mjs",
+    "trim:brisbane-gtfs": "node scripts/trim-brisbane-gtfs.mjs",
+    "build:line-map": "node scripts/build-line-map.mjs --city=brisbane",
     "probe:sydney": "node scripts/probe-sydney-board.mjs",
     "probe:melbourne": "node scripts/probe-melbourne-board.mjs",
     "probe:adelaide": "node scripts/probe-adelaide-board.mjs",
