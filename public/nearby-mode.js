@@ -274,6 +274,30 @@ function setNearbyError(message, kind = null) {
   nearbyErrorKind = kind || (message ? classifyNearbyError(message) : null);
 }
 
+function keepNearbyBoardWithLocationHint() {
+  return (
+    nearbyErrorKind === "location" &&
+    Boolean(nearbySession?.station) &&
+    nearbyBoardHasDepartures()
+  );
+}
+
+function syncNearbyLocationHint() {
+  if (!keepNearbyBoardWithLocationHint() || !nearbyError) {
+    return;
+  }
+  if (nearbyFallbackEl) {
+    nearbyFallbackEl.hidden = false;
+  }
+  if (nearbyFallbackTextEl) {
+    nearbyFallbackTextEl.textContent = nearbyError;
+  }
+  if (deps.updatedEl) {
+    deps.updatedEl.textContent = "Location off — tap Near me to update";
+  }
+  ensureNearbyStationOptions();
+}
+
 function clearNearbyError() {
   nearbyError = null;
   nearbyErrorKind = null;
@@ -505,7 +529,11 @@ function isNearbyFaceReadyForOnboarding() {
     return false;
   }
 
-  if (!nearbyBoard || nearbyError) {
+  if (!nearbyBoard) {
+    return false;
+  }
+
+  if (nearbyError && !keepNearbyBoardWithLocationHint()) {
     return false;
   }
 
@@ -764,6 +792,43 @@ function syncRestoredNearbyPinState() {
   if (getNearbyPin() || (pin && deps.isNearbyPinSettingsHolding?.(pin))) {
     deps.reconcileExclusivePinState?.({ type: "nearby" });
   }
+}
+
+/** Widget / Near me open: keep the pinned trip focused, not the soonest next train. */
+function applyHoldingNearbyPinFocus() {
+  if (!nearbySession?.station) {
+    return false;
+  }
+  restoreNearbySessionPinFromSettings();
+  const pin = getNearbyPin();
+  if (!isNearbyPinHolding(pin) || !pin.direction) {
+    return false;
+  }
+  nearbySession.focusedDirection = pin.direction;
+  if (nearbyBoard?.entries?.length) {
+    const entry = nearbyBoard.entries.find((item) => item.direction === pin.direction);
+    if (entry?.data) {
+      entry.data = applyNearbyPinToData(pin.direction, entry.data);
+    }
+  }
+  return true;
+}
+
+function applyWidgetTapDeparture(direction, data) {
+  const iso = nearbySession?.pendingTapDepartureIso;
+  if (!iso || !data) {
+    return data;
+  }
+  const normalized = normalizeApiTrainData(data);
+  const upcoming = getUpcomingTrips(normalized);
+  const idx = upcoming.findIndex((trip) => resolveTripDeparture(trip) === iso);
+  if (idx < 0) {
+    return data;
+  }
+  nearbySession.focusedDirection = direction;
+  setNearbySkip(direction, idx);
+  nearbySession.pendingTapDepartureIso = null;
+  return applyNearbySkip(normalized, idx);
 }
 
 function buildNearbyLeaveNext(trip) {
@@ -1643,7 +1708,7 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
         if (!isNearbyLocateCurrent(generation)) {
           return;
         }
-        clearNearbyError();
+        setNearbyError(locationErrorFrom(error).message, "location");
         renderNearbyBoard();
       } catch (fetchError) {
         if (!isNearbyLocateCurrent(generation)) {
@@ -1837,7 +1902,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     return;
   }
 
-  if (nearbyError) {
+  if (nearbyError && !keepNearbyBoardWithLocationHint()) {
     setRouteDisplay(formatNearbyRouteLine());
     setHeroUrgency("calm");
     if (deps.heroDepartLabelEl) {
@@ -1909,6 +1974,7 @@ function renderNearbyBoard({ stale = false } = {}) {
     // Always re-apply pin/skip on paint. Optimistic swipes update skip immediately, but an
     // in-flight board fetch may still resolve with an older skip and briefly flash the wrong train.
     boardData = applyNearbyPinToData(focusedEntry.direction, boardData);
+    boardData = applyWidgetTapDeparture(focusedEntry.direction, boardData);
     focusedEntry.data = boardData;
   }
 
@@ -2013,6 +2079,7 @@ function renderNearbyBoard({ stale = false } = {}) {
   updateSwipeCues();
   renderNearbyPinLeaveSurfaces(next, pinned);
   syncNearbyPinChrome();
+  syncNearbyLocationHint();
   maybeScheduleOnboarding();
 }
 
@@ -2121,7 +2188,9 @@ async function fetchNearbyBoardOnce() {
     return;
   }
 
-  if (
+  if (applyHoldingNearbyPinFocus()) {
+    // Keep the pinned direction even if another line has an earlier next train.
+  } else if (
     !nearbySession.focusedDirection ||
     !entries.some((entry) => entry.direction === nearbySession.focusedDirection)
   ) {
@@ -2162,7 +2231,11 @@ function setNearbyGpsRefining(value) {
   }
 }
 
-async function enterNearbyMode({ station: manualStation, distanceKm = null } = {}) {
+async function enterNearbyMode({
+  station: manualStation,
+  distanceKm = null,
+  departureIso = null,
+} = {}) {
   deps.setChromeTravelTab?.("nearby");
   setJourneyModeActive(false);
   deps.clearManualJourneyOverride?.();
@@ -2183,8 +2256,10 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
       distanceKm,
       focusedDirection: null,
       skipByDirection: {},
+      pendingTapDepartureIso: departureIso || null,
     };
     syncRestoredNearbyPinState();
+    applyHoldingNearbyPinFocus();
     syncNearbyChrome();
     renderNearbyBoard();
 
@@ -2214,6 +2289,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
       gpsRefining: true,
       focusedDirection: cachedBoard?.focusedDirection ?? null,
       skipByDirection: {},
+      pendingTapDepartureIso: departureIso || null,
     };
     syncRestoredNearbyPinState();
     if (cachedBoard) {
@@ -2221,13 +2297,17 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
         lastUpdated: cachedBoard.lastUpdated ?? "just now",
         entries: cachedBoard.entries,
       };
-      if (
-        !nearbySession.focusedDirection ||
-        !nearbyBoard.entries.some((entry) => entry.direction === nearbySession.focusedDirection)
-      ) {
-        nearbySession.focusedDirection = pickSoonestNearbyDirection(nearbyBoard.entries);
+      if (!applyHoldingNearbyPinFocus()) {
+        if (
+          !nearbySession.focusedDirection ||
+          !nearbyBoard.entries.some((entry) => entry.direction === nearbySession.focusedDirection)
+        ) {
+          nearbySession.focusedDirection = pickSoonestNearbyDirection(nearbyBoard.entries);
+        }
       }
       nearbyLoading = false;
+    } else {
+      applyHoldingNearbyPinFocus();
     }
     syncNearbyChrome();
     renderNearbyBoard();
@@ -2255,9 +2335,9 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
             await window.NextTrainGeo.ensureLocationPermission();
           }
         } catch (error) {
-          // Keep cached board; permission / geo failures shouldn't blank a useful face.
           if (nearbySession) {
             setNearbyGpsRefining(false);
+            setNearbyError(locationErrorFrom(error).message, "location");
           }
           renderNearbyBoard();
           return;
@@ -2276,6 +2356,7 @@ async function enterNearbyMode({ station: manualStation, distanceKm = null } = {
     distanceKm: null,
     focusedDirection: null,
     skipByDirection: {},
+    pendingTapDepartureIso: departureIso || null,
   };
   syncNearbyChrome();
   renderNearbyBoard();
@@ -2385,7 +2466,11 @@ async function applyNearbyManualStation(station) {
 function initNearbyListeners() {
   nearbyBtn?.addEventListener("click", () => {
     nearbyBtn?.classList.add("icon-btn--refreshing");
-    Promise.resolve(enterNearbyMode()).finally(() => {
+    const refreshInPlace =
+      isNearbyModeActive() && nearbySession
+        ? locateNearbyInBackground({ forceFresh: true })
+        : enterNearbyMode();
+    Promise.resolve(refreshInPlace).finally(() => {
       window.setTimeout(() => nearbyBtn?.classList.remove("icon-btn--refreshing"), 300);
     });
   });

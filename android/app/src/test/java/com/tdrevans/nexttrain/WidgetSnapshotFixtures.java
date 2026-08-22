@@ -69,4 +69,15 @@ final class WidgetSnapshotFixtures {
     snapshot.put("empty", true);
     return snapshot;
   }
+
+  static JSONObject unsetPinCta() throws Exception {
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("empty", false);
+    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("primary", WidgetUiBuilder.UNSET_PIN_PRIMARY);
+    snapshot.put("trainClock", WidgetUiBuilder.UNSET_PIN_SUB);
+    snapshot.put("route", "Edgewater → Perth");
+    snapshot.put("stationLabel", "Edgewater Stn");
+    return snapshot;
+  }
 }

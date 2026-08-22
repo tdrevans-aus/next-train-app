@@ -199,6 +199,12 @@ var NextTrainGeo = (() => {
   f();
 
   // web-sources/geo-native.mjs
+  function locationPermissionHelpMessage() {
+    if (globalThis.Capacitor?.getPlatform?.() === "ios") {
+      return "Location is off for this visit. Tap Near me and choose While Using the App, or open Settings \u2192 Next Train \u2192 Location. You can also pick a station below.";
+    }
+    return "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below.";
+  }
   function permissionGranted(status) {
     const location = status?.location ?? status?.coarseLocation;
     return location === "granted";
@@ -218,26 +224,20 @@ var NextTrainGeo = (() => {
       return { granted: true, status };
     }
     if (permissionDenied(status)) {
-      const error = new Error(
-        "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
-      );
+      const error = new Error(locationPermissionHelpMessage());
       error.code = 1;
       throw error;
     }
     try {
       status = await Geolocation2.requestPermissions();
     } catch (error) {
-      const denied = new Error(
-        "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
-      );
+      const denied = new Error(locationPermissionHelpMessage());
       denied.code = 1;
       denied.cause = error;
       throw denied;
     }
     if (!permissionGranted(status)) {
-      const error = new Error(
-        "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
-      );
+      const error = new Error(locationPermissionHelpMessage());
       error.code = 1;
       throw error;
     }
@@ -270,9 +270,7 @@ var NextTrainGeo = (() => {
         throw disabled;
       }
       if (Number(error?.code) === 1 || lower.includes("denied") || lower.includes("permission")) {
-        const denied = new Error(
-          "Location permission is needed for Near me. Open Settings \u2192 Apps \u2192 Next Train \u2192 Location \u2192 Allow, or choose a station below."
-        );
+        const denied = new Error(locationPermissionHelpMessage());
         denied.code = 1;
         denied.cause = error;
         throw denied;

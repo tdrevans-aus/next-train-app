@@ -1008,14 +1008,15 @@
         input.nearbyPin.direction === input.nearbyFocusedDirection &&
         isNearbyPinHolding(input.nearbyPin, clock)
     );
+    const pinnedChrome = Boolean(
+      !isSkipPreview &&
+        heroShowsPin &&
+        (mode === "nearby" || (mode === "journey" && isOverrideActiveToday))
+    );
+    // Lock browse only when the pin control is actually on (override / nearby hold).
+    // Preferred "Target train" keeps an outlined pin so later trains stay swipeable.
     const isHeroPinLockingSwipe =
-      mode === "nearby"
-        ? nearbyPinLocking
-        : isOverrideActiveToday
-          ? heroShowsPin
-          : outsideActiveDay
-            ? false
-            : heroShowsPin;
+      mode === "nearby" ? nearbyPinLocking : pinnedChrome;
 
     const leaveCardArmed =
       (mode === "nearby" ||
@@ -1025,12 +1026,6 @@
         pinDeparture,
         isPinDismissedToday,
       });
-
-    const pinnedChrome = Boolean(
-      !isSkipPreview &&
-        heroShowsPin &&
-        (mode === "nearby" || (mode === "journey" && isOverrideActiveToday))
-    );
 
     const isBrowseSwipeAllowed = Boolean(outsideActiveDay && !isOverrideActiveToday);
 

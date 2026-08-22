@@ -63,7 +63,7 @@
     "isOverrideActiveToday": false,
     "isPinDismissedToday": false,
     "isSkipPreview": false,
-    "isHeroPinLockingSwipe": true,
+    "isHeroPinLockingSwipe": false,
     "showSecondaryNext": false,
     "leaveCardArmed": false,
     "heroLabel": "Target train"

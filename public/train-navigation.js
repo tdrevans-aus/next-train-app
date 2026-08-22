@@ -877,6 +877,8 @@ function restoreJourneyTargetPinFace(journey = getActiveJourney(), data = getLas
     return;
   }
 
+  // Nearby exclusivity may dismiss the commute pin for today, but My Journeys
+  // should still land on the preferred Target train, not true next.
   clearSkipState();
   setSkipTrains(0);
   if (data) {
@@ -926,7 +928,11 @@ function isHeroPinLockingSwipe() {
     return false;
   }
 
-  return journeysDepartureMatch(heroTrip, pinTrip);
+  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  return (
+    isJourneyOverrideActiveToday(journeyClean) &&
+    journeysDepartureMatch(heroTrip, pinTrip)
+  );
 }
 
 function canSkipToTargetTrain() {
@@ -1626,13 +1632,13 @@ function resolveJourneyHeroPinToggleView(pinJourney, journeyClean) {
         pinState.pinnedChrome
     );
     const isTargetPinned = Boolean(
-      !pinState.isPinDismissedToday &&
+      skipTrains === 0 &&
+        !pinState.isPinDismissedToday &&
         !pinState.isOverrideActiveToday &&
         (pinState.heroLabel === "Target train" ||
-          (skipTrains === 0 &&
-            (pinState.showsTargetTrain ||
-              pinState.heroShowsPin ||
-              (pinState.isPinnedToday && preferredMinutesForLiveGlance(journeyClean) >= 0))))
+          pinState.showsTargetTrain ||
+          pinState.heroShowsPin ||
+          (pinState.isPinnedToday && preferredMinutesForLiveGlance(journeyClean) >= 0))
     );
     return {
       isPinnedView: isTargetPinned || isOverridePinned,
@@ -1701,8 +1707,16 @@ async function toggleHeroPin() {
     return;
   }
 
-  const heroDeparture = resolveTripDeparture(getLastRenderedNext());
-  if (!heroDeparture) {
+  const normalizedBoard = getLastApiData() ? normalizeApiTrainData(getLastApiData()) : null;
+  if (!normalizedBoard) {
+    return;
+  }
+
+  const skip = getSkipTrains();
+  const skippedTrip = skip > 0 ? getUpcomingTrips(normalizedBoard)[skip] : null;
+  const heroTrip = skippedTrip ?? getLastRenderedNext();
+  const heroDeparture = resolveTripDeparture(heroTrip);
+  if (!heroDeparture || !findTripByDepartureIso(normalizedBoard, heroDeparture)) {
     return;
   }
 

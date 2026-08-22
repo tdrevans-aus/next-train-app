@@ -5,7 +5,7 @@
 **Status:** Ready to code  
 **Backlog:** Extends **FB-20** (journey pin/target); follows Saturday pin fix (Aug 2026)  
 **Related:** `docs/pin-behavior.md` · `docs/jim-brief-journey-pin-preferred-target.md` · `docs/jim-brief-commute-target-train-face.md` · `android/.../NextCommutePreview.java` · `public/pin-state.js`  
-**Deferred:** **Brief 2** — Active from/to field simplification (separate pass after ship + test)  
+**Deferred:** **FB-46** — `docs/jim-brief-journey-schedule-simplify.md` (derive Active hours from Target; backlog until Brief 1 + widget 1.5 QA done)  
 **Out of scope:** Widget layout changes; route-journey pin rules; changing `remindDays` UX; Brief 2 schedule-field redesign
 
 ---

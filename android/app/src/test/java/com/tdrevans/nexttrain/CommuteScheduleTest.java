@@ -784,8 +784,10 @@ public class CommuteScheduleTest {
 
     JSONObject snapshot = CommuteSchedule.toWidgetSnapshot(result);
 
-    assertEquals("No trains", snapshot.optString("primary"));
+    assertEquals(WidgetUiBuilder.UNSET_PIN_PRIMARY, snapshot.optString("primary"));
+    assertEquals(WidgetUiBuilder.UNSET_PIN_SUB, snapshot.optString("trainClock"));
     assertEquals("", snapshot.optString("secondary"));
+    assertEquals("", snapshot.optString("route"));
     assertFalse(snapshot.optBoolean("leaveByArmed"));
   }
 

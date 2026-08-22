@@ -14,6 +14,8 @@ public final class WidgetUiBuilder {
 
   public static final String EMPTY_SETUP_PRIMARY = "Set up widget";
   public static final String EMPTY_SETUP_SUB = "In the app";
+  public static final String UNSET_PIN_PRIMARY = "Pin a train";
+  public static final String UNSET_PIN_SUB = "Press to start";
 
   /** Outside-hours idle — sized for default 2×1; same on larger cells (no upscale). */
   private static final float IDLE_LABEL_SP = 8f;
@@ -124,6 +126,11 @@ public final class WidgetUiBuilder {
 
     if (snapshot.optBoolean("nearbyFallback", false)) {
       bindNearbyFallback(views, context, size, palette);
+      applyWidgetBackground(views, context, palette, appearance, size);
+      return views;
+    }
+    if (isUnsetPinCtaFace(snapshot)) {
+      bindUnsetPinCta(views, context, size, snapshot, palette);
       applyWidgetBackground(views, context, palette, appearance, size);
       return views;
     }
@@ -323,13 +330,15 @@ public final class WidgetUiBuilder {
     if (showRouteAtBottom) {
       views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
       String routeDisplay = isCompactLiveFace(size)
-        ? compactRouteLine(routeLine)
+        ? routeLine.trim()
         : formatWidgetRouteLine(routeLine, size);
       views.setTextViewText(R.id.widget_route, routeDisplay);
       views.setTextViewTextSize(
         R.id.widget_route,
         TypedValue.COMPLEX_UNIT_SP,
-        liveRouteLineTextSizeSp(routeLine, size)
+        isCompactLiveFace(size)
+          ? idleRouteLineTextSizeSp(routeDisplay, size.layoutId)
+          : liveRouteLineTextSizeSp(routeLine, size)
       );
       setRouteTopMargin(views, isCompactLiveFace(size) ? 0 : 1);
     } else {
@@ -437,10 +446,10 @@ public final class WidgetUiBuilder {
     if (isCompactLiveFace(size)) {
       views.setTextViewTextSize(R.id.widget_label, TypedValue.COMPLEX_UNIT_SP, 10f);
       views.setTextViewTextSize(R.id.widget_leave_label, TypedValue.COMPLEX_UNIT_SP, 10f);
-      views.setTextViewTextSize(R.id.widget_primary_value, TypedValue.COMPLEX_UNIT_SP, 24f);
-      views.setTextViewTextSize(R.id.widget_primary_unit, TypedValue.COMPLEX_UNIT_SP, 9f);
-      views.setTextViewTextSize(R.id.widget_leave_unit, TypedValue.COMPLEX_UNIT_SP, 9f);
-      views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, 10f);
+      views.setTextViewTextSize(R.id.widget_primary_value, TypedValue.COMPLEX_UNIT_SP, 28f);
+      views.setTextViewTextSize(R.id.widget_primary_unit, TypedValue.COMPLEX_UNIT_SP, 11f);
+      views.setTextViewTextSize(R.id.widget_leave_unit, TypedValue.COMPLEX_UNIT_SP, 11f);
+      views.setTextViewTextSize(R.id.widget_train_clock, TypedValue.COMPLEX_UNIT_SP, 13f);
       setTrainClockTopMargin(views, 0);
       return;
     }
@@ -459,15 +468,15 @@ public final class WidgetUiBuilder {
     setTrainClockTopMargin(views, medium ? 2 : 1);
   }
 
-  /** Small default 2×1 — tighter twin row so route fits on the bottom line. */
+  /** Small layout (default 2×1). Do not require width ≤120 — Samsung reports ~150–170dp. */
   static boolean isCompactLiveFace(WidgetSize size) {
-    return size != null && !size.isMedium() && isNarrowCell(size);
+    return size != null && !size.isMedium();
   }
 
   /** Small 2×1 twin columns — "NOW" needs a tighter size so the W is not clipped. */
   static float liveLeaveValueTextSizeSp(String leaveValue, WidgetSize size) {
     if (isCompactLiveFace(size)) {
-      return "NOW".equals(leaveValue) ? 20f : 24f;
+      return "NOW".equals(leaveValue) ? 20f : 28f;
     }
     return liveLeaveValueTextSizeSp(leaveValue, size.isMedium(), size.typeScale());
   }
@@ -797,14 +806,69 @@ public final class WidgetUiBuilder {
     views.setOnClickPendingIntent(R.id.widget_root, buildTapIntent(context, "new"));
   }
 
+  static boolean isUnsetPinCtaFace(JSONObject snapshot) {
+    return snapshot != null && UNSET_PIN_PRIMARY.equals(snapshot.optString("primary", ""));
+  }
+
+  /** Saved route/journey with no pin or upcoming trip — CTA, not a dead board. */
+  private static void bindUnsetPinCta(
+    RemoteViews views,
+    Context context,
+    WidgetSize size,
+    JSONObject snapshot,
+    WidgetThemePalette palette
+  ) {
+    int layoutId = size.layoutId;
+    boolean medium = size.isMedium();
+    float scale = size.typeScale();
+    views.setTextViewText(R.id.widget_label, snapshot.optString("label", "NEXT TRAIN"));
+    views.setTextViewTextSize(
+      R.id.widget_label,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 12f : 11f, scale)
+    );
+    bindCompactPrimary(views, UNSET_PIN_PRIMARY);
+    views.setTextViewTextSize(
+      R.id.widget_primary_value,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 23f : 19f, scale)
+    );
+    views.setTextColor(R.id.widget_label, palette.muted);
+    views.setTextColor(R.id.widget_primary_value, palette.accent);
+    views.setTextViewText(R.id.widget_train_clock, UNSET_PIN_SUB);
+    views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
+    views.setTextViewTextSize(
+      R.id.widget_train_clock,
+      TypedValue.COMPLEX_UNIT_SP,
+      scaleSp(medium ? 14f : 12f, scale)
+    );
+    views.setTextColor(R.id.widget_train_clock, palette.muted);
+    hideLeaveTwin(views);
+    hideStatusIfPresent(views, layoutId);
+    bindPreferredHint(views, "", layoutId);
+    views.setViewVisibility(R.id.widget_right_column, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_secondary, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_updated, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_updated_left, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
+    setTrainStackCentered(views, true);
+    views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.CENTER);
+    views.setOnClickPendingIntent(R.id.widget_root, buildTapPendingIntent(context, snapshot));
+  }
+
   private static void restoreLiveLayoutChrome(RemoteViews views, WidgetSize size) {
-    // Weighted invisible spacer pushes widget_route to the bottom edge (2×1 live + idle parity).
-    if (isCompactLiveFace(size) || !size.isShortCell()) {
-      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
+    // 2×1: pack like idle so route sits under the clock, not on the far bottom of a fat One UI cell.
+    if (isCompactLiveFace(size)) {
+      bindOutsideHoursIdleLayoutChrome(views);
+      return;
+    }
+    if (size.isShortCell()) {
+      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
       views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
       return;
     }
-    views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
+    views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
     views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
   }
 
@@ -936,7 +1000,7 @@ public final class WidgetUiBuilder {
     }
     String journeyId = snapshot.optString("journeyId", "").trim();
     if ("nearby".equals(journeyId) || NearbyPinHelper.JOURNEY_ID.equals(journeyId)) {
-      return nearbyTapIntent(context);
+      return nearbyTapIntent(context, snapshot.optString("departureIso", ""));
     }
     if ("pro".equals(journeyId)) {
       return paywallTapIntent(context);
@@ -1007,9 +1071,17 @@ public final class WidgetUiBuilder {
   }
 
   public static Intent nearbyTapIntent(Context context) {
+    return nearbyTapIntent(context, "");
+  }
+
+  public static Intent nearbyTapIntent(Context context, String departureIso) {
+    android.net.Uri.Builder builder = Uri.parse("nexttrain://nearby").buildUpon();
+    if (departureIso != null && !departureIso.isEmpty()) {
+      builder.appendQueryParameter("departure", departureIso);
+    }
     Intent intent = new Intent(context, MainActivity.class);
     intent.setAction(Intent.ACTION_VIEW);
-    intent.setData(Uri.parse("nexttrain://nearby"));
+    intent.setData(builder.build());
     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     return intent;
   }
@@ -1034,6 +1106,7 @@ public final class WidgetUiBuilder {
   public static WidgetSize widgetSizeFor(Context context, AppWidgetManager manager, int widgetId) {
     int widthDp = 110;
     int heightDp = 40;
+    int columnSpan = 0;
     try {
       android.os.Bundle options = manager.getAppWidgetOptions(widgetId);
       if (options != null) {
@@ -1045,11 +1118,17 @@ public final class WidgetUiBuilder {
           options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, heightDp),
           options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, heightDp)
         );
+        columnSpan = options.getInt("semAppWidgetColumnSpan", 0);
       }
     } catch (Exception ignored) {
       // Use compact layout.
     }
-    return new WidgetSize(widthDp, heightDp, layoutForSizeDp(widthDp, heightDp));
+    int layoutId = layoutForSizeDp(widthDp, heightDp);
+    // One UI 2-column span is still a 2×1 even when dp looks like AOSP 3×1.
+    if (columnSpan == 2 && heightDp < 110) {
+      layoutId = R.layout.widget_small;
+    }
+    return new WidgetSize(widthDp, heightDp, layoutId);
   }
 
   public static int layoutForWidget(Context context, AppWidgetManager manager, int widgetId) {
@@ -1066,12 +1145,15 @@ public final class WidgetUiBuilder {
 
   /**
    * Size → layout. Default 2×1 is small. ≈2×2 (110dp+ tall) → medium with Updated line.
-   * Wide 3×1 (180dp+) uses medium only when tall enough (≥55dp); short 3×1 stays small.
-   * Cell formula: (70 × n) − 30.
+   * AOSP 3×1 is ~180×55. Samsung One UI 2×1 is ~187×95 and must stay small — that cell is
+   * fatter than a short 3×1 but still one row.
    */
   static int layoutForSizeDp(int minWidthDp, int minHeightDp) {
     if (minHeightDp >= 110) {
       return R.layout.widget_medium;
+    }
+    if (minHeightDp >= 85 && minWidthDp < 240) {
+      return R.layout.widget_small;
     }
     if (minWidthDp >= 180 && minHeightDp >= 55) {
       return R.layout.widget_medium;

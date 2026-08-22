@@ -72,6 +72,7 @@
 | **FB-34** | **Leave alarm (stopwatch-style) instead of / as well as notification** | **Leave now** is an audible ongoing alarm until dismiss (CATEGORY_ALARM + chronometer + optional full-screen activity). Scheduled with `setAlarmClock` + existing `SCHEDULE_EXACT_ALARM` — **not** `USE_EXACT_ALARM`. Get-ready stays a heads-up. Open: alarm *replaces* notify (yes for Leave now); DND/battery OEM variance; iOS / FB-16 later. | Implemented — **Aug 2026** |
 | **FB-16** | **Lock-screen / ongoing “on the way” glance** | After **Leave now** (FB-34), tap **I've left** (in-app or on the alarm) → quiet ongoing shade countdown to the train (reuse `CommuteStrip*`, session persists, no FGS). Explicit confirm — not auto all morning. | **Implemented** — Aug 2026 |
 | **FB-18** | **Bury Menu → Send feedback before production** | **Done Aug 2026** — **Send feedback** moved to Menu legal row (About · Privacy · Send feedback), not a primary nav link. Formspree/`/api/feedback` unchanged. | Done |
+| **FB-46** | **Journey schedule simplification — derive Active hours from Target** | Hide Journey window (From/Until) on commute detail; derive `defaultFrom`/`defaultUntil` from target ±90 min on Save; remove U-14 block. **After** outside-day hero browse brief ships + device QA. Brief: `docs/jim-brief-journey-schedule-simplify.md`. Supersedes U-14/U-15 UX when implemented. | **Backlog** — **Aug 2026** |
 
 ---
 
@@ -127,6 +128,9 @@
 | Bury Menu Send feedback (FB-18) | Done — legal row in Menu (`index.html`) |
 | UptimeRobot ready + synthetic monitors (FB-19) | `docs/feature-backlog.md` **FB-19** · `docs/go-live-ops.md` § Uptime |
 | Route vs Commute (FB-23) | `docs/jim-brief-fb-23-route-vs-commute.md` · **Complete** Aug 2026 |
+| Journey schedule simplify — hide Active hours UI (FB-46) | `docs/jim-brief-journey-schedule-simplify.md` · **Backlog** — after outside-day hero brief |
+| Outside active day — preview hero + browse (brief) | `docs/jim-brief-outside-day-hero-browse.md` |
+| Widget 2×1 live bottom route (FB-43 Phase 1.5) | `docs/jim-brief-widget-2x1-live-route.md` |
 | Codebase refactor phases (FB-24–27) | `docs/codebase-inventory.md` · **Complete** |
 | Pin / display contract (FB-26) | `docs/fb-26-pin-state-design.md` · **Complete** Aug 2026 |
 | Native true-next naming (FB-44) | `docs/feature-backlog.md` **FB-44** · **Done** 21 Aug 2026 |

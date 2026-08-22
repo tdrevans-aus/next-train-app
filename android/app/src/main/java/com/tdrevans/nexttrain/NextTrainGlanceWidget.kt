@@ -146,6 +146,8 @@ private fun NextTrainGlanceContent(context: Context, glanceId: androidx.glance.G
           EmptyFace(context, size, colors)
         snapshot.optBoolean("nearbyFallback", false) ->
           NearbyFace(context, size, colors)
+        WidgetUiBuilder.isUnsetPinCtaFace(snapshot) ->
+          UnsetPinCtaFace(context, size, colors)
         WidgetUiBuilder.isOutsideHoursIdleFace(snapshot) ->
           IdleFace(context, snapshot, size, colors)
         else ->
@@ -166,9 +168,9 @@ private fun LiveFace(
   val scale = size.typeScale()
   val compact = WidgetUiBuilder.isCompactLiveFace(size)
   val labelSp = if (compact) 10f else scaleSp(medium, 12f, 11f, scale)
-  val valueSp = if (compact) 24f else scaleSp(medium, 34f, 28f, scale)
-  val unitSp = if (compact) 9f else scaleSp(medium, 12f, 10f, scale)
-  val clockSp = if (compact) 10f else scaleSp(medium, 14f, 12f, scale)
+  val valueSp = if (compact) 28f else scaleSp(medium, 34f, 28f, scale)
+  val unitSp = if (compact) 11f else scaleSp(medium, 12f, 10f, scale)
+  val clockSp = if (compact) 13f else scaleSp(medium, 14f, 12f, scale)
 
   val label = snapshot.optString("label", "")
   val primary = snapshot.optString("primary", "—")
@@ -234,7 +236,7 @@ private fun LiveFace(
     }
   }
 
-  if (routeLine.isNotEmpty() && (!size.isShortCell() || compact)) {
+  if (routeLine.isNotEmpty()) {
     val routeDisplay = WidgetUiBuilder.formatWidgetRouteLine(routeLine, size)
     GlanceText(
       routeDisplay,
@@ -313,6 +315,33 @@ private fun EmptyFace(
     )
     GlanceText(
       WidgetUiBuilder.EMPTY_SETUP_SUB,
+      scaleSp(medium, 14f, 12f, scale),
+      colors.mutedArgb,
+    )
+  }
+}
+
+@androidx.compose.runtime.Composable
+private fun UnsetPinCtaFace(
+  context: Context,
+  size: WidgetUiBuilder.WidgetSize,
+  colors: WidgetGlanceColors,
+) {
+  val medium = size.isMedium()
+  val scale = size.typeScale()
+  Column(
+    modifier = GlanceModifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    GlanceText("NEXT TRAIN", scaleSp(medium, 12f, 11f, scale), colors.mutedArgb, FontWeight.Medium)
+    GlanceText(
+      WidgetUiBuilder.UNSET_PIN_PRIMARY,
+      scaleSp(medium, 23f, 19f, scale),
+      colors.accentArgb,
+      FontWeight.Bold,
+    )
+    GlanceText(
+      WidgetUiBuilder.UNSET_PIN_SUB,
       scaleSp(medium, 14f, 12f, scale),
       colors.mutedArgb,
     )

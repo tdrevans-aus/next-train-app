@@ -36,14 +36,16 @@ public final class CommuteScheduleSnapshot {
           : WidgetDataService.formatRoute(result.journey)
       );
       snapshot.put("label", "NEXT TRAIN");
-      snapshot.put("primary", "No trains");
-      snapshot.put("trainClock", "");
+      snapshot.put("primary", WidgetUiBuilder.UNSET_PIN_PRIMARY);
+      snapshot.put("trainClock", WidgetUiBuilder.UNSET_PIN_SUB);
       snapshot.put("secondary", "");
-      snapshot.put("updatedLine", PerthTime.formatUpdatedAgo(result.refreshedAtMs));
+      snapshot.put("updatedLine", "");
       snapshot.put("statusCrumb", "");
       snapshot.put("urgent", false);
       snapshot.put("late", false);
       snapshot.put("stale", result.stale);
+      snapshot.put("stationLabel", "");
+      snapshot.put("route", "");
       return snapshot;
     }
 
@@ -413,7 +415,7 @@ public final class CommuteScheduleSnapshot {
       return false;
     }
 
-    if ("No trains".equals(snapshot.optString("primary"))) {
+    if (WidgetUiBuilder.isUnsetPinCtaFace(snapshot)) {
       return false;
     }
 
@@ -433,6 +435,7 @@ public final class CommuteScheduleSnapshot {
         "Updating…".equals(primary) ||
         "…".equals(primary) ||
         WidgetUiBuilder.EMPTY_SETUP_PRIMARY.equals(primary) ||
+        WidgetUiBuilder.UNSET_PIN_PRIMARY.equals(primary) ||
         "—".equals(primary)
       ) {
         return false;

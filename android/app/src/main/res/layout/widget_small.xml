@@ -175,13 +175,12 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Fills the middle so station sits on the true bottom edge -->
+    <!-- 2×1 packs like idle (wrap_content stack). Weighted spacer clips route on One UI. -->
     <TextView
         android:id="@+id/widget_bottom_spacer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/widget_route"
