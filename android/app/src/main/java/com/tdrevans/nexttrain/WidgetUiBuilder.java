@@ -320,21 +320,11 @@ public final class WidgetUiBuilder {
 
     setBottomRouteGravity(views, true);
     boolean showRouteAtBottom = !empty && routeLine != null && !routeLine.isEmpty();
-    boolean foldRouteIntoClock = showRouteAtBottom && size.isShortCell();
-    if (foldRouteIntoClock) {
-      views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
-      views.setTextViewText(R.id.widget_route, "");
-      if (trainClock != null && !trainClock.isEmpty()) {
-        String routeForFold = isCompactLiveFace(size)
-          ? compactRouteLine(routeLine)
-          : abbreviateRouteLine(routeLine);
-        String folded = foldRouteIntoTrainClock(trainClock, routeForFold);
-        views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
-        views.setTextViewText(R.id.widget_train_clock, folded);
-      }
-    } else if (showRouteAtBottom) {
+    if (showRouteAtBottom) {
       views.setViewVisibility(R.id.widget_route, android.view.View.VISIBLE);
-      String routeDisplay = formatWidgetRouteLine(routeLine, size);
+      String routeDisplay = isCompactLiveFace(size)
+        ? compactRouteLine(routeLine)
+        : formatWidgetRouteLine(routeLine, size);
       views.setTextViewText(R.id.widget_route, routeDisplay);
       views.setTextViewTextSize(
         R.id.widget_route,
@@ -808,18 +798,14 @@ public final class WidgetUiBuilder {
   }
 
   private static void restoreLiveLayoutChrome(RemoteViews views, WidgetSize size) {
-    if (isCompactLiveFace(size)) {
-      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
+    // Weighted invisible spacer pushes widget_route to the bottom edge (2×1 live + idle parity).
+    if (isCompactLiveFace(size) || !size.isShortCell()) {
+      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
       views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
       return;
     }
-    if (size.isShortCell()) {
-      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
-      views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
-    } else {
-      views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.INVISIBLE);
-      views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
-    }
+    views.setViewVisibility(R.id.widget_bottom_spacer, android.view.View.GONE);
+    views.setInt(R.id.widget_content, "setGravity", android.view.Gravity.TOP);
   }
 
   /** Pro trial expired — calm locked face, not stale/error. */

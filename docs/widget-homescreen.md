@@ -65,7 +65,7 @@ In-app: same clock rule — outside all Active hours → **Near me** (manual jou
 ### Right / secondary — leave (buffer on)
 
 - **`Leave in 8 min`** / **`Leave now`** (through **1 minute after** leave-by). After that grace, **hide** the leave line — never **`Leave N min ago`**.  
-- On **2×1**: prefer **station** under leave (or under clock when leave is hidden). **No Updated** on small — bare **`Just now`** is not allowed.  
+- On **2×1**: **route on the bottom bar** (`widget_route`) for both live countdown and outside-hours idle. Clock line is **time only** (no `time · route` fold). **No Updated** on small — bare **`Just now`** is not allowed.  
 - On **medium+** (user resized): station **and** full **`Updated just now`** / **`Updated 3m ago`** return.  
 - Urgency colour on the **leave line only** (teal stays on the train number — mirrors main screen)  
 - Tiny Updated line: medium+ only (or stale warning there)  
