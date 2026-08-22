@@ -6,6 +6,25 @@
     <meta name="theme-color" content="#eef3f2" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script>
+      (function () {
+        try {
+          var t = "system";
+          var raw = localStorage.getItem("nextTrainSettings");
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && (parsed.appTheme === "light" || parsed.appTheme === "dark" || parsed.appTheme === "system")) {
+              t = parsed.appTheme;
+            }
+          }
+          var dark =
+            t === "dark" ||
+            (t === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
     <title>Next Train</title>
     <link rel="manifest" href="manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1042,6 +1061,21 @@
             </p>
           </div>
           <div class="menu-dialog-divider" aria-hidden="true"></div>
+          <div class="menu-appearance" id="menu-appearance">
+            <p class="menu-widget-heading">Appearance</p>
+            <p class="menu-appearance-hint">App only. Widget colours stay under Widget appearance.</p>
+            <div class="menu-theme-chips" role="radiogroup" aria-label="App theme">
+              <button type="button" class="remind-day-chip" data-app-theme="system" role="radio" aria-checked="true">
+                System
+              </button>
+              <button type="button" class="remind-day-chip" data-app-theme="light" role="radio" aria-checked="false">
+                Light
+              </button>
+              <button type="button" class="remind-day-chip" data-app-theme="dark" role="radio" aria-checked="false">
+                Dark
+              </button>
+            </div>
+          </div>
           <button type="button" class="menu-dialog-link" id="menu-help-btn">Help</button>
         </nav>
         <p class="menu-dialog-legal">
@@ -1302,6 +1336,7 @@
     <script src="train-times-bundle.js"></script>
     <script src="station-combobox.js"></script>
     <script src="journey-model.js"></script>
+    <script src="app-theme.js"></script>
     <script src="pin-state.js"></script>
     <script src="train-navigation.js"></script>
     <script src="nearby-mode.js"></script>

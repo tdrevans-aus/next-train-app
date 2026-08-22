@@ -107,7 +107,7 @@ struct NextTrainWidgetView: View {
                     }
                 }
 
-                if !route.isEmpty {
+                if !route.isEmpty && primary != "Pin a train" {
                     Text(route)
                         .font(.caption)
                         .foregroundStyle(.secondary)

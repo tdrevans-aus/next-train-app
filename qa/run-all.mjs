@@ -59,6 +59,7 @@ const RELEASE_EXTRA_SCRIPTS = [
   "fb-23-auto-selection.mjs",
   "fb-23-web.mjs",
   "add-journey-btn.mjs",
+  "app-theme.mjs",
 ];
 
 const RELEASE_SCRIPTS = [

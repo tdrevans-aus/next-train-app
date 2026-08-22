@@ -203,6 +203,7 @@ const NEARBY_SOFT_LOCATION_MAX_AGE_MS = 2 * 60 * 1000;
 let lastResumeRefreshAt = 0;
 let lastRenderedNext = null;
 let lastApiData = null;
+let journeyBoardFetchId = 0;
 let stationCoords = null;
 let refreshTimer = null;
 let countdownTimer = null;
@@ -305,6 +306,17 @@ function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
 }
 
+function isIosNativeApp() {
+  return isNativeApp() && window.Capacitor?.getPlatform?.() === "ios";
+}
+
+function locationPermissionHelpMessage() {
+  if (isIosNativeApp()) {
+    return "Location is off for this visit. Tap Near me and choose While Using the App, or open Settings → Next Train → Location. You can also pick a station below.";
+  }
+  return "Location permission is needed for Near me. Open Settings → Apps → Next Train → Location → Allow, or choose a station below.";
+}
+
 async function ensureGeoBridge() {
   if (!isNativeApp() || window.NextTrainGeo?.getCurrentPosition) {
     return;
@@ -329,12 +341,10 @@ function locationErrorFrom(error) {
     lower.includes("denied") ||
     lower.includes("permission")
   ) {
-    return Object.assign(
-      new Error(
-        "Location permission is needed for Near me. Open Settings → Apps → Next Train → Location → Allow, or choose a station below."
-      ),
-      { code: 1, cause: error }
-    );
+    return Object.assign(new Error(locationPermissionHelpMessage()), {
+      code: 1,
+      cause: error,
+    });
   }
 
   if (
@@ -1589,11 +1599,13 @@ function resolveJourneyPinState(data, journey, { skip = skipTrains } = {}) {
   if (!window.nextTrainPinState?.resolvePinState) {
     return null;
   }
+  const skipState = readSkipState();
   return window.nextTrainPinState.resolvePinState({
     mode: "journey",
     payload: lastApiData ?? data,
     journey,
     skipTrains: skip,
+    browseLiveBoard: skipState.browseLiveBoard,
   });
 }
 
@@ -3636,8 +3648,10 @@ function render(data, { stale = false } = {}) {
       ? null
       : resolveDepartedJourneyTargetTrip(lastApiData ?? data, journey);
   const heroTrip = pinState
-    ? tripForPinDeparture(data, pinState.heroDeparture, journey) ??
-      (skipTrains > 0 ? next : pinTrip ?? departedTargetTrip ?? next)
+    ? pinState.heroMode === "preview"
+      ? null
+      : tripForPinDeparture(data, pinState.heroDeparture, journey) ??
+        (skipTrains > 0 ? next : pinTrip ?? departedTargetTrip ?? next)
     : skipTrains > 0
       ? next
       : pinTrip ?? departedTargetTrip ?? next;
@@ -3653,22 +3667,34 @@ function render(data, { stale = false } = {}) {
   if (!heroTrip) {
     lastRenderedNext = null;
     setHeroUrgency("calm");
-    const targetLabel = preferredMinutesForLiveGlance(journey) >= 0
-      ? formatPreferredClock(preferredMinutesForLiveGlance(journey))
-      : "";
+    const previewClock =
+      pinState?.heroMode === "preview"
+        ? pinState.heroPreviewClock
+        : preferredMinutesForLiveGlance(journey) >= 0
+          ? formatPreferredClock(preferredMinutesForLiveGlance(journey))
+          : "";
+    const previewDayLabel =
+      pinState?.heroMode === "preview" ? pinState.heroPreviewDayLabel : "";
     if (heroDepartLabelEl) {
-      heroDepartLabelEl.textContent = "Target train";
+      heroDepartLabelEl.textContent = pinState?.heroLabel ?? "Target train";
     }
     if (departCountdownEl) {
       departCountdownEl.textContent = "—";
+      departCountdownEl.classList.remove("depart-countdown--has-left");
     }
     if (departDisplayTimeEl) {
-      departDisplayTimeEl.textContent = targetLabel
-        ? `No train at or after ${targetLabel}`
-        : "No matching train";
+      departDisplayTimeEl.textContent = previewClock || "No matching train";
     }
     if (heroScheduledTimeEl) {
-      heroScheduledTimeEl.hidden = true;
+      if (previewDayLabel) {
+        heroScheduledTimeEl.textContent = previewDayLabel;
+        heroScheduledTimeEl.hidden = false;
+      } else {
+        heroScheduledTimeEl.textContent = previewClock
+          ? `No train at or after ${previewClock}`
+          : "";
+        heroScheduledTimeEl.hidden = !previewClock;
+      }
     }
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
@@ -3738,6 +3764,9 @@ function render(data, { stale = false } = {}) {
   if (departCountdownEl) {
     if (targetDeparted) {
       renderHeroHasLeftCountdown(departCountdownEl);
+    } else if (pinState?.heroMode === "preview") {
+      departCountdownEl.textContent = "—";
+      departCountdownEl.classList.remove("depart-countdown--has-left");
     } else {
       departCountdownEl.classList.remove("depart-countdown--has-left");
       renderDepartureCountdown(departCountdownEl, heroTrip);
@@ -3918,6 +3947,12 @@ function openJourneysLibrary() {
   openTravelLibrary("journeys");
 }
 
+function discardStaleJourneyBoard() {
+  journeyBoardFetchId += 1;
+  lastApiData = null;
+  lastRenderedNext = null;
+}
+
 function enterRouteMode() {
   dismissLeaveHint();
   closeJourneySwitcherMenu();
@@ -3942,6 +3977,7 @@ function enterRouteMode() {
     clearManualJourneyOverride();
   }
 
+  discardStaleJourneyBoard();
   ensureActiveJourneyForTab("routes");
   const journey = getActiveJourney();
   if (journey) {
@@ -3984,6 +4020,7 @@ function enterJourneyMode() {
   }
 
   ensureActiveJourneyForTab("journeys");
+  discardStaleJourneyBoard();
   clearHeroSetupState();
   maybeAutoSelectJourney();
   const journey = getActiveJourney();
@@ -4348,6 +4385,10 @@ function heroHasVisibleTrain() {
   if (heroEmptyStateEl && !heroEmptyStateEl.hidden) {
     return false;
   }
+  const pinState = resolveJourneyPinState(lastApiData, getActiveJourney());
+  if (pinState?.heroMode === "preview") {
+    return true;
+  }
   if (!lastRenderedNext) {
     return false;
   }
@@ -4455,10 +4496,13 @@ function syncHeroPinChrome() {
         const pinState = resolveJourneyPinState(lastApiData, journeyPinClean);
         let pinActive = false;
         if (pinState) {
+          // Filled pin when this journey is armed and the hero is on that train.
+          // pinnedChrome is only override/nearby (swipe lock); Target train still
+          // uses skip to sit on preferred, so skip>0 must not hide the pressed state.
           pinActive = Boolean(
             pinState.isPinnedToday &&
               !pinState.isPinDismissedToday &&
-              (pinState.pinnedChrome || pinState.showsTargetTrain || pinState.heroShowsPin)
+              (pinState.heroShowsPin || pinState.showsTargetTrain || pinState.pinnedChrome)
           );
         } else {
           const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPinClean);
@@ -4555,17 +4599,29 @@ async function fetchNextTrain() {
   updateSwipeHint();
   updateSwipeCues();
 
+  const fetchId = ++journeyBoardFetchId;
+
   try {
     const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`));
+
+    if (fetchId !== journeyBoardFetchId) {
+      return;
+    }
 
     if (!result.ok) {
       throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
     }
 
     const payload = await resolveNextTrainPayload(result.data);
+    if (fetchId !== journeyBoardFetchId) {
+      return;
+    }
     lastApiData = normalizeApiTrainData(payload);
     render(prepareDisplayData(lastApiData));
   } catch (error) {
+    if (fetchId !== journeyBoardFetchId) {
+      return;
+    }
     errorEl.textContent = error.message;
     errorEl.hidden = false;
     trackProductEvent("api_error_shown", { surface: "journey" });
@@ -5419,6 +5475,7 @@ function clearAllAppData() {
   onboardingPopulatedAt = null;
 
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  window.nextTrainAppTheme?.applyAppTheme?.(settings.appTheme);
   renderJourneyListView();
   renderJourneySwitcher();
   applyJourneysMode({ coldStart: true });
@@ -6707,6 +6764,7 @@ function initJourneyModelFromModule() {
       refreshSeconds = nextSettings.refreshSeconds;
       renderJourneySwitcher();
       window.nextTrainWidget?.syncWidgetSettings?.(nextSettings);
+      window.nextTrainAppTheme?.applyAppTheme?.(nextSettings.appTheme);
       document.dispatchEvent(new CustomEvent("nexttrain:settings-persisted"));
     },
   });
@@ -6728,6 +6786,7 @@ function initPinStateFromModule() {
 }
 
 initJourneyModelFromModule();
+window.nextTrainAppTheme?.init?.();
 initPinStateFromModule();
 initJourneyDetailFromModule();
 initStationComboboxesFromModule();

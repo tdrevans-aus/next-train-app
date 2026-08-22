@@ -38,12 +38,14 @@ public class WidgetUiBuilderRobolectricTest {
     WidgetLayoutTestSupport.RemoteViewsBinding binding = WidgetLayoutTestSupport.capture(remoteViews);
 
     assertEquals("11 min", binding.primaryDisplay());
+    assertEquals("Target train", binding.text(R.id.widget_label));
     assertEquals("LEAVE IN", binding.text(R.id.widget_leave_label));
     assertEquals("4", binding.text(R.id.widget_leave_value));
     assertEquals("min", binding.text(R.id.widget_leave_unit));
     assertEquals("5:42 pm", binding.text(R.id.widget_train_clock));
     assertEquals(View.VISIBLE, binding.visibility(R.id.widget_route));
-    assertEquals("Perth", binding.text(R.id.widget_route));
+    assertTrue(binding.text(R.id.widget_route).contains("Warwick"));
+    assertTrue(binding.text(R.id.widget_route).contains("Perth"));
     assertEquals(View.GONE, binding.visibility(R.id.widget_updated));
     assertEquals(View.GONE, binding.visibility(R.id.widget_bottom_spacer));
   }
@@ -108,8 +110,9 @@ public class WidgetUiBuilderRobolectricTest {
       );
 
     assertEquals(View.VISIBLE, binding.visibility(R.id.widget_route));
-    assertEquals("Perth", binding.text(R.id.widget_route));
     assertEquals("23:15", binding.text(R.id.widget_train_clock));
+    assertTrue(binding.text(R.id.widget_route).contains("Edgewater"));
+    assertTrue(binding.text(R.id.widget_route).contains("Perth"));
     assertEquals(
       10f,
       WidgetUiBuilder.liveRouteLineTextSizeSp("Edgewater → Perth", size),
@@ -150,9 +153,11 @@ public class WidgetUiBuilderRobolectricTest {
   public void resolveTapIntent_opensNearbyForNearbyPin() throws Exception {
     JSONObject snapshot = new JSONObject();
     snapshot.put("journeyId", NearbyPinHelper.JOURNEY_ID);
+    snapshot.put("departureIso", "2026-08-22T09:45:19.000Z");
     android.content.Intent intent =
       WidgetUiBuilder.resolveTapIntent(WidgetLayoutTestSupport.appContext(), snapshot);
-    assertEquals("nexttrain://nearby", intent.getData().toString());
+    assertEquals("nearby", intent.getData().getHost());
+    assertEquals("2026-08-22T09:45:19.000Z", intent.getData().getQueryParameter("departure"));
   }
 
   @Test
@@ -214,7 +219,56 @@ public class WidgetUiBuilderRobolectricTest {
   }
 
   @Test
-  public void small2x1_emptySetup_showsTapToSetUpCopy() throws Exception {
+  public void samsungTwoByOne_liveFace_showsRouteWhenCellIsWiderThanStock110() throws Exception {
+    JSONObject snapshot = WidgetSnapshotFixtures.liveNearbyPin();
+    int layoutId = WidgetUiBuilder.layoutForSizeDp(187, 95);
+    assertEquals(R.layout.widget_small, layoutId);
+    WidgetUiBuilder.WidgetSize size = new WidgetUiBuilder.WidgetSize(187, 95, layoutId);
+    WidgetLayoutTestSupport.RemoteViewsBinding binding =
+      WidgetLayoutTestSupport.capture(
+        WidgetUiBuilder.build(WidgetLayoutTestSupport.appContext(), snapshot, size)
+      );
+
+    assertTrue(WidgetUiBuilder.isCompactLiveFace(size));
+    assertEquals(View.GONE, binding.visibility(R.id.widget_bottom_spacer));
+    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_route));
+    assertTrue(binding.text(R.id.widget_route).contains("Edgewater"));
+    assertTrue(binding.text(R.id.widget_route).contains("Perth"));
+  }
+
+  @Test
+  public void small2x1_liveNearbyPin_showsRouteAtBottom() throws Exception {
+    JSONObject snapshot = WidgetSnapshotFixtures.liveNearbyPin();
+    WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetLayoutTestSupport.RemoteViewsBinding binding =
+      WidgetLayoutTestSupport.capture(
+        WidgetUiBuilder.build(WidgetLayoutTestSupport.appContext(), snapshot, size)
+      );
+
+    assertEquals("Pinned train", binding.text(R.id.widget_label));
+    assertEquals("15:30", binding.text(R.id.widget_train_clock));
+    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_route));
+    assertTrue(binding.text(R.id.widget_route).contains("Edgewater"));
+    assertTrue(binding.text(R.id.widget_route).contains("Perth"));
+  }
+
+  @Test
+  public void small2x1_liveFace_emptyClockStillShowsRoute() throws Exception {
+    JSONObject snapshot = WidgetSnapshotFixtures.liveJourneyWithLeave();
+    snapshot.put("trainClock", "");
+    WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetLayoutTestSupport.RemoteViewsBinding binding =
+      WidgetLayoutTestSupport.capture(
+        WidgetUiBuilder.build(WidgetLayoutTestSupport.appContext(), snapshot, size)
+      );
+
+    assertEquals(View.GONE, binding.visibility(R.id.widget_train_clock));
+    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_route));
+    assertTrue(binding.text(R.id.widget_route).contains("Warwick"));
+  }
+
+  @Test
+  public void small2x1_emptySetup_showsNeutralSetupCopy() throws Exception {
     JSONObject snapshot = WidgetSnapshotFixtures.emptySetup();
     WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
     WidgetLayoutTestSupport.RemoteViewsBinding binding =
@@ -231,6 +285,20 @@ public class WidgetUiBuilderRobolectricTest {
       WidgetUiBuilder.EMPTY_SETUP_SUB,
       binding.text(R.id.widget_train_clock)
     );
+  }
+
+  @Test
+  public void small2x1_unsetPinCta_hidesRouteAndShowsPressToStart() throws Exception {
+    JSONObject snapshot = WidgetSnapshotFixtures.unsetPinCta();
+    WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
+    WidgetLayoutTestSupport.RemoteViewsBinding binding =
+      WidgetLayoutTestSupport.capture(
+        WidgetUiBuilder.build(WidgetLayoutTestSupport.appContext(), snapshot, size)
+      );
+
+    assertEquals(WidgetUiBuilder.UNSET_PIN_PRIMARY, binding.text(R.id.widget_primary_value));
+    assertEquals(WidgetUiBuilder.UNSET_PIN_SUB, binding.text(R.id.widget_train_clock));
+    assertEquals(View.GONE, binding.visibility(R.id.widget_route));
   }
 
   @Test

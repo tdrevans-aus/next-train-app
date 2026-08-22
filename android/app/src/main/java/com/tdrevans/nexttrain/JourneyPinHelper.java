@@ -167,6 +167,7 @@ public final class JourneyPinHelper {
     trip.put("arrival", departureIso);
     trip.put("leaveBy", leaveByIso);
     trip.put("displayTime", PerthTime.formatClockFromEpochMs(departureMs));
+    trip.put("minutesUntilDeparture", PerthTime.minutesUntilWallClock(departureIso, System.currentTimeMillis()));
     trip.put("platform", "—");
     trip.put("status", "On Time");
     return trip;

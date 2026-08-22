@@ -11,7 +11,7 @@ public class WidgetUiBuilderTest {
   @Test
   public void isOutsideHoursIdleFace_liveTargetKeepsLiveFace() throws Exception {
     org.json.JSONObject live = new org.json.JSONObject();
-    live.put("label", "Target");
+    live.put("label", "Target train");
     live.put("outsideHoursIdle", false);
     live.put("trainClock", "5:42 pm");
     live.put("primary", "3 min");
@@ -59,7 +59,7 @@ public class WidgetUiBuilderTest {
   public void liveLeaveValueTextSizeSp_shrinksOnCompact2x1() {
     WidgetUiBuilder.WidgetSize compact = WidgetLayoutTestSupport.small2x1();
     assertEquals(20f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", compact), 0.01f);
-    assertEquals(24f, WidgetUiBuilder.liveLeaveValueTextSizeSp("4", compact), 0.01f);
+    assertEquals(28f, WidgetUiBuilder.liveLeaveValueTextSizeSp("4", compact), 0.01f);
     assertEquals(24f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", false, 1f), 0.01f);
     assertEquals(28f, WidgetUiBuilder.liveLeaveValueTextSizeSp("4", false, 1f), 0.01f);
     assertEquals(34f, WidgetUiBuilder.liveLeaveValueTextSizeSp("NOW", true, 1f), 0.01f);
@@ -194,6 +194,7 @@ public class WidgetUiBuilderTest {
     assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(170, 70));
     assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(180, 40));
     assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(250, 40));
+    assertEquals(R.layout.widget_small, WidgetUiBuilder.layoutForSizeDp(187, 95));
   }
 
   @Test
@@ -219,6 +220,12 @@ public class WidgetUiBuilderTest {
     assertEquals("Monday · Joondalup", WidgetUiBuilder.foldRouteIntoTrainClock("Monday", "Joondalup"));
     assertEquals("Joondalup", WidgetUiBuilder.foldRouteIntoTrainClock("", "Joondalup"));
     assertEquals("Monday", WidgetUiBuilder.foldRouteIntoTrainClock("Monday", ""));
+  }
+
+  @Test
+  public void compactRouteLine_keepsArrowWithoutSpaces() {
+    assertEquals("Warwick Stn→Perth", WidgetUiBuilder.compactRouteLine("Warwick Stn → Perth"));
+    assertEquals("Edgewater→Perth", WidgetUiBuilder.compactRouteLine("Edgewater → Perth"));
   }
 
   @Test

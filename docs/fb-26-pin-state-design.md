@@ -176,7 +176,7 @@ getHeroLabel({ heroShowsPin, isSkipPreview, pinnedChrome }): string
 | Dismissed today | **Target contract:** `pinDeparture = null`, hero/leave/widget use `trueNextDeparture` (align native `JourneyPinHelper`) |
 | No preferred | `pinDeparture = null`, `isPinnedToday = false`, hero = true next |
 | Nearby holding | `heroDeparture = pinDeparture` when mode nearby + holding |
-| Swipe lock | `isHeroPinLockingSwipe`: journey override active OR nearby pin holding |
+| Swipe lock | `isHeroPinLockingSwipe`: **pinned chrome only** — journey day-override pin or nearby pin holding. Preferred Target train does **not** lock swipe. |
 
 ---
 

@@ -4,6 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#eef3f2" />
+    <script>
+      (function () {
+        try {
+          var t = "system";
+          var raw = localStorage.getItem("nextTrainSettings");
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && (parsed.appTheme === "light" || parsed.appTheme === "dark" || parsed.appTheme === "system")) {
+              t = parsed.appTheme;
+            }
+          }
+          var dark =
+            t === "dark" ||
+            (t === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
     <meta
       name="description"
       content="Privacy policy for Next Train — Perth Transperth leave-by companion by Evans Studios."
@@ -183,5 +202,9 @@
       </p>
     </main>
     <script src="static-page-ad-padding.js"></script>
+    <script src="app-theme.js"></script>
+    <script>
+      window.nextTrainAppTheme?.init?.();
+    </script>
   </body>
 </html>

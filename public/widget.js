@@ -53,8 +53,16 @@ function parseWidgetDeepLink(uri) {
     return null;
   }
 
-  if (/^nexttrain:\/\/nearby\/?$/i.test(String(uri))) {
-    return { type: "nearby" };
+  const raw = String(uri);
+  if (/^nexttrain:\/\/nearby/i.test(raw)) {
+    let departureIso = "";
+    try {
+      departureIso = new URL(raw).searchParams.get("departure") || "";
+    } catch {
+      const query = raw.includes("?") ? raw.slice(raw.indexOf("?") + 1) : "";
+      departureIso = new URLSearchParams(query).get("departure") || "";
+    }
+    return { type: "nearby", departureIso };
   }
 
   if (/^nexttrain:\/\/home\/?$/i.test(String(uri))) {
@@ -81,7 +89,9 @@ async function handleWidgetDeepLink(uri) {
   }
 
   if (target.type === "nearby") {
-    await window.nextTrainApp?.enterNearbyMode?.();
+    await window.nextTrainApp?.enterNearbyMode?.({
+      departureIso: target.departureIso || undefined,
+    });
     return;
   }
 
@@ -108,7 +118,9 @@ async function handleWidgetDeepLink(uri) {
 
   if (target.journeyId === "nearby-pin") {
     window.nextTrainApp?.prepareMainScreenFromDeepLink?.();
-    await window.nextTrainApp?.enterNearbyMode?.();
+    await window.nextTrainApp?.enterNearbyMode?.({
+      departureIso: target.departureIso || undefined,
+    });
     return;
   }
 
@@ -1512,7 +1524,7 @@ async function finishWidgetAppearanceSetup(ok = true) {
 }
 
 async function maybeOpenWidgetConfigureSetup() {
-  if (!isNativeApp()) {
+  if (!isNativeApp() || widgetSetupState.active) {
     return;
   }
 
@@ -1548,8 +1560,14 @@ function initWidgetConfigureListener() {
     void finishWidgetAppearanceSetup(ok);
   };
 
+  const handleConfigurePending = () => {
+    void maybeOpenWidgetConfigureSetup();
+  };
+
   window.addEventListener("widgetConfigureFinished", handleConfigureFinished);
   document.addEventListener("widgetConfigureFinished", handleConfigureFinished);
+  window.addEventListener("widgetConfigurePending", handleConfigurePending);
+  document.addEventListener("widgetConfigurePending", handleConfigurePending);
 }
 
 function handleWidgetOpacityInput(event) {

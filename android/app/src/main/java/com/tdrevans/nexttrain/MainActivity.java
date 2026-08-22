@@ -60,6 +60,7 @@ public class MainActivity extends BridgeActivity {
     DeepLinkHelper.applyDebugActions(this, intent);
     CommuteRefreshService.repaintFromCache(this);
     CommuteRefreshService.refreshAll(this);
+    notifyWidgetConfigurePending();
   }
 
   @Override
@@ -67,6 +68,18 @@ public class MainActivity extends BridgeActivity {
     super.onResume();
     CommuteRefreshService.repaintFromCache(this);
     CommuteRefreshService.refreshAll(this);
+    notifyWidgetConfigurePending();
+  }
+
+  private void notifyWidgetConfigurePending() {
+    if (!WidgetConfigureBridge.isActive()
+      && !getIntent().getBooleanExtra(EXTRA_WIDGET_CONFIGURE, false)) {
+      return;
+    }
+    if (getBridge() == null) {
+      return;
+    }
+    getBridge().triggerJSEvent("widgetConfigurePending", "{}");
   }
 
   private void notifyWidgetConfigureFinished(boolean ok) {

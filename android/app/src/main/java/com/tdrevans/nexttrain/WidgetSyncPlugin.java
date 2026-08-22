@@ -171,6 +171,9 @@ public class WidgetSyncPlugin extends Plugin {
       CommuteRefreshService.refreshAll(getContext());
     }
     WidgetConfigureBridge.finish(ok);
+    if (ok && getActivity() != null) {
+      getActivity().moveTaskToBack(true);
+    }
     call.resolve();
   }
 

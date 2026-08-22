@@ -11,7 +11,7 @@ final class WidgetSnapshotFixtures {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", false);
     snapshot.put("outsideHoursIdle", false);
-    snapshot.put("label", "Target");
+    snapshot.put("label", "Target train");
     snapshot.put("primary", "11 min");
     snapshot.put("trainClock", "5:42 pm");
     snapshot.put("secondary", "Leave in 4 min");
@@ -42,6 +42,16 @@ final class WidgetSnapshotFixtures {
     return snapshot;
   }
 
+  static JSONObject liveNearbyPin() throws Exception {
+    JSONObject snapshot = liveJourneyWithLeave();
+    snapshot.put("journeyId", NearbyPinHelper.JOURNEY_ID);
+    snapshot.put("label", "Pinned train");
+    snapshot.put("route", "Edgewater → Perth");
+    snapshot.put("stationLabel", "Edgewater");
+    snapshot.put("trainClock", "15:30");
+    return snapshot;
+  }
+
   static JSONObject outsideHoursIdle() throws Exception {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", false);
@@ -57,6 +67,17 @@ final class WidgetSnapshotFixtures {
   static JSONObject emptySetup() throws Exception {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", true);
+    return snapshot;
+  }
+
+  static JSONObject unsetPinCta() throws Exception {
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("empty", false);
+    snapshot.put("label", "NEXT TRAIN");
+    snapshot.put("primary", WidgetUiBuilder.UNSET_PIN_PRIMARY);
+    snapshot.put("trainClock", WidgetUiBuilder.UNSET_PIN_SUB);
+    snapshot.put("route", "Edgewater → Perth");
+    snapshot.put("stationLabel", "Edgewater Stn");
     return snapshot;
   }
 }

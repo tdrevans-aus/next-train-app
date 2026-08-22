@@ -108,6 +108,7 @@ public final class NearbyPinHelper {
     trip.put("arrival", departureIso);
     trip.put("leaveBy", leaveByIso);
     trip.put("displayTime", displayTime);
+    trip.put("minutesUntilDeparture", PerthTime.minutesUntilWallClock(departureIso, System.currentTimeMillis()));
     trip.put("platform", pin.optString("platform", "—"));
     trip.put("status", pin.optString("status", "Departed"));
     return trip;

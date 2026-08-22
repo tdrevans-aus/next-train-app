@@ -1,0 +1,62 @@
+import java.util.zip.ZipFile
+
+/**
+ * Play needs BUNDLE-METADATA native debug symbols. debugSymbolLevel alone is not
+ * enough: Sentry ships stripped jni/*.so, so AGP has nothing to extract.
+ * After mergeReleaseNativeLibs, overlay Sentry's unstripped prefab .so files so
+ * extractReleaseNativeSymbolTables can write the Play metadata zip.
+ */
+def overlaySentryPrefabNativeLibs(File libRoot, File aar) {
+    if (!libRoot.isDirectory()) {
+        throw new GradleException("Merged native lib dir missing: ${libRoot}")
+    }
+    if (aar == null || !aar.isFile()) {
+        throw new GradleException("sentry-native-ndk AAR not in Gradle cache (${gradle.gradleUserHomeDir}/caches/modules-2/files-2.1/io.sentry/sentry-native-ndk)")
+    }
+    def copied = 0
+    def zip = new ZipFile(aar)
+    try {
+        zip.entries().each { entry ->
+            def matcher = (entry.name =~ /^prefab\/modules\/[^\/]+\/libs\/android\.([^\/]+)\/(lib.+\.so)$/)
+            if (!matcher.matches()) {
+                return
+            }
+            def abi = matcher[0][1]
+            def soName = matcher[0][2]
+            def dest = new File(new File(libRoot, abi), soName)
+            if (!dest.parentFile.exists()) {
+                return
+            }
+            dest.withOutputStream { out ->
+                zip.getInputStream(entry).withStream { ins -> out << ins }
+            }
+            copied++
+            logger.lifecycle("native-debug-symbols: overlaid ${abi}/${soName} (${dest.length()} bytes) from ${aar.name}")
+        }
+    } finally {
+        zip.close()
+    }
+    if (copied == 0) {
+        throw new GradleException("No prefab .so files found in ${aar.name}")
+    }
+}
+
+afterEvaluate {
+    def mergeName = "mergeReleaseNativeLibs"
+    if (!tasks.names.contains(mergeName)) {
+        return
+    }
+    tasks.named(mergeName).configure { mergeTask ->
+        mergeTask.doLast {
+            def cacheDir = new File(gradle.gradleUserHomeDir, "caches/modules-2/files-2.1/io.sentry/sentry-native-ndk")
+            def aar = fileTree(cacheDir) { include "**/*.aar" }.files.max { it.lastModified() }
+            def libRoot = mergeTask.outputs.files.files.find { file ->
+                file.isDirectory() && new File(file, "arm64-v8a").exists()
+            }
+            if (libRoot == null) {
+                libRoot = file("${layout.buildDirectory.get()}/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
+            }
+            overlaySentryPrefabNativeLibs(libRoot, aar)
+        }
+    }
+}

@@ -2,7 +2,7 @@
 
 **For:** Jim (implement) · Simon (swatch QA)  
 **From:** Tim (product)  
-**Status:** **Complete** (Aug 2026) — QA green; device screenshot pending  
+**Status:** **Done** (22 Aug 2026) — further widget work in **FB-43**  
 **Backlog:** **FB-42**  
 **Builds on:** **FB-35** (preset tokens), **FB-36** (opacity), **FB-40** (blend / wallpaper / brand modes + Glance)  
 **Related:** `WidgetThemePalette.java`, `WidgetGlanceTheme.kt`, `public/widget.js`, `public/styles/widget-appearance.css`, `docs/jim-brief-widget-colour-presets.md`  

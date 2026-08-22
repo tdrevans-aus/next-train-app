@@ -55,6 +55,7 @@ function createDefaultStore() {
     journeys: [],
     nearbyLeaveBeforeMinutes: DEFAULT_SETTINGS.leaveBeforeMinutes,
     nearbyPin: null,
+    appTheme: "system",
   };
 }
 
@@ -470,11 +471,20 @@ function pickWidgetAppearanceFields(raw = {}) {
   return {};
 }
 
+function pickAppThemeFields(raw = {}) {
+  const mode = String(raw.appTheme ?? "").trim();
+  if (mode === "light" || mode === "dark" || mode === "system") {
+    return { appTheme: mode };
+  }
+  return { appTheme: "system" };
+}
+
 function pickPersistedRootFields(raw = {}) {
   return {
     ...pickNearbySettingsFields(raw),
     ...pickWidgetThemeFields(raw),
     ...pickWidgetAppearanceFields(raw),
+    ...pickAppThemeFields(raw),
   };
 }
 
@@ -757,6 +767,7 @@ function getPerthLocalDateKey(date = new Date()) {
     normalizeJourney,
     legToJourney,
     pickNearbySettingsFields,
+    pickAppThemeFields,
     migrateSettings,
     getConfiguredJourneys,
     getJourneyById,

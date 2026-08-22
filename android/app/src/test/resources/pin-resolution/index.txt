@@ -6,6 +6,10 @@ journey-overnight-after-window-departed.json
 journey-override-stale-date.json
 journey-override-wins.json
 journey-preferred-default.json
+journey-saturday-browse-true-next.json
+journey-saturday-monday-preview-no-trip.json
+journey-saturday-monday-target-stale-skip.json
+journey-saturday-monday-target.json
 journey-secondary-next-hidden.json
 journey-skip-past-target-slot.json
 journey-skip-preview-hero.json

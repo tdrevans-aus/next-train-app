@@ -187,31 +187,33 @@ function readSkipState() {
   try {
     const raw = sessionStorage.getItem(skipStorageKey());
     if (!raw) {
-      return { count: 0, skippedUntil: null, skippedToDeparture: null };
+      return { count: 0, skippedUntil: null, skippedToDeparture: null, browseLiveBoard: false };
     }
 
     const parsed = JSON.parse(raw);
     if (parsed.skippedUntil && new Date(parsed.skippedUntil) <= new Date()) {
       clearSkipState();
-      return { count: 0, skippedUntil: null, skippedToDeparture: null };
+      return { count: 0, skippedUntil: null, skippedToDeparture: null, browseLiveBoard: false };
     }
 
     return {
       count: Math.max(0, Number(parsed.count) || 0),
       skippedUntil: parsed.skippedUntil ?? null,
       skippedToDeparture: parsed.skippedToDeparture ?? null,
+      browseLiveBoard: Boolean(parsed.browseLiveBoard),
     };
   } catch {
-    return { count: 0, skippedUntil: null, skippedToDeparture: null };
+    return { count: 0, skippedUntil: null, skippedToDeparture: null, browseLiveBoard: false };
   }
 }
 
-function saveSkipState(count, skippedUntil, skippedToDeparture = null) {
+function saveSkipState(count, skippedUntil, skippedToDeparture = null, options = {}) {
   setSkipTrains(Math.max(0, count));
   const payload = {
     count: getSkipTrains(),
     skippedUntil: skippedUntil ?? null,
     skippedToDeparture: skippedToDeparture ?? null,
+    browseLiveBoard: Boolean(options.browseLiveBoard),
   };
   sessionStorage.setItem(skipStorageKey(), JSON.stringify(payload));
 }
@@ -788,19 +790,41 @@ function clearJourneyPinOverride(journeyId = getActiveJourney()?.id) {
 }
 
 function findPreferredTripSkipIndex(data, journey = getActiveJourney()) {
-  const preferredMinutes = preferredMinutesForLiveGlance(journey);
+  const journeyClean = global.nextTrainPinState?.sanitizeJourneyPinFields
+    ? global.nextTrainPinState.sanitizeJourneyPinFields(journey)
+    : sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
   if (preferredMinutes < 0 || !data) {
     return -1;
   }
 
-  const upcoming = getUpcomingTrips(data);
-  const horizon = targetTripHorizonMinutes(journey);
+  const normalized = normalizeApiTrainData(data);
+  if (global.nextTrainPinState?.resolveJourneyWidgetFaceDeparture) {
+    const widgetFace = global.nextTrainPinState.resolveJourneyWidgetFaceDeparture(
+      normalized,
+      journeyClean
+    );
+    if (widgetFace) {
+      const index = findTripIndexInUpcoming(normalized, { departure: widgetFace });
+      if (index >= 0) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  const upcoming = getUpcomingTrips(normalized);
+  const horizon = targetTripHorizonMinutes(journeyClean);
   for (let index = 0; index < upcoming.length; index += 1) {
     if (tripMatchesPreferredOrLater(upcoming[index], preferredMinutes, horizon)) {
       return index;
     }
   }
   return -1;
+}
+
+function markBrowseLiveBoard(skipCount, skippedToDeparture = null) {
+  saveSkipState(skipCount, null, skippedToDeparture, { browseLiveBoard: true });
 }
 
 function focusPreferredTargetSkip(journey = getActiveJourney(), data = getLastApiData()) {
@@ -835,7 +859,7 @@ function focusPreferredTargetSkip(journey = getActiveJourney(), data = getLastAp
   const normalized = normalizeApiTrainData(data);
   const skippedToTrip = normalized.upcoming?.[targetIndex] ?? null;
   const skippedToDeparture = skippedToTrip ? resolveTripDeparture(skippedToTrip) : null;
-  saveSkipState(targetIndex, null, skippedToDeparture);
+  saveSkipState(targetIndex, null, skippedToDeparture, { browseLiveBoard: false });
   setSkipTrains(targetIndex);
   return true;
 }
@@ -853,6 +877,8 @@ function restoreJourneyTargetPinFace(journey = getActiveJourney(), data = getLas
     return;
   }
 
+  // Nearby exclusivity may dismiss the commute pin for today, but My Journeys
+  // should still land on the preferred Target train, not true next.
   clearSkipState();
   setSkipTrains(0);
   if (data) {
@@ -876,6 +902,8 @@ function isHeroPinLockingSwipe() {
         nearbyFocusedDirection: nearbyEntry?.direction ?? null,
         skipTrains:
           mode === "nearby" ? getNearbySkip(nearbyEntry?.direction) : getSkipTrains(),
+        browseLiveBoard:
+          mode === "journey" ? readSkipState().browseLiveBoard : false,
       }).isHeroPinLockingSwipe
     );
   }
@@ -900,7 +928,11 @@ function isHeroPinLockingSwipe() {
     return false;
   }
 
-  return journeysDepartureMatch(heroTrip, pinTrip);
+  const journeyClean = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(journey));
+  return (
+    isJourneyOverrideActiveToday(journeyClean) &&
+    journeysDepartureMatch(heroTrip, pinTrip)
+  );
 }
 
 function canSkipToTargetTrain() {
@@ -1275,7 +1307,7 @@ function skipToNextTrain() {
   const normalized = normalizeApiTrainData(getLastApiData());
   const skippedToTrip = normalized.upcoming?.[nextSkip] ?? null;
   const skippedToDeparture = skippedToTrip ? resolveTripDeparture(skippedToTrip) : null;
-  saveSkipState(nextSkip, null, skippedToDeparture);
+  markBrowseLiveBoard(nextSkip, skippedToDeparture);
   dismissSwipeHint();
 
   if (getLastApiData()) {
@@ -1334,7 +1366,7 @@ function previewUpcomingDepartureAtIndex(tripIndex) {
   setSkipTrains(index);
   const skippedToTrip = upcoming[index] ?? null;
   const skippedToDeparture = skippedToTrip ? resolveTripDeparture(skippedToTrip) : null;
-  saveSkipState(index, null, skippedToDeparture);
+  markBrowseLiveBoard(index, skippedToDeparture);
   dismissSwipeHint();
 
   render(applyClientSkip({ ...data }));
@@ -1377,14 +1409,15 @@ function skipToEarlierTrain() {
   }
 
   if (previousSkip <= 0) {
-    clearSkipState();
-    setSkipTrains(0);
+    const normalized = normalizeApiTrainData(getLastApiData());
+    const skippedToDeparture = resolveTripDeparture(normalized.upcoming?.[0]);
+    markBrowseLiveBoard(0, skippedToDeparture);
   } else {
     setSkipTrains(previousSkip);
     const normalized = normalizeApiTrainData(getLastApiData());
     const skippedToTrip = normalized.upcoming?.[previousSkip] ?? null;
     const skippedToDeparture = skippedToTrip ? resolveTripDeparture(skippedToTrip) : null;
-    saveSkipState(previousSkip, null, skippedToDeparture);
+    markBrowseLiveBoard(previousSkip, skippedToDeparture);
   }
 
   dismissSwipeHint();
@@ -1570,13 +1603,14 @@ function initHeroPinButton() {
 }
 
 function jumpToTargetTrain() {
-  if (!getJourneyModeActive() || getSkipTrains() <= 0) {
+  if (!getJourneyModeActive()) {
     return;
   }
 
   clearSkipState();
   dismissSwipeHint();
   if (getLastApiData()) {
+    focusPreferredTargetSkip(getActiveJourney(), getLastApiData());
     render(prepareDisplayData(getLastApiData()));
     fetchNextTrain();
   }
@@ -1598,13 +1632,13 @@ function resolveJourneyHeroPinToggleView(pinJourney, journeyClean) {
         pinState.pinnedChrome
     );
     const isTargetPinned = Boolean(
-      !pinState.isPinDismissedToday &&
+      skipTrains === 0 &&
+        !pinState.isPinDismissedToday &&
         !pinState.isOverrideActiveToday &&
         (pinState.heroLabel === "Target train" ||
-          (skipTrains === 0 &&
-            (pinState.showsTargetTrain ||
-              pinState.heroShowsPin ||
-              (pinState.isPinnedToday && preferredMinutesForLiveGlance(journeyClean) >= 0))))
+          pinState.showsTargetTrain ||
+          pinState.heroShowsPin ||
+          (pinState.isPinnedToday && preferredMinutesForLiveGlance(journeyClean) >= 0))
     );
     return {
       isPinnedView: isTargetPinned || isOverridePinned,
@@ -1673,8 +1707,16 @@ async function toggleHeroPin() {
     return;
   }
 
-  const heroDeparture = resolveTripDeparture(getLastRenderedNext());
-  if (!heroDeparture) {
+  const normalizedBoard = getLastApiData() ? normalizeApiTrainData(getLastApiData()) : null;
+  if (!normalizedBoard) {
+    return;
+  }
+
+  const skip = getSkipTrains();
+  const skippedTrip = skip > 0 ? getUpcomingTrips(normalizedBoard)[skip] : null;
+  const heroTrip = skippedTrip ?? getLastRenderedNext();
+  const heroDeparture = resolveTripDeparture(heroTrip);
+  if (!heroDeparture || !findTripByDepartureIso(normalizedBoard, heroDeparture)) {
     return;
   }
 

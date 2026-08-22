@@ -36,14 +36,16 @@ public final class CommuteScheduleSnapshot {
           : WidgetDataService.formatRoute(result.journey)
       );
       snapshot.put("label", "NEXT TRAIN");
-      snapshot.put("primary", "No trains");
-      snapshot.put("trainClock", "");
+      snapshot.put("primary", WidgetUiBuilder.UNSET_PIN_PRIMARY);
+      snapshot.put("trainClock", WidgetUiBuilder.UNSET_PIN_SUB);
       snapshot.put("secondary", "");
-      snapshot.put("updatedLine", PerthTime.formatUpdatedAgo(result.refreshedAtMs));
+      snapshot.put("updatedLine", "");
       snapshot.put("statusCrumb", "");
       snapshot.put("urgent", false);
       snapshot.put("late", false);
       snapshot.put("stale", result.stale);
+      snapshot.put("stationLabel", "");
+      snapshot.put("route", "");
       return snapshot;
     }
 
@@ -69,7 +71,10 @@ public final class CommuteScheduleSnapshot {
 
     String leavePhase = result.leavePhase;
     int minutesUntilLeave = result.minutesUntilLeave;
-    int minutesUntilDeparture = next.optInt("minutesUntilDeparture", 0);
+    String departureIso = result.departureIso != null ? result.departureIso : "";
+    int minutesUntilDeparture = !departureIso.isEmpty()
+      ? PerthTime.minutesUntilWallClock(departureIso, System.currentTimeMillis())
+      : next.optInt("minutesUntilDeparture", 0);
     String displayTime = result.displayTime;
     String status = result.status;
 
@@ -168,6 +173,10 @@ public final class CommuteScheduleSnapshot {
   }
 
   private static JSONObject tryPromoteFollowing(JSONObject cached, long now) throws Exception {
+    if (!shouldPromoteFollowingFace(cached)) {
+      return null;
+    }
+
     String followingDepartureIso = cached.optString("followingDepartureIso", "");
     if (
       followingDepartureIso.isEmpty()
@@ -406,7 +415,7 @@ public final class CommuteScheduleSnapshot {
       return false;
     }
 
-    if ("No trains".equals(snapshot.optString("primary"))) {
+    if (WidgetUiBuilder.isUnsetPinCtaFace(snapshot)) {
       return false;
     }
 
@@ -426,6 +435,7 @@ public final class CommuteScheduleSnapshot {
         "Updating…".equals(primary) ||
         "…".equals(primary) ||
         WidgetUiBuilder.EMPTY_SETUP_PRIMARY.equals(primary) ||
+        WidgetUiBuilder.UNSET_PIN_PRIMARY.equals(primary) ||
         "—".equals(primary)
       ) {
         return false;
@@ -527,5 +537,19 @@ public final class CommuteScheduleSnapshot {
       return "";
     }
     return status;
+  }
+
+  /** Only advance cached following when the departed face was pin/target — not a leaked true-next. */
+  private static boolean shouldPromoteFollowingFace(JSONObject cached) {
+    if (cached == null) {
+      return false;
+    }
+    if (cached.optBoolean("widgetFacePinned", false)) {
+      return true;
+    }
+    if (cached.optBoolean("widgetPinnedChrome", false)) {
+      return true;
+    }
+    return !cached.optString("preferredTrainTime", "").trim().isEmpty();
   }
 }

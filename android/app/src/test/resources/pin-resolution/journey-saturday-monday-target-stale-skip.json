@@ -1,0 +1,74 @@
+{
+  "id": "journey-saturday-monday-target-stale-skip",
+  "description": "Saturday with stale skip on today's train — hero stays on Monday target; swipe unlocked outside active day.",
+  "tags": ["journey", "preferred", "skip", "outside-hours"],
+  "clock": {
+    "perthDateKey": "2026-08-15",
+    "nowIso": "2026-08-15T10:00:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 1,
+    "journey": {
+      "id": "j-weekday",
+      "kind": "journey",
+      "name": "Weekday morning",
+      "station": "Edgewater Stn",
+      "direction": "Perth",
+      "preferredTrainTime": "07:30",
+      "defaultFrom": "06:00",
+      "defaultUntil": "09:00",
+      "remindDays": [1, 2, 3, 4, 5],
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": {
+        "departure": "2026-08-15T10:15:00+08:00",
+        "displayTime": "10:15",
+        "platform": "1",
+        "leaveBy": "2026-08-15T10:05:00+08:00"
+      },
+      "upcoming": [
+        {
+          "departure": "2026-08-15T10:15:00+08:00",
+          "displayTime": "10:15",
+          "platform": "1",
+          "leaveBy": "2026-08-15T10:05:00+08:00"
+        },
+        {
+          "departure": "2026-08-15T11:00:00+08:00",
+          "displayTime": "11:00",
+          "platform": "2",
+          "leaveBy": "2026-08-15T10:50:00+08:00"
+        },
+        {
+          "departure": "2026-08-17T07:30:00+08:00",
+          "displayTime": "07:30",
+          "platform": "1",
+          "leaveBy": "2026-08-17T07:20:00+08:00"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "trueNextDeparture": "2026-08-15T10:15:00+08:00",
+    "pinDeparture": "2026-08-17T07:30:00+08:00",
+    "heroDeparture": "2026-08-17T07:30:00+08:00",
+    "leaveDeparture": "2026-08-17T07:30:00+08:00",
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": "2026-08-17T07:30:00+08:00",
+    "isPinnedToday": true,
+    "heroShowsPin": false,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": true,
+    "isHeroPinLockingSwipe": false,
+    "showSecondaryNext": false,
+    "leaveCardArmed": false,
+    "heroLabel": "Target train",
+    "heroMode": "live",
+    "isBrowseSwipeAllowed": true
+  }
+}

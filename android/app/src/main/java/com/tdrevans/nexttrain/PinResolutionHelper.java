@@ -125,7 +125,11 @@ public final class PinResolutionHelper {
       activeTargetDeparture != null
         && activeTargetDeparture.equals(result.heroDeparture)
         && !result.isOverrideActiveToday;
-    result.isHeroPinLockingSwipe = nearbyHolding || result.heroShowsPin;
+    boolean pinnedChrome =
+      !isSkipPreview
+        && result.heroShowsPin
+        && ("nearby".equals(mode) || ("journey".equals(mode) && result.isOverrideActiveToday));
+    result.isHeroPinLockingSwipe = nearbyHolding || pinnedChrome;
     result.leaveCardArmed =
       ("nearby".equals(mode) || insideActiveWindow)
         && resolveLeaveCardArmed(mode, journey, result.pinDeparture, result.isPinDismissedToday, clock);
