@@ -69,7 +69,10 @@ public final class CommuteScheduleSnapshot {
 
     String leavePhase = result.leavePhase;
     int minutesUntilLeave = result.minutesUntilLeave;
-    int minutesUntilDeparture = next.optInt("minutesUntilDeparture", 0);
+    String departureIso = result.departureIso != null ? result.departureIso : "";
+    int minutesUntilDeparture = !departureIso.isEmpty()
+      ? PerthTime.minutesUntilWallClock(departureIso, System.currentTimeMillis())
+      : next.optInt("minutesUntilDeparture", 0);
     String displayTime = result.displayTime;
     String status = result.status;
 
@@ -168,6 +171,10 @@ public final class CommuteScheduleSnapshot {
   }
 
   private static JSONObject tryPromoteFollowing(JSONObject cached, long now) throws Exception {
+    if (!shouldPromoteFollowingFace(cached)) {
+      return null;
+    }
+
     String followingDepartureIso = cached.optString("followingDepartureIso", "");
     if (
       followingDepartureIso.isEmpty()
@@ -527,5 +534,19 @@ public final class CommuteScheduleSnapshot {
       return "";
     }
     return status;
+  }
+
+  /** Only advance cached following when the departed face was pin/target — not a leaked true-next. */
+  private static boolean shouldPromoteFollowingFace(JSONObject cached) {
+    if (cached == null) {
+      return false;
+    }
+    if (cached.optBoolean("widgetFacePinned", false)) {
+      return true;
+    }
+    if (cached.optBoolean("widgetPinnedChrome", false)) {
+      return true;
+    }
+    return !cached.optString("preferredTrainTime", "").trim().isEmpty();
   }
 }

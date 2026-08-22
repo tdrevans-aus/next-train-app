@@ -26,7 +26,10 @@ const EXPECTED_BOOLEAN_KEYS = new Set([
   "isHeroPinLockingSwipe",
   "showSecondaryNext",
   "leaveCardArmed",
+  "isBrowseSwipeAllowed",
 ]);
+const EXPECTED_STRING_KEYS = new Set(["heroMode"]);
+const EXPECTED_PREVIEW_LABEL_KEYS = new Set(["heroPreviewDayLabel", "heroPreviewClock"]);
 const EXPECTED_DEPARTURE_KEYS = new Set([
   "trueNextDeparture",
   "pinDeparture",
@@ -114,6 +117,14 @@ function validateFixture({ name, fixture }) {
       assert(typeof value === "boolean", `${prefix} expected.${key} must be boolean`);
       continue;
     }
+    if (EXPECTED_STRING_KEYS.has(key)) {
+      assert(typeof value === "string" && value.length > 0, `${prefix} expected.${key} must be string`);
+      continue;
+    }
+    if (EXPECTED_PREVIEW_LABEL_KEYS.has(key)) {
+      assert(isDepartureOrNull(value), `${prefix} expected.${key} must be string or null`);
+      continue;
+    }
     if (key === "heroLabel") {
       assert(HERO_LABELS.has(value), `${prefix} invalid heroLabel`);
       continue;
@@ -158,6 +169,7 @@ function buildPinStateInput(fixture) {
     nearbyFocusedDirection:
       input.nearbyFocusedDirection ?? input.nearbyPin?.direction ?? null,
     skipTrains: input.skipTrains ?? 0,
+    browseLiveBoard: input.browseLiveBoard ?? false,
     journeyModeActive: input.journeyModeActive ?? false,
     nearbyModeActive: input.nearbyModeActive ?? false,
   };

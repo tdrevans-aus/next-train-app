@@ -38,12 +38,12 @@ public class WidgetUiBuilderRobolectricTest {
     WidgetLayoutTestSupport.RemoteViewsBinding binding = WidgetLayoutTestSupport.capture(remoteViews);
 
     assertEquals("11 min", binding.primaryDisplay());
+    assertEquals("Target train", binding.text(R.id.widget_label));
     assertEquals("LEAVE IN", binding.text(R.id.widget_leave_label));
     assertEquals("4", binding.text(R.id.widget_leave_value));
     assertEquals("min", binding.text(R.id.widget_leave_unit));
-    assertEquals("5:42 pm", binding.text(R.id.widget_train_clock));
-    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_route));
-    assertEquals("Perth", binding.text(R.id.widget_route));
+    assertEquals("5:42 pm · Warwick Stn→Perth", binding.text(R.id.widget_train_clock));
+    assertEquals(View.GONE, binding.visibility(R.id.widget_route));
     assertEquals(View.GONE, binding.visibility(R.id.widget_updated));
     assertEquals(View.GONE, binding.visibility(R.id.widget_bottom_spacer));
   }
@@ -107,9 +107,8 @@ public class WidgetUiBuilderRobolectricTest {
         WidgetUiBuilder.build(WidgetLayoutTestSupport.appContext(), snapshot, size)
       );
 
-    assertEquals(View.VISIBLE, binding.visibility(R.id.widget_route));
-    assertEquals("Perth", binding.text(R.id.widget_route));
-    assertEquals("23:15", binding.text(R.id.widget_train_clock));
+    assertEquals(View.GONE, binding.visibility(R.id.widget_route));
+    assertEquals("23:15 · Edgewater→Perth", binding.text(R.id.widget_train_clock));
     assertEquals(
       10f,
       WidgetUiBuilder.liveRouteLineTextSizeSp("Edgewater → Perth", size),
@@ -214,7 +213,7 @@ public class WidgetUiBuilderRobolectricTest {
   }
 
   @Test
-  public void small2x1_emptySetup_showsTapToSetUpCopy() throws Exception {
+  public void small2x1_emptySetup_showsNeutralSetupCopy() throws Exception {
     JSONObject snapshot = WidgetSnapshotFixtures.emptySetup();
     WidgetUiBuilder.WidgetSize size = WidgetLayoutTestSupport.small2x1();
     WidgetLayoutTestSupport.RemoteViewsBinding binding =

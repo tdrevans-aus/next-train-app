@@ -117,7 +117,7 @@ Visual language: light surface, teal accent on the **train** number, urgency on 
 | **Live OK** | §4 content | App → that journey in Journey mode |
 | **Stale** (cached times, refresh failed) | Last times + **Open app** on medium; **Times may be out of date** on Updated line | Same |
 | **No upcoming trains** | Route · `No trains` · updated | Same |
-| **No journeys** | `Next Train` · `Add a journey` · short subcopy | App → Journey empty / add flow |
+| **No journeys** | `Next Train` · `Set up widget` · `In the app` | App → Journey empty / add flow |
 | **Location/API N/A** | N/A for journey widget — uses saved station, not GPS | — |
 
 Empty state copy (no journeys):

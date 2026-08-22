@@ -35,6 +35,7 @@ Add home screen widget       ← Android only (hidden on web as today)
 
         ── gap / divider ──
 
+Appearance                    ← System / Light / Dark (app only)
 Help
 Remove ads / Restore / Ad-free status   ← existing entitlement UI, unchanged rules
 

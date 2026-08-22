@@ -24,11 +24,6 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~:!_*.txt'
         }
     }
-    packaging {
-        jniLibs {
-            keepDebugSymbols += "**/*.so"
-        }
-    }
     signingConfigs {
         release {
             def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -108,6 +103,7 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
+apply from: 'native-debug-symbols.gradle'
 
 try {
     def servicesJSON = file('google-services.json')

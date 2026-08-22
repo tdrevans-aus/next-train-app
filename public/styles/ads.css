@@ -8,7 +8,7 @@
 }
 
 .ad-placeholder {
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--hero-bg);
   border: 1px dashed var(--line-strong);
   border-radius: 0.9rem;
   padding: 1.1rem 1rem;
@@ -75,7 +75,7 @@
   padding: 0.8rem 0.9rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
-  background: #f7faf9;
+  background: var(--surface-tint);
   color: inherit;
   font: inherit;
   text-align: left;
@@ -359,7 +359,7 @@
   width: 1.14rem;
   height: 1.14rem;
   border-radius: 50%;
-  background: #fff;
+  background: var(--surface);
   box-shadow: 0 1px 3px rgba(19, 37, 35, 0.18);
   transition: transform 0.2s ease;
 }
@@ -396,7 +396,7 @@
   padding: 0.7rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
-  background: rgba(255, 255, 255, 0.97);
+  background: var(--frost-toast);
   color: var(--ink);
   font-size: 0.86rem;
   font-weight: 600;

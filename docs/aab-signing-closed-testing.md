@@ -64,7 +64,7 @@ Manual checklist:
 - [ ] Set **`versionName`** if you want a human label (e.g. `2.3.0` or `3.0.0`)
 - [ ] Also bump `appVersion` / `appVersionCode` in `public/site-config.json` to match when you bump Gradle.
 - [ ] **NDK installed** for native debug symbols: Android Studio → SDK Manager → SDK Tools → **NDK (Side by side)** (AGP 9.3 defaults to **28.2.13676358**). Rebuild AAB after install.
-- [ ] **Native debug symbols:** release `build.gradle` has `ndkVersion`, `ndk { debugSymbolLevel 'SYMBOL_TABLE' }` (checked by `test:pre-upload`; clears Play “native debug symbols” warning when NDK is present).
+- [ ] **Native debug symbols:** `debugSymbolLevel 'SYMBOL_TABLE'` plus `native-debug-symbols.gradle` (Sentry prefab overlay). After `bundleRelease`, the AAB must contain `BUNDLE-METADATA/com.android.tools.build.debugsymbols` — Gradle flags alone do not clear Play.
 - [ ] AdMob: release/closed builds should use **prod ads path** once Jim’s ship gate lands (debug APK may stay test mode). Don’t invite friends on a build that only shows Google test banners if you’re trying to validate real ads/IAP.
 - [ ] IAP product `com.tdrevans.nexttrain.adfree` exists in Play Console (can be inactive until license testers are set — create it before expecting purchases to work)
 - [ ] Privacy URL ready to paste on listing: `https://next-train-app.vercel.app/privacy.html` (after deploy)
@@ -109,7 +109,7 @@ If Play shows **“You must let us know whether your app uses any exact alarm pe
 | Warning | Status | Action |
 |---------|--------|--------|
 | **Exact alarm declaration** | **Tim — Play Console** | App content → Exact alarms → declare leave-by / widget timing use case (`SCHEDULE_EXACT_ALARM` only). See §3 above. |
-| **Native debug symbols** | **Fixed in Gradle** | `ndkVersion` pinned + `debugSymbolLevel 'SYMBOL_TABLE'`. **Install NDK** in Android Studio → SDK Manager → SDK Tools → NDK (Side by side), then rebuild AAB. Without NDK, symbols are not extracted. |
+| **Native debug symbols** | **Gradle flag was not enough** | Sentry ships stripped `jni/` `.so` files, so last night’s AAB had native code and **no** Play `BUNDLE-METADATA` debugsymbols. Overlay unstripped Sentry prefab libs via [`android/app/native-debug-symbols.gradle`](../android/app/native-debug-symbols.gradle), rebuild, unzip-check `BUNDLE-METADATA/com.android.tools.build.debugsymbols`. `libandroidx.graphics.path.so` has no vendor debug file. |
 | **Deobfuscation file** | **N/A** | `minifyEnabled false` — no `mapping.txt` exists. Safe to ignore until R8 is enabled (`docs/jim-brief-play-hygiene.md` §4). |
 | **APK size increase** | **Mitigated** | v2.4+ added Glance/Compose + Sentry native libs (expected). Removed dev `_*.txt` scratch from assets. Further shrink needs R8 (deferred). |
 | **Device support drop** | **Mitigated** | Manifest marks location + touchscreen as optional so Wi‑Fi-only / non-GPS devices stay eligible. Small drops (e.g. 28 devices) can still appear when dependencies change — check Play’s device catalog diff if needed. |

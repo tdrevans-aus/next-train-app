@@ -63,6 +63,10 @@
           "type": "integer",
           "minimum": 0
         },
+        "browseLiveBoard": {
+          "type": "boolean",
+          "description": "User is browsing today's live board outside active day."
+        },
         "journey": {
           "type": "object",
           "description": "Journey settings object (subset of nextTrainSettings.journeys[])."
@@ -106,7 +110,14 @@
         "heroLabel": {
           "type": "string",
           "enum": ["Next Train", "Target train", "Later train", "Pinned Train"]
-        }
+        },
+        "heroMode": {
+          "type": "string",
+          "enum": ["live", "preview"]
+        },
+        "heroPreviewDayLabel": { "$ref": "#/$defs/departureOrNull" },
+        "heroPreviewClock": { "$ref": "#/$defs/departureOrNull" },
+        "isBrowseSwipeAllowed": { "type": "boolean" }
       }
     },
     "notes": {

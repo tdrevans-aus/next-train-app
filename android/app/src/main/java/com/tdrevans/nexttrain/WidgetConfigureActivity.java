@@ -26,7 +26,7 @@ public class WidgetConfigureActivity extends Activity {
     Intent main = new Intent(this, MainActivity.class);
     main.putExtra(MainActivity.EXTRA_WIDGET_CONFIGURE, true);
     main.putExtra(MainActivity.EXTRA_WIDGET_CONFIGURE_ID, appWidgetId);
-    main.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    main.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
     startActivity(main);
   }
 
@@ -43,7 +43,10 @@ public class WidgetConfigureActivity extends Activity {
 
   @Override
   protected void onDestroy() {
-    WidgetConfigureBridge.clear();
+    if (!isFinishing()) {
+      setResult(RESULT_CANCELED);
+      WidgetConfigureBridge.clear();
+    }
     super.onDestroy();
   }
 }

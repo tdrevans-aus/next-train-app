@@ -12,8 +12,8 @@ import org.json.JSONObject;
 
 public final class WidgetUiBuilder {
 
-  public static final String EMPTY_SETUP_PRIMARY = "Add a journey";
-  public static final String EMPTY_SETUP_SUB = "Tap to set up";
+  public static final String EMPTY_SETUP_PRIMARY = "Set up widget";
+  public static final String EMPTY_SETUP_SUB = "In the app";
 
   /** Outside-hours idle — sized for default 2×1; same on larger cells (no upscale). */
   private static final float IDLE_LABEL_SP = 8f;
@@ -320,14 +320,15 @@ public final class WidgetUiBuilder {
 
     setBottomRouteGravity(views, true);
     boolean showRouteAtBottom = !empty && routeLine != null && !routeLine.isEmpty();
-    boolean foldRouteIntoClock =
-      showRouteAtBottom && size.isShortCell() && !isCompactLiveFace(size);
+    boolean foldRouteIntoClock = showRouteAtBottom && size.isShortCell();
     if (foldRouteIntoClock) {
       views.setViewVisibility(R.id.widget_route, android.view.View.GONE);
       views.setTextViewText(R.id.widget_route, "");
       if (trainClock != null && !trainClock.isEmpty()) {
-        String folded =
-          foldRouteIntoTrainClock(trainClock, abbreviateRouteLine(routeLine));
+        String routeForFold = isCompactLiveFace(size)
+          ? compactRouteLine(routeLine)
+          : abbreviateRouteLine(routeLine);
+        String folded = foldRouteIntoTrainClock(trainClock, routeForFold);
         views.setViewVisibility(R.id.widget_train_clock, android.view.View.VISIBLE);
         views.setTextViewText(R.id.widget_train_clock, folded);
       }
@@ -674,6 +675,14 @@ public final class WidgetUiBuilder {
       return routeLine.substring(arrow + (routeLine.charAt(arrow) == '→' ? 1 : 2)).trim();
     }
     return routeLine.trim();
+  }
+
+  /** Compact full route for 2×1 live face (e.g. "Edgewater → Perth" → "Edgewater→Perth"). */
+  static String compactRouteLine(String routeLine) {
+    if (routeLine == null || routeLine.isEmpty()) {
+      return "";
+    }
+    return routeLine.trim().replace(" → ", "→").replace(" -> ", "→");
   }
 
   static String foldRouteIntoTrainClock(String clockLine, String route) {

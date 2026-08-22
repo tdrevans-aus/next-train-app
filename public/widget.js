@@ -1512,7 +1512,7 @@ async function finishWidgetAppearanceSetup(ok = true) {
 }
 
 async function maybeOpenWidgetConfigureSetup() {
-  if (!isNativeApp()) {
+  if (!isNativeApp() || widgetSetupState.active) {
     return;
   }
 
@@ -1548,8 +1548,14 @@ function initWidgetConfigureListener() {
     void finishWidgetAppearanceSetup(ok);
   };
 
+  const handleConfigurePending = () => {
+    void maybeOpenWidgetConfigureSetup();
+  };
+
   window.addEventListener("widgetConfigureFinished", handleConfigureFinished);
   document.addEventListener("widgetConfigureFinished", handleConfigureFinished);
+  window.addEventListener("widgetConfigurePending", handleConfigurePending);
+  document.addEventListener("widgetConfigurePending", handleConfigurePending);
 }
 
 function handleWidgetOpacityInput(event) {

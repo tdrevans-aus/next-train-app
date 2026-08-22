@@ -3,8 +3,8 @@
   "description": "Preferred target departed with no later pinable train — hero/widget show departed target, not true next.",
   "tags": ["journey", "preferred", "widget"],
   "clock": {
-    "perthDateKey": "2026-08-15",
-    "nowIso": "2026-08-15T07:32:00+08:00"
+    "perthDateKey": "2026-08-14",
+    "nowIso": "2026-08-14T07:32:00+08:00"
   },
   "input": {
     "mode": "journey",
@@ -22,29 +22,29 @@
     },
     "payload": {
       "next": {
-        "departure": "2026-08-15T06:30:00+08:00",
+        "departure": "2026-08-14T06:30:00+08:00",
         "displayTime": "6:30",
         "platform": "1",
-        "leaveBy": "2026-08-15T06:20:00+08:00"
+        "leaveBy": "2026-08-14T06:20:00+08:00"
       },
       "upcoming": [
         {
-          "departure": "2026-08-15T06:30:00+08:00",
+          "departure": "2026-08-14T06:30:00+08:00",
           "displayTime": "6:30",
           "platform": "1",
-          "leaveBy": "2026-08-15T06:20:00+08:00"
+          "leaveBy": "2026-08-14T06:20:00+08:00"
         },
         {
-          "departure": "2026-08-15T07:00:00+08:00",
+          "departure": "2026-08-14T07:00:00+08:00",
           "displayTime": "7:00",
           "platform": "2",
-          "leaveBy": "2026-08-15T06:50:00+08:00"
+          "leaveBy": "2026-08-14T06:50:00+08:00"
         },
         {
-          "departure": "2026-08-15T07:30:00+08:00",
+          "departure": "2026-08-14T07:30:00+08:00",
           "displayTime": "7:30",
           "platform": "1",
-          "leaveBy": "2026-08-15T07:20:00+08:00"
+          "leaveBy": "2026-08-14T07:20:00+08:00"
         }
       ]
     }
@@ -52,10 +52,10 @@
   "expected": {
     "trueNextDeparture": null,
     "pinDeparture": null,
-    "heroDeparture": "2026-08-15T07:30:00+08:00",
+    "heroDeparture": "2026-08-14T07:30:00+08:00",
     "leaveDeparture": null,
     "secondaryNextDeparture": null,
-    "widgetFaceDeparture": "2026-08-15T07:30:00+08:00",
+    "widgetFaceDeparture": "2026-08-14T07:30:00+08:00",
     "isPinnedToday": true,
     "heroShowsPin": true,
     "isOverrideActiveToday": false,

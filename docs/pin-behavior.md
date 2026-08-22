@@ -119,6 +119,12 @@ Display contract is implemented in `public/pin-state.js` (`resolvePinState`). Su
 | Route, override today | Override departure | Per route rules |
 | Swipe preview (`skipTrains > 0`) | Preview train | Leave-by still follows pin |
 | **Unpinned target** | When hero shows the **preferred target** departure, label **Target train** + blue chrome — even if `journeyPinDismissedDate` is today. Other trains use Next/Later. Pin icon stays **unfilled**. | Hidden when not on target |
+| **C. Outside active day** (e.g. Sat for Mon–Fri) | Default: next **remind-day target** (live trip or **preview** `Monday · 07:30`, no countdown). Swipe browse: today's **Next train** / **Later train** — never Target chrome on today's board. | Optional muted true next on default target face |
+| **C browse (unpinned)** | Live board train user swiped to | Hidden; leave-by hidden until user pins |
+
+**Outside active day swipe:** `isHeroPinLockingSwipe` is **false** — user may browse today's board; tab return / jump-to-target restores remind-day target (preview or live slot). Inside the active window, FB-20 pin/target swipe lock is unchanged.
+
+**Preview hero** (`heroMode: preview`): when the remind-day target is not in `upcoming`, hero shows preferred clock + day word (widget parity); no departure countdown; pin icon unfilled.
 
 **Widget** (native + `widgetFaceDeparture` in pin-state) uses a stricter priority than the in-app hero:
 
@@ -128,7 +134,7 @@ Display contract is implemented in `public/pin-state.js` (`resolvePinState`). Su
 
 Nearby pin beats journey when holding. See `docs/jim-brief-nearby-pin-leave-by.md` § D1.
 
-**Widget live header** (when a train is shown): **Pinned** or **Target** only — never "Next Train". Pinned when nearby pin, day override, or commute target is pinned today; Target when showing the preferred train without an active pin. Idle outside-hours faces keep **Target Train** / **Next Journey** unchanged.
+**Widget live header** (when a train is shown): **Pinned train** or **Target train** only — never "Next Train". Pinned train when nearby pin, day override, or commute target is pinned today; Target train when showing the preferred train without an active pin. Idle outside-hours faces keep **Target Train** / **Next Journey** unchanged.
 
 ---
 
@@ -148,6 +154,13 @@ Nearby pin beats journey when holding. See `docs/jim-brief-nearby-pin-leave-by.m
 ## 8. Regression tests
 
 Automated (web, Playwright):
+
+```bash
+node qa/pin-resolution-fixtures.mjs --validate-only
+IMPLEMENT_PIN_STATE=1 node qa/pin-resolution-fixtures.mjs
+```
+
+Fixtures for outside active day: `journey-saturday-monday-target`, `journey-saturday-monday-preview-no-trip`, `journey-saturday-browse-true-next`, `journey-saturday-monday-target-stale-skip`. See `docs/jim-brief-outside-day-hero-browse.md`.
 
 ```bash
 node qa/pin-behavior.mjs

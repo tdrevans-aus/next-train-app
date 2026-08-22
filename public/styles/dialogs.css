@@ -570,7 +570,7 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   padding: 0.55rem 0.65rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
-  background: #f7faf9;
+  background: var(--surface-tint);
 }
 
 .menu-pause-block[hidden] {
@@ -581,7 +581,7 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   padding: 0.55rem 0.65rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
-  background: #f7faf9;
+  background: var(--surface-tint);
 }
 
 .menu-widget-block[hidden] {
@@ -644,7 +644,7 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   padding: 0.85rem;
   border: 1px solid var(--line);
   border-radius: 0.9rem;
-  background: #f7faf9;
+  background: var(--surface-tint);
 }
 
 .reminders-empty-title {
@@ -675,7 +675,7 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   padding: 0.85rem;
   border: 1px solid var(--line);
   border-radius: 0.9rem;
-  background: #f7faf9;
+  background: var(--surface-tint);
 }
 
 .reminders-shared-options[hidden] {
@@ -844,6 +844,31 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   border-top: 1px solid var(--line);
 }
 
+.menu-appearance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.15rem 0 0.2rem;
+}
+
+.menu-appearance-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.menu-theme-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.menu-theme-chips .remind-day-chip {
+  flex: 1 1 4.5rem;
+  min-height: 2.4rem;
+}
+
 .menu-dialog-links a,
 .menu-dialog-link {
   display: block;
@@ -851,7 +876,7 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   padding: 0.8rem 0.9rem;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
-  background: #f7faf9;
+  background: var(--surface-tint);
   color: var(--text);
   font: inherit;
   font-size: 0.92rem;
@@ -1050,7 +1075,7 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   padding: 0.85rem;
   border: 1px solid var(--line);
   border-radius: 0.95rem;
-  background: #f7faf9;
+  background: var(--surface-tint);
 }
 
 .settings-section-title {

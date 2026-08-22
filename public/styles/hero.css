@@ -5,13 +5,14 @@
   padding: 1.1rem 0.9rem 0.85rem;
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.55);
+  background-color: var(--hero-bg);
+  background: var(--hero-bg);
   box-shadow: 0 10px 28px rgba(19, 37, 35, 0.05);
   touch-action: none;
   user-select: none;
   cursor: grab;
   animation: rise-in 0.6s ease 0.08s both;
-  transition: opacity 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+  transition: opacity 0.35s ease, border-color 0.35s ease;
 }
 
 .hero.stale {
@@ -28,7 +29,7 @@
 
 .hero.hero--target-train.calm {
   border-color: var(--journey-target-border);
-  background: color-mix(in srgb, var(--journey-target-wash) 55%, rgba(255, 255, 255, 0.55));
+  background: color-mix(in srgb, var(--journey-target-wash) 55%, var(--hero-bg));
 }
 
 .hero.hero--target-train.calm #hero-depart-label,
@@ -205,7 +206,7 @@
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.86);
+  background: var(--hero-pin-bg);
   color: var(--muted);
   cursor: pointer;
   flex-shrink: 0;
@@ -221,7 +222,7 @@
 .hero-pin-btn:not(.hero-pin-btn--active):hover {
   color: var(--accent);
   border-color: rgba(11, 110, 106, 0.35);
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--hero-pin-bg-hover);
 }
 
 .hero-pin-btn:focus {
@@ -729,7 +730,7 @@
   user-select: none;
   border-radius: var(--radius);
   border: 1px dashed rgba(11, 110, 106, 0.35);
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--hero-bg-setup);
 }
 
 .hero.hero-setup:active {

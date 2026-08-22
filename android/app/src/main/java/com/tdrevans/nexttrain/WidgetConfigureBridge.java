@@ -16,7 +16,9 @@ public final class WidgetConfigureBridge {
   }
 
   public static boolean isActive() {
-    return activity != null && appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID;
+    return activity != null
+      && !activity.isFinishing()
+      && appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID;
   }
 
   public static int getAppWidgetId() {

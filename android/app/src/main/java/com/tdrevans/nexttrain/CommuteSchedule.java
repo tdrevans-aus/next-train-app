@@ -69,10 +69,8 @@ public final class CommuteSchedule {
       result.refreshedAtMs = System.currentTimeMillis();
       WidgetSettingsStore.saveLastRefreshMs(context, result.refreshedAtMs);
       result.stale = false;
-      result.next =
-        routeJourney
-          ? resolveTrueNextTrip(result.payload)
-          : JourneyPinHelper.resolvePinnedTrip(result.payload, result.journey);
+      // Widget face: pin or target only — never true-next (FB-20 / FB-43).
+      result.next = JourneyPinHelper.resolvePinnedTrip(result.payload, result.journey);
       fillTripFields(result);
       return result;
     } catch (Exception error) {
@@ -308,20 +306,20 @@ public final class CommuteSchedule {
 
   static String normalizeWidgetLiveFaceLabel(String label) {
     if (label == null || label.isEmpty()) {
-      return "Target";
+      return "Target train";
     }
     String normalized = label.trim().toLowerCase(java.util.Locale.US);
     if (normalized.equals("pinned") || normalized.equals("pinned train")) {
-      return "Pinned";
+      return "Pinned train";
     }
     if (normalized.equals("target") || normalized.equals("target train")) {
-      return "Target";
+      return "Target train";
     }
     return label;
   }
 
   /**
-   * Live face label: Pinned (nearby / day override) or Target (preferred target + default).
+   * Live face label: Pinned train (nearby / day override) or Target train (preferred target + default).
    * (Idle outside-hours uses {@link NextCommutePreview#idleWidgetLabel}.)
    */
   static String liveWidgetLabel(JSONObject journey, JSONObject trip) {
@@ -329,19 +327,19 @@ public final class CommuteSchedule {
       return "";
     }
     if (isWidgetPinnedChromeLabel(journey)) {
-      return "Pinned";
+      return "Pinned train";
     }
-    return "Target";
+    return "Target train";
   }
 
   static String liveWidgetLabelFromSnapshot(JSONObject snapshot) {
     if (snapshot == null) {
-      return "Target";
+      return "Target train";
     }
     if (snapshot.optBoolean("widgetPinnedChrome", false)) {
-      return "Pinned";
+      return "Pinned train";
     }
-    return "Target";
+    return "Target train";
   }
 
   /** Preserve Pinned / Target across Updating… / stale paints. */
@@ -354,11 +352,11 @@ public final class CommuteSchedule {
       String normalized = normalizeWidgetLiveFaceLabel(label);
       // Legacy snapshots stored preferred-target face as Pinned before widgetPinnedChrome existed.
       if (
-        "Pinned".equals(normalized) &&
+        "Pinned train".equals(normalized) &&
         !cached.optBoolean("widgetPinnedChrome", false) &&
         !NearbyPinHelper.JOURNEY_ID.equals(cached.optString("journeyId", ""))
       ) {
-        return "Target";
+        return "Target train";
       }
       return normalized;
     }

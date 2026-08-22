@@ -3,8 +3,8 @@
   "description": "When pin is the soonest train, secondary Next line is omitted.",
   "tags": ["journey", "preferred", "secondary-next"],
   "clock": {
-    "perthDateKey": "2026-08-15",
-    "nowIso": "2026-08-15T06:00:00+08:00"
+    "perthDateKey": "2026-08-14",
+    "nowIso": "2026-08-14T06:00:00+08:00"
   },
   "input": {
     "mode": "journey",
@@ -22,18 +22,18 @@
     },
     "payload": {
       "next": {
-        "departure": "2026-08-15T06:30:00+08:00",
+        "departure": "2026-08-14T06:30:00+08:00",
         "displayTime": "6:30",
         "platform": "1"
       },
       "upcoming": [
         {
-          "departure": "2026-08-15T06:30:00+08:00",
+          "departure": "2026-08-14T06:30:00+08:00",
           "displayTime": "6:30",
           "platform": "1"
         },
         {
-          "departure": "2026-08-15T07:00:00+08:00",
+          "departure": "2026-08-14T07:00:00+08:00",
           "displayTime": "7:00",
           "platform": "2"
         }
@@ -41,12 +41,12 @@
     }
   },
   "expected": {
-    "trueNextDeparture": "2026-08-15T06:30:00+08:00",
-    "pinDeparture": "2026-08-15T06:30:00+08:00",
-    "heroDeparture": "2026-08-15T06:30:00+08:00",
-    "leaveDeparture": "2026-08-15T06:30:00+08:00",
+    "trueNextDeparture": "2026-08-14T06:30:00+08:00",
+    "pinDeparture": "2026-08-14T06:30:00+08:00",
+    "heroDeparture": "2026-08-14T06:30:00+08:00",
+    "leaveDeparture": "2026-08-14T06:30:00+08:00",
     "secondaryNextDeparture": null,
-    "widgetFaceDeparture": "2026-08-15T06:30:00+08:00",
+    "widgetFaceDeparture": "2026-08-14T06:30:00+08:00",
     "isPinnedToday": true,
     "heroShowsPin": true,
     "isOverrideActiveToday": false,

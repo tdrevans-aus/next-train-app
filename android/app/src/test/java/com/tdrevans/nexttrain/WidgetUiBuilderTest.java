@@ -11,7 +11,7 @@ public class WidgetUiBuilderTest {
   @Test
   public void isOutsideHoursIdleFace_liveTargetKeepsLiveFace() throws Exception {
     org.json.JSONObject live = new org.json.JSONObject();
-    live.put("label", "Target");
+    live.put("label", "Target train");
     live.put("outsideHoursIdle", false);
     live.put("trainClock", "5:42 pm");
     live.put("primary", "3 min");
@@ -219,6 +219,12 @@ public class WidgetUiBuilderTest {
     assertEquals("Monday · Joondalup", WidgetUiBuilder.foldRouteIntoTrainClock("Monday", "Joondalup"));
     assertEquals("Joondalup", WidgetUiBuilder.foldRouteIntoTrainClock("", "Joondalup"));
     assertEquals("Monday", WidgetUiBuilder.foldRouteIntoTrainClock("Monday", ""));
+  }
+
+  @Test
+  public void compactRouteLine_keepsArrowWithoutSpaces() {
+    assertEquals("Warwick Stn→Perth", WidgetUiBuilder.compactRouteLine("Warwick Stn → Perth"));
+    assertEquals("Edgewater→Perth", WidgetUiBuilder.compactRouteLine("Edgewater → Perth"));
   }
 
   @Test

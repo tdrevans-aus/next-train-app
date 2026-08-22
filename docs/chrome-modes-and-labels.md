@@ -153,6 +153,7 @@ Sheet / dialog contents (**as built**):
   - **Reminders** — opens Reminders dialog (master toggle, get ready, pause, per-commute settings; Android app only)
   - **Add home screen widget** (Android app only — hidden on web)
 - **Info tier** (below a light divider):
+  - **Appearance** — System / Light / Dark (app chrome; widget stays under Widget appearance)
   - **Help** (opens help dialog)
   - **Remove ads** / **Restore purchase** (Android app only; one-time IAP)
 - **Legal (quiet text links):** **About** · **Privacy**

@@ -14,7 +14,7 @@
 |----|------|-------|--------|
 | **FB-06** | **Widget/app live = preferred-or-later** | **Superseded 2026-08-11 by U-11 (lock B).** Was: live face = first train at/after preferred. **New:** live face = true next train; Leave By only for preferred or user-chosen (swipe/Next). `applyPreferredOrLaterFilter` removed from app (Aug 2026); native true-next helper is `resolveTrueNextTrip`. | Superseded — see U-11 |
 | **FB-08** | ~~App Leave By vs widget preferred gate~~ | **Locked U-12 → 1** — Gate app Leave By like widget. **Promoted** → `docs/jim-brief-leave-by-preferred-gate.md` | Briefed |
-| **FB-43** | **Widget real estate redesign** | Revisit layout and information hierarchy on **2×1** (default) and **medium** — twin-face columns, station placement, label density, resize behaviour. **Not** second-by-second countdown (stays minute-level; see `docs/widget-homescreen.md` non-goals). Broader trust/staleness contract: `docs/widget-redesign-v2.md`. Promote to Jim brief when Tim + Simon lock a layout direction. | Backlog — **Aug 2026** |
+| **FB-43** | **Widget real estate redesign** | Revisit layout and information hierarchy on **2×1** (default) and **medium** — twin-face columns, station placement, label density, resize behaviour. **Not** second-by-second countdown (stays minute-level; see `docs/widget-homescreen.md` non-goals). Broader trust/staleness contract: `docs/widget-redesign-v2.md`. **Phase 1 done** (22 Aug 2026): tap→NOW fix, Target/Pinned train labels, 2×1 route fold, empty copy. Phase 2 (3×1 / 2×2) when Tim sends screenshots. | **Phase 1 done** — **Aug 2026** |
 
 ---
 
@@ -22,15 +22,15 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-01** | **Colour scheme / theme** — System / Light / Dark | Menu setting later. Full app theme (surfaces, type, chrome, dialogs). **Widget** has separate presets — **FB-35**. **Not** “Dark strip” as a third product look — that was icon-preview only. Skip until post-launch polish; if built, follow OS (`System`) + Light + Dark only. | Backlog |
+| **FB-01** | **Colour scheme / theme** — System / Light / Dark | **Shipped:** Menu → Appearance chips; default System; widget skins separate. Design: `docs/simon-brief-app-theme.md`. | **Implemented** (22 Aug 2026) |
 | **FB-35** | **Widget colour presets + System match** | **Widget-only** curated skins (8 presets + Match system on Android 12+). Marketing: home-screen curation. Not paywalled. Brief: `docs/jim-brief-widget-colour-presets.md`. | **Implemented** |
 | **FB-36** | **Widget background opacity + transparent card** | Extends FB-35: 0–100% bg opacity, Transparent card toggle, text legibility on busy wallpapers. Brief: `docs/jim-brief-widget-appearance-opacity.md`. | Implemented (2026-08-16) |
 | **FB-37** | **Widget setup on placement + wallpaper preview** | `APPWIDGET_CONFIGURE` on drag-add; hero preview on Dark/Light/Vibrant backdrops; pin-path setup parity. Brief: `docs/jim-brief-widget-configure-on-drop.md`. | Implemented (2026-08-16) |
 | **FB-38** | **Match system — Material You dynamic colours** | Absorbed into **FB-40** `wallpaper` mode. Brief: `docs/jim-brief-widget-material-you-system.md`. | Superseded → **FB-40** |
 | **FB-39** | **Widget style packs** | Classic / Minimal / Bold layout faces. Brief: `docs/jim-brief-widget-style-packs.md`. | **Dropped** (Aug 2026) — Tim; one Classic face is enough |
 | **FB-40** | **Widget — Jetpack Glance (blend-first)** | Replace RemoteViews; **Blend in / Match wallpaper / Brand teal** only (drop 8-preset grid). Brief: `docs/jim-brief-widget-glance.md`. | Implemented |
-| **FB-42** | **Widget background colour row** | Second row under **Blend** mode — FB-35 presets (Ocean, Midnight, …) + opacity; hidden for Wallpaper/Brand. Brief: `docs/jim-brief-widget-background-colours.md`. | **Complete** (Aug 2026) — QA green; Tim device screenshot pending |
-| **FB-04** | ~~Unsupported region~~ | **Promoted** → `docs/jim-brief-unsupported-region.md` (flag + block Near me; journeys OK) | Briefed |
+| **FB-42** | **Widget background colour row** | Second row under **Blend** mode — FB-35 presets (Ocean, Midnight, …) + opacity; hidden for Wallpaper/Brand. Brief: `docs/jim-brief-widget-background-colours.md`. Further widget layout in **FB-43**. | **Done** (22 Aug 2026) |
+| **FB-04** | ~~Unsupported region~~ | Shipped: flag + block Near me; journeys OK. Brief: `docs/jim-brief-unsupported-region.md`. | **Done** |
 
 ---
 
@@ -38,9 +38,9 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-02** | **Other Australian cities** | Expand beyond Perth Transperth. First candidate research: Sydney vs Melbourne — see `docs/city-2-bookmarks.md`. Same product job (leave / next train / journeys); local API + ToS + competition checks. **Depends on** station typeahead (`docs/jim-brief-station-typeahead.md`) shipping first or with city 2. | Backlog |
+| **FB-02** | **Other Australian cities** | Expand beyond Perth Transperth. First candidate research: Sydney vs Melbourne — see `docs/city-2-bookmarks.md`. Same product job (leave / next train / journeys); local API + ToS + competition checks. Perth station picker (**FB-05**) already shipped; reuse for city-2 lists. | Backlog |
 | **FB-03** | **Any city with a train API** | Longer-term: city pack / adapter model for any metro that exposes a reliable live (or schedule) train API. Needs multi-city architecture, station graphs, and store listing strategy per region — not a quick locale swap. | Backlog |
-| **FB-05** | ~~Station type-to-filter~~ | **Promoted** → `docs/jim-brief-station-typeahead.md` (P2) | Briefed |
+| **FB-05** | **Station type-to-filter** | Combobox on journey detail + Near me; list-first open, **Search stations** to type. Briefs: `docs/jim-brief-station-typeahead.md`, `docs/jim-brief-station-picker-list-first.md`. | **Done** (Aug 2026) |
 | **FB-07** | **Process: find + merge same-line directions** | **v8:** heuristic + Perth line map shipped (`docs/direction-collapse-heuristic.md`, `lib/cities/perth/line-map.json`). Groups now include Butler + Fremantle←Claremont. Re-run when expanding cities. | Done — **v8** (process); city-2 still backlog |
 
 ---
@@ -49,9 +49,10 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-09** | **R8 + Play deobfuscation mapping** | Process when `minifyEnabled true`. **v3 public ships minify off.** Consolidated: `docs/jim-brief-play-hygiene.md` **FB-41** §4. | **Done** — absorbed by FB-41 |
+| **FB-09** | **R8 + Play deobfuscation mapping** | Process doc only. **v3 public ships minify off.** Implementation parked as **FB-45**. Brief: `docs/jim-brief-play-hygiene.md` §4. | **Done** — process absorbed by FB-41; enable later = FB-45 |
 | **FB-10** | **Play native debug symbols** | `debugSymbolLevel 'SYMBOL_TABLE'` in release. Consolidated: `docs/jim-brief-play-hygiene.md` **FB-41** §3. | **Done** — absorbed by FB-41 |
 | **FB-41** | **Play hygiene — public launch gate** | Native symbols + `release:prep` + extended `test:pre-upload`; R8 process doc. Before public v3. Brief: `docs/jim-brief-play-hygiene.md`. | **Done** (2026-08-16) |
+| **FB-45** | **Enable R8 / minify after public is stable** | First public stays `minifyEnabled false` (Play deobfuscation warning is noise until then). Later dedicated PR: keep rules (Capacitor, Billing, AdMob, Glance), `minifyEnabled true`, mapping in AAB + archive, flip `test:pre-upload` minify guard, device smoke (IAP / ads / widget / reminders). Optional `shrinkResources` follow-up. Trigger: public stable for a release or two, or AAB size / Play warning becomes worth the keep-rule risk. Do not drive-by flip minify. | Backlog — **Aug 2026** |
 | **FB-11** | **v7: Nearby onboarding gate + 15s locate timeout** | Coach only after settled Near me face (`isNearbyFaceReadyForOnboarding`); `clearOnboardingSchedule` on entry; 15s locate timeout + emulator error copy; stale GPS cache cleared on unsupported region. Brief: `docs/jim-brief-closed-aab-v6-ship-gate.md` §v7. | **Done** (Aug 2026) |
 
 ---
@@ -106,7 +107,7 @@
 | Widget real estate redesign (FB-43) | `docs/feature-backlog.md` **FB-43** · `docs/widget-redesign-v2.md` |
 | Widget preferred-or-later live (FB-06) | `docs/feature-backlog.md` |
 | Direction line groups (one-off merges) | `docs/jim-brief-direction-line-groups.md` |
-| R8 / mapping file on Play upload | `docs/jim-brief-play-hygiene.md` **FB-41** §4 |
+| R8 / mapping file on Play upload | `docs/feature-backlog.md` **FB-45** · process: `docs/jim-brief-play-hygiene.md` §4 |
 | Native debug symbols on Play upload | `docs/jim-brief-play-hygiene.md` **FB-41** §3 |
 | Play hygiene (public gate) | `docs/jim-brief-play-hygiene.md` |
 | Target train large gap (FB-12) | `docs/feature-backlog.md` **FB-12** (v8 warn shipped; B/C dropped) |
@@ -119,7 +120,7 @@
 | Match system Material You (FB-38) | `docs/jim-brief-widget-material-you-system.md` |
 | Widget style packs (FB-39) | **Dropped** Aug 2026 — `docs/jim-brief-widget-style-packs.md` (archived) |
 | Jetpack Glance blend-first (FB-40) | `docs/jim-brief-widget-glance.md` |
-| Widget background colour row (FB-42) | `docs/jim-brief-widget-background-colours.md` · **Complete** Aug 2026 |
+| Widget background colour row (FB-42) | `docs/jim-brief-widget-background-colours.md` · **Done** 22 Aug 2026 |
 | Leave now → strip morph (FB-15) | **Dropped** Aug 2026 — see FB-34 / FB-16 |
 | Leave alarm / stopwatch at leave-by (FB-34) | `docs/feature-backlog.md` **FB-34** · Leave now = ongoing alarm (`LeaveReminderNotifier` / `LeaveAlarmActivity`) |
 | Lock-screen on-the-way glance (FB-16) | `docs/feature-backlog.md` **FB-16** · Start from Leave now → commute strip |

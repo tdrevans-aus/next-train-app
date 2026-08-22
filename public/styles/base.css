@@ -1,7 +1,20 @@
 :root {
+  --font-display: "Syne", "Segoe UI", sans-serif;
+  --font: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --safe-top: max(env(safe-area-inset-top, 0px), 1.1rem);
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 1rem);
+  --ad-scroll-padding: 8.25rem;
+  --radius: 1.15rem;
+}
+
+html:not([data-theme="dark"]) {
   color-scheme: light;
   --bg: #eef3f2;
   --bg-mid: #e2ece9;
+  --atmosphere-top: #f5f8f7;
+  --atmosphere-accent: rgba(11, 110, 106, 0.18);
+  --atmosphere-warm: rgba(234, 88, 12, 0.08);
+  --atmosphere-stripe: rgba(11, 110, 106, 0.045);
   --ink: #132523;
   --text: #1a2f2c;
   --muted: #5c726d;
@@ -20,20 +33,62 @@
   --leave-calm-wash: rgba(92, 114, 109, 0.1);
   --surface: #ffffff;
   --surface-soft: rgba(255, 255, 255, 0.72);
+  --surface-tint: #f7faf9;
+  --hero-bg: rgba(255, 255, 255, 0.55);
+  --hero-bg-setup: rgba(255, 255, 255, 0.45);
+  --hero-pin-bg: rgba(255, 255, 255, 0.86);
+  --hero-pin-bg-hover: rgba(255, 255, 255, 0.96);
+  --frost-card: rgba(255, 255, 255, 0.9);
+  --frost-toast: rgba(255, 255, 255, 0.97);
   --line: rgba(19, 37, 35, 0.1);
   --line-strong: rgba(19, 37, 35, 0.16);
   --urgent: #c2410c;
   --urgent-soft: #ea580c;
   --good: #15803d;
   --bad: #be123c;
-  --font-display: "Syne", "Segoe UI", sans-serif;
-  --font: "Figtree", "Segoe UI", system-ui, sans-serif;
-  --safe-top: max(env(safe-area-inset-top, 0px), 1.1rem);
-  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 1rem);
-  /* Native AdMob banner (margin 72) + adaptive banner height */
-  --ad-scroll-padding: 8.25rem;
-  --radius: 1.15rem;
   --shadow-soft: 0 18px 40px rgba(19, 37, 35, 0.08);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1a2422;
+  --bg-mid: #141c1b;
+  --atmosphere-top: #121918;
+  --atmosphere-accent: rgba(94, 196, 191, 0.16);
+  --atmosphere-warm: rgba(234, 88, 12, 0.07);
+  --atmosphere-stripe: rgba(94, 196, 191, 0.08);
+  --ink: #e8eeed;
+  --text: #e4ebe9;
+  --muted: #9aada8;
+  --accent: #5ec4bf;
+  --accent-strong: #7dd3ce;
+  --accent-wash: rgba(94, 196, 191, 0.16);
+  --journey-target: #93c5fd;
+  --journey-target-strong: #bfdbfe;
+  --journey-target-wash: rgba(147, 197, 253, 0.14);
+  --journey-target-border: rgba(147, 197, 253, 0.38);
+  --hero-pinned-border: color-mix(in srgb, var(--accent) 58%, var(--line));
+  --leave-calm: #9aada8;
+  --leave: #f0b429;
+  --leave-strong: #fbbf24;
+  --leave-wash: rgba(240, 180, 41, 0.16);
+  --leave-calm-wash: rgba(154, 173, 168, 0.12);
+  --surface: #24302e;
+  --surface-soft: rgba(36, 48, 46, 0.78);
+  --surface-tint: #1e2a28;
+  --hero-bg: #24302e;
+  --hero-bg-setup: #1e2a28;
+  --hero-pin-bg: #24302e;
+  --hero-pin-bg-hover: #2c3a37;
+  --frost-card: #24302e;
+  --frost-toast: #24302e;
+  --line: rgba(232, 238, 237, 0.12);
+  --line-strong: rgba(232, 238, 237, 0.2);
+  --urgent: #fb923c;
+  --urgent-soft: #fdba74;
+  --good: #4ade80;
+  --bad: #fb7185;
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
 * {
@@ -62,9 +117,9 @@ body {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(120% 70% at 50% -10%, rgba(11, 110, 106, 0.18), transparent 55%),
-    radial-gradient(90% 50% at 100% 20%, rgba(234, 88, 12, 0.08), transparent 45%),
-    linear-gradient(180deg, #f5f8f7 0%, var(--bg) 42%, var(--bg-mid) 100%);
+    radial-gradient(120% 70% at 50% -10%, var(--atmosphere-accent), transparent 55%),
+    radial-gradient(90% 50% at 100% 20%, var(--atmosphere-warm), transparent 45%),
+    linear-gradient(180deg, var(--atmosphere-top) 0%, var(--bg) 42%, var(--bg-mid) 100%);
 }
 
 .atmosphere::after {
@@ -76,8 +131,8 @@ body {
     90deg,
     transparent 0,
     transparent 47px,
-    rgba(11, 110, 106, 0.045) 47px,
-    rgba(11, 110, 106, 0.045) 48px
+    var(--atmosphere-stripe) 47px,
+    var(--atmosphere-stripe) 48px
   );
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 70%);
 }

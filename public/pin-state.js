@@ -371,17 +371,24 @@
       return null;
     }
 
-    const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
+    // Next remind-day target may be days away — do not clip to today's Active-until horizon.
     for (const trip of getUpcomingTrips(normalized)) {
-      if (tripHasDeparted(trip, resolvedClock)) {
+      const departureIso = resolveTripDeparture(trip);
+      if (!departureIso) {
+        continue;
+      }
+      const departureMs = Date.parse(departureIso);
+      if (!Number.isFinite(departureMs) || departureMs <= resolvedClock.nowMs) {
         continue;
       }
       if (!tripMatchesJourneyRemindDay(trip, journeyClean, resolvedClock)) {
         continue;
       }
-      if (tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
-        return resolveTripDeparture(trip);
+      const tripMinutes = getPerthMinutesSinceMidnightFromIso(departureIso);
+      if (tripMinutes < preferredMinutes) {
+        continue;
       }
+      return departureIso;
     }
 
     return null;
@@ -635,9 +642,86 @@
     return departureIso;
   }
 
-  function resolveSkippedHeroDeparture(payload, skipTrains, clock) {
+  function formatPreviewClock(minutesSinceMidnight) {
+    const wrapped = ((minutesSinceMidnight % (24 * 60)) + 24 * 60) % (24 * 60);
+    const hour = Math.floor(wrapped / 60);
+    const minute = wrapped % 60;
+    return `${hour}:${String(minute).padStart(2, "0")}`;
+  }
+
+  function previewDayName(dayOfWeekIso) {
+    switch (dayOfWeekIso) {
+      case 1:
+        return "Monday";
+      case 2:
+        return "Tuesday";
+      case 3:
+        return "Wednesday";
+      case 4:
+        return "Thursday";
+      case 5:
+        return "Friday";
+      case 6:
+        return "Saturday";
+      case 7:
+        return "Sunday";
+      default:
+        return "";
+    }
+  }
+
+  function formatPreviewDayWord(dayOffset, dayOfWeekIso) {
+    if (dayOffset === 0) {
+      return "Today";
+    }
+    if (dayOffset === 1) {
+      return "Tomorrow";
+    }
+    return previewDayName(dayOfWeekIso);
+  }
+
+  function resolveJourneyPreviewHero(journey, clock = resolveClock()) {
     const resolvedClock = resolveClock(clock);
-    if (!payload || skipTrains <= 0) {
+    if (!journey) {
+      return null;
+    }
+
+    const journeyClean = sanitizeJourneyPinFields(journey, resolvedClock);
+    if (!journeyClean || isRouteJourney(journeyClean)) {
+      return null;
+    }
+    if (journeyMatchesActiveDay(journeyClean, resolvedClock)) {
+      return null;
+    }
+
+    const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
+    if (preferredMinutes < 0) {
+      return null;
+    }
+
+    const remindDays = getJourneyRemindDays(journeyClean);
+    const nowDay = getPerthDayOfWeekIsoFromDate(new Date(resolvedClock.nowMs));
+
+    for (let dayOffset = 1; dayOffset <= 7; dayOffset += 1) {
+      const day = ((nowDay - 1 + dayOffset) % 7) + 1;
+      if (!remindDays.includes(day)) {
+        continue;
+      }
+
+      return {
+        dayOffset,
+        dayOfWeekIso: day,
+        heroPreviewDayLabel: formatPreviewDayWord(dayOffset, day),
+        heroPreviewClock: formatPreviewClock(preferredMinutes),
+      };
+    }
+
+    return null;
+  }
+
+  function resolveBoardHeroDeparture(payload, skipTrains, clock) {
+    const resolvedClock = resolveClock(clock);
+    if (!payload) {
       return null;
     }
 
@@ -646,12 +730,19 @@
       return null;
     }
 
-    const skip = Math.min(skipTrains, upcoming.length - 1);
+    const skip = Math.max(0, Math.min(skipTrains, upcoming.length - 1));
     const trip = upcoming[skip];
     if (!trip || tripHasDeparted(trip, resolvedClock)) {
       return null;
     }
     return resolveTripDeparture(trip);
+  }
+
+  function resolveSkippedHeroDeparture(payload, skipTrains, clock) {
+    if (!payload || skipTrains <= 0) {
+      return null;
+    }
+    return resolveBoardHeroDeparture(payload, skipTrains, clock);
   }
 
   function resolveLeaveCardArmed(input, state) {
@@ -677,6 +768,7 @@
   function getHeroLabel({
     heroShowsPin = false,
     isSkipPreview = false,
+    browseSkipCount = 0,
     pinnedChrome = false,
     isDayOverridePin = false,
     showsTargetTrain = false,
@@ -688,7 +780,7 @@
       return "Target train";
     }
     if (isSkipPreview) {
-      return "Later train";
+      return browseSkipCount > 0 ? "Later train" : "Next Train";
     }
     return "Next Train";
   }
@@ -732,8 +824,9 @@
   function resolvePinState(input = {}) {
     const clock = resolveClock(input.clock);
     const skipTrains = input.skipTrains ?? 0;
+    const browseLiveBoard = Boolean(input.browseLiveBoard);
     const mode = input.mode;
-    const isSkipPreview = skipTrains > 0;
+    const isSkipPreview = skipTrains > 0 || browseLiveBoard;
 
     const trueNextDeparture = resolveTrueNextDeparture(input.payload, clock);
 
@@ -753,6 +846,8 @@
     const insideActiveWindow =
       mode === "journey" && journeyClean && journeyMatchesSchedule(journeyClean, clock);
     const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
+    const outsideActiveDay =
+      mode === "journey" && journeyClean && !journeyMatchesActiveDay(journeyClean, clock);
     const retainDepartedOutsideWindow = Boolean(
       outsideActiveWindow &&
         journeyClean &&
@@ -768,9 +863,106 @@
       }
     }
 
-    const heroDeparture = isSkipPreview
-      ? resolveSkippedHeroDeparture(input.payload, skipTrains, clock)
-      : activeTargetDeparture ?? trueNextDeparture;
+    const isOverrideActiveToday =
+      mode === "journey" && isJourneyOverrideActiveToday(journeyClean, clock);
+    const isPinDismissedToday =
+      mode === "journey" && isJourneyPinDismissedToday(journeyClean, clock);
+
+    const preferredTargetDeparture =
+      mode === "journey" && journeyClean && !isRouteJourney(journeyClean)
+        ? outsideActiveDay
+          ? resolveJourneyPreferredTargetDepartureOnRemindDays(
+              input.payload,
+              journeyClean,
+              clock
+            )
+          : insideActiveWindow
+            ? resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
+            : journeyMatchesActiveDay(journeyClean, clock)
+              ? null
+              : resolveJourneyPreferredTargetDepartureOnRemindDays(
+                  input.payload,
+                  journeyClean,
+                  clock
+                )
+        : null;
+
+    const previewHero =
+      mode === "journey" && journeyClean && outsideActiveDay && !preferredTargetDeparture
+        ? resolveJourneyPreviewHero(journeyClean, clock)
+        : null;
+
+    const targetSkipIndex =
+      preferredTargetDeparture && input.payload
+        ? (() => {
+            const normalized = normalizeApiTrainData(input.payload);
+            for (let index = 0; index < getUpcomingTrips(normalized).length; index += 1) {
+              const trip = getUpcomingTrips(normalized)[index];
+              if (resolveTripDeparture(trip) === preferredTargetDeparture) {
+                return index;
+              }
+            }
+            return -1;
+          })()
+        : -1;
+
+    const isBrowsingLiveBoard = Boolean(
+      outsideActiveDay &&
+        !isOverrideActiveToday &&
+        browseLiveBoard &&
+        (skipTrains > 0 || browseLiveBoard)
+    );
+    const isStaleBrowseSkip = Boolean(
+      outsideActiveDay &&
+        !isOverrideActiveToday &&
+        skipTrains > 0 &&
+        !browseLiveBoard &&
+        skipTrains !== targetSkipIndex
+    );
+
+    const skippedHeroDeparture =
+      isBrowsingLiveBoard || (isSkipPreview && !isStaleBrowseSkip)
+        ? resolveBoardHeroDeparture(input.payload, skipTrains, clock)
+        : null;
+
+    let heroMode = "live";
+    let heroPreviewDayLabel = null;
+    let heroPreviewClock = null;
+    let heroDeparture;
+
+    if (outsideActiveDay && !isOverrideActiveToday) {
+      if (isPinDismissedToday) {
+        heroDeparture = isBrowsingLiveBoard
+          ? skippedHeroDeparture ?? trueNextDeparture
+          : trueNextDeparture;
+        heroMode = "live";
+      } else if (isBrowsingLiveBoard) {
+        heroDeparture = skippedHeroDeparture ?? trueNextDeparture;
+        heroMode = "live";
+      } else if (isStaleBrowseSkip) {
+        heroDeparture = preferredTargetDeparture ?? null;
+        heroMode = preferredTargetDeparture ? "live" : "preview";
+      } else if (isSkipPreview && skippedHeroDeparture) {
+        heroDeparture = skippedHeroDeparture;
+        heroMode = "live";
+      } else if (preferredTargetDeparture) {
+        heroDeparture = preferredTargetDeparture;
+        heroMode = "live";
+      } else if (previewHero) {
+        heroDeparture = null;
+        heroMode = "preview";
+        heroPreviewDayLabel = previewHero.heroPreviewDayLabel;
+        heroPreviewClock = previewHero.heroPreviewClock;
+      } else {
+        heroDeparture = trueNextDeparture;
+        heroMode = "live";
+      }
+    } else {
+      heroDeparture = isSkipPreview
+        ? skippedHeroDeparture
+        : activeTargetDeparture ?? trueNextDeparture;
+      heroMode = heroDeparture ? "live" : "preview";
+    }
 
     const leaveDeparture = pinDeparture ?? trueNextDeparture;
     const widgetFaceDeparture =
@@ -780,35 +972,34 @@
           ? pinDeparture
           : null;
 
-    const isOverrideActiveToday =
-      mode === "journey" && isJourneyOverrideActiveToday(journeyClean, clock);
-    const isPinDismissedToday =
-      mode === "journey" && isJourneyPinDismissedToday(journeyClean, clock);
     const isPinnedToday =
       mode === "journey"
         ? isJourneyPinnedToday(input.journey, clock)
         : Boolean(pinDeparture);
 
     const heroShowsPin = Boolean(
-      activeTargetDeparture && heroDeparture === activeTargetDeparture
+      activeTargetDeparture &&
+        heroDeparture === activeTargetDeparture &&
+        (mode === "nearby" ||
+          insideActiveWindow ||
+          isOverrideActiveToday ||
+          retainDepartedOutsideWindow)
     );
     const showSecondaryNext = Boolean(
       !isSkipPreview &&
+        !isBrowsingLiveBoard &&
+        !isStaleBrowseSkip &&
         trueNextDeparture &&
         pinDeparture &&
         trueNextDeparture !== pinDeparture
     );
     const secondaryNextDeparture = showSecondaryNext ? trueNextDeparture : null;
 
-    const preferredTargetDeparture =
-      mode === "journey" && journeyClean && !isRouteJourney(journeyClean)
-        ? resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
-        : null;
-
     const showsTargetTrain = Boolean(
       !isOverrideActiveToday &&
-        preferredTargetDeparture &&
-        heroDeparture === preferredTargetDeparture
+        !isBrowsingLiveBoard &&
+        ((preferredTargetDeparture && heroDeparture === preferredTargetDeparture) ||
+          heroMode === "preview")
     );
     const nearbyPinLocking = Boolean(
       mode === "nearby" &&
@@ -817,10 +1008,19 @@
         input.nearbyPin.direction === input.nearbyFocusedDirection &&
         isNearbyPinHolding(input.nearbyPin, clock)
     );
-    const isHeroPinLockingSwipe = mode === "nearby" ? nearbyPinLocking : heroShowsPin;
+    const isHeroPinLockingSwipe =
+      mode === "nearby"
+        ? nearbyPinLocking
+        : isOverrideActiveToday
+          ? heroShowsPin
+          : outsideActiveDay
+            ? false
+            : heroShowsPin;
 
     const leaveCardArmed =
-      (mode === "nearby" || insideActiveWindow) &&
+      (mode === "nearby" ||
+        insideActiveWindow ||
+        (outsideActiveDay && isOverrideActiveToday)) &&
       resolveLeaveCardArmed(input, {
         pinDeparture,
         isPinDismissedToday,
@@ -832,10 +1032,13 @@
         (mode === "nearby" || (mode === "journey" && isOverrideActiveToday))
     );
 
+    const isBrowseSwipeAllowed = Boolean(outsideActiveDay && !isOverrideActiveToday);
+
     const heroLabel = getHeroLabel({
       heroShowsPin: heroShowsPin && !isSkipPreview,
       showsTargetTrain,
-      isSkipPreview: isSkipPreview && !showsTargetTrain,
+      isSkipPreview: (isSkipPreview || isBrowsingLiveBoard) && !showsTargetTrain,
+      browseSkipCount: skipTrains,
       pinnedChrome,
       isDayOverridePin: isOverrideActiveToday,
     });
@@ -858,6 +1061,10 @@
       showSecondaryNext,
       leaveCardArmed,
       heroLabel,
+      heroMode,
+      heroPreviewDayLabel,
+      heroPreviewClock,
+      isBrowseSwipeAllowed,
     };
   }
 
@@ -872,6 +1079,7 @@
     resolveJourneyPinDeparture,
     resolveJourneyPreferredTargetDeparture,
     resolveJourneyWidgetFaceDeparture,
+    resolveJourneyPreviewHero,
     resolveDepartedJourneyTargetDeparture,
     resolveJourneyActiveTargetDeparture,
     resolveTrueNextDeparture,

@@ -23,6 +23,8 @@ function readBuildGradle() {
   const minifyEnabled = /minifyEnabled\s+true/.test(text);
   const nativeSymbolsConfigured =
     /debugSymbolLevel/.test(text) && /SYMBOL_TABLE/.test(text);
+  const sentryPrefabOverlay =
+    /apply from:\s*'native-debug-symbols\.gradle'/.test(text);
   const ndkVersionPinned = /ndkVersion\s+"[\d.]+"/.test(text);
   return {
     applicationId,
@@ -32,6 +34,7 @@ function readBuildGradle() {
     text,
     minifyEnabled,
     nativeSymbolsConfigured,
+    sentryPrefabOverlay,
     ndkVersionPinned,
   };
 }
@@ -192,6 +195,15 @@ async function main() {
     ok: gradle.nativeSymbolsConfigured,
     detail: gradle.gradlePath,
     hint: "Add ndk { debugSymbolLevel 'SYMBOL_TABLE' } to release buildType — see docs/jim-brief-play-hygiene.md §3",
+  });
+
+  results.push({
+    check: "Sentry unstripped prefab overlay (Play native symbols)",
+    ok: gradle.sentryPrefabOverlay,
+    detail: gradle.sentryPrefabOverlay
+      ? "native-debug-symbols.gradle applied"
+      : "missing apply from: native-debug-symbols.gradle",
+    hint: "Sentry jni .so files are stripped; overlay prefab libs before extractReleaseNativeSymbolTables",
   });
 
   results.push({

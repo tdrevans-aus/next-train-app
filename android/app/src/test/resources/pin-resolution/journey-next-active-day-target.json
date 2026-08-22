@@ -54,11 +54,11 @@
     "secondaryNextDeparture": "2026-08-18T23:15:00+08:00",
     "widgetFaceDeparture": "2026-08-19T07:30:00+08:00",
     "isPinnedToday": true,
-    "heroShowsPin": true,
+    "heroShowsPin": false,
     "isOverrideActiveToday": false,
     "isPinDismissedToday": false,
     "isSkipPreview": false,
-    "isHeroPinLockingSwipe": true,
+    "isHeroPinLockingSwipe": false,
     "showSecondaryNext": true,
     "leaveCardArmed": false,
     "heroLabel": "Target train"

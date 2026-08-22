@@ -1589,11 +1589,13 @@ function resolveJourneyPinState(data, journey, { skip = skipTrains } = {}) {
   if (!window.nextTrainPinState?.resolvePinState) {
     return null;
   }
+  const skipState = readSkipState();
   return window.nextTrainPinState.resolvePinState({
     mode: "journey",
     payload: lastApiData ?? data,
     journey,
     skipTrains: skip,
+    browseLiveBoard: skipState.browseLiveBoard,
   });
 }
 
@@ -3636,8 +3638,10 @@ function render(data, { stale = false } = {}) {
       ? null
       : resolveDepartedJourneyTargetTrip(lastApiData ?? data, journey);
   const heroTrip = pinState
-    ? tripForPinDeparture(data, pinState.heroDeparture, journey) ??
-      (skipTrains > 0 ? next : pinTrip ?? departedTargetTrip ?? next)
+    ? pinState.heroMode === "preview"
+      ? null
+      : tripForPinDeparture(data, pinState.heroDeparture, journey) ??
+        (skipTrains > 0 ? next : pinTrip ?? departedTargetTrip ?? next)
     : skipTrains > 0
       ? next
       : pinTrip ?? departedTargetTrip ?? next;
@@ -3653,22 +3657,34 @@ function render(data, { stale = false } = {}) {
   if (!heroTrip) {
     lastRenderedNext = null;
     setHeroUrgency("calm");
-    const targetLabel = preferredMinutesForLiveGlance(journey) >= 0
-      ? formatPreferredClock(preferredMinutesForLiveGlance(journey))
-      : "";
+    const previewClock =
+      pinState?.heroMode === "preview"
+        ? pinState.heroPreviewClock
+        : preferredMinutesForLiveGlance(journey) >= 0
+          ? formatPreferredClock(preferredMinutesForLiveGlance(journey))
+          : "";
+    const previewDayLabel =
+      pinState?.heroMode === "preview" ? pinState.heroPreviewDayLabel : "";
     if (heroDepartLabelEl) {
-      heroDepartLabelEl.textContent = "Target train";
+      heroDepartLabelEl.textContent = pinState?.heroLabel ?? "Target train";
     }
     if (departCountdownEl) {
       departCountdownEl.textContent = "—";
+      departCountdownEl.classList.remove("depart-countdown--has-left");
     }
     if (departDisplayTimeEl) {
-      departDisplayTimeEl.textContent = targetLabel
-        ? `No train at or after ${targetLabel}`
-        : "No matching train";
+      departDisplayTimeEl.textContent = previewClock || "No matching train";
     }
     if (heroScheduledTimeEl) {
-      heroScheduledTimeEl.hidden = true;
+      if (previewDayLabel) {
+        heroScheduledTimeEl.textContent = previewDayLabel;
+        heroScheduledTimeEl.hidden = false;
+      } else {
+        heroScheduledTimeEl.textContent = previewClock
+          ? `No train at or after ${previewClock}`
+          : "";
+        heroScheduledTimeEl.hidden = !previewClock;
+      }
     }
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
@@ -3738,6 +3754,9 @@ function render(data, { stale = false } = {}) {
   if (departCountdownEl) {
     if (targetDeparted) {
       renderHeroHasLeftCountdown(departCountdownEl);
+    } else if (pinState?.heroMode === "preview") {
+      departCountdownEl.textContent = "—";
+      departCountdownEl.classList.remove("depart-countdown--has-left");
     } else {
       departCountdownEl.classList.remove("depart-countdown--has-left");
       renderDepartureCountdown(departCountdownEl, heroTrip);
@@ -4348,6 +4367,10 @@ function heroHasVisibleTrain() {
   if (heroEmptyStateEl && !heroEmptyStateEl.hidden) {
     return false;
   }
+  const pinState = resolveJourneyPinState(lastApiData, getActiveJourney());
+  if (pinState?.heroMode === "preview") {
+    return true;
+  }
   if (!lastRenderedNext) {
     return false;
   }
@@ -4458,7 +4481,8 @@ function syncHeroPinChrome() {
           pinActive = Boolean(
             pinState.isPinnedToday &&
               !pinState.isPinDismissedToday &&
-              (pinState.pinnedChrome || pinState.showsTargetTrain || pinState.heroShowsPin)
+              (pinState.pinnedChrome ||
+                (pinState.isOverrideActiveToday && pinState.heroShowsPin))
           );
         } else {
           const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPinClean);
@@ -5419,6 +5443,7 @@ function clearAllAppData() {
   onboardingPopulatedAt = null;
 
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  window.nextTrainAppTheme?.applyAppTheme?.(settings.appTheme);
   renderJourneyListView();
   renderJourneySwitcher();
   applyJourneysMode({ coldStart: true });
@@ -6707,6 +6732,7 @@ function initJourneyModelFromModule() {
       refreshSeconds = nextSettings.refreshSeconds;
       renderJourneySwitcher();
       window.nextTrainWidget?.syncWidgetSettings?.(nextSettings);
+      window.nextTrainAppTheme?.applyAppTheme?.(nextSettings.appTheme);
       document.dispatchEvent(new CustomEvent("nexttrain:settings-persisted"));
     },
   });
@@ -6728,6 +6754,7 @@ function initPinStateFromModule() {
 }
 
 initJourneyModelFromModule();
+window.nextTrainAppTheme?.init?.();
 initPinStateFromModule();
 initJourneyDetailFromModule();
 initStationComboboxesFromModule();

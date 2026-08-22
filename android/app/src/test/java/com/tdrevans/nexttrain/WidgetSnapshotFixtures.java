@@ -11,7 +11,7 @@ final class WidgetSnapshotFixtures {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", false);
     snapshot.put("outsideHoursIdle", false);
-    snapshot.put("label", "Target");
+    snapshot.put("label", "Target train");
     snapshot.put("primary", "11 min");
     snapshot.put("trainClock", "5:42 pm");
     snapshot.put("secondary", "Leave in 4 min");
