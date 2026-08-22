@@ -5,7 +5,7 @@ Dogfood catalog for `lib/providers/brisbane.js`. **Not** wired to product UI.
 - `stopIds` are populated from the rail-only GTFS fixture (all child platform stops per parent station).
 - Canonical names: **Central** (alias Brisbane Central), **Boggo Road** (alias Park Road).
 - Regenerate with `npm run build:line-map` after updating `qa/fixtures/brisbane/gtfs/`.
-- Add `directionAliases` / line groups when riders need collapsed terminals (see `docs/multi-city-provider-design.md`).
+- Direction overlay (D2 review): `shortTurnGroups` stays empty (§3 is line+terminus). Frozen `doNotGroup` + H4 branch pairs live in `line-map.json`; Exhibition is suppressed. D5 label assertions still held.
 
 Sources:
 

@@ -72,7 +72,7 @@ Record `retrievedAt` and the source URL. This file is **never** regenerated from
 - termini and headsign strings with occurrence counts
 - junction stations (served by more than one route)
 - first / last service per route per day type (weekday / Saturday / Sunday)
-- `shortTurnGroups` / `doNotGroup` proposed via `proposeDirectionGroups()` from `lib/direction-collapse-heuristic.js`, written as **proposals** for product review, not auto-accepted
+- `shortTurnGroups` / `doNotGroup` proposed via `proposeDirectionGroups()` from `lib/direction-collapse-heuristic.js`, written as **proposals** for product review, not auto-accepted. **D2 review (Luke):** freeze `shortTurnGroups` empty (§3 line+terminus; do not collapse opposite through-run ends). Accept listed nested `doNotGroup` pairs + H4 branch traps; reject opposite T1 ends / spine. Suppress Exhibition. Tighten `junctionStations` to Darra / Boggo Road / Eagle Junction / Petrie. D5 still held.
 
 Keep the generator city-agnostic where cheap — Sydney and Adelaide use the same GTFS stack.
 

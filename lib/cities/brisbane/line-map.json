@@ -3,13 +3,71 @@
   "source": "GTFS fixture qa/fixtures/brisbane/gtfs (generated 2026-08-22)",
   "publishedOracle": "https://www.queenslandrail.com.au/forcustomers/stations-and-maps/text-version-of-seq-network-map",
   "notes": [
-    "Generated from rail-only GTFS fixture — do not hand-edit; regenerate with scripts/build-line-map.mjs.",
-    "shortTurnGroups / doNotGroup are intentionally empty until product review.",
-    "See proposedShortTurnGroups / proposedDoNotGroup for heuristic output.",
+    "Generated from rail-only GTFS fixture — regenerate with scripts/build-line-map.mjs.",
+    "D2 review (Luke): do not accept any proposedShortTurnGroups. §3 is line+terminus; do not collapse opposite through-run ends.",
+    "doNotGroup: accepted Caboolture–Nambour, Caboolture–Gympie North, Doomben–Eagle Junction, Northgate–Shorncliffe. Rejected opposite T1 ends / spine.",
+    "H4 doNotGroup: Springfield Central–Ipswich (Darra); Beenleigh–Cleveland and Varsity Lakes–Beenleigh (Boggo Road); Airport vs Shorncliffe / Kippa-Ring / Doomben (Eagle Junction); Kippa-Ring–Caboolture (Petrie).",
+    "Exhibition is suppressed (H3 event-only). D5 direction-label assertions still held.",
     "Station names normalized from GTFS parent stop_name (platform suffix stripped)."
   ],
   "shortTurnGroups": {},
-  "doNotGroup": [],
+  "doNotGroup": [
+    {
+      "a": "Caboolture",
+      "b": "Nambour",
+      "reason": "Accepted nested short-turn (H5) — keep Caboolture vs Nambour distinct on T1"
+    },
+    {
+      "a": "Caboolture",
+      "b": "Gympie North",
+      "reason": "Accepted nested short-turn (H5) — keep Caboolture vs Gympie North distinct on T1"
+    },
+    {
+      "a": "Doomben",
+      "b": "Eagle Junction",
+      "reason": "Accepted — weekday T3 is an Eagle Junction–Doomben shuttle, not a through-run"
+    },
+    {
+      "a": "Northgate",
+      "b": "Shorncliffe",
+      "reason": "Accepted nested short-turn (H5) — keep Northgate vs Shorncliffe distinct on T4"
+    },
+    {
+      "a": "Springfield Central",
+      "b": "Ipswich",
+      "reason": "H4 branch at Darra (T2 vs T1)"
+    },
+    {
+      "a": "Beenleigh",
+      "b": "Cleveland",
+      "reason": "H4 branch at Boggo Road (T6 vs T4)"
+    },
+    {
+      "a": "Varsity Lakes",
+      "b": "Beenleigh",
+      "reason": "H4 branch at Boggo Road (T5 vs T6)"
+    },
+    {
+      "a": "Domestic Airport",
+      "b": "Shorncliffe",
+      "reason": "H4 branch at Eagle Junction (T5 vs T4)"
+    },
+    {
+      "a": "Domestic Airport",
+      "b": "Kippa-Ring",
+      "reason": "H4 branch at Eagle Junction (T5 vs T2)"
+    },
+    {
+      "a": "Domestic Airport",
+      "b": "Doomben",
+      "reason": "H4 branch at Eagle Junction (T5 vs T3)"
+    },
+    {
+      "a": "Kippa-Ring",
+      "b": "Caboolture",
+      "reason": "H4 branch at Petrie (T2 vs T1)"
+    }
+  ],
   "proposedShortTurnGroups": {
     "T1:Ipswich station": [
       "Gympie North station",
@@ -86,28 +144,13 @@
       "reason": "R3_branched_junction_guard"
     },
     {
-      "a": "Gympie North station",
-      "b": "Ipswich station",
-      "reason": "R3_branched_junction_guard"
-    },
-    {
       "a": "Darra station",
       "b": "Gympie North station",
       "reason": "R3_branched_junction_guard"
     },
     {
-      "a": "Ipswich station",
-      "b": "Nambour station",
-      "reason": "R3_branched_junction_guard"
-    },
-    {
       "a": "Darra station",
       "b": "Nambour station",
-      "reason": "R3_branched_junction_guard"
-    },
-    {
-      "a": "Ipswich station",
-      "b": "Roma Street station",
       "reason": "R3_branched_junction_guard"
     },
     {
@@ -118,11 +161,6 @@
     {
       "a": "Darra station",
       "b": "Ipswich station",
-      "reason": "R3_branched_junction_guard"
-    },
-    {
-      "a": "Ipswich station",
-      "b": "Sherwood station",
       "reason": "R3_branched_junction_guard"
     },
     {
@@ -196,162 +234,116 @@
       "reason": "R3_branched_junction_guard"
     }
   ],
+  "rejectedProposedDoNotGroup": [
+    {
+      "a": "Caboolture station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Ipswich station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Darra station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Sherwood station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Gympie North station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Nambour station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Ipswich station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Sherwood station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Doomben station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Bowen Hills station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Eagle Junction station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Eagle Junction station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bowen Hills station",
+      "b": "Eagle Junction station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Lota station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Cleveland station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bowen Hills station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Cannon Hill station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Northgate station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    }
+  ],
   "junctionStations": [
-    "Albion",
-    "Alderley",
-    "Altandi",
-    "Ascot",
-    "Auchenflower",
-    "Bald Hills",
-    "Banoon",
-    "Banyo",
-    "Beenleigh",
-    "Beerburrum",
-    "Beerwah",
-    "Bethania",
-    "Bindha",
-    "Birkdale",
     "Boggo Road",
-    "Boondall",
-    "Booval",
-    "Bowen Hills",
-    "Bray Park",
-    "Bundamba",
-    "Buranda",
-    "Burpengary",
-    "Caboolture",
-    "Cannon Hill",
-    "Carseldine",
-    "Central",
-    "Chelmer",
-    "Clayfield",
-    "Cleveland",
-    "Coomera",
-    "Coopers Plains",
-    "Cooran",
-    "Cooroy",
-    "Coorparoo",
-    "Corinda",
-    "Dakabin",
     "Darra",
-    "Deagon",
-    "Dinmore",
-    "Domestic Airport",
-    "Doomben",
-    "Dutton Park",
     "Eagle Junction",
-    "East Ipswich",
-    "Ebbw Vale",
-    "Edens Landing",
-    "Elimbah",
-    "Enoggera",
-    "Eudlo",
-    "Eumundi",
-    "Exhibition",
-    "Fairfield",
-    "Ferny Grove",
-    "Fortitude Valley",
-    "Fruitgrove",
-    "Gailes",
-    "Gaythorne",
-    "Geebung",
-    "Glass House Mountains",
-    "Goodna",
-    "Graceville",
-    "Grovely",
-    "Gympie North",
-    "Helensvale",
-    "Hemmant",
-    "Hendra",
-    "Holmview",
-    "Hope Island",
-    "Indooroopilly",
-    "International Airport",
-    "Ipswich",
-    "Kallangur",
-    "Karrabin",
-    "Keperra",
-    "Kingston",
-    "Kippa-Ring",
-    "Kuraby",
-    "Landsborough",
-    "Lawnton",
-    "Lindum",
-    "Loganlea",
-    "Lota",
-    "Mango Hill",
-    "Mango Hill East",
-    "Manly",
-    "Milton",
-    "Mitchelton",
-    "Mooloolah",
-    "Morayfield",
-    "Morningside",
-    "Murarrie",
-    "Murrumba Downs",
-    "Nambour",
-    "Narangba",
-    "Nerang",
-    "Newmarket",
-    "Norman Park",
-    "North Boondall",
-    "Northgate",
-    "Nudgee",
-    "Nundah",
-    "Ormeau",
-    "Ormiston",
-    "Oxford Park",
-    "Oxley",
-    "Palmwoods",
-    "Petrie",
-    "Pimpama",
-    "Pomona",
-    "Redbank",
-    "Richlands",
-    "Riverview",
-    "Robina",
-    "Rocklea",
-    "Roma Street",
-    "Rosewood",
-    "Rothwell",
-    "Runcorn",
-    "Salisbury",
-    "Sandgate",
-    "Sherwood",
-    "Shorncliffe",
-    "South Bank",
-    "South Brisbane",
-    "Springfield",
-    "Springfield Central",
-    "Strathpine",
-    "Sunnybank",
-    "Sunshine",
-    "Taringa",
-    "Thagoona",
-    "Thomas Street",
-    "Thorneside",
-    "Toombul",
-    "Toowong",
-    "Traveston",
-    "Trinder Park",
-    "Varsity Lakes",
-    "Virginia",
-    "Wacol",
-    "Walloon",
-    "Wellington Point",
-    "Wilston",
-    "Windsor",
-    "Woodridge",
-    "Wooloowin",
-    "Woombye",
-    "Wulkuraka",
-    "Wynnum",
-    "Wynnum Central",
-    "Wynnum North",
-    "Yandina",
-    "Yeerongpilly",
-    "Yeronga",
-    "Zillmere"
+    "Petrie"
+  ],
+  "suppressedTermini": [
+    "Exhibition"
   ],
   "lines": [
     {

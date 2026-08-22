@@ -25,13 +25,76 @@ const CITY_CONFIG = {
     lineMapPath: join(ROOT, "lib/cities/brisbane/line-map.json"),
     stationsPath: join(ROOT, "lib/cities/brisbane/stations.json"),
     branchedJunctions: [
-      "Eagle Junction",
-      "Darra",
       "Boggo Road",
-      "Northgate",
       "Caboolture",
-      "Ipswich",
+      "Darra",
+      "Eagle Junction",
+      "Northgate",
+      "Petrie",
     ],
+    suppressedTermini: ["Exhibition"],
+    // D2 review (Luke): frozen product overlay. Heuristic proposals are never auto-accepted.
+    productReview: {
+      shortTurnGroups: {},
+      junctionStations: ["Boggo Road", "Darra", "Eagle Junction", "Petrie"],
+      doNotGroup: [
+        {
+          a: "Caboolture",
+          b: "Nambour",
+          reason: "Accepted nested short-turn (H5) — keep Caboolture vs Nambour distinct on T1",
+        },
+        {
+          a: "Caboolture",
+          b: "Gympie North",
+          reason: "Accepted nested short-turn (H5) — keep Caboolture vs Gympie North distinct on T1",
+        },
+        {
+          a: "Doomben",
+          b: "Eagle Junction",
+          reason: "Accepted — weekday T3 is an Eagle Junction–Doomben shuttle, not a through-run",
+        },
+        {
+          a: "Northgate",
+          b: "Shorncliffe",
+          reason: "Accepted nested short-turn (H5) — keep Northgate vs Shorncliffe distinct on T4",
+        },
+        {
+          a: "Springfield Central",
+          b: "Ipswich",
+          reason: "H4 branch at Darra (T2 vs T1)",
+        },
+        {
+          a: "Beenleigh",
+          b: "Cleveland",
+          reason: "H4 branch at Boggo Road (T6 vs T4)",
+        },
+        {
+          a: "Varsity Lakes",
+          b: "Beenleigh",
+          reason: "H4 branch at Boggo Road (T5 vs T6)",
+        },
+        {
+          a: "Domestic Airport",
+          b: "Shorncliffe",
+          reason: "H4 branch at Eagle Junction (T5 vs T4)",
+        },
+        {
+          a: "Domestic Airport",
+          b: "Kippa-Ring",
+          reason: "H4 branch at Eagle Junction (T5 vs T2)",
+        },
+        {
+          a: "Domestic Airport",
+          b: "Doomben",
+          reason: "H4 branch at Eagle Junction (T5 vs T3)",
+        },
+        {
+          a: "Kippa-Ring",
+          b: "Caboolture",
+          reason: "H4 branch at Petrie (T2 vs T1)",
+        },
+      ],
+    },
     nameAliases: {
       Central: ["Brisbane Central", "Central Station"],
       "Boggo Road": ["Park Road", "Park Rd"],
@@ -232,17 +295,20 @@ function buildLines(staticData, published) {
   return lines;
 }
 
-function junctionStations(lines) {
-  const counts = new Map();
-  for (const line of lines) {
-    for (const station of line.stations) {
-      counts.set(station, (counts.get(station) ?? 0) + 1);
-    }
+function pairKey(a, b) {
+  return [normalizeKey(a), normalizeKey(b)].sort().join("|");
+}
+
+function stationIsSuppressed(name, suppressed) {
+  const key = normalizeKey(name);
+  return suppressed.some((entry) => normalizeKey(entry) === key);
+}
+
+function lineTouchesSuppressed(line, suppressed) {
+  if ((line.termini ?? []).some((name) => stationIsSuppressed(name, suppressed))) {
+    return true;
   }
-  return [...counts.entries()]
-    .filter(([, count]) => count > 1)
-    .map(([station]) => station)
-    .sort();
+  return (line.stations ?? []).some((name) => stationIsSuppressed(name, suppressed));
 }
 
 function buildProposals(lines, published, branchedJunctions) {
@@ -422,24 +488,37 @@ function main() {
   });
 
   const lines = buildLines(staticData, published);
-  const junctions = junctionStations(lines);
-  const proposals = buildProposals(lines, published, config.branchedJunctions);
+  const suppressed = config.suppressedTermini ?? [];
+  const review = config.productReview ?? { shortTurnGroups: {}, doNotGroup: [], junctionStations: [] };
+  const proposals = buildProposals(
+    lines.filter((line) => !lineTouchesSuppressed(line, suppressed)),
+    published,
+    config.branchedJunctions
+  );
+  const acceptedKeys = new Set(review.doNotGroup.map((pair) => pairKey(pair.a, pair.b)));
+  const rejectedProposedDoNotGroup = proposals.proposedDoNotGroup.filter(
+    (pair) => !acceptedKeys.has(pairKey(pair.a, pair.b))
+  );
 
   const lineMap = {
     city,
     source: `GTFS fixture qa/fixtures/brisbane/gtfs (generated ${new Date().toISOString().slice(0, 10)})`,
     publishedOracle: published.source,
     notes: [
-      "Generated from rail-only GTFS fixture — do not hand-edit; regenerate with scripts/build-line-map.mjs.",
-      "shortTurnGroups / doNotGroup are intentionally empty until product review.",
-      "See proposedShortTurnGroups / proposedDoNotGroup for heuristic output.",
+      "Generated from rail-only GTFS fixture — regenerate with scripts/build-line-map.mjs.",
+      "D2 review (Luke): do not accept any proposedShortTurnGroups. §3 is line+terminus; do not collapse opposite through-run ends.",
+      "doNotGroup: accepted Caboolture–Nambour, Caboolture–Gympie North, Doomben–Eagle Junction, Northgate–Shorncliffe. Rejected opposite T1 ends / spine.",
+      "H4 doNotGroup: Springfield Central–Ipswich (Darra); Beenleigh–Cleveland and Varsity Lakes–Beenleigh (Boggo Road); Airport vs Shorncliffe / Kippa-Ring / Doomben (Eagle Junction); Kippa-Ring–Caboolture (Petrie).",
+      "Exhibition is suppressed (H3 event-only). D5 direction-label assertions still held.",
       "Station names normalized from GTFS parent stop_name (platform suffix stripped).",
     ],
-    shortTurnGroups: {},
-    doNotGroup: [],
+    shortTurnGroups: review.shortTurnGroups,
+    doNotGroup: review.doNotGroup,
     proposedShortTurnGroups: proposals.proposedShortTurnGroups,
     proposedDoNotGroup: proposals.proposedDoNotGroup,
-    junctionStations: junctions,
+    rejectedProposedDoNotGroup,
+    junctionStations: [...review.junctionStations].sort((a, b) => a.localeCompare(b)),
+    suppressedTermini: suppressed,
     lines,
     coverageGaps: [],
   };
