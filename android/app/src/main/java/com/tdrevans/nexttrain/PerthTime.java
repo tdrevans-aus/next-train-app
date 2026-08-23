@@ -1,6 +1,7 @@
 package com.tdrevans.nexttrain;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -88,25 +89,34 @@ public final class PerthTime {
   }
 
   public static int minutesFromIso(String iso) {
-    if (iso == null || iso.isEmpty()) {
+    ZonedDateTime time = parseIsoToPerth(iso);
+    if (time == null) {
       return -1;
     }
-    try {
-      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.parse(iso), ZONE);
-      return time.getHour() * 60 + time.getMinute();
-    } catch (Exception error) {
-      return -1;
-    }
+    return time.getHour() * 60 + time.getMinute();
   }
 
   public static long epochMillisFromIso(String iso) {
-    if (iso == null || iso.isEmpty()) {
+    ZonedDateTime time = parseIsoToPerth(iso);
+    if (time == null) {
       return 0L;
     }
+    return time.toInstant().toEpochMilli();
+  }
+
+  /** Accepts `Z` instants and offset timestamps used by pin-resolution fixtures. */
+  static ZonedDateTime parseIsoToPerth(String iso) {
+    if (iso == null || iso.isEmpty()) {
+      return null;
+    }
     try {
-      return Instant.parse(iso).toEpochMilli();
-    } catch (Exception error) {
-      return 0L;
+      return Instant.parse(iso).atZone(ZONE);
+    } catch (Exception ignored) {
+      try {
+        return OffsetDateTime.parse(iso).atZoneSameInstant(ZONE);
+      } catch (Exception error) {
+        return null;
+      }
     }
   }
 

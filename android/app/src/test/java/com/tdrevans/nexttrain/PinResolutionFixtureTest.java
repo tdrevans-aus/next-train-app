@@ -78,6 +78,7 @@ public class PinResolutionFixtureTest {
     JSONObject journey = input.optJSONObject("journey");
     JSONObject nearbyPin = input.optJSONObject("nearbyPin");
     int skipTrains = input.optInt("skipTrains", 0);
+    boolean browseLiveBoard = input.optBoolean("browseLiveBoard", false);
 
     PinResolutionHelper.Result actual =
       PinResolutionHelper.resolvePinState(
@@ -86,7 +87,8 @@ public class PinResolutionFixtureTest {
         payload,
         journey,
         nearbyPin,
-        skipTrains
+        skipTrains,
+        browseLiveBoard
       );
 
     assertDeparture("trueNextDeparture", expected, actual.trueNextDeparture);

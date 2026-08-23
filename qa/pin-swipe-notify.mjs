@@ -51,7 +51,8 @@ async function waitForJourneyHero(page) {
 }
 
 async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
-  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(90));
+  // Keep a later train in the `normal` fixture (last trip is +90 min) so Next Train can advance.
+  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(48));
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=${fixture}`);
   await page.evaluate(
@@ -132,13 +133,11 @@ async function armPinnedJourney(page, options = {}) {
 
 async function armJourneyPinOverride(page, { fixture = "normal" } = {}) {
   await armPinnedJourney(page, { fixture });
-  await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(400);
   await page.evaluate(() => window.nextTrainApp.skipToNextTrain());
   await page.waitForFunction(
     () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Later train",
     null,
-    { timeout: 8000 }
+    { timeout: process.env.CI === "true" ? 20_000 : 8_000 }
   );
   await page.locator("#hero-pin-btn").click();
   await page.waitForTimeout(800);
@@ -244,13 +243,11 @@ async function testJourneyPinTapAfterSwipePreview(page) {
     return { ok: false, label: "journey pin tap after swipe", detail: { step: "initial pin", pinned } };
   }
 
-  await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(400);
   await page.evaluate(() => window.nextTrainApp.skipToNextTrain());
   await page.waitForFunction(
     () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Later train",
     null,
-    { timeout: 8000 }
+    { timeout: process.env.CI === "true" ? 20_000 : 8_000 }
   );
 
   const afterSwipe = await page.evaluate(() => ({

@@ -46,8 +46,20 @@ public final class PinResolutionHelper {
     JSONObject nearbyPin,
     int skipTrains
   ) throws Exception {
+    return resolvePinState(mode, clock, payload, journey, nearbyPin, skipTrains, false);
+  }
+
+  public static Result resolvePinState(
+    String mode,
+    Clock clock,
+    JSONObject payload,
+    JSONObject journey,
+    JSONObject nearbyPin,
+    int skipTrains,
+    boolean browseLiveBoard
+  ) throws Exception {
     Result result = new Result();
-    boolean isSkipPreview = skipTrains > 0;
+    boolean isSkipPreview = skipTrains > 0 || browseLiveBoard;
 
     result.trueNextDeparture = resolveTrueNextDeparture(payload, clock);
 
@@ -71,6 +83,8 @@ public final class PinResolutionHelper {
         && journeyClean != null
         && matchesHoursWindow(journeyClean, nowMinutes);
     boolean outsideActiveWindow = "journey".equals(mode) && journeyClean != null && !insideActiveWindow;
+    boolean outsideActiveDay =
+      "journey".equals(mode) && journeyClean != null && !journeyMatchesActiveDay(journeyClean, clock);
     boolean retainDepartedOutsideWindow =
       outsideActiveWindow
         && journeyClean != null
@@ -85,8 +99,61 @@ public final class PinResolutionHelper {
       }
     }
 
-    if (isSkipPreview) {
-      result.heroDeparture = resolveSkippedHeroDeparture(payload, skipTrains, clock);
+    result.isOverrideActiveToday =
+      "journey".equals(mode) && isJourneyOverrideActiveToday(journeyClean, clock);
+    result.isPinDismissedToday =
+      "journey".equals(mode) && isJourneyPinDismissedToday(journeyClean, clock);
+
+    String preferredTargetDeparture = null;
+    if ("journey".equals(mode) && journeyClean != null && !JourneySelector.isRouteJourney(journeyClean)) {
+      if (outsideActiveDay) {
+        preferredTargetDeparture =
+          resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
+      } else if (insideActiveWindow) {
+        preferredTargetDeparture =
+          resolveJourneyPreferredTargetDeparture(payload, journeyClean, clock);
+      } else if (!journeyMatchesActiveDay(journeyClean, clock)) {
+        preferredTargetDeparture =
+          resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
+      }
+    }
+
+    int targetSkipIndex = indexOfDeparture(payload, preferredTargetDeparture);
+    boolean isBrowsingLiveBoard =
+      outsideActiveDay && !result.isOverrideActiveToday && browseLiveBoard;
+    boolean isStaleBrowseSkip =
+      outsideActiveDay
+        && !result.isOverrideActiveToday
+        && skipTrains > 0
+        && !browseLiveBoard
+        && skipTrains != targetSkipIndex;
+
+    String skippedHeroDeparture =
+      isBrowsingLiveBoard || (isSkipPreview && !isStaleBrowseSkip)
+        ? resolveBoardHeroDeparture(payload, skipTrains, clock)
+        : null;
+
+    if (outsideActiveDay && !result.isOverrideActiveToday) {
+      if (result.isPinDismissedToday) {
+        result.heroDeparture =
+          isBrowsingLiveBoard
+            ? firstNonNull(skippedHeroDeparture, result.trueNextDeparture)
+            : result.trueNextDeparture;
+      } else if (isBrowsingLiveBoard) {
+        result.heroDeparture = firstNonNull(skippedHeroDeparture, result.trueNextDeparture);
+      } else if (isStaleBrowseSkip) {
+        result.heroDeparture = preferredTargetDeparture;
+      } else if (isSkipPreview && skippedHeroDeparture != null) {
+        result.heroDeparture = skippedHeroDeparture;
+      } else if (preferredTargetDeparture != null) {
+        result.heroDeparture = preferredTargetDeparture;
+      } else if (shouldShowPreviewHero(journeyClean, clock)) {
+        result.heroDeparture = null;
+      } else {
+        result.heroDeparture = result.trueNextDeparture;
+      }
+    } else if (isSkipPreview) {
+      result.heroDeparture = skippedHeroDeparture;
     } else {
       result.heroDeparture =
         activeTargetDeparture != null ? activeTargetDeparture : result.trueNextDeparture;
@@ -101,20 +168,23 @@ public final class PinResolutionHelper {
           ? result.pinDeparture
           : null;
 
-    result.isOverrideActiveToday =
-      "journey".equals(mode) && isJourneyOverrideActiveToday(journeyClean, clock);
-    result.isPinDismissedToday =
-      "journey".equals(mode) && isJourneyPinDismissedToday(journeyClean, clock);
     result.isPinnedToday =
       "journey".equals(mode)
         ? isJourneyPinnedToday(journey, clock)
         : result.pinDeparture != null;
 
     result.heroShowsPin =
-      activeTargetDeparture != null && activeTargetDeparture.equals(result.heroDeparture);
+      activeTargetDeparture != null
+        && activeTargetDeparture.equals(result.heroDeparture)
+        && ("nearby".equals(mode)
+          || insideActiveWindow
+          || result.isOverrideActiveToday
+          || retainDepartedOutsideWindow);
     result.isSkipPreview = isSkipPreview;
     result.showSecondaryNext =
       !isSkipPreview
+        && !isBrowsingLiveBoard
+        && !isStaleBrowseSkip
         && result.trueNextDeparture != null
         && result.pinDeparture != null
         && !result.trueNextDeparture.equals(result.pinDeparture);
@@ -122,21 +192,25 @@ public final class PinResolutionHelper {
 
     boolean nearbyHolding = "nearby".equals(mode) && isNearbyPinHolding(nearbyPin, clock);
     boolean showsTargetTrain =
-      activeTargetDeparture != null
-        && activeTargetDeparture.equals(result.heroDeparture)
-        && !result.isOverrideActiveToday;
+      !result.isOverrideActiveToday
+        && !isBrowsingLiveBoard
+        && ((preferredTargetDeparture != null && preferredTargetDeparture.equals(result.heroDeparture))
+          || (outsideActiveDay && result.heroDeparture == null && shouldShowPreviewHero(journeyClean, clock)));
     boolean pinnedChrome =
       !isSkipPreview
         && result.heroShowsPin
         && ("nearby".equals(mode) || ("journey".equals(mode) && result.isOverrideActiveToday));
-    result.isHeroPinLockingSwipe = nearbyHolding || pinnedChrome;
+    result.isHeroPinLockingSwipe = "nearby".equals(mode) ? nearbyHolding : pinnedChrome;
     result.leaveCardArmed =
-      ("nearby".equals(mode) || insideActiveWindow)
+      ("nearby".equals(mode)
+          || insideActiveWindow
+          || (outsideActiveDay && result.isOverrideActiveToday))
         && resolveLeaveCardArmed(mode, journey, result.pinDeparture, result.isPinDismissedToday, clock);
     result.heroLabel =
       getHeroLabel(
         result.heroShowsPin && !isSkipPreview,
-        isSkipPreview && !showsTargetTrain,
+        (isSkipPreview || isBrowsingLiveBoard) && !showsTargetTrain,
+        skipTrains,
         "nearby".equals(mode) && result.heroShowsPin,
         result.isOverrideActiveToday,
         showsTargetTrain
@@ -449,8 +523,8 @@ public final class PinResolutionHelper {
   }
 
   /**
-   * Outside active days: pick the next preferred (or later) train that lands on a remind day —
-   * matches web pin-state resolveJourneyPreferredTargetDepartureOnRemindDays.
+   * Outside active days: pick the next preferred (or later) train that lands on a remind day.
+   * Do not clip to today's Active-until horizon — the target may be days away.
    */
   private static String resolveJourneyPreferredTargetDepartureOnRemindDays(
     JSONObject payload,
@@ -462,22 +536,76 @@ public final class PinResolutionHelper {
       return null;
     }
 
-    int horizon = targetTripHorizonMinutes(journey, clock);
     JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
     for (int index = 0; index < upcoming.length(); index += 1) {
       JSONObject trip = upcoming.optJSONObject(index);
-      if (trip == null || tripHasDeparted(trip, clock)) {
+      if (trip == null) {
+        continue;
+      }
+      String departureIso = CommuteSchedule.tripDepartureIso(trip);
+      if (departureIso.isEmpty()) {
+        continue;
+      }
+      long departureMs = PerthTime.epochMillisFromIso(departureIso);
+      if (departureMs <= 0 || departureMs <= clock.nowMs) {
         continue;
       }
       if (!tripMatchesJourneyRemindDay(trip, journey)) {
         continue;
       }
-      if (tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, clock)) {
-        return CommuteSchedule.tripDepartureIso(trip);
+      int tripMinutes = PerthTime.minutesFromIso(departureIso);
+      if (tripMinutes < preferredMinutes) {
+        continue;
       }
+      return departureIso;
     }
 
     return null;
+  }
+
+  private static boolean shouldShowPreviewHero(JSONObject journey, Clock clock) {
+    if (journey == null || JourneySelector.isRouteJourney(journey)) {
+      return false;
+    }
+    if (journeyMatchesActiveDay(journey, clock)) {
+      return false;
+    }
+    return CommuteSchedule.preferredMinutesForLiveGlance(journey) >= 0;
+  }
+
+  private static String firstNonNull(String left, String right) {
+    return left != null ? left : right;
+  }
+
+  private static int indexOfDeparture(JSONObject payload, String departureIso) throws Exception {
+    if (payload == null || departureIso == null || departureIso.isEmpty()) {
+      return -1;
+    }
+    JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
+    for (int index = 0; index < upcoming.length(); index += 1) {
+      JSONObject trip = upcoming.optJSONObject(index);
+      if (trip != null && departureIso.equals(CommuteSchedule.tripDepartureIso(trip))) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  private static String resolveBoardHeroDeparture(JSONObject payload, int skipTrains, Clock clock)
+    throws Exception {
+    if (payload == null) {
+      return null;
+    }
+    JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
+    if (upcoming.length() == 0) {
+      return null;
+    }
+    int skip = Math.max(0, Math.min(skipTrains, upcoming.length() - 1));
+    JSONObject trip = upcoming.optJSONObject(skip);
+    if (trip == null || tripHasDeparted(trip, clock)) {
+      return null;
+    }
+    return CommuteSchedule.tripDepartureIso(trip);
   }
 
   /** Hours-only Active window — remind days checked separately (web journeyMatchesSchedule). */
@@ -582,29 +710,11 @@ public final class PinResolutionHelper {
     if (departureIso.isEmpty()) {
       return true;
     }
-    return PerthTime.minutesUntilWallClock(departureIso, clock.nowMs) <= 0;
-  }
-
-  private static String resolveSkippedHeroDeparture(
-    JSONObject payload,
-    int skipTrains,
-    Clock clock
-  ) throws Exception {
-    if (payload == null || skipTrains <= 0) {
-      return null;
+    long departureMs = PerthTime.epochMillisFromIso(departureIso);
+    if (departureMs <= 0) {
+      return true;
     }
-
-    JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
-    if (upcoming.length() == 0) {
-      return null;
-    }
-
-    int skip = Math.min(skipTrains, upcoming.length() - 1);
-    JSONObject trip = upcoming.optJSONObject(skip);
-    if (trip == null || tripHasDeparted(trip, clock)) {
-      return null;
-    }
-    return CommuteSchedule.tripDepartureIso(trip);
+    return departureMs <= clock.nowMs;
   }
 
   private static boolean resolveLeaveCardArmed(
@@ -632,6 +742,7 @@ public final class PinResolutionHelper {
   private static String getHeroLabel(
     boolean heroShowsPin,
     boolean isSkipPreview,
+    int browseSkipCount,
     boolean pinnedChrome,
     boolean isDayOverridePin,
     boolean showsTargetTrain
@@ -643,7 +754,7 @@ public final class PinResolutionHelper {
       return "Target train";
     }
     if (isSkipPreview) {
-      return "Later train";
+      return browseSkipCount > 0 ? "Later train" : "Next Train";
     }
     return "Next Train";
   }
