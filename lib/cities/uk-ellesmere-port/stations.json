@@ -1,0 +1,127 @@
+{
+  "region": "uk-ellesmere-port",
+  "displayName": "Ellesmere Port corridor",
+  "timeZone": "Europe/London",
+  "source": "docs/uk-coding-brief.md Region 2; coords NaPTAN",
+  "retrievedAt": "2026-08-23",
+  "feeds": {
+    "train": "darwin"
+  },
+  "notInRegion": [
+    "West Kirby",
+    "Eastham Rake",
+    "Bromborough",
+    "Hamilton Square",
+    "New Brighton",
+    "Stanlow & Thornton",
+    "Helsby",
+    "Ince & Elton"
+  ],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Ellesmere Port",
+      "crs": "ELP",
+      "role": "Home terminus",
+      "aliases": [],
+      "lat": 53.2821909626,
+      "lng": -2.89642257273
+    },
+    {
+      "mode": "train",
+      "name": "Overpool",
+      "crs": "OVE",
+      "role": "Branch",
+      "aliases": [],
+      "lat": 53.28404743498,
+      "lng": -2.92406060411
+    },
+    {
+      "mode": "train",
+      "name": "Little Sutton",
+      "crs": "LTT",
+      "role": "Branch",
+      "aliases": [],
+      "lat": 53.28551485986,
+      "lng": -2.94329238719
+    },
+    {
+      "mode": "train",
+      "name": "Hooton",
+      "crs": "HOO",
+      "role": "Junction",
+      "aliases": [],
+      "lat": 53.2971988261,
+      "lng": -2.97700928654
+    },
+    {
+      "mode": "train",
+      "name": "Capenhurst",
+      "crs": "CPU",
+      "role": "Chester branch",
+      "aliases": [],
+      "lat": 53.26017358053,
+      "lng": -2.94228478229
+    },
+    {
+      "mode": "train",
+      "name": "Bache",
+      "crs": "BAC",
+      "role": "Chester branch",
+      "aliases": [],
+      "lat": 53.20878566244,
+      "lng": -2.89167004578
+    },
+    {
+      "mode": "train",
+      "name": "Chester",
+      "crs": "CTR",
+      "role": "Chester end",
+      "aliases": [],
+      "lat": 53.19669513735,
+      "lng": -2.87959353783
+    },
+    {
+      "mode": "train",
+      "name": "Liverpool James Street",
+      "crs": "LVJ",
+      "role": "Loop",
+      "aliases": [
+        "James Street"
+      ],
+      "lat": 53.40476383468,
+      "lng": -2.9919576404
+    },
+    {
+      "mode": "train",
+      "name": "Moorfields",
+      "crs": "MRF",
+      "role": "Loop / Northern Line",
+      "aliases": [],
+      "lat": 53.40856229497,
+      "lng": -2.9891727421
+    },
+    {
+      "mode": "train",
+      "name": "Liverpool Lime Street",
+      "crs": "LIV",
+      "role": "Loop + mainline interchange",
+      "aliases": [
+        "Lime Street"
+      ],
+      "lat": 53.40730825272,
+      "lng": -2.97772602818
+    },
+    {
+      "mode": "train",
+      "name": "Liverpool Central",
+      "crs": "LVC",
+      "role": "Loop",
+      "aliases": [
+        "Central"
+      ],
+      "lat": 53.40459987883,
+      "lng": -2.97915307006
+    }
+  ]
+}
