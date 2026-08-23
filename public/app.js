@@ -4851,6 +4851,12 @@ function createJourneyFromTemplate(templateKey) {
 
   journeyDetail().setLibraryKind?.("journeys");
 
+  // First journey should always start from the Morning commute preset, even when
+  // the user taps "Add a journey" instead of onboarding "Set up a journey".
+  if (templateKey === "custom" && !hasJourneyKind()) {
+    return createJourneyFromPresetTemplate("morning");
+  }
+
   if (templateKey === "custom") {
     const journey = createDefaultJourney({
       name: nextAvailableJourneyName(getJourneyNamePool()),
