@@ -2856,7 +2856,13 @@ function shouldAutoAckLeavePhase(leavePhase) {
   return leavePhase === "now" || leavePhase === "late" || leavePhase === "missed";
 }
 
-function movementTriggersLeaveAutoAck({ distanceKm: stationDistanceKm }) {
+function movementTriggersLeaveAutoAck({ distanceKm: stationDistanceKm, speed, movedKm }) {
+  if (typeof speed === "number" && speed >= TRAVELING_SPEED_MS) {
+    return true;
+  }
+  if (typeof movedKm === "number" && movedKm >= LEAVE_AUTO_ACK_MOVE_KM) {
+    return true;
+  }
   return typeof stationDistanceKm === "number" && stationDistanceKm <= STATION_ARRIVAL_KM;
 }
 
@@ -2962,9 +2968,11 @@ async function maybeAutoAcknowledgeLeave(next, options = {}) {
       if (
         movementTriggersLeaveAutoAck({
           distanceKm: stationDistance,
+          speed: effectiveSpeed,
+          movedKm: effectiveMovedKm,
         })
       ) {
-        void markLeaveAcknowledgedLocally(next, { ackContext: resolvedAckContext });
+        await markLeaveAcknowledgedLocally(next, { ackContext: resolvedAckContext });
         onAcknowledged?.();
         return true;
       }
