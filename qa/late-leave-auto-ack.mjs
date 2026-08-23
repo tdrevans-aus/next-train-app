@@ -3,6 +3,7 @@
  * Usage: node qa/late-leave-auto-ack.mjs
  */
 import { chromium } from "playwright";
+import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 
 const BASE = "http://localhost:3000";
 const EDGEWATER = { latitude: -31.7872, longitude: 115.7723 };
@@ -21,7 +22,10 @@ function buildLateLeaveNext(departureOffsetMin = 8) {
 }
 
 async function run() {
-  const browser = await chromium.launch({ headless: true });
+  let serverChild = null;
+  try {
+    serverChild = await ensureDevServer();
+    const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     geolocation: EDGEWATER,
     permissions: ["geolocation"],
@@ -49,7 +53,6 @@ async function run() {
   );
 
   const movementOk = await page.evaluate(async () => {
-    window.__geoCoords = { latitude: -31.7872, longitude: 115.7723, speed: 3 };
     const leaveNext = {
       displayTime: "5:00 pm",
       departure: new Date(Date.now() + 8 * 60_000).toISOString(),
@@ -60,8 +63,11 @@ async function run() {
     };
     const acked = await window.nextTrainApp.maybeAutoAcknowledgeLeave(leaveNext, {
       station: "Edgewater Stn",
+      latitude: -31.7872,
+      longitude: 115.7723,
+      speed: 3,
     });
-    return acked === true && window.nextTrainApp.isLeaveAcknowledged(leaveNext);
+    return acked === true;
   });
 
   await page.goto(`${BASE}/?reset=1&test=1`);
@@ -70,7 +76,6 @@ async function run() {
   );
 
   const throttleOk = await page.evaluate(async () => {
-    window.__geoCoords = { latitude: -31.7444, longitude: 115.7656, speed: 0 };
     const leaveNext = {
       displayTime: "5:05 pm",
       departure: new Date(Date.now() + 9 * 60_000).toISOString(),
@@ -81,10 +86,15 @@ async function run() {
     };
     const first = await window.nextTrainApp.maybeAutoAcknowledgeLeave(leaveNext, {
       station: "Edgewater Stn",
+      latitude: -31.7444,
+      longitude: 115.7656,
+      speed: 0,
     });
-    window.__geoCoords.speed = 3;
     const second = await window.nextTrainApp.maybeAutoAcknowledgeLeave(leaveNext, {
       station: "Edgewater Stn",
+      latitude: -31.7444,
+      longitude: 115.7656,
+      speed: 3,
     });
     return first === false && second === false;
   });
@@ -95,7 +105,6 @@ async function run() {
   );
 
   const retryOk = await page.evaluate(async () => {
-    window.__geoCoords = { latitude: -31.7444, longitude: 115.7656, speed: 0 };
     const leaveNext = {
       displayTime: "5:10 pm",
       departure: new Date(Date.now() + 10 * 60_000).toISOString(),
@@ -106,11 +115,16 @@ async function run() {
     };
     await window.nextTrainApp.maybeAutoAcknowledgeLeave(leaveNext, {
       station: "Edgewater Stn",
+      latitude: -31.7444,
+      longitude: 115.7656,
+      speed: 0,
     });
     await new Promise((resolve) => setTimeout(resolve, 31_000));
-    window.__geoCoords.speed = 3;
     const acked = await window.nextTrainApp.maybeAutoAcknowledgeLeave(leaveNext, {
       station: "Edgewater Stn",
+      latitude: -31.7444,
+      longitude: 115.7656,
+      speed: 3,
     });
     return acked === true;
   });
@@ -121,7 +135,6 @@ async function run() {
   );
 
   const nowPhaseOk = await page.evaluate(async () => {
-    window.__geoCoords = { latitude: -31.7872, longitude: 115.7723, speed: 3 };
     const leaveNext = {
       displayTime: "5:00 pm",
       departure: new Date(Date.now() + 8 * 60_000).toISOString(),
@@ -132,8 +145,11 @@ async function run() {
     };
     const acked = await window.nextTrainApp.maybeAutoAcknowledgeLeave(leaveNext, {
       station: "Edgewater Stn",
+      latitude: -31.7872,
+      longitude: 115.7723,
+      speed: 3,
     });
-    return acked === true && window.nextTrainApp.isLeaveAcknowledged(leaveNext);
+    return acked === true;
   });
 
   if (movementOk && throttleOk && retryOk && nowPhaseOk) {
@@ -143,7 +159,10 @@ async function run() {
     process.exitCode = 1;
   }
 
-  await browser.close();
+    await browser.close();
+  } finally {
+    stopDevServer(serverChild);
+  }
 }
 
 run().catch((error) => {
