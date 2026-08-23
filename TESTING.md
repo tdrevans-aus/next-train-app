@@ -976,6 +976,90 @@ Paste into a **fresh** Cursor agent chat (not the coding session):
 
 > You are a QA agent. Follow `TESTING.md` in this repo. Run `npm start` if needed. Execute smoke tests 1–11, 13, 15 (web), **16** (`node qa/button-visibility.mjs`), **20** (`node qa/stickiness-coaches-logic.mjs`), **21** (`node qa/reminders-dialog.mjs`), and **45** (`node qa/pin-behavior.mjs`). Use fixture URLs with `test=1` where noted. Output a table: test #, PASS/FAIL, notes. Do not fix code unless I ask.
 
+## iOS (Capacitor) — Mac test setup
+
+**Install once on this Mac:** Xcode, Node 22 (`nvm use 22`), `npm install`, [Maestro CLI](https://maestro.mobile.dev) (`curl -Ls "https://get.maestro.mobile.dev" | bash`), Safari **Develop** menu enabled (Safari → Settings → Advanced → *Show features for web developers*).
+
+**No Android Studio / adb needed** for iOS QA.
+
+### Daily workflow
+
+| Step | Command | When |
+|------|---------|------|
+| 1. Web smoke | `npm run test:smoke` | Every `public/` change (fixtures, fast) |
+| 2. Preflight | `npm run test:ios:preflight` | Before simulator run — checks Xcode, Maestro, booted sim |
+| 3. Sync + install | `npm run test:ios:maestro -- --install` | After web changes ship to native |
+| 4. iOS Maestro NT-6 | `npm run test:ios:maestro` | Repeat simulator smoke |
+| 5. Manual NT-6 | Checklist below | Before TestFlight / device sign-off |
+
+The native app uses the **live Vercel API** — web `?fixture=` URLs do not apply in the simulator.
+
+### Automated iOS (Maestro)
+
+Flows live in `.maestro/ios/`:
+
+| Flow | Covers |
+|------|--------|
+| `01-cold-start-seed` | `nexttrain://test/seed` → Edgewater journey (debug sim only) |
+| `02-app-launches` | Chrome visible |
+| `03-journeys-sheet` | My Journeys → Add journey → Custom chip (no hang) |
+| `04-menu-opens` | Menu → Done |
+| `05-seeded-journey-hero` | Seeded route on hero (+ network) |
+| `06-near-me` | Near me + location prompt |
+
+```bash
+npm run test:ios:preflight
+open -a Simulator
+npm run test:ios:maestro -- --install   # first time / after code changes
+npm run test:ios:maestro                  # repeat runs
+npm run test:ios:maestro -- --flow 03-journeys-sheet
+```
+
+**Test seed (debug simulator builds only):**
+
+```
+nexttrain://test/seed?reset=1&preset=morning&station=Edgewater%20Stn&direction=Perth
+```
+
+### NT-6 manual smoke (simulator + device)
+
+Run on **simulator** after Maestro passes; repeat on a **physical iPhone** before TestFlight.
+
+| # | Step | Expect |
+|---|------|--------|
+| 1 | Launch app | No crash; **Near me / My Journeys / Menu** visible |
+| 2 | **Near me** | Location prompt (Allow) or station fallback; departures load |
+| 3 | **My Journeys → Add journey → Custom** | Sheet opens; pick station + direction; **Save** |
+| 4 | Hero | Route + countdown (live API) |
+| 5 | Leave card | Leave-by line visible when journey configured |
+| 6 | **Menu → Remove ads** (or Pro) | Store sheet opens (sandbox on device) |
+| 7 | Ads | Banner loads (test AdMob in debug) |
+| 8 | Force-quit → reopen | Journey data persists |
+
+Sign-off: note simulator/device model + iOS version in `qa/latest.md`.
+
+### Safari Web Inspector (WKWebView debug)
+
+When the app hangs or a sheet fails to appear:
+
+1. Run app in **iOS Simulator**
+2. Safari → **Develop** → *Simulator* → **Next Train**
+3. **Console** — JS errors (e.g. failed `showModal`, fetch timeouts)
+4. **Network** — `/api/next-train` responses
+5. **Storage** — `localStorage.nextTrainSettings`
+
+### Build commands (reference)
+
+```bash
+nvm use 22
+npm run cap:sync:ios
+npx cap open ios          # Xcode → ⌘R
+# or:
+npx cap run ios --target "iPhone 17 Pro"
+```
+
+---
+
 ## Android / Capacitor
 
 The native app loads the hosted Vercel API — **fixtures do not apply**. After web smoke passes:

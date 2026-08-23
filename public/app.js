@@ -352,25 +352,23 @@ function locationErrorFrom(error) {
     lower.includes("location services") ||
     lower.includes("not enabled")
   ) {
-    return Object.assign(
-      new Error(
-        "Turn on Location in your phone settings, then try Near me again — or choose a station below."
-      ),
-      { code: 2, cause: error }
-    );
+    const servicesOff = isIosNativeApp()
+      ? "Turn on Location Services in Settings → Privacy & Security → Location Services, then try Near me again — or choose a station below."
+      : "Turn on Location in your phone settings, then try Near me again — or choose a station below.";
+    return Object.assign(new Error(servicesOff), { code: 2, cause: error });
   }
 
   if (
+    code === 3 ||
     lower.includes("timeout") ||
     lower.includes("could not obtain location in time") ||
-    lower.includes("location unavailable")
+    lower.includes("location unavailable") ||
+    lower.includes("timed out")
   ) {
-    return Object.assign(
-      new Error(
-        "Couldn’t get your location. On an emulator, set a mock GPS (Extended controls → Location). On a phone, turn on Location — or choose a station below."
-      ),
-      { code: 2, cause: error }
-    );
+    const timeoutMessage = isIosNativeApp()
+      ? "Couldn’t get your location in time. On iPad, try Wi‑Fi, move near a window, or choose a station below."
+      : "Couldn’t get your location. On an emulator, set a mock GPS (Extended controls → Location). On a phone, turn on Location — or choose a station below.";
+    return Object.assign(new Error(timeoutMessage), { code: 3, cause: error });
   }
 
   if (error instanceof Error) {

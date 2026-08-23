@@ -15,6 +15,15 @@ const fgSvg = fs.readFileSync(
 );
 const exportsDir = path.join(root, "store-assets", "exports");
 const res = path.join(root, "android", "app", "src", "main", "res");
+const iosIcon = path.join(
+  root,
+  "ios",
+  "App",
+  "App",
+  "Assets.xcassets",
+  "AppIcon.appiconset",
+  "AppIcon-512@2x.png"
+);
 
 const densities = [
   { dir: "mipmap-mdpi", launcher: 48, foreground: 108 },
@@ -44,6 +53,10 @@ const page = await browser.newPage();
 
 await shotSvg(page, iconSvg, 512, path.join(exportsDir, "play-icon-512.png"), "#EEF3F2");
 console.log("wrote play-icon-512.png");
+
+fs.mkdirSync(path.dirname(iosIcon), { recursive: true });
+await shotSvg(page, iconSvg, 1024, iosIcon, "#EEF3F2");
+console.log("wrote ios AppIcon-512@2x.png");
 
 for (const d of densities) {
   const dir = path.join(res, d.dir);
