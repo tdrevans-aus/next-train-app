@@ -1,0 +1,3805 @@
+{
+  "city": "brisbane",
+  "source": "GTFS fixture qa/fixtures/brisbane/gtfs (generated 2026-08-22)",
+  "publishedOracle": "https://www.queenslandrail.com.au/forcustomers/stations-and-maps/text-version-of-seq-network-map",
+  "notes": [
+    "Generated from rail-only GTFS fixture — regenerate with scripts/build-line-map.mjs.",
+    "D2 review (Luke): do not accept any proposedShortTurnGroups. §3 is line+terminus; do not collapse opposite through-run ends.",
+    "doNotGroup: accepted Caboolture–Nambour, Caboolture–Gympie North, Doomben–Eagle Junction, Northgate–Shorncliffe. Rejected opposite T1 ends / spine.",
+    "H4 doNotGroup: Springfield Central–Ipswich (Darra); Beenleigh–Cleveland and Varsity Lakes–Beenleigh (Boggo Road); Airport vs Shorncliffe / Kippa-Ring / Doomben (Eagle Junction); Kippa-Ring–Caboolture (Petrie).",
+    "Exhibition is suppressed (H3 event-only). D5 labels locked: Central 12 marketing chips (T1 Caboolture/Ipswich; T5 Brisbane Airport).",
+    "Station names normalized from GTFS parent stop_name (platform suffix stripped)."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Caboolture",
+      "b": "Nambour",
+      "reason": "Accepted nested short-turn (H5) — keep Caboolture vs Nambour distinct on T1"
+    },
+    {
+      "a": "Caboolture",
+      "b": "Gympie North",
+      "reason": "Accepted nested short-turn (H5) — keep Caboolture vs Gympie North distinct on T1"
+    },
+    {
+      "a": "Doomben",
+      "b": "Eagle Junction",
+      "reason": "Accepted — weekday T3 is an Eagle Junction–Doomben shuttle, not a through-run"
+    },
+    {
+      "a": "Northgate",
+      "b": "Shorncliffe",
+      "reason": "Accepted nested short-turn (H5) — keep Northgate vs Shorncliffe distinct on T4"
+    },
+    {
+      "a": "Springfield Central",
+      "b": "Ipswich",
+      "reason": "H4 branch at Darra (T2 vs T1)"
+    },
+    {
+      "a": "Beenleigh",
+      "b": "Cleveland",
+      "reason": "H4 branch at Boggo Road (T6 vs T4)"
+    },
+    {
+      "a": "Varsity Lakes",
+      "b": "Beenleigh",
+      "reason": "H4 branch at Boggo Road (T5 vs T6)"
+    },
+    {
+      "a": "Domestic Airport",
+      "b": "Shorncliffe",
+      "reason": "H4 branch at Eagle Junction (T5 vs T4)"
+    },
+    {
+      "a": "Domestic Airport",
+      "b": "Kippa-Ring",
+      "reason": "H4 branch at Eagle Junction (T5 vs T2)"
+    },
+    {
+      "a": "Domestic Airport",
+      "b": "Doomben",
+      "reason": "H4 branch at Eagle Junction (T5 vs T3)"
+    },
+    {
+      "a": "Kippa-Ring",
+      "b": "Caboolture",
+      "reason": "H4 branch at Petrie (T2 vs T1)"
+    }
+  ],
+  "proposedShortTurnGroups": {
+    "T1:Ipswich station": [
+      "Gympie North station",
+      "Nambour station",
+      "Caboolture station",
+      "Roma Street station",
+      "Sherwood station",
+      "Darra station",
+      "Ipswich station"
+    ],
+    "T2:Roma Street station": [
+      "Kippa-Ring station",
+      "Roma Street station"
+    ],
+    "T3:Roma Street station": [
+      "Doomben station",
+      "Eagle Junction station",
+      "Bowen Hills station",
+      "Roma Street station"
+    ],
+    "T4:Cleveland station": [
+      "Shorncliffe station",
+      "Northgate station",
+      "Bowen Hills station",
+      "Roma Street station",
+      "Cannon Hill station",
+      "Lota station",
+      "Cleveland station"
+    ],
+    "T5:Varsity Lakes station": [
+      "Domestic Airport station",
+      "Bowen Hills station",
+      "Roma Street station",
+      "Altandi station",
+      "Varsity Lakes station"
+    ],
+    "T6:Beenleigh station": [
+      "Ferny Grove station",
+      "Bowen Hills station",
+      "Roma Street station",
+      "Salisbury station",
+      "Beenleigh station"
+    ]
+  },
+  "proposedDoNotGroup": [
+    {
+      "a": "Caboolture station",
+      "b": "Gympie North station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Nambour station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Ipswich station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Darra station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Sherwood station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Gympie North station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Nambour station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Ipswich station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Sherwood station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Doomben station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Bowen Hills station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Doomben station",
+      "b": "Eagle Junction station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Eagle Junction station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Eagle Junction station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bowen Hills station",
+      "b": "Eagle Junction station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Lota station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Cleveland station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Northgate station",
+      "b": "Shorncliffe station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bowen Hills station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Cannon Hill station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Northgate station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    }
+  ],
+  "rejectedProposedDoNotGroup": [
+    {
+      "a": "Caboolture station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Ipswich station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Darra station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Caboolture station",
+      "b": "Sherwood station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Gympie North station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Nambour station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Ipswich station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Darra station",
+      "b": "Sherwood station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Doomben station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Bowen Hills station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Eagle Junction station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Boggo Road station",
+      "b": "Eagle Junction station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bowen Hills station",
+      "b": "Eagle Junction station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Lota station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Cleveland station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bowen Hills station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Cannon Hill station",
+      "b": "Northgate station",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Northgate station",
+      "b": "Roma Street station",
+      "reason": "R3_branched_junction_guard"
+    }
+  ],
+  "junctionStations": [
+    "Boggo Road",
+    "Darra",
+    "Eagle Junction",
+    "Petrie"
+  ],
+  "suppressedTermini": [
+    "Exhibition"
+  ],
+  "lines": [
+    {
+      "id": "bdbr",
+      "name": "Airport - Brisbane City",
+      "routeShortName": "BDBR",
+      "tLine": null,
+      "termini": [
+        "Domestic Airport",
+        "Roma Street"
+      ],
+      "stations": [
+        "Domestic Airport",
+        "International Airport",
+        "Eagle Junction",
+        "Wooloowin",
+        "Albion",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street"
+      ],
+      "headsigns": {
+        "Roma Street station": 72,
+        "Bowen Hills station": 66
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "07:49:00",
+          "last": "13:47:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516562-QR 26_27-43852-DR30"
+    },
+    {
+      "id": "bdvl",
+      "name": "Airport - Varsity Lakes",
+      "routeShortName": "BDVL",
+      "tLine": "T5",
+      "termini": [
+        "Domestic Airport",
+        "Varsity Lakes"
+      ],
+      "stations": [
+        "Domestic Airport",
+        "International Airport",
+        "Eagle Junction",
+        "Wooloowin",
+        "Albion",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road",
+        "Altandi",
+        "Loganlea",
+        "Beenleigh",
+        "Ormeau",
+        "Pimpama",
+        "Coomera",
+        "Hope Island",
+        "Helensvale",
+        "Nerang",
+        "Robina",
+        "Varsity Lakes"
+      ],
+      "headsigns": {
+        "Varsity Lakes station": 461,
+        "Roma Street station": 5
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:04:00",
+          "last": "23:55:00"
+        },
+        "saturday": {
+          "first": "06:04:00",
+          "last": "23:55:00"
+        },
+        "sunday": {
+          "first": "06:04:00",
+          "last": "23:55:00"
+        }
+      },
+      "sampleTripId": "38516431-QR 26_27-43852-DG18"
+    },
+    {
+      "id": "bnbn",
+      "name": "Beenleigh - Beenleigh",
+      "routeShortName": "BNBN",
+      "tLine": null,
+      "termini": [
+        "Banoon",
+        "Beenleigh"
+      ],
+      "stations": [
+        "Banoon",
+        "Sunnybank",
+        "Altandi",
+        "Runcorn",
+        "Fruitgrove",
+        "Kuraby",
+        "Trinder Park",
+        "Woodridge",
+        "Kingston",
+        "Loganlea",
+        "Bethania",
+        "Edens Landing",
+        "Holmview",
+        "Beenleigh"
+      ],
+      "headsigns": {
+        "Beenleigh station": 3,
+        "Banoon station": 4
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474949-QR 26_27-43781-17A2"
+    },
+    {
+      "id": "bnbr",
+      "name": "Beenleigh - Brisbane City",
+      "routeShortName": "BNBR",
+      "tLine": "T6",
+      "termini": [
+        "Beenleigh",
+        "Bowen Hills"
+      ],
+      "stations": [
+        "Beenleigh",
+        "Holmview",
+        "Edens Landing",
+        "Bethania",
+        "Loganlea",
+        "Kingston",
+        "Woodridge",
+        "Trinder Park",
+        "Kuraby",
+        "Fruitgrove",
+        "Runcorn",
+        "Altandi",
+        "Sunnybank",
+        "Banoon",
+        "Coopers Plains",
+        "Salisbury",
+        "Rocklea",
+        "Yeerongpilly",
+        "Yeronga",
+        "Fairfield",
+        "Dutton Park",
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills"
+      ],
+      "headsigns": {
+        "Bowen Hills station": 322,
+        "Salisbury station": 14
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:18:00",
+          "last": "25:01:00"
+        },
+        "saturday": {
+          "first": "24:18:00",
+          "last": "26:01:00"
+        },
+        "sunday": {
+          "first": "22:18:00",
+          "last": "24:01:00"
+        }
+      },
+      "sampleTripId": "38516027-QR 26_27-43852-1M07"
+    },
+    {
+      "id": "bnfg",
+      "name": "Beenleigh - Ferny Grove",
+      "routeShortName": "BNFG",
+      "tLine": "T6",
+      "termini": [
+        "Beenleigh",
+        "Ferny Grove"
+      ],
+      "stations": [
+        "Beenleigh",
+        "Holmview",
+        "Edens Landing",
+        "Bethania",
+        "Loganlea",
+        "Kingston",
+        "Woodridge",
+        "Trinder Park",
+        "Kuraby",
+        "Fruitgrove",
+        "Runcorn",
+        "Altandi",
+        "Sunnybank",
+        "Banoon",
+        "Coopers Plains",
+        "Salisbury",
+        "Rocklea",
+        "Yeerongpilly",
+        "Yeronga",
+        "Fairfield",
+        "Dutton Park",
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Windsor",
+        "Wilston",
+        "Newmarket",
+        "Alderley",
+        "Enoggera",
+        "Gaythorne",
+        "Mitchelton",
+        "Oxford Park",
+        "Grovely",
+        "Keperra",
+        "Ferny Grove"
+      ],
+      "headsigns": {
+        "Ferny Grove station": 151
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "15:48:00",
+          "last": "17:27:00"
+        },
+        "saturday": {
+          "first": "05:18:00",
+          "last": "25:27:00"
+        },
+        "sunday": {
+          "first": "05:18:00",
+          "last": "23:27:00"
+        }
+      },
+      "sampleTripId": "38516031-QR 26_27-43852-1EQ3"
+    },
+    {
+      "id": "bnsh",
+      "name": "Beenleigh - Shorncliffe",
+      "routeShortName": "BNSH",
+      "tLine": null,
+      "termini": [
+        "Beenleigh",
+        "Shorncliffe"
+      ],
+      "stations": [
+        "Beenleigh",
+        "Holmview",
+        "Edens Landing",
+        "Bethania",
+        "Loganlea",
+        "Kingston",
+        "Woodridge",
+        "Trinder Park",
+        "Kuraby",
+        "Fruitgrove",
+        "Runcorn",
+        "Altandi",
+        "Sunnybank",
+        "Banoon",
+        "Coopers Plains",
+        "Salisbury",
+        "Rocklea",
+        "Yeerongpilly",
+        "Yeronga",
+        "Fairfield",
+        "Dutton Park",
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "Toombul",
+        "Nundah",
+        "Northgate",
+        "Bindha",
+        "Banyo",
+        "Nudgee",
+        "Boondall",
+        "North Boondall",
+        "Deagon",
+        "Sandgate",
+        "Shorncliffe"
+      ],
+      "headsigns": {
+        "Shorncliffe station": 7,
+        "Northgate station": 1
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:18:00",
+          "last": "07:05:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516420-QR 26_27-43852-DAQ7"
+    },
+    {
+      "id": "bnvl",
+      "name": "Beenleigh - Varsity Lakes",
+      "routeShortName": "BNVL",
+      "tLine": null,
+      "termini": [
+        "Banoon",
+        "Varsity Lakes"
+      ],
+      "stations": [
+        "Banoon",
+        "Sunnybank",
+        "Altandi",
+        "Runcorn",
+        "Fruitgrove",
+        "Kuraby",
+        "Trinder Park",
+        "Woodridge",
+        "Kingston",
+        "Loganlea",
+        "Bethania",
+        "Edens Landing",
+        "Holmview",
+        "Beenleigh",
+        "Ormeau",
+        "Pimpama",
+        "Coomera",
+        "Hope Island",
+        "Helensvale",
+        "Nerang",
+        "Robina",
+        "Varsity Lakes"
+      ],
+      "headsigns": {
+        "Varsity Lakes station": 76
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38475104-QR 26_27-43781-DGL6"
+    },
+    {
+      "id": "brbd",
+      "name": "Brisbane City - Airport",
+      "routeShortName": "BRBD",
+      "tLine": "T5",
+      "termini": [
+        "Roma Street",
+        "Domestic Airport"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "International Airport",
+        "Domestic Airport"
+      ],
+      "headsigns": {
+        "Domestic Airport station": 182
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:27:00",
+          "last": "17:41:00"
+        },
+        "saturday": {
+          "first": "05:27:00",
+          "last": "06:55:00"
+        },
+        "sunday": {
+          "first": "05:27:00",
+          "last": "06:56:00"
+        }
+      },
+      "sampleTripId": "38516502-QR 26_27-43852-DP01"
+    },
+    {
+      "id": "brbn",
+      "name": "Brisbane City - Beenleigh",
+      "routeShortName": "BRBN",
+      "tLine": "T6",
+      "termini": [
+        "Bowen Hills",
+        "Beenleigh"
+      ],
+      "stations": [
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road",
+        "Dutton Park",
+        "Fairfield",
+        "Yeronga",
+        "Yeerongpilly",
+        "Rocklea",
+        "Salisbury",
+        "Coopers Plains",
+        "Banoon",
+        "Sunnybank",
+        "Altandi",
+        "Runcorn",
+        "Fruitgrove",
+        "Kuraby",
+        "Trinder Park",
+        "Woodridge",
+        "Kingston",
+        "Loganlea",
+        "Bethania",
+        "Edens Landing",
+        "Holmview",
+        "Beenleigh"
+      ],
+      "headsigns": {
+        "Beenleigh station": 332,
+        "Roma Street station": 12
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "03:58:00",
+          "last": "25:11:00"
+        },
+        "saturday": {
+          "first": "03:43:00",
+          "last": "06:11:00"
+        },
+        "sunday": {
+          "first": "03:43:00",
+          "last": "07:14:00"
+        }
+      },
+      "sampleTripId": "38516026-QR 26_27-43852-1702"
+    },
+    {
+      "id": "brbr",
+      "name": "Brisbane City - Brisbane City",
+      "routeShortName": "BRBR",
+      "tLine": "T5",
+      "termini": [
+        "Roma Street",
+        "Bowen Hills"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills"
+      ],
+      "headsigns": {
+        "Bowen Hills station": 18,
+        "Roma Street station": 13
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "16:03:00",
+          "last": "19:24:00"
+        },
+        "saturday": {
+          "first": "03:52:00",
+          "last": "25:40:00"
+        },
+        "sunday": {
+          "first": "03:52:00",
+          "last": "23:41:00"
+        }
+      },
+      "sampleTripId": "38516124-QR 26_27-43852-1M57"
+    },
+    {
+      "id": "brca",
+      "name": "Brisbane City - Caboolture",
+      "routeShortName": "BRCA",
+      "tLine": "T1",
+      "termini": [
+        "Roma Street",
+        "Caboolture"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "Toombul",
+        "Nundah",
+        "Northgate",
+        "Virginia",
+        "Sunshine",
+        "Geebung",
+        "Zillmere",
+        "Carseldine",
+        "Bald Hills",
+        "Strathpine",
+        "Bray Park",
+        "Lawnton",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture"
+      ],
+      "headsigns": {
+        "Caboolture station": 84
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:33:00",
+          "last": "17:33:00"
+        },
+        "saturday": {
+          "first": "03:42:00",
+          "last": "25:56:00"
+        },
+        "sunday": {
+          "first": "03:42:00",
+          "last": "23:56:00"
+        }
+      },
+      "sampleTripId": "38094942-QR 26_27-43503-D101"
+    },
+    {
+      "id": "brcl",
+      "name": "Brisbane City - Cleveland",
+      "routeShortName": "BRCL",
+      "tLine": "T4",
+      "termini": [
+        "Bowen Hills",
+        "Cleveland"
+      ],
+      "stations": [
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road",
+        "Buranda",
+        "Coorparoo",
+        "Norman Park",
+        "Morningside",
+        "Cannon Hill",
+        "Murarrie",
+        "Hemmant",
+        "Lindum",
+        "Wynnum North",
+        "Wynnum",
+        "Wynnum Central",
+        "Manly",
+        "Lota",
+        "Thorneside",
+        "Birkdale",
+        "Wellington Point",
+        "Ormiston",
+        "Cleveland"
+      ],
+      "headsigns": {
+        "Lota station": 7,
+        "Cleveland station": 24
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:11:00",
+          "last": "17:38:00"
+        },
+        "saturday": {
+          "first": "04:41:00",
+          "last": "06:20:00"
+        },
+        "sunday": {
+          "first": "05:43:00",
+          "last": "07:20:00"
+        }
+      },
+      "sampleTripId": "38516336-QR 26_27-43852-D802"
+    },
+    {
+      "id": "brdb",
+      "name": "Brisbane City - Doomben",
+      "routeShortName": "BRDB",
+      "tLine": "T3",
+      "termini": [
+        "Boggo Road",
+        "Doomben"
+      ],
+      "stations": [
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "Clayfield",
+        "Hendra",
+        "Ascot",
+        "Doomben"
+      ],
+      "headsigns": {
+        "Doomben station": 86
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:19:00",
+          "last": "05:46:00"
+        },
+        "saturday": {
+          "first": "07:20:00",
+          "last": "19:46:00"
+        },
+        "sunday": {
+          "first": "07:20:00",
+          "last": "19:46:00"
+        }
+      },
+      "sampleTripId": "38095103-QR 26_27-43503-DB05"
+    },
+    {
+      "id": "brfg",
+      "name": "Brisbane City - Ferny Grove",
+      "routeShortName": "BRFG",
+      "tLine": null,
+      "termini": [
+        "Roma Street",
+        "Ferny Grove"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Windsor",
+        "Wilston",
+        "Newmarket",
+        "Alderley",
+        "Enoggera",
+        "Gaythorne",
+        "Mitchelton",
+        "Oxford Park",
+        "Grovely",
+        "Keperra",
+        "Ferny Grove"
+      ],
+      "headsigns": {
+        "Ferny Grove station": 517
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:16:00",
+          "last": "24:07:00"
+        },
+        "saturday": {
+          "first": "04:52:00",
+          "last": "06:27:00"
+        },
+        "sunday": {
+          "first": "04:52:00",
+          "last": "06:27:00"
+        }
+      },
+      "sampleTripId": "38516033-QR 26_27-43852-1E83"
+    },
+    {
+      "id": "brgy",
+      "name": "Brisbane City - Gympie North",
+      "routeShortName": "BRGY",
+      "tLine": "T1",
+      "termini": [
+        "Roma Street",
+        "Gympie North"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Northgate",
+        "Petrie",
+        "Caboolture",
+        "Elimbah",
+        "Beerburrum",
+        "Glass House Mountains",
+        "Beerwah",
+        "Landsborough",
+        "Mooloolah",
+        "Eudlo",
+        "Palmwoods",
+        "Woombye",
+        "Nambour",
+        "Yandina",
+        "Eumundi",
+        "Cooroy",
+        "Pomona",
+        "Cooran",
+        "Traveston",
+        "Gympie North"
+      ],
+      "headsigns": {
+        "Gympie North station": 22
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "09:29:00",
+          "last": "20:53:00"
+        },
+        "saturday": {
+          "first": "17:00:00",
+          "last": "20:04:00"
+        },
+        "sunday": {
+          "first": "12:00:00",
+          "last": "20:04:00"
+        }
+      },
+      "sampleTripId": "38516221-QR 26_27-43852-D403"
+    },
+    {
+      "id": "brip",
+      "name": "Brisbane City - Ipswich",
+      "routeShortName": "BRIP",
+      "tLine": null,
+      "termini": [
+        "Bowen Hills",
+        "Ipswich"
+      ],
+      "stations": [
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Wacol",
+        "Gailes",
+        "Goodna",
+        "Redbank",
+        "Riverview",
+        "Dinmore",
+        "Ebbw Vale",
+        "Bundamba",
+        "Booval",
+        "East Ipswich",
+        "Ipswich"
+      ],
+      "headsigns": {
+        "Ipswich station": 123
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "14:44:00",
+          "last": "19:03:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516025-QR 26_27-43852-15Q2"
+    },
+    {
+      "id": "brna",
+      "name": "Brisbane City - Nambour",
+      "routeShortName": "BRNA",
+      "tLine": "T1",
+      "termini": [
+        "Roma Street",
+        "Nambour"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Eagle Junction",
+        "Northgate",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture",
+        "Elimbah",
+        "Beerburrum",
+        "Glass House Mountains",
+        "Beerwah",
+        "Landsborough",
+        "Mooloolah",
+        "Eudlo",
+        "Palmwoods",
+        "Woombye",
+        "Nambour"
+      ],
+      "headsigns": {
+        "Nambour station": 20
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": "07:03:00",
+          "last": "22:26:00"
+        },
+        "sunday": {
+          "first": "07:03:00",
+          "last": "22:26:00"
+        }
+      },
+      "sampleTripId": "38325776-QR 26_27-43708-DL05"
+    },
+    {
+      "id": "brrp",
+      "name": "Brisbane City - Redcliffe Peninsula",
+      "routeShortName": "BRRP",
+      "tLine": "T2",
+      "termini": [
+        "Roma Street",
+        "Kippa-Ring"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Eagle Junction",
+        "Northgate",
+        "Virginia",
+        "Sunshine",
+        "Geebung",
+        "Zillmere",
+        "Carseldine",
+        "Bald Hills",
+        "Strathpine",
+        "Bray Park",
+        "Lawnton",
+        "Petrie",
+        "Kallangur",
+        "Murrumba Downs",
+        "Mango Hill",
+        "Mango Hill East",
+        "Rothwell",
+        "Kippa-Ring"
+      ],
+      "headsigns": {
+        "Kippa-Ring station": 232
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:48:00",
+          "last": "19:19:00"
+        },
+        "saturday": {
+          "first": "05:18:00",
+          "last": "26:16:00"
+        },
+        "sunday": {
+          "first": "06:18:00",
+          "last": "24:16:00"
+        }
+      },
+      "sampleTripId": "38516175-QR 26_27-43852-1YH1"
+    },
+    {
+      "id": "brsh",
+      "name": "Brisbane City - Shorncliffe",
+      "routeShortName": "BRSH",
+      "tLine": "T4",
+      "termini": [
+        "Roma Street",
+        "Shorncliffe"
+      ],
+      "stations": [
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "Toombul",
+        "Nundah",
+        "Northgate",
+        "Bindha",
+        "Banyo",
+        "Nudgee",
+        "Boondall",
+        "North Boondall",
+        "Deagon",
+        "Sandgate",
+        "Shorncliffe"
+      ],
+      "headsigns": {
+        "Northgate station": 477,
+        "Shorncliffe station": 23
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:24:00",
+          "last": "23:48:00"
+        },
+        "saturday": {
+          "first": "04:39:00",
+          "last": "25:17:00"
+        },
+        "sunday": {
+          "first": "05:09:00",
+          "last": "23:17:00"
+        }
+      },
+      "sampleTripId": "38516401-QR 26_27-43852-DA01"
+    },
+    {
+      "id": "brsp",
+      "name": "Brisbane City - Springfield",
+      "routeShortName": "BRSP",
+      "tLine": null,
+      "termini": [
+        "Bowen Hills",
+        "Springfield Central"
+      ],
+      "stations": [
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Richlands",
+        "Springfield",
+        "Springfield Central"
+      ],
+      "headsigns": {
+        "Springfield Central station": 8
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "16:57:00",
+          "last": "17:44:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516125-QR 26_27-43852-1KQ4"
+    },
+    {
+      "id": "brvl",
+      "name": "Brisbane City - Varsity Lakes",
+      "routeShortName": "BRVL",
+      "tLine": "T5",
+      "termini": [
+        "Bowen Hills",
+        "Varsity Lakes"
+      ],
+      "stations": [
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road",
+        "Altandi",
+        "Loganlea",
+        "Beenleigh",
+        "Ormeau",
+        "Pimpama",
+        "Coomera",
+        "Hope Island",
+        "Helensvale",
+        "Nerang",
+        "Robina",
+        "Varsity Lakes"
+      ],
+      "headsigns": {
+        "Varsity Lakes station": 41,
+        "Roma Street station": 1
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:23:00",
+          "last": "24:25:00"
+        },
+        "saturday": {
+          "first": "05:23:00",
+          "last": "25:55:00"
+        },
+        "sunday": {
+          "first": "05:53:00",
+          "last": "24:25:00"
+        }
+      },
+      "sampleTripId": "38516429-QR 26_27-43852-DG02"
+    },
+    {
+      "id": "cabr",
+      "name": "Caboolture - Brisbane City",
+      "routeShortName": "CABR",
+      "tLine": "T1",
+      "termini": [
+        "Petrie",
+        "Roma Street"
+      ],
+      "stations": [
+        "Petrie",
+        "Lawnton",
+        "Bray Park",
+        "Strathpine",
+        "Bald Hills",
+        "Carseldine",
+        "Zillmere",
+        "Geebung",
+        "Sunshine",
+        "Virginia",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street"
+      ],
+      "headsigns": {
+        "Roma Street station": 64
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "06:57:00",
+          "last": "08:11:00"
+        },
+        "saturday": {
+          "first": "05:05:00",
+          "last": "25:00:00"
+        },
+        "sunday": {
+          "first": "05:05:00",
+          "last": "22:30:00"
+        }
+      },
+      "sampleTripId": "38516400-QR 26_27-43852-D9S2"
+    },
+    {
+      "id": "cadb",
+      "name": "Caboolture - Doomben",
+      "routeShortName": "CADB",
+      "tLine": "T3",
+      "termini": [
+        "Eagle Junction",
+        "Doomben"
+      ],
+      "stations": [
+        "Eagle Junction",
+        "Clayfield",
+        "Hendra",
+        "Ascot",
+        "Doomben"
+      ],
+      "headsigns": {
+        "Doomben station": 224
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "06:10:00",
+          "last": "19:50:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516735-QR 26_27-43852-JB03"
+    },
+    {
+      "id": "caex",
+      "name": "Caboolture - Exhibition",
+      "routeShortName": "CAEX",
+      "tLine": null,
+      "termini": [
+        "Caboolture",
+        "Exhibition"
+      ],
+      "stations": [
+        "Caboolture",
+        "Morayfield",
+        "Burpengary",
+        "Narangba",
+        "Dakabin",
+        "Petrie",
+        "Northgate",
+        "Eagle Junction",
+        "Exhibition"
+      ],
+      "headsigns": {
+        "Exhibition station": 49
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474952-QR 26_27-43781-DX12"
+    },
+    {
+      "id": "caip",
+      "name": "Caboolture - Ipswich",
+      "routeShortName": "CAIP",
+      "tLine": "T1",
+      "termini": [
+        "Caboolture",
+        "Ipswich"
+      ],
+      "stations": [
+        "Caboolture",
+        "Morayfield",
+        "Burpengary",
+        "Narangba",
+        "Dakabin",
+        "Petrie",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Wacol",
+        "Gailes",
+        "Goodna",
+        "Redbank",
+        "Riverview",
+        "Dinmore",
+        "Ebbw Vale",
+        "Bundamba",
+        "Booval",
+        "East Ipswich",
+        "Ipswich"
+      ],
+      "headsigns": {
+        "Ipswich station": 192,
+        "Darra station": 5,
+        "Sherwood station": 4
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:05:00",
+          "last": "24:26:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516020-QR 26_27-43852-1518"
+    },
+    {
+      "id": "casp",
+      "name": "Caboolture - Springfield",
+      "routeShortName": "CASP",
+      "tLine": null,
+      "termini": [
+        "Caboolture",
+        "Springfield Central"
+      ],
+      "stations": [
+        "Caboolture",
+        "Morayfield",
+        "Burpengary",
+        "Narangba",
+        "Dakabin",
+        "Petrie",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Richlands",
+        "Springfield",
+        "Springfield Central"
+      ],
+      "headsigns": {
+        "Springfield Central station": 81
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:50:00",
+          "last": "18:39:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516024-QR 26_27-43852-1K68"
+    },
+    {
+      "id": "clbr",
+      "name": "Cleveland - Brisbane City",
+      "routeShortName": "CLBR",
+      "tLine": "T4",
+      "termini": [
+        "Cleveland",
+        "Bowen Hills"
+      ],
+      "stations": [
+        "Cleveland",
+        "Ormiston",
+        "Wellington Point",
+        "Birkdale",
+        "Thorneside",
+        "Lota",
+        "Manly",
+        "Wynnum Central",
+        "Wynnum",
+        "Wynnum North",
+        "Lindum",
+        "Hemmant",
+        "Murarrie",
+        "Cannon Hill",
+        "Morningside",
+        "Norman Park",
+        "Coorparoo",
+        "Buranda",
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills"
+      ],
+      "headsigns": {
+        "Bowen Hills station": 49,
+        "Cannon Hill station": 4
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "06:47:00",
+          "last": "24:47:00"
+        },
+        "saturday": {
+          "first": "24:09:00",
+          "last": "25:48:00"
+        },
+        "sunday": {
+          "first": "22:09:00",
+          "last": "24:18:00"
+        }
+      },
+      "sampleTripId": "38516370-QR 26_27-43852-DM99"
+    },
+    {
+      "id": "clcl",
+      "name": "Cleveland - Cleveland",
+      "routeShortName": "CLCL",
+      "tLine": null,
+      "termini": [
+        "Cannon Hill",
+        "Cleveland"
+      ],
+      "stations": [
+        "Cannon Hill",
+        "Murarrie",
+        "Hemmant",
+        "Lindum",
+        "Wynnum North",
+        "Wynnum",
+        "Wynnum Central",
+        "Manly",
+        "Lota",
+        "Thorneside",
+        "Birkdale",
+        "Wellington Point",
+        "Ormiston",
+        "Cleveland"
+      ],
+      "headsigns": {
+        "Cleveland station": 76,
+        "Cannon Hill station": 75
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38475637-QR 26_27-43781-J8A2"
+    },
+    {
+      "id": "clsh",
+      "name": "Cleveland - Shorncliffe",
+      "routeShortName": "CLSH",
+      "tLine": "T4",
+      "termini": [
+        "Cleveland",
+        "Shorncliffe"
+      ],
+      "stations": [
+        "Cleveland",
+        "Ormiston",
+        "Wellington Point",
+        "Birkdale",
+        "Thorneside",
+        "Lota",
+        "Manly",
+        "Wynnum Central",
+        "Wynnum",
+        "Wynnum North",
+        "Lindum",
+        "Hemmant",
+        "Murarrie",
+        "Cannon Hill",
+        "Morningside",
+        "Norman Park",
+        "Coorparoo",
+        "Buranda",
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "Toombul",
+        "Nundah",
+        "Northgate",
+        "Bindha",
+        "Banyo",
+        "Nudgee",
+        "Boondall",
+        "North Boondall",
+        "Deagon",
+        "Sandgate",
+        "Shorncliffe"
+      ],
+      "headsigns": {
+        "Northgate station": 227,
+        "Shorncliffe station": 339,
+        "Cannon Hill station": 8
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:39:00",
+          "last": "24:02:00"
+        },
+        "saturday": {
+          "first": "05:09:00",
+          "last": "25:01:00"
+        },
+        "sunday": {
+          "first": "06:09:00",
+          "last": "23:01:00"
+        }
+      },
+      "sampleTripId": "38516047-QR 26_27-43852-1A39"
+    },
+    {
+      "id": "dbbr",
+      "name": "Doomben - Brisbane City",
+      "routeShortName": "DBBR",
+      "tLine": "T3",
+      "termini": [
+        "Doomben",
+        "Boggo Road"
+      ],
+      "stations": [
+        "Doomben",
+        "Ascot",
+        "Hendra",
+        "Clayfield",
+        "Eagle Junction",
+        "Wooloowin",
+        "Albion",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road"
+      ],
+      "headsigns": {
+        "Roma Street station": 16,
+        "Boggo Road station": 44,
+        "Bowen Hills station": 26
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "19:58:00",
+          "last": "20:25:00"
+        },
+        "saturday": {
+          "first": "07:58:00",
+          "last": "20:25:00"
+        },
+        "sunday": {
+          "first": "07:58:00",
+          "last": "20:25:00"
+        }
+      },
+      "sampleTripId": "38095100-QR 26_27-43503-DS02"
+    },
+    {
+      "id": "dbca",
+      "name": "Doomben - Caboolture",
+      "routeShortName": "DBCA",
+      "tLine": "T3",
+      "termini": [
+        "Doomben",
+        "Eagle Junction"
+      ],
+      "stations": [
+        "Doomben",
+        "Ascot",
+        "Hendra",
+        "Clayfield",
+        "Eagle Junction"
+      ],
+      "headsigns": {
+        "Eagle Junction station": 224
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:58:00",
+          "last": "19:37:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516734-QR 26_27-43852-JM22"
+    },
+    {
+      "id": "exca",
+      "name": "Exhibition - Caboolture",
+      "routeShortName": "EXCA",
+      "tLine": null,
+      "termini": [
+        "Exhibition",
+        "Caboolture"
+      ],
+      "stations": [
+        "Exhibition",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "Toombul",
+        "Nundah",
+        "Northgate",
+        "Virginia",
+        "Sunshine",
+        "Geebung",
+        "Zillmere",
+        "Carseldine",
+        "Bald Hills",
+        "Strathpine",
+        "Bray Park",
+        "Lawnton",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture"
+      ],
+      "headsigns": {
+        "Caboolture station": 57
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474950-QR 26_27-43781-D101"
+    },
+    {
+      "id": "exgy",
+      "name": "Exhibition - Gympie North",
+      "routeShortName": "EXGY",
+      "tLine": null,
+      "termini": [
+        "Exhibition",
+        "Gympie North"
+      ],
+      "stations": [
+        "Exhibition",
+        "Northgate",
+        "Petrie",
+        "Caboolture",
+        "Elimbah",
+        "Beerburrum",
+        "Glass House Mountains",
+        "Beerwah",
+        "Landsborough",
+        "Mooloolah",
+        "Eudlo",
+        "Palmwoods",
+        "Woombye",
+        "Nambour",
+        "Yandina",
+        "Eumundi",
+        "Cooroy",
+        "Pomona",
+        "Cooran",
+        "Traveston",
+        "Gympie North"
+      ],
+      "headsigns": {
+        "Gympie North station": 3
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474960-QR 26_27-43781-D401"
+    },
+    {
+      "id": "exna",
+      "name": "Exhibition - Nambour",
+      "routeShortName": "EXNA",
+      "tLine": null,
+      "termini": [
+        "Exhibition",
+        "Nambour"
+      ],
+      "stations": [
+        "Exhibition",
+        "Eagle Junction",
+        "Northgate",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture",
+        "Elimbah",
+        "Beerburrum",
+        "Glass House Mountains",
+        "Beerwah",
+        "Landsborough",
+        "Mooloolah",
+        "Eudlo",
+        "Palmwoods",
+        "Woombye",
+        "Nambour"
+      ],
+      "headsigns": {
+        "Nambour station": 20
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38475461-QR 26_27-43781-DL05"
+    },
+    {
+      "id": "exrp",
+      "name": "Exhibition - Redcliffe Peninsula",
+      "routeShortName": "EXRP",
+      "tLine": null,
+      "termini": [
+        "Exhibition",
+        "Kippa-Ring"
+      ],
+      "stations": [
+        "Exhibition",
+        "Eagle Junction",
+        "Northgate",
+        "Virginia",
+        "Sunshine",
+        "Geebung",
+        "Zillmere",
+        "Carseldine",
+        "Bald Hills",
+        "Strathpine",
+        "Bray Park",
+        "Lawnton",
+        "Petrie",
+        "Kallangur",
+        "Murrumba Downs",
+        "Mango Hill",
+        "Mango Hill East",
+        "Rothwell",
+        "Kippa-Ring"
+      ],
+      "headsigns": {
+        "Kippa-Ring station": 76
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474953-QR 26_27-43781-DY09"
+    },
+    {
+      "id": "fgbn",
+      "name": "Ferny Grove - Beenleigh",
+      "routeShortName": "FGBN",
+      "tLine": "T6",
+      "termini": [
+        "Ferny Grove",
+        "Beenleigh"
+      ],
+      "stations": [
+        "Ferny Grove",
+        "Keperra",
+        "Grovely",
+        "Oxford Park",
+        "Mitchelton",
+        "Gaythorne",
+        "Enoggera",
+        "Alderley",
+        "Newmarket",
+        "Wilston",
+        "Windsor",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road",
+        "Dutton Park",
+        "Fairfield",
+        "Yeronga",
+        "Yeerongpilly",
+        "Rocklea",
+        "Salisbury",
+        "Coopers Plains",
+        "Banoon",
+        "Sunnybank",
+        "Altandi",
+        "Runcorn",
+        "Fruitgrove",
+        "Kuraby",
+        "Trinder Park",
+        "Woodridge",
+        "Kingston",
+        "Loganlea",
+        "Bethania",
+        "Edens Landing",
+        "Holmview",
+        "Beenleigh"
+      ],
+      "headsigns": {
+        "Beenleigh station": 144
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": "05:02:00",
+          "last": "25:41:00"
+        },
+        "sunday": {
+          "first": "06:02:00",
+          "last": "23:41:00"
+        }
+      },
+      "sampleTripId": "38094860-QR 26_27-43503-1722"
+    },
+    {
+      "id": "fgbr",
+      "name": "Ferny Grove - Brisbane City",
+      "routeShortName": "FGBR",
+      "tLine": null,
+      "termini": [
+        "Ferny Grove",
+        "Roma Street"
+      ],
+      "stations": [
+        "Ferny Grove",
+        "Keperra",
+        "Grovely",
+        "Oxford Park",
+        "Mitchelton",
+        "Gaythorne",
+        "Enoggera",
+        "Alderley",
+        "Newmarket",
+        "Wilston",
+        "Windsor",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street"
+      ],
+      "headsigns": {
+        "Roma Street station": 454,
+        "Bowen Hills station": 75
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:52:00",
+          "last": "24:37:00"
+        },
+        "saturday": {
+          "first": "24:32:00",
+          "last": "25:07:00"
+        },
+        "sunday": {
+          "first": "22:32:00",
+          "last": "23:41:00"
+        }
+      },
+      "sampleTripId": "38516032-QR 26_27-43852-1R96"
+    },
+    {
+      "id": "gybr",
+      "name": "Gympie North - Brisbane City",
+      "routeShortName": "GYBR",
+      "tLine": "T1",
+      "termini": [
+        "Gympie North",
+        "Roma Street"
+      ],
+      "stations": [
+        "Gympie North",
+        "Traveston",
+        "Cooran",
+        "Pomona",
+        "Cooroy",
+        "Eumundi",
+        "Yandina",
+        "Nambour",
+        "Woombye",
+        "Palmwoods",
+        "Eudlo",
+        "Mooloolah",
+        "Landsborough",
+        "Beerwah",
+        "Glass House Mountains",
+        "Beerburrum",
+        "Elimbah",
+        "Caboolture",
+        "Petrie",
+        "Northgate",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street"
+      ],
+      "headsigns": {
+        "Roma Street station": 14
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:54:00",
+          "last": "08:49:00"
+        },
+        "saturday": {
+          "first": "05:47:00",
+          "last": "23:52:00"
+        },
+        "sunday": {
+          "first": "15:43:00",
+          "last": "18:38:00"
+        }
+      },
+      "sampleTripId": "38516395-QR 26_27-43852-D920"
+    },
+    {
+      "id": "gyex",
+      "name": "Gympie North - Exhibition",
+      "routeShortName": "GYEX",
+      "tLine": null,
+      "termini": [
+        "Gympie North",
+        "Exhibition"
+      ],
+      "stations": [
+        "Gympie North",
+        "Traveston",
+        "Cooran",
+        "Pomona",
+        "Cooroy",
+        "Eumundi",
+        "Yandina",
+        "Nambour",
+        "Woombye",
+        "Palmwoods",
+        "Eudlo",
+        "Mooloolah",
+        "Landsborough",
+        "Beerwah",
+        "Glass House Mountains",
+        "Beerburrum",
+        "Elimbah",
+        "Caboolture",
+        "Petrie",
+        "Northgate",
+        "Exhibition"
+      ],
+      "headsigns": {
+        "Exhibition station": 3
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474961-QR 26_27-43781-DX04"
+    },
+    {
+      "id": "gysp",
+      "name": "Gympie North - Springfield",
+      "routeShortName": "GYSP",
+      "tLine": null,
+      "termini": [
+        "Gympie North",
+        "Springfield Central"
+      ],
+      "stations": [
+        "Gympie North",
+        "Traveston",
+        "Cooran",
+        "Pomona",
+        "Cooroy",
+        "Eumundi",
+        "Yandina",
+        "Nambour",
+        "Woombye",
+        "Palmwoods",
+        "Eudlo",
+        "Mooloolah",
+        "Landsborough",
+        "Beerwah",
+        "Glass House Mountains",
+        "Beerburrum",
+        "Elimbah",
+        "Caboolture",
+        "Petrie",
+        "Northgate",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Richlands",
+        "Springfield",
+        "Springfield Central"
+      ],
+      "headsigns": {
+        "Springfield Central station": 8
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "13:16:00",
+          "last": "17:00:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516397-QR 26_27-43852-DKS4"
+    },
+    {
+      "id": "ipbr",
+      "name": "Ipswich - Brisbane City",
+      "routeShortName": "IPBR",
+      "tLine": null,
+      "termini": [
+        "Ipswich",
+        "Bowen Hills"
+      ],
+      "stations": [
+        "Ipswich",
+        "East Ipswich",
+        "Booval",
+        "Bundamba",
+        "Ebbw Vale",
+        "Dinmore",
+        "Riverview",
+        "Redbank",
+        "Goodna",
+        "Gailes",
+        "Wacol",
+        "Darra",
+        "Oxley",
+        "Corinda",
+        "Sherwood",
+        "Graceville",
+        "Chelmer",
+        "Indooroopilly",
+        "Taringa",
+        "Toowong",
+        "Auchenflower",
+        "Milton",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills"
+      ],
+      "headsigns": {
+        "Bowen Hills station": 128
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:29:00",
+          "last": "24:41:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516015-QR 26_27-43852-1001"
+    },
+    {
+      "id": "ipca",
+      "name": "Ipswich - Caboolture",
+      "routeShortName": "IPCA",
+      "tLine": "T1",
+      "termini": [
+        "Ipswich",
+        "Caboolture"
+      ],
+      "stations": [
+        "Ipswich",
+        "East Ipswich",
+        "Booval",
+        "Bundamba",
+        "Ebbw Vale",
+        "Dinmore",
+        "Riverview",
+        "Redbank",
+        "Goodna",
+        "Gailes",
+        "Wacol",
+        "Darra",
+        "Oxley",
+        "Corinda",
+        "Sherwood",
+        "Graceville",
+        "Chelmer",
+        "Indooroopilly",
+        "Taringa",
+        "Toowong",
+        "Auchenflower",
+        "Milton",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Eagle Junction",
+        "Northgate",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture"
+      ],
+      "headsigns": {
+        "Caboolture station": 206
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:07:00",
+          "last": "23:56:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516021-QR 26_27-43852-1119"
+    },
+    {
+      "id": "ipip",
+      "name": "Ipswich - Ipswich",
+      "routeShortName": "IPIP",
+      "tLine": null,
+      "termini": [
+        "Corinda",
+        "Ipswich"
+      ],
+      "stations": [
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Wacol",
+        "Gailes",
+        "Goodna",
+        "Redbank",
+        "Riverview",
+        "Dinmore",
+        "Ebbw Vale",
+        "Bundamba",
+        "Booval",
+        "East Ipswich",
+        "Ipswich"
+      ],
+      "headsigns": {
+        "Ipswich station": 75,
+        "Corinda station": 72
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474947-QR 26_27-43781-15A2"
+    },
+    {
+      "id": "ipna",
+      "name": "Ipswich - Nambour",
+      "routeShortName": "IPNA",
+      "tLine": "T1",
+      "termini": [
+        "Ipswich",
+        "Nambour"
+      ],
+      "stations": [
+        "Ipswich",
+        "East Ipswich",
+        "Booval",
+        "Bundamba",
+        "Ebbw Vale",
+        "Dinmore",
+        "Riverview",
+        "Redbank",
+        "Goodna",
+        "Gailes",
+        "Wacol",
+        "Darra",
+        "Oxley",
+        "Corinda",
+        "Sherwood",
+        "Graceville",
+        "Chelmer",
+        "Indooroopilly",
+        "Taringa",
+        "Toowong",
+        "Auchenflower",
+        "Milton",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Eagle Junction",
+        "Northgate",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture",
+        "Elimbah",
+        "Beerburrum",
+        "Glass House Mountains",
+        "Beerwah",
+        "Landsborough",
+        "Mooloolah",
+        "Eudlo",
+        "Palmwoods",
+        "Woombye",
+        "Nambour"
+      ],
+      "headsigns": {
+        "Nambour station": 131
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:37:00",
+          "last": "25:26:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516216-QR 26_27-43852-DL09"
+    },
+    {
+      "id": "iprw",
+      "name": "Ipswich - Rosewood",
+      "routeShortName": "IPRW",
+      "tLine": null,
+      "termini": [
+        "Ipswich",
+        "Rosewood"
+      ],
+      "stations": [
+        "Ipswich",
+        "Thomas Street",
+        "Wulkuraka",
+        "Karrabin",
+        "Walloon",
+        "Thagoona",
+        "Rosewood"
+      ],
+      "headsigns": {
+        "Rosewood station": 284
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:34:00",
+          "last": "24:56:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516681-QR 26_27-43852-J602"
+    },
+    {
+      "id": "ipsp",
+      "name": "Ipswich - Springfield",
+      "routeShortName": "IPSP",
+      "tLine": null,
+      "termini": [
+        "Corinda",
+        "Springfield Central"
+      ],
+      "stations": [
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Richlands",
+        "Springfield",
+        "Springfield Central"
+      ],
+      "headsigns": {
+        "Springfield Central station": 67
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474989-QR 26_27-43781-DKA4"
+    },
+    {
+      "id": "nabr",
+      "name": "Nambour - Brisbane City",
+      "routeShortName": "NABR",
+      "tLine": "T1",
+      "termini": [
+        "Nambour",
+        "Roma Street"
+      ],
+      "stations": [
+        "Nambour",
+        "Woombye",
+        "Palmwoods",
+        "Eudlo",
+        "Mooloolah",
+        "Landsborough",
+        "Beerwah",
+        "Glass House Mountains",
+        "Beerburrum",
+        "Elimbah",
+        "Caboolture",
+        "Morayfield",
+        "Burpengary",
+        "Narangba",
+        "Dakabin",
+        "Petrie",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street"
+      ],
+      "headsigns": {
+        "Roma Street station": 30
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "22:38:00",
+          "last": "24:30:00"
+        },
+        "saturday": {
+          "first": "06:08:00",
+          "last": "24:30:00"
+        },
+        "sunday": {
+          "first": "06:08:00",
+          "last": "23:00:00"
+        }
+      },
+      "sampleTripId": "38516497-QR 26_27-43852-D932"
+    },
+    {
+      "id": "naex",
+      "name": "Nambour - Exhibition",
+      "routeShortName": "NAEX",
+      "tLine": null,
+      "termini": [
+        "Nambour",
+        "Exhibition"
+      ],
+      "stations": [
+        "Nambour",
+        "Woombye",
+        "Palmwoods",
+        "Eudlo",
+        "Mooloolah",
+        "Landsborough",
+        "Beerwah",
+        "Glass House Mountains",
+        "Beerburrum",
+        "Elimbah",
+        "Caboolture",
+        "Morayfield",
+        "Burpengary",
+        "Narangba",
+        "Dakabin",
+        "Petrie",
+        "Northgate",
+        "Eagle Junction",
+        "Exhibition"
+      ],
+      "headsigns": {
+        "Exhibition station": 23
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38475458-QR 26_27-43781-DX14"
+    },
+    {
+      "id": "naip",
+      "name": "Nambour - Ipswich",
+      "routeShortName": "NAIP",
+      "tLine": null,
+      "termini": [
+        "Nambour",
+        "Ipswich"
+      ],
+      "stations": [
+        "Nambour",
+        "Woombye",
+        "Palmwoods",
+        "Eudlo",
+        "Mooloolah",
+        "Landsborough",
+        "Beerwah",
+        "Glass House Mountains",
+        "Beerburrum",
+        "Elimbah",
+        "Caboolture",
+        "Morayfield",
+        "Burpengary",
+        "Narangba",
+        "Dakabin",
+        "Petrie",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Wacol",
+        "Gailes",
+        "Goodna",
+        "Redbank",
+        "Riverview",
+        "Dinmore",
+        "Ebbw Vale",
+        "Bundamba",
+        "Booval",
+        "East Ipswich",
+        "Ipswich"
+      ],
+      "headsigns": {
+        "Ipswich station": 124,
+        "Darra station": 2,
+        "Sherwood station": 2
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:38:00",
+          "last": "23:26:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516228-QR 26_27-43852-D508"
+    },
+    {
+      "id": "nasp",
+      "name": "Nambour - Springfield",
+      "routeShortName": "NASP",
+      "tLine": null,
+      "termini": [
+        "Nambour",
+        "Springfield Central"
+      ],
+      "stations": [
+        "Nambour",
+        "Woombye",
+        "Palmwoods",
+        "Eudlo",
+        "Mooloolah",
+        "Landsborough",
+        "Beerwah",
+        "Glass House Mountains",
+        "Beerburrum",
+        "Elimbah",
+        "Caboolture",
+        "Morayfield",
+        "Burpengary",
+        "Narangba",
+        "Dakabin",
+        "Petrie",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Richlands",
+        "Springfield",
+        "Springfield Central"
+      ],
+      "headsigns": {
+        "Springfield Central station": 24
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "07:23:00",
+          "last": "17:39:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516217-QR 26_27-43852-DK48"
+    },
+    {
+      "id": "rpbr",
+      "name": "Redcliffe Peninsula - Brisbane City",
+      "routeShortName": "RPBR",
+      "tLine": "T2",
+      "termini": [
+        "Kippa-Ring",
+        "Roma Street"
+      ],
+      "stations": [
+        "Kippa-Ring",
+        "Rothwell",
+        "Mango Hill East",
+        "Mango Hill",
+        "Murrumba Downs",
+        "Kallangur",
+        "Petrie",
+        "Lawnton",
+        "Bray Park",
+        "Strathpine",
+        "Bald Hills",
+        "Carseldine",
+        "Zillmere",
+        "Geebung",
+        "Sunshine",
+        "Virginia",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street"
+      ],
+      "headsigns": {
+        "Roma Street station": 200
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:34:00",
+          "last": "24:14:00"
+        },
+        "saturday": {
+          "first": "04:46:00",
+          "last": "25:44:00"
+        },
+        "sunday": {
+          "first": "04:46:00",
+          "last": "22:45:00"
+        }
+      },
+      "sampleTripId": "38516389-QR 26_27-43852-D902"
+    },
+    {
+      "id": "rpex",
+      "name": "Redcliffe Peninsula - Exhibition",
+      "routeShortName": "RPEX",
+      "tLine": null,
+      "termini": [
+        "Kippa-Ring",
+        "Exhibition"
+      ],
+      "stations": [
+        "Kippa-Ring",
+        "Rothwell",
+        "Mango Hill East",
+        "Mango Hill",
+        "Murrumba Downs",
+        "Kallangur",
+        "Petrie",
+        "Lawnton",
+        "Bray Park",
+        "Strathpine",
+        "Bald Hills",
+        "Carseldine",
+        "Zillmere",
+        "Geebung",
+        "Sunshine",
+        "Virginia",
+        "Northgate",
+        "Eagle Junction",
+        "Exhibition"
+      ],
+      "headsigns": {
+        "Exhibition station": 76
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474954-QR 26_27-43781-DXK8"
+    },
+    {
+      "id": "rpsp",
+      "name": "Redcliffe Peninsula - Springfield",
+      "routeShortName": "RPSP",
+      "tLine": null,
+      "termini": [
+        "Kippa-Ring",
+        "Springfield Central"
+      ],
+      "stations": [
+        "Kippa-Ring",
+        "Rothwell",
+        "Mango Hill East",
+        "Mango Hill",
+        "Murrumba Downs",
+        "Kallangur",
+        "Petrie",
+        "Lawnton",
+        "Bray Park",
+        "Strathpine",
+        "Bald Hills",
+        "Carseldine",
+        "Zillmere",
+        "Geebung",
+        "Sunshine",
+        "Virginia",
+        "Northgate",
+        "Eagle Junction",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "Milton",
+        "Auchenflower",
+        "Toowong",
+        "Taringa",
+        "Indooroopilly",
+        "Chelmer",
+        "Graceville",
+        "Sherwood",
+        "Corinda",
+        "Oxley",
+        "Darra",
+        "Richlands",
+        "Springfield",
+        "Springfield Central"
+      ],
+      "headsigns": {
+        "Springfield Central station": 323,
+        "Sherwood station": 6
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "03:46:00",
+          "last": "24:24:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516187-QR 26_27-43852-DK26"
+    },
+    {
+      "id": "rwip",
+      "name": "Rosewood - Ipswich",
+      "routeShortName": "RWIP",
+      "tLine": null,
+      "termini": [
+        "Rosewood",
+        "Ipswich"
+      ],
+      "stations": [
+        "Rosewood",
+        "Thagoona",
+        "Walloon",
+        "Karrabin",
+        "Wulkuraka",
+        "Thomas Street",
+        "Ipswich"
+      ],
+      "headsigns": {
+        "Ipswich station": 308
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:09:00",
+          "last": "24:26:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516678-QR 26_27-43852-J501"
+    },
+    {
+      "id": "shbn",
+      "name": "Shorncliffe - Beenleigh",
+      "routeShortName": "SHBN",
+      "tLine": null,
+      "termini": [
+        "Shorncliffe",
+        "Beenleigh"
+      ],
+      "stations": [
+        "Shorncliffe",
+        "Sandgate",
+        "Deagon",
+        "North Boondall",
+        "Boondall",
+        "Nudgee",
+        "Banyo",
+        "Bindha",
+        "Northgate",
+        "Nundah",
+        "Toombul",
+        "Eagle Junction",
+        "Wooloowin",
+        "Albion",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road",
+        "Dutton Park",
+        "Fairfield",
+        "Yeronga",
+        "Yeerongpilly",
+        "Rocklea",
+        "Salisbury",
+        "Coopers Plains",
+        "Banoon",
+        "Sunnybank",
+        "Altandi",
+        "Runcorn",
+        "Fruitgrove",
+        "Kuraby",
+        "Trinder Park",
+        "Woodridge",
+        "Kingston",
+        "Loganlea",
+        "Bethania",
+        "Edens Landing",
+        "Holmview",
+        "Beenleigh"
+      ],
+      "headsigns": {
+        "Beenleigh station": 16
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "06:56:00",
+          "last": "09:11:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516073-QR 26_27-43852-1716"
+    },
+    {
+      "id": "shbr",
+      "name": "Shorncliffe - Brisbane City",
+      "routeShortName": "SHBR",
+      "tLine": "T4",
+      "termini": [
+        "Shorncliffe",
+        "Roma Street"
+      ],
+      "stations": [
+        "Shorncliffe",
+        "Sandgate",
+        "Deagon",
+        "North Boondall",
+        "Boondall",
+        "Nudgee",
+        "Banyo",
+        "Bindha",
+        "Northgate",
+        "Nundah",
+        "Toombul",
+        "Eagle Junction",
+        "Wooloowin",
+        "Albion",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street"
+      ],
+      "headsigns": {
+        "Roma Street station": 388,
+        "Bowen Hills station": 146
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:42:00",
+          "last": "24:50:00"
+        },
+        "saturday": {
+          "first": "05:47:00",
+          "last": "25:20:00"
+        },
+        "sunday": {
+          "first": "07:14:00",
+          "last": "24:20:00"
+        }
+      },
+      "sampleTripId": "38516054-QR 26_27-43852-1RD4"
+    },
+    {
+      "id": "shcl",
+      "name": "Shorncliffe - Cleveland",
+      "routeShortName": "SHCL",
+      "tLine": "T4",
+      "termini": [
+        "Shorncliffe",
+        "Cleveland"
+      ],
+      "stations": [
+        "Shorncliffe",
+        "Sandgate",
+        "Deagon",
+        "North Boondall",
+        "Boondall",
+        "Nudgee",
+        "Banyo",
+        "Bindha",
+        "Northgate",
+        "Nundah",
+        "Toombul",
+        "Eagle Junction",
+        "Wooloowin",
+        "Albion",
+        "Bowen Hills",
+        "Fortitude Valley",
+        "Central",
+        "Roma Street",
+        "South Brisbane",
+        "South Bank",
+        "Boggo Road",
+        "Buranda",
+        "Coorparoo",
+        "Norman Park",
+        "Morningside",
+        "Cannon Hill",
+        "Murarrie",
+        "Hemmant",
+        "Lindum",
+        "Wynnum North",
+        "Wynnum",
+        "Wynnum Central",
+        "Manly",
+        "Lota",
+        "Thorneside",
+        "Birkdale",
+        "Wellington Point",
+        "Ormiston",
+        "Cleveland"
+      ],
+      "headsigns": {
+        "Cleveland station": 538,
+        "Roma Street station": 12
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:57:00",
+          "last": "24:50:00"
+        },
+        "saturday": {
+          "first": "05:29:00",
+          "last": "25:50:00"
+        },
+        "sunday": {
+          "first": "06:29:00",
+          "last": "23:50:00"
+        }
+      },
+      "sampleTripId": "38516046-QR 26_27-43852-1824"
+    },
+    {
+      "id": "spbr",
+      "name": "Springfield - Brisbane City",
+      "routeShortName": "SPBR",
+      "tLine": null,
+      "termini": [
+        "Springfield Central",
+        "Bowen Hills"
+      ],
+      "stations": [
+        "Springfield Central",
+        "Springfield",
+        "Richlands",
+        "Darra",
+        "Oxley",
+        "Corinda",
+        "Sherwood",
+        "Graceville",
+        "Chelmer",
+        "Indooroopilly",
+        "Taringa",
+        "Toowong",
+        "Auchenflower",
+        "Milton",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills"
+      ],
+      "headsigns": {
+        "Bowen Hills station": 15
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "07:16:00",
+          "last": "08:21:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516017-QR 26_27-43852-10H3"
+    },
+    {
+      "id": "spca",
+      "name": "Springfield - Caboolture",
+      "routeShortName": "SPCA",
+      "tLine": null,
+      "termini": [
+        "Springfield Central",
+        "Caboolture"
+      ],
+      "stations": [
+        "Springfield Central",
+        "Springfield",
+        "Richlands",
+        "Darra",
+        "Oxley",
+        "Corinda",
+        "Sherwood",
+        "Graceville",
+        "Chelmer",
+        "Indooroopilly",
+        "Taringa",
+        "Toowong",
+        "Auchenflower",
+        "Milton",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Eagle Junction",
+        "Northgate",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture"
+      ],
+      "headsigns": {
+        "Caboolture station": 74
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:54:00",
+          "last": "19:11:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516190-QR 26_27-43852-D135"
+    },
+    {
+      "id": "spip",
+      "name": "Springfield - Ipswich",
+      "routeShortName": "SPIP",
+      "tLine": null,
+      "termini": [
+        "Springfield Central",
+        "Corinda"
+      ],
+      "stations": [
+        "Springfield Central",
+        "Springfield",
+        "Richlands",
+        "Darra",
+        "Oxley",
+        "Corinda"
+      ],
+      "headsigns": {
+        "Corinda station": 66
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38474988-QR 26_27-43781-DD17"
+    },
+    {
+      "id": "spna",
+      "name": "Springfield - Nambour",
+      "routeShortName": "SPNA",
+      "tLine": null,
+      "termini": [
+        "Springfield Central",
+        "Nambour"
+      ],
+      "stations": [
+        "Springfield Central",
+        "Springfield",
+        "Richlands",
+        "Darra",
+        "Oxley",
+        "Corinda",
+        "Sherwood",
+        "Graceville",
+        "Chelmer",
+        "Indooroopilly",
+        "Taringa",
+        "Toowong",
+        "Auchenflower",
+        "Milton",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Eagle Junction",
+        "Northgate",
+        "Petrie",
+        "Dakabin",
+        "Narangba",
+        "Burpengary",
+        "Morayfield",
+        "Caboolture",
+        "Elimbah",
+        "Beerburrum",
+        "Glass House Mountains",
+        "Beerwah",
+        "Landsborough",
+        "Mooloolah",
+        "Eudlo",
+        "Palmwoods",
+        "Woombye",
+        "Nambour"
+      ],
+      "headsigns": {
+        "Nambour station": 25
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "06:24:00",
+          "last": "17:18:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516461-QR 26_27-43852-DL15"
+    },
+    {
+      "id": "sprp",
+      "name": "Springfield - Redcliffe Peninsula",
+      "routeShortName": "SPRP",
+      "tLine": "T2",
+      "termini": [
+        "Springfield Central",
+        "Kippa-Ring"
+      ],
+      "stations": [
+        "Springfield Central",
+        "Springfield",
+        "Richlands",
+        "Darra",
+        "Oxley",
+        "Corinda",
+        "Sherwood",
+        "Graceville",
+        "Chelmer",
+        "Indooroopilly",
+        "Taringa",
+        "Toowong",
+        "Auchenflower",
+        "Milton",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Eagle Junction",
+        "Northgate",
+        "Virginia",
+        "Sunshine",
+        "Geebung",
+        "Zillmere",
+        "Carseldine",
+        "Bald Hills",
+        "Strathpine",
+        "Bray Park",
+        "Lawnton",
+        "Petrie",
+        "Kallangur",
+        "Murrumba Downs",
+        "Mango Hill",
+        "Mango Hill East",
+        "Rothwell",
+        "Kippa-Ring"
+      ],
+      "headsigns": {
+        "Kippa-Ring station": 306
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "05:09:00",
+          "last": "24:46:00"
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38516186-QR 26_27-43852-DY15"
+    },
+    {
+      "id": "vlbd",
+      "name": "Varsity Lakes - Airport",
+      "routeShortName": "VLBD",
+      "tLine": "T5",
+      "termini": [
+        "Varsity Lakes",
+        "Domestic Airport"
+      ],
+      "stations": [
+        "Varsity Lakes",
+        "Robina",
+        "Nerang",
+        "Helensvale",
+        "Hope Island",
+        "Coomera",
+        "Pimpama",
+        "Ormeau",
+        "Beenleigh",
+        "Loganlea",
+        "Altandi",
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills",
+        "Albion",
+        "Wooloowin",
+        "Eagle Junction",
+        "International Airport",
+        "Domestic Airport"
+      ],
+      "headsigns": {
+        "Domestic Airport station": 416
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:06:00",
+          "last": "21:56:00"
+        },
+        "saturday": {
+          "first": "05:36:00",
+          "last": "21:55:00"
+        },
+        "sunday": {
+          "first": "05:36:00",
+          "last": "21:55:00"
+        }
+      },
+      "sampleTripId": "38516430-QR 26_27-43852-DP15"
+    },
+    {
+      "id": "vlbn",
+      "name": "Varsity Lakes - Beenleigh",
+      "routeShortName": "VLBN",
+      "tLine": null,
+      "termini": [
+        "Varsity Lakes",
+        "Banoon"
+      ],
+      "stations": [
+        "Varsity Lakes",
+        "Robina",
+        "Nerang",
+        "Helensvale",
+        "Hope Island",
+        "Coomera",
+        "Pimpama",
+        "Ormeau",
+        "Beenleigh",
+        "Holmview",
+        "Edens Landing",
+        "Bethania",
+        "Loganlea",
+        "Kingston",
+        "Woodridge",
+        "Trinder Park",
+        "Kuraby",
+        "Fruitgrove",
+        "Runcorn",
+        "Altandi",
+        "Sunnybank",
+        "Banoon"
+      ],
+      "headsigns": {
+        "Banoon station": 74
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "38475105-QR 26_27-43781-DV15"
+    },
+    {
+      "id": "vlbr",
+      "name": "Varsity Lakes - Brisbane City",
+      "routeShortName": "VLBR",
+      "tLine": "T5",
+      "termini": [
+        "Varsity Lakes",
+        "Bowen Hills"
+      ],
+      "stations": [
+        "Varsity Lakes",
+        "Robina",
+        "Nerang",
+        "Helensvale",
+        "Hope Island",
+        "Coomera",
+        "Pimpama",
+        "Ormeau",
+        "Beenleigh",
+        "Loganlea",
+        "Altandi",
+        "Boggo Road",
+        "South Bank",
+        "South Brisbane",
+        "Roma Street",
+        "Central",
+        "Fortitude Valley",
+        "Bowen Hills"
+      ],
+      "headsigns": {
+        "Bowen Hills station": 86,
+        "Altandi station": 14
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "20:36:00",
+          "last": "25:06:00"
+        },
+        "saturday": {
+          "first": "20:36:00",
+          "last": "26:06:00"
+        },
+        "sunday": {
+          "first": "20:36:00",
+          "last": "24:06:00"
+        }
+      },
+      "sampleTripId": "38516438-QR 26_27-43852-DM93"
+    }
+  ],
+  "coverageGaps": [
+    "C3-3: D1 T1 elides Petrie–Northgate shared stations (Lawnton–Virginia) and some inner-north stops",
+    "C3-T1-rosewood: D1 T1 includes Rosewood branch; mapped T1 GTFS codes stop at Ipswich",
+    "C3-T2-petrie: D1 T2 omits Petrie",
+    "C3-T3-southbank: weekend Doomben patterns continue to Boggo Road; D1 ends at Roma Street",
+    "C3-4: D1 T5 is express-style; GTFS all-stops extras are a pattern variant",
+    "C3-T6-moorooka: D1 lists Moorooka; longest T6 GTFS patterns may skip it",
+    "H2: many GTFS route codes (NAIP, Exhibition, Rosewood shuttle, city shorts) are not on the published T-line route lists"
+  ]
+}

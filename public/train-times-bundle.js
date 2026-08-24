@@ -35,7 +35,16 @@ var NextTrainTimes = (() => {
   var LINE_DESTINATION_GROUPS = {
     Yanchep: ["Yanchep", "Whitfords", "Clarkson", "Butler"],
     Mandurah: ["Mandurah", "Cockburn"],
-    Fremantle: ["Fremantle", "Claremont"]
+    Fremantle: ["Fremantle", "Claremont"],
+    // London TfL short-turn groups (line + terminus format)
+    "Bakerloo Harrow & Wealdstone": ["Bakerloo Harrow & Wealdstone", "Bakerloo Queen's Park", "Bakerloo Stonebridge Park"],
+    "Central Epping": ["Central Epping", "Central Loughton", "Central Hainault"],
+    "Central West Ruislip": ["Central West Ruislip", "Central Northolt"],
+    "District Upminster": ["District Upminster", "District Barking"],
+    "District Ealing Broadway": ["District Ealing Broadway", "District Kensington (Olympia)"],
+    "Piccadilly Heathrow Terminal 5": ["Piccadilly Heathrow Terminal 5", "Piccadilly Heathrow Terminals 2 & 3"],
+    "Piccadilly Uxbridge": ["Piccadilly Uxbridge", "Piccadilly Rayners Lane"],
+    "Victoria Walthamstow Central": ["Victoria Walthamstow Central", "Victoria Seven Sisters", "Victoria Blackhorse Road"]
   };
   function applyDestinationAliases(destination) {
     const trimmed = destination.trim();
@@ -162,7 +171,9 @@ var NextTrainTimes = (() => {
       displayTime: trip.displayTime,
       platform: trip.platform ?? "",
       destination: trip.destination,
-      cars: trip.cars
+      cars: trip.cars,
+      line: trip.line,
+      id: trip.id
     };
     return enrichTripTiming(internal);
   }
@@ -211,6 +222,7 @@ var NextTrainTimes = (() => {
       status: timing.status,
       destination: timing.destination,
       cars: timing.cars,
+      line: timing.line,
       leaveBy: new Date(leaveByMs).toISOString(),
       minutesUntilDeparture,
       minutesUntilArrival: minutesUntilDeparture,
@@ -225,6 +237,7 @@ var NextTrainTimes = (() => {
       scheduledDisplayTime: trip.scheduledDisplayTime,
       platform: trip.platform,
       status: trip.status,
+      line: trip.line,
       departure: trip.departure,
       arrival: trip.arrival
     };

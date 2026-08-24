@@ -1,0 +1,270 @@
+{
+  "city": "adelaide",
+  "source": "Hand-locked from D1 qa/fixtures/adelaide/published-network.json. No generator.",
+  "publishedOracle": {
+    "title": "Adelaide Metro train and tram network map",
+    "edition": "26 January 2026",
+    "index": "https://www.adelaidemetro.com.au/plan-a-trip/network-maps"
+  },
+  "notes": [
+    "D2: no scripts/build-line-map for Adelaide.",
+    "shortTurnGroups empty (S3 line+terminus; do not collapse opposite radial ends).",
+    "Port Dock is a seventh printed line. Tonsley is a Flinders station, not a line.",
+    "Hub: Adelaide Railway Station. TRAIN only. H7 Australia/Adelaide DST. H2 public GTFS no key."
+  ],
+  "shortTurnGroups": {},
+  "proposedShortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Seaford",
+      "b": "Flinders",
+      "reason": "H4 branch at Woodlands Park"
+    },
+    {
+      "a": "Outer Harbor",
+      "b": "Port Dock",
+      "reason": "H4 branch at Alberton"
+    },
+    {
+      "a": "Outer Harbor",
+      "b": "Grange",
+      "reason": "H4 branch at Woodville"
+    },
+    {
+      "a": "Port Dock",
+      "b": "Grange",
+      "reason": "H4 branch at Woodville"
+    },
+    {
+      "a": "Belair",
+      "b": "Seaford",
+      "reason": "H4 split at Goodwood"
+    },
+    {
+      "a": "Belair",
+      "b": "Flinders",
+      "reason": "H4 split at Goodwood"
+    }
+  ],
+  "coverageGaps": [
+    "C-hub: GTFS stop_name Adelaide vs catalog Adelaide Railway Station",
+    "C-osborne: peak Outer Harbor extras are not a printed terminus",
+    "C-gawler-racecourse: event-only stop on Gawler line",
+    "H2: public GTFS+GTFS-R need no key",
+    "H7: Australia/Adelaide observes DST"
+  ],
+  "lines": [
+    {
+      "id": "bel",
+      "number": "BEL",
+      "routeShortName": "BEL",
+      "name": "Belair line",
+      "mode": "train",
+      "termini": [
+        "Adelaide Railway Station",
+        "Belair"
+      ],
+      "stations": [
+        "Adelaide Railway Station",
+        "Mile End",
+        "Adelaide Showground",
+        "Goodwood",
+        "Millswood",
+        "Unley Park",
+        "Mitcham",
+        "Torrens Park",
+        "Lynton",
+        "Eden Hills",
+        "Coromandel",
+        "Blackwood",
+        "Glenalta",
+        "Pinera",
+        "Belair"
+      ]
+    },
+    {
+      "id": "seafrd",
+      "number": "SEAFRD",
+      "routeShortName": "SEAFRD",
+      "name": "Seaford line",
+      "mode": "train",
+      "termini": [
+        "Adelaide Railway Station",
+        "Seaford"
+      ],
+      "stations": [
+        "Adelaide Railway Station",
+        "Mile End",
+        "Adelaide Showground",
+        "Goodwood",
+        "Clarence Park",
+        "Emerson",
+        "Edwardstown",
+        "Woodlands Park",
+        "Ascot Park",
+        "Marion",
+        "Oaklands",
+        "Warradale",
+        "Hove",
+        "Brighton",
+        "Seacliff",
+        "Marino",
+        "Marino Rocks",
+        "Hallett Cove",
+        "Hallett Cove Beach",
+        "Lonsdale",
+        "Christie Downs",
+        "Noarlunga Centre",
+        "Seaford Meadows",
+        "Seaford"
+      ]
+    },
+    {
+      "id": "flndrs",
+      "number": "FLNDRS",
+      "routeShortName": "FLNDRS",
+      "name": "Flinders line",
+      "mode": "train",
+      "termini": [
+        "Adelaide Railway Station",
+        "Flinders"
+      ],
+      "stations": [
+        "Adelaide Railway Station",
+        "Mile End",
+        "Adelaide Showground",
+        "Goodwood",
+        "Clarence Park",
+        "Emerson",
+        "Edwardstown",
+        "Woodlands Park",
+        "Mitchell Park",
+        "Tonsley",
+        "Flinders"
+      ]
+    },
+    {
+      "id": "gawc",
+      "number": "GAWC",
+      "routeShortName": "GAWC",
+      "name": "Gawler line",
+      "mode": "train",
+      "termini": [
+        "Adelaide Railway Station",
+        "Gawler Central"
+      ],
+      "stations": [
+        "Adelaide Railway Station",
+        "North Adelaide",
+        "Ovingham",
+        "Dudley Park",
+        "Islington",
+        "Kilburn",
+        "Dry Creek",
+        "Mawson Interchange",
+        "Greenfields",
+        "Parafield Gardens",
+        "Parafield",
+        "Chidda",
+        "Salisbury",
+        "Nurlutta",
+        "Elizabeth South",
+        "Elizabeth",
+        "Womma",
+        "Broadmeadows",
+        "Smithfield",
+        "Munno Para",
+        "Kudla",
+        "Tambelin",
+        "Evanston",
+        "Gawler Racecourse",
+        "Gawler",
+        "Gawler Oval",
+        "Gawler Central"
+      ]
+    },
+    {
+      "id": "outha",
+      "number": "OUTHA",
+      "routeShortName": "OUTHA",
+      "name": "Outer Harbor line",
+      "mode": "train",
+      "termini": [
+        "Adelaide Railway Station",
+        "Outer Harbor"
+      ],
+      "stations": [
+        "Adelaide Railway Station",
+        "Bowden",
+        "Croydon",
+        "West Croydon",
+        "Kilkenny",
+        "Woodville Park",
+        "Woodville",
+        "St Clair",
+        "Cheltenham",
+        "Alberton",
+        "Port Adelaide",
+        "Ethelton",
+        "Glanville",
+        "Peterhead",
+        "Largs",
+        "Largs North",
+        "Draper",
+        "Taperoo",
+        "Midlunga",
+        "Osborne",
+        "North Haven",
+        "Outer Harbor"
+      ]
+    },
+    {
+      "id": "ptdock",
+      "number": "PTDOCK",
+      "routeShortName": "PTDOCK",
+      "name": "Port Dock line",
+      "mode": "train",
+      "termini": [
+        "Adelaide Railway Station",
+        "Port Dock"
+      ],
+      "stations": [
+        "Adelaide Railway Station",
+        "Bowden",
+        "Croydon",
+        "West Croydon",
+        "Kilkenny",
+        "Woodville Park",
+        "Woodville",
+        "St Clair",
+        "Cheltenham",
+        "Alberton",
+        "Port Dock"
+      ]
+    },
+    {
+      "id": "grng",
+      "number": "GRNG",
+      "routeShortName": "GRNG",
+      "name": "Grange line",
+      "mode": "train",
+      "termini": [
+        "Adelaide Railway Station",
+        "Grange"
+      ],
+      "stations": [
+        "Adelaide Railway Station",
+        "Bowden",
+        "Croydon",
+        "West Croydon",
+        "Kilkenny",
+        "Woodville Park",
+        "Woodville",
+        "Albert Park",
+        "Seaton Park",
+        "East Grange",
+        "Grange"
+      ]
+    }
+  ]
+}

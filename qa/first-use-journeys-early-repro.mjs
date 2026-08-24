@@ -43,6 +43,8 @@ async function run() {
     detailOpen: !document.getElementById("settings-detail-view").hidden,
     wizardSeen: localStorage.getItem("nextTrainTemplateWizardSeen"),
     onboardingComplete: localStorage.getItem("nextTrainOnboardingComplete"),
+    journeyName: document.getElementById("detail-journey-name")?.value,
+    coachTitle: document.getElementById("template-wizard-step-1-title")?.textContent?.trim(),
   }));
 
   console.log("After Morning:", afterMorning);
@@ -50,6 +52,19 @@ async function run() {
 
   if (!afterMorning.coachOpen) {
     console.error("FAIL — template wizard missing after early Journeys path");
+    process.exit(1);
+  }
+
+  if (afterMorning.journeyName !== "Morning into town") {
+    console.error(
+      "FAIL — first journey from hero Add should use Morning into town, got:",
+      afterMorning.journeyName
+    );
+    process.exit(1);
+  }
+
+  if (afterMorning.coachTitle !== "Station picked for you") {
+    console.error("FAIL — expected Morning route coach, got:", afterMorning.coachTitle);
     process.exit(1);
   }
 

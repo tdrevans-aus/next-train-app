@@ -770,6 +770,18 @@ Jim brief: `docs/jim-brief-adelaide-provider.md`
 4. Dev board: `GET /api/dev/board?city=adelaide&station=Adelaide` with `ALLOW_CITY_PROBES=1`.
 5. `/api/next-train?city=adelaide&station=…` still **501** on production paths.
 
+### 42b. Adelaide route conformance (offline)
+
+Luke pack + Jim D2–D6. City stays `planned`. Perth, Sydney, and Brisbane live-gates unchanged. No generator.
+
+1. `node qa/adelaide-line-map-conformance.mjs` — C0–C7 vs `qa/fixtures/adelaide/published-network.json` + `lib/cities/adelaide/line-map.json`. No network.
+2. Hub locked as **Adelaide Railway Station**. Chips are **line + terminus** (`Belair line Belair`).
+3. Port Dock is a seventh printed TRAIN line. Tonsley is a Flinders station, not a line.
+4. `assertCityLive("adelaide")` still fails.
+5. H2: public GTFS + GTFS-R need no key. H7: `Australia/Adelaide` has DST.
+6. Live sweep (not CI): `npm run sweep:adelaide` — every catalog station to `qa/reports/adelaide-sweep-*.json`. Excluded from `qa/run-all.mjs`.
+7. Sideload: `docs/mark-dogfood-adelaide.md`. `node qa/adelaide-dogfood-gate.mjs`.
+
 ### 43. Canberra provider probe (adapter only — not live)
 
 Jim brief: `docs/jim-brief-canberra-provider.md`
@@ -835,9 +847,20 @@ Jim brief: `docs/jim-brief-brisbane-provider.md`
 1. `assertCityLive("brisbane")` still returns **501** (`status: planned`, `adapterReady: true`).
 2. `npm run probe:brisbane -- Central` → JSON board with upcoming rail trips (ISO departures, destination, platform).
 3. `npm run probe:brisbane -- --list` → catalog station names.
-4. **Mark dogfood:** `docs/mark-dogfood-brisbane.md` — gated `GET /api/dev/board?city=brisbane&station=…` (Vercel `ALLOW_CITY_PROBES=1`). Without env → **404**.
-5. `/api/next-train?city=brisbane&station=…` still **501** on production paths.
+4. **Sideload dogfood (not Play):** `docs/mark-dogfood-brisbane.md`. Debug APK uses the **same Near me / chips / hero UI** as Perth against this PC (`npm run dev` + `ALLOW_CITY_PROBES=1`). Vercel `/api/next-train?city=brisbane` stays **501**. `/api/dev/board` on Vercel always **404**.
+5. `/api/next-train?city=brisbane&station=…` still **501** on production paths. Release/Play has no BNE control.
 6. Perth `/api/next-train` unchanged (default city).
+
+### 22b. Brisbane route conformance (offline)
+
+Jim brief: `docs/jim-brief-brisbane-route-conformance.md`
+
+1. `node qa/brisbane-line-map-conformance.mjs` — C1–C7 vs `published-network.json` + `line-map.json`. No network.
+2. C2/C3 extras must be listed in `DOCUMENTED_STATION_DIFFS` (and `line-map.json` `coverageGaps`). Do not guess which oracle is right.
+3. `LABEL_EXPECTATIONS`: Central locked at **12 chips** (Luke) — T1 Caboolture/Ipswich, T2 Kippa-Ring/Springfield Central, T3 Doomben/Roma Street, T4 Cleveland/Shorncliffe, T5 Brisbane Airport/Varsity Lakes, T6 Beenleigh/Ferny Grove. Nests (Rosewood, Nambour, Gympie North) are not extra Central chips. Exhibition suppressed.
+4. `assertCityLive("brisbane")` still fails. Perth `qa/perth-static-directions.mjs` unchanged.
+5. Live sweep (not CI): `npm run sweep:brisbane` — every catalog station, S1–S6 anomalies to `qa/reports/brisbane-sweep-*.json`. Optional `--time=am-peak|midday|pm-peak|late` `--day=weekday|sat|sun`. Excluded from `qa/run-all.mjs`.
+6. **Before commit:** `npm run sweep:brisbane -- --time=am-peak --day=weekday` on a **real weekday morning**. That run stresses Doomben, through-running, and S3. Clean, or the same “one RT past the board” S5 pattern, is enough. City stays `planned`. Perth `qa/perth-static-directions.mjs` must stay green.
 
 ### 23. Sydney provider probe (adapter only — not live)
 
@@ -849,6 +872,22 @@ Jim brief: `docs/jim-brief-sydney-provider.md`
 4. `npm run probe:sydney -- --list` → catalog station names (no key required).
 5. Dev board (optional): `GET /api/dev/board?city=sydney&station=Central` with `ALLOW_CITY_PROBES=1` + `TFNSW_API_KEY` on server; without key → **503** with message.
 6. `/api/next-train?city=sydney&station=…` still **501** on production paths.
+
+### 23b. Sydney route conformance (offline)
+
+Luke pack + Jim D2–D6. City stays `planned`. Perth and Brisbane live-gates unchanged.
+
+1. `node qa/sydney-line-map-conformance.mjs` — C1–C7 vs `qa/fixtures/sydney/published-network.json` + `lib/cities/sydney/line-map.json`. No network.
+2. C2/C3 extras must be listed in `DOCUMENTED_STATION_DIFFS` (and `line-map.json` `coverageGaps`). Do not guess which oracle is right.
+3. `LABEL_EXPECTATIONS`: Central = line + terminus chips (T1 Berowra / Emu Plains / Richmond, T2 Leppington / Parramatta, T3 Liverpool / Lidcombe, T4 Bondi Junction / Cronulla / Waterfall, T8 Macarthur, T9 Gordon / Hornsby). **Central Metro** is M1 Tallawong / Sydenham only. City Circle is not a terminus.
+4. Catalog split: Central / Martin Place / Epping / Chatswood / Sydenham vs `* Metro` — disjoint `stopIds`.
+5. `assertCityLive("sydney")` still fails.
+6. Live sweep (not CI): `npm run sweep:sydney` — every catalog station, S1–S6 anomalies to `qa/reports/sydney-sweep-*.json`. Needs `TFNSW_API_KEY`. Excluded from `qa/run-all.mjs`.
+7. H7: `Australia/Sydney` has DST — do not copy Brisbane no-DST.
+
+### 23c. Sydney sideload city UI (not live)
+
+`docs/mark-dogfood-sydney.md`. Debug APK + `npm run dev` + `ALLOW_CITY_PROBES=1`. Settings / first-launch city picker. Geolocate is a hint. Saved city persists. Ask once on mismatch; never silent-switch. Local `/api/next-train?city=sydney` uses the same hero/chips as Perth (`T1 Emu Plains`). Production next-train stays **501**. `/api/dev/board` on Vercel stays **404**. No `ALLOW_CITY_PROBES` on Vercel. Leave Melbourne/Adelaide/Canberra out. `node qa/sydney-dogfood-gate.mjs`.
 
 ### 24. Melbourne provider probe (adapter only — not live)
 

@@ -14,9 +14,11 @@ android/keystore.properties
 .env*
 
 public/site-config.json
+public/dogfood-origin.json
 
 public/_*.txt
 
+qa/reports/*.json
 qa/*.png
 qa/*.xml
 !qa/maestro/

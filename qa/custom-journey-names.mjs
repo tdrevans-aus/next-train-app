@@ -22,7 +22,30 @@ async function run() {
 
   await page.goto(`${BASE}/?test=1&fixture=normal`);
   await page.evaluate(() => {
-    localStorage.setItem("nextTrainSettings", JSON.stringify({ journeys: [], activeJourneyId: null }));
+    const morning = {
+      id: "j-seed-morning",
+      name: "Morning into town",
+      station: "Edgewater Stn",
+      direction: "Perth",
+      leaveBeforeMinutes: 10,
+      useLeaveBefore: true,
+      kind: "journey",
+      templateKey: "morning",
+      defaultFrom: "06:00",
+      defaultUntil: "09:00",
+      preferredTrainTime: "07:30",
+      remindDays: [1, 2, 3, 4, 5],
+      remindMe: true,
+    };
+    localStorage.setItem(
+      "nextTrainSettings",
+      JSON.stringify({
+        settingsSchemaVersion: 2,
+        journeys: [morning],
+        activeJourneyId: morning.id,
+        refreshSeconds: 30,
+      })
+    );
     localStorage.setItem("nextTrainTemplateWizardSeen", "1");
     localStorage.setItem("nextTrainOnboardingDone", "1");
   });

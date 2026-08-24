@@ -21,13 +21,27 @@
   }
 
   async function getStationsList() {
+    if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+      const dogfood = window.NextTrainBrisbaneDogfood.getStations?.() ?? [];
+      if (dogfood.length) {
+        stationsCache = dogfood;
+        return stationsCache;
+      }
+    }
+
     if (stationsCache) {
       return stationsCache;
     }
 
     const collapseStationList = deps.collapseStationList;
     try {
-      stationsCache = collapseStationList(await fetchLocalJson("/stations.json"));
+      const list = collapseStationList(await fetchLocalJson("/stations.json"));
+      if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+        const dogfood = window.NextTrainBrisbaneDogfood.getStations?.() ?? [];
+        stationsCache = dogfood.length ? dogfood : list;
+      } else {
+        stationsCache = list;
+      }
     } catch (error) {
       console.warn("Could not load stations.json", error);
       stationsCache = collapseStationList([
@@ -38,6 +52,15 @@
       ]);
     }
 
+    return stationsCache;
+  }
+
+  function replaceStationsCache(names) {
+    if (names == null) {
+      stationsCache = null;
+      return stationsCache;
+    }
+    stationsCache = Array.isArray(names) ? names : [];
     return stationsCache;
   }
 
@@ -536,6 +559,7 @@
     fetchLocalJson,
     getStationsList,
     getStationsCache,
+    replaceStationsCache,
     replaceSelectOptions,
     renderStationOptions,
     filterStationsByQuery,

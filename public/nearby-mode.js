@@ -99,6 +99,59 @@
     return deps.isCatalogStation?.(station) ?? false;
   }
 
+  function isStationInActiveCity(station) {
+    return deps.isStationInActiveCity?.(station) ?? isCatalogStation(station);
+  }
+
+  function readActiveCity() {
+    return String(
+      deps.readActiveCity?.() ||
+        window.NextTrainBrisbaneDogfood?.getCity?.() ||
+        window.NextTrainCitySession?.readSavedCity?.() ||
+        "perth"
+    )
+      .trim()
+      .toLowerCase();
+  }
+
+  function activeRegionDisplayName() {
+    const city = readActiveCity();
+    const names = {
+      perth: "Perth",
+      brisbane: "Brisbane",
+      sydney: "Sydney",
+      adelaide: "Adelaide",
+      "uk-london-tfl": "London",
+    };
+    return names[city] || "your region";
+  }
+
+  function readActiveTimeZone() {
+    return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
+  }
+
+  function isNearbyCacheValid(data) {
+    if (!data?.station) {
+      return false;
+    }
+    const activeCity = readActiveCity();
+    if (data.city && data.city !== activeCity) {
+      return false;
+    }
+    if (!data.city && activeCity !== "perth") {
+      return false;
+    }
+    return isStationInActiveCity(data.station);
+  }
+
+  function regionLocateErrorMessage(error) {
+    const message = String(error?.message || "");
+    if (message.includes("in this region") || message.includes("nearby station")) {
+      return `Location outside ${activeRegionDisplayName()} — pick a station below.`;
+    }
+    return locationErrorFrom(error).message;
+  }
+
   function getStationsList() {
     return deps.getStationsList?.();
   }
@@ -406,6 +459,31 @@ function isUnsupportedRegion(distanceKm) {
 }
 
 function renderUnsupportedRegionBoard() {
+  const city = readActiveCity();
+  const copyByCity = {
+    perth: {
+      title: "Perth rail only",
+      text: "Next Train's Near me board works near Transperth stations. You're outside that area right now.",
+      hint: "You can still save routes and journeys when you're back in Perth.",
+    },
+    brisbane: {
+      title: "Brisbane rail only",
+      text: "Near me works near South East Queensland rail stations. You're outside that area right now.",
+      hint: "You can still save routes and journeys when you're back on the network.",
+    },
+    sydney: {
+      title: "Sydney rail only",
+      text: "Near me works near Sydney Trains and Metro stations. You're outside that area right now.",
+      hint: "You can still save routes and journeys when you're back on the network.",
+    },
+    adelaide: {
+      title: "Adelaide rail only",
+      text: "Near me works near Adelaide Metro rail stations. You're outside that area right now.",
+      hint: "You can still save routes and journeys when you're back on the network.",
+    },
+  };
+  const copy = copyByCity[city] || copyByCity.perth;
+
   setLastRenderedNext(null);
   if (deps.errorEl) {
     deps.errorEl.hidden = true;
@@ -448,17 +526,15 @@ function renderUnsupportedRegionBoard() {
 
     const title = document.createElement("span");
     title.className = "hero-empty-title";
-    title.textContent = "Perth rail only";
+    title.textContent = copy.title;
 
     const text = document.createElement("span");
     text.className = "hero-empty-text";
-    text.textContent =
-      "Next Train's Near me board works near Transperth stations. You're outside that area right now.";
+    text.textContent = copy.text;
 
     const hint = document.createElement("span");
     hint.className = "hero-empty-hint";
-    hint.textContent =
-      "You can still save routes and journeys when you're back in Perth.";
+    hint.textContent = copy.hint;
 
     const emptyJourneysBtn = document.createElement("button");
     emptyJourneysBtn.type = "button";
@@ -601,6 +677,10 @@ function readLastNearbyStationCache() {
       return null;
     }
 
+    if (!isNearbyCacheValid(data)) {
+      return null;
+    }
+
     return data;
   } catch {
     return null;
@@ -642,6 +722,7 @@ function writeLastNearbyStationCache({ station, distanceKm = null, board = undef
 
   const payload = {
     station,
+    city: readActiveCity(),
     distanceKm: typeof distanceKm === "number" ? distanceKm : null,
     savedAtMs: Date.now(),
     board: nextBoard,
@@ -657,6 +738,7 @@ function writeLastNearbyStationCache({ station, distanceKm = null, board = undef
         LAST_NEARBY_STATION_KEY,
         JSON.stringify({
           station: payload.station,
+          city: payload.city,
           distanceKm: payload.distanceKm,
           savedAtMs: payload.savedAtMs,
           board: null,
@@ -1201,6 +1283,7 @@ async function fetchNearbyDirectionData(station, direction, _skip = 0) {
   if (fixture) {
     params.set("fixture", fixture);
   }
+  window.NextTrainBrisbaneDogfood?.applyParams?.(params);
 
   const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
   if (!result.ok) {
@@ -1208,21 +1291,26 @@ async function fetchNearbyDirectionData(station, direction, _skip = 0) {
   }
 
   let payload = result.data;
-  if (!Array.isArray(payload?.upcoming) || payload.upcoming.length === 0) {
-    const client = window.NextTrainTimes;
-    if (client?.getNextTrainData) {
-      try {
-        payload =
-          (await client.getNextTrainData({
-            station,
-            destination: direction,
-            destinationLabel: direction,
-            leaveBeforeMinutes: 0,
-            refreshSeconds: settings.refreshSeconds,
-            skipTrains: 0,
-          })) ?? payload;
-      } catch (error) {
-        console.warn("Nearby live-times fallback failed", error);
+  if (
+    !Array.isArray(payload?.upcoming) ||
+    payload.upcoming.length === 0
+  ) {
+    if (!window.NextTrainBrisbaneDogfood?.isActive?.()) {
+      const client = window.NextTrainTimes;
+      if (client?.getNextTrainData) {
+        try {
+          payload =
+            (await client.getNextTrainData({
+              station,
+              destination: direction,
+              destinationLabel: direction,
+              leaveBeforeMinutes: 0,
+              refreshSeconds: settings.refreshSeconds,
+              skipTrains: 0,
+            })) ?? payload;
+        } catch (error) {
+          console.warn("Nearby live-times fallback failed", error);
+        }
       }
     }
   }
@@ -1694,6 +1782,20 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
     nearbyLoading = false;
     nearbyDontWaitVisible = false;
     syncNearbyDontWaitButton();
+
+    const staleStation =
+      nearbySession?.station && !isStationInActiveCity(nearbySession.station);
+
+    if (staleStation) {
+      clearLastNearbyStationCache();
+      nearbySession.station = null;
+      nearbySession.distanceKm = null;
+      nearbyBoard = null;
+      setNearbyError(regionLocateErrorMessage(error), "location");
+      renderNearbyBoard();
+      return;
+    }
+
     if (!nearbySession.station && !nearbyUserPickedStation) {
       setNearbyError(locationErrorFrom(error).message, "location");
       renderNearbyBoard();
@@ -1714,6 +1816,14 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
         if (!isNearbyLocateCurrent(generation)) {
           return;
         }
+        clearLastNearbyStationCache();
+        nearbySession.station = null;
+        nearbySession.distanceKm = null;
+        nearbyBoard = null;
+        setNearbyError(
+          regionLocateErrorMessage(fetchError) || fetchError.message,
+          "board"
+        );
         if (deps.errorEl) {
           deps.errorEl.textContent = fetchError.message;
           deps.errorEl.hidden = false;
@@ -1980,6 +2090,16 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   const next = boardData?.next ?? null;
   setRouteDisplay(formatNearbyRouteLine());
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = boardData?.regionId || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   if (deps.updatedEl) {
     if (nearbySession?.refineNotice) {
       deps.updatedEl.textContent = nearbySession.refineNotice;
@@ -2050,7 +2170,9 @@ function renderNearbyBoard({ stale = false } = {}) {
     renderDepartureCountdown(deps.departCountdownEl, next);
   }
   if (deps.departDisplayTimeEl) {
-    deps.departDisplayTimeEl.textContent = `${next.displayTime} · towards ${focusedEntry.direction}`;
+    const linePart = next.line ? `${next.line} · ` : "";
+    deps.departDisplayTimeEl.textContent = `${next.displayTime} · ${linePart}towards ${focusedEntry.direction}`;
+    deps.departDisplayTimeEl.dataset.time = next.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(next);
@@ -2147,7 +2269,8 @@ async function fetchNearbyBoardOnce() {
       }
     })
   );
-  const entries = settled.filter(Boolean);
+  // Hide empty chips in Near me (unless it's an overnight board with zero trips for ALL directions)
+  const entries = settled.filter((entry) => entry && entry.data?.next);
 
   if (!nearbySession || nearbySession.station !== station) {
     return;
@@ -2159,9 +2282,10 @@ async function fetchNearbyBoardOnce() {
     }
 
     // Station known but no live/scheduled trips (overnight). Not a location failure.
+    // In this case we show all oracle directions as empty.
     nearbyBoard = {
       lastUpdated: new Date().toLocaleString("en-AU", {
-        timeZone: "Australia/Perth",
+        timeZone: readActiveTimeZone(),
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
@@ -2199,7 +2323,7 @@ async function fetchNearbyBoardOnce() {
 
   nearbyBoard = {
     lastUpdated: new Date().toLocaleString("en-AU", {
-      timeZone: "Australia/Perth",
+      timeZone: readActiveTimeZone(),
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",

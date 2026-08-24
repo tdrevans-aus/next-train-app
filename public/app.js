@@ -298,9 +298,17 @@ const JOURNEY_TEMPLATE_PRESETS = {
 const DELETE_LAST_JOURNEY_CONFIRM =
   "Delete your only journey? You can add a new one anytime.";
 
-const API_ORIGIN = window.Capacitor?.isNativePlatform?.()
-  ? "https://next-train-app.vercel.app"
-  : "";
+const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
+
+function getApiOrigin() {
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const origin = window.NextTrainBrisbaneDogfood.getOrigin?.() || "";
+    if (origin) {
+      return origin;
+    }
+  }
+  return window.Capacitor?.isNativePlatform?.() ? VERCEL_ORIGIN : "";
+}
 
 function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
@@ -552,7 +560,24 @@ function closeAppDialog(dialog) {
 }
 
 function apiUrl(path) {
-  return `${API_ORIGIN}${path}`;
+  return `${getApiOrigin()}${path}`;
+}
+
+/** Formspree lives on production Vercel — never POST feedback to local/dogfood origins. */
+function feedbackApiUrl() {
+  const host = String(location.hostname || "");
+  const origin = getApiOrigin();
+  const localHost =
+    host === "localhost" || host === "127.0.0.1" || host === "10.0.2.2";
+  const localOrigin =
+    !origin ||
+    /localhost|127\.0\.0\.1|10\.0\.2\.2|192\.168\.|10\.\d+\.\d+\.\d+/.test(
+      origin
+    );
+  if (localHost || localOrigin || window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    return `${VERCEL_ORIGIN}/api/feedback`;
+  }
+  return apiUrl("/api/feedback");
 }
 
 function getActiveFixture() {
@@ -561,12 +586,17 @@ function getActiveFixture() {
 
 function appendFixtureQuery(queryString) {
   const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
-  if (!fixture) {
-    return queryString;
-  }
-
   const params = new URLSearchParams(queryString);
-  params.set("fixture", fixture);
+  if (fixture) {
+    params.set("fixture", fixture);
+  }
+  window.NextTrainBrisbaneDogfood?.applyParams?.(params);
+  if (!params.has("city")) {
+    const savedCity = window.NextTrainCitySession?.readSavedCity?.();
+    if (savedCity && savedCity !== "perth") {
+      params.set("city", savedCity);
+    }
+  }
   return params.toString();
 }
 
@@ -1312,8 +1342,15 @@ function showOnboardingStep1() {
 
   const step1Text = onboardingStep1?.querySelector("p");
   if (step1Text) {
+    const regionNames = {
+      perth: "Transperth",
+      brisbane: "Brisbane",
+      sydney: "Sydney",
+      adelaide: "Adelaide",
+    };
+    const regionLabel = regionNames[readActiveCity()] || "your local";
     step1Text.textContent = nearbyMode().getNearbySession()?.unsupportedRegion
-      ? "Near me works when you're near Transperth stations."
+      ? `Near me works when you're near ${regionLabel} stations.`
       : "By default, Next Train shows departures at the station nearest you.";
   }
 
@@ -1326,6 +1363,7 @@ function showOnboardingStep1() {
   if (onboardingStep3) {
     onboardingStep3.hidden = true;
   }
+  window.NextTrainCitySession?.syncRegionControls?.();
   showOnboardingCoach(1);
 }
 
@@ -1699,6 +1737,22 @@ function syncLeaveBeforeControlsState() {
 
 
 
+function getActiveTimeZoneOffset(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth",
+    timeZoneName: "shortOffset",
+  }).formatToParts(date);
+  const offsetPart = parts.find((p) => p.type === "timeZoneName")?.value || "GMT+8";
+  let offset = offsetPart.replace("GMT", "");
+  if (offset === "Z") return "+00:00";
+  if (!offset.includes(":")) {
+    const sign = offset.startsWith("-") ? "-" : "+";
+    const val = offset.replace(/[+-]/, "");
+    offset = `${sign}${val.padStart(2, "0")}:00`;
+  }
+  return offset;
+}
+
 function departureIsoFromDisplayTime(displayTime, referenceIso) {
   if (!displayTime) {
     return null;
@@ -1707,8 +1761,9 @@ function departureIsoFromDisplayTime(displayTime, referenceIso) {
   const [hour, minute] = displayTime.split(":").map(Number);
   const reference = referenceIso ? new Date(referenceIso) : new Date();
   const { year, month, day } = getPerthDateParts(reference);
+  const offset = getActiveTimeZoneOffset(reference);
   let departure = new Date(
-    `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(minute)}:00+08:00`
+    `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(minute)}:00${offset}`
   );
 
   if (referenceIso && departure < new Date(referenceIso) - 30 * 60 * 1000) {
@@ -2449,6 +2504,7 @@ function buildApiParams() {
   if (fixture) {
     params.set("fixture", fixture);
   }
+  window.NextTrainBrisbaneDogfood?.applyParams?.(params);
 
   return params;
 }
@@ -2856,7 +2912,13 @@ function shouldAutoAckLeavePhase(leavePhase) {
   return leavePhase === "now" || leavePhase === "late" || leavePhase === "missed";
 }
 
-function movementTriggersLeaveAutoAck({ distanceKm: stationDistanceKm }) {
+function movementTriggersLeaveAutoAck({ distanceKm: stationDistanceKm, speed, movedKm }) {
+  if (typeof speed === "number" && speed >= TRAVELING_SPEED_MS) {
+    return true;
+  }
+  if (typeof movedKm === "number" && movedKm >= LEAVE_AUTO_ACK_MOVE_KM) {
+    return true;
+  }
   return typeof stationDistanceKm === "number" && stationDistanceKm <= STATION_ARRIVAL_KM;
 }
 
@@ -2962,9 +3024,11 @@ async function maybeAutoAcknowledgeLeave(next, options = {}) {
       if (
         movementTriggersLeaveAutoAck({
           distanceKm: stationDistance,
+          speed: effectiveSpeed,
+          movedKm: effectiveMovedKm,
         })
       ) {
-        void markLeaveAcknowledgedLocally(next, { ackContext: resolvedAckContext });
+        await markLeaveAcknowledgedLocally(next, { ackContext: resolvedAckContext });
         onAcknowledged?.();
         return true;
       }
@@ -3439,6 +3503,16 @@ function renderRouteJourney(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = journey?.cityId || lastApiData?.config?.city || data?.config?.city || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -3514,7 +3588,8 @@ function renderRouteJourney(data, { stale = false } = {}) {
     renderDepartureCountdown(departCountdownEl, heroTrip);
   }
   if (departDisplayTimeEl) {
-    departDisplayTimeEl.textContent = heroTrip.displayTime;
+    departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
+    departDisplayTimeEl.dataset.time = heroTrip.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(heroTrip);
@@ -3584,6 +3659,16 @@ function render(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = journey?.cityId || lastApiData?.config?.city || data?.config?.city || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -3773,7 +3858,8 @@ function render(data, { stale = false } = {}) {
     }
   }
   if (departDisplayTimeEl) {
-    departDisplayTimeEl.textContent = heroTrip.displayTime;
+    departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
+    departDisplayTimeEl.dataset.time = heroTrip.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(heroTrip);
@@ -3846,6 +3932,16 @@ function renderRefreshErrorState() {
 
   const journey = getActiveJourney();
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = journey?.cityId || lastApiData?.config?.city || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   updatedEl.textContent = "Update failed";
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
@@ -4137,6 +4233,14 @@ async function loadStationCoords() {
     return stationCoords;
   }
 
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const dogfoodCoords = window.NextTrainBrisbaneDogfood.getCoords?.() ?? {};
+    if (Object.keys(dogfoodCoords).length > 0) {
+      stationCoords = { ...dogfoodCoords };
+      return stationCoords;
+    }
+  }
+
   try {
     stationCoords = await fetchLocalJson("/station-coords.json");
   } catch (error) {
@@ -4147,8 +4251,81 @@ async function loadStationCoords() {
   return stationCoords;
 }
 
+function activeCityStationNames() {
+  if (!window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    return null;
+  }
+  return new Set(window.NextTrainBrisbaneDogfood.getStations?.() ?? []);
+}
+
+function isStationInActiveCity(station) {
+  const allowed = activeCityStationNames();
+  return !allowed || allowed.has(station);
+}
+
+function readActiveCity() {
+  return String(
+    window.NextTrainBrisbaneDogfood?.getCity?.() ||
+      window.NextTrainCitySession?.readSavedCity?.() ||
+      "perth"
+  )
+    .trim()
+    .toLowerCase();
+}
+
+async function locateCityFromPosition() {
+  try {
+    console.log("[App] locateCityFromPosition: getting geolocation...");
+    const position = await getAppGeolocationPosition({
+      timeout: 8000,
+      maximumAge: 300000,
+    });
+    const hint = window.NextTrainCitySession?.hintCityFromCoords?.(
+      position.coords.latitude,
+      position.coords.longitude
+    ) ?? null;
+    console.log(`[App] locateCityFromPosition: hint=${hint} from ${position.coords.latitude}, ${position.coords.longitude}`);
+    return hint;
+  } catch (error) {
+    console.warn("[App] locateCityFromPosition failed:", error.message);
+    return null;
+  }
+}
+
+function scheduleRegionMismatchPrompt() {
+  console.log("[App] scheduleRegionMismatchPrompt: scheduling in 2s...");
+  setTimeout(() => {
+    console.log("[App] scheduleRegionMismatchPrompt: firing...");
+    void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
+      skip: isTestMode(),
+      locateCity: locateCityFromPosition,
+    });
+  }, 2000);
+}
+
+function testModeNearestStation() {
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const city = String(window.NextTrainBrisbaneDogfood.getCity?.() || "").toLowerCase();
+    const defaults = {
+      brisbane: "Roma Street",
+      sydney: "Central",
+      adelaide: "Adelaide Railway Station",
+    };
+    if (defaults[city]) {
+      return { station: defaults[city], distanceKm: 0.2 };
+    }
+  }
+  return { station: "Edgewater Stn", distanceKm: 0.2 };
+}
+
 async function pickPerthDirection(station) {
   const directions = await fetchDirectionsFromApi(station);
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const first = directions.find(
+      (direction) => normalizeDirection(direction) !== DEFAULT_DIRECTION_LABEL
+    );
+    return first ? normalizeDirection(first) : null;
+  }
   const exact = directions.find(
     (direction) => normalizeDirection(direction) === DEFAULT_DIRECTION_LABEL
   );
@@ -4329,17 +4506,19 @@ async function getGeolocationPosition() {
 
 async function findNearestStation({ forceFresh = false, allowSessionShortcut = true } = {}) {
   if (isTestMode()) {
-    return { station: "Edgewater Stn", distanceKm: 0.2 };
+    return testModeNearestStation();
   }
 
   // Only skip GPS when caller explicitly allows it (not the background refine path).
   if (allowSessionShortcut && !forceFresh && nearbyMode().getNearbySession()?.station) {
     const session = nearbyMode().getNearbySession();
-    return {
-      station: session.station,
-      distanceKm:
-        typeof session.distanceKm === "number" ? session.distanceKm : 0,
-    };
+    if (isStationInActiveCity(session.station)) {
+      return {
+        station: session.station,
+        distanceKm:
+          typeof session.distanceKm === "number" ? session.distanceKm : 0,
+      };
+    }
   }
 
   const geoTimeoutMs = 15000;
@@ -4368,6 +4547,14 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
 
   if (!nearest) {
     throw new Error("Could not find a nearby station");
+  }
+
+  if (!isStationInActiveCity(nearest)) {
+    throw new Error("Could not find a nearby station in this region");
+  }
+
+  if (isUnsupportedRegion(bestDistance)) {
+    throw new Error("Could not find a nearby station in this region");
   }
 
   return { station: nearest, distanceKm: bestDistance };
@@ -4531,6 +4718,9 @@ function syncNearbyPinChrome() {
 
 
 async function fetchNextTrainFromLiveTimesClient() {
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    return null;
+  }
   const client = window.NextTrainTimes;
   if (!client?.getNextTrainData) {
     return null;
@@ -4842,6 +5032,12 @@ function createJourneyFromTemplate(templateKey) {
   }
 
   journeyDetail().setLibraryKind?.("journeys");
+
+  // First journey should always start from the Morning commute preset, even when
+  // the user taps "Add a journey" instead of onboarding "Set up a journey".
+  if (templateKey === "custom" && !hasJourneyKind()) {
+    return createJourneyFromPresetTemplate("morning");
+  }
 
   if (templateKey === "custom") {
     const journey = createDefaultJourney({
@@ -5321,6 +5517,19 @@ function feedbackVersionLabel(config) {
   return formatAppVersionLabel(config) || "unknown version";
 }
 
+function setFeedbackFooterMode(mode) {
+  const isForm = mode === "form";
+  if (feedbackSendBtn) {
+    feedbackSendBtn.hidden = !isForm;
+  }
+  if (feedbackCancelBtn) {
+    feedbackCancelBtn.hidden = !isForm;
+  }
+  if (feedbackDoneBtn) {
+    feedbackDoneBtn.hidden = isForm;
+  }
+}
+
 function resetFeedbackForm() {
   if (feedbackForm) {
     feedbackForm.hidden = false;
@@ -5337,6 +5546,7 @@ function resetFeedbackForm() {
     feedbackSendBtn.disabled = false;
     feedbackSendBtn.textContent = "Send";
   }
+  setFeedbackFooterMode("form");
 }
 
 async function openFeedbackDialog() {
@@ -5356,7 +5566,9 @@ function closeFeedbackDialog({ resumeMenu = false } = {}) {
   feedbackOpenedFromMenu = false;
   closeAppDialog(feedbackDialog);
   if (shouldResume) {
-    openMenu();
+    requestAnimationFrame(() => {
+      openMenu();
+    });
   }
 }
 
@@ -5399,7 +5611,7 @@ async function submitFeedback(event) {
   }
 
   try {
-    const response = await fetch(apiUrl("/api/feedback"), {
+    const response = await fetch(feedbackApiUrl(), {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(payload),
@@ -5413,30 +5625,28 @@ async function submitFeedback(event) {
       if (feedbackThanksEl) {
         feedbackThanksEl.hidden = false;
       }
+      setFeedbackFooterMode("thanks");
       return;
     }
 
-    // Webhook not configured / failed — fall back to device mail composer.
     const mailto = buildFeedbackMailto({
       ...payload,
       to: data?.mailto || "EvansAppStudio@gmail.com",
     });
+    if (feedbackStatusEl) {
+      feedbackStatusEl.hidden = false;
+      feedbackStatusEl.textContent =
+        "Could not reach the feedback inbox. Opening email so you can send it yourself.";
+    }
     window.location.href = mailto;
-    if (feedbackForm) {
-      feedbackForm.hidden = true;
-    }
-    if (feedbackThanksEl) {
-      feedbackThanksEl.hidden = false;
-    }
   } catch {
     const mailto = buildFeedbackMailto(payload);
+    if (feedbackStatusEl) {
+      feedbackStatusEl.hidden = false;
+      feedbackStatusEl.textContent =
+        "Could not reach the feedback inbox. Opening email so you can send it yourself.";
+    }
     window.location.href = mailto;
-    if (feedbackForm) {
-      feedbackForm.hidden = true;
-    }
-    if (feedbackThanksEl) {
-      feedbackThanksEl.hidden = false;
-    }
   } finally {
     if (feedbackSendBtn) {
       feedbackSendBtn.disabled = false;
@@ -5618,6 +5828,27 @@ menuFeedbackBtn?.addEventListener("click", (event) => {
   closeMenuDialog();
   void openFeedbackDialog();
 });
+feedbackForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (event.submitter?.id === "feedback-cancel-btn") {
+    closeFeedbackDialog();
+    return;
+  }
+  void submitFeedback(event);
+});
+feedbackDialog?.addEventListener("click", (event) => {
+  const button = event.target.closest?.("#feedback-cancel-btn, #feedback-done-btn");
+  if (!button) {
+    return;
+  }
+  event.preventDefault();
+  event.stopPropagation();
+  closeFeedbackDialog();
+});
+feedbackDialog?.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeFeedbackDialog();
+});
 menuHelpBtn?.addEventListener("click", () => {
   helpOpenedFromMenu = true;
   closeMenuDialog();
@@ -5756,6 +5987,7 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
 });
 
 onboardingGotItBtn?.addEventListener("click", () => {
+  window.NextTrainCitySession?.markRegionExplicit?.();
   clearOnboardingSchedule();
   showOnboardingStep2();
 });
@@ -5913,8 +6145,14 @@ journeySwitcherMenuEl?.addEventListener("click", (event) => {
   event.stopPropagation();
 });
 
-document.addEventListener("click", () => {
-  closeJourneySwitcherMenu();
+document.addEventListener("nexttrain:city-changed", () => {
+  clearLastNearbyStationCache();
+  if (isNearbyModeActive()) {
+    exitNearbyMode();
+  }
+  stationCoords = null;
+  void loadStationCoords();
+  void getStationsList();
 });
 
 async function init() {
@@ -5928,6 +6166,9 @@ async function init() {
   if (!seedApplied) {
     applyTestQueryParams();
   }
+
+  await window.NextTrainCitySession?.init?.();
+  stationCoords = null;
 
   installOnboardingInteractionTracking();
   dismissStaleBlockingLayers();
@@ -5946,11 +6187,14 @@ async function init() {
     fetchNextTrain();
     window.nextTrainWidget?.syncWidgetSettings?.(settings);
     await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+    void window.NextTrainBrisbaneDogfood?.mount?.();
     return;
   }
 
   const urlSettings = await readUrlSettings();
   if (urlSettings) {
+    console.log("[init] found urlSettings, entering journey mode");
+    journeyModeActive = true;
     persistSettings(urlSettings);
   } else {
     settings = readStoredSettings();
@@ -5959,8 +6203,8 @@ async function init() {
   }
 
   scheduleRefresh();
-  void getStationsList();
-  void loadStationCoords();
+  await getStationsList();
+  await loadStationCoords();
   if (isNativeApp()) {
     void ensureGeoBridge().catch(() => {});
   }
@@ -5974,6 +6218,7 @@ async function init() {
     fetchNextTrain();
     window.nextTrainWidget?.syncWidgetSettings?.(settings);
     await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+    void window.NextTrainBrisbaneDogfood?.mount?.();
     return;
   }
 
@@ -5985,6 +6230,8 @@ async function init() {
   if (isNativeApp()) {
     void maybeSyncLeaveAlarmFromNative();
   }
+  void window.NextTrainBrisbaneDogfood?.mount?.();
+  scheduleRegionMismatchPrompt();
 }
 
 
@@ -6080,6 +6327,22 @@ function getPerthMinutesSinceMidnight(date) {
     return testMinutes;
   }
   return journeyModel().getPerthMinutesSinceMidnight(date);
+}
+function readTestDayFromUrl() {
+  if (!isTestMode()) {
+    return null;
+  }
+  const params = new URLSearchParams(window.location.search);
+  const day = params.get("day");
+  return day != null ? Number(day) : null;
+}
+
+function getPerthDayOfWeekIso() {
+  const testDay = readTestDayFromUrl();
+  if (testDay != null) {
+    return testDay;
+  }
+  return journeyModel().getPerthDayOfWeekIso();
 }
 function getPerthLocalDateKey(date) { return journeyModel().getPerthLocalDateKey(date); }
 function hasDefaultWindow(journey) { return journeyModel().hasDefaultWindow(journey); }
@@ -6339,6 +6602,8 @@ function initNearbyModeFromModule() {
     formatStationLabel,
     normalizeStation,
     isCatalogStation,
+    isStationInActiveCity,
+    readActiveCity,
     getStationsList,
     getNearbyStationCombobox,
     setStationComboboxValue,
@@ -6828,6 +7093,7 @@ window.nextTrainApp = {
   enterRouteMode,
   enterJourneyMode,
   enterNearbyMode,
+  applyNearbyManualStation,
   isLeaveAcknowledged,
   shouldAutoAckLeavePhase,
   maybeAutoAcknowledgeLeave,

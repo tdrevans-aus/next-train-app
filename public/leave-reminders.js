@@ -227,10 +227,31 @@ async function dismissLeaveAlarm() {
   }
 }
 
+function getActiveTimeZone() {
+  return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
+}
+
+function getActiveTimeZoneOffset(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: getActiveTimeZone(),
+    timeZoneName: "shortOffset",
+  }).formatToParts(date);
+  const offsetPart = parts.find((p) => p.type === "timeZoneName")?.value || "GMT+8";
+  // Convert "GMT+08:00" or "GMT+8" to "+08:00"
+  let offset = offsetPart.replace("GMT", "");
+  if (offset === "Z") return "+00:00";
+  if (!offset.includes(":")) {
+    const sign = offset.startsWith("-") ? "-" : "+";
+    const val = offset.replace(/[+-]/, "");
+    offset = `${sign}${val.padStart(2, "0")}:00`;
+  }
+  return offset;
+}
+
 function getPerthDateParts(date = new Date()) {
   const parts = {};
   new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Australia/Perth",
+    timeZone: getActiveTimeZone(),
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -248,16 +269,17 @@ function getPerthDateParts(date = new Date()) {
 
 function pauseUntilEndOfPerthDay() {
   const dateKey = getPerthDateKey();
-  return `${dateKey}T23:59:59+08:00`;
+  return `${dateKey}T23:59:59${getActiveTimeZoneOffset()}`;
 }
 
 function pauseUntilPerthDaysFromNow(days) {
   const parts = getPerthDateParts();
   const dateKey = getPerthDateKey();
-  const midnight = new Date(`${dateKey}T00:00:00+08:00`);
+  const offset = getActiveTimeZoneOffset();
+  const midnight = new Date(`${dateKey}T00:00:00${offset}`);
   const target = new Date(midnight.getTime() + days * 24 * 60 * 60 * 1000);
   const targetKey = getPerthDateKey(target);
-  return `${targetKey}T${parts.hour}:${parts.minute}:${parts.second}+08:00`;
+  return `${targetKey}T${parts.hour}:${parts.minute}:${parts.second}${offset}`;
 }
 
 function computePauseUntilIso(duration, customDays = readCustomPauseDays()) {
@@ -290,7 +312,7 @@ function formatPauseUntilLabel(pauseUntil, paused = true) {
   }
 
   const label = date.toLocaleDateString("en-AU", {
-    timeZone: "Australia/Perth",
+    timeZone: getActiveTimeZone(),
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -490,7 +512,7 @@ function updatePauseUi(settings) {
 
 function getPerthDateKey(date = new Date()) {
   return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Australia/Perth",
+    timeZone: getActiveTimeZone(),
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -701,7 +723,7 @@ function updateRemindersEmptyState() {
 }
 
 async function refreshJourneyRemindExtras() {
-  if (!isNativeApp()) {
+  if (!isNativeApp() && !Boolean(window.NextTrainCitySession?.readActiveTimeZone?.())) {
     return null;
   }
   let settings = await loadReminderSettings();
@@ -737,7 +759,7 @@ async function refreshMenuPauseUi() {
     return null;
   }
 
-  if (!isNativeApp()) {
+  if (!isNativeApp() && !Boolean(window.NextTrainCitySession?.readActiveTimeZone?.())) {
     block.hidden = false;
     if (webHint) {
       webHint.hidden = false;
@@ -848,7 +870,7 @@ function hideLeaveReminderCoach() {
 }
 
 function showLeaveReminderCoach() {
-  if (!isNativeApp()) {
+  if (!isNativeApp() && !Boolean(window.NextTrainCitySession?.readActiveTimeZone?.())) {
     return;
   }
 

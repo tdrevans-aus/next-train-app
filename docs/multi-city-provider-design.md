@@ -197,6 +197,8 @@ Dropped (Tim 11 Aug 2026): bus-only, weak “Next Train” fit, no solid open re
 
 When Tim picks city #2 to **launch**: flip registry to `live` + catalog in app UI — separate brief.
 
+**City switch (launch brief only — not while Brisbane is `planned`):** first launch geolocate as a hint; persist saved city; settings can change. If a saved-city user is detected in the other live city, ask once — never silent-switch. Do not default to a planned city. Do not ship this picker until `assertCityLive("brisbane")` is allowed to succeed.
+
 ---
 
 ## 6. Change log
@@ -204,4 +206,4 @@ When Tim picks city #2 to **launch**: flip registry to `live` + catalog in app U
 | Date | Note |
 | --- | --- |
 | 2026-08-11 | Initial capital-by-capital design + provider registry stubs |
-| 2026-08-11 | Hobart/Darwin dropped; Jim adapter briefs written (build, don’t enable) |
+| 2026-08-22 | City-switch rules locked for a future second live city; picker not started while Brisbane is planned |

@@ -1,6 +1,6 @@
 {
   "name": "next-train-app",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "Shows when to leave for your next train",
   "type": "module",
   "engines": {
@@ -37,9 +37,20 @@
     "test:pre-release": "node qa/pre-release.mjs",
     "soak:status": "node qa/soak-status.mjs",
     "probe:brisbane": "node scripts/probe-brisbane-board.mjs",
+    "sweep:brisbane": "node qa/brisbane-network-sweep.mjs",
+    "dogfood:origin": "node scripts/write-dogfood-origin.mjs",
+    "android:debug": "node scripts/write-dogfood-origin.mjs && npm run cap:sync && node scripts/assemble-debug.mjs",
+    "trim:brisbane-gtfs": "node scripts/trim-brisbane-gtfs.mjs",
+    "build:line-map": "node scripts/build-line-map.mjs --city=brisbane",
     "probe:sydney": "node scripts/probe-sydney-board.mjs",
+    "sweep:sydney": "node qa/sydney-network-sweep.mjs",
+    "sweep:uk-london-tfl": "node qa/uk-london-tfl-network-sweep.mjs",
+    "trim:sydney-gtfs": "node scripts/trim-sydney-gtfs.mjs",
     "probe:melbourne": "node scripts/probe-melbourne-board.mjs",
     "probe:adelaide": "node scripts/probe-adelaide-board.mjs",
+    "probe:uk": "node scripts/probe-uk-board.mjs",
+    "probe:uk-london-tfl": "node scripts/probe-uk-london-tfl-board.mjs",
+    "sweep:adelaide": "node qa/adelaide-network-sweep.mjs",
     "probe:canberra": "node scripts/probe-canberra-board.mjs",
     "postinstall": "patch-package"
   },

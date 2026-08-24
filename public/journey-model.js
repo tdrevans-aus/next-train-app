@@ -152,7 +152,7 @@ function normalizeRemindDays(raw) {
 }
 function getPerthDayOfWeekIso(date = new Date()) {
   const weekday = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Australia/Perth",
+    timeZone: getActiveTimeZone(),
     weekday: "long",
   }).format(date);
   const map = {
@@ -208,12 +208,21 @@ function journeyMatchesActiveDay(journey, dayOfWeek = getPerthDayOfWeekIso()) {
   return getJourneyRemindDays(journey).includes(dayOfWeek);
 }
 
-function journeyMatchesSchedule(
+  function isTestMode() {
+    return sessionStorage.getItem("nextTrainTestMode") === "1" || window.location.search.includes("test=1");
+  }
+
+  function journeyMatchesSchedule(
   journey,
   minutes = getPerthMinutesSinceMidnight(),
   dayOfWeek = getPerthDayOfWeekIso()
 ) {
-  return journeyMatchesActiveDay(journey, dayOfWeek) && journeyMatchesTime(journey, minutes);
+  const matchesDay = journeyMatchesActiveDay(journey, dayOfWeek);
+  const matchesTime = journeyMatchesTime(journey, minutes);
+  if (isTestMode()) {
+    console.log("[model] journeyMatchesSchedule", journey.name, { minutes, dayOfWeek, matchesDay, matchesTime });
+  }
+  return matchesDay && matchesTime;
 }
 
 function journeyRemindMeEnabled(raw = {}) {
@@ -479,12 +488,33 @@ function pickAppThemeFields(raw = {}) {
   return { appTheme: "system" };
 }
 
+function pickSavedCityFields(raw = {}) {
+  const city = String(raw.savedCity ?? "").trim().toLowerCase();
+  const country = String(raw.savedCountry ?? "").trim().toLowerCase();
+  const out = {};
+  if (city === "perth" || city === "sydney" || city === "brisbane" || city === "adelaide" || city === "uk-london-tfl") {
+    out.savedCity = city;
+  }
+  if (country === "au" || country === "gb") {
+    out.savedCountry = country;
+  }
+  if (raw.regionExplicit === true) {
+    out.regionExplicit = true;
+  }
+  const mismatch = String(raw.regionMismatchDismissed ?? "").trim();
+  if (mismatch) {
+    out.regionMismatchDismissed = mismatch;
+  }
+  return out;
+}
+
 function pickPersistedRootFields(raw = {}) {
   return {
     ...pickNearbySettingsFields(raw),
     ...pickWidgetThemeFields(raw),
     ...pickWidgetAppearanceFields(raw),
     ...pickAppThemeFields(raw),
+    ...pickSavedCityFields(raw),
   };
 }
 
@@ -590,23 +620,36 @@ function pad2(value) {
   return String(value).padStart(2, "0");
 }
 
+function getActiveTimeZone() {
+  return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
+}
+
 function getPerthDateParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-AU", {
-    timeZone: "Australia/Perth",
+    timeZone: getActiveTimeZone(),
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
   }).formatToParts(date);
 
+  const get = (type) => parts.find((p) => p.type === type)?.value;
+
   return {
-    year: Number(parts.find((part) => part.type === "year").value),
-    month: Number(parts.find((part) => part.type === "month").value),
-    day: Number(parts.find((part) => part.type === "day").value),
+    year: Number(get("year")),
+    month: Number(get("month")),
+    day: Number(get("day")),
+    hour: Number(get("hour")),
+    minute: Number(get("minute")),
+    second: Number(get("second")),
   };
 }
 function getPerthMinutesSinceMidnight(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-AU", {
-    timeZone: "Australia/Perth",
+    timeZone: getActiveTimeZone(),
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -621,8 +664,10 @@ function hasDefaultWindow(journey) {
 }
 
 function parseTimeToMinutes(time) {
-  const [hour, minute] = String(time || "00:00").split(":").map(Number);
-  return hour * 60 + (minute || 0);
+  const parts = String(time || "00:00").split(":");
+  const hour = parseInt(parts[0], 10);
+  const minute = parseInt(parts[1], 10);
+  return isNaN(hour) || isNaN(minute) ? -1 : hour * 60 + minute;
 }
 
 function formatMinutesAsTime(totalMinutes) {

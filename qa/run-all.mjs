@@ -41,6 +41,13 @@ const SMOKE_SCRIPTS = [
   "dialog-above-ad.mjs",
   "onboarding-not-on-overlay.mjs",
   "onboarding-scrim-dismiss.mjs",
+  "brisbane-dogfood-gate.mjs",
+  "sydney-dogfood-gate.mjs",
+  "adelaide-dogfood-gate.mjs",
+  "region-selection.mjs",
+  "uk-region-catalog-conformance.mjs",
+  "uk-planned-gate.mjs",
+  "london-nearby-chips.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -87,6 +94,14 @@ const RUNNER_EXCLUDE = new Set([
   "fb-23-phase-4-native.mjs",
   /** Mac/Xcode preflight — `npm run test:ios:preflight`, not Linux web CI. */
   "check-ios-test-setup.mjs",
+  /** Live Translink SEQ sweep — D6; never gate PRs. npm run sweep:brisbane */
+  "brisbane-network-sweep.mjs",
+  /** Live TfNSW Sydney sweep — D6; never gate PRs. npm run sweep:sydney */
+  "sydney-network-sweep.mjs",
+  /** Live Adelaide Metro sweep — D6; never gate PRs. npm run sweep:adelaide */
+  "adelaide-network-sweep.mjs",
+  /** Live London TfL sweep — D6; never gate PRs. npm run sweep:uk-london-tfl */
+  "uk-london-tfl-network-sweep.mjs",
 ]);
 
 /** Native/device scripts run last so they do not disturb each other. */

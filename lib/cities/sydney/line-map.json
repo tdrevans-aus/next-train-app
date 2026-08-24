@@ -1,0 +1,2192 @@
+{
+  "city": "sydney",
+  "source": "GTFS fixture qa/fixtures/sydney/gtfs (generated 2026-08-23)",
+  "publishedOracle": "https://transportnsw.info/routes/train",
+  "notes": [
+    "Generated from T1–T9 + M1 GTFS fixture — regenerate with scripts/build-line-map.mjs --city=sydney.",
+    "D2: freeze shortTurnGroups empty (§3 line+terminus; do not collapse opposite through-run ends).",
+    "C2: Central, Martin Place, Epping, Chatswood, Sydenham Metro vs Trains must not share stopIds.",
+    "Helensburgh is suppressed (SCO on T4 PDF, out of modes v1).",
+    "D5 labels: line + terminus (T1 Emu Plains). City Circle is not a terminus."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Cronulla",
+      "b": "Waterfall",
+      "reason": "H4 T4 split at Sutherland"
+    },
+    {
+      "a": "Domestic Airport",
+      "b": "Sydenham",
+      "reason": "H4 T8 Airport vs Sydenham at Wolli Creek"
+    },
+    {
+      "a": "Emu Plains",
+      "b": "Richmond",
+      "reason": "H4 T1 western fork at Blacktown"
+    },
+    {
+      "a": "Leppington",
+      "b": "Parramatta",
+      "reason": "H4 T2 two published termini"
+    },
+    {
+      "a": "Bankstown",
+      "b": "Sydenham",
+      "reason": "H4 T6 leftover rail vs M1 published southern end"
+    },
+    {
+      "a": "Berowra",
+      "b": "Hornsby",
+      "reason": "H4 T1 vs T9 shared North Shore stations"
+    }
+  ],
+  "proposedShortTurnGroups": {
+    "M1:Sydenham": [
+      "Tallawong",
+      "Epping",
+      "Chatswood",
+      "Sydenham"
+    ],
+    "T1:Penrith": [
+      "Hornsby",
+      "Gordon",
+      "Lindfield",
+      "Chatswood",
+      "North Sydney",
+      "Central",
+      "Lidcombe",
+      "Blacktown",
+      "Schofields",
+      "Richmond",
+      "Penrith",
+      "Penrith Via Gordon",
+      "Penrith Via Central",
+      "Richmond Via Central",
+      "Berowra Via Gordon",
+      "Hornsby Via Gordon",
+      "Emu Plains Via Gordon",
+      "Central Via Gordon",
+      "Gordon Via Lindfield",
+      "North Sydney Via Gordon",
+      "Wynyard Via Gordon",
+      "City Circle Via Museum",
+      "Olympic Park Via Central",
+      "Penrith Via Parramatta",
+      "Lindfield Via Central",
+      "City Circle Via Strathfield",
+      "Richmond Via Parramatta",
+      "North Sydney Via Central",
+      "Schofields Via Parramatta",
+      "Blacktown Via Parramatta",
+      "Emu Plains Via Parramatta",
+      "Gordon Via Central",
+      "Chatswood Via Central",
+      "Olympic Park"
+    ],
+    "T2:Wynyard": [
+      "Leppington",
+      "Granville",
+      "Strathfield",
+      "Ashfield",
+      "Central",
+      "Wynyard",
+      "City Circle Via Town Hall",
+      "Hornsby Via Central",
+      "Olympic Park Via Granville",
+      "Leppington Via Granville",
+      "City Circle Via Regents Park",
+      "Bankstown",
+      "Leppington Via Regents Park",
+      "Lidcombe Via Regents Park",
+      "North Sydney",
+      "North Sydney Via Central",
+      "City Circle Via Museum",
+      "City Circle Via Granville",
+      "City Circle Via Strathfield"
+    ],
+    "T2:City Circle Via Town Hall": [
+      "City Circle Via Town Hall",
+      "City Circle Via Museum",
+      "City Circle Via Granville",
+      "City Circle Via Strathfield"
+    ],
+    "T3:City Circle Via Regents Park": [
+      "City Circle Via Regents Park",
+      "City Circle Via Museum",
+      "City Circle Via Town Hall",
+      "Liverpool Via Regents Park",
+      "Lidcombe Via Regents Park"
+    ],
+    "T5:Richmond": [
+      "Leppington",
+      "Liverpool",
+      "Blacktown",
+      "Schofields",
+      "Richmond",
+      "Penrith",
+      "Campbelltown"
+    ],
+    "T6:Lidcombe": [
+      "Bankstown",
+      "Lidcombe",
+      "Bankstown Via Lidcombe"
+    ],
+    "T7:Olympic Park": [
+      "Olympic Park",
+      "Lidcombe",
+      "Olympic Park Via Strathfield",
+      "Strathfield",
+      "Central"
+    ],
+    "T8:City Circle Via Town Hall": [
+      "City Circle Via Town Hall",
+      "City Circle Via Airport",
+      "Central Via Airport",
+      "Macarthur Via Airport",
+      "City Circle Via Sydenham",
+      "City Circle Via Museum",
+      "North Sydney",
+      "Macarthur Via Wolli Creek",
+      "Campbelltown"
+    ],
+    "T9:North Sydney": [
+      "Hornsby",
+      "Epping",
+      "North Sydney",
+      "Hornsby Via Central",
+      "Eastwood Via Strathfield",
+      "Berowra Via Strathfield",
+      "Hornsby Via Eastwood",
+      "Hornsby Via Gordon",
+      "North Sydney Via Central",
+      "Hornsby Via Strathfield",
+      "Central Via Strathfield",
+      "Epping Via Strathfield",
+      "Gordon Via Strathfield",
+      "Gordon Via Lindfield",
+      "Central Via Gordon"
+    ],
+    "T9:Hornsby Via Strathfield": [
+      "Hornsby Via Strathfield",
+      "Hornsby Via Central",
+      "Central Via Strathfield",
+      "Epping Via Strathfield",
+      "Gordon Via Strathfield",
+      "Gordon Via Lindfield",
+      "Central Via Gordon"
+    ]
+  },
+  "proposedDoNotGroup": [
+    {
+      "a": "Hornsby",
+      "b": "Penrith Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Lindfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Lindfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Penrith Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "North Sydney",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "North Sydney",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Richmond Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Richmond Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Berowra Via Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Berowra Via Gordon",
+      "b": "Blacktown",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Hornsby Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Emu Plains Via Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Emu Plains Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Chatswood",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Chatswood",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central Via Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Central Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon Via Lindfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "North Sydney Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Wynyard Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Museum",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Olympic Park Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Penrith Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Lindfield Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Richmond Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "North Sydney Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Schofields Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown Via Parramatta",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Emu Plains Via Parramatta",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Schofields",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon Via Central",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Penrith",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Richmond",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Chatswood Via Central",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Olympic Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Lidcombe",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Gordon Via Lindfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "North Sydney Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Wynyard Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "City Circle Via Museum",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Olympic Park Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Lindfield Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "City Circle Via Strathfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Richmond Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "North Sydney Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Schofields Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Blacktown Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Emu Plains Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Schofields",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Gordon Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Richmond",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Chatswood Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Olympic Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Lidcombe",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Town Hall",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Museum",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Granville",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Strathfield",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Wynyard",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Hornsby Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Olympic Park Via Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Leppington Via Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Leppington",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Regents Park",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bankstown",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Leppington Via Regents Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Lidcombe Via Regents Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Ashfield",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Strathfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "North Sydney",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "North Sydney Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Campbelltown",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Liverpool",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Leppington",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Strathfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Epping Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Eastwood Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Berowra Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Eastwood",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Epping",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    }
+  ],
+  "rejectedProposedDoNotGroup": [
+    {
+      "a": "Hornsby",
+      "b": "Penrith Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Lindfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Lindfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Penrith Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "North Sydney",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "North Sydney",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Richmond Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Richmond Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Berowra Via Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Berowra Via Gordon",
+      "b": "Blacktown",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Hornsby Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Emu Plains Via Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Emu Plains Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Chatswood",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Chatswood",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central Via Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Central Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon Via Lindfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "North Sydney Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Wynyard Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Museum",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Olympic Park Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Penrith Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Lindfield Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Richmond Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "North Sydney Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Schofields Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown Via Parramatta",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Emu Plains Via Parramatta",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Schofields",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon Via Central",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Penrith",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Richmond",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Chatswood Via Central",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Olympic Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Lidcombe",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Gordon Via Lindfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "North Sydney Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Wynyard Via Gordon",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "City Circle Via Museum",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Olympic Park Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Lindfield Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "City Circle Via Strathfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Richmond Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "North Sydney Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Schofields Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Blacktown Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Emu Plains Via Parramatta",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Schofields",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Gordon Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Penrith",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Richmond",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Chatswood Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Olympic Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Lidcombe",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Town Hall",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Museum",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Granville",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Strathfield",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Wynyard",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Hornsby Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Olympic Park Via Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Leppington Via Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Leppington",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "City Circle Via Regents Park",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Bankstown",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Leppington Via Regents Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Lidcombe Via Regents Park",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Ashfield",
+      "b": "Granville",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "Strathfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "North Sydney",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Granville",
+      "b": "North Sydney Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Campbelltown",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Liverpool",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Blacktown",
+      "b": "Leppington",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Central",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Strathfield",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Central Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Epping Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Gordon Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Eastwood Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Berowra Via Strathfield",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Hornsby",
+      "b": "Hornsby Via Eastwood",
+      "reason": "R3_branched_junction_guard"
+    },
+    {
+      "a": "Epping",
+      "b": "Hornsby",
+      "reason": "R3_branched_junction_guard"
+    }
+  ],
+  "junctionStations": [
+    "Blacktown",
+    "Cabramatta",
+    "Granville",
+    "Sutherland",
+    "Wolli Creek"
+  ],
+  "suppressedTermini": [
+    "Helensburgh"
+  ],
+  "lines": [
+    {
+      "id": "m1",
+      "name": "M1 Metro North West and Bankstown Line",
+      "routeShortName": "M1",
+      "tLine": "M1",
+      "termini": [
+        "Tallawong",
+        "Sydenham"
+      ],
+      "stations": [
+        "Tallawong",
+        "Rouse Hill",
+        "Kellyville",
+        "Bella Vista",
+        "Norwest",
+        "Hills Showground",
+        "Castle Hill",
+        "Cherrybrook",
+        "Epping",
+        "Macquarie University",
+        "Macquarie Park",
+        "North Ryde",
+        "Chatswood",
+        "Crows Nest",
+        "Victoria Cross",
+        "Barangaroo",
+        "Martin Place",
+        "Gadigal",
+        "Central",
+        "Waterloo",
+        "Sydenham"
+      ],
+      "longestStations": [
+        "Tallawong",
+        "Rouse Hill",
+        "Kellyville",
+        "Bella Vista",
+        "Norwest",
+        "Hills Showground",
+        "Castle Hill",
+        "Cherrybrook",
+        "Epping",
+        "Macquarie University",
+        "Macquarie Park",
+        "North Ryde",
+        "Chatswood",
+        "Crows Nest",
+        "Victoria Cross",
+        "Barangaroo",
+        "Martin Place",
+        "Gadigal",
+        "Central",
+        "Waterloo",
+        "Sydenham"
+      ],
+      "headsigns": {
+        "Sydenham": 973,
+        "Tallawong": 974,
+        "Chatswood": 3,
+        "Epping": 9
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": "04:08:00",
+          "last": "25:22:27"
+        },
+        "saturday": {
+          "first": "04:08:00",
+          "last": "26:22:27"
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "0251-001-101-002:1001"
+    },
+    {
+      "id": "t1",
+      "name": "T1 North Shore and Western Line",
+      "routeShortName": "T1",
+      "tLine": "T1",
+      "termini": [
+        "Central",
+        "Emu Plains"
+      ],
+      "stations": [
+        "Central",
+        "Redfern",
+        "Ashfield",
+        "Croydon",
+        "Burwood",
+        "Strathfield",
+        "Homebush",
+        "Flemington",
+        "Lidcombe",
+        "Auburn",
+        "Clyde",
+        "Granville",
+        "Harris Park",
+        "Parramatta",
+        "Westmead",
+        "Wentworthville",
+        "Pendle Hill",
+        "Toongabbie",
+        "Seven Hills",
+        "Blacktown",
+        "Doonside",
+        "Rooty Hill",
+        "Mount Druitt",
+        "St Marys",
+        "Werrington",
+        "Kingswood",
+        "Penrith",
+        "Emu Plains",
+        "Hornsby",
+        "Waitara",
+        "Wahroonga",
+        "Warrawee",
+        "Turramurra",
+        "Pymble",
+        "Gordon",
+        "Killara",
+        "Lindfield",
+        "Roseville",
+        "Chatswood",
+        "Artarmon",
+        "St Leonards",
+        "Wollstonecraft",
+        "Waverton",
+        "North Sydney",
+        "Milsons Point",
+        "Wynyard",
+        "Town Hall",
+        "Asquith",
+        "Mount Colah",
+        "Mount Kuring-gai",
+        "Berowra",
+        "Museum",
+        "St James",
+        "Circular Quay",
+        "Richmond",
+        "East Richmond",
+        "Clarendon",
+        "Windsor",
+        "Mulgrave",
+        "Vineyard",
+        "Riverstone",
+        "Schofields",
+        "Quakers Hill",
+        "Marayong",
+        "Olympic Park"
+      ],
+      "longestStations": [
+        "Central",
+        "Redfern",
+        "Ashfield",
+        "Croydon",
+        "Burwood",
+        "Strathfield",
+        "Homebush",
+        "Flemington",
+        "Lidcombe",
+        "Auburn",
+        "Clyde",
+        "Granville",
+        "Harris Park",
+        "Parramatta",
+        "Westmead",
+        "Wentworthville",
+        "Pendle Hill",
+        "Toongabbie",
+        "Seven Hills",
+        "Blacktown",
+        "Doonside",
+        "Rooty Hill",
+        "Mount Druitt",
+        "St Marys",
+        "Werrington",
+        "Kingswood",
+        "Penrith",
+        "Emu Plains"
+      ],
+      "headsigns": {
+        "Penrith Via Gordon": 716,
+        "Central": 194,
+        "Lindfield": 411,
+        "Penrith Via Central": 407,
+        "North Sydney": 557,
+        "Richmond Via Central": 550,
+        "Berowra Via Gordon": 1720,
+        "Hornsby Via Gordon": 1977,
+        "Emu Plains Via Gordon": 915,
+        "Chatswood": 15,
+        "Central Via Gordon": 4,
+        "Hornsby": 80,
+        "Gordon Via Lindfield": 143,
+        "Gordon": 3,
+        "North Sydney Via Gordon": 7,
+        "Wynyard Via Gordon": 35,
+        "City Circle Via Museum": 1,
+        "Olympic Park Via Central": 2,
+        "Penrith Via Parramatta": 1325,
+        "Lindfield Via Central": 465,
+        "City Circle Via Strathfield": 1,
+        "Richmond Via Parramatta": 582,
+        "North Sydney Via Central": 520,
+        "Schofields Via Parramatta": 226,
+        "Blacktown": 12,
+        "Blacktown Via Parramatta": 63,
+        "Emu Plains Via Parramatta": 559,
+        "Schofields": 1,
+        "Gordon Via Central": 71,
+        "Penrith": 28,
+        "Richmond": 11,
+        "Chatswood Via Central": 2,
+        "Olympic Park": 26,
+        "Lidcombe": 5
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "821E.1397.145.128.B.8.91222103"
+    },
+    {
+      "id": "t2",
+      "name": "T2 Leppington and Inner West Line",
+      "routeShortName": "T2",
+      "tLine": "T2",
+      "termini": [
+        "Central",
+        "Leppington"
+      ],
+      "stations": [
+        "Central",
+        "Museum",
+        "St James",
+        "Circular Quay",
+        "Wynyard",
+        "Town Hall",
+        "Central",
+        "Redfern",
+        "Macdonaldtown",
+        "Newtown",
+        "Stanmore",
+        "Petersham",
+        "Lewisham",
+        "Summer Hill",
+        "Ashfield",
+        "Croydon",
+        "Burwood",
+        "Strathfield",
+        "Flemington",
+        "Lidcombe",
+        "Berala",
+        "Regents Park",
+        "Sefton",
+        "Chester Hill",
+        "Leightonfield",
+        "Villawood",
+        "Carramar",
+        "Cabramatta",
+        "Warwick Farm",
+        "Liverpool",
+        "Casula",
+        "Glenfield",
+        "Edmondson Park",
+        "Leppington",
+        "Homebush",
+        "Auburn",
+        "Clyde",
+        "Granville",
+        "Merrylands",
+        "Guildford",
+        "Yennora",
+        "Fairfield",
+        "Canley Vale",
+        "Harris Park",
+        "Parramatta",
+        "Olympic Park",
+        "Bankstown",
+        "Yagoona",
+        "Birrong",
+        "Campbelltown",
+        "Leumeah",
+        "Minto",
+        "Ingleburn",
+        "Macquarie Fields"
+      ],
+      "longestStations": [
+        "Central",
+        "Museum",
+        "St James",
+        "Circular Quay",
+        "Wynyard",
+        "Town Hall",
+        "Central",
+        "Redfern",
+        "Macdonaldtown",
+        "Newtown",
+        "Stanmore",
+        "Petersham",
+        "Lewisham",
+        "Summer Hill",
+        "Ashfield",
+        "Croydon",
+        "Burwood",
+        "Strathfield",
+        "Flemington",
+        "Lidcombe",
+        "Berala",
+        "Regents Park",
+        "Sefton",
+        "Chester Hill",
+        "Leightonfield",
+        "Villawood",
+        "Carramar",
+        "Cabramatta",
+        "Warwick Farm",
+        "Liverpool",
+        "Casula",
+        "Glenfield",
+        "Edmondson Park",
+        "Leppington"
+      ],
+      "headsigns": {
+        "City Circle Via Town Hall": 1198,
+        "City Circle Via Museum": 3203,
+        "City Circle Via Granville": 1368,
+        "City Circle Via Strathfield": 737,
+        "Wynyard": 9,
+        "Hornsby Via Central": 8,
+        "Olympic Park Via Granville": 110,
+        "Leppington Via Granville": 132,
+        "Leppington": 9,
+        "Granville": 10,
+        "Central": 1,
+        "City Circle Via Regents Park": 40,
+        "Bankstown": 1,
+        "Leppington Via Regents Park": 84,
+        "Lidcombe Via Regents Park": 82,
+        "Ashfield": 79,
+        "Strathfield": 1,
+        "North Sydney": 1,
+        "North Sydney Via Central": 19
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "731Z.937.149.2.B.8.90926815"
+    },
+    {
+      "id": "t3",
+      "name": "T3 Liverpool and Inner West Line",
+      "routeShortName": "T3",
+      "tLine": "T3",
+      "termini": [
+        "Central",
+        "Liverpool"
+      ],
+      "stations": [
+        "Central",
+        "Museum",
+        "St James",
+        "Circular Quay",
+        "Wynyard",
+        "Town Hall",
+        "Central",
+        "Redfern",
+        "Macdonaldtown",
+        "Newtown",
+        "Stanmore",
+        "Petersham",
+        "Lewisham",
+        "Summer Hill",
+        "Ashfield",
+        "Croydon",
+        "Burwood",
+        "Strathfield",
+        "Homebush",
+        "Flemington",
+        "Lidcombe",
+        "Berala",
+        "Regents Park",
+        "Sefton",
+        "Chester Hill",
+        "Leightonfield",
+        "Villawood",
+        "Carramar",
+        "Cabramatta",
+        "Warwick Farm",
+        "Liverpool"
+      ],
+      "longestStations": [
+        "Central",
+        "Museum",
+        "St James",
+        "Circular Quay",
+        "Wynyard",
+        "Town Hall",
+        "Central",
+        "Redfern",
+        "Macdonaldtown",
+        "Newtown",
+        "Stanmore",
+        "Petersham",
+        "Lewisham",
+        "Summer Hill",
+        "Ashfield",
+        "Croydon",
+        "Burwood",
+        "Strathfield",
+        "Homebush",
+        "Flemington",
+        "Lidcombe",
+        "Berala",
+        "Regents Park",
+        "Sefton",
+        "Chester Hill",
+        "Leightonfield",
+        "Villawood",
+        "Carramar",
+        "Cabramatta",
+        "Warwick Farm",
+        "Liverpool"
+      ],
+      "headsigns": {
+        "City Circle Via Regents Park": 750,
+        "City Circle Via Museum": 756,
+        "City Circle Via Town Hall": 1,
+        "Liverpool Via Regents Park": 53,
+        "Lidcombe Via Regents Park": 29
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "10-H.2006.101.128.B.8.90669019"
+    },
+    {
+      "id": "t4",
+      "name": "T4 Eastern Suburbs and Illawarra Line",
+      "routeShortName": "T4",
+      "tLine": "T4",
+      "termini": [
+        "Bondi Junction",
+        "Cronulla"
+      ],
+      "stations": [
+        "Bondi Junction",
+        "Edgecliff",
+        "Kings Cross",
+        "Martin Place",
+        "Town Hall",
+        "Central",
+        "Redfern",
+        "Erskineville",
+        "St Peters",
+        "Sydenham",
+        "Tempe",
+        "Wolli Creek",
+        "Arncliffe",
+        "Banksia",
+        "Rockdale",
+        "Kogarah",
+        "Carlton",
+        "Allawah",
+        "Hurstville",
+        "Penshurst",
+        "Mortdale",
+        "Oatley",
+        "Como",
+        "Jannali",
+        "Sutherland",
+        "Kirrawee",
+        "Gymea",
+        "Miranda",
+        "Caringbah",
+        "Woolooware",
+        "Cronulla",
+        "Loftus",
+        "Engadine",
+        "Heathcote",
+        "Waterfall",
+        "Museum",
+        "St James",
+        "Circular Quay",
+        "Wynyard",
+        "Helensburgh"
+      ],
+      "longestStations": [
+        "Bondi Junction",
+        "Edgecliff",
+        "Kings Cross",
+        "Martin Place",
+        "Town Hall",
+        "Central",
+        "Redfern",
+        "Erskineville",
+        "St Peters",
+        "Sydenham",
+        "Tempe",
+        "Wolli Creek",
+        "Arncliffe",
+        "Banksia",
+        "Rockdale",
+        "Kogarah",
+        "Carlton",
+        "Allawah",
+        "Hurstville",
+        "Penshurst",
+        "Mortdale",
+        "Oatley",
+        "Como",
+        "Jannali",
+        "Sutherland",
+        "Kirrawee",
+        "Gymea",
+        "Miranda",
+        "Caringbah",
+        "Woolooware",
+        "Cronulla"
+      ],
+      "headsigns": {
+        "Hurstville Via Banksia": 575,
+        "Bondi Junction Via Wolli Creek": 820,
+        "Central": 318,
+        "Bondi Junction": 298,
+        "Bondi Junction Via Banksia": 1188,
+        "Hurstville Via Kogarah": 33,
+        "Sutherland Via Wolli Creek": 33,
+        "Hurstville Via Wolli Creek": 78,
+        "Bondi Junction Via Kogarah": 874,
+        "Cronulla Via Kogarah": 851,
+        "Waterfall Via Banksia": 533,
+        "City Circle Via Banksia": 19,
+        "City Circle Via Museum": 35,
+        "Sutherland Via Kogarah": 1,
+        "Hurstville": 65,
+        "Central Via Banksia": 8,
+        "Mortdale Via Banksia": 5,
+        "Cronulla Via Banksia": 45,
+        "Cronulla": 79,
+        "Waterfall Via Wolli Creek": 225,
+        "Cronulla Via Wolli Creek": 503,
+        "Central Via Kogarah": 2,
+        "City Circle Via Kogarah": 16,
+        "Sutherland": 41,
+        "Mortdale Via Kogarah": 3,
+        "Waterfall": 21,
+        "Waterfall Via Kogarah": 9,
+        "Central Via Hurstville": 1,
+        "Helensburgh Via Banksia": 16,
+        "Mortdale": 1
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "610P.807.166.4.T.8.91072558"
+    },
+    {
+      "id": "t5",
+      "name": "T5 Cumberland Line",
+      "routeShortName": "T5",
+      "tLine": "T5",
+      "termini": [
+        "Richmond",
+        "Leppington"
+      ],
+      "stations": [
+        "Richmond",
+        "East Richmond",
+        "Clarendon",
+        "Windsor",
+        "Mulgrave",
+        "Vineyard",
+        "Riverstone",
+        "Schofields",
+        "Quakers Hill",
+        "Marayong",
+        "Blacktown",
+        "Seven Hills",
+        "Toongabbie",
+        "Pendle Hill",
+        "Wentworthville",
+        "Westmead",
+        "Parramatta",
+        "Harris Park",
+        "Merrylands",
+        "Guildford",
+        "Yennora",
+        "Fairfield",
+        "Canley Vale",
+        "Cabramatta",
+        "Warwick Farm",
+        "Liverpool",
+        "Casula",
+        "Glenfield",
+        "Edmondson Park",
+        "Leppington",
+        "Doonside",
+        "Rooty Hill",
+        "Mount Druitt",
+        "St Marys",
+        "Werrington",
+        "Kingswood",
+        "Penrith",
+        "Macarthur",
+        "Campbelltown"
+      ],
+      "longestStations": [
+        "Richmond",
+        "East Richmond",
+        "Clarendon",
+        "Windsor",
+        "Mulgrave",
+        "Vineyard",
+        "Riverstone",
+        "Schofields",
+        "Quakers Hill",
+        "Marayong",
+        "Blacktown",
+        "Seven Hills",
+        "Toongabbie",
+        "Pendle Hill",
+        "Wentworthville",
+        "Westmead",
+        "Parramatta",
+        "Harris Park",
+        "Merrylands",
+        "Guildford",
+        "Yennora",
+        "Fairfield",
+        "Canley Vale",
+        "Cabramatta",
+        "Warwick Farm",
+        "Liverpool",
+        "Casula",
+        "Glenfield",
+        "Edmondson Park",
+        "Leppington"
+      ],
+      "headsigns": {
+        "Richmond": 248,
+        "Penrith": 9,
+        "Schofields": 440,
+        "Blacktown": 294,
+        "Campbelltown": 179,
+        "Liverpool": 301,
+        "Leppington": 559
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "504H.937.149.2.A.8.90926739"
+    },
+    {
+      "id": "t6",
+      "name": "T6 Lidcombe and Bankstown Line",
+      "routeShortName": "T6",
+      "tLine": "T6",
+      "termini": [
+        "Homebush",
+        "Bankstown"
+      ],
+      "stations": [
+        "Homebush",
+        "Lidcombe",
+        "Berala",
+        "Regents Park",
+        "Birrong",
+        "Yagoona",
+        "Bankstown"
+      ],
+      "longestStations": [
+        "Homebush",
+        "Lidcombe",
+        "Berala",
+        "Regents Park",
+        "Birrong",
+        "Yagoona",
+        "Bankstown"
+      ],
+      "headsigns": {
+        "Bankstown": 1446,
+        "Lidcombe": 1434,
+        "Bankstown Via Lidcombe": 1
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "71AB.937.149.2.M.4.90925002"
+    },
+    {
+      "id": "t7",
+      "name": "T7 Olympic Park Line",
+      "routeShortName": "T7",
+      "tLine": "T7",
+      "termini": [
+        "Blacktown",
+        "Olympic Park"
+      ],
+      "stations": [
+        "Blacktown",
+        "Seven Hills",
+        "Westmead",
+        "Parramatta",
+        "Granville",
+        "Olympic Park",
+        "Lidcombe",
+        "Central",
+        "Redfern",
+        "Strathfield"
+      ],
+      "longestStations": [
+        "Blacktown",
+        "Seven Hills",
+        "Westmead",
+        "Parramatta",
+        "Granville",
+        "Olympic Park"
+      ],
+      "headsigns": {
+        "Olympic Park": 1979,
+        "Lidcombe": 2001,
+        "Olympic Park Via Strathfield": 77,
+        "Strathfield": 2,
+        "Central": 58
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "852K.807.166.64.M.4.91068957"
+    },
+    {
+      "id": "t8",
+      "name": "T8 Airport and South Line",
+      "routeShortName": "T8",
+      "tLine": "T8",
+      "termini": [
+        "Central",
+        "Macarthur"
+      ],
+      "stations": [
+        "Central",
+        "Town Hall",
+        "Wynyard",
+        "Circular Quay",
+        "St James",
+        "Museum",
+        "Central",
+        "Green Square",
+        "Mascot",
+        "Domestic Airport",
+        "International Airport",
+        "Wolli Creek",
+        "Turrella",
+        "Bardwell Park",
+        "Bexley North",
+        "Kingsgrove",
+        "Beverly Hills",
+        "Narwee",
+        "Riverwood",
+        "Padstow",
+        "Revesby",
+        "Panania",
+        "East Hills",
+        "Holsworthy",
+        "Glenfield",
+        "Macquarie Fields",
+        "Ingleburn",
+        "Minto",
+        "Leumeah",
+        "Campbelltown",
+        "Macarthur",
+        "Sydenham",
+        "St Peters",
+        "Erskineville",
+        "Redfern",
+        "Tempe"
+      ],
+      "longestStations": [
+        "Central",
+        "Town Hall",
+        "Wynyard",
+        "Circular Quay",
+        "St James",
+        "Museum",
+        "Central",
+        "Green Square",
+        "Mascot",
+        "Domestic Airport",
+        "International Airport",
+        "Wolli Creek",
+        "Turrella",
+        "Bardwell Park",
+        "Bexley North",
+        "Kingsgrove",
+        "Beverly Hills",
+        "Narwee",
+        "Riverwood",
+        "Padstow",
+        "Revesby",
+        "Panania",
+        "East Hills",
+        "Holsworthy",
+        "Glenfield",
+        "Macquarie Fields",
+        "Ingleburn",
+        "Minto",
+        "Leumeah",
+        "Campbelltown",
+        "Macarthur"
+      ],
+      "headsigns": {
+        "City Circle Via Airport": 2805,
+        "City Circle Via Town Hall": 4437,
+        "Central Via Airport": 20,
+        "Macarthur Via Airport": 48,
+        "City Circle Via Sydenham": 147,
+        "City Circle Via Museum": 1045,
+        "North Sydney": 1,
+        "Macarthur Via Wolli Creek": 2,
+        "Campbelltown": 1
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "10-F.2006.101.128.B.8.90669015"
+    },
+    {
+      "id": "t9",
+      "name": "T9 Northern Line",
+      "routeShortName": "T9",
+      "tLine": "T9",
+      "termini": [
+        "Hornsby",
+        "Central"
+      ],
+      "stations": [
+        "Hornsby",
+        "Normanhurst",
+        "Thornleigh",
+        "Pennant Hills",
+        "Beecroft",
+        "Cheltenham",
+        "Epping",
+        "Eastwood",
+        "Denistone",
+        "West Ryde",
+        "Meadowbank",
+        "Rhodes",
+        "Concord West",
+        "North Strathfield",
+        "Strathfield",
+        "Burwood",
+        "Ashfield",
+        "Summer Hill",
+        "Lewisham",
+        "Petersham",
+        "Stanmore",
+        "Newtown",
+        "Macdonaldtown",
+        "Redfern",
+        "Central",
+        "Gordon",
+        "Killara",
+        "Lindfield",
+        "Roseville",
+        "Chatswood",
+        "Artarmon",
+        "St Leonards",
+        "Wollstonecraft",
+        "Waverton",
+        "North Sydney",
+        "Milsons Point",
+        "Wynyard",
+        "Town Hall",
+        "Berowra",
+        "Mount Kuring-gai",
+        "Mount Colah",
+        "Asquith",
+        "Waitara",
+        "Wahroonga",
+        "Warrawee",
+        "Turramurra",
+        "Pymble",
+        "Croydon"
+      ],
+      "longestStations": [
+        "Hornsby",
+        "Normanhurst",
+        "Thornleigh",
+        "Pennant Hills",
+        "Beecroft",
+        "Cheltenham",
+        "Epping",
+        "Eastwood",
+        "Denistone",
+        "West Ryde",
+        "Meadowbank",
+        "Rhodes",
+        "Concord West",
+        "North Strathfield",
+        "Strathfield",
+        "Burwood",
+        "Ashfield",
+        "Summer Hill",
+        "Lewisham",
+        "Petersham",
+        "Stanmore",
+        "Newtown",
+        "Macdonaldtown",
+        "Redfern",
+        "Central"
+      ],
+      "headsigns": {
+        "Hornsby Via Central": 1168,
+        "Hornsby Via Strathfield": 1637,
+        "Central Via Strathfield": 1784,
+        "Epping Via Strathfield": 210,
+        "Gordon Via Strathfield": 121,
+        "Gordon Via Lindfield": 1172,
+        "Central Via Gordon": 419,
+        "North Sydney": 79,
+        "Eastwood Via Strathfield": 16,
+        "Berowra Via Strathfield": 10,
+        "Hornsby Via Eastwood": 17,
+        "Hornsby Via Gordon": 32,
+        "North Sydney Via Central": 2,
+        "Epping": 25,
+        "Hornsby": 22
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "123V.807.166.16.A.8.91072753"
+    }
+  ],
+  "coverageGaps": [
+    "C3-1: T2 and T3 share one official PDF; oracle keeps two line objects",
+    "C3-2: T4 PDF/GTFS may include Helensburgh SCO; excluded from published T4 stations",
+    "C3-3: M1 printed name Metro North West & Bankstown; published stops end at Sydenham; leftover heavy rail is T6",
+    "C3-4: City Circle is a loop, not a terminus",
+    "C3-T2/T3/T8-circle: D1 lists Circle stations linearly; longest GTFS patterns are loops",
+    "H2: public zip has T/M numbers; gateway schedule/RT still 401 without TFNSW_API_KEY",
+    "H7: Australia/Sydney observes DST — do not copy Brisbane no-DST"
+  ]
+}

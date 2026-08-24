@@ -24,7 +24,7 @@ Official **GTFS + GTFS-R** (CC). Prefer GTFS-R so we reuse Brisbane helpers. SIR
 | Modes v1 | **Train** (tram optional later) |
 | Registry | Stay `planned` |
 | Public product path | Still **501** |
-| Auth | Whatever Adelaide portal requires → env e.g. `ADELAIDE_METRO_API_KEY` (confirm at implement time; document actual header in PR) |
+| Auth | **None required.** Public GTFS + GTFS-R (H2). Optional `ADELAIDE_METRO_API_KEY` (`x-api-key`) only. |
 
 ---
 

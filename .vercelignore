@@ -4,7 +4,12 @@ node_modules
 android
 ios
 store-assets
-qa
+qa/*.mjs
+qa/reports
+qa/maestro
+qa/*.png
+qa/*.xml
+qa/*.log
 .git
 *.apk
 *.aab

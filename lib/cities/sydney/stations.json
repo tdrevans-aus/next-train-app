@@ -1,84 +1,1622 @@
 {
   "stations": [
     {
-      "name": "Central",
-      "aliases": ["Sydney Central", "Central Station"],
-      "stopIds": []
+      "name": "Allawah",
+      "aliases": [],
+      "stopIds": [
+        "2220351",
+        "2220352",
+        "2220353",
+        "2220354"
+      ]
     },
     {
-      "name": "Town Hall",
+      "name": "Arncliffe",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "220591",
+        "220592",
+        "220593",
+        "220594"
+      ]
     },
     {
-      "name": "Wynyard",
+      "name": "Artarmon",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "206451",
+        "206452"
+      ]
     },
     {
-      "name": "Circular Quay",
+      "name": "Ashfield",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2131121",
+        "2131122",
+        "2131123",
+        "2131124",
+        "2131125"
+      ]
     },
     {
-      "name": "Martin Place",
+      "name": "Asquith",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2077291",
+        "2077292"
+      ]
     },
     {
-      "name": "North Sydney",
+      "name": "Auburn",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2144241",
+        "2144242",
+        "2144243",
+        "2144244"
+      ]
     },
     {
-      "name": "Chatswood",
+      "name": "Banksia",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2216161",
+        "2216162",
+        "2216163",
+        "2216164"
+      ]
     },
     {
-      "name": "Parramatta",
+      "name": "Bankstown",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2200501",
+        "2200502"
+      ]
+    },
+    {
+      "name": "Barangaroo",
+      "aliases": [],
+      "stopIds": [
+        "2000460",
+        "2000461"
+      ]
+    },
+    {
+      "name": "Bardwell Park",
+      "aliases": [],
+      "stopIds": [
+        "2207271",
+        "2207272"
+      ]
+    },
+    {
+      "name": "Beecroft",
+      "aliases": [],
+      "stopIds": [
+        "211981",
+        "211982"
+      ]
+    },
+    {
+      "name": "Bella Vista",
+      "aliases": [],
+      "stopIds": [
+        "2153402",
+        "2153403"
+      ]
+    },
+    {
+      "name": "Berala",
+      "aliases": [],
+      "stopIds": [
+        "2141301",
+        "2141302"
+      ]
+    },
+    {
+      "name": "Berowra",
+      "aliases": [],
+      "stopIds": [
+        "208172"
+      ]
+    },
+    {
+      "name": "Beverly Hills",
+      "aliases": [],
+      "stopIds": [
+        "2209141",
+        "2209142"
+      ]
+    },
+    {
+      "name": "Bexley North",
+      "aliases": [],
+      "stopIds": [
+        "2207281",
+        "2207282"
+      ]
+    },
+    {
+      "name": "Birrong",
+      "aliases": [],
+      "stopIds": [
+        "214381",
+        "214382"
+      ]
+    },
+    {
+      "name": "Blacktown",
+      "aliases": [],
+      "stopIds": [
+        "2148531",
+        "2148532",
+        "2148533",
+        "2148534",
+        "2148535",
+        "2148536",
+        "2148537"
+      ]
     },
     {
       "name": "Bondi Junction",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "202291",
+        "202292"
+      ]
     },
     {
-      "name": "Sydenham",
+      "name": "Burwood",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "213491",
+        "213492",
+        "213493",
+        "213494",
+        "213495",
+        "213496"
+      ]
     },
     {
-      "name": "Redfern",
+      "name": "Cabramatta",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2166271",
+        "2166272"
+      ]
     },
     {
-      "name": "Strathfield",
+      "name": "Campbelltown",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2560691",
+        "2560692",
+        "2560693"
+      ]
+    },
+    {
+      "name": "Canley Vale",
+      "aliases": [],
+      "stopIds": [
+        "2166281",
+        "2166282"
+      ]
+    },
+    {
+      "name": "Caringbah",
+      "aliases": [],
+      "stopIds": [
+        "2229221",
+        "2229222"
+      ]
+    },
+    {
+      "name": "Carlton",
+      "aliases": [],
+      "stopIds": [
+        "221891",
+        "221892",
+        "221893",
+        "221894"
+      ]
+    },
+    {
+      "name": "Carramar",
+      "aliases": [],
+      "stopIds": [
+        "2163191",
+        "2163192"
+      ]
+    },
+    {
+      "name": "Castle Hill",
+      "aliases": [],
+      "stopIds": [
+        "2154262",
+        "2154263"
+      ]
+    },
+    {
+      "name": "Casula",
+      "aliases": [],
+      "stopIds": [
+        "2170811",
+        "2170812"
+      ]
+    },
+    {
+      "name": "Central",
+      "aliases": [],
+      "stopIds": [
+        "2000321",
+        "2000323",
+        "2000324",
+        "2000325",
+        "2000326",
+        "2000327",
+        "2000328",
+        "2000329",
+        "2000330",
+        "2000331",
+        "2000332",
+        "2000333",
+        "2000334",
+        "2000336",
+        "2000337",
+        "2000338",
+        "2000339",
+        "2000340",
+        "2000341",
+        "2000342",
+        "2000343",
+        "2000344",
+        "2000345"
+      ]
+    },
+    {
+      "name": "Central Metro",
+      "aliases": [
+        "Central",
+        "Central (Metro)"
+      ],
+      "stopIds": [
+        "2000466",
+        "2000467"
+      ]
+    },
+    {
+      "name": "Chatswood",
+      "aliases": [],
+      "stopIds": [
+        "2067141",
+        "2067144"
+      ]
+    },
+    {
+      "name": "Chatswood Metro",
+      "aliases": [
+        "Chatswood",
+        "Chatswood (Metro)"
+      ],
+      "stopIds": [
+        "2067142",
+        "2067143"
+      ]
+    },
+    {
+      "name": "Cheltenham",
+      "aliases": [],
+      "stopIds": [
+        "211991",
+        "211992"
+      ]
+    },
+    {
+      "name": "Cherrybrook",
+      "aliases": [],
+      "stopIds": [
+        "2126159",
+        "2126160"
+      ]
+    },
+    {
+      "name": "Chester Hill",
+      "aliases": [],
+      "stopIds": [
+        "2162191",
+        "2162192"
+      ]
+    },
+    {
+      "name": "Circular Quay",
+      "aliases": [],
+      "stopIds": [
+        "2000351",
+        "2000352"
+      ]
+    },
+    {
+      "name": "Clarendon",
+      "aliases": [],
+      "stopIds": [
+        "2756431",
+        "2756432"
+      ]
+    },
+    {
+      "name": "Clyde",
+      "aliases": [],
+      "stopIds": [
+        "2142312",
+        "2142313",
+        "2142314",
+        "2142315"
+      ]
+    },
+    {
+      "name": "Como",
+      "aliases": [],
+      "stopIds": [
+        "2226101",
+        "2226102"
+      ]
+    },
+    {
+      "name": "Concord West",
+      "aliases": [],
+      "stopIds": [
+        "213881",
+        "213882",
+        "213883"
+      ]
+    },
+    {
+      "name": "Cronulla",
+      "aliases": [],
+      "stopIds": [
+        "2230211",
+        "2230212"
+      ]
+    },
+    {
+      "name": "Crows Nest",
+      "aliases": [],
+      "stopIds": [
+        "2065163",
+        "2065164"
+      ]
+    },
+    {
+      "name": "Croydon",
+      "aliases": [],
+      "stopIds": [
+        "213282",
+        "213283",
+        "213284",
+        "213285"
+      ]
+    },
+    {
+      "name": "Denistone",
+      "aliases": [],
+      "stopIds": [
+        "2114171",
+        "2114172",
+        "2114173",
+        "2114174"
+      ]
+    },
+    {
+      "name": "Domestic Airport",
+      "aliases": [
+        "Sydney Domestic Airport"
+      ],
+      "stopIds": [
+        "202091",
+        "202092"
+      ]
+    },
+    {
+      "name": "Doonside",
+      "aliases": [],
+      "stopIds": [
+        "2767121",
+        "2767122",
+        "2767123",
+        "2767124"
+      ]
+    },
+    {
+      "name": "East Hills",
+      "aliases": [],
+      "stopIds": [
+        "2213142",
+        "2213143"
+      ]
+    },
+    {
+      "name": "East Richmond",
+      "aliases": [],
+      "stopIds": [
+        "2753661"
+      ]
+    },
+    {
+      "name": "Eastwood",
+      "aliases": [],
+      "stopIds": [
+        "2122231",
+        "2122232",
+        "2122233",
+        "2122234"
+      ]
+    },
+    {
+      "name": "Edgecliff",
+      "aliases": [],
+      "stopIds": [
+        "202761",
+        "202762"
+      ]
+    },
+    {
+      "name": "Edmondson Park",
+      "aliases": [],
+      "stopIds": [
+        "217427",
+        "217428"
+      ]
+    },
+    {
+      "name": "Emu Plains",
+      "aliases": [],
+      "stopIds": [
+        "2750491",
+        "2750492"
+      ]
+    },
+    {
+      "name": "Engadine",
+      "aliases": [],
+      "stopIds": [
+        "2233271",
+        "2233272"
+      ]
+    },
+    {
+      "name": "Epping",
+      "aliases": [],
+      "stopIds": [
+        "2121221",
+        "2121222",
+        "2121223"
+      ]
+    },
+    {
+      "name": "Epping Metro",
+      "aliases": [
+        "Epping",
+        "Epping (Metro)"
+      ],
+      "stopIds": [
+        "2121225",
+        "2121226"
+      ]
+    },
+    {
+      "name": "Erskineville",
+      "aliases": [],
+      "stopIds": [
+        "204331",
+        "204332",
+        "204333",
+        "204334"
+      ]
+    },
+    {
+      "name": "Fairfield",
+      "aliases": [],
+      "stopIds": [
+        "2165201",
+        "2165202"
+      ]
+    },
+    {
+      "name": "Flemington",
+      "aliases": [],
+      "stopIds": [
+        "214061",
+        "214062",
+        "214063",
+        "214064"
+      ]
+    },
+    {
+      "name": "Gadigal",
+      "aliases": [],
+      "stopIds": [
+        "2000464",
+        "2000465"
+      ]
+    },
+    {
+      "name": "Glenfield",
+      "aliases": [],
+      "stopIds": [
+        "216761",
+        "216762",
+        "216763",
+        "216765"
+      ]
+    },
+    {
+      "name": "Gordon",
+      "aliases": [],
+      "stopIds": [
+        "207261",
+        "207262",
+        "207263"
+      ]
+    },
+    {
+      "name": "Granville",
+      "aliases": [],
+      "stopIds": [
+        "2142321",
+        "2142322",
+        "2142323",
+        "2142324"
+      ]
+    },
+    {
+      "name": "Green Square",
+      "aliases": [],
+      "stopIds": [
+        "2015111",
+        "2015112"
+      ]
+    },
+    {
+      "name": "Guildford",
+      "aliases": [],
+      "stopIds": [
+        "2161251",
+        "2161252"
+      ]
+    },
+    {
+      "name": "Gymea",
+      "aliases": [],
+      "stopIds": [
+        "2227101",
+        "2227102"
+      ]
+    },
+    {
+      "name": "Harris Park",
+      "aliases": [],
+      "stopIds": [
+        "2150401",
+        "2150402",
+        "2150403",
+        "2150404"
+      ]
+    },
+    {
+      "name": "Heathcote",
+      "aliases": [],
+      "stopIds": [
+        "2233281",
+        "2233282"
+      ]
+    },
+    {
+      "name": "Helensburgh",
+      "aliases": [],
+      "stopIds": [
+        "2508161"
+      ]
+    },
+    {
+      "name": "Hills Showground",
+      "aliases": [],
+      "stopIds": [
+        "2154264",
+        "2154265"
+      ]
+    },
+    {
+      "name": "Holsworthy",
+      "aliases": [],
+      "stopIds": [
+        "217391",
+        "217392"
+      ]
+    },
+    {
+      "name": "Homebush",
+      "aliases": [],
+      "stopIds": [
+        "214072",
+        "214073",
+        "214074",
+        "214075",
+        "214076",
+        "214077"
+      ]
     },
     {
       "name": "Hornsby",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2077301",
+        "2077302",
+        "2077303",
+        "2077304",
+        "2077305"
+      ]
+    },
+    {
+      "name": "Hurstville",
+      "aliases": [],
+      "stopIds": [
+        "2220361",
+        "2220362",
+        "2220363",
+        "2220364"
+      ]
+    },
+    {
+      "name": "Ingleburn",
+      "aliases": [],
+      "stopIds": [
+        "2565651",
+        "2565652"
+      ]
+    },
+    {
+      "name": "International Airport",
+      "aliases": [
+        "Sydney International Airport"
+      ],
+      "stopIds": [
+        "2020101",
+        "2020102"
+      ]
+    },
+    {
+      "name": "Jannali",
+      "aliases": [],
+      "stopIds": [
+        "2226111",
+        "2226112"
+      ]
+    },
+    {
+      "name": "Kellyville",
+      "aliases": [],
+      "stopIds": [
+        "2155265",
+        "2155266"
+      ]
+    },
+    {
+      "name": "Killara",
+      "aliases": [],
+      "stopIds": [
+        "207191",
+        "207192"
+      ]
+    },
+    {
+      "name": "Kings Cross",
+      "aliases": [],
+      "stopIds": [
+        "201171",
+        "201172"
+      ]
+    },
+    {
+      "name": "Kingsgrove",
+      "aliases": [],
+      "stopIds": [
+        "2208141",
+        "2208142"
+      ]
+    },
+    {
+      "name": "Kingswood",
+      "aliases": [],
+      "stopIds": [
+        "2747361",
+        "2747362"
+      ]
+    },
+    {
+      "name": "Kirrawee",
+      "aliases": [],
+      "stopIds": [
+        "2232271",
+        "2232272"
+      ]
+    },
+    {
+      "name": "Kogarah",
+      "aliases": [],
+      "stopIds": [
+        "2217191",
+        "2217192",
+        "2217193",
+        "2217194"
+      ]
+    },
+    {
+      "name": "Leightonfield",
+      "aliases": [],
+      "stopIds": [
+        "2163201",
+        "2163202"
+      ]
+    },
+    {
+      "name": "Leppington",
+      "aliases": [],
+      "stopIds": [
+        "217934",
+        "217935",
+        "217936",
+        "217937"
+      ]
+    },
+    {
+      "name": "Leumeah",
+      "aliases": [],
+      "stopIds": [
+        "2560701",
+        "2560702"
+      ]
+    },
+    {
+      "name": "Lewisham",
+      "aliases": [],
+      "stopIds": [
+        "204981",
+        "204982"
+      ]
+    },
+    {
+      "name": "Lidcombe",
+      "aliases": [],
+      "stopIds": [
+        "2141311",
+        "2141312",
+        "2141313",
+        "2141314",
+        "2141315",
+        "2141316"
+      ]
+    },
+    {
+      "name": "Lindfield",
+      "aliases": [],
+      "stopIds": [
+        "2070141",
+        "2070142",
+        "2070143"
+      ]
+    },
+    {
+      "name": "Liverpool",
+      "aliases": [],
+      "stopIds": [
+        "2170821",
+        "2170822",
+        "2170823",
+        "2170824"
+      ]
+    },
+    {
+      "name": "Loftus",
+      "aliases": [],
+      "stopIds": [
+        "2232281",
+        "2232282"
+      ]
+    },
+    {
+      "name": "Macarthur",
+      "aliases": [],
+      "stopIds": [
+        "2560711",
+        "2560712",
+        "2560713"
+      ]
+    },
+    {
+      "name": "Macdonaldtown",
+      "aliases": [],
+      "stopIds": [
+        "2015121",
+        "2015122"
+      ]
+    },
+    {
+      "name": "Macquarie Fields",
+      "aliases": [],
+      "stopIds": [
+        "2564141",
+        "2564142"
+      ]
+    },
+    {
+      "name": "Macquarie Park",
+      "aliases": [],
+      "stopIds": [
+        "2113341",
+        "2113342"
+      ]
     },
     {
       "name": "Macquarie University",
-      "aliases": ["Macquarie Uni"],
-      "stopIds": []
+      "aliases": [],
+      "stopIds": [
+        "2113351",
+        "2113352"
+      ]
+    },
+    {
+      "name": "Marayong",
+      "aliases": [],
+      "stopIds": [
+        "2148541",
+        "2148542"
+      ]
+    },
+    {
+      "name": "Martin Place",
+      "aliases": [],
+      "stopIds": [
+        "2000361",
+        "2000362"
+      ]
+    },
+    {
+      "name": "Martin Place Metro",
+      "aliases": [
+        "Martin Place",
+        "Martin Place (Metro)"
+      ],
+      "stopIds": [
+        "2000462",
+        "2000463"
+      ]
+    },
+    {
+      "name": "Mascot",
+      "aliases": [],
+      "stopIds": [
+        "2020111",
+        "2020112"
+      ]
+    },
+    {
+      "name": "Meadowbank",
+      "aliases": [],
+      "stopIds": [
+        "2114181",
+        "2114182"
+      ]
+    },
+    {
+      "name": "Merrylands",
+      "aliases": [],
+      "stopIds": [
+        "2160261",
+        "2160262"
+      ]
+    },
+    {
+      "name": "Milsons Point",
+      "aliases": [],
+      "stopIds": [
+        "206141",
+        "206142"
+      ]
+    },
+    {
+      "name": "Minto",
+      "aliases": [],
+      "stopIds": [
+        "2566241",
+        "2566242"
+      ]
+    },
+    {
+      "name": "Miranda",
+      "aliases": [],
+      "stopIds": [
+        "2228131",
+        "2228132"
+      ]
+    },
+    {
+      "name": "Mortdale",
+      "aliases": [],
+      "stopIds": [
+        "2223291",
+        "2223292"
+      ]
+    },
+    {
+      "name": "Mount Colah",
+      "aliases": [],
+      "stopIds": [
+        "2079101",
+        "2079102"
+      ]
+    },
+    {
+      "name": "Mount Druitt",
+      "aliases": [],
+      "stopIds": [
+        "2770591",
+        "2770592",
+        "2770593",
+        "2770594"
+      ]
+    },
+    {
+      "name": "Mount Kuring-gai",
+      "aliases": [],
+      "stopIds": [
+        "208041",
+        "208042"
+      ]
+    },
+    {
+      "name": "Mulgrave",
+      "aliases": [],
+      "stopIds": [
+        "2756441",
+        "2756442"
+      ]
+    },
+    {
+      "name": "Museum",
+      "aliases": [],
+      "stopIds": [
+        "2000371",
+        "2000372"
+      ]
+    },
+    {
+      "name": "Narwee",
+      "aliases": [],
+      "stopIds": [
+        "2209151",
+        "2209152"
+      ]
+    },
+    {
+      "name": "Newtown",
+      "aliases": [],
+      "stopIds": [
+        "204261",
+        "204262"
+      ]
+    },
+    {
+      "name": "Normanhurst",
+      "aliases": [],
+      "stopIds": [
+        "2076231",
+        "2076232"
+      ]
+    },
+    {
+      "name": "North Ryde",
+      "aliases": [],
+      "stopIds": [
+        "2113361",
+        "2113362"
+      ]
+    },
+    {
+      "name": "North Strathfield",
+      "aliases": [],
+      "stopIds": [
+        "2137171",
+        "2137172",
+        "2137173"
+      ]
+    },
+    {
+      "name": "North Sydney",
+      "aliases": [],
+      "stopIds": [
+        "2060101",
+        "2060102",
+        "2060103",
+        "2060104"
+      ]
+    },
+    {
+      "name": "Norwest",
+      "aliases": [],
+      "stopIds": [
+        "2153404",
+        "2153405"
+      ]
+    },
+    {
+      "name": "Oatley",
+      "aliases": [],
+      "stopIds": [
+        "2223301",
+        "2223302"
+      ]
+    },
+    {
+      "name": "Olympic Park",
+      "aliases": [],
+      "stopIds": [
+        "2127102",
+        "2127103"
+      ]
+    },
+    {
+      "name": "Padstow",
+      "aliases": [],
+      "stopIds": [
+        "2211141",
+        "2211142"
+      ]
+    },
+    {
+      "name": "Panania",
+      "aliases": [],
+      "stopIds": [
+        "2213151",
+        "2213152"
+      ]
+    },
+    {
+      "name": "Parramatta",
+      "aliases": [],
+      "stopIds": [
+        "2150411",
+        "2150412",
+        "2150413",
+        "2150414"
+      ]
+    },
+    {
+      "name": "Pendle Hill",
+      "aliases": [],
+      "stopIds": [
+        "2145641",
+        "2145642",
+        "2145643",
+        "2145644"
+      ]
+    },
+    {
+      "name": "Pennant Hills",
+      "aliases": [],
+      "stopIds": [
+        "2120201",
+        "2120202"
+      ]
+    },
+    {
+      "name": "Penrith",
+      "aliases": [],
+      "stopIds": [
+        "2750511",
+        "2750512",
+        "2750513"
+      ]
+    },
+    {
+      "name": "Penshurst",
+      "aliases": [],
+      "stopIds": [
+        "2222131",
+        "2222132"
+      ]
+    },
+    {
+      "name": "Petersham",
+      "aliases": [],
+      "stopIds": [
+        "204991",
+        "204992"
+      ]
+    },
+    {
+      "name": "Pymble",
+      "aliases": [],
+      "stopIds": [
+        "2073161",
+        "2073162"
+      ]
+    },
+    {
+      "name": "Quakers Hill",
+      "aliases": [],
+      "stopIds": [
+        "2763171",
+        "2763172"
+      ]
+    },
+    {
+      "name": "Redfern",
+      "aliases": [],
+      "stopIds": [
+        "2015131",
+        "2015132",
+        "2015133",
+        "2015134",
+        "2015135",
+        "2015136",
+        "2015137",
+        "2015138",
+        "2015139",
+        "2015140",
+        "2015141",
+        "2015142"
+      ]
+    },
+    {
+      "name": "Regents Park",
+      "aliases": [],
+      "stopIds": [
+        "214391",
+        "214392"
+      ]
+    },
+    {
+      "name": "Revesby",
+      "aliases": [],
+      "stopIds": [
+        "2212161",
+        "2212162",
+        "2212163",
+        "2212164"
+      ]
+    },
+    {
+      "name": "Rhodes",
+      "aliases": [],
+      "stopIds": [
+        "213891",
+        "213892",
+        "213893"
+      ]
+    },
+    {
+      "name": "Richmond",
+      "aliases": [],
+      "stopIds": [
+        "2753671",
+        "2753672"
+      ]
+    },
+    {
+      "name": "Riverstone",
+      "aliases": [],
+      "stopIds": [
+        "2765291",
+        "2765292"
+      ]
+    },
+    {
+      "name": "Riverwood",
+      "aliases": [],
+      "stopIds": [
+        "2210321",
+        "2210322"
+      ]
+    },
+    {
+      "name": "Rockdale",
+      "aliases": [],
+      "stopIds": [
+        "2216172",
+        "2216173",
+        "2216174",
+        "2216175"
+      ]
+    },
+    {
+      "name": "Rooty Hill",
+      "aliases": [],
+      "stopIds": [
+        "2766141",
+        "2766142",
+        "2766143",
+        "2766144"
+      ]
+    },
+    {
+      "name": "Roseville",
+      "aliases": [],
+      "stopIds": [
+        "2069131",
+        "2069132"
+      ]
+    },
+    {
+      "name": "Rouse Hill",
+      "aliases": [],
+      "stopIds": [
+        "2155267",
+        "2155268"
+      ]
+    },
+    {
+      "name": "Schofields",
+      "aliases": [],
+      "stopIds": [
+        "2762121",
+        "2762122"
+      ]
+    },
+    {
+      "name": "Sefton",
+      "aliases": [],
+      "stopIds": [
+        "2162201",
+        "2162202"
+      ]
+    },
+    {
+      "name": "Seven Hills",
+      "aliases": [],
+      "stopIds": [
+        "2147421",
+        "2147422",
+        "2147423",
+        "2147424"
+      ]
+    },
+    {
+      "name": "St James",
+      "aliases": [],
+      "stopIds": [
+        "2000381",
+        "2000382"
+      ]
+    },
+    {
+      "name": "St Leonards",
+      "aliases": [],
+      "stopIds": [
+        "2065152",
+        "2065153"
+      ]
+    },
+    {
+      "name": "St Marys",
+      "aliases": [],
+      "stopIds": [
+        "2760301",
+        "2760302",
+        "2760303",
+        "2760304"
+      ]
+    },
+    {
+      "name": "St Peters",
+      "aliases": [],
+      "stopIds": [
+        "204461",
+        "204462",
+        "204463",
+        "204464"
+      ]
+    },
+    {
+      "name": "Stanmore",
+      "aliases": [],
+      "stopIds": [
+        "204832",
+        "204833"
+      ]
+    },
+    {
+      "name": "Strathfield",
+      "aliases": [],
+      "stopIds": [
+        "2135231",
+        "2135232",
+        "2135233",
+        "2135234",
+        "2135235",
+        "2135236",
+        "2135237",
+        "2135238"
+      ]
+    },
+    {
+      "name": "Summer Hill",
+      "aliases": [],
+      "stopIds": [
+        "213052",
+        "213053"
+      ]
+    },
+    {
+      "name": "Sutherland",
+      "aliases": [],
+      "stopIds": [
+        "2232291",
+        "2232292",
+        "2232293"
+      ]
+    },
+    {
+      "name": "Sydenham",
+      "aliases": [],
+      "stopIds": [
+        "204473",
+        "204474",
+        "204475",
+        "204476"
+      ]
+    },
+    {
+      "name": "Sydenham Metro",
+      "aliases": [
+        "Sydenham",
+        "Sydenham (Metro)"
+      ],
+      "stopIds": [
+        "204471",
+        "204472"
+      ]
     },
     {
       "name": "Tallawong",
       "aliases": [],
-      "stopIds": []
+      "stopIds": [
+        "2155269",
+        "2155270"
+      ]
     },
     {
-      "name": "Sydenham Metro",
-      "aliases": ["Sydenham (Metro)"],
-      "stopIds": []
+      "name": "Tempe",
+      "aliases": [],
+      "stopIds": [
+        "204481",
+        "204482",
+        "204483",
+        "204484"
+      ]
+    },
+    {
+      "name": "Thornleigh",
+      "aliases": [],
+      "stopIds": [
+        "2120211",
+        "2120212",
+        "2120213"
+      ]
+    },
+    {
+      "name": "Toongabbie",
+      "aliases": [],
+      "stopIds": [
+        "2146111",
+        "2146112",
+        "2146113",
+        "2146114"
+      ]
+    },
+    {
+      "name": "Town Hall",
+      "aliases": [],
+      "stopIds": [
+        "2000391",
+        "2000392",
+        "2000393",
+        "2000394",
+        "2000395",
+        "2000396"
+      ]
+    },
+    {
+      "name": "Turramurra",
+      "aliases": [],
+      "stopIds": [
+        "2074181",
+        "2074182"
+      ]
+    },
+    {
+      "name": "Turrella",
+      "aliases": [],
+      "stopIds": [
+        "2205101",
+        "2205102"
+      ]
+    },
+    {
+      "name": "Victoria Cross",
+      "aliases": [],
+      "stopIds": [
+        "2060114",
+        "2060115"
+      ]
+    },
+    {
+      "name": "Villawood",
+      "aliases": [],
+      "stopIds": [
+        "2163211",
+        "2163212"
+      ]
+    },
+    {
+      "name": "Vineyard",
+      "aliases": [],
+      "stopIds": [
+        "2765301"
+      ]
+    },
+    {
+      "name": "Wahroonga",
+      "aliases": [],
+      "stopIds": [
+        "2076241",
+        "2076242"
+      ]
+    },
+    {
+      "name": "Waitara",
+      "aliases": [],
+      "stopIds": [
+        "2077311",
+        "2077312"
+      ]
+    },
+    {
+      "name": "Warrawee",
+      "aliases": [],
+      "stopIds": [
+        "2074191",
+        "2074192"
+      ]
+    },
+    {
+      "name": "Warwick Farm",
+      "aliases": [],
+      "stopIds": [
+        "2170831",
+        "2170832"
+      ]
+    },
+    {
+      "name": "Waterfall",
+      "aliases": [],
+      "stopIds": [
+        "2233291",
+        "2233292"
+      ]
+    },
+    {
+      "name": "Waterloo",
+      "aliases": [],
+      "stopIds": [
+        "2017077",
+        "2017078"
+      ]
+    },
+    {
+      "name": "Waverton",
+      "aliases": [],
+      "stopIds": [
+        "2060111",
+        "2060112"
+      ]
+    },
+    {
+      "name": "Wentworthville",
+      "aliases": [],
+      "stopIds": [
+        "2145651",
+        "2145652",
+        "2145653",
+        "2145654"
+      ]
+    },
+    {
+      "name": "Werrington",
+      "aliases": [],
+      "stopIds": [
+        "2747371",
+        "2747372"
+      ]
+    },
+    {
+      "name": "West Ryde",
+      "aliases": [],
+      "stopIds": [
+        "2114191",
+        "2114192",
+        "2114193"
+      ]
+    },
+    {
+      "name": "Westmead",
+      "aliases": [],
+      "stopIds": [
+        "2145661",
+        "2145662",
+        "2145663",
+        "2145664"
+      ]
+    },
+    {
+      "name": "Windsor",
+      "aliases": [],
+      "stopIds": [
+        "2756451"
+      ]
+    },
+    {
+      "name": "Wolli Creek",
+      "aliases": [],
+      "stopIds": [
+        "2205111",
+        "2205112",
+        "2205113",
+        "2205114"
+      ]
+    },
+    {
+      "name": "Wollstonecraft",
+      "aliases": [],
+      "stopIds": [
+        "2065161",
+        "2065162"
+      ]
+    },
+    {
+      "name": "Woolooware",
+      "aliases": [],
+      "stopIds": [
+        "2230221",
+        "2230222"
+      ]
+    },
+    {
+      "name": "Wynyard",
+      "aliases": [],
+      "stopIds": [
+        "2000403",
+        "2000404",
+        "2000405",
+        "2000406"
+      ]
+    },
+    {
+      "name": "Yagoona",
+      "aliases": [],
+      "stopIds": [
+        "2199171",
+        "2199172"
+      ]
+    },
+    {
+      "name": "Yennora",
+      "aliases": [],
+      "stopIds": [
+        "2161261",
+        "2161262"
+      ]
     }
   ]
 }

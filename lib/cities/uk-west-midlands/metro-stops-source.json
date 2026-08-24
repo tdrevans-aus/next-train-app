@@ -1,0 +1,230 @@
+{
+  "region": "west-midlands",
+  "mode": "metro",
+  "operator": "west-midlands-metro",
+  "source": "docs/uk-coding-brief.md — West Midlands Metro Current Service (35 stops)",
+  "retrievedAt": "2026-08-23",
+  "stopCount": 35,
+  "notes": [
+    "stopId from TfWM GTFS (api.tfwm.org.uk) — run scripts/enrich-wm-metro-stop-ids.mjs when TFWM_API_APP_ID + TFWM_API_KEY are set.",
+    "Do not use CRS for Metro stops. catalogId disambiguates NR interchanges (Grand Central vs BHM, Wolverhampton Station vs WVH).",
+    "Wednesbury–Brierley Hill / Dudley extension stops are out until operator lists under Current Service."
+  ],
+  "stops": [
+    {
+      "name": "Edgbaston Village",
+      "catalogId": "metro:edgbaston-village",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Five Ways",
+      "catalogId": "metro:five-ways",
+      "stopId": null,
+      "aliases": [],
+      "note": "Metro stop; NR Five Ways is FIW (separate catalog)"
+    },
+    {
+      "name": "Brindleyplace",
+      "catalogId": "metro:brindleyplace",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Library Centenary Square",
+      "catalogId": "metro:library-centenary-square",
+      "stopId": null,
+      "aliases": ["Centenary Square"]
+    },
+    {
+      "name": "Town Hall",
+      "catalogId": "metro:town-hall",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Grand Central",
+      "catalogId": "metro:grand-central",
+      "stopId": null,
+      "aliases": ["Grand Central New Street"],
+      "interchange": { "nationalRailCrs": "BHM", "nationalRailName": "Birmingham New Street" }
+    },
+    {
+      "name": "Corporation Street",
+      "catalogId": "metro:corporation-street",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Bull Street",
+      "catalogId": "metro:bull-street",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Albert Street",
+      "catalogId": "metro:albert-street",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Millennium Point",
+      "catalogId": "metro:millennium-point",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "St Chads",
+      "catalogId": "metro:st-chads",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "St Paul's",
+      "catalogId": "metro:st-pauls",
+      "stopId": null,
+      "aliases": ["St Pauls"]
+    },
+    {
+      "name": "Jewellery Quarter",
+      "catalogId": "metro:jewellery-quarter",
+      "stopId": null,
+      "aliases": [],
+      "note": "Metro stop; NR Jewellery Quarter is JEQ (separate catalog)"
+    },
+    {
+      "name": "Soho Benson Road",
+      "catalogId": "metro:soho-benson-road",
+      "stopId": null,
+      "aliases": ["Soho"]
+    },
+    {
+      "name": "Winson Green",
+      "catalogId": "metro:winson-green",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Handsworth Booth Street",
+      "catalogId": "metro:handsworth-booth-street",
+      "stopId": null,
+      "aliases": ["Handsworth"]
+    },
+    {
+      "name": "The Hawthorns",
+      "catalogId": "metro:the-hawthorns",
+      "stopId": null,
+      "aliases": [],
+      "note": "Metro stop; NR The Hawthorns is THA (separate catalog)"
+    },
+    {
+      "name": "Kenrick Park",
+      "catalogId": "metro:kenrick-park",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Trinity Way",
+      "catalogId": "metro:trinity-way",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "West Bromwich Central",
+      "catalogId": "metro:west-bromwich-central",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Lodge Road",
+      "catalogId": "metro:lodge-road",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Dartmouth Street",
+      "catalogId": "metro:dartmouth-street",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Dudley Street",
+      "catalogId": "metro:dudley-street",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Black Lake",
+      "catalogId": "metro:black-lake",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Wednesbury Great Western Street",
+      "catalogId": "metro:wednesbury-great-western-street",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Wednesbury Parkway",
+      "catalogId": "metro:wednesbury-parkway",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Bradley Lane",
+      "catalogId": "metro:bradley-lane",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Loxdale",
+      "catalogId": "metro:loxdale",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Bilston Central",
+      "catalogId": "metro:bilston-central",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "The Crescent",
+      "catalogId": "metro:the-crescent",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Priestfield",
+      "catalogId": "metro:priestfield",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "The Royal",
+      "catalogId": "metro:the-royal",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Pipers Row",
+      "catalogId": "metro:pipers-row",
+      "stopId": null,
+      "aliases": []
+    },
+    {
+      "name": "Wolverhampton Station",
+      "catalogId": "metro:wolverhampton-station",
+      "stopId": null,
+      "aliases": ["Wolverhampton Metro"],
+      "interchange": { "nationalRailCrs": "WVH", "nationalRailName": "Wolverhampton" }
+    },
+    {
+      "name": "Wolverhampton St George's",
+      "catalogId": "metro:wolverhampton-st-georges",
+      "stopId": null,
+      "aliases": ["St George's", "St Georges"]
+    }
+  ]
+}

@@ -122,7 +122,8 @@ function queueBannerOp(label, fn) {
 function isOverlaySuppressedByClass() {
   return (
     document.body.classList.contains("app-dialog-open") ||
-    document.body.classList.contains("widget-setup-active")
+    document.body.classList.contains("widget-setup-active") ||
+    document.body.classList.contains("region-setup-active")
   );
 }
 

@@ -231,6 +231,7 @@
         </section>
 
         <p class="updated" id="updated">Updating…</p>
+        <p class="attribution" id="attribution" hidden></p>
       </div>
 
       <section class="leave-alarm-banner" id="leave-alarm-banner" hidden aria-live="assertive">
@@ -372,6 +373,10 @@
         <div id="onboarding-step-1" class="onboarding-coach-step">
           <h2 id="onboarding-step-title">Near Me</h2>
           <p>By default, Next Train shows departures at the station nearest you.</p>
+          <button type="button" class="onboarding-region-btn" id="onboarding-region-btn">
+            Region
+            <span data-region-summary></span>
+          </button>
           <button type="button" class="btn-primary" id="onboarding-got-it-btn">Got it</button>
         </div>
         <div id="onboarding-step-2" class="onboarding-coach-step" hidden>
@@ -571,6 +576,36 @@
       <footer class="widget-appearance-setup-footer">
         <button type="button" class="btn-secondary" id="widget-appearance-setup-cancel-btn">Cancel</button>
         <button type="button" class="btn-primary" id="widget-appearance-setup-primary-btn">Done</button>
+      </footer>
+    </div>
+
+    <div class="region-setup" id="region-setup" hidden>
+      <div class="region-setup-scroll">
+        <header class="region-setup-header">
+          <div class="region-setup-header-row">
+            <button
+              type="button"
+              class="region-setup-back"
+              id="region-setup-back-btn"
+              aria-label="Back"
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+            <h2 id="region-setup-title">Region</h2>
+          </div>
+          <p class="region-setup-hint">Defaults to your location until you set it here.</p>
+        </header>
+        <label class="menu-region-field">
+          <span>Country</span>
+          <select data-region-country aria-label="Country"></select>
+        </label>
+        <label class="menu-region-field">
+          <span>Region</span>
+          <select data-region-city aria-label="Region"></select>
+        </label>
+      </div>
+      <footer class="region-setup-footer">
+        <button type="button" class="btn-primary" id="region-setup-done-btn">Done</button>
       </footer>
     </div>
 
@@ -970,22 +1005,22 @@
 
     <dialog class="menu-dialog" id="menu-dialog">
       <div class="menu-dialog-body">
-        <div class="settings-view-header">
-          <h2>Menu</h2>
-        </div>
-        <nav class="menu-dialog-links" aria-label="Menu">
-          <div class="menu-widget-block" id="menu-widget-block" hidden>
-            <p class="menu-widget-heading">Widget</p>
-            <div class="menu-widget-links">
-              <button type="button" class="menu-dialog-link" id="menu-widget-btn">
-                Add home screen widget
-              </button>
-              <button type="button" class="menu-dialog-link" id="menu-widget-appearance-btn">
-                Widget appearance
-              </button>
-            </div>
+
+        <div class="menu-widget-block" id="menu-widget-block" hidden>
+          <p class="menu-section-label">Widget</p>
+          <div class="menu-section-card">
+            <button type="button" class="menu-row menu-row--nav" id="menu-widget-btn">
+              Add home screen widget
+            </button>
+            <div class="menu-row-sep" aria-hidden="true"></div>
+            <button type="button" class="menu-row menu-row--nav" id="menu-widget-appearance-btn">
+              Widget appearance
+            </button>
           </div>
-          <div class="menu-pause-block" id="menu-pause-block" hidden>
+        </div>
+
+        <div class="menu-pause-block" id="menu-pause-block" hidden>
+          <div class="menu-section-card menu-pause-card">
             <div class="reminders-shared-option reminders-pause-option" id="leave-reminders-pause-wrap">
               <div class="reminders-shared-option-header">
                 <div class="reminders-shared-option-copy">
@@ -1041,28 +1076,36 @@
               Reminders are available in the Android app. Turn Remind me on for a journey under My Journeys.
             </p>
           </div>
-          <div class="menu-pro" id="menu-ad-free-section" hidden>
-            <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-ad-free-cta-btn">
-              <span class="menu-purchase-title" id="menu-ad-free-cta-title">Remove ads</span>
-              <span class="menu-purchase-subtitle" id="menu-ad-free-cta-subtitle">A$7.99 · one-time</span>
-            </button>
-            <div class="menu-purchase-row menu-purchase-row--status" id="menu-ad-free-status-row" hidden>
-              <span class="menu-purchase-title" id="menu-ad-free-status-title">Ads removed</span>
-              <span class="menu-purchase-subtitle" id="menu-ad-free-status-subtitle">Thanks for supporting Next Train</span>
-            </div>
-            <button type="button" class="menu-restore-btn" id="menu-restore-purchase-btn" hidden>
-              Restore purchases
-            </button>
-            <p class="menu-ad-free-web-hint" id="menu-ad-free-web-hint" hidden>
-              Remove ads is available in the Android app.
-            </p>
-            <p class="menu-ad-free-web-hint" id="menu-ad-free-billing-hint" hidden>
-              Purchases aren&rsquo;t available on this install.
-            </p>
+        </div>
+
+        <div class="menu-pro" id="menu-ad-free-section" hidden>
+          <button type="button" class="menu-purchase-row menu-purchase-row--cta" id="menu-ad-free-cta-btn">
+            <span class="menu-purchase-title" id="menu-ad-free-cta-title">Remove ads</span>
+            <span class="menu-purchase-subtitle" id="menu-ad-free-cta-subtitle">A$7.99 · one-time</span>
+          </button>
+          <div class="menu-purchase-row menu-purchase-row--status" id="menu-ad-free-status-row" hidden>
+            <span class="menu-purchase-title" id="menu-ad-free-status-title">Ads removed</span>
+            <span class="menu-purchase-subtitle" id="menu-ad-free-status-subtitle">Thanks for supporting Next Train</span>
           </div>
-          <div class="menu-dialog-divider" aria-hidden="true"></div>
-          <div class="menu-appearance" id="menu-appearance">
-            <p class="menu-widget-heading">Appearance</p>
+          <button type="button" class="menu-restore-btn" id="menu-restore-purchase-btn" hidden>
+            Restore purchases
+          </button>
+          <p class="menu-ad-free-web-hint" id="menu-ad-free-web-hint" hidden>
+            Remove ads is available in the Android app.
+          </p>
+          <p class="menu-ad-free-web-hint" id="menu-ad-free-billing-hint" hidden>
+            Purchases aren&rsquo;t available on this install.
+          </p>
+        </div>
+
+        <nav class="menu-section-card" aria-label="Menu">
+          <button type="button" class="menu-row menu-row--nav menu-region-btn" id="menu-region-btn">
+            <span class="menu-row-label">Region</span>
+            <span class="menu-region-btn-value" data-region-summary></span>
+          </button>
+          <div class="menu-row-sep" aria-hidden="true"></div>
+          <div class="menu-row menu-row--stacked menu-appearance" id="menu-appearance">
+            <span class="menu-row-label">Appearance</span>
             <p class="menu-appearance-hint">App only. Widget colours stay under Widget appearance.</p>
             <div class="menu-theme-chips" role="radiogroup" aria-label="App theme">
               <button type="button" class="remind-day-chip" data-app-theme="system" role="radio" aria-checked="true">
@@ -1076,8 +1119,10 @@
               </button>
             </div>
           </div>
-          <button type="button" class="menu-dialog-link" id="menu-help-btn">Help</button>
+          <div class="menu-row-sep" aria-hidden="true"></div>
+          <button type="button" class="menu-row menu-row--nav" id="menu-help-btn">Help</button>
         </nav>
+
         <p class="menu-dialog-legal">
           <a href="/about.html">About</a>
           <span class="menu-dialog-legal-sep" aria-hidden="true">·</span>
@@ -1090,6 +1135,17 @@
       <div class="menu-dialog-footer">
         <button type="button" class="btn-primary menu-done-btn" id="menu-done-btn">Done</button>
         <button type="button" class="settings-clear-data" id="clear-all-data-btn">Clear all data</button>
+      </div>
+    </dialog>
+
+    <dialog class="confirm-dialog" id="region-mismatch-dialog" aria-labelledby="region-mismatch-dialog-title">
+      <div class="confirm-dialog-body">
+        <h2 id="region-mismatch-dialog-title">Different region?</h2>
+        <p id="region-mismatch-dialog-body"></p>
+        <div class="confirm-dialog-actions">
+          <button type="button" class="btn-secondary" id="region-mismatch-keep-btn">Keep current</button>
+          <button type="button" class="btn-primary" id="region-mismatch-switch-btn">Switch region</button>
+        </div>
       </div>
     </dialog>
 
@@ -1136,128 +1192,158 @@
             />
           </label>
           <p class="feedback-status" id="feedback-status" hidden role="status"></p>
-          <div class="feedback-actions">
-            <button type="submit" class="btn-primary" id="feedback-send-btn">Send</button>
-            <button type="button" class="btn-secondary" id="feedback-cancel-btn">Cancel</button>
-          </div>
         </form>
         <div class="feedback-thanks" id="feedback-thanks" hidden>
           <p>Thanks — that helps.</p>
-          <button type="button" class="btn-primary" id="feedback-done-btn">Done</button>
         </div>
+      </div>
+      <div class="help-dialog-footer feedback-actions">
+        <button type="submit" class="btn-primary" id="feedback-send-btn" form="feedback-form">
+          Send
+        </button>
+        <button
+          type="button"
+          class="btn-secondary"
+          id="feedback-cancel-btn"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn-primary" id="feedback-done-btn" hidden>Done</button>
       </div>
     </dialog>
 
     <dialog class="help-dialog" id="help-dialog">
       <div class="help-dialog-body">
         <h2>Help</h2>
-        <ul class="help-list">
-          <li>
-            <strong>Journeys</strong> — A saved regular trip: your station, direction, and time to
-            station. Set them up in
-            <span class="help-inline-icon" role="img" aria-label="Journeys">
-              <svg class="journeys-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="5.5" cy="14.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
-                <circle cx="18.5" cy="9.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
-                <path
-                  d="M7.7 13.2c2.2-0.2 4.2-2.4 6.6-3.2"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M13.2 8.6l1.9-0.1-0.7 1.8"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            . More than one — e.g. morning in and evening out? Tap
-            <span class="help-inline-journey-switcher" role="img" aria-label="Switch journey">
-              Morning into town
-              <svg class="journey-switcher-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M6 9l6 6 6-6"
-                  stroke="currentColor"
-                  stroke-width="2.25"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            under the station name to change which journey you’re viewing. To add or edit journeys, tap the
-            <strong>edit</strong> icon beside the journey name (or tap <strong>My Journeys</strong> again at the top).
-          </li>
-          <li>
-            <strong>Next Train</strong> — The top card shows when your train departs.
-            Swipe left or right for later or earlier departures.
-          </li>
-          <li>
-            <strong>Pin</strong> — On <strong>Near me</strong>, tap the pin (top right of the
-            departure card) to hold that train on screen until about a minute after it leaves
-            (or until you unpin). While pinned, a <strong>Leave by</strong> card appears with
-            <strong>Time to station</strong>, and <strong>Other directions</strong> hides to
-            free space. Turn on <strong>Tell me when to leave</strong> if you want a
-            leave reminder — pin alone does not ask for notification
-            permission. A pinned train also shows on the home screen widget while the pin holds.
-          </li>
-          <li>
-            <strong>Leave by</strong> — On a journey, when a <strong>target train</strong> is on,
-            the card below shows when to head out (from your time to station). If you&rsquo;re late, tap
-            <strong>I've left</strong> or <strong>Next Train</strong>
-            (same as swiping left on the departure card). On Near me and pinned
-            <strong>Routes</strong>, Leave by appears when a train is pinned (see
-            <strong>Pin</strong> above); tap <strong>Hide</strong> to clear it anytime.
-            If the card says you should have left or leave now, and location is allowed,
-            the app may dismiss it when you&rsquo;re moving or near the station — the same as
-            tapping <strong>I've left</strong>. It checks every so often while that reminder
-            is showing; no extra popup.
-          </li>
-          <li>
-            <strong>Near me</strong> — Tap
-            <span class="help-inline-icon" role="img" aria-label="Near me">
-              <svg class="nearby-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.75" />
-                <path
-                  d="M12 2v4M12 18v4M2 12h4M18 12h4"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </span>
-            in the top bar for the nearest-station board. Pick a direction from the list, or swipe
-            for other departures. Use the <strong>pin</strong> to lock one departure (see
-            <strong>Pin</strong> above). Tap Near me again to refresh your location.
-          </li>
-          <li>
-            <strong>Reminders</strong> — Turn on <strong>Target train</strong>, set the time, then
-            <strong>Remind me</strong> fires a <strong>Leave now</strong> alarm at leave-by
-            (sound + shade until you dismiss). Tap <strong>I've left</strong> for a quiet
-            countdown while you walk to the station. Pause anytime from
-            <strong>Menu → Pause reminders</strong>. We pick the first train at or after your
-            target time.
-          </li>
-          <li>
-            <strong>Platform &amp; status</strong> — Live platform and delay info for the train
-            you’re viewing.
-          </li>
-          <li>
-            <strong>Direction</strong> — Pick what the platform sign says (end of the line),
-            not necessarily where you get off.
-          </li>
-          <li>
-            <strong>Active hours</strong> — Optional times when a journey is selected
-            automatically (e.g. morning 6:00–9:00).
-          </li>
-          <li>
-            <strong>Home screen widget</strong> — Add from <strong>Menu</strong> so your next
-            train shows without opening the app. Long-press to resize for a roomier layout.
-          </li>
-        </ul>
+        <div class="help-faq-list">
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">My Journeys</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>A saved regular trip — your station, direction, and time to station. Set them up via the
+              <span class="help-inline-icon" role="img" aria-label="Journeys">
+                <svg class="journeys-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="5.5" cy="14.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
+                  <circle cx="18.5" cy="9.5" r="2.35" stroke="currentColor" stroke-width="1.75" />
+                  <path d="M7.7 13.2c2.2-0.2 4.2-2.4 6.6-3.2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" fill="none"/>
+                  <path d="M13.2 8.6l1.9-0.1-0.7 1.8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              icon.</p>
+              <p>More than one journey (e.g. morning in and evening out)? Tap
+              <span class="help-inline-journey-switcher" role="img" aria-label="Switch journey">
+                Morning into town
+                <svg class="journey-switcher-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              under the station name to switch. To add or edit, tap the <strong>edit</strong> icon beside the journey name (or tap <strong>My Journeys</strong> again at the top).</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Next Train card</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>The top card shows when your train departs. Swipe left for later departures, right for earlier ones.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Near me</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>Tap
+              <span class="help-inline-icon" role="img" aria-label="Near me">
+                <svg class="nearby-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.75" />
+                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+                </svg>
+              </span>
+              in the top bar for the nearest-station board. Pick a direction from the list, or swipe for other departures. Tap Near me again to refresh your location.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Pinning a train</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>On <strong>Near me</strong>, tap the pin icon (top right of the departure card) to hold that train on screen until about a minute after it leaves — or until you unpin.</p>
+              <p>While pinned, a <strong>Leave by</strong> card appears, <strong>Other directions</strong> hides to free space, and the train shows on the home screen widget. Turn on <strong>Tell me when to leave</strong> if you want a leave reminder — pin alone doesn’t ask for notification permission.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Leave by</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>On a journey with <strong>target train</strong> on, the Leave by card shows when to head out based on your time to station.</p>
+              <p>If you’re late, tap <strong>I’ve left</strong> or <strong>Next Train</strong> (same as swiping left). On Near me and pinned Routes, Leave by appears when a train is pinned; tap <strong>Hide</strong> to clear it anytime.</p>
+              <p>If location is allowed and the card says leave now or you’re overdue, the app may auto-dismiss it when you’re moving or near the station — no extra popup.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Reminders</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>Turn on <strong>Target train</strong> and set the time. <strong>Remind me</strong> fires a <strong>Leave now</strong> alarm at leave-by time (sound + notification shade until dismissed).</p>
+              <p>Tap <strong>I’ve left</strong> for a quiet countdown while you walk to the station. Pause all reminders anytime from <strong>Menu → Pause reminders</strong>. The app picks the first train at or after your target time.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Platform &amp; status</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>Live platform and delay info for the train you’re viewing.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Direction</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>Pick what the platform sign says — the end of the line — not necessarily where you get off.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Active hours</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>Optional times when a journey is selected automatically — for example, morning 6:00–9:00 switches to your commute-in journey without you having to tap.</p>
+            </div>
+          </details>
+
+          <details class="help-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title">Home screen widget</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body">
+              <p>Add from <strong>Menu</strong> so your next train shows on the home screen without opening the app. Long-press to resize for a roomier layout.</p>
+            </div>
+          </details>
+
+        </div>
         <pre class="widget-debug-panel" id="widget-debug-panel" hidden></pre>
       </div>
       <div class="help-dialog-footer">
@@ -1333,6 +1419,8 @@
     <script src="analytics.js"></script>
     <script src="geo-bundle.js"></script>
     <script src="ads-bundle.js"></script>
+    <script src="brisbane-dogfood.js"></script>
+    <script src="city-session.js"></script>
     <script src="train-times-bundle.js"></script>
     <script src="station-combobox.js"></script>
     <script src="journey-model.js"></script>
@@ -1342,10 +1430,10 @@
     <script src="nearby-mode.js"></script>
     <script src="template-wizard.js"></script>
     <script src="journey-detail.js"></script>
-    <script src="app.js"></script>
     <script src="widget.js"></script>
     <script src="leave-reminders.js"></script>
     <script src="stickiness-coaches.js"></script>
+    <script src="app.js?v=feedback-cancel-1"></script>
     <script src="ads.js"></script>
   </body>
 </html>

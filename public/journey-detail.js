@@ -819,6 +819,8 @@ function syncDetailTargetRemindVisibility() {
   const leaveBeforeOn = detailUseLeaveBeforeInput?.checked !== false;
   const showRemind = hasTarget && leaveBeforeOn;
 
+  console.log("[detail] syncDetailTargetRemindVisibility", { hasTarget, leaveBeforeOn, showRemind });
+
   if (controls) {
     controls.hidden = !showRemind;
   }

@@ -1,0 +1,1070 @@
+{
+  "region": "uk-west-midlands",
+  "displayName": "West Midlands",
+  "timeZone": "Europe/London",
+  "source": "docs/uk-coding-brief.md — ORR 6329 + Camp Hill + Kidderminster + WM Metro; coords NaPTAN",
+  "retrievedAt": "2026-08-23",
+  "feeds": {
+    "train": "darwin",
+    "metro": "tfwm-gtfs-rt"
+  },
+  "notInRegion": [
+    "Wythall",
+    "Hagley",
+    "Blakedown",
+    "Worcester",
+    "Warwick",
+    "Leamington",
+    "Stafford",
+    "Penkridge",
+    "Water Orton",
+    "Coleshill Parkway",
+    "Shenstone",
+    "Lichfield City",
+    "Lichfield Trent Valley",
+    "Barnt Green",
+    "Alvechurch",
+    "Redditch",
+    "Landywood",
+    "Cannock",
+    "Hednesford",
+    "Rugeley",
+    "Lapworth",
+    "Bermuda Park",
+    "Bedworth",
+    "Nuneaton"
+  ],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Acocks Green",
+      "crs": "ACG",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.44932277674,
+      "lng": -1.81897541144
+    },
+    {
+      "mode": "train",
+      "name": "Adderley Park",
+      "crs": "ADD",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.4830859425,
+      "lng": -1.85594442017
+    },
+    {
+      "mode": "train",
+      "name": "Aston",
+      "crs": "AST",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.50423065769,
+      "lng": -1.87193353804
+    },
+    {
+      "mode": "train",
+      "name": "Birmingham Moor Street",
+      "crs": "BMO",
+      "borough": "Birmingham",
+      "aliases": [
+        "Moor Street"
+      ],
+      "lat": 52.4790792138,
+      "lng": -1.89247250732
+    },
+    {
+      "mode": "train",
+      "name": "Birmingham New Street",
+      "crs": "BHM",
+      "borough": "Birmingham",
+      "aliases": [
+        "Birmingham",
+        "Birmingham New Street Station"
+      ],
+      "lat": 52.47781838678,
+      "lng": -1.900205346
+    },
+    {
+      "mode": "train",
+      "name": "Birmingham Snow Hill",
+      "crs": "BSH",
+      "borough": "Birmingham",
+      "aliases": [
+        "Snow Hill"
+      ],
+      "lat": 51.64558157546,
+      "lng": -0.38474907806
+    },
+    {
+      "mode": "train",
+      "name": "Blake Street",
+      "crs": "BLT",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 55.7973256008,
+      "lng": -4.08697074349
+    },
+    {
+      "mode": "train",
+      "name": "Bordesley",
+      "crs": "BBS",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.47187299411,
+      "lng": -1.87776863413
+    },
+    {
+      "mode": "train",
+      "name": "Bournville",
+      "crs": "BOV",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.42696311913,
+      "lng": -1.9264238296
+    },
+    {
+      "mode": "train",
+      "name": "Butlers Lane",
+      "crs": "BUL",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.59246962124,
+      "lng": -1.83802010484
+    },
+    {
+      "mode": "train",
+      "name": "Chester Road",
+      "crs": "CDR",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 55.96037865007,
+      "lng": -4.65307320297
+    },
+    {
+      "mode": "train",
+      "name": "Duddeston",
+      "crs": "DUD",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.48836282887,
+      "lng": -1.87139045926
+    },
+    {
+      "mode": "train",
+      "name": "Erdington",
+      "crs": "ERD",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.52828416108,
+      "lng": -1.8395088764
+    },
+    {
+      "mode": "train",
+      "name": "Five Ways",
+      "crs": "FIW",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.47109493838,
+      "lng": -1.91295429272
+    },
+    {
+      "mode": "train",
+      "name": "Four Oaks",
+      "crs": "FOK",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.57977993641,
+      "lng": -1.82803168874
+    },
+    {
+      "mode": "train",
+      "name": "Gravelly Hill",
+      "crs": "GLH",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 53.70904301993,
+      "lng": -1.34200506295
+    },
+    {
+      "mode": "train",
+      "name": "Hall Green",
+      "crs": "HLG",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.43690935389,
+      "lng": -1.8456508538
+    },
+    {
+      "mode": "train",
+      "name": "Hamstead",
+      "crs": "HSD",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.53106841956,
+      "lng": -1.92897770946
+    },
+    {
+      "mode": "train",
+      "name": "Jewellery Quarter",
+      "crs": "JEQ",
+      "borough": "Birmingham",
+      "aliases": [
+        "Jewellery Quarter Station"
+      ],
+      "lat": 52.48943464536,
+      "lng": -1.91321274578
+    },
+    {
+      "mode": "train",
+      "name": "Kings Norton",
+      "crs": "KNN",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.41429066035,
+      "lng": -1.93232572815
+    },
+    {
+      "mode": "train",
+      "name": "Lea Hall",
+      "crs": "LEH",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.48064289566,
+      "lng": -1.78601180865
+    },
+    {
+      "mode": "train",
+      "name": "Longbridge",
+      "crs": "LGN",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.98995274882,
+      "lng": -2.1370105607
+    },
+    {
+      "mode": "train",
+      "name": "Northfield",
+      "crs": "NFD",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.40819177754,
+      "lng": -1.96585143369
+    },
+    {
+      "mode": "train",
+      "name": "Perry Barr",
+      "crs": "PRB",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 53.29338287721,
+      "lng": -2.14548249893
+    },
+    {
+      "mode": "train",
+      "name": "Selly Oak",
+      "crs": "SEA",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 54.83905560445,
+      "lng": -1.34633708067
+    },
+    {
+      "mode": "train",
+      "name": "Small Heath",
+      "crs": "SMH",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 51.57446738866,
+      "lng": -0.07668192282
+    },
+    {
+      "mode": "train",
+      "name": "Spring Road",
+      "crs": "SRD",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 51.46750678691,
+      "lng": -2.56621684378
+    },
+    {
+      "mode": "train",
+      "name": "Stechford",
+      "crs": "SCF",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.48482081945,
+      "lng": -1.81102530457
+    },
+    {
+      "mode": "train",
+      "name": "Sutton Coldfield",
+      "crs": "SUT",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.56494205726,
+      "lng": -1.82484407629
+    },
+    {
+      "mode": "train",
+      "name": "Tyseley",
+      "crs": "TYS",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.45411654627,
+      "lng": -1.83911599365
+    },
+    {
+      "mode": "train",
+      "name": "University",
+      "crs": "UNI",
+      "borough": "Birmingham",
+      "aliases": [
+        "Birmingham University"
+      ],
+      "lat": 52.45124209223,
+      "lng": -1.93668367928
+    },
+    {
+      "mode": "train",
+      "name": "Witton",
+      "crs": "WTT",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.51237937415,
+      "lng": -1.88443458772
+    },
+    {
+      "mode": "train",
+      "name": "Wylde Green",
+      "crs": "WYL",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.54571328738,
+      "lng": -1.83140879635
+    },
+    {
+      "mode": "train",
+      "name": "Yardley Wood",
+      "crs": "YRD",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.42150248188,
+      "lng": -1.85438029288
+    },
+    {
+      "mode": "train",
+      "name": "Berkswell",
+      "crs": "BKW",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.39588092817,
+      "lng": -1.6428402938
+    },
+    {
+      "mode": "train",
+      "name": "Birmingham International",
+      "crs": "BHI",
+      "borough": "Solihull",
+      "aliases": [
+        "Birmingham International Airport"
+      ],
+      "lat": 52.45080697192,
+      "lng": -1.72585666561
+    },
+    {
+      "mode": "train",
+      "name": "Dorridge",
+      "crs": "DDG",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.37206841619,
+      "lng": -1.75290025038
+    },
+    {
+      "mode": "train",
+      "name": "Earlswood (West Midlands)",
+      "crs": "ERL",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 53.45113672322,
+      "lng": -2.63766325712
+    },
+    {
+      "mode": "train",
+      "name": "Hampton-in-Arden",
+      "crs": "HIA",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.4290331285,
+      "lng": -1.6999305593
+    },
+    {
+      "mode": "train",
+      "name": "Marston Green",
+      "crs": "MGN",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.46718898461,
+      "lng": -1.75560688006
+    },
+    {
+      "mode": "train",
+      "name": "Olton",
+      "crs": "OLT",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.43851142341,
+      "lng": -1.80430937035
+    },
+    {
+      "mode": "train",
+      "name": "Shirley",
+      "crs": "SRL",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.40342077547,
+      "lng": -1.84517960348
+    },
+    {
+      "mode": "train",
+      "name": "Solihull",
+      "crs": "SOL",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.41439070084,
+      "lng": -1.78839054222
+    },
+    {
+      "mode": "train",
+      "name": "Whitlocks End",
+      "crs": "WTE",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 52.39183169991,
+      "lng": -1.85153883163
+    },
+    {
+      "mode": "train",
+      "name": "Widney Manor",
+      "crs": "WMN",
+      "borough": "Solihull",
+      "aliases": [],
+      "lat": 51.2067765844,
+      "lng": -2.17673403563
+    },
+    {
+      "mode": "train",
+      "name": "Bescot Stadium",
+      "crs": "BSC",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.56309313612,
+      "lng": -1.9911054766
+    },
+    {
+      "mode": "train",
+      "name": "Cradley Heath",
+      "crs": "CRA",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.46965356315,
+      "lng": -2.0904881333
+    },
+    {
+      "mode": "train",
+      "name": "Dudley Port",
+      "crs": "DDP",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.52465134793,
+      "lng": -2.0494795502
+    },
+    {
+      "mode": "train",
+      "name": "Langley Green",
+      "crs": "LGG",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.49387123397,
+      "lng": -2.0049640419
+    },
+    {
+      "mode": "train",
+      "name": "Old Hill",
+      "crs": "OHL",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.4709334976,
+      "lng": -2.05619065901
+    },
+    {
+      "mode": "train",
+      "name": "Rowley Regis",
+      "crs": "ROW",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.47732574583,
+      "lng": -2.03087492352
+    },
+    {
+      "mode": "train",
+      "name": "Sandwell & Dudley",
+      "crs": "SAD",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.50865918165,
+      "lng": -2.01159594973
+    },
+    {
+      "mode": "train",
+      "name": "Smethwick Galton Bridge",
+      "crs": "SGB",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.50178092401,
+      "lng": -1.98049616718
+    },
+    {
+      "mode": "train",
+      "name": "Smethwick Rolfe Street",
+      "crs": "SMR",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.49638495514,
+      "lng": -1.97064443919
+    },
+    {
+      "mode": "train",
+      "name": "Tame Bridge Parkway",
+      "crs": "TAB",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.55293259655,
+      "lng": -1.97621148692
+    },
+    {
+      "mode": "train",
+      "name": "The Hawthorns",
+      "crs": "THA",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 51.3938442377,
+      "lng": -1.24319001016
+    },
+    {
+      "mode": "train",
+      "name": "Tipton",
+      "crs": "TIP",
+      "borough": "Sandwell",
+      "aliases": [],
+      "lat": 52.53044189588,
+      "lng": -2.06570115359
+    },
+    {
+      "mode": "train",
+      "name": "Bloxwich",
+      "crs": "BXW",
+      "borough": "Walsall",
+      "aliases": [],
+      "lat": 51.25401185327,
+      "lng": -0.32848987487
+    },
+    {
+      "mode": "train",
+      "name": "Bloxwich North",
+      "crs": "BXN",
+      "borough": "Walsall",
+      "aliases": [],
+      "lat": 52.62543623428,
+      "lng": -2.01768436339
+    },
+    {
+      "mode": "train",
+      "name": "Darlaston",
+      "crs": "DAS",
+      "borough": "Walsall",
+      "aliases": [],
+      "lat": 52.57591,
+      "lng": -2.020506
+    },
+    {
+      "mode": "train",
+      "name": "Walsall",
+      "crs": "WSL",
+      "borough": "Walsall",
+      "aliases": [],
+      "lat": 52.58439836249,
+      "lng": -1.98475489781
+    },
+    {
+      "mode": "train",
+      "name": "Willenhall",
+      "crs": "WLE",
+      "borough": "Walsall",
+      "aliases": [],
+      "lat": 52.54952909591,
+      "lng": -0.1189909353
+    },
+    {
+      "mode": "train",
+      "name": "Coseley",
+      "crs": "COS",
+      "borough": "Dudley",
+      "aliases": [],
+      "lat": 52.64483387472,
+      "lng": -2.30027466756
+    },
+    {
+      "mode": "train",
+      "name": "Lye",
+      "crs": "LYE",
+      "borough": "Dudley",
+      "aliases": [],
+      "lat": 52.45992212735,
+      "lng": -2.11592923617
+    },
+    {
+      "mode": "train",
+      "name": "Stourbridge Junction",
+      "crs": "SBJ",
+      "borough": "Dudley",
+      "aliases": [],
+      "lat": 52.44758686544,
+      "lng": -2.13384699879
+    },
+    {
+      "mode": "train",
+      "name": "Stourbridge Town",
+      "crs": "SBT",
+      "borough": "Dudley",
+      "aliases": [],
+      "lat": 52.45557866625,
+      "lng": -2.14181789595
+    },
+    {
+      "mode": "train",
+      "name": "Canley",
+      "crs": "CNL",
+      "borough": "Coventry",
+      "aliases": [],
+      "lat": 52.39924091257,
+      "lng": -1.54757470481
+    },
+    {
+      "mode": "train",
+      "name": "Coventry",
+      "crs": "COV",
+      "borough": "Coventry",
+      "aliases": [],
+      "lat": 52.40081364453,
+      "lng": -1.51345961399
+    },
+    {
+      "mode": "train",
+      "name": "Coventry Arena",
+      "crs": "CAA",
+      "borough": "Coventry",
+      "aliases": [],
+      "lat": 52.44773294663,
+      "lng": -1.49412454597
+    },
+    {
+      "mode": "train",
+      "name": "Tile Hill",
+      "crs": "THL",
+      "borough": "Coventry",
+      "aliases": [],
+      "lat": 52.39510382823,
+      "lng": -1.59684836222
+    },
+    {
+      "mode": "train",
+      "name": "Wolverhampton",
+      "crs": "WVH",
+      "borough": "Wolverhampton",
+      "aliases": [
+        "Wolverhampton Station"
+      ],
+      "lat": 52.58784476301,
+      "lng": -2.11951450933
+    },
+    {
+      "mode": "train",
+      "name": "Moseley Village",
+      "crs": "MOV",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.446069,
+      "lng": -1.8858216
+    },
+    {
+      "mode": "train",
+      "name": "Kings Heath",
+      "crs": "KIH",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.439197,
+      "lng": -1.8927236
+    },
+    {
+      "mode": "train",
+      "name": "Pineapple Road",
+      "crs": "PIR",
+      "borough": "Birmingham",
+      "aliases": [],
+      "lat": 52.430029,
+      "lng": -1.9084071
+    },
+    {
+      "mode": "train",
+      "name": "Kidderminster",
+      "crs": "KID",
+      "borough": "Worcestershire",
+      "aliases": [],
+      "lat": 52.38448244877,
+      "lng": -2.23847072681
+    },
+    {
+      "mode": "metro",
+      "name": "Edgbaston Village",
+      "catalogId": "metro:edgbaston-village",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.47195,
+      "lng": -1.92315
+    },
+    {
+      "mode": "metro",
+      "name": "Five Ways",
+      "catalogId": "metro:five-ways",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.47473,
+      "lng": -1.91504,
+      "note": "Metro stop; NR Five Ways is FIW (separate catalog)"
+    },
+    {
+      "mode": "metro",
+      "name": "Brindleyplace",
+      "catalogId": "metro:brindleyplace",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.47665,
+      "lng": -1.9123
+    },
+    {
+      "mode": "metro",
+      "name": "Library Centenary Square",
+      "catalogId": "metro:library-centenary-square",
+      "stopId": null,
+      "aliases": [
+        "Centenary Square"
+      ],
+      "lat": 52.47862,
+      "lng": -1.90833
+    },
+    {
+      "mode": "metro",
+      "name": "Town Hall",
+      "catalogId": "metro:town-hall",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.47932,
+      "lng": -1.90315
+    },
+    {
+      "mode": "metro",
+      "name": "Grand Central",
+      "catalogId": "metro:grand-central",
+      "stopId": null,
+      "aliases": [
+        "Grand Central New Street"
+      ],
+      "lat": 52.47852,
+      "lng": -1.89938,
+      "interchange": {
+        "nationalRailCrs": "BHM",
+        "nationalRailName": "Birmingham New Street"
+      }
+    },
+    {
+      "mode": "metro",
+      "name": "Corporation Street",
+      "catalogId": "metro:corporation-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.47975,
+      "lng": -1.89708
+    },
+    {
+      "mode": "metro",
+      "name": "Bull Street",
+      "catalogId": "metro:bull-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.4821,
+      "lng": -1.8966
+    },
+    {
+      "mode": "metro",
+      "name": "Albert Street",
+      "catalogId": "metro:albert-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.48045,
+      "lng": -1.89222
+    },
+    {
+      "mode": "metro",
+      "name": "Millennium Point",
+      "catalogId": "metro:millennium-point",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.48083,
+      "lng": -1.88994
+    },
+    {
+      "mode": "metro",
+      "name": "St Chads",
+      "catalogId": "metro:st-chads",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.48501,
+      "lng": -1.90059
+    },
+    {
+      "mode": "metro",
+      "name": "St Paul's",
+      "catalogId": "metro:st-pauls",
+      "stopId": null,
+      "aliases": [
+        "St Pauls"
+      ],
+      "lat": 52.48752,
+      "lng": -1.90451
+    },
+    {
+      "mode": "metro",
+      "name": "Jewellery Quarter",
+      "catalogId": "metro:jewellery-quarter",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.48965,
+      "lng": -1.91324,
+      "note": "Metro stop; NR Jewellery Quarter is JEQ (separate catalog)"
+    },
+    {
+      "mode": "metro",
+      "name": "Soho Benson Road",
+      "catalogId": "metro:soho-benson-road",
+      "stopId": null,
+      "aliases": [
+        "Soho"
+      ],
+      "lat": 52.49727,
+      "lng": -1.93111
+    },
+    {
+      "mode": "metro",
+      "name": "Winson Green",
+      "catalogId": "metro:winson-green",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.49884,
+      "lng": -1.93791
+    },
+    {
+      "mode": "metro",
+      "name": "Handsworth Booth Street",
+      "catalogId": "metro:handsworth-booth-street",
+      "stopId": null,
+      "aliases": [
+        "Handsworth"
+      ],
+      "lat": 52.50289,
+      "lng": -1.95203
+    },
+    {
+      "mode": "metro",
+      "name": "The Hawthorns",
+      "catalogId": "metro:the-hawthorns",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.5057,
+      "lng": -1.96497,
+      "note": "Metro stop; NR The Hawthorns is THA (separate catalog)"
+    },
+    {
+      "mode": "metro",
+      "name": "Kenrick Park",
+      "catalogId": "metro:kenrick-park",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.5087,
+      "lng": -1.98295
+    },
+    {
+      "mode": "metro",
+      "name": "Trinity Way",
+      "catalogId": "metro:trinity-way",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.51194,
+      "lng": -1.98873
+    },
+    {
+      "mode": "metro",
+      "name": "West Bromwich Central",
+      "catalogId": "metro:west-bromwich-central",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.5168,
+      "lng": -1.99468
+    },
+    {
+      "mode": "metro",
+      "name": "Lodge Road",
+      "catalogId": "metro:lodge-road",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.51892,
+      "lng": -2.00013
+    },
+    {
+      "mode": "metro",
+      "name": "Dartmouth Street",
+      "catalogId": "metro:dartmouth-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.52035,
+      "lng": -2.00392
+    },
+    {
+      "mode": "metro",
+      "name": "Dudley Street",
+      "catalogId": "metro:dudley-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.52538,
+      "lng": -2.00827
+    },
+    {
+      "mode": "metro",
+      "name": "Black Lake",
+      "catalogId": "metro:black-lake",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.53135,
+      "lng": -2.00883
+    },
+    {
+      "mode": "metro",
+      "name": "Wednesbury Great Western Street",
+      "catalogId": "metro:wednesbury-great-western-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.54926,
+      "lng": -2.02624
+    },
+    {
+      "mode": "metro",
+      "name": "Wednesbury Parkway",
+      "catalogId": "metro:wednesbury-parkway",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.54995,
+      "lng": -2.03245
+    },
+    {
+      "mode": "metro",
+      "name": "Bradley Lane",
+      "catalogId": "metro:bradley-lane",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.55578,
+      "lng": -2.05612
+    },
+    {
+      "mode": "metro",
+      "name": "Loxdale",
+      "catalogId": "metro:loxdale",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.5600094,
+      "lng": -2.065952006
+    },
+    {
+      "mode": "metro",
+      "name": "Bilston Central",
+      "catalogId": "metro:bilston-central",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.56597,
+      "lng": -2.0753
+    },
+    {
+      "mode": "metro",
+      "name": "The Crescent",
+      "catalogId": "metro:the-crescent",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.56786,
+      "lng": -2.08131
+    },
+    {
+      "mode": "metro",
+      "name": "Priestfield",
+      "catalogId": "metro:priestfield",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.57094,
+      "lng": -2.09664
+    },
+    {
+      "mode": "metro",
+      "name": "The Royal",
+      "catalogId": "metro:the-royal",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.58099,
+      "lng": -2.11671
+    },
+    {
+      "mode": "metro",
+      "name": "Pipers Row",
+      "catalogId": "metro:pipers-row",
+      "stopId": null,
+      "aliases": [],
+      "lat": 52.58502,
+      "lng": -2.12284
+    },
+    {
+      "mode": "metro",
+      "name": "Wolverhampton Station",
+      "catalogId": "metro:wolverhampton-station",
+      "stopId": null,
+      "aliases": [
+        "Wolverhampton Metro"
+      ],
+      "lat": 52.58713,
+      "lng": -2.12111,
+      "interchange": {
+        "nationalRailCrs": "WVH",
+        "nationalRailName": "Wolverhampton"
+      }
+    },
+    {
+      "mode": "metro",
+      "name": "Wolverhampton St George's",
+      "catalogId": "metro:wolverhampton-st-georges",
+      "stopId": null,
+      "aliases": [
+        "St George's",
+        "St Georges"
+      ],
+      "lat": 52.58388,
+      "lng": -2.12364
+    }
+  ]
+}
