@@ -479,12 +479,29 @@ function pickAppThemeFields(raw = {}) {
   return { appTheme: "system" };
 }
 
+function pickSavedCityFields(raw = {}) {
+  const city = String(raw.savedCity ?? "").trim().toLowerCase();
+  const country = String(raw.savedCountry ?? "").trim().toLowerCase();
+  const out = {};
+  if (city === "perth" || city === "sydney" || city === "brisbane" || city === "adelaide") {
+    out.savedCity = city;
+  }
+  if (country === "au" || country === "gb") {
+    out.savedCountry = country;
+  }
+  if (raw.regionExplicit === true) {
+    out.regionExplicit = true;
+  }
+  return out;
+}
+
 function pickPersistedRootFields(raw = {}) {
   return {
     ...pickNearbySettingsFields(raw),
     ...pickWidgetThemeFields(raw),
     ...pickWidgetAppearanceFields(raw),
     ...pickAppThemeFields(raw),
+    ...pickSavedCityFields(raw),
   };
 }
 

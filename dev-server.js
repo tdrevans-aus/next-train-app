@@ -18,12 +18,31 @@ import { resolveDirectionsForStation } from "./lib/cities/perth/static-direction
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
 import { listCities, assertCityLive } from "./lib/providers/registry.js";
 import { getFoundingStatus, tryClaimFounding } from "./lib/founding-counter.js";
+import { applyCors } from "./lib/api-cors.js";
 import { isCityProbeAllowed, fetchDevCityBoard } from "./lib/dev-city-board.js";
+import { loadEnvLocal } from "./lib/load-env-local.js";
+import {
+  getLiveAuDirections,
+  getLiveAuNextTrain,
+  isLiveAuCity,
+  listLiveAuStations,
+  resolveLiveAuStation,
+} from "./lib/cities/live-city-api.js";
+
+loadEnvLocal();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
+const PRODUCTION_FEEDBACK_URL = "https://next-train-app.vercel.app/api/feedback";
 
+app.use(express.json({ limit: "32kb" }));
+app.use((req, res, next) => {
+  if (/\.js$/i.test(req.path)) {
+    res.setHeader("Cache-Control", "no-store");
+  }
+  next();
+});
 app.use(express.static(join(__dirname, "public")));
 app.use("/design", express.static(join(__dirname, "design")));
 
@@ -48,6 +67,10 @@ function readQueryParams(query) {
     refreshSeconds: Number(refresh) || DEFAULT_REFRESH_SECONDS,
     skipTrains: Math.max(0, Math.floor(Number(skipTrains) || 0)),
   };
+}
+
+function isLiveAuCityRequest(query = {}) {
+  return isLiveAuCity(String(query.city || "").toLowerCase());
 }
 
 function readFixtureId(query) {
@@ -113,6 +136,10 @@ app.get("/api/cities", (_req, res) => {
 });
 
 app.get("/api/next-train", async (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+
   if (!gateRequest(req, res)) {
     return;
   }
@@ -120,6 +147,22 @@ app.get("/api/next-train", async (req, res) => {
   const config = readQueryParams(req.query);
   if (!config) {
     res.status(400).json({ error: "Missing required parameters: station, direction" });
+    return;
+  }
+
+  if (isLiveAuCityRequest(req.query)) {
+    const station = resolveLiveAuStation(config.city, config.station);
+    if (!station) {
+      res.status(400).json({ error: "Unknown station" });
+      return;
+    }
+    try {
+      const data = await getLiveAuNextTrain(config.city, { ...config, station });
+      res.json(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message ?? "Failed to fetch train times" });
+    }
     return;
   }
 
@@ -167,7 +210,24 @@ app.get("/api/next-train", async (req, res) => {
 });
 
 app.get("/api/directions", async (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+
   if (!gateRequest(req, res)) {
+    return;
+  }
+
+  if (isLiveAuCityRequest(req.query)) {
+    const station = resolveLiveAuStation(req.query.city, req.query.station);
+    if (!station) {
+      res.status(400).json({
+        error: req.query.station ? "Unknown station" : "Missing station parameter",
+      });
+      return;
+    }
+    const pack = getLiveAuDirections(req.query.city, station);
+    res.json({ directions: pack.directions, source: pack.source });
     return;
   }
 
@@ -202,7 +262,24 @@ app.get("/api/directions", async (req, res) => {
 });
 
 app.get("/api/destinations", async (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+
   if (!gateRequest(req, res)) {
+    return;
+  }
+
+  if (isLiveAuCityRequest(req.query)) {
+    const station = resolveLiveAuStation(req.query.city, req.query.station);
+    if (!station) {
+      res.status(400).json({
+        error: req.query.station ? "Unknown station" : "Missing station parameter",
+      });
+      return;
+    }
+    const pack = getLiveAuDirections(req.query.city, station);
+    res.json({ destinations: pack.directions, source: pack.source });
     return;
   }
 
@@ -245,7 +322,78 @@ app.post("/api/founding-claim", (_req, res) => {
   res.status(200).json(tryClaimFounding());
 });
 
+app.options("/api/feedback", (_req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
+  res.status(204).end();
+});
+
+app.post("/api/feedback", async (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  try {
+    const upstream = await fetch(PRODUCTION_FEEDBACK_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(req.body || {}),
+    });
+    const text = await upstream.text();
+    res.status(upstream.status);
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.send(text);
+  } catch (error) {
+    console.warn("Local feedback proxy failed", error);
+    res.status(502).json({
+      error: "Could not send feedback",
+      mailto: "EvansAppStudio@gmail.com",
+    });
+  }
+});
+
+app.get("/api/city-stations", (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+
+  if (!gateRequest(req, res)) {
+    return;
+  }
+
+  const city = req.query.city ?? "";
+  const cityGate = assertCityLive(city);
+  if (!cityGate.ok) {
+    res.status(cityGate.status).json({
+      error: cityGate.error,
+      city: cityGate.city,
+      integration: cityGate.integration,
+    });
+    return;
+  }
+
+  if (!isLiveAuCity(city)) {
+    res.status(400).json({ error: "Station catalog only available for Sydney, Brisbane, and Adelaide" });
+    return;
+  }
+
+  const stations = listLiveAuStations(city).map((entry) => ({
+    name: entry.name,
+    lat: entry.lat ?? null,
+    lng: entry.lng ?? null,
+  }));
+
+  res.setHeader("Cache-Control", "public, s-maxage=3600");
+  res.json({ city, stations });
+});
+
 app.get("/api/dev/board", async (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+
   if (!isCityProbeAllowed()) {
     res.status(404).json({ error: "Not found" });
     return;

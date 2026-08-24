@@ -1201,6 +1201,7 @@ async function fetchNearbyDirectionData(station, direction, _skip = 0) {
   if (fixture) {
     params.set("fixture", fixture);
   }
+  window.NextTrainBrisbaneDogfood?.applyParams?.(params);
 
   const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
   if (!result.ok) {
@@ -1208,21 +1209,26 @@ async function fetchNearbyDirectionData(station, direction, _skip = 0) {
   }
 
   let payload = result.data;
-  if (!Array.isArray(payload?.upcoming) || payload.upcoming.length === 0) {
-    const client = window.NextTrainTimes;
-    if (client?.getNextTrainData) {
-      try {
-        payload =
-          (await client.getNextTrainData({
-            station,
-            destination: direction,
-            destinationLabel: direction,
-            leaveBeforeMinutes: 0,
-            refreshSeconds: settings.refreshSeconds,
-            skipTrains: 0,
-          })) ?? payload;
-      } catch (error) {
-        console.warn("Nearby live-times fallback failed", error);
+  if (
+    !Array.isArray(payload?.upcoming) ||
+    payload.upcoming.length === 0
+  ) {
+    if (!window.NextTrainBrisbaneDogfood?.isActive?.()) {
+      const client = window.NextTrainTimes;
+      if (client?.getNextTrainData) {
+        try {
+          payload =
+            (await client.getNextTrainData({
+              station,
+              destination: direction,
+              destinationLabel: direction,
+              leaveBeforeMinutes: 0,
+              refreshSeconds: settings.refreshSeconds,
+              skipTrains: 0,
+            })) ?? payload;
+        } catch (error) {
+          console.warn("Nearby live-times fallback failed", error);
+        }
       }
     }
   }

@@ -4,6 +4,11 @@ import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
 import { assertCityLive } from "../lib/providers/registry.js";
+import {
+  getLiveAuDirections,
+  isLiveAuCity,
+  resolveLiveAuStation,
+} from "../lib/cities/live-city-api.js";
 
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
@@ -14,13 +19,32 @@ export default async function handler(req, res) {
     return;
   }
 
-  const cityGate = assertCityLive(req.query?.city ?? "perth");
+  const city = req.query?.city ?? "perth";
+  const cityGate = assertCityLive(city);
   if (!cityGate.ok) {
     res.status(cityGate.status).json({
       error: cityGate.error,
       city: cityGate.city,
       integration: cityGate.integration,
     });
+    return;
+  }
+
+  if (isLiveAuCity(city)) {
+    const station = resolveLiveAuStation(city, req.query?.station);
+    if (!station) {
+      res.status(400).json({
+        error: req.query?.station ? "Unknown station" : "Missing station parameter",
+      });
+      return;
+    }
+    try {
+      const pack = getLiveAuDirections(city, station);
+      res.status(200).json({ directions: pack.directions, source: pack.source });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message ?? "Failed to load directions" });
+    }
     return;
   }
 

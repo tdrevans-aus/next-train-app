@@ -7,6 +7,11 @@ import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
 import { assertCityLive } from "../lib/providers/registry.js";
+import {
+  getLiveAuNextTrain,
+  isLiveAuCity,
+  resolveLiveAuStation,
+} from "../lib/cities/live-city-api.js";
 
 function readParams(query = {}) {
   const station = query.station;
@@ -54,6 +59,22 @@ export default async function handler(req, res) {
       city: cityGate.city,
       integration: cityGate.integration,
     });
+    return;
+  }
+
+  if (isLiveAuCity(config.city)) {
+    const station = resolveLiveAuStation(config.city, config.station);
+    if (!station) {
+      res.status(400).json({ error: "Unknown station" });
+      return;
+    }
+    try {
+      const data = await getLiveAuNextTrain(config.city, { ...config, station });
+      res.status(200).json(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message ?? "Failed to fetch train times" });
+    }
     return;
   }
 

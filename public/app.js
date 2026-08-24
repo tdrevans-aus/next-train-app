@@ -298,9 +298,17 @@ const JOURNEY_TEMPLATE_PRESETS = {
 const DELETE_LAST_JOURNEY_CONFIRM =
   "Delete your only journey? You can add a new one anytime.";
 
-const API_ORIGIN = window.Capacitor?.isNativePlatform?.()
-  ? "https://next-train-app.vercel.app"
-  : "";
+const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
+
+function getApiOrigin() {
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const origin = window.NextTrainBrisbaneDogfood.getOrigin?.() || "";
+    if (origin) {
+      return origin;
+    }
+  }
+  return window.Capacitor?.isNativePlatform?.() ? VERCEL_ORIGIN : "";
+}
 
 function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
@@ -552,7 +560,24 @@ function closeAppDialog(dialog) {
 }
 
 function apiUrl(path) {
-  return `${API_ORIGIN}${path}`;
+  return `${getApiOrigin()}${path}`;
+}
+
+/** Formspree lives on production Vercel — never POST feedback to local/dogfood origins. */
+function feedbackApiUrl() {
+  const host = String(location.hostname || "");
+  const origin = getApiOrigin();
+  const localHost =
+    host === "localhost" || host === "127.0.0.1" || host === "10.0.2.2";
+  const localOrigin =
+    !origin ||
+    /localhost|127\.0\.0\.1|10\.0\.2\.2|192\.168\.|10\.\d+\.\d+\.\d+/.test(
+      origin
+    );
+  if (localHost || localOrigin || window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    return `${VERCEL_ORIGIN}/api/feedback`;
+  }
+  return apiUrl("/api/feedback");
 }
 
 function getActiveFixture() {
@@ -561,12 +586,17 @@ function getActiveFixture() {
 
 function appendFixtureQuery(queryString) {
   const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
-  if (!fixture) {
-    return queryString;
-  }
-
   const params = new URLSearchParams(queryString);
-  params.set("fixture", fixture);
+  if (fixture) {
+    params.set("fixture", fixture);
+  }
+  window.NextTrainBrisbaneDogfood?.applyParams?.(params);
+  if (!params.has("city")) {
+    const savedCity = window.NextTrainCitySession?.readSavedCity?.();
+    if (savedCity && savedCity !== "perth") {
+      params.set("city", savedCity);
+    }
+  }
   return params.toString();
 }
 
@@ -1326,6 +1356,7 @@ function showOnboardingStep1() {
   if (onboardingStep3) {
     onboardingStep3.hidden = true;
   }
+  window.NextTrainCitySession?.syncRegionControls?.();
   showOnboardingCoach(1);
 }
 
@@ -2449,6 +2480,7 @@ function buildApiParams() {
   if (fixture) {
     params.set("fixture", fixture);
   }
+  window.NextTrainBrisbaneDogfood?.applyParams?.(params);
 
   return params;
 }
@@ -4145,6 +4177,14 @@ async function loadStationCoords() {
     return stationCoords;
   }
 
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const dogfoodCoords = window.NextTrainBrisbaneDogfood.getCoords?.() ?? {};
+    if (Object.keys(dogfoodCoords).length > 0) {
+      stationCoords = { ...dogfoodCoords };
+      return stationCoords;
+    }
+  }
+
   try {
     stationCoords = await fetchLocalJson("/station-coords.json");
   } catch (error) {
@@ -4155,8 +4195,41 @@ async function loadStationCoords() {
   return stationCoords;
 }
 
+function activeCityStationNames() {
+  if (!window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    return null;
+  }
+  return new Set(window.NextTrainBrisbaneDogfood.getStations?.() ?? []);
+}
+
+function isStationInActiveCity(station) {
+  const allowed = activeCityStationNames();
+  return !allowed || allowed.has(station);
+}
+
+function testModeNearestStation() {
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const city = String(window.NextTrainBrisbaneDogfood.getCity?.() || "").toLowerCase();
+    const defaults = {
+      brisbane: "Roma Street",
+      sydney: "Central",
+      adelaide: "Adelaide Railway Station",
+    };
+    if (defaults[city]) {
+      return { station: defaults[city], distanceKm: 0.2 };
+    }
+  }
+  return { station: "Edgewater Stn", distanceKm: 0.2 };
+}
+
 async function pickPerthDirection(station) {
   const directions = await fetchDirectionsFromApi(station);
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    const first = directions.find(
+      (direction) => normalizeDirection(direction) !== DEFAULT_DIRECTION_LABEL
+    );
+    return first ? normalizeDirection(first) : null;
+  }
   const exact = directions.find(
     (direction) => normalizeDirection(direction) === DEFAULT_DIRECTION_LABEL
   );
@@ -4337,17 +4410,19 @@ async function getGeolocationPosition() {
 
 async function findNearestStation({ forceFresh = false, allowSessionShortcut = true } = {}) {
   if (isTestMode()) {
-    return { station: "Edgewater Stn", distanceKm: 0.2 };
+    return testModeNearestStation();
   }
 
   // Only skip GPS when caller explicitly allows it (not the background refine path).
   if (allowSessionShortcut && !forceFresh && nearbyMode().getNearbySession()?.station) {
     const session = nearbyMode().getNearbySession();
-    return {
-      station: session.station,
-      distanceKm:
-        typeof session.distanceKm === "number" ? session.distanceKm : 0,
-    };
+    if (isStationInActiveCity(session.station)) {
+      return {
+        station: session.station,
+        distanceKm:
+          typeof session.distanceKm === "number" ? session.distanceKm : 0,
+      };
+    }
   }
 
   const geoTimeoutMs = 15000;
@@ -4376,6 +4451,14 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
 
   if (!nearest) {
     throw new Error("Could not find a nearby station");
+  }
+
+  if (!isStationInActiveCity(nearest)) {
+    throw new Error("Could not find a nearby station in this region");
+  }
+
+  if (isUnsupportedRegion(bestDistance)) {
+    throw new Error("Could not find a nearby station in this region");
   }
 
   return { station: nearest, distanceKm: bestDistance };
@@ -4539,6 +4622,9 @@ function syncNearbyPinChrome() {
 
 
 async function fetchNextTrainFromLiveTimesClient() {
+  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
+    return null;
+  }
   const client = window.NextTrainTimes;
   if (!client?.getNextTrainData) {
     return null;
@@ -5335,6 +5421,19 @@ function feedbackVersionLabel(config) {
   return formatAppVersionLabel(config) || "unknown version";
 }
 
+function setFeedbackFooterMode(mode) {
+  const isForm = mode === "form";
+  if (feedbackSendBtn) {
+    feedbackSendBtn.hidden = !isForm;
+  }
+  if (feedbackCancelBtn) {
+    feedbackCancelBtn.hidden = !isForm;
+  }
+  if (feedbackDoneBtn) {
+    feedbackDoneBtn.hidden = isForm;
+  }
+}
+
 function resetFeedbackForm() {
   if (feedbackForm) {
     feedbackForm.hidden = false;
@@ -5351,6 +5450,7 @@ function resetFeedbackForm() {
     feedbackSendBtn.disabled = false;
     feedbackSendBtn.textContent = "Send";
   }
+  setFeedbackFooterMode("form");
 }
 
 async function openFeedbackDialog() {
@@ -5370,7 +5470,9 @@ function closeFeedbackDialog({ resumeMenu = false } = {}) {
   feedbackOpenedFromMenu = false;
   closeAppDialog(feedbackDialog);
   if (shouldResume) {
-    openMenu();
+    requestAnimationFrame(() => {
+      openMenu();
+    });
   }
 }
 
@@ -5413,7 +5515,7 @@ async function submitFeedback(event) {
   }
 
   try {
-    const response = await fetch(apiUrl("/api/feedback"), {
+    const response = await fetch(feedbackApiUrl(), {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(payload),
@@ -5427,30 +5529,28 @@ async function submitFeedback(event) {
       if (feedbackThanksEl) {
         feedbackThanksEl.hidden = false;
       }
+      setFeedbackFooterMode("thanks");
       return;
     }
 
-    // Webhook not configured / failed — fall back to device mail composer.
     const mailto = buildFeedbackMailto({
       ...payload,
       to: data?.mailto || "EvansAppStudio@gmail.com",
     });
+    if (feedbackStatusEl) {
+      feedbackStatusEl.hidden = false;
+      feedbackStatusEl.textContent =
+        "Could not reach the feedback inbox. Opening email so you can send it yourself.";
+    }
     window.location.href = mailto;
-    if (feedbackForm) {
-      feedbackForm.hidden = true;
-    }
-    if (feedbackThanksEl) {
-      feedbackThanksEl.hidden = false;
-    }
   } catch {
     const mailto = buildFeedbackMailto(payload);
+    if (feedbackStatusEl) {
+      feedbackStatusEl.hidden = false;
+      feedbackStatusEl.textContent =
+        "Could not reach the feedback inbox. Opening email so you can send it yourself.";
+    }
     window.location.href = mailto;
-    if (feedbackForm) {
-      feedbackForm.hidden = true;
-    }
-    if (feedbackThanksEl) {
-      feedbackThanksEl.hidden = false;
-    }
   } finally {
     if (feedbackSendBtn) {
       feedbackSendBtn.disabled = false;
@@ -5632,6 +5732,27 @@ menuFeedbackBtn?.addEventListener("click", (event) => {
   closeMenuDialog();
   void openFeedbackDialog();
 });
+feedbackForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (event.submitter?.id === "feedback-cancel-btn") {
+    closeFeedbackDialog();
+    return;
+  }
+  void submitFeedback(event);
+});
+feedbackDialog?.addEventListener("click", (event) => {
+  const button = event.target.closest?.("#feedback-cancel-btn, #feedback-done-btn");
+  if (!button) {
+    return;
+  }
+  event.preventDefault();
+  event.stopPropagation();
+  closeFeedbackDialog();
+});
+feedbackDialog?.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeFeedbackDialog();
+});
 menuHelpBtn?.addEventListener("click", () => {
   helpOpenedFromMenu = true;
   closeMenuDialog();
@@ -5770,6 +5891,7 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
 });
 
 onboardingGotItBtn?.addEventListener("click", () => {
+  window.NextTrainCitySession?.markRegionExplicit?.();
   clearOnboardingSchedule();
   showOnboardingStep2();
 });
@@ -5927,8 +6049,10 @@ journeySwitcherMenuEl?.addEventListener("click", (event) => {
   event.stopPropagation();
 });
 
-document.addEventListener("click", () => {
-  closeJourneySwitcherMenu();
+document.addEventListener("nexttrain:city-changed", () => {
+  stationCoords = null;
+  void loadStationCoords();
+  void getStationsList();
 });
 
 async function init() {
@@ -5937,6 +6061,9 @@ async function init() {
   }
 
   localStorage.removeItem("nextTrainAdsLoaded");
+
+  await window.NextTrainCitySession?.init?.();
+  stationCoords = null;
 
   const seedApplied = await applyMaestroTestSeedFromDeepLink();
   if (!seedApplied) {
@@ -5960,6 +6087,7 @@ async function init() {
     fetchNextTrain();
     window.nextTrainWidget?.syncWidgetSettings?.(settings);
     await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+    void window.NextTrainBrisbaneDogfood?.mount?.();
     return;
   }
 
@@ -5988,6 +6116,7 @@ async function init() {
     fetchNextTrain();
     window.nextTrainWidget?.syncWidgetSettings?.(settings);
     await window.nextTrainWidget?.consumeLaunchDeepLink?.();
+    void window.NextTrainBrisbaneDogfood?.mount?.();
     return;
   }
 
@@ -5999,6 +6128,7 @@ async function init() {
   if (isNativeApp()) {
     void maybeSyncLeaveAlarmFromNative();
   }
+  void window.NextTrainBrisbaneDogfood?.mount?.();
 }
 
 

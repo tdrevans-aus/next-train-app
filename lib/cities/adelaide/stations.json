@@ -1,53 +1,456 @@
 {
   "stations": [
     {
-      "name": "Adelaide",
-      "aliases": ["Adelaide Railway Station", "Adelaide Station"],
+      "name": "Adelaide Railway Station",
+      "aliases": [
+        "Adelaide",
+        "Adelaide Station"
+      ],
       "stopIds": []
     },
     {
-      "name": "Goodwood",
-      "aliases": ["Goodwood Station"],
+      "name": "Adelaide Showground",
+      "aliases": [],
       "stopIds": []
     },
     {
-      "name": "Salisbury",
-      "aliases": ["Salisbury Station"],
+      "name": "Albert Park",
+      "aliases": [],
       "stopIds": []
     },
     {
-      "name": "Gawler Central",
-      "aliases": ["Gawler", "Gawler Station"],
+      "name": "Alberton",
+      "aliases": [],
       "stopIds": []
     },
     {
-      "name": "Noarlunga Centre",
-      "aliases": ["Noarlunga", "Noarlunga Station"],
+      "name": "Ascot Park",
+      "aliases": [],
       "stopIds": []
     },
     {
       "name": "Belair",
-      "aliases": ["Belair Station"],
+      "aliases": [],
       "stopIds": []
     },
     {
-      "name": "Seaford",
-      "aliases": ["Seaford Station"],
+      "name": "Blackwood",
+      "aliases": [],
       "stopIds": []
     },
     {
-      "name": "Flinders Street",
-      "aliases": ["Flinders St"],
+      "name": "Bowden",
+      "aliases": [],
       "stopIds": []
     },
     {
-      "name": "Mawson Lakes",
-      "aliases": ["Mawson Lakes Station"],
+      "name": "Brighton",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Broadmeadows",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Cheltenham",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Chidda",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Christie Downs",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Clarence Park",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Coromandel",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Croydon",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Draper",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Dry Creek",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Dudley Park",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "East Grange",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Eden Hills",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Edwardstown",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Elizabeth",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Elizabeth South",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Emerson",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Ethelton",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Evanston",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Flinders",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Gawler",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Gawler Central",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Gawler Oval",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Gawler Racecourse",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Glanville",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Glenalta",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Goodwood",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Grange",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Greenfields",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Hallett Cove",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Hallett Cove Beach",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Hove",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Islington",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Kilburn",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Kilkenny",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Kudla",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Largs",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Largs North",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Lonsdale",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Lynton",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Marino",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Marino Rocks",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Marion",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Mawson Interchange",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Midlunga",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Mile End",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Millswood",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Mitcham",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Mitchell Park",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Munno Para",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Noarlunga Centre",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "North Adelaide",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "North Haven",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Nurlutta",
+      "aliases": [],
       "stopIds": []
     },
     {
       "name": "Oaklands",
-      "aliases": ["Oaklands Station"],
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Osborne",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Outer Harbor",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Ovingham",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Parafield",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Parafield Gardens",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Peterhead",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Pinera",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Port Adelaide",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Port Dock",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Salisbury",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Seacliff",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Seaford",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Seaford Meadows",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Seaton Park",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Smithfield",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "St Clair",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Tambelin",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Taperoo",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Tonsley",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Torrens Park",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Unley Park",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Warradale",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "West Croydon",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Womma",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Woodlands Park",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Woodville",
+      "aliases": [],
+      "stopIds": []
+    },
+    {
+      "name": "Woodville Park",
+      "aliases": [],
       "stopIds": []
     }
   ]
