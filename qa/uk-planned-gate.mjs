@@ -15,6 +15,13 @@ const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
 for (const id of UK_REGION_IDS) {
+  if (id === "uk-london-tfl") {
+    const live = assertCityLive(id);
+    assert(live?.ok === true, `assertCityLive(${id}) must be live now`);
+    const entry = getCity(id);
+    assert(entry?.status === "live", `${id} registry status must be live`);
+    continue;
+  }
   const live = assertCityLive(id);
   assert(live?.ok === false, `assertCityLive(${id}) must fail`);
   assert(live?.status === 501, `${id} must be 501 planned`);
@@ -27,5 +34,5 @@ const ukDump = getCity("uk");
 assert(!ukDump, "city=uk must not exist in registry");
 
 console.log(
-  "uk-planned-gate: ok (uk-west-midlands, uk-ellesmere-port, uk-london-tfl planned/501; no city=uk; Perth green)"
+  "uk-planned-gate: ok (uk-west-midlands, uk-ellesmere-port planned/501; uk-london-tfl live; no city=uk; Perth green)"
 );

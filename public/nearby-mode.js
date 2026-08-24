@@ -121,8 +121,13 @@
       brisbane: "Brisbane",
       sydney: "Sydney",
       adelaide: "Adelaide",
+      "uk-london-tfl": "London",
     };
     return names[city] || "your region";
+  }
+
+  function readActiveTimeZone() {
+    return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
   }
 
   function isNearbyCacheValid(data) {
@@ -142,7 +147,7 @@
   function regionLocateErrorMessage(error) {
     const message = String(error?.message || "");
     if (message.includes("in this region") || message.includes("nearby station")) {
-      return `Couldn't find a nearby ${activeRegionDisplayName()} station — pick one below.`;
+      return `Location outside ${activeRegionDisplayName()} — pick a station below.`;
     }
     return locationErrorFrom(error).message;
   }
@@ -2167,6 +2172,7 @@ function renderNearbyBoard({ stale = false } = {}) {
   if (deps.departDisplayTimeEl) {
     const linePart = next.line ? `${next.line} · ` : "";
     deps.departDisplayTimeEl.textContent = `${next.displayTime} · ${linePart}towards ${focusedEntry.direction}`;
+    deps.departDisplayTimeEl.dataset.time = next.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(next);
@@ -2263,7 +2269,8 @@ async function fetchNearbyBoardOnce() {
       }
     })
   );
-  const entries = settled.filter(Boolean);
+  // Hide empty chips in Near me (unless it's an overnight board with zero trips for ALL directions)
+  const entries = settled.filter((entry) => entry && entry.data?.next);
 
   if (!nearbySession || nearbySession.station !== station) {
     return;
@@ -2275,9 +2282,10 @@ async function fetchNearbyBoardOnce() {
     }
 
     // Station known but no live/scheduled trips (overnight). Not a location failure.
+    // In this case we show all oracle directions as empty.
     nearbyBoard = {
       lastUpdated: new Date().toLocaleString("en-AU", {
-        timeZone: "Australia/Perth",
+        timeZone: readActiveTimeZone(),
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
@@ -2315,7 +2323,7 @@ async function fetchNearbyBoardOnce() {
 
   nearbyBoard = {
     lastUpdated: new Date().toLocaleString("en-AU", {
-      timeZone: "Australia/Perth",
+      timeZone: readActiveTimeZone(),
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",

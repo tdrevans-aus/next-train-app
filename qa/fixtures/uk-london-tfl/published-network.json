@@ -31,11 +31,11 @@
       "name": "Bakerloo",
       "mode": "tube",
       "termini": [
-        "Harrow & Wealdstone",
-        "Elephant & Castle"
+        "Harrow and Wealdstone",
+        "Elephant and Castle"
       ],
       "shortTurns": {
-        "Harrow & Wealdstone": [
+        "Harrow and Wealdstone": [
           "Queen's Park",
           "Stonebridge Park"
         ]
@@ -89,7 +89,7 @@
     },
     {
       "id": "hammersmith-city",
-      "name": "Hammersmith & City",
+      "name": "Hammersmith and City",
       "mode": "tube",
       "termini": [
         "Hammersmith",
@@ -141,7 +141,7 @@
       ],
       "shortTurns": {
         "Heathrow Terminal 5": [
-          "Heathrow Terminals 2 & 3"
+          "Heathrow Terminals 2 and 3"
         ],
         "Uxbridge": [
           "Rayners Lane"
@@ -165,7 +165,7 @@
     },
     {
       "id": "waterloo-city",
-      "name": "Waterloo & City",
+      "name": "Waterloo and City",
       "mode": "tube",
       "termini": [
         "Waterloo",

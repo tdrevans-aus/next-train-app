@@ -1737,6 +1737,22 @@ function syncLeaveBeforeControlsState() {
 
 
 
+function getActiveTimeZoneOffset(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth",
+    timeZoneName: "shortOffset",
+  }).formatToParts(date);
+  const offsetPart = parts.find((p) => p.type === "timeZoneName")?.value || "GMT+8";
+  let offset = offsetPart.replace("GMT", "");
+  if (offset === "Z") return "+00:00";
+  if (!offset.includes(":")) {
+    const sign = offset.startsWith("-") ? "-" : "+";
+    const val = offset.replace(/[+-]/, "");
+    offset = `${sign}${val.padStart(2, "0")}:00`;
+  }
+  return offset;
+}
+
 function departureIsoFromDisplayTime(displayTime, referenceIso) {
   if (!displayTime) {
     return null;
@@ -1745,8 +1761,9 @@ function departureIsoFromDisplayTime(displayTime, referenceIso) {
   const [hour, minute] = displayTime.split(":").map(Number);
   const reference = referenceIso ? new Date(referenceIso) : new Date();
   const { year, month, day } = getPerthDateParts(reference);
+  const offset = getActiveTimeZoneOffset(reference);
   let departure = new Date(
-    `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(minute)}:00+08:00`
+    `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(minute)}:00${offset}`
   );
 
   if (referenceIso && departure < new Date(referenceIso) - 30 * 60 * 1000) {
@@ -3572,6 +3589,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
   }
   if (departDisplayTimeEl) {
     departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
+    departDisplayTimeEl.dataset.time = heroTrip.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(heroTrip);
@@ -3841,6 +3859,7 @@ function render(data, { stale = false } = {}) {
   }
   if (departDisplayTimeEl) {
     departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
+    departDisplayTimeEl.dataset.time = heroTrip.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(heroTrip);
@@ -4256,26 +4275,32 @@ function readActiveCity() {
 
 async function locateCityFromPosition() {
   try {
+    console.log("[App] locateCityFromPosition: getting geolocation...");
     const position = await getAppGeolocationPosition({
       timeout: 8000,
       maximumAge: 300000,
     });
-    return (
-      window.NextTrainCitySession?.hintCityFromCoords?.(
-        position.coords.latitude,
-        position.coords.longitude
-      ) ?? null
-    );
-  } catch {
+    const hint = window.NextTrainCitySession?.hintCityFromCoords?.(
+      position.coords.latitude,
+      position.coords.longitude
+    ) ?? null;
+    console.log(`[App] locateCityFromPosition: hint=${hint} from ${position.coords.latitude}, ${position.coords.longitude}`);
+    return hint;
+  } catch (error) {
+    console.warn("[App] locateCityFromPosition failed:", error.message);
     return null;
   }
 }
 
 function scheduleRegionMismatchPrompt() {
-  void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
-    skip: isTestMode(),
-    locateCity: locateCityFromPosition,
-  });
+  console.log("[App] scheduleRegionMismatchPrompt: scheduling in 2s...");
+  setTimeout(() => {
+    console.log("[App] scheduleRegionMismatchPrompt: firing...");
+    void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
+      skip: isTestMode(),
+      locateCity: locateCityFromPosition,
+    });
+  }, 2000);
 }
 
 function testModeNearestStation() {
@@ -6137,13 +6162,13 @@ async function init() {
 
   localStorage.removeItem("nextTrainAdsLoaded");
 
-  await window.NextTrainCitySession?.init?.();
-  stationCoords = null;
-
   const seedApplied = await applyMaestroTestSeedFromDeepLink();
   if (!seedApplied) {
     applyTestQueryParams();
   }
+
+  await window.NextTrainCitySession?.init?.();
+  stationCoords = null;
 
   installOnboardingInteractionTracking();
   dismissStaleBlockingLayers();
@@ -6168,6 +6193,8 @@ async function init() {
 
   const urlSettings = await readUrlSettings();
   if (urlSettings) {
+    console.log("[init] found urlSettings, entering journey mode");
+    journeyModeActive = true;
     persistSettings(urlSettings);
   } else {
     settings = readStoredSettings();
@@ -7050,6 +7077,7 @@ window.nextTrainApp = {
   enterRouteMode,
   enterJourneyMode,
   enterNearbyMode,
+  applyNearbyManualStation,
   isLeaveAcknowledged,
   shouldAutoAckLeavePhase,
   maybeAutoAcknowledgeLeave,

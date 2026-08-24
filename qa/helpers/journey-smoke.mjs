@@ -163,7 +163,8 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
   await waitForJourneyHero(page);
 
   await page.evaluate(async (jId) => {
-    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
+    const el = document.getElementById("depart-display-time");
+    const preferred = el?.dataset.time || el?.textContent?.trim();
     if (!preferred || preferred === "—") {
       return;
     }
@@ -195,7 +196,8 @@ function clearLeaveAckSessionStorage(page) {
 
 async function syncPreferredFromHeroAndRefresh(page, journeyId) {
   await page.evaluate(async (jId) => {
-    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
+    const el = document.getElementById("depart-display-time");
+    const preferred = el?.dataset.time || el?.textContent?.trim();
     if (!preferred || preferred === "—") {
       return;
     }

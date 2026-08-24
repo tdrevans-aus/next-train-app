@@ -30,12 +30,18 @@
     return hour * 60 + (minute || 0);
   }
 
+  function getActiveTimeZone() {
+    return (
+      window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth"
+    );
+  }
+
   function getPerthMinutesSinceMidnightFromDate(date) {
     if (deps.getPerthMinutesSinceMidnight) {
       return deps.getPerthMinutesSinceMidnight(date);
     }
     const parts = new Intl.DateTimeFormat("en-AU", {
-      timeZone: "Australia/Perth",
+      timeZone: getActiveTimeZone(),
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
@@ -61,7 +67,7 @@
       return deps.getPerthLocalDateKey(new Date(clock.nowMs));
     }
     const parts = new Intl.DateTimeFormat("en-AU", {
-      timeZone: "Australia/Perth",
+      timeZone: getActiveTimeZone(),
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -316,7 +322,7 @@
       return deps.getPerthDayOfWeekIso(date);
     }
     const weekday = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Australia/Perth",
+      timeZone: getActiveTimeZone(),
       weekday: "long",
     }).format(date);
     const map = {

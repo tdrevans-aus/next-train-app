@@ -13,20 +13,20 @@
       id: "au",
       name: "Australia",
       regions: [
-        { id: "perth", name: "Perth" },
-        { id: "sydney", name: "Sydney" },
-        { id: "brisbane", name: "Brisbane" },
-        { id: "adelaide", name: "Adelaide" },
-        { id: "melbourne", name: "Melbourne", comingSoon: true },
+        { id: "perth", name: "Perth", timeZone: "Australia/Perth" },
+        { id: "sydney", name: "Sydney", timeZone: "Australia/Sydney" },
+        { id: "brisbane", name: "Brisbane", timeZone: "Australia/Brisbane" },
+        { id: "adelaide", name: "Adelaide", timeZone: "Australia/Adelaide" },
+        { id: "melbourne", name: "Melbourne", timeZone: "Australia/Melbourne", comingSoon: true },
       ],
     },
     {
       id: "gb",
       name: "England",
       regions: [
-        { id: "uk-west-midlands", name: "West Midlands", comingSoon: true },
-        { id: "uk-ellesmere-port", name: "Ellesmere Port corridor", comingSoon: true },
-        { id: "uk-london-tfl", name: "London TfL" },
+        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: true },
+        { id: "uk-ellesmere-port", name: "Ellesmere Port corridor", timeZone: "Europe/London", comingSoon: true },
+        { id: "uk-london-tfl", name: "London TfL", timeZone: "Europe/London" },
       ],
     },
   ];
@@ -210,12 +210,16 @@
     if (skip) {
       return false;
     }
-    if (!readRegionExplicit()) {
+    const explicit = readRegionExplicit();
+    if (!explicit) {
+      console.log("[NextTrainCitySession] Mismatch check skipped: not explicit");
       return false;
     }
     const savedCity = readSavedCity() || LIVE_CITY;
     const locate = locateCity || geolocateHint;
+    console.log("[NextTrainCitySession] Mismatch check: locating...");
     const detectedCity = await locate();
+    console.log(`[NextTrainCitySession] Mismatch check: saved=${savedCity}, detected=${detectedCity}`);
     if (!detectedCity || detectedCity === savedCity) {
       return false;
     }
@@ -225,14 +229,17 @@
     }
     const pairKey = `${savedCity}>${detectedCity}`;
     if (readRegionMismatchDismissed() === pairKey) {
+      console.log(`[NextTrainCitySession] Mismatch check: dismissed already (${pairKey})`);
       return false;
     }
     if (!regionMismatchDialog) {
       regionMismatchDialog = bindRegionMismatchDialog();
     }
     if (!regionMismatchDialog) {
+      console.warn("[NextTrainCitySession] Mismatch check: no dialog bound");
       return false;
     }
+    console.log(`[NextTrainCitySession] Mismatch check: opening dialog for ${detectedCity}`);
     regionMismatchDialog.open(savedCity, detectedCity);
     return true;
   }
@@ -244,8 +251,9 @@
           reject(new Error("no geo"));
           return;
         }
+        const isTestActive = sessionStorage.getItem("nextTrainTestMode") === "1" || window.location.search.includes("test=1");
         navigator.geolocation.getCurrentPosition(resolve, reject, {
-          timeout: 4000,
+          timeout: isTestActive ? 1000 : 4000,
           maximumAge: 300000,
         });
       });
@@ -469,6 +477,11 @@
     geolocateHint,
     maybePromptRegionMismatch,
     regionDisplayName,
+    regionById,
+    readActiveTimeZone() {
+      const city = readSavedCity() || LIVE_CITY;
+      return regionById(city)?.region.timeZone || "Australia/Perth";
+    },
     markRegionExplicit() {
       const city = readSavedCity() || LIVE_CITY;
       persistRegion({
