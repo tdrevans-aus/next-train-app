@@ -29,7 +29,11 @@
         "tube"
       ],
       "lines": [
-        "Bakerloo"
+        "Bakerloo",
+        "Circle",
+        "Hammersmith & City",
+        "Jubilee",
+        "Metropolitan"
       ],
       "lat": 51.522883,
       "lng": -0.15713,
@@ -239,7 +243,9 @@
         "tube"
       ],
       "lines": [
-        "Bakerloo"
+        "Bakerloo",
+        "Central",
+        "Victoria"
       ],
       "lat": 51.515224,
       "lng": -0.141903,
@@ -374,7 +380,10 @@
         "tube"
       ],
       "lines": [
-        "Bakerloo"
+        "Bakerloo",
+        "Jubilee",
+        "Northern",
+        "Waterloo & City"
       ],
       "lat": 51.503299,
       "lng": -0.11478,
@@ -464,7 +473,10 @@
         "tube"
       ],
       "lines": [
-        "Central"
+        "Central",
+        "Northern",
+        "Waterloo & City",
+        "DLR"
       ],
       "lat": 51.513356,
       "lng": -0.088899,
@@ -989,7 +1001,11 @@
         "tube"
       ],
       "lines": [
-        "Central"
+        "Central",
+        "Jubilee",
+        "Elizabeth",
+        "DLR",
+        "Mildmay"
       ],
       "lat": 51.541806,
       "lng": -0.003458,
@@ -1019,7 +1035,7 @@
         "tube"
       ],
       "lines": [
-        "Central"
+        "Elizabeth"
       ],
       "lat": 51.516426,
       "lng": -0.13041,
@@ -1320,7 +1336,12 @@
         "tube"
       ],
       "lines": [
-        "Circle"
+        "Circle",
+        "Hammersmith & City",
+        "Metropolitan",
+        "Northern",
+        "Piccadilly",
+        "Victoria"
       ],
       "lat": 51.530663,
       "lng": -0.123194,
@@ -2251,6 +2272,9 @@
         "dlr"
       ],
       "lines": [
+        "Central",
+        "Northern",
+        "Waterloo & City",
         "DLR"
       ],
       "lat": 51.513233,
@@ -2748,7 +2772,11 @@
         "dlr"
       ],
       "lines": [
-        "DLR"
+        "Central",
+        "Jubilee",
+        "Elizabeth",
+        "DLR",
+        "Mildmay"
       ],
       "lat": 51.541758,
       "lng": -0.003287,
@@ -2939,7 +2967,7 @@
         "elizabeth-line"
       ],
       "lines": [
-        "Elizabeth line"
+        "DLR"
       ],
       "lat": 51.506203,
       "lng": -0.018834,
@@ -3416,7 +3444,7 @@
         "elizabeth-line"
       ],
       "lines": [
-        "Elizabeth line"
+        "Elizabeth"
       ],
       "lat": 51.515698,
       "lng": -0.13044,
@@ -3563,7 +3591,7 @@
         "tube"
       ],
       "lines": [
-        "Jubilee"
+        "DLR"
       ],
       "lat": 51.503488,
       "lng": -0.018246,
@@ -4704,7 +4732,8 @@
         "overground"
       ],
       "lines": [
-        "Mildmay"
+        "Mildmay",
+        "Windrush"
       ],
       "lat": 51.546177,
       "lng": -0.103764,
@@ -7676,7 +7705,8 @@
         "tube"
       ],
       "lines": [
-        "Victoria"
+        "Mildmay",
+        "Windrush"
       ],
       "lat": 51.54635,
       "lng": -0.103324,
