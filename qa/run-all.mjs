@@ -87,6 +87,8 @@ const RUNNER_EXCLUDE = new Set([
   "fb-23-phase-4-native.mjs",
   /** Mac/Xcode preflight — `npm run test:ios:preflight`, not Linux web CI. */
   "check-ios-test-setup.mjs",
+  /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
+  "pin-exclusive.mjs",
 ]);
 
 /** Native/device scripts run last so they do not disturb each other. */

@@ -345,13 +345,17 @@ async function run() {
   record("enterJourneyMode opens pinned commute journey", pinnedJourneySelected === "j-evening");
 
   // --- Re-pin target train: hero pin pressed immediately when skip index > 0 ---
+  // Fixture `normal` has trips at +18/+34/+48/+62/+76/+90 min. Prefer a middle
+  // trip so journey mode lands on Target train with skip > 0 even if the clock
+  // ticks during setup. Do not rewrite preferred from the hero clock — that
+  // collapsed skip to 0 when Next Train was still showing.
   const preferredTrainTime = (() => {
     const parts = new Intl.DateTimeFormat("en-AU", {
       timeZone: "Australia/Perth",
       hour: "numeric",
       minute: "numeric",
       hour12: false,
-    }).formatToParts(new Date(Date.now() + 90 * 60_000));
+    }).formatToParts(new Date(Date.now() + 48 * 60_000));
     const hour = String(
       Number(parts.find((part) => part.type === "hour")?.value ?? 0)
     ).padStart(2, "0");
@@ -409,9 +413,18 @@ async function run() {
   );
 
   await page.evaluate(() => window.nextTrainApp.enterRouteMode());
-  await page.evaluate(async () => {
-    await window.nextTrainApp.fetchNextTrain?.();
-  });
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    await page.evaluate(async () => {
+      await window.nextTrainApp.fetchNextTrain?.();
+    });
+    const countdown = await page.evaluate(
+      () => document.getElementById("depart-countdown")?.textContent?.trim() ?? ""
+    );
+    if (countdown.length > 0 && countdown !== "—") {
+      break;
+    }
+    await page.waitForTimeout(1500);
+  }
   await page.waitForFunction(
     () => {
       const countdown = document.getElementById("depart-countdown")?.textContent?.trim() ?? "";
@@ -428,17 +441,20 @@ async function run() {
     await window.nextTrainApp.enterJourneyMode();
   });
   await page.waitForSelector("#hero-pin-btn:not([hidden])", { timeout: 25000 });
-  await page.evaluate(async () => {
-    const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
-    if (preferred && preferred !== "—") {
-      await window.nextTrainApp?.persistReminderJourneys?.([
-        { id: "j-a", preferredTrainTime: preferred, remindMe: false },
-      ]);
-      await window.nextTrainApp?.fetchNextTrain?.();
-    }
-  });
   await page.waitForFunction(
-    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+    () => {
+      const label = document.getElementById("hero-depart-label")?.textContent?.trim();
+      let skipCount = 0;
+      try {
+        skipCount = Math.max(
+          0,
+          Number(JSON.parse(sessionStorage.getItem("nextTrainSkip:j-a") || "{}").count) || 0
+        );
+      } catch {
+        skipCount = 0;
+      }
+      return label === "Target train" && skipCount > 0;
+    },
     null,
     { timeout: 20000 }
   );

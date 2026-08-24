@@ -5,6 +5,7 @@
 import { chromium } from "playwright";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 import { dismissOnboardingMaybeLater, waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
+import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 
@@ -39,11 +40,46 @@ async function run() {
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
   await waitForOnboardingStep1(page);
   await dismissOnboardingMaybeLater(page);
+  // Empty-state Add a journey is Morning; seed Evening so Custom add and the
+  // Morning chip both stay available.
+  await seedPersistedJourneys(
+    page,
+    [
+      {
+        id: "j-seed-evening",
+        kind: "journey",
+        name: "Evening home",
+        station: "Perth Underground Stn",
+        direction: "Mandurah",
+        leaveBeforeMinutes: 10,
+        useLeaveBefore: true,
+        templateKey: "evening",
+        defaultFrom: "15:00",
+        defaultUntil: "18:00",
+        preferredTrainTime: "17:30",
+        remindDays: [1, 2, 3, 4, 5],
+        remindMe: false,
+      },
+    ],
+    { templateWizardSeen: false }
+  );
+  await page.evaluate(() => {
+    localStorage.removeItem("nextTrainTemplateWizardSeen");
+    localStorage.removeItem("nextTrainTemplateWizardSkipped");
+  });
+  await page.reload();
+  await page.waitForTimeout(800);
   await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
   await page.waitForTimeout(400);
 
   await openCustomJourneyCreate(page);
-  await page.waitForTimeout(1500);
+  for (let i = 0; i < 20; i++) {
+    await page.waitForTimeout(250);
+    const snap = await coachState(page);
+    if (!snap.coachHidden && snap.coachBody.length > 0) {
+      break;
+    }
+  }
   const afterCustom = await coachState(page);
 
   await dismissTemplateCoach(page);
