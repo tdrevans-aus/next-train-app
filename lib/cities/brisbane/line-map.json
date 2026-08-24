@@ -7,7 +7,7 @@
     "D2 review (Luke): do not accept any proposedShortTurnGroups. §3 is line+terminus; do not collapse opposite through-run ends.",
     "doNotGroup: accepted Caboolture–Nambour, Caboolture–Gympie North, Doomben–Eagle Junction, Northgate–Shorncliffe. Rejected opposite T1 ends / spine.",
     "H4 doNotGroup: Springfield Central–Ipswich (Darra); Beenleigh–Cleveland and Varsity Lakes–Beenleigh (Boggo Road); Airport vs Shorncliffe / Kippa-Ring / Doomben (Eagle Junction); Kippa-Ring–Caboolture (Petrie).",
-    "Exhibition is suppressed (H3 event-only). D5 direction-label assertions still held.",
+    "Exhibition is suppressed (H3 event-only). D5 labels locked: Central 12 marketing chips (T1 Caboolture/Ipswich; T5 Brisbane Airport).",
     "Station names normalized from GTFS parent stop_name (platform suffix stripped)."
   ],
   "shortTurnGroups": {},

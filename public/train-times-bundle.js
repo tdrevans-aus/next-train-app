@@ -162,7 +162,8 @@ var NextTrainTimes = (() => {
       displayTime: trip.displayTime,
       platform: trip.platform ?? "",
       destination: trip.destination,
-      cars: trip.cars
+      cars: trip.cars,
+      line: trip.line
     };
     return enrichTripTiming(internal);
   }
@@ -211,6 +212,7 @@ var NextTrainTimes = (() => {
       status: timing.status,
       destination: timing.destination,
       cars: timing.cars,
+      line: timing.line,
       leaveBy: new Date(leaveByMs).toISOString(),
       minutesUntilDeparture,
       minutesUntilArrival: minutesUntilDeparture,
@@ -225,6 +227,7 @@ var NextTrainTimes = (() => {
       scheduledDisplayTime: trip.scheduledDisplayTime,
       platform: trip.platform,
       status: trip.status,
+      line: trip.line,
       departure: trip.departure,
       arrival: trip.arrival
     };

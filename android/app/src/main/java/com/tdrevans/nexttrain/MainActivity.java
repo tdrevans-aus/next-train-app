@@ -2,6 +2,7 @@ package com.tdrevans.nexttrain;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import androidx.activity.OnBackPressedCallback;
 import com.getcapacitor.BridgeActivity;
@@ -61,6 +62,17 @@ public class MainActivity extends BridgeActivity {
     CommuteRefreshService.repaintFromCache(this);
     CommuteRefreshService.refreshAll(this);
     notifyWidgetConfigurePending();
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    if (BuildConfig.DEBUG && getBridge() != null) {
+      WebView webView = getBridge().getWebView();
+      if (webView != null) {
+        webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+      }
+    }
   }
 
   @Override

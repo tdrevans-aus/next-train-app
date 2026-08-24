@@ -3,9 +3,9 @@
 **For:** Jim (implement)
 **From:** Tim
 **Date:** 22 Aug 2026
-**Status:** Ready to code — **blocked on one product decision** (§3)
-**Related:** `docs/jim-brief-brisbane-provider.md` · `docs/multi-city-provider-design.md` · `docs/direction-collapse-heuristic.md` · `lib/cities/perth/line-map.json` · `qa/perth-static-directions.mjs`
-**Out of scope:** Flipping Brisbane to `live`; multi-city UI; Play listing; bus/ferry/tram; Sydney/Melbourne/Adelaide/Canberra
+**Status:** Ready to code — §3 labels **locked (Luke, 22 Aug 2026)**  
+**Related:** `docs/jim-brief-brisbane-provider.md` · `docs/multi-city-provider-design.md` · `docs/direction-collapse-heuristic.md` · `lib/cities/perth/line-map.json` · `qa/perth-static-directions.mjs`  
+**Out of scope:** Flipping Brisbane to `live`; multi-city UI / city picker; Play listing; bus/ferry/tram; Sydney/Melbourne/Adelaide/Canberra
 
 ---
 
@@ -33,9 +33,22 @@ Nobody on the team lives in Brisbane, so that method cannot be repeated. It also
 
 ---
 
-## 3. Open design question — **blocks §5 assertions**
+## 3. Direction model — **locked (Luke)**
 
-**Brisbane lines through-run in pairs.** Ferny Grove services become Beenleigh services, Shorncliffe becomes Cleveland, Airport becomes Varsity Lakes. Translink also introduced **T1–T6 line numbering in August 2026**, which is what riders now see on the map and in-station:
+**Brisbane lines through-run in pairs.** Chips are **line + marketing terminus**, not GTFS far termini.
+
+| Line | Central chips (two ends) |
+|------|--------------------------|
+| T1 | Caboolture · Ipswich |
+| T2 | Kippa-Ring · Springfield Central |
+| T3 | Doomben · Roma Street |
+| T4 | Cleveland · Shorncliffe |
+| T5 | Brisbane Airport · Varsity Lakes |
+| T6 | Beenleigh · Ferny Grove |
+
+Central = **12 chips**. Nests (Rosewood, Nambour, Gympie North) are not extra Central chips. Exhibition stays suppressed.
+
+T1–T6 numbering is what riders see (August 2026). Translink pairings:
 
 | Line | Pairing |
 |------|---------|
@@ -46,11 +59,9 @@ Nobody on the team lives in Brisbane, so that method cannot be repeated. It also
 | T5 | Varsity Lakes ↔ Brisbane Airport |
 | T6 | Beenleigh ↔ Ferny Grove |
 
-Perth's rule — *directions = far termini of the lines serving this station* — works because Perth is hub-and-spoke with Perth Stn at the centre. Brisbane has no such centre: every line passes through Central, so the same rule yields roughly fifteen terminus options at one station.
+Perth's rule — *directions = far termini of the lines serving this station* — stays Perth-only. Brisbane has no hub centre: every line passes through Central.
 
-**Candidate models:** line + terminus (`T6 towards Beenleigh`); terminus only (Perth-style); inbound/outbound relative to the CBD with terminus as detail.
-
-**Jim:** build §4 (generator, fixtures, catalog) now — none of it depends on this. Do **not** write the direction-label assertions in §5 until Tim locks the model. Structure `qa/brisbane-line-map-conformance.mjs` so label expectations sit in one table at the top of the file.
+**Jim:** `LABEL_EXPECTATIONS` in `qa/brisbane-line-map-conformance.mjs` asserts the Central 12. Do not emit nest chips at Central.
 
 ---
 
@@ -72,7 +83,7 @@ Record `retrievedAt` and the source URL. This file is **never** regenerated from
 - termini and headsign strings with occurrence counts
 - junction stations (served by more than one route)
 - first / last service per route per day type (weekday / Saturday / Sunday)
-- `shortTurnGroups` / `doNotGroup` proposed via `proposeDirectionGroups()` from `lib/direction-collapse-heuristic.js`, written as **proposals** for product review, not auto-accepted. **D2 review (Luke):** freeze `shortTurnGroups` empty (§3 line+terminus; do not collapse opposite through-run ends). Accept listed nested `doNotGroup` pairs + H4 branch traps; reject opposite T1 ends / spine. Suppress Exhibition. Tighten `junctionStations` to Darra / Boggo Road / Eagle Junction / Petrie. D5 still held.
+- `shortTurnGroups` / `doNotGroup` proposed via `proposeDirectionGroups()` from `lib/direction-collapse-heuristic.js`, written as **proposals** for product review, not auto-accepted. **D2 review (Luke):** freeze `shortTurnGroups` empty (§3 line+terminus; do not collapse opposite through-run ends). Accept listed nested `doNotGroup` pairs + H4 branch traps; reject opposite T1 ends / spine. Suppress Exhibition. Tighten `junctionStations` to Darra / Boggo Road / Eagle Junction / Petrie. **D5 labels locked** (Central 12 marketing chips).
 
 Keep the generator city-agnostic where cheap — Sydney and Adelaide use the same GTFS stack.
 
@@ -86,7 +97,7 @@ Commit a rail-only trimmed SEQ GTFS snapshot to `qa/fixtures/brisbane/gtfs/` so 
 
 ---
 
-## 5. Deliverables — conformance (label assertions blocked on §3)
+## 5. Deliverables — conformance
 
 ### D5 · `qa/brisbane-line-map-conformance.mjs` — offline, runs in CI
 
@@ -160,12 +171,12 @@ Add to `RUNNER_EXCLUDE` in `qa/run-all.mjs` — it hits Translink live and must 
 
 ## 8. Follow-ups (not this brief)
 
-- Direction model decision (§3), then the label assertions in D5
 - Brisbane rider dogfood — extend `docs/mark-dogfood-brisbane.md` from a dev-board probe into a scripted route audit with side-by-side screenshots against the Translink app
 - Nightly soak alerting on new destination strings and RT/static divergence — reuse `qa/soak-status.mjs` and `docs/fb-33-soak.md`. **Gated on Tim flipping the city live**; `docs/mark-dogfood-brisbane.md` currently forbids Brisbane monitors
+- **City switch (once Brisbane is `live`, not now):** first launch geolocate as a hint; persist saved city; settings can change. If a saved-city user is detected in the other live city, ask once — never silent-switch. Do not default to a planned city. **Do not** start that picker while `assertCityLive("brisbane")` must fail.
 
 ---
 
 ## 9. Slack / Jim
 
-> Jim — start `docs/jim-brief-brisbane-route-conformance.md`. Build the GTFS line-map generator, the published-map transcription, the expanded station catalog, and the two conformance scripts. The live sweep must stay out of CI. Hold off on direction-label assertions until Tim locks the direction model in §3. Brisbane stays `planned`; Perth unchanged.
+> Jim — `LABEL_EXPECTATIONS` is locked for Central (12 marketing chips). Live sweep stays out of CI. Brisbane stays `planned`; Perth unchanged. Do not start a city picker.

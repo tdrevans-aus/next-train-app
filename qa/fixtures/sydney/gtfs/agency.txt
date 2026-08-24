@@ -1,0 +1,3 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone
+x0001,Sydney Trains,http://transportnsw.info,Australia/Sydney,EN,
+SMNW,Sydney Metro,http://transportnsw.info,Australia/Sydney,EN,

@@ -1,7 +1,7 @@
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { assertCityLive } from "../lib/providers/registry.js";
-import { isLiveAuCity, listLiveAuStations } from "../lib/cities/live-city-api.js";
+import { isMultiCity, listMultiCityStations } from "../lib/cities/live-city-api.js";
 
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
@@ -23,12 +23,12 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!isLiveAuCity(city)) {
-    res.status(400).json({ error: "Station catalog only available for Sydney, Brisbane, and Adelaide" });
+  if (!isMultiCity(city)) {
+    res.status(400).json({ error: "Station catalog only available for Sydney, Brisbane, Adelaide, and London" });
     return;
   }
 
-  const stations = listLiveAuStations(city).map((entry) => ({
+  const stations = listMultiCityStations(city).map((entry) => ({
     name: entry.name,
     lat: entry.lat ?? null,
     lng: entry.lng ?? null,

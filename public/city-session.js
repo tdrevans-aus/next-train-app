@@ -353,11 +353,14 @@
     }
     const dogfoodApi = dogfood();
     if (MULTI_CITY_IDS.includes(city)) {
+      console.log(`[NextTrainCitySession] Mounting multi-city: ${city}`);
       const ok = await dogfoodApi?.mount?.(city);
       if (!ok) {
+        console.error(`[NextTrainCitySession] Failed to mount: ${city}`);
         return false;
       }
     } else {
+      console.log(`[NextTrainCitySession] Unmounting to live city: ${LIVE_CITY}`);
       dogfoodApi?.unmount?.();
       city = LIVE_CITY;
       try {

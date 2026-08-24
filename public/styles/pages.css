@@ -109,3 +109,59 @@ body.native-ad-banner main.page {
     transform: translateY(0);
   }
 }
+
+.brisbane-dogfood-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: color-mix(in srgb, var(--bg, #eef3f2) 88%, #000 12%);
+  padding: 1.25rem;
+  overflow: auto;
+}
+
+.brisbane-dogfood-card {
+  max-width: 28rem;
+  margin: 0 auto;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.brisbane-dogfood-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brisbane-dogfood-field {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.brisbane-dogfood-field input,
+.brisbane-dogfood-field select {
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+}
+
+.brisbane-dogfood-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.brisbane-dogfood-chip {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.brisbane-dogfood-trips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}

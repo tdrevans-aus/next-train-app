@@ -111,6 +111,84 @@ const CITY_CONFIG = {
       "Varsity Lakes": ["Gold Coast"],
     },
   },
+  sydney: {
+    timeZone: "Australia/Sydney",
+    fixtureDir: join(ROOT, "qa/fixtures/sydney/gtfs"),
+    publishedNetworkPath: join(ROOT, "qa/fixtures/sydney/published-network.json"),
+    lineMapPath: join(ROOT, "lib/cities/sydney/line-map.json"),
+    stationsPath: join(ROOT, "lib/cities/sydney/stations.json"),
+    routeTypes: ["2", "401"],
+    catalogByServedStop: true,
+    modeSplitNames: ["Central", "Martin Place", "Epping", "Chatswood", "Sydenham"],
+    branchedJunctions: [
+      "Blacktown",
+      "Cabramatta",
+      "Glenfield",
+      "Granville",
+      "Hornsby",
+      "Sutherland",
+      "Wolli Creek",
+    ],
+    suppressedTermini: ["Helensburgh"],
+    productReview: {
+      shortTurnGroups: {},
+      junctionStations: ["Blacktown", "Cabramatta", "Granville", "Sutherland", "Wolli Creek"],
+      doNotGroup: [
+        {
+          a: "Cronulla",
+          b: "Waterfall",
+          reason: "H4 T4 split at Sutherland",
+        },
+        {
+          a: "Domestic Airport",
+          b: "Sydenham",
+          reason: "H4 T8 Airport vs Sydenham at Wolli Creek",
+        },
+        {
+          a: "Emu Plains",
+          b: "Richmond",
+          reason: "H4 T1 western fork at Blacktown",
+        },
+        {
+          a: "Leppington",
+          b: "Parramatta",
+          reason: "H4 T2 two published termini",
+        },
+        {
+          a: "Bankstown",
+          b: "Sydenham",
+          reason: "H4 T6 leftover rail vs M1 published southern end",
+        },
+        {
+          a: "Berowra",
+          b: "Hornsby",
+          reason: "H4 T1 vs T9 shared North Shore stations",
+        },
+      ],
+      coverageGaps: [
+        "C3-1: T2 and T3 share one official PDF; oracle keeps two line objects",
+        "C3-2: T4 PDF/GTFS may include Helensburgh SCO; excluded from published T4 stations",
+        "C3-3: M1 printed name Metro North West & Bankstown; published stops end at Sydenham; leftover heavy rail is T6",
+        "C3-4: City Circle is a loop, not a terminus",
+        "C3-T2/T3/T8-circle: D1 lists Circle stations linearly; longest GTFS patterns are loops",
+        "H2: public zip has T/M numbers; gateway schedule/RT still 401 without TFNSW_API_KEY",
+        "H7: Australia/Sydney observes DST — do not copy Brisbane no-DST",
+      ],
+    },
+    nameAliases: {
+      Central: ["Central Station"],
+      "Martin Place": ["Martin Place Station"],
+      "International Airport": ["International Airport Station", "Sydney International Airport"],
+      "Domestic Airport": ["Domestic Airport Station", "Sydney Domestic Airport"],
+    },
+    notes: [
+      "Generated from T1–T9 + M1 GTFS fixture — regenerate with scripts/build-line-map.mjs --city=sydney.",
+      "D2: freeze shortTurnGroups empty (§3 line+terminus; do not collapse opposite through-run ends).",
+      "C2: Central, Martin Place, Epping, Chatswood, Sydenham Metro vs Trains must not share stopIds.",
+      "Helensburgh is suppressed (SCO on T4 PDF, out of modes v1).",
+      "D5 labels: line + terminus (T1 Emu Plains). City Circle is not a terminus.",
+    ],
+  },
 };
 
 function parseArgs(argv) {
@@ -130,6 +208,21 @@ function displayStationName(stop) {
   return name.trim();
 }
 
+function indexStopTimesByTrip(staticData) {
+  const byTrip = new Map();
+  for (const times of staticData.stopTimesByStopId.values()) {
+    for (const row of times) {
+      const list = byTrip.get(row.trip_id) ?? [];
+      list.push(row);
+      byTrip.set(row.trip_id, list);
+    }
+  }
+  for (const list of byTrip.values()) {
+    list.sort((a, b) => Number(a.stop_sequence) - Number(b.stop_sequence));
+  }
+  return byTrip;
+}
+
 function normalizeKey(value) {
   return String(value || "")
     .trim()
@@ -146,8 +239,11 @@ function slugify(value) {
 }
 
 function tripPattern(staticData, tripId) {
+  if (staticData.stopTimesByTripId) {
+    return staticData.stopTimesByTripId.get(tripId) ?? [];
+  }
   const rows = [];
-  for (const [stopId, times] of staticData.stopTimesByStopId) {
+  for (const times of staticData.stopTimesByStopId.values()) {
     for (const row of times) {
       if (row.trip_id === tripId) {
         rows.push(row);
@@ -194,6 +290,30 @@ function longestTripPattern(staticData, trips) {
     }
   }
   return best;
+}
+
+function unionStationsForTrips(staticData, trips) {
+  const longest = longestTripPattern(staticData, trips);
+  const seen = new Set(longest.stations.map(normalizeKey));
+  const extra = [];
+  for (const trip of trips) {
+    for (const name of stationsForTrip(staticData, trip.trip_id)) {
+      const key = normalizeKey(name);
+      if (!key || seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      extra.push(name);
+    }
+  }
+  return {
+    tripId: longest.tripId,
+    stations: [...longest.stations, ...extra],
+    longestStations: longest.stations,
+    termini: longest.stations.length
+      ? [longest.stations[0], longest.stations[longest.stations.length - 1]]
+      : [],
+  };
 }
 
 function headsignCounts(trips) {
@@ -277,7 +397,7 @@ function buildLines(staticData, published) {
 
   for (const [shortName, routes] of routesByShortName(staticData)) {
     const trips = tripsForRouteGroup(staticData, routes);
-    const { tripId, stations } = longestTripPattern(staticData, trips);
+    const { tripId, stations, termini, longestStations } = unionStationsForTrips(staticData, trips);
     if (!stations.length) {
       continue;
     }
@@ -288,8 +408,9 @@ function buildLines(staticData, published) {
       name: sampleRoute.route_long_name || shortName,
       routeShortName: shortName,
       tLine: tLineByRoute.get(shortName) ?? null,
-      termini: [stations[0], stations[stations.length - 1]],
+      termini: termini.length ? termini : [stations[0], stations[stations.length - 1]],
       stations,
+      longestStations,
       headsigns: headsignCounts(trips),
       firstLastService: firstLastForTrips(
         staticData,
@@ -410,7 +531,111 @@ function childStopIds(staticData, parentStopId) {
   return [...ids].sort();
 }
 
+function shortNamesForStop(staticData, stopId) {
+  const shorts = new Set();
+  for (const row of staticData.stopTimesByStopId.get(stopId) ?? []) {
+    const trip = staticData.tripsById.get(row.trip_id);
+    const route = trip ? staticData.routesById.get(trip.route_id) : null;
+    const shortName = route?.route_short_name;
+    if (shortName) {
+      shorts.add(shortName);
+    }
+  }
+  return shorts;
+}
+
+function modeForShortNames(shorts) {
+  const names = [...shorts];
+  const metro = names.some((name) => name === "M1");
+  const train = names.some((name) => /^T[1-9]$/.test(name));
+  if (metro && !train) {
+    return "metro";
+  }
+  if (train && !metro) {
+    return "train";
+  }
+  if (metro && train) {
+    return "mixed";
+  }
+  return "train";
+}
+
+function buildServedStopCatalog(staticData, config) {
+  const aliasByCanonical = new Map(Object.entries(config.nameAliases ?? {}));
+  const splitNames = new Set((config.modeSplitNames ?? []).map(normalizeKey));
+  const groups = new Map();
+
+  for (const [stopId] of staticData.stopTimesByStopId) {
+    const stop = staticData.stopsById.get(stopId);
+    if (!stop) {
+      continue;
+    }
+    const rawName = displayStationName(stop);
+    if (!rawName) {
+      continue;
+    }
+    const shorts = shortNamesForStop(staticData, stopId);
+    let mode = modeForShortNames(shorts);
+    if (mode === "mixed") {
+      mode = [...shorts].includes("M1") ? "metro" : "train";
+    }
+
+    let canonicalName = rawName;
+    for (const [canonical, aliases] of aliasByCanonical.entries()) {
+      if (
+        normalizeKey(canonical) === normalizeKey(rawName) ||
+        aliases.some((alias) => normalizeKey(alias) === normalizeKey(rawName))
+      ) {
+        canonicalName = canonical;
+        break;
+      }
+    }
+
+    if (mode === "metro" && splitNames.has(normalizeKey(canonicalName))) {
+      canonicalName = `${canonicalName} Metro`;
+    }
+
+    const key = `${mode}|${normalizeKey(canonicalName)}`;
+    const existing = groups.get(key);
+    if (!existing) {
+      const aliases = new Set(aliasByCanonical.get(canonicalName) ?? []);
+      if (normalizeKey(rawName) !== normalizeKey(canonicalName)) {
+        aliases.add(rawName);
+      }
+      if (canonicalName.endsWith(" Metro")) {
+        aliases.add(`${canonicalName.replace(/ Metro$/, "")} (Metro)`);
+      }
+      groups.set(key, {
+        name: canonicalName,
+        aliases: [...aliases],
+        stopIds: [stopId],
+      });
+      continue;
+    }
+    existing.stopIds = uniquePreserve([...existing.stopIds, stopId]);
+    if (normalizeKey(rawName) !== normalizeKey(existing.name)) {
+      existing.aliases = uniquePreserve([...(existing.aliases ?? []), rawName]);
+    }
+  }
+
+  return {
+    stations: [...groups.values()]
+      .map((station) => ({
+        ...station,
+        aliases: (station.aliases ?? [])
+          .filter((alias) => normalizeKey(alias) !== normalizeKey(station.name))
+          .sort(),
+        stopIds: [...station.stopIds].sort(),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name)),
+  };
+}
+
 function buildStationCatalog(staticData, config, published) {
+  if (config.catalogByServedStop) {
+    return buildServedStopCatalog(staticData, config);
+  }
+
   const aliasByCanonical = new Map(Object.entries(config.nameAliases ?? {}));
   const publishedNames = new Set();
   for (const line of published.lines ?? []) {
@@ -491,10 +716,12 @@ function main() {
   const published = loadPublishedNetwork(config.publishedNetworkPath);
 
   const staticData = loadGtfsStaticFromDirectory(config.fixtureDir, {
-    railOnly: true,
+    railOnly: !config.routeTypes,
+    routeTypes: config.routeTypes ?? null,
     timeZone: config.timeZone,
     sourceUrl: config.fixtureDir,
   });
+  staticData.stopTimesByTripId = indexStopTimesByTrip(staticData);
 
   const lines = buildLines(staticData, published);
   const suppressed = config.suppressedTermini ?? [];
@@ -511,14 +738,14 @@ function main() {
 
   const lineMap = {
     city,
-    source: `GTFS fixture qa/fixtures/brisbane/gtfs (generated ${new Date().toISOString().slice(0, 10)})`,
+    source: `GTFS fixture qa/fixtures/${city}/gtfs (generated ${new Date().toISOString().slice(0, 10)})`,
     publishedOracle: published.source,
-    notes: [
+    notes: config.notes ?? [
       "Generated from rail-only GTFS fixture — regenerate with scripts/build-line-map.mjs.",
       "D2 review (Luke): do not accept any proposedShortTurnGroups. §3 is line+terminus; do not collapse opposite through-run ends.",
       "doNotGroup: accepted Caboolture–Nambour, Caboolture–Gympie North, Doomben–Eagle Junction, Northgate–Shorncliffe. Rejected opposite T1 ends / spine.",
       "H4 doNotGroup: Springfield Central–Ipswich (Darra); Beenleigh–Cleveland and Varsity Lakes–Beenleigh (Boggo Road); Airport vs Shorncliffe / Kippa-Ring / Doomben (Eagle Junction); Kippa-Ring–Caboolture (Petrie).",
-      "Exhibition is suppressed (H3 event-only). D5 direction-label assertions still held.",
+      "Exhibition is suppressed (H3 event-only). D5 labels locked: Central 12 marketing chips (T1 Caboolture/Ipswich; T5 Brisbane Airport).",
       "Station names normalized from GTFS parent stop_name (platform suffix stripped).",
     ],
     shortTurnGroups: review.shortTurnGroups,

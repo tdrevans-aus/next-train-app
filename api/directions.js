@@ -5,9 +5,9 @@ import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { resolveAllowedStation } from "../lib/api-station-allowlist.js";
 import { assertCityLive } from "../lib/providers/registry.js";
 import {
-  getLiveAuDirections,
-  isLiveAuCity,
-  resolveLiveAuStation,
+  getMultiCityDirections,
+  isMultiCity,
+  resolveMultiCityStation,
 } from "../lib/cities/live-city-api.js";
 
 export default async function handler(req, res) {
@@ -30,8 +30,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (isLiveAuCity(city)) {
-    const station = resolveLiveAuStation(city, req.query?.station);
+  if (isMultiCity(city)) {
+    const station = resolveMultiCityStation(city, req.query?.station);
     if (!station) {
       res.status(400).json({
         error: req.query?.station ? "Unknown station" : "Missing station parameter",
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       return;
     }
     try {
-      const pack = getLiveAuDirections(city, station);
+      const pack = getMultiCityDirections(city, station);
       res.status(200).json({ directions: pack.directions, source: pack.source });
     } catch (error) {
       console.error(error);

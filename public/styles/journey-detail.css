@@ -171,7 +171,9 @@
 body.app-dialog-open #ad-container,
 body.app-dialog-open .ad-remove-link-wrap,
 body.widget-setup-active #ad-container,
-body.widget-setup-active .ad-remove-link-wrap {
+body.widget-setup-active .ad-remove-link-wrap,
+body.region-setup-active #ad-container,
+body.region-setup-active .ad-remove-link-wrap {
   visibility: hidden;
   pointer-events: none;
 }
@@ -981,14 +983,16 @@ body.widget-setup-active .ad-remove-link-wrap {
 
 .feedback-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .feedback-actions .btn-primary,
 .feedback-actions .btn-secondary,
 .feedback-thanks .btn-primary {
-  width: 100%;
+  flex: 1 1 8rem;
+  width: auto;
 }
 
 .feedback-thanks {

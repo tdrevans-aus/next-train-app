@@ -4,15 +4,16 @@
  */
 (function () {
   const STORAGE_KEY = "nextTrainDogfoodOrigin";
-  const LIVE_AU_CITIES = ["sydney", "brisbane", "adelaide"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
+  const SETTINGS_KEY = "nextTrainSettings";
   const state = {
     ready: false,
     origin: "",
     city: "",
     stations: [],
     coords: {},
-    available: { sydney: true, brisbane: true, adelaide: true },
+    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true },
   };
 
   async function isDebugNative() {
@@ -97,7 +98,7 @@
   function parseCatalogRows(rows) {
     const stations = [];
     const coords = {};
-    const list = Array.isArray(rows) ? rows : [];
+    const list = Array.isArray(rows) ? rows : (Array.isArray(rows?.stops) ? rows.stops : (Array.isArray(rows?.stations) ? rows.stations : []));
     for (const row of list) {
       const name = typeof row === "string" ? row : row?.name;
       if (!name) {
@@ -131,7 +132,7 @@
 
   async function probe() {
     state.ready = true;
-    for (const city of LIVE_AU_CITIES) {
+    for (const city of MULTI_CITY_IDS) {
       try {
         const catalog = await loadCatalog(city);
         state.available[city] = catalog.stations.length > 0;
@@ -145,10 +146,12 @@
 
   async function mount(city) {
     const id = String(city || "").toLowerCase();
+    console.log(`[NextTrainDogfood] mount(${id})`);
     if (!id) {
       return Boolean(state.active);
     }
-    if (!LIVE_AU_CITIES.includes(id)) {
+    if (!MULTI_CITY_IDS.includes(id)) {
+      console.warn(`[NextTrainDogfood] City not in multi-city list: ${id}`);
       state.active = false;
       state.city = "";
       state.stations = [];
@@ -156,18 +159,22 @@
       return false;
     }
     if (!state.ready) {
+      console.log(`[NextTrainDogfood] probing before mount...`);
       await probe();
     }
     let catalog = state[`${id}Catalog`];
     if (!catalog?.stations?.length) {
       try {
+        console.log(`[NextTrainDogfood] loading catalog for ${id}...`);
         catalog = await loadCatalog(id);
         state[`${id}Catalog`] = catalog;
-      } catch {
+      } catch (error) {
+        console.error(`[NextTrainDogfood] Failed to load catalog for ${id}:`, error);
         catalog = null;
       }
     }
     if (!catalog?.stations?.length) {
+      console.error(`[NextTrainDogfood] No stations found for ${id}`);
       state.active = false;
       state.city = "";
       return false;
@@ -176,6 +183,7 @@
     state.stations = catalog.stations;
     state.coords = catalog.coords;
     state.active = true;
+    console.log(`[NextTrainDogfood] city mounted: ${id} (${catalog.stations.length} stations)`);
     window.nextTrainStationCombobox?.replaceStationsCache?.(catalog.stations);
     return true;
   }
@@ -197,7 +205,7 @@
     getOrigin: () => state.origin,
     getStations: () => state.stations,
     getCoords: () => state.coords,
-    isCityAvailable: (city) => LIVE_AU_CITIES.includes(String(city || "").toLowerCase()),
+    isCityAvailable: (city) => MULTI_CITY_IDS.includes(String(city || "").toLowerCase()),
     applyParams(params) {
       if (state.active && state.city) {
         params.set("city", state.city);

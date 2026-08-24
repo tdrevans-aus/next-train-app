@@ -22,11 +22,11 @@ import { applyCors } from "./lib/api-cors.js";
 import { isCityProbeAllowed, fetchDevCityBoard } from "./lib/dev-city-board.js";
 import { loadEnvLocal } from "./lib/load-env-local.js";
 import {
-  getLiveAuDirections,
-  getLiveAuNextTrain,
-  isLiveAuCity,
-  listLiveAuStations,
-  resolveLiveAuStation,
+  getMultiCityDirections,
+  getMultiCityNextTrain,
+  isMultiCity,
+  listMultiCityStations,
+  resolveMultiCityStation,
 } from "./lib/cities/live-city-api.js";
 
 loadEnvLocal();
@@ -69,8 +69,8 @@ function readQueryParams(query) {
   };
 }
 
-function isLiveAuCityRequest(query = {}) {
-  return isLiveAuCity(String(query.city || "").toLowerCase());
+function isMultiCityRequest(query = {}) {
+  return isMultiCity(String(query.city || "").toLowerCase());
 }
 
 function readFixtureId(query) {
@@ -150,14 +150,14 @@ app.get("/api/next-train", async (req, res) => {
     return;
   }
 
-  if (isLiveAuCityRequest(req.query)) {
-    const station = resolveLiveAuStation(config.city, config.station);
+  if (isMultiCityRequest(req.query)) {
+    const station = resolveMultiCityStation(config.city, config.station);
     if (!station) {
       res.status(400).json({ error: "Unknown station" });
       return;
     }
     try {
-      const data = await getLiveAuNextTrain(config.city, { ...config, station });
+      const data = await getMultiCityNextTrain(config.city, { ...config, station });
       res.json(data);
     } catch (error) {
       console.error(error);
@@ -218,15 +218,15 @@ app.get("/api/directions", async (req, res) => {
     return;
   }
 
-  if (isLiveAuCityRequest(req.query)) {
-    const station = resolveLiveAuStation(req.query.city, req.query.station);
+  if (isMultiCityRequest(req.query)) {
+    const station = resolveMultiCityStation(req.query.city, req.query.station);
     if (!station) {
       res.status(400).json({
         error: req.query.station ? "Unknown station" : "Missing station parameter",
       });
       return;
     }
-    const pack = getLiveAuDirections(req.query.city, station);
+    const pack = getMultiCityDirections(req.query.city, station);
     res.json({ directions: pack.directions, source: pack.source });
     return;
   }
@@ -270,15 +270,15 @@ app.get("/api/destinations", async (req, res) => {
     return;
   }
 
-  if (isLiveAuCityRequest(req.query)) {
-    const station = resolveLiveAuStation(req.query.city, req.query.station);
+  if (isMultiCityRequest(req.query)) {
+    const station = resolveMultiCityStation(req.query.city, req.query.station);
     if (!station) {
       res.status(400).json({
         error: req.query.station ? "Unknown station" : "Missing station parameter",
       });
       return;
     }
-    const pack = getLiveAuDirections(req.query.city, station);
+    const pack = getMultiCityDirections(req.query.city, station);
     res.json({ destinations: pack.directions, source: pack.source });
     return;
   }
@@ -374,12 +374,12 @@ app.get("/api/city-stations", (req, res) => {
     return;
   }
 
-  if (!isLiveAuCity(city)) {
-    res.status(400).json({ error: "Station catalog only available for Sydney, Brisbane, and Adelaide" });
+  if (!isMultiCity(city)) {
+    res.status(400).json({ error: "Station catalog only available for Sydney, Brisbane, Adelaide, and London" });
     return;
   }
 
-  const stations = listLiveAuStations(city).map((entry) => ({
+  const stations = listMultiCityStations(city).map((entry) => ({
     name: entry.name,
     lat: entry.lat ?? null,
     lng: entry.lng ?? null,

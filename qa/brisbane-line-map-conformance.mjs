@@ -2,8 +2,8 @@
  * D5 — Offline Brisbane line-map conformance (published map vs GTFS line-map).
  * Usage: node qa/brisbane-line-map-conformance.mjs
  *
- * Label assertions (LABEL_EXPECTATIONS) stay empty until Tim clears D5 labels.
- * Topology invariants C1–C7 run now.
+ * LABEL_EXPECTATIONS locked (Luke, 2026-08-22): Central = 12 marketing chips
+ * (T1–T6 × two ends). Nests are not extra Central chips. Exhibition suppressed.
  */
 import { readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -14,12 +14,43 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
 /**
- * §3 line+terminus expectations — held.
- * Fill this table when Tim clears D5 labels. Rows are not asserted while empty.
+ * Marketing ends for line+terminus chips — not GTFS far termini.
+ * T1 nests (Rosewood, Nambour, Gympie North) are not extra Central chips.
+ * T5 chip is "Brisbane Airport", not Domestic/International split.
+ */
+const MARKETING_ENDS = {
+  T1: ["Caboolture", "Ipswich"],
+  T2: ["Kippa-Ring", "Springfield Central"],
+  T3: ["Doomben", "Roma Street"],
+  T4: ["Cleveland", "Shorncliffe"],
+  T5: ["Brisbane Airport", "Varsity Lakes"],
+  T6: ["Beenleigh", "Ferny Grove"],
+};
+
+const SUPPRESSED_LABEL_ENDS = ["Exhibition"];
+
+/**
+ * Locked Central chips (Luke). Other stations inherit MARKETING_ENDS via C7.
  * @type {Array<{ station: string, labels: string[] }>}
  */
 const LABEL_EXPECTATIONS = [
-  // { station: "Central", labels: ["T6 towards Beenleigh", "T6 towards Ferny Grove", ...] },
+  {
+    station: "Central",
+    labels: [
+      "T1 towards Caboolture",
+      "T1 towards Ipswich",
+      "T2 towards Kippa-Ring",
+      "T2 towards Springfield Central",
+      "T3 towards Doomben",
+      "T3 towards Roma Street",
+      "T4 towards Cleveland",
+      "T4 towards Shorncliffe",
+      "T5 towards Brisbane Airport",
+      "T5 towards Varsity Lakes",
+      "T6 towards Beenleigh",
+      "T6 towards Ferny Grove",
+    ],
+  },
 ];
 
 const H6_STATIONS = [
@@ -32,7 +63,7 @@ const H6_STATIONS = [
   "Boggo Road",
 ];
 
-/** Line+terminus ceiling after collapse. Central is the canary (6 T-lines × 2 far ends). */
+/** Line+terminus ceiling after collapse. Central is 12 marketing chips (T1–T6 × 2). */
 const DIRECTION_CEILING = 12;
 
 const NAME_ALIASES = {
@@ -258,7 +289,10 @@ function lineLabelsForStation(published, station) {
     } else if (!onLine) {
       continue;
     }
-    for (const terminus of line.termini ?? []) {
+    for (const terminus of MARKETING_ENDS[line.number] ?? line.termini ?? []) {
+      if (SUPPRESSED_LABEL_ENDS.some((name) => normalizeKey(name) === normalizeKey(terminus))) {
+        continue;
+      }
       if (normalizeKey(terminus) === stationKey) {
         continue;
       }
@@ -281,8 +315,8 @@ function main() {
   const failures = [];
 
   const liveGate = assertCityLive("brisbane");
-  if (!liveGate || liveGate.ok !== false) {
-    failures.push("C0: assertCityLive(brisbane) must still fail (city stays planned)");
+  if (!liveGate || liveGate.ok !== true) {
+    failures.push("C0: assertCityLive(brisbane) must pass (city is live)");
   }
 
   const gtfsCodes = new Set((lineMap.lines ?? []).map((line) => line.routeShortName));
@@ -424,7 +458,7 @@ function main() {
   }
 
   console.log("brisbane-line-map-conformance: ok");
-  console.log(`  C1–C7 passed. LABEL_EXPECTATIONS held (${LABEL_EXPECTATIONS.length} rows).`);
+  console.log(`  C1–C7 passed. LABEL_EXPECTATIONS ${LABEL_EXPECTATIONS.length} station(s).`);
   console.log(`  Central labels (${lineLabelsForStation(published, "Central").length}): ${lineLabelsForStation(published, "Central").join("; ")}`);
 }
 
