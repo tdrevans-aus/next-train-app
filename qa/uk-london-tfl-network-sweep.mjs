@@ -10,11 +10,16 @@ import { loadEnvLocal } from "../lib/load-env-local.js";
 loadEnvLocal();
 
 const STOPS = [
-  { name: "King's Cross St. Pancras Underground Station", mode: "tube" },
+  { name: "King's Cross St. Pancras", mode: "tube" },
   { name: "Tottenham Court Road", mode: "elizabeth-line" },
-  { name: "Canary Wharf DLR Station", mode: "dlr" },
-  { name: "Highbury & Islington Rail Station", mode: "overground" },
-  { name: "Beckenham Junction Tram Stop", mode: "tram" },
+  { name: "Canary Wharf", mode: "dlr" },
+  { name: "Highbury & Islington", mode: "overground" },
+  { name: "Beckenham Junction", mode: "tram" },
+  {
+    name: "Kew Gardens",
+    mode: "tube+overground",
+    requireLines: ["District", "Mildmay"],
+  },
 ];
 
 async function main() {
@@ -26,15 +31,25 @@ async function main() {
       const board = await fetchStopBoard(stop.name);
       const tripCount = board.trips.length;
       console.log(`  PASS ${stop.name} (${stop.mode}): ${tripCount} trips`);
+
       if (tripCount === 0) {
         console.warn(`    WARN: No trips found for ${stop.name}. Is it late at night?`);
+        continue;
+      }
+
+      const lines = [...new Set(board.trips.map((t) => t.line).filter(Boolean))];
+      if (lines.length > 0) {
+        console.log(`    Lines: ${lines.join(", ")}`);
       } else {
-        // Check for line name filling as requested
-        const lines = [...new Set(board.trips.map(t => t.line).filter(Boolean))];
-        if (lines.length > 0) {
-          console.log(`    Lines: ${lines.join(", ")}`);
-        } else {
-          console.warn(`    WARN: No line names found in trips for ${stop.name}`);
+        console.warn(`    WARN: No line names found in trips for ${stop.name}`);
+      }
+
+      if (stop.requireLines) {
+        for (const req of stop.requireLines) {
+          if (!lines.includes(req)) {
+            console.error(`  FAIL ${stop.name}: Missing required line ${req}`);
+            failures++;
+          }
         }
       }
     } catch (error) {
