@@ -1,0 +1,274 @@
+{
+  "source": "https://tfl.gov.uk/maps/track/tube",
+  "retrievedAt": "2026-08-24",
+  "linePages": {
+    "tube-map": "https://tfl.gov.uk/maps/track/tube",
+    "overground": "https://tfl.gov.uk/modes/london-overground/the-new-look-london-overground",
+    "elizabeth": "https://tfl.gov.uk/modes/elizabeth-line/",
+    "dlr": "https://tfl.gov.uk/modes/dlr/",
+    "trams": "https://tfl.gov.uk/modes/trams/"
+  },
+  "notes": [
+    "Hand-locked from TfL published maps / What we do / Overground six-name launch (28 Nov 2024). Never generate chips from GTFS or compass.",
+    "Modes v1: tube, elizabeth-line, dlr, overground, tram. No buses, no NR-only.",
+    "\u00a73 chips are line + terminus. Circle is a loop, not a terminus chip (same rule as Sydney City Circle).",
+    "Overground line ids: lioness, mildmay, windrush, weaver, suffragette, liberty.",
+    "Shared complexes (Paddington LU vs Elizabeth, King's Cross children) stay separate StopPoints. Do not merge NR into this oracle.",
+    "Short workings nest under the published terminus (see shortTurns). Do not promote a short as a primary chip.",
+    "Station lists below are termini and published ends for chips, not a substitute for stops.json."
+  ],
+  "chipRule": "lineName + ' ' + terminus",
+  "bannedChips": [
+    "Northbound",
+    "Southbound",
+    "Eastbound",
+    "Westbound",
+    "All trains"
+  ],
+  "lines": [
+    {
+      "id": "bakerloo",
+      "name": "Bakerloo",
+      "mode": "tube",
+      "termini": [
+        "Harrow & Wealdstone",
+        "Elephant & Castle"
+      ],
+      "shortTurns": {
+        "Harrow & Wealdstone": [
+          "Queen's Park",
+          "Stonebridge Park"
+        ]
+      }
+    },
+    {
+      "id": "central",
+      "name": "Central",
+      "mode": "tube",
+      "termini": [
+        "West Ruislip",
+        "Ealing Broadway",
+        "Epping"
+      ],
+      "shortTurns": {
+        "Epping": [
+          "Loughton",
+          "Hainault"
+        ],
+        "West Ruislip": [
+          "Northolt"
+        ]
+      }
+    },
+    {
+      "id": "circle",
+      "name": "Circle",
+      "mode": "tube",
+      "termini": [],
+      "loop": true,
+      "notes": "No terminus chip. Arrivals still show."
+    },
+    {
+      "id": "district",
+      "name": "District",
+      "mode": "tube",
+      "termini": [
+        "Upminster",
+        "Richmond",
+        "Ealing Broadway",
+        "Wimbledon"
+      ],
+      "shortTurns": {
+        "Upminster": [
+          "Barking"
+        ],
+        "Ealing Broadway": [
+          "Kensington (Olympia)"
+        ]
+      }
+    },
+    {
+      "id": "hammersmith-city",
+      "name": "Hammersmith & City",
+      "mode": "tube",
+      "termini": [
+        "Hammersmith",
+        "Barking"
+      ]
+    },
+    {
+      "id": "jubilee",
+      "name": "Jubilee",
+      "mode": "tube",
+      "termini": [
+        "Stanmore",
+        "Stratford"
+      ]
+    },
+    {
+      "id": "metropolitan",
+      "name": "Metropolitan",
+      "mode": "tube",
+      "termini": [
+        "Aldgate",
+        "Amersham",
+        "Chesham",
+        "Watford",
+        "Uxbridge"
+      ]
+    },
+    {
+      "id": "northern",
+      "name": "Northern",
+      "mode": "tube",
+      "termini": [
+        "Edgware",
+        "High Barnet",
+        "Mill Hill East",
+        "Morden"
+      ],
+      "notes": "Via Bank and via Charing Cross are the same Morden chip until we lock via-labels."
+    },
+    {
+      "id": "piccadilly",
+      "name": "Piccadilly",
+      "mode": "tube",
+      "termini": [
+        "Cockfosters",
+        "Heathrow Terminal 4",
+        "Heathrow Terminal 5",
+        "Uxbridge"
+      ],
+      "shortTurns": {
+        "Heathrow Terminal 5": [
+          "Heathrow Terminals 2 & 3"
+        ],
+        "Uxbridge": [
+          "Rayners Lane"
+        ]
+      }
+    },
+    {
+      "id": "victoria",
+      "name": "Victoria",
+      "mode": "tube",
+      "termini": [
+        "Walthamstow Central",
+        "Brixton"
+      ],
+      "shortTurns": {
+        "Walthamstow Central": [
+          "Seven Sisters",
+          "Blackhorse Road"
+        ]
+      }
+    },
+    {
+      "id": "waterloo-city",
+      "name": "Waterloo & City",
+      "mode": "tube",
+      "termini": [
+        "Waterloo",
+        "Bank"
+      ]
+    },
+    {
+      "id": "elizabeth",
+      "name": "Elizabeth",
+      "mode": "elizabeth-line",
+      "termini": [
+        "Reading",
+        "Heathrow Terminal 4",
+        "Heathrow Terminal 5",
+        "Abbey Wood",
+        "Shenfield"
+      ]
+    },
+    {
+      "id": "dlr",
+      "name": "DLR",
+      "mode": "dlr",
+      "termini": [
+        "Bank",
+        "Tower Gateway",
+        "Stratford",
+        "Stratford International",
+        "Beckton",
+        "Woolwich Arsenal",
+        "Lewisham"
+      ]
+    },
+    {
+      "id": "lioness",
+      "name": "Lioness",
+      "mode": "overground",
+      "termini": [
+        "Euston",
+        "Watford Junction"
+      ]
+    },
+    {
+      "id": "mildmay",
+      "name": "Mildmay",
+      "mode": "overground",
+      "termini": [
+        "Stratford",
+        "Richmond",
+        "Clapham Junction"
+      ]
+    },
+    {
+      "id": "windrush",
+      "name": "Windrush",
+      "mode": "overground",
+      "termini": [
+        "Highbury & Islington",
+        "New Cross",
+        "Clapham Junction",
+        "Crystal Palace",
+        "West Croydon"
+      ]
+    },
+    {
+      "id": "weaver",
+      "name": "Weaver",
+      "mode": "overground",
+      "termini": [
+        "Liverpool Street",
+        "Enfield Town",
+        "Cheshunt",
+        "Chingford"
+      ]
+    },
+    {
+      "id": "suffragette",
+      "name": "Suffragette",
+      "mode": "overground",
+      "termini": [
+        "Gospel Oak",
+        "Barking Riverside"
+      ]
+    },
+    {
+      "id": "liberty",
+      "name": "Liberty",
+      "mode": "overground",
+      "termini": [
+        "Romford",
+        "Upminster"
+      ]
+    },
+    {
+      "id": "tram",
+      "name": "Tram",
+      "mode": "tram",
+      "termini": [
+        "Wimbledon",
+        "New Addington",
+        "Beckenham Junction",
+        "Elmers End",
+        "West Croydon"
+      ]
+    }
+  ]
+}
