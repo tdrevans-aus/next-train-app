@@ -6328,6 +6328,22 @@ function getPerthMinutesSinceMidnight(date) {
   }
   return journeyModel().getPerthMinutesSinceMidnight(date);
 }
+function readTestDayFromUrl() {
+  if (!isTestMode()) {
+    return null;
+  }
+  const params = new URLSearchParams(window.location.search);
+  const day = params.get("day");
+  return day != null ? Number(day) : null;
+}
+
+function getPerthDayOfWeekIso() {
+  const testDay = readTestDayFromUrl();
+  if (testDay != null) {
+    return testDay;
+  }
+  return journeyModel().getPerthDayOfWeekIso();
+}
 function getPerthLocalDateKey(date) { return journeyModel().getPerthLocalDateKey(date); }
 function hasDefaultWindow(journey) { return journeyModel().hasDefaultWindow(journey); }
 function parseTimeToMinutes(time) { return journeyModel().parseTimeToMinutes(time); }
