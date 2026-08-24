@@ -483,7 +483,7 @@ function pickSavedCityFields(raw = {}) {
   const city = String(raw.savedCity ?? "").trim().toLowerCase();
   const country = String(raw.savedCountry ?? "").trim().toLowerCase();
   const out = {};
-  if (city === "perth" || city === "sydney" || city === "brisbane" || city === "adelaide") {
+  if (city === "perth" || city === "sydney" || city === "brisbane" || city === "adelaide" || city === "uk-london-tfl") {
     out.savedCity = city;
   }
   if (country === "au" || country === "gb") {
@@ -491,6 +491,10 @@ function pickSavedCityFields(raw = {}) {
   }
   if (raw.regionExplicit === true) {
     out.regionExplicit = true;
+  }
+  const mismatch = String(raw.regionMismatchDismissed ?? "").trim();
+  if (mismatch) {
+    out.regionMismatchDismissed = mismatch;
   }
   return out;
 }

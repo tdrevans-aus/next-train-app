@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const LIVE_AU_CITIES = ["sydney", "brisbane", "adelaide"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -36,6 +36,7 @@
     perth: { minLat: -32.8, maxLat: -31.4, minLng: 115.55, maxLng: 116.25 },
     brisbane: { minLat: -28.2, maxLat: -27.0, minLng: 152.6, maxLng: 153.6 },
     adelaide: { minLat: -35.3, maxLat: -34.55, minLng: 138.35, maxLng: 138.85 },
+    "uk-london-tfl": { minLat: 51.28, maxLat: 51.7, minLng: -0.52, maxLng: 0.35 },
   };
 
   function dogfood() {
@@ -119,6 +120,121 @@
 
   function firstOpenRegion(countryId) {
     return countryById(countryId).regions.find((region) => isRegionOpen(region)) ?? null;
+  }
+
+  function readRegionMismatchDismissed() {
+    return String(readStore().regionMismatchDismissed || "");
+  }
+
+  function dismissRegionMismatch(savedCity, detectedCity) {
+    const patch = {
+      regionMismatchDismissed: `${savedCity}>${detectedCity}`,
+    };
+    const persist = window.nextTrainJourneyModel?.persistSettings;
+    if (typeof persist === "function") {
+      persist(patch);
+      return;
+    }
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...readStore(), ...patch }));
+  }
+
+  function clearRegionMismatchDismissed() {
+    const persist = window.nextTrainJourneyModel?.persistSettings;
+    if (typeof persist === "function") {
+      persist({ regionMismatchDismissed: "" });
+      return;
+    }
+    const store = readStore();
+    delete store.regionMismatchDismissed;
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(store));
+  }
+
+  function bindRegionMismatchDialog() {
+    const dialog = document.getElementById("region-mismatch-dialog");
+    const body = document.getElementById("region-mismatch-dialog-body");
+    const switchBtn = document.getElementById("region-mismatch-switch-btn");
+    const keepBtn = document.getElementById("region-mismatch-keep-btn");
+    if (!dialog || !body || !switchBtn || !keepBtn) {
+      return;
+    }
+
+    let pending = null;
+
+    function closeDialog() {
+      window.nextTrainApp?.closeAppDialog?.(dialog);
+      pending = null;
+    }
+
+    switchBtn.addEventListener("click", () => {
+      const next = pending;
+      closeDialog();
+      if (next?.detectedCity) {
+        clearRegionMismatchDismissed();
+        void applyCity(next.detectedCity, { persist: true, explicit: true });
+      }
+    });
+
+    keepBtn.addEventListener("click", () => {
+      const next = pending;
+      closeDialog();
+      if (next?.savedCity && next?.detectedCity) {
+        dismissRegionMismatch(next.savedCity, next.detectedCity);
+      }
+    });
+
+    dialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      const next = pending;
+      closeDialog();
+      if (next?.savedCity && next?.detectedCity) {
+        dismissRegionMismatch(next.savedCity, next.detectedCity);
+      }
+    });
+
+    return {
+      open(savedCity, detectedCity) {
+        pending = { savedCity, detectedCity };
+        const savedLabel = regionDisplayName(savedCity);
+        const detectedLabel = regionDisplayName(detectedCity);
+        body.textContent = `Your location looks like ${detectedLabel}, but the app is set to ${savedLabel}. Switch region?`;
+        switchBtn.textContent = `Switch to ${detectedLabel}`;
+        keepBtn.textContent = `Keep ${savedLabel}`;
+        window.nextTrainApp?.openAppDialog?.(dialog);
+      },
+    };
+  }
+
+  let regionMismatchDialog = null;
+
+  async function maybePromptRegionMismatch({ locateCity, skip } = {}) {
+    if (skip) {
+      return false;
+    }
+    if (!readRegionExplicit()) {
+      return false;
+    }
+    const savedCity = readSavedCity() || LIVE_CITY;
+    const locate = locateCity || geolocateHint;
+    const detectedCity = await locate();
+    if (!detectedCity || detectedCity === savedCity) {
+      return false;
+    }
+    const detectedRegion = regionById(detectedCity)?.region;
+    if (!isRegionOpen(detectedRegion)) {
+      return false;
+    }
+    const pairKey = `${savedCity}>${detectedCity}`;
+    if (readRegionMismatchDismissed() === pairKey) {
+      return false;
+    }
+    if (!regionMismatchDialog) {
+      regionMismatchDialog = bindRegionMismatchDialog();
+    }
+    if (!regionMismatchDialog) {
+      return false;
+    }
+    regionMismatchDialog.open(savedCity, detectedCity);
+    return true;
   }
 
   async function geolocateHint() {
@@ -236,7 +352,7 @@
       city = LIVE_CITY;
     }
     const dogfoodApi = dogfood();
-    if (LIVE_AU_CITIES.includes(city)) {
+    if (MULTI_CITY_IDS.includes(city)) {
       const ok = await dogfoodApi?.mount?.(city);
       if (!ok) {
         return false;
@@ -257,6 +373,9 @@
         country: match?.country.id || "au",
         explicit: explicit || readRegionExplicit(),
       });
+    }
+    if (explicit) {
+      clearRegionMismatchDismissed();
     }
     window.nextTrainApp?.clearLastNearbyStationCache?.();
     document.dispatchEvent(
@@ -343,6 +462,10 @@
     readSavedCity,
     readSavedCountry,
     readRegionExplicit,
+    hintCityFromCoords,
+    geolocateHint,
+    maybePromptRegionMismatch,
+    regionDisplayName,
     markRegionExplicit() {
       const city = readSavedCity() || LIVE_CITY;
       persistRegion({
@@ -356,7 +479,7 @@
     closeRegionScreen,
     COUNTRIES,
     LIVE_CITY,
-    LIVE_AU_CITIES,
+    MULTI_CITY_IDS,
     VERCEL_ORIGIN,
   };
 })();

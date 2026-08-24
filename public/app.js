@@ -4254,6 +4254,30 @@ function readActiveCity() {
     .toLowerCase();
 }
 
+async function locateCityFromPosition() {
+  try {
+    const position = await getAppGeolocationPosition({
+      timeout: 8000,
+      maximumAge: 300000,
+    });
+    return (
+      window.NextTrainCitySession?.hintCityFromCoords?.(
+        position.coords.latitude,
+        position.coords.longitude
+      ) ?? null
+    );
+  } catch {
+    return null;
+  }
+}
+
+function scheduleRegionMismatchPrompt() {
+  void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
+    skip: isTestMode(),
+    locateCity: locateCityFromPosition,
+  });
+}
+
 function testModeNearestStation() {
   if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
     const city = String(window.NextTrainBrisbaneDogfood.getCity?.() || "").toLowerCase();
@@ -6180,6 +6204,7 @@ async function init() {
     void maybeSyncLeaveAlarmFromNative();
   }
   void window.NextTrainBrisbaneDogfood?.mount?.();
+  scheduleRegionMismatchPrompt();
 }
 
 
