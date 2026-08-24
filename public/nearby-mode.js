@@ -1986,6 +1986,16 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   const next = boardData?.next ?? null;
   setRouteDisplay(formatNearbyRouteLine());
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = boardData?.regionId || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   if (deps.updatedEl) {
     if (nearbySession?.refineNotice) {
       deps.updatedEl.textContent = nearbySession.refineNotice;
@@ -2056,7 +2066,8 @@ function renderNearbyBoard({ stale = false } = {}) {
     renderDepartureCountdown(deps.departCountdownEl, next);
   }
   if (deps.departDisplayTimeEl) {
-    deps.departDisplayTimeEl.textContent = `${next.displayTime} · towards ${focusedEntry.direction}`;
+    const linePart = next.line ? `${next.line} · ` : "";
+    deps.departDisplayTimeEl.textContent = `${next.displayTime} · ${linePart}towards ${focusedEntry.direction}`;
   }
 
   const scheduledLine = formatHeroScheduledLine(next);

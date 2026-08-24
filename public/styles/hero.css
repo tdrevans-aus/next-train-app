@@ -955,6 +955,15 @@
   line-height: 1.2;
 }
 
+.attribution {
+  margin: 0.15rem 0 0;
+  text-align: center;
+  font-size: 0.62rem;
+  color: var(--muted);
+  opacity: 0.8;
+  line-height: 1.2;
+}
+
 .error {
   text-align: center;
   color: var(--bad);

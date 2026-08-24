@@ -1,0 +1,32 @@
+{
+  "country": "gb",
+  "countryName": "England",
+  "timeZone": "Europe/London",
+  "notes": [
+    "Region ids per docs/uk-architecture.md. No city=uk dump.",
+    "Registry entries stay planned until Tim flips live."
+  ],
+  "regions": [
+    {
+      "id": "uk-west-midlands",
+      "name": "West Midlands",
+      "catalogPath": "../../cities/uk-west-midlands/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "tfwm-gtfs-rt" }
+    },
+    {
+      "id": "uk-ellesmere-port",
+      "name": "Ellesmere Port corridor",
+      "catalogPath": "../../cities/uk-ellesmere-port/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "uk-london-tfl",
+      "name": "London TfL",
+      "catalogPath": "../../cities/uk-london-tfl/stops.json",
+      "modes": ["tube", "elizabeth-line", "dlr", "overground", "tram"],
+      "feeds": { "tfl": "unified-api" }
+    }
+  ]
+}

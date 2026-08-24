@@ -3479,6 +3479,16 @@ function renderRouteJourney(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = journey?.cityId || lastApiData?.config?.city || data?.config?.city || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -3554,7 +3564,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     renderDepartureCountdown(departCountdownEl, heroTrip);
   }
   if (departDisplayTimeEl) {
-    departDisplayTimeEl.textContent = heroTrip.displayTime;
+    departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(heroTrip);
@@ -3624,6 +3634,16 @@ function render(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = journey?.cityId || lastApiData?.config?.city || data?.config?.city || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -3813,7 +3833,7 @@ function render(data, { stale = false } = {}) {
     }
   }
   if (departDisplayTimeEl) {
-    departDisplayTimeEl.textContent = heroTrip.displayTime;
+    departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
   }
 
   const scheduledLine = formatHeroScheduledLine(heroTrip);
@@ -3886,6 +3906,16 @@ function renderRefreshErrorState() {
 
   const journey = getActiveJourney();
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+  const attributionEl = document.getElementById("attribution");
+  if (attributionEl) {
+    const cityId = journey?.cityId || lastApiData?.config?.city || "perth";
+    if (cityId === "uk-london-tfl") {
+      attributionEl.textContent = "Powered by TfL Open Data";
+      attributionEl.hidden = false;
+    } else {
+      attributionEl.hidden = true;
+    }
+  }
   updatedEl.textContent = "Update failed";
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {

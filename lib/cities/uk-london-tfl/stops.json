@@ -1,0 +1,7517 @@
+{
+  "region": "uk-london-tfl",
+  "displayName": "London TfL",
+  "timeZone": "Europe/London",
+  "source": "TfL Unified API Line/StopPoints",
+  "retrievedAt": "2026-08-24",
+  "feeds": {
+    "tfl": "unified-api"
+  },
+  "modes": [
+    "tube",
+    "elizabeth-line",
+    "dlr",
+    "overground",
+    "tram"
+  ],
+  "notInRegion": [
+    "bus",
+    "river-bus",
+    "coach",
+    "national-rail-only"
+  ],
+  "stopCount": 575,
+  "stops": [
+    {
+      "name": "Baker Street Underground Station",
+      "naptanId": "940GZZLUBST",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.522883,
+      "lng": -0.15713,
+      "aliases": []
+    },
+    {
+      "name": "Charing Cross Underground Station",
+      "naptanId": "940GZZLUCHX",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.50741,
+      "lng": -0.127277,
+      "aliases": []
+    },
+    {
+      "name": "Elephant & Castle Underground Station",
+      "naptanId": "940GZZLUEAC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.494536,
+      "lng": -0.100606,
+      "aliases": []
+    },
+    {
+      "name": "Embankment Underground Station",
+      "naptanId": "940GZZLUEMB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.507058,
+      "lng": -0.122666,
+      "aliases": []
+    },
+    {
+      "name": "Edgware Road (Bakerloo) Underground Station",
+      "naptanId": "940GZZLUERB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.520299,
+      "lng": -0.17015,
+      "aliases": []
+    },
+    {
+      "name": "Harrow & Wealdstone Underground Station",
+      "naptanId": "940GZZLUHAW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.592268,
+      "lng": -0.335217,
+      "aliases": []
+    },
+    {
+      "name": "Harlesden Underground Station",
+      "naptanId": "940GZZLUHSN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.53631,
+      "lng": -0.257883,
+      "aliases": []
+    },
+    {
+      "name": "Kenton Underground Station",
+      "naptanId": "940GZZLUKEN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.581756,
+      "lng": -0.31691,
+      "aliases": []
+    },
+    {
+      "name": "Kilburn Park Underground Station",
+      "naptanId": "940GZZLUKPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.534979,
+      "lng": -0.194232,
+      "aliases": []
+    },
+    {
+      "name": "Kensal Green Underground Station",
+      "naptanId": "940GZZLUKSL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.530539,
+      "lng": -0.225016,
+      "aliases": []
+    },
+    {
+      "name": "Lambeth North Underground Station",
+      "naptanId": "940GZZLULBN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.498808,
+      "lng": -0.112315,
+      "aliases": []
+    },
+    {
+      "name": "Maida Vale Underground Station",
+      "naptanId": "940GZZLUMVL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.529777,
+      "lng": -0.185758,
+      "aliases": []
+    },
+    {
+      "name": "Marylebone Underground Station",
+      "naptanId": "940GZZLUMYB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.522322,
+      "lng": -0.163207,
+      "aliases": []
+    },
+    {
+      "name": "North Wembley Underground Station",
+      "naptanId": "940GZZLUNWY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.562551,
+      "lng": -0.304,
+      "aliases": []
+    },
+    {
+      "name": "Oxford Circus Underground Station",
+      "naptanId": "940GZZLUOXC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.515224,
+      "lng": -0.141903,
+      "aliases": []
+    },
+    {
+      "name": "Paddington Underground Station",
+      "naptanId": "940GZZLUPAC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.516581,
+      "lng": -0.175689,
+      "aliases": []
+    },
+    {
+      "name": "Piccadilly Circus Underground Station",
+      "naptanId": "940GZZLUPCC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.51005,
+      "lng": -0.133798,
+      "aliases": []
+    },
+    {
+      "name": "Queen's Park Underground Station",
+      "naptanId": "940GZZLUQPS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.534158,
+      "lng": -0.204574,
+      "aliases": []
+    },
+    {
+      "name": "Regent's Park Underground Station",
+      "naptanId": "940GZZLURGP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.523344,
+      "lng": -0.146444,
+      "aliases": []
+    },
+    {
+      "name": "Stonebridge Park Underground Station",
+      "naptanId": "940GZZLUSGP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.543959,
+      "lng": -0.275892,
+      "aliases": []
+    },
+    {
+      "name": "South Kenton Underground Station",
+      "naptanId": "940GZZLUSKT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.570232,
+      "lng": -0.308433,
+      "aliases": []
+    },
+    {
+      "name": "Willesden Junction Underground Station",
+      "naptanId": "940GZZLUWJN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.532259,
+      "lng": -0.244283,
+      "aliases": []
+    },
+    {
+      "name": "Warwick Avenue Underground Station",
+      "naptanId": "940GZZLUWKA",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.523263,
+      "lng": -0.183783,
+      "aliases": []
+    },
+    {
+      "name": "Waterloo Underground Station",
+      "naptanId": "940GZZLUWLO",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.503299,
+      "lng": -0.11478,
+      "aliases": []
+    },
+    {
+      "name": "Wembley Central Underground Station",
+      "naptanId": "940GZZLUWYC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Bakerloo"
+      ],
+      "lat": 51.552304,
+      "lng": -0.296852,
+      "aliases": []
+    },
+    {
+      "name": "Barkingside Underground Station",
+      "naptanId": "940GZZLUBKE",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.585689,
+      "lng": 0.088585,
+      "aliases": []
+    },
+    {
+      "name": "Buckhurst Hill Underground Station",
+      "naptanId": "940GZZLUBKH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.626605,
+      "lng": 0.046757,
+      "aliases": []
+    },
+    {
+      "name": "Bethnal Green Underground Station",
+      "naptanId": "940GZZLUBLG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.527222,
+      "lng": -0.055506,
+      "aliases": []
+    },
+    {
+      "name": "Bond Street Underground Station",
+      "naptanId": "940GZZLUBND",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.514304,
+      "lng": -0.149723,
+      "aliases": []
+    },
+    {
+      "name": "Bank Underground Station",
+      "naptanId": "940GZZLUBNK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.513356,
+      "lng": -0.088899,
+      "aliases": []
+    },
+    {
+      "name": "Chancery Lane Underground Station",
+      "naptanId": "940GZZLUCHL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.518247,
+      "lng": -0.111583,
+      "aliases": []
+    },
+    {
+      "name": "Chigwell Underground Station",
+      "naptanId": "940GZZLUCWL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.617916,
+      "lng": 0.075041,
+      "aliases": []
+    },
+    {
+      "name": "Debden Underground Station",
+      "naptanId": "940GZZLUDBN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.645386,
+      "lng": 0.083782,
+      "aliases": []
+    },
+    {
+      "name": "East Acton Underground Station",
+      "naptanId": "940GZZLUEAN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.516612,
+      "lng": -0.247248,
+      "aliases": []
+    },
+    {
+      "name": "Ealing Broadway Underground Station",
+      "naptanId": "940GZZLUEBY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.515017,
+      "lng": -0.301457,
+      "aliases": []
+    },
+    {
+      "name": "Epping Underground Station",
+      "naptanId": "940GZZLUEPG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.69368,
+      "lng": 0.113767,
+      "aliases": []
+    },
+    {
+      "name": "Fairlop Underground Station",
+      "naptanId": "940GZZLUFLP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.595618,
+      "lng": 0.091004,
+      "aliases": []
+    },
+    {
+      "name": "Greenford Underground Station",
+      "naptanId": "940GZZLUGFD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.542424,
+      "lng": -0.34605,
+      "aliases": []
+    },
+    {
+      "name": "Grange Hill Underground Station",
+      "naptanId": "940GZZLUGGH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.613378,
+      "lng": 0.092066,
+      "aliases": []
+    },
+    {
+      "name": "Gants Hill Underground Station",
+      "naptanId": "940GZZLUGTH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.576544,
+      "lng": 0.066185,
+      "aliases": []
+    },
+    {
+      "name": "Holborn Underground Station",
+      "naptanId": "940GZZLUHBN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.51758,
+      "lng": -0.120475,
+      "aliases": []
+    },
+    {
+      "name": "Hanger Lane Underground Station",
+      "naptanId": "940GZZLUHGR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.530177,
+      "lng": -0.292704,
+      "aliases": []
+    },
+    {
+      "name": "Hainault Underground Station",
+      "naptanId": "940GZZLUHLT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.603659,
+      "lng": 0.093482,
+      "aliases": []
+    },
+    {
+      "name": "Holland Park Underground Station",
+      "naptanId": "940GZZLUHPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.507143,
+      "lng": -0.205679,
+      "aliases": []
+    },
+    {
+      "name": "Loughton Underground Station",
+      "naptanId": "940GZZLULGN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.641443,
+      "lng": 0.055476,
+      "aliases": []
+    },
+    {
+      "name": "Lancaster Gate Underground Station",
+      "naptanId": "940GZZLULGT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.511723,
+      "lng": -0.175494,
+      "aliases": []
+    },
+    {
+      "name": "Liverpool Street Underground Station",
+      "naptanId": "940GZZLULVT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.517372,
+      "lng": -0.083182,
+      "aliases": []
+    },
+    {
+      "name": "Leyton Underground Station",
+      "naptanId": "940GZZLULYN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.556589,
+      "lng": -0.005523,
+      "aliases": []
+    },
+    {
+      "name": "Leytonstone Underground Station",
+      "naptanId": "940GZZLULYS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.568324,
+      "lng": 0.008194,
+      "aliases": []
+    },
+    {
+      "name": "Marble Arch Underground Station",
+      "naptanId": "940GZZLUMBA",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.513424,
+      "lng": -0.158953,
+      "aliases": []
+    },
+    {
+      "name": "Mile End Underground Station",
+      "naptanId": "940GZZLUMED",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.525122,
+      "lng": -0.03364,
+      "aliases": []
+    },
+    {
+      "name": "North Acton Underground Station",
+      "naptanId": "940GZZLUNAN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.523524,
+      "lng": -0.259755,
+      "aliases": []
+    },
+    {
+      "name": "Newbury Park Underground Station",
+      "naptanId": "940GZZLUNBP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.575726,
+      "lng": 0.090004,
+      "aliases": []
+    },
+    {
+      "name": "Notting Hill Gate Underground Station",
+      "naptanId": "940GZZLUNHG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.509128,
+      "lng": -0.196104,
+      "aliases": []
+    },
+    {
+      "name": "Northolt Underground Station",
+      "naptanId": "940GZZLUNHT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.548236,
+      "lng": -0.368699,
+      "aliases": []
+    },
+    {
+      "name": "Perivale Underground Station",
+      "naptanId": "940GZZLUPVL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.536717,
+      "lng": -0.323446,
+      "aliases": []
+    },
+    {
+      "name": "Queensway Underground Station",
+      "naptanId": "940GZZLUQWY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.510312,
+      "lng": -0.187152,
+      "aliases": []
+    },
+    {
+      "name": "Redbridge Underground Station",
+      "naptanId": "940GZZLURBG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.576243,
+      "lng": 0.04536,
+      "aliases": []
+    },
+    {
+      "name": "Ruislip Gardens Underground Station",
+      "naptanId": "940GZZLURSG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.560736,
+      "lng": -0.41071,
+      "aliases": []
+    },
+    {
+      "name": "Roding Valley Underground Station",
+      "naptanId": "940GZZLURVY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.617199,
+      "lng": 0.043647,
+      "aliases": []
+    },
+    {
+      "name": "Shepherd's Bush (Central) Underground Station",
+      "naptanId": "940GZZLUSBC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.504376,
+      "lng": -0.218813,
+      "aliases": []
+    },
+    {
+      "name": "Snaresbrook Underground Station",
+      "naptanId": "940GZZLUSNB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.580678,
+      "lng": 0.02144,
+      "aliases": []
+    },
+    {
+      "name": "St. Paul's Underground Station",
+      "naptanId": "940GZZLUSPU",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.514936,
+      "lng": -0.097567,
+      "aliases": []
+    },
+    {
+      "name": "South Ruislip Underground Station",
+      "naptanId": "940GZZLUSRP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.556853,
+      "lng": -0.398915,
+      "aliases": []
+    },
+    {
+      "name": "Stratford Underground Station",
+      "naptanId": "940GZZLUSTD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.541806,
+      "lng": -0.003458,
+      "aliases": []
+    },
+    {
+      "name": "South Woodford Underground Station",
+      "naptanId": "940GZZLUSWF",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.591907,
+      "lng": 0.027338,
+      "aliases": []
+    },
+    {
+      "name": "Tottenham Court Road Underground Station",
+      "naptanId": "940GZZLUTCR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.516426,
+      "lng": -0.13041,
+      "aliases": [
+        "Tottenham Court Road Tube"
+      ]
+    },
+    {
+      "name": "Theydon Bois Underground Station",
+      "naptanId": "940GZZLUTHB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.671759,
+      "lng": 0.103085,
+      "aliases": []
+    },
+    {
+      "name": "White City Underground Station",
+      "naptanId": "940GZZLUWCY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.511959,
+      "lng": -0.224297,
+      "aliases": []
+    },
+    {
+      "name": "Woodford Underground Station",
+      "naptanId": "940GZZLUWOF",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.606899,
+      "lng": 0.03397,
+      "aliases": []
+    },
+    {
+      "name": "West Ruislip Underground Station",
+      "naptanId": "940GZZLUWRP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.569688,
+      "lng": -0.437886,
+      "aliases": []
+    },
+    {
+      "name": "Wanstead Underground Station",
+      "naptanId": "940GZZLUWSD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.575501,
+      "lng": 0.028527,
+      "aliases": []
+    },
+    {
+      "name": "West Acton Underground Station",
+      "naptanId": "940GZZLUWTA",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Central"
+      ],
+      "lat": 51.518001,
+      "lng": -0.28098,
+      "aliases": []
+    },
+    {
+      "name": "Aldgate Underground Station",
+      "naptanId": "940GZZLUALD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.514246,
+      "lng": -0.075689,
+      "aliases": []
+    },
+    {
+      "name": "Barbican Underground Station",
+      "naptanId": "940GZZLUBBN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.520275,
+      "lng": -0.097993,
+      "aliases": []
+    },
+    {
+      "name": "Blackfriars Underground Station",
+      "naptanId": "940GZZLUBKF",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.511581,
+      "lng": -0.103659,
+      "aliases": []
+    },
+    {
+      "name": "Bayswater Underground Station",
+      "naptanId": "940GZZLUBWT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.512284,
+      "lng": -0.187938,
+      "aliases": []
+    },
+    {
+      "name": "Cannon Street Underground Station",
+      "naptanId": "940GZZLUCST",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.51151,
+      "lng": -0.090432,
+      "aliases": []
+    },
+    {
+      "name": "Edgware Road (Circle Line) Underground Station",
+      "naptanId": "940GZZLUERC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.519858,
+      "lng": -0.167832,
+      "aliases": []
+    },
+    {
+      "name": "Euston Square Underground Station",
+      "naptanId": "940GZZLUESQ",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.525604,
+      "lng": -0.135829,
+      "aliases": []
+    },
+    {
+      "name": "Farringdon Underground Station",
+      "naptanId": "940GZZLUFCN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.520252,
+      "lng": -0.104913,
+      "aliases": []
+    },
+    {
+      "name": "Goldhawk Road Underground Station",
+      "naptanId": "940GZZLUGHK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.502005,
+      "lng": -0.226715,
+      "aliases": []
+    },
+    {
+      "name": "Great Portland Street Underground Station",
+      "naptanId": "940GZZLUGPS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.52384,
+      "lng": -0.144262,
+      "aliases": []
+    },
+    {
+      "name": "Gloucester Road Underground Station",
+      "naptanId": "940GZZLUGTR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.494316,
+      "lng": -0.182658,
+      "aliases": []
+    },
+    {
+      "name": "Hammersmith (H&C Line) Underground Station",
+      "naptanId": "940GZZLUHSC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.49339,
+      "lng": -0.22503,
+      "aliases": []
+    },
+    {
+      "name": "High Street Kensington Underground Station",
+      "naptanId": "940GZZLUHSK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.501055,
+      "lng": -0.192792,
+      "aliases": []
+    },
+    {
+      "name": "King's Cross St. Pancras Underground Station",
+      "naptanId": "940GZZLUKSX",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.530663,
+      "lng": -0.123194,
+      "aliases": [
+        "King's Cross St. Pancras"
+      ]
+    },
+    {
+      "name": "Ladbroke Grove Underground Station",
+      "naptanId": "940GZZLULAD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.517449,
+      "lng": -0.210391,
+      "aliases": []
+    },
+    {
+      "name": "Latimer Road Underground Station",
+      "naptanId": "940GZZLULRD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.513389,
+      "lng": -0.217799,
+      "aliases": []
+    },
+    {
+      "name": "Moorgate Underground Station",
+      "naptanId": "940GZZLUMGT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.518176,
+      "lng": -0.088322,
+      "aliases": []
+    },
+    {
+      "name": "Monument Underground Station",
+      "naptanId": "940GZZLUMMT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.5107,
+      "lng": -0.085969,
+      "aliases": []
+    },
+    {
+      "name": "Mansion House Underground Station",
+      "naptanId": "940GZZLUMSH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.512117,
+      "lng": -0.094009,
+      "aliases": []
+    },
+    {
+      "name": "Paddington (H&C Line)-Underground",
+      "naptanId": "940GZZLUPAH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.518187,
+      "lng": -0.178306,
+      "aliases": []
+    },
+    {
+      "name": "Royal Oak Underground Station",
+      "naptanId": "940GZZLURYO",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.519113,
+      "lng": -0.188748,
+      "aliases": []
+    },
+    {
+      "name": "Shepherd's Bush Market Underground Station",
+      "naptanId": "940GZZLUSBM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.505579,
+      "lng": -0.226375,
+      "aliases": []
+    },
+    {
+      "name": "St. James's Park Underground Station",
+      "naptanId": "940GZZLUSJP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.499544,
+      "lng": -0.133608,
+      "aliases": []
+    },
+    {
+      "name": "South Kensington Underground Station",
+      "naptanId": "940GZZLUSKS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.494094,
+      "lng": -0.174138,
+      "aliases": []
+    },
+    {
+      "name": "Sloane Square Underground Station",
+      "naptanId": "940GZZLUSSQ",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.49227,
+      "lng": -0.156377,
+      "aliases": []
+    },
+    {
+      "name": "Temple Underground Station",
+      "naptanId": "940GZZLUTMP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.511006,
+      "lng": -0.11426,
+      "aliases": []
+    },
+    {
+      "name": "Tower Hill Underground Station",
+      "naptanId": "940GZZLUTWH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.509971,
+      "lng": -0.076546,
+      "aliases": []
+    },
+    {
+      "name": "Victoria Underground Station",
+      "naptanId": "940GZZLUVIC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.496359,
+      "lng": -0.143102,
+      "aliases": []
+    },
+    {
+      "name": "Wood Lane Underground Station",
+      "naptanId": "940GZZLUWLA",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.509669,
+      "lng": -0.22453,
+      "aliases": []
+    },
+    {
+      "name": "Westminster Underground Station",
+      "naptanId": "940GZZLUWSM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.50132,
+      "lng": -0.124861,
+      "aliases": []
+    },
+    {
+      "name": "Westbourne Park Underground Station",
+      "naptanId": "940GZZLUWSP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Circle"
+      ],
+      "lat": 51.52111,
+      "lng": -0.201065,
+      "aliases": []
+    },
+    {
+      "name": "Acton Town Underground Station",
+      "naptanId": "940GZZLUACT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.503057,
+      "lng": -0.280462,
+      "aliases": []
+    },
+    {
+      "name": "Aldgate East Underground Station",
+      "naptanId": "940GZZLUADE",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.515037,
+      "lng": -0.072384,
+      "aliases": []
+    },
+    {
+      "name": "Bromley-by-Bow Underground Station",
+      "naptanId": "940GZZLUBBB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.524839,
+      "lng": -0.011538,
+      "aliases": []
+    },
+    {
+      "name": "Becontree Underground Station",
+      "naptanId": "940GZZLUBEC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.540331,
+      "lng": 0.127016,
+      "aliases": []
+    },
+    {
+      "name": "Barking Underground Station",
+      "naptanId": "940GZZLUBKG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.539321,
+      "lng": 0.081053,
+      "aliases": []
+    },
+    {
+      "name": "Barons Court Underground Station",
+      "naptanId": "940GZZLUBSC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.490311,
+      "lng": -0.213427,
+      "aliases": []
+    },
+    {
+      "name": "Bow Road Underground Station",
+      "naptanId": "940GZZLUBWR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.52694,
+      "lng": -0.025128,
+      "aliases": []
+    },
+    {
+      "name": "Chiswick Park Underground Station",
+      "naptanId": "940GZZLUCWP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.494627,
+      "lng": -0.267972,
+      "aliases": []
+    },
+    {
+      "name": "Dagenham East Underground Station",
+      "naptanId": "940GZZLUDGE",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.544096,
+      "lng": 0.166017,
+      "aliases": []
+    },
+    {
+      "name": "Dagenham Heathway Underground Station",
+      "naptanId": "940GZZLUDGY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.541639,
+      "lng": 0.147527,
+      "aliases": []
+    },
+    {
+      "name": "Ealing Common Underground Station",
+      "naptanId": "940GZZLUECM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.51014,
+      "lng": -0.288265,
+      "aliases": []
+    },
+    {
+      "name": "Earl's Court Underground Station",
+      "naptanId": "940GZZLUECT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.492063,
+      "lng": -0.193378,
+      "aliases": []
+    },
+    {
+      "name": "East Ham Underground Station",
+      "naptanId": "940GZZLUEHM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.538948,
+      "lng": 0.051186,
+      "aliases": []
+    },
+    {
+      "name": "Elm Park Underground Station",
+      "naptanId": "940GZZLUEPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.549775,
+      "lng": 0.19864,
+      "aliases": []
+    },
+    {
+      "name": "East Putney Underground Station",
+      "naptanId": "940GZZLUEPY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.459205,
+      "lng": -0.211,
+      "aliases": []
+    },
+    {
+      "name": "Fulham Broadway Underground Station",
+      "naptanId": "940GZZLUFBY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.480081,
+      "lng": -0.195422,
+      "aliases": []
+    },
+    {
+      "name": "Gunnersbury Underground Station",
+      "naptanId": "940GZZLUGBY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.491803,
+      "lng": -0.275267,
+      "aliases": []
+    },
+    {
+      "name": "Hornchurch Underground Station",
+      "naptanId": "940GZZLUHCH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.554093,
+      "lng": 0.219116,
+      "aliases": []
+    },
+    {
+      "name": "Hammersmith (Dist&Picc Line) Underground Station",
+      "naptanId": "940GZZLUHSD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.4923,
+      "lng": -0.22362,
+      "aliases": []
+    },
+    {
+      "name": "Kensington (Olympia) Underground Station",
+      "naptanId": "940GZZLUKOY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.497624,
+      "lng": -0.210015,
+      "aliases": []
+    },
+    {
+      "name": "Kew Gardens Underground Station",
+      "naptanId": "940GZZLUKWG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.477058,
+      "lng": -0.285241,
+      "aliases": []
+    },
+    {
+      "name": "Plaistow Underground Station",
+      "naptanId": "940GZZLUPLW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.531341,
+      "lng": 0.017451,
+      "aliases": []
+    },
+    {
+      "name": "Parsons Green Underground Station",
+      "naptanId": "940GZZLUPSG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.475277,
+      "lng": -0.20117,
+      "aliases": []
+    },
+    {
+      "name": "Putney Bridge Underground Station",
+      "naptanId": "940GZZLUPYB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.468262,
+      "lng": -0.208731,
+      "aliases": []
+    },
+    {
+      "name": "Richmond Underground Station",
+      "naptanId": "940GZZLURMD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.463237,
+      "lng": -0.301336,
+      "aliases": []
+    },
+    {
+      "name": "Ravenscourt Park Underground Station",
+      "naptanId": "940GZZLURVP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.494122,
+      "lng": -0.235881,
+      "aliases": []
+    },
+    {
+      "name": "Stamford Brook Underground Station",
+      "naptanId": "940GZZLUSFB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.494917,
+      "lng": -0.245704,
+      "aliases": []
+    },
+    {
+      "name": "Southfields Underground Station",
+      "naptanId": "940GZZLUSFS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.445073,
+      "lng": -0.206602,
+      "aliases": []
+    },
+    {
+      "name": "Stepney Green Underground Station",
+      "naptanId": "940GZZLUSGN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.521858,
+      "lng": -0.046596,
+      "aliases": []
+    },
+    {
+      "name": "Turnham Green Underground Station",
+      "naptanId": "940GZZLUTNG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.495148,
+      "lng": -0.254555,
+      "aliases": []
+    },
+    {
+      "name": "Upminster Bridge Underground Station",
+      "naptanId": "940GZZLUUPB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.55856,
+      "lng": 0.235809,
+      "aliases": []
+    },
+    {
+      "name": "Upton Park Underground Station",
+      "naptanId": "940GZZLUUPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.53534,
+      "lng": 0.035263,
+      "aliases": []
+    },
+    {
+      "name": "Upminster Underground Station",
+      "naptanId": "940GZZLUUPM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.559063,
+      "lng": 0.250882,
+      "aliases": []
+    },
+    {
+      "name": "Upney Underground Station",
+      "naptanId": "940GZZLUUPY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.538372,
+      "lng": 0.10153,
+      "aliases": []
+    },
+    {
+      "name": "West Brompton Underground Station",
+      "naptanId": "940GZZLUWBN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.487268,
+      "lng": -0.195599,
+      "aliases": []
+    },
+    {
+      "name": "West Ham Underground Station",
+      "naptanId": "940GZZLUWHM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.528136,
+      "lng": 0.005055,
+      "aliases": []
+    },
+    {
+      "name": "Wimbledon Underground Station",
+      "naptanId": "940GZZLUWIM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.421207,
+      "lng": -0.206573,
+      "aliases": []
+    },
+    {
+      "name": "Wimbledon Park Underground Station",
+      "naptanId": "940GZZLUWIP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.434573,
+      "lng": -0.199719,
+      "aliases": []
+    },
+    {
+      "name": "West Kensington Underground Station",
+      "naptanId": "940GZZLUWKN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.490459,
+      "lng": -0.206636,
+      "aliases": []
+    },
+    {
+      "name": "Whitechapel Underground Station",
+      "naptanId": "940GZZLUWPL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "District"
+      ],
+      "lat": 51.519518,
+      "lng": -0.059971,
+      "aliases": []
+    },
+    {
+      "name": "Abbey Road DLR Station",
+      "naptanId": "940GZZDLABR",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.531926,
+      "lng": 0.003737,
+      "aliases": []
+    },
+    {
+      "name": "All Saints DLR Station",
+      "naptanId": "940GZZDLALL",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.511,
+      "lng": -0.013135,
+      "aliases": []
+    },
+    {
+      "name": "Beckton DLR Station",
+      "naptanId": "940GZZDLBEC",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.514362,
+      "lng": 0.061453,
+      "aliases": []
+    },
+    {
+      "name": "Blackwall DLR Station",
+      "naptanId": "940GZZDLBLA",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.507991,
+      "lng": -0.006969,
+      "aliases": []
+    },
+    {
+      "name": "Bank DLR Station",
+      "naptanId": "940GZZDLBNK",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.513233,
+      "lng": -0.088515,
+      "aliases": []
+    },
+    {
+      "name": "Bow Church DLR Station",
+      "naptanId": "940GZZDLBOW",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.527858,
+      "lng": -0.020936,
+      "aliases": []
+    },
+    {
+      "name": "Beckton Park DLR Station",
+      "naptanId": "940GZZDLBPK",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.508793,
+      "lng": 0.054932,
+      "aliases": []
+    },
+    {
+      "name": "Canary Wharf DLR Station",
+      "naptanId": "940GZZDLCAN",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.504838,
+      "lng": -0.020997,
+      "aliases": [
+        "Canary Wharf DLR"
+      ]
+    },
+    {
+      "name": "Canning Town DLR Station",
+      "naptanId": "940GZZDLCGT",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.514127,
+      "lng": 0.008101,
+      "aliases": []
+    },
+    {
+      "name": "Crossharbour DLR Station",
+      "naptanId": "940GZZDLCLA",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.495728,
+      "lng": -0.014606,
+      "aliases": []
+    },
+    {
+      "name": "Custom House (for ExCel) DLR Station",
+      "naptanId": "940GZZDLCUS",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.509716,
+      "lng": 0.026699,
+      "aliases": []
+    },
+    {
+      "name": "Cutty Sark (for Maritime Greenwich) DLR Station",
+      "naptanId": "940GZZDLCUT",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.481671,
+      "lng": -0.01081,
+      "aliases": []
+    },
+    {
+      "name": "Cyprus DLR Station",
+      "naptanId": "940GZZDLCYP",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.508473,
+      "lng": 0.063925,
+      "aliases": []
+    },
+    {
+      "name": "Deptford Bridge DLR Station",
+      "naptanId": "940GZZDLDEP",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.474215,
+      "lng": -0.022438,
+      "aliases": []
+    },
+    {
+      "name": "Devons Road DLR Station",
+      "naptanId": "940GZZDLDEV",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.522667,
+      "lng": -0.017615,
+      "aliases": []
+    },
+    {
+      "name": "East India DLR Station",
+      "naptanId": "940GZZDLEIN",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.509359,
+      "lng": -0.002326,
+      "aliases": []
+    },
+    {
+      "name": "Elverson Road DLR Station",
+      "naptanId": "940GZZDLELV",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.469074,
+      "lng": -0.016728,
+      "aliases": []
+    },
+    {
+      "name": "Gallions Reach DLR Station",
+      "naptanId": "940GZZDLGAL",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.508941,
+      "lng": 0.071555,
+      "aliases": []
+    },
+    {
+      "name": "Greenwich DLR Station",
+      "naptanId": "940GZZDLGRE",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.478087,
+      "lng": -0.013673,
+      "aliases": []
+    },
+    {
+      "name": "Heron Quays DLR Station",
+      "naptanId": "940GZZDLHEQ",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.503379,
+      "lng": -0.021421,
+      "aliases": []
+    },
+    {
+      "name": "Island Gardens DLR Station",
+      "naptanId": "940GZZDLISL",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.487811,
+      "lng": -0.010139,
+      "aliases": []
+    },
+    {
+      "name": "King George V DLR Station",
+      "naptanId": "940GZZDLKGV",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.502003,
+      "lng": 0.062624,
+      "aliases": []
+    },
+    {
+      "name": "London City Airport DLR Station",
+      "naptanId": "940GZZDLLCA",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.503416,
+      "lng": 0.048739,
+      "aliases": []
+    },
+    {
+      "name": "Langdon Park DLR Station",
+      "naptanId": "940GZZDLLDP",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.515172,
+      "lng": -0.01415,
+      "aliases": []
+    },
+    {
+      "name": "Lewisham DLR Station",
+      "naptanId": "940GZZDLLEW",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.464665,
+      "lng": -0.012874,
+      "aliases": []
+    },
+    {
+      "name": "Limehouse DLR Station",
+      "naptanId": "940GZZDLLIM",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.512393,
+      "lng": -0.039809,
+      "aliases": []
+    },
+    {
+      "name": "Mudchute DLR Station",
+      "naptanId": "940GZZDLMUD",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.490704,
+      "lng": -0.014738,
+      "aliases": []
+    },
+    {
+      "name": "Pontoon Dock DLR Station",
+      "naptanId": "940GZZDLPDK",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.502212,
+      "lng": 0.032115,
+      "aliases": []
+    },
+    {
+      "name": "Poplar DLR Station",
+      "naptanId": "940GZZDLPOP",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.507744,
+      "lng": -0.017384,
+      "aliases": []
+    },
+    {
+      "name": "Prince Regent DLR Station",
+      "naptanId": "940GZZDLPRE",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.509263,
+      "lng": 0.034158,
+      "aliases": []
+    },
+    {
+      "name": "Pudding Mill Lane DLR Station",
+      "naptanId": "940GZZDLPUD",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.534302,
+      "lng": -0.012755,
+      "aliases": []
+    },
+    {
+      "name": "Royal Albert DLR Station",
+      "naptanId": "940GZZDLRAL",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.508357,
+      "lng": 0.045935,
+      "aliases": []
+    },
+    {
+      "name": "Royal Victoria DLR Station",
+      "naptanId": "940GZZDLRVC",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.509336,
+      "lng": 0.018497,
+      "aliases": []
+    },
+    {
+      "name": "Shadwell DLR Station",
+      "naptanId": "940GZZDLSHA",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.511693,
+      "lng": -0.056643,
+      "aliases": []
+    },
+    {
+      "name": "Stratford High Street DLR Station",
+      "naptanId": "940GZZDLSHS",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.538196,
+      "lng": -0.001078,
+      "aliases": []
+    },
+    {
+      "name": "Stratford International DLR Station",
+      "naptanId": "940GZZDLSIT",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.545265,
+      "lng": -0.009638,
+      "aliases": []
+    },
+    {
+      "name": "South Quay DLR Station",
+      "naptanId": "940GZZDLSOQ",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.50005,
+      "lng": -0.01597,
+      "aliases": []
+    },
+    {
+      "name": "Stratford DLR Station",
+      "naptanId": "940GZZDLSTD",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.541758,
+      "lng": -0.003287,
+      "aliases": []
+    },
+    {
+      "name": "Star Lane DLR Station",
+      "naptanId": "940GZZDLSTL",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.520786,
+      "lng": 0.004156,
+      "aliases": []
+    },
+    {
+      "name": "Tower Gateway DLR Station",
+      "naptanId": "940GZZDLTWG",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.510617,
+      "lng": -0.074818,
+      "aliases": []
+    },
+    {
+      "name": "Westferry DLR Station",
+      "naptanId": "940GZZDLWFE",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.509431,
+      "lng": -0.02675,
+      "aliases": []
+    },
+    {
+      "name": "West Ham DLR Station",
+      "naptanId": "940GZZDLWHM",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.527894,
+      "lng": 0.004482,
+      "aliases": []
+    },
+    {
+      "name": "West India Quay DLR Station",
+      "naptanId": "940GZZDLWIQ",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.50703,
+      "lng": -0.020311,
+      "aliases": []
+    },
+    {
+      "name": "Woolwich Arsenal DLR Station",
+      "naptanId": "940GZZDLWLA",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.490009,
+      "lng": 0.069127,
+      "aliases": []
+    },
+    {
+      "name": "West Silvertown DLR Station",
+      "naptanId": "940GZZDLWSV",
+      "modes": [
+        "dlr"
+      ],
+      "lines": [
+        "DLR"
+      ],
+      "lat": 51.502838,
+      "lng": 0.02246,
+      "aliases": []
+    },
+    {
+      "name": "Abbey Wood",
+      "naptanId": "910GABWDXR",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.491284,
+      "lng": 0.121087,
+      "aliases": []
+    },
+    {
+      "name": "Acton Main Line Rail Station",
+      "naptanId": "910GACTONML",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.51718,
+      "lng": -0.266756,
+      "aliases": []
+    },
+    {
+      "name": "Burnham (Berks) Rail Station",
+      "naptanId": "910GBNHAM",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.523506,
+      "lng": -0.646374,
+      "aliases": []
+    },
+    {
+      "name": "Bond Street",
+      "naptanId": "910GBONDST",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.51369,
+      "lng": -0.149517,
+      "aliases": []
+    },
+    {
+      "name": "Brentwood Rail Station",
+      "naptanId": "910GBRTWOOD",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.613605,
+      "lng": 0.299586,
+      "aliases": []
+    },
+    {
+      "name": "Canary Wharf",
+      "naptanId": "910GCANWHRF",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.506203,
+      "lng": -0.018834,
+      "aliases": [
+        "Canary Wharf Elizabeth Line"
+      ]
+    },
+    {
+      "name": "Chadwell Heath Rail Station",
+      "naptanId": "910GCHDWLHT",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.568039,
+      "lng": 0.128958,
+      "aliases": []
+    },
+    {
+      "name": "Custom House Rail Station",
+      "naptanId": "910GCUSTMHS",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.509769,
+      "lng": 0.02673,
+      "aliases": []
+    },
+    {
+      "name": "Ealing Broadway Rail Station",
+      "naptanId": "910GEALINGB",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.514841,
+      "lng": -0.301752,
+      "aliases": []
+    },
+    {
+      "name": "Farringdon",
+      "naptanId": "910GFRNDXR",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.520188,
+      "lng": -0.104915,
+      "aliases": []
+    },
+    {
+      "name": "Forest Gate Rail Station",
+      "naptanId": "910GFRSTGT",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.549432,
+      "lng": 0.024353,
+      "aliases": []
+    },
+    {
+      "name": "Gidea Park Rail Station",
+      "naptanId": "910GGIDEAPK",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.581904,
+      "lng": 0.205964,
+      "aliases": []
+    },
+    {
+      "name": "Goodmayes Rail Station",
+      "naptanId": "910GGODMAYS",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.565579,
+      "lng": 0.110807,
+      "aliases": []
+    },
+    {
+      "name": "Hanwell Rail Station",
+      "naptanId": "910GHANWELL",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.511835,
+      "lng": -0.338583,
+      "aliases": []
+    },
+    {
+      "name": "Hayes & Harlington Rail Station",
+      "naptanId": "910GHAYESAH",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.503096,
+      "lng": -0.420683,
+      "aliases": []
+    },
+    {
+      "name": "Harold Wood Rail Station",
+      "naptanId": "910GHRLDWOD",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.592766,
+      "lng": 0.233129,
+      "aliases": []
+    },
+    {
+      "name": "Heathrow Terminals 2 & 3 Rail Station",
+      "naptanId": "910GHTRWAPT",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.471987,
+      "lng": -0.454788,
+      "aliases": []
+    },
+    {
+      "name": "Heathrow Terminal 4 Rail Station",
+      "naptanId": "910GHTRWTM4",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.458268,
+      "lng": -0.445463,
+      "aliases": []
+    },
+    {
+      "name": "Heathrow Terminal 5 Rail Station",
+      "naptanId": "910GHTRWTM5",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.470053,
+      "lng": -0.490589,
+      "aliases": []
+    },
+    {
+      "name": "Ilford Rail Station",
+      "naptanId": "910GILFORD",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.559118,
+      "lng": 0.06968,
+      "aliases": []
+    },
+    {
+      "name": "Iver Rail Station",
+      "naptanId": "910GIVER",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.508503,
+      "lng": -0.506726,
+      "aliases": []
+    },
+    {
+      "name": "Langley (Berks) Rail Station",
+      "naptanId": "910GLANGLEY",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.508062,
+      "lng": -0.541756,
+      "aliases": []
+    },
+    {
+      "name": "London Liverpool Street Rail Station",
+      "naptanId": "910GLIVST",
+      "modes": [
+        "elizabeth-line",
+        "overground"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.517991,
+      "lng": -0.081426,
+      "aliases": []
+    },
+    {
+      "name": "Liverpool Street",
+      "naptanId": "910GLIVSTLL",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.517722,
+      "lng": -0.082043,
+      "aliases": []
+    },
+    {
+      "name": "Manor Park Rail Station",
+      "naptanId": "910GMANRPK",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.552477,
+      "lng": 0.046342,
+      "aliases": []
+    },
+    {
+      "name": "Maidenhead Rail Station",
+      "naptanId": "910GMDNHEAD",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.518669,
+      "lng": -0.72266,
+      "aliases": []
+    },
+    {
+      "name": "Maryland Rail Station",
+      "naptanId": "910GMRYLAND",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.546081,
+      "lng": 0.005815,
+      "aliases": []
+    },
+    {
+      "name": "Paddington",
+      "naptanId": "910GPADTLL",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.516449,
+      "lng": -0.177107,
+      "aliases": []
+    },
+    {
+      "name": "London Paddington Rail Station",
+      "naptanId": "910GPADTON",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.515996,
+      "lng": -0.176174,
+      "aliases": []
+    },
+    {
+      "name": "Reading Rail Station",
+      "naptanId": "910GRDNGSTN",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.458786,
+      "lng": -0.971863,
+      "aliases": []
+    },
+    {
+      "name": "Romford Rail Station",
+      "naptanId": "910GROMFORD",
+      "modes": [
+        "elizabeth-line",
+        "overground"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.574829,
+      "lng": 0.183237,
+      "aliases": []
+    },
+    {
+      "name": "Shenfield Rail Station",
+      "naptanId": "910GSHENFLD",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.630877,
+      "lng": 0.329851,
+      "aliases": []
+    },
+    {
+      "name": "Slough Rail Station",
+      "naptanId": "910GSLOUGH",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.51188,
+      "lng": -0.59151,
+      "aliases": []
+    },
+    {
+      "name": "Stratford (London) Rail Station",
+      "naptanId": "910GSTFD",
+      "modes": [
+        "elizabeth-line",
+        "overground"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.541895,
+      "lng": -0.003397,
+      "aliases": []
+    },
+    {
+      "name": "Southall Rail Station",
+      "naptanId": "910GSTHALL",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.505957,
+      "lng": -0.37861,
+      "aliases": []
+    },
+    {
+      "name": "Seven Kings Rail Station",
+      "naptanId": "910GSVNKNGS",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.564026,
+      "lng": 0.0971,
+      "aliases": []
+    },
+    {
+      "name": "Taplow Rail Station",
+      "naptanId": "910GTAPLOW",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.523562,
+      "lng": -0.68137,
+      "aliases": []
+    },
+    {
+      "name": "Tottenham Court Road",
+      "naptanId": "910GTOTCTRD",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.515698,
+      "lng": -0.13044,
+      "aliases": [
+        "Tottenham Court Road Elizabeth Line",
+        "Tottenham Court Road Elizabeth"
+      ]
+    },
+    {
+      "name": "Twyford Rail Station",
+      "naptanId": "910GTWYFORD",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.475534,
+      "lng": -0.863293,
+      "aliases": []
+    },
+    {
+      "name": "Whitechapel",
+      "naptanId": "910GWCHAPXR",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.519632,
+      "lng": -0.059837,
+      "aliases": []
+    },
+    {
+      "name": "West Drayton Rail Station",
+      "naptanId": "910GWDRYTON",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.510055,
+      "lng": -0.472234,
+      "aliases": []
+    },
+    {
+      "name": "West Ealing Rail Station",
+      "naptanId": "910GWEALING",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.513506,
+      "lng": -0.320133,
+      "aliases": []
+    },
+    {
+      "name": "Woolwich",
+      "naptanId": "910GWOLWXR",
+      "modes": [
+        "elizabeth-line"
+      ],
+      "lines": [
+        "Elizabeth line"
+      ],
+      "lat": 51.492168,
+      "lng": 0.070593,
+      "aliases": []
+    },
+    {
+      "name": "Bermondsey Underground Station",
+      "naptanId": "940GZZLUBMY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.49775,
+      "lng": -0.063993,
+      "aliases": []
+    },
+    {
+      "name": "Canning Town Underground Station",
+      "naptanId": "940GZZLUCGT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.513584,
+      "lng": 0.008322,
+      "aliases": []
+    },
+    {
+      "name": "Canons Park Underground Station",
+      "naptanId": "940GZZLUCPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.607701,
+      "lng": -0.294693,
+      "aliases": []
+    },
+    {
+      "name": "Canada Water Underground Station",
+      "naptanId": "940GZZLUCWR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.497931,
+      "lng": -0.049405,
+      "aliases": []
+    },
+    {
+      "name": "Canary Wharf Underground Station",
+      "naptanId": "940GZZLUCYF",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.503488,
+      "lng": -0.018246,
+      "aliases": [
+        "Canary Wharf Tube"
+      ]
+    },
+    {
+      "name": "Dollis Hill Underground Station",
+      "naptanId": "940GZZLUDOH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.551955,
+      "lng": -0.239068,
+      "aliases": []
+    },
+    {
+      "name": "Finchley Road Underground Station",
+      "naptanId": "940GZZLUFYR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.546825,
+      "lng": -0.179845,
+      "aliases": []
+    },
+    {
+      "name": "Green Park Underground Station",
+      "naptanId": "940GZZLUGPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.506947,
+      "lng": -0.142787,
+      "aliases": []
+    },
+    {
+      "name": "Kilburn Underground Station",
+      "naptanId": "940GZZLUKBN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.547183,
+      "lng": -0.204248,
+      "aliases": []
+    },
+    {
+      "name": "Kingsbury Underground Station",
+      "naptanId": "940GZZLUKBY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.584845,
+      "lng": -0.27879,
+      "aliases": []
+    },
+    {
+      "name": "London Bridge Underground Station",
+      "naptanId": "940GZZLULNB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.505721,
+      "lng": -0.088873,
+      "aliases": []
+    },
+    {
+      "name": "Neasden Underground Station",
+      "naptanId": "940GZZLUNDN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.553986,
+      "lng": -0.249837,
+      "aliases": []
+    },
+    {
+      "name": "North Greenwich Underground Station",
+      "naptanId": "940GZZLUNGW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.50047,
+      "lng": 0.004287,
+      "aliases": []
+    },
+    {
+      "name": "Queensbury Underground Station",
+      "naptanId": "940GZZLUQBY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.594188,
+      "lng": -0.286219,
+      "aliases": []
+    },
+    {
+      "name": "St. John's Wood Underground Station",
+      "naptanId": "940GZZLUSJW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.534521,
+      "lng": -0.173948,
+      "aliases": []
+    },
+    {
+      "name": "Stanmore Underground Station",
+      "naptanId": "940GZZLUSTM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.619839,
+      "lng": -0.303266,
+      "aliases": []
+    },
+    {
+      "name": "Swiss Cottage Underground Station",
+      "naptanId": "940GZZLUSWC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.543681,
+      "lng": -0.174894,
+      "aliases": []
+    },
+    {
+      "name": "Southwark Underground Station",
+      "naptanId": "940GZZLUSWK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.50427,
+      "lng": -0.105331,
+      "aliases": []
+    },
+    {
+      "name": "West Hampstead Underground Station",
+      "naptanId": "940GZZLUWHP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.546638,
+      "lng": -0.191059,
+      "aliases": []
+    },
+    {
+      "name": "Willesden Green Underground Station",
+      "naptanId": "940GZZLUWIG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.549146,
+      "lng": -0.221537,
+      "aliases": []
+    },
+    {
+      "name": "Wembley Park Underground Station",
+      "naptanId": "940GZZLUWYP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Jubilee"
+      ],
+      "lat": 51.563198,
+      "lng": -0.279262,
+      "aliases": []
+    },
+    {
+      "name": "Emerson Park Rail Station",
+      "naptanId": "910GEMRSPKH",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Liberty"
+      ],
+      "lat": 51.568642,
+      "lng": 0.220113,
+      "aliases": []
+    },
+    {
+      "name": "Upminster Rail Station",
+      "naptanId": "910GUPMNSTR",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Liberty"
+      ],
+      "lat": 51.559018,
+      "lng": 0.25088,
+      "aliases": []
+    },
+    {
+      "name": "Bushey Rail Station",
+      "naptanId": "910GBUSHYDC",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.645751,
+      "lng": -0.385321,
+      "aliases": []
+    },
+    {
+      "name": "Carpenders Park Rail Station",
+      "naptanId": "910GCRPNDPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.628351,
+      "lng": -0.385939,
+      "aliases": []
+    },
+    {
+      "name": "London Euston Rail Station",
+      "naptanId": "910GEUSTON",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.528136,
+      "lng": -0.133924,
+      "aliases": []
+    },
+    {
+      "name": "Harlesden Rail Station",
+      "naptanId": "910GHARLSDN",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.536289,
+      "lng": -0.257667,
+      "aliases": []
+    },
+    {
+      "name": "Headstone Lane Rail Station",
+      "naptanId": "910GHEDSTNL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.602649,
+      "lng": -0.35722,
+      "aliases": []
+    },
+    {
+      "name": "Harrow & Wealdstone Rail Station",
+      "naptanId": "910GHROW",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.592169,
+      "lng": -0.334571,
+      "aliases": []
+    },
+    {
+      "name": "Hatch End Rail Station",
+      "naptanId": "910GHTCHEND",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.609417,
+      "lng": -0.368601,
+      "aliases": []
+    },
+    {
+      "name": "Kensal Green Rail Station",
+      "naptanId": "910GKENSLG",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.53054,
+      "lng": -0.225088,
+      "aliases": []
+    },
+    {
+      "name": "Kilburn High Road Rail Station",
+      "naptanId": "910GKLBRNHR",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.537277,
+      "lng": -0.192237,
+      "aliases": []
+    },
+    {
+      "name": "Kenton Rail Station",
+      "naptanId": "910GKTON",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.581802,
+      "lng": -0.316981,
+      "aliases": []
+    },
+    {
+      "name": "North Wembley Rail Station",
+      "naptanId": "910GNWEMBLY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.562596,
+      "lng": -0.303984,
+      "aliases": []
+    },
+    {
+      "name": "Queens Park (London) Rail Station",
+      "naptanId": "910GQPRK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.533966,
+      "lng": -0.204985,
+      "aliases": []
+    },
+    {
+      "name": "South Hampstead Rail Station",
+      "naptanId": "910GSHMPSTD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.541432,
+      "lng": -0.178878,
+      "aliases": []
+    },
+    {
+      "name": "South Kenton Rail Station",
+      "naptanId": "910GSKENTON",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.570214,
+      "lng": -0.308462,
+      "aliases": []
+    },
+    {
+      "name": "Stonebridge Park Rail Station",
+      "naptanId": "910GSTNBGPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.544111,
+      "lng": -0.275828,
+      "aliases": []
+    },
+    {
+      "name": "Watford High Street Rail Station",
+      "naptanId": "910GWATFDHS",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.652655,
+      "lng": -0.391711,
+      "aliases": []
+    },
+    {
+      "name": "Watford Junction Rail Station",
+      "naptanId": "910GWATFJDC",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.663529,
+      "lng": -0.396517,
+      "aliases": []
+    },
+    {
+      "name": "Willesden Junction Rail Station",
+      "naptanId": "910GWLSDJHL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.532497,
+      "lng": -0.244548,
+      "aliases": []
+    },
+    {
+      "name": "Wembley Central Rail Station",
+      "naptanId": "910GWMBY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Lioness"
+      ],
+      "lat": 51.552325,
+      "lng": -0.296433,
+      "aliases": []
+    },
+    {
+      "name": "Amersham Underground Station",
+      "naptanId": "940GZZLUAMS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.674126,
+      "lng": -0.607714,
+      "aliases": []
+    },
+    {
+      "name": "Chalfont & Latimer Underground Station",
+      "naptanId": "940GZZLUCAL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.667985,
+      "lng": -0.560689,
+      "aliases": []
+    },
+    {
+      "name": "Chesham Underground Station",
+      "naptanId": "940GZZLUCSM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.705208,
+      "lng": -0.611247,
+      "aliases": []
+    },
+    {
+      "name": "Croxley Underground Station",
+      "naptanId": "940GZZLUCXY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.647044,
+      "lng": -0.441718,
+      "aliases": []
+    },
+    {
+      "name": "Chorleywood Underground Station",
+      "naptanId": "940GZZLUCYD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.654358,
+      "lng": -0.518461,
+      "aliases": []
+    },
+    {
+      "name": "Eastcote Underground Station",
+      "naptanId": "940GZZLUEAE",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.576506,
+      "lng": -0.397373,
+      "aliases": []
+    },
+    {
+      "name": "Hillingdon Underground Station",
+      "naptanId": "940GZZLUHGD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.553715,
+      "lng": -0.449828,
+      "aliases": []
+    },
+    {
+      "name": "Harrow-on-the-Hill Underground Station",
+      "naptanId": "940GZZLUHOH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.579195,
+      "lng": -0.337225,
+      "aliases": []
+    },
+    {
+      "name": "Ickenham Underground Station",
+      "naptanId": "940GZZLUICK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.56177,
+      "lng": -0.442225,
+      "aliases": []
+    },
+    {
+      "name": "Moor Park Underground Station",
+      "naptanId": "940GZZLUMPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.629845,
+      "lng": -0.432454,
+      "aliases": []
+    },
+    {
+      "name": "North Harrow Underground Station",
+      "naptanId": "940GZZLUNHA",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.584872,
+      "lng": -0.362408,
+      "aliases": []
+    },
+    {
+      "name": "Northwick Park Underground Station",
+      "naptanId": "940GZZLUNKP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.578481,
+      "lng": -0.318056,
+      "aliases": []
+    },
+    {
+      "name": "Northwood Underground Station",
+      "naptanId": "940GZZLUNOW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.611053,
+      "lng": -0.423829,
+      "aliases": []
+    },
+    {
+      "name": "Northwood Hills Underground Station",
+      "naptanId": "940GZZLUNWH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.600572,
+      "lng": -0.409464,
+      "aliases": []
+    },
+    {
+      "name": "Pinner Underground Station",
+      "naptanId": "940GZZLUPNR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.592901,
+      "lng": -0.381161,
+      "aliases": []
+    },
+    {
+      "name": "Preston Road Underground Station",
+      "naptanId": "940GZZLUPRD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.571972,
+      "lng": -0.295107,
+      "aliases": []
+    },
+    {
+      "name": "Rickmansworth Underground Station",
+      "naptanId": "940GZZLURKW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.640207,
+      "lng": -0.473703,
+      "aliases": []
+    },
+    {
+      "name": "Ruislip Manor Underground Station",
+      "naptanId": "940GZZLURSM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.573202,
+      "lng": -0.412973,
+      "aliases": []
+    },
+    {
+      "name": "Ruislip Underground Station",
+      "naptanId": "940GZZLURSP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.571354,
+      "lng": -0.421898,
+      "aliases": []
+    },
+    {
+      "name": "Rayners Lane Underground Station",
+      "naptanId": "940GZZLURYL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.575147,
+      "lng": -0.371127,
+      "aliases": []
+    },
+    {
+      "name": "Uxbridge Underground Station",
+      "naptanId": "940GZZLUUXB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.546565,
+      "lng": -0.477949,
+      "aliases": []
+    },
+    {
+      "name": "Watford Underground Station",
+      "naptanId": "940GZZLUWAF",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.657446,
+      "lng": -0.417377,
+      "aliases": []
+    },
+    {
+      "name": "West Harrow Underground Station",
+      "naptanId": "940GZZLUWHW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Metropolitan"
+      ],
+      "lat": 51.57971,
+      "lng": -0.3534,
+      "aliases": []
+    },
+    {
+      "name": "Acton Central Rail Station",
+      "naptanId": "910GACTNCTL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.508716,
+      "lng": -0.262971,
+      "aliases": []
+    },
+    {
+      "name": "Brondesbury Rail Station",
+      "naptanId": "910GBRBY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.545166,
+      "lng": -0.202309,
+      "aliases": []
+    },
+    {
+      "name": "Brondesbury Park Rail Station",
+      "naptanId": "910GBRBYPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.540734,
+      "lng": -0.210054,
+      "aliases": []
+    },
+    {
+      "name": "Caledonian Road & Barnsbury Rail Station",
+      "naptanId": "910GCLDNNRB",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.543041,
+      "lng": -0.116729,
+      "aliases": []
+    },
+    {
+      "name": "Clapham Junction Rail Station",
+      "naptanId": "910GCLPHMJ1",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.464187,
+      "lng": -0.170221,
+      "aliases": []
+    },
+    {
+      "name": "Clapham Junction Rail Station",
+      "naptanId": "910GCLPHMJC",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.464188,
+      "lng": -0.170293,
+      "aliases": []
+    },
+    {
+      "name": "Camden Road Rail Station",
+      "naptanId": "910GCMDNRD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.541791,
+      "lng": -0.138701,
+      "aliases": []
+    },
+    {
+      "name": "Canonbury Rail Station",
+      "naptanId": "910GCNNB",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.548732,
+      "lng": -0.092191,
+      "aliases": []
+    },
+    {
+      "name": "Imperial Wharf Rail Station",
+      "naptanId": "910GCSEAH",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.474949,
+      "lng": -0.182823,
+      "aliases": []
+    },
+    {
+      "name": "Dalston Kingsland Rail Station",
+      "naptanId": "910GDALSKLD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.548148,
+      "lng": -0.075701,
+      "aliases": []
+    },
+    {
+      "name": "Finchley Road & Frognal Rail Station",
+      "naptanId": "910GFNCHLYR",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.550266,
+      "lng": -0.183141,
+      "aliases": []
+    },
+    {
+      "name": "Gunnersbury Rail Station",
+      "naptanId": "910GGNRSBRY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.491678,
+      "lng": -0.275286,
+      "aliases": []
+    },
+    {
+      "name": "Gospel Oak Rail Station",
+      "naptanId": "910GGOSPLOK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.555335,
+      "lng": -0.15077,
+      "aliases": []
+    },
+    {
+      "name": "Hackney Central Rail Station",
+      "naptanId": "910GHACKNYC",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.547105,
+      "lng": -0.056058,
+      "aliases": []
+    },
+    {
+      "name": "Hackney Wick Rail Station",
+      "naptanId": "910GHACKNYW",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.54341,
+      "lng": -0.02492,
+      "aliases": []
+    },
+    {
+      "name": "Highbury & Islington Rail Station",
+      "naptanId": "910GHGHI",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.546177,
+      "lng": -0.103764,
+      "aliases": []
+    },
+    {
+      "name": "Hampstead Heath Rail Station",
+      "naptanId": "910GHMPSTDH",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.55521,
+      "lng": -0.165705,
+      "aliases": []
+    },
+    {
+      "name": "Homerton Rail Station",
+      "naptanId": "910GHOMRTON",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.547012,
+      "lng": -0.04236,
+      "aliases": []
+    },
+    {
+      "name": "Kensington (Olympia) Rail Station",
+      "naptanId": "910GKENOLYM",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.497899,
+      "lng": -0.210364,
+      "aliases": []
+    },
+    {
+      "name": "Kensal Rise Rail Station",
+      "naptanId": "910GKENR",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.534554,
+      "lng": -0.219957,
+      "aliases": []
+    },
+    {
+      "name": "Kew Gardens Rail Station",
+      "naptanId": "910GKEWGRDN",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.477073,
+      "lng": -0.285054,
+      "aliases": []
+    },
+    {
+      "name": "Kentish Town West Rail Station",
+      "naptanId": "910GKNTSHTW",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.546548,
+      "lng": -0.146655,
+      "aliases": []
+    },
+    {
+      "name": "Richmond (London) Rail Station",
+      "naptanId": "910GRICHMND",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.463061,
+      "lng": -0.301558,
+      "aliases": []
+    },
+    {
+      "name": "South Acton Rail Station",
+      "naptanId": "910GSACTON",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.499695,
+      "lng": -0.270157,
+      "aliases": []
+    },
+    {
+      "name": "Shepherds Bush Rail Station",
+      "naptanId": "910GSHPDSB",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.505285,
+      "lng": -0.217654,
+      "aliases": []
+    },
+    {
+      "name": "West Brompton Rail Station",
+      "naptanId": "910GWBRMPTN",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.487061,
+      "lng": -0.195593,
+      "aliases": []
+    },
+    {
+      "name": "West Hampstead Rail Station",
+      "naptanId": "910GWHMDSTD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Mildmay"
+      ],
+      "lat": 51.547468,
+      "lng": -0.191185,
+      "aliases": []
+    },
+    {
+      "name": "Battersea Power Station Underground Station",
+      "naptanId": "940GZZBPSUST",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.479932,
+      "lng": -0.142142,
+      "aliases": []
+    },
+    {
+      "name": "Archway Underground Station",
+      "naptanId": "940GZZLUACY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.565478,
+      "lng": -0.134819,
+      "aliases": []
+    },
+    {
+      "name": "Angel Underground Station",
+      "naptanId": "940GZZLUAGL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.53184,
+      "lng": -0.10635,
+      "aliases": []
+    },
+    {
+      "name": "Balham Underground Station",
+      "naptanId": "940GZZLUBLM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.443288,
+      "lng": -0.152997,
+      "aliases": []
+    },
+    {
+      "name": "Borough Underground Station",
+      "naptanId": "940GZZLUBOR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.501199,
+      "lng": -0.09337,
+      "aliases": []
+    },
+    {
+      "name": "Burnt Oak Underground Station",
+      "naptanId": "940GZZLUBTK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.602774,
+      "lng": -0.264048,
+      "aliases": []
+    },
+    {
+      "name": "Brent Cross Underground Station",
+      "naptanId": "940GZZLUBTX",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.57665,
+      "lng": -0.213622,
+      "aliases": []
+    },
+    {
+      "name": "Belsize Park Underground Station",
+      "naptanId": "940GZZLUBZP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.550529,
+      "lng": -0.164783,
+      "aliases": []
+    },
+    {
+      "name": "Chalk Farm Underground Station",
+      "naptanId": "940GZZLUCFM",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.544118,
+      "lng": -0.153388,
+      "aliases": []
+    },
+    {
+      "name": "Colindale Underground Station",
+      "naptanId": "940GZZLUCND",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.595424,
+      "lng": -0.249919,
+      "aliases": []
+    },
+    {
+      "name": "Clapham Common Underground Station",
+      "naptanId": "940GZZLUCPC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.461742,
+      "lng": -0.138317,
+      "aliases": []
+    },
+    {
+      "name": "Clapham North Underground Station",
+      "naptanId": "940GZZLUCPN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.465135,
+      "lng": -0.130016,
+      "aliases": []
+    },
+    {
+      "name": "Clapham South Underground Station",
+      "naptanId": "940GZZLUCPS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.452654,
+      "lng": -0.147582,
+      "aliases": []
+    },
+    {
+      "name": "Colliers Wood Underground Station",
+      "naptanId": "940GZZLUCSD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.41816,
+      "lng": -0.178086,
+      "aliases": []
+    },
+    {
+      "name": "Camden Town Underground Station",
+      "naptanId": "940GZZLUCTN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.539292,
+      "lng": -0.14274,
+      "aliases": []
+    },
+    {
+      "name": "East Finchley Underground Station",
+      "naptanId": "940GZZLUEFY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.587131,
+      "lng": -0.165012,
+      "aliases": []
+    },
+    {
+      "name": "Edgware Underground Station",
+      "naptanId": "940GZZLUEGW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.613653,
+      "lng": -0.274928,
+      "aliases": []
+    },
+    {
+      "name": "Euston Underground Station",
+      "naptanId": "940GZZLUEUS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.527824,
+      "lng": -0.131846,
+      "aliases": []
+    },
+    {
+      "name": "Finchley Central Underground Station",
+      "naptanId": "940GZZLUFYC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.600921,
+      "lng": -0.192527,
+      "aliases": []
+    },
+    {
+      "name": "Goodge Street Underground Station",
+      "naptanId": "940GZZLUGDG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.520599,
+      "lng": -0.134361,
+      "aliases": []
+    },
+    {
+      "name": "Golders Green Underground Station",
+      "naptanId": "940GZZLUGGN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.572259,
+      "lng": -0.194039,
+      "aliases": []
+    },
+    {
+      "name": "High Barnet Underground Station",
+      "naptanId": "940GZZLUHBT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.650541,
+      "lng": -0.194298,
+      "aliases": []
+    },
+    {
+      "name": "Hendon Central Underground Station",
+      "naptanId": "940GZZLUHCL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.583301,
+      "lng": -0.226424,
+      "aliases": []
+    },
+    {
+      "name": "Highgate Underground Station",
+      "naptanId": "940GZZLUHGT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.577532,
+      "lng": -0.145857,
+      "aliases": []
+    },
+    {
+      "name": "Hampstead Underground Station",
+      "naptanId": "940GZZLUHTD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.556239,
+      "lng": -0.177464,
+      "aliases": []
+    },
+    {
+      "name": "Kennington Underground Station",
+      "naptanId": "940GZZLUKNG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.488337,
+      "lng": -0.105963,
+      "aliases": []
+    },
+    {
+      "name": "Kentish Town Underground Station",
+      "naptanId": "940GZZLUKSH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.550312,
+      "lng": -0.140733,
+      "aliases": []
+    },
+    {
+      "name": "Leicester Square Underground Station",
+      "naptanId": "940GZZLULSQ",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.511386,
+      "lng": -0.128426,
+      "aliases": []
+    },
+    {
+      "name": "Morden Underground Station",
+      "naptanId": "940GZZLUMDN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.402142,
+      "lng": -0.194839,
+      "aliases": []
+    },
+    {
+      "name": "Mill Hill East Underground Station",
+      "naptanId": "940GZZLUMHL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.608229,
+      "lng": -0.209986,
+      "aliases": []
+    },
+    {
+      "name": "Mornington Crescent Underground Station",
+      "naptanId": "940GZZLUMTC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.534679,
+      "lng": -0.138789,
+      "aliases": []
+    },
+    {
+      "name": "Old Street Underground Station",
+      "naptanId": "940GZZLUODS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.525864,
+      "lng": -0.08777,
+      "aliases": []
+    },
+    {
+      "name": "Oval Underground Station",
+      "naptanId": "940GZZLUOVL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.48185,
+      "lng": -0.112439,
+      "aliases": []
+    },
+    {
+      "name": "Stockwell Underground Station",
+      "naptanId": "940GZZLUSKW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.472184,
+      "lng": -0.122644,
+      "aliases": []
+    },
+    {
+      "name": "South Wimbledon Underground Station",
+      "naptanId": "940GZZLUSWN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.415309,
+      "lng": -0.192005,
+      "aliases": []
+    },
+    {
+      "name": "Totteridge & Whetstone Underground Station",
+      "naptanId": "940GZZLUTAW",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.630597,
+      "lng": -0.17921,
+      "aliases": []
+    },
+    {
+      "name": "Tooting Bec Underground Station",
+      "naptanId": "940GZZLUTBC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.435678,
+      "lng": -0.159736,
+      "aliases": []
+    },
+    {
+      "name": "Tooting Broadway Underground Station",
+      "naptanId": "940GZZLUTBY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.42763,
+      "lng": -0.168374,
+      "aliases": []
+    },
+    {
+      "name": "Tufnell Park Underground Station",
+      "naptanId": "940GZZLUTFP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.556822,
+      "lng": -0.138433,
+      "aliases": []
+    },
+    {
+      "name": "West Finchley Underground Station",
+      "naptanId": "940GZZLUWFN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.609426,
+      "lng": -0.188362,
+      "aliases": []
+    },
+    {
+      "name": "Woodside Park Underground Station",
+      "naptanId": "940GZZLUWOP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.618014,
+      "lng": -0.18542,
+      "aliases": []
+    },
+    {
+      "name": "Warren Street Underground Station",
+      "naptanId": "940GZZLUWRR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.524951,
+      "lng": -0.138321,
+      "aliases": []
+    },
+    {
+      "name": "Nine Elms Underground Station",
+      "naptanId": "940GZZNEUGST",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Northern"
+      ],
+      "lat": 51.479912,
+      "lng": -0.128476,
+      "aliases": []
+    },
+    {
+      "name": "Alperton Underground Station",
+      "naptanId": "940GZZLUALP",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.540627,
+      "lng": -0.29961,
+      "aliases": []
+    },
+    {
+      "name": "Arnos Grove Underground Station",
+      "naptanId": "940GZZLUASG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.616446,
+      "lng": -0.133062,
+      "aliases": []
+    },
+    {
+      "name": "Arsenal Underground Station",
+      "naptanId": "940GZZLUASL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.558655,
+      "lng": -0.107457,
+      "aliases": []
+    },
+    {
+      "name": "Bounds Green Underground Station",
+      "naptanId": "940GZZLUBDS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.607034,
+      "lng": -0.124235,
+      "aliases": []
+    },
+    {
+      "name": "Boston Manor Underground Station",
+      "naptanId": "940GZZLUBOS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.495635,
+      "lng": -0.324939,
+      "aliases": []
+    },
+    {
+      "name": "Caledonian Road Underground Station",
+      "naptanId": "940GZZLUCAR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.548519,
+      "lng": -0.118493,
+      "aliases": []
+    },
+    {
+      "name": "Covent Garden Underground Station",
+      "naptanId": "940GZZLUCGN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.513093,
+      "lng": -0.124436,
+      "aliases": []
+    },
+    {
+      "name": "Cockfosters Underground Station",
+      "naptanId": "940GZZLUCKS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.65152,
+      "lng": -0.149171,
+      "aliases": []
+    },
+    {
+      "name": "Finsbury Park Underground Station",
+      "naptanId": "940GZZLUFPK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.564158,
+      "lng": -0.106825,
+      "aliases": []
+    },
+    {
+      "name": "Hatton Cross Underground Station",
+      "naptanId": "940GZZLUHNX",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.466747,
+      "lng": -0.423191,
+      "aliases": []
+    },
+    {
+      "name": "Hyde Park Corner Underground Station",
+      "naptanId": "940GZZLUHPC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.503035,
+      "lng": -0.152441,
+      "aliases": []
+    },
+    {
+      "name": "Heathrow Terminal 4 Underground Station",
+      "naptanId": "940GZZLUHR4",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.458524,
+      "lng": -0.445771,
+      "aliases": []
+    },
+    {
+      "name": "Heathrow Terminal 5 Underground Station",
+      "naptanId": "940GZZLUHR5",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.470052,
+      "lng": -0.49056,
+      "aliases": []
+    },
+    {
+      "name": "Heathrow Terminals 2 & 3 Underground Station",
+      "naptanId": "940GZZLUHRC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.471235,
+      "lng": -0.452265,
+      "aliases": []
+    },
+    {
+      "name": "Hounslow Central Underground Station",
+      "naptanId": "940GZZLUHWC",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.471295,
+      "lng": -0.366578,
+      "aliases": []
+    },
+    {
+      "name": "Hounslow East Underground Station",
+      "naptanId": "940GZZLUHWE",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.473213,
+      "lng": -0.356474,
+      "aliases": []
+    },
+    {
+      "name": "Hounslow West Underground Station",
+      "naptanId": "940GZZLUHWT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.473469,
+      "lng": -0.386544,
+      "aliases": []
+    },
+    {
+      "name": "Holloway Road Underground Station",
+      "naptanId": "940GZZLUHWY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.552697,
+      "lng": -0.113244,
+      "aliases": []
+    },
+    {
+      "name": "Knightsbridge Underground Station",
+      "naptanId": "940GZZLUKNB",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.501669,
+      "lng": -0.160508,
+      "aliases": []
+    },
+    {
+      "name": "Manor House Underground Station",
+      "naptanId": "940GZZLUMRH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.570738,
+      "lng": -0.096118,
+      "aliases": []
+    },
+    {
+      "name": "North Ealing Underground Station",
+      "naptanId": "940GZZLUNEN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.517505,
+      "lng": -0.288868,
+      "aliases": []
+    },
+    {
+      "name": "Northfields Underground Station",
+      "naptanId": "940GZZLUNFD",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.499319,
+      "lng": -0.314719,
+      "aliases": []
+    },
+    {
+      "name": "Oakwood Underground Station",
+      "naptanId": "940GZZLUOAK",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.647726,
+      "lng": -0.132182,
+      "aliases": []
+    },
+    {
+      "name": "Osterley Underground Station",
+      "naptanId": "940GZZLUOSY",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.481274,
+      "lng": -0.352224,
+      "aliases": []
+    },
+    {
+      "name": "Park Royal Underground Station",
+      "naptanId": "940GZZLUPKR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.527123,
+      "lng": -0.284341,
+      "aliases": []
+    },
+    {
+      "name": "Russell Square Underground Station",
+      "naptanId": "940GZZLURSQ",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.523073,
+      "lng": -0.124285,
+      "aliases": []
+    },
+    {
+      "name": "South Ealing Underground Station",
+      "naptanId": "940GZZLUSEA",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.501003,
+      "lng": -0.307424,
+      "aliases": []
+    },
+    {
+      "name": "Southgate Underground Station",
+      "naptanId": "940GZZLUSGT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.632315,
+      "lng": -0.127816,
+      "aliases": []
+    },
+    {
+      "name": "South Harrow Underground Station",
+      "naptanId": "940GZZLUSHH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.564888,
+      "lng": -0.352492,
+      "aliases": []
+    },
+    {
+      "name": "Sudbury Hill Underground Station",
+      "naptanId": "940GZZLUSUH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.556946,
+      "lng": -0.336435,
+      "aliases": []
+    },
+    {
+      "name": "Sudbury Town Underground Station",
+      "naptanId": "940GZZLUSUT",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.550815,
+      "lng": -0.315745,
+      "aliases": []
+    },
+    {
+      "name": "Turnpike Lane Underground Station",
+      "naptanId": "940GZZLUTPN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.590272,
+      "lng": -0.102953,
+      "aliases": []
+    },
+    {
+      "name": "Wood Green Underground Station",
+      "naptanId": "940GZZLUWOG",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Piccadilly"
+      ],
+      "lat": 51.597479,
+      "lng": -0.109886,
+      "aliases": []
+    },
+    {
+      "name": "Barking Rail Station",
+      "naptanId": "910GBARKING",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.539495,
+      "lng": 0.080903,
+      "aliases": []
+    },
+    {
+      "name": "Barking Riverside",
+      "naptanId": "910GBARKRIV",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.51953,
+      "lng": 0.11596,
+      "aliases": []
+    },
+    {
+      "name": "Blackhorse Road Rail Station",
+      "naptanId": "910GBLCHSRD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.586605,
+      "lng": -0.041236,
+      "aliases": []
+    },
+    {
+      "name": "Crouch Hill Rail Station",
+      "naptanId": "910GCROUCHH",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.571302,
+      "lng": -0.117149,
+      "aliases": []
+    },
+    {
+      "name": "Harringay Green Lanes Rail Station",
+      "naptanId": "910GHRGYGL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.577182,
+      "lng": -0.098144,
+      "aliases": []
+    },
+    {
+      "name": "Leyton Midland Road Rail Station",
+      "naptanId": "910GLEYTNMR",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.569725,
+      "lng": -0.008051,
+      "aliases": []
+    },
+    {
+      "name": "Leytonstone High Road Rail Station",
+      "naptanId": "910GLYTNSHR",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.563554,
+      "lng": 0.008416,
+      "aliases": []
+    },
+    {
+      "name": "South Tottenham Rail Station",
+      "naptanId": "910GSTOTNHM",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.580372,
+      "lng": -0.072103,
+      "aliases": []
+    },
+    {
+      "name": "Upper Holloway Rail Station",
+      "naptanId": "910GUPRHLWY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.563631,
+      "lng": -0.129513,
+      "aliases": []
+    },
+    {
+      "name": "Woodgrange Park Rail Station",
+      "naptanId": "910GWDGRNPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.549264,
+      "lng": 0.044423,
+      "aliases": []
+    },
+    {
+      "name": "Walthamstow Queens Road Rail Station",
+      "naptanId": "910GWLTHQRD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.581503,
+      "lng": -0.023846,
+      "aliases": []
+    },
+    {
+      "name": "Wanstead Park Rail Station",
+      "naptanId": "910GWNSTDPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Suffragette"
+      ],
+      "lat": 51.551693,
+      "lng": 0.026213,
+      "aliases": []
+    },
+    {
+      "name": "Addiscombe",
+      "naptanId": "9400ZZCRADD1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.379753,
+      "lng": -0.073058,
+      "aliases": []
+    },
+    {
+      "name": "Addiscombe",
+      "naptanId": "9400ZZCRADD2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.379753,
+      "lng": -0.073014,
+      "aliases": []
+    },
+    {
+      "name": "Addington Village",
+      "naptanId": "9400ZZCRADV1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.356599,
+      "lng": -0.032607,
+      "aliases": []
+    },
+    {
+      "name": "Addington Village",
+      "naptanId": "9400ZZCRADV2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.356338,
+      "lng": -0.032618,
+      "aliases": []
+    },
+    {
+      "name": "Ampere Way",
+      "naptanId": "9400ZZCRAMP1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.382238,
+      "lng": -0.123654,
+      "aliases": []
+    },
+    {
+      "name": "Ampere Way",
+      "naptanId": "9400ZZCRAMP2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.382203,
+      "lng": -0.123727,
+      "aliases": []
+    },
+    {
+      "name": "Arena",
+      "naptanId": "9400ZZCRARA1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.391362,
+      "lng": -0.058297,
+      "aliases": []
+    },
+    {
+      "name": "Arena",
+      "naptanId": "9400ZZCRARA2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.391263,
+      "lng": -0.058301,
+      "aliases": []
+    },
+    {
+      "name": "Avenue Road",
+      "naptanId": "9400ZZCRAVE1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.407037,
+      "lng": -0.049092,
+      "aliases": []
+    },
+    {
+      "name": "Avenue Road",
+      "naptanId": "9400ZZCRAVE2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.406848,
+      "lng": -0.0491,
+      "aliases": []
+    },
+    {
+      "name": "Beddington Lane",
+      "naptanId": "9400ZZCRBED1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.3893,
+      "lng": -0.142409,
+      "aliases": []
+    },
+    {
+      "name": "Beddington Lane",
+      "naptanId": "9400ZZCRBED2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.389273,
+      "lng": -0.14241,
+      "aliases": []
+    },
+    {
+      "name": "Beckenham Junction",
+      "naptanId": "9400ZZCRBEK1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.410952,
+      "lng": -0.02619,
+      "aliases": []
+    },
+    {
+      "name": "Belgrave Walk",
+      "naptanId": "9400ZZCRBGV1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.399722,
+      "lng": -0.180256,
+      "aliases": []
+    },
+    {
+      "name": "Belgrave Walk",
+      "naptanId": "9400ZZCRBGV2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.40133,
+      "lng": -0.177806,
+      "aliases": []
+    },
+    {
+      "name": "Birkbeck",
+      "naptanId": "9400ZZCRBIR1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.40405,
+      "lng": -0.056063,
+      "aliases": []
+    },
+    {
+      "name": "Blackhorse Lane",
+      "naptanId": "9400ZZCRBLA1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.384748,
+      "lng": -0.070563,
+      "aliases": []
+    },
+    {
+      "name": "Blackhorse Lane",
+      "naptanId": "9400ZZCRBLA2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.380641,
+      "lng": -0.070735,
+      "aliases": []
+    },
+    {
+      "name": "Beckenham Road",
+      "naptanId": "9400ZZCRBRD1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.409639,
+      "lng": -0.042855,
+      "aliases": []
+    },
+    {
+      "name": "George Street",
+      "naptanId": "9400ZZCRCEN1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.373815,
+      "lng": -0.098753,
+      "aliases": []
+    },
+    {
+      "name": "Church Street",
+      "naptanId": "9400ZZCRCHR1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.373774,
+      "lng": -0.103985,
+      "aliases": []
+    },
+    {
+      "name": "Coombe Lane",
+      "naptanId": "9400ZZCRCOO1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.359875,
+      "lng": -0.058623,
+      "aliases": []
+    },
+    {
+      "name": "Coombe Lane",
+      "naptanId": "9400ZZCRCOO2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.359552,
+      "lng": -0.059226,
+      "aliases": []
+    },
+    {
+      "name": "Centrale",
+      "naptanId": "9400ZZCRCTR1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.376229,
+      "lng": -0.103424,
+      "aliases": []
+    },
+    {
+      "name": "Dundonald Road",
+      "naptanId": "9400ZZCRDDR1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.417608,
+      "lng": -0.207648,
+      "aliases": []
+    },
+    {
+      "name": "Dundonald Road",
+      "naptanId": "9400ZZCRDDR2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.417609,
+      "lng": -0.207706,
+      "aliases": []
+    },
+    {
+      "name": "East Croydon",
+      "naptanId": "9400ZZCRECR1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.374854,
+      "lng": -0.092417,
+      "aliases": []
+    },
+    {
+      "name": "East Croydon",
+      "naptanId": "9400ZZCRECR2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.374809,
+      "lng": -0.092418,
+      "aliases": []
+    },
+    {
+      "name": "Elmers End",
+      "naptanId": "9400ZZCRELM1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.39851,
+      "lng": -0.049555,
+      "aliases": []
+    },
+    {
+      "name": "Fieldway",
+      "naptanId": "9400ZZCRFLD1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.351305,
+      "lng": -0.024245,
+      "aliases": []
+    },
+    {
+      "name": "Fieldway",
+      "naptanId": "9400ZZCRFLD2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.351312,
+      "lng": -0.024647,
+      "aliases": []
+    },
+    {
+      "name": "Gravel Hill",
+      "naptanId": "9400ZZCRGRA1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.354676,
+      "lng": -0.042355,
+      "aliases": []
+    },
+    {
+      "name": "Gravel Hill",
+      "naptanId": "9400ZZCRGRA2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.35446,
+      "lng": -0.042364,
+      "aliases": []
+    },
+    {
+      "name": "Harrington Road",
+      "naptanId": "9400ZZCRHAR1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.399609,
+      "lng": -0.060478,
+      "aliases": []
+    },
+    {
+      "name": "Harrington Road",
+      "naptanId": "9400ZZCRHAR2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.399609,
+      "lng": -0.060478,
+      "aliases": []
+    },
+    {
+      "name": "King Henry's Drive",
+      "naptanId": "9400ZZCRKGH1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.34614,
+      "lng": -0.020849,
+      "aliases": []
+    },
+    {
+      "name": "King Henry's Drive",
+      "naptanId": "9400ZZCRKGH2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.345082,
+      "lng": -0.019975,
+      "aliases": []
+    },
+    {
+      "name": "Lebanon Road",
+      "naptanId": "9400ZZCRLEB1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.375075,
+      "lng": -0.084418,
+      "aliases": []
+    },
+    {
+      "name": "Lebanon Road",
+      "naptanId": "9400ZZCRLEB2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.37512,
+      "lng": -0.084417,
+      "aliases": []
+    },
+    {
+      "name": "Lloyd Park",
+      "naptanId": "9400ZZCRLOY1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.364193,
+      "lng": -0.082229,
+      "aliases": []
+    },
+    {
+      "name": "Lloyd Park",
+      "naptanId": "9400ZZCRLOY2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.364193,
+      "lng": -0.082229,
+      "aliases": []
+    },
+    {
+      "name": "Mitcham",
+      "naptanId": "9400ZZCRMCH1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.397787,
+      "lng": -0.172585,
+      "aliases": []
+    },
+    {
+      "name": "Mitcham",
+      "naptanId": "9400ZZCRMCH2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.397733,
+      "lng": -0.172587,
+      "aliases": []
+    },
+    {
+      "name": "Morden Road",
+      "naptanId": "9400ZZCRMDN1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.40905,
+      "lng": -0.192597,
+      "aliases": []
+    },
+    {
+      "name": "Morden Road",
+      "naptanId": "9400ZZCRMDN2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.40878,
+      "lng": -0.192608,
+      "aliases": []
+    },
+    {
+      "name": "Mitcham Junction",
+      "naptanId": "9400ZZCRMJT1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.392859,
+      "lng": -0.158795,
+      "aliases": []
+    },
+    {
+      "name": "Mitcham Junction",
+      "naptanId": "9400ZZCRMJT2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.392823,
+      "lng": -0.158797,
+      "aliases": []
+    },
+    {
+      "name": "Merton Park",
+      "naptanId": "9400ZZCRMTP1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.414797,
+      "lng": -0.201431,
+      "aliases": []
+    },
+    {
+      "name": "Merton Park",
+      "naptanId": "9400ZZCRMTP2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.414799,
+      "lng": -0.201517,
+      "aliases": []
+    },
+    {
+      "name": "New Addington",
+      "naptanId": "9400ZZCRNWA1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.34313,
+      "lng": -0.017805,
+      "aliases": []
+    },
+    {
+      "name": "Phipps Bridge",
+      "naptanId": "9400ZZCRPHI1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.403979,
+      "lng": -0.18164,
+      "aliases": []
+    },
+    {
+      "name": "Phipps Bridge",
+      "naptanId": "9400ZZCRPHI2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.403979,
+      "lng": -0.18164,
+      "aliases": []
+    },
+    {
+      "name": "Reeves Corner",
+      "naptanId": "9400ZZCRRVC1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.37527,
+      "lng": -0.10638,
+      "aliases": []
+    },
+    {
+      "name": "Sandilands",
+      "naptanId": "9400ZZCRSAN1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.375006,
+      "lng": -0.078027,
+      "aliases": []
+    },
+    {
+      "name": "Sandilands",
+      "naptanId": "9400ZZCRSAN2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.374808,
+      "lng": -0.078036,
+      "aliases": []
+    },
+    {
+      "name": "Therapia Lane",
+      "naptanId": "9400ZZCRTPA1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.385296,
+      "lng": -0.128702,
+      "aliases": []
+    },
+    {
+      "name": "Therapia Lane",
+      "naptanId": "9400ZZCRTPA2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.385511,
+      "lng": -0.128694,
+      "aliases": []
+    },
+    {
+      "name": "Waddon Marsh",
+      "naptanId": "9400ZZCRWAD1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.37711,
+      "lng": -0.117886,
+      "aliases": []
+    },
+    {
+      "name": "Waddon Marsh",
+      "naptanId": "9400ZZCRWAD2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.377006,
+      "lng": -0.118149,
+      "aliases": []
+    },
+    {
+      "name": "Wandle Park",
+      "naptanId": "9400ZZCRWAN1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.373022,
+      "lng": -0.113082,
+      "aliases": []
+    },
+    {
+      "name": "Wandle Park",
+      "naptanId": "9400ZZCRWAN2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.373025,
+      "lng": -0.113283,
+      "aliases": []
+    },
+    {
+      "name": "West Croydon",
+      "naptanId": "9400ZZCRWCR1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.379083,
+      "lng": -0.101984,
+      "aliases": []
+    },
+    {
+      "name": "Wellesley Road",
+      "naptanId": "9400ZZCRWEL1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.375369,
+      "lng": -0.097539,
+      "aliases": []
+    },
+    {
+      "name": "Wimbledon",
+      "naptanId": "9400ZZCRWMB1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.421051,
+      "lng": -0.205773,
+      "aliases": []
+    },
+    {
+      "name": "Woodside",
+      "naptanId": "9400ZZCRWOD1",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.38732,
+      "lng": -0.064576,
+      "aliases": []
+    },
+    {
+      "name": "Woodside",
+      "naptanId": "9400ZZCRWOD2",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.387033,
+      "lng": -0.064588,
+      "aliases": []
+    },
+    {
+      "name": "Addiscombe Tram Stop",
+      "naptanId": "940GZZCRADD",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.37981,
+      "lng": -0.073242,
+      "aliases": []
+    },
+    {
+      "name": "Addington Village Tram Stop",
+      "naptanId": "940GZZCRADV",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.356241,
+      "lng": -0.032694,
+      "aliases": []
+    },
+    {
+      "name": "Ampere Way Tram Stop",
+      "naptanId": "940GZZCRAMP",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.382238,
+      "lng": -0.123654,
+      "aliases": []
+    },
+    {
+      "name": "Arena Tram Stop",
+      "naptanId": "940GZZCRARA",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.391525,
+      "lng": -0.058347,
+      "aliases": []
+    },
+    {
+      "name": "Avenue Road Tram Stop",
+      "naptanId": "940GZZCRAVE",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.4068,
+      "lng": -0.049476,
+      "aliases": []
+    },
+    {
+      "name": "Beddington Lane Tram Stop",
+      "naptanId": "940GZZCRBED",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.389242,
+      "lng": -0.142167,
+      "aliases": []
+    },
+    {
+      "name": "Beckenham Junction Tram Stop",
+      "naptanId": "940GZZCRBEK",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.41073,
+      "lng": -0.026401,
+      "aliases": []
+    },
+    {
+      "name": "Belgrave Walk Tram Stop",
+      "naptanId": "940GZZCRBGV",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.4011,
+      "lng": -0.17774,
+      "aliases": []
+    },
+    {
+      "name": "Birkbeck Tram Stop",
+      "naptanId": "940GZZCRBIR",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.403767,
+      "lng": -0.055787,
+      "aliases": []
+    },
+    {
+      "name": "Blackhorse Lane Tram Stop",
+      "naptanId": "940GZZCRBLA",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.384757,
+      "lng": -0.070562,
+      "aliases": []
+    },
+    {
+      "name": "Beckenham Road Tram Stop",
+      "naptanId": "940GZZCRBRD",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.409532,
+      "lng": -0.043421,
+      "aliases": []
+    },
+    {
+      "name": "George Street Tram Stop",
+      "naptanId": "940GZZCRCEN",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.373977,
+      "lng": -0.098746,
+      "aliases": []
+    },
+    {
+      "name": "Church Street Tram Stop",
+      "naptanId": "940GZZCRCHR",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.373708,
+      "lng": -0.104361,
+      "aliases": []
+    },
+    {
+      "name": "Coombe Lane Tram Stop",
+      "naptanId": "940GZZCRCOO",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.359791,
+      "lng": -0.05956,
+      "aliases": []
+    },
+    {
+      "name": "Centrale Tram Stop",
+      "naptanId": "940GZZCRCTR",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.375769,
+      "lng": -0.103917,
+      "aliases": []
+    },
+    {
+      "name": "Dundonald Road Tram Stop",
+      "naptanId": "940GZZCRDDR",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.417555,
+      "lng": -0.207679,
+      "aliases": []
+    },
+    {
+      "name": "East Croydon Tram Stop",
+      "naptanId": "940GZZCRECR",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.374863,
+      "lng": -0.092416,
+      "aliases": []
+    },
+    {
+      "name": "Elmers End Tram Stop",
+      "naptanId": "940GZZCRELM",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.398474,
+      "lng": -0.049557,
+      "aliases": []
+    },
+    {
+      "name": "Fieldway Tram Stop",
+      "naptanId": "940GZZCRFLD",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.351305,
+      "lng": -0.024245,
+      "aliases": []
+    },
+    {
+      "name": "Gravel Hill Tram Stop",
+      "naptanId": "940GZZCRGRA",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.354545,
+      "lng": -0.04315,
+      "aliases": []
+    },
+    {
+      "name": "Harrington Road Tram Stop",
+      "naptanId": "940GZZCRHAR",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.399793,
+      "lng": -0.060729,
+      "aliases": []
+    },
+    {
+      "name": "King Henry's Drive Tram Stop",
+      "naptanId": "940GZZCRKGH",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.34614,
+      "lng": -0.020849,
+      "aliases": []
+    },
+    {
+      "name": "Lebanon Road Tram Stop",
+      "naptanId": "940GZZCRLEB",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.375201,
+      "lng": -0.085002,
+      "aliases": []
+    },
+    {
+      "name": "Lloyd Park Tram Stop",
+      "naptanId": "940GZZCRLOY",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.364278,
+      "lng": -0.080775,
+      "aliases": []
+    },
+    {
+      "name": "Mitcham Tram Stop",
+      "naptanId": "940GZZCRMCH",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.39749,
+      "lng": -0.1709,
+      "aliases": []
+    },
+    {
+      "name": "Morden Road Tram Stop",
+      "naptanId": "940GZZCRMDN",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.408874,
+      "lng": -0.192834,
+      "aliases": []
+    },
+    {
+      "name": "Mitcham Junction Tram Stop",
+      "naptanId": "940GZZCRMJT",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.392868,
+      "lng": -0.158263,
+      "aliases": []
+    },
+    {
+      "name": "Merton Park Tram Stop",
+      "naptanId": "940GZZCRMTP",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.413589,
+      "lng": -0.201219,
+      "aliases": []
+    },
+    {
+      "name": "New Addington Tram Stop",
+      "naptanId": "940GZZCRNWA",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.342593,
+      "lng": -0.017412,
+      "aliases": []
+    },
+    {
+      "name": "Phipps Bridge Tram Stop",
+      "naptanId": "940GZZCRPHI",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.403378,
+      "lng": -0.182311,
+      "aliases": []
+    },
+    {
+      "name": "Reeves Corner Tram Stop",
+      "naptanId": "940GZZCRRVC",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.375279,
+      "lng": -0.106408,
+      "aliases": []
+    },
+    {
+      "name": "Sandilands Tram Stop",
+      "naptanId": "940GZZCRSAN",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.375024,
+      "lng": -0.078041,
+      "aliases": []
+    },
+    {
+      "name": "Therapia Lane Tram Stop",
+      "naptanId": "940GZZCRTPA",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.385697,
+      "lng": -0.129045,
+      "aliases": []
+    },
+    {
+      "name": "Waddon Marsh Tram Stop",
+      "naptanId": "940GZZCRWAD",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.377076,
+      "lng": -0.118016,
+      "aliases": []
+    },
+    {
+      "name": "Wandle Park Tram Stop",
+      "naptanId": "940GZZCRWAN",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.373403,
+      "lng": -0.113282,
+      "aliases": []
+    },
+    {
+      "name": "West Croydon Tram Stop",
+      "naptanId": "940GZZCRWCR",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.378971,
+      "lng": -0.101701,
+      "aliases": []
+    },
+    {
+      "name": "Wellesley Road Tram Stop",
+      "naptanId": "940GZZCRWEL",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.37537,
+      "lng": -0.097554,
+      "aliases": []
+    },
+    {
+      "name": "Wimbledon Tram Stop",
+      "naptanId": "940GZZCRWMB",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.421051,
+      "lng": -0.205816,
+      "aliases": []
+    },
+    {
+      "name": "Woodside Tram Stop",
+      "naptanId": "940GZZCRWOD",
+      "modes": [
+        "tram"
+      ],
+      "lines": [
+        "Tram"
+      ],
+      "lat": 51.3871,
+      "lng": -0.065361,
+      "aliases": []
+    },
+    {
+      "name": "Blackhorse Road Underground Station",
+      "naptanId": "940GZZLUBLR",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.586919,
+      "lng": -0.04115,
+      "aliases": []
+    },
+    {
+      "name": "Brixton Underground Station",
+      "naptanId": "940GZZLUBXN",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.462618,
+      "lng": -0.114888,
+      "aliases": []
+    },
+    {
+      "name": "Highbury & Islington Underground Station",
+      "naptanId": "940GZZLUHAI",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.54635,
+      "lng": -0.103324,
+      "aliases": []
+    },
+    {
+      "name": "Pimlico Underground Station",
+      "naptanId": "940GZZLUPCO",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.489097,
+      "lng": -0.133761,
+      "aliases": []
+    },
+    {
+      "name": "Seven Sisters Underground Station",
+      "naptanId": "940GZZLUSVS",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.58333,
+      "lng": -0.072584,
+      "aliases": []
+    },
+    {
+      "name": "Tottenham Hale Underground Station",
+      "naptanId": "940GZZLUTMH",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.588108,
+      "lng": -0.060241,
+      "aliases": []
+    },
+    {
+      "name": "Vauxhall Underground Station",
+      "naptanId": "940GZZLUVXL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.485743,
+      "lng": -0.124204,
+      "aliases": []
+    },
+    {
+      "name": "Walthamstow Central Underground Station",
+      "naptanId": "940GZZLUWWL",
+      "modes": [
+        "tube"
+      ],
+      "lines": [
+        "Victoria"
+      ],
+      "lat": 51.582965,
+      "lng": -0.019885,
+      "aliases": []
+    },
+    {
+      "name": "Bush Hill Park Rail Station",
+      "naptanId": "910GBHILLPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.641519,
+      "lng": -0.069221,
+      "aliases": []
+    },
+    {
+      "name": "Bruce Grove Rail Station",
+      "naptanId": "910GBRUCGRV",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.593959,
+      "lng": -0.069867,
+      "aliases": []
+    },
+    {
+      "name": "Bethnal Green Rail Station",
+      "naptanId": "910GBTHNLGR",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.523917,
+      "lng": -0.059568,
+      "aliases": []
+    },
+    {
+      "name": "Cambridge Heath (London) Rail Station",
+      "naptanId": "910GCAMHTH",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.531973,
+      "lng": -0.057279,
+      "aliases": []
+    },
+    {
+      "name": "Cheshunt Rail Station",
+      "naptanId": "910GCHESHNT",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.702876,
+      "lng": -0.02396,
+      "aliases": []
+    },
+    {
+      "name": "Chingford Rail Station",
+      "naptanId": "910GCHINGFD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.633087,
+      "lng": 0.009897,
+      "aliases": []
+    },
+    {
+      "name": "Clapton Rail Station",
+      "naptanId": "910GCLAPTON",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.561644,
+      "lng": -0.057025,
+      "aliases": []
+    },
+    {
+      "name": "Edmonton Green Rail Station",
+      "naptanId": "910GEDMNGRN",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.624929,
+      "lng": -0.061112,
+      "aliases": []
+    },
+    {
+      "name": "Enfield Town Rail Station",
+      "naptanId": "910GENFLDTN",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.652026,
+      "lng": -0.079328,
+      "aliases": []
+    },
+    {
+      "name": "Hackney Downs Rail Station",
+      "naptanId": "910GHAKNYNM",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.548757,
+      "lng": -0.060819,
+      "aliases": []
+    },
+    {
+      "name": "Highams Park Rail Station",
+      "naptanId": "910GHGHMSPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.60835,
+      "lng": -0.000222,
+      "aliases": []
+    },
+    {
+      "name": "London Fields Rail Station",
+      "naptanId": "910GLONFLDS",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.541153,
+      "lng": -0.057753,
+      "aliases": []
+    },
+    {
+      "name": "Rectory Road Rail Station",
+      "naptanId": "910GRCTRYRD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.558502,
+      "lng": -0.068267,
+      "aliases": []
+    },
+    {
+      "name": "Southbury Rail Station",
+      "naptanId": "910GSBURY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.648705,
+      "lng": -0.052437,
+      "aliases": []
+    },
+    {
+      "name": "Seven Sisters Rail Station",
+      "naptanId": "910GSEVNSIS",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.582268,
+      "lng": -0.07527,
+      "aliases": []
+    },
+    {
+      "name": "Silver Street Rail Station",
+      "naptanId": "910GSIVRST",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.614688,
+      "lng": -0.06724,
+      "aliases": []
+    },
+    {
+      "name": "St James Street (London) Rail Station",
+      "naptanId": "910GSTJMSST",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.580981,
+      "lng": -0.032918,
+      "aliases": []
+    },
+    {
+      "name": "Stoke Newington Rail Station",
+      "naptanId": "910GSTKNWNG",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.565233,
+      "lng": -0.072887,
+      "aliases": []
+    },
+    {
+      "name": "Stamford Hill Rail Station",
+      "naptanId": "910GSTMFDHL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.574467,
+      "lng": -0.076682,
+      "aliases": []
+    },
+    {
+      "name": "Theobalds Grove Rail Station",
+      "naptanId": "910GTHBLDSG",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.692457,
+      "lng": -0.034831,
+      "aliases": []
+    },
+    {
+      "name": "Turkey Street Rail Station",
+      "naptanId": "910GTURKYST",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.672628,
+      "lng": -0.047217,
+      "aliases": []
+    },
+    {
+      "name": "Wood Street Rail Station",
+      "naptanId": "910GWDST",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.58658,
+      "lng": -0.002405,
+      "aliases": []
+    },
+    {
+      "name": "White Hart Lane Rail Station",
+      "naptanId": "910GWHHRTLA",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.605037,
+      "lng": -0.070914,
+      "aliases": []
+    },
+    {
+      "name": "Walthamstow Central Rail Station",
+      "naptanId": "910GWLTWCEN",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Weaver"
+      ],
+      "lat": 51.582919,
+      "lng": -0.019815,
+      "aliases": []
+    },
+    {
+      "name": "Anerley Rail Station",
+      "naptanId": "910GANERLEY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.412153,
+      "lng": -0.065886,
+      "aliases": []
+    },
+    {
+      "name": "Brockley Rail Station",
+      "naptanId": "910GBROCKLY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.464649,
+      "lng": -0.037537,
+      "aliases": []
+    },
+    {
+      "name": "Clapham High Street Rail Station",
+      "naptanId": "910GCLPHHS",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.465481,
+      "lng": -0.132522,
+      "aliases": []
+    },
+    {
+      "name": "Canada Water Rail Station",
+      "naptanId": "910GCNDAW",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.49799,
+      "lng": -0.04972,
+      "aliases": []
+    },
+    {
+      "name": "Crystal Palace Rail Station",
+      "naptanId": "910GCRYSTLP",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.418109,
+      "lng": -0.07261,
+      "aliases": []
+    },
+    {
+      "name": "Dalston Junction Rail Station",
+      "naptanId": "910GDALS",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.546116,
+      "lng": -0.075137,
+      "aliases": []
+    },
+    {
+      "name": "Denmark Hill Rail Station",
+      "naptanId": "910GDENMRKH",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.468203,
+      "lng": -0.089361,
+      "aliases": []
+    },
+    {
+      "name": "Forest Hill Rail Station",
+      "naptanId": "910GFORESTH",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.43928,
+      "lng": -0.053157,
+      "aliases": []
+    },
+    {
+      "name": "Haggerston Rail Station",
+      "naptanId": "910GHAGGERS",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.538705,
+      "lng": -0.075666,
+      "aliases": []
+    },
+    {
+      "name": "Honor Oak Park Rail Station",
+      "naptanId": "910GHONROPK",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.449989,
+      "lng": -0.045505,
+      "aliases": []
+    },
+    {
+      "name": "Hoxton Rail Station",
+      "naptanId": "910GHOXTON",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.531512,
+      "lng": -0.075681,
+      "aliases": []
+    },
+    {
+      "name": "New Cross Gate Rail Station",
+      "naptanId": "910GNEWXGTE",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.475128,
+      "lng": -0.040399,
+      "aliases": []
+    },
+    {
+      "name": "Norwood Junction Rail Station",
+      "naptanId": "910GNORWDJ",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.397019,
+      "lng": -0.075221,
+      "aliases": []
+    },
+    {
+      "name": "New Cross ELL Rail Station",
+      "naptanId": "910GNWCRELL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.476344,
+      "lng": -0.032441,
+      "aliases": []
+    },
+    {
+      "name": "Queens Road Peckham Rail Station",
+      "naptanId": "910GPCKHMQD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.473566,
+      "lng": -0.057313,
+      "aliases": []
+    },
+    {
+      "name": "Peckham Rye Rail Station",
+      "naptanId": "910GPCKHMRY",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.470034,
+      "lng": -0.069414,
+      "aliases": []
+    },
+    {
+      "name": "Penge West Rail Station",
+      "naptanId": "910GPENEW",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.417555,
+      "lng": -0.06084,
+      "aliases": []
+    },
+    {
+      "name": "Rotherhithe Rail Station",
+      "naptanId": "910GRTHERHI",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.500817,
+      "lng": -0.052048,
+      "aliases": []
+    },
+    {
+      "name": "Shadwell Rail Station",
+      "naptanId": "910GSHADWEL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.511284,
+      "lng": -0.056934,
+      "aliases": []
+    },
+    {
+      "name": "Shoreditch High Street Rail Station",
+      "naptanId": "910GSHRDHST",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.523375,
+      "lng": -0.075246,
+      "aliases": []
+    },
+    {
+      "name": "Surrey Quays Rail Station",
+      "naptanId": "910GSURREYQ",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.493196,
+      "lng": -0.047519,
+      "aliases": []
+    },
+    {
+      "name": "Sydenham Rail Station",
+      "naptanId": "910GSYDENHM",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.427248,
+      "lng": -0.054244,
+      "aliases": []
+    },
+    {
+      "name": "Wapping Rail Station",
+      "naptanId": "910GWAPPING",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.504388,
+      "lng": -0.055931,
+      "aliases": []
+    },
+    {
+      "name": "Whitechapel Rail Station",
+      "naptanId": "910GWCHAPEL",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.519469,
+      "lng": -0.059757,
+      "aliases": []
+    },
+    {
+      "name": "West Croydon Rail Station",
+      "naptanId": "910GWCROYDN",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.378428,
+      "lng": -0.102585,
+      "aliases": []
+    },
+    {
+      "name": "Wandsworth Road Rail Station",
+      "naptanId": "910GWNDSWRD",
+      "modes": [
+        "overground"
+      ],
+      "lines": [
+        "Windrush"
+      ],
+      "lat": 51.470216,
+      "lng": -0.13852,
+      "aliases": []
+    }
+  ]
+}
