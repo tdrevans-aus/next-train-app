@@ -258,6 +258,7 @@
         explicit: explicit || readRegionExplicit(),
       });
     }
+    window.nextTrainApp?.clearLastNearbyStationCache?.();
     document.dispatchEvent(
       new CustomEvent("nexttrain:city-changed", { detail: { city, country: match?.country.id || "au" } })
     );

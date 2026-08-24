@@ -1342,8 +1342,15 @@ function showOnboardingStep1() {
 
   const step1Text = onboardingStep1?.querySelector("p");
   if (step1Text) {
+    const regionNames = {
+      perth: "Transperth",
+      brisbane: "Brisbane",
+      sydney: "Sydney",
+      adelaide: "Adelaide",
+    };
+    const regionLabel = regionNames[readActiveCity()] || "your local";
     step1Text.textContent = nearbyMode().getNearbySession()?.unsupportedRegion
-      ? "Near me works when you're near Transperth stations."
+      ? `Near me works when you're near ${regionLabel} stations.`
       : "By default, Next Train shows departures at the station nearest you.";
   }
 
@@ -4237,6 +4244,16 @@ function isStationInActiveCity(station) {
   return !allowed || allowed.has(station);
 }
 
+function readActiveCity() {
+  return String(
+    window.NextTrainBrisbaneDogfood?.getCity?.() ||
+      window.NextTrainCitySession?.readSavedCity?.() ||
+      "perth"
+  )
+    .trim()
+    .toLowerCase();
+}
+
 function testModeNearestStation() {
   if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
     const city = String(window.NextTrainBrisbaneDogfood.getCity?.() || "").toLowerCase();
@@ -6080,6 +6097,10 @@ journeySwitcherMenuEl?.addEventListener("click", (event) => {
 });
 
 document.addEventListener("nexttrain:city-changed", () => {
+  clearLastNearbyStationCache();
+  if (isNearbyModeActive()) {
+    exitNearbyMode();
+  }
   stationCoords = null;
   void loadStationCoords();
   void getStationsList();
@@ -6131,8 +6152,8 @@ async function init() {
   }
 
   scheduleRefresh();
-  void getStationsList();
-  void loadStationCoords();
+  await getStationsList();
+  await loadStationCoords();
   if (isNativeApp()) {
     void ensureGeoBridge().catch(() => {});
   }
@@ -6513,6 +6534,8 @@ function initNearbyModeFromModule() {
     formatStationLabel,
     normalizeStation,
     isCatalogStation,
+    isStationInActiveCity,
+    readActiveCity,
     getStationsList,
     getNearbyStationCombobox,
     setStationComboboxValue,
