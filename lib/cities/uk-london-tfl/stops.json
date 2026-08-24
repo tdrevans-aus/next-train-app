@@ -1405,7 +1405,7 @@
       ]
     },
     {
-      "name": "Paddington (H&C Line)-Underground",
+      "name": "Paddington (H&C Line)",
       "naptanId": "940GZZLUPAH",
       "modes": [
         "tube"
@@ -1415,7 +1415,9 @@
       ],
       "lat": 51.518187,
       "lng": -0.178306,
-      "aliases": []
+      "aliases": [
+        "Paddington (H&C Line)-Underground"
+      ]
     },
     {
       "name": "Royal Oak",
@@ -1853,7 +1855,7 @@
       ]
     },
     {
-      "name": "Hammersmith (Dist&Picc Line)",
+      "name": "Hammersmith (Dist&Pic Line)",
       "naptanId": "940GZZLUHSD",
       "modes": [
         "tube"
@@ -1864,7 +1866,7 @@
       "lat": 51.4923,
       "lng": -0.22362,
       "aliases": [
-        "Hammersmith (Dist&Picc Line) Underground Station"
+        "Hammersmith (Dist&Pic Line) Underground Station"
       ]
     },
     {
@@ -2349,7 +2351,7 @@
       ]
     },
     {
-      "name": "Cutty Sark (for Maritime Greenwich)",
+      "name": "Cutty Sark",
       "naptanId": "940GZZDLCUT",
       "modes": [
         "dlr"
@@ -2360,6 +2362,7 @@
       "lat": 51.481671,
       "lng": -0.01081,
       "aliases": [
+        "Cutty Sark (for Maritime Greenwich)",
         "Cutty Sark (for Maritime Greenwich) DLR Station"
       ]
     },
