@@ -26,7 +26,7 @@
       regions: [
         { id: "uk-west-midlands", name: "West Midlands", comingSoon: true },
         { id: "uk-ellesmere-port", name: "Ellesmere Port corridor", comingSoon: true },
-        { id: "uk-london-tfl", name: "London TfL", comingSoon: true },
+        { id: "uk-london-tfl", name: "London TfL" },
       ],
     },
   ];
