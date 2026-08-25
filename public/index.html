@@ -1400,15 +1400,22 @@
           if (!Cap) {
             return null;
           }
-          // Native bridge has Plugins.* but not registerPlugin (that lives in @capacitor/core JS).
-          function registerPlugin(name) {
-            if (Cap.Plugins && Cap.Plugins[name]) {
+          // Native bridge exposes Plugins.* and (optionally) Cap.registerPlugin from
+          // @capacitor/core. Cap.withPlugin on native is a no-op that ignores the id —
+          // do not use it. Never throw at bundle load: analytics-bundle registers
+          // SentryCapacitor eagerly via require("@capacitor/core").registerPlugin.
+          function registerPlugin(name, implementations) {
+            const nativeRegister = Cap.registerPlugin;
+            if (typeof nativeRegister === "function" && nativeRegister !== registerPlugin) {
+              return nativeRegister.call(Cap, name, implementations);
+            }
+            if (!Cap.Plugins) {
+              Cap.Plugins = {};
+            }
+            if (Cap.Plugins[name]) {
               return Cap.Plugins[name];
             }
-            if (typeof Cap.withPlugin === "function") {
-              return Cap.withPlugin(name);
-            }
-            throw new Error('Capacitor plugin "' + name + '" is not available');
+            return (Cap.Plugins[name] = {});
           }
           return {
             Capacitor: Cap,
