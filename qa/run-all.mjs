@@ -28,6 +28,7 @@ const EXIT_INVERT_PASS = new Set([
 
 const SMOKE_SCRIPTS = [
   "stickiness-coaches-logic.mjs",
+  "stickiness-coaches-reentry.mjs",
   "fremantle-claremont-direction.mjs",
   "smoke-browser.mjs",
   "smoke-11-13.mjs",
@@ -298,7 +299,11 @@ async function main() {
     return;
   }
 
-  const needsServer = scripts.some((name) => name !== "stickiness-coaches-logic.mjs");
+  const noServerScripts = new Set([
+    "stickiness-coaches-logic.mjs",
+    "stickiness-coaches-reentry.mjs",
+  ]);
+  const needsServer = scripts.some((name) => !noServerScripts.has(name));
   let serverChild = null;
 
   if (needsServer) {
