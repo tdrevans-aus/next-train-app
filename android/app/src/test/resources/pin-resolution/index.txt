@@ -14,5 +14,6 @@ journey-secondary-next-hidden.json
 journey-skip-past-target-slot.json
 journey-skip-preview-hero.json
 journey-target-departed.json
+journey-tuesday-night-morning-preview.json
 nearby-pin-expired.json
 nearby-pin-holding.json

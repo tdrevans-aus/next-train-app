@@ -1850,7 +1850,11 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
         if (!isNearbyLocateCurrent(generation)) {
           return;
         }
-        setNearbyError(locationErrorFrom(error).message);
+        // Only show GPS error if we have no board data — if board loaded fine, don't
+        // overwrite a working display with a stale location error.
+        if (!nearbyBoard || !nearbyBoardHasDepartures()) {
+          setNearbyError(locationErrorFrom(error).message);
+        }
         renderNearbyBoard();
       } catch (fetchError) {
         if (!isNearbyLocateCurrent(generation)) {
@@ -2356,7 +2360,16 @@ async function fetchNearbyBoard() {
     }
     window.NextTrainBrisbaneDogfood?.applyParams?.(params);
 
-    const result = await fetchJson(apiUrl(`/api/board?${params}`));
+    // Race the board fetch against a 15-second hard timeout.
+    // CapacitorHttp doesn't honour AbortSignal, so Promise.race is the only
+    // reliable way to cap the wait when native HTTP ignores abort.
+    const result = await Promise.race([
+      fetchJson(apiUrl(`/api/board?${params}`)),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Times unavailable — please try again")), 15000)
+      ),
+    ]);
+
     if (!result.ok) {
       // Fallback: if /api/board 404s (e.g. not deployed to Vercel yet), try individual fetches.
       if (result.status === 404) {

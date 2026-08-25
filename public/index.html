@@ -1414,7 +1414,15 @@
         };
 
         // Jim brief: defer non-critical scripts and fonts until after first train paint.
+        let deferredLoadStarted = false;
+        let deferredReadyPromise = null;
+
         function loadDeferred() {
+          if (deferredLoadStarted) {
+            return deferredReadyPromise;
+          }
+          deferredLoadStarted = true;
+
           const scripts = [
             "ad-free-purchase.js",
             "analytics-bundle.js",
@@ -1425,22 +1433,45 @@
             "widget.js",
             "leave-reminders.js",
             "stickiness-coaches.js",
-            "ads.js"
+            "ads.js",
           ];
-          scripts.forEach(src => {
-            const s = document.createElement("script");
-            s.src = src;
-            s.async = true;
-            document.body.appendChild(s);
+
+          deferredReadyPromise = Promise.all(
+            scripts.map(
+              (src) =>
+                new Promise((resolve, reject) => {
+                  const s = document.createElement("script");
+                  s.src = src;
+                  s.async = true;
+                  s.onload = () => resolve();
+                  s.onerror = () => reject(new Error("Failed to load " + src));
+                  document.body.appendChild(s);
+                })
+            )
+          ).then(() => {
+            window.NextTrainDeferred._ready = true;
+            if (typeof window.NextTrainDeferred.onReady === "function") {
+              window.NextTrainDeferred.onReady();
+            }
+            document.dispatchEvent(new CustomEvent("nexttrain:deferred-ready"));
           });
 
           // Load Google Fonts after paint
           const f = document.createElement("link");
           f.rel = "stylesheet";
-          f.href = "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap";
+          f.href =
+            "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap";
           document.head.appendChild(f);
+
+          return deferredReadyPromise;
         }
-        window.NextTrainDeferred = { load: loadDeferred };
+
+        window.NextTrainDeferred = {
+          load: loadDeferred,
+          whenReady() {
+            return deferredReadyPromise || Promise.resolve();
+          },
+        };
       })();
     </script>
     <script src="geo-bundle.js"></script>

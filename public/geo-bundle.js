@@ -302,7 +302,7 @@ var NextTrainGeo = (() => {
     }
     if (Number(error?.code) === 3 || lower.includes("timeout") || lower.includes("could not obtain location in time") || lower.includes("timed out")) {
       const timeout = new Error(
-        isIos() ? "Couldn't get your location in time. On iPad, try Wi\u2011Fi, move near a window, or choose a station below." : "Couldn\u2019t get your location. On an emulator, set a mock GPS (Extended controls \u2192 Location). On a phone, turn on Location \u2014 or choose a station below."
+        isIos() ? "Couldn't get your location in time. On iPad, try Wi\u2011Fi, move near a window, or choose a station below." : "Couldn\u2019t get your location in time. Turn on Location \u2014 or choose a station below."
       );
       timeout.code = 3;
       timeout.cause = error;
@@ -310,29 +310,61 @@ var NextTrainGeo = (() => {
     }
     throw error;
   }
+  function isEmulator() {
+    const ua = String(navigator?.userAgent || "");
+    return /sdk_gphone|emulator|Android SDK built for/i.test(ua);
+  }
+  function readPositionCoords(position) {
+    if (!position) {
+      return null;
+    }
+    const coords = position.coords ?? position;
+    const latitude = coords?.latitude ?? position.latitude;
+    const longitude = coords?.longitude ?? position.longitude;
+    if (typeof latitude !== "number" || typeof longitude !== "number") {
+      console.warn("[Geo] Invalid position shape:", JSON.stringify(position));
+      return null;
+    }
+    return {
+      latitude,
+      longitude,
+      speed: coords?.speed ?? position.speed ?? null
+    };
+  }
   async function getCurrentPosition(options = {}) {
     await ensureLocationPermission();
-    const timeout = options.timeout ?? (isIos() ? 2e4 : 8e3);
+    const timeout = options.timeout ?? (isIos() ? 2e4 : 15e3);
     const maximumAge = options.maximumAge ?? 6e4;
     const preferHighAccuracy = Boolean(options.enableHighAccuracy);
-    const attempts = preferHighAccuracy ? [{ enableHighAccuracy: true }, { enableHighAccuracy: false }] : [{ enableHighAccuracy: false }, { enableHighAccuracy: true }];
+    const nativeAttempts = preferHighAccuracy ? [
+      { enableHighAccuracy: true, maximumAge },
+      { enableHighAccuracy: false, maximumAge }
+    ] : isEmulator() ? [
+      // Emulator: prefer a fresh mock fix (Extended controls → SET LOCATION).
+      { enableHighAccuracy: false, maximumAge: 0 },
+      { enableHighAccuracy: false, maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1e3) },
+      { enableHighAccuracy: true, maximumAge: 0 }
+    ] : [
+      { enableHighAccuracy: false, maximumAge },
+      { enableHighAccuracy: true, maximumAge }
+    ];
     let lastError = null;
-    for (const attempt of attempts) {
+    for (const attempt of nativeAttempts) {
       try {
-        console.log(`[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${timeout}`);
+        console.log(
+          `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${timeout}, maximumAge=${attempt.maximumAge}`
+        );
         const position = await Geolocation2.getCurrentPosition({
           enableHighAccuracy: attempt.enableHighAccuracy,
           timeout,
-          maximumAge
+          maximumAge: attempt.maximumAge
         });
+        const coords = readPositionCoords(position);
+        if (!coords) {
+          throw new Error("Geolocation returned an invalid position");
+        }
         console.log("[Geo] getCurrentPosition success");
-        return {
-          coords: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            speed: position.coords.speed ?? null
-          }
-        };
+        return { coords };
       } catch (error) {
         console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
         lastError = error;
@@ -345,7 +377,7 @@ var NextTrainGeo = (() => {
           navigator.geolocation.getCurrentPosition(resolve, reject, {
             enableHighAccuracy: preferHighAccuracy,
             timeout: timeout + 5e3,
-            maximumAge
+            maximumAge: isEmulator() ? 0 : maximumAge
           });
         });
         console.log("[Geo] navigator.geolocation success");

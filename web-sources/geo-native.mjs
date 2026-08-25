@@ -150,7 +150,7 @@ function mapGeolocationError(error) {
     const timeout = new Error(
       isIos()
         ? "Couldn't get your location in time. On iPad, try Wi‑Fi, move near a window, or choose a station below."
-        : "Couldn’t get your location. On an emulator, set a mock GPS (Extended controls → Location). On a phone, turn on Location — or choose a station below."
+        : "Couldn’t get your location in time. Turn on Location — or choose a station below."
     );
     timeout.code = 3;
     timeout.cause = error;
@@ -160,34 +160,75 @@ function mapGeolocationError(error) {
   throw error;
 }
 
+function isEmulator() {
+  const ua = String(navigator?.userAgent || "");
+  return /sdk_gphone|emulator|Android SDK built for/i.test(ua);
+}
+
+function readPositionCoords(position) {
+  if (!position) {
+    return null;
+  }
+
+  const coords = position.coords ?? position;
+  const latitude = coords?.latitude ?? position.latitude;
+  const longitude = coords?.longitude ?? position.longitude;
+
+  if (typeof latitude !== "number" || typeof longitude !== "number") {
+    console.warn("[Geo] Invalid position shape:", JSON.stringify(position));
+    return null;
+  }
+
+  return {
+    latitude,
+    longitude,
+    speed: coords?.speed ?? position.speed ?? null,
+  };
+}
+
 export async function getCurrentPosition(options = {}) {
   await ensureLocationPermission();
 
-    const timeout = options.timeout ?? (isIos() ? 20000 : 8000);
+  const timeout = options.timeout ?? (isIos() ? 20000 : 15000);
   const maximumAge = options.maximumAge ?? 60000;
   const preferHighAccuracy = Boolean(options.enableHighAccuracy);
-  const attempts = preferHighAccuracy
-    ? [{ enableHighAccuracy: true }, { enableHighAccuracy: false }]
-    : [{ enableHighAccuracy: false }, { enableHighAccuracy: true }];
+
+  const nativeAttempts = preferHighAccuracy
+    ? [
+        { enableHighAccuracy: true, maximumAge },
+        { enableHighAccuracy: false, maximumAge },
+      ]
+    : isEmulator()
+      ? [
+          // Emulator: prefer a fresh mock fix (Extended controls → SET LOCATION).
+          { enableHighAccuracy: false, maximumAge: 0 },
+          { enableHighAccuracy: false, maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1000) },
+          { enableHighAccuracy: true, maximumAge: 0 },
+        ]
+      : [
+          { enableHighAccuracy: false, maximumAge },
+          { enableHighAccuracy: true, maximumAge },
+        ];
 
   let lastError = null;
-  for (const attempt of attempts) {
+  for (const attempt of nativeAttempts) {
     try {
-      console.log(`[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${timeout}`);
+      console.log(
+        `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${timeout}, maximumAge=${attempt.maximumAge}`
+      );
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: attempt.enableHighAccuracy,
         timeout,
-        maximumAge,
+        maximumAge: attempt.maximumAge,
       });
 
+      const coords = readPositionCoords(position);
+      if (!coords) {
+        throw new Error("Geolocation returned an invalid position");
+      }
+
       console.log("[Geo] getCurrentPosition success");
-      return {
-        coords: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          speed: position.coords.speed ?? null,
-        },
-      };
+      return { coords };
     } catch (error) {
       console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
       lastError = error;
@@ -202,7 +243,7 @@ export async function getCurrentPosition(options = {}) {
         navigator.geolocation.getCurrentPosition(resolve, reject, {
           enableHighAccuracy: preferHighAccuracy,
           timeout: timeout + 5000,
-          maximumAge,
+          maximumAge: isEmulator() ? 0 : maximumAge,
         });
       });
       console.log("[Geo] navigator.geolocation success");

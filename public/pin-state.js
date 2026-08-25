@@ -696,9 +696,6 @@
     if (!journeyClean || isRouteJourney(journeyClean)) {
       return null;
     }
-    if (journeyMatchesActiveDay(journeyClean, resolvedClock)) {
-      return null;
-    }
 
     const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
     if (preferredMinutes < 0) {
@@ -707,6 +704,18 @@
 
     const remindDays = getJourneyRemindDays(journeyClean);
     const nowDay = getPerthDayOfWeekIsoFromDate(new Date(resolvedClock.nowMs));
+    const nowMinutes = getPerthMinutesSinceMidnight(resolvedClock);
+    const onActiveDay = journeyMatchesActiveDay(journeyClean, resolvedClock);
+    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
+
+    if (onActiveDay && !insideActiveWindow && preferredMinutes > nowMinutes) {
+      return {
+        dayOffset: 0,
+        dayOfWeekIso: nowDay,
+        heroPreviewDayLabel: formatPreviewDayWord(0, nowDay),
+        heroPreviewClock: formatPreviewClock(preferredMinutes),
+      };
+    }
 
     for (let dayOffset = 1; dayOffset <= 7; dayOffset += 1) {
       const day = ((nowDay - 1 + dayOffset) % 7) + 1;
@@ -884,13 +893,13 @@
             )
           : insideActiveWindow
             ? resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
-            : journeyMatchesActiveDay(journeyClean, clock)
-              ? null
-              : resolveJourneyPreferredTargetDepartureOnRemindDays(
+            : !trueNextDeparture
+              ? resolveJourneyPreferredTargetDepartureOnRemindDays(
                   input.payload,
                   journeyClean,
                   clock
                 )
+              : null
         : null;
 
     const previewHero =
@@ -967,7 +976,19 @@
       heroDeparture = isSkipPreview
         ? skippedHeroDeparture
         : activeTargetDeparture ?? trueNextDeparture;
-      heroMode = heroDeparture ? "live" : "preview";
+
+      if (!heroDeparture && outsideActiveWindow) {
+        const preview = resolveJourneyPreviewHero(journeyClean, clock);
+        if (preview) {
+          heroMode = "preview";
+          heroPreviewDayLabel = preview.heroPreviewDayLabel;
+          heroPreviewClock = preview.heroPreviewClock;
+        } else {
+          heroMode = "preview";
+        }
+      } else {
+        heroMode = heroDeparture ? "live" : "preview";
+      }
     }
 
     const leaveDeparture = pinDeparture ?? trueNextDeparture;
