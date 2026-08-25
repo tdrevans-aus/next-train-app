@@ -1,6 +1,37 @@
-**Tim follow-up (~17:22):** Intermittent — **did not reproduce** on next open. When it **did** happen: **Near me** chrome first (not My Journeys). Confirms nearby cold-start path (`shouldDefaultToNearby` → `enterNearbyMode` → locate → board render) before journey times, not a pure journey-mode race.
+## Overnight — 26 Aug 2026 (~00:30 AWST)
+
+**Shipped to `master`:** `b0e5f01` — journey wizard deferred init, target-train hero preview (outside hours / empty board), post-save stale-board clear + target face restore, geo/nearby hardening, pin-resolution fixture `journey-tuesday-night-morning-preview`.
+
+| Gate | Result |
+|------|--------|
+| **Full web** (`npm run test:full`) | **82 PASS · 2 PASS\* · 14 FAIL** · ~877s |
+| **Release prep** (`npm run release:prep`) | **FAIL** — smoke 18 PASS · 3 FAIL (blocked before `cap:sync`) |
+
+**Tonight's fixes — QA green:** `template-wizard-skip`, `template-wizard-coach-overlap`, `template-wizard-hours-zindex`, `pin-resolution-fixtures`, `new-journey-show-now`, `morning-template-wizard-repro`, `first-use-wizard-repro`, `journey-wizard-after-route`.
+
+**Failures to triage tomorrow (likely mix of env + regressions):**
+
+| Script | Notes |
+|--------|-------|
+| `reminders-dialog.mjs` | `saveSettingsToStorage is not defined` — suspect deferred `journey-detail.js` / init order |
+| `smoke-browser.mjs` | `waitForFunction` timeout (test 12?) |
+| `region-selection.mjs` | Mismatch prompt not shown (region UX removed/changed?) |
+| `target-outside-active-hint.mjs` | `closeJourneysDialog` / journeys helper timeout after dialog changes |
+| `security-xss-share.mjs` | Share URL journey not created |
+| `button-visibility.mjs` | |
+| `nearby-cache-last-station.mjs` | |
+| `nearby-exit-during-gps-refine.mjs` | |
+| `nearby-location-hint-keeps-cache.mjs` | |
+| `unsupported-region.mjs` | |
+| `perth-static-directions.mjs` | Static directions assertion |
+| `adelaide-line-map-conformance.mjs` | |
+| `run-sydney-sweep-once.mjs` | No TfNSW env (skip) |
+| `reminders-permission-native-cdp.mjs` | Native CDP strip/heal |
+
+**Not uploaded:** release prep did not reach `cap:sync` / AAB. Re-run `npm run release:prep` after smoke fixes or known-waiver triage.
 
 ---
+
 
 ## QA nightly triage — 17 Aug 2026 (run [#31994432594](https://github.com/tdrevans-aus/next-train-app/actions/runs/31994432594))
 
