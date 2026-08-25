@@ -6708,6 +6708,33 @@ function initNearbyModeFromModule() {
   nearbyMode()?.initNearbyListeners?.();
 }
 
+async function mountNearbyMode() {
+  return nearbyMode().mount({
+    appEl,
+    settings,
+    journeyModeActive,
+    chromeTravelTab,
+    lastRenderedNext,
+    errorEl,
+    heroEl,
+    heroDepartLabelEl,
+    departCountdownEl,
+    departDisplayTimeEl,
+    heroScheduledTimeEl,
+    leaveCardEl,
+    leaveCardLabelEl,
+    leaveTimeEl,
+    leaveCountdownEl,
+    leaveCardActionsEl,
+    leaveBufferEditBtn,
+    platformEl,
+    statusEl,
+    followingSectionEl,
+    updatedEl,
+    attributionEl,
+  });
+}
+
 const trainNavigation = () => window.nextTrainNavigation;
 
 function skipStorageKey() { return trainNavigation().skipStorageKey(); }

@@ -36,16 +36,11 @@ var NextTrainTimes = (() => {
     Yanchep: ["Yanchep", "Whitfords", "Clarkson", "Butler"],
     Mandurah: ["Mandurah", "Cockburn"],
     Fremantle: ["Fremantle", "Claremont"],
-    // London TfL short-turn groups (line + terminus format)
     "Bakerloo Harrow and Wealdstone": ["Bakerloo Harrow and Wealdstone", "Bakerloo Queen's Park", "Bakerloo Stonebridge Park"],
     "Central Epping": ["Central Epping", "Central Loughton", "Central Hainault"],
     "Central West Ruislip": ["Central West Ruislip", "Central Northolt"],
     "District Upminster": ["District Upminster", "District Barking"],
     "District Ealing Broadway": ["District Ealing Broadway", "District Kensington (Olympia)"],
-    "Hammersmith and City Barking": ["Hammersmith and City Barking"],
-    "Hammersmith and City Hammersmith": ["Hammersmith and City Hammersmith"],
-    "Waterloo and City Bank": ["Waterloo and City Bank"],
-    "Waterloo and City Waterloo": ["Waterloo and City Waterloo"],
     "Piccadilly Heathrow Terminal 5": ["Piccadilly Heathrow Terminal 5", "Piccadilly Heathrow Terminals 2 and 3"],
     "Piccadilly Uxbridge": ["Piccadilly Uxbridge", "Piccadilly Rayners Lane"],
     "Victoria Walthamstow Central": ["Victoria Walthamstow Central", "Victoria Seven Sisters", "Victoria Blackhorse Road"]
@@ -55,7 +50,7 @@ var NextTrainTimes = (() => {
     if (DESTINATION_ALIASES[trimmed]) {
       return DESTINATION_ALIASES[trimmed];
     }
-    const cleaned = trimmed.replace(/\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station)$/i, "").replace(/\s+(&|and)\s+/g, " and ").replace(/\s+via\s+.*$/i, "").trim();
+    const cleaned = trimmed.replace(/\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station)$/i, "").replace(/\s+(&|and)\s+/g, " and ").replace(/\s+via\s+.*$/i, "").replace(/check front of train/i, "").trim();
     if (DESTINATION_ALIASES[cleaned]) {
       return DESTINATION_ALIASES[cleaned];
     }
