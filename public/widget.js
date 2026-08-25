@@ -1,3 +1,10 @@
+// Classic <script> re-entry in the same WebView throws on top-level `let`/`const`
+// (CAPACITOR-11: Identifier 'widgetMenuHintToastTimer' has already been declared).
+(function () {
+  if (window.nextTrainWidget) {
+    return;
+  }
+
 function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
 }
@@ -1832,3 +1839,5 @@ document.addEventListener("visibilitychange", () => {
     }
   }
 });
+
+})();
