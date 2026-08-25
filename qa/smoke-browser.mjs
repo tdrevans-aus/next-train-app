@@ -218,9 +218,6 @@ async function run() {
   }
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=error`);
-  await page.evaluate(() => {
-    sessionStorage.clear();
-  });
   await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
   await page.goto(`${BASE}/?test=1&fixture=error`);
   await ensureJourneyMode(page);
