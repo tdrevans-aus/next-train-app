@@ -53,7 +53,11 @@ async function run() {
 
   await browser.close();
 
-  const duplicateConstBug = pageErrors.some((m) => m.includes("DEFAULT_REMIND_DAYS"));
+  const duplicateConstBug = pageErrors.some(
+    (m) =>
+      m.includes("DEFAULT_REMIND_DAYS") ||
+      m.includes("LEAVE_REMINDER_SETTINGS_KEY")
+  );
 
   const webPass =
     bridge.hasLeaveRemindersApi &&
@@ -76,7 +80,7 @@ async function run() {
 
   if (duplicateConstBug) {
     console.log(
-      "\nFAIL  leave-reminders.js did not load (duplicate DEFAULT_REMIND_DAYS in app.js + leave-reminders.js)"
+      "\nFAIL  leave-reminders.js did not load (duplicate const — DEFAULT_REMIND_DAYS or LEAVE_REMINDER_SETTINGS_KEY)"
     );
     process.exit(1);
   }
