@@ -16,7 +16,7 @@ import {
 import { checkRateLimit } from "./lib/api-rate-limit.js";
 import { resolveDirectionsForStation } from "./lib/cities/perth/static-directions.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
-import { listCities, assertCityLive } from "./lib/providers/registry.js";
+import { listCities, assertCityLive, getCity } from "./lib/providers/registry.js";
 import { getFoundingStatus, tryClaimFounding } from "./lib/founding-counter.js";
 import { applyCors } from "./lib/api-cors.js";
 import { isCityProbeAllowed, fetchDevCityBoard } from "./lib/dev-city-board.js";
@@ -27,7 +27,9 @@ import {
   isMultiCity,
   listMultiCityStations,
   resolveMultiCityStation,
+  findNearestStation as findNearestMultiCityStation,
 } from "./lib/cities/live-city-api.js";
+import { buildNextTrainResponse, pickUpcomingTrips, parseLiveBoardTimestamp, pickUpcomingProviderTrips } from "./lib/train-times-core.js";
 
 loadEnvLocal();
 
@@ -38,6 +40,7 @@ const PRODUCTION_FEEDBACK_URL = "https://next-train-app.vercel.app/api/feedback"
 
 app.use(express.json({ limit: "32kb" }));
 app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   if (/\.js$/i.test(req.path)) {
     res.setHeader("Cache-Control", "no-store");
   }
@@ -351,6 +354,188 @@ app.post("/api/feedback", async (req, res) => {
       error: "Could not send feedback",
       mailto: "EvansAppStudio@gmail.com",
     });
+  }
+});
+
+app.get("/api/board", async (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+
+  if (!gateRequest(req, res)) {
+    return;
+  }
+
+  const city = req.query?.city ?? "perth";
+  let stationName = req.query?.station;
+  const lat = req.query?.lat ? parseFloat(req.query.lat) : null;
+  const lng = req.query?.lng ? parseFloat(req.query.lng) : null;
+
+  if (!stationName && lat != null && lng != null) {
+    stationName = findNearestMultiCityStation(city, lat, lng);
+  }
+
+  if (!stationName) {
+    res.status(400).json({ error: "Missing required parameter: station" });
+    return;
+  }
+
+  const cityGate = assertCityLive(city);
+  if (!cityGate.ok) {
+    res.status(cityGate.status).json({
+      error: cityGate.error,
+      city: cityGate.city,
+      integration: cityGate.integration,
+    });
+    return;
+  }
+
+  const now = new Date();
+  const leaveBeforeMinutes = Number(req.query?.leaveBefore) || DEFAULT_LEAVE_BEFORE_MINUTES;
+  const refreshSeconds = Number(req.query?.refresh) || DEFAULT_REFRESH_SECONDS;
+
+  const fixtureId = readFixtureId(req.query);
+  if (fixtureId) {
+    if (fixtureId === "error") {
+      res.status(500).json({ error: "Fixture error: simulated API failure" });
+      return;
+    }
+
+    try {
+      const directions = getFixtureDirections(fixtureId);
+      const entries = directions.map(direction => {
+        const config = {
+          city,
+          station: stationName,
+          destination: direction,
+          destinationLabel: direction,
+          leaveBeforeMinutes,
+          refreshSeconds,
+          skipTrains: 0,
+          now,
+        };
+        const data = getFixtureNextTrainData(fixtureId, config);
+        return { direction, data };
+      });
+
+      res.json({
+        stationName: stationName,
+        lastUpdated: now.toISOString(),
+        entries,
+        fixture: fixtureId
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message ?? "Fixture failed" });
+    }
+    return;
+  }
+
+  try {
+    if (isMultiCity(city)) {
+      const station = resolveMultiCityStation(city, stationName);
+      if (!station) {
+        res.status(400).json({ error: "Unknown station" });
+        return;
+      }
+
+      const { directions } = getMultiCityDirections(city, station);
+      
+      // Optimized TfL fetch
+      if (city === "uk-london-tfl") {
+        try {
+          const { fetchStopBoard } = await import("./lib/providers/uk-tfl.js");
+          const cityData = getCity("uk-london-tfl");
+          
+          const board = await fetchStopBoard(station);
+          const entries = directions.map(direction => {
+            const upcoming = pickUpcomingProviderTrips(board.trips || [], direction, now);
+            const data = buildNextTrainResponse({
+              station: board.stationName,
+              destination: direction,
+              destinationLabel: direction,
+              leaveBeforeMinutes,
+              refreshSeconds,
+              now,
+              lastUpdated: board.lastUpdate ? new Date(board.lastUpdate) : now,
+              upcomingTrips: upcoming,
+              timeZone: cityData.timeZone,
+            });
+            return { direction, data };
+          });
+
+          res.status(200).json({
+            stationName: station,
+            lastUpdated: board.lastUpdate || now.toISOString(),
+            entries: entries.filter(e => e.data?.next),
+          });
+          return;
+        } catch (error) {
+          console.error(`[api/board] TfL optimized fetch failed:`, error.message);
+        }
+      }
+
+      const entries = await Promise.all(
+        directions.map(async (direction) => {
+          try {
+            const data = await getMultiCityNextTrain(city, {
+              station,
+              destination: direction,
+              leaveBeforeMinutes,
+              refreshSeconds,
+              now,
+            });
+            return { direction, data };
+          } catch (error) {
+            console.warn(`[api/board] Failed to fetch ${direction} for ${station}:`, error.message);
+            return null;
+          }
+        })
+      );
+
+      res.status(200).json({
+        stationName: station,
+        lastUpdated: now.toISOString(),
+        entries: entries.filter(Boolean),
+      });
+      return;
+    }
+
+    // Perth
+    const station = resolveAllowedStation(stationName);
+    if (!station) {
+      res.status(400).json({ error: "Unknown station" });
+      return;
+    }
+
+    const { trips, lastUpdate } = await fetchTripsForStation(station);
+    const { directions } = resolveDirectionsForStation(station, trips);
+
+    const entries = directions.map((direction) => {
+      const upcoming = pickUpcomingTrips(trips, direction, now);
+      const data = buildNextTrainResponse({
+        station,
+        destination: direction,
+        destinationLabel: direction,
+        leaveBeforeMinutes,
+        refreshSeconds,
+        skipTrains: 0,
+        now,
+        lastUpdated: parseLiveBoardTimestamp(lastUpdate),
+        upcomingTrips: upcoming,
+        timeZone: "Australia/Perth",
+      });
+      return { direction, data };
+    });
+
+    res.status(200).json({
+      stationName: station,
+      lastUpdated: lastUpdate || now.toISOString(),
+      entries: entries.filter(e => e.data?.next),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message ?? "Failed to fetch station board" });
   }
 });
 

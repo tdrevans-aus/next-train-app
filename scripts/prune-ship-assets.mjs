@@ -11,8 +11,8 @@ const roots = [
   "ios/App/App/public",
 ];
 
-const prunePaths = ["design", "site-config.example.json"];
-const pruneGlobs = [".mjs"];
+const prunePaths = ["design", "site-config.example.json", "lib/cities"];
+const pruneGlobs = [".mjs", ".ts", ".map"];
 
 function rmrf(target) {
   if (!fs.existsSync(target)) {

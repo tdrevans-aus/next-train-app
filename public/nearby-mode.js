@@ -4,12 +4,12 @@
   const LAST_NEARBY_BOARD_MAX_AGE_MS = 15 * 60 * 1000;
   const NEARBY_SOFT_LOCATION_MAX_AGE_MS = 2 * 60 * 1000;
   const NEARBY_PIN_HOLD_MS = 60_000;
-  const NEARBY_LOCATE_COPY = "Finding your nearest station…";
+  const NEARBY_LOCATE_COPY = "Locating...";
   const NEARBY_BOARD_LOADING_COPY = "Loading departures…";
   /** Nearest catalog station farther than this → Perth-rail-only empty state (Near me blocked). */
   const UNSUPPORTED_REGION_KM = 50;
   /** Keep calm on a normal GPS fix (~1–4s). Offer escape only when it is actually slow. */
-  const NEARBY_LOCATE_DONT_WAIT_MS = 7000;
+  const NEARBY_LOCATE_DONT_WAIT_MS = 1000;
   /** While the system permission sheet is up, offer escape sooner so the 7s GPS wait is fair. */
   const NEARBY_LOCATE_PERMISSION_ESCAPE_MS = 2500;
   /** Foreground re-locate while Near me is open — idle vs traveling cadence. */
@@ -114,18 +114,6 @@
       .toLowerCase();
   }
 
-  function activeRegionDisplayName() {
-    const city = readActiveCity();
-    const names = {
-      perth: "Perth",
-      brisbane: "Brisbane",
-      sydney: "Sydney",
-      adelaide: "Adelaide",
-      "uk-london-tfl": "London",
-    };
-    return names[city] || "your region";
-  }
-
   function readActiveTimeZone() {
     return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
   }
@@ -145,9 +133,12 @@
   }
 
   function regionLocateErrorMessage(error) {
-    const message = String(error?.message || "");
-    if (message.includes("in this region") || message.includes("nearby station")) {
-      return `Location outside ${activeRegionDisplayName()} — pick a station below.`;
+    if (error) {
+      console.log("[Nearby] regionLocateErrorMessage raw:", JSON.stringify(error));
+    }
+    const message = String(error?.message || error || "");
+    if (message.includes("nearby station")) {
+      return "Location too far — pick a station below.";
     }
     return locationErrorFrom(error).message;
   }
@@ -314,15 +305,37 @@
   }
 function classifyNearbyError(message) {
   const lower = String(message || "").toLowerCase();
+  console.log(`[nearby] classifyNearbyError: "${message}" (lower: "${lower}")`);
+  
+  // These indicate we HAVE location but the board/network failed, 
+  // or it was a temporary GPS failure/timeout (not a permission block).
   if (
     lower.includes("departures") ||
     lower.includes("times") ||
     lower.includes("board") ||
     lower.includes("directions") ||
-    lower.includes("unavailable")
+    lower.includes("unavailable") ||
+    lower.includes("fetch") ||
+    lower.includes("network") ||
+    lower.includes("connect") ||
+    lower.includes("offline") ||
+    lower.includes("status code") ||
+    lower.includes("timeout") ||
+    lower.includes("get your location") ||
+    lower.includes("mock gps") ||
+    lower.includes("location services") ||
+    lower.includes("locating") ||
+    lower.includes("too far") ||
+    lower.includes("invalid response") ||
+    lower.includes("npm start") ||
+    lower.includes("not be deployed yet")
   ) {
+    console.log("[nearby] classifyNearbyError: returning 'board'");
     return "board";
   }
+  
+  // Default to location (permission) error
+  console.log("[nearby] classifyNearbyError: returning 'location'");
   return "location";
 }
 
@@ -1733,31 +1746,54 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
       return;
     }
 
-    const stationChanged = Boolean(previousStation && nearest.station !== previousStation);
+    const stationChanged = Boolean(
+      (previousStation && nearest.station && nearest.station !== previousStation) ||
+      (previousStation && !nearest.station && nearest.lat != null) // Might change, let server decide
+    );
 
     nearbySession.unsupportedRegion = false;
     nearbySession.fromCache = false;
     setNearbyGpsRefining(false);
-    nearbySession.station = nearest.station;
+    nearbySession.station = nearest.station ?? null;
+    nearbySession.lat = nearest.lat ?? null;
+    nearbySession.lng = nearest.lng ?? null;
     nearbySession.distanceKm = nearest.distanceKm;
+
     if (stationChanged) {
       clearNearbyPin();
-      nearbySession.refineNotice = "Updated to nearest station";
-    } else {
+      if (nearest.station) {
+        nearbySession.refineNotice = "Updated to nearest station";
+      }
+    } else if (nearest.station) {
       restoreNearbySessionPinFromSettings();
       deps.reconcileExclusivePinState?.({ type: "nearby" });
     }
-    writeLastNearbyStationCache({
-      station: nearest.station,
-      distanceKm: nearest.distanceKm,
-    });
+    if (nearest.station) {
+      writeLastNearbyStationCache({
+        station: nearest.station,
+        distanceKm: nearest.distanceKm,
+      });
+    }
     stopNearbyLocateTimers();
     nearbyLocatePickerVisible = false;
     nearbyDontWaitVisible = false;
     syncNearbyDontWaitButton();
     try {
-      if (stationChanged || !nearbyBoard) {
-        await fetchNearbyBoard();
+      if (stationChanged || !nearbyBoard || !nearbySession.station) {
+        const boardPromise = fetchNearbyBoard();
+        await boardPromise;
+        
+        // If server resolved a station name for us, update the session and cache.
+        if (!nearbySession.station && nearbyBoard?.entries?.[0]?.data?.station) {
+          const resolvedStation = nearbyBoard.entries[0].data.station;
+          console.log(`[nearby] Server resolved station: ${resolvedStation}`);
+          nearbySession.station = resolvedStation;
+          writeLastNearbyStationCache({
+            station: resolvedStation,
+            distanceKm: nearbySession.distanceKm,
+          });
+          renderNearbyBoard();
+        }
       }
       if (!isNearbyLocateCurrent(generation)) {
         return;
@@ -1795,13 +1831,13 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
       nearbySession.station = null;
       nearbySession.distanceKm = null;
       nearbyBoard = null;
-      setNearbyError(regionLocateErrorMessage(error), "location");
+      setNearbyError(regionLocateErrorMessage(error));
       renderNearbyBoard();
       return;
     }
 
     if (!nearbySession.station && !nearbyUserPickedStation) {
-      setNearbyError(locationErrorFrom(error).message, "location");
+      setNearbyError(locationErrorFrom(error).message);
       renderNearbyBoard();
       return;
     }
@@ -1814,7 +1850,7 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
         if (!isNearbyLocateCurrent(generation)) {
           return;
         }
-        setNearbyError(locationErrorFrom(error).message, "location");
+        setNearbyError(locationErrorFrom(error).message);
         renderNearbyBoard();
       } catch (fetchError) {
         if (!isNearbyLocateCurrent(generation)) {
@@ -2026,9 +2062,17 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.departCountdownEl.textContent = "—";
     }
     if (deps.departDisplayTimeEl) {
-      const kind = nearbyErrorKind || classifyNearbyError(nearbyError);
-      deps.departDisplayTimeEl.textContent =
-        kind === "board" ? "Times unavailable" : "Location needed";
+      const kind = nearbyErrorKind || (nearbyError ? classifyNearbyError(nearbyError) : null);
+      console.log(`[nearby] renderNearbyBoard error path: kind="${kind}" error="${nearbyError}"`);
+      
+      let displayError = nearbyError;
+      if (kind === "board") {
+        displayError = nearbyError || "Times unavailable";
+      } else {
+        displayError = nearbyError || "Location needed";
+      }
+      
+      deps.departDisplayTimeEl.textContent = displayError;
     }
     if (deps.heroScheduledTimeEl) {
       deps.heroScheduledTimeEl.hidden = true;
@@ -2218,7 +2262,7 @@ function nearbyBoardLooksEmpty(board = nearbyBoard) {
 }
 
 async function fetchNearbyBoard() {
-  if (!nearbySession?.station) {
+  if (!nearbySession?.station && (nearbySession?.lat == null || nearbySession?.lng == null)) {
     return;
   }
 
@@ -2243,54 +2287,148 @@ async function fetchNearbyBoard() {
   return nearbyBoardInflight;
 }
 
+  async function fetchNearbyBoardLegacy(params) {
+    let station = params.get("station");
+    const lat = params.get("lat");
+    const lng = params.get("lng");
+    const city = readActiveCity();
+
+    if (!station && lat != null && lng != null) {
+      if (typeof window.loadStationCoords === "function") {
+        await window.loadStationCoords();
+      }
+      if (typeof window.findNearestStation === "function") {
+        const nearest = window.findNearestStation(parseFloat(lat), parseFloat(lng));
+        if (!nearest) throw new Error("Could not find a nearby station");
+        station = nearest.name;
+      }
+    }
+
+    if (!station) throw new Error("Missing station");
+
+    const destResult = await fetchJson(apiUrl(`/api/destinations?station=${encodeURIComponent(station)}&city=${city}`));
+    if (!destResult.ok) throw new Error(destResult.error || "Could not load directions");
+    const directions = destResult.data.destinations || [];
+
+    const entries = await Promise.all(directions.map(async (direction) => {
+      const trainResult = await fetchJson(apiUrl(`/api/next-train?station=${encodeURIComponent(station)}&direction=${encodeURIComponent(direction)}&city=${city}`));
+      if (trainResult.ok) {
+        return { direction, data: normalizeApiTrainData(trainResult.data) };
+      }
+      return null;
+    }));
+
+    return {
+      ok: true,
+      data: {
+        stationName: station,
+        lastUpdated: new Date().toISOString(),
+        entries: entries.filter(Boolean)
+      }
+    };
+  }
+
   async function fetchNearbyBoardOnce() {
     console.log("[nearby] fetchNearbyBoardOnce starting");
     const station = nearbySession?.station;
-    if (!station) {
-      console.log("[nearby] fetchNearbyBoardOnce: no station, returning");
+    const lat = nearbySession?.lat;
+    const lng = nearbySession?.lng;
+
+    if (!station && (lat == null || lng == null)) {
+      console.log("[nearby] fetchNearbyBoardOnce: no station or coords, returning");
       return;
     }
 
-  let directions = [];
-  try {
-    directions = await fetchDirectionsFromApi(station);
-  } catch (error) {
-    console.warn("Nearby directions lookup failed", error);
-    if (isTestMode()) {
-      directions = ["Perth", "Mandurah", "Joondalup"];
+    const params = new URLSearchParams({
+      leaveBefore: "0",
+      refresh: String(settings.refreshSeconds),
+    });
+    if (station) {
+      params.set("station", station);
     } else {
-      throw error;
+      params.set("lat", String(lat));
+      params.set("lng", String(lng));
     }
-  }
-  let fetchFailures = 0;
-  const settled = await Promise.all(
-    directions.map(async (direction) => {
-      try {
-        const data = await fetchNearbyDirectionData(station, direction, getNearbySkip(direction));
-        return { direction, data };
-      } catch (error) {
-        fetchFailures += 1;
-        console.warn(`Nearby fetch failed for ${direction}`, error);
-        return null;
+
+    const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
+    if (fixture) {
+      params.set("fixture", fixture);
+    }
+    window.NextTrainBrisbaneDogfood?.applyParams?.(params);
+
+    const result = await fetchJson(apiUrl(`/api/board?${params}`));
+    if (!result.ok) {
+      // Fallback: if /api/board 404s (e.g. not deployed to Vercel yet), try individual fetches.
+      if (result.status === 404) {
+        console.warn("[nearby] /api/board not found, falling back to legacy fetches");
+        return await fetchNearbyBoardLegacy(params);
       }
-    })
-  );
-  // Hide empty chips in Near me (unless it's an overnight board with zero trips for ALL directions)
-  const entries = settled.filter((entry) => entry && entry.data?.next);
-
-  if (!nearbySession || nearbySession.station !== station) {
-    return;
-  }
-
-  if (!entries.length) {
-    if (fetchFailures > 0) {
-      throw new Error("Could not load departures for this station");
+      throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
     }
 
-    // Station known but no live/scheduled trips (overnight). Not a location failure.
-    // In this case we show all oracle directions as empty.
+    const payload = result.data;
+    const entries = (payload.entries || []).map(entry => ({
+      direction: entry.direction,
+      data: normalizeApiTrainData(entry.data)
+    }));
+
+    if (!nearbySession || nearbySession.station !== station) {
+      return;
+    }
+
+    if (!entries.length) {
+      // Station known but no live/scheduled trips (overnight). Not a location failure.
+      // We'll show an empty board with directions if possible.
+      let directions = [];
+      try {
+        const destResult = await fetchJson(apiUrl(`/api/destinations?${params}`));
+        if (destResult.ok) {
+          directions = destResult.data.destinations || [];
+        }
+      } catch {
+        /* ignore */
+      }
+
+      nearbyBoard = {
+        lastUpdated: payload.lastUpdated || new Date().toLocaleString("en-AU", {
+          timeZone: readActiveTimeZone(),
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }),
+        entries: directions.map((direction) => ({
+          direction,
+          data: { next: null, following: [], scheduleSource: "empty" },
+        })),
+      };
+      if (
+        !nearbySession.focusedDirection ||
+        !directions.includes(nearbySession.focusedDirection)
+      ) {
+        nearbySession.focusedDirection = directions[0] ?? null;
+      }
+      writeLastNearbyStationCache({
+        station,
+        distanceKm: nearbySession.distanceKm,
+        board: nearbyBoard,
+      });
+      return;
+    }
+
+    if (applyHoldingNearbyPinFocus()) {
+      // Keep the pinned direction even if another line has an earlier next train.
+    } else if (
+      !nearbySession.focusedDirection ||
+      !entries.some((entry) => entry.direction === nearbySession.focusedDirection)
+    ) {
+      nearbySession.focusedDirection = pickSoonestNearbyDirection(entries);
+    }
+
     nearbyBoard = {
-      lastUpdated: new Date().toLocaleString("en-AU", {
+      lastUpdated: payload.lastUpdated || new Date().toLocaleString("en-AU", {
         timeZone: readActiveTimeZone(),
         hour: "2-digit",
         minute: "2-digit",
@@ -2299,52 +2437,17 @@ async function fetchNearbyBoard() {
         month: "2-digit",
         year: "numeric",
       }),
-      entries: directions.map((direction) => ({
-        direction,
-        data: { next: null, following: [], scheduleSource: "empty" },
-      })),
+      entries,
     };
-    if (
-      !nearbySession.focusedDirection ||
-      !directions.includes(nearbySession.focusedDirection)
-    ) {
-      nearbySession.focusedDirection = directions[0] ?? null;
-    }
     writeLastNearbyStationCache({
       station,
       distanceKm: nearbySession.distanceKm,
       board: nearbyBoard,
     });
-    return;
-  }
 
-  if (applyHoldingNearbyPinFocus()) {
-    // Keep the pinned direction even if another line has an earlier next train.
-  } else if (
-    !nearbySession.focusedDirection ||
-    !entries.some((entry) => entry.direction === nearbySession.focusedDirection)
-  ) {
-    nearbySession.focusedDirection = pickSoonestNearbyDirection(entries);
+    // Jim brief: defer non-critical scripts until after first train paint.
+    window.NextTrainDeferred?.load?.();
   }
-
-  nearbyBoard = {
-    lastUpdated: new Date().toLocaleString("en-AU", {
-      timeZone: readActiveTimeZone(),
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }),
-    entries,
-  };
-  writeLastNearbyStationCache({
-    station,
-    distanceKm: nearbySession.distanceKm,
-    board: nearbyBoard,
-  });
-}
 
 function focusNearbyDirection(direction) {
   if (!nearbySession || nearbySession.focusedDirection === direction) {
@@ -2413,8 +2516,8 @@ async function enterNearbyMode({
     const cachedBoard = readCachedNearbyBoard(cachedStation);
     nearbySession = {
       station: cachedStation.station,
-      // Don't show a stale km crumb until GPS refine returns.
-      distanceKm: null,
+      // Don't show a km crumb until GPS refine returns.
+      distanceKm: cachedStation.distanceKm ?? null,
       fromCache: true,
       gpsRefining: true,
       focusedDirection: cachedBoard?.focusedDirection ?? null,
@@ -2436,6 +2539,11 @@ async function enterNearbyMode({
         }
       }
       nearbyLoading = false;
+
+      // Jim brief: paint cached board immediately on repeat open.
+      renderNearbyBoard();
+      // Also load deferred scripts if we have a valid board.
+      window.NextTrainDeferred?.load?.();
     } else {
       applyHoldingNearbyPinFocus();
     }
@@ -2467,7 +2575,7 @@ async function enterNearbyMode({
         } catch (error) {
           if (nearbySession) {
             setNearbyGpsRefining(false);
-            setNearbyError(locationErrorFrom(error).message, "location");
+            setNearbyError(locationErrorFrom(error).message);
           }
           renderNearbyBoard();
           return;
@@ -2505,7 +2613,7 @@ async function enterNearbyMode({
         }
         nearbyLoading = false;
         stopNearbyLocateTimers();
-        setNearbyError(locationErrorFrom(error).message, "location");
+        setNearbyError(locationErrorFrom(error).message);
         syncNearbyChrome();
         renderNearbyBoard();
         return;
@@ -2701,6 +2809,7 @@ function initNearbyListeners() {
     getNearbyLeaveBeforeMinutes,
     getNearbyPin,
     getNearbySession,
+    getNearbyErrorKind: () => nearbyErrorKind,
     getNearbySkip,
     handleNearbyNotifyToggle,
     hideNearbyPinLeaveSurfaces,

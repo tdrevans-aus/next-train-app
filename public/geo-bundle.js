@@ -212,7 +212,7 @@ var NextTrainGeo = (() => {
     if (isIos()) {
       return "Turn on Location Services in Settings \u2192 Privacy & Security \u2192 Location Services, then try Near me again \u2014 or choose a station below.";
     }
-    return "Turn on Location in your phone settings, then try Near me again \u2014 or choose a station below.";
+    return "Location services are off. Turn on Location in your phone settings, then try Near me again \u2014 or choose a station below.";
   }
   function permissionGranted(status) {
     const location = status?.location ?? status?.coarseLocation;
@@ -222,47 +222,73 @@ var NextTrainGeo = (() => {
     const location = status?.location ?? status?.coarseLocation;
     return location === "denied";
   }
+  var permissionPromise = null;
   async function ensureLocationPermission() {
-    let status;
-    try {
-      status = await Geolocation2.checkPermissions();
-    } catch {
-      status = null;
+    if (permissionPromise) {
+      return permissionPromise;
     }
-    if (permissionGranted(status)) {
-      return { granted: true, status };
-    }
-    if (permissionDenied(status)) {
-      const error = new Error(locationPermissionHelpMessage());
-      error.code = 1;
-      throw error;
-    }
-    try {
-      status = await Geolocation2.requestPermissions();
-    } catch (error) {
-      const denied = new Error(locationPermissionHelpMessage());
-      denied.code = 1;
-      denied.cause = error;
-      throw denied;
-    }
-    if (!permissionGranted(status)) {
+    permissionPromise = (async () => {
+      let status;
       try {
         status = await Geolocation2.checkPermissions();
-      } catch {
+        console.log("[Geo] checkPermissions status:", JSON.stringify(status));
+      } catch (e) {
+        console.warn("[Geo] checkPermissions failed:", e);
         status = null;
       }
+      if (permissionGranted(status)) {
+        return { granted: true, status };
+      }
+      if (permissionDenied(status)) {
+        console.log("[Geo] Permission denied by check");
+        const error = new Error(locationPermissionHelpMessage());
+        error.code = 1;
+        throw error;
+      }
+      try {
+        console.log("[Geo] Requesting permissions...");
+        const requestPromise = Geolocation2.requestPermissions({
+          permissions: ["location", "coarseLocation"]
+        });
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Permission request timeout")), 15e3);
+        });
+        status = await Promise.race([requestPromise, timeoutPromise]);
+        console.log("[Geo] requestPermissions result:", JSON.stringify(status));
+      } catch (error) {
+        console.warn("[Geo] requestPermissions failed:", error);
+        status = await Geolocation2.checkPermissions();
+      }
+      if (!permissionGranted(status)) {
+        await new Promise((r) => setTimeout(r, 1e3));
+        status = await Geolocation2.checkPermissions();
+        console.log("[Geo] Final check after delay:", JSON.stringify(status));
+      }
+      if (!permissionGranted(status)) {
+        if (status?.location === "prompt" || status?.coarseLocation === "prompt") {
+          console.log("[Geo] Status is still prompt, proceeding to getCurrentPosition anyway");
+          return { granted: false, status };
+        }
+        console.log("[Geo] Final permission check failed:", JSON.stringify(status));
+        const error = new Error(locationPermissionHelpMessage());
+        error.code = 1;
+        throw error;
+      }
+      return { granted: true, status };
+    })();
+    try {
+      return await permissionPromise;
+    } finally {
+      permissionPromise = null;
     }
-    if (!permissionGranted(status)) {
-      const error = new Error(locationPermissionHelpMessage());
-      error.code = 1;
-      throw error;
-    }
-    return { granted: true, status };
   }
   function mapGeolocationError(error) {
+    if (!error) return;
+    console.log("[Geo] mapGeolocationError raw:", JSON.stringify(error));
+    const code = String(error?.code || "");
     const message = String(error?.message || error || "");
     const lower = message.toLowerCase();
-    if (lower.includes("disabled") || lower.includes("location services") || lower.includes("not enabled") || lower.includes("location unavailable")) {
+    if (code === "OS-PLUG-GLOC-0010" || lower.includes("disabled") || lower.includes("location services") || lower.includes("not enabled") || lower.includes("location unavailable")) {
       const disabled = new Error(locationServicesOffMessage());
       disabled.code = 2;
       disabled.cause = error;
@@ -286,18 +312,20 @@ var NextTrainGeo = (() => {
   }
   async function getCurrentPosition(options = {}) {
     await ensureLocationPermission();
-    const timeout = options.timeout ?? (isIos() ? 2e4 : 15e3);
+    const timeout = options.timeout ?? (isIos() ? 2e4 : 8e3);
     const maximumAge = options.maximumAge ?? 6e4;
     const preferHighAccuracy = Boolean(options.enableHighAccuracy);
     const attempts = preferHighAccuracy ? [{ enableHighAccuracy: true }, { enableHighAccuracy: false }] : [{ enableHighAccuracy: false }, { enableHighAccuracy: true }];
     let lastError = null;
     for (const attempt of attempts) {
       try {
+        console.log(`[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${timeout}`);
         const position = await Geolocation2.getCurrentPosition({
           enableHighAccuracy: attempt.enableHighAccuracy,
           timeout,
           maximumAge
         });
+        console.log("[Geo] getCurrentPosition success");
         return {
           coords: {
             latitude: position.coords.latitude,
@@ -306,7 +334,30 @@ var NextTrainGeo = (() => {
           }
         };
       } catch (error) {
+        console.warn(`[Geo] getCurrentPosition attempt failed:`, error.message || error);
         lastError = error;
+      }
+    }
+    if (navigator.geolocation) {
+      try {
+        console.log("[Geo] Falling back to navigator.geolocation...");
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: preferHighAccuracy,
+            timeout: timeout + 5e3,
+            maximumAge
+          });
+        });
+        console.log("[Geo] navigator.geolocation success");
+        return {
+          coords: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            speed: position.coords.speed ?? null
+          }
+        };
+      } catch (error) {
+        console.warn("[Geo] navigator.geolocation failed:", error.message || error);
       }
     }
     mapGeolocationError(lastError);

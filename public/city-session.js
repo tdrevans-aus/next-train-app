@@ -245,6 +245,8 @@
   }
 
   async function geolocateHint() {
+    // Jim brief: wait for app stability before requesting permissions on cold boot.
+    await new Promise((r) => setTimeout(r, 1000));
     try {
       const pos = await new Promise((resolve, reject) => {
         if (!navigator.geolocation?.getCurrentPosition) {
@@ -314,7 +316,16 @@
   }
 
   function syncRegionSummaries() {
-    const label = regionDisplayName(readSavedCity() || LIVE_CITY);
+    const savedCity = readSavedCity();
+    const explicit = readRegionExplicit();
+    let label;
+    if (savedCity || explicit) {
+      label = regionDisplayName(savedCity || LIVE_CITY);
+    } else {
+      // Jim brief: don't show the hint in the label automatically on first load.
+      // Let the user see "Choose..." until they pick or a mismatch prompt fires.
+      label = "Choose...";
+    }
     document.querySelectorAll("[data-region-summary]").forEach((el) => {
       el.textContent = label;
     });
@@ -322,12 +333,12 @@
 
   function syncRegionControls() {
     const countryId = readSavedCountry();
-    const city = readSavedCity() || LIVE_CITY;
+    const savedCity = readSavedCity() || LIVE_CITY;
     document.querySelectorAll("[data-region-country]").forEach((select) => {
       fillCountrySelect(select, countryId);
     });
     document.querySelectorAll("[data-region-city]").forEach((select) => {
-      fillRegionSelect(select, countryId, city);
+      fillRegionSelect(select, countryId, savedCity);
     });
     syncRegionSummaries();
   }
@@ -364,10 +375,13 @@
     if (MULTI_CITY_IDS.includes(city)) {
       if (savedCity !== city) {
         console.log(`[NextTrainCitySession] Mounting multi-city: ${city}`);
-        const ok = await dogfoodApi?.mount?.(city);
-        if (!ok) {
-          console.error(`[NextTrainCitySession] Failed to mount: ${city}`);
-          return false;
+        const mountPromise = dogfoodApi?.mount?.(city);
+        if (explicit) {
+          const ok = await mountPromise;
+          if (!ok) {
+            console.error(`[NextTrainCitySession] Failed to mount: ${city}`);
+            return false;
+          }
         }
       }
     } else {
@@ -377,7 +391,10 @@
         city = LIVE_CITY;
         try {
           window.nextTrainStationCombobox?.replaceStationsCache?.(null);
-          await window.nextTrainStationCombobox?.getStationsList?.();
+          const listPromise = window.nextTrainStationCombobox?.getStationsList?.();
+          if (explicit) {
+            await listPromise;
+          }
         } catch {
           /* perth list reloads on next getStationsList */
         }
@@ -438,15 +455,13 @@
     document.getElementById("menu-region-btn")?.addEventListener("click", () => {
       openRegionScreen();
     });
-    document.getElementById("onboarding-region-btn")?.addEventListener("click", () => {
-      openRegionScreen();
-    });
     document.getElementById("region-setup-back-btn")?.addEventListener("click", closeRegionScreen);
     document.getElementById("region-setup-done-btn")?.addEventListener("click", closeRegionScreen);
     document.addEventListener("nexttrain:menu-open", () => syncRegionControls());
   }
 
   let initializing = false;
+  let currentHint = null;
 
   async function init() {
     if (initializing) {
@@ -454,28 +469,37 @@
     }
     initializing = true;
     bindControls();
-    await dogfood()?.probe?.();
 
-    let city = readSavedCity();
     const explicit = readRegionExplicit();
+    let initialCity = readSavedCity() || LIVE_CITY;
 
     if (!explicit) {
-      const hint = await geolocateHint();
-      if (hint && isRegionOpen(regionById(hint)?.region)) {
-        city = hint;
-      }
+      // Background city detection — don't block initial paint.
+      // Jim brief: compare lat/lng to CITY_BOUNDS on device. Do not download other city catalog until confirmed.
+      void (async () => {
+        const hint = await geolocateHint();
+        if (hint) {
+          currentHint = hint;
+          syncRegionSummaries();
+        }
+        if (hint && hint !== initialCity && isRegionOpen(regionById(hint)?.region)) {
+          // Note: we don't applyCity(hint) here because that would download the catalog.
+          // App will call scheduleRegionMismatchPrompt after first paint.
+        }
+      })();
     }
 
-    if (city && !isRegionOpen(regionById(city)?.region)) {
-      city = LIVE_CITY;
-    }
-    if (!city) {
-      city = LIVE_CITY;
+    // Only load the catalog for the active city.
+    // Jim brief: don't block boot on the catalog fetch.
+    const applyPromise = applyCity(initialCity, { persist: !explicit, explicit: false });
+    if (!explicit) {
+      void applyPromise;
+    } else {
+      await applyPromise;
     }
 
-    await applyCity(city, { persist: !explicit, explicit: false });
     syncRegionControls();
-    return city;
+    return initialCity;
   }
 
   window.NextTrainCitySession = {
@@ -486,6 +510,9 @@
     readRegionExplicit,
     hintCityFromCoords,
     geolocateHint,
+    readActiveHint() {
+      return currentHint;
+    },
     maybePromptRegionMismatch,
     regionDisplayName,
     regionById,

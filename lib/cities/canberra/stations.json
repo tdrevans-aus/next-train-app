@@ -2,47 +2,68 @@
   "stations": [
     {
       "name": "Gungahlin",
-      "aliases": ["Gungahlin Place"],
+      "aliases": [
+        "Gungahlin Place"
+      ],
       "stopIds": []
     },
     {
       "name": "Mitchell",
-      "aliases": ["Mitchell Station"],
+      "aliases": [
+        "Mitchell Station"
+      ],
       "stopIds": []
     },
     {
       "name": "EPIC",
-      "aliases": ["Exhibition Park", "EPIC and Exhibition Park"],
+      "aliases": [
+        "Exhibition Park",
+        "EPIC and Exhibition Park"
+      ],
       "stopIds": []
     },
     {
       "name": "Wellcamp",
-      "aliases": ["Wellcamp Station"],
+      "aliases": [
+        "Wellcamp Station"
+      ],
       "stopIds": []
     },
     {
       "name": "City",
-      "aliases": ["Alinga Street", "City West", "Canberra City"],
+      "aliases": [
+        "Alinga Street",
+        "City West",
+        "Canberra City"
+      ],
       "stopIds": []
     },
     {
       "name": "London Circuit",
-      "aliases": ["London Circuit Station"],
+      "aliases": [
+        "London Circuit Station"
+      ],
       "stopIds": []
     },
     {
       "name": "Commonwealth Park",
-      "aliases": ["Commonwealth Park Station"],
+      "aliases": [
+        "Commonwealth Park Station"
+      ],
       "stopIds": []
     },
     {
       "name": "Russell",
-      "aliases": ["Russell Station"],
+      "aliases": [
+        "Russell Station"
+      ],
       "stopIds": []
     },
     {
       "name": "Kingston",
-      "aliases": ["Kingston Station"],
+      "aliases": [
+        "Kingston Station"
+      ],
       "stopIds": []
     }
   ]

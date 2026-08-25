@@ -301,17 +301,58 @@ const DELETE_LAST_JOURNEY_CONFIRM =
 
 const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
 
+async function readDogfoodOrigin() {
+  if (!isNativeApp()) {
+    return null;
+  }
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 2000);
+    const response = await fetch("dogfood-origin.json", { signal: controller.signal });
+    clearTimeout(id);
+    if (!response.ok) return null;
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+let dogfoodOriginCache = null;
+
 function getApiOrigin() {
+  const params = new URLSearchParams(window.location.search);
+  const useDogfood = params.get("dogfood") === "1" || params.get("test") === "1";
+
   if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
     const origin = window.NextTrainBrisbaneDogfood.getOrigin?.() || "";
     if (origin) {
       return origin;
     }
   }
-  return window.Capacitor?.isNativePlatform?.() ? VERCEL_ORIGIN : "";
+
+  // Debug dogfooding on LAN or Emulator — only if explicitly enabled or in test mode.
+  if (useDogfood && dogfoodOriginCache) {
+    if (dogfoodOriginCache.emulatorOrigin && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+      return dogfoodOriginCache.emulatorOrigin;
+    }
+    if (dogfoodOriginCache.origin) {
+      return dogfoodOriginCache.origin;
+    }
+  }
+
+  // Production or regular web
+  if (isNativeApp()) {
+    // Standard native app always hits production Vercel
+    return VERCEL_ORIGIN;
+  }
+  return "";
 }
 
 function isNativeApp() {
+  if (window.location.hostname === "localhost" && window.location.port === "") {
+    // Standard Capacitor dev webview
+    return true;
+  }
   return Boolean(window.Capacitor?.isNativePlatform?.());
 }
 
@@ -341,30 +382,40 @@ async function ensureGeoBridge() {
 }
 
 function locationErrorFrom(error) {
+  const codeStr = String(error?.code || "");
   const code = Number(error?.code);
-  const message = String(error?.message || error || "");
+  const message = String(error?.message || (typeof error === 'string' ? error : '') || "");
   const lower = message.toLowerCase();
+  
+  console.log(`[App] locationErrorFrom: code=${code}, codeStr=${codeStr}, message="${message}"`);
+
+  // Detect immediate failures on Android/Emulator
+  const isServicesOff = 
+    codeStr === "OS-PLUG-GLOC-0010" ||
+    lower.includes("disabled") ||
+    lower.includes("location services") ||
+    lower.includes("not enabled") ||
+    lower.includes("location unavailable") ||
+    lower.includes("timeout") ||
+    lower.includes("could not obtain location");
+  if (isServicesOff) {
+    const servicesOff = isIosNativeApp()
+      ? "Location services are off. Turn them on in Settings → Privacy → Location Services."
+      : "Location services are off. Turn on Location in your phone settings, then try Near me again.";
+    console.log("[App] locationErrorFrom: recognized as services off");
+    return Object.assign(new Error(servicesOff), { code: 2, cause: error });
+  }
 
   if (
     code === 1 ||
     lower.includes("denied") ||
-    lower.includes("permission")
+    lower.includes("permission") ||
+    lower.includes("authorized")
   ) {
     return Object.assign(new Error(locationPermissionHelpMessage()), {
       code: 1,
       cause: error,
     });
-  }
-
-  if (
-    lower.includes("disabled") ||
-    lower.includes("location services") ||
-    lower.includes("not enabled")
-  ) {
-    const servicesOff = isIosNativeApp()
-      ? "Turn on Location Services in Settings → Privacy & Security → Location Services, then try Near me again — or choose a station below."
-      : "Turn on Location in your phone settings, then try Near me again — or choose a station below.";
-    return Object.assign(new Error(servicesOff), { code: 2, cause: error });
   }
 
   if (
@@ -390,6 +441,7 @@ function locationErrorFrom(error) {
 }
 
 async function getAppGeolocationPosition(options = {}) {
+  console.log("[App] getAppGeolocationPosition starting...", options);
   if (isNativeApp()) {
     await ensureGeoBridge();
     if (!window.NextTrainGeo?.getCurrentPosition) {
@@ -400,7 +452,12 @@ async function getAppGeolocationPosition(options = {}) {
       if (typeof window.NextTrainGeo.ensureLocationPermission === "function") {
         await window.NextTrainGeo.ensureLocationPermission();
       }
-      return await window.NextTrainGeo.getCurrentPosition(options);
+      const gpsPromise = window.NextTrainGeo.getCurrentPosition(options);
+      const timeoutPromise = new Promise((_, reject) => {
+        // Jim brief: give more time for first fix on cold start.
+        setTimeout(() => reject(new Error("Native GPS timeout")), (options.timeout || 30000) + 1000);
+      });
+      return await Promise.race([gpsPromise, timeoutPromise]);
     } catch (error) {
       throw locationErrorFrom(error);
     }
@@ -599,7 +656,7 @@ function appendFixtureQuery(queryString) {
   return params.toString();
 }
 
-function applyTestQueryParams() {
+async function applyTestQueryParams() {
   const params = new URLSearchParams(window.location.search);
   if (params.get("test") === "1") {
     sessionStorage.setItem("nextTrainTestMode", "1");
@@ -614,6 +671,15 @@ function applyTestQueryParams() {
   if (params.get("test") === "1") {
     sessionStorage.setItem("nextTrainTestMode", "1");
   }
+
+  // Jim brief: if station/direction are in URL, save them immediately on reset.
+  const urlSettings = await readUrlSettings();
+  if (urlSettings) {
+    saveSettingsToStorage(urlSettings);
+    settings = urlSettings;
+    settingsDraftJourneys = settings.journeys.map((j) => ({ ...j }));
+  }
+
   params.delete("reset");
   const nextQuery = params.toString();
   const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}`;
@@ -1019,11 +1085,8 @@ async function applyJourneysMode({ coldStart = false } = {}) {
     if (coldStart) {
       maybeScheduleOnboarding();
     }
-    if (!nearbyMode().getNearbySession()) {
-      await enterNearbyMode();
-    } else {
-      syncChromeMode();
-    }
+    // Jim brief: always ensure nearby mode is entered if we default to it.
+    await enterNearbyMode();
     return;
   }
 
@@ -1062,6 +1125,13 @@ function hasCompletedOnboarding() {
 function isOnboardingVisible() {
   const active = isTemplateWizardActive();
   const visible = Boolean(onboardingCoach && !onboardingCoach.hidden) || active;
+  
+  // If we are in nearby mode and it's showing a fallback error (like location needed), 
+  // we want periodic refreshes and train fetching to proceed so we can break out of the error state.
+  if (isNearbyModeActive() && nearbyMode().getNearbyErrorKind()) {
+    return false;
+  }
+  
   console.log("[App] isOnboardingVisible:", visible, "mainCoach:", Boolean(onboardingCoach && !onboardingCoach.hidden), "wizardActive:", active);
   return visible;
 }
@@ -1352,8 +1422,8 @@ function showOnboardingStep1() {
     };
     const regionLabel = regionNames[readActiveCity()] || "your local";
     step1Text.textContent = nearbyMode().getNearbySession()?.unsupportedRegion
-      ? `Near me works when you're near ${regionLabel} stations.`
-      : "By default, Next Train shows departures at the station nearest you.";
+      ? "Near me works when you're near supported train stations."
+      : `By default, Next Train shows departures at the station nearest you.`;
   }
 
   if (onboardingStep1) {
@@ -1365,8 +1435,8 @@ function showOnboardingStep1() {
   if (onboardingStep3) {
     onboardingStep3.hidden = true;
   }
-  window.NextTrainCitySession?.syncRegionControls?.();
   showOnboardingCoach(1);
+  window.NextTrainCitySession?.syncRegionControls?.();
 }
 
 function showOnboardingStep2() {
@@ -2080,7 +2150,30 @@ async function readUrlSettings() {
     return null;
   }
 
+  // Jim brief: don't block on catalog fetch for URL-based settings if we can.
+  // However, for validation, we do a quick check.
   const stations = await getStationsList();
+  if (stations.length === 0) {
+    // If list failed/empty, trust the URL station for now (e.g. cold start with network delay)
+    const journey = createDefaultJourney({
+      name: "To work",
+      station: stationText,
+      direction: directionText,
+      leaveBeforeMinutes:
+        Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
+        DEFAULT_SETTINGS.leaveBeforeMinutes,
+    });
+
+    return migrateSettings({
+      settingsSchemaVersion: 2,
+      journeys: [journey],
+      activeJourneyId: journey.id,
+      refreshSeconds:
+        Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
+        DEFAULT_SETTINGS.refreshSeconds,
+    });
+  }
+
   const catalog = new Set(stations);
   const normalizedStation = normalizeStation(stationText);
   if (!catalog.has(normalizedStation) && !catalog.has(stationText)) {
@@ -2511,24 +2604,50 @@ function buildApiParams() {
   return params;
 }
 
-async function fetchJson(url) {
+async function fetchJson(url, timeoutMs = 10000) {
+  console.log(`[fetchJson] ${url}`);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
   let response;
   let text;
   try {
-    response = await fetch(url);
+    response = await fetch(url, { signal: controller.signal });
     text = await response.text();
-  } catch {
+  } catch (error) {
+    console.error(`[fetchJson] error for ${url}:`, error.message || error);
+    clearTimeout(timeoutId);
+
+    // Fallback to Vercel if local origin fails (e.g. firewall, disconnected from LAN)
+    const origin = getApiOrigin();
+    if (origin && url.startsWith(origin) && origin !== VERCEL_ORIGIN && !url.includes("dogfood-origin.json")) {
+      console.warn(`[fetchJson] Local API failed, retrying with Vercel: ${url} (error: ${error.message || error})`);
+      const vercelUrl = url.replace(origin, VERCEL_ORIGIN);
+      return await fetchJson(vercelUrl, timeoutMs);
+    }
+
+    if (error.name === "AbortError") {
+      return {
+        ok: false,
+        error: "Connection timed out. Check your signal.",
+      };
+    }
     return {
       ok: false,
       error: "Couldn't reach live times. Check your connection.",
     };
+  } finally {
+    clearTimeout(timeoutId);
   }
   try {
-    return { ok: response.ok, data: JSON.parse(text) };
+    return { ok: response.ok, status: response.status, data: JSON.parse(text) };
   } catch {
     return {
       ok: false,
-      error: "Server returned an invalid response. Restart with: npm start",
+      status: response.status,
+      error: text.includes("<html") 
+        ? `Server error (${response.status}). The board API may not be deployed yet.`
+        : "Server returned an invalid response. Restart with: npm start",
     };
   }
 }
@@ -3327,7 +3446,7 @@ function openLeaveBufferSettings() {
     return;
   }
 
-  journeyDetail().setLibraryKind?.(isRouteJourney(journey) ? "routes" : "journeys");
+  journeyDetail()?.setLibraryKind?.(isRouteJourney(journey) ? "routes" : "journeys");
 
   openJourneyDetail(journey.id).then(() => {
     requestAnimationFrame(() => {
@@ -4013,7 +4132,7 @@ function openTravelLibrary(tab) {
   chromeTravelTab = tab;
   journeyModeActive = true;
   exitNearbyMode();
-  journeyDetail().setLibraryKind?.(tab);
+  journeyDetail()?.setLibraryKind?.(tab);
   dismissLeaveHint();
   dismissTemplateRouteCoach();
   showSettingsListView();
@@ -4235,12 +4354,16 @@ async function loadStationCoords() {
     return stationCoords;
   }
 
+  // Jim brief: if multi-city is active but catalog hasn't loaded yet, 
+  // don't block. findNearestStation will use raw GPS + server resolution.
   if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
     const dogfoodCoords = window.NextTrainBrisbaneDogfood.getCoords?.() ?? {};
     if (Object.keys(dogfoodCoords).length > 0) {
       stationCoords = { ...dogfoodCoords };
       return stationCoords;
     }
+    // If we're multi-city but no coords yet, return empty to skip blocking.
+    return {};
   }
 
   try {
@@ -4269,6 +4392,7 @@ function readActiveCity() {
   return String(
     window.NextTrainBrisbaneDogfood?.getCity?.() ||
       window.NextTrainCitySession?.readSavedCity?.() ||
+      window.NextTrainCitySession?.readActiveHint?.() ||
       "perth"
   )
     .trim()
@@ -4300,6 +4424,7 @@ function scheduleRegionMismatchPrompt() {
     console.log("[App] scheduleRegionMismatchPrompt: firing...");
     void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
       locateCity: locateCityFromPosition,
+      skip: () => isAppDialogOpen() || isJourneysDialogOpen() || isConfiguringAnyJourney(),
     });
   }, 2000);
 }
@@ -4486,6 +4611,7 @@ async function configureOutboundJourney(journey, nearestStation, inboundJourney 
 }
 
 async function getGeolocationPosition() {
+  console.log("[App] getGeolocationPosition starting...");
   const options = { timeout: 15000, maximumAge: 60000 };
 
   try {
@@ -4522,7 +4648,7 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     }
   }
 
-  const geoTimeoutMs = 15000;
+  const geoTimeoutMs = 30000;
   // Load station catalog and GPS in parallel — don't serialise a local JSON read ahead of the fix.
   const [coords, position] = await Promise.all([
     loadStationCoords(),
@@ -4535,6 +4661,24 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   ]);
 
   const { latitude, longitude } = position.coords;
+  
+  // Cache the last successful GPS fix.
+  try {
+    localStorage.setItem("nextTrainLastGps", JSON.stringify({
+      latitude,
+      longitude,
+      accuracy: position.coords.accuracy,
+      timestamp: position.timestamp || Date.now()
+    }));
+  } catch {}
+
+  // Jim brief: if we don't have coords yet, don't wait for the catalog.
+  // We can return the raw coords and let the server find the nearest.
+  if (Object.keys(coords).length === 0) {
+    console.log("[App] findNearestStation: no coords loaded, returning raw position");
+    return { lat: latitude, lng: longitude, distanceKm: 0 };
+  }
+
   let nearest = null;
   let bestDistance = Infinity;
 
@@ -4551,11 +4695,11 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   }
 
   if (!isStationInActiveCity(nearest)) {
-    throw new Error("Could not find a nearby station in this region");
+    throw new Error("Could not find a nearby station.");
   }
 
   if (isUnsupportedRegion(bestDistance)) {
-    throw new Error("Could not find a nearby station in this region");
+    throw new Error("Could not find a nearby station.");
   }
 
   return { station: nearest, distanceKm: bestDistance };
@@ -4808,9 +4952,12 @@ async function fetchNextTrain() {
     if (fetchId !== journeyBoardFetchId) {
       return;
     }
-    lastApiData = normalizeApiTrainData(payload);
-    render(prepareDisplayData(lastApiData));
-  } catch (error) {
+  lastApiData = normalizeApiTrainData(payload);
+  render(prepareDisplayData(lastApiData));
+
+  // Jim brief: defer non-critical scripts until after first train paint.
+  window.NextTrainDeferred?.load?.();
+} catch (error) {
     if (fetchId !== journeyBoardFetchId) {
       return;
     }
@@ -5019,7 +5166,7 @@ function createJourneyFromRoute() {
     return;
   }
 
-  journeyDetail().setLibraryKind?.("routes");
+  journeyDetail()?.setLibraryKind?.("routes");
   const journey = createDefaultJourney({
     name: "",
     kind: "route",
@@ -5034,7 +5181,7 @@ function createJourneyFromTemplate(templateKey) {
     return;
   }
 
-  journeyDetail().setLibraryKind?.("journeys");
+  journeyDetail()?.setLibraryKind?.("journeys");
 
   // First journey should always start from the Morning commute preset, even when
   // the user taps "Add a journey" instead of onboarding "Set up a journey".
@@ -5946,7 +6093,7 @@ journeySaveRouteBtnEl?.addEventListener("click", async () => {
 
   templateCreateInFlight = true;
   setJourneyTemplateLoading(true);
-  journeyDetail().setLibraryKind?.("routes");
+  journeyDetail()?.setLibraryKind?.("routes");
   openJourneysDialogSync();
 
   try {
@@ -5964,7 +6111,7 @@ journeySetupBtnEl?.addEventListener("click", async () => {
 
   templateCreateInFlight = true;
   setJourneyTemplateLoading(true);
-  journeyDetail().setLibraryKind?.("journeys");
+  journeyDetail()?.setLibraryKind?.("journeys");
   openJourneysDialogSync();
   try {
     await createJourneyFromTemplate("custom");
@@ -6169,13 +6316,14 @@ async function init() {
 
   if (isNativeApp()) {
     document.body.classList.add("native-app");
+    dogfoodOriginCache = await readDogfoodOrigin();
   }
 
   localStorage.removeItem("nextTrainAdsLoaded");
 
   const seedApplied = await applyMaestroTestSeedFromDeepLink();
   if (!seedApplied) {
-    applyTestQueryParams();
+    await applyTestQueryParams();
   }
 
   settings = readStoredSettings();
@@ -6213,8 +6361,6 @@ async function init() {
   }
 
   scheduleRefresh();
-  await getStationsList();
-  await loadStationCoords();
 
   initNearbyModeFromModule();
   initJourneyDetailFromModule();
@@ -6225,6 +6371,13 @@ async function init() {
   if (isNativeApp()) {
     void ensureGeoBridge().catch(() => {});
   }
+
+  // First paint: GPS + nearest + one board. Full catalogs can wait until the first paint is done
+  // or until the user opens a picker.
+  setTimeout(() => {
+    void getStationsList();
+    void loadStationCoords();
+  }, 100);
 
   if (urlSettings) {
     journeyModeActive = true;
@@ -6283,7 +6436,7 @@ function initStationComboboxesFromModule() {
     detailDirectionSelect,
     loadDirectionsForSelect,
     syncDetailNearestStationChrome,
-    detailNearestState: journeyDetail().getDetailNearestState?.(),
+    getDetailNearestState: () => journeyDetail()?.getDetailNearestState?.(),
     isNearbyModeActive,
     applyNearbyManualStation,
   });

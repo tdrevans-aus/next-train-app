@@ -131,16 +131,9 @@
   }
 
   async function probe() {
+    // Multi-city probe is disabled in production to avoid loading unrelated city catalogs.
+    // mount(city) will load the specific city catalog when needed.
     state.ready = true;
-    for (const city of MULTI_CITY_IDS) {
-      try {
-        const catalog = await loadCatalog(city);
-        state.available[city] = catalog.stations.length > 0;
-        state[`${city}Catalog`] = catalog;
-      } catch {
-        state.available[city] = false;
-      }
-    }
     return { ...state.available, origin: state.origin };
   }
 
@@ -158,10 +151,7 @@
       state.coords = {};
       return false;
     }
-    if (!state.ready) {
-      console.log(`[NextTrainDogfood] probing before mount...`);
-      await probe();
-    }
+
     let catalog = state[`${id}Catalog`];
     if (!catalog?.stations?.length) {
       try {
@@ -183,6 +173,7 @@
     state.stations = catalog.stations;
     state.coords = catalog.coords;
     state.active = true;
+    state.ready = true;
     console.log(`[NextTrainDogfood] city mounted: ${id} (${catalog.stations.length} stations)`);
     window.nextTrainStationCombobox?.replaceStationsCache?.(catalog.stations);
     return true;

@@ -511,7 +511,6 @@
       detailDirectionSelect,
       loadDirectionsForSelect,
       syncDetailNearestStationChrome,
-      detailNearestState,
       nearbyStationComboboxRoot,
       isNearbyModeActive,
       applyNearbyManualStation,
@@ -523,9 +522,10 @@
         hideFooterOnOpen: true,
         onChange: (station) => {
           void loadDirectionsForSelect(detailDirectionSelect, station);
+          const state = deps.getDetailNearestState ? deps.getDetailNearestState() : deps.detailNearestState;
           if (!station) {
             syncDetailNearestStationChrome({ error: false, hint: "" });
-          } else if (!detailNearestState.loading) {
+          } else if (!state || !state.loading) {
             syncDetailNearestStationChrome({ error: false, hint: "" });
           }
         },

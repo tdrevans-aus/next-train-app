@@ -2,84 +2,111 @@
   "stations": [
     {
       "name": "Flinders Street",
-      "aliases": ["Flinders St", "Flinders Street Station"],
+      "aliases": [
+        "Flinders St",
+        "Flinders Street Station"
+      ],
       "stopId": 1071,
       "lat": -37.8183,
       "lng": 144.9671
     },
     {
       "name": "Southern Cross",
-      "aliases": ["Southern Cross Station", "Spencer Street"],
+      "aliases": [
+        "Southern Cross Station",
+        "Spencer Street"
+      ],
       "stopId": 1181,
       "lat": -37.8184,
       "lng": 144.9525
     },
     {
       "name": "Melbourne Central",
-      "aliases": ["Melb Central", "Melbourne Central Station"],
+      "aliases": [
+        "Melb Central",
+        "Melbourne Central Station"
+      ],
       "stopId": 1120,
       "lat": -37.8106,
       "lng": 144.9631
     },
     {
       "name": "Parliament",
-      "aliases": ["Parliament Station"],
+      "aliases": [
+        "Parliament Station"
+      ],
       "stopId": 1155,
       "lat": -37.8135,
       "lng": 144.9734
     },
     {
       "name": "Richmond",
-      "aliases": ["Richmond Station"],
+      "aliases": [
+        "Richmond Station"
+      ],
       "stopId": 1072,
       "lat": -37.8257,
       "lng": 144.9972
     },
     {
       "name": "North Melbourne",
-      "aliases": ["North Melbourne Station"],
+      "aliases": [
+        "North Melbourne Station"
+      ],
       "stopId": 1144,
       "lat": -37.8066,
       "lng": 144.9425
     },
     {
       "name": "Footscray",
-      "aliases": ["Footscray Station"],
+      "aliases": [
+        "Footscray Station"
+      ],
       "stopId": 1076,
       "lat": -37.7992,
       "lng": 144.9017
     },
     {
       "name": "Caulfield",
-      "aliases": ["Caulfield Station"],
+      "aliases": [
+        "Caulfield Station"
+      ],
       "stopId": 1068,
       "lat": -37.8838,
       "lng": 145.0412
     },
     {
       "name": "Box Hill",
-      "aliases": ["Box Hill Station"],
+      "aliases": [
+        "Box Hill Station"
+      ],
       "stopId": 1009,
       "lat": -37.8191,
       "lng": 145.1235
     },
     {
       "name": "Ringwood",
-      "aliases": ["Ringwood Station"],
+      "aliases": [
+        "Ringwood Station"
+      ],
       "stopId": 1070,
       "lat": -37.8388,
       "lng": 145.2286
     },
     {
       "name": "Glen Waverley",
-      "aliases": ["Glen Waverley Station"],
+      "aliases": [
+        "Glen Waverley Station"
+      ],
       "stopId": 1078,
       "lat": -37.8835,
       "lng": 145.1664
     },
     {
       "name": "Hurstbridge",
-      "aliases": ["Hurstbridge Station"],
+      "aliases": [
+        "Hurstbridge Station"
+      ],
       "stopId": 1080,
       "lat": -37.6395,
       "lng": 145.1923

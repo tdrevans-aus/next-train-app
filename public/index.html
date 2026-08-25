@@ -27,15 +27,27 @@
     </script>
     <title>Next Train</title>
     <link rel="manifest" href="manifest.json" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <style>
+      :root {
+        --nt-font-main: "Figtree", system-ui, -apple-system, sans-serif;
+        --nt-font-display: "Syne", "Figtree", system-ui, -apple-system, sans-serif;
+      }
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .brand-mark, .brand-logo {
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      /* Hero countdown should be readable in system font while loading Syne */
+      .time {
+        font-family: system-ui, -apple-system, sans-serif;
+        font-weight: 800;
+      }
+    </style>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <script src="capacitor.js"></script>
     <div class="atmosphere" aria-hidden="true"></div>
     <main class="app">
       <header class="topbar">
@@ -373,10 +385,6 @@
         <div id="onboarding-step-1" class="onboarding-coach-step">
           <h2 id="onboarding-step-title">Near Me</h2>
           <p>By default, Next Train shows departures at the station nearest you.</p>
-          <button type="button" class="onboarding-region-btn" id="onboarding-region-btn">
-            Region
-            <span data-region-summary></span>
-          </button>
           <button type="button" class="btn-primary" id="onboarding-got-it-btn">Got it</button>
         </div>
         <div id="onboarding-step-2" class="onboarding-coach-step" hidden>
@@ -576,36 +584,6 @@
       <footer class="widget-appearance-setup-footer">
         <button type="button" class="btn-secondary" id="widget-appearance-setup-cancel-btn">Cancel</button>
         <button type="button" class="btn-primary" id="widget-appearance-setup-primary-btn">Done</button>
-      </footer>
-    </div>
-
-    <div class="region-setup" id="region-setup" hidden>
-      <div class="region-setup-scroll">
-        <header class="region-setup-header">
-          <div class="region-setup-header-row">
-            <button
-              type="button"
-              class="region-setup-back"
-              id="region-setup-back-btn"
-              aria-label="Back"
-            >
-              <span aria-hidden="true">←</span>
-            </button>
-            <h2 id="region-setup-title">Region</h2>
-          </div>
-          <p class="region-setup-hint">Defaults to your location until you set it here.</p>
-        </header>
-        <label class="menu-region-field">
-          <span>Country</span>
-          <select data-region-country aria-label="Country"></select>
-        </label>
-        <label class="menu-region-field">
-          <span>Region</span>
-          <select data-region-city aria-label="Region"></select>
-        </label>
-      </div>
-      <footer class="region-setup-footer">
-        <button type="button" class="btn-primary" id="region-setup-done-btn">Done</button>
       </footer>
     </div>
 
@@ -1099,9 +1077,9 @@
         </div>
 
         <nav class="menu-section-card" aria-label="Menu">
-          <button type="button" class="menu-row menu-row--nav menu-region-btn" id="menu-region-btn">
+          <button type="button" class="menu-row menu-row--nav" id="menu-region-btn">
             <span class="menu-row-label">Region</span>
-            <span class="menu-region-btn-value" data-region-summary></span>
+            <span class="menu-row-value" data-region-summary>Perth</span>
           </button>
           <div class="menu-row-sep" aria-hidden="true"></div>
           <div class="menu-row menu-row--stacked menu-appearance" id="menu-appearance">
@@ -1138,16 +1116,38 @@
       </div>
     </dialog>
 
-    <dialog class="confirm-dialog" id="region-mismatch-dialog" aria-labelledby="region-mismatch-dialog-title">
+    <dialog class="confirm-dialog" id="region-mismatch-dialog" aria-labelledby="region-mismatch-title">
       <div class="confirm-dialog-body">
-        <h2 id="region-mismatch-dialog-title">Different region?</h2>
-        <p id="region-mismatch-dialog-body"></p>
+        <h2 id="region-mismatch-title">Switch Region?</h2>
+        <p id="region-mismatch-body"></p>
         <div class="confirm-dialog-actions">
-          <button type="button" class="btn-secondary" id="region-mismatch-keep-btn">Keep current</button>
-          <button type="button" class="btn-primary" id="region-mismatch-switch-btn">Switch region</button>
+          <button type="button" class="btn-secondary" id="region-mismatch-dismiss-btn">Dismiss</button>
+          <button type="button" class="btn-primary" id="region-mismatch-switch-btn">Switch</button>
         </div>
       </div>
     </dialog>
+
+    <div class="region-setup" id="region-setup" hidden>
+      <header class="region-setup-header">
+        <button type="button" class="region-setup-back" id="region-setup-back-btn" aria-label="Back">
+          <span aria-hidden="true">←</span>
+        </button>
+        <h2 id="region-setup-title">Region</h2>
+      </header>
+      <div class="region-setup-body">
+        <label class="field region-field">
+          <span>Country</span>
+          <select id="region-country-select" data-region-country></select>
+        </label>
+        <label class="field region-field">
+          <span>City</span>
+          <select id="region-city-select" data-region-city></select>
+        </label>
+      </div>
+      <footer class="region-setup-footer">
+        <button type="button" class="btn-primary region-setup-done" id="region-setup-done-btn">Done</button>
+      </footer>
+    </div>
 
     <dialog class="confirm-dialog" id="delete-journey-dialog" aria-labelledby="delete-journey-dialog-title">
       <div class="confirm-dialog-body">
@@ -1412,13 +1412,38 @@
           }
           throw new Error('Dynamic require of "' + name + '" is not supported');
         };
+
+        // Jim brief: defer non-critical scripts and fonts until after first train paint.
+        function loadDeferred() {
+          const scripts = [
+            "ad-free-purchase.js",
+            "analytics-bundle.js",
+            "analytics.js",
+            "ads-bundle.js",
+            "template-wizard.js",
+            "journey-detail.js",
+            "widget.js",
+            "leave-reminders.js",
+            "stickiness-coaches.js",
+            "ads.js"
+          ];
+          scripts.forEach(src => {
+            const s = document.createElement("script");
+            s.src = src;
+            s.async = true;
+            document.body.appendChild(s);
+          });
+
+          // Load Google Fonts after paint
+          const f = document.createElement("link");
+          f.rel = "stylesheet";
+          f.href = "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap";
+          document.head.appendChild(f);
+        }
+        window.NextTrainDeferred = { load: loadDeferred };
       })();
     </script>
-    <script src="ad-free-purchase.js"></script>
-    <script src="analytics-bundle.js"></script>
-    <script src="analytics.js"></script>
     <script src="geo-bundle.js"></script>
-    <script src="ads-bundle.js"></script>
     <script src="brisbane-dogfood.js"></script>
     <script src="city-session.js"></script>
     <script src="train-times-bundle.js"></script>
@@ -1428,12 +1453,6 @@
     <script src="pin-state.js"></script>
     <script src="train-navigation.js"></script>
     <script src="nearby-mode.js"></script>
-    <script src="template-wizard.js"></script>
-    <script src="journey-detail.js"></script>
-    <script src="widget.js"></script>
-    <script src="leave-reminders.js"></script>
-    <script src="stickiness-coaches.js"></script>
     <script src="app.js?v=feedback-cancel-1"></script>
-    <script src="ads.js"></script>
   </body>
 </html>
