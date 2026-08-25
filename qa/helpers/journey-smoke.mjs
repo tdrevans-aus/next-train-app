@@ -107,7 +107,9 @@ export async function ensureJourneyMode(page) {
     null,
     { timeout: 20000 }
   );
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
+    await window.NextTrainDeferred?.load?.();
+    await window.NextTrainDeferred?.whenReady?.();
     const appEl = document.querySelector(".app");
     const nearby = appEl?.classList.contains("nearby-mode");
     const journey = appEl?.classList.contains("journey-mode");

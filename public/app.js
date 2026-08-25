@@ -6614,9 +6614,9 @@ function openJourneysDialogSync() {
 }
 function syncJourneysDetailChrome() { return journeyDetail().syncJourneysDetailChrome(); }
 function syncJourneysDialogSheetMode() { return journeyDetail().syncJourneysDialogSheetMode(); }
-function showSettingsListView() { return journeyDetail().showSettingsListView(); }
-function showSettingsDetailView() { return journeyDetail().showSettingsDetailView(); }
-function cancelJourneyDetailEdit() { return journeyDetail().cancelJourneyDetailEdit(); }
+function showSettingsListView() { return journeyDetail()?.showSettingsListView?.(); }
+function showSettingsDetailView() { return journeyDetail()?.showSettingsDetailView?.(); }
+function cancelJourneyDetailEdit() { return journeyDetail()?.cancelJourneyDetailEdit?.(); }
 function syncJourneyDetailRouteFields(journey, nearestHint) {
   return journeyDetail().syncJourneyDetailRouteFields(journey, nearestHint);
 }
