@@ -1,3 +1,15 @@
+/**
+ * Classic-script IIFE so top-level const/let are not on the shared global
+ * lexical environment. Re-evaluating this file (WebView reload / duplicate
+ * script tag) previously threw:
+ *   SyntaxError: Identifier 'AD_FREE_CACHE_KEY' has already been declared
+ * (Sentry CAPACITOR-10).
+ */
+(function (global) {
+if (global.NextTrainAdFree) {
+  return;
+}
+
 const AD_FREE_CACHE_KEY = "nextTrainAdFreeCache";
 const DEFAULT_PRODUCT_ID = "com.tdrevans.nexttrain.adfree";
 const DEFAULT_LIST_PRICE = "A$7.99";
@@ -649,7 +661,7 @@ function wireUi() {
   });
 }
 
-window.NextTrainAdFree = {
+global.NextTrainAdFree = {
   isPurchased() {
     return entitled;
   },
@@ -670,10 +682,11 @@ window.NextTrainAdFree = {
   },
 };
 
-window.NextTrainScripts = {
+global.NextTrainScripts = {
   loadScriptOnce,
   waitForCapacitor,
 };
 
 wireUi();
 ensureInit();
+})(window);

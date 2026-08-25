@@ -15,6 +15,37 @@ async function run() {
   await page.goto(`${BASE}/?reset=1&fixture=normal&test=1`);
   await page.waitForTimeout(5000);
 
+  // CAPACITOR-10: re-injecting the classic script must not redeclare consts.
+  const reloadOk = await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = "ad-free-purchase.js";
+        script.onload = () =>
+          resolve({
+            loaded: true,
+            hasApi: typeof window.NextTrainAdFree?.isEntitled === "function",
+          });
+        script.onerror = () => resolve({ loaded: false, hasApi: false });
+        document.head.appendChild(script);
+      })
+  );
+  const redeclareErrors = pageErrors.filter((e) =>
+    /AD_FREE_CACHE_KEY|already been declared/i.test(e)
+  );
+  const reloadPass =
+    reloadOk.loaded === true &&
+    reloadOk.hasApi === true &&
+    redeclareErrors.length === 0;
+  console.log(
+    reloadPass
+      ? "PASS  ad-free-purchase.js safe to re-inject"
+      : "FAIL  ad-free-purchase.js re-inject"
+  );
+  if (!reloadPass) {
+    console.error(JSON.stringify({ reloadOk, redeclareErrors }, null, 2));
+  }
+
   const web = await page.evaluate(async () => {
     const api = window.NextTrainAdFree;
     if (!api?.ensureInit || typeof api.refreshEntitlement !== "function") {
@@ -141,7 +172,9 @@ async function run() {
   }
 
   await browser.close();
-  process.exit(webPass && noBridgeUiOk && paywallOk && entitledOk ? 0 : 1);
+  process.exit(
+    reloadPass && webPass && noBridgeUiOk && paywallOk && entitledOk ? 0 : 1
+  );
 }
 
 run().catch((e) => {
