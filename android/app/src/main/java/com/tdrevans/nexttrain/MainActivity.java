@@ -6,6 +6,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import androidx.activity.OnBackPressedCallback;
 import com.getcapacitor.BridgeActivity;
+import io.sentry.capacitor.SentryCapacitor;
 
 public class MainActivity extends BridgeActivity {
 
@@ -16,6 +17,8 @@ public class MainActivity extends BridgeActivity {
   public void onCreate(Bundle savedInstanceState) {
     registerPlugin(WidgetSyncPlugin.class);
     registerPlugin(LeaveReminderPlugin.class);
+    // Ensure SentryCapacitor is on the bridge even if capacitor.plugins.json is stale.
+    registerPlugin(SentryCapacitor.class);
     super.onCreate(savedInstanceState);
     DeepLinkHelper.capture(getIntent());
     boolean debugAction = DeepLinkHelper.applyDebugActions(this, getIntent());
