@@ -24,7 +24,9 @@ assert(perth.includes("Yanchep"), "Perth → Yanchep");
 assert(perth.includes("Mandurah"), "Perth → Mandurah");
 assert(perth.includes("Fremantle"), "Perth → Fremantle");
 assert(perth.includes("Midland"), "Perth → Midland");
-assert(perth.includes("Armadale"), "Perth → Armadale");
+assert(perth.includes("Byford"), "Perth → Byford (Armadale / Byford Line)");
+assert(perth.includes("Ellenbrook"), "Perth → Ellenbrook (Ellenbrook Line)");
+assert(perth.includes("High Wycombe"), "Perth → High Wycombe (Airport Line)");
 assert(perth.includes("Cockburn"), "Perth → Cockburn (Thornlie–Cockburn Line)");
 
 const nicholson = staticDirectionsForStation("Nicholson Road Stn");

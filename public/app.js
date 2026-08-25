@@ -6165,6 +6165,8 @@ async function init() {
     applyTestQueryParams();
   }
 
+  settings = readStoredSettings();
+
   await window.NextTrainCitySession?.init?.();
   stationCoords = null;
 
@@ -6172,7 +6174,6 @@ async function init() {
   dismissStaleBlockingLayers();
 
   if (seedApplied) {
-    settings = readStoredSettings();
     refreshSeconds = settings.refreshSeconds ?? DEFAULT_SETTINGS.refreshSeconds;
     journeyModeActive = true;
     scheduleRefresh();
@@ -6185,7 +6186,6 @@ async function init() {
     fetchNextTrain();
     window.nextTrainWidget?.syncWidgetSettings?.(settings);
     await window.nextTrainWidget?.consumeLaunchDeepLink?.();
-    void window.NextTrainBrisbaneDogfood?.mount?.();
     return;
   }
 
@@ -6194,15 +6194,21 @@ async function init() {
     console.log("[init] found urlSettings, entering journey mode");
     journeyModeActive = true;
     persistSettings(urlSettings);
-  } else {
     settings = readStoredSettings();
+  } else {
     refreshSeconds = settings.refreshSeconds ?? DEFAULT_SETTINGS.refreshSeconds;
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
   }
 
   scheduleRefresh();
   await getStationsList();
   await loadStationCoords();
+
+  initNearbyModeFromModule();
+  initJourneyDetailFromModule();
+  initTemplateWizardFromModule();
+
+  await mountNearbyMode();
+
   if (isNativeApp()) {
     void ensureGeoBridge().catch(() => {});
   }
@@ -6216,7 +6222,6 @@ async function init() {
     fetchNextTrain();
     window.nextTrainWidget?.syncWidgetSettings?.(settings);
     await window.nextTrainWidget?.consumeLaunchDeepLink?.();
-    void window.NextTrainBrisbaneDogfood?.mount?.();
     return;
   }
 
@@ -6228,7 +6233,6 @@ async function init() {
   if (isNativeApp()) {
     void maybeSyncLeaveAlarmFromNative();
   }
-  void window.NextTrainBrisbaneDogfood?.mount?.();
   scheduleRegionMismatchPrompt();
 }
 
@@ -6289,13 +6293,6 @@ function findJourneyNameConflict(name, journeys, excludeId) {
 }
 function isLegacyBlankDefaultWindow(a, b) { return journeyModel().isLegacyBlankDefaultWindow(a, b); }
 function normalizeRemindDays(raw) { return journeyModel().normalizeRemindDays(raw); }
-function getPerthDayOfWeekIso(date) {
-  const testDay = readTestDayIsoFromUrl();
-  if (testDay != null) {
-    return testDay;
-  }
-  return journeyModel().getPerthDayOfWeekIso(date);
-}
 function getJourneyRemindDays(journey) { return journeyModel().getJourneyRemindDays(journey); }
 function formatJourneyActiveDays(journey) { return journeyModel().formatJourneyActiveDays(journey); }
 function journeyMatchesActiveDay(journey, day) { return journeyModel().journeyMatchesActiveDay(journey, day); }
@@ -6335,12 +6332,12 @@ function readTestDayFromUrl() {
   return day != null ? Number(day) : null;
 }
 
-function getPerthDayOfWeekIso() {
+function getPerthDayOfWeekIso(date = new Date()) {
   const testDay = readTestDayFromUrl();
   if (testDay != null) {
     return testDay;
   }
-  return journeyModel().getPerthDayOfWeekIso();
+  return journeyModel().getPerthDayOfWeekIso(date);
 }
 function getPerthLocalDateKey(date) { return journeyModel().getPerthLocalDateKey(date); }
 function hasDefaultWindow(journey) { return journeyModel().hasDefaultWindow(journey); }

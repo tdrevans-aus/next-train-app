@@ -621,43 +621,62 @@ function pad2(value) {
 }
 
 function getActiveTimeZone() {
-  return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
+  try {
+    return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
+  } catch {
+    return "Australia/Perth";
+  }
 }
 
 function getPerthDateParts(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-AU", {
-    timeZone: getActiveTimeZone(),
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).formatToParts(date);
+  try {
+    const parts = new Intl.DateTimeFormat("en-AU", {
+      timeZone: getActiveTimeZone(),
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }).formatToParts(date);
 
-  const get = (type) => parts.find((p) => p.type === type)?.value;
+    const get = (type) => parts.find((p) => p.type === type)?.value;
 
-  return {
-    year: Number(get("year")),
-    month: Number(get("month")),
-    day: Number(get("day")),
-    hour: Number(get("hour")),
-    minute: Number(get("minute")),
-    second: Number(get("second")),
-  };
+    return {
+      year: Number(get("year") ?? 0),
+      month: Number(get("month") ?? 1),
+      day: Number(get("day") ?? 1),
+      hour: Number(get("hour") ?? 0),
+      minute: Number(get("minute") ?? 0),
+      second: Number(get("second") ?? 0),
+    };
+  } catch {
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+      hour: date.getHours(),
+      minute: date.getMinutes(),
+      second: date.getSeconds(),
+    };
+  }
 }
 function getPerthMinutesSinceMidnight(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-AU", {
-    timeZone: getActiveTimeZone(),
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).formatToParts(date);
+  try {
+    const parts = new Intl.DateTimeFormat("en-AU", {
+      timeZone: getActiveTimeZone(),
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).formatToParts(date);
 
-  const hour = Number(parts.find((part) => part.type === "hour").value);
-  const minute = Number(parts.find((part) => part.type === "minute").value);
-  return hour * 60 + minute;
+    const hour = Number(parts.find((part) => part.type === "hour")?.value ?? 0);
+    const minute = Number(parts.find((part) => part.type === "minute")?.value ?? 0);
+    return hour * 60 + minute;
+  } catch {
+    return date.getHours() * 60 + date.getMinutes();
+  }
 }
 function hasDefaultWindow(journey) {
   return Boolean(journey?.defaultFrom && journey?.defaultUntil);

@@ -40,6 +40,7 @@
     "sweep:brisbane": "node qa/brisbane-network-sweep.mjs",
     "dogfood:origin": "node scripts/write-dogfood-origin.mjs",
     "android:debug": "node scripts/write-dogfood-origin.mjs && npm run cap:sync && node scripts/assemble-debug.mjs",
+    "android:bundle": "npm run cap:sync && node scripts/assemble-release-bundle.mjs",
     "trim:brisbane-gtfs": "node scripts/trim-brisbane-gtfs.mjs",
     "build:line-map": "node scripts/build-line-map.mjs --city=brisbane",
     "probe:sydney": "node scripts/probe-sydney-board.mjs",

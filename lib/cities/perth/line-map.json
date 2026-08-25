@@ -1,6 +1,6 @@
 {
   "city": "perth",
-  "source": "Transperth rail network (manual audit 2026-08-19 from public/stations.json + line topology)",
+  "source": "Transperth rail network (manual audit 2026-08-25 from public/stations.json + line topology)",
   "notes": [
     "Stations use LiveTimes naming (* Stn).",
     "Directions for journey setup = far termini of lines serving the station.",
@@ -9,7 +9,8 @@
   "shortTurnGroups": {
     "Yanchep": ["Yanchep", "Whitfords", "Clarkson", "Butler"],
     "Mandurah": ["Mandurah", "Cockburn"],
-    "Fremantle": ["Fremantle", "Claremont"]
+    "Fremantle": ["Fremantle", "Claremont"],
+    "Byford": ["Byford", "Armadale"]
   },
   "doNotGroup": [
     {
@@ -118,7 +119,7 @@
     {
       "id": "airport",
       "name": "Airport Line",
-      "termini": ["High Wycombe", "Perth"],
+      "termini": ["High Wycombe", "Fremantle"],
       "stations": [
         "High Wycombe Stn",
         "Airport Central Stn",
@@ -127,6 +128,41 @@
         "Meltham Stn",
         "Maylands Stn",
         "Mt Lawley Stn",
+        "East Perth Stn",
+        "Claisebrook Stn",
+        "McIver Stn",
+        "Perth Stn",
+        "Perth Underground Stn",
+        "Subiaco Stn",
+        "Shenton Park Stn",
+        "Daglish Stn",
+        "Showgrounds Stn",
+        "Karrakatta Stn",
+        "Loch Street Stn",
+        "Claremont Stn",
+        "Swanbourne Stn",
+        "Grant Street Stn",
+        "Mosman Park Stn",
+        "Victoria Street Stn",
+        "North Fremantle Stn",
+        "Fremantle Stn"
+      ]
+    },
+    {
+      "id": "ellenbrook",
+      "name": "Ellenbrook Line",
+      "termini": ["Ellenbrook", "Perth"],
+      "stations": [
+        "Ellenbrook Stn",
+        "Whiteman Park Stn",
+        "Ballajura Stn",
+        "Noranda Stn",
+        "Morley Stn",
+        "Bayswater Stn",
+        "Meltham Stn",
+        "Maylands Stn",
+        "Mt Lawley Stn",
+        "East Perth Stn",
         "Claisebrook Stn",
         "McIver Stn",
         "Perth Stn",
@@ -136,8 +172,9 @@
     {
       "id": "armadale",
       "name": "Armadale / Byford Line",
-      "termini": ["Armadale", "Perth"],
+      "termini": ["Byford", "Perth"],
       "stations": [
+        "Byford Stn",
         "Armadale Stn",
         "Sherwood Stn",
         "Challis Stn",
@@ -163,8 +200,14 @@
     {
       "id": "thornlie",
       "name": "Thornlie–Cockburn Line",
-      "termini": ["Cockburn", "Perth"],
+      "termini": ["Mandurah", "Perth"],
       "stations": [
+        "Mandurah Stn",
+        "Lakelands Stn",
+        "Warnbro Stn",
+        "Wellard Stn",
+        "Rockingham Stn",
+        "Kwinana Stn",
         "Cockburn Central Stn",
         "Ranford Road Stn",
         "Nicholson Road Stn",
@@ -186,9 +229,7 @@
     }
   ],
   "coverageGaps": [
-    "Ellenbrook Line stations not yet in public/stations.json (Ellenbrook, Whiteman Park, etc.) — add when LiveTimes allowlists them.",
     "Alkimos / Eglinton (Yanchep extension) not in stations.json yet.",
-    "Byford Stn not in stations.json yet — Armadale terminus used until Byford ships.",
     "Cottesloe naming may appear as Mosman Park / Grant Street corridor in LiveTimes."
   ]
 }
