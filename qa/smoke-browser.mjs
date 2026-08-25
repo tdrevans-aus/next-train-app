@@ -51,7 +51,11 @@ async function run() {
   });
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
-  await page.waitForTimeout(5000);
+  await page.waitForFunction(
+    () => document.querySelector(".app")?.classList.contains("nearby-mode"),
+    null,
+    { timeout: 20000 }
+  );
   const nearbyMode = await page.evaluate(() => document.querySelector(".app")?.classList.contains("nearby-mode"));
   const heroSetup = await page.locator("#hero").evaluate((el) => el.classList.contains("hero-setup"));
   const route1 = (await page.locator("#route").textContent())?.trim();

@@ -2333,7 +2333,6 @@ async function fetchNearbyBoard() {
   }
 
   async function fetchNearbyBoardOnce() {
-    console.log("[nearby] fetchNearbyBoardOnce starting");
     const station = nearbySession?.station;
     const lat = nearbySession?.lat;
     const lng = nearbySession?.lng;
