@@ -2658,8 +2658,17 @@ function initNearbyListeners() {
     deps = { ...nextDeps };
   }
 
+  /**
+   * CAPACITOR-Y: app boot calls nearbyMode().mount(domSnapshot) after init().
+   * Merge DOM refs without wiping callback deps already wired by init().
+   */
+  function mount(nextDeps = {}) {
+    deps = { ...deps, ...nextDeps };
+  }
+
   const api = {
     init,
+    mount,
     applyNearbyManualStation,
     applyNearbyPinToData,
     applyNearbySkip,

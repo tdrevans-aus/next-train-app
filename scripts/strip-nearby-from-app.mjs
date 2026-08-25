@@ -182,6 +182,7 @@ function initNearbyModeFromModule() {
     statusEl,
     followingSectionEl,
     updatedEl,
+    attributionEl,
     journeySwitcherEl,
     journeySwitcherMenuEl,
     appEl,

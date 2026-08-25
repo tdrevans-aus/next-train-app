@@ -107,6 +107,7 @@ const domRefs = [
   "statusEl",
   "followingSectionEl",
   "updatedEl",
+  "attributionEl",
   "journeySwitcherEl",
   "journeySwitcherMenuEl",
   "appEl",
@@ -208,8 +209,13 @@ const footer = `
     deps = { ...nextDeps };
   }
 
+  function mount(nextDeps = {}) {
+    deps = { ...deps, ...nextDeps };
+  }
+
   const api = {
     init,
+    mount,
 ${exports}
   };
 

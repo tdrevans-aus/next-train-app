@@ -53,6 +53,7 @@ function setAccessibleText(el, text) {
   el.setAttribute("aria-label", text);
 }
 const updatedEl = document.getElementById("updated");
+const attributionEl = document.getElementById("attribution");
 const journeySwitcherEl = document.getElementById("journey-switcher");
 const journeySwitcherNameEl = document.getElementById("journey-switcher-name");
 const journeySwitcherMenuEl = document.getElementById("journey-switcher-menu");
@@ -6706,6 +6707,38 @@ function initNearbyModeFromModule() {
     journeysChromeAction,
   });
   nearbyMode()?.initNearbyListeners?.();
+}
+
+/**
+ * CAPACITOR-Y: London release boot calls mountNearbyMode() → nearbyMode().mount(...).
+ * Near me only exposed init(); mount was never on the API. Optional-chain so a
+ * missing module does not throw (same posture as CAPACITOR-T).
+ */
+async function mountNearbyMode() {
+  return nearbyMode()?.mount?.({
+    appEl,
+    settings,
+    journeyModeActive,
+    chromeTravelTab,
+    lastRenderedNext,
+    errorEl,
+    heroEl,
+    heroDepartLabelEl,
+    departCountdownEl,
+    departDisplayTimeEl,
+    heroScheduledTimeEl,
+    leaveCardEl,
+    leaveCardLabelEl,
+    leaveTimeEl,
+    leaveCountdownEl,
+    leaveCardActionsEl,
+    leaveBufferEditBtn,
+    platformEl,
+    statusEl,
+    followingSectionEl,
+    updatedEl,
+    attributionEl,
+  });
 }
 
 const trainNavigation = () => window.nextTrainNavigation;
