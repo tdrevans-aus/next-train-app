@@ -289,6 +289,20 @@
     return deps.apiUrl?.(path) ?? path;
   }
 
+  async function fetchJson(url) {
+    // Prefer injected dep; fall back to classic-script global from app.js.
+    if (typeof deps.fetchJson === "function") {
+      return deps.fetchJson(url);
+    }
+    if (typeof global.fetchJson === "function") {
+      return global.fetchJson(url);
+    }
+    return {
+      ok: false,
+      error: "Couldn't reach live times. Check your connection.",
+    };
+  }
+
   function appendFixtureQuery(queryString) {
     return deps.appendFixtureQuery?.(queryString) ?? queryString;
   }
@@ -1290,8 +1304,8 @@ async function fetchNearbyDirectionData(station, direction, _skip = 0) {
   window.NextTrainBrisbaneDogfood?.applyParams?.(params);
 
   const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
-  if (!result.ok) {
-    throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+  if (!result?.ok) {
+    throw new Error(result?.data?.error ?? result?.error ?? "Could not load train times");
   }
 
   let payload = result.data;
@@ -2253,7 +2267,7 @@ async function fetchNearbyBoard() {
 
   let directions = [];
   try {
-    directions = await fetchDirectionsFromApi(station);
+    directions = (await fetchDirectionsFromApi(station)) ?? [];
   } catch (error) {
     console.warn("Nearby directions lookup failed", error);
     if (isTestMode()) {

@@ -283,8 +283,16 @@
     return deps.getStationsList?.();
   }
 
-  function fetchJson(url) {
-    return deps.fetchJson?.(url);
+  async function fetchJson(url) {
+    // CAPACITOR-18: optional deps.fetchJson?.(url) returned undefined when the dep
+    // was missing, then primary.ok / fallback.ok threw TypeError.
+    if (typeof deps.fetchJson !== "function") {
+      return {
+        ok: false,
+        error: "Couldn't reach live times. Check your connection.",
+      };
+    }
+    return deps.fetchJson(url);
   }
 
   function apiUrl(path) {
@@ -948,19 +956,20 @@ async function fetchDirectionsFromApi(station) {
   const query = appendFixtureQuery(`station=${encodeURIComponent(station)}`);
   const primary = await fetchJson(apiUrl(`/api/directions?${query}`));
 
-  if (primary.ok && Array.isArray(primary.data.directions)) {
+  if (primary?.ok && Array.isArray(primary.data?.directions)) {
     return primary.data.directions;
   }
 
   const fallback = await fetchJson(apiUrl(`/api/destinations?${query}`));
-  if (fallback.ok && Array.isArray(fallback.data.destinations)) {
+  if (fallback?.ok && Array.isArray(fallback.data?.destinations)) {
     return fallback.data.destinations;
   }
 
   throw new Error(
-    primary.data?.error ??
-      fallback.data?.error ??
-      primary.error ??
+    primary?.data?.error ??
+      fallback?.data?.error ??
+      primary?.error ??
+      fallback?.error ??
       "Could not load directions"
   );
 }
