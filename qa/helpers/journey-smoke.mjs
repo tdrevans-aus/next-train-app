@@ -90,17 +90,44 @@ export async function waitForJourneyHero(page, { timeout = 30000 } = {}) {
 }
 
 export async function ensureJourneyMode(page) {
-  await page.waitForFunction(() => Boolean(window.nextTrainApp?.enterJourneyMode), null, {
-    timeout: 15000,
-  });
+  // Wait until cold-start init has painted a face. Calling enterJourneyMode()
+  // beforehand loses the race to applyJourneysMode({ coldStart: true }), which
+  // re-enters Nearby when no in-hours journey is selected yet.
+  await page.waitForFunction(
+    () => {
+      const route = document.getElementById("route")?.textContent?.trim() ?? "";
+      const app = document.querySelector(".app");
+      return (
+        Boolean(window.nextTrainApp?.enterJourneyMode) &&
+        route.length > 0 &&
+        route !== "Loading…" &&
+        (app?.classList.contains("nearby-mode") || app?.classList.contains("journey-mode"))
+      );
+    },
+    null,
+    { timeout: 20000 }
+  );
   await page.evaluate(() => {
-    const app = document.querySelector(".app");
-    if (app?.classList.contains("nearby-mode") || !app?.classList.contains("journey-mode")) {
+    const appEl = document.querySelector(".app");
+    const nearby = appEl?.classList.contains("nearby-mode");
+    const journey = appEl?.classList.contains("journey-mode");
+    if (nearby || !journey) {
       window.nextTrainApp.enterJourneyMode();
     }
+    // enterJourneyMode() opens the library when Journeys is already the active
+    // tab — never leave that sheet up for later switcher/hero clicks.
+    window.nextTrainApp.closeJourneysDialog?.();
   });
   await page.waitForFunction(
-    () => !document.querySelector(".app")?.classList.contains("nearby-mode"),
+    () => {
+      const app = document.querySelector(".app");
+      const dialog = document.getElementById("journeys-dialog");
+      return (
+        Boolean(app?.classList.contains("journey-mode")) &&
+        !app?.classList.contains("nearby-mode") &&
+        !dialog?.open
+      );
+    },
     null,
     { timeout: 10000 }
   );
@@ -350,8 +377,8 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
             direction: "Perth",
             leaveBeforeMinutes: 10,
             useLeaveBefore: true,
-            defaultFrom: "00:00",
-            defaultUntil: "00:00",
+            defaultFrom: "00:01",
+            defaultUntil: "23:59",
             preferredTrainTime: preferredInTime,
             remindDays: [1, 2, 3, 4, 5, 6, 7],
           },
@@ -363,8 +390,8 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
             direction: "Mandurah",
             leaveBeforeMinutes: 10,
             useLeaveBefore: true,
-            defaultFrom: "00:00",
-            defaultUntil: "00:00",
+            defaultFrom: "00:01",
+            defaultUntil: "23:59",
             preferredTrainTime: preferredOutTime,
             remindDays: [1, 2, 3, 4, 5, 6, 7],
           },
@@ -375,7 +402,10 @@ export async function injectSwitcherJourneys(page, { activeId = "j-in-smoke" } =
     sessionStorage.removeItem(`nextTrainSkip:${activeJourneyId}`);
     sessionStorage.setItem(
       "nextTrainManualJourneyOverride",
-      JSON.stringify({ journeyId: activeJourneyId, matchingWindowIds: [activeJourneyId] })
+      JSON.stringify({
+        journeyId: activeJourneyId,
+        matchingWindowIds: ["j-in-smoke", "j-out-smoke"],
+      })
     );
   }, { activeJourneyId: activeId, preferredInTime: preferredIn, preferredOutTime: preferredOut });
 }

@@ -15,7 +15,11 @@ async function run() {
   await page.goto(
     `${BASE}/?reset=1&test=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`
   );
-  await page.waitForTimeout(2000);
+  await page.waitForFunction(
+    () => typeof window.nextTrainLeaveReminders?.refreshMenuPauseUi === "function",
+    null,
+    { timeout: 15000 }
+  );
 
   const bridge = await page.evaluate(() => ({
     hasLeaveRemindersApi: typeof window.nextTrainLeaveReminders?.refreshMenuPauseUi === "function",
