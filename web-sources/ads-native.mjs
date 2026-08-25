@@ -5,6 +5,46 @@ const GOOGLE_TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
 let cachedReleaseBuild = null;
 let bannerMounted = false;
 let bannerVisible = false;
+let admobAvailability = null;
+
+function isAdMobNativeLinked() {
+  if (admobAvailability !== null) {
+    return admobAvailability;
+  }
+
+  const Cap = window.Capacitor;
+  if (!Cap?.isNativePlatform?.()) {
+    admobAvailability = false;
+    return admobAvailability;
+  }
+
+  if (Cap.PluginHeaders?.some?.((header) => header?.name === "AdMob")) {
+    admobAvailability = true;
+    return admobAvailability;
+  }
+
+  // Capacitor plugin JS injection installs plain stubs with own methods.
+  // Our @capacitor/core require shim may place a Proxy on Plugins.AdMob — that
+  // is not a linked native plugin (CAPACITOR-15).
+  const stub = Cap.Plugins?.AdMob;
+  admobAvailability = Boolean(
+    stub &&
+      typeof stub === "object" &&
+      Object.prototype.hasOwnProperty.call(stub, "initialize") &&
+      typeof stub.initialize === "function"
+  );
+  return admobAvailability;
+}
+
+function assertAdMobUsable() {
+  if (!window.Capacitor?.isNativePlatform?.()) {
+    return;
+  }
+  if (isAdMobNativeLinked()) {
+    return;
+  }
+  throw new Error("AdMob native plugin is not linked in this build");
+}
 
 async function isNativeReleaseBuild() {
   if (!window.Capacitor?.isNativePlatform?.()) {
@@ -47,6 +87,8 @@ export async function showNativeBanner(config) {
   if (bannerVisible) {
     return;
   }
+
+  assertAdMobUsable();
 
   if (bannerMounted) {
     await AdMob.resumeBanner();

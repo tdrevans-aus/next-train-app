@@ -268,6 +268,35 @@ var NextTrainAdsNative = (() => {
   var cachedReleaseBuild = null;
   var bannerMounted = false;
   var bannerVisible = false;
+  var admobAvailability = null;
+  function isAdMobNativeLinked() {
+    if (admobAvailability !== null) {
+      return admobAvailability;
+    }
+    const Cap = window.Capacitor;
+    if (!Cap?.isNativePlatform?.()) {
+      admobAvailability = false;
+      return admobAvailability;
+    }
+    if (Cap.PluginHeaders?.some?.((header) => header?.name === "AdMob")) {
+      admobAvailability = true;
+      return admobAvailability;
+    }
+    const stub = Cap.Plugins?.AdMob;
+    admobAvailability = Boolean(
+      stub && typeof stub === "object" && Object.prototype.hasOwnProperty.call(stub, "initialize") && typeof stub.initialize === "function"
+    );
+    return admobAvailability;
+  }
+  function assertAdMobUsable() {
+    if (!window.Capacitor?.isNativePlatform?.()) {
+      return;
+    }
+    if (isAdMobNativeLinked()) {
+      return;
+    }
+    throw new Error("AdMob native plugin is not linked in this build");
+  }
   async function isNativeReleaseBuild() {
     if (!window.Capacitor?.isNativePlatform?.()) {
       return false;
@@ -298,6 +327,7 @@ var NextTrainAdsNative = (() => {
     if (bannerVisible) {
       return;
     }
+    assertAdMobUsable();
     if (bannerMounted) {
       await AdMob.resumeBanner();
       bannerVisible = true;

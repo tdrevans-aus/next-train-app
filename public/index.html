@@ -1382,15 +1382,80 @@
           if (!Cap) {
             return null;
           }
-          // Native bridge has Plugins.* but not registerPlugin (that lives in @capacitor/core JS).
-          function registerPlugin(name) {
-            if (Cap.Plugins && Cap.Plugins[name]) {
+          // Native bridge has Plugins.* stubs + PluginHeaders, but not registerPlugin
+          // (that lives in @capacitor/core JS). Bundles mark core external and call
+          // registerPlugin(name, { web }) at load time — never throw here (CAPACITOR-15).
+          // Do not use Cap.withPlugin as a getter: native stub returns a dummy function.
+          if (!Cap.WebPlugin) {
+            Cap.WebPlugin = class WebPlugin {
+              unavailable(message) {
+                return new Error(message || "Unavailable");
+              }
+              unimplemented(message) {
+                return new Error(message || "Not implemented");
+              }
+            };
+          }
+          function registerPlugin(name, jsImplementations) {
+            jsImplementations = jsImplementations || {};
+            Cap.Plugins = Cap.Plugins || {};
+
+            if (Cap.Plugins[name] && typeof Cap.Plugins[name] === "object") {
               return Cap.Plugins[name];
             }
-            if (typeof Cap.withPlugin === "function") {
-              return Cap.withPlugin(name);
+
+            if (
+              typeof Cap.registerPlugin === "function" &&
+              Cap.registerPlugin !== registerPlugin
+            ) {
+              return Cap.registerPlugin(name, jsImplementations);
             }
-            throw new Error('Capacitor plugin "' + name + '" is not available');
+
+            const hasNativeHeader = Boolean(
+              Cap.PluginHeaders &&
+                Cap.PluginHeaders.some(function (header) {
+                  return header && header.name === name;
+                })
+            );
+
+            const plugin = new Proxy(
+              {},
+              {
+                get(_target, prop) {
+                  if (prop === "then" || prop === "$$typeof" || prop === "toJSON") {
+                    return undefined;
+                  }
+                  return async function (options) {
+                    if (
+                      hasNativeHeader &&
+                      typeof Cap.nativePromise === "function"
+                    ) {
+                      return Cap.nativePromise(name, String(prop), options);
+                    }
+                    if (jsImplementations.web) {
+                      const impl =
+                        typeof jsImplementations.web === "function"
+                          ? await jsImplementations.web()
+                          : jsImplementations.web;
+                      if (impl && typeof impl[prop] === "function") {
+                        return impl[prop](options);
+                      }
+                    }
+                    throw new Error(
+                      '"' +
+                        name +
+                        "." +
+                        String(prop) +
+                        '()" is not implemented on ' +
+                        (Cap.getPlatform ? Cap.getPlatform() : "web")
+                    );
+                  };
+                },
+              }
+            );
+
+            Cap.Plugins[name] = plugin;
+            return plugin;
           }
           return {
             Capacitor: Cap,
