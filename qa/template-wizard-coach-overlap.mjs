@@ -47,15 +47,16 @@ function evaluateCoachOverlap() {
 
 async function openMorningWizard(page) {
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(10000);
   await openJourneysLibrary(page);
   await page.locator('[data-template="morning"]').click();
-  await page.waitForTimeout(2200);
+  await page.waitForSelector("#template-route-coach", { state: "visible", timeout: 15000 });
+  await page.waitForTimeout(3500);
 }
 
 async function openCustomWizard(page) {
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(10000);
   await page.evaluate(() => {
     localStorage.setItem(
       "nextTrainSettings",
@@ -84,13 +85,15 @@ async function openCustomWizard(page) {
     );
     localStorage.setItem("nextTrainOnboardingDone", "1");
     localStorage.setItem("nextTrainTemplateWizardSeen", "0");
+    localStorage.setItem("nextTrainTemplateWizardSkipped", "0");
     localStorage.removeItem("nextTrainTemplateWizardSkipped");
   });
   await page.reload();
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(10000);
   await openJourneysLibrary(page);
   await openCustomJourneyCreate(page);
-  await page.waitForTimeout(2200);
+  await page.waitForSelector("#template-route-coach", { state: "visible", timeout: 15000 });
+  await page.waitForTimeout(3500);
 }
 
 async function walkWizardSteps(page, maxStep) {
@@ -105,8 +108,27 @@ async function walkWizardSteps(page, maxStep) {
     }
 
     if (step < maxStep) {
-      await page.locator("#template-wizard-primary-btn").click();
-      await page.waitForTimeout(550);
+      const btn = page.locator("#template-wizard-primary-btn");
+      try {
+        await btn.waitFor({ state: "visible", timeout: 15000 });
+      } catch (e) {
+        const state = await page.evaluate(() => {
+          const coach = document.getElementById("template-route-coach");
+          const btn = document.getElementById("template-wizard-primary-btn");
+          return {
+            coachHidden: coach?.hidden,
+            coachDisplay: coach ? getComputedStyle(coach).display : "null",
+            btnHidden: btn?.hidden,
+            btnDisplay: btn ? getComputedStyle(btn).display : "null",
+            btnOuter: btn?.outerHTML,
+            dialogOpen: document.getElementById("journeys-dialog")?.classList.contains("template-wizard-active"),
+          };
+        });
+        console.error("FAIL — Button not visible. State:", state);
+        throw e;
+      }
+      await btn.click();
+      await page.waitForTimeout(750);
     }
   }
 

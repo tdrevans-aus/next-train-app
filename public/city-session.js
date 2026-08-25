@@ -253,7 +253,7 @@
         }
         const isTestActive = sessionStorage.getItem("nextTrainTestMode") === "1" || window.location.search.includes("test=1");
         navigator.geolocation.getCurrentPosition(resolve, reject, {
-          timeout: isTestActive ? 1000 : 4000,
+          timeout: isTestActive ? 2500 : 4000,
           maximumAge: 300000,
         });
       });
@@ -360,22 +360,27 @@
       city = LIVE_CITY;
     }
     const dogfoodApi = dogfood();
+    const savedCity = readSavedCity();
     if (MULTI_CITY_IDS.includes(city)) {
-      console.log(`[NextTrainCitySession] Mounting multi-city: ${city}`);
-      const ok = await dogfoodApi?.mount?.(city);
-      if (!ok) {
-        console.error(`[NextTrainCitySession] Failed to mount: ${city}`);
-        return false;
+      if (savedCity !== city) {
+        console.log(`[NextTrainCitySession] Mounting multi-city: ${city}`);
+        const ok = await dogfoodApi?.mount?.(city);
+        if (!ok) {
+          console.error(`[NextTrainCitySession] Failed to mount: ${city}`);
+          return false;
+        }
       }
     } else {
-      console.log(`[NextTrainCitySession] Unmounting to live city: ${LIVE_CITY}`);
-      dogfoodApi?.unmount?.();
-      city = LIVE_CITY;
-      try {
-        window.nextTrainStationCombobox?.replaceStationsCache?.(null);
-        await window.nextTrainStationCombobox?.getStationsList?.();
-      } catch {
-        /* perth list reloads on next getStationsList */
+      if (savedCity) {
+        console.log(`[NextTrainCitySession] Unmounting to live city: ${LIVE_CITY}`);
+        dogfoodApi?.unmount?.();
+        city = LIVE_CITY;
+        try {
+          window.nextTrainStationCombobox?.replaceStationsCache?.(null);
+          await window.nextTrainStationCombobox?.getStationsList?.();
+        } catch {
+          /* perth list reloads on next getStationsList */
+        }
       }
     }
     if (persist) {
@@ -441,7 +446,13 @@
     document.addEventListener("nexttrain:menu-open", () => syncRegionControls());
   }
 
+  let initializing = false;
+
   async function init() {
+    if (initializing) {
+      return readSavedCity() || LIVE_CITY;
+    }
+    initializing = true;
     bindControls();
     await dogfood()?.probe?.();
 

@@ -53,6 +53,7 @@ function setAccessibleText(el, text) {
   el.setAttribute("aria-label", text);
 }
 const updatedEl = document.getElementById("updated");
+const attributionEl = document.getElementById("attribution");
 const journeySwitcherEl = document.getElementById("journey-switcher");
 const journeySwitcherNameEl = document.getElementById("journey-switcher-name");
 const journeySwitcherMenuEl = document.getElementById("journey-switcher-menu");
@@ -1059,7 +1060,10 @@ function hasCompletedOnboarding() {
 }
 
 function isOnboardingVisible() {
-  return Boolean(onboardingCoach && !onboardingCoach.hidden);
+  const active = isTemplateWizardActive();
+  const visible = Boolean(onboardingCoach && !onboardingCoach.hidden) || active;
+  console.log("[App] isOnboardingVisible:", visible, "mainCoach:", Boolean(onboardingCoach && !onboardingCoach.hidden), "wizardActive:", active);
+  return visible;
 }
 
 function hideOnboardingCoach() {
@@ -4295,7 +4299,6 @@ function scheduleRegionMismatchPrompt() {
   setTimeout(() => {
     console.log("[App] scheduleRegionMismatchPrompt: firing...");
     void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
-      skip: isTestMode(),
       locateCity: locateCityFromPosition,
     });
   }, 2000);
@@ -4754,6 +4757,7 @@ async function resolveNextTrainPayload(apiData) {
 }
 
 async function fetchNextTrain() {
+  console.log("[App] fetchNextTrain starting");
   if (!isNearbyModeActive() && !journeyModeActive && shouldDefaultToNearby()) {
     await applyJourneysMode();
     return;
@@ -4879,6 +4883,7 @@ function scheduleLiveDisplayRefresh() {
 }
 
 function scheduleRefresh() {
+  console.log("[App] scheduleRefresh: seconds=", refreshSeconds);
   if (refreshTimer) {
     clearInterval(refreshTimer);
   }
@@ -5365,6 +5370,7 @@ function closeJourneysSheet() {
 }
 
 function closeJourneysDialog() {
+  console.log("[App] closeJourneysDialog called");
   dismissTemplateRouteCoach();
   journeysTemplatesExpanded = false;
 
@@ -6153,7 +6159,14 @@ document.addEventListener("nexttrain:city-changed", () => {
   void getStationsList();
 });
 
+let isInitializing = false;
+
 async function init() {
+  if (isInitializing) {
+    return;
+  }
+  isInitializing = true;
+
   if (isNativeApp()) {
     document.body.classList.add("native-app");
   }
@@ -6497,6 +6510,7 @@ function hasSkippedTemplateWizard() { return templateWizard().hasSkippedTemplate
 function hasSeenTemplateWizard() { return templateWizard().hasSeenTemplateWizard(); }
 function getTemplateWizardContext() { return templateWizard().getTemplateWizardContext(); }
 function isTemplateWizardReminderDemoActive() { return templateWizard().isTemplateWizardReminderDemoActive(); }
+function isTemplateWizardActive() { return templateWizard()?.isTemplateWizardActive?.() || false; }
 
 function initTemplateWizardFromModule() {
   templateWizard()?.init?.({

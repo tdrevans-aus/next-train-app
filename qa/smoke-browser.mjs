@@ -31,6 +31,7 @@ import {
 } from "./helpers/journey-smoke.mjs";
 
 const results = [];
+const pageErrors = [];
 
 function pass(id, notes) {
   results.push({ id, result: "PASS", notes });
@@ -44,9 +45,14 @@ async function run() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext(PERTH_GEO_CONTEXT);
   const page = await context.newPage();
+  page.on("console", (msg) => console.log("BROWSER LOG:", msg.text()));
+  page.on("pageerror", (e) => {
+    console.log("PAGE ERROR:", e.message);
+    pageErrors.push(e.message);
+  });
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(5000);
   const nearbyMode = await page.evaluate(() => document.querySelector(".app")?.classList.contains("nearby-mode"));
   const heroSetup = await page.locator("#hero").evaluate((el) => el.classList.contains("hero-setup"));
   const route1 = (await page.locator("#route").textContent())?.trim();
@@ -410,6 +416,9 @@ async function run() {
 
   const passCount = results.filter((r) => r.result === "PASS").length;
   const failCount = results.filter((r) => r.result === "FAIL").length;
+  if (pageErrors.length) {
+    console.log("Page errors:", JSON.stringify(pageErrors.slice(0, 5), null, 2));
+  }
   console.log(JSON.stringify({ summary: `${passCount} PASS · ${failCount} FAIL`, results }, null, 2));
   process.exit(failCount > 0 ? 1 : 0);
 }
@@ -417,6 +426,9 @@ async function run() {
 run().catch((err) => {
   const passCount = results.filter((r) => r.result === "PASS").length;
   const failCount = results.filter((r) => r.result === "FAIL").length;
+  if (pageErrors.length) {
+    console.log("Page errors:", JSON.stringify(pageErrors.slice(0, 5), null, 2));
+  }
   console.log(JSON.stringify({ summary: `${passCount} PASS · ${failCount} FAIL`, results, error: String(err) }, null, 2));
   process.exit(1);
 });

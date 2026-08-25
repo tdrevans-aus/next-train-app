@@ -301,6 +301,10 @@
     return deps.syncNearbyPinChrome?.();
   }
 
+  function syncJourneyContextChrome() {
+    return deps.syncJourneyContextChrome?.();
+  }
+
   function getNearbySession() {
     return nearbySession;
   }
@@ -2239,11 +2243,13 @@ async function fetchNearbyBoard() {
   return nearbyBoardInflight;
 }
 
-async function fetchNearbyBoardOnce() {
-  const station = nearbySession?.station;
-  if (!station) {
-    return;
-  }
+  async function fetchNearbyBoardOnce() {
+    console.log("[nearby] fetchNearbyBoardOnce starting");
+    const station = nearbySession?.station;
+    if (!station) {
+      console.log("[nearby] fetchNearbyBoardOnce: no station, returning");
+      return;
+    }
 
   let directions = [];
   try {
@@ -2654,12 +2660,20 @@ function initNearbyListeners() {
   });
 }
 
+  async function mount(nextDeps = {}) {
+    deps = { ...deps, ...nextDeps };
+    if (isNearbyModeActive()) {
+      return fetchNearbyBoard();
+    }
+  }
+
   function init(nextDeps = {}) {
     deps = { ...nextDeps };
   }
 
   const api = {
     init,
+    mount,
     applyNearbyManualStation,
     applyNearbyPinToData,
     applyNearbySkip,

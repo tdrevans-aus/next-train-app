@@ -219,9 +219,6 @@ function journeyMatchesActiveDay(journey, dayOfWeek = getPerthDayOfWeekIso()) {
 ) {
   const matchesDay = journeyMatchesActiveDay(journey, dayOfWeek);
   const matchesTime = journeyMatchesTime(journey, minutes);
-  if (isTestMode()) {
-    console.log("[model] journeyMatchesSchedule", journey.name, { minutes, dayOfWeek, matchesDay, matchesTime });
-  }
   return matchesDay && matchesTime;
 }
 

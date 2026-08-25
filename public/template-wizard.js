@@ -701,7 +701,16 @@ function showTemplateRouteCoach({
   window.requestAnimationFrame(() => syncTemplateWizardCoachPosition());
 }
 
+function isTemplateWizardActive() {
+  return Boolean(templateRouteCoach && !templateRouteCoach.hidden);
+}
+
+let listenersBound = false;
 function initTemplateWizardListeners() {
+  if (listenersBound) {
+    return;
+  }
+  listenersBound = true;
   templateWizardPrimaryBtn?.addEventListener("click", () => {
     advanceTemplateWizard();
   });
@@ -723,6 +732,7 @@ const api = {
   hasSeenTemplateWizard,
   hasSkippedTemplateWizard,
   isTemplateWizardReminderDemoActive,
+  isTemplateWizardActive,
   showTemplateRouteCoach,
   skipTemplateWizard,
   shouldShowTemplateRouteCoach,

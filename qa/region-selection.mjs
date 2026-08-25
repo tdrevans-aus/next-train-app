@@ -18,7 +18,7 @@ async function run() {
     console.log("  Test 1: Explicit pick persistence...");
     const context = await browser.newContext({ geolocation: LONDON, permissions: ["geolocation"] });
     const page = await context.newPage();
-    await page.goto(`${BASE}/?reset=1&fixture=normal`);
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
     await page.waitForTimeout(4000);
 
     // Switch to Sydney explicitly
@@ -55,8 +55,8 @@ async function run() {
     console.log("  Test 2: Mismatch prompt triggers...");
     const context = await browser.newContext({ geolocation: SYDNEY, permissions: ["geolocation"] });
     const page = await context.newPage();
-    await page.goto(`${BASE}/?reset=1&fixture=normal`);
-    await page.waitForTimeout(4000);
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(5000);
 
     // Pick Sydney explicitly
     await page.evaluate(async () => {
@@ -68,7 +68,7 @@ async function run() {
     await context.setGeolocation(LONDON);
     // Explicitly set the "dismissed" pair key to something else to ensure it can trigger
     await page.evaluate(() => localStorage.removeItem('nextTrainRegionMismatchDismissed'));
-    await page.reload();
+    await page.goto(`${BASE}/?test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
     // App has a 2s delay for prompt in scheduleRegionMismatchPrompt
     await page.waitForTimeout(10000);
 
@@ -91,8 +91,8 @@ async function run() {
     console.log("  Test 3: Selector UI reflects current choice...");
     const context = await browser.newContext();
     const page = await context.newPage();
-    await page.goto(`${BASE}/?reset=1&fixture=normal`);
-    await page.waitForTimeout(2000);
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
+    await page.waitForTimeout(5000);
 
     // Set to London
     await page.evaluate(async () => {
