@@ -53,6 +53,7 @@ function setAccessibleText(el, text) {
   el.setAttribute("aria-label", text);
 }
 const updatedEl = document.getElementById("updated");
+const attributionEl = document.getElementById("attribution");
 const journeySwitcherEl = document.getElementById("journey-switcher");
 const journeySwitcherNameEl = document.getElementById("journey-switcher-name");
 const journeySwitcherMenuEl = document.getElementById("journey-switcher-menu");

@@ -107,6 +107,7 @@ const domRefs = [
   "statusEl",
   "followingSectionEl",
   "updatedEl",
+  "attributionEl",
   "journeySwitcherEl",
   "journeySwitcherMenuEl",
   "appEl",
