@@ -1413,32 +1413,37 @@
           throw new Error('Dynamic require of "' + name + '" is not supported');
         };
 
-        // Jim brief: defer non-critical scripts and fonts until after first train paint.
+        // Defer ads/analytics/fonts until after first train paint. Journey/reminder
+        // modules stay in the document — they are required before app.js runs.
+        let deferredLoaded = false;
         function loadDeferred() {
+          if (deferredLoaded) {
+            return;
+          }
+          deferredLoaded = true;
           const scripts = [
             "ad-free-purchase.js",
             "analytics-bundle.js",
             "analytics.js",
             "ads-bundle.js",
-            "template-wizard.js",
-            "journey-detail.js",
-            "widget.js",
-            "leave-reminders.js",
-            "stickiness-coaches.js",
             "ads.js"
           ];
           scripts.forEach(src => {
+            if (document.querySelector(`script[src="${src}"]`)) {
+              return;
+            }
             const s = document.createElement("script");
             s.src = src;
             s.async = true;
             document.body.appendChild(s);
           });
 
-          // Load Google Fonts after paint
-          const f = document.createElement("link");
-          f.rel = "stylesheet";
-          f.href = "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap";
-          document.head.appendChild(f);
+          if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
+            const f = document.createElement("link");
+            f.rel = "stylesheet";
+            f.href = "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap";
+            document.head.appendChild(f);
+          }
         }
         window.NextTrainDeferred = { load: loadDeferred };
       })();
@@ -1453,6 +1458,11 @@
     <script src="pin-state.js"></script>
     <script src="train-navigation.js"></script>
     <script src="nearby-mode.js"></script>
+    <script src="template-wizard.js"></script>
+    <script src="journey-detail.js"></script>
+    <script src="widget.js"></script>
+    <script src="leave-reminders.js"></script>
+    <script src="stickiness-coaches.js"></script>
     <script src="app.js?v=feedback-cancel-1"></script>
   </body>
 </html>

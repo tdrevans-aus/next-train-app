@@ -151,9 +151,13 @@
 
   function bindRegionMismatchDialog() {
     const dialog = document.getElementById("region-mismatch-dialog");
-    const body = document.getElementById("region-mismatch-dialog-body");
+    const body =
+      document.getElementById("region-mismatch-body") ||
+      document.getElementById("region-mismatch-dialog-body");
     const switchBtn = document.getElementById("region-mismatch-switch-btn");
-    const keepBtn = document.getElementById("region-mismatch-keep-btn");
+    const keepBtn =
+      document.getElementById("region-mismatch-keep-btn") ||
+      document.getElementById("region-mismatch-dismiss-btn");
     if (!dialog || !body || !switchBtn || !keepBtn) {
       return;
     }
@@ -207,7 +211,13 @@
   let regionMismatchDialog = null;
 
   async function maybePromptRegionMismatch({ locateCity, skip } = {}) {
-    if (skip) {
+    let shouldSkip = false;
+    try {
+      shouldSkip = typeof skip === "function" ? Boolean(skip()) : Boolean(skip);
+    } catch {
+      shouldSkip = false;
+    }
+    if (shouldSkip) {
       return false;
     }
     const explicit = readRegionExplicit();

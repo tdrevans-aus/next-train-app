@@ -672,12 +672,18 @@ async function applyTestQueryParams() {
     sessionStorage.setItem("nextTrainTestMode", "1");
   }
 
-  // Jim brief: if station/direction are in URL, save them immediately on reset.
+  // If station/direction are in the URL, persist them immediately on reset.
   const urlSettings = await readUrlSettings();
   if (urlSettings) {
-    saveSettingsToStorage(urlSettings);
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(urlSettings));
+    } catch {
+      /* ignore quota */
+    }
     settings = urlSettings;
-    settingsDraftJourneys = settings.journeys.map((j) => ({ ...j }));
+    settingsDraftJourneys = Array.isArray(settings.journeys)
+      ? settings.journeys.map((j) => ({ ...j }))
+      : [];
   }
 
   params.delete("reset");
@@ -1544,10 +1550,11 @@ function persistReminderJourneys(patches) {
     window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
   }
 
-  if (journeyDetail().getEditingJourneyId?.() && !settingsDetailView.hidden) {
+  const editingId = journeyDetail()?.getEditingJourneyId?.();
+  if (editingId && settingsDetailView && !settingsDetailView.hidden) {
     const journey =
-      settingsDraftJourneys.find((entry) => entry.id === journeyDetail().getEditingJourneyId?.()) ??
-      getJourneyById(journeyDetail().getEditingJourneyId?.());
+      settingsDraftJourneys.find((entry) => entry.id === editingId) ??
+      getJourneyById(editingId);
     if (journey) {
       populateDetailReminderFields(journey);
     }
@@ -4424,7 +4431,7 @@ function scheduleRegionMismatchPrompt() {
     console.log("[App] scheduleRegionMismatchPrompt: firing...");
     void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
       locateCity: locateCityFromPosition,
-      skip: () => isAppDialogOpen() || isJourneysDialogOpen() || isConfiguringAnyJourney(),
+      skip: () => isJourneysDialogOpen() || Boolean(document.querySelector("dialog[open]")),
     });
   }, 2000);
 }
