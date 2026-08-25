@@ -28,6 +28,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const SMOKE_SCRIPTS = [
   "stickiness-coaches-logic.mjs",
+  "stickiness-coaches-reentry.mjs",
+  "widget-script-reentry.mjs",
+  "leave-reminders-double-eval.mjs",
   "fremantle-claremont-direction.mjs",
   "smoke-browser.mjs",
   "smoke-11-13.mjs",
@@ -193,6 +196,11 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   /** Offline UK catalog checks. */
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-lazy-load.mjs",
+  /** Classic-script reentry guards — static file/vm-sandbox assertions, no browser. */
+  "widget-script-reentry.mjs",
+  "ads-js-idempotent.mjs",
+  "leave-reminders-double-eval.mjs",
+  "stickiness-coaches-reentry.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
