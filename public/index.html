@@ -1382,20 +1382,91 @@
           if (!Cap) {
             return null;
           }
+
+          // Native Capacitor bridge often omits WebPlugin; bundles (e.g. @capgo/native-purchases)
+          // still `extends WebPlugin` for the web implementation fallback.
+          class FallbackWebPlugin {
+            unavailable(message) {
+              return new Error(message || "Unavailable");
+            }
+            unimplemented(message) {
+              return new Error(message || "Not implemented");
+            }
+          }
+          const WebPlugin = Cap.WebPlugin || FallbackWebPlugin;
+
           // Native bridge has Plugins.* but not registerPlugin (that lives in @capacitor/core JS).
-          function registerPlugin(name) {
+          // Match Capacitor core: never throw at registration time. Prefer native Plugins[name],
+          // then a non-empty withPlugin result, then lazy web implementation when provided.
+          // CAPACITOR-17: throwing here crashed ad-free-bundle load when NativePurchases
+          // was missing from the bridge (older APK / mock native / web assets ahead of binary).
+          function registerPlugin(name, implementation) {
             if (Cap.Plugins && Cap.Plugins[name]) {
               return Cap.Plugins[name];
             }
             if (typeof Cap.withPlugin === "function") {
-              return Cap.withPlugin(name);
+              const fromBridge = Cap.withPlugin(name);
+              if (
+                fromBridge &&
+                typeof fromBridge === "object" &&
+                (Object.keys(fromBridge).length > 0 ||
+                  typeof fromBridge.addListener === "function")
+              ) {
+                return fromBridge;
+              }
             }
-            throw new Error('Capacitor plugin "' + name + '" is not available');
+
+            let webInstancePromise = null;
+            function loadWebInstance() {
+              if (!implementation || typeof implementation.web !== "function") {
+                return Promise.reject(
+                  new Error('Capacitor plugin "' + name + '" is not available')
+                );
+              }
+              if (!webInstancePromise) {
+                webInstancePromise = Promise.resolve()
+                  .then(function () {
+                    return implementation.web();
+                  })
+                  .then(function (plugin) {
+                    return plugin;
+                  });
+              }
+              return webInstancePromise;
+            }
+
+            return new Proxy(
+              {},
+              {
+                get(_target, prop) {
+                  if (prop === "then") {
+                    return undefined;
+                  }
+                  if (typeof prop === "symbol") {
+                    return undefined;
+                  }
+                  return function () {
+                    const args = arguments;
+                    return loadWebInstance().then(function (plugin) {
+                      const fn = plugin[prop];
+                      if (typeof fn !== "function") {
+                        return Promise.reject(
+                          new Error(
+                            '"' + String(prop) + '" is not implemented on plugin ' + name
+                          )
+                        );
+                      }
+                      return fn.apply(plugin, args);
+                    });
+                  };
+                },
+              }
+            );
           }
           return {
             Capacitor: Cap,
             registerPlugin,
-            WebPlugin: Cap.WebPlugin,
+            WebPlugin,
             Plugins: Cap.Plugins,
           };
         }

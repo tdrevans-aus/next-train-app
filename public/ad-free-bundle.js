@@ -190,11 +190,15 @@ var NextTrainAdFreeNative = (() => {
     }
   }
   async function getInAppProduct(productId) {
-    const { products } = await NativePurchases.getProducts({
-      productIdentifiers: [productId],
-      productType: PURCHASE_TYPE.INAPP
-    });
-    return products?.[0] ?? null;
+    try {
+      const { products } = await NativePurchases.getProducts({
+        productIdentifiers: [productId],
+        productType: PURCHASE_TYPE.INAPP
+      });
+      return products?.[0] ?? null;
+    } catch {
+      return null;
+    }
   }
   async function purchaseInAppProduct(productId) {
     return NativePurchases.purchaseProduct({
@@ -204,13 +208,20 @@ var NextTrainAdFreeNative = (() => {
     });
   }
   async function getInAppPurchases() {
-    const { purchases } = await NativePurchases.getPurchases({
-      productType: PURCHASE_TYPE.INAPP
-    });
-    return purchases ?? [];
+    try {
+      const { purchases } = await NativePurchases.getPurchases({
+        productType: PURCHASE_TYPE.INAPP
+      });
+      return purchases ?? [];
+    } catch {
+      return [];
+    }
   }
   async function restoreInAppPurchases() {
-    await NativePurchases.restorePurchases();
+    try {
+      await NativePurchases.restorePurchases();
+    } catch {
+    }
     return getInAppPurchases();
   }
   function purchaseIncludesProduct(purchases, productId) {

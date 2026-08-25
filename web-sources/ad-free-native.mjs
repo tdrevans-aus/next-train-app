@@ -12,11 +12,15 @@ export async function isBillingSupported() {
 }
 
 export async function getInAppProduct(productId) {
-  const { products } = await NativePurchases.getProducts({
-    productIdentifiers: [productId],
-    productType: PURCHASE_TYPE.INAPP,
-  });
-  return products?.[0] ?? null;
+  try {
+    const { products } = await NativePurchases.getProducts({
+      productIdentifiers: [productId],
+      productType: PURCHASE_TYPE.INAPP,
+    });
+    return products?.[0] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function purchaseInAppProduct(productId) {
@@ -28,14 +32,22 @@ export async function purchaseInAppProduct(productId) {
 }
 
 export async function getInAppPurchases() {
-  const { purchases } = await NativePurchases.getPurchases({
-    productType: PURCHASE_TYPE.INAPP,
-  });
-  return purchases ?? [];
+  try {
+    const { purchases } = await NativePurchases.getPurchases({
+      productType: PURCHASE_TYPE.INAPP,
+    });
+    return purchases ?? [];
+  } catch {
+    return [];
+  }
 }
 
 export async function restoreInAppPurchases() {
-  await NativePurchases.restorePurchases();
+  try {
+    await NativePurchases.restorePurchases();
+  } catch {
+    // Fall through to re-query; empty list if plugin still unavailable.
+  }
   return getInAppPurchases();
 }
 
