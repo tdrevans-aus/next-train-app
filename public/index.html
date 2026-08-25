@@ -1382,6 +1382,26 @@
           if (!Cap) {
             return null;
           }
+          // Native Android/iOS inject a partial Cap (Plugins / PluginHeaders / bridges) before
+          // @capacitor/core JS runs. Our bundles mark core external and use this shim instead,
+          // so createCapacitor() never attaches getPlatform — @sentry/capacitor then crashes
+          // at analytics-bundle load: Capacitor.getPlatform is not a function (CAPACITOR-19).
+          if (typeof Cap.getPlatform !== "function") {
+            Cap.getPlatform = function () {
+              if (window.androidBridge) {
+                return "android";
+              }
+              if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
+                return "ios";
+              }
+              return "web";
+            };
+          }
+          if (typeof Cap.isNativePlatform !== "function") {
+            Cap.isNativePlatform = function () {
+              return Cap.getPlatform() !== "web";
+            };
+          }
           // Native bridge has Plugins.* but not registerPlugin (that lives in @capacitor/core JS).
           function registerPlugin(name) {
             if (Cap.Plugins && Cap.Plugins[name]) {
