@@ -1,3 +1,13 @@
+/**
+ * Idempotent load guard: classic <script src="ads.js"> re-eval in the same
+ * realm throws SyntaxError on top-level `let` (Sentry CAPACITOR-12).
+ */
+(function loadNextTrainAds() {
+  if (window.__nextTrainAdsJsLoaded) {
+    return;
+  }
+  window.__nextTrainAdsJsLoaded = true;
+
 function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
 }
@@ -484,3 +494,5 @@ document.addEventListener("nexttrain:adfree-changed", (event) => {
 
   initAds();
 });
+
+})();
