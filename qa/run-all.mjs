@@ -102,6 +102,8 @@ const RUNNER_EXCLUDE = new Set([
   "adelaide-network-sweep.mjs",
   /** Live London TfL sweep — D6; never gate PRs. npm run sweep:uk-london-tfl */
   "uk-london-tfl-network-sweep.mjs",
+  /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
+  "pin-exclusive.mjs",
 ]);
 
 /** Native/device scripts run last so they do not disturb each other. */

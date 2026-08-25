@@ -37,12 +37,16 @@ var NextTrainTimes = (() => {
     Mandurah: ["Mandurah", "Cockburn"],
     Fremantle: ["Fremantle", "Claremont"],
     // London TfL short-turn groups (line + terminus format)
-    "Bakerloo Harrow & Wealdstone": ["Bakerloo Harrow & Wealdstone", "Bakerloo Queen's Park", "Bakerloo Stonebridge Park"],
+    "Bakerloo Harrow and Wealdstone": ["Bakerloo Harrow and Wealdstone", "Bakerloo Queen's Park", "Bakerloo Stonebridge Park"],
     "Central Epping": ["Central Epping", "Central Loughton", "Central Hainault"],
     "Central West Ruislip": ["Central West Ruislip", "Central Northolt"],
     "District Upminster": ["District Upminster", "District Barking"],
     "District Ealing Broadway": ["District Ealing Broadway", "District Kensington (Olympia)"],
-    "Piccadilly Heathrow Terminal 5": ["Piccadilly Heathrow Terminal 5", "Piccadilly Heathrow Terminals 2 & 3"],
+    "Hammersmith and City Barking": ["Hammersmith and City Barking"],
+    "Hammersmith and City Hammersmith": ["Hammersmith and City Hammersmith"],
+    "Waterloo and City Bank": ["Waterloo and City Bank"],
+    "Waterloo and City Waterloo": ["Waterloo and City Waterloo"],
+    "Piccadilly Heathrow Terminal 5": ["Piccadilly Heathrow Terminal 5", "Piccadilly Heathrow Terminals 2 and 3"],
     "Piccadilly Uxbridge": ["Piccadilly Uxbridge", "Piccadilly Rayners Lane"],
     "Victoria Walthamstow Central": ["Victoria Walthamstow Central", "Victoria Seven Sisters", "Victoria Blackhorse Road"]
   };
@@ -51,11 +55,15 @@ var NextTrainTimes = (() => {
     if (DESTINATION_ALIASES[trimmed]) {
       return DESTINATION_ALIASES[trimmed];
     }
-    const withoutStn = trimmed.replace(/ Stn$/i, "");
+    const cleaned = trimmed.replace(/\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station)$/i, "").replace(/\s+(&|and)\s+/g, " and ").replace(/\s+via\s+.*$/i, "").trim();
+    if (DESTINATION_ALIASES[cleaned]) {
+      return DESTINATION_ALIASES[cleaned];
+    }
+    const withoutStn = cleaned.replace(/\s+Stn$/i, "");
     if (DESTINATION_ALIASES[withoutStn]) {
       return DESTINATION_ALIASES[withoutStn];
     }
-    return trimmed;
+    return cleaned;
   }
   function normalizeDestination(destination) {
     if (!destination) {
@@ -75,9 +83,15 @@ var NextTrainTimes = (() => {
     if (trip.toLowerCase() === filter.toLowerCase()) {
       return true;
     }
-    for (const members of Object.values(LINE_DESTINATION_GROUPS)) {
-      const memberSet = new Set(members.map((member) => member.toLowerCase()));
-      if (memberSet.has(trip.toLowerCase()) && memberSet.has(filter.toLowerCase())) {
+    const groupMatches = (can, m) => {
+      const normCan = normalizeDestination(can).toLowerCase();
+      const members = LINE_DESTINATION_GROUPS[can] || [];
+      return normCan === m.toLowerCase() || members.some((mem) => normalizeDestination(mem).toLowerCase() === m.toLowerCase());
+    };
+    for (const canonical of Object.keys(LINE_DESTINATION_GROUPS)) {
+      const t = trip.toLowerCase();
+      const f = filter.toLowerCase();
+      if (groupMatches(canonical, t) && groupMatches(canonical, f)) {
         return true;
       }
     }

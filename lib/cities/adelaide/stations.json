@@ -159,11 +159,6 @@
       "stopIds": []
     },
     {
-      "name": "Gawler Racecourse",
-      "aliases": [],
-      "stopIds": []
-    },
-    {
       "name": "Glanville",
       "aliases": [],
       "stopIds": []
@@ -259,8 +254,11 @@
       "stopIds": []
     },
     {
-      "name": "Mawson Interchange",
-      "aliases": [],
+      "name": "Mawson Lakes Railway Station",
+      "aliases": [
+        "Mawson Interchange",
+        "Mawson Lakes"
+      ],
       "stopIds": []
     },
     {
@@ -294,8 +292,10 @@
       "stopIds": []
     },
     {
-      "name": "Noarlunga Centre",
-      "aliases": [],
+      "name": "Noarlunga Railway Station",
+      "aliases": [
+        "Noarlunga Centre"
+      ],
       "stopIds": []
     },
     {
