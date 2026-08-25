@@ -1,3 +1,9 @@
+(function (global) {
+  // CAPACITOR-Z: classic-script re-eval must not redeclare top-level const in global scope.
+  if (global.nextTrainLeaveReminders) {
+    return;
+  }
+
 const LEAVE_REMINDER_SETTINGS_KEY = "nextTrainLeaveReminders";
 const PAUSE_DURATION_KEY = "nextTrainPauseDuration";
 const PAUSE_CUSTOM_DAYS_KEY = "nextTrainPauseCustomDays";
@@ -1556,7 +1562,7 @@ async function initReminderFastTestMode() {
   }
 }
 
-window.nextTrainLeaveReminders = {
+global.nextTrainLeaveReminders = {
   loadReminderSettings,
   saveReminderSettings,
   enableLeaveReminders,
@@ -1591,3 +1597,4 @@ document.addEventListener("visibilitychange", () => {
     getLeaveRemindersPlugin()?.reschedule?.();
   }
 });
+})(window);

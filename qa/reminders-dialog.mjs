@@ -55,7 +55,11 @@ async function runChecks(browser) {
     donePresent: Boolean(document.getElementById("reminders-done-btn")),
   }));
 
-  const duplicateConstBug = pageErrors.some((m) => m.includes("DEFAULT_REMIND_DAYS"));
+  const duplicateConstBug = pageErrors.some(
+    (m) =>
+      m.includes("DEFAULT_REMIND_DAYS") ||
+      m.includes("LEAVE_REMINDER_SETTINGS_KEY")
+  );
   const webPass =
     menuUi.menuOpen &&
     menuUi.remindersBtnPresent &&
@@ -77,6 +81,13 @@ async function runChecks(browser) {
     console.log("Page errors:", pageErrors.slice(0, 3));
   }
 
+  if (duplicateConstBug) {
+    console.log(
+      "\nFAIL  leave-reminders.js did not load (duplicate const — DEFAULT_REMIND_DAYS or LEAVE_REMINDER_SETTINGS_KEY)"
+    );
+    process.exitCode = 1;
+    return;
+  }
   if (!webPass) {
     process.exitCode = 1;
     console.log("\nFAIL");
