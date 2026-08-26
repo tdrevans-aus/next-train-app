@@ -75,6 +75,40 @@
     return templateWizardReminderDemoActive;
   }
 
+  function templateWizardUsesNameStep(context = templateWizardContext) {
+    return context?.useNameStep === true;
+  }
+
+  function getTemplateWizardRouteStep(context = templateWizardContext) {
+    return templateWizardUsesNameStep(context) ? 2 : 1;
+  }
+
+  /** Target train — before Reminders and Journey window. */
+  function getTemplateWizardTimeStep(context = templateWizardContext) {
+    return templateWizardUsesNameStep(context) ? 3 : 2;
+  }
+
+  /** Reminders — after target train, before Journey window (matches form layout). */
+  function getTemplateWizardReminderStep(context = templateWizardContext) {
+    return getTemplateWizardTimeStep(context) + 1;
+  }
+
+  /** Journey window (active hours) — final wizard step. */
+  function getTemplateWizardHoursStep(context = templateWizardContext) {
+    return getTemplateWizardReminderStep(context) + 1;
+  }
+
+  function getTemplateWizardMaxStep(context = templateWizardContext) {
+    return getTemplateWizardHoursStep(context);
+  }
+
+  // CAPACITOR-1B: classic-script / global callers after FB-25 + deferred load.
+  global.getTemplateWizardRouteStep = getTemplateWizardRouteStep;
+  global.getTemplateWizardTimeStep = getTemplateWizardTimeStep;
+  global.getTemplateWizardReminderStep = getTemplateWizardReminderStep;
+  global.getTemplateWizardHoursStep = getTemplateWizardHoursStep;
+  global.getTemplateWizardMaxStep = getTemplateWizardMaxStep;
+
 
 
 
@@ -162,32 +196,6 @@ function syncTemplateWizardCoachPosition() {
   }
 
   applyTemplateWizardCoachTop(card, padding, padding, maxTop);
-}
-
-function templateWizardUsesNameStep(context = templateWizardContext) {
-  return context?.useNameStep === true;
-}
-
-function getTemplateWizardRouteStep(context = templateWizardContext) {
-  return templateWizardUsesNameStep(context) ? 2 : 1;
-}
-
-/** Target train — before Reminders and Journey window. */
-function getTemplateWizardTimeStep(context = templateWizardContext) {
-  return templateWizardUsesNameStep(context) ? 3 : 2;
-}
-
-/** Reminders — after target train, before Journey window (matches form layout). */
-function getTemplateWizardReminderStep(context = templateWizardContext) {
-  return getTemplateWizardTimeStep(context) + 1;
-}
-
-function getTemplateWizardHoursStep(context = templateWizardContext) {
-  return getTemplateWizardReminderStep(context) + 1;
-}
-
-function getTemplateWizardMaxStep(context = templateWizardContext) {
-  return getTemplateWizardHoursStep(context);
 }
 
 function getTemplateWizardHighlightTarget(
@@ -729,6 +737,11 @@ const api = {
   advanceTemplateWizard,
   dismissTemplateRouteCoach,
   getTemplateWizardContext,
+  getTemplateWizardRouteStep,
+  getTemplateWizardTimeStep,
+  getTemplateWizardReminderStep,
+  getTemplateWizardHoursStep,
+  getTemplateWizardMaxStep,
   hasSeenTemplateWizard,
   hasSkippedTemplateWizard,
   isTemplateWizardReminderDemoActive,

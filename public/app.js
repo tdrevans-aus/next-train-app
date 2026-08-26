@@ -6835,6 +6835,47 @@ function initJourneyDetailFromModule() {
 
 const templateWizard = () => window.nextTrainTemplateWizard;
 
+/**
+ * CAPACITOR-1B: step-index helpers must stay defined for classic-script / global
+ * callers after FB-25 extracted template-wizard.js (and deferred its load).
+ * Fallback numbers match public/template-wizard.js when the module is not ready.
+ */
+function getTemplateWizardRouteStep(context) {
+  const fromMod = templateWizard()?.getTemplateWizardRouteStep?.(context);
+  if (typeof fromMod === "number") {
+    return fromMod;
+  }
+  return context?.useNameStep === true ? 2 : 1;
+}
+function getTemplateWizardTimeStep(context) {
+  const fromMod = templateWizard()?.getTemplateWizardTimeStep?.(context);
+  if (typeof fromMod === "number") {
+    return fromMod;
+  }
+  return context?.useNameStep === true ? 3 : 2;
+}
+function getTemplateWizardReminderStep(context) {
+  const fromMod = templateWizard()?.getTemplateWizardReminderStep?.(context);
+  if (typeof fromMod === "number") {
+    return fromMod;
+  }
+  return getTemplateWizardTimeStep(context) + 1;
+}
+function getTemplateWizardHoursStep(context) {
+  const fromMod = templateWizard()?.getTemplateWizardHoursStep?.(context);
+  if (typeof fromMod === "number") {
+    return fromMod;
+  }
+  return getTemplateWizardReminderStep(context) + 1;
+}
+function getTemplateWizardMaxStep(context) {
+  const fromMod = templateWizard()?.getTemplateWizardMaxStep?.(context);
+  if (typeof fromMod === "number") {
+    return fromMod;
+  }
+  return getTemplateWizardHoursStep(context);
+}
+
 function showTemplateRouteCoach(options) {
   void ensureDeferredModulesReady().then(() => templateWizard()?.showTemplateRouteCoach?.(options));
 }
@@ -7520,6 +7561,11 @@ window.nextTrainApp = {
   openAppDialog,
   closeAppDialog,
   hasSkippedTemplateWizard,
+  getTemplateWizardHoursStep,
+  getTemplateWizardMaxStep,
+  getTemplateWizardReminderStep,
+  getTemplateWizardRouteStep,
+  getTemplateWizardTimeStep,
   switchJourney,
   fetchNextTrain,
   hasJourneyKind,
