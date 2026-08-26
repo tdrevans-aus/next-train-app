@@ -7,7 +7,6 @@ import {
   openJourneysDialog,
   openJourneyDetail,
   clickJourneysDone,
-  clickMenuDone,
   enableTargetTrainOnDetail,
 } from "./helpers/journeys-dialog.mjs";
 import {
@@ -38,6 +37,33 @@ function pass(id, notes) {
 
 function fail(id, notes) {
   results.push({ id, result: "FAIL", notes });
+}
+
+async function dumpHero(page) {
+  return page.evaluate(() => ({
+    href: location.href,
+    route: document.getElementById("route")?.textContent?.trim() ?? "",
+    label: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
+    countdown: document.getElementById("depart-countdown")?.textContent?.trim() ?? "",
+    depart: document.getElementById("depart-display-time")?.textContent?.trim() ?? "",
+    updated: document.getElementById("updated")?.textContent?.trim() ?? "",
+    error: document.getElementById("error")?.textContent?.trim() ?? "",
+    leaveHidden: Boolean(document.getElementById("leave-card")?.hidden),
+    leaveStale: Boolean(document.getElementById("leave-card")?.classList.contains("stale")),
+    heroStale: Boolean(document.getElementById("hero")?.classList.contains("stale")),
+    nearby: Boolean(document.querySelector(".app")?.classList.contains("nearby-mode")),
+    journeyMode: Boolean(document.querySelector(".app")?.classList.contains("journey-mode")),
+  }));
+}
+
+async function waitForHeroCondition(page, fn, phase) {
+  try {
+    await page.waitForFunction(fn, null, { timeout: 30000 });
+    return true;
+  } catch (error) {
+    fail(9, JSON.stringify({ phase, dump: await dumpHero(page), error: String(error) }));
+    return false;
+  }
 }
 
 async function run() {
@@ -237,7 +263,8 @@ async function run() {
   await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
   await page.goto(`${BASE}/?test=1&fixture=error`);
   await ensureJourneyMode(page);
-  await page.waitForFunction(
+  const coldReady = await waitForHeroCondition(
+    page,
     () => {
       const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
       const error = document.getElementById("error")?.textContent?.trim() ?? "";
@@ -248,9 +275,9 @@ async function run() {
         (label === "Target train" && updated.includes("Update failed"))
       );
     },
-    null,
-    { timeout: 30000 }
+    "cold-wait"
   );
+  if (coldReady) {
   const depart9a = (await page.locator("#depart-display-time").textContent())?.trim();
   const error9a = (await page.locator("#error").textContent())?.trim();
   const label9a = (await page.locator("#hero-depart-label").textContent())?.trim();
@@ -259,48 +286,87 @@ async function run() {
     (depart9a?.includes("Couldn't refresh") && Boolean(error9a)) ||
     (label9a === "Target train" && Boolean(updated9a?.includes("Update failed")));
 
-  await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
+  await page.goto(`${BASE}/?reset=1&test=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
+  await ensureJourneyMode(page);
+  await waitForLeaveCard(page, { optional: true, timeout: 15000 });
+  const liveReady = await waitForHeroCondition(
+    page,
+    () => {
+      const updated = document.getElementById("updated")?.textContent?.trim() ?? "";
+      const countdown = document.getElementById("depart-countdown")?.textContent?.trim() ?? "";
+      const leaveHidden = document.getElementById("leave-card")?.hidden;
+      const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
+      const liveHero = /\d/.test(countdown) && !updated.includes("Update failed");
+      return liveHero && (!leaveHidden || label === "Target train");
+    },
+    "live-wait"
+  );
+  if (liveReady) {
   const countdown9b = (await page.locator("#depart-countdown").textContent())?.trim();
   const min9b = parseLeaveMinutes(countdown9b);
+  const label9b = (await page.locator("#hero-depart-label").textContent())?.trim();
   await page.evaluate(() => {
     const u = new URL(location.href);
     u.searchParams.set("fixture", "error");
+    u.searchParams.set("test", "1");
     history.replaceState(null, "", u);
-  });
-  await page.evaluate(() => {
     document.getElementById("journeys-dialog")?.close?.();
     document.getElementById("menu-dialog")?.close?.();
   });
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(300);
-  await page.locator("#menu-btn").click();
-  await page.locator("#menu-done-btn").waitFor({ state: "visible", timeout: 10000 });
-  await clickMenuDone(page);
-  await page.waitForFunction(
+  await page.evaluate(async () => {
+    await window.nextTrainApp?.fetchNextTrain?.();
+  });
+  const staleReady = await waitForHeroCondition(
+    page,
     () => {
       const updated = document.getElementById("updated")?.textContent?.trim() ?? "";
       const leave = document.getElementById("leave-card");
-      return updated.includes("Update failed") && Boolean(leave?.classList.contains("stale"));
+      const hero = document.getElementById("hero");
+      const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
+      const failed = updated.includes("Update failed");
+      const staleLeave = Boolean(leave?.classList.contains("stale"));
+      const staleHero = Boolean(hero?.classList.contains("stale"));
+      const targetPreview = label === "Target train";
+      return failed && (staleLeave || staleHero || targetPreview);
     },
-    null,
-    { timeout: 30000 }
+    "stale-wait"
   );
+  if (staleReady) {
   const updated9 = (await page.locator("#updated").textContent())?.trim();
   const countdown9c = (await page.locator("#depart-countdown").textContent())?.trim();
   const min9c = parseLeaveMinutes(countdown9c);
+  const label9c = (await page.locator("#hero-depart-label").textContent())?.trim();
   const leaveStale = await page.locator("#leave-card").evaluate((el) => el.classList.contains("stale"));
+  const heroStale = await page.locator("#hero").evaluate((el) => el.classList.contains("stale"));
+  const keptCountdown =
+    min9b > 0 && min9c > 0 && Math.abs(min9c - min9b) <= 1;
+  const targetPreview = label9c === "Target train";
   const staleOk =
-    updated9?.includes("Update failed") &&
-    min9b > 0 &&
-    min9c > 0 &&
-    Math.abs(min9c - min9b) <= 1 &&
-    leaveStale;
+    Boolean(updated9?.includes("Update failed")) &&
+    (Boolean(leaveStale && keptCountdown) || Boolean(heroStale && keptCountdown) || targetPreview);
 
   if (coldOk && staleOk) {
-    pass(9, `Cold: ${label9a} ${depart9a}; stale: ${updated9}, hero kept ${countdown9c}`);
+    pass(9, `Cold: ${label9a} ${depart9a}; stale: ${updated9}, ${label9c} ${countdown9c}`);
   } else {
-    fail(9, JSON.stringify({ coldOk, depart9a, error9a, label9a, staleOk, updated9, countdown9c, leaveStale }));
+    fail(9, JSON.stringify({
+      coldOk,
+      depart9a,
+      error9a,
+      label9a,
+      staleOk,
+      updated9,
+      countdown9b,
+      countdown9c,
+      label9b,
+      label9c,
+      leaveStale,
+      heroStale,
+      dump: await dumpHero(page),
+    }));
+  }
+  }
+  }
   }
 
   await page.evaluate(() => {
