@@ -361,6 +361,17 @@ function normalizeJourney(raw = {}) {
     kind: inferJourneyKind(raw, { templateKey, preferredTrainTime }),
   };
 
+  const cityId = String(raw.cityId ?? "").trim().toLowerCase();
+  if (
+    cityId === "perth" ||
+    cityId === "sydney" ||
+    cityId === "brisbane" ||
+    cityId === "adelaide" ||
+    cityId === "uk-london-tfl"
+  ) {
+    journey.cityId = cityId;
+  }
+
   if (templateKey) {
     journey.templateKey = templateKey;
   }

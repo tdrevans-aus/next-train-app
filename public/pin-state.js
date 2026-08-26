@@ -309,6 +309,10 @@
     if (preferredMinutesForLiveGlance(journeyClean) < 0) {
       return false;
     }
+    // Auto-pin Target train only if inside the active band.
+    if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
+      return false;
+    }
     return !isJourneyPinDismissedToday(journeyClean, resolvedClock);
   }
 
@@ -771,6 +775,8 @@
     const onActiveDay = journeyMatchesActiveDay(journeyClean, resolvedClock);
     const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
 
+    // Today's target slot is only "Today" while the clock is still ahead — once
+    // 17:30 has passed, the next occurrence is on a future remind day.
     if (onActiveDay && !insideActiveWindow && preferredMinutes > nowMinutes) {
       return {
         dayOffset: 0,
@@ -982,8 +988,17 @@
           : resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
         : null;
 
+    const preferredMinutesForPreview = preferredMinutesForLiveGlance(journeyClean);
+    const targetPassedToday =
+      preferredMinutesForPreview >= 0 &&
+      getPerthMinutesSinceMidnight(clock) >= preferredMinutesForPreview &&
+      journeyMatchesActiveDay(journeyClean, clock);
+
     const previewHero =
-      mode === "journey" && journeyClean && outsideActiveWindow && !preferredTargetDeparture
+      mode === "journey" &&
+      journeyClean &&
+      !preferredTargetDeparture &&
+      (outsideActiveWindow || (insideActiveWindow && targetPassedToday))
         ? resolveJourneyPreviewHero(journeyClean, clock)
         : null;
 
@@ -1092,8 +1107,8 @@
         ? skippedHeroDeparture
         : activeTargetDeparture ?? trueNextDeparture;
 
-      if (!heroDeparture && outsideActiveWindow) {
-        const preview = resolveJourneyPreviewHero(journeyClean, clock);
+      if (!heroDeparture) {
+        const preview = previewHero ?? resolveJourneyPreviewHero(journeyClean, clock);
         if (preview) {
           heroMode = "preview";
           heroPreviewDayLabel = preview.heroPreviewDayLabel;
@@ -1102,7 +1117,7 @@
           heroMode = "preview";
         }
       } else {
-        heroMode = heroDeparture ? "live" : "preview";
+        heroMode = "live";
       }
     }
 

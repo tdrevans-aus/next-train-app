@@ -85,7 +85,6 @@
 function templateWizardShouldDockCoachBottom(step = templateWizardStep) {
   // Legacy hook — scroll padding only; coach position is computed in syncTemplateWizardCoachPosition.
   return (
-    step === getTemplateWizardHoursStep() ||
     step === getTemplateWizardTimeStep() ||
     step === getTemplateWizardReminderStep()
   );
@@ -131,19 +130,22 @@ function syncTemplateWizardCoachPosition() {
   const gap = 10;
   const padding = 12;
   const maxTop = coachRect.height - cardHeight - padding;
-  const isHoursStep = templateWizardStep === getTemplateWizardHoursStep();
 
-  const candidates = isHoursStep
-    ? [
-        { top: targetRect.top - coachRect.top - cardHeight - gap },
-        { bottom: padding },
-        { top: targetRect.bottom - coachRect.top + gap },
-      ]
-    : [
-        { top: targetRect.top - coachRect.top - cardHeight - gap },
-        { top: targetRect.bottom - coachRect.top + gap },
-        { bottom: padding },
-      ];
+  const targetCenterY = (targetRect.top + targetRect.bottom) / 2;
+  const coachCenterY = (coachRect.top + coachRect.bottom) / 2;
+
+  const candidates =
+    targetCenterY < coachCenterY
+      ? [
+          { top: targetRect.bottom - coachRect.top + gap },
+          { top: targetRect.top - coachRect.top - cardHeight - gap },
+          { bottom: padding },
+        ]
+      : [
+          { top: targetRect.top - coachRect.top - cardHeight - gap },
+          { top: targetRect.bottom - coachRect.top + gap },
+          { bottom: padding },
+        ];
 
   for (const candidate of candidates) {
     if (candidate.top !== undefined) {

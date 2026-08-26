@@ -629,6 +629,26 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl"]);
+
+function normalizeCityId(raw) {
+  const city = String(raw || "").trim().toLowerCase();
+  return LIVE_CITY_IDS.has(city) ? city : "";
+}
+
+function cityIdForStation(station) {
+  const name = String(station || "").trim();
+  const dogfood = window.NextTrainBrisbaneDogfood;
+  if (name && dogfood?.isActive?.() && dogfood.getStations?.()?.includes(name)) {
+    return normalizeCityId(dogfood.getCity());
+  }
+  return "";
+}
+
+function resolveJourneyCity(journey) {
+  return normalizeCityId(journey?.cityId) || cityIdForStation(journey?.station) || "perth";
+}
+
 function appendFixtureQuery(queryString) {
   const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
   const params = new URLSearchParams(queryString);
@@ -637,9 +657,9 @@ function appendFixtureQuery(queryString) {
   }
   window.NextTrainBrisbaneDogfood?.applyParams?.(params);
   if (!params.has("city")) {
-    const savedCity = window.NextTrainCitySession?.readSavedCity?.();
-    if (savedCity && savedCity !== "perth") {
-      params.set("city", savedCity);
+    const city = cityIdForStation(params.get("station"));
+    if (city && city !== "perth") {
+      params.set("city", city);
     }
   }
   return params.toString();
@@ -2640,6 +2660,11 @@ function buildApiParams() {
     refresh: String(settings.refreshSeconds),
   });
 
+  const city = resolveJourneyCity(journey);
+  if (city && city !== "perth") {
+    params.set("city", city);
+  }
+
   const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
   if (fixture) {
     params.set("fixture", fixture);
@@ -3025,6 +3050,32 @@ function resolveLeaveAlarmTrip(alarm) {
   };
 }
 
+function focusJourneyForLeaveAlarm(alarm) {
+  if (!alarm?.active || !alarm.journeyId) {
+    return;
+  }
+
+  if (alarm.journeyId === "nearby-pin") {
+    if (!isNearbyModeActive()) {
+      void enterNearbyMode({
+        departureIso: alarm.departure || undefined,
+      });
+    }
+    return;
+  }
+
+  const activeJourney = getActiveJourney();
+  if (activeJourney?.id === alarm.journeyId) {
+    return;
+  }
+
+  if (!getJourneyById(alarm.journeyId)) {
+    return;
+  }
+
+  switchJourney(alarm.journeyId);
+}
+
 async function syncLeaveAlarmFromNative() {
   if (!isNativeApp()) {
     hideLeaveAlarmBanner();
@@ -3032,6 +3083,9 @@ async function syncLeaveAlarmFromNative() {
   }
 
   const alarm = await window.nextTrainLeaveReminders?.getActiveLeaveAlarm?.();
+  if (alarm?.active) {
+    focusJourneyForLeaveAlarm(alarm);
+  }
   renderLeaveAlarmBanner(alarm);
   return Boolean(alarm?.active);
 }
@@ -3793,17 +3847,37 @@ function renderRouteJourney(data, { stale = false } = {}) {
 }
 
 
+function resolveJourneyTargetPreviewDisplay(journey, pinState) {
+  const authoritative = window.nextTrainPinState?.resolveJourneyPreviewHero?.(journey) ?? null;
+  if (authoritative?.heroPreviewClock) {
+    return {
+      previewClock: authoritative.heroPreviewClock,
+      previewDayLabel: authoritative.heroPreviewDayLabel ?? "",
+    };
+  }
+
+  if (pinState?.heroMode === "preview" && pinState.heroPreviewClock) {
+    return {
+      previewClock: pinState.heroPreviewClock,
+      previewDayLabel: pinState.heroPreviewDayLabel ?? "",
+    };
+  }
+
+  const preferredMinutes = preferredMinutesForLiveGlance(journey);
+  if (preferredMinutes >= 0) {
+    return {
+      previewClock: formatPreferredClock(preferredMinutes),
+      previewDayLabel: "",
+    };
+  }
+
+  return { previewClock: "", previewDayLabel: "" };
+}
+
 function renderJourneyTargetPreviewFace(journey, pinState) {
   lastRenderedNext = null;
   setHeroUrgency("calm");
-  const previewClock =
-    pinState?.heroMode === "preview"
-      ? pinState.heroPreviewClock
-      : preferredMinutesForLiveGlance(journey) >= 0
-        ? formatPreferredClock(preferredMinutesForLiveGlance(journey))
-        : "";
-  const previewDayLabel =
-    pinState?.heroMode === "preview" ? pinState.heroPreviewDayLabel : "";
+  const { previewClock, previewDayLabel } = resolveJourneyTargetPreviewDisplay(journey, pinState);
   if (heroDepartLabelEl) {
     heroDepartLabelEl.textContent = pinState?.heroLabel ?? "Target train";
   }
@@ -4980,7 +5054,7 @@ function syncHeroPinChrome() {
           pinActive = Boolean(
             pinState.isPinnedToday &&
               !pinState.isPinDismissedToday &&
-              (pinState.heroShowsPin || pinState.showsTargetTrain || pinState.pinnedChrome)
+              (pinState.heroShowsPin || pinState.pinnedChrome)
           );
         } else {
           const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPinClean);
@@ -6795,6 +6869,7 @@ function initJourneyDetailFromModule() {
     isNativeApp,
     perthStationsHas: (station) => PERTH_STATIONS.has(station),
     getPerthApiStations: () => PERTH_API_STATIONS,
+    cityIdForStation,
     pauseOnboardingForOverlay,
     isJourneysDialogOpen,
     notifyAdOverlaySuppression,
@@ -7211,17 +7286,7 @@ function hasPersistedNearbyPin() {
 
 function findActiveJourneyPinId() {
   for (const journey of settings.journeys) {
-    const next = sanitizeJourneyPinDismissed(
-      sanitizeJourneyPinOverride(normalizeJourney(journey))
-    );
-    if (isJourneyOverrideActiveToday(next)) {
-      return journey.id;
-    }
-    if (
-      !isRouteJourney(next) &&
-      preferredMinutesForLiveGlance(next) >= 0 &&
-      !isJourneyPinDismissedToday(next)
-    ) {
+    if (isJourneyPinnedToday(journey)) {
       return journey.id;
     }
   }
@@ -7336,10 +7401,7 @@ function clearOtherPinnedTrains(keep) {
 
     if (!isRouteJourney(next)) {
       const fresh = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(next));
-      if (
-        preferredMinutesForLiveGlance(fresh) >= 0 &&
-        !isJourneyPinDismissedToday(fresh)
-      ) {
+      if (isJourneyPinnedToday(fresh)) {
         next = normalizeJourney({
           ...fresh,
           journeyPinDismissedDate: today,

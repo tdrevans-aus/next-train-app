@@ -311,6 +311,10 @@
     return deps.getPerthApiStations?.() ?? [];
   }
 
+  function cityIdForStation(station) {
+    return deps.cityIdForStation?.(station) ?? "";
+  }
+
   function pauseOnboardingForOverlay() {
     return deps.pauseOnboardingForOverlay?.();
   }
@@ -1578,6 +1582,7 @@ function readJourneyDetailDraft() {
       station,
       direction,
       kind: "route",
+      cityId: cityIdForStation(station) || existing?.cityId || "perth",
       templateKey: existing?.templateKey,
       autoRoute: existing?.autoRoute,
     });
@@ -1615,6 +1620,7 @@ function readJourneyDetailDraft() {
     remindDays,
     remindMe,
     kind: "journey",
+    cityId: cityIdForStation(station) || existing?.cityId || "perth",
     templateKey: existing?.templateKey,
     autoRoute: existing?.autoRoute,
   });

@@ -1,0 +1,51 @@
+{
+  "id": "journey-inside-hours-target-passed",
+  "description": "Inside Active hours after target has passed — preview next remind day (Tomorrow 17:30), not Today.",
+  "tags": ["journey", "preferred", "outside-hours"],
+  "clock": {
+    "perthDateKey": "2026-08-26",
+    "nowIso": "2026-08-26T22:10:00+08:00"
+  },
+  "input": {
+    "mode": "journey",
+    "journeyModeActive": true,
+    "skipTrains": 0,
+    "journey": {
+      "id": "j-evening",
+      "kind": "journey",
+      "name": "Evening home",
+      "station": "Perth Underground Stn",
+      "direction": "Yanchep",
+      "preferredTrainTime": "17:30",
+      "defaultFrom": "15:00",
+      "defaultUntil": "23:00",
+      "remindDays": [1, 2, 3, 4, 5, 6, 7],
+      "leaveBeforeMinutes": 10,
+      "useLeaveBefore": true
+    },
+    "payload": {
+      "next": null,
+      "upcoming": []
+    }
+  },
+  "expected": {
+    "trueNextDeparture": null,
+    "pinDeparture": null,
+    "heroDeparture": null,
+    "leaveDeparture": null,
+    "secondaryNextDeparture": null,
+    "widgetFaceDeparture": null,
+    "isPinnedToday": true,
+    "heroShowsPin": false,
+    "isOverrideActiveToday": false,
+    "isPinDismissedToday": false,
+    "isSkipPreview": false,
+    "isHeroPinLockingSwipe": false,
+    "showSecondaryNext": false,
+    "leaveCardArmed": false,
+    "heroLabel": "Target train",
+    "heroMode": "preview",
+    "heroPreviewDayLabel": "Tomorrow",
+    "heroPreviewClock": "17:30"
+  }
+}

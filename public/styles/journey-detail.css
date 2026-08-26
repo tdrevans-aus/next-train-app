@@ -818,18 +818,15 @@ body.region-setup-active .ad-remove-link-wrap {
 }
 
 /* Journey window / Reminders: dock coach at bottom so card never covers highlighted fields */
-.journeys-dialog .template-route-coach.template-route-coach--dock-bottom .onboarding-coach-card,
-.journeys-dialog .template-route-coach.template-route-coach--step-4 .onboarding-coach-card,
-.journeys-dialog .template-route-coach.template-route-coach--step-5 .onboarding-coach-card,
-.journeys-dialog .template-route-coach.template-route-coach--step-6 .onboarding-coach-card {
+.journeys-dialog .template-route-coach.template-route-coach--dock-bottom .onboarding-coach-card {
   top: auto;
   bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* Leave room to scroll highlighted fields above a bottom-docked coach card */
 .journeys-dialog.template-wizard-active .settings-detail-scroll {
-  scroll-padding-bottom: 12rem;
-  padding-bottom: 12rem;
+  scroll-padding-bottom: 12.5rem;
+  padding-bottom: 12.5rem;
 }
 
 /* Reminder step — extra scroll room below the toggle */
@@ -838,16 +835,9 @@ body.region-setup-active .ad-remove-link-wrap {
   padding-bottom: 11rem;
 }
 
-/* Journey window step sits at the bottom of the form — extra scroll room */
-.journeys-dialog.template-wizard-hours-step .settings-detail-scroll {
-  scroll-padding-bottom: 13rem;
-  padding-bottom: 13rem;
-}
-
 #leave-before-field.template-wizard-highlight,
 #detail-target-master.template-wizard-highlight,
-#detail-preferred-section.template-wizard-highlight,
-#detail-journey-window.template-wizard-highlight {
+#detail-preferred-section.template-wizard-highlight {
   padding: 0.55rem 0.65rem;
   margin-inline: -0.65rem;
 }

@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       return;
     }
     try {
-      const pack = getMultiCityDirections(city, station);
+      const pack = await getMultiCityDirections(city, station);
       res.status(200).json({ destinations: pack.directions, source: pack.source });
     } catch (error) {
       console.error(error);
