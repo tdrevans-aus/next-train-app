@@ -104,6 +104,10 @@ body {
   font-family: var(--font);
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   min-height: 100dvh;
   height: 100dvh;

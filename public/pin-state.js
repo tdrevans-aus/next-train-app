@@ -80,7 +80,10 @@
 
   function minutesUntilPerthClockMinutes(targetMinutes, clock, { strictNext = false } = {}) {
     if (deps.minutesUntilPerthClockMinutes && !clock) {
-      return deps.minutesUntilPerthClockMinutes(targetMinutes);
+      // The host helper always answers "nearest" (a target earlier today comes back
+      // negative). strictNext callers want the next occurrence, so roll it forward.
+      const delegated = deps.minutesUntilPerthClockMinutes(targetMinutes);
+      return strictNext && delegated < 0 ? delegated + 24 * 60 : delegated;
     }
     const now = getPerthMinutesSinceMidnight(clock);
     let diff = targetMinutes - now;
@@ -100,14 +103,15 @@
     return diff;
   }
 
-  function minutesUntilPerthWallClock(isoString, clock, options = {}) {
+  function minutesUntilPerthWallClock(isoString, clock) {
     if (deps.minutesUntilPerthWallClock && !clock) {
       return deps.minutesUntilPerthWallClock(isoString);
     }
+    // A departure is a real timestamp, so strictNext must not apply here: rolling it
+    // forward would make a train that left hours ago look like tomorrow's service.
     return minutesUntilPerthClockMinutes(
       getPerthMinutesSinceMidnightFromIso(isoString),
-      clock,
-      options
+      clock
     );
   }
 
@@ -386,6 +390,13 @@
       return null;
     }
 
+    // Once the target clock has passed, today's target slot is spent — later trains
+    // today are just the next train, and the real target sits on a following remind
+    // day. Without this, every evening train on a remind day matches "at or after
+    // 07:30" and gets mislabelled as the target.
+    const targetPassedToday = getPerthMinutesSinceMidnight(resolvedClock) > preferredMinutes;
+    const todayDateKey = getPerthLocalDateKey(resolvedClock);
+
     // Next remind-day target may be days away — do not clip to today's Active-until horizon.
     for (const trip of getUpcomingTrips(normalized)) {
       const departureIso = resolveTripDeparture(trip);
@@ -397,6 +408,9 @@
         continue;
       }
       if (!tripMatchesJourneyRemindDay(trip, journeyClean, resolvedClock)) {
+        continue;
+      }
+      if (targetPassedToday && getPerthLocalDateKey({ nowMs: departureMs }) === todayDateKey) {
         continue;
       }
       const tripMinutes = getPerthMinutesSinceMidnightFromIso(departureIso);
@@ -464,12 +478,10 @@
       return null;
     }
 
-    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
-    const options = { strictNext: !insideActiveWindow };
-
+    // Same as above: the target we want here has already departed, so strictNext off.
     const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
     for (const trip of getUpcomingTrips(normalized)) {
-      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock, options)) {
+      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
         continue;
       }
       if (tripHasDeparted(trip, resolvedClock)) {
@@ -629,12 +641,11 @@
       return null;
     }
 
-    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
-    const options = { strictNext: !insideActiveWindow };
-
+    // This hunts today's target *after* it has left, so strictNext — which looks for
+    // the next occurrence of the target clock — must stay off or it never matches.
     const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
     for (const trip of getUpcomingTrips(normalized)) {
-      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock, options)) {
+      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
         continue;
       }
       if (tripHasDeparted(trip, resolvedClock)) {
@@ -910,6 +921,9 @@
       mode === "journey" ? sanitizeJourneyPinFields(input.journey, clock) : null;
     const insideActiveWindow =
       mode === "journey" && journeyClean && journeyMatchesSchedule(journeyClean, clock);
+    const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
+    const outsideActiveDay =
+      mode === "journey" && journeyClean && !journeyMatchesActiveDay(journeyClean, clock);
     const options = { strictNext: !insideActiveWindow };
     const trueNextDeparture = resolveTrueNextDeparture(input.payload, clock, options);
 
@@ -919,9 +933,12 @@
         : Boolean(pinDeparture);
 
     // Filter pinDeparture for UI display: don't show "Pinned" chrome for auto-target pins outside active window.
+    // Off an active day the pin points at the next remind-day target, which stays valid —
+    // only today's spent target gets dropped.
     const uiPinDeparture =
       mode === "journey" && journeyClean
         ? !insideActiveWindow &&
+          !outsideActiveDay &&
           !isJourneyOverrideActiveToday(journeyClean, clock) &&
           !isOvernightActiveWindow(journeyClean)
           ? null // Outside window, not manually overridden: treat as Target train (auto-outline), not a solid Pinned train.
@@ -948,9 +965,6 @@
     const isPinDismissedToday =
       mode === "journey" && isJourneyPinDismissedToday(journeyClean, clock);
 
-    const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
-    const outsideActiveDay =
-      mode === "journey" && journeyClean && !journeyMatchesActiveDay(journeyClean, clock);
     const preferredTargetDeparture =
       mode === "journey" && journeyClean && !isRouteJourney(journeyClean)
         ? outsideActiveDay || !insideActiveWindow
@@ -969,9 +983,17 @@
         : null;
 
     const previewHero =
-      mode === "journey" && journeyClean && outsideActiveDay && !preferredTargetDeparture
+      mode === "journey" && journeyClean && outsideActiveWindow && !preferredTargetDeparture
         ? resolveJourneyPreviewHero(journeyClean, clock)
         : null;
+
+    // Dismissing cancels *today's* target only. A later day's commute is a different
+    // trip, so it still leads the hero even though today's pin was dismissed.
+    const dismissedTargetIsToday = preferredTargetDeparture
+      ? getPerthLocalDateKey({ nowMs: Date.parse(preferredTargetDeparture) }) ===
+        getPerthLocalDateKey(clock)
+      : (previewHero?.dayOffset ?? 0) === 0;
+    const dismissalHidesTarget = isPinDismissedToday && dismissedTargetIsToday;
 
     const targetSkipIndex =
       preferredTargetDeparture && input.payload
@@ -1013,7 +1035,7 @@
     let heroDeparture;
 
     if (outsideActiveDay && !isOverrideActiveToday) {
-      if (isPinDismissedToday) {
+      if (dismissalHidesTarget) {
         heroDeparture = isBrowsingLiveBoard
           ? skippedHeroDeparture ?? trueNextDeparture
           : trueNextDeparture;
@@ -1040,6 +1062,29 @@
         // We use the 'strictNext: false' version for this fallback to match ANY next train.
         const nonStrictNextDeparture = resolveTrueNextDeparture(input.payload, clock, { strictNext: false });
         heroDeparture = nonStrictNextDeparture;
+        heroMode = heroDeparture ? "live" : "preview";
+      }
+    } else if (
+      // Active day, outside the active window: lead with the next target commute —
+      // the same story the widget tells — rather than whatever is leaving right now.
+      mode === "journey" &&
+      journeyClean &&
+      outsideActiveWindow &&
+      preferredMinutesForLiveGlance(journeyClean) >= 0 &&
+      !isOverrideActiveToday &&
+      !dismissalHidesTarget &&
+      !isSkipPreview &&
+      !isBrowsingLiveBoard
+    ) {
+      heroDeparture = activeTargetDeparture ?? preferredTargetDeparture ?? null;
+      if (heroDeparture) {
+        heroMode = "live";
+      } else if (previewHero) {
+        heroMode = "preview";
+        heroPreviewDayLabel = previewHero.heroPreviewDayLabel;
+        heroPreviewClock = previewHero.heroPreviewClock;
+      } else {
+        heroDeparture = trueNextDeparture;
         heroMode = heroDeparture ? "live" : "preview";
       }
     } else {

@@ -898,11 +898,11 @@
                   Fix for me
                 </button>
               </div>
-              <p class="settings-section-hint" id="detail-active-hours-hint">
-                When this journey shows on your home screen. Your target train must be within these hours.
+              <p class="settings-section-hint" id="detail-active-hours-hint" hidden>
+                When this journey shows on your home screen.
               </p>
               <p class="settings-section-hint detail-target-outside-hint" id="detail-target-outside-active-hint" hidden>
-                Target train is outside your journey window.
+                Target train must be on an active day.
               </p>
             </section>
 
@@ -931,10 +931,6 @@
                 Choose the departure you aim for.
                 We&rsquo;ll look for the first train at or after the time you set.
               </p>
-            </div>
-            <div class="template-wizard-step" id="template-wizard-step-3" hidden>
-              <h2 id="template-wizard-step-3-title">Journey window</h2>
-              <p id="template-wizard-hours-body"></p>
             </div>
             <div class="template-wizard-step" id="template-wizard-step-reminder" hidden>
               <h2 id="template-wizard-step-reminder-title">Reminders</h2>
@@ -1320,16 +1316,6 @@
             </summary>
             <div class="help-faq-body">
               <p>Pick what the platform sign says — the end of the line — not necessarily where you get off.</p>
-            </div>
-          </details>
-
-          <details class="help-faq">
-            <summary class="help-faq-summary">
-              <span class="help-faq-title">Active hours</span>
-              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </summary>
-            <div class="help-faq-body">
-              <p>Optional times when a journey is selected automatically — for example, morning 6:00–9:00 switches to your commute-in journey without you having to tap.</p>
             </div>
           </details>
 

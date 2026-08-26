@@ -1212,6 +1212,10 @@ body.region-setup-active .ad-remove-link-wrap {
   display: none !important;
 }
 
+#settings-detail-view.settings-detail-view--journey #detail-journey-window {
+  display: none !important;
+}
+
 .settings-view {
   padding: 1.25rem;
   display: flex;

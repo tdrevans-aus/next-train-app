@@ -703,9 +703,6 @@ function syncDetailComboHints({ amendWindowFromTarget = false, skipWindowDefault
       detailTargetOutsideActiveHint.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
   }
-  if (detailActiveHoursHint) {
-    detailActiveHoursHint.hidden = false;
-  }
 }
 
 function readDetailActiveDays() {
@@ -1179,10 +1176,10 @@ async function syncJourneyDetailRouteFields(journey, nearestHint = null) {
 
 function formatJourneyOverlapError(updated, conflict) {
   if (conflict.name === updated.name && conflict.id !== updated.id) {
-    return `Only one journey can be active at one time. Another ${conflict.name} already uses these hours.`;
+    return `Only one journey can be active at one time. Another ${conflict.name} already uses this schedule.`;
   }
 
-  return `Only one journey can be active at one time. These hours overlap ${conflict.name} (${formatJourneyDefaultWindow(conflict)}).`;
+  return `Only one journey can be active at one time. This schedule overlaps ${conflict.name} (${formatJourneyDefaultWindow(conflict)}).`;
 }
 
 function clearJourneyOverlapError() {

@@ -1,4 +1,5 @@
 journey-dismissed-falls-back-true-next.json
+journey-dismissed-keeps-next-day-preview.json
 journey-next-active-day-target.json
 journey-no-preferred-true-next.json
 journey-outside-hours-target.json
