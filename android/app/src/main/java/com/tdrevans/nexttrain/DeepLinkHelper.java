@@ -28,7 +28,13 @@ public final class DeepLinkHelper {
       return;
     }
 
-    if (!"journey".equals(host) && !"nearby".equals(host) && !"home".equals(host) && !"paywall".equals(host)) {
+    if (
+      !"journey".equals(host) &&
+      !"nearby".equals(host) &&
+      !"home".equals(host) &&
+      !"paywall".equals(host) &&
+      !"reminders".equals(host)
+    ) {
       return;
     }
 

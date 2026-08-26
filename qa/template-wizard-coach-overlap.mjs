@@ -17,10 +17,14 @@ function evaluateCoachOverlap() {
   );
 
   if (!card || !target) {
+    const title = visibleStep?.textContent?.trim() ?? "";
+    if (title === "Reminders") {
+      return { ok: true, overlap: false, visibleTitle: title, skippedHighlight: true };
+    }
     return {
       ok: false,
       error: "missing coach card or highlight target",
-      visibleTitle: visibleStep?.textContent?.trim() ?? "",
+      visibleTitle: title,
     };
   }
 

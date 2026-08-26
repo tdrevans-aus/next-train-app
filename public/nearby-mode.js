@@ -100,36 +100,46 @@
   }
 
   function isStationInActiveCity(station) {
-    return deps.isStationInActiveCity?.(station) ?? isCatalogStation(station);
+    return deps.isStationInNearbyCity?.(station) ?? deps.isStationInActiveCity?.(station) ?? isCatalogStation(station);
   }
 
-  function readActiveCity() {
-    return String(
-      deps.readActiveCity?.() ||
-        window.NextTrainBrisbaneDogfood?.getCity?.() ||
-        window.NextTrainCitySession?.readSavedCity?.() ||
-        "perth"
-    )
+  function readNearbyCity() {
+    return String(deps.readNearbyCity?.() || "perth").trim().toLowerCase();
+  }
+
+  function readPreferenceCity() {
+    return String(deps.readPreferenceCity?.() || deps.readActiveCity?.() || "perth")
       .trim()
       .toLowerCase();
   }
 
+  function readActiveCity() {
+    return readNearbyCity();
+  }
+
   function readActiveTimeZone() {
-    return window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth";
+    const city = readNearbyCity();
+    return window.NextTrainCitySession?.regionById?.(city)?.region?.timeZone || "Australia/Perth";
+  }
+
+  function applyNearbyBoardParams(params) {
+    const city = readNearbyCity();
+    if (city && city !== "perth") {
+      params.set("city", city);
+    }
+    return params;
   }
 
   function isNearbyCacheValid(data) {
     if (!data?.station) {
       return false;
     }
-    const activeCity = readActiveCity();
-    if (data.city && data.city !== activeCity) {
+    const cacheCity = String(data.city || "perth").trim().toLowerCase();
+    const nearbyCity = readNearbyCity();
+    if (cacheCity !== nearbyCity) {
       return false;
     }
-    if (!data.city && activeCity !== "perth") {
-      return false;
-    }
-    return isStationInActiveCity(data.station);
+    return deps.isStationInNearbyCity?.(data.station, cacheCity) ?? isStationInActiveCity(data.station);
   }
 
   function regionLocateErrorMessage(error) {
@@ -144,7 +154,7 @@
   }
 
   function getStationsList() {
-    return deps.getStationsList?.();
+    return deps.getNearbyStationsList?.() ?? deps.getStationsList?.();
   }
 
   function getNearbyStationCombobox() {
@@ -496,6 +506,11 @@ function renderUnsupportedRegionBoard() {
     adelaide: {
       title: "Adelaide rail only",
       text: "Near me works near Adelaide Metro rail stations. You're outside that area right now.",
+      hint: "You can still save routes and journeys when you're back on the network.",
+    },
+    "uk-london-tfl": {
+      title: "London rail only",
+      text: "Near me works near TfL rail stations. You're outside that area right now.",
       hint: "You can still save routes and journeys when you're back on the network.",
     },
   };
@@ -1156,6 +1171,47 @@ async function handleNearbyNotifyToggle() {
   }
 }
 
+async function setNearbyPinNotifyMe(notifyOn) {
+  const on = notifyOn === true;
+  if (nearbySession) {
+    nearbySession.pinNotifyMe = on;
+  }
+
+  const current = getSettings().nearbyPin;
+  if (current && deps.isNearbyPinSettingsHolding?.(current)) {
+    persistSettings({
+      nearbyPin: {
+        ...current,
+        notifyMe: on,
+      },
+    });
+    if (isNativeApp() && typeof window.nextTrainWidget?.syncWidgetSettings === "function") {
+      await window.nextTrainWidget.syncWidgetSettings();
+    }
+  }
+
+  if (on) {
+    const reminderSettings = await window.nextTrainLeaveReminders?.enableLeaveReminders?.({
+      userInitiated: true,
+    });
+    if (reminderSettings?.permissionGranted === false) {
+      if (nearbySession) {
+        nearbySession.pinNotifyMe = false;
+      }
+      const pin = getSettings().nearbyPin;
+      if (pin) {
+        persistSettings({ nearbyPin: { ...pin, notifyMe: false } });
+      }
+      return false;
+    }
+  } else {
+    await window.nextTrainLeaveReminders?.refreshJourneyRemindExtras?.();
+  }
+
+  await rescheduleNearbyPinReminders();
+  return true;
+}
+
 function nearbyPinExpiryMs(pin = getNearbyPin()) {
   if (!pin) {
     return 0;
@@ -1300,7 +1356,7 @@ async function fetchNearbyDirectionData(station, direction, _skip = 0) {
   if (fixture) {
     params.set("fixture", fixture);
   }
-  window.NextTrainBrisbaneDogfood?.applyParams?.(params);
+  applyNearbyBoardParams(params);
 
   const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
   if (!result.ok) {
@@ -1388,7 +1444,10 @@ async function ensureNearbyStationOptions({ force = false } = {}) {
     return;
   }
 
-  if (!force && window.nextTrainStationCombobox?.getStationsCache?.()?.length) {
+  if (force) {
+    window.nextTrainStationCombobox?.replaceNearbyStationsCache?.(null);
+    getNearbyStationCombobox()?.clearLocalStationsCache?.();
+  } else if (window.nextTrainStationCombobox?.getNearbyStationsCache?.()?.length) {
     setStationComboboxValue(getNearbyStationCombobox(), nearbySession?.station ?? "");
     return;
   }
@@ -1755,6 +1814,7 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
     nearbySession.fromCache = false;
     setNearbyGpsRefining(false);
     nearbySession.station = nearest.station ?? null;
+    nearbySession.city = nearest.city || readNearbyCity();
     nearbySession.lat = nearest.lat ?? null;
     nearbySession.lng = nearest.lng ?? null;
     nearbySession.distanceKm = nearest.distanceKm;
@@ -1771,6 +1831,7 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
     if (nearest.station) {
       writeLastNearbyStationCache({
         station: nearest.station,
+        city: nearest.city || readNearbyCity(),
         distanceKm: nearest.distanceKm,
       });
     }
@@ -2299,7 +2360,7 @@ async function fetchNearbyBoard() {
     let station = params.get("station");
     const lat = params.get("lat");
     const lng = params.get("lng");
-    const city = readActiveCity();
+    const city = readNearbyCity();
 
     if (!station && lat != null && lng != null) {
       if (typeof window.loadStationCoords === "function") {
@@ -2361,7 +2422,7 @@ async function fetchNearbyBoard() {
     if (fixture) {
       params.set("fixture", fixture);
     }
-    window.NextTrainBrisbaneDogfood?.applyParams?.(params);
+    applyNearbyBoardParams(params);
 
     // Race the board fetch against a 15-second hard timeout.
     // CapacitorHttp doesn't honour AbortSignal, so Promise.race is the only
@@ -2502,6 +2563,7 @@ async function enterNearbyMode({
   if (manualStation) {
     nearbySession = {
       station: manualStation,
+      city: readNearbyCity(),
       distanceKm,
       focusedDirection: null,
       skipByDirection: {},
@@ -2529,9 +2591,13 @@ async function enterNearbyMode({
   // 9/10 visits the station is unchanged; GPS refine swaps if it moved.
   const cachedStation = readLastNearbyStationCache();
   if (cachedStation?.station) {
+    await deps.ensureNearbyCatalog?.(cachedStation.city || readNearbyCity());
+  }
+  if (cachedStation?.station && isNearbyCacheValid(cachedStation)) {
     const cachedBoard = readCachedNearbyBoard(cachedStation);
     nearbySession = {
       station: cachedStation.station,
+      city: cachedStation.city || readNearbyCity(),
       // Don't show a km crumb until GPS refine returns.
       distanceKm: cachedStation.distanceKm ?? null,
       fromCache: true,
@@ -2682,7 +2748,7 @@ function exitNearbyMode() {
 async function applyNearbyManualStation(station) {
   await getStationsList();
   const normalized = normalizeStation(station);
-  if (!normalized || !isCatalogStation(station)) {
+  if (!normalized || !isStationInActiveCity(station)) {
     return;
   }
 
@@ -2696,6 +2762,7 @@ async function applyNearbyManualStation(station) {
   syncNearbyDontWaitButton();
   nearbySession = {
     station: normalized,
+    city: readNearbyCity(),
     distanceKm: null,
     focusedDirection: null,
     skipByDirection: {},
@@ -2784,16 +2851,32 @@ function initNearbyListeners() {
   });
 }
 
-  async function mount(nextDeps = {}) {
-    deps = { ...deps, ...nextDeps };
-    if (isNearbyModeActive()) {
-      return fetchNearbyBoard();
+async function refreshNearbyAfterRegionChange() {
+  const cache = readLastNearbyStationCache();
+  if (cache?.station && isNearbyCacheValid(cache)) {
+    if (nearbySession) {
+      nearbySession.city = cache.city || readNearbyCity();
+      nearbySession.station = cache.station;
+      nearbySession.distanceKm = cache.distanceKm ?? nearbySession.distanceKm ?? null;
     }
+    await ensureNearbyStationOptions({ force: true });
+    return;
   }
 
-  function init(nextDeps = {}) {
-    deps = { ...nextDeps };
+  await ensureNearbyStationOptions({ force: true });
+  void locateNearbyInBackground({ forceFresh: false });
+}
+
+async function mount(nextDeps = {}) {
+  deps = { ...deps, ...nextDeps };
+  if (isNearbyModeActive()) {
+    return fetchNearbyBoard();
   }
+}
+
+function init(nextDeps = {}) {
+  deps = { ...nextDeps };
+}
 
   const api = {
     init,
@@ -2852,11 +2935,13 @@ function initNearbyListeners() {
     renderNearbyPinLeaveSurfaces,
     renderRoutePinLeaveSurfaces,
     renderUnsupportedRegionBoard,
+    refreshNearbyAfterRegionChange,
     rescheduleNearbyPinReminders,
     restoreNearbySessionPinFromSettings,
     setNearbyError,
     setNearbyGpsRefining,
     setNearbyPinFromTrip,
+    setNearbyPinNotifyMe,
     setNearbySkip,
     shouldShowNearbyLoadingState,
     showNearbyDontWaitOffer,

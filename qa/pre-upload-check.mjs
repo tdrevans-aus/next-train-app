@@ -92,17 +92,19 @@ function readSyncedAsset(relPath) {
 function checkSyncedLocationGate() {
   const geo = readSyncedAsset("geo-bundle.js");
   const app = readSyncedAsset("app.js");
+  const nearby = readSyncedAsset("nearby-mode.js");
   const geoOk =
     geo.text != null && geo.text.includes("ensureLocationPermission");
   const appOk =
     app.text != null &&
     app.text.includes("enterNearbyMode") &&
-    app.text.includes("ensureLocationPermission");
+    nearby.text != null &&
+    nearby.text.includes("ensureLocationPermission");
   return {
     geoOk,
     appOk,
     geoPath: geo.assetPath,
-    appPath: app.assetPath,
+    appPath: nearby.assetPath || app.assetPath,
   };
 }
 

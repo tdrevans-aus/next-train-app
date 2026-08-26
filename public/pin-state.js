@@ -988,17 +988,10 @@
           : resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
         : null;
 
-    const preferredMinutesForPreview = preferredMinutesForLiveGlance(journeyClean);
-    const targetPassedToday =
-      preferredMinutesForPreview >= 0 &&
-      getPerthMinutesSinceMidnight(clock) >= preferredMinutesForPreview &&
-      journeyMatchesActiveDay(journeyClean, clock);
-
     const previewHero =
       mode === "journey" &&
       journeyClean &&
-      !preferredTargetDeparture &&
-      (outsideActiveWindow || (insideActiveWindow && targetPassedToday))
+      !preferredTargetDeparture
         ? resolveJourneyPreviewHero(journeyClean, clock)
         : null;
 
@@ -1080,11 +1073,10 @@
         heroMode = heroDeparture ? "live" : "preview";
       }
     } else if (
-      // Active day, outside the active window: lead with the next target commute —
-      // the same story the widget tells — rather than whatever is leaving right now.
+      // Target commute leads the hero — live trip if on the board, otherwise the
+      // 7:30 preview — not whatever is leaving right now.
       mode === "journey" &&
       journeyClean &&
-      outsideActiveWindow &&
       preferredMinutesForLiveGlance(journeyClean) >= 0 &&
       !isOverrideActiveToday &&
       !dismissalHidesTarget &&
@@ -1099,8 +1091,7 @@
         heroPreviewDayLabel = previewHero.heroPreviewDayLabel;
         heroPreviewClock = previewHero.heroPreviewClock;
       } else {
-        heroDeparture = trueNextDeparture;
-        heroMode = heroDeparture ? "live" : "preview";
+        heroMode = "preview";
       }
     } else {
       heroDeparture = isSkipPreview

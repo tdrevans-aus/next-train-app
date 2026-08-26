@@ -214,25 +214,13 @@ public final class JourneyPinHelper {
       return CommuteSchedule.resolveTrueNextTrip(payload);
     }
 
-    String preferred = journey.optString("preferredTrainTime", "");
-    if (preferred.isEmpty() && !journey.has("remindMe")) {
-      preferred = journey.optString("defaultFrom", "");
-    }
-    int preferredMinutes = PerthTime.parseClockMinutes(preferred);
-    if (preferredMinutes >= 0) {
-      int horizon = PreferredTrainReminder.reminderHorizonMinutes(journey, preferredMinutes);
-      JSONObject preferredTrip = PreferredTrainReminder.pickTripAtOrAfter(
-        upcoming,
-        preferredMinutes,
-        horizon
-      );
-      if (preferredTrip != null) {
-        long departureMs = PerthTime.epochMillisFromIso(
-          preferredTrip.optString("departure", preferredTrip.optString("arrival", ""))
-        );
-        if (departureMs > clock.nowMs) {
-          return preferredTrip;
-        }
+    PinResolutionHelper.Clock pinClock = new PinResolutionHelper.Clock(clock.nowMs, clock.localDateKey);
+    String departureIso = PinResolutionHelper.resolveReminderTargetDeparture(payload, journey, pinClock);
+    if (departureIso != null && !departureIso.isEmpty()) {
+      JSONObject preferredTrip = findTripByDeparture(upcoming, departureIso);
+      long departureMs = PerthTime.epochMillisFromIso(departureIso);
+      if (preferredTrip != null && departureMs > clock.nowMs) {
+        return preferredTrip;
       }
     }
 

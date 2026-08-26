@@ -775,6 +775,10 @@ function isDetailTargetMasterOn() {
   return isJourneyDetailEditor();
 }
 
+function defaultPreferredTrainTime() {
+  return global.nextTrainJourneyModel?.getDefaultCustomPreferredTrainTime?.() || "07:30";
+}
+
 function syncDetailTargetMasterVisibility({ seedTime = false } = {}) {
   if (detailPreferredField) {
     detailPreferredField.hidden = false;
@@ -795,9 +799,7 @@ function syncDetailTargetMasterVisibility({ seedTime = false } = {}) {
       editingJourneySnapshot?.preferredTrainTime ||
       journey?.preferredTrainTime ||
       editingJourneySnapshot?.defaultFrom ||
-      (journey?.templateKey === "custom"
-        ? global.nextTrainJourneyModel?.getDefaultCustomPreferredTrainTime?.()
-        : "07:30");
+      defaultPreferredTrainTime();
     setOptionalTimeField(
       detailPreferredInput,
       detailPreferredDisplay,
@@ -1398,6 +1400,66 @@ function conflictFixCreatesOtherClash(proposedConflict, editing, journeys) {
     return best;
   }
 
+function applyOverlapFixForConflict(editing, conflict) {
+  const fix = suggestOverlapFixForConflict(editing, conflict, getSettingsDraftJourneys());
+  if (!fix) {
+    return false;
+  }
+
+  const index = getSettingsDraftJourneys().findIndex((journey) => journey.id === conflict.id);
+  if (index < 0) {
+    return false;
+  }
+
+  const updatedConflict = {
+    ...getSettingsDraftJourneys()[index],
+    ...fix,
+  };
+
+  if (updatedConflict.preferredTrainTime) {
+    const { from, until } = journeyWindowAroundTarget(updatedConflict.preferredTrainTime);
+    updatedConflict.defaultFrom = from;
+    updatedConflict.defaultUntil = until;
+  } else {
+    updatedConflict.defaultFrom = "";
+    updatedConflict.defaultUntil = "";
+  }
+
+  getSettingsDraftJourneys()[index] = normalizeJourney(updatedConflict);
+  return true;
+}
+
+/** Keep the journey being saved; adjust older conflicts in the draft without blocking Save. */
+function autoResolveJourneyOverlapConflicts(editing) {
+  const maxPasses = getSettingsDraftJourneys().length + 1;
+
+  for (let pass = 0; pass < maxPasses; pass += 1) {
+    const conflict = findJourneyDefaultWindowConflict(editing, getSettingsDraftJourneys());
+    if (!conflict) {
+      return true;
+    }
+
+    if (applyOverlapFixForConflict(editing, conflict)) {
+      continue;
+    }
+
+    const index = getSettingsDraftJourneys().findIndex((journey) => journey.id === conflict.id);
+    if (index < 0) {
+      return false;
+    }
+
+    getSettingsDraftJourneys()[index] = normalizeJourney({
+      ...getSettingsDraftJourneys()[index],
+      preferredTrainTime: "",
+      defaultFrom: "",
+      defaultUntil: "",
+      remindMe: false,
+    });
+  }
+
+  return !findJourneyDefaultWindowConflict(editing, getSettingsDraftJourneys());
+}
+
   function applyJourneyOverlapFix() {
     if (!journeyOverlapState?.conflict || !journeyOverlapState?.updated) {
       return;
@@ -1405,31 +1467,9 @@ function conflictFixCreatesOtherClash(proposedConflict, editing, journeys) {
 
     const kept = journeyOverlapState.updated;
     const conflict = journeyOverlapState.conflict;
-    const fix = suggestOverlapFixForConflict(kept, conflict, getSettingsDraftJourneys());
-    if (!fix) {
+    if (!applyOverlapFixForConflict(kept, conflict)) {
       return;
     }
-
-    const index = getSettingsDraftJourneys().findIndex((journey) => journey.id === conflict.id);
-    if (index < 0) {
-      return;
-    }
-
-    const updatedConflict = {
-      ...getSettingsDraftJourneys()[index],
-      ...fix,
-    };
-    
-    if (updatedConflict.preferredTrainTime) {
-        const { from, until } = journeyWindowAroundTarget(updatedConflict.preferredTrainTime);
-        updatedConflict.defaultFrom = from;
-        updatedConflict.defaultUntil = until;
-    } else {
-        updatedConflict.defaultFrom = "";
-        updatedConflict.defaultUntil = "";
-    }
-
-    getSettingsDraftJourneys()[index] = updatedConflict;
 
     const stillConflicts = findJourneyDefaultWindowConflict(kept, getSettingsDraftJourneys());
     if (stillConflicts) {
@@ -1437,7 +1477,12 @@ function conflictFixCreatesOtherClash(proposedConflict, editing, journeys) {
       return;
     }
 
-    showJourneyOverlapFixApplied(getSettingsDraftJourneys()[index], kept, fix.cleared);
+    const adjusted = getSettingsDraftJourneys().find((journey) => journey.id === conflict.id);
+    showJourneyOverlapFixApplied(
+      adjusted ?? conflict,
+      kept,
+      !adjusted?.preferredTrainTime && !hasDefaultWindow(adjusted ?? conflict)
+    );
   }
 
 async function revertDetailRemindersForDeniedPermission() {
@@ -1520,12 +1565,7 @@ async function handleDetailRemindToggleChange() {
 
 function populateDetailReminderFields(journey) {
   const hasTarget = Boolean(journey?.preferredTrainTime);
-  const preferredTrainTime =
-    journey?.preferredTrainTime ||
-    (journey?.templateKey === "custom"
-      ? global.nextTrainJourneyModel?.getDefaultCustomPreferredTrainTime?.()
-      : "") ||
-    "";
+  const preferredTrainTime = journey?.preferredTrainTime || defaultPreferredTrainTime();
   const leaveBeforeOn = journey?.useLeaveBefore !== false;
   const remindOn =
     leaveBeforeOn &&
@@ -1911,14 +1951,7 @@ function saveJourneyDetailFromForm() {
 
   const updated = readJourneyDetailDraft();
   if (!isRouteJourney(updated)) {
-    const conflict = findJourneyDefaultWindowConflict(updated, getSettingsDraftJourneys());
-    if (conflict) {
-      const overlapError = new Error(formatJourneyOverlapError(updated, conflict));
-      overlapError.code = "journey-overlap";
-      overlapError.conflict = conflict;
-      overlapError.updated = updated;
-      throw overlapError;
-    }
+    autoResolveJourneyOverlapConflicts(updated);
   }
 
   const wasConfiguredBeforeSave = getSettings().journeys.some(
@@ -2103,10 +2136,6 @@ function initJourneyDetailListeners() {
     try {
       saveJourneyDetailFromForm();
     } catch (error) {
-      if (error.code === "journey-overlap") {
-        showJourneyOverlapError(error.updated, error.conflict);
-        return;
-      }
       clearJourneyOverlapError();
       alert(error.message);
       return;

@@ -187,6 +187,16 @@
     state.coords = {};
   }
 
+  async function loadCoordsForCity(city) {
+    const catalog = await loadCatalog(String(city || "").toLowerCase());
+    return catalog.coords ?? {};
+  }
+
+  async function loadStationNamesForCity(city) {
+    const catalog = await loadCatalog(String(city || "").toLowerCase());
+    return catalog.stations ?? [];
+  }
+
   const api = {
     probe,
     mount,
@@ -197,6 +207,8 @@
     getOrigin: () => state.origin,
     getStations: () => state.stations,
     getCoords: () => state.coords,
+    loadCoordsForCity,
+    loadStationNamesForCity,
     isCityAvailable: (city) => MULTI_CITY_IDS.includes(String(city || "").toLowerCase()),
     applyParams(params) {
       if (state.active && state.city && !params.has("city")) {

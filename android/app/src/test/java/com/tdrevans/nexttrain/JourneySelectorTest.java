@@ -29,7 +29,7 @@ public class JourneySelectorTest {
     settings.put("activeJourneyId", "j-evening");
 
     assertTrue(JourneySelector.matchesWindow(journeys.getJSONObject(0), 7 * 60 + 30, TEST_DAY));
-    assertTrue(JourneySelector.matchesWindow(journeys.getJSONObject(1), 16 * 60, TEST_DAY));
+    assertTrue(JourneySelector.matchesWindow(journeys.getJSONObject(1), 16 * 60 + 40, TEST_DAY));
   }
 
   @Test
@@ -77,12 +77,32 @@ public class JourneySelectorTest {
   public void selectJourney_doesNotFallbackToSoleJourneyWithoutWindow() throws Exception {
     JSONObject settings = new JSONObject();
     JSONArray journeys = new JSONArray();
-    journeys.put(journey("j-custom", "Custom", "Edgewater Stn", "Perth", "", ""));
+    journeys.put(
+      journey("j-custom", "Custom", "Edgewater Stn", "Perth", "", "")
+    );
+    journeys.getJSONObject(0).put("preferredTrainTime", "");
     settings.put("journeys", journeys);
     settings.put("activeJourneyId", "j-custom");
 
     assertNull(JourneySelector.selectJourney(settings));
     assertTrue(JourneySelector.hasConfiguredJourneys(settings));
+  }
+
+  @Test
+  public void matchesWindow_preferredTrainUsesHourAroundTargetWithoutSavedHours() throws Exception {
+    JSONObject journey = new JSONObject();
+    journey.put("kind", "journey");
+    journey.put("preferredTrainTime", "07:30");
+    JSONArray remindDays = new JSONArray();
+    for (int day = 1; day <= 7; day += 1) {
+      remindDays.put(day);
+    }
+    journey.put("remindDays", remindDays);
+
+    assertTrue(JourneySelector.matchesWindow(journey, 6 * 60 + 42, TEST_DAY));
+    assertTrue(JourneySelector.matchesWindow(journey, 7 * 60 + 30, TEST_DAY));
+    assertFalse(JourneySelector.matchesWindow(journey, 5 * 60, TEST_DAY));
+    assertFalse(JourneySelector.matchesWindow(journey, 8 * 60, TEST_DAY));
   }
 
   @Test
@@ -170,7 +190,10 @@ public class JourneySelectorTest {
     journey.put("direction", direction);
     journey.put("defaultFrom", from);
     journey.put("defaultUntil", until);
-    journey.put("preferredTrainTime", "07:30");
+    journey.put(
+      "preferredTrainTime",
+      from != null && from.startsWith("15") ? "17:30" : "07:30"
+    );
     journey.put("kind", "journey");
     journey.put("leaveBeforeMinutes", 10);
     journey.put("useLeaveBefore", true);

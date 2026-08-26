@@ -1,5 +1,6 @@
 (function (global) {
   let stationsCache = null;
+  let nearbyStationsCache = null;
   let detailStationCombobox = null;
   let nearbyStationCombobox = null;
   let deps = {};
@@ -18,6 +19,27 @@
     });
 
     return Promise.race([fetchPromise, timeoutPromise]);
+  }
+
+  async function getNearbyStationsList() {
+    if (deps.getNearbyStationsList) {
+      nearbyStationsCache = await deps.getNearbyStationsList();
+      return nearbyStationsCache;
+    }
+    return getStationsList();
+  }
+
+  function getNearbyStationsCache() {
+    return nearbyStationsCache;
+  }
+
+  function replaceNearbyStationsCache(names) {
+    if (names == null) {
+      nearbyStationsCache = null;
+      return nearbyStationsCache;
+    }
+    nearbyStationsCache = Array.isArray(names) ? names : [];
+    return nearbyStationsCache;
   }
 
   async function getStationsList() {
@@ -121,7 +143,7 @@
     return getStationsList();
   }
 
-  function createStationCombobox(root, { onChange, required = false, hideFooterOnOpen = false } = {}) {
+  function createStationCombobox(root, { onChange, required = false, hideFooterOnOpen = false, loadStations } = {}) {
     const trigger = root?.querySelector(".station-combobox-input");
     const list = root?.querySelector(".station-combobox-list");
     if (!trigger || !list) {
@@ -152,6 +174,9 @@
     }
 
     const isDetailPicker = root.id === "detail-station-combobox";
+    const isNearbyPicker = root.id === "nearby-station-combobox";
+    const resolveStationsList = loadStations || (isNearbyPicker ? getNearbyStationsList : getStationsList);
+    let localStationsCache = null;
     let selectedValue = "";
     let activeIndex = -1;
     let suppressBlurClose = false;
@@ -260,8 +285,34 @@
       }
     }
 
+    function filterLocalStationsByQuery(query) {
+      const stations = localStationsCache ?? [];
+      const normalized = String(query || "").trim().toLowerCase();
+      if (!normalized) {
+        return stations;
+      }
+
+      return stations.filter((name) =>
+        deps.formatStationLabel(name).toLowerCase().includes(normalized)
+      );
+    }
+
+    function ensureLocalStationsLoaded() {
+      if (localStationsCache?.length) {
+        return Promise.resolve(localStationsCache);
+      }
+      return resolveStationsList().then((list) => {
+        localStationsCache = Array.isArray(list) ? list : [];
+        return localStationsCache;
+      });
+    }
+
+    function clearLocalStationsCache() {
+      localStationsCache = null;
+    }
+
     function renderList(query = "") {
-      const matches = filterStationsByQuery(query);
+      const matches = filterLocalStationsByQuery(query);
       list.innerHTML = "";
 
       if (mode === "browse") {
@@ -329,7 +380,7 @@
       searchInput.value = "";
       setExpanded(true);
       setFooterHidden(true);
-      void ensureStationsLoaded().then(() => {
+      void ensureLocalStationsLoaded().then(() => {
         renderList("");
         if (isDetailPicker) {
           syncDetailDropdownPosition();
@@ -344,7 +395,7 @@
       activeIndex = 0;
       searchInput.hidden = false;
       searchInput.value = "";
-      void ensureStationsLoaded().then(() => {
+      void ensureLocalStationsLoaded().then(() => {
         renderList("");
         if (isDetailPicker) {
           syncDetailDropdownPosition();
@@ -498,6 +549,7 @@
       openBrowse,
       closeList,
       enterSearchMode,
+      clearLocalStationsCache,
       required,
       trigger,
       searchInput,
@@ -558,8 +610,11 @@
     init,
     fetchLocalJson,
     getStationsList,
+    getNearbyStationsList,
     getStationsCache,
+    getNearbyStationsCache,
     replaceStationsCache,
+    replaceNearbyStationsCache,
     replaceSelectOptions,
     renderStationOptions,
     filterStationsByQuery,

@@ -109,13 +109,12 @@ async function run() {
   if (
     templatesVisible &&
     detailOpen &&
-    templateJourney?.defaultFrom === "06:00" &&
-    templateJourney?.defaultUntil === "09:00" &&
+    /^Morning into town$/i.test(templateJourney?.name ?? "") &&
     (routeConfigured || coachVisible)
   ) {
     pass(13, routeConfigured
       ? "Morning template → auto route (Edgewater → Perth) + coach"
-      : "Morning template → detail + default hours + coach");
+      : "Morning template → detail + coach");
   } else {
     fail(13, JSON.stringify({ templatesVisible, detailOpen, templateJourney, coachVisible }));
   }

@@ -206,14 +206,34 @@ public final class JourneySelector {
   }
 
   static boolean matchesWindow(JSONObject journey, int minutes, int dayOfWeekIso) {
-    if (!hasWindow(journey)) {
-      return false;
-    }
     if (!PreferredTrainReminder.isRemindDay(journey, dayOfWeekIso)) {
       return false;
     }
-    int from = parseTime(journey.optString("defaultFrom"));
-    int until = parseTime(journey.optString("defaultUntil"));
+    return matchesTime(journey, minutes);
+  }
+
+  /**
+   * Web {@code journeyMatchesTime}: target journeys use preferred−60 … preferred+15,
+   * even when Active from/until are empty (hidden hours).
+   */
+  static boolean matchesTime(JSONObject journey, int minutes) {
+    if (journey == null) {
+      return false;
+    }
+    int from;
+    int until;
+    String preferred = journey.optString("preferredTrainTime", "");
+    if (isJourneyKind(journey) && !preferred.isEmpty() && !hasWindow(journey)) {
+      int target = parseTime(preferred);
+      from = Math.floorMod(target - 60, 24 * 60);
+      until = Math.floorMod(target + 15, 24 * 60);
+    } else {
+      if (!hasWindow(journey)) {
+        return false;
+      }
+      from = parseTime(journey.optString("defaultFrom"));
+      until = parseTime(journey.optString("defaultUntil"));
+    }
     if (from == until) {
       return true;
     }

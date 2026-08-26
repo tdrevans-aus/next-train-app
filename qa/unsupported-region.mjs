@@ -1,5 +1,7 @@
 /**
  * Unsupported region — Near me blocked when nearest station > 50 km.
+ * GPS-first: Sydney geo uses the Sydney network; outback GPS falls back to Perth gate.
+ *
  * Usage: node qa/unsupported-region.mjs
  */
 import { chromium } from "playwright";
@@ -7,16 +9,20 @@ import { chromium } from "playwright";
 const BASE = "http://localhost:3000";
 const SYDNEY = { latitude: -33.8688, longitude: 151.2093 };
 const PERTH = { latitude: -31.9505, longitude: 115.8605 };
+const OUTBACK = { latitude: -25.0, longitude: 133.0 };
 
 async function run() {
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ geolocation: SYDNEY, permissions: ["geolocation"] });
-  const page = await context.newPage();
 
-  await page.goto(`${BASE}/?reset=1&fixture=normal`);
-  await page.waitForTimeout(4000);
+  const outbackContext = await browser.newContext({
+    geolocation: OUTBACK,
+    permissions: ["geolocation"],
+  });
+  const outbackPage = await outbackContext.newPage();
+  await outbackPage.goto(`${BASE}/?reset=1&fixture=normal`);
+  await outbackPage.waitForTimeout(4000);
 
-  const unsupported = await page.evaluate(() => {
+  const unsupported = await outbackPage.evaluate(() => {
     const hero = document.getElementById("depart-countdown");
     const title = hero?.querySelector(".hero-empty-title")?.textContent?.trim();
     const directionsHidden = document.getElementById("nearby-directions")?.hidden;
@@ -31,25 +37,49 @@ async function run() {
     unsupported.nearbyMode &&
     !unsupported.journeysMode
   ) {
-    console.log("PASS — Sydney geo shows Perth rail only empty state");
+    console.log("PASS — Outback geo shows Perth rail only empty state");
   } else {
     console.error("FAIL — unsupported state", unsupported);
     process.exitCode = 1;
   }
 
-  await page.evaluate(() => window.nextTrainApp.enterJourneyMode());
-  await page.waitForTimeout(500);
+  await outbackPage.evaluate(() => window.nextTrainApp.enterJourneyMode());
+  await outbackPage.waitForTimeout(500);
 
-  const journeysOpen = await page.evaluate(() => {
-    const dialog = document.getElementById("journeys-dialog");
+  const journeysOpen = await outbackPage.evaluate(() => {
     const journeysMode = document.querySelector(".app")?.classList.contains("journey-mode");
-    return { dialogOpen: Boolean(dialog?.open), journeysMode };
+    return { journeysMode };
   });
 
   if (journeysOpen.journeysMode) {
     console.log("PASS — My Journeys reachable from unsupported state");
   } else {
     console.error("FAIL — could not enter journey mode", journeysOpen);
+    process.exitCode = 1;
+  }
+
+  const sydneyContext = await browser.newContext({
+    geolocation: SYDNEY,
+    permissions: ["geolocation"],
+  });
+  const sydneyPage = await sydneyContext.newPage();
+  await sydneyPage.goto(`${BASE}/?reset=1&fixture=normal`);
+  await sydneyPage.waitForTimeout(4000);
+
+  const sydneyNearby = await sydneyPage.evaluate(() => {
+    const title = document.getElementById("depart-countdown")?.querySelector(".hero-empty-title")?.textContent?.trim();
+    const route = document.getElementById("route")?.textContent?.trim() ?? "";
+    const nearbyCity = window.nextTrainNearby?.getNearbySession?.()?.city ?? null;
+    return { title, route, nearbyCity };
+  });
+
+  if (sydneyNearby.title === "Perth rail only") {
+    console.error("FAIL — Sydney geo should not use Perth unsupported copy", sydneyNearby);
+    process.exitCode = 1;
+  } else if (sydneyNearby.nearbyCity === "sydney" || sydneyNearby.route.includes("Near you")) {
+    console.log("PASS — Sydney geo scopes Near me to Sydney network");
+  } else {
+    console.error("FAIL — expected Sydney-scoped nearby", sydneyNearby);
     process.exitCode = 1;
   }
 

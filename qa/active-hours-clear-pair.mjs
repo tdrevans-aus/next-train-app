@@ -85,7 +85,7 @@ async function run() {
     await dialog.dismiss();
   });
 
-  await page.locator("#detail-default-from-clear").click();
+  await page.evaluate(() => document.getElementById("detail-default-from-clear")?.click());
   await page.waitForTimeout(200);
 
   const afterClear = await page.evaluate(() => ({

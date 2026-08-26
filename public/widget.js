@@ -48,12 +48,40 @@ async function syncWidgetSettings(settings) {
   }
 }
 
+function launchDeepLinkOpensSpecificScreen(uri) {
+  const target = parseWidgetDeepLink(uri);
+  if (!target) {
+    return false;
+  }
+  return target.type === "journey" || target.type === "home" || target.type === "paywall" || target.type === "reminders";
+}
+
+async function peekWidgetLaunchDeepLink() {
+  const plugin = getWidgetSyncPlugin();
+  if (!plugin?.peekLaunchDeepLink) {
+    return null;
+  }
+
+  try {
+    const peek = await plugin.peekLaunchDeepLink();
+    const uri = peek?.uri;
+    return uri ? String(uri) : null;
+  } catch (error) {
+    console.warn("Could not peek widget deep link", error);
+    return null;
+  }
+}
+
 function parseWidgetDeepLink(uri) {
   if (!uri) {
     return null;
   }
 
   const raw = String(uri);
+  if (/^nexttrain:\/\/reminders\/?$/i.test(raw)) {
+    return { type: "reminders" };
+  }
+
   if (/^nexttrain:\/\/nearby/i.test(raw)) {
     let departureIso = "";
     try {
@@ -92,6 +120,12 @@ async function handleWidgetDeepLink(uri) {
     await window.nextTrainApp?.enterNearbyMode?.({
       departureIso: target.departureIso || undefined,
     });
+    return;
+  }
+
+  if (target.type === "reminders") {
+    window.nextTrainApp?.prepareMainScreenFromDeepLink?.();
+    window.nextTrainLeaveReminders?.openRemindersDialog?.();
     return;
   }
 
@@ -1734,6 +1768,8 @@ window.nextTrainWidget = {
   syncWidgetSettings,
   handleWidgetDeepLink,
   consumeLaunchDeepLink: consumeWidgetLaunchDeepLink,
+  peekLaunchDeepLink: peekWidgetLaunchDeepLink,
+  launchDeepLinkOpensSpecificScreen,
   getWidgetInstanceCount,
   showWidgetCoach,
   openWidgetHelpDialog,

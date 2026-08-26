@@ -43,7 +43,9 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Shipped re-upload | **2.4.1** | **15** | `v2.4.1` | 2.4.0 closed-test re-upload (Play versionCode bump) |
 | Pin / widget QA | **2.5.0** | **16** | `v2.5.0` | Pin resolution parity, widget layout, pin-behavior QA |
 | Play hygiene | **2.5.1** | **17** | `v2.5.1` | Drop `USE_EXACT_ALARM`; closed-test upload |
-| **Shipping now** | **2.5.2** | **18** | `v2.5.2` | Leave-now alarm, cancel, on-the-way countdown |
+| Leave-now / on-the-way | **2.5.2** | **18** | `v2.5.2` | Leave-now alarm, cancel, on-the-way countdown |
+| Closed line | **2.5.4** | **20** | — | Prior closed candidate |
+| **Shipping now** | **2.5.5** | **21** | `v2.5.5` | Target-train widget/Journeys face; reminders; pin preview |
 
 Update this table when you ship.
 

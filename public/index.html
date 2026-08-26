@@ -977,28 +977,29 @@
       </div>
     </dialog>
 
-    <dialog class="menu-dialog" id="menu-dialog">
-      <div class="menu-dialog-body">
+    <dialog class="reminders-dialog" id="reminders-dialog" aria-labelledby="reminders-dialog-title">
+      <div class="reminders-dialog-body">
+        <header class="reminders-dialog-header">
+          <h2 id="reminders-dialog-title">Reminders</h2>
+          <p class="reminders-lead">We&rsquo;ll ping you when it&rsquo;s time to leave.</p>
+        </header>
 
-        <div class="menu-widget-block" id="menu-widget-block" hidden>
-          <p class="menu-section-label">Widget</p>
-          <div class="menu-section-card">
-            <button type="button" class="menu-row menu-row--nav" id="menu-widget-btn">
-              Add home screen widget
-            </button>
-            <div class="menu-row-sep" aria-hidden="true"></div>
-            <button type="button" class="menu-row menu-row--nav" id="menu-widget-appearance-btn">
-              Widget appearance
-            </button>
-          </div>
-        </div>
+        <div id="reminders-journeys-list"></div>
+        <p class="reminders-journeys-empty" id="reminders-journeys-empty" hidden>
+          Save a journey first to get leave pings.
+        </p>
+        <p class="reminders-leftovers-wrap" id="reminders-leftovers-wrap" hidden>
+          <button type="button" class="btn-secondary reminders-leftover-clear" id="reminders-clear-leftovers-btn">
+            Clear leftovers
+          </button>
+        </p>
 
         <div class="menu-pause-block" id="menu-pause-block" hidden>
           <div class="menu-section-card menu-pause-card">
             <div class="reminders-shared-option reminders-pause-option" id="leave-reminders-pause-wrap">
               <div class="reminders-shared-option-header">
                 <div class="reminders-shared-option-copy">
-                  <span class="menu-toggle-title">Pause Reminders</span>
+                  <span class="menu-toggle-title">Pause</span>
                   <p class="reminders-option-hint">Holidays, time off, or working from home.</p>
                 </div>
                 <label class="menu-toggle-switch">
@@ -1047,8 +1048,29 @@
               </div>
             </div>
             <p class="menu-pause-web-hint" id="menu-pause-web-hint" hidden>
-              Reminders are available in the Android app. Turn Remind me on for a journey under My Journeys.
+              Reminders are available in the Android app.
             </p>
+          </div>
+        </div>
+      </div>
+      <div class="reminders-dialog-footer">
+        <button type="button" class="btn-primary reminders-done-btn" id="reminders-done-btn">Done</button>
+      </div>
+    </dialog>
+
+    <dialog class="menu-dialog" id="menu-dialog">
+      <div class="menu-dialog-body">
+
+        <div class="menu-widget-block" id="menu-widget-block" hidden>
+          <p class="menu-section-label">Widget</p>
+          <div class="menu-section-card">
+            <button type="button" class="menu-row menu-row--nav" id="menu-widget-btn">
+              Add home screen widget
+            </button>
+            <div class="menu-row-sep" aria-hidden="true"></div>
+            <button type="button" class="menu-row menu-row--nav" id="menu-widget-appearance-btn">
+              Widget appearance
+            </button>
           </div>
         </div>
 
@@ -1093,6 +1115,8 @@
               </button>
             </div>
           </div>
+          <div class="menu-row-sep" aria-hidden="true"></div>
+          <button type="button" class="menu-row menu-row--nav" id="menu-reminders-btn">Reminders</button>
           <div class="menu-row-sep" aria-hidden="true"></div>
           <button type="button" class="menu-row menu-row--nav" id="menu-help-btn">Help</button>
         </nav>
@@ -1295,7 +1319,7 @@
             </summary>
             <div class="help-faq-body">
               <p>Turn on <strong>Target train</strong> and set the time. <strong>Remind me</strong> fires a <strong>Leave now</strong> alarm at leave-by time (sound + notification shade until dismissed).</p>
-              <p>Tap <strong>I’ve left</strong> for a quiet countdown while you walk to the station. Pause all reminders anytime from <strong>Menu → Pause reminders</strong>. The app picks the first train at or after your target time.</p>
+              <p>Tap <strong>I&rsquo;ve left</strong> for a quiet countdown while you walk to the station. See the next fires and pause from <strong>Menu → Reminders</strong>. The app picks the first train at or after your target time.</p>
             </div>
           </details>
 

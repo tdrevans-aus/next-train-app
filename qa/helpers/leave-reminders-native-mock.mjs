@@ -69,6 +69,29 @@ export function createLeaveRemindersNativeMock(initial = {}) {
       enabled: state.settings.enabled,
       paused: state.settings.paused,
     }),
+    getUpcoming: async () => ({
+      paused: Boolean(state.settings.paused),
+      fires: [],
+      leftovers: [],
+      firedToday: [],
+      armBlocked: !state.permissionGranted,
+      permissionGranted: state.permissionGranted,
+    }),
+    skipToday: async ({ journeyId } = {}) => {
+      state.skippedToday = [...(state.skippedToday || []), journeyId];
+      return {
+        paused: Boolean(state.settings.paused),
+        fires: [],
+        leftovers: [],
+        firedToday: journeyId ? [journeyId] : [],
+        armBlocked: !state.permissionGranted,
+      };
+    },
+    clearLeftoverAlarms: async () => ({
+      paused: Boolean(state.settings.paused),
+      fires: [],
+      leftovers: [],
+    }),
   };
 
   return {
@@ -157,6 +180,21 @@ export async function installLeaveRemindersNativeMock(page, initial = {}) {
         permissionGranted: state.permissionGranted,
         enabled: state.settings.enabled,
         paused: state.settings.paused,
+      }),
+      getUpcoming: async () => ({
+        paused: Boolean(state.settings.paused),
+        fires: [],
+        leftovers: [],
+        firedToday: [],
+        armBlocked: !state.permissionGranted,
+        permissionGranted: state.permissionGranted,
+      }),
+      skipToday: async ({ journeyId } = {}) => ({
+        paused: Boolean(state.settings.paused),
+        fires: [],
+        leftovers: [],
+        firedToday: journeyId ? [journeyId] : [],
+        armBlocked: !state.permissionGranted,
       }),
     };
 

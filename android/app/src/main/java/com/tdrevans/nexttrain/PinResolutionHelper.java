@@ -106,17 +106,21 @@ public final class PinResolutionHelper {
 
     String preferredTargetDeparture = null;
     if ("journey".equals(mode) && journeyClean != null && !JourneySelector.isRouteJourney(journeyClean)) {
-      if (outsideActiveDay) {
+      if (outsideActiveDay || !insideActiveWindow) {
         preferredTargetDeparture =
           resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
-      } else if (insideActiveWindow) {
+      } else {
         preferredTargetDeparture =
           resolveJourneyPreferredTargetDeparture(payload, journeyClean, clock);
-      } else if (result.trueNextDeparture == null) {
-        preferredTargetDeparture =
-          resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
       }
     }
+
+    boolean preferredTargetIsToday =
+      preferredTargetDeparture != null
+        && clock.perthDateKey.equals(
+          localDateKeyFromEpochMs(PerthTime.epochMillisFromIso(preferredTargetDeparture))
+        );
+    boolean dismissalHidesTarget = result.isPinDismissedToday && preferredTargetIsToday;
 
     int targetSkipIndex = indexOfDeparture(payload, preferredTargetDeparture);
     boolean isBrowsingLiveBoard =
@@ -152,6 +156,17 @@ public final class PinResolutionHelper {
       } else {
         result.heroDeparture = result.trueNextDeparture;
       }
+    } else if (
+      "journey".equals(mode)
+        && journeyClean != null
+        && CommuteSchedule.preferredMinutesForLiveGlance(journeyClean) >= 0
+        && !result.isOverrideActiveToday
+        && !dismissalHidesTarget
+        && !isSkipPreview
+        && !isBrowsingLiveBoard
+    ) {
+      result.heroDeparture =
+        activeTargetDeparture != null ? activeTargetDeparture : preferredTargetDeparture;
     } else if (isSkipPreview) {
       result.heroDeparture = skippedHeroDeparture;
     } else {
@@ -531,10 +546,23 @@ public final class PinResolutionHelper {
     JSONObject journey,
     Clock clock
   ) throws Exception {
+    return resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journey, clock, true);
+  }
+
+  private static String resolveJourneyPreferredTargetDepartureOnRemindDays(
+    JSONObject payload,
+    JSONObject journey,
+    Clock clock,
+    boolean skipTodaysPostTargetTrips
+  ) throws Exception {
     int preferredMinutes = CommuteSchedule.preferredMinutesForLiveGlance(journey);
     if (preferredMinutes < 0) {
       return null;
     }
+
+    boolean targetPassedToday =
+      skipTodaysPostTargetTrips && PerthTime.minutesSinceMidnight(clock.nowMs) > preferredMinutes;
+    String todayDateKey = clock.perthDateKey;
 
     JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
     for (int index = 0; index < upcoming.length(); index += 1) {
@@ -553,6 +581,9 @@ public final class PinResolutionHelper {
       if (!tripMatchesJourneyRemindDay(trip, journey)) {
         continue;
       }
+      if (targetPassedToday && todayDateKey.equals(localDateKeyFromEpochMs(departureMs))) {
+        continue;
+      }
       int tripMinutes = PerthTime.minutesFromIso(departureIso);
       if (tripMinutes < preferredMinutes) {
         continue;
@@ -563,16 +594,82 @@ public final class PinResolutionHelper {
     return null;
   }
 
+  /**
+   * Departure ISO for leave reminders / commute strip — matches pin-state target resolution,
+   * not naive clock-minute matching on tonight's board.
+   */
+  static String resolveReminderTargetDeparture(
+    JSONObject payload,
+    JSONObject journey,
+    Clock clock
+  ) throws Exception {
+    if (payload == null || journey == null || clock == null) {
+      return null;
+    }
+
+    JSONObject journeyClean = sanitizeJourneyPinFields(journey, clock);
+    if (journeyClean == null) {
+      return null;
+    }
+
+    if (isJourneyOverrideActiveToday(journeyClean, clock)) {
+      String overrideIso = journeyClean.optString("journeyPinOverrideIso", "");
+      JSONObject overrideTrip = JourneyPinHelper.findTripByDeparture(
+        CommuteSchedule.collectUpcomingTrips(payload),
+        overrideIso
+      );
+      if (overrideTrip != null && !tripHasDeparted(overrideTrip, clock)) {
+        return CommuteSchedule.tripDepartureIso(overrideTrip);
+      }
+      return null;
+    }
+
+    if (isJourneyPinDismissedToday(journeyClean, clock)) {
+      return resolveTrueNextDeparture(payload, clock);
+    }
+
+    if (JourneySelector.isRouteJourney(journeyClean)) {
+      return null;
+    }
+
+    int preferredMinutes = CommuteSchedule.preferredMinutesForLiveGlance(journeyClean);
+    if (preferredMinutes < 0) {
+      return resolveTrueNextDeparture(payload, clock);
+    }
+
+    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+    if (matchesHoursWindow(journeyClean, nowMinutes)) {
+      return resolveJourneyPreferredTargetDeparture(payload, journeyClean, clock);
+    }
+
+    return resolveJourneyPreferredTargetDepartureOnRemindDays(
+      payload,
+      journeyClean,
+      clock,
+      true
+    );
+  }
+
+  private static String localDateKeyFromEpochMs(long epochMs) {
+    return java.time.ZonedDateTime
+      .ofInstant(java.time.Instant.ofEpochMilli(epochMs), PerthTime.zone())
+      .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+  }
+
   private static boolean shouldShowPreviewHero(JSONObject journey, Clock clock) {
     if (journey == null || JourneySelector.isRouteJourney(journey)) {
       return false;
     }
-    if (CommuteSchedule.preferredMinutesForLiveGlance(journey) < 0) {
+    int preferredMinutes = CommuteSchedule.preferredMinutesForLiveGlance(journey);
+    if (preferredMinutes < 0) {
       return false;
     }
     if (journeyMatchesActiveDay(journey, clock)) {
       int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
-      return !matchesHoursWindow(journey, nowMinutes);
+      if (!matchesHoursWindow(journey, nowMinutes)) {
+        return true;
+      }
+      return nowMinutes >= preferredMinutes;
     }
     return true;
   }
@@ -612,26 +709,9 @@ public final class PinResolutionHelper {
     return CommuteSchedule.tripDepartureIso(trip);
   }
 
-  /** Hours-only Active window — remind days checked separately (web journeyMatchesSchedule). */
+  /** Active window — remind days checked separately (web journeyMatchesSchedule). */
   private static boolean matchesHoursWindow(JSONObject journey, int minutes) {
-    if (!JourneySelector.hasWindow(journey)) {
-      return false;
-    }
-    int from = PerthTime.parseClockMinutes(journey.optString("defaultFrom", "00:00"));
-    int until = PerthTime.parseClockMinutes(journey.optString("defaultUntil", "23:59"));
-    if (from < 0) {
-      from = 0;
-    }
-    if (until < 0) {
-      until = 24 * 60 - 1;
-    }
-    if (from == until) {
-      return true;
-    }
-    if (from < until) {
-      return minutes >= from && minutes < until;
-    }
-    return minutes >= from || minutes < until;
+    return JourneySelector.matchesTime(journey, minutes);
   }
 
   /** Web pin-state default: Mon–Fri when remindDays is empty. */

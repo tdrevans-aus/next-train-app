@@ -6,4 +6,7 @@ appId: com.tdrevans.nexttrain
     timeout: 60000
 - tapOn: "Menu"
 - assertVisible: "Done"
-- assertNotVisible: "Reminder settings"
+- tapOn: "Reminders"
+- assertVisible: "time to leave"
+- assertNotVisible: "Upcoming"
+- assertVisible: "Done"

@@ -69,7 +69,7 @@ public final class CommuteSchedulePreview {
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", false);
     snapshot.put("outsideHoursIdle", true);
-    snapshot.put("openNearbyOnTap", true);
+    snapshot.put("openNearbyOnTap", false);
     snapshot.put("nearbyFallback", false);
     snapshot.put("journeyId", preview.journey.optString("id", "nearby"));
     String route = WidgetDataService.formatRoute(preview.journey);

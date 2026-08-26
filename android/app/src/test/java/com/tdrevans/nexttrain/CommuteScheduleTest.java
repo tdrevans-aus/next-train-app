@@ -105,7 +105,7 @@ public class CommuteScheduleTest {
     assertEquals("Edgewater → Perth", snapshot.optString("route"));
     assertEquals("Edgewater → Perth", snapshot.optString("stationLabel"));
     assertEquals("", snapshot.optString("departureIso"));
-    assertTrue(snapshot.optBoolean("openNearbyOnTap"));
+    assertFalse(snapshot.optBoolean("openNearbyOnTap"));
     assertEquals("", snapshot.optString("updatedLine"));
   }
 
@@ -789,6 +789,33 @@ public class CommuteScheduleTest {
     assertEquals("", snapshot.optString("secondary"));
     assertEquals("", snapshot.optString("route"));
     assertFalse(snapshot.optBoolean("leaveByArmed"));
+  }
+
+  @Test
+  public void toWidgetSnapshot_journeyTargetWithoutLiveTripShowsTargetPreview() throws Exception {
+    CommuteSchedule.Result result = new CommuteSchedule.Result();
+    JSONObject journey = new JSONObject();
+    journey.put("kind", "journey");
+    journey.put("id", "j-morning");
+    journey.put("name", "Morning into town");
+    journey.put("station", "Edgewater Stn");
+    journey.put("direction", "Perth");
+    journey.put("preferredTrainTime", "07:30");
+    JSONArray remindDays = new JSONArray();
+    for (int day = 1; day <= 7; day += 1) {
+      remindDays.put(day);
+    }
+    journey.put("remindDays", remindDays);
+    result.journey = journey;
+    result.journeyId = "j-morning";
+    result.settings = new JSONObject().put("journeys", new JSONArray().put(journey));
+    result.payload = new JSONObject().put("upcoming", new JSONArray());
+    result.next = null;
+
+    JSONObject snapshot = CommuteSchedule.toWidgetSnapshot(result);
+
+    assertFalse(WidgetUiBuilder.UNSET_PIN_PRIMARY.equals(snapshot.optString("primary")));
+    assertEquals("Target Train", snapshot.optString("label"));
   }
 
   @Test

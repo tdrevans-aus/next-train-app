@@ -25,6 +25,11 @@ public final class CommuteScheduleSnapshot {
     }
 
     if (result.next == null) {
+      if (result.journey != null
+        && JourneySelector.isJourneyKind(result.journey)
+        && NextCommutePreview.hasTargetTrainClock(result.journey)) {
+        return targetPreviewSnapshot(result.journey);
+      }
       JSONObject snapshot = new JSONObject();
       snapshot.put("empty", false);
       snapshot.put("journeyId", result.journeyId);
@@ -50,6 +55,30 @@ public final class CommuteScheduleSnapshot {
     }
 
     return buildLiveSnapshot(result);
+  }
+
+  /** Target clock when the commute is in-band but the 7:30 train is not on the board yet. */
+  private static JSONObject targetPreviewSnapshot(JSONObject journey) throws Exception {
+    JSONObject snapshot = new JSONObject();
+    String route = WidgetDataService.formatRoute(journey);
+    int preferredMinutes = PerthTime.parseClockMinutes(journey.optString("preferredTrainTime", ""));
+    snapshot.put("empty", false);
+    snapshot.put("outsideHoursIdle", true);
+    snapshot.put("journeyId", journey.optString("id", ""));
+    snapshot.put("route", route);
+    snapshot.put("stationLabel", route);
+    snapshot.put("journeyName", journey.optString("name", ""));
+    snapshot.put("label", NextCommutePreview.idleWidgetLabel(journey));
+    snapshot.put("primary", NextCommutePreview.formatClock(preferredMinutes));
+    snapshot.put("trainClock", "Today");
+    snapshot.put("secondary", "");
+    snapshot.put("leaveByArmed", false);
+    snapshot.put("updatedLine", "");
+    snapshot.put("statusCrumb", "");
+    snapshot.put("stale", false);
+    snapshot.put("urgent", false);
+    snapshot.put("late", false);
+    return snapshot;
   }
 
   private static JSONObject buildLiveSnapshot(CommuteSchedule.Result result) throws Exception {

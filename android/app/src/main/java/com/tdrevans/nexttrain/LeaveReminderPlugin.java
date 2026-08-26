@@ -264,10 +264,9 @@ public class LeaveReminderPlugin extends Plugin {
         CommuteRefreshService.refreshAll(getContext());
       }
       JSObject result = jsonToJs(LeaveReminderScheduler.describeSchedule(getContext()));
-      boolean permissionGranted = !needsNotificationPermission();
-      boolean exactAlarmsGranted = canScheduleExactAlarms();
-      result.put("permissionGranted", permissionGranted);
-      result.put("exactAlarmsGranted", exactAlarmsGranted);
+      applyArmFlags(result);
+      boolean permissionGranted = result.optBoolean("permissionGranted", false);
+      boolean exactAlarmsGranted = result.optBoolean("exactAlarmsGranted", false);
       if (
         !permissionGranted &&
         result.optBoolean("enabled", false) &&
@@ -296,6 +295,49 @@ public class LeaveReminderPlugin extends Plugin {
   @PluginMethod
   public void getScheduleDebug(PluginCall call) {
     getSchedule(call);
+  }
+
+  @PluginMethod
+  public void getUpcoming(PluginCall call) {
+    try {
+      JSObject result = jsonToJs(LeaveReminderScheduler.describeUpcoming(getContext()));
+      applyArmFlags(result);
+      call.resolve(result);
+    } catch (Exception error) {
+      JSObject result = new JSObject();
+      result.put("paused", false);
+      result.put("fires", new com.getcapacitor.JSArray());
+      result.put("leftovers", new com.getcapacitor.JSArray());
+      result.put("armBlocked", true);
+      call.resolve(result);
+    }
+  }
+
+  @PluginMethod
+  public void skipToday(PluginCall call) {
+    String journeyId = call.getString("journeyId", "");
+    if (journeyId == null || journeyId.isEmpty()) {
+      call.reject("journeyId required");
+      return;
+    }
+    LeaveReminderScheduler.skipToday(getContext(), journeyId);
+    try {
+      JSObject result = jsonToJs(LeaveReminderScheduler.describeUpcoming(getContext()));
+      applyArmFlags(result);
+      call.resolve(result);
+    } catch (Exception error) {
+      call.resolve();
+    }
+  }
+
+  @PluginMethod
+  public void clearLeftoverAlarms(PluginCall call) {
+    LeaveReminderScheduler.clearLeftoverAlarms(getContext());
+    try {
+      call.resolve(jsonToJs(LeaveReminderScheduler.describeUpcoming(getContext())));
+    } catch (Exception error) {
+      call.resolve();
+    }
   }
 
   @PluginMethod
@@ -368,6 +410,22 @@ public class LeaveReminderPlugin extends Plugin {
     );
   }
 
+  private void applyArmFlags(JSObject result) {
+    boolean permissionGranted = !needsNotificationPermission();
+    boolean exactAlarmsGranted = canScheduleExactAlarms();
+    result.put("permissionGranted", permissionGranted);
+    result.put("exactAlarmsGranted", exactAlarmsGranted);
+    boolean scheduled = result.optBoolean("scheduled", false);
+    if (!result.has("scheduled")) {
+      try {
+        scheduled = LeaveReminderScheduler.describeSchedule(getContext()).optBoolean("scheduled", false);
+      } catch (Exception ignored) {
+        scheduled = false;
+      }
+    }
+    result.put("armBlocked", !permissionGranted || (!exactAlarmsGranted && !scheduled));
+  }
+
   private boolean isDebuggable() {
     return (getContext().getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
   }
@@ -402,6 +460,18 @@ public class LeaveReminderPlugin extends Plugin {
       Object nested = value.get(key);
       if (nested instanceof JSONObject) {
         result.put(key, jsonToJs((JSONObject) nested));
+      } else if (nested instanceof org.json.JSONArray) {
+        com.getcapacitor.JSArray array = new com.getcapacitor.JSArray();
+        org.json.JSONArray source = (org.json.JSONArray) nested;
+        for (int index = 0; index < source.length(); index += 1) {
+          Object item = source.get(index);
+          if (item instanceof JSONObject) {
+            array.put(jsonToJs((JSONObject) item));
+          } else {
+            array.put(item);
+          }
+        }
+        result.put(key, array);
       } else {
         result.put(key, nested);
       }

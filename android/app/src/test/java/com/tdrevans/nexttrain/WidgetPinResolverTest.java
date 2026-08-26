@@ -103,6 +103,8 @@ public class WidgetPinResolverTest {
 
     JSONObject preferred = new JSONObject();
     preferred.put("preferredTrainTime", "07:30");
+    preferred.put("defaultFrom", "00:00");
+    preferred.put("defaultUntil", "23:59");
     assertTrue(JourneyPinHelper.isJourneyPinnedToday(preferred));
 
     JSONObject dismissed = new JSONObject();

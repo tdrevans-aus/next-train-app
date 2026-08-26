@@ -408,10 +408,33 @@ function initLeaveReminderUi() {
     await updateRemindersDialogUi(settings, schedule);
   });
 
+  document.getElementById("reminders-clear-leftovers-btn")?.addEventListener("click", async () => {
+    await clearLeftoverAlarms();
+  });
+
   document.getElementById("leave-reminder-turn-on-btn")?.addEventListener("click", async () => {
     hideLeaveReminderCoach();
     window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
-    window.nextTrainApp?.openJourneys?.();
+    openRemindersDialog();
+  });
+
+  document.getElementById("menu-reminders-btn")?.addEventListener("click", () => {
+    remindersOpenedFromMenu = true;
+    window.nextTrainApp?.closeMenuDialogOnly?.();
+    openRemindersDialog();
+  });
+
+  document.getElementById("reminders-done-btn")?.addEventListener("click", () => {
+    const reopen = remindersOpenedFromMenu;
+    remindersOpenedFromMenu = false;
+    closeRemindersDialog({ reopenMenu: reopen });
+  });
+
+  document.getElementById("reminders-dialog")?.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    const reopen = remindersOpenedFromMenu;
+    remindersOpenedFromMenu = false;
+    closeRemindersDialog({ reopenMenu: reopen });
   });
 
   document.getElementById("leave-reminder-later-btn")?.addEventListener("click", () => {
@@ -610,6 +633,568 @@ function getConfiguredJourneys() {
   return window.nextTrainApp?.getConfiguredJourneys?.() ?? [];
 }
 
+function getJourneyKindJourneys() {
+  const journeys = getConfiguredJourneys();
+  return journeys.filter((journey) => {
+    if (typeof window.nextTrainApp?.isRouteJourney === "function") {
+      return !window.nextTrainApp.isRouteJourney(journey);
+    }
+    return journey?.kind !== "route";
+  });
+}
+
+function formatClockMinutes(minutes) {
+  const wrapped = ((minutes % (24 * 60)) + 24 * 60) % (24 * 60);
+  const hour = Math.floor(wrapped / 60);
+  const minute = wrapped % 60;
+  return `${hour}:${String(minute).padStart(2, "0")}`;
+}
+
+function parsePreferredMinutes(journey) {
+  const preferred = journey?.preferredTrainTime || journey?.defaultFrom || "";
+  const parts = String(preferred).split(":");
+  if (parts.length < 2) {
+    return -1;
+  }
+  const hour = Number(parts[0]);
+  const minute = Number(parts[1]);
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
+    return -1;
+  }
+  return hour * 60 + minute;
+}
+
+function journeyRemindDays(journey) {
+  const days = journey?.remindDays;
+  if (!Array.isArray(days) || days.length === 0) {
+    return null;
+  }
+  return days.map(Number);
+}
+
+function isJourneyRemindDay(journey, dayOfWeekIso) {
+  const days = journeyRemindDays(journey);
+  if (!days) {
+    return true;
+  }
+  return days.includes(dayOfWeekIso);
+}
+
+function weekdayName(dayOfWeekIso) {
+  return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayOfWeekIso - 1] || "";
+}
+
+function nextLeaveForJourney(journey, nowMinutes, dayOfWeekIso, { skipToday = false } = {}) {
+  if (!journey?.remindMe || journey.useLeaveBefore === false) {
+    return null;
+  }
+  const trainMinutes = parsePreferredMinutes(journey);
+  if (trainMinutes < 0) {
+    return null;
+  }
+  const leaveBefore = Number(journey.leaveBeforeMinutes) || 10;
+  let leaveByMinutes = trainMinutes - leaveBefore;
+  if (leaveByMinutes < 0) {
+    leaveByMinutes = 0;
+  }
+
+  const startOffset = skipToday ? 1 : 0;
+  for (let dayOffset = startOffset; dayOffset <= 7; dayOffset += 1) {
+    const day = ((dayOfWeekIso - 1 + dayOffset) % 7) + 1;
+    if (!isJourneyRemindDay(journey, day)) {
+      continue;
+    }
+    if (dayOffset === 0 && leaveByMinutes <= nowMinutes) {
+      continue;
+    }
+    const clock = formatClockMinutes(leaveByMinutes);
+    const trainClock = formatClockMinutes(trainMinutes);
+    if (skipToday) {
+      return {
+        journeyId: journey.id,
+        notifyAtClock: clock,
+        trainTime: trainClock,
+        sortKey: dayOffset * 24 * 60 + leaveByMinutes,
+        doneToday: true,
+        subtitle: `Done today · next ${weekdayName(day)} ${clock}`,
+      };
+    }
+    const dayWord = dayOffset === 0 ? "today" : weekdayName(day);
+    return {
+      journeyId: journey.id,
+      notifyAtClock: clock,
+      trainTime: trainClock,
+      sortKey: dayOffset * 24 * 60 + leaveByMinutes,
+      subtitle: `Leave ${dayWord} ${clock} for the ${trainClock}`,
+    };
+  }
+  return null;
+}
+
+function skipTodayStorageKey(journeyId) {
+  return `nextTrainSkipToday:${journeyId}:${getPerthDateKey()}`;
+}
+
+function isSkippedTodayLocal(journeyId) {
+  if (!journeyId) {
+    return false;
+  }
+  try {
+    return localStorage.getItem(skipTodayStorageKey(journeyId)) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markSkippedTodayLocal(journeyId) {
+  if (!journeyId) {
+    return;
+  }
+  try {
+    localStorage.setItem(skipTodayStorageKey(journeyId), "1");
+  } catch {
+    // ignore
+  }
+}
+
+function isJourneyDoneToday(journeyId, upcoming) {
+  if (!journeyId) {
+    return false;
+  }
+  if ((upcoming?.firedToday ?? []).includes(journeyId)) {
+    return true;
+  }
+  const fire = fireForJourney(upcoming, journeyId);
+  if (fire?.doneToday) {
+    return true;
+  }
+  return isSkippedTodayLocal(journeyId);
+}
+
+function fireForJourney(upcoming, journeyId) {
+  return (upcoming?.fires ?? []).find((fire) => fire?.journeyId === journeyId) ?? null;
+}
+
+function remindersArmBlocked(upcoming) {
+  if (typeof upcoming?.armBlocked === "boolean") {
+    return upcoming.armBlocked;
+  }
+  if (typeof Notification !== "undefined" && Notification.permission === "denied") {
+    return true;
+  }
+  return false;
+}
+
+function journeyLeaveSubtitle(journey, { paused = false, upcoming = null } = {}) {
+  if (paused && journey?.remindMe) {
+    return "Paused";
+  }
+  if (!journey?.remindMe) {
+    return "Off";
+  }
+  if (remindersArmBlocked(upcoming)) {
+    return "Notifications blocked";
+  }
+  const fire = fireForJourney(upcoming, journey.id);
+  if (fire?.subtitle) {
+    return fire.subtitle;
+  }
+  const nowMinutes =
+    window.nextTrainApp?.getPerthMinutesSinceMidnight?.() ??
+    new Date().getHours() * 60 + new Date().getMinutes();
+  const dayOfWeekIso = window.nextTrainApp?.getPerthDayOfWeekIso?.() ?? ((new Date().getDay() + 6) % 7) + 1;
+  const skipToday = isJourneyDoneToday(journey.id, upcoming);
+  return nextLeaveForJourney(journey, nowMinutes, dayOfWeekIso, { skipToday })?.subtitle ||
+    (skipToday ? "Done today" : "Off");
+}
+
+function formatStationShort(station) {
+  return String(station || "")
+    .replace(/\s+Stn$/i, "")
+    .trim();
+}
+
+function clocksFromDepartureIso(departureIso, leaveBeforeMinutes) {
+  const departureMs = Date.parse(departureIso ?? "");
+  if (!Number.isFinite(departureMs)) {
+    return null;
+  }
+  const leaveBefore = Number(leaveBeforeMinutes) || 10;
+  const leaveByMs = departureMs - leaveBefore * 60_000;
+  const leaveClock = formatClockFromMs(leaveByMs);
+  const trainClock = formatClockFromMs(departureMs);
+  if (!leaveClock || !trainClock) {
+    return null;
+  }
+  return {
+    leaveClock,
+    trainClock,
+    sortKey: leaveClockToSortKey(leaveByMs),
+    subtitle: `Leave today ${leaveClock} for the ${trainClock}`,
+  };
+}
+
+function formatClockFromMs(epochMs) {
+  if (!Number.isFinite(epochMs)) {
+    return "";
+  }
+  try {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: window.NextTrainCitySession?.readActiveTimeZone?.() || "Australia/Perth",
+      hour: "numeric",
+      minute: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(new Date(epochMs));
+    const hour = Number(parts.find((part) => part.type === "hour")?.value);
+    const minute = Number(parts.find((part) => part.type === "minute")?.value);
+    if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
+      return "";
+    }
+    return formatClockMinutes(hour * 60 + minute);
+  } catch {
+    return "";
+  }
+}
+
+function leaveClockToSortKey(leaveByMs) {
+  const clock = formatClockFromMs(leaveByMs);
+  const parts = String(clock).split(":");
+  const hour = Number(parts[0]);
+  const minute = Number(parts[1]);
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
+    return 0;
+  }
+  return hour * 60 + minute;
+}
+
+function isSettingsPinHolding(pin) {
+  if (typeof window.nextTrainApp?.isNearbyPinSettingsHolding === "function") {
+    return window.nextTrainApp.isNearbyPinSettingsHolding(pin);
+  }
+  if (!pin?.departureIso) {
+    return false;
+  }
+  const departureMs = Date.parse(pin.departureIso);
+  if (!Number.isFinite(departureMs)) {
+    return false;
+  }
+  const holdUntil =
+    typeof pin.holdingUntilMs === "number" ? pin.holdingUntilMs : departureMs + 60_000;
+  return Date.now() < holdUntil;
+}
+
+function getActivePinReminder() {
+  const settings = readAppSettings();
+  const nearby = settings?.nearbyPin;
+  if (nearby?.notifyMe && isSettingsPinHolding(nearby)) {
+    const clocks = clocksFromDepartureIso(
+      nearby.departureIso,
+      settings.nearbyLeaveBeforeMinutes || 10
+    );
+    if (clocks) {
+      return {
+        kind: "nearby",
+        journeyId: "nearby-pin",
+        name: `Near me · ${formatStationShort(nearby.station)}`,
+        remindOn: true,
+        ...clocks,
+      };
+    }
+  }
+
+  const routes = getConfiguredJourneys().filter((journey) =>
+    window.nextTrainApp?.isRouteJourney?.(journey)
+  );
+  for (const journey of routes) {
+    if (journey?.pinNotifyMe !== true) {
+      continue;
+    }
+    const overrideOn =
+      typeof window.nextTrainApp?.isJourneyOverrideActiveToday === "function"
+        ? window.nextTrainApp.isJourneyOverrideActiveToday(journey)
+        : Boolean(journey.journeyPinOverrideIso);
+    if (!overrideOn) {
+      continue;
+    }
+    const leaveBefore =
+      window.nextTrainApp?.getEffectiveLeaveBeforeMinutes?.(journey) ||
+      journey.leaveBeforeMinutes ||
+      settings?.nearbyLeaveBeforeMinutes ||
+      10;
+    const clocks = clocksFromDepartureIso(journey.journeyPinOverrideIso, leaveBefore);
+    if (!clocks) {
+      continue;
+    }
+    return {
+      kind: "route",
+      journeyId: journey.id,
+      name: window.nextTrainApp?.formatJourneyRoute?.(journey) || journey.name || "Route",
+      remindOn: true,
+      ...clocks,
+    };
+  }
+  return null;
+}
+
+async function loadUpcomingSchedule() {
+  const plugin = getLeaveRemindersPlugin();
+  if (plugin?.getUpcoming) {
+    try {
+      return await plugin.getUpcoming();
+    } catch (error) {
+      console.warn("Could not load upcoming reminders", error);
+    }
+  }
+  const settings = await loadReminderSettings();
+  return { paused: Boolean(settings?.paused), fires: [], leftovers: [] };
+}
+
+function renderLeftoversLine(upcoming) {
+  const wrap = document.getElementById("reminders-leftovers-wrap");
+  if (!wrap) {
+    return;
+  }
+  wrap.hidden = !((upcoming?.leftovers ?? []).length > 0);
+}
+
+async function clearLeftoverAlarms() {
+  const plugin = getLeaveRemindersPlugin();
+  try {
+    if (plugin?.clearLeftoverAlarms) {
+      await plugin.clearLeftoverAlarms();
+    } else {
+      plugin?.reschedule?.();
+    }
+  } catch (error) {
+    console.warn("Could not clear leftover reminders", error);
+  }
+  const upcoming = await loadUpcomingSchedule();
+  const settings = await loadReminderSettings();
+  await updateRemindersDialogUi(settings, null, upcoming);
+}
+
+function renderRemindersJourneyList(paused, upcoming) {
+  const list = document.getElementById("reminders-journeys-list");
+  const empty = document.getElementById("reminders-journeys-empty");
+  if (!list) {
+    return;
+  }
+
+  const journeys = getJourneyKindJourneys();
+  const pin = getActivePinReminder();
+  list.innerHTML = "";
+  if (empty) {
+    empty.hidden = journeys.length > 0 || Boolean(pin);
+  }
+
+  const nowMinutes =
+    window.nextTrainApp?.getPerthMinutesSinceMidnight?.() ??
+    new Date().getHours() * 60 + new Date().getMinutes();
+  const dayOfWeekIso = window.nextTrainApp?.getPerthDayOfWeekIso?.() ?? ((new Date().getDay() + 6) % 7) + 1;
+  const soonestJourneySort = journeys.reduce((min, journey) => {
+    const skipToday = isJourneyDoneToday(journey.id, upcoming);
+    const next = nextLeaveForJourney(journey, nowMinutes, dayOfWeekIso, { skipToday });
+    if (!next) {
+      return min;
+    }
+    return Math.min(min, next.sortKey);
+  }, Number.POSITIVE_INFINITY);
+  const pinFirst = Boolean(pin && pin.sortKey < soonestJourneySort);
+
+  if (pin && pinFirst) {
+    list.append(buildRemindersPinRow(pin, paused, upcoming));
+  }
+  for (const journey of journeys) {
+    list.append(buildRemindersJourneyRow(journey, paused, upcoming));
+  }
+  if (pin && !pinFirst) {
+    list.append(buildRemindersPinRow(pin, paused, upcoming));
+  }
+}
+
+function pinLeaveSubtitle(pin, paused, upcoming) {
+  if (paused) {
+    return "Paused";
+  }
+  if (remindersArmBlocked(upcoming) && pin?.remindOn) {
+    return "Notifications blocked";
+  }
+  const fire = fireForJourney(upcoming, pin?.journeyId);
+  if (fire?.subtitle) {
+    return fire.subtitle;
+  }
+  if (isJourneyDoneToday(pin?.journeyId, upcoming)) {
+    return "Done today";
+  }
+  return pin?.subtitle || "Off";
+}
+
+function buildRemindersJourneyRow(journey, paused, upcoming) {
+  const remindOn = Boolean(journey.remindMe);
+  const doneToday = isJourneyDoneToday(journey.id, upcoming);
+  return buildRemindersRow({
+    name: journey.name || window.nextTrainApp?.formatJourneyRoute?.(journey) || "Journey",
+    subtitle: journeyLeaveSubtitle(journey, { paused, upcoming }),
+    remindOn,
+    showSkipToday: remindOn && !paused && !remindersArmBlocked(upcoming) && !doneToday,
+    onOpen: () => openJourneyFromReminders(journey.id),
+    onSkipToday: () => skipReminderToday(journey.id),
+    onToggle: async (on) => {
+      if (on && !journey.preferredTrainTime) {
+        openJourneyFromReminders(journey.id);
+        return false;
+      }
+      if (on) {
+        const enabled = await enableLeaveReminders({ userInitiated: true });
+        if (enabled?.permissionGranted === false) {
+          return false;
+        }
+      }
+      window.nextTrainApp?.persistReminderJourneys?.([
+        {
+          id: journey.id,
+          remindMe: on,
+          preferredTrainTime: journey.preferredTrainTime || "",
+        },
+      ]);
+      getLeaveRemindersPlugin()?.reschedule?.();
+      return true;
+    },
+  });
+}
+
+function buildRemindersPinRow(pin, paused, upcoming) {
+  const doneToday = isJourneyDoneToday(pin.journeyId, upcoming);
+  return buildRemindersRow({
+    name: pin.name,
+    subtitle: pinLeaveSubtitle(pin, paused, upcoming),
+    remindOn: pin.remindOn,
+    showSkipToday: pin.remindOn && !paused && !remindersArmBlocked(upcoming) && !doneToday,
+    onOpen: () => openPinFromReminders(pin),
+    onSkipToday: () => skipReminderToday(pin.journeyId),
+    onToggle: async (on) => {
+      if (on) {
+        const enabled = await enableLeaveReminders({ userInitiated: true });
+        if (enabled?.permissionGranted === false) {
+          return false;
+        }
+      }
+      if (pin.kind === "nearby") {
+        const saved = await window.nextTrainApp?.setNearbyPinNotifyMe?.(on);
+        if (saved === false) {
+          return false;
+        }
+      } else if (pin.journeyId) {
+        window.nextTrainApp?.persistRoutePinSettings?.(pin.journeyId, { pinNotifyMe: on });
+      }
+      getLeaveRemindersPlugin()?.reschedule?.();
+      return true;
+    },
+  });
+}
+
+async function skipReminderToday(journeyId) {
+  markSkippedTodayLocal(journeyId);
+  const plugin = getLeaveRemindersPlugin();
+  try {
+    if (plugin?.skipToday) {
+      await plugin.skipToday({ journeyId });
+    } else {
+      plugin?.reschedule?.();
+    }
+  } catch (error) {
+    console.warn("Could not skip today's reminder", error);
+  }
+  const upcoming = await loadUpcomingSchedule();
+  const settings = await loadReminderSettings();
+  await updateRemindersDialogUi(settings, null, upcoming);
+}
+
+function buildRemindersRow({ name, subtitle, remindOn, showSkipToday, onOpen, onSkipToday, onToggle }) {
+  const row = document.createElement("div");
+  row.className = "reminders-journey-row";
+
+  const stack = document.createElement("div");
+  stack.className = "reminders-journey-stack";
+
+  const main = document.createElement("button");
+  main.type = "button";
+  main.className = "reminders-journey-main";
+  const nameEl = document.createElement("span");
+  nameEl.className = "reminders-journey-name";
+  nameEl.textContent = name;
+  const sub = document.createElement("span");
+  sub.className = "reminders-journey-sub";
+  sub.textContent = subtitle;
+  main.append(nameEl, sub);
+  main.addEventListener("click", () => {
+    onOpen?.();
+  });
+  stack.append(main);
+
+  if (showSkipToday) {
+    const skip = document.createElement("button");
+    skip.type = "button";
+    skip.className = "reminders-skip-today";
+    skip.textContent = "Skip today";
+    skip.addEventListener("click", (event) => {
+      event.stopPropagation();
+      onSkipToday?.();
+    });
+    stack.append(skip);
+  }
+
+  const label = document.createElement("label");
+  label.className = "menu-toggle-switch";
+  label.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.checked = Boolean(remindOn);
+  input.setAttribute("aria-label", "Remind me");
+  input.addEventListener("change", async () => {
+    const next = input.checked;
+    const ok = await onToggle?.(next);
+    if (ok === false) {
+      input.checked = !next;
+      return;
+    }
+    const upcoming = await loadUpcomingSchedule();
+    const settings = await loadReminderSettings();
+    await updateRemindersDialogUi(settings, null, upcoming);
+  });
+  const track = document.createElement("span");
+  track.className = "menu-toggle-track";
+  track.setAttribute("aria-hidden", "true");
+  label.append(input, track);
+  row.append(stack, label);
+  return row;
+}
+
+function openPinFromReminders(pin) {
+  closeRemindersDialog({ reopenMenu: false });
+  window.nextTrainApp?.closeMenuDialogOnly?.();
+  if (pin?.kind === "nearby") {
+    const station = readAppSettings()?.nearbyPin?.station;
+    void window.nextTrainApp?.enterNearbyMode?.(station ? { station } : {});
+    return;
+  }
+  if (pin?.journeyId) {
+    window.nextTrainApp?.switchJourney?.(pin.journeyId);
+  }
+}
+
+function openJourneyFromReminders(journeyId) {
+  closeRemindersDialog({ reopenMenu: false });
+  window.nextTrainApp?.closeMenuDialogOnly?.();
+  if (journeyId) {
+    window.nextTrainApp?.openJourneyDetail?.(journeyId);
+  }
+}
+
+let remindersOpenedFromMenu = false;
+
 function readAppSettings() {
   try {
     return window.settings ?? window.nextTrainApp?.getSettings?.() ?? null;
@@ -774,7 +1359,7 @@ async function refreshMenuPauseUi() {
     webHint.hidden = true;
   }
 
-  if (!deriveReminderEnabled()) {
+  if (!getJourneyKindJourneys().length && !getActivePinReminder()) {
     block.hidden = true;
     return null;
   }
@@ -800,10 +1385,12 @@ function openMyJourneysFromReminders() {
   window.nextTrainApp?.openJourneys?.();
 }
 
-async function updateRemindersDialogUi(settings, schedule) {
+async function updateRemindersDialogUi(settings, schedule, upcoming) {
   updateNudgeEarlyUi(settings);
   updatePauseUi(settings);
   updateReminderScheduleLine(schedule, settings);
+  renderRemindersJourneyList(Boolean(settings?.paused || upcoming?.paused), upcoming);
+  renderLeftoversLine(upcoming ?? (await loadUpcomingSchedule()));
   await refreshMenuPauseUi();
 }
 
@@ -860,6 +1447,10 @@ async function resumeReminders() {
 
 async function renderRemindersDialog() {
   await renderLeaveAlertSurfaces();
+  const settings = await loadReminderSettings();
+  const schedule = settings?.enabled ? await loadReminderSchedule() : null;
+  const upcoming = await loadUpcomingSchedule();
+  await updateRemindersDialogUi(settings, schedule, upcoming);
 }
 
 function hideLeaveReminderCoach() {
@@ -885,15 +1476,29 @@ function showLeaveReminderCoach() {
   }
 }
 
-/** @deprecated Reminder settings sheet removed — open Journeys instead. */
 function openRemindersDialog() {
   window.nextTrainStickinessCoaches?.markCoachDone?.("reminder");
-  window.nextTrainApp?.closeMenuDialogOnly?.();
-  window.nextTrainApp?.openJourneys?.();
+  hideLeaveReminderCoach();
+  const dialog = document.getElementById("reminders-dialog");
+  if (!dialog) {
+    window.nextTrainApp?.openJourneys?.();
+    return;
+  }
+  window.nextTrainApp?.openAppDialog?.(dialog);
+  void renderRemindersDialog();
 }
 
-function closeRemindersDialog() {
-  // no-op — sheet removed
+function closeRemindersDialog({ reopenMenu = false } = {}) {
+  const dialog = document.getElementById("reminders-dialog");
+  if (dialog) {
+    window.nextTrainApp?.closeAppDialog?.(dialog);
+  }
+  if (reopenMenu) {
+    const menu = document.getElementById("menu-dialog");
+    if (menu) {
+      window.nextTrainApp?.openAppDialog?.(menu);
+    }
+  }
 }
 
 function setRemindersDoneBusy() {
@@ -963,6 +1568,7 @@ window.nextTrainLeaveReminders = {
   renderLeaveAlertSurfaces,
   refreshJourneyRemindExtras,
   refreshMenuPauseUi,
+  closeRemindersDialog,
   openRemindersDialog,
   showLeaveReminderCoach,
   healAfterJourneySave,

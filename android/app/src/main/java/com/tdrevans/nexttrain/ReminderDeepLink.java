@@ -9,6 +9,10 @@ public final class ReminderDeepLink {
 
   private ReminderDeepLink() {}
 
+  public static Uri forReminders() {
+    return Uri.parse("nexttrain://reminders");
+  }
+
   public static Uri forJourney(String journeyId) {
     if (journeyId != null && NearbyPinHelper.JOURNEY_ID.equals(journeyId)) {
       return Uri.parse("nexttrain://nearby");

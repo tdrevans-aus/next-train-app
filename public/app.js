@@ -206,6 +206,10 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl"];
+const nearbyCoordsCache = new Map();
+const nearbyStationNamesCache = new Map();
+let nearbyCityHint = "perth";
 let refreshTimer = null;
 let countdownTimer = null;
 let lastLiveDisplayMinute = null;
@@ -509,7 +513,7 @@ function ensureDialogBackdrop(dialog) {
       return;
     }
 
-    if (dialog === helpDialog || dialog === feedbackDialog) {
+    if (dialog === helpDialog || dialog === feedbackDialog || dialog?.id === "reminders-dialog") {
       closeAppDialog(dialog);
     }
   });
@@ -790,6 +794,10 @@ function isCatalogStation(station) {
   }
 
   const normalized = normalizeStation(trimmed);
+  if (isNearbyModeActive()) {
+    return isStationInNearbyCity(normalized) || isStationInNearbyCity(trimmed);
+  }
+
   if (!window.nextTrainStationCombobox?.getStationsCache?.()?.length) {
     return Boolean(normalized);
   }
@@ -1085,7 +1093,7 @@ function consumeJourneyTargetFaceRestore(journey, data) {
   pendingJourneyTargetFaceRestore = false;
 }
 
-async function applyJourneysMode({ coldStart = false } = {}) {
+async function applyJourneysMode({ coldStart = false, skipNearbyDefault = false } = {}) {
   // Don't yank the user back to Near me while they're setting up a journey.
   if (isJourneysDialogOpen() || isOnboardingVisible()) {
     renderJourneySwitcher();
@@ -1106,7 +1114,7 @@ async function applyJourneysMode({ coldStart = false } = {}) {
     return;
   }
 
-  if (coldStart && shouldDefaultToNearby()) {
+  if (coldStart && !skipNearbyDefault && shouldDefaultToNearby()) {
     journeyModeActive = false;
     await enterNearbyMode();
     return;
@@ -2630,10 +2638,21 @@ function switchJourney(journeyId) {
   setManualJourneyOverride(journeyId);
   deferJourneyAutoSelect = false;
   persistSettings({ activeJourneyId: journeyId });
-  skipTrains = readSkipState().count;
   closeJourneySwitcherMenu();
   clearHeroSetupState();
   syncChromeMode();
+  discardStaleJourneyBoard();
+  if (isJourneyKind(journey)) {
+    // Switcher: land on Target train, not a leftover swipe from last visit.
+    // Day-override Pinned train still wins via restoreJourneyTargetPinFace.
+    if (!isJourneyOverrideActiveToday(journey)) {
+      clearSkipState();
+    }
+    requestJourneyTargetFaceRestore();
+    trainNavigation().restoreJourneyTargetPinFace?.(journey);
+  } else {
+    skipTrains = readSkipState().count;
+  }
   fetchNextTrain();
 }
 
@@ -4569,20 +4588,103 @@ function distanceKm(lat1, lng1, lat2, lng2) {
   return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+async function loadStationCoordsForCity(cityId) {
+  const id = String(cityId || "perth").trim().toLowerCase();
+  if (nearbyCoordsCache.has(id)) {
+    return nearbyCoordsCache.get(id);
+  }
+
+  let coords = {};
+  if (id === "perth") {
+    try {
+      coords = await fetchLocalJson("/station-coords.json");
+    } catch (error) {
+      console.warn("Could not load station-coords.json for nearby", error);
+      coords = {};
+    }
+  } else if (NEARBY_MULTI_CITY_IDS.includes(id)) {
+    coords = (await window.NextTrainBrisbaneDogfood?.loadCoordsForCity?.(id)) ?? {};
+  }
+
+  nearbyCoordsCache.set(id, coords);
+  return coords;
+}
+
+async function loadNearbyStationNames(cityId) {
+  const id = String(cityId || "perth").trim().toLowerCase();
+  if (nearbyStationNamesCache.has(id)) {
+    return nearbyStationNamesCache.get(id);
+  }
+
+  let names = [];
+  if (id === "perth") {
+    try {
+      names = collapseStationList(await fetchLocalJson("/stations.json"));
+    } catch (error) {
+      console.warn("Could not load stations.json for nearby", error);
+      names = [];
+    }
+  } else if (NEARBY_MULTI_CITY_IDS.includes(id)) {
+    names = (await window.NextTrainBrisbaneDogfood?.loadStationNamesForCity?.(id)) ?? [];
+  }
+
+  const set = new Set(names);
+  nearbyStationNamesCache.set(id, set);
+  return set;
+}
+
+function nearbyCityFromCoords(lat, lng) {
+  const hint = window.NextTrainCitySession?.hintCityFromCoords?.(lat, lng);
+  return hint || "perth";
+}
+
+function readPreferenceCity() {
+  return String(
+    window.NextTrainBrisbaneDogfood?.getCity?.() ||
+      window.NextTrainCitySession?.readSavedCity?.() ||
+      window.NextTrainCitySession?.readActiveHint?.() ||
+      "perth"
+  )
+    .trim()
+    .toLowerCase();
+}
+
+function readNearbyCity() {
+  const sessionCity = nearbyMode().getNearbySession?.()?.city;
+  if (sessionCity) {
+    return String(sessionCity).trim().toLowerCase();
+  }
+  if (nearbyCityHint) {
+    return String(nearbyCityHint).trim().toLowerCase();
+  }
+  const cached = nearbyMode().readLastNearbyStationCache?.();
+  if (cached?.city) {
+    return String(cached.city).trim().toLowerCase();
+  }
+  if (cached?.station) {
+    return "perth";
+  }
+  return "perth";
+}
+
+async function getNearbyStationsList() {
+  const city = readNearbyCity();
+  const names = await loadNearbyStationNames(city);
+  return Array.from(names);
+}
+
 async function loadStationCoords() {
   if (stationCoords) {
     return stationCoords;
   }
 
-  // Jim brief: if multi-city is active but catalog hasn't loaded yet, 
-  // don't block. findNearestStation will use raw GPS + server resolution.
+  // Planning/detail path: preference region catalog only.
   if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
     const dogfoodCoords = window.NextTrainBrisbaneDogfood.getCoords?.() ?? {};
     if (Object.keys(dogfoodCoords).length > 0) {
       stationCoords = { ...dogfoodCoords };
       return stationCoords;
     }
-    // If we're multi-city but no coords yet, return empty to skip blocking.
     return {};
   }
 
@@ -4603,20 +4705,26 @@ function activeCityStationNames() {
   return new Set(window.NextTrainBrisbaneDogfood.getStations?.() ?? []);
 }
 
+function isStationInNearbyCity(station, cityId = readNearbyCity()) {
+  const id = String(cityId || "perth").trim().toLowerCase();
+  const normalized = normalizeStation(station);
+  const cached = nearbyStationNamesCache.get(id);
+  if (!cached?.size) {
+    return true;
+  }
+  return cached.has(normalized) || cached.has(station);
+}
+
 function isStationInActiveCity(station) {
+  if (isNearbyModeActive()) {
+    return isStationInNearbyCity(station);
+  }
   const allowed = activeCityStationNames();
   return !allowed || allowed.has(station);
 }
 
 function readActiveCity() {
-  return String(
-    window.NextTrainBrisbaneDogfood?.getCity?.() ||
-      window.NextTrainCitySession?.readSavedCity?.() ||
-      window.NextTrainCitySession?.readActiveHint?.() ||
-      "perth"
-  )
-    .trim()
-    .toLowerCase();
+  return readPreferenceCity();
 }
 
 async function locateCityFromPosition() {
@@ -4859,9 +4967,11 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   // Only skip GPS when caller explicitly allows it (not the background refine path).
   if (allowSessionShortcut && !forceFresh && nearbyMode().getNearbySession()?.station) {
     const session = nearbyMode().getNearbySession();
-    if (isStationInActiveCity(session.station)) {
+    const sessionCity = session.city || readNearbyCity();
+    if (isStationInNearbyCity(session.station, sessionCity)) {
       return {
         station: session.station,
+        city: sessionCity,
         distanceKm:
           typeof session.distanceKm === "number" ? session.distanceKm : 0,
       };
@@ -4869,19 +4979,16 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   }
 
   const geoTimeoutMs = forceFresh ? 12000 : 5000;
-  // Load station catalog and GPS in parallel — don't serialise a local JSON read ahead of the fix.
-  const [coords, position] = await Promise.all([
-    loadStationCoords(),
-    getAppGeolocationPosition({
-      // Soft locate reuses a recent fused fix (station-level). forceFresh only for rare hard refresh.
-      enableHighAccuracy: forceFresh,
-      timeout: geoTimeoutMs,
-      maximumAge: forceFresh ? 0 : NEARBY_SOFT_LOCATION_MAX_AGE_MS,
-    }),
-  ]);
+  const position = await getAppGeolocationPosition({
+    enableHighAccuracy: forceFresh,
+    timeout: geoTimeoutMs,
+    maximumAge: forceFresh ? 0 : NEARBY_SOFT_LOCATION_MAX_AGE_MS,
+  });
 
   const { latitude, longitude } = position.coords;
-  
+  const nearbyCity = nearbyCityFromCoords(latitude, longitude);
+  nearbyCityHint = nearbyCity;
+
   // Cache the last successful GPS fix.
   try {
     localStorage.setItem("nextTrainLastGps", JSON.stringify({
@@ -4892,11 +4999,13 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     }));
   } catch {}
 
-  // Jim brief: if we don't have coords yet, don't wait for the catalog.
-  // We can return the raw coords and let the server find the nearest.
+  const coords = await loadStationCoordsForCity(nearbyCity);
+  await loadNearbyStationNames(nearbyCity);
+
+  // If we don't have coords yet, return raw position for server resolution.
   if (Object.keys(coords).length === 0) {
     console.log("[App] findNearestStation: no coords loaded, returning raw position");
-    return { lat: latitude, lng: longitude, distanceKm: 0 };
+    return { lat: latitude, lng: longitude, city: nearbyCity, distanceKm: 0 };
   }
 
   let nearest = null;
@@ -4914,15 +5023,11 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     throw new Error("Could not find a nearby station");
   }
 
-  if (!isStationInActiveCity(nearest)) {
+  if (!isStationInNearbyCity(nearest, nearbyCity)) {
     throw new Error("Could not find a nearby station.");
   }
 
-  if (isUnsupportedRegion(bestDistance)) {
-    throw new Error("Could not find a nearby station.");
-  }
-
-  return { station: nearest, distanceKm: bestDistance };
+  return { station: nearest, city: nearbyCity, distanceKm: bestDistance };
 }
 
 
@@ -5421,12 +5526,6 @@ function createJourneyFromTemplate(templateKey) {
   }
 
   journeyDetail()?.setLibraryKind?.("journeys");
-
-  // First journey should always start from the Morning commute preset, even when
-  // the user taps "Add a journey" instead of onboarding "Set up a journey".
-  if (templateKey === "custom" && !hasJourneyKind()) {
-    return createJourneyFromPresetTemplate("morning");
-  }
 
   if (templateKey === "custom") {
     const journey = createDefaultJourney({
@@ -6123,7 +6222,7 @@ async function startFirstJourneySetup() {
   journeyModeActive = true;
   exitNearbyMode();
   syncChromeMode();
-  await startJourneyCreateFromTemplate("morning");
+  await startJourneyCreateFromTemplate("custom");
 }
 
 function openJourneysForSetup() {
@@ -6545,13 +6644,11 @@ journeySwitcherMenuEl?.addEventListener("click", (event) => {
 });
 
 document.addEventListener("nexttrain:city-changed", () => {
-  clearLastNearbyStationCache();
-  if (isNearbyModeActive()) {
-    exitNearbyMode();
-  }
   stationCoords = null;
-  void loadStationCoords();
   void getStationsList();
+  if (isNearbyModeActive()) {
+    void nearbyMode().refreshNearbyAfterRegionChange?.();
+  }
 });
 
 let isInitializing = false;
@@ -6641,10 +6738,19 @@ async function init() {
     return;
   }
 
-  // Nearby must not wait on the native deep-link bridge (~1s). Deep links still win after paint.
-  const deepLinkTask = window.nextTrainWidget?.consumeLaunchDeepLink?.();
-  await applyJourneysMode({ coldStart: true });
-  await deepLinkTask;
+  // Do not paint Near me over a widget tap. Peek first (does not consume), then apply
+  // the deep link after the default screen so a slow bridge cannot be overwritten.
+  let skipNearbyDefault = false;
+  try {
+    const launchUri = await window.nextTrainWidget?.peekLaunchDeepLink?.();
+    skipNearbyDefault = Boolean(
+      window.nextTrainWidget?.launchDeepLinkOpensSpecificScreen?.(launchUri)
+    );
+  } catch (error) {
+    console.warn("Could not peek widget launch deep link", error);
+  }
+  await applyJourneysMode({ coldStart: true, skipNearbyDefault });
+  await window.nextTrainWidget?.consumeLaunchDeepLink?.();
   window.nextTrainWidget?.syncWidgetSettings?.(settings);
   if (isNativeApp()) {
     void maybeSyncLeaveAlarmFromNative();
@@ -6689,6 +6795,7 @@ function initStationComboboxesFromModule() {
     getDetailNearestState: () => journeyDetail()?.getDetailNearestState?.(),
     isNearbyModeActive,
     applyNearbyManualStation,
+    getNearbyStationsList,
   });
 }
 
@@ -6796,7 +6903,24 @@ function openJourneysDialogSync() {
   if (heroEmptyStateEl) {
     heroEmptyStateEl.hidden = true;
   }
-  return journeyDetail().openJourneysDialogSync();
+  const impl = journeyDetail()?.openJourneysDialogSync;
+  if (typeof impl === "function") {
+    return impl();
+  }
+  const dialog = document.getElementById("journeys-dialog");
+  if (!dialog || !dialog.hidden) {
+    void ensureDeferredModulesReady();
+    return;
+  }
+  pauseOnboardingForOverlay();
+  const backdrop = document.getElementById("journeys-dialog-backdrop");
+  if (backdrop) {
+    backdrop.hidden = false;
+  }
+  dialog.hidden = false;
+  document.body.classList.add("app-dialog-open");
+  notifyAdOverlaySuppression();
+  void ensureDeferredModulesReady();
 }
 function syncJourneysDetailChrome() { return journeyDetail().syncJourneysDetailChrome(); }
 function syncJourneysDialogSheetMode() { return journeyDetail().syncJourneysDialogSheetMode(); }
@@ -6819,7 +6943,13 @@ function populateDetailReminderFields(journey) { return journeyDetail().populate
 function readJourneyDetailDraft() { return journeyDetail().readJourneyDetailDraft(); }
 function updateJourneyTemplatesVisibility() { return journeyDetail().updateJourneyTemplatesVisibility(); }
 function renderJourneyListView() { return journeyDetail().renderJourneyListView(); }
-function populateJourneyListView() { return journeyDetail().populateJourneyListView(); }
+function populateJourneyListView() {
+  const impl = journeyDetail()?.populateJourneyListView;
+  if (typeof impl === "function") {
+    return impl();
+  }
+  return ensureDeferredModulesReady().then(() => journeyDetail()?.populateJourneyListView?.());
+}
 function populateJourneyDetailForm(journeyId, options) {
   return journeyDetail().populateJourneyDetailForm(journeyId, options);
 }
@@ -7026,6 +7156,7 @@ function enterNearbyMode(options) { return nearbyMode().enterNearbyMode(options)
 function exitNearbyMode() { return nearbyMode().exitNearbyMode(); }
 function applyNearbyManualStation(station) { return nearbyMode().applyNearbyManualStation(station); }
 function handleNearbyNotifyToggle() { return nearbyMode().handleNearbyNotifyToggle(); }
+function setNearbyPinNotifyMe(notifyOn) { return nearbyMode().setNearbyPinNotifyMe(notifyOn); }
 function shouldShowNearbyLoadingState() { return nearbyMode().shouldShowNearbyLoadingState(); }
 function hideNearbyPinLeaveSurfaces() { return nearbyMode().hideNearbyPinLeaveSurfaces(); }
 function readLastNearbyStationCache() { return nearbyMode().readLastNearbyStationCache(); }
@@ -7053,8 +7184,17 @@ function initNearbyModeFromModule() {
     normalizeStation,
     isCatalogStation,
     isStationInActiveCity,
+    isStationInNearbyCity,
     readActiveCity,
+    readPreferenceCity,
+    readNearbyCity,
     getStationsList,
+    getNearbyStationsList,
+    ensureNearbyCatalog: async (cityId) => {
+      const id = String(cityId || "perth").trim().toLowerCase();
+      nearbyCityHint = id;
+      await Promise.all([loadStationCoordsForCity(id), loadNearbyStationNames(id)]);
+    },
     getNearbyStationCombobox,
     setStationComboboxValue,
     isNativeApp,
@@ -7545,6 +7685,23 @@ window.nextTrainApp = {
   getConfiguredJourneys,
   formatJourneyRoute,
   persistReminderJourneys,
+  persistRoutePinSettings,
+  setNearbyPinNotifyMe,
+  isJourneyOverrideActiveToday,
+  isNearbyPinSettingsHolding: (pin) => {
+    if (!pin?.departureIso) {
+      return false;
+    }
+    const departureMs = Date.parse(pin.departureIso);
+    if (!Number.isFinite(departureMs)) {
+      return false;
+    }
+    const holdUntil =
+      typeof pin.holdingUntilMs === "number"
+        ? pin.holdingUntilMs
+        : departureMs + NEARBY_PIN_HOLD_MS;
+    return Date.now() < holdUntil;
+  },
   getPerthDayOfWeekIso,
   getPerthMinutesSinceMidnight,
   journeyMatchesSchedule,

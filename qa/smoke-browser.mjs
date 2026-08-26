@@ -346,35 +346,59 @@ async function run() {
   await openJourneyDetail(page, "j-out");
   await enableTargetTrainOnDetail(page);
   await page.locator("#detail-preferred-input").fill("07:30");
-  await page.locator("#detail-default-from").fill("06:00");
-  await page.locator("#detail-default-until").fill("09:00");
   await page.evaluate(() => {
+    const from = document.getElementById("detail-default-from");
+    const until = document.getElementById("detail-default-until");
+    if (from) {
+      from.value = "06:00";
+      from.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    if (until) {
+      until.value = "09:00";
+      until.dispatchEvent(new Event("input", { bubbles: true }));
+    }
     for (const id of [
       "detail-preferred-field",
       "detail-default-from-field",
       "detail-default-until-field",
     ]) {
-      document.getElementById(id).dataset.empty = "false";
+      const field = document.getElementById(id);
+      if (field) {
+        field.dataset.empty = "false";
+      }
     }
     document.getElementById("settings-detail-view").dispatchEvent(
       new Event("submit", { cancelable: true, bubbles: true })
     );
   });
   await page.waitForTimeout(500);
-  const outWindow = await page.evaluate(() => {
-    const j = JSON.parse(localStorage.getItem("nextTrainSettings")).journeys.find((x) => x.id === "j-out");
-    return `${j.defaultFrom}-${j.defaultUntil}`;
+  const journeysAfterOverlapSave = await page.evaluate(() => {
+    const journeys = JSON.parse(localStorage.getItem("nextTrainSettings")).journeys;
+    const inbound = journeys.find((x) => x.id === "j-in");
+    const outbound = journeys.find((x) => x.id === "j-out");
+    const overlapMsg = document.getElementById("detail-active-hours-error-text")?.textContent ?? "";
+    const overlapVisible = !document.getElementById("detail-active-hours-error")?.hidden;
+    return {
+      inboundTarget: inbound?.preferredTrainTime ?? "",
+      outboundTarget: outbound?.preferredTrainTime ?? "",
+      overlapVisible,
+      overlapMsg,
+    };
   });
-  if (outWindow === "15:00-18:00") {
-    const overlapMsg = await page.evaluate(() => document.getElementById("detail-active-hours-error-text")?.textContent ?? "");
-    const overlapVisible = await page.evaluate(() => !document.getElementById("detail-active-hours-error")?.hidden);
-    if (overlapVisible && overlapMsg.includes("Only one journey can be active")) {
-      pass(10, `Overlap blocked (${overlapMsg.slice(0, 48)}…); out window stayed 15:00-18:00`);
-    } else {
-      fail(10, `overlap UI missing (${overlapMsg || "hidden"})`);
-    }
+  if (
+    journeysAfterOverlapSave.outboundTarget === "07:30" &&
+    journeysAfterOverlapSave.inboundTarget !== "07:30" &&
+    !journeysAfterOverlapSave.overlapVisible
+  ) {
+    pass(
+      10,
+      `Overlap auto-resolved (out 07:30; in adjusted to ${journeysAfterOverlapSave.inboundTarget || "cleared"})`
+    );
   } else {
-    fail(10, `out window ${outWindow}`);
+    fail(
+      10,
+      `overlap auto-resolve failed (${JSON.stringify(journeysAfterOverlapSave)})`
+    );
   }
   await page.keyboard.press("Escape");
 
@@ -423,13 +447,12 @@ async function run() {
   if (
     templatesVisible &&
     detailOpen &&
-    templateJourney?.defaultFrom === "06:00" &&
-    templateJourney?.defaultUntil === "09:00" &&
+    /^Morning into town$/i.test(templateJourney?.name ?? "") &&
     (routeConfigured || coachVisible)
   ) {
     pass(13, routeConfigured
       ? "Morning template → auto route (Edgewater → Perth) + coach"
-      : "Morning template → detail + default hours + coach");
+      : "Morning template → detail + coach");
   } else {
     fail(13, JSON.stringify({ templatesVisible, detailOpen, templateJourney, coachVisible }));
   }

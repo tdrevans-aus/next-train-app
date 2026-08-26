@@ -296,7 +296,7 @@ public final class LeaveReminderNotifier {
   private static PendingIntent openJourneyPending(Context context, String journeyId, int requestCode) {
     Intent openIntent = new Intent(context, MainActivity.class);
     openIntent.setAction(Intent.ACTION_VIEW);
-    openIntent.setData(ReminderDeepLink.forJourney(journeyId));
+    openIntent.setData(ReminderDeepLink.forReminders());
     openIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
     return PendingIntent.getActivity(
       context,

@@ -735,7 +735,7 @@ function getDefaultCustomPreferredTrainTime(date = new Date()) {
 function journeyMatchesTime(journey, minutes) {
   let from, until;
 
-  if (isJourneyKind(journey) && journey.preferredTrainTime) {
+  if (isJourneyKind(journey) && journey.preferredTrainTime && !hasDefaultWindow(journey)) {
     const target = parseTimeToMinutes(journey.preferredTrainTime);
     from = (target - 60 + 24 * 60) % (24 * 60);
     until = (target + 15 + 24 * 60) % (24 * 60);

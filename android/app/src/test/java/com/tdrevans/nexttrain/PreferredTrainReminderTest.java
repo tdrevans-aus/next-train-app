@@ -219,6 +219,51 @@ public class PreferredTrainReminderTest {
   }
 
   @Test
+  public void tuesdayNightMorningTarget_schedulesTomorrowNotTonight() throws Exception {
+    JSONObject journey = new JSONObject(
+      "{"
+        + "\"id\":\"j-morning\","
+        + "\"kind\":\"journey\","
+        + "\"station\":\"Perth Underground Stn\","
+        + "\"direction\":\"Mandurah\","
+        + "\"preferredTrainTime\":\"07:30\","
+        + "\"defaultFrom\":\"06:00\","
+        + "\"defaultUntil\":\"09:00\","
+        + "\"remindDays\":[1,2,3,4,5],"
+        + "\"leaveBeforeMinutes\":10,"
+        + "\"useLeaveBefore\":true"
+        + "}"
+    );
+    JSONObject payload = new JSONObject(
+      "{"
+        + "\"next\":{\"departure\":\"2026-08-18T23:15:00+08:00\",\"leaveBy\":\"2026-08-18T23:05:00+08:00\",\"displayTime\":\"23:15\"},"
+        + "\"upcoming\":["
+        + "{\"departure\":\"2026-08-18T23:15:00+08:00\",\"leaveBy\":\"2026-08-18T23:05:00+08:00\",\"displayTime\":\"23:15\"},"
+        + "{\"departure\":\"2026-08-19T07:30:00+08:00\",\"leaveBy\":\"2026-08-19T07:20:00+08:00\",\"displayTime\":\"07:30\"}"
+        + "]"
+        + "}"
+    );
+    PreferredTrainReminder.ScheduleClock tuesdayNight = new PreferredTrainReminder.ScheduleClock(
+      Instant.parse("2026-08-18T22:53:00+08:00").toEpochMilli(),
+      2,
+      "2026-08-18",
+      false
+    );
+
+    PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
+      journey,
+      payload,
+      false,
+      tuesdayNight
+    );
+
+    assertNotNull(target);
+    assertEquals("2026-08-19T07:30:00+08:00", target.departureIso);
+    assertEquals(Instant.parse("2026-08-19T07:20:00+08:00").toEpochMilli(), target.leaveByMs);
+    assertTrue(!target.departureIso.contains("T23:15:00"));
+  }
+
+  @Test
   public void getReadyOffsetMath() {
     long leaveByMs = Instant.parse("2026-08-10T07:20:00+08:00").toEpochMilli();
 

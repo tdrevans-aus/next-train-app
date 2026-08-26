@@ -12,6 +12,10 @@ public final class NearbyPinHelper {
   private NearbyPinHelper() {}
 
   public static boolean isHolding(JSONObject pin) {
+    return isHolding(pin, System.currentTimeMillis());
+  }
+
+  public static boolean isHolding(JSONObject pin, long nowMs) {
     if (pin == null) {
       return false;
     }
@@ -25,7 +29,7 @@ public final class NearbyPinHelper {
     long holdUntilMs = pin.has("holdingUntilMs")
       ? pin.optLong("holdingUntilMs", 0)
       : departureMs + HOLD_MS;
-    return System.currentTimeMillis() < holdUntilMs;
+    return nowMs < holdUntilMs;
   }
 
   public static long holdingUntilMs(JSONObject pin) {

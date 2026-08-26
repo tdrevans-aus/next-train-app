@@ -1,4 +1,36 @@
-## Overnight — 26 Aug 2026 (~00:30 AWST)
+## Overnight — 27 Aug 2026 (release for closed upload)
+
+**Candidate:** `2.5.4` (`versionCode` **20**). Working tree was **not committed**. AAB is ready locally.
+
+| Gate | Result |
+|------|--------|
+| **Pre-upload** (`node qa/pre-upload-check.mjs`) | **PASS** |
+| **Android JVM** (`npm run test:android:unit`) | **PASS** (after pin-hero parity + widget test hours) |
+| **Full web** (`node qa/run-all.mjs`) | **79 PASS · 2 PASS\* · 24 FAIL** · ~3506s |
+| **Smoke** (`npm run test:web` smoke) | **19 PASS · 4 FAIL** — `release:prep` still blocked on smoke |
+| **`cap:sync`** | **PASS** |
+| **AAB** | `android/app/build/outputs/bundle/release/app-release.aab` · **16.5 MB** · 27 Aug 2026 01:39 AWST |
+
+**Upload this morning:** Gradle `bundleRelease` / `signReleaseBundle` succeeded, but `android/keystore.properties` is **not** in the repo tree. Confirm in Android Studio that this AAB is signed with the **upload key** before Play. If not, **Generate Signed Bundle** over the same tree.
+
+**Ship fix in this tree (uncommitted):** `openJourneysDialogSync` / `populateJourneyListView` no longer crash when deferred `journey-detail.js` is not loaded yet. Android pin-state hero outside Active hours now matches web fixtures (preview next target, skip tonight’s late trains).
+
+**Do not treat as Play-green until smoke is green.** Failures grouped:
+
+| Bucket | Scripts | Notes |
+|--------|---------|--------|
+| Hidden Active hours (product) | `active-hours-clear-pair`, `smoke-browser` (was fill), `template-wizard-hours-zindex`, `target-active-combo-hints` | From/Until UI hidden; tests still poke those fields. Partial test patches applied. |
+| Wizard copy / steps | `first-use-*`, `smoke-11-13` (until hours assert loosened), `template-wizard-*` | Custom-first / Reminders step vs Morning-into-town + hours step |
+| Env / fixtures | `adelaide-line-map-conformance`, `run-sydney-sweep-once`, `devtools-*` | Missing Adelaide `published-network.json`; no TfNSW env; `QA_DEVTOOLS` |
+| Product / pin | `fb-23-auto-selection`, `journeys-after-nearby-pin`, `leave-by-preferred-gate`, `pin-behavior`, `preferred-always-visible` | Repro in this tree; leave-by hung ~19 min until killed |
+| Native CDP | `reminders-permission-native-cdp` | No CDP bytes on 9222 |
+| Maestro | `run-maestro.mjs` | **PASS** (~179s) |
+
+**Not done:** git commit / tag `v2.5.4` / Play upload. Say the word to commit.
+
+---
+
+
 
 **Shipped to `master`:** `b0e5f01` — journey wizard deferred init, target-train hero preview (outside hours / empty board), post-save stale-board clear + target face restore, geo/nearby hardening, pin-resolution fixture `journey-tuesday-night-morning-preview`.
 

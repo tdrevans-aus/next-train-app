@@ -1010,30 +1010,7 @@ public final class LeaveReminderScheduler {
     try {
       JSONArray keys = new JSONArray(raw);
       for (int index = 0; index < keys.length(); index += 1) {
-        int requestCode = keys.getInt(index);
-        Intent cancelIntent = new Intent(context, LeaveReminderReceiver.class);
-        cancelIntent.setAction(ACTION_LEAVE_REMINDER);
-        PendingIntent pending = PendingIntent.getBroadcast(
-          context,
-          requestCode,
-          cancelIntent,
-          PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
-        );
-        if (pending != null) {
-          manager.cancel(pending);
-          pending.cancel();
-        }
-        Intent showIntent = new Intent(context, LeaveAlarmActivity.class);
-        PendingIntent showPending = PendingIntent.getActivity(
-          context,
-          requestCode + 17,
-          showIntent,
-          PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
-        );
-        if (showPending != null) {
-          manager.cancel(showPending);
-          showPending.cancel();
-        }
+        cancelRequestCode(context, manager, requestCodeFromRecord(keys.opt(index)));
       }
     } catch (Exception ignored) {
       // Fall through to clear keys.
@@ -1042,15 +1019,214 @@ public final class LeaveReminderScheduler {
     prefs.edit().putString(KEY_SCHEDULED_ALARMS, "[]").apply();
   }
 
-  private static void registerScheduledAlarm(Context context, int requestCode) {
+  private static JSONArray readScheduledAlarmRecords(Context context) {
+    SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    try {
+      return new JSONArray(prefs.getString(KEY_SCHEDULED_ALARMS, "[]"));
+    } catch (Exception error) {
+      return new JSONArray();
+    }
+  }
+
+  private static int requestCodeFromRecord(Object raw) {
+    if (raw instanceof Number) {
+      return ((Number) raw).intValue();
+    }
+    if (raw instanceof JSONObject) {
+      return ((JSONObject) raw).optInt("requestCode", 0);
+    }
+    return 0;
+  }
+
+  private static void cancelRequestCode(Context context, AlarmManager manager, int requestCode) {
+    if (manager == null || requestCode == 0) {
+      return;
+    }
+    Intent cancelIntent = new Intent(context, LeaveReminderReceiver.class);
+    cancelIntent.setAction(ACTION_LEAVE_REMINDER);
+    PendingIntent pending = PendingIntent.getBroadcast(
+      context,
+      requestCode,
+      cancelIntent,
+      PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
+    );
+    if (pending != null) {
+      manager.cancel(pending);
+      pending.cancel();
+    }
+    Intent showIntent = new Intent(context, LeaveAlarmActivity.class);
+    PendingIntent showPending = PendingIntent.getActivity(
+      context,
+      requestCode + 17,
+      showIntent,
+      PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
+    );
+    if (showPending != null) {
+      manager.cancel(showPending);
+      showPending.cancel();
+    }
+  }
+
+  private static void registerScheduledAlarm(
+    Context context,
+    int requestCode,
+    String type,
+    PreferredTrainReminder.Target target,
+    long triggerAtMs
+  ) {
     try {
       SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
       JSONArray keys = new JSONArray(prefs.getString(KEY_SCHEDULED_ALARMS, "[]"));
-      keys.put(requestCode);
+      JSONObject record = new JSONObject();
+      record.put("requestCode", requestCode);
+      record.put("type", type);
+      record.put("triggerAtMs", triggerAtMs);
+      if (target != null) {
+        record.put("journeyId", target.journeyId);
+        record.put("trainTime", target.trainTime);
+        record.put("route", target.route);
+        record.put("departureKey", target.departureKey);
+      }
+      keys.put(record);
       prefs.edit().putString(KEY_SCHEDULED_ALARMS, keys.toString()).apply();
     } catch (Exception ignored) {
       // Best effort.
     }
+  }
+
+  public static JSONObject describeUpcoming(Context context) {
+    long nowMs = System.currentTimeMillis();
+    LeaveReminderSettingsStore.clearExpiredPauseIfNeeded(context);
+    JSONObject leaveSettings = LeaveReminderSettingsStore.readSettings(context);
+    boolean paused = leaveSettings.optBoolean("paused", false);
+    JSONObject envelope = new JSONObject();
+    try {
+      envelope.put("paused", paused);
+      envelope.put("enabled", leaveSettings.optBoolean("enabled", false));
+      String pauseUntil = leaveSettings.optString("pauseUntil", "");
+      if (pauseUntil != null && !pauseUntil.isEmpty() && !"null".equals(pauseUntil)) {
+        envelope.put("pauseUntil", pauseUntil);
+      }
+
+      JSONObject widgetSettings = new JSONObject();
+      String settingsJson = WidgetSettingsStore.readSettings(context);
+      if (settingsJson != null && !settingsJson.isEmpty()) {
+        widgetSettings = new JSONObject(settingsJson);
+      }
+
+      java.util.Set<String> doneToday = collectDoneTodayIds(context, widgetSettings);
+      JSONArray derived = UpcomingReminders.deriveFires(
+        widgetSettings,
+        PerthTime.minutesSinceMidnight(nowMs),
+        PerthTime.dayOfWeekIso(nowMs),
+        doneToday
+      );
+      JSONArray firedToday = new JSONArray();
+      for (String journeyId : doneToday) {
+        firedToday.put(journeyId);
+      }
+      envelope.put("fires", derived);
+      envelope.put("firedToday", firedToday);
+      envelope.put("leftovers", UpcomingReminders.findLeftovers(readScheduledAlarmRecords(context), derived));
+      return envelope;
+    } catch (Exception error) {
+      try {
+        envelope.put("fires", new JSONArray());
+        envelope.put("leftovers", new JSONArray());
+        envelope.put("reason", "error");
+      } catch (Exception ignored) {
+        // Unreachable.
+      }
+      return envelope;
+    }
+  }
+
+  public static void skipToday(Context context, String journeyId) {
+    if (journeyId == null || journeyId.isEmpty()) {
+      return;
+    }
+    String date = PerthTime.localDateKey();
+    LeaveReminderSettingsStore.markLeaveNowFiredForDay(context, journeyId, date);
+    LeaveReminderSettingsStore.markGetReadyFiredForDay(context, journeyId, date);
+    CommuteRefreshService.refreshAll(context);
+  }
+
+  static java.util.Set<String> collectDoneTodayIds(Context context, JSONObject widgetSettings) {
+    java.util.Set<String> ids = new java.util.HashSet<>();
+    String date = PerthTime.localDateKey();
+    considerDoneToday(context, NearbyPinHelper.JOURNEY_ID, date, ids);
+    if (widgetSettings == null) {
+      return ids;
+    }
+    JSONArray journeys = widgetSettings.optJSONArray("journeys");
+    if (journeys == null) {
+      return ids;
+    }
+    for (int index = 0; index < journeys.length(); index += 1) {
+      JSONObject journey = journeys.optJSONObject(index);
+      if (journey == null) {
+        continue;
+      }
+      considerDoneToday(context, journey.optString("id", ""), date, ids);
+    }
+    return ids;
+  }
+
+  private static void considerDoneToday(
+    Context context,
+    String journeyId,
+    String date,
+    java.util.Set<String> ids
+  ) {
+    if (journeyId == null || journeyId.isEmpty()) {
+      return;
+    }
+    if (LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, journeyId, date)) {
+      ids.add(journeyId);
+      return;
+    }
+    String departureKey = LeaveReminderSettingsStore.getLeaveNowDepartureKeyForDay(
+      context,
+      journeyId,
+      date
+    );
+    if (departureKey != null && LeaveReminderSettingsStore.isAcknowledged(context, departureKey)) {
+      ids.add(journeyId);
+    }
+  }
+
+  public static void clearLeftoverAlarms(Context context) {
+    AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    JSONArray derived = new JSONArray();
+    try {
+      JSONObject upcoming = describeUpcoming(context);
+      derived = upcoming.optJSONArray("fires");
+      if (derived == null) {
+        derived = new JSONArray();
+      }
+    } catch (Exception ignored) {
+      derived = new JSONArray();
+    }
+
+    SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    JSONArray kept = new JSONArray();
+    try {
+      JSONArray stored = readScheduledAlarmRecords(context);
+      for (int index = 0; index < stored.length(); index += 1) {
+        Object raw = stored.opt(index);
+        JSONObject alarm = UpcomingReminders.asAlarmRecord(raw);
+        if (alarm == null || UpcomingReminders.isLeftover(alarm, derived)) {
+          cancelRequestCode(context, manager, requestCodeFromRecord(raw));
+          continue;
+        }
+        kept.put(raw);
+      }
+    } catch (Exception ignored) {
+      // Fall through to reschedule.
+    }
+    prefs.edit().putString(KEY_SCHEDULED_ALARMS, kept.toString()).apply();
+    LeaveReminderNotifier.cancel(context);
+    CommuteRefreshService.refreshAll(context);
   }
 
   /** Leave-now uses AlarmClock for reliable wake + status-bar alarm affordance (FB-34). */
@@ -1120,7 +1296,7 @@ public final class LeaveReminderScheduler {
       }
     }
 
-    registerScheduledAlarm(context, requestCode);
+    registerScheduledAlarm(context, requestCode, type, target, triggerAtMs);
   }
 
   private static int alarmRequestCode(String journeyId, String localDate, String type) {

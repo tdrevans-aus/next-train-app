@@ -16,8 +16,9 @@ public class MainActivity extends BridgeActivity {
   public void onCreate(Bundle savedInstanceState) {
     registerPlugin(WidgetSyncPlugin.class);
     registerPlugin(LeaveReminderPlugin.class);
-    super.onCreate(savedInstanceState);
+    // Capture before the WebView boots so JS cannot consume a still-empty pending URI.
     DeepLinkHelper.capture(getIntent());
+    super.onCreate(savedInstanceState);
     boolean debugAction = DeepLinkHelper.applyDebugActions(this, getIntent());
     if (!debugAction) {
       // Sticky QA latch was skipping real leave-by and arming +60s instead.
