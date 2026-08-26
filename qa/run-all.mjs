@@ -68,6 +68,7 @@ const RELEASE_EXTRA_SCRIPTS = [
   "add-journey-btn.mjs",
   "app-theme.mjs",
   "sanitize-journey-pin-fields.mjs",
+  "pin-state-outside-active-window-tdz.mjs",
 ];
 
 const RELEASE_SCRIPTS = [

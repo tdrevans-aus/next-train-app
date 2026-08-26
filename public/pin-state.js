@@ -910,6 +910,10 @@
       mode === "journey" ? sanitizeJourneyPinFields(input.journey, clock) : null;
     const insideActiveWindow =
       mode === "journey" && journeyClean && journeyMatchesSchedule(journeyClean, clock);
+    // Declared before retainDepartedOutsideWindow / hero preview — CAPACITOR-1A TDZ.
+    const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
+    const outsideActiveDay =
+      mode === "journey" && journeyClean && !journeyMatchesActiveDay(journeyClean, clock);
     const options = { strictNext: !insideActiveWindow };
     const trueNextDeparture = resolveTrueNextDeparture(input.payload, clock, options);
 
@@ -947,10 +951,6 @@
       mode === "journey" && isJourneyOverrideActiveToday(journeyClean, clock);
     const isPinDismissedToday =
       mode === "journey" && isJourneyPinDismissedToday(journeyClean, clock);
-
-    const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
-    const outsideActiveDay =
-      mode === "journey" && journeyClean && !journeyMatchesActiveDay(journeyClean, clock);
     const preferredTargetDeparture =
       mode === "journey" && journeyClean && !isRouteJourney(journeyClean)
         ? outsideActiveDay || !insideActiveWindow
