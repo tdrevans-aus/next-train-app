@@ -68,7 +68,12 @@ public final class PerthTime {
   }
 
   public static String localDateKey() {
-    return ZonedDateTime.now(ZONE).format(DateTimeFormatter.ISO_LOCAL_DATE);
+    return localDateKey(System.currentTimeMillis());
+  }
+
+  public static String localDateKey(long epochMs) {
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE)
+      .format(DateTimeFormatter.ISO_LOCAL_DATE);
   }
 
   public static int parseClockMinutes(String value) {

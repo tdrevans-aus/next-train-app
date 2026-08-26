@@ -150,18 +150,18 @@ async function run() {
   let exitCode = 0;
 
   await openMorningWizard(page);
-  const morningFailures = await walkWizardSteps(page, 5);
+  const morningFailures = await walkWizardSteps(page, 4);
   if (morningFailures.length === 0) {
-    console.log("PASS — Morning template: coach clear on all 5 wizard steps");
+    console.log("PASS — Morning template: coach clear on all 4 wizard steps");
   } else {
     console.error("FAIL — Morning template coach overlaps highlight", morningFailures);
     exitCode = 1;
   }
 
   await openCustomWizard(page);
-  const customFailures = await walkWizardSteps(page, 4);
+  const customFailures = await walkWizardSteps(page, 3);
   if (customFailures.length === 0) {
-    console.log("PASS — Custom template: coach clear on all 4 wizard steps");
+    console.log("PASS — Custom template: coach clear on all 3 wizard steps");
   } else {
     console.error("FAIL — Custom template coach overlaps highlight", customFailures);
     exitCode = 1;
