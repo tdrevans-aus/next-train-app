@@ -19,7 +19,6 @@ import {
   injectSwitcherJourneys,
   parseLeaveMinutes,
   swipeHero,
-  waitForDepartText,
   waitForJourneyHero,
   waitForJourneyRouteStable,
   waitForJourneySwitcher,
@@ -208,19 +207,29 @@ async function run() {
   await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
   await page.goto(`${BASE}/?test=1&fixture=empty`);
   await ensureJourneyMode(page);
-  await waitForDepartText(page, "No upcoming", { timeout: 30000 });
+  await page.waitForFunction(
+    () => {
+      const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
+      const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
+      const leaveHidden = Boolean(document.getElementById("leave-card")?.hidden);
+      if (!leaveHidden || !depart || depart === "—") {
+        return false;
+      }
+      return depart.includes("No upcoming") || label === "Target train";
+    },
+    null,
+    { timeout: 30000 }
+  );
   const depart8 = (await page.locator("#depart-display-time").textContent())?.trim();
+  const label8 = (await page.locator("#hero-depart-label").textContent())?.trim();
   const leaveHidden8 = await page.locator("#leave-card").isHidden();
-  if (depart8?.includes("No upcoming") && leaveHidden8) {
-    pass(8, depart8);
+  if ((depart8?.includes("No upcoming") || label8 === "Target train") && leaveHidden8) {
+    pass(8, `${label8}: ${depart8}`);
   } else {
-    fail(8, JSON.stringify({ depart8, leaveHidden8 }));
+    fail(8, JSON.stringify({ depart8, label8, leaveHidden8 }));
   }
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=error`);
-  await page.evaluate(() => {
-    sessionStorage.clear();
-  });
   await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
   await page.goto(`${BASE}/?test=1&fixture=error`);
   await ensureJourneyMode(page);
@@ -228,14 +237,23 @@ async function run() {
     () => {
       const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
       const error = document.getElementById("error")?.textContent?.trim() ?? "";
-      return depart.includes("Couldn't refresh") && Boolean(error);
+      const updated = document.getElementById("updated")?.textContent?.trim() ?? "";
+      const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
+      return (
+        (depart.includes("Couldn't refresh") && Boolean(error)) ||
+        (label === "Target train" && updated.includes("Update failed"))
+      );
     },
     null,
     { timeout: 30000 }
   );
   const depart9a = (await page.locator("#depart-display-time").textContent())?.trim();
   const error9a = (await page.locator("#error").textContent())?.trim();
-  const coldOk = depart9a?.includes("Couldn't refresh") && error9a;
+  const label9a = (await page.locator("#hero-depart-label").textContent())?.trim();
+  const updated9a = (await page.locator("#updated").textContent())?.trim();
+  const coldOk =
+    (depart9a?.includes("Couldn't refresh") && Boolean(error9a)) ||
+    (label9a === "Target train" && Boolean(updated9a?.includes("Update failed")));
 
   await page.goto(`${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`);
   await armJourneyLeaveCard(page, { minutesFromNowFallback: 18 });
@@ -276,9 +294,9 @@ async function run() {
     leaveStale;
 
   if (coldOk && staleOk) {
-    pass(9, `Cold: ${depart9a}; stale: ${updated9}, hero kept ${countdown9c}`);
+    pass(9, `Cold: ${label9a} ${depart9a}; stale: ${updated9}, hero kept ${countdown9c}`);
   } else {
-    fail(9, JSON.stringify({ coldOk, depart9a, error9a, staleOk, updated9, countdown9c, leaveStale }));
+    fail(9, JSON.stringify({ coldOk, depart9a, error9a, label9a, staleOk, updated9, countdown9c, leaveStale }));
   }
 
   await page.evaluate(() => {

@@ -112,7 +112,7 @@ public final class PinResolutionHelper {
       } else if (insideActiveWindow) {
         preferredTargetDeparture =
           resolveJourneyPreferredTargetDeparture(payload, journeyClean, clock);
-      } else if (!journeyMatchesActiveDay(journeyClean, clock)) {
+      } else if (result.trueNextDeparture == null) {
         preferredTargetDeparture =
           resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
       }
@@ -195,7 +195,7 @@ public final class PinResolutionHelper {
       !result.isOverrideActiveToday
         && !isBrowsingLiveBoard
         && ((preferredTargetDeparture != null && preferredTargetDeparture.equals(result.heroDeparture))
-          || (outsideActiveDay && result.heroDeparture == null && shouldShowPreviewHero(journeyClean, clock)));
+          || (result.heroDeparture == null && shouldShowPreviewHero(journeyClean, clock)));
     boolean pinnedChrome =
       !isSkipPreview
         && result.heroShowsPin
@@ -567,10 +567,14 @@ public final class PinResolutionHelper {
     if (journey == null || JourneySelector.isRouteJourney(journey)) {
       return false;
     }
-    if (journeyMatchesActiveDay(journey, clock)) {
+    if (CommuteSchedule.preferredMinutesForLiveGlance(journey) < 0) {
       return false;
     }
-    return CommuteSchedule.preferredMinutesForLiveGlance(journey) >= 0;
+    if (journeyMatchesActiveDay(journey, clock)) {
+      int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+      return !matchesHoursWindow(journey, nowMinutes);
+    }
+    return true;
   }
 
   private static String firstNonNull(String left, String right) {
