@@ -151,7 +151,8 @@
       state.coords = {};
       return false;
     }
-
+    // Load only this city. probe() walks every live catalog (Sydney/Brisbane GTFS
+    // fixtures) and must not run on the Perth cold-start path.
     let catalog = state[`${id}Catalog`];
     if (!catalog?.stations?.length) {
       try {

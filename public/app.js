@@ -4949,7 +4949,6 @@ async function resolveNextTrainPayload(apiData) {
 }
 
 async function fetchNextTrain() {
-  console.log("[App] fetchNextTrain starting");
   if (!isNearbyModeActive() && !journeyModeActive && shouldDefaultToNearby()) {
     await applyJourneysMode();
     return;
@@ -5086,7 +5085,6 @@ function scheduleLiveDisplayRefresh() {
 }
 
 function scheduleRefresh() {
-  console.log("[App] scheduleRefresh: seconds=", refreshSeconds);
   if (refreshTimer) {
     clearInterval(refreshTimer);
   }
@@ -5573,7 +5571,6 @@ function closeJourneysSheet() {
 }
 
 function closeJourneysDialog() {
-  console.log("[App] closeJourneysDialog called");
   dismissTemplateRouteCoach();
   journeysTemplatesExpanded = false;
 
@@ -6430,7 +6427,11 @@ async function init() {
 
   initNearbyModeFromModule();
 
-  await mountNearbyMode();
+  try {
+    await mountNearbyMode();
+  } catch (error) {
+    console.warn("Nearby mount failed", error);
+  }
 
   if (isNativeApp()) {
     void ensureGeoBridge().catch(() => {});
@@ -6977,7 +6978,7 @@ function initNearbyModeFromModule() {
 }
 
 async function mountNearbyMode() {
-  return nearbyMode().mount({
+  return nearbyMode()?.mount?.({
     appEl,
     settings,
     journeyModeActive,

@@ -381,9 +381,12 @@
       city = LIVE_CITY;
     }
     const dogfoodApi = dogfood();
-    const savedCity = readSavedCity();
+    // In-memory mount state, not localStorage. After a reload the JS session is
+    // fresh even when the saved city is unchanged — skipping mount then leaves
+    // Sydney/London catalogs empty.
+    const mountedCity = dogfoodApi?.getCity?.() || "";
     if (MULTI_CITY_IDS.includes(city)) {
-      if (savedCity !== city) {
+      if (mountedCity !== city) {
         console.log(`[NextTrainCitySession] Mounting multi-city: ${city}`);
         const mountPromise = dogfoodApi?.mount?.(city);
         if (explicit) {
@@ -394,20 +397,18 @@
           }
         }
       }
-    } else {
-      if (savedCity) {
-        console.log(`[NextTrainCitySession] Unmounting to live city: ${LIVE_CITY}`);
-        dogfoodApi?.unmount?.();
-        city = LIVE_CITY;
-        try {
-          window.nextTrainStationCombobox?.replaceStationsCache?.(null);
-          const listPromise = window.nextTrainStationCombobox?.getStationsList?.();
-          if (explicit) {
-            await listPromise;
-          }
-        } catch {
-          /* perth list reloads on next getStationsList */
+    } else if (mountedCity) {
+      console.log(`[NextTrainCitySession] Unmounting to live city: ${LIVE_CITY}`);
+      dogfoodApi?.unmount?.();
+      city = LIVE_CITY;
+      try {
+        window.nextTrainStationCombobox?.replaceStationsCache?.(null);
+        const listPromise = window.nextTrainStationCombobox?.getStationsList?.();
+        if (explicit) {
+          await listPromise;
         }
+      } catch {
+        /* perth list reloads on next getStationsList */
       }
     }
     if (persist) {
@@ -470,15 +471,26 @@
     document.addEventListener("nexttrain:menu-open", () => syncRegionControls());
   }
 
-  let initializing = false;
+  let initPromise = null;
   let currentHint = null;
 
   async function init() {
-    if (initializing) {
-      return readSavedCity() || LIVE_CITY;
+    if (initPromise) {
+      return initPromise;
     }
-    initializing = true;
+    initPromise = runInit();
+    try {
+      return await initPromise;
+    } catch (error) {
+      initPromise = null;
+      throw error;
+    }
+  }
+
+  async function runInit() {
     bindControls();
+    // Do not probe every live city before first paint. Sydney/Brisbane catalogs
+    // parse large GTFS fixtures and were blocking Near me on Perth cold start.
 
     const explicit = readRegionExplicit();
     let initialCity = readSavedCity() || LIVE_CITY;
