@@ -139,7 +139,8 @@ var NextTrainGeo = (() => {
   var geo_native_exports = {};
   __export(geo_native_exports, {
     ensureLocationPermission: () => ensureLocationPermission,
-    getCurrentPosition: () => getCurrentPosition
+    getCurrentPosition: () => getCurrentPosition,
+    resetLocationPermissionCache: () => resetLocationPermissionCache
   });
 
   // node_modules/@capacitor/geolocation/dist/esm/index.js
@@ -223,6 +224,9 @@ var NextTrainGeo = (() => {
     return location === "denied";
   }
   var permissionPromise = null;
+  function resetLocationPermissionCache() {
+    permissionPromise = null;
+  }
   async function ensureLocationPermission() {
     if (permissionPromise) {
       return permissionPromise;
@@ -288,7 +292,7 @@ var NextTrainGeo = (() => {
     const code = String(error?.code || "");
     const message = String(error?.message || error || "");
     const lower = message.toLowerCase();
-    if (code === "OS-PLUG-GLOC-0010" || lower.includes("disabled") || lower.includes("location services") || lower.includes("not enabled") || lower.includes("location unavailable")) {
+    if (lower.includes("disabled") || lower.includes("location services") && lower.includes("off") || lower.includes("not enabled")) {
       const disabled = new Error(locationServicesOffMessage());
       disabled.code = 2;
       disabled.cause = error;
@@ -300,7 +304,7 @@ var NextTrainGeo = (() => {
       denied.cause = error;
       throw denied;
     }
-    if (Number(error?.code) === 3 || lower.includes("timeout") || lower.includes("could not obtain location in time") || lower.includes("timed out")) {
+    if (code === "OS-PLUG-GLOC-0010" || Number(error?.code) === 3 || lower.includes("timeout") || lower.includes("could not obtain location in time") || lower.includes("location unavailable") || lower.includes("timed out")) {
       const timeout = new Error(
         isIos() ? "Couldn't get your location in time. On iPad, try Wi\u2011Fi, move near a window, or choose a station below." : "Couldn\u2019t get your location in time. Turn on Location \u2014 or choose a station below."
       );
@@ -331,34 +335,78 @@ var NextTrainGeo = (() => {
       speed: coords?.speed ?? position.speed ?? null
     };
   }
+  function withDeadline(promise, ms) {
+    const budgetMs = Math.max(Number(ms) || 0, 1e3);
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        setTimeout(() => {
+          const error = new Error("Could not obtain location in time");
+          error.code = 3;
+          reject(error);
+        }, budgetMs);
+      })
+    ]);
+  }
+  async function readNavigatorPosition(options = {}) {
+    if (!navigator.geolocation) {
+      return null;
+    }
+    const timeout = options.timeout ?? 5e3;
+    const maximumAge = options.maximumAge ?? 6e4;
+    const enableHighAccuracy = Boolean(options.enableHighAccuracy);
+    console.log("[Geo] navigator.geolocation attempt...");
+    const position = await withDeadline(
+      new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy,
+          timeout,
+          maximumAge: isEmulator() ? 0 : maximumAge
+        });
+      }),
+      timeout + 1e3
+    );
+    const coords = readPositionCoords(position);
+    if (!coords) {
+      throw new Error("Geolocation returned an invalid position");
+    }
+    console.log("[Geo] navigator.geolocation success");
+    return { coords };
+  }
   async function getCurrentPosition(options = {}) {
     await ensureLocationPermission();
-    const timeout = options.timeout ?? (isIos() ? 2e4 : 15e3);
+    const timeout = options.timeout ?? (isIos() ? 8e3 : 5e3);
     const maximumAge = options.maximumAge ?? 6e4;
     const preferHighAccuracy = Boolean(options.enableHighAccuracy);
     const nativeAttempts = preferHighAccuracy ? [
-      { enableHighAccuracy: true, maximumAge },
-      { enableHighAccuracy: false, maximumAge }
+      { enableHighAccuracy: true, maximumAge, timeout },
+      { enableHighAccuracy: false, maximumAge, timeout }
     ] : isEmulator() ? [
-      // Emulator: prefer a fresh mock fix (Extended controls → SET LOCATION).
-      { enableHighAccuracy: false, maximumAge: 0 },
-      { enableHighAccuracy: false, maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1e3) },
-      { enableHighAccuracy: true, maximumAge: 0 }
+      { enableHighAccuracy: false, maximumAge: 0, timeout },
+      {
+        enableHighAccuracy: false,
+        maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1e3),
+        timeout
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout }
     ] : [
-      { enableHighAccuracy: false, maximumAge },
-      { enableHighAccuracy: true, maximumAge }
+      { enableHighAccuracy: false, maximumAge, timeout },
+      { enableHighAccuracy: true, maximumAge, timeout: Math.max(timeout, 6e3) }
     ];
     let lastError = null;
     for (const attempt of nativeAttempts) {
       try {
         console.log(
-          `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${timeout}, maximumAge=${attempt.maximumAge}`
+          `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
         );
-        const position = await Geolocation2.getCurrentPosition({
-          enableHighAccuracy: attempt.enableHighAccuracy,
-          timeout,
-          maximumAge: attempt.maximumAge
-        });
+        const position = await withDeadline(
+          Geolocation2.getCurrentPosition({
+            enableHighAccuracy: attempt.enableHighAccuracy,
+            timeout: attempt.timeout,
+            maximumAge: attempt.maximumAge
+          }),
+          attempt.timeout + 1e3
+        );
         const coords = readPositionCoords(position);
         if (!coords) {
           throw new Error("Geolocation returned an invalid position");
@@ -372,24 +420,14 @@ var NextTrainGeo = (() => {
     }
     if (navigator.geolocation) {
       try {
-        console.log("[Geo] Falling back to navigator.geolocation...");
-        const position = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject, {
-            enableHighAccuracy: preferHighAccuracy,
-            timeout: timeout + 5e3,
-            maximumAge: isEmulator() ? 0 : maximumAge
-          });
+        return await readNavigatorPosition({
+          enableHighAccuracy: preferHighAccuracy,
+          timeout,
+          maximumAge
         });
-        console.log("[Geo] navigator.geolocation success");
-        return {
-          coords: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            speed: position.coords.speed ?? null
-          }
-        };
       } catch (error) {
         console.warn("[Geo] navigator.geolocation failed:", error.message || error);
+        lastError = error;
       }
     }
     mapGeolocationError(lastError);

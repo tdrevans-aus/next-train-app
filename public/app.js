@@ -389,11 +389,10 @@ function locationErrorFrom(error) {
   
   console.log(`[App] locationErrorFrom: code=${code}, codeStr=${codeStr}, message="${message}"`);
 
-  // Detect immediate failures on Android/Emulator
-  const isServicesOff = 
-    codeStr === "OS-PLUG-GLOC-0010" ||
+  // OS-PLUG-GLOC-0010 is Capacitor's GPS timeout — not "location off".
+  const isServicesOff =
     lower.includes("disabled") ||
-    lower.includes("location services") ||
+    (lower.includes("location services") && lower.includes("off")) ||
     lower.includes("not enabled");
   if (isServicesOff) {
     const servicesOff = isIosNativeApp()
@@ -417,6 +416,7 @@ function locationErrorFrom(error) {
 
   if (
     code === 3 ||
+    codeStr === "OS-PLUG-GLOC-0010" ||
     lower.includes("timeout") ||
     lower.includes("could not obtain location in time") ||
     lower.includes("location unavailable") ||
@@ -446,11 +446,6 @@ async function getAppGeolocationPosition(options = {}) {
     }
 
     try {
-      if (typeof window.NextTrainGeo.ensureLocationPermission === "function") {
-        await window.NextTrainGeo.ensureLocationPermission();
-      }
-      // geo-native owns timeouts and its own retry chain — do not race here or we
-      // surface errors while native/navigator fallbacks are still in flight.
       return await window.NextTrainGeo.getCurrentPosition(options);
     } catch (error) {
       throw locationErrorFrom(error);
@@ -634,6 +629,26 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl"]);
+
+function normalizeCityId(raw) {
+  const city = String(raw || "").trim().toLowerCase();
+  return LIVE_CITY_IDS.has(city) ? city : "";
+}
+
+function cityIdForStation(station) {
+  const name = String(station || "").trim();
+  const dogfood = window.NextTrainBrisbaneDogfood;
+  if (name && dogfood?.isActive?.() && dogfood.getStations?.()?.includes(name)) {
+    return normalizeCityId(dogfood.getCity());
+  }
+  return "";
+}
+
+function resolveJourneyCity(journey) {
+  return normalizeCityId(journey?.cityId) || cityIdForStation(journey?.station) || "perth";
+}
+
 function appendFixtureQuery(queryString) {
   const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
   const params = new URLSearchParams(queryString);
@@ -642,9 +657,9 @@ function appendFixtureQuery(queryString) {
   }
   window.NextTrainBrisbaneDogfood?.applyParams?.(params);
   if (!params.has("city")) {
-    const savedCity = window.NextTrainCitySession?.readSavedCity?.();
-    if (savedCity && savedCity !== "perth") {
-      params.set("city", savedCity);
+    const city = cityIdForStation(params.get("station"));
+    if (city && city !== "perth") {
+      params.set("city", city);
     }
   }
   return params.toString();
@@ -1080,7 +1095,8 @@ async function applyJourneysMode({ coldStart = false } = {}) {
 
   renderJourneySwitcher();
 
-  if (shouldDefaultToNearby()) {
+  const configured = getConfiguredJourneys();
+  if (!configured.length) {
     journeyModeActive = false;
     if (coldStart) {
       maybeScheduleOnboarding();
@@ -1090,13 +1106,19 @@ async function applyJourneysMode({ coldStart = false } = {}) {
     return;
   }
 
-  const scheduledId = findScheduledJourneyId();
+  if (coldStart && shouldDefaultToNearby()) {
+    journeyModeActive = false;
+    await enterNearbyMode();
+    return;
+  }
+
+  const resolvedId = resolveCurrentOrNextJourneyId();
   if (
-    scheduledId &&
-    settings.activeJourneyId !== scheduledId &&
-    !isManualOverrideBlockingAuto(scheduledId)
+    resolvedId &&
+    settings.activeJourneyId !== resolvedId &&
+    !isManualOverrideBlockingAuto(resolvedId)
   ) {
-    settings.activeJourneyId = scheduledId;
+    settings.activeJourneyId = resolvedId;
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
   }
 
@@ -2021,6 +2043,48 @@ function findScheduledJourneyId() {
   return picked?.id ?? null;
 }
 
+/** Rule 4: soonest upcoming target clock, any day (tonight, tomorrow, or next Monday). */
+function findNextTargetJourneyId() {
+  const journeys = getConfiguredJourneys().filter(isJourneyKind);
+  if (!journeys.length) {
+    return null;
+  }
+
+  const nowMinutes = getPerthMinutesSinceMidnight();
+  const day = getPerthDayOfWeekIso();
+
+  // Try today
+  const upcomingToday = journeys
+    .filter((j) => journeyMatchesActiveDay(j, day))
+    .map((j) => ({ id: j.id, minutes: preferredMinutesFromJourney(j) }))
+    .filter((j) => j.minutes != null && j.minutes > nowMinutes)
+    .sort((a, b) => a.minutes - b.minutes);
+
+  if (upcomingToday.length > 0) {
+    return upcomingToday[0].id;
+  }
+
+  // Try future days
+  for (let offset = 1; offset <= 7; offset++) {
+    const nextDay = ((day + offset - 1) % 7) + 1;
+    const upcomingNextDay = journeys
+      .filter((j) => journeyMatchesActiveDay(j, nextDay))
+      .map((j) => ({ id: j.id, minutes: preferredMinutesFromJourney(j) }))
+      .filter((j) => j.minutes != null)
+      .sort((a, b) => a.minutes - b.minutes);
+
+    if (upcomingNextDay.length > 0) {
+      return upcomingNextDay[0].id;
+    }
+  }
+
+  return journeys[0].id;
+}
+
+function resolveCurrentOrNextJourneyId() {
+  return findScheduledJourneyId() ?? findNextTargetJourneyId();
+}
+
 function findDefaultWindowJourneyAt(minutes = getPerthMinutesSinceMidnight()) {
   return pickScheduledJourney(getJourneysMatchingSchedule(minutes));
 }
@@ -2596,6 +2660,11 @@ function buildApiParams() {
     refresh: String(settings.refreshSeconds),
   });
 
+  const city = resolveJourneyCity(journey);
+  if (city && city !== "perth") {
+    params.set("city", city);
+  }
+
   const fixture = getActiveFixture() || (isTestMode() ? "normal" : null);
   if (fixture) {
     params.set("fixture", fixture);
@@ -2981,6 +3050,32 @@ function resolveLeaveAlarmTrip(alarm) {
   };
 }
 
+function focusJourneyForLeaveAlarm(alarm) {
+  if (!alarm?.active || !alarm.journeyId) {
+    return;
+  }
+
+  if (alarm.journeyId === "nearby-pin") {
+    if (!isNearbyModeActive()) {
+      void enterNearbyMode({
+        departureIso: alarm.departure || undefined,
+      });
+    }
+    return;
+  }
+
+  const activeJourney = getActiveJourney();
+  if (activeJourney?.id === alarm.journeyId) {
+    return;
+  }
+
+  if (!getJourneyById(alarm.journeyId)) {
+    return;
+  }
+
+  switchJourney(alarm.journeyId);
+}
+
 async function syncLeaveAlarmFromNative() {
   if (!isNativeApp()) {
     hideLeaveAlarmBanner();
@@ -2988,6 +3083,9 @@ async function syncLeaveAlarmFromNative() {
   }
 
   const alarm = await window.nextTrainLeaveReminders?.getActiveLeaveAlarm?.();
+  if (alarm?.active) {
+    focusJourneyForLeaveAlarm(alarm);
+  }
   renderLeaveAlarmBanner(alarm);
   return Boolean(alarm?.active);
 }
@@ -3749,17 +3847,37 @@ function renderRouteJourney(data, { stale = false } = {}) {
 }
 
 
+function resolveJourneyTargetPreviewDisplay(journey, pinState) {
+  const authoritative = window.nextTrainPinState?.resolveJourneyPreviewHero?.(journey) ?? null;
+  if (authoritative?.heroPreviewClock) {
+    return {
+      previewClock: authoritative.heroPreviewClock,
+      previewDayLabel: authoritative.heroPreviewDayLabel ?? "",
+    };
+  }
+
+  if (pinState?.heroMode === "preview" && pinState.heroPreviewClock) {
+    return {
+      previewClock: pinState.heroPreviewClock,
+      previewDayLabel: pinState.heroPreviewDayLabel ?? "",
+    };
+  }
+
+  const preferredMinutes = preferredMinutesForLiveGlance(journey);
+  if (preferredMinutes >= 0) {
+    return {
+      previewClock: formatPreferredClock(preferredMinutes),
+      previewDayLabel: "",
+    };
+  }
+
+  return { previewClock: "", previewDayLabel: "" };
+}
+
 function renderJourneyTargetPreviewFace(journey, pinState) {
   lastRenderedNext = null;
   setHeroUrgency("calm");
-  const previewClock =
-    pinState?.heroMode === "preview"
-      ? pinState.heroPreviewClock
-      : preferredMinutesForLiveGlance(journey) >= 0
-        ? formatPreferredClock(preferredMinutesForLiveGlance(journey))
-        : "";
-  const previewDayLabel =
-    pinState?.heroMode === "preview" ? pinState.heroPreviewDayLabel : "";
+  const { previewClock, previewDayLabel } = resolveJourneyTargetPreviewDisplay(journey, pinState);
   if (heroDepartLabelEl) {
     heroDepartLabelEl.textContent = pinState?.heroLabel ?? "Target train";
   }
@@ -4212,10 +4330,52 @@ function openJourneysLibrary() {
   openTravelLibrary("journeys");
 }
 
+function paintJourneyBoardLoadingState() {
+  if (isNearbyModeActive() || !hasConfiguredForActiveTab()) {
+    return;
+  }
+
+  hideNearbyPinLeaveSurfaces();
+  clearHeroSetupState();
+  heroEl?.classList.remove("stale");
+  leaveCardEl?.classList.remove("stale");
+  errorEl.hidden = true;
+
+  const journey = getActiveJourney();
+  setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+
+  if (heroDepartLabelEl) {
+    heroDepartLabelEl.textContent = "Next Train";
+  }
+  if (departCountdownEl) {
+    departCountdownEl.textContent = "—";
+  }
+  if (departDisplayTimeEl) {
+    departDisplayTimeEl.textContent = "Updating…";
+    departDisplayTimeEl.removeAttribute("data-time");
+  }
+  if (heroScheduledTimeEl) {
+    heroScheduledTimeEl.hidden = true;
+  }
+  if (leaveCardEl) {
+    leaveCardEl.hidden = true;
+  }
+  if (updatedEl) {
+    updatedEl.textContent = "Updating…";
+  }
+  platformEl.textContent = "—";
+  statusEl.textContent = "—";
+  followingSectionEl.hidden = true;
+  hideUpcomingDepartureBoard();
+  syncHeroPinChrome();
+  renderJourneySwitcher();
+}
+
 function discardStaleJourneyBoard() {
   journeyBoardFetchId += 1;
   lastApiData = null;
   lastRenderedNext = null;
+  paintJourneyBoardLoadingState();
 }
 
 function enterRouteMode() {
@@ -4287,11 +4447,23 @@ function enterJourneyMode() {
   ensureActiveJourneyForTab("journeys");
   discardStaleJourneyBoard();
   clearHeroSetupState();
-  maybeAutoSelectJourney();
+
+  const resolvedId = resolveCurrentOrNextJourneyId();
+  if (resolvedId && settings.activeJourneyId !== resolvedId) {
+    settings.activeJourneyId = resolvedId;
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }
+
   const journey = getActiveJourney();
   if (journey) {
     setManualJourneyOverride(journey.id);
   }
+
+  // Rule 6: load = Target train again, unless their chosen pin is still active.
+  if (journey && !isJourneyOverrideActiveToday(journey)) {
+    clearSkipState();
+  }
+
   if (hasPersistedNearbyPin()) {
     reconcileExclusivePinState({ type: "nearby" });
   } else if (journey && isJourneyTargetPinnedToday(journey)) {
@@ -4696,7 +4868,7 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     }
   }
 
-  const geoTimeoutMs = forceFresh ? 30000 : 15000;
+  const geoTimeoutMs = forceFresh ? 12000 : 5000;
   // Load station catalog and GPS in parallel — don't serialise a local JSON read ahead of the fix.
   const [coords, position] = await Promise.all([
     loadStationCoords(),
@@ -4882,7 +5054,7 @@ function syncHeroPinChrome() {
           pinActive = Boolean(
             pinState.isPinnedToday &&
               !pinState.isPinDismissedToday &&
-              (pinState.heroShowsPin || pinState.showsTargetTrain || pinState.pinnedChrome)
+              (pinState.heroShowsPin || pinState.pinnedChrome)
           );
         } else {
           const pinTrip = resolveJourneyPinTrip(lastApiData, journeyPinClean);
@@ -4944,6 +5116,16 @@ async function resolveNextTrainPayload(apiData) {
     return apiData;
   }
 
+  if (apiData?.next) {
+    return apiData;
+  }
+
+  // Server already checked live board (+ GTFS fallback server-side). Do not re-fetch
+  // raw Perth XML in the browser — it can disagree and flash a phantom time.
+  if (apiData?.scheduleSource) {
+    return apiData;
+  }
+
   const clientData = await fetchNextTrainFromLiveTimesClient();
   return clientData ?? apiData;
 }
@@ -4978,6 +5160,9 @@ async function fetchNextTrain() {
 
   syncActiveJourneyForCurrentTab();
   clearHeroSetupState();
+  if (!lastApiData) {
+    paintJourneyBoardLoadingState();
+  }
   maybeAutoSelectJourney();
   updateSwipeHint();
   updateSwipeCues();
@@ -6684,6 +6869,7 @@ function initJourneyDetailFromModule() {
     isNativeApp,
     perthStationsHas: (station) => PERTH_STATIONS.has(station),
     getPerthApiStations: () => PERTH_API_STATIONS,
+    cityIdForStation,
     pauseOnboardingForOverlay,
     isJourneysDialogOpen,
     notifyAdOverlaySuppression,
@@ -7100,17 +7286,7 @@ function hasPersistedNearbyPin() {
 
 function findActiveJourneyPinId() {
   for (const journey of settings.journeys) {
-    const next = sanitizeJourneyPinDismissed(
-      sanitizeJourneyPinOverride(normalizeJourney(journey))
-    );
-    if (isJourneyOverrideActiveToday(next)) {
-      return journey.id;
-    }
-    if (
-      !isRouteJourney(next) &&
-      preferredMinutesForLiveGlance(next) >= 0 &&
-      !isJourneyPinDismissedToday(next)
-    ) {
+    if (isJourneyPinnedToday(journey)) {
       return journey.id;
     }
   }
@@ -7225,10 +7401,7 @@ function clearOtherPinnedTrains(keep) {
 
     if (!isRouteJourney(next)) {
       const fresh = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(next));
-      if (
-        preferredMinutesForLiveGlance(fresh) >= 0 &&
-        !isJourneyPinDismissedToday(fresh)
-      ) {
+      if (isJourneyPinnedToday(fresh)) {
         next = normalizeJourney({
           ...fresh,
           journeyPinDismissedDate: today,
@@ -7477,6 +7650,7 @@ document.addEventListener("visibilitychange", () => {
     return;
   }
 
+  window.NextTrainGeo?.resetLocationPermissionCache?.();
   dismissStaleBlockingLayers();
   maybeScheduleOnboarding();
   void maybeSyncLeaveAlarmFromNative();

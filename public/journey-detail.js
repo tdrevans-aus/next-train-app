@@ -240,7 +240,7 @@
       detailReminderSection.hidden = route;
     }
     if (detailJourneyWindow) {
-      detailJourneyWindow.hidden = route;
+      detailJourneyWindow.hidden = true;
     }
     if (detailRemindControls) {
       detailRemindControls.hidden = route;
@@ -309,6 +309,10 @@
 
   function getPerthApiStations() {
     return deps.getPerthApiStations?.() ?? [];
+  }
+
+  function cityIdForStation(station) {
+    return deps.cityIdForStation?.(station) ?? "";
   }
 
   function pauseOnboardingForOverlay() {
@@ -604,16 +608,17 @@ function isTargetOutsideActiveWindow(defaultFrom, defaultUntil, preferredTrainTi
   return targetMinutes < from && targetMinutes > until;
 }
 
-const JOURNEY_WINDOW_TARGET_PADDING_MINUTES = 90;
+const JOURNEY_WINDOW_TARGET_START_PADDING_MINUTES = 60;
+const JOURNEY_WINDOW_TARGET_END_PADDING_MINUTES = 15;
 
 function journeyWindowAroundTarget(preferredTrainTime) {
   const from =
     deps.addMinutesToTimeString?.(
       preferredTrainTime,
-      -JOURNEY_WINDOW_TARGET_PADDING_MINUTES
+      -JOURNEY_WINDOW_TARGET_START_PADDING_MINUTES
     ) ?? "";
   const until =
-    deps.addMinutesToTimeString?.(preferredTrainTime, JOURNEY_WINDOW_TARGET_PADDING_MINUTES) ??
+    deps.addMinutesToTimeString?.(preferredTrainTime, JOURNEY_WINDOW_TARGET_END_PADDING_MINUTES) ??
     "";
   return { from, until };
 }
@@ -701,9 +706,6 @@ function syncDetailComboHints({ amendWindowFromTarget = false, skipWindowDefault
     if (outsideTarget && wasHidden) {
       detailTargetOutsideActiveHint.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
-  }
-  if (detailActiveHoursHint) {
-    detailActiveHoursHint.hidden = false;
   }
 }
 
@@ -854,26 +856,34 @@ function formatMinutesAsTime(totalMinutes) {
   );
 }
 
-function getJourneyWindowRanges(journey) {
-  if (!hasDefaultWindow(journey)) {
-    return [];
-  }
+  function getJourneyWindowRanges(journey) {
+    let from, until;
 
-  const from = parseTimeToMinutes(journey.defaultFrom);
-  const until = parseTimeToMinutes(journey.defaultUntil);
-  const dayEnd = 24 * 60;
+    if (isJourneyKind(journey) && journey.preferredTrainTime) {
+      const target = parseTimeToMinutes(journey.preferredTrainTime);
+      from = (target - 60 + 24 * 60) % (24 * 60);
+      until = (target + 15 + 24 * 60) % (24 * 60);
+    } else {
+      if (!hasDefaultWindow(journey)) {
+        return [];
+      }
+      from = parseTimeToMinutes(journey.defaultFrom);
+      until = parseTimeToMinutes(journey.defaultUntil);
+    }
 
-  if (from === until) {
-    return [[0, dayEnd]];
+    const dayEnd = 24 * 60;
+
+    if (from === until) {
+      return [[0, dayEnd]];
+    }
+    if (from < until) {
+      return [[from, until]];
+    }
+    return [
+      [from, dayEnd],
+      [0, until],
+    ];
   }
-  if (from < until) {
-    return [[from, until]];
-  }
-  return [
-    [from, dayEnd],
-    [0, until],
-  ];
-}
 
 function timeRangesOverlap(rangeA, rangeB) {
   return rangeA[0] < rangeB[1] && rangeB[0] < rangeA[1];
@@ -1170,10 +1180,10 @@ async function syncJourneyDetailRouteFields(journey, nearestHint = null) {
 
 function formatJourneyOverlapError(updated, conflict) {
   if (conflict.name === updated.name && conflict.id !== updated.id) {
-    return `Only one journey can be active at one time. Another ${conflict.name} already uses these hours.`;
+    return `Only one journey can be active at one time. Another ${conflict.name} already uses this schedule.`;
   }
 
-  return `Only one journey can be active at one time. These hours overlap ${conflict.name} (${formatJourneyDefaultWindow(conflict)}).`;
+  return `Only one journey can be active at one time. This schedule overlaps ${conflict.name} (${formatJourneyDefaultWindow(conflict)}).`;
 }
 
 function clearJourneyOverlapError() {
@@ -1231,64 +1241,90 @@ function showJourneyOverlapFixApplied(adjustedJourney, keptJourney, cleared) {
   }
 }
 
-function scoreActiveHoursChange(before, after) {
-  if (!hasDefaultWindow(after)) {
-    return 24 * 60 * 4;
-  }
-  if (!hasDefaultWindow(before)) {
-    return 0;
-  }
-  return (
-    Math.abs(parseTimeToMinutes(after.defaultFrom) - parseTimeToMinutes(before.defaultFrom)) +
-    Math.abs(parseTimeToMinutes(after.defaultUntil) - parseTimeToMinutes(before.defaultUntil))
-  );
-}
+  function scoreActiveHoursChange(before, after) {
+    if (isJourneyKind(after) && after.preferredTrainTime) {
+      if (!before.preferredTrainTime) {
+        return 24 * 60 * 4;
+      }
+      return Math.abs(parseTimeToMinutes(after.preferredTrainTime) - parseTimeToMinutes(before.preferredTrainTime));
+    }
 
-function buildConflictFixCandidates(editing, conflict) {
-  const editingStart = parseTimeToMinutes(editing.defaultFrom);
-  const editingEnd = parseTimeToMinutes(editing.defaultUntil);
-  const conflictStart = parseTimeToMinutes(conflict.defaultFrom);
-  const conflictEnd = parseTimeToMinutes(conflict.defaultUntil);
-  const candidates = [];
-
-  // Overnight windows: clearing the older journey is safer than inventing a preset.
-  if (editingStart >= editingEnd || conflictStart >= conflictEnd) {
-    return [{ defaultFrom: "", defaultUntil: "" }];
+    if (!hasDefaultWindow(after)) {
+      return 24 * 60 * 4;
+    }
+    if (!hasDefaultWindow(before)) {
+      return 0;
+    }
+    return (
+      Math.abs(parseTimeToMinutes(after.defaultFrom) - parseTimeToMinutes(before.defaultFrom)) +
+      Math.abs(parseTimeToMinutes(after.defaultUntil) - parseTimeToMinutes(before.defaultUntil))
+    );
   }
 
-  const duration = conflictEnd - conflictStart;
+  function buildConflictFixCandidates(editing, conflict) {
+    if (isJourneyKind(conflict) && conflict.preferredTrainTime) {
+      const editingRanges = getJourneyWindowRanges(editing);
+      if (editingRanges.length !== 1) {
+        // Multi-range (overnight) editing journey: clearing is safer.
+        return [{ preferredTrainTime: "" }];
+      }
+      const [editingStart, editingEnd] = editingRanges[0];
+      
+      return [
+        { preferredTrainTime: formatMinutesAsTime(editingStart - 15) },
+        { preferredTrainTime: formatMinutesAsTime(editingEnd + 60) },
+        { preferredTrainTime: "" },
+      ].filter(c => {
+          if (!c.preferredTrainTime) return true;
+          const mins = parseTimeToMinutes(c.preferredTrainTime);
+          return mins >= 0 && mins < 24 * 60;
+      });
+    }
 
-  if (conflictStart < editingStart && conflictEnd > editingStart && editingStart - conflictStart >= 1) {
-    candidates.push({
-      defaultFrom: formatMinutesAsTime(conflictStart),
-      defaultUntil: formatMinutesAsTime(editingStart),
-    });
+    const editingStart = parseTimeToMinutes(editing.defaultFrom);
+    const editingEnd = parseTimeToMinutes(editing.defaultUntil);
+    const conflictStart = parseTimeToMinutes(conflict.defaultFrom);
+    const conflictEnd = parseTimeToMinutes(conflict.defaultUntil);
+    const candidates = [];
+
+    // Overnight windows: clearing the older journey is safer than inventing a preset.
+    if (editingStart >= editingEnd || conflictStart >= conflictEnd) {
+      return [{ defaultFrom: "", defaultUntil: "" }];
+    }
+
+    const duration = conflictEnd - conflictStart;
+
+    if (conflictStart < editingStart && conflictEnd > editingStart && editingStart - conflictStart >= 1) {
+      candidates.push({
+        defaultFrom: formatMinutesAsTime(conflictStart),
+        defaultUntil: formatMinutesAsTime(editingStart),
+      });
+    }
+
+    if (conflictStart < editingEnd && conflictEnd > editingEnd && conflictEnd - editingEnd >= 1) {
+      candidates.push({
+        defaultFrom: formatMinutesAsTime(editingEnd),
+        defaultUntil: formatMinutesAsTime(conflictEnd),
+      });
+    }
+
+    if (duration >= 1 && editingStart - duration >= 0) {
+      candidates.push({
+        defaultFrom: formatMinutesAsTime(editingStart - duration),
+        defaultUntil: formatMinutesAsTime(editingStart),
+      });
+    }
+
+    if (duration >= 1 && editingEnd + duration <= 24 * 60) {
+      candidates.push({
+        defaultFrom: formatMinutesAsTime(editingEnd),
+        defaultUntil: formatMinutesAsTime(editingEnd + duration),
+      });
+    }
+
+    candidates.push({ defaultFrom: "", defaultUntil: "" });
+    return candidates;
   }
-
-  if (conflictStart < editingEnd && conflictEnd > editingEnd && conflictEnd - editingEnd >= 1) {
-    candidates.push({
-      defaultFrom: formatMinutesAsTime(editingEnd),
-      defaultUntil: formatMinutesAsTime(conflictEnd),
-    });
-  }
-
-  if (duration >= 1 && editingStart - duration >= 0) {
-    candidates.push({
-      defaultFrom: formatMinutesAsTime(editingStart - duration),
-      defaultUntil: formatMinutesAsTime(editingStart),
-    });
-  }
-
-  if (duration >= 1 && editingEnd + duration <= 24 * 60) {
-    candidates.push({
-      defaultFrom: formatMinutesAsTime(editingEnd),
-      defaultUntil: formatMinutesAsTime(editingEnd + duration),
-    });
-  }
-
-  candidates.push({ defaultFrom: "", defaultUntil: "" });
-  return candidates;
-}
 
 function conflictFixCreatesOtherClash(proposedConflict, editing, journeys) {
   if (!hasDefaultWindow(proposedConflict)) {
@@ -1319,73 +1355,90 @@ function conflictFixCreatesOtherClash(proposedConflict, editing, journeys) {
  * New journey (being edited) keeps its hours. Adjust the conflicting journey
  * by the smallest time change that removes the overlap.
  */
-function suggestOverlapFixForConflict(editing, conflict, journeys) {
-  let best = null;
-  let bestScore = Infinity;
-  let bestStart = Infinity;
+  function suggestOverlapFixForConflict(editing, conflict, journeys) {
+    let best = null;
+    let bestScore = Infinity;
+    let bestStart = Infinity;
 
-  for (const window of buildConflictFixCandidates(editing, conflict)) {
-    const proposed = {
-      ...conflict,
-      defaultFrom: window.defaultFrom,
-      defaultUntil: window.defaultUntil,
-    };
-    if (hasDefaultWindow(proposed) && journeyDefaultWindowsOverlap(editing, proposed)) {
-      continue;
-    }
-    if (conflictFixCreatesOtherClash(proposed, editing, journeys)) {
-      continue;
-    }
-
-    const score = scoreActiveHoursChange(conflict, proposed);
-    const start = hasDefaultWindow(proposed)
-      ? parseTimeToMinutes(proposed.defaultFrom)
-      : Infinity;
-    if (score < bestScore || (score === bestScore && start < bestStart)) {
-      bestScore = score;
-      bestStart = start;
-      best = {
-        defaultFrom: window.defaultFrom,
-        defaultUntil: window.defaultUntil,
-        cleared: !hasDefaultWindow(proposed),
+    for (const fix of buildConflictFixCandidates(editing, conflict)) {
+      const proposed = {
+        ...conflict,
+        ...fix,
       };
+      
+      // Re-derive defaultFrom/Until for the proposed conflict so overlap check works
+      if (proposed.preferredTrainTime) {
+          const { from, until } = journeyWindowAroundTarget(proposed.preferredTrainTime);
+          proposed.defaultFrom = from;
+          proposed.defaultUntil = until;
+      }
+
+      if ((proposed.preferredTrainTime || hasDefaultWindow(proposed)) && journeyDefaultWindowsOverlap(editing, proposed)) {
+        continue;
+      }
+      if (conflictFixCreatesOtherClash(proposed, editing, journeys)) {
+        continue;
+      }
+
+      const score = scoreActiveHoursChange(conflict, proposed);
+      const start = proposed.preferredTrainTime 
+        ? parseTimeToMinutes(proposed.preferredTrainTime) - 60
+        : (hasDefaultWindow(proposed) ? parseTimeToMinutes(proposed.defaultFrom) : Infinity);
+      
+      if (score < bestScore || (score === bestScore && start < bestStart)) {
+        bestScore = score;
+        bestStart = start;
+        best = {
+          ...fix,
+          cleared: !proposed.preferredTrainTime && !hasDefaultWindow(proposed),
+        };
+      }
     }
+
+    return best;
   }
 
-  return best;
-}
+  function applyJourneyOverlapFix() {
+    if (!journeyOverlapState?.conflict || !journeyOverlapState?.updated) {
+      return;
+    }
 
-function applyJourneyOverlapFix() {
-  if (!journeyOverlapState?.conflict || !journeyOverlapState?.updated) {
-    return;
+    const kept = journeyOverlapState.updated;
+    const conflict = journeyOverlapState.conflict;
+    const fix = suggestOverlapFixForConflict(kept, conflict, getSettingsDraftJourneys());
+    if (!fix) {
+      return;
+    }
+
+    const index = getSettingsDraftJourneys().findIndex((journey) => journey.id === conflict.id);
+    if (index < 0) {
+      return;
+    }
+
+    const updatedConflict = {
+      ...getSettingsDraftJourneys()[index],
+      ...fix,
+    };
+    
+    if (updatedConflict.preferredTrainTime) {
+        const { from, until } = journeyWindowAroundTarget(updatedConflict.preferredTrainTime);
+        updatedConflict.defaultFrom = from;
+        updatedConflict.defaultUntil = until;
+    } else {
+        updatedConflict.defaultFrom = "";
+        updatedConflict.defaultUntil = "";
+    }
+
+    getSettingsDraftJourneys()[index] = updatedConflict;
+
+    const stillConflicts = findJourneyDefaultWindowConflict(kept, getSettingsDraftJourneys());
+    if (stillConflicts) {
+      showJourneyOverlapError(kept, stillConflicts);
+      return;
+    }
+
+    showJourneyOverlapFixApplied(getSettingsDraftJourneys()[index], kept, fix.cleared);
   }
-
-  const kept = journeyOverlapState.updated;
-  const conflict = journeyOverlapState.conflict;
-  const fix = suggestOverlapFixForConflict(kept, conflict, getSettingsDraftJourneys());
-  if (!fix) {
-    return;
-  }
-
-  const index = getSettingsDraftJourneys().findIndex((journey) => journey.id === conflict.id);
-  if (index < 0) {
-    return;
-  }
-
-  getSettingsDraftJourneys()[index] = {
-    ...getSettingsDraftJourneys()[index],
-    defaultFrom: fix.defaultFrom,
-    defaultUntil: fix.defaultUntil,
-  };
-
-  const stillConflicts = findJourneyDefaultWindowConflict(kept, getSettingsDraftJourneys());
-  if (stillConflicts) {
-    showJourneyOverlapError(kept, stillConflicts);
-    return;
-  }
-
-  showJourneyOverlapFixApplied(getSettingsDraftJourneys()[index], kept, fix.cleared);
-}
 
 async function revertDetailRemindersForDeniedPermission() {
   if (detailRemindMeInput) {
@@ -1529,12 +1582,11 @@ function readJourneyDetailDraft() {
       station,
       direction,
       kind: "route",
+      cityId: cityIdForStation(station) || existing?.cityId || "perth",
       templateKey: existing?.templateKey,
       autoRoute: existing?.autoRoute,
     });
   }
-
-  const { defaultFrom, defaultUntil } = normalizeActiveHoursFieldsForSave();
 
   const remindDays = readDetailActiveDays();
   if (!remindDays.length) {
@@ -1550,19 +1602,7 @@ function readJourneyDetailDraft() {
     throw new Error("Choose your target train.");
   }
 
-  if (!defaultFrom || !defaultUntil) {
-    if (!defaultFrom) {
-      detailDefaultFromDisplay?.focus?.();
-    } else {
-      detailDefaultUntilDisplay?.focus?.();
-    }
-    throw new Error("Set your journey window.");
-  }
-
-  if (isTargetOutsideActiveWindow(defaultFrom, defaultUntil, preferredTrainTime)) {
-    detailPreferredDisplay?.focus?.();
-    throw new Error("Target train must be within your journey window.");
-  }
+  const { from: defaultFrom, until: defaultUntil } = journeyWindowAroundTarget(preferredTrainTime);
 
   const useLeaveBefore = detailUseLeaveBeforeInput?.checked !== false;
   const remindMe = useLeaveBefore ? remindWanted : false;
@@ -1580,6 +1620,7 @@ function readJourneyDetailDraft() {
     remindDays,
     remindMe,
     kind: "journey",
+    cityId: cityIdForStation(station) || existing?.cityId || "perth",
     templateKey: existing?.templateKey,
     autoRoute: existing?.autoRoute,
   });

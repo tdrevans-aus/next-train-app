@@ -85,7 +85,6 @@
 function templateWizardShouldDockCoachBottom(step = templateWizardStep) {
   // Legacy hook — scroll padding only; coach position is computed in syncTemplateWizardCoachPosition.
   return (
-    step === getTemplateWizardHoursStep() ||
     step === getTemplateWizardTimeStep() ||
     step === getTemplateWizardReminderStep()
   );
@@ -131,19 +130,22 @@ function syncTemplateWizardCoachPosition() {
   const gap = 10;
   const padding = 12;
   const maxTop = coachRect.height - cardHeight - padding;
-  const isHoursStep = templateWizardStep === getTemplateWizardHoursStep();
 
-  const candidates = isHoursStep
-    ? [
-        { top: targetRect.top - coachRect.top - cardHeight - gap },
-        { bottom: padding },
-        { top: targetRect.bottom - coachRect.top + gap },
-      ]
-    : [
-        { top: targetRect.top - coachRect.top - cardHeight - gap },
-        { top: targetRect.bottom - coachRect.top + gap },
-        { bottom: padding },
-      ];
+  const targetCenterY = (targetRect.top + targetRect.bottom) / 2;
+  const coachCenterY = (coachRect.top + coachRect.bottom) / 2;
+
+  const candidates =
+    targetCenterY < coachCenterY
+      ? [
+          { top: targetRect.bottom - coachRect.top + gap },
+          { top: targetRect.top - coachRect.top - cardHeight - gap },
+          { bottom: padding },
+        ]
+      : [
+          { top: targetRect.top - coachRect.top - cardHeight - gap },
+          { top: targetRect.bottom - coachRect.top + gap },
+          { bottom: padding },
+        ];
 
   for (const candidate of candidates) {
     if (candidate.top !== undefined) {
@@ -182,12 +184,8 @@ function getTemplateWizardReminderStep(context = templateWizardContext) {
   return getTemplateWizardTimeStep(context) + 1;
 }
 
-function getTemplateWizardHoursStep(context = templateWizardContext) {
-  return getTemplateWizardReminderStep(context) + 1;
-}
-
 function getTemplateWizardMaxStep(context = templateWizardContext) {
-  return getTemplateWizardHoursStep(context);
+  return getTemplateWizardReminderStep(context);
 }
 
 function getTemplateWizardHighlightTarget(
@@ -200,9 +198,6 @@ function getTemplateWizardHighlightTarget(
 
   if (step === getTemplateWizardRouteStep(context)) {
     return deps.detailRouteCore || deps.detailRouteSection;
-  }
-  if (step === getTemplateWizardHoursStep(context)) {
-    return deps.detailJourneyWindow || document.getElementById("detail-timing-section");
   }
   if (step === getTemplateWizardTimeStep(context)) {
     return deps.detailTargetMaster || deps.detailPreferredSection || deps.detailPreferredField;
@@ -223,9 +218,6 @@ function getTemplateWizardStepTitleId(
   }
   if (step === getTemplateWizardRouteStep(context)) {
     return "template-wizard-step-1-title";
-  }
-  if (step === getTemplateWizardHoursStep(context)) {
-    return "template-wizard-step-3-title";
   }
   if (step === getTemplateWizardTimeStep(context)) {
     return "template-wizard-step-2-title";
@@ -393,7 +385,6 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
   if (target) {
     target.classList.add("template-wizard-highlight");
     const scrollBlock =
-      step === getTemplateWizardHoursStep() ||
       step === getTemplateWizardTimeStep() ||
       step === getTemplateWizardReminderStep()
         ? "start"
@@ -411,10 +402,8 @@ function syncTemplateWizardHighlight(step = templateWizardStep) {
 function syncTemplateWizardChrome() {
   const active = Boolean(templateRouteCoach && !templateRouteCoach.hidden);
   const reminderStep = active && templateWizardStep === getTemplateWizardReminderStep();
-  const hoursStep = active && templateWizardStep === getTemplateWizardHoursStep();
   deps.journeysDialog?.classList.toggle("template-wizard-active", active);
   deps.journeysDialog?.classList.toggle("template-wizard-reminder-step", reminderStep);
-  deps.journeysDialog?.classList.toggle("template-wizard-hours-step", hoursStep);
 
   if (!templateRouteCoach) {
     return;
@@ -440,7 +429,6 @@ function renderTemplateWizardStep() {
   const useName = templateWizardUsesNameStep();
   const routeStep = getTemplateWizardRouteStep();
   const timeStep = getTemplateWizardTimeStep();
-  const hoursStep = getTemplateWizardHoursStep();
   const reminderStep = getTemplateWizardReminderStep();
 
   if (templateWizardStepName) {
@@ -451,9 +439,6 @@ function renderTemplateWizardStep() {
   }
   if (templateWizardStep2) {
     templateWizardStep2.hidden = templateWizardStep !== timeStep;
-  }
-  if (templateWizardStep3) {
-    templateWizardStep3.hidden = templateWizardStep !== hoursStep;
   }
   if (templateWizardStepReminder) {
     templateWizardStepReminder.hidden = templateWizardStep !== reminderStep;

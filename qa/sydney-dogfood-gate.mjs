@@ -4,6 +4,8 @@
 import { assertCityLive } from "../lib/providers/registry.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
+import directionsHandler from "../api/directions.js";
+import { getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import { marketingLabelsForStation } from "../lib/cities/sydney/marketing-directions.js";
 
 function assert(condition, message) {
@@ -53,6 +55,44 @@ assert(!central.some((label) => label.startsWith("M1 ")), "Central trains must n
 const metro = marketingLabelsForStation("Central Metro");
 assert(metro.includes("M1 Tallawong") && metro.includes("M1 Sydenham"), "Central Metro is M1 only");
 assert(!metro.some((label) => label.startsWith("T")), "Central Metro must not show Trains chips");
+
+const banksia = marketingLabelsForStation("Banksia");
+assert(banksia.includes("T4 Bondi Junction"), "Banksia must offer T4 Bondi Junction");
+assert(
+  banksia.includes("T4 Waterfall") && banksia.includes("T4 Cronulla"),
+  "Banksia is T4 Illawarra"
+);
+
+const banksiaPack = await getMultiCityDirections("sydney", "Banksia");
+assert(Array.isArray(banksiaPack.directions), "getMultiCityDirections must resolve to a directions array");
+assert(
+  banksiaPack.directions.includes("T4 Bondi Junction"),
+  "Banksia directions pack includes T4 Bondi Junction"
+);
+
+const banksiaRes = {
+  statusCode: 0,
+  body: null,
+  setHeader() {},
+  status(code) {
+    this.statusCode = code;
+    return this;
+  },
+  json(payload) {
+    this.body = payload;
+    return this;
+  },
+  end() {},
+};
+await directionsHandler(
+  { method: "GET", headers: {}, query: { city: "sydney", station: "Banksia" } },
+  banksiaRes
+);
+assert(banksiaRes.statusCode === 200, `Banksia /api/directions must 200, got ${banksiaRes.statusCode}`);
+assert(
+  Array.isArray(banksiaRes.body?.directions) && banksiaRes.body.directions.includes("T4 Bondi Junction"),
+  "Banksia /api/directions must return T4 chips, not an unresolved Promise"
+);
 
 if (previous === undefined) {
   delete process.env.ALLOW_CITY_PROBES;

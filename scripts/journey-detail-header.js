@@ -179,6 +179,10 @@
     return deps.getPerthApiStations?.() ?? [];
   }
 
+  function cityIdForStation(station) {
+    return deps.cityIdForStation?.(station) ?? "";
+  }
+
   function pauseOnboardingForOverlay() {
     return deps.pauseOnboardingForOverlay?.();
   }

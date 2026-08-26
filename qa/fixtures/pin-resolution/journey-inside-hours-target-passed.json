@@ -1,10 +1,10 @@
 {
-  "id": "journey-outside-hours-target",
-  "description": "Outside Active hours on an active day — hero previews the next target commute (Tomorrow 17:30), not tonight's train; widget shows nothing.",
+  "id": "journey-inside-hours-target-passed",
+  "description": "Inside Active hours after target has passed — preview next remind day (Tomorrow 17:30), not Today.",
   "tags": ["journey", "preferred", "outside-hours"],
   "clock": {
-    "perthDateKey": "2026-08-15",
-    "nowIso": "2026-08-15T23:28:00+08:00"
+    "perthDateKey": "2026-08-26",
+    "nowIso": "2026-08-26T22:10:00+08:00"
   },
   "input": {
     "mode": "journey",
@@ -15,42 +15,24 @@
       "kind": "journey",
       "name": "Evening home",
       "station": "Perth Underground Stn",
-      "direction": "Mandurah",
+      "direction": "Yanchep",
       "preferredTrainTime": "17:30",
       "defaultFrom": "15:00",
-      "defaultUntil": "18:00",
+      "defaultUntil": "23:00",
       "remindDays": [1, 2, 3, 4, 5, 6, 7],
       "leaveBeforeMinutes": 10,
       "useLeaveBefore": true
     },
     "payload": {
-      "next": {
-        "departure": "2026-08-15T23:42:00+08:00",
-        "displayTime": "23:42",
-        "platform": "1",
-        "leaveBy": "2026-08-15T23:32:00+08:00"
-      },
-      "upcoming": [
-        {
-          "departure": "2026-08-15T23:42:00+08:00",
-          "displayTime": "23:42",
-          "platform": "1",
-          "leaveBy": "2026-08-15T23:32:00+08:00"
-        },
-        {
-          "departure": "2026-08-15T23:58:00+08:00",
-          "displayTime": "23:58",
-          "platform": "2",
-          "leaveBy": "2026-08-15T23:48:00+08:00"
-        }
-      ]
+      "next": null,
+      "upcoming": []
     }
   },
   "expected": {
-    "trueNextDeparture": "2026-08-15T23:42:00+08:00",
+    "trueNextDeparture": null,
     "pinDeparture": null,
     "heroDeparture": null,
-    "leaveDeparture": "2026-08-15T23:42:00+08:00",
+    "leaveDeparture": null,
     "secondaryNextDeparture": null,
     "widgetFaceDeparture": null,
     "isPinnedToday": true,

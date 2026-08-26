@@ -1837,7 +1837,11 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
     }
 
     if (!nearbySession.station && !nearbyUserPickedStation) {
-      setNearbyError(locationErrorFrom(error).message);
+      const message = locationErrorFrom(error).message;
+      setNearbyError(message);
+      if (Number(error?.code) === 3 || classifyNearbyError(message) === "location") {
+        showNearbyEarlyPicker();
+      }
       renderNearbyBoard();
       return;
     }

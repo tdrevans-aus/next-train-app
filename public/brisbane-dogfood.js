@@ -199,8 +199,11 @@
     getCoords: () => state.coords,
     isCityAvailable: (city) => MULTI_CITY_IDS.includes(String(city || "").toLowerCase()),
     applyParams(params) {
-      if (state.active && state.city) {
-        params.set("city", state.city);
+      if (state.active && state.city && !params.has("city")) {
+        const station = params.get("station");
+        if (station && state.stations.includes(station)) {
+          params.set("city", state.city);
+        }
       }
       return params;
     },

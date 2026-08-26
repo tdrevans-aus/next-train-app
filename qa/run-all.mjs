@@ -43,6 +43,7 @@ const SMOKE_SCRIPTS = [
   "onboarding-scrim-dismiss.mjs",
   "brisbane-dogfood-gate.mjs",
   "sydney-dogfood-gate.mjs",
+  "sydney-banksia-perth-route.mjs",
   "adelaide-dogfood-gate.mjs",
   "region-selection.mjs",
   "uk-region-catalog-conformance.mjs",

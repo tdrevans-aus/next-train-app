@@ -229,7 +229,7 @@ app.get("/api/directions", async (req, res) => {
       });
       return;
     }
-    const pack = getMultiCityDirections(req.query.city, station);
+    const pack = await getMultiCityDirections(req.query.city, station);
     res.json({ directions: pack.directions, source: pack.source });
     return;
   }
@@ -281,7 +281,7 @@ app.get("/api/destinations", async (req, res) => {
       });
       return;
     }
-    const pack = getMultiCityDirections(req.query.city, station);
+    const pack = await getMultiCityDirections(req.query.city, station);
     res.json({ destinations: pack.directions, source: pack.source });
     return;
   }
@@ -439,7 +439,7 @@ app.get("/api/board", async (req, res) => {
         return;
       }
 
-      const { directions } = getMultiCityDirections(city, station);
+      const { directions } = await getMultiCityDirections(city, station);
       
       // Optimized TfL fetch
       if (city === "uk-london-tfl") {

@@ -27,7 +27,7 @@ public final class JourneyPinHelper {
     return !dismissedDate.isEmpty() && dismissedDate.equals(PerthTime.localDateKey());
   }
 
-  /** Widget + hero pin chrome: override today, or preferred target not dismissed today. */
+  /** Widget + hero pin chrome: override today, or preferred target in window and not dismissed today. */
   public static boolean isJourneyPinnedToday(JSONObject journey) {
     if (journey == null) {
       return false;
@@ -38,7 +38,10 @@ public final class JourneyPinHelper {
     if (isPinDismissedToday(journey)) {
       return false;
     }
-    return CommuteSchedule.preferredMinutesForLiveGlance(journey) >= 0;
+    if (CommuteSchedule.preferredMinutesForLiveGlance(journey) < 0) {
+      return false;
+    }
+    return JourneySelector.matchesWindow(journey, PerthTime.minutesSinceMidnight());
   }
 
   public static JSONObject resolvePinnedTrip(JSONObject payload, JSONObject journey) throws Exception {

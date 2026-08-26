@@ -50,11 +50,15 @@ Perth clock. **Active day** = `remindDays` includes today. **Active window** = a
 | Mode | Example | Default hero | Countdown | Swipe | Leave-by | Secondary “Next” |
 |------|---------|--------------|-----------|-------|----------|------------------|
 | **A. Inside active window** | Mon 07:00, target 07:30 | Live target / pin | Yes | Locked when pin/target owns hero (FB-20) | Per existing pin + window rules | When true next ≠ pin |
-| **B. Outside hours, same active day** | Mon 22:00, window 06–09 | True next (live board) | Yes | Browse | Hidden unless pinned | Per existing outside-hours fixture |
+| **B. Outside hours, same active day** | Mon 22:00, window 06–09 | **Preview or live target** (Tomorrow 07:30) — *changed Aug 2026, was true next* | **No** on preview; yes if live trip in API | Browse | Hidden unless pinned | Per existing outside-hours fixture |
 | **C. Outside active day** | Sat 10:00, Mon–Fri commute | **Preview or live target** (Mon 15:30) | **No** on preview; yes if live trip in API | **Unlocked** browse | **Hidden** unless pinned | Optional: muted true next when on preview face |
 | **D. Target dismissed today** | Sat, user unpinned target | Preview target chrome, **unfilled** pin | No on preview | Unlocked browse | Hidden unless pinned | Hidden or true next per §5 |
 
-**This brief owns mode C** (and preview branches of D). Modes A–B stay as documented in `pin-behavior.md` unless explicitly noted below.
+**This brief owns mode C** (and preview branches of D). Mode A stays as documented in `pin-behavior.md` unless explicitly noted below.
+
+**Mode B update (Tim, locked Aug 2026):** once the target clock has passed on an active day, today's target slot is spent, so the hero leads with the **next** target commute (usually tomorrow morning) using the same preview face as mode C — not that evening's true next. Browsing by swipe still reaches the live board. Previously mode B defaulted to true next, which meant an evening train got labelled **Target train**.
+
+**Dismissal scope (Tim, locked Aug 2026):** dismissing the target cancels **today's** target train only. It does **not** suppress a preview or live target that falls on a **later day**, in either mode B or mode C — a different day's commute is a different trip. This is what row **D** above already implied; the code previously fell back to true next for any dismissal. Fixture: `journey-dismissed-keeps-next-day-preview`.
 
 ---
 

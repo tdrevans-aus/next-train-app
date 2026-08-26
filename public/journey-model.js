@@ -361,9 +361,30 @@ function normalizeJourney(raw = {}) {
     kind: inferJourneyKind(raw, { templateKey, preferredTrainTime }),
   };
 
+  const cityId = String(raw.cityId ?? "").trim().toLowerCase();
+  if (
+    cityId === "perth" ||
+    cityId === "sydney" ||
+    cityId === "brisbane" ||
+    cityId === "adelaide" ||
+    cityId === "uk-london-tfl"
+  ) {
+    journey.cityId = cityId;
+  }
+
   if (templateKey) {
     journey.templateKey = templateKey;
   }
+
+  // Always re-derive Active hours from Target train if it's a Journey kind.
+  if (isJourneyKind(journey) && journey.preferredTrainTime) {
+    const target = parseTimeToMinutes(journey.preferredTrainTime);
+    const fromMins = (target - 60 + 24 * 60) % (24 * 60);
+    const untilMins = (target + 15 + 24 * 60) % (24 * 60);
+    journey.defaultFrom = formatMinutesAsTime(fromMins);
+    journey.defaultUntil = formatMinutesAsTime(untilMins);
+  }
+
   if (raw.autoRoute === false) {
     journey.autoRoute = false;
   }
@@ -712,12 +733,19 @@ function getDefaultCustomPreferredTrainTime(date = new Date()) {
 }
 
 function journeyMatchesTime(journey, minutes) {
-  if (!hasDefaultWindow(journey)) {
-    return false;
-  }
+  let from, until;
 
-  const from = parseTimeToMinutes(journey.defaultFrom);
-  const until = parseTimeToMinutes(journey.defaultUntil);
+  if (isJourneyKind(journey) && journey.preferredTrainTime) {
+    const target = parseTimeToMinutes(journey.preferredTrainTime);
+    from = (target - 60 + 24 * 60) % (24 * 60);
+    until = (target + 15 + 24 * 60) % (24 * 60);
+  } else {
+    if (!hasDefaultWindow(journey)) {
+      return false;
+    }
+    from = parseTimeToMinutes(journey.defaultFrom);
+    until = parseTimeToMinutes(journey.defaultUntil);
+  }
 
   if (from === until) {
     return true;

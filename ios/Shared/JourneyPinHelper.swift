@@ -20,7 +20,8 @@ enum JourneyPinHelper {
         guard let journey else { return false }
         if isOverrideActiveToday(journey) { return true }
         if isPinDismissedToday(journey) { return false }
-        return preferredMinutesForLiveGlance(journey) >= 0
+        guard preferredMinutesForLiveGlance(journey) >= 0 else { return false }
+        return JourneySelector.matchesWindow(journey, minutes: PerthTime.minutesSinceMidnight())
     }
 
     static func resolvePinnedTrip(_ payload: [String: Any]?, journey: [String: Any]) -> [String: Any]? {

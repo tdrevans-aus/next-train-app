@@ -64,7 +64,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    const { directions } = getMultiCityDirections(city, station);
+    const { directions } = await getMultiCityDirections(city, station);
     const now = new Date();
 
     // Optimize: if it's London TfL, we can fetch all arrivals in one go.
