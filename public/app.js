@@ -7219,6 +7219,7 @@ function findTripIndexInUpcoming(data, trip) { return trainNavigation().findTrip
 function getTrueNextTrip(data) { return trainNavigation().getTrueNextTrip(data); }
 function isJourneyOverrideActiveToday(journey) { return trainNavigation().isJourneyOverrideActiveToday(journey); }
 function isJourneyPinDismissedToday(journey) { return trainNavigation().isJourneyPinDismissedToday(journey); }
+function isJourneyPinnedToday(journey) { return trainNavigation().isJourneyPinnedToday(journey); }
 function isJourneyTargetPinnedToday(journey) { return trainNavigation().isJourneyTargetPinnedToday(journey); }
 function sanitizeJourneyPinOverride(journey) { return trainNavigation().sanitizeJourneyPinOverride(journey); }
 function sanitizeJourneyPinDismissed(journey) { return trainNavigation().sanitizeJourneyPinDismissed(journey); }

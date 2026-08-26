@@ -1834,6 +1834,7 @@ async function toggleHeroPin() {
     isHeroPinLockingSwipe,
     isJourneyOverrideActiveToday,
     isJourneyPinDismissedToday,
+    isJourneyPinnedToday: isJourneyTargetPinnedToday,
     isJourneyTargetPinnedToday,
     journeysDepartureMatch,
     jumpToTargetTrain,
