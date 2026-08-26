@@ -88,9 +88,9 @@ Fresh install: **`journeys: []`**. Templates only when adding.
 
 ## 6. Cold start after they have journeys (shipped intent)
 
-1. **No journeys** → Nearby.  
-2. **Has journeys** and current time in **active hours** → that journey.  
-3. **Has journeys** but outside windows → **Nearby**.  
+1. **No journeys** → Nearby.
+2. **Has journeys** and current time in **active hours** → that journey.
+3. **Has journeys** but outside windows → **Nearby**. (User must tap **My Journeys** to see the next Target train).
 4. Manual journey pick / Near me tap overrides until context changes.
 
 ---
@@ -114,7 +114,7 @@ Fresh install: **`journeys: []`**. Templates only when adding.
 3. Step 1 → Got it → Step 2 Routes → Got it → Step 3 Journeys; Set up / Maybe later as above.  
 4. Fresh install: **zero** journeys.  
 5. Add journey offers Morning / Evening / Custom templates.  
-6. Active window → journey cold start; otherwise Nearby.
+6. Active window → journey cold start; otherwise Nearby (User must tap **My Journeys** to see the next Target train).
 
 ---
 

@@ -34,6 +34,10 @@ function permissionDenied(status) {
  */
 let permissionPromise = null;
 
+export function resetLocationPermissionCache() {
+  permissionPromise = null;
+}
+
 export async function ensureLocationPermission() {
   if (permissionPromise) {
     return permissionPromise;
@@ -62,7 +66,6 @@ export async function ensureLocationPermission() {
 
     try {
       console.log("[Geo] Requesting permissions...");
-      // Explicitly request both for Android 12+ robustness
       const requestPromise = Geolocation.requestPermissions({
         permissions: ["location", "coarseLocation"],
       });
@@ -73,24 +76,19 @@ export async function ensureLocationPermission() {
       console.log("[Geo] requestPermissions result:", JSON.stringify(status));
     } catch (error) {
       console.warn("[Geo] requestPermissions failed:", error);
-      // Fallback: try one more check in case it's a transient failure
       status = await Geolocation.checkPermissions();
     }
 
     if (!permissionGranted(status)) {
-      // If still prompt, it might mean the dialog is open or rejected immediately.
-      // We'll give it one more chance with a short delay.
       await new Promise((r) => setTimeout(r, 1000));
       status = await Geolocation.checkPermissions();
       console.log("[Geo] Final check after delay:", JSON.stringify(status));
     }
 
     if (!permissionGranted(status)) {
-      // On some emulators/versions, requestPermissions returns prompt even if it worked.
-      // We'll proceed if it's prompt and let getCurrentPosition handle the final failure.
       if (status?.location === "prompt" || status?.coarseLocation === "prompt") {
         console.log("[Geo] Status is still prompt, proceeding to getCurrentPosition anyway");
-        return { granted: false, status }; // Not granted yet, but not denied
+        return { granted: false, status };
       }
 
       console.log("[Geo] Final permission check failed:", JSON.stringify(status));
@@ -112,17 +110,15 @@ export async function ensureLocationPermission() {
 function mapGeolocationError(error) {
   if (!error) return;
   console.log("[Geo] mapGeolocationError raw:", JSON.stringify(error));
-  
+
   const code = String(error?.code || "");
   const message = String(error?.message || error || "");
   const lower = message.toLowerCase();
 
   if (
-    code === "OS-PLUG-GLOC-0010" ||
     lower.includes("disabled") ||
-    lower.includes("location services") ||
-    lower.includes("not enabled") ||
-    lower.includes("location unavailable")
+    (lower.includes("location services") && lower.includes("off")) ||
+    lower.includes("not enabled")
   ) {
     const disabled = new Error(locationServicesOffMessage());
     disabled.code = 2;
@@ -142,9 +138,11 @@ function mapGeolocationError(error) {
   }
 
   if (
+    code === "OS-PLUG-GLOC-0010" ||
     Number(error?.code) === 3 ||
     lower.includes("timeout") ||
     lower.includes("could not obtain location in time") ||
+    lower.includes("location unavailable") ||
     lower.includes("timed out")
   ) {
     const timeout = new Error(
@@ -186,41 +184,94 @@ function readPositionCoords(position) {
   };
 }
 
+function withDeadline(promise, ms) {
+  const budgetMs = Math.max(Number(ms) || 0, 1000);
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => {
+        const error = new Error("Could not obtain location in time");
+        error.code = 3;
+        reject(error);
+      }, budgetMs);
+    }),
+  ]);
+}
+
+async function readNavigatorPosition(options = {}) {
+  if (!navigator.geolocation) {
+    return null;
+  }
+
+  const timeout = options.timeout ?? 5000;
+  const maximumAge = options.maximumAge ?? 60000;
+  const enableHighAccuracy = Boolean(options.enableHighAccuracy);
+
+  console.log("[Geo] navigator.geolocation attempt...");
+  const position = await withDeadline(
+    new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy,
+        timeout,
+        maximumAge: isEmulator() ? 0 : maximumAge,
+      });
+    }),
+    timeout + 1000
+  );
+
+  const coords = readPositionCoords(position);
+  if (!coords) {
+    throw new Error("Geolocation returned an invalid position");
+  }
+
+  console.log("[Geo] navigator.geolocation success");
+  return { coords };
+}
+
 export async function getCurrentPosition(options = {}) {
   await ensureLocationPermission();
 
-  const timeout = options.timeout ?? (isIos() ? 20000 : 15000);
+  const timeout = options.timeout ?? (isIos() ? 8000 : 5000);
   const maximumAge = options.maximumAge ?? 60000;
   const preferHighAccuracy = Boolean(options.enableHighAccuracy);
 
+  // A cached fused fix returns in well under a second, so the first attempt stays
+  // short. The GPS retry is what rescues a cold start where the network provider
+  // has nothing, so it gets the longer budget.
   const nativeAttempts = preferHighAccuracy
     ? [
-        { enableHighAccuracy: true, maximumAge },
-        { enableHighAccuracy: false, maximumAge },
+        { enableHighAccuracy: true, maximumAge, timeout },
+        { enableHighAccuracy: false, maximumAge, timeout },
       ]
     : isEmulator()
       ? [
-          // Emulator: prefer a fresh mock fix (Extended controls → SET LOCATION).
-          { enableHighAccuracy: false, maximumAge: 0 },
-          { enableHighAccuracy: false, maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1000) },
-          { enableHighAccuracy: true, maximumAge: 0 },
+          { enableHighAccuracy: false, maximumAge: 0, timeout },
+          {
+            enableHighAccuracy: false,
+            maximumAge: Math.max(maximumAge, 24 * 60 * 60 * 1000),
+            timeout,
+          },
+          { enableHighAccuracy: true, maximumAge: 0, timeout },
         ]
       : [
-          { enableHighAccuracy: false, maximumAge },
-          { enableHighAccuracy: true, maximumAge },
+          { enableHighAccuracy: false, maximumAge, timeout },
+          { enableHighAccuracy: true, maximumAge, timeout: Math.max(timeout, 6000) },
         ];
 
   let lastError = null;
   for (const attempt of nativeAttempts) {
     try {
       console.log(
-        `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${timeout}, maximumAge=${attempt.maximumAge}`
+        `[Geo] getCurrentPosition attempt: accuracy=${attempt.enableHighAccuracy}, timeout=${attempt.timeout}, maximumAge=${attempt.maximumAge}`
       );
-      const position = await Geolocation.getCurrentPosition({
-        enableHighAccuracy: attempt.enableHighAccuracy,
-        timeout,
-        maximumAge: attempt.maximumAge,
-      });
+      const position = await withDeadline(
+        Geolocation.getCurrentPosition({
+          enableHighAccuracy: attempt.enableHighAccuracy,
+          timeout: attempt.timeout,
+          maximumAge: attempt.maximumAge,
+        }),
+        attempt.timeout + 1000
+      );
 
       const coords = readPositionCoords(position);
       if (!coords) {
@@ -235,27 +286,16 @@ export async function getCurrentPosition(options = {}) {
     }
   }
 
-  // Fallback to browser geolocation if native fails
   if (navigator.geolocation) {
     try {
-      console.log("[Geo] Falling back to navigator.geolocation...");
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: preferHighAccuracy,
-          timeout: timeout + 5000,
-          maximumAge: isEmulator() ? 0 : maximumAge,
-        });
+      return await readNavigatorPosition({
+        enableHighAccuracy: preferHighAccuracy,
+        timeout,
+        maximumAge,
       });
-      console.log("[Geo] navigator.geolocation success");
-      return {
-        coords: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          speed: position.coords.speed ?? null,
-        },
-      };
     } catch (error) {
       console.warn("[Geo] navigator.geolocation failed:", error.message || error);
+      lastError = error;
     }
   }
 

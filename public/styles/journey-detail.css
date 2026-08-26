@@ -1069,8 +1069,10 @@ body.region-setup-active .ad-remove-link-wrap {
   }
 
   50% {
-    box-shadow: 0 0 0 0.45rem rgba(11, 110, 106, 0.12);
-    transform: scale(1.06);
+    box-shadow:
+      0 0 0 0.75rem rgba(11, 110, 106, 0.18),
+      0 0 1.25rem rgba(11, 110, 106, 0.35);
+    transform: scale(1.12);
   }
 }
 

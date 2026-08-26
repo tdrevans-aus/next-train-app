@@ -78,12 +78,20 @@
     return `${year}-${month}-${day}`;
   }
 
-  function minutesUntilPerthClockMinutes(targetMinutes, clock) {
+  function minutesUntilPerthClockMinutes(targetMinutes, clock, { strictNext = false } = {}) {
     if (deps.minutesUntilPerthClockMinutes && !clock) {
       return deps.minutesUntilPerthClockMinutes(targetMinutes);
     }
     const now = getPerthMinutesSinceMidnight(clock);
     let diff = targetMinutes - now;
+
+    if (strictNext) {
+      if (diff < 0) {
+        diff += 24 * 60;
+      }
+      return diff;
+    }
+
     if (diff < -12 * 60) {
       diff += 24 * 60;
     } else if (diff > 12 * 60) {
@@ -92,17 +100,18 @@
     return diff;
   }
 
-  function minutesUntilPerthWallClock(isoString, clock) {
+  function minutesUntilPerthWallClock(isoString, clock, options = {}) {
     if (deps.minutesUntilPerthWallClock && !clock) {
       return deps.minutesUntilPerthWallClock(isoString);
     }
     return minutesUntilPerthClockMinutes(
       getPerthMinutesSinceMidnightFromIso(isoString),
-      clock
+      clock,
+      options
     );
   }
 
-  function tripHasDeparted(trip, clock) {
+  function tripHasDeparted(trip, clock, options = {}) {
     if (!trip) {
       return true;
     }
@@ -110,7 +119,7 @@
     if (!iso) {
       return true;
     }
-    return minutesUntilPerthWallClock(iso, clock) <= 0;
+    return minutesUntilPerthWallClock(iso, clock, options) <= 0;
   }
 
   function resolveTripDeparture(trip) {
@@ -208,14 +217,14 @@
     return minutes >= from || minutes < until;
   }
 
-  function tripMatchesPreferredOrLater(trip, preferredMinutes, horizonMinutes, clock) {
+  function tripMatchesPreferredOrLater(trip, preferredMinutes, horizonMinutes, clock, options = {}) {
     const iso = trip?.departure ?? trip?.arrival;
     if (!iso) {
       return false;
     }
 
     const minutesUntilDeparture = minutesUntilPerthWallClock(iso, clock);
-    const minutesUntilPreferred = minutesUntilPerthClockMinutes(preferredMinutes, clock);
+    const minutesUntilPreferred = minutesUntilPerthClockMinutes(preferredMinutes, clock, options);
 
     if (minutesUntilDeparture < minutesUntilPreferred) {
       return false;
@@ -299,19 +308,19 @@
     return !isJourneyPinDismissedToday(journeyClean, resolvedClock);
   }
 
-  function resolveTrueNextDeparture(payload, clock = resolveClock()) {
+  function resolveTrueNextDeparture(payload, clock = resolveClock(), options = {}) {
     const resolvedClock = resolveClock(clock);
     if (!payload) {
       return null;
     }
     const normalized = normalizeApiTrainData(payload);
     for (const trip of getUpcomingTrips(normalized)) {
-      if (!tripHasDeparted(trip, resolvedClock)) {
+      if (!tripHasDeparted(trip, resolvedClock, options)) {
         return resolveTripDeparture(trip);
       }
     }
     const next = normalized.next;
-    if (next && !tripHasDeparted(next, resolvedClock)) {
+    if (next && !tripHasDeparted(next, resolvedClock, options)) {
       return resolveTripDeparture(next);
     }
     return null;
@@ -400,7 +409,12 @@
     return null;
   }
 
-  function resolveJourneyPreferredTargetDeparture(payload, journey, clock = resolveClock()) {
+  function resolveJourneyPreferredTargetDeparture(
+    payload,
+    journey,
+    clock = resolveClock(),
+    horizonOverride = null
+  ) {
     const resolvedClock = resolveClock(clock);
     if (!payload || !journey) {
       return null;
@@ -414,12 +428,18 @@
       return null;
     }
 
-    const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
+    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
+    const options = { strictNext: !insideActiveWindow };
+
+    const horizon =
+      horizonOverride != null
+        ? horizonOverride
+        : targetTripHorizonMinutes(journeyClean, resolvedClock);
     for (const trip of getUpcomingTrips(normalized)) {
       if (tripHasDeparted(trip, resolvedClock)) {
         continue;
       }
-      if (tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
+      if (tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock, options)) {
         return resolveTripDeparture(trip);
       }
     }
@@ -444,9 +464,12 @@
       return null;
     }
 
+    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
+    const options = { strictNext: !insideActiveWindow };
+
     const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
     for (const trip of getUpcomingTrips(normalized)) {
-      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
+      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock, options)) {
         continue;
       }
       if (tripHasDeparted(trip, resolvedClock)) {
@@ -482,31 +505,33 @@
       return null;
     }
 
-    if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
+    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
+    const preferredDeparture = resolveJourneyPreferredTargetDeparture(
+      normalized,
+      journeyClean,
+      resolvedClock,
+      insideActiveWindow ? null : 24 * 60
+    );
+    if (preferredDeparture) {
+      return preferredDeparture;
+    }
+
+    if (!insideActiveWindow) {
       if (isOvernightActiveWindow(journeyClean)) {
-        return resolveDepartedJourneyTargetDepartureIgnoringDismiss(
+        const departed = resolveDepartedJourneyTargetDepartureIgnoringDismiss(
           payload,
           journeyClean,
           resolvedClock
         );
+        if (departed) {
+          return departed;
+        }
       }
-      if (!journeyMatchesActiveDay(journeyClean, resolvedClock)) {
-        return resolveJourneyPreferredTargetDepartureOnRemindDays(
-          normalized,
-          journeyClean,
-          resolvedClock
-        );
-      }
-      return null;
-    }
-
-    const preferredDeparture = resolveJourneyPreferredTargetDeparture(
-      normalized,
-      journeyClean,
-      resolvedClock
-    );
-    if (preferredDeparture) {
-      return preferredDeparture;
+      return resolveJourneyPreferredTargetDepartureOnRemindDays(
+        normalized,
+        journeyClean,
+        resolvedClock
+      );
     }
 
     return resolveDepartedJourneyTargetDepartureIgnoringDismiss(
@@ -516,7 +541,7 @@
     );
   }
 
-  function resolveJourneyPinDeparture(payload, journey, clock = resolveClock()) {
+  function resolveJourneyPinDeparture(payload, journey, clock = resolveClock(), { nearbyPin = null } = {}) {
     const resolvedClock = resolveClock(clock);
     if (!payload || !journey) {
       return null;
@@ -540,18 +565,42 @@
       return null;
     }
 
-    if (!journeyMatchesSchedule(journeyClean, resolvedClock)) {
-      if (!journeyMatchesActiveDay(journeyClean, resolvedClock)) {
-        return resolveJourneyPreferredTargetDepartureOnRemindDays(
-          normalized,
-          journeyClean,
-          resolvedClock
-        );
+    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
+    const onActiveDay = journeyMatchesActiveDay(journeyClean, resolvedClock);
+    
+    const preferredDeparture = resolveJourneyPreferredTargetDeparture(
+      normalized,
+      journeyClean,
+      resolvedClock,
+      insideActiveWindow && onActiveDay ? null : 24 * 60
+    );
+
+    if (preferredDeparture) {
+      // Pin Target train only if inside band and nothing else is pinned (no steal).
+      if (insideActiveWindow && onActiveDay) {
+        if (nearbyPin && isNearbyPinHolding(nearbyPin, resolvedClock)) {
+          return null;
+        }
+
+        // Do not auto-pin a train that already left (i.e. the next train is now a following one).
+        const preferredMinutes = preferredMinutesForLiveGlance(journeyClean);
+        const trip = findTripByDepartureIso(normalized, preferredDeparture);
+        const scheduledIso = trip?.scheduledDeparture || preferredDeparture;
+        const scheduledMinutes = getPerthMinutesSinceMidnightFromIso(scheduledIso);
+
+        if (scheduledMinutes > preferredMinutes) {
+          return null;
+        }
+
+        return preferredDeparture;
       }
-      return null;
     }
 
-    return resolveJourneyPreferredTargetDeparture(normalized, journeyClean, resolvedClock);
+    return resolveJourneyPreferredTargetDepartureOnRemindDays(
+      normalized,
+      journeyClean,
+      resolvedClock
+    );
   }
 
   function resolveDepartedJourneyTargetDeparture(payload, journey, clock = resolveClock()) {
@@ -580,9 +629,12 @@
       return null;
     }
 
+    const insideActiveWindow = journeyMatchesSchedule(journeyClean, resolvedClock);
+    const options = { strictNext: !insideActiveWindow };
+
     const horizon = targetTripHorizonMinutes(journeyClean, resolvedClock);
     for (const trip of getUpcomingTrips(normalized)) {
-      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock)) {
+      if (!tripMatchesPreferredOrLater(trip, preferredMinutes, horizon, resolvedClock, options)) {
         continue;
       }
       if (tripHasDeparted(trip, resolvedClock)) {
@@ -594,8 +646,8 @@
     return null;
   }
 
-  function resolveJourneyActiveTargetDeparture(payload, journey, clock = resolveClock()) {
-    const pinDeparture = resolveJourneyPinDeparture(payload, journey, clock);
+  function resolveJourneyActiveTargetDeparture(payload, journey, clock = resolveClock(), options = {}) {
+    const pinDeparture = resolveJourneyPinDeparture(payload, journey, clock, options);
     if (pinDeparture) {
       return pinDeparture;
     }
@@ -734,7 +786,7 @@
     return null;
   }
 
-  function resolveBoardHeroDeparture(payload, skipTrains, clock) {
+  function resolveBoardHeroDeparture(payload, skipTrains, clock, options = {}) {
     const resolvedClock = resolveClock(clock);
     if (!payload) {
       return null;
@@ -747,17 +799,17 @@
 
     const skip = Math.max(0, Math.min(skipTrains, upcoming.length - 1));
     const trip = upcoming[skip];
-    if (!trip || tripHasDeparted(trip, resolvedClock)) {
+    if (!trip || tripHasDeparted(trip, resolvedClock, options)) {
       return null;
     }
     return resolveTripDeparture(trip);
   }
 
-  function resolveSkippedHeroDeparture(payload, skipTrains, clock) {
+  function resolveSkippedHeroDeparture(payload, skipTrains, clock, options = {}) {
     if (!payload || skipTrains <= 0) {
       return null;
     }
-    return resolveBoardHeroDeparture(payload, skipTrains, clock);
+    return resolveBoardHeroDeparture(payload, skipTrains, clock, options);
   }
 
   function resolveLeaveCardArmed(input, state) {
@@ -805,7 +857,7 @@
     const skipTrains = input.skipTrains ?? 0;
     const pinDeparture =
       input.mode === "journey"
-        ? resolveJourneyPinDeparture(input.payload, input.journey, clock)
+        ? resolveJourneyPinDeparture(input.payload, input.journey, clock, { nearbyPin: input.nearbyPin })
         : resolveNearbyPinDeparture(input.payload, input.nearbyPin, clock);
     const trueNextDeparture = resolveTrueNextDeparture(input.payload, clock);
 
@@ -814,7 +866,7 @@
     }
     if (input.mode === "journey") {
       return (
-        resolveJourneyActiveTargetDeparture(input.payload, input.journey, clock) ??
+        resolveJourneyActiveTargetDeparture(input.payload, input.journey, clock, { nearbyPin: input.nearbyPin }) ??
         trueNextDeparture
       );
     }
@@ -825,7 +877,7 @@
     const clock = resolveClock(input.clock);
     const pinDeparture =
       input.mode === "journey"
-        ? resolveJourneyPinDeparture(input.payload, input.journey, clock)
+        ? resolveJourneyPinDeparture(input.payload, input.journey, clock, { nearbyPin: input.nearbyPin })
         : resolveNearbyPinDeparture(input.payload, input.nearbyPin, clock);
     const trueNextDeparture = resolveTrueNextDeparture(input.payload, clock);
     return pinDeparture ?? trueNextDeparture;
@@ -843,11 +895,9 @@
     const mode = input.mode;
     const isSkipPreview = skipTrains > 0 || browseLiveBoard;
 
-    const trueNextDeparture = resolveTrueNextDeparture(input.payload, clock);
-
     const pinDeparture =
       mode === "journey"
-        ? resolveJourneyPinDeparture(input.payload, input.journey, clock)
+        ? resolveJourneyPinDeparture(input.payload, input.journey, clock, { nearbyPin: input.nearbyPin })
         : mode === "nearby"
           ? resolveNearbyPinDeparture(input.payload, input.nearbyPin, clock)
           : null;
@@ -860,16 +910,31 @@
       mode === "journey" ? sanitizeJourneyPinFields(input.journey, clock) : null;
     const insideActiveWindow =
       mode === "journey" && journeyClean && journeyMatchesSchedule(journeyClean, clock);
-    const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
-    const outsideActiveDay =
-      mode === "journey" && journeyClean && !journeyMatchesActiveDay(journeyClean, clock);
+    const options = { strictNext: !insideActiveWindow };
+    const trueNextDeparture = resolveTrueNextDeparture(input.payload, clock, options);
+
+    const isPinnedToday =
+      mode === "journey"
+        ? isJourneyPinnedToday(input.journey, clock)
+        : Boolean(pinDeparture);
+
+    // Filter pinDeparture for UI display: don't show "Pinned" chrome for auto-target pins outside active window.
+    const uiPinDeparture =
+      mode === "journey" && journeyClean
+        ? !insideActiveWindow &&
+          !isJourneyOverrideActiveToday(journeyClean, clock) &&
+          !isOvernightActiveWindow(journeyClean)
+          ? null // Outside window, not manually overridden: treat as Target train (auto-outline), not a solid Pinned train.
+          : pinDeparture
+        : pinDeparture;
+
     const retainDepartedOutsideWindow = Boolean(
       outsideActiveWindow &&
         journeyClean &&
         isOvernightActiveWindow(journeyClean) &&
         departedTargetDeparture
     );
-    let activeTargetDeparture = pinDeparture;
+    let activeTargetDeparture = uiPinDeparture;
     if (!activeTargetDeparture && mode === "journey") {
       if (insideActiveWindow) {
         activeTargetDeparture = departedTargetDeparture;
@@ -883,23 +948,24 @@
     const isPinDismissedToday =
       mode === "journey" && isJourneyPinDismissedToday(journeyClean, clock);
 
+    const outsideActiveWindow = mode === "journey" && journeyClean && !insideActiveWindow;
+    const outsideActiveDay =
+      mode === "journey" && journeyClean && !journeyMatchesActiveDay(journeyClean, clock);
     const preferredTargetDeparture =
       mode === "journey" && journeyClean && !isRouteJourney(journeyClean)
-        ? outsideActiveDay
-          ? resolveJourneyPreferredTargetDepartureOnRemindDays(
+        ? outsideActiveDay || !insideActiveWindow
+          ? resolveJourneyPreferredTargetDeparture(
+              input.payload,
+              journeyClean,
+              clock,
+              24 * 60
+            ) ||
+            resolveJourneyPreferredTargetDepartureOnRemindDays(
               input.payload,
               journeyClean,
               clock
             )
-          : insideActiveWindow
-            ? resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
-            : !trueNextDeparture
-              ? resolveJourneyPreferredTargetDepartureOnRemindDays(
-                  input.payload,
-                  journeyClean,
-                  clock
-                )
-              : null
+          : resolveJourneyPreferredTargetDeparture(input.payload, journeyClean, clock)
         : null;
 
     const previewHero =
@@ -911,8 +977,9 @@
       preferredTargetDeparture && input.payload
         ? (() => {
             const normalized = normalizeApiTrainData(input.payload);
-            for (let index = 0; index < getUpcomingTrips(normalized).length; index += 1) {
-              const trip = getUpcomingTrips(normalized)[index];
+            const trips = getUpcomingTrips(normalized);
+            for (let index = 0; index < trips.length; index += 1) {
+              const trip = trips[index];
               if (resolveTripDeparture(trip) === preferredTargetDeparture) {
                 return index;
               }
@@ -937,7 +1004,7 @@
 
     const skippedHeroDeparture =
       isBrowsingLiveBoard || (isSkipPreview && !isStaleBrowseSkip)
-        ? resolveBoardHeroDeparture(input.payload, skipTrains, clock)
+        ? resolveBoardHeroDeparture(input.payload, skipTrains, clock, options)
         : null;
 
     let heroMode = "live";
@@ -969,8 +1036,11 @@
         heroPreviewDayLabel = previewHero.heroPreviewDayLabel;
         heroPreviewClock = previewHero.heroPreviewClock;
       } else {
-        heroDeparture = trueNextDeparture;
-        heroMode = "live";
+        // Fallback to true next departure on the live board if no target today/tomorrow.
+        // We use the 'strictNext: false' version for this fallback to match ANY next train.
+        const nonStrictNextDeparture = resolveTrueNextDeparture(input.payload, clock, { strictNext: false });
+        heroDeparture = nonStrictNextDeparture;
+        heroMode = heroDeparture ? "live" : "preview";
       }
     } else {
       heroDeparture = isSkipPreview
@@ -991,18 +1061,13 @@
       }
     }
 
-    const leaveDeparture = pinDeparture ?? trueNextDeparture;
+    const leaveDeparture = uiPinDeparture ?? trueNextDeparture;
     const widgetFaceDeparture =
       mode === "journey"
         ? resolveJourneyWidgetFaceDeparture(input.payload, input.journey, clock)
         : mode === "nearby"
-          ? pinDeparture
+          ? uiPinDeparture
           : null;
-
-    const isPinnedToday =
-      mode === "journey"
-        ? isJourneyPinnedToday(input.journey, clock)
-        : Boolean(pinDeparture);
 
     const heroShowsPin = Boolean(
       activeTargetDeparture &&
@@ -1017,8 +1082,8 @@
         !isBrowsingLiveBoard &&
         !isStaleBrowseSkip &&
         trueNextDeparture &&
-        pinDeparture &&
-        trueNextDeparture !== pinDeparture
+        uiPinDeparture &&
+        trueNextDeparture !== uiPinDeparture
     );
     const secondaryNextDeparture = showSecondaryNext ? trueNextDeparture : null;
 
@@ -1050,7 +1115,7 @@
         insideActiveWindow ||
         (outsideActiveDay && isOverrideActiveToday)) &&
       resolveLeaveCardArmed(input, {
-        pinDeparture,
+        pinDeparture: uiPinDeparture,
         isPinDismissedToday,
       });
 
@@ -1067,7 +1132,7 @@
 
     return {
       trueNextDeparture,
-      pinDeparture,
+      pinDeparture: uiPinDeparture,
       heroDeparture,
       leaveDeparture,
       secondaryNextDeparture,

@@ -389,11 +389,10 @@ function locationErrorFrom(error) {
   
   console.log(`[App] locationErrorFrom: code=${code}, codeStr=${codeStr}, message="${message}"`);
 
-  // Detect immediate failures on Android/Emulator
-  const isServicesOff = 
-    codeStr === "OS-PLUG-GLOC-0010" ||
+  // OS-PLUG-GLOC-0010 is Capacitor's GPS timeout — not "location off".
+  const isServicesOff =
     lower.includes("disabled") ||
-    lower.includes("location services") ||
+    (lower.includes("location services") && lower.includes("off")) ||
     lower.includes("not enabled");
   if (isServicesOff) {
     const servicesOff = isIosNativeApp()
@@ -417,6 +416,7 @@ function locationErrorFrom(error) {
 
   if (
     code === 3 ||
+    codeStr === "OS-PLUG-GLOC-0010" ||
     lower.includes("timeout") ||
     lower.includes("could not obtain location in time") ||
     lower.includes("location unavailable") ||
@@ -446,11 +446,6 @@ async function getAppGeolocationPosition(options = {}) {
     }
 
     try {
-      if (typeof window.NextTrainGeo.ensureLocationPermission === "function") {
-        await window.NextTrainGeo.ensureLocationPermission();
-      }
-      // geo-native owns timeouts and its own retry chain — do not race here or we
-      // surface errors while native/navigator fallbacks are still in flight.
       return await window.NextTrainGeo.getCurrentPosition(options);
     } catch (error) {
       throw locationErrorFrom(error);
@@ -1080,7 +1075,8 @@ async function applyJourneysMode({ coldStart = false } = {}) {
 
   renderJourneySwitcher();
 
-  if (shouldDefaultToNearby()) {
+  const configured = getConfiguredJourneys();
+  if (!configured.length) {
     journeyModeActive = false;
     if (coldStart) {
       maybeScheduleOnboarding();
@@ -1090,13 +1086,19 @@ async function applyJourneysMode({ coldStart = false } = {}) {
     return;
   }
 
-  const scheduledId = findScheduledJourneyId();
+  if (coldStart && shouldDefaultToNearby()) {
+    journeyModeActive = false;
+    await enterNearbyMode();
+    return;
+  }
+
+  const resolvedId = resolveCurrentOrNextJourneyId();
   if (
-    scheduledId &&
-    settings.activeJourneyId !== scheduledId &&
-    !isManualOverrideBlockingAuto(scheduledId)
+    resolvedId &&
+    settings.activeJourneyId !== resolvedId &&
+    !isManualOverrideBlockingAuto(resolvedId)
   ) {
-    settings.activeJourneyId = scheduledId;
+    settings.activeJourneyId = resolvedId;
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
   }
 
@@ -2019,6 +2021,48 @@ function findScheduledJourneyId() {
 
   const picked = pickScheduledJourney(matching);
   return picked?.id ?? null;
+}
+
+/** Rule 4: soonest upcoming target clock, any day (tonight, tomorrow, or next Monday). */
+function findNextTargetJourneyId() {
+  const journeys = getConfiguredJourneys().filter(isJourneyKind);
+  if (!journeys.length) {
+    return null;
+  }
+
+  const nowMinutes = getPerthMinutesSinceMidnight();
+  const day = getPerthDayOfWeekIso();
+
+  // Try today
+  const upcomingToday = journeys
+    .filter((j) => journeyMatchesActiveDay(j, day))
+    .map((j) => ({ id: j.id, minutes: preferredMinutesFromJourney(j) }))
+    .filter((j) => j.minutes != null && j.minutes > nowMinutes)
+    .sort((a, b) => a.minutes - b.minutes);
+
+  if (upcomingToday.length > 0) {
+    return upcomingToday[0].id;
+  }
+
+  // Try future days
+  for (let offset = 1; offset <= 7; offset++) {
+    const nextDay = ((day + offset - 1) % 7) + 1;
+    const upcomingNextDay = journeys
+      .filter((j) => journeyMatchesActiveDay(j, nextDay))
+      .map((j) => ({ id: j.id, minutes: preferredMinutesFromJourney(j) }))
+      .filter((j) => j.minutes != null)
+      .sort((a, b) => a.minutes - b.minutes);
+
+    if (upcomingNextDay.length > 0) {
+      return upcomingNextDay[0].id;
+    }
+  }
+
+  return journeys[0].id;
+}
+
+function resolveCurrentOrNextJourneyId() {
+  return findScheduledJourneyId() ?? findNextTargetJourneyId();
 }
 
 function findDefaultWindowJourneyAt(minutes = getPerthMinutesSinceMidnight()) {
@@ -4212,10 +4256,52 @@ function openJourneysLibrary() {
   openTravelLibrary("journeys");
 }
 
+function paintJourneyBoardLoadingState() {
+  if (isNearbyModeActive() || !hasConfiguredForActiveTab()) {
+    return;
+  }
+
+  hideNearbyPinLeaveSurfaces();
+  clearHeroSetupState();
+  heroEl?.classList.remove("stale");
+  leaveCardEl?.classList.remove("stale");
+  errorEl.hidden = true;
+
+  const journey = getActiveJourney();
+  setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
+
+  if (heroDepartLabelEl) {
+    heroDepartLabelEl.textContent = "Next Train";
+  }
+  if (departCountdownEl) {
+    departCountdownEl.textContent = "—";
+  }
+  if (departDisplayTimeEl) {
+    departDisplayTimeEl.textContent = "Updating…";
+    departDisplayTimeEl.removeAttribute("data-time");
+  }
+  if (heroScheduledTimeEl) {
+    heroScheduledTimeEl.hidden = true;
+  }
+  if (leaveCardEl) {
+    leaveCardEl.hidden = true;
+  }
+  if (updatedEl) {
+    updatedEl.textContent = "Updating…";
+  }
+  platformEl.textContent = "—";
+  statusEl.textContent = "—";
+  followingSectionEl.hidden = true;
+  hideUpcomingDepartureBoard();
+  syncHeroPinChrome();
+  renderJourneySwitcher();
+}
+
 function discardStaleJourneyBoard() {
   journeyBoardFetchId += 1;
   lastApiData = null;
   lastRenderedNext = null;
+  paintJourneyBoardLoadingState();
 }
 
 function enterRouteMode() {
@@ -4287,11 +4373,23 @@ function enterJourneyMode() {
   ensureActiveJourneyForTab("journeys");
   discardStaleJourneyBoard();
   clearHeroSetupState();
-  maybeAutoSelectJourney();
+
+  const resolvedId = resolveCurrentOrNextJourneyId();
+  if (resolvedId && settings.activeJourneyId !== resolvedId) {
+    settings.activeJourneyId = resolvedId;
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }
+
   const journey = getActiveJourney();
   if (journey) {
     setManualJourneyOverride(journey.id);
   }
+
+  // Rule 6: load = Target train again, unless their chosen pin is still active.
+  if (journey && !isJourneyOverrideActiveToday(journey)) {
+    clearSkipState();
+  }
+
   if (hasPersistedNearbyPin()) {
     reconcileExclusivePinState({ type: "nearby" });
   } else if (journey && isJourneyTargetPinnedToday(journey)) {
@@ -4696,7 +4794,7 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     }
   }
 
-  const geoTimeoutMs = forceFresh ? 30000 : 15000;
+  const geoTimeoutMs = forceFresh ? 12000 : 5000;
   // Load station catalog and GPS in parallel — don't serialise a local JSON read ahead of the fix.
   const [coords, position] = await Promise.all([
     loadStationCoords(),
@@ -4944,6 +5042,16 @@ async function resolveNextTrainPayload(apiData) {
     return apiData;
   }
 
+  if (apiData?.next) {
+    return apiData;
+  }
+
+  // Server already checked live board (+ GTFS fallback server-side). Do not re-fetch
+  // raw Perth XML in the browser — it can disagree and flash a phantom time.
+  if (apiData?.scheduleSource) {
+    return apiData;
+  }
+
   const clientData = await fetchNextTrainFromLiveTimesClient();
   return clientData ?? apiData;
 }
@@ -4978,6 +5086,9 @@ async function fetchNextTrain() {
 
   syncActiveJourneyForCurrentTab();
   clearHeroSetupState();
+  if (!lastApiData) {
+    paintJourneyBoardLoadingState();
+  }
   maybeAutoSelectJourney();
   updateSwipeHint();
   updateSwipeCues();
@@ -7477,6 +7588,7 @@ document.addEventListener("visibilitychange", () => {
     return;
   }
 
+  window.NextTrainGeo?.resetLocationPermissionCache?.();
   dismissStaleBlockingLayers();
   maybeScheduleOnboarding();
   void maybeSyncLeaveAlarmFromNative();
