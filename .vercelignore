@@ -10,6 +10,8 @@ qa/maestro
 qa/*.png
 qa/*.xml
 qa/*.log
+qa/tmp
+docs
 .git
 *.apk
 *.aab
