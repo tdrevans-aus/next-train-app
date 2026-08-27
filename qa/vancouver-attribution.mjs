@@ -36,6 +36,8 @@ assert(about.includes(TFL), "About may keep the TfL line");
 assert(!about.includes(DISCLAIMER), "Do not put the Vancouver disclaimer on the global About page");
 
 const css = readFileSync(join(ROOT, "public/styles/hero.css"), "utf8");
-assert(css.includes(".attribution.is-required"), "Vancouver disclaimer must use the prominent attribution class");
+assert(css.includes(".attribution.is-required"), "Vancouver disclaimer must use the required attribution class");
+assert(/\.attribution\.is-required[\s\S]*?font-size:\s*0\.62rem/.test(css), "disclaimer type should stay small");
+assert(/\.attribution\.is-required[\s\S]*?font-weight:\s*400/.test(css), "disclaimer must not be bold");
 
 console.log("vancouver-attribution: ok (exact TransLink disclaimer, Vancouver-only, TfL unchanged)");
