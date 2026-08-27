@@ -97,7 +97,8 @@ async function run() {
   });
 
   // §4.2 Journey in active window — auto-select that journey.
-  await openWithClock(page, "07:30", {
+  // Derived band is target −60 / +15, so 07:00 is in-window for a 07:00 target (07:30 is not).
+  await openWithClock(page, "07:00", {
     settingsSchemaVersion: 2,
     refreshSeconds: 60,
     activeJourneyId: "route-a",
@@ -119,7 +120,7 @@ async function run() {
   assert("journey in window auto-selected", inWindow.active === "journey-morning", inWindow);
 
   // §4.3 Two journeys with targets — switch at midpoint (07:30).
-  await openWithClock(page, "07:20", {
+  await openWithClock(page, "07:10", {
     settingsSchemaVersion: 2,
     refreshSeconds: 60,
     activeJourneyId: "journey-early",

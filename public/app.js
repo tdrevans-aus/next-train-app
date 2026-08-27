@@ -4060,7 +4060,9 @@ function render(data, { stale = false } = {}) {
       : resolveDepartedJourneyTargetTrip(lastApiData ?? data, journey);
   const heroTrip = pinState
     ? pinState.heroMode === "preview"
-      ? null
+      ? stale
+        ? next
+        : null
       : tripForPinDeparture(data, pinState.heroDeparture, journey) ??
         (skipTrains > 0 ? next : pinTrip ?? departedTargetTrip ?? next)
     : skipTrains > 0
@@ -4231,7 +4233,16 @@ function renderRefreshErrorState() {
   leaveCardEl?.classList.remove("stale");
 
   const journey = getActiveJourney();
-  if (tryRenderJourneyTargetPreview(journey, lastApiData ?? { next: null, upcoming: [] })) {
+  let previewed = false;
+  try {
+    previewed = tryRenderJourneyTargetPreview(
+      journey,
+      lastApiData ?? { next: null, upcoming: [] }
+    );
+  } catch {
+    previewed = false;
+  }
+  if (previewed) {
     updatedEl.textContent = "Update failed";
     errorEl.hidden = true;
     return;
@@ -5304,16 +5315,22 @@ async function fetchNextTrain() {
 
     if (lastApiData?.next) {
       render(prepareDisplayData(lastApiData), { stale: true });
-    } else if (
-      tryRenderJourneyTargetPreview(
-        getActiveJourney(),
-        lastApiData ?? { next: null, upcoming: [] }
-      )
-    ) {
-      updatedEl.textContent = "Update failed";
-      errorEl.hidden = true;
     } else {
-      renderRefreshErrorState();
+      let previewed = false;
+      try {
+        previewed = tryRenderJourneyTargetPreview(
+          getActiveJourney(),
+          lastApiData ?? { next: null, upcoming: [] }
+        );
+      } catch {
+        previewed = false;
+      }
+      if (previewed) {
+        updatedEl.textContent = "Update failed";
+        errorEl.hidden = true;
+      } else {
+        renderRefreshErrorState();
+      }
     }
   }
 }

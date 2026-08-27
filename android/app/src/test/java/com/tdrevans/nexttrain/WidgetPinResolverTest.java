@@ -101,14 +101,20 @@ public class WidgetPinResolverTest {
     override.put("journeyPinOverrideIso", "2026-08-14T08:00:00+08:00");
     assertTrue(JourneyPinHelper.isJourneyPinnedToday(override));
 
-    JSONObject preferred = new JSONObject();
-    preferred.put("preferredTrainTime", "07:30");
-    preferred.put("defaultFrom", "00:00");
-    preferred.put("defaultUntil", "23:59");
-    assertTrue(JourneyPinHelper.isJourneyPinnedToday(preferred));
+    JSONObject preferredInWindow = new JSONObject();
+    preferredInWindow.put("preferredTrainTime", "07:30");
+    preferredInWindow.put("defaultFrom", "00:00");
+    preferredInWindow.put("defaultUntil", "23:59");
+    assertTrue(JourneyPinHelper.isJourneyPinnedToday(preferredInWindow));
+
+    JSONObject preferredNoWindow = new JSONObject();
+    preferredNoWindow.put("preferredTrainTime", "07:30");
+    assertFalse(JourneyPinHelper.isJourneyPinnedToday(preferredNoWindow));
 
     JSONObject dismissed = new JSONObject();
     dismissed.put("preferredTrainTime", "07:30");
+    dismissed.put("defaultFrom", "00:00");
+    dismissed.put("defaultUntil", "23:59");
     dismissed.put("journeyPinDismissedDate", PerthTime.localDateKey());
     assertFalse(JourneyPinHelper.isJourneyPinnedToday(dismissed));
   }
