@@ -30,6 +30,7 @@ if (widgetOnly) {
   gradleArgs.push("--tests", "com.tdrevans.nexttrain.WidgetUiBuilder*");
   gradleArgs.push("--tests", "com.tdrevans.nexttrain.WidgetThemePaletteTest");
   gradleArgs.push("--tests", "com.tdrevans.nexttrain.CommuteScheduleTest");
+  gradleArgs.push("--tests", "com.tdrevans.nexttrain.WidgetPinResolverTest");
 }
 
 const result = spawnSync(gradle, gradleArgs, {
