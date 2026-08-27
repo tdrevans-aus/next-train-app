@@ -59,7 +59,7 @@ async function run() {
     dialogUi.title === "Reminders" &&
     dialogUi.lead?.includes("ping you when it’s time to leave") &&
     !dialogUi.upcomingTitle &&
-    dialogUi.emptyCopy?.includes("Save a journey first to get leave pings") &&
+    dialogUi.emptyCopy?.includes("No reminders set") &&
     dialogUi.pauseTitle === "Pause" &&
     dialogUi.donePresent &&
     !duplicateConstBug;

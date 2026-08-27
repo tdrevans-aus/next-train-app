@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   }
 
   if (!isMultiCity(city)) {
-    res.status(400).json({ error: "Station catalog only available for Sydney, Brisbane, Adelaide, and London" });
+    res.status(400).json({ error: "Station catalog only available for live multi-city regions" });
     return;
   }
 

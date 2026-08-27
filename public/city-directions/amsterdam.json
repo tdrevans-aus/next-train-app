@@ -1,0 +1,214 @@
+{
+  "Isolatorweg": [
+    "M50 + Gein",
+    "M51 + Centraal Station"
+  ],
+  "Station Sloterdijk": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "De Vlugtlaan": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "Jan van Galenstraat": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "Postjesweg": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "Station Lelylaan": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "Heemstedestraat": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "Henk Sneevlietweg": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "Amstelveenseweg": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg"
+  ],
+  "Station Zuid": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg",
+    "M52 + Noord"
+  ],
+  "Station RAI": [
+    "M50 + Gein",
+    "M50 + Isolatorweg"
+  ],
+  "Overamstel": [
+    "M50 + Gein",
+    "M50 + Isolatorweg"
+  ],
+  "Van der Madeweg": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Station Duivendrecht": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Strandvliet": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Station Bijlmer ArenA": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Bullewijk": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Station Holendrecht": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Reigersbos": [
+    "M50 + Gein",
+    "M50 + Isolatorweg",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Gein": [
+    "M50 + Isolatorweg",
+    "M54 + Centraal Station"
+  ],
+  "Centraal Station": [
+    "M51 + Isolatorweg",
+    "M52 + Noord",
+    "M52 + Station Zuid",
+    "M53 + Gaasperplas",
+    "M54 + Gein"
+  ],
+  "Nieuwmarkt": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Waterlooplein": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Weesperplein": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Wibautstraat": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Amstelstation": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Spaklerweg": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas",
+    "M54 + Centraal Station",
+    "M54 + Gein"
+  ],
+  "Venserpolder": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas"
+  ],
+  "Station Diemen Zuid": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas"
+  ],
+  "Verrijn Stuartweg": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas"
+  ],
+  "Ganzenhoef": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas"
+  ],
+  "Kraaiennest": [
+    "M53 + Centraal Station",
+    "M53 + Gaasperplas"
+  ],
+  "Gaasperplas": [
+    "M53 + Centraal Station"
+  ],
+  "Noord": [
+    "M52 + Station Zuid"
+  ],
+  "Noorderpark": [
+    "M52 + Noord",
+    "M52 + Station Zuid"
+  ],
+  "Rokin": [
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg",
+    "M52 + Noord",
+    "M52 + Station Zuid"
+  ],
+  "Vijzelgracht": [
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg",
+    "M52 + Noord",
+    "M52 + Station Zuid"
+  ],
+  "De Pijp": [
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg",
+    "M52 + Noord",
+    "M52 + Station Zuid"
+  ],
+  "Europaplein": [
+    "M51 + Centraal Station",
+    "M51 + Isolatorweg",
+    "M52 + Noord",
+    "M52 + Station Zuid"
+  ]
+}

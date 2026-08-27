@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_phone
+GVB,GVB,http://www.gvb.nl/klantenservice,Europe/Amsterdam,0900-80 11

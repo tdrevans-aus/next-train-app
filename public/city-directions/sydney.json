@@ -1,0 +1,959 @@
+{
+  "Allawah": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Arncliffe": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Artarmon": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Ashfield": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Asquith": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Auburn": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta"
+  ],
+  "Banksia": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Bankstown": [
+    "T6 Lidcombe"
+  ],
+  "Barangaroo": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Bardwell Park": [
+    "T8 Macarthur"
+  ],
+  "Beecroft": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Bella Vista": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Berala": [
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T6 Bankstown",
+    "T6 Lidcombe"
+  ],
+  "Berowra": [
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Beverly Hills": [
+    "T8 Macarthur"
+  ],
+  "Bexley North": [
+    "T8 Macarthur"
+  ],
+  "Birrong": [
+    "T6 Bankstown",
+    "T6 Lidcombe"
+  ],
+  "Blacktown": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Bondi Junction": [
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Burwood": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Cabramatta": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Campbelltown": [
+    "T8 Macarthur"
+  ],
+  "Canley Vale": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Caringbah": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Carlton": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Carramar": [
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Castle Hill": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Casula": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Central": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall",
+    "T8 Macarthur",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Central Metro": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Chatswood": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Chatswood Metro": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Cheltenham": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Cherrybrook": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Chester Hill": [
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Circular Quay": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T8 Macarthur"
+  ],
+  "Clarendon": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Clyde": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta"
+  ],
+  "Como": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Concord West": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Cronulla": [
+    "T4 Bondi Junction",
+    "T4 Waterfall"
+  ],
+  "Crows Nest": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Croydon": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Denistone": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Domestic Airport": [
+    "T8 Macarthur"
+  ],
+  "Doonside": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "East Hills": [
+    "T8 Macarthur"
+  ],
+  "East Richmond": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Eastwood": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Edgecliff": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Edmondson Park": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Emu Plains": [
+    "T1 Berowra",
+    "T1 Richmond"
+  ],
+  "Engadine": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Epping": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Epping Metro": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Erskineville": [
+    "T8 Macarthur"
+  ],
+  "Fairfield": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Flemington": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Gadigal": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Glenfield": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond",
+    "T8 Macarthur"
+  ],
+  "Gordon": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Hornsby"
+  ],
+  "Granville": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta"
+  ],
+  "Green Square": [
+    "T8 Macarthur"
+  ],
+  "Guildford": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Gymea": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Harris Park": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Heathcote": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Hills Showground": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Holsworthy": [
+    "T8 Macarthur"
+  ],
+  "Homebush": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Hornsby": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon"
+  ],
+  "Hurstville": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Ingleburn": [
+    "T8 Macarthur"
+  ],
+  "International Airport": [
+    "T8 Macarthur"
+  ],
+  "Jannali": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Kellyville": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Killara": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Kings Cross": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Kingsgrove": [
+    "T8 Macarthur"
+  ],
+  "Kingswood": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Kirrawee": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Kogarah": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Leightonfield": [
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Leppington": [
+    "T2 Parramatta",
+    "T5 Richmond"
+  ],
+  "Leumeah": [
+    "T8 Macarthur"
+  ],
+  "Lewisham": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Lidcombe": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Liverpool",
+    "T6 Bankstown",
+    "T7 Olympic Park"
+  ],
+  "Lindfield": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Liverpool": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Loftus": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Macdonaldtown": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Macquarie Fields": [
+    "T8 Macarthur"
+  ],
+  "Macquarie Park": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Macquarie University": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Marayong": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Martin Place": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Martin Place Metro": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Mascot": [
+    "T8 Macarthur"
+  ],
+  "Meadowbank": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Merrylands": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Milsons Point": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Minto": [
+    "T8 Macarthur"
+  ],
+  "Miranda": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Mortdale": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Mount Colah": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Mount Druitt": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Mount Kuring-gai": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Mulgrave": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Museum": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T8 Macarthur"
+  ],
+  "Narwee": [
+    "T8 Macarthur"
+  ],
+  "Newtown": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Normanhurst": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "North Ryde": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "North Strathfield": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "North Sydney": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Norwest": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Oatley": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Olympic Park": [
+    "T7 Lidcombe"
+  ],
+  "Padstow": [
+    "T8 Macarthur"
+  ],
+  "Panania": [
+    "T8 Macarthur"
+  ],
+  "Parramatta": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Pendle Hill": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Pennant Hills": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Penrith": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Penshurst": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Petersham": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Pymble": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Quakers Hill": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Redfern": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall",
+    "T8 Macarthur",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Regents Park": [
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T6 Bankstown",
+    "T6 Lidcombe"
+  ],
+  "Revesby": [
+    "T8 Macarthur"
+  ],
+  "Rhodes": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Richmond": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T5 Leppington"
+  ],
+  "Riverstone": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Riverwood": [
+    "T8 Macarthur"
+  ],
+  "Rockdale": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Rooty Hill": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Roseville": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Rouse Hill": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Schofields": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Sefton": [
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Seven Hills": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "St James": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T8 Macarthur"
+  ],
+  "St Leonards": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "St Marys": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "St Peters": [
+    "T8 Macarthur"
+  ],
+  "Stanmore": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Strathfield": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Summer Hill": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Sutherland": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Sydenham": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall",
+    "T8 Macarthur"
+  ],
+  "Sydenham Metro": [
+    "M1 Tallawong"
+  ],
+  "Tallawong": [
+    "M1 Sydenham"
+  ],
+  "Tempe": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Thornleigh": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Toongabbie": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Town Hall": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall",
+    "T8 Macarthur",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Turramurra": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Turrella": [
+    "T8 Macarthur"
+  ],
+  "Victoria Cross": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Villawood": [
+    "T3 Lidcombe",
+    "T3 Liverpool"
+  ],
+  "Vineyard": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Wahroonga": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Waitara": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Warrawee": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "Warwick Farm": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Waterfall": [
+    "T4 Bondi Junction",
+    "T4 Cronulla"
+  ],
+  "Waterloo": [
+    "M1 Sydenham",
+    "M1 Tallawong"
+  ],
+  "Waverton": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Wentworthville": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Werrington": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond"
+  ],
+  "West Ryde": [
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Westmead": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Windsor": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T5 Leppington",
+    "T5 Richmond"
+  ],
+  "Wolli Creek": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall",
+    "T8 Macarthur"
+  ],
+  "Wollstonecraft": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Woolooware": [
+    "T4 Bondi Junction",
+    "T4 Cronulla",
+    "T4 Waterfall"
+  ],
+  "Wynyard": [
+    "T1 Berowra",
+    "T1 Emu Plains",
+    "T1 Richmond",
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T3 Lidcombe",
+    "T3 Liverpool",
+    "T8 Macarthur",
+    "T9 Gordon",
+    "T9 Hornsby"
+  ],
+  "Yagoona": [
+    "T6 Bankstown",
+    "T6 Lidcombe"
+  ],
+  "Yennora": [
+    "T2 Leppington",
+    "T2 Parramatta",
+    "T5 Leppington",
+    "T5 Richmond"
+  ]
+}

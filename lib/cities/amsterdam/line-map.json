@@ -1,0 +1,147 @@
+{
+  "city": "amsterdam",
+  "source": "Official GVB rail map (GVB_railnetwerk_24apr_2026). Not generated from GTFS. Luke D1 pack can follow.",
+  "timeZone": "Europe/Amsterdam",
+  "dst": true,
+  "notes": [
+    "TRAIN v1 is GVB metro only: M50–M54. No tram, bus, ferry, NS Intercity/Sprinter.",
+    "Hub printed name is Centraal Station. Do not collapse with NS Amsterdam Centraal. M52 has its own deeper platforms at Centraal — still one hub name.",
+    "Metro does not go to Schiphol.",
+    "Direction: line + terminus (M54 + Gein). Not inbound/outbound.",
+    "Do not generate published-network.json from GTFS."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Centraal Station",
+      "b": "Amsterdam Centraal",
+      "reason": "GVB metro hub vs NS station name"
+    }
+  ],
+  "junctionStations": [
+    "Centraal Station",
+    "Station Zuid",
+    "Van der Madeweg",
+    "Spaklerweg"
+  ],
+  "suppressedTermini": ["Schiphol"],
+  "lines": [
+    {
+      "id": "m50",
+      "number": "50",
+      "name": "M50",
+      "mode": "METRO",
+      "termini": ["Isolatorweg", "Gein"],
+      "stations": [
+        "Isolatorweg",
+        "Station Sloterdijk",
+        "De Vlugtlaan",
+        "Jan van Galenstraat",
+        "Postjesweg",
+        "Station Lelylaan",
+        "Heemstedestraat",
+        "Henk Sneevlietweg",
+        "Amstelveenseweg",
+        "Station Zuid",
+        "Station RAI",
+        "Overamstel",
+        "Van der Madeweg",
+        "Station Duivendrecht",
+        "Strandvliet",
+        "Station Bijlmer ArenA",
+        "Bullewijk",
+        "Station Holendrecht",
+        "Reigersbos",
+        "Gein"
+      ]
+    },
+    {
+      "id": "m51",
+      "number": "51",
+      "name": "M51",
+      "mode": "METRO",
+      "termini": ["Centraal Station", "Isolatorweg"],
+      "stations": [
+        "Isolatorweg",
+        "Station Sloterdijk",
+        "De Vlugtlaan",
+        "Jan van Galenstraat",
+        "Postjesweg",
+        "Station Lelylaan",
+        "Heemstedestraat",
+        "Henk Sneevlietweg",
+        "Amstelveenseweg",
+        "Station Zuid",
+        "Europaplein",
+        "De Pijp",
+        "Vijzelgracht",
+        "Rokin",
+        "Centraal Station"
+      ]
+    },
+    {
+      "id": "m52",
+      "number": "52",
+      "name": "M52",
+      "mode": "METRO",
+      "termini": ["Noord", "Station Zuid"],
+      "stations": [
+        "Noord",
+        "Noorderpark",
+        "Centraal Station",
+        "Rokin",
+        "Vijzelgracht",
+        "De Pijp",
+        "Europaplein",
+        "Station Zuid"
+      ]
+    },
+    {
+      "id": "m53",
+      "number": "53",
+      "name": "M53",
+      "mode": "METRO",
+      "termini": ["Centraal Station", "Gaasperplas"],
+      "stations": [
+        "Centraal Station",
+        "Nieuwmarkt",
+        "Waterlooplein",
+        "Weesperplein",
+        "Wibautstraat",
+        "Amstelstation",
+        "Spaklerweg",
+        "Van der Madeweg",
+        "Venserpolder",
+        "Station Diemen Zuid",
+        "Verrijn Stuartweg",
+        "Ganzenhoef",
+        "Kraaiennest",
+        "Gaasperplas"
+      ]
+    },
+    {
+      "id": "m54",
+      "number": "54",
+      "name": "M54",
+      "mode": "METRO",
+      "termini": ["Centraal Station", "Gein"],
+      "stations": [
+        "Centraal Station",
+        "Nieuwmarkt",
+        "Waterlooplein",
+        "Weesperplein",
+        "Wibautstraat",
+        "Amstelstation",
+        "Spaklerweg",
+        "Van der Madeweg",
+        "Station Duivendrecht",
+        "Strandvliet",
+        "Station Bijlmer ArenA",
+        "Bullewijk",
+        "Station Holendrecht",
+        "Reigersbos",
+        "Gein"
+      ]
+    }
+  ]
+}

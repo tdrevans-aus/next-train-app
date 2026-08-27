@@ -1,0 +1,59 @@
+{
+  "city": "newcastle",
+  "status": "live",
+  "timeZone": "Australia/Sydney",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Newcastle Interchange",
+      "aliases": [
+        "Interchange",
+        "Newcastle Interchange Light Rail"
+      ],
+      "stopIds": ["229315"],
+      "lat": -32.9253,
+      "lng": 151.7587,
+      "directions": ["NLR + Newcastle Beach"]
+    },
+    {
+      "name": "Honeysuckle",
+      "aliases": ["Honeysuckle Light Rail"],
+      "stopIds": ["2300107", "2300108"],
+      "lat": -32.9258,
+      "lng": 151.7705,
+      "directions": ["NLR + Newcastle Beach", "NLR + Newcastle Interchange"]
+    },
+    {
+      "name": "Civic",
+      "aliases": ["Civic Light Rail"],
+      "stopIds": ["2300123", "2300124"],
+      "lat": -32.9269,
+      "lng": 151.7758,
+      "directions": ["NLR + Newcastle Beach", "NLR + Newcastle Interchange"]
+    },
+    {
+      "name": "Crown Street",
+      "aliases": ["Crown Street Light Rail"],
+      "stopIds": ["2300125", "2300126"],
+      "lat": -32.9275,
+      "lng": 151.7798,
+      "directions": ["NLR + Newcastle Beach", "NLR + Newcastle Interchange"]
+    },
+    {
+      "name": "Queens Wharf",
+      "aliases": ["Queens Wharf Light Rail"],
+      "stopIds": ["2300127", "2300128"],
+      "lat": -32.9272,
+      "lng": 151.7839,
+      "directions": ["NLR + Newcastle Beach", "NLR + Newcastle Interchange"]
+    },
+    {
+      "name": "Newcastle Beach",
+      "aliases": ["Newcastle Beach Light Rail"],
+      "stopIds": ["2300129"],
+      "lat": -32.928,
+      "lng": 151.7885,
+      "directions": ["NLR + Newcastle Interchange"]
+    }
+  ]
+}

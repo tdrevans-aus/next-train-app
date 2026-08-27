@@ -362,13 +362,7 @@ function normalizeJourney(raw = {}) {
   };
 
   const cityId = String(raw.cityId ?? "").trim().toLowerCase();
-  if (
-    cityId === "perth" ||
-    cityId === "sydney" ||
-    cityId === "brisbane" ||
-    cityId === "adelaide" ||
-    cityId === "uk-london-tfl"
-  ) {
+  if (PERSISTED_CITY_IDS.has(cityId)) {
     journey.cityId = cityId;
   }
 
@@ -506,14 +500,28 @@ function pickAppThemeFields(raw = {}) {
   return { appTheme: "system" };
 }
 
+const PERSISTED_CITY_IDS = new Set([
+  "perth",
+  "sydney",
+  "brisbane",
+  "adelaide",
+  "uk-london-tfl",
+  "amsterdam",
+  "vancouver",
+  "canberra",
+  "gold-coast",
+  "newcastle",
+]);
+const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca"]);
+
 function pickSavedCityFields(raw = {}) {
   const city = String(raw.savedCity ?? "").trim().toLowerCase();
   const country = String(raw.savedCountry ?? "").trim().toLowerCase();
   const out = {};
-  if (city === "perth" || city === "sydney" || city === "brisbane" || city === "adelaide" || city === "uk-london-tfl") {
+  if (PERSISTED_CITY_IDS.has(city)) {
     out.savedCity = city;
   }
-  if (country === "au" || country === "gb") {
+  if (PERSISTED_COUNTRY_IDS.has(country)) {
     out.savedCountry = country;
   }
   if (raw.regionExplicit === true) {

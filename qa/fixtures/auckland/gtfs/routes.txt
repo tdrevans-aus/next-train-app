@@ -1,0 +1,5 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color,route_sort_order,contract_id
+WEST-201,AM,WEST,WEST,,2,,97C93D,152239,,TRAIN
+EAST-201,AM,EAST,EAST,,2,,FDB913,152239,,TRAIN
+ONE-201,AM,ONE,ONE,,2,,00AEEF,152239,,TRAIN
+STH-201,AM,STH,STH,,2,,D52923,FFFFFF,,TRAIN

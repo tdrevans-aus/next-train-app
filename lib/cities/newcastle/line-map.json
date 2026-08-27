@@ -1,0 +1,45 @@
+{
+  "city": "newcastle",
+  "source": "docs/newcastle-d1 and qa/fixtures/newcastle/published-network.json (official NLR map). Not generated from GTFS.",
+  "timeZone": "Australia/Sydney",
+  "dst": true,
+  "notes": [
+    "City newcastle is not part of Sydney. Newcastle Light Rail only. No Central Coast & Newcastle Line trains. No Stockton ferry.",
+    "One passenger line NLR: Newcastle Interchange to Newcastle Beach. Six open stops.",
+    "Hub lock is Newcastle Interchange. Civic is intermediate, not the hub. Wickham and Newcastle East are suburbs, not stop names.",
+    "Do not add Broadmeadow extension. Direction: line + terminus (NLR + Newcastle Beach).",
+    "Same TFNSW_API_KEY as Sydney. Static/RT are the Newcastle Light Rail feeds, not Sydney trains."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Newcastle Interchange",
+      "b": "Newcastle Interchange Light Rail",
+      "reason": "Hub lock vs GTFS child; do not surface trains at the parent"
+    },
+    {
+      "a": "Queens Wharf",
+      "b": "Stockton",
+      "reason": "Light rail vs Stockton ferry"
+    }
+  ],
+  "junctionStations": ["Newcastle Interchange", "Queens Wharf"],
+  "suppressedTermini": ["Broadmeadow", "Wickham", "Stockton", "Newcastle East"],
+  "lines": [
+    {
+      "id": "nlr",
+      "number": "NLR",
+      "name": "NLR",
+      "mode": "LIGHT_RAIL",
+      "termini": ["Newcastle Interchange", "Newcastle Beach"],
+      "stations": [
+        "Newcastle Interchange",
+        "Honeysuckle",
+        "Civic",
+        "Crown Street",
+        "Queens Wharf",
+        "Newcastle Beach"
+      ]
+    }
+  ]
+}

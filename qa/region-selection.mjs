@@ -118,6 +118,51 @@ async function run() {
     await context.close();
   }
 
+  // 4. Netherlands / Canada persist (allowlist used to strip savedCity)
+  {
+    console.log("    Test 4: Amsterdam and Vancouver persist...");
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
+    await page.waitForTimeout(4000);
+
+    for (const { city, country, station } of [
+      { city: "amsterdam", country: "nl", station: "Centraal Station" },
+      { city: "vancouver", country: "ca", station: "Waterfront" },
+      { city: "newcastle", country: "au", station: "Newcastle Interchange" },
+      { city: "gold-coast", country: "au", station: "Helensvale" },
+    ]) {
+      await page.evaluate(async (id) => {
+        await window.NextTrainCitySession.applyCity(id, { persist: true, explicit: true });
+      }, city);
+      await page.waitForTimeout(1500);
+
+      const state = await page.evaluate((stop) => {
+        const raw = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
+        const stations = window.NextTrainBrisbaneDogfood?.getStations?.() ?? [];
+        return {
+          savedCity: window.NextTrainCitySession.readSavedCity(),
+          savedCountry: window.NextTrainCitySession.readSavedCountry(),
+          storedCity: raw.savedCity,
+          storedCountry: raw.savedCountry,
+          hasStop: stations.includes(stop),
+          stationCount: stations.length,
+        };
+      }, station);
+
+      if (state.savedCity !== city || state.storedCity !== city || state.savedCountry !== country) {
+        console.error(`    FAIL — ${city} did not persist`, state);
+        process.exitCode = 1;
+      } else if (!state.hasStop) {
+        console.error(`    FAIL — ${city} catalog missing ${station}`, state);
+        process.exitCode = 1;
+      } else {
+        console.log(`    PASS — ${city} persisted (${state.stationCount} stops)`);
+      }
+    }
+    await context.close();
+  }
+
   await browser.close();
 }
 

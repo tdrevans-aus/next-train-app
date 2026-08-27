@@ -38,10 +38,10 @@
 
 | ID | Idea | Notes | Status |
 |----|------|-------|--------|
-| **FB-02** | **Other Australian cities** | Expand beyond Perth Transperth. First candidate research: Sydney vs Melbourne — see `docs/city-2-bookmarks.md`. Same product job (leave / next train / journeys); local API + ToS + competition checks. Perth station picker (**FB-05**) already shipped; reuse for city-2 lists. | Backlog |
-| **FB-03** | **Any city with a train API** | Longer-term: city pack / adapter model for any metro that exposes a reliable live (or schedule) train API. Needs multi-city architecture, station graphs, and store listing strategy per region — not a quick locale swap. | Backlog |
+| **FB-02** | **Other Australian cities** | Expand beyond Perth Transperth. First candidate research: Sydney vs Melbourne — see `docs/city-2-bookmarks.md`. Same product job (leave / next train / journeys); local API + ToS + competition checks. Perth station picker (**FB-05**) already shipped; reuse for city-2 lists. | **Done** (Tim, 27 Aug 2026) |
+| **FB-03** | **Any city with a train API** | Longer-term: city pack / adapter model for any metro that exposes a reliable live (or schedule) train API. Needs multi-city architecture, station graphs, and store listing strategy per region — not a quick locale swap. | **Done** (Tim, 27 Aug 2026) |
 | **FB-05** | **Station type-to-filter** | Combobox on journey detail + Near me; list-first open, **Search stations** to type. Briefs: `docs/jim-brief-station-typeahead.md`, `docs/jim-brief-station-picker-list-first.md`. | **Done** (Aug 2026) |
-| **FB-07** | **Process: find + merge same-line directions** | **v8:** heuristic + Perth line map shipped (`docs/direction-collapse-heuristic.md`, `lib/cities/perth/line-map.json`). Groups now include Butler + Fremantle←Claremont. Re-run when expanding cities. | Done — **v8** (process); city-2 still backlog |
+| **FB-07** | **Process: find + merge same-line directions** | **v8:** heuristic + Perth line map shipped (`docs/direction-collapse-heuristic.md`, `lib/cities/perth/line-map.json`). Groups: Yanchep←Whitfords/Clarkson/Butler, Mandurah←Cockburn, Fremantle←Claremont. Repeatable for other cities (e.g. Brisbane review froze groups empty). Not a leftover product item. | **Done** — **v8** |
 
 ---
 

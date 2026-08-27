@@ -347,8 +347,8 @@
     return deps.findNearestStation?.();
   }
 
-  function pickPerthDirection(station) {
-    return deps.pickPerthDirection?.(station);
+  function pickDefaultDirection(station) {
+    return deps.pickDefaultDirection?.(station) ?? deps.pickPerthDirection?.(station);
   }
 
   function locationErrorFrom(error) {
@@ -957,6 +957,11 @@ async function ensureSettingsDraftLoaded() {
 }
 
 async function fetchDirectionsFromApi(station) {
+  const bundled = window.NextTrainBrisbaneDogfood?.getDirectionsForStation?.(station) ?? [];
+  if (Array.isArray(bundled) && bundled.length) {
+    return bundled;
+  }
+
   const query = appendFixtureQuery(`station=${encodeURIComponent(station)}`);
   const primary = await fetchJson(apiUrl(`/api/directions?${query}`));
 
@@ -1622,7 +1627,7 @@ function readJourneyDetailDraft() {
       station,
       direction,
       kind: "route",
-      cityId: cityIdForStation(station) || existing?.cityId || "perth",
+      cityId: cityIdForStation(station) || existing?.cityId || deps.readPreferenceCity?.() || "perth",
       templateKey: existing?.templateKey,
       autoRoute: existing?.autoRoute,
     });
@@ -1660,7 +1665,7 @@ function readJourneyDetailDraft() {
     remindDays,
     remindMe,
     kind: "journey",
-    cityId: cityIdForStation(station) || existing?.cityId || "perth",
+    cityId: cityIdForStation(station) || existing?.cityId || deps.readPreferenceCity?.() || "perth",
     templateKey: existing?.templateKey,
     autoRoute: existing?.autoRoute,
   });
@@ -2113,7 +2118,7 @@ function initJourneyDetailListeners() {
       const { station, distanceKm: km } = await findNearestStation();
       getDetailStationCombobox()?.setValue(station);
       await loadDirectionsForSelect(detailDirectionSelect, station);
-      const direction = await pickPerthDirection(station);
+      const direction = await pickDefaultDirection(station);
       if (direction) {
         detailDirectionSelect.value = direction;
       }

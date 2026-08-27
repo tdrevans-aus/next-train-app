@@ -1,0 +1,468 @@
+{
+  "city": "amsterdam",
+  "status": "live",
+  "timeZone": "Europe/Amsterdam",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Isolatorweg",
+      "aliases": [],
+      "stopIds": [
+        "3981177",
+        "stoparea:615123",
+        "3980939"
+      ],
+      "lat": 52.395222,
+      "lng": 4.850132
+    },
+    {
+      "name": "Station Sloterdijk",
+      "aliases": [
+        "Sloterdijk"
+      ],
+      "stopIds": [
+        "3981404",
+        "stoparea:615119",
+        "3980688"
+      ],
+      "lat": 52.388806,
+      "lng": 4.838781
+    },
+    {
+      "name": "De Vlugtlaan",
+      "aliases": [
+        "Burg. De Vlugtlaan"
+      ],
+      "stopIds": [
+        "3980423",
+        "stoparea:615097",
+        "3979836"
+      ],
+      "lat": 52.37951,
+      "lng": 4.838088
+    },
+    {
+      "name": "Jan van Galenstraat",
+      "aliases": [],
+      "stopIds": [
+        "3981345",
+        "stoparea:615103",
+        "3980089"
+      ],
+      "lat": 52.371963,
+      "lng": 4.834922
+    },
+    {
+      "name": "Postjesweg",
+      "aliases": [],
+      "stopIds": [
+        "3980167",
+        "stoparea:615106",
+        "3981215"
+      ],
+      "lat": 52.364669,
+      "lng": 4.833838
+    },
+    {
+      "name": "Station Lelylaan",
+      "aliases": [
+        "Lelylaan"
+      ],
+      "stopIds": [
+        "3980624",
+        "stoparea:615117",
+        "3980810"
+      ],
+      "lat": 52.357652,
+      "lng": 4.834263
+    },
+    {
+      "name": "Heemstedestraat",
+      "aliases": [],
+      "stopIds": [
+        "3981073",
+        "stoparea:615126",
+        "3981111"
+      ],
+      "lat": 52.352555,
+      "lng": 4.834209
+    },
+    {
+      "name": "Henk Sneevlietweg",
+      "aliases": [],
+      "stopIds": [
+        "3979743",
+        "stoparea:615092",
+        "3980623"
+      ],
+      "lat": 52.346265,
+      "lng": 4.834376
+    },
+    {
+      "name": "Amstelveenseweg",
+      "aliases": [],
+      "stopIds": [
+        "3980314",
+        "stoparea:615110",
+        "3980951"
+      ],
+      "lat": 52.338365,
+      "lng": 4.858069
+    },
+    {
+      "name": "Station Zuid",
+      "aliases": [
+        "Zuid"
+      ],
+      "stopIds": [
+        "3980926",
+        "stoparea:615088",
+        "3979905",
+        "3979717",
+        "3987437"
+      ],
+      "lat": 52.339254,
+      "lng": 4.874111
+    },
+    {
+      "name": "Station RAI",
+      "aliases": [
+        "RAI"
+      ],
+      "stopIds": [
+        "3981250",
+        "stoparea:615124",
+        "3980950"
+      ],
+      "lat": 52.337397,
+      "lng": 4.889817
+    },
+    {
+      "name": "Overamstel",
+      "aliases": [],
+      "stopIds": [
+        "3979849",
+        "stoparea:615094",
+        "3979776",
+        "3980503"
+      ],
+      "lat": 52.331797,
+      "lng": 4.918151
+    },
+    {
+      "name": "Van der Madeweg",
+      "aliases": [],
+      "stopIds": [
+        "3980635",
+        "stoparea:615114",
+        "3980803",
+        "3981387",
+        "3980501"
+      ],
+      "lat": 52.329857,
+      "lng": 4.930172
+    },
+    {
+      "name": "Station Duivendrecht",
+      "aliases": [
+        "Duivendrecht"
+      ],
+      "stopIds": [
+        "3979812",
+        "stoparea:615096",
+        "3980916"
+      ],
+      "lat": 52.323895,
+      "lng": 4.936262
+    },
+    {
+      "name": "Strandvliet",
+      "aliases": [],
+      "stopIds": [
+        "3981329",
+        "stoparea:615122",
+        "3980848"
+      ],
+      "lat": 52.318683,
+      "lng": 4.941375
+    },
+    {
+      "name": "Station Bijlmer ArenA",
+      "aliases": [
+        "Bijlmer ArenA",
+        "Station Arena",
+        "Arena"
+      ],
+      "stopIds": [
+        "3980962",
+        "stoparea:615125",
+        "3981233"
+      ],
+      "lat": 52.312611,
+      "lng": 4.946935
+    },
+    {
+      "name": "Bullewijk",
+      "aliases": [],
+      "stopIds": [
+        "3981144",
+        "stoparea:615116",
+        "3980563"
+      ],
+      "lat": 52.306931,
+      "lng": 4.952079
+    },
+    {
+      "name": "Station Holendrecht",
+      "aliases": [
+        "Holendrecht"
+      ],
+      "stopIds": [
+        "3981303",
+        "stoparea:615113",
+        "3980442"
+      ],
+      "lat": 52.298394,
+      "lng": 4.959859
+    },
+    {
+      "name": "Reigersbos",
+      "aliases": [],
+      "stopIds": [
+        "3979741",
+        "stoparea:615091",
+        "3980145"
+      ],
+      "lat": 52.295576,
+      "lng": 4.973636
+    },
+    {
+      "name": "Gein",
+      "aliases": [],
+      "stopIds": [
+        "3980747",
+        "stoparea:615115",
+        "3980550"
+      ],
+      "lat": 52.296284,
+      "lng": 4.988728
+    },
+    {
+      "name": "Centraal Station",
+      "aliases": [],
+      "stopIds": [
+        "3979722",
+        "stoparea:615089",
+        "3981395",
+        "3979920",
+        "3981392"
+      ],
+      "lat": 52.377954,
+      "lng": 4.899511
+    },
+    {
+      "name": "Nieuwmarkt",
+      "aliases": [],
+      "stopIds": [
+        "3981245",
+        "stoparea:615120",
+        "3980811"
+      ],
+      "lat": 52.371913,
+      "lng": 4.901427
+    },
+    {
+      "name": "Waterlooplein",
+      "aliases": [],
+      "stopIds": [
+        "3980640",
+        "stoparea:615100",
+        "3979944"
+      ],
+      "lat": 52.366986,
+      "lng": 4.90314
+    },
+    {
+      "name": "Weesperplein",
+      "aliases": [],
+      "stopIds": [
+        "3981336",
+        "stoparea:615086",
+        "3979696"
+      ],
+      "lat": 52.361236,
+      "lng": 4.907945
+    },
+    {
+      "name": "Wibautstraat",
+      "aliases": [],
+      "stopIds": [
+        "3980265",
+        "stoparea:615109",
+        "3980778"
+      ],
+      "lat": 52.354332,
+      "lng": 4.912188
+    },
+    {
+      "name": "Amstelstation",
+      "aliases": [
+        "Amstel"
+      ],
+      "stopIds": [
+        "3980520",
+        "stoparea:615111",
+        "3980326"
+      ],
+      "lat": 52.346489,
+      "lng": 4.91757
+    },
+    {
+      "name": "Spaklerweg",
+      "aliases": [],
+      "stopIds": [
+        "3980158",
+        "stoparea:615105",
+        "3980658",
+        "3980648",
+        "3980996"
+      ],
+      "lat": 52.340239,
+      "lng": 4.92107
+    },
+    {
+      "name": "Venserpolder",
+      "aliases": [],
+      "stopIds": [
+        "3980490",
+        "stoparea:615102",
+        "3980042"
+      ],
+      "lat": 52.326727,
+      "lng": 4.946047
+    },
+    {
+      "name": "Station Diemen Zuid",
+      "aliases": [
+        "Diemen Zuid"
+      ],
+      "stopIds": [
+        "3980840",
+        "stoparea:615121",
+        "3981216"
+      ],
+      "lat": 52.330206,
+      "lng": 4.956105
+    },
+    {
+      "name": "Verrijn Stuartweg",
+      "aliases": [],
+      "stopIds": [
+        "3980003",
+        "stoparea:615101",
+        "3980708"
+      ],
+      "lat": 52.328815,
+      "lng": 4.966549
+    },
+    {
+      "name": "Ganzenhoef",
+      "aliases": [],
+      "stopIds": [
+        "3979808",
+        "stoparea:615095",
+        "3981316"
+      ],
+      "lat": 52.323984,
+      "lng": 4.972858
+    },
+    {
+      "name": "Kraaiennest",
+      "aliases": [],
+      "stopIds": [
+        "3979765",
+        "stoparea:615093",
+        "3979992"
+      ],
+      "lat": 52.316816,
+      "lng": 4.979378
+    },
+    {
+      "name": "Gaasperplas",
+      "aliases": [],
+      "stopIds": [
+        "3980335",
+        "stoparea:615108",
+        "3980228"
+      ],
+      "lat": 52.311225,
+      "lng": 4.984488
+    },
+    {
+      "name": "Noord",
+      "aliases": [],
+      "stopIds": [
+        "3981333",
+        "stoparea:615085",
+        "3979688"
+      ],
+      "lat": 52.40117,
+      "lng": 4.931229
+    },
+    {
+      "name": "Noorderpark",
+      "aliases": [],
+      "stopIds": [
+        "3980581",
+        "stoparea:615099",
+        "3979933"
+      ],
+      "lat": 52.388553,
+      "lng": 4.917874
+    },
+    {
+      "name": "Rokin",
+      "aliases": [],
+      "stopIds": [
+        "3980118",
+        "stoparea:615104",
+        "3980373"
+      ],
+      "lat": 52.369278,
+      "lng": 4.892294
+    },
+    {
+      "name": "Vijzelgracht",
+      "aliases": [],
+      "stopIds": [
+        "3980837",
+        "stoparea:615087",
+        "3979710"
+      ],
+      "lat": 52.359799,
+      "lng": 4.890726
+    },
+    {
+      "name": "De Pijp",
+      "aliases": [],
+      "stopIds": [
+        "3980523",
+        "stoparea:615112",
+        "3980395"
+      ],
+      "lat": 52.35296,
+      "lng": 4.891008
+    },
+    {
+      "name": "Europaplein",
+      "aliases": [],
+      "stopIds": [
+        "3980201",
+        "stoparea:615090",
+        "3979735"
+      ],
+      "lat": 52.341852,
+      "lng": 4.891308
+    }
+  ]
+}

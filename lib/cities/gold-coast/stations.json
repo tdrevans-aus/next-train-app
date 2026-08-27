@@ -1,0 +1,363 @@
+{
+  "city": "gold-coast",
+  "status": "live",
+  "timeZone": "Australia/Brisbane",
+  "dst": false,
+  "stations": [
+    {
+      "name": "Helensvale",
+      "aliases": [
+        "Helensvale station"
+      ],
+      "stopIds": [
+        "600836",
+        "600837"
+      ],
+      "lat": -27.925333,
+      "lng": 153.338816
+    },
+    {
+      "name": "Parkwood",
+      "aliases": [
+        "Parkwood station"
+      ],
+      "stopIds": [
+        "600834",
+        "600835",
+        "place_parstn"
+      ],
+      "lat": -27.951583,
+      "lng": 153.347323
+    },
+    {
+      "name": "Parkwood East",
+      "aliases": [
+        "Parkwood East station"
+      ],
+      "stopIds": [
+        "600832",
+        "600833",
+        "place_paestn"
+      ],
+      "lat": -27.962748,
+      "lng": 153.364742
+    },
+    {
+      "name": "Gold Coast University Hospital",
+      "aliases": [
+        "Gold Coast University Hospital station",
+        "GCUH",
+        "University Hospital"
+      ],
+      "stopIds": [
+        "600830",
+        "600831",
+        "place_gcustn"
+      ],
+      "lat": -27.960496,
+      "lng": 153.380688
+    },
+    {
+      "name": "Griffith University",
+      "aliases": [
+        "Griffith University station (Southport)",
+        "Griffith University (Southport)"
+      ],
+      "stopIds": [
+        "600828",
+        "600829",
+        "place_gristn"
+      ],
+      "lat": -27.963258,
+      "lng": 153.384767
+    },
+    {
+      "name": "Queen Street",
+      "aliases": [
+        "Queen Street station (Southport)",
+        "Queen Street (Southport)"
+      ],
+      "stopIds": [
+        "600826",
+        "600827",
+        "place_qssstn"
+      ],
+      "lat": -27.970153,
+      "lng": 153.394489
+    },
+    {
+      "name": "Nerang Street",
+      "aliases": [
+        "Nerang Street station"
+      ],
+      "stopIds": [
+        "600824",
+        "600825",
+        "place_nerstn"
+      ],
+      "lat": -27.970671,
+      "lng": 153.408579
+    },
+    {
+      "name": "Southport",
+      "aliases": [
+        "Southport station"
+      ],
+      "stopIds": [
+        "600822",
+        "600823",
+        "place_soustn"
+      ],
+      "lat": -27.967707,
+      "lng": 153.413691
+    },
+    {
+      "name": "Southport South",
+      "aliases": [
+        "Southport South station"
+      ],
+      "stopIds": [
+        "600820",
+        "600821",
+        "place_sosstn"
+      ],
+      "lat": -27.972392,
+      "lng": 153.415479
+    },
+    {
+      "name": "Broadwater Parklands",
+      "aliases": [
+        "Broadwater Parklands station"
+      ],
+      "stopIds": [
+        "600818",
+        "600819",
+        "place_brostn"
+      ],
+      "lat": -27.973596,
+      "lng": 153.418873
+    },
+    {
+      "name": "Main Beach",
+      "aliases": [
+        "Main Beach station"
+      ],
+      "stopIds": [
+        "600816",
+        "600817",
+        "place_maistn"
+      ],
+      "lat": -27.98199,
+      "lng": 153.423488
+    },
+    {
+      "name": "Surfers Paradise North",
+      "aliases": [
+        "Surfers Paradise North station"
+      ],
+      "stopIds": [
+        "600814",
+        "600815",
+        "place_spnstn"
+      ],
+      "lat": -27.992607,
+      "lng": 153.429286
+    },
+    {
+      "name": "Cypress Avenue",
+      "aliases": [
+        "Cypress Avenue station"
+      ],
+      "stopIds": [
+        "600812",
+        "600813",
+        "place_cypsta"
+      ],
+      "lat": -27.99661,
+      "lng": 153.429285
+    },
+    {
+      "name": "Cavill Avenue",
+      "aliases": [
+        "Cavill Avenue station"
+      ],
+      "stopIds": [
+        "600810",
+        "600811",
+        "place_cavsta"
+      ],
+      "lat": -28.001701,
+      "lng": 153.428466
+    },
+    {
+      "name": "Surfers Paradise",
+      "aliases": [
+        "Surfers Paradise station"
+      ],
+      "stopIds": [
+        "600808",
+        "600809",
+        "place_surstn"
+      ],
+      "lat": -28.006114,
+      "lng": 153.429184
+    },
+    {
+      "name": "Northcliffe",
+      "aliases": [
+        "Northcliffe station"
+      ],
+      "stopIds": [
+        "600806",
+        "600807",
+        "place_norstn"
+      ],
+      "lat": -28.01,
+      "lng": 153.429515
+    },
+    {
+      "name": "Florida Gardens",
+      "aliases": [
+        "Florida Gardens station"
+      ],
+      "stopIds": [
+        "600804",
+        "600805",
+        "place_flostn"
+      ],
+      "lat": -28.017291,
+      "lng": 153.429468
+    },
+    {
+      "name": "Broadbeach North",
+      "aliases": [
+        "Broadbeach North station"
+      ],
+      "stopIds": [
+        "600802",
+        "600803",
+        "place_brnstn"
+      ],
+      "lat": -28.028773,
+      "lng": 153.429854
+    },
+    {
+      "name": "Broadbeach South",
+      "aliases": [
+        "Broadbeach South station"
+      ],
+      "stopIds": [
+        "600800",
+        "600801",
+        "place_brsstn"
+      ],
+      "lat": -28.035965,
+      "lng": 153.431102
+    },
+    {
+      "name": "Mermaid Beach",
+      "aliases": [
+        "Mermaid Beach station"
+      ],
+      "stopIds": [
+        "600863",
+        "600864",
+        "place_mebstn"
+      ],
+      "lat": -28.041899,
+      "lng": 153.434187
+    },
+    {
+      "name": "Mermaid Beach South",
+      "aliases": [
+        "Mermaid Beach South station"
+      ],
+      "stopIds": [
+        "600865",
+        "600866",
+        "place_mbsstn"
+      ],
+      "lat": -28.050532,
+      "lng": 153.436324
+    },
+    {
+      "name": "Nobby Beach",
+      "aliases": [
+        "Nobby Beach station"
+      ],
+      "stopIds": [
+        "600867",
+        "600868",
+        "place_nobstn"
+      ],
+      "lat": -28.059362,
+      "lng": 153.437865
+    },
+    {
+      "name": "Miami North",
+      "aliases": [
+        "Miami North station"
+      ],
+      "stopIds": [
+        "600869",
+        "600870",
+        "place_minstn"
+      ],
+      "lat": -28.065013,
+      "lng": 153.438685
+    },
+    {
+      "name": "Miami",
+      "aliases": [
+        "Miami station"
+      ],
+      "stopIds": [
+        "600871",
+        "600872",
+        "place_miastn"
+      ],
+      "lat": -28.068932,
+      "lng": 153.441886
+    },
+    {
+      "name": "Christine Avenue",
+      "aliases": [
+        "Christine Avenue station"
+      ],
+      "stopIds": [
+        "600873",
+        "600874",
+        "place_chrstn"
+      ],
+      "lat": -28.075648,
+      "lng": 153.445198
+    },
+    {
+      "name": "Second Avenue",
+      "aliases": [
+        "Second Avenue station",
+        "Second Avenue Burleigh"
+      ],
+      "stopIds": [
+        "600875",
+        "600876",
+        "place_seastn"
+      ],
+      "lat": -28.084087,
+      "lng": 153.448317
+    },
+    {
+      "name": "Burleigh Heads",
+      "aliases": [
+        "Burleigh Heads station"
+      ],
+      "stopIds": [
+        "600877",
+        "600878",
+        "place_bhdstn"
+      ],
+      "lat": -28.089692,
+      "lng": 153.453026
+    }
+  ]
+}

@@ -1,0 +1,537 @@
+{
+  "city": "stockholm",
+  "source": "qa/fixtures/stockholm/published-network.json (Luke D1 SL Spårtrafikkarta 250414). Not generated from GTFS.",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "notes": [
+    "Station lists lock to Luke D1. Never generate published-network.json from GTFS.",
+    "T-Centralen is metro. Stockholm City is pendeltåg Citybanan. Stockholms central is SJ/fjärrtåg — do not collapse.",
+    "Odenplan (metro) is not Stockholm Odenplan (pendeltåg).",
+    "v1: Tunnelbana 10/11/13/14/17/18/19 and Pendeltåg 40/41/43/48. No buses. Trams/Roslagsbanan/Saltsjöbanan/Tvärbanan later.",
+    "Line 48 does not through-run Citybanan. 43X is a nested skip-stop of 43. 42/44 are not D1.",
+    "Direction: line + terminus (Röda linjen + Norsborg). Not inbound/outbound."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "T-Centralen",
+      "b": "Stockholm City",
+      "reason": "Metro node vs pendeltåg Citybanan"
+    },
+    {
+      "a": "T-Centralen",
+      "b": "Stockholms central",
+      "reason": "Metro vs SJ/fjärrtåg"
+    },
+    {
+      "a": "Stockholm City",
+      "b": "Stockholms central",
+      "reason": "Pendeltåg vs SJ/fjärrtåg"
+    },
+    {
+      "a": "Odenplan",
+      "b": "Stockholm Odenplan",
+      "reason": "Metro site vs pendeltåg site"
+    },
+    {
+      "a": "Sundbybergs centrum",
+      "b": "Sundbyberg",
+      "reason": "Blue 11 metro vs pendeltåg 43"
+    },
+    {
+      "a": "Solna centrum",
+      "b": "Solna",
+      "reason": "Blue 10 metro vs pendeltåg 40/41"
+    },
+    {
+      "a": "Farsta strand",
+      "b": "Farsta strand pendeltåg",
+      "reason": "Same map word, two modes — keep modes filtered on boards"
+    }
+  ],
+  "proposedShortTurnGroups": {},
+  "proposedDoNotGroup": [],
+  "junctionStations": [
+    "Västra skogen",
+    "Liljeholmen",
+    "Östermalmstorg",
+    "Gullmarsplan",
+    "Skärmarbrink",
+    "Upplands Väsby",
+    "Älvsjö",
+    "Stockholm Odenplan",
+    "Södertälje hamn"
+  ],
+  "suppressedTermini": [
+    "Arenastaden",
+    "Hagastaden",
+    "Södra Hagalund"
+  ],
+  "laterModes": [
+    "Spårväg City",
+    "Nockebybanan",
+    "Lidingöbanan",
+    "Saltsjöbanan",
+    "Roslagsbanan",
+    "Tvärbanan"
+  ],
+  "lines": [
+    {
+      "id": "t10",
+      "number": "10",
+      "name": "Blå linjen",
+      "mode": "METRO",
+      "mapGroup": "Blå linjen",
+      "termini": [
+        "Hjulsta",
+        "Kungsträdgården"
+      ],
+      "stations": [
+        "Kungsträdgården",
+        "T-Centralen",
+        "Rådhuset",
+        "Fridhemsplan",
+        "Stadshagen",
+        "Västra skogen",
+        "Solna centrum",
+        "Näckrosen",
+        "Hallonbergen",
+        "Rinkeby",
+        "Tensta",
+        "Hjulsta"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "t11",
+      "number": "11",
+      "name": "Blå linjen",
+      "mode": "METRO",
+      "mapGroup": "Blå linjen",
+      "termini": [
+        "Akalla",
+        "Kungsträdgården"
+      ],
+      "stations": [
+        "Kungsträdgården",
+        "T-Centralen",
+        "Rådhuset",
+        "Fridhemsplan",
+        "Stadshagen",
+        "Västra skogen",
+        "Huvudsta",
+        "Solna strand",
+        "Sundbybergs centrum",
+        "Duvbo",
+        "Rissne",
+        "Kista",
+        "Husby",
+        "Akalla"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "t13",
+      "number": "13",
+      "name": "Röda linjen",
+      "mode": "METRO",
+      "mapGroup": "Röda linjen",
+      "termini": [
+        "Norsborg",
+        "Ropsten"
+      ],
+      "stations": [
+        "Norsborg",
+        "Hallunda",
+        "Alby",
+        "Fittja",
+        "Masmo",
+        "Vårby gård",
+        "Vårberg",
+        "Skärholmen",
+        "Sätra",
+        "Bredäng",
+        "Mälarhöjden",
+        "Axelsberg",
+        "Örnsberg",
+        "Aspudden",
+        "Liljeholmen",
+        "Hornstull",
+        "Zinkensdamm",
+        "Mariatorget",
+        "Slussen",
+        "Gamla stan",
+        "T-Centralen",
+        "Östermalmstorg",
+        "Karlaplan",
+        "Gärdet",
+        "Ropsten"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "t14",
+      "number": "14",
+      "name": "Röda linjen",
+      "mode": "METRO",
+      "mapGroup": "Röda linjen",
+      "termini": [
+        "Fruängen",
+        "Mörby centrum"
+      ],
+      "stations": [
+        "Fruängen",
+        "Västertorp",
+        "Hägerstensåsen",
+        "Telefonplan",
+        "Midsommarkransen",
+        "Liljeholmen",
+        "Hornstull",
+        "Zinkensdamm",
+        "Mariatorget",
+        "Slussen",
+        "Gamla stan",
+        "T-Centralen",
+        "Östermalmstorg",
+        "Stadion",
+        "Tekniska högskolan",
+        "Universitetet",
+        "Bergshamra",
+        "Danderyds sjukhus",
+        "Mörby centrum"
+      ],
+      "shortTurns": [
+        {
+          "code": "14",
+          "terminus": "Telefonplan",
+          "note": "Live SL Transport sometimes shows Telefonplan as a nested south short. Not a separate map line."
+        }
+      ]
+    },
+    {
+      "id": "t17",
+      "number": "17",
+      "name": "Gröna linjen",
+      "mode": "METRO",
+      "mapGroup": "Gröna linjen",
+      "termini": [
+        "Åkeshov",
+        "Skarpnäck"
+      ],
+      "stations": [
+        "Åkeshov",
+        "Brommaplan",
+        "Abrahamsberg",
+        "Stora mossen",
+        "Alvik",
+        "Kristineberg",
+        "Thorildsplan",
+        "Fridhemsplan",
+        "S:t Eriksplan",
+        "Odenplan",
+        "Rådmansgatan",
+        "Hötorget",
+        "T-Centralen",
+        "Gamla stan",
+        "Slussen",
+        "Medborgarplatsen",
+        "Skanstull",
+        "Gullmarsplan",
+        "Skärmarbrink",
+        "Hammarbyhöjden",
+        "Björkhagen",
+        "Kärrtorp",
+        "Bagarmossen",
+        "Skarpnäck"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "t18",
+      "number": "18",
+      "name": "Gröna linjen",
+      "mode": "METRO",
+      "mapGroup": "Gröna linjen",
+      "termini": [
+        "Hässelby strand",
+        "Farsta strand"
+      ],
+      "stations": [
+        "Hässelby strand",
+        "Hässelby gård",
+        "Johannelund",
+        "Vällingby",
+        "Råcksta",
+        "Blackeberg",
+        "Islandstorget",
+        "Ängbyplan",
+        "Åkeshov",
+        "Brommaplan",
+        "Abrahamsberg",
+        "Stora mossen",
+        "Alvik",
+        "Kristineberg",
+        "Thorildsplan",
+        "Fridhemsplan",
+        "S:t Eriksplan",
+        "Odenplan",
+        "Rådmansgatan",
+        "Hötorget",
+        "T-Centralen",
+        "Gamla stan",
+        "Slussen",
+        "Medborgarplatsen",
+        "Skanstull",
+        "Gullmarsplan",
+        "Skärmarbrink",
+        "Blåsut",
+        "Sandsborg",
+        "Skogskyrkogården",
+        "Tallkrogen",
+        "Gubbängen",
+        "Hökarängen",
+        "Farsta",
+        "Farsta strand"
+      ],
+      "shortTurns": [
+        {
+          "code": "18",
+          "terminus": "Alvik",
+          "note": "Live SL Transport often terminates 18 at Alvik. Map still draws the west end at Hässelby strand."
+        }
+      ]
+    },
+    {
+      "id": "t19",
+      "number": "19",
+      "name": "Gröna linjen",
+      "mode": "METRO",
+      "mapGroup": "Gröna linjen",
+      "termini": [
+        "Hässelby strand",
+        "Hagsätra"
+      ],
+      "stations": [
+        "Hässelby strand",
+        "Hässelby gård",
+        "Johannelund",
+        "Vällingby",
+        "Råcksta",
+        "Blackeberg",
+        "Islandstorget",
+        "Ängbyplan",
+        "Åkeshov",
+        "Brommaplan",
+        "Abrahamsberg",
+        "Stora mossen",
+        "Alvik",
+        "Kristineberg",
+        "Thorildsplan",
+        "Fridhemsplan",
+        "S:t Eriksplan",
+        "Odenplan",
+        "Rådmansgatan",
+        "Hötorget",
+        "T-Centralen",
+        "Gamla stan",
+        "Slussen",
+        "Medborgarplatsen",
+        "Skanstull",
+        "Gullmarsplan",
+        "Globen",
+        "Enskede gård",
+        "Sockenplan",
+        "Svedmyra",
+        "Stureby",
+        "Bandhagen",
+        "Högdalen",
+        "Rågsved",
+        "Hagsätra"
+      ],
+      "shortTurns": [
+        {
+          "code": "19",
+          "terminus": "Alvik",
+          "note": "Live short; map west end is Hässelby strand."
+        },
+        {
+          "code": "17",
+          "terminus": "Vällingby",
+          "note": "Live SL Transport also shows Vällingby as a nested west short on the green west branch."
+        }
+      ]
+    },
+    {
+      "id": "p40",
+      "number": "40",
+      "name": "Pendeltåg",
+      "mode": "TRAIN",
+      "mapGroup": "Pendeltåg",
+      "termini": [
+        "Uppsala C",
+        "Södertälje centrum"
+      ],
+      "stations": [
+        "Uppsala C",
+        "Knivsta",
+        "Arlanda central",
+        "Upplands Väsby",
+        "Rotebro",
+        "Norrviken",
+        "Häggvik",
+        "Sollentuna",
+        "Helenelund",
+        "Ulriksdal",
+        "Solna",
+        "Stockholm Odenplan",
+        "Stockholm City",
+        "Stockholms södra",
+        "Årstaberg",
+        "Älvsjö",
+        "Stuvsta",
+        "Huddinge",
+        "Flemingsberg",
+        "Tullinge",
+        "Tumba",
+        "Rönninge",
+        "Östertälje",
+        "Södertälje hamn",
+        "Södertälje centrum"
+      ],
+      "shortTurns": [
+        {
+          "code": "40",
+          "terminus": "Tumba",
+          "note": "Live nested south short through Stockholm City."
+        }
+      ]
+    },
+    {
+      "id": "p41",
+      "number": "41",
+      "name": "Pendeltåg",
+      "mode": "TRAIN",
+      "mapGroup": "Pendeltåg",
+      "termini": [
+        "Märsta",
+        "Södertälje centrum"
+      ],
+      "stations": [
+        "Märsta",
+        "Rosersberg",
+        "Upplands Väsby",
+        "Rotebro",
+        "Norrviken",
+        "Häggvik",
+        "Sollentuna",
+        "Helenelund",
+        "Ulriksdal",
+        "Solna",
+        "Stockholm Odenplan",
+        "Stockholm City",
+        "Stockholms södra",
+        "Årstaberg",
+        "Älvsjö",
+        "Stuvsta",
+        "Huddinge",
+        "Flemingsberg",
+        "Tullinge",
+        "Tumba",
+        "Rönninge",
+        "Östertälje",
+        "Södertälje hamn",
+        "Södertälje centrum"
+      ],
+      "shortTurns": [
+        {
+          "code": "41",
+          "terminus": "Tumba",
+          "note": "Live nested south short."
+        },
+        {
+          "code": "41",
+          "terminus": "Upplands Väsby",
+          "note": "Live nested north short."
+        }
+      ]
+    },
+    {
+      "id": "p43",
+      "number": "43",
+      "name": "Pendeltåg",
+      "mode": "TRAIN",
+      "mapGroup": "Pendeltåg",
+      "termini": [
+        "Bålsta",
+        "Nynäshamn"
+      ],
+      "stations": [
+        "Bålsta",
+        "Bro",
+        "Kungsängen",
+        "Kallhäll",
+        "Jakobsberg",
+        "Barkarby",
+        "Spånga",
+        "Sundbyberg",
+        "Stockholm Odenplan",
+        "Stockholm City",
+        "Stockholms södra",
+        "Årstaberg",
+        "Älvsjö",
+        "Farsta strand",
+        "Trångsund",
+        "Skogås",
+        "Vega",
+        "Handen",
+        "Jordbro",
+        "Västerhaninge",
+        "Krigslida",
+        "Tungelsta",
+        "Hemfosa",
+        "Segersäng",
+        "Ösmo",
+        "Nynäsgård",
+        "Gröndalsviken",
+        "Nynäshamn"
+      ],
+      "shortTurns": [
+        {
+          "code": "43",
+          "terminus": "Västerhaninge",
+          "note": "Live nested south short (outer Nynäs is thinner)."
+        },
+        {
+          "code": "43",
+          "terminus": "Bro",
+          "note": "Live nested west short short of Bålsta."
+        },
+        {
+          "code": "43X",
+          "terminus": "Kallhäll",
+          "note": "Official skip-stop 43X Kallhäll–Nynäshamn. Map family is still 43. Skips Trångsund, Skogås, Vega, Jordbro per passenger timetable notes."
+        }
+      ]
+    },
+    {
+      "id": "p48",
+      "number": "48",
+      "name": "Pendeltåg",
+      "mode": "TRAIN",
+      "mapGroup": "Pendeltåg",
+      "termini": [
+        "Södertälje centrum",
+        "Gnesta"
+      ],
+      "stations": [
+        "Södertälje centrum",
+        "Södertälje hamn",
+        "Södertälje syd",
+        "Järna",
+        "Mölnbo",
+        "Gnesta"
+      ],
+      "shortTurns": []
+    }
+  ]
+}

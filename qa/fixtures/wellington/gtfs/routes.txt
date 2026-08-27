@@ -1,0 +1,6 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color,route_sort_order
+2,RAIL,KPL,Kāpiti Line (Waikanae - Wellington),Kāpiti Line (Wellington - Waikanae),2,,d4d110,000000,2
+3,RAIL,MEL,Melling Line (Melling - Wellington),Melling Line (Melling - Wellington),2,,ffab2f,000000,3
+4,RAIL,WRL,Wairarapa Line (Masterton - Wellington),Wairarapa Line (Wellington - Masterton),2,,feca0a,000000,4
+5,RAIL,HVL,Hutt Valley Line (Upper Hutt - Wellington),Hutt Valley Line (Wellington - Upper Hutt),2,,ffab2f,000000,5
+6,RAIL,JVL,Johnsonville Line (Johnsonville - Wellington),Johnsonville Line (Wellington - Johnsonville),2,,42c3dc,000000,6

@@ -1,0 +1,70 @@
+{
+  "city": "gold-coast",
+  "source": "docs/gold-coast-d1 and qa/fixtures/gold-coast/published-network.json (official G:link tram PDF Effective August 2026). Not generated from GTFS.",
+  "timeZone": "Australia/Brisbane",
+  "dst": false,
+  "notes": [
+    "City gold-coast is not part of Brisbane. G:link L1 only. No SEQ trains, buses, or ferries.",
+    "One passenger line L1: Helensvale to Burleigh Heads. Stage 3 (Broadbeach South to Burleigh Heads) is in service.",
+    "Do not add Stage 4 (Palm Beach / Coolangatta / Airport) or Biggera Waters — not passenger-open.",
+    "Direction: line + terminus (L1 Burleigh Heads). Not inbound/outbound.",
+    "Same TransLink SEQ GTFS as Brisbane (no key), filtered to G:link. RT SEQ TripUpdates. Do not generate published-network.json from GTFS.",
+    "Hub lock Helensvale (tram map). Shared QR parent — doNotGroup tram vs train platforms."
+  ],
+  "shortTurnGroups": {
+    "l1": ["Griffith University", "Queen Street"]
+  },
+  "doNotGroup": [
+    {
+      "a": "Helensvale",
+      "b": "Helensvale station",
+      "reason": "G:link tram vs QR Gold Coast line at the shared SEQ parent"
+    }
+  ],
+  "junctionStations": ["Helensvale", "Cavill Avenue", "Broadbeach South"],
+  "suppressedTermini": [
+    "Biggera Waters",
+    "Labrador",
+    "Palm Beach",
+    "Coolangatta",
+    "Gold Coast Airport"
+  ],
+  "lines": [
+    {
+      "id": "l1",
+      "number": "L1",
+      "name": "L1",
+      "mode": "LIGHT_RAIL",
+      "termini": ["Helensvale", "Burleigh Heads"],
+      "stations": [
+        "Helensvale",
+        "Parkwood",
+        "Parkwood East",
+        "Gold Coast University Hospital",
+        "Griffith University",
+        "Queen Street",
+        "Nerang Street",
+        "Southport",
+        "Southport South",
+        "Broadwater Parklands",
+        "Main Beach",
+        "Surfers Paradise North",
+        "Cypress Avenue",
+        "Cavill Avenue",
+        "Surfers Paradise",
+        "Northcliffe",
+        "Florida Gardens",
+        "Broadbeach North",
+        "Broadbeach South",
+        "Mermaid Beach",
+        "Mermaid Beach South",
+        "Nobby Beach",
+        "Miami North",
+        "Miami",
+        "Christine Avenue",
+        "Second Avenue",
+        "Burleigh Heads"
+      ]
+    }
+  ]
+}

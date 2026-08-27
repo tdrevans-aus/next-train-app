@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -15,8 +15,11 @@
       regions: [
         { id: "perth", name: "Perth", timeZone: "Australia/Perth" },
         { id: "sydney", name: "Sydney", timeZone: "Australia/Sydney" },
+        { id: "newcastle", name: "Newcastle", timeZone: "Australia/Sydney" },
         { id: "brisbane", name: "Brisbane", timeZone: "Australia/Brisbane" },
+        { id: "gold-coast", name: "Gold Coast", timeZone: "Australia/Brisbane" },
         { id: "adelaide", name: "Adelaide", timeZone: "Australia/Adelaide" },
+        { id: "canberra", name: "Canberra", timeZone: "Australia/Sydney" },
         { id: "melbourne", name: "Melbourne", timeZone: "Australia/Melbourne", comingSoon: true },
       ],
     },
@@ -29,14 +32,33 @@
         { id: "uk-london-tfl", name: "London TfL", timeZone: "Europe/London" },
       ],
     },
+    {
+      id: "nl",
+      name: "Netherlands",
+      regions: [
+        { id: "amsterdam", name: "Amsterdam", timeZone: "Europe/Amsterdam" },
+      ],
+    },
+    {
+      id: "ca",
+      name: "Canada",
+      regions: [
+        { id: "vancouver", name: "Vancouver", timeZone: "America/Vancouver" },
+      ],
+    },
   ];
 
   const CITY_BOUNDS = {
     sydney: { minLat: -34.15, maxLat: -33.45, minLng: 150.6, maxLng: 151.35 },
+    newcastle: { minLat: -32.94, maxLat: -32.91, minLng: 151.75, maxLng: 151.80 },
     perth: { minLat: -32.8, maxLat: -31.4, minLng: 115.55, maxLng: 116.25 },
+    "gold-coast": { minLat: -28.13, maxLat: -27.90, minLng: 153.32, maxLng: 153.46 },
     brisbane: { minLat: -28.2, maxLat: -27.0, minLng: 152.6, maxLng: 153.6 },
     adelaide: { minLat: -35.3, maxLat: -34.55, minLng: 138.35, maxLng: 138.85 },
     "uk-london-tfl": { minLat: 51.28, maxLat: 51.7, minLng: -0.52, maxLng: 0.35 },
+    amsterdam: { minLat: 52.28, maxLat: 52.43, minLng: 4.75, maxLng: 5.05 },
+    vancouver: { minLat: 49.0, maxLat: 49.35, minLng: -123.3, maxLng: -122.7 },
+    canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
   };
 
   function dogfood() {
@@ -68,6 +90,39 @@
       }
     }
     return null;
+  }
+
+  const TFL_OPEN_DATA_LINE = "Powered by TfL Open Data";
+  const VANCOUVER_TRANSLINK_DISCLAIMER =
+    "Some of the data used in this product or service is provided by permission of TransLink. TransLink assumes no responsibility for the accuracy or currency of the Data used in this product or service.";
+
+  function feedAttributionForCity(cityId) {
+    const id = String(cityId || "").toLowerCase();
+    if (id === "vancouver") {
+      return { text: VANCOUVER_TRANSLINK_DISCLAIMER, required: true };
+    }
+    if (id === "uk-london-tfl") {
+      return { text: TFL_OPEN_DATA_LINE, required: false };
+    }
+    return null;
+  }
+
+  function syncFeedAttribution(cityId) {
+    const el = document.getElementById("attribution");
+    if (!el) {
+      return;
+    }
+    const city = String(cityId || readSavedCity() || LIVE_CITY).toLowerCase();
+    const attr = feedAttributionForCity(city);
+    if (!attr) {
+      el.textContent = "";
+      el.hidden = true;
+      el.classList.remove("is-required");
+      return;
+    }
+    el.textContent = attr.text;
+    el.hidden = false;
+    el.classList.toggle("is-required", Boolean(attr.required));
   }
 
   function readStore() {
@@ -380,27 +435,45 @@
     if (!match || !isRegionOpen(match.region)) {
       city = LIVE_CITY;
     }
+    const countryId = match?.country.id || regionById(city)?.country.id || "au";
+
+    // Save the pick immediately. Catalog mount can be slow or fail; snapping
+    // the saved region back to Perth made the picker look like it ignored the tap.
+    if (persist) {
+      persistRegion({
+        city,
+        country: countryId,
+        explicit: explicit || readRegionExplicit(),
+      });
+    }
+    if (explicit) {
+      clearRegionMismatchDismissed();
+    }
+    syncRegionControls();
+    syncFeedAttribution(city);
+
     const dogfoodApi = dogfood();
     // In-memory mount state, not localStorage. After a reload the JS session is
     // fresh even when the saved city is unchanged — skipping mount then leaves
     // Sydney/London catalogs empty.
     const mountedCity = dogfoodApi?.getCity?.() || "";
+    let mountOk = true;
     if (MULTI_CITY_IDS.includes(city)) {
       if (mountedCity !== city) {
         console.log(`[NextTrainCitySession] Mounting multi-city: ${city}`);
-        const mountPromise = dogfoodApi?.mount?.(city);
-        if (explicit) {
-          const ok = await mountPromise;
-          if (!ok) {
-            console.error(`[NextTrainCitySession] Failed to mount: ${city}`);
-            return false;
-          }
+        try {
+          mountOk = Boolean(await dogfoodApi?.mount?.(city));
+        } catch (error) {
+          console.error(`[NextTrainCitySession] Failed to mount: ${city}`, error);
+          mountOk = false;
+        }
+        if (!mountOk) {
+          console.error(`[NextTrainCitySession] Catalog failed for ${city}; region stays saved`);
         }
       }
     } else if (mountedCity) {
-      console.log(`[NextTrainCitySession] Unmounting to live city: ${LIVE_CITY}`);
+      console.log(`[NextTrainCitySession] Unmounting to live city: ${city}`);
       dogfoodApi?.unmount?.();
-      city = LIVE_CITY;
       try {
         window.nextTrainStationCombobox?.replaceStationsCache?.(null);
         const listPromise = window.nextTrainStationCombobox?.getStationsList?.();
@@ -411,21 +484,11 @@
         /* perth list reloads on next getStationsList */
       }
     }
-    if (persist) {
-      persistRegion({
-        city,
-        country: match?.country.id || "au",
-        explicit: explicit || readRegionExplicit(),
-      });
-    }
-    if (explicit) {
-      clearRegionMismatchDismissed();
-    }
     document.dispatchEvent(
-      new CustomEvent("nexttrain:city-changed", { detail: { city, country: match?.country.id || "au" } })
+      new CustomEvent("nexttrain:city-changed", { detail: { city, country: countryId } })
     );
     syncRegionControls();
-    return true;
+    return mountOk;
   }
 
   async function onCountryChange(select) {
@@ -520,6 +583,7 @@
     }
 
     syncRegionControls();
+    syncFeedAttribution(initialCity);
     return initialCity;
   }
 
@@ -550,6 +614,10 @@
       });
     },
     syncRegionControls,
+    syncFeedAttribution,
+    feedAttributionForCity,
+    VANCOUVER_TRANSLINK_DISCLAIMER,
+    TFL_OPEN_DATA_LINE,
     openRegionScreen,
     closeRegionScreen,
     COUNTRIES,

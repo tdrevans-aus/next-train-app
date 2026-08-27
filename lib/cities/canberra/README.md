@@ -1,13 +1,11 @@
-# Canberra light rail station catalog
+# Canberra (light rail)
 
-Dogfood catalog for `lib/providers/canberra.js`. **Not** wired to product UI.
+Live for testers. **Not** a public store listing. City `canberra`.
 
-- Product v1: **light rail** only (`route_type` 0); buses deferred.
-- `stopIds` may be empty — adapter resolves from GTFS static by stop name.
-- Time zone: `Australia/Sydney` (ACT).
-
-Sources:
-
-- Static GTFS: https://transport.api.act.gov.au/gtfs/data/gtfs/v2/google_transit.zip
-- GTFS-RT trip updates: https://transport.api.act.gov.au/gtfs/data/gtfs/v2/trip-updates.pb
-- Auth: `ACT_GTFS_BASIC` or `ACT_GTFS_CLIENT_ID` + `ACT_GTFS_CLIENT_SECRET` (MuleSoft portal).
+- Hub: **Alinga Street** (printed name). Do not rename to City.
+- v1: one passenger line, Gungahlin Place to Alinga Street, **14 stops**. No buses.
+- Stage 2A (Edinburgh Avenue, City South, Commonwealth Park) and Woden are not passenger-open (Stage 2A services 2028).
+- Direction: line + terminus (`R1 Gungahlin Place`).
+- Time zone: `Australia/Sydney` (DST).
+- Public CMO static GTFS + `https://files.transport.act.gov.au/feeds/lightrail.pb`. **No MyWay+ key.**
+- D1 oracle: `qa/fixtures/canberra/published-network.json` (copied from `docs/canberra-d1/`). Do not generate that file from GTFS.

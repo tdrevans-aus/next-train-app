@@ -1,0 +1,259 @@
+{
+  "22nd Street": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "29th Avenue": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Aberdeen": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Braid": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Brentwood Town Centre": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Bridgeport": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Broadway–City Hall": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Burquitlam": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Burrard": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Capstan": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Columbia": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Commercial–Broadway": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront",
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Coquitlam Central": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Edmonds": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Gateway": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Gilmore": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Granville": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Holdom": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Inlet Centre": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Joyce–Collingwood": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "King Edward": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "King George": [
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Lafarge Lake–Douglas": [
+    "Millennium Line VCC–Clark"
+  ],
+  "Lake City Way": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Langara–49th Ave": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Lansdowne": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Lincoln": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Lougheed Town Centre": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront",
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Main Street–Science World": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Marine Drive": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Metrotown": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Moody Centre": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Nanaimo": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "New Westminster": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Oakridge–41st Ave": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Olympic Village": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Patterson": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Production Way–University": [
+    "Expo Line King George",
+    "Expo Line Waterfront",
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Renfrew": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Richmond–Brighouse": [
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Royal Oak": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Rupert": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Sapperton": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Scott Road": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Sea Island Centre": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Sperling–Burnaby Lake": [
+    "Millennium Line Lafarge Lake–Douglas",
+    "Millennium Line VCC–Clark"
+  ],
+  "Stadium–Chinatown": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Surrey Central": [
+    "Expo Line King George",
+    "Expo Line Production Way–University",
+    "Expo Line Waterfront"
+  ],
+  "Templeton": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "Vancouver City Centre": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "VCC–Clark": [
+    "Millennium Line Lafarge Lake–Douglas"
+  ],
+  "Waterfront": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line YVR–Airport",
+    "Expo Line King George",
+    "Expo Line Production Way–University"
+  ],
+  "Yaletown–Roundhouse": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront",
+    "Canada Line YVR–Airport"
+  ],
+  "YVR–Airport": [
+    "Canada Line Richmond–Brighouse",
+    "Canada Line Waterfront"
+  ]
+}

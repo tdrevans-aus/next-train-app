@@ -47,6 +47,10 @@
     "lat": -31.9517991,
     "lng": 115.8134022
   },
+  "East Guildford Stn": {
+    "lat": -31.8964,
+    "lng": 115.9736
+  },
   "East Perth Stn": {
     "lat": -31.9439495,
     "lng": 115.8770742
@@ -207,6 +211,10 @@
     "lat": -31.8448271,
     "lng": 115.7963953
   },
+  "West Leederville Stn": {
+    "lat": -31.9372,
+    "lng": 115.8408
+  },
   "Woodbridge Stn": {
     "lat": -31.8915181,
     "lng": 115.992868
@@ -227,6 +235,10 @@
     "lat": -32.1578,
     "lng": 115.8564
   },
+  "Alkimos Stn": {
+    "lat": -31.6106,
+    "lng": 115.6864
+  },
   "Butler Stn": {
     "lat": -31.6353,
     "lng": 115.7108
@@ -235,9 +247,17 @@
     "lat": -32.0661,
     "lng": 115.9678
   },
+  "City West Stn": {
+    "lat": -31.9515,
+    "lng": 115.8478
+  },
   "Cockburn Central Stn": {
     "lat": -32.1203,
     "lng": 115.8431
+  },
+  "Cottesloe Stn": {
+    "lat": -32.0042,
+    "lng": 115.7583
   },
   "Currambine Stn": {
     "lat": -31.7361,
@@ -246,6 +266,10 @@
   "Edgewater Stn": {
     "lat": -31.7872,
     "lng": 115.7723
+  },
+  "Eglinton Stn": {
+    "lat": -31.5878,
+    "lng": 115.6619
   },
   "Joondalup Stn": {
     "lat": -31.7444,

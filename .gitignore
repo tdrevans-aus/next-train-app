@@ -19,6 +19,7 @@ public/dogfood-origin.json
 public/_*.txt
 
 qa/reports/*.json
+qa/tmp/
 qa/*.png
 qa/*.xml
 !qa/maestro/

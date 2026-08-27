@@ -1,0 +1,235 @@
+{
+  "city": "auckland",
+  "source": "GTFS fixture qa/fixtures/auckland/gtfs (generated 2026-08-27)",
+  "timeZone": "Pacific/Auckland",
+  "dst": true,
+  "notes": [
+    "Station lists lock to Luke D1 (qa/fixtures/auckland/published-network.json). Headsigns come from the GTFS fixture. Never generate D1 from this feed.",
+    "Hub product name is Waitematā Station (not Britomart, City Centre, or Waitemata Train Station).",
+    "CRL stations Te Waihorotiu / Karanga-a-Hape are not inserted. Maungawhau closed. Ngākōroa not open.",
+    "Onehunga Line currently ends at Newmarket.",
+    "Te Huia and AirportLink out of v1."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Onehunga",
+      "b": "Pukekohe",
+      "reason": "ONE currently ends at Newmarket — do not collapse onto Southern"
+    },
+    {
+      "a": "Onehunga",
+      "b": "Waitematā Station",
+      "reason": "ONE does not run to the hub"
+    }
+  ],
+  "proposedShortTurnGroups": {},
+  "proposedDoNotGroup": [],
+  "junctionStations": [
+    "Newmarket",
+    "Ōtāhuhu",
+    "Penrose"
+  ],
+  "suppressedTermini": [
+    "Maungawhau",
+    "Te Waihorotiu",
+    "Karanga-a-Hape",
+    "Ngākōroa"
+  ],
+  "lines": [
+    {
+      "id": "sth",
+      "number": "STH",
+      "name": "Southern Line",
+      "routeShortName": "STH",
+      "termini": [
+        "Pukekohe",
+        "Waitematā Station"
+      ],
+      "stations": [
+        "Waitematā Station",
+        "Parnell",
+        "Newmarket",
+        "Remuera",
+        "Greenlane",
+        "Ellerslie",
+        "Penrose",
+        "Ōtāhuhu",
+        "Middlemore",
+        "Papatoetoe",
+        "Puhinui",
+        "Homai",
+        "Manurewa",
+        "Te Mahia",
+        "Takaanini",
+        "Papakura",
+        "Drury",
+        "Paerātā",
+        "Pukekohe"
+      ],
+      "headsigns": {
+        "Brit 4 To Pukekohe 3 Via NKT 4, OHU 3, Papakura 1; DRU PAE": 121,
+        "Brit 4 To Papakura 1 Via NKT 4 and OHU 3": 1,
+        "Brit 4 To Papakura 2 Via NKT 4 and OHU 3": 2,
+        "Brit 4 To Papakura 3 Via NKT 4 and OHU 3": 4,
+        "Brit 4 To Manukau 2 Via NKT 4 Via OHU 3": 5,
+        "Brit 4 To Pukekohe 1 Via NKT 4, OHU 3, Papakura 1; DRU PAE": 20,
+        "Pukekohe 3 To Brit 3 Via NKT 2, Papakura 3; PAE DRU": 3,
+        "Brit 4 To Pukekohe 2 Via NKT 4, OHU 3, Papakura 1; DRU PAE": 20,
+        "Otahuhu 1 To Puhinui 2": 1,
+        "Papakura 2 To Brit 4 Via Newmarket 1": 1,
+        "Papakura 3 To Brit 4 Via Newmarket 2": 3,
+        "Brit 4 To Puhinui 2 Via NKT 4 and OHU 3": 2,
+        "Brit 4 To Otahuhu 1 Via New 4": 2,
+        "Otahuhu 1 To Brit 2 Via Newmarket 1": 1,
+        "Brit 4 To Otahuhu 2 Via New 4": 3,
+        "Brit 4 To OHU 3 Via NKT 4": 2,
+        "Otahuhu 2 To Brit 4 Via Newmarket 1": 1,
+        "Brit 4 To Manukau 1 Via NKT 4 and OHU 3": 3,
+        "Papakura 3 To Puhinui": 1,
+        "Puhinui To Brit 4 Via Newmarket 2": 1,
+        "Manukau 2 To Puhinui 1": 1,
+        "Manukau 1 To Brit 4 Via Newmarket 1 (PNR ELL GRN REM 2's)": 1,
+        "Manukau 2 To Brit 4 Via Newmarket 1 (PNR ELL GRN REM 2's)": 1,
+        "Pukekohe 3 To Brit 2 Via NKT 1, Papakura 3; PAE DRU": 1,
+        "Brit 2 To Pukekohe 3 Via NKT 4, OHU 3, Papakura 1; DRU PAE": 2,
+        "Brit 3 To Pukekohe 3 Via NKT 4, OHU 3, Papakura 1; DRU PAE": 2,
+        "Brit 4 To Pukekohe 1 Via NKT 4, OHU 2, Papakura 1; DRU PAE": 1,
+        "Pukekohe 3 To Brit 3 Via NKT 1, Papakura 3; PAE DRU": 2,
+        "Brit 4 To Pukekohe 3 Via NKT 4, OHU 3, Papakura 2; DRU PAE": 4,
+        "Brit 4 To Pukekohe 4 Via NKT 4, OHU 3, Papakura 1; DRU PAE": 2,
+        "Pukekohe 1 To Brit 4 Via NKT 1, Papakura 3; PAE DRU": 4,
+        "Pukekohe 1 To Brit 4 Via NKT 2, Papakura 3; PAE DRU": 8,
+        "Pukekohe 2 To Brit 4 Via NKT 1, Papakura 3; PAE DRU": 10,
+        "Pukekohe 2 To Brit 4 Via NKT 2, Papakura 3; PAE DRU": 7,
+        "Puhinui 2 To Pukekohe 3 Via Papakura 1; DRU PAE": 1,
+        "Pukekohe 3 To Brit 4 Via NKT 1, Papakura 2; PAE DRU": 5,
+        "Pukekohe 3 To Brit 4 Via NKT 2, Papakura 2; PAE DRU": 3,
+        "Pukekohe 3 To Brit 4 Via NKT 1, Papakura 3; PAE DRU": 40,
+        "Pukekohe 3 To Brit 4 Via NKT 2, Papakura 3; PAE DRU": 79,
+        "Pukekohe 3 To Brit 4 Via NKT 4, Papakura 3; PAE DRU": 1,
+        "Pukekohe 4 To Brit 4 Via NKT 1, Papakura 3; PAE DRU": 4,
+        "Pukekohe 4 To Brit 4 Via NKT 2, Papakura 3; PAE DRU": 1,
+        "Pukekohe 3 To Puhinui Via Papakura 3; PAE DRU": 1,
+        "Pukekohe 3 To Papakura 3; PAE DRU": 1,
+        "Otahuhu 2 To Pukekohe 3 Via Papakura 1; DRU PAE": 1,
+        "Pukekohe 3 To Otahuhu 2 Via Papakura 3; PAE DRU": 2,
+        "Pukekohe 3 To Brit 4 Via PPK3, NKT1 (PNRELLGRNREM 2's)PAEDRU": 1
+      }
+    },
+    {
+      "id": "east",
+      "number": "EAST",
+      "name": "Eastern Line",
+      "routeShortName": "EAST",
+      "termini": [
+        "Manukau",
+        "Waitematā Station"
+      ],
+      "stations": [
+        "Manukau",
+        "Puhinui",
+        "Papatoetoe",
+        "Middlemore",
+        "Ōtāhuhu",
+        "Sylvia Park",
+        "Panmure",
+        "Glen Innes",
+        "Meadowbank",
+        "Ōrākei",
+        "Waitematā Station"
+      ],
+      "headsigns": {
+        "Manukau 1 To Brit 1 Via Panmure": 138,
+        "Brit 1 To Manukau 1 Via Panmure And Otahuhu 3": 143,
+        "Brit 2 To Manukau 1 Via Panmure And Otahuhu 3": 2,
+        "Manukau 1 To Brit 3 Via Panmure": 2,
+        "Brit 3 To Manukau 1 Via Panmure And Otahuhu 3": 1,
+        "Manukau 2 To Brit 1 Via Panmure": 28,
+        "Brit 1 To Manukau 2 Via Panmure And Otahuhu 3": 25,
+        "Brit 1 To Otahuhu 2 Via Panmure": 1,
+        "Otahuhu 1 To Manukau 1": 1,
+        "Manukau 2 To Otahuhu 1": 1,
+        "Otahuhu 2 To Manukau 1": 4,
+        "Manukau 1 To Otahuhu 2": 5,
+        "Otahuhu 2 To Manukau 2": 2
+      }
+    },
+    {
+      "id": "west",
+      "number": "WEST",
+      "name": "Western Line",
+      "routeShortName": "WEST",
+      "termini": [
+        "Swanson",
+        "Waitematā Station"
+      ],
+      "stations": [
+        "Waitematā Station",
+        "Parnell",
+        "Newmarket",
+        "Grafton",
+        "Kingsland",
+        "Morningside",
+        "Baldwin Ave",
+        "Mt Albert",
+        "Avondale",
+        "New Lynn",
+        "Fruitvale Rd",
+        "Glen Eden",
+        "Sunnyvale",
+        "Henderson",
+        "Sturges Rd",
+        "Rānui",
+        "Swanson"
+      ],
+      "headsigns": {
+        "Brit 2 To Swanson 1 Via Newmarket 1": 89,
+        "Swanson 1 To Brit 2 Via Newmarket 2": 88,
+        "Brit 2 To Swanson 2 Via Newmarket 1": 78,
+        "Swanson 1 To Brit 3 Via Newmarket 2": 1,
+        "Brit 2 To Swanson 2 Via Newmarket 2": 1,
+        "Swanson 1 To Brit 4 Via Newmarket 1": 1,
+        "Brit 3 To Swanson 1 Via Newmarket 1": 7,
+        "Brit 3 To Swanson 2 Via Newmarket 1": 3,
+        "Swanson 2 To Brit 2 Via Newmarket 1": 3,
+        "Swanson 2 To Brit 2 Via Newmarket 2": 76,
+        "Swanson 2 To Brit 3 Via Newmarket 2": 1,
+        "Brit 3 To Henderson Via Newmarket 1": 2,
+        "Henderson To Brit 2 Via Newmarket 2": 1,
+        "Brit 2 To Kingsland 1 Via Newmarket 1": 4,
+        "Kingsland 1 To Brit 2 Via Newmarket 2": 3
+      }
+    },
+    {
+      "id": "one",
+      "number": "ONE",
+      "name": "Onehunga Line",
+      "routeShortName": "ONE",
+      "termini": [
+        "Onehunga",
+        "Newmarket"
+      ],
+      "stations": [
+        "Onehunga",
+        "Te Pāpapa",
+        "Penrose",
+        "Ellerslie",
+        "Greenlane",
+        "Remuera",
+        "Newmarket"
+      ],
+      "headsigns": {
+        "Onehunga To Newmarket 1": 1,
+        "Newmarket 4 To Onehunga": 85,
+        "Newmarket 2 To Onehunga": 25,
+        "Onehunga To Newmarket 2": 108
+      }
+    }
+  ],
+  "coverageGaps": [
+    "Future CRL E-W / S-C / O-W are coverageGaps until a new D1 after passenger opening (AT: Sunday 13 Sep 2026; weekday timetable 14 Sep).",
+    "Do not insert Te Waihorotiu / Karanga-a-Hape. Maungawhau closed. Ngākōroa not open.",
+    "Paerātā + Drury live from 2 Aug 2026."
+  ]
+}

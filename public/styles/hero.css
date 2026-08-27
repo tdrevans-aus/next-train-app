@@ -964,6 +964,20 @@
   line-height: 1.2;
 }
 
+.attribution.is-required {
+  margin: 0.55rem auto 0;
+  max-width: 36rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  opacity: 1;
+  line-height: 1.4;
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+}
+
 .error {
   text-align: center;
   color: var(--bad);

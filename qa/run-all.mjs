@@ -44,11 +44,29 @@ const SMOKE_SCRIPTS = [
   "brisbane-dogfood-gate.mjs",
   "sydney-dogfood-gate.mjs",
   "sydney-banksia-perth-route.mjs",
+  "sydney-new-journey-not-perth.mjs",
   "nearby-region-preference.mjs",
   "adelaide-dogfood-gate.mjs",
+  "amsterdam-dogfood-gate.mjs",
+  "amsterdam-line-map-conformance.mjs",
+  "vancouver-dogfood-gate.mjs",
+  "vancouver-attribution.mjs",
+  "vancouver-line-map-conformance.mjs",
+  "canberra-dogfood-gate.mjs",
+  "canberra-line-map-conformance.mjs",
+  "gold-coast-dogfood-gate.mjs",
+  "gold-coast-line-map-conformance.mjs",
+  "newcastle-dogfood-gate.mjs",
+  "newcastle-line-map-conformance.mjs",
   "region-selection.mjs",
   "uk-region-catalog-conformance.mjs",
+  "uk-catalog-lazy-load.mjs",
   "uk-planned-gate.mjs",
+  "nz-planned-gate.mjs",
+  "stockholm-planned-gate.mjs",
+  "auckland-line-map-conformance.mjs",
+  "stockholm-line-map-conformance.mjs",
+  "perth-line-map-conformance.mjs",
   "london-nearby-chips.mjs",
 ];
 
@@ -104,6 +122,24 @@ const RUNNER_EXCLUDE = new Set([
   "adelaide-network-sweep.mjs",
   /** Live London TfL sweep — D6; never gate PRs. npm run sweep:uk-london-tfl */
   "uk-london-tfl-network-sweep.mjs",
+  /** Live Auckland AT sweep — D6; never gate PRs. npm run sweep:auckland */
+  "auckland-network-sweep.mjs",
+  /** Live Wellington Metlink sweep — D6; never gate PRs. npm run sweep:wellington */
+  "wellington-network-sweep.mjs",
+  /** Live Stockholm SL Transport sweep — D6; never gate PRs. npm run sweep:stockholm */
+  "stockholm-network-sweep.mjs",
+  /** Live Transperth sweep — D6; never gate PRs. npm run sweep:perth */
+  "perth-network-sweep.mjs",
+  /** Live Amsterdam GVB metro sweep — D6; never gate PRs. npm run sweep:amsterdam */
+  "amsterdam-network-sweep.mjs",
+  /** Live Vancouver SkyTrain sweep — D6; never gate PRs. npm run sweep:vancouver */
+  "vancouver-network-sweep.mjs",
+  /** Live Canberra light-rail sweep — D6; never gate PRs. npm run sweep:canberra */
+  "canberra-network-sweep.mjs",
+  /** Live Gold Coast G:link sweep — D6; never gate PRs. npm run sweep:gold-coast */
+  "gold-coast-network-sweep.mjs",
+  /** Live Newcastle Light Rail sweep — D6; never gate PRs. npm run sweep:newcastle */
+  "newcastle-network-sweep.mjs",
   /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
   "pin-exclusive.mjs",
 ]);

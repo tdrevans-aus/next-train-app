@@ -42,9 +42,36 @@
     return nearbyStationsCache;
   }
 
+  function planningCityId() {
+    return String(
+      window.NextTrainBrisbaneDogfood?.getCity?.() ||
+        window.NextTrainCitySession?.readSavedCity?.() ||
+        ""
+    )
+      .trim()
+      .toLowerCase();
+  }
+
+  function isMultiCityCatalog(city) {
+    const ids = window.NextTrainCitySession?.MULTI_CITY_IDS;
+    return Array.isArray(ids) && ids.includes(city);
+  }
+
   async function getStationsList() {
-    if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
-      const dogfood = window.NextTrainBrisbaneDogfood.getStations?.() ?? [];
+    const city = planningCityId();
+    const dogfoodApi = window.NextTrainBrisbaneDogfood;
+
+    if (isMultiCityCatalog(city)) {
+      if (dogfoodApi && dogfoodApi.getCity?.() !== city) {
+        await dogfoodApi.mount?.(city);
+      }
+      const dogfood = dogfoodApi?.getStations?.() ?? [];
+      stationsCache = dogfood;
+      return stationsCache;
+    }
+
+    if (dogfoodApi?.isActive?.()) {
+      const dogfood = dogfoodApi.getStations?.() ?? [];
       if (dogfood.length) {
         stationsCache = dogfood;
         return stationsCache;
@@ -80,10 +107,21 @@
   function replaceStationsCache(names) {
     if (names == null) {
       stationsCache = null;
+      detailStationCombobox?.clearLocalStationsCache?.();
+      nearbyStationCombobox?.clearLocalStationsCache?.();
       return stationsCache;
     }
     stationsCache = Array.isArray(names) ? names : [];
+    detailStationCombobox?.clearLocalStationsCache?.();
+    nearbyStationCombobox?.clearLocalStationsCache?.();
     return stationsCache;
+  }
+
+  function invalidateStationPickerCaches() {
+    stationsCache = null;
+    nearbyStationsCache = null;
+    detailStationCombobox?.clearLocalStationsCache?.();
+    nearbyStationCombobox?.clearLocalStationsCache?.();
   }
 
   function getStationsCache() {
@@ -177,6 +215,7 @@
     const isNearbyPicker = root.id === "nearby-station-combobox";
     const resolveStationsList = loadStations || (isNearbyPicker ? getNearbyStationsList : getStationsList);
     let localStationsCache = null;
+    let localCacheCity = "";
     let selectedValue = "";
     let activeIndex = -1;
     let suppressBlurClose = false;
@@ -298,17 +337,20 @@
     }
 
     function ensureLocalStationsLoaded() {
-      if (localStationsCache?.length) {
+      const city = planningCityId();
+      if (localStationsCache?.length && localCacheCity === city) {
         return Promise.resolve(localStationsCache);
       }
       return resolveStationsList().then((list) => {
         localStationsCache = Array.isArray(list) ? list : [];
+        localCacheCity = city;
         return localStationsCache;
       });
     }
 
     function clearLocalStationsCache() {
       localStationsCache = null;
+      localCacheCity = "";
     }
 
     function renderList(query = "") {
@@ -595,6 +637,11 @@
     }
 
     void getStationsList();
+
+    document.addEventListener("nexttrain:city-changed", () => {
+      invalidateStationPickerCaches();
+      void getStationsList();
+    });
   }
 
   function setStationComboboxValue(combobox, station) {
@@ -614,6 +661,7 @@
     getStationsCache,
     getNearbyStationsCache,
     replaceStationsCache,
+    invalidateStationPickerCaches,
     replaceNearbyStationsCache,
     replaceSelectOptions,
     renderStationOptions,

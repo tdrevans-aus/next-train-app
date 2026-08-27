@@ -1995,6 +1995,9 @@ function renderNearbyBoard({ stale = false } = {}) {
     return;
   }
 
+  window.NextTrainCitySession?.syncFeedAttribution?.(
+    nearbySession?.city || window.NextTrainCitySession?.readSavedCity?.()
+  );
   syncNearbyChrome();
   if (deps.errorEl) {
     deps.errorEl.hidden = true;
@@ -2207,16 +2210,9 @@ function renderNearbyBoard({ stale = false } = {}) {
 
   const next = boardData?.next ?? null;
   setRouteDisplay(formatNearbyRouteLine());
-  const attributionEl = document.getElementById("attribution");
-  if (attributionEl) {
-    const cityId = boardData?.regionId || "perth";
-    if (cityId === "uk-london-tfl") {
-      attributionEl.textContent = "Powered by TfL Open Data";
-      attributionEl.hidden = false;
-    } else {
-      attributionEl.hidden = true;
-    }
-  }
+  window.NextTrainCitySession?.syncFeedAttribution?.(
+    boardData?.regionId || nearbySession?.city || window.NextTrainCitySession?.readSavedCity?.()
+  );
   if (deps.updatedEl) {
     if (nearbySession?.refineNotice) {
       deps.updatedEl.textContent = nearbySession.refineNotice;

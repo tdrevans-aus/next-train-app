@@ -1,0 +1,706 @@
+{
+  "Albion": [
+    "T3 towards Doomben",
+    "T3 towards Roma Street",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Alderley": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Altandi": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Ascot": [
+    "T3 towards Doomben",
+    "T3 towards Roma Street"
+  ],
+  "Auchenflower": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Bald Hills": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Banoon": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Banyo": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Beenleigh": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Ferny Grove"
+  ],
+  "Beerburrum": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Beerwah": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Bethania": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Bindha": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Birkdale": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Boggo Road": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Boondall": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Booval": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Bowen Hills": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central",
+    "T3 towards Doomben",
+    "T3 towards Roma Street",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Bray Park": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Bundamba": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Buranda": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Burpengary": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Caboolture": [
+    "T1 towards Ipswich"
+  ],
+  "Cannon Hill": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Carseldine": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Central": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central",
+    "T3 towards Doomben",
+    "T3 towards Roma Street",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Chelmer": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Clayfield": [
+    "T3 towards Doomben",
+    "T3 towards Roma Street"
+  ],
+  "Cleveland": [
+    "T4 towards Shorncliffe"
+  ],
+  "Coomera": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Coopers Plains": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Cooran": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Cooroy": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Coorparoo": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Corinda": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Dakabin": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Darra": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Deagon": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Dinmore": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Domestic Airport": [
+    "T5 towards Varsity Lakes"
+  ],
+  "Doomben": [
+    "T3 towards Roma Street"
+  ],
+  "Dutton Park": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Eagle Junction": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central",
+    "T3 towards Doomben",
+    "T3 towards Roma Street",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "East Ipswich": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Ebbw Vale": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Edens Landing": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Elimbah": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Enoggera": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Eudlo": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Eumundi": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Fairfield": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Ferny Grove": [
+    "T6 towards Beenleigh"
+  ],
+  "Fortitude Valley": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central",
+    "T3 towards Doomben",
+    "T3 towards Roma Street",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Fruitgrove": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Gailes": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Gaythorne": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Geebung": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Glass House Mountains": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Goodna": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Graceville": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Grovely": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Gympie North": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Helensvale": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Hemmant": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Hendra": [
+    "T3 towards Doomben",
+    "T3 towards Roma Street"
+  ],
+  "Holmview": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Hope Island": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Indooroopilly": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "International Airport": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Ipswich": [
+    "T1 towards Caboolture"
+  ],
+  "Kallangur": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Karrabin": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Keperra": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Kingston": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Kippa-Ring": [
+    "T2 towards Springfield Central"
+  ],
+  "Kuraby": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Landsborough": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Lawnton": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Lindum": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Loganlea": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Lota": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Mango Hill": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Mango Hill East": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Manly": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Milton": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Mitchelton": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Mooloolah": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Morayfield": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Morningside": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Murarrie": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Murrumba Downs": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Nambour": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Narangba": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Nerang": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Newmarket": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Norman Park": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "North Boondall": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Northgate": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Nudgee": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Nundah": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Ormeau": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Ormiston": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Oxford Park": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Oxley": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Palmwoods": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Petrie": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Pimpama": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Pomona": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Redbank": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Richlands": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Riverview": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Robina": [
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Rocklea": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Roma Street": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central",
+    "T3 towards Doomben",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Rosewood": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Rothwell": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Runcorn": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Salisbury": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Sandgate": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Sherwood": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Shorncliffe": [
+    "T4 towards Cleveland"
+  ],
+  "South Bank": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "South Brisbane": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes",
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Springfield": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Springfield Central": [
+    "T2 towards Kippa-Ring"
+  ],
+  "Strathpine": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Sunnybank": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Sunshine": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Taringa": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Thagoona": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Thomas Street": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Thorneside": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Toombul": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Toowong": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich",
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Traveston": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Trinder Park": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Varsity Lakes": [
+    "T5 towards Brisbane Airport"
+  ],
+  "Virginia": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ],
+  "Wacol": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Walloon": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Wellington Point": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Wilston": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Windsor": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Woodridge": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Wooloowin": [
+    "T3 towards Doomben",
+    "T3 towards Roma Street",
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe",
+    "T5 towards Brisbane Airport",
+    "T5 towards Varsity Lakes"
+  ],
+  "Woombye": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Wulkuraka": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Wynnum": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Wynnum Central": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Wynnum North": [
+    "T4 towards Cleveland",
+    "T4 towards Shorncliffe"
+  ],
+  "Yandina": [
+    "T1 towards Caboolture",
+    "T1 towards Ipswich"
+  ],
+  "Yeerongpilly": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Yeronga": [
+    "T6 towards Beenleigh",
+    "T6 towards Ferny Grove"
+  ],
+  "Zillmere": [
+    "T2 towards Kippa-Ring",
+    "T2 towards Springfield Central"
+  ]
+}

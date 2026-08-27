@@ -1,0 +1,24 @@
+{
+  "Newcastle Interchange": [
+    "NLR + Newcastle Beach"
+  ],
+  "Honeysuckle": [
+    "NLR + Newcastle Beach",
+    "NLR + Newcastle Interchange"
+  ],
+  "Civic": [
+    "NLR + Newcastle Beach",
+    "NLR + Newcastle Interchange"
+  ],
+  "Crown Street": [
+    "NLR + Newcastle Beach",
+    "NLR + Newcastle Interchange"
+  ],
+  "Queens Wharf": [
+    "NLR + Newcastle Beach",
+    "NLR + Newcastle Interchange"
+  ],
+  "Newcastle Beach": [
+    "NLR + Newcastle Interchange"
+  ]
+}

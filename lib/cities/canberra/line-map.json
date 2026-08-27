@@ -1,0 +1,42 @@
+{
+  "city": "canberra",
+  "source": "docs/canberra-d1 and qa/fixtures/canberra/published-network.json (CMET R1 map). Not generated from GTFS.",
+  "timeZone": "Australia/Sydney",
+  "dst": true,
+  "notes": [
+    "TRAIN v1 is light rail only: one passenger line, Gungahlin Place to Alinga Street, 14 stops. No buses.",
+    "Hub printed name is Alinga Street. Do not rename to City.",
+    "Stage 2A (Edinburgh Avenue, City South, Commonwealth Park) and Woden are not passenger-open (Stage 2A services 2028).",
+    "Direction: line + terminus (R1 Gungahlin Place). Not inbound/outbound.",
+    "Public CMO GTFS + lightrail.pb — no MyWay+ key. Do not generate published-network.json from GTFS."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [],
+  "junctionStations": ["Alinga Street", "Dickson Interchange", "Gungahlin Place"],
+  "suppressedTermini": ["Edinburgh Avenue", "City South", "Commonwealth Park", "Woden"],
+  "lines": [
+    {
+      "id": "r1",
+      "number": "1",
+      "name": "R1",
+      "mode": "LIGHT_RAIL",
+      "termini": ["Gungahlin Place", "Alinga Street"],
+      "stations": [
+        "Gungahlin Place",
+        "Manning Clark North",
+        "Mapleton Avenue",
+        "Nullarbor Avenue",
+        "Well Station Drive",
+        "Sandford Street",
+        "EPIC and Racecourse",
+        "Phillip Avenue",
+        "Swinden Street",
+        "Dickson Interchange",
+        "Macarthur Avenue",
+        "Ipima Street",
+        "Elouera Street",
+        "Alinga Street"
+      ]
+    }
+  ]
+}

@@ -43,7 +43,9 @@ var NextTrainTimes = (() => {
     "District Ealing Broadway": ["District Ealing Broadway", "District Kensington (Olympia)"],
     "Piccadilly Heathrow Terminal 5": ["Piccadilly Heathrow Terminal 5", "Piccadilly Heathrow Terminals 2 and 3"],
     "Piccadilly Uxbridge": ["Piccadilly Uxbridge", "Piccadilly Rayners Lane"],
-    "Victoria Walthamstow Central": ["Victoria Walthamstow Central", "Victoria Seven Sisters", "Victoria Blackhorse Road"]
+    "Victoria Walthamstow Central": ["Victoria Walthamstow Central", "Victoria Seven Sisters", "Victoria Blackhorse Road"],
+    "Hammersmith and City Barking": ["Hammersmith and City Barking", "Hammersmith & City Barking"],
+    "Hammersmith and City Hammersmith": ["Hammersmith and City Hammersmith", "Hammersmith & City Hammersmith"]
   };
   function applyDestinationAliases(destination) {
     const trimmed = destination.trim();
@@ -72,10 +74,17 @@ var NextTrainTimes = (() => {
     }
     return aliased;
   }
-  function destinationMatchesFilter(tripDestination, filterDestination) {
+  function destinationMatchesFilter(tripDestination, filterDestination, tripLine = "") {
     const trip = normalizeDestination(tripDestination);
     const filter = normalizeDestination(filterDestination);
+    if (!trip || !filter) {
+      return false;
+    }
     if (trip.toLowerCase() === filter.toLowerCase()) {
+      return true;
+    }
+    const line = normalizeDestination(tripLine);
+    if (line && line.toLowerCase() === filter.toLowerCase()) {
       return true;
     }
     const groupMatches = (can, m) => {
@@ -187,7 +196,7 @@ var NextTrainTimes = (() => {
     return enrichTripTiming(internal);
   }
   function pickUpcomingTrips(trips, destination, now = /* @__PURE__ */ new Date()) {
-    return trips.filter((trip) => destinationMatchesFilter(trip.destination, destination)).filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture);
+    return trips.filter((trip) => destinationMatchesFilter(trip.destination, destination, trip.line)).filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture);
   }
   function roundMinutes(ms) {
     return Math.round(ms / 6e4);

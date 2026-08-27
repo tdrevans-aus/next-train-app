@@ -1,0 +1,125 @@
+{
+  "city": "vancouver",
+  "source": "Official TransLink SkyTrain map (https://www.translink.ca/schedules-and-maps/skytrain). Not generated from GTFS. Luke D1 pack can follow.",
+  "timeZone": "America/Vancouver",
+  "dst": true,
+  "notes": [
+    "TRAIN v1 is SkyTrain only: Expo, Millennium, Canada Line. No bus, SeaBus, or West Coast Express.",
+    "Hub printed name is Waterfront (Expo / Canada Line city end). Millennium does not serve Waterfront; west end is VCC–Clark.",
+    "Broadway Subway is not passenger-open (testing; public opening fall 2027). Do not add Great Northern Way–Emily Carr, Mount Pleasant, Oak–VGH, South Granville, or Arbutus. Broadway–City Hall is Canada Line only.",
+    "Direction: line + terminus (Expo Line King George). Not inbound/outbound.",
+    "Attribute TransLink. RTTI is retired; GTFS-RT v3 only. Do not generate published-network.json from GTFS."
+  ],
+  "shortTurnGroups": {
+    "expo-pwu": ["Braid", "Lougheed Town Centre", "Production Way–University"]
+  },
+  "doNotGroup": [
+    {
+      "a": "Waterfront",
+      "b": "VCC–Clark",
+      "reason": "Expo/Canada Line city end vs Millennium west end"
+    }
+  ],
+  "junctionStations": [
+    "Waterfront",
+    "Commercial–Broadway",
+    "Columbia",
+    "Lougheed Town Centre",
+    "Production Way–University",
+    "Bridgeport"
+  ],
+  "suppressedTermini": [
+    "Great Northern Way–Emily Carr",
+    "Mount Pleasant",
+    "Oak–VGH",
+    "South Granville",
+    "Arbutus"
+  ],
+  "lines": [
+    {
+      "id": "expo",
+      "number": "expo",
+      "name": "Expo Line",
+      "mode": "METRO",
+      "termini": ["Waterfront", "King George", "Production Way–University"],
+      "stations": [
+        "Waterfront",
+        "Burrard",
+        "Granville",
+        "Stadium–Chinatown",
+        "Main Street–Science World",
+        "Commercial–Broadway",
+        "Nanaimo",
+        "29th Avenue",
+        "Joyce–Collingwood",
+        "Patterson",
+        "Metrotown",
+        "Royal Oak",
+        "Edmonds",
+        "22nd Street",
+        "New Westminster",
+        "Columbia",
+        "Scott Road",
+        "Gateway",
+        "Surrey Central",
+        "King George",
+        "Sapperton",
+        "Braid",
+        "Lougheed Town Centre",
+        "Production Way–University"
+      ]
+    },
+    {
+      "id": "millennium",
+      "number": "millennium",
+      "name": "Millennium Line",
+      "mode": "METRO",
+      "termini": ["VCC–Clark", "Lafarge Lake–Douglas"],
+      "stations": [
+        "VCC–Clark",
+        "Commercial–Broadway",
+        "Renfrew",
+        "Rupert",
+        "Gilmore",
+        "Brentwood Town Centre",
+        "Holdom",
+        "Sperling–Burnaby Lake",
+        "Lake City Way",
+        "Production Way–University",
+        "Lougheed Town Centre",
+        "Burquitlam",
+        "Moody Centre",
+        "Inlet Centre",
+        "Coquitlam Central",
+        "Lincoln",
+        "Lafarge Lake–Douglas"
+      ]
+    },
+    {
+      "id": "canada",
+      "number": "canada",
+      "name": "Canada Line",
+      "mode": "METRO",
+      "termini": ["Waterfront", "YVR–Airport", "Richmond–Brighouse"],
+      "stations": [
+        "Waterfront",
+        "Vancouver City Centre",
+        "Yaletown–Roundhouse",
+        "Olympic Village",
+        "Broadway–City Hall",
+        "King Edward",
+        "Oakridge–41st Ave",
+        "Langara–49th Ave",
+        "Marine Drive",
+        "Bridgeport",
+        "Templeton",
+        "Sea Island Centre",
+        "YVR–Airport",
+        "Capstan",
+        "Aberdeen",
+        "Lansdowne",
+        "Richmond–Brighouse"
+      ]
+    }
+  ]
+}

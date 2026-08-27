@@ -1,0 +1,508 @@
+{
+  "city": "perth",
+  "status": "live",
+  "timezone": "Australia/Perth",
+  "source": "https://www.transperth.wa.gov.au/Portals/0/SYSTEM%20MAP%20OCTOBER%202025.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger map",
+      "title": "Transperth System Map — Updated October 2025 (Byford Rail Extension System Map)",
+      "url": "https://www.transperth.wa.gov.au/Portals/0/SYSTEM%20MAP%20OCTOBER%202025.pdf",
+      "sameBytesAs": "https://www.transperth.wa.gov.au/Portals/0/Asset/Documents/Using%20Transperth/System%20Maps/Byford%20Rail%20Extension%20System%20Map%20October%202025.pdf",
+      "linkedFrom": "https://www.transperth.wa.gov.au/journey-planner/network-maps",
+      "captionOnIndex": "Transperth System Map - Updated October 2025",
+      "retrievedAt": "2026-08-27T00:59:22Z",
+      "localFile": "sources/SYSTEM-MAP-OCTOBER-2025.pdf"
+    },
+    {
+      "role": "map index",
+      "url": "https://www.transperth.wa.gov.au/journey-planner/network-maps",
+      "retrievedAt": "2026-08-27T00:58:50Z",
+      "printedLineList": [
+        "Airport",
+        "Armadale",
+        "Ellenbrook",
+        "Fremantle",
+        "Mandurah",
+        "Midland",
+        "Thornlie-Cockburn",
+        "Yanchep"
+      ]
+    },
+    {
+      "role": "stations index (printed Station suffix)",
+      "url": "https://www.transperth.wa.gov.au/Using-Transperth/Station-Facilities/Stations-Maps",
+      "retrievedAt": "2026-08-27T00:59:10Z"
+    },
+    {
+      "role": "train timetable index",
+      "url": "https://www.transperth.wa.gov.au/timetables/results?train=",
+      "retrievedAt": "2026-08-27T00:59:00Z",
+      "lineTimetablePdfs": [
+        "Airport Line 20251013.pdf",
+        "Armadale Line 20251013.pdf",
+        "Ellenbrook Line 20251013.pdf",
+        "Fremantle Line 20260201.pdf",
+        "Mandurah Line 20251130.pdf",
+        "Midland Line 20251013.pdf",
+        "Thornlie-Cockburn Line 20251013.pdf",
+        "Yanchep Line 20251130.pdf"
+      ]
+    },
+    {
+      "role": "line timetable PDFs (ordered cover stacks + footnotes)",
+      "urls": [
+        "https://www.transperth.wa.gov.au/timetablepdfs/Airport%20Line%2020251013.pdf",
+        "https://www.transperth.wa.gov.au/timetablepdfs/Armadale%20Line%2020251013.pdf",
+        "https://www.transperth.wa.gov.au/timetablepdfs/Ellenbrook%20Line%2020251013.pdf",
+        "https://www.transperth.wa.gov.au/timetablepdfs/Fremantle%20Line%2020260201.pdf",
+        "https://www.transperth.wa.gov.au/timetablepdfs/Mandurah%20Line%2020251130.pdf",
+        "https://www.transperth.wa.gov.au/timetablepdfs/Midland%20Line%2020251013.pdf",
+        "https://www.transperth.wa.gov.au/timetablepdfs/Thornlie-Cockburn%20Line%2020251013.pdf",
+        "https://www.transperth.wa.gov.au/timetablepdfs/Yanchep%20Line%2020251130.pdf"
+      ],
+      "retrievedAt": "2026-08-27T01:00:05Z"
+    }
+  ],
+  "retrievedAt": "2026-08-27T01:00:05Z",
+  "notes": [
+    "D1 oracle is the official Transperth System Map (Updated October 2025) plus passenger train timetable PDF covers and footnotes. Stations arrays are hand-transcribed from those covers in printed cover order. Not generated from GTFS. Not generated from lib/cities/perth/line-map.json. LiveTimes/line-map are H2 name clash only.",
+    "City stays live. Modes v1: TRAIN only (Transperth suburban passenger rail). Bus, ferry, CAT, Transwa Australind are on the same map or stations index; they are out of the oracle.",
+    "Timezone Australia/Perth has NO DST. Do not copy Adelaide DST. Wall-clock is AWST year-round.",
+    "No T-numbers. Passenger product is line name + terminus. Map index and map legend print eight lines: Airport, Armadale, Ellenbrook, Fremantle, Mandurah, Midland, Thornlie-Cockburn, Yanchep. Timetable covers print the same eight names (Thornlie cover stacks as 'Thornlie - Cockburn Line').",
+    "Locked inner-city printed names from the map (three distinct stations, do not collapse): Perth; Perth Underground; Elizabeth Quay. Map also prints Perth Stadium (dashed / Special Events Station) on the Armadale / Thornlie-Cockburn corridor. Stations & Maps dropdown prints Perth Station / Perth Underground Station / Elizabeth Quay Station / Perth Stadium Station. Timetable covers print the bare map strings. LiveTimes prints * Stn.",
+    "Byford is printed open on the October 2025 map as the Armadale Line outer terminus, and is on the Armadale Line 13/10/2025 cover (Perth ... Armadale, Byford). Include it.",
+    "Ellenbrook is a printed live line (map legend bright red / Ellenbrook Line) branching at Bayswater: Morley, Noranda, Ballajura, Whiteman Park, Ellenbrook. Do not fold into Midland or Airport.",
+    "Airport–Fremantle through-running: the October 2025 map draws Airport Line colour along the full Fremantle corridor to Fremantle. Airport Line timetable cover (13/10/2025) lists High Wycombe–Claremont only (To Claremont / To High Wycombe). Fremantle Line 01/02/2026 footnote T: 'This trip is a continuation of an Airport Line service' (High Wycombe–Claremont on the Airport booklet; Claremont–Fremantle on the Fremantle booklet). D1 Airport Line row therefore includes the map through-run to Fremantle. West-of-Claremont stations are transcribed from the Fremantle cover (same printed strings), not invented.",
+    "Yanchep and Mandurah are two printed lines that meet at Perth Underground / Elizabeth Quay (north–south tunnel). Covers do not list Perth (surface) as a Yanchep or Mandurah stop. Do not treat them as inbound/outbound vs a single hub.",
+    "Thornlie-Cockburn Line cover ends at Cockburn Central. Shared with Mandurah at Cockburn Central only. Do not attach Mandurah, Lakelands, Warnbro, Wellard, Rockingham, Kwinana, Aubin Grove to TCL.",
+    "Showgrounds is on the Fremantle and Airport covers and is a dashed Special Events Station on the map. Left in the stations arrays because the line pages print it. Coverage note: LiveTimes Fremantle filter omits Showgrounds Stn.",
+    "Perth Stadium is on the Armadale and Thornlie-Cockburn covers and is dashed Special Events Station on the map. Left in those stations arrays because the line pages print it.",
+    "Short workings printed as timetable footnote codes, not separate D1 rows: Yanchep K terminates Clarkson / W terminates Whitfords; Mandurah W terminates Cockburn Central; Fremantle C terminates Claremont; Airport P terminates Perth. No printed Armadale-short-of-Byford code on the 13/10/2025 Armadale booklet. No printed Butler-terminate code on the Yanchep booklet.",
+    "gtfsRouteIdsIfKnown left empty: the live Perth product is Transperth LiveTimes XML, not GTFS. H2 used line-map.json (LiveTimes * Stn names) only to clash. No stopIds in this file."
+  ],
+  "printedInnerCityNames": {
+    "lock": [
+      "Perth",
+      "Perth Underground",
+      "Elizabeth Quay"
+    ],
+    "doNotCollapse": "Perth, Perth Underground and Elizabeth Quay are three printed stations on the October 2025 map. Do not emit a single 'Perth Station' blob. Do not treat Perth Underground as an alias of Perth.",
+    "doNotUseAsStop": [
+      "City",
+      "Perth CBD",
+      "Perth Central"
+    ],
+    "stationsAndMapsSuffix": "Perth Station / Perth Underground Station / Elizabeth Quay Station / Perth Stadium Station",
+    "liveTimesSuffix": "Perth Stn / Perth Underground Stn / Elizabeth Quay Stn / Perth Stadium Stn",
+    "alsoPrintedInner": [
+      "McIver",
+      "Claisebrook",
+      "City West",
+      "West Leederville",
+      "Perth Stadium"
+    ]
+  },
+  "coverageGaps": [
+    "Airport Line timetable cover stops at Claremont; map colour and Fremantle T-footnote through-run to Fremantle. West-of-Claremont Airport stations are taken from the Fremantle cover + map, not from the Airport cover stack.",
+    "Showgrounds is cover-listed and map-dashed Special Events. LiveTimes Fremantle station filter omits it.",
+    "Perth Stadium is cover-listed on Armadale and Thornlie-Cockburn and map-dashed Special Events.",
+    "Map prints bus stations (Karrinyup, Scarborough Beach, Mirrabooka, Galleria, Kalamunda, Booragoon, Curtin Central / Curtin University, Causeway, etc.) and ferry (Elizabeth Quay Jetty, Mends St). Out of v1 TRAIN oracle.",
+    "PDF hex colours are not printed as text; colour families cited from map legend swatches only (Airport teal, Fremantle blue, Yanchep olive, Mandurah orange, Armadale yellow, Midland dark red, Thornlie-Cockburn purple, Ellenbrook bright red).",
+    "Composite Perth–Bayswater / Perth–Cannington / Perth–Claremont booklets are linked from the train index; they were not used as all-stops oracles (covers already list the shared inners).",
+    "Kenwick is on the Armadale Line cover only. Thornlie-Cockburn cover jumps Beckenham → Thornlie; do not attach Kenwick to TCL."
+  ],
+  "lines": [
+    {
+      "id": "yanchep",
+      "name": "Yanchep Line",
+      "officialPageTitle": "Yanchep Line — timetable effective 30/11/2025",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Yanchep Line",
+      "termini": [
+        "Yanchep",
+        "Elizabeth Quay"
+      ],
+      "shortTurns": [
+        {
+          "code": "K",
+          "terminus": "Clarkson",
+          "note": "Yanchep Line 30/11/2025 footnote: K Terminates at Clarkson Stn / Departs from Clarkson Stn."
+        },
+        {
+          "code": "W",
+          "terminus": "Whitfords",
+          "note": "Yanchep Line 30/11/2025 footnote: W Terminates at Whitfords Stn / Departs from Whitfords Stn."
+        }
+      ],
+      "branches": [],
+      "throughRunning": {
+        "with": "mandurah",
+        "at": [
+          "Perth Underground",
+          "Elizabeth Quay"
+        ],
+        "note": "Map: Yanchep olive meets Mandurah orange at Perth Underground / Elizabeth Quay. Covers list those two inner stations, not Perth (surface). Product direction example: Yanchep Line + Yanchep."
+      },
+      "stations": [
+        "Elizabeth Quay",
+        "Perth Underground",
+        "Leederville",
+        "Glendalough",
+        "Stirling",
+        "Warwick",
+        "Greenwood",
+        "Whitfords",
+        "Edgewater",
+        "Joondalup",
+        "Currambine",
+        "Clarkson",
+        "Butler",
+        "Alkimos",
+        "Eglinton",
+        "Yanchep"
+      ]
+    },
+    {
+      "id": "mandurah",
+      "name": "Mandurah Line",
+      "officialPageTitle": "Mandurah Line — timetable effective 30/11/2025",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Mandurah Line",
+      "termini": [
+        "Mandurah",
+        "Perth Underground"
+      ],
+      "shortTurns": [
+        {
+          "code": "W",
+          "terminus": "Cockburn Central",
+          "note": "Mandurah Line 30/11/2025 footnote: W Terminates at Cockburn Central Stn / Departs from Cockburn Central Stn."
+        }
+      ],
+      "branches": [
+        {
+          "at": "Cockburn Central",
+          "otherLine": "thornlie-cockburn",
+          "note": "TCL joins here and does not continue south to Mandurah on the official cover."
+        }
+      ],
+      "throughRunning": {
+        "with": "yanchep",
+        "at": [
+          "Perth Underground",
+          "Elizabeth Quay"
+        ]
+      },
+      "stations": [
+        "Perth Underground",
+        "Elizabeth Quay",
+        "Canning Bridge",
+        "Bull Creek",
+        "Murdoch",
+        "Cockburn Central",
+        "Aubin Grove",
+        "Kwinana",
+        "Wellard",
+        "Rockingham",
+        "Warnbro",
+        "Lakelands",
+        "Mandurah"
+      ]
+    },
+    {
+      "id": "fremantle",
+      "name": "Fremantle Line",
+      "officialPageTitle": "Fremantle Line — timetable effective 01/02/2026",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Fremantle Line",
+      "termini": [
+        "Fremantle",
+        "Perth"
+      ],
+      "shortTurns": [
+        {
+          "code": "C",
+          "terminus": "Claremont",
+          "note": "Fremantle Line 01/02/2026 footnote: C Terminates at Claremont Stn / Departs from Claremont Station."
+        }
+      ],
+      "branches": [],
+      "throughRunning": {
+        "with": "airport",
+        "at": "Claremont",
+        "note": "Footnote T: trip is a continuation of an Airport Line service. High Wycombe–Claremont lives on the Airport booklet; Claremont–Fremantle on this booklet. Map draws Airport colour the full Fremantle corridor."
+      },
+      "stations": [
+        "Perth",
+        "City West",
+        "West Leederville",
+        "Subiaco",
+        "Daglish",
+        "Shenton Park",
+        "Karrakatta",
+        "Loch Street",
+        "Showgrounds",
+        "Claremont",
+        "Swanbourne",
+        "Grant Street",
+        "Cottesloe",
+        "Mosman Park",
+        "Victoria Street",
+        "North Fremantle",
+        "Fremantle"
+      ]
+    },
+    {
+      "id": "midland",
+      "name": "Midland Line",
+      "officialPageTitle": "Midland Line — timetable effective 13/10/2025",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Midland Line",
+      "termini": [
+        "Midland",
+        "Perth"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Bayswater",
+          "otherLine": "airport",
+          "note": "Airport leaves east via Redcliffe / Airport Central / High Wycombe."
+        },
+        {
+          "at": "Bayswater",
+          "otherLine": "ellenbrook",
+          "note": "Ellenbrook leaves north via Morley / Noranda / Ballajura / Whiteman Park / Ellenbrook."
+        }
+      ],
+      "stations": [
+        "Perth",
+        "McIver",
+        "Claisebrook",
+        "East Perth",
+        "Mt Lawley",
+        "Maylands",
+        "Meltham",
+        "Bayswater",
+        "Ashfield",
+        "Bassendean",
+        "Success Hill",
+        "Guildford",
+        "East Guildford",
+        "Woodbridge",
+        "Midland"
+      ]
+    },
+    {
+      "id": "airport",
+      "name": "Airport Line",
+      "officialPageTitle": "Airport Line — timetable effective 13/10/2025 (cover High Wycombe–Claremont); map + Fremantle T-footnote through-run to Fremantle",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Airport Line",
+      "termini": [
+        "High Wycombe",
+        "Fremantle"
+      ],
+      "coverTermini": [
+        "High Wycombe",
+        "Claremont"
+      ],
+      "shortTurns": [
+        {
+          "code": "P",
+          "terminus": "Perth",
+          "note": "Airport Line 13/10/2025 footnote: P Terminates at Perth Station / Departs Perth Station."
+        }
+      ],
+      "branches": [
+        {
+          "at": "Bayswater",
+          "otherLine": "midland",
+          "note": "Midland continues Ashfield–Midland. Ellenbrook leaves north. Do not group High Wycombe with Ellenbrook."
+        },
+        {
+          "at": "Bayswater",
+          "otherLine": "ellenbrook"
+        }
+      ],
+      "throughRunning": {
+        "with": "fremantle",
+        "mapShowsFullFremantleCorridor": true,
+        "timetableCoverEnds": "Claremont",
+        "fremantleFootnoteT": "This trip is a continuation of an Airport Line service / continues as an Airport Line service.",
+        "note": "Include Fremantle as the map through-run terminus. Stations west of Claremont transcribed from the Fremantle Line cover (same printed names)."
+      },
+      "stations": [
+        "High Wycombe",
+        "Airport Central",
+        "Redcliffe",
+        "Bayswater",
+        "Meltham",
+        "Maylands",
+        "Mt Lawley",
+        "East Perth",
+        "Claisebrook",
+        "McIver",
+        "Perth",
+        "City West",
+        "West Leederville",
+        "Subiaco",
+        "Daglish",
+        "Shenton Park",
+        "Karrakatta",
+        "Loch Street",
+        "Showgrounds",
+        "Claremont",
+        "Swanbourne",
+        "Grant Street",
+        "Cottesloe",
+        "Mosman Park",
+        "Victoria Street",
+        "North Fremantle",
+        "Fremantle"
+      ],
+      "stationsFromAirportCoverOnly": [
+        "High Wycombe",
+        "Airport Central",
+        "Redcliffe",
+        "Bayswater",
+        "Meltham",
+        "Maylands",
+        "Mt Lawley",
+        "East Perth",
+        "Claisebrook",
+        "McIver",
+        "Perth",
+        "City West",
+        "West Leederville",
+        "Subiaco",
+        "Daglish",
+        "Shenton Park",
+        "Karrakatta",
+        "Loch Street",
+        "Showgrounds",
+        "Claremont"
+      ]
+    },
+    {
+      "id": "ellenbrook",
+      "name": "Ellenbrook Line",
+      "officialPageTitle": "Ellenbrook Line — timetable effective 13/10/2025",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Ellenbrook Line",
+      "termini": [
+        "Ellenbrook",
+        "Perth"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Bayswater",
+          "otherLine": "airport",
+          "note": "Ellenbrook vs High Wycombe at Bayswater are different branches. doNotGroup."
+        },
+        {
+          "at": "Bayswater",
+          "otherLine": "midland"
+        }
+      ],
+      "stations": [
+        "Perth",
+        "McIver",
+        "Claisebrook",
+        "East Perth",
+        "Mt Lawley",
+        "Maylands",
+        "Meltham",
+        "Bayswater",
+        "Morley",
+        "Noranda",
+        "Ballajura",
+        "Whiteman Park",
+        "Ellenbrook"
+      ]
+    },
+    {
+      "id": "armadale",
+      "name": "Armadale Line",
+      "officialPageTitle": "Armadale Line — timetable effective 13/10/2025 (To Byford / To Perth)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Armadale Line",
+      "termini": [
+        "Byford",
+        "Perth"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Beckenham",
+          "otherLine": "thornlie-cockburn",
+          "note": "TCL leaves via Thornlie / Nicholson Road / Ranford Road. Armadale continues Kenwick–Byford."
+        }
+      ],
+      "stations": [
+        "Perth",
+        "McIver",
+        "Claisebrook",
+        "Perth Stadium",
+        "Burswood",
+        "Victoria Park",
+        "Carlisle",
+        "Oats Street",
+        "Queens Park",
+        "Cannington",
+        "Beckenham",
+        "Kenwick",
+        "Maddington",
+        "Gosnells",
+        "Seaforth",
+        "Kelmscott",
+        "Challis",
+        "Sherwood",
+        "Armadale",
+        "Byford"
+      ]
+    },
+    {
+      "id": "thornlie-cockburn",
+      "name": "Thornlie-Cockburn Line",
+      "officialPageTitle": "Thornlie - Cockburn Line — timetable effective 13/10/2025",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Thornlie-Cockburn Line",
+      "termini": [
+        "Cockburn Central",
+        "Perth"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Beckenham",
+          "otherLine": "armadale"
+        },
+        {
+          "at": "Cockburn Central",
+          "otherLine": "mandurah",
+          "note": "Official cover terminus. Does not continue to Mandurah."
+        }
+      ],
+      "stations": [
+        "Perth",
+        "McIver",
+        "Claisebrook",
+        "Perth Stadium",
+        "Burswood",
+        "Victoria Park",
+        "Carlisle",
+        "Oats Street",
+        "Queens Park",
+        "Cannington",
+        "Beckenham",
+        "Thornlie",
+        "Nicholson Road",
+        "Ranford Road",
+        "Cockburn Central"
+      ]
+    }
+  ]
+}

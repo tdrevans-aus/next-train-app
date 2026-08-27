@@ -206,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -633,7 +633,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -661,7 +661,7 @@ function appendFixtureQuery(queryString) {
   }
   window.NextTrainBrisbaneDogfood?.applyParams?.(params);
   if (!params.has("city")) {
-    const city = cityIdForStation(params.get("station"));
+    const city = cityIdForStation(params.get("station")) || planningCityId();
     if (city && city !== "perth") {
       params.set("city", city);
     }
@@ -1449,6 +1449,11 @@ function showOnboardingStep1() {
       brisbane: "Brisbane",
       sydney: "Sydney",
       adelaide: "Adelaide",
+      amsterdam: "Amsterdam",
+      vancouver: "Vancouver",
+      canberra: "Canberra",
+      "gold-coast": "Gold Coast",
+      newcastle: "Newcastle",
     };
     const regionLabel = regionNames[readActiveCity()] || "your local";
     step1Text.textContent = nearbyMode().getNearbySession()?.unsupportedRegion
@@ -3742,16 +3747,9 @@ function renderRouteJourney(data, { stale = false } = {}) {
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
-  const attributionEl = document.getElementById("attribution");
-  if (attributionEl) {
-    const cityId = journey?.cityId || lastApiData?.config?.city || data?.config?.city || "perth";
-    if (cityId === "uk-london-tfl") {
-      attributionEl.textContent = "Powered by TfL Open Data";
-      attributionEl.hidden = false;
-    } else {
-      attributionEl.hidden = true;
-    }
-  }
+  window.NextTrainCitySession?.syncFeedAttribution?.(
+    journey?.cityId || lastApiData?.config?.city || data?.config?.city || planningCityId()
+  );
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -3977,16 +3975,9 @@ function render(data, { stale = false } = {}) {
     next = tripForPinDeparture(data, emptyBoardPinState.heroDeparture, journey);
   }
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
-  const attributionEl = document.getElementById("attribution");
-  if (attributionEl) {
-    const cityId = journey?.cityId || lastApiData?.config?.city || data?.config?.city || "perth";
-    if (cityId === "uk-london-tfl") {
-      attributionEl.textContent = "Powered by TfL Open Data";
-      attributionEl.hidden = false;
-    } else {
-      attributionEl.hidden = true;
-    }
-  }
+  window.NextTrainCitySession?.syncFeedAttribution?.(
+    journey?.cityId || lastApiData?.config?.city || data?.config?.city || planningCityId()
+  );
   updatedEl.textContent = stale
     ? "Update failed — times may be out of date"
     : lastUpdated
@@ -4249,16 +4240,7 @@ function renderRefreshErrorState() {
   }
 
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
-  const attributionEl = document.getElementById("attribution");
-  if (attributionEl) {
-    const cityId = journey?.cityId || lastApiData?.config?.city || "perth";
-    if (cityId === "uk-london-tfl") {
-      attributionEl.textContent = "Powered by TfL Open Data";
-      attributionEl.hidden = false;
-    } else {
-      attributionEl.hidden = true;
-    }
-  }
+  window.NextTrainCitySession?.syncFeedAttribution?.(journey?.cityId || lastApiData?.config?.city || planningCityId());
   updatedEl.textContent = "Update failed";
   setHeroUrgency("calm");
   if (heroDepartLabelEl) {
@@ -4768,6 +4750,10 @@ function scheduleRegionMismatchPrompt() {
   }, 2000);
 }
 
+function planningCityId() {
+  return normalizeCityId(readPreferenceCity()) || "perth";
+}
+
 function testModeNearestStation() {
   if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
     const city = String(window.NextTrainBrisbaneDogfood.getCity?.() || "").toLowerCase();
@@ -4775,22 +4761,21 @@ function testModeNearestStation() {
       brisbane: "Roma Street",
       sydney: "Central",
       adelaide: "Adelaide Railway Station",
+      "uk-london-tfl": "King's Cross St. Pancras",
+      amsterdam: "Centraal Station",
+      vancouver: "Waterfront",
+      canberra: "Alinga Street",
+      "gold-coast": "Helensvale",
+      newcastle: "Newcastle Interchange",
     };
     if (defaults[city]) {
-      return { station: defaults[city], distanceKm: 0.2 };
+      return { station: defaults[city], city, distanceKm: 0.2 };
     }
   }
-  return { station: "Edgewater Stn", distanceKm: 0.2 };
+  return { station: "Edgewater Stn", city: "perth", distanceKm: 0.2 };
 }
 
-async function pickPerthDirection(station) {
-  const directions = await fetchDirectionsFromApi(station);
-  if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
-    const first = directions.find(
-      (direction) => normalizeDirection(direction) !== DEFAULT_DIRECTION_LABEL
-    );
-    return first ? normalizeDirection(first) : null;
-  }
+function pickPerthDirectionFromList(directions) {
   const exact = directions.find(
     (direction) => normalizeDirection(direction) === DEFAULT_DIRECTION_LABEL
   );
@@ -4802,6 +4787,19 @@ async function pickPerthDirection(station) {
     normalizeDirection(direction).toLowerCase().includes("perth")
   );
   return loose ? normalizeDirection(loose) : null;
+}
+
+async function pickPerthDirection(station) {
+  return pickPerthDirectionFromList(await fetchDirectionsFromApi(station));
+}
+
+async function pickDefaultDirection(station) {
+  const directions = await fetchDirectionsFromApi(station);
+  if (planningCityId() === "perth") {
+    return pickPerthDirectionFromList(directions);
+  }
+  const first = directions.find((direction) => String(direction || "").trim());
+  return first ? normalizeDirection(first) : null;
 }
 
 function isOutboundJourney(journey) {
@@ -4854,7 +4852,7 @@ async function configureInboundJourney(journey, nearestStation) {
     return null;
   }
 
-  const direction = await pickPerthDirection(station);
+  const direction = await pickDefaultDirection(station);
   if (!direction) {
     return null;
   }
@@ -4873,7 +4871,7 @@ async function applyDefaultJourneyRoute(journey) {
   }
 
   if (journey.station && !journey.direction) {
-    const direction = await pickPerthDirection(journey.station);
+    const direction = await pickDefaultDirection(journey.station);
     if (!direction) {
       return { configured: false, nearest: null, error: null, journey };
     }
@@ -4971,15 +4969,23 @@ async function getGeolocationPosition() {
 }
 
 async function findNearestStation({ forceFresh = false, allowSessionShortcut = true } = {}) {
+  const planningCity = planningCityId();
+  const regionMismatch = new Error("Could not find a nearby station in the selected region.");
+
   if (isTestMode()) {
-    return testModeNearestStation();
+    const nearest = testModeNearestStation();
+    const nearestCity = normalizeCityId(nearest.city) || "perth";
+    if (nearestCity !== planningCity) {
+      throw regionMismatch;
+    }
+    return nearest;
   }
 
   // Only skip GPS when caller explicitly allows it (not the background refine path).
   if (allowSessionShortcut && !forceFresh && nearbyMode().getNearbySession()?.station) {
     const session = nearbyMode().getNearbySession();
-    const sessionCity = session.city || readNearbyCity();
-    if (isStationInNearbyCity(session.station, sessionCity)) {
+    const sessionCity = normalizeCityId(session.city || readNearbyCity()) || "perth";
+    if (sessionCity === planningCity && isStationInNearbyCity(session.station, sessionCity)) {
       return {
         station: session.station,
         city: sessionCity,
@@ -5000,6 +5006,10 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   const nearbyCity = nearbyCityFromCoords(latitude, longitude);
   nearbyCityHint = nearbyCity;
 
+  if ((normalizeCityId(nearbyCity) || "perth") !== planningCity) {
+    throw regionMismatch;
+  }
+
   // Cache the last successful GPS fix.
   try {
     localStorage.setItem("nextTrainLastGps", JSON.stringify({
@@ -5010,13 +5020,13 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     }));
   } catch {}
 
-  const coords = await loadStationCoordsForCity(nearbyCity);
-  await loadNearbyStationNames(nearbyCity);
+  const coords = await loadStationCoordsForCity(planningCity);
+  await loadNearbyStationNames(planningCity);
 
   // If we don't have coords yet, return raw position for server resolution.
   if (Object.keys(coords).length === 0) {
     console.log("[App] findNearestStation: no coords loaded, returning raw position");
-    return { lat: latitude, lng: longitude, city: nearbyCity, distanceKm: 0 };
+    return { lat: latitude, lng: longitude, city: planningCity, distanceKm: 0 };
   }
 
   let nearest = null;
@@ -5034,11 +5044,11 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     throw new Error("Could not find a nearby station");
   }
 
-  if (!isStationInNearbyCity(nearest, nearbyCity)) {
+  if (!isStationInNearbyCity(nearest, planningCity)) {
     throw new Error("Could not find a nearby station.");
   }
 
-  return { station: nearest, city: nearbyCity, distanceKm: bestDistance };
+  return { station: nearest, city: planningCity, distanceKm: bestDistance };
 }
 
 
@@ -5286,7 +5296,7 @@ async function fetchNextTrain() {
   const fetchId = ++journeyBoardFetchId;
 
   try {
-    const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`));
+    const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`), 20000);
 
     if (fetchId !== journeyBoardFetchId) {
       return;
@@ -5413,6 +5423,10 @@ async function applyTemplateRoute(journey, templateKey) {
     return { configured: false, nearest: null, error: null };
   }
 
+  if (planningCityId() !== "perth") {
+    return applyDefaultJourneyRoute(journey);
+  }
+
   let nearest = null;
   try {
     nearest = await findNearestStation();
@@ -5532,6 +5546,7 @@ function createJourneyFromRoute() {
     name: "",
     kind: "route",
     autoRoute: false,
+    cityId: planningCityId(),
   });
   settingsDraftJourneys.push(journey);
   return openJourneyDetail(journey.id);
@@ -5550,6 +5565,7 @@ function createJourneyFromTemplate(templateKey) {
       kind: "journey",
       templateKey: "custom",
       autoRoute: false,
+      cityId: planningCityId(),
       remindDays: [getPerthDayOfWeekIso()],
       preferredTrainTime: journeyModel().getDefaultCustomPreferredTrainTime(),
     });
@@ -5637,7 +5653,7 @@ async function prefillCustomNearestStation(journeyId) {
   const formDirection = String(detailDirectionSelect?.value || "").trim();
   let direction = formDirection || journey.direction || "";
   if (!direction) {
-    direction = (await pickPerthDirection(nearest.station)) || "";
+    direction = (await pickDefaultDirection(nearest.station)) || "";
   }
 
   if (journeyDetail().getEditingJourneyId?.() !== journeyId) {
@@ -5760,6 +5776,7 @@ async function createJourneyFromPresetTemplate(templateKey) {
     remindMe: preset.remindMe !== false && Boolean(preset.preferredTrainTime),
     templateKey,
     autoRoute: true,
+    cityId: planningCityId(),
   });
   settingsDraftJourneys.push(journey);
 
@@ -6660,9 +6677,13 @@ journeySwitcherMenuEl?.addEventListener("click", (event) => {
   event.stopPropagation();
 });
 
-document.addEventListener("nexttrain:city-changed", () => {
+document.addEventListener("nexttrain:city-changed", (event) => {
   stationCoords = null;
+  nearbyCoordsCache.clear();
+  nearbyStationNamesCache.clear();
+  window.nextTrainStationCombobox?.invalidateStationPickerCaches?.();
   void getStationsList();
+  window.NextTrainCitySession?.syncFeedAttribution?.(event.detail?.city || planningCityId());
   if (isNearbyModeActive()) {
     void nearbyMode().refreshNearbyAfterRegionChange?.();
   }
@@ -7025,7 +7046,8 @@ function initJourneyDetailFromModule() {
     hasCompletedOnboarding,
     maybeScheduleOnboarding,
     findNearestStation,
-    pickPerthDirection,
+    readPreferenceCity,
+    pickDefaultDirection,
     locationErrorFrom,
     applyDefaultJourneyRoute,
     shouldAutoRouteJourney,

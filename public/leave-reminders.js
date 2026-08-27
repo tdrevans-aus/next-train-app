@@ -983,8 +983,10 @@ function renderRemindersJourneyList(paused, upcoming) {
   const journeys = getJourneyKindJourneys();
   const pin = getActivePinReminder();
   list.innerHTML = "";
+  const reminderArmed =
+    journeys.some((journey) => journey?.remindMe) || Boolean(pin?.remindOn);
   if (empty) {
-    empty.hidden = journeys.length > 0 || Boolean(pin);
+    empty.hidden = reminderArmed;
   }
 
   const nowMinutes =
