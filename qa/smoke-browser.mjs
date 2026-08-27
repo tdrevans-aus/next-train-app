@@ -77,8 +77,14 @@ async function run() {
   });
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
+  // 2.5.5 paints nearby-mode while the route line is still "Locating...".
+  // Wait for the resolved Near you board, not just the mode class.
   await page.waitForFunction(
-    () => document.querySelector(".app")?.classList.contains("nearby-mode"),
+    () => {
+      const nearby = document.querySelector(".app")?.classList.contains("nearby-mode");
+      const route = document.getElementById("route")?.textContent?.trim() ?? "";
+      return nearby && route.includes("Near you");
+    },
     null,
     { timeout: 20000 }
   );
