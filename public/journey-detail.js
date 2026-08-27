@@ -969,6 +969,20 @@ async function fetchDirectionsFromApi(station) {
     return fallback.data.destinations;
   }
 
+  const rateLimited =
+    typeof isRateLimitedResult === "function" &&
+    (isRateLimitedResult(primary) || isRateLimitedResult(fallback));
+  if (rateLimited && typeof apiResultError === "function") {
+    throw apiResultError(
+      isRateLimitedResult(primary) ? primary : fallback,
+      "Could not load directions"
+    );
+  }
+
+  if (typeof apiResultError === "function") {
+    throw apiResultError(primary.ok ? fallback : primary, "Could not load directions");
+  }
+
   throw new Error(
     primary.data?.error ??
       fallback.data?.error ??
