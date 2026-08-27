@@ -145,6 +145,10 @@ export async function armJourneyLeaveCard(page, { minutesFromNowFallback = 18 } 
     perthMinutesFromNow(Math.max(1, minutesFromNowFallback - 5))
   );
 
+  // Seed on a reset page that has no station/direction. If those params stay in
+  // the URL, init()'s late persistSettings(urlSettings) replaces this journey
+  // with a catalog-derived route and the hero falls through to empty My Journeys.
+  await page.goto(`${BASE}/?reset=1&test=1&fixture=${encodeURIComponent(fixture)}`);
   await page.evaluate(
     ({ preferred, stationName, directionName, jId }) => {
       localStorage.setItem(

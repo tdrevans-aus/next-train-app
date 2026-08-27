@@ -107,8 +107,13 @@ public class WidgetPinResolverTest {
     preferredInWindow.put("defaultUntil", "23:59");
     assertTrue(JourneyPinHelper.isJourneyPinnedToday(preferredInWindow));
 
+    // Journeys without From/Until still get a derived band (preferred−60 … +15).
+    // Pick a target 12h away so this is not wall-clock flaky around 07:30 Perth.
+    int farMinutes = (PerthTime.minutesSinceMidnight() + 12 * 60) % (24 * 60);
+    String farClock =
+      String.format("%02d:%02d", farMinutes / 60, farMinutes % 60);
     JSONObject preferredNoWindow = new JSONObject();
-    preferredNoWindow.put("preferredTrainTime", "07:30");
+    preferredNoWindow.put("preferredTrainTime", farClock);
     assertFalse(JourneyPinHelper.isJourneyPinnedToday(preferredNoWindow));
 
     JSONObject dismissed = new JSONObject();

@@ -685,8 +685,10 @@ async function applyTestQueryParams() {
     sessionStorage.setItem("nextTrainTestMode", "1");
   }
 
-  // If station/direction are in the URL, persist them immediately on reset.
-  const urlSettings = await readUrlSettings();
+  // Persist URL station/direction synchronously. Awaiting the station catalog here
+  // yields past `load`, so QA seeds written after goto would be overwritten when
+  // catalog fetch completed.
+  const urlSettings = buildUrlSettingsFromParams(params);
   if (urlSettings) {
     try {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(urlSettings));
@@ -697,6 +699,7 @@ async function applyTestQueryParams() {
     settingsDraftJourneys = Array.isArray(settings.journeys)
       ? settings.journeys.map((j) => ({ ...j }))
       : [];
+    urlSettingsAppliedDuringReset = true;
   }
 
   params.delete("reset");
@@ -2209,6 +2212,37 @@ function maybeAutoSelectJourney() {
   skipTrains = readSkipState().count;
 }
 
+function buildUrlSettingsFromParams(params, { station, direction } = {}) {
+  const stationText = String(station ?? params.get("station") ?? "").trim();
+  const directionText = String(
+    direction ?? params.get("direction") ?? params.get("destination") ?? ""
+  ).trim();
+  if (!stationText || !directionText) {
+    return null;
+  }
+  if (stationText.length > 120 || directionText.length > 120) {
+    return null;
+  }
+
+  const journey = createDefaultJourney({
+    name: "To work",
+    station: stationText,
+    direction: directionText,
+    leaveBeforeMinutes:
+      Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
+      DEFAULT_SETTINGS.leaveBeforeMinutes,
+  });
+
+  return migrateSettings({
+    settingsSchemaVersion: 2,
+    journeys: [journey],
+    activeJourneyId: journey.id,
+    refreshSeconds:
+      Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
+      DEFAULT_SETTINGS.refreshSeconds,
+  });
+}
+
 async function readUrlSettings() {
   const params = new URLSearchParams(window.location.search);
   const rawStation = params.get("station");
@@ -2233,22 +2267,9 @@ async function readUrlSettings() {
   const stations = await getStationsList();
   if (stations.length === 0) {
     // If list failed/empty, trust the URL station for now (e.g. cold start with network delay)
-    const journey = createDefaultJourney({
-      name: "To work",
+    return buildUrlSettingsFromParams(params, {
       station: stationText,
       direction: directionText,
-      leaveBeforeMinutes:
-        Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
-        DEFAULT_SETTINGS.leaveBeforeMinutes,
-    });
-
-    return migrateSettings({
-      settingsSchemaVersion: 2,
-      journeys: [journey],
-      activeJourneyId: journey.id,
-      refreshSeconds:
-        Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
-        DEFAULT_SETTINGS.refreshSeconds,
     });
   }
 
@@ -2259,23 +2280,9 @@ async function readUrlSettings() {
   }
 
   const station = catalog.has(normalizedStation) ? normalizedStation : stationText;
-
-  const journey = createDefaultJourney({
-    name: "To work",
+  return buildUrlSettingsFromParams(params, {
     station,
     direction: directionText,
-    leaveBeforeMinutes:
-      Number(params.get("leaveBefore") ?? params.get("leaveBeforeMinutes")) ||
-      DEFAULT_SETTINGS.leaveBeforeMinutes,
-  });
-
-  return migrateSettings({
-    settingsSchemaVersion: 2,
-    journeys: [journey],
-    activeJourneyId: journey.id,
-    refreshSeconds:
-      Number(params.get("refresh") ?? params.get("refreshSeconds")) ||
-      DEFAULT_SETTINGS.refreshSeconds,
   });
 }
 
@@ -6690,12 +6697,15 @@ document.addEventListener("nexttrain:city-changed", (event) => {
 });
 
 let isInitializing = false;
+/** Reset+station persist already wrote URL settings this load; don't persist them again. */
+let urlSettingsAppliedDuringReset = false;
 
 async function init() {
   if (isInitializing) {
     return;
   }
   isInitializing = true;
+  urlSettingsAppliedDuringReset = false;
 
   if (isNativeApp()) {
     document.body.classList.add("native-app");
@@ -6737,7 +6747,11 @@ async function init() {
   if (urlSettings) {
     console.log("[init] found urlSettings, entering journey mode");
     journeyModeActive = true;
-    persistSettings(urlSettings);
+    // Reset already persisted these params. Re-persisting after the catalog
+    // await would clobber a journey seed written between `load` and this point.
+    if (!urlSettingsAppliedDuringReset) {
+      persistSettings(urlSettings);
+    }
     settings = readStoredSettings();
   } else {
     refreshSeconds = settings.refreshSeconds ?? DEFAULT_SETTINGS.refreshSeconds;
