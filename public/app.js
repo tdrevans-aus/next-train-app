@@ -537,8 +537,17 @@ function isAppOverlayOpen() {
   );
 }
 
+function hasExplicitRegionChoice() {
+  return window.NextTrainCitySession?.readRegionExplicit?.() === true;
+}
+
 function canShowOnboardingCoach() {
-  return isNearbyModeActive() && !isAppOverlayOpen() && !hasCompletedOnboarding();
+  return (
+    isNearbyModeActive() &&
+    !isAppOverlayOpen() &&
+    !hasCompletedOnboarding() &&
+    !hasExplicitRegionChoice()
+  );
 }
 
 function pauseOnboardingForOverlay() {
@@ -1168,6 +1177,11 @@ function isOnboardingVisible() {
   console.log("[App] isOnboardingVisible:", visible, "mainCoach:", Boolean(onboardingCoach && !onboardingCoach.hidden), "wizardActive:", active);
   return visible;
 }
+
+document.addEventListener("nexttrain:region-explicit", () => {
+  clearOnboardingSchedule();
+  hideOnboardingCoach();
+});
 
 function hideOnboardingCoach() {
   if (!onboardingCoach) {
@@ -5560,10 +5574,6 @@ function getJourneyNamePool() {
 }
 
 function createJourneyFromRoute() {
-  if (isAtJourneyCap()) {
-    return;
-  }
-
   journeyDetail()?.setLibraryKind?.("routes");
   const journey = createDefaultJourney({
     name: "",
@@ -5812,8 +5822,14 @@ function countConfiguredJourneys(journeys) {
   return journeys.filter((journey) => !isUnconfiguredJourney(journey)).length;
 }
 
+function countConfiguredJourneyKind(journeys) {
+  return journeys.filter(
+    (journey) => !isUnconfiguredJourney(journey) && isJourneyKind(journey)
+  ).length;
+}
+
 function isAtJourneyCap(journeys = settingsDraftJourneys) {
-  return countConfiguredJourneys(journeys) >= MAX_JOURNEYS;
+  return countConfiguredJourneyKind(journeys) >= MAX_JOURNEYS;
 }
 
 function reloadSettingsDraftFromStorage() {
@@ -5837,7 +5853,7 @@ function saveJourneyListToSettings({ allowEmpty = false } = {}) {
     return;
   }
 
-  if (countConfiguredJourneys(draftConfigured) > MAX_JOURNEYS) {
+  if (countConfiguredJourneyKind(draftConfigured) > MAX_JOURNEYS) {
     return;
   }
 
@@ -6491,7 +6507,7 @@ async function startJourneyCreateFromTemplate(templateKey) {
 }
 
 journeySaveRouteBtnEl?.addEventListener("click", async () => {
-  if (templateCreateInFlight || isAtJourneyCap()) {
+  if (templateCreateInFlight) {
     return;
   }
 
@@ -7087,6 +7103,7 @@ function initJourneyDetailFromModule() {
     readManualJourneyOverride,
     setManualJourneyOverride,
     countConfiguredJourneys,
+    countConfiguredJourneyKind,
     getInboundJourney,
     isOutboundJourney,
     markInitialJourneySetup,
@@ -7812,6 +7829,7 @@ window.nextTrainApp = {
   fetchNextTrain,
   hasJourneyKind,
   hasConfiguredRoute,
+  isAtJourneyCap,
   getChromeTravelTab,
   closeMenuDialogOnly,
   closeJourneysDialog,

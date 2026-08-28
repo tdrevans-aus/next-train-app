@@ -387,6 +387,10 @@
     return deps.countConfiguredJourneys?.(journeys) ?? 0;
   }
 
+  function countConfiguredJourneyKind(journeys) {
+    return deps.countConfiguredJourneyKind?.(journeys) ?? 0;
+  }
+
   function getInboundJourney(journeys) {
     return deps.getInboundJourney?.(journeys) ?? null;
   }
@@ -1676,20 +1680,20 @@ function updateJourneyTemplatesVisibility() {
     return;
   }
 
-  const atCap = isAtJourneyCap();
+  const atCap = libraryKind === "journeys" && isAtJourneyCap();
 
   if (journeyTemplatesCapHintEl) {
     journeyTemplatesCapHintEl.textContent = getJourneyCapHint();
     journeyTemplatesCapHintEl.hidden = !atCap;
   }
   if (journeySaveRouteBtnEl) {
-    journeySaveRouteBtnEl.hidden = atCap || libraryKind !== "routes";
+    journeySaveRouteBtnEl.hidden = libraryKind !== "routes";
   }
   if (journeySetupBtnEl) {
     journeySetupBtnEl.hidden = atCap || libraryKind !== "journeys";
   }
   if (routesCreateActionsEl) {
-    routesCreateActionsEl.hidden = atCap || libraryKind !== "routes";
+    routesCreateActionsEl.hidden = libraryKind !== "routes";
   }
   if (journeysCreateActionsEl) {
     journeysCreateActionsEl.hidden = atCap || libraryKind !== "journeys";
@@ -1963,7 +1967,11 @@ function saveJourneyDetailFromForm() {
     (journey) => journey.id === editingJourneyId && !isUnconfiguredJourney(journey)
   );
   const isNewJourneySave = !wasConfiguredBeforeSave;
-  if (isNewJourneySave && countConfiguredJourneys(getSettings().journeys) >= getMaxJourneys()) {
+  if (
+    isNewJourneySave &&
+    isJourneyKind(updated) &&
+    countConfiguredJourneyKind(getSettings().journeys) >= getMaxJourneys()
+  ) {
     const capError = new Error(getJourneyCapHint());
     capError.code = "journey-cap";
     throw capError;

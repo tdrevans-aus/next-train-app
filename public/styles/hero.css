@@ -755,7 +755,8 @@
 
 .hero.hero-setup ~ .train-meta,
 .hero.hero-setup ~ .nearby-directions,
-.hero.hero-setup ~ .upcoming-departures {
+.hero.hero-setup ~ .upcoming-departures,
+.hero.hero-setup ~ .attribution {
   display: none !important;
 }
 
@@ -956,7 +957,7 @@
 }
 
 .attribution {
-  margin: 0.15rem 0 0;
+  margin: 0.75rem 0 0;
   text-align: center;
   font-size: 0.62rem;
   color: var(--muted);

@@ -35,6 +35,11 @@ const about = readFileSync(join(ROOT, "public/about.html"), "utf8");
 assert(about.includes(TFL), "About may keep the TfL line");
 assert(!about.includes(DISCLAIMER), "Do not put the Vancouver disclaimer on the global About page");
 
+const html = readFileSync(join(ROOT, "public/index.html"), "utf8");
+const upcomingAt = html.indexOf('id="upcoming-departures"');
+const attributionAt = html.indexOf('id="attribution"');
+assert(upcomingAt > 0 && attributionAt > upcomingAt, "disclaimer must sit below upcoming departures");
+
 const css = readFileSync(join(ROOT, "public/styles/hero.css"), "utf8");
 assert(css.includes(".attribution.is-required"), "Vancouver disclaimer must use the required attribution class");
 assert(/\.attribution\.is-required[\s\S]*?font-size:\s*0\.62rem/.test(css), "disclaimer type should stay small");

@@ -29,7 +29,7 @@
       regions: [
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: true },
         { id: "uk-ellesmere-port", name: "Ellesmere Port corridor", timeZone: "Europe/London", comingSoon: true },
-        { id: "uk-london-tfl", name: "London TfL", timeZone: "Europe/London" },
+        { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
       ],
     },
     {
@@ -448,6 +448,7 @@
     }
     if (explicit) {
       clearRegionMismatchDismissed();
+      document.dispatchEvent(new CustomEvent("nexttrain:region-explicit"));
     }
     syncRegionControls();
     syncFeedAttribution(city);

@@ -70,7 +70,7 @@ for (const stop of stops) {
 
 const payload = {
   region: "uk-london-tfl",
-  displayName: "London TfL",
+  displayName: "London",
   timeZone: "Europe/London",
   source: "TfL Unified API Line/StopPoints",
   retrievedAt: new Date().toISOString().slice(0, 10),

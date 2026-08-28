@@ -23,7 +23,7 @@
     },
     {
       "id": "uk-london-tfl",
-      "name": "London TfL",
+      "name": "London",
       "catalogPath": "../../cities/uk-london-tfl/stops.json",
       "modes": ["tube", "elizabeth-line", "dlr", "overground", "tram"],
       "feeds": { "tfl": "unified-api" }

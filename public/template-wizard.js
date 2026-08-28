@@ -604,6 +604,10 @@ function skipTemplateWizard() {
 
 function shouldShowTemplateRouteCoach() {
   // Journey setup tour — once per install (complete or Skip tour). Routes do not consume it.
+  // Testers who picked a non-default region skip it; Perth templates confuse other cities.
+  if (window.NextTrainCitySession?.readRegionExplicit?.() === true) {
+    return false;
+  }
   return !hasSeenTemplateWizard();
 }
 
@@ -702,6 +706,9 @@ function initTemplateWizardListeners() {
 
   templateWizardSkipBtn?.addEventListener("click", () => {
     skipTemplateWizard();
+  });
+  document.addEventListener("nexttrain:region-explicit", () => {
+    dismissTemplateRouteCoach();
   });
 }
 

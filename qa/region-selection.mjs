@@ -105,11 +105,13 @@ async function run() {
 
     const selection = await page.evaluate(() => {
       const country = document.querySelector('[data-region-country]')?.value;
-      const city = document.querySelector('[data-region-city]')?.value;
-      return { country, city };
+      const citySelect = document.querySelector('[data-region-city]');
+      const city = citySelect?.value;
+      const label = citySelect?.selectedOptions?.[0]?.textContent?.trim() ?? "";
+      return { country, city, label };
     });
 
-    if (selection.country === "gb" && selection.city === "uk-london-tfl") {
+    if (selection.country === "gb" && selection.city === "uk-london-tfl" && selection.label === "London") {
       console.log("    PASS — Selector UI correctly shows England/London");
     } else {
       console.error("    FAIL — Selector UI incorrect", selection);
