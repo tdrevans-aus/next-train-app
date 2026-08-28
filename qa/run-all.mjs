@@ -51,6 +51,8 @@ const SMOKE_SCRIPTS = [
   "adelaide-dogfood-gate.mjs",
   "amsterdam-dogfood-gate.mjs",
   "amsterdam-line-map-conformance.mjs",
+  "rotterdam-dogfood-gate.mjs",
+  "rotterdam-line-map-conformance.mjs",
   "gtfs-overnight-lookahead.mjs",
   "vancouver-dogfood-gate.mjs",
   "vancouver-attribution.mjs",
@@ -135,6 +137,8 @@ const RUNNER_EXCLUDE = new Set([
   "perth-network-sweep.mjs",
   /** Live Amsterdam GVB metro sweep — D6; never gate PRs. npm run sweep:amsterdam */
   "amsterdam-network-sweep.mjs",
+  /** Live Rotterdam RET metro sweep — D6; never gate PRs. npm run sweep:rotterdam */
+  "rotterdam-network-sweep.mjs",
   /** Live Vancouver SkyTrain sweep — D6; never gate PRs. npm run sweep:vancouver */
   "vancouver-network-sweep.mjs",
   /** Live Canberra light-rail sweep — D6; never gate PRs. npm run sweep:canberra */

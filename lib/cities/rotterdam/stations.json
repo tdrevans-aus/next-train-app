@@ -1,0 +1,808 @@
+{
+  "city": "rotterdam",
+  "status": "live",
+  "timeZone": "Europe/Amsterdam",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Binnenhof",
+      "aliases": [],
+      "stopIds": [
+        "3989177",
+        "stoparea:617448",
+        "3989176"
+      ],
+      "lat": 51.960254,
+      "lng": 4.535093
+    },
+    {
+      "name": "Romeynshof",
+      "aliases": [],
+      "stopIds": [
+        "3989178",
+        "stoparea:617490",
+        "3989179"
+      ],
+      "lat": 51.961571,
+      "lng": 4.543231
+    },
+    {
+      "name": "Graskruid",
+      "aliases": [],
+      "stopIds": [
+        "3989188",
+        "stoparea:617459",
+        "3989189"
+      ],
+      "lat": 51.957723,
+      "lng": 4.549327
+    },
+    {
+      "name": "Alexander",
+      "aliases": [
+        "Rotterdam Alexander"
+      ],
+      "stopIds": [
+        "3989190",
+        "3989191"
+      ],
+      "lat": 51.951476,
+      "lng": 4.551873
+    },
+    {
+      "name": "Oosterflank",
+      "aliases": [],
+      "stopIds": [
+        "3989192",
+        "stoparea:617480",
+        "3989193"
+      ],
+      "lat": 51.946315,
+      "lng": 4.554165
+    },
+    {
+      "name": "Prinsenlaan",
+      "aliases": [],
+      "stopIds": [
+        "3989194",
+        "stoparea:617484",
+        "3989195"
+      ],
+      "lat": 51.941466,
+      "lng": 4.556233
+    },
+    {
+      "name": "Schenkel",
+      "aliases": [],
+      "stopIds": [
+        "3989196",
+        "stoparea:617495",
+        "3989197"
+      ],
+      "lat": 51.932939,
+      "lng": 4.563007
+    },
+    {
+      "name": "Capelsebrug",
+      "aliases": [],
+      "stopIds": [
+        "3989198",
+        "stoparea:617453",
+        "3989200",
+        "3989199"
+      ],
+      "lat": 51.921436,
+      "lng": 4.558275
+    },
+    {
+      "name": "Kralingse Zoom",
+      "aliases": [],
+      "stopIds": [
+        "3989204",
+        "stoparea:617466",
+        "3989201",
+        "3989202"
+      ],
+      "lat": 51.921644,
+      "lng": 4.533398
+    },
+    {
+      "name": "Voorschoterlaan",
+      "aliases": [],
+      "stopIds": [
+        "3989206",
+        "stoparea:617507",
+        "3989203"
+      ],
+      "lat": 51.925141,
+      "lng": 4.512614
+    },
+    {
+      "name": "Gerdesiaweg",
+      "aliases": [],
+      "stopIds": [
+        "3989208",
+        "stoparea:617458",
+        "3989205"
+      ],
+      "lat": 51.925972,
+      "lng": 4.505867
+    },
+    {
+      "name": "Oostplein",
+      "aliases": [],
+      "stopIds": [
+        "3989210",
+        "stoparea:617479",
+        "3989207"
+      ],
+      "lat": 51.923267,
+      "lng": 4.496455
+    },
+    {
+      "name": "Blaak",
+      "aliases": [],
+      "stopIds": [
+        "3989211",
+        "stoparea:617447",
+        "3989209"
+      ],
+      "lat": 51.920034,
+      "lng": 4.489731
+    },
+    {
+      "name": "Beurs",
+      "aliases": [],
+      "stopIds": [
+        "3989213",
+        "stoparea:617449",
+        "3989212",
+        "3989136",
+        "3989135"
+      ],
+      "lat": 51.918393,
+      "lng": 4.480926
+    },
+    {
+      "name": "Eendrachtsplein",
+      "aliases": [],
+      "stopIds": [
+        "3989215",
+        "stoparea:617456",
+        "3989214"
+      ],
+      "lat": 51.915906,
+      "lng": 4.473141
+    },
+    {
+      "name": "Dijkzigt",
+      "aliases": [],
+      "stopIds": [
+        "3989217",
+        "stoparea:617455",
+        "3989216"
+      ],
+      "lat": 51.912171,
+      "lng": 4.466778
+    },
+    {
+      "name": "Coolhaven",
+      "aliases": [],
+      "stopIds": [
+        "3989219",
+        "stoparea:617452",
+        "3989218"
+      ],
+      "lat": 51.909301,
+      "lng": 4.458509
+    },
+    {
+      "name": "Delfshaven",
+      "aliases": [],
+      "stopIds": [
+        "3989221",
+        "stoparea:617454",
+        "3989220"
+      ],
+      "lat": 51.910072,
+      "lng": 4.445762
+    },
+    {
+      "name": "Marconiplein",
+      "aliases": [],
+      "stopIds": [
+        "3989223",
+        "stoparea:617471",
+        "3989222"
+      ],
+      "lat": 51.913576,
+      "lng": 4.432258
+    },
+    {
+      "name": "Schiedam Centrum",
+      "aliases": [],
+      "stopIds": [
+        "3989224",
+        "stoparea:617491",
+        "3989234",
+        "3989225"
+      ],
+      "lat": 51.921595,
+      "lng": 4.409424
+    },
+    {
+      "name": "Nesselande",
+      "aliases": [],
+      "stopIds": [
+        "3989169",
+        "stoparea:618216",
+        "3989168"
+      ],
+      "lat": 51.979257,
+      "lng": 4.586348
+    },
+    {
+      "name": "De Tochten",
+      "aliases": [
+        "Tochten"
+      ],
+      "stopIds": [
+        "3989180",
+        "stoparea:617501",
+        "3989181"
+      ],
+      "lat": 51.969141,
+      "lng": 4.579223
+    },
+    {
+      "name": "Ambachtsland",
+      "aliases": [],
+      "stopIds": [
+        "3989182",
+        "stoparea:617443",
+        "3989183"
+      ],
+      "lat": 51.96581,
+      "lng": 4.570712
+    },
+    {
+      "name": "Nieuw Verlaat",
+      "aliases": [],
+      "stopIds": [
+        "3989184",
+        "stoparea:617478",
+        "3989185"
+      ],
+      "lat": 51.964887,
+      "lng": 4.562042
+    },
+    {
+      "name": "Hesseplaats",
+      "aliases": [],
+      "stopIds": [
+        "3989186",
+        "stoparea:617464",
+        "3989187"
+      ],
+      "lat": 51.963309,
+      "lng": 4.553791
+    },
+    {
+      "name": "Schiedam Nieuwland",
+      "aliases": [],
+      "stopIds": [
+        "3989236",
+        "stoparea:617492",
+        "3989235"
+      ],
+      "lat": 51.922935,
+      "lng": 4.383852
+    },
+    {
+      "name": "Vlaardingen Oost",
+      "aliases": [],
+      "stopIds": [
+        "3989238",
+        "stoparea:617505",
+        "3989237"
+      ],
+      "lat": 51.910588,
+      "lng": 4.362414
+    },
+    {
+      "name": "Vlaardingen Centrum",
+      "aliases": [],
+      "stopIds": [
+        "3989240",
+        "3989239"
+      ],
+      "lat": 51.903139,
+      "lng": 4.344361
+    },
+    {
+      "name": "Vlaardingen West",
+      "aliases": [],
+      "stopIds": [
+        "3989242",
+        "stoparea:617506",
+        "3989241"
+      ],
+      "lat": 51.903734,
+      "lng": 4.315545
+    },
+    {
+      "name": "Maassluis Centrum",
+      "aliases": [],
+      "stopIds": [
+        "3989244",
+        "3989243"
+      ],
+      "lat": 51.916182,
+      "lng": 4.254066
+    },
+    {
+      "name": "Maassluis West",
+      "aliases": [],
+      "stopIds": [
+        "3989246",
+        "stoparea:617475",
+        "3989245"
+      ],
+      "lat": 51.925989,
+      "lng": 4.235499
+    },
+    {
+      "name": "Steendijkpolder",
+      "aliases": [],
+      "stopIds": [
+        "3989249",
+        "3989247",
+        "3989248"
+      ],
+      "lat": 51.932573,
+      "lng": 4.225035
+    },
+    {
+      "name": "Hoek van Holland Haven",
+      "aliases": [
+        "Hoek v Holland Haven",
+        "Haven"
+      ],
+      "stopIds": [
+        "3989250",
+        "stoparea:617461",
+        "3989251"
+      ],
+      "lat": 51.976722,
+      "lng": 4.127547
+    },
+    {
+      "name": "Hoek van Holland Strand",
+      "aliases": [
+        "Hoek v Holland Strand",
+        "Strand"
+      ],
+      "stopIds": [
+        "3989252",
+        "3989601"
+      ],
+      "lat": 51.986748,
+      "lng": 4.106256
+    },
+    {
+      "name": "De Terp",
+      "aliases": [],
+      "stopIds": [
+        "3989171",
+        "stoparea:617499",
+        "3989170"
+      ],
+      "lat": 51.935625,
+      "lng": 4.599515
+    },
+    {
+      "name": "Capelle Centrum",
+      "aliases": [],
+      "stopIds": [
+        "3989172",
+        "stoparea:617451",
+        "3989173"
+      ],
+      "lat": 51.931562,
+      "lng": 4.590164
+    },
+    {
+      "name": "Slotlaan",
+      "aliases": [],
+      "stopIds": [
+        "3989174",
+        "stoparea:617497",
+        "3989175"
+      ],
+      "lat": 51.928556,
+      "lng": 4.579008
+    },
+    {
+      "name": "Parkweg",
+      "aliases": [],
+      "stopIds": [
+        "3989226",
+        "stoparea:617486",
+        "3989227"
+      ],
+      "lat": 51.921036,
+      "lng": 4.393111
+    },
+    {
+      "name": "Troelstralaan",
+      "aliases": [],
+      "stopIds": [
+        "3989228",
+        "stoparea:617500",
+        "3989229"
+      ],
+      "lat": 51.91525,
+      "lng": 4.383907
+    },
+    {
+      "name": "Vijfsluizen",
+      "aliases": [],
+      "stopIds": [
+        "3989230",
+        "stoparea:617508",
+        "3989231"
+      ],
+      "lat": 51.908548,
+      "lng": 4.371732
+    },
+    {
+      "name": "Pernis",
+      "aliases": [],
+      "stopIds": [
+        "3989232",
+        "stoparea:617483",
+        "3989233"
+      ],
+      "lat": 51.88443,
+      "lng": 4.382125
+    },
+    {
+      "name": "Tussenwater",
+      "aliases": [],
+      "stopIds": [
+        "3989166",
+        "stoparea:617502",
+        "3989167",
+        "3989165",
+        "3989164"
+      ],
+      "lat": 51.862905,
+      "lng": 4.376218
+    },
+    {
+      "name": "Hoogvliet",
+      "aliases": [],
+      "stopIds": [
+        "3989151",
+        "stoparea:617465",
+        "3989154"
+      ],
+      "lat": 51.860259,
+      "lng": 4.366521
+    },
+    {
+      "name": "Zalmplaat",
+      "aliases": [],
+      "stopIds": [
+        "3989153",
+        "stoparea:617510",
+        "3989156"
+      ],
+      "lat": 51.854748,
+      "lng": 4.362349
+    },
+    {
+      "name": "Spijkenisse Centrum",
+      "aliases": [],
+      "stopIds": [
+        "3989155",
+        "stoparea:617498",
+        "3989158"
+      ],
+      "lat": 51.84681,
+      "lng": 4.33478
+    },
+    {
+      "name": "Heemraadlaan",
+      "aliases": [],
+      "stopIds": [
+        "3989157",
+        "stoparea:617463",
+        "3989160"
+      ],
+      "lat": 51.837415,
+      "lng": 4.331619
+    },
+    {
+      "name": "De Akkers",
+      "aliases": [],
+      "stopIds": [
+        "3989161",
+        "stoparea:617444",
+        "3989159"
+      ],
+      "lat": 51.83332,
+      "lng": 4.320151
+    },
+    {
+      "name": "Rotterdam Centraal",
+      "aliases": [],
+      "stopIds": [
+        "4140486",
+        "4140484",
+        "4140485"
+      ],
+      "lat": 51.923953,
+      "lng": 4.469997
+    },
+    {
+      "name": "Stadhuis",
+      "aliases": [],
+      "stopIds": [
+        "3989134",
+        "stoparea:617494",
+        "3989133"
+      ],
+      "lat": 51.923476,
+      "lng": 4.478032
+    },
+    {
+      "name": "Leuvehaven",
+      "aliases": [],
+      "stopIds": [
+        "3989138",
+        "stoparea:617468",
+        "3989137"
+      ],
+      "lat": 51.913699,
+      "lng": 4.481761
+    },
+    {
+      "name": "Wilhelminaplein",
+      "aliases": [],
+      "stopIds": [
+        "3989162",
+        "stoparea:618332",
+        "3989163"
+      ],
+      "lat": 51.907749,
+      "lng": 4.492519
+    },
+    {
+      "name": "Rijnhaven",
+      "aliases": [],
+      "stopIds": [
+        "3989140",
+        "stoparea:617489",
+        "3989139"
+      ],
+      "lat": 51.904089,
+      "lng": 4.496966
+    },
+    {
+      "name": "Maashaven",
+      "aliases": [],
+      "stopIds": [
+        "3989142",
+        "stoparea:617472",
+        "3989141"
+      ],
+      "lat": 51.897503,
+      "lng": 4.494961
+    },
+    {
+      "name": "Zuidplein",
+      "aliases": [],
+      "stopIds": [
+        "3989144",
+        "stoparea:617509",
+        "3989143"
+      ],
+      "lat": 51.887297,
+      "lng": 4.488597
+    },
+    {
+      "name": "Slinge",
+      "aliases": [],
+      "stopIds": [
+        "3989148",
+        "stoparea:617496",
+        "3989145",
+        "3989146"
+      ],
+      "lat": 51.875017,
+      "lng": 4.477951
+    },
+    {
+      "name": "Rhoon",
+      "aliases": [],
+      "stopIds": [
+        "3989147",
+        "stoparea:617488",
+        "3989150"
+      ],
+      "lat": 51.858953,
+      "lng": 4.418261
+    },
+    {
+      "name": "Poortugaal",
+      "aliases": [],
+      "stopIds": [
+        "3989149",
+        "stoparea:617485",
+        "3989152"
+      ],
+      "lat": 51.861878,
+      "lng": 4.394897
+    },
+    {
+      "name": "Den Haag Centraal",
+      "aliases": [],
+      "stopIds": [
+        "3989280",
+        "stoparea:617460"
+      ],
+      "lat": 52.080343,
+      "lng": 4.32611
+    },
+    {
+      "name": "Laan van NOI",
+      "aliases": [],
+      "stopIds": [
+        "3989279",
+        "stoparea:617469",
+        "3989278"
+      ],
+      "lat": 52.079598,
+      "lng": 4.344276
+    },
+    {
+      "name": "Voorburg 't Loo",
+      "aliases": [
+        "'t Loo",
+        "Voorburg t Loo"
+      ],
+      "stopIds": [
+        "3989277",
+        "stoparea:617503",
+        "3989276"
+      ],
+      "lat": 52.0818,
+      "lng": 4.366839
+    },
+    {
+      "name": "Leidschendam-Voorburg",
+      "aliases": [],
+      "stopIds": [
+        "3989275",
+        "stoparea:617467",
+        "3989274"
+      ],
+      "lat": 52.076979,
+      "lng": 4.3832
+    },
+    {
+      "name": "Forepark",
+      "aliases": [],
+      "stopIds": [
+        "3989273",
+        "stoparea:617457",
+        "3989272"
+      ],
+      "lat": 52.069346,
+      "lng": 4.393654
+    },
+    {
+      "name": "Leidschenveen",
+      "aliases": [],
+      "stopIds": [
+        "3989271",
+        "stoparea:617470",
+        "3989270"
+      ],
+      "lat": 52.064123,
+      "lng": 4.401105
+    },
+    {
+      "name": "Nootdorp",
+      "aliases": [],
+      "stopIds": [
+        "3989269",
+        "stoparea:617477",
+        "3989268"
+      ],
+      "lat": 52.047347,
+      "lng": 4.414785
+    },
+    {
+      "name": "Pijnacker Centrum",
+      "aliases": [],
+      "stopIds": [
+        "3989267",
+        "stoparea:617481",
+        "3989266"
+      ],
+      "lat": 52.020351,
+      "lng": 4.437487
+    },
+    {
+      "name": "Pijnacker Zuid",
+      "aliases": [],
+      "stopIds": [
+        "3989265",
+        "stoparea:617482",
+        "3989264"
+      ],
+      "lat": 52.004598,
+      "lng": 4.445875
+    },
+    {
+      "name": "Berkel Westpolder",
+      "aliases": [],
+      "stopIds": [
+        "3989263",
+        "stoparea:618418",
+        "3989262"
+      ],
+      "lat": 51.989862,
+      "lng": 4.454454
+    },
+    {
+      "name": "Rodenrijs",
+      "aliases": [],
+      "stopIds": [
+        "3989261",
+        "stoparea:617487",
+        "3989260"
+      ],
+      "lat": 51.974849,
+      "lng": 4.460966
+    },
+    {
+      "name": "Meijersplein/Airport",
+      "aliases": [
+        "Meijersplein / Airport",
+        "Meijersplein"
+      ],
+      "stopIds": [
+        "3989255",
+        "stoparea:617473",
+        "3989254"
+      ],
+      "lat": 51.955685,
+      "lng": 4.462191
+    },
+    {
+      "name": "Melanchthonweg",
+      "aliases": [],
+      "stopIds": [
+        "3989259",
+        "stoparea:617476",
+        "3989258"
+      ],
+      "lat": 51.948182,
+      "lng": 4.464731
+    },
+    {
+      "name": "Blijdorp",
+      "aliases": [],
+      "stopIds": [
+        "3989257",
+        "stoparea:617446",
+        "3989256"
+      ],
+      "lat": 51.930806,
+      "lng": 4.457847
+    }
+  ]
+}

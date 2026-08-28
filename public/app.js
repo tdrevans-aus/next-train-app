@@ -206,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -642,7 +642,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -1467,6 +1467,7 @@ function showOnboardingStep1() {
       sydney: "Sydney",
       adelaide: "Adelaide",
       amsterdam: "Amsterdam",
+      rotterdam: "Rotterdam",
       vancouver: "Vancouver",
       canberra: "Canberra",
       "gold-coast": "Gold Coast",
@@ -4784,6 +4785,7 @@ function testModeNearestStation() {
       adelaide: "Adelaide Railway Station",
       "uk-london-tfl": "King's Cross St. Pancras",
       amsterdam: "Centraal Station",
+      rotterdam: "Beurs",
       vancouver: "Waterfront",
       canberra: "Alinga Street",
       "gold-coast": "Helensvale",

@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -37,6 +37,7 @@
       name: "Netherlands",
       regions: [
         { id: "amsterdam", name: "Amsterdam", timeZone: "Europe/Amsterdam" },
+        { id: "rotterdam", name: "Rotterdam", timeZone: "Europe/Amsterdam" },
       ],
     },
     {
@@ -57,6 +58,7 @@
     adelaide: { minLat: -35.3, maxLat: -34.55, minLng: 138.35, maxLng: 138.85 },
     "uk-london-tfl": { minLat: 51.28, maxLat: 51.7, minLng: -0.52, maxLng: 0.35 },
     amsterdam: { minLat: 52.28, maxLat: 52.43, minLng: 4.75, maxLng: 5.05 },
+    rotterdam: { minLat: 51.82, maxLat: 52.12, minLng: 4.08, maxLng: 4.60 },
     vancouver: { minLat: 49.0, maxLat: 49.35, minLng: -123.3, maxLng: -122.7 },
     canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
   };
