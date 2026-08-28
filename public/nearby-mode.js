@@ -1520,6 +1520,33 @@ function startNearbyRelocateLoop() {
   scheduleNearbyRelocate(NEARBY_RELOCATE_IDLE_MS);
 }
 
+/**
+ * Reopen / foreground: ask for a new GPS fix immediately (maximumAge: 0) and
+ * recompute nearest station. Do not wait for the idle 4 min / travel 45 s loop.
+ * Cache-first paint stays; this only refines once the fresh fix lands.
+ * Debounce collapses visibilitychange + pageshow + appStateChange firing together.
+ */
+let lastForegroundFreshLocateAt = 0;
+const FOREGROUND_FRESH_LOCATE_DEBOUNCE_MS = 1000;
+
+function refreshNearbyOnForeground() {
+  if (!shouldRunNearbyRelocate()) {
+    return;
+  }
+
+  const now = Date.now();
+  if (now - lastForegroundFreshLocateAt >= FOREGROUND_FRESH_LOCATE_DEBOUNCE_MS) {
+    lastForegroundFreshLocateAt = now;
+    void locateNearbyInBackground({ maximumAge: 0 });
+  }
+
+  if (!nearbyRelocateTimer && !nearbyRelocateTickInflight) {
+    scheduleNearbyRelocate(
+      nearbyTravelMode ? NEARBY_RELOCATE_TRAVEL_MS : NEARBY_RELOCATE_IDLE_MS
+    );
+  }
+}
+
 function sampleMovedKm(current, previous) {
   if (!previous || typeof deps.distanceKm !== "function") {
     return 0;
@@ -1748,16 +1775,18 @@ function isNearbyLocateCurrent(generation) {
   return generation === nearbyLocateGeneration && Boolean(nearbySession);
 }
 
-async function locateNearbyInBackground({ forceFresh = false } = {}) {
+async function locateNearbyInBackground({ forceFresh = false, maximumAge } = {}) {
   const generation = ++nearbyLocateGeneration;
   const previousStation = nearbySession?.station ?? null;
 
   try {
-    // Soft by default: reuse a recent fused fix. Never short-circuit on session station —
-    // that's what the optimistic cache paint sets, and we still need a real nearest check.
+    // Soft by default: reuse a recent fused fix. Open/resume pass maximumAge: 0 so the
+    // first refine cannot keep a 45–60s-old Edgewater-era location. Never short-circuit
+    // on session station — that's what the optimistic cache paint sets.
     const nearest = await deps.findNearestStation?.({
       forceFresh,
       allowSessionShortcut: false,
+      ...(typeof maximumAge === "number" ? { maximumAge } : {}),
     });
     // User may have left Near me (or started a newer locate) while GPS resolved.
     if (!isNearbyLocateCurrent(generation)) {
@@ -1818,6 +1847,13 @@ async function locateNearbyInBackground({ forceFresh = false } = {}) {
     nearbySession.lat = nearest.lat ?? null;
     nearbySession.lng = nearest.lng ?? null;
     nearbySession.distanceKm = nearest.distanceKm;
+    if (typeof nearest.lat === "number" && typeof nearest.lng === "number") {
+      lastRelocateSample = {
+        latitude: nearest.lat,
+        longitude: nearest.lng,
+        at: Date.now(),
+      };
+    }
 
     if (stationChanged) {
       clearNearbyPin();
@@ -2659,7 +2695,7 @@ async function enterNearbyMode({
           return;
         }
       }
-      void locateNearbyInBackground({ forceFresh: false });
+      void locateNearbyInBackground({ maximumAge: 0 });
     })();
     startNearbyRelocateLoop();
     return;
@@ -2706,7 +2742,7 @@ async function enterNearbyMode({
     if (!nearbyDontWaitVisible) {
       startNearbyLocateTimers(NEARBY_LOCATE_DONT_WAIT_MS);
     }
-    void locateNearbyInBackground();
+    void locateNearbyInBackground({ maximumAge: 0 });
   })();
   startNearbyRelocateLoop();
 }
@@ -2926,6 +2962,7 @@ function init(nextDeps = {}) {
     pickSoonestNearbyDirection,
     readCachedNearbyBoard,
     readLastNearbyStationCache,
+    refreshNearbyOnForeground,
     renderNearbyBoard,
     renderNearbyDirectionsList,
     renderNearbyPinLeaveSurfaces,
