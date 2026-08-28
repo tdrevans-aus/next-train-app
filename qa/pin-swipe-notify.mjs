@@ -51,8 +51,11 @@ async function waitForJourneyHero(page) {
 }
 
 async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
-  // Keep a later train in the `normal` fixture (last trip is +90 min) so Next Train can advance.
-  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(48));
+  // `normal` trips: +18/+34/+48/+62/+76/+90. Pin +48 so Leave By is inside the
+  // derived [target−60, target+15] window and a later trip remains for Next Train.
+  // `late` trips: +7/+23. Pin +7 so the leave card is actually late.
+  const preferredOffsetMinutes = fixture === "late" ? 7 : 48;
+  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(preferredOffsetMinutes));
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=${fixture}`);
   await page.evaluate(
@@ -95,7 +98,14 @@ async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
     await ensureJourneyMode(page);
   }
   await waitForJourneyHero(page);
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+    null,
+    { timeout: 15000 }
+  );
 
+  // Sync preferred to the displayed clock after Target train is showing so a
+  // minute tick during setup does not miss the fixture trip.
   await page.evaluate(async (journeyId) => {
     const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
     if (!preferred || preferred === "—") {
