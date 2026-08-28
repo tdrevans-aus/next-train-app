@@ -4975,7 +4975,11 @@ async function getGeolocationPosition() {
   }
 }
 
-async function findNearestStation({ forceFresh = false, allowSessionShortcut = true } = {}) {
+async function findNearestStation({
+  forceFresh = false,
+  allowSessionShortcut = true,
+  maximumAge,
+} = {}) {
   const planningCity = planningCityId();
   const regionMismatch = new Error("Could not find a nearby station in the selected region.");
 
@@ -5003,10 +5007,16 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
   }
 
   const geoTimeoutMs = forceFresh ? 12000 : 5000;
+  const resolvedMaximumAge =
+    typeof maximumAge === "number"
+      ? maximumAge
+      : forceFresh
+        ? 0
+        : NEARBY_SOFT_LOCATION_MAX_AGE_MS;
   const position = await getAppGeolocationPosition({
     enableHighAccuracy: forceFresh,
     timeout: geoTimeoutMs,
-    maximumAge: forceFresh ? 0 : NEARBY_SOFT_LOCATION_MAX_AGE_MS,
+    maximumAge: resolvedMaximumAge,
   });
 
   const { latitude, longitude } = position.coords;
@@ -5055,7 +5065,13 @@ async function findNearestStation({ forceFresh = false, allowSessionShortcut = t
     throw new Error("Could not find a nearby station.");
   }
 
-  return { station: nearest, city: planningCity, distanceKm: bestDistance };
+  return {
+    station: nearest,
+    city: planningCity,
+    distanceKm: bestDistance,
+    lat: latitude,
+    lng: longitude,
+  };
 }
 
 
@@ -7860,6 +7876,29 @@ document.addEventListener("visibilitychange", () => {
     return;
   }
 
+  handleAppForeground();
+});
+
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    handleAppForeground();
+  }
+});
+
+function subscribeNativeAppForeground() {
+  const App = window.Capacitor?.Plugins?.App;
+  if (!App?.addListener || subscribeNativeAppForeground.bound) {
+    return;
+  }
+  subscribeNativeAppForeground.bound = true;
+  App.addListener("appStateChange", (state) => {
+    if (state?.isActive) {
+      handleAppForeground();
+    }
+  });
+}
+
+function handleAppForeground() {
   window.NextTrainGeo?.resetLocationPermissionCache?.();
   dismissStaleBlockingLayers();
   maybeScheduleOnboarding();
@@ -7883,7 +7922,7 @@ document.addEventListener("visibilitychange", () => {
     }
 
     if (isNearbyModeActive() && nearbyMode().getNearbySession?.()) {
-      void nearbyMode().tickNearbyRelocate?.();
+      nearbyMode().refreshNearbyOnForeground?.();
     }
 
     if (!journeyModeActive) {
@@ -7926,4 +7965,7 @@ document.addEventListener("visibilitychange", () => {
 
     void applyJourneysMode();
   })();
-});
+}
+
+subscribeNativeAppForeground();
+window.addEventListener("load", subscribeNativeAppForeground);
