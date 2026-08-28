@@ -463,12 +463,13 @@ async function testPinLockDoesNotBlockAdvancePath(page) {
 
 async function run() {
   let serverChild = null;
+  let browser = null;
   try {
     serverChild = await ensureDevServer();
     if (process.env.CI === "true") {
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
-    const browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true });
 
     const results = [];
     for (const testFn of [
@@ -491,8 +492,6 @@ async function run() {
       await new Promise((resolve) => setTimeout(resolve, 600));
     }
 
-    await browser.close();
-
     let failed = 0;
     for (const result of results) {
       if (result.ok) {
@@ -510,12 +509,15 @@ async function run() {
     }
 
     console.log(`\nPASS — ${results.length} pin/swipe/notify scenarios`);
+  } catch (error) {
+    console.error(error);
+    process.exitCode = 1;
   } finally {
+    if (browser) {
+      await browser.close();
+    }
     stopDevServer(serverChild);
   }
 }
 
-run().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+run();
