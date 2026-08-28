@@ -49,8 +49,8 @@ for (const line of published.lines ?? []) {
 
 const ALIASES = {
   "Meijersplein/Airport": ["Meijersplein / Airport", "Meijersplein"],
-  "Hoek van Holland Strand": ["Hoek v Holland Strand", "Strand"],
-  "Hoek van Holland Haven": ["Hoek v Holland Haven", "Haven"],
+  "Hoek van Holland Strand": ["Hoek v Holland Strand", "Hoek v. Holland Strand", "Strand"],
+  "Hoek van Holland Haven": ["Hoek v Holland Haven", "Hoek v. Holland Haven", "Haven"],
   "De Tochten": ["Tochten"],
   "Voorburg 't Loo": ["'t Loo", "Voorburg t Loo"],
   Alexander: ["Rotterdam Alexander"],

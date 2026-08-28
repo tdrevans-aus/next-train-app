@@ -1,6 +1,6 @@
 # Rotterdam hazard pack (H1–H7)
 
-Evidence: RET Metrolijnenkaart; RET metro A/B timetables; Luke Expansion brief (71 stops, hub Beurs, A–E termini).
+Evidence: RET Metrolijnenkaart PDF (2025-12-15); RET Metro A–E columns as of 28 Aug 2026; Luke Expansion brief (71 stops, hub Beurs, A–E termini).
 
 ## H1 — parent + child
 

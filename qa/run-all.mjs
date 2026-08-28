@@ -53,6 +53,7 @@ const SMOKE_SCRIPTS = [
   "amsterdam-line-map-conformance.mjs",
   "rotterdam-dogfood-gate.mjs",
   "rotterdam-line-map-conformance.mjs",
+  "rotterdam-mark-probes.mjs",
   "gtfs-overnight-lookahead.mjs",
   "vancouver-dogfood-gate.mjs",
   "vancouver-attribution.mjs",

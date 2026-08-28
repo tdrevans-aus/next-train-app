@@ -10,6 +10,7 @@ import { isMultiCity } from "../lib/cities/live-city-api.js";
 import {
   foldKey,
   HUB,
+  MARK_PROBES,
   mapRotterdamDestination,
   marketingLabelsForStation,
 } from "../lib/cities/rotterdam/marketing-directions.js";
@@ -70,6 +71,12 @@ function main() {
     if (published.printedInnerCityNames?.strandLock !== "Hoek van Holland Strand") {
       failures.push("C2: lock Hoek van Holland Strand");
     }
+    if (JSON.stringify(published.markProbes) !== JSON.stringify(MARK_PROBES)) {
+      failures.push("C2: D1 markProbes must be Mark’s 13 (Haven last)");
+    }
+    if (published.source !== "https://bestanden.ret.nl/user_upload/Documenten/PDF/Kaarten_en_plattegronden/RET_metrolijnenkaart.pdf") {
+      failures.push("C2: D1 oracle must be the RET Metrolijnenkaart PDF");
+    }
     for (const line of published.lines ?? []) {
       const mapped = (lineMap.lines ?? []).find((row) => row.id === line.id);
       if (JSON.stringify(mapped?.stations ?? []) !== JSON.stringify(line.stations ?? [])) {
@@ -100,12 +107,33 @@ function main() {
   }
 
   const lineA = (lineMap.lines ?? []).find((line) => line.number === "A");
+  const lineB = (lineMap.lines ?? []).find((line) => line.number === "B");
+  const lineC = (lineMap.lines ?? []).find((line) => line.number === "C");
+  const lineD = (lineMap.lines ?? []).find((line) => line.number === "D");
+  const lineE = (lineMap.lines ?? []).find((line) => line.number === "E");
   if ((lineA?.stations ?? []).includes("Nesselande")) {
     failures.push("C1: A does not go to Nesselande");
   }
-  const lineB = (lineMap.lines ?? []).find((line) => line.number === "B");
-  if (!(lineB?.stations ?? []).includes("Hoek van Holland Strand")) {
-    failures.push("C1: B includes Hoek van Holland Strand");
+  if (!(lineA?.stations ?? []).includes("Binnenhof") || !(lineA?.stations ?? []).includes("Graskruid")) {
+    failures.push("C1: A is Binnenhof (and Graskruid), not Nesselande");
+  }
+  if (!(lineB?.stations ?? []).includes("Hoek van Holland Strand") || !(lineB?.stations ?? []).includes("Hoek van Holland Haven")) {
+    failures.push("C1: B includes Strand and distinct Haven");
+  }
+  if (!(lineC?.stations ?? []).includes("De Akkers") || !(lineD?.stations ?? []).includes("De Akkers")) {
+    failures.push("C1: De Akkers is shared C/D");
+  }
+  if (!(lineC?.stations ?? []).includes("Tussenwater") || !(lineD?.stations ?? []).includes("Tussenwater")) {
+    failures.push("C1: Tussenwater is shared C vs D");
+  }
+  if (!(lineA?.stations ?? []).includes("Graskruid") || !(lineB?.stations ?? []).includes("Graskruid")) {
+    failures.push("C1: Graskruid is shared A vs B");
+  }
+  if ((lineC?.stations ?? []).includes("Nesselande") || (lineD?.stations ?? []).includes("Binnenhof")) {
+    failures.push("C1: C/D must not steal A/B east termini");
+  }
+  if (!(lineE?.stations ?? []).includes("Den Haag Centraal") || !(lineE?.stations ?? []).includes("Meijersplein/Airport")) {
+    failures.push("C1: E keeps Den Haag Centraal and Meijersplein/Airport on rotterdam");
   }
 
   const catalogNames = (catalog.stations ?? []).map((row) => row.name);
@@ -123,6 +151,36 @@ function main() {
   }
   if (!catalogNames.includes("Hoek van Holland Strand") || !catalogNames.includes("Hoek van Holland Haven")) {
     failures.push("C2: Strand and Haven are distinct catalog stops");
+  }
+  if (catalogNames.includes("Meijersplein / Airport") || catalogNames.includes("Meijersplein")) {
+    failures.push("H2: do not leave Meijersplein / Airport as the product name");
+  }
+  if (catalogNames.some((name) => /^hoek v\.?\s/i.test(name))) {
+    failures.push("H2: do not leave Hoek v as the product name");
+  }
+  if (catalogNames.includes("Centraal Station") || catalogNames.some((name) => /, /.test(name))) {
+    failures.push("H2: leftover GTFS/Amsterdam product names in rotterdam stations.json");
+  }
+  const amsterdam = loadJson("lib/cities/amsterdam/stations.json");
+  const amsterdamNames = new Set((amsterdam.stations ?? []).map((row) => row.name));
+  const clashes = catalogNames.filter((name) => amsterdamNames.has(name));
+  if (clashes.length) {
+    failures.push(`H2: exact name clash with amsterdam stations.json: ${clashes.join(", ")}`);
+  }
+  for (const probe of MARK_PROBES) {
+    if (!catalogNames.includes(probe)) {
+      failures.push(`Mark probe missing from catalog: ${probe}`);
+    }
+  }
+  if (MARK_PROBES.length !== 13 || MARK_PROBES[12] !== "Hoek van Holland Haven") {
+    failures.push("Mark probes: Haven is the 13th and must not collapse into Strand");
+  }
+  const grouped = (lineMap.doNotGroup ?? []).map((row) => `${row.a}::${row.b}`);
+  if (!grouped.some((row) => row.includes("Rotterdam Centraal") && /ns/i.test(row))) {
+    failures.push("C2: doNotGroup Rotterdam Centraal metro vs NS");
+  }
+  if (!grouped.some((row) => row.includes("Hoek van Holland Strand") && row.includes("Hoek van Holland Haven"))) {
+    failures.push("C2: doNotGroup Strand vs Haven");
   }
   const blob = JSON.stringify(catalog);
   if (/gvb|isolatorweg|gaasperplas|\bgein\b|schiphol/i.test(blob)) {

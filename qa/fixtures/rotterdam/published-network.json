@@ -2,35 +2,50 @@
   "city": "rotterdam",
   "status": "planned",
   "timezone": "Europe/Amsterdam",
-  "source": "https://www.ret.nl/home/reizen/kaarten-plattegronden.html",
+  "source": "https://bestanden.ret.nl/user_upload/Documenten/PDF/Kaarten_en_plattegronden/RET_metrolijnenkaart.pdf",
   "sources": [
     {
       "role": "D1 passenger metro map (RET Metrolijnenkaart)",
       "title": "RET Metrolijnenkaart — lines A–E",
-      "url": "https://www.ret.nl/home/reizen/kaarten-plattegronden.html",
-      "linkedFrom": "https://www.ret.nl/en",
+      "url": "https://bestanden.ret.nl/user_upload/Documenten/PDF/Kaarten_en_plattegronden/RET_metrolijnenkaart.pdf",
+      "linkedFrom": "https://www.ret.nl/home/reizen/kaarten-plattegronden.html",
       "captionOnIndex": "RET Metrolijnenkaart",
+      "mapDate": "2025-12-15",
       "retrievedAt": "2026-08-28T14:00:00Z",
-      "note": "Official RET metro map. Five letters A–E. Hub Beurs (all five). Hand-transcribed. Not generated from GTFS."
+      "note": "Official RET metro PDF. Five letters A–E. Hub Beurs (all five). Hand-transcribed 28 Aug 2026. Not generated from GTFS."
     },
     {
-      "role": "passenger timetable (line A stop order, 20)",
-      "title": "Metro A dienstregeling Binnenhof – Schiedam Centrum",
+      "role": "passenger timetable columns (Metro A–E as of 28 Aug 2026)",
+      "title": "RET Metro A–E dienstregeling columns",
       "url": "https://www.ret.nl/home/reizen/dienstregeling/metro-a.html",
+      "also": [
+        "https://www.ret.nl/home/reizen/dienstregeling/metro-b.html",
+        "https://www.ret.nl/home/reizen/dienstregeling/metro-c.html",
+        "https://www.ret.nl/home/reizen/dienstregeling/metro-d.html",
+        "https://www.ret.nl/home/reizen/dienstregeling/metro-e.html"
+      ],
       "retrievedAt": "2026-08-28T14:00:00Z",
-      "note": "20 haltes. Termini Binnenhof and Schiedam Centrum. A does not go to Nesselande."
-    },
-    {
-      "role": "passenger timetable (line B stop order, 32 including Strand)",
-      "title": "Metro B dienstregeling Nesselande – Hoek van Holland Strand",
-      "url": "https://www.ret.nl/home/reizen/dienstregeling/metro-b.html",
-      "retrievedAt": "2026-08-28T14:00:00Z",
-      "note": "32 haltes. Hoek van Holland Strand is in. Distinct from Hoek van Holland Haven."
+      "note": "Stop-order columns as of 28 Aug 2026. A=20 Binnenhof–Schiedam Centrum (not Nesselande). B=32 including Hoek van Holland Strand. C=26 D=17 E=23."
     }
   ],
   "retrievedAt": "2026-08-28T14:00:00Z",
+  "markProbes": [
+    "Beurs",
+    "Rotterdam Centraal",
+    "Graskruid",
+    "Capelsebrug",
+    "Schiedam Centrum",
+    "Tussenwater",
+    "De Akkers",
+    "Slinge",
+    "Den Haag Centraal",
+    "Hoek van Holland Strand",
+    "Meijersplein/Airport",
+    "Binnenhof",
+    "Hoek van Holland Haven"
+  ],
   "notes": [
-    "D1 oracle is the official RET Metrolijnenkaart, HAND-TRANSCRIBED from Luke's Expansion brief. Stations arrays are not generated from GTFS. No stopIds in this file.",
+    "D1 oracle is the official RET Metrolijnenkaart PDF (2025-12-15) plus Metro A–E columns as of 28 Aug 2026, HAND-TRANSCRIBED. Stations arrays are not generated from GTFS. No stopIds in this file.",
     "City id rotterdam is a SEPARATE city from amsterdam. Same OVapi agency family and same no-key GTFS/GTFS-RT, filtered to RET metro A–E. Do not merge into amsterdam. Do not invent city=nl or the-hague.",
     "Oracle JSON status may stay planned. Product flip to tester-live is Jim D2–D6 (registry live + picker).",
     "Modes v1: TRAIN-like metro only (RET A–E). No tram, bus, waterbus, or NS.",

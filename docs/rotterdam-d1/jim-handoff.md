@@ -2,7 +2,7 @@ Rotterdam D1 + research pack (Luke Expansion brief). Jim owns D2–D6 tester-liv
 
 Drop later (Jim D2): qa/fixtures/rotterdam/published-network.json. Pack files: published-network.json, oracle-clash-report.md, hazard-pack.md, direction-model-memo.md, jim-handoff.md.
 
-D1 = official RET Metrolijnenkaart (https://www.ret.nl/home/reizen/kaarten-plattegronden.html) plus RET metro A/B timetables for stop order. Modes v1: TRAIN-like **RET metro A–E only**. No tram, bus, waterbus, NS. Stations hand-transcribed. Not generated from GTFS.
+D1 = official RET Metrolijnenkaart PDF (https://bestanden.ret.nl/user_upload/Documenten/PDF/Kaarten_en_plattegronden/RET_metrolijnenkaart.pdf, 2025-12-15) plus Metro A–E columns as of 28 Aug 2026. Modes v1: TRAIN-like **RET metro A–E only**. No tram, bus, waterbus, NS. Stations hand-transcribed. Not generated from GTFS.
 
 Five lines: **A** Binnenhof–Schiedam Centrum (20; A does not go to Nesselande). **B** Nesselande–Hoek van Holland Strand (32; Strand is in). **C** De Terp–De Akkers (26). **D** Rotterdam Centraal–De Akkers (17). **E** Den Haag Centraal–Slinge (23). 71 unique stops.
 

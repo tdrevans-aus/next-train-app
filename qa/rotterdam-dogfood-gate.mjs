@@ -26,6 +26,9 @@ assert(getCity("rotterdam")?.id !== "amsterdam", "rotterdam is not Amsterdam");
 assert(!getCity("nl"), "city=nl must not exist");
 assert(!getCity("the-hague"), "the-hague must not exist");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
+assert(assertCityLive("sydney")?.ok === true, "Sydney stays live");
+assert(assertCityLive("brisbane")?.ok === true, "Brisbane stays live");
+assert(assertCityLive("adelaide")?.ok === true, "Adelaide stays live");
 assert(assertCityLive("amsterdam")?.ok === true, "Amsterdam stays live");
 assert(assertCityLive("melbourne")?.ok === false, "Melbourne stays planned");
 assert(

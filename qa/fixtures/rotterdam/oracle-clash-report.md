@@ -1,6 +1,6 @@
 # Rotterdam oracle clash report
 
-D1 (published, Expansion brief 28 Aug 2026): [RET Metrolijnenkaart](https://www.ret.nl/home/reizen/kaarten-plattegronden.html). Stations arrays hand-transcribed. **Not generated from GTFS.**
+D1 (published, Expansion brief 28 Aug 2026): [RET Metrolijnenkaart PDF](https://bestanden.ret.nl/user_upload/Documenten/PDF/Kaarten_en_plattegronden/RET_metrolijnenkaart.pdf) (map date 2025-12-15) plus RET Metro A–E timetable columns as of 28 Aug 2026. Stations arrays hand-transcribed. **Not generated from GTFS.**
 
 RET A timetable (cite with D1; 20 stops Binnenhof–Schiedam Centrum): [Metro A](https://www.ret.nl/home/reizen/dienstregeling/metro-a.html).
 
