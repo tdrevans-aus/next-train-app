@@ -47,7 +47,7 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Closed line | **2.5.4** | **20** | — | Prior closed candidate |
 | Shipped | **2.5.5** | **21** | `v2.5.5` | Target-train widget/Journeys face; reminders; pin preview |
 | Shipped | **2.5.6** | **22** | — | Rotterdam RET metro tester-live; Near me Got it dismiss |
-| **Shipping now** | **2.5.7** | **23** | — | Auckland tester-live; AU D1 oracle packs |
+| Shipped | **2.5.7** | **23** | `v2.5.7` | Auckland tester-live; AU D1 packs; nearest hide when GPS is another region |
 
 Update this table when you ship.
 
