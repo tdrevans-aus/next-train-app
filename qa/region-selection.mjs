@@ -206,14 +206,14 @@ async function run() {
     });
 
     if (
-      picker.swedenLabel === "Sweden (Coming Soon)" &&
+      picker.swedenLabel === "Sweden" &&
       picker.stockholmLabel === "Stockholm (Coming Soon)" &&
-      picker.goteborgLabel === "Göteborg (Coming Soon)" &&
-      (picker.cityValue === "stockholm" || picker.cityValue === "goteborg") &&
+      picker.goteborgLabel === "Göteborg" &&
+      picker.cityValue === "goteborg" &&
       applied.afterStockholm !== "stockholm" &&
-      applied.afterGoteborg !== "goteborg"
+      applied.afterGoteborg === "goteborg"
     ) {
-      console.log("    PASS — Sweden/Stockholm/Göteborg Coming Soon; applyCity does not go live");
+      console.log("    PASS — Göteborg live in Sweden picker; Stockholm stays Coming Soon");
     } else {
       console.error("    FAIL — Sweden picker / applyCity", { picker, applied });
       process.exitCode = 1;

@@ -506,7 +506,8 @@ public final class LeaveReminderScheduler {
     }
 
     int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
-    JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore);
+    JSONObject payload =
+      NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore, journey.optString("cityId", ""));
     PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
       context,
       journey,
@@ -779,7 +780,8 @@ public final class LeaveReminderScheduler {
       AlarmPlan plan = computeAlarmPlan(context, journey, stale);
       if (plan == null) {
         int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
-        JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore);
+        JSONObject payload =
+      NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore, journey.optString("cityId", ""));
         PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
           context,
           journey,
@@ -897,7 +899,8 @@ public final class LeaveReminderScheduler {
     }
 
     int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
-    JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore);
+    JSONObject payload =
+      NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore, journey.optString("cityId", ""));
     PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
       context,
       journey,

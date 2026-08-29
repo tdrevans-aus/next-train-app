@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import org.json.JSONObject;
 
 /** One-shot network refresh right after the cached train's departure minute passes. */
@@ -42,16 +41,7 @@ public final class WidgetDepartureAdvanceScheduler {
     }
 
     PendingIntent pending = buildPendingIntent(context);
-
-    try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, advanceAt, pending);
-      } else {
-        manager.setExact(AlarmManager.RTC_WAKEUP, advanceAt, pending);
-      }
-    } catch (Exception error) {
-      manager.set(AlarmManager.RTC_WAKEUP, advanceAt, pending);
-    }
+    WidgetAlarms.scheduleWakeup(manager, advanceAt, pending);
   }
 
   public static void cancel(Context context) {

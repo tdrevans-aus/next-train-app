@@ -49,7 +49,16 @@ public final class WidgetSettingsStore {
     return prefs(context).getLong(KEY_LAST_REFRESH_MS, 0L);
   }
 
+  public static void saveRefreshAlarmAt(Context context, long value) {
+    prefs(context).edit().putLong(KEY_REFRESH_ALARM_AT, value).apply();
+  }
+
+  public static long readRefreshAlarmAt(Context context) {
+    return prefs(context).getLong(KEY_REFRESH_ALARM_AT, 0L);
+  }
+
   private static final String KEY_LAST_REFRESH_MS = "last_refresh_ms";
+  private static final String KEY_REFRESH_ALARM_AT = "refresh_alarm_at";
 
   private static SharedPreferences prefs(Context context) {
     return context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);

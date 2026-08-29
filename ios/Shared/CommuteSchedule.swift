@@ -70,7 +70,8 @@ enum CommuteSchedule {
             result.payload = try NextTrainApiClient.fetchNextTrain(
                 station: journey["station"] as? String ?? "",
                 direction: journey["direction"] as? String ?? "",
-                leaveBeforeMinutes: leaveBefore
+                leaveBeforeMinutes: leaveBefore,
+                city: journey["cityId"] as? String
             )
             result.refreshedAtMs = Int64(Date().timeIntervalSince1970 * 1000)
             WidgetSettingsStore.saveLastRefreshMs(result.refreshedAtMs)
@@ -108,7 +109,9 @@ enum CommuteSchedule {
         }
     }
 
-    static func repaintSnapshot(_ cached: [String: Any]?) -> [String: Any]? {
+    /// `at` lets timeline entries repaint for a future minute so the widget
+    /// countdown ticks between reloads; callers without a timeline pass now.
+    static func repaintSnapshot(_ cached: [String: Any]?, at date: Date = Date()) -> [String: Any]? {
         guard var snapshot = cached else { return nil }
         if isStaleEmptySnapshot(snapshot) {
             return nil
@@ -122,8 +125,8 @@ enum CommuteSchedule {
         let departureIso = snapshot["departureIso"] as? String ?? ""
         guard !departureIso.isEmpty else { return snapshot }
 
-        let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
-        if hasDepartureMinutePassed(departureIso) {
+        let nowMs = Int64(date.timeIntervalSince1970 * 1000)
+        if hasDepartureMinutePassed(departureIso, nowMs: nowMs) {
             return snapshot
         }
         return repaintActiveSnapshot(&snapshot, nowMs: nowMs)
@@ -369,10 +372,13 @@ enum CommuteSchedule {
         return trip["arrival"] as? String ?? ""
     }
 
-    private static func hasDepartureMinutePassed(_ departureIso: String) -> Bool {
+    private static func hasDepartureMinutePassed(
+        _ departureIso: String,
+        nowMs: Int64 = Int64(Date().timeIntervalSince1970 * 1000)
+    ) -> Bool {
         let departureMs = PerthTime.epochMillisFromIso(departureIso)
         guard departureMs > 0 else { return false }
-        return Int64(Date().timeIntervalSince1970 * 1000) >= departureMs
+        return nowMs >= departureMs
     }
 
     private static func hasDepartureMinutePassed(_ trip: [String: Any]) -> Bool {

@@ -64,7 +64,8 @@ public final class CommuteSchedule {
       result.payload = NextTrainApiClient.fetchNextTrain(
         result.journey.optString("station"),
         result.journey.optString("direction"),
-        leaveBefore
+        leaveBefore,
+        result.journey.optString("cityId", "")
       );
       result.refreshedAtMs = System.currentTimeMillis();
       WidgetSettingsStore.saveLastRefreshMs(context, result.refreshedAtMs);
@@ -112,7 +113,8 @@ public final class CommuteSchedule {
     JSONObject payload = NextTrainApiClient.fetchNextTrain(
       pin.optString("station", ""),
       pin.optString("direction", ""),
-      leaveBefore
+      leaveBefore,
+      pin.optString("cityId", "")
     );
 
     Result result = new Result();
