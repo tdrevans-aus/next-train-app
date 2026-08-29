@@ -1,0 +1,591 @@
+{
+  "city": "bart",
+  "displayName": "BART",
+  "status": "planned",
+  "agency": "BART",
+  "timezone": "America/Los_Angeles",
+  "source": "https://www.bart.gov/sites/default/files/2025-01/BART-Detailed-Map-Web.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger BART system diagram (ordered stops + color lines + hub lock)",
+      "title": "BART Website Map PDF Format",
+      "pdfTitle": "BART Website Map PDF Format",
+      "printedCopyright": "© BART 2025",
+      "url": "https://www.bart.gov/sites/default/files/2025-01/BART-Detailed-Map-Web.pdf",
+      "linkedFrom": "https://www.bart.gov/system-map",
+      "alsoLinkedFrom": [
+        "https://www.bart.gov/schedules"
+      ],
+      "captionOnIndex": "View the more detailed version of the map showing connecting rail.",
+      "retrievedAt": "2026-08-29T01:00:00Z",
+      "lastModified": "Mon, 13 Jan 2025 08:02:35 GMT",
+      "pdfModDate": "Mon Dec 16 20:06:53 2024 UTC",
+      "pdfCreationDate": "Mon Dec 16 20:06:53 2024 UTC",
+      "localFile": "sources/BART-Detailed-Map-Web.pdf",
+      "localPng": "sources/bart-map-1.png",
+      "note": "Linked from System Map as the more detailed version showing connecting rail. PDF title BART Website Map PDF Format. Illustrator 29.1. HTTP Last-Modified Mon, 13 Jan 2025 08:02:35 GMT. Printed © BART 2025. Daytime 5-line legend: Red Richmond–Millbrae; Orange Richmond–Berryessa/North San José; Yellow Antioch–SFO Int’l Airport; Green Daly City–Berryessa/North San José; Blue Daly City–Dublin/Pleasanton; OAK Airport Coliseum–Oakland Int’l Airport. Evening 3-line: Orange same; Yellow Antioch–Millbrae; Blue same; OAK same; Red and Green No Service. eBART Antioch + Pittsburg Center print as Yellow with ‘Change trains at transfer platform’ east of Pittsburg/Bay Point. Irvington PLANNED FUTURE STATION. Phase II 28th St/Little Portugal, Downtown San José, Diridon, Santa Clara are Future Service — not D1 open stops. Connecting rail (Muni Metro, Caltrain, VTA, ACE, Capitol Corridor, SMART, Amtrak San Joaquins) is gray transfer, not D1."
+    },
+    {
+      "role": "D1 passenger map index (5-line / 3-line plates)",
+      "title": "System Map",
+      "url": "https://www.bart.gov/system-map",
+      "retrievedAt": "2026-08-29T00:59:00Z",
+      "lastModified": "Sat, 29 Aug 2026 00:28:01 GMT",
+      "localFile": "sources/system-map.html",
+      "printedMapsOnIndex": [
+        "Every day until 9pm 5-Line Service PNG BART-system-map-everyday-until-9pm.png",
+        "9pm-Midnight 3-Line Service PNG BART-system-map-9pm-to-midnight.png",
+        "More detailed version showing connecting rail BART-Detailed-Map-Web.pdf"
+      ],
+      "note": "Passenger rail oracle is the detailed PDF (same Jan 2025 plate as the 5-line PNG, plus connecting-rail and future-service labels). 5-Line / 3-Line PNGs are the same service. /schedules also embeds the same maps."
+    },
+    {
+      "role": "supporting 5-line daytime passenger PNG (same Jan 2025 plate)",
+      "title": "System Map - Every day until 9pm 5-Line Service",
+      "url": "https://www.bart.gov/sites/default/files/2025-01/BART-system-map-everyday-until-9pm.png",
+      "linkedFrom": "https://www.bart.gov/system-map",
+      "retrievedAt": "2026-08-29T00:59:00Z",
+      "lastModified": "Mon, 13 Jan 2025 08:01:22 GMT",
+      "localFile": "sources/BART-system-map-everyday-until-9pm.png",
+      "note": "Same 5-line daytime service as the detailed PDF. Support for color paths. Detailed PDF still wins names and future-service labels."
+    },
+    {
+      "role": "supporting evening 3-line passenger PNG (overlay, not a second stop oracle)",
+      "title": "System Map - 9pm-Midnight 3-Line Service",
+      "url": "https://www.bart.gov/sites/default/files/2025-01/BART-system-map-9pm-to-midnight.png",
+      "linkedFrom": "https://www.bart.gov/system-map",
+      "retrievedAt": "2026-08-29T00:59:00Z",
+      "lastModified": "Mon, 13 Jan 2025 08:02:11 GMT",
+      "localFile": "sources/BART-system-map-9pm-to-midnight.png",
+      "note": "Evening overlay. Yellow printed terminus flips to Millbrae. Red and Green no service. All stations remain reachable. Not a second D1 stop list."
+    },
+    {
+      "role": "supporting official stations index (name tokens; map printed names win)",
+      "title": "Stations | Bay Area Rapid Transit",
+      "url": "https://www.bart.gov/stations",
+      "retrievedAt": "2026-08-29T01:04:00Z",
+      "localFile": "sources/stations.html",
+      "note": "50 official BART stations including Oakland International Airport. Page long forms use periods and spaced slashes (12th St. Oakland City Center; Berryessa / North San Jose; Montgomery St.). Map prints 12th St/Oakland City Center, Berryessa/North San José, Montgomery St. Map still wins."
+    },
+    {
+      "role": "supporting line timetable PDFs (ordered stops / termini; map still wins)",
+      "title": "BART Schedules (PDF)",
+      "url": "https://www.bart.gov/schedules/pdfs",
+      "retrievedAt": "2026-08-29T01:00:00Z",
+      "lastModified": "Sat, 29 Aug 2026 00:25:49 GMT",
+      "localFile": "sources/pdfs.html",
+      "note": "Schedule as of August 10, 2026. Weekday titles: Antioch to SFO (Yellow); Berryessa/N San Jose to Daly City (Green); Berryessa/N San Jose to Richmond (Orange); Dublin/Pleasanton to Daly City (Blue); Richmond to Millbrae (Red) — page text also says Millbrae + SFO for Red; weekday file name is Richmond to Millbrae (Red) without +SFO; weekend Red file is Millbrae +SFO. Map legend is Red Richmond–Millbrae; SFO is Yellow. Map still wins. No PDF and no real-time for BART to OAK."
+    },
+    {
+      "role": "developer portal (live-board path; not a D1 generator; no key in this pack)",
+      "title": "Developer Program | Bay Area Rapid Transit",
+      "url": "https://www.bart.gov/about/developers",
+      "retrievedAt": "2026-08-29T00:59:00Z",
+      "lastModified": "Sat, 29 Aug 2026 00:47:50 GMT",
+      "localFile": "sources/developers.html",
+      "note": "/schedules/developers 302s here. Links GTFS, GTFS-RT, geospatial, editable system map, RSS, Legacy API. Not a D1 generator. Never paste a key."
+    },
+    {
+      "role": "Legacy API portal (document only; key not copied)",
+      "title": "BART Legacy API",
+      "url": "https://www.bart.gov/schedules/developers/api",
+      "retrievedAt": "2026-08-29T01:05:00Z",
+      "localFile": "sources/api.html",
+      "note": "Default Next Train path for Jim D2: ETD at api.bart.gov. Page documents a public no-registration key AND a signup path (api.bart.gov/api/register.aspx). This pack redacted the public key from the saved HTML and does not print it anywhere. Did not call any API with a real key. Empty-key probe HTTP 400 Invalid key. Not a D1 blocker. Not a D1 generator."
+    },
+    {
+      "role": "ETD docs (document only)",
+      "title": "BART Legacy API — Real-Time Estimates (etd)",
+      "url": "https://api.bart.gov/docs/etd/etd.aspx",
+      "retrievedAt": "2026-08-29T01:04:00Z",
+      "localFile": "sources/api-etd.html",
+      "note": "GET https://api.bart.gov/api/etd.aspx?cmd=etd&orig={ABBR|ALL}&key=INSERT-KEY&json=y. Destination blinds are termini (Millbrae, Richmond, …) plus color (YELLOW/RED/ORANGE/GREEN/BLUE). Optional dir=n/s is Northbound/Southbound — not the product direction model. BART to OAK has no real-time ETD. Not used as a D1 generator."
+    },
+    {
+      "role": "GTFS docs (document only; not a D1 generator)",
+      "title": "GTFS Schedules",
+      "url": "https://www.bart.gov/schedules/developers/gtfs",
+      "retrievedAt": "2026-08-29T01:05:00Z",
+      "localFile": "sources/gtfs.html",
+      "note": "Permalink https://www.bart.gov/dev/schedules/google_transit.zip . Do not generate published-network.json from GTFS. Conventional ETD color tokens if later needed: YELLOW, RED, ORANGE, GREEN, BLUE."
+    },
+    {
+      "role": "GTFS-RT docs (document only)",
+      "title": "BART GTFS Realtime",
+      "url": "https://www.bart.gov/schedules/developers/gtfs-realtime",
+      "retrievedAt": "2026-08-29T01:05:00Z",
+      "localFile": "sources/gtfs-realtime.html"
+    },
+    {
+      "role": "Developer License Agreement",
+      "title": "Developer License Agreement",
+      "url": "https://www.bart.gov/schedules/developers/developer-license-agreement",
+      "retrievedAt": "2026-08-29T01:05:00Z",
+      "localFile": "sources/dla.html",
+      "note": "/dla 301s here."
+    },
+    {
+      "role": "empty-key ETD probe (no subscription key sent)",
+      "title": "GET api.bart.gov/api/etd.aspx?cmd=etd&orig=EMBR",
+      "url": "https://api.bart.gov/api/etd.aspx?cmd=etd&orig=EMBR",
+      "retrievedAt": "2026-08-29T01:04:00Z",
+      "localFile": "sources/etd-empty.xml",
+      "note": "HTTP 400. Body: Invalid key / The api key was missing or invalid. Did not send a real key."
+    }
+  ],
+  "retrievedAt": "2026-08-29T01:10:00Z",
+  "notes": [
+    "D1 oracle is the official BART detailed system map (bart.gov/sites/default/files/2025-01/BART-Detailed-Map-Web.pdf, PDF title BART Website Map PDF Format, HTTP Last-Modified Mon 13 Jan 2025 08:02:35 GMT, © BART 2025) HAND-TRANSCRIBED from rendered map images (sources/bart-map-1.png + sources/crop-*.png + sources/BART-system-map-everyday-until-9pm.png). Official stations index and August 10 2026 line timetable PDFs are support only. Stations arrays are not generated from GTFS. Not generated from the Legacy API. Map printed names win clashes.",
+    "City id bart is a SEPARATE city. Do not invent city=sf, city=san-francisco, city=bay-area, city=oakland, or city=sfo. Do not merge into chicago or washington. Agency BART. Modes v1: BART heavy rail (five color lines) plus OAK Airport because the printed BART service legend lists it as a BART line (Coliseum–Oakland Int’l Airport). No Muni Metro, no Muni bus, no Caltrain, no ACE, no Capitol Corridor, no SMART, no ferry, no VTA.",
+    "City stays planned until Jim wires testers. Cut #1 is Rotterdam only. Chicago stays planned and untouched. Washington stays planned and untouched. This pack stays planned. assertCityLive(\"bart\") must fail.",
+    "Timezone America/Los_Angeles HAS DST (PDT/PST). Do not copy Perth / Brisbane no-DST.",
+    "Five printed color lines on the current map plus OAK Airport in the same BART service legend: Yellow, Blue, Green, Red, Orange, OAK. mapGroup BART. Conventional ETD color tokens YELLOW/BLUE/GREEN/RED/ORANGE recorded as gtfsRouteIdsIfKnown (from ETD docs, not extracted from GTFS). OAK has no ETD color token on the ETD page.",
+    "Locked inner-city printed name: Embarcadero (first downtown SF stop after the Transbay Tube; Yellow/Blue/Green/Red). The map prints Embarcadero, Montgomery St, Powell St, Civic Center/UN Plaza as an equal four-stop downtown SF trunk — not a single named transfer diamond. Powell St is the Muni/cable-car-famous stop; do not mix Muni; do not steal the lock. Orange never calls Embarcadero (East Bay only). Embarcadero is a stop string, not a direction token.",
+    "50 unique passenger BART stops after shared-transfer dedupe (same physical nest counted once). Official stations index also lists 50 including Oakland International Airport. No same-name different-line places. Irvington (PLANNED FUTURE STATION) and Phase II 28th St/Little Portugal / Downtown San José / Diridon / Santa Clara are Future Service — not inserted. No 2026 opening is printed as open on this map.",
+    "Map vs page: 12th St/Oakland City Center (map) vs 12th St. Oakland City Center (stations). Montgomery St / Powell St (map, no period) vs Montgomery St. / Powell St. (stations). Berryessa/North San José (map, accent, no spaces) vs Berryessa / North San Jose (stations). 16th St Mission / 24th St Mission (map, no period) vs 16th St. Mission / 24th St. Mission. Civic Center/UN Plaza (map) vs Civic Center / UN Plaza. San Francisco International Airport (SFO) and Oakland International Airport (OAK) keep the map airport codes.",
+    "Yellow: daytime legend Antioch–SFO Int’l Airport; evening legend Antioch–Millbrae; dashed yellow SFO–Millbrae; TRAIN CONTROL MODERNIZATION note After 9pm, change trains at SFO for Millbrae service. stations[] is Antioch→SFO then Millbrae. eBART Antioch + Pittsburg Center print as Yellow (not a sixth color). Change trains at transfer platform east of Pittsburg/Bay Point is not a named passenger station.",
+    "Red: map legend Richmond–Millbrae. Red does not enter the SFO spur on this map (Yellow does). Weekend timetable file is Richmond to Millbrae +SFO — H3 overlay, not a Red station-list row. Map still wins.",
+    "Green and Blue skip 12th St/Oakland City Center and 19th St/Oakland (West Oakland ↔ Lake Merritt). Orange skips West Oakland and all of San Francisco (12th St ↔ Lake Merritt). Red and Yellow skip Lake Merritt (12th St ↔ West Oakland).",
+    "OAK Airport is the gray BART-to-OAK automated people-mover, listed in the BART service legend with a plane icon (not an R/O/Y/G/B color block). Included because the printed official map lists it as a BART line. No PDF timetable. No real-time ETD. Average wait 4.5 minutes per schedules/pdfs.",
+    "Feed (Jim D2, not a D1 generator): https://www.bart.gov/about/developers Legacy API https://www.bart.gov/schedules/developers/api ETD https://api.bart.gov/docs/etd/etd.aspx GTFS https://www.bart.gov/schedules/developers/gtfs . Key later (Auckland pattern; public no-registration key lives on the developer page and is not copied here). D1 stays planned. Do not call the live API with a real key. Never paste a key. The key is not a D1 blocker.",
+    "H3: Green Line buses replace trains Union City–Warm Springs this weekend (29–30 Aug 2026) — overlay, stations remain. Evening Red/Green no service — overlay, stations remain. eBART transfer platform. SFO–Millbrae after-9pm change. Irvington / Phase II not open."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Embarcadero",
+    "lockSet": [
+      "Embarcadero"
+    ],
+    "lockNote": "Printed inner-city lock. First downtown San Francisco stop after the Transbay Tube on the official BART map. Yellow, Blue, Green, and Red all call here. The map prints Embarcadero / Montgomery St / Powell St / Civic Center/UN Plaza as an equal four-stop downtown SF trunk, not a single named transfer diamond. Powell St is not the lock (Muni/cable-car mix). Orange never serves Embarcadero. Inbound/outbound dies at Embarcadero (through-run to East Bay or Peninsula). Embarcadero is a stop string, not a direction token.",
+    "doNotUse": [
+      "Powell",
+      "Powell St",
+      "Downtown",
+      "San Francisco",
+      "SF",
+      "City",
+      "CBD",
+      "Downtown SF",
+      "Metro Center",
+      "Clark/Lake",
+      "Beurs",
+      "Civic Center",
+      "Montgomery",
+      "sf",
+      "san-francisco",
+      "bay-area",
+      "oakland",
+      "sfo",
+      "Bay Area"
+    ],
+    "doNotCollapse": [
+      "Embarcadero",
+      "Montgomery St",
+      "Powell St",
+      "Civic Center/UN Plaza",
+      "16th St Mission",
+      "24th St Mission",
+      "12th St/Oakland City Center",
+      "19th St/Oakland",
+      "West Oakland",
+      "Lake Merritt",
+      "MacArthur",
+      "Dublin/Pleasanton",
+      "West Dublin/Pleasanton",
+      "Pittsburg/Bay Point",
+      "Pittsburg Center",
+      "San Francisco International Airport (SFO)",
+      "Oakland International Airport (OAK)",
+      "Berryessa/North San José",
+      "Warm Springs/South Fremont",
+      "El Cerrito del Norte",
+      "El Cerrito Plaza",
+      "Downtown Berkeley",
+      "North Berkeley",
+      "North Concord/Martinez",
+      "Pleasant Hill/Contra Costa Centre",
+      "South San Francisco",
+      "San Bruno",
+      "Millbrae",
+      "Coliseum",
+      "Daly City",
+      "Balboa Park"
+    ],
+    "alsoOnSharedApproaches": [
+      "Montgomery St",
+      "Powell St",
+      "Civic Center/UN Plaza",
+      "West Oakland",
+      "12th St/Oakland City Center",
+      "19th St/Oakland",
+      "MacArthur",
+      "Lake Merritt",
+      "Balboa Park",
+      "Daly City"
+    ]
+  },
+  "coverageGaps": [
+    "Muni Metro (J Church, N Judah, T Third, L Taraval, K Ingleside, M Ocean View, F Market & Wharves). Gray connecting rail on the detailed map. Out of v1.",
+    "Muni bus / cable car. Out of v1. Powell St Muni mix is why Powell is not the hub lock.",
+    "Caltrain (Millbrae transfer; 22nd St, Bayshore, Peninsula stations). Transfer, not a D1 stop. doNotGroup Millbrae vs Caltrain Millbrae.",
+    "ACE (crosses near Fremont / Union City toward Pleasanton / Livermore). Out of v1.",
+    "Capitol Corridor / Amtrak San Joaquins (Richmond, Coliseum, Antioch-Pittsburg Amtrak). Transfers, not D1 stops.",
+    "SMART / Larkspur / San Rafael. Out of v1.",
+    "VTA light rail (Milpitas / Alum Rock; San José). Out of v1.",
+    "Ferry. Out of v1.",
+    "Irvington (PLANNED FUTURE STATION) between Fremont and Warm Springs/South Fremont. Not inserted.",
+    "Silicon Valley Phase II Future Service: 28th St/Little Portugal, Downtown San José, Diridon, Santa Clara. Not inserted.",
+    "No 2026 station opening is printed as open on this map."
+  ],
+  "liveBoards": {
+    "status": "developer_api_exists_city_planned",
+    "portal": "https://www.bart.gov/about/developers",
+    "legacyApi": "https://www.bart.gov/schedules/developers/api",
+    "etdDocs": "https://api.bart.gov/docs/etd/etd.aspx",
+    "register": "https://api.bart.gov/api/register.aspx",
+    "gtfsDocs": "https://www.bart.gov/schedules/developers/gtfs",
+    "gtfsRtDocs": "https://www.bart.gov/schedules/developers/gtfs-realtime",
+    "terms": "https://www.bart.gov/schedules/developers/developer-license-agreement",
+    "defaultNextTrain": {
+      "name": "BART Legacy API ETD",
+      "note": "Jim D2. GET https://api.bart.gov/api/etd.aspx?cmd=etd&orig={ABBR|ALL}&key=INSERT-KEY&json=y . Destination blinds are termini + color. BART to OAK has no real-time ETD. Not a D1 generator."
+    },
+    "keyPolicy": "Tim signs up later on api.bart.gov/api/register.aspx (Auckland pattern), or reads the public no-registration key from bart.gov/schedules/developers/api later. This pack does not contain a key and did not call the API with a real key. The key is for live boards later, NOT a D1 blocker.",
+    "d1": "planned. assertCityLive(bart) must fail."
+  },
+  "stats": {
+    "lines": 6,
+    "yellowStops": 28,
+    "blueStops": 18,
+    "greenStops": 22,
+    "redStops": 23,
+    "orangeStops": 21,
+    "oakStops": 2,
+    "uniqueNames": 50,
+    "innerCityLock": [
+      "Embarcadero"
+    ],
+    "downtownSfTrunk": [
+      "Embarcadero",
+      "Montgomery St",
+      "Powell St",
+      "Civic Center/UN Plaza"
+    ]
+  },
+  "lines": [
+    {
+      "id": "yellow",
+      "number": "Yellow",
+      "name": "Yellow Line",
+      "officialPageTitle": "Yellow Line • Antioch / SFO Int’l Airport (day) & Millbrae (evening)",
+      "gtfsRouteIdsIfKnown": [
+        "YELLOW"
+      ],
+      "mapGroup": "BART",
+      "termini": [
+        "Antioch",
+        "San Francisco International Airport (SFO)",
+        "Millbrae"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Pittsburg/Bay Point",
+          "otherLine": "yellow",
+          "note": "eBART. Map: Change trains at transfer platform (east of Pittsburg/Bay Point; not a named street station). Pittsburg Center and Antioch print as Yellow, not a sixth color."
+        },
+        {
+          "at": "MacArthur",
+          "otherLine": "red",
+          "note": "Timed transfer southbound. Yellow continues east to Rockridge / Antioch. Red/Orange continue north to Richmond."
+        },
+        {
+          "at": "12th St/Oakland City Center",
+          "otherLine": "orange",
+          "note": "Yellow/Red turn west to West Oakland. Orange turns south to Lake Merritt. Green/Blue never call 12th St."
+        },
+        {
+          "at": "Embarcadero",
+          "otherLine": "blue",
+          "note": "Hub lock. Yellow/Blue/Green/Red downtown SF trunk. Not a Yellow terminus."
+        },
+        {
+          "at": "San Bruno",
+          "otherLine": "red",
+          "note": "Yellow leaves the Peninsula trunk to SFO. Red continues San Bruno–Millbrae. Dashed yellow SFO–Millbrae; after 9pm change at SFO for Millbrae."
+        }
+      ],
+      "stations": [
+        "Antioch",
+        "Pittsburg Center",
+        "Pittsburg/Bay Point",
+        "North Concord/Martinez",
+        "Concord",
+        "Pleasant Hill/Contra Costa Centre",
+        "Walnut Creek",
+        "Lafayette",
+        "Orinda",
+        "Rockridge",
+        "MacArthur",
+        "19th St/Oakland",
+        "12th St/Oakland City Center",
+        "West Oakland",
+        "Embarcadero",
+        "Montgomery St",
+        "Powell St",
+        "Civic Center/UN Plaza",
+        "16th St Mission",
+        "24th St Mission",
+        "Glen Park",
+        "Balboa Park",
+        "Daly City",
+        "Colma",
+        "South San Francisco",
+        "San Bruno",
+        "San Francisco International Airport (SFO)",
+        "Millbrae"
+      ]
+    },
+    {
+      "id": "blue",
+      "number": "Blue",
+      "name": "Blue Line",
+      "officialPageTitle": "Blue Line • Daly City / Dublin/Pleasanton",
+      "gtfsRouteIdsIfKnown": [
+        "BLUE"
+      ],
+      "mapGroup": "BART",
+      "termini": [
+        "Dublin/Pleasanton",
+        "Daly City"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Bay Fair",
+          "otherLine": "green",
+          "note": "Blue leaves the south-east trunk east to Castro Valley / Dublin/Pleasanton. Green/Orange continue south to Hayward / Berryessa."
+        },
+        {
+          "at": "West Oakland",
+          "otherLine": "yellow",
+          "note": "Blue/Green skip 12th St and 19th St (West Oakland ↔ Lake Merritt)."
+        },
+        {
+          "at": "Embarcadero",
+          "otherLine": "yellow",
+          "note": "Hub lock. Blue through-runs Daly City ↔ Dublin/Pleasanton. Embarcadero is not a Blue terminus."
+        }
+      ],
+      "stations": [
+        "Dublin/Pleasanton",
+        "West Dublin/Pleasanton",
+        "Castro Valley",
+        "Bay Fair",
+        "San Leandro",
+        "Coliseum",
+        "Fruitvale",
+        "Lake Merritt",
+        "West Oakland",
+        "Embarcadero",
+        "Montgomery St",
+        "Powell St",
+        "Civic Center/UN Plaza",
+        "16th St Mission",
+        "24th St Mission",
+        "Glen Park",
+        "Balboa Park",
+        "Daly City"
+      ]
+    },
+    {
+      "id": "green",
+      "number": "Green",
+      "name": "Green Line",
+      "officialPageTitle": "Green Line • Daly City / Berryessa/North San José",
+      "gtfsRouteIdsIfKnown": [
+        "GREEN"
+      ],
+      "mapGroup": "BART",
+      "termini": [
+        "Berryessa/North San José",
+        "Daly City"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "West Oakland",
+          "otherLine": "blue",
+          "note": "Green/Blue skip 12th St/Oakland City Center and 19th St/Oakland."
+        },
+        {
+          "at": "Embarcadero",
+          "otherLine": "yellow",
+          "note": "Hub lock. Green through-runs Daly City ↔ Berryessa. Evening: Green no service — use Orange + Blue. Overlay, not a deleted line."
+        },
+        {
+          "at": "Bay Fair",
+          "otherLine": "blue"
+        }
+      ],
+      "stations": [
+        "Berryessa/North San José",
+        "Milpitas",
+        "Warm Springs/South Fremont",
+        "Fremont",
+        "Union City",
+        "South Hayward",
+        "Hayward",
+        "Bay Fair",
+        "San Leandro",
+        "Coliseum",
+        "Fruitvale",
+        "Lake Merritt",
+        "West Oakland",
+        "Embarcadero",
+        "Montgomery St",
+        "Powell St",
+        "Civic Center/UN Plaza",
+        "16th St Mission",
+        "24th St Mission",
+        "Glen Park",
+        "Balboa Park",
+        "Daly City"
+      ]
+    },
+    {
+      "id": "red",
+      "number": "Red",
+      "name": "Red Line",
+      "officialPageTitle": "Red Line • Richmond / Millbrae",
+      "gtfsRouteIdsIfKnown": [
+        "RED"
+      ],
+      "mapGroup": "BART",
+      "termini": [
+        "Richmond",
+        "Millbrae"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "MacArthur",
+          "otherLine": "yellow"
+        },
+        {
+          "at": "Embarcadero",
+          "otherLine": "yellow",
+          "note": "Hub lock. Red through-runs Richmond ↔ Millbrae. Evening: Red no service — use Orange + Yellow. Overlay."
+        },
+        {
+          "at": "San Bruno",
+          "otherLine": "yellow",
+          "note": "Red continues to Millbrae. Does not enter the SFO spur on this map. Weekend timetable +SFO is H3 overlay, not a Red station-list row."
+        }
+      ],
+      "stations": [
+        "Richmond",
+        "El Cerrito del Norte",
+        "El Cerrito Plaza",
+        "North Berkeley",
+        "Downtown Berkeley",
+        "Ashby",
+        "MacArthur",
+        "19th St/Oakland",
+        "12th St/Oakland City Center",
+        "West Oakland",
+        "Embarcadero",
+        "Montgomery St",
+        "Powell St",
+        "Civic Center/UN Plaza",
+        "16th St Mission",
+        "24th St Mission",
+        "Glen Park",
+        "Balboa Park",
+        "Daly City",
+        "Colma",
+        "South San Francisco",
+        "San Bruno",
+        "Millbrae"
+      ]
+    },
+    {
+      "id": "orange",
+      "number": "Orange",
+      "name": "Orange Line",
+      "officialPageTitle": "Orange Line • Richmond / Berryessa/North San José",
+      "gtfsRouteIdsIfKnown": [
+        "ORANGE"
+      ],
+      "mapGroup": "BART",
+      "termini": [
+        "Richmond",
+        "Berryessa/North San José"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "MacArthur",
+          "otherLine": "yellow",
+          "note": "Orange stays East Bay. Never calls West Oakland or Embarcadero."
+        },
+        {
+          "at": "12th St/Oakland City Center",
+          "otherLine": "yellow",
+          "note": "Orange turns south to Lake Merritt. Does not cross the Transbay Tube."
+        },
+        {
+          "at": "Coliseum",
+          "otherLine": "oak",
+          "note": "Transfer to OAK Airport people-mover. Coliseum is also Green/Blue."
+        }
+      ],
+      "stations": [
+        "Richmond",
+        "El Cerrito del Norte",
+        "El Cerrito Plaza",
+        "North Berkeley",
+        "Downtown Berkeley",
+        "Ashby",
+        "MacArthur",
+        "19th St/Oakland",
+        "12th St/Oakland City Center",
+        "Lake Merritt",
+        "Fruitvale",
+        "Coliseum",
+        "San Leandro",
+        "Bay Fair",
+        "Hayward",
+        "South Hayward",
+        "Union City",
+        "Fremont",
+        "Warm Springs/South Fremont",
+        "Milpitas",
+        "Berryessa/North San José"
+      ]
+    },
+    {
+      "id": "oak",
+      "number": "OAK",
+      "name": "OAK Airport",
+      "officialPageTitle": "OAK Airport • Coliseum / Oakland Int’l Airport",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "BART",
+      "termini": [
+        "Coliseum",
+        "Oakland International Airport (OAK)"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Coliseum",
+          "otherLine": "orange",
+          "note": "Gray BART-to-OAK automated people-mover with plane icon. Listed in the official BART service legend — included. No ETD. No PDF timetable."
+        }
+      ],
+      "stations": [
+        "Coliseum",
+        "Oakland International Airport (OAK)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,903 @@
+{
+  "city": "berlin",
+  "displayName": "Berlin",
+  "status": "planned",
+  "agency": "BVG",
+  "timezone": "Europe/Berlin",
+  "source": "https://www.bvg.de/dam/jcr:3f8025f2-285b-4fa0-8cef-72def24c6c21/S+U-Bahn_03_2026-Internetversion-BVG.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger S+U network map (hub lock + printed U-Bahn ticks + termini geography). Skip every S-Bahn, Regional, FEX.",
+      "title": "S+U-Bahnnetz – Tarifbereich ABC (Stand 30. März 2026)",
+      "url": "https://www.bvg.de/dam/jcr:3f8025f2-285b-4fa0-8cef-72def24c6c21/S+U-Bahn_03_2026-Internetversion-BVG.pdf",
+      "linkedFrom": "https://www.bvg.de/de/verbindungen/netzplaene-und-linien",
+      "captionOnIndex": "S+U-Bahnnetz – Tarifbereich ABC",
+      "retrievedAt": "2026-08-29T00:32:00Z",
+      "lastModified": "Wed, 19 Aug 2026 07:34:17 GMT",
+      "localFile": "sources/S+U-Bahn_03_2026-Internetversion-BVG.pdf",
+      "note": "A3 Illustrator 30.2, created 9 Mar 2026, PDF title S+U-Bahn_03_2026-Internetversion-BVG, footer Stand: 30. März 2026 © Berliner Verkehrsbetriebe (BVG). Mixed S+U+Regional sheet. U-Bahn ticks U1–U9 including U5 through former U55 to Hauptbahnhof. Map still prints closed U6 north (Alt-Tegel, Borsigwerke, Holzhauser Str., Otisstr.) — not passenger-open; omitted from stations[]. Prints Anton- / Amo-Str. (not Mohrenstr.) and Magdalenenstr. + Campus für Demokratie. Innenstadt node Alexanderplatz. Same file bytes as the sbahn.berlin 15.06.2026 caption upload."
+    },
+    {
+      "role": "D1 inner-city excerpt (hub lock geography)",
+      "title": "S+U-Bahnnetz – Innenstadt (Stand 30. März 2026)",
+      "url": "https://www.bvg.de/dam/jcr:60a89e3b-f88d-4d48-b8a6-98ab340ada05/S+UAusschnitt_03_2026-Internetversion-BVG.pdf",
+      "linkedFrom": "https://www.bvg.de/de/verbindungen/netzplaene-und-linien",
+      "captionOnIndex": "S+U-Bahnnetz – Innenstadt",
+      "retrievedAt": "2026-08-29T00:32:00Z",
+      "lastModified": "Wed, 19 Aug 2026 07:34:07 GMT",
+      "localFile": "sources/S+UAusschnitt_03_2026-Internetversion-BVG.pdf",
+      "note": "A3 inner-city excerpt of the same BVG S+U family. Printed Mitte interchange Alexanderplatz (U2/U5/U8 + S). Hauptbahnhof printed as U5 west end + S + Regional. Nollendorfplatz / Wittenbergplatz on the Kleinprofil west of Zoo. Not a stop-order oracle — use line halt lists for order."
+    },
+    {
+      "role": "D1 passenger map index",
+      "title": "Netzpläne & Liniennetz",
+      "url": "https://www.bvg.de/de/verbindungen/netzplaene-und-linien",
+      "retrievedAt": "2026-08-29T00:32:00Z",
+      "lastModified": "Fri, 28 Aug 2026 12:27:12 GMT",
+      "localFile": "sources/netzplaene-und-linien.html",
+      "printedMapsOnIndex": [
+        "S+U-Bahnnetz – Tarifbereich ABC",
+        "S+U-Bahnnetz – Innenstadt",
+        "Bus- und Fährnetz",
+        "Tramnetz",
+        "Nachtnetz"
+      ]
+    },
+    {
+      "role": "D1 U-Bahn Linienverlauf index (nine official line PDFs)",
+      "title": "Berlins U-Bahn-Linien im Überblick",
+      "url": "https://www.bvg.de/de/verbindungen/netzplaene-und-linien/u-bahn",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/u-bahn-index.html",
+      "note": "Downloads U1–U9 Linienverlauf PDFs only. No U10. No U55."
+    },
+    {
+      "role": "current U-Bahn line index (official termini pairs)",
+      "title": "Linienübersicht",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht",
+      "retrievedAt": "2026-08-29T00:31:00Z",
+      "localFile": "sources/linienuebersicht.html",
+      "note": "U1 Warschauer Str.◄►Uhlandstr.; U2 Pankow◄►Ruhleben; U3 Warschauer Str.◄►Krumme Lanke; U4 Nollendorfplatz◄►Innsbrucker Platz; U5 Hönow◄►Hauptbahnhof; U6 Kurt-Schumacher-Platz◄►Alt-Mariendorf; U7 Rathaus Spandau◄►Rudow; U8 Wittenau◄►Hermannstr.; U9 Osloer Str.◄►Rathaus Steglitz. S-Bahn / tram / bus / ferry on the same index are out of v1."
+    },
+    {
+      "role": "current U1 halt list + Linienverlauf (ordered ticks)",
+      "title": "U1 S+U Warschauer Str. ◂▸ U Uhlandstr.",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u1",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:67d10cb8-0345-4134-9885-90c0c1d7964b/U1_2025-12-14.pdf",
+      "retrievedAt": "2026-08-29T00:32:00Z",
+      "lastModified": "Wed, 10 Dec 2025 13:13:36 GMT",
+      "localFile": "sources/linie-u1.html",
+      "localPdf": "sources/U1_2025-12-14.pdf",
+      "note": "13 official halt ticks. Folder gültig ab 14. Dezember 2025."
+    },
+    {
+      "role": "current U2 halt list + Linienverlauf (ordered ticks)",
+      "title": "U2 S+U Pankow ◂▸ U Ruhleben",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u2",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:e37c8d1c-5feb-4a73-a93f-bf897dd20441/U2_2026-07-13.pdf",
+      "retrievedAt": "2026-08-29T00:32:00Z",
+      "lastModified": "Tue, 07 Jul 2026 13:15:05 GMT",
+      "localFile": "sources/linie-u2.html",
+      "localPdf": "sources/U2_2026-07-13.pdf",
+      "note": "29 official halt ticks. Prints U Anton-Wilhelm-Amo-Str. (rename 23 Aug 2025). Folder 13 Jul 2026."
+    },
+    {
+      "role": "current U3 halt list + Linienverlauf (ordered ticks)",
+      "title": "U3 S+U Warschauer Str. ◂▸ U Krumme Lanke",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u3",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:557aca57-8499-4b8f-a59d-712cee6bb780/U3_2026-08-23.pdf",
+      "retrievedAt": "2026-08-29T00:33:00Z",
+      "lastModified": "Fri, 21 Aug 2026 08:15:38 GMT",
+      "localFile": "sources/linie-u3.html",
+      "localPdf": "sources/U3_2026-08-23.pdf",
+      "note": "24 official halt ticks. Shared Warschauer Str.–Wittenbergplatz with U1."
+    },
+    {
+      "role": "current U4 halt list + Linienverlauf (ordered ticks)",
+      "title": "U4 U Nollendorfplatz ◂▸ S+U Innsbrucker Platz",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u4",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:1645b0c0-c8f7-4c5f-bbdb-a6cdbc8a3cc0/U4_2025-12-14.pdf",
+      "retrievedAt": "2026-08-29T00:33:00Z",
+      "lastModified": "Wed, 10 Dec 2025 13:14:31 GMT",
+      "localFile": "sources/linie-u4.html",
+      "localPdf": "sources/U4_2025-12-14.pdf",
+      "note": "5 official halt ticks. Shortest U-Bahn. U-Bahn-only except Innsbrucker Platz S+U."
+    },
+    {
+      "role": "current U5 halt list + Linienverlauf (ordered ticks; former U55 merged)",
+      "title": "U5 U Hönow ◂▸ S+U Hauptbahnhof",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u5",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:1a9bdb27-dd81-45ab-b552-26ebb6cefaf4/U5_2026-06-15.pdf",
+      "retrievedAt": "2026-08-29T00:33:00Z",
+      "lastModified": "Tue, 16 Jun 2026 05:32:25 GMT",
+      "localFile": "sources/linie-u5.html",
+      "localPdf": "sources/U5_2026-06-15.pdf",
+      "note": "26 official halt ticks. West end is the former U55 plus the 2020 Mitte stations: Rotes Rathaus, Museumsinsel, Unter den Linden, Brandenburger Tor, Bundestag, Hauptbahnhof. No passenger U55. Magdalenenstr. (Campus für Demokratie) subtitle from 14 Dec 2025."
+    },
+    {
+      "role": "current U6 halt list + Linienverlauf (ordered ticks; north closed)",
+      "title": "U6 U Kurt-Schumacher-Platz ◂▸ U Alt-Mariendorf",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u6",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:0cc3c530-83b4-43bb-9bde-fa6b7738f036/U6_2026-08-23.pdf",
+      "retrievedAt": "2026-08-29T00:33:00Z",
+      "lastModified": "Fri, 21 Aug 2026 08:15:48 GMT",
+      "localFile": "sources/linie-u6.html",
+      "localPdf": "sources/U6_2026-08-23.pdf",
+      "note": "24 official passenger-open halt ticks. Folder banner: Bis ca. Ende 2026 verkehrt die Linie nur auf U Alt-Mariendorf <> U Kurt-Schumacher-Platz. Map still prints Alt-Tegel / Borsigwerke / Holzhauser Str. / Otisstr. — closed, not in passenger service, not inserted. Press 30 Jul 2026: reopen target 16 Aug 2027. Overlay, not D1 rows."
+    },
+    {
+      "role": "current U7 halt list + Linienverlauf (ordered ticks)",
+      "title": "U7 S+U Rathaus Spandau ◂▸ U Rudow",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u7",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:857931f4-7c13-44c9-8564-5dcc4422dc6e/U7_2026-08-23.pdf",
+      "retrievedAt": "2026-08-29T00:33:00Z",
+      "lastModified": "Fri, 21 Aug 2026 08:15:57 GMT",
+      "localFile": "sources/linie-u7.html",
+      "localPdf": "sources/U7_2026-08-23.pdf",
+      "note": "40 official halt ticks. Longest U-Bahn. Misses Alexanderplatz and Nollendorfplatz."
+    },
+    {
+      "role": "current U8 halt list + Linienverlauf (ordered ticks)",
+      "title": "U8 S+U Wittenau ◂▸ S+U Hermannstr.",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u8",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:faf89b4c-be2b-462b-be88-a99b77952d09/U8_2026-08-23.pdf",
+      "retrievedAt": "2026-08-29T00:33:00Z",
+      "lastModified": "Fri, 21 Aug 2026 08:16:04 GMT",
+      "localFile": "sources/linie-u8.html",
+      "localPdf": "sources/U8_2026-08-23.pdf",
+      "note": "24 official halt ticks. Through Alexanderplatz. Franz-Neumann-Platz printed without (Am Schäfersee) on the 2026 halt list."
+    },
+    {
+      "role": "current U9 halt list + Linienverlauf (ordered ticks)",
+      "title": "U9 U Osloer Str. ◂▸ S+U Rathaus Steglitz",
+      "url": "https://www.bvg.de/de/verbindungen/linienuebersicht/u9",
+      "linienverlaufPdf": "https://www.bvg.de/dam/jcr:35f614b4-a5c6-4c18-8e3f-80479ea990a6/U9_2025-12-14.pdf",
+      "retrievedAt": "2026-08-29T00:33:00Z",
+      "lastModified": "Wed, 10 Dec 2025 13:15:55 GMT",
+      "localFile": "sources/linie-u9.html",
+      "localPdf": "sources/U9_2025-12-14.pdf",
+      "note": "18 official halt ticks. Misses Alexanderplatz. Crosses Zoo / Kudamm / Berliner Str."
+    },
+    {
+      "role": "printed inner-city S+U hub (U2/U5/U8)",
+      "title": "S+U Alexanderplatz",
+      "url": "https://www.bvg.de/de/verbindungen/stationsuebersicht/s-u-alexanderplatz",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/halte-alexanderplatz.html",
+      "note": "BVG halte title S+U Alexanderplatz. U2/U5/U8 plus S3/S5/S7/S9 plus Regionalverkehr. Locked inner-city printed name. doNotGroup U vs S vs Regional."
+    },
+    {
+      "role": "printed U5 west terminus / S+DB cluster (doNotGroup)",
+      "title": "S+U Hauptbahnhof",
+      "url": "https://www.bvg.de/de/verbindungen/stationsuebersicht/s-u-hauptbahnhof",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/halte-hauptbahnhof.html",
+      "note": "U5-only U-Bahn. Same building as S-Bahn and DB / FEX. Not the U-Bahn all-lines lock. doNotGroup."
+    },
+    {
+      "role": "U-Bahn-only 4-line Kleinprofil node",
+      "title": "U Nollendorfplatz",
+      "url": "https://www.bvg.de/de/verbindungen/stationsuebersicht/u-nollendorfplatz",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/halte-nollendorfplatz.html",
+      "note": "U1/U2/U3/U4. Highest U-Bahn degree. No S-Bahn. Shared approach, not the Innenstadt lock."
+    },
+    {
+      "role": "Kleinprofil 3-line node (U1/U2/U3)",
+      "title": "U Wittenbergplatz",
+      "url": "https://www.bvg.de/de/verbindungen/stationsuebersicht/u-wittenbergplatz",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/halte-wittenbergplatz.html",
+      "note": "U1 Uhlandstr. vs U3 Krumme Lanke split. U2 through. Shared approach."
+    },
+    {
+      "role": "14 Dec 2025 printed renames (Amo + Magdalenen subtitle)",
+      "title": "Angebotsänderungen ab 14. Dezember 2025",
+      "url": "https://www.bvg.de/dam/jcr:4674de3d-c2a2-4f32-a406-d1d46f82402d/Angebots%C3%A4nderungen%2014.%20Dezember%202025.pdf",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/Angebotsaenderungen_14_Dezember_2025.pdf",
+      "note": "U2: U-Bahnhof Mohrenstraße → U Anton-Wilhelm-Amo-Str. (bereits seit 23. August 2025). U5: Magdalenenstraße erhält den Untertitel Campus für Demokratie."
+    },
+    {
+      "role": "S-Bahn Berlin caption of the same BVG S+U sheet (not a second authority)",
+      "title": "S- und U-Bahnnetz: Tarifbereich Berlin ABC (sbahn.berlin caption Stand 15.06.2026)",
+      "url": "https://sbahn.berlin/fileadmin/user_upload/Liniennetz/S_U-Bahn-Liniennetz.pdf",
+      "linkedFrom": "https://sbahn.berlin/fahren/liniennetze/",
+      "retrievedAt": "2026-08-29T00:32:00Z",
+      "lastModified": "Mon, 15 Jun 2026 14:30:39 GMT",
+      "localFile": "sources/S_U-Bahn-Liniennetz_15_06_2026.pdf",
+      "note": "md5 identical to the BVG 30 Mar 2026 ABC PDF. Caption date is not a new map. D1 authority stays the bvg.de file. S-Bahn Berlin is not the U-Bahn agency."
+    },
+    {
+      "role": "live-board path (official VBB REST; key via email — not wired)",
+      "title": "VBB API mit Fahrplaninformationen",
+      "url": "https://www.vbb.de/vbb-services/api-open-data/api/",
+      "retrievedAt": "2026-08-29T00:34:00Z",
+      "localFile": "sources/vbb-api.html",
+      "endpointsNamed": [
+        "arrivalBoard",
+        "departureBoard",
+        "GIS route",
+        "HimSearch",
+        "journeyDetail",
+        "journeyPosition",
+        "location.name",
+        "location.nearbystops",
+        "trip"
+      ],
+      "note": "Official HAFAS-style REST. Access: email api@VBB.de + project description → test server → Produktionsfreischaltung. Not anonymous. Not a D1 station oracle. Filter product subway / U1–U9 when Jim wires."
+    },
+    {
+      "role": "official VBB open-data index (static GTFS + GTFS-RT pointer)",
+      "title": "Offene Datensätze des VBB",
+      "url": "https://www.vbb.de/vbb-services/api-open-data/datensaetze",
+      "alsoLinkedFrom": "https://unternehmen.vbb.de/digitale-services/datensaetze/",
+      "retrievedAt": "2026-08-29T00:34:00Z",
+      "localFile": "sources/vbb-datensaetze.html",
+      "note": "Static GTFS 2× weekly at /gtfs (NOT used as D1 generator). GTFS-RT at https://production.gtfsrt.vbb.de. Linienfarben CSV April 2026. CC BY 4.0. Contact api@VBB.de."
+    },
+    {
+      "role": "official VBB GTFS-RT (public, currently degraded)",
+      "title": "VBB GTFS Realtime Feed",
+      "url": "https://production.gtfsrt.vbb.de/",
+      "feedUrl": "https://production.gtfsrt.vbb.de/data",
+      "retrievedAt": "2026-08-29T00:34:00Z",
+      "localFile": "sources/vbb-gtfsrt.html",
+      "note": "HTTP 200 application/protobuf on 29 Aug 2026 (~4.2 MB), Last-Modified Sat 29 Aug 2026 00:34:34 GMT. No key. 60 req/min. User-Agent required. Banner: limited data coverage since 2026-06-04 16:00; no restoration estimate. Not complete U-Bahn next-train today. Not a D1 generator."
+    }
+  ],
+  "retrievedAt": "2026-08-29T00:35:00Z",
+  "notes": [
+    "D1 oracle is official BVG passenger maps and halt lists HAND-TRANSCRIBED: S+U-Bahnnetz 30. März 2026 (hub + printed U ticks) plus current U1–U9 Linienverlauf PDFs and linienuebersicht halt stacks as of 29 Aug 2026. Stations arrays are not generated from GTFS. Not generated from VBB GTFS-RT. Not generated from HAFAS. Not generated from Wikipedia.",
+    "City id berlin is unused in uk-architecture.md, scoped-cities-2026-08-28.md, and existing packs (rotterdam, goteborg, malmo, uppsala, washington, …). Display Berlin. Agency BVG, not S-Bahn Berlin GmbH, not DB, not VBB as a city. Do not invent city=germany or city=brandenburg.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like = BVG U-Bahn U1–U9 only. No S-Bahn, no DB / RE / RB / FEX, no tram, no bus, no ferry, no BVG Muva, no U10, no passenger U55, no construction-closed U6 north of Kurt-Schumacher-Platz.",
+    "Timezone Europe/Berlin HAS DST (CEST/CET). Do not copy Perth / Brisbane no-DST.",
+    "Nine printed U-Bahn lines on the official BVG index: U1 Warschauer Str.–Uhlandstr.; U2 Pankow–Ruhleben; U3 Warschauer Str.–Krumme Lanke; U4 Nollendorfplatz–Innsbrucker Platz; U5 Hönow–Hauptbahnhof (includes former U55); U6 Kurt-Schumacher-Platz–Alt-Mariendorf (map still prints closed Alt-Tegel); U7 Rathaus Spandau–Rudow; U8 Wittenau–Hermannstr.; U9 Osloer Str.–Rathaus Steglitz.",
+    "Locked inner-city printed name: Alexanderplatz (Innenstadtausschnitt Mitte node; BVG halte title S+U Alexanderplatz; U2/U5/U8 cross). Not Berlin, not Mitte, not City, not Hauptbahnhof (U5-only U-Bahn), not Nollendorfplatz (U-Bahn-only 4-line Kleinprofil node — shared approach). doNotGroup U vs S vs Regional at Alexanderplatz.",
+    "170 unique passenger-open U-Bahn stop strings. 203 line ticks. 25 shared U-Bahn interchanges. Four map-printed U6 north stations (Otisstr., Holzhauser Str., Borsigwerke, Alt-Tegel) are closed and not inserted. Dual-name S+U ticks use the BVG U-Bahn halt-list string without the U / S+U prefix (Warschauer Str., not S Warschauer Straße).",
+    "Map vs halt list: BVG line pages prefix U / S+U; D1 locks the name without that prefix and keeps official abbreviations (Str., ß in Schloßstr.) and official parentheticals (Freie Universität (Thielplatz), Kienberg (Gärten der Welt), Magdalenenstr. (Campus für Demokratie), Kochstr./Checkpoint Charlie). Anton-Wilhelm-Amo-Str. not Mohrenstraße (23 Aug 2025).",
+    "gtfsRouteIdsIfKnown are passenger codes U1–U9 printed on the BVG index. VBB/GTFS route_id versioning is feed metadata — do not treat suffixes as print locks. No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Official VBB REST API departureBoard — key from api@VBB.de, not anonymous. Official VBB GTFS-RT https://production.gtfsrt.vbb.de/data no key, 200 on 29 Aug 2026, but VBB banner limited coverage since 2026-06-04. BVG app HAFAS sits at bvg-apps.hafas.de (CSP on bvg.de) — unpublished mobile endpoint, not a product contract. Community v6.bvg.transport.rest is not the official path. D1 stays planned. assertCityLive(\"berlin\") must fail."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Alexanderplatz",
+    "doNotUse": [
+      "Berlin",
+      "Berlin Hbf",
+      "Berlin Hauptbahnhof",
+      "Mitte",
+      "City",
+      "City Centre",
+      "Centrum",
+      "CBD",
+      "Zentrum",
+      "Alex",
+      "S+U Alexanderplatz",
+      "Alexanderplatz Bahnhof",
+      "Hauptbahnhof",
+      "Nollendorfplatz"
+    ],
+    "alsoOnSharedApproaches": [
+      "Nollendorfplatz",
+      "Wittenbergplatz",
+      "Hauptbahnhof",
+      "Stadtmitte",
+      "Zoologischer Garten",
+      "Friedrichstr.",
+      "Potsdamer Platz",
+      "Gleisdreieck"
+    ]
+  },
+  "coverageGaps": [
+    "S-Bahn S1–S9 / S15 / S25 / S26 / S41 / S42 / S46 / S47 / S75 / S85 including every S+U interchange. Out of v1. doNotGroup the U-Bahn stop string vs the S-Bahn stop of the same name family.",
+    "DB Regional / RE / RB / IC / ICE and FEX Flughafen BER. BER is not a U-Bahn stop. Bus X7 / X71 / N7 to BER are out of v1.",
+    "BVG tram, bus, night bus, ferry, BVG Muva. Out of v1.",
+    "U10 unbuilt (planning / ghost platforms only). Not on the official 2026 U-Bahn index. Not inserted.",
+    "Passenger U55 does not exist. Former U55 (Brandenburger Tor–Bundestag–Hauptbahnhof) is U5. Not a second line.",
+    "U6 north of Kurt-Schumacher-Platz closed to passengers since 7 Nov 2022 (Otisstr., Holzhauser Str., Borsigwerke, Alt-Tegel). Still drawn on the 30 Mar 2026 map. Official U6 folder and linienuebersicht terminate at Kurt-Schumacher-Platz. Reopen target 16 Aug 2027. Not inserted. Replacement bus is out of v1.",
+    "Closed / never-in-service U-Bahn stations (e.g. historic ghost stations not in the 2026 halt lists). Not inserted.",
+    "S-Bahn Berlin GmbH is a different agency. Do not merge berlin into an S-Bahn city. Do not use the sbahn.berlin caption date as a second map authority (same PDF bytes as the BVG 30 Mar 2026 sheet).",
+    "PDF hex colours and S-Bahn/Regional overlay are legend metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "u1",
+      "number": "U1",
+      "name": "U1",
+      "officialPageTitle": "U1 S+U Warschauer Str. ◂▸ U Uhlandstr.",
+      "gtfsRouteIdsIfKnown": [
+        "U1"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Warschauer Str.",
+        "Uhlandstr."
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Warschauer Str.",
+          "otherLine": "u3",
+          "note": "Shared U1/U3 east terminus. U1 turns west to Uhlandstr. after Wittenbergplatz; U3 turns south-west to Krumme Lanke."
+        },
+        {
+          "at": "Nollendorfplatz",
+          "otherLine": "u2",
+          "note": "Kleinprofil family cross. U1/U3 through; U2 through; U4 terminates here."
+        },
+        {
+          "at": "Wittenbergplatz",
+          "otherLine": "u3",
+          "note": "U1 continues Kurfürstendamm–Uhlandstr. U2 through to Zoologischer Garten. U3 continues Augsburger Str.–Krumme Lanke."
+        },
+        {
+          "at": "Gleisdreieck",
+          "otherLine": "u2",
+          "note": "U1/U3 east–west Kleinprofil; U2 crosses north–south."
+        },
+        {
+          "at": "Kottbusser Tor",
+          "otherLine": "u8",
+          "note": "U1/U3 Kleinprofil vs U8 Großprofil. doNotGroup vs S-Bahn (none here)."
+        },
+        {
+          "at": "Möckernbrücke",
+          "otherLine": "u7",
+          "note": "U1/U3 vs U7."
+        },
+        {
+          "at": "Hallesches Tor",
+          "otherLine": "u6",
+          "note": "U1/U3 vs U6."
+        }
+      ],
+      "stations": [
+        "Warschauer Str.",
+        "Schlesisches Tor",
+        "Görlitzer Bahnhof",
+        "Kottbusser Tor",
+        "Prinzenstr.",
+        "Hallesches Tor",
+        "Möckernbrücke",
+        "Gleisdreieck",
+        "Kurfürstenstr.",
+        "Nollendorfplatz",
+        "Wittenbergplatz",
+        "Kurfürstendamm",
+        "Uhlandstr."
+      ]
+    },
+    {
+      "id": "u2",
+      "number": "U2",
+      "name": "U2",
+      "officialPageTitle": "U2 S+U Pankow ◂▸ U Ruhleben",
+      "gtfsRouteIdsIfKnown": [
+        "U2"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Pankow",
+        "Ruhleben"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Alexanderplatz",
+          "otherLine": "u5",
+          "note": "Printed Innenstadt S+U node. U2 Kleinprofil vs U5/U8 Großprofil. doNotGroup U vs S3/S5/S7/S9 vs Regional."
+        },
+        {
+          "at": "Stadtmitte",
+          "otherLine": "u6",
+          "note": "U2 vs U6. Not the hub lock."
+        },
+        {
+          "at": "Nollendorfplatz",
+          "otherLine": "u1",
+          "note": "U2 through; U1/U3 through; U4 terminates."
+        },
+        {
+          "at": "Wittenbergplatz",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Gleisdreieck",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Zoologischer Garten",
+          "otherLine": "u9",
+          "note": "U2 vs U9. doNotGroup U vs S-Bahn Zoologischer Garten vs Regional."
+        },
+        {
+          "at": "Bismarckstr.",
+          "otherLine": "u7",
+          "note": "U2 vs U7."
+        }
+      ],
+      "stations": [
+        "Pankow",
+        "Vinetastr.",
+        "Schönhauser Allee",
+        "Eberswalder Str.",
+        "Senefelderplatz",
+        "Rosa-Luxemburg-Platz",
+        "Alexanderplatz",
+        "Klosterstr.",
+        "Märkisches Museum",
+        "Spittelmarkt",
+        "Hausvogteiplatz",
+        "Stadtmitte",
+        "Anton-Wilhelm-Amo-Str.",
+        "Potsdamer Platz",
+        "Mendelssohn-Bartholdy-Park",
+        "Gleisdreieck",
+        "Bülowstr.",
+        "Nollendorfplatz",
+        "Wittenbergplatz",
+        "Zoologischer Garten",
+        "Ernst-Reuter-Platz",
+        "Deutsche Oper",
+        "Bismarckstr.",
+        "Sophie-Charlotte-Platz",
+        "Kaiserdamm",
+        "Theodor-Heuss-Platz",
+        "Neu-Westend",
+        "Olympia-Stadion",
+        "Ruhleben"
+      ]
+    },
+    {
+      "id": "u3",
+      "number": "U3",
+      "name": "U3",
+      "officialPageTitle": "U3 S+U Warschauer Str. ◂▸ U Krumme Lanke",
+      "gtfsRouteIdsIfKnown": [
+        "U3"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Warschauer Str.",
+        "Krumme Lanke"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Warschauer Str.",
+          "otherLine": "u1",
+          "note": "Shared U1/U3 east terminus."
+        },
+        {
+          "at": "Wittenbergplatz",
+          "otherLine": "u1",
+          "note": "U3 is the Krumme Lanke branch. U1 is Uhlandstr. U2 through to Zoo."
+        },
+        {
+          "at": "Nollendorfplatz",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Fehrbelliner Platz",
+          "otherLine": "u7",
+          "note": "U3 vs U7."
+        },
+        {
+          "at": "Spichernstr.",
+          "otherLine": "u9",
+          "note": "U3 vs U9."
+        }
+      ],
+      "stations": [
+        "Warschauer Str.",
+        "Schlesisches Tor",
+        "Görlitzer Bahnhof",
+        "Kottbusser Tor",
+        "Prinzenstr.",
+        "Hallesches Tor",
+        "Möckernbrücke",
+        "Gleisdreieck",
+        "Kurfürstenstr.",
+        "Nollendorfplatz",
+        "Wittenbergplatz",
+        "Augsburger Str.",
+        "Spichernstr.",
+        "Hohenzollernplatz",
+        "Fehrbelliner Platz",
+        "Heidelberger Platz",
+        "Rüdesheimer Platz",
+        "Breitenbachplatz",
+        "Podbielskiallee",
+        "Dahlem-Dorf",
+        "Freie Universität (Thielplatz)",
+        "Oskar-Helene-Heim",
+        "Onkel Toms Hütte",
+        "Krumme Lanke"
+      ]
+    },
+    {
+      "id": "u4",
+      "number": "U4",
+      "name": "U4",
+      "officialPageTitle": "U4 U Nollendorfplatz ◂▸ S+U Innsbrucker Platz",
+      "gtfsRouteIdsIfKnown": [
+        "U4"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Nollendorfplatz",
+        "Innsbrucker Platz"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Nollendorfplatz",
+          "otherLine": "u1",
+          "note": "U4 terminates. Only U-Bahn-only 4-line node (U1/U2/U3/U4)."
+        },
+        {
+          "at": "Bayerischer Platz",
+          "otherLine": "u7",
+          "note": "U4 vs U7."
+        }
+      ],
+      "stations": [
+        "Nollendorfplatz",
+        "Viktoria-Luise-Platz",
+        "Bayerischer Platz",
+        "Rathaus Schöneberg",
+        "Innsbrucker Platz"
+      ]
+    },
+    {
+      "id": "u5",
+      "number": "U5",
+      "name": "U5",
+      "officialPageTitle": "U5 U Hönow ◂▸ S+U Hauptbahnhof",
+      "gtfsRouteIdsIfKnown": [
+        "U5"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Hönow",
+        "Hauptbahnhof"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Alexanderplatz",
+          "otherLine": "u2",
+          "note": "U5 through-runs Mitte. Former U55 is now this west end (Rotes Rathaus–Museumsinsel–Unter den Linden–Brandenburger Tor–Bundestag–Hauptbahnhof). No passenger U55."
+        },
+        {
+          "at": "Unter den Linden",
+          "otherLine": "u6",
+          "note": "U5 vs U6. Not Alexanderplatz."
+        },
+        {
+          "at": "Hauptbahnhof",
+          "otherLine": "u5",
+          "note": "U5-only U-Bahn terminus. doNotGroup U vs S-Bahn vs DB Hauptbahnhof vs FEX BER."
+        }
+      ],
+      "stations": [
+        "Hönow",
+        "Louis-Lewin-Str.",
+        "Hellersdorf",
+        "Cottbusser Platz",
+        "Kienberg (Gärten der Welt)",
+        "Kaulsdorf-Nord",
+        "Wuhletal",
+        "Elsterwerdaer Platz",
+        "Biesdorf-Süd",
+        "Tierpark",
+        "Friedrichsfelde",
+        "Lichtenberg",
+        "Magdalenenstr. (Campus für Demokratie)",
+        "Frankfurter Allee",
+        "Samariterstr.",
+        "Frankfurter Tor",
+        "Weberwiese",
+        "Strausberger Platz",
+        "Schillingstr.",
+        "Alexanderplatz",
+        "Rotes Rathaus",
+        "Museumsinsel",
+        "Unter den Linden",
+        "Brandenburger Tor",
+        "Bundestag",
+        "Hauptbahnhof"
+      ]
+    },
+    {
+      "id": "u6",
+      "number": "U6",
+      "name": "U6",
+      "officialPageTitle": "U6 U Kurt-Schumacher-Platz ◂▸ U Alt-Mariendorf",
+      "gtfsRouteIdsIfKnown": [
+        "U6"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Kurt-Schumacher-Platz",
+        "Alt-Mariendorf"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Stadtmitte",
+          "otherLine": "u2"
+        },
+        {
+          "at": "Unter den Linden",
+          "otherLine": "u5"
+        },
+        {
+          "at": "Hallesches Tor",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Mehringdamm",
+          "otherLine": "u7"
+        },
+        {
+          "at": "Leopoldplatz",
+          "otherLine": "u9",
+          "note": "U6 vs U9."
+        },
+        {
+          "at": "Friedrichstr.",
+          "otherLine": "u6",
+          "note": "doNotGroup U vs S-Bahn Friedrichstr. vs Regional / DB."
+        }
+      ],
+      "stations": [
+        "Kurt-Schumacher-Platz",
+        "Afrikanische Str.",
+        "Rehberge",
+        "Seestr.",
+        "Leopoldplatz",
+        "Wedding",
+        "Reinickendorfer Str.",
+        "Schwartzkopffstr.",
+        "Naturkundemuseum",
+        "Oranienburger Tor",
+        "Friedrichstr.",
+        "Unter den Linden",
+        "Stadtmitte",
+        "Kochstr./Checkpoint Charlie",
+        "Hallesches Tor",
+        "Mehringdamm",
+        "Platz der Luftbrücke",
+        "Paradestr.",
+        "Tempelhof",
+        "Alt-Tempelhof",
+        "Kaiserin-Augusta-Str.",
+        "Ullsteinstr.",
+        "Westphalweg",
+        "Alt-Mariendorf"
+      ]
+    },
+    {
+      "id": "u7",
+      "number": "U7",
+      "name": "U7",
+      "officialPageTitle": "U7 S+U Rathaus Spandau ◂▸ U Rudow",
+      "gtfsRouteIdsIfKnown": [
+        "U7"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Rathaus Spandau",
+        "Rudow"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Bismarckstr.",
+          "otherLine": "u2"
+        },
+        {
+          "at": "Fehrbelliner Platz",
+          "otherLine": "u3"
+        },
+        {
+          "at": "Berliner Str.",
+          "otherLine": "u9"
+        },
+        {
+          "at": "Bayerischer Platz",
+          "otherLine": "u4"
+        },
+        {
+          "at": "Möckernbrücke",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Mehringdamm",
+          "otherLine": "u6"
+        },
+        {
+          "at": "Hermannplatz",
+          "otherLine": "u8",
+          "note": "U7 vs U8."
+        },
+        {
+          "at": "Yorckstr.",
+          "otherLine": "u7",
+          "note": "doNotGroup U vs S Yorckstraße / Großgörschenstraße."
+        }
+      ],
+      "stations": [
+        "Rathaus Spandau",
+        "Altstadt Spandau",
+        "Zitadelle",
+        "Haselhorst",
+        "Paulsternstr.",
+        "Rohrdamm",
+        "Siemensdamm",
+        "Halemweg",
+        "Jakob-Kaiser-Platz",
+        "Jungfernheide",
+        "Mierendorffplatz",
+        "Richard-Wagner-Platz",
+        "Bismarckstr.",
+        "Wilmersdorfer Str.",
+        "Adenauerplatz",
+        "Konstanzer Str.",
+        "Fehrbelliner Platz",
+        "Blissestr.",
+        "Berliner Str.",
+        "Bayerischer Platz",
+        "Eisenacher Str.",
+        "Kleistpark",
+        "Yorckstr.",
+        "Möckernbrücke",
+        "Mehringdamm",
+        "Gneisenaustr.",
+        "Südstern",
+        "Hermannplatz",
+        "Rathaus Neukölln",
+        "Karl-Marx-Str.",
+        "Neukölln",
+        "Grenzallee",
+        "Blaschkoallee",
+        "Parchimer Allee",
+        "Britz-Süd",
+        "Johannisthaler Chaussee",
+        "Lipschitzallee",
+        "Wutzkyallee",
+        "Zwickauer Damm",
+        "Rudow"
+      ]
+    },
+    {
+      "id": "u8",
+      "number": "U8",
+      "name": "U8",
+      "officialPageTitle": "U8 S+U Wittenau ◂▸ S+U Hermannstr.",
+      "gtfsRouteIdsIfKnown": [
+        "U8"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Wittenau",
+        "Hermannstr."
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Alexanderplatz",
+          "otherLine": "u2",
+          "note": "U8 north–south Großprofil through the lock."
+        },
+        {
+          "at": "Osloer Str.",
+          "otherLine": "u9",
+          "note": "U8 vs U9. U9 terminates here."
+        },
+        {
+          "at": "Kottbusser Tor",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Hermannplatz",
+          "otherLine": "u7"
+        },
+        {
+          "at": "Gesundbrunnen",
+          "otherLine": "u8",
+          "note": "doNotGroup U vs S-Bahn Gesundbrunnen vs Regional / Ring."
+        }
+      ],
+      "stations": [
+        "Wittenau",
+        "Rathaus Reinickendorf",
+        "Karl-Bonhoeffer-Nervenklinik",
+        "Lindauer Allee",
+        "Paracelsus-Bad",
+        "Residenzstr.",
+        "Franz-Neumann-Platz",
+        "Osloer Str.",
+        "Pankstr.",
+        "Gesundbrunnen",
+        "Voltastr.",
+        "Bernauer Str.",
+        "Rosenthaler Platz",
+        "Weinmeisterstr.",
+        "Alexanderplatz",
+        "Jannowitzbrücke",
+        "Heinrich-Heine-Str.",
+        "Moritzplatz",
+        "Kottbusser Tor",
+        "Schönleinstr.",
+        "Hermannplatz",
+        "Boddinstr.",
+        "Leinestr.",
+        "Hermannstr."
+      ]
+    },
+    {
+      "id": "u9",
+      "number": "U9",
+      "name": "U9",
+      "officialPageTitle": "U9 U Osloer Str. ◂▸ S+U Rathaus Steglitz",
+      "gtfsRouteIdsIfKnown": [
+        "U9"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Osloer Str.",
+        "Rathaus Steglitz"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Osloer Str.",
+          "otherLine": "u8",
+          "note": "U9 northern terminus. U8 through."
+        },
+        {
+          "at": "Leopoldplatz",
+          "otherLine": "u6"
+        },
+        {
+          "at": "Zoologischer Garten",
+          "otherLine": "u2"
+        },
+        {
+          "at": "Kurfürstendamm",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Spichernstr.",
+          "otherLine": "u3"
+        },
+        {
+          "at": "Berliner Str.",
+          "otherLine": "u7"
+        }
+      ],
+      "stations": [
+        "Osloer Str.",
+        "Nauener Platz",
+        "Leopoldplatz",
+        "Amrumer Str.",
+        "Westhafen",
+        "Birkenstr.",
+        "Turmstr.",
+        "Hansaplatz",
+        "Zoologischer Garten",
+        "Kurfürstendamm",
+        "Spichernstr.",
+        "Güntzelstr.",
+        "Berliner Str.",
+        "Bundesplatz",
+        "Friedrich-Wilhelm-Platz",
+        "Walther-Schreiber-Platz",
+        "Schloßstr.",
+        "Rathaus Steglitz"
+      ]
+    }
+  ]
+}

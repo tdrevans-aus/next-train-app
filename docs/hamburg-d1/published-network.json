@@ -1,0 +1,542 @@
+{
+  "city": "hamburg",
+  "displayName": "Hamburg",
+  "status": "planned",
+  "agency": "Hamburger Hochbahn / HVV",
+  "timezone": "Europe/Berlin",
+  "source": "https://www.hvv.de/resource/blob/120104/3ff58f395fa6e8d4818231b0573b0bc6/hvv_usar-plan.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger U/S/A/R network map (hub lock + printed U-Bahn ticks + termini geography). Skip every S-Bahn, AKN, Regional, bus, ferry.",
+      "title": "hvv Plan: U/S/A/R-Plan (Stand 01.06.2026)",
+      "url": "https://www.hvv.de/resource/blob/120104/3ff58f395fa6e8d4818231b0573b0bc6/hvv_usar-plan.pdf",
+      "linkedFrom": "https://www.hvv.de/de/plaene",
+      "captionOnIndex": "U/S/A/R-Plan",
+      "retrievedAt": "2026-08-29T00:52:00Z",
+      "etag": "3ff58f395fa6e8d4818231b0573b0bc6",
+      "localFile": "sources/hvv_usar-plan.pdf",
+      "note": "Illustrator 30.6, created 15 Jul 2026, PDF title hvv Plan: U/S/A/R-Plan, author Hamburger Verkehrsverbund GmbH, footer Stand: 01.06.2026 ©hvv. Mixed U+S+A+R sheet. Prints U1–U4 only. No U5. No Horner Geest / Stoltenstraße / Grasbrook. Inner-city print Jungfernstieg beside Hauptbahnhof; legend phrase als über Jungfernstieg / as via Jungfernstieg. English index URL usar-network-plan-diagram-en-data.pdf is md5-identical (same bytes)."
+    },
+    {
+      "role": "D1 English caption of the same USAR sheet (not a second authority)",
+      "title": "hvv Plan: U/S/A/R-Plan (English index caption; same bytes as German 01.06.2026 sheet)",
+      "url": "https://www.hvv.de/resource/blob/3204/3b7a5ac2668b2ac106536f53648ec5c3/usar-network-plan-diagram-en-data.pdf",
+      "linkedFrom": "https://www.hvv.de/en/timetables/overview",
+      "retrievedAt": "2026-08-29T00:52:00Z",
+      "localFile": "sources/usar-network-plan-diagram-en-data.pdf",
+      "note": "md5 1697e5fc44eeb99703fb3e054a8caa05 identical to sources/hvv_usar-plan.pdf. D1 authority stays the hvv.de German blob."
+    },
+    {
+      "role": "D1 accessible USAR companion (same 01.06.2026 family)",
+      "title": "hvv Plan: USAR network plan with access aids (Stand 01.06.2026)",
+      "url": "https://www.hvv.de/resource/blob/23728/8e08116b21069d49a3f63e5029e05440/usar-network-plan-with-access-aids-data.pdf",
+      "linkedFrom": "https://www.hvv.de/de/plaene",
+      "captionOnIndex": "USAR-Plan mit Einstieghilfen",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/usar-einstieghilfen.pdf",
+      "note": "InDesign 21.0, created 22 Jul 2026. Same June 2026 USAR family. Accessibility overlay, not a second map authority. Notes Jungfernstieg barrier-free works into 2027 — overlay, stop stays in D1."
+    },
+    {
+      "role": "D1 passenger map index",
+      "title": "Netz- und Tarifpläne",
+      "url": "https://www.hvv.de/de/plaene",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/plaene.html",
+      "printedMapsOnIndex": [
+        "U/S/A/R-Plan",
+        "USAR-Plan mit Einstieghilfen",
+        "Tarifplan U/S/A/R - schematisch",
+        "MetroBusse",
+        "XpressBusse",
+        "NachtBusse",
+        "Hafenfähren Hamburg",
+        "Metropolregion Regionalverkehrsplan"
+      ]
+    },
+    {
+      "role": "D1 U-Bahn Linienfahrplan index (four official line PDFs)",
+      "title": "Linienfahrplan",
+      "url": "https://www.hvv.de/de/linienfahrplan",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/linienfahrplan.html",
+      "note": "Search-a-line PDF index. Downloads U1–U4 Linienfahrplan PDFs only for this city. S-Bahn / AKN / Regional / bus / ferry on the same index are out of v1."
+    },
+    {
+      "role": "Hochbahn U-Bahn network portrait (four passenger lines; 93 stops)",
+      "title": "U-Bahn-Streckennetz — Mit den Linien U1, U2, U3 und U4",
+      "url": "https://www.hochbahn.de/de/betrieb/u-bahn-streckennetz",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/u-bahn-streckennetz.html",
+      "note": "Agency copy: currently four U-Bahn lines U1–U4 to 93 Haltestellen. U1 47 stops, branch at Volksdorf to Großhansdorf and Ohlstedt. U2 25 stops Niendorf to Mümmelmannsberg. U3 ring 26 halt ticks. U4 Billstedt to Elbbrücken; Horner Geest and Grasbrook described as future. U5 construction. Not a substitute for the HVV USAR sheet + Linienfahrplan halt stacks."
+    },
+    {
+      "role": "current U1 halt list + Linienfahrplan (ordered ticks + official termini; Volksdorf Y-fork)",
+      "title": "U1 Norderstedt Mitte – Hauptbahnhof Süd – Ohlstedt / Großhansdorf",
+      "url": "https://www.hvv.de/resource/blob/73090/9734f4e35987f27cd3d3f0b212fee7c2/hvv_linienfahrplan_U1.pdf",
+      "linkedFrom": "https://www.hvv.de/de/linienfahrplan",
+      "retrievedAt": "2026-08-29T00:52:00Z",
+      "localFile": "sources/hvv_linienfahrplan_U1.pdf",
+      "localTxt": "sources/hvv_linienfahrplan_U1.txt",
+      "note": "47 official halt ticks. Header [U-1] Norderstedt Mitte – Hauptbahnhof Süd – Ohlstedt / Großhansd. Gültig 14.12.2025–12.12.2026. Author Hochbahn, created 6 May 2026. Volksdorf splits to Ohlstedt (Buckhorn, Hoisbüttel) and Großhansdorf (Buchenkamp … Kiekut). Folder truncates Großhansdorf as Großhansd. — lock the halt-row full string Großhansdorf."
+    },
+    {
+      "role": "current U2 halt list + Linienfahrplan (ordered ticks + official termini)",
+      "title": "U2 Niendorf Nord – Hauptbahnhof Nord – Mümmelmannsberg",
+      "url": "https://www.hvv.de/resource/blob/73084/4e48810f9dd89ca66c1a98cf211d09be/hvv_linienfahrplan_U2.pdf",
+      "linkedFrom": "https://www.hvv.de/de/linienfahrplan",
+      "retrievedAt": "2026-08-29T00:52:00Z",
+      "localFile": "sources/hvv_linienfahrplan_U2.pdf",
+      "localTxt": "sources/hvv_linienfahrplan_U2.txt",
+      "note": "25 official halt ticks. Header [U-2] Niendorf Nord – Hauptbahnhof Nord – Mümmelmannsberg. Gültig 14.12.2025–12.12.2026. Author Hochbahn, created 6 Nov 2025. Halt-list string Gänsemarkt (Oper). Some columns short-turn Billstedt — overlay, not a nested code."
+    },
+    {
+      "role": "current U3 halt list + Linienfahrplan (ordered ticks + official termini; ring through Barmbek)",
+      "title": "U3 Barmbek – Schlump – Hauptbahnhof Süd – Wandsbek-Gartenstadt",
+      "url": "https://www.hvv.de/resource/blob/73098/439fcd76010fe3b7332774dc1b41fc2e/hvv_linienfahrplan_U3.pdf",
+      "linkedFrom": "https://www.hvv.de/de/linienfahrplan",
+      "retrievedAt": "2026-08-29T00:52:00Z",
+      "localFile": "sources/hvv_linienfahrplan_U3.pdf",
+      "localTxt": "sources/hvv_linienfahrplan_U3.txt",
+      "note": "26 official halt ticks, 25 unique names. Header [U-3] Barmbek – Schlump – Hauptbahnhof Süd – Wandsbek-Gartenstadt. Gültig 14.12.2025–12.12.2026. Author Hochbahn, created 6 Nov 2025. Same physical Barmbek listed twice (west onto the ring, then east through to the Wandsbek-Gartenstadt spur). Folder strings St.Pauli (no space), Borgweg (Stadtpark), Sternschanze (Messe), Feldstraße (Heiligengeistfeld), Baumwall (Elbphilharmonie). U3 never calls Jungfernstieg (Rathaus is the nearby U3 inner tick)."
+    },
+    {
+      "role": "current U4 halt list + Linienfahrplan (ordered ticks + official termini)",
+      "title": "U4 Elbbrücken – Hauptbahnhof Nord – Billstedt",
+      "url": "https://www.hvv.de/resource/blob/73080/bb74bf6bfbb892ad7083777354901f90/hvv_linienfahrplan_U4.pdf",
+      "linkedFrom": "https://www.hvv.de/de/linienfahrplan",
+      "retrievedAt": "2026-08-29T00:52:00Z",
+      "localFile": "sources/hvv_linienfahrplan_U4.pdf",
+      "localTxt": "sources/hvv_linienfahrplan_U4.txt",
+      "note": "12 official halt ticks. Header [U-4] Elbbrücken – Hauptbahnhof Nord – Billstedt. Gültig 14.12.2025–12.12.2026. Author Hochbahn, created 5 Nov 2025. Shares Jungfernstieg–Billstedt with U2 except the three HafenCity ticks. No Horner Geest, no Stoltenstraße, no Grasbrook."
+    },
+    {
+      "role": "U5 construction status (not passenger-open — OUT)",
+      "title": "The U5 for Hamburg",
+      "url": "https://www.hochbahn.de/en/projects/underground-expansion/the-u5-for-hamburg",
+      "alsoLinkedFrom": "https://www.hochbahn.de/de/projekte/u-bahn-ausbau/die-u5-fuer-hamburg",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/u5.html",
+      "localFileDe": "sources/u5-de.html",
+      "note": "Trial run Sengelmannstraße–City Nord from 2027; passenger service from 2029. Not on the 01.06.2026 USAR sheet. Not on the 2025/26 Linienfahrplan index. Not inserted."
+    },
+    {
+      "role": "U4 Horner Geest construction status (not passenger-open — OUT)",
+      "title": "U4 Horner Geest",
+      "url": "https://www.hochbahn.de/de/projekte/u-bahn-ausbau/u4-horner-geest",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/u4-horner-geest.html",
+      "note": "Two new stops Stoltenstraße and Horner Geest. Passenger target Herbst / Ende 2027. Current U4 still Billstedt–Elbbrücken on the shared U2 east. Not inserted."
+    },
+    {
+      "role": "U1 Ohlsdorf 2026 construction overlay (stations stay in D1)",
+      "title": "Modernisierung der U1 / Ohlsdorf 2026",
+      "url": "https://www.hvv.de/de/ohlsdorf",
+      "alsoLinkedFrom": "https://www.hochbahn.de/de/projekte/fit-fuer-die-zukunft/ohlsdorf",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/ohlsdorf.html",
+      "note": "As of 29 Aug 2026: U1 closed Fuhlsbüttel Nord <> Lattenkamp 13 Jul–14 Oct 2026 (SEV bus). 15–28 Oct Ohlsdorf skip-stop inbound. Official U1 folder and USAR map still print the full passenger geography including Ohlsdorf / Sengelmannstraße (City Nord) / Alsterdorf. Overlay, not deleted D1 rows. Replacement bus out of v1."
+    },
+    {
+      "role": "live-board path (official Hochbahn / HVV Geofox GTI; key via email — not wired)",
+      "title": "Geofox Thin Interface (GTI) — Anwenderhandbuch Version 63.4",
+      "url": "https://gti.geofox.de/",
+      "handbookHtml": "https://gti.geofox.de/html/GTIHandbuch_p.html",
+      "handbookPdf": "https://gti.geofox.de/pdf/GEOFOX_GTI_Anwenderhandbuch_p.pdf",
+      "applyAt": "https://www.hvv.de/de/fahrplaene/abruf-fahrplaninfos/datenabruf",
+      "retrievedAt": "2026-08-29T00:54:00Z",
+      "localFile": "sources/gti.html",
+      "localHandbookHtml": "sources/GTIHandbuch.html",
+      "localHandbookPdf": "sources/GEOFOX_GTI_Anwenderhandbuch_p.pdf",
+      "localApplyPage": "sources/datenabruf.html",
+      "endpointsNamed": [
+        "POST https://gti.geofox.de/gti/public/init",
+        "POST https://gti.geofox.de/gti/public/checkName",
+        "POST https://gti.geofox.de/gti/public/getRoute",
+        "POST https://gti.geofox.de/gti/public/departureList",
+        "POST https://gti.geofox.de/gti/public/departureCourse",
+        "POST https://gti.geofox.de/gti/public/listStations",
+        "POST https://gti.geofox.de/gti/public/listLines",
+        "POST https://gti.geofox.de/gti/public/getAnnouncements"
+      ],
+      "note": "Official REST-like next-train path. HMAC-SHA1 headers geofox-auth-user + geofox-auth-signature, or static IP. Access: email api@hochbahn.de (no general entitlement). Filter FilterServiceType UBAHN. departureList useRealtime true returns delay / cancelled / extra / realtimePlatform. Changing node Hauptbahnhof is documented as separate stations Hbf. Nord / Hbf. Süd / Hbf. ZOB — doNotGroup. GTI Plandaten.zip at /gti/data/Plandaten.zip is ISA static, not a D1 generator. D1 stays planned."
+    }
+  ],
+  "retrievedAt": "2026-08-29T00:54:00Z",
+  "notes": [
+    "D1 oracle is official HVV/Hochbahn passenger maps and halt lists HAND-TRANSCRIBED: U/S/A/R-Plan Stand 01.06.2026 (hub + printed U ticks) plus current U1–U4 Linienfahrplan PDFs gültig 14.12.2025–12.12.2026 as of 29 Aug 2026. Stations arrays are not generated from GTFS. Not generated from GTI listStations / listLines. Not generated from Wikipedia.",
+    "City id hamburg is unused in existing packs (berlin, munich, rotterdam, goteborg, malmo, uppsala, washington, …). Display Hamburg. Agency Hamburger Hochbahn AG / HVV, not S-Bahn Hamburg, not AKN, not DB, not VHH bus. Do not invent city=germany or merge into an S-Bahn city.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like = Hochbahn U-Bahn U1–U4 only. No S-Bahn, no AKN, no DB / RE / RB, no tram (Hamburg has no tram), no bus / MetroBus / NachtBus, no HADAG ferry, no passenger U5, no U4 Horner Geest / Stoltenstraße / Grasbrook.",
+    "Timezone Europe/Berlin HAS DST (CEST/CET). Do not copy no-DST cities.",
+    "Four printed U-Bahn lines on the official Hochbahn network page and HVV Linienfahrplan: U1 Norderstedt Mitte–Hauptbahnhof Süd–Ohlstedt / Großhansdorf; U2 Niendorf Nord–Hauptbahnhof Nord–Mümmelmannsberg; U3 Barmbek–Schlump–Hauptbahnhof Süd–Wandsbek-Gartenstadt; U4 Elbbrücken–Hauptbahnhof Nord–Billstedt.",
+    "Locked inner-city printed name: Jungfernstieg (USAR inner-city U1/U2/U4 + S node; map legend als über Jungfernstieg). Not Hamburg, not City, not Hauptbahnhof (two distinct U-Bahn stations Nord and Süd plus S plus DB), not Hauptbahnhof Süd, not Berliner Tor (U2/U3/U4 east of the printed core). doNotGroup U vs S at Jungfernstieg. doNotGroup Hauptbahnhof Süd vs Hauptbahnhof Nord vs S Hauptbahnhof vs DB Hamburg Hbf. doNotGroup Berliner Tor U vs S.",
+    "93 unique passenger-open U-Bahn stop strings (matches Hochbahn 93 Haltestellen). 110 line ticks (U3 lists Barmbek twice as the official ring-then-spur order). Dual-name S+U ticks use the Hochbahn/HVV U-Bahn halt-list string without a U / S prefix.",
+    "Map vs halt list: lock official 2025/26 folder strings. Großhansdorf not folder-header Großhansd. Gänsemarkt (Oper) not Gänsemarkt. Sengelmannstraße (City Nord), Stephansplatz (Oper/CCH), Lattenkamp (Sporthalle), Borgweg (Stadtpark), Sternschanze (Messe), Feldstraße (Heiligengeistfeld), Baumwall (Elbphilharmonie) keep parentheticals. St.Pauli as printed (no space). Meßberg / Straßburger Straße keep ß. Hauptbahnhof Süd and Hauptbahnhof Nord never collapse to Hauptbahnhof.",
+    "gtfsRouteIdsIfKnown are passenger codes U1–U4 printed on the HVV/Hochbahn index (GTI examples de:hvv:U2: / HHA U:U1_HHA-U are feed metadata — not print locks). No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Official Geofox GTI departureList — key from api@hochbahn.de, HMAC-SHA1, not anonymous. Filter UBAHN. Static HVV GTFS on Transparenzportal Hamburg is monthly and is NOT a D1 generator; that portal does not publish GTFS-RT. hvv.de Abfahrten is the passenger UI, not a product contract. D1 stays planned. assertCityLive(\"hamburg\") must fail."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Jungfernstieg",
+    "doNotUse": [
+      "Hamburg",
+      "Hamburg Hbf",
+      "Hamburg Hauptbahnhof",
+      "City",
+      "City Centre",
+      "Centrum",
+      "CBD",
+      "Zentrum",
+      "Mitte",
+      "HafenCity",
+      "to City",
+      "Hauptbahnhof",
+      "Hauptbahnhof Süd",
+      "Hauptbahnhof Nord",
+      "Berliner Tor",
+      "Rathaus",
+      "Mönckebergstraße"
+    ],
+    "alsoOnSharedApproaches": [
+      "Hauptbahnhof Süd",
+      "Hauptbahnhof Nord",
+      "Berliner Tor",
+      "Schlump",
+      "Kellinghusenstraße",
+      "Lübecker Straße",
+      "Wandsbek-Gartenstadt",
+      "Landungsbrücken",
+      "Rathaus",
+      "Horner Rennbahn",
+      "Billstedt",
+      "Barmbek"
+    ]
+  },
+  "coverageGaps": [
+    "S-Bahn S1–S5 / S7 including every S+U interchange (Jungfernstieg, Hauptbahnhof, Berliner Tor, Landungsbrücken, Sternschanze, Ohlsdorf, Barmbek, Wandsbeker Chaussee, Elbbrücken, Hammerbrook is S-only). Out of v1. doNotGroup the U-Bahn stop string vs the S-Bahn stop of the same name family.",
+    "AKN A1/A2/A3. Out of v1. Not U-Bahn.",
+    "DB Regional / RE / RB / IC / ICE at Hamburg Hbf, Dammtor, Altona, Harburg. Dammtor is S / DB — nearby U-Bahn is Stephansplatz (Oper/CCH), a different stop.",
+    "Bus (MetroBus, XpressBus, NachtBus, Stadtbus), HADAG ferry. Out of v1. Hamburg has no tram.",
+    "U5 unopened. Trial 2027, passengers 2029 (Sengelmannstraße–City Nord first). Not on the 01.06.2026 USAR sheet. Not inserted.",
+    "U4 east of Horner Rennbahn to Stoltenstraße / Horner Geest unopened (passenger target Herbst/Ende 2027). Folder still Billstedt. Not inserted.",
+    "U4 Grasbrook / south of the Elbe unopened. Not inserted.",
+    "U3 extra stop Fuhlsbüttler Straße (between Habichtstraße and Barmbek) is planning only. Not inserted.",
+    "U1 Ohlsdorf 2026 construction (Fuhlsbüttel Nord–Lattenkamp closed 13 Jul–14 Oct 2026; Ohlsdorf skip-stop inbound to 28 Oct). Overlay. Official folder still prints the full U1 path — stations stay in D1. SEV bus out of v1.",
+    "PDF hex colours and S-Bahn/AKN/Regional overlay are legend metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "u1",
+      "number": "U1",
+      "name": "U1",
+      "officialPageTitle": "U1 Norderstedt Mitte – Hauptbahnhof Süd – Ohlstedt / Großhansdorf",
+      "gtfsRouteIdsIfKnown": [
+        "U1"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Norderstedt Mitte",
+        "Ohlstedt",
+        "Großhansdorf"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Volksdorf",
+          "note": "Official Y-fork on one passenger code. North branch Buckhorn – Hoisbüttel – Ohlstedt. East branch Buchenkamp – Ahrensburg West – Ahrensburg Ost – Schmalenbeck – Kiekut – Großhansdorf. Folder header abbreviates Großhansd."
+        },
+        {
+          "at": "Jungfernstieg",
+          "otherLine": "u2",
+          "note": "Printed inner-city U1/U2/U4 + S node. Hub lock. doNotGroup U vs S. U3 does not call here (Rathaus is the nearby U3 tick)."
+        },
+        {
+          "at": "Hauptbahnhof Süd",
+          "otherLine": "u3",
+          "note": "U1/U3. Distinct from Hauptbahnhof Nord (U2/U4). doNotGroup vs S Hauptbahnhof vs DB Hamburg Hbf."
+        },
+        {
+          "at": "Kellinghusenstraße",
+          "otherLine": "u3",
+          "note": "U1 through vs U3 ring."
+        },
+        {
+          "at": "Lübecker Straße",
+          "otherLine": "u3"
+        },
+        {
+          "at": "Wandsbek-Gartenstadt",
+          "otherLine": "u3",
+          "note": "U1 through to Volksdorf. U3 eastern terminus."
+        },
+        {
+          "at": "Ohlsdorf",
+          "note": "doNotGroup U vs S Ohlsdorf. 2026 platform rebuild overlay; stop stays in D1."
+        },
+        {
+          "at": "Stephansplatz (Oper/CCH)",
+          "note": "Nearby S/DB Dammtor is a different stop. doNotGroup."
+        }
+      ],
+      "stations": [
+        "Norderstedt Mitte",
+        "Richtweg",
+        "Garstedt",
+        "Ochsenzoll",
+        "Kiwittsmoor",
+        "Langenhorn Nord",
+        "Langenhorn Markt",
+        "Fuhlsbüttel Nord",
+        "Fuhlsbüttel",
+        "Klein Borstel",
+        "Ohlsdorf",
+        "Sengelmannstraße (City Nord)",
+        "Alsterdorf",
+        "Lattenkamp (Sporthalle)",
+        "Hudtwalckerstraße",
+        "Kellinghusenstraße",
+        "Klosterstern",
+        "Hallerstraße",
+        "Stephansplatz (Oper/CCH)",
+        "Jungfernstieg",
+        "Meßberg",
+        "Steinstraße",
+        "Hauptbahnhof Süd",
+        "Lohmühlenstraße",
+        "Lübecker Straße",
+        "Wartenau",
+        "Ritterstraße",
+        "Wandsbeker Chaussee",
+        "Wandsbek Markt",
+        "Straßburger Straße",
+        "Alter Teichweg",
+        "Wandsbek-Gartenstadt",
+        "Trabrennbahn",
+        "Farmsen",
+        "Oldenfelde",
+        "Berne",
+        "Meiendorfer Weg",
+        "Volksdorf",
+        "Buckhorn",
+        "Hoisbüttel",
+        "Ohlstedt",
+        "Buchenkamp",
+        "Ahrensburg West",
+        "Ahrensburg Ost",
+        "Schmalenbeck",
+        "Kiekut",
+        "Großhansdorf"
+      ]
+    },
+    {
+      "id": "u2",
+      "number": "U2",
+      "name": "U2",
+      "officialPageTitle": "U2 Niendorf Nord – Hauptbahnhof Nord – Mümmelmannsberg",
+      "gtfsRouteIdsIfKnown": [
+        "U2"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Niendorf Nord",
+        "Mümmelmannsberg"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jungfernstieg",
+          "otherLine": "u1",
+          "note": "Hub lock. U2/U4 through with U1. doNotGroup U vs S."
+        },
+        {
+          "at": "Hauptbahnhof Nord",
+          "otherLine": "u4",
+          "note": "U2/U4. Distinct from Hauptbahnhof Süd. doNotGroup vs S / DB."
+        },
+        {
+          "at": "Berliner Tor",
+          "otherLine": "u3",
+          "note": "U2/U4 vs U3. doNotGroup U vs S Berliner Tor."
+        },
+        {
+          "at": "Schlump",
+          "otherLine": "u3",
+          "note": "U2 through vs U3 ring."
+        },
+        {
+          "at": "Horner Rennbahn",
+          "otherLine": "u4",
+          "note": "U2 continues to Billstedt – Mümmelmannsberg. U4 currently continues to Billstedt only. Future U4 Horner Geest leaves here — not passenger-open."
+        },
+        {
+          "at": "Billstedt",
+          "otherLine": "u4",
+          "note": "U4 eastern terminus. U2 continues Merkenstraße – Steinfurther Allee – Mümmelmannsberg. Some U2 columns short-turn here — overlay."
+        }
+      ],
+      "stations": [
+        "Niendorf Nord",
+        "Schippelsweg",
+        "Joachim-Mähl-Straße",
+        "Niendorf Markt",
+        "Hagendeel",
+        "Hagenbecks Tierpark",
+        "Lutterothstraße",
+        "Osterstraße",
+        "Emilienstraße",
+        "Christuskirche",
+        "Schlump",
+        "Messehallen",
+        "Gänsemarkt (Oper)",
+        "Jungfernstieg",
+        "Hauptbahnhof Nord",
+        "Berliner Tor",
+        "Burgstraße",
+        "Hammer Kirche",
+        "Rauhes Haus",
+        "Horner Rennbahn",
+        "Legienstraße",
+        "Billstedt",
+        "Merkenstraße",
+        "Steinfurther Allee",
+        "Mümmelmannsberg"
+      ]
+    },
+    {
+      "id": "u3",
+      "number": "U3",
+      "name": "U3",
+      "officialPageTitle": "U3 Barmbek – Schlump – Hauptbahnhof Süd – Wandsbek-Gartenstadt",
+      "gtfsRouteIdsIfKnown": [
+        "U3"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Barmbek",
+        "Wandsbek-Gartenstadt"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Barmbek",
+          "note": "Official termini pair is Barmbek ◂▸ Wandsbek-Gartenstadt. Ring: trains leave Barmbek west via Saarlandstraße / Schlump, return through Barmbek from Dehnhaide, then spur Habichtstraße – Wandsbek-Gartenstadt. Same physical stop listed twice in stations[]. doNotGroup U vs S Barmbek. Planned extra tick Fuhlsbüttler Straße is not passenger-open."
+        },
+        {
+          "at": "Schlump",
+          "otherLine": "u2"
+        },
+        {
+          "at": "Kellinghusenstraße",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Hauptbahnhof Süd",
+          "otherLine": "u1",
+          "note": "doNotGroup vs Hauptbahnhof Nord / S / DB. U3 never calls Jungfernstieg."
+        },
+        {
+          "at": "Berliner Tor",
+          "otherLine": "u2",
+          "note": "doNotGroup U vs S."
+        },
+        {
+          "at": "Landungsbrücken",
+          "note": "doNotGroup U vs S Landungsbrücken."
+        },
+        {
+          "at": "Sternschanze (Messe)",
+          "note": "doNotGroup U vs S Sternschanze."
+        },
+        {
+          "at": "Rathaus",
+          "note": "U3 inner-city tick next to Jungfernstieg (passage). Not the hub lock. Not a direction token."
+        }
+      ],
+      "stations": [
+        "Barmbek",
+        "Saarlandstraße",
+        "Borgweg (Stadtpark)",
+        "Sierichstraße",
+        "Kellinghusenstraße",
+        "Eppendorfer Baum",
+        "Hoheluftbrücke",
+        "Schlump",
+        "Sternschanze (Messe)",
+        "Feldstraße (Heiligengeistfeld)",
+        "St.Pauli",
+        "Landungsbrücken",
+        "Baumwall (Elbphilharmonie)",
+        "Rödingsmarkt",
+        "Rathaus",
+        "Mönckebergstraße",
+        "Hauptbahnhof Süd",
+        "Berliner Tor",
+        "Lübecker Straße",
+        "Uhlandstraße",
+        "Mundsburg",
+        "Hamburger Straße",
+        "Dehnhaide",
+        "Barmbek",
+        "Habichtstraße",
+        "Wandsbek-Gartenstadt"
+      ]
+    },
+    {
+      "id": "u4",
+      "number": "U4",
+      "name": "U4",
+      "officialPageTitle": "U4 Elbbrücken – Hauptbahnhof Nord – Billstedt",
+      "gtfsRouteIdsIfKnown": [
+        "U4"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Elbbrücken",
+        "Billstedt"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jungfernstieg",
+          "otherLine": "u1",
+          "note": "U4 turns south to Überseequartier – HafenCity Universität – Elbbrücken. U1/U2 through. Hub lock."
+        },
+        {
+          "at": "Hauptbahnhof Nord",
+          "otherLine": "u2"
+        },
+        {
+          "at": "Berliner Tor",
+          "otherLine": "u2",
+          "note": "doNotGroup U vs S."
+        },
+        {
+          "at": "Horner Rennbahn",
+          "otherLine": "u2",
+          "note": "Future U4 Horner Geest / Stoltenstraße leaves here Ende 2027. Not D1."
+        },
+        {
+          "at": "Billstedt",
+          "otherLine": "u2",
+          "note": "Current U4 eastern terminus. U2 continues to Mümmelmannsberg."
+        },
+        {
+          "at": "Elbbrücken",
+          "note": "U4 western terminus. doNotGroup U vs S Elbbrücken. Grasbrook extension unopened."
+        }
+      ],
+      "stations": [
+        "Elbbrücken",
+        "HafenCity Universität",
+        "Überseequartier",
+        "Jungfernstieg",
+        "Hauptbahnhof Nord",
+        "Berliner Tor",
+        "Burgstraße",
+        "Hammer Kirche",
+        "Rauhes Haus",
+        "Horner Rennbahn",
+        "Legienstraße",
+        "Billstedt"
+      ]
+    }
+  ]
+}
