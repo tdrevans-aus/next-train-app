@@ -4,7 +4,7 @@
   "installCommand": "npm install",
   "crons": [
     {
-      "path": "/api/cron/refresh-gtfs",
+      "path": "/api/health",
       "schedule": "17 3 * * *"
     }
   ],
