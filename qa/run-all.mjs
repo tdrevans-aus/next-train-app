@@ -73,6 +73,7 @@ const SMOKE_SCRIPTS = [
   "nz-planned-gate.mjs",
   "stockholm-planned-gate.mjs",
   "goteborg-planned-gate.mjs",
+  "wellington-planned-gate.mjs",
   "auckland-line-map-conformance.mjs",
   "stockholm-line-map-conformance.mjs",
   "goteborg-line-map-conformance.mjs",
