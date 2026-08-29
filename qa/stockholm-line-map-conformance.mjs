@@ -21,6 +21,19 @@ import {
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PRINTED_CODES = ["10", "11", "13", "14", "17", "18", "19", "40", "41", "43", "48"];
 const SWEDISH = ["T-Centralen", "Södertälje", "Hässelby", "Mörby", "Åkeshov"];
+const MARK_PROBES = [
+  "T-Centralen",
+  "Stockholm City",
+  "Odenplan",
+  "Stockholm Odenplan",
+  "Slussen",
+  "Fridhemsplan",
+  "Östermalmstorg",
+  "Arlanda central",
+  "Södertälje centrum",
+  "Hjulsta",
+  "Norsborg",
+];
 
 function loadJson(rel) {
   return JSON.parse(readFileSync(join(ROOT, rel), "utf8"));
@@ -61,6 +74,11 @@ function main() {
   }
   if (catalogNames.includes(SJ_HUB)) {
     failures.push("C2: Stockholms central is not a v1 pickable station");
+  }
+  for (const name of MARK_PROBES) {
+    if (!catalogNames.includes(name)) {
+      failures.push(`Mark probe: catalog must include ${name}`);
+    }
   }
   if (catalogNames.includes("Göteborg") || catalogNames.some((name) => /gothenburg|goteborg/i.test(name))) {
     failures.push("C2: Göteborg is not this city");
@@ -104,10 +122,17 @@ function main() {
     }
   }
 
+  const d1Path = join(ROOT, "docs/stockholm-d1/published-network.json");
   const publishedPath = join(ROOT, "qa/fixtures/stockholm/published-network.json");
+  if (!existsSync(d1Path)) {
+    failures.push("C3: docs/stockholm-d1/published-network.json is the Expansion pack");
+  }
   if (!existsSync(publishedPath)) {
     failures.push("C3: Luke D1 published-network.json must be copied into qa/fixtures/stockholm/");
-  } else {
+  } else if (existsSync(d1Path) && readFileSync(d1Path, "utf8") !== readFileSync(publishedPath, "utf8")) {
+    failures.push("C3: qa/fixtures/stockholm/published-network.json must match docs/stockholm-d1 verbatim");
+  }
+  if (existsSync(publishedPath)) {
     const published = JSON.parse(readFileSync(publishedPath, "utf8"));
     if (published.printedInnerCityNames?.lockMetro !== METRO_HUB) {
       failures.push("C2: D1 lockMetro must be T-Centralen");

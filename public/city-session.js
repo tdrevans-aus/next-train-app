@@ -40,6 +40,13 @@
       ],
     },
     {
+      id: "se",
+      name: "Sweden",
+      regions: [
+        { id: "stockholm", name: "Stockholm", timeZone: "Europe/Stockholm", comingSoon: true },
+      ],
+    },
+    {
       id: "ca",
       name: "Canada",
       regions: [
