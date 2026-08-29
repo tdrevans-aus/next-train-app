@@ -22,9 +22,16 @@ Rosengård station` vs **Rosengård**, etc. — full rename table in the oracle 
 headsigns print **"Malmö central"**, which matches no printed station string. Lock the printed
 strings; treat the feed forms as renames, and never surface "Malmö central" as a token.
 
-GTFS parent/child (`location_type`/`parent_station`) shape for Malmö C was still not catalogued —
-unchanged flag for Jim: confirm directly against the wired feed's `stops.txt` at D2; do not
-assume single-row stops.
+GTFS parent/child (`location_type`/`parent_station`) — **resolved 29 Aug 2026** from GTFS
+Sweden 3 `stops.txt`: every Malmö-area station is a parented cluster (location_type 1 parent +
+platform-coded children). Malmö C = parent `3` with ~60 children (train spår AND bus lägen under
+one parent — filter by served mode, not by parent membership); Triangeln `1587`, Hyllie `1586`,
+Svågertorp `1546`, Persborg `1486`, Rosengård `1621`, Östervärn `59221`, Burlöv `937` (11
+children), Oxie `27087`. Do not assume single-row stops. Extra wrinkle from live verification:
+the ring train uses **two different Malmö C platform groups on one trip** (departs surface
+Spår 11 onto Kontinentalbanan, returns via Citytunneln Spår 3a) — both children of the same
+parent. Skånetrafiken's own site API uses a separate stop-area GID scheme (Malmö C
+`9021012080000000`, Triangeln `9021012080140000`, …) — per-feed id mapping is a D2 task.
 
 ## H3 — thin / event / overlay
 

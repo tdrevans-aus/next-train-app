@@ -43,25 +43,38 @@ ordered stops, termini, short-turns, ring double-call).
    (static + TripUpdates + VehiclePositions + occupancy per Trafiklab's table), but the local
    `TRAFIKLAB_GTFS_SWEDEN_KEY`/`_RT_KEY` get **403 "Key does not have access to file"** on
    `gtfs/skane/skane.zip` and `gtfs-rt-sweden/skane/TripUpdatesSweden.pb`. The regional
-   `TRAFIKLAB_API_KEY` is Vercel-only. Verify key scope before promising a live board.
+   `TRAFIKLAB_API_KEY` is Vercel-only, and a `vercel env pull` attempt was permission-blocked
+   in this session — Tim/Jim runs it. Verify key scope before promising a live board.
    (RT catalog identity corrected: mdb-2970 = TripUpdates, 2971 = ServiceAlerts,
    2972 = VehiclePositions.)
-2. **Line 3's Helsingborg end** (Gantofta–Ramlösa–Helsingborg C) is on the map and in the
-   reference station count but didn't run through in the analysed GTFS week (engineering work
-   plausible). Don't chip Gantofta as a terminus; confirm against the live feed.
-3. **Ring chip copy.** "Malmöringen mot Triangeln/Östervärn" is recommended structure, not
-   transcribed signage — platform display wording unverified. Tim signs off chip copy
-   (direction-model-memo open questions 1–2).
-4. **Short-turn lists are observed-indicative**, from one fragmented week — assert per-trip far
-   ends from the live feed at D5, not a fixed list.
-5. **GTFS parent/child shape at Malmö C** not catalogued — check `stops.txt`
-   `location_type`/`parent_station` in the wired feed; do not assume single-row stops.
+2. **Ring via-suffix copy.** The official far-end convention is verified ("mot Kävlinge" —
+   see below), but the terminating ring direction is officially self-referential ("Malmö
+   central"); the recommended "mot Malmö C via Östervärn"-style suffix is our copy, pending
+   Tim's sign-off (direction-model-memo open question 2).
+3. **Short-turn lists are observed-indicative**, from one fragmented week — assert per-trip far
+   ends from the live feed at D5 (the site API exposes an official `towards` per departure),
+   not a fixed list. Planned overlay to know about: Åstorp–Helsingborg closed 9 Sep–8 Nov 2026.
+4. **Per-feed stop-id mapping.** Parent/child shape is now confirmed from GTFS Sweden 3
+   (parented clusters: Malmö C parent `3` with ~60 platform children incl. bus lägen — filter
+   by mode; Triangeln `1587`, Hyllie `1586`, Svågertorp `1546`, Persborg `1486`, Rosengård
+   `1621`, Östervärn `59221`, Burlöv `937`, Oxie `27087`), but Skånetrafiken's site API uses a
+   different stop-area GID scheme (Malmö C `9021012080000000`, Triangeln `9021012080140000`, …)
+   and the regional feed's ids are unverified (see item 1) — map ids against whichever feed
+   gets wired. Ring trips use two Malmö C platform groups on one trip (surface Spår 11 out,
+   Citytunneln Spår 3a back).
+
+Resolved since the second pass (29 Aug 2026, live checks): **line 3's Helsingborg end runs**
+(hourly direct Pågatåg Vallåkra→Helsingborg C observed — the GTFS week's Gantofta truncation
+was an artifact); **direction wording verified** against Skånetrafiken's journey API — ring
+train 1420 shows `towards: "mot Kävlinge"` at Malmö C, buses "mot Stenkällan via Rosengård";
+**parent/child catalogued** (above).
 
 ## Direction model
 
-**Product + terminus ("Pågatågen mot `<far end>`"), Malmöringen special-cased with ring-side
-tokens; never inbound/outbound, never raw headsigns** (self-referential "Malmö central" at
-Malmö C). Worked §3 examples now exist in direction-model-memo.md.
+**Product + terminus ("Pågatågen mot `<far end>`") — now matching Skånetrafiken's own verified
+`towards` strings; Malmöringen's terminating direction gets a via-suffix; never inbound/outbound,
+never raw headsigns at Malmö C** (self-referential "Malmö central"). Worked §3 examples in
+direction-model-memo.md use the live-verified strings.
 
 ## What I did not do
 

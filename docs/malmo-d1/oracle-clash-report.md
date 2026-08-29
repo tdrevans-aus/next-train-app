@@ -13,6 +13,12 @@ D1 (published, as of 29 Aug 2026, second pass — the egress block is gone): [Sk
 5. **Malmöringen: RESOLVED — and the Oslo-line-5 hazard is real, at Malmö C itself.** Ring path: **Malmö C – Östervärn – Rosengård – Persborg – Svågertorp – Hyllie – Triangeln – Malmö C**, run in both directions, through-run to/from **Kävlinge via Furulund–Lomma** (Lommabanan). 142 GTFS trips call **Malmö C twice on one through-path** (Kävlinge → … → Malmö C → ring → Malmö C). No intermediate ring station is called twice on any pattern. `stop_headsign` prints **"Malmö central" at every call — including trains departing Malmö C outbound around the ring** — so destination-only direction labeling is broken on this line at the hub lock. See direction-model-memo.md.
 6. **Burlöv / Oxie: RESOLVED — both in v1.** Both print Pågatågen symbols on the Dec 2024 map and both are in current GTFS service (Burlöv: lines 3/6/8/9/10; Oxie: line 6).
 
+Same-day live-verification addendum (29 Aug 2026, via skanetrafiken.se's own journey planner + its `gw-tps/api/v2/Journey` API):
+
+7. **Direction wording: RESOLVED.** The official API's line object carries `towards: "mot Kävlinge"` for the ring train at Malmö C (train 1420, full path Malmö C Spår 11 → ring via Östervärn → Malmö C Spår 3a → Lomma → Kävlinge) and e.g. `"mot Stenkällan via Rosengård"` for buses — the convention is "mot `<far end>`" (+ optional "via"). The self-referential "Malmö central" headsign belongs to the opposite, terminating ring direction only.
+8. **Line 3's Helsingborg end: RESOLVED — running.** Hourly direct Pågatåg Vallåkra → Helsingborg C observed live (trains 1516/1518/1520/1522, 14 min); the analysed GTFS week's Gantofta truncation was an artifact. Known planned overlay: Åstorp–Helsingborg closed 9 Sep–8 Nov 2026.
+9. **GTFS parent/child: RESOLVED.** All nine Malmö-area stations are parented clusters in GTFS Sweden 3 (Malmö C parent `3`, ~60 platform children incl. bus lägen; Triangeln `1587`, Hyllie `1586`, Svågertorp `1546`, Persborg `1486`, Rosengård `1621`, Östervärn `59221`, Burlöv `937`, Oxie `27087`). The site API uses a separate stop-area GID scheme (Malmö C `9021012080000000`, …) — per-feed id mapping is Jim's D2.
+
 ## Agency / feed / auth (H2 product path)
 
 | field | value |

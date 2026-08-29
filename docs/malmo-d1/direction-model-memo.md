@@ -27,12 +27,14 @@ first pass reasoned from the City Tunnel's through-station shape; the data is st
   call, including trains departing Malmö C outbound around the ring.** A raw headsign chip at
   Malmö C would read "to Malmö C" on a train leaving Malmö C.
 
-**Malmöringen special case:** at Malmö C (and on the ring generally), the chip needs a
-line-scoped path token, not a bare destination — recommend **"Malmöringen mot Triangeln"** /
-**"Malmöringen mot Östervärn"** (next-ring-side tokens, mirroring how Oslo's line 5 memo used
-the ring side), with "mot Kävlinge" for the Lommabanan leg. Which exact token Skånetrafiken's
-own displays use on-platform is still unverified (see open questions) — the *structure* (line +
-path/far-end, never inbound/outbound, never raw headsign) is what's locked here.
+**Malmöringen special case — now grounded in the official strings (verified 29 Aug 2026):**
+Skånetrafiken's own journey API labels the outbound-through ring direction **"mot Kävlinge"** at
+every call (train 1420: Malmö C Spår 11 → ring via Östervärn → Malmö C Spår 3a → Lomma →
+Kävlinge), so that direction's chip is simply **"Malmöringen mot Kävlinge"** — official far end,
+no invention needed. The opposite direction (Kävlinge → Malmö C → ring → terminates Malmö C) is
+officially labeled toward Malmö C ("Malmö central" in GTFS headsigns), which is self-referential
+mid-ring — that direction needs a via-disambiguator (open question 2). The locked structure:
+line + official far end, never inbound/outbound, never a raw headsign at Malmö C.
 
 ## Worked §3 examples
 
@@ -40,11 +42,11 @@ path/far-end, never inbound/outbound, never raw headsign) is what's locked here.
 | --- | --- | --- | --- |
 | Triangeln | line 9 toward Trelleborg | Pågatågen mot Trelleborg | plain far end works everywhere off the ring |
 | Triangeln | line 6 toward Simrishamn (turning Ystad) | Pågatågen mot Ystad | short-turn trips show their actual far end; Simrishamn only when through |
-| Malmö C | line 11 clockwise (via Triangeln) | Malmöringen mot Triangeln | headsign says "Malmö central" — useless; ring side token required |
-| Malmö C | line 11 counter-clockwise (via Östervärn) | Malmöringen mot Östervärn | same, opposite side |
-| Malmö C | line 11 ending its loop (arriving leg → continues to Kävlinge) | Malmöringen mot Kävlinge (via Lomma) | the through-run's true far end |
-| Persborg | line 11 toward Hyllie | Malmöringen mot Hyllie / Kävlinge | ring-only stop; either side is unambiguous here since each is called once |
-| Svågertorp | line 9 vs line 11 vs line 10 | mot Trelleborg / Malmöringen mot Persborg / Express mot Hässleholm | three continuations share one stop — line scoping mandatory |
+| Malmö C | line 11 outbound-through (ring → Kävlinge; e.g. train 1420, Spår 11) | Malmöringen mot Kävlinge | the official `towards` string, verified live — works because the through-run's far end really is Kävlinge |
+| Malmö C | line 11 loop-only / terminating variants | Malmöringen mot Malmö C via `<first ring side>` | official label is self-referential here — via-suffix is our addition (open question 2) |
+| Triangeln | line 11 heading away around the loop (Kävlinge → ring → Malmö C direction) | Malmöringen mot Malmö C via Östervärn | raw official label ("Malmö central") reads backwards at this stop — the via carries the direction |
+| Persborg | line 11 toward Hyllie | Malmöringen mot Kävlinge | official far end; unambiguous at ring-only stops (each called once) |
+| Svågertorp | line 9 vs line 11 vs line 10 | mot Trelleborg / Malmöringen mot Kävlinge / Express mot Hässleholm | three continuations share one stop — line scoping mandatory |
 | Hyllie | Öresundståg toward Copenhagen | **not shown** | Öresundståg out of v1; doNotGroup (map-confirmed it calls here) |
 
 ## Options
@@ -58,17 +60,23 @@ path/far-end, never inbound/outbound, never raw headsign) is what's locked here.
 
 ## Open §3 questions for Tim
 
-1. **Platform signage wording.** "Pågatågen mot `<X>`" and the Malmöringen ring-side tokens are
-   reasoned defaults consistent with Swedish signage convention and the feed's corridor
-   structure, but no platform display/destination-blind source was checked. Verify the actual
-   on-platform string for a ring departure at Malmö C before freezing chip copy (site copy and
-   feed both dead-end at "Malmö central").
-2. **Ring token convention**: next-ring-side ("mot Triangeln"/"mot Östervärn", recommended,
-   Oslo-style) vs loop far-end ("mot Kävlinge" both ways once aboard the ring)? Recommend
-   next-side; needs Tim's sign-off since it's invented copy, not transcription.
+1. ~~Platform signage wording~~ — **RESOLVED 29 Aug 2026 against Skånetrafiken's own journey API**
+   (`gw-tps/api/v2/Journey`, the data behind their planner): the line object carries an official
+   `towards` string in exactly the expected shape — ring train 1420 at Malmö C shows
+   **"mot Kävlinge"**; buses show **"mot Stenkällan via Rosengård"** ("mot `<far end>`", optional
+   "via"). Chips should follow the official far-end convention, not invented ring-side tokens.
+2. **Ring residual (the one real decision left):** the official convention is asymmetric on the
+   ring. Outbound-through direction (Malmö C → ring → Kävlinge) reads "mot Kävlinge" everywhere —
+   fine. The opposite direction (Kävlinge → Malmö C → ring → *terminates* Malmö C) is labeled
+   toward **Malmö C/"Malmö central"** — which mid-ring means a train at Triangeln heading *away*
+   around the loop reads "toward Malmö C". Recommend appending a via/ring-side disambiguator to
+   that direction only ("mot Malmö C via Östervärn"-style). That suffix is our copy, not
+   transcription — Tim signs off.
 3. **Short-turn chips**: observed short-turn sets (Ystad, Förslöv, Hässleholm C, …) are from one
    engineering-work-fragmented GTFS week — D5 assertion tables should assert the *published far
-   end per trip* from the live feed, not a fixed short-turn list.
+   end per trip* from the live feed (`towards` is available per departure), not a fixed
+   short-turn list. (Line 3's Helsingborg end was live-verified running hourly 29 Aug 2026 —
+   its Gantofta truncation in the analysed week was an artifact.)
 4. ~~Per-line termini~~ / ~~line-code convention~~ / ~~Malmöringen route path~~ /
    ~~Triangeln-Hyllie Öresundståg overlap~~ — **all resolved**, see the oracle report's
    Resolutions section. Öresundståg calls Triangeln/Hyllie/Burlöv: those stations' §3 rows must

@@ -140,9 +140,10 @@
   ],
   "coverageGaps": [
     "Reference line numbers (2–11, incl. 4B) come from reference sources whose station counts match the GTFS patterns exactly, but they appear on NO official passenger surface (map, site copy, feed). They are stored as referenceLineNumber for cross-referencing only. If Jim needs a printed line token for chips, there isn't one — chips must be built from corridor termini ('Pågatågen mot <X>'), see direction-model-memo.md.",
-    "The GTFS Regional `skane` product (Jim's intended adapter path) was NOT verified end-to-end from this machine: local TRAFIKLAB_GTFS_SWEDEN_KEY gets 403 on gtfs/skane/skane.zip and on gtfs-rt-sweden/skane/TripUpdatesSweden.pb (key scope — the regional TRAFIKLAB_API_KEY is Vercel-only). Trafiklab's operator table and Mobility Database both list skane static + TripUpdates + VehiclePositions as live. Jim: verify key scope at D2 before assuming RT.",
-    "Line 3's Helsingborg end (Gantofta–Ramlösa–Helsingborg C) is on the official map and in the reference 14-station count, but the analysed GTFS week's longest line-3 pattern ends at Gantofta (engineering-work truncation is plausible — skanetrafiken.se lists Helsingborg–Gantofta cancellation notices). Stations array keeps the full published path; Jim should not treat Gantofta as a terminus chip.",
-    "Platform signage wording ('mot <destination>'?) still unverified — no platform/destination-blind source was checked. The direction-model memo's 'mot X' expectation remains a reasoned default.",
+    "The GTFS Regional `skane` product (Jim's intended adapter path) was NOT verified end-to-end from this machine: local TRAFIKLAB_GTFS_SWEDEN_KEY gets 403 on gtfs/skane/skane.zip and on gtfs-rt-sweden/skane/TripUpdatesSweden.pb (key scope — the regional TRAFIKLAB_API_KEY is Vercel-only; a `vercel env pull` attempt was permission-blocked in this session, so Tim/Jim must run it). Trafiklab's operator table and Mobility Database both list skane static + TripUpdates + VehiclePositions as live. Jim: verify key scope at D2 before assuming RT.",
+    "RESOLVED 29 Aug 2026 (kept for the record): line 3's Helsingborg end runs in live service — hourly direct Pågatåg (trains 1516/1518/1520/1522 observed), Vallåkra Spår 1 → Helsingborg C Spår 6a/7a, 14 min, via the official journey planner. The analysed GTFS week's Gantofta truncation was an artifact. Full 14-station path stands; Gantofta is still not a terminus chip. Note the planned Åstorp–Helsingborg closure 9 Sep–8 Nov 2026 (site news) will overlay lines 5/8 at that end.",
+    "RESOLVED 29 Aug 2026 (kept for the record): direction wording verified against Skånetrafiken's own journey API (gw-tps/api/v2/Journey, live 29 Aug 2026). The line object carries towards: 'mot Kävlinge' for a ring departure at Malmö C (train 1420: Malmö C Spår 11 → Östervärn → ring → Malmö C Spår 3a → Lomma → Kävlinge, 'mot Kävlinge' the whole way) and buses show 'mot Stenkällan via Rosengård' — the convention is 'mot <far end>' with optional 'via'. The self-referential 'Malmö central' headsign belongs to the OPPOSITE ring direction (Kävlinge → Lomma → Malmö C → ring → terminates Malmö C), which mid-ring reads 'toward Malmö C' while circling away — see direction-model-memo.md.",
+    "RESOLVED 29 Aug 2026 (kept for the record): GTFS parent/child shape confirmed from GTFS Sweden 3 stops.txt — every Malmö-area station is a parented cluster (location_type 1 parent + platform-coded children): Malmö C parent id 3 (~60 children incl. bus lägen), Triangeln 1587, Hyllie 1586, Svågertorp 1546, Persborg 1486, Rosengård 1621, Östervärn 59221, Burlöv 937, Oxie 27087. Do not assume single-row stops. Skånetrafiken's own site API uses a different stop-area GID scheme (Malmö C 9021012080000000, Triangeln 9021012080140000, Hyllie 9021012080040000, Svågertorp 9021012080580000, Persborg 9021012080682000, Rosengård 9021012080075000, Östervärn 9021012080201000) — map per-feed at D2.",
     "Short-turn sets in lines[].shortTurns are the termini pairs observed in the analysed GTFS week (fragmented by engineering work), not an official short-turn list — treat as indicative overlays, not chips.",
     "Museum tram (seasonal) and the 1973 tram closure are out of v1 — confirmed, not a gap, listed so it isn't mistaken for missing data."
   ],
@@ -235,7 +236,7 @@
         "Triangeln",
         "Hyllie"
       ],
-      "note": "Analysed GTFS week's longest pattern ends at Gantofta (see coverageGaps); full published path per official map + reference 14-station count."
+      "note": "Full path confirmed in live service 29 Aug 2026: hourly direct Pågatåg Vallåkra→Helsingborg C (trains 1516–1522, 14 min) via the official journey planner — the analysed GTFS week's Gantofta truncation was an artifact."
     },
     {
       "id": "blekinge-vast",
@@ -563,7 +564,7 @@
       "branches": [
         {
           "at": "Malmö C",
-          "note": "CALLED TWICE on the official through-path (Kävlinge → Lomma → Malmö C → ring → Malmö C), both ring directions — the Oslo-Stortinget pattern, at the hub lock itself. GTFS stop_headsign prints 'Malmö central' at every call including outbound departures FROM Malmö C, so destination-only chips are broken here. Line + far-end token required; see direction-model-memo.md."
+          "note": "CALLED TWICE on the official through-path, both ring directions — the Oslo-Stortinget pattern, at the hub lock itself. Live-verified 29 Aug 2026 (train 1420): Malmö C Spår 11 → ring via Östervärn → Malmö C Spår 3a (Citytunneln platforms) → Lomma → Kävlinge, official towards string 'mot Kävlinge' throughout. The opposite through-direction (Kävlinge → Lomma → Malmö C → ring → terminates Malmö C) carries the self-referential 'Malmö central' headsign, so destination-only chips are broken for it mid-ring. Line + far-end token required; see direction-model-memo.md."
         },
         {
           "at": "Svågertorp",
