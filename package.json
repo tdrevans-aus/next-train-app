@@ -8,6 +8,7 @@
   },
   "scripts": {
     "setup:mac": "node scripts/setup-mac.mjs",
+    "find:sweden-coords": "node scripts/find-sweden-station-coords.mjs",
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",
