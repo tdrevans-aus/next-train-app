@@ -8,6 +8,12 @@
       "schedule": "17 3 * * *"
     }
   ],
+  "functions": {
+    "api/health.js": {
+      "memory": 3009,
+      "maxDuration": 300
+    }
+  },
   "headers": [
     {
       "source": "/api/(.*)",

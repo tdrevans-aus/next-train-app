@@ -13,11 +13,11 @@ import { runGtfsRefresh } from "../lib/gtfs-refresh.js";
  * sends Authorization: Bearer $CRON_SECRET, so this never fires for a
  * normal health check.
  */
-export const config = {
-  maxDuration: 300,
-  memory: 3009,
-};
-
+// memory + maxDuration are set in vercel.json's "functions" block instead
+// of here - a `memory` field in this in-file config export is silently
+// ignored by the Vercel Node builder (confirmed by inspecting the actual
+// deployed .vc-config.json, which had no "memory" key despite this export
+// declaring one); only vercel.json's functions.<path>.memory took effect.
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
     return;
