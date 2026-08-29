@@ -118,7 +118,8 @@ public final class JourneyPinHelper {
       return null;
     }
 
-    JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes);
+    JSONObject payload =
+      NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes, journey.optString("cityId", ""));
     JSONObject trip = findTripByDeparture(CommuteSchedule.collectUpcomingTrips(payload), departureIso);
     if (trip == null) {
       trip = buildSyntheticRoutePinTrip(journey, departureIso, leaveBeforeMinutes);

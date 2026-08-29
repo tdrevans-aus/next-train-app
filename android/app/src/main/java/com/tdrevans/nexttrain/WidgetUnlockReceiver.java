@@ -19,7 +19,9 @@ public class WidgetUnlockReceiver extends BroadcastReceiver {
       Intent.ACTION_BOOT_COMPLETED.equals(action)
     ) {
       CommuteRefreshService.repaintFromCache(context);
-      CommuteRefreshService.refreshAll(context);
+      // goAsync keeps the process alive until the network fetch completes.
+      PendingResult pendingResult = goAsync();
+      CommuteRefreshService.refreshAll(context, pendingResult::finish);
       WidgetRefreshScheduler.ensureScheduled(context);
     }
   }

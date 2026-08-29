@@ -39,7 +39,7 @@ assert(getCity("stockholm")?.adapterReady === true, "stockholm adapterReady must
 assert(isMultiCity("stockholm") === false, "stockholm must stay out of MULTI_CITY_IDS until Tim flips");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(assertCityLive("rotterdam")?.ok === true, "Rotterdam stays live");
-assert(assertCityLive("goteborg")?.ok === false, "Göteborg stays planned");
+assert(assertCityLive("goteborg")?.ok === true, "Göteborg is tester-live");
 
 // Invisible to the live app: picker shows Coming Soon only, no live wiring.
 const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
