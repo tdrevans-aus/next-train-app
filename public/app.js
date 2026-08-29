@@ -1316,6 +1316,11 @@ function completeOnboarding() {
   sessionStorage.removeItem(ONBOARDING_STEP_KEY);
   clearOnboardingSchedule();
   hideOnboardingCoach();
+  const coach = document.getElementById("onboarding-coach");
+  if (coach) {
+    coach.hidden = true;
+    coach.setAttribute("hidden", "");
+  }
   if (onboardingStep1) {
     onboardingStep1.hidden = false;
   }
@@ -1326,6 +1331,12 @@ function completeOnboarding() {
     onboardingStep3.hidden = true;
   }
 }
+
+window.dismissNearMeOnboarding = function dismissNearMeOnboarding(event) {
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  completeOnboarding();
+};
 
 function deferOnboardingForSession() {
   if (hasCompletedOnboarding()) {
@@ -6559,11 +6570,21 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
   void createJourneyFromTemplate("custom");
 });
 
-onboardingGotItBtn?.addEventListener("click", () => {
-  // markRegionExplicit here made canShowOnboardingCoach() false, so
-  // showOnboardingStep2() returned without hiding the card — Got it was a no-op.
-  completeOnboarding();
+onboardingGotItBtn?.addEventListener("click", (event) => {
+  window.dismissNearMeOnboarding(event);
 });
+onboardingGotItBtn?.addEventListener("pointerup", (event) => {
+  window.dismissNearMeOnboarding(event);
+});
+document.addEventListener(
+  "click",
+  (event) => {
+    if (event.target.closest("#onboarding-got-it-btn")) {
+      window.dismissNearMeOnboarding(event);
+    }
+  },
+  true
+);
 
 onboardingRoutesGotItBtn?.addEventListener("click", () => {
   clearOnboardingSchedule();

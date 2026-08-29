@@ -23,6 +23,21 @@ async function run() {
     process.exit(1);
   }
 
+  const hit = await page.evaluate(() => {
+    const btn = document.getElementById("onboarding-got-it-btn");
+    const rect = btn.getBoundingClientRect();
+    const top = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    return {
+      topId: top?.id || top?.className || "",
+      isButton: Boolean(top?.closest("#onboarding-got-it-btn")),
+    };
+  });
+  if (!hit.isButton) {
+    await browser.close();
+    console.error("FAIL onboarding-got-it-no-loop — Got it is covered", hit);
+    process.exit(1);
+  }
+
   await page.locator("#onboarding-got-it-btn").click();
   await page.waitForTimeout(300);
 
