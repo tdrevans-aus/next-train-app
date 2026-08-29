@@ -14,7 +14,8 @@ import { loadEnvLocal } from "../lib/load-env-local.js";
 import { readTfnswApiKey, tfnswAuthHeaders } from "../lib/providers/gtfs/auth.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/newcastle/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/newcastle/gtfs");
 const DEFAULT_URL = "https://api.transport.nsw.gov.au/v1/gtfs/schedule/lightrail/newcastle";
 // Explicit column allow-lists — only fields actually read anywhere in
 // lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md).

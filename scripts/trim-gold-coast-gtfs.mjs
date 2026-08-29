@@ -12,7 +12,8 @@ import { unzipSync } from "../lib/vendor/fflate.mjs";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/gold-coast/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/gold-coast/gtfs");
 const DEFAULT_URL = "https://gtfsrt.api.translink.com.au/GTFS/SEQ_GTFS.zip";
 const USER_AGENT = "next-train";
 // Explicit column allow-lists — only fields actually read anywhere in

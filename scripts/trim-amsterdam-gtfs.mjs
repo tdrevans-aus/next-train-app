@@ -12,7 +12,8 @@ import { unzipSync } from "../lib/vendor/fflate.mjs";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/amsterdam/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/amsterdam/gtfs");
 const DEFAULT_URL = "https://gtfs.ovapi.nl/gtfs-nl.zip";
 const KEEP_SHORTS = new Set(["50", "51", "52", "53", "54"]);
 const METRO_ROUTE_TYPE = "1";

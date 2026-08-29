@@ -13,7 +13,8 @@ import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/wellington/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/wellington/gtfs");
 const DEFAULT_URL = "https://static.opendata.metlink.org.nz/v1/gtfs/full.zip";
 const RAIL_ROUTE_TYPE = "2";
 const KEEP_SHORTS = new Set(["KPL", "HVL", "MEL", "JVL", "WRL"]);

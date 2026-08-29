@@ -5,14 +5,15 @@
  *
  * Usage: node scripts/trim-vancouver-gtfs.mjs [--zip=qa/tmp/translink-gtfs.zip]
  */
-import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { unzipSync } from "../lib/vendor/fflate.mjs";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/vancouver/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/vancouver/gtfs");
 const DEFAULT_URL = "https://gtfs-static.translink.ca/gtfs/google_transit.zip";
 const SKYTRAIN_TYPE = "1";
 const USER_AGENT = "next-train";
@@ -66,7 +67,8 @@ async function loadZipBuffer(zipPath, url) {
 async function main() {
   const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
   const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
-  const zipPath = zipArg ? zipArg.slice("--zip=".length) : join(ROOT, "qa/tmp/translink-gtfs.zip");
+  const defaultZipPath = join(ROOT, "qa/tmp/translink-gtfs.zip");
+  const zipPath = zipArg ? zipArg.slice("--zip=".length) : existsSync(defaultZipPath) ? defaultZipPath : "";
   const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
 
   const buffer = await loadZipBuffer(zipPath, url);

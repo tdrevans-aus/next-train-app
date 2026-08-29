@@ -13,7 +13,8 @@ import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/brisbane/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/brisbane/gtfs");
 const DEFAULT_URL = "https://gtfsrt.api.translink.com.au/GTFS/SEQ_GTFS.zip";
 const RAIL_ROUTE_TYPE = "2";
 // Explicit column allow-lists — only fields actually read anywhere in
