@@ -78,3 +78,13 @@ H2 conclusion: eight color lines already agree (map + line pages). Clash is **Li
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no Perth edit, no GTFS-derived station arrays, no invent city=chi / dc, no call to the live API with a real key, no API key in any file, no mix-in with washington/rotterdam.
+
+## License
+
+- **License name:** CTA Developer License Agreement and Terms of Use.
+- **Redistribution / rehosting:** Limited, non-exclusive, non-assignable, non-transferable, revocable licence to use, reproduce, and distribute CTA Data *for the sole purpose of assisting mass transportation riders or promoting public transportation*. Express permission required to copy/distribute otherwise.
+- **Commercial use:** Allowed only inside that rider-assistance purpose. Trademark rules apply (do not lead with CTA name/logo).
+- **Attribution:** Optional phrasing such as "Data provided by Chicago Transit Authority" is permitted; CTA marks follow https://www.transitchicago.com/developers/branding/
+- **Terms URL:** https://www.transitchicago.com/developers/terms/ (from https://www.transitchicago.com/developers/)
+- **Confidence:** `clear` on purpose-limited redistribute; Train Tracker API is separately keyed.
+- **Keyed feeds:** Train Tracker / Bus Tracker keys. GTFS zip at https://www.transitchicago.com/downloads/sch_data/ includes a copy of the DLA.

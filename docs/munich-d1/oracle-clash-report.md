@@ -68,3 +68,13 @@ H2 conclusion: passenger codes on the map and line pages already agree (**U1–U
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no GTFS-derived station arrays, no reopen of London TfL, no redo of Amsterdam / Rotterdam / Sweden / Berlin.
+
+## License
+
+- **License name:** Creative Commons Attribution (CC BY / CC-BY-4.0 per Transitland), MVV OpenData GTFS.
+- **Redistribution / rehosting:** Transitland: redistribution allowed = Yes; derived products allowed = Yes. Cite MVV when redistributing.
+- **Commercial use:** allowed under CC BY.
+- **Attribution:** "Münchner Verkehrs- und Tarifverbund GmbH (MVV)" plus retrieval date and feed version number.
+- **Terms URL:** https://www.mvv-muenchen.de/en/service-support/mvv-content-for-developers/ and https://opendata.muenchen.de/dataset/soll-fahrplandaten-mvv-gesamtnetz-gtfs
+- **Confidence:** `clear` for the MVV Gesamtnetz GTFS. That zip is whole-network (S-Bahn + U-Bahn + tram + bus) — v1 is U-Bahn only. Transitland `f-u281z9-mvv` last listed a 404 on the zip URL (unstable_url); confirm the current download before D2.
+- **Keyed feeds:** GTFS zip is unkeyed. Realtime still closed-beta on the MVV developer page.

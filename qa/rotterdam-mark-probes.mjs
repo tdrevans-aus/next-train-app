@@ -3,7 +3,12 @@
  * Usage: node qa/rotterdam-mark-probes.mjs
  */
 import { assertCityLive } from "../lib/providers/registry.js";
-import { fetchStationBoard } from "../lib/providers/rotterdam.js";
+import {
+  fetchStationBoard,
+  loadRotterdamStatic,
+  ROTTERDAM_TIME_ZONE,
+} from "../lib/providers/rotterdam.js";
+import { activeServicesForDate } from "../lib/providers/gtfs/static-cache.js";
 import {
   MARK_PROBES,
   marketingLabelsForStation,
@@ -15,7 +20,38 @@ function assert(condition, message) {
   }
 }
 
-const NOW = new Date("2026-08-27T10:00:00.000Z");
+/**
+ * The blob-hosted fixture is republished with a rolling service window, so a
+ * hard-coded NOW eventually falls outside it (empty boards). Pin NOW to a
+ * Wednesday midday inside the fixture's own calendar instead.
+ */
+function middayWednesdayInFixtureWindow(staticData) {
+  const serviceDates = [
+    ...staticData.calendar.map((row) => String(row.start_date)),
+    ...staticData.calendarDates.map((row) => String(row.date)),
+  ].filter((ymd) => /^\d{8}$/.test(ymd)).sort();
+  assert(serviceDates.length > 0, "rotterdam fixture has no service dates");
+  const [first] = serviceDates;
+  const windowStart = new Date(
+    Date.UTC(Number(first.slice(0, 4)), Number(first.slice(4, 6)) - 1, Number(first.slice(6, 8)), 10)
+  );
+  for (let offset = 1; offset <= 60; offset += 1) {
+    const candidate = new Date(windowStart.getTime() + offset * 86_400_000);
+    const weekday = new Intl.DateTimeFormat("en-US", {
+      timeZone: ROTTERDAM_TIME_ZONE,
+      weekday: "short",
+    }).format(candidate);
+    if (weekday !== "Wed") {
+      continue;
+    }
+    if (activeServicesForDate(staticData, candidate, ROTTERDAM_TIME_ZONE).size > 0) {
+      return candidate;
+    }
+  }
+  throw new Error("no midweek service date inside the rotterdam fixture window");
+}
+
+const NOW = middayWednesdayInFixtureWindow(await loadRotterdamStatic());
 
 assert(assertCityLive("rotterdam")?.ok === true, "assertCityLive(rotterdam) must pass");
 assert(MARK_PROBES.length === 13, "Mark probes are 13 stations");
