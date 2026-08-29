@@ -36,3 +36,8 @@ docs/*.xlsx
 /test-output-*.txt
 /tmp-*.js
 /tmp-*.mjs
+
+# api/package.json is a bundling stub; local npm installs regenerate a
+# lockfile there we don't want to track (no other package.json in the repo
+# carries one either — the root package-lock.json is the real one).
+/api/package-lock.json
