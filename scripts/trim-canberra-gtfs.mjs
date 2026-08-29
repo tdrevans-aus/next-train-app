@@ -5,7 +5,7 @@
  *
  * Usage: node scripts/trim-canberra-gtfs.mjs [--zip=qa/tmp/canberra-lr.zip]
  */
-import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { unzipSync } from "../lib/vendor/fflate.mjs";
@@ -65,7 +65,8 @@ async function loadZipBuffer(zipPath, url) {
 async function main() {
   const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
   const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
-  const zipPath = zipArg ? zipArg.slice("--zip=".length) : join(ROOT, "qa/tmp/canberra-lr.zip");
+  const defaultZipPath = join(ROOT, "qa/tmp/canberra-lr.zip");
+  const zipPath = zipArg ? zipArg.slice("--zip=".length) : existsSync(defaultZipPath) ? defaultZipPath : "";
   const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
 
   const buffer = await loadZipBuffer(zipPath, url);

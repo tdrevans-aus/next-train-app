@@ -5,7 +5,7 @@
  *
  * Usage: node scripts/trim-rotterdam-gtfs.mjs [--zip=qa/tmp/gtfs-nl.zip]
  */
-import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { unzipSync } from "../lib/vendor/fflate.mjs";
@@ -95,7 +95,8 @@ function filterStopTimesBytes(bytes, keepTrips) {
 async function main() {
   const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
   const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
-  const zipPath = zipArg ? zipArg.slice("--zip=".length) : join(ROOT, "qa/tmp/gtfs-nl.zip");
+  const defaultZipPath = join(ROOT, "qa/tmp/gtfs-nl.zip");
+  const zipPath = zipArg ? zipArg.slice("--zip=".length) : existsSync(defaultZipPath) ? defaultZipPath : "";
   const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
 
   const buffer = await loadZipBuffer(zipPath, url);
