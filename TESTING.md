@@ -894,13 +894,25 @@ Luke pack + Jim D2–D6. City stays `planned`. Perth and Brisbane live-gates unc
 D1 pack: `docs/stockholm-d1/`. D2 fixture is a verbatim copy at `qa/fixtures/stockholm/published-network.json`. Not generated from GTFS.
 
 1. `assertCityLive("stockholm")` still returns **501** (`status: planned`, `adapterReady: true`).
-2. Picker: country **Sweden** (`se`) → **Stockholm (Coming Soon)**. No live board. Do not invent `city=sweden`. Do not merge Göteborg / Malmö.
+2. Picker: country **Sweden** (`se`) → **Stockholm (Coming Soon)** (Göteborg is a separate Coming Soon sibling). No live board. Do not invent `city=sweden`. Do not merge Göteborg / Malmö.
 3. Hub lock: **T-Centralen** (metro) ≠ **Stockholm City** (pendeltåg Citybanan) ≠ **Stockholms central** (SJ, not pickable).
 4. Line 48 does not through-run City. Direction is line + terminus (`Röda linjen + Norsborg`), not inbound/outbound.
 5. `node qa/stockholm-planned-gate.mjs` and `node qa/stockholm-line-map-conformance.mjs` — offline. Stockholm is not added to `LIVE_CITY_IDS` / `MULTI_CITY_IDS`. Rotterdam tester-live from #112 stays.
 6. Mark probes in those tests: T-Centralen, Stockholm City, Stockholms central (negative), Odenplan pair, Slussen, Fridhemsplan, Östermalmstorg, Arlanda central, Södertälje centrum, Hjulsta, Norsborg.
 7. Probe (optional, not CI): `npm run probe:stockholm -- "T-Centralen"` uses SL Transport (no key). Trafiklab GTFS Sweden keys exist on Vercel as `TRAFIKLAB_GTFS_SWEDEN_KEY` / `TRAFIKLAB_GTFS_SWEDEN_RT_KEY` (env names only).
 8. Live sweep (not CI): `npm run sweep:stockholm`. `/api/next-train?city=stockholm&station=…` stays **501**. Melbourne stays planned. Do not wire UK NR.
+
+### 24b. Göteborg provider (catalog / planned — not live)
+
+D1 pack: `docs/goteborg-d1/` (Expansion-room five-file). D2 fixture is a verbatim copy at `qa/fixtures/goteborg/published-network.json`. Not generated from GTFS.
+
+1. `assertCityLive("goteborg")` still returns **501** (`status: planned`, `adapterReady: true`).
+2. Picker: country **Sweden** (`se`) → **Göteborg (Coming Soon)** beside Stockholm. No live board. Do not invent `city=sweden`. Do not merge Stockholm / Malmö.
+3. Hub lock: **Brunnsparken** (10 of 12 trams). Lines **8** and **12** miss it (Korsvägen). Do not lock **Centralstationen** (renamed **Drottningtorget** 15 Jun 2026). Västtågen hub is **Göteborg Central**.
+4. Direction is line + terminus (`1 + Tynnered`, `12 + Lindholmen`, `Västtågen + Kungsbacka`). Map legend far end, not first-halt strings. Never “to City”.
+5. `node qa/goteborg-planned-gate.mjs` and `node qa/goteborg-line-map-conformance.mjs` — offline. Perth / Amsterdam / `LIVE_CITY_IDS` / `MULTI_CITY_IDS` untouched. Rotterdam tester-live from #112 stays. Stockholm (#113) stays Coming Soon.
+6. Mark probes in those tests: Brunnsparken, Drottningtorget, Korsvägen, Nils Ericsonsplatsen, Liseberg Station / Liseberg Station (tåg) / Liseberg Södra, Gamlestads Torg / Gamlestaden Station, Lindholmen, Göteborg Central.
+7. Adapter uses Trafiklab GTFS Regional `vt` (`TRAFIKLAB_API_KEY`); no TripUpdates for Västtrafik — schedule-only. `/api/next-train?city=goteborg&station=Brunnsparken&direction=Tynnered` stays **501**. Melbourne stays planned. Do not wire UK NR.
 
 ### 24. Melbourne provider probe (adapter only — not live)
 
