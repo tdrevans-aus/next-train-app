@@ -240,8 +240,9 @@ Triggered by the ~18 → 309 city expansion plan. Not a "someday" item — the c
 | 6.2 | Cache `loadGtfsStaticFromDirectory` (currently reparses full CSV per request — live perf bug, not just a scaling one) | S | Immediate perf fix, 9 cities | **Done** |
 | 6.3 | Move fixture-backed cities (sydney, brisbane, amsterdam, rotterdam, vancouver, canberra, gold-coast, newcastle) off committed git fixtures onto Vercel Blob + `loadGtfsStatic({url})`, same pattern already proven by adelaide/perth/etc. | M | Removes the git/deployment size ceiling entirely | **Done** — `qa/fixtures/*/gtfs` 120MB → 2.5MB tracked |
 | 6.4 | Deprecate `netlify/functions/` (unmaintained since first release, doesn't know the multi-city registry) | S | Removes a design constraint on 6.3's storage choice | **Done** |
-| 6.5 | Scheduled refresh job (upstream fetch → trim → column-diet → blob upload) replacing manual `trim-*.mjs` + git commit | M | Required for 309 cities to ever get refreshed at all | Not started |
+| 6.5 | Scheduled refresh job (upstream fetch → trim → column-diet → blob upload) replacing manual `trim-*.mjs` + git commit | M | Required for 309 cities to ever get refreshed at all | **Done** — `api/health.js` dispatches into `lib/gtfs-refresh.js` on a daily cron (`vercel.json`), covers canberra/vancouver/newcastle/brisbane/gold-coast |
 | 6.6 | Precomputed compact per-city index format (defer until 6.3 is measured in production) | L | Only pursue if parse-on-cache-miss cost is a real problem | Deferred |
+| 6.7 | Automate amsterdam/rotterdam refresh — currently excluded from 6.5 because OVapi's 230MB nationwide feed OOMs a Hobby-plan function even for one city alone (confirmed live). Needs either a Pro-plan memory bump or moving just this job off Vercel Compute (e.g. GitHub Actions on a schedule, pushing the result to Blob) | M | Closes the last manual-refresh gap besides sydney (which has its own Python-only blocker) | Not started — backlog |
 
 **Explicitly not doing:** a relational database. Access pattern is a point lookup (city + stop + time → next departures), not cross-city joins — no query benefit to justify the operational complexity.
 
