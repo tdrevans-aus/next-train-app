@@ -1,0 +1,741 @@
+{
+  "city": "hong-kong",
+  "displayName": "Hong Kong",
+  "status": "planned",
+  "agency": "MTR Corporation Limited",
+  "timezone": "Asia/Hong_Kong",
+  "source": "https://www.mtr.com.hk/en/customer/services/system_map.html",
+  "sources": [
+    {
+      "role": "D1 passenger system map page (oracle index)",
+      "title": "System Map",
+      "url": "https://www.mtr.com.hk/en/customer/services/system_map.html",
+      "retrievedAt": "2026-08-29T15:06:00Z",
+      "note": "Official MTR EN system-map page. Links the routemap.pdf oracle. Mixed plate — Airport Express, Disneyland Resort, High Speed Rail, Ngong Ping 360, and Light Rail interchange marks print on the same sheet. v1 is the eight urban heavy-rail legends only."
+    },
+    {
+      "role": "D1 passenger system map PDF (oracle plate)",
+      "title": "MTR System Map (routemap.pdf)",
+      "url": "https://www.mtr.com.hk/archive/en/services/routemap.pdf",
+      "linkedFrom": "https://www.mtr.com.hk/en/customer/services/system_map.html",
+      "retrievedAt": "2026-08-29T15:06:53Z",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "contentLength": 655591,
+      "lastModified": "Wed, 11 Sep 2024 07:19:57 GMT",
+      "md5": "ce189e23d1a033a456eb09c025a32339",
+      "note": "Empty-key 200. Last-Modified Wed, 11 Sep 2024. Same bytes at /archive/ch/services/routemap.pdf. Official EN station ticks hand-transcribed against the homepage line lists that print the same geography. Not generated from GTFS. Light Rail is a different official map (LR_routemap.pdf) — out of v1."
+    },
+    {
+      "role": "Official EN line termini (corporate Railway Network page)",
+      "title": "Railway Network",
+      "url": "https://www.mtr.com.hk/en/corporate/operations/detail_network.html",
+      "retrievedAt": "2026-08-29T15:07:00Z",
+      "note": "Official termini pairs: Island Kennedy Town–Chai Wan; Tsuen Wan Tsuen Wan–Central; Kwun Tong Whampoa–Tiu Keng Leng; South Island Admiralty–South Horizons; Tseung Kwan O Po Lam/LOHAS Park–North Point; Tung Chung Tung Chung–Hong Kong; East Rail Admiralty–Lo Wu/Lok Ma Chau; Tuen Ma Tuen Mun–Wu Kai Sha. Same page also prints Disneyland Resort and Airport Express — out of v1."
+    },
+    {
+      "role": "Official EN station names printed on mtr.com.hk homepage line lists",
+      "title": "MTR homepage line lists",
+      "url": "https://www.mtr.com.hk/",
+      "retrievedAt": "2026-08-29T15:07:00Z",
+      "note": "Official EN tick strings used as D1 station names: HKU (not Hong Kong University), LOHAS Park, Sung Wong Toi, East Tsim Sha Tsui, Mong Kok East, Exhibition Centre, South Horizons. Homepage also prints Airport Express / Disneyland Resort / High Speed Rail Hong Kong West Kowloon — out of v1."
+    },
+    {
+      "role": "Next Train spec v1.7 — line/sta codes only, NOT the map oracle",
+      "title": "Next Train API Specification v1.7 (13 March 2025)",
+      "url": "https://opendata.mtr.com.hk/doc/Next_Train_API_Spec_v1.7.pdf",
+      "retrievedAt": "2026-08-29T15:06:55Z",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "contentLength": 273133,
+      "lastModified": "Thu, 13 Mar 2025 06:31:39 GMT",
+      "md5": "6bca3e16916fe54574e8f3413ac98da0",
+      "note": "Empty-key 200. Three-letter sta codes (ADM, CEN, …) for the catalog siteId field. Covers ISL TWL KTL TKL TCL TML EAL SIL plus AEL and DRL — AEL/DRL stay out of v1. Unversioned Next_Train_API_Spec.pdf is the 2021 plate — do not use. Spec PDF confidential stamp is NOT the JSON licence."
+    },
+    {
+      "role": "Next Train data dictionary v1.7 — codes companion, NOT the map oracle",
+      "title": "Next Train Data Dictionary v1.7",
+      "url": "https://opendata.mtr.com.hk/doc/Next_Train_DataDictionary_v1.7.pdf",
+      "retrievedAt": "2026-08-29T15:06:55Z",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "contentLength": 280890,
+      "lastModified": "Thu, 13 Mar 2025 06:31:39 GMT",
+      "md5": "7ae6fbafe98a37faad787487db92e42c",
+      "note": "Companion to spec v1.7. Codes only."
+    },
+    {
+      "role": "Live REST dataset page (not wired)",
+      "title": "Next Train Data (data.gov.hk)",
+      "url": "https://data.gov.hk/en-data/dataset/mtr-data2-nexttrain-data",
+      "retrievedAt": "2026-08-29T15:07:00Z",
+      "note": "IP owner MTR Corporation Limited. Live path https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php (line + sta). Empty-key GET 200 verified 2026-08-29 on ISL/TWL/EAL/SIL at ADM, TML at HUH, AEL at HOK. Not wired. AEL on the same REST is the trap — out of v1."
+    }
+  ],
+  "retrievedAt": "2026-08-29T15:08:00Z",
+  "notes": [
+    "D1 oracle is the official MTR system map (routemap.pdf, Last-Modified 11 Sep 2024) HAND-TRANSCRIBED against the official EN homepage line lists and the corporate Railway Network termini page. Stations arrays are official EN names in official tick order. Not generated from GTFS. Not generated from the Transport Department all-modes zip (Transitland f-hong~kong~en / static.data.gov.hk/td/pt-headway-en/gtfs.zip). Not generated from Wikipedia. Not generated from the 2021 unversioned Next Train spec.",
+    "City id hong-kong only. Display Hong Kong. Agency MTR Corporation Limited. Do not invent city=hk, mtr, kowloon, or merge Light Rail / Airport Express into a second city. Not China as the country.",
+    "City stays planned. Modes v1: metro / urban heavy-rail only — eight lines ISL TWL KTL TKL TCL TML EAL SIL. OUT: AEL Airport Express (in v1.7 AND live on the same REST — that is the trap); DIS / DRL Disneyland Resort Line; Light Rail / NWNT (separate lrt/getSchedule + LR_routemap.pdf); High Speed Rail / 高鐵 (Hong Kong West Kowloon); Ngong Ping 360; MTR Buses; KMB / Citybus; ferries; trams; Peak Tram; mainland through-train.",
+    "Timezone Asia/Hong_Kong. NO DST.",
+    "Live feed exists but stays dark: MTR Next Train REST empty-key GET https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php. Not wired. adapterReady false. envKeys none. No lib/providers/hong-kong.js. No dogfood harness. No public/city-catalogs/hong-kong.json. No GTFS trim/build. Skip D6 as a PR gate.",
+    "Locked inner-city printed name: Admiralty (spec ADM). Official + live REST: TWL × ISL × SIL × EAL. Not Central (CEN), not Tsim Sha Tsui (TST), not East Tsim Sha Tsui (ETS), not Hung Hom (HUH), not Kowloon AEL (KOW), not Hong Kong station AEL/TCL (HOK), not Hong Kong West Kowloon HSR, not Downtown. Tuen Ma, Kwun Tong, Tseung Kwan O, and Tung Chung do not serve Admiralty.",
+    "East Rail Lo Wu / Lok Ma Chau are EAL border stations — in v1, not HSR. LOHAS Park is the TKL branch — in v1. Racecourse is the official EAL race-day tick at Fo Tan (spec RAC) — in.",
+    "95 unique official EN stop strings. 114 line ticks (ISL 17 + TWL 16 + KTL 17 + TKL 8 + TCL 8 + TML 27 + EAL 16 + SIL 5). Interchanges counted once in unique names.",
+    "Direction: line + official terminus (Island + Chai Wan, Tseung Kwan O + Po Lam / LOHAS Park, East Rail + Lo Wu / Lok Ma Chau). Not compass, not inbound/outbound, never to City.",
+    "Next Train spec v1.7 three-letter codes are catalog siteId values, not D1 stop strings. No GTFS stopIds. Passenger line tokens are ISL / TWL / KTL / TKL / TCL / TML / EAL / SIL plus the official EN short names Island / Tsuen Wan / Kwun Tong / Tseung Kwan O / Tung Chung / Tuen Ma / East Rail / South Island."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Admiralty",
+    "doNotUse": [
+      "Downtown",
+      "City",
+      "to City",
+      "Central",
+      "Tsim Sha Tsui",
+      "East Tsim Sha Tsui",
+      "Hung Hom",
+      "Kowloon",
+      "Hong Kong",
+      "Hong Kong West Kowloon",
+      "Exhibition Centre",
+      "Admiralty Station"
+    ],
+    "doNotCollapse": [
+      "Admiralty",
+      "Central",
+      "Tsim Sha Tsui",
+      "East Tsim Sha Tsui",
+      "Hung Hom",
+      "Kowloon",
+      "Hong Kong",
+      "Hong Kong West Kowloon",
+      "Exhibition Centre",
+      "Mong Kok",
+      "Mong Kok East"
+    ],
+    "alsoOnSharedApproaches": [
+      "Central",
+      "Tsim Sha Tsui",
+      "Exhibition Centre",
+      "Hung Hom"
+    ]
+  },
+  "coverageGaps": [
+    "Airport Express (AEL) is in Next Train spec v1.7 and live on the same REST (AEL-HOK 200). Out of v1. That is the trap.",
+    "Disneyland Resort Line (DIS / DRL) is in spec v1.7. Out of v1. Sunny Bay stays as a Tung Chung stop.",
+    "Light Rail / NWNT uses a different official map (LR_routemap.pdf) and a different REST (lrt/getSchedule). Out of v1. Do not invent a Light Rail city id.",
+    "High Speed Rail / 高鐵 at Hong Kong West Kowloon prints on the mixed system-map plate. Not in Next Train v1.7. Out of v1.",
+    "Ngong Ping 360, MTR Buses, KMB / Citybus, ferries, trams, Peak Tram, mainland through-train. Out of v1.",
+    "Transport Department all-modes GTFS (Transitland f-hong~kong~en / static.data.gov.hk/td/pt-headway-en/gtfs.zip) is not an MTR-only subway feed. Do not generate this file from it.",
+    "Unversioned Next_Train_API_Spec.pdf is the 2021 plate (AEL/TCL/TML/TKL only). Disagrees with v1.7. Do not use."
+  ],
+  "lines": [
+    {
+      "id": "island",
+      "number": "ISL",
+      "name": "Island",
+      "officialPageTitle": "Island Line",
+      "zhName": "港島綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "Kennedy Town",
+        "Chai Wan"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Admiralty",
+          "note": "Hub lock. Official + live REST: TWL × ISL × SIL × EAL. Spec ADM. Not Central, not Tsim Sha Tsui, not Hung Hom."
+        },
+        {
+          "at": "Central",
+          "note": "TWL × ISL only. Spec CEN. doNotGroup vs Admiralty."
+        },
+        {
+          "at": "North Point",
+          "note": "TKL western terminus. Shared with Tseung Kwan O. Not the hub."
+        }
+      ],
+      "stations": [
+        "Kennedy Town",
+        "HKU",
+        "Sai Ying Pun",
+        "Sheung Wan",
+        "Central",
+        "Admiralty",
+        "Wan Chai",
+        "Causeway Bay",
+        "Tin Hau",
+        "Fortress Hill",
+        "North Point",
+        "Quarry Bay",
+        "Tai Koo",
+        "Sai Wan Ho",
+        "Shau Kei Wan",
+        "Heng Fa Chuen",
+        "Chai Wan"
+      ],
+      "stationCodes": [
+        "KET",
+        "HKU",
+        "SYP",
+        "SHW",
+        "CEN",
+        "ADM",
+        "WAC",
+        "CAB",
+        "TIH",
+        "FOH",
+        "NOP",
+        "QUB",
+        "TAK",
+        "SWH",
+        "SKW",
+        "HFC",
+        "CHW"
+      ]
+    },
+    {
+      "id": "tsuen-wan",
+      "number": "TWL",
+      "name": "Tsuen Wan",
+      "officialPageTitle": "Tsuen Wan Line",
+      "zhName": "荃灣綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "Tsuen Wan",
+        "Central"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Admiralty",
+          "note": "Hub lock. TWL × ISL × SIL × EAL."
+        },
+        {
+          "at": "Tsim Sha Tsui",
+          "note": "TWL only. Spec TST. doNotGroup vs East Tsim Sha Tsui (TML ETS) — interchange walk, not the same station."
+        },
+        {
+          "at": "Lai King",
+          "note": "Shared with Tung Chung. Not the hub."
+        },
+        {
+          "at": "Mei Foo",
+          "note": "Shared with Tuen Ma. Not the hub."
+        }
+      ],
+      "stations": [
+        "Tsuen Wan",
+        "Tai Wo Hau",
+        "Kwai Hing",
+        "Kwai Fong",
+        "Lai King",
+        "Mei Foo",
+        "Lai Chi Kok",
+        "Cheung Sha Wan",
+        "Sham Shui Po",
+        "Prince Edward",
+        "Mong Kok",
+        "Yau Ma Tei",
+        "Jordan",
+        "Tsim Sha Tsui",
+        "Admiralty",
+        "Central"
+      ],
+      "stationCodes": [
+        "TSW",
+        "TWH",
+        "KWH",
+        "KWF",
+        "LAK",
+        "MEF",
+        "LCK",
+        "CSW",
+        "SSP",
+        "PRE",
+        "MOK",
+        "YMT",
+        "JOR",
+        "TST",
+        "ADM",
+        "CEN"
+      ]
+    },
+    {
+      "id": "kwun-tong",
+      "number": "KTL",
+      "name": "Kwun Tong",
+      "officialPageTitle": "Kwun Tong Line",
+      "zhName": "觀塘綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "Whampoa",
+        "Tiu Keng Leng"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Ho Man Tin",
+          "note": "Shared with Tuen Ma. Kwun Tong does not serve Admiralty."
+        },
+        {
+          "at": "Diamond Hill",
+          "note": "Shared with Tuen Ma. Not the hub."
+        },
+        {
+          "at": "Kowloon Tong",
+          "note": "Shared with East Rail. Not the hub."
+        },
+        {
+          "at": "Yau Tong",
+          "note": "Shared with Tseung Kwan O. Not the hub."
+        }
+      ],
+      "stations": [
+        "Whampoa",
+        "Ho Man Tin",
+        "Yau Ma Tei",
+        "Mong Kok",
+        "Prince Edward",
+        "Shek Kip Mei",
+        "Kowloon Tong",
+        "Lok Fu",
+        "Wong Tai Sin",
+        "Diamond Hill",
+        "Choi Hung",
+        "Kowloon Bay",
+        "Ngau Tau Kok",
+        "Kwun Tong",
+        "Lam Tin",
+        "Yau Tong",
+        "Tiu Keng Leng"
+      ],
+      "stationCodes": [
+        "WHA",
+        "HOM",
+        "YMT",
+        "MOK",
+        "PRE",
+        "SKM",
+        "KOT",
+        "LOF",
+        "WTS",
+        "DIH",
+        "CHH",
+        "KOB",
+        "NTK",
+        "KWT",
+        "LAT",
+        "YAT",
+        "TIK"
+      ]
+    },
+    {
+      "id": "tseung-kwan-o",
+      "number": "TKL",
+      "name": "Tseung Kwan O",
+      "officialPageTitle": "Tseung Kwan O Line",
+      "zhName": "將軍澳綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "North Point",
+        "Po Lam / LOHAS Park"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Tseung Kwan O",
+          "note": "Official fork. Main line Hang Hau – Po Lam. Branch Tseung Kwan O – LOHAS Park. Direction chip is Tseung Kwan O + Po Lam / LOHAS Park."
+        },
+        {
+          "at": "LOHAS Park",
+          "note": "TKL branch terminus. Spec LHP. Official homepage prints LOHAS Park on this line. In v1."
+        },
+        {
+          "at": "North Point",
+          "note": "Western terminus. Shared with Island. Tseung Kwan O does not serve Admiralty."
+        }
+      ],
+      "stations": [
+        "North Point",
+        "Quarry Bay",
+        "Yau Tong",
+        "Tiu Keng Leng",
+        "Tseung Kwan O",
+        "Hang Hau",
+        "Po Lam",
+        "LOHAS Park"
+      ],
+      "stationCodes": [
+        "NOP",
+        "QUB",
+        "YAT",
+        "TIK",
+        "TKO",
+        "HAH",
+        "POA",
+        "LHP"
+      ]
+    },
+    {
+      "id": "tung-chung",
+      "number": "TCL",
+      "name": "Tung Chung",
+      "officialPageTitle": "Tung Chung Line",
+      "zhName": "東涌綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "Hong Kong",
+        "Tung Chung"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Hong Kong",
+          "note": "TCL urban terminus. Spec HOK. Same name-family as Airport Express HOK — doNotGroup vs AEL Hong Kong station. Not the city id. Tung Chung does not serve Admiralty."
+        },
+        {
+          "at": "Kowloon",
+          "note": "Spec KOW. Airport Express also calls Kowloon. doNotGroup vs AEL. Not Hung Hom, not Hong Kong West Kowloon HSR."
+        },
+        {
+          "at": "Sunny Bay",
+          "note": "Disneyland Resort Line transfer. DIS is out of v1. Sunny Bay stays as a Tung Chung stop."
+        },
+        {
+          "at": "Tsing Yi",
+          "note": "Airport Express also calls Tsing Yi. doNotGroup vs AEL. TCL only in v1."
+        }
+      ],
+      "stations": [
+        "Hong Kong",
+        "Kowloon",
+        "Olympic",
+        "Nam Cheong",
+        "Lai King",
+        "Tsing Yi",
+        "Sunny Bay",
+        "Tung Chung"
+      ],
+      "stationCodes": [
+        "HOK",
+        "KOW",
+        "OLY",
+        "NAC",
+        "LAK",
+        "TSY",
+        "SUN",
+        "TUC"
+      ]
+    },
+    {
+      "id": "tuen-ma",
+      "number": "TML",
+      "name": "Tuen Ma",
+      "officialPageTitle": "Tuen Ma Line",
+      "zhName": "屯馬綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "Wu Kai Sha",
+        "Tuen Mun"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Hung Hom",
+          "note": "EAL × TML. Spec HUH. doNotGroup vs Admiralty. Tuen Ma does not serve Admiralty."
+        },
+        {
+          "at": "East Tsim Sha Tsui",
+          "note": "TML only. Spec ETS. doNotGroup vs Tsim Sha Tsui (TWL TST) — interchange walk."
+        },
+        {
+          "at": "Tai Wai",
+          "note": "Shared with East Rail. Not the hub."
+        },
+        {
+          "at": "Nam Cheong",
+          "note": "Shared with Tung Chung. Not the hub."
+        }
+      ],
+      "stations": [
+        "Wu Kai Sha",
+        "Ma On Shan",
+        "Heng On",
+        "Tai Shui Hang",
+        "Shek Mun",
+        "City One",
+        "Sha Tin Wai",
+        "Che Kung Temple",
+        "Tai Wai",
+        "Hin Keng",
+        "Diamond Hill",
+        "Kai Tak",
+        "Sung Wong Toi",
+        "To Kwa Wan",
+        "Ho Man Tin",
+        "Hung Hom",
+        "East Tsim Sha Tsui",
+        "Austin",
+        "Nam Cheong",
+        "Mei Foo",
+        "Tsuen Wan West",
+        "Kam Sheung Road",
+        "Yuen Long",
+        "Long Ping",
+        "Tin Shui Wai",
+        "Siu Hong",
+        "Tuen Mun"
+      ],
+      "stationCodes": [
+        "WKS",
+        "MOS",
+        "HEO",
+        "TSH",
+        "SHM",
+        "CIO",
+        "STW",
+        "CKT",
+        "TAW",
+        "HIK",
+        "DIH",
+        "KAT",
+        "SUW",
+        "TKW",
+        "HOM",
+        "HUH",
+        "ETS",
+        "AUS",
+        "NAC",
+        "MEF",
+        "TWW",
+        "KSR",
+        "YUL",
+        "LOP",
+        "TIS",
+        "SIH",
+        "TUM"
+      ]
+    },
+    {
+      "id": "east-rail",
+      "number": "EAL",
+      "name": "East Rail",
+      "officialPageTitle": "East Rail Line",
+      "zhName": "東鐵綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "Admiralty",
+        "Lo Wu / Lok Ma Chau"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Admiralty",
+          "note": "Hub lock. EAL southern terminus after the 2022 cross-harbour extension. Spec ADM."
+        },
+        {
+          "at": "Sheung Shui",
+          "note": "Official fork. Lo Wu and Lok Ma Chau are EAL border stations — in v1, not High Speed Rail and not a mainland through-train product."
+        },
+        {
+          "at": "Lo Wu",
+          "note": "EAL border terminus. Spec LOW. Stays IN."
+        },
+        {
+          "at": "Lok Ma Chau",
+          "note": "EAL border terminus. Spec LMC. Stays IN. Direction chip is East Rail + Lo Wu / Lok Ma Chau."
+        },
+        {
+          "at": "Racecourse",
+          "note": "Official race-day station at Fo Tan. Spec RAC. Official homepage and spec both print it. In v1 as an EAL tick."
+        },
+        {
+          "at": "Exhibition Centre",
+          "note": "doNotGroup vs Admiralty. Not the hub."
+        },
+        {
+          "at": "Mong Kok East",
+          "note": "doNotGroup vs Mong Kok (TWL/KTL). Not the hub."
+        }
+      ],
+      "stations": [
+        "Admiralty",
+        "Exhibition Centre",
+        "Hung Hom",
+        "Mong Kok East",
+        "Kowloon Tong",
+        "Tai Wai",
+        "Sha Tin",
+        "Fo Tan",
+        "Racecourse",
+        "University",
+        "Tai Po Market",
+        "Tai Wo",
+        "Fanling",
+        "Sheung Shui",
+        "Lo Wu",
+        "Lok Ma Chau"
+      ],
+      "stationCodes": [
+        "ADM",
+        "EXC",
+        "HUH",
+        "MKK",
+        "KOT",
+        "TAW",
+        "SHT",
+        "FOT",
+        "RAC",
+        "UNI",
+        "TAP",
+        "TWO",
+        "FAN",
+        "SHS",
+        "LOW",
+        "LMC"
+      ]
+    },
+    {
+      "id": "south-island",
+      "number": "SIL",
+      "name": "South Island",
+      "officialPageTitle": "South Island Line",
+      "zhName": "南港島綫",
+      "mapGroup": "MTR urban heavy-rail",
+      "mode": "METRO",
+      "termini": [
+        "Admiralty",
+        "South Horizons"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Admiralty",
+          "note": "Hub lock. SIL northern terminus. Spec ADM."
+        }
+      ],
+      "stations": [
+        "Admiralty",
+        "Ocean Park",
+        "Wong Chuk Hang",
+        "Lei Tung",
+        "South Horizons"
+      ],
+      "stationCodes": [
+        "ADM",
+        "OCP",
+        "WCH",
+        "LET",
+        "SOH"
+      ]
+    }
+  ],
+  "uniqueStationCount": 95,
+  "uniqueStations": [
+    "Admiralty",
+    "Austin",
+    "Causeway Bay",
+    "Central",
+    "Chai Wan",
+    "Che Kung Temple",
+    "Cheung Sha Wan",
+    "Choi Hung",
+    "City One",
+    "Diamond Hill",
+    "East Tsim Sha Tsui",
+    "Exhibition Centre",
+    "Fanling",
+    "Fo Tan",
+    "Fortress Hill",
+    "Hang Hau",
+    "Heng Fa Chuen",
+    "Heng On",
+    "Hin Keng",
+    "HKU",
+    "Ho Man Tin",
+    "Hong Kong",
+    "Hung Hom",
+    "Jordan",
+    "Kai Tak",
+    "Kam Sheung Road",
+    "Kennedy Town",
+    "Kowloon",
+    "Kowloon Bay",
+    "Kowloon Tong",
+    "Kwai Fong",
+    "Kwai Hing",
+    "Kwun Tong",
+    "Lai Chi Kok",
+    "Lai King",
+    "Lam Tin",
+    "Lei Tung",
+    "Lo Wu",
+    "LOHAS Park",
+    "Lok Fu",
+    "Lok Ma Chau",
+    "Long Ping",
+    "Ma On Shan",
+    "Mei Foo",
+    "Mong Kok",
+    "Mong Kok East",
+    "Nam Cheong",
+    "Ngau Tau Kok",
+    "North Point",
+    "Ocean Park",
+    "Olympic",
+    "Po Lam",
+    "Prince Edward",
+    "Quarry Bay",
+    "Racecourse",
+    "Sai Wan Ho",
+    "Sai Ying Pun",
+    "Sha Tin",
+    "Sha Tin Wai",
+    "Sham Shui Po",
+    "Shau Kei Wan",
+    "Shek Kip Mei",
+    "Shek Mun",
+    "Sheung Shui",
+    "Sheung Wan",
+    "Siu Hong",
+    "South Horizons",
+    "Sung Wong Toi",
+    "Sunny Bay",
+    "Tai Koo",
+    "Tai Po Market",
+    "Tai Shui Hang",
+    "Tai Wai",
+    "Tai Wo",
+    "Tai Wo Hau",
+    "Tin Hau",
+    "Tin Shui Wai",
+    "Tiu Keng Leng",
+    "To Kwa Wan",
+    "Tseung Kwan O",
+    "Tsim Sha Tsui",
+    "Tsing Yi",
+    "Tsuen Wan",
+    "Tsuen Wan West",
+    "Tuen Mun",
+    "Tung Chung",
+    "University",
+    "Wan Chai",
+    "Whampoa",
+    "Wong Chuk Hang",
+    "Wong Tai Sin",
+    "Wu Kai Sha",
+    "Yau Ma Tei",
+    "Yau Tong",
+    "Yuen Long"
+  ]
+}

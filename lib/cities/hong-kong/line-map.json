@@ -1,0 +1,330 @@
+{
+  "city": "hong-kong",
+  "source": "qa/fixtures/hong-kong/published-network.json (Luke D1 official MTR system map + homepage EN line lists). Not generated from GTFS.",
+  "timeZone": "Asia/Hong_Kong",
+  "dst": false,
+  "notes": [
+    "Station lists lock to D1 official EN names. Never generate published-network.json from GTFS or the Transport Department all-modes zip.",
+    "Admiralty is the hub (TWL × ISL × SIL × EAL, spec ADM).",
+    "Eight urban heavy-rail lines only. AEL / DIS / Light Rail / HSR out.",
+    "Direction: line + terminus (Island + Chai Wan). Not inbound/outbound. Never to City.",
+    "Asia/Hong_Kong. No DST. Next Train REST exists and is not wired."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Admiralty",
+      "b": "Central",
+      "reason": "Hub (TWL × ISL × SIL × EAL) vs TWL × ISL only"
+    },
+    {
+      "a": "Admiralty",
+      "b": "Tsim Sha Tsui",
+      "reason": "Hub vs TWL TST — do not lock Tsim Sha Tsui"
+    },
+    {
+      "a": "Admiralty",
+      "b": "East Tsim Sha Tsui",
+      "reason": "Hub vs TML ETS"
+    },
+    {
+      "a": "Admiralty",
+      "b": "Hung Hom",
+      "reason": "Hub vs EAL × TML HUH"
+    },
+    {
+      "a": "Admiralty",
+      "b": "Exhibition Centre",
+      "reason": "Hub vs EAL neighbour EXC"
+    },
+    {
+      "a": "Admiralty",
+      "b": "Hong Kong",
+      "reason": "Hub vs TCL/AEL HOK — do not lock Hong Kong station"
+    },
+    {
+      "a": "Admiralty",
+      "b": "Kowloon",
+      "reason": "Hub vs TCL/AEL KOW"
+    },
+    {
+      "a": "Admiralty",
+      "b": "Hong Kong West Kowloon",
+      "reason": "Hub vs High Speed Rail — HSR out of v1"
+    },
+    {
+      "a": "Tsim Sha Tsui",
+      "b": "East Tsim Sha Tsui",
+      "reason": "TWL TST vs TML ETS — interchange walk, two official stations"
+    },
+    {
+      "a": "Mong Kok",
+      "b": "Mong Kok East",
+      "reason": "TWL/KTL MOK vs EAL MKK"
+    },
+    {
+      "a": "Hong Kong",
+      "b": "Hong Kong West Kowloon",
+      "reason": "TCL HOK vs HSR — do not fold HSR into urban MTR"
+    },
+    {
+      "a": "Kowloon",
+      "b": "Hung Hom",
+      "reason": "TCL/AEL KOW vs EAL × TML HUH"
+    },
+    {
+      "a": "Tsuen Wan",
+      "b": "Tsuen Wan West",
+      "reason": "TWL TSW vs TML TWW"
+    }
+  ],
+  "suppressedTermini": [
+    "Airport",
+    "AsiaWorld-Expo",
+    "Disneyland Resort",
+    "Hong Kong West Kowloon",
+    "Downtown",
+    "City"
+  ],
+  "laterModes": [
+    "Airport Express",
+    "Disneyland Resort Line",
+    "Light Rail",
+    "High Speed Rail",
+    "Ngong Ping 360",
+    "MTR Buses",
+    "KMB",
+    "Citybus",
+    "ferries",
+    "trams",
+    "Peak Tram"
+  ],
+  "lines": [
+    {
+      "id": "island",
+      "number": "ISL",
+      "name": "Island",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "Kennedy Town",
+        "Chai Wan"
+      ],
+      "stations": [
+        "Kennedy Town",
+        "HKU",
+        "Sai Ying Pun",
+        "Sheung Wan",
+        "Central",
+        "Admiralty",
+        "Wan Chai",
+        "Causeway Bay",
+        "Tin Hau",
+        "Fortress Hill",
+        "North Point",
+        "Quarry Bay",
+        "Tai Koo",
+        "Sai Wan Ho",
+        "Shau Kei Wan",
+        "Heng Fa Chuen",
+        "Chai Wan"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "tsuen-wan",
+      "number": "TWL",
+      "name": "Tsuen Wan",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "Tsuen Wan",
+        "Central"
+      ],
+      "stations": [
+        "Tsuen Wan",
+        "Tai Wo Hau",
+        "Kwai Hing",
+        "Kwai Fong",
+        "Lai King",
+        "Mei Foo",
+        "Lai Chi Kok",
+        "Cheung Sha Wan",
+        "Sham Shui Po",
+        "Prince Edward",
+        "Mong Kok",
+        "Yau Ma Tei",
+        "Jordan",
+        "Tsim Sha Tsui",
+        "Admiralty",
+        "Central"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "kwun-tong",
+      "number": "KTL",
+      "name": "Kwun Tong",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "Whampoa",
+        "Tiu Keng Leng"
+      ],
+      "stations": [
+        "Whampoa",
+        "Ho Man Tin",
+        "Yau Ma Tei",
+        "Mong Kok",
+        "Prince Edward",
+        "Shek Kip Mei",
+        "Kowloon Tong",
+        "Lok Fu",
+        "Wong Tai Sin",
+        "Diamond Hill",
+        "Choi Hung",
+        "Kowloon Bay",
+        "Ngau Tau Kok",
+        "Kwun Tong",
+        "Lam Tin",
+        "Yau Tong",
+        "Tiu Keng Leng"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "tseung-kwan-o",
+      "number": "TKL",
+      "name": "Tseung Kwan O",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "North Point",
+        "Po Lam / LOHAS Park"
+      ],
+      "stations": [
+        "North Point",
+        "Quarry Bay",
+        "Yau Tong",
+        "Tiu Keng Leng",
+        "Tseung Kwan O",
+        "Hang Hau",
+        "Po Lam",
+        "LOHAS Park"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "tung-chung",
+      "number": "TCL",
+      "name": "Tung Chung",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "Hong Kong",
+        "Tung Chung"
+      ],
+      "stations": [
+        "Hong Kong",
+        "Kowloon",
+        "Olympic",
+        "Nam Cheong",
+        "Lai King",
+        "Tsing Yi",
+        "Sunny Bay",
+        "Tung Chung"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "tuen-ma",
+      "number": "TML",
+      "name": "Tuen Ma",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "Wu Kai Sha",
+        "Tuen Mun"
+      ],
+      "stations": [
+        "Wu Kai Sha",
+        "Ma On Shan",
+        "Heng On",
+        "Tai Shui Hang",
+        "Shek Mun",
+        "City One",
+        "Sha Tin Wai",
+        "Che Kung Temple",
+        "Tai Wai",
+        "Hin Keng",
+        "Diamond Hill",
+        "Kai Tak",
+        "Sung Wong Toi",
+        "To Kwa Wan",
+        "Ho Man Tin",
+        "Hung Hom",
+        "East Tsim Sha Tsui",
+        "Austin",
+        "Nam Cheong",
+        "Mei Foo",
+        "Tsuen Wan West",
+        "Kam Sheung Road",
+        "Yuen Long",
+        "Long Ping",
+        "Tin Shui Wai",
+        "Siu Hong",
+        "Tuen Mun"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "east-rail",
+      "number": "EAL",
+      "name": "East Rail",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "Admiralty",
+        "Lo Wu / Lok Ma Chau"
+      ],
+      "stations": [
+        "Admiralty",
+        "Exhibition Centre",
+        "Hung Hom",
+        "Mong Kok East",
+        "Kowloon Tong",
+        "Tai Wai",
+        "Sha Tin",
+        "Fo Tan",
+        "Racecourse",
+        "University",
+        "Tai Po Market",
+        "Tai Wo",
+        "Fanling",
+        "Sheung Shui",
+        "Lo Wu",
+        "Lok Ma Chau"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "south-island",
+      "number": "SIL",
+      "name": "South Island",
+      "mode": "METRO",
+      "mapGroup": "MTR urban heavy-rail",
+      "termini": [
+        "Admiralty",
+        "South Horizons"
+      ],
+      "stations": [
+        "Admiralty",
+        "Ocean Park",
+        "Wong Chuk Hang",
+        "Lei Tung",
+        "South Horizons"
+      ],
+      "shortTurns": []
+    }
+  ]
+}
