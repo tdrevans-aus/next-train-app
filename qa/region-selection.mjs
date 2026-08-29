@@ -221,6 +221,52 @@ async function run() {
     await context.close();
   }
 
+  // 6. Osaka stays Coming Soon — no live board
+  {
+    console.log("  Test 6: Osaka picker Coming Soon...");
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
+    await page.waitForTimeout(4000);
+
+    await page.evaluate(() => window.NextTrainCitySession.openRegionScreen());
+    await page.waitForTimeout(500);
+
+    const picker = await page.evaluate(() => {
+      const countrySelect = document.querySelector("[data-region-country]");
+      const japan = [...(countrySelect?.options ?? [])].find((option) => option.value === "jp");
+      countrySelect.value = "jp";
+      countrySelect.dispatchEvent(new Event("change", { bubbles: true }));
+      const citySelect = document.querySelector("[data-region-city]");
+      const osaka = [...(citySelect?.options ?? [])].find((option) => option.value === "osaka");
+      return {
+        japanLabel: japan?.textContent?.trim() ?? "",
+        osakaLabel: osaka?.textContent?.trim() ?? "",
+        osakaValue: citySelect?.value ?? "",
+        savedCity: window.NextTrainCitySession.readSavedCity(),
+      };
+    });
+
+    const applied = await page.evaluate(async () => {
+      await window.NextTrainCitySession.applyCity("osaka", { persist: true, explicit: true });
+      return { savedCity: window.NextTrainCitySession.readSavedCity() };
+    });
+
+    if (
+      picker.japanLabel === "Japan (Coming Soon)" &&
+      picker.osakaLabel === "Osaka (Coming Soon)" &&
+      picker.osakaValue === "osaka" &&
+      applied.savedCity !== "osaka" &&
+      (applied.savedCity === "perth" || applied.savedCity === "")
+    ) {
+      console.log("    PASS — Japan/Osaka Coming Soon; applyCity does not persist (falls back to Perth)");
+    } else {
+      console.error("    FAIL — Osaka picker / applyCity", { picker, applied });
+      process.exitCode = 1;
+    }
+    await context.close();
+  }
+
   await browser.close();
 }
 
