@@ -1,0 +1,366 @@
+{
+  "city": "osaka",
+  "source": "qa/fixtures/osaka/published-network.json (Luke D1 official Osaka Metro EN routes list + 2025-04-04 路線図). Not generated from GTFS.",
+  "timeZone": "Asia/Tokyo",
+  "dst": false,
+  "notes": [
+    "Station lists lock to D1 official EN names. Never generate published-network.json from GTFS.",
+    "Hommachi is the hub (M18 × Y13 × C16). Official transfers Yotsubashi + Chuo only.",
+    "Eight subway lines only. New Tram / Nanko Port Town out. Kitakyu north of Esaka out.",
+    "Direction: line + terminus (Midosuji + Nakamozu). Not inbound/outbound. Never to City.",
+    "Asia/Tokyo. No DST. No official public feed."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Hommachi",
+      "b": "Sakaisuji-Hommachi",
+      "reason": "Hub (M18 × Y13 × C16) vs Chuo × Sakaisuji interchange"
+    },
+    {
+      "a": "Umeda",
+      "b": "Higashi-Umeda",
+      "reason": "Midosuji vs Tanimachi Umeda family"
+    },
+    {
+      "a": "Umeda",
+      "b": "Nishi-Umeda",
+      "reason": "Midosuji vs Yotsubashi Umeda family"
+    },
+    {
+      "a": "Higashi-Umeda",
+      "b": "Nishi-Umeda",
+      "reason": "Tanimachi vs Yotsubashi Umeda family"
+    },
+    {
+      "a": "Shinsaibashi",
+      "b": "Yotsubashi",
+      "reason": "Midosuji × Nagahori vs Yotsubashi station"
+    },
+    {
+      "a": "Hommachi",
+      "b": "Umeda",
+      "reason": "Hub vs Umeda cluster — do not lock Umeda"
+    },
+    {
+      "a": "Hommachi",
+      "b": "Namba",
+      "reason": "Hub vs Namba cluster — do not lock Namba"
+    },
+    {
+      "a": "Hommachi",
+      "b": "Shinsaibashi",
+      "reason": "Hub vs Shinsaibashi — do not lock Shinsaibashi"
+    },
+    {
+      "a": "Esaka",
+      "b": "Senri-Chuo",
+      "reason": "Metro-operated M11 vs Kitakyu through-run (out of v1)"
+    },
+    {
+      "a": "Nagata",
+      "b": "Kintetsu Nagata",
+      "reason": "Metro C23 vs Kintetsu through-run beyond Nagata"
+    },
+    {
+      "a": "Tenjimbashisuji 6-chome",
+      "b": "Hankyu Tenjimbashisuji 6-chome",
+      "reason": "Metro K11 vs Hankyu mutual operation beyond K11"
+    },
+    {
+      "a": "Namba",
+      "b": "Nankai Namba",
+      "reason": "Metro Namba vs Nankai Namba"
+    },
+    {
+      "a": "Namba",
+      "b": "JR Namba",
+      "reason": "Metro Namba vs JR Namba"
+    },
+    {
+      "a": "Namba",
+      "b": "Kintetsu Osaka-Namba",
+      "reason": "Metro Namba vs Kintetsu Osaka-Namba"
+    },
+    {
+      "a": "Umeda",
+      "b": "Hankyu Osaka-Umeda",
+      "reason": "Metro Umeda vs Hankyu Osaka-Umeda"
+    },
+    {
+      "a": "Umeda",
+      "b": "Hanshin Osaka-Umeda",
+      "reason": "Metro Umeda vs Hanshin Osaka-Umeda"
+    },
+    {
+      "a": "Umeda",
+      "b": "JR Osaka",
+      "reason": "Metro Umeda vs JR Osaka"
+    },
+    {
+      "a": "Tennoji",
+      "b": "JR Tennoji",
+      "reason": "Metro Tennoji vs JR / Kintetsu Tennoji"
+    }
+  ],
+  "suppressedTermini": [
+    "Senri-Chuo",
+    "Momoyamadai",
+    "Minoh-Kayano",
+    "Downtown",
+    "City"
+  ],
+  "laterModes": [
+    "New Tram",
+    "Nanko Port Town",
+    "Imazato Liner",
+    "Osaka City Bus",
+    "JR West",
+    "Hankyu",
+    "Hanshin",
+    "Nankai",
+    "Kintetsu",
+    "Keihan",
+    "Kita-Osaka Kyuko",
+    "Osaka Monorail",
+    "Hankai"
+  ],
+  "lines": [
+    {
+      "id": "midosuji",
+      "number": "M",
+      "name": "Midosuji",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Esaka",
+        "Nakamozu"
+      ],
+      "stations": [
+        "Esaka",
+        "Higashimikuni",
+        "Shin-Osaka",
+        "Nishinakajima-Minamigata",
+        "Nakatsu",
+        "Umeda",
+        "Yodoyabashi",
+        "Hommachi",
+        "Shinsaibashi",
+        "Namba",
+        "Daikokucho",
+        "Dobutsuen-mae",
+        "Tennoji",
+        "Showacho",
+        "Nishitanabe",
+        "Nagai",
+        "Abiko",
+        "Kitahanada",
+        "Shinkanaoka",
+        "Nakamozu"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "tanimachi",
+      "number": "T",
+      "name": "Tanimachi",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Dainichi",
+        "Yao-minami"
+      ],
+      "stations": [
+        "Dainichi",
+        "Moriguchi",
+        "Taishibashi-Imaichi",
+        "Sembayashi-Omiya",
+        "Sekime-Takadono",
+        "Noe-Uchindai",
+        "Miyakojima",
+        "Tenjimbashisuji 6-chome",
+        "Nakazakicho",
+        "Higashi-Umeda",
+        "Minamimorimachi",
+        "Temmabashi",
+        "Tanimachi 4-chome",
+        "Tanimachi 6-chome",
+        "Tanimachi 9-chome",
+        "Shitennoji-mae Yuhigaoka",
+        "Tennoji",
+        "Abeno",
+        "Fuminosato",
+        "Tanabe",
+        "Komagawa-Nakano",
+        "Hirano",
+        "Kire-Uriwari",
+        "Deto",
+        "Nagahara",
+        "Yao-minami"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "yotsubashi",
+      "number": "Y",
+      "name": "Yotsubashi",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Nishi-Umeda",
+        "Suminoekoen"
+      ],
+      "stations": [
+        "Nishi-Umeda",
+        "Higobashi",
+        "Hommachi",
+        "Yotsubashi",
+        "Namba",
+        "Daikokucho",
+        "Hanazonocho",
+        "Kishinosato",
+        "Tamade",
+        "Kitakagaya",
+        "Suminoekoen"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "chuo",
+      "number": "C",
+      "name": "Chuo",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Yumeshima",
+        "Nagata"
+      ],
+      "stations": [
+        "Yumeshima",
+        "Cosmosquare",
+        "Osakako",
+        "Asashiobashi",
+        "Bentencho",
+        "Kujo",
+        "Awaza",
+        "Hommachi",
+        "Sakaisuji-Hommachi",
+        "Tanimachi 4-chome",
+        "Morinomiya",
+        "Midoribashi",
+        "Fukaebashi",
+        "Takaida",
+        "Nagata"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "sennichimae",
+      "number": "S",
+      "name": "Sennichimae",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Nodahanshin",
+        "Minami-Tatsumi"
+      ],
+      "stations": [
+        "Nodahanshin",
+        "Tamagawa",
+        "Awaza",
+        "Nishinagahori",
+        "Sakuragawa",
+        "Namba",
+        "Nippombashi",
+        "Tanimachi 9-chome",
+        "Tsuruhashi",
+        "Imazato",
+        "Shin-Fukae",
+        "Shoji",
+        "Kita-Tatsumi",
+        "Minami-Tatsumi"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "sakaisuji",
+      "number": "K",
+      "name": "Sakaisuji",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Tenjimbashisuji 6-chome",
+        "Tengachaya"
+      ],
+      "stations": [
+        "Tenjimbashisuji 6-chome",
+        "Ogimachi",
+        "Minamimorimachi",
+        "Kitahama",
+        "Sakaisuji-Hommachi",
+        "Nagahoribashi",
+        "Nippombashi",
+        "Ebisucho",
+        "Dobutsuen-mae",
+        "Tengachaya"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "nagahori-tsurumi-ryokuchi",
+      "number": "N",
+      "name": "Nagahori Tsurumi-ryokuchi",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Taisho",
+        "Kadoma-minami"
+      ],
+      "stations": [
+        "Taisho",
+        "Dome-mae Chiyozaki",
+        "Nishinagahori",
+        "Nishiohashi",
+        "Shinsaibashi",
+        "Nagahoribashi",
+        "Matsuyamachi",
+        "Tanimachi 6-chome",
+        "Tamatsukuri",
+        "Morinomiya",
+        "Osaka Business Park",
+        "Kyobashi",
+        "Gamo 4-chome",
+        "Imafuku-Tsurumi",
+        "Yokozutsumi",
+        "Tsurumi-ryokuchi",
+        "Kadoma-minami"
+      ],
+      "shortTurns": []
+    },
+    {
+      "id": "imazatosuji",
+      "number": "I",
+      "name": "Imazatosuji",
+      "mode": "METRO",
+      "mapGroup": "Osaka Metro subway",
+      "termini": [
+        "Itakano",
+        "Imazato"
+      ],
+      "stations": [
+        "Itakano",
+        "Zuiko 4-chome",
+        "Daido-Toyosato",
+        "Taishibashi-Imaichi",
+        "Shimizu",
+        "Shimmori-Furuichi",
+        "Sekime-Seiiku",
+        "Gamo 4-chome",
+        "Shigino",
+        "Midoribashi",
+        "Imazato"
+      ],
+      "shortTurns": []
+    }
+  ]
+}

@@ -8,6 +8,14 @@ const BASE = "http://localhost:3000";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });
+  try {
+    await runChecks(browser);
+  } finally {
+    await browser.close();
+  }
+}
+
+async function runChecks(browser) {
   const page = await browser.newPage();
   const pageErrors = [];
   page.on("pageerror", (e) => pageErrors.push(e.message));
@@ -46,8 +54,6 @@ async function run() {
     pauseTitle: document.querySelector("#leave-reminders-pause-wrap .menu-toggle-title")?.textContent,
     donePresent: Boolean(document.getElementById("reminders-done-btn")),
   }));
-
-  await browser.close();
 
   const duplicateConstBug = pageErrors.some((m) => m.includes("DEFAULT_REMIND_DAYS"));
   const webPass =

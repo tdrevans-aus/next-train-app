@@ -80,6 +80,8 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
   }
 
   public static void requestRefresh(Context context) {
+    // onUpdate already repaints and queues a network refresh — no second
+    // refreshSoon() here, which used to double-fetch per request.
     Intent intent = new Intent(context, NextTrainWidgetProvider.class);
     intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
     AppWidgetManager manager = AppWidgetManager.getInstance(context);
@@ -87,6 +89,5 @@ public class NextTrainWidgetProvider extends AppWidgetProvider {
     int[] ids = manager.getAppWidgetIds(component);
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
     context.sendBroadcast(intent);
-    WidgetRefreshScheduler.refreshSoon(context);
   }
 }
