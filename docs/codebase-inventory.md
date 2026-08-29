@@ -142,7 +142,7 @@ See **`docs/dead-code-inventory.md`** (last trawl 11 Aug 2026). Still accurate; 
 | **D-09** | `#preferred-hint` + `jumpToTargetTrain()` / `skipToTargetTrain()` | **Resolved — kept active** (Aug 2026). Jump hint visible when hero preview ≠ pin; `skipToTargetTrain` sets skip index; `jumpToTargetTrain` clears skip. |
 | **D-10** | `PRO_MONETIZATION_SHIPPED = false` branches | Entire pro/paywall UI gated — fine for ship; grep before FB-13. |
 | **D-11** | `applyPreferredOrLaterFilter` | Gone from `app.js`; FB-06 doc updated Aug 2026 — hygiene closed. |
-| **D-12** | `public/design/*.html` in APK | Design pickers (pin icon, etc.) — same class as D-05. `target-icon-pick.html` obsolete (FB-17 superseded). |
+| **D-12** | `public/design/*.html` in APK | Design pickers (pin icon, etc.) — same class as D-05. **`target-icon-pick.html` deleted** (29 Aug 2026) — zero references anywhere in tree, confirmed via grep. Rest of `design/` still in active use (`app-icon-pick.html`, `journey-icon-pick.html`, `pin-icon-pick.html`, `founding-pro.html` all referenced). |
 
 **Confirmed live (do not delete):** `CommuteRefreshService`, `applyCommuteMode()`, strip/reminder schedulers, all widget receivers — see dead-code doc table.
 
