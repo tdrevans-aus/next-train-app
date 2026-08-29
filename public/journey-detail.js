@@ -288,6 +288,24 @@
     return deps.fetchJson?.(url);
   }
 
+  function apiResultError(result, fallback) {
+    if (typeof deps.apiResultError === "function") {
+      return deps.apiResultError(result, fallback);
+    }
+    return new Error(result?.data?.error ?? result?.error ?? fallback);
+  }
+
+  function isRateLimitedResult(result) {
+    if (typeof deps.isRateLimitedResult === "function") {
+      return deps.isRateLimitedResult(result);
+    }
+    return (
+      result?.status === 429 ||
+      result?.data?.error === "Too many requests" ||
+      result?.error === "Too many requests"
+    );
+  }
+
   function apiUrl(path) {
     return deps.apiUrl?.(path) ?? path;
   }
@@ -983,12 +1001,14 @@ async function fetchDirectionsFromApi(station) {
     return fallback.data.destinations;
   }
 
-  throw new Error(
-    primary.data?.error ??
-      fallback.data?.error ??
-      primary.error ??
+  if (isRateLimitedResult(primary) || isRateLimitedResult(fallback)) {
+    throw apiResultError(
+      isRateLimitedResult(primary) ? primary : fallback,
       "Could not load directions"
-  );
+    );
+  }
+
+  throw apiResultError(primary.ok ? fallback : primary, "Could not load directions");
 }
 
 async function loadDirectionsForSelect(selectEl, station, preferredDirection) {

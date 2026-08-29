@@ -1,92 +1,71 @@
 # Oslo direction model memo (§3 for Tim)
 
-Context **today (29 Aug 2026)**: five T-bane lines (1, 2, 3, 4, 5), all converging through the
-city-centre **Common Tunnel (Fellestunnelen)**, running Majorstuen – Nationaltheatret –
-**Stortinget** – Jernbanetorget – Grønland – Tøyen. This is a 5-of-5 shared trunk, not a 2- or
-3-line partial overlap like the reference cities seen so far (Rotterdam's Beurs is 5-of-5 too, but
-Rotterdam's oracle report also hand-transcribed all five lines' full termini and branch points —
-Oslo's did not; see the blocker below).
+Context **today (29 Aug 2026)**: **through Common Tunnel**, not a single hub-and-spoke. Official Ruter folder titles talk **1 Frognerseteren - Bergkrystallen**, **2 Østerås - Ellingsrudåsen**, **3 Kolsås - Mortensrud**, **4 Vestli - Bergkrystallen**, **5 Sognsvann - Vestli**, not “to City” / “to Oslo” / “to Sentrum”.
 
-There is no city loop. All five lines run through Stortinget in both directions; none terminate
-there.
+Inbound/outbound vs City already dies at **Stortinget** (all five lines through; line 5 both ways on one trip), **Jernbanetorget** (same plus Oslo S), **Nationaltheatret** (same plus railway), **Majorstuen** (four western branches + ring), **Carl Berners plass** (line 5 ring vs Vestli), and **Økern** (line 4 Løren vs line 5 Hasle).
 
 ## Recommendation
 
-**Line + terminus** (example: `Line 1 + <west terminus>`, `Line 3 + <east terminus>`) — same
-model as Auckland, Canberra, and Rotterdam. This is the right target model for Oslo: five lines
-sharing a trunk is exactly the case where "line + terminus" beats compass or inbound/outbound
-labels, because a compass or "inbound/outbound vs Stortinget" label is ambiguous the instant two
-lines diverge on the same side of the tunnel (e.g. two lines both leaving Majorstuen westbound
-toward different unconfirmed termini).
+**Line + terminus** (example: `1 + Frognerseteren`, or `2 + Ellingsrudåsen`, or `5 + Vestli`).
 
-**This recommendation cannot be turned into a D5 assertion table yet.** The oracle report gives:
+Use the **official Ruter folder terminus** on trains leaving a node. Use **Stortinget** only as the hub *stop string*, never as a direction token (“to City” / “to Oslo” / “to Sentrum”). At Stortinget the useful pair is line + suburban end.
 
-- the Common Tunnel's ordered stop list (confirmed, six stations, shared by all five lines), and
-- three isolated facts — Skøyen served by lines 1 & 2, Frogner served by line 3, Blindern is a
-  Line 6 (not-live) branch station —
+Do not write D5 assertion tables until Tim locks this.
 
-but **no terminus name for any of lines 1–5**, and no ordered station sequence west of Majorstuen
-or east of Tøyen. Line + terminus needs the terminus string on both ends of every line; without
-that, any §3 example below is a placeholder, not a locked label.
+The pack prompt’s chips are **line + official terminus**, not compass, not “to City”. D1 locks folder strings: **Frognerseteren**, **Bergkrystallen**, **Østerås**, **Ellingsrudåsen**, **Kolsås**, **Mortensrud**, **Sognsvann**, **Vestli**. **Helsfyr** is a line-1 short-turn, not a chip. **Ringen** is not a chip.
 
-**Do not fill this from GTFS, from a route generator, or from general/background knowledge of the
-Oslo T-bane system.** The oracle report is explicit that D1 is hand-transcribed from the Ruter
-linjekart and timetables, not generated from GTFS — inventing termini from another source here
-would be exactly the "guess at a station graph" failure mode this pipeline is designed to avoid,
-and would produce direction labels that look locked but aren't sourced.
+**There is no passenger line 6.** No Fornebu chip.
 
 ## Options
 
 | model | how it reads | pros | cons |
 | --- | --- | --- | --- |
-| **A. Line + terminus** (recommend, target) | Line 1 + Frognerseteren *(placeholder — terminus not confirmed)* | Matches the pattern used by every reference city with >1 line through a shared hub; correct even after Line 6 opens | **Blocked**: no confirmed termini for lines 1–5 in the oracle report |
-| B. Terminus only | e.g. destination blind text alone | Shorter chip | Same blocker as A (no termini), and fails once two lines share a terminus area, same as Rotterdam's C-vs-D note at De Akkers |
-| C. Inbound/outbound vs Stortinget | To Stortinget / Away from Stortinget | Cheap; no terminus data needed | Explicitly wrong per every other reference memo (Canberra H6, Rotterdam H6) — false the instant two lines diverge on the same side; Stortinget is a through-hub for all five lines, not an end, so "inbound/outbound" collapses two different real directions into one label at every non-Stortinget station |
-| D. Tunnel-end anchor (interim only, not recommended as final) | Line 3 — towards Majorstuen / Line 3 — towards Tøyen | Usable **today** from confirmed data only (the six Common Tunnel stations are the one fully-ordered, fully-sourced segment in the report) | Only correct *inside* the tunnel; wrong the moment a line continues past Majorstuen or Tøyen toward its real terminus, so it cannot be the shipped model — flagged here only as what's buildable without new sourcing |
+| **A. Line + terminus** (recommend) | 1 + Frognerseteren; 2 + Ellingsrudåsen; 5 + Vestli | Matches Ruter folder titles and destination blinds; splits H4 at Stortinget / Majorstuen / Økern / Hellerud | Must keep Vestli as a token on both 4 and 5 (line prefix does the work) and not collapse line 1’s Helsfyr short-turn into a third chip |
+| **B. Terminus only** | Frognerseteren; Ellingsrudåsen; Vestli | Matches some blinds | At Stortinget five lines collapse to suburb names with no family. Line 4 and line 5 both “Vestli” the north-east way |
+| **C. Inbound/outbound vs City + terminus** | To City / To Frognerseteren | Close to English “centre” | False at Stortinget (through-tunnel). “City” / “Sentrum” is the map blob, not the hub lock. Dies for line 5 (one trip is both inbound and outbound) |
 
-## §3 examples (illustrative only — not D5, blocked on missing termini)
+## §3 examples (illustrative — not D5)
 
-Assume model A once termini are known. Locked hub **Stortinget**, all five lines.
+Assume model A. Locked stop string **Stortinget**. Official folder termini.
 
-### Stortinget (hub, all five lines)
+### Stortinget (all five lines; line 5 twice)
 
-| train | label (target, once termini confirmed) |
+| train | label |
 | --- | --- |
-| Line 1 | Line 1 + `<west terminus>` / Line 1 + `<east terminus>` |
-| Line 2 | Line 2 + `<west terminus>` / Line 2 + `<east terminus>` |
-| Line 3 | Line 3 + `<west terminus>` / Line 3 + `<east terminus>` |
-| Line 4 | Line 4 + `<west terminus>` / Line 4 + `<east terminus>` |
-| Line 5 | Line 5 + `<west terminus>` / Line 5 + `<east terminus>` |
+| 1 west | 1 + Frognerseteren |
+| 1 east | 1 + Bergkrystallen |
+| 2 west | 2 + Østerås |
+| 2 east | 2 + Ellingsrudåsen |
+| 3 west | 3 + Kolsås |
+| 3 east | 3 + Mortensrud |
+| 4 west/north | 4 + Vestli |
+| 4 east | 4 + Bergkrystallen |
+| 5 toward Sognsvann | 5 + Sognsvann |
+| 5 toward Vestli | 5 + Vestli |
 
-Every `<...terminus>` placeholder above is an open question, not a value Jim should fill in from
-elsewhere — it must come back from a hand-transcribed Ruter linjekart pass.
+Vy / NSB at Oslo S is **out of this city**. Inbound/outbound does not work (every line both ways is not “to City”). Line 5 on this board can be *both* directions on the same published through-path.
 
-### Tøyen (secondary transfer hub, not the lock)
+### Jernbanetorget (H4; T-bane + Oslo S)
 
-Same model, same blocker. Report is explicit this is an interchange node, not a fragment point —
-do not split Tøyen's label set by line the way a terminus station would be split.
+Same ten chips as Stortinget. **Oslo S / Vy / NSB / bussterminal are a different mode.** “To Oslo S” is false as a T-bane direction. doNotGroup.
 
-### Common Tunnel interior (Nationaltheatret, Jernbanetorget, Grønland)
+### Nationaltheatret (H4; T-bane + railway)
 
-All five lines pass through; same blocker applies. Note Jernbanetorget additionally needs the
-H1 doNotGroup applied (metro label only — never merge in Oslo S / Vy-NSB rail departures) on top
-of the direction-collapse logic.
+Same chips. Railway platforms are **out of this city**.
 
-### Fallback if Tim needs something shippable before Nico's follow-up
+### Majorstuen (H4)
 
-Use model D (tunnel-end anchor: "towards Majorstuen" / "towards Tøyen") **only** for the six
-Common Tunnel stations, and mark it explicitly as interim in code/config so it's easy to find and
-replace once real termini land — do not let an interim compass-like label quietly become the
-permanent one.
+1 + Frognerseteren vs 1 + Bergkrystallen vs 2 + Østerås vs 2 + Ellingsrudåsen vs 3 + Kolsås vs 3 + Mortensrud vs 4 + Vestli vs 4 + Bergkrystallen vs 5 + Sognsvann vs 5 + Vestli. Terminus-only collapses 4 vs 5 both “Vestli” — keep the line token.
 
-## Open §3 questions for Tim / Nico
+### Carl Berners plass / Økern / Hellerud / Helsfyr
 
-1. **Termini for lines 1–5** (both ends, all five lines) — not in the oracle report. Required
-   before any D5 assertion table can be written. This is the single biggest blocker in this pack.
-2. **Ordered station sequence** west of Majorstuen and east of Tøyen for each line, including
-   where Skøyen (1, 2) and Frogner (3) actually sit in that sequence.
-3. **Line naming convention**: report only ever refers to "line 1" / "lines 1–5" as passenger
-   codes (no line names given, unlike Rotterdam's "Metro A" style). Confirm whether Ruter prints a
-   name alongside the number before Jim builds display strings.
-4. Whether the Common-Tunnel-only interim label (model D above) is acceptable to ship ahead of a
-   full termini pass, or whether Tim would rather hold the whole city until Nico supplies the rest.
+Line + the far official end (5 + Sognsvann vs 5 + Vestli, not “around the ring”; 4 + Vestli vs 5 + Vestli — line token required; 2 + Ellingsrudåsen vs 3 + Mortensrud; 1 + Bergkrystallen vs 1 + Frognerseteren — not Helsfyr unless that specific trip is signed that way).
+
+## Open §3 questions for Tim
+
+1. Spoken/printed line token: map / folder `1` vs `T-bane 1` vs `Linje 1`. Rec: **{1–5} + official Ruter terminus**.
+2. Hub far-end string: never “City” / “Oslo” / “Sentrum” / “Oslo S”. Lock **Stortinget** as the stop; directions always the official suburban terminus.
+3. Line 1 eastern string: folder `Bergkrystallen` vs short-turn `Helsfyr`. Rec: **passenger folder terminus**; Helsfyr only if a specific trip is signed that way (overlay).
+4. Line 5 string: folder pair `Sognsvann` / `Vestli` vs marketing `Ringen`. Rec: **passenger folder**; Ringen is the path, not a chip.
+5. Whether testers see oslo as its own city picker (yes — do not bury under a Norway / Ruter / Vy city).
+6. Whether boards at Jernbanetorget still show an Oslo S-shaped “to City” (they should not — T-bane chips are the suburban ends; rail is out of this city).

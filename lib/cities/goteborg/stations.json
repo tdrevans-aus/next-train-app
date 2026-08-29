@@ -1,0 +1,795 @@
+{
+  "city": "goteborg",
+  "status": "planned",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Alingsås Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Allhelgonakyrkan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Almedal",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Angereds Centrum",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Anneberg Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Aprilgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Aspedalen Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Aspen Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Axel Dahlströms Torg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Bellevue",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Berzeliigatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Beväringsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Bohus Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Bokekullsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Botaniska Trädgården",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Briljantgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Brunnsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Brunnsparken",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Bögatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Chalmers",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Chapmans Torg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Doktor Fries Torg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Doktor Sydows Gata",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Domkyrkan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Drottningtorget",
+      "aliases": [
+        "Centralstationen"
+      ],
+      "mode": "tram"
+    },
+    {
+      "name": "Ejdergatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Ekedal",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Eketrägatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Ekmanska",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Elisedal",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Fjällgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Floda Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Frihamnen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Friskväderstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Frölunda Torg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Galileis Gata",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Gamlestaden Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Gamlestads Torg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Godhemsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Gropegårdsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Grönsakstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Göteborg Central",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Hagakyrkan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Hagen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Hammarkullen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Handelshögskolan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Hede Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Hinsholmen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Hjalmar Brantingsplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Hjällbo",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Härlanda",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Högsbogatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Jaegerdorffsplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Januarigatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Jonsered Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Jubileumsparken",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Järntorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kaggeledstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kapellplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kaptensgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Klintens Väg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Komettorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Korsvägen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kortedala Torg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Krokslätts Fabriker",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Krokslätts Torg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kungsbacka Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Kungsportsplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kungssten",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kviberg",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Kållered Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Käringberget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Lackarebäck",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Lana",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Lantmilsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Lerum Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Lilla Bommen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Lindholmen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Lindome Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Linnéplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Liseberg Station",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Liseberg Station (tåg)",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Liseberg Södra",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Långedrag",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Majvallen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Mariaplan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Marklandsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Masthuggstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Medicinaregatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Mildvädersgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Munkebäckstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Musikvägen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Mölndal Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Mölndals Innerstad",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Mölndals sjukhus",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Nils Ericsonsplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Nol Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Nordstan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Norsesund Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Nya Varvsallén",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Nymilsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Nymånegatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Nödinge Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Olivedalsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Olskrokstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Opaltorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Ostindiegatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Partille Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Positivgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Prinsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Pumpgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Rambergsvallen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Redbergsplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Runstavsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Rymdtorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Sahlgrenska Huvudentré",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Saltholmen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Sandarna",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Sankt Sigfrids Plan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Sannaplan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Scandinavium",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Seminariegatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "SKF",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Smaragdgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Stenkullen Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Stenpiren",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Stigbergstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Stockholmsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Storås",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Surte Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Svingeln",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Sälöfjordsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Sävenäs Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Teleskopgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Temperaturgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Tingvallsvägen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Tranered",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Töpelsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Ullevi Norra",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Ullevi Södra",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Vagnhallen Majorna",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Valand",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Varbergsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Varmfrontsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Vasa Viktoriagatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Vasaplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Virginsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Vågmästareplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Vårväderstorget",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Väderilsgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Västra Bodarna Station",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Wavrinskys Plats",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Welandergatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Wieselgrensplatsen",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Älvängen resecentrum",
+      "aliases": [],
+      "mode": "train"
+    },
+    {
+      "name": "Önskevädersgatan",
+      "aliases": [],
+      "mode": "tram"
+    },
+    {
+      "name": "Östra Sjukhuset",
+      "aliases": [],
+      "mode": "tram"
+    }
+  ]
+}

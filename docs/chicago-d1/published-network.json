@@ -1,0 +1,756 @@
+{
+  "city": "chicago",
+  "displayName": "Chicago",
+  "status": "planned",
+  "agency": "CTA",
+  "timezone": "America/Chicago",
+  "source": "https://www.transitchicago.com/assets/1/6/ctamap_Lsystem.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger ‘L’ (rail) system diagram (ordered stops + color lines + hub lock)",
+      "title": "‘L’ (rail) system diagram",
+      "pdfTitle": "[FE-7861-R31] P19 L (rail) system diagram WEB",
+      "printedFormCode": "FE-7861-R31",
+      "url": "https://www.transitchicago.com/assets/1/6/ctamap_Lsystem.pdf",
+      "pngUrl": "https://www.transitchicago.com/assets/1/6/ctamap_Lsystem.png",
+      "linkedFrom": "https://www.transitchicago.com/maps/",
+      "alsoLinkedFrom": [
+        "https://www.transitchicago.com/brochures/"
+      ],
+      "captionOnIndex": "‘L’ (rail) system diagram — Downloadable version (PDF) / Online version (PNG). Shows train routes only.",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "lastModified": "Tue, 11 Aug 2026 19:34:54 GMT",
+      "pdfModDate": "Mon Aug 10 18:55:57 2026 UTC",
+      "pdfCreationDate": "Mon Aug 10 18:55:56 2026 UTC",
+      "localFile": "sources/ctamap_Lsystem.pdf",
+      "localPng": "sources/ctamap_Lsystem.png",
+      "note": "Linked from Maps as ‘L’ (rail) system diagram. PDF title [FE-7861-R31] P19 L (rail) system diagram WEB. Illustrator 30.7. HTTP Last-Modified Tue, 11 Aug 2026 19:34:54 GMT. Printed footer form code FE-7861-R31. Eight color lines: Red Blue Brown Green Orange Pink Purple Yellow. Purple weekday Loop express is dashed (rush period service only). Green south split is labeled Ashland Branch (Ashland/63rd) and East 63rd Branch (Cottage Grove). Red Line Extension south of 95th/Dan Ryan is dotted under-construction (103rd, 111th, Michigan, 130th) — not D1 open stops. State/Lake prints as temporarily closed. Clark/Lake is the named inner-city transfer on the Loop rectangle. Loop is a region/structure label, not a station. Map prints Library (not Harold Washington Library-State/Van Buren). Metra train icons are transfers, not D1 stops."
+    },
+    {
+      "role": "D1 passenger map index",
+      "title": "Maps - CTA",
+      "url": "https://www.transitchicago.com/maps/",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "lastModified": "Sat, 29 Aug 2026 00:42:08 GMT",
+      "localFile": "sources/maps.html",
+      "printedMapsOnIndex": [
+        "CTA Map Brochure (All pages) ctamap_SystemMap.pdf",
+        "Mapa en español ctamap_System_es.pdf",
+        "Web-based System map / Downtown map",
+        "‘L’ (rail) system diagram PNG + PDF",
+        "RTA regional maps (CTA+Metra+Pace — out of v1)",
+        "Downtown Sightseeing by Transit",
+        "Night Owl Brochure"
+      ],
+      "note": "Passenger rail oracle is the ‘L’ (rail) system diagram, not the bus+rail brochure and not RTA regional."
+    },
+    {
+      "role": "supporting CTA System Map brochure (bus + rail; not the D1 stop oracle)",
+      "title": "CTA System Map brochure",
+      "url": "https://www.transitchicago.com/assets/1/6/ctamap_SystemMap.pdf",
+      "linkedFrom": "https://www.transitchicago.com/maps/",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "lastModified": "Fri, 07 Aug 2026 18:40:25 GMT",
+      "pdfModDate": "Thu Aug 6 18:48:17 2026 UTC",
+      "localFile": "sources/ctamap_SystemMap.pdf",
+      "note": "All-pages bus+rail brochure. Out of v1 for bus/Pace/Metra. Rail names checked as support only. Map still wins from the ‘L’ diagram."
+    },
+    {
+      "role": "older ‘L’ (Rail) System Map brochure (not the current D1 plate)",
+      "title": "‘L’ (Rail) System Map brochure",
+      "url": "https://www.transitchicago.com/assets/1/6/ctamap_LMap.pdf",
+      "linkedFrom": "https://www.transitchicago.com/brochures/",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "lastModified": "Mon, 05 Aug 2024 20:03:49 GMT",
+      "pdfCreationDate": "Wed Jul 24 17:04:28 2024 UTC",
+      "localFile": "sources/ctamap_LMap.pdf",
+      "note": "Brochures page still links this 2024 L brochure. D1 oracle is the Aug 2026 ctamap_Lsystem.pdf diagram."
+    },
+    {
+      "role": "supporting official line pages (ordered stops; map printed names win)",
+      "title": "CTA ‘L’ line pages",
+      "urls": [
+        "https://www.transitchicago.com/redline/",
+        "https://www.transitchicago.com/blueline/",
+        "https://www.transitchicago.com/brownline/",
+        "https://www.transitchicago.com/greenline/",
+        "https://www.transitchicago.com/orangeline/",
+        "https://www.transitchicago.com/pinkline/",
+        "https://www.transitchicago.com/purpleline/",
+        "https://www.transitchicago.com/yellowline/"
+      ],
+      "retrievedAt": "2026-08-29T00:43:00Z",
+      "localFiles": [
+        "sources/redline.html",
+        "sources/blueline.html",
+        "sources/brownline.html",
+        "sources/greenline.html",
+        "sources/orangeline.html",
+        "sources/pinkline.html",
+        "sources/purpleline.html",
+        "sources/yellowline.html"
+      ],
+      "note": "Route diagram rld-stopname columns. Page long form Harold Washington Library-State/Van Buren vs map Library. Blue page appends (O'Hare Branch)/(Forest Park Branch) to Harlem and Western — map prints Harlem / Western only. Red page has no Washington (Lake→Monroe). Purple page: local Linden–Howard; weekday rush Express continues Wilson, Belmont, Wellington, Diversey, Fullerton, Armitage, Sedgwick, Chicago, Merchandise Mart, then clockwise Loop. Green page lists Damen (StopId 150) between California and Ashland; State/Lake temporarily closed; King Drive Harlem-bound boarding only. State/Lake alert: closed for reconstruction into 2029; use Clark/Lake or Washington/Wabash. Map still wins."
+    },
+    {
+      "role": "developer portal (live-board path; not a D1 generator; no key in this pack)",
+      "title": "Developer Center - Open Chicago Transit Data - CTA",
+      "url": "https://www.transitchicago.com/developers/",
+      "retrievedAt": "2026-08-29T00:45:00Z",
+      "localFile": "sources/developers.html",
+      "note": "Train Tracker API, Bus Tracker API (out of v1), Customer Alerts API, GTFS. Terms https://www.transitchicago.com/developers/terms/ . Train Tracker docs https://www.transitchicago.com/developers/traintracker/ . GTFS docs https://www.transitchicago.com/developers/gtfs/ . Key later if needed. Not a D1 blocker. Never paste a key. Did not call any API with a real key. Did not generate stations from GTFS."
+    },
+    {
+      "role": "Train Tracker API docs (document only)",
+      "title": "CTA Train Tracker API",
+      "url": "https://www.transitchicago.com/developers/traintracker/",
+      "retrievedAt": "2026-08-29T00:49:00Z",
+      "localFile": "sources/traintracker.html",
+      "note": "Default Next Train path for Jim D2. Requires a developer key from the CTA portal. JSON output is documented on this page. Not used as a D1 generator."
+    },
+    {
+      "role": "GTFS docs (document only; not a D1 generator)",
+      "title": "General Transit Feed Specification (GTFS) Data - CTA",
+      "url": "https://www.transitchicago.com/developers/gtfs/",
+      "retrievedAt": "2026-08-29T00:49:00Z",
+      "localFile": "sources/gtfsdev.html",
+      "note": "Static GTFS exists. Do not generate published-network.json from GTFS. Conventional passenger route ids if later needed: Red, Blue, Brn, G, Org, Pink, P, Y."
+    }
+  ],
+  "retrievedAt": "2026-08-29T00:50:00Z",
+  "notes": [
+    "D1 oracle is the official CTA ‘L’ (rail) system diagram (transitchicago.com/assets/1/6/ctamap_Lsystem.pdf, PDF title [FE-7861-R31] P19 L (rail) system diagram WEB, HTTP Last-Modified Tue 11 Aug 2026 19:34:54 GMT) HAND-TRANSCRIBED from rendered map images (sources/ctamap_Lsystem.png + sources/overview.png + sources/crop-*.png + sources/lsystem-r300-1.png + sources/hi-loop.png). Official line pages are support only. Stations arrays are not generated from GTFS. Not generated from Train Tracker. Map printed names win clashes.",
+    "City id chicago is a SEPARATE city. Do not invent city=chi, city=cta, city=chicago-l, or city=dc. Do not merge into washington or rotterdam. Agency CTA. Modes v1: CTA ‘L’ rapid transit ONLY. No Metra, no Pace, no South Shore Line, no CTA bus.",
+    "City stays planned until Jim wires testers. Cut #1 is Rotterdam only. Washington stays planned and untouched. This pack stays planned. assertCityLive(\"chicago\") must fail.",
+    "Timezone America/Chicago HAS DST (CDT/CST). Do not copy Perth / Brisbane no-DST.",
+    "Eight printed color lines on the current map: Red, Blue, Brown, Green, Orange, Pink, Purple, Yellow. mapGroup L. Conventional CTA GTFS-style codes Red/Blue/Brn/G/Org/Pink/P/Y recorded as gtfsRouteIdsIfKnown (not extracted from GTFS).",
+    "Locked inner-city printed name: Clark/Lake (Blue subway × Brown/Green/Orange/Pink/Purple elevated on the Loop rectangle). The Loop is the structure / region label, not a station and not a hub token. Not State/Lake, not Washington/Wabash, not Lake, not Downtown, not The Loop as a stop.",
+    "143 unique passenger ‘L’ stops after shared-transfer dedupe (same physical nest counted once) with same-name different-line places counted separately. State/Lake is included (map prints it; official pages mark temporarily closed for reconstruction into 2029). Green Damen is included (map + greenline.html StopId 150). Red Line Extension 103rd / 111th / Michigan / 130th are under construction — not inserted. Washington is NOT a Red passenger stop on the official Red page (Lake→Monroe); map Washington in the Red subway is the out-of-system transfer annotation to Washington/Wabash / Lake. Blue Washington is a real Blue subway stop.",
+    "Map vs page: Library (map) vs Harold Washington Library-State/Van Buren (line pages). Blue Harlem / Western print without the page’s (O'Hare Branch)/(Forest Park Branch) suffix. Merchandise Mart is the printed / page string (not Merch Mart as a lock).",
+    "Purple: map dashed = rush period / Purple Line Express. Local is Linden–Howard. Express continues Howard–Wilson–Belmont–Wellington–Diversey–Fullerton–Armitage–Sedgwick–Chicago–Merchandise Mart then clockwise around the Loop (Clark/Lake → State/Lake → Washington/Wabash → Adams/Wabash → Library → LaSalle/Van Buren → Quincy → Washington/Wells) and returns to Linden. Brown circulates the Loop the other way (official brownline.html: Merchandise Mart → Washington/Wells → Quincy → LaSalle/Van Buren → Library → Adams/Wabash → Washington/Wabash → State/Lake → Clark/Lake).",
+    "Green two south branches as the map prints: Ashland Branch Halsted–Ashland/63rd; East 63rd Branch King Drive (Harlem-bound boarding only)–Cottage Grove. Split at Garfield.",
+    "Yellow is Skokie only: Dempster-Skokie, Oakton-Skokie, Howard. Not a Loop line.",
+    "Do not add Metra names (Ogilvie, Union Station Metra, LaSalle St Metra, Millennium Station) as ‘L’ stops. Map ‘L’ stations near those transfers are Quincy, Library, Washington/Wabash, LaSalle/Van Buren.",
+    "Feed (Jim D2, not a D1 generator): https://www.transitchicago.com/developers/ Train Tracker API https://www.transitchicago.com/developers/traintracker/ GTFS https://www.transitchicago.com/developers/gtfs/ . Key later (Auckland pattern). D1 stays planned. Do not call the live API with a real key. Never paste a key. The key is not a D1 blocker.",
+    "H3: State/Lake closed into 2029 (overlay, station remains in D1 as printed). Red Line Extension under construction (not a D1 stop). Red page mentions select rush trips to/from Ashland/63rd — not a Red station list row."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Clark/Lake",
+    "lockSet": [
+      "Clark/Lake"
+    ],
+    "lockNote": "Printed inner-city lock. Named stop on the official ‘L’ diagram at the northwest corner of the Loop rectangle: Blue subway + Brown/Green/Orange/Pink/Purple elevated. The Loop is the structure (elevated rectangle + region label), not a station and not a direction token. Inbound/outbound dies in the Loop. Clark/Lake is a stop string.",
+    "doNotUse": [
+      "Downtown",
+      "The Loop",
+      "Loop",
+      "Loop 'L'",
+      "Metro Center",
+      "Beurs",
+      "Washington",
+      "Union Station",
+      "Union Station (Metra)",
+      "Ogilvie",
+      "Ogilvie Transportation Center",
+      "Millennium Station",
+      "LaSalle Street Station",
+      "chi",
+      "cta",
+      "chicago-l",
+      "City",
+      "CBD",
+      "Downtown Chicago"
+    ],
+    "doNotCollapse": [
+      "Clark/Lake",
+      "State/Lake",
+      "Washington/Wabash",
+      "Clark/Division",
+      "Lake",
+      "Howard",
+      "Roosevelt",
+      "Ashland",
+      "Ashland/63rd",
+      "Pulaski",
+      "Western",
+      "Cicero",
+      "Harlem",
+      "Harlem/Lake",
+      "Washington",
+      "Washington/Wells",
+      "Adams/Wabash",
+      "Library",
+      "LaSalle",
+      "LaSalle/Van Buren",
+      "Quincy",
+      "Monroe",
+      "Jackson",
+      "Chicago",
+      "Grand",
+      "Belmont",
+      "Addison",
+      "Damen",
+      "Kedzie",
+      "Kedzie-Homan",
+      "California",
+      "Oak Park",
+      "Austin",
+      "Halsted",
+      "Garfield",
+      "47th",
+      "Montrose",
+      "Irving Park",
+      "Central",
+      "Clinton",
+      "Dempster",
+      "Dempster-Skokie"
+    ],
+    "alsoOnSharedApproaches": [
+      "State/Lake",
+      "Washington/Wabash",
+      "Adams/Wabash",
+      "Library",
+      "LaSalle/Van Buren",
+      "Quincy",
+      "Washington/Wells",
+      "Lake",
+      "Washington",
+      "Monroe",
+      "Jackson",
+      "Merchandise Mart",
+      "Roosevelt",
+      "Howard",
+      "Belmont",
+      "Fullerton",
+      "Wilson"
+    ]
+  },
+  "coverageGaps": [
+    "CTA bus. Out of v1.",
+    "Pace suburban bus. Out of v1.",
+    "Metra commuter rail (train icons on the ‘L’ diagram; Ogilvie, Union Station, LaSalle Street, Millennium Station). Transfers, not D1 stops. doNotGroup.",
+    "South Shore Line (Millennium Station transfer on the Green/Loop pages). Out of v1.",
+    "Red Line Extension (103rd, 111th, Michigan, 130th) dotted under construction on this map. Not inserted.",
+    "Washington Red subway (closed 2006; absent from redline.html). Not inserted.",
+    "RTA regional / downtown sightseeing / owl brochure maps on the same Maps index. Not the D1 stop oracle.",
+    "Spanish system map is a language twin, not a second stop oracle."
+  ],
+  "liveBoards": {
+    "status": "developer_api_exists_city_planned",
+    "portal": "https://www.transitchicago.com/developers/",
+    "trainTrackerDocs": "https://www.transitchicago.com/developers/traintracker/",
+    "gtfsDocs": "https://www.transitchicago.com/developers/gtfs/",
+    "terms": "https://www.transitchicago.com/developers/terms/",
+    "defaultNextTrain": {
+      "name": "CTA Train Tracker API",
+      "note": "Jim D2. Developer key required. JSON documented on the Train Tracker page. Not a D1 generator. Bus Tracker is out of v1."
+    },
+    "keyPolicy": "Tim signs up later on transitchicago.com/developers (Auckland pattern). The key is for live boards later, NOT a D1 blocker. This pack does not contain a key and did not call the API with a real key.",
+    "d1": "planned. assertCityLive(chicago) must fail."
+  },
+  "stats": {
+    "lines": 8,
+    "redStops": 33,
+    "blueStops": 33,
+    "brownStops": 27,
+    "greenStops": 31,
+    "orangeStops": 16,
+    "pinkStops": 22,
+    "purpleStops": 26,
+    "yellowStops": 3,
+    "uniqueNames": 143,
+    "innerCityLock": [
+      "Clark/Lake"
+    ],
+    "loopStructure": "Loop"
+  },
+  "lines": [
+    {
+      "id": "red",
+      "number": "Red",
+      "name": "Red Line",
+      "officialPageTitle": "Red Line • Howard / 95th/Dan Ryan",
+      "gtfsRouteIdsIfKnown": [
+        "Red"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "Howard",
+        "95th/Dan Ryan"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Howard",
+          "otherLine": "purple",
+          "note": "Howard is Red northern terminus + Purple local + Yellow. Transfer, not the inner-city hub."
+        },
+        {
+          "at": "Howard",
+          "otherLine": "yellow"
+        },
+        {
+          "at": "Wilson",
+          "otherLine": "purple",
+          "note": "Purple Express stop. Red local continues Jarvis–Lawrence and Sheridan–Addison that Purple Express skips."
+        },
+        {
+          "at": "Belmont",
+          "otherLine": "brown",
+          "note": "Red/Brown/Purple Express transfer. Not Blue Belmont (O'Hare Branch)."
+        },
+        {
+          "at": "Fullerton",
+          "otherLine": "brown"
+        },
+        {
+          "at": "Lake",
+          "otherLine": "blue",
+          "note": "Red subway Lake. Out-of-system transfer on the map to Washington/Wabash and to Clark/Lake. Not Clark/Lake. Not State/Lake. No Washington Red passenger stop on redline.html (Lake→Monroe)."
+        },
+        {
+          "at": "Jackson",
+          "otherLine": "blue",
+          "note": "Red/Blue subway transfer. doNotCollapse from Blue LaSalle or Red Monroe."
+        },
+        {
+          "at": "Roosevelt",
+          "otherLine": "orange",
+          "note": "Red subway × Green/Orange elevated."
+        }
+      ],
+      "stations": [
+        "Howard",
+        "Jarvis",
+        "Morse",
+        "Loyola",
+        "Granville",
+        "Thorndale",
+        "Bryn Mawr",
+        "Berwyn",
+        "Argyle",
+        "Lawrence",
+        "Wilson",
+        "Sheridan",
+        "Addison",
+        "Belmont",
+        "Fullerton",
+        "North/Clybourn",
+        "Clark/Division",
+        "Chicago",
+        "Grand",
+        "Lake",
+        "Monroe",
+        "Jackson",
+        "Harrison",
+        "Roosevelt",
+        "Cermak-Chinatown",
+        "Sox-35th",
+        "47th",
+        "Garfield",
+        "63rd",
+        "69th",
+        "79th",
+        "87th",
+        "95th/Dan Ryan"
+      ]
+    },
+    {
+      "id": "blue",
+      "number": "Blue",
+      "name": "Blue Line",
+      "officialPageTitle": "Blue Line • O'Hare / Forest Park",
+      "gtfsRouteIdsIfKnown": [
+        "Blue"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "O'Hare",
+        "Forest Park"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Clark/Lake",
+          "otherLine": "green",
+          "note": "Hub lock. Blue subway under the Loop rectangle. Harlem and Western print twice on this line (O'Hare Branch vs Forest Park Branch) — same string, two places. Map does not append the page’s branch suffix."
+        },
+        {
+          "at": "Washington",
+          "otherLine": "red",
+          "note": "Blue Washington is a real subway stop. Not Red Washington (absent). Not Washington/Wabash. Not Washington/Wells."
+        },
+        {
+          "at": "Jackson",
+          "otherLine": "red"
+        }
+      ],
+      "stations": [
+        "O'Hare",
+        "Rosemont",
+        "Cumberland",
+        "Harlem",
+        "Jefferson Park",
+        "Montrose",
+        "Irving Park",
+        "Addison",
+        "Belmont",
+        "Logan Square",
+        "California",
+        "Western",
+        "Damen",
+        "Division",
+        "Chicago",
+        "Grand",
+        "Clark/Lake",
+        "Washington",
+        "Monroe",
+        "Jackson",
+        "LaSalle",
+        "Clinton",
+        "UIC-Halsted",
+        "Racine",
+        "Illinois Medical District",
+        "Western",
+        "Kedzie-Homan",
+        "Pulaski",
+        "Cicero",
+        "Austin",
+        "Oak Park",
+        "Harlem",
+        "Forest Park"
+      ]
+    },
+    {
+      "id": "brown",
+      "number": "Brown",
+      "name": "Brown Line",
+      "officialPageTitle": "Brown Line • Kimball / Loop ‘L’",
+      "gtfsRouteIdsIfKnown": [
+        "Brn"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "Kimball"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Belmont",
+          "otherLine": "red"
+        },
+        {
+          "at": "Fullerton",
+          "otherLine": "red"
+        },
+        {
+          "at": "Merchandise Mart",
+          "otherLine": "purple",
+          "note": "Brown and Purple Express enter the Loop here. Brown circulates the other way from Orange/Pink/Purple (official brownline.html order Washington/Wells→Quincy→LaSalle/Van Buren→Library→Adams/Wabash→Washington/Wabash→State/Lake→Clark/Lake)."
+        },
+        {
+          "at": "Clark/Lake",
+          "otherLine": "blue",
+          "note": "Loop is circulation, not a Brown terminus. Direction token is Brown + Kimball."
+        }
+      ],
+      "stations": [
+        "Kimball",
+        "Kedzie",
+        "Francisco",
+        "Rockwell",
+        "Western",
+        "Damen",
+        "Montrose",
+        "Irving Park",
+        "Addison",
+        "Paulina",
+        "Southport",
+        "Belmont",
+        "Wellington",
+        "Diversey",
+        "Fullerton",
+        "Armitage",
+        "Sedgwick",
+        "Chicago",
+        "Merchandise Mart",
+        "Washington/Wells",
+        "Quincy",
+        "LaSalle/Van Buren",
+        "Library",
+        "Adams/Wabash",
+        "Washington/Wabash",
+        "State/Lake",
+        "Clark/Lake"
+      ]
+    },
+    {
+      "id": "green",
+      "number": "Green",
+      "name": "Green Line",
+      "officialPageTitle": "Green Line • Harlem/Lake / Ashland/63rd & Cottage Grove",
+      "gtfsRouteIdsIfKnown": [
+        "G"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "Harlem/Lake",
+        "Ashland/63rd",
+        "Cottage Grove"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Damen",
+          "otherLine": "pink",
+          "note": "Green Damen is on this map and on greenline.html (StopId 150) between California and Ashland. Distinct from Blue Damen, Brown Damen, Pink Damen."
+        },
+        {
+          "at": "Ashland",
+          "otherLine": "pink",
+          "note": "Shared Green/Pink Lake Street elevated. Not Orange Ashland. Not Ashland/63rd."
+        },
+        {
+          "at": "Clark/Lake",
+          "otherLine": "blue",
+          "note": "Green crosses the north/east Loop only (Clark/Lake, State/Lake, Washington/Wabash, Adams/Wabash) then leaves south to Roosevelt. Does not serve Library / LaSalle/Van Buren / Quincy / Washington/Wells."
+        },
+        {
+          "at": "Roosevelt",
+          "otherLine": "red"
+        },
+        {
+          "at": "Garfield",
+          "otherLine": "green",
+          "note": "South split. Ashland Branch: Halsted, Ashland/63rd (listed next in stations[]). East 63rd Branch: King Drive (Harlem-bound boarding only), Cottage Grove (listed after Ashland/63rd)."
+        }
+      ],
+      "stations": [
+        "Harlem/Lake",
+        "Oak Park",
+        "Ridgeland",
+        "Austin",
+        "Central",
+        "Laramie",
+        "Cicero",
+        "Pulaski",
+        "Conservatory-Central Park Drive",
+        "Kedzie",
+        "California",
+        "Damen",
+        "Ashland",
+        "Morgan",
+        "Clinton",
+        "Clark/Lake",
+        "State/Lake",
+        "Washington/Wabash",
+        "Adams/Wabash",
+        "Roosevelt",
+        "Cermak-McCormick Place",
+        "35th-Bronzeville-IIT",
+        "Indiana",
+        "43rd",
+        "47th",
+        "51st",
+        "Garfield",
+        "Halsted",
+        "Ashland/63rd",
+        "King Drive",
+        "Cottage Grove"
+      ]
+    },
+    {
+      "id": "orange",
+      "number": "Orange",
+      "name": "Orange Line",
+      "officialPageTitle": "Orange Line • Midway / Loop ‘L’",
+      "gtfsRouteIdsIfKnown": [
+        "Org"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "Midway"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Roosevelt",
+          "otherLine": "red"
+        },
+        {
+          "at": "Clark/Lake",
+          "otherLine": "blue",
+          "note": "Orange circulates the Loop (official orangeline.html: Library→LaSalle/Van Buren→Quincy→Washington/Wells→Clark/Lake→State/Lake→Washington/Wabash→Adams/Wabash) then returns to Midway. Loop is not an Orange terminus. Direction token is Orange + Midway."
+        }
+      ],
+      "stations": [
+        "Midway",
+        "Pulaski",
+        "Kedzie",
+        "Western",
+        "35th/Archer",
+        "Ashland",
+        "Halsted",
+        "Roosevelt",
+        "Library",
+        "LaSalle/Van Buren",
+        "Quincy",
+        "Washington/Wells",
+        "Clark/Lake",
+        "State/Lake",
+        "Washington/Wabash",
+        "Adams/Wabash"
+      ]
+    },
+    {
+      "id": "pink",
+      "number": "Pink",
+      "name": "Pink Line",
+      "officialPageTitle": "Pink Line • 54th/Cermak / Loop ‘L’",
+      "gtfsRouteIdsIfKnown": [
+        "Pink"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "54th/Cermak"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Ashland",
+          "otherLine": "green"
+        },
+        {
+          "at": "Clark/Lake",
+          "otherLine": "blue",
+          "note": "Pink circulates the Loop clockwise with Purple Express (Clark/Lake→…→Washington/Wells) then returns west. Loop is not a Pink terminus. Direction token is Pink + 54th/Cermak."
+        }
+      ],
+      "stations": [
+        "54th/Cermak",
+        "Cicero",
+        "Kostner",
+        "Pulaski",
+        "Central Park",
+        "Kedzie",
+        "California",
+        "Western",
+        "Damen",
+        "18th",
+        "Polk",
+        "Ashland",
+        "Morgan",
+        "Clinton",
+        "Clark/Lake",
+        "State/Lake",
+        "Washington/Wabash",
+        "Adams/Wabash",
+        "Library",
+        "LaSalle/Van Buren",
+        "Quincy",
+        "Washington/Wells"
+      ]
+    },
+    {
+      "id": "purple",
+      "number": "Purple",
+      "name": "Purple Line",
+      "officialPageTitle": "Purple Line • Linden / Howard (local) & Loop Express",
+      "gtfsRouteIdsIfKnown": [
+        "P"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "Linden",
+        "Howard"
+      ],
+      "shortTurns": [
+        "Howard"
+      ],
+      "branches": [
+        {
+          "at": "Howard",
+          "otherLine": "red",
+          "note": "Local shuttle is Linden–Howard. Map dashed south of Howard = rush-period Purple Line Express."
+        },
+        {
+          "at": "Howard",
+          "otherLine": "yellow"
+        },
+        {
+          "at": "Wilson",
+          "otherLine": "red",
+          "note": "First Express stop south of Howard. Skips Jarvis–Lawrence and Sheridan–Addison."
+        },
+        {
+          "at": "Belmont",
+          "otherLine": "brown"
+        },
+        {
+          "at": "Merchandise Mart",
+          "otherLine": "brown"
+        },
+        {
+          "at": "Clark/Lake",
+          "otherLine": "blue",
+          "note": "Express circulates the Loop clockwise then returns to Linden. Loop is not a Purple terminus token. Direction is Purple + Linden (or Purple + Howard for the local)."
+        }
+      ],
+      "stations": [
+        "Linden",
+        "Central",
+        "Noyes",
+        "Foster",
+        "Davis",
+        "Dempster",
+        "Main",
+        "South Blvd",
+        "Howard",
+        "Wilson",
+        "Belmont",
+        "Wellington",
+        "Diversey",
+        "Fullerton",
+        "Armitage",
+        "Sedgwick",
+        "Chicago",
+        "Merchandise Mart",
+        "Clark/Lake",
+        "State/Lake",
+        "Washington/Wabash",
+        "Adams/Wabash",
+        "Library",
+        "LaSalle/Van Buren",
+        "Quincy",
+        "Washington/Wells"
+      ]
+    },
+    {
+      "id": "yellow",
+      "number": "Yellow",
+      "name": "Yellow Line",
+      "officialPageTitle": "Yellow Line • Dempster-Skokie / Howard",
+      "gtfsRouteIdsIfKnown": [
+        "Y"
+      ],
+      "mapGroup": "L",
+      "termini": [
+        "Dempster-Skokie",
+        "Howard"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Howard",
+          "otherLine": "red",
+          "note": "Yellow is Skokie only. Does not enter the Loop. Dempster-Skokie is not Purple Dempster."
+        }
+      ],
+      "stations": [
+        "Dempster-Skokie",
+        "Oakton-Skokie",
+        "Howard"
+      ]
+    }
+  ]
+}

@@ -1,52 +1,19 @@
-Oslo D1 + research pack. City stays **planned** until Jim wires testers live. Other cities'
-live-gates untouched. No generator, no PR, no issues, no product edit. Do not flip oslo live from
-this pack. Do not touch any other city's files (`lib/providers/`, `registry.js` included — that's
-your job next, not this pack's).
+Oslo D1 + research pack. City stays **planned** until Jim wires testers live. Existing live cities untouched. London TfL stays planned and **untouched**. Amsterdam stays live and **untouched**. Rotterdam / Göteborg / Malmö / Uppsala / Sweden / Berlin / Munich / Hamburg stay planned and **untouched**. Hague/Utrecht tram-skip is unrelated. Copenhagen skip. Dublin later. **assertCityLive("oslo") must still fail** (city is not in `lib/providers/registry.js` CITIES today — Unknown city / 400). No generator, no PR, no issues, no product edit. Tim copies files; Jim owns D2–D6. Do not flip oslo live from this pack. Do not reopen London TfL. Do not redo Amsterdam/Rotterdam/Sweden/Berlin/Munich/Hamburg.
 
-Pack files: `oracle-clash-report.md` (Nico), `hazard-pack.md`, `direction-model-memo.md`,
-`published-network.json` (this handoff).
+Drop later (Jim D2): qa/fixtures/oslo/published-network.json. Research pack is /workspace/oslo-pack/: published-network.json, oracle-clash-report.md, hazard-pack.md, direction-model-memo.md, jim-handoff.md, sources/.
 
-D1 = ruter.no T-bane linjekart + timetables as of 29 Aug 2026, hand-transcribed. Modes v1:
-T-bane (Sporveien T-banen, operator on contract from Ruter) lines **1–5 only**. Line 6 (Fornebu)
-excluded — under construction, opening expected 2029; do not insert Blindern or any Line-6-only
-station. Tram, bus, Vy/NSB rail out of v1.
+D1 = official Ruter **Linjekart for T-banen** https://cdn.sanity.io/files/5a84xxkm/prod/e46cf566dd5b9cc4e323b70b168115d7bc3c911f.pdf (PDF title gjeldende fra 3. april 2015, Utgave 2016-04, still the card on ruter.no 29 Aug 2026) plus **Rutetabeller for T-bane** gjelder fra 10. juni 2024 and the T-bane index as of 29 Aug 2026. Index https://ruter.no/rutetabeller-og-linjekart/t-bane. Modes v1: TRAIN-like **T-bane / metro only (lines 1–5)**. No trikk, no bus, no Vy/NSB trains, no ferry, no passenger line 6, no Fornebubanen. Stations hand-transcribed. Not generated from GTFS.
 
-Hub lock **Stortinget** — all five lines, "kilometer zero." Do not fragment by line. Secondary
-transfer hub **Tøyen** (all five converge) — interchange, not a fragment point.
+Five lines: **1** Frognerseteren–Bergkrystallen (35, Gulleråsen one-way, Helsfyr short-turn), **2** Østerås–Ellingsrudåsen (26), **3** Kolsås–Mortensrud (33), **4** Vestli–Bergkrystallen (37, via Løren), **5** Sognsvann–Vestli (43 ticks / 33 unique; Stortinget twice). **101** unique open T-bane stops. **174** line ticks.
 
-**doNotGroup Jernbanetorget T-bane (metro, in-tunnel) vs Oslo Central Station / Oslo S /
-Jernbanetorget railway (Vy/NSB, above ground) vs street-level bus/tram terminals.** Same square,
-different products.
+Hub lock **Stortinget**. Not Oslo, not City, not Sentrum (map blob), not Jernbanetorget (Oslo S / Vy / bussterminal), not Nationaltheatret (T-bane vs railway), not Majorstuen (west mouth). **doNotGroup** T-bane vs NSB/Vy at Jernbanetorget / Oslo S. **doNotGroup** Nationaltheatret T-bane vs railway.
 
-Norwegian characters (ø, å, Ø, Å) preserved throughout — GTFS and D1 print forms both keep them.
-Do not ASCII-fold.
+C2/C3: (1) Separate city oslo, agency Ruter / Sporveien T-banen. (2) Lock Stortinget; all five lines; line 5 twice. (3) No passenger line 6. Fornebu 2029. (4) Line 1 folder end is Bergkrystallen, not Helsfyr. (5) Ullevål stadion; Carl Berners plass; Jernbanetorget not Oslo S. (6) No trikk / bus / Vy / ferry as T-bane.
 
-Entur GTFS-RT (`https://api.entur.io/realtime/v1/gtfs-rt/trip-updates?datasource=RUT`) and
-GraphQL JourneyPlanner (`https://api.entur.io/journey-planner/v3/graphql`) both need an
-`ET-Client-Name` header — an identifying string, not a secret key (NLOD licence, no auth token).
-Verified HTTP 200 on GTFS-RT 28 Aug 2026 per the oracle report.
+H2: no product oslo stations.json. Map-vs-halt-list (Gulleråsen one-way; Helsfyr short-turn; timing-point grids) plus **T-bane vs NSB/Vy name family**.
 
-Timezone `Europe/Oslo`, **has DST** (CET/CEST).
+**Live boards: official path exists; D1 stays planned.** (1) **Entur Journey Planner v3** `POST https://api.entur.io/journey-planner/v3/graphql` — `stopPlace { estimatedCalls }` (aimed / expected / actual, `destinationDisplay.frontText`, quay, situations). Header **ET-Client-Name** as `company-application` (NLOD; unidentified clients rate-limited). Filter **transportMode metro** / authority Ruter. Jernbanetorget and Nationaltheatret are multimodal stop-places — doNotGroup. (2) **Entur SIRI ET** `GET https://api.entur.io/realtime/v1/rest/et?datasetId=RUT` plus SX; GTFS-RT `trip-updates` / `alerts` `?datasource=RUT`. RUT has **no** SIRI VM and **no** GTFS-RT vehicle-positions. Publish/subscribe `https://api.entur.io/realtime/v1/subscribe` for higher rate (Lite is 4 req/min). (3) Static Entur GTFS for RUT is **not** a D1 generator. reise.ruter.no / Ruter-appen is the passenger UI, not a product contract. **D1 stays planned.** assertCityLive("oslo") must fail.
 
-## Blocker before you build direction-collapse logic
+H7: Europe/Oslo **HAS DST**. Do not copy no-DST cities.
 
-**The oracle report does not contain full per-line station arrays or termini for lines 1–5.** Only
-the six-station Common Tunnel segment (Majorstuen–Nationaltheatret–Stortinget–Jernbanetorget–
-Grønland–Tøyen, all five lines) is fully ordered and sourced. `published-network.json`'s `lines[]`
-entries reflect only that segment, each flagged `"stationsComplete": false` /
-`"terminiConfirmed": false`. Skøyen (lines 1 & 2) and Frogner (line 3) are named as served but not
-placed in any sequence — see `knownAdditionalStations` per line, kept out of the ordered
-`stations` arrays on purpose.
-
-I did not fill this from GTFS, a generator, or general knowledge of the real Oslo T-bane network —
-doing so would be exactly the silent station-graph guess this pipeline is supposed to prevent, and
-Jim would inherit a graph that looks locked but isn't sourced. This needs to go back to Nico for a
-follow-up hand-transcription pass against the Ruter linjekart (full ordered stops + termini, both
-ends, all five lines) before assertion-table (D5) or leave-by logic beyond the shared tunnel can be
-built safely. §3 direction-model-memo.md recommends **line + terminus** as the target model (same
-family as Rotterdam/Canberra/Auckland) and gives an explicitly-interim fallback (tunnel-end anchor
-labels, Common Tunnel stations only) if Tim wants something shippable before that follow-up lands
-— flagged there as interim, not to be treated as the permanent model.
-
-Testers can pick city id **oslo** once wired, but leave-by math for anything past the six Common
-Tunnel stations will be wrong/incomplete until the station-graph gap above is closed.
+§3 rec: line + terminus (`1 + Frognerseteren`, `1 + Bergkrystallen`, `2 + Østerås`, `2 + Ellingsrudåsen`, `3 + Kolsås`, `3 + Mortensrud`, `4 + Vestli`, `4 + Bergkrystallen`, `5 + Sognsvann`, `5 + Vestli`). Flag: inbound/outbound vs City dies at Stortinget / Jernbanetorget / Majorstuen / Carl Berners plass. Hold D5. Jim owns D2–D6. When Jim wires, testers can pick city id **oslo**. Do not flip from this pack. Testers live is Jim’s job, not this pack’s flip.

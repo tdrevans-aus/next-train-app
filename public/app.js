@@ -2732,6 +2732,52 @@ function buildApiParams() {
   return params;
 }
 
+let rateLimitPauseUntil = 0;
+
+function parseRetryAfterSec(response) {
+  const raw = response.headers?.get?.("Retry-After");
+  const seconds = Number(raw);
+  if (Number.isFinite(seconds) && seconds > 0) {
+    return Math.min(Math.ceil(seconds), 300);
+  }
+  return undefined;
+}
+
+function noteRateLimited(retryAfterSec = 60) {
+  const pauseMs = Math.max(1, Number(retryAfterSec) || 60) * 1000;
+  rateLimitPauseUntil = Math.max(rateLimitPauseUntil, Date.now() + pauseMs);
+}
+
+function isRateLimitPaused() {
+  return Date.now() < rateLimitPauseUntil;
+}
+
+function isRateLimitedResult(result) {
+  return (
+    result?.status === 429 ||
+    result?.data?.error === "Too many requests" ||
+    result?.error === "Too many requests"
+  );
+}
+
+function isRateLimitedError(error) {
+  return (
+    error?.code === "RATE_LIMITED" ||
+    /too many requests|live times are busy/i.test(String(error?.message ?? error ?? ""))
+  );
+}
+
+function apiResultError(result, fallback = "Could not load train times") {
+  if (isRateLimitedResult(result)) {
+    noteRateLimited(result?.retryAfterSec ?? 60);
+    const error = new Error("Live times are busy. Trying again shortly.");
+    error.code = "RATE_LIMITED";
+    return error;
+  }
+
+  return new Error(result?.data?.error ?? result?.error ?? fallback);
+}
+
 async function fetchJson(url, timeoutMs = 10000) {
   console.log(`[fetchJson] ${url}`);
   const controller = new AbortController();
@@ -2767,12 +2813,19 @@ async function fetchJson(url, timeoutMs = 10000) {
   } finally {
     clearTimeout(timeoutId);
   }
+  const retryAfterSec = parseRetryAfterSec(response);
   try {
-    return { ok: response.ok, status: response.status, data: JSON.parse(text) };
+    return {
+      ok: response.ok,
+      status: response.status,
+      retryAfterSec,
+      data: JSON.parse(text),
+    };
   } catch {
     return {
       ok: false,
       status: response.status,
+      retryAfterSec,
       error: text.includes("<html") 
         ? `Server error (${response.status}). The board API may not be deployed yet.`
         : "Server returned an invalid response. Restart with: npm start",
@@ -3605,13 +3658,17 @@ function openLeaveBufferSettings() {
 
   journeyDetail()?.setLibraryKind?.(isRouteJourney(journey) ? "routes" : "journeys");
 
-  openJourneyDetail(journey.id).then(() => {
-    requestAnimationFrame(() => {
-      leaveBeforeField?.scrollIntoView({ behavior: "smooth", block: "center" });
-      detailLeaveBeforeInput?.focus({ preventScroll: true });
-      window.setTimeout(() => highlightLeaveBeforeField(leaveBeforeField), 400);
+  openJourneyDetail(journey.id)
+    .then(() => {
+      requestAnimationFrame(() => {
+        leaveBeforeField?.scrollIntoView({ behavior: "smooth", block: "center" });
+        detailLeaveBeforeInput?.focus({ preventScroll: true });
+        window.setTimeout(() => highlightLeaveBeforeField(leaveBeforeField), 400);
+      });
+    })
+    .catch((error) => {
+      console.warn("Could not open leave buffer settings", error);
     });
-  });
 }
 
 function hasSeenLeaveHint() {
@@ -4947,40 +5004,45 @@ async function applyDefaultJourneyRoute(journey) {
     return { configured: false, nearest: null, error: null, journey };
   }
 
-  if (journey.station && !journey.direction) {
-    const direction = await pickDefaultDirection(journey.station);
-    if (!direction) {
-      return { configured: false, nearest: null, error: null, journey };
+  try {
+    if (journey.station && !journey.direction) {
+      const direction = await pickDefaultDirection(journey.station);
+      if (!direction) {
+        return { configured: false, nearest: null, error: null, journey };
+      }
+
+      return {
+        configured: true,
+        nearest: null,
+        error: null,
+        journey: normalizeJourney({ ...journey, direction }),
+      };
     }
 
-    return {
-      configured: true,
-      nearest: null,
-      error: null,
-      journey: normalizeJourney({ ...journey, direction }),
-    };
-  }
-
-  if (isPlanningAwayFromLocation()) {
-    return { configured: false, nearest: null, error: null, journey, regionAway: true };
-  }
-
-  let nearest = null;
-  try {
-    nearest = await findNearestStation();
-  } catch (error) {
-    if (isRegionMismatchError(error)) {
+    if (isPlanningAwayFromLocation()) {
       return { configured: false, nearest: null, error: null, journey, regionAway: true };
     }
+
+    let nearest = null;
+    try {
+      nearest = await findNearestStation();
+    } catch (error) {
+      if (isRegionMismatchError(error)) {
+        return { configured: false, nearest: null, error: null, journey, regionAway: true };
+      }
+      return { configured: false, nearest: null, error, journey };
+    }
+
+    const configured = await configureInboundJourney(journey, nearest.station);
+    if (!configured) {
+      return { configured: false, nearest, error: null, journey };
+    }
+
+    return { configured: true, nearest, error: null, journey: configured };
+  } catch (error) {
+    // Direction API 429/failures must not reject journey-detail openers (unhandled → Sentry).
     return { configured: false, nearest: null, error, journey };
   }
-
-  const configured = await configureInboundJourney(journey, nearest.station);
-  if (!configured) {
-    return { configured: false, nearest, error: null, journey };
-  }
-
-  return { configured: true, nearest, error: null, journey: configured };
 }
 
 async function configureOutboundFromInbound(journey, inboundJourney) {
@@ -5371,10 +5433,19 @@ async function fetchNextTrain() {
       return;
     }
 
+    if (isRateLimitPaused()) {
+      renderNearbyBoard({ stale: Boolean(nearbyMode().getNearbyBoard?.()) });
+      return;
+    }
+
     try {
       await fetchNearbyBoard();
       renderNearbyBoard();
     } catch (error) {
+      if (isRateLimitedError(error)) {
+        renderNearbyBoard({ stale: true });
+        return;
+      }
       errorEl.textContent = error.message;
       errorEl.hidden = false;
       renderNearbyBoard({ stale: true });
@@ -5396,6 +5467,13 @@ async function fetchNextTrain() {
   updateSwipeHint();
   updateSwipeCues();
 
+  if (isRateLimitPaused()) {
+    if (lastApiData?.next) {
+      render(prepareDisplayData(lastApiData), { stale: true });
+    }
+    return;
+  }
+
   const fetchId = ++journeyBoardFetchId;
 
   try {
@@ -5406,7 +5484,7 @@ async function fetchNextTrain() {
     }
 
     if (!result.ok) {
-      throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+      throw apiResultError(result, "Could not load train times");
     }
 
     const payload = await resolveNextTrainPayload(result.data);
@@ -5424,7 +5502,10 @@ async function fetchNextTrain() {
     }
     errorEl.textContent = error.message;
     errorEl.hidden = false;
-    trackProductEvent("api_error_shown", { surface: "journey" });
+    trackProductEvent("api_error_shown", {
+      surface: "journey",
+      code: error?.code || "api_error",
+    });
 
     if (lastApiData?.next) {
       render(prepareDisplayData(lastApiData), { stale: true });
@@ -5544,16 +5625,21 @@ async function applyTemplateRoute(journey, templateKey) {
     return { configured: false, nearest: null, error };
   }
 
-  const inbound = getInboundJourney(
-    settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
-  );
-  const configured = await configureOutboundJourney(journey, nearest.station, inbound);
+  try {
+    const inbound = getInboundJourney(
+      settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
+    );
+    const configured = await configureOutboundJourney(journey, nearest.station, inbound);
 
-  if (!configured) {
-    return { configured: false, nearest, error: null };
+    if (!configured) {
+      return { configured: false, nearest, error: null };
+    }
+
+    return { configured: true, journey: configured, nearest, error: null };
+  } catch (error) {
+    // Direction API 429/failures must not reject template creators (unhandled → Sentry).
+    return { configured: false, nearest, error };
   }
-
-  return { configured: true, journey: configured, nearest, error: null };
 }
 
 function shouldAutoRouteJourney(journey) {
@@ -5689,7 +5775,9 @@ function createJourneyFromTemplate(templateKey) {
         regionAway,
         routeLoading: !regionAway,
       });
-      void prefillCustomNearestStation(journey.id);
+      void prefillCustomNearestStation(journey.id).catch((error) => {
+        console.warn("Custom nearest prefill failed", error);
+      });
     });
   }
 
@@ -5789,41 +5877,63 @@ async function prefillCustomNearestStation(journeyId) {
 
   const formDirection = String(detailDirectionSelect?.value || "").trim();
   let direction = formDirection || journey.direction || "";
-  if (!direction) {
-    direction = (await pickDefaultDirection(nearest.station)) || "";
-  }
-
-  if (journeyDetail().getEditingJourneyId?.() !== journeyId) {
-    return;
-  }
-
-  // User may have typed a station while geo was in flight — don't overwrite.
-  if (String(getDetailStationCombobox()?.getValue?.() || "").trim()) {
-    if (getTemplateWizardContext()?.templateKey === "custom") {
-      updateTemplateRouteCoachState({ routeLoading: false });
+  try {
+    if (!direction) {
+      direction = (await pickDefaultDirection(nearest.station)) || "";
     }
-    syncDetailNearestStationChrome({ loading: false, error: false, hint: "" });
-    return;
-  }
 
-  const updated = normalizeJourney({
-    ...journey,
-    station: nearest.station,
-    direction,
-  });
-  settingsDraftJourneys[journeyIndex] = updated;
+    if (journeyDetail().getEditingJourneyId?.() !== journeyId) {
+      return;
+    }
 
-  const nearestHint = formatNearestDistanceHint(nearest);
-  await syncJourneyDetailRouteFields(updated, nearestHint);
+    // User may have typed a station while geo was in flight — don't overwrite.
+    if (String(getDetailStationCombobox()?.getValue?.() || "").trim()) {
+      if (getTemplateWizardContext()?.templateKey === "custom") {
+        updateTemplateRouteCoachState({ routeLoading: false });
+      }
+      syncDetailNearestStationChrome({ loading: false, error: false, hint: "" });
+      return;
+    }
 
-  if (getTemplateWizardContext()?.templateKey === "custom") {
-    updateTemplateRouteCoachState({
-      journey: updated,
-      nearest,
-      configured: Boolean(updated.station && updated.direction),
-      error: null,
-      routeLoading: false,
+    const updated = normalizeJourney({
+      ...journey,
+      station: nearest.station,
+      direction,
     });
+    settingsDraftJourneys[journeyIndex] = updated;
+
+    const nearestHint = formatNearestDistanceHint(nearest);
+    await syncJourneyDetailRouteFields(updated, nearestHint);
+
+    if (getTemplateWizardContext()?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey: updated,
+        nearest,
+        configured: Boolean(updated.station && updated.direction),
+        error: null,
+        routeLoading: false,
+      });
+    }
+  } catch (routeError) {
+    if (journeyDetail().getEditingJourneyId?.() !== journeyId) {
+      return;
+    }
+    syncDetailNearestStationChrome({
+      loading: false,
+      error: true,
+      hint: isRateLimitedError(routeError)
+        ? routeError.message
+        : "Couldn't load directions for nearest station",
+    });
+    if (getTemplateWizardContext()?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        nearest,
+        configured: false,
+        error: routeError,
+        routeLoading: false,
+      });
+    }
   }
 }
 
@@ -6613,6 +6723,8 @@ async function startJourneyCreateFromTemplate(templateKey) {
 
   try {
     await createJourneyFromTemplate(templateKey);
+  } catch (error) {
+    console.warn("Could not create journey from template", error);
   } finally {
     templateCreateInFlight = false;
     setJourneyTemplateLoading(false);
@@ -6631,6 +6743,8 @@ journeySaveRouteBtnEl?.addEventListener("click", async () => {
 
   try {
     await createJourneyFromRoute();
+  } catch (error) {
+    console.warn("Could not create route journey", error);
   } finally {
     templateCreateInFlight = false;
     setJourneyTemplateLoading(false);
@@ -6648,6 +6762,8 @@ journeySetupBtnEl?.addEventListener("click", async () => {
   openJourneysDialogSync();
   try {
     await createJourneyFromTemplate("custom");
+  } catch (error) {
+    console.warn("Could not create custom journey", error);
   } finally {
     templateCreateInFlight = false;
     setJourneyTemplateLoading(false);
@@ -6664,10 +6780,14 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
   if (chromeTravelTab === "routes") {
-    void createJourneyFromRoute();
+    void createJourneyFromRoute().catch((error) => {
+      console.warn("Could not create route journey", error);
+    });
     return;
   }
-  void createJourneyFromTemplate("custom");
+  void createJourneyFromTemplate("custom").catch((error) => {
+    console.warn("Could not create custom journey", error);
+  });
 });
 
 onboardingGotItBtn?.addEventListener("click", (event) => {
@@ -7200,6 +7320,9 @@ function initJourneyDetailFromModule() {
     replaceSelectOptions,
     getStationsList,
     fetchJson,
+    apiResultError,
+    isRateLimitedResult,
+    isRateLimitedError,
     apiUrl,
     appendFixtureQuery,
     isTestMode,
@@ -7440,6 +7563,10 @@ function initNearbyModeFromModule() {
     maybeScheduleOnboarding,
     apiUrl,
     appendFixtureQuery,
+    fetchJson,
+    apiResultError,
+    isRateLimitedResult,
+    isRateLimitedError,
     enrichTrip,
     findNearestStation,
     getGeolocationPosition,

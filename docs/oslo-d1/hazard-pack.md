@@ -1,106 +1,81 @@
 # Oslo hazard pack (H1–H7)
 
-Evidence: Oslo oracle-clash report (Nico, 29 Aug 2026) — D1 = ruter.no T-bane linjekart + timetables,
-hand-transcribed, **not generated from GTFS**. H2 surfaces: Entur GTFS-RT TripUpdates
-(`datasource=RUT`, `ET-Client-Name` header, no key, verified HTTP 200 28 Aug 2026), Entur
-GraphQL JourneyPlanner (same header), Entur static GTFS aggregation (H2 name-clash only).
+Evidence: Ruter Linjekart for T-banen Utgave 2016-04 (still linked 29 Aug 2026); Rutetabeller for T-bane gjelder fra 10. juni 2024; ruter.no T-bane index; T-baneløftet 2026 page; Oslo kommune Fornebubanen; Sporveien T-baneprogrammet; Entur Journey Planner v3 + Real-Time Data (codespace RUT); product `lib/cities/oslo/` absent.
 
 ## H1 — parent + child
 
-`doNotGroup`: **Jernbanetorget T-bane (metro) vs Oslo Central Station / Oslo S / Jernbanetorget
-railway station (Vy/NSB)**. Both sit on Jernbanetorget square; the metro stop is in the tunnel,
-the rail station is above ground. Report also flags bus terminals and tram present at street
-level at the same square — those are separate products again, not folded into either lock.
+D1 has no stopIds. Entur stop-place register and Journey Planner collapse T-bane + railway + bus under nearby printed names at the Oslo S and Nationaltheatret clusters.
 
-Report does not give a GTFS `stop_name`/parent form for Jernbanetorget beyond the generic
-`Jernbanetorget, Oslo` family match, so there is no confirmed second doNotGroup string pair here
-beyond the metro-vs-rail split already stated — do not invent a GTFS parent string that wasn't in
-the report.
+doNotGroup: **Jernbanetorget** (T-bane 1–5) vs **Oslo S** (Vy / NSB / Flytoget) vs **Oslo bussterminal**; **Nationaltheatret** T-bane vs **Nationaltheatret** railway; future **Skøyen** / **Lysaker** T-bane (Fornebu, unopened) vs existing Vy stations of those names. **Stortinget** is T-bane-only in the inner lock — keep it as the hub string.
 
 ## H3 — thin / event / overlay
 
-- **Line 6 (Fornebu)**: under construction, opening expected 2029. Report explicitly warns GTFS
-  "may pre-stage stops" before passenger opening — a GTFS-RT/static feed showing Line 6 trip ids
-  or Blindern-branch stops is not a D1 signal. Do not insert.
-- No other overlay/short-turn/partial-trip surfaces are mentioned in the oracle report (no
-  equivalent of Canberra's Rapid bus overlay or Rotterdam's peak extras). Do not assume Oslo has
-  none — this is an **unconfirmed absence**, not a verified "no overlays exist." Flag back to Nico
-  if Jim's QA turns up short-turn trips in GTFS-RT that aren't on the Ruter map.
+- **No passenger line 6.** Official index and 2024 cover print **1–5** only. Historical Ringen-as-6 is gone.
+- **Fornebubanen unopened.** Oslo kommune / Sporveien: passenger target **2029**. Six new stations Skøyen, Vækerø, Lysaker, Fornebuporten, Flytårnet, Fornebu. Absent from the 2016 linjekart and the 2024 folders. Out of v1.
+- **Line 1 Restricted service** east of Helsfyr (map *Begrenset driftstid*). Folder footnotes: some trips, plus romjul / påske / sommer, short-turn **Helsfyr**. Overlay. Official title still Frognerseteren–Bergkrystallen. Helsfyr is in `shortTurns`, not a terminus chip.
+- **Gulleråsen** one-direction (toward Frognerseteren). Overlay on calling pattern, not a deleted stop.
+- **2026 T-baneløftet** (as of 29 Aug 2026): CBTC + Majorstuen rebuild + Fornebu tie-in. 17–23 Aug line 5 Sognsvann bus-for-bane Nydalen–Sognsvann (ended). 23–30 Aug *evenings* line 4 Helsfyr–Storo / line 5 Helsfyr–Sognsvann only — Fri 28 and Sat 29 Aug run normally. 31 Aug–2 Sep evenings line 3 Avløs–Mortensrud only (bus 3B Kolsås–Avløs). Official folder still prints the full path. Overlay, not deleted D1 rows. Replacement bus out of v1.
+- **Trikk / bus / båt / Vy** on the same official rutetabeller index. Out of v1.
 
-## H4 — branches (doNotGroup / do-not-guess candidates)
+## H4 — branches (doNotGroup candidates)
 
 | node | branches | evidence |
 | --- | --- | --- |
-| Majorstuen | western terminus of the Common Tunnel (Fellestunnelen); lines 1–5 diverge west of here | oracle report, station name table |
-| Tøyen | all five lines converge/diverge here; secondary transfer hub | oracle report §Hub lock |
-| Skøyen | served by lines 1 & 2, west of centre | oracle report station name table row |
-| Frogner | served by line 3, west of centre | oracle report station name table row |
-| Blindern | Line 6 branch only — **not D1-live, do not insert** | oracle report station name table row |
+| Stortinget | all five lines through the Common Tunnel; line 5 twice (ring-then-spur) | linjekart; all five folders |
+| Jernbanetorget | same five T-bane lines + Oslo S / Vy / NSB / bussterminal | linjekart Oslo S icon |
+| Nationaltheatret | five T-bane lines + railway | linjekart train icon |
+| Majorstuen | 1 Holmenkollen vs 2/3 west vs 4/5 ring west. Common Tunnel starts | linjekart |
+| Tøyen | Common Tunnel ends; 1/2/3/4 east vs 5 to Carl Berners plass | linjekart |
+| Carl Berners plass | line 5 onto Ringen vs line 5 out to Hasle–Vestli | line 5 Stoppestedsliste lists it twice |
+| Økern | line 4 via Løren vs line 5 via Hasle | folders |
+| Sinsen / Storo / Nydalen | line 4 Vestli–Bergkrystallen vs line 5 ring | folders |
+| Ullevål stadion | line 4 through vs line 5 Sognsvann branch | linjekart |
+| Smestad / Borgen | line 2 Røa vs line 3 Kolsås | folders |
+| Brynseng | 1/4 Lambertseter vs 2/3 Hellerud | linjekart |
+| Hellerud | line 2 Furuset vs line 3 Østensjø | linjekart |
+| Helsfyr | line 1 short-turn vs through to Bergkrystallen | map *Begrenset driftstid*; folder footnote |
 
-**Hazard**: the report gives no ordered station list for any line west of Majorstuen or east of
-Tøyen, and no termini for lines 1–5. It names Skøyen/Frogner/Blindern as *served-by* facts but not
-their position in a sequence. Do not fill this gap from GTFS `stop_sequence`, from a generator, or
-from general knowledge of the Oslo T-bane network — the report itself says D1 is hand-transcribed
-from Ruter, not generated from GTFS, and states "Check Ruter timetable for line-specific branch
-routes" as unfinished work, not a completed check. This is flagged as a **coverage gap** in
-`published-network.json`, not guessed at.
+No city loop as a single extra passenger code — line 5 is published as **Sognsvann – Vestli** via the ring, not as “6” or “Ringen”. Inbound/outbound vs City is false at **Stortinget** (all five lines through in both compass headings; line 5 both ways on one trip), **Jernbanetorget** (same plus rail), and **Carl Berners plass** (ring vs Grorud).
 
 ## H5 — nested short turns
 
-Not covered in the oracle report. No nested/short-turn passenger codes are documented one way or
-the other. Do not assume none exist.
+No official nested codes like Adelaide GAW/SALIS. Five passenger codes only: **1–5**. No 6.
+
+Line 1 some trips (and holiday periods) terminate **Helsfyr**. Line 5 late-night footnote *Kun til Tøyen; fortsetter videre som linje 1* is an overlay. `shortTurns` on line 1 = `Helsfyr`; others empty.
+
+Night extras on the T-bane index (“på dagtid og natt”) are the same 1–5 codes at reduced frequency, not extra D1 rows. Replacement bus (3B / 4B / 5B) out of v1.
 
 ## H6 — inner city (where §3 lives)
 
-Locked hub: **Stortinget** — all five T-bane lines serve it; report calls it "kilometer zero" of
-the network; located beneath the Storting (Parliament). This is the strongest hub lock of any
-reference city seen so far (5-of-5 lines, not 3-of-5 or fewer).
+Locked set: **Stortinget**. Shared approaches: Jernbanetorget (T-bane + Oslo S), Nationaltheatret (T-bane + railway), Majorstuen (west mouth), Tøyen (east mouth), Carl Berners plass (line 5 ring hinge).
 
-Secondary transfer hub: **Tøyen** (lines 1–5 converge, street-level interchange) — report is
-explicit this is a hub but **not** the singular lock like Stortinget; handle as an interchange
-node, not a fragment/collapse point.
-
-Do not fragment Stortinget's label by line — all five lines pass through in both directions, so
-any label logic that treats Stortinget as a single-line terminus or as an inbound/outbound-only
-node will be wrong the moment more than one line is rendered there.
+Stortinget is a **through Common Tunnel**, not a single-end hub. All five lines call it. Line 5 calls it twice. Inbound/outbound vs City is false here (west ends Frognerseteren / Østerås / Kolsås / Sognsvann and east/north ends Bergkrystallen / Ellingsrudåsen / Mortensrud / Vestli). Jernbanetorget is the Oslo S cluster — still not the T-bane lock. Majorstuen is four western branches plus the ring — still not the printed inner lock.
 
 ## H7 — DST
 
-**Europe/Oslo observes DST** (CET / CEST, UTC+1 standard / UTC+2 summer). Report states this
-directly. Do not copy a no-DST timezone convention from any city that doesn't observe it (e.g. do
-not assume Oslo behaves like a fixed-offset city). Standard IANA `Europe/Oslo` tz handling should
-cover the spring-forward/fall-back edges; no Oslo-specific transition dates were given in the
-report, so use the standard EU-wide DST rule (last Sunday in March / last Sunday in October) rather
-than hand-rolling dates.
-
-## Norwegian character hazard
-
-Ø, Å, ø, å are preserved in both the Ruter D1 print forms and in Entur GTFS `stop_name` values per
-the oracle report. **Do not ASCII-fold** (Ø→O, Å→A) anywhere in the pipeline — station name
-matching, display strings, or search/lookup keys. A silent fold here breaks the doNotGroup/lock
-matching this pack defines, since the locked strings (Stortinget, Jernbanetorget, Grønland, Tøyen,
-Nationaltheatret) rely on exact-string equality downstream.
-
-## GTFS auth hazard
-
-`ET-Client-Name` is a **required identifying header, not a secret key** (Entur uses NLOD — the
-Norwegian License for Open Data — no auth token). Do not treat it like a rotatable API key; do not
-store it as a secret. Both GTFS-RT (`https://api.entur.io/realtime/v1/gtfs-rt/trip-updates?datasource=RUT`)
-and GraphQL JourneyPlanner (`https://api.entur.io/journey-planner/v3/graphql`) require it. Missing
-the header is a likely first-integration failure mode (Jim should confirm the request fails
-cleanly/informatively without it, not silently).
+**Europe/Oslo observes DST (CEST/CET).** Do not copy no-DST cities. Wall-clock is Oslo local. Entur `expectedDepartureTime` is offset-aware ISO-8601; do not treat raw clock minutes as elapsed minutes across the spring jump.
 
 ## doNotGroup proposals
 
 | candidate | reason |
 | --- | --- |
-| Jernbanetorget (T-bane) vs Oslo Central Station / Oslo S / Jernbanetorget railway | Metro stop in tunnel vs Vy/NSB long-distance rail station above ground, same square |
-| Jernbanetorget (T-bane) vs street-level bus/tram terminals | Different products at the same square; report flags but does not name specific bus/tram stop strings |
-| Blindern vs Line 1–5 stations | Line 6 (Fornebu) only; not D1-live; do not insert until a new D1 flip after opening (expected 2029) |
-| Stortinget vs any single-line fragment of it | Hub lock — all 5 lines; do not split by line |
+| oslo vs city=norway / vy / nsb / ruter-trikk | Separate city; agency Ruter / Sporveien T-banen |
+| oslo vs berlin / munich / hamburg / rotterdam / goteborg / amsterdam / london-tfl | Other packs; do not reopen |
+| Stortinget vs City / Sentrum / Oslo / Jernbanetorget | Hub lock vs marketing / Oslo S |
+| Jernbanetorget T-bane vs Oslo S / Vy / NSB / bussterminal | linjekart mixes the icon |
+| Nationaltheatret T-bane vs Nationaltheatret railway | Same name family, different mode |
+| Ullevaal vs Ullevål stadion | Stadium spelling |
+| Carl Berner vs Carl Berners plass | Halt-list long form |
+| Nationaltheateret vs Nationaltheatret | Extra e |
+| Oslo S vs Jernbanetorget | Railway vs T-bane string |
+| Helsfyr vs Bergkrystallen as line 1 end | Short-turn vs folder terminus |
+| Gulleråsen omitted vs included | One-way tick |
+| Løren vs Hasle | Line 4 vs line 5 at Økern |
+| Line 6 / Ringen vs line 5 | No passenger 6 |
+| Fornebu / Flytårnet / Fornebuporten / Vækerø vs 1–5 | Unopened |
+| Skøyen / Lysaker T-bane vs Vy Skøyen / Lysaker | Unopened metro vs existing rail |
+| Trikk / bus / båt vs T-bane | Other modes on the same index |
 
 ## What I did not do
 
-No line-map generator from GTFS, no `stopIds` in `published-network.json`, no live city flip, no
-GitHub PR, no fabricated termini/branch stations for lines 1–5, no ASCII-folding of Norwegian
-characters, no tram/bus/rail rewrite, no construction-status monitor for Line 6.
+No generator, no assertion tables, no live city flip, no product edit, no reopen of London TfL, no redo of Amsterdam / Rotterdam / Sweden / Berlin / Munich / Hamburg.
