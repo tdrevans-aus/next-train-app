@@ -1,0 +1,204 @@
+{
+  "city": "oslo",
+  "status": "planned",
+  "timezone": "Europe/Oslo",
+  "source": "https://ruter.no/",
+  "sources": [
+    {
+      "role": "D1 passenger network (T-bane linjekart + timetables)",
+      "title": "Ruter",
+      "url": "https://ruter.no/",
+      "note": "Oracle report cites ruter.no generally as the D1 source for the T-bane line map and current timetables, hand-transcribed. Not generated from GTFS. Report does NOT cite a specific line-map PDF or per-line timetable page URL — see coverageGaps."
+    },
+    {
+      "role": "Ruter app (passenger integration point, same D1 data)",
+      "title": "Ruter app",
+      "url": "https://ruter.no/en/billett-og-app/ruter-app"
+    },
+    {
+      "role": "H2 GTFS-RT TripUpdates (not D1; name/id clash only)",
+      "title": "Entur realtime GTFS-RT, datasource=RUT",
+      "url": "https://api.entur.io/realtime/v1/gtfs-rt/trip-updates?datasource=RUT",
+      "note": "Requires ET-Client-Name header (not a secret key; NLOD licence). Verified HTTP 200 on 28 Aug 2026 per oracle report. Protobuf TripUpdates, trip IDs only, no station names."
+    },
+    {
+      "role": "H2 GraphQL StopPlaces / JourneyPlanner (not D1; later feed for Jim D2)",
+      "title": "Entur JourneyPlanner v3 GraphQL",
+      "url": "https://api.entur.io/journey-planner/v3/graphql",
+      "note": "Same ET-Client-Name header requirement. Full timetable and real-time queries available here later; not used to source this D1 pack."
+    },
+    {
+      "role": "H2 Entur static GTFS aggregation (not D1; not authoritative for line names)",
+      "note": "Entur aggregates all Norwegian GTFS; oracle report says filter agency=rut or similar. No specific dataset URL captured in the oracle report."
+    }
+  ],
+  "retrievedAt": "2026-08-29",
+  "notes": [
+    "D1 oracle is ruter.no T-bane linjekart (line map) and current timetables, HAND-TRANSCRIBED per the oracle report. Not generated from GTFS.",
+    "City stays planned. Modes v1: TRAIN-like T-bane (Sporveien T-banen, operating on contract from Ruter) lines 1-5 only. Tram (trikk), bus, Vy/NSB commuter rail, and Line 6 (Fornebu) are out of v1.",
+    "Timezone Europe/Oslo HAS DST (CET/CEST, UTC+1 standard / UTC+2 summer). Standard EU DST transition dates assumed; no Oslo-specific dates given in the oracle report.",
+    "Norwegian characters (ø, å, Ø, Å) preserved in both D1 print forms and Entur GTFS stop_name. Do not ASCII-fold anywhere in the pipeline.",
+    "Hub lock: Stortinget. All five T-bane lines serve it; report calls it 'kilometer zero' of the network; located beneath the Storting (Parliament). Do not fragment this label by line.",
+    "Secondary transfer hub: Tøyen (all five lines converge; street-level interchange). Not a singular lock like Stortinget — handle as interchange, not a fragment/collapse point.",
+    "doNotGroup: Jernbanetorget T-bane (metro, in-tunnel) vs Oslo Central Station / Oslo S / Jernbanetorget railway station (Vy/NSB, above ground) vs street-level bus/tram terminals at the same square. All occupy Jernbanetorget square but are separate transport products.",
+    "Line 6 (Fornebu) is under construction, opening expected 2029. Not D1-live. Blindern (a Line 6 branch station) and any other Line-6-only station are intentionally NOT inserted. A new D1 flip is required after Fornebu opens.",
+    "gtfsRouteIdsIfKnown are the passenger line numbers (1-5) per the oracle report's H2 table (Entur GTFS route_short_name 1-5, route_type=1/subway). No stopIds in this file, matching reference-city convention of not sourcing station identity from GTFS.",
+    "ET-Client-Name header required on all Entur endpoints (GTFS-RT and GraphQL). It is an identifying header, not a secret key — NLOD licence, no auth token needed."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Stortinget",
+    "doNotGroup": [
+      "Oslo Central Station / Oslo S / Jernbanetorget railway station (Vy/NSB) — separate from Jernbanetorget T-bane metro stop",
+      "Street-level bus/tram terminals at Jernbanetorget square — separate product from the T-bane metro stop"
+    ],
+    "secondaryHub": "Tøyen",
+    "alsoOnSharedApproaches": [
+      "Nationaltheatret",
+      "Grønland"
+    ]
+  },
+  "commonTunnel": {
+    "name": "Fellestunnelen (Common Tunnel)",
+    "servedByAllLines": ["1", "2", "3", "4", "5"],
+    "note": "The only fully ordered, fully sourced station sequence in the oracle report. Confirmed west-to-east order below. Do not extend this array past either end without a new hand-transcribed source.",
+    "stations": [
+      "Majorstuen",
+      "Nationaltheatret",
+      "Stortinget",
+      "Jernbanetorget",
+      "Grønland",
+      "Tøyen"
+    ]
+  },
+  "coverageGaps": [
+    "BLOCKER: full per-line station arrays (west of Majorstuen and east of Tøyen) for lines 1-5 were not hand-transcribed in the oracle report. Only the six shared Common Tunnel stations have a confirmed order. Do NOT infer full line topology, termini, or branch points from GTFS, from a generator, or from general/background knowledge of the Oslo T-bane network — that is exactly the silent station-graph mistake this pipeline exists to avoid. Needs a follow-up Nico pass against the Ruter linjekart before Jim can build direction-collapse logic beyond the shared tunnel.",
+    "No termini given for lines 1-5. Required before a line+terminus direction model (the recommended model; see direction-model-memo.md) can be written up as a D5 assertion table.",
+    "Known-but-unordered station facts from the oracle report, not placed in any sequence: Skøyen (served by lines 1 & 2, west of centre), Frogner (served by line 3, west of centre). Listed per-line below under knownAdditionalStations, NOT inserted into the ordered stations array.",
+    "Report gives no specific Ruter T-bane linjekart PDF/page URL — only the ruter.no homepage and app link generically as D1. A precise citable D1 map source URL is needed for future re-verification.",
+    "Line 6 (Fornebu) under construction, opening expected 2029. Blindern and any other Line-6-only station intentionally not inserted.",
+    "Tram (trikk), bus, Vy/NSB commuter rail, and transfers to non-metro modes are out of v1 oracle.",
+    "No stopIds in this file. gtfsRouteIdsIfKnown are the passenger line numbers only."
+  ],
+  "lines": [
+    {
+      "id": "1",
+      "number": "1",
+      "name": "Line 1",
+      "gtfsRouteIdsIfKnown": ["1"],
+      "mapGroup": "T-bane",
+      "termini": [],
+      "terminiConfirmed": false,
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen"
+      ],
+      "stationsComplete": false,
+      "knownAdditionalStations": ["Skøyen"],
+      "note": "Common Tunnel segment only (confirmed order). Termini and full west/east extension not given by oracle report. Skøyen confirmed served by this line but its position in sequence is not sourced — do not place it in the stations array."
+    },
+    {
+      "id": "2",
+      "number": "2",
+      "name": "Line 2",
+      "gtfsRouteIdsIfKnown": ["2"],
+      "mapGroup": "T-bane",
+      "termini": [],
+      "terminiConfirmed": false,
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen"
+      ],
+      "stationsComplete": false,
+      "knownAdditionalStations": ["Skøyen"],
+      "note": "Common Tunnel segment only (confirmed order). Termini and full west/east extension not given by oracle report. Skøyen confirmed served by this line but its position in sequence is not sourced — do not place it in the stations array."
+    },
+    {
+      "id": "3",
+      "number": "3",
+      "name": "Line 3",
+      "gtfsRouteIdsIfKnown": ["3"],
+      "mapGroup": "T-bane",
+      "termini": [],
+      "terminiConfirmed": false,
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen"
+      ],
+      "stationsComplete": false,
+      "knownAdditionalStations": ["Frogner"],
+      "note": "Common Tunnel segment only (confirmed order). Termini and full west/east extension not given by oracle report. Oracle report separately notes: 'Check Ruter timetable for line-specific branch routes (e.g. Line 3 branches west)' — an unfinished check, not a confirmed branch point. Frogner confirmed served by this line but its position in sequence is not sourced — do not place it in the stations array."
+    },
+    {
+      "id": "4",
+      "number": "4",
+      "name": "Line 4",
+      "gtfsRouteIdsIfKnown": ["4"],
+      "mapGroup": "T-bane",
+      "termini": [],
+      "terminiConfirmed": false,
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen"
+      ],
+      "stationsComplete": false,
+      "knownAdditionalStations": [],
+      "note": "Common Tunnel segment only (confirmed order). Termini and full west/east extension not given by oracle report."
+    },
+    {
+      "id": "5",
+      "number": "5",
+      "name": "Line 5",
+      "gtfsRouteIdsIfKnown": ["5"],
+      "mapGroup": "T-bane",
+      "termini": [],
+      "terminiConfirmed": false,
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen"
+      ],
+      "stationsComplete": false,
+      "knownAdditionalStations": [],
+      "note": "Common Tunnel segment only (confirmed order). Termini and full west/east extension not given by oracle report."
+    }
+  ],
+  "excludedLines": [
+    {
+      "id": "6",
+      "number": "6",
+      "name": "Line 6 (Fornebu)",
+      "status": "under construction",
+      "expectedOpening": "2029",
+      "note": "Not D1-live. Do not insert. Known-only station: Blindern (also serves as a name that must not be inserted into any live line's stations array). A new D1 flip is required after Fornebu opens."
+    }
+  ]
+}
