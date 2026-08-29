@@ -2,6 +2,12 @@ function isNativeApp() {
   return Boolean(window.Capacitor?.isNativePlatform?.());
 }
 
+// iOS has no wallpaper palette or true widget transparency, so parts of the
+// appearance sheet are Android-only (see ios/Shared/WidgetAppearance.swift).
+function isIosWidgetPlatform() {
+  return isNativeApp() && window.Capacitor?.getPlatform?.() === "ios";
+}
+
 function getWidgetSyncPlugin() {
   if (!window.Capacitor) {
     return null;
@@ -528,12 +534,14 @@ const WIDGET_APPEARANCE_MODES = [
     id: "blend",
     label: "Blend in",
     description: "Transparent card; your wallpaper shows through.",
+    iosDescription: "A soft colour card in your chosen preset.",
   },
   {
     id: "wallpaper",
     label: "Match wallpaper",
     description: "Colours from your wallpaper on Android 12+.",
     wallpaper: true,
+    androidOnly: true,
   },
   {
     id: "brand",
@@ -698,12 +706,19 @@ function getWidgetBgOpacity() {
   }
   const opacity = Number(settings.widgetBgOpacity);
   if (!Number.isFinite(opacity)) {
+    // iOS paints the card fully when unset — there is no wallpaper show-through.
+    if (isIosWidgetPlatform()) {
+      return 100;
+    }
     return mode === "blend" ? 0 : 100;
   }
   return Math.max(0, Math.min(100, Math.round(opacity)));
 }
 
 function getWidgetTransparentBg() {
+  if (isIosWidgetPlatform()) {
+    return false;
+  }
   const settings = readSettingsObject();
   const mode = migrateWidgetAppearanceMode(settings);
   if (mode !== "blend") {
@@ -1060,7 +1075,7 @@ function refreshWidgetAppearanceControls() {
   const transparent = getWidgetTransparentBg();
   const displayOpacity = transparent ? 0 : opacity;
   const showOpacityControls = mode === "blend" || mode === "wallpaper" || mode === "brand";
-  const showTransparentToggle = mode === "blend";
+  const showTransparentToggle = mode === "blend" && !isIosWidgetPlatform();
 
   for (const block of document.querySelectorAll(".widget-appearance-opacity-block")) {
     block.hidden = !showOpacityControls;
@@ -1088,6 +1103,10 @@ function refreshWidgetAppearanceControls() {
   const colourBlock = document.getElementById("widget-appearance-colour-block");
   if (colourBlock) {
     colourBlock.hidden = mode !== "blend";
+  }
+  const colourHint = document.getElementById("widget-appearance-colour-hint");
+  if (colourHint && isIosWidgetPlatform()) {
+    colourHint.textContent = "Pick a card colour, then fade it with opacity.";
   }
   if (mode === "blend") {
     renderWidgetColourGrid(getWidgetThemeId());
@@ -1350,6 +1369,9 @@ function renderWidgetAppearanceGridInto(grid, selectedMode) {
   }
   grid.replaceChildren();
   for (const mode of WIDGET_APPEARANCE_MODES) {
+    if (mode.androidOnly && isIosWidgetPlatform()) {
+      continue;
+    }
     const button = document.createElement("button");
     button.type = "button";
     button.className = "widget-appearance-mode-card";
@@ -1364,7 +1386,8 @@ function renderWidgetAppearanceGridInto(grid, selectedMode) {
     button.append(label);
     const desc = document.createElement("span");
     desc.className = "widget-appearance-mode-desc";
-    desc.textContent = mode.description;
+    desc.textContent =
+      isIosWidgetPlatform() && mode.iosDescription ? mode.iosDescription : mode.description;
     button.append(desc);
     button.addEventListener("click", async () => {
       await applyWidgetAppearanceModeSelection(mode.id);
