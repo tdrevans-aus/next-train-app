@@ -1,0 +1,610 @@
+{
+  "city": "goteborg",
+  "source": "qa/fixtures/goteborg/published-network.json (D1 Västtrafik 2026-06-15 tram + city-map pendeltåg). Not generated from GTFS.",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "notes": [
+    "Station lists lock to D1. Never generate published-network.json from GTFS.",
+    "Brunnsparken is the tram hub. Lines 8 and 12 miss it (Korsvägen). Do not lock Centralstationen.",
+    "Västtågen hub is Göteborg Central. Three city-map pendeltåg only.",
+    "Direction: line + terminus (1 + Tynnered). Not inbound/outbound. Never to City."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Drottningtorget",
+      "b": "Göteborg Central",
+      "reason": "Tram halt (renamed 15 Jun 2026) vs Västtågen hub"
+    },
+    {
+      "a": "Drottningtorget",
+      "b": "Nils Ericsonsplatsen",
+      "reason": "Two printed tram places by the station"
+    },
+    {
+      "a": "Drottningtorget",
+      "b": "Nils Ericson Terminalen",
+      "reason": "Tram vs coach terminal — terminal is not v1"
+    },
+    {
+      "a": "Göteborg Central",
+      "b": "Nils Ericsonsplatsen",
+      "reason": "Train hub vs tram halt"
+    },
+    {
+      "a": "Göteborg Central",
+      "b": "Nils Ericson Terminalen",
+      "reason": "Train hub vs coach terminal"
+    },
+    {
+      "a": "Nils Ericsonsplatsen",
+      "b": "Nils Ericson Terminalen",
+      "reason": "Tram halt vs coach terminal"
+    },
+    {
+      "a": "Liseberg Station",
+      "b": "Liseberg Station (tåg)",
+      "reason": "Tram 5 vs pendeltåg"
+    },
+    {
+      "a": "Liseberg Station",
+      "b": "Liseberg Södra",
+      "reason": "Tram 5 vs tram 4/12"
+    },
+    {
+      "a": "Liseberg Station (tåg)",
+      "b": "Liseberg Södra",
+      "reason": "Pendeltåg vs tram 4/12"
+    },
+    {
+      "a": "Gamlestads Torg",
+      "b": "Gamlestaden Station",
+      "reason": "Tram vs pendeltåg"
+    }
+  ],
+  "proposedShortTurnGroups": {},
+  "proposedDoNotGroup": [],
+  "junctionStations": [
+    "Brunnsparken",
+    "Korsvägen",
+    "Drottningtorget",
+    "Gamlestads Torg",
+    "Marklandsgatan",
+    "Järntorget"
+  ],
+  "suppressedTermini": [
+    "Centralstationen"
+  ],
+  "laterModes": [
+    "stombuss",
+    "båt",
+    "express X-bus",
+    "regional Västtågen"
+  ],
+  "lines": [
+    {
+      "id": "tram1",
+      "number": "1",
+      "name": "Spårvagn 1",
+      "mode": "TRAM",
+      "termini": [
+        "Tynnered",
+        "Östra Sjukhuset"
+      ],
+      "stations": [
+        "Opaltorget",
+        "Briljantgatan",
+        "Smaragdgatan",
+        "Frölunda Torg",
+        "Musikvägen",
+        "Positivgatan",
+        "Nymilsgatan",
+        "Lantmilsgatan",
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Linnéplatsen",
+        "Olivedalsgatan",
+        "Prinsgatan",
+        "Järntorget",
+        "Stenpiren",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Stockholmsgatan",
+        "Härlanda",
+        "Munkebäckstorget",
+        "Kaggeledstorget",
+        "Tingvallsvägen",
+        "Östra Sjukhuset"
+      ]
+    },
+    {
+      "id": "tram2",
+      "number": "2",
+      "name": "Spårvagn 2",
+      "mode": "TRAM",
+      "termini": [
+        "Högsbotorp",
+        "Biskopsgården"
+      ],
+      "stations": [
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Linnéplatsen",
+        "Olivedalsgatan",
+        "Handelshögskolan",
+        "Seminariegatan",
+        "Brunnsgatan",
+        "Vasaplatsen",
+        "Grönsakstorget",
+        "Domkyrkan",
+        "Brunnsparken",
+        "Nils Ericsonsplatsen",
+        "Nordstan",
+        "Frihamnen",
+        "Hjalmar Brantingsplatsen",
+        "Vågmästareplatsen",
+        "Wieselgrensplatsen",
+        "Rambergsvallen",
+        "Gropegårdsgatan",
+        "Eketrägatan",
+        "Sälöfjordsgatan",
+        "Vårväderstorget",
+        "Mildvädersgatan",
+        "Önskevädersgatan",
+        "Friskväderstorget",
+        "Väderilsgatan"
+      ]
+    },
+    {
+      "id": "tram3",
+      "number": "3",
+      "name": "Spårvagn 3",
+      "mode": "TRAM",
+      "termini": [
+        "Marklandsgatan",
+        "Kålltorp"
+      ],
+      "stations": [
+        "Marklandsgatan",
+        "Högsbogatan",
+        "Bokekullsgatan",
+        "Klintens Väg",
+        "Mariaplan",
+        "Ostindiegatan",
+        "Vagnhallen Majorna",
+        "Jaegerdorffsplatsen",
+        "Chapmans Torg",
+        "Kaptensgatan",
+        "Stigbergstorget",
+        "Masthuggstorget",
+        "Järntorget",
+        "Hagakyrkan",
+        "Vasa Viktoriagatan",
+        "Vasaplatsen",
+        "Valand",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Stockholmsgatan",
+        "Härlanda",
+        "Virginsgatan"
+      ]
+    },
+    {
+      "id": "tram4",
+      "number": "4",
+      "name": "Spårvagn 4",
+      "mode": "TRAM",
+      "termini": [
+        "Mölndal",
+        "Angered"
+      ],
+      "stations": [
+        "Mölndals Innerstad",
+        "Mölndals sjukhus",
+        "Lackarebäck",
+        "Krokslätts Fabriker",
+        "Krokslätts Torg",
+        "Varbergsgatan",
+        "Elisedal",
+        "Almedal",
+        "Lana",
+        "Liseberg Södra",
+        "Korsvägen",
+        "Berzeliigatan",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "Storås",
+        "Hjällbo",
+        "Hammarkullen",
+        "Angereds Centrum"
+      ]
+    },
+    {
+      "id": "tram5",
+      "number": "5",
+      "name": "Spårvagn 5",
+      "mode": "TRAM",
+      "termini": [
+        "Östra Sjukhuset",
+        "Länsmansgården"
+      ],
+      "stations": [
+        "Östra Sjukhuset",
+        "Tingvallsvägen",
+        "Kaggeledstorget",
+        "Munkebäckstorget",
+        "Virginsgatan",
+        "Welandergatan",
+        "Töpelsgatan",
+        "Bögatan",
+        "Ekmanska",
+        "Sankt Sigfrids Plan",
+        "Liseberg Station",
+        "Korsvägen",
+        "Berzeliigatan",
+        "Kungsportsplatsen",
+        "Valand",
+        "Brunnsparken",
+        "Lilla Bommen",
+        "Frihamnen",
+        "Hjalmar Brantingsplatsen",
+        "Vågmästareplatsen",
+        "Wieselgrensplatsen",
+        "Rambergsvallen",
+        "Gropegårdsgatan",
+        "Eketrägatan",
+        "Sälöfjordsgatan",
+        "Vårväderstorget",
+        "Mildvädersgatan",
+        "Önskevädersgatan",
+        "Friskväderstorget",
+        "Väderilsgatan",
+        "Temperaturgatan",
+        "Varmfrontsgatan"
+      ]
+    },
+    {
+      "id": "tram6",
+      "number": "6",
+      "name": "Spårvagn 6",
+      "mode": "TRAM",
+      "termini": [
+        "Länsmansgården",
+        "Kortedala"
+      ],
+      "stations": [
+        "Varmfrontsgatan",
+        "Temperaturgatan",
+        "Eketrägatan",
+        "Gropegårdsgatan",
+        "Rambergsvallen",
+        "Wieselgrensplatsen",
+        "Vågmästareplatsen",
+        "Hjalmar Brantingsplatsen",
+        "Frihamnen",
+        "Nordstan",
+        "Brunnsparken",
+        "Grönsakstorget",
+        "Domkyrkan",
+        "Hagakyrkan",
+        "Järntorget",
+        "Prinsgatan",
+        "Olivedalsgatan",
+        "Linnéplatsen",
+        "Botaniska Trädgården",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Medicinaregatan",
+        "Sahlgrenska Huvudentré",
+        "Korsvägen",
+        "Scandinavium",
+        "Ullevi Södra",
+        "Ullevi Norra",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Ejdergatan",
+        "Gamlestads Torg",
+        "SKF",
+        "Bellevue",
+        "Kviberg",
+        "Beväringsgatan",
+        "Runstavsgatan",
+        "Kortedala Torg",
+        "Allhelgonakyrkan",
+        "Nymånegatan",
+        "Aprilgatan"
+      ]
+    },
+    {
+      "id": "tram7",
+      "number": "7",
+      "name": "Spårvagn 7",
+      "mode": "TRAM",
+      "termini": [
+        "Tynnered",
+        "Bergsjön"
+      ],
+      "stations": [
+        "Opaltorget",
+        "Briljantgatan",
+        "Smaragdgatan",
+        "Frölunda Torg",
+        "Musikvägen",
+        "Positivgatan",
+        "Nymilsgatan",
+        "Lantmilsgatan",
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Kapellplatsen",
+        "Vasaplatsen",
+        "Valand",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "SKF",
+        "Bellevue",
+        "Kviberg",
+        "Beväringsgatan",
+        "Runstavsgatan",
+        "Kortedala Torg",
+        "Allhelgonakyrkan",
+        "Nymånegatan",
+        "Januarigatan",
+        "Galileis Gata",
+        "Teleskopgatan",
+        "Rymdtorget",
+        "Komettorget"
+      ]
+    },
+    {
+      "id": "tram8",
+      "number": "8",
+      "name": "Spårvagn 8",
+      "mode": "TRAM",
+      "termini": [
+        "Frölunda",
+        "Angered"
+      ],
+      "stations": [
+        "Frölunda Torg",
+        "Musikvägen",
+        "Positivgatan",
+        "Nymilsgatan",
+        "Lantmilsgatan",
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Medicinaregatan",
+        "Sahlgrenska Huvudentré",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Korsvägen",
+        "Scandinavium",
+        "Ullevi Södra",
+        "Ullevi Norra",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Ejdergatan",
+        "Gamlestads Torg",
+        "Storås",
+        "Hjällbo",
+        "Hammarkullen",
+        "Angereds Centrum"
+      ]
+    },
+    {
+      "id": "tram9",
+      "number": "9",
+      "name": "Spårvagn 9",
+      "mode": "TRAM",
+      "termini": [
+        "Kungssten",
+        "Angered"
+      ],
+      "stations": [
+        "Kungssten",
+        "Ostindiegatan",
+        "Vagnhallen Majorna",
+        "Jaegerdorffsplatsen",
+        "Chapmans Torg",
+        "Kaptensgatan",
+        "Stigbergstorget",
+        "Masthuggstorget",
+        "Järntorget",
+        "Hagakyrkan",
+        "Grönsakstorget",
+        "Domkyrkan",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "Storås",
+        "Hjällbo",
+        "Hammarkullen",
+        "Angereds Centrum"
+      ]
+    },
+    {
+      "id": "tram10",
+      "number": "10",
+      "name": "Spårvagn 10",
+      "mode": "TRAM",
+      "termini": [
+        "Guldheden",
+        "Lindholmen"
+      ],
+      "stations": [
+        "Doktor Sydows Gata",
+        "Doktor Fries Torg",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Kapellplatsen",
+        "Vasaplatsen",
+        "Valand",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Lilla Bommen",
+        "Jubileumsparken",
+        "Pumpgatan",
+        "Lindholmen"
+      ]
+    },
+    {
+      "id": "tram11",
+      "number": "11",
+      "name": "Spårvagn 11",
+      "mode": "TRAM",
+      "termini": [
+        "Saltholmen",
+        "Bergsjön"
+      ],
+      "stations": [
+        "Saltholmen",
+        "Långedrag",
+        "Hinsholmen",
+        "Käringberget",
+        "Tranered",
+        "Hagen",
+        "Nya Varvsallén",
+        "Kungssten",
+        "Sandarna",
+        "Sannaplan",
+        "Mariaplan",
+        "Godhemsgatan",
+        "Ekedal",
+        "Fjällgatan",
+        "Majvallen",
+        "Stigbergstorget",
+        "Masthuggstorget",
+        "Järntorget",
+        "Stenpiren",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "SKF",
+        "Bellevue",
+        "Kviberg",
+        "Beväringsgatan",
+        "Runstavsgatan",
+        "Kortedala Torg",
+        "Allhelgonakyrkan",
+        "Nymånegatan",
+        "Januarigatan",
+        "Galileis Gata",
+        "Teleskopgatan",
+        "Rymdtorget",
+        "Komettorget"
+      ]
+    },
+    {
+      "id": "tram12",
+      "number": "12",
+      "name": "Spårvagn 12",
+      "mode": "TRAM",
+      "termini": [
+        "Mölndal",
+        "Lindholmen"
+      ],
+      "stations": [
+        "Mölndals Innerstad",
+        "Mölndals sjukhus",
+        "Lackarebäck",
+        "Krokslätts Fabriker",
+        "Krokslätts Torg",
+        "Varbergsgatan",
+        "Elisedal",
+        "Almedal",
+        "Lana",
+        "Liseberg Södra",
+        "Korsvägen",
+        "Scandinavium",
+        "Ullevi Södra",
+        "Drottningtorget",
+        "Nordstan",
+        "Jubileumsparken",
+        "Pumpgatan",
+        "Lindholmen"
+      ]
+    },
+    {
+      "id": "vasttagen-kungsbacka",
+      "number": "Kungsbacka",
+      "name": "Västtågen",
+      "mode": "TRAIN",
+      "termini": [
+        "Göteborg Central",
+        "Kungsbacka"
+      ],
+      "stations": [
+        "Göteborg Central",
+        "Liseberg Station (tåg)",
+        "Mölndal Station",
+        "Kållered Station",
+        "Lindome Station",
+        "Anneberg Station",
+        "Hede Station",
+        "Kungsbacka Station"
+      ]
+    },
+    {
+      "id": "vasttagen-alingsas",
+      "number": "Alingsås",
+      "name": "Västtågen",
+      "mode": "TRAIN",
+      "termini": [
+        "Göteborg Central",
+        "Alingsås"
+      ],
+      "stations": [
+        "Göteborg Central",
+        "Gamlestaden Station",
+        "Sävenäs Station",
+        "Partille Station",
+        "Jonsered Station",
+        "Aspen Station",
+        "Aspedalen Station",
+        "Lerum Station",
+        "Stenkullen Station",
+        "Floda Station",
+        "Norsesund Station",
+        "Västra Bodarna Station",
+        "Alingsås Station"
+      ]
+    },
+    {
+      "id": "vasttagen-ale",
+      "number": "Ale",
+      "name": "Västtågen",
+      "mode": "TRAIN",
+      "termini": [
+        "Göteborg Central",
+        "Ale"
+      ],
+      "stations": [
+        "Göteborg Central",
+        "Gamlestaden Station",
+        "Surte Station",
+        "Bohus Station",
+        "Nödinge Station",
+        "Nol Station",
+        "Älvängen resecentrum"
+      ]
+    }
+  ]
+}
