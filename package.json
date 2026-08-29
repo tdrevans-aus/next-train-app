@@ -23,6 +23,7 @@
     "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
     "cap:open:ios": "npx cap open ios",
     "test:smoke": "node qa/run-all.mjs --smoke",
+    "test:pin": "node qa/run-all.mjs --pin",
     "test:web": "node qa/run-all.mjs",
     "test:web:ci": "node qa/run-all.mjs --no-native",
     "test:web:release": "node qa/run-all.mjs --release",
@@ -93,6 +94,7 @@
     "@capgo/native-purchases": "^8.6.5",
     "@sentry/browser": "10.69.0",
     "@sentry/capacitor": "^4.3.0",
+    "@vercel/blob": "^2.8.0",
     "express": "^4.21.2",
     "fflate": "^0.8.3",
     "gtfs-realtime-bindings": "^2.2.0"

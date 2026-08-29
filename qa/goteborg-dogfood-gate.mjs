@@ -45,7 +45,11 @@ const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
 assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*goteborg/.test(appJs), "goteborg must not be in LIVE_CITY_IDS");
 assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*goteborg/.test(appJs), "goteborg must not be in NEARBY_MULTI_CITY_IDS");
 const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(!/goteborg/i.test(citySession), "goteborg must stay out of public/city-session.js until the flip");
+assert(!/MULTI_CITY_IDS = \[[^\]]*goteborg/.test(citySession), "goteborg must not be in city-session MULTI_CITY_IDS");
+assert(
+  /\{ id: "goteborg"[^}]*comingSoon: true/.test(citySession),
+  "goteborg's city-session entry must stay comingSoon until the flip"
+);
 
 // Dogfood station list + directions come from the catalog, not GTFS parses.
 const stations = listGoteborgDogfoodStations();

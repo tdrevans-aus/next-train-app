@@ -53,6 +53,7 @@
       name: "Sweden",
       regions: [
         { id: "stockholm", name: "Stockholm", timeZone: "Europe/Stockholm", comingSoon: true },
+        { id: "goteborg", name: "Göteborg", timeZone: "Europe/Stockholm", comingSoon: true },
       ],
     },
     {

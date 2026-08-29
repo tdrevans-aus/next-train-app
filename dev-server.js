@@ -17,7 +17,6 @@ import { checkRateLimit } from "./lib/api-rate-limit.js";
 import { resolveDirectionsForStation } from "./lib/cities/perth/static-directions.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
 import { listCities, assertCityLive, getCity } from "./lib/providers/registry.js";
-import { getFoundingStatus, tryClaimFounding } from "./lib/founding-counter.js";
 import { applyCors } from "./lib/api-cors.js";
 import { isCityProbeAllowed, fetchDevCityBoard } from "./lib/dev-city-board.js";
 import { loadEnvLocal } from "./lib/load-env-local.js";
@@ -313,16 +312,6 @@ app.get("/api/destinations", async (req, res) => {
     }
     res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
   }
-});
-
-app.get("/api/founding-status", (_req, res) => {
-  res.setHeader("Cache-Control", "no-store");
-  res.status(200).json(getFoundingStatus());
-});
-
-app.post("/api/founding-claim", (_req, res) => {
-  res.setHeader("Cache-Control", "no-store");
-  res.status(200).json(tryClaimFounding());
 });
 
 app.options("/api/feedback", (_req, res) => {

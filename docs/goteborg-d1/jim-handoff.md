@@ -1,4 +1,4 @@
-Göteborg D1 + Trafiklab GTFS Regional adapter. City stays **planned**. Perth/Sydney/Brisbane/Amsterdam/Rotterdam live-gates untouched. **assertCityLive("goteborg") must still fail.** No UI picker flip. No generator. Do not invent city=sweden or gothenburg.
+Göteborg D1 + Trafiklab GTFS Regional adapter. City stays **planned**. Picker shows **Göteborg (Coming Soon)** under Sweden (`se`), beside Stockholm. Perth/Sydney/Brisbane/Amsterdam/Rotterdam live-gates untouched. **assertCityLive("goteborg") must still fail.** No generator. Do not invent city=sweden or gothenburg.
 
 Drop later (already copied as D2): qa/fixtures/goteborg/published-network.json. Research pack is docs/goteborg-d1/: published-network.json, oracle-clash-report.md, hazard-pack.md, direction-model-memo.md, jim-handoff.md, qa-note.md.
 

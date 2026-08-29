@@ -51,8 +51,17 @@ assert(wellington.agency === "Metlink", "Wellington is a separate Metlink city")
 assert((wellington.envKeys ?? []).includes("METLINK_API_KEY"), "Wellington uses METLINK_API_KEY");
 
 assert(
-  !existsSync(join(ROOT, "qa/fixtures/wellington/published-network.json")),
-  "Wellington published-network.json must stay unwritten until Luke D1"
+  existsSync(join(ROOT, "docs/wellington-d1/published-network.json")),
+  "Luke D1 published-network.json must exist under docs/wellington-d1/"
+);
+assert(
+  existsSync(join(ROOT, "qa/fixtures/wellington/published-network.json")),
+  "Luke D1 published-network.json must be copied into qa/fixtures/wellington/"
+);
+assert(
+  readFileSync(join(ROOT, "docs/wellington-d1/published-network.json"), "utf8") ===
+    readFileSync(join(ROOT, "qa/fixtures/wellington/published-network.json"), "utf8"),
+  "qa/fixtures/wellington/published-network.json must be a verbatim copy of docs/wellington-d1/published-network.json"
 );
 const wellingtonCatalog = JSON.parse(
   readFileSync(join(ROOT, "lib/cities/wellington/stations.json"), "utf8")

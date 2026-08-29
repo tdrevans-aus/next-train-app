@@ -1,7 +1,0 @@
-stop_id,stop_name,stop_lat,stop_lon
-229315,Newcastle Interchange,-32.9253,151.7587
-2300107,Honeysuckle,-32.9258,151.7705
-2300123,Civic,-32.9269,151.7758
-2300125,Crown Street,-32.9275,151.7798
-2300127,Queens Wharf,-32.9272,151.7839
-2300129,Newcastle Beach,-32.928,151.7885

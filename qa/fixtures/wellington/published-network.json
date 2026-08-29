@@ -1,0 +1,288 @@
+{
+  "city": "wellington",
+  "status": "planned",
+  "timezone": "Pacific/Auckland",
+  "source": "https://www.metlink.org.nz/assets/Network-maps/RegionalRailNetwork.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger rail network map",
+      "title": "Wellington Regional Rail Network (Metlink)",
+      "url": "https://www.metlink.org.nz/assets/Network-maps/RegionalRailNetwork.pdf",
+      "linkedFrom": "https://www.metlink.org.nz/getting-started/apps-maps-and-guides",
+      "captionOnIndex": "Rail Network Map",
+      "retrievedAt": "2026-08-29T05:30:00Z",
+      "note": "Official Metlink schematic. Five lines KPL/HVL/MEL/JVL/WRL. Hub Wellington Station. Hand-transcribed station order cross-checked to Metlink line timetables + GTFS parents for * Station suffixes. Not generated from GTFS."
+    },
+    {
+      "role": "maps index",
+      "url": "https://www.metlink.org.nz/getting-started/apps-maps-and-guides",
+      "retrievedAt": "2026-08-29T05:30:00Z"
+    },
+    {
+      "role": "Kāpiti Line timetable (ordered stops)",
+      "url": "https://backend.metlink.org.nz/assets/Uploads/KPL-Kapiti-Line-Waikanae-Wellington-23-03-2026.pdf",
+      "retrievedAt": "2026-08-29T05:30:00Z"
+    },
+    {
+      "role": "H2 name clash only — Metlink GTFS + GTFS-RT",
+      "staticUrl": "https://static.opendata.metlink.org.nz/v1/gtfs/full.zip",
+      "rtUrl": "https://api.opendata.metlink.org.nz/v1/gtfs-rt/tripupdates",
+      "auth": "METLINK_API_KEY → x-api-key (static zip needs no key)",
+      "notD1": true,
+      "note": "Adapter already uses this path. H2 only for name/code clash."
+    },
+    {
+      "role": "Melling Station closure (coverage gap)",
+      "url": "https://www.rnz.co.nz/news/regions_local-democracy-reporting/583691/train-tracks-and-lines-ripped-up-at-a-now-closed-melling-station-in-capital",
+      "retrievedAt": "2026-08-29T05:30:00Z",
+      "note": "Melling Station closed from Christmas Eve 2025/~2026 for RiverLink; MEL terminates at Western Hutt until ~late 2028."
+    }
+  ],
+  "retrievedAt": "2026-08-29T05:30:00Z",
+  "markProbes": [
+    "Wellington Station",
+    "Waikanae Station",
+    "Upper Hutt Station",
+    "Western Hutt Station",
+    "Johnsonville Station",
+    "Masterton Station",
+    "Petone Station",
+    "Porirua Station",
+    "Paekākāriki Station",
+    "Taita Station"
+  ],
+  "notes": [
+    "D1 oracle is the official Metlink Regional Rail Network map plus line timetables, HAND-TRANSCRIBED. Stations arrays are not generated from GTFS. No stopIds in this file.",
+    "City id wellington is SEPARATE from auckland. Same Pacific/Auckland TZ (HAS DST). Do not merge.",
+    "Modes v1: TRAIN only — KPL, HVL, MEL, JVL, WRL. No bus, ferry, cable car, Capital Connection, or Northern Explorer.",
+    "Hub lock: Wellington Station. Not Wellington, not Railway Station alone.",
+    "Melling Line keeps the MEL product name; live outer terminus is Western Hutt Station while Melling Station is closed (~late 2028 reopen).",
+    "47 unique stations. Schematic map often omits the Station suffix; D1 keeps Metlink timetable / GTFS parent * Station forms (incl. Paekākāriki).",
+    "Map may print Taitā; GTFS/catalog use Taita Station — rename clash.",
+    "gtfsRouteIdsIfKnown are passenger short names KPL/HVL/MEL/JVL/WRL. City stays planned. Do not flip live."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Wellington Station",
+    "doNotUse": [
+      "Wellington",
+      "Railway Station",
+      "Britomart",
+      "Waitematā Station",
+      "Auckland"
+    ],
+    "mellingClosure": {
+      "lineName": "Melling Line",
+      "liveTerminus": "Western Hutt Station",
+      "closedUntil": "~late 2028",
+      "closedStop": "Melling Station"
+    }
+  },
+  "coverageGaps": [
+    "Bus, ferry, and Wellington Cable Car are out of v1.",
+    "Capital Connection and Northern Explorer are out of v1 (KiwiRail / long-distance).",
+    "Melling Station closed for Te Wai Takamori o Te Awa Kairangi; not a live D1 stop. MEL ends at Western Hutt Station.",
+    "Ōtaki is outside Metlink suburban rail (not on these five lines).",
+    "Adapter uses full GTFS railOnly without an explicit KPL/HVL/MEL/JVL/WRL allowlist — flag if other route_type=2 services appear in full.zip."
+  ],
+  "lines": [
+    {
+      "id": "kpl",
+      "number": "KPL",
+      "name": "Kāpiti Line",
+      "officialPageTitle": "Kāpiti Line (Waikanae – Wellington)",
+      "gtfsRouteIdsIfKnown": [
+        "KPL"
+      ],
+      "mapGroup": "Train",
+      "termini": [
+        "Waikanae Station",
+        "Wellington Station"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Wellington Station",
+        "Takapu Road Station",
+        "Redwood Station",
+        "Tawa Station",
+        "Linden Station",
+        "Kenepuru Station",
+        "Porirua Station",
+        "Paremata Station",
+        "Mana Station",
+        "Plimmerton Station",
+        "Pukerua Bay Station",
+        "Paekākāriki Station",
+        "Paraparaumu Station",
+        "Waikanae Station"
+      ]
+    },
+    {
+      "id": "hvl",
+      "number": "HVL",
+      "name": "Hutt Valley Line",
+      "officialPageTitle": "Hutt Valley Line (Upper Hutt – Wellington)",
+      "gtfsRouteIdsIfKnown": [
+        "HVL"
+      ],
+      "mapGroup": "Train",
+      "termini": [
+        "Upper Hutt Station",
+        "Wellington Station"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Wellington Station",
+        "Ngauranga Station",
+        "Petone Station",
+        "Ava Station",
+        "Woburn Station",
+        "Waterloo Station",
+        "Epuni Station",
+        "Naenae Station",
+        "Wingate Station",
+        "Taita Station",
+        "Pomare Station",
+        "Manor Park Station",
+        "Silverstream Station",
+        "Heretaunga Station",
+        "Trentham Station",
+        "Wallaceville Station",
+        "Upper Hutt Station"
+      ]
+    },
+    {
+      "id": "mel",
+      "number": "MEL",
+      "name": "Melling Line",
+      "officialPageTitle": "Melling Line (Western Hutt – Wellington) — Melling Station closed until ~late 2028",
+      "gtfsRouteIdsIfKnown": [
+        "MEL"
+      ],
+      "mapGroup": "Train",
+      "termini": [
+        "Western Hutt Station",
+        "Wellington Station"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Wellington Station",
+        "Ngauranga Station",
+        "Petone Station",
+        "Western Hutt Station"
+      ],
+      "notes": [
+        "Passenger line name remains Melling Line. Live terminus is Western Hutt Station while Melling Station is closed for Te Wai Takamori o Te Awa Kairangi (RiverLink). Reopen ~late 2028."
+      ]
+    },
+    {
+      "id": "jvl",
+      "number": "JVL",
+      "name": "Johnsonville Line",
+      "officialPageTitle": "Johnsonville Line (Johnsonville – Wellington)",
+      "gtfsRouteIdsIfKnown": [
+        "JVL"
+      ],
+      "mapGroup": "Train",
+      "termini": [
+        "Johnsonville Station",
+        "Wellington Station"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Wellington Station",
+        "Crofton Downs Station",
+        "Ngaio Station",
+        "Awarua Street Station",
+        "Simla Crescent Station",
+        "Box Hill Station",
+        "Khandallah Station",
+        "Raroa Station",
+        "Johnsonville Station"
+      ]
+    },
+    {
+      "id": "wrl",
+      "number": "WRL",
+      "name": "Wairarapa Line",
+      "officialPageTitle": "Wairarapa Line (Masterton – Wellington)",
+      "gtfsRouteIdsIfKnown": [
+        "WRL"
+      ],
+      "mapGroup": "Train",
+      "termini": [
+        "Masterton Station",
+        "Wellington Station"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Wellington Station",
+        "Petone Station",
+        "Waterloo Station",
+        "Upper Hutt Station",
+        "Maymorn Station",
+        "Featherston Station",
+        "Woodside Station",
+        "Matarawa Station",
+        "Carterton Station",
+        "Solway Station",
+        "Renall Street Station",
+        "Masterton Station"
+      ]
+    }
+  ],
+  "uniqueStationCount": 47,
+  "uniqueStations": [
+    "Wellington Station",
+    "Takapu Road Station",
+    "Redwood Station",
+    "Tawa Station",
+    "Linden Station",
+    "Kenepuru Station",
+    "Porirua Station",
+    "Paremata Station",
+    "Mana Station",
+    "Plimmerton Station",
+    "Pukerua Bay Station",
+    "Paekākāriki Station",
+    "Paraparaumu Station",
+    "Waikanae Station",
+    "Ngauranga Station",
+    "Petone Station",
+    "Ava Station",
+    "Woburn Station",
+    "Waterloo Station",
+    "Epuni Station",
+    "Naenae Station",
+    "Wingate Station",
+    "Taita Station",
+    "Pomare Station",
+    "Manor Park Station",
+    "Silverstream Station",
+    "Heretaunga Station",
+    "Trentham Station",
+    "Wallaceville Station",
+    "Upper Hutt Station",
+    "Western Hutt Station",
+    "Crofton Downs Station",
+    "Ngaio Station",
+    "Awarua Street Station",
+    "Simla Crescent Station",
+    "Box Hill Station",
+    "Khandallah Station",
+    "Raroa Station",
+    "Johnsonville Station",
+    "Maymorn Station",
+    "Featherston Station",
+    "Woodside Station",
+    "Matarawa Station",
+    "Carterton Station",
+    "Solway Station",
+    "Renall Street Station",
+    "Masterton Station"
+  ]
+}

@@ -14,8 +14,13 @@ import { loadEnvLocal } from "../lib/load-env-local.js";
 import { readTfnswApiKey, tfnswAuthHeaders } from "../lib/providers/gtfs/auth.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/newcastle/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/newcastle/gtfs");
 const DEFAULT_URL = "https://api.transport.nsw.gov.au/v1/gtfs/schedule/lightrail/newcastle";
+// Explicit column allow-lists — only fields actually read anywhere in
+// lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md).
+const STOP_TIME_COLUMNS = ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type"];
+const TRIP_COLUMNS = ["route_id", "service_id", "trip_id", "trip_headsign"];
 
 function toCsv(rows, columns) {
   if (!rows.length) {
@@ -64,13 +69,12 @@ async function loadZipBuffer(zipPath, url) {
   return Buffer.from(await response.arrayBuffer());
 }
 
-async function main() {
-  const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
-  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
-  const zipPath = zipArg ? zipArg.slice("--zip=".length) : "";
-  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
-
-  const buffer = await loadZipBuffer(zipPath || null, url);
+/**
+ * Given a raw upstream GTFS zip buffer, return the trimmed+dieted file
+ * contents keyed by filename. Statically imported by
+ * api/cron/refresh-gtfs.js - keep this pure (no fs/network access).
+ */
+export function buildTrimmedFiles(buffer) {
   const files = unzipSync(new Uint8Array(buffer));
   const routes = parseCsv(zipText(files, "routes.txt")).filter(isNlrRoute);
   const routeIds = new Set(routes.map((row) => row.route_id));
@@ -97,26 +101,46 @@ async function main() {
   );
   const agency = parseCsv(zipText(files, "agency.txt"));
 
-  mkdirSync(OUT_DIR, { recursive: true });
-  writeFileSync(join(OUT_DIR, "agency.txt"), toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })));
-  writeFileSync(join(OUT_DIR, "routes.txt"), toCsv(routes, Object.keys(routes[0])));
-  writeFileSync(join(OUT_DIR, "trips.txt"), toCsv(trips, Object.keys(trips[0])));
-  writeFileSync(join(OUT_DIR, "stops.txt"), toCsv(stops, Object.keys(stops[0])));
-  writeFileSync(join(OUT_DIR, "stop_times.txt"), toCsv(stopTimes, Object.keys(stopTimes[0])));
-  writeFileSync(join(OUT_DIR, "calendar.txt"), toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" })));
-  writeFileSync(
-    join(OUT_DIR, "calendar_dates.txt"),
-    toCsv(calendarDates, Object.keys(calendarDates[0] ?? { service_id: "" }))
-  );
+  const output = {
+    "agency.txt": toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })),
+    "routes.txt": toCsv(routes, Object.keys(routes[0])),
+    "trips.txt": toCsv(trips, TRIP_COLUMNS),
+    "stops.txt": toCsv(stops, Object.keys(stops[0])),
+    "stop_times.txt": toCsv(stopTimes, STOP_TIME_COLUMNS),
+    "calendar.txt": toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" })),
+    "calendar_dates.txt": toCsv(calendarDates, Object.keys(calendarDates[0] ?? { service_id: "" })),
+  };
   const feed = zipText(files, "feed_info.txt");
   if (feed) {
-    writeFileSync(join(OUT_DIR, "feed_info.txt"), feed.endsWith("\n") ? feed : `${feed}\n`);
+    output["feed_info.txt"] = feed.endsWith("\n") ? feed : `${feed}\n`;
   }
 
-  console.log(`trim-newcastle-gtfs: ${routes.length} routes, ${trips.length} trips, ${stops.length} stops`);
+  return {
+    output,
+    summary: `${routes.length} routes, ${trips.length} trips, ${stops.length} stops`,
+  };
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+async function main() {
+  const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
+  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
+  const zipPath = zipArg ? zipArg.slice("--zip=".length) : "";
+  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
+
+  const buffer = await loadZipBuffer(zipPath || null, url);
+  const { output, summary } = buildTrimmedFiles(buffer);
+
+  mkdirSync(OUT_DIR, { recursive: true });
+  for (const [name, content] of Object.entries(output)) {
+    writeFileSync(join(OUT_DIR, name), content);
+  }
+
+  console.log(`trim-newcastle-gtfs: ${summary}`);
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

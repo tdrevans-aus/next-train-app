@@ -167,9 +167,9 @@ async function run() {
     await context.close();
   }
 
-  // 5. Stockholm stays Coming Soon — no live board
+  // 5. Sweden cities stay Coming Soon — no live board
   {
-    console.log("  Test 5: Stockholm picker Coming Soon...");
+    console.log("  Test 5: Sweden picker Coming Soon (Stockholm + Göteborg)...");
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
@@ -185,28 +185,37 @@ async function run() {
       countrySelect.dispatchEvent(new Event("change", { bubbles: true }));
       const citySelect = document.querySelector("[data-region-city]");
       const stockholm = [...(citySelect?.options ?? [])].find((option) => option.value === "stockholm");
+      const goteborg = [...(citySelect?.options ?? [])].find((option) => option.value === "goteborg");
       return {
         swedenLabel: sweden?.textContent?.trim() ?? "",
         stockholmLabel: stockholm?.textContent?.trim() ?? "",
-        stockholmValue: citySelect?.value ?? "",
+        goteborgLabel: goteborg?.textContent?.trim() ?? "",
+        cityValue: citySelect?.value ?? "",
         savedCity: window.NextTrainCitySession.readSavedCity(),
       };
     });
 
     const applied = await page.evaluate(async () => {
       await window.NextTrainCitySession.applyCity("stockholm", { persist: true, explicit: true });
-      return { savedCity: window.NextTrainCitySession.readSavedCity() };
+      const afterStockholm = window.NextTrainCitySession.readSavedCity();
+      await window.NextTrainCitySession.applyCity("goteborg", { persist: true, explicit: true });
+      return {
+        afterStockholm,
+        afterGoteborg: window.NextTrainCitySession.readSavedCity(),
+      };
     });
 
     if (
       picker.swedenLabel === "Sweden (Coming Soon)" &&
       picker.stockholmLabel === "Stockholm (Coming Soon)" &&
-      picker.stockholmValue === "stockholm" &&
-      applied.savedCity !== "stockholm"
+      picker.goteborgLabel === "Göteborg (Coming Soon)" &&
+      (picker.cityValue === "stockholm" || picker.cityValue === "goteborg") &&
+      applied.afterStockholm !== "stockholm" &&
+      applied.afterGoteborg !== "goteborg"
     ) {
-      console.log("    PASS — Sweden/Stockholm Coming Soon; applyCity does not go live");
+      console.log("    PASS — Sweden/Stockholm/Göteborg Coming Soon; applyCity does not go live");
     } else {
-      console.error("    FAIL — Stockholm picker / applyCity", { picker, applied });
+      console.error("    FAIL — Sweden picker / applyCity", { picker, applied });
       process.exitCode = 1;
     }
     await context.close();

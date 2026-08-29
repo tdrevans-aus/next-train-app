@@ -1,6 +1,6 @@
 # Göteborg (Västtrafik) station catalog
 
-Adapter catalog for `lib/providers/goteborg.js`. City stays **planned**. Do not flip live.
+Adapter catalog for `lib/providers/goteborg.js`. City stays **planned**. Picker shows **Coming Soon**. Do not flip live.
 
 - City id: **goteborg**. Display **Göteborg**. Not gothenburg. Not city=sweden. Not Stockholm. Not Malmö.
 - Inner-city lock: **Brunnsparken** (tram; 10 of 12 lines). Lines **8** and **12** miss it — they live at **Korsvägen**.
