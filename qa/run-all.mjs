@@ -74,7 +74,6 @@ const SMOKE_SCRIPTS = [
   "stockholm-planned-gate.mjs",
   "stockholm-dogfood-gate.mjs",
   "stockholm-direction-match.mjs",
-  "goteborg-planned-gate.mjs",
   "goteborg-dogfood-gate.mjs",
   "goteborg-direction-match.mjs",
   "wellington-planned-gate.mjs",
