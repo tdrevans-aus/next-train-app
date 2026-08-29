@@ -14,6 +14,13 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "qa" / "fixtures" / "sydney" / "gtfs"
 KEEP_SHORT = {f"T{i}" for i in range(1, 10)} | {"M1"}
 
+# Explicit column allow-lists — only fields actually read anywhere in
+# lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md). Keeps
+# the checked-in fixture slim on every regeneration instead of carrying
+# every upstream GTFS column through as a pass-through.
+STOP_TIME_COLUMNS = ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type"]
+TRIP_COLUMNS = ["route_id", "service_id", "trip_id", "trip_headsign"]
+
 
 def text(zf: zipfile.ZipFile, name: str):
     try:
@@ -57,7 +64,7 @@ def main() -> None:
 
         with text(zf, "trips.txt") as handle:
             trip_reader = csv.DictReader(handle)
-            trip_fields = list(trip_reader.fieldnames or [])
+            trip_fields = [name for name in TRIP_COLUMNS if name in (trip_reader.fieldnames or [])]
             rail_trips = [row for row in trip_reader if row["route_id"] in rail_route_ids]
         rail_trip_ids = {row["trip_id"] for row in rail_trips}
         used_service_ids = {row["service_id"] for row in rail_trips}
@@ -71,7 +78,7 @@ def main() -> None:
             "w", encoding="utf-8", newline=""
         ) as out:
             reader = csv.DictReader(handle)
-            stop_time_fields = list(reader.fieldnames or [])
+            stop_time_fields = [name for name in STOP_TIME_COLUMNS if name in (reader.fieldnames or [])]
             writer = csv.DictWriter(out, fieldnames=stop_time_fields, extrasaction="ignore")
             writer.writeheader()
             for row in reader:

@@ -15,6 +15,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = join(ROOT, "qa/fixtures/canberra/gtfs");
 const DEFAULT_URL = "https://www.transport.act.gov.au/googletransit/google_transit_lr.zip";
 const USER_AGENT = "next-train";
+// Explicit column allow-lists — only fields actually read anywhere in
+// lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md).
+const STOP_TIME_COLUMNS = ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type"];
+const TRIP_COLUMNS = ["route_id", "service_id", "trip_id", "trip_headsign"];
 
 function toCsv(rows, columns) {
   if (!rows.length) {
@@ -90,9 +94,9 @@ async function main() {
   mkdirSync(OUT_DIR, { recursive: true });
   writeFileSync(join(OUT_DIR, "agency.txt"), toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })));
   writeFileSync(join(OUT_DIR, "routes.txt"), toCsv(routes, Object.keys(routes[0])));
-  writeFileSync(join(OUT_DIR, "trips.txt"), toCsv(trips, Object.keys(trips[0])));
+  writeFileSync(join(OUT_DIR, "trips.txt"), toCsv(trips, TRIP_COLUMNS));
   writeFileSync(join(OUT_DIR, "stops.txt"), toCsv(stops, Object.keys(stops[0])));
-  writeFileSync(join(OUT_DIR, "stop_times.txt"), toCsv(stopTimes, Object.keys(stopTimes[0])));
+  writeFileSync(join(OUT_DIR, "stop_times.txt"), toCsv(stopTimes, STOP_TIME_COLUMNS));
   writeFileSync(join(OUT_DIR, "calendar.txt"), toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" })));
   writeFileSync(
     join(OUT_DIR, "calendar_dates.txt"),
