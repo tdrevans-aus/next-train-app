@@ -87,3 +87,13 @@ H2 conclusion: passenger codes on the map and folders already agree (**1–5**).
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no GTFS-derived station arrays, no reopen of London TfL, no redo of Amsterdam / Rotterdam / Sweden / Berlin / Munich / Hamburg.
+
+## License
+
+- **License name:** Norwegian Licence for Open Government Data (NLOD), as stated on Entur developer open-data pages (timetable / realtime).
+- **Redistribution / rehosting:** NLOD allows copy, modify, and redistribute, including commercially, with attribution. Entur requires an `ET-Client-Name` header on API calls (identify the app, not a secret).
+- **Commercial use:** allowed under NLOD.
+- **Attribution:** Name Entur / the data provider. Example client header: `next-train`. Do not pretend to be Ruter.
+- **Terms URL:** https://developer.entur.no/open-data/timetable and https://developer.entur.no/open-data/realtime (category National journey planning, License: NLOD). Licence text: https://data.norge.no/nlod/en/2.0
+- **Confidence:** `clear` that Entur dumps + GTFS-RT `datasource=RUT` are NLOD. Official Ruter linjekart used as D1 oracle is a separate map copyright — not the GTFS dump.
+- **Keyed feeds:** No secret key. `ET-Client-Name` is mandatory identification.

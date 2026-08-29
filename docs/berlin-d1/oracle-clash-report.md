@@ -77,3 +77,13 @@ H2 conclusion: passenger codes on the map and line pages already agree (**U1–U
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no Perth edit, no GTFS-derived station arrays, no reopen of London TfL, no redo of Amsterdam / Rotterdam / Sweden.
+
+## License
+
+- **License name:** Creative Commons Attribution 4.0 International (CC BY 4.0), VBB open datasets.
+- **Redistribution / rehosting:** CC BY 4.0 allows copy, redistribute, and derived works (including commercial) if attribution is given. Transitland: creating derived products allowed = Yes; use without attribution = No.
+- **Commercial use:** allowed under CC BY 4.0.
+- **Attribution:** Credit Verkehrsverbund Berlin-Brandenburg GmbH (VBB). OSM-specific carve-out: if the data enters OSM, naming VBB in OSM contributors is enough.
+- **Terms URL:** https://www.vbb.de/vbb-services/api-open-data/datensaetze/
+- **Confidence:** `clear` for the VBB GTFS/GTFS-RT datasets. Official U-Bahn *map* copyright is separate from the GTFS dump — D1 oracle is the map, not GTFS.
+- **Keyed feeds:** Static VBB GTFS zip is unkeyed. GTFS-RT https://production.gtfsrt.vbb.de. Transitland Onestop for the VBB regional dump includes BVG.
