@@ -70,3 +70,13 @@ H2 conclusion: passenger codes on the map and trunk page already agree (**M1 / M
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no GTFS-derived station arrays, no reopen of London TfL, no redo of Amsterdam / Rotterdam / Sweden / Berlin / Munich / Hamburg / Oslo.
+
+## License
+
+- **License name:** Creative Commons Attribution 4.0 International (CC BY 4.0) for HSL datasets and APIs (since 1 Sep 2015), except Journey Planner OSM geometry/address (ODbL) and city-bike OD (City Bike Finland).
+- **Redistribution / rehosting:** CC BY 4.0 allows copy, redistribute, and derived works including commercial, with attribution. Digitransit: CC BY is a global, gratuitous, non-exclusive, non-revocable right to use the data for any purpose including copy, rework, and distribute.
+- **Commercial use:** allowed under CC BY 4.0.
+- **Attribution:** Cite the licensee and the time HSL delivered the data, e.g. "© HSL 2026". Digitransit API terms ask for "© Digitransit {year}" when using that API.
+- **Terms URL:** https://www.hsl.fi/en/hsl/open-data and https://digitransit.fi/en/developers/apis/7-terms-of-use/
+- **Confidence:** `clear` for HSL GTFS + GTFS-RT. `unclear` only if we later mix in Digitransit routing geometry (ODbL). Transitland Onestop **f-ud9-helsinginseudunliikenne**.
+- **Keyed feeds:** Static GTFS zip unkeyed (https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip). Digitransit GraphQL needs `digitransit-subscription-key`. GTFS-RT trip-updates at realtime.hsl.fi is unkeyed.

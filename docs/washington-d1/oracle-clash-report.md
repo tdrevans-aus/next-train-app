@@ -85,3 +85,13 @@ H2 conclusion: passenger colors on the map already agree (Red Orange Blue Silver
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no Perth edit, no GTFS-derived station arrays, no invent city=dc, no API key, no post.
+
+## License
+
+- **License name:** WMATA Developer License Agreement / Transit Data licence (developer.wmata.com).
+- **Redistribution / rehosting:** Limited, non-exclusive, non-assignable, non-transferable, non-sublicensable, revocable licence to download, use, reproduce, and redistribute Transit Data *within your Application*. API access is similarly limited and non-sublicensable.
+- **Commercial use:** Currently no licence fee; WMATA may charge later. Serving riders in a commercial app is not prohibited on the face of the terms; sublicensing the feed is.
+- **Attribution:** WMATA Transit Information must appear in legible bold print on the same page, close to the data: "WMATA Transit information provided on this …" (full sentence on the WMATA Developer License Agreement page).
+- **Terms URL:** https://developer.wmata.com/license and https://www.wmata.com/about/developers/WMATA-Developer-License-Agreement.cfm
+- **Confidence:** `clear` that a key is required for GTFS/API portal access; `clear` that redistribution is in-app only / non-sublicensable.
+- **Keyed feeds:** Registration + API key required. Account terms govern, not a public-domain dump.
