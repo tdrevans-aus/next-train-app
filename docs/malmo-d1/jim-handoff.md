@@ -1,66 +1,70 @@
-Malmö D1 + research pack. City stays **planned** until Jim wires testers live. Existing live/planned
-cities untouched (Göteborg, Stockholm, Oslo, Rotterdam, Berlin, Munich, Hamburg, etc.). Do not merge
+Malmö D1 + research pack — **second pass, 29 Aug 2026: per-line data filled in.** City stays
+**planned** until Jim wires testers live. Existing live/planned cities untouched. Do not merge
 malmo into goteborg or stockholm. **assertCityLive("malmo") must still fail** (city not in
-`lib/providers/registry.js` today). No generator, no PR, no product edit. Tim copies files; Jim owns
-D2–D6. Do not flip malmo live from this pack.
+`lib/providers/registry.js` today). No generator committed, no PR, no product edit. Do not flip
+malmo live from this pack.
 
 Pack files: `docs/malmo-d1/{oracle-clash-report,hazard-pack,direction-model-memo}.md`,
 `published-network.json`, this file.
 
-**Read the hazard-pack and direction-model-memo before wiring — this pack is thinner than Oslo/
-Rotterdam/Newcastle's, on purpose, because the oracle report was thinner. Do not fill the gaps
-yourself from GTFS as a substitute for D1 verification; flag back to Nico/Tim instead.**
+The first pass was thin because the official map was egress-blocked. That block is gone: the
+Skånetrafiken train map (Dec 2024) was obtained and the per-line structure was derived from the
+official GTFS Sweden 3 feed cross-checked against it. `lines[]` is now populated (10 corridors,
+ordered stops, termini, short-turns, ring double-call).
 
 ## What's solid (cite: oracle-clash-report.md)
 
-- **city=malmo**, agency Skånetrafiken / Pågatågen. Trafiklab GTFS Regional operator code `skane`
-  confirmed to resolve correctly. Same `TRAFIKLAB_API_KEY` as Göteborg, different operator code.
-- **V1 scope: Pågatågen commuter rail only.** No light rail — tracker's "commuter + light rail"
-  label is wrong; Malmö's tram system closed in 1973, only a seasonal museum tram remains, not v1.
-  No bus, no Öresundståg.
-- **Hub lock: Malmö C** (Malmö Central Station). City Tunnel terminus/portal, opened Dec 2010.
-  "All or most" Pågatågen lines serve it.
-- **doNotGroup Malmö C Pågatågen vs Malmö C Öresundståg.** Öresundståg is a separate cross-border
-  operator (Skånetrafiken + DSB + Region Hovedstaden), same station string, not v1.
-- **GTFS-RT is live for `skane`** (Static + Real-time + Vehicle positions confirmed via Trafiklab
-  operator table / Mobility Database mdb-2971, checked 2026-08-28) — unlike Göteborg's schedule-only
-  gap, Malmö can use TripUpdates + vehicle positions for the D2+ live board.
+- **city=malmo**, agency Skånetrafiken / Pågatågen. V1 = Pågatågen only (no light rail — closed
+  1973; no bus; no Öresundståg; no Krösatågen).
+- **Official D1 map in hand**: "Fler resmöjligheter med tåg", Uppdaterad december 2024, linked
+  from skanetrafiken.se/kartor/ ("Tåglinjer i Skåne"), md5 `41387ef91e51a0009e99cde9c47dbf41`.
+- **10 Pågatågen corridors** (reference numbers 2–11 incl. 4B; no 1, no 12), 6 of which serve
+  Malmö (3, 6, 8, 9, 10, 11). Full ordered stops in `published-network.json`.
+- **No passenger-facing line codes exist** — not on the map, site, or feed. The first pass's
+  "H3/H4/E6" hedge and "11 lines + rush-hour line 12" claim are both withdrawn/corrected;
+  the express is **PågatågenExpress** (Svågertorp–Hässleholm/–Älmhult, limited daily).
+- **Hub lock: Malmö C** — and it is the network's one double-call station: line 11
+  (Malmöpendeln/Malmöringen, Kävlinge–Lomma–Malmö C–Triangeln–Hyllie–Svågertorp–Persborg–
+  Rosengård–Östervärn–Malmö C, both directions) calls it twice per through-path, with headsign
+  "Malmö central" even outbound. Model like Oslo's Stortinget; see direction-model-memo.md.
+- **doNotGroup Pågatågen vs Öresundståg at Malmö C, Triangeln, Hyllie, AND Burlöv** (map legend
+  symbol confirmed).
+- **Burlöv and Oxie confirmed in v1** (map symbol + current GTFS service).
+- **Feed renames**: GTFS strings "Malmö Triangeln" / "Malmö Rosengård station" / "Malmö
+  Centralstation" etc. vs printed "Triangeln" / "Rosengård" / "Malmö C" — rename table in the
+  oracle report. Lock printed strings.
+- **License: CC0 1.0** for both GTFS Sweden 3 and GTFS Regional (captured per
+  nico-research-sources §2) — redistribution/commercial use unrestricted.
 - **Europe/Stockholm HAS DST.**
-- 9 Malmö-area station names (Malmö C, Triangeln, Hyllie, Svågertorp, Persborg, Rosengård,
-  Östervärn, Burlöv, Oxie), hand-transcribed from Trafiklab GTFS `stops.txt`, not from an official
-  passenger map (see below).
 
-## What is NOT solid — do not wire around these, resolve them first
+## What is still NOT solid — resolve at D2, don't wire around
 
-1. **No per-line station/termini data exists in the oracle report for any of the 11 regular lines
-   or rush-hour line 12.** `published-network.json`'s `lines[]` is intentionally empty. Before
-   writing the adapter's line/direction logic, either (a) get the Skånetrafiken linjenät PDF read
-   (currently egress-blocked — this pipeline should not route around that block itself) or (b) have
-   the D2+ implementation read `routes.txt`/`trips.txt` from the confirmed-live `skane` GTFS feed
-   directly and treat that as an implementation detail to verify against a passenger-facing source
-   later, not as a D1 substitute.
-2. **Line codes are unconfirmed.** The report's "H3, H4, E6, etc." is explicitly hedged as an
-   expected format, not a confirmed one. Don't hardcode that naming pattern.
-3. **Possible Öresundståg overlap at Triangeln and/or Hyllie** (both City Tunnel stations, same
-   2010 project as Malmö C) is flagged but not confirmed either way in the oracle report. Verify
-   before assuming these two stops are Pågatågen-only.
-4. **Malmöringen (ring line) route path is unknown.** Svågertorp, Persborg, and Östervärn are each
-   tagged "ring-line stop" with no route detail. If a published line calls one of these stations
-   twice on a single through-path — the way Oslo's line 5 calls Stortinget twice — inbound/outbound
-   direction labeling breaks the same way it did there. Confirm before assuming simple
-   inbound/outbound works anywhere on this network.
-5. **Burlöv and Oxie inclusion is conditional** — the oracle report itself only says "keep in v1 if
-   GTFS includes it," which was not independently checked.
+1. **Regional key scope.** The adapter path is Trafiklab GTFS Regional `skane`
+   (static + TripUpdates + VehiclePositions + occupancy per Trafiklab's table), but the local
+   `TRAFIKLAB_GTFS_SWEDEN_KEY`/`_RT_KEY` get **403 "Key does not have access to file"** on
+   `gtfs/skane/skane.zip` and `gtfs-rt-sweden/skane/TripUpdatesSweden.pb`. The regional
+   `TRAFIKLAB_API_KEY` is Vercel-only. Verify key scope before promising a live board.
+   (RT catalog identity corrected: mdb-2970 = TripUpdates, 2971 = ServiceAlerts,
+   2972 = VehiclePositions.)
+2. **Line 3's Helsingborg end** (Gantofta–Ramlösa–Helsingborg C) is on the map and in the
+   reference station count but didn't run through in the analysed GTFS week (engineering work
+   plausible). Don't chip Gantofta as a terminus; confirm against the live feed.
+3. **Ring chip copy.** "Malmöringen mot Triangeln/Östervärn" is recommended structure, not
+   transcribed signage — platform display wording unverified. Tim signs off chip copy
+   (direction-model-memo open questions 1–2).
+4. **Short-turn lists are observed-indicative**, from one fragmented week — assert per-trip far
+   ends from the live feed at D5, not a fixed list.
+5. **GTFS parent/child shape at Malmö C** not catalogued — check `stops.txt`
+   `location_type`/`parent_station` in the wired feed; do not assume single-row stops.
 
 ## Direction model
 
-Recommend **line + terminus** (matches every sibling city), likely aligning with Swedish "mot
-`<destination>`" platform signage — but this is a reasoned default pending confirmation, not a
-locked model. No worked §3 examples exist yet because there are no confirmed termini to put in
-them. See `direction-model-memo.md` open questions before writing D5 assertion tables.
+**Product + terminus ("Pågatågen mot `<far end>`"), Malmöringen special-cased with ring-side
+tokens; never inbound/outbound, never raw headsigns** (self-referential "Malmö central" at
+Malmö C). Worked §3 examples now exist in direction-model-memo.md.
 
 ## What I did not do
 
-No generator from GTFS, no per-line station arrays invented, no PDF fetch around the egress block,
-no Öresundståg data pulled in, no bus/light-rail scope creep, no D5 assertion tables, no live city
-flip, no `lib/providers/` or `registry.js` edit, no read of any other city's in-progress pack.
+No `lib/providers/` or `registry.js` edit, no live flip, no UI wiring, no D5 assertion tables,
+no Öresundståg/Krösatågen/bus scope creep, no rehosting of the Skånetrafiken PDF artwork, no
+edits to any other city's pack.

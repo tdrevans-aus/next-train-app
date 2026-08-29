@@ -4,117 +4,591 @@
   "status": "planned",
   "agency": "Skånetrafiken / Pågatågen",
   "timezone": "Europe/Stockholm",
-  "source": "https://opendata.samtrafiken.se/gtfs/skane/skane.zip?key={TRAFIKLAB_API_KEY}",
+  "source": "https://www.skanetrafiken.se/link/de1bc77203da4224945f33548db82a6c.aspx",
   "sources": [
     {
-      "role": "D1 station names (hand-transcribed from GTFS after operator-code verification, NOT a passenger-facing map — see note)",
-      "title": "Trafiklab GTFS Regional, operator `skane`",
-      "url": "https://opendata.samtrafiken.se/gtfs/skane/skane.zip?key={TRAFIKLAB_API_KEY}",
-      "auth": "Trafiklab API key in query string (TRAFIKLAB_API_KEY, same key as Göteborg)",
-      "retrievedAt": "2026-08-29T00:00:00Z",
-      "note": "Unlike Oslo/Rotterdam/Newcastle, this pack's station list is NOT transcribed from an official Skånetrafiken passenger map or timetable — that PDF (see blocked source below) was inaccessible. The 9 Malmö-area station names come from Trafiklab GTFS stops.txt after confirming the `skane` operator code resolves to Skånetrafiken. Per the oracle report's own instruction, this pack does NOT extend that GTFS read into full per-line station/termini arrays for the 11 regular + 1 rush-hour lines — that would be generating published-network.json from GTFS alone, which the oracle report explicitly says not to do without further verification. See coverageGaps."
+      "role": "D1 official passenger train network map (station geography, per-station product symbols, hub lock). The authority the first pass could not reach — now obtained.",
+      "title": "Fler resmöjligheter med tåg (tåglinjer i Skåne), Uppdaterad december 2024",
+      "url": "https://www.skanetrafiken.se/link/de1bc77203da4224945f33548db82a6c.aspx",
+      "linkedFrom": "https://www.skanetrafiken.se/kartor/",
+      "captionOnIndex": "Tåglinjer i Skåne (PDF, öppnas i nytt fönster)",
+      "retrievedAt": "2026-08-29T10:42:00Z",
+      "md5": "41387ef91e51a0009e99cde9c47dbf41",
+      "note": "1-page PDF, footer 'Uppdaterad december 2024', still the train map linked from skanetrafiken.se/kartor/ on 29 Aug 2026. Legend has five station classes: Pågatågen; Öresunds- och Pågatågen; Krösatågen; Öresunds- och Krösatågen; Öresunds-, Påga- och Krösatågen. Malmö C, Triangeln, Hyllie, Burlöv, Lund C all print the 'Öresunds- och Pågatågen' symbol — Öresundståg overlap at Triangeln/Hyllie/Burlöv is CONFIRMED, not just at Malmö C. Östervärn, Rosengård, Persborg, Svågertorp, Oxie print the Pågatågen-only symbol. Ring topology visible: Malmö C – Östervärn – Rosengård – Persborg – (junction) – Svågertorp – Hyllie – Triangeln – Malmö C. Arrows: 'mot Danmark' west of Hyllie (Öresund), 'mot Göteborg' north of Halmstad, 'mot Växjö/Kalmar' beyond Älmhult, 'mot Karlskrona' east of Karlshamn. The map draws NO line numbers — it is product-level, not line-level; per-line structure below comes from the GTFS Sweden 3 pattern analysis cross-checked against this map's geography."
     },
     {
-      "role": "confirms GTFS-RT availability (not used to derive station/line structure in this pack)",
-      "title": "Trafiklab GTFS-RT, operator `skane`, TripUpdates",
-      "url": "https://opendata.samtrafiken.se/gtfs-rt/skane/TripUpdates.pb?key={TRAFIKLAB_API_KEY}",
-      "retrievedAt": "2026-08-28T00:00:00Z",
-      "note": "Confirmed live 2026-08-28 via Trafiklab operator table / Mobility Database mdb-2971: Static, Real-time, and Vehicle positions all available for `skane`. Relevant to Jim's D2+ live-board wiring, not to this D1 station graph."
+      "role": "D1 per-line ordered stops, termini, short turns, ring double-call (official Samtrafiken national feed, downloaded and analysed 29 Aug 2026; every station name cross-checks against the official map above)",
+      "title": "Trafiklab GTFS Sweden 3 static (sweden.zip), Pågatåg agency routes/trips/stop_times",
+      "url": "https://opendata.samtrafiken.se/gtfs-sweden/sweden.zip?key={TRAFIKLAB_GTFS_SWEDEN_KEY}",
+      "auth": "Trafiklab API key in query string (TRAFIKLAB_GTFS_SWEDEN_KEY — works locally; this is the same product scripts/find-sweden-station-coords.mjs uses)",
+      "retrievedAt": "2026-08-29T10:46:00Z",
+      "license": "CC0 1.0 Universal (trafiklab.se/api/gtfs-datasets/gtfs-sweden/) — see oracle report License section",
+      "note": "3,244 Pågatåg trips, 292 distinct stop patterns analysed. Feed identifies Pågatåg routes by agency name 'Pågatåg' with route_short_name = individual TRAIN numbers (1202, 1739, 11900…), route_long_name 'Pågatåg', route_type 106 — NO passenger line codes exist in the feed. Longest patterns per corridor match the reference station counts exactly (29 / 23 / 14 / 12 / 11 / 10 / 6 / 4). Ring through-service confirmed: Kävlinge–Furulund–Lomma–Malmö C–Triangeln–Hyllie–Svågertorp–Persborg–Rosengård–Östervärn–Malmö C (and the reverse), 142 trips — Malmö C is called TWICE on one through-path, and stop_headsign prints 'Malmö central' at every call including departures FROM Malmö C."
     },
     {
-      "role": "D1 passenger line map — BLOCKED, unverified, not used",
-      "title": "Skånetrafiken linjenät (line network map), dated 1 Dec 2024, for June 2025",
-      "url": null,
-      "retrievedAt": null,
-      "note": "Egress policy blocked access to skanetrafiken.se PDF hosting; no URL/md5/localFile could be confirmed. This would be the equivalent authority to Oslo's linjekart / Rotterdam's Metrolijnenkaart / Newcastle's light rail map, and this pack does not have it. Listed here as a placeholder so the gap is visible in-schema, not silently absent."
+      "role": "confirms GTFS Regional `skane` product capability + CC0 license (adapter product path for Jim; not used to derive this file's line data)",
+      "title": "Trafiklab GTFS Regional — operator `skane` (Skånetrafiken)",
+      "url": "https://www.trafiklab.se/api/gtfs-datasets/gtfs-regional/",
+      "retrievedAt": "2026-08-29T10:55:00Z",
+      "license": "CC0 1.0 Universal",
+      "note": "Trafiklab GTFS Regional operator table confirms `skane` with realtime TripUpdates AND VehiclePositions (plus occupancy). Static URL scheme https://opendata.samtrafiken.se/gtfs/skane/skane.zip?key={TRAFIKLAB_API_KEY}. NOT verified end-to-end from this machine: the local TRAFIKLAB_GTFS_SWEDEN_KEY gets 403 'Key does not have access to file' on both gtfs/skane/skane.zip and gtfs-rt-sweden/skane/TripUpdatesSweden.pb — the regional TRAFIKLAB_API_KEY lives on Vercel only. Key-scope check is a D2 item for Jim, not a feed-absence signal."
+    },
+    {
+      "role": "GTFS-RT catalog identity correction (the first pass cited 'mdb-2971' as TripUpdates proof — 2971 is actually ServiceAlerts)",
+      "title": "Mobility Database — Skånetrafiken realtime feeds mdb-2970/2971/2972",
+      "url": "https://mobilitydatabase.org/feeds/mdb-2971",
+      "retrievedAt": "2026-08-29T10:53:00Z",
+      "note": "mdb-2970 = TripUpdates, mdb-2971 = ServiceAlerts, mdb-2972 = VehiclePositions — all official Skånetrafiken entries (verification updated 15 Jan 2026), URL scheme opendata.samtrafiken.se/gtfs-rt-sweden/skane/*.pb, linked static feed 'GTFS Sweden 3' (mdb-2939)."
+    },
+    {
+      "role": "official corridor naming + PågatågenExpress identity (passenger-facing copy)",
+      "title": "Skånetrafiken — Tidtabellsskifte 14 juni 2026: Så ändras Pågatågen",
+      "url": "https://www.skanetrafiken.se/aktuellt/tidtabellsskifte--14--juni-2026/tag/",
+      "retrievedAt": "2026-08-29T10:50:00Z",
+      "note": "Names corridors, not numbered lines: 'Kävlinge – Malmö' (Lommabanan), 'Hässleholm-Lund-Malmö-Svågertorp' (PågatågenExpress; 'Avgångarna till och från Älmhult går'), 'Ystad – Simrishamn', 'Helsingborg – Åstorp'. Site news elsewhere refers to individual trains as 'Pågatåg 1739' etc. — train numbers, never line codes. This plus the map plus the feed settles the line-code question: Pågatågen has NO passenger-facing line codes."
+    },
+    {
+      "role": "reference-only line numbering + per-line station counts (NOT official, NOT passenger-facing — used solely to cross-check the GTFS-derived patterns)",
+      "title": "Wikipedia (sv): Pågatågen — Linjer",
+      "url": "https://sv.wikipedia.org/wiki/P%C3%A5gat%C3%A5gen",
+      "retrievedAt": "2026-08-29T10:56:00Z",
+      "note": "Lists reference numbers 2, 2+6, 3, 4B, 4B+9, 5, 7, 8, 10, 11 with station counts that match the GTFS longest patterns exactly (10/29/14/6/23/14/4/12/10/11 calls). No line 1, no line 12. These numbers appear on no official passenger surface checked (map, site, feed) — recorded as referenceLineNumber only, never as a chip token."
     }
   ],
-  "retrievedAt": "2026-08-29T00:00:00Z",
+  "retrievedAt": "2026-08-29T11:00:00Z",
   "notes": [
-    "D1 oracle for this city is thinner than its Oslo/Rotterdam/Newcastle siblings: no official passenger map or timetable was transcribed (PDF blocked by egress policy). Station names are hand-transcribed from Trafiklab GTFS Regional `skane` stops.txt only. Line-level structure (termini, ordered stops, branches, confirmed line codes) is NOT in the oracle report and is NOT populated in this file — see coverageGaps and lines[] below.",
-    "Scope correction from the expansion tracker: tracker lists Malmö as 'commuter + light rail (Skånetrafiken)'. Malmö has no active light rail/tram system — the historical tram network closed in 1973; only a seasonal (Sat/Sun) museum tram remains, which is not v1. V1 is Pågatågen commuter rail only.",
-    "City id malmo is separate from goteborg (Västtrafik) and from stockholm. Do not merge.",
-    "Trafiklab GTFS Regional operator code `skane` confirmed to resolve to Skånetrafiken. Same TRAFIKLAB_API_KEY as Göteborg (different operator code). GTFS-RT (TripUpdates + vehicle positions) confirmed available for `skane`, unlike Göteborg's schedule-only gap — relevant to Jim's D2+ live board, not to this D1 file.",
-    "V1 mode cut: Pågatågen only. No Malmö stadsbuss / regional bus, no tram/spårvagn (none active in passenger service), no Öresundståg (separate cross-border operator: Skånetrafiken + DSB + Region Hovedstaden), no X-bus, no coach terminals (e.g. Nils Ericsonsplatsen — that's Göteborg's, not Malmö's; excluded here for clarity that no coach terminal is in scope).",
-    "Hub lock Malmö C (Malmö Central Station): City Tunnel (Citytunneln) terminus/portal, opened December 2010; report states 'all or most' Pågatågen lines serve it. doNotGroup Malmö C Pågatågen vs Malmö C Öresundståg (same station, different operator) — the one clash the oracle report confirms directly.",
-    "Eleven core Pågatågen lines plus a rush-hour-only line 12, per the oracle report's Oct 2025 line-count claim. This count is stated directly in the report (not hedged as 'presumed'), unlike the specific line codes below, which are hedged. Per-line termini, ordered stops, and branch structure are NOT in the report and are NOT fabricated here.",
-    "Line-code format 'H3, H4, E6, etc.' is explicitly flagged in the oracle report as 'expected'/'presumed' and 'must be confirmed in GTFS' — not a confirmed passenger-facing convention. Do not treat these example codes as real line names.",
-    "Timezone Europe/Stockholm HAS DST (CEST/CET), same family as Göteborg, Stockholm, Oslo.",
-    "gtfsRouteIdsIfKnown / stopIds are deliberately absent from this file, consistent with every sibling D1 pack — those are Jim's D2+ concern against the live feed, not a D1 print lock (and here, unusually, there is no print lock to check them against yet)."
+    "D1 oracle upgraded 29 Aug 2026: the official Skånetrafiken train map ('Fler resmöjligheter med tåg', Uppdaterad december 2024) was obtained and hand-checked — the egress block that forced the first pass to hand-transcribe from GTFS alone is gone. Station geography and per-station product symbols come from that map; per-line ordered stops/termini come from GTFS Sweden 3 pattern analysis (3,244 Pågatåg trips) cross-checked against the map — every station in lines[] appears on the map with a Pågatågen symbol.",
+    "LINE-CODE RESOLUTION: Pågatågen has NO passenger-facing line codes. The official map draws no line numbers; skanetrafiken.se names services by corridor ('Pågatågen mellan Helsingborg och Åstorp') and individual trains by train number ('Pågatåg 1739'); the GTFS feed's route_short_name is the train number. The first pass's hedged 'H3, H4, E6, etc.' convention is WRONG — no such codes exist. The numeric ids used by reference sources (2–11, incl. 4B) are planning/reference numbers only, stored below as referenceLineNumber, never a chip token.",
+    "LINE-COUNT CORRECTION: the first pass's 'eleven core lines + rush-hour-only line 12' is not supported by any source found. The network is 10 service corridors (reference numbers 2, 3, 4B, 5, 6, 7, 8, 9, 10, 11 — no 1, no 12), where 2+6 and 4B+9 through-run as single services and 10 is the limited-daily PågatågenExpress. 'Line 12' appears nowhere; the closest real thing is PågatågenExpress (Malmö Svågertorp–Hässleholm, plus Älmhult through trips; reduced in summer).",
+    "MALMÖRINGEN RESOLVED — AND THE OSLO-LINE-5 HAZARD IS REAL, AT MALMÖ C ITSELF: the ring is Malmö C – Östervärn – Rosengård – Persborg – Svågertorp – Hyllie – Triangeln – Malmö C, run in BOTH directions, and through-runs to/from Kävlinge via Lomma (Lommabanan). 142 GTFS trips call Malmö C twice on one through-path (Kävlinge → … → Malmö C → ring → Malmö C), exactly like Oslo line 5 at Stortinget. Worse: stop_headsign is 'Malmö central' at every call, INCLUDING trains departing Malmö C outbound around the ring — destination-only direction labeling is broken on this line at the hub lock itself. No OTHER station is called twice on any pattern.",
+    "Öresundståg overlap CONFIRMED at Triangeln, Hyllie, AND Burlöv (map legend symbol 'Öresunds- och Pågatågen'), not just Malmö C. doNotGroup the Pågatågen stop vs the Öresundståg stop at all four. Öresundståg itself stays out of v1.",
+    "Burlöv and Oxie CONFIRMED in v1: both print Pågatågen symbols on the official map and both appear in current GTFS service (Burlöv on lines 3/6/8/9/10 patterns; Oxie on line 6).",
+    "Scope correction from the expansion tracker stands: Malmö has no active light rail/tram (closed 1973; seasonal museum tram only, not v1). V1 is Pågatågen commuter rail only. No bus, no Öresundståg, no Krösatågen (Krösatågen-only stations like Killeberg/Osby/Hästveda/Ballingslöv are on the map but are NOT v1 rows).",
+    "City id malmo is separate from goteborg (Västtrafik) and stockholm. Do not merge.",
+    "Hub lock Malmö C (Citytunneln portal, opened Dec 2010). Lines 3, 6, 8, 9, 10, 11 all call it — the 'all or most lines' claim is now concrete: 6 of 10 corridors (the other 4 are the north/east corridors that never enter Malmö).",
+    "Feed-vs-print renames (GTFS Sweden 3 stop_name vs official map string): 'Malmö Centralstation'→'Malmö C', 'Malmö Triangeln'→'Triangeln', 'Malmö Hyllie'→'Hyllie', 'Malmö Svågertorp'→'Svågertorp', 'Malmö Persborg'→'Persborg', 'Malmö Rosengård station'→'Rosengård', 'Lund Gunnesbo station'→'Gunnesbo', 'Trelleborg C'→'Trelleborg', 'Sölvesborgs Resecentrum'→'Sölvesborg', 'Karlshamn Resecentrum'→'Karlshamn', 'Laholm Station'→'Laholm', '<name> station' suffix elsewhere. lines[].stations use the printed map strings; see the oracle report's rename table.",
+    "Timezone Europe/Stockholm HAS DST (CEST/CET).",
+    "gtfsRouteIdsIfKnown is empty on every line by necessity, not omission: the national feed has no stable line-level route ids (one route id per train number, e.g. 9011790000000000-1739). Route-id mapping is Jim's D2+ concern against whichever feed he wires.",
+    "Trafiklab licenses captured (see oracle report License section): GTFS Sweden 3 and GTFS Regional are both CC0 1.0 Universal — redistribution/commercial use unrestricted, no attribution required."
   ],
   "printedInnerCityNames": {
     "lock": "Malmö C",
     "doNotUse": [
       "Malmö Central",
       "Malmö Centralstation",
+      "Malmö central",
       "Malmö C Öresundståg",
       "Öresundståg",
       "Malmö",
       "City",
-      "Bussterminal",
-      "Nils Ericsonsplatsen"
+      "Malmöringen (as a station token)",
+      "Bussterminal"
     ],
     "alsoOnSharedApproaches": [
       "Triangeln",
-      "Hyllie"
+      "Hyllie",
+      "Svågertorp",
+      "Burlöv"
     ]
   },
   "malmoAreaStations": [
     {
       "name": "Malmö C",
       "class": "lock (commuter hub)",
-      "note": "Citytunneln underground portion, opened Dec 2010. All/most v1 lines. doNotGroup vs Malmö C Öresundståg."
+      "note": "Citytunneln portal, opened Dec 2010. Lines 3, 6, 8, 9, 10, 11. doNotGroup vs Malmö C Öresundståg. Called TWICE on Malmöringen through-paths (line 11) — see notes. Feed string 'Malmö Centralstation'; headsigns print 'Malmö central'."
     },
     {
       "name": "Triangeln",
       "class": "match",
-      "note": "City Tunnel, opened 2010. Possible Öresundståg overlap at this stop — unconfirmed, see hazard-pack H1."
+      "note": "City Tunnel, opened 2010. Öresundståg ALSO calls here (map symbol confirmed) — doNotGroup Pågatågen vs Öresundståg. Feed string 'Malmö Triangeln'."
     },
     {
       "name": "Hyllie",
       "class": "match",
-      "note": "City Tunnel, opened 2010. Possible Öresundståg overlap at this stop — unconfirmed, see hazard-pack H1."
+      "note": "City Tunnel, opened 2010. Öresundståg ALSO calls here (map symbol confirmed) — doNotGroup. Inner terminus for lines 3 and 8; 'mot Danmark' continues west (not v1). Feed string 'Malmö Hyllie'."
     },
     {
       "name": "Svågertorp",
       "class": "match",
-      "note": "Ring-line stop (Malmöringen / Malmöpendeln). Route path through this stop not confirmed — see hazard-pack H4."
+      "note": "Ring stop (line 11) + line 9 to Trelleborg + PågatågenExpress (line 10) terminus. Pågatågen-only symbol. Feed string 'Malmö Svågertorp'."
     },
     {
       "name": "Persborg",
       "class": "match",
-      "note": "Ring-line stop; reopened 2018 on Kontinentalbanan. Route path not confirmed."
+      "note": "Ring stop (line 11 only); reopened 2018 on Kontinentalbanan. Called once per through-path — no double-call here. Feed string 'Malmö Persborg'."
     },
     {
       "name": "Rosengård",
       "class": "match",
-      "note": "New station, opened 2018 in Rosengård neighborhood."
+      "note": "Ring stop (line 11 only); opened 2018. Feed string 'Malmö Rosengård station'."
     },
     {
       "name": "Östervärn",
       "class": "match",
-      "note": "Ring-line stop; reopened 2018. Route path not confirmed."
+      "note": "Ring stop (line 11 only); reopened 2018. Feed string is plain 'Östervärn' (no Malmö prefix — the one Malmö-area stop where feed and print already agree)."
     },
     {
       "name": "Burlöv",
-      "class": "match, conditional",
-      "note": "Outside Malmö proper. Oracle report: 'keep in v1 if GTFS includes it' — inclusion not independently confirmed by this pack."
+      "class": "match — CONFIRMED in v1",
+      "note": "On lines 3, 6, 8, 9, 10. Öresundståg ALSO calls here per the Dec 2024 map symbol — doNotGroup. Feed string 'Burlöv station'."
     },
     {
       "name": "Oxie",
-      "class": "match, conditional",
-      "note": "Outside Malmö proper. Oracle report: 'keep in v1 if GTFS includes it' — inclusion not independently confirmed by this pack."
+      "class": "match — CONFIRMED in v1",
+      "note": "On line 6 (Ystadbanan). Pågatågen-only symbol. Feed string 'Oxie station'."
     }
   ],
   "coverageGaps": [
-    "BLOCKING for D5: no per-line termini, ordered stop list, or branch structure exists in the oracle report for any of the 11 regular Pågatågen lines or rush-hour line 12. The lines[] array below is intentionally left as a stub, not populated with invented station arrays — see direction-model-memo.md.",
-    "Line-code convention (e.g. whether route_short_name really follows an H3/H4/E6-style pattern) is unconfirmed — oracle report explicitly hedges this.",
-    "Whether line 12 is a distinct route_id or a variant trip pattern on an existing line is unconfirmed.",
-    "Whether Öresundståg also calls at Triangeln and/or Hyllie (both City Tunnel stations, same corridor as the confirmed Malmö C clash) is unconfirmed.",
-    "Malmöringen (ring line) route path is unconfirmed — if any published line calls at Svågertorp, Persborg, or Östervärn twice on one through-path (Oslo line-5-style), inbound/outbound direction labeling will be wrong at that station and this file's direction guidance will need updating.",
-    "Burlöv and Oxie inclusion in v1 is conditional per the oracle report itself ('if GTFS includes it') — not independently verified here.",
-    "The Skånetrafiken linjenät PDF (dated 1 Dec 2024, for June 2025) that would be the equivalent authority to the Oslo/Rotterdam/Newcastle maps was not accessible (egress policy). No md5/localFile/URL could be confirmed. If this pack is revisited once that source is reachable, station names and line structure should be re-verified against it, not just against GTFS.",
-    "Museum tram (seasonal, Sat/Sun) and the 1973 tram closure are out of v1 scope — confirmed, not a gap, listed here only so it isn't mistaken for missing data."
+    "Reference line numbers (2–11, incl. 4B) come from reference sources whose station counts match the GTFS patterns exactly, but they appear on NO official passenger surface (map, site copy, feed). They are stored as referenceLineNumber for cross-referencing only. If Jim needs a printed line token for chips, there isn't one — chips must be built from corridor termini ('Pågatågen mot <X>'), see direction-model-memo.md.",
+    "The GTFS Regional `skane` product (Jim's intended adapter path) was NOT verified end-to-end from this machine: local TRAFIKLAB_GTFS_SWEDEN_KEY gets 403 on gtfs/skane/skane.zip and on gtfs-rt-sweden/skane/TripUpdatesSweden.pb (key scope — the regional TRAFIKLAB_API_KEY is Vercel-only). Trafiklab's operator table and Mobility Database both list skane static + TripUpdates + VehiclePositions as live. Jim: verify key scope at D2 before assuming RT.",
+    "Line 3's Helsingborg end (Gantofta–Ramlösa–Helsingborg C) is on the official map and in the reference 14-station count, but the analysed GTFS week's longest line-3 pattern ends at Gantofta (engineering-work truncation is plausible — skanetrafiken.se lists Helsingborg–Gantofta cancellation notices). Stations array keeps the full published path; Jim should not treat Gantofta as a terminus chip.",
+    "Platform signage wording ('mot <destination>'?) still unverified — no platform/destination-blind source was checked. The direction-model memo's 'mot X' expectation remains a reasoned default.",
+    "Short-turn sets in lines[].shortTurns are the termini pairs observed in the analysed GTFS week (fragmented by engineering work), not an official short-turn list — treat as indicative overlays, not chips.",
+    "Museum tram (seasonal) and the 1973 tram closure are out of v1 — confirmed, not a gap, listed so it isn't mistaken for missing data."
   ],
-  "lines": []
+  "lines": [
+    {
+      "id": "vastkust-nord",
+      "referenceLineNumber": "2",
+      "number": null,
+      "name": "Helsingborg–Ängelholm–Halmstad",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Halmstad"
+      ],
+      "shortTurns": [
+        "Förslöv"
+      ],
+      "branches": [
+        {
+          "at": "Helsingborg C",
+          "note": "doNotGroup Pågatågen vs Öresundståg (map: Öresunds+Påga symbol). Shared with lines 3, 5, 6."
+        },
+        {
+          "at": "Förslöv",
+          "note": "Most trips turn here (68 Förslöv→Helsingborg C trips vs 7 through to Halmstad in the analysed week) — Hallandsås tunnel section beyond is thinner service. Förslöv is a heavy short-turn, not the line's published far end."
+        }
+      ],
+      "stations": [
+        "Helsingborg C",
+        "Maria",
+        "Ödåkra",
+        "Kattarp",
+        "Ängelholm",
+        "Barkåkra",
+        "Förslöv",
+        "Båstad",
+        "Laholm",
+        "Halmstad"
+      ],
+      "note": "Not a Malmö-area line — included for network completeness; no v1 Malmö station."
+    },
+    {
+      "id": "marieholmsbanan",
+      "referenceLineNumber": "3",
+      "number": null,
+      "name": "Helsingborg–Eslöv–Malmö–Hyllie (via Marieholm)",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Hyllie"
+      ],
+      "shortTurns": [
+        "Gantofta",
+        "Vallåkra",
+        "Teckomatorp",
+        "Eslöv"
+      ],
+      "branches": [
+        {
+          "at": "Malmö C",
+          "note": "Hub lock. Skips Åkarp/Hjärup/Klostergården between Burlöv and Lund C (calls Burlöv only) — do not assume every Malmö–Lund line shares one stop set."
+        },
+        {
+          "at": "Hyllie",
+          "note": "Inner terminus (City Tunnel). doNotGroup vs Öresundståg at Hyllie/Triangeln/Malmö C/Burlöv."
+        },
+        {
+          "at": "Teckomatorp",
+          "otherLine": "soderasbanan",
+          "note": "Line 8 (Söderåsbanan) crosses here toward Svalöv/Åstorp; line 3 continues Marieholm–Eslöv."
+        }
+      ],
+      "stations": [
+        "Helsingborg C",
+        "Ramlösa",
+        "Gantofta",
+        "Vallåkra",
+        "Tågarp",
+        "Billeberga",
+        "Teckomatorp",
+        "Marieholm",
+        "Eslöv",
+        "Lund C",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie"
+      ],
+      "note": "Analysed GTFS week's longest pattern ends at Gantofta (see coverageGaps); full published path per official map + reference 14-station count."
+    },
+    {
+      "id": "blekinge-vast",
+      "referenceLineNumber": "4B",
+      "number": null,
+      "name": "Kristianstad–Bromölla–Karlshamn",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Kristianstad C",
+        "Karlshamn"
+      ],
+      "shortTurns": [
+        "Bromölla"
+      ],
+      "branches": [
+        {
+          "at": "Kristianstad C",
+          "note": "Through-runs onto line 9 toward Hässleholm–Malmö–Trelleborg (reference '4B+9'). 'mot Karlskrona' continues east of Karlshamn — not Pågatågen v1."
+        }
+      ],
+      "stations": [
+        "Kristianstad C",
+        "Fjälkinge",
+        "Bromölla",
+        "Sölvesborg",
+        "Mörrum",
+        "Karlshamn"
+      ],
+      "note": "Not a Malmö-area line on its own, but through-runs make Kristianstad C→Trelleborg one seat — see line 9."
+    },
+    {
+      "id": "skanebanan",
+      "referenceLineNumber": "5",
+      "number": null,
+      "name": "Helsingborg–Åstorp–Hässleholm–Kristianstad",
+      "officialPageTitle": "Helsingborg – Åstorp (skanetrafiken.se corridor naming for the west end)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Kristianstad C"
+      ],
+      "shortTurns": [
+        "Åstorp",
+        "Hässleholm C",
+        "Kvidinge"
+      ],
+      "branches": [
+        {
+          "at": "Åstorp",
+          "otherLine": "soderasbanan",
+          "note": "Line 8 (Söderåsbanan) terminates here from the south; line 5 continues east to Hässleholm."
+        },
+        {
+          "at": "Hässleholm C",
+          "otherLine": "markarydsbanan",
+          "note": "Line 7 leaves north to Markaryd; lines 9/10 run south toward Lund/Malmö."
+        }
+      ],
+      "stations": [
+        "Helsingborg C",
+        "Ramlösa",
+        "Påarp",
+        "Mörarp",
+        "Bjuv",
+        "Åstorp",
+        "Kvidinge",
+        "Klippan",
+        "Perstorp",
+        "Tyringe",
+        "Hässleholm C",
+        "Vinslöv",
+        "Önnestad",
+        "Kristianstad C"
+      ],
+      "note": "Not a Malmö-area line — no v1 Malmö station."
+    },
+    {
+      "id": "hbg-ystad-simrishamn",
+      "referenceLineNumber": "6 (through-marketed 2+6 in reference sources)",
+      "number": null,
+      "name": "Helsingborg–Landskrona–Lund–Malmö–Ystad–Simrishamn",
+      "officialPageTitle": "Ystad – Simrishamn (skanetrafiken.se corridor naming for the east end)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Simrishamn"
+      ],
+      "shortTurns": [
+        "Ystad",
+        "Skurup",
+        "Svedala",
+        "Kävlinge",
+        "Landskrona",
+        "Lund C",
+        "Malmö C"
+      ],
+      "branches": [
+        {
+          "at": "Malmö C",
+          "note": "Hub lock. Full Lund–Malmö stop set (Klostergården, Hjärup, Åkarp, Burlöv) unlike lines 3/8."
+        },
+        {
+          "at": "Hyllie",
+          "note": "Continues east to Oxie — the only line serving Oxie. doNotGroup vs Öresundståg at Malmö C/Triangeln/Hyllie/Burlöv."
+        },
+        {
+          "at": "Ystad",
+          "note": "Österlenbanan continues to Simrishamn; many trips turn at Ystad — Ystad is the dominant short-turn."
+        }
+      ],
+      "stations": [
+        "Helsingborg C",
+        "Ramlösa",
+        "Rydebäck",
+        "Glumslöv",
+        "Landskrona",
+        "Häljarp",
+        "Dösjebro",
+        "Kävlinge",
+        "Gunnesbo",
+        "Lund C",
+        "Klostergården",
+        "Hjärup",
+        "Åkarp",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie",
+        "Oxie",
+        "Svedala",
+        "Skurup",
+        "Rydsgård",
+        "Svarte",
+        "Ystad",
+        "Köpingebro",
+        "Tomelilla",
+        "Lunnarp",
+        "Smedstorp",
+        "Gärsnäs",
+        "Simrishamn"
+      ]
+    },
+    {
+      "id": "markarydsbanan",
+      "referenceLineNumber": "7",
+      "number": null,
+      "name": "Hässleholm–Markaryd",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Hässleholm C",
+        "Markaryd"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Hässleholm C",
+        "Bjärnum",
+        "Vittsjö",
+        "Markaryd"
+      ],
+      "note": "Not a Malmö-area line — no v1 Malmö station."
+    },
+    {
+      "id": "soderasbanan",
+      "referenceLineNumber": "8",
+      "number": null,
+      "name": "Åstorp–Teckomatorp–Lund–Malmö–Hyllie (Söderåsbanan)",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Åstorp",
+        "Hyllie"
+      ],
+      "shortTurns": [
+        "Billesholm",
+        "Kävlinge"
+      ],
+      "branches": [
+        {
+          "at": "Teckomatorp",
+          "otherLine": "marieholmsbanan",
+          "note": "Line 3 crosses toward Marieholm/Eslöv; line 8 runs Kävlinge–Gunnesbo–Lund C."
+        },
+        {
+          "at": "Malmö C",
+          "note": "Hub lock. Calls Burlöv but skips Åkarp/Hjärup/Klostergården, and calls Gunnesbo (line 3 does not) — three different Malmö–Lund stop sets exist across lines 3/6/8."
+        },
+        {
+          "at": "Åstorp",
+          "otherLine": "skanebanan",
+          "note": "Meets line 5 (Helsingborg–Hässleholm)."
+        }
+      ],
+      "stations": [
+        "Åstorp",
+        "Billesholm",
+        "Kågeröd",
+        "Svalöv",
+        "Teckomatorp",
+        "Kävlinge",
+        "Gunnesbo",
+        "Lund C",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie"
+      ]
+    },
+    {
+      "id": "kristianstad-malmo-trelleborg",
+      "referenceLineNumber": "9 (through-marketed 4B+9 in reference sources)",
+      "number": null,
+      "name": "Kristianstad–Hässleholm–Lund–Malmö–Trelleborg",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Kristianstad C",
+        "Trelleborg"
+      ],
+      "shortTurns": [
+        "Hässleholm C",
+        "Höör",
+        "Lund C",
+        "Malmö C"
+      ],
+      "branches": [
+        {
+          "at": "Malmö C",
+          "note": "Hub lock. Full Lund–Malmö stop set (Klostergården, Hjärup, Åkarp, Burlöv)."
+        },
+        {
+          "at": "Svågertorp",
+          "note": "Trelleborgsbanan leaves the City Tunnel corridor here toward Västra Ingelstad; line 11's ring also calls Svågertorp — two different lines, one stop, different far ends."
+        },
+        {
+          "at": "Kristianstad C",
+          "otherLine": "blekinge-vast",
+          "note": "Through-runs to/from Karlshamn (reference '4B+9') — 42 Kristianstad C→Trelleborg trips in the analysed week."
+        }
+      ],
+      "stations": [
+        "Kristianstad C",
+        "Önnestad",
+        "Vinslöv",
+        "Hässleholm C",
+        "Sösdala",
+        "Tjörnarp",
+        "Höör",
+        "Stehag",
+        "Eslöv",
+        "Örtofta",
+        "Stångby",
+        "Lund C",
+        "Klostergården",
+        "Hjärup",
+        "Åkarp",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie",
+        "Svågertorp",
+        "Västra Ingelstad",
+        "Östra Grevie",
+        "Trelleborg"
+      ]
+    },
+    {
+      "id": "pagatagen-express",
+      "referenceLineNumber": "10",
+      "number": null,
+      "name": "PågatågenExpress Malmö Svågertorp–Hässleholm(–Älmhult)",
+      "officialPageTitle": "Hässleholm-Lund-Malmö-Svågertorp (skanetrafiken.se corridor naming)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Svågertorp",
+        "Älmhult"
+      ],
+      "shortTurns": [
+        "Hässleholm C"
+      ],
+      "branches": [
+        {
+          "at": "Hässleholm C",
+          "note": "Regular PågatågenExpress runs Malmö Svågertorp–Hässleholm; a few trips daily continue to Älmhult (official copy: 'Avgångarna till och från Älmhult går' while the Svågertorp–Hässleholm express pauses in summer). Overlay-grade service — limited daily, seasonal reductions. Not a terminus-chip peer of the regular lines."
+        }
+      ],
+      "stations": [
+        "Svågertorp",
+        "Hyllie",
+        "Triangeln",
+        "Malmö C",
+        "Burlöv",
+        "Lund C",
+        "Eslöv",
+        "Höör",
+        "Hässleholm C",
+        "Älmhult"
+      ],
+      "note": "Limited-stop express (skips Åkarp/Hjärup/Klostergården/Stångby/Örtofta/Stehag etc.). This — not a 'line 12' — is the network's rush-hour-flavoured extra; the first pass's 'rush-hour-only line 12' claim is withdrawn."
+    },
+    {
+      "id": "malmoringen",
+      "referenceLineNumber": "11",
+      "number": null,
+      "name": "Malmöpendeln / Malmöringen (Kävlinge–Lomma–Malmö C–ring)",
+      "officialPageTitle": "Kävlinge – Malmö (skanetrafiken.se corridor naming for the Lommabanan leg)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Kävlinge",
+        "Malmö C"
+      ],
+      "shortTurns": [
+        "Lomma"
+      ],
+      "branches": [
+        {
+          "at": "Malmö C",
+          "note": "CALLED TWICE on the official through-path (Kävlinge → Lomma → Malmö C → ring → Malmö C), both ring directions — the Oslo-Stortinget pattern, at the hub lock itself. GTFS stop_headsign prints 'Malmö central' at every call including outbound departures FROM Malmö C, so destination-only chips are broken here. Line + far-end token required; see direction-model-memo.md."
+        },
+        {
+          "at": "Svågertorp",
+          "otherLine": "kristianstad-malmo-trelleborg",
+          "note": "Ring calls Svågertorp between Hyllie and Persborg; line 9 also calls Svågertorp toward Trelleborg — same stop, different continuations."
+        },
+        {
+          "at": "Östervärn",
+          "note": "Kontinentalbanan leg (Östervärn–Rosengård–Persborg, ring-only stops, each called ONCE per through-path — no double-call at any ring intermediate)."
+        }
+      ],
+      "stations": [
+        "Kävlinge",
+        "Furulund",
+        "Lomma",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie",
+        "Svågertorp",
+        "Persborg",
+        "Rosengård",
+        "Östervärn",
+        "Malmö C"
+      ],
+      "note": "stations[] is the clockwise-through-Citytunneln direction (5 of 7 pure-ring trips; 58 of 142 through trips); the counter-clockwise mirror (Malmö C–Östervärn–…–Triangeln–Malmö C) also runs. Malmö C appears twice by design, same convention as Oslo line 5's stations[]."
+    }
+  ]
 }
