@@ -50,6 +50,17 @@ Precompute a compact per-city index (binary or minified JSON: per-stop sorted de
 
 ---
 
+## 2.5 Finding from implementation (29 Aug 2026): `existsSync(FIXTURE_DIR)` is doing double duty
+
+Before wiring any city, checked every call site of the pattern `existsSync(join(FIXTURE_DIR, "stops.txt"))`. In `lib/providers/{amsterdam,rotterdam,vancouver,canberra,gold-coast,newcastle}.js`, this check is used **twice** per file, for two different decisions:
+
+1. Which static-schedule loader to call (`loadGtfsStaticFromDirectory` vs `loadGtfsStatic({url})`) — this is the one Phase 1 is meant to change.
+2. Whether to attempt a live GTFS-RT fetch at all (`amsterdam.js:115`, `rotterdam.js:116`: `if (existsSync(...)) throw new Error("skip-national-rt")` — RT is explicitly skipped whenever the fixture path exists; `canberra.js:104`, `vancouver.js:125` have the equivalent). **In today's production deployment the fixture files ARE present** (they're committed to git and deployed), so this second check currently evaluates true for all of these cities — meaning **RT is currently disabled and these cities run static-schedule-only in production already**, not as a dev/test fallback.
+
+Deleting the local fixture directory and switching only the first check would silently flip the second one too — enabling live RT fetch in production as a side effect of an infra migration, which is exactly the kind of change this brief's "byte-identical" verification bar is meant to catch. **Fix:** introduce an explicit `STATIC_ONLY` (or per-city equivalent) constant decoupled from file existence, defaulting to `true` to preserve current behavior, instead of deriving the RT-skip decision from `existsSync`. Re-enabling RT for a given city is a separate, deliberate product decision — not a side effect of where the static data is hosted.
+
+---
+
 ## 3. Implementation sketch
 
 ### 3.1 Phase 0 — cache the fixture-directory path
