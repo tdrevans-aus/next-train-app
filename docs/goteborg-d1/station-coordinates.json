@@ -1,0 +1,1094 @@
+{
+  "city": "goteborg",
+  "resolved": {
+    "Alingsås Station": {
+      "lat": 57.926862,
+      "lng": 12.532493,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Alingsås Station",
+      "matchedStops": 1
+    },
+    "Allhelgonakyrkan": {
+      "lat": 57.757349,
+      "lng": 12.03669,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kortedala Allhelgonakyrkan",
+      "matchedStops": 1
+    },
+    "Almedal": {
+      "lat": 57.672008,
+      "lng": 12.558887,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Almedal",
+      "matchedStops": 1
+    },
+    "Angereds Centrum": {
+      "lat": 57.795948,
+      "lng": 12.049038,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Angered centrum",
+      "matchedStops": 1
+    },
+    "Anneberg Station": {
+      "lat": 57.539264,
+      "lng": 12.101243,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Anneberg Station",
+      "matchedStops": 1
+    },
+    "Aprilgatan": {
+      "lat": 57.761178,
+      "lng": 12.041218,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kortedala Aprilgatan",
+      "matchedStops": 1
+    },
+    "Aspedalen Station": {
+      "lat": 57.763095,
+      "lng": 12.259108,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Aspedalen Station",
+      "matchedStops": 1
+    },
+    "Aspen Station": {
+      "lat": 57.754465,
+      "lng": 12.241379,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Aspen Station",
+      "matchedStops": 1
+    },
+    "Axel Dahlströms Torg": {
+      "lat": 57.671996,
+      "lng": 11.927626,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Axel Dahlströms Torg",
+      "matchedStops": 1
+    },
+    "Bellevue": {
+      "lat": 57.732456,
+      "lng": 12.023473,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Bellevue",
+      "matchedStops": 1
+    },
+    "Berzeliigatan": {
+      "lat": 57.698491,
+      "lng": 11.981881,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Berzeliigatan",
+      "matchedStops": 1
+    },
+    "Beväringsgatan": {
+      "lat": 57.739861,
+      "lng": 12.028564,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Beväringsgatan",
+      "matchedStops": 1
+    },
+    "Bohus Station": {
+      "lat": 57.851988,
+      "lng": 12.013644,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Bohus Station",
+      "matchedStops": 1
+    },
+    "Bokekullsgatan": {
+      "lat": 57.677221,
+      "lng": 11.932721,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Bokekullsgatan",
+      "matchedStops": 1
+    },
+    "Botaniska Trädgården": {
+      "lat": 57.681018,
+      "lng": 11.945788,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Botaniska Trädgården",
+      "matchedStops": 1
+    },
+    "Briljantgatan": {
+      "lat": 57.64894,
+      "lng": 11.903334,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Tynnered Briljantgatan",
+      "matchedStops": 1
+    },
+    "Brunnsgatan": {
+      "lat": 60.669841,
+      "lng": 17.149,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Brunnsgatan",
+      "matchedStops": 1
+    },
+    "Brunnsparken": {
+      "lat": 59.386216,
+      "lng": 16.435189,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Brunnsparken",
+      "matchedStops": 1
+    },
+    "Bögatan": {
+      "lat": 57.700996,
+      "lng": 12.016434,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Bögatan",
+      "matchedStops": 1
+    },
+    "Chalmers": {
+      "lat": 57.689951,
+      "lng": 11.972931,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Chalmers",
+      "matchedStops": 1
+    },
+    "Chapmans Torg": {
+      "lat": 57.694317,
+      "lng": 11.919581,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Chapmans Torg",
+      "matchedStops": 1
+    },
+    "Doktor Fries Torg": {
+      "lat": 57.684239,
+      "lng": 11.973065,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Doktor Fries Torg",
+      "matchedStops": 1
+    },
+    "Doktor Sydows Gata": {
+      "lat": 57.680796,
+      "lng": 11.975392,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Doktor Sydows Gata",
+      "matchedStops": 1
+    },
+    "Domkyrkan": {
+      "lat": 57.704294,
+      "lng": 11.963707,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Domkyrkan",
+      "matchedStops": 1
+    },
+    "Drottningtorget": {
+      "lat": 58.410501,
+      "lng": 15.635806,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Drottningtorget",
+      "matchedStops": 1
+    },
+    "Ejdergatan": {
+      "lat": 57.64998,
+      "lng": 12.046671,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Ejdergatan",
+      "matchedStops": 1
+    },
+    "Ekedal": {
+      "lat": 58.781446,
+      "lng": 15.952217,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Ekedal",
+      "matchedStops": 2
+    },
+    "Eketrägatan": {
+      "lat": 57.716275,
+      "lng": 11.910288,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Eketrägatan",
+      "matchedStops": 1
+    },
+    "Ekmanska": {
+      "lat": 57.699563,
+      "lng": 12.009684,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Ekmanska",
+      "matchedStops": 1
+    },
+    "Elisedal": {
+      "lat": 57.684048,
+      "lng": 12.00005,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Elisedal",
+      "matchedStops": 1
+    },
+    "Fjällgatan": {
+      "lat": 58.845452,
+      "lng": 13.377858,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Fjällgatan",
+      "matchedStops": 4
+    },
+    "Floda Station": {
+      "lat": 57.810065,
+      "lng": 12.361331,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Floda Station",
+      "matchedStops": 1
+    },
+    "Frihamnen": {
+      "lat": 59.345563,
+      "lng": 18.131525,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Frihamnen",
+      "matchedStops": 1
+    },
+    "Friskväderstorget": {
+      "lat": 57.723591,
+      "lng": 11.893374,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Friskväderstorget",
+      "matchedStops": 1
+    },
+    "Frölunda Torg": {
+      "lat": 57.652625,
+      "lng": 11.909745,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Frölunda Torg",
+      "matchedStops": 1
+    },
+    "Galileis Gata": {
+      "lat": 57.760524,
+      "lng": 12.051577,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Galileis Gata",
+      "matchedStops": 1
+    },
+    "Gamlestaden Station": {
+      "lat": 57.729152,
+      "lng": 12.004414,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Gamlestaden Station",
+      "matchedStops": 1
+    },
+    "Gamlestads Torg": {
+      "lat": 57.727835,
+      "lng": 12.005745,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Gamlestads Torg",
+      "matchedStops": 1
+    },
+    "Godhemsgatan": {
+      "lat": 57.684861,
+      "lng": 11.925998,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Godhemsgatan",
+      "matchedStops": 1
+    },
+    "Gropegårdsgatan": {
+      "lat": 57.718234,
+      "lng": 11.918441,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Gropegårdsgatan",
+      "matchedStops": 1
+    },
+    "Grönsakstorget": {
+      "lat": 57.702492,
+      "lng": 11.964436,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Grönsakstorget",
+      "matchedStops": 1
+    },
+    "Göteborg Central": {
+      "lat": 57.708896,
+      "lng": 11.973479,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Centralstation",
+      "matchedStops": 1
+    },
+    "Hagakyrkan": {
+      "lat": 57.699571,
+      "lng": 11.962664,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Hagakyrkan",
+      "matchedStops": 1
+    },
+    "Hagen": {
+      "lat": 58.928205,
+      "lng": 14.373955,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Hagen",
+      "matchedStops": 18
+    },
+    "Hammarkullen": {
+      "lat": 57.780294,
+      "lng": 12.035794,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Hammarkullen",
+      "matchedStops": 1
+    },
+    "Handelshögskolan": {
+      "lat": 59.341998,
+      "lng": 18.057357,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Handelshögskolan",
+      "matchedStops": 1
+    },
+    "Hede Station": {
+      "lat": 57.513095,
+      "lng": 12.083576,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Hede Station",
+      "matchedStops": 1
+    },
+    "Hinsholmen": {
+      "lat": 57.667811,
+      "lng": 11.860982,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Hinsholmen",
+      "matchedStops": 1
+    },
+    "Hjalmar Brantingsplatsen": {
+      "lat": 57.720831,
+      "lng": 11.953655,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Hjalmar Brantingspl",
+      "matchedStops": 1
+    },
+    "Hjällbo": {
+      "lat": 57.768823,
+      "lng": 12.022728,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Hjällbo",
+      "matchedStops": 1
+    },
+    "Härlanda": {
+      "lat": 57.718072,
+      "lng": 12.020038,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Härlanda",
+      "matchedStops": 1
+    },
+    "Högsbogatan": {
+      "lat": 57.680236,
+      "lng": 11.930201,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Högsbogatan",
+      "matchedStops": 1
+    },
+    "Jaegerdorffsplatsen": {
+      "lat": 57.691578,
+      "lng": 11.915276,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Jaegerdorffsplatsen",
+      "matchedStops": 1
+    },
+    "Januarigatan": {
+      "lat": 57.760288,
+      "lng": 12.041227,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kortedala Januarigatan",
+      "matchedStops": 1
+    },
+    "Jonsered Station": {
+      "lat": 57.749955,
+      "lng": 12.1738,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Jonsered Station",
+      "matchedStops": 1
+    },
+    "Jubileumsparken": {
+      "lat": 57.717932,
+      "lng": 11.961756,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Jubileumsparken",
+      "matchedStops": 1
+    },
+    "Järntorget": {
+      "lat": 59.366207,
+      "lng": 16.509138,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Järntorget",
+      "matchedStops": 1
+    },
+    "Kaggeledstorget": {
+      "lat": 57.723066,
+      "lng": 12.033777,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Kaggeledstorget",
+      "matchedStops": 1
+    },
+    "Kapellplatsen": {
+      "lat": 57.693656,
+      "lng": 11.973294,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Kapellplatsen",
+      "matchedStops": 1
+    },
+    "Kaptensgatan": {
+      "lat": 62.911128,
+      "lng": 16.270538,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kaptensgatan",
+      "matchedStops": 2
+    },
+    "Klintens Väg": {
+      "lat": 57.682547,
+      "lng": 11.927907,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Klintens Väg",
+      "matchedStops": 1
+    },
+    "Komettorget": {
+      "lat": 57.75098,
+      "lng": 12.071647,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Bergsjön Komettorget",
+      "matchedStops": 1
+    },
+    "Korsvägen": {
+      "lat": 58.916937,
+      "lng": 15.356698,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Korsvägen",
+      "matchedStops": 6
+    },
+    "Kortedala Torg": {
+      "lat": 57.752939,
+      "lng": 12.032863,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kortedala Torg",
+      "matchedStops": 1
+    },
+    "Krokslätts Fabriker": {
+      "lat": 57.671485,
+      "lng": 12.010258,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Krokslätts Fabriker",
+      "matchedStops": 1
+    },
+    "Krokslätts Torg": {
+      "lat": 57.675344,
+      "lng": 12.007976,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Mölndal Krokslätts torg",
+      "matchedStops": 1
+    },
+    "Kungsbacka Station": {
+      "lat": 57.490555,
+      "lng": 12.079615,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kungsbacka Station",
+      "matchedStops": 1
+    },
+    "Kungsportsplatsen": {
+      "lat": 57.704028,
+      "lng": 11.969746,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Kungsportsplatsen",
+      "matchedStops": 1
+    },
+    "Kungssten": {
+      "lat": 57.680613,
+      "lng": 11.90157,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Kungssten",
+      "matchedStops": 1
+    },
+    "Kviberg": {
+      "lat": 57.736466,
+      "lng": 12.025054,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Kviberg",
+      "matchedStops": 1
+    },
+    "Kållered Station": {
+      "lat": 57.609928,
+      "lng": 12.048619,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kållered Station",
+      "matchedStops": 1
+    },
+    "Käringberget": {
+      "lat": 57.669226,
+      "lng": 11.871462,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Käringberget",
+      "matchedStops": 1
+    },
+    "Lackarebäck": {
+      "lat": 57.665847,
+      "lng": 12.011351,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Mölndal Lackarebäck",
+      "matchedStops": 1
+    },
+    "Lana": {
+      "lat": 57.678168,
+      "lng": 12.004157,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Lana",
+      "matchedStops": 1
+    },
+    "Lantmilsgatan": {
+      "lat": 57.667186,
+      "lng": 11.924651,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Lantmilsgatan",
+      "matchedStops": 1
+    },
+    "Lerum Station": {
+      "lat": 57.76936,
+      "lng": 12.272317,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Lerum Station",
+      "matchedStops": 1
+    },
+    "Lilla Bommen": {
+      "lat": 57.709551,
+      "lng": 11.966038,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Lilla Bommen",
+      "matchedStops": 1
+    },
+    "Lindholmen": {
+      "lat": 57.200401,
+      "lng": 15.084558,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Lindholmen",
+      "matchedStops": 2
+    },
+    "Lindome Station": {
+      "lat": 57.576096,
+      "lng": 12.078476,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Lindome Station",
+      "matchedStops": 1
+    },
+    "Linnéplatsen": {
+      "lat": 57.689979,
+      "lng": 11.952269,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Linnéplatsen",
+      "matchedStops": 1
+    },
+    "Liseberg Station": {
+      "lat": 57.698248,
+      "lng": 11.995269,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Liseberg Station",
+      "matchedStops": 1
+    },
+    "Liseberg Station (tåg)": {
+      "lat": 57.698248,
+      "lng": 11.995269,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Liseberg station",
+      "matchedStops": 1
+    },
+    "Liseberg Södra": {
+      "lat": 57.691848,
+      "lng": 11.991947,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Liseberg Södra",
+      "matchedStops": 1
+    },
+    "Långedrag": {
+      "lat": 57.668017,
+      "lng": 11.853462,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Långedrag",
+      "matchedStops": 1
+    },
+    "Majvallen": {
+      "lat": 57.691032,
+      "lng": 11.935541,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Majvallen",
+      "matchedStops": 1
+    },
+    "Mariaplan": {
+      "lat": 57.686654,
+      "lng": 11.92057,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Mariaplan",
+      "matchedStops": 1
+    },
+    "Marklandsgatan": {
+      "lat": 57.674402,
+      "lng": 11.936041,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Marklandsgatan",
+      "matchedStops": 1
+    },
+    "Masthuggstorget": {
+      "lat": 57.699436,
+      "lng": 11.943793,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Masthuggstorget",
+      "matchedStops": 1
+    },
+    "Medicinaregatan": {
+      "lat": 57.68544,
+      "lng": 11.964347,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Medicinaregatan",
+      "matchedStops": 1
+    },
+    "Mildvädersgatan": {
+      "lat": 57.715624,
+      "lng": 11.890943,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Mildvädersgatan",
+      "matchedStops": 1
+    },
+    "Munkebäckstorget": {
+      "lat": 57.718497,
+      "lng": 12.026409,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Munkebäckstorget",
+      "matchedStops": 1
+    },
+    "Musikvägen": {
+      "lat": 59.042124,
+      "lng": 15.499206,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Musikvägen",
+      "matchedStops": 3
+    },
+    "Mölndal Station": {
+      "lat": 57.655958,
+      "lng": 12.018723,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Mölndal Station",
+      "matchedStops": 1
+    },
+    "Mölndals Innerstad": {
+      "lat": 57.656132,
+      "lng": 12.017028,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Mölndals Innerstad",
+      "matchedStops": 1
+    },
+    "Mölndals sjukhus": {
+      "lat": 57.661453,
+      "lng": 12.013471,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Mölndal Sjukhus",
+      "matchedStops": 1
+    },
+    "Nils Ericsonsplatsen": {
+      "lat": 57.709336,
+      "lng": 11.971115,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Nils Ericsonsplatsen",
+      "matchedStops": 1
+    },
+    "Nol Station": {
+      "lat": 57.918463,
+      "lng": 12.061957,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Nol Station",
+      "matchedStops": 1
+    },
+    "Norsesund Station": {
+      "lat": 57.861592,
+      "lng": 12.43903,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Norsesund Station",
+      "matchedStops": 1
+    },
+    "Nya Varvsallén": {
+      "lat": 57.677583,
+      "lng": 11.893994,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Nya Varvsallén",
+      "matchedStops": 1
+    },
+    "Nymilsgatan": {
+      "lat": 57.662749,
+      "lng": 11.924438,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Nymilsgatan",
+      "matchedStops": 1
+    },
+    "Nymånegatan": {
+      "lat": 57.743052,
+      "lng": 12.029794,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Nymånegatan",
+      "matchedStops": 1
+    },
+    "Nödinge Station": {
+      "lat": 57.89312,
+      "lng": 12.044648,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Nödinge Station",
+      "matchedStops": 1
+    },
+    "Olivedalsgatan": {
+      "lat": 57.691994,
+      "lng": 11.952625,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Olivedalsgatan",
+      "matchedStops": 1
+    },
+    "Olskrokstorget": {
+      "lat": 57.714639,
+      "lng": 11.999086,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Olskrokstorget",
+      "matchedStops": 1
+    },
+    "Opaltorget": {
+      "lat": 57.641664,
+      "lng": 11.900848,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Tynnered Opaltorget",
+      "matchedStops": 1
+    },
+    "Ostindiegatan": {
+      "lat": 57.687725,
+      "lng": 11.915354,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Ostindiegatan",
+      "matchedStops": 1
+    },
+    "Partille Station": {
+      "lat": 57.740871,
+      "lng": 12.102855,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Partille Station",
+      "matchedStops": 1
+    },
+    "Positivgatan": {
+      "lat": 57.656727,
+      "lng": 11.917722,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Frölunda Positivgatan",
+      "matchedStops": 1
+    },
+    "Prinsgatan": {
+      "lat": 57.696898,
+      "lng": 11.951046,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Prinsgatan",
+      "matchedStops": 1
+    },
+    "Pumpgatan": {
+      "lat": 57.71189,
+      "lng": 11.944883,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Pumpgatan",
+      "matchedStops": 1
+    },
+    "Rambergsvallen": {
+      "lat": 57.719484,
+      "lng": 11.927529,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Rambergsvallen",
+      "matchedStops": 1
+    },
+    "Redbergsplatsen": {
+      "lat": 57.716421,
+      "lng": 12.004827,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Redbergsplatsen",
+      "matchedStops": 1
+    },
+    "Runstavsgatan": {
+      "lat": 57.747585,
+      "lng": 12.030228,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Kortedala Runstavsgatan",
+      "matchedStops": 1
+    },
+    "Rymdtorget": {
+      "lat": 57.755835,
+      "lng": 12.066841,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Bergsjön Rymdtorget Spårvagn",
+      "matchedStops": 1
+    },
+    "Sahlgrenska Huvudentré": {
+      "lat": 57.683625,
+      "lng": 11.960831,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Sahlgrenska huvudentr",
+      "matchedStops": 1
+    },
+    "Saltholmen": {
+      "lat": 57.660968,
+      "lng": 11.843078,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Saltholmens Brygga",
+      "matchedStops": 1
+    },
+    "Sandarna": {
+      "lat": 62.539612,
+      "lng": 17.396737,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Sandarna",
+      "matchedStops": 1
+    },
+    "Sankt Sigfrids Plan": {
+      "lat": 57.698632,
+      "lng": 11.999374,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Sankt Sigfrids Plan",
+      "matchedStops": 1
+    },
+    "Sannaplan": {
+      "lat": 57.684239,
+      "lng": 11.916584,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Sannaplan",
+      "matchedStops": 1
+    },
+    "Scandinavium": {
+      "lat": 57.700445,
+      "lng": 11.985872,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Scandinavium",
+      "matchedStops": 1
+    },
+    "Seminariegatan": {
+      "lat": 57.692238,
+      "lng": 11.957383,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Seminariegatan",
+      "matchedStops": 1
+    },
+    "SKF": {
+      "lat": 57.729248,
+      "lng": 12.013594,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg SKF",
+      "matchedStops": 1
+    },
+    "Smaragdgatan": {
+      "lat": 57.645335,
+      "lng": 11.899246,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Tynnered Smaragdgatan",
+      "matchedStops": 1
+    },
+    "Stenkullen Station": {
+      "lat": 57.791798,
+      "lng": 12.314747,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Stenkullen Station",
+      "matchedStops": 1
+    },
+    "Stenpiren": {
+      "lat": 57.705948,
+      "lng": 11.957521,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Stenpiren",
+      "matchedStops": 1
+    },
+    "Stigbergstorget": {
+      "lat": 57.698969,
+      "lng": 11.934996,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Stigbergstorget",
+      "matchedStops": 1
+    },
+    "Stockholmsgatan": {
+      "lat": 57.717131,
+      "lng": 12.013519,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Stockholmsgatan",
+      "matchedStops": 1
+    },
+    "Storås": {
+      "lat": 57.785027,
+      "lng": 12.046876,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Hammarkullen Storås",
+      "matchedStops": 1
+    },
+    "Surte Station": {
+      "lat": 57.825034,
+      "lng": 12.014508,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Surte Station",
+      "matchedStops": 1
+    },
+    "Svingeln": {
+      "lat": 57.713149,
+      "lng": 11.991081,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Svingeln",
+      "matchedStops": 1
+    },
+    "Sälöfjordsgatan": {
+      "lat": 57.713708,
+      "lng": 11.902234,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Sälöfjordsgatan",
+      "matchedStops": 1
+    },
+    "Sävenäs Station": {
+      "lat": 57.724782,
+      "lng": 12.025316,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Sävenäs Station",
+      "matchedStops": 1
+    },
+    "Teleskopgatan": {
+      "lat": 57.759734,
+      "lng": 12.060099,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Bergsjön Teleskopgatan",
+      "matchedStops": 1
+    },
+    "Temperaturgatan": {
+      "lat": 57.732842,
+      "lng": 11.895516,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Temperaturgatan",
+      "matchedStops": 1
+    },
+    "Tingvallsvägen": {
+      "lat": 57.724596,
+      "lng": 12.041983,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Tingvallsvägen",
+      "matchedStops": 1
+    },
+    "Tranered": {
+      "lat": 57.672518,
+      "lng": 11.879627,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Tranered",
+      "matchedStops": 1
+    },
+    "Töpelsgatan": {
+      "lat": 57.702384,
+      "lng": 12.022567,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Töpelsgatan",
+      "matchedStops": 1
+    },
+    "Ullevi Norra": {
+      "lat": 57.707779,
+      "lng": 11.985888,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Ullevi Norra",
+      "matchedStops": 1
+    },
+    "Ullevi Södra": {
+      "lat": 57.704131,
+      "lng": 11.985013,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Ullevi Södra",
+      "matchedStops": 1
+    },
+    "Vagnhallen Majorna": {
+      "lat": 57.689041,
+      "lng": 11.912275,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Vagnhallen Majorna",
+      "matchedStops": 1
+    },
+    "Valand": {
+      "lat": 57.700335,
+      "lng": 11.974519,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Valand",
+      "matchedStops": 1
+    },
+    "Varbergsgatan": {
+      "lat": 57.680033,
+      "lng": 12.002804,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Varbergsgatan",
+      "matchedStops": 1
+    },
+    "Varmfrontsgatan": {
+      "lat": 57.736934,
+      "lng": 11.896468,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Varmfrontsgatan",
+      "matchedStops": 1
+    },
+    "Vasa Viktoriagatan": {
+      "lat": 57.698233,
+      "lng": 11.965676,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Vasa Viktoriagatan",
+      "matchedStops": 1
+    },
+    "Vasaplatsen": {
+      "lat": 57.699122,
+      "lng": 11.969779,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Vasaplatsen",
+      "matchedStops": 1
+    },
+    "Virginsgatan": {
+      "lat": 57.71052,
+      "lng": 12.023548,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Virginsgatan",
+      "matchedStops": 1
+    },
+    "Vågmästareplatsen": {
+      "lat": 57.720685,
+      "lng": 11.945037,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Vågmästareplatsen",
+      "matchedStops": 1
+    },
+    "Vårväderstorget": {
+      "lat": 57.713084,
+      "lng": 11.893098,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Vårväderstorget",
+      "matchedStops": 1
+    },
+    "Väderilsgatan": {
+      "lat": 57.726889,
+      "lng": 11.89337,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Väderilsgatan",
+      "matchedStops": 1
+    },
+    "Wavrinskys Plats": {
+      "lat": 57.688848,
+      "lng": 11.968567,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Wavrinskys Plats",
+      "matchedStops": 1
+    },
+    "Welandergatan": {
+      "lat": 57.706059,
+      "lng": 12.024047,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Welandergatan",
+      "matchedStops": 1
+    },
+    "Wieselgrensplatsen": {
+      "lat": 57.720802,
+      "lng": 11.935047,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Wieselgrensplatsen",
+      "matchedStops": 1
+    },
+    "Älvängen resecentrum": {
+      "lat": 57.957819,
+      "lng": 12.116398,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Älvängen station",
+      "matchedStops": 1
+    },
+    "Önskevädersgatan": {
+      "lat": 57.719939,
+      "lng": 11.893886,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Önskevädersgatan",
+      "matchedStops": 1
+    },
+    "Östra Sjukhuset": {
+      "lat": 57.722272,
+      "lng": 12.048154,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Göteborg Östra Sjukhuset",
+      "matchedStops": 1
+    }
+  },
+  "unresolved": [
+    "Nordstan",
+    "Västra Bodarna Station"
+  ]
+}

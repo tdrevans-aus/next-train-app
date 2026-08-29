@@ -1,0 +1,198 @@
+{
+  "Ava Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Awarua Street Station": [
+    "Johnsonville Line Johnsonville Station",
+    "Johnsonville Line Wellington Station"
+  ],
+  "Box Hill Station": [
+    "Johnsonville Line Johnsonville Station",
+    "Johnsonville Line Wellington Station"
+  ],
+  "Carterton Station": [
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Crofton Downs Station": [
+    "Johnsonville Line Johnsonville Station",
+    "Johnsonville Line Wellington Station"
+  ],
+  "Epuni Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Featherston Station": [
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Heretaunga Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Johnsonville Station": [
+    "Johnsonville Line Wellington Station"
+  ],
+  "Kenepuru Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Khandallah Station": [
+    "Johnsonville Line Johnsonville Station",
+    "Johnsonville Line Wellington Station"
+  ],
+  "Linden Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Mana Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Manor Park Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Masterton Station": [
+    "Wairarapa Line Wellington Station"
+  ],
+  "Matarawa Station": [
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Maymorn Station": [
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Naenae Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Ngaio Station": [
+    "Johnsonville Line Johnsonville Station",
+    "Johnsonville Line Wellington Station"
+  ],
+  "Ngauranga Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station",
+    "Melling Line Wellington Station",
+    "Melling Line Western Hutt Station"
+  ],
+  "Paekākāriki Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Paraparaumu Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Paremata Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Petone Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station",
+    "Melling Line Wellington Station",
+    "Melling Line Western Hutt Station",
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Plimmerton Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Pomare Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Porirua Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Pukerua Bay Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Raroa Station": [
+    "Johnsonville Line Johnsonville Station",
+    "Johnsonville Line Wellington Station"
+  ],
+  "Redwood Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Renall Street Station": [
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Silverstream Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Simla Crescent Station": [
+    "Johnsonville Line Johnsonville Station",
+    "Johnsonville Line Wellington Station"
+  ],
+  "Solway Station": [
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Taita Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Takapu Road Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Tawa Station": [
+    "Kāpiti Line Waikanae Station",
+    "Kāpiti Line Wellington Station"
+  ],
+  "Trentham Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Upper Hutt Station": [
+    "Hutt Valley Line Wellington Station",
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Waikanae Station": [
+    "Kāpiti Line Wellington Station"
+  ],
+  "Wallaceville Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Waterloo Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station",
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ],
+  "Wellington Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Johnsonville Line Johnsonville Station",
+    "Kāpiti Line Waikanae Station",
+    "Melling Line Western Hutt Station",
+    "Wairarapa Line Masterton Station"
+  ],
+  "Western Hutt Station": [
+    "Melling Line Wellington Station"
+  ],
+  "Wingate Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Woburn Station": [
+    "Hutt Valley Line Upper Hutt Station",
+    "Hutt Valley Line Wellington Station"
+  ],
+  "Woodside Station": [
+    "Wairarapa Line Masterton Station",
+    "Wairarapa Line Wellington Station"
+  ]
+}

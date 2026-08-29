@@ -29,7 +29,7 @@ function assert(condition, message) {
   }
 }
 
-// Tester-live (flipped by Tim 29 Aug 2026). Stockholm stays planned.
+// Tester-live (flipped by Tim 29 Aug 2026). Stockholm also live (flipped 30 Aug 2026).
 const live = assertCityLive("goteborg");
 assert(live?.ok === true, "assertCityLive(goteborg) must pass");
 assert(getCity("goteborg")?.status === "live", "goteborg registry status must be live");
@@ -37,7 +37,7 @@ assert(getCity("goteborg")?.adapterReady === true, "goteborg adapterReady must b
 assert(isMultiCity("goteborg") === true, "goteborg must be in MULTI_CITY_IDS");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(assertCityLive("rotterdam")?.ok === true, "Rotterdam stays live");
-assert(assertCityLive("stockholm")?.ok === false, "Stockholm stays planned");
+assert(assertCityLive("stockholm")?.ok === true, "Stockholm stays live");
 
 // Registry identity + D1 pack (absorbed from the retired goteborg-planned-gate).
 const entry = getCity("goteborg");

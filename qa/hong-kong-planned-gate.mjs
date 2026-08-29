@@ -110,7 +110,7 @@ assert(!existsSync(join(ROOT, "qa/hong-kong-network-sweep.mjs")), "D6 network-sw
 assert(!getCity("light-rail") && !getCity("airport-express"), "do not start Light Rail / Airport Express as a city");
 
 const stockholm = getCity("stockholm");
-assert(stockholm?.status === "planned", "Stockholm stays planned / Coming Soon");
+assert(stockholm?.status === "live", "Stockholm is tester-live");
 const goteborg = getCity("goteborg");
 assert(goteborg?.status === "live", "Göteborg tester-live must stay green");
 assert(getCity("rotterdam")?.status === "live", "Rotterdam stays live");
@@ -210,7 +210,7 @@ assert(
   "Melbourne stays Coming Soon"
 );
 assert(/id:\s*"rotterdam"/.test(session), "Rotterdam must remain in the NL picker");
-assert(/id:\s*"stockholm"/.test(session), "Stockholm stays Coming Soon");
+assert(/id:\s*"stockholm"/.test(session), "Stockholm must remain in the Sweden picker");
 assert(!/id:\s*"china"|id:\s*"mtr"|id:\s*"kowloon"/.test(session), "do not start China / mtr / kowloon");
 assert(!/MULTI_CITY_IDS = \[[^\]]*hong-kong/.test(session), "hong-kong must not be in city-session MULTI_CITY_IDS");
 assert(/MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(session), "rotterdam must remain in city-session MULTI_CITY_IDS");

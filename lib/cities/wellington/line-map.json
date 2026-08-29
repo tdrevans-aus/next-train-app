@@ -1,0 +1,154 @@
+{
+  "city": "wellington",
+  "source": "docs/wellington-d1/published-network.json (Luke D1, hand-transcribed from Metlink Regional Rail Network map + line timetables)",
+  "timeZone": "Pacific/Auckland",
+  "dst": true,
+  "notes": [
+    "Station lists lock to Luke D1 (docs/wellington-d1/published-network.json). Never generate D1 from GTFS.",
+    "Hub product name is Wellington Station.",
+    "MEL (Melling Line) live terminus is Western Hutt Station while Melling Station is closed (~late 2028).",
+    "Bus, ferry, Wellington Cable Car, Capital Connection, and Northern Explorer are out of v1."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Melling Line",
+      "b": "Melling Station",
+      "reason": "Melling Station closed; MEL terminates at Western Hutt Station until ~late 2028"
+    }
+  ],
+  "proposedShortTurnGroups": {},
+  "proposedDoNotGroup": [],
+  "junctionStations": [
+    "Wellington Station",
+    "Petone Station",
+    "Waterloo Station",
+    "Upper Hutt Station"
+  ],
+  "suppressedTermini": [
+    "Melling Station"
+  ],
+  "lines": [
+    {
+      "id": "kpl",
+      "number": "KPL",
+      "name": "Kāpiti Line",
+      "routeShortName": "KPL",
+      "termini": [
+        "Waikanae Station",
+        "Wellington Station"
+      ],
+      "stations": [
+        "Wellington Station",
+        "Takapu Road Station",
+        "Redwood Station",
+        "Tawa Station",
+        "Linden Station",
+        "Kenepuru Station",
+        "Porirua Station",
+        "Paremata Station",
+        "Mana Station",
+        "Plimmerton Station",
+        "Pukerua Bay Station",
+        "Paekākāriki Station",
+        "Paraparaumu Station",
+        "Waikanae Station"
+      ]
+    },
+    {
+      "id": "hvl",
+      "number": "HVL",
+      "name": "Hutt Valley Line",
+      "routeShortName": "HVL",
+      "termini": [
+        "Upper Hutt Station",
+        "Wellington Station"
+      ],
+      "stations": [
+        "Wellington Station",
+        "Ngauranga Station",
+        "Petone Station",
+        "Ava Station",
+        "Woburn Station",
+        "Waterloo Station",
+        "Epuni Station",
+        "Naenae Station",
+        "Wingate Station",
+        "Taita Station",
+        "Pomare Station",
+        "Manor Park Station",
+        "Silverstream Station",
+        "Heretaunga Station",
+        "Trentham Station",
+        "Wallaceville Station",
+        "Upper Hutt Station"
+      ]
+    },
+    {
+      "id": "mel",
+      "number": "MEL",
+      "name": "Melling Line",
+      "routeShortName": "MEL",
+      "termini": [
+        "Western Hutt Station",
+        "Wellington Station"
+      ],
+      "stations": [
+        "Wellington Station",
+        "Ngauranga Station",
+        "Petone Station",
+        "Western Hutt Station"
+      ]
+    },
+    {
+      "id": "jvl",
+      "number": "JVL",
+      "name": "Johnsonville Line",
+      "routeShortName": "JVL",
+      "termini": [
+        "Johnsonville Station",
+        "Wellington Station"
+      ],
+      "stations": [
+        "Wellington Station",
+        "Crofton Downs Station",
+        "Ngaio Station",
+        "Awarua Street Station",
+        "Simla Crescent Station",
+        "Box Hill Station",
+        "Khandallah Station",
+        "Raroa Station",
+        "Johnsonville Station"
+      ]
+    },
+    {
+      "id": "wrl",
+      "number": "WRL",
+      "name": "Wairarapa Line",
+      "routeShortName": "WRL",
+      "termini": [
+        "Masterton Station",
+        "Wellington Station"
+      ],
+      "stations": [
+        "Wellington Station",
+        "Petone Station",
+        "Waterloo Station",
+        "Upper Hutt Station",
+        "Maymorn Station",
+        "Featherston Station",
+        "Woodside Station",
+        "Matarawa Station",
+        "Carterton Station",
+        "Solway Station",
+        "Renall Street Station",
+        "Masterton Station"
+      ]
+    }
+  ],
+  "coverageGaps": [
+    "Capital Connection and Northern Explorer are out of v1 (KiwiRail / long-distance).",
+    "Bus, ferry, and Wellington Cable Car are out of v1.",
+    "Melling Station closed for Te Wai Takamori o Te Awa Kairangi; MEL ends at Western Hutt Station."
+  ]
+}

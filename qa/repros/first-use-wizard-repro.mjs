@@ -3,7 +3,7 @@
  * Usage: node qa/first-use-wizard-repro.mjs
  */
 import { chromium } from "playwright";
-import { advanceOnboardingToJourneysStep, waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
+import { advanceOnboardingToJourneysStep, waitForOnboardingStep1 } from "../helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
 

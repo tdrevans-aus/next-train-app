@@ -1,5 +1,5 @@
 /**
- * Auckland is tester-live. Wellington stays planned. No city=nz. Perth live-gate untouched.
+ * Auckland and Wellington are both tester-live, separate cities. No city=nz. Perth live-gate untouched.
  * Usage: node qa/nz-planned-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
@@ -24,11 +24,10 @@ assert(getCity("auckland")?.status === "live", "auckland registry status must be
 assert(isMultiCity("auckland") === true, "auckland must be in MULTI_CITY_IDS");
 
 const wellingtonLive = assertCityLive("wellington");
-assert(wellingtonLive?.ok === false, "assertCityLive(wellington) must fail");
-assert(wellingtonLive?.status === 501, "wellington must be 501 planned");
-assert(getCity("wellington")?.status === "planned", "wellington registry status must be planned");
+assert(wellingtonLive?.ok === true, "assertCityLive(wellington) must pass");
+assert(getCity("wellington")?.status === "live", "wellington registry status must be live");
 assert(getCity("wellington")?.adapterReady === true, "wellington adapterReady must be true");
-assert(isMultiCity("wellington") === false, "wellington must not be in MULTI_CITY_IDS until Tim flips live");
+assert(isMultiCity("wellington") === true, "wellington must be in MULTI_CITY_IDS");
 
 for (const id of ["auckland", "wellington"]) {
   const entry = getCity(id);
@@ -77,10 +76,10 @@ assert(
 
 const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
 assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*auckland/.test(appJs), "auckland must be in LIVE_CITY_IDS");
-assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*wellington/.test(appJs), "wellington must not be in LIVE_CITY_IDS");
+assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*wellington/.test(appJs), "wellington must be in LIVE_CITY_IDS");
 assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*auckland/.test(appJs), "auckland must be in the city picker nearby list");
-assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*wellington/.test(appJs), "wellington must not be in the city picker nearby list");
+assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*wellington/.test(appJs), "wellington must be in the city picker nearby list");
 
 console.log(
-  "nz-planned-gate: ok (auckland tester-live, wellington planned/501, no city=nz, Perth green)"
+  "nz-planned-gate: ok (auckland + wellington both tester-live, separate cities, no city=nz, Perth green)"
 );

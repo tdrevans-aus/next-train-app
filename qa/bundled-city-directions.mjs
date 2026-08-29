@@ -12,6 +12,7 @@ import { marketingLabelsForStation as newcastleLabels, HUB as NLR_HUB } from "..
 import { marketingLabelsForStation as aucklandLabels, HUB as AT_HUB } from "../lib/cities/auckland/marketing-directions.js";
 import { marketingLabelsForStation as goteborgLabels, TRAM_HUB as GBG_HUB } from "../lib/cities/goteborg/marketing-directions.js";
 import { marketingLabelsForStation as stockholmLabels, METRO_HUB as STO_METRO_HUB, PENDELTÅG_HUB as STO_PENDEL_HUB } from "../lib/cities/stockholm/marketing-directions.js";
+import { marketingLabelsForStation as wellingtonLabels, HUB as WLG_HUB } from "../lib/cities/wellington/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -78,8 +79,7 @@ assert(
 assert(goteborg[GBG_HUB].includes("1 + Tynnered"), "Brunnsparken must offer 1 + Tynnered");
 assert(!goteborg[GBG_HUB].some((chip) => /^(8|12) \+ /.test(chip)), "Brunnsparken must not offer 8 or 12");
 
-// Stockholm is adapter-ready but still planned (not in MULTI_CITY_IDS) —
-// its chips are bundled ahead of the live flip.
+// Stockholm is tester-live — hub chips must match the marketing module.
 const stockholm = loadDirections("stockholm");
 const stoMetro = stockholmLabels(STO_METRO_HUB);
 assert(Array.isArray(stockholm[STO_METRO_HUB]), "Stockholm hub T-Centralen must be in bundled directions");
@@ -92,4 +92,15 @@ assert(!stockholm[STO_METRO_HUB].some((chip) => /pendeltåg/i.test(chip)), "T-Ce
 assert(!(stockholm[STO_PENDEL_HUB] ?? []).some((chip) => /pendeltåg 48/i.test(chip)), "Stockholm City must not offer line 48");
 assert(!("Stockholms central" in stockholm), "Stockholms central must not have bundled chips");
 
-console.log(`bundled-city-directions: ok (${MULTI_CITY_IDS.length} cities + stockholm planned)`);
+// Wellington is tester-live — hub chips must match the marketing module.
+const wellington = loadDirections("wellington");
+const wlgHub = wellingtonLabels(WLG_HUB);
+assert(Array.isArray(wellington[WLG_HUB]), "Wellington hub Wellington Station must be in bundled directions");
+assert(
+  wlgHub.every((chip) => wellington[WLG_HUB].includes(chip)),
+  "Wellington bundled hub chips must match marketingLabelsForStation"
+);
+assert(wellington[WLG_HUB].includes("Kāpiti Line Waikanae Station"), "Wellington Station must offer Kāpiti Line Waikanae Station");
+assert(!wellington[WLG_HUB].some((chip) => /melling station$/i.test(chip)), "Wellington Station must not offer a Melling Station chip");
+
+console.log(`bundled-city-directions: ok (${MULTI_CITY_IDS.length} cities)`);

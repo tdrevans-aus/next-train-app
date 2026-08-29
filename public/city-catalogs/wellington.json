@@ -1,0 +1,469 @@
+{
+  "stations": [
+    {
+      "name": "Ava Station",
+      "aliases": [],
+      "stopIds": [
+        "AVA"
+      ],
+      "lat": -41.21955358999999,
+      "lng": 174.89200603
+    },
+    {
+      "name": "Awarua Street Station",
+      "aliases": [],
+      "stopIds": [
+        "AWAR"
+      ],
+      "lat": -41.24650333999999,
+      "lng": 174.7742774
+    },
+    {
+      "name": "Box Hill Station",
+      "aliases": [],
+      "stopIds": [
+        "BOXH"
+      ],
+      "lat": -41.24601334,
+      "lng": 174.78875658
+    },
+    {
+      "name": "Carterton Station",
+      "aliases": [],
+      "stopIds": [
+        "CART"
+      ],
+      "lat": -41.02168247,
+      "lng": 175.52331266
+    },
+    {
+      "name": "Crofton Downs Station",
+      "aliases": [],
+      "stopIds": [
+        "CROF"
+      ],
+      "lat": -41.25504083,
+      "lng": 174.76649879
+    },
+    {
+      "name": "Epuni Station",
+      "aliases": [],
+      "stopIds": [
+        "EPUN"
+      ],
+      "lat": -41.20750643,
+      "lng": 174.93031151
+    },
+    {
+      "name": "Featherston Station",
+      "aliases": [],
+      "stopIds": [
+        "FEAT"
+      ],
+      "lat": -41.11345390999999,
+      "lng": 175.32976323
+    },
+    {
+      "name": "Heretaunga Station",
+      "aliases": [],
+      "stopIds": [
+        "HERE"
+      ],
+      "lat": -41.14233915,
+      "lng": 175.02591233
+    },
+    {
+      "name": "Johnsonville Station",
+      "aliases": [],
+      "stopIds": [
+        "JOHN"
+      ],
+      "lat": -41.22334496,
+      "lng": 174.80474332
+    },
+    {
+      "name": "Kenepuru Station",
+      "aliases": [],
+      "stopIds": [
+        "KENE"
+      ],
+      "lat": -41.14962774,
+      "lng": 174.83811245
+    },
+    {
+      "name": "Khandallah Station",
+      "aliases": [],
+      "stopIds": [
+        "KHAN",
+        "KHAN1",
+        "KHAN2"
+      ],
+      "lat": -41.24267127,
+      "lng": 174.7934371
+    },
+    {
+      "name": "Linden Station",
+      "aliases": [],
+      "stopIds": [
+        "LIND"
+      ],
+      "lat": -41.15895027,
+      "lng": 174.83202049
+    },
+    {
+      "name": "Mana Station",
+      "aliases": [],
+      "stopIds": [
+        "MANA",
+        "MANA1",
+        "MANA2"
+      ],
+      "lat": -41.095281805,
+      "lng": 174.868209595
+    },
+    {
+      "name": "Manor Park Station",
+      "aliases": [],
+      "stopIds": [
+        "MANO"
+      ],
+      "lat": -41.156315,
+      "lng": 174.978929
+    },
+    {
+      "name": "Masterton Station",
+      "aliases": [],
+      "stopIds": [
+        "MAST"
+      ],
+      "lat": -40.94043328,
+      "lng": 175.65474837
+    },
+    {
+      "name": "Matarawa Station",
+      "aliases": [],
+      "stopIds": [
+        "MATA"
+      ],
+      "lat": -41.04880879,
+      "lng": 175.44873607
+    },
+    {
+      "name": "Maymorn Station",
+      "aliases": [],
+      "stopIds": [
+        "MAYM"
+      ],
+      "lat": -41.10808608,
+      "lng": 175.13409007
+    },
+    {
+      "name": "Naenae Station",
+      "aliases": [],
+      "stopIds": [
+        "NAEN"
+      ],
+      "lat": -41.19783157,
+      "lng": 174.94616226
+    },
+    {
+      "name": "Ngaio Station",
+      "aliases": [],
+      "stopIds": [
+        "NGAI",
+        "NGAI1",
+        "NGAI2"
+      ],
+      "lat": -41.25097096499999,
+      "lng": 174.771858475
+    },
+    {
+      "name": "Ngauranga Station",
+      "aliases": [],
+      "stopIds": [
+        "NGAU"
+      ],
+      "lat": -41.249038,
+      "lng": 174.813013
+    },
+    {
+      "name": "Paekākāriki Station",
+      "aliases": [],
+      "stopIds": [
+        "PAEK",
+        "PAEK1",
+        "PAEK2"
+      ],
+      "lat": -40.987192230000005,
+      "lng": 174.95441017500002
+    },
+    {
+      "name": "Paraparaumu Station",
+      "aliases": [],
+      "stopIds": [
+        "PARA",
+        "PARA1",
+        "PARA2"
+      ],
+      "lat": -40.916650345,
+      "lng": 175.007175645
+    },
+    {
+      "name": "Paremata Station",
+      "aliases": [],
+      "stopIds": [
+        "PARE"
+      ],
+      "lat": -41.10631518,
+      "lng": 174.86626787
+    },
+    {
+      "name": "Petone Station",
+      "aliases": [],
+      "stopIds": [
+        "PETO",
+        "PETO1",
+        "PETO2"
+      ],
+      "lat": -41.222010964999996,
+      "lng": 174.8694881
+    },
+    {
+      "name": "Plimmerton Station",
+      "aliases": [],
+      "stopIds": [
+        "PLIM",
+        "PLIM1",
+        "PLIM2",
+        "PLIM3"
+      ],
+      "lat": -41.08386498333333,
+      "lng": 174.86722164333332
+    },
+    {
+      "name": "Pomare Station",
+      "aliases": [],
+      "stopIds": [
+        "POMA"
+      ],
+      "lat": -41.16945495,
+      "lng": 174.96972088
+    },
+    {
+      "name": "Porirua Station",
+      "aliases": [],
+      "stopIds": [
+        "PORI",
+        "PORI1",
+        "PORI2"
+      ],
+      "lat": -41.13757251999999,
+      "lng": 174.84337592999998
+    },
+    {
+      "name": "Pukerua Bay Station",
+      "aliases": [],
+      "stopIds": [
+        "PUKE"
+      ],
+      "lat": -41.03801419,
+      "lng": 174.88677691
+    },
+    {
+      "name": "Raroa Station",
+      "aliases": [],
+      "stopIds": [
+        "RARO"
+      ],
+      "lat": -41.23225739,
+      "lng": 174.80174787
+    },
+    {
+      "name": "Redwood Station",
+      "aliases": [],
+      "stopIds": [
+        "REDW",
+        "REDW1",
+        "REDW2"
+      ],
+      "lat": -41.175645949999996,
+      "lng": 174.827051305
+    },
+    {
+      "name": "Renall Street Station",
+      "aliases": [],
+      "stopIds": [
+        "RENA"
+      ],
+      "lat": -40.94765033,
+      "lng": 175.6384081
+    },
+    {
+      "name": "Silverstream Station",
+      "aliases": [],
+      "stopIds": [
+        "SILV"
+      ],
+      "lat": -41.14729787,
+      "lng": 175.01029236
+    },
+    {
+      "name": "Simla Crescent Station",
+      "aliases": [],
+      "stopIds": [
+        "SIML"
+      ],
+      "lat": -41.24679734,
+      "lng": 174.78433654
+    },
+    {
+      "name": "Solway Station",
+      "aliases": [],
+      "stopIds": [
+        "SOLW"
+      ],
+      "lat": -40.95338889,
+      "lng": 175.62551783
+    },
+    {
+      "name": "Taita Station",
+      "aliases": [],
+      "stopIds": [
+        "TAIT",
+        "TAIT1",
+        "TAIT2"
+      ],
+      "lat": -41.18035079,
+      "lng": 174.96075452
+    },
+    {
+      "name": "Takapu Road Station",
+      "aliases": [],
+      "stopIds": [
+        "TAKA",
+        "TAKA1",
+        "TAKA2"
+      ],
+      "lat": -41.18529339999999,
+      "lng": 174.828279435
+    },
+    {
+      "name": "Tawa Station",
+      "aliases": [],
+      "stopIds": [
+        "TAWA",
+        "TAWA1",
+        "TAWA2"
+      ],
+      "lat": -41.1693215,
+      "lng": 174.828352
+    },
+    {
+      "name": "Trentham Station",
+      "aliases": [],
+      "stopIds": [
+        "TREN",
+        "TREN1",
+        "TREN2"
+      ],
+      "lat": -41.13787778999999,
+      "lng": 175.03843415
+    },
+    {
+      "name": "Upper Hutt Station",
+      "aliases": [],
+      "stopIds": [
+        "UPPE"
+      ],
+      "lat": -41.12623233,
+      "lng": 175.07031754
+    },
+    {
+      "name": "Waikanae Station",
+      "aliases": [],
+      "stopIds": [
+        "WAIK"
+      ],
+      "lat": -40.87658706,
+      "lng": 175.06621317
+    },
+    {
+      "name": "Wallaceville Station",
+      "aliases": [],
+      "stopIds": [
+        "WALL",
+        "WALL1",
+        "WALL2"
+      ],
+      "lat": -41.130637465,
+      "lng": 175.05859547
+    },
+    {
+      "name": "Waterloo Station",
+      "aliases": [],
+      "stopIds": [
+        "WATE",
+        "WATE1",
+        "WATE2"
+      ],
+      "lat": -41.213921835,
+      "lng": 174.92113184
+    },
+    {
+      "name": "Wellington Station",
+      "aliases": [],
+      "stopIds": [
+        "WELL",
+        "WELL1",
+        "WELL2",
+        "WELL3",
+        "WELL4",
+        "WELL5",
+        "WELL6",
+        "WELL7",
+        "WELL8",
+        "WELL9"
+      ],
+      "lat": -41.27843602744041,
+      "lng": 174.78093550893652
+    },
+    {
+      "name": "Western Hutt Station",
+      "aliases": [],
+      "stopIds": [
+        "WEST"
+      ],
+      "lat": -41.21187,
+      "lng": 174.889995
+    },
+    {
+      "name": "Wingate Station",
+      "aliases": [],
+      "stopIds": [
+        "WING"
+      ],
+      "lat": -41.18878155,
+      "lng": 174.95469693
+    },
+    {
+      "name": "Woburn Station",
+      "aliases": [],
+      "stopIds": [
+        "WOBU",
+        "WOBU1",
+        "WOBU2"
+      ],
+      "lat": -41.220877224999995,
+      "lng": 174.911263905
+    },
+    {
+      "name": "Woodside Station",
+      "aliases": [],
+      "stopIds": [
+        "WOOD"
+      ],
+      "lat": -41.06736154,
+      "lng": 175.40189781
+    }
+  ]
+}

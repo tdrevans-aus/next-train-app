@@ -2,7 +2,7 @@
  * D5 — Offline Stockholm line-map conformance.
  * Usage: node qa/stockholm-line-map-conformance.mjs
  *
- * City stays planned. D1 pack required. Not generated from GTFS.
+ * Tester-live. D1 pack required. Not generated from GTFS.
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -44,14 +44,14 @@ function main() {
   const catalog = loadJson("lib/cities/stockholm/stations.json");
   const failures = [];
 
-  if (assertCityLive("stockholm")?.ok === true) {
-    failures.push("C0: assertCityLive(stockholm) must fail (city stays planned)");
+  if (assertCityLive("stockholm")?.ok !== true) {
+    failures.push("C0: assertCityLive(stockholm) must pass (tester-live)");
   }
-  if (getCity("stockholm")?.status !== "planned") {
-    failures.push("C0: stockholm registry status must be planned");
+  if (getCity("stockholm")?.status !== "live") {
+    failures.push("C0: stockholm registry status must be live");
   }
-  if (isMultiCity("stockholm")) {
-    failures.push("C0: stockholm must not join MULTI_CITY_IDS until Tim flips live");
+  if (!isMultiCity("stockholm")) {
+    failures.push("C0: stockholm must be in MULTI_CITY_IDS");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
@@ -218,7 +218,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("stockholm-line-map-conformance: ok (planned, D1 pack present)");
+  console.log("stockholm-line-map-conformance: ok (tester-live, D1 pack present)");
 }
 
 main();

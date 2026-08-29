@@ -7,489 +7,683 @@
     {
       "name": "Alingsås Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.926862,
+      "lng": 12.532493
     },
     {
       "name": "Allhelgonakyrkan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.757349,
+      "lng": 12.03669
     },
     {
       "name": "Almedal",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.672008,
+      "lng": 12.558887
     },
     {
       "name": "Angereds Centrum",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.795948,
+      "lng": 12.049038
     },
     {
       "name": "Anneberg Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.539264,
+      "lng": 12.101243
     },
     {
       "name": "Aprilgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.761178,
+      "lng": 12.041218
     },
     {
       "name": "Aspedalen Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.763095,
+      "lng": 12.259108
     },
     {
       "name": "Aspen Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.754465,
+      "lng": 12.241379
     },
     {
       "name": "Axel Dahlströms Torg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.671996,
+      "lng": 11.927626
     },
     {
       "name": "Bellevue",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.732456,
+      "lng": 12.023473
     },
     {
       "name": "Berzeliigatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.698491,
+      "lng": 11.981881
     },
     {
       "name": "Beväringsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.739861,
+      "lng": 12.028564
     },
     {
       "name": "Bohus Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.851988,
+      "lng": 12.013644
     },
     {
       "name": "Bokekullsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.677221,
+      "lng": 11.932721
     },
     {
       "name": "Botaniska Trädgården",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.681018,
+      "lng": 11.945788
     },
     {
       "name": "Briljantgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.64894,
+      "lng": 11.903334
     },
     {
       "name": "Brunnsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 60.669841,
+      "lng": 17.149
     },
     {
       "name": "Brunnsparken",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 59.386216,
+      "lng": 16.435189
     },
     {
       "name": "Bögatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.700996,
+      "lng": 12.016434
     },
     {
       "name": "Chalmers",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.689951,
+      "lng": 11.972931
     },
     {
       "name": "Chapmans Torg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.694317,
+      "lng": 11.919581
     },
     {
       "name": "Doktor Fries Torg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.684239,
+      "lng": 11.973065
     },
     {
       "name": "Doktor Sydows Gata",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.680796,
+      "lng": 11.975392
     },
     {
       "name": "Domkyrkan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.704294,
+      "lng": 11.963707
     },
     {
       "name": "Drottningtorget",
       "aliases": [
         "Centralstationen"
       ],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 58.410501,
+      "lng": 15.635806
     },
     {
       "name": "Ejdergatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.64998,
+      "lng": 12.046671
     },
     {
       "name": "Ekedal",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 58.781446,
+      "lng": 15.952217
     },
     {
       "name": "Eketrägatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.716275,
+      "lng": 11.910288
     },
     {
       "name": "Ekmanska",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.699563,
+      "lng": 12.009684
     },
     {
       "name": "Elisedal",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.684048,
+      "lng": 12.00005
     },
     {
       "name": "Fjällgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 58.845452,
+      "lng": 13.377858
     },
     {
       "name": "Floda Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.810065,
+      "lng": 12.361331
     },
     {
       "name": "Frihamnen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 59.345563,
+      "lng": 18.131525
     },
     {
       "name": "Friskväderstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.723591,
+      "lng": 11.893374
     },
     {
       "name": "Frölunda Torg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.652625,
+      "lng": 11.909745
     },
     {
       "name": "Galileis Gata",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.760524,
+      "lng": 12.051577
     },
     {
       "name": "Gamlestaden Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.729152,
+      "lng": 12.004414
     },
     {
       "name": "Gamlestads Torg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.727835,
+      "lng": 12.005745
     },
     {
       "name": "Godhemsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.684861,
+      "lng": 11.925998
     },
     {
       "name": "Gropegårdsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.718234,
+      "lng": 11.918441
     },
     {
       "name": "Grönsakstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.702492,
+      "lng": 11.964436
     },
     {
       "name": "Göteborg Central",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.708896,
+      "lng": 11.973479
     },
     {
       "name": "Hagakyrkan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.699571,
+      "lng": 11.962664
     },
     {
       "name": "Hagen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 58.928205,
+      "lng": 14.373955
     },
     {
       "name": "Hammarkullen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.780294,
+      "lng": 12.035794
     },
     {
       "name": "Handelshögskolan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 59.341998,
+      "lng": 18.057357
     },
     {
       "name": "Hede Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.513095,
+      "lng": 12.083576
     },
     {
       "name": "Hinsholmen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.667811,
+      "lng": 11.860982
     },
     {
       "name": "Hjalmar Brantingsplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.720831,
+      "lng": 11.953655
     },
     {
       "name": "Hjällbo",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.768823,
+      "lng": 12.022728
     },
     {
       "name": "Härlanda",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.718072,
+      "lng": 12.020038
     },
     {
       "name": "Högsbogatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.680236,
+      "lng": 11.930201
     },
     {
       "name": "Jaegerdorffsplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.691578,
+      "lng": 11.915276
     },
     {
       "name": "Januarigatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.760288,
+      "lng": 12.041227
     },
     {
       "name": "Jonsered Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.749955,
+      "lng": 12.1738
     },
     {
       "name": "Jubileumsparken",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.717932,
+      "lng": 11.961756
     },
     {
       "name": "Järntorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 59.366207,
+      "lng": 16.509138
     },
     {
       "name": "Kaggeledstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.723066,
+      "lng": 12.033777
     },
     {
       "name": "Kapellplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.693656,
+      "lng": 11.973294
     },
     {
       "name": "Kaptensgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 62.911128,
+      "lng": 16.270538
     },
     {
       "name": "Klintens Väg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.682547,
+      "lng": 11.927907
     },
     {
       "name": "Komettorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.75098,
+      "lng": 12.071647
     },
     {
       "name": "Korsvägen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 58.916937,
+      "lng": 15.356698
     },
     {
       "name": "Kortedala Torg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.752939,
+      "lng": 12.032863
     },
     {
       "name": "Krokslätts Fabriker",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.671485,
+      "lng": 12.010258
     },
     {
       "name": "Krokslätts Torg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.675344,
+      "lng": 12.007976
     },
     {
       "name": "Kungsbacka Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.490555,
+      "lng": 12.079615
     },
     {
       "name": "Kungsportsplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.704028,
+      "lng": 11.969746
     },
     {
       "name": "Kungssten",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.680613,
+      "lng": 11.90157
     },
     {
       "name": "Kviberg",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.736466,
+      "lng": 12.025054
     },
     {
       "name": "Kållered Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.609928,
+      "lng": 12.048619
     },
     {
       "name": "Käringberget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.669226,
+      "lng": 11.871462
     },
     {
       "name": "Lackarebäck",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.665847,
+      "lng": 12.011351
     },
     {
       "name": "Lana",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.678168,
+      "lng": 12.004157
     },
     {
       "name": "Lantmilsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.667186,
+      "lng": 11.924651
     },
     {
       "name": "Lerum Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.76936,
+      "lng": 12.272317
     },
     {
       "name": "Lilla Bommen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.709551,
+      "lng": 11.966038
     },
     {
       "name": "Lindholmen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.200401,
+      "lng": 15.084558
     },
     {
       "name": "Lindome Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.576096,
+      "lng": 12.078476
     },
     {
       "name": "Linnéplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.689979,
+      "lng": 11.952269
     },
     {
       "name": "Liseberg Station",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.698248,
+      "lng": 11.995269
     },
     {
       "name": "Liseberg Station (tåg)",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.698248,
+      "lng": 11.995269
     },
     {
       "name": "Liseberg Södra",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.691848,
+      "lng": 11.991947
     },
     {
       "name": "Långedrag",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.668017,
+      "lng": 11.853462
     },
     {
       "name": "Majvallen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.691032,
+      "lng": 11.935541
     },
     {
       "name": "Mariaplan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.686654,
+      "lng": 11.92057
     },
     {
       "name": "Marklandsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.674402,
+      "lng": 11.936041
     },
     {
       "name": "Masthuggstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.699436,
+      "lng": 11.943793
     },
     {
       "name": "Medicinaregatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.68544,
+      "lng": 11.964347
     },
     {
       "name": "Mildvädersgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.715624,
+      "lng": 11.890943
     },
     {
       "name": "Munkebäckstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.718497,
+      "lng": 12.026409
     },
     {
       "name": "Musikvägen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 59.042124,
+      "lng": 15.499206
     },
     {
       "name": "Mölndal Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.655958,
+      "lng": 12.018723
     },
     {
       "name": "Mölndals Innerstad",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.656132,
+      "lng": 12.017028
     },
     {
       "name": "Mölndals sjukhus",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.661453,
+      "lng": 12.013471
     },
     {
       "name": "Nils Ericsonsplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.709336,
+      "lng": 11.971115
     },
     {
       "name": "Nol Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.918463,
+      "lng": 12.061957
     },
     {
       "name": "Nordstan",
@@ -499,262 +693,366 @@
     {
       "name": "Norsesund Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.861592,
+      "lng": 12.43903
     },
     {
       "name": "Nya Varvsallén",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.677583,
+      "lng": 11.893994
     },
     {
       "name": "Nymilsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.662749,
+      "lng": 11.924438
     },
     {
       "name": "Nymånegatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.743052,
+      "lng": 12.029794
     },
     {
       "name": "Nödinge Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.89312,
+      "lng": 12.044648
     },
     {
       "name": "Olivedalsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.691994,
+      "lng": 11.952625
     },
     {
       "name": "Olskrokstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.714639,
+      "lng": 11.999086
     },
     {
       "name": "Opaltorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.641664,
+      "lng": 11.900848
     },
     {
       "name": "Ostindiegatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.687725,
+      "lng": 11.915354
     },
     {
       "name": "Partille Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.740871,
+      "lng": 12.102855
     },
     {
       "name": "Positivgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.656727,
+      "lng": 11.917722
     },
     {
       "name": "Prinsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.696898,
+      "lng": 11.951046
     },
     {
       "name": "Pumpgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.71189,
+      "lng": 11.944883
     },
     {
       "name": "Rambergsvallen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.719484,
+      "lng": 11.927529
     },
     {
       "name": "Redbergsplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.716421,
+      "lng": 12.004827
     },
     {
       "name": "Runstavsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.747585,
+      "lng": 12.030228
     },
     {
       "name": "Rymdtorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.755835,
+      "lng": 12.066841
     },
     {
       "name": "Sahlgrenska Huvudentré",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.683625,
+      "lng": 11.960831
     },
     {
       "name": "Saltholmen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.660968,
+      "lng": 11.843078
     },
     {
       "name": "Sandarna",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 62.539612,
+      "lng": 17.396737
     },
     {
       "name": "Sankt Sigfrids Plan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.698632,
+      "lng": 11.999374
     },
     {
       "name": "Sannaplan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.684239,
+      "lng": 11.916584
     },
     {
       "name": "Scandinavium",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.700445,
+      "lng": 11.985872
     },
     {
       "name": "Seminariegatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.692238,
+      "lng": 11.957383
     },
     {
       "name": "SKF",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.729248,
+      "lng": 12.013594
     },
     {
       "name": "Smaragdgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.645335,
+      "lng": 11.899246
     },
     {
       "name": "Stenkullen Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.791798,
+      "lng": 12.314747
     },
     {
       "name": "Stenpiren",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.705948,
+      "lng": 11.957521
     },
     {
       "name": "Stigbergstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.698969,
+      "lng": 11.934996
     },
     {
       "name": "Stockholmsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.717131,
+      "lng": 12.013519
     },
     {
       "name": "Storås",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.785027,
+      "lng": 12.046876
     },
     {
       "name": "Surte Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.825034,
+      "lng": 12.014508
     },
     {
       "name": "Svingeln",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.713149,
+      "lng": 11.991081
     },
     {
       "name": "Sälöfjordsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.713708,
+      "lng": 11.902234
     },
     {
       "name": "Sävenäs Station",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.724782,
+      "lng": 12.025316
     },
     {
       "name": "Teleskopgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.759734,
+      "lng": 12.060099
     },
     {
       "name": "Temperaturgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.732842,
+      "lng": 11.895516
     },
     {
       "name": "Tingvallsvägen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.724596,
+      "lng": 12.041983
     },
     {
       "name": "Tranered",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.672518,
+      "lng": 11.879627
     },
     {
       "name": "Töpelsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.702384,
+      "lng": 12.022567
     },
     {
       "name": "Ullevi Norra",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.707779,
+      "lng": 11.985888
     },
     {
       "name": "Ullevi Södra",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.704131,
+      "lng": 11.985013
     },
     {
       "name": "Vagnhallen Majorna",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.689041,
+      "lng": 11.912275
     },
     {
       "name": "Valand",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.700335,
+      "lng": 11.974519
     },
     {
       "name": "Varbergsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.680033,
+      "lng": 12.002804
     },
     {
       "name": "Varmfrontsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.736934,
+      "lng": 11.896468
     },
     {
       "name": "Vasa Viktoriagatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.698233,
+      "lng": 11.965676
     },
     {
       "name": "Vasaplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.699122,
+      "lng": 11.969779
     },
     {
       "name": "Virginsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.71052,
+      "lng": 12.023548
     },
     {
       "name": "Vågmästareplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.720685,
+      "lng": 11.945037
     },
     {
       "name": "Vårväderstorget",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.713084,
+      "lng": 11.893098
     },
     {
       "name": "Väderilsgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.726889,
+      "lng": 11.89337
     },
     {
       "name": "Västra Bodarna Station",
@@ -764,32 +1062,44 @@
     {
       "name": "Wavrinskys Plats",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.688848,
+      "lng": 11.968567
     },
     {
       "name": "Welandergatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.706059,
+      "lng": 12.024047
     },
     {
       "name": "Wieselgrensplatsen",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.720802,
+      "lng": 11.935047
     },
     {
       "name": "Älvängen resecentrum",
       "aliases": [],
-      "mode": "train"
+      "mode": "train",
+      "lat": 57.957819,
+      "lng": 12.116398
     },
     {
       "name": "Önskevädersgatan",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.719939,
+      "lng": 11.893886
     },
     {
       "name": "Östra Sjukhuset",
       "aliases": [],
-      "mode": "tram"
+      "mode": "tram",
+      "lat": 57.722272,
+      "lng": 12.048154
     }
   ]
 }

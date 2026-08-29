@@ -3,9 +3,9 @@
  * Usage: node qa/custom-template-no-wizard-repro.mjs
  */
 import { chromium } from "playwright";
-import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
-import { dismissOnboardingMaybeLater, waitForOnboardingStep1 } from "./helpers/onboarding.mjs";
-import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
+import { openCustomJourneyCreate } from "../helpers/open-custom-journey.mjs";
+import { dismissOnboardingMaybeLater, waitForOnboardingStep1 } from "../helpers/onboarding.mjs";
+import { seedPersistedJourneys } from "../helpers/travel-library.mjs";
 
 const BASE = "http://localhost:3000";
 

@@ -110,7 +110,7 @@ assert(!existsSync(join(ROOT, "qa/osaka-network-sweep.mjs")), "D6 network-sweep 
 assert(!getCity("fukuoka") && !getCity("nagoya"), "do not start Fukuoka / Nagoya from this city");
 
 const stockholm = getCity("stockholm");
-assert(stockholm?.status === "planned", "Stockholm stays planned / Coming Soon");
+assert(stockholm?.status === "live", "Stockholm is tester-live");
 const goteborg = getCity("goteborg");
 assert(goteborg?.status === "live", "Göteborg tester-live must stay green");
 assert(getCity("rotterdam")?.status === "live", "Rotterdam stays live");
@@ -196,7 +196,7 @@ assert(
   "Melbourne stays Coming Soon"
 );
 assert(/id:\s*"rotterdam"/.test(session), "Rotterdam must remain in the NL picker");
-assert(/id:\s*"stockholm"/.test(session), "Stockholm stays Coming Soon");
+assert(/id:\s*"stockholm"/.test(session), "Stockholm must remain in the Sweden picker");
 assert(!/id:\s*"japan"/.test(session), "do not invent city=japan in the picker");
 assert(!/id:\s*"tokyo"|id:\s*"fukuoka"|id:\s*"nagoya"|id:\s*"osk"|id:\s*"osaka-metro"/.test(session), "do not start Tokyo / Fukuoka / Nagoya / osk");
 assert(!/MULTI_CITY_IDS = \[[^\]]*osaka/.test(session), "osaka must not be in city-session MULTI_CITY_IDS");

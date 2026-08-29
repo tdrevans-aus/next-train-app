@@ -304,9 +304,9 @@ Jim brief: `docs/jim-brief-menu-layout.md`
 **Morning / Evening wizard (automated):**
 
 ```bash
-node qa/morning-template-wizard-repro.mjs
-node qa/custom-template-delay-repro.mjs
-node qa/custom-template-no-wizard-repro.mjs
+node qa/repros/morning-template-wizard-repro.mjs
+node qa/repros/custom-template-delay-repro.mjs
+node qa/repros/custom-template-no-wizard-repro.mjs
 ```
 
 **Expect:** Morning coach opens immediately (step 1 **Name**); geo runs in background. Custom detail opens without geo delay; coach still 3 steps (route → time → hours).
@@ -462,7 +462,7 @@ node qa/reminders-permission-native-cdp.mjs
 **Done double-tap (web):**
 
 ```bash
-node qa/done-double-tap-repro.mjs
+node qa/repros/done-double-tap-repro.mjs
 ```
 
 **Expect:** All scenarios `PASS (1 Done closes all)` — Menu, Menu→Reminders→Done, after Journeys activity.
@@ -544,7 +544,7 @@ See `docs/widget-homescreen.md` and `CommuteSchedule.java` (`WidgetDepartureAdva
 Automated:
 
 ```bash
-node qa/other-directions-journey-repro.mjs
+node qa/repros/other-directions-journey-repro.mjs
 ```
 
 **Expect:** **PASS** — in My Journeys mode, `#nearby-directions` is **hidden** (no “Other directions” label).
@@ -584,7 +584,7 @@ Jim brief: `docs/jim-brief-journey-name-on-detail.md`
 Automated:
 
 ```bash
-node qa/custom-template-no-wizard-repro.mjs
+node qa/repros/custom-template-no-wizard-repro.mjs
 ```
 
 **Expect:** **PASS** — onboarding → **Custom** shows 3-step template coach (“Pick your route” / time to station / active hours), same flow as Morning/Evening.

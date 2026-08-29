@@ -46,7 +46,45 @@ function keyedUrl() {
   return `https://opendata.samtrafiken.se/gtfs-sweden/sweden.zip?key=${encodeURIComponent(key)}`;
 }
 
+// Catalog name -> exact GTFS stop_name, for stations whose national-feed name
+// differs beyond a plain "Göteborg " prefix. Every alias below was verified by
+// hand against stops.txt (grep) — this is name aliasing, not coordinate guessing.
+const GOTEBORG_ALIASES = {
+  "Allhelgonakyrkan": "Kortedala Allhelgonakyrkan",
+  "Angereds Centrum": "Angered centrum",
+  "Aprilgatan": "Kortedala Aprilgatan",
+  "Briljantgatan": "Tynnered Briljantgatan",
+  "Göteborg Central": "Göteborg Centralstation",
+  "Hjalmar Brantingsplatsen": "Göteborg Hjalmar Brantingspl",
+  "Januarigatan": "Kortedala Januarigatan",
+  "Komettorget": "Bergsjön Komettorget",
+  "Krokslätts Torg": "Mölndal Krokslätts torg",
+  "Lackarebäck": "Mölndal Lackarebäck",
+  "Liseberg Station (tåg)": "Liseberg station",
+  "Mölndals sjukhus": "Mölndal Sjukhus",
+  "Opaltorget": "Tynnered Opaltorget",
+  "Positivgatan": "Frölunda Positivgatan",
+  "Runstavsgatan": "Kortedala Runstavsgatan",
+  "Rymdtorget": "Bergsjön Rymdtorget Spårvagn",
+  "Sahlgrenska Huvudentré": "Göteborg Sahlgrenska huvudentr",
+  "Saltholmen": "Göteborg Saltholmens Brygga",
+  "Smaragdgatan": "Tynnered Smaragdgatan",
+  "Storås": "Hammarkullen Storås",
+  "Teleskopgatan": "Bergsjön Teleskopgatan",
+  "Älvängen resecentrum": "Älvängen station",
+  // Not in the national feed at all (verified by grep, 2026-08-29):
+  // "Nordstan", "Västra Bodarna Station" (only the "Västra Bodarna E20" bus
+  // stop exists, which is NOT the rail station) — left unresolved on purpose.
+};
+
 async function downloadStopsTable() {
+  // Optional local cache: point SWEDEN_STOPS_TXT at an already-extracted
+  // stops.txt to skip the ~2MB download on repeat runs.
+  const cached = String(process.env.SWEDEN_STOPS_TXT || "").trim();
+  if (cached && existsSync(cached)) {
+    console.log(`Reading cached stops.txt from ${cached}`);
+    return parseCsv(readFileSync(cached, "utf8"));
+  }
   const attempts = [PUBLIC_URL, keyedUrl()].filter(Boolean);
   let lastError;
   for (const url of attempts) {
@@ -96,13 +134,36 @@ function buildNameIndex(rows) {
   return index;
 }
 
-function resolveNames(names, nameIndex, sourceLabel) {
+/**
+ * Resolve each name by trying, in order: the exact name, the exact name
+ * prefixed with the city (the national feed names stops "Göteborg Chalmers",
+ * not "Chalmers"), then any explicit alias. All lookups stay exact-match
+ * (case-insensitive) — no fuzzy matching, ever.
+ */
+function resolveNames(names, nameIndex, sourceLabel, { cityPrefix = null, aliases = {} } = {}) {
   const resolved = {};
   const unresolved = [];
   for (const name of names) {
-    const hit = nameIndex.get(name.trim().toLowerCase());
+    const candidates = [name.trim()];
+    if (cityPrefix) candidates.push(`${cityPrefix} ${name.trim()}`);
+    if (aliases[name]) candidates.push(aliases[name]);
+    let hit = null;
+    let matchedName = null;
+    for (const candidate of candidates) {
+      hit = nameIndex.get(candidate.toLowerCase());
+      if (hit) {
+        matchedName = candidate;
+        break;
+      }
+    }
     if (hit) {
-      resolved[name] = { lat: hit.lat, lng: hit.lng, source: sourceLabel, matchedStops: hit.stopCount };
+      resolved[name] = {
+        lat: hit.lat,
+        lng: hit.lng,
+        source: sourceLabel,
+        matchedName,
+        matchedStops: hit.stopCount,
+      };
     } else {
       unresolved.push(name);
     }
@@ -120,7 +181,10 @@ async function main() {
   const goteborgPath = join(ROOT, "lib/cities/goteborg/stations.json");
   const goteborgCatalog = JSON.parse(readFileSync(goteborgPath, "utf8"));
   const goteborgNames = (goteborgCatalog.stations ?? []).map((s) => s.name);
-  const goteborg = resolveNames(goteborgNames, nameIndex, sourceLabel);
+  const goteborg = resolveNames(goteborgNames, nameIndex, sourceLabel, {
+    cityPrefix: "Göteborg",
+    aliases: GOTEBORG_ALIASES,
+  });
   const goteborgOut = join(ROOT, "docs/goteborg-d1/station-coordinates.json");
   writeFileSync(
     goteborgOut,
@@ -138,7 +202,9 @@ async function main() {
   }
 
   // --- Stockholm (just Uppsala C) ---
-  const stockholm = resolveNames(["Uppsala C"], nameIndex, sourceLabel);
+  const stockholm = resolveNames(["Uppsala C"], nameIndex, sourceLabel, {
+    aliases: { "Uppsala C": "Uppsala Centralstation" },
+  });
   const stockholmOut = join(ROOT, "docs/stockholm-d1/uppsala-c-coordinates.json");
   writeFileSync(
     stockholmOut,

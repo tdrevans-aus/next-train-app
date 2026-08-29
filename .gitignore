@@ -26,6 +26,11 @@ qa/*.xml
 
 docs/*.xlsx
 
+# GTFS trim output (auckland, wellington) — regenerate locally with
+# scripts/trim-{city}-gtfs.mjs; never committed. See docs/jim-brief-gtfs-data-platform-scale.md.
+qa/fixtures/auckland/gtfs/*.txt
+qa/fixtures/wellington/gtfs/*.txt
+
 # Root-level scratch output from ad-hoc QA/debug runs — never source
 /qa-*.log
 /qa-*.exit

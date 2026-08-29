@@ -1,5 +1,5 @@
 /**
- * Auckland is live for testers; hub Waitematā Station; TRAIN only; Wellington planned.
+ * Auckland is live for testers; hub Waitematā Station; TRAIN only; Wellington also live.
  */
 import { existsSync } from "fs";
 import { dirname, join } from "path";
@@ -24,7 +24,7 @@ assert(getCity("auckland")?.status === "live", "auckland registry must be live")
 assert(isMultiCity("auckland") === true, "auckland must be in MULTI_CITY_IDS");
 assert(!getCity("nz"), "city=nz must not exist");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
-assert(assertCityLive("wellington")?.ok === false, "Wellington stays planned until Tim says");
+assert(assertCityLive("wellington")?.ok === true, "Wellington is tester-live (flipped by Tim)");
 assert(assertCityLive("melbourne")?.ok === false, "Melbourne stays planned");
 assert(
   existsSync(join(ROOT, "qa/fixtures/auckland/published-network.json")),
@@ -67,4 +67,4 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("auckland-dogfood-gate: ok (live, picker city, TRAIN only, Waitematā hub, Wellington/Melbourne planned)");
+console.log("auckland-dogfood-gate: ok (live, picker city, TRAIN only, Waitematā hub, Wellington also live, Melbourne planned)");

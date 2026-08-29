@@ -3,8 +3,8 @@
  * Usage: node qa/journey-cap-repro.mjs
  */
 import { chromium } from "playwright";
-import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
-import { pickStationCombobox } from "./helpers/station-combobox.mjs";
+import { openCustomJourneyCreate } from "../helpers/open-custom-journey.mjs";
+import { pickStationCombobox } from "../helpers/station-combobox.mjs";
 
 const BASE = "http://localhost:3000";
 

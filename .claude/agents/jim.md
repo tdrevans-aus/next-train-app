@@ -18,5 +18,7 @@ Your output is the adapter file, its tests, and the registry entry. Mark reads t
 
 ## Guardrails
 - One city per invocation, trailing Luke by roughly one city.
+- When verifying your wiring, run your city's own gates (`node qa/<city>-*-gate.mjs`) or at most
+  `node qa/run-all.mjs --smoke`. Never the bare (full) suite — it's for nightly runs, not lanes.
 - Never touch shared product UI or the `/api/next-train` response shape. If a city seems to need that, stop and flag it rather than making the change.
 - Escalate model tier (Opus) only by asking first — don't silently switch up for a hard city.

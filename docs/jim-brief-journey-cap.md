@@ -43,7 +43,7 @@ journeyTemplatesEl.hidden = atCap || !anyChipVisible;
 - `saveJourneyDetailFromForm()` / `saveJourneyListToSettings()`
 - `completeTemplateRouteSetup()` → `saveJourneyListToSettings()` on auto-route
 
-Web repro: `node qa/journey-cap-repro.mjs` (chips hidden at 6; persist has no max).
+Web repro: `node qa/repros/journey-cap-repro.mjs` (chips hidden at 6; persist has no max).
 
 ### B. Morning chip when journey already exists
 
@@ -99,7 +99,7 @@ HTML: e.g. `#journey-templates-cap-hint` toggled in `updateJourneyTemplatesVisib
 ## Automated
 
 ```bash
-node qa/journey-cap-repro.mjs
+node qa/repros/journey-cap-repro.mjs
 ```
 
 Extend script or add case: assert `journeys.length` cannot exceed 6 after attempted 7th save.
@@ -111,7 +111,7 @@ Extend script or add case: assert `journeys.length` cannot exceed 6 after attemp
 1. Cannot persist more than **6 configured** journeys via any UI path.
 2. **Morning into town** chip hidden when a journey with that name (or `templateKey: morning`) already exists, even if active hours ≠ 06:00–09:00.
 3. At 6 journeys, cap hint visible; template chips hidden.
-4. `node qa/journey-cap-repro.mjs` **PASS**.
+4. `node qa/repros/journey-cap-repro.mjs` **PASS**.
 5. Duplicate Morning overlap scenario reduced (see `jim-brief-duplicate-morning-template.md`).
 
 ---
