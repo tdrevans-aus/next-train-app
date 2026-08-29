@@ -64,14 +64,12 @@ async function loadZipBuffer(zipPath, url) {
   return Buffer.from(await response.arrayBuffer());
 }
 
-async function main() {
-  const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
-  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
-  const defaultZipPath = join(ROOT, "qa/tmp/translink-gtfs.zip");
-  const zipPath = zipArg ? zipArg.slice("--zip=".length) : existsSync(defaultZipPath) ? defaultZipPath : "";
-  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
-
-  const buffer = await loadZipBuffer(zipPath, url);
+/**
+ * Given a raw upstream GTFS zip buffer, return the trimmed+dieted file
+ * contents keyed by filename. Statically imported by
+ * api/cron/refresh-gtfs.js - keep this pure (no fs/network access).
+ */
+export function buildTrimmedFiles(buffer) {
   const files = unzipSync(new Uint8Array(buffer));
   const routes = parseCsv(zipText(files, "routes.txt")).filter((row) => row.route_type === SKYTRAIN_TYPE);
   const routeIds = new Set(routes.map((row) => row.route_id));
@@ -98,30 +96,51 @@ async function main() {
   );
   const agency = parseCsv(zipText(files, "agency.txt"));
 
-  mkdirSync(OUT_DIR, { recursive: true });
-  writeFileSync(join(OUT_DIR, "agency.txt"), toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })));
-  writeFileSync(join(OUT_DIR, "routes.txt"), toCsv(routes, Object.keys(routes[0])));
-  writeFileSync(join(OUT_DIR, "trips.txt"), toCsv(trips, TRIP_COLUMNS));
-  writeFileSync(join(OUT_DIR, "stops.txt"), toCsv(stops, Object.keys(stops[0])));
-  writeFileSync(join(OUT_DIR, "stop_times.txt"), toCsv(stopTimes, STOP_TIME_COLUMNS));
-  writeFileSync(join(OUT_DIR, "calendar.txt"), toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" })));
-  writeFileSync(
-    join(OUT_DIR, "calendar_dates.txt"),
-    toCsv(calendarDates, Object.keys(calendarDates[0] ?? { service_id: "" }))
-  );
+  const output = {
+    "agency.txt": toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })),
+    "routes.txt": toCsv(routes, Object.keys(routes[0])),
+    "trips.txt": toCsv(trips, TRIP_COLUMNS),
+    "stops.txt": toCsv(stops, Object.keys(stops[0])),
+    "stop_times.txt": toCsv(stopTimes, STOP_TIME_COLUMNS),
+    "calendar.txt": toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" })),
+    "calendar_dates.txt": toCsv(calendarDates, Object.keys(calendarDates[0] ?? { service_id: "" })),
+  };
   const feed = zipText(files, "feed_info.txt");
   if (feed) {
-    writeFileSync(join(OUT_DIR, "feed_info.txt"), feed.endsWith("\n") ? feed : `${feed}\n`);
+    output["feed_info.txt"] = feed.endsWith("\n") ? feed : `${feed}\n`;
   }
 
   const names = [...new Set(stops.map((row) => row.stop_name))].sort((a, b) => a.localeCompare(b));
   const headsigns = [...new Set(trips.map((row) => row.trip_headsign))].sort();
-  console.log(`trim-vancouver-gtfs: ${routes.length} routes, ${trips.length} trips, ${stops.length} stops`);
-  console.log("headsigns:", headsigns.join(" | "));
-  console.log(names.join("\n"));
+  return {
+    output,
+    summary: `${routes.length} routes, ${trips.length} trips, ${stops.length} stops`,
+    diagnostics: `headsigns: ${headsigns.join(" | ")}\n${names.join("\n")}`,
+  };
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+async function main() {
+  const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
+  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
+  const defaultZipPath = join(ROOT, "qa/tmp/translink-gtfs.zip");
+  const zipPath = zipArg ? zipArg.slice("--zip=".length) : existsSync(defaultZipPath) ? defaultZipPath : "";
+  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
+
+  const buffer = await loadZipBuffer(zipPath, url);
+  const { output, summary, diagnostics } = buildTrimmedFiles(buffer);
+
+  mkdirSync(OUT_DIR, { recursive: true });
+  for (const [name, content] of Object.entries(output)) {
+    writeFileSync(join(OUT_DIR, name), content);
+  }
+
+  console.log(`trim-vancouver-gtfs: ${summary}`);
+  console.log(diagnostics);
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

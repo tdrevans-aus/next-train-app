@@ -59,18 +59,13 @@ function uniqueBy(rows, keyFn) {
   return out;
 }
 
-async function main() {
-  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
-  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
-
-  const response = await fetch(url, {
-    headers: { Accept: "application/zip, application/octet-stream, */*" },
-  });
-  if (!response.ok) {
-    throw new Error(`GTFS download failed (${response.status}) for ${url}`);
-  }
-
-  const buffer = await response.arrayBuffer();
+/**
+ * Given a raw upstream GTFS zip buffer, return the trimmed+dieted file
+ * contents keyed by filename (excluding README.md, which is a local-dev
+ * nicety only). Statically imported by api/cron/refresh-gtfs.js - keep
+ * this pure (no fs/network access).
+ */
+export function buildTrimmedFiles(buffer) {
   const files = unzipSync(new Uint8Array(buffer));
 
   const routes = parseCsv(readZipText(files, "routes.txt"));
@@ -122,8 +117,6 @@ async function main() {
   const railCalendar = calendar.filter((row) => usedServiceIds.has(row.service_id));
   const railCalendarDates = calendarDates.filter((row) => usedServiceIds.has(row.service_id));
 
-  mkdirSync(OUT_DIR, { recursive: true });
-
   const outputs = {
     "agency.txt": agency,
     "feed_info.txt": feedInfo,
@@ -146,15 +139,42 @@ async function main() {
     "calendar_dates.txt": Object.keys(calendarDates[0] ?? {}),
   };
 
+  const output = {};
   for (const [filename, rows] of Object.entries(outputs)) {
-    writeFileSync(join(OUT_DIR, filename), toCsv(rows, columnsByFile[filename]));
+    output[filename] = toCsv(rows, columnsByFile[filename]);
+  }
+
+  return {
+    output,
+    summary: `routes=${railRoutes.length} trips=${railTrips.length} stops=${railStops.length} stop_times=${railStopTimes.length}`,
+    feedInfo: feedInfo[0] ?? null,
+  };
+}
+
+async function main() {
+  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
+  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
+
+  const response = await fetch(url, {
+    headers: { Accept: "application/zip, application/octet-stream, */*" },
+  });
+  if (!response.ok) {
+    throw new Error(`GTFS download failed (${response.status}) for ${url}`);
+  }
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  const { output, summary, feedInfo } = buildTrimmedFiles(buffer);
+
+  mkdirSync(OUT_DIR, { recursive: true });
+  for (const [filename, content] of Object.entries(output)) {
+    writeFileSync(join(OUT_DIR, filename), content);
   }
 
   const readme = `# Brisbane SEQ GTFS fixture (rail-only)
 
 **Source:** ${url}
 **Trimmed:** ${new Date().toISOString().slice(0, 10)}
-**Feed span:** ${feedInfo[0]?.feed_start_date ?? "?"} → ${feedInfo[0]?.feed_end_date ?? "?"}
+**Feed span:** ${feedInfo?.feed_start_date ?? "?"} → ${feedInfo?.feed_end_date ?? "?"}
 
 ## Regenerate
 
@@ -173,12 +193,12 @@ node scripts/build-line-map.mjs --city=brisbane
   writeFileSync(join(OUT_DIR, "README.md"), readme);
 
   console.log(`Wrote rail fixture to ${OUT_DIR}`);
-  console.log(
-    `routes=${railRoutes.length} trips=${railTrips.length} stops=${railStops.length} stop_times=${railStopTimes.length}`
-  );
+  console.log(summary);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

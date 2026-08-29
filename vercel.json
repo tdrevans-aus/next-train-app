@@ -2,6 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npm install",
+  "crons": [
+    {
+      "path": "/api/cron/refresh-gtfs",
+      "schedule": "17 3 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
