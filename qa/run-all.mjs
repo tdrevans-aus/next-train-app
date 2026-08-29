@@ -67,6 +67,7 @@ const SMOKE_SCRIPTS = [
   "newcastle-line-map-conformance.mjs",
   "auckland-dogfood-gate.mjs",
   "region-selection.mjs",
+  "live-city-lists-sync.mjs",
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-lazy-load.mjs",
   "uk-planned-gate.mjs",
@@ -182,6 +183,8 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "vancouver-attribution.mjs",
   /** Direct provider-lib imports, no :3000. */
   "gtfs-overnight-lookahead.mjs",
+  /** Registry vs. the six live-city list copies (docs/live-flip-checklist.md). */
+  "live-city-lists-sync.mjs",
   /** Offline UK catalog checks. */
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-lazy-load.mjs",
