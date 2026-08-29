@@ -5506,6 +5506,9 @@ async function fetchNextTrain() {
     if (fetchId !== journeyBoardFetchId) {
       return;
     }
+    // Deferred features (reminders, journey detail) must still become
+    // available when the first fetch fails (offline/429).
+    window.NextTrainDeferred?.load?.();
     errorEl.textContent = error.message;
     errorEl.hidden = false;
     trackProductEvent("api_error_shown", {
