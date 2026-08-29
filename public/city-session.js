@@ -360,22 +360,27 @@
       return;
     }
     select.replaceChildren();
-    for (const region of countryById(countryId).regions) {
+    const country = countryById(countryId);
+    const hasOpen = country.regions.some((region) => isRegionOpen(region));
+    for (const region of country.regions) {
       const option = document.createElement("option");
       option.value = region.id;
       if (region.comingSoon) {
         option.textContent = `${region.name} (Coming Soon)`;
-        option.disabled = true;
+        // Keep the label visible when a country has no live city yet (Sweden).
+        // Still disabled beside live siblings (Melbourne next to Perth).
+        option.disabled = hasOpen;
       } else {
         option.textContent = region.name;
       }
       select.append(option);
     }
     const open = firstOpenRegion(countryId);
-    const wantedOpen = countryById(countryId).regions.some(
+    const soon = country.regions.find((region) => region.comingSoon);
+    const wantedOpen = country.regions.some(
       (region) => region.id === regionId && isRegionOpen(region)
     );
-    const wanted = wantedOpen ? regionId : open?.id ?? "";
+    const wanted = wantedOpen ? regionId : open?.id ?? soon?.id ?? "";
     if (wanted && ![...select.options].some((option) => option.value === wanted && !option.disabled)) {
       select.value = open?.id ?? select.options[0]?.value ?? "";
     } else {
