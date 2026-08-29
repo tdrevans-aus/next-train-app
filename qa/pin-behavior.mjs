@@ -13,6 +13,7 @@ import {
   loadApp,
   nearbyPinSnapshot,
   perthTodayKey,
+  perthWallClockPlus,
   readSettings,
   routeJourney,
   seedSettings,
@@ -325,9 +326,9 @@ async function run() {
         commuteJourney({
           id: "j-evening",
           name: "Evening",
-          preferredTrainTime: "17:00",
-          defaultFrom: "15:00",
-          defaultUntil: "18:00",
+          // Inside the derived [target−60, target+15] band now, so this is
+          // the pinned journey; a fixed 17:00 pinned it only 16:00–17:15.
+          preferredTrainTime: perthWallClockPlus(40),
           journeyPinDismissedDate: "",
         }),
       ],
