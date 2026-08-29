@@ -914,6 +914,19 @@ D1 pack: `docs/goteborg-d1/` (Expansion-room five-file). D2 fixture is a verbati
 6. Mark probes in those tests: Brunnsparken, Drottningtorget, Korsvägen, Nils Ericsonsplatsen, Liseberg Station / Liseberg Station (tåg) / Liseberg Södra, Gamlestads Torg / Gamlestaden Station, Lindholmen, Göteborg Central.
 7. Adapter uses Trafiklab GTFS Regional `vt` (`TRAFIKLAB_API_KEY`); no TripUpdates for Västtrafik — schedule-only. `/api/next-train?city=goteborg&station=Brunnsparken&direction=Tynnered` stays **501**. Melbourne stays planned. Do not wire UK NR.
 
+### 24c. Osaka provider (catalog / planned — not live)
+
+D1 pack: `docs/osaka-d1/`. D2 fixture is a verbatim copy at `qa/fixtures/osaka/published-network.json`. Not generated from GTFS. No official public feed. `adapterReady: false`.
+
+1. `assertCityLive("osaka")` still returns **501** (`status: planned`, `adapterReady: false`).
+2. Picker: country **Japan** (`jp`) → **Osaka (Coming Soon)**. No live board. Do not invent `city=japan`. Do not invent `osk` / `osaka-metro` / `kintetsu`. Do not merge Tokyo / Keihanshin.
+3. Hub lock: **Hommachi** (M18 × Y13 × C16). Official transfers Yotsubashi + Chuo only. Not Umeda, not Namba, not Shinsaibashi, not Sakaisuji-Hommachi, not Tennoji, not Downtown.
+4. Direction is line + terminus (`Midosuji + Nakamozu`). Not compass N/S/E/W. Never inbound/outbound or “to City”.
+5. `node qa/osaka-planned-gate.mjs` and `node qa/osaka-line-map-conformance.mjs` — offline. Osaka is not added to `LIVE_CITY_IDS` / `MULTI_CITY_IDS`. Perth / Amsterdam / Rotterdam live-gates stay. Stockholm / Göteborg stay Coming Soon. Melbourne stays planned.
+6. Mark probes in those tests: Hommachi, Sakaisuji-Hommachi, Umeda / Higashi-Umeda / Nishi-Umeda, Namba, Shinsaibashi, Yotsubashi, Esaka, Yumeshima, Nakamozu, Nagata, Tenjimbashisuji 6-chome. Negatives: New Tram / Senri-Chuo / Momoyamadai / Minoh-Kayano.
+7. `/api/next-train?city=osaka&station=Hommachi&direction=Nakamozu` stays **501**. `/api/board?city=osaka&station=Hommachi` stays **501**. No env key. Do not invent an ODPT zip.
+8. No D6 network-sweep and no `probe:osaka` — there is no official public feed. D6 must never gate the PR. Melbourne stays planned. Do not wire Tokyo / Fukuoka / Nagoya.
+
 ### 24. Melbourne provider probe (adapter only — not live)
 
 Jim brief: `docs/jim-brief-melbourne-provider.md`
