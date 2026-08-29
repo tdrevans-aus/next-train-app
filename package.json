@@ -91,6 +91,7 @@
     "@capgo/native-purchases": "^8.6.5",
     "@sentry/browser": "10.69.0",
     "@sentry/capacitor": "^4.3.0",
+    "@vercel/blob": "^2.8.0",
     "express": "^4.21.2",
     "fflate": "^0.8.3",
     "gtfs-realtime-bindings": "^2.2.0"
