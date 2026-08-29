@@ -1,7 +1,7 @@
 /**
  * Shared Playwright helpers for journey-mode smoke tests.
  */
-export const BASE = "http://localhost:3000";
+export const BASE = process.env.QA_BASE || "http://localhost:3000";
 
 export const PERTH_GEO_CONTEXT = {
   geolocation: { latitude: -31.77, longitude: 115.99 },

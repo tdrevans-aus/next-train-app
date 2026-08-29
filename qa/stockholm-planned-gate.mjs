@@ -141,10 +141,10 @@ assert(/id:\s*"rotterdam"/.test(session), "Rotterdam must remain in the NL picke
 assert(!/id:\s*"sweden"/.test(session), "do not invent city=sweden in the picker");
 assert(!/id:\s*"malmo"/.test(session), "do not start Malmö in the picker");
 assert(
-  /id:\s*"goteborg",\s*name:\s*"Göteborg",\s*timeZone:\s*"Europe\/Stockholm",\s*comingSoon:\s*true/.test(
+  /id:\s*"goteborg",\s*name:\s*"Göteborg",\s*timeZone:\s*"Europe\/Stockholm"/.test(
     session
   ),
-  "Göteborg is a separate Coming Soon sibling, not merged into Stockholm"
+  "Göteborg is a separate (now tester-live) sibling, not merged into Stockholm"
 );
 assert(!/MULTI_CITY_IDS = \[[^\]]*stockholm/.test(session), "stockholm must not be in city-session MULTI_CITY_IDS");
 assert(/MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(session), "rotterdam must remain in city-session MULTI_CITY_IDS");

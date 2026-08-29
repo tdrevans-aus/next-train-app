@@ -2,7 +2,7 @@
 
 **For:** Jim (implement)  
 **From:** Tim (product) / Simon (design)  
-**Status:** Implemented  
+**Status:** Removed — the Glance path was never registered in the manifest ("paused until stable on launchers") and shipped ~2 MB of unused Compose/Glance deps; the renderer and deps were deleted rather than cut over. RemoteViews remains the only widget renderer.  
 **Backlog:** **FB-40**  
 **Supersedes:** **FB-35** preset grid UX (native paint stays until cutover); **FB-39** dropped (Aug 2026)  
 **Builds on:** **FB-36** (opacity / transparent), **FB-37** (configure + wallpaper preview), **FB-38** (Monet — folded into **Match wallpaper** mode)  

@@ -15,6 +15,13 @@ final class WidgetBackgroundPainter {
   private static final float STROKE_WIDTH_DP = 1f;
   /** ~30% black scrim when opacity is below 50%. */
   private static final int LEGIBILITY_SCRIM_COLOR = 0x4D000000;
+  /**
+   * Cap per-bitmap pixels pushed through RemoteViews. Oversized ARGB_8888
+   * bitmaps (large cells × high density) are the classic route to
+   * TransactionTooLargeException → "Problem loading widget"; the layers use
+   * fitXY, so a downscaled card stretches back losslessly enough.
+   */
+  static final int MAX_BITMAP_PIXELS = 640_000;
 
   private WidgetBackgroundPainter() {}
 
@@ -29,6 +36,10 @@ final class WidgetBackgroundPainter {
     float density = context.getResources().getDisplayMetrics().density;
     int widthPx = Math.max((int) (size.widthDp * density), 1);
     int heightPx = Math.max((int) (size.heightDp * density), 1);
+    float bitmapScale = bitmapScaleFor(widthPx, heightPx);
+    widthPx = Math.max((int) (widthPx * bitmapScale), 1);
+    heightPx = Math.max((int) (heightPx * bitmapScale), 1);
+    density = density * bitmapScale;
     String mode = WidgetAppearanceMode.read(context);
 
     if (opacity <= 0) {
@@ -64,6 +75,15 @@ final class WidgetBackgroundPainter {
     } else {
       views.setViewVisibility(R.id.widget_text_scrim, View.GONE);
     }
+  }
+
+  /** Exposed for JVM tests. */
+  static float bitmapScaleFor(int widthPx, int heightPx) {
+    long pixels = (long) widthPx * heightPx;
+    if (pixels <= MAX_BITMAP_PIXELS) {
+      return 1f;
+    }
+    return (float) Math.sqrt((double) MAX_BITMAP_PIXELS / pixels);
   }
 
   private static Bitmap drawableToBitmap(GradientDrawable drawable, int width, int height) {
