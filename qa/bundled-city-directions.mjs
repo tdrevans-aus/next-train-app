@@ -67,8 +67,7 @@ assert(
   "Auckland bundled hub chips must match marketingLabelsForStation"
 );
 
-// Göteborg is adapter-ready but still planned (not in MULTI_CITY_IDS) —
-// its chips are bundled ahead of the live flip.
+// Göteborg is tester-live — hub chips must match the marketing module.
 const goteborg = loadDirections("goteborg");
 const gbgHub = goteborgLabels(GBG_HUB);
 assert(Array.isArray(goteborg[GBG_HUB]), "Göteborg hub Brunnsparken must be in bundled directions");
@@ -93,4 +92,4 @@ assert(!stockholm[STO_METRO_HUB].some((chip) => /pendeltåg/i.test(chip)), "T-Ce
 assert(!(stockholm[STO_PENDEL_HUB] ?? []).some((chip) => /pendeltåg 48/i.test(chip)), "Stockholm City must not offer line 48");
 assert(!("Stockholms central" in stockholm), "Stockholms central must not have bundled chips");
 
-console.log(`bundled-city-directions: ok (${MULTI_CITY_IDS.length} cities + goteborg/stockholm planned)`);
+console.log(`bundled-city-directions: ok (${MULTI_CITY_IDS.length} cities + stockholm planned)`);
