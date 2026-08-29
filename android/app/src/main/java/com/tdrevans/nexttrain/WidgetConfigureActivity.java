@@ -45,8 +45,10 @@ public class WidgetConfigureActivity extends Activity {
   protected void onDestroy() {
     if (!isFinishing()) {
       setResult(RESULT_CANCELED);
-      WidgetConfigureBridge.clear();
     }
+    // Always release the static reference — clearing only on abnormal
+    // destruction leaked this Activity on the normal finish path.
+    WidgetConfigureBridge.clearIfBound(this);
     super.onDestroy();
   }
 }

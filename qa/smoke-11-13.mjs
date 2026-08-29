@@ -12,7 +12,7 @@ import {
 } from "./helpers/journeys-dialog.mjs";
 import { ensureJourneyMode, PERTH_GEO_CONTEXT, waitForMorningTemplateRoute, readMorningTemplateMeta } from "./helpers/journey-smoke.mjs";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.QA_BASE || "http://localhost:3000";
 const results = [];
 
 function pass(id, notes) {
