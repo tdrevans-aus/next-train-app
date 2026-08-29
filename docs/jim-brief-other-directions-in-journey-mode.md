@@ -28,7 +28,7 @@ In **My Journeys** mode, the **Other directions** block (`#nearby-directions`) s
 
 **Result:** `journeyModeActive === true`, route shows journey, **Manage journeys** visible, but `#nearby-directions.hidden === false`.
 
-Playwright one-liner path: see QA repro in `qa/other-directions-journey-repro.mjs`.
+Playwright one-liner path: see QA repro in `qa/repros/other-directions-journey-repro.mjs`.
 
 ---
 
@@ -61,7 +61,7 @@ Playwright one-liner path: see QA repro in `qa/other-directions-journey-repro.mj
 | **Near me** | Visible when board has directions |
 | **My Journeys** | **Never** visible (hidden, empty list) |
 
-**TESTING.md test 23** + `node qa/other-directions-journey-repro.mjs` → **PASS**.
+**TESTING.md test 23** + `node qa/repros/other-directions-journey-repro.mjs` → **PASS**.
 
 Manual: Journey mode after any path (save journey, switch from Near me, cold start in active window) — no “Other directions” label.
 

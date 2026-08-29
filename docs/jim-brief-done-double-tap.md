@@ -21,7 +21,7 @@ Feels random; more likely **after some activity** (toggling options, opening fro
 ## Automated repro (web)
 
 ```bash
-node qa/done-double-tap-repro.mjs
+node qa/repros/done-double-tap-repro.mjs
 ```
 
 **Result:** **Did not reproduce** on web (`test=1`, fixture). Single Done closes Menu, Menu→Reminders→Done, after Journeys→Menu→Done, double-click Done — all `anyDialogOpen === 0`.
@@ -103,7 +103,7 @@ Possible race if user taps Done during re-render (device unlock).
 - Menu: one Done always dismisses (web + Android).
 - Reminders web: one Done.
 - Reminders native: one Done after typical edits; validation errors show without “dead” first tap.
-- `node qa/done-double-tap-repro.mjs` stays green on web.
+- `node qa/repros/done-double-tap-repro.mjs` stays green on web.
 
 ---
 

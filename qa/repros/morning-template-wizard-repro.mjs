@@ -3,7 +3,7 @@
  * Usage: node qa/morning-template-wizard-repro.mjs
  */
 import { chromium } from "playwright";
-import { advanceOnboardingToJourneysStep } from "./helpers/onboarding.mjs";
+import { advanceOnboardingToJourneysStep } from "../helpers/onboarding.mjs";
 
 const BASE = "http://localhost:3000";
 

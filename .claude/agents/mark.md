@@ -17,6 +17,9 @@ Read the wired adapter, its tests, and the city's `docs/<city>-d1/` pack. Don't 
 Write your result as a short pass/fail note (where the pipeline already keeps them, or as a PR comment if this runs against a PR) — not as a chat reply that only exists in this conversation. You have no tool that lets you message another agent directly.
 
 ## Guardrails
+- QA tiers: run `node qa/run-all.mjs --smoke` for a city check, `--release` only when told the
+  branch is about to merge. Never run the bare (full) suite — it has no local timeouts and can
+  hang your whole run; a single `node qa/<city>-*-gate.mjs` is fine for a tight loop.
 - Flag, don't fix. If a fix looks trivial, still report it rather than editing code yourself.
 - Escalate to a stronger model only by asking first, for a city whose feed keeps producing ambiguous results.
 - Can burst-check several finished adapters in one run — you don't need to stay resident waiting for the next one.

@@ -10,7 +10,13 @@
  *
  * CI (GITHUB_ACTIONS): per-script timeouts (3–6 min), QA_VERBOSE=1 streams logs,
  * 30s heartbeats, and dev-server is always spawned fresh on :3000.
+ * Local runs cap each script at 10 min (heavier of that and the CI ceiling).
  * Override all script limits with QA_SCRIPT_TIMEOUT_MS.
+ *
+ * Only top-level qa/*.mjs files are suite candidates. One-off bug repros live
+ * in qa/repros/ and debug utilities in qa/tools/ — both invisible to the full
+ * suite's glob on purpose. A new gate belongs in qa/ root; a new repro or
+ * probe belongs in a subfolder so it never silently joins the release gate.
  */
 import { spawn } from "child_process";
 import fs from "fs";
@@ -19,12 +25,6 @@ import { fileURLToPath } from "url";
 import { ensureDevServer, stopDevServer, REPO_ROOT } from "./helpers/dev-server.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-/** Exit 1 = expected good (repro did not fire / delay not seen). */
-const EXIT_INVERT_PASS = new Set([
-  "custom-template-delay-repro.mjs",
-  "done-double-tap-repro.mjs",
-]);
 
 const SMOKE_SCRIPTS = [
   "stickiness-coaches-logic.mjs",
@@ -224,10 +224,13 @@ function getScriptTimeoutMs(scriptName) {
   if (Number.isFinite(override) && override > 0) {
     return override;
   }
-  if (process.env.CI !== "true") {
-    return 0;
+  const heavy = HEAVY_SCRIPT_TIMEOUT_MS[scriptName];
+  if (process.env.CI === "true") {
+    return heavy ?? 3 * 60 * 1000;
   }
-  return HEAVY_SCRIPT_TIMEOUT_MS[scriptName] ?? 3 * 60 * 1000;
+  // Local runs get a generous ceiling instead of none — a single hung
+  // Playwright script must not stall the whole suite indefinitely.
+  return Math.max(heavy ?? 0, 10 * 60 * 1000);
 }
 
 function killScriptChild(child) {
@@ -315,15 +318,6 @@ function classifyResult(scriptName, code, { timedOut = false, timeoutMs = 0 } = 
     return { status: "FAIL", note: `timeout after ${limitSec}s` };
   }
 
-  if (EXIT_INVERT_PASS.has(scriptName)) {
-    if (code === 1) {
-      return { status: "PASS*", note: "exit 1 = expected good" };
-    }
-    if (code === 0) {
-      return { status: "FAIL", note: "exit 0 = repro or unexpected pass" };
-    }
-  }
-
   if (code === 0) {
     return { status: "PASS", note: "" };
   }
@@ -352,8 +346,7 @@ async function main() {
           : "Full scripts:";
     console.log(label);
     for (const name of scripts) {
-      const invert = EXIT_INVERT_PASS.has(name) ? " (PASS* on exit 1)" : "";
-      console.log(`  ${name}${invert}`);
+      console.log(`  ${name}`);
     }
     return;
   }
@@ -399,7 +392,6 @@ async function main() {
   }
 
   const pass = results.filter((r) => r.status === "PASS").length;
-  const passStar = results.filter((r) => r.status === "PASS*").length;
   const fail = results.filter((r) => r.status === "FAIL").length;
   const elapsedSec = Math.round((Date.now() - started) / 1000);
 
@@ -412,7 +404,7 @@ async function main() {
         ? "full (no native)"
         : "full";
   console.log(
-    `Suite: ${suiteLabel} · ${pass} PASS · ${passStar} PASS* · ${fail} FAIL · ${elapsedSec}s`
+    `Suite: ${suiteLabel} · ${pass} PASS · ${fail} FAIL · ${elapsedSec}s`
   );
   console.log("");
 

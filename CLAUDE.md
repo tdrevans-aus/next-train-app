@@ -1,5 +1,20 @@
 # Next Train — repo notes for Claude
 
+## QA suite tiers — default to smoke, never full
+
+`qa/run-all.mjs` has three tiers; pick by occasion, not by thoroughness instinct:
+
+- **Day-to-day / verifying a change:** `node qa/run-all.mjs --smoke` (~2–5 min). This already
+  includes every city dogfood gate, line-map conformance, direction-match, and planned gate —
+  it covers a normal data/adapter change completely.
+- **Before merging or pushing a branch:** `node qa/run-all.mjs --release` (~5–8 min) — what CI
+  runs on main.
+- **Full (no flag) is not a working-session command.** It globs ~130 scripts, runs them
+  sequentially, and has no per-script timeout outside CI, so one hung script stalls it forever.
+  Reserve it for nightly/pre-release runs a human asked for by name.
+
+A single city gate can also be run directly (`node qa/<city>-dogfood-gate.mjs`) for a tight loop.
+
 ## Expansion pipeline agents (Nico / Luke / Jim / Mark / Viv)
 
 Five named agents run the city-expansion pipeline (see `docs/multi-city-provider-design.md`

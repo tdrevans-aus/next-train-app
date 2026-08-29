@@ -2,7 +2,7 @@
  * Reproduce unreliable hero swipe-left on fresh load.
  */
 import { chromium } from "playwright";
-import { armJourneyLeaveCard } from "./helpers/journey-smoke.mjs";
+import { armJourneyLeaveCard } from "../helpers/journey-smoke.mjs";
 
 const BASE = "http://localhost:3000";
 const FIXTURE_RESET_URL = `${BASE}/?reset=1&fixture=normal&station=Edgewater%20Stn&direction=Perth`;
