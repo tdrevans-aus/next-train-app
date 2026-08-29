@@ -65,6 +65,7 @@ const SMOKE_SCRIPTS = [
   "gold-coast-line-map-conformance.mjs",
   "newcastle-dogfood-gate.mjs",
   "newcastle-line-map-conformance.mjs",
+  "auckland-dogfood-gate.mjs",
   "region-selection.mjs",
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-lazy-load.mjs",

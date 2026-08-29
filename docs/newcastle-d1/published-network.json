@@ -1,0 +1,93 @@
+{
+  "city": "newcastle",
+  "status": "planned",
+  "timezone": "Australia/Sydney",
+  "source": "https://www.newcastletransport.info/wp-content/uploads/2019/11/MAP-SIMPLE-Newcastle-Light-Rail.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger light rail map (ordered stops + termini)",
+      "title": "Newcastle Light Rail map",
+      "url": "https://www.newcastletransport.info/wp-content/uploads/2019/11/MAP-SIMPLE-Newcastle-Light-Rail.pdf",
+      "linkedFrom": "https://www.newcastletransport.info/plan-your-trip/light-rail/",
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "localFile": "sources/MAP-SIMPLE-Newcastle-Light-Rail.pdf",
+      "note": "Schematic, not to scale. Six L-icon stops. Termini: Newcastle Interchange (WICKHAM; T+B+L) and Newcastle Beach (NEWCASTLE EAST). Intermediate: Honeysuckle, Civic, Crown Street, Queens Wharf (ferry). No under-construction stops."
+    },
+    {
+      "role": "current NLR timetable (same six names + suburb column)",
+      "title": "Newcastle Light Rail servicing Newcastle Interchange, Honeysuckle, Civic, Crown Street, Queens Wharf & Newcastle Beach",
+      "url": "https://www.newcastletransport.info/wp-content/uploads/2022/03/NLR_tt_20220403_web.pdf",
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "localFile": "sources/NLR_tt_20220403_web.pdf",
+      "note": "Valid from 03/04/2022; still the PDF linked as Download Light Rail Timetable on 27 Aug 2026. Route code NLR. Columns: Newcastle Interchange, Wickham / Honeysuckle, Newcastle / Civic, Newcastle / Crown Street, Newcastle / Queens Wharf, Newcastle / Newcastle Beach, Newcastle. Operator Keolis Downer. Frequency-based."
+    },
+    {
+      "role": "passenger index",
+      "title": "Light rail — Newcastle Transport",
+      "url": "https://www.newcastletransport.info/plan-your-trip/light-rail/",
+      "retrievedAt": "2026-08-27T14:31:00Z",
+      "localFile": "sources/light-rail.html",
+      "note": "Newcastle light rail runs from Newcastle Interchange in Wickham to Newcastle Beach in the east end of Newcastle. Six convenient stops."
+    }
+  ],
+  "retrievedAt": "2026-08-27T14:32:00Z",
+  "notes": [
+    "D1 oracle is the official Newcastle Transport light rail map plus the linked NLR timetable PDF, HAND-TRANSCRIBED. Stations arrays are not generated from GTFS. H2 name-clash is against TfNSW GTFS schedule/lightrail/newcastle (same TFNSW_API_KEY as Sydney). No stopIds in this file.",
+    "City id newcastle is a SEPARATE city from sydney. Do not merge into Sydney light rail or NSW TrainLink / Central Coast & Hunter heavy rail. Modes v1: TRAIN-like light rail only (NLR). No buses, ferry (Stockton), or NSW TrainLink to Sydney in the oracle.",
+    "Timezone Australia/Sydney HAS DST (AEDT/AEST). Do not copy Brisbane / Gold Coast no-DST.",
+    "One printed line: Newcastle Light Rail, passenger code NLR. Termini Newcastle Interchange and Newcastle Beach.",
+    "Locked rail-interchange printed name: Newcastle Interchange (map hub with T+B+L). Not Wickham, not Newcastle Interchange Light Rail, not Newcastle Station. Timetable column adds suburb: Newcastle Interchange, Wickham. GTFS parent is Newcastle Interchange (location_type=1); child Newcastle Interchange Light Rail.",
+    "Locked beach terminus: Newcastle Beach (map). Not Newcastle East (suburb label on the map), not Newcastle Beach Light Rail. Timetable column: Newcastle Beach, Newcastle.",
+    "Civic is an intermediate stop, not the hub. Do not confuse with Canberra Civic / Alinga Street.",
+    "gtfsRouteIdsIfKnown is the passenger code NLR. Keyed feed route_id NT_NLR. No stopIds in this file."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Newcastle Interchange",
+    "doNotUse": [
+      "Wickham",
+      "Newcastle Interchange Light Rail",
+      "Newcastle Station",
+      "Newcastle",
+      "City",
+      "Civic",
+      "Newcastle Beach Light Rail"
+    ],
+    "alsoOnSharedApproaches": [
+      "Honeysuckle"
+    ],
+    "beachTerminusLock": "Newcastle Beach"
+  },
+  "coverageGaps": [
+    "No passenger extension west of Newcastle Interchange (Broadmeadow corridor is strategic / not on the official NLR map). Not inserted.",
+    "NSW TrainLink / Central Coast & Hunter trains at Newcastle Interchange are out of v1. Same parent name Newcastle Interchange in the NLR GTFS — doNotGroup train vs light rail children.",
+    "Stockton ferry at Queens Wharf is out of v1.",
+    "Timetable PDF still dated 03/04/2022; stop names match the current map. Frequency on the Newcastle Transport page (5am–1am, ~7.5 min peak) is the live product, not a new stop list.",
+    "PDF hex / TfNSW red EE343F are legend/feed metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "nlr",
+      "number": "NLR",
+      "name": "Newcastle Light Rail",
+      "officialPageTitle": "Newcastle Light Rail servicing Newcastle Interchange, Honeysuckle, Civic, Crown Street, Queens Wharf & Newcastle Beach",
+      "gtfsRouteIdsIfKnown": [
+        "NLR"
+      ],
+      "mapGroup": "Light rail",
+      "termini": [
+        "Newcastle Interchange",
+        "Newcastle Beach"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Newcastle Interchange",
+        "Honeysuckle",
+        "Civic",
+        "Crown Street",
+        "Queens Wharf",
+        "Newcastle Beach"
+      ]
+    }
+  ]
+}

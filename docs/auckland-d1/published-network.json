@@ -1,0 +1,262 @@
+{
+  "city": "auckland",
+  "status": "planned",
+  "timezone": "Pacific/Auckland",
+  "source": "https://at.govt.nz/bus-train-ferry/train-services/auckland-train-network-maps",
+  "sources": [
+    {
+      "role": "D1 passenger map index",
+      "title": "Auckland train network maps",
+      "url": "https://at.govt.nz/bus-train-ferry/train-services/auckland-train-network-maps",
+      "retrievedAt": "2026-08-24T15:52:00Z"
+    },
+    {
+      "role": "current Eastern Line timetable (ordered stops)",
+      "url": "https://at.govt.nz/media/j5qlqiir/auckland-transport-eastern-line-train-timetable.pdf",
+      "retrievedAt": "2026-08-24T15:54:00Z",
+      "note": "Towards Waitematā via Panmure. Station column: Manukau–Waitematā."
+    },
+    {
+      "role": "current Western Line timetable (ordered stops)",
+      "url": "https://at.govt.nz/media/q2pdxp2x/auckland-transport-western-line-train-timetable.pdf",
+      "retrievedAt": "2026-08-24T15:54:00Z",
+      "note": "Effective 14 June 2026. Towards Waitematā via New Lynn and Newmarket. Prints Maungawhau (Mt Eden) Station temporarily closed for construction of the City Rail Link."
+    },
+    {
+      "role": "current Southern Line corridor (ordered stops + overlays)",
+      "urls": [
+        "https://at.govt.nz/media/n44gnojn/southern-line-timetable.pdf",
+        "https://at.govt.nz/media/xcvhdrrl/south-city-line-timetable-auckland-transport.pdf"
+      ],
+      "retrievedAt": "2026-08-24T15:54:00Z",
+      "note": "n44gnojn is a Sept 2025 rail-bus overlay missing Paerātā/Drury. Paerātā and Drury inserted from AT 2 Aug 2026 opening release plus South City preview timetable (same corridor). Ngākōroa marked Under construction on that preview — not inserted."
+    },
+    {
+      "role": "current Onehunga Line description + CRL preview ordered stops on the branch",
+      "urls": [
+        "https://at.govt.nz/bus-train-ferry/train-services/onehunga-west-line",
+        "https://at.govt.nz/media/vkfjkt2x/onehunga-west-line-timetable-auckland-transport.pdf",
+        "https://at.govt.nz/media/1972899/onehunga-line-train-route-map-march-2017.pdf"
+      ],
+      "retrievedAt": "2026-08-24T15:52:00Z"
+    },
+    {
+      "role": "printed inner-city name / hub",
+      "title": "Waitematā Station",
+      "url": "https://at.govt.nz/projects-initiatives/city-centre-projects-and-initiatives/city-rail-link-auckland-s-new-network-in-2026/about-the-city-rail-link-stations/waitemata-station",
+      "retrievedAt": "2026-08-24T15:55:00Z",
+      "lastUpdatedOnPage": "16/07/2026"
+    },
+    {
+      "role": "CRL status (not yet passenger-open)",
+      "title": "All aboard! What you need to know about City Rail Link opening 13 September",
+      "url": "https://at.govt.nz/about-us/news-events/media-centre/2026-media-releases/all-aboard-what-you-need-to-know-about-city-rail-link-opening-13-september",
+      "retrievedAt": "2026-08-24T15:55:00Z"
+    },
+    {
+      "role": "future in-carriage map (CRL-era; not the live D1 product until 13 Sep 2026)",
+      "title": "AT-Map-InCarriageTrainMap-23_06_26",
+      "url": "https://at.govt.nz/media/gwrnlxzs/train-network-map-auckland-transport-2026.pdf",
+      "retrievedAt": "2026-08-24T15:53:00Z"
+    },
+    {
+      "role": "train index (current + future line names)",
+      "url": "https://at.govt.nz/bus-train-ferry/train-services",
+      "retrievedAt": "2026-08-24T15:55:00Z",
+      "routeCodesPrinted": ["STH", "EAST", "WEST", "ONE", "S-C", "E-W", "O-W"]
+    },
+    {
+      "role": "Drury and Paerātā opening",
+      "url": "https://at.govt.nz/about-us/news-events/media-centre/2026-media-releases/new-drury-and-paerata-railway-stations-to-open-on-sunday-2-august",
+      "retrievedAt": "2026-08-24T15:55:00Z"
+    }
+  ],
+  "retrievedAt": "2026-08-24T15:55:38Z",
+  "notes": [
+    "D1 oracle is official Auckland Transport passenger maps/PDFs/line pages, HAND-TRANSCRIBED. Stations arrays are not generated from GTFS. GTFS (https://gtfs.at.govt.nz/gtfs.zip, no key) is H2 name-clash only.",
+    "City stays planned. Modes v1: TRAIN only (Auckland Metro / AT trains). No bus, ferry, AirportLink, Northern Busway, or Te Huia in the oracle.",
+    "Timezone Pacific/Auckland HAS DST (NZDT/NZST). Do not copy Brisbane no-DST.",
+    "As of 24 Aug 2026 the live passenger product is still Southern / Eastern / Western / Onehunga. City Rail Link passenger services are confirmed to start Sunday 13 September 2026 (first weekday timetable Monday 14 September). Do not treat Te Waihorotiu or Karanga-a-Hape as open D1 stops. Do not flip the oracle to East West / South City / Onehunga West until that date.",
+    "Locked inner-city printed name: Waitematā Station (AT Waitematā Station page; network maps page; current timetables print Waitematā). Not Britomart, not Waitematā (Britomart), not Waitemata, not City Centre as a stop. Mana whenua gifted Waitematā to replace Britomart; dual-name stage ended; last-stage rename from Sep 2025.",
+    "Until CRL opens, Waitematā Station is the only city-centre commuter rail station. All lines except Onehunga arrive/depart Waitematā. Onehunga currently terminates at Newmarket (AT Onehunga West page: until end of Saturday 12 September, ONE runs Newmarket–Onehunga every 30 minutes).",
+    "Passenger codes on AT line pages: STH Southern, EAST Eastern, WEST Western, ONE Onehunga. Future codes S-C, E-W, O-W are preview-only.",
+    "Maungawhau (formerly Mount Eden) is printed on the Western timetable as temporarily closed for CRL construction. Not inserted on the current Western stations array. Future East West / Onehunga West pages list it after opening.",
+    "Paerātā and Drury Railway Stations opened Sunday 2 August 2026 on the Southern Line (AT/KiwiRail release 16 Jul 2026). Inserted. Ngākōroa Railway Station planned 2027 (South City preview: Under construction) — not inserted.",
+    "2017 line-route PDFs still linked from the maps index still say Britomart / Mt Eden / Te Papapa / Takanini. Do not use those strings as the 2026 lock. They are source for Onehunga corridor geography only.",
+    "2026 in-carriage map (23 Jun 2026) is the CRL-era product (South City / East West / Onehunga West plus Te Waihorotiu / Karanga-a-Hape). Coverage gap until 13 Sep. Map uses double-vowel macron spellings (Ngaakooroa, Paeraataa, Te Maahia) that differ from timetable macrons.",
+    "Te Huia (Hamilton–The Strand) is long-distance, not Auckland Metro D1.",
+    "gtfsRouteIdsIfKnown are passenger codes. H2 used public GTFS only to clash names. No stopIds in this file."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Waitematā Station",
+    "doNotUse": [
+      "Britomart",
+      "Britomart Station",
+      "Waitematā (Britomart)",
+      "Waitemata",
+      "Waitemata Train Station",
+      "City Centre",
+      "City"
+    ],
+    "alsoOnSharedApproaches": [
+      "Newmarket",
+      "Parnell",
+      "Grafton"
+    ],
+    "crlNotYetOpen": [
+      "Te Waihorotiu Station",
+      "Karanga-a-Hape Station",
+      "Maungawhau Station"
+    ]
+  },
+  "coverageGaps": [
+    "City Rail Link not in passenger service as of 24 Aug 2026. Opens 13 Sep 2026. Te Waihorotiu and Karanga-a-Hape must not be treated as live D1 stops. Future lines East West (E-W), South City (S-C), Onehunga West (O-W) are official preview only.",
+    "Maungawhau (Mt Eden) currently closed for CRL construction (Western timetable legend). Not on current WEST stop list.",
+    "Ngākōroa: official South City preview prints Under construction; AT Drury/Paerātā release says planned 2027. Not inserted.",
+    "Current Southern all-stops PDF linked from some AT pages (n44gnojn) is a 27–28 Sep 2025 rail-bus overlay and omits Paerātā/Drury. Oracle uses AT 2 Aug 2026 opening copy plus the South City preview corridor for those two names.",
+    "2017 Eastern/Southern/Western/Onehunga route-map PDFs still linked from the maps index are stale (Britomart branding).",
+    "Te Huia The Strand is out of v1.",
+    "PDF hex colours are feed/legend metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "southern",
+      "number": "STH",
+      "name": "Southern Line",
+      "officialPageTitle": "Southern Line — Pukekohe and Waitematā Station via Manurewa and Newmarket (until end Saturday 12 September 2026)",
+      "gtfsRouteIdsIfKnown": ["STH"],
+      "mapGroup": "Southern Line",
+      "termini": ["Pukekohe", "Waitematā Station"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Newmarket",
+          "otherLine": "western",
+          "note": "Western also uses Newmarket–Parnell–Waitematā. Onehunga currently ends at Newmarket."
+        },
+        {
+          "at": "Penrose",
+          "otherLine": "onehunga",
+          "note": "Onehunga leaves via Te Pāpapa. Southern continues Ellerslie–Newmarket."
+        },
+        {
+          "at": "Ōtāhuhu",
+          "otherLine": "eastern",
+          "note": "Shared Ōtāhuhu–Puhinui corridor with Eastern; Eastern leaves via Sylvia Park."
+        }
+      ],
+      "stations": [
+        "Pukekohe",
+        "Paerātā",
+        "Drury",
+        "Papakura",
+        "Takaanini",
+        "Te Mahia",
+        "Manurewa",
+        "Homai",
+        "Puhinui",
+        "Papatoetoe",
+        "Middlemore",
+        "Ōtāhuhu",
+        "Penrose",
+        "Ellerslie",
+        "Greenlane",
+        "Remuera",
+        "Newmarket",
+        "Parnell",
+        "Waitematā Station"
+      ],
+      "notInsertedFromMap": ["Ngākōroa"]
+    },
+    {
+      "id": "eastern",
+      "number": "EAST",
+      "name": "Eastern Line",
+      "officialPageTitle": "Eastern Line (EAST) — Manukau and Waitematā Station via Panmure, Otahuhu and Puhinui (until end Saturday 12 September 2026)",
+      "gtfsRouteIdsIfKnown": ["EAST"],
+      "mapGroup": "Eastern Line",
+      "termini": ["Manukau", "Waitematā Station"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Ōtāhuhu",
+          "otherLine": "southern"
+        }
+      ],
+      "stations": [
+        "Manukau",
+        "Puhinui",
+        "Papatoetoe",
+        "Middlemore",
+        "Ōtāhuhu",
+        "Sylvia Park",
+        "Panmure",
+        "Glen Innes",
+        "Meadowbank",
+        "Ōrākei",
+        "Waitematā Station"
+      ]
+    },
+    {
+      "id": "western",
+      "number": "WEST",
+      "name": "Western Line",
+      "officialPageTitle": "Western Line (WEST) — Swanson and Waitematā Station via Henderson, New Lynn and Newmarket (until end Saturday 12 September 2026)",
+      "gtfsRouteIdsIfKnown": ["WEST"],
+      "mapGroup": "Western Line",
+      "termini": ["Swanson", "Waitematā Station"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Newmarket",
+          "otherLine": "southern"
+        }
+      ],
+      "stations": [
+        "Swanson",
+        "Rānui",
+        "Sturges Rd",
+        "Henderson",
+        "Sunnyvale",
+        "Glen Eden",
+        "Fruitvale Rd",
+        "New Lynn",
+        "Avondale",
+        "Mt Albert",
+        "Baldwin Ave",
+        "Morningside",
+        "Kingsland",
+        "Grafton",
+        "Newmarket",
+        "Parnell",
+        "Waitematā Station"
+      ],
+      "notInsertedFromMap": ["Maungawhau"]
+    },
+    {
+      "id": "onehunga",
+      "number": "ONE",
+      "name": "Onehunga Line",
+      "officialPageTitle": "Onehunga Line (ONE) — Onehunga and Newmarket via Penrose and Ellerslie (until end Saturday 12 September 2026)",
+      "gtfsRouteIdsIfKnown": ["ONE"],
+      "mapGroup": "Onehunga Line",
+      "termini": ["Onehunga", "Newmarket"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Penrose",
+          "otherLine": "southern"
+        }
+      ],
+      "stations": [
+        "Onehunga",
+        "Te Pāpapa",
+        "Penrose",
+        "Ellerslie",
+        "Greenlane",
+        "Remuera",
+        "Newmarket"
+      ]
+    }
+  ]
+}

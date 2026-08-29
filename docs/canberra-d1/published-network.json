@@ -1,0 +1,153 @@
+{
+  "city": "canberra",
+  "status": "planned",
+  "timezone": "Australia/Sydney",
+  "source": "https://cmet.com.au/wp-content/uploads/TC-Light-Rail-Map.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger light rail map (ordered stops + hub lock)",
+      "title": "R1 Route Map: Gungahlin - City",
+      "url": "https://cmet.com.au/wp-content/uploads/TC-Light-Rail-Map.pdf",
+      "linkedFrom": "https://cmet.com.au/light-rail-stops/",
+      "alsoLinkedFrom": "https://www.transport.act.gov.au/travel-options/light-rail/using-light-rail",
+      "retrievedAt": "2026-08-27T14:27:00Z",
+      "localFile": "sources/TC-Light-Rail-Map.pdf",
+      "note": "Transport Canberra / ACT Government branded. Prints 14 stops Gungahlin Place–Alinga Street. Hub bubble: Alinga Street (CITY). No Woden / Stage 2A stops."
+    },
+    {
+      "role": "D1 stop list (same 14 names; City suffix on the hub)",
+      "title": "Light Rail Stops — CMET",
+      "url": "https://cmet.com.au/light-rail-stops/",
+      "retrievedAt": "2026-08-27T14:27:00Z",
+      "localFile": "sources/cmet-light-rail-stops.html",
+      "note": "TC Using light rail page titles this 'Gungahlin to Civic map'. Stop list prints Alinga Street, City — not Civic as a stop. EPIC &#038; Racecourse vs map EPIC and Racecourse."
+    },
+    {
+      "role": "TC passenger page (Gungahlin to the City / Civic map card)",
+      "title": "Using light rail",
+      "url": "https://www.transport.act.gov.au/travel-options/light-rail/using-light-rail",
+      "retrievedAt": "2026-08-27T14:27:00Z",
+      "localFile": "sources/tc-using-light-rail.html"
+    },
+    {
+      "role": "current frequency booklet (ordered termini)",
+      "title": "Welcome aboard — Gungahlin Place to Alinga Street",
+      "url": "https://cmet.com.au/wp-content/uploads/Welcome-Aboard-Brochure.pdf",
+      "retrievedAt": "2026-08-27T14:27:00Z",
+      "localFile": "sources/Welcome-Aboard-Brochure.pdf",
+      "note": "Columns: Gungahlin Place to Alinga Street / Alinga Street to Gungahlin Place. Stage 1 Route Map: Gungahlin – City."
+    },
+    {
+      "role": "printed inner-city interchange (facility title + street)",
+      "title": "City Interchange - departure platforms. Effective 20 July 2026",
+      "url": "https://www.transport.act.gov.au/__data/assets/pdf_file/0019/3004417/TC_interchange_map_city_20-July-2026.pdf",
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "localFile": "sources/TC_interchange_map_city_20-July-2026.pdf",
+      "note": "R1 to Dickson & Gungahlin on Northbourne Ave. Street label Alinga St. No light rail platforms south of Alinga St."
+    },
+    {
+      "role": "Gungahlin Interchange (R1 to City)",
+      "url": "https://www.transport.act.gov.au/__data/assets/pdf_file/0015/3004422/Gungahlin-interchange-map.pdf",
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "localFile": "sources/Gungahlin-interchange-map.pdf"
+    },
+    {
+      "role": "Dickson Interchange (R1 to Gungahlin / R1 to City)",
+      "url": "https://www.transport.act.gov.au/__data/assets/pdf_file/0013/3004420/Dickson-interchange-map.pdf",
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "localFile": "sources/Dickson-interchange-map.pdf"
+    },
+    {
+      "role": "TC network + region maps effective 20 July 2026 (light rail geography; bus mixed)",
+      "urls": [
+        "https://www.transport.act.gov.au/getting-around/find-a-stop-or-map",
+        "https://www.transport.act.gov.au/__data/assets/pdf_file/0006/3082866/TC-network-map-20-Jul-2026.pdf",
+        "https://www.transport.act.gov.au/__data/assets/pdf_file/0003/3082863/TC-Gungahlin-map-20-Jul-2026.pdf",
+        "https://www.transport.act.gov.au/__data/assets/pdf_file/0004/3082864/TC-Inner-north-map-20-Jul-2026.pdf",
+        "https://www.transport.act.gov.au/__data/assets/pdf_file/0005/3082865/TC-Inner-south-map-20-Jul-2026.pdf",
+        "https://www.transport.act.gov.au/__data/assets/pdf_file/0009/3082869/TC-Woden-map-Jul-20-2026.pdf"
+      ],
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "note": "Legend includes Light rail stop. R1 drawn Gungahlin–City. Inner south / Woden maps do not open passenger LR south of Alinga Street."
+    },
+    {
+      "role": "Woden extension NOT passenger-open",
+      "title": "Light Rail to Woden — Built for CBR",
+      "url": "https://www.act.gov.au/builtforcbr/browse-all-projects/transport/light-rail-to-woden",
+      "retrievedAt": "2026-08-27T14:32:00Z",
+      "localFile": "sources/light-rail-to-woden.html",
+      "note": "Stage 2A City to Commonwealth Park: construction expected complete early 2027; regular services 2028. Stage 2B Commonwealth Park to Woden: 2028–2033. Not inserted."
+    }
+  ],
+  "retrievedAt": "2026-08-27T14:32:00Z",
+  "notes": [
+    "D1 oracle is official Transport Canberra / CMET passenger light rail maps, HAND-TRANSCRIBED. Stations arrays are not generated from GTFS. H2 name-clash is against the public no-key static zip (bus-only, stale) plus live no-key GTFS-RT lightrail.pb. No stopIds in this file.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like light rail only (R1). No buses, Rapid (R2–R10), coaches, or school services in the oracle.",
+    "Timezone Australia/Sydney HAS DST (AEDT/AEST). Do not copy Brisbane / Gold Coast no-DST.",
+    "One printed line: R1 Gungahlin – City. Passenger code R1 on interchange maps and region maps.",
+    "Locked inner-city printed name: Alinga Street (R1 route map hub bubble; Welcome aboard columns; CMET stop list Alinga Street, City). Not Civic, not City, not City Interchange, not Alinga St as a stop. TC page card title is 'Gungahlin to Civic map'; Gungahlin Interchange prints R1 to City. Civic/City are precinct/direction labels, not the stop lock.",
+    "14 open stops on the official R1 map. Woden / Stage 2A (Edinburgh Avenue, City South, Commonwealth Park) are not on that passenger map and are not passenger-open as of 27 Aug 2026. Not inserted.",
+    "EPIC and Racecourse locked from the R1 map (and). CMET HTML prints EPIC & Racecourse.",
+    "gtfsRouteIdsIfKnown is the passenger code R1. Public google_transit.zip has no R1 row. No stopIds in this file."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Alinga Street",
+    "doNotUse": [
+      "Civic",
+      "Civic Interchange",
+      "City",
+      "City Centre",
+      "City Interchange",
+      "Alinga St",
+      "Alinga Street, City",
+      "Canberra",
+      "Canberra City"
+    ],
+    "alsoOnSharedApproaches": [
+      "Elouera Street",
+      "Ipima Street"
+    ]
+  },
+  "coverageGaps": [
+    "Stage 2A City–Commonwealth Park not passenger-open (Built for CBR: construction to early 2027, regular services early 2028). Three new stops named on the project page, not on the R1 passenger map: Edinburgh Avenue, City South, Commonwealth Park. Not inserted.",
+    "Stage 2B Commonwealth Park–Woden not passenger-open (2028–2033). Not inserted.",
+    "City Interchange 20 July 2026 map shows R1 only to Dickson & Gungahlin; no LR platforms south of Alinga St.",
+    "Public static GTFS https://www.transport.act.gov.au/googletransit/google_transit.zip is bus-only (all route_type=3), calendar ended 2025-07-04, no R1 / no light-rail parents. MyWay+ replacement https://transport.api.act.gov.au/gtfs/data/gtfs/v2/google_transit.zip requires basic auth.",
+    "Region maps (Gungahlin / Inner north / Inner south / Woden / network) are mixed bus+LR. Rapid R2–R10 and local buses out of v1.",
+    "PDF hex colours are legend metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "r1",
+      "number": "R1",
+      "name": "Gungahlin – City",
+      "officialPageTitle": "R1 Route Map: Gungahlin - City",
+      "gtfsRouteIdsIfKnown": [
+        "R1"
+      ],
+      "mapGroup": "Light rail",
+      "termini": [
+        "Gungahlin Place",
+        "Alinga Street"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Gungahlin Place",
+        "Manning Clark North",
+        "Mapleton Avenue",
+        "Nullarbor Avenue",
+        "Well Station Drive",
+        "Sandford Street",
+        "EPIC and Racecourse",
+        "Phillip Avenue",
+        "Swinden Street",
+        "Dickson Interchange",
+        "Macarthur Avenue",
+        "Ipima Street",
+        "Elouera Street",
+        "Alinga Street"
+      ]
+    }
+  ]
+}

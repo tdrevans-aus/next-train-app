@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -21,6 +21,14 @@
         { id: "adelaide", name: "Adelaide", timeZone: "Australia/Adelaide" },
         { id: "canberra", name: "Canberra", timeZone: "Australia/Sydney" },
         { id: "melbourne", name: "Melbourne", timeZone: "Australia/Melbourne", comingSoon: true },
+      ],
+    },
+    {
+      id: "nz",
+      name: "New Zealand",
+      regions: [
+        { id: "auckland", name: "Auckland", timeZone: "Pacific/Auckland" },
+        { id: "wellington", name: "Wellington", timeZone: "Pacific/Auckland", comingSoon: true },
       ],
     },
     {
@@ -61,6 +69,7 @@
     rotterdam: { minLat: 51.82, maxLat: 52.12, minLng: 4.08, maxLng: 4.60 },
     vancouver: { minLat: 49.0, maxLat: 49.35, minLng: -123.3, maxLng: -122.7 },
     canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
+    auckland: { minLat: -37.12, maxLat: -36.72, minLng: 174.62, maxLng: 175.05 },
   };
 
   function dogfood() {

@@ -1,6 +1,6 @@
 /**
  * D6 — Live Auckland network sweep. Anomaly report, not a CI gate.
- * City stays planned. Needs AT_API_KEY.
+ * City is tester-live. Needs AT_API_KEY.
  *
  *   npm run sweep:auckland
  *   node qa/auckland-network-sweep.mjs --station="Waitematā Station"
@@ -36,8 +36,8 @@ function parseArgs(argv) {
 
 async function main() {
   const live = assertCityLive("auckland");
-  if (live?.ok === true) {
-    throw new Error("assertCityLive(auckland) must fail — city stays planned");
+  if (live?.ok !== true) {
+    throw new Error("assertCityLive(auckland) must pass — testers live");
   }
   if (!readAucklandApiKey()) {
     throw new Error("AT_API_KEY is not set");

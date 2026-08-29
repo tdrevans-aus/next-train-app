@@ -2,7 +2,7 @@
  * D5 — Offline Auckland line-map conformance.
  * Usage: node qa/auckland-line-map-conformance.mjs
  *
- * C0: city stays planned. Hub Waitematā Station. TRAIN only. DST.
+ * C0: testers live. Hub Waitematā Station. TRAIN only. DST.
  * D1 published-network.json is required (Luke pack; never generated from GTFS).
  */
 import { existsSync, readFileSync } from "fs";
@@ -31,14 +31,14 @@ function main() {
   const failures = [];
 
   const live = assertCityLive("auckland");
-  if (live?.ok === true) {
-    failures.push("C0: assertCityLive(auckland) must fail (city stays planned)");
+  if (live?.ok !== true) {
+    failures.push("C0: assertCityLive(auckland) must pass (testers live)");
   }
-  if (getCity("auckland")?.status !== "planned") {
-    failures.push("C0: auckland registry status must be planned");
+  if (getCity("auckland")?.status !== "live") {
+    failures.push("C0: auckland registry status must be live");
   }
-  if (isMultiCity("auckland")) {
-    failures.push("C0: auckland must not join MULTI_CITY_IDS until Tim flips live");
+  if (!isMultiCity("auckland")) {
+    failures.push("C0: auckland must be in MULTI_CITY_IDS");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
@@ -168,7 +168,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("auckland-line-map-conformance: ok (planned, D1 pack present)");
+  console.log("auckland-line-map-conformance: ok (tester-live, D1 pack present, TRAIN only)");
 }
 
 main();

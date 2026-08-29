@@ -1,0 +1,130 @@
+{
+  "city": "gold-coast",
+  "status": "planned",
+  "timezone": "Australia/Brisbane",
+  "source": "https://translink.com.au/sites/default/files/acquiadam-assets/timetables/260809-gold-coast-tram.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger tram map (G:link network)",
+      "title": "Route G:link — Effective August 2026",
+      "url": "https://translink.com.au/sites/default/files/acquiadam-assets/timetables/260809-gold-coast-tram.pdf",
+      "linkedFrom": "https://translink.com.au/plan-your-journey/maps",
+      "captionOnIndex": "Tram network (PDF) / G:link network map (PDF)",
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "localFile": "sources/260809-gold-coast-tram.pdf",
+      "note": "Frequency table Helensvale ↔ Burleigh Heads. Inset south of Broadbeach South is in the same solid tram style (in service). Stop bubbles use Avenue/Street long forms (Queen Street, Cypress Avenue, Christine Avenue, Second Avenue)."
+    },
+    {
+      "role": "SEQ network diagram (tram pair + ordered geography; cite with D1 tram PDF)",
+      "title": "SEQ network map Version 4 - GCLR3 - 10 August 2026",
+      "url": "https://translink.widen.net/content/szuvbcshyi/original/260809-seq-network-map-.pdf",
+      "linkedFrom": "https://translink.com.au/plan-your-journey/maps",
+      "retrievedAt": "2026-08-27T14:23:00Z",
+      "localFile": "sources/260809-seq-network-map.pdf",
+      "note": "Legend tram: Helensvale – Burleigh Heads. Ordered yellow-line names Helensvale…Burleigh Heads. South of Burleigh Heads the mixed map continues Twenty Seventh Ave, Nineteenth Ave, Palm Beach, Gold Coast Airport — those are not on the G:link tram PDF and are not inserted. Diagram abbreviates St/Ave."
+    },
+    {
+      "role": "passenger opening of Stage 3 (eight new stations in service)",
+      "title": "Bus and tram changes to connect the coast — New Gold Coast tram stations now open from 6:00 am Sunday 9 August 2026",
+      "url": "https://translink.com.au/updates/1092351",
+      "retrievedAt": "2026-08-27T14:31:00Z",
+      "localFile": "sources/tram-stations-open.html",
+      "note": "Prints the eight new stations: Mermaid Beach, Mermaid Beach South, Nobby Beach, Miami North, Miami, Christine Avenue, Second Avenue, Burleigh Heads. Line token L1 Helensvale / Burleigh Heads."
+    },
+    {
+      "role": "maps index",
+      "url": "https://translink.com.au/plan-your-journey/maps",
+      "retrievedAt": "2026-08-27T14:22:00Z",
+      "localFile": "sources/translink-maps.html"
+    }
+  ],
+  "retrievedAt": "2026-08-27T14:32:00Z",
+  "notes": [
+    "D1 oracle is the official Translink G:link tram PDF (Effective August 2026) plus the 10 Aug 2026 SEQ diagram for ordered geography, HAND-TRANSCRIBED. Stations arrays are not generated from GTFS. H2 name-clash is against SEQ_GTFS.zip. No stopIds in this file.",
+    "City id gold-coast is a SEPARATE city from brisbane. Same SEQ Translink agency and same no-key GTFS/GTFS-RT, filtered to light rail (route_type=0 / L1). Do not merge into Brisbane T-lines or the QR Gold Coast heavy-rail corridor.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like light rail only (G:link / L1). No buses (700/70/777/…), no QR Gold Coast line (Helensvale–Varsity Lakes), no ferry in the oracle.",
+    "Timezone Australia/Brisbane NO DST. Same as Brisbane. Do not copy Sydney/Canberra/Newcastle HAS-DST.",
+    "One printed line: G:link, passenger number L1 from 9 August 2026. Termini Helensvale and Burleigh Heads. Broadbeach South remains an intermediate stop (former southern terminus).",
+    "Stage 3 Broadbeach South–Burleigh Heads is passenger-open on the official August 2026 tram map (solid line + inset) and on SEQ Version 4 GCLR3 10 Aug 2026. Inserted.",
+    "Locked rail-interchange printed name: Helensvale (tram map stop on the yellow line). Connecting-services box says Helensvale station. GTFS parent Helensvale station is SHARED with QR Gold Coast line — doNotGroup tram vs train platforms.",
+    "Locked long forms from the tram PDF: Queen Street, Nerang Street, Cypress Avenue, Cavill Avenue, Christine Avenue, Second Avenue. SEQ diagram abbreviates St/Ave. GTFS parents add station and, at two places, (Southport).",
+    "Arundel and Olsen Ave on the tram PDF are suburb/street labels, not stops. Not inserted.",
+    "gtfsRouteIdsIfKnown is the passenger code L1. SEQ feed route_id L1-5029 is versioned — do not treat the suffix as a print lock. No stopIds in this file."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Helensvale",
+    "doNotUse": [
+      "Helensvale station",
+      "Helensvale Train Station",
+      "Helensvale railway station",
+      "Broadbeach",
+      "Surfers Paradise (as a hub lock)",
+      "Gold Coast",
+      "GCUH"
+    ],
+    "alsoOnSharedApproaches": [
+      "Parkwood",
+      "Parkwood East"
+    ]
+  },
+  "coverageGaps": [
+    "SEQ mixed map south of Burleigh Heads prints Twenty Seventh Ave, Nineteenth Ave, Palm Beach, Gold Coast Airport. Not on the G:link tram PDF. Not passenger-open as G:link. Not inserted.",
+    "Proposed western branch (Olsen Avenue / Labrador / Biggera Waters) is not on the August 2026 tram PDF. Not inserted.",
+    "QR Gold Coast line (Helensvale–Nerang–Robina–Varsity Lakes, plus Pimpama / Hope Island) is heavy rail. Out of this city. Brisbane T5 covers that corridor.",
+    "Weekday midnight–5am is bus replacement on the tram PDF frequency table (bus icon). Overlay, not a D1 line.",
+    "PDF hex colours are legend metadata, not D1 print locks. GTFS L1 colour FFC425 is feed metadata."
+  ],
+  "lines": [
+    {
+      "id": "l1",
+      "number": "L1",
+      "name": "G:link",
+      "officialPageTitle": "Route G:link — Helensvale to Burleigh Heads — Effective August 2026",
+      "gtfsRouteIdsIfKnown": [
+        "L1"
+      ],
+      "mapGroup": "Tram",
+      "termini": [
+        "Helensvale",
+        "Burleigh Heads"
+      ],
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Helensvale",
+        "Parkwood",
+        "Parkwood East",
+        "Gold Coast University Hospital",
+        "Griffith University",
+        "Queen Street",
+        "Nerang Street",
+        "Southport",
+        "Southport South",
+        "Broadwater Parklands",
+        "Main Beach",
+        "Surfers Paradise North",
+        "Cypress Avenue",
+        "Cavill Avenue",
+        "Surfers Paradise",
+        "Northcliffe",
+        "Florida Gardens",
+        "Broadbeach North",
+        "Broadbeach South",
+        "Mermaid Beach",
+        "Mermaid Beach South",
+        "Nobby Beach",
+        "Miami North",
+        "Miami",
+        "Christine Avenue",
+        "Second Avenue",
+        "Burleigh Heads"
+      ],
+      "notInsertedFromMap": [
+        "Twenty Seventh Ave",
+        "Nineteenth Ave",
+        "Palm Beach",
+        "Gold Coast Airport"
+      ]
+    }
+  ]
+}

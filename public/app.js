@@ -206,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -642,7 +642,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -1483,6 +1483,7 @@ function showOnboardingStep1() {
       canberra: "Canberra",
       "gold-coast": "Gold Coast",
       newcastle: "Newcastle",
+      auckland: "Auckland",
     };
     const regionLabel = regionNames[readActiveCity()] || "your local";
     step1Text.textContent = nearbyMode().getNearbySession()?.unsupportedRegion
@@ -4801,6 +4802,7 @@ function testModeNearestStation() {
       canberra: "Alinga Street",
       "gold-coast": "Helensvale",
       newcastle: "Newcastle Interchange",
+      auckland: "Waitematā Station",
     };
     if (defaults[city]) {
       return { station: defaults[city], city, distanceKm: 0.2 };

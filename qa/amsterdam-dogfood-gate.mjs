@@ -24,7 +24,7 @@ assert(getCity("amsterdam")?.status === "live", "amsterdam registry must be live
 assert(isMultiCity("amsterdam") === true, "amsterdam must be in MULTI_CITY_IDS");
 assert(!getCity("nl"), "city=nl must not exist");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
-assert(assertCityLive("auckland")?.ok === false, "Auckland stays planned");
+assert(assertCityLive("auckland")?.ok === true, "Auckland is tester-live");
 assert(assertCityLive("wellington")?.ok === false, "Wellington stays planned");
 assert(assertCityLive("stockholm")?.ok === false, "Stockholm stays planned");
 assert(
@@ -69,4 +69,4 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("amsterdam-dogfood-gate: ok (live, picker city, no city=nl, Vercel board 404, NZ/Stockholm planned)");
+console.log("amsterdam-dogfood-gate: ok (live, picker city, no city=nl, Vercel board 404, Wellington/Stockholm planned)");

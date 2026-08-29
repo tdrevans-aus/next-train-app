@@ -1,6 +1,5 @@
 /**
- * Probe Auckland AT rail board without enabling the city.
- * Requires AT_API_KEY. City stays planned.
+ * Probe Auckland AT rail board. Requires AT_API_KEY.
  *
  *   node scripts/probe-auckland-board.mjs "Waitematā Station"
  *   node scripts/probe-auckland-board.mjs --list
@@ -39,12 +38,10 @@ if (!readAucklandApiKey()) {
 }
 
 const gate = assertCityLive("auckland");
-if (gate.ok) {
-  console.error("Unexpected: auckland is live — probe expects planned status");
+if (!gate.ok) {
+  console.error("Unexpected: auckland is not live");
   process.exit(1);
 }
-
-console.log(`City gate (expected 501): ${gate.status} — ${gate.error}\n`);
 
 const board = await fetchStationBoard(station);
 console.log(`Station: ${board.stationName}`);

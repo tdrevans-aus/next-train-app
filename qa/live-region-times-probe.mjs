@@ -18,6 +18,7 @@ const HUBS = {
   canberra: "Alinga Street",
   "gold-coast": "Helensvale",
   newcastle: "Newcastle Interchange",
+  auckland: "Waitematā Station",
 };
 
 const MIDDAY_UTC = {
@@ -31,6 +32,7 @@ const MIDDAY_UTC = {
   canberra: "2026-08-27T02:00:00.000Z",
   "gold-coast": "2026-08-27T02:00:00.000Z",
   newcastle: "2026-08-27T02:00:00.000Z",
+  auckland: "2026-08-27T00:00:00.000Z",
 };
 
 async function probeCity(city) {

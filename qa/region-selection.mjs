@@ -134,6 +134,7 @@ async function run() {
       { city: "vancouver", country: "ca", station: "Waterfront" },
       { city: "newcastle", country: "au", station: "Newcastle Interchange" },
       { city: "gold-coast", country: "au", station: "Helensvale" },
+      { city: "auckland", country: "nz", station: "Waitematā Station" },
     ]) {
       await page.evaluate(async (id) => {
         await window.NextTrainCitySession.applyCity(id, { persist: true, explicit: true });
