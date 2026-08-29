@@ -17,6 +17,7 @@ SHARED_FILES = [
     "WidgetPinResolver.swift",
     "JourneyPinHelper.swift",
     "NearbyPinHelper.swift",
+    "WidgetAppearance.swift",
 ]
 
 def main() -> None:

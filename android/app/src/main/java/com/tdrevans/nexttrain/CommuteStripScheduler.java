@@ -443,7 +443,8 @@ public final class CommuteStripScheduler {
     }
 
     int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
-    JSONObject payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore);
+    JSONObject payload =
+      NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore, journey.optString("cityId", ""));
     PreferredTrainReminder.Target target = PreferredTrainReminder.computeForJourney(
       journey,
       payload,

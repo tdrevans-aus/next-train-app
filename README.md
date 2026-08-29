@@ -37,13 +37,6 @@ npx vercel --prod
 
 `vercel.json` sets short cache headers on `/api/*` so live times stay fresh.
 
-## Deploy to Netlify
-
-1. Push to GitHub.
-2. Go to [netlify.com](https://netlify.com) → **Add new site** → import repo.
-3. Build settings are in `netlify.toml` (publish `public`, serverless functions).
-4. Deploy, then add to home screen on your phone.
-
 ## Default commute
 
 On first launch, the app asks you to pick **station** and **direction**. You can tap **Use nearest station** (location permission) to pre-fill the closest Transperth station, then choose your direction and save.

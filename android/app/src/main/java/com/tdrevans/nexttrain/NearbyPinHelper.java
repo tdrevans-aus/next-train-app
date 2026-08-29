@@ -143,7 +143,7 @@ public final class NearbyPinHelper {
 
     JSONObject payload = null;
     try {
-      payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes);
+      payload = NextTrainApiClient.fetchNextTrain(station, direction, leaveBeforeMinutes, pin.optString("cityId", ""));
     } catch (Exception error) {
       payload = null;
     }
