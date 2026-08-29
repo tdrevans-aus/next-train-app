@@ -1,0 +1,731 @@
+{
+  "city": "goteborg",
+  "status": "planned",
+  "timezone": "Europe/Stockholm",
+  "source": "https://www.vasttrafik.se/globalassets/media/kartor/linjenatskartor/sparvagn/sparvagn_stombuss_bat_juni_2026.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger map",
+      "title": "Spårvagns- stombuss- och båttrafik (gäller från 2026-06-15)",
+      "url": "https://www.vasttrafik.se/globalassets/media/kartor/linjenatskartor/sparvagn/sparvagn_stombuss_bat_juni_2026.pdf",
+      "linkedFrom": "https://www.vasttrafik.se/reseplanering/mer-om-reseplanering/linjekartor/",
+      "captionOnIndex": "Spårvagn, stombuss och båt",
+      "format": "PDF",
+      "retrievedAt": "2026-08-29T01:10:00Z"
+    },
+    {
+      "role": "D1 city-map pendeltåg",
+      "title": "Expressbussar och pendeltåg (gäller från 2026-06-15)",
+      "url": "https://www.vasttrafik.se/globalassets/media/kartor/linjenatskartor/expressbussar/expressbuss_pendeltag_juni_2026.pdf",
+      "linkedFrom": "https://www.vasttrafik.se/reseplanering/mer-om-reseplanering/linjekartor/",
+      "captionOnIndex": "Expressbussar och pendeltåg",
+      "format": "PDF",
+      "retrievedAt": "2026-08-29T01:10:00Z",
+      "note": "Västtågen city-map rows only: Göteborg–Kungsbacka, Göteborg–Alingsås, Göteborg–Ale. Express X-bus and regional Västtågen out of v1."
+    },
+    {
+      "role": "map index",
+      "url": "https://www.vasttrafik.se/reseplanering/mer-om-reseplanering/linjekartor/",
+      "retrievedAt": "2026-08-29T01:10:00Z"
+    },
+    {
+      "role": "H2 feed path — Trafiklab GTFS Regional vt (not D1 oracle)",
+      "url": "https://www.trafiklab.se/api/gtfs-datasets/gtfs-regional/",
+      "note": "Static: opendata.samtrafiken.se/gtfs/vt/vt.zip?key=TRAFIKLAB_API_KEY. TripUpdates not published for vt (Trafiklab table 2026-08-28). Adapter schedule-only; Planera Resa OAuth is a later alternate.",
+      "notD1": true
+    }
+  ],
+  "retrievedAt": "2026-08-29T01:10:00Z",
+  "notes": [
+    "D1 oracle is the official Västtrafik Spårvagns- stombuss- och båttrafik map dated 2026-06-15 plus the Expressbussar och pendeltåg city map on vasttrafik.se. Stations arrays are hand-transcribed from those passenger maps. Not generated from GTFS.",
+    "City stays planned. Modes v1: tram 1–12 plus the three city-map pendeltåg (Kungsbacka / Alingsås / Ale). No stombuss, båt, express X-bus, or regional Västtågen beyond those three. No metro.",
+    "Timezone Europe/Stockholm HAS DST (CET/CEST). Do not copy Brisbane no-DST.",
+    "132 unique tram names + 25 unique train names = 157 unique catalog names.",
+    "LOCKED tram hub is Brunnsparken (10 of 12 trams). Lines 8 and 12 miss it — they live at Korsvägen. Do not lock Centralstationen (renamed Drottningtorget 15 Jun 2026). Västtågen hub is Göteborg Central.",
+    "Passenger product is line + terminus using the map legend far end (1 + Tynnered, 12 + Lindholmen, Västtågen + Kungsbacka). Never “to City”. First-halt strings stay on the stations arrays (Opaltorget, Axel Dahlströms Torg, Väderilsgatan, Varmfrontsgatan, Aprilgatan, Komettorget, Frölunda Torg, Mölndals Innerstad, Virginsgatan, Doktor Sydows Gata, Älvängen resecentrum).",
+    "Line 12 is the new Mölndal–Lindholmen. Line 2 is Högsbotorp–Biskopsgården, not Mölndal. Line 10 is Guldheden–Lindholmen.",
+    "doNotGroup: Drottningtorget tram vs Göteborg Central vs Nils Ericsonsplatsen vs Nils Ericson Terminalen; Liseberg Station tram 5 vs Liseberg Station (tåg) vs Liseberg Södra; Gamlestads Torg tram vs Gamlestaden Station.",
+    "Swedish characters must be preserved (Göteborg, Mölndal, Frölunda, Kålltorp, Älvängen, Högsbotorp). Stockholm / Malmö / city=sweden are not this city.",
+    "Trafiklab GTFS Regional vt: static with TRAFIKLAB_API_KEY; no TripUpdates for Västtrafik. Adapter uses realtime-board.js and falls back to schedule-only. Stay planned. Do not flip live."
+  ],
+  "printedInnerCityNames": {
+    "lockTram": "Brunnsparken",
+    "lockPendeltag": "Göteborg Central",
+    "lock": "Brunnsparken",
+    "doNotUse": [
+      "Centralstationen",
+      "Gothenburg",
+      "Göteborg C as the tram hub",
+      "to City"
+    ],
+    "doNotCollapse": [
+      "Drottningtorget",
+      "Göteborg Central",
+      "Nils Ericsonsplatsen",
+      "Nils Ericson Terminalen",
+      "Liseberg Station",
+      "Liseberg Station (tåg)",
+      "Liseberg Södra",
+      "Gamlestads Torg",
+      "Gamlestaden Station"
+    ],
+    "alsoOnMap": {
+      "tramRename": "Drottningtorget (was Centralstationen 15 Jun 2026)",
+      "vasttagenHub": "Göteborg Central",
+      "line8and12": "Korsvägen"
+    }
+  },
+  "coverageGaps": [
+    "Stombuss 16/17/18/19/21/25 and Älvsnabben / southern-archipelago båt sit on the same tram PDF. Out of v1.",
+    "Express X-bus (X1–X6, X40, X76, X77, X90) sit on the pendeltåg PDF. Out of v1.",
+    "Regional Västtågen beyond the three city-map pendeltåg (Uddevalla, Strömstad, Vänersborg, Borås, Varberg, …) sit on the separate tågkarta. Out of v1.",
+    "Trafiklab GTFS Regional vt has no TripUpdates/vehicle positions (as of 2026-08-28). Do not generate published-network.json from GTFS. Schedule-only board until RT lands or OAuth is wired.",
+    "Solrosgatan prints on the tram PNG near Kålltorp; treated as a map label, not a 132nd extra halt beyond the locked set."
+  ],
+  "lines": [
+    {
+      "id": "tram1",
+      "number": "1",
+      "name": "Spårvagn 1",
+      "officialPageTitle": "Spårvagn 1 Tynnered–Östra Sjukhuset",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Tynnered",
+        "Östra Sjukhuset"
+      ],
+      "firstHalts": {
+        "Tynnered": "Opaltorget",
+        "Östra Sjukhuset": "Östra Sjukhuset"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Opaltorget",
+        "Briljantgatan",
+        "Smaragdgatan",
+        "Frölunda Torg",
+        "Musikvägen",
+        "Positivgatan",
+        "Nymilsgatan",
+        "Lantmilsgatan",
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Linnéplatsen",
+        "Olivedalsgatan",
+        "Prinsgatan",
+        "Järntorget",
+        "Stenpiren",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Stockholmsgatan",
+        "Härlanda",
+        "Munkebäckstorget",
+        "Kaggeledstorget",
+        "Tingvallsvägen",
+        "Östra Sjukhuset"
+      ]
+    },
+    {
+      "id": "tram2",
+      "number": "2",
+      "name": "Spårvagn 2",
+      "officialPageTitle": "Spårvagn 2 Högsbotorp–Biskopsgården",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Högsbotorp",
+        "Biskopsgården"
+      ],
+      "firstHalts": {
+        "Högsbotorp": "Axel Dahlströms Torg",
+        "Biskopsgården": "Väderilsgatan"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Linnéplatsen",
+        "Olivedalsgatan",
+        "Handelshögskolan",
+        "Seminariegatan",
+        "Brunnsgatan",
+        "Vasaplatsen",
+        "Grönsakstorget",
+        "Domkyrkan",
+        "Brunnsparken",
+        "Nils Ericsonsplatsen",
+        "Nordstan",
+        "Frihamnen",
+        "Hjalmar Brantingsplatsen",
+        "Vågmästareplatsen",
+        "Wieselgrensplatsen",
+        "Rambergsvallen",
+        "Gropegårdsgatan",
+        "Eketrägatan",
+        "Sälöfjordsgatan",
+        "Vårväderstorget",
+        "Mildvädersgatan",
+        "Önskevädersgatan",
+        "Friskväderstorget",
+        "Väderilsgatan"
+      ]
+    },
+    {
+      "id": "tram3",
+      "number": "3",
+      "name": "Spårvagn 3",
+      "officialPageTitle": "Spårvagn 3 Marklandsgatan–Kålltorp",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Marklandsgatan",
+        "Kålltorp"
+      ],
+      "firstHalts": {
+        "Marklandsgatan": "Marklandsgatan",
+        "Kålltorp": "Virginsgatan"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Marklandsgatan",
+        "Högsbogatan",
+        "Bokekullsgatan",
+        "Klintens Väg",
+        "Mariaplan",
+        "Ostindiegatan",
+        "Vagnhallen Majorna",
+        "Jaegerdorffsplatsen",
+        "Chapmans Torg",
+        "Kaptensgatan",
+        "Stigbergstorget",
+        "Masthuggstorget",
+        "Järntorget",
+        "Hagakyrkan",
+        "Vasa Viktoriagatan",
+        "Vasaplatsen",
+        "Valand",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Stockholmsgatan",
+        "Härlanda",
+        "Virginsgatan"
+      ]
+    },
+    {
+      "id": "tram4",
+      "number": "4",
+      "name": "Spårvagn 4",
+      "officialPageTitle": "Spårvagn 4 Mölndal–Angered",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Mölndal",
+        "Angered"
+      ],
+      "firstHalts": {
+        "Mölndal": "Mölndals Innerstad",
+        "Angered": "Angereds Centrum"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Mölndals Innerstad",
+        "Mölndals sjukhus",
+        "Lackarebäck",
+        "Krokslätts Fabriker",
+        "Krokslätts Torg",
+        "Varbergsgatan",
+        "Elisedal",
+        "Almedal",
+        "Lana",
+        "Liseberg Södra",
+        "Korsvägen",
+        "Berzeliigatan",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "Storås",
+        "Hjällbo",
+        "Hammarkullen",
+        "Angereds Centrum"
+      ]
+    },
+    {
+      "id": "tram5",
+      "number": "5",
+      "name": "Spårvagn 5",
+      "officialPageTitle": "Spårvagn 5 Östra Sjukhuset–Länsmansgården",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Östra Sjukhuset",
+        "Länsmansgården"
+      ],
+      "firstHalts": {
+        "Östra Sjukhuset": "Östra Sjukhuset",
+        "Länsmansgården": "Varmfrontsgatan"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Östra Sjukhuset",
+        "Tingvallsvägen",
+        "Kaggeledstorget",
+        "Munkebäckstorget",
+        "Virginsgatan",
+        "Welandergatan",
+        "Töpelsgatan",
+        "Bögatan",
+        "Ekmanska",
+        "Sankt Sigfrids Plan",
+        "Liseberg Station",
+        "Korsvägen",
+        "Berzeliigatan",
+        "Kungsportsplatsen",
+        "Valand",
+        "Brunnsparken",
+        "Lilla Bommen",
+        "Frihamnen",
+        "Hjalmar Brantingsplatsen",
+        "Vågmästareplatsen",
+        "Wieselgrensplatsen",
+        "Rambergsvallen",
+        "Gropegårdsgatan",
+        "Eketrägatan",
+        "Sälöfjordsgatan",
+        "Vårväderstorget",
+        "Mildvädersgatan",
+        "Önskevädersgatan",
+        "Friskväderstorget",
+        "Väderilsgatan",
+        "Temperaturgatan",
+        "Varmfrontsgatan"
+      ]
+    },
+    {
+      "id": "tram6",
+      "number": "6",
+      "name": "Spårvagn 6",
+      "officialPageTitle": "Spårvagn 6 Länsmansgården–Kortedala",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Länsmansgården",
+        "Kortedala"
+      ],
+      "firstHalts": {
+        "Länsmansgården": "Varmfrontsgatan",
+        "Kortedala": "Aprilgatan"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Varmfrontsgatan",
+        "Temperaturgatan",
+        "Eketrägatan",
+        "Gropegårdsgatan",
+        "Rambergsvallen",
+        "Wieselgrensplatsen",
+        "Vågmästareplatsen",
+        "Hjalmar Brantingsplatsen",
+        "Frihamnen",
+        "Nordstan",
+        "Brunnsparken",
+        "Grönsakstorget",
+        "Domkyrkan",
+        "Hagakyrkan",
+        "Järntorget",
+        "Prinsgatan",
+        "Olivedalsgatan",
+        "Linnéplatsen",
+        "Botaniska Trädgården",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Medicinaregatan",
+        "Sahlgrenska Huvudentré",
+        "Korsvägen",
+        "Scandinavium",
+        "Ullevi Södra",
+        "Ullevi Norra",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Ejdergatan",
+        "Gamlestads Torg",
+        "SKF",
+        "Bellevue",
+        "Kviberg",
+        "Beväringsgatan",
+        "Runstavsgatan",
+        "Kortedala Torg",
+        "Allhelgonakyrkan",
+        "Nymånegatan",
+        "Aprilgatan"
+      ]
+    },
+    {
+      "id": "tram7",
+      "number": "7",
+      "name": "Spårvagn 7",
+      "officialPageTitle": "Spårvagn 7 Tynnered–Bergsjön",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Tynnered",
+        "Bergsjön"
+      ],
+      "firstHalts": {
+        "Tynnered": "Opaltorget",
+        "Bergsjön": "Komettorget"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Opaltorget",
+        "Briljantgatan",
+        "Smaragdgatan",
+        "Frölunda Torg",
+        "Musikvägen",
+        "Positivgatan",
+        "Nymilsgatan",
+        "Lantmilsgatan",
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Kapellplatsen",
+        "Vasaplatsen",
+        "Valand",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "SKF",
+        "Bellevue",
+        "Kviberg",
+        "Beväringsgatan",
+        "Runstavsgatan",
+        "Kortedala Torg",
+        "Allhelgonakyrkan",
+        "Nymånegatan",
+        "Januarigatan",
+        "Galileis Gata",
+        "Teleskopgatan",
+        "Rymdtorget",
+        "Komettorget"
+      ]
+    },
+    {
+      "id": "tram8",
+      "number": "8",
+      "name": "Spårvagn 8",
+      "officialPageTitle": "Spårvagn 8 Frölunda–Angered",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Frölunda",
+        "Angered"
+      ],
+      "firstHalts": {
+        "Frölunda": "Frölunda Torg",
+        "Angered": "Angereds Centrum"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Frölunda Torg",
+        "Musikvägen",
+        "Positivgatan",
+        "Nymilsgatan",
+        "Lantmilsgatan",
+        "Axel Dahlströms Torg",
+        "Marklandsgatan",
+        "Botaniska Trädgården",
+        "Medicinaregatan",
+        "Sahlgrenska Huvudentré",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Korsvägen",
+        "Scandinavium",
+        "Ullevi Södra",
+        "Ullevi Norra",
+        "Svingeln",
+        "Olskrokstorget",
+        "Redbergsplatsen",
+        "Ejdergatan",
+        "Gamlestads Torg",
+        "Storås",
+        "Hjällbo",
+        "Hammarkullen",
+        "Angereds Centrum"
+      ]
+    },
+    {
+      "id": "tram9",
+      "number": "9",
+      "name": "Spårvagn 9",
+      "officialPageTitle": "Spårvagn 9 Kungssten–Angered",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Kungssten",
+        "Angered"
+      ],
+      "firstHalts": {
+        "Kungssten": "Kungssten",
+        "Angered": "Angereds Centrum"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Kungssten",
+        "Ostindiegatan",
+        "Vagnhallen Majorna",
+        "Jaegerdorffsplatsen",
+        "Chapmans Torg",
+        "Kaptensgatan",
+        "Stigbergstorget",
+        "Masthuggstorget",
+        "Järntorget",
+        "Hagakyrkan",
+        "Grönsakstorget",
+        "Domkyrkan",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "Storås",
+        "Hjällbo",
+        "Hammarkullen",
+        "Angereds Centrum"
+      ]
+    },
+    {
+      "id": "tram10",
+      "number": "10",
+      "name": "Spårvagn 10",
+      "officialPageTitle": "Spårvagn 10 Guldheden–Lindholmen",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Guldheden",
+        "Lindholmen"
+      ],
+      "firstHalts": {
+        "Guldheden": "Doktor Sydows Gata",
+        "Lindholmen": "Lindholmen"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Doktor Sydows Gata",
+        "Doktor Fries Torg",
+        "Wavrinskys Plats",
+        "Chalmers",
+        "Kapellplatsen",
+        "Vasaplatsen",
+        "Valand",
+        "Kungsportsplatsen",
+        "Brunnsparken",
+        "Lilla Bommen",
+        "Jubileumsparken",
+        "Pumpgatan",
+        "Lindholmen"
+      ]
+    },
+    {
+      "id": "tram11",
+      "number": "11",
+      "name": "Spårvagn 11",
+      "officialPageTitle": "Spårvagn 11 Saltholmen–Bergsjön",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Saltholmen",
+        "Bergsjön"
+      ],
+      "firstHalts": {
+        "Saltholmen": "Saltholmen",
+        "Bergsjön": "Komettorget"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Saltholmen",
+        "Långedrag",
+        "Hinsholmen",
+        "Käringberget",
+        "Tranered",
+        "Hagen",
+        "Nya Varvsallén",
+        "Kungssten",
+        "Sandarna",
+        "Sannaplan",
+        "Mariaplan",
+        "Godhemsgatan",
+        "Ekedal",
+        "Fjällgatan",
+        "Majvallen",
+        "Stigbergstorget",
+        "Masthuggstorget",
+        "Järntorget",
+        "Stenpiren",
+        "Brunnsparken",
+        "Drottningtorget",
+        "Gamlestads Torg",
+        "SKF",
+        "Bellevue",
+        "Kviberg",
+        "Beväringsgatan",
+        "Runstavsgatan",
+        "Kortedala Torg",
+        "Allhelgonakyrkan",
+        "Nymånegatan",
+        "Januarigatan",
+        "Galileis Gata",
+        "Teleskopgatan",
+        "Rymdtorget",
+        "Komettorget"
+      ]
+    },
+    {
+      "id": "tram12",
+      "number": "12",
+      "name": "Spårvagn 12",
+      "officialPageTitle": "Spårvagn 12 Mölndal–Lindholmen",
+      "mapGroup": "Spårvagn",
+      "mode": "TRAM",
+      "termini": [
+        "Mölndal",
+        "Lindholmen"
+      ],
+      "firstHalts": {
+        "Mölndal": "Mölndals Innerstad",
+        "Lindholmen": "Lindholmen"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Mölndals Innerstad",
+        "Mölndals sjukhus",
+        "Lackarebäck",
+        "Krokslätts Fabriker",
+        "Krokslätts Torg",
+        "Varbergsgatan",
+        "Elisedal",
+        "Almedal",
+        "Lana",
+        "Liseberg Södra",
+        "Korsvägen",
+        "Scandinavium",
+        "Ullevi Södra",
+        "Drottningtorget",
+        "Nordstan",
+        "Jubileumsparken",
+        "Pumpgatan",
+        "Lindholmen"
+      ]
+    },
+    {
+      "id": "vasttagen-kungsbacka",
+      "number": "Kungsbacka",
+      "name": "Västtågen",
+      "officialPageTitle": "Västtågen Göteborg–Kungsbacka",
+      "mapGroup": "Pendeltåg",
+      "mode": "TRAIN",
+      "termini": [
+        "Göteborg Central",
+        "Kungsbacka"
+      ],
+      "firstHalts": {
+        "Göteborg Central": "Göteborg Central",
+        "Kungsbacka": "Kungsbacka Station"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Göteborg Central",
+        "Liseberg Station (tåg)",
+        "Mölndal Station",
+        "Kållered Station",
+        "Lindome Station",
+        "Anneberg Station",
+        "Hede Station",
+        "Kungsbacka Station"
+      ]
+    },
+    {
+      "id": "vasttagen-alingsas",
+      "number": "Alingsås",
+      "name": "Västtågen",
+      "officialPageTitle": "Västtågen Göteborg–Alingsås",
+      "mapGroup": "Pendeltåg",
+      "mode": "TRAIN",
+      "termini": [
+        "Göteborg Central",
+        "Alingsås"
+      ],
+      "firstHalts": {
+        "Göteborg Central": "Göteborg Central",
+        "Alingsås": "Alingsås Station"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Göteborg Central",
+        "Gamlestaden Station",
+        "Sävenäs Station",
+        "Partille Station",
+        "Jonsered Station",
+        "Aspen Station",
+        "Aspedalen Station",
+        "Lerum Station",
+        "Stenkullen Station",
+        "Floda Station",
+        "Norsesund Station",
+        "Västra Bodarna Station",
+        "Alingsås Station"
+      ]
+    },
+    {
+      "id": "vasttagen-ale",
+      "number": "Ale",
+      "name": "Västtågen",
+      "officialPageTitle": "Västtågen Göteborg–Ale",
+      "mapGroup": "Pendeltåg",
+      "mode": "TRAIN",
+      "termini": [
+        "Göteborg Central",
+        "Ale"
+      ],
+      "firstHalts": {
+        "Göteborg Central": "Göteborg Central",
+        "Ale": "Älvängen resecentrum"
+      },
+      "shortTurns": [],
+      "branches": [],
+      "stations": [
+        "Göteborg Central",
+        "Gamlestaden Station",
+        "Surte Station",
+        "Bohus Station",
+        "Nödinge Station",
+        "Nol Station",
+        "Älvängen resecentrum"
+      ]
+    }
+  ]
+}
