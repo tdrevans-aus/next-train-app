@@ -12,6 +12,11 @@ public class MainActivity extends BridgeActivity {
   public static final String EXTRA_WIDGET_CONFIGURE = "nexttrain_widget_configure";
   public static final String EXTRA_WIDGET_CONFIGURE_ID = "nexttrain_widget_configure_id";
 
+  // CONFIGURATION_CHANGED / WALLPAPER_CHANGED are never delivered to manifest
+  // receivers, so the wallpaper-mode repaint listens at runtime while the app
+  // lives; unlock and alarm repaints cover theme flips that happen in between.
+  private WidgetSystemThemeReceiver systemThemeReceiver;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     registerPlugin(WidgetSyncPlugin.class);
@@ -19,6 +24,7 @@ public class MainActivity extends BridgeActivity {
     // Capture before the WebView boots so JS cannot consume a still-empty pending URI.
     DeepLinkHelper.capture(getIntent());
     super.onCreate(savedInstanceState);
+    registerSystemThemeReceiver();
     boolean debugAction = DeepLinkHelper.applyDebugActions(this, getIntent());
     if (!debugAction) {
       // Sticky QA latch was skipping real leave-by and arming +60s instead.
@@ -51,6 +57,35 @@ public class MainActivity extends BridgeActivity {
           getOnBackPressedDispatcher().onBackPressed();
         }
       }
+    );
+  }
+
+  @Override
+  public void onDestroy() {
+    if (systemThemeReceiver != null) {
+      try {
+        unregisterReceiver(systemThemeReceiver);
+      } catch (Exception error) {
+        // Already unregistered.
+      }
+      systemThemeReceiver = null;
+    }
+    super.onDestroy();
+  }
+
+  private void registerSystemThemeReceiver() {
+    if (systemThemeReceiver != null) {
+      return;
+    }
+    systemThemeReceiver = new WidgetSystemThemeReceiver();
+    android.content.IntentFilter filter = new android.content.IntentFilter();
+    filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+    filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+    androidx.core.content.ContextCompat.registerReceiver(
+      this,
+      systemThemeReceiver,
+      filter,
+      androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED
     );
   }
 
