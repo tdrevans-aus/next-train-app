@@ -2,7 +2,7 @@
  * D5 — Offline Göteborg line-map conformance.
  * Usage: node qa/goteborg-line-map-conformance.mjs
  *
- * City stays planned. D1 pack required. Not generated from GTFS.
+ * City is tester-live (flipped by Tim 30 Aug 2026). D1 pack required. Not generated from GTFS.
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -61,14 +61,14 @@ function main() {
   const catalog = loadJson("lib/cities/goteborg/stations.json");
   const failures = [];
 
-  if (assertCityLive("goteborg")?.ok === true) {
-    failures.push("C0: assertCityLive(goteborg) must fail (city stays planned)");
+  if (assertCityLive("goteborg")?.ok !== true) {
+    failures.push("C0: assertCityLive(goteborg) must pass (tester-live)");
   }
-  if (getCity("goteborg")?.status !== "planned") {
-    failures.push("C0: goteborg registry status must be planned");
+  if (getCity("goteborg")?.status !== "live") {
+    failures.push("C0: goteborg registry status must be live");
   }
-  if (isMultiCity("goteborg")) {
-    failures.push("C0: goteborg must not join MULTI_CITY_IDS until Tim flips live");
+  if (!isMultiCity("goteborg")) {
+    failures.push("C0: goteborg must be in MULTI_CITY_IDS after the flip");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
@@ -323,7 +323,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("goteborg-line-map-conformance: ok (planned, D1 pack present, 157 names, 8/12 miss Brunnsparken)");
+  console.log("goteborg-line-map-conformance: ok (tester-live, D1 pack present, 157 names, 8/12 miss Brunnsparken)");
 }
 
 main();

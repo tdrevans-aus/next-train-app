@@ -4,7 +4,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.QA_BASE || "http://localhost:3000";
 const LONDON = { latitude: 51.5074, longitude: -0.1278 };
 const SYDNEY = { latitude: -33.8688, longitude: 151.2093 };
 const PERTH = { latitude: -31.9505, longitude: 115.8605 };
@@ -167,9 +167,9 @@ async function run() {
     await context.close();
   }
 
-  // 5. Sweden cities stay Coming Soon — no live board
+  // 5. Stockholm and Göteborg are both tester-live
   {
-    console.log("  Test 5: Sweden picker Coming Soon (Stockholm + Göteborg)...");
+    console.log("  Test 5: Sweden picker (Stockholm + Göteborg live)...");
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
@@ -206,14 +206,14 @@ async function run() {
     });
 
     if (
-      picker.swedenLabel === "Sweden (Coming Soon)" &&
-      picker.stockholmLabel === "Stockholm (Coming Soon)" &&
-      picker.goteborgLabel === "Göteborg (Coming Soon)" &&
-      (picker.cityValue === "stockholm" || picker.cityValue === "goteborg") &&
-      applied.afterStockholm !== "stockholm" &&
-      applied.afterGoteborg !== "goteborg"
+      picker.swedenLabel === "Sweden" &&
+      picker.stockholmLabel === "Stockholm" &&
+      picker.goteborgLabel === "Göteborg" &&
+      picker.cityValue === "stockholm" &&
+      applied.afterStockholm === "stockholm" &&
+      applied.afterGoteborg === "goteborg"
     ) {
-      console.log("    PASS — Sweden/Stockholm/Göteborg Coming Soon; applyCity does not go live");
+      console.log("    PASS — Stockholm and Göteborg both live in Sweden picker");
     } else {
       console.error("    FAIL — Sweden picker / applyCity", { picker, applied });
       process.exitCode = 1;

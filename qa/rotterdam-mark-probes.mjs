@@ -15,7 +15,17 @@ function assert(condition, message) {
   }
 }
 
-const NOW = new Date("2026-08-27T10:00:00.000Z");
+/**
+ * Rotterdam's board is built from the live GTFS static blob (gtfsFixtureBlobUrl),
+ * which is a *rolling* fixture: calendar_dates.txt only covers a ~90-day window
+ * starting a day or two before the blob was last published (see
+ * scripts/publish-gtfs-fixture-to-blob.mjs). A fixed historical NOW eventually
+ * falls outside that window as the blob rolls forward, making every station
+ * report an empty board — this is what made the gate intermittently fail.
+ * Pin to "tomorrow, midday UTC" instead so NOW always lands inside the window.
+ */
+const NOW = new Date(Date.now() + 24 * 60 * 60 * 1000);
+NOW.setUTCHours(10, 0, 0, 0);
 
 assert(assertCityLive("rotterdam")?.ok === true, "assertCityLive(rotterdam) must pass");
 assert(MARK_PROBES.length === 13, "Mark probes are 13 stations");

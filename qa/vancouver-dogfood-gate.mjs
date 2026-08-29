@@ -25,8 +25,8 @@ assert(isMultiCity("vancouver") === true, "vancouver must be in MULTI_CITY_IDS")
 assert(!getCity("canada"), "city=canada must not exist");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(assertCityLive("auckland")?.ok === true, "Auckland is tester-live");
-assert(assertCityLive("wellington")?.ok === false, "Wellington stays planned");
-assert(assertCityLive("stockholm")?.ok === false, "Stockholm stays planned");
+assert(assertCityLive("wellington")?.ok === true, "Wellington is tester-live");
+assert(assertCityLive("stockholm")?.ok === true, "Stockholm is tester-live");
 assert(
   !existsSync(join(ROOT, "qa/fixtures/vancouver/published-network.json")),
   "Do not generate published-network.json from GTFS; Luke D1 can follow"
@@ -73,4 +73,4 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("vancouver-dogfood-gate: ok (live, picker city, no city=canada, Vercel board 404, Wellington/Stockholm planned)");
+console.log("vancouver-dogfood-gate: ok (live, picker city, no city=canada, Vercel board 404, Wellington planned)");
