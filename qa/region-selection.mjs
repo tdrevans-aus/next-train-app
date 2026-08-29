@@ -267,6 +267,53 @@ async function run() {
     await context.close();
   }
 
+
+  // 7. Hong Kong stays Coming Soon — no live board
+  {
+    console.log("  Test 7: Hong Kong picker Coming Soon...");
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
+    await page.waitForTimeout(4000);
+
+    await page.evaluate(() => window.NextTrainCitySession.openRegionScreen());
+    await page.waitForTimeout(500);
+
+    const picker = await page.evaluate(() => {
+      const countrySelect = document.querySelector("[data-region-country]");
+      const hongKong = [...(countrySelect?.options ?? [])].find((option) => option.value === "hk");
+      countrySelect.value = "hk";
+      countrySelect.dispatchEvent(new Event("change", { bubbles: true }));
+      const citySelect = document.querySelector("[data-region-city]");
+      const city = [...(citySelect?.options ?? [])].find((option) => option.value === "hong-kong");
+      return {
+        countryLabel: hongKong?.textContent?.trim() ?? "",
+        cityLabel: city?.textContent?.trim() ?? "",
+        cityValue: citySelect?.value ?? "",
+        savedCity: window.NextTrainCitySession.readSavedCity(),
+      };
+    });
+
+    const applied = await page.evaluate(async () => {
+      await window.NextTrainCitySession.applyCity("hong-kong", { persist: true, explicit: true });
+      return { savedCity: window.NextTrainCitySession.readSavedCity() };
+    });
+
+    if (
+      picker.countryLabel === "Hong Kong (Coming Soon)" &&
+      picker.cityLabel === "Hong Kong (Coming Soon)" &&
+      picker.cityValue === "hong-kong" &&
+      applied.savedCity !== "hong-kong" &&
+      (applied.savedCity === "perth" || applied.savedCity === "")
+    ) {
+      console.log("    PASS — Hong Kong Coming Soon; applyCity does not persist (falls back to Perth)");
+    } else {
+      console.error("    FAIL — Hong Kong picker / applyCity", { picker, applied });
+      process.exitCode = 1;
+    }
+    await context.close();
+  }
+
   await browser.close();
 }
 
