@@ -256,9 +256,10 @@ async function run() {
       picker.japanLabel === "Japan (Coming Soon)" &&
       picker.osakaLabel === "Osaka (Coming Soon)" &&
       picker.osakaValue === "osaka" &&
-      applied.savedCity !== "osaka"
+      applied.savedCity !== "osaka" &&
+      (applied.savedCity === "perth" || applied.savedCity === "")
     ) {
-      console.log("    PASS — Japan/Osaka Coming Soon; applyCity does not go live");
+      console.log("    PASS — Japan/Osaka Coming Soon; applyCity does not persist (falls back to Perth)");
     } else {
       console.error("    FAIL — Osaka picker / applyCity", { picker, applied });
       process.exitCode = 1;

@@ -9,6 +9,11 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
+import {
+  METRO_HUB,
+  mapOsakaDestination,
+  marketingLabelsForStation,
+} from "../lib/cities/osaka/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PRINTED_CODES = ["M", "T", "Y", "C", "S", "K", "N", "I"];
@@ -113,7 +118,7 @@ function main() {
   if (catalogNames.length !== 101 || new Set(catalogNames).size !== 101) {
     failures.push(`C2: catalog must have 101 unique names, got ${catalogNames.length}`);
   }
-  if (!catalogNames.includes("Hommachi")) {
+  if (!catalogNames.includes(METRO_HUB)) {
     failures.push("C2: catalog must lock Hommachi");
   }
   for (const name of MARK_PROBES) {
@@ -139,8 +144,14 @@ function main() {
   }
   if (existsSync(publishedPath)) {
     const published = JSON.parse(readFileSync(publishedPath, "utf8"));
-    if (published.printedInnerCityNames?.lock !== "Hommachi") {
+    if (published.printedInnerCityNames?.lock !== METRO_HUB) {
       failures.push("C2: D1 lock must be Hommachi");
+    }
+    if (published.timezone !== "Asia/Tokyo") {
+      failures.push("C0: D1 JSON timezone must be lowercase Asia/Tokyo");
+    }
+    if (published.timeZone) {
+      failures.push("C0: D1 JSON must use timezone, not timeZone");
     }
     if (published.uniqueStationCount !== 101) {
       failures.push(`C1: D1 uniqueStationCount must be 101, got ${published.uniqueStationCount}`);
@@ -233,6 +244,39 @@ function main() {
   }
   if (!blob.includes("Hommachi") || !blob.includes("Yumeshima")) {
     failures.push("C2: catalog must preserve Hommachi and Yumeshima");
+  }
+
+  const hubLabels = marketingLabelsForStation(METRO_HUB);
+  if (!hubLabels.includes("Midosuji + Nakamozu") || !hubLabels.includes("Midosuji + Esaka")) {
+    failures.push(`C7: Hommachi must offer Midosuji + Esaka / Nakamozu (got ${hubLabels.join("; ")})`);
+  }
+  if (!hubLabels.includes("Chuo + Yumeshima") || !hubLabels.includes("Yotsubashi + Suminoekoen")) {
+    failures.push(`C7: Hommachi must offer Chuo + Yumeshima and Yotsubashi + Suminoekoen (got ${hubLabels.join("; ")})`);
+  }
+  if (hubLabels.some((label) => /inbound|outbound|to city|downtown/i.test(label))) {
+    failures.push("C7: do not use inbound/outbound or to City");
+  }
+  if (hubLabels.some((label) => /new tram|nanko|senri-chuo|minoh/i.test(label))) {
+    failures.push("C7: Hommachi chips must not name New Tram or Kitakyu through-run");
+  }
+
+  const destCases = [
+    ["Nakamozu", "M", "Midosuji + Nakamozu"],
+    ["Esaka", "Midosuji", "Midosuji + Esaka"],
+    ["Yumeshima", "C", "Chuo + Yumeshima"],
+    ["Nagata", "Chuo Line", "Chuo + Nagata"],
+    ["Yao-minami", "T", "Tanimachi + Yao-minami"],
+    ["City", "M", ""],
+    ["Downtown", "Y", ""],
+  ];
+  for (const [headsign, code, expected] of destCases) {
+    const got = mapOsakaDestination(headsign, code);
+    if (got !== expected) {
+      failures.push(`board dest: ${JSON.stringify(headsign)} ${code} → ${got} expected ${expected}`);
+    }
+    if (/to city|downtown|inbound|outbound/i.test(got)) {
+      failures.push(`board dest leaked forbidden string: ${got}`);
+    }
   }
 
   if (failures.length) {

@@ -11,6 +11,7 @@ import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
 import nextTrain from "../api/next-train.js";
 import board from "../api/board.js";
+import { METRO_HUB, marketingLabelsForStation } from "../lib/cities/osaka/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const D1_FILES = [
@@ -85,7 +86,7 @@ assert(live?.status === 501, "osaka must be 501 planned");
 
 const entry = getCity("osaka");
 assert(entry?.status === "planned", "osaka registry status must be planned");
-assert(entry?.adapterReady === false, "osaka adapterReady must be false");
+assert(entry?.adapterReady !== true, "osaka adapterReady must be omitted or false");
 assert(entry?.displayName === "Osaka", "osaka display name must be Osaka");
 assert(entry?.timeZone === "Asia/Tokyo", "osaka timezone must be Asia/Tokyo");
 assert(entry?.agency === "Osaka Metro", "Osaka agency is Osaka Metro");
@@ -103,6 +104,10 @@ assert(!getCity("tokyo"), "do not start Tokyo from this city");
 assert(!CITIES.some((city) => city.id === "japan"), "registry must not invent city=japan");
 assert(CITIES.filter((city) => city.id === "osaka").length === 1, "osaka must appear once in the registry");
 assert(!existsSync(join(ROOT, "lib/providers/osaka.js")), "osaka must not have a live adapter");
+assert(!existsSync(join(ROOT, "lib/cities/osaka/dogfood-next-train.js")), "osaka must not have dogfood-next-train.js");
+assert(!existsSync(join(ROOT, "public/city-catalogs/osaka.json")), "osaka must not have a public catalog");
+assert(!existsSync(join(ROOT, "qa/osaka-network-sweep.mjs")), "D6 network-sweep must not exist — no public feed");
+assert(!getCity("fukuoka") && !getCity("nagoya"), "do not start Fukuoka / Nagoya from this city");
 
 const stockholm = getCity("stockholm");
 assert(stockholm?.status === "planned", "Stockholm stays planned / Coming Soon");
@@ -122,8 +127,15 @@ assert(
   d1Json === readFileSync(fixturePath, "utf8"),
   "qa/fixtures/osaka/published-network.json must be a verbatim copy of docs/osaka-d1 (not GTFS-generated)"
 );
+assert(existsSync(join(ROOT, "qa/fixtures/osaka/README.md")), "D2 fixture README must exist");
+assert(
+  /verbatim|byte-identical/i.test(readFileSync(join(ROOT, "qa/fixtures/osaka/README.md"), "utf8")),
+  "D2 fixture README must say the JSON is a verbatim / byte-identical copy"
+);
 
 const network = JSON.parse(d1Json);
+assert(network.timezone === "Asia/Tokyo", "D1 JSON timezone is lowercase Asia/Tokyo");
+assert(network.timeZone === undefined, "D1 JSON must use timezone, not timeZone");
 assert(network.city === "osaka", "D1 city id is osaka");
 assert(network.displayName === "Osaka", "D1 displayName is Osaka");
 assert(network.status === "planned", "D1 pack stays planned");
@@ -137,7 +149,10 @@ const catalog = JSON.parse(readFileSync(join(ROOT, "lib/cities/osaka/stations.js
 const byName = new Map((catalog.stations ?? []).map((s) => [s.name, s]));
 assert(byName.size === 101, `catalog must have 101 stations, got ${byName.size}`);
 assert(catalog.dst === false, "Asia/Tokyo has no DST");
-assert(catalog.timeZone === "Asia/Tokyo", "catalog timezone is Asia/Tokyo");
+assert(catalog.timeZone === "Asia/Tokyo", "catalog timeZone is camelCase Asia/Tokyo");
+const lineMap = JSON.parse(readFileSync(join(ROOT, "lib/cities/osaka/line-map.json"), "utf8"));
+assert(lineMap.timeZone === "Asia/Tokyo", "line-map timeZone is camelCase Asia/Tokyo");
+assert(lineMap.dst === false, "line-map records no DST");
 assert(byName.has("Hommachi"), "catalog must lock Hommachi");
 assert(byName.get("Hommachi")?.codes?.includes("M18"), "Hommachi must carry official code M18");
 assert(byName.get("Hommachi")?.codes?.includes("Y13"), "Hommachi must carry official code Y13");
@@ -155,14 +170,18 @@ for (const name of FORBIDDEN) {
 
 const nextRes = mockRes();
 await nextTrain(
-  { method: "GET", query: { city: "osaka", station: "Hommachi", direction: "Nakamozu" }, headers: {} },
+  { method: "GET", query: { city: "osaka", station: METRO_HUB, direction: "Nakamozu" }, headers: {} },
   nextRes
 );
 assert(nextRes.statusCode === 501, `/api/next-train?city=osaka must 501, got ${nextRes.statusCode}`);
 
 const boardRes = mockRes();
-await board({ method: "GET", query: { city: "osaka", station: "Hommachi" }, headers: {} }, boardRes);
+await board({ method: "GET", query: { city: "osaka", station: METRO_HUB }, headers: {} }, boardRes);
 assert(boardRes.statusCode === 501, `/api/board?city=osaka must 501, got ${boardRes.statusCode}`);
+
+const hubChips = marketingLabelsForStation(METRO_HUB);
+assert(hubChips.includes("Midosuji + Nakamozu"), "Hommachi chips must include Midosuji + Nakamozu");
+assert(!hubChips.some((label) => /inbound|outbound|to city/i.test(label)), "chips are line + terminus, never to City");
 
 const session = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
 assert(/id:\s*"jp"/.test(session) && /name:\s*"Japan"/.test(session), "picker country is jp (Japan), not city=japan");
@@ -179,7 +198,7 @@ assert(
 assert(/id:\s*"rotterdam"/.test(session), "Rotterdam must remain in the NL picker");
 assert(/id:\s*"stockholm"/.test(session), "Stockholm stays Coming Soon");
 assert(!/id:\s*"japan"/.test(session), "do not invent city=japan in the picker");
-assert(!/id:\s*"tokyo"|id:\s*"osk"|id:\s*"osaka-metro"/.test(session), "do not start Tokyo / osk / osaka-metro");
+assert(!/id:\s*"tokyo"|id:\s*"fukuoka"|id:\s*"nagoya"|id:\s*"osk"|id:\s*"osaka-metro"/.test(session), "do not start Tokyo / Fukuoka / Nagoya / osk");
 assert(!/MULTI_CITY_IDS = \[[^\]]*osaka/.test(session), "osaka must not be in city-session MULTI_CITY_IDS");
 assert(/MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(session), "rotterdam must remain in city-session MULTI_CITY_IDS");
 

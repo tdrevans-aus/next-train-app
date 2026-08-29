@@ -925,6 +925,7 @@ D1 pack: `docs/osaka-d1/`. D2 fixture is a verbatim copy at `qa/fixtures/osaka/p
 5. `node qa/osaka-planned-gate.mjs` and `node qa/osaka-line-map-conformance.mjs` — offline. Osaka is not added to `LIVE_CITY_IDS` / `MULTI_CITY_IDS`. Perth / Amsterdam / Rotterdam live-gates stay. Stockholm / Göteborg stay Coming Soon. Melbourne stays planned.
 6. Mark probes in those tests: Hommachi, Sakaisuji-Hommachi, Umeda / Higashi-Umeda / Nishi-Umeda, Namba, Shinsaibashi, Yotsubashi, Esaka, Yumeshima, Nakamozu, Nagata, Tenjimbashisuji 6-chome. Negatives: New Tram / Senri-Chuo / Momoyamadai / Minoh-Kayano.
 7. `/api/next-train?city=osaka&station=Hommachi&direction=Nakamozu` stays **501**. `/api/board?city=osaka&station=Hommachi` stays **501**. No env key. Do not invent an ODPT zip.
+8. No D6 network-sweep and no `probe:osaka` — there is no official public feed. D6 must never gate the PR. Melbourne stays planned. Do not wire Tokyo / Fukuoka / Nagoya.
 
 ### 24. Melbourne provider probe (adapter only — not live)
 
