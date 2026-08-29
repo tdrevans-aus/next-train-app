@@ -40,6 +40,7 @@ const SMOKE_SCRIPTS = [
   "static-page-above-ad.mjs",
   "dialog-above-ad.mjs",
   "onboarding-not-on-overlay.mjs",
+  "onboarding-got-it-no-loop.mjs",
   "region-explicit-skips-wizard.mjs",
   "journey-cap-ignores-routes.mjs",
   "onboarding-scrim-dismiss.mjs",

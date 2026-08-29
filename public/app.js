@@ -6560,9 +6560,9 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
 });
 
 onboardingGotItBtn?.addEventListener("click", () => {
-  window.NextTrainCitySession?.markRegionExplicit?.();
-  clearOnboardingSchedule();
-  showOnboardingStep2();
+  // markRegionExplicit here made canShowOnboardingCoach() false, so
+  // showOnboardingStep2() returned without hiding the card — Got it was a no-op.
+  completeOnboarding();
 });
 
 onboardingRoutesGotItBtn?.addEventListener("click", () => {

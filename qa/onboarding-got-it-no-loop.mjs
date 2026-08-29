@@ -1,5 +1,5 @@
 /**
- * Got it on step 1 must advance to Routes (step 2) and not loop back after defer timer.
+ * Got it on the Near me wizard must dismiss it and keep it dismissed.
  * Usage: node qa/onboarding-got-it-no-loop.mjs
  */
 import { chromium } from "playwright";
@@ -27,58 +27,37 @@ async function run() {
   await page.waitForTimeout(300);
 
   const afterGotIt = await page.evaluate(() => ({
-    step1Hidden: document.getElementById("onboarding-step-1")?.hidden,
-    step2Visible: !document.getElementById("onboarding-step-2")?.hidden,
-    step2Title: document.getElementById("onboarding-step-2-title")?.textContent,
-    coachStep: document.getElementById("onboarding-coach")?.classList.contains("onboarding-coach--step-2"),
-    onboardingStep: sessionStorage.getItem("nextTrainOnboardingStep"),
+    coachHidden: document.getElementById("onboarding-coach")?.hidden === true,
+    coachVisible: document.getElementById("onboarding-coach")?.hidden === false,
+    step1Visible: document.getElementById("onboarding-step-1")?.hidden === false,
+    done: Boolean(localStorage.getItem("nextTrainOnboardingDone")),
   }));
 
-  if (
-    !afterGotIt.step2Visible ||
-    !afterGotIt.coachStep ||
-    afterGotIt.onboardingStep !== "2" ||
-    afterGotIt.step2Title !== "Routes"
-  ) {
+  if (!afterGotIt.coachHidden || afterGotIt.coachVisible || !afterGotIt.done) {
     await browser.close();
-    console.error("FAIL onboarding-got-it-no-loop — did not advance to Routes step", afterGotIt);
+    console.error("FAIL onboarding-got-it-no-loop — Got it did not dismiss Near me wizard", afterGotIt);
     process.exit(1);
   }
 
-  await page.locator("#onboarding-routes-got-it-btn").click();
-  await page.waitForTimeout(300);
-
-  const afterRoutes = await page.evaluate(() => ({
-    step3Visible: !document.getElementById("onboarding-step-3")?.hidden,
-    coachStep3: document.getElementById("onboarding-coach")?.classList.contains("onboarding-coach--step-3"),
-    onboardingStep: sessionStorage.getItem("nextTrainOnboardingStep"),
-  }));
-
-  if (!afterRoutes.step3Visible || !afterRoutes.coachStep3 || afterRoutes.onboardingStep !== "3") {
-    await browser.close();
-    console.error("FAIL onboarding-got-it-no-loop — did not advance to Journeys step", afterRoutes);
-    process.exit(1);
-  }
-
-  // Old bug: defer timer fired ~8s after Got it and reset to step 1.
   await page.waitForTimeout(8500);
 
   const afterWait = await page.evaluate(() => ({
-    step1Visible: !document.getElementById("onboarding-step-1")?.hidden,
-    step3Visible: !document.getElementById("onboarding-step-3")?.hidden,
-    coachStep1: document.getElementById("onboarding-coach")?.classList.contains("onboarding-coach--step-1"),
-    coachStep3: document.getElementById("onboarding-coach")?.classList.contains("onboarding-coach--step-3"),
-    onboardingStep: sessionStorage.getItem("nextTrainOnboardingStep"),
+    coachHidden: document.getElementById("onboarding-coach")?.hidden === true,
+    coachVisible: document.getElementById("onboarding-coach")?.hidden === false,
+    step1Visible:
+      document.getElementById("onboarding-coach")?.hidden === false &&
+      document.getElementById("onboarding-step-1")?.hidden === false,
+    done: Boolean(localStorage.getItem("nextTrainOnboardingDone")),
   }));
 
   await browser.close();
 
-  if (afterWait.coachStep1 || afterWait.step1Visible || !afterWait.step3Visible || !afterWait.coachStep3) {
-    console.error("FAIL onboarding-got-it-no-loop — looped back to step 1", afterWait);
+  if (afterWait.coachVisible || afterWait.step1Visible || !afterWait.done || !afterWait.coachHidden) {
+    console.error("FAIL onboarding-got-it-no-loop — Near me wizard came back", afterWait);
     process.exit(1);
   }
 
-  console.log("PASS onboarding-got-it-no-loop");
+  console.log("PASS onboarding-got-it-no-loop — Got it dismissed and stayed dismissed");
 }
 
 run().catch((error) => {
