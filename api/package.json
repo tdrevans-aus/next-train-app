@@ -2,5 +2,8 @@
   "name": "next-train-api",
   "private": true,
   "type": "module",
-  "description": "Stub so @sentry/capacitor postinstall does not ENOENT on Vercel (INIT_CWD can be api/). Not a real package."
+  "description": "Stub so @sentry/capacitor postinstall does not ENOENT on Vercel (INIT_CWD can be api/). Not a real package.",
+  "dependencies": {
+    "@vercel/blob": "^2.8.0"
+  }
 }
