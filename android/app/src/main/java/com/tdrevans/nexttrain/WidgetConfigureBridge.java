@@ -37,4 +37,11 @@ public final class WidgetConfigureBridge {
     activity = null;
     appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
   }
+
+  /** Clear only when still bound to this activity — a newer bind() stays intact. */
+  public static void clearIfBound(WidgetConfigureActivity configureActivity) {
+    if (activity == configureActivity) {
+      clear();
+    }
+  }
 }

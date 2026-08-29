@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 public final class WidgetRefreshScheduler {
 
@@ -20,18 +19,18 @@ public final class WidgetRefreshScheduler {
       return;
     }
 
-    long triggerAt = System.currentTimeMillis() + INTERVAL_MS;
-    PendingIntent pending = buildPendingIntent(context);
-
-    try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending);
-      } else {
-        manager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, pending);
-      }
-    } catch (Exception error) {
-      manager.set(AlarmManager.RTC_WAKEUP, triggerAt, pending);
+    // Floor, not reset: callers fire on every unlock/update, and re-arming at
+    // now + 15 min each time deferred the alarm forever on active devices.
+    long now = System.currentTimeMillis();
+    long pendingAt = WidgetSettingsStore.readRefreshAlarmAt(context);
+    if (pendingAt > now && pendingAt <= now + INTERVAL_MS) {
+      return;
     }
+
+    long triggerAt = now + INTERVAL_MS;
+    PendingIntent pending = buildPendingIntent(context);
+    WidgetAlarms.scheduleWakeup(manager, triggerAt, pending);
+    WidgetSettingsStore.saveRefreshAlarmAt(context, triggerAt);
   }
 
   public static void refreshSoon(Context context) {
@@ -47,6 +46,7 @@ public final class WidgetRefreshScheduler {
     PendingIntent pending = buildPendingIntent(context);
     manager.cancel(pending);
     pending.cancel();
+    WidgetSettingsStore.saveRefreshAlarmAt(context, 0L);
   }
 
   static PendingIntent buildPendingIntent(Context context) {

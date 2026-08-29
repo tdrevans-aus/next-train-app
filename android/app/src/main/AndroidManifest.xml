@@ -122,15 +122,6 @@
             android:exported="false" />
 
         <receiver
-            android:name=".WidgetSystemThemeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.WALLPAPER_CHANGED" />
-                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name=".WidgetRefreshReceiver"
             android:exported="false" />
 

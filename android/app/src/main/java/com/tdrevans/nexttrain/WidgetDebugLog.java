@@ -11,10 +11,16 @@ public final class WidgetDebugLog {
   private WidgetDebugLog() {}
 
   public static void refreshStart(String trigger) {
+    if (!BuildConfig.DEBUG) {
+      return;
+    }
     Log.i(TAG, "refresh start trigger=" + trigger);
   }
 
   public static void refreshDone(JSONObject snapshot) {
+    if (!BuildConfig.DEBUG) {
+      return;
+    }
     if (snapshot == null) {
       Log.i(TAG, "refresh done snapshot=null");
       return;
@@ -23,6 +29,9 @@ public final class WidgetDebugLog {
   }
 
   public static void paintDone(JSONObject snapshot, String reason) {
+    if (!BuildConfig.DEBUG) {
+      return;
+    }
     if (snapshot == null) {
       Log.i(TAG, "paint reason=" + reason + " snapshot=null");
       return;

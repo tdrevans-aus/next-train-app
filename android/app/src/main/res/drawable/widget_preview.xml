@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget picker preview for API < 31 (previewLayout covers 31+): a stylised
+     card echoing the live face — label, big teal countdown, leave column. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="220dp"
+    android:height="100dp"
+    android:viewportWidth="220"
+    android:viewportHeight="100">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16,0 L204,0 A16,16 0 0 1 220,16 L220,84 A16,16 0 0 1 204,100 L16,100 A16,16 0 0 1 0,84 L0,16 A16,16 0 0 1 16,0 Z" />
+    <path
+        android:fillColor="#5C726D"
+        android:pathData="M16,16 L74,16 A4,4 0 0 1 78,20 L78,24 A4,4 0 0 1 74,28 L16,28 A4,4 0 0 1 12,24 L12,20 A4,4 0 0 1 16,16 Z" />
+    <path
+        android:fillColor="#0B6E6A"
+        android:pathData="M18,38 L96,38 A6,6 0 0 1 102,44 L102,58 A6,6 0 0 1 96,64 L18,64 A6,6 0 0 1 12,58 L12,44 A6,6 0 0 1 18,38 Z" />
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M148,16 L204,16 A4,4 0 0 1 208,20 L208,26 A4,4 0 0 1 204,30 L148,30 A4,4 0 0 1 144,26 L144,20 A4,4 0 0 1 148,16 Z" />
+    <path
+        android:fillColor="#5C726D"
+        android:pathData="M16,76 L120,76 A4,4 0 0 1 124,80 L124,84 A4,4 0 0 1 120,88 L16,88 A4,4 0 0 1 12,84 L12,80 A4,4 0 0 1 16,76 Z" />
+</vector>

@@ -1,7 +1,7 @@
 /**
- * Göteborg dogfood machinery is fully wired while the city stays planned and
- * invisible. Schedule-only RT (Trafiklab publishes no TripUpdates for vt) is
- * documented and surfaced honestly — never asserted away.
+ * Göteborg is tester-live (flipped by Tim 29 Aug 2026). Schedule-only RT
+ * (Trafiklab publishes no TripUpdates for vt) is documented and surfaced
+ * honestly — never asserted away.
  * Usage: node qa/goteborg-dogfood-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
@@ -29,26 +29,50 @@ function assert(condition, message) {
   }
 }
 
-// City stays planned — dogfood wiring must not leak it live.
+// Tester-live (flipped by Tim 29 Aug 2026). Stockholm stays planned.
 const live = assertCityLive("goteborg");
-assert(live?.ok === false, "assertCityLive(goteborg) must still fail");
-assert(live?.status === 501, "goteborg must stay 501 planned");
-assert(getCity("goteborg")?.status === "planned", "goteborg registry status must stay planned");
+assert(live?.ok === true, "assertCityLive(goteborg) must pass");
+assert(getCity("goteborg")?.status === "live", "goteborg registry status must be live");
 assert(getCity("goteborg")?.adapterReady === true, "goteborg adapterReady must be true");
-assert(isMultiCity("goteborg") === false, "goteborg must stay out of MULTI_CITY_IDS until Tim flips");
+assert(isMultiCity("goteborg") === true, "goteborg must be in MULTI_CITY_IDS");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(assertCityLive("rotterdam")?.ok === true, "Rotterdam stays live");
 assert(assertCityLive("stockholm")?.ok === false, "Stockholm stays planned");
 
-// Invisible to the live app: no picker/visibility wiring may mention goteborg.
+// Registry identity + D1 pack (absorbed from the retired goteborg-planned-gate).
+const entry = getCity("goteborg");
+assert(entry?.displayName === "Göteborg", "goteborg display name must be Göteborg");
+assert(entry?.agency === "Västtrafik", "Göteborg agency is Västtrafik");
+assert((entry.envKeys ?? []).includes("TRAFIKLAB_API_KEY"), "goteborg needs TRAFIKLAB_API_KEY");
+assert(!entry.modes?.includes("metro"), "goteborg has no metro");
+assert(entry.modes?.includes("tram") && entry.modes?.includes("train"), "goteborg modes v1 are tram + train");
+assert(!getCity("sweden") && !getCity("gothenburg"), "city id is goteborg — no sweden/gothenburg");
+assert(!getCity("malmo") && !getCity("malmö"), "do not merge Malmö into this city");
+for (const name of [
+  "published-network.json",
+  "oracle-clash-report.md",
+  "hazard-pack.md",
+  "direction-model-memo.md",
+  "jim-handoff.md",
+  "qa-note.md",
+]) {
+  assert(existsSync(join(ROOT, "docs/goteborg-d1", name)), `docs/goteborg-d1/${name} is required`);
+}
+const catalogJson = JSON.parse(readFileSync(join(ROOT, "lib/cities/goteborg/stations.json"), "utf8"));
+const tramCount = (catalogJson.stations ?? []).filter((row) => row.mode === "tram").length;
+const trainCount = (catalogJson.stations ?? []).filter((row) => row.mode === "train").length;
+assert(tramCount === 132, `132 unique tram names, got ${tramCount}`);
+assert(trainCount === 25, `25 unique train names, got ${trainCount}`);
+
+// Visible to the live app: picker + visibility wiring must include goteborg.
 const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*goteborg/.test(appJs), "goteborg must not be in LIVE_CITY_IDS");
-assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*goteborg/.test(appJs), "goteborg must not be in NEARBY_MULTI_CITY_IDS");
+assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*goteborg/.test(appJs), "goteborg must be in LIVE_CITY_IDS");
+assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*goteborg/.test(appJs), "goteborg must be in NEARBY_MULTI_CITY_IDS");
 const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(!/MULTI_CITY_IDS = \[[^\]]*goteborg/.test(citySession), "goteborg must not be in city-session MULTI_CITY_IDS");
+assert(/MULTI_CITY_IDS = \[[^\]]*goteborg/.test(citySession), "goteborg must be in city-session MULTI_CITY_IDS");
 assert(
-  /\{ id: "goteborg"[^}]*comingSoon: true/.test(citySession),
-  "goteborg's city-session entry must stay comingSoon until the flip"
+  !/\{ id: "goteborg"[^}]*comingSoon: true/.test(citySession),
+  "goteborg's city-session entry must not be comingSoon after the flip"
 );
 
 // Dogfood station list + directions come from the catalog, not GTFS parses.
@@ -131,5 +155,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "goteborg-dogfood-gate: ok (planned + invisible, dispatch ready, bundled chips, schedule-only documented, Brunnsparken/Göteborg Central hubs)"
+  "goteborg-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, schedule-only documented, Brunnsparken/Göteborg Central hubs)"
 );
