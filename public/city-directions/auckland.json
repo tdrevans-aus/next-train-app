@@ -1,0 +1,184 @@
+{
+  "Avondale": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Baldwin Ave": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Drury": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Ellerslie": [
+    "Onehunga Line Newmarket",
+    "Onehunga Line Onehunga",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Fruitvale Rd": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Glen Eden": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Glen Innes": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station"
+  ],
+  "Grafton": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Greenlane": [
+    "Onehunga Line Newmarket",
+    "Onehunga Line Onehunga",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Henderson": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Homai": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Kingsland": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Manukau": [
+    "Eastern Line Waitematā Station"
+  ],
+  "Manurewa": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Meadowbank": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station"
+  ],
+  "Middlemore": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Morningside": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Mt Albert": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "New Lynn": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Newmarket": [
+    "Onehunga Line Onehunga",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station",
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Onehunga": [
+    "Onehunga Line Newmarket"
+  ],
+  "Ōrākei": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station"
+  ],
+  "Ōtāhuhu": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Paerātā": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Panmure": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station"
+  ],
+  "Papakura": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Papatoetoe": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Parnell": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station",
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Penrose": [
+    "Onehunga Line Newmarket",
+    "Onehunga Line Onehunga",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Puhinui": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Pukekohe": [
+    "Southern Line Waitematā Station"
+  ],
+  "Rānui": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Remuera": [
+    "Onehunga Line Newmarket",
+    "Onehunga Line Onehunga",
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Sturges Rd": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Sunnyvale": [
+    "Western Line Swanson",
+    "Western Line Waitematā Station"
+  ],
+  "Swanson": [
+    "Western Line Waitematā Station"
+  ],
+  "Sylvia Park": [
+    "Eastern Line Manukau",
+    "Eastern Line Waitematā Station"
+  ],
+  "Takaanini": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Te Mahia": [
+    "Southern Line Pukekohe",
+    "Southern Line Waitematā Station"
+  ],
+  "Te Pāpapa": [
+    "Onehunga Line Newmarket",
+    "Onehunga Line Onehunga"
+  ],
+  "Waitematā Station": [
+    "Eastern Line Manukau",
+    "Southern Line Pukekohe",
+    "Western Line Swanson"
+  ]
+}

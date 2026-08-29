@@ -1,5 +1,5 @@
 /**
- * Auckland and Wellington stay planned. No city=nz. Perth live-gate untouched.
+ * Auckland is tester-live. Wellington stays planned. No city=nz. Perth live-gate untouched.
  * Usage: node qa/nz-planned-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
@@ -16,22 +16,27 @@ function assert(condition, message) {
   }
 }
 
-const perth = assertCityLive("perth");
-assert(perth?.ok === true, "Perth must stay live");
+assert(assertCityLive("perth")?.ok === true, "Perth must stay live");
+
+const aucklandLive = assertCityLive("auckland");
+assert(aucklandLive?.ok === true, "assertCityLive(auckland) must pass");
+assert(getCity("auckland")?.status === "live", "auckland registry status must be live");
+assert(isMultiCity("auckland") === true, "auckland must be in MULTI_CITY_IDS");
+
+const wellingtonLive = assertCityLive("wellington");
+assert(wellingtonLive?.ok === false, "assertCityLive(wellington) must fail");
+assert(wellingtonLive?.status === 501, "wellington must be 501 planned");
+assert(getCity("wellington")?.status === "planned", "wellington registry status must be planned");
+assert(getCity("wellington")?.adapterReady === true, "wellington adapterReady must be true");
+assert(isMultiCity("wellington") === false, "wellington must not be in MULTI_CITY_IDS until Tim flips live");
 
 for (const id of ["auckland", "wellington"]) {
-  const live = assertCityLive(id);
-  assert(live?.ok === false, `assertCityLive(${id}) must fail`);
-  assert(live?.status === 501, `${id} must be 501 planned`);
   const entry = getCity(id);
-  assert(entry?.status === "planned", `${id} registry status must be planned`);
-  assert(entry?.adapterReady === true, `${id} adapterReady must be true`);
   assert(entry?.timeZone === "Pacific/Auckland", `${id} timezone must be Pacific/Auckland`);
   assert(entry?.modes?.length === 1 && entry.modes[0] === "train", `${id} modes v1 TRAIN only`);
-  assert(isMultiCity(id) === false, `${id} must not be in MULTI_CITY_IDS until Tim flips live`);
 }
 
-assert(!getCity("nz"), "city=nz must not exist");
+assert(!getCity("nz"), "city=nz must not exist as a registry city");
 assert(
   !CITIES.some((city) => city.id === "nz"),
   "registry must not contain a combined NZ city"
@@ -62,11 +67,11 @@ assert(
 );
 
 const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*auckland/.test(appJs), "auckland must not be in LIVE_CITY_IDS");
+assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*auckland/.test(appJs), "auckland must be in LIVE_CITY_IDS");
 assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*wellington/.test(appJs), "wellington must not be in LIVE_CITY_IDS");
-assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*auckland/.test(appJs), "auckland must not be in the city picker nearby list");
+assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*auckland/.test(appJs), "auckland must be in the city picker nearby list");
 assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*wellington/.test(appJs), "wellington must not be in the city picker nearby list");
 
 console.log(
-  "nz-planned-gate: ok (auckland + wellington planned/501, no city=nz, Perth green, not in multi-city UI)"
+  "nz-planned-gate: ok (auckland tester-live, wellington planned/501, no city=nz, Perth green)"
 );

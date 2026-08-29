@@ -7,7 +7,9 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
 import { marketingLabelsForStation, HUB as AMS_HUB } from "../lib/cities/amsterdam/marketing-directions.js";
+import { marketingLabelsForStation as rotterdamLabels, HUB as RET_HUB } from "../lib/cities/rotterdam/marketing-directions.js";
 import { marketingLabelsForStation as newcastleLabels, HUB as NLR_HUB } from "../lib/cities/newcastle/marketing-directions.js";
+import { marketingLabelsForStation as aucklandLabels, HUB as AT_HUB } from "../lib/cities/auckland/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -39,11 +41,28 @@ assert(
   "Amsterdam bundled hub chips must match marketingLabelsForStation"
 );
 
+const rotterdam = loadDirections("rotterdam");
+const retHub = rotterdamLabels(RET_HUB);
+assert(Array.isArray(rotterdam[RET_HUB]), "Rotterdam hub Beurs must be in bundled directions");
+assert(
+  retHub.every((chip) => rotterdam[RET_HUB].includes(chip)),
+  "Rotterdam bundled hub chips must match marketingLabelsForStation"
+);
+assert(rotterdam[RET_HUB].includes("Metro A + Binnenhof"), "Beurs must offer Metro A + Binnenhof");
+
 const newcastle = loadDirections("newcastle");
 const nlrHub = newcastleLabels(NLR_HUB);
 assert(
   nlrHub.every((chip) => newcastle[NLR_HUB].includes(chip)),
   "Newcastle bundled hub chips must match marketingLabelsForStation"
+);
+
+const auckland = loadDirections("auckland");
+const atHub = aucklandLabels(AT_HUB);
+assert(Array.isArray(auckland[AT_HUB]), "Auckland hub Waitematā Station must be in bundled directions");
+assert(
+  atHub.every((chip) => auckland[AT_HUB].includes(chip)),
+  "Auckland bundled hub chips must match marketingLabelsForStation"
 );
 
 console.log(`bundled-city-directions: ok (${MULTI_CITY_IDS.length} cities)`);

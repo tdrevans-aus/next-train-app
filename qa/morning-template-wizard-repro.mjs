@@ -1,5 +1,5 @@
 /**
- * Repro: Morning template wizard opens on first setup tap (onboarding path).
+ * Repro: Near me Got it dismisses the first-use wizard (geo delay must not bring it back).
  * Usage: node qa/morning-template-wizard-repro.mjs
  */
 import { chromium } from "playwright";
@@ -25,7 +25,6 @@ async function runWizardPath({ geoDelayMs = 0, label }) {
   }, geoDelayMs);
 
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
-  // nearby geo + 4s onboarding delay
   await page.waitForTimeout(geoDelayMs + 6000);
 
   if (!(await page.locator("#onboarding-step-1").isVisible())) {
@@ -34,41 +33,26 @@ async function runWizardPath({ geoDelayMs = 0, label }) {
   }
 
   await advanceOnboardingToJourneysStep(page);
-  await page.locator("#onboarding-setup-btn").click();
   await page.waitForTimeout(600);
 
-  const events = [];
-  const t1 = Date.now();
-
-  for (let ms = 250; ms <= geoDelayMs + 4000; ms += 250) {
-    await page.waitForTimeout(250);
-    const snap = await page.evaluate(() => ({
-      detailOpen: !document.getElementById("settings-detail-view").hidden,
-      coachOpen: !document.getElementById("template-route-coach").hidden,
-      listHidden: document.getElementById("settings-list-view").hidden,
-    }));
-    events.push({ event: "poll", ms: Date.now() - t1, ...snap });
-    if (snap.detailOpen && snap.coachOpen) {
-      break;
-    }
-  }
-
-  const afterFirst = await page.evaluate(() => ({
-    detailOpen: !document.getElementById("settings-detail-view").hidden,
-    coachOpen: !document.getElementById("template-route-coach").hidden,
-    journeyName:
-      JSON.parse(localStorage.getItem("nextTrainSettings") || "{}").journeys?.[0]?.name ?? null,
+  const afterGotIt = await page.evaluate(() => ({
+    coachHidden: document.getElementById("onboarding-coach")?.hidden === true,
+    done: Boolean(localStorage.getItem("nextTrainOnboardingDone")),
   }));
 
-  const final = afterFirst;
+  await page.waitForTimeout(Math.min(geoDelayMs + 2000, 4000));
+
+  const later = await page.evaluate(() => ({
+    coachVisible: document.getElementById("onboarding-coach")?.hidden === false,
+    done: Boolean(localStorage.getItem("nextTrainOnboardingDone")),
+  }));
 
   await browser.close();
   return {
     label,
     geoDelayMs,
-    afterSetup: afterFirst,
-    final,
-    events,
+    afterGotIt,
+    later,
   };
 }
 
@@ -78,20 +62,24 @@ const results = [
   await runWizardPath({ geoDelayMs: 5000, label: "5s geo (template)" }),
 ];
 
+let failed = false;
 for (const r of results) {
   console.log("\n===", r.label, "===");
   if (r.error) {
     console.log("ERROR:", r.error);
+    failed = true;
     continue;
   }
-  console.log("after setup:", r.afterSetup);
-  console.log("final:", r.final);
-  const firstDetail = r.events.find((e) => e.detailOpen);
-  console.log(
-    "detail opened after ms:",
-    firstDetail ? firstDetail.ms : "never",
-    "(geo delay:",
-    r.geoDelayMs,
-    ")"
-  );
+  console.log("after Got it:", r.afterGotIt);
+  console.log("later:", r.later);
+  if (!r.afterGotIt.coachHidden || !r.afterGotIt.done || r.later.coachVisible || !r.later.done) {
+    failed = true;
+  }
 }
+
+if (failed) {
+  console.error("FAIL morning-template-wizard-repro — Got it did not keep Near me dismissed");
+  process.exit(1);
+}
+
+console.log("\nPASS morning-template-wizard-repro — Got it dismissed across geo delays");

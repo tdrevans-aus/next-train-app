@@ -1,0 +1,234 @@
+{
+  "city": "rotterdam",
+  "source": "Official RET Metrolijnenkaart PDF 2025-12-15 plus Metro A–E columns as of 28 Aug 2026 (hand-transcribed). Not generated from GTFS.",
+  "timeZone": "Europe/Amsterdam",
+  "dst": true,
+  "hub": "Beurs",
+  "notes": [
+    "TRAIN v1 is RET metro only: A–E. No tram, bus, waterbus, NS Intercity/Sprinter.",
+    "Hub printed name is Beurs. Do not collapse with Rotterdam, CS, or Centraal Station.",
+    "Direction: line + terminus (Metro A + Binnenhof). Not inbound/outbound. A does not go to Nesselande.",
+    "Locked map forms: Meijersplein/Airport and Hoek van Holland Strand.",
+    "Den Haag Centraal is a Metro E stop on city rotterdam. Do not add a Hague city.",
+    "Do not generate published-network.json from GTFS."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Rotterdam Centraal",
+      "b": "Rotterdam Centraal NS",
+      "reason": "RET metro vs NS station"
+    },
+    {
+      "a": "Beurs",
+      "b": "Beurs tram",
+      "reason": "RET metro hub vs tram"
+    },
+    {
+      "a": "Den Haag Centraal",
+      "b": "Den Haag Centraal NS",
+      "reason": "RET Metro E vs NS/HTM"
+    },
+    {
+      "a": "Hoek van Holland Strand",
+      "b": "Hoek van Holland Haven",
+      "reason": "Strand is in on B; distinct from Haven"
+    },
+    {
+      "a": "rotterdam",
+      "b": "amsterdam",
+      "reason": "Separate cities; do not merge GVB M50–M54"
+    }
+  ],
+  "junctionStations": [
+    "Beurs",
+    "Graskruid",
+    "Capelsebrug",
+    "Schiedam Centrum",
+    "Tussenwater",
+    "De Akkers",
+    "Slinge",
+    "Rotterdam Centraal"
+  ],
+  "suppressedTermini": [],
+  "lines": [
+    {
+      "id": "a",
+      "number": "A",
+      "name": "Metro A",
+      "mode": "METRO",
+      "termini": [
+        "Binnenhof",
+        "Schiedam Centrum"
+      ],
+      "stations": [
+        "Binnenhof",
+        "Romeynshof",
+        "Graskruid",
+        "Alexander",
+        "Oosterflank",
+        "Prinsenlaan",
+        "Schenkel",
+        "Capelsebrug",
+        "Kralingse Zoom",
+        "Voorschoterlaan",
+        "Gerdesiaweg",
+        "Oostplein",
+        "Blaak",
+        "Beurs",
+        "Eendrachtsplein",
+        "Dijkzigt",
+        "Coolhaven",
+        "Delfshaven",
+        "Marconiplein",
+        "Schiedam Centrum"
+      ]
+    },
+    {
+      "id": "b",
+      "number": "B",
+      "name": "Metro B",
+      "mode": "METRO",
+      "termini": [
+        "Nesselande",
+        "Hoek van Holland Strand"
+      ],
+      "stations": [
+        "Nesselande",
+        "De Tochten",
+        "Ambachtsland",
+        "Nieuw Verlaat",
+        "Hesseplaats",
+        "Graskruid",
+        "Alexander",
+        "Oosterflank",
+        "Prinsenlaan",
+        "Schenkel",
+        "Capelsebrug",
+        "Kralingse Zoom",
+        "Voorschoterlaan",
+        "Gerdesiaweg",
+        "Oostplein",
+        "Blaak",
+        "Beurs",
+        "Eendrachtsplein",
+        "Dijkzigt",
+        "Coolhaven",
+        "Delfshaven",
+        "Marconiplein",
+        "Schiedam Centrum",
+        "Schiedam Nieuwland",
+        "Vlaardingen Oost",
+        "Vlaardingen Centrum",
+        "Vlaardingen West",
+        "Maassluis Centrum",
+        "Maassluis West",
+        "Steendijkpolder",
+        "Hoek van Holland Haven",
+        "Hoek van Holland Strand"
+      ]
+    },
+    {
+      "id": "c",
+      "number": "C",
+      "name": "Metro C",
+      "mode": "METRO",
+      "termini": [
+        "De Terp",
+        "De Akkers"
+      ],
+      "stations": [
+        "De Terp",
+        "Capelle Centrum",
+        "Slotlaan",
+        "Capelsebrug",
+        "Kralingse Zoom",
+        "Voorschoterlaan",
+        "Gerdesiaweg",
+        "Oostplein",
+        "Blaak",
+        "Beurs",
+        "Eendrachtsplein",
+        "Dijkzigt",
+        "Coolhaven",
+        "Delfshaven",
+        "Marconiplein",
+        "Schiedam Centrum",
+        "Parkweg",
+        "Troelstralaan",
+        "Vijfsluizen",
+        "Pernis",
+        "Tussenwater",
+        "Hoogvliet",
+        "Zalmplaat",
+        "Spijkenisse Centrum",
+        "Heemraadlaan",
+        "De Akkers"
+      ]
+    },
+    {
+      "id": "d",
+      "number": "D",
+      "name": "Metro D",
+      "mode": "METRO",
+      "termini": [
+        "Rotterdam Centraal",
+        "De Akkers"
+      ],
+      "stations": [
+        "Rotterdam Centraal",
+        "Stadhuis",
+        "Beurs",
+        "Leuvehaven",
+        "Wilhelminaplein",
+        "Rijnhaven",
+        "Maashaven",
+        "Zuidplein",
+        "Slinge",
+        "Rhoon",
+        "Poortugaal",
+        "Tussenwater",
+        "Hoogvliet",
+        "Zalmplaat",
+        "Spijkenisse Centrum",
+        "Heemraadlaan",
+        "De Akkers"
+      ]
+    },
+    {
+      "id": "e",
+      "number": "E",
+      "name": "Metro E",
+      "mode": "METRO",
+      "termini": [
+        "Den Haag Centraal",
+        "Slinge"
+      ],
+      "stations": [
+        "Den Haag Centraal",
+        "Laan van NOI",
+        "Voorburg 't Loo",
+        "Leidschendam-Voorburg",
+        "Forepark",
+        "Leidschenveen",
+        "Nootdorp",
+        "Pijnacker Centrum",
+        "Pijnacker Zuid",
+        "Berkel Westpolder",
+        "Rodenrijs",
+        "Meijersplein/Airport",
+        "Melanchthonweg",
+        "Blijdorp",
+        "Rotterdam Centraal",
+        "Stadhuis",
+        "Beurs",
+        "Leuvehaven",
+        "Wilhelminaplein",
+        "Rijnhaven",
+        "Maashaven",
+        "Zuidplein",
+        "Slinge"
+      ]
+    }
+  ]
+}

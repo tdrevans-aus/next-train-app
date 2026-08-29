@@ -13,10 +13,12 @@ const HUBS = {
   adelaide: "Adelaide Railway Station",
   "uk-london-tfl": "King's Cross St. Pancras",
   amsterdam: "Centraal Station",
+  rotterdam: "Beurs",
   vancouver: "Waterfront",
   canberra: "Alinga Street",
   "gold-coast": "Helensvale",
   newcastle: "Newcastle Interchange",
+  auckland: "Waitematā Station",
 };
 
 const MIDDAY_UTC = {
@@ -25,10 +27,12 @@ const MIDDAY_UTC = {
   adelaide: "2026-08-27T02:30:00.000Z",
   "uk-london-tfl": "2026-08-27T11:00:00.000Z",
   amsterdam: "2026-08-27T10:00:00.000Z",
+  rotterdam: "2026-08-27T10:00:00.000Z",
   vancouver: "2026-08-27T19:00:00.000Z",
   canberra: "2026-08-27T02:00:00.000Z",
   "gold-coast": "2026-08-27T02:00:00.000Z",
   newcastle: "2026-08-27T02:00:00.000Z",
+  auckland: "2026-08-27T00:00:00.000Z",
 };
 
 async function probeCity(city) {

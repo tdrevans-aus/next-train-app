@@ -27,6 +27,7 @@
     loading: false,
     error: false,
     hint: "",
+    regionAway: false,
   };
 
   const settingsListView = document.getElementById("settings-list-view");
@@ -287,6 +288,24 @@
     return deps.fetchJson?.(url);
   }
 
+  function apiResultError(result, fallback) {
+    if (typeof deps.apiResultError === "function") {
+      return deps.apiResultError(result, fallback);
+    }
+    return new Error(result?.data?.error ?? result?.error ?? fallback);
+  }
+
+  function isRateLimitedResult(result) {
+    if (typeof deps.isRateLimitedResult === "function") {
+      return deps.isRateLimitedResult(result);
+    }
+    return (
+      result?.status === 429 ||
+      result?.data?.error === "Too many requests" ||
+      result?.error === "Too many requests"
+    );
+  }
+
   function apiUrl(path) {
     return deps.apiUrl?.(path) ?? path;
   }
@@ -447,6 +466,7 @@
     detailNearestState.loading = false;
     detailNearestState.error = false;
     detailNearestState.hint = "";
+    detailNearestState.regionAway = false;
   }
 
   function getEditingJourneyId() {
@@ -529,14 +549,17 @@ function syncDetailNearestStationChrome(patch = {}) {
   if ("hint" in patch) {
     detailNearestState.hint = patch.hint ? String(patch.hint) : "";
   }
+  if ("regionAway" in patch) {
+    detailNearestState.regionAway = Boolean(patch.regionAway);
+  }
 
   const station = String(getDetailStationCombobox()?.getValue?.() || "").trim();
   const hasStation = Boolean(station);
-  const { loading, error, hint } = detailNearestState;
+  const { loading, error, hint, regionAway } = detailNearestState;
 
-  const showButton = loading || error || !hasStation;
-  // Success distance (e.g. "3.0 km away") adds noise once a station is picked — keep errors/loading only.
-  const showHint = loading || error;
+  const hideNearest = regionAway || deps.isPlanningAwayFromLocation?.();
+  const showButton = !hideNearest && (loading || error || !hasStation);
+  const showHint = !hideNearest && (loading || error);
   const nearestLabel = detailNearestBtn?.querySelector(".route-nearest-btn__label");
 
   if (detailNearestBtn) {
@@ -978,12 +1001,14 @@ async function fetchDirectionsFromApi(station) {
     return fallback.data.destinations;
   }
 
-  throw new Error(
-    primary.data?.error ??
-      fallback.data?.error ??
-      primary.error ??
+  if (isRateLimitedResult(primary) || isRateLimitedResult(fallback)) {
+    throw apiResultError(
+      isRateLimitedResult(primary) ? primary : fallback,
       "Could not load directions"
-  );
+    );
+  }
+
+  throw apiResultError(primary.ok ? fallback : primary, "Could not load directions");
 }
 
 async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
@@ -1854,6 +1879,9 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
   editingJourneySnapshot = normalizeJourney({ ...journey });
   syncDetailFormForJourneyKind(journey);
   resetDetailNearestState();
+  if (deps.isPlanningAwayFromLocation?.()) {
+    syncDetailNearestStationChrome({ regionAway: true, loading: false, error: false, hint: "" });
+  }
   clearJourneyOverlapError();
   if (detailJourneyNameInput) {
     detailJourneyNameInput.value = journey.name || "";
@@ -1892,7 +1920,7 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
 
   let nearestHint = null;
 
-  if (!skipAutoRoute && shouldAutoRouteJourney(journey)) {
+  if (!skipAutoRoute && shouldAutoRouteJourney(journey) && !deps.isPlanningAwayFromLocation?.()) {
     syncDetailNearestStationChrome({ loading: true, error: false, hint: "" });
 
     const routeResult = await applyDefaultJourneyRoute(journey);
@@ -1910,7 +1938,14 @@ async function populateJourneyDetailForm(journeyId, { skipAutoRoute = false } = 
       populateDetailReminderFields(journey);
     }
 
-    if (routeResult.configured && routeResult.nearest) {
+    if (routeResult.regionAway || deps.isRegionMismatchError?.(routeResult.error)) {
+      syncDetailNearestStationChrome({
+        loading: false,
+        error: false,
+        hint: "",
+        regionAway: true,
+      });
+    } else if (routeResult.configured && routeResult.nearest) {
       nearestHint = formatNearestDistanceHint(routeResult.nearest);
       syncDetailNearestStationChrome({ loading: false, error: false, hint: nearestHint });
     } else if (routeResult.error) {
@@ -2121,6 +2156,15 @@ function initJourneyDetailListeners() {
   });
 
   detailNearestBtn?.addEventListener("click", async () => {
+    if (deps.isPlanningAwayFromLocation?.()) {
+      syncDetailNearestStationChrome({
+        loading: false,
+        error: false,
+        hint: "",
+        regionAway: true,
+      });
+      return;
+    }
     syncDetailNearestStationChrome({ loading: true, error: false, hint: "" });
     try {
       const { station, distanceKm: km } = await findNearestStation();
@@ -2136,6 +2180,15 @@ function initJourneyDetailListeners() {
         hint: formatNearestDistanceHint({ distanceKm: km }),
       });
     } catch (error) {
+      if (deps.isRegionMismatchError?.(error)) {
+        syncDetailNearestStationChrome({
+          loading: false,
+          error: false,
+          hint: "",
+          regionAway: true,
+        });
+        return;
+      }
       syncDetailNearestStationChrome({
         loading: false,
         error: true,

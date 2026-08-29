@@ -294,6 +294,27 @@
     return deps.appendFixtureQuery?.(queryString) ?? queryString;
   }
 
+  function fetchJson(url, timeoutMs) {
+    return deps.fetchJson?.(url, timeoutMs);
+  }
+
+  function apiResultError(result, fallback = "Could not load train times") {
+    if (typeof deps.apiResultError === "function") {
+      return deps.apiResultError(result, fallback);
+    }
+    return new Error(result?.data?.error ?? result?.error ?? fallback);
+  }
+
+  function isRateLimitedError(error) {
+    if (typeof deps.isRateLimitedError === "function") {
+      return deps.isRateLimitedError(error);
+    }
+    return (
+      error?.code === "RATE_LIMITED" ||
+      /too many requests|live times are busy/i.test(String(error?.message ?? error ?? ""))
+    );
+  }
+
   function enrichTrip(trip, referenceIso) {
     return deps.enrichTrip?.(trip, referenceIso) ?? trip;
   }
@@ -1360,7 +1381,7 @@ async function fetchNearbyDirectionData(station, direction, _skip = 0) {
 
   const result = await fetchJson(apiUrl(`/api/next-train?${params}`));
   if (!result.ok) {
-    throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+    throw apiResultError(result, "Could not load train times");
   }
 
   let payload = result.data;
@@ -2372,14 +2393,23 @@ async function fetchNearbyBoard() {
     return nearbyBoardInflight;
   }
 
-  nearbyBoardInflight = fetchNearbyBoardOnce().finally(() => {
-    nearbyBoardInflight = null;
-    renderNearbyBoard();
-    if (nearbyBoardRefetchPending) {
-      nearbyBoardRefetchPending = false;
-      void fetchNearbyBoard().catch(() => renderNearbyBoard({ stale: true }));
-    }
-  });
+  nearbyBoardInflight = fetchNearbyBoardOnce()
+    .catch((error) => {
+      // Rate limits are expected soft-protect responses — never leave them unhandled
+      // for fire-and-forget Near me refresh callers (CAPACITOR-1E / CAPACITOR-1D).
+      if (isRateLimitedError(error)) {
+        return;
+      }
+      throw error;
+    })
+    .finally(() => {
+      nearbyBoardInflight = null;
+      renderNearbyBoard();
+      if (nearbyBoardRefetchPending) {
+        nearbyBoardRefetchPending = false;
+        void fetchNearbyBoard().catch(() => renderNearbyBoard({ stale: true }));
+      }
+    });
 
   if (nearbyBoardLooksEmpty()) {
     renderNearbyBoard();
@@ -2408,7 +2438,9 @@ async function fetchNearbyBoard() {
     if (!station) throw new Error("Missing station");
 
     const destResult = await fetchJson(apiUrl(`/api/destinations?station=${encodeURIComponent(station)}&city=${city}`));
-    if (!destResult.ok) throw new Error(destResult.error || "Could not load directions");
+    if (!destResult.ok) {
+      throw apiResultError(destResult, "Could not load directions");
+    }
     const directions = destResult.data.destinations || [];
 
     const entries = await Promise.all(directions.map(async (direction) => {
@@ -2436,6 +2468,10 @@ async function fetchNearbyBoard() {
 
     if (!station && (lat == null || lng == null)) {
       console.log("[nearby] fetchNearbyBoardOnce: no station or coords, returning");
+      return;
+    }
+
+    if (typeof isRateLimitPaused === "function" && isRateLimitPaused()) {
       return;
     }
 
@@ -2472,7 +2508,7 @@ async function fetchNearbyBoard() {
         console.warn("[nearby] /api/board not found, falling back to legacy fetches");
         return await fetchNearbyBoardLegacy(params);
       }
-      throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+      throw apiResultError(result, "Could not load train times");
     }
 
     const payload = result.data;

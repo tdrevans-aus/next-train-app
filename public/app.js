@@ -206,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -642,7 +642,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -1316,6 +1316,11 @@ function completeOnboarding() {
   sessionStorage.removeItem(ONBOARDING_STEP_KEY);
   clearOnboardingSchedule();
   hideOnboardingCoach();
+  const coach = document.getElementById("onboarding-coach");
+  if (coach) {
+    coach.hidden = true;
+    coach.setAttribute("hidden", "");
+  }
   if (onboardingStep1) {
     onboardingStep1.hidden = false;
   }
@@ -1326,6 +1331,12 @@ function completeOnboarding() {
     onboardingStep3.hidden = true;
   }
 }
+
+window.dismissNearMeOnboarding = function dismissNearMeOnboarding(event) {
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  completeOnboarding();
+};
 
 function deferOnboardingForSession() {
   if (hasCompletedOnboarding()) {
@@ -1467,10 +1478,12 @@ function showOnboardingStep1() {
       sydney: "Sydney",
       adelaide: "Adelaide",
       amsterdam: "Amsterdam",
+      rotterdam: "Rotterdam",
       vancouver: "Vancouver",
       canberra: "Canberra",
       "gold-coast": "Gold Coast",
       newcastle: "Newcastle",
+      auckland: "Auckland",
     };
     const regionLabel = regionNames[readActiveCity()] || "your local";
     step1Text.textContent = nearbyMode().getNearbySession()?.unsupportedRegion
@@ -2719,6 +2732,52 @@ function buildApiParams() {
   return params;
 }
 
+let rateLimitPauseUntil = 0;
+
+function parseRetryAfterSec(response) {
+  const raw = response.headers?.get?.("Retry-After");
+  const seconds = Number(raw);
+  if (Number.isFinite(seconds) && seconds > 0) {
+    return Math.min(Math.ceil(seconds), 300);
+  }
+  return undefined;
+}
+
+function noteRateLimited(retryAfterSec = 60) {
+  const pauseMs = Math.max(1, Number(retryAfterSec) || 60) * 1000;
+  rateLimitPauseUntil = Math.max(rateLimitPauseUntil, Date.now() + pauseMs);
+}
+
+function isRateLimitPaused() {
+  return Date.now() < rateLimitPauseUntil;
+}
+
+function isRateLimitedResult(result) {
+  return (
+    result?.status === 429 ||
+    result?.data?.error === "Too many requests" ||
+    result?.error === "Too many requests"
+  );
+}
+
+function isRateLimitedError(error) {
+  return (
+    error?.code === "RATE_LIMITED" ||
+    /too many requests|live times are busy/i.test(String(error?.message ?? error ?? ""))
+  );
+}
+
+function apiResultError(result, fallback = "Could not load train times") {
+  if (isRateLimitedResult(result)) {
+    noteRateLimited(result?.retryAfterSec ?? 60);
+    const error = new Error("Live times are busy. Trying again shortly.");
+    error.code = "RATE_LIMITED";
+    return error;
+  }
+
+  return new Error(result?.data?.error ?? result?.error ?? fallback);
+}
+
 async function fetchJson(url, timeoutMs = 10000) {
   console.log(`[fetchJson] ${url}`);
   const controller = new AbortController();
@@ -2754,12 +2813,19 @@ async function fetchJson(url, timeoutMs = 10000) {
   } finally {
     clearTimeout(timeoutId);
   }
+  const retryAfterSec = parseRetryAfterSec(response);
   try {
-    return { ok: response.ok, status: response.status, data: JSON.parse(text) };
+    return {
+      ok: response.ok,
+      status: response.status,
+      retryAfterSec,
+      data: JSON.parse(text),
+    };
   } catch {
     return {
       ok: false,
       status: response.status,
+      retryAfterSec,
       error: text.includes("<html") 
         ? `Server error (${response.status}). The board API may not be deployed yet.`
         : "Server returned an invalid response. Restart with: npm start",
@@ -3592,13 +3658,17 @@ function openLeaveBufferSettings() {
 
   journeyDetail()?.setLibraryKind?.(isRouteJourney(journey) ? "routes" : "journeys");
 
-  openJourneyDetail(journey.id).then(() => {
-    requestAnimationFrame(() => {
-      leaveBeforeField?.scrollIntoView({ behavior: "smooth", block: "center" });
-      detailLeaveBeforeInput?.focus({ preventScroll: true });
-      window.setTimeout(() => highlightLeaveBeforeField(leaveBeforeField), 400);
+  openJourneyDetail(journey.id)
+    .then(() => {
+      requestAnimationFrame(() => {
+        leaveBeforeField?.scrollIntoView({ behavior: "smooth", block: "center" });
+        detailLeaveBeforeInput?.focus({ preventScroll: true });
+        window.setTimeout(() => highlightLeaveBeforeField(leaveBeforeField), 400);
+      });
+    })
+    .catch((error) => {
+      console.warn("Could not open leave buffer settings", error);
     });
-  });
 }
 
 function hasSeenLeaveHint() {
@@ -4775,6 +4845,47 @@ function planningCityId() {
   return normalizeCityId(readPreferenceCity()) || "perth";
 }
 
+function isRegionMismatchError(error) {
+  if (!error) {
+    return false;
+  }
+  if (error.code === "REGION_MISMATCH") {
+    return true;
+  }
+  return /in the selected region/i.test(String(error.message || ""));
+}
+
+/** Last known GPS city only — never default to Perth. */
+function readKnownLocateCity() {
+  const sessionCity = nearbyMode().getNearbySession?.()?.city;
+  if (sessionCity) {
+    return normalizeCityId(sessionCity) || String(sessionCity).trim().toLowerCase() || null;
+  }
+  try {
+    const raw = JSON.parse(localStorage.getItem("nextTrainLastGps") || "null");
+    if (raw && Number.isFinite(Number(raw.latitude)) && Number.isFinite(Number(raw.longitude))) {
+      const hint = window.NextTrainCitySession?.hintCityFromCoords?.(
+        Number(raw.latitude),
+        Number(raw.longitude)
+      );
+      if (hint) {
+        return normalizeCityId(hint) || String(hint).trim().toLowerCase();
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function isPlanningAwayFromLocation() {
+  const locate = readKnownLocateCity();
+  if (!locate) {
+    return false;
+  }
+  return locate !== planningCityId();
+}
+
 function testModeNearestStation() {
   if (window.NextTrainBrisbaneDogfood?.isActive?.()) {
     const city = String(window.NextTrainBrisbaneDogfood.getCity?.() || "").toLowerCase();
@@ -4784,10 +4895,12 @@ function testModeNearestStation() {
       adelaide: "Adelaide Railway Station",
       "uk-london-tfl": "King's Cross St. Pancras",
       amsterdam: "Centraal Station",
+      rotterdam: "Beurs",
       vancouver: "Waterfront",
       canberra: "Alinga Street",
       "gold-coast": "Helensvale",
       newcastle: "Newcastle Interchange",
+      auckland: "Waitematā Station",
     };
     if (defaults[city]) {
       return { station: defaults[city], city, distanceKm: 0.2 };
@@ -4891,33 +5004,45 @@ async function applyDefaultJourneyRoute(journey) {
     return { configured: false, nearest: null, error: null, journey };
   }
 
-  if (journey.station && !journey.direction) {
-    const direction = await pickDefaultDirection(journey.station);
-    if (!direction) {
-      return { configured: false, nearest: null, error: null, journey };
+  try {
+    if (journey.station && !journey.direction) {
+      const direction = await pickDefaultDirection(journey.station);
+      if (!direction) {
+        return { configured: false, nearest: null, error: null, journey };
+      }
+
+      return {
+        configured: true,
+        nearest: null,
+        error: null,
+        journey: normalizeJourney({ ...journey, direction }),
+      };
     }
 
-    return {
-      configured: true,
-      nearest: null,
-      error: null,
-      journey: normalizeJourney({ ...journey, direction }),
-    };
-  }
+    if (isPlanningAwayFromLocation()) {
+      return { configured: false, nearest: null, error: null, journey, regionAway: true };
+    }
 
-  let nearest = null;
-  try {
-    nearest = await findNearestStation();
+    let nearest = null;
+    try {
+      nearest = await findNearestStation();
+    } catch (error) {
+      if (isRegionMismatchError(error)) {
+        return { configured: false, nearest: null, error: null, journey, regionAway: true };
+      }
+      return { configured: false, nearest: null, error, journey };
+    }
+
+    const configured = await configureInboundJourney(journey, nearest.station);
+    if (!configured) {
+      return { configured: false, nearest, error: null, journey };
+    }
+
+    return { configured: true, nearest, error: null, journey: configured };
   } catch (error) {
+    // Direction API 429/failures must not reject journey-detail openers (unhandled → Sentry).
     return { configured: false, nearest: null, error, journey };
   }
-
-  const configured = await configureInboundJourney(journey, nearest.station);
-  if (!configured) {
-    return { configured: false, nearest, error: null, journey };
-  }
-
-  return { configured: true, nearest, error: null, journey: configured };
 }
 
 async function configureOutboundFromInbound(journey, inboundJourney) {
@@ -4995,7 +5120,10 @@ async function findNearestStation({
   maximumAge,
 } = {}) {
   const planningCity = planningCityId();
-  const regionMismatch = new Error("Could not find a nearby station in the selected region.");
+  const regionMismatch = Object.assign(
+    new Error("Could not find a nearby station in the selected region."),
+    { code: "REGION_MISMATCH" }
+  );
 
   if (isTestMode()) {
     const nearest = testModeNearestStation();
@@ -5305,10 +5433,19 @@ async function fetchNextTrain() {
       return;
     }
 
+    if (isRateLimitPaused()) {
+      renderNearbyBoard({ stale: Boolean(nearbyMode().getNearbyBoard?.()) });
+      return;
+    }
+
     try {
       await fetchNearbyBoard();
       renderNearbyBoard();
     } catch (error) {
+      if (isRateLimitedError(error)) {
+        renderNearbyBoard({ stale: true });
+        return;
+      }
       errorEl.textContent = error.message;
       errorEl.hidden = false;
       renderNearbyBoard({ stale: true });
@@ -5330,6 +5467,13 @@ async function fetchNextTrain() {
   updateSwipeHint();
   updateSwipeCues();
 
+  if (isRateLimitPaused()) {
+    if (lastApiData?.next) {
+      render(prepareDisplayData(lastApiData), { stale: true });
+    }
+    return;
+  }
+
   const fetchId = ++journeyBoardFetchId;
 
   try {
@@ -5340,7 +5484,7 @@ async function fetchNextTrain() {
     }
 
     if (!result.ok) {
-      throw new Error(result.data?.error ?? result.error ?? "Could not load train times");
+      throw apiResultError(result, "Could not load train times");
     }
 
     const payload = await resolveNextTrainPayload(result.data);
@@ -5358,7 +5502,10 @@ async function fetchNextTrain() {
     }
     errorEl.textContent = error.message;
     errorEl.hidden = false;
-    trackProductEvent("api_error_shown", { surface: "journey" });
+    trackProductEvent("api_error_shown", {
+      surface: "journey",
+      code: error?.code || "api_error",
+    });
 
     if (lastApiData?.next) {
       render(prepareDisplayData(lastApiData), { stale: true });
@@ -5464,23 +5611,35 @@ async function applyTemplateRoute(journey, templateKey) {
     return applyDefaultJourneyRoute(journey);
   }
 
+  if (isPlanningAwayFromLocation()) {
+    return { configured: false, nearest: null, error: null, regionAway: true };
+  }
+
   let nearest = null;
   try {
     nearest = await findNearestStation();
   } catch (error) {
+    if (isRegionMismatchError(error)) {
+      return { configured: false, nearest: null, error: null, regionAway: true };
+    }
     return { configured: false, nearest: null, error };
   }
 
-  const inbound = getInboundJourney(
-    settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
-  );
-  const configured = await configureOutboundJourney(journey, nearest.station, inbound);
+  try {
+    const inbound = getInboundJourney(
+      settingsDraftJourneys.filter((entry) => entry.id !== journey.id)
+    );
+    const configured = await configureOutboundJourney(journey, nearest.station, inbound);
 
-  if (!configured) {
-    return { configured: false, nearest, error: null };
+    if (!configured) {
+      return { configured: false, nearest, error: null };
+    }
+
+    return { configured: true, journey: configured, nearest, error: null };
+  } catch (error) {
+    // Direction API 429/failures must not reject template creators (unhandled → Sentry).
+    return { configured: false, nearest, error };
   }
-
-  return { configured: true, journey: configured, nearest, error: null };
 }
 
 function shouldAutoRouteJourney(journey) {
@@ -5606,15 +5765,19 @@ function createJourneyFromTemplate(templateKey) {
     // Draft only until Save with station + direction — do not persist shells.
     // Open immediately; nearest station prefills in the background (no geo gate).
     return openJourneyDetail(journey.id).then(() => {
+      const regionAway = isPlanningAwayFromLocation();
       showTemplateRouteCoach({
         templateKey: "custom",
         journey,
         nearest: null,
         configured: false,
         error: null,
-        routeLoading: true,
+        regionAway,
+        routeLoading: !regionAway,
       });
-      void prefillCustomNearestStation(journey.id);
+      void prefillCustomNearestStation(journey.id).catch((error) => {
+        console.warn("Custom nearest prefill failed", error);
+      });
     });
   }
 
@@ -5626,7 +5789,21 @@ async function prefillCustomNearestStation(journeyId) {
     return;
   }
 
-  syncDetailNearestStationChrome({ loading: true, error: false, hint: "" });
+  if (isPlanningAwayFromLocation()) {
+    syncDetailNearestStationChrome({ loading: false, error: false, hint: "", regionAway: true });
+    if (getTemplateWizardContext()?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        nearest: null,
+        configured: false,
+        error: null,
+        regionAway: true,
+        routeLoading: false,
+      });
+    }
+    return;
+  }
+
+  syncDetailNearestStationChrome({ loading: true, error: false, hint: "", regionAway: false });
 
   if (getTemplateWizardContext()?.templateKey === "custom") {
     updateTemplateRouteCoachState({ routeLoading: true });
@@ -5663,6 +5840,21 @@ async function prefillCustomNearestStation(journeyId) {
     return;
   }
 
+  if (isRegionMismatchError(error)) {
+    syncDetailNearestStationChrome({ loading: false, error: false, hint: "", regionAway: true });
+    if (getTemplateWizardContext()?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        nearest: null,
+        configured: false,
+        error: null,
+        regionAway: true,
+        routeLoading: false,
+      });
+    }
+    return;
+  }
+
   if (error || !nearest?.station) {
     syncDetailNearestStationChrome({
       loading: false,
@@ -5685,41 +5877,63 @@ async function prefillCustomNearestStation(journeyId) {
 
   const formDirection = String(detailDirectionSelect?.value || "").trim();
   let direction = formDirection || journey.direction || "";
-  if (!direction) {
-    direction = (await pickDefaultDirection(nearest.station)) || "";
-  }
-
-  if (journeyDetail().getEditingJourneyId?.() !== journeyId) {
-    return;
-  }
-
-  // User may have typed a station while geo was in flight — don't overwrite.
-  if (String(getDetailStationCombobox()?.getValue?.() || "").trim()) {
-    if (getTemplateWizardContext()?.templateKey === "custom") {
-      updateTemplateRouteCoachState({ routeLoading: false });
+  try {
+    if (!direction) {
+      direction = (await pickDefaultDirection(nearest.station)) || "";
     }
-    syncDetailNearestStationChrome({ loading: false, error: false, hint: "" });
-    return;
-  }
 
-  const updated = normalizeJourney({
-    ...journey,
-    station: nearest.station,
-    direction,
-  });
-  settingsDraftJourneys[journeyIndex] = updated;
+    if (journeyDetail().getEditingJourneyId?.() !== journeyId) {
+      return;
+    }
 
-  const nearestHint = formatNearestDistanceHint(nearest);
-  await syncJourneyDetailRouteFields(updated, nearestHint);
+    // User may have typed a station while geo was in flight — don't overwrite.
+    if (String(getDetailStationCombobox()?.getValue?.() || "").trim()) {
+      if (getTemplateWizardContext()?.templateKey === "custom") {
+        updateTemplateRouteCoachState({ routeLoading: false });
+      }
+      syncDetailNearestStationChrome({ loading: false, error: false, hint: "" });
+      return;
+    }
 
-  if (getTemplateWizardContext()?.templateKey === "custom") {
-    updateTemplateRouteCoachState({
-      journey: updated,
-      nearest,
-      configured: Boolean(updated.station && updated.direction),
-      error: null,
-      routeLoading: false,
+    const updated = normalizeJourney({
+      ...journey,
+      station: nearest.station,
+      direction,
     });
+    settingsDraftJourneys[journeyIndex] = updated;
+
+    const nearestHint = formatNearestDistanceHint(nearest);
+    await syncJourneyDetailRouteFields(updated, nearestHint);
+
+    if (getTemplateWizardContext()?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey: updated,
+        nearest,
+        configured: Boolean(updated.station && updated.direction),
+        error: null,
+        routeLoading: false,
+      });
+    }
+  } catch (routeError) {
+    if (journeyDetail().getEditingJourneyId?.() !== journeyId) {
+      return;
+    }
+    syncDetailNearestStationChrome({
+      loading: false,
+      error: true,
+      hint: isRateLimitedError(routeError)
+        ? routeError.message
+        : "Couldn't load directions for nearest station",
+    });
+    if (getTemplateWizardContext()?.templateKey === "custom") {
+      updateTemplateRouteCoachState({
+        journey,
+        nearest,
+        configured: false,
+        error: routeError,
+        routeLoading: false,
+      });
+    }
   }
 }
 
@@ -5760,6 +5974,14 @@ async function completeTemplateRouteSetup(journeyId, templateKey) {
 
   if (journeyDetail().getEditingJourneyId?.() === journeyId) {
     await syncJourneyDetailRouteFields(journey, nearestHint);
+    if (routeResult.regionAway) {
+      syncDetailNearestStationChrome({
+        regionAway: true,
+        loading: false,
+        error: false,
+        hint: "",
+      });
+    }
   }
 
   if (showCoach) {
@@ -5768,6 +5990,7 @@ async function completeTemplateRouteSetup(journeyId, templateKey) {
       nearest: routeResult.nearest,
       configured: routeResult.configured,
       error: routeResult.error,
+      regionAway: Boolean(routeResult.regionAway),
       routeLoading: false,
     });
   }
@@ -6500,6 +6723,8 @@ async function startJourneyCreateFromTemplate(templateKey) {
 
   try {
     await createJourneyFromTemplate(templateKey);
+  } catch (error) {
+    console.warn("Could not create journey from template", error);
   } finally {
     templateCreateInFlight = false;
     setJourneyTemplateLoading(false);
@@ -6518,6 +6743,8 @@ journeySaveRouteBtnEl?.addEventListener("click", async () => {
 
   try {
     await createJourneyFromRoute();
+  } catch (error) {
+    console.warn("Could not create route journey", error);
   } finally {
     templateCreateInFlight = false;
     setJourneyTemplateLoading(false);
@@ -6535,6 +6762,8 @@ journeySetupBtnEl?.addEventListener("click", async () => {
   openJourneysDialogSync();
   try {
     await createJourneyFromTemplate("custom");
+  } catch (error) {
+    console.warn("Could not create custom journey", error);
   } finally {
     templateCreateInFlight = false;
     setJourneyTemplateLoading(false);
@@ -6551,17 +6780,31 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
   if (chromeTravelTab === "routes") {
-    void createJourneyFromRoute();
+    void createJourneyFromRoute().catch((error) => {
+      console.warn("Could not create route journey", error);
+    });
     return;
   }
-  void createJourneyFromTemplate("custom");
+  void createJourneyFromTemplate("custom").catch((error) => {
+    console.warn("Could not create custom journey", error);
+  });
 });
 
-onboardingGotItBtn?.addEventListener("click", () => {
-  window.NextTrainCitySession?.markRegionExplicit?.();
-  clearOnboardingSchedule();
-  showOnboardingStep2();
+onboardingGotItBtn?.addEventListener("click", (event) => {
+  window.dismissNearMeOnboarding(event);
 });
+onboardingGotItBtn?.addEventListener("pointerup", (event) => {
+  window.dismissNearMeOnboarding(event);
+});
+document.addEventListener(
+  "click",
+  (event) => {
+    if (event.target.closest("#onboarding-got-it-btn")) {
+      window.dismissNearMeOnboarding(event);
+    }
+  },
+  true
+);
 
 onboardingRoutesGotItBtn?.addEventListener("click", () => {
   clearOnboardingSchedule();
@@ -7077,6 +7320,9 @@ function initJourneyDetailFromModule() {
     replaceSelectOptions,
     getStationsList,
     fetchJson,
+    apiResultError,
+    isRateLimitedResult,
+    isRateLimitedError,
     apiUrl,
     appendFixtureQuery,
     isTestMode,
@@ -7095,6 +7341,8 @@ function initJourneyDetailFromModule() {
     readPreferenceCity,
     pickDefaultDirection,
     locationErrorFrom,
+    isPlanningAwayFromLocation,
+    isRegionMismatchError,
     applyDefaultJourneyRoute,
     shouldAutoRouteJourney,
     saveJourneyListToSettings,
@@ -7315,6 +7563,10 @@ function initNearbyModeFromModule() {
     maybeScheduleOnboarding,
     apiUrl,
     appendFixtureQuery,
+    fetchJson,
+    apiResultError,
+    isRateLimitedResult,
+    isRateLimitedError,
     enrichTrip,
     findNearestStation,
     getGeolocationPosition,

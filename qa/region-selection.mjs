@@ -130,9 +130,11 @@ async function run() {
 
     for (const { city, country, station } of [
       { city: "amsterdam", country: "nl", station: "Centraal Station" },
+      { city: "rotterdam", country: "nl", station: "Beurs" },
       { city: "vancouver", country: "ca", station: "Waterfront" },
       { city: "newcastle", country: "au", station: "Newcastle Interchange" },
       { city: "gold-coast", country: "au", station: "Helensvale" },
+      { city: "auckland", country: "nz", station: "Waitematā Station" },
     ]) {
       await page.evaluate(async (id) => {
         await window.NextTrainCitySession.applyCity(id, { persist: true, explicit: true });

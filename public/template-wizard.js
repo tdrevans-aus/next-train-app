@@ -277,7 +277,7 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
     return;
   }
 
-  const { templateKey, journey, nearest, configured, error, routeLoading } = context;
+  const { templateKey, journey, nearest, configured, error, routeLoading, regionAway } = context;
   const step1Title = document.getElementById("template-wizard-step-1-title");
   if (step1Title) {
     step1Title.textContent =
@@ -310,6 +310,9 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
     } else if (error?.code === 1) {
       templateRouteCoachBody.textContent =
         "Location permission was denied, so we couldn't pick your nearest station. Open Settings → Apps → Next Train → Location → Allow, or choose your station and direction — you can tap Use nearest station if you change your mind.";
+    } else if (regionAway || error?.code === "REGION_MISMATCH") {
+      templateRouteCoachBody.textContent =
+        "Pick your station and direction above.";
     } else if (error) {
       templateRouteCoachBody.textContent =
         "We couldn't find your nearest station just now. Pick your station and direction — you can tap Use nearest station for a shortcut.";
@@ -327,6 +330,8 @@ function populateTemplateRouteCoachBody(context = templateWizardContext) {
   } else if (error?.code === 1) {
     templateRouteCoachBody.textContent =
       "Location permission was denied, so we couldn't pick your nearest station. Open Settings → Apps → Next Train → Location → Allow, or choose your station and direction — you can tap Use nearest station if you change your mind.";
+  } else if (regionAway || error?.code === "REGION_MISMATCH") {
+    templateRouteCoachBody.textContent = "Pick your station and direction above.";
   } else if (
     templateKey === "morning" &&
     nearest?.station &&
@@ -652,6 +657,7 @@ function showTemplateRouteCoach({
   configured,
   error,
   routeLoading = false,
+  regionAway = false,
 }) {
   if (!templateRouteCoach || !templateRouteCoachBody) {
     return;
@@ -669,6 +675,7 @@ function showTemplateRouteCoach({
     configured,
     error,
     routeLoading,
+    regionAway,
     useNameStep,
   };
   templateWizardStep = 1;

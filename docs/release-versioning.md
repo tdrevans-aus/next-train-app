@@ -45,7 +45,9 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Play hygiene | **2.5.1** | **17** | `v2.5.1` | Drop `USE_EXACT_ALARM`; closed-test upload |
 | Leave-now / on-the-way | **2.5.2** | **18** | `v2.5.2` | Leave-now alarm, cancel, on-the-way countdown |
 | Closed line | **2.5.4** | **20** | — | Prior closed candidate |
-| **Shipping now** | **2.5.5** | **21** | `v2.5.5` | Target-train widget/Journeys face; reminders; pin preview |
+| Shipped | **2.5.5** | **21** | `v2.5.5` | Target-train widget/Journeys face; reminders; pin preview |
+| Shipped | **2.5.6** | **22** | — | Rotterdam RET metro tester-live; Near me Got it dismiss |
+| Shipped | **2.5.7** | **23** | `v2.5.7` | Auckland tester-live; AU D1 packs; nearest hide when GPS is another region |
 
 Update this table when you ship.
 
