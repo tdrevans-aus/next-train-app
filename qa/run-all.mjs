@@ -3,8 +3,8 @@
  *
  * Usage:
  *   node qa/run-all.mjs              # full suite
- *   node qa/run-all.mjs --smoke      # fast gate (~2–5 min)
- *   node qa/run-all.mjs --release    # smoke + pin/leave gates (~5–8 min) — CI on main
+ *   node qa/run-all.mjs --smoke      # fast gate (~6–7 min; offline gates run 6-wide)
+ *   node qa/run-all.mjs --release    # smoke + pin/leave gates (~9–11 min) — CI on main
  *   node qa/run-all.mjs --no-native  # full web only (no Maestro / native CDP tail)
  *   node qa/run-all.mjs --list       # list scripts in suite
  *
@@ -161,6 +161,36 @@ const RUNNER_EXCLUDE = new Set([
   /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
   "pin-exclusive.mjs",
 ]);
+
+/**
+ * Offline pure-Node gates — no dev server, no browser. Their wall clock is
+ * dominated by per-spawn Node startup + module imports (each reports ~0s of
+ * test time), so the runner executes them with limited parallelism. Each still
+ * gets its own clean `node` process and its own exit code — only the
+ * scheduling changes. Anything NOT matched here is assumed to need the dev
+ * server on :3000 and runs strictly serially, in suite order, as before.
+ */
+const OFFLINE_GATE_RE =
+  /-(dogfood-gate|line-map-conformance|planned-gate|direction-match|mark-probes)\.mjs$/;
+const OFFLINE_EXTRA_SCRIPTS = new Set([
+  /** Pure logic, no browser (see its header). */
+  "stickiness-coaches-logic.mjs",
+  /** lib/train-times.js only. */
+  "fremantle-claremont-direction.mjs",
+  /** Static file/source assertions. */
+  "nearby-pin-notify-label.mjs",
+  "vancouver-attribution.mjs",
+  /** Direct provider-lib imports, no :3000. */
+  "gtfs-overnight-lookahead.mjs",
+  /** Offline UK catalog checks. */
+  "uk-region-catalog-conformance.mjs",
+  "uk-catalog-lazy-load.mjs",
+]);
+const OFFLINE_CONCURRENCY = 6;
+
+function isOfflineScript(name) {
+  return OFFLINE_GATE_RE.test(name) || OFFLINE_EXTRA_SCRIPTS.has(name);
+}
 
 /** Native/device scripts run last so they do not disturb each other. */
 const NATIVE_TAIL_SCRIPTS = [
@@ -357,7 +387,7 @@ async function main() {
     return;
   }
 
-  const needsServer = scripts.some((name) => name !== "stickiness-coaches-logic.mjs");
+  const needsServer = scripts.some((name) => !isOfflineScript(name));
   let serverChild = null;
 
   if (needsServer) {
@@ -378,20 +408,53 @@ async function main() {
   const results = [];
   const started = Date.now();
 
-  for (const scriptName of scripts) {
-    const limitSec = getScriptTimeoutMs(scriptName);
-    const limitLabel = limitSec > 0 ? ` (limit ${Math.round(limitSec / 1000)}s)` : "";
-    process.stdout.write(`→ ${scriptName}${limitLabel} … `);
-    const { code, output, timedOut, timeoutMs, elapsedMs } = await runScript(scriptName);
+  const limitLabelFor = (scriptName) => {
+    const limitMs = getScriptTimeoutMs(scriptName);
+    return limitMs > 0 ? ` (limit ${Math.round(limitMs / 1000)}s)` : "";
+  };
+
+  /** Record one finished run; fullLine=true prints the whole "→ name … " line at once. */
+  const recordResult = ({ scriptName, code, output, timedOut, timeoutMs, elapsedMs }, fullLine) => {
     const { status, note } = classifyResult(scriptName, code, { timedOut, timeoutMs });
     const elapsedSec = Math.round(elapsedMs / 1000);
     results.push({ scriptName, status, code, note, elapsedSec });
-    console.log(`${status}${note ? ` (${note})` : ""} · ${elapsedSec}s`);
+    const suffix = `${status}${note ? ` (${note})` : ""} · ${elapsedSec}s`;
+    if (fullLine) {
+      console.log(`→ ${scriptName}${limitLabelFor(scriptName)} … ${suffix}`);
+    } else {
+      console.log(suffix);
+    }
     if (status === "FAIL" && output.trim()) {
       console.log(tailOutput(output, timedOut ? 20 : 8));
       console.log("");
     }
+  };
+
+  const offlineScripts = scripts.filter(isOfflineScript);
+  const serialScripts = scripts.filter((name) => !isOfflineScript(name));
+
+  /** Phase 1: offline pure-Node gates with limited parallel spawns. */
+  if (offlineScripts.length > 0) {
+    const queue = [...offlineScripts];
+    const worker = async () => {
+      for (let next = queue.shift(); next; next = queue.shift()) {
+        recordResult(await runScript(next), true);
+      }
+    };
+    await Promise.all(
+      Array.from({ length: Math.min(OFFLINE_CONCURRENCY, queue.length) }, worker)
+    );
   }
+
+  /** Phase 2: browser/dev-server scripts, strictly serial in suite order. */
+  for (const scriptName of serialScripts) {
+    process.stdout.write(`→ ${scriptName}${limitLabelFor(scriptName)} … `);
+    recordResult(await runScript(scriptName), false);
+  }
+
+  /** Keep the summary table in suite-list order regardless of finish order. */
+  const listOrder = new Map(scripts.map((name, index) => [name, index]));
+  results.sort((a, b) => listOrder.get(a.scriptName) - listOrder.get(b.scriptName));
 
   if (serverChild) {
     stopDevServer(serverChild);
