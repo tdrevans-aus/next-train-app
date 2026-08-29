@@ -4,7 +4,7 @@
 **From:** Claude (repo-size review) / Tim (product)
 **Date:** 29 Aug 2026
 **Status:** Scoped — not started
-**Related:** `docs/codebase-inventory.md` · `docs/dead-code-inventory.md` (D-12, resolved same day) · `lib/providers/gtfs/static-cache.js` · `scripts/trim-*-gtfs.mjs` / `trim-sydney-gtfs.py`
+**Related:** `docs/codebase-inventory.md` · `docs/dead-code-inventory.md` (D-12, resolved same day) · `docs/jim-brief-gtfs-data-platform-scale.md` (complementary — that brief removes the git/deployment size ceiling this one still lives under; do both) · `lib/providers/gtfs/static-cache.js` · `scripts/trim-*-gtfs.mjs` / `trim-sydney-gtfs.py`
 **Out of scope:** Date-range/service-span trimming, route/mode filtering (already correct), rewriting the CSV parser, touching any non-fixture GTFS consumer (`melbourne.js` uses a live API, not these fixtures)
 
 ---
