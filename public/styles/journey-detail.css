@@ -658,6 +658,7 @@ body.region-setup-active .ad-remove-link-wrap {
 .onboarding-coach-scrim {
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: rgba(19, 37, 35, 0.28);
   cursor: pointer;
 }
@@ -669,6 +670,8 @@ body.region-setup-active .ad-remove-link-wrap {
 
 .onboarding-coach-card {
   position: absolute;
+  z-index: 1;
+  pointer-events: auto;
   left: 50%;
   width: min(92vw, 320px);
   padding: 0.95rem 1rem 1rem;

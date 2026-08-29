@@ -507,6 +507,7 @@ const PERSISTED_CITY_IDS = new Set([
   "adelaide",
   "uk-london-tfl",
   "amsterdam",
+  "rotterdam",
   "vancouver",
   "canberra",
   "gold-coast",

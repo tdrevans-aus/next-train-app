@@ -206,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -642,7 +642,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "vancouver", "canberra", "gold-coast", "newcastle"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -1316,6 +1316,11 @@ function completeOnboarding() {
   sessionStorage.removeItem(ONBOARDING_STEP_KEY);
   clearOnboardingSchedule();
   hideOnboardingCoach();
+  const coach = document.getElementById("onboarding-coach");
+  if (coach) {
+    coach.hidden = true;
+    coach.setAttribute("hidden", "");
+  }
   if (onboardingStep1) {
     onboardingStep1.hidden = false;
   }
@@ -1326,6 +1331,12 @@ function completeOnboarding() {
     onboardingStep3.hidden = true;
   }
 }
+
+window.dismissNearMeOnboarding = function dismissNearMeOnboarding(event) {
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  completeOnboarding();
+};
 
 function deferOnboardingForSession() {
   if (hasCompletedOnboarding()) {
@@ -1467,6 +1478,7 @@ function showOnboardingStep1() {
       sydney: "Sydney",
       adelaide: "Adelaide",
       amsterdam: "Amsterdam",
+      rotterdam: "Rotterdam",
       vancouver: "Vancouver",
       canberra: "Canberra",
       "gold-coast": "Gold Coast",
@@ -4784,6 +4796,7 @@ function testModeNearestStation() {
       adelaide: "Adelaide Railway Station",
       "uk-london-tfl": "King's Cross St. Pancras",
       amsterdam: "Centraal Station",
+      rotterdam: "Beurs",
       vancouver: "Waterfront",
       canberra: "Alinga Street",
       "gold-coast": "Helensvale",
@@ -6557,11 +6570,21 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
   void createJourneyFromTemplate("custom");
 });
 
-onboardingGotItBtn?.addEventListener("click", () => {
-  window.NextTrainCitySession?.markRegionExplicit?.();
-  clearOnboardingSchedule();
-  showOnboardingStep2();
+onboardingGotItBtn?.addEventListener("click", (event) => {
+  window.dismissNearMeOnboarding(event);
 });
+onboardingGotItBtn?.addEventListener("pointerup", (event) => {
+  window.dismissNearMeOnboarding(event);
+});
+document.addEventListener(
+  "click",
+  (event) => {
+    if (event.target.closest("#onboarding-got-it-btn")) {
+      window.dismissNearMeOnboarding(event);
+    }
+  },
+  true
+);
 
 onboardingRoutesGotItBtn?.addEventListener("click", () => {
   clearOnboardingSchedule();

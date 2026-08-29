@@ -7,6 +7,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
 import { marketingLabelsForStation, HUB as AMS_HUB } from "../lib/cities/amsterdam/marketing-directions.js";
+import { marketingLabelsForStation as rotterdamLabels, HUB as RET_HUB } from "../lib/cities/rotterdam/marketing-directions.js";
 import { marketingLabelsForStation as newcastleLabels, HUB as NLR_HUB } from "../lib/cities/newcastle/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -38,6 +39,15 @@ assert(
   amsHub.every((chip) => amsterdam[AMS_HUB].includes(chip)),
   "Amsterdam bundled hub chips must match marketingLabelsForStation"
 );
+
+const rotterdam = loadDirections("rotterdam");
+const retHub = rotterdamLabels(RET_HUB);
+assert(Array.isArray(rotterdam[RET_HUB]), "Rotterdam hub Beurs must be in bundled directions");
+assert(
+  retHub.every((chip) => rotterdam[RET_HUB].includes(chip)),
+  "Rotterdam bundled hub chips must match marketingLabelsForStation"
+);
+assert(rotterdam[RET_HUB].includes("Metro A + Binnenhof"), "Beurs must offer Metro A + Binnenhof");
 
 const newcastle = loadDirections("newcastle");
 const nlrHub = newcastleLabels(NLR_HUB);
