@@ -1,5 +1,0 @@
-﻿tag v7.0.0
-Tagger: tdrevans-aus <tdrevans@hotmail.com>
-
-Android v7 closed Alpha (versionCode 7, versionName 2.1.0)
-18672c11fc7474a10e2a76fa85b1a9d5e865cb74 v7: keep Live countdown ticking after leave-by.

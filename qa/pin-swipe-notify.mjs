@@ -51,8 +51,11 @@ async function waitForJourneyHero(page) {
 }
 
 async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
-  // Keep a later train in the `normal` fixture (last trip is +90 min) so Next Train can advance.
-  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(48));
+  // `normal` trips: +18/+34/+48/+62/+76/+90. Pin +48 so Leave By is inside the
+  // derived [target−60, target+15] window and a later trip remains for Next Train.
+  // `late` trips: +7/+23. Pin +7 so the leave card is actually late.
+  const preferredOffsetMinutes = fixture === "late" ? 7 : 48;
+  const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(preferredOffsetMinutes));
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=${fixture}`);
   await page.evaluate(
@@ -91,11 +94,16 @@ async function armPinnedJourneyOnce(page, { fixture = "normal" } = {}) {
     { preferred: preferredTrainTime, journeyId: JOURNEY_ID }
   );
   await page.goto(`${BASE}/?test=1&fixture=${fixture}`);
-  if (await page.evaluate(() => document.querySelector(".app")?.classList.contains("nearby-mode"))) {
-    await ensureJourneyMode(page);
-  }
+  await ensureJourneyMode(page);
   await waitForJourneyHero(page);
+  await page.waitForFunction(
+    () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+    null,
+    { timeout: 15000 }
+  );
 
+  // Sync preferred to the displayed clock after Target train is showing so a
+  // minute tick during setup does not miss the fixture trip.
   await page.evaluate(async (journeyId) => {
     const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
     if (!preferred || preferred === "—") {
@@ -463,12 +471,13 @@ async function testPinLockDoesNotBlockAdvancePath(page) {
 
 async function run() {
   let serverChild = null;
+  let browser = null;
   try {
     serverChild = await ensureDevServer();
     if (process.env.CI === "true") {
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
-    const browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true });
 
     const results = [];
     for (const testFn of [
@@ -491,8 +500,6 @@ async function run() {
       await new Promise((resolve) => setTimeout(resolve, 600));
     }
 
-    await browser.close();
-
     let failed = 0;
     for (const result of results) {
       if (result.ok) {
@@ -510,12 +517,15 @@ async function run() {
     }
 
     console.log(`\nPASS — ${results.length} pin/swipe/notify scenarios`);
+  } catch (error) {
+    console.error(error);
+    process.exitCode = 1;
   } finally {
+    if (browser) {
+      await browser.close();
+    }
     stopDevServer(serverChild);
   }
 }
 
-run().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+run();

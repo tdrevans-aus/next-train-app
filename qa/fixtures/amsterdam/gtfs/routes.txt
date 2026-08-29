@@ -1,6 +1,0 @@
-route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_color,route_text_color,route_url
-152361,GVB,50,Lijn 50,,1,187a36,ffffff,
-152362,GVB,51,Lijn 51,,1,FF6600,000000,
-152363,GVB,52,Lijn 52,,1,00adef,000000,
-152364,GVB,54,Lijn 54,,1,fff200,000000,
-152365,GVB,53,Lijn 53,,1,d81118,ffffff,

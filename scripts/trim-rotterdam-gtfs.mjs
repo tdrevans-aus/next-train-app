@@ -5,19 +5,24 @@
  *
  * Usage: node scripts/trim-rotterdam-gtfs.mjs [--zip=qa/tmp/gtfs-nl.zip]
  */
-import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { unzipSync } from "../lib/vendor/fflate.mjs";
 import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/rotterdam/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/rotterdam/gtfs");
 const DEFAULT_URL = "https://gtfs.ovapi.nl/gtfs-nl.zip";
 const KEEP_SHORTS = new Set(["A", "B", "C", "D", "E"]);
 const METRO_ROUTE_TYPE = "1";
 const AGENCY_ID = "RET";
 const USER_AGENT = "next-train";
+// Explicit column allow-lists — only fields actually read anywhere in
+// lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md).
+const STOP_TIME_COLUMNS = ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type"];
+const TRIP_COLUMNS = ["route_id", "service_id", "trip_id", "trip_headsign"];
 
 function toCsv(rows, columns) {
   if (!rows.length) {
@@ -88,13 +93,12 @@ function filterStopTimesBytes(bytes, keepTrips) {
   return `${header}\n${kept.join("\n")}\n`;
 }
 
-async function main() {
-  const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
-  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
-  const zipPath = zipArg ? zipArg.slice("--zip=".length) : join(ROOT, "qa/tmp/gtfs-nl.zip");
-  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
-
-  const buffer = await loadZipBuffer(zipPath, url);
+/**
+ * Given a raw upstream OVapi GTFS zip buffer, return the trimmed+dieted
+ * RET-metro file contents keyed by filename. Statically imported by
+ * api/cron/refresh-gtfs.js - keep this pure (no fs/network access).
+ */
+export function buildTrimmedFiles(buffer) {
   const smallFiles = unzipSync(new Uint8Array(buffer), {
     filter: (file) =>
       /\/?(agency|routes|trips|stops|calendar|calendar_dates|feed_info)\.txt$/i.test(file.name),
@@ -139,36 +143,54 @@ async function main() {
   );
   const agency = parseCsv(zipText(smallFiles, "agency.txt")).filter((row) => row.agency_id === AGENCY_ID);
 
-  mkdirSync(OUT_DIR, { recursive: true });
-  writeFileSync(join(OUT_DIR, "agency.txt"), toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })));
-  writeFileSync(join(OUT_DIR, "routes.txt"), toCsv(routes, Object.keys(routes[0])));
-  writeFileSync(join(OUT_DIR, "trips.txt"), toCsv(trips, Object.keys(trips[0])));
-  writeFileSync(join(OUT_DIR, "stops.txt"), toCsv(stops, Object.keys(stops[0])));
-  writeFileSync(join(OUT_DIR, "stop_times.txt"), stopTimesText);
-  writeFileSync(
-    join(OUT_DIR, "calendar.txt"),
-    toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" }))
-  );
-  writeFileSync(
-    join(OUT_DIR, "calendar_dates.txt"),
-    toCsv(calendarDates, Object.keys(calendarDates[0] ?? { service_id: "" }))
-  );
-  const feed = zipText(smallFiles, "feed_info.txt");
-  if (feed) {
-    writeFileSync(join(OUT_DIR, "feed_info.txt"), feed.endsWith("\n") ? feed : `${feed}\n`);
-  }
-
   const gvbLeak = routes.filter((row) => /gvb/i.test(JSON.stringify(row)));
   if (gvbLeak.length) {
     throw new Error("trim-rotterdam-gtfs: GVB routes leaked into RET trim");
   }
 
-  const names = [...new Set(stops.map((row) => row.stop_name))].sort((a, b) => a.localeCompare(b, "nl"));
-  console.log(`trim-rotterdam-gtfs: ${routes.length} routes, ${trips.length} trips, ${stops.length} stops`);
-  console.log(names.join("\n"));
+  const output = {
+    "agency.txt": toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })),
+    "routes.txt": toCsv(routes, Object.keys(routes[0])),
+    "trips.txt": toCsv(trips, TRIP_COLUMNS),
+    "stops.txt": toCsv(stops, Object.keys(stops[0])),
+    "stop_times.txt": toCsv(stopTimes, STOP_TIME_COLUMNS),
+    "calendar.txt": toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" })),
+    "calendar_dates.txt": toCsv(calendarDates, Object.keys(calendarDates[0] ?? { service_id: "" })),
+  };
+  const feed = zipText(smallFiles, "feed_info.txt");
+  if (feed) {
+    output["feed_info.txt"] = feed.endsWith("\n") ? feed : `${feed}\n`;
+  }
+
+  return {
+    output,
+    summary: `${routes.length} routes, ${trips.length} trips, ${stops.length} stops`,
+    stopNames: [...new Set(stops.map((row) => row.stop_name))].sort((a, b) => a.localeCompare(b, "nl")),
+  };
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+async function main() {
+  const zipArg = process.argv.find((arg) => arg.startsWith("--zip="));
+  const urlArg = process.argv.find((arg) => arg.startsWith("--url="));
+  const defaultZipPath = join(ROOT, "qa/tmp/gtfs-nl.zip");
+  const zipPath = zipArg ? zipArg.slice("--zip=".length) : existsSync(defaultZipPath) ? defaultZipPath : "";
+  const url = urlArg ? urlArg.slice("--url=".length) : DEFAULT_URL;
+
+  const buffer = await loadZipBuffer(zipPath, url);
+  const { output, summary, stopNames } = buildTrimmedFiles(buffer);
+
+  mkdirSync(OUT_DIR, { recursive: true });
+  for (const [name, content] of Object.entries(output)) {
+    writeFileSync(join(OUT_DIR, name), content);
+  }
+
+  console.log(`trim-rotterdam-gtfs: ${summary}`);
+  console.log(stopNames.join("\n"));
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

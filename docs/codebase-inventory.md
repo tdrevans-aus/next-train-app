@@ -142,7 +142,7 @@ See **`docs/dead-code-inventory.md`** (last trawl 11 Aug 2026). Still accurate; 
 | **D-09** | `#preferred-hint` + `jumpToTargetTrain()` / `skipToTargetTrain()` | **Resolved — kept active** (Aug 2026). Jump hint visible when hero preview ≠ pin; `skipToTargetTrain` sets skip index; `jumpToTargetTrain` clears skip. |
 | **D-10** | `PRO_MONETIZATION_SHIPPED = false` branches | Entire pro/paywall UI gated — fine for ship; grep before FB-13. |
 | **D-11** | `applyPreferredOrLaterFilter` | Gone from `app.js`; FB-06 doc updated Aug 2026 — hygiene closed. |
-| **D-12** | `public/design/*.html` in APK | Design pickers (pin icon, etc.) — same class as D-05. `target-icon-pick.html` obsolete (FB-17 superseded). |
+| **D-12** | `public/design/*.html` in APK | Design pickers (pin icon, etc.) — same class as D-05. **`target-icon-pick.html` deleted** (29 Aug 2026) — zero references anywhere in tree, confirmed via grep. Rest of `design/` still in active use (`app-icon-pick.html`, `journey-icon-pick.html`, `pin-icon-pick.html`, `founding-pro.html` all referenced). |
 
 **Confirmed live (do not delete):** `CommuteRefreshService`, `applyCommuteMode()`, strip/reminder schedulers, all widget receivers — see dead-code doc table.
 
@@ -230,6 +230,22 @@ Do **one PR per module**; run full web QA each time.
 | 4.3 | Packaging: D-05 move `design/` + `.mjs` sources out of APK `webDir` | M | Smaller AAB | **Done** |
 | 4.4 | `CommuteSchedule.java` decomposition (preview vs schedule vs pin) | L | Widget maintainability | **Done** |
 
+### Phase 6 — GTFS data platform for 309-city expansion (active, 29 Aug 2026)
+
+Triggered by the ~18 → 309 city expansion plan. Not a "someday" item — the current committed-fixture setup hits a hard Vercel deployment-size ceiling well before 309 cities, independent of code cleanliness. See `docs/jim-brief-gtfs-fixture-diet.md` and `docs/jim-brief-gtfs-data-platform-scale.md`.
+
+| # | Task | Effort | ROI | Status |
+|---|------|--------|-----|--------|
+| 6.1 | Column-prune `qa/fixtures/*/gtfs/stop_times.txt` + `trips.txt` (drop ~5 unused GTFS columns per table) | S | Real bytes off today's fixtures, any scale | **Done** |
+| 6.2 | Cache `loadGtfsStaticFromDirectory` (currently reparses full CSV per request — live perf bug, not just a scaling one) | S | Immediate perf fix, 9 cities | **Done** |
+| 6.3 | Move fixture-backed cities (sydney, brisbane, amsterdam, rotterdam, vancouver, canberra, gold-coast, newcastle) off committed git fixtures onto Vercel Blob + `loadGtfsStatic({url})`, same pattern already proven by adelaide/perth/etc. | M | Removes the git/deployment size ceiling entirely | **Done** — `qa/fixtures/*/gtfs` 120MB → 2.5MB tracked |
+| 6.4 | Deprecate `netlify/functions/` (unmaintained since first release, doesn't know the multi-city registry) | S | Removes a design constraint on 6.3's storage choice | **Done** |
+| 6.5 | Scheduled refresh job (upstream fetch → trim → column-diet → blob upload) replacing manual `trim-*.mjs` + git commit | M | Required for 309 cities to ever get refreshed at all | **Done** — `api/health.js` dispatches into `lib/gtfs-refresh.js` on a daily cron (`vercel.json`), covers canberra/vancouver/newcastle/brisbane/gold-coast |
+| 6.6 | Precomputed compact per-city index format (defer until 6.3 is measured in production) | L | Only pursue if parse-on-cache-miss cost is a real problem | Deferred |
+| 6.7 | Automate amsterdam/rotterdam refresh — currently excluded from 6.5 because OVapi's 230MB nationwide feed OOMs a Hobby-plan function even for one city alone (confirmed live). Needs either a Pro-plan memory bump or moving just this job off Vercel Compute (e.g. GitHub Actions on a schedule, pushing the result to Blob) | M | Closes the last manual-refresh gap besides sydney (which has its own Python-only blocker) | Not started — backlog |
+
+**Explicitly not doing:** a relational database. Access pattern is a point lookup (city + stop + time → next departures), not cross-city joins — no query benefit to justify the operational complexity.
+
 ### Phase 5 — Defer / low ROI
 
 | # | Task | Why defer |
@@ -260,6 +276,7 @@ Do **one PR per module**; run full web QA each time.
 | Second pin/widget bug from swipe/notify mismatch | Phase 3.1 immediately |
 | City #2 adapter work | Phase 2 + `lib/` only; keep `app.js` city-agnostic |
 | Public launch | Phase 4.3 + D-08/D-05 packaging |
+| 309-city expansion plan confirmed | Phase 6, all of it, before onboarding new cities on the old fixture pattern |
 
 ---
 
@@ -268,3 +285,4 @@ Do **one PR per module**; run full web QA each time.
 | Date | Note |
 |------|------|
 | 2026-08-14 | First inventory (post v2.2.0 pin work, pre-ship) |
+| 2026-08-29 | Repo/scratch-file hygiene pass; D-12 resolved; Phase 6 added for the 309-city GTFS data platform work |

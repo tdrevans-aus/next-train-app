@@ -1,0 +1,28 @@
+Next Train expansion — burndown,,,,,,,,,,,
+Work done vs remaining for Tim Evans. Cities!Status dropdowns drive every headline number via COUNTIF — change a city status and this sheet updates. Not doing is shown but excluded from the in-scope denominator.,,,,,,,,,,,
+Cities,,,Countries,,,,,,,,
+Metric,Count,,Metric,Count,,,,,,,
+In-scope cities,,,In flight,,,,,,,,
+Done,,,To Do,,,,,,,,
+In flight,,,Not doing,,,,,,,,
+Blocked,,,Blocked,,,,,,,,
+To Do,,,Countries with ≥1 Done city,,,,,,,,
+Not doing (out of denom.),,,"Country Status is the Countries sheet roll-up (COUNTIF on col B). “≥1 Done city” counts distinct Countries!A names that have at least one Cities row with Status = Done (currently AU, NL, UK).",,,,,,,,
+Remaining,,,,,,,,,,,
+Percent complete,,,,,,,,,,,
+Percent remaining,,,,,,,,,,,
+Notes,,,,,,,,,,,
+•  Not doing is out of the burndown denominator on purpose.,,,,,,,,,,,
+"•  US/DE/JP inherited 24 Aug skips reversed 2026-08-28 (city-by-city, not national). SG still skipped (LTA). Nepal/Vietnam/RU/BY/KP unchanged.",,,,,,,,,,,
+•  Liverpool City Region and Greater Manchester packed 2026-08-28 (in flight); Ellesmere Port folded into LCR.,,,,,,,,,,,
+"•  Blocked (Melbourne PTV, Toronto) still counts as remaining.",,,,,,,,,,,
+Snapshot history,,,,,,,,,Remaining by wave,,
+Date,Done,In flight,Blocked,To Do,Remaining,In scope,% complete,,Wave,Remaining,What it is
+2026-08-28 00:00:00,6,12,2,230,244,250,0.024,,0 Close open tabs,,Open packs / Coming Soon. Finish or park before new work in the same country.
+2026-08-28 00:00:00,6,12,2,265,279,285,0.02105263157894737,,1 Finish started countries,,"AU, NZ, UK, NL, SE, CA leftovers — including Blocked (Melbourne, Toronto)."
+2026-08-28 00:00:00,6,12,2,289,303,309,0.01941747572815534,,2 Next new countries,,Oslo → Copenhagen → Helsinki → Brussels metro → Dublin Luas. US after Sweden D1s: DC WMATA first → Chicago CTA L → BART → Boston MBTA subway → LA Metro rail.
+,,,,,,,,,3 Later Europe,,"Switzerland, Vienna, Prague, Lisbon. US: NYC subway; other US light rail. DE: Berlin U-Bahn (after first US cities) → Munich → Hamburg (v1 U-Bahn only, no S-Bahn). JP: Osaka Metro first → Fukuoka/Nagoya/Sapporo → Tokyo later (multi-operator)."
+,,,,,,,,,Later,,Real metro cities not in the near queue. Unscoped. US leftover metros + Muni + commuter. Other DE cities. Other JP cities.
+,,,,,,,,,Skip,,Paired with Not doing. Remaining here should stay 0.
+,,,,,,,,,Total remaining,,Should match headline Remaining (B12).
+Nico appends a snapshot when the tracker is updated. Paste values (not formulas) so the burndown can accumulate.,,,,,,,,,,,

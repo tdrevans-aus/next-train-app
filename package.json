@@ -8,6 +8,7 @@
   },
   "scripts": {
     "setup:mac": "node scripts/setup-mac.mjs",
+    "find:sweden-coords": "node scripts/find-sweden-station-coords.mjs",
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",
@@ -22,6 +23,7 @@
     "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
     "cap:open:ios": "npx cap open ios",
     "test:smoke": "node qa/run-all.mjs --smoke",
+    "test:pin": "node qa/run-all.mjs --pin",
     "test:web": "node qa/run-all.mjs",
     "test:web:ci": "node qa/run-all.mjs --no-native",
     "test:web:release": "node qa/run-all.mjs --release",
@@ -70,6 +72,7 @@
     "sweep:canberra": "node qa/canberra-network-sweep.mjs",
     "sweep:gold-coast": "node qa/gold-coast-network-sweep.mjs",
     "sweep:newcastle": "node qa/newcastle-network-sweep.mjs",
+    "sweep:goteborg": "node qa/goteborg-network-sweep.mjs",
     "sweep:perth": "node qa/perth-network-sweep.mjs",
     "trim:auckland-gtfs": "node scripts/trim-auckland-gtfs.mjs",
     "trim:wellington-gtfs": "node scripts/trim-wellington-gtfs.mjs",
@@ -91,6 +94,7 @@
     "@capgo/native-purchases": "^8.6.5",
     "@sentry/browser": "10.69.0",
     "@sentry/capacitor": "^4.3.0",
+    "@vercel/blob": "^2.8.0",
     "express": "^4.21.2",
     "fflate": "^0.8.3",
     "gtfs-realtime-bindings": "^2.2.0"

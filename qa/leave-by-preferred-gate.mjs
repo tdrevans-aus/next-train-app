@@ -16,6 +16,12 @@ import { ensureJourneyMode } from "./helpers/journey-smoke.mjs";
 
 const BASE = "http://localhost:3000";
 const JOURNEY_ID = "j-pref";
+// Fixture `normal` trips: +18/+34/+48/+62/+76/+90. Journeys re-derive Active hours
+// to [target−60, target+15] on normalize, so a +90 target is still 30 min before
+// the window: cold start defaults to Nearby and Leave By stays hidden (not a
+// pin-qa flake). Use a middle trip so Leave By is armed and Next Train still
+// has a later service to advance to.
+const PREFERRED_OFFSET_MINUTES = 48;
 
 function perthMinutesFromNow(offsetMinutes) {
   const formatter = new Intl.DateTimeFormat("en-AU", {
@@ -67,13 +73,30 @@ async function readState(page) {
   }));
 }
 
+async function dumpHeroState(page) {
+  return page.evaluate(() => {
+    const app = document.querySelector(".app");
+    return {
+      nearby: app?.classList.contains("nearby-mode") ?? false,
+      journey: app?.classList.contains("journey-mode") ?? false,
+      route: document.getElementById("route")?.textContent?.trim() ?? "",
+      leaveHidden: document.getElementById("leave-card")?.hidden ?? true,
+      heroLabel: document.getElementById("hero-depart-label")?.textContent?.trim() ?? "",
+      heroDepart: document.getElementById("depart-display-time")?.textContent?.trim() ?? "",
+      countdown: document.getElementById("depart-countdown")?.textContent?.trim() ?? "",
+      scheduledId: window.nextTrainApp?.findScheduledJourneyId?.() ?? null,
+    };
+  });
+}
+
 async function run() {
   let serverChild = null;
+  let browser = null;
   try {
     serverChild = await ensureDevServer();
-    const browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
-    const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(90));
+    const preferredTrainTime = formatWallClockMinutes(perthMinutesFromNow(PREFERRED_OFFSET_MINUTES));
     const activeHours = allDayActiveHours();
 
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
@@ -118,19 +141,28 @@ async function run() {
       }
     );
     await page.goto(`${BASE}/?test=1&fixture=normal`);
-    if (await page.evaluate(() => document.querySelector(".app")?.classList.contains("nearby-mode"))) {
-      await ensureJourneyMode(page);
-    }
+    // Cold start paints Nearby when the pin is outside derived hours. Always
+    // wait for a face, then enter Journeys — checking nearby-mode immediately
+    // after goto loses that race and waitForJourneyHero times out.
+    await ensureJourneyMode(page);
 
     try {
       await waitForJourneyHero(page);
     } catch {
-      console.error("FAIL — journey hero never loaded (fixture/API)");
-      await browser.close();
+      console.error("FAIL — journey hero never loaded (fixture/API)", await dumpHeroState(page));
       process.exitCode = 1;
       return;
     }
 
+    await page.waitForFunction(
+      () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+      null,
+      { timeout: 15000 }
+    );
+
+    // Sync preferred to the displayed clock so a minute tick during setup does not
+    // miss the fixture trip. Do this after Target train is showing so we do not
+    // rewrite a later preferred onto the true-next hero.
     await page.evaluate(async (journeyId) => {
       const preferred = document.getElementById("depart-display-time")?.textContent?.trim();
       if (!preferred || preferred === "—") {
@@ -142,7 +174,11 @@ async function run() {
       await window.nextTrainApp?.fetchNextTrain?.();
     }, JOURNEY_ID);
     await page.waitForFunction(
-      () => document.getElementById("hero-depart-label")?.textContent?.trim() === "Target train",
+      () => {
+        const leaveHidden = document.getElementById("leave-card")?.hidden ?? true;
+        const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
+        return label === "Target train" && !leaveHidden;
+      },
       null,
       { timeout: 15000 }
     );
@@ -162,6 +198,10 @@ async function run() {
     if (!pinned.jumpHidden) {
       console.error("FAIL — Jump to target should hide while hero is on pin", pinned);
       process.exitCode = 1;
+    }
+
+    if (process.exitCode) {
+      return;
     }
 
     const heroBefore = pinned.heroDepart;
@@ -209,14 +249,15 @@ async function run() {
     if (!process.exitCode) {
       console.log("PASS — pin hero, leave card synced with hero on Next Train");
     }
-
-    await browser.close();
+  } catch (error) {
+    console.error(error);
+    process.exitCode = 1;
   } finally {
+    if (browser) {
+      await browser.close();
+    }
     stopDevServer(serverChild);
   }
 }
 
-run().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+run();

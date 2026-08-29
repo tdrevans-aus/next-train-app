@@ -13,10 +13,15 @@ import { parseCsv } from "../lib/providers/gtfs/csv.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
-const OUT_DIR = join(ROOT, "qa/fixtures/wellington/gtfs");
+const outArg = process.argv.find((arg) => arg.startsWith("--out="));
+const OUT_DIR = outArg ? outArg.slice("--out=".length) : join(ROOT, "qa/fixtures/wellington/gtfs");
 const DEFAULT_URL = "https://static.opendata.metlink.org.nz/v1/gtfs/full.zip";
 const RAIL_ROUTE_TYPE = "2";
 const KEEP_SHORTS = new Set(["KPL", "HVL", "MEL", "JVL", "WRL"]);
+// Explicit column allow-lists — only fields actually read anywhere in
+// lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md).
+const STOP_TIME_COLUMNS = ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type"];
+const TRIP_COLUMNS = ["route_id", "service_id", "trip_id", "trip_headsign"];
 
 function foldKey(value) {
   return String(value || "")
@@ -132,9 +137,9 @@ async function main() {
     "agency.txt": Object.keys(agency[0] ?? {}),
     "feed_info.txt": Object.keys(feedInfo[0] ?? {}),
     "routes.txt": Object.keys(routes[0] ?? {}),
-    "trips.txt": Object.keys(trips[0] ?? {}),
+    "trips.txt": TRIP_COLUMNS,
     "stops.txt": Object.keys(stops[0] ?? {}),
-    "stop_times.txt": Object.keys(stopTimes[0] ?? {}),
+    "stop_times.txt": STOP_TIME_COLUMNS,
     "calendar.txt": Object.keys(calendar[0] ?? {}),
     "calendar_dates.txt": Object.keys(calendarDates[0] ?? {}),
   };

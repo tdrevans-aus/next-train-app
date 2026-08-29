@@ -7764,7 +7764,7 @@ function hasPersistedNearbyPin() {
 
 function findActiveJourneyPinId() {
   for (const journey of settings.journeys) {
-    if (isJourneyPinnedToday(journey)) {
+    if (isJourneyTargetPinnedToday(journey)) {
       return journey.id;
     }
   }
@@ -7879,7 +7879,7 @@ function clearOtherPinnedTrains(keep) {
 
     if (!isRouteJourney(next)) {
       const fresh = sanitizeJourneyPinDismissed(sanitizeJourneyPinOverride(next));
-      if (isJourneyPinnedToday(fresh)) {
+      if (isJourneyTargetPinnedToday(fresh)) {
         next = normalizeJourney({
           ...fresh,
           journeyPinDismissedDate: today,

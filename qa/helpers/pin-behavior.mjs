@@ -17,7 +17,26 @@ export function perthTodayKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-/** defaultFrom === defaultUntil matches any time of day (journeyMatchesTime). */
+/** Perth wall clock offset minutes from now, formatted HH:MM. */
+export function perthWallClockPlus(offsetMinutes, date = new Date(Date.now() + offsetMinutes * 60_000)) {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Perth",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+  const hour = parts.find((part) => part.type === "hour")?.value ?? "00";
+  const minute = parts.find((part) => part.type === "minute")?.value ?? "00";
+  return `${hour}:${minute}`;
+}
+
+/**
+ * normalizeJourney re-derives Active hours to [target−60, target+15], and
+ * isJourneyPinnedToday auto-pins only inside that band — so the preferred
+ * target must be relative to "now" or the fixture is pinned for only 75
+ * minutes of the day (the pre-488311b fixed 07:30 made these checks
+ * time-of-day dependent).
+ */
 export function commuteJourney(overrides = {}) {
   return {
     id: "j-a",
@@ -29,7 +48,7 @@ export function commuteJourney(overrides = {}) {
     useLeaveBefore: true,
     defaultFrom: "00:00",
     defaultUntil: "00:00",
-    preferredTrainTime: "07:30",
+    preferredTrainTime: perthWallClockPlus(30),
     remindDays: [1, 2, 3, 4, 5, 6, 7],
     remindMe: false,
     journeyPinDismissedDate: "",

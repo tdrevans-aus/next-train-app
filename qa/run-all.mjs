@@ -72,9 +72,15 @@ const SMOKE_SCRIPTS = [
   "uk-planned-gate.mjs",
   "nz-planned-gate.mjs",
   "stockholm-planned-gate.mjs",
+  "stockholm-dogfood-gate.mjs",
+  "stockholm-direction-match.mjs",
   "goteborg-planned-gate.mjs",
+  "goteborg-dogfood-gate.mjs",
+  "goteborg-direction-match.mjs",
+  "wellington-planned-gate.mjs",
   "auckland-line-map-conformance.mjs",
   "stockholm-line-map-conformance.mjs",
+  "goteborg-line-map-conformance.mjs",
   "perth-line-map-conformance.mjs",
   "london-nearby-chips.mjs",
 ];
@@ -151,6 +157,8 @@ const RUNNER_EXCLUDE = new Set([
   "gold-coast-network-sweep.mjs",
   /** Live Newcastle Light Rail sweep — D6; never gate PRs. npm run sweep:newcastle */
   "newcastle-network-sweep.mjs",
+  /** Live Göteborg Västtrafik sweep (schedule-only, needs TRAFIKLAB_API_KEY) — D6; never gate PRs. npm run sweep:goteborg */
+  "goteborg-network-sweep.mjs",
   /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
   "pin-exclusive.mjs",
 ]);
@@ -174,14 +182,17 @@ function listFullScripts() {
 function parseArgs(argv) {
   const smoke = argv.includes("--smoke");
   const release = argv.includes("--release");
+  const pin = argv.includes("--pin");
   const list = argv.includes("--list");
   const noNative = argv.includes("--no-native");
-  return { smoke, release, list, noNative };
+  return { smoke, release, pin, list, noNative };
 }
 
-function resolveScripts({ smoke, release, noNative }) {
+function resolveScripts({ smoke, release, pin, noNative }) {
   let scripts;
-  if (smoke) {
+  if (pin) {
+    scripts = RELEASE_PIN_SCRIPTS;
+  } else if (smoke) {
     scripts = SMOKE_SCRIPTS;
   } else if (release) {
     scripts = RELEASE_SCRIPTS;
@@ -328,8 +339,8 @@ function tailOutput(text, maxLines = 8) {
 }
 
 async function main() {
-  const { smoke, release, list, noNative } = parseArgs(process.argv.slice(2));
-  const scripts = resolveScripts({ smoke, release, noNative });
+  const { smoke, release, pin, list, noNative } = parseArgs(process.argv.slice(2));
+  const scripts = resolveScripts({ smoke, release, pin, noNative });
 
   if (list) {
     const label = smoke
