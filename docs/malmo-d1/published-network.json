@@ -1,0 +1,120 @@
+{
+  "city": "malmo",
+  "displayName": "Malmö",
+  "status": "planned",
+  "agency": "Skånetrafiken / Pågatågen",
+  "timezone": "Europe/Stockholm",
+  "source": "https://opendata.samtrafiken.se/gtfs/skane/skane.zip?key={TRAFIKLAB_API_KEY}",
+  "sources": [
+    {
+      "role": "D1 station names (hand-transcribed from GTFS after operator-code verification, NOT a passenger-facing map — see note)",
+      "title": "Trafiklab GTFS Regional, operator `skane`",
+      "url": "https://opendata.samtrafiken.se/gtfs/skane/skane.zip?key={TRAFIKLAB_API_KEY}",
+      "auth": "Trafiklab API key in query string (TRAFIKLAB_API_KEY, same key as Göteborg)",
+      "retrievedAt": "2026-08-29T00:00:00Z",
+      "note": "Unlike Oslo/Rotterdam/Newcastle, this pack's station list is NOT transcribed from an official Skånetrafiken passenger map or timetable — that PDF (see blocked source below) was inaccessible. The 9 Malmö-area station names come from Trafiklab GTFS stops.txt after confirming the `skane` operator code resolves to Skånetrafiken. Per the oracle report's own instruction, this pack does NOT extend that GTFS read into full per-line station/termini arrays for the 11 regular + 1 rush-hour lines — that would be generating published-network.json from GTFS alone, which the oracle report explicitly says not to do without further verification. See coverageGaps."
+    },
+    {
+      "role": "confirms GTFS-RT availability (not used to derive station/line structure in this pack)",
+      "title": "Trafiklab GTFS-RT, operator `skane`, TripUpdates",
+      "url": "https://opendata.samtrafiken.se/gtfs-rt/skane/TripUpdates.pb?key={TRAFIKLAB_API_KEY}",
+      "retrievedAt": "2026-08-28T00:00:00Z",
+      "note": "Confirmed live 2026-08-28 via Trafiklab operator table / Mobility Database mdb-2971: Static, Real-time, and Vehicle positions all available for `skane`. Relevant to Jim's D2+ live-board wiring, not to this D1 station graph."
+    },
+    {
+      "role": "D1 passenger line map — BLOCKED, unverified, not used",
+      "title": "Skånetrafiken linjenät (line network map), dated 1 Dec 2024, for June 2025",
+      "url": null,
+      "retrievedAt": null,
+      "note": "Egress policy blocked access to skanetrafiken.se PDF hosting; no URL/md5/localFile could be confirmed. This would be the equivalent authority to Oslo's linjekart / Rotterdam's Metrolijnenkaart / Newcastle's light rail map, and this pack does not have it. Listed here as a placeholder so the gap is visible in-schema, not silently absent."
+    }
+  ],
+  "retrievedAt": "2026-08-29T00:00:00Z",
+  "notes": [
+    "D1 oracle for this city is thinner than its Oslo/Rotterdam/Newcastle siblings: no official passenger map or timetable was transcribed (PDF blocked by egress policy). Station names are hand-transcribed from Trafiklab GTFS Regional `skane` stops.txt only. Line-level structure (termini, ordered stops, branches, confirmed line codes) is NOT in the oracle report and is NOT populated in this file — see coverageGaps and lines[] below.",
+    "Scope correction from the expansion tracker: tracker lists Malmö as 'commuter + light rail (Skånetrafiken)'. Malmö has no active light rail/tram system — the historical tram network closed in 1973; only a seasonal (Sat/Sun) museum tram remains, which is not v1. V1 is Pågatågen commuter rail only.",
+    "City id malmo is separate from goteborg (Västtrafik) and from stockholm. Do not merge.",
+    "Trafiklab GTFS Regional operator code `skane` confirmed to resolve to Skånetrafiken. Same TRAFIKLAB_API_KEY as Göteborg (different operator code). GTFS-RT (TripUpdates + vehicle positions) confirmed available for `skane`, unlike Göteborg's schedule-only gap — relevant to Jim's D2+ live board, not to this D1 file.",
+    "V1 mode cut: Pågatågen only. No Malmö stadsbuss / regional bus, no tram/spårvagn (none active in passenger service), no Öresundståg (separate cross-border operator: Skånetrafiken + DSB + Region Hovedstaden), no X-bus, no coach terminals (e.g. Nils Ericsonsplatsen — that's Göteborg's, not Malmö's; excluded here for clarity that no coach terminal is in scope).",
+    "Hub lock Malmö C (Malmö Central Station): City Tunnel (Citytunneln) terminus/portal, opened December 2010; report states 'all or most' Pågatågen lines serve it. doNotGroup Malmö C Pågatågen vs Malmö C Öresundståg (same station, different operator) — the one clash the oracle report confirms directly.",
+    "Eleven core Pågatågen lines plus a rush-hour-only line 12, per the oracle report's Oct 2025 line-count claim. This count is stated directly in the report (not hedged as 'presumed'), unlike the specific line codes below, which are hedged. Per-line termini, ordered stops, and branch structure are NOT in the report and are NOT fabricated here.",
+    "Line-code format 'H3, H4, E6, etc.' is explicitly flagged in the oracle report as 'expected'/'presumed' and 'must be confirmed in GTFS' — not a confirmed passenger-facing convention. Do not treat these example codes as real line names.",
+    "Timezone Europe/Stockholm HAS DST (CEST/CET), same family as Göteborg, Stockholm, Oslo.",
+    "gtfsRouteIdsIfKnown / stopIds are deliberately absent from this file, consistent with every sibling D1 pack — those are Jim's D2+ concern against the live feed, not a D1 print lock (and here, unusually, there is no print lock to check them against yet)."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Malmö C",
+    "doNotUse": [
+      "Malmö Central",
+      "Malmö Centralstation",
+      "Malmö C Öresundståg",
+      "Öresundståg",
+      "Malmö",
+      "City",
+      "Bussterminal",
+      "Nils Ericsonsplatsen"
+    ],
+    "alsoOnSharedApproaches": [
+      "Triangeln",
+      "Hyllie"
+    ]
+  },
+  "malmoAreaStations": [
+    {
+      "name": "Malmö C",
+      "class": "lock (commuter hub)",
+      "note": "Citytunneln underground portion, opened Dec 2010. All/most v1 lines. doNotGroup vs Malmö C Öresundståg."
+    },
+    {
+      "name": "Triangeln",
+      "class": "match",
+      "note": "City Tunnel, opened 2010. Possible Öresundståg overlap at this stop — unconfirmed, see hazard-pack H1."
+    },
+    {
+      "name": "Hyllie",
+      "class": "match",
+      "note": "City Tunnel, opened 2010. Possible Öresundståg overlap at this stop — unconfirmed, see hazard-pack H1."
+    },
+    {
+      "name": "Svågertorp",
+      "class": "match",
+      "note": "Ring-line stop (Malmöringen / Malmöpendeln). Route path through this stop not confirmed — see hazard-pack H4."
+    },
+    {
+      "name": "Persborg",
+      "class": "match",
+      "note": "Ring-line stop; reopened 2018 on Kontinentalbanan. Route path not confirmed."
+    },
+    {
+      "name": "Rosengård",
+      "class": "match",
+      "note": "New station, opened 2018 in Rosengård neighborhood."
+    },
+    {
+      "name": "Östervärn",
+      "class": "match",
+      "note": "Ring-line stop; reopened 2018. Route path not confirmed."
+    },
+    {
+      "name": "Burlöv",
+      "class": "match, conditional",
+      "note": "Outside Malmö proper. Oracle report: 'keep in v1 if GTFS includes it' — inclusion not independently confirmed by this pack."
+    },
+    {
+      "name": "Oxie",
+      "class": "match, conditional",
+      "note": "Outside Malmö proper. Oracle report: 'keep in v1 if GTFS includes it' — inclusion not independently confirmed by this pack."
+    }
+  ],
+  "coverageGaps": [
+    "BLOCKING for D5: no per-line termini, ordered stop list, or branch structure exists in the oracle report for any of the 11 regular Pågatågen lines or rush-hour line 12. The lines[] array below is intentionally left as a stub, not populated with invented station arrays — see direction-model-memo.md.",
+    "Line-code convention (e.g. whether route_short_name really follows an H3/H4/E6-style pattern) is unconfirmed — oracle report explicitly hedges this.",
+    "Whether line 12 is a distinct route_id or a variant trip pattern on an existing line is unconfirmed.",
+    "Whether Öresundståg also calls at Triangeln and/or Hyllie (both City Tunnel stations, same corridor as the confirmed Malmö C clash) is unconfirmed.",
+    "Malmöringen (ring line) route path is unconfirmed — if any published line calls at Svågertorp, Persborg, or Östervärn twice on one through-path (Oslo line-5-style), inbound/outbound direction labeling will be wrong at that station and this file's direction guidance will need updating.",
+    "Burlöv and Oxie inclusion in v1 is conditional per the oracle report itself ('if GTFS includes it') — not independently verified here.",
+    "The Skånetrafiken linjenät PDF (dated 1 Dec 2024, for June 2025) that would be the equivalent authority to the Oslo/Rotterdam/Newcastle maps was not accessible (egress policy). No md5/localFile/URL could be confirmed. If this pack is revisited once that source is reachable, station names and line structure should be re-verified against it, not just against GTFS.",
+    "Museum tram (seasonal, Sat/Sun) and the 1973 tram closure are out of v1 scope — confirmed, not a gap, listed here only so it isn't mistaken for missing data."
+  ],
+  "lines": []
+}
