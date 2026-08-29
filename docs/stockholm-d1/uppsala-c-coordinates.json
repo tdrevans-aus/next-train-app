@@ -1,0 +1,13 @@
+{
+  "city": "stockholm",
+  "resolved": {
+    "Uppsala C": {
+      "lat": 59.858534,
+      "lng": 17.646086,
+      "source": "Swedish national GTFS (Samtrafiken i Sverige AB) stops.txt, fetched 2026-08-29",
+      "matchedName": "Uppsala Centralstation",
+      "matchedStops": 1
+    }
+  },
+  "unresolved": []
+}
