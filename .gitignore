@@ -25,3 +25,14 @@ qa/*.xml
 !qa/maestro/
 
 docs/*.xlsx
+
+# Root-level scratch output from ad-hoc QA/debug runs — never source
+/qa-*.log
+/qa-*.exit
+/_out*.txt
+/_ls_raw.bin
+/git-out.txt
+/test-*-out.txt
+/test-output-*.txt
+/tmp-*.js
+/tmp-*.mjs
