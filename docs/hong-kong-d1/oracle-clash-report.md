@@ -1,6 +1,6 @@
 # Hong Kong — oracle clash report
 
-**Lane:** Nico research, completed in the Jim planned-city pack. **Date:** 2026-08-29. **Status:** scoped; D1 pack written in this same PR. **city id:** `hong-kong` (do not invent `hk`, `mtr`, `kowloon`, or merge Light Rail / Airport Express into a second city id).
+**Lane:** Nico research. **Date:** 2026-08-29. **Status:** scoped, D1 pack not written. **city id:** `hong-kong` (do not invent `hk`, `mtr`, `kowloon`, or merge Light Rail / Airport Express into a second city id).
 
 ## Agency / feed (verified)
 
@@ -13,7 +13,7 @@
 | Auth | Next Train REST: none. TD GTFS zip: none. Never paste a key. |
 | Timezone | Asia/Hong_Kong (no DST) |
 
-Do not generate a published-network.json from GTFS. D1 is the official system map, hand-transcribed.
+Do not generate a published-network.json from GTFS. D1 is the official system map, hand-transcribed, later.
 
 ## v1 mode cut
 
@@ -35,9 +35,9 @@ Airport Express / Disneyland Resort leaking in because they share the urban Next
 - **Confidence:** `clear` that the live Next Train JSON is empty-key on `rt.data.gov.hk` and that the portal ToU allows free commercial/non-commercial reproduce + distribute with attribution; `unclear` whether the spec-PDF confidential / no-reproduce footer is meant to bind the JSON (do not interpret as a second, tighter licence); `not found` on a dedicated MTR Open Data licence page separate from data.gov.hk + the PDF stamp.
 - **Keyed feeds:** none. No key agreement. Never paste a key.
 
-## C2 for this D1 pack
+## C2 for a later D1 pack (not this file's job)
 
 1. city=`hong-kong`. displayName Hong Kong.
 2. Admiralty hub. doNotGroup Central / Tsim Sha Tsui / East Tsim Sha Tsui / Hung Hom / Kowloon Airport Express / Hong Kong station AEL.
 3. Modes v1 MTR urban heavy-rail in Next Train spec v1.7 only (ISL TWL KTL TKL TCL TML EAL SIL). Light Rail, Airport Express, Disneyland Resort, High Speed Rail, buses, ferries out.
-4. assertCityLive("hong-kong") must fail until wired. Registry row is present with `status: "planned"` so the fail is **501**, not 400 Unknown city.
+4. assertCityLive("hong-kong") must fail until wired.
