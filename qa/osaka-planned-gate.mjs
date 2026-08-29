@@ -112,7 +112,7 @@ assert(!getCity("fukuoka") && !getCity("nagoya"), "do not start Fukuoka / Nagoya
 const stockholm = getCity("stockholm");
 assert(stockholm?.status === "planned", "Stockholm stays planned / Coming Soon");
 const goteborg = getCity("goteborg");
-assert(goteborg?.status === "planned", "Göteborg stays planned / Coming Soon");
+assert(goteborg?.status === "live", "Göteborg tester-live must stay green");
 assert(getCity("rotterdam")?.status === "live", "Rotterdam stays live");
 
 const d1Dir = join(ROOT, "docs/osaka-d1");
