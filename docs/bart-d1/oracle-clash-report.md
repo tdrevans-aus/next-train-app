@@ -79,3 +79,13 @@ H2 conclusion: five color lines already agree (map + timetable titles). Clash is
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no Perth edit, no Chicago/Washington edit, no GTFS-derived station arrays, no invent city=sf / san-francisco / bay-area, no call to the live API with a real key, no API key in any research file, no mix-in with chicago/washington/rotterdam.
+
+## License
+
+- **License name:** BART Developer License Agreement.
+- **Redistribution / rehosting:** Non-exclusive, limited, revocable rights to use, reproduce, and redistribute BART Data. BART retains title/ownership. No official BART trademarks or copyrighted system map in association with the Data (editable CC-BY map is separate).
+- **Commercial use:** Not prohibited on the face of the DLA. Open Data Policy says published datasets are placed into the public domain — that policy vs the DLA is a Tim judgment; DLA is the click-wrap for the GTFS permalink.
+- **Attribution:** DLA does not require specific wording. GTFS page asks for a shout-out / link back. Transitland: use allowed without attribution = Yes.
+- **Terms URL:** https://www.bart.gov/schedules/developers/developer-license-agreement
+- **Confidence:** `clear` on DLA redistribute; `unclear` whether Open Data Policy "public domain" overrides the DLA.
+- **Keyed feeds:** Static GTFS permalink needs no registration. Legacy API has a public key plus optional registered keys.

@@ -3,7 +3,12 @@
  * Usage: node qa/rotterdam-mark-probes.mjs
  */
 import { assertCityLive } from "../lib/providers/registry.js";
-import { fetchStationBoard } from "../lib/providers/rotterdam.js";
+import {
+  fetchStationBoard,
+  loadRotterdamStatic,
+  ROTTERDAM_TIME_ZONE,
+} from "../lib/providers/rotterdam.js";
+import { activeServicesForDate } from "../lib/providers/gtfs/static-cache.js";
 import {
   MARK_PROBES,
   marketingLabelsForStation,
@@ -16,16 +21,37 @@ function assert(condition, message) {
 }
 
 /**
- * Rotterdam's board is built from the live GTFS static blob (gtfsFixtureBlobUrl),
- * which is a *rolling* fixture: calendar_dates.txt only covers a ~90-day window
- * starting a day or two before the blob was last published (see
- * scripts/publish-gtfs-fixture-to-blob.mjs). A fixed historical NOW eventually
- * falls outside that window as the blob rolls forward, making every station
- * report an empty board — this is what made the gate intermittently fail.
- * Pin to "tomorrow, midday UTC" instead so NOW always lands inside the window.
+ * The blob-hosted fixture is republished with a rolling service window, so a
+ * hard-coded NOW eventually falls outside it (empty boards). Pin NOW to a
+ * Wednesday midday inside the fixture's own calendar instead.
  */
-const NOW = new Date(Date.now() + 24 * 60 * 60 * 1000);
-NOW.setUTCHours(10, 0, 0, 0);
+function middayWednesdayInFixtureWindow(staticData) {
+  const serviceDates = [
+    ...staticData.calendar.map((row) => String(row.start_date)),
+    ...staticData.calendarDates.map((row) => String(row.date)),
+  ].filter((ymd) => /^\d{8}$/.test(ymd)).sort();
+  assert(serviceDates.length > 0, "rotterdam fixture has no service dates");
+  const [first] = serviceDates;
+  const windowStart = new Date(
+    Date.UTC(Number(first.slice(0, 4)), Number(first.slice(4, 6)) - 1, Number(first.slice(6, 8)), 10)
+  );
+  for (let offset = 1; offset <= 60; offset += 1) {
+    const candidate = new Date(windowStart.getTime() + offset * 86_400_000);
+    const weekday = new Intl.DateTimeFormat("en-US", {
+      timeZone: ROTTERDAM_TIME_ZONE,
+      weekday: "short",
+    }).format(candidate);
+    if (weekday !== "Wed") {
+      continue;
+    }
+    if (activeServicesForDate(staticData, candidate, ROTTERDAM_TIME_ZONE).size > 0) {
+      return candidate;
+    }
+  }
+  throw new Error("no midweek service date inside the rotterdam fixture window");
+}
+
+const NOW = middayWednesdayInFixtureWindow(await loadRotterdamStatic());
 
 assert(assertCityLive("rotterdam")?.ok === true, "assertCityLive(rotterdam) must pass");
 assert(MARK_PROBES.length === 13, "Mark probes are 13 stations");

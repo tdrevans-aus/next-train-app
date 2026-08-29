@@ -59,7 +59,7 @@ assert(getCity("stockholm")?.adapterReady === true, "stockholm adapterReady must
 assert(isMultiCity("stockholm") === true, "stockholm must be in MULTI_CITY_IDS");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(assertCityLive("rotterdam")?.ok === true, "Rotterdam stays live");
-// Göteborg's status is not asserted here — it flips independently of Stockholm.
+assert(assertCityLive("goteborg")?.ok === true, "Göteborg is tester-live");
 
 // Registry identity + D1 pack (absorbed from the retired stockholm-planned-gate).
 const entry = getCity("stockholm");

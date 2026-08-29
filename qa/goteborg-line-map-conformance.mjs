@@ -2,7 +2,7 @@
  * D5 — Offline Göteborg line-map conformance.
  * Usage: node qa/goteborg-line-map-conformance.mjs
  *
- * City is tester-live (flipped by Tim 30 Aug 2026). D1 pack required. Not generated from GTFS.
+ * Tester-live. D1 pack required. Not generated from GTFS.
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -68,7 +68,7 @@ function main() {
     failures.push("C0: goteborg registry status must be live");
   }
   if (!isMultiCity("goteborg")) {
-    failures.push("C0: goteborg must be in MULTI_CITY_IDS after the flip");
+    failures.push("C0: goteborg must be in MULTI_CITY_IDS");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");

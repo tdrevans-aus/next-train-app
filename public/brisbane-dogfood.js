@@ -14,7 +14,7 @@
     stations: [],
     coords: {},
     directionsByStation: {},
-    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true },
+    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true },
   };
 
   async function isDebugNative() {

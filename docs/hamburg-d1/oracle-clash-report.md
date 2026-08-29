@@ -80,3 +80,13 @@ H2 conclusion: passenger codes on the map and line folders already agree (**U1�
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in the published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no GTFS-derived station arrays, no reopen of London TfL, no redo of Amsterdam / Rotterdam / Sweden / Berlin / Munich.
+
+## License
+
+- **License name:** Datenlizenz Deutschland – Namensnennung – Version 2.0 (dl-de/by-2-0) for HVV GTFS on Transparenzportal Hamburg.
+- **Redistribution / rehosting:** dl-de/by-2-0 allows use, including commercial, with attribution. Transitland: derived products allowed = Yes; use without attribution = No.
+- **Commercial use:** allowed under dl-de/by-2-0.
+- **Attribution:** Hamburger Verkehrsverbund GmbH, dl-de/by-2-0 (www.govdata.de/dl-de/by-2-0), plus the dataset URL. Required attribution text is indexed on the Transitland feed page.
+- **Terms URL:** https://www.govdata.de/dl-de/by-2-0 — GTFS landing https://www.hvv.de/de/fahrplaene/abruf-fahrplaninfos/datenabruf
+- **Confidence:** `clear` for the Transparenzportal GTFS dump. Geofox / GTI API is a separate HOCHBAHN contract (email api@hochbahn.de); do not treat that API as the same licence.
+- **Keyed feeds:** GTFS zip unkeyed. Geofox is applied-for, not a D1 source.

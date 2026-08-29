@@ -1,0 +1,698 @@
+{
+  "city": "boston",
+  "displayName": "Boston",
+  "status": "planned",
+  "agency": "MBTA",
+  "timezone": "America/New_York",
+  "source": "https://cdn.mbta.com/sites/default/files/2026-06/2026-06-14-subway-map-v01.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger rapid transit / subway map (ordered stops + color lines + hub lock)",
+      "title": "MBTA | Subway and frequent bus routes | Effective June 14, 2026",
+      "pdfTitle": "MBTA | Subway and frequent bus routes | Effective June 14, 2026",
+      "printedFooter": "© Massachusetts Bay Transportation Authority — June 2026",
+      "url": "https://cdn.mbta.com/sites/default/files/2026-06/2026-06-14-subway-map-v01.pdf",
+      "linkedFrom": "https://www.mbta.com/maps",
+      "alsoLinkedFrom": [
+        "https://www.mbta.com/subway-map"
+      ],
+      "captionOnIndex": "Subway Map — This map emphasizes the subway and Silver Line. It also includes key bus routes and Commuter Rail lines.",
+      "retrievedAt": "2026-08-29T12:50:00Z",
+      "lastModified": "Thu, 18 Jun 2026 15:25:24 GMT",
+      "pdfModDate": "Thu Jun 18 15:24:15 2026 UTC",
+      "pdfCreationDate": "Fri Jun 5 18:25:32 2026 UTC",
+      "pageSizePts": "3456 x 3456",
+      "creator": "Adobe Illustrator 30.4 (Macintosh)",
+      "localFile": "sources/2026-06-14-subway-map-v01.pdf",
+      "note": "Linked from Maps as Subway Map (View full map as PDF → /subway-map 302s here). PDF title MBTA | Subway and frequent bus routes | Effective June 14, 2026. Plate title Rapid Transit & Frequent Bus Routes. Legend prints BL / OL / RL / M Mattapan Line / GL (B) Boston College to Gov't Center / (C) Cleveland Circle to Gov't Center / (D) Riverside to Union Sq / (E) Heath St to Medford/Tufts. Silver Line, frequent bus, Commuter Rail, ferry, Massport airport shuttle are on the same plate — out of v1. Stations arrays HAND-TRANSCRIBED from rendered map images. pdftotext extracted zero text (outlined Illustrator). Not generated from GTFS."
+    },
+    {
+      "role": "D1 passenger map preview PNG (same June 2026 plate)",
+      "title": "Subway map, rapid transit, and key bus routes",
+      "url": "https://cdn.mbta.com/sites/default/files/media/2026-06/2026-06-14-subway-map-v01.png",
+      "linkedFrom": "https://www.mbta.com/maps",
+      "retrievedAt": "2026-08-29T12:50:00Z",
+      "lastModified": "Thu, 18 Jun 2026 15:28:37 GMT",
+      "localFile": "sources/2026-06-14-subway-map-v01.png",
+      "note": "Index preview of the same Subway Map plate. Support for label reading. PDF still wins."
+    },
+    {
+      "role": "D1 passenger map index",
+      "title": "Maps | MBTA",
+      "url": "https://www.mbta.com/maps",
+      "retrievedAt": "2026-08-29T12:49:00Z",
+      "printedMapsOnIndex": [
+        "Full System Map /system-map → 2026-06-14-system-map_0.pdf",
+        "Downtown Map /downtown-map → 2026-06-14-downtown-map_0.pdf",
+        "Subway Map /subway-map → 2026-06-14-subway-map-v01.pdf (D1 oracle)",
+        "Frequent Bus Route Map (out of v1)",
+        "Ferry Map (out of v1)",
+        "Commuter Rail Map (out of v1)",
+        "Commuter Rail Zones (out of v1)"
+      ],
+      "note": "Passenger subway oracle is the Subway Map plate, not the full system map and not the downtown inset. Bus / ferry / Commuter Rail cards on the same index are out of v1."
+    },
+    {
+      "role": "supporting official line pages (ordered stops; map printed names win)",
+      "title": "MBTA subway line pages",
+      "urls": [
+        "https://www.mbta.com/schedules/Red/line",
+        "https://www.mbta.com/schedules/Orange/line",
+        "https://www.mbta.com/schedules/Blue/line",
+        "https://www.mbta.com/schedules/Green",
+        "https://www.mbta.com/schedules/Green-B/line",
+        "https://www.mbta.com/schedules/Green-C/line",
+        "https://www.mbta.com/schedules/Green-D/line",
+        "https://www.mbta.com/schedules/Green-E/line",
+        "https://www.mbta.com/schedules/Mattapan/line",
+        "https://www.mbta.com/stops/subway"
+      ],
+      "retrievedAt": "2026-08-29T12:50:00Z",
+      "note": "Official long forms often expand map abbreviations (Government Center, Tufts Medical Center, Massachusetts Avenue, Hynes Convention Center, Northeastern University, Capen Street). Map printed names win. Green B/C pages confirm Gov't Center as the inner end. Mattapan page lists the trolley as its own subway mode."
+    },
+    {
+      "role": "developer portal (live-board path; not a D1 generator; no key in this pack)",
+      "title": "Developers | MBTA",
+      "url": "https://www.mbta.com/developers",
+      "v3": "https://www.mbta.com/developers/v3-api",
+      "gtfs": "https://www.mbta.com/developers/gtfs",
+      "gtfsRt": "https://www.mbta.com/developers/gtfs-realtime",
+      "retrievedAt": "2026-08-29T12:50:00Z",
+      "note": "V3 API https://api-v3.mbta.com/ optional x-api-key (unauthenticated allowed, rate-limited). Static GTFS https://cdn.mbta.com/MBTA_GTFS.zip no key — NOT a D1 generator. Page still links the older MassDOT licence PDF; current 2023-08 agreement is on cdn.mbta.com. Never paste a key."
+    },
+    {
+      "role": "empty-key V3 predictions probe (no subscription key sent)",
+      "title": "GET api-v3.mbta.com/predictions?filter[stop]=place-pktrm",
+      "url": "https://api-v3.mbta.com/predictions?filter[stop]=place-pktrm&page[limit]=1",
+      "retrievedAt": "2026-08-29T12:53:00Z",
+      "note": "HTTP 200 application/vnd.api+json. x-ratelimit-limit 20. Unauthenticated works. Did not send a real key. Not a D1 generator. Park Street filter used only to prove the live path; stop ids stay out of this file."
+    }
+  ],
+  "retrievedAt": "2026-08-29T13:00:00Z",
+  "notes": [
+    "D1 oracle is the official MBTA Subway Map (cdn.mbta.com 2026-06-14-subway-map-v01.pdf, PDF title MBTA | Subway and frequent bus routes | Effective June 14, 2026, HTTP Last-Modified Thu 18 Jun 2026 15:25:24 GMT) HAND-TRANSCRIBED from rendered map images. pdftotext extracted zero text. Official line / stops pages are support only. Stations arrays are not generated from GTFS. Not generated from api-v3.mbta.com. Map printed names win clashes.",
+    "City id boston is a SEPARATE city. Do not invent city=bos, city=mbta, city=boston-mbta, or city=us. Do not merge into washington, chicago, bart, or any other Next Train city. Agency MBTA. Modes v1: subway / rapid transit ONLY — Red, Orange, Blue, Green B/C/D/E, Mattapan (printed on the rapid-transit legend as M). No Silver Line BRT, no bus, no ferry, no Commuter Rail, no CapeFlyer, no Massport shuttles.",
+    "City stays planned until Jim wires testers. Cut #1 is Rotterdam only. Washington / Chicago / BART stay planned and untouched. This pack stays planned. assertCityLive(\"boston\") must fail (city is not in lib/providers/registry.js — Unknown city / 400). Not in LIVE_CITY_IDS.",
+    "Timezone America/New_York HAS DST (EDT/EST). Do not copy Perth / Brisbane no-DST.",
+    "Legend on this plate: Blue Line; Orange Line; Red Line; Mattapan Line; Green Line (B) Boston College to Gov't Center; (C) Cleveland Circle to Gov't Center; (D) Riverside to Union Sq; (E) Heath St to Medford/Tufts. Four Green passenger services, not one linear Green. Mattapan is its own rapid-transit line from Ashmont (not folded into Red as heavy rail).",
+    "Locked inner-city printed name: Park Street (Red × Green). Not Downtown Crossing (Red × Orange), not Gov't Center (Green × Blue; B/C inner end), not State (Orange × Blue), not South Station, not North Station, not Haymarket, not Downtown. There is no single station on all colours. doNotGroup those downtown buildings.",
+    "125 unique passenger-open rapid-transit stops after dedupe across shared trunks. Red 22 (Ashmont + Braintree after JFK/UMass). Orange 20. Blue 12. Green B 23 / C 20 / D 25 / E 25. Mattapan 8 (Ashmont shared with Red). No unopened / future station the map does not print as open was inserted.",
+    "Map abbreviations locked (stops page often expands): Gov't Center (not Government Center); Tufts Medical Ctr; Mass. Ave; Hynes Convention Ctr; Northeastern (not Northeastern University); Sullivan Sq / Jackson Sq / Ball Sq / Magoun Sq / Gilman Sq / Union Sq / Washington Sq; BU East / BU Central; surface St / Ave / Rd family (Amory St, Blandford St, Central Ave, Capen St, Valley Rd, Fenwood Rd, Heath St). Terminus ALL-CAPS on the plate (ALEWIFE, OAK GROVE, BRAINTREE, …) is graphic treatment — D1 strings are title case as the passenger name.",
+    "doNotCollapse same-name-family pairs: Harvard (Red) ≠ Harvard Ave (Green B); Central (Red) ≠ Central Ave (Mattapan); Longwood (Green D) ≠ Longwood Medical Area (Green E); Chestnut Hill (Green D) ≠ Chestnut Hill Ave (Green B); Washington St (Green B) ≠ Washington Sq (Green C); Union Sq (Green D, Somerville) ≠ Union Sq (Allston) bus point on the same plate; Medford/Tufts ≠ Tufts Medical Ctr.",
+    "Green B and Green C terminate at Gov't Center (legend). They serve Park Street. They do NOT continue to Haymarket / North Station / Lechmere. Green D continues Union Sq via Lechmere. Green E continues Medford/Tufts via Lechmere. Green E leaves the B/C/D trunk at Copley (Prudential–Heath St) and does not serve Hynes Convention Ctr or Kenmore.",
+    "Red splits at JFK/UMass: Ashmont branch Savin Hill–Ashmont; Braintree branch North Quincy–Braintree. stations[] lists the Ashmont branch then the Braintree branch after JFK/UMass (Chicago Green south-split shape).",
+    "Feed (Jim D2, not a D1 generator): static GTFS https://cdn.mbta.com/MBTA_GTFS.zip no key — do not use it to build this JSON. V3 API https://api-v3.mbta.com/ optional x-api-key; unauthenticated 200 on 29 Aug 2026 (rate-limited). Default Next Train is GET /predictions. Never paste a key. The key is not a D1 blocker. D1 stays planned.",
+    "H3 overlay 20–30 Aug 2026: Orange Line suspended Oak Grove–Back Bay (news on the subway hub). Official passenger map still prints those stations as open — kept. Construction is overlay only."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Park Street",
+    "lockSet": [
+      "Park Street"
+    ],
+    "lockNote": "Printed inner-city lock. Red × Green transfer on the official subway map. All four Green services call Park Street. B/C continue one stop to Gov't Center and end; D/E continue through Gov't Center to Haymarket. Not a direction token. Inbound/outbound dies here: Red is NW–SE; Green is west/southwest vs north.",
+    "doNotUse": [
+      "Downtown Crossing",
+      "Gov't Center",
+      "Government Center",
+      "State",
+      "South Station",
+      "North Station",
+      "Haymarket",
+      "Downtown",
+      "Boston",
+      "City",
+      "CBD",
+      "Downtown Boston",
+      "bos",
+      "mbta",
+      "Park St",
+      "Park Street Station",
+      "Metro Center",
+      "Clark/Lake",
+      "Embarcadero",
+      "Beurs",
+      "T-Centralen",
+      "Brunnsparken",
+      "Centraal Station",
+      "Waitematā Station"
+    ],
+    "doNotCollapse": [
+      "Park Street",
+      "Downtown Crossing",
+      "Gov't Center",
+      "State",
+      "South Station",
+      "North Station",
+      "Haymarket",
+      "Harvard",
+      "Harvard Ave",
+      "Central",
+      "Central Ave",
+      "Longwood",
+      "Longwood Medical Area",
+      "Chestnut Hill",
+      "Chestnut Hill Ave",
+      "Washington St",
+      "Washington Sq",
+      "Union Sq",
+      "Medford/Tufts",
+      "Tufts Medical Ctr"
+    ],
+    "alsoOnSharedApproaches": [
+      "Downtown Crossing",
+      "Gov't Center",
+      "State",
+      "South Station",
+      "North Station",
+      "Haymarket",
+      "Boylston",
+      "Arlington",
+      "Copley",
+      "Hynes Convention Ctr",
+      "Kenmore",
+      "Lechmere",
+      "Science Park/West End",
+      "JFK/UMass",
+      "Ashmont",
+      "Back Bay"
+    ]
+  },
+  "coverageGaps": [
+    "Silver Line BRT (SL1/SL2/SL3/SL4/SLW and any SL5) on the same Subway Map plate. Out of v1.",
+    "Frequent bus routes (yellow numbered lines on the same plate). Out of v1.",
+    "Commuter Rail (purple lines + South Station / North Station / Back Bay / Ruggles / Forest Hills / JFK/UMass / Quincy Center / Braintree / Malden Center name-family). Transfers, not D1 stops. CapeFlyer out.",
+    "Ferry. Out of v1.",
+    "Massport airport shuttles / Logan terminals / Rental Car Center on the Blue Airport cluster. Out of v1. doNotGroup Blue Airport vs airport terminal.",
+    "Union Sq (Allston) bus point on the same plate. Not Green D Union Sq (Somerville).",
+    "Full System Map and Downtown Map on the same index are mixed-mode / inset twins, not a second stop oracle.",
+    "No unopened rapid-transit station printed as passenger-open on this June 2026 plate. None inserted.",
+    "Orange Line Oak Grove–Back Bay suspension 20–30 Aug 2026 is overlay, not a coverage gap and not a deleted D1 stop."
+  ],
+  "liveBoards": {
+    "status": "developer_api_exists_city_planned",
+    "portal": "https://www.mbta.com/developers",
+    "v3docs": "https://www.mbta.com/developers/v3-api",
+    "gtfsDocs": "https://www.mbta.com/developers/gtfs",
+    "gtfsRtDocs": "https://www.mbta.com/developers/gtfs-realtime",
+    "license": "https://cdn.mbta.com/sites/default/files/2023-08/mbta-massdot-develop-license-agreement.pdf",
+    "defaultNextTrain": {
+      "name": "V3 API predictions",
+      "method": "GET",
+      "url": "https://api-v3.mbta.com/predictions",
+      "filter": "filter[stop] + optional filter[route]=Red,Orange,Blue,Green-B,Green-C,Green-D,Green-E,Mattapan",
+      "header": "x-api-key (optional)",
+      "note": "Unauthenticated allowed, rate-limited (empty-key 200 on 29 Aug 2026, x-ratelimit-limit 20). Filter subway routes only. Park Street / Downtown Crossing / Gov't Center / State are different stop-places — doNotGroup. Jim D2. Not a D1 generator. No stopIds in this file."
+    },
+    "staticGtfs": {
+      "url": "https://cdn.mbta.com/MBTA_GTFS.zip",
+      "auth": "none",
+      "note": "NOT a D1 generator. Do not build stations[] from this zip."
+    },
+    "emptyKey": {
+      "probedAt": "2026-08-29T12:53:00Z",
+      "http": 200,
+      "contentType": "application/vnd.api+json",
+      "rateLimit": 20,
+      "note": "Did not send a real key."
+    },
+    "keyPolicy": "Optional V3 API key from https://www.mbta.com/developers. Unauthenticated works. The key is for higher rate limits later, NOT a D1 blocker. This pack does not contain a key. Never paste a key.",
+    "d1": "planned. assertCityLive(boston) must fail."
+  },
+  "stats": {
+    "lines": 8,
+    "redStops": 22,
+    "orangeStops": 20,
+    "blueStops": 12,
+    "greenBStops": 23,
+    "greenCStops": 20,
+    "greenDStops": 25,
+    "greenEStops": 25,
+    "mattapanStops": 8,
+    "uniqueNames": 125,
+    "innerCityLock": [
+      "Park Street"
+    ]
+  },
+  "lines": [
+    {
+      "id": "red",
+      "number": "Red",
+      "name": "Red Line",
+      "officialPageTitle": "Red Line • Alewife / Ashmont & Braintree",
+      "gtfsRouteIdsIfKnown": [
+        "Red"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Alewife",
+        "Ashmont",
+        "Braintree"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Park Street",
+          "otherLine": "green-b",
+          "note": "Hub lock. Red crosses all four Green services. Not a direction token."
+        },
+        {
+          "at": "Downtown Crossing",
+          "otherLine": "orange",
+          "note": "Red × Orange. Walking concourse to Park Street on the map. Still two buildings. doNotGroup. Not the hub lock."
+        },
+        {
+          "at": "South Station",
+          "note": "Red only for v1. Silver Line / Commuter Rail / bus / ferry icons on the same plate are out of v1. doNotGroup."
+        },
+        {
+          "at": "JFK/UMass",
+          "otherLine": "red",
+          "note": "South split. Ashmont branch next in stations[]: Savin Hill, Fields Corner, Shawmut, Ashmont (Mattapan transfer). Braintree branch after that: North Quincy, Wollaston, Quincy Center, Quincy Adams, Braintree. Commuter Rail at JFK/UMass is out of v1."
+        },
+        {
+          "at": "Ashmont",
+          "otherLine": "mattapan",
+          "note": "Mattapan Line begins here. Same stop string. Do not fold Mattapan into Red as heavy rail."
+        }
+      ],
+      "stations": [
+        "Alewife",
+        "Davis",
+        "Porter",
+        "Harvard",
+        "Central",
+        "Kendall/MIT",
+        "Charles/MGH",
+        "Park Street",
+        "Downtown Crossing",
+        "South Station",
+        "Broadway",
+        "Andrew",
+        "JFK/UMass",
+        "Savin Hill",
+        "Fields Corner",
+        "Shawmut",
+        "Ashmont",
+        "North Quincy",
+        "Wollaston",
+        "Quincy Center",
+        "Quincy Adams",
+        "Braintree"
+      ]
+    },
+    {
+      "id": "orange",
+      "number": "Orange",
+      "name": "Orange Line",
+      "officialPageTitle": "Orange Line • Oak Grove / Forest Hills",
+      "gtfsRouteIdsIfKnown": [
+        "Orange"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Oak Grove",
+        "Forest Hills"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "North Station",
+          "otherLine": "green-d",
+          "note": "Orange × Green D/E. Commuter Rail / Amtrak at North Station out of v1. doNotGroup. Not the hub lock."
+        },
+        {
+          "at": "Haymarket",
+          "otherLine": "green-d",
+          "note": "Orange × Green D/E. Not the hub lock."
+        },
+        {
+          "at": "State",
+          "otherLine": "blue",
+          "note": "Orange × Blue. Not the hub lock. doNotGroup vs Park Street / Downtown Crossing / Gov't Center."
+        },
+        {
+          "at": "Downtown Crossing",
+          "otherLine": "red",
+          "note": "Not the hub lock."
+        },
+        {
+          "at": "Back Bay",
+          "note": "Orange only for v1. Commuter Rail / Amtrak out of v1. doNotGroup."
+        },
+        {
+          "at": "Forest Hills",
+          "note": "Orange south terminus. Commuter Rail name-family out of v1."
+        }
+      ],
+      "stations": [
+        "Oak Grove",
+        "Malden Center",
+        "Wellington",
+        "Assembly",
+        "Sullivan Sq",
+        "Community College",
+        "North Station",
+        "Haymarket",
+        "State",
+        "Downtown Crossing",
+        "Chinatown",
+        "Tufts Medical Ctr",
+        "Back Bay",
+        "Mass. Ave",
+        "Ruggles",
+        "Roxbury Crossing",
+        "Jackson Sq",
+        "Stony Brook",
+        "Green St",
+        "Forest Hills"
+      ]
+    },
+    {
+      "id": "blue",
+      "number": "Blue",
+      "name": "Blue Line",
+      "officialPageTitle": "Blue Line • Wonderland / Bowdoin",
+      "gtfsRouteIdsIfKnown": [
+        "Blue"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Wonderland",
+        "Bowdoin"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Airport",
+          "note": "Blue only for v1. Massport shuttles / Logan terminals / Silver Line SL1 on the same cluster are out of v1. doNotGroup."
+        },
+        {
+          "at": "State",
+          "otherLine": "orange",
+          "note": "Not the hub lock."
+        },
+        {
+          "at": "Gov't Center",
+          "otherLine": "green-b",
+          "note": "Blue × Green. Inner end for Green B and Green C (legend). Green D/E through. Not the hub lock. Map print Gov't Center, not Government Center."
+        },
+        {
+          "at": "Bowdoin",
+          "note": "Blue inner terminus. One stop west of Gov't Center. Not a Green stop."
+        }
+      ],
+      "stations": [
+        "Wonderland",
+        "Revere Beach",
+        "Beachmont",
+        "Suffolk Downs",
+        "Orient Heights",
+        "Wood Island",
+        "Airport",
+        "Maverick",
+        "Aquarium",
+        "State",
+        "Gov't Center",
+        "Bowdoin"
+      ]
+    },
+    {
+      "id": "green-b",
+      "number": "B",
+      "name": "Green Line B",
+      "officialPageTitle": "Green Line B • Boston College / Gov't Center",
+      "gtfsRouteIdsIfKnown": [
+        "Green-B"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Boston College",
+        "Gov't Center"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Gov't Center",
+          "otherLine": "blue",
+          "note": "Legend inner end for B (and C). B does not continue to Haymarket / North Station / Lechmere."
+        },
+        {
+          "at": "Park Street",
+          "otherLine": "red",
+          "note": "Hub lock. All four Green services."
+        },
+        {
+          "at": "Copley",
+          "otherLine": "green-e",
+          "note": "E leaves south to Prudential–Heath St. B/C/D continue to Hynes Convention Ctr and Kenmore."
+        },
+        {
+          "at": "Kenmore",
+          "otherLine": "green-c",
+          "note": "West split. B is Blandford St–Boston College. C is St. Mary's St–Cleveland Circle. D is Fenway–Riverside."
+        }
+      ],
+      "stations": [
+        "Gov't Center",
+        "Park Street",
+        "Boylston",
+        "Arlington",
+        "Copley",
+        "Hynes Convention Ctr",
+        "Kenmore",
+        "Blandford St",
+        "BU East",
+        "BU Central",
+        "Amory St",
+        "Babcock St",
+        "Packard's Corner",
+        "Harvard Ave",
+        "Griggs St",
+        "Allston St",
+        "Warren St",
+        "Washington St",
+        "Sutherland Rd",
+        "Chiswick Rd",
+        "Chestnut Hill Ave",
+        "South St",
+        "Boston College"
+      ]
+    },
+    {
+      "id": "green-c",
+      "number": "C",
+      "name": "Green Line C",
+      "officialPageTitle": "Green Line C • Cleveland Circle / Gov't Center",
+      "gtfsRouteIdsIfKnown": [
+        "Green-C"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Cleveland Circle",
+        "Gov't Center"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Gov't Center",
+          "otherLine": "blue",
+          "note": "Legend inner end for C. C does not continue north of Gov't Center."
+        },
+        {
+          "at": "Park Street",
+          "otherLine": "red",
+          "note": "Hub lock."
+        },
+        {
+          "at": "Kenmore",
+          "otherLine": "green-b",
+          "note": "C west is St. Mary's St–Cleveland Circle."
+        }
+      ],
+      "stations": [
+        "Gov't Center",
+        "Park Street",
+        "Boylston",
+        "Arlington",
+        "Copley",
+        "Hynes Convention Ctr",
+        "Kenmore",
+        "St. Mary's St",
+        "Hawes St",
+        "Kent St",
+        "St. Paul St",
+        "Coolidge Corner",
+        "Summit Ave",
+        "Brandon Hall",
+        "Fairbanks St",
+        "Washington Sq",
+        "Tappan St",
+        "Dean Rd",
+        "Englewood Ave",
+        "Cleveland Circle"
+      ]
+    },
+    {
+      "id": "green-d",
+      "number": "D",
+      "name": "Green Line D",
+      "officialPageTitle": "Green Line D • Riverside / Union Sq",
+      "gtfsRouteIdsIfKnown": [
+        "Green-D"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Riverside",
+        "Union Sq"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Union Sq",
+          "note": "Legend north end for D. Not Union Sq (Allston) bus on the same plate. D does not serve Medford/Tufts / Ball Sq / Magoun Sq / Gilman Sq / East Somerville (those are E-only north of Lechmere)."
+        },
+        {
+          "at": "Lechmere",
+          "otherLine": "green-e",
+          "note": "E continues Medford/Tufts. D ends at Union Sq. Shared Lechmere–Copley with E (and B/C from Gov't Center to Copley)."
+        },
+        {
+          "at": "North Station",
+          "otherLine": "orange"
+        },
+        {
+          "at": "Park Street",
+          "otherLine": "red",
+          "note": "Hub lock."
+        },
+        {
+          "at": "Kenmore",
+          "otherLine": "green-b",
+          "note": "D west is Fenway–Riverside. Longwood on D is NOT Longwood Medical Area on E."
+        }
+      ],
+      "stations": [
+        "Union Sq",
+        "Lechmere",
+        "Science Park/West End",
+        "North Station",
+        "Haymarket",
+        "Gov't Center",
+        "Park Street",
+        "Boylston",
+        "Arlington",
+        "Copley",
+        "Hynes Convention Ctr",
+        "Kenmore",
+        "Fenway",
+        "Longwood",
+        "Brookline Village",
+        "Brookline Hills",
+        "Beaconsfield",
+        "Reservoir",
+        "Chestnut Hill",
+        "Newton Centre",
+        "Newton Highlands",
+        "Eliot",
+        "Waban",
+        "Woodland",
+        "Riverside"
+      ]
+    },
+    {
+      "id": "green-e",
+      "number": "E",
+      "name": "Green Line E",
+      "officialPageTitle": "Green Line E • Heath St / Medford/Tufts",
+      "gtfsRouteIdsIfKnown": [
+        "Green-E"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Heath St",
+        "Medford/Tufts"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Medford/Tufts",
+          "note": "Legend north end for E. Not Tufts Medical Ctr (Orange). Not Union Sq (D)."
+        },
+        {
+          "at": "Lechmere",
+          "otherLine": "green-d",
+          "note": "E north tail is East Somerville–Medford/Tufts. D is Union Sq."
+        },
+        {
+          "at": "Park Street",
+          "otherLine": "red",
+          "note": "Hub lock."
+        },
+        {
+          "at": "Copley",
+          "otherLine": "green-b",
+          "note": "E does NOT serve Hynes Convention Ctr or Kenmore. E south is Prudential–Heath St. Longwood Medical Area is NOT D Longwood."
+        }
+      ],
+      "stations": [
+        "Medford/Tufts",
+        "Ball Sq",
+        "Magoun Sq",
+        "Gilman Sq",
+        "East Somerville",
+        "Lechmere",
+        "Science Park/West End",
+        "North Station",
+        "Haymarket",
+        "Gov't Center",
+        "Park Street",
+        "Boylston",
+        "Arlington",
+        "Copley",
+        "Prudential",
+        "Symphony",
+        "Northeastern",
+        "Museum of Fine Arts",
+        "Longwood Medical Area",
+        "Brigham Circle",
+        "Fenwood Rd",
+        "Mission Park",
+        "Riverway",
+        "Back of the Hill",
+        "Heath St"
+      ]
+    },
+    {
+      "id": "mattapan",
+      "number": "M",
+      "name": "Mattapan Line",
+      "officialPageTitle": "Mattapan Line • Ashmont / Mattapan",
+      "gtfsRouteIdsIfKnown": [
+        "Mattapan"
+      ],
+      "mapGroup": "Subway",
+      "termini": [
+        "Ashmont",
+        "Mattapan"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Ashmont",
+          "otherLine": "red",
+          "note": "Printed as its own rapid-transit line (legend M, red with white center). Do not fold into Red as heavy rail. Central Ave on this line is NOT Red Central."
+        }
+      ],
+      "stations": [
+        "Ashmont",
+        "Cedar Grove",
+        "Butler",
+        "Milton",
+        "Central Ave",
+        "Valley Rd",
+        "Capen St",
+        "Mattapan"
+      ]
+    }
+  ]
+}

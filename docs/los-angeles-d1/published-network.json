@@ -1,0 +1,603 @@
+{
+  "city": "los-angeles",
+  "displayName": "Los Angeles",
+  "status": "planned",
+  "agency": "LA Metro",
+  "timezone": "America/Los_Angeles",
+  "source": "https://cdn.beta.metro.net/wp-content/uploads/2026/05/09224824/26-1362_map_GM_Master_DCR-2-copy.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger Metro Rail + Busway map (ordered stops + letter lines + hub lock). Skip G/J busway, Metrolink, Amtrak, FlyAway.",
+      "title": "Metro Rail & Busway (May 2026)",
+      "printedFormCode": "26-1362",
+      "printedFooter": "MAY 2026 Subject to Change. 26-1362 ©2026 LACMTA",
+      "url": "https://cdn.beta.metro.net/wp-content/uploads/2026/05/09224824/26-1362_map_GM_Master_DCR-2-copy.pdf",
+      "linkedFrom": "https://www.metro.net/riding/schedules/",
+      "alsoLinkedFrom": [
+        "https://www.metro.net/riding/guide/system-maps/"
+      ],
+      "retrievedAt": "2026-08-29T12:58:00Z",
+      "lastModified": "Sun, 10 May 2026 05:48:27 GMT",
+      "pdfCreator": "Adobe InDesign 21.2 (Macintosh)",
+      "pdfProducer": "Adobe PDF Library 18.0",
+      "pdfCreationDate": "Thu Apr 02 17:22:24 2026 -03:00",
+      "pdfModDate": "Mon May 04 16:08:04 2026 -07:00",
+      "note": "Official May 2026 Rail and Busway Map. Legend Metro Rail (circles): A Line Pomona to Long Beach; B Line North Hollywood to Union Station; C Line LAX to Norwalk; D Line Wilshire/La Cienega to Union Station; E Line Santa Monica to East LA; K Line Expo/Crenshaw to Redondo Beach. Metro Busway (squares) G Line Chatsworth to North Hollywood and J Line El Monte to San Pedro are OUT of v1. Regional Rail Amtrak/Metrolink and Airport Shuttle LAX FlyAway are transfers, not D1 stops. Pomona North is a solid open transfer (ML icon); dashed grey METRO A LINE EXTENSION PROJECT is east of Pomona North — out. Wilshire/La Cienega is a solid open D terminus; dashed grey METRO D LINE SUBWAY EXTENSION PROJECT is west of it — out. *Van Nuys Station closed until winter 2028 is a G Line overlay — out. Map prints 7th St/Metro Ctr, Civic Ctr/Grand Park, Little Tokyo/Arts Dist, East LA Civic Ctr, Heritage Sq, Lakewood Bl, LATTC/Ortho Institute. C Line station between Willowbrook/Rosa Parks and Lakewood Bl prints Lynwood (not Long Beach Bl)."
+    },
+    {
+      "role": "D1 passenger rider page (six Metro Rail lines + termini pairs + 115-station system figure). Map still wins stop strings.",
+      "title": "How to Ride Metro Rail - LA Metro",
+      "url": "https://www.metro.net/riding/how-ride-rail/",
+      "retrievedAt": "2026-08-29T12:58:00Z",
+      "pageDate": "July 27, 2026",
+      "note": "Metro rail is made up of six train lines, including 115 stations. Termini: A Pomona to Long Beach; B Union Station to North Hollywood; C Norwalk to LAX/Metro Transit Center; D Union Station to Wilshire/La Cienega; E East Los Angeles to Santa Monica; K Expo/Crenshaw to Redondo Beach. C stop string on the map is LAX/Metro Transit Center (legend shortens to LAX). E east end on the map is Atlantic (legend East LA). A ends print Pomona / Long Beach; stop strings Pomona North / Downtown Long Beach."
+    },
+    {
+      "role": "D1 passenger map index (rail timetable PDFs + Rail and Busway Map link)",
+      "title": "Maps & Schedules - LA Metro",
+      "url": "https://www.metro.net/riding/schedules/",
+      "retrievedAt": "2026-08-29T12:58:00Z",
+      "note": "Links the May 2026 Rail and Busway Map and per-line timetable PDFs. A 801 / B 802 (B+D columns) / C 803 / E 804 Dec 2025 / K 807 Jun 2026. G 901 and J 910 are busway — out of v1. Timetables are support for order and shorts; map printed names win."
+    },
+    {
+      "role": "supporting official A Line timetable (timepoints + shorts; map still wins)",
+      "title": "A Line Effective Jun 7 2026",
+      "url": "https://cdn.beta.metro.net/wp-content/uploads/2026/06/11104336/801_TT_06-07-26-1.pdf",
+      "retrievedAt": "2026-08-29T12:59:00Z",
+      "pdfModDate": "Fri May 08 10:33:19 2026 -07:00",
+      "note": "Northbound to Pomona North. Timepoints only (not every map tick). Notes: shorts originate/end Monrovia, Wardlow, APU/Citrus College. Long form 7th Street/Metro Center, Little Tokyo/Arts District vs map 7th St/Metro Ctr, Little Tokyo/Arts Dist."
+    },
+    {
+      "role": "supporting official B/D combined timetable (map still wins)",
+      "title": "B Line / D Line Effective Jun 7 2026",
+      "url": "https://cdn.beta.metro.net/wp-content/uploads/2026/06/11105233/802_TT_06-7-26-1.pdf",
+      "retrievedAt": "2026-08-29T12:59:00Z",
+      "pdfModDate": "Thu May 07 13:36:11 2026 -07:00",
+      "note": "B Line Stations + D Line Stations columns. D Section 1 Wilshire/La Cienega, Wilshire/Fairfax, Wilshire/La Brea are on this June 2026 sheet. Timetable Civic Center/Grand Park, Universal/Studio City, 7th St/Metro Center vs map Civic Ctr/Grand Park, Universal City/Studio City, 7th St/Metro Ctr."
+    },
+    {
+      "role": "supporting official C Line timetable (map still wins)",
+      "title": "C Line Effective Jun 7 2026",
+      "url": "https://cdn.beta.metro.net/wp-content/uploads/2026/06/11105237/803_TT_6-7-26-1.pdf",
+      "retrievedAt": "2026-08-29T12:59:00Z",
+      "pdfModDate": "Wed May 06 14:53:28 2026 -07:00",
+      "note": "Eastbound columns: LAX/Metro Transit Center, Aviation/Century, Aviation/Imperial, Hawthorne/Lennox, Crenshaw, Vermont/Athens, Harbor Fwy, Avalon, Willowbrook/Rosa Parks, Lynwood, Lakewood Bl, Norwalk. Confirms Lynwood (not Long Beach Bl) and LAX/Metro Transit Center as the west end."
+    },
+    {
+      "role": "supporting official E Line timetable (map still wins; Dec 2025 sheet still the schedules-page E PDF on 29 Aug 2026)",
+      "title": "E Line Effective Dec 14 2025",
+      "url": "https://cdn.beta.metro.net/wp-content/uploads/2025/12/12151402/804_TT_12-14-25.pdf",
+      "retrievedAt": "2026-08-29T12:59:00Z",
+      "pdfModDate": "Wed Nov 12 12:14:39 2025 -08:00",
+      "note": "Eastbound to East Los Angeles. Connections list LATTC/Ortho Institute, Expo Park/USC, Jefferson/USC, Grand Av Arts/Bunker Hill, East LA Civic Center, Atlantic. Map prints East LA Civic Ctr and Little Tokyo/Arts Dist."
+    },
+    {
+      "role": "supporting official K Line timetable (map still wins)",
+      "title": "K Line Effective Jun 7 2026",
+      "url": "https://cdn.beta.metro.net/wp-content/uploads/2026/06/11105241/807_TT_6-7-26-1.pdf",
+      "retrievedAt": "2026-08-29T12:59:00Z",
+      "pdfModDate": "Wed May 06 14:13:44 2026 -07:00",
+      "note": "Northbound columns: Redondo Beach, Douglas, El Segundo, Mariposa, Aviation/Century, LAX/Metro Transit Center, Westchester/Veterans, Downtown Inglewood, Fairview Heights, Hyde Park, Leimert Park, Martin Luther King Jr, Expo/Crenshaw. K does not serve Aviation/Imperial (C only)."
+    },
+    {
+      "role": "agency system totals (not a stop oracle; map still wins names)",
+      "title": "Metro Facts at a Glance",
+      "url": "https://www.metro.net/about/facts-glance/",
+      "retrievedAt": "2026-08-29T13:05:00Z",
+      "note": "Metro Rail Stations: 115 (Updated May 11, 2026, after the opening of D Line Extension 1). Per-line: A 48 (5 shared with E); B 14 (6 shared with D); C 12 (2 shared with K); D 11 (6 shared with B); E 29 (5 shared with A); K 13 (2 shared with C). Line tick counts match this pack. Unique printed D1 names after cross-line dedupe are 110 — Facts 115 is Metro's published system figure, not five extra map ticks."
+    },
+    {
+      "role": "developer portal (static rail landing; not a D1 generator)",
+      "title": "GTFS Schedule Data - Metro Developer",
+      "url": "https://developer.metro.net/gtfs-schedule-data/",
+      "retrievedAt": "2026-08-29T13:05:00Z",
+      "note": "Static rail zip is public (GitLab). Do not generate published-network.json from GTFS."
+    },
+    {
+      "role": "empty-key Swiftly GTFS-RT probe (no key sent)",
+      "title": "GET api.goswift.ly/real-time/lametro-rail/gtfs-rt-vehicle-positions",
+      "url": "https://api.goswift.ly/real-time/lametro-rail/gtfs-rt-vehicle-positions",
+      "alsoProbed": "https://api.goswift.ly/real-time/lametro-rail/gtfs-rt-trip-updates",
+      "retrievedAt": "2026-08-29T13:04:30Z",
+      "note": "HTTP 401 Invalid Credentials. WWW-Authenticate: Bearer. Did not send a real key. Never paste a key. Not a D1 blocker. D1 stays planned."
+    }
+  ],
+  "retrievedAt": "2026-08-29T13:10:00Z",
+  "notes": [
+    "D1 oracle is the official Metro Rail & Busway Map (cdn.beta.metro.net 26-1362_map_GM_Master_DCR-2-copy.pdf, printed MAY 2026 / 26-1362 ©2026 LACMTA, HTTP Last-Modified Sun 10 May 2026 05:48:27 GMT) HAND-TRANSCRIBED from rendered map images. How to Ride Metro Rail and Jun 2026 line timetable PDFs are support only. Stations arrays are not generated from GTFS. Not generated from Swiftly. Map printed names win.",
+    "City id los-angeles is a SEPARATE city. Do not invent city=la, city=lax, city=metro, city=lacmta, or city=us. Do not merge into washington / chicago / bart / boston. Agency LA Metro. Modes v1: Metro Rail ONLY (A B C D E K). No G Line, no J Line, no Metro bus, no Metrolink, no Amtrak, no LAX FlyAway, no airport people movers.",
+    "City stays planned until Jim wires testers. Not tester-live. Not live. Cut #1 is Rotterdam only. This pack stays planned. assertCityLive(\"los-angeles\") must fail. Not in LIVE_CITY_IDS. Do not edit lib/, registry, or any product file.",
+    "Timezone America/Los_Angeles HAS DST (PDT/PST). Do not copy Perth / Brisbane no-DST.",
+    "Six printed Metro Rail lines on the current map (circles A B C D E K). No seventh rail line. G and J print as Metro Busway squares — out of v1.",
+    "Locked inner-city printed name: 7th St/Metro Ctr (A × B × D × E). Clash-report long form 7th Street/Metro Center. C and K do not serve this station. Not Union Station, not Civic Ctr/Grand Park, not Pershing Square, not Historic Broadway, not Pico, not Downtown, not LA.",
+    "Line ticks match Metro Facts at a Glance: A 48, B 14, C 12, D 11, E 29, K 13 (127 line ticks). 110 unique passenger-open Metro Rail stops after dedupe across shared trunks. How to Ride / Facts print 115 as the system figure (updated 11 May 2026 after D Line Section 1) — that is Metro's published total, not five extra names on this plate.",
+    "Open on this map (solid): D Line Section 1 Wilshire/La Brea, Wilshire/Fairfax, Wilshire/La Cienega; A Line Foothill Glendora, San Dimas, La Verne/Fairplex, Pomona North. Out (dashed UNDER CONSTRUCTION): further D Line west of Wilshire/La Cienega; further A Line east of Pomona North. C Line west end is LAX/Metro Transit Center (opened 2024/2025; airplane + LAX box). C Line station Lynwood (renamed from Long Beach Blvd on the June 2026 timetable and on this plate).",
+    "A Line Long Beach is a clockwise one-way loop: Anaheim St, 5th St, 1st St, Downtown Long Beach, Pacific Av. Pacific Av is a real map tick, not J Line Pacific Av in San Pedro.",
+    "doNotGroup: 7th St/Metro Ctr vs Union Station vs Civic Ctr/Grand Park vs Pershing Square vs Historic Broadway vs East LA Civic Ctr. Union Station metro vs Metrolink/Amtrak/FlyAway. Grand Av Arts/Bunker Hill vs Grand/LATTC vs Civic Ctr/Grand Park. Pico (A×E) vs Pico/Aliso (E only). Crenshaw (C) vs Expo/Crenshaw (E×K). Slauson A vs J Line Slauson. Aviation/Century (C×K) vs Aviation/Imperial (C only). LATTC/Ortho Institute (E) vs Grand/LATTC (A) vs 37th St/USC (J, out).",
+    "Feed (Jim D2, not a D1 generator): static rail GTFS https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip — no key, NOT a D1 generator. Swiftly GTFS-RT https://api.goswift.ly/real-time/lametro-rail/gtfs-rt-vehicle-positions + gtfs-rt-trip-updates, Authorization Bearer key from https://goswift.ly/realtime-api-key. Empty-key 401 on 29 Aug 2026. Never paste a key. The key is not a D1 blocker. D1 stays planned."
+  ],
+  "printedInnerCityNames": {
+    "lock": "7th St/Metro Ctr",
+    "lockLongForm": "7th Street/Metro Center",
+    "lockSet": [
+      "7th St/Metro Ctr"
+    ],
+    "lockNote": "Printed inner-city lock. A × B × D × E transfer on the official May 2026 map. Map string 7th St/Metro Ctr. Clash-report lock 7th Street/Metro Center. C and K do not serve it. Not a direction token. Inbound/outbound dies here: A is N–S through-running; E is E–W through-running; B/D continue to Union Station / North Hollywood / Wilshire/La Cienega.",
+    "doNotUse": [
+      "Union Station",
+      "Civic Center",
+      "Civic Ctr/Grand Park",
+      "Civic Center/Grand Park",
+      "Pershing Square",
+      "Historic Broadway",
+      "Pico",
+      "Downtown",
+      "Downtown LA",
+      "LA",
+      "Los Angeles",
+      "lax",
+      "la",
+      "metro",
+      "7th Street",
+      "Metro Center",
+      "Metro Ctr",
+      "Park Street",
+      "Metro Center",
+      "Clark/Lake",
+      "Beurs",
+      "T-Centralen",
+      "Brunnsparken",
+      "Centraal Station",
+      "Waitematā Station",
+      "City",
+      "CBD"
+    ],
+    "doNotCollapse": [
+      "7th St/Metro Ctr",
+      "Union Station",
+      "Civic Ctr/Grand Park",
+      "Pershing Square",
+      "Historic Broadway",
+      "East LA Civic Ctr",
+      "Grand Av Arts/Bunker Hill",
+      "Grand/LATTC",
+      "Pico",
+      "Pico/Aliso",
+      "Little Tokyo/Arts Dist"
+    ],
+    "alsoOnSharedApproaches": [
+      "Union Station",
+      "Civic Ctr/Grand Park",
+      "Pershing Square",
+      "Westlake/MacArthur Park",
+      "Wilshire/Vermont",
+      "Historic Broadway",
+      "Grand Av Arts/Bunker Hill",
+      "Little Tokyo/Arts Dist",
+      "Pico",
+      "Pico/Aliso",
+      "Willowbrook/Rosa Parks",
+      "Expo/Crenshaw",
+      "LAX/Metro Transit Center",
+      "Aviation/Century",
+      "Chinatown"
+    ]
+  },
+  "coverageGaps": [
+    "G Line Metro Busway (Chatsworth to North Hollywood; *Van Nuys closed until winter 2028). Out of v1.",
+    "J Line Metro Busway (El Monte to San Pedro; street service in Downtown LA and San Pedro). Out of v1. Includes El Monte, Cal State LA, LA General Medical Ctr / LAC+USC Medical Ctr, 37th St/USC, Harbor Gateway Transit Ctr, Carson, J Line Pacific Av / Downtown San Pedro.",
+    "Metro bus. Out of v1.",
+    "Metrolink / Amtrak (Regional Rail logos, including Union Station ML/AM and Pomona North ML). Transfers, not D1 stops. doNotGroup.",
+    "LAX FlyAway® / airport shuttle / airport people movers. Transfers at LAX/Metro Transit Center, not D1 stops.",
+    "METRO A LINE EXTENSION PROJECT dashed east of Pomona North. Under construction. Not inserted.",
+    "METRO D LINE SUBWAY EXTENSION PROJECT dashed west of Wilshire/La Cienega. Under construction. Not inserted.",
+    "No seventh Metro Rail letter on the May 2026 map. None invented.",
+    "PDF duplicate text layers (old LAC+USC vs LA General on J Line; duplicate station words) are layout artifacts, not extra D1 stops."
+  ],
+  "liveBoards": {
+    "status": "developer_api_exists_city_planned",
+    "portal": "https://developer.metro.net/",
+    "staticGtfs": {
+      "url": "https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip",
+      "auth": "none",
+      "transitland": "f-9q5-metro~losangeles~rail",
+      "mobilityDatabase": "mdb-30",
+      "note": "NOT a D1 generator. Do not build stations[] from this zip. Bus zip mdb-29 / f-9q5-metro~losangeles is a different feed."
+    },
+    "defaultNextTrain": {
+      "name": "Swiftly GTFS-RT (lametro-rail)",
+      "method": "GET",
+      "vehiclePositions": "https://api.goswift.ly/real-time/lametro-rail/gtfs-rt-vehicle-positions",
+      "tripUpdates": "https://api.goswift.ly/real-time/lametro-rail/gtfs-rt-trip-updates",
+      "header": "Authorization: Bearer <Swiftly key>",
+      "keySignup": "https://goswift.ly/realtime-api-key",
+      "note": "Jim D2. Filter Metro Rail A/B/C/D/E/K only. 7th St/Metro Ctr / Union Station / Civic Ctr/Grand Park / Pershing Square / Historic Broadway are different stop-places — doNotGroup. Not a D1 generator. No stopIds in this file."
+    },
+    "emptyKey": {
+      "probedAt": "2026-08-29T13:04:30Z",
+      "http": 401,
+      "wwwAuthenticate": "Bearer",
+      "body": "{\"errorCode\":401,\"errorMessage\":\"Invalid Credentials\"}",
+      "note": "Vehicle-positions and trip-updates both 401. Did not send a real key."
+    },
+    "keyPolicy": "Swiftly key from https://goswift.ly/realtime-api-key later (Auckland pattern). The key is for live boards later, NOT a D1 blocker. This pack does not contain a key and did not call the API with a real key. Never paste a key.",
+    "license": "https://developer.metro.net/docs/policies/terms-conditions/",
+    "swiftlyLicense": "https://www.goswift.ly/api-license",
+    "d1": "planned. assertCityLive(los-angeles) must fail."
+  },
+  "stats": {
+    "lines": 6,
+    "aStops": 48,
+    "bStops": 14,
+    "cStops": 12,
+    "dStops": 11,
+    "eStops": 29,
+    "kStops": 13,
+    "lineTicks": 127,
+    "uniqueNames": 110,
+    "metroFactsSystemStations": 115,
+    "innerCityLock": [
+      "7th St/Metro Ctr"
+    ]
+  },
+  "lines": [
+    {
+      "id": "a",
+      "number": "A",
+      "name": "A Line",
+      "officialPageTitle": "A Line • Pomona to Long Beach",
+      "gtfsRouteIdsIfKnown": [
+        "801"
+      ],
+      "mapGroup": "Metro Rail",
+      "termini": [
+        "Pomona North",
+        "Downtown Long Beach"
+      ],
+      "shortTurns": [
+        "Monrovia",
+        "APU/Citrus College",
+        "Wardlow"
+      ],
+      "branches": [
+        {
+          "at": "7th St/Metro Ctr",
+          "otherLine": "b",
+          "note": "A crosses B/D and E. Hub lock. A is N–S through-running. Not a direction token."
+        },
+        {
+          "at": "7th St/Metro Ctr",
+          "otherLine": "e",
+          "note": "Shared Regional Connector with E: Pico–Little Tokyo/Arts Dist. South of Pico A continues Grand/LATTC–Long Beach; E continues LATTC/Ortho Institute–Santa Monica."
+        },
+        {
+          "at": "Union Station",
+          "otherLine": "b",
+          "note": "A through-runs Union Station (Chinatown ↔ Little Tokyo). B/D terminate. Not the hub lock. doNotGroup metro vs Metrolink/Amtrak/FlyAway."
+        },
+        {
+          "at": "Willowbrook/Rosa Parks",
+          "otherLine": "c",
+          "note": "A × C transfer. Not the hub lock."
+        },
+        {
+          "at": "Downtown Long Beach",
+          "otherLine": "a",
+          "note": "Clockwise one-way loop: 5th St, 1st St, Downtown Long Beach, Pacific Av. Pacific Av is A Line, not J Line Pacific Av in San Pedro."
+        }
+      ],
+      "stations": [
+        "Pomona North",
+        "La Verne/Fairplex",
+        "San Dimas",
+        "Glendora",
+        "APU/Citrus College",
+        "Azusa Downtown",
+        "Irwindale",
+        "Duarte/City of Hope",
+        "Monrovia",
+        "Arcadia",
+        "Sierra Madre Villa",
+        "Allen",
+        "Lake",
+        "Memorial Park",
+        "Del Mar",
+        "Fillmore",
+        "South Pasadena",
+        "Highland Park",
+        "Southwest Museum",
+        "Heritage Sq",
+        "Lincoln/Cypress",
+        "Chinatown",
+        "Union Station",
+        "Little Tokyo/Arts Dist",
+        "Historic Broadway",
+        "Grand Av Arts/Bunker Hill",
+        "7th St/Metro Ctr",
+        "Pico",
+        "Grand/LATTC",
+        "San Pedro St",
+        "Washington",
+        "Vernon",
+        "Slauson",
+        "Florence",
+        "Firestone",
+        "103rd St/Watts Towers",
+        "Willowbrook/Rosa Parks",
+        "Compton",
+        "Artesia",
+        "Del Amo",
+        "Wardlow",
+        "Willow St",
+        "Pacific Coast Hwy",
+        "Anaheim St",
+        "5th St",
+        "1st St",
+        "Downtown Long Beach",
+        "Pacific Av"
+      ]
+    },
+    {
+      "id": "b",
+      "number": "B",
+      "name": "B Line",
+      "officialPageTitle": "B Line • North Hollywood to Union Station",
+      "gtfsRouteIdsIfKnown": [
+        "802"
+      ],
+      "mapGroup": "Metro Rail",
+      "termini": [
+        "North Hollywood",
+        "Union Station"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Wilshire/Vermont",
+          "otherLine": "d",
+          "note": "B continues Vermont/Beverly–North Hollywood. D continues Wilshire/Normandie–Wilshire/La Cienega. Shared Union Station–Wilshire/Vermont."
+        },
+        {
+          "at": "7th St/Metro Ctr",
+          "otherLine": "a",
+          "note": "Shared B/D trunk through the hub. C and K do not serve it."
+        },
+        {
+          "at": "Union Station",
+          "otherLine": "a",
+          "note": "B/D inner end. Not the hub lock."
+        },
+        {
+          "at": "North Hollywood",
+          "note": "G Line busway transfer (square, out of v1). Do not fold G stations into B."
+        }
+      ],
+      "stations": [
+        "North Hollywood",
+        "Universal City/Studio City",
+        "Hollywood/Highland",
+        "Hollywood/Vine",
+        "Hollywood/Western",
+        "Vermont/Sunset",
+        "Vermont/Santa Monica",
+        "Vermont/Beverly",
+        "Wilshire/Vermont",
+        "Westlake/MacArthur Park",
+        "7th St/Metro Ctr",
+        "Pershing Square",
+        "Civic Ctr/Grand Park",
+        "Union Station"
+      ]
+    },
+    {
+      "id": "c",
+      "number": "C",
+      "name": "C Line",
+      "officialPageTitle": "C Line • LAX to Norwalk",
+      "gtfsRouteIdsIfKnown": [
+        "803"
+      ],
+      "mapGroup": "Metro Rail",
+      "termini": [
+        "Norwalk",
+        "LAX/Metro Transit Center"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "LAX/Metro Transit Center",
+          "otherLine": "k",
+          "note": "C west end. K through-runs to Expo/Crenshaw / Redondo Beach. Airplane + LAX box. FlyAway / people movers are transfers, not D1 stops."
+        },
+        {
+          "at": "Aviation/Century",
+          "otherLine": "k",
+          "note": "Shared C/K. Aviation/Imperial is C only. Mariposa–Redondo Beach is K only."
+        },
+        {
+          "at": "Willowbrook/Rosa Parks",
+          "otherLine": "a",
+          "note": "C × A. Not the hub lock."
+        },
+        {
+          "at": "Harbor Fwy",
+          "note": "J Line busway transfer (square, out of v1). Do not fold J stations into C."
+        }
+      ],
+      "stations": [
+        "Norwalk",
+        "Lakewood Bl",
+        "Lynwood",
+        "Willowbrook/Rosa Parks",
+        "Avalon",
+        "Harbor Fwy",
+        "Vermont/Athens",
+        "Crenshaw",
+        "Hawthorne/Lennox",
+        "Aviation/Imperial",
+        "Aviation/Century",
+        "LAX/Metro Transit Center"
+      ]
+    },
+    {
+      "id": "d",
+      "number": "D",
+      "name": "D Line",
+      "officialPageTitle": "D Line • Wilshire/La Cienega to Union Station",
+      "gtfsRouteIdsIfKnown": [
+        "802"
+      ],
+      "mapGroup": "Metro Rail",
+      "termini": [
+        "Union Station",
+        "Wilshire/La Cienega"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Wilshire/Vermont",
+          "otherLine": "b",
+          "note": "D west of here is Wilshire/Normandie–Wilshire/La Cienega (Section 1 open). Further west is dashed under construction — out."
+        },
+        {
+          "at": "7th St/Metro Ctr",
+          "otherLine": "a",
+          "note": "Shared B/D trunk through the hub."
+        },
+        {
+          "at": "Union Station",
+          "otherLine": "a",
+          "note": "D inner end with B. Not the hub lock."
+        }
+      ],
+      "stations": [
+        "Union Station",
+        "Civic Ctr/Grand Park",
+        "Pershing Square",
+        "7th St/Metro Ctr",
+        "Westlake/MacArthur Park",
+        "Wilshire/Vermont",
+        "Wilshire/Normandie",
+        "Wilshire/Western",
+        "Wilshire/La Brea",
+        "Wilshire/Fairfax",
+        "Wilshire/La Cienega"
+      ]
+    },
+    {
+      "id": "e",
+      "number": "E",
+      "name": "E Line",
+      "officialPageTitle": "E Line • Santa Monica to East LA",
+      "gtfsRouteIdsIfKnown": [
+        "804"
+      ],
+      "mapGroup": "Metro Rail",
+      "termini": [
+        "Downtown Santa Monica",
+        "Atlantic"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "7th St/Metro Ctr",
+          "otherLine": "a",
+          "note": "Shared Regional Connector with A. E is E–W through-running. Hub lock is the stop string, not a direction token."
+        },
+        {
+          "at": "Pico",
+          "otherLine": "a",
+          "note": "South of Pico, A continues Grand/LATTC; E continues LATTC/Ortho Institute. Pico ≠ Pico/Aliso."
+        },
+        {
+          "at": "Little Tokyo/Arts Dist",
+          "otherLine": "a",
+          "note": "East of here E continues Pico/Aliso–Atlantic. A continues Union Station–Pomona North."
+        },
+        {
+          "at": "Expo/Crenshaw",
+          "otherLine": "k",
+          "note": "E × K. K does not continue west on Expo."
+        }
+      ],
+      "stations": [
+        "Downtown Santa Monica",
+        "17th St/SMC",
+        "26th St/Bergamot",
+        "Expo/Bundy",
+        "Expo/Sepulveda",
+        "Westwood/Rancho Park",
+        "Palms",
+        "Culver City",
+        "La Cienega/Jefferson",
+        "Expo/La Brea",
+        "Farmdale",
+        "Expo/Crenshaw",
+        "Expo/Western",
+        "Expo/Vermont",
+        "Expo Park/USC",
+        "Jefferson/USC",
+        "LATTC/Ortho Institute",
+        "Pico",
+        "7th St/Metro Ctr",
+        "Grand Av Arts/Bunker Hill",
+        "Historic Broadway",
+        "Little Tokyo/Arts Dist",
+        "Pico/Aliso",
+        "Mariachi Plaza",
+        "Soto",
+        "Indiana",
+        "Maravilla",
+        "East LA Civic Ctr",
+        "Atlantic"
+      ]
+    },
+    {
+      "id": "k",
+      "number": "K",
+      "name": "K Line",
+      "officialPageTitle": "K Line • Expo/Crenshaw to Redondo Beach",
+      "gtfsRouteIdsIfKnown": [
+        "807"
+      ],
+      "mapGroup": "Metro Rail",
+      "termini": [
+        "Expo/Crenshaw",
+        "Redondo Beach"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Expo/Crenshaw",
+          "otherLine": "e",
+          "note": "K north end. E continues both ways on Expo."
+        },
+        {
+          "at": "LAX/Metro Transit Center",
+          "otherLine": "c",
+          "note": "K through-runs. C ends."
+        },
+        {
+          "at": "Aviation/Century",
+          "otherLine": "c",
+          "note": "South of here K is Mariposa–Redondo Beach. Aviation/Imperial is C only."
+        }
+      ],
+      "stations": [
+        "Expo/Crenshaw",
+        "Martin Luther King Jr",
+        "Leimert Park",
+        "Hyde Park",
+        "Fairview Heights",
+        "Downtown Inglewood",
+        "Westchester/Veterans",
+        "LAX/Metro Transit Center",
+        "Aviation/Century",
+        "Mariposa",
+        "El Segundo",
+        "Douglas",
+        "Redondo Beach"
+      ]
+    }
+  ]
+}
