@@ -1,0 +1,595 @@
+{
+  "city": "oslo",
+  "displayName": "Oslo",
+  "status": "planned",
+  "agency": "Ruter / Sporveien T-banen",
+  "timezone": "Europe/Oslo",
+  "source": "https://cdn.sanity.io/files/5a84xxkm/prod/e46cf566dd5b9cc4e323b70b168115d7bc3c911f.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger T-bane network map (hub lock + printed ticks + termini geography). Skip every trikk, bus, båt, Vy/NSB.",
+      "title": "Linjekart for T-banen gjeldende fra 3. april 2015 (Utgave 2016-04)",
+      "url": "https://cdn.sanity.io/files/5a84xxkm/prod/e46cf566dd5b9cc4e323b70b168115d7bc3c911f.pdf",
+      "linkedFrom": "https://ruter.no/rutetabeller-og-linjekart/t-bane",
+      "alsoLinkedFrom": "https://ruter.no/en/plan-journey/timetables-and-route-maps/metro",
+      "captionOnIndex": "Linjekart for T bane (PDF)",
+      "retrievedAt": "2026-08-29T00:59:00Z",
+      "md5": "4de147650b6e26481816a9fc17f03d28",
+      "localFile": "sources/linjekart-t-bane.pdf",
+      "localRender": "sources/linjekart-1.png",
+      "note": "Adobe Illustrator CC 2015, created 4 Mar 2016, PDF title Linjekart for T-banen gjeldende fra 3. april 2015, author Ruter, keywords linjekart, T-bane, linje 1, 2, 3, 4, 5. Footer Utgave 2016-04 © Truls Lange Civitas 2010-16. Still the PDF linked from ruter.no T-bane index on 29 Aug 2026. Prints lines 1–5 only. No line 6. No Fornebubanen. Common-tunnel ticks Majorstuen – Nationaltheatret – Stortinget – Jernbanetorget – Grønland – Tøyen. Sentrum / City centre is a shaded blob, not a stop. Jernbanetorget prints Oslo S + Oslo bussterminal. Gulleråsen marked Stopp i pilretningen / Stop in direction of arrow (toward Frognerseteren). Line 1 east of Helsfyr labelled Begrenset driftstid / Restricted service. Løren is on line 4 (Økern–Sinsen). Line 5 uses Hasle / Carl Berners plass and the printed Ringen loop."
+    },
+    {
+      "role": "D1 official line folders + Stoppestedsliste (ordered ticks + official termini pairs)",
+      "title": "Rutetabeller for T-bane — Gjelder fra 10. juni 2024",
+      "url": "https://cdn.sanity.io/files/5a84xxkm/prod/30055df46ac60424319ad6a236baeccfc9a656b2.pdf",
+      "linkedFrom": "https://ruter.no/rutetabeller-og-linjekart/t-bane",
+      "alsoLinkedFrom": "https://ruter.no/en/plan-journey/timetables-and-route-maps/metro",
+      "captionOnIndex": "Rutetabeller for T bane (PDF)",
+      "retrievedAt": "2026-08-29T00:59:00Z",
+      "created": "Thu, 08 Aug 2024 08:05:56 GMT",
+      "md5": "4a6031c381bf19d0297d3eb48e98c5d7",
+      "localFile": "sources/rutetabeller-t-bane.pdf",
+      "localTxt": "sources/rutetabeller-t-bane.txt",
+      "note": "Acrobat PDFMaker 24 for Word, author Vidar Spernes, 30 pages. Cover lists five passenger codes only: 1 Frognerseteren - Bergkrystallen (endret fra 10. juni 2024); 2 Østerås - Ellingsrudåsen (endret fra 10. juni 2024); 3 Kolsås - Mortensrud; 4 Vestli - Bergkrystallen; 5 Sognsvann - Vestli. Footer every page: Linje N kjøres av Sporveien T-banen AS. Ruteopplysning: Ruter-app, ruter.no, tlf. 177. No line 6. Stoppestedsliste on the line folders is the ordered-tick oracle (line 1 reverse lists Gulleråsen; line 5 lists the ring-then-spur with Stortinget twice). Timing-point grids omit some intermediate map ticks — lock the Stoppestedsliste + linjekart, not the sparse grid headers."
+    },
+    {
+      "role": "D1 passenger map + folder index",
+      "title": "T-bane — rutetabeller og linjekart",
+      "url": "https://ruter.no/rutetabeller-og-linjekart/t-bane",
+      "retrievedAt": "2026-08-29T00:58:00Z",
+      "localFile": "sources/t-bane.html",
+      "note": "Index copy: rutetabeller og linjekart for T-banelinjene 1, 2, 3, 4 og 5, både på dagtid og natt. Two PDF cards only (rutetabeller + linjekart). Sibling index cards for trikk / buss i Oslo / buss i Akershus / båt are out of v1."
+    },
+    {
+      "role": "D1 English caption of the same T-bane index (not a second authority)",
+      "title": "Metro — timetables and route maps",
+      "url": "https://ruter.no/en/plan-journey/timetables-and-route-maps/metro",
+      "retrievedAt": "2026-08-29T00:58:00Z",
+      "localFile": "sources/metro-en.html",
+      "note": "Same two Sanity PDFs. English copy: metro lines 1, 2, 3, 4, and 5. No line 6."
+    },
+    {
+      "role": "D1 mixed-mode index (T-bane cards only; skip trikk / buss / båt)",
+      "title": "Rutetabeller og linjekart",
+      "url": "https://ruter.no/planlegg-reise/rutetabeller-og-linjekart",
+      "retrievedAt": "2026-08-29T00:58:00Z",
+      "localFile": "sources/rutetabeller.html",
+      "printedMapsOnIndex": [
+        "T-bane",
+        "Trikk",
+        "Buss i Oslo",
+        "Buss i Akershus",
+        "Båt"
+      ]
+    },
+    {
+      "role": "2026 construction overlay (stations stay in D1; replacement bus OUT)",
+      "title": "Slik reiser du med T-banen i 2026 — Det store T-baneløftet",
+      "url": "https://ruter.no/prosjekter-og-nyutvikling/det-store-t-baneloftet",
+      "retrievedAt": "2026-08-29T01:02:00Z",
+      "localFile": "sources/t-baneloftet.html",
+      "note": "CBTC signal upgrade + Majorstuen rebuild + Fornebubanen tie-in. As of 29 Aug 2026: 17–23 Aug line 5 Sognsvann bus-for-bane Nydalen–Sognsvann (ended). 23–30 Aug evenings line 4 Helsfyr–Storo / line 5 Helsfyr–Sognsvann only — Friday 28 and Saturday 29 Aug run normally. 31 Aug–2 Sep evenings line 3 Avløs–Mortensrud only (Kolsås–Avløs bus 3B). Overlay. Official 2024 folder and 2016 linjekart still print the full passenger geography. Replacement bus out of v1."
+    },
+    {
+      "role": "Fornebubanen construction status (not passenger-open — OUT)",
+      "title": "Fornebubanen — Slik bygger vi Oslo",
+      "url": "https://www.oslo.kommune.no/slik-bygger-vi-oslo/fornebubanen/",
+      "retrievedAt": "2026-08-29T01:02:00Z",
+      "localFile": "sources/fornebu-oslo-kommune.html",
+      "note": "New T-bane Majorstuen–Fornebu, 7.7 km tunnel, six new stations: Skøyen, Vækerø, Lysaker, Fornebuporten, Flytårnet, Fornebu. Passenger target 2029. Not on the 2016 linjekart. Not on the 2024 rutetabeller. No passenger line 6. Not inserted. doNotGroup future Skøyen / Lysaker T-bane vs existing Vy/NSB stations of the same name."
+    },
+    {
+      "role": "Fornebubanen + T-baneløftet operator status (not passenger-open — OUT)",
+      "title": "Det store T-baneløftet 2025-2030",
+      "url": "https://www.sporveien.no/prosjekter-og-arbeid/t-baneprogrammet/",
+      "retrievedAt": "2026-08-29T01:02:00Z",
+      "localFile": "sources/sporveien-t-baneprogrammet.html",
+      "note": "Sporveien: Fornebubanen in drift 2029. Majorstuen upgrade, CBTC, M4 stock required first. Confirms no passenger Fornebu service in 2026."
+    },
+    {
+      "role": "mixed tourist overlay (not a second map authority)",
+      "title": "Linjekart med turistattraksjoner",
+      "url": "https://cdn.sanity.io/files/5a84xxkm/prod/5d60d220cc4005bec5404bfa63441979970f121c.pdf",
+      "linkedFrom": "https://ruter.no/om-vare-billetter/turistbillett",
+      "retrievedAt": "2026-08-29T01:03:00Z",
+      "localFile": "sources/turist-linjekart.pdf",
+      "note": "Mixed T-bane + trikk + bus + båt tourist sheet. Not the D1 map authority. T-bane geography still 1–5; no Fornebu."
+    },
+    {
+      "role": "live-board path (official Entur Journey Planner v3 — not wired)",
+      "title": "Journey Planner v3 (GraphQL)",
+      "url": "https://developer.entur.no/docs/open-services/journey-planner",
+      "graphql": "https://api.entur.io/journey-planner/v3/graphql",
+      "explorer": "https://api.entur.io/graphql-explorer/journey-planner-v3",
+      "alsoLinkedFrom": "https://developer.entur.org/pages-journeyplanner-journeyplanner/",
+      "retrievedAt": "2026-08-29T01:02:00Z",
+      "localFile": "sources/entur-journey-planner.html",
+      "localGettingStarted": "sources/entur-getting-started.html",
+      "endpointsNamed": [
+        "POST https://api.entur.io/journey-planner/v3/graphql"
+      ],
+      "note": "Official next-train / departure-board path for Norway including Ruter T-bane. Header ET-Client-Name as company-application (NLOD open service; unidentified clients rate-limited). Query stopPlace { estimatedCalls } and filter transportMode metro / authority Ruter. Returns aimed / expected / actual, cancellations, destinationDisplay.frontText, quay, situations. Jernbanetorget and Nationaltheatret are multimodal stop-places (T-bane + rail + bus) — doNotGroup. D1 stays planned."
+    },
+    {
+      "role": "live-board path (official Entur SIRI / GTFS-RT for codespace RUT — not wired)",
+      "title": "Real-Time Data — codespace RUT (Oslo region / Ruter)",
+      "url": "https://developer.entur.no/open-data/realtime",
+      "retrievedAt": "2026-08-29T01:02:00Z",
+      "localFile": "sources/entur-realtime.html",
+      "endpointsNamed": [
+        "GET https://api.entur.io/realtime/v1/rest/et?datasetId=RUT",
+        "GET https://api.entur.io/realtime/v1/rest/sx?datasetId=RUT",
+        "POST https://api.entur.io/realtime/v1/subscribe",
+        "POST https://api.entur.io/realtime/v1/services/RUT",
+        "GET https://api.entur.io/realtime/v1/gtfs-rt/trip-updates?datasource=RUT",
+        "GET https://api.entur.io/realtime/v1/gtfs-rt/alerts?datasource=RUT"
+      ],
+      "note": "RUT has SIRI ET + SX and GTFS-RT Trip Updates + Service Alerts. No SIRI VM and no GTFS-RT Vehicle Positions for RUT. Header ET-Client-Name. SIRI Lite rest/et limited to 4 req/min; use publish/subscribe for higher rate. Static Entur GTFS for RUT is NOT a D1 generator. reise.ruter.no / Ruter-appen is the passenger UI on top of Entur, not a product contract. D1 stays planned."
+    }
+  ],
+  "retrievedAt": "2026-08-29T01:05:00Z",
+  "notes": [
+    "D1 oracle is official Ruter passenger maps and halt lists HAND-TRANSCRIBED: Linjekart for T-banen Utgave 2016-04 (still the PDF linked from ruter.no on 29 Aug 2026) plus Rutetabeller for T-bane gjelder fra 10. juni 2024 Stoppestedsliste. Stations arrays are not generated from GTFS. Not generated from Entur Journey Planner / SIRI / stop-place register. Not generated from Wikipedia.",
+    "City id oslo is unused in existing packs (berlin, munich, hamburg, rotterdam, goteborg, malmo, uppsala, washington, …). Display Oslo. Agency Ruter / Sporveien T-banen, not Vy, not NSB, not Sporveien Trikken, not Ruter bus / båt. Do not invent city=norway or merge into a rail city.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like = T-bane / metro lines 1–5 only. No trikk, no bus, no Vy/NSB trains, no ferry, no passenger line 6, no Fornebubanen.",
+    "Timezone Europe/Oslo HAS DST (CEST/CET). Do not copy no-DST cities.",
+    "Five printed T-bane lines on the official Ruter index and 2024 folder cover: 1 Frognerseteren–Bergkrystallen; 2 Østerås–Ellingsrudåsen; 3 Kolsås–Mortensrud; 4 Vestli–Bergkrystallen; 5 Sognsvann–Vestli. No line 6.",
+    "Locked inner-city printed name: Stortinget (all five lines; line 5 official through-path calls it twice around Ringen). Not Oslo, not City, not Sentrum (map blob), not Jernbanetorget (Oslo S / Vy / bussterminal — doNotGroup), not Nationaltheatret (T-bane vs railway — doNotGroup), not Majorstuen (west mouth of the Common Tunnel). doNotGroup T-bane vs NSB/Vy at Jernbanetorget / Oslo S and at Nationaltheatret.",
+    "101 unique passenger-open T-bane stop strings (matches the published 101-stasjon network). 174 line ticks (line 5 Stoppestedsliste lists the ring-then-spur with Stortinget / Majorstuen / Tøyen / Carl Berners plass twice, same pattern as a published loop-then-spur folder).",
+    "Map vs halt list: lock official 2024 Stoppestedsliste + 2016 linjekart strings. Gulleråsen is a map tick and a line-1 westbound Stoppestedsliste row; eastbound Frognerseteren–Bergkrystallen skips it (Stopp i pilretningen). Ullevål stadion not Ullevaal. Carl Berners plass not Carl Berner. Nationaltheatret not Nationaltheateret. Jernbanetorget is the T-bane string — never Oslo S as the metro stop.",
+    "gtfsRouteIdsIfKnown are passenger codes 1–5 printed on the Ruter index (Entur RUT:Line:1 style ids are feed metadata — not print locks). No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Official Entur Journey Planner v3 stopPlace.estimatedCalls and SIRI ET datasetId=RUT. Header ET-Client-Name. Static Entur GTFS for RUT is NOT a D1 generator. D1 stays planned. assertCityLive(\"oslo\") must fail."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Stortinget",
+    "doNotUse": [
+      "Oslo",
+      "Oslo S",
+      "Oslo Sentralstasjon",
+      "City",
+      "City Centre",
+      "Sentrum",
+      "CBD",
+      "to City",
+      "Jernbanetorget",
+      "Nationaltheatret",
+      "Majorstuen",
+      "Tøyen",
+      "Oslo bussterminal"
+    ],
+    "alsoOnSharedApproaches": [
+      "Jernbanetorget",
+      "Nationaltheatret",
+      "Majorstuen",
+      "Tøyen",
+      "Carl Berners plass",
+      "Storo",
+      "Økern",
+      "Brynseng",
+      "Hellerud",
+      "Helsfyr",
+      "Blindern",
+      "Sinsen"
+    ]
+  },
+  "coverageGaps": [
+    "Trikk (Sporveien Trikken) on the same ruter.no rutetabeller index. Out of v1.",
+    "Ruter bus (Oslo and Akershus) and båt / ferries. Out of v1.",
+    "Vy / NSB / Flytoget / regional trains at Oslo S (Jernbanetorget cluster), Nationaltheatret, Skøyen, Lysaker. Out of v1. doNotGroup the T-bane stop string vs the railway stop of the same name family.",
+    "No passenger line 6. Historical Ringen line 6 was absorbed into line 5. Current official index and 2024 cover print 1–5 only.",
+    "Fornebubanen unopened (passenger target 2029). Six new stations Skøyen, Vækerø, Lysaker, Fornebuporten, Flytårnet, Fornebu. Not on the 2016 linjekart. Not on the 2024 folders. Not inserted.",
+    "Line 1 Restricted service / Begrenset driftstid east of Helsfyr (and holiday short-turn Helsfyr). Overlay. Official folder title and map still print Frognerseteren–Bergkrystallen including the Lambertseter ticks. Helsfyr is a short-turn, not a D1 terminus chip.",
+    "Gulleråsen is one-direction (toward Frognerseteren only). Stay in D1. Eastbound line 1 skips it.",
+    "2026 T-baneløftet CBTC / Majorstuen / evening closures (bus-for-bane). Overlay. Official folder still prints the full path — stations stay in D1. Replacement bus out of v1.",
+    "PDF hex colours and Sentrum / City centre blob are legend metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "1",
+      "number": "1",
+      "name": "1",
+      "officialPageTitle": "1 Frognerseteren - Bergkrystallen",
+      "gtfsRouteIdsIfKnown": [
+        "1"
+      ],
+      "mapGroup": "T-bane",
+      "termini": [
+        "Frognerseteren",
+        "Bergkrystallen"
+      ],
+      "shortTurns": [
+        "Helsfyr"
+      ],
+      "branches": [
+        {
+          "at": "Stortinget",
+          "note": "Hub lock. All five lines. Common Tunnel. Not a direction token."
+        },
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup T-bane vs Oslo S / Vy / NSB / bussterminal."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup T-bane vs Nationaltheatret railway (Vy/NSB)."
+        },
+        {
+          "at": "Helsfyr",
+          "note": "Official map Begrenset driftstid / Restricted service east of here. Folder footnote: some trips (and romjul / påske / sommer) short-turn Helsfyr. Overlay, not a terminus chip."
+        },
+        {
+          "at": "Brynseng",
+          "otherLine": "4",
+          "note": "Lines 1 and 4 take Lambertseter (Høyenhall–Bergkrystallen). Lines 2 and 3 continue to Hellerud."
+        },
+        {
+          "at": "Gulleråsen",
+          "note": "Map: Stopp i pilretningen / Stop in direction of arrow — toward Frognerseteren only. Westbound Stoppestedsliste lists it; eastbound Frognerseteren–Bergkrystallen skips it."
+        }
+      ],
+      "stations": [
+        "Frognerseteren",
+        "Voksenkollen",
+        "Lillevann",
+        "Skogen",
+        "Voksenlia",
+        "Holmenkollen",
+        "Besserud",
+        "Midtstuen",
+        "Skådalen",
+        "Vettakollen",
+        "Gulleråsen",
+        "Gråkammen",
+        "Slemdal",
+        "Ris",
+        "Gaustad",
+        "Vinderen",
+        "Steinerud",
+        "Frøen",
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen",
+        "Ensjø",
+        "Helsfyr",
+        "Brynseng",
+        "Høyenhall",
+        "Manglerud",
+        "Ryen",
+        "Brattlikollen",
+        "Karlsrud",
+        "Lambertseter",
+        "Munkelia",
+        "Bergkrystallen"
+      ]
+    },
+    {
+      "id": "2",
+      "number": "2",
+      "name": "2",
+      "officialPageTitle": "2 Østerås - Ellingsrudåsen",
+      "gtfsRouteIdsIfKnown": [
+        "2"
+      ],
+      "mapGroup": "T-bane",
+      "termini": [
+        "Østerås",
+        "Ellingsrudåsen"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Stortinget",
+          "note": "Hub lock. Common Tunnel."
+        },
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup T-bane vs Oslo S / Vy / NSB."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup T-bane vs railway."
+        },
+        {
+          "at": "Smestad",
+          "otherLine": "3",
+          "note": "Line 2 Røa branch and line 3 Kolsås branch join. Shared Smestad – Borgen – Majorstuen."
+        },
+        {
+          "at": "Hellerud",
+          "otherLine": "3",
+          "note": "Line 2 continues Furuset to Ellingsrudåsen. Line 3 takes Østensjø to Mortensrud."
+        },
+        {
+          "at": "Brynseng",
+          "otherLine": "1",
+          "note": "Lines 1/4 leave for Lambertseter. Line 2/3 continue to Hellerud."
+        }
+      ],
+      "stations": [
+        "Østerås",
+        "Lijordet",
+        "Eiksmarka",
+        "Ekraveien",
+        "Røa",
+        "Hovseter",
+        "Holmen",
+        "Makrellbekken",
+        "Smestad",
+        "Borgen",
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen",
+        "Ensjø",
+        "Helsfyr",
+        "Brynseng",
+        "Hellerud",
+        "Tveita",
+        "Haugerud",
+        "Trosterud",
+        "Lindeberg",
+        "Furuset",
+        "Ellingsrudåsen"
+      ]
+    },
+    {
+      "id": "3",
+      "number": "3",
+      "name": "3",
+      "officialPageTitle": "3 Kolsås - Mortensrud",
+      "gtfsRouteIdsIfKnown": [
+        "3"
+      ],
+      "mapGroup": "T-bane",
+      "termini": [
+        "Kolsås",
+        "Mortensrud"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Stortinget",
+          "note": "Hub lock. Common Tunnel."
+        },
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup T-bane vs Oslo S / Vy / NSB."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup T-bane vs railway."
+        },
+        {
+          "at": "Smestad",
+          "otherLine": "2"
+        },
+        {
+          "at": "Hellerud",
+          "otherLine": "2",
+          "note": "Line 3 Østensjø: Godlia – Skøyenåsen – Oppsal – Ulsrud – Bøler – Bogerud – Skullerud – Mortensrud."
+        }
+      ],
+      "stations": [
+        "Kolsås",
+        "Hauger",
+        "Gjettum",
+        "Avløs",
+        "Haslum",
+        "Gjønnes",
+        "Bekkestua",
+        "Ringstabekk",
+        "Jar",
+        "Bjørnsletta",
+        "Åsjordet",
+        "Ullernåsen",
+        "Montebello",
+        "Smestad",
+        "Borgen",
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen",
+        "Ensjø",
+        "Helsfyr",
+        "Brynseng",
+        "Hellerud",
+        "Godlia",
+        "Skøyenåsen",
+        "Oppsal",
+        "Ulsrud",
+        "Bøler",
+        "Bogerud",
+        "Skullerud",
+        "Mortensrud"
+      ]
+    },
+    {
+      "id": "4",
+      "number": "4",
+      "name": "4",
+      "officialPageTitle": "4 Vestli - Bergkrystallen",
+      "gtfsRouteIdsIfKnown": [
+        "4"
+      ],
+      "mapGroup": "T-bane",
+      "termini": [
+        "Vestli",
+        "Bergkrystallen"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Stortinget",
+          "note": "Hub lock. Common Tunnel."
+        },
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup T-bane vs Oslo S / Vy / NSB."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup T-bane vs railway."
+        },
+        {
+          "at": "Økern",
+          "otherLine": "5",
+          "note": "Line 4 takes Løren to Sinsen (Lørenbanen). Line 5 takes Hasle – Carl Berners plass. doNot collapse Økern to one outbound."
+        },
+        {
+          "at": "Sinsen",
+          "otherLine": "5",
+          "note": "Line 4 Vestli–Bergkrystallen via Løren. Line 5 ring passes Sinsen as part of Ringen, not via Løren."
+        },
+        {
+          "at": "Storo",
+          "otherLine": "5"
+        },
+        {
+          "at": "Ullevål stadion",
+          "otherLine": "5",
+          "note": "Line 4 through to Vestli via the ring west. Line 5 Sognsvann branch leaves here (Berg – Tåsen – Østhorn – Holstein – Kringsjå – Sognsvann)."
+        },
+        {
+          "at": "Brynseng",
+          "otherLine": "1",
+          "note": "Shared Lambertseter with line 1 to Bergkrystallen."
+        }
+      ],
+      "stations": [
+        "Vestli",
+        "Stovner",
+        "Rommen",
+        "Romsås",
+        "Grorud",
+        "Ammerud",
+        "Kalbakken",
+        "Rødtvet",
+        "Veitvet",
+        "Linderud",
+        "Vollebekk",
+        "Risløkka",
+        "Økern",
+        "Løren",
+        "Sinsen",
+        "Storo",
+        "Nydalen",
+        "Ullevål stadion",
+        "Forskningsparken",
+        "Blindern",
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen",
+        "Ensjø",
+        "Helsfyr",
+        "Brynseng",
+        "Høyenhall",
+        "Manglerud",
+        "Ryen",
+        "Brattlikollen",
+        "Karlsrud",
+        "Lambertseter",
+        "Munkelia",
+        "Bergkrystallen"
+      ]
+    },
+    {
+      "id": "5",
+      "number": "5",
+      "name": "5",
+      "officialPageTitle": "5 Sognsvann - Vestli",
+      "gtfsRouteIdsIfKnown": [
+        "5"
+      ],
+      "mapGroup": "T-bane",
+      "termini": [
+        "Sognsvann",
+        "Vestli"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Stortinget",
+          "note": "Hub lock. Official through-path calls Stortinget twice (into the Common Tunnel, around Ringen, back through Stortinget, then out to Vestli). Same physical stop listed twice in stations[]. Not a direction token."
+        },
+        {
+          "at": "Carl Berners plass",
+          "note": "First call: leave the Common Tunnel onto Ringen (Sinsen – Storo – Nydalen). Second call: leave Ringen toward Hasle – Økern – Vestli. Listed twice."
+        },
+        {
+          "at": "Økern",
+          "otherLine": "4",
+          "note": "Line 5 via Hasle. Line 4 via Løren. doNotGroup the two east/north outs."
+        },
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup T-bane vs Oslo S / Vy / NSB. Listed twice on the official through-path."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup T-bane vs railway."
+        },
+        {
+          "at": "Ullevål stadion",
+          "otherLine": "4",
+          "note": "Sognsvann branch vs ring. Listed twice on the official through-path."
+        }
+      ],
+      "stations": [
+        "Sognsvann",
+        "Kringsjå",
+        "Holstein",
+        "Østhorn",
+        "Tåsen",
+        "Berg",
+        "Ullevål stadion",
+        "Forskningsparken",
+        "Blindern",
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen",
+        "Carl Berners plass",
+        "Sinsen",
+        "Storo",
+        "Nydalen",
+        "Ullevål stadion",
+        "Forskningsparken",
+        "Blindern",
+        "Majorstuen",
+        "Nationaltheatret",
+        "Stortinget",
+        "Jernbanetorget",
+        "Grønland",
+        "Tøyen",
+        "Carl Berners plass",
+        "Hasle",
+        "Økern",
+        "Risløkka",
+        "Vollebekk",
+        "Linderud",
+        "Veitvet",
+        "Rødtvet",
+        "Kalbakken",
+        "Ammerud",
+        "Grorud",
+        "Romsås",
+        "Rommen",
+        "Stovner",
+        "Vestli"
+      ]
+    }
+  ]
+}

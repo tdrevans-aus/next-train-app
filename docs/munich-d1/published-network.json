@@ -1,0 +1,774 @@
+{
+  "city": "munich",
+  "displayName": "Munich",
+  "status": "planned",
+  "agency": "MVG / SWM",
+  "timezone": "Europe/Berlin",
+  "source": "https://www.mvg.de/dam/jcr:e9fbaf6f-4ec1-40de-8488-a75787ddbf50/2026_layout_SURTX_M.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger S+U+Regional Zone M map (hub lock + printed U-Bahn ticks + termini geography). Skip every S-Bahn, Regional, tram, bus.",
+      "title": "MVV Netzplan S-Bahn, U-Bahn, Regionalzug — MVV-Netz in der Zone M (Januar 2026)",
+      "url": "https://www.mvg.de/dam/jcr:e9fbaf6f-4ec1-40de-8488-a75787ddbf50/2026_layout_SURTX_M.pdf",
+      "linkedFrom": "https://www.mvg.de/verbindungen/fahrplaene-netzplaene.html",
+      "captionOnIndex": "Netz- und Tarifplan Zone M",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "lastModified": "Thu, 20 Nov 2025 15:07:31 GMT",
+      "localFile": "sources/2026_layout_SURTX_M.pdf",
+      "note": "InDesign 21.0, created 13 Nov 2025, PDF title MVV Netzplan S-Bahn, U-Bahn, Regionalzug, footer © MVV GmbH | Januar 2026. Mixed S+U+ExpressBus+Tram+Regional sheet hosted on mvg.de. Prints U1–U8. U5 west end Laimer Platz (not Pasing). U6 south end Klinikum Großhadern (not Martinsried). Inner Altstadt U-Bahn print Marienplatz (U3/U6 + S). Hauptbahnhof printed U1/U2/U4/U5/U7/U8 + S + Regional. Odeonsplatz printed U3/U4/U5/U6, no S."
+    },
+    {
+      "role": "D1 wider-zone companion (same 2026 SUR family)",
+      "title": "MVV Netzplan S-Bahn, U-Bahn, Regionalzug — Zonen M–12 (Januar 2026)",
+      "url": "https://www.mvg.de/dam/jcr:466d44bf-e754-460b-95d0-69364ab9cd93/2026_layout_SUR_M_12.pdf",
+      "linkedFrom": "https://www.mvg.de/verbindungen/fahrplaene-netzplaene.html",
+      "captionOnIndex": "Netz- und Tarifplan Zone M-12",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "lastModified": "Wed, 12 Nov 2025 15:13:45 GMT",
+      "localFile": "sources/2026_layout_SUR_M_12.pdf"
+    },
+    {
+      "role": "D1 accessible SUR sheet (same 2026 family; extractable ticks)",
+      "title": "MVV Netzplan S-Bahn, U-Bahn, Regionalzug — barrierefrei (© MVV GmbH | Januar 2026; typeset 12 Jun 2026)",
+      "url": "https://www.mvv-muenchen.de/fileadmin/mediapool/downloads/plaene/netzplaene/2026/2026_layout_SUR_barrierefrei.pdf",
+      "linkedFrom": "https://www.mvv-muenchen.de/netz-plaene-medien/plaene/netzplaene/",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "localFile": "sources/2026_layout_SUR_barrierefrei.pdf",
+      "note": "Same January 2026 SUR family. CreationDate 12 Jun 2026. Not a second map authority."
+    },
+    {
+      "role": "D1 passenger map index (MVG)",
+      "title": "Pläne und Fahrplanauskunft für München und MVV Netz",
+      "url": "https://www.mvg.de/verbindungen/fahrplaene-netzplaene.html",
+      "retrievedAt": "2026-08-29T00:41:00Z",
+      "localFile": "sources/fahrplaene-netzplaene.html",
+      "printedMapsOnIndex": [
+        "Netz- und Tarifplan Zone M-12",
+        "Netz- und Tarifplan Zone M-5",
+        "Netz- und Tarifplan Zone M",
+        "Tramnetz",
+        "MVG-Nachtlinien",
+        "Verkehrslinienplan Stadtgebiet München",
+        "MVV-Fahrplan - Gesamtfahrplan 2026"
+      ]
+    },
+    {
+      "role": "D1 MVV maps index",
+      "title": "Netzpläne",
+      "url": "https://www.mvv-muenchen.de/netz-plaene-medien/plaene/netzplaene/",
+      "retrievedAt": "2026-08-29T00:41:00Z",
+      "localFile": "sources/mvv-plaene.html"
+    },
+    {
+      "role": "official 2026 line index (eight U-Bahn path titles + termini pairs)",
+      "title": "MVV Linienverzeichnis und Neuerungen 2026 — Alle Linien im Münchner VerkehrsVerbund | Fahrplanjahr 2026",
+      "url": "https://www.mvv-muenchen.de/fileadmin/mediapool/downloads/fahrplanmedien/MVV-2026_Neuerungen_Gesamt.pdf",
+      "linkedFrom": "https://www.mvv-muenchen.de/service-hilfe/downloads-mvv-infomaterial/",
+      "retrievedAt": "2026-08-29T00:45:00Z",
+      "localFile": "sources/MVV-2026_Neuerungen_Gesamt.pdf",
+      "note": "U-Bahn block: Olympia-Einkaufszentrum–Hauptbahnhof–Mangfallplatz; Feldmoching–Hauptbahnhof–Messestadt Ost; Moosach–Marienplatz–Fürstenried West; Westendstraße–Hauptbahnhof–Arabellapark; Laimer Platz–Hauptbahnhof–Neuperlach Süd; Klinikum Großhadern–Marienplatz–Fröttmaning–Garching-Forschungszentrum; Olympia-Einkaufszentrum–Westfriedhof–Hauptbahnhof–Giesing–Neuperlach Zentrum; Olympiazentrum–Scheidplatz–Hauptbahnhof–Giesing–Neuperlach Zentrum. No U9. Marienplatz is the printed via-node for U3/U6."
+    },
+    {
+      "role": "current U1 Minifahrplan (ordered ticks + official termini)",
+      "title": "U1 Olympia-Einkaufszentrum – Mangfallplatz (Minifahrplan 2026)",
+      "url": "https://www.mvv-muenchen.de/fileadmin/mediapool/downloads/fahrplanmedien/2026/21-U1-s26-1-MFP_M.pdf",
+      "retrievedAt": "2026-08-29T00:43:00Z",
+      "lastModified": "Tue, 16 Dec 2025 14:07:22 GMT",
+      "localFile": "sources/minifahrplaene/21-U1-s26-1-MFP_M.pdf",
+      "note": "15 official halt ticks. Header Alle Haltestellen der Linie U1. Gültig ab 14. Dezember 2025. MVG."
+    },
+    {
+      "role": "current U2 Minifahrplan (ordered ticks + official termini)",
+      "title": "U2 Feldmoching – Messestadt Ost (Minifahrplan 2026)",
+      "url": "https://www.mvv-muenchen.de/fileadmin/mediapool/downloads/fahrplanmedien/2026/21-U2-s26-1-MFP_M.pdf",
+      "retrievedAt": "2026-08-29T00:44:00Z",
+      "lastModified": "Tue, 16 Dec 2025 14:07:23 GMT",
+      "localFile": "sources/minifahrplaene/21-U2-s26-1-MFP_M.pdf",
+      "note": "27 official halt ticks including Karl-Preis-Platz and Giesing Bahnhof. Title Feldmoching - Scheidplatz - Hauptbahnhof - Giesing - Messestadt Ost."
+    },
+    {
+      "role": "current U3 Aushangfahrplan from Moosach (ordered ticks; no 2026 Minifahrplan PDF on the Fahrplanmedien index)",
+      "title": "U3 Moosach → Fürstenried West (Aushang gültig ab 14.12.2025)",
+      "url": "https://www.mvg.de/aushangfahrplan/U3_H_MO_52.pdf",
+      "retrievedAt": "2026-08-29T00:47:00Z",
+      "localFile": "sources/aushang/U3_H_MO_52.pdf",
+      "note": "25 official halt ticks. Destination Fürstenried West. ★ some trains terminate at Sendlinger Tor. Opposite folder U3_R_FW_51.pdf."
+    },
+    {
+      "role": "current U4 Minifahrplan (ordered ticks + official termini)",
+      "title": "U4 Westendstraße – Arabellapark (Minifahrplan 2026)",
+      "url": "https://www.mvv-muenchen.de/fileadmin/mediapool/downloads/fahrplanmedien/2026/21-U4-s26-1-MFP_M.pdf",
+      "retrievedAt": "2026-08-29T00:44:00Z",
+      "lastModified": "Tue, 16 Dec 2025 14:07:23 GMT",
+      "localFile": "sources/minifahrplaene/21-U4-s26-1-MFP_M.pdf",
+      "note": "13 official halt ticks. Folder title (Westendstraße -) Theresienwiese - Karlsplatz (Stachus) - Max-Weber-Platz - Arabellapark. Many trips start/end Theresienwiese; full official ends remain Westendstraße / Arabellapark. Linienverzeichnis: Westendstraße - Hauptbahnhof - Arabellapark."
+    },
+    {
+      "role": "current U5 Minifahrplan (ordered ticks + official termini)",
+      "title": "U5 Laimer Platz – Neuperlach Süd (Minifahrplan 2026)",
+      "url": "https://www.mvv-muenchen.de/fileadmin/mediapool/downloads/fahrplanmedien/2026/21-U5-s26-1-MFP_M.pdf",
+      "retrievedAt": "2026-08-29T00:44:00Z",
+      "lastModified": "Tue, 16 Dec 2025 14:07:23 GMT",
+      "localFile": "sources/minifahrplaene/21-U5-s26-1-MFP_M.pdf",
+      "note": "18 official halt ticks. Laimer Platz - Westendstraße - Karlsplatz (Stachus) - Ostbahnhof - Neuperlach Süd. Does not call Karl-Preis-Platz. West end is Laimer Platz, not Pasing."
+    },
+    {
+      "role": "current U6 Aushangfahrplan from Garching-Forschungszentrum (ordered ticks; no 2026 Minifahrplan PDF on the Fahrplanmedien index)",
+      "title": "U6 Garching, Forschungsz. → Klinikum Großhadern (Aushang gültig ab 14.12.2025)",
+      "url": "https://www.mvg.de/aushangfahrplan/U6_H_GF_52.pdf",
+      "retrievedAt": "2026-08-29T00:47:00Z",
+      "localFile": "sources/aushang/U6_H_GF_52.pdf",
+      "note": "26 official halt ticks. Header abbreviation Garching, Forschungsz. Locked D1 string is Linienverzeichnis / 2026 map Garching-Forschungszentrum. Short-turn banners: Münchner Freiheit, Kieferngarten, Harras. Opposite folder U6_R_KG_51.pdf. South end Klinikum Großhadern, not Martinsried."
+    },
+    {
+      "role": "current U7 + U8 Minifahrplan (ordered ticks + peak/Saturday overlay)",
+      "title": "U7 Olympia-Einkaufszentrum – Neuperlach Zentrum / U8 Olympiazentrum – Neuperlach Zentrum (Minifahrplan 2026)",
+      "url": "https://www.mvv-muenchen.de/fileadmin/mediapool/downloads/fahrplanmedien/2026/21-U7-U8-s26-1-MFP_M.pdf",
+      "retrievedAt": "2026-08-29T00:44:00Z",
+      "lastModified": "Tue, 16 Dec 2025 14:07:23 GMT",
+      "localFile": "sources/minifahrplaene/21-U7-U8-s26-1-MFP_M.pdf",
+      "note": "U7 19 ticks, Zusatzlinie: Samstag, Sonn- und Feiertag kein Betrieb; some weekday columns short-turn Sendlinger Tor. U8 19 ticks, Zusatzlinie: Betrieb nur am Samstag; trade-fair trips from Innsbrucker Ring to Messestadt Ost. Halt-list string Giesing Bahnhof."
+    },
+    {
+      "role": "supporting older MVG U-Bahn-only sheet (not 2026 authority)",
+      "title": "U-Bahnnetz München (Planungsstand 09/2024; gültig 17.02.–ca. 09.03.2025 Bau overlay)",
+      "url": "https://www.mvg.de/dam/jcr:d65f2a96-acb2-49a6-a33f-2b6faf79f6a0/A4-U-Bahnnetz-2025-BAU-IP96-Web.pdf",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "lastModified": "Tue, 29 Oct 2024 09:17:32 GMT",
+      "localFile": "sources/A4-U-Bahnnetz-2025-BAU-IP96-Web.pdf",
+      "note": "U-Bahn-only geography. Construction overlay (SEV X3, Pendelzug). Legend U8 Peak times only. Not the 2026 D1 authority — use the January 2026 SUR Zone M sheet plus 2026 halt lists."
+    },
+    {
+      "role": "14 Dec 2025 / 1 Jan 2026 Fahrplanwechsel (no U-Bahn terminus change)",
+      "title": "Fahrplanwechsel 2026 bei der MVG",
+      "url": "https://www.mvg.de/news/2025/fahrplanwechsel.html",
+      "retrievedAt": "2026-08-29T00:41:00Z",
+      "localFile": "sources/fahrplanwechsel-2026.html",
+      "note": "U-Bahn changes are timetable-only. Tram 14 preview to Laimer Platz (tram, out of v1). No U5 Pasing. No U6 Martinsried."
+    },
+    {
+      "role": "live-board path (official MVV TRIAS; closed beta — not wired)",
+      "title": "MVV content for developers — TRIAS interface (VDV 431)",
+      "url": "https://www.mvv-muenchen.de/en/service-support/mvv-content-for-developers/",
+      "alsoLinkedFrom": "https://www.opendata-oepnv.de/ht/de/api",
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "localFile": "sources/mvv-developers.html",
+      "note": "Official departure boards via TRIAS (VDV Publication 431). Connection to the timetable information system is closed beta. Production access: email trias@mvv-muenchen.de + project description (opendata-oepnv.de MVV Produktivserver). Not anonymous. Static GTFS-MVV-Gesamt (07/2026, Status 04.08.2026) is published — NOT a D1 generator, and the page does not offer GTFS-RT. Homepage-service departure-board widgets are embed-only."
+    },
+    {
+      "role": "live-board path (unpublished MVG website backend — not a product contract)",
+      "title": "mvg.de bgw-pt/v3 departures",
+      "url": "https://www.mvg.de/api/bgw-pt/v3/departures",
+      "endpointsNamed": [
+        "https://www.mvg.de/api/bgw-pt/v3/departures?globalId={IFOPT}",
+        "https://www.mvg.de/api/bgw-pt/v3/locations",
+        "https://www.mvg.de/api/bgw-pt/v3/lines"
+      ],
+      "retrievedAt": "2026-08-29T00:42:00Z",
+      "note": "HTTP 200 application/json on 29 Aug 2026 for departures?globalId=de:09162:2 and /lines (exactly eight transportType UBAHN: U1–U8, network SWM). Website backend used by mvg.de, not a documented product API. Impressum: third-party processing needs MVG consent; data-mining not tolerated. Same class as BVG app HAFAS — unpublished mobile/web endpoint, not a product contract. Filter transportType UBAHN when Jim wires. D1 stays planned."
+    }
+  ],
+  "retrievedAt": "2026-08-29T00:48:00Z",
+  "notes": [
+    "D1 oracle is official MVG/MVV passenger maps and halt lists HAND-TRANSCRIBED: January 2026 SUR Zone M on mvg.de (hub + printed U ticks) plus current U1/U2/U4/U5/U7/U8 Minifahrplan 2026 PDFs and U3/U6 Aushangfahrplan stacks (gültig ab 14.12.2025) plus MVV Linienverzeichnis 2026. Stations arrays are not generated from GTFS. Not generated from the MVG website API. Not generated from Wikipedia.",
+    "City id munich is unused in uk-architecture.md, scoped-cities-2026-08-28.md, and existing packs (berlin, rotterdam, goteborg, malmo, uppsala, washington, …). Display Munich. Agency MVG / SWM (Münchner Verkehrsgesellschaft mbH, Stadtwerke München). Do not invent city=germany, city=bavaria, city=mvv, or merge into an S-Bahn city.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like = MVG U-Bahn U1–U8 only. No S-Bahn, no DB / RE / RB, no tram (including Tram 14), no bus / ExpressBus / Nachtlinien, no U9, no U5-to-Pasing, no U6-to-Martinsried.",
+    "Timezone Europe/Berlin HAS DST (CEST/CET). Do not copy no-DST cities.",
+    "Eight printed U-Bahn lines on the official 2026 Linienverzeichnis and mvg.de /lines: U1 Olympia-Einkaufszentrum–Mangfallplatz; U2 Feldmoching–Messestadt Ost; U3 Moosach–Fürstenried West; U4 Westendstraße–Arabellapark; U5 Laimer Platz–Neuperlach Süd; U6 Garching-Forschungszentrum–Klinikum Großhadern; U7 Olympia-Einkaufszentrum–Neuperlach Zentrum (weekday peak Zusatzlinie); U8 Olympiazentrum–Neuperlach Zentrum (Saturday Zusatzlinie).",
+    "Locked inner-city printed name: Marienplatz (2026 SUR Zone M Altstadt S+U node; official Linienverzeichnis via-node for U3/U6). Not Munich, not City, not Hauptbahnhof (six U-Bahn lines + S + DB), not Odeonsplatz (U3/U4/U5/U6 U-Bahn-only inner cross — shared approach), not Sendlinger Tor (U1/U2/U3/U6/U7/U8). doNotGroup U vs S at Marienplatz. doNotGroup U vs S vs DB at Hauptbahnhof.",
+    "96 unique passenger-open U-Bahn stop strings. 162 line ticks. MVG zoom marketing copy still says 100 U-Bahnhöfe — not a fourth name family and not extra D1 rows.",
+    "Map vs halt list: lock official 2026 folder strings. Giesing Bahnhof (U2/U7/U8 folders) not map/API Giesing. Garching-Forschungszentrum (Linienverzeichnis + 2026 map) not aushang Garching, Forschungsz. and not API Garching, Forschungszentrum. Hauptbahnhof not API Hauptbahnhof (U, Tram). Ostbahnhof not API München, Ostbahnhof. Karlsplatz (Stachus) and Thalkirchen (Tierpark) keep official parentheticals.",
+    "gtfsRouteIdsIfKnown are passenger codes U1–U8 printed on the MVG/MVV index (website divaId 010U1–010U8). No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Official MVV TRIAS departure boards — key/access from trias@mvv-muenchen.de, closed beta. Static GTFS-MVV-Gesamt is not a D1 generator and is not GTFS-RT. mvg.de /api/bgw-pt/v3/departures is the unpublished website backend (200 on 29 Aug 2026) — not a product contract. D1 stays planned. assertCityLive(\"munich\") must fail."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Marienplatz",
+    "doNotUse": [
+      "Munich",
+      "München",
+      "München Hbf",
+      "München Hauptbahnhof",
+      "City",
+      "City Centre",
+      "Centrum",
+      "CBD",
+      "Zentrum",
+      "Mitte",
+      "Altstadt",
+      "S+U Marienplatz",
+      "Marienplatz Bahnhof",
+      "Hauptbahnhof",
+      "Odeonsplatz",
+      "Sendlinger Tor"
+    ],
+    "alsoOnSharedApproaches": [
+      "Odeonsplatz",
+      "Hauptbahnhof",
+      "Sendlinger Tor",
+      "Karlsplatz (Stachus)",
+      "Münchner Freiheit",
+      "Scheidplatz",
+      "Innsbrucker Ring",
+      "Kolumbusplatz",
+      "Max-Weber-Platz",
+      "Implerstraße"
+    ]
+  },
+  "coverageGaps": [
+    "S-Bahn S1–S8 including every S+U interchange (Marienplatz, Hauptbahnhof, Karlsplatz (Stachus), Ostbahnhof, Giesing, Trudering, Feldmoching, Neuperlach Süd, Heimeranplatz, Moosach, Pasing). Out of v1. doNotGroup the U-Bahn stop string vs the S-Bahn stop of the same name family.",
+    "DB Regional / RE / RB / IC / ICE at München Hbf, Ostbahnhof, Pasing, and the airport lines. Flughafen München is not a U-Bahn stop.",
+    "MVG tram (including 2026 Tram 14 Pasing–Laimer Platz preview), bus, ExpressBus, Nachtlinien. Out of v1.",
+    "U9 unbuilt / not on the official 2026 U-Bahn index or /lines. Not inserted.",
+    "U5 west of Laimer Platz (Pasing / Baumschule Laim / Freiham) unopened — press timeline 2030s. Map and U5 folder terminate at Laimer Platz. Not inserted.",
+    "U6 south of Klinikum Großhadern (Martinsried) unopened — passenger target late 2027 / 2028. Aushang and Linienverzeichnis terminate at Klinikum Großhadern. Not inserted.",
+    "U7 is a weekday Zusatzlinie (no Saturday/Sunday/holiday in the 2026 folder). U8 is Saturday-only; some trade-fair trips leave the U8 path at Innsbrucker Ring for Messestadt Ost. Overlays, not extra D1 rows. Full printed U7/U8 paths stay in stations[].",
+    "MVG website /lines and /.rest/zdm/stations also list Nürnberg / Fürth U-Bahn (VAG). Different city, different agency. Do not merge.",
+    "PDF hex colours and S-Bahn/Regional/tram overlay are legend metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "u1",
+      "number": "U1",
+      "name": "U1",
+      "officialPageTitle": "U1 Olympia-Einkaufszentrum - Hauptbahnhof - Mangfallplatz",
+      "gtfsRouteIdsIfKnown": [
+        "U1"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Olympia-Einkaufszentrum",
+        "Mangfallplatz"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Olympia-Einkaufszentrum",
+          "otherLine": "u3",
+          "note": "Shared U1/U3/U7 north-west node. U1/U7 leave south-east; U3 continues north to Moosach and south-east via Olympiazentrum."
+        },
+        {
+          "at": "Hauptbahnhof",
+          "otherLine": "u2",
+          "note": "U1/U2/U4/U5/U7/U8. doNotGroup U vs S vs DB München Hbf. Not the hub lock."
+        },
+        {
+          "at": "Sendlinger Tor",
+          "otherLine": "u3",
+          "note": "U1/U2/U3/U6/U7/U8. Six U-Bahn lines. Misses U4/U5."
+        },
+        {
+          "at": "Kolumbusplatz",
+          "otherLine": "u2",
+          "note": "U1 turns south to Mangfallplatz. U2/U7/U8 continue to Giesing Bahnhof."
+        }
+      ],
+      "stations": [
+        "Olympia-Einkaufszentrum",
+        "Georg-Brauchle-Ring",
+        "Westfriedhof",
+        "Gern",
+        "Rotkreuzplatz",
+        "Maillingerstraße",
+        "Stiglmaierplatz",
+        "Hauptbahnhof",
+        "Sendlinger Tor",
+        "Fraunhoferstraße",
+        "Kolumbusplatz",
+        "Candidplatz",
+        "Wettersteinplatz",
+        "St.-Quirin-Platz",
+        "Mangfallplatz"
+      ]
+    },
+    {
+      "id": "u2",
+      "number": "U2",
+      "name": "U2",
+      "officialPageTitle": "U2 Feldmoching - Hauptbahnhof - Messestadt Ost",
+      "gtfsRouteIdsIfKnown": [
+        "U2"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Feldmoching",
+        "Messestadt Ost"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Feldmoching",
+          "otherLine": "u2",
+          "note": "U2 north terminus. doNotGroup U vs S1 Feldmoching."
+        },
+        {
+          "at": "Scheidplatz",
+          "otherLine": "u3",
+          "note": "U2/U8 vs U3. U8 Saturday Zusatzlinie through here."
+        },
+        {
+          "at": "Hauptbahnhof",
+          "otherLine": "u1",
+          "note": "doNotGroup U vs S vs DB."
+        },
+        {
+          "at": "Giesing Bahnhof",
+          "otherLine": "u7",
+          "note": "Halt-list string Giesing Bahnhof. doNotGroup U vs S3/S5 Giesing."
+        },
+        {
+          "at": "Innsbrucker Ring",
+          "otherLine": "u5",
+          "note": "U2 continues to Messestadt Ost. U5/U7/U8 turn to Neuperlach. Trade-fair U8 overlay toward Messestadt Ost starts here."
+        },
+        {
+          "at": "Trudering",
+          "otherLine": "u2",
+          "note": "doNotGroup U vs S4/S6 Trudering."
+        }
+      ],
+      "stations": [
+        "Feldmoching",
+        "Hasenbergl",
+        "Dülferstraße",
+        "Harthof",
+        "Am Hart",
+        "Frankfurter Ring",
+        "Milbertshofen",
+        "Scheidplatz",
+        "Hohenzollernplatz",
+        "Josephsplatz",
+        "Theresienstraße",
+        "Königsplatz",
+        "Hauptbahnhof",
+        "Sendlinger Tor",
+        "Fraunhoferstraße",
+        "Kolumbusplatz",
+        "Silberhornstraße",
+        "Untersbergstraße",
+        "Giesing Bahnhof",
+        "Karl-Preis-Platz",
+        "Innsbrucker Ring",
+        "Josephsburg",
+        "Kreillerstraße",
+        "Trudering",
+        "Moosfeld",
+        "Messestadt West",
+        "Messestadt Ost"
+      ]
+    },
+    {
+      "id": "u3",
+      "number": "U3",
+      "name": "U3",
+      "officialPageTitle": "U3 Moosach - Marienplatz - Fürstenried West",
+      "gtfsRouteIdsIfKnown": [
+        "U3"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Moosach",
+        "Fürstenried West"
+      ],
+      "shortTurns": [
+        "Sendlinger Tor"
+      ],
+      "branches": [
+        {
+          "at": "Moosach",
+          "otherLine": "u3",
+          "note": "U3 north terminus. doNotGroup U vs S1 Moosach / Regional."
+        },
+        {
+          "at": "Olympia-Einkaufszentrum",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Scheidplatz",
+          "otherLine": "u2"
+        },
+        {
+          "at": "Münchner Freiheit",
+          "otherLine": "u6",
+          "note": "U3/U6 Stammstrecke 1 join. U6 north continues to Garching-Forschungszentrum."
+        },
+        {
+          "at": "Odeonsplatz",
+          "otherLine": "u4",
+          "note": "U3/U6 vs U4/U5. U-Bahn-only 4-line inner cross. Shared approach, not the lock."
+        },
+        {
+          "at": "Marienplatz",
+          "otherLine": "u6",
+          "note": "Printed Innenstadt lock. U3/U6 only. doNotGroup U vs S-Bahn Stammstrecke."
+        },
+        {
+          "at": "Sendlinger Tor",
+          "otherLine": "u1",
+          "note": "U3/U6 through; U1/U2/U7/U8 through. Some U3 trains ★ terminate here."
+        },
+        {
+          "at": "Implerstraße",
+          "otherLine": "u6",
+          "note": "U3 turns south-west to Fürstenried West. U6 turns west to Klinikum Großhadern."
+        }
+      ],
+      "stations": [
+        "Moosach",
+        "Moosacher St.-Martins-Platz",
+        "Olympia-Einkaufszentrum",
+        "Oberwiesenfeld",
+        "Olympiazentrum",
+        "Petuelring",
+        "Scheidplatz",
+        "Bonner Platz",
+        "Münchner Freiheit",
+        "Giselastraße",
+        "Universität",
+        "Odeonsplatz",
+        "Marienplatz",
+        "Sendlinger Tor",
+        "Goetheplatz",
+        "Poccistraße",
+        "Implerstraße",
+        "Brudermühlstraße",
+        "Thalkirchen (Tierpark)",
+        "Obersendling",
+        "Aidenbachstraße",
+        "Machtlfinger Straße",
+        "Forstenrieder Allee",
+        "Basler Straße",
+        "Fürstenried West"
+      ]
+    },
+    {
+      "id": "u4",
+      "number": "U4",
+      "name": "U4",
+      "officialPageTitle": "U4 Westendstraße - Hauptbahnhof - Arabellapark",
+      "gtfsRouteIdsIfKnown": [
+        "U4"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Westendstraße",
+        "Arabellapark"
+      ],
+      "shortTurns": [
+        "Theresienwiese"
+      ],
+      "branches": [
+        {
+          "at": "Westendstraße",
+          "otherLine": "u5",
+          "note": "Shared U4/U5 west family. U5 continues to Laimer Platz. U4 official west end."
+        },
+        {
+          "at": "Heimeranplatz",
+          "otherLine": "u5",
+          "note": "doNotGroup U vs S7/S20."
+        },
+        {
+          "at": "Hauptbahnhof",
+          "otherLine": "u1",
+          "note": "doNotGroup U vs S vs DB."
+        },
+        {
+          "at": "Karlsplatz (Stachus)",
+          "otherLine": "u5",
+          "note": "doNotGroup U vs S-Bahn Stachus."
+        },
+        {
+          "at": "Odeonsplatz",
+          "otherLine": "u3",
+          "note": "U4/U5 vs U3/U6. Shared approach."
+        },
+        {
+          "at": "Max-Weber-Platz",
+          "otherLine": "u5",
+          "note": "U4 turns north-east to Arabellapark. U5 continues to Ostbahnhof / Neuperlach Süd."
+        }
+      ],
+      "stations": [
+        "Westendstraße",
+        "Heimeranplatz",
+        "Schwanthalerhöhe",
+        "Theresienwiese",
+        "Hauptbahnhof",
+        "Karlsplatz (Stachus)",
+        "Odeonsplatz",
+        "Lehel",
+        "Max-Weber-Platz",
+        "Prinzregentenplatz",
+        "Böhmerwaldplatz",
+        "Richard-Strauss-Straße",
+        "Arabellapark"
+      ]
+    },
+    {
+      "id": "u5",
+      "number": "U5",
+      "name": "U5",
+      "officialPageTitle": "U5 Laimer Platz - Hauptbahnhof - Neuperlach Süd",
+      "gtfsRouteIdsIfKnown": [
+        "U5"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Laimer Platz",
+        "Neuperlach Süd"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Laimer Platz",
+          "otherLine": "u5",
+          "note": "U5 west passenger end. Pasing / Baumschule Laim unopened. Tram 14 interchange is out of v1."
+        },
+        {
+          "at": "Westendstraße",
+          "otherLine": "u4"
+        },
+        {
+          "at": "Hauptbahnhof",
+          "otherLine": "u1",
+          "note": "doNotGroup U vs S vs DB."
+        },
+        {
+          "at": "Odeonsplatz",
+          "otherLine": "u3"
+        },
+        {
+          "at": "Ostbahnhof",
+          "otherLine": "u5",
+          "note": "doNotGroup U vs S vs DB München Ost. Folder string Ostbahnhof, not München, Ostbahnhof."
+        },
+        {
+          "at": "Innsbrucker Ring",
+          "otherLine": "u2",
+          "note": "U5 does not call Karl-Preis-Platz. U2/U7/U8 do."
+        },
+        {
+          "at": "Neuperlach Süd",
+          "otherLine": "u5",
+          "note": "U5 south-east terminus. doNotGroup U vs S5."
+        }
+      ],
+      "stations": [
+        "Laimer Platz",
+        "Friedenheimer Straße",
+        "Westendstraße",
+        "Heimeranplatz",
+        "Schwanthalerhöhe",
+        "Theresienwiese",
+        "Hauptbahnhof",
+        "Karlsplatz (Stachus)",
+        "Odeonsplatz",
+        "Lehel",
+        "Max-Weber-Platz",
+        "Ostbahnhof",
+        "Innsbrucker Ring",
+        "Michaelibad",
+        "Quiddestraße",
+        "Neuperlach Zentrum",
+        "Therese-Giehse-Allee",
+        "Neuperlach Süd"
+      ]
+    },
+    {
+      "id": "u6",
+      "number": "U6",
+      "name": "U6",
+      "officialPageTitle": "U6 Klinikum Großhadern - Marienplatz - Fröttmaning - Garching-Forschungszentrum",
+      "gtfsRouteIdsIfKnown": [
+        "U6"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Garching-Forschungszentrum",
+        "Klinikum Großhadern"
+      ],
+      "shortTurns": [
+        "Münchner Freiheit",
+        "Kieferngarten",
+        "Harras"
+      ],
+      "branches": [
+        {
+          "at": "Garching-Forschungszentrum",
+          "otherLine": "u6",
+          "note": "U6 north passenger end. Locked to Linienverzeichnis / 2026 map hyphen form, not aushang Garching, Forschungsz."
+        },
+        {
+          "at": "Münchner Freiheit",
+          "otherLine": "u3",
+          "note": "U6/U3 join. Some U6 trains terminate here."
+        },
+        {
+          "at": "Odeonsplatz",
+          "otherLine": "u4"
+        },
+        {
+          "at": "Marienplatz",
+          "otherLine": "u3",
+          "note": "Printed lock. doNotGroup U vs S."
+        },
+        {
+          "at": "Sendlinger Tor",
+          "otherLine": "u1"
+        },
+        {
+          "at": "Implerstraße",
+          "otherLine": "u3",
+          "note": "U6 turns west to Klinikum Großhadern. Martinsried unopened beyond the south end."
+        }
+      ],
+      "stations": [
+        "Garching-Forschungszentrum",
+        "Garching",
+        "Garching-Hochbrück",
+        "Fröttmaning",
+        "Kieferngarten",
+        "Freimann",
+        "Studentenstadt",
+        "Alte Heide",
+        "Nordfriedhof",
+        "Dietlindenstraße",
+        "Münchner Freiheit",
+        "Giselastraße",
+        "Universität",
+        "Odeonsplatz",
+        "Marienplatz",
+        "Sendlinger Tor",
+        "Goetheplatz",
+        "Poccistraße",
+        "Implerstraße",
+        "Harras",
+        "Partnachplatz",
+        "Westpark",
+        "Holzapfelkreuth",
+        "Haderner Stern",
+        "Großhadern",
+        "Klinikum Großhadern"
+      ]
+    },
+    {
+      "id": "u7",
+      "number": "U7",
+      "name": "U7",
+      "officialPageTitle": "U7 Olympia-Einkaufszentrum - Westfriedhof - Hauptbahnhof - Giesing - Neuperlach Zentrum",
+      "gtfsRouteIdsIfKnown": [
+        "U7"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Olympia-Einkaufszentrum",
+        "Neuperlach Zentrum"
+      ],
+      "shortTurns": [
+        "Sendlinger Tor"
+      ],
+      "branches": [
+        {
+          "at": "Olympia-Einkaufszentrum",
+          "otherLine": "u1",
+          "note": "Weekday Zusatzlinie. Folder: Samstag, Sonn- und Feiertag kein Betrieb."
+        },
+        {
+          "at": "Hauptbahnhof",
+          "otherLine": "u1",
+          "note": "doNotGroup U vs S vs DB."
+        },
+        {
+          "at": "Sendlinger Tor",
+          "otherLine": "u1",
+          "note": "Some weekday columns short-turn here."
+        },
+        {
+          "at": "Innsbrucker Ring",
+          "otherLine": "u2",
+          "note": "U7 joins U5 path to Neuperlach Zentrum. Trade-fair overlay may send some trains to Messestadt Ost."
+        }
+      ],
+      "stations": [
+        "Olympia-Einkaufszentrum",
+        "Georg-Brauchle-Ring",
+        "Westfriedhof",
+        "Gern",
+        "Rotkreuzplatz",
+        "Maillingerstraße",
+        "Stiglmaierplatz",
+        "Hauptbahnhof",
+        "Sendlinger Tor",
+        "Fraunhoferstraße",
+        "Kolumbusplatz",
+        "Silberhornstraße",
+        "Untersbergstraße",
+        "Giesing Bahnhof",
+        "Karl-Preis-Platz",
+        "Innsbrucker Ring",
+        "Michaelibad",
+        "Quiddestraße",
+        "Neuperlach Zentrum"
+      ]
+    },
+    {
+      "id": "u8",
+      "number": "U8",
+      "name": "U8",
+      "officialPageTitle": "U8 Olympiazentrum - Scheidplatz - Hauptbahnhof - Giesing - Neuperlach Zentrum",
+      "gtfsRouteIdsIfKnown": [
+        "U8"
+      ],
+      "mapGroup": "U-Bahn",
+      "termini": [
+        "Olympiazentrum",
+        "Neuperlach Zentrum"
+      ],
+      "shortTurns": [
+        "Scheidplatz"
+      ],
+      "branches": [
+        {
+          "at": "Olympiazentrum",
+          "otherLine": "u3",
+          "note": "Saturday Zusatzlinie only. Some trips ● terminate at Scheidplatz."
+        },
+        {
+          "at": "Scheidplatz",
+          "otherLine": "u2"
+        },
+        {
+          "at": "Hauptbahnhof",
+          "otherLine": "u1",
+          "note": "doNotGroup U vs S vs DB."
+        },
+        {
+          "at": "Innsbrucker Ring",
+          "otherLine": "u2",
+          "note": "Bei Großmessen einzelne Fahrten zur Messestadt Ost instead of Neuperlach Zentrum. Overlay, not a second D1 line."
+        }
+      ],
+      "stations": [
+        "Olympiazentrum",
+        "Petuelring",
+        "Scheidplatz",
+        "Hohenzollernplatz",
+        "Josephsplatz",
+        "Theresienstraße",
+        "Königsplatz",
+        "Hauptbahnhof",
+        "Sendlinger Tor",
+        "Fraunhoferstraße",
+        "Kolumbusplatz",
+        "Silberhornstraße",
+        "Untersbergstraße",
+        "Giesing Bahnhof",
+        "Karl-Preis-Platz",
+        "Innsbrucker Ring",
+        "Michaelibad",
+        "Quiddestraße",
+        "Neuperlach Zentrum"
+      ]
+    }
+  ]
+}

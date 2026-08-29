@@ -1,0 +1,653 @@
+{
+  "city": "washington",
+  "displayName": "Washington, D.C.",
+  "status": "planned",
+  "agency": "WMATA Metro",
+  "timezone": "America/New_York",
+  "source": "https://www.wmata.com/content/dam/wmata-com/maps/system-map-rail.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger Metrorail system map (ordered stops + color lines + hub lock)",
+      "title": "Metro Rail System Map",
+      "pdfSubject": "Metrorail System Map - Jan 2026",
+      "printedFooter": "WASHINGTON METROPOLITAN AREA TRANSIT AUTHORITY © 2025",
+      "url": "https://www.wmata.com/content/dam/wmata-com/maps/system-map-rail.pdf",
+      "linkedFrom": "https://www.wmata.com/ride/maps.html",
+      "alsoLinkedFrom": [
+        "https://www.wmata.com/",
+        "https://www.wmata.com/schedules/maps/index.cfm?t=maps"
+      ],
+      "captionOnIndex": "Metro Rail System Map [PDF, 499.05 kb]",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "lastModified": "Sat, 18 Apr 2026 13:04:09 GMT",
+      "pdfModDate": "Sat Apr 18 13:03:58 2026 UTC",
+      "pdfCreationDate": "Wed Dec 10 20:15:34 2025 UTC",
+      "localFile": "sources/system-map-rail.pdf",
+      "note": "Linked from Maps and Schedules as Metro Rail System Map. PDF title Metro Rail System Map. PDF subject Metrorail System Map - Jan 2026. InDesign 20.2. HTTP Last-Modified Sat, 18 Apr 2026 13:04:09 GMT. Legend Terminal stations: Red Line • Glenmont / Shady Grove; Yellow Line • Huntington / Mt Vernon Sq & Greenbelt; Green Line • Branch Av / Greenbelt; Orange Line • New Carrollton / Vienna; Silver Line • Ashburn / Downtown Largo & New Carrollton; Blue Line • Franconia-Springfield / Downtown Largo. Six color lines only. Circles R O B S G Y. Yellow dashed + 'Served by every other train' is the Greenbelt extension. Connecting Rail Systems logos (Amtrak / VRE / MARC) are transfers, not D1 stops. Map prints Downtown Largo (not Largo Town Center), Ashburn (Silver far end; Wiehle-Reston East is a through stop), Potomac Yard + VT subtitle, Hyattsville Crossing, North Bethesda, Tysons. Grosvenor - Strathmore prints spaces around the hyphen."
+    },
+    {
+      "role": "D1 passenger map index",
+      "title": "Maps and Schedules",
+      "url": "https://www.wmata.com/ride/maps.html",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "lastModified": "Fri, 28 Aug 2026 21:47:21 GMT",
+      "localFile": "sources/maps.html",
+      "printedMapsOnIndex": [
+        "Metro Rail System Map [PDF, 499.05 kb]",
+        "Metro Rail System Map - Spanish [PDF, 502.14 kb]",
+        "District of Columbia Bus Service Map",
+        "Maryland Bus Service Map",
+        "Virginia Bus Service Map",
+        "High Frequency and 24/7 bus maps (out of v1)"
+      ],
+      "note": "https://www.wmata.com/schedules/maps/ 301s here. Bus maps out of v1."
+    },
+    {
+      "role": "H3 overlay only — temporary construction map, NOT the D1 stop oracle",
+      "title": "Rail System Map (Effective July 6-Sept. 6, 2026)",
+      "url": "https://www.wmata.com/content/dam/wmata-com/advisories/advisories_micc_072026/Summer%202026%20Major%20Construction/System-Map-Effective-July-6-Sept-7-2026.pdf",
+      "linkedFrom": "https://www.wmata.com/ride/alerts-and-advisories/summer-2026-red-line-major-construction.html",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "lastModified": "Sat, 18 Apr 2026 13:05:24 GMT",
+      "localFile": "sources/System-Map-Effective-July-6-Sept-7-2026.pdf",
+      "note": "Same Jan 2026 base plate with Closed Station / Closed Track on Red between North Bethesda and Friendship Heights (Grosvenor, Medical Center, Bethesda shuttles). Overlay. D1 keeps those three as printed open stops on the passenger system map."
+    },
+    {
+      "role": "H3 overlay advisory (Red split 6 Jul–6 Sep 2026)",
+      "title": "Summer 2026 Red Line Major Construction",
+      "url": "https://www.wmata.com/ride/alerts-and-advisories/summer-2026-red-line-major-construction.html",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "lastModified": "Fri, 28 Aug 2026 21:52:05 GMT",
+      "localFile": "sources/summer-2026-red-line.html"
+    },
+    {
+      "role": "supporting official line live-boards (not ordered timetable columns; map still wins)",
+      "title": "Rail Line Stations | WMATA Rider Tools",
+      "urls": [
+        "https://www.wmata.com/ridertools/line/red",
+        "https://www.wmata.com/ridertools/line/orange",
+        "https://www.wmata.com/ridertools/line/blue",
+        "https://www.wmata.com/ridertools/line/silver",
+        "https://www.wmata.com/ridertools/line/green",
+        "https://www.wmata.com/ridertools/line/yellow"
+      ],
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFiles": [
+        "sources/line-red.html",
+        "sources/line-orange.html",
+        "sources/line-blue.html",
+        "sources/line-silver.html",
+        "sources/line-green.html",
+        "sources/line-yellow.html"
+      ],
+      "note": "JS live boards, not printable timetable column stacks. Destination token often prints Largo (not Downtown Largo). Construction banner. Map still wins."
+    },
+    {
+      "role": "printed inner-city hub (Red + Orange/Blue/Silver)",
+      "title": "Metro Center — Station Arrivals | WMATA Rider Tools",
+      "url": "https://www.wmata.com/ridertools/station/metro-center",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/metro-center.html",
+      "note": "Rider Tools title Metro Center (not Metro Center Station). Parent grouping STN_A01_C01 (Red A01 + Orange/Blue/Silver C01). Live blinds 29 Aug 2026: Glenmont; Friendship Heights (Red west short during construction); Ashburn; Vienna; Franconia-Springfield; Largo; New Carrollton. Map lock Downtown Largo vs board Largo."
+    },
+    {
+      "role": "rider-tools lines index (rail/subway filter)",
+      "title": "Lines | WMATA Rider Tools",
+      "url": "https://www.wmata.com/ridertools/lines?linesTransitMode=rail%2Csubway",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/ridertools-lines.html",
+      "note": "Old rider-guide/stations/index.cfm?rail=all 301s here. Tokens include Downtown Largo, Potomac Yard, Ashburn, Wiehle, Hyattsville Crossing, North Bethesda. Zero Largo Town Center."
+    },
+    {
+      "role": "developer portal (live-board path; not a D1 generator; no key in this pack)",
+      "title": "Washington Metropolitan Area Transit Authority API",
+      "url": "https://developer.wmata.com/",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/developer.html",
+      "note": "Sign-up later (Auckland pattern). Default Next Train is Station Prediction. Header api_key. Empty-key 401. D1 stays planned. Do not require the key to lock the map. Never paste a key."
+    },
+    {
+      "role": "developer APIs list",
+      "title": "APIs: List — developer.wmata.com",
+      "url": "https://developer.wmata.com/apis",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/developer-apis.html"
+    },
+    {
+      "role": "WMATA public developer resources (points at the portal)",
+      "title": "Developer Resources | WMATA",
+      "url": "https://www.wmata.com/about/developers.html",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "lastModified": "Fri, 28 Aug 2026 21:46:39 GMT",
+      "localFile": "sources/developers.html",
+      "note": "Metro Transparent Data Sets API → https://developer.wmata.com/ . Register → https://developer.wmata.com/signup/ . License https://developer.wmata.com/license . GTFS/GTFS-RT also require the portal key. Not a D1 generator."
+    },
+    {
+      "role": "empty-key Station Prediction probe (no subscription key sent)",
+      "title": "GET StationPrediction.svc/json/GetPrediction/All",
+      "url": "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All",
+      "retrievedAt": "2026-08-29T00:35:00Z",
+      "localFile": "sources/pred-empty.json",
+      "note": "HTTP 401 Access Denied. Body: Access denied due to missing subscription key. Did not send a real key."
+    }
+  ],
+  "retrievedAt": "2026-08-29T00:45:00Z",
+  "notes": [
+    "D1 oracle is the official WMATA Metro Rail System Map (wmata.com system-map-rail.pdf, PDF title Metro Rail System Map, PDF subject Metrorail System Map - Jan 2026, HTTP Last-Modified Sat 18 Apr 2026 13:04:09 GMT) HAND-TRANSCRIBED from rendered map images (sources/metro-map-1.png + sources/crop-*.png). pdftotext -bbox is layout-scrambled and was not used to build stations[]. Rider-tools line pages are support only. Stations arrays are not generated from GTFS. Not generated from developer.wmata.com. Map printed names win clashes.",
+    "City id washington is a SEPARATE city. Do not invent city=dc, city=washington-dc, city=wmata, or city=us as a second city. Do not merge into any other Next Train city. Agency WMATA Metro. Modes v1: WMATA Metrorail ONLY. No Metrobus, no Better Bus, no DC Circulator, no DC Streetcar, no MARC, no VRE, no Amtrak, no commuter rail.",
+    "City stays planned until Jim wires testers. Cut #1 is Rotterdam only. This pack stays planned. assertCityLive(\"washington\") must fail.",
+    "Timezone America/New_York HAS DST (EDT/EST). Do not copy Perth / Brisbane no-DST.",
+    "Six printed color lines on the current map: Red, Orange, Blue, Silver, Green, Yellow. No seventh line. Map circles print R O B S G Y. Conventional WMATA codes RD/OR/BL/SV/GR/YL recorded as gtfsRouteIdsIfKnown (not extracted from GTFS).",
+    "Locked inner-city printed name: Metro Center (Red × Orange/Blue/Silver transfer; rider-tools title Metro Center). Not Gallery Place, not Union Station, not L'Enfant Plaza, not Federal Triangle, not Downtown, not DC, not Capitol, not Washington.",
+    "98 unique passenger-open Metrorail stops on the official map after dedupe across shared trunks. Recent openings that ARE on this map: Potomac Yard (printed Potomac Yard + VT subtitle → Potomac Yard-VT); Silver Line through to Ashburn (Wiehle-Reston East is a through stop, not the far end); Downtown Largo (not Largo Town Center); North Bethesda (not White Flint); Hyattsville Crossing (not Prince George's Plaza); Tysons (not Tysons Corner). No unopened / future station the map does not print as open was inserted.",
+    "Two-line map labels concatenated for D1 strings (primary + historic/campus subtitle the map prints): Woodley Park-Zoo/Adams Morgan; Gallery Place-Chinatown (map prints Gallery Place, not Gallery Pl); Rhode Island Av-Brentwood; Addison Rd-Seat Pleasant; U St/African-Amer Civil War Mem'l/Cardozo; Mt Vernon Sq/7th St-Convention Center; Archives-Navy Mem'l-Penn Quarter; Vienna/Fairfax-GMU; Dunn Loring-Merrifield; West Falls Church-VT (map subtitle VT only — not VT/UVA); Potomac Yard-VT. Landmark-only subtitles Kennedy Center (under Foggy Bottom-GWU) and National Mall (under Smithsonian) are NOT part of the stop string. Grosvenor - Strathmore keeps the map spaces around the hyphen.",
+    "Yellow legend is Huntington / Mt Vernon Sq & Greenbelt. Dashed yellow = Served by every other train on the Green trunk to Greenbelt. Yellow stations[] includes that full run. shortTurns records Mt Vernon Sq/7th St-Convention Center. Yellow does not serve Arlington Cemetery or Rosslyn.",
+    "Silver legend is Ashburn / Downtown Largo & New Carrollton. stations[] is the Ashburn–Downtown Largo path (34). New Carrollton is a second eastern terminus sharing Orange east of Stadium-Armory (Minnesota Av, Deanwood, Cheverly, Landover, New Carrollton).",
+    "Farragut North (Red) is NOT Farragut West (Orange/Blue/Silver). Gallery Place-Chinatown is NOT Metro Center. Do not merge.",
+    "Feed (Jim D2, not a D1 generator): https://developer.wmata.com Default Next Train / Station Prediction GET https://api.wmata.com/StationPrediction.svc/json/GetPrediction/{StationCodes|All} header api_key. Tim signs up later (Auckland pattern). Empty-key 401 on 29 Aug 2026. D1 stays planned. Do not call the live API with a real key. Never paste a key. The key is not a D1 blocker.",
+    "H3 overlay 6 Jul–6 Sep 2026: Red closed North Bethesda–Friendship Heights. Official passenger map still prints Grosvenor - Strathmore, Medical Center, Bethesda as open stops — kept. Construction map is overlay only."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Metro Center",
+    "lockSet": [
+      "Metro Center"
+    ],
+    "lockNote": "Printed inner-city lock. Red × Orange/Blue/Silver transfer on the official system map. Rider-tools station title Metro Center. Not a direction token. Inbound/outbound dies here: Red is NW–NE; Orange/Blue/Silver are E–W.",
+    "doNotUse": [
+      "Gallery Place",
+      "Gallery Place-Chinatown",
+      "Gallery Pl-Chinatown",
+      "Union Station",
+      "L'Enfant Plaza",
+      "Federal Triangle",
+      "Washington",
+      "Washington, DC",
+      "Washington DC",
+      "DC",
+      "Downtown",
+      "Capitol",
+      "Metro Center Station",
+      "Metro Center station",
+      "Metro-Center",
+      "Chicago Loop",
+      "Beurs",
+      "T-Centralen",
+      "Brunnsparken",
+      "Centraal Station",
+      "Waitematā Station",
+      "City",
+      "CBD",
+      "Downtown DC"
+    ],
+    "doNotCollapse": [
+      "Metro Center",
+      "Gallery Place-Chinatown",
+      "Federal Triangle",
+      "McPherson Sq",
+      "Farragut North",
+      "Farragut West",
+      "L'Enfant Plaza",
+      "Union Station"
+    ],
+    "alsoOnSharedApproaches": [
+      "Gallery Place-Chinatown",
+      "Farragut North",
+      "Farragut West",
+      "McPherson Sq",
+      "Federal Triangle",
+      "Smithsonian",
+      "L'Enfant Plaza",
+      "Union Station",
+      "Judiciary Sq",
+      "Archives-Navy Mem'l-Penn Quarter",
+      "Fort Totten",
+      "Rosslyn",
+      "Pentagon",
+      "Stadium-Armory"
+    ]
+  },
+  "coverageGaps": [
+    "Metrobus / Better Bus (DC, MD, VA bus maps on the same Maps and Schedules index). Out of v1.",
+    "DC Circulator. Out of v1.",
+    "DC Streetcar. Out of v1.",
+    "MARC, VRE, Amtrak (Connecting Rail Systems logos on the rail map). Transfers, not D1 stops. doNotGroup.",
+    "No seventh Metrorail color on the Jan 2026 map. None invented.",
+    "No unopened Metrorail stations printed as passenger-open on this map. None inserted.",
+    "Summer 2026 Red Line construction overlay (Grosvenor / Medical Center / Bethesda shuttle). Overlay, not a coverage gap and not a deleted D1 stop.",
+    "Spanish Metro Rail System Map on the same index is a language twin, not a second stop oracle.",
+    "PDF hex colours are legend metadata, not D1 print locks."
+  ],
+  "liveBoards": {
+    "status": "developer_api_exists_city_planned",
+    "portal": "https://developer.wmata.com/",
+    "signup": "https://developer.wmata.com/signup/",
+    "publicDocs": "https://www.wmata.com/about/developers.html",
+    "license": "https://developer.wmata.com/license",
+    "defaultNextTrain": {
+      "name": "Station Prediction / Real-Time Rail Predictions",
+      "method": "GET",
+      "url": "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/{StationCodes}",
+      "allStations": "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All",
+      "header": "api_key",
+      "note": "Use All for every station. Transfer stations with two codes (Metro Center A01+C01, Gallery Place, Fort Totten, L'Enfant Plaza) need both codes for complete predictions. Jim D2. Not a D1 generator."
+    },
+    "emptyKey": {
+      "probedAt": "2026-08-29T00:35:00Z",
+      "http": 401,
+      "body": "Access denied due to missing subscription key. Make sure to include subscription key when making requests to an API."
+    },
+    "keyPolicy": "Tim signs up later on developer.wmata.com (Auckland pattern). The key is for live boards later, NOT a D1 blocker. This pack does not contain a key and did not call the API with a real key.",
+    "d1": "planned. assertCityLive(washington) must fail."
+  },
+  "stats": {
+    "lines": 6,
+    "redStops": 27,
+    "orangeStops": 26,
+    "blueStops": 28,
+    "silverStopsToDowntownLargo": 34,
+    "greenStops": 21,
+    "yellowStopsIncludingGreenbelt": 22,
+    "uniqueNames": 98,
+    "innerCityLock": [
+      "Metro Center"
+    ]
+  },
+  "lines": [
+    {
+      "id": "red",
+      "number": "Red",
+      "name": "Red Line",
+      "officialPageTitle": "Red Line • Glenmont / Shady Grove",
+      "gtfsRouteIdsIfKnown": [
+        "RD"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Shady Grove",
+        "Glenmont"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Metro Center",
+          "otherLine": "orange",
+          "note": "Red crosses Orange/Blue/Silver at Metro Center. Red is the NW–NE U. Orange/Blue/Silver are E–W. Hub lock is this stop string, not a direction token."
+        },
+        {
+          "at": "Gallery Place-Chinatown",
+          "otherLine": "green",
+          "note": "Red crosses Green/Yellow one stop east of Metro Center. Gallery Place-Chinatown is NOT Metro Center. Do not merge."
+        },
+        {
+          "at": "Fort Totten",
+          "otherLine": "green",
+          "note": "Red crosses Green/Yellow. Transfer station, not the inner-city hub."
+        }
+      ],
+      "stations": [
+        "Shady Grove",
+        "Rockville",
+        "Twinbrook",
+        "North Bethesda",
+        "Grosvenor - Strathmore",
+        "Medical Center",
+        "Bethesda",
+        "Friendship Heights",
+        "Tenleytown-AU",
+        "Van Ness-UDC",
+        "Cleveland Park",
+        "Woodley Park-Zoo/Adams Morgan",
+        "Dupont Circle",
+        "Farragut North",
+        "Metro Center",
+        "Gallery Place-Chinatown",
+        "Judiciary Sq",
+        "Union Station",
+        "NoMa-Gallaudet U",
+        "Rhode Island Av-Brentwood",
+        "Brookland-CUA",
+        "Fort Totten",
+        "Takoma",
+        "Silver Spring",
+        "Forest Glen",
+        "Wheaton",
+        "Glenmont"
+      ]
+    },
+    {
+      "id": "orange",
+      "number": "Orange",
+      "name": "Orange Line",
+      "officialPageTitle": "Orange Line • New Carrollton / Vienna",
+      "gtfsRouteIdsIfKnown": [
+        "OR"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Vienna/Fairfax-GMU",
+        "New Carrollton"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "East Falls Church",
+          "otherLine": "silver",
+          "note": "Silver joins from McLean–Ashburn. Shared Orange/Silver East Falls Church–Rosslyn."
+        },
+        {
+          "at": "Rosslyn",
+          "otherLine": "blue",
+          "note": "Blue joins from Arlington Cemetery–Franconia-Springfield. Shared Orange/Blue/Silver Rosslyn–Stadium-Armory."
+        },
+        {
+          "at": "Metro Center",
+          "otherLine": "red",
+          "note": "Cross with Red. Farragut West (this trunk) is NOT Farragut North (Red)."
+        },
+        {
+          "at": "L'Enfant Plaza",
+          "otherLine": "green",
+          "note": "Cross with Green/Yellow. Not the hub lock."
+        },
+        {
+          "at": "Stadium-Armory",
+          "otherLine": "blue",
+          "note": "Orange continues Minnesota Av–New Carrollton. Blue/Silver continue Benning Rd–Downtown Largo. Some Silver trains take this Orange east branch to New Carrollton."
+        }
+      ],
+      "stations": [
+        "Vienna/Fairfax-GMU",
+        "Dunn Loring-Merrifield",
+        "West Falls Church-VT",
+        "East Falls Church",
+        "Ballston-MU",
+        "Virginia Sq-GMU",
+        "Clarendon",
+        "Court House",
+        "Rosslyn",
+        "Foggy Bottom-GWU",
+        "Farragut West",
+        "McPherson Sq",
+        "Metro Center",
+        "Federal Triangle",
+        "Smithsonian",
+        "L'Enfant Plaza",
+        "Federal Center SW",
+        "Capitol South",
+        "Eastern Market",
+        "Potomac Av",
+        "Stadium-Armory",
+        "Minnesota Av",
+        "Deanwood",
+        "Cheverly",
+        "Landover",
+        "New Carrollton"
+      ]
+    },
+    {
+      "id": "blue",
+      "number": "Blue",
+      "name": "Blue Line",
+      "officialPageTitle": "Blue Line • Franconia-Springfield / Downtown Largo",
+      "gtfsRouteIdsIfKnown": [
+        "BL"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Franconia-Springfield",
+        "Downtown Largo"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "King St-Old Town",
+          "otherLine": "yellow",
+          "note": "Yellow continues Eisenhower Av–Huntington. Blue continues Van Dorn St–Franconia-Springfield."
+        },
+        {
+          "at": "Pentagon",
+          "otherLine": "yellow",
+          "note": "Yellow crosses the river to L'Enfant Plaza. Blue continues Arlington Cemetery–Rosslyn."
+        },
+        {
+          "at": "Rosslyn",
+          "otherLine": "orange",
+          "note": "Joins Orange/Silver E–W trunk."
+        },
+        {
+          "at": "Metro Center",
+          "otherLine": "red"
+        },
+        {
+          "at": "Stadium-Armory",
+          "otherLine": "orange",
+          "note": "Blue/Silver to Downtown Largo. Orange to New Carrollton."
+        }
+      ],
+      "stations": [
+        "Franconia-Springfield",
+        "Van Dorn St",
+        "King St-Old Town",
+        "Braddock Rd",
+        "Potomac Yard-VT",
+        "Ronald Reagan Washington National Airport",
+        "Crystal City",
+        "Pentagon City",
+        "Pentagon",
+        "Arlington Cemetery",
+        "Rosslyn",
+        "Foggy Bottom-GWU",
+        "Farragut West",
+        "McPherson Sq",
+        "Metro Center",
+        "Federal Triangle",
+        "Smithsonian",
+        "L'Enfant Plaza",
+        "Federal Center SW",
+        "Capitol South",
+        "Eastern Market",
+        "Potomac Av",
+        "Stadium-Armory",
+        "Benning Rd",
+        "Capitol Heights",
+        "Addison Rd-Seat Pleasant",
+        "Morgan Blvd",
+        "Downtown Largo"
+      ]
+    },
+    {
+      "id": "silver",
+      "number": "Silver",
+      "name": "Silver Line",
+      "officialPageTitle": "Silver Line • Ashburn / Downtown Largo & New Carrollton",
+      "gtfsRouteIdsIfKnown": [
+        "SV"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Ashburn",
+        "Downtown Largo",
+        "New Carrollton"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "East Falls Church",
+          "otherLine": "orange",
+          "note": "Silver west is Ashburn–McLean (through Washington Dulles International Airport and Wiehle-Reston East). Orange west is Vienna/Fairfax-GMU."
+        },
+        {
+          "at": "Rosslyn",
+          "otherLine": "blue"
+        },
+        {
+          "at": "Metro Center",
+          "otherLine": "red"
+        },
+        {
+          "at": "Stadium-Armory",
+          "otherLine": "orange",
+          "note": "Silver serves BOTH eastern termini printed on the legend: Downtown Largo (shared with Blue; listed in stations[]) AND New Carrollton (shared with Orange: Minnesota Av, Deanwood, Cheverly, Landover, New Carrollton)."
+        }
+      ],
+      "stations": [
+        "Ashburn",
+        "Loudoun Gateway",
+        "Washington Dulles International Airport",
+        "Innovation Center",
+        "Herndon",
+        "Reston Town Center",
+        "Wiehle-Reston East",
+        "Spring Hill",
+        "Greensboro",
+        "Tysons",
+        "McLean",
+        "East Falls Church",
+        "Ballston-MU",
+        "Virginia Sq-GMU",
+        "Clarendon",
+        "Court House",
+        "Rosslyn",
+        "Foggy Bottom-GWU",
+        "Farragut West",
+        "McPherson Sq",
+        "Metro Center",
+        "Federal Triangle",
+        "Smithsonian",
+        "L'Enfant Plaza",
+        "Federal Center SW",
+        "Capitol South",
+        "Eastern Market",
+        "Potomac Av",
+        "Stadium-Armory",
+        "Benning Rd",
+        "Capitol Heights",
+        "Addison Rd-Seat Pleasant",
+        "Morgan Blvd",
+        "Downtown Largo"
+      ]
+    },
+    {
+      "id": "green",
+      "number": "Green",
+      "name": "Green Line",
+      "officialPageTitle": "Green Line • Branch Av / Greenbelt",
+      "gtfsRouteIdsIfKnown": [
+        "GR"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Greenbelt",
+        "Branch Av"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Fort Totten",
+          "otherLine": "red"
+        },
+        {
+          "at": "Mt Vernon Sq/7th St-Convention Center",
+          "otherLine": "yellow",
+          "note": "Yellow solid service ends here on the legend (Huntington / Mt Vernon Sq). Every-other-train Yellow continues with Green to Greenbelt (dashed yellow)."
+        },
+        {
+          "at": "Gallery Place-Chinatown",
+          "otherLine": "red",
+          "note": "Not Metro Center."
+        },
+        {
+          "at": "L'Enfant Plaza",
+          "otherLine": "yellow",
+          "note": "Yellow leaves south across the river to Pentagon. Green continues Waterfront–Branch Av. Orange/Blue/Silver also call L'Enfant Plaza."
+        }
+      ],
+      "stations": [
+        "Greenbelt",
+        "College Park-U of Md",
+        "Hyattsville Crossing",
+        "West Hyattsville",
+        "Fort Totten",
+        "Georgia Av-Petworth",
+        "Columbia Heights",
+        "U St/African-Amer Civil War Mem'l/Cardozo",
+        "Shaw-Howard U",
+        "Mt Vernon Sq/7th St-Convention Center",
+        "Gallery Place-Chinatown",
+        "Archives-Navy Mem'l-Penn Quarter",
+        "L'Enfant Plaza",
+        "Waterfront",
+        "Navy Yard-Ballpark",
+        "Anacostia",
+        "Congress Heights",
+        "Southern Av",
+        "Naylor Rd",
+        "Suitland",
+        "Branch Av"
+      ]
+    },
+    {
+      "id": "yellow",
+      "number": "Yellow",
+      "name": "Yellow Line",
+      "officialPageTitle": "Yellow Line • Huntington / Mt Vernon Sq & Greenbelt",
+      "gtfsRouteIdsIfKnown": [
+        "YL"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Huntington",
+        "Mt Vernon Sq/7th St-Convention Center",
+        "Greenbelt"
+      ],
+      "shortTurns": [
+        "Mt Vernon Sq/7th St-Convention Center"
+      ],
+      "branches": [
+        {
+          "at": "King St-Old Town",
+          "otherLine": "blue",
+          "note": "Yellow continues Eisenhower Av–Huntington. Blue continues Van Dorn St–Franconia-Springfield."
+        },
+        {
+          "at": "Pentagon",
+          "otherLine": "blue",
+          "note": "Yellow does NOT serve Arlington Cemetery or Rosslyn. Yellow L'Enfant Plaza–Pentagon river crossing."
+        },
+        {
+          "at": "L'Enfant Plaza",
+          "otherLine": "green"
+        },
+        {
+          "at": "Mt Vernon Sq/7th St-Convention Center",
+          "otherLine": "green",
+          "note": "Legend pair Huntington / Mt Vernon Sq. Dashed yellow + 'Served by every other train' continues to Greenbelt on the Green trunk."
+        }
+      ],
+      "stations": [
+        "Huntington",
+        "Eisenhower Av",
+        "King St-Old Town",
+        "Braddock Rd",
+        "Potomac Yard-VT",
+        "Ronald Reagan Washington National Airport",
+        "Crystal City",
+        "Pentagon City",
+        "Pentagon",
+        "L'Enfant Plaza",
+        "Archives-Navy Mem'l-Penn Quarter",
+        "Gallery Place-Chinatown",
+        "Mt Vernon Sq/7th St-Convention Center",
+        "Shaw-Howard U",
+        "U St/African-Amer Civil War Mem'l/Cardozo",
+        "Columbia Heights",
+        "Georgia Av-Petworth",
+        "Fort Totten",
+        "West Hyattsville",
+        "Hyattsville Crossing",
+        "College Park-U of Md",
+        "Greenbelt"
+      ]
+    }
+  ]
+}
