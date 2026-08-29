@@ -42,5 +42,13 @@ Tim's call, same as the tracker already insists ("Do not flip live" appears on m
 
 Full agent roster, model rationale, and wave-by-wave roadmap: see the Expansion Playbook artifact —
 <https://claude.ai/code/artifact/f1e97865-bafc-4197-9424-a8dfa4c09c8f> (owned by Tim; read it with
-the `Artifact` tool, `action: "read"`). It is not checked into the repo — this is the pointer to it,
-kept current whenever the playbook is revised (last synced: 29 Aug 2026, wave 0 in progress).
+the `Artifact` tool, `action: "read"`). This is the pointer to it, kept current whenever the
+playbook is revised (last synced: 29 Aug 2026, wave 0 in progress).
+
+The source tracker it's built from — `next-train-expansion-tracker.xlsx` (Cities, Countries,
+Burndown, Legend sheets) — is checked in as plain CSV at `docs/expansion-tracker/{cities,countries,
+burndown,legend}.csv` (one file per sheet; binary `.xlsx` isn't committed) so it doesn't depend on
+Tim re-uploading it. It's the row-level detail (per-city feed URLs, auth type, wave, owner,
+skip-risk notes) behind the playbook's summary — check `cities.csv`'s `Wave`/`Status` columns for
+the current, authoritative wave assignment before trusting the playbook's prose, which can lag it.
+Re-sync these CSVs whenever Tim shares a newer export.
