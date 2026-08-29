@@ -20,8 +20,29 @@ public final class CommuteRefreshService {
 
   /** Network refresh on a background thread — safe from Activity / UI thread. */
   public static void refreshAll(Context context) {
+    refreshAll(context, null);
+  }
+
+  /**
+   * As {@link #refreshAll(Context)}; runs {@code onComplete} after the worker
+   * finishes (or fails). Lets a BroadcastReceiver hold its goAsync() result
+   * open so the process is not killed mid-fetch.
+   */
+  public static void refreshAll(Context context, Runnable onComplete) {
     Context appContext = context.getApplicationContext();
-    REFRESH_EXECUTOR.execute(() -> refreshAllOnWorker(appContext));
+    REFRESH_EXECUTOR.execute(() -> {
+      try {
+        refreshAllOnWorker(appContext);
+      } finally {
+        if (onComplete != null) {
+          try {
+            onComplete.run();
+          } catch (Exception error) {
+            // finish() after the system already timed the receiver out.
+          }
+        }
+      }
+    });
   }
 
   static void refreshAllOnWorker(Context context) {

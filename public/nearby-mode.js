@@ -1277,6 +1277,8 @@ function setNearbyPinFromTrip(direction, trip) {
 
   nearbySession.pin = {
     station: nearbySession.station,
+    // Native widget/reminder fetches pass this through as the API city param.
+    cityId: nearbySession.city || readNearbyCity() || undefined,
     direction,
     departureIso,
     trip: {

@@ -8,6 +8,8 @@ public class WidgetDepartureAdvanceReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    CommuteRefreshService.refreshAll(context);
+    // goAsync keeps the process alive until the network fetch completes.
+    PendingResult pendingResult = goAsync();
+    CommuteRefreshService.refreshAll(context, pendingResult::finish);
   }
 }

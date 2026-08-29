@@ -36,6 +36,8 @@
 		NTWW081FED79650016851F /* JourneyPinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS081FED79650016851F /* JourneyPinHelper.swift */; };
 		NTWA091FED79650016851F /* NearbyPinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS091FED79650016851F /* NearbyPinHelper.swift */; };
 		NTWW091FED79650016851F /* NearbyPinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS091FED79650016851F /* NearbyPinHelper.swift */; };
+		NTWA0A1FED79650016851F /* WidgetAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS0A1FED79650016851F /* WidgetAppearance.swift */; };
+		NTWW0A1FED79650016851F /* WidgetAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWS0A1FED79650016851F /* WidgetAppearance.swift */; };
 		NTWG00041FED79650016851F /* WidgetSyncPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWG00031FED79650016851F /* WidgetSyncPlugin.swift */; };
 		NTWG00061FED79650016851F /* NextTrainWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = NTWG00051FED79650016851F /* NextTrainWidget.swift */; };
 		NTWG00121FED79650016851F /* NextTrainWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = NTWG000A1FED79650016851F /* NextTrainWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -63,6 +65,7 @@
 		NTWS071FED79650016851F /* WidgetPinResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPinResolver.swift; sourceTree = "<group>"; };
 		NTWS081FED79650016851F /* JourneyPinHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyPinHelper.swift; sourceTree = "<group>"; };
 		NTWS091FED79650016851F /* NearbyPinHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPinHelper.swift; sourceTree = "<group>"; };
+		NTWS0A1FED79650016851F /* WidgetAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetAppearance.swift; sourceTree = "<group>"; };
 		NTWG00031FED79650016851F /* WidgetSyncPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSyncPlugin.swift; sourceTree = "<group>"; };
 		NTWG00051FED79650016851F /* NextTrainWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextTrainWidget.swift; sourceTree = "<group>"; };
 		NTWG00071FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 				NTWS071FED79650016851F /* WidgetPinResolver.swift */,
 				NTWS081FED79650016851F /* JourneyPinHelper.swift */,
 				NTWS091FED79650016851F /* NearbyPinHelper.swift */,
+				NTWS0A1FED79650016851F /* WidgetAppearance.swift */,
 			);
 			path = ../Shared;
 			sourceTree = "<group>";
@@ -325,6 +329,7 @@
 				NTWW071FED79650016851F /* WidgetPinResolver.swift in Sources */,
 				NTWW081FED79650016851F /* JourneyPinHelper.swift in Sources */,
 				NTWW091FED79650016851F /* NearbyPinHelper.swift in Sources */,
+				NTWW0A1FED79650016851F /* WidgetAppearance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +353,7 @@
 				NTWA071FED79650016851F /* WidgetPinResolver.swift in Sources */,
 				NTWA081FED79650016851F /* JourneyPinHelper.swift in Sources */,
 				NTWA091FED79650016851F /* NearbyPinHelper.swift in Sources */,
+				NTWA0A1FED79650016851F /* WidgetAppearance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
