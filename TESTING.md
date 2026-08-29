@@ -914,7 +914,255 @@ D1 pack: `docs/goteborg-d1/` (Expansion-room five-file). D2 fixture is a verbati
 6. Mark probes in those tests: Brunnsparken, Drottningtorget, Korsvägen, Nils Ericsonsplatsen, Liseberg Station / Liseberg Station (tåg) / Liseberg Södra, Gamlestads Torg / Gamlestaden Station, Lindholmen, Göteborg Central.
 7. Adapter uses Trafiklab GTFS Regional `vt` (`TRAFIKLAB_API_KEY`); no TripUpdates for Västtrafik — schedule-only. `/api/next-train?city=goteborg&station=Brunnsparken&direction=Tynnered` stays **501**. Melbourne stays planned. Do not wire UK NR.
 
-### 24c. Hong Kong provider (catalog / planned — not live)
+### 24c. Osaka provider (catalog / planned — not live)
+
+D1 pack: `docs/osaka-d1/`. D2 fixture is a verbatim copy at `qa/fixtures/osaka/published-network.json`. Not generated from GTFS. No official public feed. `adapterReady: false`.
+
+1. `assertCityLive("osaka")` still returns **501** (`status: planned`, `adapterReady: false`).
+2. Picker: country **Japan** (`jp`) → **Osaka (Coming Soon)**. No live board. Do not invent `city=japan`. Do not invent `osk` / `osaka-metro` / `kintetsu`. Do not merge Tokyo / Keihanshin.
+3. Hub lock: **Hommachi** (M18 × Y13 × C16). Official transfers Yotsubashi + Chuo only. Not Umeda, not Namba, not Shinsaibashi, not Sakaisuji-Hommachi, not Tennoji, not Downtown.
+4. Direction is line + terminus (`Midosuji + Nakamozu`). Not compass N/S/E/W. Never inbound/outbound or “to City”.
+5. `node qa/osaka-planned-gate.mjs` and `node qa/osaka-line-map-conformance.mjs` — offline. Osaka is not added to `LIVE_CITY_IDS` / `MULTI_CITY_IDS`. Perth / Amsterdam / Rotterdam live-gates stay. Stockholm / Göteborg stay Coming Soon. Melbourne stays planned.
+6. Mark probes in those tests: Hommachi, Sakaisuji-Hommachi, Umeda / Higashi-Umeda / Nishi-Umeda, Namba, Shinsaibashi, Yotsubashi, Esaka, Yumeshima, Nakamozu, Nagata, Tenjimbashisuji 6-chome. Negatives: New Tram / Senri-Chuo / Momoyamadai / Minoh-Kayano.
+7. `/api/next-train?city=osaka&station=Hommachi&direction=Nakamozu` stays **501**. `/api/board?city=osaka&station=Hommachi` stays **501**. No env key. Do not invent an ODPT zip.
+8. No D6 network-sweep and no `probe:osaka` — there is no official public feed. D6 must never gate the PR. Melbourne stays planned. Do not wire Tokyo / Fukuoka / Nagoya.
+
+### 24. Melbourne provider probe (adapter only — not live)
+
+Jim brief: `docs/jim-brief-melbourne-provider.md`
+
+1. `assertCityLive("melbourne")` still returns **501** (`status: planned`, `adapterReady: true`).
+2. Without `PTV_DEVID` / `PTV_API_KEY`: `npm run probe:melbourne -- "Flinders Street"` exits with a clear message.
+3. With keys: probe returns metro departures with ISO times, destination, optional platform.
+4. `npm run probe:melbourne -- --list` → catalog station names (no keys required).
+5. Dev board: `GET /api/dev/board?city=melbourne&station=Flinders%20Street` with `ALLOW_CITY_PROBES=1` + PTV env; without keys → **503**.
+6. `/api/next-train?city=melbourne&station=…` still **501** on production paths.
+
+### 25. Founding Pro (widget + no ads)
+
+Jim brief: `docs/jim-brief-founding-pro.md` · design: `public/design/founding-pro.html`
+
+1. Menu **Try the widget** when no trial (`free_no_trial`); **Unlock Pro** after trial expiry.
+2. First widget add → founding claim or **30-day trial** sheet (non-blocking).
+3. Trial nudge (day **21–25**; firm at day 30) dismissible via **Not now** in Menu.
+4. After trial without purchase: widget shows **Widget paused** + **Unlock Pro** (not Updating/stale).
+5. Paywall: one-time, restore, benefits = widget + no ads.
+6. Free in-app leave-by still works with ads when trial expired.
+
+### 45. Pin exclusivity & tab transitions (automated)
+
+Product rules: **`docs/pin-behavior.md`** (one global pin; tab transitions; hold semantics).
+
+```bash
+node qa/pin-behavior.mjs
+```
+
+**Expect:** 12× **PASS** — journey pin clears nearby/route; route pin dismisses target; nearby pin dismisses target; `enterJourneyMode` does not re-pin dismissed target; persisted nearby survives `exitNearbyMode`; page load keeps `holdingUntilMs` pin; reconcile keeps nearby over journey pins; dismissed target on true next stays **Next Train**; dismissed target on preferred slot shows **Target train** chrome; **enterJourneyMode** selects pinned commute journey.
+
+Included in release gate:
+
+```bash
+npm run test:web:release
+```
+
+Related pin tests (also in release gate):
+
+```bash
+node qa/pin-swipe-notify.mjs      # swipe + Next Train + pin advance matrix
+node qa/pin-resolution-fixtures.mjs --validate-only
+```
+
+**Manual (optional):** Target train pinned → pin in **Near me** → **My Journeys** shows only nearby pin active (target dismissed). Unpin target → **Near me** → **My Journeys** → target stays unpinned.
+
+### 2. Configured journey (fixture)
+
+1. Open the quick-start URL above (`fixture=normal`).
+2. **Expect:** Route shows `Edgewater Stn, towards Perth`. Hero shows **18 minutes** + departure time. Leave card visible below. Platform + Status populated. “Then” section visible.
+
+### 3. Journey switcher
+
+1. From test 2, open journey switcher and pick **Daily Commute - out** (or add a second configured journey in settings).
+2. **Expect:** Switcher label updates. Selection does not snap back on refresh.
+
+### 4. Swipe — later train
+
+1. `fixture=normal` URL.
+2. Swipe **left** on the hero card.
+3. **Expect:** Departure time advances to the next train (~34 min bucket). Swipe hint disappears and does not return (stored in `localStorage` key `nextTrainSwipeHintSeen`).
+
+### 5. Swipe — earlier train (undo)
+
+1. After test 4, swipe **right** on the hero.
+2. **Expect:** Returns to the first train (~18 min).
+
+### 6. Urgent leave styling
+
+1. Open `fixture=urgent` URL.
+2. **Expect:** Leave card uses urgent border/colour. Countdown says leave in ~2 minutes.
+
+### 7. Late leave styling
+
+1. Open `fixture=late` URL.
+2. **Expect:** Leave card label “You should have left”. Late styling on leave card.
+
+### 8. Empty state
+
+1. Open `fixture=empty` URL.
+2. **Expect:** No crash. Hero shows no trains message. No leave card.
+
+### 9. API error
+
+1. Open `fixture=error` URL (or mock a 500 after a successful empty response).
+2. **Expect:** Error message visible. App remains usable (settings still open).
+3. If the last good response had trains → hero stays visible, dimmed, with **Update failed — times may be out of date**.
+4. If the last good response had no trains (or none loaded) → hero shows **Couldn't refresh times**, not “No upcoming trains”.
+
+### 10. Settings — overlap validation
+
+1. Open settings → edit a journey → set default window **06:00–09:00** on journey A and overlapping window on journey B → Save.
+2. **Expect:** Inline error under Active hours: *Only one journey can be active at one time. These hours overlap …* plus **Fix for me** chip. Invalid window not saved. **Fix for me** keeps the journey you’re saving and minimally adjusts the other.
+
+### 32. Widget already on home screen (Android manual)
+
+1. **No widget** → Menu → **Add home screen widget** → pin-first copy; **Add widget** primary.
+2. **≥1 widget pinned** → same Menu row → *You already have a Next Train widget…* + long-press tip; **Done** primary, **Add another** secondary (still pins).
+
+Jim brief: `docs/jim-brief-widget-already-have.md`
+
+### 33. Journey overlap — Fix for me
+
+1. Two journeys with the same Active hours (e.g. both **15:00–18:00**) on shared days → Save second journey.
+2. **Expect:** Inline overlap error; **Fix for me** keeps the editing journey at **15:00–18:00** and adjusts the *other* journey (e.g. to **12:00–15:00**), with a confirmation line.
+3. Save succeeds; editing journey hours unchanged. Never snaps the editing journey to **06:00–09:00**.
+
+Jim brief: `docs/jim-brief-journey-overlap-friendly.md`
+
+### 11. Settings — Save vs Done
+
+1. Edit leave-before minutes, tap **Done** without Save, reopen journey.
+2. **Expect:** Value unchanged. After **Save**, value persists.
+
+### 14. Live API (optional)
+
+1. Open `http://localhost:3000/?reset=1&station=Edgewater%20Stn&direction=Perth` (no `fixture`).
+2. **Expect:** Real Transperth times load. Countdowns change over time.
+
+## Testing agent prompt
+
+Paste into a **fresh** Cursor agent chat (not the coding session):
+
+> You are a QA agent. Follow `TESTING.md` in this repo. Run `npm start` if needed. Execute smoke tests 1–11, 13, 15 (web), **16** (`node qa/button-visibility.mjs`), **20** (`node qa/stickiness-coaches-logic.mjs`), **21** (`node qa/reminders-dialog.mjs`), and **45** (`node qa/pin-behavior.mjs`). Use fixture URLs with `test=1` where noted. Output a table: test #, PASS/FAIL, notes. Do not fix code unless I ask.
+
+## iOS (Capacitor) — Mac test setup
+
+**Install once on this Mac:** Xcode, Node 22 (`nvm use 22`), `npm install`, [Maestro CLI](https://maestro.mobile.dev) (`curl -Ls "https://get.maestro.mobile.dev" | bash`), Safari **Develop** menu enabled (Safari → Settings → Advanced → *Show features for web developers*).
+
+**No Android Studio / adb needed** for iOS QA.
+
+### Daily workflow
+
+| Step | Command | When |
+|------|---------|------|
+| 1. Web smoke | `npm run test:smoke` | Every `public/` change (fixtures, fast) |
+| 2. Preflight | `npm run test:ios:preflight` | Before simulator run — checks Xcode, Maestro, booted sim |
+| 3. Sync + install | `npm run test:ios:maestro -- --install` | After web changes ship to native |
+| 4. iOS Maestro NT-6 | `npm run test:ios:maestro` | Repeat simulator smoke |
+| 5. Manual NT-6 | Checklist below | Before TestFlight / device sign-off |
+
+The native app uses the **live Vercel API** — web `?fixture=` URLs do not apply in the simulator.
+
+### Automated iOS (Maestro)
+
+Flows live in `.maestro/ios/`:
+
+| Flow | Covers |
+|------|--------|
+| `01-cold-start-seed` | `nexttrain://test/seed` → Edgewater journey (debug sim only) |
+| `02-app-launches` | Chrome visible |
+| `03-journeys-sheet` | My Journeys → Add journey → Custom chip (no hang) |
+| `04-menu-opens` | Menu → Done |
+| `05-seeded-journey-hero` | Seeded route on hero (+ network) |
+| `06-near-me` | Near me + location prompt |
+
+```bash
+npm run test:ios:preflight
+open -a Simulator
+npm run test:ios:maestro -- --install   # first time / after code changes
+npm run test:ios:maestro                  # repeat runs
+npm run test:ios:maestro -- --flow 03-journeys-sheet
+```
+
+**Test seed (debug simulator builds only):**
+
+```
+nexttrain://test/seed?reset=1&preset=morning&station=Edgewater%20Stn&direction=Perth
+```
+
+### NT-6 manual smoke (simulator + device)
+
+Run on **simulator** after Maestro passes; repeat on a **physical iPhone** before TestFlight.
+
+| # | Step | Expect |
+|---|------|--------|
+| 1 | Launch app | No crash; **Near me / My Journeys / Menu** visible |
+| 2 | **Near me** | Location prompt (Allow) or station fallback; departures load |
+| 3 | **My Journeys → Add journey → Custom** | Sheet opens; pick station + direction; **Save** |
+| 4 | Hero | Route + countdown (live API) |
+| 5 | Leave card | Leave-by line visible when journey configured |
+| 6 | **Menu → Remove ads** (or Pro) | Store sheet opens (sandbox on device) |
+| 7 | Ads | Banner loads (test AdMob in debug) |
+| 8 | Force-quit → reopen | Journey data persists |
+
+Sign-off: note simulator/device model + iOS version in `qa/latest.md`.
+
+### Safari Web Inspector (WKWebView debug)
+
+When the app hangs or a sheet fails to appear:
+
+1. Run app in **iOS Simulator**
+2. Safari → **Develop** → *Simulator* → **Next Train**
+3. **Console** — JS errors (e.g. failed `showModal`, fetch timeouts)
+4. **Network** — `/api/next-train` responses
+5. **Storage** — `localStorage.nextTrainSettings`
+
+### Build commands (reference)
+
+```bash
+nvm use 22
+npm run cap:sync:ios
+npx cap open ios          # Xcode → ⌘R
+# or:
+npx cap run ios --target "iPhone 17 Pro"
+```
+
+---
+
+## Android / Capacitor
+
+The native app loads the hosted Vercel API — **fixtures do not apply**. After web smoke passes:
+
+1. `npm run cap:sync`
+2. Run on device/emulator
+3. Manually verify swipe gestures and journey switcher (tests 4–5, 3)
+4. **Play closed test:** complete `docs/DEVICE-SMOKE.md` (~30 min, 15 checks)
+
+## Storage keys (for debugging)
+
+| Key | Storage | Purpose |
+|-----|---------|---------|
+| `nextTrainSettings` | localStorage | Journeys + active journey + `nearbyPin` (see `docs/pin-behavior.md`) |
+| `nextTrainSkip:<journeyId>` | sessionStorage | Client-side train skip offset |
+| `nextTrainManualJourneyOverride` | localStorage | Manual journey picker override |
+| `nextTrainLastNearbyStation` | localStorage | Last successful Near me station (optimistic paint) |
+| `nextTrainOnboardingDone` | localStorage | Onboarding coach completed |
+| `nextTrainSwipeHintSeen` | localStorage | Swipe hint dismissed |
+| `nextTrainAppEngagement` | localStorage | App open count + first journey configured timestamp (stickiness) |
+| `nextTrainWidgetCoach` | localStorage | Widget coach status (`pending` / `snoozed` / `done` / `exhausted`) |
+| `nextTrainLeaveReminderCoach` | localStorage | Leave-reminder coach status (same shape) |
+
+Clear everything: `/?reset=1` or DevTools → Application → Clear site data.
+
+### 24d. Hong Kong provider (catalog / planned — not live)
 
 D1 pack: `docs/hong-kong-d1/`. D2 fixture is a verbatim copy at `qa/fixtures/hong-kong/published-network.json`. Not generated from GTFS. Not generated from the Transport Department all-modes zip. Next Train REST exists and is **not wired**. `adapterReady: false`.
 
