@@ -30,21 +30,27 @@ struct NextTrainTimelineProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (NextTrainEntry) -> Void) {
-        let snapshot = CommuteSchedule.snapshotForDisplay()
-        completion(NextTrainEntry(date: Date(), snapshot: snapshot))
+        DispatchQueue.global(qos: .userInitiated).async {
+            let snapshot = CommuteSchedule.snapshotForDisplay()
+            completion(NextTrainEntry(date: Date(), snapshot: snapshot))
+        }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NextTrainEntry>) -> Void) {
-        let snapshot = CommuteSchedule.load(allowStaleFallback: true)
-        let now = Date()
-        var entries: [NextTrainEntry] = []
-        for offset in 0..<16 {
-            let date = Calendar.current.date(byAdding: .minute, value: offset, to: now) ?? now
-            let repainted = CommuteSchedule.repaintSnapshot(snapshot) ?? snapshot
-            entries.append(NextTrainEntry(date: date, snapshot: repainted))
+        // The fetch inside load() blocks on the network, so keep it off the
+        // thread WidgetKit called us on.
+        DispatchQueue.global(qos: .userInitiated).async {
+            let snapshot = CommuteSchedule.load(allowStaleFallback: true)
+            let now = Date()
+            var entries: [NextTrainEntry] = []
+            for offset in 0..<16 {
+                let date = Calendar.current.date(byAdding: .minute, value: offset, to: now) ?? now
+                let repainted = CommuteSchedule.repaintSnapshot(snapshot, at: date) ?? snapshot
+                entries.append(NextTrainEntry(date: date, snapshot: repainted))
+            }
+            let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
+            completion(Timeline(entries: entries, policy: .after(refresh)))
         }
-        let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
-        completion(Timeline(entries: entries, policy: .after(refresh)))
     }
 }
 

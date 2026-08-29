@@ -19,6 +19,15 @@ public final class NextTrainApiClient {
     String direction,
     int leaveBeforeMinutes
   ) throws Exception {
+    return fetchNextTrain(station, direction, leaveBeforeMinutes, null);
+  }
+
+  public static JSONObject fetchNextTrain(
+    String station,
+    String direction,
+    int leaveBeforeMinutes,
+    String cityId
+  ) throws Exception {
     String query =
       "station=" +
       URLEncoder.encode(station, StandardCharsets.UTF_8.name()) +
@@ -26,6 +35,11 @@ public final class NextTrainApiClient {
       URLEncoder.encode(direction, StandardCharsets.UTF_8.name()) +
       "&leaveBefore=" +
       leaveBeforeMinutes;
+    // The API defaults to Perth when no city is given, so non-Perth
+    // journeys must always name theirs.
+    if (cityId != null && !cityId.isEmpty()) {
+      query += "&city=" + URLEncoder.encode(cityId, StandardCharsets.UTF_8.name());
+    }
 
     URL url = new URL(API_BASE + "/api/next-train?" + query);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
