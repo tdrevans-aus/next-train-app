@@ -914,6 +914,19 @@ D1 pack: `docs/goteborg-d1/` (Expansion-room five-file). D2 fixture is a verbati
 6. Mark probes in those tests: Brunnsparken, Drottningtorget, Korsvägen, Nils Ericsonsplatsen, Liseberg Station / Liseberg Station (tåg) / Liseberg Södra, Gamlestads Torg / Gamlestaden Station, Lindholmen, Göteborg Central.
 7. Adapter uses Trafiklab GTFS Regional `vt` (`TRAFIKLAB_API_KEY`); no TripUpdates for Västtrafik — schedule-only. `/api/next-train?city=goteborg&station=Brunnsparken&direction=Tynnered` stays **501**. Melbourne stays planned. Do not wire UK NR.
 
+### 24c. Hong Kong provider (catalog / planned — not live)
+
+D1 pack: `docs/hong-kong-d1/`. D2 fixture is a verbatim copy at `qa/fixtures/hong-kong/published-network.json`. Not generated from GTFS. Not generated from the Transport Department all-modes zip. Next Train REST exists and is **not wired**. `adapterReady: false`.
+
+1. `assertCityLive("hong-kong")` still returns **501** (`status: planned`, `adapterReady: false`). A missing row would be 400 Unknown city — that is a fail.
+2. Picker: country **Hong Kong** (`hk`) → **Hong Kong (Coming Soon)**. No live board. Do not invent `city=hk`. Do not invent `mtr` / `kowloon`. Do not use China as the country. Do not invent a Light Rail city.
+3. Hub lock: **Admiralty** (TWL × ISL × SIL × EAL, spec ADM). Not Central, not Tsim Sha Tsui, not East Tsim Sha Tsui, not Hung Hom, not Kowloon, not Hong Kong station, not Hong Kong West Kowloon, not Downtown.
+4. Direction is line + terminus (`Island + Chai Wan`, `Tseung Kwan O + Po Lam / LOHAS Park`, `East Rail + Lo Wu / Lok Ma Chau`). Not compass N/S/E/W. Never inbound/outbound or “to City”.
+5. `node qa/hong-kong-planned-gate.mjs` and `node qa/hong-kong-line-map-conformance.mjs` — offline. Hong Kong is not added to `LIVE_CITY_IDS` / `MULTI_CITY_IDS`. Perth / Amsterdam / Rotterdam live-gates stay. Stockholm / Göteborg stay Coming Soon. Melbourne stays planned.
+6. Mark probes in those tests: Admiralty, Central, Tsim Sha Tsui / East Tsim Sha Tsui, Hung Hom, Hong Kong / Kowloon, Exhibition Centre, Lo Wu / Lok Ma Chau, LOHAS Park. Negatives: Airport / AsiaWorld-Expo / Disneyland Resort / Hong Kong West Kowloon / Light Rail.
+7. `/api/next-train?city=hong-kong&station=Admiralty&direction=Chai Wan` stays **501**. `/api/board?city=hong-kong&station=Admiralty` stays **501**. No env key. Do not wire the Next Train REST. Do not include AEL just because the REST serves it.
+8. No D6 network-sweep and no `probe:hong-kong` as a PR gate. D6 must never gate the PR. Melbourne stays planned. Do not wire Light Rail / Airport Express as a second city.
+
 ### 24. Melbourne provider probe (adapter only — not live)
 
 Jim brief: `docs/jim-brief-melbourne-provider.md`

@@ -63,6 +63,13 @@
         { id: "vancouver", name: "Vancouver", timeZone: "America/Vancouver" },
       ],
     },
+    {
+      id: "hk",
+      name: "Hong Kong",
+      regions: [
+        { id: "hong-kong", name: "Hong Kong", timeZone: "Asia/Hong_Kong", comingSoon: true },
+      ],
+    },
   ];
 
   const CITY_BOUNDS = {

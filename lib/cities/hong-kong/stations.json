@@ -1,0 +1,1053 @@
+{
+  "city": "hong-kong",
+  "status": "planned",
+  "timeZone": "Asia/Hong_Kong",
+  "dst": false,
+  "stations": [
+    {
+      "name": "Admiralty",
+      "aliases": [
+        "ADM"
+      ],
+      "siteId": "ADM",
+      "codes": [
+        "ADM"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Austin",
+      "aliases": [
+        "AUS"
+      ],
+      "siteId": "AUS",
+      "codes": [
+        "AUS"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Causeway Bay",
+      "aliases": [
+        "CAB"
+      ],
+      "siteId": "CAB",
+      "codes": [
+        "CAB"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Central",
+      "aliases": [
+        "CEN"
+      ],
+      "siteId": "CEN",
+      "codes": [
+        "CEN"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Chai Wan",
+      "aliases": [
+        "CHW"
+      ],
+      "siteId": "CHW",
+      "codes": [
+        "CHW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Che Kung Temple",
+      "aliases": [
+        "CKT"
+      ],
+      "siteId": "CKT",
+      "codes": [
+        "CKT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Cheung Sha Wan",
+      "aliases": [
+        "CSW"
+      ],
+      "siteId": "CSW",
+      "codes": [
+        "CSW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Choi Hung",
+      "aliases": [
+        "CHH"
+      ],
+      "siteId": "CHH",
+      "codes": [
+        "CHH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "City One",
+      "aliases": [
+        "CIO"
+      ],
+      "siteId": "CIO",
+      "codes": [
+        "CIO"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Diamond Hill",
+      "aliases": [
+        "DIH"
+      ],
+      "siteId": "DIH",
+      "codes": [
+        "DIH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "East Tsim Sha Tsui",
+      "aliases": [
+        "ETS"
+      ],
+      "siteId": "ETS",
+      "codes": [
+        "ETS"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Exhibition Centre",
+      "aliases": [
+        "EXC"
+      ],
+      "siteId": "EXC",
+      "codes": [
+        "EXC"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Fanling",
+      "aliases": [
+        "FAN"
+      ],
+      "siteId": "FAN",
+      "codes": [
+        "FAN"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Fo Tan",
+      "aliases": [
+        "FOT"
+      ],
+      "siteId": "FOT",
+      "codes": [
+        "FOT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Fortress Hill",
+      "aliases": [
+        "FOH"
+      ],
+      "siteId": "FOH",
+      "codes": [
+        "FOH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Hang Hau",
+      "aliases": [
+        "HAH"
+      ],
+      "siteId": "HAH",
+      "codes": [
+        "HAH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Heng Fa Chuen",
+      "aliases": [
+        "HFC"
+      ],
+      "siteId": "HFC",
+      "codes": [
+        "HFC"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Heng On",
+      "aliases": [
+        "HEO"
+      ],
+      "siteId": "HEO",
+      "codes": [
+        "HEO"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Hin Keng",
+      "aliases": [
+        "HIK"
+      ],
+      "siteId": "HIK",
+      "codes": [
+        "HIK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "HKU",
+      "aliases": [
+        "HKU"
+      ],
+      "siteId": "HKU",
+      "codes": [
+        "HKU"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Ho Man Tin",
+      "aliases": [
+        "HOM"
+      ],
+      "siteId": "HOM",
+      "codes": [
+        "HOM"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Hong Kong",
+      "aliases": [
+        "HOK"
+      ],
+      "siteId": "HOK",
+      "codes": [
+        "HOK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Hung Hom",
+      "aliases": [
+        "HUH"
+      ],
+      "siteId": "HUH",
+      "codes": [
+        "HUH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Jordan",
+      "aliases": [
+        "JOR"
+      ],
+      "siteId": "JOR",
+      "codes": [
+        "JOR"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kai Tak",
+      "aliases": [
+        "KAT"
+      ],
+      "siteId": "KAT",
+      "codes": [
+        "KAT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kam Sheung Road",
+      "aliases": [
+        "KSR"
+      ],
+      "siteId": "KSR",
+      "codes": [
+        "KSR"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kennedy Town",
+      "aliases": [
+        "KET"
+      ],
+      "siteId": "KET",
+      "codes": [
+        "KET"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kowloon",
+      "aliases": [
+        "KOW"
+      ],
+      "siteId": "KOW",
+      "codes": [
+        "KOW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kowloon Bay",
+      "aliases": [
+        "KOB"
+      ],
+      "siteId": "KOB",
+      "codes": [
+        "KOB"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kowloon Tong",
+      "aliases": [
+        "KOT"
+      ],
+      "siteId": "KOT",
+      "codes": [
+        "KOT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kwai Fong",
+      "aliases": [
+        "KWF"
+      ],
+      "siteId": "KWF",
+      "codes": [
+        "KWF"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kwai Hing",
+      "aliases": [
+        "KWH"
+      ],
+      "siteId": "KWH",
+      "codes": [
+        "KWH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Kwun Tong",
+      "aliases": [
+        "KWT"
+      ],
+      "siteId": "KWT",
+      "codes": [
+        "KWT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Lai Chi Kok",
+      "aliases": [
+        "LCK"
+      ],
+      "siteId": "LCK",
+      "codes": [
+        "LCK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Lai King",
+      "aliases": [
+        "LAK"
+      ],
+      "siteId": "LAK",
+      "codes": [
+        "LAK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Lam Tin",
+      "aliases": [
+        "LAT"
+      ],
+      "siteId": "LAT",
+      "codes": [
+        "LAT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Lei Tung",
+      "aliases": [
+        "LET"
+      ],
+      "siteId": "LET",
+      "codes": [
+        "LET"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Lo Wu",
+      "aliases": [
+        "LOW"
+      ],
+      "siteId": "LOW",
+      "codes": [
+        "LOW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "LOHAS Park",
+      "aliases": [
+        "LHP"
+      ],
+      "siteId": "LHP",
+      "codes": [
+        "LHP"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Lok Fu",
+      "aliases": [
+        "LOF"
+      ],
+      "siteId": "LOF",
+      "codes": [
+        "LOF"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Lok Ma Chau",
+      "aliases": [
+        "LMC"
+      ],
+      "siteId": "LMC",
+      "codes": [
+        "LMC"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Long Ping",
+      "aliases": [
+        "LOP"
+      ],
+      "siteId": "LOP",
+      "codes": [
+        "LOP"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Ma On Shan",
+      "aliases": [
+        "MOS"
+      ],
+      "siteId": "MOS",
+      "codes": [
+        "MOS"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Mei Foo",
+      "aliases": [
+        "MEF"
+      ],
+      "siteId": "MEF",
+      "codes": [
+        "MEF"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Mong Kok",
+      "aliases": [
+        "MOK"
+      ],
+      "siteId": "MOK",
+      "codes": [
+        "MOK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Mong Kok East",
+      "aliases": [
+        "MKK"
+      ],
+      "siteId": "MKK",
+      "codes": [
+        "MKK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Nam Cheong",
+      "aliases": [
+        "NAC"
+      ],
+      "siteId": "NAC",
+      "codes": [
+        "NAC"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Ngau Tau Kok",
+      "aliases": [
+        "NTK"
+      ],
+      "siteId": "NTK",
+      "codes": [
+        "NTK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "North Point",
+      "aliases": [
+        "NOP"
+      ],
+      "siteId": "NOP",
+      "codes": [
+        "NOP"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Ocean Park",
+      "aliases": [
+        "OCP"
+      ],
+      "siteId": "OCP",
+      "codes": [
+        "OCP"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Olympic",
+      "aliases": [
+        "OLY"
+      ],
+      "siteId": "OLY",
+      "codes": [
+        "OLY"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Po Lam",
+      "aliases": [
+        "POA"
+      ],
+      "siteId": "POA",
+      "codes": [
+        "POA"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Prince Edward",
+      "aliases": [
+        "PRE"
+      ],
+      "siteId": "PRE",
+      "codes": [
+        "PRE"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Quarry Bay",
+      "aliases": [
+        "QUB"
+      ],
+      "siteId": "QUB",
+      "codes": [
+        "QUB"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Racecourse",
+      "aliases": [
+        "RAC"
+      ],
+      "siteId": "RAC",
+      "codes": [
+        "RAC"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sai Wan Ho",
+      "aliases": [
+        "SWH"
+      ],
+      "siteId": "SWH",
+      "codes": [
+        "SWH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sai Ying Pun",
+      "aliases": [
+        "SYP"
+      ],
+      "siteId": "SYP",
+      "codes": [
+        "SYP"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sha Tin",
+      "aliases": [
+        "SHT"
+      ],
+      "siteId": "SHT",
+      "codes": [
+        "SHT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sha Tin Wai",
+      "aliases": [
+        "STW"
+      ],
+      "siteId": "STW",
+      "codes": [
+        "STW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sham Shui Po",
+      "aliases": [
+        "SSP"
+      ],
+      "siteId": "SSP",
+      "codes": [
+        "SSP"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Shau Kei Wan",
+      "aliases": [
+        "SKW"
+      ],
+      "siteId": "SKW",
+      "codes": [
+        "SKW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Shek Kip Mei",
+      "aliases": [
+        "SKM"
+      ],
+      "siteId": "SKM",
+      "codes": [
+        "SKM"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Shek Mun",
+      "aliases": [
+        "SHM"
+      ],
+      "siteId": "SHM",
+      "codes": [
+        "SHM"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sheung Shui",
+      "aliases": [
+        "SHS"
+      ],
+      "siteId": "SHS",
+      "codes": [
+        "SHS"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sheung Wan",
+      "aliases": [
+        "SHW"
+      ],
+      "siteId": "SHW",
+      "codes": [
+        "SHW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Siu Hong",
+      "aliases": [
+        "SIH"
+      ],
+      "siteId": "SIH",
+      "codes": [
+        "SIH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "South Horizons",
+      "aliases": [
+        "SOH"
+      ],
+      "siteId": "SOH",
+      "codes": [
+        "SOH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sung Wong Toi",
+      "aliases": [
+        "SUW"
+      ],
+      "siteId": "SUW",
+      "codes": [
+        "SUW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Sunny Bay",
+      "aliases": [
+        "SUN"
+      ],
+      "siteId": "SUN",
+      "codes": [
+        "SUN"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tai Koo",
+      "aliases": [
+        "TAK"
+      ],
+      "siteId": "TAK",
+      "codes": [
+        "TAK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tai Po Market",
+      "aliases": [
+        "TAP"
+      ],
+      "siteId": "TAP",
+      "codes": [
+        "TAP"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tai Shui Hang",
+      "aliases": [
+        "TSH"
+      ],
+      "siteId": "TSH",
+      "codes": [
+        "TSH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tai Wai",
+      "aliases": [
+        "TAW"
+      ],
+      "siteId": "TAW",
+      "codes": [
+        "TAW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tai Wo",
+      "aliases": [
+        "TWO"
+      ],
+      "siteId": "TWO",
+      "codes": [
+        "TWO"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tai Wo Hau",
+      "aliases": [
+        "TWH"
+      ],
+      "siteId": "TWH",
+      "codes": [
+        "TWH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tin Hau",
+      "aliases": [
+        "TIH"
+      ],
+      "siteId": "TIH",
+      "codes": [
+        "TIH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tin Shui Wai",
+      "aliases": [
+        "TIS"
+      ],
+      "siteId": "TIS",
+      "codes": [
+        "TIS"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tiu Keng Leng",
+      "aliases": [
+        "TIK"
+      ],
+      "siteId": "TIK",
+      "codes": [
+        "TIK"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "To Kwa Wan",
+      "aliases": [
+        "TKW"
+      ],
+      "siteId": "TKW",
+      "codes": [
+        "TKW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tseung Kwan O",
+      "aliases": [
+        "TKO"
+      ],
+      "siteId": "TKO",
+      "codes": [
+        "TKO"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tsim Sha Tsui",
+      "aliases": [
+        "TST"
+      ],
+      "siteId": "TST",
+      "codes": [
+        "TST"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tsing Yi",
+      "aliases": [
+        "TSY"
+      ],
+      "siteId": "TSY",
+      "codes": [
+        "TSY"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tsuen Wan",
+      "aliases": [
+        "TSW"
+      ],
+      "siteId": "TSW",
+      "codes": [
+        "TSW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tsuen Wan West",
+      "aliases": [
+        "TWW"
+      ],
+      "siteId": "TWW",
+      "codes": [
+        "TWW"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tuen Mun",
+      "aliases": [
+        "TUM"
+      ],
+      "siteId": "TUM",
+      "codes": [
+        "TUM"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Tung Chung",
+      "aliases": [
+        "TUC"
+      ],
+      "siteId": "TUC",
+      "codes": [
+        "TUC"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "University",
+      "aliases": [
+        "UNI"
+      ],
+      "siteId": "UNI",
+      "codes": [
+        "UNI"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Wan Chai",
+      "aliases": [
+        "WAC"
+      ],
+      "siteId": "WAC",
+      "codes": [
+        "WAC"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Whampoa",
+      "aliases": [
+        "WHA"
+      ],
+      "siteId": "WHA",
+      "codes": [
+        "WHA"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Wong Chuk Hang",
+      "aliases": [
+        "WCH"
+      ],
+      "siteId": "WCH",
+      "codes": [
+        "WCH"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Wong Tai Sin",
+      "aliases": [
+        "WTS"
+      ],
+      "siteId": "WTS",
+      "codes": [
+        "WTS"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Wu Kai Sha",
+      "aliases": [
+        "WKS"
+      ],
+      "siteId": "WKS",
+      "codes": [
+        "WKS"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Yau Ma Tei",
+      "aliases": [
+        "YMT"
+      ],
+      "siteId": "YMT",
+      "codes": [
+        "YMT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Yau Tong",
+      "aliases": [
+        "YAT"
+      ],
+      "siteId": "YAT",
+      "codes": [
+        "YAT"
+      ],
+      "mode": "metro"
+    },
+    {
+      "name": "Yuen Long",
+      "aliases": [
+        "YUL"
+      ],
+      "siteId": "YUL",
+      "codes": [
+        "YUL"
+      ],
+      "mode": "metro"
+    }
+  ]
+}
