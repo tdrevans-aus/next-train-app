@@ -26,7 +26,8 @@ enum WidgetPinResolver {
         let payload = try NextTrainApiClient.fetchNextTrain(
             station: pin["station"] as? String ?? "",
             direction: pin["direction"] as? String ?? "",
-            leaveBeforeMinutes: leaveBefore
+            leaveBeforeMinutes: leaveBefore,
+            city: pin["cityId"] as? String
         )
         let departureIso = pin["departureIso"] as? String ?? ""
         var trip = NearbyPinHelper.findTripByDeparture(payload, departureIso: departureIso)
@@ -53,7 +54,8 @@ enum WidgetPinResolver {
         let payload = try NextTrainApiClient.fetchNextTrain(
             station: journey["station"] as? String ?? "",
             direction: journey["direction"] as? String ?? "",
-            leaveBeforeMinutes: leaveBefore
+            leaveBeforeMinutes: leaveBefore,
+            city: journey["cityId"] as? String
         )
         guard let trip = JourneyPinHelper.resolvePinnedTrip(payload, journey: journey) else { return nil }
 

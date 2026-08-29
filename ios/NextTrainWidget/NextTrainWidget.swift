@@ -15,7 +15,7 @@ struct NextTrainWidget: Widget {
         StaticConfiguration(kind: kind, provider: NextTrainTimelineProvider()) { entry in
             NextTrainWidgetView(snapshot: entry.snapshot)
                 .containerBackground(for: .widget) {
-                    Color(.systemBackground)
+                    WidgetCardBackground()
                 }
         }
         .configurationDisplayName("Next Train")
@@ -30,21 +30,27 @@ struct NextTrainTimelineProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (NextTrainEntry) -> Void) {
-        let snapshot = CommuteSchedule.snapshotForDisplay()
-        completion(NextTrainEntry(date: Date(), snapshot: snapshot))
+        DispatchQueue.global(qos: .userInitiated).async {
+            let snapshot = CommuteSchedule.snapshotForDisplay()
+            completion(NextTrainEntry(date: Date(), snapshot: snapshot))
+        }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NextTrainEntry>) -> Void) {
-        let snapshot = CommuteSchedule.load(allowStaleFallback: true)
-        let now = Date()
-        var entries: [NextTrainEntry] = []
-        for offset in 0..<16 {
-            let date = Calendar.current.date(byAdding: .minute, value: offset, to: now) ?? now
-            let repainted = CommuteSchedule.repaintSnapshot(snapshot) ?? snapshot
-            entries.append(NextTrainEntry(date: date, snapshot: repainted))
+        // The fetch inside load() blocks on the network, so keep it off the
+        // thread WidgetKit called us on.
+        DispatchQueue.global(qos: .userInitiated).async {
+            let snapshot = CommuteSchedule.load(allowStaleFallback: true)
+            let now = Date()
+            var entries: [NextTrainEntry] = []
+            for offset in 0..<16 {
+                let date = Calendar.current.date(byAdding: .minute, value: offset, to: now) ?? now
+                let repainted = CommuteSchedule.repaintSnapshot(snapshot, at: date) ?? snapshot
+                entries.append(NextTrainEntry(date: date, snapshot: repainted))
+            }
+            let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
+            completion(Timeline(entries: entries, policy: .after(refresh)))
         }
-        let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now.addingTimeInterval(900)
-        completion(Timeline(entries: entries, policy: .after(refresh)))
     }
 }
 
@@ -53,16 +59,35 @@ struct NextTrainEntry: TimelineEntry {
     let snapshot: [String: Any]
 }
 
-struct NextTrainWidgetView: View {
-    @Environment(\.widgetFamily) private var family
-    let snapshot: [String: Any]
-
-    private var accentColor: Color { Color(red: 0.0, green: 0.55, blue: 0.52) }
-    private var leaveCalmColor: Color { Color(red: 0.36, green: 0.45, blue: 0.43) }
-    private var leaveAmberColor: Color { Color(red: 0.71, green: 0.33, blue: 0.04) }
-    private var lateColor: Color { Color(red: 0.75, green: 0.07, blue: 0.24) }
+/// Card background: system base plus the user's appearance tint. In the
+/// accented/vibrant rendering modes (iOS 18 tinted home screen, StandBy)
+/// the system supplies the surface, so no custom paint is added.
+struct WidgetCardBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.widgetRenderingMode) private var renderingMode
 
     var body: some View {
+        if renderingMode == .fullColor {
+            ZStack {
+                Color(.systemBackground)
+                WidgetAppearance.resolve(colorScheme: colorScheme).cardTint
+            }
+        } else {
+            Color(.systemBackground)
+        }
+    }
+}
+
+struct NextTrainWidgetView: View {
+    @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.widgetRenderingMode) private var renderingMode
+    let snapshot: [String: Any]
+
+    private var isFullColor: Bool { renderingMode == .fullColor }
+
+    var body: some View {
+        let appearance = WidgetAppearance.resolve(colorScheme: colorScheme)
         let label = snapshot["label"] as? String ?? "NEXT TRAIN"
         let primary = snapshot["primary"] as? String ?? "—"
         let trainClock = snapshot["trainClock"] as? String ?? ""
@@ -72,7 +97,22 @@ struct NextTrainWidgetView: View {
         let urgent = snapshot["urgent"] as? Bool ?? false
         let late = snapshot["late"] as? Bool ?? false
         let outsideHours = snapshot["outsideHoursIdle"] as? Bool ?? false
-        let leaveColor = late ? lateColor : (urgent ? leaveAmberColor : leaveCalmColor)
+
+        // Parity with WidgetUiBuilder: calm leave text uses the muted palette
+        // colour; urgent/late use the shared semantic colours.
+        let mutedStyle = isFullColor ? AnyShapeStyle(appearance.muted) : AnyShapeStyle(.secondary)
+        let textStyle = isFullColor ? AnyShapeStyle(appearance.text) : AnyShapeStyle(.primary)
+        let accentStyle = isFullColor ? AnyShapeStyle(appearance.accent) : AnyShapeStyle(.primary)
+        let leaveStyle: AnyShapeStyle
+        if !isFullColor {
+            leaveStyle = AnyShapeStyle(.primary)
+        } else if late {
+            leaveStyle = AnyShapeStyle(appearance.late)
+        } else if urgent {
+            leaveStyle = AnyShapeStyle(appearance.leaveUrgent)
+        } else {
+            leaveStyle = AnyShapeStyle(appearance.muted)
+        }
 
         Link(destination: widgetURL()) {
             VStack(alignment: .leading, spacing: 6) {
@@ -80,16 +120,17 @@ struct NextTrainWidgetView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(label.uppercased())
                             .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(mutedStyle)
                         Text(primary)
                             .font(.system(size: family == .systemSmall ? 28 : 34, weight: .bold))
-                            .foregroundStyle(accentColor)
+                            .foregroundStyle(accentStyle)
+                            .widgetAccentable()
                             .minimumScaleFactor(0.7)
                             .lineLimit(1)
                         if !trainClock.isEmpty {
                             Text(trainClock)
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(textStyle)
                         }
                     }
                     Spacer(minLength: 8)
@@ -97,11 +138,12 @@ struct NextTrainWidgetView: View {
                         VStack(alignment: .trailing, spacing: 2) {
                             Text("LEAVE")
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(mutedStyle)
                             Text(secondary)
                                 .font(.caption)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(leaveColor)
+                                .foregroundStyle(leaveStyle)
+                                .widgetAccentable()
                                 .multilineTextAlignment(.trailing)
                         }
                     }
@@ -110,14 +152,14 @@ struct NextTrainWidgetView: View {
                 if !route.isEmpty && primary != "Pin a train" {
                     Text(route)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(mutedStyle)
                         .lineLimit(1)
                 }
 
                 if family == .systemMedium, !updatedLine.isEmpty {
                     Text(updatedLine)
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(mutedStyle)
                         .lineLimit(1)
                 }
             }
