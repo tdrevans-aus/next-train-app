@@ -15,6 +15,7 @@ import { runGtfsRefresh } from "../lib/gtfs-refresh.js";
  */
 export const config = {
   maxDuration: 300,
+  memory: 3009,
 };
 
 export default async function handler(req, res) {
@@ -26,6 +27,7 @@ export default async function handler(req, res) {
   const authHeader = req.headers["authorization"];
   if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
     const report = await runGtfsRefresh();
+    console.log("gtfs-refresh:", JSON.stringify(report));
     res.status(report.ok ? 200 : 500).json(report);
     return;
   }
