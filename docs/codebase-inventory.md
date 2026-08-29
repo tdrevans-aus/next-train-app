@@ -236,9 +236,9 @@ Triggered by the ~18 → 309 city expansion plan. Not a "someday" item — the c
 
 | # | Task | Effort | ROI | Status |
 |---|------|--------|-----|--------|
-| 6.1 | Column-prune `qa/fixtures/*/gtfs/stop_times.txt` + `trips.txt` (drop ~5 unused GTFS columns per table) | S | Real bytes off today's fixtures, any scale | **In progress** |
-| 6.2 | Cache `loadGtfsStaticFromDirectory` (currently reparses full CSV per request — live perf bug, not just a scaling one) | S | Immediate perf fix, 9 cities | **In progress** |
-| 6.3 | Move fixture-backed cities (sydney, brisbane, amsterdam, rotterdam, vancouver, canberra, gold-coast, newcastle) off committed git fixtures onto Vercel Blob + `loadGtfsStatic({url})`, same pattern already proven by adelaide/perth/etc. | M | Removes the git/deployment size ceiling entirely | **In progress** — amsterdam done (reference impl) |
+| 6.1 | Column-prune `qa/fixtures/*/gtfs/stop_times.txt` + `trips.txt` (drop ~5 unused GTFS columns per table) | S | Real bytes off today's fixtures, any scale | **Done** |
+| 6.2 | Cache `loadGtfsStaticFromDirectory` (currently reparses full CSV per request — live perf bug, not just a scaling one) | S | Immediate perf fix, 9 cities | **Done** |
+| 6.3 | Move fixture-backed cities (sydney, brisbane, amsterdam, rotterdam, vancouver, canberra, gold-coast, newcastle) off committed git fixtures onto Vercel Blob + `loadGtfsStatic({url})`, same pattern already proven by adelaide/perth/etc. | M | Removes the git/deployment size ceiling entirely | **Done** — `qa/fixtures/*/gtfs` 120MB → 2.5MB tracked |
 | 6.4 | Deprecate `netlify/functions/` (unmaintained since first release, doesn't know the multi-city registry) | S | Removes a design constraint on 6.3's storage choice | **Done** |
 | 6.5 | Scheduled refresh job (upstream fetch → trim → column-diet → blob upload) replacing manual `trim-*.mjs` + git commit | M | Required for 309 cities to ever get refreshed at all | Not started |
 | 6.6 | Precomputed compact per-city index format (defer until 6.3 is measured in production) | L | Only pursue if parse-on-cache-miss cost is a real problem | Deferred |

@@ -3,7 +3,7 @@
 **For:** Jim (implement, phased)
 **From:** Claude (repo-size review) / Tim (product)
 **Date:** 29 Aug 2026
-**Status:** Scoped — not started. Decide Phase 1 storage target and Netlify question before coding.
+**Status:** Phases 0, 1, and the Netlify decision are done (29 Aug 2026). Storage target: Vercel Blob (store `next-train-gtfs`, linked to this project). Netlify deprecated and removed. All 8 runtime-fixture-backed cities (sydney, brisbane, amsterdam, rotterdam, vancouver, canberra, gold-coast, newcastle) now fetch via `loadGtfsStatic({ url: gtfsFixtureBlobUrl(city) })` instead of a committed local fixture — `qa/fixtures/*/gtfs` dropped from 120MB to 2.5MB tracked in git. `qa/fixtures/auckland/gtfs` and `qa/fixtures/wellington/gtfs` remain committed on purpose: auckland's fixture is build-time-only (feeds `build-line-map.mjs`, never read at runtime — confirmed via grep, not part of this brief's scaling problem), and wellington isn't live yet. Phase 2 (compact index format) and the automated refresh job (§3.2's scheduled pipeline, item 6.5 in `docs/codebase-inventory.md`) remain **not started** — cities are on Blob but still refreshed by manually re-running `scripts/publish-gtfs-fixture-to-blob.mjs <city>` after a local `trim-*-gtfs` regeneration, same cadence as before, just a different destination.
 **Related:** `docs/jim-brief-gtfs-fixture-diet.md` (complementary, not a substitute — see §5) · `lib/providers/gtfs/static-cache.js` · `lib/cities/live-city-api.js` · `lib/providers/registry.js`
 **Out of scope:** Native app / Capacitor bundle size (`webDir` is `public/`; `qa/fixtures` never ships in the APK/IPA — this is a server-only concern), rewriting the CSV parser or GTFS query logic, any change to computed schedule output
 

@@ -3,7 +3,7 @@
 **For:** Jim (implement)
 **From:** Claude (repo-size review) / Tim (product)
 **Date:** 29 Aug 2026
-**Status:** Scoped — not started
+**Status:** Done (29 Aug 2026) — column diet applied to sydney, brisbane, rotterdam, vancouver, canberra, gold-coast, newcastle, auckland, wellington. Amsterdam's local fixture was migrated to Vercel Blob before this landed (see `docs/jim-brief-gtfs-data-platform-scale.md`) and still carries pre-diet columns — a small (~9.8MB raw) known gap, follow up if it matters.
 **Related:** `docs/codebase-inventory.md` · `docs/dead-code-inventory.md` (D-12, resolved same day) · `docs/jim-brief-gtfs-data-platform-scale.md` (complementary — that brief removes the git/deployment size ceiling this one still lives under; do both) · `lib/providers/gtfs/static-cache.js` · `scripts/trim-*-gtfs.mjs` / `trim-sydney-gtfs.py`
 **Out of scope:** Date-range/service-span trimming, route/mode filtering (already correct), rewriting the CSV parser, touching any non-fixture GTFS consumer (`melbourne.js` uses a live API, not these fixtures)
 
