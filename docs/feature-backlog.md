@@ -41,6 +41,7 @@
 | **FB-02** | **Other Australian cities** | Expand beyond Perth Transperth. First candidate research: Sydney vs Melbourne — see `docs/city-2-bookmarks.md`. Same product job (leave / next train / journeys); local API + ToS + competition checks. Perth station picker (**FB-05**) already shipped; reuse for city-2 lists. | **Done** (Tim, 27 Aug 2026) |
 | **FB-03** | **Any city with a train API** | Longer-term: city pack / adapter model for any metro that exposes a reliable live (or schedule) train API. Needs multi-city architecture, station graphs, and store listing strategy per region — not a quick locale swap. | **Done** (Tim, 27 Aug 2026) |
 | **FB-05** | **Station type-to-filter** | Combobox on journey detail + Near me; list-first open, **Search stations** to type. Briefs: `docs/jim-brief-station-typeahead.md`, `docs/jim-brief-station-picker-list-first.md`. | **Done** (Aug 2026) |
+| **FB-47** | **Curated network-model API (B2B)** | Offer the curated per-city layer — `published-network.json` catalogs, direction models, hub-locks, v1 scope cuts, and the frozen `/api/next-train` "when do I leave" contract — as an external API / licensable dataset once expansion waves land. **Not** raw GTFS/GTFS-RT rehosting: most feed licenses prohibit redistribution, and Transitland (commercial) + Transitous (free) already own that space. The differentiated asset is the curation layer no aggregator has. Prereqs before any launch decision: per-feed license/redistribution terms captured in every oracle report (Nico now records these — `docs/nico-research-sources.md`), and provider contract kept free of app-internal assumptions (Expansion Playbook §08). Revisit after Wave 2. | Backlog — **Aug 2026** |
 | **FB-07** | **Process: find + merge same-line directions** | **v8:** heuristic + Perth line map shipped (`docs/direction-collapse-heuristic.md`, `lib/cities/perth/line-map.json`). Groups: Yanchep←Whitfords/Clarkson/Butler, Mandurah←Cockburn, Fremantle←Claremont. Repeatable for other cities (e.g. Brisbane review froze groups empty). Not a leftover product item. | **Done** — **v8** |
 
 ---
@@ -136,6 +137,7 @@
 | Native true-next naming (FB-44) | `docs/feature-backlog.md` **FB-44** · **Done** 21 Aug 2026 |
 | Robolectric widget layout tests (FB-28) | `docs/feature-backlog.md` **FB-28** · TESTING.md **§22** |
 | QA infrastructure (CI, run-all, helpers) | `docs/qa-infrastructure-plan.md` |
+| Curated network-model API (FB-47) | `docs/feature-backlog.md` **FB-47** · license capture: `docs/nico-research-sources.md` |
 
 ---
 

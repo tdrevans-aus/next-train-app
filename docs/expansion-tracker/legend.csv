@@ -1,0 +1,51 @@
+Next Train — global expansion tracker,
+Workbook for Tim Evans. Urban passenger rail only: metro / subway / S-Bahn / commuter / light rail / tram-train. Not villages with a mainline station. Not bus-only cities. Generated 28 Aug 2026 PT.,
+Status,"Meaning (Cities and Countries — exact strings, dropdown)"
+Done,Tester-live (not public store). City pack is live for testers. Do not treat as App Store public.
+In flight,"Packed and/or Jim wiring. Started, not finished as a country. Includes D1-done cities still waiting on live flip."
+To Do,Queued or unscoped. No work started. Use Wave to see whether it is near-term or Later.
+Blocked,Cannot proceed. Key / account / policy. Not a skip — parked until the named owner unblocks.
+Not doing,Explicit skip. Do not pack. Leave the row so the skip is visible and not re-litigated.
+Wave,"Attack order. Sort Cities by Wave (Skip last), then Country, then City."
+0 Close open tabs,"Work already open: in-flight packs, wiring, Coming Soon. Finish or park these before starting new cities in the same country."
+1 Finish started countries,"Remaining in-scope cities in Australia, New Zealand, United Kingdom, Netherlands, Sweden, Canada — including Done rows in those countries."
+2 Next new countries,"Locked order after started countries: Norway Oslo, Denmark Copenhagen, Finland Helsinki, Belgium Brussels metro, Ireland Dublin Luas (after UK). US (already planned, after Sweden D1s, city-by-city): DC WMATA first → Chicago CTA L → BART → Boston MBTA subway → LA Metro rail."
+3 Later Europe,"Switzerland (all listed cities), Austria Vienna, Czechia Prague, Portugal Lisbon. US: NYC subway Wave 3; other US light rail Wave 3. DE: Berlin U-Bahn (after first US cities; v1 U-Bahn only, NO S-Bahn), then Munich U-Bahn, Hamburg U-Bahn. JP: Osaka Metro first (not Tokyo), then Fukuoka / Nagoya / Sapporo, Tokyo later (multi-operator)."
+Later,"Real metro / urban-rail cities not in the near queue. Status = To Do, Owner blank, Notes = unscoped unless we already know a feed fact."
+Skip,Paired with Status = Not doing. Sort last.
+Owner,Who moves the row. Blank = unscoped.
+Luke,AU leftovers + non-UK countries already started + Wave 2 / Wave 3.
+Zoe,UK only.
+Jim,Wiring / live flip. Not D1 packing.
+Tim,"Key / account blockers (PTV, Darwin/RDM, Toronto, and anything that needs EvansAppStudio)."
+(blank),Unscoped Later (or Skip). Do not assign until the city enters a numbered wave.
+Locked attack-order rules,Do not reorder this queue without Tim.
+UK (Zoe),1) Absorb Ellesmere Port into Liverpool City Region (Zoe is on this now). 2) Greater Manchester. 3) West Yorkshire. 4) South Yorkshire. 5) North East. 6) East Midlands. 7) West of England. 8) South Wales. 9) Rest of Wales. 10) Glasgow. 11) Edinburgh. 12) Rest of Scotland. 13) London & South East National Rail. 14) Leftover England (Solent / Thames Valley split). One Darwin contract for NR. TfL stays its own city. NI out of UK v1. Buses out.
+Sweden (Luke),"After Göteborg: Malmö/Skåne (Skånetrafiken), then Uppsala (UL). Trafiklab keys already on Vercel. Stockholm hub is T-Centralen — not Stockholm City, not Stockholms central."
+Wave 2 (Luke),Norway Oslo → Denmark Copenhagen → Finland Helsinki → Belgium Brussels metro → Ireland Dublin Luas (after UK). US after Sweden D1s: DC WMATA first → Chicago CTA L → BART → Boston MBTA subway → LA Metro rail.
+Wave 3 (Luke),"Switzerland → Austria Vienna → Czechia Prague → Portugal Lisbon. US: NYC subway; other US light rail. DE: Berlin U-Bahn (after first US cities) → Munich U-Bahn → Hamburg U-Bahn (v1 U-Bahn only, NO S-Bahn). JP: Osaka Metro first → Fukuoka / Nagoya / Sapporo → Tokyo later (multi-operator)."
+Later,"France; Spain (Madrid/Barcelona and other metro cities); Italy; then other real metro countries not in Skip. US leftover metros (Atlanta, Baltimore, Cleveland, Honolulu, Miami, Philadelphia, San Juan) + San Francisco Muni and commuters (LIRR, Metro-North, NJ Transit, Metra, Caltrain, MARC, VRE, Sounder, PATH). Other DE cities. Other JP cities (Hiroshima, Kobe, Kyoto, Sendai, Yokohama)."
+Do not start,"Singapore, Nepal, Vietnam, Russia, Belarus, North Korea. The Hague / Utrecht tram-skip. Christchurch / Hamilton / Dunedin / KiwiRail national. Hobart / Darwin. Northern Ireland. Ellesmere Port (folded into LCR). US/DE/JP inherited 24 Aug skips reversed 2026-08-28."
+Country roll-up,"Countries.Status is a roll-up, not a second opinion. Recalculate when Cities change."
+Done,Every in-scope city is Done. None yet: AU is not Done while Melbourne is Blocked and Canberra / Gold Coast / Newcastle are In flight.
+In flight,"At least one city In flight or Done, and the country is not finished. AU, NZ, UK, NL, SE, CA are In flight."
+Blocked,"The country cannot proceed at all. Melbourne does not block all of AU. Darwin blocks UK NR live boards but London is Done, so UK = In flight."
+Not doing,"Entire country skipped: Singapore, Nepal, Vietnam, Russia, Belarus, North Korea. (US/DE/JP inherited skips reversed 2026-08-28 — now To Do, city-by-city.)"
+To Do,Not started. Wave 2/3 countries sit above Later countries on this sheet; Status is still To Do for both.
+Scope rules,What belongs on Cities.
+In,Every country with urban passenger rail. Every metro city. Major S-Bahn / commuter / light rail / tram-train that is a realistic Next Train city.
+Out,Villages with a mainline station. Bus-only cities. Heritage-only trams. Airport people-movers. SeaBus / ferries. Sunshine Coast stays inside Brisbane SEQ. Wollongong / Central Coast stay with Sydney.
+v1 cuts (locked),"Amsterdam: no tram, bus, ferry, NS, Schiphol. Vancouver v1: SkyTrain Expo / Millennium / Canada Line only — no SeaBus, bus, West Coast Express. Canberra R1 only. Gold Coast G:link L1 only. Newcastle NSW NLR only. Auckland CRL out until passenger-open."
+Known feed / key facts,Short notes already on city rows. Do not invent new statuses for these.
+Darwin / RDM,"UK National Rail live boards need DARWIN_LDB_TOKEN. EvansAppStudio is AU-registered on Rail Data Marketplace. This is Tim/RDM, not a city skip. WM and Ellesmere Port stay In flight / Coming Soon until the token exists."
+PTV,Melbourne blocked on PTV Timetable API key. Parked. No follow-up unless Tim says.
+OVapi,"Netherlands: no key. Amsterdam metro tester-live; Rotterdam pack uses OVapi, not merged into Amsterdam."
+Trafiklab,Sweden keys already on Vercel.
+TransLink,Vancouver attribution required.
+LTA,Singapore refuses MRT next-train (Parliament Jan 2026).
+Rotterdam,"D1 DONE 2026-08-28. Pack docs/rotterdam-d1/. Jim has tester-live paste (city rotterdam, RET metro A–E, hub Beurs)."
+How to use,Operational notes for this file.
+Dropdowns,"Status is a data-validation list on Cities and Countries, including ~500 extra blank rows so new cities keep the dropdown. Wave is free text using the locked strings (not a dropdown)."
+Filters,Header row is frozen; autofilter is on. Filter Status or Wave to run stand-up.
+Colours,"Done = green, In flight = amber, To Do = none, Blocked = red, Not doing = grey. Header is navy with one gold accent rule. Do not rainbow-code countries."
+Sheets,Burndown = work done vs remaining (opens first; COUNTIF on Cities Status). Cities = working list. Countries = roll-up. Legend = this page. Do not add a fourth status vocabulary.

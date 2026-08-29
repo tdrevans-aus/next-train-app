@@ -1,0 +1,1117 @@
+{
+  "city": "stockholm",
+  "status": "planned",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Abrahamsberg",
+      "aliases": [],
+      "siteId": 9110,
+      "lat": 59.3368663392784,
+      "lng": 17.9527525811065
+    },
+    {
+      "name": "Akalla",
+      "aliases": [],
+      "siteId": 9300,
+      "lat": 59.4154606839982,
+      "lng": 17.9132778129664
+    },
+    {
+      "name": "Alby",
+      "aliases": [],
+      "siteId": 9282,
+      "lat": 59.2391882247589,
+      "lng": 17.8466064887099
+    },
+    {
+      "name": "Alvik",
+      "aliases": [],
+      "siteId": 9112,
+      "lat": 59.3329381479123,
+      "lng": 17.9806240326063
+    },
+    {
+      "name": "Arlanda central",
+      "aliases": [
+        "Arlanda Centralstation"
+      ],
+      "siteId": 9511,
+      "lat": 59.6508842113286,
+      "lng": 17.9313620197202
+    },
+    {
+      "name": "Aspudden",
+      "aliases": [],
+      "siteId": 9293,
+      "lat": 59.3056912815986,
+      "lng": 18.002187118831
+    },
+    {
+      "name": "Axelsberg",
+      "aliases": [],
+      "siteId": 9291,
+      "lat": 59.3040323980964,
+      "lng": 17.97740867346
+    },
+    {
+      "name": "Bagarmossen",
+      "aliases": [],
+      "siteId": 9141,
+      "lat": 59.2765961552911,
+      "lng": 18.1335052242798
+    },
+    {
+      "name": "Bandhagen",
+      "aliases": [],
+      "siteId": 9163,
+      "lat": 59.2705580174688,
+      "lng": 18.0482722040434
+    },
+    {
+      "name": "Barkarby",
+      "aliases": [],
+      "siteId": 9703,
+      "lat": 59.4044294556303,
+      "lng": 17.8659444029027
+    },
+    {
+      "name": "Bergshamra",
+      "aliases": [],
+      "siteId": 9202,
+      "lat": 59.3801121173706,
+      "lng": 18.0383249878343
+    },
+    {
+      "name": "Björkhagen",
+      "aliases": [],
+      "siteId": 9143,
+      "lat": 59.2913554941061,
+      "lng": 18.1160815137454
+    },
+    {
+      "name": "Blackeberg",
+      "aliases": [],
+      "siteId": 9105,
+      "lat": 59.3495606660551,
+      "lng": 17.8847697046021
+    },
+    {
+      "name": "Blåsut",
+      "aliases": [],
+      "siteId": 9187,
+      "lat": 59.2895324597963,
+      "lng": 18.091047642411
+    },
+    {
+      "name": "Bredäng",
+      "aliases": [],
+      "siteId": 9289,
+      "lat": 59.2947376652726,
+      "lng": 17.9333857856863
+    },
+    {
+      "name": "Bro",
+      "aliases": [],
+      "siteId": 9711,
+      "lat": 59.5116230080052,
+      "lng": 17.6363094385068
+    },
+    {
+      "name": "Brommaplan",
+      "aliases": [],
+      "siteId": 9109,
+      "lat": 59.3382959612222,
+      "lng": 17.9378670110751
+    },
+    {
+      "name": "Bålsta",
+      "aliases": [],
+      "siteId": 9710,
+      "lat": 59.5687473249131,
+      "lng": 17.5315917680306
+    },
+    {
+      "name": "Danderyds sjukhus",
+      "aliases": [],
+      "siteId": 9201,
+      "lat": 59.3900601961384,
+      "lng": 18.0426057199932
+    },
+    {
+      "name": "Duvbo",
+      "aliases": [],
+      "siteId": 9324,
+      "lat": 59.3678020122562,
+      "lng": 17.9651920804991
+    },
+    {
+      "name": "Enskede gård",
+      "aliases": [],
+      "siteId": 9167,
+      "lat": 59.2896351857597,
+      "lng": 18.0703623458846
+    },
+    {
+      "name": "Farsta",
+      "aliases": [],
+      "siteId": 9181,
+      "lat": 59.2436344477772,
+      "lng": 18.0937623899521
+    },
+    {
+      "name": "Farsta strand",
+      "aliases": [],
+      "siteId": 9180,
+      "lat": 59.236060845357,
+      "lng": 18.101236963156
+    },
+    {
+      "name": "Fittja",
+      "aliases": [],
+      "siteId": 9283,
+      "lat": 59.2479552147856,
+      "lng": 17.86124226778
+    },
+    {
+      "name": "Flemingsberg",
+      "aliases": [],
+      "siteId": 9526,
+      "lat": 59.2192399841871,
+      "lng": 17.947987167813
+    },
+    {
+      "name": "Fridhemsplan",
+      "aliases": [],
+      "siteId": 9115,
+      "lat": 59.3321287010252,
+      "lng": 18.0291302694077
+    },
+    {
+      "name": "Fruängen",
+      "aliases": [],
+      "siteId": 9260,
+      "lat": 59.2855983112276,
+      "lng": 17.9654584780999
+    },
+    {
+      "name": "Gamla stan",
+      "aliases": [],
+      "siteId": 9193,
+      "lat": 59.3230154032428,
+      "lng": 18.0681902578054
+    },
+    {
+      "name": "Globen",
+      "aliases": [],
+      "siteId": 9168,
+      "lat": 59.2936671609802,
+      "lng": 18.076037188386
+    },
+    {
+      "name": "Gnesta",
+      "aliases": [],
+      "siteId": 9540,
+      "lat": 59.0482501687844,
+      "lng": 17.3136654400994
+    },
+    {
+      "name": "Gröndalsviken",
+      "aliases": [],
+      "siteId": 9721,
+      "lat": 58.8987644065291,
+      "lng": 17.9323220609646
+    },
+    {
+      "name": "Gubbängen",
+      "aliases": [],
+      "siteId": 9183,
+      "lat": 59.2619577249649,
+      "lng": 18.0827840340904
+    },
+    {
+      "name": "Gullmarsplan",
+      "aliases": [],
+      "siteId": 9189,
+      "lat": 59.2984218698272,
+      "lng": 18.0809364762737
+    },
+    {
+      "name": "Gärdet",
+      "aliases": [],
+      "siteId": 9221,
+      "lat": 59.3480838652274,
+      "lng": 18.1022811307506
+    },
+    {
+      "name": "Hagsätra",
+      "aliases": [],
+      "siteId": 9160,
+      "lat": 59.2616070826723,
+      "lng": 18.0166589052988
+    },
+    {
+      "name": "Hallonbergen",
+      "aliases": [],
+      "siteId": 9303,
+      "lat": 59.3755672991178,
+      "lng": 17.970190441858
+    },
+    {
+      "name": "Hallunda",
+      "aliases": [],
+      "siteId": 9281,
+      "lat": 59.2432820392459,
+      "lng": 17.8259405962412
+    },
+    {
+      "name": "Hammarbyhöjden",
+      "aliases": [],
+      "siteId": 9144,
+      "lat": 59.2947127994241,
+      "lng": 18.1070221813453
+    },
+    {
+      "name": "Handen",
+      "aliases": [],
+      "siteId": 9730,
+      "lat": 59.167555121793,
+      "lng": 18.1366891414625
+    },
+    {
+      "name": "Helenelund",
+      "aliases": [],
+      "siteId": 9507,
+      "lat": 59.4094616273478,
+      "lng": 17.9622597026878
+    },
+    {
+      "name": "Hemfosa",
+      "aliases": [],
+      "siteId": 9725,
+      "lat": 59.0680581172718,
+      "lng": 17.9770492397035
+    },
+    {
+      "name": "Hjulsta",
+      "aliases": [],
+      "siteId": 9320,
+      "lat": 59.3958263787893,
+      "lng": 17.8856308287709
+    },
+    {
+      "name": "Hornstull",
+      "aliases": [],
+      "siteId": 9295,
+      "lat": 59.3155367237985,
+      "lng": 18.0342299596225
+    },
+    {
+      "name": "Huddinge",
+      "aliases": [],
+      "siteId": 9527,
+      "lat": 59.2364370936957,
+      "lng": 17.9787877294555
+    },
+    {
+      "name": "Husby",
+      "aliases": [],
+      "siteId": 9301,
+      "lat": 59.4106849932129,
+      "lng": 17.9270551668531
+    },
+    {
+      "name": "Huvudsta",
+      "aliases": [],
+      "siteId": 9327,
+      "lat": 59.3496499577023,
+      "lng": 17.985420470501
+    },
+    {
+      "name": "Hägerstensåsen",
+      "aliases": [],
+      "siteId": 9262,
+      "lat": 59.2944637973965,
+      "lng": 17.9771850989849
+    },
+    {
+      "name": "Häggvik",
+      "aliases": [],
+      "siteId": 9505,
+      "lat": 59.4445685986451,
+      "lng": 17.9334082873188
+    },
+    {
+      "name": "Hässelby gård",
+      "aliases": [],
+      "siteId": 9101,
+      "lat": 59.366483934838,
+      "lng": 17.843409741841
+    },
+    {
+      "name": "Hässelby strand",
+      "aliases": [],
+      "siteId": 9100,
+      "lat": 59.3608705264266,
+      "lng": 17.8313945861123
+    },
+    {
+      "name": "Högdalen",
+      "aliases": [],
+      "siteId": 9162,
+      "lat": 59.2631190810993,
+      "lng": 18.0411710614341
+    },
+    {
+      "name": "Hökarängen",
+      "aliases": [],
+      "siteId": 9182,
+      "lat": 59.2584287071081,
+      "lng": 18.0827765379092
+    },
+    {
+      "name": "Hötorget",
+      "aliases": [],
+      "siteId": 9119,
+      "lat": 59.3355274414545,
+      "lng": 18.0638723461329
+    },
+    {
+      "name": "Islandstorget",
+      "aliases": [],
+      "siteId": 9106,
+      "lat": 59.3464154740598,
+      "lng": 17.8933504146501
+    },
+    {
+      "name": "Jakobsberg",
+      "aliases": [],
+      "siteId": 9702,
+      "lat": 59.4237565771,
+      "lng": 17.8328067121625
+    },
+    {
+      "name": "Johannelund",
+      "aliases": [],
+      "siteId": 9102,
+      "lat": 59.3676703183749,
+      "lng": 17.8553730070105
+    },
+    {
+      "name": "Jordbro",
+      "aliases": [],
+      "siteId": 9729,
+      "lat": 59.1414460364733,
+      "lng": 18.1258431133743
+    },
+    {
+      "name": "Järna",
+      "aliases": [],
+      "siteId": 9542,
+      "lat": 59.0930130409984,
+      "lng": 17.5676641048638
+    },
+    {
+      "name": "Kallhäll",
+      "aliases": [],
+      "siteId": 9701,
+      "lat": 59.4536398509384,
+      "lng": 17.8059535720851
+    },
+    {
+      "name": "Karlaplan",
+      "aliases": [],
+      "siteId": 9222,
+      "lat": 59.3390674804385,
+      "lng": 18.0920921072242
+    },
+    {
+      "name": "Kista",
+      "aliases": [],
+      "siteId": 9302,
+      "lat": 59.403472470728,
+      "lng": 17.9425949765819
+    },
+    {
+      "name": "Knivsta",
+      "aliases": [],
+      "siteId": 6091,
+      "lat": 59.7264256581684,
+      "lng": 17.7870326098218
+    },
+    {
+      "name": "Krigslida",
+      "aliases": [],
+      "siteId": 9727,
+      "lat": 59.1091660513926,
+      "lng": 18.0658963138635
+    },
+    {
+      "name": "Kristineberg",
+      "aliases": [],
+      "siteId": 9113,
+      "lat": 59.3327025272372,
+      "lng": 18.0058988172612
+    },
+    {
+      "name": "Kungsträdgården",
+      "aliases": [],
+      "siteId": 9340,
+      "lat": 59.3307990179729,
+      "lng": 18.0733386335906
+    },
+    {
+      "name": "Kungsängen",
+      "aliases": [],
+      "siteId": 4532,
+      "lat": 59.3331001954841,
+      "lng": 18.6436478376216
+    },
+    {
+      "name": "Kärrtorp",
+      "aliases": [],
+      "siteId": 9142,
+      "lat": 59.2837284740298,
+      "lng": 18.1157401151303
+    },
+    {
+      "name": "Liljeholmen",
+      "aliases": [],
+      "siteId": 9294,
+      "lat": 59.3106687554312,
+      "lng": 18.0248135598107
+    },
+    {
+      "name": "Mariatorget",
+      "aliases": [],
+      "siteId": 9297,
+      "lat": 59.317014373907,
+      "lng": 18.0621173620111
+    },
+    {
+      "name": "Masmo",
+      "aliases": [],
+      "siteId": 9284,
+      "lat": 59.249730326511,
+      "lng": 17.8789679671696
+    },
+    {
+      "name": "Medborgarplatsen",
+      "aliases": [],
+      "siteId": 9191,
+      "lat": 59.3142896936717,
+      "lng": 18.0734300675445
+    },
+    {
+      "name": "Midsommarkransen",
+      "aliases": [],
+      "siteId": 9264,
+      "lat": 59.3018709599802,
+      "lng": 18.0119844238255
+    },
+    {
+      "name": "Mälarhöjden",
+      "aliases": [],
+      "siteId": 9290,
+      "lat": 59.3012804949011,
+      "lng": 17.9565496664651
+    },
+    {
+      "name": "Märsta",
+      "aliases": [],
+      "siteId": 9500,
+      "lat": 59.6289193807522,
+      "lng": 17.8609561900354
+    },
+    {
+      "name": "Mölnbo",
+      "aliases": [],
+      "siteId": 9541,
+      "lat": 59.0474941750931,
+      "lng": 17.4182911856744
+    },
+    {
+      "name": "Mörby centrum",
+      "aliases": [],
+      "siteId": 9200,
+      "lat": 59.3983761507639,
+      "lng": 18.036268747591
+    },
+    {
+      "name": "Norrviken",
+      "aliases": [],
+      "siteId": 9504,
+      "lat": 59.4581207797918,
+      "lng": 17.9238702872796
+    },
+    {
+      "name": "Norsborg",
+      "aliases": [],
+      "siteId": 9280,
+      "lat": 59.2440940703016,
+      "lng": 17.8140871063896
+    },
+    {
+      "name": "Nynäsgård",
+      "aliases": [],
+      "siteId": 9722,
+      "lat": 58.9134583427428,
+      "lng": 17.942513117382
+    },
+    {
+      "name": "Nynäshamn",
+      "aliases": [],
+      "siteId": 9720,
+      "lat": 58.9011867651025,
+      "lng": 17.9503981890623
+    },
+    {
+      "name": "Näckrosen",
+      "aliases": [],
+      "siteId": 9304,
+      "lat": 59.3664427676597,
+      "lng": 17.9837531674041
+    },
+    {
+      "name": "Odenplan",
+      "aliases": [
+        "Odenplan T-bana"
+      ],
+      "siteId": 9117,
+      "lat": 59.3429034949229,
+      "lng": 18.0491023996295,
+      "boardModes": [
+        "METRO"
+      ]
+    },
+    {
+      "name": "Rinkeby",
+      "aliases": [],
+      "siteId": 9322,
+      "lat": 59.3890362472407,
+      "lng": 17.9220408990427
+    },
+    {
+      "name": "Rissne",
+      "aliases": [],
+      "siteId": 9323,
+      "lat": 59.3760349110419,
+      "lng": 17.94127348031
+    },
+    {
+      "name": "Ropsten",
+      "aliases": [],
+      "siteId": 9220,
+      "lat": 59.3580045217541,
+      "lng": 18.1034262583503
+    },
+    {
+      "name": "Rosersberg",
+      "aliases": [],
+      "siteId": 9501,
+      "lat": 59.5832021766177,
+      "lng": 17.8800847981747
+    },
+    {
+      "name": "Rotebro",
+      "aliases": [],
+      "siteId": 9503,
+      "lat": 59.4764902974046,
+      "lng": 17.914007302559
+    },
+    {
+      "name": "Råcksta",
+      "aliases": [],
+      "siteId": 9104,
+      "lat": 59.3550690729056,
+      "lng": 17.8811321981291
+    },
+    {
+      "name": "Rådhuset",
+      "aliases": [],
+      "siteId": 9309,
+      "lat": 59.3310348953436,
+      "lng": 18.0442427208638
+    },
+    {
+      "name": "Rådmansgatan",
+      "aliases": [],
+      "siteId": 9118,
+      "lat": 59.3419320573214,
+      "lng": 18.0575293279589
+    },
+    {
+      "name": "Rågsved",
+      "aliases": [],
+      "siteId": 9161,
+      "lat": 59.2564985554343,
+      "lng": 18.0266212975271
+    },
+    {
+      "name": "Rönninge",
+      "aliases": [],
+      "siteId": 9523,
+      "lat": 59.194107670483,
+      "lng": 17.7495973492777
+    },
+    {
+      "name": "S:t Eriksplan",
+      "aliases": [
+        "Sankt Eriksplan"
+      ],
+      "siteId": 9116,
+      "lat": 59.3395810846411,
+      "lng": 18.0386350565701
+    },
+    {
+      "name": "Sandsborg",
+      "aliases": [],
+      "siteId": 9186,
+      "lat": 59.2848266628748,
+      "lng": 18.0896291469711
+    },
+    {
+      "name": "Segersäng",
+      "aliases": [],
+      "siteId": 9724,
+      "lat": 59.0286423406367,
+      "lng": 17.9267838259215
+    },
+    {
+      "name": "Skanstull",
+      "aliases": [],
+      "siteId": 9190,
+      "lat": 59.3079430921409,
+      "lng": 18.0761632879509
+    },
+    {
+      "name": "Skarpnäck",
+      "aliases": [],
+      "siteId": 9140,
+      "lat": 59.2664554142691,
+      "lng": 18.1326202888136
+    },
+    {
+      "name": "Skogskyrkogården",
+      "aliases": [],
+      "siteId": 9185,
+      "lat": 59.2798247982956,
+      "lng": 18.0926983920528
+    },
+    {
+      "name": "Skogås",
+      "aliases": [],
+      "siteId": 9731,
+      "lat": 59.2180696476061,
+      "lng": 18.1541287878032
+    },
+    {
+      "name": "Skärholmen",
+      "aliases": [],
+      "siteId": 9287,
+      "lat": 59.2767537667053,
+      "lng": 17.9094898712197
+    },
+    {
+      "name": "Skärmarbrink",
+      "aliases": [],
+      "siteId": 9188,
+      "lat": 59.2974944074844,
+      "lng": 18.091338491514
+    },
+    {
+      "name": "Slussen",
+      "aliases": [],
+      "siteId": 9192,
+      "lat": 59.3203176773338,
+      "lng": 18.0724531524889
+    },
+    {
+      "name": "Sockenplan",
+      "aliases": [],
+      "siteId": 9166,
+      "lat": 59.2825115747023,
+      "lng": 18.071538773962
+    },
+    {
+      "name": "Sollentuna",
+      "aliases": [],
+      "siteId": 9506,
+      "lat": 59.4295917697502,
+      "lng": 17.9481892222135
+    },
+    {
+      "name": "Solna",
+      "aliases": [],
+      "siteId": 9509,
+      "lat": 59.3643089945298,
+      "lng": 18.0118675176227
+    },
+    {
+      "name": "Solna centrum",
+      "aliases": [],
+      "siteId": 9305,
+      "lat": 59.3586776300569,
+      "lng": 17.9975546587566
+    },
+    {
+      "name": "Solna strand",
+      "aliases": [],
+      "siteId": 9326,
+      "lat": 59.3534977796971,
+      "lng": 17.9743774023631
+    },
+    {
+      "name": "Spånga",
+      "aliases": [],
+      "siteId": 9704,
+      "lat": 59.3828450690663,
+      "lng": 17.8989333519053
+    },
+    {
+      "name": "Stadion",
+      "aliases": [],
+      "siteId": 9205,
+      "lat": 59.3405183688036,
+      "lng": 18.081536650878
+    },
+    {
+      "name": "Stadshagen",
+      "aliases": [],
+      "siteId": 9307,
+      "lat": 59.335231502435,
+      "lng": 18.0182952570246
+    },
+    {
+      "name": "Stockholm City",
+      "aliases": [
+        "Stockholm City station"
+      ],
+      "siteId": 1080,
+      "lat": 59.3310033102155,
+      "lng": 18.0592920942299,
+      "boardModes": [
+        "TRAIN"
+      ]
+    },
+    {
+      "name": "Stockholm Odenplan",
+      "aliases": [
+        "Stockholm Odenplan station"
+      ],
+      "siteId": 1079,
+      "lat": 59.3431180362708,
+      "lng": 18.0456865578456,
+      "boardModes": [
+        "TRAIN"
+      ]
+    },
+    {
+      "name": "Stockholms södra",
+      "aliases": [],
+      "siteId": 9530,
+      "lat": 59.3133898866022,
+      "lng": 18.0614029338071
+    },
+    {
+      "name": "Stora mossen",
+      "aliases": [],
+      "siteId": 9111,
+      "lat": 59.3347831154287,
+      "lng": 17.9674196858731
+    },
+    {
+      "name": "Stureby",
+      "aliases": [],
+      "siteId": 9164,
+      "lat": 59.27441634004,
+      "lng": 18.0541753436123
+    },
+    {
+      "name": "Stuvsta",
+      "aliases": [],
+      "siteId": 9528,
+      "lat": 59.2527261517392,
+      "lng": 17.9970072660487
+    },
+    {
+      "name": "Sundbyberg",
+      "aliases": [],
+      "siteId": 9325,
+      "lat": 59.3608711069539,
+      "lng": 17.9714916630653,
+      "boardModes": [
+        "TRAIN"
+      ]
+    },
+    {
+      "name": "Sundbybergs centrum",
+      "aliases": [],
+      "siteId": 9325,
+      "lat": 59.3608711069539,
+      "lng": 17.9714916630653,
+      "boardModes": [
+        "METRO"
+      ]
+    },
+    {
+      "name": "Svedmyra",
+      "aliases": [],
+      "siteId": 9165,
+      "lat": 59.2781827042778,
+      "lng": 18.0689875776668
+    },
+    {
+      "name": "Sätra",
+      "aliases": [],
+      "siteId": 9288,
+      "lat": 59.2844834212783,
+      "lng": 17.9234446654417
+    },
+    {
+      "name": "Södertälje centrum",
+      "aliases": [
+        "Södertälje centrum station"
+      ],
+      "siteId": 9520,
+      "lat": 59.1920645334556,
+      "lng": 17.6277989100555
+    },
+    {
+      "name": "Södertälje hamn",
+      "aliases": [
+        "Södertälje hamn station"
+      ],
+      "siteId": 9521,
+      "lat": 59.1794420794445,
+      "lng": 17.6480500460456
+    },
+    {
+      "name": "Södertälje syd",
+      "aliases": [
+        "Södertälje Syd"
+      ],
+      "siteId": 9543,
+      "lat": 59.1610053325154,
+      "lng": 17.6444535185894
+    },
+    {
+      "name": "T-Centralen",
+      "aliases": [
+        "T-Centralen T-bana"
+      ],
+      "siteId": 9001,
+      "lat": 59.3313754153065,
+      "lng": 18.0604334292973,
+      "boardModes": [
+        "METRO"
+      ]
+    },
+    {
+      "name": "Tallkrogen",
+      "aliases": [],
+      "siteId": 9184,
+      "lat": 59.2685592662699,
+      "lng": 18.0873295178016
+    },
+    {
+      "name": "Tekniska högskolan",
+      "aliases": [],
+      "siteId": 9204,
+      "lat": 59.3455476647756,
+      "lng": 18.0717109678536
+    },
+    {
+      "name": "Telefonplan",
+      "aliases": [],
+      "siteId": 9263,
+      "lat": 59.2982360604965,
+      "lng": 17.9975104391998
+    },
+    {
+      "name": "Tensta",
+      "aliases": [],
+      "siteId": 9321,
+      "lat": 59.3939593012421,
+      "lng": 17.9047200676339
+    },
+    {
+      "name": "Thorildsplan",
+      "aliases": [],
+      "siteId": 9114,
+      "lat": 59.3316659403517,
+      "lng": 18.0172725754011
+    },
+    {
+      "name": "Trångsund",
+      "aliases": [],
+      "siteId": 9732,
+      "lat": 59.2276406110887,
+      "lng": 18.132254119971
+    },
+    {
+      "name": "Tullinge",
+      "aliases": [],
+      "siteId": 9525,
+      "lat": 59.2054707394433,
+      "lng": 17.9041406146817
+    },
+    {
+      "name": "Tumba",
+      "aliases": [],
+      "siteId": 9524,
+      "lat": 59.1991984403059,
+      "lng": 17.8365706767666
+    },
+    {
+      "name": "Tungelsta",
+      "aliases": [],
+      "siteId": 9726,
+      "lat": 59.1025794266368,
+      "lng": 18.0435072243261
+    },
+    {
+      "name": "Ulriksdal",
+      "aliases": [],
+      "siteId": 9508,
+      "lat": 59.3806614200163,
+      "lng": 18.0006628190387
+    },
+    {
+      "name": "Universitetet",
+      "aliases": [],
+      "siteId": 9203,
+      "lat": 59.3653618628997,
+      "lng": 18.0538041584269
+    },
+    {
+      "name": "Upplands Väsby",
+      "aliases": [],
+      "siteId": 9502,
+      "lat": 59.5214820914699,
+      "lng": 17.8996731067734
+    },
+    {
+      "name": "Uppsala C",
+      "aliases": [
+        "Uppsala centralstation"
+      ],
+      "siteId": null,
+      "lat": null,
+      "lng": null
+    },
+    {
+      "name": "Vega",
+      "aliases": [],
+      "siteId": 9733,
+      "lat": 59.1856506885355,
+      "lng": 18.1355776586667
+    },
+    {
+      "name": "Vårberg",
+      "aliases": [],
+      "siteId": 9286,
+      "lat": 59.2735983846695,
+      "lng": 17.8879271489398
+    },
+    {
+      "name": "Vårby gård",
+      "aliases": [],
+      "siteId": 9285,
+      "lat": 59.2635189493558,
+      "lng": 17.8865228440688
+    },
+    {
+      "name": "Vällingby",
+      "aliases": [],
+      "siteId": 9103,
+      "lat": 59.3634824713747,
+      "lng": 17.871531746241
+    },
+    {
+      "name": "Västerhaninge",
+      "aliases": [],
+      "siteId": 9728,
+      "lat": 59.1227381045141,
+      "lng": 18.1032325683713
+    },
+    {
+      "name": "Västertorp",
+      "aliases": [],
+      "siteId": 9261,
+      "lat": 59.2913279099245,
+      "lng": 17.9665060935791
+    },
+    {
+      "name": "Västra skogen",
+      "aliases": [],
+      "siteId": 9306,
+      "lat": 59.3475854006124,
+      "lng": 18.003028678579
+    },
+    {
+      "name": "Zinkensdamm",
+      "aliases": [],
+      "siteId": 9296,
+      "lat": 59.3175780343686,
+      "lng": 18.0502793288527
+    },
+    {
+      "name": "Åkeshov",
+      "aliases": [],
+      "siteId": 9108,
+      "lat": 59.3423125329638,
+      "lng": 17.9237014816981
+    },
+    {
+      "name": "Årstaberg",
+      "aliases": [],
+      "siteId": 9531,
+      "lat": 59.2992348519753,
+      "lng": 18.030231522931
+    },
+    {
+      "name": "Älvsjö",
+      "aliases": [],
+      "siteId": 9529,
+      "lat": 59.278742427396,
+      "lng": 18.0103509663912
+    },
+    {
+      "name": "Ängbyplan",
+      "aliases": [],
+      "siteId": 9107,
+      "lat": 59.342567924229,
+      "lng": 17.9070369907814
+    },
+    {
+      "name": "Örnsberg",
+      "aliases": [],
+      "siteId": 9292,
+      "lat": 59.3051808575997,
+      "lng": 17.9882112501831
+    },
+    {
+      "name": "Ösmo",
+      "aliases": [],
+      "siteId": 9723,
+      "lat": 58.9835210113344,
+      "lng": 17.9012556364134
+    },
+    {
+      "name": "Östermalmstorg",
+      "aliases": [],
+      "siteId": 9206,
+      "lat": 59.3363687168691,
+      "lng": 18.0800462414432
+    },
+    {
+      "name": "Östertälje",
+      "aliases": [],
+      "siteId": 9522,
+      "lat": 59.1845040030128,
+      "lng": 17.6608325608098
+    }
+  ]
+}

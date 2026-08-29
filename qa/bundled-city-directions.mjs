@@ -10,6 +10,8 @@ import { marketingLabelsForStation, HUB as AMS_HUB } from "../lib/cities/amsterd
 import { marketingLabelsForStation as rotterdamLabels, HUB as RET_HUB } from "../lib/cities/rotterdam/marketing-directions.js";
 import { marketingLabelsForStation as newcastleLabels, HUB as NLR_HUB } from "../lib/cities/newcastle/marketing-directions.js";
 import { marketingLabelsForStation as aucklandLabels, HUB as AT_HUB } from "../lib/cities/auckland/marketing-directions.js";
+import { marketingLabelsForStation as goteborgLabels, TRAM_HUB as GBG_HUB } from "../lib/cities/goteborg/marketing-directions.js";
+import { marketingLabelsForStation as stockholmLabels, METRO_HUB as STO_METRO_HUB, PENDELTÅG_HUB as STO_PENDEL_HUB } from "../lib/cities/stockholm/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -65,4 +67,30 @@ assert(
   "Auckland bundled hub chips must match marketingLabelsForStation"
 );
 
-console.log(`bundled-city-directions: ok (${MULTI_CITY_IDS.length} cities)`);
+// Göteborg is adapter-ready but still planned (not in MULTI_CITY_IDS) —
+// its chips are bundled ahead of the live flip.
+const goteborg = loadDirections("goteborg");
+const gbgHub = goteborgLabels(GBG_HUB);
+assert(Array.isArray(goteborg[GBG_HUB]), "Göteborg hub Brunnsparken must be in bundled directions");
+assert(
+  gbgHub.every((chip) => goteborg[GBG_HUB].includes(chip)),
+  "Göteborg bundled hub chips must match marketingLabelsForStation"
+);
+assert(goteborg[GBG_HUB].includes("1 + Tynnered"), "Brunnsparken must offer 1 + Tynnered");
+assert(!goteborg[GBG_HUB].some((chip) => /^(8|12) \+ /.test(chip)), "Brunnsparken must not offer 8 or 12");
+
+// Stockholm is adapter-ready but still planned (not in MULTI_CITY_IDS) —
+// its chips are bundled ahead of the live flip.
+const stockholm = loadDirections("stockholm");
+const stoMetro = stockholmLabels(STO_METRO_HUB);
+assert(Array.isArray(stockholm[STO_METRO_HUB]), "Stockholm hub T-Centralen must be in bundled directions");
+assert(
+  stoMetro.every((chip) => stockholm[STO_METRO_HUB].includes(chip)),
+  "Stockholm bundled metro hub chips must match marketingLabelsForStation"
+);
+assert(stockholm[STO_METRO_HUB].includes("Röda linjen + Norsborg"), "T-Centralen must offer Röda linjen + Norsborg");
+assert(!stockholm[STO_METRO_HUB].some((chip) => /pendeltåg/i.test(chip)), "T-Centralen must not offer pendeltåg chips");
+assert(!(stockholm[STO_PENDEL_HUB] ?? []).some((chip) => /pendeltåg 48/i.test(chip)), "Stockholm City must not offer line 48");
+assert(!("Stockholms central" in stockholm), "Stockholms central must not have bundled chips");
+
+console.log(`bundled-city-directions: ok (${MULTI_CITY_IDS.length} cities + goteborg/stockholm planned)`);

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "setup:mac": "node scripts/setup-mac.mjs",
+    "find:sweden-coords": "node scripts/find-sweden-station-coords.mjs",
     "start": "node dev-server.js",
     "dev": "node dev-server.js",
     "vercel:dev": "vercel dev",
@@ -71,6 +72,7 @@
     "sweep:canberra": "node qa/canberra-network-sweep.mjs",
     "sweep:gold-coast": "node qa/gold-coast-network-sweep.mjs",
     "sweep:newcastle": "node qa/newcastle-network-sweep.mjs",
+    "sweep:goteborg": "node qa/goteborg-network-sweep.mjs",
     "sweep:perth": "node qa/perth-network-sweep.mjs",
     "trim:auckland-gtfs": "node scripts/trim-auckland-gtfs.mjs",
     "trim:wellington-gtfs": "node scripts/trim-wellington-gtfs.mjs",

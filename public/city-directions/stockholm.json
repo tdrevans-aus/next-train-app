@@ -1,0 +1,750 @@
+{
+  "Abrahamsberg": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Akalla": [
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Alby": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Alvik": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Arlanda central": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C"
+  ],
+  "Aspudden": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Axelsberg": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Bagarmossen": [
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Bandhagen": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Barkarby": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Bergshamra": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Björkhagen": [
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Blackeberg": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Blåsut": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Bredäng": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Bro": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Brommaplan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Bålsta": [
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Danderyds sjukhus": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Duvbo": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Enskede gård": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Farsta": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Farsta strand": [
+    "Gröna linjen + Hässelby strand",
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Fittja": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Flemingsberg": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Fridhemsplan": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården",
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Fruängen": [
+    "Röda linjen + Mörby centrum"
+  ],
+  "Gamla stan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov",
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Globen": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Gnesta": [
+    "Pendeltåg 48 + Södertälje centrum"
+  ],
+  "Gröndalsviken": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Gubbängen": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Gullmarsplan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Gärdet": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Hagsätra": [
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Hallonbergen": [
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Hallunda": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Hammarbyhöjden": [
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Handen": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Helenelund": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Hemfosa": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Hjulsta": [
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Hornstull": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Huddinge": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Husby": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Huvudsta": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Hägerstensåsen": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Häggvik": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Hässelby gård": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Hässelby strand": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra"
+  ],
+  "Högdalen": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Hökarängen": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Hötorget": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Islandstorget": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Jakobsberg": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Johannelund": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Jordbro": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Järna": [
+    "Pendeltåg 48 + Gnesta",
+    "Pendeltåg 48 + Södertälje centrum"
+  ],
+  "Kallhäll": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Karlaplan": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Kista": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Knivsta": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C"
+  ],
+  "Krigslida": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Kristineberg": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Kungsträdgården": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Hjulsta"
+  ],
+  "Kungsängen": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Kärrtorp": [
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Liljeholmen": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Mariatorget": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Masmo": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Medborgarplatsen": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Midsommarkransen": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Mälarhöjden": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Märsta": [
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Mölnbo": [
+    "Pendeltåg 48 + Gnesta",
+    "Pendeltåg 48 + Södertälje centrum"
+  ],
+  "Mörby centrum": [
+    "Röda linjen + Fruängen"
+  ],
+  "Norrviken": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Norsborg": [
+    "Röda linjen + Ropsten"
+  ],
+  "Nynäsgård": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Nynäshamn": [
+    "Pendeltåg 43 + Bålsta"
+  ],
+  "Näckrosen": [
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Odenplan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Rinkeby": [
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Rissne": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Ropsten": [
+    "Röda linjen + Norsborg"
+  ],
+  "Rosersberg": [
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Rotebro": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Råcksta": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Rådhuset": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Rådmansgatan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Rågsved": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Rönninge": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "S:t Eriksplan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Sandsborg": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Segersäng": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Skanstull": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Skarpnäck": [
+    "Gröna linjen + Åkeshov"
+  ],
+  "Skogskyrkogården": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Skogås": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Skärholmen": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Skärmarbrink": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Slussen": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov",
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Sockenplan": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Sollentuna": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Solna": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Solna centrum": [
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Solna strand": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Spånga": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Stadion": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Stadshagen": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Stockholm City": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum",
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Stockholm Odenplan": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum",
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Stockholms södra": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum",
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Stora mossen": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Stureby": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Stuvsta": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Sundbyberg": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Sundbybergs centrum": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Svedmyra": [
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Sätra": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Södertälje centrum": [
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 48 + Gnesta"
+  ],
+  "Södertälje hamn": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum",
+    "Pendeltåg 48 + Gnesta",
+    "Pendeltåg 48 + Södertälje centrum"
+  ],
+  "Södertälje syd": [
+    "Pendeltåg 48 + Gnesta",
+    "Pendeltåg 48 + Södertälje centrum"
+  ],
+  "T-Centralen": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården",
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov",
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Tallkrogen": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Tekniska högskolan": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Telefonplan": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Tensta": [
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Thorildsplan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck",
+    "Gröna linjen + Åkeshov"
+  ],
+  "Trångsund": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Tullinge": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Tumba": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Tungelsta": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Ulriksdal": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Universitetet": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Upplands Väsby": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ],
+  "Uppsala C": [
+    "Pendeltåg 40 + Södertälje centrum"
+  ],
+  "Vega": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Vårberg": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Vårby gård": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Vällingby": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Västerhaninge": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Västertorp": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum"
+  ],
+  "Västra skogen": [
+    "Blå linjen + Akalla",
+    "Blå linjen + Hjulsta",
+    "Blå linjen + Kungsträdgården"
+  ],
+  "Zinkensdamm": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Åkeshov": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand",
+    "Gröna linjen + Skarpnäck"
+  ],
+  "Årstaberg": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum",
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Älvsjö": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum",
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Ängbyplan": [
+    "Gröna linjen + Farsta strand",
+    "Gröna linjen + Hagsätra",
+    "Gröna linjen + Hässelby strand"
+  ],
+  "Örnsberg": [
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Ösmo": [
+    "Pendeltåg 43 + Bålsta",
+    "Pendeltåg 43 + Nynäshamn"
+  ],
+  "Östermalmstorg": [
+    "Röda linjen + Fruängen",
+    "Röda linjen + Mörby centrum",
+    "Röda linjen + Norsborg",
+    "Röda linjen + Ropsten"
+  ],
+  "Östertälje": [
+    "Pendeltåg 40 + Södertälje centrum",
+    "Pendeltåg 40 + Uppsala C",
+    "Pendeltåg 41 + Märsta",
+    "Pendeltåg 41 + Södertälje centrum"
+  ]
+}

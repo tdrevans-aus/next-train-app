@@ -227,6 +227,94 @@ function main() {
     }
   }
 
+  if (getCity("goteborg")?.adapterReady !== true) {
+    failures.push("C0: goteborg adapterReady must be true");
+  }
+  if (getCity("sweden") || getCity("gothenburg")) {
+    failures.push("C0: city=sweden / gothenburg must not exist");
+  }
+
+  const PRINTED = {
+    1: 27, 2: 27, 3: 26, 4: 20, 5: 32, 6: 41, 7: 33, 8: 25, 9: 19, 10: 13, 11: 35, 12: 18,
+    Kungsbacka: 8, Alingsås: 13, Ale: 7,
+  };
+  const unique = new Set();
+  for (const line of lineMap.lines ?? []) {
+    if ((line.stations ?? []).length !== PRINTED[line.number]) {
+      failures.push(`C1: ${line.name} expected ${PRINTED[line.number]} stops, got ${(line.stations ?? []).length}`);
+    }
+    for (const name of line.stations ?? []) {
+      unique.add(name);
+    }
+    if ((line.stations ?? []).includes(FORBIDDEN_TRAM_HUB)) {
+      failures.push(`C1: ${line.name} must print Drottningtorget, not Centralstationen`);
+    }
+  }
+  if (unique.size !== 157) {
+    failures.push(`C1: expected 157 unique stops (132 tram + 25 train), got ${unique.size}`);
+  }
+  for (const number of ["Kungsbacka", "Alingsås", "Ale"]) {
+    const line = (lineMap.lines ?? []).find((row) => row.number === number);
+    if (!(line?.stations ?? []).includes(PENDELTÅG_HUB)) {
+      failures.push(`C2: Västtågen ${number} must serve ${PENDELTÅG_HUB}`);
+    }
+  }
+  if (tramLines.some((line) => (line.stations ?? []).includes(PENDELTÅG_HUB))) {
+    failures.push("C2: trams stop at Drottningtorget, never Göteborg Central");
+  }
+
+  const stockholm = loadJson("lib/cities/stockholm/stations.json");
+  const stockholmNames = new Set((stockholm.stations ?? []).map((row) => row.name));
+  const clashes = catalogNames.filter((name) => stockholmNames.has(name));
+  if (clashes.length) {
+    failures.push(`H2: exact name clash with stockholm stations.json: ${clashes.join(", ")}`);
+  }
+
+  const grouped = (lineMap.doNotGroup ?? []).map((row) => `${row.a}::${row.b}`);
+  if (!grouped.some((row) => row.includes("Drottningtorget") && row.includes("Göteborg Central"))) {
+    failures.push("C2: doNotGroup Drottningtorget vs Göteborg Central");
+  }
+  if (!grouped.some((row) => row.includes("Liseberg Station") && row.includes("Liseberg Station (tåg)"))) {
+    failures.push("C2: doNotGroup Liseberg tram vs pendeltåg");
+  }
+  if (!grouped.some((row) => row.includes("Gamlestads Torg") && row.includes("Gamlestaden Station"))) {
+    failures.push("C2: doNotGroup Gamlestads Torg vs Gamlestaden Station");
+  }
+  if (!(lineMap.suppressedTermini ?? []).includes(FORBIDDEN_TRAM_HUB)) {
+    failures.push("C2: Centralstationen must be a suppressed terminus");
+  }
+
+  if (!hubLabels.includes("11 + Saltholmen")) {
+    failures.push(`C7: Brunnsparken must offer 11 + Saltholmen (got ${hubLabels.join("; ")})`);
+  }
+  if (cityLabels.length !== 3 || !cityLabels.every((label) => label.startsWith("Västtågen + "))) {
+    failures.push(`C7: Göteborg Central chips must be the three Västtågen: ${cityLabels.join("; ")}`);
+  }
+  if (marketingLabelsForStation(FORBIDDEN_TRAM_HUB).length !== 0) {
+    failures.push("C7: Centralstationen must not resolve to chips");
+  }
+
+  const extraDestCases = [
+    ["Väderilsgatan", "2", "2 + Biskopsgården"],
+    ["Virginsgatan", "3", "3 + Kålltorp"],
+    ["Aprilgatan", "6", "6 + Kortedala"],
+    ["Komettorget", "7", "7 + Bergsjön"],
+    ["Frölunda Torg", "8", "8 + Frölunda"],
+    ["Doktor Sydows Gata", "10", "10 + Guldheden"],
+    ["Mölndals Innerstad", "12", "12 + Mölndal"],
+    ["Centralstationen", "4", "4 + Drottningtorget"],
+  ];
+  for (const [headsign, code, expected] of extraDestCases) {
+    const got = mapGoteborgDestination(headsign, code);
+    if (got !== expected) {
+      failures.push(`board dest: ${headsign} ${code} → ${got} expected ${expected}`);
+    }
+  }
+
+  if (foldKey("Göteborg Central") !== foldKey("Goteborg Central")) {
+    failures.push("C2: fold must accept unaccented variants");
+  }
+
   if (failures.length) {
     console.error("goteborg-line-map-conformance failures:\n");
     for (const failure of failures) {

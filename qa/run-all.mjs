@@ -72,7 +72,11 @@ const SMOKE_SCRIPTS = [
   "uk-planned-gate.mjs",
   "nz-planned-gate.mjs",
   "stockholm-planned-gate.mjs",
+  "stockholm-dogfood-gate.mjs",
+  "stockholm-direction-match.mjs",
   "goteborg-planned-gate.mjs",
+  "goteborg-dogfood-gate.mjs",
+  "goteborg-direction-match.mjs",
   "wellington-planned-gate.mjs",
   "auckland-line-map-conformance.mjs",
   "stockholm-line-map-conformance.mjs",
@@ -153,6 +157,8 @@ const RUNNER_EXCLUDE = new Set([
   "gold-coast-network-sweep.mjs",
   /** Live Newcastle Light Rail sweep — D6; never gate PRs. npm run sweep:newcastle */
   "newcastle-network-sweep.mjs",
+  /** Live Göteborg Västtrafik sweep (schedule-only, needs TRAFIKLAB_API_KEY) — D6; never gate PRs. npm run sweep:goteborg */
+  "goteborg-network-sweep.mjs",
   /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
   "pin-exclusive.mjs",
 ]);
