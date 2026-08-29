@@ -20,7 +20,7 @@ const OUT_DIR = join(ROOT, "public", "city-directions");
  * Adapter-ready cities that are still `planned` (not in MULTI_CITY_IDS).
  * Their chips are bundled ahead of the live flip; the picker never shows them.
  */
-const EXTRA_BUNDLED_CITY_IDS = ["goteborg"];
+const EXTRA_BUNDLED_CITY_IDS = ["goteborg", "stockholm"];
 
 function listBundledStations(city) {
   if (MULTI_CITY_IDS.includes(city)) {
