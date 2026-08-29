@@ -4401,7 +4401,13 @@ function openTravelLibrary(tab) {
   chromeTravelTab = tab;
   journeyModeActive = true;
   exitNearbyMode();
-  journeyDetail()?.setLibraryKind?.(tab);
+  if (journeyDetail()) {
+    journeyDetail().setLibraryKind?.(tab);
+  } else {
+    // First paint can fail (offline/429) without ever loading the deferred
+    // modules; the library must still open in the requested kind.
+    void ensureDeferredModulesReady().then(() => journeyDetail()?.setLibraryKind?.(tab));
+  }
   dismissLeaveHint();
   dismissTemplateRouteCoach();
   showSettingsListView();
@@ -5500,6 +5506,9 @@ async function fetchNextTrain() {
     if (fetchId !== journeyBoardFetchId) {
       return;
     }
+    // Deferred features (reminders, journey detail) must still become
+    // available when the first fetch fails (offline/429).
+    window.NextTrainDeferred?.load?.();
     errorEl.textContent = error.message;
     errorEl.hidden = false;
     trackProductEvent("api_error_shown", {
