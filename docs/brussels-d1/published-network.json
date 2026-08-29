@@ -1,0 +1,505 @@
+{
+  "city": "brussels",
+  "displayName": "Brussels",
+  "status": "planned",
+  "agency": "STIB/MIVB",
+  "timezone": "Europe/Brussels",
+  "source": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20r%C3%A9seau/Plan_Metro_Train.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger metro map (ordered stops + metro 1/2/5/6 + hub lock). Mixed plate — v1 is the metro legend only. Skip every CHRONO tram, SNCB/NMBS S-line, bus.",
+      "title": "Map for metro, CHRONO lines and SNCB-NMBS / Plan voor de metro, CHRONO-lijnen en de NMBS",
+      "pdfTitle": "Plan_Metro_Train_240923",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20r%C3%A9seau/Plan_Metro_Train.pdf",
+      "linkedFrom": "https://www.stib-mivb.be/travel/network-and-district-maps",
+      "alsoLinkedFrom": [
+        "https://www.stib-mivb.be/reizen/netplannen-en-wijkplannen",
+        "https://www.stib-mivb.be/voyager/plans-de-reseau-et-plans-de-quartier"
+      ],
+      "captionOnIndex": "Map for metro, CHRONO lines and SNCB-NMBS",
+      "retrievedAt": "2026-08-29T13:13:40Z",
+      "lastModified": "Thu, 03 Oct 2024 15:13:01 GMT",
+      "pdfCreationDate": "Thu Jun 20 09:10:17 2024 UTC",
+      "pdfModDate": "Thu Jun 20 09:10:17 2024 UTC",
+      "creator": "Adobe Illustrator 28.1 (Windows)",
+      "pageSize": "1151.61 x 1179 pts, 1 page",
+      "note": "Official mixed metro + CHRONO + SNCB-NMBS plate on the Network and district maps index. PDF title Plan_Metro_Train_240923. HTTP Last-Modified Thu, 03 Oct 2024 15:13:01 GMT. Legend LIJNEN · LIGNES · LINES prints metro M 1 2 5 6 only (magenta / orange / gold / blue squares). Tram T 4 7 8 9 10 are CHRONO on this plate — out of v1. No passenger metro 3 or 4 on the legend. No Albert–Bordet metro 3. Stations[] HAND-TRANSCRIBED from the rendered map (metro-line colour + M ticks), not from pdftotext (layout-scrambled), not from GTFS, not from lines.json."
+    },
+    {
+      "role": "D1 passenger map index (official bilingual district-map name list + PDF links)",
+      "title": "Network and district maps",
+      "url": "https://www.stib-mivb.be/travel/network-and-district-maps",
+      "alsoLinkedFrom": [
+        "https://www.stib-mivb.be/reizen/netplannen-en-wijkplannen",
+        "https://www.stib-mivb.be/voyager/plans-de-reseau-et-plans-de-quartier"
+      ],
+      "retrievedAt": "2026-08-29T13:13:00Z",
+      "printedMapsOnIndex": [
+        "Brupass Network Map (SCHM_Plan_ACTU.pdf) — mixed; out of v1 as a stop oracle",
+        "Brupass XL Network Map (GEO_Brupass_XL.pdf) — out of v1",
+        "Noctis Network Map — out of v1",
+        "Map for metro, CHRONO lines and SNCB-NMBS (Plan_Metro_Train.pdf) — D1 plate; metro legend only"
+      ],
+      "note": "District-map table is the official bilingual FR/NL printed-pair list (Arts-Loi / Kunst-Wet, Gare du Midi / Zuidstation, …). District maps also exist for premetro (Albert, Anneessens, Bourse / Beurs, Gare du Nord / Noordstation, …) — those are not D1 rows. No Elisabeth district-map row (Simonis ≠ Elisabeth)."
+    },
+    {
+      "role": "printed inner-city hub (metro 1 × 2 × 5 × 6; no tram)",
+      "title": "Station Arts-Loi (Kunst-Wet) — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Arts-Loi-Kunst-Wet_Textual-description-of-the-district-map.pdf",
+      "districtMap": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/ArtsLoi_KunstWet_Plan.pdf",
+      "retrievedAt": "2026-08-29T13:13:45Z",
+      "note": "Every exit: “Metro lines 1, 2, 5, 6 available in the station. Tram: No tram lines available.” Official hub lock. Not a direction token."
+    },
+    {
+      "role": "doNotGroup — Gare du Midi / Zuidstation is metro 2/6 + tram + SNCB, not the hub",
+      "title": "Station Gare du Midi (Zuidstation) — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Gare-du-Midi-Zuidstation_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:15:00Z",
+      "note": "Metro lines 2, 6 available. Tram lines 4, 10, 51, 81, 82 available. SNCB/NMBS on the mixed plate. Not the hub lock. doNotGroup metro vs SNCB vs premetro/tram at this name family."
+    },
+    {
+      "role": "doNotGroup — Gare Centrale / Centraal Station is metro 1/5 only, not the hub",
+      "title": "Station Gare Centrale (Centraal Station) — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Gare-Centrale-Centraal-Station_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:15:00Z",
+      "note": "Metro lines 1, 5 available. Tram: No tram lines available. Not the 1×2×5×6 lock."
+    },
+    {
+      "role": "doNotGroup — Gare du Nord / Noordstation is premetro/tram only",
+      "title": "Station Gare du Nord (Noordstation) — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Gare-du-Nord-Noordstation_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:17:00Z",
+      "note": "Metro: No metro lines available. Tram lines 4, 10, 25, 55. Out of v1. Not inserted."
+    },
+    {
+      "role": "doNotGroup — Albert is premetro/tram only; metro 3 Albert–Bordet is not on the map",
+      "title": "Station Albert — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Albert_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:17:00Z",
+      "note": "Metro: No metro lines available at this station. Tram station lines 4, 10, 18. Frozen metro 3 project — out until the official metro map says open."
+    },
+    {
+      "role": "Simonis district text (metro 2/6). No Elisabeth district-map row",
+      "title": "Station Simonis — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Simonis_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:15:00Z",
+      "note": "Title Simonis. Metro lines 2, 6. Tram 9, 19. Map prints a separate Elisabeth terminus box on the same complex — two D1 names. Simonis ≠ Elisabeth."
+    },
+    {
+      "role": "Louise / Louiza on metro 2/6 (map tick between Hôtel des Monnaies and Porte de Namur)",
+      "title": "Station Louise (Louiza) — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Louise-Louiza_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:17:00Z",
+      "note": "Metro lines 2, 6. Tram 8, 92, 93, 97. Confirms Louise is passenger metro, not a skipped tick."
+    },
+    {
+      "role": "Gare de l'Ouest / Weststation — all four metro lines; line 1 west end",
+      "title": "Station Gare de l'Ouest (Weststation) — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Gare-de-l-Ouest-Weststation_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:15:00Z",
+      "note": "Metro lines 1, 2, 5, 6. Line 1 printed west terminus on the map. Line 5 continues west to Erasme / Erasmus. Not the inner-city hub lock."
+    },
+    {
+      "role": "Beekkant — western 1×2×5×6 junction, not the hub lock",
+      "title": "Station Beekkant — Textual description of the district map",
+      "url": "https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20Quartiers/Plans%20Quartiers%20Verbales/EN/Station-Beekkant_Textual-description-of-the-district-map.pdf",
+      "retrievedAt": "2026-08-29T13:17:00Z",
+      "note": "Metro lines 1, 2, 5, 6. Tram: No tram lines available. Western split (1/5 east via Étangs Noirs; 2/6 via Osseghem / Midi). Not the inner-city lock."
+    },
+    {
+      "role": "live-board path (official BMC Waiting Time + Vehicle Positions — not wired; no key in this pack)",
+      "title": "Belgian Mobility Open Data Portal — STIB-MIVB specific datasets",
+      "url": "https://data.belgianmobility.io/en/data.html",
+      "portal": "https://api-management-opendata-production.developer.azure-api.net/apis",
+      "terms": "https://data.belgianmobility.io/en/terms.html",
+      "retrievedAt": "2026-08-29T13:18:45Z",
+      "endpointsNamed": [
+        "BMC Waiting Time (STIB-MIVB Specific Datasets)",
+        "BMC Vehicle Positions (STIB-MIVB Specific Datasets)"
+      ],
+      "note": "No STIB GTFS-RT (NAP knowledge base). Live path is proprietary JSON behind Ocp-Apim-Subscription-Key. Historic OpenDataSoft names waiting-time-rt-production / vehicle-position-rt-production. Knowledge-base sample …/api/datasets/WaitingTimes.json is HTTP 404 empty-key 29 Aug 2026 — use the developer portal, not that curl. Never paste a key. Not a D1 generator. D1 stays planned.",
+      "emptyKey": {
+        "probedAt": "2026-08-29T13:18:45Z",
+        "url": "https://api-management-opendata-production.azure-api.net/api/datasets/WaitingTimes.json",
+        "http": 404,
+        "note": "Empty-key only. Did not send a real key."
+      }
+    },
+    {
+      "role": "static GTFS exists (empty-key 200) — NOT a D1 generator",
+      "title": "STIB/MIVB static GTFS (Belgian NAP discovery)",
+      "url": "https://opendata-discovery-gtfs-static.api.production.belgianmobility.io/api/gtfs/feed/stibmivb/static",
+      "retrievedAt": "2026-08-29T13:18:47Z",
+      "http": 200,
+      "contentType": "application/zip",
+      "note": "Anonymous 200 on 29 Aug 2026. Stations[] were not built from this zip. Do not generate published-network.json from GTFS."
+    }
+  ],
+  "retrievedAt": "2026-08-29T13:20:00Z",
+  "notes": [
+    "D1 oracle is the official STIB/MIVB mixed metro+CHRONO+SNCB plate Plan_Metro_Train.pdf (PDF title Plan_Metro_Train_240923, Illustrator 20 Jun 2024, HTTP Last-Modified Thu 03 Oct 2024 15:13:01 GMT) HAND-TRANSCRIBED from the rendered map. Metro legend only: M 1 2 5 6. pdftotext is layout-scrambled and was not used to build stations[]. Official district-map texts lock the hub and doNotGroup pairs. Stations arrays are not generated from GTFS. Not generated from lines.json. Not generated from Wikipedia. Map printed metro ticks win.",
+    "City id brussels is unused in existing packs. Display Brussels. Agency STIB/MIVB. Do not invent city=bru, city=bruxelles, city=stib, or merge into another Belgian city. Sweden out. Do not edit Perth. Do not flip live.",
+    "City stays planned until Jim wires testers. Modes v1: metro 1, 2, 5, 6 only. Tracker M1–M6 overstates — there is no passenger metro 3 or 4 on the official map. OUT: tram; premetro (North–South Axis underground tram); CHRONO T 4 7 8 9 10 on this plate; bus; Noctis; SNCB/NMBS S-lines; De Lijn; TEC. Metro 3 Albert–Bordet is a frozen project — official Albert district text prints “No metro lines available”. Out until the official metro map says open.",
+    "Timezone Europe/Brussels HAS DST (CEST/CET). Do not copy Perth / Brisbane no-DST.",
+    "Four printed metro lines on the official legend: 1 Gare de l'Ouest / Weststation – Stockel / Stokkel (21); 2 Simonis – Elisabeth (19); 5 Erasme / Erasmus – Herrmann-Debroux (28); 6 Roi Baudouin / Koning Boudewijn – Elisabeth (26). 60 unique open metro stop strings after dedupe. 94 line ticks. Simonis and Elisabeth are two names (line 2 loop ends).",
+    "Locked inner-city printed name: Arts-Loi / Kunst-Wet (metro 1 × 2 × 5 × 6; official district-map text at every exit; no tram). Not Gare du Midi / Zuidstation, not Gare Centrale / Centraal Station, not De Brouckère, not Rogier, not Gare du Nord / Noordstation, not Simonis, not Elisabeth, not Downtown / Centre / Centrum, not Beekkant, not Gare de l'Ouest / Weststation. Arts-Loi / Kunst-Wet is a hub stop string, not a direction token.",
+    "Bilingual lock is FR / NL with a slash, matching the clash report (Arts-Loi / Kunst-Wet, Gare du Midi / Zuidstation). The map often stacks both languages (sometimes NL above FR). One D1 string per station; the other stack order is a rename in hazards, not a second stop. Same-in-both-languages names stay single (Beekkant, De Brouckère, Simonis, Elisabeth, Schuman, …).",
+    "doNotGroup Simonis ≠ Elisabeth (two printed terminus boxes on the same complex). doNotGroup metro vs SNCB at Gare du Midi / Zuidstation, Gare Centrale / Centraal Station, Schuman, Merode, Bockstael. doNotGroup metro vs North–South Axis premetro at Rogier, De Brouckère, Gare du Midi, Porte de Hal. Gare du Nord / Noordstation has no metro.",
+    "gtfsRouteIdsIfKnown are the passenger numbers 1 2 5 6 printed on the metro legend (not extracted from GTFS). No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): BMC Waiting Time + Vehicle Positions via the Belgian Mobility developer portal (Ocp-Apim-Subscription-Key). No STIB GTFS-RT. Static NAP zip exists empty-key — not a D1 generator. Never paste a key. D1 stays planned. assertCityLive(\"brussels\") must fail (Unknown city / 400 — city is not in lib/providers/registry.js CITIES)."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Arts-Loi / Kunst-Wet",
+    "lockSet": [
+      "Arts-Loi / Kunst-Wet"
+    ],
+    "lockNote": "Printed inner-city lock. Metro 1 × 2 × 5 × 6 on the official map. Official district-map text: metro 1, 2, 5, 6; no tram. Not a direction token. Inbound/outbound dies here: 1/5 are E–W; 2/6 are the inner-ring loop N–S through this building.",
+    "doNotUse": [
+      "Gare du Midi",
+      "Zuidstation",
+      "Gare du Midi / Zuidstation",
+      "Gare Centrale",
+      "Centraal Station",
+      "Gare Centrale / Centraal Station",
+      "De Brouckère",
+      "Rogier",
+      "Gare du Nord",
+      "Noordstation",
+      "Simonis",
+      "Elisabeth",
+      "Beekkant",
+      "Gare de l'Ouest",
+      "Weststation",
+      "Downtown",
+      "Centre",
+      "Centrum",
+      "City",
+      "CBD",
+      "Brussels",
+      "Bruxelles",
+      "Brussel",
+      "bru",
+      "stib"
+    ],
+    "doNotCollapse": [
+      "Arts-Loi / Kunst-Wet",
+      "Gare du Midi / Zuidstation",
+      "Gare Centrale / Centraal Station",
+      "De Brouckère",
+      "Rogier",
+      "Simonis",
+      "Elisabeth"
+    ],
+    "alsoOnSharedApproaches": [
+      "Parc / Park",
+      "Maelbeek / Maalbeek",
+      "Trône / Troon",
+      "Madou",
+      "Gare Centrale / Centraal Station",
+      "De Brouckère",
+      "Porte de Namur / Naamsepoort",
+      "Louise / Louiza",
+      "Botanique / Kruidtuin",
+      "Rogier"
+    ]
+  },
+  "coverageGaps": [
+    "Tram and CHRONO (T 4 7 8 9 10 on this plate; also 51 81 82 at Gare du Midi). Out of v1.",
+    "Premetro / North–South Axis underground tram (Gare du Nord, Bourse / Beurs, Anneessens, Lemonnier, Parvis de Saint-Gilles / Sint-Gillisvoorplein, Horta, Albert). Official Gare du Nord and Albert district texts print no metro. Out of v1.",
+    "Greater-ring tram ticks on the same plate (Diamant, Georges Henri, Boileau, Meiser, De Wand). Out of v1.",
+    "SNCB/NMBS S-lines and stations on the mixed plate (Bruxelles-Congrès, Bruxelles-Chapelle, Bruxelles-Luxembourg, Tour et Taxis / Thurn en Taxis, Anderlecht, …). Transfers, not D1 stops.",
+    "Bus / Noctis. Out of v1.",
+    "De Lijn / TEC. Out of v1.",
+    "No passenger metro 3 or 4 on the official legend. Metro 3 Albert–Bordet is a frozen project — not inserted.",
+    "No Elisabeth district-map row on the official index. Map still prints Elisabeth as a metro terminus — kept as a D1 name, distinct from Simonis.",
+    "PDF hex colours and Brupass / Brupass XL zone keys are legend metadata, not D1 print locks."
+  ],
+  "liveBoards": {
+    "status": "developer_api_exists_city_planned",
+    "portal": "https://api-management-opendata-production.developer.azure-api.net/apis",
+    "publicDocs": "https://data.belgianmobility.io/en/data.html",
+    "knowledgeBase": "https://data.belgianmobility.io/en/knowledge-base.html",
+    "license": "https://data.belgianmobility.io/en/terms.html",
+    "defaultNextTrain": {
+      "name": "BMC Waiting Time (STIB-MIVB Specific Datasets)",
+      "header": "Ocp-Apim-Subscription-Key",
+      "also": "BMC Vehicle Positions",
+      "note": "No STIB GTFS-RT. Jim D2. Not a D1 generator. Use the developer portal, not the historic OpenDataSoft / WaitingTimes.json curl."
+    },
+    "emptyKey": {
+      "probedAt": "2026-08-29T13:18:45Z",
+      "http": 404,
+      "url": "https://api-management-opendata-production.azure-api.net/api/datasets/WaitingTimes.json",
+      "note": "Empty-key only. Did not send a real key."
+    },
+    "keyPolicy": "Tim signs up later on the BMC developer portal. The key is personal / non-transferable under BMC ToU §5. The key is for live boards later, NOT a D1 blocker. This pack does not contain a key and did not call the API with a real key. Never paste a key.",
+    "d1": "planned. assertCityLive(brussels) must fail."
+  },
+  "stats": {
+    "lines": 4,
+    "line1Stops": 21,
+    "line2Stops": 19,
+    "line5Stops": 28,
+    "line6Stops": 26,
+    "lineTicks": 94,
+    "uniqueNames": 60,
+    "innerCityLock": [
+      "Arts-Loi / Kunst-Wet"
+    ]
+  },
+  "lines": [
+    {
+      "id": "1",
+      "number": "1",
+      "name": "1",
+      "officialPageTitle": "1 Gare de l'Ouest / Weststation – Stockel / Stokkel",
+      "gtfsRouteIdsIfKnown": [
+        "1"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Gare de l'Ouest / Weststation",
+        "Stockel / Stokkel"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Arts-Loi / Kunst-Wet",
+          "otherLine": "2",
+          "note": "Hub lock. Metro 1 × 2 × 5 × 6. Official district-map text: metro 1, 2, 5, 6; no tram. Not a direction token."
+        },
+        {
+          "at": "Beekkant",
+          "otherLine": "2",
+          "note": "Western 1×2×5×6 junction. 1/5 continue east via Étangs Noirs. 2/6 take Osseghem / Midi. Not the inner-city lock."
+        },
+        {
+          "at": "Gare de l'Ouest / Weststation",
+          "otherLine": "5",
+          "note": "Line 1 west terminus. Line 5 continues west Erasme–Jacques Brel. Also on 2/6. Not the hub lock."
+        },
+        {
+          "at": "Merode",
+          "otherLine": "5",
+          "note": "East split. Line 1 takes Montgomery–Stockel. Line 5 takes Thieffry–Herrmann-Debroux."
+        }
+      ],
+      "stations": [
+        "Gare de l'Ouest / Weststation",
+        "Beekkant",
+        "Étangs Noirs / Zwarte Vijvers",
+        "Comte de Flandre / Graaf van Vlaanderen",
+        "Sainte-Catherine / Sint-Katelijne",
+        "De Brouckère",
+        "Gare Centrale / Centraal Station",
+        "Parc / Park",
+        "Arts-Loi / Kunst-Wet",
+        "Maelbeek / Maalbeek",
+        "Schuman",
+        "Merode",
+        "Montgomery",
+        "Joséphine-Charlotte",
+        "Gribaumont",
+        "Tomberg",
+        "Roodebeek",
+        "Vandervelde",
+        "Alma",
+        "Crainhem / Kraainem",
+        "Stockel / Stokkel"
+      ]
+    },
+    {
+      "id": "2",
+      "number": "2",
+      "name": "2",
+      "officialPageTitle": "2 Simonis – Elisabeth",
+      "gtfsRouteIdsIfKnown": [
+        "2"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Simonis",
+        "Elisabeth"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Arts-Loi / Kunst-Wet",
+          "otherLine": "1",
+          "note": "Hub lock. Line 2/6 loop crosses 1/5 here."
+        },
+        {
+          "at": "Simonis",
+          "otherLine": "6",
+          "note": "Line 2 west/loop end. Line 6 continues north to Roi Baudouin / Koning Boudewijn. Simonis ≠ Elisabeth."
+        },
+        {
+          "at": "Elisabeth",
+          "otherLine": "6",
+          "note": "Line 2 and line 6 east/loop end. Separate printed name from Simonis. No district-map row titled Elisabeth."
+        },
+        {
+          "at": "Gare du Midi / Zuidstation",
+          "note": "doNotGroup metro 2/6 vs tram 4/10/51/81/82 vs SNCB. Not the hub lock."
+        },
+        {
+          "at": "Beekkant",
+          "otherLine": "1",
+          "note": "Western junction. Not the hub lock."
+        }
+      ],
+      "stations": [
+        "Simonis",
+        "Osseghem / Ossegem",
+        "Beekkant",
+        "Gare de l'Ouest / Weststation",
+        "Delacroix",
+        "Clemenceau",
+        "Gare du Midi / Zuidstation",
+        "Porte de Hal / Hallepoort",
+        "Hôtel des Monnaies / Munthof",
+        "Louise / Louiza",
+        "Porte de Namur / Naamsepoort",
+        "Trône / Troon",
+        "Arts-Loi / Kunst-Wet",
+        "Madou",
+        "Botanique / Kruidtuin",
+        "Rogier",
+        "Yser / IJzer",
+        "Ribaucourt",
+        "Elisabeth"
+      ]
+    },
+    {
+      "id": "5",
+      "number": "5",
+      "name": "5",
+      "officialPageTitle": "5 Erasme / Erasmus – Herrmann-Debroux",
+      "gtfsRouteIdsIfKnown": [
+        "5"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Erasme / Erasmus",
+        "Herrmann-Debroux"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Arts-Loi / Kunst-Wet",
+          "otherLine": "2",
+          "note": "Hub lock. Shared 1/5 trunk."
+        },
+        {
+          "at": "Gare de l'Ouest / Weststation",
+          "otherLine": "1",
+          "note": "Line 1 west end. Line 5 continues west to Erasme / Erasmus."
+        },
+        {
+          "at": "Merode",
+          "otherLine": "1",
+          "note": "East split. Line 5 takes Thieffry–Herrmann-Debroux."
+        },
+        {
+          "at": "Beekkant",
+          "otherLine": "2",
+          "note": "Western 1×2×5×6 junction. Not the hub lock."
+        }
+      ],
+      "stations": [
+        "Erasme / Erasmus",
+        "Eddy Merckx",
+        "CERIA / COOVI",
+        "La Roue / Het Rad",
+        "Bizet",
+        "Veeweyde / Veeweide",
+        "Saint-Guidon / Sint-Guido",
+        "Aumale",
+        "Jacques Brel",
+        "Gare de l'Ouest / Weststation",
+        "Beekkant",
+        "Étangs Noirs / Zwarte Vijvers",
+        "Comte de Flandre / Graaf van Vlaanderen",
+        "Sainte-Catherine / Sint-Katelijne",
+        "De Brouckère",
+        "Gare Centrale / Centraal Station",
+        "Parc / Park",
+        "Arts-Loi / Kunst-Wet",
+        "Maelbeek / Maalbeek",
+        "Schuman",
+        "Merode",
+        "Thieffry",
+        "Pétillon",
+        "Hankar",
+        "Delta",
+        "Beaulieu",
+        "Demey",
+        "Herrmann-Debroux"
+      ]
+    },
+    {
+      "id": "6",
+      "number": "6",
+      "name": "6",
+      "officialPageTitle": "6 Roi Baudouin / Koning Boudewijn – Elisabeth",
+      "gtfsRouteIdsIfKnown": [
+        "6"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Roi Baudouin / Koning Boudewijn",
+        "Elisabeth"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Arts-Loi / Kunst-Wet",
+          "otherLine": "1",
+          "note": "Hub lock. Shared 2/6 loop."
+        },
+        {
+          "at": "Simonis",
+          "otherLine": "2",
+          "note": "Line 6 through-station. Line 2 loop end. Line 6 continues north Roi Baudouin–Belgica. Simonis ≠ Elisabeth."
+        },
+        {
+          "at": "Elisabeth",
+          "otherLine": "2",
+          "note": "Line 6 south/loop terminus (same printed end as line 2). Not Simonis."
+        },
+        {
+          "at": "Heysel / Heizel",
+          "note": "doNotGroup metro 6 vs CHRONO tram 7 at the same printed name family. De Wand is tram 7 only — not a D1 row."
+        }
+      ],
+      "stations": [
+        "Roi Baudouin / Koning Boudewijn",
+        "Heysel / Heizel",
+        "Houba-Brugmann",
+        "Stuyvenbergh",
+        "Bockstael",
+        "Pannenhuis",
+        "Belgica",
+        "Simonis",
+        "Osseghem / Ossegem",
+        "Beekkant",
+        "Gare de l'Ouest / Weststation",
+        "Delacroix",
+        "Clemenceau",
+        "Gare du Midi / Zuidstation",
+        "Porte de Hal / Hallepoort",
+        "Hôtel des Monnaies / Munthof",
+        "Louise / Louiza",
+        "Porte de Namur / Naamsepoort",
+        "Trône / Troon",
+        "Arts-Loi / Kunst-Wet",
+        "Madou",
+        "Botanique / Kruidtuin",
+        "Rogier",
+        "Yser / IJzer",
+        "Ribaucourt",
+        "Elisabeth"
+      ]
+    }
+  ]
+}
