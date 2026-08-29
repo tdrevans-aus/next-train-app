@@ -43,8 +43,8 @@ line + official far end, never inbound/outbound, never a raw headsign at Malmö 
 | Triangeln | line 9 toward Trelleborg | Pågatågen mot Trelleborg | plain far end works everywhere off the ring |
 | Triangeln | line 6 toward Simrishamn (turning Ystad) | Pågatågen mot Ystad | short-turn trips show their actual far end; Simrishamn only when through |
 | Malmö C | line 11 outbound-through (ring → Kävlinge; e.g. train 1420, Spår 11) | Malmöringen mot Kävlinge | the official `towards` string, verified live — works because the through-run's far end really is Kävlinge |
-| Malmö C | line 11 loop-only / terminating variants | Malmöringen mot Malmö C via `<first ring side>` | official label is self-referential here — via-suffix is our addition (open question 2) |
-| Triangeln | line 11 heading away around the loop (Kävlinge → ring → Malmö C direction) | Malmöringen mot Malmö C via Östervärn | raw official label ("Malmö central") reads backwards at this stop — the via carries the direction |
+| Malmö C | line 11 loop-only / terminating variants | Malmöring. v `<first ring side>` (e.g. Malmöring. v Triangeln) | official label is self-referential here — Tim-approved abbreviated ring-side chip (open question 2, decided) |
+| Triangeln | line 11 heading away around the loop (Kävlinge → ring → Malmö C direction) | Malmöring. v Östervärn | raw official label ("Malmö central") reads backwards at this stop — the via carries the direction; exact chip string per Tim |
 | Persborg | line 11 toward Hyllie | Malmöringen mot Kävlinge | official far end; unambiguous at ring-only stops (each called once) |
 | Svågertorp | line 9 vs line 11 vs line 10 | mot Trelleborg / Malmöringen mot Kävlinge / Express mot Hässleholm | three continuations share one stop — line scoping mandatory |
 | Hyllie | Öresundståg toward Copenhagen | **not shown** | Öresundståg out of v1; doNotGroup (map-confirmed it calls here) |
@@ -65,13 +65,14 @@ line + official far end, never inbound/outbound, never a raw headsign at Malmö 
    `towards` string in exactly the expected shape — ring train 1420 at Malmö C shows
    **"mot Kävlinge"**; buses show **"mot Stenkällan via Rosengård"** ("mot `<far end>`", optional
    "via"). Chips should follow the official far-end convention, not invented ring-side tokens.
-2. **Ring residual (the one real decision left):** the official convention is asymmetric on the
-   ring. Outbound-through direction (Malmö C → ring → Kävlinge) reads "mot Kävlinge" everywhere —
-   fine. The opposite direction (Kävlinge → Malmö C → ring → *terminates* Malmö C) is labeled
-   toward **Malmö C/"Malmö central"** — which mid-ring means a train at Triangeln heading *away*
-   around the loop reads "toward Malmö C". Recommend appending a via/ring-side disambiguator to
-   that direction only ("mot Malmö C via Östervärn"-style). That suffix is our copy, not
-   transcription — Tim signs off.
+2. ~~Ring residual~~ — **DECIDED by Tim, 29 Aug 2026.** The official convention is asymmetric on
+   the ring: the outbound-through direction (Malmö C → ring → Kävlinge) reads "mot Kävlinge"
+   everywhere — use it as-is. The opposite direction (Kävlinge → Malmö C → ring → *terminates*
+   Malmö C) is officially labeled toward Malmö C/"Malmö central", which reads backwards mid-ring;
+   Tim's signed-off chip copy for it is the abbreviated ring-side form **"Malmöring. v
+   Östervärn"** (mirror **"Malmöring. v Triangeln"** where a loop departure's defining side is
+   Triangeln). "Malmöring." abbreviates Malmöringen, "v" abbreviates via; no "mot Malmö C" text
+   in the chip.
 3. **Short-turn chips**: observed short-turn sets (Ystad, Förslöv, Hässleholm C, …) are from one
    engineering-work-fragmented GTFS week — D5 assertion tables should assert the *published far
    end per trip* from the live feed (`towards` is available per departure), not a fixed

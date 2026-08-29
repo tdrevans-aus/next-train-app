@@ -39,18 +39,21 @@ ordered stops, termini, short-turns, ring double-call).
 
 ## What is still NOT solid — resolve at D2, don't wire around
 
-1. **Regional key scope.** The adapter path is Trafiklab GTFS Regional `skane`
-   (static + TripUpdates + VehiclePositions + occupancy per Trafiklab's table), but the local
-   `TRAFIKLAB_GTFS_SWEDEN_KEY`/`_RT_KEY` get **403 "Key does not have access to file"** on
-   `gtfs/skane/skane.zip` and `gtfs-rt-sweden/skane/TripUpdatesSweden.pb`. The regional
-   `TRAFIKLAB_API_KEY` is Vercel-only, and a `vercel env pull` attempt was permission-blocked
-   in this session — Tim/Jim runs it. Verify key scope before promising a live board.
+1. **Regional key — sharpened 29 Aug 2026: it may not exist.** The adapter path is Trafiklab
+   GTFS Regional `skane` (static + TripUpdates + VehiclePositions + occupancy per Trafiklab's
+   table), but the local `TRAFIKLAB_GTFS_SWEDEN_KEY`/`_RT_KEY` get **403 "Key does not have
+   access to file"** on the regional endpoints, and a Vercel env pull of the **development**
+   environment shows **no `TRAFIKLAB_API_KEY` at all** — the inherited "same key as Göteborg,
+   on Vercel" assumption is unverified. Before D2: (a) test the unlabeled `x-api-key` env var
+   against `gtfs/skane/skane.zip` (untested — could be the regional key under another name);
+   (b) check the production Vercel environment; (c) if neither, register a GTFS Regional key
+   at trafiklab.se (Viv-lane outreach draft if registration needs an account decision).
    (RT catalog identity corrected: mdb-2970 = TripUpdates, 2971 = ServiceAlerts,
    2972 = VehiclePositions.)
-2. **Ring via-suffix copy.** The official far-end convention is verified ("mot Kävlinge" —
-   see below), but the terminating ring direction is officially self-referential ("Malmö
-   central"); the recommended "mot Malmö C via Östervärn"-style suffix is our copy, pending
-   Tim's sign-off (direction-model-memo open question 2).
+2. ~~Ring via-suffix copy~~ — **DECIDED (Tim, 29 Aug 2026).** Outbound-through direction uses
+   the official "mot Kävlinge" as-is; the terminating ring direction's chip is the abbreviated
+   ring-side form **"Malmöring. v Östervärn"** (mirror "Malmöring. v Triangeln"). See
+   direction-model-memo.md open question 2.
 3. **Short-turn lists are observed-indicative**, from one fragmented week — assert per-trip far
    ends from the live feed at D5 (the site API exposes an official `towards` per departure),
    not a fixed list. Planned overlay to know about: Åstorp–Helsingborg closed 9 Sep–8 Nov 2026.
@@ -71,9 +74,10 @@ train 1420 shows `towards: "mot Kävlinge"` at Malmö C, buses "mot Stenkällan 
 
 ## Direction model
 
-**Product + terminus ("Pågatågen mot `<far end>`") — now matching Skånetrafiken's own verified
-`towards` strings; Malmöringen's terminating direction gets a via-suffix; never inbound/outbound,
-never raw headsigns at Malmö C** (self-referential "Malmö central"). Worked §3 examples in
+**Product + terminus ("Pågatågen mot `<far end>`") — matching Skånetrafiken's own verified
+`towards` strings; Malmöringen's terminating direction uses Tim's signed-off chip
+"Malmöring. v Östervärn" (mirror "Malmöring. v Triangeln"); never inbound/outbound, never raw
+headsigns at Malmö C** (self-referential "Malmö central"). Worked §3 examples in
 direction-model-memo.md use the live-verified strings.
 
 ## What I did not do
