@@ -40,5 +40,7 @@ ones" rule.
 **Live-flip stays human.** No agent sets `status: "live"` in `lib/providers/registry.js` — that's
 Tim's call, same as the tracker already insists ("Do not flip live" appears on multiple rows).
 
-Full agent roster, model rationale, and wave-by-wave roadmap: see the Expansion Playbook artifact
-(ask Tim for the link if you need it — it isn't checked into the repo).
+Full agent roster, model rationale, and wave-by-wave roadmap: see the Expansion Playbook artifact —
+<https://claude.ai/code/artifact/f1e97865-bafc-4197-9424-a8dfa4c09c8f> (owned by Tim; read it with
+the `Artifact` tool, `action: "read"`). It is not checked into the repo — this is the pointer to it,
+kept current whenever the playbook is revised (last synced: 29 Aug 2026, wave 0 in progress).
