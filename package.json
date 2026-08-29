@@ -22,6 +22,7 @@
     "cap:open": "set \"CAPACITOR_ANDROID_STUDIO_PATH=C:\\Program Files\\Android\\Android Studio1\\bin\\studio64.exe\" && npx cap open android",
     "cap:open:ios": "npx cap open ios",
     "test:smoke": "node qa/run-all.mjs --smoke",
+    "test:pin": "node qa/run-all.mjs --pin",
     "test:web": "node qa/run-all.mjs",
     "test:web:ci": "node qa/run-all.mjs --no-native",
     "test:web:release": "node qa/run-all.mjs --release",
