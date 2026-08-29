@@ -78,9 +78,11 @@ const SMOKE_SCRIPTS = [
   "goteborg-dogfood-gate.mjs",
   "goteborg-direction-match.mjs",
   "wellington-planned-gate.mjs",
+  "osaka-planned-gate.mjs",
   "auckland-line-map-conformance.mjs",
   "stockholm-line-map-conformance.mjs",
   "goteborg-line-map-conformance.mjs",
+  "osaka-line-map-conformance.mjs",
   "perth-line-map-conformance.mjs",
   "london-nearby-chips.mjs",
 ];

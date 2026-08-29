@@ -63,6 +63,13 @@
         { id: "vancouver", name: "Vancouver", timeZone: "America/Vancouver" },
       ],
     },
+    {
+      id: "jp",
+      name: "Japan",
+      regions: [
+        { id: "osaka", name: "Osaka", timeZone: "Asia/Tokyo", comingSoon: true },
+      ],
+    },
   ];
 
   const CITY_BOUNDS = {
