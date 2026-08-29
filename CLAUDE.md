@@ -21,7 +21,16 @@ incomplete — fix the file, don't relay the chat. Concretely:
 | Viv (outreach) | a Blocked row | a draft in `docs/outreach-drafts/<city>.md`, for Tim to send |
 
 None of the five have a tool that lets them message another agent directly — this is enforced in
-their `.claude/agents/*.md` tool lists, not just written as a convention.
+their `.claude/agents/*.md` tool lists, not just written as a convention. The same tool lists mean
+none of them can schedule their own re-run or escalate their own model tier either: model is
+pinned in each definition file, so running a city on a stronger model (e.g. Opus for a hard one)
+requires a deliberate top-level `Agent` call with a `model` override — never something an agent
+does to itself mid-task.
+
+**Start a fresh `Agent` call per city — never `SendMessage` to continue a prior one.** A new
+`Agent` invocation has no memory of earlier runs; that's what keeps each city's context small and
+cheap. The failure mode is treating one of these five as a standing conversation and feeding it
+city after city via follow-up messages — don't do that, even though the tool allows it.
 
 **One city per pipeline lane at a time.** Luke and Jim in particular touch shared files
 (`lib/providers/`, `gtfs/realtime-board.js`) — running two cities through the same lane at once is
