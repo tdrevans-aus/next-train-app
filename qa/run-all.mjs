@@ -116,6 +116,7 @@ const RELEASE_EXTRA_SCRIPTS = [
   "app-theme.mjs",
   "sanitize-journey-pin-fields.mjs",
   "ads-js-idempotent.mjs",
+  "fetchjson-deps-ok.mjs",
 ];
 
 const RELEASE_SCRIPTS = [
