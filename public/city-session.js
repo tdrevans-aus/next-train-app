@@ -93,6 +93,9 @@
     vancouver: { minLat: 49.0, maxLat: 49.35, minLng: -123.3, maxLng: -122.7 },
     canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
     auckland: { minLat: -37.12, maxLat: -36.72, minLng: 174.62, maxLng: 175.05 },
+    stockholm: { minLat: 58.85, maxLat: 59.60, minLng: 17.50, maxLng: 18.40 },
+    goteborg: { minLat: 57.55, maxLat: 57.85, minLng: 11.75, maxLng: 12.25 },
+    wellington: { minLat: -41.45, maxLat: -40.80, minLng: 174.75, maxLng: 175.70 },
   };
 
   function dogfood() {
