@@ -85,8 +85,8 @@
       "name": "Furulund",
       "aliases": [],
       "mode": "train",
-      "lat": 60.069882,
-      "lng": 15.399247
+      "lat": 55.775103,
+      "lng": 13.095875
     },
     {
       "name": "Förslöv",
@@ -113,8 +113,8 @@
       "name": "Gunnesbo",
       "aliases": [],
       "mode": "train",
-      "lat": 58.218312,
-      "lng": 11.454228
+      "lat": 55.726206,
+      "lng": 13.16811
     },
     {
       "name": "Gärsnäs",
@@ -127,8 +127,8 @@
       "name": "Halmstad",
       "aliases": [],
       "mode": "train",
-      "lat": 58.448011,
-      "lng": 13.160735
+      "lat": 56.669273,
+      "lng": 12.864841
     },
     {
       "name": "Helsingborg C",
@@ -176,8 +176,8 @@
       "name": "Karlshamn",
       "aliases": [],
       "mode": "train",
-      "lat": 56.715348,
-      "lng": 15.498361
+      "lat": 56.176512,
+      "lng": 14.868018
     },
     {
       "name": "Kattarp",
@@ -190,15 +190,15 @@
       "name": "Klippan",
       "aliases": [],
       "mode": "train",
-      "lat": 58.61373,
-      "lng": 14.178756
+      "lat": 56.130841,
+      "lng": 13.128374
     },
     {
       "name": "Klostergården",
       "aliases": [],
       "mode": "train",
-      "lat": 58.236861,
-      "lng": 13.675327
+      "lat": 55.695279,
+      "lng": 13.172708
     },
     {
       "name": "Kristianstad C",
@@ -288,15 +288,15 @@
       "name": "Marieholm",
       "aliases": [],
       "mode": "train",
-      "lat": 57.499561,
-      "lng": 14.20063
+      "lat": 55.864686,
+      "lng": 13.158997
     },
     {
       "name": "Markaryd",
       "aliases": [],
       "mode": "train",
-      "lat": 58.21463,
-      "lng": 14.652447
+      "lat": 56.458889,
+      "lng": 13.593365
     },
     {
       "name": "Mörarp",
@@ -323,15 +323,15 @@
       "name": "Persborg",
       "aliases": [],
       "mode": "train",
-      "lat": 60.420228,
-      "lng": 16.857683
+      "lat": 55.58051,
+      "lng": 13.029042
     },
     {
       "name": "Perstorp",
       "aliases": [],
       "mode": "train",
-      "lat": 57.730519,
-      "lng": 14.884392
+      "lat": 56.13636,
+      "lng": 13.397194
     },
     {
       "name": "Påarp",
@@ -351,8 +351,8 @@
       "name": "Rosengård",
       "aliases": [],
       "mode": "train",
-      "lat": 58.05657,
-      "lng": 11.694082
+      "lat": 55.589599,
+      "lng": 13.031239
     },
     {
       "name": "Rydebäck",
@@ -386,8 +386,8 @@
       "name": "Smedstorp",
       "aliases": [],
       "mode": "train",
-      "lat": 58.934635,
-      "lng": 16.172776
+      "lat": 55.549567,
+      "lng": 14.117545
     },
     {
       "name": "Stehag",
@@ -477,8 +477,8 @@
       "name": "Triangeln",
       "aliases": [],
       "mode": "train",
-      "lat": 64.27455,
-      "lng": 18.698593
+      "lat": 55.593207,
+      "lng": 13.00147
     },
     {
       "name": "Tyringe",
@@ -498,8 +498,8 @@
       "name": "Vallåkra",
       "aliases": [],
       "mode": "train",
-      "lat": 58.905839,
-      "lng": 16.792725
+      "lat": 55.963799,
+      "lng": 12.861684
     },
     {
       "name": "Vinslöv",
@@ -533,29 +533,29 @@
       "name": "Åkarp",
       "aliases": [],
       "mode": "train",
-      "lat": 58.308323,
-      "lng": 14.229261
+      "lat": 55.657432,
+      "lng": 13.108149
     },
     {
       "name": "Åstorp",
       "aliases": [],
       "mode": "train",
-      "lat": 58.231806,
-      "lng": 13.665159
+      "lat": 56.133968,
+      "lng": 12.949185
     },
     {
       "name": "Älmhult",
       "aliases": [],
       "mode": "train",
-      "lat": 57.34998,
-      "lng": 15.029543
+      "lat": 56.551427,
+      "lng": 14.136985
     },
     {
       "name": "Ängelholm",
       "aliases": [],
       "mode": "train",
-      "lat": 57.337355,
-      "lng": 13.205775
+      "lat": 56.245203,
+      "lng": 12.854194
     },
     {
       "name": "Ödåkra",
