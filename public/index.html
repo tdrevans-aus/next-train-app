@@ -125,7 +125,26 @@
 
       <div class="app-body">
       <section class="context">
-        <p class="route" id="route" role="heading" aria-level="2" tabindex="0" aria-live="polite">Loading…</p>
+        <div class="route-line" id="route-line">
+          <p class="route" id="route" role="heading" aria-level="2" tabindex="0" aria-live="polite">Loading…</p>
+          <button
+            type="button"
+            class="journey-edit-btn"
+            id="route-edit-btn"
+            hidden
+            aria-label="Manage routes"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
         <div class="journey-context-row" id="journey-context-row" hidden>
           <p class="journey-context-name" id="journey-context-name" role="heading" aria-level="2" tabindex="0">Journey</p>
           <button
