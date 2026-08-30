@@ -109,7 +109,7 @@
       "endpointsNamed": [
         "POST https://api.entur.io/journey-planner/v3/graphql"
       ],
-      "note": "Official next-train / departure-board path for Norway including Ruter T-bane. Header ET-Client-Name as company-application (NLOD open service; unidentified clients rate-limited). Query stopPlace { estimatedCalls } and filter transportMode metro / authority Ruter. Returns aimed / expected / actual, cancellations, destinationDisplay.frontText, quay, situations. Jernbanetorget and Nationaltheatret are multimodal stop-places (T-bane + rail + bus) — doNotGroup. D1 stays planned."
+      "note": "Official next-train / departure-board path for Norway including Ruter T-bane. Header ET-Client-Name as next-train-app (NLOD open service; unidentified clients rate-limited). Query stopPlace { estimatedCalls } and filter transportMode metro / authority Ruter. Returns aimed / expected / actual, cancellations, destinationDisplay.frontText, quay, situations. Jernbanetorget and Nationaltheatret are multimodal stop-places (T-bane + rail + bus) — doNotGroup. D1 stays planned."
     },
     {
       "role": "D1 board-eligibility oracle for Vy regional/commuter rail and Flytoget (added 30 Aug 2026)",
