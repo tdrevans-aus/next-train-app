@@ -150,6 +150,7 @@ function initNearbyModeFromModule() {
     updateLeaveHint,
     maybeScheduleOnboarding,
     apiUrl,
+    fetchJson,
     appendFixtureQuery,
     enrichTrip,
     findNearestStation,

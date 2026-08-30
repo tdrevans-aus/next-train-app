@@ -295,7 +295,15 @@
   }
 
   function fetchJson(url, timeoutMs) {
-    return deps.fetchJson?.(url, timeoutMs);
+    // CAPACITOR-18: optional deps.fetchJson?.() returned undefined when the dep
+    // was missing, then callers' result.ok reads threw TypeError.
+    if (typeof deps.fetchJson !== "function") {
+      return {
+        ok: false,
+        error: "Couldn't reach live times. Check your connection.",
+      };
+    }
+    return deps.fetchJson(url, timeoutMs);
   }
 
   function apiResultError(result, fallback = "Could not load train times") {
