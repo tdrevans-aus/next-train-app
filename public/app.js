@@ -4815,7 +4815,10 @@ function scheduleRegionMismatchPrompt() {
     console.log("[App] scheduleRegionMismatchPrompt: firing...");
     void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
       locateCity: locateCityFromPosition,
-      skip: () => isJourneysDialogOpen() || Boolean(document.querySelector("dialog[open]")),
+      // Region mismatch only matters for My Routes / My Journeys — Near me doesn't care
+      // which region you're in, so don't prompt while it's the active view.
+      skip: () =>
+        !journeyModeActive || isJourneysDialogOpen() || Boolean(document.querySelector("dialog[open]")),
     });
   }, 2000);
 }
