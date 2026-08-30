@@ -2,7 +2,7 @@
   "city": "oslo",
   "displayName": "Oslo",
   "status": "planned",
-  "agency": "Ruter / Sporveien T-banen",
+  "agency": "Ruter / Sporveien T-banen (T-bane) + Vy (regional/commuter rail, in scope at Jernbanetorget and Nationaltheatret only, added 30 Aug 2026) + Flytoget (airport express, in scope at Jernbanetorget and Nationaltheatret only, added 30 Aug 2026)",
   "timezone": "Europe/Oslo",
   "source": "https://cdn.sanity.io/files/5a84xxkm/prod/e46cf566dd5b9cc4e323b70b168115d7bc3c911f.pdf",
   "sources": [
@@ -109,7 +109,14 @@
       "endpointsNamed": [
         "POST https://api.entur.io/journey-planner/v3/graphql"
       ],
-      "note": "Official next-train / departure-board path for Norway including Ruter T-bane. Header ET-Client-Name as company-application (NLOD open service; unidentified clients rate-limited). Query stopPlace { estimatedCalls } and filter transportMode metro / authority Ruter. Returns aimed / expected / actual, cancellations, destinationDisplay.frontText, quay, situations. Jernbanetorget and Nationaltheatret are multimodal stop-places (T-bane + rail + bus) — doNotGroup. D1 stays planned."
+      "note": "Official next-train / departure-board path for Norway including Ruter T-bane. Header ET-Client-Name as next-train-app (NLOD open service; unidentified clients rate-limited). Query stopPlace { estimatedCalls } and filter transportMode metro / authority Ruter. Returns aimed / expected / actual, cancellations, destinationDisplay.frontText, quay, situations. Jernbanetorget and Nationaltheatret are multimodal stop-places (T-bane + rail + bus) — doNotGroup. D1 stays planned."
+    },
+    {
+      "role": "D1 board-eligibility oracle for Vy regional/commuter rail and Flytoget (added 30 Aug 2026)",
+      "title": "Oslo oracle-clash-report.md — Board eligibility section",
+      "url": "docs/oslo-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Tim's board-eligibility decision (30 Aug 2026): Vy regional/commuter rail (RE10, RE11, R12, R13, R14, R21, L1, L2) and Flytoget (FLY1, FLY2) both pass the two boarding-contract tests in docs/board-eligibility-rule.md (walk-up, no compulsory reservation; no check-in barrier) at Jernbanetorget and Nationaltheatret. Evidence: Vy seat-reservation policy page (reservations optional/supplementary on regional trains); Flytoget conditions of carriage (ticket does not automatically entitle a seat = no compulsory reservation); Bane NOR station pages for Oslo S and Nationaltheatret confirm no check-in barrier at these stations (Flytoget's customs/barrier only applies at Oslo Airport Station itself, not in this catalog). Scope is these two stations only — the oracle report gives official terminus-pair naming for direction chips, not stop-level data for the rest of each corridor."
     },
     {
       "role": "live-board path (official Entur SIRI / GTFS-RT for codespace RUT — not wired)",
@@ -132,14 +139,15 @@
   "notes": [
     "D1 oracle is official Ruter passenger maps and halt lists HAND-TRANSCRIBED: Linjekart for T-banen Utgave 2016-04 (still the PDF linked from ruter.no on 29 Aug 2026) plus Rutetabeller for T-bane gjelder fra 10. juni 2024 Stoppestedsliste. Stations arrays are not generated from GTFS. Not generated from Entur Journey Planner / SIRI / stop-place register. Not generated from Wikipedia.",
     "City id oslo is unused in existing packs (berlin, munich, hamburg, rotterdam, goteborg, malmo, uppsala, washington, …). Display Oslo. Agency Ruter / Sporveien T-banen, not Vy, not NSB, not Sporveien Trikken, not Ruter bus / båt. Do not invent city=norway or merge into a rail city.",
-    "City stays planned until Jim wires testers. Modes v1: TRAIN-like = T-bane / metro lines 1–5 only. No trikk, no bus, no Vy/NSB trains, no ferry, no passenger line 6, no Fornebubanen.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like = T-bane / metro lines 1–5 (all 101 stations) PLUS Vy regional/commuter rail (RE10, RE11, R12, R13, R14, R21, L1, L2) and Flytoget (FLY1, FLY2), both scoped ONLY to Jernbanetorget and Nationaltheatret (added 30 Aug 2026 per Tim's board-eligibility decision — see oracle-clash-report.md Board eligibility section). No trikk, no bus, no ferry, no passenger line 6, no Fornebubanen. Vy/NSB trains are no longer blanket-excluded — only the Vy lines and stations listed above are in scope; the rest of the Vy network stays out.",
     "Timezone Europe/Oslo HAS DST (CEST/CET). Do not copy no-DST cities.",
     "Five printed T-bane lines on the official Ruter index and 2024 folder cover: 1 Frognerseteren–Bergkrystallen; 2 Østerås–Ellingsrudåsen; 3 Kolsås–Mortensrud; 4 Vestli–Bergkrystallen; 5 Sognsvann–Vestli. No line 6.",
-    "Locked inner-city printed name: Stortinget (all five lines; line 5 official through-path calls it twice around Ringen). Not Oslo, not City, not Sentrum (map blob), not Jernbanetorget (Oslo S / Vy / bussterminal — doNotGroup), not Nationaltheatret (T-bane vs railway — doNotGroup), not Majorstuen (west mouth of the Common Tunnel). doNotGroup T-bane vs NSB/Vy at Jernbanetorget / Oslo S and at Nationaltheatret.",
+    "Locked inner-city printed name: Stortinget (T-bane only; all five lines; line 5 official through-path calls it twice around Ringen). Not Oslo, not City, not Sentrum (map blob), not Jernbanetorget (T-bane + Vy + Flytoget, three-way doNotGroup, bussterminal stays out), not Nationaltheatret (T-bane + Vy + Flytoget, three-way doNotGroup), not Majorstuen (west mouth of the Common Tunnel, T-bane only). doNotGroup T-bane vs Vy vs Flytoget at Jernbanetorget and at Nationaltheatret — three separate platform/board sections, not two.",
     "101 unique passenger-open T-bane stop strings (matches the published 101-stasjon network). 174 line ticks (line 5 Stoppestedsliste lists the ring-then-spur with Stortinget / Majorstuen / Tøyen / Carl Berners plass twice, same pattern as a published loop-then-spur folder).",
     "Map vs halt list: lock official 2024 Stoppestedsliste + 2016 linjekart strings. Gulleråsen is a map tick and a line-1 westbound Stoppestedsliste row; eastbound Frognerseteren–Bergkrystallen skips it (Stopp i pilretningen). Ullevål stadion not Ullevaal. Carl Berners plass not Carl Berner. Nationaltheatret not Nationaltheateret. Jernbanetorget is the T-bane string — never Oslo S as the metro stop.",
-    "gtfsRouteIdsIfKnown are passenger codes 1–5 printed on the Ruter index (Entur RUT:Line:1 style ids are feed metadata — not print locks). No stopIds in this file.",
-    "Feed / live (Jim D2, not a D1 generator): Official Entur Journey Planner v3 stopPlace.estimatedCalls and SIRI ET datasetId=RUT. Header ET-Client-Name. Static Entur GTFS for RUT is NOT a D1 generator. D1 stays planned. assertCityLive(\"oslo\") must fail."
+    "gtfsRouteIdsIfKnown are passenger codes 1–5 printed on the Ruter index (Entur RUT:Line:1 style ids are feed metadata — not print locks) for T-bane, and the printed Vy/Flytoget line codes (RE10, RE11, R12, R13, R14, R21, L1, L2, FLY1, FLY2) for the newly in-scope lines. No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Official Entur Journey Planner v3 stopPlace.estimatedCalls and SIRI ET datasetId=RUT for T-bane. For Vy, Entur GTFS/SIRI filtered to datasetId=VY. For Flytoget, Entur GTFS/SIRI filtered to datasetId=FLY. Header ET-Client-Name on all three. Static Entur GTFS is NOT a D1 generator for any of the three. D1 stays planned. assertCityLive(\"oslo\") must fail.",
+    "Vy and Flytoget scope (added 30 Aug 2026): mapGroup Vy / mapGroup Flytoget lines below are scoped ONLY to Jernbanetorget and Nationaltheatret — their stations[] arrays list just those two stops, not the full corridor (Drammen, Lillehammer, Skien, Eidsvoll, Kongsberg, Dal, Asker, Kongsvinger, Moss, Spikkestad, Lillestrøm, Stabekk, Ski, Oslo Airport Station are NOT in this catalog; no stop-level data for them is sourced). Call order between Jernbanetorget and Nationaltheatret is not asserted — the oracle report's Board eligibility table lists them in different orders for Vy rows vs Flytoget rows, which reads like table-authoring order, not a sourced sequence. Do not infer a direction from stations[] array order for these lines."
   ],
   "printedInnerCityNames": {
     "lock": "Stortinget",
@@ -156,7 +164,8 @@
       "Nationaltheatret",
       "Majorstuen",
       "Tøyen",
-      "Oslo bussterminal"
+      "Oslo bussterminal",
+      "Oslo S"
     ],
     "alsoOnSharedApproaches": [
       "Jernbanetorget",
@@ -176,13 +185,14 @@
   "coverageGaps": [
     "Trikk (Sporveien Trikken) on the same ruter.no rutetabeller index. Out of v1.",
     "Ruter bus (Oslo and Akershus) and båt / ferries. Out of v1.",
-    "Vy / NSB / Flytoget / regional trains at Oslo S (Jernbanetorget cluster), Nationaltheatret, Skøyen, Lysaker. Out of v1. doNotGroup the T-bane stop string vs the railway stop of the same name family.",
+    "Vy regional/commuter rail (RE10, RE11, R12, R13, R14, R21, L1, L2) and Flytoget (FLY1, FLY2) are IN v1 as of 30 Aug 2026, but ONLY at Jernbanetorget and Nationaltheatret — see the `lines` entries with mapGroup Vy / Flytoget below. Skøyen and Lysaker Vy/NSB stations, and the rest of each Vy/Flytoget corridor, stay OUT (not in this catalog; no stop-level data sourced for them). doNotGroup the T-bane stop string vs Vy vs Flytoget at both in-scope stations — three separate platform sections.",
     "No passenger line 6. Historical Ringen line 6 was absorbed into line 5. Current official index and 2024 cover print 1–5 only.",
     "Fornebubanen unopened (passenger target 2029). Six new stations Skøyen, Vækerø, Lysaker, Fornebuporten, Flytårnet, Fornebu. Not on the 2016 linjekart. Not on the 2024 folders. Not inserted.",
     "Line 1 Restricted service / Begrenset driftstid east of Helsfyr (and holiday short-turn Helsfyr). Overlay. Official folder title and map still print Frognerseteren–Bergkrystallen including the Lambertseter ticks. Helsfyr is a short-turn, not a D1 terminus chip.",
     "Gulleråsen is one-direction (toward Frognerseteren only). Stay in D1. Eastbound line 1 skips it.",
     "2026 T-baneløftet CBTC / Majorstuen / evening closures (bus-for-bane). Overlay. Official folder still prints the full path — stations stay in D1. Replacement bus out of v1.",
-    "PDF hex colours and Sentrum / City centre blob are legend metadata, not D1 print locks."
+    "PDF hex colours and Sentrum / City centre blob are legend metadata, not D1 print locks.",
+    "Vy R21 (Oslo S–Moss) has Oslo S / Jernbanetorget as its own terminus. At Jernbanetorget, do not synthesize an `R21 + Oslo S` / `R21 + Jernbanetorget` direction chip — that is the arriving train, not an outbound direction (same self-referential-hub problem already solved for T-bane at Stortinget). Only `R21 + Moss` is a valid outbound chip there."
   ],
   "lines": [
     {
@@ -590,6 +600,236 @@
         "Stovner",
         "Vestli"
       ]
+    },
+    {
+      "id": "vy-re10",
+      "number": "RE10",
+      "name": "RE10",
+      "operator": "Vy",
+      "officialPageTitle": "RE10 Drammen - Oslo S - Lillehammer (Dovrebanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Drammen", "Lillehammer"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026 per oracle report Board eligibility table."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor (Drammen–Lillehammer via Oslo S) is not sourced at stop level and is not in this catalog. Call order between the two in-catalog stations is not asserted from the oracle report — see published-network.json top-level notes."
+    },
+    {
+      "id": "vy-re11",
+      "number": "RE11",
+      "name": "RE11",
+      "operator": "Vy",
+      "officialPageTitle": "RE11 Skien - Oslo S - Eidsvoll (Vestfoldbanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Skien", "Eidsvoll"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor not sourced at stop level."
+    },
+    {
+      "id": "vy-r12",
+      "number": "R12",
+      "name": "R12",
+      "operator": "Vy",
+      "officialPageTitle": "R12 Kongsberg - Oslo S - Eidsvoll (Gardermobanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Kongsberg", "Eidsvoll"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor not sourced at stop level."
+    },
+    {
+      "id": "vy-r13",
+      "number": "R13",
+      "name": "R13",
+      "operator": "Vy",
+      "officialPageTitle": "R13 Drammen - Dal (Hovedbanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Drammen", "Dal"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor not sourced at stop level."
+    },
+    {
+      "id": "vy-r14",
+      "number": "R14",
+      "name": "R14",
+      "operator": "Vy",
+      "officialPageTitle": "R14 Asker - Oslo S - Kongsvinger (Kongsvingerbanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Asker", "Kongsvinger"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor not sourced at stop level."
+    },
+    {
+      "id": "vy-r21",
+      "number": "R21",
+      "name": "R21",
+      "operator": "Vy",
+      "officialPageTitle": "R21 Oslo S - Moss (Østfoldbanen western line)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Oslo S", "Moss"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. R21's own terminus is Oslo S / Jernbanetorget — do NOT synthesize an 'R21 + Oslo S' outbound direction chip here; only 'R21 + Moss' is valid outbound. Self-referential-hub case, same as Stortinget for T-bane."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor not sourced at stop level. See direction-model-memo.md R21 flag."
+    },
+    {
+      "id": "vy-l1",
+      "number": "L1",
+      "name": "L1",
+      "operator": "Vy",
+      "officialPageTitle": "L1 Spikkestad - Lillestrøm via Oslo S (Hovedbanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Spikkestad", "Lillestrøm"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor not sourced at stop level."
+    },
+    {
+      "id": "vy-l2",
+      "number": "L2",
+      "name": "L2",
+      "operator": "Vy",
+      "officialPageTitle": "L2 Stabekk - Ski (Østfoldbanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Vy",
+      "termini": ["Stabekk", "Ski"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Flytoget. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Jernbanetorget", "Nationaltheatret"],
+      "note": "In-catalog scope is Jernbanetorget and Nationaltheatret ONLY. Full corridor not sourced at stop level."
+    },
+    {
+      "id": "flytoget-fly1",
+      "number": "FLY1",
+      "name": "FLY1",
+      "operator": "Flytoget",
+      "officialPageTitle": "FLY1 Drammen - Oslo Airport (Dovrebanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Flytoget",
+      "termini": ["Drammen", "Oslo Airport"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Vy. In scope 30 Aug 2026 per oracle report Board eligibility table. Customs/barrier applies only at Oslo Airport Station itself, not here."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Vy. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Nationaltheatret", "Jernbanetorget"],
+      "note": "In-catalog scope is Nationaltheatret and Jernbanetorget ONLY. Full corridor (through Drammen to Oslo Airport Station) not sourced at stop level; Oslo Airport Station itself is out of this catalog. Call order between the two in-catalog stations is not asserted (see top-level notes)."
+    },
+    {
+      "id": "flytoget-fly2",
+      "number": "FLY2",
+      "name": "FLY2",
+      "operator": "Flytoget",
+      "officialPageTitle": "FLY2 Stabekk - Oslo Airport (Østfoldbanen)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Flytoget",
+      "termini": ["Stabekk", "Oslo Airport"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Jernbanetorget",
+          "note": "doNotGroup vs T-bane and vs Vy. In scope 30 Aug 2026. Customs/barrier applies only at Oslo Airport Station itself, not here."
+        },
+        {
+          "at": "Nationaltheatret",
+          "note": "doNotGroup vs T-bane and vs Vy. In scope 30 Aug 2026."
+        }
+      ],
+      "stations": ["Nationaltheatret", "Jernbanetorget"],
+      "note": "In-catalog scope is Nationaltheatret and Jernbanetorget ONLY. Full corridor not sourced at stop level; Oslo Airport Station itself is out of this catalog."
     }
   ]
 }
