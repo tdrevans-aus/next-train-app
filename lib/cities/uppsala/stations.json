@@ -1,0 +1,141 @@
+{
+  "city": "uppsala",
+  "status": "planned",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Arlanda C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.649053,
+      "lng": 17.928923
+    },
+    {
+      "name": "Furuvik",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.65114,
+      "lng": 17.331907
+    },
+    {
+      "name": "Gävle C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.676036,
+      "lng": 17.151491
+    },
+    {
+      "name": "Heby",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.940482,
+      "lng": 16.850735
+    },
+    {
+      "name": "Knivsta",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.726062,
+      "lng": 17.787278
+    },
+    {
+      "name": "Marma",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.491245,
+      "lng": 17.430557
+    },
+    {
+      "name": "Mehedeby",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.45061,
+      "lng": 17.401305
+    },
+    {
+      "name": "Morgongåva",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.932876,
+      "lng": 16.959818
+    },
+    {
+      "name": "Märsta",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.628521,
+      "lng": 17.861127
+    },
+    {
+      "name": "Sala",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.924987,
+      "lng": 16.605679
+    },
+    {
+      "name": "Skutskär",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.623626,
+      "lng": 17.405841
+    },
+    {
+      "name": "Skyttorp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.080146,
+      "lng": 17.738008
+    },
+    {
+      "name": "Storvreta",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.95709,
+      "lng": 17.706563
+    },
+    {
+      "name": "Tierp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.345734,
+      "lng": 17.512583
+    },
+    {
+      "name": "Tobo",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.257806,
+      "lng": 17.638315
+    },
+    {
+      "name": "Uppsala C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 59.857739,
+      "lng": 17.647666
+    },
+    {
+      "name": "Vattholma",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.025022,
+      "lng": 17.731129
+    },
+    {
+      "name": "Älvkarleby",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.555221,
+      "lng": 17.427657
+    },
+    {
+      "name": "Örbyhus",
+      "aliases": [],
+      "mode": "train",
+      "lat": 60.228584,
+      "lng": 17.704716
+    }
+  ]
+}
