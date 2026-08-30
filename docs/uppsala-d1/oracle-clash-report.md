@@ -52,6 +52,17 @@ H2 conclusion: passenger line routes and corridors through Uppsala C **agree** a
 | Terms URL | [CC0 1.0 Universal Deed](https://creativecommons.org/publicdomain/zero/1.0/deed.en). Trafiklab feed page: [GTFS Regional](https://www.trafiklab.se/api/gtfs-datasets/gtfs-regional/). |
 | Confidence | **Clear**. CC0 is an explicit public-domain waiver with no restrictions on redistribution or use. |
 
+## Board eligibility
+
+| Service | Calls at in-catalog stations | Walk-up? | Proposed verdict | Current behavior | QA verdict |
+|---|---|---|---|---|---|
+| **SL Commuter Line 40 (Pendeltåg)** | Knivsta, Märsta, Södertälje syd, Uppsala C, and other shared corridor stops | Yes — walk-up, high-frequency | `in` per rule test 1 & 2; owned by Stockholm's pack | Explicitly excluded from Uppsala's board (agency filter to Mälardalstrafik only) | ✓ NOT a violation. Riders at Knivsta see Line 40 departures when accessing Knivsta via Stockholm's city context (Stockholm is tester-live as of 30 Aug 2026, includes Knivsta, and includes Line 40 in ALLOWED_LINE_CODES). Exclusion is correct per design: one service, one pack. Known product gap (cross-city board merge, scoped in `look-into-the-uk-validated-sprout.md`) not a silent omission. |
+| **Mälartåg regional rail** (all in-scope routes) | Uppsala C, Knivsta, Märsta, Arlanda C, and other UL-feed Mälartåg stops | Yes — walk-up | `in` | Shown on Uppsala's board | ✓ Correct |
+| **Mälartåg ersättningstrafik** | Occasionally at in-catalog stops | Yes (if applicable) | `out-mode` (v1 scope excludes replacement services) | Excluded by adapter filtering | ✓ Correct |
+| **All other services** | None call at any in-catalog station per `ul` feed filtered to Mälardalstrafik. UL buses (route_type 700) and SL services are out of scope. | N/A | N/A | N/A | ✓ Verified — no walk-up services silently missing |
+
+**Board eligibility summary:** No violations. Adapter filtering matches verdicts.
+
 ## What I did not do
 
 No line-map generation, no station hand-transcription from the Mälartågskartan, no live city flip, no GitHub PR, no adapter code, no Trafiklab OAuth fallback investigation.

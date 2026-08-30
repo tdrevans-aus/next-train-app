@@ -1,0 +1,77 @@
+{
+  "Arlanda C": [
+    "Mälartåg mot Flemingsberg",
+    "Mälartåg mot Stockholm C"
+  ],
+  "Furuvik": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Gävle C": [
+    "Mälartåg mot Uppsala C"
+  ],
+  "Heby": [
+    "Mälartåg mot Sala",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Knivsta": [
+    "Mälartåg mot Flemingsberg",
+    "Mälartåg mot Stockholm C"
+  ],
+  "Marma": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Mehedeby": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Morgongåva": [
+    "Mälartåg mot Sala",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Märsta": [
+    "Mälartåg mot Stockholm C"
+  ],
+  "Sala": [
+    "Mälartåg mot Uppsala C"
+  ],
+  "Skutskär": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Skyttorp": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Storvreta": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Tierp": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Tobo": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Uppsala C": [
+    "Mälartåg mot Flemingsberg",
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Sala",
+    "Mälartåg mot Stockholm C"
+  ],
+  "Vattholma": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Älvkarleby": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
+  "Örbyhus": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ]
+}
