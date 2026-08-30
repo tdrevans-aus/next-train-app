@@ -76,7 +76,6 @@
   const detailActiveHoursErrorTextEl = document.getElementById("detail-active-hours-error-text");
   const detailActiveHoursFixBtn = document.getElementById("detail-active-hours-fix-btn");
   const detailActiveHoursHint = document.getElementById("detail-active-hours-hint");
-  const detailTargetOutsideActiveHint = document.getElementById("detail-target-outside-active-hint");
   const detailReminderSection = document.getElementById("detail-reminder-section");
   const detailRemindControls = document.getElementById("detail-remind-controls");
   const detailRemindMeInput = document.getElementById("detail-remind-me");
@@ -623,26 +622,6 @@ function syncDetailActiveDaysHint() {
   detailActiveDaysHint.textContent = DEFAULT_ACTIVE_DAYS_HINT;
 }
 
-function isTargetOutsideActiveWindow(defaultFrom, defaultUntil, preferredTrainTime) {
-  if (!defaultFrom || !defaultUntil || !preferredTrainTime) {
-    return false;
-  }
-
-  const targetMinutes = parseTimeToMinutes(preferredTrainTime);
-  const from = parseTimeToMinutes(defaultFrom);
-  const until = parseTimeToMinutes(defaultUntil);
-
-  // Inclusive of Active from/until (unlike live auto-show, which uses until exclusive).
-  if (from === until) {
-    return false;
-  }
-  if (from < until) {
-    return targetMinutes < from || targetMinutes > until;
-  }
-  // Overnight window: inside if at/after from OR at/before until.
-  return targetMinutes < from && targetMinutes > until;
-}
-
 const JOURNEY_WINDOW_TARGET_START_PADDING_MINUTES = 60;
 const JOURNEY_WINDOW_TARGET_END_PADDING_MINUTES = 15;
 
@@ -694,53 +673,10 @@ function maybeDefaultJourneyWindowFromTarget(preferredTrainTime) {
   setDetailJourneyWindow(from, until);
 }
 
-function amendJourneyWindowFromTargetIfNeeded(preferredTrainTime) {
-  if (!isJourneyDetailEditor() || !preferredTrainTime) {
-    return;
-  }
-
-  const defaultFrom = readOptionalTimeField(detailDefaultFromField);
-  const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
-  if (
-    !defaultFrom ||
-    !defaultUntil ||
-    !isTargetOutsideActiveWindow(defaultFrom, defaultUntil, preferredTrainTime)
-  ) {
-    return;
-  }
-
-  const { from, until } = journeyWindowAroundTarget(preferredTrainTime);
-  if (!from || !until) {
-    return;
-  }
-
-  setDetailJourneyWindow(from, until);
-}
-
-function syncDetailComboHints({ amendWindowFromTarget = false, skipWindowDefault = false } = {}) {
+function syncDetailComboHints({ skipWindowDefault = false } = {}) {
   const preferredTrainTime = readOptionalTimeField(detailPreferredField);
   if (!skipWindowDefault) {
     maybeDefaultJourneyWindowFromTarget(preferredTrainTime);
-  }
-  if (amendWindowFromTarget) {
-    amendJourneyWindowFromTargetIfNeeded(preferredTrainTime);
-  }
-
-  const defaultFrom = readOptionalTimeField(detailDefaultFromField);
-  const defaultUntil = readOptionalTimeField(detailDefaultUntilField);
-
-  const outsideTarget = isTargetOutsideActiveWindow(
-    defaultFrom,
-    defaultUntil,
-    preferredTrainTime
-  );
-
-  if (detailTargetOutsideActiveHint) {
-    const wasHidden = detailTargetOutsideActiveHint.hidden;
-    detailTargetOutsideActiveHint.hidden = !outsideTarget;
-    if (outsideTarget && wasHidden) {
-      detailTargetOutsideActiveHint.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    }
   }
 }
 
@@ -2239,7 +2175,6 @@ const api = {
   hasDetailTargetTrain,
   highlightDetailReminderSection,
   isDetailTargetMasterOn,
-  isTargetOutsideActiveWindow,
   loadDirectionsForSelect,
   openJourneyDetail,
   openJourneysDialogSync,

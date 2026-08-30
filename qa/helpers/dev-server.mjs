@@ -52,7 +52,10 @@ export async function ensureDevServer({ force = false } = {}) {
   const child = spawn("node", ["dev-server.js"], {
     cwd: REPO_ROOT,
     stdio: ["ignore", "pipe", "pipe"],
-    env: { ...process.env },
+    // QA hammers this dev-server with many scripts against one long-lived
+    // process; always bypass its soft rate limit (dev-server.js checks
+    // CI==="true"), not just when the outer run is GitHub Actions CI.
+    env: { ...process.env, CI: "true" },
     detached: process.platform !== "win32",
   });
 

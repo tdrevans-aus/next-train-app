@@ -1,7 +1,7 @@
 /* Default journey detail should fit one phone viewport.
    Scroll remains for errors / station picker / tiny screens. */
 @media (max-height: 820px) {
-  #settings-detail-view .settings-section-hint:not([hidden]):not([role="alert"]):not(.detail-target-outside-hint):not(.detail-target-master-hint) {
+  #settings-detail-view .settings-section-hint:not([hidden]):not([role="alert"]):not(.detail-target-master-hint) {
     display: none;
   }
 
