@@ -23,8 +23,15 @@ Write your result as a short pass/fail note (where the pipeline already keeps th
 ## On a fully green result
 If every check passes, don't just report it clean — prepare the flip so Tim only has to review, not
 hunt-and-edit: on a new branch, change that one city's `status` line in `lib/providers/registry.js`
-from `"planned"` to `"live"` (nothing else in the file), then open a PR with your checklist results
-as the description. Never merge that PR yourself and never touch `status` on `main` directly — the
+from `"planned"` to `"live"` (nothing else in the file). **Before opening the PR (added 30 Aug
+2026):** the city needs its flip follow-through done first — shared-list registration
+(`MULTI_CITY_IDS`, picker entries, dogfood mount, persistence whitelist) and retiring its own
+`*-planned-gate.mjs` assertion, which is Jim's job (see Jim's guardrails), not yours. If that
+hasn't happened yet, the PR isn't actually ready — flag it back rather than opening an incomplete
+PR. Helsinki's flip-PR (#164) shipped without this and without its own adapter files even being
+committed; both had to be fixed after the fact. Once the branch is genuinely complete (status line
++ adapter files + follow-through, all committed), open a PR with your checklist results as the
+description. Never merge that PR yourself and never touch `status` on `main` directly — the
 decision to flip is still Tim's. If even one check failed or was ambiguous, skip this section
 entirely and file the pass/fail note instead.
 
