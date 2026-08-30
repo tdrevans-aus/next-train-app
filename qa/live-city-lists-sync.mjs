@@ -127,6 +127,22 @@ for (const id of registryLiveIds) {
   );
 }
 
+// 8. public/city-session.js — CITY_BOUNDS. Missing entries silently fall back to
+// nearbyCityFromCoords()'s "perth" default (public/app.js), misfiring the region-mismatch
+// prompt for a live city's own users.
+const boundsMatch = citySession.match(/CITY_BOUNDS = \{([\s\S]*?)\n  \};/);
+check(boundsMatch, "city-session CITY_BOUNDS: could not parse (pattern drift — update this gate)");
+if (boundsMatch) {
+  const boundsIds = [...boundsMatch[1].matchAll(/(?:"([a-z-]+)"|([a-z-]+)):\s*\{/g)].map(
+    (m) => m[1] ?? m[2]
+  );
+  const missingBounds = registryLiveIds.filter((id) => !boundsIds.includes(id));
+  check(
+    missingBounds.length === 0,
+    `city-session CITY_BOUNDS missing entries for live cities: [${missingBounds}]`
+  );
+}
+
 if (failures > 0) {
   console.error(`live-city-lists-sync: ${failures} failure(s)`);
   process.exit(1);
