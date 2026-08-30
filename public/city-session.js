@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -63,6 +63,13 @@
       name: "Canada",
       regions: [
         { id: "vancouver", name: "Vancouver", timeZone: "America/Vancouver" },
+      ],
+    },
+    {
+      id: "fi",
+      name: "Finland",
+      regions: [
+        { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
       ],
     },
     {
