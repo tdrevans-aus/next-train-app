@@ -98,6 +98,8 @@
     stockholm: { minLat: 58.85, maxLat: 59.60, minLng: 17.50, maxLng: 18.40 },
     goteborg: { minLat: 57.55, maxLat: 57.85, minLng: 11.75, maxLng: 12.25 },
     wellington: { minLat: -41.45, maxLat: -40.80, minLng: 174.75, maxLng: 175.70 },
+    malmo: { minLat: 55.30, maxLat: 56.75, minLng: 12.60, maxLng: 15.55 },
+    uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
   };
 
   function dogfood() {
