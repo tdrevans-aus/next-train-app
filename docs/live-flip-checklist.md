@@ -93,6 +93,25 @@ assert about this city:
 - [ ] `node qa/run-all.mjs --smoke` — full smoke, including the flipped city gates and
       `region-selection.mjs` (the script that caught the Göteborg misses).
 
+## 9. Live-sweep verification (mandatory — do this before opening the flip PR)
+
+Sections 1–8 only prove the app *wires up* to the city correctly — registry status, list
+copies, gate assertions. None of it calls the real upstream API. The Wellington flip (PR #147,
+30 Aug 2026) passed every gate in this checklist and still shipped a broken board, because the
+one script that hits the real feed (`qa/<city>-network-sweep.mjs`, D6 tier) is deliberately
+excluded from `qa/run-all.mjs`'s smoke/release tiers (no per-script timeout outside CI — it can
+hang) and nobody ran it by hand.
+
+- [ ] Run `node qa/<city>-network-sweep.mjs --limit=5` (needs the city's real API key set
+      locally) and confirm it completes and reports 0 anomalies against the *live* feed —
+      not the fixture. If it errors before making a network call at all, that script is stale
+      (e.g. it still asserts the pre-flip planned status) — fix the assertion first, then rerun.
+- [ ] If the city's D1 pack or Nico/Luke handoff docs flag an open pre-live risk (e.g. "confirm
+      the railOnly filter against the full live feed before flipping" for Wellington), that risk
+      must be resolved or explicitly waived by Tim in the PR description — don't flip past a
+      documented red flag on the assumption the gates will catch it. They won't; see above.
+- [ ] Save the sweep's JSON report under `qa/reports/` and link it in the flip PR description.
+
 ## Self-enforcement
 
 `qa/live-city-lists-sync.mjs` (in the smoke suite, offline phase) derives the expected live

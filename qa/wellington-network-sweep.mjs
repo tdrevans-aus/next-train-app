@@ -1,6 +1,6 @@
 /**
  * D6 — Live Wellington network sweep. Anomaly report, not a CI gate.
- * City stays planned. Needs METLINK_API_KEY. No published-network until Luke D1.
+ * City is live. Needs METLINK_API_KEY.
  *
  *   npm run sweep:wellington
  *   node qa/wellington-network-sweep.mjs --station="Wellington Station"
@@ -35,8 +35,8 @@ function parseArgs(argv) {
 
 async function main() {
   const live = assertCityLive("wellington");
-  if (live?.ok === true) {
-    throw new Error("assertCityLive(wellington) must fail — city stays planned");
+  if (live?.ok !== true) {
+    throw new Error("assertCityLive(wellington) must pass — city is live");
   }
   if (!readMetlinkApiKey()) {
     throw new Error("METLINK_API_KEY is not set");
