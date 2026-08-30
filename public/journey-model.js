@@ -516,6 +516,8 @@ const PERSISTED_CITY_IDS = new Set([
   "stockholm",
   "goteborg",
   "wellington",
+  "malmo",
+  "uppsala",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se"]);
 

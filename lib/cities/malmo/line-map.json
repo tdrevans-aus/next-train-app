@@ -1,0 +1,314 @@
+{
+  "city": "malmo",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "hub": "Malmö C",
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Malmö C",
+      "b": "Malmö C Öresundståg",
+      "reason": "Öresunds- och Pågatågen map symbol — both shown (board-eligibility-rule.md, in), keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
+    },
+    {
+      "a": "Triangeln",
+      "b": "Triangeln Öresundståg",
+      "reason": "Öresunds- och Pågatågen map symbol — both shown, keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
+    },
+    {
+      "a": "Hyllie",
+      "b": "Hyllie Öresundståg",
+      "reason": "Öresunds- och Pågatågen map symbol — both shown, keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
+    },
+    {
+      "a": "Burlöv",
+      "b": "Burlöv Öresundståg",
+      "reason": "Öresunds- och Pågatågen map symbol — both shown, keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
+    },
+    {
+      "a": "Hässleholm C",
+      "b": "Hässleholm C Krösatågen",
+      "reason": "Krösatågen (Hässleholm–Växjö, Kalmar–Växjö) also calls Hässleholm C, a Pågatågen v1 station (lines 5/7/9/10) — both shown (board-eligibility-rule.md, in), keep as distinct service entries at the same physical stop"
+    },
+    {
+      "a": "Malmö C",
+      "b": "Malmö central",
+      "reason": "self-referential ring headsign, never a station token"
+    }
+  ],
+  "lines": [
+    {
+      "id": "vastkust-nord",
+      "referenceLineNumber": "2",
+      "number": null,
+      "name": "Helsingborg–Ängelholm–Halmstad",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Halmstad"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Helsingborg C",
+        "Maria",
+        "Ödåkra",
+        "Kattarp",
+        "Ängelholm",
+        "Barkåkra",
+        "Förslöv",
+        "Båstad",
+        "Laholm",
+        "Halmstad"
+      ]
+    },
+    {
+      "id": "marieholmsbanan",
+      "referenceLineNumber": "3",
+      "number": null,
+      "name": "Helsingborg–Eslöv–Malmö–Hyllie (via Marieholm)",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Hyllie"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Helsingborg C",
+        "Ramlösa",
+        "Gantofta",
+        "Vallåkra",
+        "Tågarp",
+        "Billeberga",
+        "Teckomatorp",
+        "Marieholm",
+        "Eslöv",
+        "Lund C",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie"
+      ]
+    },
+    {
+      "id": "blekinge-vast",
+      "referenceLineNumber": "4B",
+      "number": null,
+      "name": "Kristianstad–Bromölla–Karlshamn",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Kristianstad C",
+        "Karlshamn"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Kristianstad C",
+        "Fjälkinge",
+        "Bromölla",
+        "Sölvesborg",
+        "Mörrum",
+        "Karlshamn"
+      ]
+    },
+    {
+      "id": "skanebanan",
+      "referenceLineNumber": "5",
+      "number": null,
+      "name": "Helsingborg–Åstorp–Hässleholm–Kristianstad",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Kristianstad C"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Helsingborg C",
+        "Ramlösa",
+        "Påarp",
+        "Mörarp",
+        "Bjuv",
+        "Åstorp",
+        "Kvidinge",
+        "Klippan",
+        "Perstorp",
+        "Tyringe",
+        "Hässleholm C",
+        "Vinslöv",
+        "Önnestad",
+        "Kristianstad C"
+      ]
+    },
+    {
+      "id": "hbg-ystad-simrishamn",
+      "referenceLineNumber": "6 (through-marketed 2+6 in reference sources)",
+      "number": null,
+      "name": "Helsingborg–Landskrona–Lund–Malmö–Ystad–Simrishamn",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Helsingborg C",
+        "Simrishamn"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Helsingborg C",
+        "Ramlösa",
+        "Rydebäck",
+        "Glumslöv",
+        "Landskrona",
+        "Häljarp",
+        "Dösjebro",
+        "Kävlinge",
+        "Gunnesbo",
+        "Lund C",
+        "Klostergården",
+        "Hjärup",
+        "Åkarp",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie",
+        "Oxie",
+        "Svedala",
+        "Skurup",
+        "Rydsgård",
+        "Svarte",
+        "Ystad",
+        "Köpingebro",
+        "Tomelilla",
+        "Lunnarp",
+        "Smedstorp",
+        "Gärsnäs",
+        "Simrishamn"
+      ]
+    },
+    {
+      "id": "markarydsbanan",
+      "referenceLineNumber": "7",
+      "number": null,
+      "name": "Hässleholm–Markaryd",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Hässleholm C",
+        "Markaryd"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Hässleholm C",
+        "Bjärnum",
+        "Vittsjö",
+        "Markaryd"
+      ]
+    },
+    {
+      "id": "soderasbanan",
+      "referenceLineNumber": "8",
+      "number": null,
+      "name": "Åstorp–Teckomatorp–Lund–Malmö–Hyllie (Söderåsbanan)",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Åstorp",
+        "Hyllie"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Åstorp",
+        "Billesholm",
+        "Kågeröd",
+        "Svalöv",
+        "Teckomatorp",
+        "Kävlinge",
+        "Gunnesbo",
+        "Lund C",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie"
+      ]
+    },
+    {
+      "id": "kristianstad-malmo-trelleborg",
+      "referenceLineNumber": "9 (through-marketed 4B+9 in reference sources)",
+      "number": null,
+      "name": "Kristianstad–Hässleholm–Lund–Malmö–Trelleborg",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Kristianstad C",
+        "Trelleborg"
+      ],
+      "productLabel": "Pågatågen",
+      "stations": [
+        "Kristianstad C",
+        "Önnestad",
+        "Vinslöv",
+        "Hässleholm C",
+        "Sösdala",
+        "Tjörnarp",
+        "Höör",
+        "Stehag",
+        "Eslöv",
+        "Örtofta",
+        "Stångby",
+        "Lund C",
+        "Klostergården",
+        "Hjärup",
+        "Åkarp",
+        "Burlöv",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie",
+        "Svågertorp",
+        "Västra Ingelstad",
+        "Östra Grevie",
+        "Trelleborg"
+      ]
+    },
+    {
+      "id": "pagatagen-express",
+      "referenceLineNumber": "10",
+      "number": null,
+      "name": "PågatågenExpress Malmö Svågertorp–Hässleholm(–Älmhult)",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Svågertorp",
+        "Älmhult"
+      ],
+      "productLabel": "PågatågenExpress",
+      "stations": [
+        "Svågertorp",
+        "Hyllie",
+        "Triangeln",
+        "Malmö C",
+        "Burlöv",
+        "Lund C",
+        "Eslöv",
+        "Höör",
+        "Hässleholm C",
+        "Älmhult"
+      ]
+    },
+    {
+      "id": "malmoringen",
+      "referenceLineNumber": "11",
+      "number": null,
+      "name": "Malmöpendeln / Malmöringen (Kävlinge–Lomma–Malmö C–ring)",
+      "mapGroup": "Pågatågen",
+      "termini": [
+        "Kävlinge",
+        "Malmö C"
+      ],
+      "productLabel": "Malmöringen",
+      "stations": [
+        "Kävlinge",
+        "Furulund",
+        "Lomma",
+        "Malmö C",
+        "Triangeln",
+        "Hyllie",
+        "Svågertorp",
+        "Persborg",
+        "Rosengård",
+        "Östervärn",
+        "Malmö C"
+      ]
+    }
+  ]
+}

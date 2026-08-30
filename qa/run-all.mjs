@@ -80,6 +80,8 @@ const SMOKE_SCRIPTS = [
   "stockholm-direction-match.mjs",
   "goteborg-dogfood-gate.mjs",
   "goteborg-direction-match.mjs",
+  "malmo-dogfood-gate.mjs",
+  "malmo-line-map-conformance.mjs",
   "wellington-dogfood-gate.mjs",
   "osaka-planned-gate.mjs",
   "hong-kong-planned-gate.mjs",
@@ -91,6 +93,8 @@ const SMOKE_SCRIPTS = [
   "hong-kong-line-map-conformance.mjs",
   "perth-line-map-conformance.mjs",
   "london-nearby-chips.mjs",
+  "uppsala-dogfood-gate.mjs",
+  "uppsala-line-map-conformance.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
