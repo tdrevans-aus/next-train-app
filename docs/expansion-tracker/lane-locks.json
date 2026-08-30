@@ -10,5 +10,17 @@
     "stage": "jim",
     "branch": null,
     "locked_at": "2026-08-30T12:39:54.003Z"
+  },
+  "Belgium": {
+    "region": "Brussels",
+    "stage": "jim",
+    "branch": null,
+    "locked_at": "2026-08-30T23:31:47.466Z"
+  },
+  "United Kingdom": {
+    "region": "East Midlands",
+    "stage": "luke",
+    "branch": null,
+    "locked_at": "2026-08-30T23:37:03.972Z"
   }
 }
