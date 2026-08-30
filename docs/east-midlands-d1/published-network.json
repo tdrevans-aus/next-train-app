@@ -1,0 +1,115 @@
+{
+  "city": "east-midlands",
+  "displayName": "East Midlands",
+  "status": "planned",
+  "agency": [
+    "Nottingham Express Transit (NET, operated by Keolis)",
+    "National Rail (Darwin/OpenLDBWS — Keolis East Midlands Trains + cross-boundary operators)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/east-midlands-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico, from-scratch redo 31 Aug 2026)",
+      "title": "East Midlands oracle clash report",
+      "url": "docs/east-midlands-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. No hand-transcribed passenger map exists for either agency in this report — NET line data is termini-only; National Rail has no printed route map at all (Darwin is a per-station real-time board product). Both gaps are carried into coverageGaps below rather than guessed."
+    },
+    {
+      "role": "NET static GTFS feed (confirmed live, no key, not yet pulled for this pack)",
+      "title": "UK Department for Transport Bus Open Data Service",
+      "url": "https://data.bus-data.dft.gov.uk/downloads/",
+      "onestopId": "f-bus~dft~gov~uk",
+      "transitlandEntry": "https://www.transit.land/feeds/f-bus~dft~gov~uk",
+      "note": "Verified live (200) 30 Aug 2026 per the oracle report. Monthly-refresh static GTFS. No key required. This pack does NOT contain stopIds or a GTFS-derived stop order — Jim should pull this feed at D2 to get NET's actual ordered stop sequence, which the oracle report does not include."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as West Midlands / Greater Manchester / Liverpool City Region. Not a feed problem — do not treat this as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    }
+  ],
+  "retrievedAt": "2026-08-31T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/east-midlands-d1/oracle-clash-report.md only. No product lib/cities/east-midlands/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "Two agencies, two direction models, one shared hub name (Nottingham Station) with doNotGroup between the layers. See direction-model-memo.md.",
+    "NET modes v1: TRAIN-like light rail only (tram). Two lines, Line 1 and Line 2. No Line 3 passenger service.",
+    "National Rail modes v1: heavy rail, destination-board model (not line+terminus). BLOCKED pending DARWIN_LDB_TOKEN — see coverageGaps. Build the catalog/adapter normally per Nico's report; do not wire the token until it exists.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock: Nottingham Station (NOT CRS). NET tram viaduct above National Rail main platforms, footbridge connects. doNotGroup NET tram vs National Rail at this station — separate infrastructure, separate operators, separate boarding areas.",
+    "Tamworth is a genuine shared National Rail platform with West Midlands — this is a D2 de-dup boundary for a FUTURE West Midlands pack, not an East Midlands D1 concern. Do not build any cross-region merge logic here.",
+    "Leicester, Kettering, Wellingborough, Chesterfield, Alfreton are through-running-only National Rail stations (same operator continuing across the regional boundary, not a shared-platform merge point). Routing/filter concern for whichever regions ship National Rail, not a station-graph merge concern.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as West Midlands / Greater Manchester / Liverpool City Region.",
+    "NET Line 1/Line 2 station arrays below are TERMINI-ONLY — the oracle report does not give an intermediate stop order. This is a real gap, not an omission; see hazard-pack.md H4/H5 and direction-model-memo.md. Jim should confirm the full ordered stop list against the DFT GTFS feed before building the adapter's station graph.",
+    "gtfsRouteIdsIfKnown is left empty for NET — the report does not state the GTFS route_id for either line. Do not guess it; read it off the DFT feed at D2."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Nottingham Station",
+    "doNotUse": [
+      "Nottingham",
+      "NOT",
+      "Nottingham Tram Station",
+      "Nottingham Rail Station"
+    ],
+    "netTramLock": "Nottingham Station",
+    "nationalRailLock": "Nottingham Station (NOT CRS)",
+    "note": "Two locks sharing one printed name, one building, doNotGroup between them. See hazard-pack.md H1/H6."
+  },
+  "coverageGaps": [
+    "NET real-time: no public GTFS-RT API confirmed. v1 is schedule-only for NET.",
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here; do not assume permission to relay Darwin data to end users until Tim confirms against the signed RDM Data Sharing Agreement.",
+    "NET Line 1 and Line 2 intermediate stop order is not in the oracle report — termini only. Do not treat the 'stations' arrays below as complete; pull the DFT GTFS feed at D2 for the real ordered list.",
+    "National Rail has no printed route/line map to transcribe (Darwin is a real-time per-station board product) — no 'lines' array is provided for National Rail in this pack, only the hub and through-running station list. See direction-model-memo.md for the destination+operator model recommended instead of line+terminus.",
+    "Tamworth shared-platform de-dup with West Midlands is explicitly out of scope for this pack — D2 concern for a future West Midlands pack.",
+    "No buses, no other operators, no NET real-time in v1 scope, per the oracle report."
+  ],
+  "lines": [
+    {
+      "id": "line-1",
+      "number": "1",
+      "name": "NET Line 1",
+      "agency": "Nottingham Express Transit (Keolis)",
+      "mapGroup": "Tram",
+      "termini": ["Hucknall", "Beeston/Chilwell"],
+      "shortTurns": [],
+      "branches": [],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["Hucknall", "Nottingham Station", "Beeston/Chilwell"],
+      "stationsNote": "TERMINI + hub only. Full intermediate stop order not in the oracle report — do not treat as complete. See coverageGaps."
+    },
+    {
+      "id": "line-2",
+      "number": "2",
+      "name": "NET Line 2",
+      "agency": "Nottingham Express Transit (Keolis)",
+      "mapGroup": "Tram",
+      "termini": ["Phoenix Park", "city centre"],
+      "shortTurns": [],
+      "branches": [],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["Phoenix Park", "Nottingham Station"],
+      "stationsNote": "TERMINI + hub only, and the 'city centre' terminus label is a placeholder — the report does not give a confirmed printed station name for Line 2's inner end. Confirm against GTFS/NET's own site before shipping. See coverageGaps and direction-model-memo.md."
+    }
+  ],
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
+    "hub": {
+      "name": "Nottingham Station",
+      "crs": "NOT",
+      "class": "hub lock — shared with NET tram, doNotGroup, footbridge connects viaduct to main platforms"
+    },
+    "throughRunningOnly": [
+      { "name": "Leicester", "crs": "LEI", "class": "through-running only, not a merge point" },
+      { "name": "Kettering", "crs": "KET", "class": "through-running only, not a merge point" },
+      { "name": "Wellingborough", "crs": "WEL", "class": "through-running only, not a merge point" },
+      { "name": "Chesterfield", "crs": "CHD", "class": "through-running only, not a merge point" },
+      { "name": "Alfreton", "crs": "ALF", "class": "through-running only, not a merge point" }
+    ],
+    "sharedPlatformFlaggedForD2": [
+      { "name": "Tamworth", "crs": "TAM", "class": "genuine shared platform with West Midlands region — D2 de-dup concern, out of scope for this pack" }
+    ]
+  }
+}
