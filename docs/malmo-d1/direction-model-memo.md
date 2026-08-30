@@ -47,7 +47,7 @@ line + official far end, never inbound/outbound, never a raw headsign at Malmö 
 | Triangeln | line 11 heading away around the loop (Kävlinge → ring → Malmö C direction) | Malmöring. v Östervärn | raw official label ("Malmö central") reads backwards at this stop — the via carries the direction; exact chip string per Tim |
 | Persborg | line 11 toward Hyllie | Malmöringen mot Kävlinge | official far end; unambiguous at ring-only stops (each called once) |
 | Svågertorp | line 9 vs line 11 vs line 10 | mot Trelleborg / Malmöringen mot Kävlinge / Express mot Hässleholm | three continuations share one stop — line scoping mandatory |
-| Hyllie | Öresundståg toward Copenhagen | **not shown** | Öresundståg out of v1; doNotGroup (map-confirmed it calls here) |
+| Hyllie | Öresundståg toward Copenhagen | Öresundståg mot Köpenhamn C | **Revised 30 Aug 2026 (board-eligibility-rule.md):** Öresundståg is `in` — own product-label chip, distinct from "Pågatågen mot …"; doNotGroup still applies (map-confirmed it calls here) — shown as a separate service entry, not merged into the Pågatågen chip |
 
 ## Options
 
@@ -80,6 +80,8 @@ line + official far end, never inbound/outbound, never a raw headsign at Malmö 
    its Gantofta truncation in the analysed week was an artifact.)
 4. ~~Per-line termini~~ / ~~line-code convention~~ / ~~Malmöringen route path~~ /
    ~~Triangeln-Hyllie Öresundståg overlap~~ — **all resolved**, see the oracle report's
-   Resolutions section. Öresundståg calls Triangeln/Hyllie/Burlöv: those stations' §3 rows must
-   scope to Pågatågen departures only (doNotGroup confirmed).
+   Resolutions section. **Revised 30 Aug 2026:** Öresundståg calls Triangeln/Hyllie/Burlöv and is
+   now `in` (board-eligibility-rule.md) — those stations' §3 rows carry both Pågatågen and
+   Öresundståg chips, kept as distinct entries (doNotGroup still applies — never merged into one
+   chip).
 5. malmo is its own city picker, separate from Göteborg — unchanged, confirmed.

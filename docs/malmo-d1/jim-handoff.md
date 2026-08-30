@@ -12,10 +12,17 @@ Skånetrafiken train map (Dec 2024) was obtained and the per-line structure was 
 official GTFS Sweden 3 feed cross-checked against it. `lines[]` is now populated (10 corridors,
 ordered stops, termini, short-turns, ring double-call).
 
+**Update, 30 Aug 2026 (Tim's product decision, docs/board-eligibility-rule.md):** Öresundståg and
+Krösatågen flip from "out of v1" to `in` — see oracle-clash-report.md's Board eligibility
+section. `lib/providers/malmo.js`'s `tripAllowed()` now also accepts these two products via GTFS
+`route_desc` (Skånetrafiken files them there, not under `route_long_name`); the "not v1"
+statements below are historical and superseded by that section.
+
 ## What's solid (cite: oracle-clash-report.md)
 
-- **city=malmo**, agency Skånetrafiken / Pågatågen. V1 = Pågatågen only (no light rail — closed
-  1973; no bus; no Öresundståg; no Krösatågen).
+- **city=malmo**, agency Skånetrafiken / Pågatågen. V1 = Pågatågen plus Öresundståg and
+  Krösatågen (revised 30 Aug 2026 — both `in` under docs/board-eligibility-rule.md; no light
+  rail — closed 1973; no bus).
 - **Official D1 map in hand**: "Fler resmöjligheter med tåg", Uppdaterad december 2024, linked
   from skanetrafiken.se/kartor/ ("Tåglinjer i Skåne"), md5 `41387ef91e51a0009e99cde9c47dbf41`.
 - **10 Pågatågen corridors** (reference numbers 2–11 incl. 4B; no 1, no 12), 6 of which serve
@@ -82,6 +89,13 @@ direction-model-memo.md use the live-verified strings.
 
 ## What I did not do
 
-No `lib/providers/` or `registry.js` edit, no live flip, no UI wiring, no D5 assertion tables,
-no Öresundståg/Krösatågen/bus scope creep, no rehosting of the Skånetrafiken PDF artwork, no
-edits to any other city's pack.
+No live flip, no UI wiring, no D5 assertion tables, no bus scope creep, no rehosting of the
+Skånetrafiken PDF artwork, no edits to any other city's pack, no station-catalog extension for
+Krösatågen-only stations (decided out of scope, see oracle-clash-report.md's Board eligibility
+section).
+
+**Update, 30 Aug 2026:** `lib/providers/malmo.js` and `lib/providers/registry.js` WERE edited in
+this pass, specifically and only to broaden Öresundståg/Krösatågen board eligibility per Tim's
+product decision — see oracle-clash-report.md and hazard-pack.md for the reasoning. This is a
+narrower edit than a full D2 wiring pass; the D2 items below (key scope, per-feed stop ids) are
+still open.
