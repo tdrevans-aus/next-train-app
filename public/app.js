@@ -42,7 +42,6 @@ function syncRouteLineVisibility() {
     getRouteJourneys().length >= 2 &&
     !heroEl?.classList.contains("hero-setup");
   routeEl.hidden = hideForRouteSwitcher;
-  requestAnimationFrame(syncJourneyContextEditOffset);
 }
 
 function setAccessibleText(el, text) {
@@ -60,6 +59,8 @@ const journeySwitcherMenuEl = document.getElementById("journey-switcher-menu");
 const journeyContextNameEl = document.getElementById("journey-context-name");
 const journeyContextRowEl = document.getElementById("journey-context-row");
 const journeyEditBtn = document.getElementById("journey-edit-btn");
+const routeEditBtn = document.getElementById("route-edit-btn");
+const routeLineEl = document.getElementById("route-line");
 const heroEl = document.getElementById("hero");
 const heroDepartLabelEl = document.getElementById("hero-depart-label");
 const departCountdownEl = document.getElementById("depart-countdown");
@@ -1000,34 +1001,6 @@ function shouldShowJourneySwitcher() {
   return getActiveTabJourneys().length >= 2;
 }
 
-function isSingleRouteEditContext() {
-  return (
-    journeyModeActive &&
-    chromeTravelTab === "routes" &&
-    getRouteJourneys().length === 1 &&
-    !heroEl?.classList.contains("hero-setup") &&
-    !isNearbyModeActive()
-  );
-}
-
-function syncJourneyContextEditOffset() {
-  if (!journeyContextRowEl || !journeyEditBtn || journeyEditBtn.hidden) {
-    journeyContextRowEl?.style.removeProperty("--journey-context-anchor-width");
-    return;
-  }
-
-  let anchorEl = journeyContextNameEl?.hidden ? journeySwitcherEl : journeyContextNameEl;
-  if (isSingleRouteEditContext() && routeEl && !routeEl.hidden) {
-    anchorEl = routeEl;
-  }
-  if (!anchorEl || anchorEl.hidden) {
-    journeyContextRowEl.style.removeProperty("--journey-context-anchor-width");
-    return;
-  }
-
-  journeyContextRowEl.style.setProperty("--journey-context-anchor-width", `${anchorEl.offsetWidth}px`);
-}
-
 function syncJourneyContextChrome() {
   const configuredCount = getActiveTabJourneys().length;
   const inEmptySetup = heroEl?.classList.contains("hero-setup");
@@ -1041,8 +1014,7 @@ function syncJourneyContextChrome() {
   const showRouteEdit = isRoutesTab && configuredCount === 1 && !inEmptySetup;
   if (isRoutesTab) {
     showName = false;
-    showSwitcher = configuredCount >= 2 && !inEmptySetup;
-    showManage = showSwitcher || showRouteEdit;
+    showManage = showSwitcher;
   }
 
   syncRouteLineVisibility();
@@ -1051,7 +1023,6 @@ function syncJourneyContextChrome() {
     journeyContextRowEl.hidden = !showManage;
     journeyContextRowEl.classList.toggle("journey-context-row--multi", showSwitcher);
     journeyContextRowEl.classList.toggle("journey-context-row--single", showName);
-    journeyContextRowEl.classList.toggle("journey-context-row--route-edit", showRouteEdit);
   }
 
   if (journeyContextNameEl) {
@@ -1071,7 +1042,11 @@ function syncJourneyContextChrome() {
     );
   }
 
-  requestAnimationFrame(syncJourneyContextEditOffset);
+  if (routeEditBtn) {
+    routeEditBtn.hidden = !showRouteEdit;
+  }
+
+  routeLineEl?.classList.toggle("route-line--edit", showRouteEdit);
 }
 
 
@@ -6611,19 +6586,25 @@ journeyEditBtn?.addEventListener("click", () => {
   }
   openJourneys();
 });
-if (journeyContextRowEl && typeof ResizeObserver !== "undefined") {
-  const journeyContextLayoutObserver = new ResizeObserver(() => syncJourneyContextEditOffset());
-  journeyContextLayoutObserver.observe(journeyContextRowEl);
-  if (journeyContextNameEl) {
-    journeyContextLayoutObserver.observe(journeyContextNameEl);
-  }
-  if (journeySwitcherEl) {
-    journeyContextLayoutObserver.observe(journeySwitcherEl);
-  }
-  if (routeEl) {
-    journeyContextLayoutObserver.observe(routeEl);
-  }
+routeEditBtn?.addEventListener("click", () => openRoutesLibrary());
+
+function activateIfManageVisible(triggerBtn) {
+  return (event) => {
+    if (!triggerBtn || triggerBtn.hidden) {
+      return;
+    }
+    if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+    event.preventDefault();
+    triggerBtn.click();
+  };
 }
+
+journeyContextNameEl?.addEventListener("click", activateIfManageVisible(journeyEditBtn));
+journeyContextNameEl?.addEventListener("keydown", activateIfManageVisible(journeyEditBtn));
+routeEl?.addEventListener("click", activateIfManageVisible(routeEditBtn));
+routeEl?.addEventListener("keydown", activateIfManageVisible(routeEditBtn));
 menuBtn?.addEventListener("click", () => openMenu());
 menuFeedbackBtn?.addEventListener("click", (event) => {
   event.preventDefault();
