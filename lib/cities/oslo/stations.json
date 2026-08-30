@@ -1,0 +1,819 @@
+{
+  "city": "oslo",
+  "status": "planned",
+  "timeZone": "Europe/Oslo",
+  "dst": true,
+  "source": "docs/oslo-d1/published-network.json T-bane station list (101 names, hand-transcribed from Ruter linjekart + Stoppestedsliste). stationGtfsId resolved live against Entur geocoder (GET https://api.entur.io/geocoder/v1/autocomplete, layers=venue, filtered to locality Oslo + category metroStation) and cross-checked against Journey Planner v3 stopPlace.estimatedCalls 30 Aug 2026 -- a runtime NSR StopPlace id lookup, not the D1 station-list oracle. Sinsen resolves in the NSR register as Sinsen T (T-bane suffix); id kept, printed name stays the D1 string Sinsen. Jernbanetorget carries an additional railStationGtfsId (NSR:StopPlace:59872, Oslo S) for Vy/Flytoget -- confirmed live as a physically separate NSR StopPlace from the T-bane cluster; Nationaltheatret needs no second id because its single NSR StopPlace (58404) already returns metro + rail (Vy/Flytoget) calls together.",
+  "stations": [
+    {
+      "name": "Frognerseteren",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59768",
+      "lat": 59.978602,
+      "lng": 10.676345
+    },
+    {
+      "name": "Voksenkollen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58266",
+      "lat": 59.980057,
+      "lng": 10.664729
+    },
+    {
+      "name": "Lillevann",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:61604",
+      "lat": 59.980583,
+      "lng": 10.652967
+    },
+    {
+      "name": "Skogen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59767",
+      "lat": 59.975188,
+      "lng": 10.647557
+    },
+    {
+      "name": "Voksenlia",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59763",
+      "lat": 59.967027,
+      "lng": 10.654611
+    },
+    {
+      "name": "Holmenkollen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59766",
+      "lat": 59.960263,
+      "lng": 10.662881
+    },
+    {
+      "name": "Besserud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58267",
+      "lat": 59.957763,
+      "lng": 10.67387
+    },
+    {
+      "name": "Midtstuen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6302",
+      "lat": 59.961323,
+      "lng": 10.68302
+    },
+    {
+      "name": "Skådalen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6299",
+      "lat": 59.961823,
+      "lng": 10.690739
+    },
+    {
+      "name": "Vettakollen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6298",
+      "lat": 59.959888,
+      "lng": 10.695705
+    },
+    {
+      "name": "Gulleråsen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6294",
+      "lat": 59.955753,
+      "lng": 10.696762
+    },
+    {
+      "name": "Gråkammen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6289",
+      "lat": 59.955038,
+      "lng": 10.701613
+    },
+    {
+      "name": "Slemdal",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58268",
+      "lat": 59.951011,
+      "lng": 10.694123
+    },
+    {
+      "name": "Ris",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58269",
+      "lat": 59.948069,
+      "lng": 10.7046
+    },
+    {
+      "name": "Gaustad",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59519",
+      "lat": 59.946103,
+      "lng": 10.71093
+    },
+    {
+      "name": "Vinderen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58270",
+      "lat": 59.942425,
+      "lng": 10.704643
+    },
+    {
+      "name": "Steinerud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58271",
+      "lat": 59.939141,
+      "lng": 10.704374
+    },
+    {
+      "name": "Frøen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6233",
+      "lat": 59.934582,
+      "lng": 10.709103
+    },
+    {
+      "name": "Majorstuen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58381",
+      "lat": 59.929213,
+      "lng": 10.71634
+    },
+    {
+      "name": "Nationaltheatret",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58404",
+      "lat": 59.914994,
+      "lng": 10.7322
+    },
+    {
+      "name": "Stortinget",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:4029",
+      "lat": 59.913437,
+      "lng": 10.743256
+    },
+    {
+      "name": "Jernbanetorget",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58366",
+      "lat": 59.911898,
+      "lng": 10.75038,
+      "railStationGtfsId": "NSR:StopPlace:59872",
+      "railStationGtfsIdNote": "Oslo S rail cluster (Vy/Flytoget) — separate NSR StopPlace from the Jernbanetorget T-bane cluster (doNotGroup)."
+    },
+    {
+      "name": "Grønland",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6488",
+      "lat": 59.912806,
+      "lng": 10.760162
+    },
+    {
+      "name": "Tøyen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59604",
+      "lat": 59.915031,
+      "lng": 10.776247
+    },
+    {
+      "name": "Ensjø",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59762",
+      "lat": 59.914059,
+      "lng": 10.787276
+    },
+    {
+      "name": "Helsfyr",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59516",
+      "lat": 59.912673,
+      "lng": 10.801052
+    },
+    {
+      "name": "Brynseng",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58197",
+      "lat": 59.909427,
+      "lng": 10.813497
+    },
+    {
+      "name": "Høyenhall",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58250",
+      "lat": 59.9065,
+      "lng": 10.819554
+    },
+    {
+      "name": "Manglerud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58249",
+      "lat": 59.897521,
+      "lng": 10.812113
+    },
+    {
+      "name": "Ryen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58248",
+      "lat": 59.895516,
+      "lng": 10.804785
+    },
+    {
+      "name": "Brattlikollen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58247",
+      "lat": 59.886574,
+      "lng": 10.800408
+    },
+    {
+      "name": "Karlsrud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58246",
+      "lat": 59.879726,
+      "lng": 10.805161
+    },
+    {
+      "name": "Lambertseter",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58245",
+      "lat": 59.87353,
+      "lng": 10.810273
+    },
+    {
+      "name": "Munkelia",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58244",
+      "lat": 59.868208,
+      "lng": 10.813143
+    },
+    {
+      "name": "Bergkrystallen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58243",
+      "lat": 59.866897,
+      "lng": 10.821753
+    },
+    {
+      "name": "Østerås",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58277",
+      "lat": 59.939461,
+      "lng": 10.608845
+    },
+    {
+      "name": "Lijordet",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:3700",
+      "lat": 59.941136,
+      "lng": 10.616618
+    },
+    {
+      "name": "Eiksmarka",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58276",
+      "lat": 59.947043,
+      "lng": 10.622964
+    },
+    {
+      "name": "Ekraveien",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59764",
+      "lat": 59.950611,
+      "lng": 10.637662
+    },
+    {
+      "name": "Røa",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59520",
+      "lat": 59.947382,
+      "lng": 10.643027
+    },
+    {
+      "name": "Hovseter",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58275",
+      "lat": 59.946404,
+      "lng": 10.655462
+    },
+    {
+      "name": "Holmen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6350",
+      "lat": 59.946029,
+      "lng": 10.667379
+    },
+    {
+      "name": "Makrellbekken",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58274",
+      "lat": 59.941707,
+      "lng": 10.673722
+    },
+    {
+      "name": "Smestad",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58273",
+      "lat": 59.937306,
+      "lng": 10.684011
+    },
+    {
+      "name": "Borgen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58272",
+      "lat": 59.93464,
+      "lng": 10.696102
+    },
+    {
+      "name": "Hellerud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58198",
+      "lat": 59.910298,
+      "lng": 10.830996
+    },
+    {
+      "name": "Tveita",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6167",
+      "lat": 59.913641,
+      "lng": 10.84394
+    },
+    {
+      "name": "Haugerud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58213",
+      "lat": 59.92203,
+      "lng": 10.85475
+    },
+    {
+      "name": "Trosterud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6197",
+      "lat": 59.927175,
+      "lng": 10.865165
+    },
+    {
+      "name": "Lindeberg",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58222",
+      "lat": 59.93292,
+      "lng": 10.881797
+    },
+    {
+      "name": "Furuset",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58221",
+      "lat": 59.940893,
+      "lng": 10.897515
+    },
+    {
+      "name": "Ellingsrudåsen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58220",
+      "lat": 59.936486,
+      "lng": 10.916859
+    },
+    {
+      "name": "Kolsås",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58284",
+      "lat": 59.914582,
+      "lng": 10.500843
+    },
+    {
+      "name": "Hauger",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58283",
+      "lat": 59.910449,
+      "lng": 10.509464
+    },
+    {
+      "name": "Gjettum",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:4007",
+      "lat": 59.908516,
+      "lng": 10.530621
+    },
+    {
+      "name": "Avløs",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59895",
+      "lat": 59.914026,
+      "lng": 10.550276
+    },
+    {
+      "name": "Haslum",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58282",
+      "lat": 59.914994,
+      "lng": 10.563869
+    },
+    {
+      "name": "Gjønnes",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:64352",
+      "lat": 59.914909,
+      "lng": 10.580488
+    },
+    {
+      "name": "Bekkestua",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58281",
+      "lat": 59.917247,
+      "lng": 10.589651
+    },
+    {
+      "name": "Ringstabekk",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:63808",
+      "lat": 59.920146,
+      "lng": 10.604157
+    },
+    {
+      "name": "Jar",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58280",
+      "lat": 59.926162,
+      "lng": 10.619059
+    },
+    {
+      "name": "Bjørnsletta",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58279",
+      "lat": 59.927023,
+      "lng": 10.636729
+    },
+    {
+      "name": "Åsjordet",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58278",
+      "lat": 59.92884,
+      "lng": 10.647613
+    },
+    {
+      "name": "Ullernåsen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6509",
+      "lat": 59.931488,
+      "lng": 10.655979
+    },
+    {
+      "name": "Montebello",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6503",
+      "lat": 59.93483,
+      "lng": 10.666415
+    },
+    {
+      "name": "Godlia",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:5968",
+      "lat": 59.907148,
+      "lng": 10.835914
+    },
+    {
+      "name": "Skøyenåsen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58223",
+      "lat": 59.89966,
+      "lng": 10.836596
+    },
+    {
+      "name": "Oppsal",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59575",
+      "lat": 59.892749,
+      "lng": 10.840609
+    },
+    {
+      "name": "Ulsrud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58224",
+      "lat": 59.889627,
+      "lng": 10.849372
+    },
+    {
+      "name": "Bøler",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58225",
+      "lat": 59.883942,
+      "lng": 10.84475
+    },
+    {
+      "name": "Bogerud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58226",
+      "lat": 59.875663,
+      "lng": 10.841956
+    },
+    {
+      "name": "Skullerud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58227",
+      "lat": 59.866685,
+      "lng": 10.840032
+    },
+    {
+      "name": "Mortensrud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58228",
+      "lat": 59.849385,
+      "lng": 10.829376
+    },
+    {
+      "name": "Vestli",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58218",
+      "lat": 59.972383,
+      "lng": 10.92887
+    },
+    {
+      "name": "Stovner",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58219",
+      "lat": 59.961987,
+      "lng": 10.922846
+    },
+    {
+      "name": "Rommen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58217",
+      "lat": 59.962916,
+      "lng": 10.908651
+    },
+    {
+      "name": "Romsås",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:5780",
+      "lat": 59.962536,
+      "lng": 10.892702
+    },
+    {
+      "name": "Grorud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58216",
+      "lat": 59.961166,
+      "lng": 10.882537
+    },
+    {
+      "name": "Ammerud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59518",
+      "lat": 59.95768,
+      "lng": 10.871752
+    },
+    {
+      "name": "Kalbakken",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:5810",
+      "lat": 59.954565,
+      "lng": 10.8668
+    },
+    {
+      "name": "Rødtvet",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58214",
+      "lat": 59.950895,
+      "lng": 10.858333
+    },
+    {
+      "name": "Veitvet",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58215",
+      "lat": 59.94491,
+      "lng": 10.845587
+    },
+    {
+      "name": "Linderud",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:4308",
+      "lat": 59.793582,
+      "lng": 11.261776
+    },
+    {
+      "name": "Vollebekk",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59704",
+      "lat": 59.936139,
+      "lng": 10.831954
+    },
+    {
+      "name": "Risløkka",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:5922",
+      "lat": 59.932473,
+      "lng": 10.822987
+    },
+    {
+      "name": "Økern",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58194",
+      "lat": 59.928324,
+      "lng": 10.806609
+    },
+    {
+      "name": "Løren",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:63284",
+      "lat": 59.929501,
+      "lng": 10.791315
+    },
+    {
+      "name": "Sinsen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:61268",
+      "lat": 59.936978,
+      "lng": 10.781837
+    },
+    {
+      "name": "Storo",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58195",
+      "lat": 59.94527,
+      "lng": 10.778637
+    },
+    {
+      "name": "Nydalen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59605",
+      "lat": 59.949063,
+      "lng": 10.766848
+    },
+    {
+      "name": "Ullevål stadion",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58265",
+      "lat": 59.947956,
+      "lng": 10.732505
+    },
+    {
+      "name": "Forskningsparken",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59600",
+      "lat": 59.943756,
+      "lng": 10.721023
+    },
+    {
+      "name": "Blindern",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6332",
+      "lat": 59.940205,
+      "lng": 10.716174
+    },
+    {
+      "name": "Sognsvann",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59705",
+      "lat": 59.96732,
+      "lng": 10.73375
+    },
+    {
+      "name": "Kringsjå",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59706",
+      "lat": 59.963797,
+      "lng": 10.734689
+    },
+    {
+      "name": "Holstein",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59765",
+      "lat": 59.960666,
+      "lng": 10.739865
+    },
+    {
+      "name": "Østhorn",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:6196",
+      "lat": 59.956649,
+      "lng": 10.750155
+    },
+    {
+      "name": "Tåsen",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59573",
+      "lat": 59.952802,
+      "lng": 10.751501
+    },
+    {
+      "name": "Berg",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:59738",
+      "lat": 59.951481,
+      "lng": 10.744747
+    },
+    {
+      "name": "Carl Berners plass",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58189",
+      "lat": 59.926144,
+      "lng": 10.7763
+    },
+    {
+      "name": "Hasle",
+      "aliases": [],
+      "mode": "metro",
+      "stationGtfsId": "NSR:StopPlace:58191",
+      "lat": 59.923903,
+      "lng": 10.793032
+    }
+  ]
+}
