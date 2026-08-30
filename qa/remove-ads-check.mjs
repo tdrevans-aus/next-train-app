@@ -4,7 +4,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.QA_BASE || "http://localhost:3000";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });

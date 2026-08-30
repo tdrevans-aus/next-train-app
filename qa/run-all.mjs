@@ -31,6 +31,7 @@ const SMOKE_SCRIPTS = [
   "stickiness-coaches-reentry.mjs",
   "widget-script-reentry.mjs",
   "leave-reminders-double-eval.mjs",
+  "remove-ads-check.mjs",
   "fremantle-claremont-direction.mjs",
   "smoke-browser.mjs",
   "smoke-11-13.mjs",
