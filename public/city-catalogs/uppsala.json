@@ -8,134 +8,134 @@
       "name": "Arlanda C",
       "aliases": [],
       "mode": "train",
-      "lat": 59.649053,
-      "lng": 17.928923
+      "lat": 59.649472,
+      "lng": 17.929197
     },
     {
       "name": "Furuvik",
       "aliases": [],
       "mode": "train",
-      "lat": 60.65114,
-      "lng": 17.331907
+      "lat": 60.651196,
+      "lng": 17.3318
     },
     {
       "name": "Gävle C",
       "aliases": [],
       "mode": "train",
-      "lat": 60.676036,
-      "lng": 17.151491
+      "lat": 60.67612,
+      "lng": 17.151219
     },
     {
       "name": "Heby",
       "aliases": [],
       "mode": "train",
-      "lat": 59.940482,
-      "lng": 16.850735
+      "lat": 59.94051,
+      "lng": 16.852954
     },
     {
       "name": "Knivsta",
       "aliases": [],
       "mode": "train",
-      "lat": 59.726062,
-      "lng": 17.787278
+      "lat": 59.725704,
+      "lng": 17.786687
     },
     {
       "name": "Marma",
       "aliases": [],
       "mode": "train",
-      "lat": 60.491245,
-      "lng": 17.430557
+      "lat": 60.490868,
+      "lng": 17.43061
     },
     {
       "name": "Mehedeby",
       "aliases": [],
       "mode": "train",
-      "lat": 60.45061,
-      "lng": 17.401305
+      "lat": 60.450117,
+      "lng": 17.400499
     },
     {
       "name": "Morgongåva",
       "aliases": [],
       "mode": "train",
-      "lat": 59.932876,
-      "lng": 16.959818
+      "lat": 59.932843,
+      "lng": 16.961623
     },
     {
       "name": "Märsta",
       "aliases": [],
       "mode": "train",
-      "lat": 59.628521,
-      "lng": 17.861127
+      "lat": 59.628182,
+      "lng": 17.86162
     },
     {
       "name": "Sala",
       "aliases": [],
       "mode": "train",
-      "lat": 59.924987,
-      "lng": 16.605679
+      "lat": 59.924962,
+      "lng": 16.605446
     },
     {
       "name": "Skutskär",
       "aliases": [],
       "mode": "train",
-      "lat": 60.623626,
-      "lng": 17.405841
+      "lat": 60.623947,
+      "lng": 17.405345
     },
     {
       "name": "Skyttorp",
       "aliases": [],
       "mode": "train",
-      "lat": 60.080146,
-      "lng": 17.738008
+      "lat": 60.079692,
+      "lng": 17.737154
     },
     {
       "name": "Storvreta",
       "aliases": [],
       "mode": "train",
-      "lat": 59.95709,
-      "lng": 17.706563
+      "lat": 59.956065,
+      "lng": 17.706074
     },
     {
       "name": "Tierp",
       "aliases": [],
       "mode": "train",
-      "lat": 60.345734,
-      "lng": 17.512583
+      "lat": 60.345326,
+      "lng": 17.514373
     },
     {
       "name": "Tobo",
       "aliases": [],
       "mode": "train",
-      "lat": 60.257806,
-      "lng": 17.638315
+      "lat": 60.258367,
+      "lng": 17.636106
     },
     {
       "name": "Uppsala C",
       "aliases": [],
       "mode": "train",
-      "lat": 59.857739,
-      "lng": 17.647666
+      "lat": 59.858534,
+      "lng": 17.646086
     },
     {
       "name": "Vattholma",
       "aliases": [],
       "mode": "train",
-      "lat": 60.025022,
-      "lng": 17.731129
+      "lat": 60.025679,
+      "lng": 17.731059
     },
     {
       "name": "Älvkarleby",
       "aliases": [],
       "mode": "train",
-      "lat": 60.555221,
-      "lng": 17.427657
+      "lat": 60.555265,
+      "lng": 17.427823
     },
     {
       "name": "Örbyhus",
       "aliases": [],
       "mode": "train",
-      "lat": 60.228584,
-      "lng": 17.704716
+      "lat": 60.228695,
+      "lng": 17.705769
     }
   ]
 }
