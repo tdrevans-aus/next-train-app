@@ -2,7 +2,7 @@
  * D5 — Offline Malmö line-map conformance.
  * Usage: node qa/malmo-line-map-conformance.mjs
  *
- * Planned. D1 pack required. Not generated from GTFS.
+ * Tester-live (flipped by Tim 30 Aug 2026). D1 pack required. Not generated from GTFS.
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -26,8 +26,8 @@ function main() {
   const catalog = loadJson("lib/cities/malmo/stations.json");
   const failures = [];
 
-  if (getCity("malmo")?.status !== "planned") {
-    failures.push("C0: malmo registry status must be planned");
+  if (getCity("malmo")?.status !== "live") {
+    failures.push("C0: malmo registry status must be live");
   }
   if (lineMap.timeZone !== "Europe/Stockholm" || lineMap.dst !== true) {
     failures.push("C0: Europe/Stockholm must record DST");
@@ -106,6 +106,14 @@ function main() {
   if (!grouped.some((row) => row.includes("Burlöv") && row.includes("Burlöv Öresundståg"))) {
     failures.push("C2: doNotGroup Burlöv Pågatågen vs Öresundståg");
   }
+  if (!grouped.some((row) => row.includes("Hässleholm C") && row.includes("Krösatågen"))) {
+    failures.push("C2: doNotGroup Hässleholm C Pågatågen vs Krösatågen");
+  }
+  if (!(lineMap.doNotGroup ?? []).every((row) => /shown|self-referential/.test(row.reason ?? ""))) {
+    failures.push(
+      "C2: doNotGroup reasons must reflect board-eligibility-rule.md (distinct entries at a shared stop, not exclusion)"
+    );
+  }
   if (!grouped.some((row) => row.includes("Malmö C") && row.includes("Malmö central"))) {
     failures.push("C2: doNotGroup Malmö C vs malmö central headsign");
   }
@@ -135,7 +143,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("malmo-line-map-conformance: ok (planned, D1 pack, 84 stations, 10 lines, doNotGroup Öresundståg + headsign)");
+  console.log("malmo-line-map-conformance: ok (live, D1 pack, 84 stations, 10 lines, doNotGroup Öresundståg/Krösatågen shown-separately + headsign)");
 }
 
 main();

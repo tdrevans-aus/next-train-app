@@ -185,7 +185,6 @@ const detailActiveHoursErrorEl = document.getElementById("detail-active-hours-er
 const detailActiveHoursErrorTextEl = document.getElementById("detail-active-hours-error-text");
 const detailActiveHoursFixBtn = document.getElementById("detail-active-hours-fix-btn");
 const detailActiveHoursHint = document.getElementById("detail-active-hours-hint");
-const detailTargetOutsideActiveHint = document.getElementById("detail-target-outside-active-hint");
 const detailComboBHint = document.getElementById("detail-combo-b-hint");
 const detailComboDHint = document.getElementById("detail-combo-d-hint");
 const detailReminderSection = document.getElementById("detail-reminder-section");
@@ -207,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -643,7 +642,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -1644,8 +1643,7 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
 
   const syncFromInput = () => {
     setOptionalTimeField(input, display, field, clearBtn, input.value);
-    const amendWindowFromTarget = field === detailPreferredField;
-    syncDetailComboHints({ amendWindowFromTarget });
+    syncDetailComboHints();
     if (field === detailPreferredField) {
       if (input.value && detailUseTargetTrainInput && !detailUseTargetTrainInput.checked) {
         detailUseTargetTrainInput.checked = true;
@@ -1668,7 +1666,7 @@ function bindOptionalTimeField(input, display, field, clearBtn) {
       return;
     }
     setOptionalTimeField(input, display, field, clearBtn, "");
-    syncDetailComboHints({ amendWindowFromTarget: field === detailPreferredField });
+    syncDetailComboHints();
     if (field === detailPreferredField) {
       if (detailUseTargetTrainInput) {
         detailUseTargetTrainInput.checked = false;
@@ -7197,7 +7195,6 @@ function resetDetailNearestState() { return journeyDetail().resetDetailNearestSt
 function syncDetailNearestStationChrome(patch) { return journeyDetail().syncDetailNearestStationChrome(patch); }
 function setDetailActiveDayChips(days) { return journeyDetail().setDetailActiveDayChips?.(days); }
 function syncDetailActiveDaysHint(journey) { return journeyDetail().syncDetailActiveDaysHint?.(journey); }
-function isTargetOutsideActiveWindow(a, b, c) { return journeyDetail().isTargetOutsideActiveWindow(a, b, c); }
 function syncDetailComboHints(options) { return journeyDetail().syncDetailComboHints(options); }
 function readDetailActiveDays() { return journeyDetail().readDetailActiveDays?.() ?? []; }
 function normalizeActiveHoursFieldsForSave() { return journeyDetail().normalizeActiveHoursFieldsForSave?.(); }
@@ -8093,7 +8090,6 @@ window.nextTrainApp = {
   leaveByArmedForDisplayedTrip,
   preferredHintForJourney,
   tripMatchesPreferredOrLater,
-  isTargetOutsideActiveWindow,
   syncDetailComboHints,
   prepareDisplayData,
   skipToNextTrain,

@@ -47,7 +47,12 @@ assert((entry.envKeys ?? []).includes("TRAFIKLAB_API_KEY"), "goteborg needs TRAF
 assert(!entry.modes?.includes("metro"), "goteborg has no metro");
 assert(entry.modes?.includes("tram") && entry.modes?.includes("train"), "goteborg modes v1 are tram + train");
 assert(!getCity("sweden") && !getCity("gothenburg"), "city id is goteborg — no sweden/gothenburg");
-assert(!getCity("malmo") && !getCity("malmö"), "do not merge Malmö into this city");
+// Malmö is its own separate planned city (docs/malmo-d1/) — assert non-merger, not non-existence.
+assert(!getCity("malmö"), "malmo's registry id must be ascii malmo, not malmö");
+if (getCity("malmo")) {
+  assert(getCity("malmo").id !== "goteborg", "malmo must be its own registry entry, not merged into goteborg");
+  assert(getCity("malmo").agency !== entry.agency, "malmo (Skånetrafiken) must not share goteborg's Västtrafik agency");
+}
 for (const name of [
   "published-network.json",
   "oracle-clash-report.md",
