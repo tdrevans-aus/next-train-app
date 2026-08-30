@@ -2,8 +2,8 @@
  * D5 — Offline Uppsala line-map conformance.
  * Usage: node qa/uppsala-line-map-conformance.mjs
  *
- * Planned. D1 pack required. Not generated from GTFS (line-map is a hand-built summary of the
- * D1 pack's lines[], not re-derived from a live feed pull).
+ * Tester-live (flipped by Tim 30 Aug 2026). D1 pack required. Not generated from GTFS
+ * (line-map is a hand-built summary of the D1 pack's lines[], not re-derived from a live pull).
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -26,8 +26,8 @@ function main() {
   const catalog = loadJson("lib/cities/uppsala/stations.json");
   const failures = [];
 
-  if (getCity("uppsala")?.status !== "planned") {
-    failures.push("C0: uppsala registry status must be planned");
+  if (getCity("uppsala")?.status !== "live") {
+    failures.push("C0: uppsala registry status must be live");
   }
   if (lineMap.timeZone !== "Europe/Stockholm" || lineMap.dst !== true) {
     failures.push("C0: Europe/Stockholm must record DST");
@@ -137,7 +137,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("uppsala-line-map-conformance: ok (planned, D1 pack, 19 stations, 4 lines, doNotGroup SL-pendeln at 3 stations, Arlanda/Märsta route_id sharing)");
+  console.log("uppsala-line-map-conformance: ok (live, D1 pack, 19 stations, 4 lines, doNotGroup SL-pendeln at 3 stations, Arlanda/Märsta route_id sharing)");
 }
 
 main();
