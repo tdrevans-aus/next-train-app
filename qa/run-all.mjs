@@ -89,6 +89,8 @@ const SMOKE_SCRIPTS = [
   "london-nearby-chips.mjs",
   "malmo-planned-gate.mjs",
   "malmo-line-map-conformance.mjs",
+  "uppsala-planned-gate.mjs",
+  "uppsala-line-map-conformance.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

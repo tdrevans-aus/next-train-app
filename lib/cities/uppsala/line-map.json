@@ -1,0 +1,118 @@
+{
+  "city": "uppsala",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "hub": "Uppsala C",
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Uppsala C",
+      "b": "Uppsala C SL-pendeln",
+      "reason": "SL Line 40 shares this stop; already covered by stockholm-d1, out of v1"
+    },
+    {
+      "a": "Uppsala C",
+      "b": "Uppsala C UL bus",
+      "reason": "route_type 700, out of v1"
+    },
+    {
+      "a": "Knivsta",
+      "b": "Knivsta SL-pendeln",
+      "reason": "SL Line 40 calls the identical stop on its Uppsala C -> Stockholm pattern"
+    },
+    {
+      "a": "Arlanda C",
+      "b": "Arlanda C SL-pendeln",
+      "reason": "SL Line 40 calls the identical stop on its Uppsala C -> Stockholm pattern"
+    }
+  ],
+  "lines": [
+    {
+      "id": "uppsala-gavle",
+      "number": null,
+      "name": "Uppsala C–Gävle",
+      "mapGroup": "Mälartåg",
+      "gtfsRouteIdsIfKnown": [
+        "9011313099900000"
+      ],
+      "termini": [
+        "Uppsala C",
+        "Gävle C"
+      ],
+      "productLabel": "Mälartåg",
+      "stations": [
+        "Uppsala C",
+        "Storvreta",
+        "Vattholma",
+        "Skyttorp",
+        "Örbyhus",
+        "Tobo",
+        "Tierp",
+        "Mehedeby",
+        "Marma",
+        "Älvkarleby",
+        "Skutskär",
+        "Furuvik",
+        "Gävle C"
+      ]
+    },
+    {
+      "id": "uppsala-sala",
+      "number": null,
+      "name": "Uppsala C–Sala",
+      "mapGroup": "Mälartåg",
+      "gtfsRouteIdsIfKnown": [
+        "9011313099700000"
+      ],
+      "termini": [
+        "Uppsala C",
+        "Sala"
+      ],
+      "productLabel": "Mälartåg",
+      "stations": [
+        "Uppsala C",
+        "Morgongåva",
+        "Heby",
+        "Sala"
+      ]
+    },
+    {
+      "id": "uppsala-arlanda",
+      "number": null,
+      "name": "Uppsala C–Arlanda C (feed terminus; headsign confirms continuation to Stockholm C, some via Flemingsberg)",
+      "mapGroup": "Mälartåg",
+      "gtfsRouteIdsIfKnown": [
+        "9011313099300000"
+      ],
+      "termini": [
+        "Uppsala C",
+        "Arlanda C"
+      ],
+      "productLabel": "Mälartåg",
+      "stations": [
+        "Uppsala C",
+        "Knivsta",
+        "Arlanda C"
+      ]
+    },
+    {
+      "id": "uppsala-marsta",
+      "number": null,
+      "name": "Uppsala C–Märsta (feed terminus; headsign confirms continuation to Stockholm C)",
+      "mapGroup": "Mälartåg",
+      "gtfsRouteIdsIfKnown": [
+        "9011313099300000"
+      ],
+      "termini": [
+        "Uppsala C",
+        "Märsta"
+      ],
+      "productLabel": "Mälartåg",
+      "stations": [
+        "Uppsala C",
+        "Knivsta",
+        "Märsta"
+      ]
+    }
+  ]
+}
