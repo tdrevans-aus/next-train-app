@@ -11,10 +11,18 @@ status, regional key scope, line 3's Helsingborg end, platform signage wording).
 
 ## H1 — parent + child
 
+**Revised 30 Aug 2026 (docs/board-eligibility-rule.md — Tim's product decision, see the oracle
+report's Board eligibility section):** Öresundståg is now v1 (`in`) — both it and the "not v1"
+framing below are superseded. It is a walk-up, fixed-price, buy-and-board product with no
+compulsory reservation, so it passes the walk-up rule; the original "separate cross-border
+product, out of v1" exclusion was not actually a board-eligibility ruling, it predates the rule.
+
 Confirmed doNotGroup set (was one confirmed + two flagged; now four confirmed):
 **Malmö C, Triangeln, Hyllie, and Burlöv** each print the map legend's "Öresunds- och Pågatågen"
-symbol — Öresundståg (Skånetrafiken + DSB + Region Hovedstaden, separate cross-border product,
-not v1) calls at all four. doNotGroup the Pågatågen stop vs the Öresundståg stop at each.
+symbol — Öresundståg (Skånetrafiken + DSB + Region Hovedstaden) calls at all four. doNotGroup the
+Pågatågen stop vs the Öresundståg stop at each — as of the board-eligibility revision this means
+the two products appear as **distinct, clearly separate service entries at the same physical
+stop**, not that Öresundståg is hidden.
 
 Feed-name clash layer (new, from the GTFS read): feed strings carry "Malmö " prefixes and
 " station" suffixes vs the printed map strings (`Malmö Triangeln` vs **Triangeln**, `Malmö
@@ -104,17 +112,23 @@ pass's "if GTFS includes it" condition is discharged.
 | candidate | reason | confidence |
 | --- | --- | --- |
 | malmo vs goteborg / vastra-gotaland | Separate city; do not merge into Västtrafik pack | confirmed |
-| Malmö C Pågatågen vs Malmö C Öresundståg | Separate cross-border product, same station | confirmed |
-| **Triangeln / Hyllie / Burlöv Pågatågen vs Öresundståg** | Map legend symbol "Öresunds- och Pågatågen" at all three | **confirmed (was flagged)** |
+| Malmö C Pågatågen vs Malmö C Öresundståg | **Revised 30 Aug 2026: both `in` (board-eligibility-rule.md) — separate product, same station, shown as distinct entries** | confirmed |
+| **Triangeln / Hyllie / Burlöv Pågatågen vs Öresundståg** | Map legend symbol "Öresunds- och Pågatågen" at all three — **both `in`, shown separately, never merged** | **confirmed (was flagged)** |
 | Pågatågen vs seasonal museum tram | No active light rail | confirmed |
 | Pågatågen vs Malmö stadsbuss / regional bus | Buses out of v1 | confirmed |
-| Pågatågen vs Krösatågen | Different product on the same map (Killeberg/Osby/… rows are not v1) | confirmed (new) |
+| Pågatågen vs Krösatågen | **Revised 30 Aug 2026: both `in` at Hässleholm C (shared Pågatågen station), shown as distinct entries. Krösatågen-only stations (Killeberg/Osby/Hästveda/Ballingslöv/…) stay out of the catalog — v1's station footprint is unchanged, Krösatågen is scoped to where it overlaps that footprint, not extended to its own-only stations.** | confirmed (revised) |
 | Burlöv / Oxie inclusion | Map symbol + current GTFS service | **confirmed in v1 (was flagged)** |
 | Malmöringen double-call station | **Malmö C, confirmed** — not Svågertorp/Persborg/Östervärn as first suspected | **confirmed (was flagged)** |
 | printed strings vs feed strings ("Malmö Triangeln", "Malmö central", "… station") | rename layer, lock printed forms | confirmed (new) |
 
 ## What I did not do
 
-No live city flip, no `lib/providers/`/`registry.js` edit, no D5 assertion tables (that's Luke/Jim
-against this now-complete pack), no Öresundståg/Krösatågen/bus data pulled into v1 rows, no
-rehosting of the Skånetrafiken PDF, no edits to any other city's pack.
+No live city flip. No bus data pulled into v1. No rehosting of the Skånetrafiken PDF. No edits
+to any other city's pack. No station-catalog extension for Krösatågen-only stations (Killeberg,
+Osby, Hästveda, Ballingslöv, …) — decided out-of-scope, see the doNotGroup table and the Board
+eligibility section of the oracle report.
+
+**Update, 30 Aug 2026 (product decision by Tim, docs/board-eligibility-rule.md):** Öresundståg
+and Krösatågen are now `in` — the "not v1" framing above this line is historical. `tripAllowed()`
+in `lib/providers/malmo.js` was broadened accordingly (route_desc match, alongside the existing
+route_long_name match for Pågatåg); this is recorded here rather than left stale.

@@ -8,22 +8,27 @@
     {
       "a": "Malmö C",
       "b": "Malmö C Öresundståg",
-      "reason": "Öresunds- och Pågatågen map symbol"
+      "reason": "Öresunds- och Pågatågen map symbol — both shown (board-eligibility-rule.md, in), keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
     },
     {
       "a": "Triangeln",
       "b": "Triangeln Öresundståg",
-      "reason": "Öresunds- och Pågatågen map symbol"
+      "reason": "Öresunds- och Pågatågen map symbol — both shown, keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
     },
     {
       "a": "Hyllie",
       "b": "Hyllie Öresundståg",
-      "reason": "Öresunds- och Pågatågen map symbol"
+      "reason": "Öresunds- och Pågatågen map symbol — both shown, keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
     },
     {
       "a": "Burlöv",
       "b": "Burlöv Öresundståg",
-      "reason": "Öresunds- och Pågatågen map symbol"
+      "reason": "Öresunds- och Pågatågen map symbol — both shown, keep as distinct service entries at the same physical stop, never merged into one Pågatågen chip"
+    },
+    {
+      "a": "Hässleholm C",
+      "b": "Hässleholm C Krösatågen",
+      "reason": "Krösatågen (Hässleholm–Växjö, Kalmar–Växjö) also calls Hässleholm C, a Pågatågen v1 station (lines 5/7/9/10) — both shown (board-eligibility-rule.md, in), keep as distinct service entries at the same physical stop"
     },
     {
       "a": "Malmö C",

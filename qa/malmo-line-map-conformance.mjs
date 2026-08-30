@@ -106,6 +106,14 @@ function main() {
   if (!grouped.some((row) => row.includes("Burlöv") && row.includes("Burlöv Öresundståg"))) {
     failures.push("C2: doNotGroup Burlöv Pågatågen vs Öresundståg");
   }
+  if (!grouped.some((row) => row.includes("Hässleholm C") && row.includes("Krösatågen"))) {
+    failures.push("C2: doNotGroup Hässleholm C Pågatågen vs Krösatågen");
+  }
+  if (!(lineMap.doNotGroup ?? []).every((row) => /shown|self-referential/.test(row.reason ?? ""))) {
+    failures.push(
+      "C2: doNotGroup reasons must reflect board-eligibility-rule.md (distinct entries at a shared stop, not exclusion)"
+    );
+  }
   if (!grouped.some((row) => row.includes("Malmö C") && row.includes("Malmö central"))) {
     failures.push("C2: doNotGroup Malmö C vs malmö central headsign");
   }
@@ -135,7 +143,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("malmo-line-map-conformance: ok (planned, D1 pack, 84 stations, 10 lines, doNotGroup Öresundståg + headsign)");
+  console.log("malmo-line-map-conformance: ok (planned, D1 pack, 84 stations, 10 lines, doNotGroup Öresundståg/Krösatågen shown-separately + headsign)");
 }
 
 main();
