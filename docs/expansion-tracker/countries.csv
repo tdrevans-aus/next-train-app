@@ -1,81 +1,81 @@
-Country,Status,Cities in scope,Blocker / skip reason
-Australia,In flight,8 — Adelaide; Brisbane; Canberra; Gold Coast; Melbourne; Newcastle NSW; Perth; Sydney,Melbourne PTV key parked (does not block country). Canberra / Gold Coast / Newcastle tester-live 2026-08-29. Hobart & Darwin out. Do not split Sunshine Coast from Brisbane SEQ.
-Canada,In flight,6 — Calgary; Edmonton; Montreal; Ottawa; Toronto; Vancouver,"Vancouver tester-live 2026-08-29; Vancouver-only until Toronto unblocks. TransLink attribution required. No SeaBus / bus / West Coast Express in Vancouver v1. Montreal, Calgary, Ottawa, Edmonton unscoped Later."
-Netherlands,In flight,2 — Amsterdam; Rotterdam,Amsterdam and Rotterdam both tester-live (Rotterdam 2026-08-29). OVapi no key. The Hague / Utrecht tram-skip for v1.
-New Zealand,In flight,2 — Auckland; Wellington,"Auckland and Wellington both tester-live (Wellington flipped 2026-08-30). CRL stations out until passenger-open. Christchurch (buses), Hamilton/Te Huia (long-distance), Dunedin (no urban rail), KiwiRail national — out."
-Sweden,In flight,4 — Göteborg; Malmö / Skåne; Stockholm; Uppsala,"Göteborg and Stockholm both tester-live (Göteborg schedule-only boards, flipped 2026-08-29; Stockholm flipped 2026-08-30). After Göteborg: Malmö/Skåne, then Uppsala. Trafiklab keys already on Vercel. Hub T-Centralen ≠ Stockholm City ≠ Stockholms central."
-United Kingdom,In flight,18 — East Midlands; Edinburgh; Glasgow; Greater Manchester; Leftover England; Liverpool City Region; London & South East National Rail; London TfL; North East; Rest of Scotland; Rest of Wales; Solent; South Wales; South Yorkshire; Thames Valley; West Midlands; West Yorkshire; West of England,"Darwin LDBWS blocked: EvansAppStudio is AU-registered on Rail Data Marketplace. WM / LCR / Greater Manchester cannot flip live until DARWIN_LDB_TOKEN exists (Tim/RDM, not a city skip). LCR and Greater Manchester packed 2026-08-28 (Coming Soon); Ellesmere Port folded into LCR 2026-08-28 (not a separate picker city). London TfL done; National Rail is not. NI out of UK v1. One Darwin contract for NR; TfL stays its own city. Buses out."
-Austria,To Do,3 — Graz; Linz; Vienna,Wave 3. Vienna U-Bahn first. Graz / Linz Later.
-Belgium,To Do,3 — Antwerp; Brussels; Charleroi,Wave 2. Brussels metro v1. Antwerp / Charleroi Later.
-Czechia,To Do,2 — Brno; Prague,Wave 3. Prague Metro first. Brno Later.
-Denmark,To Do,2 — Aarhus; Copenhagen,Wave 2. Copenhagen first (Metro + S-tog). Aarhus Later.
-Finland,To Do,2 — Helsinki; Tampere,Wave 2. Helsinki first. Tampere Later.
-Germany,To Do,13 — Berlin; Cologne; Dresden; Düsseldorf; Frankfurt Rhine-Main; Hamburg; Hanover; Leipzig / Halle; Munich; Nuremberg; Rhine-Neckar (Mannheim / Heidelberg); Rhine-Ruhr (Essen / Dortmund); Stuttgart,"Wave 3 after first US cities: Berlin U-Bahn first (v1 U-Bahn only, NO S-Bahn), then Munich U-Bahn, Hamburg U-Bahn. Other DE cities To Do Later. City-by-city, not DB national. Inherited 24 Aug skip reversed 2026-08-28."
-Ireland,To Do,1 — Dublin,"Wave 2, after UK. Dublin Luas + DART."
-Japan,To Do,10 — Fukuoka; Hiroshima; Kobe; Kyoto; Nagoya; Osaka; Sapporo; Sendai; Tokyo; Yokohama,"Wave 3: Osaka Metro first (not Tokyo), then Fukuoka / Nagoya / Sapporo, Tokyo later in Wave 3 (multi-operator). Other JP cities To Do Later. Inherited 24 Aug skip reversed 2026-08-28."
-Norway,To Do,2 — Bergen; Oslo,Wave 2. Oslo first (T-bane). Bergen Later.
-Portugal,To Do,2 — Lisbon; Porto,Wave 3. Lisbon Metro first. Porto Later.
-Switzerland,To Do,5 — Basel; Bern; Geneva; Lausanne; Zürich,Wave 3. Zürich / Geneva / Basel / Bern / Lausanne.
-United States,To Do,"36 — Atlanta; BART; Baltimore; Boston; Charlotte; Chicago; Chicago Metra; Cleveland; Dallas; Denver; Honolulu; Houston; Long Island (LIRR); Los Angeles; Maryland (MARC); Miami; Minneapolis–Saint Paul; New Jersey (NJ Transit); New York City; New York Metro-North; New York PATH; Northern Virginia (VRE); Peninsula (Caltrain); Philadelphia; Phoenix; Pittsburgh; Portland; Sacramento; Salt Lake City; San Diego; San Francisco Muni; San Juan; Seattle; Seattle Sounder; St. Louis; Washington, D.C.","In. City-by-city. Wave 2 (already planned): DC WMATA first, then Chicago CTA L, BART, Boston MBTA subway, LA Metro rail. NYC subway Wave 3. Other US light rail Wave 3. Commuter (LIRR/MNR/PATH/Metra/Caltrain) Later. BART is its own city (v1 BART only); Muni Later. Inherited 24 Aug skip reversed 2026-08-28."
-Algeria,To Do,1 — Algiers,Unscoped. Metro/urban rail present; not in near-term queue.
-Argentina,To Do,1 — Buenos Aires,Unscoped. Metro/urban rail present; not in near-term queue.
-Armenia,To Do,1 — Yerevan,Unscoped. Metro/urban rail present; not in near-term queue.
-Azerbaijan,To Do,1 — Baku,Unscoped. Metro/urban rail present; not in near-term queue.
-Bangladesh,To Do,1 — Dhaka,Unscoped. Metro/urban rail present; not in near-term queue.
-Bosnia and Herzegovina,To Do,1 — Sarajevo,Unscoped. Metro/urban rail present; not in near-term queue.
-Brazil,To Do,8 — Belo Horizonte; Brasília; Fortaleza; Porto Alegre; Recife; Rio de Janeiro; Salvador; São Paulo,Unscoped. Metro/urban rail present; not in near-term queue.
-Bulgaria,To Do,1 — Sofia,Unscoped. Metro/urban rail present; not in near-term queue.
-Chile,To Do,1 — Santiago,Unscoped. Metro/urban rail present; not in near-term queue.
-China,To Do,45 — Beijing; Changchun; Changsha; Changzhou; Chengdu; Chongqing; Dalian; Dongguan; Foshan; Fuzhou; Guangzhou; Guiyang; Hangzhou; Harbin; Hefei; Hohhot; Jinan; Jinhua; Kunming; Lanzhou; Luoyang; Nanchang; Nanjing; Nanning; Nantong; Ningbo; Qingdao; Shanghai; Shaoxing; Shenyang; Shenzhen; Shijiazhuang; Suzhou; Taiyuan; Taizhou; Tianjin; Wenzhou; Wuhan; Wuhu; Wuxi; Xi'an; Xiamen; Xuzhou; Zhengzhou; Ürümqi,Unscoped. Metro/urban rail present; not in near-term queue.
-Colombia,To Do,1 — Medellín,Unscoped. Metro/urban rail present; not in near-term queue.
-Croatia,To Do,1 — Zagreb,Unscoped. Metro/urban rail present; not in near-term queue.
-Dominican Republic,To Do,1 — Santo Domingo,Unscoped. Metro/urban rail present; not in near-term queue.
-Ecuador,To Do,1 — Quito,Unscoped. Metro/urban rail present; not in near-term queue.
-Egypt,To Do,1 — Cairo,Unscoped. Metro/urban rail present; not in near-term queue.
-Estonia,To Do,1 — Tallinn,Unscoped. Metro/urban rail present; not in near-term queue.
-Ethiopia,To Do,1 — Addis Ababa,Unscoped. Metro/urban rail present; not in near-term queue.
-France,To Do,13 — Bordeaux; Grenoble; Lille; Lyon; Marseille; Montpellier; Nantes; Nice; Paris; Rennes; Rouen; Strasbourg; Toulouse,Later. All metro cities + major tram networks. Unscoped.
-Georgia,To Do,1 — Tbilisi,Unscoped. Metro/urban rail present; not in near-term queue.
-Greece,To Do,2 — Athens; Thessaloniki,Unscoped. Metro/urban rail present; not in near-term queue.
-Hong Kong,To Do,1 — Hong Kong,Unscoped. Metro/urban rail present; not in near-term queue.
-Hungary,To Do,1 — Budapest,Unscoped. Metro/urban rail present; not in near-term queue.
-India,To Do,21 — Agra; Ahmedabad; Bengaluru; Bhopal; Chennai; Delhi; Gurgaon; Hyderabad; Indore; Jaipur; Kanpur; Kochi; Kolkata; Lucknow; Meerut; Mumbai; Nagpur; Navi Mumbai; Noida; Patna; Pune,Unscoped. Metro/urban rail present; not in near-term queue.
-Indonesia,To Do,2 — Jakarta; Palembang,Unscoped. Metro/urban rail present; not in near-term queue.
-Iran,To Do,6 — Isfahan; Karaj; Mashhad; Shiraz; Tabriz; Tehran,Unscoped. Metro/urban rail present; not in near-term queue.
-Israel,To Do,2 — Jerusalem; Tel Aviv,Unscoped. Metro/urban rail present; not in near-term queue.
-Italy,To Do,8 — Brescia; Catania; Florence; Genoa; Milan; Naples; Rome; Turin,Later. All metro cities. Unscoped.
-Kazakhstan,To Do,2 — Almaty; Astana,Unscoped. Metro/urban rail present; not in near-term queue.
-Latvia,To Do,1 — Riga,Unscoped. Metro/urban rail present; not in near-term queue.
-Luxembourg,To Do,1 — Luxembourg City,Unscoped. Metro/urban rail present; not in near-term queue.
-Macau,To Do,1 — Macau,Unscoped. Metro/urban rail present; not in near-term queue.
-Malaysia,To Do,1 — Kuala Lumpur,Unscoped. Metro/urban rail present; not in near-term queue.
-Mexico,To Do,3 — Guadalajara; Mexico City; Monterrey,Unscoped. Metro/urban rail present; not in near-term queue.
-Morocco,To Do,2 — Casablanca; Rabat,Unscoped. Metro/urban rail present; not in near-term queue.
-Nigeria,To Do,1 — Lagos,Unscoped. Metro/urban rail present; not in near-term queue.
-Pakistan,To Do,1 — Lahore,Unscoped. Metro/urban rail present; not in near-term queue.
-Panama,To Do,1 — Panama City,Unscoped. Metro/urban rail present; not in near-term queue.
-Peru,To Do,1 — Lima,Unscoped. Metro/urban rail present; not in near-term queue.
-Philippines,To Do,1 — Manila,Unscoped. Metro/urban rail present; not in near-term queue.
-Poland,To Do,5 — Kraków; Tricity (Gdańsk–Gdynia–Sopot); Warsaw; Wrocław; Łódź,Unscoped. Metro/urban rail present; not in near-term queue.
-Qatar,To Do,1 — Doha,Unscoped. Metro/urban rail present; not in near-term queue.
-Romania,To Do,1 — Bucharest,Unscoped. Metro/urban rail present; not in near-term queue.
-Saudi Arabia,To Do,2 — Mecca; Riyadh,Unscoped. Metro/urban rail present; not in near-term queue.
-Serbia,To Do,1 — Belgrade,Unscoped. Metro/urban rail present; not in near-term queue.
-Slovakia,To Do,1 — Bratislava,Unscoped. Metro/urban rail present; not in near-term queue.
-South Africa,To Do,2 — Cape Town; Gauteng (Johannesburg / Pretoria),Unscoped. Metro/urban rail present; not in near-term queue.
-South Korea,To Do,6 — Busan; Daegu; Daejeon; Gwangju; Incheon; Seoul,Unscoped. Metro/urban rail present; not in near-term queue.
-Spain,To Do,8 — Barcelona; Bilbao; Granada; Madrid; Málaga; Palma; Seville; Valencia,Later. Madrid / Barcelona plus other metro cities. Unscoped.
-Taiwan,To Do,5 — Kaohsiung; New Taipei; Taichung; Taipei; Taoyuan,Unscoped. Metro/urban rail present; not in near-term queue.
-Thailand,To Do,1 — Bangkok,Unscoped. Metro/urban rail present; not in near-term queue.
-Tunisia,To Do,1 — Tunis,Unscoped. Metro/urban rail present; not in near-term queue.
-Turkey,To Do,5 — Adana; Ankara; Bursa; Istanbul; İzmir,Unscoped. Metro/urban rail present; not in near-term queue.
-Ukraine,To Do,3 — Dnipro; Kharkiv; Kyiv,Unscoped. Metro/urban rail present; not in near-term queue.
-United Arab Emirates,To Do,1 — Dubai,Unscoped. Metro/urban rail present; not in near-term queue.
-Uzbekistan,To Do,1 — Tashkent,Unscoped. Metro/urban rail present; not in near-term queue.
-Venezuela,To Do,3 — Caracas; Maracaibo; Valencia,Unscoped. Metro/urban rail present; not in near-term queue.
-Belarus,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",Not doing — geopolitical.
-Nepal,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",No passenger rail.
-North Korea,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",Not doing — geopolitical.
-Russia,Not doing,"0 — country skipped (7 urban-rail cities listed on Cities, out of scope)",Not doing — geopolitical.
-Singapore,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",LTA refuses MRT next-train (Parliament Jan 2026).
-Vietnam,Not doing,"0 — country skipped (2 urban-rail cities listed on Cities, out of scope)",Hanoi + HCMC metros exist but no public GTFS/departure API; skip for trip.
+Country,Status,Cities in scope,Blocker / skip reason,Country lane
+Australia,In flight,8 — Adelaide; Brisbane; Canberra; Gold Coast; Melbourne; Newcastle NSW; Perth; Sydney,Melbourne PTV key parked (does not block country). Canberra / Gold Coast / Newcastle tester-live 2026-08-29. Hobart & Darwin out. Do not split Sunshine Coast from Brisbane SEQ.,Not needed (segregated networks; per-agency feeds)
+Canada,In flight,6 — Calgary; Edmonton; Montreal; Ottawa; Toronto; Vancouver,"Vancouver tester-live 2026-08-29; Vancouver-only until Toronto unblocks. TransLink attribution required. No SeaBus / bus / West Coast Express in Vancouver v1. Montreal, Calgary, Ottawa, Edmonton unscoped Later.",Not needed (segregated networks; per-agency feeds)
+Netherlands,In flight,2 — Amsterdam; Rotterdam,Amsterdam and Rotterdam both tester-live (Rotterdam 2026-08-29). OVapi no key. The Hague / Utrecht tram-skip for v1.,To do (light) — record shared-OVapi provider + forward NS stance (see board-eligibility audit)
+New Zealand,In flight,2 — Auckland; Wellington,"Auckland and Wellington both tester-live (Wellington flipped 2026-08-30). CRL stations out until passenger-open. Christchurch (buses), Hamilton/Te Huia (long-distance), Dunedin (no urban rail), KiwiRail national — out.",Not needed (segregated networks; per-agency feeds)
+Sweden,Done,4 — Göteborg; Malmö / Skåne; Stockholm; Uppsala,"All 4 tester-live 30 Aug 2026 (Göteborg 29 Aug; Stockholm, Malmö, Uppsala 30 Aug). Göteborg schedule-only boards pending Trafiklab vt TripUpdates. Trafiklab keys on Vercel. Hub T-Centralen ≠ Stockholm City ≠ Stockholms central.","Partial — decisions made and recorded, but scattered across Malmö/Uppsala oracle reports, not consolidated: no docs/sweden-ledger.md exists. Provider decision, line-40 stop ownership, SJ/Öresundståg/Krösatågen verdicts need pulling into one file per country-lane.md's own spec before this reads as Done"
+United Kingdom,In flight,18 — East Midlands; Edinburgh; Glasgow; Greater Manchester; Leftover England; Liverpool City Region; London & South East National Rail; London TfL; North East; Rest of Scotland; Rest of Wales; Solent; South Wales; South Yorkshire; Thames Valley; West Midlands; West Yorkshire; West of England,"Darwin LDBWS blocked: EvansAppStudio is AU-registered on Rail Data Marketplace. WM / LCR / Greater Manchester cannot flip live until DARWIN_LDB_TOKEN exists (Tim/RDM, not a city skip). LCR and Greater Manchester packed 2026-08-28 (Coming Soon); Ellesmere Port folded into LCR 2026-08-28 (not a separate picker city). London TfL done; National Rail is not. NI out of UK v1. One Darwin contract for NR; TfL stays its own city. Buses out.","To do — required before next NR region: one-Darwin-provider decision, stop-ownership ledger (fold in glasgow/edinburgh/east-midlands boundary sections), Eurostar/sleeper verdicts"
+Austria,To Do,3 — Graz; Linz; Vienna,Wave 3. Vienna U-Bahn first. Graz / Linz Later.,TBD at scoping
+Belgium,To Do,3 — Antwerp; Brussels; Charleroi,Wave 2. Brussels metro v1. Antwerp / Charleroi Later.,TBD at scoping
+Czechia,To Do,2 — Brno; Prague,Wave 3. Prague Metro first. Brno Later.,TBD at scoping
+Denmark,To Do,2 — Aarhus; Copenhagen,"Wave 2. Copenhagen first (Metro + S-tog). Aarhus Later. Skip-risk downgraded: Rejseplanen API 2.0 confirms Metro RT, old ""web bypass only"" note was stale (2026-08-30 Nico pass) — clear to proceed to Luke's D1 pack.","Light pass done, docs/denmark-ledger.md — shared-provider config over Rejseplanen (opposite of Finland's per-region call). Full ledger deferred until Aarhus is actively planned."
+Finland,To Do,2 — Helsinki; Tampere,Wave 2. Helsinki first. Tampere Later.,"Light pass done (2026-08-30 Nico pass): per-region adapters justified, not shared-provider — HSL/Digitransit and Tampere/Waltti diverge at the realtime layer (separate GTFS-RT hosts, separate MQTT brokers). No impact on tonight's Helsinki build; guidance recorded for whenever Tampere is planned."
+Germany,To Do,13 — Berlin; Cologne; Dresden; Düsseldorf; Frankfurt Rhine-Main; Hamburg; Hanover; Leipzig / Halle; Munich; Nuremberg; Rhine-Neckar (Mannheim / Heidelberg); Rhine-Ruhr (Essen / Dortmund); Stuttgart,"Wave 3 after first US cities: Berlin U-Bahn first (v1 U-Bahn only, NO S-Bahn), then Munich U-Bahn, Hamburg U-Bahn. Other DE cities To Do Later. City-by-city, not DB national. Inherited 24 Aug skip reversed 2026-08-28.",Likely — DELFI national aggregator (v1 U-Bahn-only cuts may defer it)
+Ireland,To Do,1 — Dublin,"Wave 2, after UK. Dublin Luas + DART.",Likely — NTA national GTFS
+Japan,To Do,10 — Fukuoka; Hiroshima; Kobe; Kyoto; Nagoya; Osaka; Sapporo; Sendai; Tokyo; Yokohama,"Wave 3: Osaka Metro first (not Tokyo), then Fukuoka / Nagoya / Sapporo, Tokyo later in Wave 3 (multi-operator). Other JP cities To Do Later. Inherited 24 Aug skip reversed 2026-08-28.",Likely for Tokyo (ODPT multi-operator); not needed for Osaka v1
+Norway,To Do,2 — Bergen; Oslo,Wave 2. Oslo first (T-bane). Bergen Later.,"Defer to Bergen entry — only Oslo planned. Vy regional/commuter at Jernbanetorget/Nationaltheatret: Tim's decision 30 Aug 2026 — `in` (passes both boarding-contract tests, same call as Öresundståg/Krösatågen in Sweden). Needs threading into docs/oslo-d1/ (oracle report + D1 pack) before Jim builds the adapter."
+Portugal,To Do,2 — Lisbon; Porto,Wave 3. Lisbon Metro first. Porto Later.,TBD at scoping
+Switzerland,To Do,5 — Basel; Bern; Geneva; Lausanne; Zürich,Wave 3. Zürich / Geneva / Basel / Bern / Lausanne.,TBD at scoping
+United States,To Do,"36 — Atlanta; BART; Baltimore; Boston; Charlotte; Chicago; Chicago Metra; Cleveland; Dallas; Denver; Honolulu; Houston; Long Island (LIRR); Los Angeles; Maryland (MARC); Miami; Minneapolis–Saint Paul; New Jersey (NJ Transit); New York City; New York Metro-North; New York PATH; Northern Virginia (VRE); Peninsula (Caltrain); Philadelphia; Phoenix; Pittsburgh; Portland; Sacramento; Salt Lake City; San Diego; San Francisco Muni; San Juan; Seattle; Seattle Sounder; St. Louis; Washington, D.C.","In. City-by-city. Wave 2 (already planned): DC WMATA first, then Chicago CTA L, BART, Boston MBTA subway, LA Metro rail. NYC subway Wave 3. Other US light rail Wave 3. Commuter (LIRR/MNR/PATH/Metra/Caltrain) Later. BART is its own city (v1 BART only); Muni Later. Inherited 24 Aug skip reversed 2026-08-28.",Mostly not needed (agency feeds); NY area will need one
+Algeria,To Do,1 — Algiers,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Argentina,To Do,1 — Buenos Aires,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Armenia,To Do,1 — Yerevan,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Azerbaijan,To Do,1 — Baku,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Bangladesh,To Do,1 — Dhaka,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Bosnia and Herzegovina,To Do,1 — Sarajevo,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Brazil,To Do,8 — Belo Horizonte; Brasília; Fortaleza; Porto Alegre; Recife; Rio de Janeiro; Salvador; São Paulo,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Bulgaria,To Do,1 — Sofia,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Chile,To Do,1 — Santiago,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+China,To Do,45 — Beijing; Changchun; Changsha; Changzhou; Chengdu; Chongqing; Dalian; Dongguan; Foshan; Fuzhou; Guangzhou; Guiyang; Hangzhou; Harbin; Hefei; Hohhot; Jinan; Jinhua; Kunming; Lanzhou; Luoyang; Nanchang; Nanjing; Nanning; Nantong; Ningbo; Qingdao; Shanghai; Shaoxing; Shenyang; Shenzhen; Shijiazhuang; Suzhou; Taiyuan; Taizhou; Tianjin; Wenzhou; Wuhan; Wuhu; Wuxi; Xi'an; Xiamen; Xuzhou; Zhengzhou; Ürümqi,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Colombia,To Do,1 — Medellín,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Croatia,To Do,1 — Zagreb,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Dominican Republic,To Do,1 — Santo Domingo,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Ecuador,To Do,1 — Quito,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Egypt,To Do,1 — Cairo,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Estonia,To Do,1 — Tallinn,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Ethiopia,To Do,1 — Addis Ababa,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+France,To Do,13 — Bordeaux; Grenoble; Lille; Lyon; Marseille; Montpellier; Nantes; Nice; Paris; Rennes; Rouen; Strasbourg; Toulouse,Later. All metro cities + major tram networks. Unscoped.,TBD at scoping
+Georgia,To Do,1 — Tbilisi,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Greece,To Do,2 — Athens; Thessaloniki,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Hong Kong,To Do,1 — Hong Kong,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Hungary,To Do,1 — Budapest,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+India,To Do,21 — Agra; Ahmedabad; Bengaluru; Bhopal; Chennai; Delhi; Gurgaon; Hyderabad; Indore; Jaipur; Kanpur; Kochi; Kolkata; Lucknow; Meerut; Mumbai; Nagpur; Navi Mumbai; Noida; Patna; Pune,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Indonesia,To Do,2 — Jakarta; Palembang,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Iran,To Do,6 — Isfahan; Karaj; Mashhad; Shiraz; Tabriz; Tehran,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Israel,To Do,2 — Jerusalem; Tel Aviv,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Italy,To Do,8 — Brescia; Catania; Florence; Genoa; Milan; Naples; Rome; Turin,Later. All metro cities. Unscoped.,TBD at scoping
+Kazakhstan,To Do,2 — Almaty; Astana,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Latvia,To Do,1 — Riga,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Luxembourg,To Do,1 — Luxembourg City,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Macau,To Do,1 — Macau,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Malaysia,To Do,1 — Kuala Lumpur,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Mexico,To Do,3 — Guadalajara; Mexico City; Monterrey,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Morocco,To Do,2 — Casablanca; Rabat,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Nigeria,To Do,1 — Lagos,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Pakistan,To Do,1 — Lahore,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Panama,To Do,1 — Panama City,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Peru,To Do,1 — Lima,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Philippines,To Do,1 — Manila,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Poland,To Do,5 — Kraków; Tricity (Gdańsk–Gdynia–Sopot); Warsaw; Wrocław; Łódź,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Qatar,To Do,1 — Doha,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Romania,To Do,1 — Bucharest,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Saudi Arabia,To Do,2 — Mecca; Riyadh,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Serbia,To Do,1 — Belgrade,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Slovakia,To Do,1 — Bratislava,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+South Africa,To Do,2 — Cape Town; Gauteng (Johannesburg / Pretoria),Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+South Korea,To Do,6 — Busan; Daegu; Daejeon; Gwangju; Incheon; Seoul,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Spain,To Do,8 — Barcelona; Bilbao; Granada; Madrid; Málaga; Palma; Seville; Valencia,Later. Madrid / Barcelona plus other metro cities. Unscoped.,TBD at scoping
+Taiwan,To Do,5 — Kaohsiung; New Taipei; Taichung; Taipei; Taoyuan,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Thailand,To Do,1 — Bangkok,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Tunisia,To Do,1 — Tunis,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Turkey,To Do,5 — Adana; Ankara; Bursa; Istanbul; İzmir,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Ukraine,To Do,3 — Dnipro; Kharkiv; Kyiv,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+United Arab Emirates,To Do,1 — Dubai,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Uzbekistan,To Do,1 — Tashkent,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Venezuela,To Do,3 — Caracas; Maracaibo; Valencia,Unscoped. Metro/urban rail present; not in near-term queue.,TBD at scoping
+Belarus,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",Not doing — geopolitical.,—
+Nepal,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",No passenger rail.,—
+North Korea,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",Not doing — geopolitical.,—
+Russia,Not doing,"0 — country skipped (7 urban-rail cities listed on Cities, out of scope)",Not doing — geopolitical.,—
+Singapore,Not doing,"0 — country skipped (1 urban-rail city listed on Cities, out of scope)",LTA refuses MRT next-train (Parliament Jan 2026).,—
+Vietnam,Not doing,"0 — country skipped (2 urban-rail cities listed on Cities, out of scope)",Hanoi + HCMC metros exist but no public GTFS/departure API; skip for trip.,—

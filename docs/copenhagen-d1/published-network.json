@@ -1,0 +1,398 @@
+{
+  "city": "copenhagen",
+  "displayName": "Copenhagen",
+  "status": "planned",
+  "agency": "Metroselskabet I/S (Metro M1-M4) + S-tog operator (DSB, suburban) + DSB (Regional/InterCity) + Öresundståg/Skånetrafiken (regional to Malmö/Sweden) — all reachable via the shared Rejseplanen national platform, see docs/denmark-ledger.md",
+  "timezone": "Europe/Copenhagen",
+  "source": "https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations",
+  "sources": [
+    {
+      "role": "D1 Metro station roster (44 stations), line membership, and independent ordering check",
+      "title": "List of Copenhagen Metro stations",
+      "url": "https://en.wikipedia.org/wiki/List_of_Copenhagen_Metro_stations",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "44-row wikitable: Station / Line / Grade / Opened / Time to Nørreport (M1 and M2) / Zone / Transfer. Line membership read from each row's icon `title` attributes (M1 (Copenhagen), M2 (Copenhagen), City Circle Line = M3, M4 (Copenhagen)), not from the stripped-of-text Line column. The 'Time to Nørreport' minute column independently reproduces the M1/M2 trunk and branch orderings used below. København S (opened 2024, the renamed Ny Ellebjerg St., M4 southern terminus) and Havneholmen (2024, M4-only despite being adjacent to the M3 ring) are both in this table."
+    },
+    {
+      "role": "D1 S-tog line termini/schedule table (A, B, Bx, C, E, F, H)",
+      "title": "List of Copenhagen S-train lines",
+      "url": "https://en.wikipedia.org/wiki/List_of_Copenhagen_S-train_lines",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Southern end / Runs when / Northern end table per line. Used for S-tog termini and short-turn overlays (line A Hundige/Solrød Strand vs Køge; line E Mon-Fri only)."
+    },
+    {
+      "role": "D1 confirmation: Nordhavn's exact S-tog line set (correcting the oracle report's six-line claim to five)",
+      "title": "Nordhavn railway station",
+      "url": "https://en.wikipedia.org/wiki/Nordhavn_railway_station",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Infobox line field and Adjacent stations table both list only A, B, Bx, C, E for S-tog (plus M4 for Metro) - no H. Platforms: 2 island (1 S-train, 1 Metro). Tracks: 6 (2 S-train, 2 Metro, 2 non-stop Kystbanen - DSB/Öresundståg trains pass through without stopping). The page's own prose paragraph inconsistently still lists H; the infobox + Adjacent stations table + the H line's own article (below) all agree H does not call here. Do not use the prose."
+    },
+    {
+      "role": "D1 confirmation that S-tog line H does not serve Nordhavn (since 2017)",
+      "title": "H (S-train)",
+      "url": "https://en.wikipedia.org/wiki/H_(S-train)",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Stations section explicitly lists Nordhavn, Svanemøllen, Ryparken, etc. under 'Following stations are not part of this line since 2017 ... They are serviced by line B.' Current H route: Frederikssund <-> Østerport via Ballerup, Vanløse, Flintholm, Valby, København H, Vesterport, Nørreport."
+    },
+    {
+      "role": "D1 confirmation: Nørrebro's S-tog scope is F (Ring Line) only, and M3-only doNotGroup pairing",
+      "title": "Nørrebro railway station",
+      "url": "https://en.wikipedia.org/wiki/N%C3%B8rrebro_railway_station",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Infobox line field: F, M3. Platforms: 2 side (S-train), 1 island (Metro). Adjacent stations table labels the M3 neighbours 'clockwise' (Skjolds Plads) and 'counter-clockwise' (Nørrebros Runddel) - primary source for the M3 ring direction model. S-tog F: Fuglebakken <-> Bispebjerg, towards Hellerup one way, towards Copenhagen South (København S) the other."
+    },
+    {
+      "role": "D1 confirmation: Nørreport is SIX S-tog lines (not just C as the oracle report implied) plus DSB/Öresundståg presence",
+      "title": "Nørreport station",
+      "url": "https://en.wikipedia.org/wiki/N%C3%B8rreport_station",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Infobox line field: A, B, Bx, C, E, H, M1, M2, plus 'Boulevard Line'. Platforms: 3 island (S-train, Metro, Kystbanen). Tracks: 6 (2 S-train, 2 Metro, 2 Kystbanen). Operators: DSB, Skånetrafiken, Metro Service A/S - Skånetrafiken's presence confirms Öresundståg calls here too (cross-checked against København H's Öresundståg rows below, which name Nørreport as a call point)."
+    },
+    {
+      "role": "D1 confirmation: København H's full multi-operator roster, M3/M4 adjacent-station order, and two new unverdicted cross-border services",
+      "title": "Copenhagen Central Station",
+      "url": "https://en.wikipedia.org/wiki/Copenhagen_Central_Station",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Adjacent stations table: S-tog A/B/Bx/C/E/H all present (Vesterport/Dybbølsbro neighbours); M3 neighbours Enghave Plads/Rådhuspladsen; M4 neighbours Havneholmen/Rådhuspladsen (confirms M4 is one continuous through-route, not a fork, and confirms Havneholmen sits south of København H on the M4 chain). DSB/InterCity/InterCityLyn/EuroCity termini pairs (Valby, København S, Høje Taastrup, Ringsted, Odense, Copenhagen Airport). Öresundståg's four named corridors (Lund, Gothenburg, Kalmar, Karlskrona) list Nørreport as a call point, not just København H. Also lists SJ (Stockholm, Southern Main Line) and České dráhy (Prague, RJ) calling here - NEITHER has an oracle-report board-eligibility verdict; not included in this catalog pending that verdict (see hazard-pack.md H3 and direction-model-memo.md open question 3)."
+    },
+    {
+      "role": "D1 board-eligibility oracle (agency/auth, hub lock, board-eligibility verdicts, license)",
+      "title": "Copenhagen oracle-clash-report.md",
+      "url": "docs/copenhagen-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Second/corrected pass (30 Aug 2026). Metro M1-M4 (44 stations) + S-tog + DSB Regional/InterCity + Öresundståg in v1 scope, but the latter three ONLY at Nørreport/Nørrebro/København H/Nordhavn (not full corridors). DSB EuroCity out-reservation (excluded). Harbour buses out-mode (excluded). Hub lock Kongens Nytorv. This pack corrects two line-membership claims in that report's C2/C3 section - see hazard-pack.md H2."
+    },
+    {
+      "role": "Country-level provider decision (shared-provider-config pattern, not per-region adapters)",
+      "title": "Denmark country ledger",
+      "url": "docs/denmark-ledger.md",
+      "retrievedAt": "2026-08-30T00:00:00Z",
+      "note": "Light pass only (only Copenhagen currently planned; Aarhus unscoped). Rejseplanen is a genuine national platform (25+ operators, one GTFS feed) - build Copenhagen as a config over a shared Rejseplanen provider, not a per-city clone. No stop-ownership or coverage-boundary sections yet (deferred until Aarhus is actively scoped)."
+    }
+  ],
+  "retrievedAt": "2026-08-30T00:00:00Z",
+  "notes": [
+    "D1 oracle is Wikipedia's Copenhagen Metro station list + individual station infoboxes (Nordhavn, Nørrebro, Nørreport, Copenhagen Central Station), hand-transcribed and cross-validated against the 'Time to Nørreport' minute column and each station's own Adjacent-stations table. Not generated from GTFS, not generated from the Rejseplanen API. The oracle report pointed at the official m.dk Metro map and this Wikipedia list as D1 sources but did not itself transcribe station rosters; this pack did the transcription against the Wikipedia source since it is directly checkable (infobox + adjacent-stations tables agree with each other independently) and is one of the oracle report's own named D1 sources.",
+    "City id copenhagen is unused in existing packs. Agency is three operators over one shared Rejseplanen feed (Metroselskabet, S-tog/DSB, DSB Regional/InterCity/Öresundståg) - not city=denmark, not merged into a national adapter (see denmark-ledger.md: Copenhagen is a CONFIG over a shared provider, not its own clone, but still its own city id/pack).",
+    "City stays planned until Jim wires testers, and per this task's explicit instruction, Jim's Copenhagen adapter work is deferred to a supervised session, not the unattended pipeline. assertCityLive(\"copenhagen\") must fail.",
+    "Modes v1: Metro M1-M4 (44 stations, full network) PLUS S-tog (A, B, Bx, C, E, H, F) PLUS DSB Regional/InterCity/InterCityLyn PLUS Öresundståg, the latter three scoped ONLY to Nørreport, Nørrebro, København H, Nordhavn (not the full S-tog/DSB network - those corridors are not in this catalog; no stop-level data sourced for them beyond these four stations). No buses, no harbour ferries, no DSB EuroCity (out-reservation), no SJ/České dráhy (unverdicted - see sources note above).",
+    "Timezone Europe/Copenhagen HAS DST. Do not copy no-DST cities.",
+    "Locked inner-city hub: Kongens Nytorv (Metro-only, all four lines M1-M4, confirmed zero rail/S-tog transfer in its own station-list row). Not Nørreport, not København H, not Nørrebro, not Nordhavn - those four are shared/multi-operator approach stations with their own three-or-four-way doNotGroup treatment (see printedInnerCityNames below and direction-model-memo.md).",
+    "44 unique Metro stations, verified by direct count of the Wikipedia station-list table (44 rows) and cross-checked by summing each line's station count (M1 15, M2 16 with 22 unique across M1+M2's shared 9-station trunk, M3 17, M4 13, all unique names deduplicated across shared nodes Kongens Nytorv/Frederiksberg/København H/Gammel Strand/Marmorkirken/Østerport/Rådhuspladsen) = 44.",
+    "S-tog line-membership correction (hazard-pack.md H2): Nordhavn is FIVE S-tog lines (A, B, Bx, C, E) not six - line H stopped serving Nordhavn in 2017, confirmed by both Nordhavn's own infobox/adjacent-stations table and the H line's own article. Nørreport is SIX S-tog lines (A, B, Bx, C, E, H) not just C as the oracle report's C2/C3 section implied - confirmed by Nørreport's own infobox line field.",
+    "gtfsRouteIdsIfKnown are the printed passenger line codes (M1-M4, A/B/Bx/C/E/H/F) for Metro/S-tog. DSB Regional/InterCity/InterCityLyn/Öresundståg have NO printed passenger-facing line code (Wikipedia's internal route ids like 'R51'/'ICCphEs' are editorial shorthand, not signage) - direction is service-type + destination, see direction-model-memo.md section 3. No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Rejseplanen API 2.0 departureBoard (confirmed covers Metro + S-tog + DSB + Öresundståg, ~1 min latency, per the oracle report) or SIRI-ET via Dataudveksleren NAP. Static Rejseplanen GTFS is NOT a D1 generator. D1 stays planned.",
+    "Two services observed calling at København H in the primary source data have NO board-eligibility verdict from the oracle report: SJ (Stockholm, Southern Main Line) and České dráhy (Prague, RJ). NOT included in this catalog. This is a gap to flag back to Nico/Tim, not a decision made here - see hazard-pack.md H3 and direction-model-memo.md open question 3.",
+    "Öresundståg additionally calls Nørreport per København H's own Adjacent-stations data (all four Öresundståg corridors list Nørreport as a call point, not just København H) - the oracle report's Board eligibility table only named København H for Öresundståg. Recommend extending the verdict to Nørreport (same service, same boarding contract) but this is Tim's call, not assumed in this file - Öresundståg is included at BOTH stations below since the boarding-contract evidence (no compulsory reservation) applies identically; flagged as an open question for confirmation, not a silent scope creep."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Kongens Nytorv",
+    "doNotUse": [
+      "Copenhagen",
+      "København",
+      "City",
+      "Centrum",
+      "CBD",
+      "Nørreport",
+      "København H",
+      "Nørrebro",
+      "Nordhavn"
+    ],
+    "alsoOnSharedApproaches": [
+      "Nørreport",
+      "Nørrebro",
+      "København H",
+      "Nordhavn",
+      "Orientkaj",
+      "Havneholmen",
+      "København S"
+    ]
+  },
+  "coverageGaps": [
+    "S-tog network beyond Nørreport/Nørrebro/København H/Nordhavn (the rest of A, B, Bx, C, E, H, F's routes) - not in this catalog, per v1 scope. No stop-level data sourced for those other S-tog stations.",
+    "DSB Regional/InterCity/InterCityLyn/Öresundståg network beyond Nørreport and København H - not in this catalog.",
+    "DSB EuroCity (Hamburg-Copenhagen) at København H - out-reservation (compulsory 26 Jun-16 Aug), excluded per oracle report board-eligibility verdict.",
+    "SJ (Stockholm) and České dráhy (Prague) at København H - observed in the source data, NOT board-eligibility-verdicted by the oracle report. Excluded pending that verdict, not a decided 'out'.",
+    "Harbour buses (Havnebus 991/992) at Orientkaj - out-mode, buses/ferries excluded v1.",
+    "Aarhus (Aarhus Letbane) - unscoped, Later per docs/denmark-ledger.md. Not this pack's concern; no stop-ownership boundary drawn yet since only Copenhagen is planned.",
+    "København S (Ny Ellebjerg, renamed 2024) has its own S-train/regional interchange per the Metro station-list 'Transfer' column, but is NOT one of the oracle report's four named shared stations - no board-eligibility verdict recorded for S-tog/regional service AT København S itself. Flagged, not decided."
+  ],
+  "lines": [
+    {
+      "id": "m1",
+      "number": "M1",
+      "name": "M1",
+      "operator": "Metroselskabet",
+      "officialPageTitle": "M1 Vanløse - Vestamager",
+      "gtfsRouteIdsIfKnown": ["M1"],
+      "mapGroup": "Metro",
+      "shape": "linear",
+      "termini": ["Vanløse", "Vestamager"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Kongens Nytorv", "note": "Hub lock. All four Metro lines. Never a direction token." },
+        { "at": "Christianshavn", "otherLine": "M2", "note": "M1/M2 shared trunk ends; M1 branches south to Vestamager." }
+      ],
+      "stations": [
+        "Vanløse", "Flintholm", "Lindevang", "Fasanvej", "Frederiksberg", "Forum", "Nørreport",
+        "Kongens Nytorv", "Christianshavn", "Islands Brygge", "DR Byen", "Sundby", "Bella Center",
+        "Ørestad", "Vestamager"
+      ],
+      "note": "Order cross-validated against the Metro station list's 'Time to Nørreport' minute column."
+    },
+    {
+      "id": "m2",
+      "number": "M2",
+      "name": "M2",
+      "operator": "Metroselskabet",
+      "officialPageTitle": "M2 Vanløse - Lufthavnen",
+      "gtfsRouteIdsIfKnown": ["M2"],
+      "mapGroup": "Metro",
+      "shape": "linear",
+      "termini": ["Vanløse", "Lufthavnen"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Kongens Nytorv", "note": "Hub lock. All four Metro lines." },
+        { "at": "Christianshavn", "otherLine": "M1", "note": "M1/M2 shared trunk ends; M2 branches southeast to Lufthavnen (Copenhagen Airport)." }
+      ],
+      "stations": [
+        "Vanløse", "Flintholm", "Lindevang", "Fasanvej", "Frederiksberg", "Forum", "Nørreport",
+        "Kongens Nytorv", "Christianshavn", "Amagerbro", "Lergravsparken", "Øresund",
+        "Amager Strand", "Femøren", "Kastrup", "Lufthavnen"
+      ],
+      "note": "Order cross-validated against the Metro station list's 'Time to Nørreport' minute column."
+    },
+    {
+      "id": "m3",
+      "number": "M3",
+      "name": "M3",
+      "operator": "Metroselskabet",
+      "officialPageTitle": "M3 Cityringen (City Circle Line)",
+      "gtfsRouteIdsIfKnown": ["M3"],
+      "mapGroup": "Metro",
+      "shape": "ring",
+      "termini": [],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Kongens Nytorv", "note": "Hub lock. All four Metro lines." },
+        { "at": "København H", "note": "doNotGroup vs S-tog (6 lines) vs DSB/Öresundståg/EuroCity(excluded) vs M4." },
+        { "at": "Nørrebro", "note": "doNotGroup vs S-tog F (Ring Line) only." },
+        { "at": "Frederiksberg", "otherLine": "M1/M2", "note": "M3 crosses the M1/M2 trunk here without a through-track connection (separate platforms)." }
+      ],
+      "stations": [
+        "København H", "Rådhuspladsen", "Gammel Strand", "Kongens Nytorv", "Marmorkirken",
+        "Østerport", "Trianglen", "Poul Henningsens Plads", "Vibenshus Runddel", "Skjolds Plads",
+        "Nørrebros Runddel", "Nørrebro", "Nuuks Plads", "Aksel Møllers Have", "Frederiksberg",
+        "Frederiksberg Allé", "Enghave Plads"
+      ],
+      "note": "17-station loop, no repeated station and no linear terminus - a true ring, confirmed by Nørrebro's own Adjacent-stations table labelling its two M3 neighbours 'clockwise'/'counter-clockwise'. Direction model is clockwise/counter-clockwise, not line+terminus - see direction-model-memo.md section 1. Order confirmed via København H's Adjacent-stations table (Enghave Plads / Rådhuspladsen neighbours) and Nørrebro's (Skjolds Plads / Nørrebros Runddel neighbours)."
+    },
+    {
+      "id": "m4",
+      "number": "M4",
+      "name": "M4",
+      "operator": "Metroselskabet",
+      "officialPageTitle": "M4 Orientkaj - København S",
+      "gtfsRouteIdsIfKnown": ["M4"],
+      "mapGroup": "Metro",
+      "shape": "linear",
+      "termini": ["Orientkaj", "København S"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Kongens Nytorv", "note": "Hub lock. All four Metro lines." },
+        { "at": "København H", "note": "doNotGroup vs S-tog (6 lines) vs DSB/Öresundståg/EuroCity(excluded) vs M3. Confirmed single continuous through-route (not a fork) via adjacent-stations neighbours Havneholmen (south)/Rådhuspladsen (north)." },
+        { "at": "Nordhavn", "note": "doNotGroup vs S-tog (A, B, Bx, C, E only - NOT H, see H2 correction). Two separate island platforms." }
+      ],
+      "stations": [
+        "Orientkaj", "Nordhavn", "Østerport", "Marmorkirken", "Kongens Nytorv", "Gammel Strand",
+        "Rådhuspladsen", "København H", "Havneholmen", "Enghave Brygge", "Sluseholmen",
+        "Mozarts Plads", "København S"
+      ],
+      "note": "Order fully confirmed via primary adjacent-stations data (København H page: M4 neighbours Havneholmen/Rådhuspladsen; Nordhavn page: M4 neighbours Østerport/Orientkaj-terminus). Havneholmen is M4-only, not shared with M3 despite sitting near the M3 ring's western arc."
+    },
+    {
+      "id": "stog-a",
+      "number": "A",
+      "name": "A",
+      "operator": "S-tog (DSB)",
+      "officialPageTitle": "A Hillerød - Køge",
+      "gtfsRouteIdsIfKnown": ["A"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Hillerød", "Køge"],
+      "shortTurns": ["Hundige", "Solrød Strand"],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs DSB/Öresundståg." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs DSB/Öresundståg/EuroCity(excluded)." },
+        { "at": "Nordhavn", "note": "doNotGroup vs Metro (M4). Shared S-train island platform with B, Bx, C, E." }
+      ],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "In-catalog scope is these three shared stations ONLY - full Hillerød-Køge corridor not sourced at stop level here. Daytime trains mostly short-turn at Hundige (every 2nd extended to Solrød Strand); evening trains run through to Køge - overlay, not a separate line, per the Oslo Helsfyr pattern."
+    },
+    {
+      "id": "stog-b",
+      "number": "B",
+      "name": "B",
+      "operator": "S-tog (DSB)",
+      "officialPageTitle": "B Farum - Høje Taastrup",
+      "gtfsRouteIdsIfKnown": ["B"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Farum", "Høje Taastrup"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs DSB/Öresundståg." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs DSB/Öresundståg/EuroCity(excluded)." },
+        { "at": "Nordhavn", "note": "doNotGroup vs Metro (M4). Shared S-train island platform with A, Bx, C, E." }
+      ],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "In-catalog scope is these three shared stations ONLY."
+    },
+    {
+      "id": "stog-bx",
+      "number": "Bx",
+      "name": "Bx",
+      "operator": "S-tog (DSB)",
+      "officialPageTitle": "Bx Buddinge - Høje Taastrup",
+      "gtfsRouteIdsIfKnown": ["Bx"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Buddinge", "Høje Taastrup"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs DSB/Öresundståg." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs DSB/Öresundståg/EuroCity(excluded)." },
+        { "at": "Nordhavn", "note": "doNotGroup vs Metro (M4). Shared S-train island platform with A, B, C, E. Peak hours only." }
+      ],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "Peak-hours-only limited-stop service (own service letter, not a Helsfyr-style short-turn overlay). In-catalog scope is these three shared stations ONLY."
+    },
+    {
+      "id": "stog-c",
+      "number": "C",
+      "name": "C",
+      "operator": "S-tog (DSB)",
+      "officialPageTitle": "C Klampenborg - Frederikssund",
+      "gtfsRouteIdsIfKnown": ["C"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Klampenborg", "Frederikssund"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs DSB/Öresundståg." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs DSB/Öresundståg/EuroCity(excluded)." },
+        { "at": "Nordhavn", "note": "doNotGroup vs Metro (M4). Shared S-train island platform with A, B, Bx, E." }
+      ],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "In-catalog scope is these three shared stations ONLY."
+    },
+    {
+      "id": "stog-e",
+      "number": "E",
+      "name": "E",
+      "operator": "S-tog (DSB)",
+      "officialPageTitle": "E Holte - Køge",
+      "gtfsRouteIdsIfKnown": ["E"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Holte", "Køge"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs DSB/Öresundståg." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs DSB/Öresundståg/EuroCity(excluded)." },
+        { "at": "Nordhavn", "note": "doNotGroup vs Metro (M4). Shared S-train island platform with A, B, Bx, C. Mon-Fri only." }
+      ],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "Monday-Friday only - weekend timetable gap is a realtime-layer fact for Jim (D2), not a station-graph fact. In-catalog scope is these three shared stations ONLY."
+    },
+    {
+      "id": "stog-h",
+      "number": "H",
+      "name": "H",
+      "operator": "S-tog (DSB)",
+      "officialPageTitle": "H Frederikssund - Østerport",
+      "gtfsRouteIdsIfKnown": ["H"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Frederikssund", "Østerport"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs DSB/Öresundståg." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs DSB/Öresundståg/EuroCity(excluded)." }
+      ],
+      "stations": ["Nørreport", "København H"],
+      "note": "CORRECTION vs oracle report: H does NOT call at Nordhavn (removed from that routing in 2017; now serviced by line B there instead) - confirmed by both Nordhavn's own infobox/adjacent-stations data and H's own Wikipedia article. Do not add Nordhavn to this line's stations[]. In-catalog scope is Nørreport and København H ONLY."
+    },
+    {
+      "id": "stog-f",
+      "number": "F",
+      "name": "F",
+      "operator": "S-tog (DSB)",
+      "officialPageTitle": "F Hellerup - København S (Ring Line)",
+      "gtfsRouteIdsIfKnown": ["F"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Hellerup", "København S"],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørrebro", "note": "doNotGroup vs Metro M3 only. No DSB/Öresundståg at this station." }
+      ],
+      "stations": ["Nørrebro"],
+      "note": "The Ring Line - only S-tog service calling at Nørrebro among the four shared stations; does not call at Nørreport, København H, or Nordhavn. In-catalog scope is Nørrebro ONLY."
+    },
+    {
+      "id": "dsb-regional",
+      "number": null,
+      "name": "Regionaltog",
+      "operator": "DSB",
+      "officialPageTitle": "DSB Regionaltog (no printed line code - service type + destination)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "DSB/Öresundståg",
+      "shape": "linear",
+      "termini": [],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs S-tog (6 lines)." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs S-tog (6 lines) vs EuroCity (excluded)." }
+      ],
+      "stations": ["Nørreport", "København H"],
+      "note": "No passenger-facing line code - direction is 'Regionaltog + <destination>'. Observed destinations (indicative, not exhaustive, from one station's Adjacent-stations snapshot): Valby, København S, Høje Taastrup, Ringsted."
+    },
+    {
+      "id": "dsb-intercity",
+      "number": null,
+      "name": "InterCity",
+      "operator": "DSB",
+      "officialPageTitle": "DSB InterCity / InterCityLyn (no printed line code)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "DSB/Öresundståg",
+      "shape": "linear",
+      "termini": [],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs S-tog (6 lines)." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs S-tog (6 lines) vs EuroCity (excluded)." }
+      ],
+      "stations": ["Nørreport", "København H"],
+      "note": "No passenger-facing line code - direction is 'InterCity + <destination>' or 'InterCityLyn + <destination>'. Observed destinations: Valby, København S, Ringsted (InterCity); Copenhagen Airport, Odense (InterCityLyn)."
+    },
+    {
+      "id": "oresundstag",
+      "number": null,
+      "name": "Öresundståg",
+      "operator": "Öresundståg / Skånetrafiken",
+      "officialPageTitle": "Öresundståg (no printed line code - route-name destinations)",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "DSB/Öresundståg",
+      "shape": "linear",
+      "termini": [],
+      "shortTurns": [],
+      "branches": [
+        { "at": "Nørreport", "note": "doNotGroup vs Metro (M1, M2) vs S-tog (6 lines). Confirmed call point via København H's own Adjacent-stations Öresundståg rows (left: Nørreport, right: Ørestad) - oracle report's Board eligibility table named København H only; extending here per identical boarding contract, flagged for Tim confirmation (direction-model-memo.md open question 4)." },
+        { "at": "København H", "note": "doNotGroup vs Metro (M3, M4) vs S-tog (6 lines) vs EuroCity (excluded). Oracle report's confirmed in-catalog stop." }
+      ],
+      "stations": ["Nørreport", "København H"],
+      "note": "No passenger-facing line code - direction is 'Öresundståg + <destination>' using the printed corridor name. Four corridors observed: Copenhagen-Lund, Copenhagen-Gothenburg, Copenhagen-Kalmar, Copenhagen-Karlskrona."
+    }
+  ]
+}

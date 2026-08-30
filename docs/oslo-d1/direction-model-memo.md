@@ -12,6 +12,8 @@ Use the **official Ruter folder terminus** on trains leaving a node. Use **Stort
 
 Do not write D5 assertion tables until Tim locks this.
 
+**Scope update (30 Aug 2026):** Vy regional/commuter rail and Flytoget airport express are now `in` at Jernbanetorget and Nationaltheatret per Tim's board-eligibility decision (see the oracle report's Board eligibility section and the dedicated section below). They use the same line + official terminus convention as T-bane, in their own `Vy` / `Flytoget` mapGroups, doNotGroup against T-bane and against each other.
+
 The pack prompt’s chips are **line + official terminus**, not compass, not “to City”. D1 locks folder strings: **Frognerseteren**, **Bergkrystallen**, **Østerås**, **Ellingsrudåsen**, **Kolsås**, **Mortensrud**, **Sognsvann**, **Vestli**. **Helsfyr** is a line-1 short-turn, not a chip. **Ringen** is not a chip.
 
 **There is no passenger line 6.** No Fornebu chip.
@@ -60,6 +62,42 @@ Same chips. Railway platforms are **out of this city**.
 ### Carl Berners plass / Økern / Hellerud / Helsfyr
 
 Line + the far official end (5 + Sognsvann vs 5 + Vestli, not “around the ring”; 4 + Vestli vs 5 + Vestli — line token required; 2 + Ellingsrudåsen vs 3 + Mortensrud; 1 + Bergkrystallen vs 1 + Frognerseteren — not Helsfyr unless that specific trip is signed that way).
+
+## Vy regional/commuter rail and Flytoget (added 30 Aug 2026 — Tim's board-eligibility decision)
+
+Per the oracle report's Board eligibility section, Vy regional/commuter rail and Flytoget are now `in` at **Jernbanetorget** and **Nationaltheatret** only (not the full corridor — the oracle report gives boarding-contract evidence and official terminus pairs for these two stations, not stop-level data for the rest of each route). Same **line + official terminus** convention as T-bane, using the terminus pairs printed in the oracle report's route descriptions:
+
+| line | official terminus pair | source line in oracle report |
+| --- | --- | --- |
+| Vy RE10 | Drammen ↔ Lillehammer (Dovrebanen) | "Drammen–Oslo S–Lillehammer" |
+| Vy RE11 | Skien ↔ Eidsvoll (Vestfoldbanen) | "Skien–Oslo S–Eidsvoll" |
+| Vy R12 | Kongsberg ↔ Eidsvoll (Gardermobanen) | "Kongsberg–Oslo S–Eidsvoll" |
+| Vy R13 | Drammen ↔ Dal (Hovedbanen) | "Drammen–Dal" |
+| Vy R14 | Asker ↔ Kongsvinger (Kongsvingerbanen) | "Asker–Oslo S–Kongsvinger" |
+| Vy R21 | Oslo S ↔ Moss (Østfoldbanen western line) | "Oslo S–Moss" |
+| Vy L1 | Spikkestad ↔ Lillestrøm (Hovedbanen) | "Spikkestad–Lillestrøm via Oslo S" |
+| Vy L2 | Stabekk ↔ Ski (Østfoldbanen) | "Stabekk–Ski" |
+| Flytoget FLY1 | Drammen ↔ Oslo Airport (Dovrebanen) | "Drammen–Oslo Airport" |
+| Flytoget FLY2 | Stabekk ↔ Oslo Airport (Østfoldbanen) | "Stabekk–Oslo Airport" |
+
+Example chips at Jernbanetorget / Nationaltheatret (same pattern as `1 + Frognerseteren`):
+
+- `RE10 + Drammen` / `RE10 + Lillehammer`
+- `RE11 + Skien` / `RE11 + Eidsvoll`
+- `R12 + Kongsberg` / `R12 + Eidsvoll`
+- `R13 + Drammen` / `R13 + Dal`
+- `R14 + Asker` / `R14 + Kongsvinger`
+- `R21 + Moss` (outbound only — see flag below)
+- `L1 + Spikkestad` / `L1 + Lillestrøm`
+- `L2 + Stabekk` / `L2 + Ski`
+- `FLY1 + Drammen` / `FLY1 + Oslo Airport`
+- `FLY2 + Stabekk` / `FLY2 + Oslo Airport`
+
+**Flag — R21's own terminus is Oslo S.** R21 runs Oslo S–Moss; at Jernbanetorget (the D1 string for the Oslo S cluster) a train signed toward Oslo S is the train arriving, not a valid outbound direction chip — same self-referential-hub problem already solved for T-bane at Stortinget (§ above: "never a direction token"). Rec: only `R21 + Moss` appears as an outbound chip at Jernbanetorget/Nationaltheatret; do not synthesize `R21 + Oslo S` as a direction.
+
+**Flag — call order between Jernbanetorget and Nationaltheatret not sourced.** The oracle report's Board eligibility table lists "Jernbanetorget, Nationaltheatret" for Vy rows and "Nationaltheatret, Jernbanetorget" for Flytoget rows — this reads like table-authoring order, not a sourced stop sequence. `published-network.json` lists both stations for each Vy/Flytoget line without asserting which is called first; Jim should not infer a sequence from array order. Flagging back rather than guessing a station graph the oracle report doesn't give (the report scopes Vy/Flytoget only to these two stations, not the rest of each corridor).
+
+**doNotGroup unchanged in kind, now three-way:** Jernbanetorget and Nationaltheatret both host T-bane (mapGroup `T-bane`) + Vy (mapGroup `Vy`) + Flytoget (mapGroup `Flytoget`) as three separate platform/board sections. Same **Stortinget-is-the-only-T-bane-hub-lock** rule as before — Vy/Flytoget do not get a "hub lock" string of their own in this pack; they are only in-scope at these two named stations.
 
 ## Open §3 questions for Tim
 

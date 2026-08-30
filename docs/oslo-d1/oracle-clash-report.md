@@ -14,7 +14,40 @@ No line 6. Fornebubanen not on either official PDF.
 
 Hub lock: **Stortinget** (all five lines; line 5's published ring-then-spur is defined by passing it twice). Jernbanetorget is the Oslo S / Vy / bussterminal print — **doNotGroup**, not the lock. Nationaltheatret is the other T-bane / railway pair — **doNotGroup**, not the lock. Majorstuen is the west mouth of the Common Tunnel — shared approach. The linjekart *Sentrum / City centre* blob is not a stop.
 
-H2 clash surface (after transcription): **no** product `lib/cities/oslo/`. Clash is **map-vs-halt-list** (Gulleråsen one-way; line-1 Helsfyr short-turn vs Bergkrystallen folder title; timing-point grids vs full Stoppestedsliste) plus **T-bane vs NSB/Vy name family** at Jernbanetorget / Oslo S and Nationaltheatret. Not GTFS. Trikk / bus / båt / Vy out of v1 oracle.
+H2 clash surface (after transcription): **no** product `lib/cities/oslo/`. Clash is **map-vs-halt-list** (Gulleråsen one-way; line-1 Helsfyr short-turn vs Bergkrystallen folder title; timing-point grids vs full Stoppestedsliste) plus **T-bane vs NSB/Vy name family** at Jernbanetorget / Oslo S and Nationaltheatret. Not GTFS. Trikk / bus / båt out of v1 oracle; **Vy regional/commuter rail and Flytoget now in scope (30 Aug 2026)**.
+
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier). A service passing both is marked `in` and appears on boards.
+
+**Verdict for Vy regional/commuter rail (Tim decision, 30 Aug 2026):** Both tests pass. Vy regional trains (RE10, RE11, R12, R13, R14, L1, L2, R21) at Jernbanetorget (Oslo S) and Nationaltheatret do not require compulsory seat reservations — [Vy's seat reservation page](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway) confirms reservations are optional and supplementary. Neither station has check-in barriers or border control. **Same boarding-contract basis as Öresundståg/Krösatågen in Sweden** (per `docs/board-eligibility-audit-au-se-nl.md`): walk-up high-frequency regional services, `in` verdict.
+
+**Verdict for Flytoget (corrected, 30 Aug 2026):** Both tests pass at in-catalog stations (Jernbanetorget and Nationaltheatret). Flytoget does not require compulsory seat reservations — [Flytoget conditions of carriage](https://flytoget.no/en/terms-and-conditions/conditions-of-carriage/) state "Purchased ticket does not automatically entitle you to a seat," meaning reservations are optional. At Jernbanetorget and Nationaltheatret (central Oslo stations), there is no check-in barrier or border control; riders board with a standard ticket. (The customs/border requirement exists only at Oslo Airport Station itself for international arrivals, a separate station not in the catalog. At the catalog stations, walk-up boarding is unrestricted.) **Flytoget is a train service on rail infrastructure passing both tests at in-catalog stations; `in` verdict.**
+
+**doNotGroup implications:** Jernbanetorget and Nationaltheatret boards must show platforms separately: T-bane, Vy regional, and Flytoget in distinct platform groups. Three operators, three separate sections. Different infrastructure, different line codes (T-bane 1–5; Vy RE/R/L codes; Flytoget FLY1/FLY2).
+
+| Service | Calls at in-catalog stations | Walk-up? | Compulsory reservation? | Check-in barrier? | Verdict | Evidence URL |
+|---|---|---|---|---|---|---|
+| **T-bane (Ruter)** Lines 1–5 | All 101 D1 stations | Yes | No | No | `in` | [Ruter T-bane fares](https://ruter.no/en/about-ruter/tickets-and-fares); open public metro |
+| **Vy RE10** Drammen–Oslo S–Lillehammer (Dovrebanen) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Nationaltheatret](https://www.banenor.no/en/traffic-and-travel/railway-stations/-n-/nationaltheatret/) |
+| **Vy RE11** Skien–Oslo S–Eidsvoll (Vestfoldbanen) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Oslo S](https://www.banenor.no/en/traffic-and-travel/railway-stations/-o-/oslo-central/) |
+| **Vy R12** Kongsberg–Oslo S–Eidsvoll (Gardermobanen) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Oslo S](https://www.banenor.no/en/traffic-and-travel/railway-stations/-o-/oslo-central/) |
+| **Vy R13** Drammen–Dal (Hovedbanen) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Nationaltheatret](https://www.banenor.no/en/traffic-and-travel/railway-stations/-n-/nationaltheatret/) |
+| **Vy R14** Asker–Oslo S–Kongsvinger (Kongsvingerbanen) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Oslo S](https://www.banenor.no/en/traffic-and-travel/railway-stations/-o-/oslo-central/) |
+| **Vy R21** Oslo S–Moss (Østfoldbanen western line) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Oslo S](https://www.banenor.no/en/traffic-and-travel/railway-stations/-o-/oslo-central/) |
+| **Vy L1** Spikkestad–Lillestrøm via Oslo S (Hovedbanen) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Nationaltheatret](https://www.banenor.no/en/traffic-and-travel/railway-stations/-n-/nationaltheatret/) |
+| **Vy L2** Stabekk–Ski (Østfoldbanen) | Jernbanetorget, Nationaltheatret | Yes | No | No | `in` | [Vy seat reservation policy](https://www.vy.no/en/buy-tickets/train-tickets/seat-reservations-on-regional-trains-in-eastern-norway); [Bane NOR Nationaltheatret](https://www.banenor.no/en/traffic-and-travel/railway-stations/-n-/nationaltheatret/) |
+| **Flytoget FLY1** Drammen–Oslo Airport (Dovrebanen) | Nationaltheatret, Jernbanetorget | Yes | No | No | `in` | [Flytoget conditions of carriage](https://flytoget.no/en/terms-and-conditions/conditions-of-carriage/); [Flytoget route info](https://flytoget.no/en/to-and-from-airport/train-from-oslo-airport-to-city/); no barrier at catalog stations |
+| **Flytoget FLY2** Stabekk–Oslo Airport (Østfoldbanen) | Nationaltheatret, Jernbanetorget | Yes | No | No | `in` | [Flytoget conditions of carriage](https://flytoget.no/en/terms-and-conditions/conditions-of-carriage/); [Flytoget route info](https://flytoget.no/en/to-and-from-airport/train-from-oslo-airport-to-city/); no barrier at catalog stations |
+
+**Summary for Jim and Luke:**
+1. Oslo v1 now covers **T-bane (metro, all lines)**, **Vy regional/commuter rail**, and **Flytoget airport express** at Jernbanetorget and Nationaltheatret.
+2. **Jernbanetorget (Oslo S) hosts:** T-bane + eight Vy lines (RE10, RE11, R12, R13, R14, R21, L1, L2) + two Flytoget lines (FLY1, FLY2).
+3. **Nationaltheatret hosts:** T-bane + eight Vy lines (RE10, RE11, R12, R13, R14, R21, L1, L2) + two Flytoget lines (FLY1, FLY2).
+4. **doNotGroup enforced:** Separate boards for T-bane, Vy, and Flytoget at both stations. Three operator groups, three separate platform sections. Different infrastructure, different line codes (T-bane 1–5; Vy RE/R/L; Flytoget FLY1/FLY2).
+5. **Line codes for Vy terminus pairs:** RE10 (Drammen/Lillehammer), RE11 (Skien/Eidsvoll), R12 (Kongsberg/Eidsvoll), R13 (Drammen/Dal), R14 (Asker/Kongsvinger), R21 (Oslo S/Moss), L1 (Spikkestad/Lillestrøm), L2 (Stabekk/Ski).
+6. **Line codes for Flytoget:** FLY1 (Drammen–Oslo Airport), FLY2 (Stabekk–Oslo Airport).
+7. **No other operators call at these catalog stations.**
 
 ## Station name table
 
@@ -23,8 +56,8 @@ Match rule: published D1 string (Ruter / Sporveien T-banen Stoppestedsliste + li
 | published (D1) | other print | class |
 | --- | --- | --- |
 | Stortinget | linjekart **Stortinget**; folders all five lines; line 5 listed twice | **match (lock)**. Do not use City / Sentrum / Oslo / Jernbanetorget. All five lines. |
-| Jernbanetorget | linjekart **Jernbanetorget** + **Oslo S** + **Oslo bussterminal** | **match T-bane**. doNotGroup vs **Oslo S** / Vy / NSB / Flytoget / bussterminal. Not the lock. |
-| Nationaltheatret | linjekart **Nationaltheatret** + train icon | **match T-bane**. doNotGroup vs Nationaltheatret railway. Not Nationaltheateret. |
+| Jernbanetorget | linjekart **Jernbanetorget** + **Oslo S** + **Oslo bussterminal** | **match T-bane**. doNotGroup vs **Oslo S** / Vy / Flytoget / bussterminal. T-bane, Vy, and Flytoget on separate platforms. |
+| Nationaltheatret | linjekart **Nationaltheatret** + train icon | **match T-bane**. doNotGroup vs Nationaltheatret railway. T-bane, Vy, and Flytoget on separate platforms. |
 | Majorstuen | linjekart / folders | **match**. West mouth of the Common Tunnel. Shared approach, not the lock. 2026 rebuild overlay; stay in D1. |
 | Tøyen | linjekart / folders | **match**. East mouth of the Common Tunnel. |
 | Frognerseteren | line 1 west end | match. Not Holmenkollen as the line token. |
@@ -69,20 +102,21 @@ Match rule: published D1 string (Ruter / Sporveien T-banen Stoppestedsliste + li
 | Entur static GTFS (RUT) | not used as D1 | Not this H2 stop-order surface. |
 | reise.ruter.no / Ruter-appen | passenger UI | Entur-backed. Not a product contract. |
 
-H2 conclusion: passenger codes on the map and folders already agree (**1–5**). Clash is **one-way Gulleråsen / Helsfyr short-turn / T-bane vs Oslo S at Jernbanetorget**, and **no product oslo file**. Do not generate published-network.json from GTFS. Do not merge trikk, bus, båt, or Vy into this city.
+H2 conclusion: passenger codes on the map and folders already agree (**1–5**). Clash is **one-way Gulleråsen / Helsfyr short-turn / T-bane vs Oslo S at Jernbanetorget**, and **no product oslo file**. Do not generate published-network.json from GTFS. Do not merge trikk, bus, båt into this city. **Vy regional/commuter rail and Flytoget now in scope as of 30 Aug 2026.**
 
 ## C2/C3 to put in front of Jim
 
-1. **city=oslo**, agency **Ruter / Sporveien T-banen**, not `norway`, not merged into a Vy / NSB city. London TfL / Amsterdam / Rotterdam / Sweden / Berlin / Munich / Hamburg untouched.
+1. **city=oslo**, agency **Ruter / Sporveien T-banen** + **Vy (regional/commuter rail only)** + **Flytoget (airport express)**, not `norway`, not merged into a city covering all of Vy's or Flytoget's entire network. London TfL / Amsterdam / Rotterdam / Sweden / Berlin / Munich / Hamburg untouched.
 2. **Stortinget** is the locked inner-city T-bane hub (all five lines; line 5 twice). Not Jernbanetorget, not Nationaltheatret, not Majorstuen, not City / Sentrum / Oslo.
-3. **doNotGroup Jernbanetorget T-bane vs Oslo S / Vy / NSB / bussterminal.**
-4. **doNotGroup Nationaltheatret T-bane vs Nationaltheatret railway.**
+3. **doNotGroup Jernbanetorget T-bane vs Oslo S / Vy (in scope) / Flytoget (in scope) / bussterminal.** Three operator sections: T-bane platforms, Vy regional platforms, Flytoget airport platforms.
+4. **doNotGroup Nationaltheatret T-bane vs Nationaltheatret railway / Vy (in scope) / Flytoget (in scope).** Three operator sections: T-bane platforms, Vy regional platforms, Flytoget airport platforms.
 5. **No passenger line 6.** Fornebubanen unopened (2029). Six new stations Skøyen, Vækerø, Lysaker, Fornebuporten, Flytårnet, Fornebu — not D1 rows. Chip is not `6 + Fornebu`.
 6. **Line 1 chips are Frognerseteren / Bergkrystallen.** Helsfyr is a short-turn overlay. Gulleråsen stays (one-way).
-7. **Line 5 chips are Sognsvann / Vestli**, not “Ringen” / “to City”. The ring is how the official through-path is written, not a sixth code.
-8. **No trikk, no bus, no Vy/NSB, no ferry.**
+7. **Line 5 chips are Sognsvann / Vestli**, not "Ringen" / "to City". The ring is how the official through-path is written, not a sixth code.
+8. **No trikk, no bus, no ferry.** Vy regional/commuter rail and Flytoget airport express now in scope at Jernbanetorget and Nationaltheatret.
 9. **Europe/Oslo HAS DST.** Official live path is Entur Journey Planner `estimatedCalls` + SIRI ET `datasetId=RUT`. D1 stays planned.
 10. Product child stopIds stay out of this file.
+11. **Vy and Flytoget lines use Entur GTFS** (Vy: `datasetId=VY`; Flytoget: `datasetId=FLY`). These services separate from T-bane by physical infrastructure and operator; do not cross-schedule or merge platforms.
 
 ## What I did not do
 
