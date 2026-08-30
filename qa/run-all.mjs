@@ -91,7 +91,7 @@ const SMOKE_SCRIPTS = [
   "london-nearby-chips.mjs",
   "uppsala-dogfood-gate.mjs",
   "uppsala-line-map-conformance.mjs",
-  "helsinki-planned-gate.mjs",
+  "helsinki-dogfood-gate.mjs",
   "helsinki-line-map-conformance.mjs",
 ];
 

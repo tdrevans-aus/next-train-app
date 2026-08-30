@@ -1,11 +1,35 @@
 /**
- * Helsinki stays planned (adapter wired, not flipped live). Perth stays live.
- * Usage: node qa/helsinki-planned-gate.mjs
+ * Helsinki is live (status flipped ahead of the flip-follow-through pass —
+ * see git log "Helsinki: flip status to live per QA checklist"). This gate
+ * migrates helsinki-planned-gate.mjs's still-relevant assertions to the live
+ * shape (assertCityLive must now PASS, not 501) and adds the dispatch-wiring
+ * checks Jim's follow-through pass adds for every flip (see the Oslo
+ * precedent — lib/cities/oslo/dogfood-next-train.js + oslo-dogfood-gate.mjs).
+ *
+ * DEFERRED — NOT done in this pass, matching Oslo's intermediate state
+ * (commit 52d0508) before its bundled flip commit (f1c2abd) added them
+ * alongside the status flip. For Helsinki the status flip already happened
+ * separately, so these four still need to land in ONE follow-up commit
+ * (the next pass, mirroring Oslo's f1c2abd) — do not add them piecemeal:
+ *   1. lib/cities/live-city-api.js — MULTI_CITY_IDS array + the MultiCityId typedef
+ *   2. public/brisbane-dogfood.js — its MULTI_CITY_IDS + the `available` mount map
+ *   3. public/journey-model.js — PERSISTED_CITY_IDS / PERSISTED_COUNTRY_IDS (fi)
+ *   4. public/app.js and public/city-session.js — NEARBY_MULTI_CITY_IDS / LIVE_CITY_IDS /
+ *      city-session MULTI_CITY_IDS / picker region entry (comingSoon: false) for a
+ *      Finland (fi) country entry with a Helsinki region
+ * Until that commit lands, qa/live-city-lists-sync.mjs will correctly keep failing
+ * with Helsinki listed as "missing" from all of the above — that failure is the
+ * to-do list for the next pass, not a regression to chase down here.
+ *
+ * Usage: node qa/helsinki-dogfood-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
+import { getMultiCityDirections } from "../lib/cities/live-city-api.js";
+import { isCityProbeAllowed } from "../lib/dev-city-board.js";
+import vercelBoard from "../api/dev/board.js";
 import { HELSINKI_HUB, resolveCatalogEntry, listCatalogStations } from "../lib/providers/helsinki.js";
 import {
   marketingLabelsForStation,
@@ -15,6 +39,10 @@ import {
   isForbiddenCollapseName,
   isForbiddenTerminusToken,
 } from "../lib/cities/helsinki/marketing-directions.js";
+import {
+  listHelsinkiDogfoodStations,
+  getHelsinkiDogfoodDirections,
+} from "../lib/cities/helsinki/dogfood-next-train.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -24,31 +52,29 @@ function assert(condition, message) {
   }
 }
 
-const perth = assertCityLive("perth");
-assert(perth?.ok === true, "Perth must stay live");
-assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must stay green");
-assert(assertCityLive("goteborg")?.ok === true, "Göteborg tester-live must stay green");
-assert(assertCityLive("malmo")?.ok === true, "Malmö tester-live must stay green");
-assert(assertCityLive("uppsala")?.ok === true, "Uppsala tester-live must stay green");
-
+// Registry identity + live status.
 const live = assertCityLive("helsinki");
-assert(live?.ok === false, "assertCityLive(helsinki) must fail");
-assert(live?.status === 501, "helsinki must be 501 planned");
-
-const entry = getCity("helsinki");
-assert(entry?.status === "planned", "helsinki registry status must be planned");
-assert(entry?.adapterReady === true, "helsinki adapterReady must be true");
-assert(entry?.displayName === "Helsinki", "helsinki display name must be Helsinki");
-assert(entry?.timeZone === "Europe/Helsinki", "helsinki timezone must be Europe/Helsinki");
-assert(entry?.agency === "HKL / HSL", "helsinki agency is HKL / HSL");
-assert((entry.envKeys ?? []).includes("DIGITRANSIT_SUBSCRIPTION_KEY"), "helsinki needs DIGITRANSIT_SUBSCRIPTION_KEY");
-assert(entry.modes?.includes("metro"), "helsinki modes v1 are metro");
-assert(!entry.modes?.includes("tram"), "no tram in v1");
-assert(!entry.modes?.includes("bus"), "no bus in v1");
-assert(!entry.modes?.includes("train"), "no HSL/VR commuter rail in v1 (metro only)");
+assert(live?.ok === true, "assertCityLive(helsinki) must pass");
+assert(getCity("helsinki")?.status === "live", "helsinki registry status must be live");
+assert(getCity("helsinki")?.adapterReady === true, "helsinki adapterReady must be true");
+assert(getCity("helsinki")?.displayName === "Helsinki", "helsinki display name must be Helsinki");
+assert(getCity("helsinki")?.timeZone === "Europe/Helsinki", "helsinki timezone must be Europe/Helsinki");
+assert(getCity("helsinki")?.agency === "HKL / HSL", "helsinki agency is HKL / HSL");
+assert((getCity("helsinki").envKeys ?? []).includes("DIGITRANSIT_SUBSCRIPTION_KEY"), "helsinki needs DIGITRANSIT_SUBSCRIPTION_KEY");
+assert(getCity("helsinki").modes?.includes("metro"), "helsinki modes v1 are metro");
+assert(!getCity("helsinki").modes?.includes("tram"), "no tram in v1");
+assert(!getCity("helsinki").modes?.includes("bus"), "no bus in v1");
+assert(!getCity("helsinki").modes?.includes("train"), "no HSL/VR commuter rail in v1 (metro only)");
 assert(CITIES.filter((city) => city.id === "helsinki").length === 1, "helsinki must appear once in the registry");
 assert(!getCity("finland"), "must not be registered as city=finland");
 
+assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
+assert(assertCityLive("stockholm")?.ok === true, "Stockholm stays live");
+assert(assertCityLive("goteborg")?.ok === true, "Göteborg stays live");
+assert(assertCityLive("malmo")?.ok === true, "Malmö stays live");
+assert(assertCityLive("uppsala")?.ok === true, "Uppsala stays live");
+
+// D1 pack (absorbed from the retired helsinki-planned-gate).
 const d1Dir = join(ROOT, "docs/helsinki-d1");
 for (const name of [
   "published-network.json",
@@ -70,7 +96,6 @@ assert(
 
 const network = JSON.parse(d1Json);
 assert(network.city === "helsinki", "D1 city id is helsinki");
-assert(network.status === "planned", "D1 pack stays planned");
 assert(network.printedInnerCityNames?.lock === HELSINKI_HUB, `D1 lock must be ${HELSINKI_HUB}`);
 assert(network.lines.length === 2, "D1 must carry exactly M1 and M2 — no M3");
 assert(
@@ -82,7 +107,6 @@ const stations = listCatalogStations();
 assert(stations.length === 30, `catalog must have 30 stations, got ${stations.length}`);
 const byName = new Map(stations.map((s) => [s.name, s]));
 assert(byName.has(HELSINKI_HUB), `catalog must lock ${HELSINKI_HUB}`);
-// Shared approaches and the former west end all stay real, boardable catalog entries.
 for (const name of ["Kamppi", "Helsingin yliopisto", "Matinkylä", "Tapiola", "Itäkeskus"]) {
   assert(byName.has(name), `catalog missing shared-approach station ${name}`);
 }
@@ -123,8 +147,6 @@ assert(stripViaSuffix("Tapiola") === "Tapiola", "stripViaSuffix must pass throug
 assert(mapHelsinkiDestination("Kivenlahti via Tapiola", "M1") === "M1 + Kivenlahti", "mapHelsinkiDestination must combine line + stripped terminus");
 assert(mapHelsinkiDestination("Mellunmäki via Itäkeskus", "M2") === "M2 + Mellunmäki", "mapHelsinkiDestination must combine line + stripped terminus");
 
-// The doNotUse list forbids these as chip termini even though Kamppi/Helsingin yliopisto/
-// Matinkylä stay real, boardable stations (see resolveCatalogEntry assertions above).
 assert(isForbiddenTerminusToken("Kamppi") === true, "Kamppi must never be a direction chip terminus");
 assert(isForbiddenTerminusToken("Helsingin yliopisto") === true, "Helsingin yliopisto must never be a direction chip terminus");
 assert(isForbiddenTerminusToken("Matinkylä") === true, "Matinkylä must never be a direction chip terminus");
@@ -134,6 +156,63 @@ assert(isForbiddenCollapseName("Helsinki Central") === true, "Helsinki Central m
 assert(foldKey("Rautatientori") === foldKey("RAUTATIENTORI"), "foldKey must normalize case");
 assert(foldKey("Mellunmäki") === foldKey("mellunmaki"), "foldKey must normalize diacritics");
 
+// Dogfood station list + directions come from the catalog, not GTFS parses.
+const dogfoodStations = listHelsinkiDogfoodStations();
+assert(dogfoodStations.length === 30, `dogfood stations must be the 30 D1 names, got ${dogfoodStations.length}`);
+const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
+assert(dogfoodNames.has(HELSINKI_HUB), "hub must be listed by the dogfood harness");
+
+const hubPack = getHelsinkiDogfoodDirections(HELSINKI_HUB);
+assert(hubPack.source === "helsinki-marketing-ends", "directions source must be helsinki-marketing-ends");
+assert(
+  JSON.stringify(hubPack.directions) === JSON.stringify(hubLabels),
+  "dogfood directions must match marketingLabelsForStation"
+);
+
+// The production dispatch entry exists and returns the same chips as the dogfood harness.
+// Called directly by cityId string (not gated on MULTI_CITY_IDS — that list update is
+// deliberately deferred, see header comment above).
+const dispatched = await getMultiCityDirections("helsinki", HELSINKI_HUB);
+assert(
+  JSON.stringify(dispatched.directions) === JSON.stringify(hubLabels),
+  "live-city-api dispatch must return the same chips as the dogfood harness"
+);
+assert(dispatched.source === "helsinki-marketing-ends", "live-city-api dispatch source must be helsinki-marketing-ends");
+
+// getMultiCityNextTrain must resolve to Helsinki's dogfood next-train module (no throw on lookup).
+const { getHelsinkiDogfoodNextTrain } = await import("../lib/cities/helsinki/dogfood-next-train.js");
+assert(typeof getHelsinkiDogfoodNextTrain === "function", "getHelsinkiDogfoodNextTrain must be exported for live-city-api to dispatch to");
+
+// Probe plumbing: local express only; Vercel dev board must 404 regardless.
+const previous = process.env.ALLOW_CITY_PROBES;
+delete process.env.ALLOW_CITY_PROBES;
+assert(isCityProbeAllowed() === false, "CI/default must not allow city probes");
+process.env.ALLOW_CITY_PROBES = "1";
+assert(isCityProbeAllowed() === true, "ALLOW_CITY_PROBES=1 enables local express probes only");
+
+const res = {
+  statusCode: 0,
+  body: null,
+  setHeader() {},
+  status(code) {
+    this.statusCode = code;
+    return this;
+  },
+  json(payload) {
+    this.body = payload;
+    return this;
+  },
+  end() {},
+};
+await vercelBoard({ method: "GET", query: { city: "helsinki", station: HELSINKI_HUB } }, res);
+assert(res.statusCode === 404, "Vercel /api/dev/board must 404 even if ALLOW_CITY_PROBES=1");
+
+if (previous === undefined) {
+  delete process.env.ALLOW_CITY_PROBES;
+} else {
+  process.env.ALLOW_CITY_PROBES = previous;
+}
+
 console.log(
-  "helsinki-planned-gate: ok (planned/501, adapterReady, D1 pack + fixture, 30 stations, M1/M2 line+terminus chips, Rautatientori hub, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
+  "helsinki-dogfood-gate: ok (dispatch switch-case wired and tested, MULTI_CITY_IDS/mount/persistence/picker lists deliberately deferred to the next bundled commit, D1 pack, 30 stations, M1/M2 line+terminus chips, Rautatientori hub)"
 );
