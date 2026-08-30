@@ -1,0 +1,172 @@
+{
+  "city": "uppsala",
+  "displayName": "Uppsala",
+  "status": "planned",
+  "agency": "Mälardalstrafik (Mälartåg)",
+  "timezone": "Europe/Stockholm",
+  "source": "https://opendata.samtrafiken.se/gtfs/ul/ul.zip",
+  "sources": [
+    {
+      "role": "D1 network generation source — per the oracle report's H2 conclusion this file was GENERATED from this feed, not hand-transcribed from the Mälartågskartan PNG.",
+      "title": "Trafiklab GTFS Regional — operator `ul` static (ul.zip)",
+      "url": "https://opendata.samtrafiken.se/gtfs/ul/ul.zip?key={TRAFIKLAB_API_KEY}",
+      "auth": "Trafiklab API key in query string (TRAFIKLAB_API_KEY)",
+      "retrievedAt": "2026-08-30T06:38:16Z",
+      "license": "CC0 1.0 Universal (trafiklab.se/api/gtfs-datasets/gtfs-regional/)",
+      "note": "Filtered to route_type 100 (railway/regional train) AND agency_name 'Mälardalstrafik' (agency_id 33010000167212099). This excludes UL buses (route_type 700, agency 'UL', 233 routes) and SL-pendeln (route_type 100, agency 'Storstockholms Lokaltrafik AB', 2 routes: 'SL-pendeln Uppsala' and 'SL-pendeln Bålsta' — this is Stockholm's own SL Line 40, already in docs/stockholm-d1/published-network.json per the oracle report; NOT duplicated here). After filtering, exactly 3 Mälartåg route_ids remain: 'Mälartåg Arlanda C/Märsta' (9011313099300000), 'Mälartåg Sala' (9011313099700000), 'Mälartåg Gävle' (9011313099900000). 356 trips total across the analysed static feed."
+    },
+    {
+      "role": "station coordinates — every station below is stops.txt's location_type=1 PARENT row for the stop cluster the Mälartåg trips actually call, not an unresolved platform child",
+      "title": "Trafiklab GTFS Regional `ul` stops.txt",
+      "url": "same static feed as above",
+      "retrievedAt": "2026-08-30T06:38:16Z",
+      "note": "Every Mälartåg-served station in this feed is a parented cluster (location_type 1 parent + platform-coded children, e.g. Uppsala Centralstation parent 9021003700600000 has 30 children). Coordinates below are the parent row's stop_lat/stop_lon. Uppsala C's children carry both route_type 100 (Mälartåg + SL-pendeln) and route_type 700 (UL bus) trips — filter by mode, never assume parent membership alone means 'this stop is a train stop'."
+    },
+    {
+      "role": "confirms GTFS-RT TripUpdates availability for in-scope trips (not used to derive station/line data — static feed only, per oracle report)",
+      "title": "Trafiklab GTFS Regional `ul` realtime TripUpdates",
+      "url": "https://opendata.samtrafiken.se/gtfs-rt/ul/TripUpdates.pb?key={TRAFIKLAB_API_KEY_RT}",
+      "note": "Confirmed live and populated with in-scope Mälartåg corridor trips as of 2026-08-30 per oracle-clash-report.md. Uses TRAFIKLAB_API_KEY_RT, a separate key product from TRAFIKLAB_API_KEY (see lib/providers/gtfs/auth.js)."
+    }
+  ],
+  "retrievedAt": "2026-08-30T06:38:16Z",
+  "notes": [
+    "GENERATED FROM GTFS, NOT HAND-TRANSCRIBED: per the oracle report's H2 conclusion ('Do not generate published-network.json from routes.txt' referred to the D1 PNG map's line codes being unreliable to hand-copy from image; this file instead comes from the actual routes/trips/stop_times/stops tables of the `ul` GTFS Regional static feed, filtered to route_type 100 + agency Mälardalstrafik).",
+    "STATION-GRAPH GAP — flag back to Nico, do not silently patch: the oracle report names FOUR corridors through Uppsala C — Gävle; Sala/Västerås/Eskilstuna; Stockholm-via-Märsta; Stockholm/Örebro-via-Arlanda. The `ul` operator's static feed only carries stop-level rows for the UL-county segment of each: the Gävle corridor is fully covered (13 ordered stations, Uppsala C to Gävle Central), but the Sala route's stop_times NEVER include Västerås or Eskilstuna (feed terminates the physical stop pattern at Sala station), and the Arlanda/Märsta route's stop_times NEVER include Stockholm Central, Flemingsberg, Västerås, Eskilstuna, or Örebro (feed terminates at Arlanda C / Märsta station respectively). This is NOT the same claim as the oracle's H2 (map vs feed corridor agreement) — H2 compared corridor existence, not per-station GTFS coverage, and did not check stop_times row-by-row.",
+      "STOP_HEADSIGN EVIDENCE (does not close the gap, but sharpens it): stop_headsign on the last in-feed stop of each pattern shows real destinations beyond the feed's own physical stops — the Arlanda/Märsta route's outbound (direction_id=1) trips carry stop_headsign 'Stockholm Central' (42 trips) or 'Flemingsberg' (30 trips, all via the Arlanda C branch specifically — Flemingsberg is south of Stockholm C on the line toward Södertälje/Katrineholm, consistent with but NOT confirming the oracle's 'Örebro' naming: the string 'Örebro' never appears in any headsign, route name, or stop name in this feed). The Sala route's headsigns never mention Västerås or Eskilstuna at all, in either direction. No coordinates exist in this feed for Stockholm Central, Flemingsberg, Västerås, or Eskilstuna, so none of those stations are included below — inventing coordinates for them was out of scope per the 'never guess a station graph' guardrail.",
+    "RESOLUTION NEEDED AT D2: full corridor coverage (Västerås, Eskilstuna, Örebro, and physical Stockholm-side stops) likely requires a second Trafiklab GTFS Regional operator feed (candidates: `sl` for the Stockholm-side legs already partly checked here, `vs` for Västmanland/Västerås, `srf` for Sörmland/Eskilstuna, or an `orebro`-equivalent operator) or the national `sweden.zip` bundle referenced in docs/malmo-d1/oracle-clash-report.md. This pack deliberately stops at the UL feed's real physical coverage rather than fabricating stop rows.",
+    "DIRECTION-COLLAPSE HAZARD (Oslo/Malmö-pattern, confirmed from raw trips.txt, not inferred): the Arlanda C and Märsta branches share ONE GTFS route_id (9011313099300000) and Knivsta as a common branch stop. direction_id does NOT distinguish the two branches — direction_id=1 (outbound from Uppsala C) covers ALL 41 Arlanda-branch AND Märsta-branch trips together (stop_headsign values 'Flemingsberg'/'Stockholm Central' mixed in one direction_id bucket); direction_id=0 (inbound) is uniformly headsigned 'Uppsala C' regardless of which branch a trip came from. A board built on direction_id alone would show an Uppsala C-bound Arlanda train and an Uppsala C-bound Märsta train as indistinguishable, and would show outbound Arlanda/Märsta departures as one undifferentiated 'direction'. Branch must be resolved from stop_headsign or the trip's actual stop_id path (does it call Arlanda C or Märsta?), never from direction_id. See direction-model-memo.md.",
+    "doNotGroup — Uppsala C, Knivsta, AND Arlanda C are all shared with SL-pendeln (SL Line 40, agency 'Storstockholms Lokaltrafik AB', route_id 9011001099500000): its GTFS pattern is Uppsala Centralstation > Knivsta station > Arlanda C > Upplands Väsby > ... > Stockholm city, i.e. the exact same three UL-area stations as Mälartåg's Arlanda branch. Line 40 itself is out of scope (already in docs/stockholm-d1/published-network.json per the oracle report) but doNotGroup must be enforced at all three shared stations, not just the Uppsala C hub — the oracle report's 'Uppsala C is the shared far terminus only' undersells this: SL-pendeln also calls Knivsta and Arlanda C in this feed.",
+    "Uppsala C hub-lock station is a parented cluster (30 platform children, route_type 100 AND 700 both call there) — filter Mälartåg board rows by mode/route, never by 'any child of parent 9021003700600000'.",
+    "No UL buses (route_type 700) included — 233 UL bus routes were excluded by the route_type filter.",
+    "No Mälartåg ersättningstrafik (replacement traffic) — this feed's Mälartåg routes are the three regular-service route_ids above; no replacement-bus route_ids were included.",
+    "Timezone Europe/Stockholm HAS DST (CEST/CET), same as Stockholm/Göteborg/Malmö.",
+    "City id uppsala, not sweden, not a Stockholm variant — per oracle report instruction.",
+    "gtfsRouteIdsIfKnown is populated per line below (unlike Malmö's Pågatåg, this feed DOES expose stable per-corridor route_ids — 'Mälartåg Sala' and 'Mälartåg Gävle' each have one; the Arlanda and Märsta corridors share one route_id, see the direction-collapse hazard above).",
+    "License: CC0 1.0 Universal, same as every other Trafiklab GTFS Regional/Sweden product used elsewhere in this codebase — redistribution and commercial use unrestricted, attribution not legally required."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Uppsala C",
+    "note": "No official passenger-facing print map was hand-transcribed for this pack (oracle report H2: 'Do not generate published-network.json from... hand-transcribed'). 'Uppsala C' is the oracle report's own hub-lock name (see 'Hub lock | Uppsala C (Uppsala Central Station)'); every other station name below is a cleaned GTFS stop_name (municipality parenthetical and redundant 'station'/'Central' suffix stripped — see stationCoordinates[].gtfsStopName for the untouched original). These are NOT verified against any printed Mälartågskartan station list — if Jim needs printed-map station strings for a UI label, that verification has not happened and should be flagged, not assumed equal to the GTFS-derived names here."
+  },
+  "doNotGroup": [
+    {
+      "stations": ["Uppsala C"],
+      "reason": "Mälartåg vs UL buses (route_type 700) vs SL-pendeln (SL Line 40, out of v1, already in stockholm-d1). Parent cluster with 30 children serving all three.",
+      "confidence": "confirmed (GTFS route_type + agency_id cross-check)"
+    },
+    {
+      "stations": ["Knivsta", "Arlanda C"],
+      "reason": "SL-pendeln (SL Line 40) also calls these exact two stations on its Uppsala C → Stockholm city pattern — same physical stop, different product, out of v1.",
+      "confidence": "confirmed (identical stop-name sequence in SL-pendeln's own GTFS trip pattern)"
+    }
+  ],
+  "coverageGaps": [
+    "Västerås and Eskilstuna (named in the oracle report's 'Sala/Västerås/Eskilstuna' corridor) have zero stop_times rows in the `ul` feed's Mälartåg patterns and zero mentions in any stop_headsign. Not included as stations. Flag to Nico/Jim before assuming this corridor extends past Sala in v1.",
+    "Stockholm Central, Flemingsberg (named/implied by the oracle report's two Stockholm corridors) have zero stop_times rows in this feed. stop_headsign confirms trips continue there, but no coordinates exist in the `ul` feed for them. Not included as stations.",
+    "Örebro (named in the oracle report's 'Stockholm/Örebro-via-Arlanda' corridor) never appears anywhere in this feed — not a route name, not a stop name, not a headsign. The closest evidence is the Flemingsberg headsign on 30 of 41 Arlanda-branch outbound trips, which is geographically consistent with a train continuing toward the Örebro direction past Stockholm, but this is circumstantial, not a citation. Needs a second source before treating 'Örebro' as confirmed.",
+    "gtfsRouteIdsIfKnown for the Arlanda/Märsta corridors is the SAME route_id (9011313099300000) for both — this is not a data-entry error, see the direction-collapse hazard in notes[]. Any D2 assertion table must not assume one route_id = one corridor for this pair.",
+    "No official Mälartågskartan print-map station-name cross-check was performed (see printedInnerCityNames note) — station display names below are cleaned GTFS names, not verified print strings."
+  ],
+  "stationCoordinates": {
+    "Uppsala C": { "lat": 59.857739, "lng": 17.647666, "gtfsStopId": "9021003700600000", "gtfsStopName": "Uppsala Centralstation" },
+    "Knivsta": { "lat": 59.726062, "lng": 17.787278, "gtfsStopId": "9021003780050000", "gtfsStopName": "Knivsta station" },
+    "Arlanda C": { "lat": 59.649053, "lng": 17.928923, "gtfsStopId": "9021003791305000", "gtfsStopName": "Arlanda C" },
+    "Märsta": { "lat": 59.628521, "lng": 17.861127, "gtfsStopId": "9021003191048000", "gtfsStopName": "Märsta station" },
+    "Sala": { "lat": 59.924987, "lng": 16.605679, "gtfsStopId": "9021003793036000", "gtfsStopName": "Sala station" },
+    "Morgongåva": { "lat": 59.932876, "lng": 16.959818, "gtfsStopId": "9021003793034000", "gtfsStopName": "Morgongåva station" },
+    "Heby": { "lat": 59.940482, "lng": 16.850735, "gtfsStopId": "9021003793051000", "gtfsStopName": "Heby station" },
+    "Storvreta": { "lat": 59.957090, "lng": 17.706563, "gtfsStopId": "9021003780141000", "gtfsStopName": "Storvreta station" },
+    "Vattholma": { "lat": 60.025022, "lng": 17.731129, "gtfsStopId": "9021003780025000", "gtfsStopName": "Vattholma station" },
+    "Skyttorp": { "lat": 60.080146, "lng": 17.738008, "gtfsStopId": "9021003780839000", "gtfsStopName": "Skyttorp station" },
+    "Örbyhus": { "lat": 60.228584, "lng": 17.704716, "gtfsStopId": "9021003760009000", "gtfsStopName": "Örbyhus station" },
+    "Tobo": { "lat": 60.257806, "lng": 17.638315, "gtfsStopId": "9021003760054000", "gtfsStopName": "Tobo station" },
+    "Tierp": { "lat": 60.345734, "lng": 17.512583, "gtfsStopId": "9021003760005000", "gtfsStopName": "Tierp station" },
+    "Mehedeby": { "lat": 60.450610, "lng": 17.401305, "gtfsStopId": "9021003760281000", "gtfsStopName": "Mehedeby station" },
+    "Marma": { "lat": 60.491245, "lng": 17.430557, "gtfsStopId": "9021003719115000", "gtfsStopName": "Marma station" },
+    "Älvkarleby": { "lat": 60.555221, "lng": 17.427657, "gtfsStopId": "9021003719000000", "gtfsStopName": "Älvkarleby station" },
+    "Skutskär": { "lat": 60.623626, "lng": 17.405841, "gtfsStopId": "9021003719200000", "gtfsStopName": "Skutskär station" },
+    "Furuvik": { "lat": 60.651140, "lng": 17.331907, "gtfsStopId": "9021003492015000", "gtfsStopName": "Furuvik" },
+    "Gävle C": { "lat": 60.676036, "lng": 17.151491, "gtfsStopId": "9021003480119000", "gtfsStopName": "Gävle Central" }
+  },
+  "lines": [
+    {
+      "id": "uppsala-gavle",
+      "number": null,
+      "name": "Uppsala C–Gävle",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": ["9011313099900000"],
+      "mapGroup": "Mälartåg",
+      "termini": ["Uppsala C", "Gävle C"],
+      "shortTurns": ["Tierp", "Mehedeby"],
+      "branches": [],
+      "stations": [
+        "Uppsala C",
+        "Storvreta",
+        "Vattholma",
+        "Skyttorp",
+        "Örbyhus",
+        "Tobo",
+        "Tierp",
+        "Mehedeby",
+        "Marma",
+        "Älvkarleby",
+        "Skutskär",
+        "Furuvik",
+        "Gävle C"
+      ],
+      "note": "Fully covered by the `ul` feed's stop_times — every station on the map's named corridor has GTFS stop-level data and coordinates. 115 trips analysed; longest pattern (33+31 trips) matches this 13-station list exactly. Tierp (33 trips) and Mehedeby (a few trips) are observed short-turns via stop_headsign, not a fixed official list — treat as indicative."
+    },
+    {
+      "id": "uppsala-sala",
+      "number": null,
+      "name": "Uppsala C–Sala",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": ["9011313099700000"],
+      "mapGroup": "Mälartåg",
+      "termini": ["Uppsala C", "Sala"],
+      "shortTurns": ["Morgongåva"],
+      "branches": [],
+      "stations": ["Uppsala C", "Morgongåva", "Heby", "Sala"],
+      "note": "The oracle report names this corridor 'Sala/Västerås/Eskilstuna'. This feed's stop_times and stop_headsign never mention Västerås or Eskilstuna — see coverageGaps. stations[] and termini[] are deliberately truncated at what this feed actually carries (Sala), not the oracle's full named corridor. 71 trips analysed; dominant pattern (36+33 trips) is this 4-station list."
+    },
+    {
+      "id": "uppsala-arlanda",
+      "number": null,
+      "name": "Uppsala C–Arlanda C (feed terminus; headsign confirms continuation to Stockholm C, some via Flemingsberg)",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": ["9011313099300000"],
+      "mapGroup": "Mälartåg",
+      "termini": ["Uppsala C", "Arlanda C"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Knivsta",
+          "otherLine": "uppsala-marsta",
+          "note": "Knivsta is the shared branch stop between the Arlanda C and Märsta continuations — both are patterns on the SAME GTFS route_id (9011313099300000). direction_id does not distinguish them; branch must be read from stop_headsign or the trip's stop_id path. See published-network.json notes[] and direction-model-memo.md."
+        }
+      ],
+      "stations": ["Uppsala C", "Knivsta", "Arlanda C"],
+      "note": "The oracle report names this corridor 'Stockholm/Örebro-via-Arlanda'. This feed's physical stop_times end at Arlanda C; stop_headsign on the last in-feed stop reads 'Stockholm Central' (11 trips) or 'Flemingsberg' (30 trips) for outbound service, confirming real continuation beyond the feed's coverage without providing stop-level data for it — see coverageGaps. 'Örebro' does not appear anywhere in this feed."
+    },
+    {
+      "id": "uppsala-marsta",
+      "number": null,
+      "name": "Uppsala C–Märsta (feed terminus; headsign confirms continuation to Stockholm C)",
+      "officialPageTitle": null,
+      "gtfsRouteIdsIfKnown": ["9011313099300000"],
+      "mapGroup": "Mälartåg",
+      "termini": ["Uppsala C", "Märsta"],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Knivsta",
+          "otherLine": "uppsala-arlanda",
+          "note": "Shared branch stop with the Arlanda C continuation — same route_id, same direction_id-collapse hazard. See published-network.json notes[] and direction-model-memo.md."
+        }
+      ],
+      "stations": ["Uppsala C", "Knivsta", "Märsta"],
+      "note": "The oracle report names this corridor 'Stockholm-via-Märsta'. This feed's physical stop_times end at Märsta station; stop_headsign on the last in-feed stop uniformly reads 'Stockholm Central' (31 outbound trips) — simpler than the Arlanda branch, no Flemingsberg variant observed."
+    }
+  ]
+}
