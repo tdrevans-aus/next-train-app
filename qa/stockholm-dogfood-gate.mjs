@@ -71,7 +71,12 @@ assert(
   "stockholm envKeys must be Trafiklab GTFS Sweden names only"
 );
 assert(!getCity("sweden"), "city=sweden must not exist");
-assert(!getCity("malmo") && !getCity("malmö"), "do not start Malmö");
+// Malmö is its own separate planned city (docs/malmo-d1/) — assert non-merger, not non-existence.
+assert(!getCity("malmö"), "malmo's registry id must be ascii malmo, not malmö");
+if (getCity("malmo")) {
+  assert(getCity("malmo").id !== "stockholm", "malmo must be its own registry entry, not merged into stockholm");
+  assert(getCity("malmo").agency !== entry.agency, "malmo (Skånetrafiken) must not share stockholm's SL agency");
+}
 assert(!CITIES.some((city) => city.id === "sweden"), "registry must not invent city=sweden");
 const rotterdam = getCity("rotterdam");
 assert(rotterdam?.status === "live", "Rotterdam from #112 must remain live");

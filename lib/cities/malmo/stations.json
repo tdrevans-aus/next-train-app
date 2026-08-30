@@ -1,0 +1,596 @@
+{
+  "city": "malmo",
+  "status": "planned",
+  "timeZone": "Europe/Stockholm",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Barkåkra",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.287818,
+      "lng": 12.827821
+    },
+    {
+      "name": "Billeberga",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.884037,
+      "lng": 12.99561
+    },
+    {
+      "name": "Billesholm",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.056491,
+      "lng": 12.976631
+    },
+    {
+      "name": "Bjuv",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.083078,
+      "lng": 12.912316
+    },
+    {
+      "name": "Bjärnum",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.29144,
+      "lng": 13.706872
+    },
+    {
+      "name": "Bromölla",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.067342,
+      "lng": 14.479502
+    },
+    {
+      "name": "Burlöv",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.640814,
+      "lng": 13.079965
+    },
+    {
+      "name": "Båstad",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.431836,
+      "lng": 12.906987
+    },
+    {
+      "name": "Dösjebro",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.822936,
+      "lng": 13.031624
+    },
+    {
+      "name": "Eslöv",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.837716,
+      "lng": 13.305488
+    },
+    {
+      "name": "Fjälkinge",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.043675,
+      "lng": 14.280685
+    },
+    {
+      "name": "Furulund",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.775103,
+      "lng": 13.095875
+    },
+    {
+      "name": "Förslöv",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.354247,
+      "lng": 12.800614
+    },
+    {
+      "name": "Gantofta",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.990494,
+      "lng": 12.805755
+    },
+    {
+      "name": "Glumslöv",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.94561,
+      "lng": 12.812064
+    },
+    {
+      "name": "Gunnesbo",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.726206,
+      "lng": 13.16811
+    },
+    {
+      "name": "Gärsnäs",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.546518,
+      "lng": 14.181024
+    },
+    {
+      "name": "Halmstad",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.669273,
+      "lng": 12.864841
+    },
+    {
+      "name": "Helsingborg C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.044404,
+      "lng": 12.694261
+    },
+    {
+      "name": "Hjärup",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.674154,
+      "lng": 13.136509
+    },
+    {
+      "name": "Hyllie",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.563152,
+      "lng": 12.976928
+    },
+    {
+      "name": "Häljarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.860902,
+      "lng": 12.911659
+    },
+    {
+      "name": "Hässleholm C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.15776,
+      "lng": 13.763138
+    },
+    {
+      "name": "Höör",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.937024,
+      "lng": 13.541398
+    },
+    {
+      "name": "Karlshamn",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.176512,
+      "lng": 14.868018
+    },
+    {
+      "name": "Kattarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.144383,
+      "lng": 12.778428
+    },
+    {
+      "name": "Klippan",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.130841,
+      "lng": 13.128374
+    },
+    {
+      "name": "Klostergården",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.695279,
+      "lng": 13.172708
+    },
+    {
+      "name": "Kristianstad C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.031668,
+      "lng": 14.15126
+    },
+    {
+      "name": "Kvidinge",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.137223,
+      "lng": 13.046862
+    },
+    {
+      "name": "Kågeröd",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.999484,
+      "lng": 13.083372
+    },
+    {
+      "name": "Kävlinge",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.794431,
+      "lng": 13.111423
+    },
+    {
+      "name": "Köpingebro",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.457222,
+      "lng": 13.93564
+    },
+    {
+      "name": "Laholm",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.50191,
+      "lng": 12.999604
+    },
+    {
+      "name": "Landskrona",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.878897,
+      "lng": 12.857408
+    },
+    {
+      "name": "Lomma",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.674464,
+      "lng": 13.074285
+    },
+    {
+      "name": "Lund C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.708099,
+      "lng": 13.1869
+    },
+    {
+      "name": "Lunnarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.541225,
+      "lng": 14.041921
+    },
+    {
+      "name": "Malmö C",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.609459,
+      "lng": 13.000913
+    },
+    {
+      "name": "Maria",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.075927,
+      "lng": 12.711016
+    },
+    {
+      "name": "Marieholm",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.864686,
+      "lng": 13.158997
+    },
+    {
+      "name": "Markaryd",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.458889,
+      "lng": 13.593365
+    },
+    {
+      "name": "Mörarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.055747,
+      "lng": 12.873239
+    },
+    {
+      "name": "Mörrum",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.186732,
+      "lng": 14.74467
+    },
+    {
+      "name": "Oxie",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.541632,
+      "lng": 13.096171
+    },
+    {
+      "name": "Persborg",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.58051,
+      "lng": 13.029042
+    },
+    {
+      "name": "Perstorp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.13636,
+      "lng": 13.397194
+    },
+    {
+      "name": "Påarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.029265,
+      "lng": 12.817093
+    },
+    {
+      "name": "Ramlösa",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.02336,
+      "lng": 12.727951
+    },
+    {
+      "name": "Rosengård",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.589599,
+      "lng": 13.031239
+    },
+    {
+      "name": "Rydebäck",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.965852,
+      "lng": 12.783584
+    },
+    {
+      "name": "Rydsgård",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.474233,
+      "lng": 13.587492
+    },
+    {
+      "name": "Simrishamn",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.554029,
+      "lng": 14.351946
+    },
+    {
+      "name": "Skurup",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.480071,
+      "lng": 13.500375
+    },
+    {
+      "name": "Smedstorp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.549567,
+      "lng": 14.117545
+    },
+    {
+      "name": "Stehag",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.90081,
+      "lng": 13.394853
+    },
+    {
+      "name": "Stångby",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.751151,
+      "lng": 13.2002
+    },
+    {
+      "name": "Svalöv",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.911338,
+      "lng": 13.110194
+    },
+    {
+      "name": "Svarte",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.428485,
+      "lng": 13.717116
+    },
+    {
+      "name": "Svedala",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.506869,
+      "lng": 13.232409
+    },
+    {
+      "name": "Svågertorp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.5472,
+      "lng": 12.990485
+    },
+    {
+      "name": "Sölvesborg",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.049941,
+      "lng": 14.582737
+    },
+    {
+      "name": "Sösdala",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.036273,
+      "lng": 13.680425
+    },
+    {
+      "name": "Teckomatorp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.87059,
+      "lng": 13.086124
+    },
+    {
+      "name": "Tjörnarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.000319,
+      "lng": 13.629848
+    },
+    {
+      "name": "Tomelilla",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.546552,
+      "lng": 13.94894
+    },
+    {
+      "name": "Trelleborg",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.371526,
+      "lng": 13.161085
+    },
+    {
+      "name": "Triangeln",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.593207,
+      "lng": 13.00147
+    },
+    {
+      "name": "Tyringe",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.159792,
+      "lng": 13.598202
+    },
+    {
+      "name": "Tågarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.926548,
+      "lng": 12.952665
+    },
+    {
+      "name": "Vallåkra",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.963799,
+      "lng": 12.861684
+    },
+    {
+      "name": "Vinslöv",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.104899,
+      "lng": 13.916896
+    },
+    {
+      "name": "Vittsjö",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.342113,
+      "lng": 13.663263
+    },
+    {
+      "name": "Västra Ingelstad",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.490304,
+      "lng": 13.107896
+    },
+    {
+      "name": "Ystad",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.427318,
+      "lng": 13.824574
+    },
+    {
+      "name": "Åkarp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.657432,
+      "lng": 13.108149
+    },
+    {
+      "name": "Åstorp",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.133968,
+      "lng": 12.949185
+    },
+    {
+      "name": "Älmhult",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.551427,
+      "lng": 14.136985
+    },
+    {
+      "name": "Ängelholm",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.245203,
+      "lng": 12.854194
+    },
+    {
+      "name": "Ödåkra",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.104868,
+      "lng": 12.744743
+    },
+    {
+      "name": "Önnestad",
+      "aliases": [],
+      "mode": "train",
+      "lat": 56.060573,
+      "lng": 14.029126
+    },
+    {
+      "name": "Örtofta",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.778928,
+      "lng": 13.243973
+    },
+    {
+      "name": "Östervärn",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.60745,
+      "lng": 13.032677
+    },
+    {
+      "name": "Östra Grevie",
+      "aliases": [],
+      "mode": "train",
+      "lat": 55.467826,
+      "lng": 13.132636
+    }
+  ]
+}
