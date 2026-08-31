@@ -206,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "oslo"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -642,7 +642,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "oslo"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -4815,7 +4815,10 @@ function scheduleRegionMismatchPrompt() {
     console.log("[App] scheduleRegionMismatchPrompt: firing...");
     void window.NextTrainCitySession?.maybePromptRegionMismatch?.({
       locateCity: locateCityFromPosition,
-      skip: () => isJourneysDialogOpen() || Boolean(document.querySelector("dialog[open]")),
+      // Region mismatch only matters for My Routes / My Journeys — Near me doesn't care
+      // which region you're in, so don't prompt while it's the active view.
+      skip: () =>
+        !journeyModeActive || isJourneysDialogOpen() || Boolean(document.querySelector("dialog[open]")),
     });
   }, 2000);
 }

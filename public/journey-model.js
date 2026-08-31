@@ -518,9 +518,10 @@ const PERSISTED_CITY_IDS = new Set([
   "wellington",
   "malmo",
   "uppsala",
+  "helsinki",
   "oslo",
 ]);
-const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "no"]);
+const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 
 function pickSavedCityFields(raw = {}) {
   const city = String(raw.savedCity ?? "").trim().toLowerCase();
