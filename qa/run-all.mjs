@@ -91,7 +91,10 @@ const SMOKE_SCRIPTS = [
   "london-nearby-chips.mjs",
   "uppsala-dogfood-gate.mjs",
   "uppsala-line-map-conformance.mjs",
-  "oslo-planned-gate.mjs",
+  "helsinki-dogfood-gate.mjs",
+  "helsinki-line-map-conformance.mjs",
+  "oslo-dogfood-gate.mjs",
+  "oslo-line-map-conformance.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

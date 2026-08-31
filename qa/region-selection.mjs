@@ -69,6 +69,11 @@ async function run() {
     // Explicitly set the "dismissed" pair key to something else to ensure it can trigger
     await page.evaluate(() => localStorage.removeItem('nextTrainRegionMismatchDismissed'));
     await page.goto(`${BASE}/?test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(2000);
+    // Region mismatch only matters for My Routes / My Journeys — Near me (the default cold-start
+    // view) doesn't care which region you're in, so the prompt is gated on journey mode being
+    // active. Enter it explicitly so this test reflects that, not the old unconditional behavior.
+    await page.evaluate(() => window.nextTrainApp?.enterJourneyMode?.());
     // App has a 2s delay for prompt in scheduleRegionMismatchPrompt
     await page.waitForTimeout(10000);
 
@@ -81,6 +86,39 @@ async function run() {
       console.log("    PASS — Region mismatch prompt appeared");
     } else {
       console.error("    FAIL — Region mismatch prompt did not appear");
+      process.exitCode = 1;
+    }
+    await context.close();
+  }
+
+  // 2b. Mismatch prompt must NOT trigger while Near me is the active view
+  {
+    console.log("  Test 2b: Mismatch prompt stays silent in Near me...");
+    const context = await browser.newContext({ geolocation: SYDNEY, permissions: ["geolocation"] });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(5000);
+
+    await page.evaluate(async () => {
+      await window.NextTrainCitySession.applyCity("sydney", { persist: true, explicit: true });
+    });
+    await page.waitForTimeout(2000);
+
+    await context.setGeolocation(LONDON);
+    await page.evaluate(() => localStorage.removeItem('nextTrainRegionMismatchDismissed'));
+    await page.goto(`${BASE}/?test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    // Deliberately stay on the default Near me view — never call enterJourneyMode here.
+    await page.waitForTimeout(10000);
+
+    const dialogOpenInNearby = await page.evaluate(() => {
+      const dialog = document.getElementById("region-mismatch-dialog");
+      return dialog && dialog.hasAttribute("open");
+    });
+
+    if (!dialogOpenInNearby) {
+      console.log("    PASS — Region mismatch prompt stayed silent in Near me");
+    } else {
+      console.error("    FAIL — Region mismatch prompt appeared while Near me was active");
       process.exitCode = 1;
     }
     await context.close();
