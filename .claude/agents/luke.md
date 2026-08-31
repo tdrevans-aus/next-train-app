@@ -24,3 +24,8 @@ Your output is the `docs/<city>-d1/` folder. Jim reads that folder, not any conv
   `node qa/lane-lock.mjs acquire <country> <region> luke` before writing any files.
 - Never write to `lib/providers/` or `registry.js` — that's Jim's job once your pack is done.
 - Flag anything the oracle report left ambiguous rather than guessing at a station graph.
+- **Commit your own work before reporting done (added 30 Aug 2026).** `git add` and `git commit`
+  the `docs/<city>-d1/` folder you wrote — don't just leave files sitting uncommitted in the working
+  tree. Nothing downstream should depend on someone else noticing your files exist. Use a plain,
+  factual commit message (what pack, what city) — no need to ask permission for this, it's your own
+  output, not a merge or a push.
