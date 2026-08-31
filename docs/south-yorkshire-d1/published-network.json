@@ -1,0 +1,156 @@
+{
+  "city": "south-yorkshire",
+  "displayName": "South Yorkshire",
+  "status": "planned",
+  "agency": [
+    "Sheffield Supertram (operated by South Yorkshire Future Tram Limited, SYFTL, since 22 Mar 2024)",
+    "National Rail (Darwin/OpenLDBWS — EMR/Northern/TPE/CrossCountry and other cross-boundary operators)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/south-yorkshire-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "South Yorkshire oracle clash report",
+      "url": "docs/south-yorkshire-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. No hand-transcribed passenger map beyond the report's station table and line-via-points list. Supertram intermediate stop order not in the report — real gap, carried into coverageGaps."
+    },
+    {
+      "role": "Supertram static data status (UNCONFIRMED, no feed pulled)",
+      "title": "Sheffield Supertram / South Yorkshire Future Tram Limited (SYFTL)",
+      "url": "https://livetrams.azurewebsites.net/",
+      "note": "No public GTFS or GTFS-RT feed confirmed under SYFTL (operator since 22 Mar 2024, taking over from Stagecoach). Live departures board exists at this URL but has no documented API. Previous Stagecoach TransXChange/NetEx contact was opendata@stagecoachbus.com — terms status under SYFTL unconfirmed. Do not treat this URL as a usable machine-readable source; it's the only public status page found."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as West Midlands / Greater Manchester / Liverpool City Region / East Midlands. Not a feed problem — do not treat as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    }
+  ],
+  "retrievedAt": "2026-08-31T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/south-yorkshire-d1/oracle-clash-report.md only. No product lib/cities/south-yorkshire/ exists yet. Not generated from GTFS. No stopIds in this file. No UK-country ledger exists yet (docs/*-ledger.md glob has only denmark-ledger.md) — this pack proceeds without one, same basis as East Midlands.",
+    "Two agencies, two direction models, one shared hub name (Sheffield Station) with doNotGroup between the layers, plus a second non-hub through-running/infrastructure-switch point at Meadowhall Interchange. See direction-model-memo.md and hazard-pack.md H1/H6.",
+    "Supertram modes v1: TRAIN-like light rail only (tram + tram-train). Four lines: Blue, Purple, Yellow, Tram-Train. 51 stops total per the report, but this pack does not enumerate all 51 — only the named termini/via-points/hub stations from the report. See coverageGaps.",
+    "Supertram real-time: SCHEDULE-ONLY v1, source TBD. This is a genuine operator-transition skip risk (SYFTL took over from Stagecoach 22 Mar 2024, no confirmed GTFS under the new operator), distinct in kind from the National Rail account block below — do not conflate the two in downstream QA notes.",
+    "National Rail modes v1: heavy rail, destination-board model (not line+terminus). BLOCKED pending DARWIN_LDB_TOKEN — see coverageGaps. Build the catalog/adapter normally per Nico's report; do not wire the token until it exists.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock: Sheffield Station (SHF CRS). Supertram tram viaduct above National Rail main platforms, footbridge connects. doNotGroup Supertram tram vs National Rail at this station — separate infrastructure, separate operators, separate boarding areas.",
+    "Meadowhall Interchange (MHS CRS) is a through-running/infrastructure-switch point, NOT a second hub lock: Supertram Tram-Train switches onto National Rail infrastructure here to continue to Rotherham Central and Parkgate. Shared platform area but separate operators/infrastructure (doNotGroup applies but it is not modelled as a parent hub the way Sheffield Station is).",
+    "Rotherham Central: National Rail only at this point in National Rail's own network sense per the report, but Tram-Train (Supertram) also terminates a segment here before continuing to Parkgate — through-running only, no shared platform with National Rail main-line trains per the report (line 17).",
+    "Parkgate is a Tram-Train-only terminus, not served by National Rail.",
+    "Denby Dale, Darton, South Elmsall, Moorthorpe are National Rail-only boundary stations with West Yorkshire, on the ticketing-scheme boundary. They may appear in both South Yorkshire and West Yorkshire feeds if both regions ship National Rail slices — flagged as a D2 de-dup boundary, not resolved here.",
+    "Chesterfield is East Midlands' station, not South Yorkshire's, per the oracle report (line 42) and per docs/east-midlands-d1/published-network.json (already lists Chesterfield under East Midlands' throughRunningOnly). NOT included in this pack's station list, to avoid two regions independently owning the same catalog entry.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked AND Supertram's real-data-source question is resolved with SYFTL/SYMCA, same overall status shape as West Midlands / Greater Manchester / Liverpool City Region / East Midlands.",
+    "Supertram line station arrays below are TERMINI + NAMED VIA-POINTS + hub only, as given by the report's line descriptions (line 39) — NOT a full ordered intermediate stop list (51 stops total, only a subset named). This is a real gap; see coverageGaps and hazard-pack.md H3/H4/H5.",
+    "gtfsRouteIdsIfKnown is left empty for all four Supertram lines — no GTFS route_id exists because no confirmed feed exists at all under SYFTL. Do not guess it."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Sheffield Station",
+    "doNotUse": [
+      "Sheffield",
+      "SHF",
+      "Sheffield Tram Station",
+      "Sheffield Rail Station",
+      "Sheffield Interchange"
+    ],
+    "supertramLock": "Sheffield Station",
+    "nationalRailLock": "Sheffield Station (SHF CRS)",
+    "note": "Two locks sharing one printed name, one building (viaduct above main platforms, footbridge connects), doNotGroup between them. See hazard-pack.md H1/H6. Meadowhall Interchange (MHS CRS) is a separate, non-hub through-running point — see meadowhall notes below, do not conflate with the Sheffield Station hub lock."
+  },
+  "coverageGaps": [
+    "Supertram real-time: NO confirmed feed at all under the new operator (SYFTL, since 22 Mar 2024). This is a genuine operator-transition skip risk, not the standard account-registration block — no public GTFS or GTFS-RT found; previous Stagecoach TransXChange/NetEx terms may not carry over. Confirm data export/GTFS publication plans with SYFTL/SYMCA before this can move past schedule-only v1. Live departures board (livetrams.azurewebsites.net) has no documented API and is not usable as a machine-readable source.",
+    "Supertram licensing: license confidence `unclear` per the oracle report. Previous Stagecoach data was described as open for personal/educational/commercial use, but SYFTL/SYMCA has not published explicit terms in sources checked. Do NOT assume open redistribution; confirm with SYFTL before D1 build proceeds past this catalog.",
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists. Same blocker as East Midlands / West Midlands / Greater Manchester / Liverpool City Region — already accepted, not re-flagged as a new blocker.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here; do not assume permission to relay Darwin data to end users until Tim confirms against the signed RDM Data Sharing Agreement. Same open item already raised for East Midlands.",
+    "Supertram's four lines' full intermediate stop order (51 stops total) is not in the oracle report — only named termini/via-points. Do not treat the 'stations' arrays below as complete; pull a confirmed GTFS feed (once one exists under SYFTL) for the real ordered list.",
+    "Purple line's Gleadless Townend branch junction detail is not in the oracle report — flagged in direction-model-memo.md, not resolved here.",
+    "National Rail has no printed route/line map to transcribe (Darwin is a real-time per-station board product) — no 'lines' array is provided for National Rail in this pack, only the hub, Meadowhall through-running/switch point, and boundary station list. See direction-model-memo.md for the destination+operator model recommended instead of line+terminus.",
+    "Denby Dale / Darton / South Elmsall / Moorthorpe boundary de-dup with West Yorkshire is explicitly out of scope for this pack — D2 concern for a future West Yorkshire pack.",
+    "Chesterfield is intentionally excluded from this pack's station list — it is East Midlands' station per that pack's published-network.json; see notes above.",
+    "No buses, no other rail modes, no Supertram real-time in v1 scope, per the oracle report."
+  ],
+  "lines": [
+    {
+      "id": "blue",
+      "number": "Blue",
+      "name": "Supertram Blue Line",
+      "agency": "Sheffield Supertram (SYFTL)",
+      "mapGroup": "Tram",
+      "termini": ["Malin Bridge", "Halfway"],
+      "shortTurns": [],
+      "branches": [],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["Malin Bridge", "Gleadless Townend", "Crystal Peaks", "Halfway"],
+      "stationsNote": "TERMINI + named via-points only (report line 39: 'via Sheffield city centre / Manor Top / Gleadless Townend / Crystal Peaks'). City centre and Manor Top named as via-corridor but not given as confirmed printed stop names on this line — omitted rather than guessed. Full ordered stop list not in the oracle report."
+    },
+    {
+      "id": "purple",
+      "number": "Purple",
+      "name": "Supertram Purple Line",
+      "agency": "Sheffield Supertram (SYFTL)",
+      "mapGroup": "Tram",
+      "termini": ["Sheffield Station", "Herdings Park"],
+      "shortTurns": [],
+      "branches": ["Gleadless Townend"],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["Sheffield Station", "Herdings Park", "Gleadless Townend"],
+      "stationsNote": "TERMINI + hub + named branch only (report line 39: 'via city centre/Manor Top; branches to Gleadless Townend'). Branch junction point not given — see hazard-pack.md H4 and direction-model-memo.md caveat. Full ordered stop list not in the oracle report."
+    },
+    {
+      "id": "yellow",
+      "number": "Yellow",
+      "name": "Supertram Yellow Line",
+      "agency": "Sheffield Supertram (SYFTL)",
+      "mapGroup": "Tram",
+      "termini": ["Middlewood", "Meadowhall"],
+      "shortTurns": [],
+      "branches": [],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["Middlewood", "Hillsborough", "Sheffield Arena", "Meadowhall"],
+      "stationsNote": "TERMINI + named via-points only (report line 39: 'via city centre / Kelham Island / Hillsborough / Sheffield Arena'). Kelham Island and city centre named as via-corridor but not given as confirmed printed stop names on this line's array here — Hillsborough and Sheffield Arena retained as they're named landmarks matching known via-points; full ordered stop list not in the oracle report."
+    },
+    {
+      "id": "tram-train",
+      "number": "Tram-Train",
+      "name": "Supertram Tram-Train",
+      "agency": "Sheffield Supertram (SYFTL)",
+      "mapGroup": "Tram",
+      "termini": ["Sheffield Station", "Parkgate"],
+      "shortTurns": [],
+      "branches": [],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["Sheffield Station", "Sheffield Arena", "Meadowhall", "Rotherham Central", "Parkgate"],
+      "stationsNote": "TERMINI + named via-points only (report line 39: 'via Sheffield Arena and Meadowhall, switching to national rail infrastructure post-Meadowhall South/Tinsley'). Switches to National Rail infrastructure after Meadowhall South/Tinsley — infrastructure fact for the station graph, not a direction-model fork (see direction-model-memo.md). Full ordered stop list not in the oracle report."
+    }
+  ],
+  "meadowhallThroughRunningSwitch": {
+    "name": "Meadowhall Interchange",
+    "crs": "MHS",
+    "class": "through-running point, NOT a merge/hub-lock — Supertram Tram-Train switches to National Rail infrastructure here (report line 16). Shared platform area but separate operators/infrastructure. doNotGroup applies but this is not a second parent hub like Sheffield Station.",
+    "servedBy": ["Supertram Yellow Line (terminus)", "Supertram Tram-Train (through-running/infrastructure switch)", "National Rail"]
+  },
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
+    "hub": {
+      "name": "Sheffield Station",
+      "crs": "SHF",
+      "class": "hub lock — shared with Supertram tram, doNotGroup, footbridge connects viaduct to main platforms"
+    },
+    "throughRunningOnly": [
+      { "name": "Rotherham Central", "crs": null, "class": "through-running only, not a merge point. Tram-Train (Supertram) also serves this stop but no shared platform with National Rail main-line trains per the report (line 17). CRS code not given in the oracle report — do not guess." },
+      { "name": "Denby Dale", "crs": null, "class": "through-running only, West Yorkshire/South Yorkshire boundary. CRS code not given in the oracle report — do not guess." },
+      { "name": "Darton", "crs": null, "class": "through-running only, South Yorkshire/West Yorkshire boundary. CRS code not given in the oracle report — do not guess." },
+      { "name": "South Elmsall", "crs": null, "class": "through-running only, West Yorkshire/South Yorkshire boundary, ticketing schemes valid both ways. CRS code not given in the oracle report — do not guess." },
+      { "name": "Moorthorpe", "crs": null, "class": "through-running only, West Yorkshire/South Yorkshire boundary. CRS code not given in the oracle report — do not guess." }
+    ],
+    "throughRunningSwitchPoint": [
+      { "name": "Meadowhall Interchange", "crs": "MHS", "class": "see meadowhallThroughRunningSwitch above — Supertram Tram-Train infrastructure switch point, not a plain National Rail through-running station" }
+    ],
+    "excludedFromThisPack": [
+      { "name": "Chesterfield", "crs": "CHD", "class": "East Midlands' station, not South Yorkshire's — see docs/east-midlands-d1/published-network.json throughRunningOnly. Excluded here to avoid duplicate cross-region ownership; report line 42 notes it may be served by through-running services but is 'not in South Yorkshire proper'." }
+    ]
+  }
+}
