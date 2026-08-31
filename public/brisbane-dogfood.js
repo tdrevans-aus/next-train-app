@@ -4,7 +4,7 @@
  */
 (function () {
   const STORAGE_KEY = "nextTrainDogfoodOrigin";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   const state = {
@@ -14,7 +14,7 @@
     stations: [],
     coords: {},
     directionsByStation: {},
-    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true },
+    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true, helsinki: true },
   };
 
   async function isDebugNative() {
