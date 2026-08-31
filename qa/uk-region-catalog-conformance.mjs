@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 7) {
-  fail(`Expected 7 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 8) {
+  fail(`Expected 8 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 7) {
-  fail(`Expected 7 regions in index, got ${regions.length}`);
+if (regions.length !== 8) {
+  fail(`Expected 8 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -284,6 +284,35 @@ if (!woeSecondary || woeSecondary.crs !== "BTH") {
   fail("west-of-england Bath Spa must resolve as a rail entry with crs BTH");
 }
 
+const sw = getRegion("south-wales");
+if (!sw || sw.railCount !== 2 || sw.metroCount !== 0) {
+  fail(`south-wales counts rail=${sw?.railCount} metro=${sw?.metroCount}`);
+}
+
+const swRail = listRailStations("south-wales");
+const swCrsSet = new Set(swRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["CDF", "STJ"]) {
+  if (!swCrsSet.has(crs)) {
+    fail(`south-wales missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("south-wales")) {
+  if (swRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in south-wales catalog`);
+  }
+}
+
+const swHub = resolveRailEntry("Cardiff Central", "south-wales");
+if (!swHub || swHub.crs !== "CDF") {
+  fail("south-wales Cardiff Central must resolve as a rail entry with crs CDF");
+}
+if (resolveRailEntry("Cardiff Queen Street", "south-wales")) {
+  fail("south-wales must not resolve Cardiff Queen Street — Valley Lines has no feed and is not catalogued");
+}
+if (resolveRailEntry("Pontypridd", "south-wales")) {
+  fail("south-wales must not resolve Pontypridd — Valley Lines has no feed and is not catalogued");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -293,5 +322,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0)"
 );
