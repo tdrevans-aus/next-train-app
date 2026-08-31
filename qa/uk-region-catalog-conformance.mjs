@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 5) {
-  fail(`Expected 5 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 6) {
+  fail(`Expected 6 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 5) {
-  fail(`Expected 5 regions in index, got ${regions.length}`);
+if (regions.length !== 6) {
+  fail(`Expected 6 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -203,6 +203,60 @@ if (!syMeadowhallMetro || syMeadowhallMetro.catalogId !== "supertram:meadowhall"
   fail("south-yorkshire Meadowhall must also resolve as the Supertram Yellow terminus metro entry");
 }
 
+const ne = getRegion("north-east");
+if (!ne || ne.railCount !== 3 || ne.metroCount !== 60) {
+  fail(`north-east counts rail=${ne?.railCount} metro=${ne?.metroCount}`);
+}
+
+const neRail = listRailStations("north-east");
+const neRailNames = new Set(neRail.map((s) => s.name));
+for (const name of ["Newcastle Central", "Sunderland", "Berwick-upon-Tweed"]) {
+  if (!neRailNames.has(name)) {
+    fail(`north-east missing National Rail station ${name}`);
+  }
+}
+const neCrsSet = new Set(neRail.map((s) => s.crs).filter(Boolean));
+if (!neCrsSet.has("NCL") || !neCrsSet.has("BWK")) {
+  fail("north-east must carry NCL and BWK CRS codes");
+}
+if (neRailNames.has("Darlington")) {
+  fail("north-east must not carry Darlington (unresolved cross-region boundary)");
+}
+for (const name of getNotInRegion("north-east")) {
+  if (neRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in north-east catalog`);
+  }
+}
+
+const neMetro = listMetroStops("north-east");
+const neMetroNames = new Set(neMetro.map((s) => s.name));
+for (const name of ["St James", "South Shields", "South Hylton", "Newcastle Airport", "Central Station", "Sunderland", "Pelaw"]) {
+  if (!neMetroNames.has(name)) {
+    fail(`north-east Metro catalog missing ${name}`);
+  }
+}
+if (neMetroNames.has("Newcastle Central")) {
+  fail("north-east Metro catalog must use 'Central Station', not 'Newcastle Central' (doNotGroup, distinct printed names)");
+}
+
+const neHubRail = resolveRailEntry("Newcastle Central", "north-east");
+const neHubMetro = resolveMetroEntry("Central Station", "north-east");
+if (!neHubRail || neHubRail.crs !== "NCL") {
+  fail("north-east Newcastle Central must resolve as a rail entry with crs NCL");
+}
+if (!neHubMetro || !neHubMetro.catalogId?.startsWith("metro:")) {
+  fail("north-east Central Station must also resolve as a Metro entry, separate from the rail entry");
+}
+
+const neSunderlandRail = resolveRailEntry("Sunderland", "north-east");
+const neSunderlandMetro = resolveMetroEntry("Sunderland", "north-east");
+if (!neSunderlandRail) {
+  fail("north-east Sunderland must resolve as a rail entry (shared-platform case, CRS null — not guessed)");
+}
+if (!neSunderlandMetro || neSunderlandMetro.catalogId !== "metro:sunderland") {
+  fail("north-east Sunderland must also resolve as the Green Line metro entry");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -212,5 +266,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60)"
 );

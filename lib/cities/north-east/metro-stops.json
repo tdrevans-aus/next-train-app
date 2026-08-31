@@ -1,0 +1,244 @@
+{
+  "_comment": "Full multi-platform GTFS stopIds per Metro station, keyed by catalog name. Confirmed via Jim D2 pull of the DFT Bus Open Data bulk archive (itm_all_gtfs.zip, agency_id OP241 Tyne and Wear Metro) 31 Aug 2026. Used by lib/providers/north-east.js to resolve every platform for a station (uk/catalog.js stations.json only carries one representative stopId per station for dispatch).",
+  "stopIdsByStation": {
+    "Bank Foot": [
+      "9400ZZTWBKF1",
+      "9400ZZTWBKF2"
+    ],
+    "Bede": [
+      "9400ZZTWBDE1",
+      "9400ZZTWBDE2"
+    ],
+    "Benton": [
+      "9400ZZTWBTN1",
+      "9400ZZTWBTN2"
+    ],
+    "Brockley Whins": [
+      "9400ZZTWBRW1",
+      "9400ZZTWBRW2"
+    ],
+    "Byker": [
+      "9400ZZTWBKR1",
+      "9400ZZTWBKR2"
+    ],
+    "Callerton Parkway": [
+      "9400ZZTWCTP1",
+      "9400ZZTWCTP2"
+    ],
+    "Central Station": [
+      "9400ZZTWCST1",
+      "9400ZZTWCST2"
+    ],
+    "Chichester": [
+      "9400ZZTWCHT1",
+      "9400ZZTWCHT2"
+    ],
+    "Chillingham Road": [
+      "9400ZZTWCHM1",
+      "9400ZZTWCHM2"
+    ],
+    "Cullercoats": [
+      "9400ZZTWCCS1",
+      "9400ZZTWCCS2"
+    ],
+    "East Boldon": [
+      "9400ZZTWEBN1",
+      "9400ZZTWEBN2"
+    ],
+    "Fawdon": [
+      "9400ZZTWFDN1",
+      "9400ZZTWFDN2"
+    ],
+    "Fellgate": [
+      "9400ZZTWFGT1",
+      "9400ZZTWFGT2"
+    ],
+    "Felling": [
+      "9400ZZTWFLG1",
+      "9400ZZTWFLG2"
+    ],
+    "Four Lane Ends": [
+      "9400ZZTWFLE1",
+      "9400ZZTWFLE2"
+    ],
+    "Gateshead": [
+      "9400ZZTWGHD1",
+      "9400ZZTWGHD2"
+    ],
+    "Gateshead Stadium": [
+      "9400ZZTWGHS1",
+      "9400ZZTWGHS2"
+    ],
+    "Hadrian Road": [
+      "9400ZZTWHRN1",
+      "9400ZZTWHRN2"
+    ],
+    "Haymarket": [
+      "9400ZZTWHMT1",
+      "9400ZZTWHMT2"
+    ],
+    "Hebburn": [
+      "9400ZZTWHBN1",
+      "9400ZZTWHBN2"
+    ],
+    "Heworth": [
+      "9400ZZTWHPW1",
+      "9400ZZTWHPW2"
+    ],
+    "Howdon": [
+      "9400ZZTWHDN1",
+      "9400ZZTWHDN2"
+    ],
+    "Ilford Road": [
+      "9400ZZTWIFD1",
+      "9400ZZTWIFD2"
+    ],
+    "Jarrow": [
+      "9400ZZTWJRW1",
+      "9400ZZTWJRW2"
+    ],
+    "Jesmond": [
+      "9400ZZTWJMD1",
+      "9400ZZTWJMD2"
+    ],
+    "Kingston Park": [
+      "9400ZZTWKSP1",
+      "9400ZZTWKSP2"
+    ],
+    "Longbenton": [
+      "9400ZZTWLBT1",
+      "9400ZZTWLBT2"
+    ],
+    "Manors": [
+      "9400ZZTWMNS1",
+      "9400ZZTWMNS2"
+    ],
+    "Meadow Well": [
+      "9400ZZTWMDW1",
+      "9400ZZTWMDW2"
+    ],
+    "Millfield": [
+      "9400ZZTWMFD1",
+      "9400ZZTWMFD2"
+    ],
+    "Monkseaton": [
+      "9400ZZTWMST1",
+      "9400ZZTWMST2"
+    ],
+    "Monument": [
+      "9400ZZTWMMT1",
+      "9400ZZTWMMT2",
+      "9400ZZTWMMT3",
+      "9400ZZTWMMT4"
+    ],
+    "Newcastle Airport": [
+      "9400ZZTWAPT1",
+      "9400ZZTWAPT2"
+    ],
+    "North Shields": [
+      "9400ZZTWNSH1",
+      "9400ZZTWNSH2"
+    ],
+    "Northumberland Park": [
+      "9400ZZTWNDP1",
+      "9400ZZTWNDP2"
+    ],
+    "Pallion": [
+      "9400ZZTWPLN1",
+      "9400ZZTWPLN2"
+    ],
+    "Palmersville": [
+      "9400ZZTWPVL1",
+      "9400ZZTWPVL2"
+    ],
+    "Park Lane": [
+      "9400ZZTWPRK1",
+      "9400ZZTWPRK2"
+    ],
+    "Pelaw": [
+      "9400ZZTWPLW1",
+      "9400ZZTWPLW2"
+    ],
+    "Percy Main": [
+      "9400ZZTWPYM1",
+      "9400ZZTWPYM2"
+    ],
+    "Regent Centre": [
+      "9400ZZTWRGC1",
+      "9400ZZTWRGC2"
+    ],
+    "Seaburn": [
+      "9400ZZTWSBN1",
+      "9400ZZTWSBN2"
+    ],
+    "Shiremoor": [
+      "9400ZZTWSHM1",
+      "9400ZZTWSHM2"
+    ],
+    "Simonside": [
+      "9400ZZTWSIM1",
+      "9400ZZTWSIM2"
+    ],
+    "South Gosforth": [
+      "9400ZZTWSGF1",
+      "9400ZZTWSGF2"
+    ],
+    "South Hylton": [
+      "9400ZZTWSHY1"
+    ],
+    "South Shields": [
+      "9400ZZTWSSH1"
+    ],
+    "St James": [
+      "9400ZZTWSTJ1"
+    ],
+    "St Peter's": [
+      "9400ZZTWSTP1",
+      "9400ZZTWSTP2"
+    ],
+    "Stadium Of Light": [
+      "9400ZZTWSOL1",
+      "9400ZZTWSOL2"
+    ],
+    "Sunderland": [
+      "9400ZZTWSND1",
+      "9400ZZTWSND2"
+    ],
+    "Tyne Dock": [
+      "9400ZZTWTYD1",
+      "9400ZZTWTYD2"
+    ],
+    "Tynemouth": [
+      "9400ZZTWTYM1",
+      "9400ZZTWTYM2"
+    ],
+    "University": [
+      "9400ZZTWUNI1",
+      "9400ZZTWUNI2"
+    ],
+    "Walkergate": [
+      "9400ZZTWWGT1",
+      "9400ZZTWWGT2"
+    ],
+    "Wallsend": [
+      "9400ZZTWWND1",
+      "9400ZZTWWND2"
+    ],
+    "Wansbeck Road": [
+      "9400ZZTWWBK1",
+      "9400ZZTWWBK2"
+    ],
+    "West Jesmond": [
+      "9400ZZTWWJM1",
+      "9400ZZTWWJM2"
+    ],
+    "West Monkseaton": [
+      "9400ZZTWWMS1",
+      "9400ZZTWWMS2"
+    ],
+    "Whitley Bay": [
+      "9400ZZTWWHB1",
+      "9400ZZTWWHB2"
+    ]
+  }
+}

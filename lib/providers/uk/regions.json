@@ -41,6 +41,13 @@
       "catalogPath": "../../cities/south-yorkshire/stations.json",
       "modes": ["train", "metro"],
       "feeds": { "train": "darwin", "metro": "supertram-static-gtfs-unconfirmed" }
+    },
+    {
+      "id": "north-east",
+      "name": "North East (Tyne and Wear)",
+      "catalogPath": "../../cities/north-east/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "tyne-and-wear-metro-static-gtfs-confirmed-no-realtime" }
     }
   ]
 }
