@@ -97,6 +97,7 @@ const SMOKE_SCRIPTS = [
   "oslo-line-map-conformance.mjs",
   "brussels-planned-gate.mjs",
   "east-midlands-planned-gate.mjs",
+  "south-yorkshire-planned-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

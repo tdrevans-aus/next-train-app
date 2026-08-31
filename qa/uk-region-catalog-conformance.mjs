@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 4) {
-  fail(`Expected 4 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 5) {
+  fail(`Expected 5 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 4) {
-  fail(`Expected 4 regions in index, got ${regions.length}`);
+if (regions.length !== 5) {
+  fail(`Expected 5 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -131,6 +131,78 @@ if (!emHubMetro || !emHubMetro.catalogId?.startsWith("net:")) {
   fail("east-midlands Nottingham Station must also resolve as a NET metro entry, separate from the rail entry");
 }
 
+const sy = getRegion("south-yorkshire");
+if (!sy || sy.railCount !== 7 || sy.metroCount !== 12) {
+  fail(`south-yorkshire counts rail=${sy?.railCount} metro=${sy?.metroCount}`);
+}
+
+const syRail = listRailStations("south-yorkshire");
+const syRailNames = new Set(syRail.map((s) => s.name));
+for (const name of [
+  "Sheffield Station",
+  "Meadowhall Interchange",
+  "Rotherham Central",
+  "Denby Dale",
+  "Darton",
+  "South Elmsall",
+  "Moorthorpe",
+]) {
+  if (!syRailNames.has(name)) {
+    fail(`south-yorkshire missing National Rail station ${name}`);
+  }
+}
+const syCrsSet = new Set(syRail.map((s) => s.crs).filter(Boolean));
+if (!syCrsSet.has("SHF") || !syCrsSet.has("MHS")) {
+  fail("south-yorkshire must carry SHF and MHS CRS codes");
+}
+if (syCrsSet.has("CHD") || syRailNames.has("Chesterfield")) {
+  fail("south-yorkshire must not carry Chesterfield (owned by East Midlands)");
+}
+for (const name of getNotInRegion("south-yorkshire")) {
+  if (syRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in south-yorkshire catalog`);
+  }
+}
+
+const syMetro = listMetroStops("south-yorkshire");
+const syMetroNames = new Set(syMetro.map((s) => s.name));
+for (const name of [
+  "Sheffield Station",
+  "Malin Bridge",
+  "Halfway",
+  "Gleadless Townend",
+  "Crystal Peaks",
+  "Herdings Park",
+  "Middlewood",
+  "Hillsborough",
+  "Sheffield Arena",
+  "Meadowhall",
+  "Rotherham Central",
+  "Parkgate",
+]) {
+  if (!syMetroNames.has(name)) {
+    fail(`south-yorkshire Supertram catalog missing ${name}`);
+  }
+}
+
+const syHubRail = resolveRailEntry("Sheffield Station", "south-yorkshire");
+const syHubMetro = resolveMetroEntry("Sheffield Station", "south-yorkshire");
+if (!syHubRail || syHubRail.crs !== "SHF") {
+  fail("south-yorkshire Sheffield Station must resolve as a rail entry with crs SHF");
+}
+if (!syHubMetro || !syHubMetro.catalogId?.startsWith("supertram:")) {
+  fail("south-yorkshire Sheffield Station must also resolve as a Supertram metro entry, separate from the rail entry");
+}
+
+const syMeadowhallRail = resolveRailEntry("Meadowhall Interchange", "south-yorkshire");
+const syMeadowhallMetro = resolveMetroEntry("Meadowhall", "south-yorkshire");
+if (!syMeadowhallRail || syMeadowhallRail.crs !== "MHS") {
+  fail("south-yorkshire Meadowhall Interchange must resolve as a rail entry with crs MHS");
+}
+if (!syMeadowhallMetro || syMeadowhallMetro.catalogId !== "supertram:meadowhall") {
+  fail("south-yorkshire Meadowhall must also resolve as the Supertram Yellow terminus metro entry");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -140,5 +212,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12)"
 );
