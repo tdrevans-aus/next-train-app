@@ -1,0 +1,208 @@
+{
+  "city": "brussels",
+  "source": "docs/brussels-d1/published-network.json (official STIB/MIVB Plan_Metro_Train.pdf, PDF title Plan_Metro_Train_240923, hand-transcribed). Not generated from GTFS.",
+  "timeZone": "Europe/Brussels",
+  "dst": true,
+  "hub": "Arts-Loi / Kunst-Wet",
+  "notes": [
+    "v1: metro 1, 2, 5, 6 only. No tram, no premetro/North-South Axis, no CHRONO, no SNCB/NMBS, no bus, no De Lijn, no TEC. No passenger metro 3 or 4 (metro 3 Albert-Bordet is a frozen project).",
+    "Direction model: line + terminus (1 + Stockel / Stokkel). Arts-Loi / Kunst-Wet is a hub stop string only, never a direction token — it is a through-cross (1/5 E-W trunk, 2/6 inner-ring loop N-S), not a single-end CBD.",
+    "Line 2 far ends: Simonis and Elisabeth (two distinct printed terminus boxes on the same complex, never collapsed). Line 6 far ends: Roi Baudouin / Koning Boudewijn and Elisabeth.",
+    "Bilingual FR/NL lock with a slash, matching docs/brussels-d1 (Arts-Loi / Kunst-Wet, Gare du Midi / Zuidstation, ...). Same-in-both-languages names stay single (Beekkant, De Brouckère, Simonis, Elisabeth, Schuman, ...)."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Arts-Loi / Kunst-Wet",
+      "b": "Gare du Midi / Zuidstation",
+      "reason": "Hub lock (metro 1x2x5x6, no tram) vs metro 2/6 + tram 4/10/51/81/82 + SNCB cluster"
+    },
+    {
+      "a": "Arts-Loi / Kunst-Wet",
+      "b": "Gare Centrale / Centraal Station",
+      "reason": "Hub lock (1x2x5x6) vs metro 1/5 only + SNCB"
+    },
+    {
+      "a": "Arts-Loi / Kunst-Wet",
+      "b": "De Brouckère",
+      "reason": "Hub lock vs metro 1/5 + North-South Axis premetro name family"
+    },
+    {
+      "a": "Arts-Loi / Kunst-Wet",
+      "b": "Rogier",
+      "reason": "Hub lock vs metro 2/6 + North-South Axis premetro name family"
+    },
+    {
+      "a": "Simonis",
+      "b": "Elisabeth",
+      "reason": "Two distinct printed line-2/6 loop-end terminus boxes on the same complex — never the same stop"
+    },
+    {
+      "a": "Gare du Nord / Noordstation",
+      "b": "any metro row",
+      "reason": "Official district text: no metro lines available at this station (tram 4/10/25/55 only)"
+    },
+    {
+      "a": "Albert",
+      "b": "any metro row",
+      "reason": "Official district text: no metro lines available; metro 3 Albert-Bordet is a frozen project, not open"
+    },
+    {
+      "a": "brussels",
+      "b": "city=bru / bruxelles / stib / belgium",
+      "reason": "Do not invent a second city id for this network"
+    }
+  ],
+  "lines": [
+    {
+      "id": "1",
+      "number": "1",
+      "name": "1",
+      "officialPageTitle": "1 Gare de l'Ouest / Weststation – Stockel / Stokkel",
+      "mapGroup": "Metro",
+      "termini": [
+        "Gare de l'Ouest / Weststation",
+        "Stockel / Stokkel"
+      ],
+      "shortTurns": [],
+      "stations": [
+        "Gare de l'Ouest / Weststation",
+        "Beekkant",
+        "Étangs Noirs / Zwarte Vijvers",
+        "Comte de Flandre / Graaf van Vlaanderen",
+        "Sainte-Catherine / Sint-Katelijne",
+        "De Brouckère",
+        "Gare Centrale / Centraal Station",
+        "Parc / Park",
+        "Arts-Loi / Kunst-Wet",
+        "Maelbeek / Maalbeek",
+        "Schuman",
+        "Merode",
+        "Montgomery",
+        "Joséphine-Charlotte",
+        "Gribaumont",
+        "Tomberg",
+        "Roodebeek",
+        "Vandervelde",
+        "Alma",
+        "Crainhem / Kraainem",
+        "Stockel / Stokkel"
+      ]
+    },
+    {
+      "id": "2",
+      "number": "2",
+      "name": "2",
+      "officialPageTitle": "2 Simonis – Elisabeth",
+      "mapGroup": "Metro",
+      "termini": [
+        "Simonis",
+        "Elisabeth"
+      ],
+      "shortTurns": [],
+      "stations": [
+        "Simonis",
+        "Osseghem / Ossegem",
+        "Beekkant",
+        "Gare de l'Ouest / Weststation",
+        "Delacroix",
+        "Clemenceau",
+        "Gare du Midi / Zuidstation",
+        "Porte de Hal / Hallepoort",
+        "Hôtel des Monnaies / Munthof",
+        "Louise / Louiza",
+        "Porte de Namur / Naamsepoort",
+        "Trône / Troon",
+        "Arts-Loi / Kunst-Wet",
+        "Madou",
+        "Botanique / Kruidtuin",
+        "Rogier",
+        "Yser / IJzer",
+        "Ribaucourt",
+        "Elisabeth"
+      ]
+    },
+    {
+      "id": "5",
+      "number": "5",
+      "name": "5",
+      "officialPageTitle": "5 Erasme / Erasmus – Herrmann-Debroux",
+      "mapGroup": "Metro",
+      "termini": [
+        "Erasme / Erasmus",
+        "Herrmann-Debroux"
+      ],
+      "shortTurns": [],
+      "stations": [
+        "Erasme / Erasmus",
+        "Eddy Merckx",
+        "CERIA / COOVI",
+        "La Roue / Het Rad",
+        "Bizet",
+        "Veeweyde / Veeweide",
+        "Saint-Guidon / Sint-Guido",
+        "Aumale",
+        "Jacques Brel",
+        "Gare de l'Ouest / Weststation",
+        "Beekkant",
+        "Étangs Noirs / Zwarte Vijvers",
+        "Comte de Flandre / Graaf van Vlaanderen",
+        "Sainte-Catherine / Sint-Katelijne",
+        "De Brouckère",
+        "Gare Centrale / Centraal Station",
+        "Parc / Park",
+        "Arts-Loi / Kunst-Wet",
+        "Maelbeek / Maalbeek",
+        "Schuman",
+        "Merode",
+        "Thieffry",
+        "Pétillon",
+        "Hankar",
+        "Delta",
+        "Beaulieu",
+        "Demey",
+        "Herrmann-Debroux"
+      ]
+    },
+    {
+      "id": "6",
+      "number": "6",
+      "name": "6",
+      "officialPageTitle": "6 Roi Baudouin / Koning Boudewijn – Elisabeth",
+      "mapGroup": "Metro",
+      "termini": [
+        "Roi Baudouin / Koning Boudewijn",
+        "Elisabeth"
+      ],
+      "shortTurns": [],
+      "stations": [
+        "Roi Baudouin / Koning Boudewijn",
+        "Heysel / Heizel",
+        "Houba-Brugmann",
+        "Stuyvenbergh",
+        "Bockstael",
+        "Pannenhuis",
+        "Belgica",
+        "Simonis",
+        "Osseghem / Ossegem",
+        "Beekkant",
+        "Gare de l'Ouest / Weststation",
+        "Delacroix",
+        "Clemenceau",
+        "Gare du Midi / Zuidstation",
+        "Porte de Hal / Hallepoort",
+        "Hôtel des Monnaies / Munthof",
+        "Louise / Louiza",
+        "Porte de Namur / Naamsepoort",
+        "Trône / Troon",
+        "Arts-Loi / Kunst-Wet",
+        "Madou",
+        "Botanique / Kruidtuin",
+        "Rogier",
+        "Yser / IJzer",
+        "Ribaucourt",
+        "Elisabeth"
+      ]
+    }
+  ]
+}

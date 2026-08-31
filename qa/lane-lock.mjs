@@ -30,8 +30,58 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
 const LOCK_FILE = path.join(REPO_ROOT, "docs", "expansion-tracker", "lane-locks.json");
+const MUTEX_FILE = LOCK_FILE + ".mutex";
 
 const STALE_MS = 6 * 60 * 60 * 1000; // 6h — long enough for a real session, short enough to flag forgetfulness.
+const MUTEX_STALE_MS = 30 * 1000; // a read-modify-write of this file should never take 30s — a leftover mutex past this is a crashed process, not real contention.
+const MUTEX_TIMEOUT_MS = 5000;
+const MUTEX_RETRY_MS = 50;
+
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+// acquire()/release() both do a read -> mutate -> write of LOCK_FILE. Two concurrent
+// invocations (two agent sessions, or Luke and Jim racing) can interleave: both read the
+// same snapshot, both write back, and whichever write lands second silently clobbers the
+// other's addition — the exact way a country's entry (Denmark) vanished from this file
+// with no release ever having been run and no trace in git history. This mutex makes that
+// read-modify-write section exclusive across processes via an exclusive-create sentinel
+// file, so a second process blocks (briefly) instead of racing.
+function withMutex(fn) {
+  const start = Date.now();
+  for (;;) {
+    try {
+      const fd = fs.openSync(MUTEX_FILE, "wx");
+      fs.writeSync(fd, String(process.pid));
+      fs.closeSync(fd);
+      break;
+    } catch (err) {
+      if (err.code !== "EEXIST") throw err;
+      try {
+        const age = Date.now() - fs.statSync(MUTEX_FILE).mtimeMs;
+        if (age > MUTEX_STALE_MS) {
+          fs.rmSync(MUTEX_FILE, { force: true });
+          continue;
+        }
+      } catch {
+        continue; // mutex file vanished between the failed open and the stat — retry immediately.
+      }
+      if (Date.now() - start > MUTEX_TIMEOUT_MS) {
+        throw new Error(
+          `Timed out waiting for the lane-lock file (${MUTEX_FILE}). Another process may be stuck holding it — ` +
+            `check for a hung qa/lane-lock.mjs and remove the .mutex file if so.`
+        );
+      }
+      sleepSync(MUTEX_RETRY_MS);
+    }
+  }
+  try {
+    return fn();
+  } finally {
+    fs.rmSync(MUTEX_FILE, { force: true });
+  }
+}
 
 function readLocks() {
   if (!fs.existsSync(LOCK_FILE)) return {};
@@ -40,7 +90,10 @@ function readLocks() {
 
 function writeLocks(locks) {
   fs.mkdirSync(path.dirname(LOCK_FILE), { recursive: true });
-  fs.writeFileSync(LOCK_FILE, JSON.stringify(locks, null, 2) + "\n");
+  // Write-then-rename so a crash mid-write can never leave LOCK_FILE truncated or half-written.
+  const tmp = `${LOCK_FILE}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(locks, null, 2) + "\n");
+  fs.renameSync(tmp, LOCK_FILE);
 }
 
 function ageString(iso) {
@@ -151,10 +204,10 @@ switch (cmd) {
     code = cmdCheck(positional[0]);
     break;
   case "acquire":
-    code = cmdAcquire(positional[0], positional[1], positional[2], positional[3]);
+    code = withMutex(() => cmdAcquire(positional[0], positional[1], positional[2], positional[3]));
     break;
   case "release":
-    code = cmdRelease(positional[0], flags);
+    code = withMutex(() => cmdRelease(positional[0], flags));
     break;
   default:
     console.error("Usage: node qa/lane-lock.mjs <status|check|acquire|release> ...");

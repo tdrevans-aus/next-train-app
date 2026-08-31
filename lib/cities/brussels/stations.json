@@ -1,0 +1,756 @@
+{
+  "city": "brussels",
+  "status": "planned",
+  "source": "docs/brussels-d1/published-network.json (official STIB/MIVB Plan_Metro_Train.pdf, PDF title Plan_Metro_Train_240923, HTTP Last-Modified Thu 03 Oct 2024, hand-transcribed). Not generated from GTFS. stopIds resolved live against the STIB/MIVB static GTFS feed (opendata-discovery-gtfs-static.api.production.belgianmobility.io, anonymous 200, confirmed 31 Aug 2026) by matching each D1 FR/NL locked name's FR half to the GTFS parent-station stop_name, then collecting all child platform stop_ids that carry route_type=1 (metro) stop_times — a runtime id lookup, not the D1 station-list oracle.",
+  "timeZone": "Europe/Brussels",
+  "dst": true,
+  "stations": [
+    {
+      "name": "Alma",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8141",
+        "8142"
+      ],
+      "lat": 50.849881,
+      "lng": 4.453149
+    },
+    {
+      "name": "Arts-Loi / Kunst-Wet",
+      "aliases": [
+        "Arts-Loi",
+        "Kunst-Wet"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8041",
+        "8042",
+        "8401",
+        "8402"
+      ],
+      "lat": 50.845333,
+      "lng": 4.36962
+    },
+    {
+      "name": "Aumale",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8711",
+        "8712"
+      ],
+      "lat": 50.839675,
+      "lng": 4.312518
+    },
+    {
+      "name": "Beaulieu",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8241",
+        "8242"
+      ],
+      "lat": 50.81505,
+      "lng": 4.409977
+    },
+    {
+      "name": "Beekkant",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8741",
+        "8742",
+        "8743",
+        "8744"
+      ],
+      "lat": 50.853386,
+      "lng": 4.322974
+    },
+    {
+      "name": "Belgica",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8773",
+        "8774"
+      ],
+      "lat": 50.868474,
+      "lng": 4.336964
+    },
+    {
+      "name": "Bizet",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8681",
+        "8682"
+      ],
+      "lat": 50.825167,
+      "lng": 4.297644
+    },
+    {
+      "name": "Bockstael",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8793",
+        "8794"
+      ],
+      "lat": 50.879152,
+      "lng": 4.347993
+    },
+    {
+      "name": "Botanique / Kruidtuin",
+      "aliases": [
+        "Botanique",
+        "Kruidtuin"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8421",
+        "8422"
+      ],
+      "lat": 50.85399,
+      "lng": 4.365557
+    },
+    {
+      "name": "CERIA / COOVI",
+      "aliases": [
+        "CERIA",
+        "COOVI"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8661",
+        "8662"
+      ],
+      "lat": 50.816451,
+      "lng": 4.290203
+    },
+    {
+      "name": "Clemenceau",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8361",
+        "8362"
+      ],
+      "lat": 50.84082,
+      "lng": 4.331202
+    },
+    {
+      "name": "Comte de Flandre / Graaf van Vlaanderen",
+      "aliases": [
+        "Comte de Flandre",
+        "Graaf van Vlaanderen"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8281",
+        "8282"
+      ],
+      "lat": 50.854705,
+      "lng": 4.340542
+    },
+    {
+      "name": "Crainhem / Kraainem",
+      "aliases": [
+        "Crainhem",
+        "Kraainem"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8151",
+        "8152"
+      ],
+      "lat": 50.848796,
+      "lng": 4.458719
+    },
+    {
+      "name": "De Brouckère",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8011",
+        "8012"
+      ],
+      "lat": 50.849821,
+      "lng": 4.352486
+    },
+    {
+      "name": "Delacroix",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8371",
+        "8372"
+      ],
+      "lat": 50.845158,
+      "lng": 4.324324
+    },
+    {
+      "name": "Delta",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8231",
+        "8232"
+      ],
+      "lat": 50.818202,
+      "lng": 4.404056
+    },
+    {
+      "name": "Demey",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8251",
+        "8252"
+      ],
+      "lat": 50.813192,
+      "lng": 4.42192
+    },
+    {
+      "name": "Eddy Merckx",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8651",
+        "8652"
+      ],
+      "lat": 50.816504,
+      "lng": 4.281547
+    },
+    {
+      "name": "Elisabeth",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8471",
+        "8472"
+      ],
+      "lat": 50.862859,
+      "lng": 4.33142
+    },
+    {
+      "name": "Erasme / Erasmus",
+      "aliases": [
+        "Erasme",
+        "Erasmus"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8641",
+        "8642"
+      ],
+      "lat": 50.815237,
+      "lng": 4.267327
+    },
+    {
+      "name": "Gare Centrale / Centraal Station",
+      "aliases": [
+        "Gare Centrale",
+        "Centraal Station"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8021",
+        "8022"
+      ],
+      "lat": 50.846349,
+      "lng": 4.358776
+    },
+    {
+      "name": "Gare de l'Ouest / Weststation",
+      "aliases": [
+        "Gare de l'Ouest",
+        "Weststation"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8381",
+        "8382",
+        "8731",
+        "8732",
+        "8733"
+      ],
+      "lat": 50.848979,
+      "lng": 4.321096
+    },
+    {
+      "name": "Gare du Midi / Zuidstation",
+      "aliases": [
+        "Gare du Midi",
+        "Zuidstation"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8351",
+        "8352"
+      ],
+      "lat": 50.83627,
+      "lng": 4.338166
+    },
+    {
+      "name": "Gribaumont",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8101",
+        "8102"
+      ],
+      "lat": 50.842506,
+      "lng": 4.418286
+    },
+    {
+      "name": "Hankar",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8221",
+        "8222"
+      ],
+      "lat": 50.820889,
+      "lng": 4.405382
+    },
+    {
+      "name": "Herrmann-Debroux",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8261",
+        "8262"
+      ],
+      "lat": 50.812243,
+      "lng": 4.429236
+    },
+    {
+      "name": "Heysel / Heizel",
+      "aliases": [
+        "Heysel",
+        "Heizel"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8823",
+        "8824"
+      ],
+      "lat": 50.897198,
+      "lng": 4.335515
+    },
+    {
+      "name": "Houba-Brugmann",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8813",
+        "8814"
+      ],
+      "lat": 50.8896,
+      "lng": 4.337736
+    },
+    {
+      "name": "Hôtel des Monnaies / Munthof",
+      "aliases": [
+        "Hôtel des Monnaies",
+        "Munthof"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8331",
+        "8332"
+      ],
+      "lat": 50.833229,
+      "lng": 4.348571
+    },
+    {
+      "name": "Jacques Brel",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8721",
+        "8722"
+      ],
+      "lat": 50.843982,
+      "lng": 4.318166
+    },
+    {
+      "name": "Joséphine-Charlotte",
+      "aliases": [
+        "JOSEPH CHARLOTTE"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8091",
+        "8092"
+      ],
+      "lat": 50.840366,
+      "lng": 4.413792
+    },
+    {
+      "name": "La Roue / Het Rad",
+      "aliases": [
+        "La Roue",
+        "Het Rad"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8671",
+        "8672"
+      ],
+      "lat": 50.821263,
+      "lng": 4.294043
+    },
+    {
+      "name": "Louise / Louiza",
+      "aliases": [
+        "Louise",
+        "Louiza"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8321",
+        "8322"
+      ],
+      "lat": 50.835061,
+      "lng": 4.35424
+    },
+    {
+      "name": "Madou",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8411",
+        "8412"
+      ],
+      "lat": 50.849728,
+      "lng": 4.369174
+    },
+    {
+      "name": "Maelbeek / Maalbeek",
+      "aliases": [
+        "Maelbeek",
+        "Maalbeek"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8051",
+        "8052"
+      ],
+      "lat": 50.843654,
+      "lng": 4.377588
+    },
+    {
+      "name": "Merode",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8071",
+        "8072"
+      ],
+      "lat": 50.839363,
+      "lng": 4.398282
+    },
+    {
+      "name": "Montgomery",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8081",
+        "8082"
+      ],
+      "lat": 50.837822,
+      "lng": 4.407364
+    },
+    {
+      "name": "Osseghem / Ossegem",
+      "aliases": [
+        "Osseghem",
+        "Ossegem"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8753",
+        "8754"
+      ],
+      "lat": 50.857115,
+      "lng": 4.325218
+    },
+    {
+      "name": "Pannenhuis",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8783",
+        "8784"
+      ],
+      "lat": 50.873614,
+      "lng": 4.343137
+    },
+    {
+      "name": "Parc / Park",
+      "aliases": [
+        "Parc",
+        "Park"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8031",
+        "8032"
+      ],
+      "lat": 50.845688,
+      "lng": 4.362979
+    },
+    {
+      "name": "Porte de Hal / Hallepoort",
+      "aliases": [
+        "Porte de Hal",
+        "Hallepoort"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8341",
+        "8342"
+      ],
+      "lat": 50.833941,
+      "lng": 4.343077
+    },
+    {
+      "name": "Porte de Namur / Naamsepoort",
+      "aliases": [
+        "Porte de Namur",
+        "Naamsepoort"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8311",
+        "8312"
+      ],
+      "lat": 50.838022,
+      "lng": 4.361236
+    },
+    {
+      "name": "Pétillon",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8211",
+        "8212"
+      ],
+      "lat": 50.827461,
+      "lng": 4.403987
+    },
+    {
+      "name": "Ribaucourt",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8461",
+        "8462"
+      ],
+      "lat": 50.860406,
+      "lng": 4.339753
+    },
+    {
+      "name": "Rogier",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8431",
+        "8432"
+      ],
+      "lat": 50.855412,
+      "lng": 4.358416
+    },
+    {
+      "name": "Roi Baudouin / Koning Boudewijn",
+      "aliases": [
+        "Roi Baudouin",
+        "Koning Boudewijn"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8833",
+        "8834"
+      ],
+      "lat": 50.89646,
+      "lng": 4.327959
+    },
+    {
+      "name": "Roodebeek",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8121",
+        "8122"
+      ],
+      "lat": 50.84753,
+      "lng": 4.435656
+    },
+    {
+      "name": "Saint-Guidon / Sint-Guido",
+      "aliases": [
+        "Saint-Guidon",
+        "Sint-Guido"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8701",
+        "8702"
+      ],
+      "lat": 50.834928,
+      "lng": 4.305314
+    },
+    {
+      "name": "Sainte-Catherine / Sint-Katelijne",
+      "aliases": [
+        "Sainte-Catherine",
+        "Sint-Katelijne"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8271",
+        "8272"
+      ],
+      "lat": 50.8519,
+      "lng": 4.348012
+    },
+    {
+      "name": "Schuman",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8061",
+        "8062"
+      ],
+      "lat": 50.842756,
+      "lng": 4.381829
+    },
+    {
+      "name": "Simonis",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8763",
+        "8764"
+      ],
+      "lat": 50.863645,
+      "lng": 4.330848
+    },
+    {
+      "name": "Stockel / Stokkel",
+      "aliases": [
+        "Stockel",
+        "Stokkel"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8161",
+        "8162"
+      ],
+      "lat": 50.841872,
+      "lng": 4.464541
+    },
+    {
+      "name": "Stuyvenbergh",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8803",
+        "8804"
+      ],
+      "lat": 50.88564,
+      "lng": 4.342738
+    },
+    {
+      "name": "Thieffry",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8201",
+        "8202"
+      ],
+      "lat": 50.833128,
+      "lng": 4.401864
+    },
+    {
+      "name": "Tomberg",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8111",
+        "8112"
+      ],
+      "lat": 50.844316,
+      "lng": 4.425819
+    },
+    {
+      "name": "Trône / Troon",
+      "aliases": [
+        "Trône",
+        "Troon"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8301",
+        "8302"
+      ],
+      "lat": 50.840792,
+      "lng": 4.366343
+    },
+    {
+      "name": "Vandervelde",
+      "aliases": [],
+      "mode": "metro",
+      "stopIds": [
+        "8131",
+        "8132"
+      ],
+      "lat": 50.847387,
+      "lng": 4.446705
+    },
+    {
+      "name": "Veeweyde / Veeweide",
+      "aliases": [
+        "Veeweyde",
+        "Veeweide"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8691",
+        "8692"
+      ],
+      "lat": 50.829611,
+      "lng": 4.300732
+    },
+    {
+      "name": "Yser / IJzer",
+      "aliases": [
+        "Yser",
+        "IJzer"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8441",
+        "8442"
+      ],
+      "lat": 50.857226,
+      "lng": 4.351501
+    },
+    {
+      "name": "Étangs Noirs / Zwarte Vijvers",
+      "aliases": [
+        "Étangs Noirs",
+        "Zwarte Vijvers"
+      ],
+      "mode": "metro",
+      "stopIds": [
+        "8291",
+        "8292"
+      ],
+      "lat": 50.857125,
+      "lng": 4.333143
+    }
+  ]
+}
