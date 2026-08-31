@@ -34,6 +34,13 @@
       "catalogPath": "../../cities/east-midlands/stations.json",
       "modes": ["train", "metro"],
       "feeds": { "train": "darwin", "metro": "net-static-gtfs-unconfirmed" }
+    },
+    {
+      "id": "south-yorkshire",
+      "name": "South Yorkshire",
+      "catalogPath": "../../cities/south-yorkshire/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "supertram-static-gtfs-unconfirmed" }
     }
   ]
 }

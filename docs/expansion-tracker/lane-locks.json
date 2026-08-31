@@ -1,26 +1,8 @@
 {
-  "Finland": {
-    "region": "Helsinki",
-    "stage": "jim",
-    "branch": null,
-    "locked_at": "2026-08-30T12:02:52.126Z"
-  },
-  "Norway": {
-    "region": "Oslo",
-    "stage": "jim",
-    "branch": null,
-    "locked_at": "2026-08-30T12:39:54.003Z"
-  },
-  "Belgium": {
-    "region": "Brussels",
-    "stage": "jim",
-    "branch": null,
-    "locked_at": "2026-08-30T23:31:47.466Z"
-  },
   "United Kingdom": {
-    "region": "East Midlands",
+    "region": "South Yorkshire",
     "stage": "jim",
     "branch": null,
-    "locked_at": "2026-08-31T00:09:46.203Z"
+    "locked_at": "2026-08-31T13:51:54.516Z"
   }
 }
