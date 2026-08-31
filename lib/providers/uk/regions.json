@@ -55,6 +55,13 @@
       "catalogPath": "../../cities/west-of-england/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "south-wales",
+      "name": "South Wales",
+      "catalogPath": "../../cities/south-wales/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }
