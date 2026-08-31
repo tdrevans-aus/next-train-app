@@ -1,0 +1,139 @@
+{
+  "city": "north-east",
+  "displayName": "North East (Tyne and Wear)",
+  "status": "planned",
+  "agency": [
+    "Tyne and Wear Metro (operated by DB Regio for Nexus / Tyne and Wear Passenger Transport Executive)",
+    "National Rail (Darwin/OpenLDBWS — Northern Trains + cross-boundary through-running operators)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/north-east-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "North East oracle clash report",
+      "url": "docs/north-east-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. No hand-transcribed passenger map beyond the report's station table and line-via-points list. Full intermediate stop order for either Metro line not in the report — real gap, carried into coverageGaps."
+    },
+    {
+      "role": "Tyne and Wear Metro static GTFS (DFT Bus Open Data Service)",
+      "title": "DFT Bus Open Data Service aggregator, Onestop ID f-bus~dft~gov~uk",
+      "url": "https://data.bus-data.dft.gov.uk/downloads/",
+      "note": "No key required. Verified live 200 on DFT platform 31 Aug 2026 per the oracle report. OGL 3.0 licensed — commercial redistribution permitted with attribution. No real-time (GTFS-RT) feed confirmed for Metro."
+    },
+    {
+      "role": "Tyne and Wear Metro real-time (UNCONFIRMED, not used)",
+      "title": "metro-rti.nexus.org.uk (unofficial, Pop app only)",
+      "url": "https://metro-rti.nexus.org.uk",
+      "note": "Undocumented, not a confirmed public API — believed to serve the Nexus Pop app only. Not treated as a usable machine-readable source for this pack. Metro ships schedule-only v1."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / South Yorkshire. Not a feed problem — do not treat as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    }
+  ],
+  "retrievedAt": "2026-08-31T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/north-east-d1/oracle-clash-report.md only. No product lib/cities/north-east/ exists yet. Not generated from GTFS. No stopIds in this file. No UK-country ledger exists yet (docs/*-ledger.md glob has only denmark-ledger.md) — this pack proceeds without one, same basis as East Midlands and South Yorkshire.",
+    "Two agencies, two direction models, one hub lock (Newcastle Central) with doNotGroup, plus a third and structurally distinct case at Sunderland (genuine shared-platform through-running, NOT a doNotGroup case) — see direction-model-memo.md and hazard-pack.md H1/H2/H6.",
+    "Metro modes v1: light rail only. Two lines: Yellow (St James-South Shields, 41 stations per report) and Green (Airport-South Hylton via Sunderland, 31 stations per report). This pack does not enumerate all stations on either line — only the named termini/via-points/hub/junction stations from the report. See coverageGaps.",
+    "Metro real-time: SCHEDULE-ONLY v1, no confirmed public feed found. This is a genuine 'no feed exists publicly' gap (unofficial app-only API at metro-rti.nexus.org.uk not usable), distinct in kind from the National Rail account block below.",
+    "National Rail modes v1: heavy rail, destination-board model (not line+terminus). BLOCKED pending DARWIN_LDB_TOKEN — see coverageGaps. Build the catalog/adapter normally per Nico's report; do not wire the token until it exists.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock: Newcastle Central (NCL CRS). Metro Central is a deep-tube station directly below the National Rail main-line platforms. doNotGroup Metro vs National Rail at this station — separate infrastructure, separate operators, separate boarding areas, no walk-through connection named in the report.",
+    "Sunderland is NOT modeled as a hub-lock/doNotGroup pair like Newcastle Central. The report states Metro Green Line and Northern Trains use the SAME platforms on the SAME track between Pelaw and Sunderland (genuine shared-platform case). Modeled as sunderlandSharedPlatform below: a single shared-platform through-running station, board must mix both services (once National Rail is unblocked) rather than split by mode tab. See direction-model-memo.md for full reasoning, including a flagged inconsistency with how South Yorkshire's already-merged pack actually described the Rotherham Central precedent Nico cited (Rotherham Central's own pack states no shared platform there, contradicting this report's characterization of it as a comparable case — flagged, not resolved, in hazard-pack.md H1).",
+    "Pelaw is a Metro-only junction, not a separate National Rail station and not a doNotGroup case. South of Pelaw is Green-exclusive track to South Hylton; north of Pelaw the Green Line's track becomes shared with National Rail toward Sunderland. Whether Yellow Line services call at Pelaw itself is not stated in the report — flagged as a gap, not guessed either way.",
+    "Berwick-upon-Tweed (BWK) is National Rail only, England's northernmost East Coast Main Line station, Scotland boundary. Included in this pack's National Rail boundary list per the report's own station table, but whether additional ECML stations between Newcastle and Berwick (e.g. Morpeth, Alnmouth) belong to North East's catalog is NOT stated in the report — real gap, not enumerated here, do not guess additional intermediate ECML stations.",
+    "Darlington (DRL) is EXCLUDED from this pack. The report flags it as a boundary candidate needing clarification against East Midlands, but East Midlands' own oracle report and published pack do not mention Darlington at all (checked: no match across docs/east-midlands-d1/*.md, *.json). The boundary is genuinely unresolved on both sides — flagged in hazard-pack.md, not assigned by guess.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked AND a confirmed Metro real-time source is found (or the region ships Metro schedule-only-permanently, a decision for Tim/Jim, not this pack), same overall status shape as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / South Yorkshire.",
+    "Metro line station arrays below are TERMINI + NAMED VIA-POINTS + hub/junction stations only, as given by the report's line descriptions and station table — NOT a full ordered intermediate stop list (41 + 31 stations total per the report, only a subset named). This is a real gap; see coverageGaps and hazard-pack.md H3/H4/H5.",
+    "gtfsRouteIdsIfKnown is left empty for both Metro lines — GTFS static feed is confirmed to exist (f-bus~dft~gov~uk) but this pack does not pull it to extract route_ids; that's a D2 task for Jim, not invented here."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Newcastle Central",
+    "doNotUse": [
+      "Newcastle",
+      "NCL",
+      "Newcastle Central Station",
+      "Central Station",
+      "Newcastle Metro Station",
+      "Newcastle Rail Station"
+    ],
+    "metroLock": "Newcastle Central",
+    "nationalRailLock": "Newcastle Central (NCL CRS)",
+    "note": "Two locks sharing one printed name, deep-tube Metro box below main rail platforms, no walk-through connection named. doNotGroup between them. See hazard-pack.md H1/H6. Sunderland is a separate, non-hub-lock case — see sunderlandSharedPlatform below, do not conflate with the Newcastle Central doNotGroup pattern."
+  },
+  "coverageGaps": [
+    "Metro real-time: NO confirmed public feed found. This is a genuine 'no source exists publicly' gap, not the standard account-registration block — unofficial app-only API at metro-rti.nexus.org.uk not usable as a machine-readable source. Confirm with Nexus/DB Regio whether GTFS-RT or a documented API will be published before this can move past schedule-only v1.",
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists. Same blocker as East Midlands / West Midlands / Greater Manchester / Liverpool City Region / South Yorkshire — already accepted, not re-flagged as a new blocker.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here; same open item already raised for East Midlands and South Yorkshire.",
+    "Metro's two lines' full intermediate stop order (41 + 31 stations) is not in the oracle report — only named termini/via-points/hub/junction stations. Do not treat the 'stations' arrays below as complete; pull a confirmed GTFS feed (f-bus~dft~gov~uk) for the real ordered list at D2.",
+    "Whether Yellow Line calls at Pelaw itself (vs. only the shared South Gosforth-Pelaw corridor) is not stated in the report — flagged in direction-model-memo.md, not resolved here.",
+    "National Rail has no printed route/line map to transcribe (Darwin is a real-time per-station board product) — no 'lines' array is provided for National Rail in this pack, only the hub, the Sunderland shared-platform case, and the boundary station list. See direction-model-memo.md for the destination+operator model recommended instead of line+terminus.",
+    "Berwick-upon-Tweed's northern boundary against a future Rest-of-Scotland pack (no such pack exists yet) is unresolved, including whether intermediate ECML stations (Morpeth, Alnmouth) belong to North East's catalog — not enumerated, not guessed.",
+    "Darlington boundary against East Midlands is unresolved on both sides (East Midlands' pack does not claim it either) — excluded from this pack's station list entirely pending clarification.",
+    "A cross-region inconsistency is flagged, not resolved: this report describes Rotherham Central (South Yorkshire) as a same-platform precedent for Sunderland, but South Yorkshire's own already-merged pack states Rotherham Central has no shared platform with National Rail. See hazard-pack.md H1 for detail. Whoever owns UK station-graph QA should reconcile which description is accurate; this pack builds Sunderland only from what this report says about Sunderland itself.",
+    "No buses, no other rail modes, no Metro real-time in v1 scope, per the oracle report."
+  ],
+  "lines": [
+    {
+      "id": "yellow",
+      "number": "Yellow",
+      "name": "Tyne and Wear Metro Yellow Line",
+      "agency": "Tyne and Wear Metro (DB Regio for Nexus)",
+      "mapGroup": "Metro",
+      "termini": ["St James", "South Shields"],
+      "shortTurns": [],
+      "branches": [],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["St James", "Newcastle Central", "South Gosforth", "Pelaw", "South Shields"],
+      "stationsNote": "TERMINI + hub + named shared-section endpoints only (report C2/C3 item 6: 'St James - South Shields'; shared central section South Gosforth-Pelaw with Green Line). Whether Yellow calls Pelaw itself is unconfirmed (see coverageGaps). Full ordered 41-station stop list not in the oracle report."
+    },
+    {
+      "id": "green",
+      "number": "Green",
+      "name": "Tyne and Wear Metro Green Line",
+      "agency": "Tyne and Wear Metro (DB Regio for Nexus)",
+      "mapGroup": "Metro",
+      "termini": ["Airport", "South Hylton"],
+      "shortTurns": [],
+      "branches": [],
+      "gtfsRouteIdsIfKnown": [],
+      "stations": ["Airport", "South Gosforth", "Newcastle Central", "Pelaw", "Sunderland", "South Hylton"],
+      "stationsNote": "TERMINI + hub + named shared-section endpoint + named through-running/shared-platform points only (report C2/C3 item 6: 'Airport - South Hylton via Sunderland'; shared central section South Gosforth-Pelaw with Yellow Line; shared platform/track Pelaw-Sunderland with National Rail). Full ordered 31-station stop list not in the oracle report."
+    }
+  ],
+  "sunderlandSharedPlatform": {
+    "name": "Sunderland",
+    "crs": null,
+    "class": "genuine shared-platform through-running station — NOT a hub lock / doNotGroup case. Metro Green Line and National Rail Northern Trains share the same platforms on the same track between Pelaw and Sunderland (report line 16, line 39). Board must mix both services (once National Rail unblocked) tagged by mode/operator, not split into separate mode tabs.",
+    "servedBy": ["Tyne and Wear Metro Green Line (via)", "National Rail Northern Trains (through-running on shared track from Pelaw)"],
+    "note": "One of only two UK stations (per the oracle report) where light rail and heavy rail share physical platforms — the other being Rotherham Central, South Yorkshire, though that pack's own published-network.json describes Rotherham Central as NOT sharing a platform, an unresolved cross-region inconsistency (see hazard-pack.md H1 and coverageGaps). This entry is built strictly from what this report says about Sunderland, independent of that discrepancy."
+  },
+  "pelawJunction": {
+    "name": "Pelaw",
+    "crs": null,
+    "class": "Metro-only through-running junction, not a separate National Rail station. South of Pelaw: Green-exclusive Metro track to South Hylton. North of Pelaw: Green Line track becomes shared with National Rail toward Sunderland.",
+    "note": "No CRS code given in the oracle report (no separate National Rail station exists here per the report) — do not guess one."
+  },
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
+    "hub": {
+      "name": "Newcastle Central",
+      "crs": "NCL",
+      "class": "hub lock — shared with Metro Central, doNotGroup, deep-tube Metro box below main rail platforms, no walk-through connection named"
+    },
+    "sharedPlatformThroughRunning": [
+      { "name": "Sunderland", "crs": null, "class": "see sunderlandSharedPlatform above — genuine shared-platform case, not a hub lock and not doNotGroup. CRS code not given in the oracle report — do not guess." }
+    ],
+    "throughRunningOnly": [
+      { "name": "Berwick-upon-Tweed", "crs": "BWK", "class": "England's northernmost East Coast Main Line station, Scotland boundary, Northern Trains through-running point into Scotland. National Rail only, no Metro service. Boundary against a future Rest-of-Scotland pack unresolved (no such pack exists yet) — see coverageGaps." }
+    ],
+    "excludedFromThisPack": [
+      { "name": "Darlington", "crs": "DRL", "class": "East Coast Main Line, County Durham. National Rail only. Boundary against East Midlands explicitly flagged unresolved by the oracle report AND East Midlands' own pack does not claim it either (checked, no match). Excluded rather than assigned by guess — see hazard-pack.md doNotGroup table." }
+    ]
+  }
+}
