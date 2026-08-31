@@ -28,6 +28,31 @@ Match rule: published TfW Valley Lines timetable name vs. National Rail station 
 
 **81** Valley Lines stations listed in [List of Valley Lines stations](https://en.wikipedia.org/wiki/Valleys_&_Cardiff_Local_Routes#Stations) (Wikipedia source pending verification against official TfW operator map). Product `lib/cities/south-wales/` absent. No live adapter.
 
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier).
+
+**Verdict summary (National Rail only; Valley Lines excluded by mode):**
+- **GWR (Great Western Railway) at Cardiff Central and Severn Tunnel Junction**: `in` (optional reservation only, no compulsory booking)
+- **CrossCountry at Cardiff Central and Severn Tunnel Junction**: `in` (optional reservation only, no compulsory booking)
+- **Transport for Wales National Rail through-running at Cardiff Central**: `in` (open seating, no reservation offered or required for regional services)
+
+**Valley Lines (TfW commuter rail, separate operator):** Out of v1 scope by mode (commuter/metro-style routes, not main-line National Rail services call these stations; Valley Lines operate radially from Cardiff Central on dedicated platforms with no through-running to other regions). Valley Lines are excluded at the city-scoping level, not per-service.
+
+**Stations with National Rail overlap:**
+- **Cardiff Central (CDF, hub-lock)**: GWR + CrossCountry + TfW National Rail through-running services (separate platforms from Valley Lines local services, footbridge connect)
+- **Severn Tunnel Junction (STJ, through-running boundary)**: GWR + CrossCountry only; TfW through-running continues to/from North Wales via Cardiff Central
+
+**No check-in barriers:** Platform access at both in-catalog stations is unrestricted. Ticket checking is on-board by conductors or at ticket barriers (low-level gating, not airport-style check-in). Walk-up boarding is unobstructed for all National Rail services listed.
+
+| Service | Calls at in-catalog stations | Compulsory reservation? | Check-in barrier? | Verdict | Evidence URL |
+|---|---|---|---|---|---|
+| **GWR (Great Western Railway) Regional/InterCity** | Cardiff Central, Severn Tunnel Junction | No (optional only, not compulsory) | No | `in` | [GWR seat reservations](https://www.gwr.com/your-tickets/seat-reservations); [ShowMeTheJourney: UK rail seat reservations](https://showmethejourney.com/train-ticket-guides/seat-reservations-when-booking-online/) — seat reservations optional for flexible (Off-Peak/Anytime) and some Advance tickets. No boarding restrictions. |
+| **CrossCountry Regional/Long-distance** | Cardiff Central, Severn Tunnel Junction | No (optional only, not compulsory) | No | `in` | [RailUK Forums: seat reservation policy](https://www.railforums.co.uk/threads/gwr-reservations-compulsory-or-not.208259/); [ShowMeTheJourney: UK rail seat reservations](https://showmethejourney.com/train-ticket-guides/seat-reservations-when-booking-online/) — reservations available but not required for walk-up boarding. |
+| **Transport for Wales National Rail through-running** | Cardiff Central | No (open seating, no reservation offered) | No | `in` | [South Wales Main Line](https://en.wikipedia.org/wiki/South_Wales_Main_Line); [Transport for Wales Cardiff Central](https://tfw.wales/places/stations/cardiff-central) — through-running regional services walk-up only. |
+
+**Board eligibility summary:** All National Rail services (GWR, CrossCountry, Transport for Wales through-running) calling at Cardiff Central and Severn Tunnel Junction pass both boarding-contract tests. Seat reservations are optional only (not compulsory) for all three operators on this corridor; no stations have check-in barriers. **All verdicts recorded; no silent omissions.** Valley Lines are out of v1 scope by mode and operate separate platforms at Cardiff Central. **Once National Rail adapter is unblocked at Tim's account level (UK re-registration on RDM), Jim will wire Darwin departures to boards at both in-catalog stations with these verdicts enforced in filtering logic.**
+
 ## H2 clash surface
 
 **Transport for Wales Valley Lines:** No product `lib/cities/south-wales/` exists. No live adapter. Valley Lines opened first electric-only service (Class 398 tram-trains) Spring 2026 between Pontypridd and Cardiff Bay. **Critical blocker:** TfW does not publish static GTFS or GTFS-RT via public API; timetable data available only via direct contact (TransXChange format). Real-time data availability unknown — must verify before D1 pack stage.
