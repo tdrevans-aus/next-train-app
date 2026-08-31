@@ -48,6 +48,13 @@
       "catalogPath": "../../cities/north-east/stations.json",
       "modes": ["train", "metro"],
       "feeds": { "train": "darwin", "metro": "tyne-and-wear-metro-static-gtfs-confirmed-no-realtime" }
+    },
+    {
+      "id": "west-of-england",
+      "name": "West of England",
+      "catalogPath": "../../cities/west-of-england/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

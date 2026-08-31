@@ -1,0 +1,78 @@
+{
+  "city": "west-of-england",
+  "displayName": "West of England",
+  "status": "planned",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS — GWR primary; Transport for Wales, CrossCountry, South Western Railway at boundaries)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/west-of-england-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "West of England oracle clash report",
+      "url": "docs/west-of-england-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. No printed route/line map exists for National Rail in this report — Darwin is a per-station real-time board product, not a fixed-route product. No station-order/branch topology to transcribe beyond the hub, secondary hub, and four through-running boundary points."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / North East. Not a feed problem — do not treat this as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    }
+  ],
+  "retrievedAt": "2026-08-31T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/west-of-england-d1/oracle-clash-report.md only. No product lib/cities/west-of-england/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "Single agency, single direction model (destination + operator) — no two-layer hub problem like East Midlands' Nottingham Station. See direction-model-memo.md.",
+    "Modes v1: National Rail heavy rail only. No light rail, no metro, no buses (report line 22, C2/C3 point 7). MetroWest (future Portishead/Henbury reopenings) is explicitly out of v1 scope.",
+    "National Rail has NO static GTFS publication (Darwin is realtime-only, SOAP API). This is an open product-architecture question flagged by the report (C2/C3 point 5): does Next Train support Darwin-only next-train with no static-schedule supplement? Not resolved in this pack — see coverageGaps and jim-handoff.md.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock: Bristol Temple Meads (BRI). Hub secondary: Bath Spa (BTH). No doNotGroup needed at either — GWR-dominated single-operator termini, platforms distinguished by route not operator (report C2/C3 point 4).",
+    "Boundary through-running stations are NOT merge points at D1: Chepstow (CPW, South Wales boundary), Gloucester (GCR, West Midlands boundary), Westbury (WSB, Solent/Thames Valley boundary), Taunton (TAU, Southwest boundary). Flagged for D2 de-dup if/when those adjacent regions ship National Rail packs. South Wales's oracle report exists (docs/south-wales-d1/oracle-clash-report.md) but has not been packed by Luke yet as of this writing — do not treat that report as settling Chepstow's D2 treatment, only as a forward-reference that a South Wales pack will eventually need to reconcile with this one.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / North East.",
+    "No 'lines' array is provided — National Rail has no printed route/line map to transcribe. This is a flat station list (hub, secondary hub, through-running-only), not a lines array, matching the East Midlands National Rail precedent.",
+    "License: OGL 2.0 baseline with NRE amendments. Confidence 'unclear' on third-party rider redistribution via the RDM Platform Agreement — same open item as East Midlands (report License section). OPEN ITEM FOR TIM ONLY, do not resolve here."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Bristol Temple Meads",
+    "lockCrs": "BRI",
+    "secondary": "Bath Spa",
+    "secondaryCrs": "BTH",
+    "doNotUse": [
+      "Bristol",
+      "Bristol TM",
+      "Bath",
+      "Bath Station"
+    ],
+    "note": "Single-layer, single-agency hub pair — no doNotGroup needed between or within BRI/BTH. See hazard-pack.md H1/H6."
+  },
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "National Rail has NO static GTFS publication at all (unlike East Midlands' NET, which has DFT Bus Open Data GTFS as a schedule-only fallback). Open product question for Jim/Tim: can Next Train support a Darwin-only next-train model, or does it require a GTFS base layer? Not resolved in this pack — do not guess an answer.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here; do not assume permission to relay Darwin data to end users until Tim confirms against the signed RDM Data Sharing Agreement.",
+    "National Rail has no printed route/line map to transcribe (Darwin is a real-time per-station board product) — no 'lines' array is provided, only the hub/secondary/through-running station list. See direction-model-memo.md for the destination+operator model recommended instead of line+terminus.",
+    "Boundary de-dup with South Wales (Chepstow), West Midlands (Gloucester), Solent/Thames Valley (Westbury), and Southwest (Taunton) is explicitly out of scope for this pack — D2 concern for future packs in those regions. South Wales already has an unpacked oracle report; the other three regions have no report yet as of this writing.",
+    "No buses, no light rail, no trams in v1 scope, per the oracle report. MetroWest (planned half-hourly frequency, future Portishead/Henbury reopenings) is out."
+  ],
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
+    "hub": {
+      "name": "Bristol Temple Meads",
+      "crs": "BRI",
+      "class": "hub lock — principal rail terminus for Bristol city; all regional and inter-city services call here. GWR ticket office, Paddington services, Southwest connections."
+    },
+    "secondaryHub": {
+      "name": "Bath Spa",
+      "crs": "BTH",
+      "class": "hub secondary — Bath city station; direct service to Bristol Temple Meads (11-19 min frequency). Regional connections north to Gloucester and east to Westbury."
+    },
+    "throughRunningOnly": [
+      { "name": "Chepstow", "crs": "CPW", "class": "through-running only, boundary to South Wales region — not a merge. De-duplicate at D2 if South Wales region enters the app." },
+      { "name": "Gloucester", "crs": "GCR", "class": "through-running only, boundary to West Midlands region — not a merge. Cross-region operator continuity (GWR regional + CrossCountry Cardiff-Nottingham long-distance)." },
+      { "name": "Westbury", "crs": "WSB", "class": "through-running only, boundary to Solent/Thames Valley regions — not a merge. GWR to Reading/Oxford (Thames Valley) and SWR to Southampton/Portsmouth (Solent) call at same platform, separate franchises. De-duplicate at D2 if adjacent regions enter the app." },
+      { "name": "Taunton", "crs": "TAU", "class": "through-running only, toward Southwest/Devon region — not a merge. GWR continues west to Exeter and beyond." }
+    ]
+  }
+}
