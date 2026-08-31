@@ -1,0 +1,73 @@
+{
+  "region": "west-of-england",
+  "displayName": "West of England",
+  "timeZone": "Europe/London",
+  "source": "docs/west-of-england-d1/published-network.json (Nico oracle-clash-report, 31 Aug 2026)",
+  "retrievedAt": "2026-08-31",
+  "feeds": {
+    "train": "darwin"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as uk-west-midlands / uk-ellesmere-port / east-midlands / south-yorkshire / north-east.",
+    "Single agency (National Rail), single mode (train). No light rail, no metro, no buses. No static GTFS exists for this feed at all — unlike East Midlands' NET or North East's Metro, there is no schedule-only fallback; this region is Darwin-or-nothing until DARWIN_LDB_TOKEN exists.",
+    "No doNotGroup needed at either hub — Bristol Temple Meads and Bath Spa are single-layer, GWR-dominated, platforms distinguished by route not operator.",
+    "Boundary through-running stations (Chepstow, Gloucester, Westbury, Taunton) are catalogued flat, NOT merge points — D2 de-dup concern for future South Wales / West Midlands / Solent / Thames Valley / Southwest packs, not built here."
+  ],
+  "notInRegion": [],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Bristol Temple Meads",
+      "crs": "BRI",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — principal rail terminus for Bristol city, all regional and inter-city services call here"
+    },
+    {
+      "mode": "train",
+      "name": "Bath Spa",
+      "crs": "BTH",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub secondary — direct service to Bristol Temple Meads, 11-19 min frequency"
+    },
+    {
+      "mode": "train",
+      "name": "Chepstow",
+      "crs": "CPW",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, boundary to South Wales region — not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Gloucester",
+      "crs": "GCR",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, boundary to West Midlands region — not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Westbury",
+      "crs": "WSB",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, boundary to Solent/Thames Valley regions — not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Taunton",
+      "crs": "TAU",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, boundary to Southwest region — not a merge point"
+    }
+  ]
+}
