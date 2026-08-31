@@ -92,6 +92,7 @@ const SMOKE_SCRIPTS = [
   "uppsala-dogfood-gate.mjs",
   "uppsala-line-map-conformance.mjs",
   "oslo-planned-gate.mjs",
+  "brussels-planned-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
