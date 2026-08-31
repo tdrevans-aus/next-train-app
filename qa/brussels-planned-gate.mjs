@@ -37,7 +37,9 @@ assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must sta
 assert(assertCityLive("goteborg")?.ok === true, "Göteborg tester-live must stay green");
 assert(assertCityLive("malmo")?.ok === true, "Malmö tester-live must stay green");
 assert(assertCityLive("uppsala")?.ok === true, "Uppsala tester-live must stay green");
-assert(assertCityLive("helsinki")?.ok === true, "Helsinki tester-live must stay green");
+// Helsinki isn't in this registry yet - it's still on its own unmerged flip-PR (#164). This
+// assertion was written in a shared working tree where Helsinki appeared live; that was
+// contamination, not master's actual state. No Helsinki assertion here until #164 merges.
 
 const live = assertCityLive("brussels");
 assert(live?.ok === false, "assertCityLive(brussels) must fail");
@@ -187,5 +189,5 @@ assert(
 );
 
 console.log(
-  "brussels-planned-gate: ok (planned/501, adapterReady, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, self-referential-arrival filter, schedule-only real GTFS board, Perth/Stockholm/Göteborg/Malmö/Uppsala/Helsinki green)"
+  "brussels-planned-gate: ok (planned/501, adapterReady, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, self-referential-arrival filter, schedule-only real GTFS board, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
 );

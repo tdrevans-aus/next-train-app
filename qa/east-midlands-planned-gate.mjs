@@ -38,7 +38,9 @@ assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must sta
 assert(assertCityLive("goteborg")?.ok === true, "Göteborg tester-live must stay green");
 assert(assertCityLive("malmo")?.ok === true, "Malmö tester-live must stay green");
 assert(assertCityLive("uppsala")?.ok === true, "Uppsala tester-live must stay green");
-assert(assertCityLive("helsinki")?.ok === true, "Helsinki tester-live must stay green");
+// Helsinki isn't in this registry yet - it's still on its own unmerged flip-PR (#164). This
+// assertion was written in a shared working tree where Helsinki appeared live; that was
+// contamination, not master's actual state. No Helsinki assertion here until #164 merges.
 
 const live = assertCityLive("east-midlands");
 assert(live?.ok === false, "assertCityLive(east-midlands) must fail");
@@ -154,5 +156,5 @@ try {
 assert(dispatchThrew, "fetchStationBoard dispatcher must not silently succeed for NET");
 
 console.log(
-  "east-midlands-planned-gate: ok (planned/501, adapterReady, D1 pack, 6 rail + 4 NET stations, Tamworth excluded, doNotGroup at Nottingham Station, line+terminus direction model, both board paths correctly blocked, Perth/Stockholm/Göteborg/Malmö/Uppsala/Helsinki green)"
+  "east-midlands-planned-gate: ok (planned/501, adapterReady, D1 pack, 6 rail + 4 NET stations, Tamworth excluded, doNotGroup at Nottingham Station, line+terminus direction model, both board paths correctly blocked, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
 );
