@@ -1,0 +1,106 @@
+{
+  "city": "helsinki",
+  "source": "docs/helsinki-d1/published-network.json (HSL Metro haarukka 10/2023 + Tervetuloa metroon 2/2025). Not generated from GTFS.",
+  "timeZone": "Europe/Helsinki",
+  "dst": true,
+  "hub": "Rautatientori",
+  "notes": [
+    "v1: metro M1 and M2 only. No tram, no bus, no HSL/VR commuter rail, no Suomenlinna ferry, no Itämetro.",
+    "Direction model: line + terminus (M1 + Kivenlahti). Rautatientori is a through-trunk hub, not a compass CBD — never inbound/outbound vs City.",
+    "Current west branches Kivenlahti (M1) and Tapiola (M2). Matinkylä is a stop, not a terminus chip (former west end 2017-2 Dec 2022).",
+    "Current east branches Vuosaari (M1) and Mellunmäki (M2)."
+  ],
+  "shortTurnGroups": {},
+  "doNotGroup": [
+    {
+      "a": "Rautatientori",
+      "b": "Helsinki Central",
+      "reason": "Metro (HKL/HSL) vs VR/HSL commuter rail Päärautatieasema — different HSL product (juna-asemat sheet), different stop-place"
+    },
+    {
+      "a": "Rautatientori",
+      "b": "Päärautatieasema",
+      "reason": "Metro lock vs railway Finnish name for the same railway product"
+    },
+    {
+      "a": "Kamppi",
+      "b": "Kamppi bus terminal",
+      "reason": "Metro station vs bus terminal, same name family, different mode"
+    },
+    {
+      "a": "Pasila",
+      "b": "any metro row",
+      "reason": "Pasila has no metro (commuter/VR only) — must never appear as a metro station"
+    }
+  ],
+  "lines": [
+    {
+      "id": "M1",
+      "number": "M1",
+      "name": "M1",
+      "officialPageTitle": "M1 Kivenlahti-Vuosaari",
+      "mapGroup": "Metro",
+      "termini": ["Kivenlahti", "Vuosaari"],
+      "shortTurns": [],
+      "stations": [
+        "Kivenlahti",
+        "Espoonlahti",
+        "Soukka",
+        "Kaitaa",
+        "Finnoo",
+        "Matinkylä",
+        "Niittykumpu",
+        "Urheilupuisto",
+        "Tapiola",
+        "Aalto-yliopisto",
+        "Keilaniemi",
+        "Koivusaari",
+        "Lauttasaari",
+        "Ruoholahti",
+        "Kamppi",
+        "Rautatientori",
+        "Helsingin yliopisto",
+        "Hakaniemi",
+        "Sörnäinen",
+        "Kalasatama",
+        "Kulosaari",
+        "Herttoniemi",
+        "Siilitie",
+        "Itäkeskus",
+        "Puotila",
+        "Rastila",
+        "Vuosaari"
+      ]
+    },
+    {
+      "id": "M2",
+      "number": "M2",
+      "name": "M2",
+      "officialPageTitle": "M2 Tapiola-Mellunmäki",
+      "mapGroup": "Metro",
+      "termini": ["Tapiola", "Mellunmäki"],
+      "shortTurns": [],
+      "stations": [
+        "Tapiola",
+        "Aalto-yliopisto",
+        "Keilaniemi",
+        "Koivusaari",
+        "Lauttasaari",
+        "Ruoholahti",
+        "Kamppi",
+        "Rautatientori",
+        "Helsingin yliopisto",
+        "Hakaniemi",
+        "Sörnäinen",
+        "Kalasatama",
+        "Kulosaari",
+        "Herttoniemi",
+        "Siilitie",
+        "Itäkeskus",
+        "Myllypuro",
+        "Kontula",
+        "Mellunmäki"
+      ]
+    }
+  ]
+}

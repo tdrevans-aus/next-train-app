@@ -13,6 +13,17 @@ Hub lock: **Rautatientori** (both lines; official metro-sheet English subtitle *
 
 H2 clash surface (after transcription): **no** product `lib/cities/helsinki/`. Clash is **stale index caption vs sheet** (hsl.fi printable card still says *M1 Matinkylä-Vuosaari*; the 2/2025 sheet and 10/2023 haarukka print **Kivenlahti**) plus **metro vs VR/commuter name family** at Rautatientori / Helsinki Central and at Pasila. Not GTFS. Tram / bus / ferry / commuter rail out of v1 oracle.
 
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier).
+
+**Verification:** The 30 in-catalog stations (M1 and M2 metro only) have no other rail services calling at them. VR (national/regional rail) operates commuter trains at Helsinki Central / Päärautatieasema (`juna-asemat/helsinki_1730x1180_02_2026.pdf`), a separate stop-place explicitly doNotGroup'd from all in-catalog metro stations. VR does not serve Rautatientori metro or any other in-catalog metro station. No services other than the in-scope operator call at any in-catalog station — verified.
+
+**Stop-place separation evidence:**
+- **In-catalog Rautatientori (metro):** HSL metro stations M1 and M2 only. Digitransit stop-place UUID for metro (in published-network.json sources).
+- **Out-of-scope Päärautatieasema / Helsinki Central (railway):** VR rail operations. Separate HSL product category (`juna-asemat` sheet, not `metroasemat`). Confirmed on 02/2026 official station map.
+- **Coverage gap:** published-network.json explicitly lists "HSL / VR commuter rail letters A, E, L, U, X, Y, I, P, K, R, D, Z, T at Helsinki Central, Pasila, Leppävaara, Tikkurila, Airport. Out of v1. doNotGroup the metro stop string vs the railway stop of the same name family."
+
 ## Station name table
 
 Match rule: published D1 string (HSL haarukka / Tervetuloa **Finnish** tick) vs official map tick vs railway print of the same place. `rename` = same place, different printed string.

@@ -1,0 +1,15 @@
+# Force LF for text files regardless of platform. Windows' core.autocrlf was silently
+# converting LF to CRLF on checkout/stash, which broke byte-identical-copy invariants
+# between D1 packs and their QA fixtures (hit repeatedly on 30 Aug 2026 — Uppsala, Oslo, Helsinki).
+* text=auto eol=lf
+
+# Binary/generated assets — never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

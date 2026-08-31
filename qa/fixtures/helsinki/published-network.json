@@ -1,0 +1,364 @@
+{
+  "city": "helsinki",
+  "displayName": "Helsinki",
+  "status": "planned",
+  "agency": "HKL / HSL",
+  "timezone": "Europe/Helsinki",
+  "source": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/reittikartat/liikennevalineittain/metrohaarukka_vaunutarra_1370x230_cmyk_10-2023_www.pdf",
+  "sources": [
+    {
+      "role": "D1 passenger metro line diagram (hub lock + printed ticks + termini geography). Skip every tram, bus, commuter rail, ferry.",
+      "title": "Metro haarukka / vaunutarra (10/2023)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/reittikartat/liikennevalineittain/metrohaarukka_vaunutarra_1370x230_cmyk_10-2023_www.pdf",
+      "linkedFrom": "https://www.hsl.fi/matkustaminen/reitti_ja_asemakartat",
+      "alsoLinkedFrom": "https://www.hsl.fi/en/travelling/route_and_station_maps",
+      "captionOnIndex": "Metro (liikennevälineittäin / by mode of transport)",
+      "retrievedAt": "2026-08-29T01:09:00Z",
+      "lastModified": "Tue, 31 Oct 2023 18:36:43 GMT",
+      "created": "Wed, 04 Oct 2023 07:08:42 GMT",
+      "md5": "a618545e52900f953bd11f4c4f3d0fc6",
+      "localFile": "sources/metrohaarukka_10-2023.pdf",
+      "localRender": "sources/metrohaarukka_10-2023-1.png",
+      "localTxt": "sources/metrohaarukka_10-2023.txt",
+      "note": "Adobe Illustrator 27.4, created 4 Oct 2023, PDF title metrohaarukka_vaunutarra_1370x230_CMYK_10-2023_paino, footer 10/2023. Official HSL metro line diagram (car sticker / haarukka). Prints M1 Kivenlahti–Vuosaari and M2 Tapiola–Mellunmäki. Common trunk Tapiola–Itäkeskus. Inner-city print Rautatientori / Järnvägstorget / Central Railway Station under the Helsingin keskusta / Helsinki City Centre blob. Ordered Finnish ticks west→east: Kivenlahti, Espoonlahti, Soukka, Kaitaa, Finnoo, Matinkylä, Niittykumpu, Urheilupuisto, Tapiola, Aalto-yliopisto, Keilaniemi, Koivusaari, Lauttasaari, Ruoholahti, Kamppi, Rautatientori, Helsingin yliopisto, Hakaniemi, Sörnäinen, Kalasatama, Kulosaari, Herttoniemi, Siilitie, Itäkeskus; then M1 Puotila–Rastila–Vuosaari and M2 Myllypuro–Kontula–Mellunmäki. Matinkylä is a stop, not a west terminus. Still the current haarukka on staticfiles.hsl.fi on 29 Aug 2026; no 2024/2025/2026 replacement URL resolved."
+    },
+    {
+      "role": "D1 passenger metro map + first/last + official termini pairs (same geography as the haarukka)",
+      "title": "Tervetuloa metroon! / Välkommen till metron! / Welcome to the Metro! (2/2025)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/tulostettavat-aikataulukoosteet/talvi-2023-2024/metro/tervetuloa_metroon_865x1180_peruskoko_022025_www.pdf",
+      "linkedFrom": "https://www.hsl.fi/en/travelling/printable-maps-and-timetables",
+      "alsoLinkedFrom": "https://www.hsl.fi/matkustaminen/reitti_ja_asemakartat",
+      "captionOnIndex": "M1 Matinkylä-Vuosaari, M2 Tapiola-Mellunmäki (index caption is stale vs sheet)",
+      "retrievedAt": "2026-08-29T01:08:00Z",
+      "lastModified": "Wed, 09 Apr 2025 11:01:43 GMT",
+      "created": "Mon, 20 Jan 2025 11:15:38 GMT",
+      "md5": "2e1aea6ca4bd1ee47610960b23ba5e1d",
+      "localFile": "sources/tervetuloa_metroon_022025.pdf",
+      "localRender": "sources/tervetuloa_metroon_022025-1.png",
+      "localTxt": "sources/tervetuloa_metroon_022025.txt",
+      "note": "Adobe InDesign 20.0, created 20 Jan 2025, footer 2/2025, HSL + Kaupunkiliikenne. Latest official passenger metro sheet found on staticfiles.hsl.fi on 29 Aug 2026 (no 02/2026 tervetuloa URL). Vertical Reitti column is the ordered-tick oracle and matches the 10/2023 haarukka Finnish strings. Official through-paths: M1 Kivenlahti–Vuosaari, M2 from Tapiola. First/last tables are written from Rautatientori (Central Railway Station). Sheet-internal index caption on hsl.fi printable page still says M1 Matinkylä-Vuosaari — stale vs the printed Kivenlahti west end (open 3 Dec 2022). Footnote: Keskustasta Mellunmäkeen: vaihda junaa Itäkeskuksessa / From the city center to Mellunmäki: change trains in Itäkeskus — first-train overlay, not a deleted M2 through-path. Helsingin keskusta blob is not a stop."
+    },
+    {
+      "role": "prior haarukka (12/2022; superseded for D1 ticks by the 10/2023 sheet)",
+      "title": "Metro haarukka / vaunutarra (12/2022)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/reittikartat/liikennevalineittain/metrohaarukka_vaunutarra_1370x230_cmyk_2023_www.pdf",
+      "retrievedAt": "2026-08-29T01:08:00Z",
+      "lastModified": "Mon, 12 Dec 2022 17:29:11 GMT",
+      "created": "Fri, 18 Nov 2022 10:54:58 GMT",
+      "md5": "1ee9f6ca43982a1c01b10bc5467ba065",
+      "localFile": "sources/metrohaarukka_2023.pdf",
+      "note": "Created 18 Nov 2022, footer 12/2022 — Kivenlahti opening edition. Same 30 Finnish ticks and M1/M2 termini as 10/2023. Kept as the earlier official sheet, not a second tick authority."
+    },
+    {
+      "role": "2026 hub station map (Rautatientori metro title + doNotGroup vs Päärautatieasema / VR)",
+      "title": "Rautatientori / Järnvägstorget / Central Railway Station (02/2026)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/metroasemat/rautatientori_1730x1180_02_2026.pdf",
+      "linkedFrom": "https://www.hsl.fi/matkustaminen/reitti_ja_asemakartat",
+      "retrievedAt": "2026-08-29T01:09:00Z",
+      "lastModified": "Fri, 20 Feb 2026 15:27:42 GMT",
+      "created": "Wed, 28 Jan 2026 08:11:08 GMT",
+      "md5": "5bf260d3ebded8323446213df7b8c2a3",
+      "localFile": "sources/rautatientori_02_2026.pdf",
+      "localTxt": "sources/rautatientori_02_2026.txt",
+      "note": "Adobe InDesign 21.1, created 28 Jan 2026, footer 02/2026. Official metro station sheet title is Rautatientori, not Helsinki / City / Päärautatieasema. Platform wayfinding: Tapiola/Kivenlahti via Kamppi vs Vuosaari/Mellunmäki via Sörnäinen/Itäkeskus. Same sheet also prints Päärautatieasema / Central Railway Station / VR:n palvelupiste and buses from Rautatientori / Elielinaukio — doNotGroup metro vs VR/commuter. Confirms 2026 passenger geography still matches the 10/2023 haarukka and 2/2025 tervetuloa."
+    },
+    {
+      "role": "2026 west-of-hub station map (Kamppi; doNotGroup metro vs bus terminal)",
+      "title": "Kamppi / Kampen (02/2026)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/metroasemat/kamppi_1730x1180_02_2026.pdf",
+      "retrievedAt": "2026-08-29T01:09:00Z",
+      "lastModified": "Fri, 20 Feb 2026 15:27:42 GMT",
+      "created": "Wed, 28 Jan 2026 06:55:39 GMT",
+      "md5": "bd19574777ae33d68c9be1e4f0ec1bb3",
+      "localFile": "sources/kamppi_02_2026.pdf",
+      "note": "Footer 02/2026. Wayfinding Vuosaari/Mellunmäki via Rautatientori. Prints Kamppi bus terminal and metro-replacement buses to Tapiola / Matinkylä / Kivenlahti. Shared approach, not the lock. Bus terminal out of v1."
+    },
+    {
+      "role": "2026 east-of-hub station map (Helsingin yliopisto; Finnish lock vs English University of Helsinki)",
+      "title": "Helsingin yliopisto / Helsingfors universitet / University of Helsinki (02/2026)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/metroasemat/helsingin_yliopisto_865x1180_02_2026.pdf",
+      "retrievedAt": "2026-08-29T01:08:00Z",
+      "lastModified": "Fri, 20 Feb 2026 15:27:42 GMT",
+      "created": "Wed, 28 Jan 2026 07:04:44 GMT",
+      "md5": "e53dd62088453e8a29ff4b78307cf035",
+      "localFile": "sources/helsingin_yliopisto_02_2026.pdf",
+      "note": "Footer 02/2026. Official Finnish metro string Helsingin yliopisto. Not Kaisaniemi (old name). Not University of Helsinki as the D1 stop string. Neighbour of the Rautatientori lock."
+    },
+    {
+      "role": "2026 east-fork station map (Itäkeskus; M1 Vuosaari vs M2 Mellunmäki)",
+      "title": "Itäkeskus / Östra centrum (02/2026)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/metroasemat/itakeskus_865x1180_02_2026.pdf",
+      "retrievedAt": "2026-08-29T01:08:00Z",
+      "lastModified": "Fri, 20 Feb 2026 15:27:42 GMT",
+      "created": "Mon, 02 Feb 2026 15:05:50 GMT",
+      "md5": "2cb90807ef06c55ddfe1a4575582b78d",
+      "localFile": "sources/itakeskus_02_2026.pdf",
+      "note": "Footer 02/2026. Official east fork. Prints metro replacement buses to Vuosaari, to Mellunmäki, and to Rautatientori. Light rail 15 at Itäkeskus is out of v1."
+    },
+    {
+      "role": "2026 VR / commuter station map at the same cluster (doNotGroup; not a metro sheet)",
+      "title": "Helsinki / Helsingfors — juna-asema (02/2026)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/juna-asemat/helsinki_1730x1180_02_2026.pdf",
+      "retrievedAt": "2026-08-29T01:09:00Z",
+      "lastModified": "Fri, 20 Feb 2026 15:38:58 GMT",
+      "created": "Wed, 28 Jan 2026 08:13:33 GMT",
+      "md5": "63f8fbde26cacf289fb2322fc1fbab39",
+      "localFile": "sources/helsinki_juna_02_2026.pdf",
+      "note": "HSL files this under juna-asemat, not metroasemat. Title Helsinki / Helsingfors. Prints Rautatientori metro as a neighbour (Helsingin yliopiston metroasema also marked). Official evidence that the railway station and the metro station are different HSL products. Out of v1. doNotGroup."
+    },
+    {
+      "role": "mixed-mode Helsinki street linjakartta (metro ticks exist; not the stop-order oracle)",
+      "title": "Helsingin linjakartta / Linjekarta Helsingfors / Route map Helsinki (12.8.2024–10.8.2025)",
+      "url": "https://staticfiles.hsl.fi/globalassets/matkustaminen/tulostettavat-aikataulut-ja-kartat/reittikartat/alueittain/linjakartta_metro_hki_865x1180mm_12082024-10082025_www.pdf",
+      "linkedFrom": "https://www.hsl.fi/matkustaminen/reitti_ja_asemakartat",
+      "retrievedAt": "2026-08-29T01:08:00Z",
+      "lastModified": "Fri, 09 Aug 2024 10:52:41 GMT",
+      "created": "Wed, 24 Jul 2024 11:01:36 GMT",
+      "md5": "9d2d77cdff993788ba51a284f107182c",
+      "localFile": "sources/linjakartta_metro_hki_2024-2025.pdf",
+      "note": "Adobe Illustrator 28.6. Mixed bus + tram + light rail + metro + railway + Suomenlinna ferry. Validity printed 12.8.2024–10.8.2025; no 2025–2026 replacement URL resolved on 29 Aug 2026. Use only as geography. Skip every tram, bus, commuter rail, ferry. Stop order from the haarukka / tervetuloa, not this street sheet."
+    },
+    {
+      "role": "current official M1/M2 termini pairs (HSL trunk-route copy)",
+      "title": "Trunk route network — Metro",
+      "url": "https://www.hsl.fi/en/hsl/trunk-route-network",
+      "retrievedAt": "2026-08-29T01:08:00Z",
+      "note": "HSL copy as of 29 Aug 2026: two Metro lines — M1: Kivenlahti-Vuosaari; M2: Tapiola-Mellunmäki. Same page lists 13 commuter train letters, 13 trunk buses, and light rail 15 — all out of v1. hsl.fi HTML is Cloudflare-challenged from this box; copy taken from the live page body."
+    },
+    {
+      "role": "D1 passenger map index (hsl.fi; Cloudflare on this box)",
+      "title": "Reittikartat ja asemakartat",
+      "url": "https://www.hsl.fi/matkustaminen/reitti_ja_asemakartat",
+      "alsoLinkedFrom": "https://www.hsl.fi/en/travelling/route_and_station_maps",
+      "retrievedAt": "2026-08-29T01:08:00Z",
+      "printedMapsOnIndex": [
+        "Reittikartat liikennevälineittäin (metro / ratikka / bussi / juna)",
+        "Reittikartat alueittain",
+        "Metroasemat",
+        "Juna-asemat",
+        "Bussiasemat"
+      ],
+      "note": "Official HSL PDF index. Metro cards only for this city. Tram, bus, commuter-rail, ferry cards on the same index are out of v1."
+    },
+    {
+      "role": "live-board path (official Digitransit Routing API v2 HSL — not wired)",
+      "title": "Routing API — Helsinki region",
+      "url": "https://digitransit.fi/en/developers/apis/1-routing-api/",
+      "graphql": "https://api.digitransit.fi/routing/v2/hsl/gtfs/v1",
+      "portal": "https://portal-api.digitransit.fi/",
+      "registration": "https://digitransit.fi/en/developers/api-registration/",
+      "retrievedAt": "2026-08-29T01:10:00Z",
+      "localFile": "sources/digitransit-routing.txt",
+      "endpointsNamed": [
+        "POST https://api.digitransit.fi/routing/v2/hsl/gtfs/v1"
+      ],
+      "note": "Official next-train / departure-board path for HSL including metro. Production APIs require a free digitransit-subscription-key as header or query param (portal-api.digitransit.fi). POST, Content-Type application/graphql or application/json. Query stop { stoptimesWithoutPatterns { scheduledDeparture realtimeDeparture departureDelay realtime headsign trip { route { shortName } } } } and filter subway / metro / route shortName M1|M2. Rautatientori and Helsinki Central are different stop-places — doNotGroup. Static HSL GTFS is NOT a D1 generator. D1 stays planned."
+    },
+    {
+      "role": "live-board path (official HSL GTFS-RT v2 — not wired)",
+      "title": "GTFS-RT feeds | HSL developer documentation",
+      "url": "https://hsldevcom.github.io/gtfs_rt/",
+      "alsoLinkedFrom": "https://digitransit.fi/en/developers/apis/5-realtime-api/",
+      "retrievedAt": "2026-08-29T01:10:00Z",
+      "localFile": "sources/hsl-gtfs-rt.html",
+      "endpointsNamed": [
+        "GET https://realtime.hsl.fi/realtime/trip-updates/v2/hsl",
+        "GET https://realtime.hsl.fi/realtime/service-alerts/v2/hsl",
+        "GET https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl"
+      ],
+      "note": "Official HSL GTFS-RT 2.0. Trip updates every 15s; vehicle positions 1s; service alerts 5 min. No query filter — whole HSL feed. Trip IDs are not stable; identify by route_id + start_date + start_time + direction_id. Digitransit api.digitransit.fi GTFS-RT hosts are deprecated; use these realtime.hsl.fi URLs. D1 stays planned."
+    },
+    {
+      "role": "live-board path (official HFP MQTT vehicle positions — not wired)",
+      "title": "High-frequency positioning",
+      "url": "https://digitransit.fi/en/developers/apis/5-realtime-api/vehicle-positions/high-frequency-positioning/",
+      "retrievedAt": "2026-08-29T01:10:00Z",
+      "localFile": "sources/digitransit-realtime.txt",
+      "endpointsNamed": [
+        "mqtts://mqtt.hsl.fi:8883/",
+        "wss://mqtt.hsl.fi:443/"
+      ],
+      "note": "Open HFP v2. Topic /hfp/v2/journey/# ; filter mode metro. Prefer TLS 8883. Vehicle positions also in GTFS-RT at realtime.hsl.fi. Not a D1 generator. D1 stays planned.",
+      "alsoLocal": "sources/digitransit-realtime.txt"
+    }
+  ],
+  "retrievedAt": "2026-08-29T01:12:00Z",
+  "notes": [
+    "D1 oracle is official HSL passenger metro maps and line diagrams HAND-TRANSCRIBED: Metro haarukka 10/2023 plus Tervetuloa metroon 2/2025 Reitti column, confirmed by 02/2026 metro station sheets (Rautatientori, Kamppi, Helsingin yliopisto, Itäkeskus). Stations arrays are not generated from GTFS. Not generated from Digitransit Routing / GTFS-RT / HFP. Not generated from Wikipedia. Not generated from helsinginmetro.fi.",
+    "City id helsinki is unused in existing packs (berlin, munich, hamburg, oslo, rotterdam, goteborg, malmo, uppsala, washington, …). Display Helsinki. Agency HKL / HSL (HSL authority; HKL / Kaupunkiliikenne operator — Tervetuloa 2/2025 prints HSL + Kaupunkiliikenne). Not VR, not HSL bus / tram / ferry, not commuter-rail letters. Do not invent city=finland or merge into a rail city.",
+    "City stays planned until Jim wires testers. Modes v1: TRAIN-like = metro M1 and M2 only. No tram, no bus, no HSL/VR commuter rail, no Suomenlinna ferry, no unopened extensions.",
+    "Timezone Europe/Helsinki HAS DST (EEST/EET). Do not copy no-DST cities.",
+    "Two printed metro lines on the official HSL trunk page and 2/2025 sheet: M1 Kivenlahti–Vuosaari; M2 Tapiola–Mellunmäki. Current west branches: Kivenlahti (M1) and Tapiola (M2). Matinkylä is a published stop, not a current west terminus (it was the west end 2017–2 Dec 2022). Current east branches: Vuosaari (M1) and Mellunmäki (M2).",
+    "Locked inner-city printed name: Rautatientori (both lines; official English subtitle Central Railway Station on the metro sheet). Not Helsinki, not City, not Helsingin keskusta (map blob), not Kamppi (west neighbour + bus terminal), not Helsingin yliopisto (east neighbour), not Päärautatieasema / Helsinki Central railway (juna-asemat sheet — doNotGroup). doNotGroup metro vs VR/commuter at Helsinki Central and at Pasila (Pasila has no metro).",
+    "30 unique passenger-open metro stop strings. 46 line ticks (M1 27 + M2 19). Matches the published 30-asema network after Länsimetro to Kivenlahti.",
+    "Map vs halt list: lock official Finnish strings from the haarukka / tervetuloa Reitti column. Aalto-yliopisto not Aalto University. Helsingin yliopisto not University of Helsinki / Kaisaniemi. Rautatientori is the metro string — never Helsinki or Central Railway Station as the metro stop. Keep ä/ö: Matinkylä, Mellunmäki, Itäkeskus, Sörnäinen, Niittykumpu, Kägeludden is Swedish only.",
+    "gtfsRouteIdsIfKnown are passenger codes M1 and M2 printed on the HSL trunk page and haarukka (HSL feed internals are not print locks). No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Official Digitransit Routing v2 POST https://api.digitransit.fi/routing/v2/hsl/gtfs/v1 stop.stoptimesWithoutPatterns (header digitransit-subscription-key) and HSL GTFS-RT GET https://realtime.hsl.fi/realtime/trip-updates/v2/hsl. Static HSL GTFS is NOT a D1 generator. D1 stays planned. assertCityLive(\"helsinki\") must fail."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Rautatientori",
+    "doNotUse": [
+      "Helsinki",
+      "Helsinki Central",
+      "Helsingin päärautatieasema",
+      "Päärautatieasema",
+      "Central Railway Station",
+      "City",
+      "City Centre",
+      "Helsingin keskusta",
+      "Helsingfors centrum",
+      "CBD",
+      "to City",
+      "Kamppi",
+      "Helsingin yliopisto",
+      "Pasila",
+      "Matinkylä"
+    ],
+    "alsoOnSharedApproaches": [
+      "Kamppi",
+      "Helsingin yliopisto",
+      "Hakaniemi",
+      "Sörnäinen",
+      "Tapiola",
+      "Itäkeskus",
+      "Ruoholahti"
+    ]
+  },
+  "coverageGaps": [
+    "HSL tram and light rail 15 on the same reitti- ja asemakartat index (Itäkeskus–Keilaniemi). Out of v1.",
+    "HSL bus (including trunk 500/510/530/560 and metro-replacement X-buses). Out of v1.",
+    "HSL / VR commuter rail letters A, E, L, U, X, Y, I, P, K, R, D, Z, T at Helsinki Central, Pasila, Leppävaara, Tikkurila, Airport. Out of v1. doNotGroup the metro stop string vs the railway stop of the same name family.",
+    "Suomenlinna ferry / Suomenlinnan lautta on the Helsinki linjakartta legend. Out of v1.",
+    "Matinkylä is not a current west terminus. It was the Länsimetro phase-1 west end 2017–2 Dec 2022. Official 10/2023 haarukka, 2/2025 tervetuloa, and 2026 HSL trunk page print M1 Kivenlahti–Vuosaari. Matinkylä stays as a stop, not a terminus chip.",
+    "No passenger M3 / Itämetro / Östersundom. Not on the 10/2023 haarukka, not on the 2/2025 tervetuloa, not on 02/2026 station sheets. Not inserted.",
+    "Tervetuloa first-train footnote Keskustasta Mellunmäkeen: vaihda junaa Itäkeskuksessa is an overlay on early M2, not a deleted through-path. Official M2 pair stays Tapiola–Mellunmäki.",
+    "Helsingin linjakartta 12.8.2024–10.8.2025 is mixed-mode and past its printed validity; no 2025–2026 replacement URL resolved. Not the D1 tick oracle.",
+    "PDF hex colours and Helsingin keskusta / City Centre blob are legend metadata, not D1 print locks."
+  ],
+  "lines": [
+    {
+      "id": "M1",
+      "number": "M1",
+      "name": "M1",
+      "officialPageTitle": "M1 Kivenlahti-Vuosaari",
+      "gtfsRouteIdsIfKnown": [
+        "M1"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Kivenlahti",
+        "Vuosaari"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Rautatientori",
+          "note": "Hub lock. Both M1 and M2. Official English subtitle Central Railway Station. Not a direction token. doNotGroup metro vs Päärautatieasema / VR / commuter."
+        },
+        {
+          "at": "Tapiola",
+          "otherLine": "M2",
+          "note": "M2 west terminus. M1 continues west Kivenlahti–Urheilupuisto. Common trunk starts east of here."
+        },
+        {
+          "at": "Itäkeskus",
+          "otherLine": "M2",
+          "note": "East fork. M1 takes Puotila–Rastila–Vuosaari. M2 takes Myllypuro–Kontula–Mellunmäki."
+        },
+        {
+          "at": "Kamppi",
+          "note": "doNotGroup metro vs Kamppi bus terminal. Shared approach, not the lock."
+        },
+        {
+          "at": "Matinkylä",
+          "note": "Former west terminus (2017–2 Dec 2022). Current official west end is Kivenlahti. Stay as a stop. Not a terminus chip."
+        }
+      ],
+      "stations": [
+        "Kivenlahti",
+        "Espoonlahti",
+        "Soukka",
+        "Kaitaa",
+        "Finnoo",
+        "Matinkylä",
+        "Niittykumpu",
+        "Urheilupuisto",
+        "Tapiola",
+        "Aalto-yliopisto",
+        "Keilaniemi",
+        "Koivusaari",
+        "Lauttasaari",
+        "Ruoholahti",
+        "Kamppi",
+        "Rautatientori",
+        "Helsingin yliopisto",
+        "Hakaniemi",
+        "Sörnäinen",
+        "Kalasatama",
+        "Kulosaari",
+        "Herttoniemi",
+        "Siilitie",
+        "Itäkeskus",
+        "Puotila",
+        "Rastila",
+        "Vuosaari"
+      ]
+    },
+    {
+      "id": "M2",
+      "number": "M2",
+      "name": "M2",
+      "officialPageTitle": "M2 Tapiola-Mellunmäki",
+      "gtfsRouteIdsIfKnown": [
+        "M2"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Tapiola",
+        "Mellunmäki"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Rautatientori",
+          "note": "Hub lock. Both lines. doNotGroup metro vs Päärautatieasema / VR / commuter."
+        },
+        {
+          "at": "Tapiola",
+          "otherLine": "M1",
+          "note": "Official M2 west end. M1 continues to Kivenlahti."
+        },
+        {
+          "at": "Itäkeskus",
+          "otherLine": "M1",
+          "note": "East fork. M2 Myllypuro–Kontula–Mellunmäki. Tervetuloa first-train footnote may require a change here toward Mellunmäki — overlay, not a chip."
+        },
+        {
+          "at": "Kamppi",
+          "note": "doNotGroup metro vs Kamppi bus terminal."
+        }
+      ],
+      "stations": [
+        "Tapiola",
+        "Aalto-yliopisto",
+        "Keilaniemi",
+        "Koivusaari",
+        "Lauttasaari",
+        "Ruoholahti",
+        "Kamppi",
+        "Rautatientori",
+        "Helsingin yliopisto",
+        "Hakaniemi",
+        "Sörnäinen",
+        "Kalasatama",
+        "Kulosaari",
+        "Herttoniemi",
+        "Siilitie",
+        "Itäkeskus",
+        "Myllypuro",
+        "Kontula",
+        "Mellunmäki"
+      ]
+    }
+  ]
+}

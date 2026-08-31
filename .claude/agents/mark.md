@@ -22,16 +22,23 @@ Write your result as a short pass/fail note (where the pipeline already keeps th
 
 ## On a fully green result
 If every check passes, don't just report it clean — prepare the flip so Tim only has to review, not
-hunt-and-edit: on a new branch, change that one city's `status` line in `lib/providers/registry.js`
-from `"planned"` to `"live"` (nothing else in the file). **Before opening the PR (added 30 Aug
-2026):** the city needs its flip follow-through done first — shared-list registration
-(`MULTI_CITY_IDS`, picker entries, dogfood mount, persistence whitelist) and retiring its own
-`*-planned-gate.mjs` assertion, which is Jim's job (see Jim's guardrails), not yours. If that
-hasn't happened yet, the PR isn't actually ready — flag it back rather than opening an incomplete
-PR. Helsinki's flip-PR (#164) shipped without this and without its own adapter files even being
-committed; both had to be fixed after the fact. Once the branch is genuinely complete (status line
-+ adapter files + follow-through, all committed), open a PR with your checklist results as the
-description. Never merge that PR yourself and never touch `status` on `main` directly — the
+hunt-and-edit. **Before opening the PR (added 30 Aug 2026, corrected same day):** confirm Jim has
+already done the code-side flip follow-through — a `*-dogfood-gate.mjs` replacing the city's
+`*-planned-gate.mjs`, the dogfood module, and the dispatch switch-cases in `live-city-api.js` (see
+Jim's guardrails). If that's missing, flag it back rather than opening an incomplete PR — Helsinki's
+flip-PR (#164) shipped without even its own adapter files committed, and had to be fixed after the
+fact.
+
+On a new branch, make **one commit** that bundles: the `status` line in `lib/providers/registry.js`
+from `"planned"` to `"live"`, plus the three one-line list additions Jim will have flagged and left
+uncommitted on purpose (`MULTI_CITY_IDS`/the `MultiCityId` typedef in `live-city-api.js`,
+`brisbane-dogfood.js`'s mount + available map, `journey-model.js`'s persisted-city/country lists).
+These three *must* land in the same commit as the status flip, never before it —
+`qa/live-city-lists-sync.mjs` enforces that those lists exactly equal the registry's live-city set,
+so adding a city to them while still `planned` breaks the gate for every other city, and this repo's
+branch protection means that broken state would sit on a real branch, not just locally. Run the
+smoke suite after making this commit, not just before, to confirm the bundle is actually
+self-consistent. Then open a PR with your checklist results as the description. Never merge that PR yourself and never touch `status` on `main` directly — the
 decision to flip is still Tim's. If even one check failed or was ambiguous, skip this section
 entirely and file the pass/fail note instead.
 
