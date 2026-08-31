@@ -27,6 +27,13 @@
       "catalogPath": "../../cities/uk-london-tfl/stops.json",
       "modes": ["tube", "elizabeth-line", "dlr", "overground", "tram"],
       "feeds": { "tfl": "unified-api" }
+    },
+    {
+      "id": "east-midlands",
+      "name": "East Midlands",
+      "catalogPath": "../../cities/east-midlands/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "net-static-gtfs-unconfirmed" }
     }
   ]
 }

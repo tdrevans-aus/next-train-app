@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 3) {
-  fail(`Expected 3 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 4) {
+  fail(`Expected 4 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 3) {
-  fail(`Expected 3 regions in index, got ${regions.length}`);
+if (regions.length !== 4) {
+  fail(`Expected 4 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -90,6 +90,47 @@ if (catalogAll.length !== 110) {
   fail(`WM combined catalog ${catalogAll.length}, expected 110`);
 }
 
+const em = getRegion("east-midlands");
+if (!em || em.railCount !== 6 || em.metroCount !== 4) {
+  fail(`east-midlands counts rail=${em?.railCount} metro=${em?.metroCount}`);
+}
+
+const emRail = listRailStations("east-midlands");
+const emCrsSet = new Set(emRail.map((s) => s.crs));
+for (const crs of ["NOT", "LEI", "KET", "WEL", "CHD", "ALF"]) {
+  if (!emCrsSet.has(crs)) {
+    fail(`east-midlands missing ${crs}`);
+  }
+}
+if (emCrsSet.has("TAM")) {
+  fail("east-midlands must not carry Tamworth (D2 de-dup boundary with West Midlands)");
+}
+for (const name of getNotInRegion("east-midlands")) {
+  if (emRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in east-midlands catalog`);
+  }
+}
+
+const emMetro = listMetroStops("east-midlands");
+const emMetroNames = new Set(emMetro.map((s) => s.name));
+for (const name of ["Hucknall", "Nottingham Station", "Beeston/Chilwell", "Phoenix Park"]) {
+  if (!emMetroNames.has(name)) {
+    fail(`east-midlands NET catalog missing ${name}`);
+  }
+}
+if (emMetroNames.has("city centre")) {
+  fail("east-midlands NET catalog must not carry the unconfirmed 'city centre' placeholder");
+}
+
+const emHubRail = resolveRailEntry("Nottingham Station", "east-midlands");
+const emHubMetro = resolveMetroEntry("Nottingham Station", "east-midlands");
+if (!emHubRail || emHubRail.crs !== "NOT") {
+  fail("east-midlands Nottingham Station must resolve as a rail entry with crs NOT");
+}
+if (!emHubMetro || !emHubMetro.catalogId?.startsWith("net:")) {
+  fail("east-midlands Nottingham Station must also resolve as a NET metro entry, separate from the rail entry");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -98,4 +139,6 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed)");
+console.log(
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4)"
+);

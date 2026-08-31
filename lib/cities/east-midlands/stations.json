@@ -1,0 +1,118 @@
+{
+  "region": "east-midlands",
+  "displayName": "East Midlands",
+  "timeZone": "Europe/London",
+  "source": "docs/east-midlands-d1/published-network.json (Nico oracle-clash-report, redone 31 Aug 2026)",
+  "retrievedAt": "2026-08-31",
+  "feeds": {
+    "train": "darwin",
+    "metro": "net-static-gtfs-unconfirmed"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as uk-west-midlands / uk-ellesmere-port.",
+    "NET (Nottingham Express Transit) tram: the D1 pack names it as DFT Bus Open Data Service (f-bus~dft~gov~uk, verified live 30 Aug 2026 per the oracle report). Jim pulled the confirmed no-key bulk archive (https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/all/, itm_all_gtfs.zip, 1.4GB, 632 agencies) fresh on 31 Aug 2026 to fill the intermediate-stop-order gap the pack flagged — Nottingham Express Transit / NET does NOT appear as an agency anywhere in that archive (Manchester Metrolink, West Midlands Metro, Edinburgh Trams, Blackpool Tram, South Yorkshire Supertram, London Tramlink, SPT Subway, and several heritage railways all do). This contradicts the pack's 'verified live' note for NET's GTFS — the 200 response the oracle report saw was almost certainly just the bulk-zip endpoint responding at all, not confirmation NET's data is inside it. Filed as a genuine feed-verification gap for Luke/Nico to re-check, not guessed around here.",
+    "Because of the above, NET's intermediate stop order remains unconfirmed (still termini-only, exactly as the D1 pack left it) and no NET board can be built — fetchNetStopBoard() in lib/providers/east-midlands.js throws rather than fabricating a schedule.",
+    "Only the printed names the oracle report actually gives are catalogued below (Hucknall, Nottingham Station, Beeston/Chilwell, Phoenix Park). No 'city centre' entry — the pack itself never lists it in a 'stations' array, only as loose prose describing Line 2's routing; per direction-model-memo.md it is an unconfirmed placeholder, not a station name, so it is not shipped here.",
+    "lat/lng are null for every NET stop — no coordinate source has been confirmed (not in the DFT bulk archive, not given by the oracle report). Do not backfill guessed coordinates.",
+    "Tamworth (TAM) is deliberately NOT in this catalog — genuine shared National Rail platform with West Midlands, flagged as a D2 de-dup boundary for a future West Midlands pack. See notInRegion below and hazard-pack.md H1."
+  ],
+  "notInRegion": [
+    "Tamworth"
+  ],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Nottingham Station",
+      "crs": "NOT",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — National Rail main platforms. doNotGroup vs NET tram viaduct platforms (same printed name, separate catalog entry, mode metro)."
+    },
+    {
+      "mode": "train",
+      "name": "Leicester",
+      "crs": "LEI",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Kettering",
+      "crs": "KET",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Wellingborough",
+      "crs": "WEL",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Chesterfield",
+      "crs": "CHD",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Alfreton",
+      "crs": "ALF",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, not a merge point"
+    },
+    {
+      "mode": "metro",
+      "name": "Hucknall",
+      "catalogId": "net:hucknall",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "NET Line 1 terminus"
+    },
+    {
+      "mode": "metro",
+      "name": "Nottingham Station",
+      "catalogId": "net:nottingham-station",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — NET tram viaduct platforms. doNotGroup vs National Rail main platforms (same printed name, separate catalog entry, mode train). Also Line 2's inner terminus per the D1 pack's own stations array."
+    },
+    {
+      "mode": "metro",
+      "name": "Beeston/Chilwell",
+      "catalogId": "net:beeston-chilwell",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "NET Line 1 terminus"
+    },
+    {
+      "mode": "metro",
+      "name": "Phoenix Park",
+      "catalogId": "net:phoenix-park",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "NET Line 2 terminus"
+    }
+  ]
+}
