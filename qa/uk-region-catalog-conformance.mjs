@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 11) {
-  fail(`Expected 11 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 12) {
+  fail(`Expected 12 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 11) {
-  fail(`Expected 11 regions in index, got ${regions.length}`);
+if (regions.length !== 12) {
+  fail(`Expected 12 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -422,6 +422,42 @@ if (resolveRailEntry("Falkirk High", "rest-of-scotland")) {
   fail("rest-of-scotland must not resolve Falkirk High — unresolved Central Belt boundary, not a catalog station");
 }
 
+// london-se-national-rail: FIRST multi-group region, no single hub-lock — 10 boards
+// (5 single-board groups + 3 London Bridge sub-boards + 2 Liverpool Street sub-boards).
+const lse = getRegion("london-se-national-rail");
+if (!lse || lse.railCount !== 10 || lse.metroCount !== 0) {
+  fail(`london-se-national-rail counts rail=${lse?.railCount} metro=${lse?.metroCount}`);
+}
+
+const lseRail = listRailStations("london-se-national-rail");
+const lseCrsSet = new Set(lseRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["WAT", "VIC", "LBG", "LST", "KGX", "STP", "PAD"]) {
+  if (!lseCrsSet.has(crs)) {
+    fail(`london-se-national-rail missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("london-se-national-rail")) {
+  if (lseRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in london-se-national-rail catalog`);
+  }
+}
+
+const lseWaterloo = resolveRailEntry("London Waterloo", "london-se-national-rail");
+if (!lseWaterloo || lseWaterloo.crs !== "WAT") {
+  fail("london-se-national-rail London Waterloo must resolve as a rail entry with crs WAT");
+}
+const lseLondonBridgeBoards = lseRail.filter((s) => s.groupId === "london-bridge");
+if (lseLondonBridgeBoards.length !== 3 || lseLondonBridgeBoards.some((s) => s.crs !== "LBG")) {
+  fail(`london-se-national-rail London Bridge must have 3 boards sharing crs LBG, got ${lseLondonBridgeBoards.length}`);
+}
+const lseLiverpoolStreetBoards = lseRail.filter((s) => s.groupId === "liverpool-street");
+if (lseLiverpoolStreetBoards.length !== 2 || lseLiverpoolStreetBoards.some((s) => s.crs !== "LST")) {
+  fail(`london-se-national-rail Liverpool Street must have 2 boards sharing crs LST, got ${lseLiverpoolStreetBoards.length}`);
+}
+if (resolveRailEntry("Euston", "london-se-national-rail")) {
+  fail("london-se-national-rail must not resolve Euston — no named regional operator, not built");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -431,5 +467,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups)"
 );
