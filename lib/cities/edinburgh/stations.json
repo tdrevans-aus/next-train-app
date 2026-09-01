@@ -1,0 +1,284 @@
+{
+  "region": "edinburgh",
+  "displayName": "Edinburgh",
+  "timeZone": "Europe/London",
+  "source": "docs/edinburgh-d1/published-network.json (Nico oracle-clash-report, 1 Sep 2026)",
+  "retrievedAt": "2026-09-01",
+  "feeds": {
+    "train": "darwin",
+    "metro": "dft-bods-static-gtfs-confirmed-no-realtime-not-fetched"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level - DARWIN_LDB_TOKEN not set. Same blocker as every other UK region in this wave.",
+    "SINGLE National Rail hub, unlike Glasgow's two: Edinburgh Waverley (EDB) is the one hub-lock; Haymarket (HYM) and Slateford (SLA) are through-running satellite stations on the same route network, not independent termini serving different corridors. See docs/edinburgh-d1/jim-handoff.md.",
+    "None of the three National Rail groups need internal doNotGroup (no evidence of separate platform/boarding-section logic per operator, unlike london-se-national-rail's London Bridge/Liverpool Street) - each is a single flat departure board, destination + operator.",
+    "CRS codes EDB/HYM/SLA are carried from the oracle report and NOT independently verified against a live GTFS dump or Darwin response (crsVerified: false).",
+    "Edinburgh Trams (T50, Transport for Edinburgh/Edinburgh Trams Ltd): a conventional point-to-point line with two confirmed termini (Newhaven, Edinburgh Airport), 7-10 minute headway. Standard line+terminus direction model, see lib/cities/edinburgh/tram-directions.js and docs/edinburgh-d1/direction-model-memo.md Part 1. No confirmed real-time feed - TfE Open Data API is closed/inactive, no successor confirmed. Schedule-only v1 remains unresolved; static GTFS (DFT BODS) is confirmed reachable (OGL 3.0) but NOT fetched or parsed by this pack.",
+    "Tram station list carries only 22 named stops (report line 21 list, transcribed verbatim into published-network.json's stations array) even though the oracle report's prose states '23 stops' in several places (report lines 23, 49, 69, 83) - a count discrepancy inside the pack itself, not resolved or padded here. Do not invent a 23rd stop.",
+    "Tram stop ORDER is UNVERIFIED - the oracle report's line 21 list reads as a plausible end-to-end sequence but was never confirmed as an ordered stop_sequence against an official Edinburgh Trams map or the DFT BODS GTFS. stationOrderVerified: false carried forward, not guessed. See lib/providers/edinburgh.js EdinburghTramsFeedUnverifiedError.",
+    "doNotGroup: Edinburgh Waverley (Trams, Waverley area stop) vs Edinburgh Waverley (National Rail, EDB) - separate platforms/infrastructure, no automatic interchange described in the report, different operator. See lib/cities/edinburgh/tram-directions.js DO_NOT_GROUP_PAIRS. Haymarket (Trams stop) vs Haymarket (National Rail, HYM) is nearby but similarly kept as two distinct catalog entries by mode - not merged, no evidence either way needs enforcement beyond mode-scoped lookup.",
+    "Falkirk High is EXCLUDED from this catalog - Edinburgh's own oracle report never lists it as an Edinburgh station (report line 9 names it 'Glasgow's boundary station'), while Glasgow's already-merged pack's prose calls it 'owned by Edinburgh region'. Both packs independently exclude it from their own catalogs (no functional contradiction), but the ownership question is unresolved prose flagged back to Nico/Tim, not settled here.",
+    "Caledonian Sleeper is EXCLUDED at Edinburgh Waverley only - board-eligibility verdict out-reservation (compulsory berth booking, no walk-up boarding).",
+    "Edinburgh Park (National Rail station) is EXCLUDED - report line 20: not listed as a National Rail station in the main catalog; only the Trams stop (Edinburgh Park Central) is in v1 scope.",
+    "lat/lng are null throughout - no confirmed coordinate source in the oracle report or published-network.json; do not backfill guessed coordinates."
+  ],
+  "notInRegion": [
+    "Falkirk High",
+    "Edinburgh Park (National Rail station)"
+  ],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Edinburgh Waverley",
+      "crs": "EDB",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "operators": ["ScotRail", "LNER", "Avanti West Coast", "CrossCountry", "TransPennine Express"],
+      "excludeOperators": ["Caledonian Sleeper"],
+      "class": "Main National Rail hub, 20 platforms. ScotRail primary operator; LNER (London-Edinburgh ECML); Avanti West Coast / CrossCountry / TransPennine Express through-running. Single flat departure board, destination + operator, no internal doNotGroup. doNotGroup vs the Trams T50 hub-lock (also 'Edinburgh Waverley' in name, separate platforms/infrastructure, no automatic interchange described in the report). Caledonian Sleeper excluded, out-reservation."
+    },
+    {
+      "mode": "train",
+      "name": "Haymarket",
+      "crs": "HYM",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "operators": ["ScotRail", "LNER", "Avanti West Coast", "CrossCountry", "TransPennine Express"],
+      "excludeOperators": [],
+      "class": "Through-running satellite of the Edinburgh Waverley hub, National Rail only (the T50 line separately calls a Haymarket tram stop nearby, but that is the Trams line's own stop, not this station - not merged). West End interchange, second busiest station in Edinburgh, on the Glasgow-Edinburgh corridor and West Coast Main Line services. Single flat departure board, destination + operator."
+    },
+    {
+      "mode": "train",
+      "name": "Slateford",
+      "crs": "SLA",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "operators": ["ScotRail"],
+      "excludeOperators": [],
+      "class": "Through-running satellite of the Edinburgh Waverley hub, National Rail only. Shotts Line junction, intermediate station on the Glasgow-Edinburgh corridor. Flagged for D2 de-dup against Glasgow's National Rail slice if/when both regions are live simultaneously."
+    },
+    {
+      "mode": "metro",
+      "name": "Newhaven",
+      "catalogId": "tram:newhaven",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 terminus. Schedule-only v1, no confirmed real-time feed. Stop order carried in the oracle report's list order, not independently verified - see lib/cities/edinburgh/tram-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Ocean Terminal",
+      "catalogId": "tram:ocean-terminal",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Port of Leith",
+      "catalogId": "tram:port-of-leith",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "The Shore",
+      "catalogId": "tram:the-shore",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Foot of the Walk",
+      "catalogId": "tram:foot-of-the-walk",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Balfour Street",
+      "catalogId": "tram:balfour-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "McDonald Road",
+      "catalogId": "tram:mcdonald-road",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Picardy Place",
+      "catalogId": "tram:picardy-place",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "St Andrew Square",
+      "catalogId": "tram:st-andrew-square",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Princes Street",
+      "catalogId": "tram:princes-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop, nearest tram stop to Edinburgh Waverley (National Rail) but not merged - see doNotGroup. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "West End",
+      "catalogId": "tram:west-end",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Haymarket",
+      "catalogId": "tram:haymarket",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop, nearby the Haymarket National Rail station but kept as a distinct catalog entry (different mode, not merged). Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Murrayfield Stadium",
+      "catalogId": "tram:murrayfield-stadium",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Balgreen",
+      "catalogId": "tram:balgreen",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Saughton",
+      "catalogId": "tram:saughton",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Bankhead",
+      "catalogId": "tram:bankhead",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Edinburgh Park Central",
+      "catalogId": "tram:edinburgh-park-central",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Only Edinburgh Park stop in v1 scope - the National Rail 'Edinburgh Park' station is excluded, see notInRegion. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Gyle Centre",
+      "catalogId": "tram:gyle-centre",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Edinburgh Gateway",
+      "catalogId": "tram:edinburgh-gateway",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Gogarburn",
+      "catalogId": "tram:gogarburn",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Ingliston Park & Ride",
+      "catalogId": "tram:ingliston-park-and-ride",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+    },
+    {
+      "mode": "metro",
+      "name": "Edinburgh Airport",
+      "catalogId": "tram:edinburgh-airport",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Edinburgh Trams T50 terminus. Schedule-only v1, no confirmed real-time feed. Stop order carried in the oracle report's list order, not independently verified."
+    }
+  ]
+}
