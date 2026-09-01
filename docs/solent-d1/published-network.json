@@ -1,0 +1,107 @@
+{
+  "city": "solent",
+  "displayName": "Solent (Southampton / Portsmouth)",
+  "status": "planned",
+  "architecture": "two-hub, not single hub-lock. Southampton Central (west) and Portsmouth Harbour (east, with a secondary board at Portsmouth & Southsea) are independent networks that do NOT merge with each other. Not full London-SE-style Option A (flat n=7) — Portsmouth side uses the West-of-England hub+secondary-hub pattern instead of promoting Portsmouth & Southsea to a third independent hub. See direction-model-memo.md before wiring an adapter.",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS) — South Western Railway (dominant, both hubs), Southern (West Coastway), Great Western Railway (through-running), CrossCountry (through-running)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/solent-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Solent oracle clash report",
+      "url": "docs/solent-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Two-hub architecture decision made by this pack applying the same 'genuinely separate destinations, not alternate routes' test london-se-national-rail and Glasgow already used (report's own recommendation, lines 27-31)."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim re-registering with a UK company address. Same blocker as every other UK region packed so far. Not a feed problem — do not treat as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "National Rail static GTFS (Transitland, reference only — Darwin is the live path)",
+      "title": "National Rail static GTFS feed",
+      "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, CC-BY-2.0 UK. Not used to derive this catalog's station list — station names/CRS come from the oracle report's tables, which the report never claims are GTFS-verified. Confirm CRS codes against this feed before adapter wiring."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "National Rail only (SWR, Southern, GWR through-running, CrossCountry through-running) at Southampton Central, Portsmouth Harbour, Portsmouth & Southsea, plus South West Main Line (Waterloo–Weymouth) and Portsmouth Direct Line (Woking–Portsmouth) regional stations. Island Line (Ryde Pier Head–Shanklin) excluded — out-mode, ferry-dependency (Wightlink FastCat from Portsmouth Harbour). Sleeper/compulsory-reservation services excluded generically (report line 11); none named as calling in this region specifically. No buses, trams, light rail, ferries.",
+  "notes": [
+    "D1 oracle is docs/solent-d1/oracle-clash-report.md only. No product lib/cities/solent/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "ARCHITECTURE: two independent hubs (Southampton Central, Portsmouth Harbour), NOT a single hub-lock and NOT full flat Option A. Southampton Central stands alone. Portsmouth Harbour carries a secondary board, Portsmouth & Southsea, on the same corridor/waterfront (West-of-England hub+secondary-hub pattern, not a third independent hub). Do not merge Southampton Central with either Portsmouth station; do not merge Portsmouth Harbour with Portsmouth & Southsea (separate physical stations, separate boards).",
+    "No doNotGroup needed WITHIN any of the three boards — report gives no evidence of separate platform/boarding-section logic per operator at any of Southampton Central, Portsmouth Harbour, or Portsmouth & Southsea (unlike London Bridge/Liverpool Street in london-se-national-rail). Each is a single flat departure board distinguished by destination + operator.",
+    "CRS codes below (SOU, PMH, PMS, FAR, ESL, WSB, WAT) are carried from the oracle report's station-name table and are NOT verified against a live GTFS dump or Darwin response. crsVerified: false throughout. Confirm before adapter wiring.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "No 'lines' array is provided for either hub — no printed route/line map to transcribe, same as every National Rail-only region packed so far. Each hub/board is a flat destination+operator departure list; see direction-model-memo.md.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked (DARWIN_LDB_TOKEN), same as every other UK National Rail region.",
+    "License: OGL 2.0 baseline with NRE amendments for Darwin. Confidence 'unclear' on third-party rider redistribution — same open item as every other UK National Rail region. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', reference-only.",
+    "Boundary consistency checked against the two named adjacent regions' finished packs (per dispatch instruction, not general cross-city context reading): Westbury already flagged as a Solent boundary in docs/west-of-england-d1/published-network.json (throughRunningOnly list); Waterloo already flagged as a Solent/West-of-England boundary in docs/london-se-national-rail-d1/published-network.json (stationGroups.waterloo.boundaryNote). Both are internally consistent with this pack's own boundary flags below — no de-dup action taken here, D2/adapter-time concern per both packs.",
+    "No docs/united-kingdom-ledger.md exists yet (checked before starting this pack; none found in docs/). docs/country-lane.md names the UK ledger retrofit as required before the next NR region — this is another NR region shipped without it (East Midlands, North East, West of England, South Wales, Rest of Wales, Rest of Scotland, West Yorkshire, london-se-national-rail, Glasgow, now Solent). This pack proceeds on the oracle report alone per the dispatch instruction; the Westbury/Waterloo boundary facts recorded here should migrate into that ledger once it exists rather than being re-derived by future regions."
+  ],
+  "stationGroups": [
+    {
+      "id": "southampton-central",
+      "name": "Southampton Central",
+      "crs": "SOU",
+      "crsVerified": false,
+      "operators": ["South Western Railway", "Southern", "Great Western Railway", "CrossCountry"],
+      "doNotGroup": false,
+      "class": "West-side hub. South West Main Line principal terminus for the city (SWR dominant, regional/InterCity). Southern local, GWR (Bristol/Cardiff) and CrossCountry (long-distance) through-running. Single flat departure board, destination + operator.",
+      "role": "primary west-side hub, independent of Portsmouth side",
+      "excludedOperators": []
+    },
+    {
+      "id": "portsmouth-harbour",
+      "name": "Portsmouth Harbour",
+      "crs": "PMH",
+      "crsVerified": false,
+      "operators": ["South Western Railway", "Southern", "Great Western Railway"],
+      "doNotGroup": false,
+      "class": "East-side hub. Portsmouth Direct Line terminus (SWR primary), West Coastway line (Southern), GWR through-running. Also a ferry dock (Ryde Pier Head, Isle of Wight) — ferry leg is out-of-scope mode, not part of this board. Single flat departure board, destination + operator.",
+      "role": "primary east-side hub, independent of Southampton side",
+      "excludedOperators": [
+        {
+          "operator": "Island Line (via Wightlink FastCat ferry connection)",
+          "verdict": "out-mode",
+          "reason": "22-minute Wightlink FastCat ferry crossing to Ryde Pier Head is a separate transport mode, not rail; connection dependency prevents walk-up boardable classification for the onward Island Line service. Report lines 10, 62, 78."
+        }
+      ]
+    },
+    {
+      "id": "portsmouth-southsea",
+      "name": "Portsmouth & Southsea",
+      "crs": "PMS",
+      "crsVerified": false,
+      "operators": ["South Western Railway", "Southern", "Great Western Railway"],
+      "doNotGroup": false,
+      "class": "Secondary board on the same Portsmouth Direct Line / West Coastway corridor as Portsmouth Harbour. Same waterfront, separate physical station — not merged into the Portsmouth Harbour board (same pattern West of England uses for Bristol Temple Meads hub + Bath Spa secondary hub). Key commuter interchange (direct SWR service to London Waterloo via Woking) per report line 41, but not treated as a third independent hub — see direction-model-memo.md.",
+      "role": "secondary board, Portsmouth side (paired with portsmouth-harbour, not merged with it)",
+      "excludedOperators": []
+    }
+  ],
+  "junctions": [
+    { "name": "Fareham", "crs": "FAR", "crsVerified": false, "class": "Junction between South West Main Line and Portsmouth Direct Line. Through-running only, not a regional hub (report line 24: 15 min from both SOU and PMH). Not a stationGroup." },
+    { "name": "Eastleigh", "crs": "ESL", "crsVerified": false, "class": "Junction for Eastleigh–Fareham Line and Eastleigh–Romsey Line. South West Main Line pass-through, SWR only. Local commuter significance, not a hub. Not a stationGroup." }
+  ],
+  "boundaryThroughRunning": [
+    { "name": "Westbury", "crs": "WSB", "crsVerified": false, "boundaryTo": "West of England", "class": "GWR and SWR services cross here from/toward Bristol/Bath. Already flagged as a Solent boundary in docs/west-of-england-d1/published-network.json. Not a merge; not a Solent stationGroup." },
+    { "name": "Waterloo", "crs": "WAT", "crsVerified": false, "boundaryTo": "London & South East National Rail", "class": "SWR London terminus; Solent services are the outlying direction from Waterloo's perspective. Already flagged as a Solent/West-of-England boundary in docs/london-se-national-rail-d1/published-network.json (stationGroups.waterloo.boundaryNote). Not a merge; not a Solent stationGroup." }
+  ],
+  "excludedServices": [
+    { "operator": "Island Line (Ryde Pier Head–Shanklin, via Wightlink FastCat)", "verdict": "out-mode", "station": "Portsmouth Harbour" }
+  ],
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR — same open item as every other UK NR region. OPEN ITEM FOR TIM ONLY, do not resolve here.",
+    "CRS codes (SOU, PMH, PMS, FAR, ESL, WSB, WAT) are carried from the oracle report and NOT independently verified against a live GTFS dump or Darwin response. crsVerified: false on every entry. Confirm before adapter wiring.",
+    "Short-turn workings (H5): the report does not confirm whether every SWR/Southern service runs the full stated corridor (e.g. Waterloo–Weymouth) or whether some short-terminate at an intermediate station such as Southampton. Treat 'no confirmed short turns' as a D1 working assumption only — flag to Nico for explicit confirmation before wiring destination logic.",
+    "Portsmouth & Southsea's ridership/board significance relative to Portsmouth Harbour is asserted only qualitatively by the report ('key commuter interchange', line 41) with no frequency or passenger-count evidence. If materially busier than assumed, Tim may want to revisit whether it deserves full independent-hub status rather than secondary-board status — see direction-model-memo.md open items.",
+    "No docs/united-kingdom-ledger.md exists yet despite being named as required before the next NR region multiple regions ago (East Midlands, North East, West of England, South Wales, Rest of Wales, Rest of Scotland, West Yorkshire, london-se-national-rail, Glasgow, now Solent — none have triggered the retrofit). This pack proceeds on the oracle report alone per the dispatch instruction; the Westbury/Waterloo boundary facts here should migrate into that ledger once it exists.",
+    "Island Line's underlying rail service is National Rail-operated SWR stock, excluded here purely on the ferry-connection-dependency mode test, not on any rail-specific defect — confirm this reasoning holds if Island Line is ever revisited as an Isle of Wight region of its own."
+  ]
+}
