@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 18) {
-  fail(`Expected 18 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 19) {
+  fail(`Expected 19 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 18) {
-  fail(`Expected 18 regions in index, got ${regions.length}`);
+if (regions.length !== 19) {
+  fail(`Expected 19 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -736,6 +736,64 @@ if (resolveRailEntry("Liverpool Central", "liverpool-city-region")) {
   fail("liverpool-city-region Liverpool Central must NOT resolve as a National Rail entry — Merseyrail-only");
 }
 
+// greater-anglia: single primary agency (National Rail), TWO co-equal secondary hubs
+// (Cambridge, Ipswich) alongside the Norwich hub lock — a deliberate departure from
+// west-of-england/solent/thames-valley's single-secondary-hub shape. Peterborough is a flat
+// through-running boundary entry with LNER excluded (excludeOperators), not a doNotGroup hub.
+const ga = getRegion("greater-anglia");
+if (!ga || ga.railCount !== 14 || ga.metroCount !== 0) {
+  fail(`greater-anglia counts rail=${ga?.railCount} metro=${ga?.metroCount}`);
+}
+
+const gaRail = listRailStations("greater-anglia");
+const gaCrsSet = new Set(gaRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLY", "THF", "YRD", "SSD", "BST"]) {
+  if (!gaCrsSet.has(crs)) {
+    fail(`greater-anglia missing ${crs}`);
+  }
+}
+if (gaCrsSet.has("LST")) {
+  fail("greater-anglia must not carry LST anywhere — that CRS belongs to Liverpool Street in london-se-national-rail");
+}
+for (const name of getNotInRegion("greater-anglia")) {
+  if (gaRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in greater-anglia catalog`);
+  }
+}
+
+const gaHub = resolveRailEntry("Norwich", "greater-anglia");
+const gaSecondaryCambridge = resolveRailEntry("Cambridge", "greater-anglia");
+const gaSecondaryIpswich = resolveRailEntry("Ipswich", "greater-anglia");
+if (!gaHub || gaHub.crs !== "NRW") {
+  fail("greater-anglia Norwich must resolve as a rail entry with crs NRW");
+}
+if (!gaSecondaryCambridge || gaSecondaryCambridge.crs !== "CBG") {
+  fail("greater-anglia Cambridge must resolve as a rail entry with crs CBG");
+}
+if (!gaSecondaryIpswich || gaSecondaryIpswich.crs !== "IPS") {
+  fail("greater-anglia Ipswich must resolve as a rail entry with crs IPS");
+}
+
+const gaPeterborough = resolveRailEntry("Peterborough", "greater-anglia");
+if (!gaPeterborough || gaPeterborough.crs !== "PBO") {
+  fail("greater-anglia Peterborough must resolve as a rail entry with crs PBO");
+}
+if (!(gaPeterborough?.excludeOperators ?? []).includes("LNER")) {
+  fail("greater-anglia Peterborough must carry excludeOperators: [LNER] — undecided board-eligibility verdict");
+}
+
+if (resolveRailEntry("Liverpool Street", "greater-anglia")) {
+  fail("greater-anglia must not resolve Liverpool Street — already built in london-se-national-rail, not duplicated");
+}
+
+const gaLowestoft = resolveRailEntry("Lowestoft", "greater-anglia");
+if (!gaLowestoft) {
+  fail("greater-anglia Lowestoft must still resolve by name even with an unverified crs");
+}
+if (gaLowestoft?.crs) {
+  fail("greater-anglia Lowestoft crs must stay null/unverified — the oracle report's own LST code collides with Liverpool Street's real CRS");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -745,5 +803,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary)"
 );
