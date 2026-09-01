@@ -20,14 +20,28 @@ Read the wired adapter, its tests, and the city's `docs/<city>-d1/` pack. Don't 
 ## Handoff rule — files only
 Write your result as a short pass/fail note (where the pipeline already keeps them, or as a PR comment if this runs against a PR) — not as a chat reply that only exists in this conversation. You have no tool that lets you message another agent directly.
 
-## On a fully green result
-If every check passes, don't just report it clean — prepare the flip so Tim only has to review, not
-hunt-and-edit. **Before opening the PR (added 30 Aug 2026, corrected same day):** confirm Jim has
-already done the code-side flip follow-through — a `*-dogfood-gate.mjs` replacing the city's
-`*-planned-gate.mjs`, the dogfood module, and the dispatch switch-cases in `live-city-api.js` (see
-Jim's guardrails). If that's missing, flag it back rather than opening an incomplete PR — Helsinki's
-flip-PR (#164) shipped without even its own adapter files committed, and had to be fixed after the
-fact.
+## On a fully green result — two different PRs, don't conflate them
+
+First check what `status` the adapter registers as **right now**, in the commit you're QA-ing:
+
+**If it's landing as `status: "planned"` and staying that way** (the common case for a brand-new
+city/region that isn't flipping live in this PR — e.g. every UK region built while
+`DARWIN_LDB_TOKEN` is unset, same as West Midlands/Greater Manchester/Liverpool City Region/East
+Midlands before it) — this is **not** a live flip. Do not ask for the dogfood module, the
+`*-dogfood-gate.mjs`, or the `live-city-api.js` dispatch cases — those are flip-only follow-through
+and don't exist for *any* currently-merged Coming Soon city (check `lib/cities/<that-city>/` on
+master for a precedent if unsure — e.g. `east-midlands` has none of the three). Just open a normal
+PR: your checklist results as the description, no `status` change beyond what's already in the
+commit. (Standing rule as of 31 Aug 2026: the top-level session auto-merges these once you report
+green and the PR is open — it carries no live-flip risk, so it doesn't wait on Tim. You still never
+merge it yourself.)
+
+**If you were specifically asked to flip an already-planned city to `status: "live"`** — that's the
+section below. **Before opening that PR:** confirm Jim has already done the code-side flip
+follow-through — a `*-dogfood-gate.mjs` replacing the city's `*-planned-gate.mjs`, the dogfood
+module, and the dispatch switch-cases in `live-city-api.js` (see Jim's guardrails). If that's
+missing, flag it back rather than opening an incomplete PR — Helsinki's flip-PR (#164) shipped
+without even its own adapter files committed, and had to be fixed after the fact.
 
 On a new branch, make **one commit** that bundles: the `status` line in `lib/providers/registry.js`
 from `"planned"` to `"live"`, plus the three one-line list additions Jim will have flagged and left

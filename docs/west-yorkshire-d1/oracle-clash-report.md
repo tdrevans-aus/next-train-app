@@ -47,6 +47,36 @@ National Rail Enquiries (NRE) publishes three-letter CRS codes; match boards to 
 8. **No West Yorkshire Metro light rail in v1 scope.** Mass-transit project is in planning (published Strategic Outline Case March 2024); no passenger rail lines open yet. When operational (future), will add separate infrastructure — tag as West Yorkshire Metro, not National Rail.
 9. **No Metrolink, tram, or regional buses beyond DFT fragmented operators in v1 scope.** Penistone Line and Calder Valley Line are National Rail corridors (Northern Trains).
 
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier).
+
+**Verdict summary (National Rail only; buses excluded by mode):**
+- **Northern Trains at Leeds Station, Bradford Forster Square, Bradford Interchange, Denby Dale, Walsden**: `in` (no compulsory reservations; walk-up boarding standard practice)
+- **LNER (London North Eastern Railway) at Leeds Station and Bradford Forster Square**: `in` (most seats reserved but unreserved seating always available; walk-up boarding permitted)
+- **CrossCountry at Leeds Station and Denby Dale**: `in` (reservations recommended but not compulsory; walk-up boarding allowed)
+- **TransPennine Express at Leeds Station and Walsden (Calder Valley Line)**: `in` (reservations available but not compulsory; walk-up boarding allowed)
+
+**Buses:** Out of v1 scope (local feeder routes, not main-line National Rail). First West Yorkshire, Arriva Yorkshire, Transdev operate fragmented services; available via DFT BODS for future expansion.
+
+**Stations with National Rail overlap:**
+- **Leeds Station (LDS, hub-lock)**: Northern Trains + LNER + CrossCountry + TransPennine Express services on separate platforms within station complex
+- **Bradford Forster Square (BDQ, secondary hub)**: Northern Trains + LNER services
+- **Bradford Interchange (BDI, through-running point)**: Northern Trains services (separate from BDQ rail; bus/rail interchange)
+- **Denby Dale (DDL, through-running point)**: Northern Trains + CrossCountry (Penistone Line, South Yorkshire boundary)
+- **Walsden (WAD, through-running point)**: Northern Trains + TransPennine Express (Calder Valley Line, Greater Manchester boundary)
+
+**No check-in barriers:** Platform access at all in-catalog stations is unrestricted. Ticket checking is on-board by conductors or at platform barriers (low-level gating, not airport-style check-in). Walk-up boarding is unobstructed for all National Rail services listed.
+
+| Service | Calls at in-catalog stations | Compulsory reservation? | Check-in barrier? | Verdict | Evidence URL |
+|---|---|---|---|---|---|
+| **Northern Trains (local/regional)** | Leeds Station, Bradford Forster Square, Bradford Interchange, Denby Dale, Walsden | No (walk-up booking standard) | No | `in` | [Northern Railway: Can I reserve a seat?](https://help.northernrailway.co.uk/s/article/Can-I-reserve-a-seat); [ShowMeTheJourney: UK rail seat reservations](https://showmethejourney.com/train-ticket-guides/seat-reservations-when-booking-online/) — all Northern services allow walk-up travel. |
+| **LNER Regional/InterCity** | Leeds Station, Bradford Forster Square | No (unreserved seating in Coach C always available; walk-up permitted) | No | `in` | [LNER Seat Sure policy](https://www.lner.co.uk/travel-information/make-a-reservation/); [ShowMeTheJourney: UK rail seat reservations](https://showmethejourney.com/train-ticket-guides/seat-reservations-when-booking-online/) — reserved seats bookable but unreserved coaches available on all trains. |
+| **CrossCountry Regional/Long-distance** | Leeds Station, Denby Dale | No (reservations recommended but not compulsory) | No | `in` | [CrossCountry: Seat Reservations](https://www.crosscountrytrains.co.uk/about-us/press/crosscountry-resumes-normal-seat-reservations); [ShowMeTheJourney: UK rail seat reservations](https://showmethejourney.com/train-ticket-guides/seat-reservations-when-booking-online/) — walk-up boarding allowed. |
+| **TransPennine Express Regional/InterCity** | Leeds Station, Walsden | No (reservations available but not compulsory) | No | `in` | [TransPennine Express Seating](https://www.tpexpress.co.uk/travelling-with-us/onboard-facilities/seating-plan); [ShowMeTheJourney: UK rail seat reservations](https://showmethejourney.com/train-ticket-guides/seat-reservations-when-booking-online/) — walk-up boarding permitted. |
+
+**Board eligibility summary:** All National Rail services (Northern Trains, LNER, CrossCountry, TransPennine Express) calling at Leeds Station and other in-catalog West Yorkshire stations pass both boarding-contract tests. No compulsory reservations exist on any service; all allow walk-up travel. No stations have check-in barriers. **All verdicts recorded; no silent omissions.** Buses are out of v1 scope by mode and operate separate infrastructure. **Once National Rail adapter is unblocked at Tim's account level (UK re-registration on RDM), Jim will wire Darwin departures to boards at in-catalog stations with these verdicts enforced in filtering logic.**
+
 ## License
 
 - **Bus GTFS (DFT Bus Open Data Service):**

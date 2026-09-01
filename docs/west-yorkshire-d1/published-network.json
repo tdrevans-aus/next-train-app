@@ -1,0 +1,97 @@
+{
+  "city": "west-yorkshire",
+  "displayName": "West Yorkshire",
+  "status": "planned",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS — Northern Trains and TransPennine Express, plus other cross-boundary operators)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/west-yorkshire-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "West Yorkshire oracle clash report",
+      "url": "docs/west-yorkshire-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Scope is National Rail only — buses (First West Yorkshire, Arriva Yorkshire, Transdev) are deferred; West Yorkshire Metro light rail is planning-only, not built. See scopeNote and jim-handoff.md."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / North East / West of England / South Wales / South Yorkshire. Not a feed problem — do not treat this as a reason to skip building the National Rail catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "Bus static GTFS (DFT aggregator, reference only — buses are out of v1 scope)",
+      "title": "UK Department for Transport Bus Open Data Service",
+      "url": "https://data.bus-data.dft.gov.uk/downloads/",
+      "note": "Onestop ID f-bus~dft~gov~uk, no key required, verified live 31 Aug 2026 per oracle report. Static only, no confirmed real-time source (report §V1 scoping). Not used to build this catalog — buses are deferred to a later wave, not modelled here at all."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "Buses (First West Yorkshire, Arriva Yorkshire, Transdev) and West Yorkshire Metro light rail are EXCLUDED from this catalog. Buses have static-only GTFS via the DFT aggregator with no confirmed public real-time feed (report §V1 scoping, C2/C3 point 6) — deferred to a later wave per the report's own instruction. West Yorkshire Metro light rail is a planning-stage mass-transit project (Strategic Outline Case published March 2024) with no passenger rail lines open yet (report C2/C3 point 8) — there is no network to catalog. If bus real-time emerges or WY Metro opens, either needs its own oracle-clash pass and Luke pack, not a retrofit of this file. See jim-handoff.md.",
+  "notes": [
+    "D1 oracle is docs/west-yorkshire-d1/oracle-clash-report.md only. No product lib/cities/west-yorkshire/ exists yet. Not generated from GTFS. No stopIds in this file. No UK-country ledger exists yet (docs/*-ledger.md glob has only denmark-ledger.md) — this pack proceeds without one, same basis as East Midlands / South Wales / South Yorkshire.",
+    "One agency in scope: National Rail. No parent/child agency structure (unlike South Wales' Valley Lines pairing or South Yorkshire's Supertram pairing) — see hazard-pack.md H1.",
+    "National Rail modes v1: heavy rail, destination-board model (not line+terminus). BLOCKED pending DARWIN_LDB_TOKEN — see coverageGaps. Build the catalog/adapter normally per Nico's report; do not wire the token until it exists.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock: Leeds Station (LDS CRS), 18 platforms (0-17), Network Rail. Secondary hub: Bradford Forster Square (BDQ CRS). Bradford Interchange (BDI CRS) is a separate station, walk-link only to BDQ, not a merge — doNotGroup applies. See hazard-pack.md H6.",
+    "doNotGroup: Leeds Station National Rail platforms vs. bus/coach interchange (report C2/C3 point 3) — forward note only, bus is out of scope so nothing exists yet to group against.",
+    "doNotGroup: Bradford Forster Square (BDQ) vs. Bradford Interchange (BDI) — separate infrastructure, walk-link connect only (report C2/C3 point 2). Both are catalog entries here since BDI also carries National Rail (Northern Trains) service, not just bus.",
+    "Denby Dale (DDL CRS) is a through-running-only boundary station shared with South Yorkshire's own catalog (docs/south-yorkshire-d1/published-network.json already lists it, CRS left null there, 'do not guess'). This pack supplies the CRS code (DDL) per this report's own station table (line 20) — NOT resolved as a merge or ownership decision between the two regions' catalogs; flagged as an open D2 de-dup item in both packs now. See hazard-pack.md.",
+    "Walsden (WAD CRS) is a through-running-only boundary station toward Greater Manchester. No Greater Manchester D1 pack exists yet to cross-check against (still account-blocked/unpacked). Flagged for future de-dup once Greater Manchester is packed.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as every other UK National Rail region packed so far.",
+    "No 'lines' array is provided for National Rail — no printed route/line map to transcribe, same as every National Rail-only region packed so far. This is a flat station list (two hubs, through-running boundary points, regional stations).",
+    "License: OGL 2.0 baseline with NRE amendments for Darwin. Confidence 'unclear' on third-party rider redistribution — same open item as every other UK National Rail region. Bus GTFS (DFT aggregator) is OGL 3.0, confidence 'clear', but is reference-only since buses are out of v1 scope.",
+    "BOARD ELIGIBILITY GAP: the oracle report has no 'Board eligibility' section (docs/board-eligibility-rule.md requirement, adopted 30 Aug 2026). This pack does not fabricate verdicts to fill that gap. See coverageGaps and jim-handoff.md — Mark's QA gate will need this resolved (a Nico follow-up pass, not a Luke guess) before a flip-PR, exactly the same requirement that applies once National Rail unblocks."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Leeds Station",
+    "lockCrs": "LDS",
+    "secondaryLock": "Bradford Forster Square",
+    "secondaryLockCrs": "BDQ",
+    "doNotUse": [
+      "Leeds",
+      "Leeds City Station",
+      "Leeds Rail Station",
+      "Bradford",
+      "Bradford Interchange"
+    ],
+    "note": "Leeds Station (LDS) is the sole primary hub lock (report C2/C3 point 1: 'Leeds Station (LDS) is the hub lock, rail only; bus connections at separate interchange'). Bradford Forster Square (BDQ) is a secondary hub, distinct from Bradford Interchange (BDI) — do not conflate the two Bradford stations under one printed name. See hazard-pack.md H6."
+  },
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists. Same blocker already accepted for every other UK National Rail region.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here.",
+    "BOARD ELIGIBILITY SECTION MISSING from the oracle report — docs/board-eligibility-rule.md requires every oracle-clash report to carry a Board eligibility section (verdict + evidence per service calling at an in-catalog station), or the explicit 'No services other than the in-scope operator...verified' sentence if empty. West Yorkshire's report has neither. This pack does not fabricate verdicts for Northern Trains / TransPennine Express services to fill the gap — that is Nico's job, not Luke's. FLAGGED FOR A NICO FOLLOW-UP PASS before Mark can gate a flip-PR on this city. See jim-handoff.md.",
+    "Buses (First West Yorkshire, Arriva Yorkshire, Transdev): static GTFS only via DFT aggregator, no confirmed public real-time endpoint found (report §V1 scoping). Deferred to a later wave per the report's own instruction; not modelled in this pack at all.",
+    "West Yorkshire Metro light rail: planning-stage mass-transit project (Strategic Outline Case published March 2024), no passenger rail lines open yet (report C2/C3 point 8). No network exists to catalog.",
+    "Denby Dale (DDL) cross-region de-dup with South Yorkshire's own catalog entry — NOT resolved in this pack. Flagged for D2/Jim in both regions' packs.",
+    "Walsden (WAD) cross-region de-dup with a future Greater Manchester pack — cannot be resolved yet since no Greater Manchester D1 pack exists.",
+    "National Rail has no printed route/line map to transcribe — no 'lines' array is provided, only the hub/secondary-hub/through-running/regional station list. See direction-model-memo.md for the destination+operator model recommended instead."
+  ],
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
+    "hub": {
+      "name": "Leeds Station",
+      "crs": "LDS",
+      "class": "hub lock — major interchange, 18 platforms (0-17), Network Rail. Central hub for West Yorkshire Metro transit authority. doNotGroup vs. bus/coach platforms at the same station (forward note, bus out of v1 scope)."
+    },
+    "secondaryHub": {
+      "name": "Bradford Forster Square",
+      "crs": "BDQ",
+      "class": "secondary hub — main Bradford rail station, Network Rail. Connected to Bradford Interchange (BDI) by walk-link only, not a shared platform — doNotGroup applies."
+    },
+    "throughRunningOnly": [
+      { "name": "Bradford Interchange", "crs": "BDI", "class": "through-running point, not a merge with Bradford Forster Square (BDQ) — separate infrastructure, serves both bus (city-centre coach station) and rail (Northern Trains services). doNotGroup vs. BDQ." },
+      { "name": "Denby Dale", "crs": "DDL", "class": "through-running only, South Yorkshire boundary on the Penistone Line. Also carried in docs/south-yorkshire-d1/published-network.json (CRS left null there) — cross-region de-dup NOT resolved, flagged for D2." },
+      { "name": "Walsden", "crs": "WAD", "class": "through-running only, Greater Manchester boundary on the Calder Valley Line. No Greater Manchester pack exists yet to reconcile against." }
+    ],
+    "regional": [
+      { "name": "Huddersfield", "crs": "HUD", "class": "regional station, Penistone Line hub — boundary to South Yorkshire via Denby Dale." },
+      { "name": "Halifax", "crs": "HFX", "class": "regional station, Calder Valley Line." },
+      { "name": "Todmorden", "crs": "TOD", "class": "regional station, Calder Valley Line, West Yorkshire side before the Walsden boundary." },
+      { "name": "Hebden Bridge", "crs": "HBN", "class": "regional station, Calder Valley Line." },
+      { "name": "Keighley", "crs": "KEY", "class": "regional station, Airedale Line from Leeds/Bradford, Northern Trains." }
+    ]
+  }
+}
