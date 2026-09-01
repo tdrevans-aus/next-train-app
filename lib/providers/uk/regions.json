@@ -104,6 +104,13 @@
       "catalogPath": "../../cities/edinburgh/stations.json",
       "modes": ["train", "metro"],
       "feeds": { "train": "darwin", "metro": "dft-bods-static-gtfs-confirmed-no-realtime-not-fetched" }
+    },
+    {
+      "id": "solent",
+      "name": "Solent (Southampton / Portsmouth)",
+      "catalogPath": "../../cities/solent/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 14) {
-  fail(`Expected 14 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 15) {
+  fail(`Expected 15 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 14) {
-  fail(`Expected 14 regions in index, got ${regions.length}`);
+if (regions.length !== 15) {
+  fail(`Expected 15 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -558,6 +558,40 @@ if (resolveMetroEntry("Edinburgh Waverley", "edinburgh")) {
   fail("edinburgh Trams catalog must NOT carry a stop literally named 'Edinburgh Waverley' — doNotGroup vs the rail hub");
 }
 
+// solent: TWO-HUB NR shape, one hub (Portsmouth Harbour) carrying a secondary board
+// (Portsmouth & Southsea) via the West-of-England hub+secondary-hub pattern — not a single
+// hub-lock, not full flat multi-group like london-se-national-rail's seven groups.
+const sol = getRegion("solent");
+if (!sol || sol.railCount !== 7 || sol.metroCount !== 0) {
+  fail(`solent counts rail=${sol?.railCount} metro=${sol?.metroCount}`);
+}
+
+const solRail = listRailStations("solent");
+const solCrsSet = new Set(solRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["SOU", "PMH", "PMS", "FAR", "ESL", "WSB", "WAT"]) {
+  if (!solCrsSet.has(crs)) {
+    fail(`solent missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("solent")) {
+  if (solRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in solent catalog`);
+  }
+}
+
+const solWest = resolveRailEntry("Southampton Central", "solent");
+const solEast = resolveRailEntry("Portsmouth Harbour", "solent");
+const solEastSecondary = resolveRailEntry("Portsmouth & Southsea", "solent");
+if (!solWest || solWest.crs !== "SOU") {
+  fail("solent Southampton Central must resolve as a rail entry with crs SOU");
+}
+if (!solEast || solEast.crs !== "PMH") {
+  fail("solent Portsmouth Harbour must resolve as a rail entry with crs PMH");
+}
+if (!solEastSecondary || solEastSecondary.crs !== "PMS") {
+  fail("solent Portsmouth & Southsea must resolve as a rail entry with crs PMS");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -567,5 +601,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary)"
 );
