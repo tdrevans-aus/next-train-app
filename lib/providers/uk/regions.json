@@ -76,6 +76,13 @@
       "catalogPath": "../../cities/rest-of-wales/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin-tfw-realtime-unconfirmed" }
+    },
+    {
+      "id": "rest-of-scotland",
+      "name": "Rest of Scotland",
+      "catalogPath": "../../cities/rest-of-scotland/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

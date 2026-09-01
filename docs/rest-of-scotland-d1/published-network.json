@@ -1,0 +1,101 @@
+{
+  "city": "rest-of-scotland",
+  "displayName": "Rest of Scotland",
+  "status": "planned",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS — ScotRail primary regional TOC, plus CrossCountry, LNER, and Caledonian Sleeper through-running)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/rest-of-scotland-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Rest of Scotland oracle clash report",
+      "url": "docs/rest-of-scotland-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Scope is National Rail only, four co-equal hub locks (Perth, Inverness, Aberdeen, Dundee) — no single primary hub, see hazard-pack.md H6. Caledonian Sleeper carries an out-reservation board-eligibility verdict and is excluded from all boards in this catalog."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as East Midlands / West Midlands / Greater Manchester / Liverpool City Region / South Wales / West Yorkshire / South Yorkshire. Not a feed problem — do not treat this as a reason to skip building the National Rail catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "National Rail static GTFS (Rail Delivery Group via Transitland, reference only — Darwin is the live path)",
+      "title": "National Rail static GTFS feed",
+      "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, verified live 2026-09-01 per oracle report. CC-BY-2.0 UK. Not used to derive this catalog's station list — station names/CRS codes are taken directly from the oracle report's station name table, not generated from a GTFS dump."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "Four tier-1 hub stations lock the scope (Perth PTH, Inverness INV, Aberdeen ABD, Dundee DDE) — no single primary hub, unlike every other UK region packed so far. See hazard-pack.md H6 for why none is treated as subordinate to another. Caledonian Sleeper (overnight London Euston–Aberdeen/Inverness/Fort William, plus Edinburgh/Glasgow) carries verdict out-reservation and is EXCLUDED from board filtering at every station it calls within this catalog (Aberdeen, Inverness, Fort William, Mallaig) — recorded, not silently dropped. The regional boundary against future Glasgow and Edinburgh regions (Falkirk High area) is explicitly UNRESOLVED per the oracle report and the task brief for this pack — this catalog's own scope stays north of that boundary and does not include Falkirk High or any Central Belt station. See jim-handoff.md.",
+  "notes": [
+    "D1 oracle is docs/rest-of-scotland-d1/oracle-clash-report.md only. No product lib/cities/rest-of-scotland/ exists yet. Not generated from GTFS. No stopIds in this file. No UK-country ledger exists yet (docs/*-ledger.md glob has only denmark-ledger.md) — this pack proceeds without one, same basis as every other UK region packed so far.",
+    "One agency family in scope: National Rail (ScotRail is a TOC within National Rail, not a separately-fed agency — report line 11). No parent/child agency structure like South Wales' Valley Lines or South Yorkshire's Supertram pairing. See hazard-pack.md H1.",
+    "National Rail modes v1: heavy rail, destination-board model (not line+terminus). BLOCKED pending DARWIN_LDB_TOKEN — see coverageGaps. Build the catalog/adapter normally per Nico's report; do not wire the token until it exists.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Four co-equal hub locks: Perth (PTH), Inverness (INV), Aberdeen (ABD), Dundee (DDE) — see nationalRailStations.hubs below and hazard-pack.md H6 for why this pack does not rank them into one primary + secondaries.",
+    "Board eligibility: ScotRail regional, CrossCountry, LNER Highland Chieftain all verdict 'in' (walk-up boardable, no check-in barrier) per oracle report §Board eligibility. Caledonian Sleeper verdict 'out-reservation' (compulsory berth booking) — EXCLUDED from boards at Aberdeen, Inverness, Fort William, Mallaig. See hazard-pack.md.",
+    "Regional boundary vs. future Glasgow/Edinburgh regions (Falkirk High area) is UNRESOLVED in both this report and Glasgow's/Edinburgh's own unbuilt draft reports. This pack does NOT attempt to resolve it and does NOT include Falkirk High or any Central Belt station. Flagged as an open D2 coordination point for whoever builds Glasgow/Edinburgh. See hazard-pack.md doNotGroup proposals.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as every other UK National Rail region packed so far.",
+    "No 'lines' array is provided for National Rail — no printed route/line map to transcribe, same as every National Rail-only region packed so far. This is a flat station list (four hubs, branch termini).",
+    "License: OGL 2.0 baseline with NRE amendments for Darwin. Confidence 'unclear' on third-party rider redistribution — same open item as every other UK National Rail region. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', but is reference-only per above."
+  ],
+  "printedInnerCityNames": {
+    "hubs": [
+      { "lock": "Perth", "lockCrs": "PTH" },
+      { "lock": "Inverness", "lockCrs": "INV" },
+      { "lock": "Aberdeen", "lockCrs": "ABD" },
+      { "lock": "Dundee", "lockCrs": "DDE" }
+    ],
+    "doNotUse": [
+      "Perth Station",
+      "Inverness Station",
+      "Aberdeen Station",
+      "Dundee Station",
+      "Dundee (city)"
+    ],
+    "note": "Four co-equal tier-1 hub locks per the oracle report's station name table (report lines 19-22). None is treated as primary/secondary to another — see hazard-pack.md H6. No relation to Perth, Australia (separate D1 city, docs/perth-d1/) — printed name collision noted for Jim to disambiguate at adapter/UI level; both cities are named 'Perth' but this entry is Perth, Scotland (PTH CRS)."
+  },
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists. Same blocker already accepted for every other UK National Rail region.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here.",
+    "Regional boundary vs. future Glasgow/Edinburgh regions (Falkirk High area) UNRESOLVED — not attempted in this pack per the task brief. Flagged for whoever builds Glasgow/Edinburgh next.",
+    "Four-hub structure (no single primary) is a departure from every prior UK region pack's single-hub-lock shape. Jim's adapter should confirm the board-fetch pattern supports multiple co-equal hub boards for one city before wiring — flagged, not assumed resolved by this pack.",
+    "National Rail has no printed route/line map to transcribe — no 'lines' array is provided, only the hub/branch-terminus station list. See direction-model-memo.md for the destination+operator model recommended instead.",
+    "Caledonian Sleeper out-reservation exclusion applies at Aberdeen, Inverness, Fort William, Mallaig — confirm Jim's filtering logic enforces this per-station, not city-wide (Sleeper is excluded because of its own reservation contract, not because those stations block all through-running)."
+  ],
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
+    "hubs": [
+      {
+        "name": "Perth",
+        "crs": "PTH",
+        "class": "hub lock — tier 1. Junction of three lines: Highland Main Line (north to Inverness), Tayside line (east to Dundee/Aberdeen), cross-country (south to Glasgow/Edinburgh). Physically one main station with east-side wing for Dundee-bound trains. Operators: ScotRail, CrossCountry, LNER — all verdict 'in'. No Caledonian Sleeper service documented at Perth in the report."
+      },
+      {
+        "name": "Inverness",
+        "crs": "INV",
+        "class": "hub lock — tier 1. Terminus of four lines: Highland Main Line, Aberdeen-Inverness line, Kyle of Lochalsh line, Far North Line. 7 platforms. Operators: ScotRail, CrossCountry, LNER Highland Chieftain (all 'in'); Caledonian Sleeper ('out-reservation', excluded from board)."
+      },
+      {
+        "name": "Aberdeen",
+        "crs": "ABD",
+        "class": "hub lock — tier 1. Terminus/junction: Dundee-Aberdeen line (south), Aberdeen-Inverness line (north). 6 platforms. Operators: ScotRail, CrossCountry (both 'in'); Caledonian Sleeper ('out-reservation', excluded from board)."
+      },
+      {
+        "name": "Dundee",
+        "crs": "DDE",
+        "class": "hub lock — tier 1. Junction of three lines: Dundee-Perth line (west), Dundee-Aberdeen line (north), Dundee-Edinburgh line (south, toward Central Belt). South branch is the unresolved regional-boundary direction — see doNotGroup proposals in hazard-pack.md. Operators: ScotRail, CrossCountry — both 'in'. No Caledonian Sleeper service documented at Dundee in the report."
+      }
+    ],
+    "branchTermini": [
+      { "name": "Kyle of Lochalsh", "crs": "KLS", "class": "branch terminus, west coast, Inverness-Kyle line. ScotRail only ('in'). End-of-line, no through-running to other regions." },
+      { "name": "Thurso", "crs": "THR", "class": "Far North Line terminus, northernmost passenger railway in Great Britain. ScotRail only ('in'). No through-running." },
+      { "name": "Wick", "crs": "WCK", "class": "Far North Line terminus. ScotRail only ('in'). No through-running." },
+      { "name": "Mallaig", "crs": "MLG", "class": "West Highland Line terminus (Inverness-Mallaig). ScotRail ('in'); Caledonian Sleeper calls nights only ('out-reservation', excluded from board)." },
+      { "name": "Fort William", "crs": "FTW", "class": "West Highland Line, through-running to Inverness. ScotRail, CrossCountry (both 'in'); Caledonian Sleeper calls nights only ('out-reservation', excluded from board)." }
+    ]
+  }
+}
