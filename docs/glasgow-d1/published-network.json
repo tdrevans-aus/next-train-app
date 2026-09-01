@@ -1,0 +1,144 @@
+{
+  "city": "glasgow",
+  "displayName": "Glasgow",
+  "status": "planned",
+  "architecture": "hybrid, not single hub-lock. One hub-locked circular metro line (Glasgow Subway, hub Buchanan Street, no termini) PLUS two independent National Rail station groups (Glasgow Central, Glasgow Queen Street) that are NOT connected by rail and are NOT merged with each other or with the Subway hub. See jim-handoff.md before wiring an adapter.",
+  "agency": [
+    "Strathclyde Partnership for Transport (SPT) — Glasgow Subway",
+    "National Rail (Darwin/OpenLDBWS) — ScotRail (both termini), Avanti West Coast (Glasgow Central only)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/glasgow-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Glasgow oracle clash report",
+      "url": "docs/glasgow-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule."
+    },
+    {
+      "role": "Glasgow Subway static GTFS (community aggregation, not official SPT)",
+      "title": "TravelWhiz GB-Bus-Train-Metro-GTFS, Scotland region (uk-busmetro-S.gtfs.zip)",
+      "url": "https://github.com/travelwhiz-ltd/GB-Bus-Train-Metro-GTFS",
+      "note": "Report line 3/103-109. CC BY 4.0 for TravelWhiz's own curation; underlying SPT timetable data terms 'unclear' per report. NOT fetched or parsed by this pack — station list below is transcribed from the oracle report's station-name table, not from a GTFS dump. Stop order / stop_sequence NOT verified against this feed — see coverageGaps."
+    },
+    {
+      "role": "Glasgow Subway official feed (does not exist)",
+      "title": "SPT — no public GTFS or GTFS-RT confirmed",
+      "url": "https://www.spt.co.uk/",
+      "note": "Report line 111-117: SPT has not published a public static GTFS or GTFS-RT feed in any source Nico checked (Transitland, Mobility Database, SPT website). Contact data@spt.co.uk to confirm. D1 blocker if an SPT-native feed turns out to be required."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim re-registering with a UK company address. Same blocker as every other UK NR region."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "Glasgow Subway (SPT, 15 stations, single circular line) + National Rail at two termini (Glasgow Central, Glasgow Queen Street) only. No buses, no tram (Glasgow has none in v1 scope), no ferries. Caledonian Sleeper excluded (out-reservation). Falkirk High (FKK) excluded — owned by the Edinburgh region D1 per the exclusive-territory split (report line 11/91); no docs/united-kingdom-ledger.md exists yet to hold this centrally (see notes below), so this boundary fact is recorded here per the report and should migrate to the UK ledger when it exists.",
+  "notes": [
+    "D1 oracle is docs/glasgow-d1/oracle-clash-report.md only. No product lib/cities/glasgow/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "ARCHITECTURE: this city has TWO independent networks under one city id, following the established 'do not force a single hub' pattern (same principle as london-se-national-rail's Option A, applied here at a much smaller scale — 2 NR groups, not 7). Glasgow Subway is a genuine hub-lock (Buchanan Street, one circular line). National Rail is NOT hub-locked to Buchanan Street or to each other: Glasgow Central and Glasgow Queen Street are separate buildings, not rail-connected, serving different corridors (Central: cross-border south/England via Avanti + ScotRail through-running; Queen Street: Scottish regional north via ScotRail only). Do not collapse Central and Queen Street into one board, and do not merge either of them into the Subway's Buchanan Street hub.",
+    "doNotGroup is required: Buchanan Street (Subway, SPT) vs Glasgow Queen Street (National Rail, GLQ CRS) — connected by a travelator but are separate station entities, separate operators, presumably separate fare/gate systems. The travelator is an interchange path, not a merge. Likewise St Enoch (Subway) vs Glasgow Central (National Rail, GLC CRS) — 'within a short walk' per report, not connected, not a merge.",
+    "Neither National Rail group needs INTERNAL doNotGroup the way London Bridge/Liverpool Street did in london-se-national-rail: Glasgow Central has ScotRail + Avanti West Coast, Glasgow Queen Street has ScotRail only, and the report gives no evidence of separate platform/boarding-section logic at either (unlike the London report's explicit per-operator platform language). Treat each as one flat departure board distinguished by destination + operator, same as London Victoria (Southern + Gatwick Express, one board) rather than London Bridge (three boards).",
+    "Glasgow Subway is a TRUE CIRCULAR LINE WITH NO TERMINI — a first for this pipeline (Newcastle/Rotterdam/every prior metro had named termini). Direction is signed on the ground as Inner Circle (anticlockwise) and Outer Circle (clockwise), not as 'towards <terminus>'. See direction-model-memo.md — do not invent a terminus-based label for this line.",
+    "Subway real-time status: UNKNOWN. No GTFS-RT feed found for SPT (report line 79-83, 111-117). Schedule-only v1, HIGH SKIP RISK flagged by Nico and carried forward here unresolved. Do not assume real-time is available.",
+    "Subway stop ORDER is NOT independently verified by this pack. The oracle report's station-name table (lines 22-35) lists the 15 stations in an order that is plausibly the geographic/operational loop sequence, but the report never states this table represents an ordered stop sequence, and no official SPT map or GTFS stop_times dump was consulted by Nico or by this pack. Per this lane's guardrail against guessing at a station graph, the 'stations' array below is carried in the report's table order AS A CANDIDATE ONLY, explicitly flagged unverified — see coverageGaps and hazard-pack.md H5/H6. Confirm against the TravelWhiz GTFS stop_sequence or an official SPT circle map before this array is used to drive an adapter's next-station/direction logic.",
+    "Timezone Europe/London HAS DST (BST/GMT). Not a separate Scotland timezone.",
+    "City lands as 'Coming Soon' (status stays planned; no separate coming-soon enum in registry.js) until (a) National Rail is unblocked (DARWIN_LDB_TOKEN) and (b) the Subway real-time question is resolved with SPT — whichever finishes wiring first still leaves the other mode schedule-only or absent; Jim's call at D2.",
+    "License: Subway (TravelWhiz) confidence 'unclear' on source-data redistribution — CC BY 4.0 covers TravelWhiz's own curation only. National Rail (Darwin/OGL 2.0 + NRE amendments) confidence 'unclear' on third-party rider redistribution, same open item as every other UK NR region. National Rail static GTFS (Transitland, CC-BY-2.0 UK) is reference-only, confidence 'clear', not used to derive this catalog.",
+    "No docs/united-kingdom-ledger.md exists yet. docs/country-lane.md names the UK ledger as a standing retrofit overdue since before East Midlands; still not run as of this pack (same gap flagged in the london-se-national-rail pack on 1 Sep 2026). The Falkirk High boundary decision, the Buchanan Street/Queen Street doNotGroup, and the Central/Queen Street non-merge recorded here should migrate into that ledger once it exists rather than being rediscovered by the Edinburgh or Rest of Scotland lanes. Flagged, not resolved, here."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Buchanan Street",
+    "doNotUse": [
+      "Buchanan Street Subway",
+      "Buchanan Street Station",
+      "Glasgow Queen Street (as a substitute for the Subway hub)"
+    ],
+    "alsoOnSharedApproaches": [
+      "Glasgow Queen Street (travelator-connected National Rail terminus, separate catalog entry, doNotGroup)"
+    ],
+    "nationalRailGroups": {
+      "central": "Glasgow Central",
+      "queenStreet": "Glasgow Queen Street"
+    }
+  },
+  "lines": [
+    {
+      "id": "subway",
+      "number": "Subway",
+      "name": "Glasgow Subway",
+      "officialPageTitle": "Glasgow Subway (SPT) — Inner Circle / Outer Circle",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "Metro",
+      "topology": "circular — no termini",
+      "directions": ["Inner Circle", "Outer Circle"],
+      "termini": [],
+      "shortTurns": [],
+      "branches": [],
+      "hubLock": "Buchanan Street",
+      "stationOrderVerified": false,
+      "stations": [
+        "Partick",
+        "Kelvinhall",
+        "Hillhead",
+        "Kelvinbridge",
+        "St George's Cross",
+        "Cowcaddens",
+        "Buchanan Street",
+        "St Enoch",
+        "Bridge Street",
+        "West Street",
+        "Shields Road",
+        "Kinning Park",
+        "Cessnock",
+        "Ibrox",
+        "Govan"
+      ]
+    }
+  ],
+  "stationGroups": [
+    {
+      "id": "glasgow-central",
+      "name": "Glasgow Central",
+      "crs": "GLC",
+      "crsVerified": false,
+      "operators": ["ScotRail", "Avanti West Coast"],
+      "doNotGroup": false,
+      "class": "Cross-border terminus (south/England) plus ScotRail through-running. Single flat departure board, distinguished by destination + operator (no evidence of separate platform/boarding-section logic in the report, unlike London Bridge/Liverpool Street in london-se-national-rail).",
+      "excludedOperators": [
+        {
+          "operator": "Caledonian Sleeper",
+          "verdict": "out-reservation",
+          "reason": "Compulsory sleeping-car/berth reservation; no walk-up boarding. Report lines 48, 61 with cited evidence (sleeper.scot booking policy, ShowMeTheJourney UK sleeper trains)."
+        }
+      ]
+    },
+    {
+      "id": "glasgow-queen-street",
+      "name": "Glasgow Queen Street",
+      "crs": "GLQ",
+      "crsVerified": false,
+      "operators": ["ScotRail"],
+      "doNotGroup": false,
+      "class": "Scottish regional terminus (Edinburgh, Aberdeen, Inverness, Oban, Mallaig, Dumfries via Carlisle). Single operator, single flat departure board. Directly travelator-connected to Buchanan Street Subway station (doNotGroup — see notes above), but Queen Street itself does not connect by rail to Glasgow Central.",
+      "excludedOperators": []
+    }
+  ],
+  "excludedServices": [
+    { "operator": "Caledonian Sleeper", "verdict": "out-reservation", "station": "Glasgow Central" }
+  ],
+  "coverageGaps": [
+    "Subway real-time (GTFS-RT) status is UNKNOWN — no public feed found by Nico. Schedule-only v1, high skip risk, unresolved by this pack. Contact data@spt.co.uk before wiring RT.",
+    "Subway static GTFS is a community aggregation (TravelWhiz), not an official SPT feed — SPT does not publish one. License confidence 'unclear' on whether the underlying SPT timetable data may be redistributed via a public API; Tim should clarify with TravelWhiz/SPT before launch (report line 105/109).",
+    "Subway stop ORDER (the 'stations' array on the subway line above) is transcribed from the oracle report's table order and is NOT verified against an official SPT circle map or the TravelWhiz GTFS stop_sequence. Flagged as stationOrderVerified: false. Do not treat this array as ground truth for a live adapter's next-station computation without independent confirmation — see hazard-pack.md H5/H6.",
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR — same open item as every other UK NR region.",
+    "CRS codes (GLC, GLQ) are carried from the oracle report and NOT independently verified against a live GTFS dump or Darwin response. crsVerified: false on both stationGroups entries. Confirm before adapter wiring.",
+    "Falkirk High (FKK) boundary with Edinburgh region: excluded per report line 11/91 (Tim's decision, exclusive-territory split, no merged board). This is a cross-region fact that belongs in a future docs/united-kingdom-ledger.md — not yet created (overdue retrofit per docs/country-lane.md, also flagged unresolved in the london-se-national-rail pack). Recorded here per the report only.",
+    "No docs/united-kingdom-ledger.md exists yet despite being named as required before the next NR region multiple regions ago. This pack proceeds on the oracle report alone per the dispatch instruction (read only the report; no cross-region inference from other cities' packs)."
+  ]
+}
