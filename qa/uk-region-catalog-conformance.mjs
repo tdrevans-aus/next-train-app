@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 10) {
-  fail(`Expected 10 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 11) {
+  fail(`Expected 11 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 10) {
-  fail(`Expected 10 regions in index, got ${regions.length}`);
+if (regions.length !== 11) {
+  fail(`Expected 11 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -388,6 +388,40 @@ if (!rowTertiary || rowTertiary.crs !== "CMN") {
   fail("rest-of-wales Carmarthen must resolve as a rail entry with crs CMN (corridor-significant, not hub-locked)");
 }
 
+const ros = getRegion("rest-of-scotland");
+if (!ros || ros.railCount !== 9 || ros.metroCount !== 0) {
+  fail(`rest-of-scotland counts rail=${ros?.railCount} metro=${ros?.metroCount}`);
+}
+
+const rosRail = listRailStations("rest-of-scotland");
+const rosCrsSet = new Set(rosRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["PTH", "INV", "ABD", "DDE", "KLS", "THR", "WCK", "MLG", "FTW"]) {
+  if (!rosCrsSet.has(crs)) {
+    fail(`rest-of-scotland missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("rest-of-scotland")) {
+  if (rosRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in rest-of-scotland catalog`);
+  }
+}
+
+// Four co-equal hub locks — no single primary hub, unlike every other UK region above.
+for (const [name, crs] of [
+  ["Perth", "PTH"],
+  ["Inverness", "INV"],
+  ["Aberdeen", "ABD"],
+  ["Dundee", "DDE"],
+]) {
+  const hit = resolveRailEntry(name, "rest-of-scotland");
+  if (!hit || hit.crs !== crs) {
+    fail(`rest-of-scotland ${name} must resolve as a rail entry with crs ${crs}`);
+  }
+}
+if (resolveRailEntry("Falkirk High", "rest-of-scotland")) {
+  fail("rest-of-scotland must not resolve Falkirk High — unresolved Central Belt boundary, not a catalog station");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -397,5 +431,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs)"
 );

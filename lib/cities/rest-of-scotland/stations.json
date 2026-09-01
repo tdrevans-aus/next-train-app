@@ -1,0 +1,102 @@
+{
+  "region": "rest-of-scotland",
+  "displayName": "Rest of Scotland",
+  "timeZone": "Europe/London",
+  "source": "docs/rest-of-scotland-d1/published-network.json (Nico oracle-clash-report, 1 Sep 2026)",
+  "retrievedAt": "2026-09-01",
+  "feeds": {
+    "train": "darwin"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as every other UK region packed so far.",
+    "FOUR co-equal tier-1 hub locks — Perth (PTH), Inverness (INV), Aberdeen (ABD), Dundee (DDE) — not one primary hub with secondaries. This is a structural departure from every other UK region packed so far. See docs/rest-of-scotland-d1/hazard-pack.md H6 and jim-handoff.md.",
+    "Caledonian Sleeper carries board-eligibility verdict out-reservation (compulsory berth booking) and is EXCLUDED from the board at Aberdeen, Inverness, Fort William, and Mallaig specifically — not city-wide, since it does not call at Perth or Dundee at all. ScotRail, CrossCountry, and LNER Highland Chieftain all verdict 'in' at every station they call. See lib/providers/rest-of-scotland.js.",
+    "Perth here is Perth, Scotland (PTH CRS) — NOT the existing live city Perth, Australia (lib/cities/perth/, city id 'perth'). Same printed station name, two entirely separate D1 cities/city ids. Flagged for Tim/product: no UI disambiguation string has been chosen yet.",
+    "Regional boundary vs. future Glasgow/Edinburgh regions (Falkirk High area) is UNRESOLVED — this catalog stays north of that boundary and does not include Falkirk High or any Central Belt station.",
+    "No 'lines' array — no printed National Rail route/line map exists for Darwin, same structural fact as every National Rail-only region packed so far. Flat station list only."
+  ],
+  "notInRegion": [],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Perth",
+      "crs": "PTH",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — tier 1, co-equal with Inverness/Aberdeen/Dundee. Three-line junction (Highland Main Line north, Tayside line east, cross-country south). ScotRail, CrossCountry, LNER all 'in'. No Caledonian Sleeper documented here. NOT Perth, Australia (separate city id 'perth') — see notes."
+    },
+    {
+      "mode": "train",
+      "name": "Inverness",
+      "crs": "INV",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — tier 1, co-equal with Perth/Aberdeen/Dundee. Four-line terminus (Highland Main Line, Aberdeen-Inverness line, Kyle of Lochalsh line, Far North Line), 7 platforms. ScotRail, CrossCountry, LNER Highland Chieftain all 'in'; Caledonian Sleeper 'out-reservation', excluded from board."
+    },
+    {
+      "mode": "train",
+      "name": "Aberdeen",
+      "crs": "ABD",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — tier 1, co-equal with Perth/Inverness/Dundee. Terminus/junction: Dundee-Aberdeen line (south), Aberdeen-Inverness line (north), 6 platforms. ScotRail, CrossCountry both 'in'; Caledonian Sleeper 'out-reservation', excluded from board."
+    },
+    {
+      "mode": "train",
+      "name": "Dundee",
+      "crs": "DDE",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — tier 1, co-equal with Perth/Inverness/Aberdeen. Junction of three lines: Dundee-Perth (west), Dundee-Aberdeen (north), Dundee-Edinburgh (south — unresolved Central Belt boundary direction, see notes). ScotRail, CrossCountry both 'in'. No Caledonian Sleeper documented here."
+    },
+    {
+      "mode": "train",
+      "name": "Kyle of Lochalsh",
+      "crs": "KLS",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "branch terminus, west coast, Inverness-Kyle line. ScotRail only, 'in'. End-of-line, no through-running."
+    },
+    {
+      "mode": "train",
+      "name": "Thurso",
+      "crs": "THR",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Far North Line terminus, northernmost passenger railway station in Great Britain. ScotRail only, 'in'. No through-running."
+    },
+    {
+      "mode": "train",
+      "name": "Wick",
+      "crs": "WCK",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Far North Line terminus. ScotRail only, 'in'. No through-running."
+    },
+    {
+      "mode": "train",
+      "name": "Mallaig",
+      "crs": "MLG",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "West Highland Line terminus (Inverness-Mallaig). ScotRail 'in'; Caledonian Sleeper calls nights only, 'out-reservation', excluded from board."
+    },
+    {
+      "mode": "train",
+      "name": "Fort William",
+      "crs": "FTW",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "West Highland Line, through-running to Inverness. ScotRail, CrossCountry both 'in'; Caledonian Sleeper calls nights only, 'out-reservation', excluded from board."
+    }
+  ]
+}
