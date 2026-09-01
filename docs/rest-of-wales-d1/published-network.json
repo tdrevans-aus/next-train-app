@@ -1,5 +1,5 @@
 {
-  "city": "uk-wales",
+  "city": "rest-of-wales",
   "displayName": "Rest of Wales",
   "status": "planned",
   "agency": [
@@ -32,7 +32,7 @@
   "scopeNote": "Single-agency pack: all in-catalog stations are National Rail (Transport for Wales as franchisee, Darwin/OpenLDBWS feed). Unlike South Wales, there is no second network to exclude — TfW operates no separate local rail service in Rest of Wales the way Valley Lines exists in South Wales (report line 3: 'no dedicated local rail operator'). The open gap here is different in kind: whether TfW's real-time data is actually carried through Darwin/OpenLDBWS is UNCONFIRMED (report lines 34, 67, 121-127), distinct from the plain account-level block below. See coverageGaps.",
   "notes": [
     "D1 oracle is docs/rest-of-wales-d1/oracle-clash-report.md only. No product lib/cities/uk-wales/ exists yet. Not generated from GTFS. No stopIds in this file.",
-    "city id is 'uk-wales' per the oracle report's explicit C2/C3 instruction (point 1) and docs/uk-architecture.md's region-id table (uk-wales = Rest of Wales). FLAG: South Wales' merged pack used city id 'south-wales', not 'uk-south-wales', even though uk-architecture.md's table lists 'uk-south-wales' — an inconsistency between that pack and the architecture doc. This pack follows its own oracle report's explicit instruction rather than guessing which convention is authoritative; flagged for Jim/Tim to reconcile, not silently resolved either way. See jim-handoff.md.",
+    "city id CORRECTED post-pack from 'uk-wales' (this pack's original value, per the oracle report's explicit C2/C3 instruction and docs/uk-architecture.md's region-id table as it stood at pack-writing time) to 'rest-of-wales'. docs/uk-architecture.md's region-id table used a stale 'uk-' prefix convention and has since been fixed (commit add8d45) to match the plain kebab-case convention every UK region has used since West Yorkshire (south-wales, west-yorkshire, north-east, etc. — not uk-south-wales/uk-wales). Jim applied this correction when wiring lib/providers/rest-of-wales.js and registry.js, per explicit session direction, rather than leaving the pack's stale id to propagate into the registry. See jim-handoff.md open item 3 for the original flag.",
     "Timezone Europe/London HAS DST (BST/GMT).",
     "Hub lock: Wrexham General (WRX). Junction of North Wales Main Line and Borderlands Line; explicitly NOT Wrexham Central (southern Borderlands terminus, lower connectivity). See hazard-pack.md H6.",
     "Three corridors, no inter-corridor through-running within Wales: North Wales <-> Mid Wales routes via Shrewsbury (England); Mid Wales <-> West Wales routes via Swansea/South Wales region. Each corridor is operationally independent within this catalog (report C2/C3 point 4).",

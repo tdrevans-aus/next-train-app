@@ -69,6 +69,13 @@
       "catalogPath": "../../cities/west-yorkshire/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "rest-of-wales",
+      "name": "Rest of Wales",
+      "catalogPath": "../../cities/rest-of-wales/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin-tfw-realtime-unconfirmed" }
     }
   ]
 }
