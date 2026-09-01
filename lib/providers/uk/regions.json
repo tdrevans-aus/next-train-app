@@ -111,6 +111,13 @@
       "catalogPath": "../../cities/solent/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "thames-valley",
+      "name": "Thames Valley (Reading / Oxford)",
+      "catalogPath": "../../cities/thames-valley/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

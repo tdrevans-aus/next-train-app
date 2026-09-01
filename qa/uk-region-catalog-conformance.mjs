@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 15) {
-  fail(`Expected 15 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 16) {
+  fail(`Expected 16 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 15) {
-  fail(`Expected 15 regions in index, got ${regions.length}`);
+if (regions.length !== 16) {
+  fail(`Expected 16 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -592,6 +592,41 @@ if (!solEastSecondary || solEastSecondary.crs !== "PMS") {
   fail("solent Portsmouth & Southsea must resolve as a rail entry with crs PMS");
 }
 
+// thames-valley: HUB + SECONDARY-HUB NR shape, reusing West of England/Solent's pattern, but
+// Oxford (the secondary hub) needs an internal doNotGroup split — GWR vs Chiltern Railways on
+// separate platforms/infrastructure, one CRS (OXF) split into two catalog entries. FIRST TIME a
+// secondary hub (not a primary terminus) has needed this in the pipeline.
+const tv = getRegion("thames-valley");
+if (!tv || tv.railCount !== 8 || tv.metroCount !== 0) {
+  fail(`thames-valley counts rail=${tv?.railCount} metro=${tv?.metroCount}`);
+}
+
+const tvRail = listRailStations("thames-valley");
+const tvCrsSet = new Set(tvRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["RDG", "OXF", "SWI", "BAN", "WSB", "HEY", "DID"]) {
+  if (!tvCrsSet.has(crs)) {
+    fail(`thames-valley missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("thames-valley")) {
+  if (tvRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in thames-valley catalog`);
+  }
+}
+
+const tvHub = resolveRailEntry("Reading", "thames-valley");
+const tvSecondaryGwr = resolveRailEntry("Oxford (GWR)", "thames-valley");
+const tvSecondaryChiltern = resolveRailEntry("Oxford (Chiltern)", "thames-valley");
+if (!tvHub || tvHub.crs !== "RDG" || tvHub.doNotGroup !== false) {
+  fail("thames-valley Reading must resolve as a rail entry with crs RDG and doNotGroup false");
+}
+if (!tvSecondaryGwr || tvSecondaryGwr.crs !== "OXF" || tvSecondaryGwr.doNotGroup !== true) {
+  fail("thames-valley Oxford (GWR) must resolve as a rail entry with crs OXF and doNotGroup true");
+}
+if (!tvSecondaryChiltern || tvSecondaryChiltern.crs !== "OXF" || tvSecondaryChiltern.doNotGroup !== true) {
+  fail("thames-valley Oxford (Chiltern) must resolve as a rail entry with crs OXF and doNotGroup true");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -601,5 +636,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split)"
 );
