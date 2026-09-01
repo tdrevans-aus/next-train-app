@@ -1,0 +1,84 @@
+{
+  "region": "solent",
+  "displayName": "Solent (Southampton / Portsmouth)",
+  "timeZone": "Europe/London",
+  "source": "docs/solent-d1/published-network.json (Nico oracle-clash-report, 1 Sep 2026)",
+  "retrievedAt": "2026-09-01",
+  "feeds": {
+    "train": "darwin"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as every other UK region in this pipeline.",
+    "Single agency (National Rail), single mode (train). No light rail, no metro, no buses. Island Line excluded entirely (out-mode, Wightlink FastCat ferry dependency — see published-network.json excludedServices), not catalogued here in any form.",
+    "TWO-HUB architecture, not a single hub-lock and not full flat multi-group: Southampton Central stands alone; Portsmouth Harbour is the east-side hub with Portsmouth & Southsea as a secondary board on the same corridor (West-of-England hub+secondary-hub pattern, reused for the Portsmouth side only — Southampton has no comparable secondary-station candidate). Southampton Central and the Portsmouth pair are independent of each other — do not merge.",
+    "No doNotGroup needed at any of the three boards — report gives no evidence of separate platform/boarding-section logic per operator at Southampton Central, Portsmouth Harbour, or Portsmouth & Southsea (unlike London Bridge/Liverpool Street in london-se-national-rail).",
+    "CRS codes (SOU, PMH, PMS, FAR, ESL, WSB, WAT) are carried from the oracle report's tables and are NOT verified against a live GTFS dump or Darwin response — crsVerified: false throughout, confirm before relying on them for a live board.",
+    "Fareham and Eastleigh are catalogued flat as through-running junctions, not stationGroups — no internal hub significance per the report. Westbury and Waterloo are catalogued flat as boundary-only through-running stations (West of England and London & South East National Rail respectively) — not merge points, D2 de-dup concern for whichever region's adapter is wired second, consistent with both those regions' own already-merged packs."
+  ],
+  "notInRegion": [],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Southampton Central",
+      "crs": "SOU",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — west-side hub, stands alone, independent of the Portsmouth side"
+    },
+    {
+      "mode": "train",
+      "name": "Portsmouth Harbour",
+      "crs": "PMH",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — east-side hub, paired with Portsmouth & Southsea as a secondary board (not merged)"
+    },
+    {
+      "mode": "train",
+      "name": "Portsmouth & Southsea",
+      "crs": "PMS",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "hub secondary — same corridor/waterfront as Portsmouth Harbour, separate physical station and board, not a third independent hub"
+    },
+    {
+      "mode": "train",
+      "name": "Fareham",
+      "crs": "FAR",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running junction between South West Main Line and Portsmouth Direct Line, not a hub, not a stationGroup"
+    },
+    {
+      "mode": "train",
+      "name": "Eastleigh",
+      "crs": "ESL",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running junction, South West Main Line pass-through, SWR only, not a stationGroup"
+    },
+    {
+      "mode": "train",
+      "name": "Westbury",
+      "crs": "WSB",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, boundary to West of England region — not a merge point"
+    },
+    {
+      "mode": "train",
+      "name": "Waterloo",
+      "crs": "WAT",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "through-running only, boundary to London & South East National Rail region — not a merge point"
+    }
+  ]
+}
