@@ -70,17 +70,25 @@ Deep-briefed now: **1, 2, 3**. Everything else is an ID + feed reservation. Do n
 | `uk-london-se-nr` | London & South East NR | Termini + commuter belt. Split later if it hurts | Darwin | — |
 | `uk-manchester` | Greater Manchester | TfGM / Bee / Metrolink | Darwin + TfGM | Metrolink |
 | `uk-liverpool` | Liverpool City Region | Absorbs EP corridor | Darwin | Merseyrail brand |
-| `uk-west-yorkshire` | West Yorkshire | Leeds CA | Darwin | — |
-| `uk-south-yorkshire` | South Yorkshire | Sheffield + Supertram | Darwin + tram | Supertram |
-| `uk-north-east` | North East | Nexus Metro | Darwin + Nexus | Metro |
-| `uk-east-midlands` | East Midlands | Nottm / Derby / Leicester + NET | Darwin + NET | NET |
-| `uk-west-of-england` | West of England | Bristol / Bath CA | Darwin | — |
-| `uk-south-wales` | South Wales | Cardiff + Valleys, TfW culture | Darwin | — |
-| `uk-wales` | Rest of Wales | Same operator, lower density | Darwin | — |
-| `uk-glasgow` | Glasgow | ScotRail + Subway | Darwin + SPT | Subway |
-| `uk-edinburgh` | Edinburgh | Second Scottish city + trams | Darwin + trams | Trams |
-| `uk-scotland` | Rest of Scotland | One ScotRail residual | Darwin | — |
-| `uk-england-rest` | Residual England | Catch-all until testers appear | Darwin | — |
+| `west-yorkshire` | West Yorkshire | Leeds CA | Darwin | — |
+| `south-yorkshire` | South Yorkshire | Sheffield + Supertram | Darwin + tram | Supertram |
+| `north-east` | North East | Nexus Metro | Darwin + Nexus | Metro |
+| `east-midlands` | East Midlands | Nottm / Derby / Leicester + NET | Darwin + NET | NET |
+| `west-of-england` | West of England | Bristol / Bath CA | Darwin | — |
+| `south-wales` | South Wales | Cardiff + Valleys, TfW culture | Darwin | — |
+| `rest-of-wales` | Rest of Wales | Same operator, lower density | Darwin | — |
+| `glasgow` | Glasgow | ScotRail + Subway | Darwin + SPT | Subway |
+| `edinburgh` | Edinburgh | Second Scottish city + trams | Darwin + trams | Trams |
+| `rest-of-scotland` | Rest of Scotland | One ScotRail residual | Darwin | — |
+| `leftover-england` | Residual England | Catch-all until testers appear | Darwin | — |
+
+**Naming note (updated 1 Sep 2026):** the `uk-` prefix above was the original plan but was dropped
+starting with West Yorkshire/South Yorkshire/North East/East Midlands onward — every region actually
+registered in `lib/providers/registry.js` since then uses a plain kebab-case id with no prefix (check
+that file for ground truth, this table is a planning reference and can drift). The first five regions
+(`uk-west-midlands`, `uk-ellesmere-port`, `uk-london-tfl`, `uk-manchester`, `uk-liverpool`) kept their
+original prefixed ids since they were already registered before the convention changed — don't rename
+them retroactively.
 
 **Not ids:** TOC names, `eastern`, `southern`, `uk` as a dump of all CRS.
 
