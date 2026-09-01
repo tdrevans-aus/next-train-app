@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 9) {
-  fail(`Expected 9 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 10) {
+  fail(`Expected 10 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 9) {
-  fail(`Expected 9 regions in index, got ${regions.length}`);
+if (regions.length !== 10) {
+  fail(`Expected 10 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -344,6 +344,50 @@ if (!wyBdi || wyBdi.crs !== "BDI") {
   fail("west-yorkshire Bradford Interchange must resolve as a rail entry with crs BDI (doNotGroup vs BDQ)");
 }
 
+const row = getRegion("rest-of-wales");
+if (!row || row.railCount !== 17 || row.metroCount !== 0) {
+  fail(`rest-of-wales counts rail=${row?.railCount} metro=${row?.metroCount}`);
+}
+
+const rowRail = listRailStations("rest-of-wales");
+const rowCrsSet = new Set(rowRail.map((s) => s.crs).filter(Boolean));
+for (const crs of [
+  "WRX", "LLJ", "CON", "BNG", "HOY",
+  "WEL", "MCH", "AYW", "PWL",
+  "CMN", "WLD", "NAR", "TNB", "PMD", "MLH", "FGW", "LLE",
+]) {
+  if (!rowCrsSet.has(crs)) {
+    fail(`rest-of-wales missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("rest-of-wales")) {
+  if (rowRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in rest-of-wales catalog`);
+  }
+}
+
+const rowHub = resolveRailEntry("Wrexham General", "rest-of-wales");
+if (!rowHub || rowHub.crs !== "WRX") {
+  fail("rest-of-wales Wrexham General must resolve as a rail entry with crs WRX");
+}
+if (resolveRailEntry("Wrexham Central", "rest-of-wales")) {
+  fail("rest-of-wales must not resolve Wrexham Central — lower-connectivity terminus, not the hub lock");
+}
+if (resolveRailEntry("Chester", "rest-of-wales")) {
+  fail("rest-of-wales must not resolve Chester — England pass-through, not a catalog station");
+}
+if (resolveRailEntry("Shrewsbury", "rest-of-wales")) {
+  fail("rest-of-wales must not resolve Shrewsbury — England pass-through, not a catalog station");
+}
+const rowSecondary = resolveRailEntry("Aberystwyth", "rest-of-wales");
+const rowTertiary = resolveRailEntry("Carmarthen", "rest-of-wales");
+if (!rowSecondary || rowSecondary.crs !== "AYW") {
+  fail("rest-of-wales Aberystwyth must resolve as a rail entry with crs AYW (corridor-significant, not hub-locked)");
+}
+if (!rowTertiary || rowTertiary.crs !== "CMN") {
+  fail("rest-of-wales Carmarthen must resolve as a rail entry with crs CMN (corridor-significant, not hub-locked)");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -353,5 +397,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0)"
 );
