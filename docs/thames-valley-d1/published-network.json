@@ -1,0 +1,98 @@
+{
+  "city": "thames-valley",
+  "displayName": "Thames Valley (Reading / Oxford)",
+  "status": "planned",
+  "architecture": "hub + secondary-hub, same pattern as West of England (Bristol Temple Meads/Bath Spa) and Solent (Portsmouth Harbour/Portsmouth & Southsea), reused here — NOT full flat Option A. Reading (RDG) is the hub lock: single flat board, three operators (GWR/CrossCountry/SWR), no internal doNotGroup (report line 36 explicitly rules out multi-operator platform mixing). Oxford (OXF) is the secondary hub, but UNLIKE Bath Spa/Portsmouth & Southsea it needs an internal doNotGroup split: GWR main line and Chiltern Railways' Marylebone branch sit on separate platforms/infrastructure at Oxford and require separate boarding logic per operator (report line 37, 56, C2/C3 point 4/6). See direction-model-memo.md before wiring an adapter.",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS) — Great Western Railway (dominant, Reading + Oxford main line), CrossCountry (through-running at Reading), Chiltern Railways (Oxford/Banbury, Marylebone branch), South Western Railway (through-running at Westbury boundary)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/thames-valley-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Thames Valley oracle clash report",
+      "url": "docs/thames-valley-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Hub + secondary-hub architecture decision applies the same pattern West of England and Solent already established (report's own C2/C3 points 2-4 and 6 name this explicitly), with an added internal doNotGroup at Oxford that neither of those regions' secondary hubs needed."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim re-registering with a UK company address. Same blocker as every other UK region packed so far. Not a feed problem — do not treat as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "National Rail static GTFS (Transitland, reference only — Darwin is the live path)",
+      "title": "National Rail static GTFS feed",
+      "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, CC-BY-2.0 UK. Not used to derive this catalog's station list — station names/CRS come from the oracle report's tables, which the report never claims are GTFS-verified. Confirm CRS codes against this feed before adapter wiring."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "National Rail only (GWR, CrossCountry, Chiltern Railways, South Western Railway through-running) at Reading and Oxford, plus surrounding regional/through-running stations (Swindon, Banbury, Westbury, Henley-on-Thames, Didcot Parkway). No buses, no light rail, no trams, no Elizabeth Line in v1 scope (TfL Elizabeth Line also serves Reading but is a separate mode/operator, out-mode per report point 7). No Eurostar, no sleeper services named in this report's scope.",
+  "notes": [
+    "D1 oracle is docs/thames-valley-d1/oracle-clash-report.md only. No product lib/cities/thames-valley/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "ARCHITECTURE: hub + secondary-hub (Reading hub-lock, Oxford secondary), same shape West of England and Solent already used. UNLIKE those regions' secondary hubs, Oxford needs doNotGroup: true internally (GWR main line vs Chiltern Marylebone branch, separate platforms/infrastructure). Reading itself does NOT need doNotGroup (report line 36: no multi-operator platform mixing, standard flat board applies despite three operators). See direction-model-memo.md.",
+    "Modes v1: National Rail heavy rail only. No light rail, no metro, no buses, no Elizabeth Line (report C2/C3 point 7 — TfL Elizabeth Line calls at Reading but is a separate mode/operator, out of v1 scope).",
+    "National Rail has NO static GTFS publication from NRE directly (Darwin is realtime-only, SOAP API). Transitland republishes a derived GTFS (CC-BY-2.0 UK, no key required) as a reference-only schedule source, not pulled to derive this catalog. Same open product-architecture question as every prior UK NR region: does Next Train support a Darwin-only next-train model, or does it need a GTFS base layer? Not resolved in this pack — see coverageGaps and jim-handoff.md.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "CRS codes below (RDG, OXF, SWI, BAN, WSB, HEY, DID) are carried from the oracle report's station-name table and are NOT verified against a live GTFS dump or Darwin response. crsVerified: false throughout. Confirm before adapter wiring.",
+    "No 'lines' array is provided for either hub — no printed route/line map exists for National Rail in the oracle report; Darwin is a per-station real-time departure-board product. See direction-model-memo.md for the destination+operator model recommended instead of line+terminus.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked (DARWIN_LDB_TOKEN), same as every other UK National Rail region.",
+    "SKIP RISK — Chiltern Railways operator transition: Chiltern moves from Arriva to DfT Operator on 20 September 2026 (report skip risk 3, per March 2026 infrastructure update). Not a blocker, but a timing flag for whoever wires this adapter after that date — verify Darwin correctly attributes Chiltern services and that any operator/agency mapping reflects the new structure post-transition.",
+    "License: OGL 2.0 baseline with NRE amendments for Darwin. Confidence 'unclear' on third-party rider redistribution — same open item as every other UK National Rail region. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', reference-only.",
+    "Boundary consistency checked against the two named adjacent regions' finished packs (per dispatch instruction, not general cross-city context reading): Westbury already flagged as a Thames Valley/Solent boundary in docs/west-of-england-d1/published-network.json (throughRunningOnly list) and independently in docs/solent-d1/published-network.json (boundaryThroughRunning list). Paddington (GWR London terminus) is built as a stationGroup in docs/london-se-national-rail-d1/published-network.json with a boundaryNote naming West of England (not Thames Valley) as the corridor continuation — Thames Valley's own GWR services to/from Reading/Oxford originate at that same Paddington, which is NOT a Thames Valley station and is not built here. Marylebone (Chiltern's London terminus) is NOT built in london-se-national-rail's pack either (sits in that pack's notBuilt.secondary-termini list) — no double-build conflict exists today for either London terminus; flagged for D2 if either region later promotes its terminus to a built stationGroup.",
+    "No docs/united-kingdom-ledger.md exists yet (checked before starting this pack; none found in docs/). docs/country-lane.md names the UK ledger retrofit as required before the next NR region — this is another NR region shipped without it. This pack proceeds on the oracle report alone per the dispatch instruction; the Westbury/Paddington/Marylebone boundary facts recorded here should migrate into that ledger once it exists rather than being re-derived by future regions."
+  ],
+  "stationGroups": [
+    {
+      "id": "reading",
+      "name": "Reading",
+      "crs": "RDG",
+      "crsVerified": false,
+      "operators": ["Great Western Railway", "CrossCountry", "South Western Railway"],
+      "doNotGroup": false,
+      "class": "Hub lock — principal rail terminus and interchange for Thames Valley; 15 platforms, busiest station in Berkshire and third busiest in South East England outside London (report line 15). GWR Paddington services, Bristol/Bath connections, CrossCountry long-distance, SWR through-running from Solent. No multi-operator platform mixing (unlike London Bridge/Liverpool Street in london-se-national-rail) — boards must show all three operators but as one flat destination+operator list (report line 36, C2/C3 point 4).",
+      "role": "hub lock, single lock-point and primary interchange",
+      "excludedOperators": []
+    },
+    {
+      "id": "oxford",
+      "name": "Oxford",
+      "crs": "OXF",
+      "crsVerified": false,
+      "operators": ["Great Western Railway", "Chiltern Railways"],
+      "doNotGroup": true,
+      "doNotGroupReason": "Two operators on different platforms and different infrastructure at one physical station — GWR main line (London/Reading/Bristol direction) vs Chiltern Railways (Marylebone branch). Report line 16, 37, 56, C2/C3 point 4/6: 'separate boarding logic required per operator... Two separate operators on different infrastructure. Boards must show both.' Not a merge into one flat board.",
+      "class": "Hub secondary — Oxford city station; direct service to Reading (22-32 min frequency, report line 16). GWR regional connections to London/Reading/Bristol direction; Chiltern Railways services to London Marylebone. Regional through-hub for north-south routing (GWR line) and east-west routing (Chiltern line).",
+      "role": "secondary hub, subordinate to Reading on the same corridor (unlike Solent's genuinely-independent Southampton/Portsmouth hubs)",
+      "excludedOperators": []
+    }
+  ],
+  "throughRunningOnly": [
+    { "name": "Swindon", "crs": "SWI", "crsVerified": false, "class": "GWR main-line through-running point. National Rail only; GWR regional/intercity London-Bristol-Penzance continue through. Oxford/Banbury to Swindon via GWR line; no regional split at this station. Upstream of the Westbury boundary — not shared with West of England or Solent (report line 17)." },
+    { "name": "Banbury", "crs": "BAN", "crsVerified": false, "class": "Through-running point, Chiltern main line + GWR Oxford branch. Chiltern from Marylebone via Oxford; GWR from Paddington via Oxford-Banbury to Birmingham. Two separate TOC operations on separate infrastructure at the same town, but not a hub candidate at D1 — not built as a stationGroup; proposed doNotGroup only if ever promoted (report line 18, 38)." },
+    { "name": "Westbury", "crs": "WSB", "crsVerified": false, "class": "Through-running point, boundary to West of England / Solent regions. GWR services to Reading/Oxford (Thames Valley) and South Western Railway services to Southampton/Portsmouth (Solent) call at the same platform but operate separate franchises. Not a merge within Thames Valley — de-duplicate at D2. Already flagged reciprocally in both docs/west-of-england-d1/published-network.json and docs/solent-d1/published-network.json (report line 19, 39, 76)." },
+    { "name": "Henley-on-Thames", "crs": "HEY", "crsVerified": false, "class": "Regional station on GWR branch line. Single operator (GWR). No through-running to other regions (report line 20)." },
+    { "name": "Didcot Parkway", "crs": "DID", "crsVerified": false, "class": "GWR main-line station, east of Oxford. Connection point for Cotswold Line (west to Hereford/Worcestershire); main line continues to Reading. Served by GWR regional only; no separate operators (report line 21)." }
+  ],
+  "boundaryThroughRunning": [
+    { "name": "Westbury", "crs": "WSB", "crsVerified": false, "boundaryTo": "West of England / Solent", "class": "GWR (Reading/Oxford direction) and SWR (Southampton/Portsmouth direction) cross here. Already flagged as a boundary in docs/west-of-england-d1/published-network.json and docs/solent-d1/published-network.json. Not a merge; not a Thames Valley stationGroup." },
+    { "name": "London Paddington", "crs": "PAD", "crsVerified": false, "crsSource": "Not given by the Thames Valley oracle report (which never names Paddington); carried from docs/london-se-national-rail-d1/published-network.json's already-built paddington stationGroup, not independently sourced by this pack.", "boundaryTo": "London & South East National Rail", "class": "GWR London terminus; Thames Valley's GWR services (Reading, Oxford) originate here, but Paddington itself is part of London & South East National Rail's catalog (already built as a stationGroup there, boundaryNote naming West of England as the westward continuation). Not a Thames Valley station, not built here." },
+    { "name": "London Marylebone", "crs": "MYB", "crsVerified": false, "crsSource": "Not given by the Thames Valley oracle report (which never names Marylebone's CRS); supplied only for identification purposes, not sourced from either oracle report — confirm independently before any adapter use.", "boundaryTo": "London & South East National Rail", "class": "Chiltern Railways London terminus; Thames Valley's Chiltern services at Oxford/Banbury originate here, but Marylebone itself is part of London & South East National Rail's scope (report point 10) and is NOT built as a stationGroup in that region's finished pack either (sits in its notBuilt.secondary-termini list). No double-build conflict today; flagged for D2 if either region later promotes it." }
+  ],
+  "excludedServices": [
+    { "operator": "Elizabeth Line (TfL)", "verdict": "out-mode", "station": "Reading", "reason": "Separate transport mode/operator (Transport for London, not National Rail). Report C2/C3 point 7: 'Elizabeth Line (TfL) serves Reading as well; out of v1 scope.'" }
+  ],
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "National Rail has NO static GTFS publication directly from NRE (unlike, e.g., a region with a GTFS-based second agency as schedule-only fallback). Open product question for Jim/Tim, same as every prior UK NR region: can Next Train support a Darwin-only next-train model, or does it require a GTFS base layer? Not resolved in this pack.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR — same open item as every other UK NR region. OPEN ITEM FOR TIM ONLY, do not resolve here.",
+    "CRS codes (RDG, OXF, SWI, BAN, WSB, HEY, DID, PAD, MYB) are carried from the oracle report and NOT independently verified against a live GTFS dump or Darwin response. crsVerified: false on every entry. Confirm before adapter wiring.",
+    "Short-turn workings (H5): the report does not confirm whether every GWR/CrossCountry/Chiltern/SWR service runs a full stated corridor or whether some short-terminate at an intermediate station. Treat 'no confirmed short turns' as a D1 working assumption only — flag to Nico for explicit confirmation before wiring destination logic.",
+    "SKIP RISK: Chiltern Railways operator transition from Arriva to DfT Operator on 20 September 2026. Verify Darwin correctly attributes Chiltern services and that any GTFS/agency mapping reflects the new operator structure post-transition — relevant if wiring or launch happens on or shortly after that date.",
+    "No docs/united-kingdom-ledger.md exists yet despite being named as required before the next NR region across multiple prior regions' packs. This pack proceeds on the oracle report alone per the dispatch instruction; the Westbury/Paddington/Marylebone boundary facts here should migrate into that ledger once it exists.",
+    "Marylebone engineering closures (14-15 March, 28-29 March 2026, report skip risk 4) may affect real-time data quality during maintenance windows on the Chiltern main line — standard closure handling, no v1 scope impact, noted only for awareness."
+  ]
+}
