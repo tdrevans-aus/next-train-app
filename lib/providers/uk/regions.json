@@ -132,6 +132,13 @@
       "catalogPath": "../../cities/liverpool-city-region/stations.json",
       "modes": ["train", "metro"],
       "feeds": { "train": "darwin", "metro": "merseyrail-static-gtfs-confirmed-no-realtime-confirmed" }
+    },
+    {
+      "id": "greater-anglia",
+      "name": "Greater Anglia",
+      "catalogPath": "../../cities/greater-anglia/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

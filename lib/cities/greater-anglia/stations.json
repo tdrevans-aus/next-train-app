@@ -1,0 +1,172 @@
+{
+  "region": "greater-anglia",
+  "displayName": "Greater Anglia",
+  "timeZone": "Europe/London",
+  "source": "docs/greater-anglia-d1/published-network.json (Nico oracle-clash-report, checked once against docs/london-se-national-rail-d1/published-network.json for the Liverpool Street stationGroup, 1 Sep 2026)",
+  "retrievedAt": "2026-09-01",
+  "feeds": {
+    "train": "darwin"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as every other UK region packed so far.",
+    "Single primary agency (Greater Anglia). Thameslink/CrossCountry/East Midlands also call at Cambridge/Ely/Peterborough and pass the board-eligibility walk-up test alongside Greater Anglia — no doNotGroup needed at any Greater Anglia-owned station.",
+    "Hub lock Norwich (NRW). TWO secondary hubs, Cambridge (CBG) and Ipswich (IPS) — the oracle report gives both identical hub-tier language (report lines 22-24, 131), unlike West of England's single-secondary-hub shape. See hazard-pack.md H6.",
+    "Peterborough (PBO) is explicitly NOT a hub — flat throughRunningBoundary entry. LNER excluded there (board-eligibility verdict undecided, same open question as London & South East National Rail's own LNER gap at King's Cross — not resolved here). East Midlands/Thameslink/CrossCountry are in.",
+    "Colchester (COL) and Ely (ELY) are kept flat under regional, not promoted to secondary-hub status, per the report's own third-tier/junction language (lines 37-38).",
+    "Liverpool Street is NOT included here — Greater Anglia services calling there are already documented as `in` in London & South East National Rail's built pack (docs/london-se-national-rail-d1/stations.json / stations.json, Liverpool Street (Greater Anglia) stationGroup, groupId liverpool-street, doNotGroup true). Not duplicated.",
+    "CRS collision caught, not propagated: the oracle report's own station-code list (line 103) assigns LST to Lowestoft, but LST is Liverpool Street's real-world CRS, already used in London & South East National Rail's built pack. Lowestoft's crs is left null/crsVerified false here rather than ship the collision. Believed real code is LOW (National Rail's well-known station code for Lowestoft) but this pack could not reach a live GTFS/Darwin source to confirm it (network calls to transitfeeds.com and api.transitland.org both failed/blocked in this environment, nationalrail.co.uk's station page is client-rendered with no static CRS text) — left null rather than guess. Confirm against the Transitland GTFS feed (f-gc-rail~delivery~group~planar~gtfs) or a live Darwin payload before ever treating LOW as authoritative.",
+    "King's Lynn (KLY), Great Yarmouth (YRD), Bishops Stortford (BST), Stansted Airport (SSD), and the hub/secondary-hub/regional/boundary codes (NRW, CBG, IPS, COL, PBO, ELY, THF) are all carried through as reported but crsVerified: false — none cross-checked against a live GTFS dump or Darwin response in this pack (D2 gap, same as every UK National Rail region packed so far). Diss and Wymondham have no CRS at all — left null, not guessed.",
+    "Station scope is intentionally the ~13 stations the oracle report explicitly names, not the full 30-50 the report itself estimates for D1 — the remaining 17-37 stations are a flagged D2 gap (expand against the Transitland feed), not invented here.",
+    "Peterborough is flagged for a future multi-region ledger (cross-regional shared-platform de-dup with any East Midlands National Rail or LNER region Peterborough entry) — not resolved in this pack."
+  ],
+  "notInRegion": [],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Norwich",
+      "crs": "NRW",
+      "crsVerified": false,
+      "aliases": ["Norwich Station", "Norwich Thorpe"],
+      "lat": null,
+      "lng": null,
+      "class": "hub lock — single terminus, single operator (Greater Anglia), Great Eastern Main Line terminus, interchange for Norwich-Cambridge, Norwich-Great Yarmouth, Norwich-Lowestoft branches"
+    },
+    {
+      "mode": "train",
+      "name": "Cambridge",
+      "crs": "CBG",
+      "crsVerified": false,
+      "aliases": ["Cambridge Station"],
+      "lat": null,
+      "lng": null,
+      "operators": ["Greater Anglia", "Thameslink"],
+      "doNotGroup": false,
+      "class": "secondary hub — Great Eastern Main Line interchange; Thameslink cross-London through-running passes the board-eligibility test alongside Greater Anglia, no separate boarding-area layer required"
+    },
+    {
+      "mode": "train",
+      "name": "Ipswich",
+      "crs": "IPS",
+      "crsVerified": false,
+      "aliases": ["Ipswich Station"],
+      "lat": null,
+      "lng": null,
+      "operators": ["Greater Anglia"],
+      "doNotGroup": false,
+      "class": "secondary hub — major Great Eastern Main Line station, connections to London, Cambridge, Norwich, Peterborough; single operator"
+    },
+    {
+      "mode": "train",
+      "name": "Peterborough",
+      "crs": "PBO",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "operators": ["Greater Anglia", "Thameslink", "CrossCountry", "East Midlands"],
+      "excludeOperators": ["LNER"],
+      "class": "through-running/boundary point, explicitly NOT a merge or a hub (report line 25). LNER excluded — board-eligibility verdict undecided pending operator confirmation on unreserved-carriage walk-up policy, same open question as London & South East National Rail's own LNER gap at King's Cross. Flagged for a multi-region ledger at D2 (cross-regional shared-platform de-dup)."
+    },
+    {
+      "mode": "train",
+      "name": "Colchester",
+      "crs": "COL",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "regional hub (third tier) — Great Eastern Main Line, no through-running to adjacent regions except the already-documented Liverpool Street boundary"
+    },
+    {
+      "mode": "train",
+      "name": "Ely",
+      "crs": "ELY",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "operators": ["Greater Anglia", "Thameslink", "CrossCountry"],
+      "class": "regional junction — Great Eastern Main Line (via Hereward Line) and Thameslink Cambridge branch meet here; Thameslink and CrossCountry pass the board-eligibility test"
+    },
+    {
+      "mode": "train",
+      "name": "King's Lynn",
+      "crs": "KLY",
+      "crsVerified": false,
+      "aliases": ["Kings Lynn"],
+      "lat": null,
+      "lng": null,
+      "class": "branch terminus — West Anglia Main Line branch (Cambridge-King's Lynn)"
+    },
+    {
+      "mode": "train",
+      "name": "Thetford",
+      "crs": "THF",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "branch-line junction/terminus, regional services only"
+    },
+    {
+      "mode": "train",
+      "name": "Diss",
+      "crs": null,
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "branch-line junction/terminus, regional services only. No CRS given in the oracle report; not guessed here."
+    },
+    {
+      "mode": "train",
+      "name": "Wymondham",
+      "crs": null,
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "branch-line junction/terminus, regional services only. No CRS given in the oracle report; not guessed here."
+    },
+    {
+      "mode": "train",
+      "name": "Great Yarmouth",
+      "crs": "YRD",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Norwich-Great Yarmouth branch terminus, regional services only"
+    },
+    {
+      "mode": "train",
+      "name": "Lowestoft",
+      "crs": null,
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Norwich-Lowestoft branch terminus, regional services only. Oracle report's own CRS list (line 103) gives LST for this station, but LST is Liverpool Street's real-world CRS, already used in London & South East National Rail's built pack — NOT used here to avoid a catalog-wide station-code collision. Believed real code LOW, not confirmed against a live GTFS/Darwin source in this pack; left null rather than guess."
+    },
+    {
+      "mode": "train",
+      "name": "Stansted Airport",
+      "crs": "SSD",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "West Anglia Main Line branch, airport/commuter service"
+    },
+    {
+      "mode": "train",
+      "name": "Bishops Stortford",
+      "crs": "BST",
+      "crsVerified": false,
+      "aliases": ["Bishop's Stortford"],
+      "lat": null,
+      "lng": null,
+      "class": "West Anglia Main Line branch, commuter service"
+    }
+  ]
+}
