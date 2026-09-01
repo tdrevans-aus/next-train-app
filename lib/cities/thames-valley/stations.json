@@ -1,0 +1,128 @@
+{
+  "region": "thames-valley",
+  "displayName": "Thames Valley (Reading / Oxford)",
+  "timeZone": "Europe/London",
+  "source": "docs/thames-valley-d1/published-network.json (Nico oracle-clash-report, 1 Sep 2026)",
+  "retrievedAt": "2026-09-01",
+  "feeds": {
+    "train": "darwin"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as every other UK region in this pipeline.",
+    "HUB + SECONDARY-HUB architecture, reused from West of England (Bristol Temple Meads/Bath Spa) and Solent (Southampton Central alone, Portsmouth Harbour/Portsmouth & Southsea pair) — NOT full flat multi-group. Reading (RDG) is the hub lock: single flat board, three operators (GWR/CrossCountry/SWR), no internal doNotGroup (report line 36 explicitly rules out multi-operator platform mixing at Reading).",
+    "Oxford (OXF) is the secondary hub, but UNLIKE Bath Spa/Portsmouth & Southsea it needs an internal doNotGroup split: GWR main line and Chiltern Railways' Marylebone branch sit on separate platforms/infrastructure at Oxford and require separate boarding logic per operator (report line 16, 37, 56, C2/C3 point 4/6) — first time in this pipeline a SECONDARY hub (not a primary terminus) has needed this. Enforced the same way as London Bridge/Liverpool Street in london-se-national-rail: two catalog entries sharing one physical CRS (OXF), split by operator, groupId 'oxford', doNotGroup: true, each carrying its own operators list passed as includeOperators to the shared uk-darwin.js fetchStationBoard().",
+    "Single agency (National Rail, four TOCs total across the region), single mode (train). No buses, no light rail, no trams, no Elizabeth Line (TfL, separate mode/operator, out-mode at Reading per report C2/C3 point 7). No Eurostar, no sleeper services named in this report's scope — no excludeOperators needed anywhere in this catalog.",
+    "Five through-running-only stations, none merge/hub candidates at D1: Swindon (SWI, GWR main-line continuation upstream of the Westbury boundary), Banbury (BAN, Chiltern + GWR on separate infrastructure at the same town, not a hub, proposed doNotGroup only if ever promoted — not built as a stationGroup), Westbury (WSB, boundary to West of England/Solent, already flagged reciprocally in both those regions' finished packs), Henley-on-Thames (HEY, GWR branch, single operator), Didcot Parkway (DID, GWR main line, Cotswold Line connection point, single operator).",
+    "London Paddington (PAD) and London Marylebone (MYB) are boundary-only references to London & South East National Rail's catalog — Paddington is already built there as a stationGroup, Marylebone is explicitly not built there either. Neither is built here; not present in this stops array.",
+    "CRS codes (RDG, OXF, SWI, BAN, WSB, HEY, DID) are carried from the oracle report's tables and are NOT verified against a live GTFS dump or Darwin response — crsVerified: false throughout, confirm before relying on them for a live board.",
+    "Direction model: destination + operator, matching every other UK National Rail region's recommendation. At Oxford this applies within each of the two doNotGroup sections (GWR section, Chiltern section), not across them. No line+terminus model — neither GWR nor Chiltern brand this corridor with named lines on a departure board. Illustrative only, not verified against a live Darwin payload. See docs/thames-valley-d1/direction-model-memo.md.",
+    "SKIP RISK — Chiltern Railways operator transition from Arriva to DfT Operator on 20 September 2026 (report skip risk 3): not a blocker, but a timing flag for whoever wires the token after that date — verify Darwin correctly attributes Chiltern services and any operator/agency mapping reflects the new operator structure."
+  ],
+  "notInRegion": [],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Reading",
+      "crs": "RDG",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "groupId": "reading",
+      "doNotGroup": false,
+      "operators": ["Great Western Railway", "CrossCountry", "South Western Railway"],
+      "class": "hub lock — principal rail terminus and interchange for Thames Valley, 15 platforms. Three operators but single flat destination+operator board (report line 36: no multi-operator platform mixing at Reading, unlike Oxford)."
+    },
+    {
+      "mode": "train",
+      "name": "Oxford (GWR)",
+      "crs": "OXF",
+      "crsVerified": false,
+      "aliases": ["Oxford"],
+      "lat": null,
+      "lng": null,
+      "groupId": "oxford",
+      "doNotGroup": true,
+      "operators": ["Great Western Railway"],
+      "class": "station group (1 of 2 sharing CRS OXF) — GWR board only. Internal doNotGroup: GWR main line (London/Reading/Bristol direction) and Chiltern Railways (Marylebone branch) sit on separate platforms/infrastructure at Oxford (report line 16, 37, 56); do not merge with the Chiltern board. Secondary hub, subordinate to Reading on the same corridor."
+    },
+    {
+      "mode": "train",
+      "name": "Oxford (Chiltern)",
+      "crs": "OXF",
+      "crsVerified": false,
+      "aliases": ["Oxford Chiltern"],
+      "lat": null,
+      "lng": null,
+      "groupId": "oxford",
+      "doNotGroup": true,
+      "operators": ["Chiltern Railways"],
+      "class": "station group (2 of 2 sharing CRS OXF) — Chiltern Railways board only, London Marylebone direction. See Oxford (GWR) for the doNotGroup rationale."
+    },
+    {
+      "mode": "train",
+      "name": "Swindon",
+      "crs": "SWI",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "groupId": "swindon",
+      "doNotGroup": false,
+      "operators": ["Great Western Railway"],
+      "class": "through-running only, GWR main-line continuation upstream of the Westbury boundary, not a hub"
+    },
+    {
+      "mode": "train",
+      "name": "Banbury",
+      "crs": "BAN",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "groupId": "banbury",
+      "doNotGroup": false,
+      "operators": ["Chiltern Railways", "Great Western Railway"],
+      "class": "through-running only, Chiltern (Marylebone via Oxford) and GWR (Paddington-Birmingham via Oxford) on separate infrastructure at the same town, not a hub — proposed doNotGroup only if ever promoted to a station group, not built as split boards here"
+    },
+    {
+      "mode": "train",
+      "name": "Westbury",
+      "crs": "WSB",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "groupId": "westbury",
+      "doNotGroup": false,
+      "operators": ["Great Western Railway", "South Western Railway"],
+      "class": "through-running only, boundary to West of England / Solent regions — not a merge point, already flagged reciprocally in both those regions' finished packs"
+    },
+    {
+      "mode": "train",
+      "name": "Henley-on-Thames",
+      "crs": "HEY",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "groupId": "henley-on-thames",
+      "doNotGroup": false,
+      "operators": ["Great Western Railway"],
+      "class": "through-running only, GWR branch, single operator, no through-running to other regions"
+    },
+    {
+      "mode": "train",
+      "name": "Didcot Parkway",
+      "crs": "DID",
+      "crsVerified": false,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "groupId": "didcot-parkway",
+      "doNotGroup": false,
+      "operators": ["Great Western Railway"],
+      "class": "through-running only, GWR main line east of Oxford, Cotswold Line connection point, single operator"
+    }
+  ]
+}
