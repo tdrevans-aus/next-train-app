@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 19) {
-  fail(`Expected 19 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 20) {
+  fail(`Expected 20 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 19) {
-  fail(`Expected 19 regions in index, got ${regions.length}`);
+if (regions.length !== 20) {
+  fail(`Expected 20 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -794,6 +794,37 @@ if (gaLowestoft?.crs) {
   fail("greater-anglia Lowestoft crs must stay null/unverified — the oracle report's own LST code collides with Liverpool Street's real CRS");
 }
 
+const swst = getRegion("southwest");
+if (!swst || swst.railCount !== 9 || swst.metroCount !== 0) {
+  fail(`southwest counts rail=${swst?.railCount} metro=${swst?.metroCount}`);
+}
+
+const swstRail = listRailStations("southwest");
+const swstCrsSet = new Set(swstRail.map((s) => s.crs));
+for (const crs of ["EXD", "PLY", "PNZ", "TAU", "NAB", "TON", "TRU", "SAU", "SER"]) {
+  if (!swstCrsSet.has(crs)) {
+    fail(`southwest missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("southwest")) {
+  if (swstRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in southwest catalog`);
+  }
+}
+
+const swstHub = resolveRailEntry("Exeter St Davids", "southwest");
+const swstSecondary = resolveRailEntry("Plymouth", "southwest");
+const swstTerminus = resolveRailEntry("Penzance", "southwest");
+if (!swstHub || swstHub.crs !== "EXD") {
+  fail("southwest Exeter St Davids must resolve as a rail entry with crs EXD");
+}
+if (!swstSecondary || swstSecondary.crs !== "PLY") {
+  fail("southwest Plymouth must resolve as a rail entry with crs PLY");
+}
+if (!swstTerminus || swstTerminus.crs !== "PNZ") {
+  fail("southwest Penzance must resolve as a rail entry with crs PNZ");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -803,5 +834,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary, southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion)"
 );

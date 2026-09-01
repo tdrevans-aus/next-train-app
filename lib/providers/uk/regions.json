@@ -139,6 +139,13 @@
       "catalogPath": "../../cities/greater-anglia/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "southwest",
+      "name": "Southwest",
+      "catalogPath": "../../cities/southwest/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }
