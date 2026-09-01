@@ -146,6 +146,13 @@
       "catalogPath": "../../cities/southwest/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "cumbria",
+      "name": "Cumbria",
+      "catalogPath": "../../cities/cumbria/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

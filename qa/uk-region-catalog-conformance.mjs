@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 20) {
-  fail(`Expected 20 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 21) {
+  fail(`Expected 21 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 20) {
-  fail(`Expected 20 regions in index, got ${regions.length}`);
+if (regions.length !== 21) {
+  fail(`Expected 21 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -825,6 +825,37 @@ if (!swstTerminus || swstTerminus.crs !== "PNZ") {
   fail("southwest Penzance must resolve as a rail entry with crs PNZ");
 }
 
+const cum = getRegion("cumbria");
+if (!cum || cum.railCount !== 7 || cum.metroCount !== 0) {
+  fail(`cumbria counts rail=${cum?.railCount} metro=${cum?.metroCount}`);
+}
+
+const cumRail = listRailStations("cumbria");
+const cumCrsSet = new Set(cumRail.map((s) => s.crs));
+for (const crs of ["CAR", "OXO", "BIF", "PEN", "WND", "KND", "SLF"]) {
+  if (!cumCrsSet.has(crs)) {
+    fail(`cumbria missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("cumbria")) {
+  if (cumRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in cumbria catalog`);
+  }
+}
+
+const cumHub = resolveRailEntry("Carlisle", "cumbria");
+const cumSecondary1 = resolveRailEntry("Oxenholme Lake District", "cumbria");
+const cumSecondary2 = resolveRailEntry("Barrow-in-Furness", "cumbria");
+if (!cumHub || cumHub.crs !== "CAR") {
+  fail("cumbria Carlisle must resolve as a rail entry with crs CAR");
+}
+if (!cumSecondary1 || cumSecondary1.crs !== "OXO") {
+  fail("cumbria Oxenholme Lake District must resolve as a rail entry with crs OXO");
+}
+if (!cumSecondary2 || cumSecondary2.crs !== "BIF") {
+  fail("cumbria Barrow-in-Furness must resolve as a rail entry with crs BIF");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -834,5 +865,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary, southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary, southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
 );
