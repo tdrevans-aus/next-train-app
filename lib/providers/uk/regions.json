@@ -90,6 +90,13 @@
       "catalogPath": "../../cities/london-se-national-rail/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "glasgow",
+      "name": "Glasgow",
+      "catalogPath": "../../cities/glasgow/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "travelwhiz-community-static-gtfs-unverified-stop-order-license-unclear" }
     }
   ]
 }

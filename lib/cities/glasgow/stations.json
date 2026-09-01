@@ -1,0 +1,200 @@
+{
+  "region": "glasgow",
+  "displayName": "Glasgow",
+  "timeZone": "Europe/London",
+  "source": "docs/glasgow-d1/published-network.json (Nico oracle-clash-report, 1 Sep 2026)",
+  "retrievedAt": "2026-09-01",
+  "feeds": {
+    "train": "darwin",
+    "metro": "travelwhiz-community-static-gtfs-unverified-stop-order-license-unclear"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level - DARWIN_LDB_TOKEN not set. Same blocker as every other UK region in this wave.",
+    "TWO independent National Rail station groups, no single hub-lock: Glasgow Central (GLC) and Glasgow Queen Street (GLQ) are separate buildings, not rail-connected, serving genuinely different corridors. Do not collapse into one board. See docs/glasgow-d1/jim-handoff.md ('Option A at n=2').",
+    "Neither National Rail group needs internal doNotGroup (no evidence of separate platform/boarding-section logic per operator, unlike london-se-national-rail's London Bridge/Liverpool Street) - each is a single flat departure board, destination + operator.",
+    "CRS codes GLC/GLQ are carried from the oracle report and NOT independently verified against a live GTFS dump or Darwin response (crsVerified: false).",
+    "Glasgow Subway (SPT): a TRUE CIRCULAR LINE WITH NO TERMINI, hub-locked at Buchanan Street. Direction model is printed Outer Circle / Inner Circle labels, not line+terminus - see lib/cities/glasgow/subway-directions.js and docs/glasgow-d1/direction-model-memo.md. No confirmed GTFS-RT feed exists for SPT. Static GTFS is a community aggregation (TravelWhiz, GB-Bus-Train-Metro-GTFS), not an official SPT feed - CC BY 4.0 covers TravelWhiz's own curation, license confidence 'unclear' on whether the underlying SPT timetable data may be redistributed via a public API.",
+    "Subway stop order is UNVERIFIED - the 'stations' array in lib/cities/glasgow/subway-directions.js is transcribed from the oracle report's table order, not confirmed against an official SPT map or the TravelWhiz GTFS stop_sequence. Jim's D2 attempt found the TravelWhiz GitHub repo reachable but no confirmed per-region data file/release path within this session's scope - carried forward unverified, not guessed. See lib/providers/glasgow.js GlasgowSubwayFeedUnverifiedError.",
+    "doNotGroup: Buchanan Street (Subway) vs Glasgow Queen Street (National Rail, GLQ) - travelator-connected but separate station entities/operators/infrastructure. St Enoch (Subway) vs Glasgow Central (National Rail, GLC) - short walk only, not connected. See lib/cities/glasgow/subway-directions.js DO_NOT_GROUP_PAIRS.",
+    "Falkirk High (FKK) is EXCLUDED - owned by the Edinburgh region per the exclusive-territory split (Tim's decision, oracle report line 11/91). Not catalogued here at all.",
+    "Caledonian Sleeper is EXCLUDED at Glasgow Central - board-eligibility verdict out-reservation (compulsory berth booking, no walk-up boarding).",
+    "lat/lng are null throughout - no confirmed coordinate source in the oracle report or published-network.json; do not backfill guessed coordinates."
+  ],
+  "notInRegion": [
+    "Falkirk High"
+  ],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Glasgow Central",
+      "crs": "GLC",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "operators": ["ScotRail", "Avanti West Coast"],
+      "excludeOperators": ["Caledonian Sleeper"],
+      "class": "Cross-border terminus (south/England) plus ScotRail through-running. Single flat departure board, destination + operator, no internal doNotGroup (no evidence of separate boarding-section logic). doNotGroup vs St Enoch (Subway) - short walk only, not connected. Caledonian Sleeper excluded, out-reservation."
+    },
+    {
+      "mode": "train",
+      "name": "Glasgow Queen Street",
+      "crs": "GLQ",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "operators": ["ScotRail"],
+      "excludeOperators": [],
+      "class": "Scottish regional terminus (Edinburgh, Aberdeen, Inverness, Oban, Mallaig, Dumfries via Carlisle). Single operator, single flat departure board. doNotGroup vs Buchanan Street (Subway) - travelator-connected but separate station entities/operators/infrastructure. Does not connect by rail to Glasgow Central."
+    },
+    {
+      "mode": "metro",
+      "name": "Partick",
+      "catalogId": "subway:partick",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Kelvinhall",
+      "catalogId": "subway:kelvinhall",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Hillhead",
+      "catalogId": "subway:hillhead",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Kelvinbridge",
+      "catalogId": "subway:kelvinbridge",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "St George's Cross",
+      "catalogId": "subway:st-georges-cross",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Cowcaddens",
+      "catalogId": "subway:cowcaddens",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Buchanan Street",
+      "catalogId": "subway:buchanan-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) hub lock - busiest station, city-centre. doNotGroup vs Glasgow Queen Street (National Rail) - travelator-connected but separate station entities/operators/infrastructure. Schedule-only v1, no confirmed GTFS-RT."
+    },
+    {
+      "mode": "metro",
+      "name": "St Enoch",
+      "catalogId": "subway:st-enoch",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. doNotGroup vs Glasgow Central (National Rail) - within a short walk, not physically connected. Schedule-only v1, no confirmed GTFS-RT."
+    },
+    {
+      "mode": "metro",
+      "name": "Bridge Street",
+      "catalogId": "subway:bridge-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "West Street",
+      "catalogId": "subway:west-street",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Shields Road",
+      "catalogId": "subway:shields-road",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Kinning Park",
+      "catalogId": "subway:kinning-park",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Cessnock",
+      "catalogId": "subway:cessnock",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Ibrox",
+      "catalogId": "subway:ibrox",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    },
+    {
+      "mode": "metro",
+      "name": "Govan",
+      "catalogId": "subway:govan",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+    }
+  ]
+}
