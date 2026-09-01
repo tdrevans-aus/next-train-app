@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 12) {
-  fail(`Expected 12 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 13) {
+  fail(`Expected 13 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 12) {
-  fail(`Expected 12 regions in index, got ${regions.length}`);
+if (regions.length !== 13) {
+  fail(`Expected 13 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -458,6 +458,53 @@ if (resolveRailEntry("Euston", "london-se-national-rail")) {
   fail("london-se-national-rail must not resolve Euston — no named regional operator, not built");
 }
 
+// glasgow: TWO independent National Rail groups (no single hub-lock, "Option A at n=2") plus a
+// hub-locked closed-loop Subway (first no-terminus metro in this pipeline).
+const gla = getRegion("glasgow");
+if (!gla || gla.railCount !== 2 || gla.metroCount !== 15) {
+  fail(`glasgow counts rail=${gla?.railCount} metro=${gla?.metroCount}`);
+}
+
+const glaRail = listRailStations("glasgow");
+const glaCrsSet = new Set(glaRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["GLC", "GLQ"]) {
+  if (!glaCrsSet.has(crs)) {
+    fail(`glasgow missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("glasgow")) {
+  if (glaRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in glasgow catalog`);
+  }
+}
+if (resolveRailEntry("Falkirk High", "glasgow")) {
+  fail("glasgow must not resolve Falkirk High — owned by the Edinburgh region's exclusive territory");
+}
+
+const glaCentral = resolveRailEntry("Glasgow Central", "glasgow");
+const glaQueenStreet = resolveRailEntry("Glasgow Queen Street", "glasgow");
+if (!glaCentral || glaCentral.crs !== "GLC") {
+  fail("glasgow Glasgow Central must resolve as a rail entry with crs GLC");
+}
+if (!glaQueenStreet || glaQueenStreet.crs !== "GLQ") {
+  fail("glasgow Glasgow Queen Street must resolve as a rail entry with crs GLQ");
+}
+
+const glaMetro = listMetroStops("glasgow");
+const glaMetroNames = new Set(glaMetro.map((s) => s.name));
+for (const name of ["Buchanan Street", "St Enoch", "Partick", "Govan"]) {
+  if (!glaMetroNames.has(name)) {
+    fail(`glasgow Subway catalog missing ${name}`);
+  }
+}
+const glaBuchananStreet = resolveMetroEntry("Buchanan Street", "glasgow");
+if (!glaBuchananStreet || !glaBuchananStreet.catalogId?.startsWith("subway:")) {
+  fail("glasgow Buchanan Street must resolve as a Subway hub entry, separate from any rail entry");
+}
+if (resolveRailEntry("Buchanan Street", "glasgow")) {
+  fail("glasgow Buchanan Street must NOT resolve as a rail entry — Subway-only, doNotGroup vs Glasgow Queen Street");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -467,5 +514,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway)"
 );
