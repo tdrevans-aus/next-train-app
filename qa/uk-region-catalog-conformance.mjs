@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 13) {
-  fail(`Expected 13 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 14) {
+  fail(`Expected 14 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 13) {
-  fail(`Expected 13 regions in index, got ${regions.length}`);
+if (regions.length !== 14) {
+  fail(`Expected 14 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -505,6 +505,59 @@ if (resolveRailEntry("Buchanan Street", "glasgow")) {
   fail("glasgow Buchanan Street must NOT resolve as a rail entry — Subway-only, doNotGroup vs Glasgow Queen Street");
 }
 
+// edinburgh: SINGLE National Rail hub-lock (Edinburgh Waverley) with two through-running
+// satellites (Haymarket, Slateford) — structurally different from glasgow's two independent
+// termini — plus a hub-locked Trams line with two confirmed termini (standard line+terminus,
+// NOT glasgow Subway's closed-loop model).
+const edi = getRegion("edinburgh");
+if (!edi || edi.railCount !== 3 || edi.metroCount !== 22) {
+  fail(`edinburgh counts rail=${edi?.railCount} metro=${edi?.metroCount}`);
+}
+
+const ediRail = listRailStations("edinburgh");
+const ediCrsSet = new Set(ediRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["EDB", "HYM", "SLA"]) {
+  if (!ediCrsSet.has(crs)) {
+    fail(`edinburgh missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("edinburgh")) {
+  if (ediRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in edinburgh catalog`);
+  }
+}
+if (resolveRailEntry("Falkirk High", "edinburgh")) {
+  fail("edinburgh must not resolve Falkirk High — unresolved cross-pack ownership prose, excluded either way");
+}
+
+const ediWaverley = resolveRailEntry("Edinburgh Waverley", "edinburgh");
+const ediHaymarketRail = resolveRailEntry("Haymarket", "edinburgh");
+const ediSlateford = resolveRailEntry("Slateford", "edinburgh");
+if (!ediWaverley || ediWaverley.crs !== "EDB") {
+  fail("edinburgh Edinburgh Waverley must resolve as a rail entry with crs EDB");
+}
+if (!ediHaymarketRail || ediHaymarketRail.crs !== "HYM") {
+  fail("edinburgh Haymarket must resolve as a rail entry with crs HYM");
+}
+if (!ediSlateford || ediSlateford.crs !== "SLA") {
+  fail("edinburgh Slateford must resolve as a rail entry with crs SLA");
+}
+
+const ediMetro = listMetroStops("edinburgh");
+const ediMetroNames = new Set(ediMetro.map((s) => s.name));
+for (const name of ["Newhaven", "Edinburgh Airport", "Princes Street", "Haymarket"]) {
+  if (!ediMetroNames.has(name)) {
+    fail(`edinburgh Trams catalog missing ${name}`);
+  }
+}
+const ediHaymarketTram = resolveMetroEntry("Haymarket", "edinburgh");
+if (!ediHaymarketTram || !ediHaymarketTram.catalogId?.startsWith("tram:")) {
+  fail("edinburgh Haymarket must also resolve as a Trams entry, separate from the rail entry");
+}
+if (resolveMetroEntry("Edinburgh Waverley", "edinburgh")) {
+  fail("edinburgh Trams catalog must NOT carry a stop literally named 'Edinburgh Waverley' — doNotGroup vs the rail hub");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -514,5 +567,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams)"
 );

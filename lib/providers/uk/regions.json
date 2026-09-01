@@ -97,6 +97,13 @@
       "catalogPath": "../../cities/glasgow/stations.json",
       "modes": ["train", "metro"],
       "feeds": { "train": "darwin", "metro": "travelwhiz-community-static-gtfs-unverified-stop-order-license-unclear" }
+    },
+    {
+      "id": "edinburgh",
+      "name": "Edinburgh",
+      "catalogPath": "../../cities/edinburgh/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "dft-bods-static-gtfs-confirmed-no-realtime-not-fetched" }
     }
   ]
 }
