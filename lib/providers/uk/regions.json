@@ -62,6 +62,13 @@
       "catalogPath": "../../cities/south-wales/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "west-yorkshire",
+      "name": "West Yorkshire",
+      "catalogPath": "../../cities/west-yorkshire/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

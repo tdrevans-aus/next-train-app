@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 8) {
-  fail(`Expected 8 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 9) {
+  fail(`Expected 9 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 8) {
-  fail(`Expected 8 regions in index, got ${regions.length}`);
+if (regions.length !== 9) {
+  fail(`Expected 9 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -313,6 +313,37 @@ if (resolveRailEntry("Pontypridd", "south-wales")) {
   fail("south-wales must not resolve Pontypridd — Valley Lines has no feed and is not catalogued");
 }
 
+const wy = getRegion("west-yorkshire");
+if (!wy || wy.railCount !== 10 || wy.metroCount !== 0) {
+  fail(`west-yorkshire counts rail=${wy?.railCount} metro=${wy?.metroCount}`);
+}
+
+const wyRail = listRailStations("west-yorkshire");
+const wyCrsSet = new Set(wyRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["LDS", "BDQ", "BDI", "DDL", "WAD", "HUD", "HFX", "TOD", "HBN", "KEY"]) {
+  if (!wyCrsSet.has(crs)) {
+    fail(`west-yorkshire missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("west-yorkshire")) {
+  if (wyRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in west-yorkshire catalog`);
+  }
+}
+
+const wyHub = resolveRailEntry("Leeds Station", "west-yorkshire");
+const wySecondary = resolveRailEntry("Bradford Forster Square", "west-yorkshire");
+const wyBdi = resolveRailEntry("Bradford Interchange", "west-yorkshire");
+if (!wyHub || wyHub.crs !== "LDS") {
+  fail("west-yorkshire Leeds Station must resolve as a rail entry with crs LDS");
+}
+if (!wySecondary || wySecondary.crs !== "BDQ") {
+  fail("west-yorkshire Bradford Forster Square must resolve as a rail entry with crs BDQ");
+}
+if (!wyBdi || wyBdi.crs !== "BDI") {
+  fail("west-yorkshire Bradford Interchange must resolve as a rail entry with crs BDI (doNotGroup vs BDQ)");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -322,5 +353,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0)"
 );

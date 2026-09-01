@@ -101,6 +101,7 @@ const SMOKE_SCRIPTS = [
   "north-east-planned-gate.mjs",
   "west-of-england-planned-gate.mjs",
   "south-wales-planned-gate.mjs",
+  "west-yorkshire-planned-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
