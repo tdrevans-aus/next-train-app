@@ -1,0 +1,176 @@
+{
+  "city": "greater-manchester",
+  "displayName": "Greater Manchester",
+  "status": "planned",
+  "architecture": "Two agencies, each with its own hub + secondary-hub, cross-linked at one shared-building station. National Rail: hub lock Manchester Piccadilly (MAN, 14 platforms, all six TOCs), secondary hub Manchester Victoria (MCV, 6 platforms, Northern + TransPennine Express only) — reuses the Thames Valley/Solent/West of England hub+secondary-hub pattern. Metrolink: hub lock St Peter's Square (all 8 lines converge, Zone 1), secondary hub Manchester Victoria. Manchester Victoria is built once as a single stationGroup with doNotGroup: true between its Metrolink and National Rail layers (same shape as Sheffield Station in South Yorkshire's pack). Manchester Piccadilly (NR) and Piccadilly Gardens (Metrolink) are built as two separate stationGroups, doNotGroup: true between them — a walk-link pair (~100m, 5-10 min), NOT a shared-building interchange the way Victoria is. This departs from the oracle report's headline C2/C3 point 4 ('hub lock: Victoria') in favour of the report's own platform/operator-count facts (line 22); see direction-model-memo.md for full reasoning and open item 1 for Tim.",
+  "agency": [
+    "Transport for Greater Manchester (TfGM) — Manchester Metrolink light rail, 8 lines, 99 stops",
+    "National Rail (Darwin/OpenLDBWS) — Northern, Avanti West Coast, TransPennine Express, CrossCountry, East Midlands Railway, Transport for Wales"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/greater-manchester-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Greater Manchester oracle clash report",
+      "url": "docs/greater-manchester-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Fresh from-scratch build 1 Sep 2026 — the tracker's prior 'Packed 2026-08-28' claim was false, no trace of an earlier pack existed anywhere in the codebase before this one."
+    },
+    {
+      "role": "Metrolink static GTFS (verified live, reference only — not pulled to derive this catalog)",
+      "title": "Manchester Metrolink GTFS",
+      "url": "https://metrolinktrains.com/globalassets/about/gtfs/gtfs.zip",
+      "note": "Also archived at Transitland Onestop ID f-9qh-metrolinktrains. Verified live 1 Sep 2026 per oracle report, no key required. Dual-licensed OGL 3.0 + ODbL 1.0. Not pulled here — station names/lines come from the oracle report's own tables."
+    },
+    {
+      "role": "Metrolink real-time (UNCONFIRMED — no feed pulled, do not assume availability)",
+      "title": "TfGM Open Data Portal",
+      "url": "https://tfgm.com/open-data",
+      "note": "TfGM developer portal (opendata.tfgm.com) deprecated, no new API keys issued; existing keys continue to function on an unconfirmed timeline. No public GTFS-RT feed confirmed anywhere. Confidence: 'not found' per oracle report License section. Metrolink ships v1 schedule-only. Contact data.analytics@tfgm.com to confirm before assuming this changes."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as East Midlands / West Midlands / Liverpool City Region / South Wales / West Yorkshire / South Yorkshire / Thames Valley / West of England / Solent / London & South East. Not a feed problem — do not treat as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "National Rail static GTFS (Transitland, reference only — Darwin is the live path)",
+      "title": "National Rail static GTFS feed",
+      "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, CC-BY-2.0 UK. Not used to derive this catalog's station list — station names/CRS come from the oracle report's tables."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "Metrolink light rail (8 lines, 99 stops, schedule-only v1) and National Rail (six TOCs) at Manchester Piccadilly and Manchester Victoria, plus surrounding regional/through-running stations (Stockport, Walsden). No buses, no other rail modes in v1 scope. Only named termini/via-points/hub stations from the report are enumerated for Metrolink — not all 99 stops (see coverageGaps).",
+  "notes": [
+    "D1 oracle is docs/greater-manchester-d1/oracle-clash-report.md only. No product lib/cities/greater-manchester/ exists yet. Not generated from GTFS. No stopIds in this file. No UK-country ledger exists yet (docs/*-ledger.md glob has only denmark-ledger.md) — this pack proceeds without one, same basis as every other UK region packed so far.",
+    "ARCHITECTURE: two agencies, two hub+secondary-hub pairs, cross-linked at Manchester Victoria. See top-level 'architecture' field and direction-model-memo.md for full reasoning, including the departure from the oracle report's headline C2/C3 point 4 recommendation.",
+    "Metrolink modes v1: light rail, line+terminus model, SCHEDULE-ONLY (no confirmed real-time feed — TfGM developer portal deprecated, no new keys issued). This is a genuine feed-status gap, same kind as South Yorkshire's Supertram/SYFTL gap, not the standard National Rail account block. Do not conflate the two in downstream QA notes.",
+    "National Rail modes v1: heavy rail, destination-board model (not line+terminus). BLOCKED pending DARWIN_LDB_TOKEN — see coverageGaps. Build the catalog/adapter normally per Nico's report; do not wire the token until it exists.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock (National Rail): Manchester Piccadilly (MAN CRS), 14 platforms, all six TOCs (Northern, Avanti West Coast, TransPennine Express, CrossCountry, East Midlands Railway, Transport for Wales). Secondary hub (National Rail): Manchester Victoria (MCV CRS), 6 platforms, Northern + TransPennine Express only.",
+    "Hub lock (Metrolink): St Peter's Square, all 8 lines converge (Zone 1 city centre, most-used stop on the network). Secondary hub (Metrolink): Manchester Victoria.",
+    "doNotGroup: Manchester Victoria Metrolink tram platforms (4) vs National Rail platforms (6) — same building, escalator/lift connect, separate operators/infrastructure. Same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands).",
+    "doNotGroup: Manchester Piccadilly (National Rail) vs Piccadilly Gardens (Metrolink) — ~100m apart, 5-10 min walk, undercroft vs street-level main platforms. NOT a shared-building case; closer to Bradford Forster Square/Bradford Interchange (West Yorkshire) than to Victoria.",
+    "Stockport (SMN CRS): National Rail only. Metrolink does not serve Stockport rail station — separate tram-only stops exist nearby on the Altrincham/Ashton lines, not co-located. Do not conflate.",
+    "Walsden: through-running-only boundary station toward West Yorkshire on the Calder Valley Line, single operator (Northern) continuing across the boundary, same platform — not a merge. CRS CODE MISMATCH FOUND, NOT RESOLVED: this report gives WDN; docs/west-yorkshire-d1/published-network.json (which explicitly flagged this as an open item pending this pack) gives WAD for the same station. Neither is treated as authoritative here — flagged for Tim/Nico to resolve against a live Darwin response before either pack's Walsden CRS is used in an adapter. See hazard-pack.md.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked (DARWIN_LDB_TOKEN) AND Metrolink's real-time feed status is confirmed with TfGM (or explicitly accepted as permanently schedule-only) — same overall status shape as South Yorkshire's dual-gate condition.",
+    "Metrolink line arrays below are TERMINI ONLY, as given by the report's C2/C3 point 10 line summary — NOT a full ordered 99-stop intermediate list. This is a real gap; see coverageGaps and hazard-pack.md H3.",
+    "gtfsRouteIdsIfKnown is left empty for all eight Metrolink lines — static GTFS exists (verified live) but this pack does not pull it to derive route_ids; that is Jim's job at adapter time, not this pack's.",
+    "License: Metrolink static GTFS is dual OGL 3.0 + ODbL 1.0, confidence 'clear'. Metrolink real-time is confidence 'not found' — no license because no feed. National Rail is OGL 2.0 baseline with NRE amendments, confidence 'unclear' on third-party redistribution — same open item as every other UK NR region. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', reference-only.",
+    "Boundary consistency checked against the one named adjacent region's finished pack (per dispatch instruction, not general cross-city context reading): docs/west-yorkshire-d1/published-network.json already records Walsden as a through-running boundary point toward Greater Manchester and explicitly notes no Greater Manchester pack existed yet to cross-check against — this pack closes that gap, confirms the through-running (not merge) framing, but surfaces a CRS code mismatch (WDN here vs WAD there) that is NOT resolved by this pack. See coverageGaps.",
+    "No docs/united-kingdom-ledger.md exists yet despite being named as required before the next NR region across multiple prior regions' packs. This pack proceeds on the oracle report alone per the dispatch instruction; the Walsden CRS mismatch recorded here should migrate into that ledger once it exists rather than being re-derived by a future region."
+  ],
+  "printedInnerCityNames": {
+    "nationalRailLock": "Manchester Piccadilly",
+    "nationalRailLockCrs": "MAN",
+    "nationalRailSecondaryLock": "Manchester Victoria",
+    "nationalRailSecondaryLockCrs": "MCV",
+    "metrolinkLock": "St Peter's Square",
+    "metrolinkSecondaryLock": "Manchester Victoria",
+    "doNotUse": [
+      "Manchester Station",
+      "Manchester Central",
+      "Piccadilly Station",
+      "Victoria Station"
+    ],
+    "note": "National Rail's hub lock (Manchester Piccadilly) and Metrolink's hub lock (St Peter's Square) are DIFFERENT physical stations — do not conflate under one printed 'Manchester hub' name. Manchester Victoria is the single shared-building point where both agencies' secondary hubs coincide; doNotGroup applies within it (tram layer vs rail layer), same station name printed once. See hazard-pack.md H6 and direction-model-memo.md."
+  },
+  "coverageGaps": [
+    "Metrolink real-time: NO confirmed feed. TfGM developer portal (opendata.tfgm.com) is deprecated and no longer issues new API keys; existing keys continue to function on an unconfirmed timeline. No public GTFS-RT feed found in any source checked. This is a genuine feed-status gap (same kind as South Yorkshire's Supertram/SYFTL gap), not the standard account-registration block. Confirm with TfGM (data.analytics@tfgm.com / https://tfgm.com/open-data) before assuming this changes. Metrolink ships v1 schedule-only.",
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists. Same blocker already accepted for every other UK National Rail region.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here.",
+    "Metrolink licensing (real-time only): UNKNOWN — no feed exists to license. Static GTFS licensing is clear (dual OGL 3.0 + ODbL 1.0).",
+    "Metrolink's eight lines' full 99-stop intermediate order is not in the oracle report — only termini and a short via-point summary (C2/C3 point 10). Do not treat the 'stations' arrays below as complete; pull the confirmed static GTFS feed (already verified live) for the real ordered list at adapter time.",
+    "Green and Purple Metrolink lines share the same terminus pair (Altrincham-Bury) with opposite line names/colours — the report does not explain the routing difference. Flagged in direction-model-memo.md; do not guess before confirming against a live TfGM timetable or GTFS payload.",
+    "Walsden CRS code mismatch: this report gives WDN (line 18); docs/west-yorkshire-d1/published-network.json gives WAD for the same station. NOT resolved by this pack — flagged for Tim/Nico to check against a live Darwin response or National Rail's published CRS list before either pack's Walsden entry is used in an adapter.",
+    "National Rail has no printed route/line map to transcribe — no 'lines' array is provided, only the hub/secondary-hub/through-running/regional station list. See direction-model-memo.md for the destination+operator model recommended instead.",
+    "Architecture departs from the oracle report's own headline C2/C3 point 4 ('hub lock: Victoria') by adding Piccadilly as National Rail's hub lock — flagged as open item 1 for Tim in direction-model-memo.md, worth an explicit sanity check before Jim wires an adapter."
+  ],
+  "metrolinkLines": [
+    { "id": "green", "name": "Green Line", "termini": ["Bury", "Altrincham"], "gtfsRouteIdsIfKnown": "" },
+    { "id": "yellow", "name": "Yellow Line", "termini": ["Bury", "Piccadilly"], "gtfsRouteIdsIfKnown": "" },
+    { "id": "blue", "name": "Blue Line", "termini": ["Ashton-under-Lyne", "Eccles"], "gtfsRouteIdsIfKnown": "" },
+    { "id": "red", "name": "Red Line", "termini": ["Trafford Centre", "Cornbrook"], "via": ["Imperial War Museum", "Wharfside", "Pomona"], "gtfsRouteIdsIfKnown": "" },
+    { "id": "purple", "name": "Purple Line", "termini": ["Altrincham", "Bury"], "gtfsRouteIdsIfKnown": "" },
+    { "id": "orange", "name": "Orange Line", "termini": ["Altrincham", "Rochdale"], "gtfsRouteIdsIfKnown": "" },
+    { "id": "airport", "name": "Airport Line", "termini": ["Piccadilly", "Manchester Airport"], "gtfsRouteIdsIfKnown": "" },
+    { "id": "eccles", "name": "Eccles Line", "termini": ["Manchester", "Eccles"], "gtfsRouteIdsIfKnown": "" }
+  ],
+  "metrolinkStations": {
+    "hub": {
+      "name": "St Peter's Square",
+      "class": "Metrolink hub lock — most used stop on the network, convergence point for most lines, operational hub for tram planning (report line 17). No National Rail service."
+    },
+    "secondaryHub": {
+      "name": "Manchester Victoria",
+      "crs": "MCV",
+      "class": "Metrolink secondary hub — also National Rail's secondary hub, same building. See stationGroups.manchesterVictoria for the combined entry and doNotGroup detail."
+    },
+    "separateFromNationalRail": [
+      { "name": "Piccadilly Gardens", "class": "Metrolink stop nearest Manchester Piccadilly NR station, but NOT co-located — undercroft/basement, ~100m/5-10 min walk from NR main platforms. doNotGroup vs Manchester Piccadilly stationGroup. See stationGroups.manchesterPiccadilly." },
+      { "name": "Stockport (tram stop)", "class": "Metrolink-only stop on the Altrincham and Ashton lines. NOT co-located with Stockport National Rail station (~0.5km walk). Do not conflate with the Stockport NR entry below." }
+    ],
+    "note": "99 stops total across 8 lines (report line 3, 21). Only the hub, secondary hub, and the two National-Rail-adjacent stops are enumerated here — the remaining ~95 stops are not individually catalogued in this pack; see coverageGaps."
+  },
+  "stationGroups": [
+    {
+      "id": "manchester-piccadilly",
+      "name": "Manchester Piccadilly",
+      "crs": "MAN",
+      "crsVerified": false,
+      "operators": ["Northern", "Avanti West Coast", "TransPennine Express", "CrossCountry", "East Midlands Railway", "Transport for Wales"],
+      "doNotGroup": true,
+      "doNotGroupReason": "Metrolink's Piccadilly Gardens stop (undercroft, ~100m away, 5-10 min walk via moving walkways) is a separate physical location, not co-located — report line 16. Never merge Piccadilly Gardens into this stationGroup.",
+      "class": "National Rail hub lock — 14 platforms, main intercity/regional hub (report line 22), all six TOCs. Busiest National Rail station in the region; four of six operators (Avanti, CrossCountry, East Midlands Railway, Transport for Wales) call only here, not at Victoria.",
+      "role": "hub lock (National Rail)",
+      "excludedOperators": []
+    },
+    {
+      "id": "manchester-victoria",
+      "name": "Manchester Victoria",
+      "crs": "MCV",
+      "crsVerified": false,
+      "operators": ["Northern", "TransPennine Express"],
+      "metrolinkPresent": true,
+      "doNotGroup": true,
+      "doNotGroupReason": "Metrolink tram platforms (4) and National Rail platforms (6) are separate infrastructure within the same building, connected by escalator/lift, ~2-5 minute walk within a shared concourse (report line 3, 15, 81). Same building, but not cross-platform interchange — doNotGroup between the two layers, same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands).",
+      "class": "National Rail secondary hub (6 platforms, Northern + TransPennine Express only) AND Metrolink secondary hub (4 platforms) — the single shared-building point where both agencies' station graphs touch. Second-busiest NR station in the region, busiest Northern-managed station (report line 79).",
+      "role": "secondary hub for both National Rail (subordinate to Piccadilly) and Metrolink (subordinate to St Peter's Square)",
+      "excludedOperators": []
+    },
+    {
+      "id": "piccadilly-gardens",
+      "name": "Piccadilly Gardens",
+      "crsVerified": false,
+      "mode": "Metrolink",
+      "doNotGroup": true,
+      "doNotGroupReason": "Manchester Piccadilly National Rail station (14 platforms, main platforms 13-14) is ~100m away at street level, 5-10 min walk via moving walkways (report line 16) — genuinely separate location, not the same building the way Victoria is.",
+      "class": "Metrolink tram stop nearest Manchester Piccadilly, undercroft/basement level. Served by Yellow and Airport lines (both terminate at 'Piccadilly' per the report's line termini).",
+      "role": "Metrolink stop, walk-link boundary to the National Rail hub lock",
+      "excludedOperators": []
+    }
+  ],
+  "throughRunningOnly": [
+    { "name": "Walsden", "crs": "WDN", "crsSource": "This report's own station table (line 18). CRS MISMATCH: docs/west-yorkshire-d1/published-network.json gives WAD for the same station — NOT resolved, see coverageGaps.", "crsVerified": false, "boundaryTo": "West Yorkshire", "class": "Through-running point, Calder Valley Line. Northern Railway continues across the Greater Manchester/West Yorkshire boundary at the same platform (single operator, not a merge). Report line 18, C2/C3 point 8." }
+  ],
+  "regional": [
+    { "name": "Stockport", "crs": "SMN", "crsVerified": false, "class": "National Rail station south of Manchester. NOT served by Metrolink at this location — separate tram-only stops exist ~0.5km away on the Altrincham and Ashton lines (report line 19). Served by East Midlands Railway and Northern per report line 92." }
+  ],
+  "excludedServices": [],
+  "boardEligibility": {
+    "note": "Restated from the oracle report's Board eligibility section (lines 24-61) — all services verdicted 'in', no exclusions found.",
+    "verdicts": [
+      { "service": "Metrolink (all 8 lines)", "verdict": "in", "reason": "Walk-up tram system, no reservations, no check-in barrier." },
+      { "service": "Northern", "verdict": "in", "reason": "Optional seat reservations only, not compulsory." },
+      { "service": "Avanti West Coast", "verdict": "in", "reason": "Optional reservations for Advance fares; walk-up also available." },
+      { "service": "TransPennine Express", "verdict": "in", "reason": "Optional reservations for premium products only; walk-up available." },
+      { "service": "CrossCountry", "verdict": "in", "reason": "Optional reservations only, not compulsory for standard fares." },
+      { "service": "East Midlands Railway", "verdict": "in", "reason": "Optional reservations only, walk-up available." },
+      { "service": "Transport for Wales", "verdict": "in", "reason": "Optional reservations only, walk-up available." }
+    ],
+    "excluded": "None identified at in-catalog stations (report line 41-43): no Caledonian Sleeper, Night Riviera Sleeper, Eurostar, or check-in-barrier services confirmed at Manchester Piccadilly or Victoria."
+  }
+}
