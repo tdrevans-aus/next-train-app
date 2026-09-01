@@ -1,0 +1,109 @@
+{
+  "city": "southwest",
+  "displayName": "Southwest",
+  "status": "planned",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS — GWR primary; CrossCountry through-running)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/southwest-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Southwest oracle clash report",
+      "url": "docs/southwest-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. No printed route/line map exists for National Rail in this report — Darwin is a per-station real-time board product, not a fixed-route product. No station-order/branch topology to transcribe beyond the hub, secondary hub, terminus, and one through-running boundary point."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / South Wales / West of England / London & South East. Not a feed problem — do not treat this as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "West of England D1 pack (consistency check only — Taunton boundary flag)",
+      "title": "West of England published-network.json",
+      "url": "docs/west-of-england-d1/published-network.json",
+      "note": "Read only to confirm Taunton (TAU) is not double-defined or contradicted: WoE's throughRunningOnly entry for Taunton says 'toward Southwest/Devon region — not a merge. GWR continues west to Exeter and beyond.' This pack's own report (line 18) independently reaches the same conclusion from the Southwest side. Not used as a source of any other station-graph fact in this pack."
+    },
+    {
+      "role": "London & South East National Rail D1 pack (consistency check only — Night Riviera Sleeper verdict)",
+      "title": "London & South East National Rail published-network.json",
+      "url": "docs/london-se-national-rail-d1/published-network.json",
+      "note": "Read only to confirm Night Riviera Sleeper's out-reservation verdict at Paddington matches this pack's own out-reservation verdict at Exeter St Davids/Plymouth/Penzance (same physical service, compulsory sleeping-car cabin reservation). Not used as a source of any other station-graph fact in this pack."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/southwest-d1/oracle-clash-report.md only. No product lib/cities/southwest/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "Single agency, single direction model (destination + operator) — no two-layer hub problem like East Midlands' Nottingham Station. See direction-model-memo.md.",
+    "Modes v1: National Rail heavy rail only. No light rail, no metro, no buses (report line 65, C2/C3 point 10).",
+    "National Rail has NO static GTFS publication (Darwin is realtime-only, SOAP API). This is an open product-architecture question already flagged in West of England's and London & South East's packs (same feed, same question) — not resolved in this pack either. See coverageGaps and jim-handoff.md.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock: Exeter St Davids (EXD). Hub secondary: Plymouth (PLY). Terminus: Penzance (PNZ). No doNotGroup needed at any of the three — GWR-dominated, platforms distinguished by route not operator; CrossCountry through-running is on distinct platforms but the report does not ask for a doNotGroup split (report C2/C3 point 6).",
+    "Boundary through-running station is NOT a merge point at D1: Taunton (TAU, West of England boundary). Already documented as a boundary in West of England's pack from the other side; this pack independently reaches the same non-merge conclusion — no contradiction. Flagged for D2 de-dup if/when both regions ship live.",
+    "Night Riviera Sleeper (London Paddington–Penzance) is EXCLUDED by board-eligibility verdict: out-reservation (compulsory sleeping-car cabin reservation, cannot walk up and board). Calls at Exeter St Davids, Plymouth, Truro, St Austell, St Erth, Penzance. Consistent with the same service's out-reservation verdict at Paddington in the London & South East National Rail pack. See excludedServices below.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as every other UK National Rail region.",
+    "No 'lines' array is provided — National Rail has no printed route/line map to transcribe. This is a flat station list (hub, secondary hub, terminus, through-running-only), not a lines array, matching the West of England / East Midlands National Rail precedent.",
+    "License: OGL 2.0 baseline with NRE amendments. Confidence 'unclear' on third-party rider redistribution via the RDM Platform Agreement — same open item as every other UK National Rail region. OPEN ITEM FOR TIM ONLY, do not resolve here.",
+    "No docs/united-kingdom-ledger.md exists yet. This pack proceeds on the oracle report alone (plus the two named consistency-check reads) per the dispatch instruction; boundary/exclusion facts here (Taunton, Night Riviera) should be folded into a future docs/united-kingdom-ledger.md rather than rediscovered by the next region."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Exeter St Davids",
+    "lockCrs": "EXD",
+    "secondary": "Plymouth",
+    "secondaryCrs": "PLY",
+    "terminus": "Penzance",
+    "terminusCrs": "PNZ",
+    "doNotUse": [
+      "Exeter",
+      "Exeter Central",
+      "Plymouth Station",
+      "Penzance Station"
+    ],
+    "note": "Single-layer, single-agency hub/secondary-hub/terminus trio — no doNotGroup needed between or within EXD/PLY/PNZ. See hazard-pack.md H1/H4/H6."
+  },
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "National Rail has NO static GTFS publication at all. Open product question for Jim/Tim, already flagged identically in West of England's and London & South East's packs (same feed): can Next Train support a Darwin-only next-train model, or does it require a GTFS base layer? Not resolved in this pack — do not guess an answer.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here; do not assume permission to relay Darwin data to end users until Tim confirms against the signed RDM Data Sharing Agreement.",
+    "National Rail has no printed route/line map to transcribe (Darwin is a real-time per-station board product) — no 'lines' array is provided, only the hub/secondary/terminus/through-running station list. See direction-model-memo.md for the destination+operator model recommended instead of line+terminus.",
+    "Boundary de-dup with West of England (Taunton) is explicitly out of scope for this pack's station graph — D2 concern for whichever of the two regions ships second. Both packs independently agree Taunton is a through-running boundary, not a merge, so there is no contradiction to resolve, only a future de-dup pass.",
+    "No buses, no light rail, no trams in v1 scope, per the oracle report."
+  ],
+  "excludedServices": [
+    {
+      "operator": "Night Riviera Sleeper",
+      "verdict": "out-reservation",
+      "stations": ["Exeter St Davids", "Plymouth", "Truro", "St Austell", "St Erth", "Penzance"],
+      "reason": "Compulsory sleeping-car cabin reservation; cannot be booked online, must be reserved at station or via GWR telesales. Walk-up boarding not available. Consistent with the same service's out-reservation verdict at Paddington in docs/london-se-national-rail-d1/published-network.json."
+    }
+  ],
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
+    "hub": {
+      "name": "Exeter St Davids",
+      "crs": "EXD",
+      "class": "hub lock — principal rail terminus for Exeter city; all GWR InterCity and regional services call here. Main interchange between London Paddington services and Southwest corridor (Plymouth-Penzance direction). Through-running point for CrossCountry services via Midlands/Bristol."
+    },
+    "secondaryHub": {
+      "name": "Plymouth",
+      "crs": "PLY",
+      "class": "hub secondary — Plymouth city station; frequent service to Exeter St Davids (30-60 min), direct service to Penzance via Riviera Line. Regional connections north to Exeter; served by GWR and CrossCountry. Largest passenger station in southwest region after Exeter."
+    },
+    "terminus": {
+      "name": "Penzance",
+      "crs": "PNZ",
+      "class": "terminus — westernmost and southernmost station on National Rail network; terminus of Cornish Main Line. GWR regional/InterCity terminus. Night Riviera Sleeper also terminates here but is EXCLUDED (out-reservation, see excludedServices)."
+    },
+    "throughRunningOnly": [
+      { "name": "Taunton", "crs": "TAU", "class": "through-running only, boundary to West of England region — not a merge. GWR and CrossCountry services cross into West of England region (Bristol/Bath/London Paddington direction) at this point. De-duplicate at D2 if West of England region enters the app. Already documented from the other side in docs/west-of-england-d1/published-network.json — no contradiction." },
+      { "name": "Newton Abbot", "crs": "NAB", "class": "through-running only (South West Main Line). GWR and CrossCountry services continue south to Plymouth. No through-running to adjacent regions." },
+      { "name": "Totnes", "crs": "TON", "class": "through-running only (Riviera Line branch). GWR regional services continue south to Plymouth. No through-running to adjacent regions." },
+      { "name": "Truro", "crs": "TRU", "class": "intermediate stop (Cornish Main Line, Truro branch). GWR services call between Exeter and Penzance. No through-running to adjacent regions." },
+      { "name": "St Austell", "crs": "SAU", "class": "intermediate stop between Truro and Penzance (Cornish Main Line, St Austell branch). No through-running to adjacent regions." },
+      { "name": "St Erth", "crs": "SER", "class": "penultimate station before Penzance terminus (Cornish Main Line, St Erth branch). No through-running to adjacent regions." }
+    ]
+  }
+}
