@@ -1,0 +1,179 @@
+{
+  "city": "liverpool-city-region",
+  "displayName": "Liverpool City Region",
+  "status": "planned",
+  "architecture": "Two agencies. National Rail: hub lock Liverpool Lime Street (LIV, seven TOCs), secondary hub Liverpool South Parkway (LPY, airport connector) — reuses the Thames Valley/Solent/West of England/Greater Manchester hub+secondary-hub pattern. Merseyrail: interchange pair Liverpool Central and Moorfields (both Merseyrail dual-line interchanges, no ranking given between them by the report), schedule-only v1 (no confirmed real-time feed). Liverpool Lime Street's Merseyrail presence is built as a SEPARATE stationGroup, doNotGroup: true against the National Rail Lime Street stationGroup, because the oracle report contradicts itself on whether the two agencies share platforms ('platform level', report line 41) or are separate buildings connected by footbridge ('separate infrastructure, separate entrance/footbridge', report line 73, C2/C3 point 2) — this pack takes the more conservative separate-infrastructure reading pending confirmation; see hazard-pack.md H1 and direction-model-memo.md.",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS) — Northern Trains (primary franchise), Avanti West Coast, TransPennine Express, East Midlands Railway, Transport for Wales, West Midlands Trains, CrossCountry",
+    "Merseyrail (Serco / Transport UK Group concession) — Northern Line (39 stations) and Wirral Line (34 stations), 69 stations total, schedule-only v1"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/liverpool-city-region-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Liverpool City Region oracle clash report",
+      "url": "docs/liverpool-city-region-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Fresh from-scratch build 1 Sep 2026 — the tracker's prior 'Packed 2026-08-28' claim was false, no trace of an earlier pack existed anywhere in the codebase before this one."
+    },
+    {
+      "role": "National Rail + Merseyrail static GTFS (verified live, reference only — not pulled to derive this catalog)",
+      "title": "National Rail GTFS (Transitland, includes Merseyrail via ATOC-CIF)",
+      "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs. CC-BY-2.0 UK, no key required, verified live 2026-08-31 per oracle report. Not pulled here — station names/lines come from the oracle report's own tables. No separate Merseyrail-only GTFS feed confirmed to exist."
+    },
+    {
+      "role": "National Rail real-time (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as every other UK region packed this wave. Not a feed problem — do not treat as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "Merseyrail real-time (UNCONFIRMED — no feed pulled, do not assume availability)",
+      "title": "Merseyrail official site (no developer/API portal found)",
+      "url": "https://www.merseyrail.org/",
+      "note": "No public GTFS-RT endpoint confirmed in Transitland, Mobility Database, or Merseyrail's own documentation. A mobile app ('Train Check') exists with live countdown info but no documented public API. Confidence: 'not found' per oracle report License section. Merseyrail ships v1 schedule-only. Contact data@merseyrail.org to confirm before assuming this changes."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "National Rail (seven TOCs) at Liverpool Lime Street and Liverpool South Parkway, plus Merseyrail (Northern Line, Wirral Line, schedule-only v1) at Liverpool Central and Moorfields. V1 SCOPE DECISION (Luke, this pack): include Merseyrail as schedule-only rather than deferring to H2 as the oracle report's own headline recommendation suggested — see direction-model-memo.md for full reasoning. Only named hub/secondary-hub/interchange stations from the report are enumerated for both agencies — not all ~30-40 National Rail stations or all 69 Merseyrail stations (see coverageGaps). No buses, no other rail modes in v1 scope.",
+  "notes": [
+    "D1 oracle is docs/liverpool-city-region-d1/oracle-clash-report.md only. No product lib/cities/liverpool-city-region/ exists yet. Not generated from GTFS. No stopIds in this file. No UK-country ledger exists yet (docs/*-ledger.md glob has only denmark-ledger.md) — this pack proceeds without one, same basis as every other UK region packed so far.",
+    "V1 SCOPE: this pack includes Merseyrail (schedule-only), departing from the oracle report's own literal recommendation to defer Merseyrail to H2. Rationale: Merseyrail's static schedule is confirmed live via Transitland; only real-time is unconfirmed, the same shape as Greater Manchester's Metrolink and South Yorkshire's Supertram, both of which shipped schedule-only rather than excluded. Board eligibility verdicts Merseyrail 'in' (report line 84). See direction-model-memo.md for full reasoning and open item 1 for Tim — this is a deliberate deviation, confirm before wiring.",
+    "ARCHITECTURE: National Rail hub+secondary-hub pair (Lime Street / South Parkway) is structurally separate from Merseyrail's own interchange pair (Central / Moorfields). Liverpool Lime Street's Merseyrail presence is built as its own stationGroup, doNotGroup: true against the NR Lime Street stationGroup, because the report contradicts itself on whether the two share a building or are footbridge-connected separate buildings. See hazard-pack.md H1 — UNRESOLVED, flagged for Tim.",
+    "National Rail modes v1: heavy rail, destination-board model (not line+terminus). BLOCKED pending DARWIN_LDB_TOKEN — see coverageGaps. Build the catalog/adapter normally per Nico's report; do not wire the token until it exists.",
+    "Merseyrail modes v1: metro-style commuter rail, line+terminus model, SCHEDULE-ONLY (no confirmed real-time feed anywhere). This is a genuine feed-status gap, same kind as Greater Manchester's Metrolink gap and South Yorkshire's Supertram/SYFTL gap, not the standard National Rail account block. Do not conflate the two in downstream QA notes.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock (National Rail): Liverpool Lime Street (LIV CRS), National Rail terminus, seven TOCs (Northern Trains primary franchise; Avanti West Coast, TransPennine Express, East Midlands Railway, Transport for Wales, West Midlands Trains, CrossCountry through-running). Secondary hub (National Rail): Liverpool South Parkway (LPY CRS), airport connector (Liverpool John Lennon Airport), regional and long-distance services.",
+    "Interchange pair (Merseyrail): Liverpool Central and Moorfields, both 'dual-line interchange' per the report with no ranking given between them (contrast Greater Manchester's Metrolink report, which explicitly ranked St Peter's Square over Victoria). Neither built as sole hub lock over the other. Flagged for Tim/Nico if a real ranking exists.",
+    "doNotGroup: Liverpool Lime Street National Rail platforms vs Merseyrail interchange presence — relationship AMBIGUOUS in the source report (line 41 'platform level' vs line 73 / C2/C3 point 2 'separate infrastructure, separate entrance/footbridge', no distance/time figure given either way, unlike Manchester Victoria's or Manchester Piccadilly/Piccadilly Gardens' explicit figures). Built conservatively as two separate stationGroups. See hazard-pack.md H1 — NOT RESOLVED, open item for Tim.",
+    "Ellesmere Port (ELP CRS, Merseyrail Wirral Line terminus): tracker says this should fold into Liverpool City Region, not remain a separate picker city. `uk-ellesmere-port` currently exists as a STANDALONE registry entry (status 'planned') in lib/providers/registry.js. This pack's Merseyrail scope already includes Ellesmere Port as a Wirral Line terminus. NOT RESOLVED HERE — registry-scope decision is explicitly Jim/Tim's call, outside Luke's scope. Second flag of this issue (Nico flagged it first in research). See jim-handoff.md.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked (DARWIN_LDB_TOKEN) AND Merseyrail's real-time feed status is confirmed with Merseyrail (or explicitly accepted as permanently schedule-only) AND the Lime Street structural ambiguity (H1) is resolved AND the Ellesmere Port registry discrepancy is resolved — same overall multi-gate status shape as Greater Manchester's and South Yorkshire's dual-gate conditions, with two additional gates here.",
+    "Merseyrail line arrays below are TERMINI/BRANCHES ONLY, as given by the report's station table and agency table (lines 21, 44) — NOT a full ordered 69-stop intermediate list. This is a real gap; see coverageGaps and hazard-pack.md H3.",
+    "gtfsRouteIdsIfKnown is left empty for both Merseyrail lines — static GTFS exists (verified live, bundled within the national feed) but this pack does not pull it to derive route_ids; that is Jim's job at adapter time, not this pack's.",
+    "License: National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', reference-only. National Rail real-time is OGL 2.0 baseline with NRE amendments, confidence 'unclear' on third-party redistribution — same open item as every other UK NR region. Merseyrail static GTFS inherits CC-BY-2.0 UK via the same bundled feed, confidence 'unclear' (report notes Merseyrail does not appear to maintain a separate license page — verify feed metadata before shipping). Merseyrail real-time has no license because no confirmed feed exists — confidence 'not found'.",
+    "No docs/united-kingdom-ledger.md exists yet despite being named as required before the next NR region across multiple prior regions' packs (Greater Manchester flagged this as overdue too). This pack proceeds on the oracle report alone per the dispatch instruction; the Lime Street structural ambiguity and Ellesmere Port discrepancy recorded here should migrate into that ledger once it exists rather than being re-derived by a future region."
+  ],
+  "printedInnerCityNames": {
+    "nationalRailLock": "Liverpool Lime Street",
+    "nationalRailLockCrs": "LIV",
+    "nationalRailSecondaryLock": "Liverpool South Parkway",
+    "nationalRailSecondaryLockCrs": "LPY",
+    "merseyrailInterchangeA": "Liverpool Central",
+    "merseyrailInterchangeB": "Moorfields",
+    "doNotUse": [
+      "Liverpool Station",
+      "Lime Street Station",
+      "Liverpool Central Station"
+    ],
+    "note": "National Rail's hub lock (Liverpool Lime Street) and Merseyrail's interchange pair (Liverpool Central, Moorfields) are DIFFERENT physical stations. Liverpool Lime Street itself is printed once but built as two doNotGroup'd stationGroups (National Rail layer, Merseyrail layer) pending resolution of the H1 structural ambiguity — see hazard-pack.md H1/H6 and direction-model-memo.md."
+  },
+  "coverageGaps": [
+    "Merseyrail real-time: NO confirmed feed anywhere. No public GTFS-RT endpoint found in Transitland, Mobility Database, or Merseyrail's own documentation — only a mobile app with an undocumented internal API. This is a genuine feed-status gap (same kind as Greater Manchester's Metrolink gap and South Yorkshire's Supertram/SYFTL gap), not the standard account-registration block. Confirm with Merseyrail (data@merseyrail.org / merseyrail.org) before assuming this changes. Merseyrail ships v1 schedule-only.",
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists. Same blocker already accepted for every other UK National Rail region.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here.",
+    "Merseyrail static GTFS licensing is UNCLEAR — Merseyrail does not appear to publish a standalone license page; inherits CC-BY-2.0 UK from the bundled national feed by assumption, not confirmed. Verify feed metadata at adapter time.",
+    "Merseyrail real-time licensing: UNKNOWN — no feed exists to license.",
+    "Liverpool Lime Street / Merseyrail structural relationship is AMBIGUOUS in the source report — 'platform level' (line 41) vs 'separate infrastructure, separate entrance/footbridge' (line 73, C2/C3 point 2), no distance/time figure given either way. NOT resolved by this pack; built conservatively as two doNotGroup'd stationGroups. See hazard-pack.md H1.",
+    "Ellesmere Port / uk-ellesmere-port registry discrepancy: tracker says Ellesmere Port should fold into Liverpool City Region; registry currently keeps `uk-ellesmere-port` as a standalone entry. NOT resolved by this pack — explicitly Jim/Tim's call, outside Luke's scope (no registry.js edits made). Second flag of this issue.",
+    "Merseyrail's two lines' full 69-stop intermediate order (39 Northern Line + 34 Wirral Line minus shared city-centre stations) is not in the oracle report — only branch termini and three individually named stations (Liverpool Central, Moorfields, Ellesmere Port). Do not treat the 'stations' arrays below as complete; pull the confirmed static GTFS feed (already verified live) for the real ordered list at adapter time.",
+    "National Rail has no printed route/line map to transcribe — no 'lines' array is provided, only the hub/secondary-hub/regional station list. See direction-model-memo.md for the destination+operator model recommended instead.",
+    "Liverpool Central vs Moorfields ranking not given by the report — both named 'dual-line interchange' with no seniority stated. Confirm before treating one as the Merseyrail hub lock over the other.",
+    "96 CRS claim from the tracker is UNVERIFIED per the oracle report (line 57) — report estimates ~30-40 National Rail + 67 Merseyrail-managed = ~97-107 total, roughly consistent but not confirmed station-by-station. This pack enumerates only the five individually named stations (Lime Street, South Parkway, Central, Moorfields, Ellesmere Port); the rest are a real gap, not populated here.",
+    "V1 scope departs from the oracle report's own headline recommendation (National Rail only, defer Merseyrail) — this pack includes Merseyrail schedule-only instead. Flagged as open item 1 for Tim in direction-model-memo.md; confirm before Jim wires an adapter."
+  ],
+  "merseyrailLines": [
+    { "id": "northern", "name": "Northern Line", "termini": ["Liverpool", "Southport"], "branches": ["Ormskirk", "Headbolt Lane"], "stationCountClaimed": 39, "gtfsRouteIdsIfKnown": "" },
+    { "id": "wirral", "name": "Wirral Line", "termini": ["Liverpool", "Ellesmere Port"], "branches": ["West Kirby", "Chester"], "stationCountClaimed": 34, "gtfsRouteIdsIfKnown": "" }
+  ],
+  "stationGroups": [
+    {
+      "id": "liverpool-lime-street-nr",
+      "name": "Liverpool Lime Street",
+      "crs": "LIV",
+      "crsVerified": false,
+      "operators": ["Northern Trains", "Avanti West Coast", "TransPennine Express", "East Midlands Railway", "Transport for Wales", "West Midlands Trains", "CrossCountry"],
+      "doNotGroup": true,
+      "doNotGroupReason": "Merseyrail Northern/Wirral Line presence at or near Lime Street is structurally ambiguous in the source report (see hazard-pack.md H1) — built as a separate stationGroup (liverpool-lime-street-merseyrail) pending confirmation. Never merge the two without resolving H1 first.",
+      "class": "National Rail hub lock — main terminus, seven TOCs (report table row 1, board eligibility lines 63-67). Northern Trains is the primary franchise holder (City Line commuter services); the other six are through-running long-distance/regional operators.",
+      "role": "hub lock (National Rail)",
+      "excludedOperators": []
+    },
+    {
+      "id": "liverpool-lime-street-merseyrail",
+      "name": "Liverpool Lime Street",
+      "crsVerified": false,
+      "mode": "Merseyrail",
+      "doNotGroup": true,
+      "doNotGroupReason": "National Rail's Liverpool Lime Street stationGroup (liverpool-lime-street-nr) is built separately. Report gives contradictory language on whether this is the same building ('platform level', line 41) or a separate building connected by footbridge ('separate infrastructure, separate entrance/footbridge', line 73, C2/C3 point 2). Built conservatively as a separate stationGroup pending confirmation — see hazard-pack.md H1.",
+      "class": "Merseyrail Northern/Wirral Line presence at or adjacent to Lime Street. Structural relationship to the National Rail terminus UNRESOLVED — see hazard-pack.md H1.",
+      "role": "Merseyrail interchange point, relationship to NR hub lock unresolved",
+      "excludedOperators": []
+    },
+    {
+      "id": "liverpool-south-parkway",
+      "name": "Liverpool South Parkway",
+      "crs": "LPY",
+      "crsVerified": false,
+      "operators": ["Northern Trains", "regional and long-distance operators (not individually enumerated by the report)"],
+      "doNotGroup": false,
+      "class": "National Rail secondary hub — airport connector (Liverpool John Lennon Airport), regional and long-distance services (report table row 2).",
+      "role": "secondary hub (National Rail)",
+      "excludedOperators": []
+    },
+    {
+      "id": "liverpool-central",
+      "name": "Liverpool Central",
+      "crsVerified": false,
+      "mode": "Merseyrail",
+      "lines": ["Northern Line", "Wirral Line"],
+      "doNotGroup": false,
+      "class": "Merseyrail dual-line interchange (report line 50). No National Rail service at this station. No ranking given against Moorfields — see hazard-pack.md H6.",
+      "role": "Merseyrail interchange (unranked against Moorfields)",
+      "excludedOperators": []
+    },
+    {
+      "id": "moorfields",
+      "name": "Moorfields",
+      "crsVerified": false,
+      "mode": "Merseyrail",
+      "lines": ["Northern Line", "Wirral Line"],
+      "doNotGroup": false,
+      "class": "Merseyrail dual-line interchange (report line 51). No National Rail service at this station. No ranking given against Liverpool Central — see hazard-pack.md H6.",
+      "role": "Merseyrail interchange (unranked against Liverpool Central)",
+      "excludedOperators": []
+    },
+    {
+      "id": "ellesmere-port",
+      "name": "Ellesmere Port",
+      "crs": "ELP",
+      "crsVerified": false,
+      "mode": "Merseyrail",
+      "lines": ["Wirral Line"],
+      "doNotGroup": false,
+      "class": "Merseyrail Wirral Line terminus (report line 52). REGISTRY DISCREPANCY: `uk-ellesmere-port` exists standalone in lib/providers/registry.js; tracker says it should fold into this region. NOT resolved by this pack. See coverageGaps and jim-handoff.md.",
+      "role": "Wirral Line terminus",
+      "excludedOperators": []
+    }
+  ],
+  "throughRunningOnly": [],
+  "regional": [],
+  "excludedServices": [
+    { "service": "Caledonian Sleeper", "verdict": "out-reservation", "reason": "Compulsory sleeping-car reservation. Report notes it does not regularly call Liverpool Lime Street (typically London Euston–Scotland route) — excluded on both grounds (report line 67, 83)." }
+  ],
+  "boardEligibility": {
+    "note": "Restated from the oracle report's Board eligibility section (lines 59-86).",
+    "verdicts": [
+      { "service": "Northern Trains (City Line, regional)", "verdict": "in", "reason": "Open seating, no compulsory reservation per Northern help pages; walk-up boarding." },
+      { "service": "Avanti West Coast", "verdict": "in", "reason": "Optional reservation only, not compulsory; walk-up boarding confirmed." },
+      { "service": "TransPennine Express", "verdict": "in", "reason": "Optional reservation only, walk-up boarding standard." },
+      { "service": "East Midlands Railway", "verdict": "in", "reason": "Optional reservation only, walk-up boarding standard." },
+      { "service": "Transport for Wales", "verdict": "in", "reason": "Optional reservation only, walk-up boarding standard." },
+      { "service": "West Midlands Trains", "verdict": "in", "reason": "Optional reservation only, walk-up boarding standard." },
+      { "service": "CrossCountry", "verdict": "in", "reason": "Optional reservation only, walk-up boarding standard." },
+      { "service": "Merseyrail (Northern Line + Wirral Line, all 69 stations)", "verdict": "in", "reason": "Walk-up commuter urban rail, no reservation system, no check-in barrier." },
+      { "service": "Caledonian Sleeper", "verdict": "out-reservation", "reason": "Compulsory sleeping-car reservation; does not regularly call Liverpool Lime Street." }
+    ]
+  }
+}
