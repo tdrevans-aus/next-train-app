@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 16) {
-  fail(`Expected 16 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 17) {
+  fail(`Expected 17 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 16) {
-  fail(`Expected 16 regions in index, got ${regions.length}`);
+if (regions.length !== 17) {
+  fail(`Expected 17 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -627,6 +627,60 @@ if (!tvSecondaryChiltern || tvSecondaryChiltern.crs !== "OXF" || tvSecondaryChil
   fail("thames-valley Oxford (Chiltern) must resolve as a rail entry with crs OXF and doNotGroup true");
 }
 
+// greater-manchester: TWO AGENCIES, TWO HUB+SECONDARY-HUB PAIRS cross-linked at one
+// shared-building station (Manchester Victoria) — National Rail's own hub (Manchester
+// Piccadilly) and Metrolink's own hub (St Peter's Square) are different physical stations,
+// unlike every prior two-agency region (Sheffield Station / Nottingham Station) which shared
+// one hub name across both modes.
+const gm = getRegion("greater-manchester");
+if (!gm || gm.railCount !== 4 || gm.metroCount !== 15) {
+  fail(`greater-manchester counts rail=${gm?.railCount} metro=${gm?.metroCount}`);
+}
+
+const gmRail = listRailStations("greater-manchester");
+const gmCrsSet = new Set(gmRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["MAN", "MCV", "SMN", "WDN"]) {
+  if (!gmCrsSet.has(crs)) {
+    fail(`greater-manchester missing ${crs}`);
+  }
+}
+if (gmCrsSet.has("WAD")) {
+  fail("greater-manchester must not silently adopt West Yorkshire's WAD code for Walsden");
+}
+for (const name of getNotInRegion("greater-manchester")) {
+  if (gmRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in greater-manchester catalog`);
+  }
+}
+
+const gmNrHub = resolveRailEntry("Manchester Piccadilly", "greater-manchester");
+const gmNrSecondary = resolveRailEntry("Manchester Victoria", "greater-manchester");
+if (!gmNrHub || gmNrHub.crs !== "MAN") {
+  fail("greater-manchester Manchester Piccadilly must resolve as a rail entry with crs MAN");
+}
+if (!gmNrSecondary || gmNrSecondary.crs !== "MCV") {
+  fail("greater-manchester Manchester Victoria must resolve as a rail entry with crs MCV");
+}
+
+const gmMetro = listMetroStops("greater-manchester");
+const gmMetroNames = new Set(gmMetro.map((s) => s.name));
+for (const name of ["St Peter's Square", "Manchester Victoria", "Piccadilly Gardens"]) {
+  if (!gmMetroNames.has(name)) {
+    fail(`greater-manchester Metrolink catalog missing ${name}`);
+  }
+}
+const gmVictoriaMetro = resolveMetroEntry("Manchester Victoria", "greater-manchester");
+if (!gmVictoriaMetro || !gmVictoriaMetro.catalogId?.startsWith("metrolink:")) {
+  fail("greater-manchester Manchester Victoria must also resolve as a Metrolink entry, separate from the rail entry (shared building, doNotGroup)");
+}
+const gmPiccadillyGardens = resolveMetroEntry("Piccadilly Gardens", "greater-manchester");
+if (!gmPiccadillyGardens || gmPiccadillyGardens.catalogId !== "metrolink:piccadilly-gardens") {
+  fail("greater-manchester Piccadilly Gardens must resolve as a Metrolink entry, separate from Manchester Piccadilly (walk-link pair, doNotGroup)");
+}
+if (resolveRailEntry("Piccadilly Gardens", "greater-manchester")) {
+  fail("greater-manchester Piccadilly Gardens must NOT resolve as a National Rail entry — Metrolink-only");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -636,5 +690,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria)"
 );
