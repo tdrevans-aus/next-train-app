@@ -1,0 +1,125 @@
+{
+  "city": "uk-wales",
+  "displayName": "Rest of Wales",
+  "status": "planned",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS — Transport for Wales franchise operations across North Wales, Mid Wales, West Wales corridors; CrossCountry/GWR at boundaries)"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/rest-of-wales-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "Rest of Wales oracle clash report",
+      "url": "docs/rest-of-wales-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Scope is National Rail only across three corridors (North Wales/Wrexham, Mid Wales/Aberystwyth, West Wales/Carmarthen). No second agency exists to exclude (unlike South Wales' Valley Lines) — see scopeNote."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as South Wales / West Midlands / Greater Manchester / Liverpool City Region / East Midlands / North East / West of England. Not a feed problem — do not treat this as a reason to skip building the National Rail catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "National Rail static GTFS (Transitland, reference only — Darwin is the live path)",
+      "title": "National Rail static GTFS feed",
+      "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, verified live 1 Sep 2026 per oracle report. CC-BY-2.0 UK. Not used to derive this catalog's station list — stations are taken directly from the oracle report's H2 corridor table, not generated from a GTFS dump."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "Single-agency pack: all in-catalog stations are National Rail (Transport for Wales as franchisee, Darwin/OpenLDBWS feed). Unlike South Wales, there is no second network to exclude — TfW operates no separate local rail service in Rest of Wales the way Valley Lines exists in South Wales (report line 3: 'no dedicated local rail operator'). The open gap here is different in kind: whether TfW's real-time data is actually carried through Darwin/OpenLDBWS is UNCONFIRMED (report lines 34, 67, 121-127), distinct from the plain account-level block below. See coverageGaps.",
+  "notes": [
+    "D1 oracle is docs/rest-of-wales-d1/oracle-clash-report.md only. No product lib/cities/uk-wales/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "city id is 'uk-wales' per the oracle report's explicit C2/C3 instruction (point 1) and docs/uk-architecture.md's region-id table (uk-wales = Rest of Wales). FLAG: South Wales' merged pack used city id 'south-wales', not 'uk-south-wales', even though uk-architecture.md's table lists 'uk-south-wales' — an inconsistency between that pack and the architecture doc. This pack follows its own oracle report's explicit instruction rather than guessing which convention is authoritative; flagged for Jim/Tim to reconcile, not silently resolved either way. See jim-handoff.md.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "Hub lock: Wrexham General (WRX). Junction of North Wales Main Line and Borderlands Line; explicitly NOT Wrexham Central (southern Borderlands terminus, lower connectivity). See hazard-pack.md H6.",
+    "Three corridors, no inter-corridor through-running within Wales: North Wales <-> Mid Wales routes via Shrewsbury (England); Mid Wales <-> West Wales routes via Swansea/South Wales region. Each corridor is operationally independent within this catalog (report C2/C3 point 4).",
+    "National Rail has NO printed route/line map to transcribe (Darwin is a per-station real-time board API) — no 'lines' array is provided, only corridor-grouped station lists. See direction-model-memo.md for the destination+operator model recommended instead.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as South Wales / West Midlands / Greater Manchester / Liverpool City Region / East Midlands / North East / West of England.",
+    "License: OGL 2.0 baseline with NRE amendments for Darwin. Confidence 'unclear' on third-party rider redistribution — same open item as every other UK National Rail region. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', reference-only. TfW real-time-feed-specific license: confidence 'not found' (report line 127) — no license to summarize because no confirmed TfW-specific feed exists."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Wrexham General",
+    "lockCrs": "WRX",
+    "doNotUse": [
+      "Wrexham",
+      "Wrexham Central",
+      "Wrexham Station"
+    ],
+    "note": "Wrexham General is the sole hub lock (report line 78: 'Recommended hub lock'; explicitly 'Do not conflate with Wrexham Central (southern terminus of Borderlands Line, lower connectivity)'). No second-agency shared-hub case exists here (contrast South Wales' Cardiff Central doNotGroup with Valley Lines) — see hazard-pack.md H1/H6."
+  },
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "Transport for Wales real-time feed status for these services is UNCONFIRMED — a distinct gap from the account block above. Report lines 34, 67, 121-127: static GTFS via Transitland is confirmed live, but whether Darwin/OpenLDBWS actually carries live TfW National Rail data, or whether TfW publishes GTFS-RT through any other channel, is not established. Must contact TfW (data@tfw.wales) to confirm before real-time boards can be built, even after the account-level block clears. If unconfirmed, boards stay schedule-only (Darwin static GTFS) or planned-only.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here.",
+    "National Rail has no printed route/line map to transcribe — no 'lines' array is provided, only corridor-grouped hub/branch station lists. See direction-model-memo.md.",
+    "City id inconsistency between this pack ('uk-wales', per oracle report instruction) and South Wales' merged pack ('south-wales', not 'uk-south-wales' as docs/uk-architecture.md's table would suggest) — NOT reconciled in this pack. Flagged for Jim/Tim.",
+    "No docs/uk-ledger.md country ledger exists yet (standing retrofit per docs/country-lane.md, not yet run) — this pack has no cross-region stop-ownership or coverage-boundary source beyond its own oracle report. If the UK ledger is written later and it conflicts with any boundary/hub-lock decision here, the ledger wins per the country-lane propagation rule; this pack does not need to be rewritten, but Jim should check the ledger before wiring."
+  ],
+  "nationalRailStations": {
+    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a corridor-grouped flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN and pending confirmation of TfW real-time feed status.",
+    "hub": {
+      "name": "Wrexham General",
+      "crs": "WRX",
+      "class": "hub lock — junction of North Wales Main Line (Chester-Wrexham-Shrewsbury) and Borderlands Line (Wrexham-Bidston/Merseyside); largest North Wales station by connectivity."
+    },
+    "corridors": {
+      "northWales": {
+        "route": "North Wales Coast Line (Crewe-Holyhead) + North Wales Main Line (Chester-Wrexham) + Borderlands Line (Wrexham-Bidston)",
+        "hub": "Wrexham General (WRX)",
+        "stations": [
+          { "name": "Wrexham General", "crs": "WRX", "class": "hub lock" },
+          { "name": "Llandudno Junction", "crs": "LLJ", "class": "intermediate" },
+          { "name": "Conwy", "crs": "CON", "class": "intermediate" },
+          { "name": "Bangor", "crs": "BNG", "class": "intermediate" },
+          { "name": "Holyhead", "crs": "HOY", "class": "terminus" }
+        ],
+        "throughRunningOnly": [
+          { "name": "Chester", "crs": "CTR", "class": "through-running only, England pass-through — not a Rest of Wales catalog station. Crewe-Wrexham mainline continues into North Wales from here (report lines 17, 30, 92)." }
+        ]
+      },
+      "midWales": {
+        "route": "Cambrian Line (Shrewsbury-Aberystwyth / Pwllheli)",
+        "hub": "Aberystwyth (AYW, terminus — not hub-locked, see hazard-pack.md H6)",
+        "stations": [
+          { "name": "Welshpool", "crs": "WEL", "class": "intermediate" },
+          { "name": "Machynlleth", "crs": "MCH", "class": "junction — Cambrian Line splits toward Aberystwyth or Pwllheli" },
+          { "name": "Aberystwyth", "crs": "AYW", "class": "terminus, secondary hub candidate (not locked)" },
+          { "name": "Pwllheli", "crs": "PWL", "class": "terminus" }
+        ],
+        "throughRunningOnly": [
+          { "name": "Shrewsbury", "crs": null, "class": "through-running only, England pass-through — not a Rest of Wales catalog station. Cambrian Line originates here; Machynlleth is the first in-Wales station (report lines 18, 31, 93). CRS not given in the oracle report — do not invent." }
+        ]
+      },
+      "westWales": {
+        "route": "West Wales lines (Carmarthen-Pembroke Dock / Milford Haven / Fishguard), Llanelli branch",
+        "hub": "Carmarthen (CMN, junction — not hub-locked, see hazard-pack.md H6)",
+        "stations": [
+          { "name": "Carmarthen", "crs": "CMN", "class": "junction, tertiary hub candidate (not locked)" },
+          { "name": "Whitland", "crs": "WLD", "class": "branch point — Fishguard / Milford Haven / Pembroke Dock branches split here" },
+          { "name": "Narberth", "crs": "NAR", "class": "intermediate" },
+          { "name": "Tenby", "crs": "TNB", "class": "intermediate" },
+          { "name": "Pembroke Dock", "crs": "PMD", "class": "terminus" },
+          { "name": "Milford Haven", "crs": "MLH", "class": "terminus" },
+          { "name": "Fishguard Harbour", "crs": "FGW", "class": "terminus" },
+          { "name": "Llanelli", "crs": "LLE", "class": "branch, stays within catalog (not a through-running boundary, report line 32)" }
+        ],
+        "throughRunningOnly": [
+          { "name": "(unnamed) toward Swansea", "crs": null, "class": "Carmarthen continues east toward Swansea on the South Wales Main Line — South Wales region, not Rest of Wales (report lines 19, 26, 94). No specific station named in this report; not a catalog point here. No de-dup attempted against South Wales' catalog, which does not list Carmarthen or a Swansea-direction boundary station either — nothing to reconcile against as of this pack." }
+        ]
+      }
+    }
+  },
+  "doNotGroup": {
+    "status": "proposed, not built",
+    "note": "See hazard-pack.md doNotGroup proposals table. No platform/service-pattern data in the oracle report to encode enforced rules; flagged for confirmation against a live Darwin payload once unblocked.",
+    "candidates": [
+      "Wrexham General (WRX): North Wales Main Line / North Wales Coast Line / Borderlands Line destinations",
+      "Carmarthen (CMN): West Wales branch (Whitland direction, in-catalog) vs. eastward through-running to Swansea (South Wales region, out of catalog)",
+      "Whitland (WLD): Fishguard Harbour / Milford Haven / Pembroke Dock branch destinations",
+      "Machynlleth (MCH): Aberystwyth vs. Pwllheli branch destinations"
+    ]
+  }
+}
