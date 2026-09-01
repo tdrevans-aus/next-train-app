@@ -1,0 +1,215 @@
+{
+  "region": "greater-manchester",
+  "displayName": "Greater Manchester",
+  "timeZone": "Europe/London",
+  "source": "docs/greater-manchester-d1/published-network.json (Nico oracle-clash-report + Luke's D1 pack, 1 Sep 2026)",
+  "retrievedAt": "2026-09-01",
+  "feeds": {
+    "train": "darwin",
+    "metro": "metrolink-static-gtfs-realtime-unconfirmed"
+  },
+  "notes": [
+    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as every other UK region in this wave.",
+    "Metrolink: TfGM developer portal (opendata.tfgm.com) is deprecated and no longer issues new API keys; no confirmed GTFS-RT feed exists anywhere. Genuinely unconfirmed feed status (same kind as South Yorkshire's Supertram/SYFTL gap), not the standard National Rail account block. fetchMetrolinkStopBoard() in lib/providers/greater-manchester.js throws MetrolinkFeedUnconfirmedError rather than fabricating a schedule. See docs/greater-manchester-d1/hazard-pack.md and jim-handoff.md skip risk section.",
+    "TWO AGENCIES, TWO HUB+SECONDARY-HUB PAIRS, cross-linked at one shared-building station (Manchester Victoria) — a deliberate departure from the oracle report's own single-sentence headline recommendation (C2/C3 point 4, 'hub lock: Victoria'), built instead from the report's own supporting facts (line 22: Piccadilly 14 platforms/all six TOCs vs Victoria 6 platforms/two TOCs). See docs/greater-manchester-d1/jim-handoff.md and direction-model-memo.md for the full reasoning — do not 'simplify' this back to a single Victoria hub lock without re-reading it.",
+    "National Rail hub lock: Manchester Piccadilly (MAN). National Rail secondary hub: Manchester Victoria (MCV). Metrolink hub lock: St Peter's Square. Metrolink secondary hub: Manchester Victoria.",
+    "Manchester Victoria is built ONCE as a shared-building station — one printed name, two catalog entries (mode train, mode metro), doNotGroup: true between them. Same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands): escalator/lift connect, ~2-5 min walk within one shared concourse, not a cross-platform interchange.",
+    "Manchester Piccadilly (National Rail, MAN) and Piccadilly Gardens (Metrolink) are TWO SEPARATE stationGroups, doNotGroup: true between them — a walk-link pair (~100m, 5-10 min via moving walkways, undercroft vs street-level), NOT a shared building the way Victoria is. Closer in shape to West Yorkshire's Bradford Forster Square/Bradford Interchange pair. Never merge these two under one printed name.",
+    "Stockport: National Rail (SMN CRS) and Metrolink are two SEPARATE, non-co-located stops (~0.5km apart) on different lines/infrastructure — the Metrolink 'Stockport' entry here is tram-only (Altrincham/Ashton lines), not the rail station. Do not conflate.",
+    "Walsden (WDN CRS): through-running-only boundary station toward West Yorkshire on the Calder Valley Line, single operator (Northern), same platform, not a merge. CRS CODE MISMATCH, NOT RESOLVED: this region's own oracle report gives WDN; West Yorkshire's already-merged pack (lib/cities/west-yorkshire/stations.json) gives WAD for the same physical station. Neither is authoritative — this catalog uses WDN because that is what THIS region's own oracle report gives, per the dispatch instruction not to silently pick one. Flagged for Tim/Nico to resolve against a live Darwin response or National Rail's published CRS list before either code is trusted. Do NOT edit West Yorkshire's stations.json to 'fix' this.",
+    "Metrolink line arrays (see marketing-directions.js) are TERMINI-ONLY per the oracle report's C2/C3 point 10 summary — NOT a full ordered 99-stop list. Only the hub, secondary hub, and named termini/via-points from that summary are catalogued below; the remaining ~85 of 99 Metrolink stops are a real, uncatalogued gap. Do not treat this list as complete.",
+    "Green and Purple Metrolink lines share the same terminus pair (Altrincham-Bury) with opposite line names/colours — the report does not explain the routing difference. Not resolved here; do not guess which physical routing distinguishes them.",
+    "The Eccles line's 'Manchester' terminus (as printed in the oracle report) is NOT catalogued as a station here — genuinely ambiguous which physical Manchester stop this refers to, not given by the report. Do not guess a resolution; the Eccles Line + Manchester chip is left as an unresolved marketing string only, generated (if at all) from the Eccles terminus, never as a resolvable catalog entry.",
+    "'Piccadilly' as printed in the oracle report's Metrolink line-termini table (Yellow, Airport lines) refers to the Piccadilly Gardens Metrolink stop, NOT Manchester Piccadilly National Rail station — aliased accordingly below. Never conflate the two; see doNotUse list in docs/greater-manchester-d1/published-network.json.",
+    "lat/lng are null for every Metrolink stop — no coordinate source confirmed (static GTFS is verified live but not pulled by this pack; Jim's job at adapter time per published-network.json, not yet done here beyond structural wiring)."
+  ],
+  "notInRegion": [],
+  "stops": [
+    {
+      "mode": "train",
+      "name": "Manchester Piccadilly",
+      "crs": "MAN",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "National Rail hub lock — 14 platforms, all six TOCs (Northern, Avanti West Coast, TransPennine Express, CrossCountry, East Midlands Railway, Transport for Wales). doNotGroup vs Piccadilly Gardens (Metrolink, separate stationGroup, ~100m walk-link)."
+    },
+    {
+      "mode": "train",
+      "name": "Manchester Victoria",
+      "crs": "MCV",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "National Rail secondary hub — 6 platforms, Northern + TransPennine Express only. Shared building with Metrolink's secondary hub (mode metro entry below); doNotGroup between the two layers."
+    },
+    {
+      "mode": "train",
+      "name": "Stockport",
+      "crs": "SMN",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Regional National Rail station, served by East Midlands Railway and Northern. NOT co-located with the Metrolink 'Stockport' tram stop (~0.5km away, different lines) — do not conflate."
+    },
+    {
+      "mode": "train",
+      "name": "Walsden",
+      "crs": "WDN",
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Through-running only, Calder Valley Line, Greater Manchester/West Yorkshire boundary (single operator, Northern, continues at same platform, not a merge). CRS MISMATCH NOT RESOLVED: West Yorkshire's stations.json gives WAD for the same physical station — this catalog uses WDN per this region's own oracle report. See top-level notes."
+    },
+    {
+      "mode": "metro",
+      "name": "St Peter's Square",
+      "catalogId": "metrolink:st-peters-square",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Metrolink hub lock — most-used stop on the network, convergence point for most lines, operational hub for tram planning per the report. Red and Eccles lines' exact routing through here is not independently confirmed (see direction-model-memo.md) — do not assume all eight lines call here without a real timetable check."
+    },
+    {
+      "mode": "metro",
+      "name": "Manchester Victoria",
+      "catalogId": "metrolink:manchester-victoria",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Metrolink secondary hub — same building as the National Rail secondary hub (mode train entry above); doNotGroup between the two layers, same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands). Yellow line named stop (Bury-Piccadilly)."
+    },
+    {
+      "mode": "metro",
+      "name": "Piccadilly Gardens",
+      "catalogId": "metrolink:piccadilly-gardens",
+      "stopId": null,
+      "aliases": ["Piccadilly"],
+      "lat": null,
+      "lng": null,
+      "class": "Metrolink stop nearest Manchester Piccadilly National Rail station but NOT co-located — undercroft/basement level, ~100m/5-10 min walk via moving walkways. doNotGroup vs Manchester Piccadilly (mode train, separate stationGroup). Yellow and Airport line terminus (printed as 'Piccadilly' in the oracle report's line-termini table — aliased here, never conflated with the National Rail station of the same informal name)."
+    },
+    {
+      "mode": "metro",
+      "name": "Bury",
+      "catalogId": "metrolink:bury",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Green, Yellow, and Purple line terminus."
+    },
+    {
+      "mode": "metro",
+      "name": "Altrincham",
+      "catalogId": "metrolink:altrincham",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Green, Purple, and Orange line terminus. Green and Purple share this Altrincham-Bury terminus pair with opposite line names — unexplained by the report, not resolved here."
+    },
+    {
+      "mode": "metro",
+      "name": "Ashton-under-Lyne",
+      "catalogId": "metrolink:ashton-under-lyne",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Blue line terminus."
+    },
+    {
+      "mode": "metro",
+      "name": "Eccles",
+      "catalogId": "metrolink:eccles",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Blue and Eccles line terminus."
+    },
+    {
+      "mode": "metro",
+      "name": "Trafford Centre",
+      "catalogId": "metrolink:trafford-centre",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Red line terminus."
+    },
+    {
+      "mode": "metro",
+      "name": "Cornbrook",
+      "catalogId": "metrolink:cornbrook",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Red line terminus/named via-point per the report's line summary."
+    },
+    {
+      "mode": "metro",
+      "name": "Imperial War Museum",
+      "catalogId": "metrolink:imperial-war-museum",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Named via-point on the Red line, between Trafford Centre and Cornbrook."
+    },
+    {
+      "mode": "metro",
+      "name": "Wharfside",
+      "catalogId": "metrolink:wharfside",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Named via-point on the Red line."
+    },
+    {
+      "mode": "metro",
+      "name": "Pomona",
+      "catalogId": "metrolink:pomona",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Named via-point on the Red line."
+    },
+    {
+      "mode": "metro",
+      "name": "Rochdale",
+      "catalogId": "metrolink:rochdale",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Orange line terminus."
+    },
+    {
+      "mode": "metro",
+      "name": "Manchester Airport",
+      "catalogId": "metrolink:manchester-airport",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Airport line terminus."
+    },
+    {
+      "mode": "metro",
+      "name": "Stockport (tram stop)",
+      "catalogId": "metrolink:stockport",
+      "stopId": null,
+      "aliases": [],
+      "lat": null,
+      "lng": null,
+      "class": "Metrolink-only stop on the Altrincham/Ashton lines, ~0.5km from Stockport National Rail station. NOT co-located — do not conflate with the mode train Stockport entry above."
+    }
+  ]
+}

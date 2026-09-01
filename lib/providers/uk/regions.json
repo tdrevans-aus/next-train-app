@@ -118,6 +118,13 @@
       "catalogPath": "../../cities/thames-valley/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "greater-manchester",
+      "name": "Greater Manchester",
+      "catalogPath": "../../cities/greater-manchester/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "metrolink-static-gtfs-realtime-unconfirmed" }
     }
   ]
 }
