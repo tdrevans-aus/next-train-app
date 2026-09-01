@@ -22,13 +22,13 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 17) {
-  fail(`Expected 17 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 18) {
+  fail(`Expected 18 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 17) {
-  fail(`Expected 17 regions in index, got ${regions.length}`);
+if (regions.length !== 18) {
+  fail(`Expected 18 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
@@ -681,6 +681,61 @@ if (resolveRailEntry("Piccadilly Gardens", "greater-manchester")) {
   fail("greater-manchester Piccadilly Gardens must NOT resolve as a National Rail entry — Metrolink-only");
 }
 
+// liverpool-city-region: TWO STRUCTURALLY SEPARATE AGENCY SHAPES, deliberately NOT
+// cross-linked at Lime Street — National Rail's own hub+secondary-hub pair (Lime Street/South
+// Parkway) is structurally distinct from Merseyrail's own unranked interchange pair (Liverpool
+// Central/Moorfields), unlike greater-manchester's cross-linked Manchester Victoria or
+// south-yorkshire/east-midlands' single shared-name hub. Liverpool Lime Street itself resolves
+// as TWO separate catalog entries (mode train + mode metro), doNotGroup, H1 structural ambiguity
+// unresolved (see docs/liverpool-city-region-d1/hazard-pack.md).
+const lcr = getRegion("liverpool-city-region");
+if (!lcr || lcr.railCount !== 2 || lcr.metroCount !== 4) {
+  fail(`liverpool-city-region counts rail=${lcr?.railCount} metro=${lcr?.metroCount}`);
+}
+
+const lcrRail = listRailStations("liverpool-city-region");
+const lcrCrsSet = new Set(lcrRail.map((s) => s.crs).filter(Boolean));
+for (const crs of ["LIV", "LPY"]) {
+  if (!lcrCrsSet.has(crs)) {
+    fail(`liverpool-city-region missing ${crs}`);
+  }
+}
+for (const name of getNotInRegion("liverpool-city-region")) {
+  if (lcrRail.some((s) => s.name === name)) {
+    fail(`False friend ${name} in liverpool-city-region catalog`);
+  }
+}
+
+const lcrNrHub = resolveRailEntry("Liverpool Lime Street", "liverpool-city-region");
+const lcrNrSecondary = resolveRailEntry("Liverpool South Parkway", "liverpool-city-region");
+if (!lcrNrHub || lcrNrHub.crs !== "LIV") {
+  fail("liverpool-city-region Liverpool Lime Street must resolve as a rail entry with crs LIV");
+}
+if (!lcrNrSecondary || lcrNrSecondary.crs !== "LPY") {
+  fail("liverpool-city-region Liverpool South Parkway must resolve as a rail entry with crs LPY");
+}
+
+const lcrMetro = listMetroStops("liverpool-city-region");
+const lcrMetroNames = new Set(lcrMetro.map((s) => s.name));
+for (const name of ["Liverpool Lime Street", "Liverpool Central", "Moorfields", "Ellesmere Port"]) {
+  if (!lcrMetroNames.has(name)) {
+    fail(`liverpool-city-region Merseyrail catalog missing ${name}`);
+  }
+}
+const lcrLimeStreetMetro = resolveMetroEntry("Liverpool Lime Street", "liverpool-city-region");
+if (!lcrLimeStreetMetro || lcrLimeStreetMetro.catalogId !== "merseyrail:liverpool-lime-street") {
+  fail(
+    "liverpool-city-region Liverpool Lime Street must also resolve as a Merseyrail entry, separate from the rail entry (H1 unresolved, doNotGroup)"
+  );
+}
+const lcrCentralMetro = resolveMetroEntry("Liverpool Central", "liverpool-city-region");
+if (!lcrCentralMetro || lcrCentralMetro.catalogId !== "merseyrail:liverpool-central") {
+  fail("liverpool-city-region Liverpool Central must resolve as a Merseyrail entry");
+}
+if (resolveRailEntry("Liverpool Central", "liverpool-city-region")) {
+  fail("liverpool-city-region Liverpool Central must NOT resolve as a National Rail entry — Merseyrail-only");
+}
+
 if (failures.length) {
   console.error("uk-region-catalog-conformance failures:\n");
   for (const f of failures) {
@@ -690,5 +745,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved)"
 );

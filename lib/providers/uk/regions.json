@@ -125,6 +125,13 @@
       "catalogPath": "../../cities/greater-manchester/stations.json",
       "modes": ["train", "metro"],
       "feeds": { "train": "darwin", "metro": "metrolink-static-gtfs-realtime-unconfirmed" }
+    },
+    {
+      "id": "liverpool-city-region",
+      "name": "Liverpool City Region",
+      "catalogPath": "../../cities/liverpool-city-region/stations.json",
+      "modes": ["train", "metro"],
+      "feeds": { "train": "darwin", "metro": "merseyrail-static-gtfs-confirmed-no-realtime-confirmed" }
     }
   ]
 }
