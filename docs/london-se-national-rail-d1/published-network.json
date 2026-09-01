@@ -1,0 +1,154 @@
+{
+  "city": "london-se-national-rail",
+  "displayName": "London & South East National Rail",
+  "status": "planned",
+  "architecture": "multi-group (Option A) — no single hub-lock. See stationGroups below and docs/london-se-national-rail-d1/jim-handoff.md before wiring an adapter.",
+  "agency": [
+    "National Rail (Darwin/OpenLDBWS) — Southeastern, Thameslink, Great Northern, Southern, Gatwick Express (Greater Thameslink Railway), c2c, Greater Anglia, GWR, SWR at their London termini"
+  ],
+  "timezone": "Europe/London",
+  "source": "docs/london-se-national-rail-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle clash report (Nico)",
+      "title": "London & South East National Rail oracle clash report",
+      "url": "docs/london-se-national-rail-d1/oracle-clash-report.md",
+      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Architecture decision (Option A, per-terminus station groups, no forced single hub-lock) made by Tim on top of this report's own Option A recommendation (report line 81)."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "title": "National Rail Enquiries Darwin data feeds",
+      "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
+      "rdmPortal": "https://raildata.org.uk/",
+      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as every other UK region packed so far. Not a feed problem — do not treat this as a reason to skip building the catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+    },
+    {
+      "role": "National Rail static GTFS (Transitland, reference only — Darwin is the live path)",
+      "title": "National Rail static GTFS feed",
+      "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, CC-BY-2.0 UK. Not used to derive this catalog's station list — station names/CRS come from the oracle report's tables, which the report itself marks as unverified against a live GTFS dump (report lines 103, 256). Confirm CRS codes against this feed before adapter wiring."
+    }
+  ],
+  "retrievedAt": "2026-09-01T00:00:00Z",
+  "scopeNote": "National Rail only. TfL (Underground/DLR/Elizabeth Line), buses, and Transport for Wales Valley Lines are out of scope (separate city entries / regions). Eurostar (out-checkin), Caledonian Sleeper and Night Riviera Sleeper (out-reservation) are excluded by board-eligibility verdict. LNER is excluded — its board-eligibility verdict was `undecided` in the oracle report and remains `undecided` after this pack's own research attempt (see coverageGaps and jim-handoff.md); per the board-eligibility rule, undecided blocks catalog inclusion, it does not default to in.",
+  "notes": [
+    "D1 oracle is docs/london-se-national-rail-d1/oracle-clash-report.md only. No product lib/cities/london-se-national-rail/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "ARCHITECTURE: Option A (Tim's decision) — eight potential per-terminus station groups, seven built (Waterloo, Victoria, London Bridge, Liverpool Street, King's Cross, St Pancras International, Paddington). Euston is NOT built — the report never names Euston's in-scope regional operator (only Caledonian Sleeper, which is excluded). No single hub-lock exists for this region; do not attempt to collapse these groups into one board or one CityConfig hub.",
+    "doNotGroup is required WITHIN two groups: London Bridge (Southeastern / Southern / Thameslink, three operators) and Liverpool Street (Greater Anglia / c2c, two operators). See stationGroups[].doNotGroup below and hazard-pack.md H4.",
+    "CRS codes below are carried from the oracle report's 'examples' list (report line 256) and are NOT verified against a live GTFS dump or Darwin response — the report itself flags this (line 103). Confirm before wiring the adapter.",
+    "Timezone Europe/London HAS DST (BST/GMT).",
+    "No 'lines' array is provided for any group — no printed route/line map to transcribe, same as every National Rail-only region packed so far. Each group is a flat destination+operator departure list; see direction-model-memo.md.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as every other UK National Rail region.",
+    "License: OGL 2.0 baseline with NRE amendments for Darwin. Confidence 'unclear' on third-party rider redistribution — same open item as every other UK National Rail region. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', reference-only.",
+    "No docs/united-kingdom-ledger.md (or docs/uk-ledger.md) exists yet. docs/country-lane.md names the UK ledger retrofit as required before the next NR region after East Midlands/North East/West of England/South Wales/Rest of Scotland/Rest of Wales/West Yorkshire — this IS that next region and the retrofit has not run. This pack proceeds on the oracle report alone per the dispatch instruction; boundary facts here (GWR/Paddington, SWR/Waterloo, CrossCountry, LNER-excluded) should be folded into a future docs/united-kingdom-ledger.md rather than rediscovered by the next region. Flagged, not resolved, here."
+  ],
+  "stationGroups": [
+    {
+      "id": "waterloo",
+      "name": "London Waterloo",
+      "crs": "WAT",
+      "crsVerified": false,
+      "operators": ["South Western Railway"],
+      "doNotGroup": false,
+      "class": "SWR terminus (southwest, Solent corridor). Single operator, no internal doNotGroup.",
+      "boundaryNote": "SWR continues southwest past this catalog's edge (West of England / Solent region, not yet built). Through-running only, not a merge point — flag for D2 ledger, not resolved here."
+    },
+    {
+      "id": "victoria",
+      "name": "London Victoria",
+      "crs": "VIC",
+      "crsVerified": false,
+      "operators": ["Southern", "Gatwick Express"],
+      "doNotGroup": false,
+      "class": "Southern/Gatwick Express hub (south coast, Gatwick Airport). Same agency family (Greater Thameslink Railway) — one board, distinguished by destination+operator, not a doNotGroup case."
+    },
+    {
+      "id": "london-bridge",
+      "name": "London Bridge",
+      "crs": "LBG",
+      "crsVerified": false,
+      "operators": ["Southeastern", "Southern", "Thameslink"],
+      "doNotGroup": true,
+      "doNotGroupReason": "Three operators at one physical station, separate platform logic per report line 48/136/231. Three separate boarding sections required; do not merge into one flat departure list.",
+      "class": "Southeastern/Southern/Thameslink hub (southeast, south coast, cross-London). Most central terminus per report, but explicitly not treated as a single-hub-lock for the whole region (Option A rejects that — see hazard-pack.md H1)."
+    },
+    {
+      "id": "liverpool-street",
+      "name": "Liverpool Street",
+      "crs": "LST",
+      "crsVerified": false,
+      "operators": ["Greater Anglia", "c2c"],
+      "doNotGroup": true,
+      "doNotGroupReason": "Two operators at one physical station, separate platform logic per report line 49/137/232.",
+      "class": "Greater Anglia/c2c hub (East Anglia, Essex)."
+    },
+    {
+      "id": "kings-cross",
+      "name": "London King's Cross",
+      "crs": "KGX",
+      "crsVerified": false,
+      "operators": ["Great Northern"],
+      "doNotGroup": false,
+      "class": "Great Northern hub (north via East Coast Main Line, regional). LNER also calls here but is EXCLUDED from this catalog — board-eligibility verdict undecided/excluded, see coverageGaps.",
+      "excludedOperators": [
+        { "operator": "LNER", "verdict": "undecided (excluded)", "reason": "Report's own board-eligibility table marks LNER undecided pending operator confirmation on unreserved-carriage walk-up policy (report lines 128-129, 156). This pack's own research attempt (curl fetches of lner.co.uk, LNER Wikipedia, Google, DuckDuckGo) could not obtain verifiable operator-policy text — every source was either client-rendered JS with no server text, or an anti-bot challenge page. Excluded per the dispatch instruction: keep undecided, exclude rather than guess." }
+      ],
+      "proposedDoNotGroup": "Against St Pancras International's Thameslink group below-ground — same complex, different physical buildings and operators. Proposed, not built as a merge (they are already two separate stationGroups entries here, which is the doNotGroup outcome in practice)."
+    },
+    {
+      "id": "st-pancras-international",
+      "name": "St Pancras International",
+      "crs": "STP",
+      "crsVerified": false,
+      "operators": ["Thameslink"],
+      "doNotGroup": false,
+      "class": "Thameslink (St Pancras Thameslink, below-ground). Eurostar also calls here (above-ground) but is EXCLUDED — out-checkin, compulsory pre-departure check-in (report line 124/159).",
+      "excludedOperators": [
+        { "operator": "Eurostar", "verdict": "out-checkin", "reason": "Compulsory 45-minute pre-departure check-in at Eurostar Channel Terminal, airport-style border/security/luggage screening. International service, out of v1 scope by design (report line 124)." }
+      ]
+    },
+    {
+      "id": "paddington",
+      "name": "London Paddington",
+      "crs": "PAD",
+      "crsVerified": false,
+      "operators": ["Great Western Railway"],
+      "doNotGroup": false,
+      "class": "GWR hub (southwest via Great Western Main Line, Wales). Night Riviera Sleeper also calls here but is EXCLUDED — out-reservation.",
+      "excludedOperators": [
+        { "operator": "Night Riviera Sleeper", "verdict": "out-reservation", "reason": "Compulsory reservation for sleeping cars; seated-accommodation walk-up status unverified (report line 126/158, skip risk noted but not resolved by this pack)." }
+      ],
+      "boundaryNote": "GWR continues west past this catalog's edge (West of England region, already built — docs/west-of-england-d1/, Bristol Temple Meads hub). Through-running only, not a merge point — flag for D2 ledger, not resolved here."
+    }
+  ],
+  "notBuilt": [
+    {
+      "id": "euston",
+      "name": "London Euston",
+      "status": "not built",
+      "reason": "Report names 'regional services' and Caledonian Sleeper at Euston (C2/C3 point 5) but never names the regional operator — not in the report's TOC scope list (lines 9, 31, 38). Caledonian Sleeper itself is excluded (out-reservation). No named in-scope TOC means no station group can be built here without inventing an operator the report doesn't confirm. See hazard-pack.md H4/H6 and jim-handoff.md."
+    },
+    {
+      "id": "secondary-termini",
+      "stations": ["Blackfriars", "Cannon Street", "Charing Cross", "Farringdon", "Fenchurch Street", "Marylebone", "Moorgate"],
+      "status": "not built",
+      "reason": "Report marks these 'TBD...may be out-of-scope D1' (report line 53/101). Farringdon and Blackfriars appear again as Thameslink calling points in the board-eligibility table (report line 147), which is suggestive but not a decision this pack makes on the report's behalf. Flagged as an open item, not resolved."
+    }
+  ],
+  "excludedServices": [
+    { "operator": "Eurostar", "verdict": "out-checkin", "station": "St Pancras International" },
+    { "operator": "Caledonian Sleeper", "verdict": "out-reservation", "station": "Euston" },
+    { "operator": "Night Riviera Sleeper", "verdict": "out-reservation", "station": "Paddington" },
+    { "operator": "LNER", "verdict": "undecided (excluded)", "station": "King's Cross" }
+  ],
+  "coverageGaps": [
+    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
+    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. OPEN ITEM FOR TIM ONLY — do not resolve here.",
+    "LNER board-eligibility verdict remains UNDECIDED. This pack attempted to resolve it (see stationGroups[kings-cross].excludedOperators and jim-handoff.md) and could not obtain verifiable operator-policy text with the tools available. LNER is excluded from the catalog pending a real operator confirmation, not defaulted to in.",
+    "Euston is not built — no named in-scope regional TOC in the oracle report. See notBuilt above.",
+    "Seven secondary termini (Blackfriars, Cannon Street, Charing Cross, Farringdon, Fenchurch Street, Marylebone, Moorgate) are not built — report marks them TBD/possibly out-of-scope. See notBuilt above.",
+    "CRS codes for all seven built groups are UNVERIFIED against a live GTFS dump or Darwin response — the oracle report itself flags this (lines 103, 256). Confirm before adapter wiring; crsVerified: false on every stationGroups entry.",
+    "Regional-boundary through-running (GWR at Paddington, SWR at Waterloo, CrossCountry system-wide) is NOT de-duplicated against West of England or any other region in this pack — flagged for a future D2/country-ledger pass, not resolved here.",
+    "No docs/united-kingdom-ledger.md exists yet despite the country-lane's standing retrofit naming this as the region that should have triggered it. See notes above."
+  ]
+}

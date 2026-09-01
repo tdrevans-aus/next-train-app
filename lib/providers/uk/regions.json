@@ -83,6 +83,13 @@
       "catalogPath": "../../cities/rest-of-scotland/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "london-se-national-rail",
+      "name": "London & South East National Rail",
+      "catalogPath": "../../cities/london-se-national-rail/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }
