@@ -36,7 +36,6 @@
       name: "England",
       regions: [
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false },
-        { id: "uk-ellesmere-port", name: "Ellesmere Port corridor", timeZone: "Europe/London", comingSoon: true },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false },
         { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false },

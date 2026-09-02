@@ -39,5 +39,5 @@ const ukDump = getCity("uk");
 assert(!ukDump, "city=uk must not exist in registry");
 
 console.log(
-  "uk-planned-gate: ok (uk-ellesmere-port and remaining UK regions planned/501; uk-london-tfl + west-of-england + east-midlands + uk-west-midlands live; no city=uk; Perth green)"
+  "uk-planned-gate: ok (remaining UK regions planned/501; uk-london-tfl + west-of-england + east-midlands + uk-west-midlands live; no city=uk; Perth green)"
 );

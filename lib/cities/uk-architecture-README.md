@@ -5,8 +5,10 @@ Per **docs/uk-architecture.md**. Region ids are registry cities — **not** `cit
 | Region id | Catalog | Feed |
 |-----------|---------|------|
 | `uk-west-midlands` | `lib/cities/uk-west-midlands/stations.json` | Darwin + TfWM Metro |
-| `uk-ellesmere-port` | `lib/cities/uk-ellesmere-port/stations.json` | Darwin |
 | `uk-london-tfl` | `lib/cities/uk-london-tfl/stops.json` | TfL Unified API |
+
+Ellesmere Port was never its own region — dropped 2 Sep 2026 as a duplicate concept. Its one
+station (ELP) already lives inside `liverpool-city-region`'s Merseyrail Wirral Line catalog.
 
 Adapters:
 
@@ -26,7 +28,6 @@ Build catalogs:
 
 ```bash
 node scripts/build-uk-west-midlands-catalog.mjs
-node scripts/build-uk-ellesmere-port-catalog.mjs
 TFL_APP_KEY=... node scripts/build-uk-london-tfl-catalog.mjs
 ```
 

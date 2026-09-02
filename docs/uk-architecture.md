@@ -35,13 +35,18 @@ lib/providers/uk-tfl.js             London TfL only (new, briefed separately)
 lib/providers/uk-metro-wm.js        West Midlands Metro (new, with WM region)
 
 lib/cities/uk-west-midlands/        stations.json (CRS + Metro ids)
-lib/cities/uk-ellesmere-port/       stations.json (11 CRS)
 lib/cities/uk-london-tfl/           stops.json (TfL ids, not CRS-only)
 ```
 
 **Do not** register `uk` as one live city. Prefer region ids:
 
-`uk-west-midlands` · `uk-ellesmere-port` · `uk-london-tfl`
+`uk-west-midlands` · `uk-london-tfl`
+
+**Dropped (2 Sep 2026):** `uk-ellesmere-port` was never its own region — it's one station (ELP)
+on the Merseyrail Wirral Line, already in `liverpool-city-region`'s catalog. The standalone
+registry entry, picker row, and catalog file were removed as a duplicate concept; nothing was
+lost. See §3's launch-order table and the Liverpool City Region pack notes below, which flagged
+this discrepancy three times before it was resolved.
 
 Registry status stays `planned`. `?city=` for those ids stays **501**.  
 `assertCityLive` for all UK region ids must fail until Tim says otherwise.
@@ -65,7 +70,7 @@ Deep-briefed now: **1, 2, 3**. Everything else is an ID + feed reservation. Do n
 | id | Display | Why it is a region | Feed | Extra mode |
 |----|---------|--------------------|------|------------|
 | `uk-west-midlands` | West Midlands | WMCA + family testers. See `docs/uk-coding-brief.md` | Darwin + WM Metro | Metro (35 current) |
-| `uk-ellesmere-port` | Ellesmere Port | Thin family corridor. Fold into Liverpool later | Darwin | — |
+| ~~`uk-ellesmere-port`~~ | ~~Ellesmere Port~~ | **Dropped 2 Sep 2026** — folded into Liverpool as planned; never shipped as its own region | — | — |
 | `uk-london-tfl` | London | Different API and map language. TfL **rail only** | **TfL Unified**, not Darwin | Tube, Elizabeth, DLR, Overground, Trams |
 | `uk-london-se-nr` | London & South East NR | Termini + commuter belt. Split later if it hurts | Darwin | — |
 | `uk-manchester` | Greater Manchester | TfGM / Bee / Metrolink | Darwin + TfGM | Metrolink |
@@ -85,8 +90,8 @@ Deep-briefed now: **1, 2, 3**. Everything else is an ID + feed reservation. Do n
 **Naming note (updated 1 Sep 2026):** the `uk-` prefix above was the original plan but was dropped
 starting with West Yorkshire/South Yorkshire/North East/East Midlands onward — every region actually
 registered in `lib/providers/registry.js` since then uses a plain kebab-case id with no prefix (check
-that file for ground truth, this table is a planning reference and can drift). The first five regions
-(`uk-west-midlands`, `uk-ellesmere-port`, `uk-london-tfl`, `uk-manchester`, `uk-liverpool`) kept their
+that file for ground truth, this table is a planning reference and can drift). The regions
+(`uk-west-midlands`, `uk-london-tfl`, `uk-manchester`, `uk-liverpool`) kept their
 original prefixed ids since they were already registered before the convention changed — don't rename
 them retroactively.
 
@@ -99,11 +104,10 @@ Break `uk-london-se-nr` or `uk-england-rest` only when a real tester catchment a
 ## 4. Launch order
 
 1. `uk-west-midlands` — `docs/uk-coding-brief.md`
-2. `uk-ellesmere-port` — same file
-3. `uk-london-tfl` — `docs/jim-brief-uk-london-tfl.md`
-4. `uk-manchester`
-5. `uk-liverpool` (absorb EP allow-list)
-6. Then Glasgow / West Yorkshire / North East by tester demand
+2. `uk-london-tfl` — `docs/jim-brief-uk-london-tfl.md`
+3. `uk-manchester`
+4. `uk-liverpool` (absorb EP allow-list)
+5. Then Glasgow / West Yorkshire / North East by tester demand
 
 Learn from 1–2 before writing more station lists: Darwin in-app, OUT destinations, dual feeds, whether CA is the right size.
 
