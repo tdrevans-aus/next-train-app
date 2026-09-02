@@ -153,3 +153,69 @@ redistribution-terms ambiguity (open item for Tim, same as every other UK NR reg
 resolution of the Merseyrail real-time feed status (open item for Tim/Merseyrail contact), no
 wiring of `DARWIN_LDB_TOKEN`, no `docs/united-kingdom-ledger.md` creation (flagged as overdue, not
 this pack's job to write), no reading of any other city's in-progress (unfinished) pack.
+
+## Flip commit — list additions for Mark (added 2 Sep 2026, Jim's code-side follow-through)
+
+Darwin's OpenLDBWS is genuinely live now (`lib/providers/uk-darwin.js` REST rewrite, PR #188,
+verified against Bristol Temple Meads) — Tim has authorized flipping Liverpool City Region live.
+Ahead of that, this pass landed the code-side follow-through only: `lib/cities/
+liverpool-city-region/dogfood-next-train.js`, the `liverpool-city-region` switch-cases in
+`lib/cities/live-city-api.js`'s `directionsFor`/`getMultiCityNextTrain`, and
+`qa/liverpool-city-region-dogfood-gate.mjs` (replacing `qa/liverpool-city-region-planned-gate.mjs`
+in `qa/run-all.mjs`'s smoke list). **Merseyrail real-time is a permanent, known gap, not a
+blocker** — `fetchMerseyrailStopBoard()` throws `MerseyrailFeedUnconfirmedError` unconditionally
+and the dogfood dispatch surfaces it rather than fabricating a schedule, same posture as Greater
+Manchester's Metrolink and South Yorkshire's Supertram. **Lime Street's H1 structural ambiguity is
+preserved exactly as built — NOT resolved by this pass** (two separate stationGroups, `doNotGroup:
+true`, conservative separate-infrastructure reading; see `lib/providers/liverpool-city-region.js`
+file header and `hazard-pack.md` H1).
+
+**Deliberately NOT done in this pass — bundle these into the actual status-flip commit** (same
+split West of England's/East Midlands' flips used):
+
+1. `lib/providers/registry.js` — flip the `liverpool-city-region` entry's `status` from
+   `"planned"` to `"live"`. Also worth updating the `notes`/`integration` prose the same way prior
+   flips did (record the Darwin unblock + flip date + confirm the Merseyrail-permanent-gap
+   posture), though that's prose, not a gate.
+2. `lib/cities/live-city-api.js` — add `"liverpool-city-region"` to the `MultiCityId` typedef union
+   and to the `MULTI_CITY_IDS` array (both currently end in `..."oslo","west-of-england"]`/`|"oslo"|
+   "west-of-england"`).
+3. `public/app.js` — add `"liverpool-city-region"` to `NEARBY_MULTI_CITY_IDS` and to the
+   `LIVE_CITY_IDS` `Set`.
+4. `public/brisbane-dogfood.js` — add `"liverpool-city-region"` to the `MULTI_CITY_IDS` array and
+   add `"liverpool-city-region": true` to the `available` map.
+5. `public/city-session.js` — add `"liverpool-city-region"` to the `MULTI_CITY_IDS` array; add a
+   picker region entry under the `gb` country's regions list, e.g. `{ id:
+   "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon:
+   false }` (follow the exact shape West of England's/East Midlands' flips used, inserted after
+   the existing `west-of-england` entry or wherever the gb regions array currently ends); add a
+   `CITY_BOUNDS` entry — derived below since `stations.json`'s lat/lng are null for every station
+   (no coordinate source was pulled by this D1 pack; confirmed in the file header), same situation
+   West Midlands' and East Midlands' flips hit. Derived from real, independently known locations
+   of the five named catalog stations (Liverpool Lime Street ~53.4075°N -2.9776°W, Liverpool South
+   Parkway ~53.3527°N -2.8888°W, Liverpool Central ~53.4041°N -2.9789°W, Moorfields ~53.4093°N
+   -2.9884°W, Ellesmere Port ~53.2814°N -2.8969°W — Liverpool city centre overall is roughly
+   53.41°N, -2.98°W per the task brief), with a small pad:
+   `"liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 }`
+   (illustrative — confirm against a real geocode pass before shipping, same caveat West
+   Midlands'/East Midlands' notes carried).
+6. `public/journey-model.js` — add `"liverpool-city-region"` to `PERSISTED_CITY_IDS` (the `"gb"`
+   country id is already in `PERSISTED_COUNTRY_IDS` from `uk-london-tfl`, no change needed there).
+7. `qa/uk-planned-gate.mjs` — add `"liverpool-city-region"` to the `LIVE_UK_REGION_IDS` `Set`
+   (currently `new Set(["uk-london-tfl", "west-of-england"])`), and update the trailing
+   `console.log` summary string to mention liverpool-city-region is live. **This assertion cannot
+   be made to pass both before and after the flip** — `LIVE_UK_REGION_IDS` is a hardcoded set
+   checked directly against `getCity(id)?.status`, not derived from the registry, so adding
+   `"liverpool-city-region"` to it before the status flip lands would make the gate fail *now*
+   (status still `"planned"`) instead of *after* (status `"live"`). Note: `liverpool-city-region`
+   IS already a member of `UK_REGION_IDS` in `lib/providers/uk/catalog.js` (unlike West Midlands,
+   which needed its own dedicated dogfood gate because it predates the D1-pack pipeline and was
+   never covered by this generic loop) — `qa/uk-planned-gate.mjs` already exercises it today as a
+   planned region; this item is only the one-line move from the planned branch to the live branch
+   of that same loop, in the same commit (or the very next one) that flips `registry.js`'s status
+   line, not before.
+
+Verify with `node qa/live-city-lists-sync.mjs` after all of the above — it derives the expected
+membership directly from the registry's `status === "live"` set and will catch any list that's
+missing `liverpool-city-region` or, just as importantly, any list where it was added too early
+relative to the others.
