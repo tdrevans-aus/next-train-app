@@ -58,13 +58,9 @@ for (const forbiddenId of ["liverpool", "merseyrail", "lcr", "liverpool-merseyra
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// uk-ellesmere-port must be left completely untouched by this wiring pass.
-const ellesmerePort = getCity("uk-ellesmere-port");
-assert(ellesmerePort?.status === "planned", "uk-ellesmere-port must remain untouched (status planned)");
-assert(
-  CITIES.filter((city) => city.id === "uk-ellesmere-port").length === 1,
-  "uk-ellesmere-port must still appear exactly once in the registry (not merged, not removed)"
-);
+// uk-ellesmere-port was deleted 2 Sep 2026 as a standalone region (hangover, never real);
+// Ellesmere Port survives only as this catalog's own Wirral Line terminus (checked below).
+assert(!getCity("uk-ellesmere-port"), "uk-ellesmere-port must no longer be registered");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/liverpool-city-region-d1");
@@ -195,5 +191,5 @@ try {
 assert(dispatchThrew, "fetchStationBoard dispatcher must not silently succeed for Merseyrail");
 
 console.log(
-  "liverpool-city-region-planned-gate: ok (planned/501, adapterReady, D1 pack, 2 rail + 4 Merseyrail stations, doNotGroup at Liverpool Lime Street (H1 unresolved), uk-ellesmere-port untouched, line+terminus direction model with unconfirmed interchange splits correctly unresolved, both board paths correctly blocked, Perth green)"
+  "liverpool-city-region-planned-gate: ok (planned/501, adapterReady, D1 pack, 2 rail + 4 Merseyrail stations, doNotGroup at Liverpool Lime Street (H1 unresolved), uk-ellesmere-port deleted, line+terminus direction model with unconfirmed interchange splits correctly unresolved, both board paths correctly blocked, Perth green)"
 );

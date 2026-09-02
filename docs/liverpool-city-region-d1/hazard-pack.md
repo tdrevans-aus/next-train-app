@@ -58,11 +58,10 @@ Restated from the report (lines 3, 90, 94):
    schedule-only vs Option B defer to H2, report lines 29–33) — the report's own recommendation
    leans toward deferring Merseyrail, but this pack makes a different call; see
    direction-model-memo.md and jim-handoff.md for the reasoning.
-5. **Ellesmere Port registry discrepancy** — flagged a second time (Nico flagged it in research,
-   this pack flags it again per the dispatch brief). `uk-ellesmere-port` exists as a standalone
-   registry entry with status "planned"; the tracker says it should be folded into Liverpool City
-   Region. Not resolved here — explicitly out of Luke's scope (registry edits are Jim/Tim's job) —
-   see jim-handoff.md.
+5. **Ellesmere Port registry discrepancy — RESOLVED 2 Sep 2026.** Tim decided: `uk-ellesmere-port`
+   was a hangover concept, not a real region — deleted. The standalone registry entry, picker row,
+   and catalog file are gone; Ellesmere Port (ELP) exists only as this pack's own Merseyrail Wirral
+   Line terminus, unchanged. No data was lost — this pack already carried the station.
 
 ## H3 — thin / event / overlay
 
@@ -76,7 +75,7 @@ here beyond: do not invent any.
 | --- | --- | --- |
 | **Liverpool Lime Street (LIV)** | National Rail platforms (Northern Trains + six through-running TOCs) vs Merseyrail Northern/Wirral Line platforms/interchange | Report lines 41, 73, C2/C3 point 2: contradictory "platform level" vs "separate infrastructure, separate entrance/footbridge" language — see H1. **Built as two separate stationGroups, doNotGroup: true**, using the more conservative separate-infrastructure reading. |
 | **Liverpool Central / Moorfields** | Merseyrail Northern Line vs Wirral Line (dual-line interchange, both lines call both stations) | Report lines 50–51: both stations are Merseyrail-only, "dual-line interchange" — no National Rail service at either. Not a National Rail/Merseyrail doNotGroup pair; internal to Merseyrail only, no cross-mode split needed here. |
-| **Ellesmere Port** | Merseyrail Wirral Line terminus vs `uk-ellesmere-port` standalone registry entry | Report line 52, 55, 114–117: tracker says Ellesmere Port should fold into Liverpool City Region, not remain a separate picker city; `uk-ellesmere-port` currently exists standalone in `registry.js`. **Not a station-graph doNotGroup — a registry-scope discrepancy.** Flagged, not resolved (Jim/Tim call). |
+| **Ellesmere Port** | Merseyrail Wirral Line terminus, sole owner | Report line 52, 55, 114–117. **Resolved 2 Sep 2026:** `uk-ellesmere-port` standalone registry entry deleted; this pack's catalog entry is now the only one. Not a doNotGroup case — never was. |
 
 ## H5 — nested short turns
 

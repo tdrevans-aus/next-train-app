@@ -15,13 +15,6 @@
       "feeds": { "train": "darwin", "metro": "tfwm-gtfs-rt" }
     },
     {
-      "id": "uk-ellesmere-port",
-      "name": "Ellesmere Port corridor",
-      "catalogPath": "../../cities/uk-ellesmere-port/stations.json",
-      "modes": ["train"],
-      "feeds": { "train": "darwin" }
-    },
-    {
       "id": "uk-london-tfl",
       "name": "London",
       "catalogPath": "../../cities/uk-london-tfl/stops.json",

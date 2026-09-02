@@ -22,23 +22,18 @@ function fail(msg) {
   failures.push(msg);
 }
 
-if (UK_REGION_IDS.length !== 21) {
-  fail(`Expected 21 UK region ids, got ${UK_REGION_IDS.join(",")}`);
+if (UK_REGION_IDS.length !== 20) {
+  fail(`Expected 20 UK region ids, got ${UK_REGION_IDS.join(",")}`);
 }
 
 const regions = listRegions();
-if (regions.length !== 21) {
-  fail(`Expected 21 regions in index, got ${regions.length}`);
+if (regions.length !== 20) {
+  fail(`Expected 20 regions in index, got ${regions.length}`);
 }
 
 const wm = getRegion("uk-west-midlands");
 if (!wm || wm.railCount !== 75 || wm.metroCount !== 35) {
   fail(`uk-west-midlands counts rail=${wm?.railCount} metro=${wm?.metroCount}`);
-}
-
-const ep = getRegion("uk-ellesmere-port");
-if (!ep || ep.railCount !== 11) {
-  fail(`uk-ellesmere-port count ${ep?.railCount}`);
 }
 
 const tfl = getRegion("uk-london-tfl");
@@ -71,13 +66,6 @@ if (!grandCentralMetro?.catalogId?.startsWith("metro:")) {
 }
 if (!newStreetNr || newStreetNr.crs !== "BHM") {
   fail("NR BHM must resolve");
-}
-
-const epCrs = new Set(listRailStations("uk-ellesmere-port").map((s) => s.crs));
-for (const crs of ["ELP", "OVE", "LTT", "HOO", "CPU", "BAC", "CTR", "LVJ", "MRF", "LIV", "LVC"]) {
-  if (!epCrs.has(crs)) {
-    fail(`uk-ellesmere-port missing ${crs}`);
-  }
 }
 
 const kx = resolveTflStop("King's Cross St. Pancras Underground Station", "uk-london-tfl");
@@ -865,5 +853,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-ellesmere-port 11, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary, southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 2+4 two structurally separate agency shapes with Lime Street's H1 ambiguity kept unresolved, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary, southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
 );
