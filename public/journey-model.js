@@ -520,6 +520,7 @@ const PERSISTED_CITY_IDS = new Set([
   "uppsala",
   "helsinki",
   "oslo",
+  "west-of-england",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 
