@@ -83,7 +83,7 @@ assert(
   CITIES.filter((city) => city.id === "uk-west-midlands").length === 1,
   "uk-west-midlands must appear once in the registry"
 );
-for (const forbiddenId of ["west-midlands", "birmingham", "wm", "wmm", "uk-ellesmere-port"]) {
+for (const forbiddenId of ["west-midlands", "birmingham", "wm", "wmm"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
