@@ -87,3 +87,94 @@ All 75 National Rail stations support multiple TOC services (Darwin returns all 
   - **Confidence:** `unclear` on both redistribution and commercial use. The TfWM API portal requires registration and does not publish terms in a static landing page. Tim must review the API platform agreement once TfWM credentials are registered. Do not assume public GTFS-RT availability permits redistribution; confirm with TfWM before launch.
 
 - **Keyed feeds:** DARWIN_LDB_TOKEN is a subscription token (Rail Data Marketplace Consumer key), not a secret API key; no HMAC or signature. Free tier: 5 million requests / 4-week railway period, then charged. Subscription terms govern API use, not a separate data license. TFWM credentials (TFWM_API_APP_ID / TFWM_API_APP_KEY) are API portal registration tokens; account terms govern use.
+
+## Flip commit — list additions for Mark (added 2 Sep 2026, Jim's code-side follow-through)
+
+Darwin's OpenLDBWS is genuinely live now (`lib/providers/uk-darwin.js` REST rewrite, PR #188,
+verified against Bristol Temple Meads) — Tim has authorized flipping West Midlands live. Ahead of
+that, this pass landed the code-side follow-through only: `lib/cities/uk-west-midlands/
+dogfood-next-train.js`, the `uk-west-midlands` switch-cases in `lib/cities/live-city-api.js`'s
+`directionsFor`/`getMultiCityNextTrain`, and `qa/uk-west-midlands-dogfood-gate.mjs` (a NEW gate —
+uk-west-midlands never had its own dedicated `*-planned-gate.mjs`; it was covered generically by
+`qa/uk-planned-gate.mjs`'s `UK_REGION_IDS` loop, which stays as-is pre-flip, see item 7 below).
+Registered in `qa/run-all.mjs`'s smoke list, inserted after `east-midlands-dogfood-gate.mjs`.
+
+This region predates the D1-pack pipeline: there is no `docs/uk-west-midlands-d1/jim-handoff.md`,
+`published-network.json`, `hazard-pack.md`, or `direction-model-memo.md` — only this
+oracle-clash-report.md, per the top-level session's instruction to put this section here instead.
+
+West Midlands Metro's situation is a **credentials gap, not a feed-unconfirmed gap** (unlike East
+Midlands' NET tram): `lib/providers/uk-metro-wm.js`'s `fetchMetroStopBoard()` checks
+`TFWM_API_APP_ID`/`TFWM_API_APP_KEY` first and throws `MissingTfwmCredentialsError`
+unconditionally while they're unset — permanent until Tim self-serves TfWM API portal
+registration (FB-48, `docs/feature-backlog.md`). The dogfood dispatch surfaces that error rather
+than swallowing it or fabricating a schedule, same shape as every other UK second-agency case.
+
+**Hub-lock correction found while wiring (worth Mark/Tim knowing):** the task brief for this pass
+described Birmingham New Street (BHM) as a doNotGroup hub with "the two catalog entries, same
+printed name BHM, different mode," matching Nottingham Station's pattern. That is NOT what the
+catalog data or this oracle report actually show. `lib/cities/uk-west-midlands/stations.json`'s
+Metro entry nearest BHM is named **"Grand Central"** (`catalogId: "metro:grand-central"`,
+aliases `["Grand Central New Street"]`), cross-referenced to BHM only via an `interchange.
+nationalRailCrs: "BHM"` field — not the same printed name. This oracle report's own Hub lock /
+Board-eligibility sections say so directly: "No physical tram/rail split like East Midlands
+Nottingham." Mode-aware resolution was still built defensively (`resolveCatalogEntry(station,
+mode)` in the new dogfood module honors an explicit mode by calling the matching fetcher
+directly, never falling through to rail), both for parity with the other two-agency regions and
+because it fails safe regardless. No catalog or registry-note change is needed for this —
+flagging only so nobody re-derives a doNotGroup collision that isn't there.
+
+**Catalog data-quality note (not fixed in this pass — out of adapter/wiring scope):** 14 of the
+110 entries in `stations.json` (12 National Rail, e.g. Chester Road CDR at 55.96°N/-4.65°W,
+Blake Street BLT at 55.80°N, Selly Oak SEA at 54.84°N, Small Heath SMH at 51.57°N/-0.08°W — all
+well outside the West Midlands) carry clearly mis-geocoded `lat`/`lng` values scattered as far as
+Scotland and outer London. The `CITY_BOUNDS` box below was derived by excluding these outliers,
+not from the raw min/max. This looks like a NaPTAN name-collision artifact from whichever script
+populated coordinates (several of these station names are common across the UK) — a Luke/catalog
+concern for whoever owns `stations.json` next, not something this pass touched.
+
+**Deliberately NOT done in this pass — bundle these into the actual status-flip commit** (same
+split East Midlands' and West of England's flips used):
+
+1. `lib/providers/registry.js` — flip the `uk-west-midlands` entry's `status` from `"planned"` to
+   `"live"`. Also worth updating the `notes` prose the same way East Midlands' flip commit did
+   (record the Darwin unblock, the TfWM credentials-gap verdict, and the flip date), though
+   that's prose, not a gate.
+2. `lib/cities/live-city-api.js` — add `"uk-west-midlands"` to the `MultiCityId` typedef union and
+   to the `MULTI_CITY_IDS` array (both currently end in `..."west-of-england","east-midlands"]`/
+   `|"west-of-england"|"east-midlands"`).
+3. `public/app.js` — add `"uk-west-midlands"` to `NEARBY_MULTI_CITY_IDS` and to the
+   `LIVE_CITY_IDS` `Set`.
+4. `public/brisbane-dogfood.js` — add `"uk-west-midlands"` to the `MULTI_CITY_IDS` array and add
+   `"uk-west-midlands": true` to the `available` map.
+5. `public/city-session.js` — add `"uk-west-midlands"` to the `MULTI_CITY_IDS` array; add a
+   picker region entry under the `gb` country's regions list, e.g. `{ id: "uk-west-midlands",
+   name: "West Midlands", timeZone: "Europe/London", comingSoon: false }` (follow the exact shape
+   East Midlands'/West of England's flips used, inserted wherever the gb regions array currently
+   ends); add a `CITY_BOUNDS` entry. Unlike East Midlands (whose stations.json coordinates were
+   all `null`), West Midlands' catalog DOES carry real coordinates — but 14 of 110 are
+   mis-geocoded outliers (see the data-quality note above). Excluding those outliers, the 96
+   remaining stations (both National Rail and Metro; Birmingham 52.478/-1.900, Wolverhampton
+   52.588/-2.120, Coventry 52.401/-1.513, Kidderminster 52.384/-2.238 all included) span
+   lat 52.372–52.645, lng -2.300 to -1.494. Recommended box, padded slightly beyond that range:
+   `"uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 }`. Confirm
+   against the actual catalog before shipping — this box deliberately excludes the 14 outlier
+   stations rather than being derived from the raw (polluted) min/max.
+6. `public/journey-model.js` — add `"uk-west-midlands"` to `PERSISTED_CITY_IDS` (the `"gb"`
+   country id is already in `PERSISTED_COUNTRY_IDS` from `uk-london-tfl`, no change needed
+   there).
+7. `qa/uk-planned-gate.mjs` — add `"uk-west-midlands"` to the `LIVE_UK_REGION_IDS` `Set`
+   (currently `new Set(["uk-london-tfl", "west-of-england", "east-midlands"])`), and update the
+   trailing `console.log` summary string to mention uk-west-midlands is live. **This assertion
+   cannot be made to pass both before and after the flip** — `LIVE_UK_REGION_IDS` is a hardcoded
+   set checked directly against `getCity(id)?.status`, not derived from the registry, so adding
+   `"uk-west-midlands"` to it before the status flip lands would make the gate fail *now* (status
+   still `"planned"`) instead of *after* (status `"live"`). This mirrors exactly what happened for
+   West of England and East Midlands before it — add `"uk-west-midlands"` to
+   `LIVE_UK_REGION_IDS` in the same commit (or the very next one) that flips `registry.js`'s
+   status line, not before.
+
+Verify with `node qa/live-city-lists-sync.mjs` after all of the above — it derives the expected
+membership directly from the registry's `status === "live"` set and will catch any list that's
+missing `uk-west-midlands` or, just as importantly, any list where it was added too early
+relative to the others.
