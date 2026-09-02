@@ -3,7 +3,7 @@
 ## Checklist results
 
 - **uk-west-midlands-dogfood-gate.mjs**: PASS. Registry status live, adapterReady true, dispatch switch-cases wired, oracle report present, 75 National Rail + 35 Metro stations, Birmingham New Street/Grand Central mode-aware resolution (no shared printed name, unlike Nottingham Station), Kidderminster National Rail only with Severn Valley Railway excluded, National Rail directions derived live from Darwin with no static line map, Metro dispatch correctly surfaces MissingTfwmCredentialsError rather than fabricating a schedule, all other cities stay green.
-- **uk-planned-gate.mjs**: PASS. uk-ellesmere-port and remaining UK regions planned/501, uk-london-tfl + west-of-england + east-midlands + uk-west-midlands live, no city=uk, Perth green.
+- **uk-planned-gate.mjs**: PASS. Remaining UK regions planned/501, uk-london-tfl + west-of-england + east-midlands + uk-west-midlands live, no city=uk, Perth green.
 - **live-city-lists-sync.mjs**: PASS. 22 live cities consistent across registry, live-city-api, app.js, city-session, brisbane-dogfood, journey-model.
 - **uk-region-catalog-conformance.mjs**: PASS. uk-west-midlands 75+35 stations confirmed.
 - **Smoke suite (node qa/run-all.mjs --smoke)**: PASS. All 84 gates passed post-flip.
@@ -61,7 +61,7 @@ Tim confirms the error-surfacing approach and the Darwin redistribution approval
 node qa/lane-lock.mjs release "United Kingdom"
 ```
 
-Run this command after the flip PR is merged to unlock the UK lane for the next region (uk-ellesmere-port, south-yorkshire, or others).
+Run this command after the flip PR is merged to unlock the UK lane for the next region (south-yorkshire or others — uk-ellesmere-port was deleted 2 Sep 2026 as a standalone region, never a real one).
 
 ---
 
