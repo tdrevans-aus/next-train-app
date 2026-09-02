@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "west-of-england", "east-midlands"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -35,7 +35,7 @@
       id: "gb",
       name: "England",
       regions: [
-        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: true },
+        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false },
         { id: "uk-ellesmere-port", name: "Ellesmere Port corridor", timeZone: "Europe/London", comingSoon: true },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false },
@@ -118,6 +118,7 @@
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
     oslo: { minLat: 59.60, maxLat: 60.25, minLng: 10.40, maxLng: 11.20 },
+    "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
     "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.20, maxLng: -2.10 },
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
   };
