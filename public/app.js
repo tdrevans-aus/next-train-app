@@ -6574,6 +6574,27 @@ function openMainScreenFromWidget() {
 }
 
 
+function activateSwipeCue(handler) {
+  return (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    handler();
+  };
+}
+
+heroSwipePrevEl?.addEventListener("click", activateSwipeCue(() => skipToEarlierTrain()));
+heroSwipeNextEl?.addEventListener("click", activateSwipeCue(() => skipToNextTrain()));
+heroSwipePrevEl?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    activateSwipeCue(() => skipToEarlierTrain())(event);
+  }
+});
+heroSwipeNextEl?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    activateSwipeCue(() => skipToNextTrain())(event);
+  }
+});
+
 routesBtn?.addEventListener("click", () => enterRouteMode());
 journeysBtn?.addEventListener("click", () => enterJourneyMode());
 journeyEditBtn?.addEventListener("click", () => {
