@@ -67,24 +67,14 @@ direction-model-memo.md.**
   genuinely unconfirmed. **Confirm with a walk-distance figure, site documentation, or a live
   Merseyrail/Darwin response before treating this as the final station graph.**
 
-## Ellesmere Port registry discrepancy — second flag, needs an actual decision
+## Ellesmere Port registry discrepancy — RESOLVED 2 Sep 2026
 
-This is now the **second time** this has been flagged (Nico flagged it first, in research; this
-pack flags it again per the dispatch instruction). Not resolved here — this is explicitly a
-Jim/Tim call, not a data question, and this pack has **not touched `uk-ellesmere-port` or
-`registry.js`**.
-
-- The tracker states Ellesmere Port should be "folded into Liverpool City Region... not a separate
-  picker city."
-- `lib/providers/registry.js` currently has `uk-ellesmere-port` as its own standalone entry
-  (status "planned").
-- This pack's Merseyrail scope already includes Ellesmere Port as a Wirral Line terminus
-  (`stationGroups` id `ellesmere-port` in `published-network.json`), so there is no technical
-  reason to keep a separate picker city unless a product decision demands it.
-- **Decision required at wiring stage:** merge `uk-ellesmere-port` into `liverpool-city-region`
-  (remove the standalone registry entry, absorb its CRS list into this region's scope), or keep it
-  standalone and accept the tracker's "fold in" note is overridden. Either way, this needs an
-  actual resolution — it should not be flagged a third time.
+Tim's decision: `uk-ellesmere-port` was a hangover, not a real region — delete it. The standalone
+registry entry, `city-session.js` picker row, `lib/providers/uk/regions.json` entry, and its
+`lib/cities/uk-ellesmere-port/stations.json` catalog file are all gone. This pack's Merseyrail
+scope already carried Ellesmere Port as a Wirral Line terminus (`stationGroups` id
+`ellesmere-port` in `published-network.json`) — that entry is untouched and is now the only one.
+No merge or CRS-list absorption was needed; there was nothing to move.
 
 ## Direction model recommendation
 

@@ -147,13 +147,13 @@ illustrative shape only, not written into `published-network.json` as confirmed 
 4. **National Rail / OpenLDBWS redistribution terms are ambiguous.** Same open item as every other
    UK National Rail region. Review the signed RDM Data Sharing Agreement once EvansAppStudio
    re-registers.
-5. **Ellesmere Port registry discrepancy** — `uk-ellesmere-port` exists standalone in
-   `registry.js`; tracker says it should fold into Liverpool City Region. Second flag of this issue
-   (Nico flagged it first, in research). Not resolved by this pack — Jim/Tim call.
+5. **Ellesmere Port registry discrepancy — resolved 2 Sep 2026.** `uk-ellesmere-port` was deleted
+   as a standalone region (never a real one); this pack's Wirral Line terminus entry is unaffected
+   and is the only remaining reference.
 6. **Liverpool Central vs Moorfields ranking** — report names both as "dual-line interchange" with
    no ranking between them, unlike Metrolink's explicit St Peter's Square-over-Victoria ranking.
    If a real ranking exists, it is not sourced in this report; confirm before treating one as senior
    to the other.
 7. **UK country ledger retrofit is still overdue** — no `docs/united-kingdom-ledger.md` exists as
-   of this pack. The Lime Street structural ambiguity and Ellesmere Port discrepancy recorded here
-   are exactly the kind of cross-region facts that ledger should hold once it exists.
+   of this pack. The Lime Street structural ambiguity recorded here is exactly the kind of
+   cross-region fact that ledger should hold once it exists.
