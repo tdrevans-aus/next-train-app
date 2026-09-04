@@ -114,7 +114,7 @@ const SMOKE_SCRIPTS = [
   "rest-of-scotland-planned-gate.mjs",
   "glasgow-planned-gate.mjs",
   "edinburgh-planned-gate.mjs",
-  "solent-planned-gate.mjs",
+  "solent-dogfood-gate.mjs",
   "thames-valley-planned-gate.mjs",
   "greater-manchester-planned-gate.mjs",
   "cumbria-planned-gate.mjs",

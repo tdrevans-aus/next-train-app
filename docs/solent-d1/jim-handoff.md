@@ -156,3 +156,176 @@ named, not for general context.
   token-gated catalog sweep (as `qa/uk-west-midlands-dogfood-gate.mjs`) so this cannot regress.
 - `DARWIN_LDB_TOKEN` exists (live since 2 Sep 2026); the account-level blocker above is resolved.
 - Board eligibility section present in the oracle report, no `undecided` rows.
+
+## 5 Sep 2026 — Adapter wired (Jim)
+
+Adapter follows `docs/jim-brief-solent-adapter.md` in full. `status` stays `"planned"`,
+`adapterReady: true`. This section supersedes the "account-level blocker" framing at the top of
+this file — the token exists (see the hygiene section above), and the board calls below are real
+Darwin responses, not fixtures.
+
+### Two-hub architecture confirmation
+
+Wired exactly as `direction-model-memo.md` and `published-network.json` specify: **two
+independent hubs** — Southampton Central (SOU, stands alone) and Portsmouth Harbour (PMH, paired
+with Portsmouth & Southsea PMS as a secondary board, not merged into PMH). `lib/providers/solent.js`
+exposes `SOLENT_HUB` / `SOLENT_EAST_HUB` / `SOLENT_EAST_SECONDARY_HUB` as three independent catalog
+resolutions; nothing in the adapter merges them, promotes one over the other, or treats Fareham as
+a third hub. Not re-litigated.
+
+### Live chip tables (destination + operator, 5 Sep 2026, `scripts/probe-uk-board.mjs --crs=...`)
+
+**Southampton Central (SOU)** — 15 trips:
+
+| Destination (chip) | Operator |
+| --- | --- |
+| Poole | South Western Railway |
+| Romsey | South Western Railway |
+| Salisbury | South Western Railway |
+| Bournemouth | CrossCountry |
+| Brighton | Southern |
+| Weymouth | South Western Railway |
+| Woking | South Western Railway |
+| Bournemouth | South Western Railway |
+| Basingstoke | South Western Railway |
+| London Waterloo | South Western Railway |
+| Portsmouth Harbour | Great Western Railway |
+| Cardiff Central | Great Western Railway |
+| Manchester Piccadilly | CrossCountry |
+
+**Portsmouth Harbour (PMH)** — 10 trips:
+
+| Destination (chip) | Operator |
+| --- | --- |
+| London Waterloo | South Western Railway |
+| Cardiff Central | Great Western Railway |
+| Barnham | Southern |
+
+**Portsmouth & Southsea (PMS)** — 15 trips (secondary board, own physical station):
+
+| Destination (chip) | Operator |
+| --- | --- |
+| Barnham | Southern |
+| Portsmouth Harbour | South Western Railway |
+| London Waterloo | South Western Railway |
+| Southampton Central | South Western Railway |
+| Portsmouth Harbour | Great Western Railway |
+| Brighton | Southern |
+| Portsmouth Harbour | Southern |
+| Cardiff Central | Great Western Railway |
+
+**Fareham (FRM)** — 15 trips (junction, both hub destinations split by operator):
+
+| Destination (chip) | Operator |
+| --- | --- |
+| Portsmouth Harbour | Great Western Railway |
+| Southampton Central | Southern |
+| Brighton | Southern |
+| Cardiff Central | Great Western Railway |
+| Portsmouth Harbour | South Western Railway |
+| Portsmouth & Southsea | South Western Railway |
+| Southampton Central | South Western Railway |
+| Woking | South Western Railway |
+| London Waterloo | South Western Railway |
+
+**Eastleigh (ESL)** — 12 trips (junction, no operator split found):
+
+| Destination (chip) | Operator |
+| --- | --- |
+| Portsmouth Harbour | South Western Railway |
+| London Waterloo | South Western Railway |
+| Romsey | South Western Railway |
+| Southampton Central | South Western Railway |
+| Basingstoke | South Western Railway |
+| Salisbury | South Western Railway |
+| Winchester | South Western Railway |
+
+**Westbury (WSB)** — 15 trips (West of England boundary, through-running only):
+
+| Destination (chip) | Operator |
+| --- | --- |
+| Salisbury | Great Western Railway |
+| Swindon | Great Western Railway |
+| Bristol Temple Meads | Great Western Railway |
+| Weymouth | Great Western Railway |
+| Plymouth | Great Western Railway |
+| London Paddington | Great Western Railway |
+| Portsmouth Harbour | Great Western Railway |
+| Cardiff Central | Great Western Railway |
+| Frome | Great Western Railway |
+| Cheltenham Spa | Great Western Railway |
+
+**London Waterloo (WAT)** — 15 trips (London & South East National Rail boundary, through-running
+only; Solent's own SWR services originate here):
+
+| Destination (chip) | Operator |
+| --- | --- |
+| Addlestone | South Western Railway |
+| Guildford | South Western Railway |
+| Weymouth and Poole | South Western Railway |
+| Hampton Court | South Western Railway |
+| Twickenham | South Western Railway |
+| Basingstoke | South Western Railway |
+| Shepperton | South Western Railway |
+| Hounslow | South Western Railway |
+| Portsmouth Harbour | South Western Railway |
+| Chessington South | South Western Railway |
+| Reading | South Western Railway |
+| Salisbury | South Western Railway |
+| Woking | South Western Railway |
+
+### Hub decision (direction hub anchoring, `lib/cities/solent/direction-hubs.json`)
+
+Probed both brief-named candidates against the live boards above:
+
+1. **Operator split on "Portsmouth Harbour" or "Southampton Central" at Fareham/Eastleigh
+   (Liverpool shape).** Held at **Fareham only**, and held for **both** destinations
+   simultaneously: FRM prints "Portsmouth Harbour" under Great Western Railway (18:29, 19:28) and
+   South Western Railway (18:52), and "Southampton Central" under Southern (18:38, 19:05, 19:37)
+   and South Western Railway (19:12). Confirmed with `--filter-crs`:
+   `node scripts/probe-uk-board.mjs "Fareham" --region=solent --filter-crs=PMH` returns 5 trips,
+   2 operators; `--filter-crs=SOU` returns 8 trips (Southern + South Western Railway on
+   "Southampton Central", plus 2 Great Western Railway "Cardiff Central" trips that also call at
+   SOU en route). Eastleigh's board shows no split — "Portsmouth Harbour" and "Southampton
+   Central" both print under South Western Railway only, both times each — no hub warranted at
+   Eastleigh.
+2. **Kidderminster shape — from Eastleigh, west-of-Southampton termini (Poole/Weymouth/
+   Bournemouth) absorbed into a Southampton Central hub.** Rejected:
+   `node scripts/probe-uk-board.mjs "Eastleigh" --region=solent --filter-crs=SOU` returns only
+   4 trips — Southampton Central and Salisbury, no Poole/Weymouth/Bournemouth service calling at
+   SOU from Eastleigh in the live sample. Per the brief's own rule ("if the filtered board doesn't
+   show it, it isn't"), no hub built for this candidate.
+
+**Infra limitation found and flagged, not resolved here:** the shared
+`lib/cities/uk/direction-hubs.js` helper's `findHubForStation()` returns only the first configured
+hub whose `appliesFrom` includes a given station CRS — one station can carry at most one hub. Since
+Fareham qualifies for both a "Portsmouth Harbour" hub and a "Southampton Central" hub
+simultaneously (candidate 1 above), only one can actually be wired. **Portsmouth Harbour is the
+one built** (named first in the brief's candidate list; evidence is otherwise symmetric between
+the two). Southampton Central's identical split at Fareham is not collapsed into a hub chip — it
+still routes correctly via the existing exact-chip path (`filterCrs=SOU`), just displayed as two
+separate operator-suffixed chips instead of one merged label. Editing the shared helper to support
+multiple hubs per station is out of scope for this pack (guardrail: no edits to
+`lib/cities/uk/*`) — flagged for Tim/Luke as a follow-up if this shape recurs in another region.
+
+No hub warranted at Southampton Central, Portsmouth Harbour, Portsmouth & Southsea, Westbury or
+Waterloo themselves — each is either a hub/secondary-hub board in its own right or a boundary-only
+through-running station, not a through-station a rider anchors past.
+
+### Eligibility statement
+
+South Western Railway, Southern, Great Western Railway and CrossCountry are all verdict `in` per
+`oracle-clash-report.md`'s Board eligibility section (no compulsory reservation, no check-in
+barrier) — no `undecided` rows. No operator-level filtering is applied by the adapter; every
+Darwin `trainServices` entry at these seven CRS codes stays on the board unfiltered. Island Line
+remains excluded entirely (out-mode, ferry dependency), not catalogued in any form.
+
+### Not done in this pass (by design)
+
+No `status: "live"` flip (Mark/Tim's call). No `MULTI_CITY_IDS`/`brisbane-dogfood.js`/
+`journey-model.js` list-membership edits — those are bundled into the flip commit per
+CLAUDE.md's flip-follow-through split; `registry.js`'s notes name exactly what to add. No
+`public/city-directions/solent.json` generated — same as West Yorkshire, not generated pre-flip
+(no marketing-directions.js exists for a destination+operator-only region; directions are derived
+live). No edits to `lib/providers/uk-darwin.js`, `lib/providers/uk/catalog.js`, `lib/cities/uk/*`,
+or any other region's files.
