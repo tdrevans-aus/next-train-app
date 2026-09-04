@@ -55,9 +55,38 @@ async function run() {
       // console, uncaught page errors, navigations, and a trace of every
       // replaceSelectOptions() call the app made (CI-only flake, see FAIL branch).
       const pageLog = [];
-      page.on("console", (msg) => pageLog.push(`[console.${msg.type()}] ${msg.text()}`));
-      page.on("pageerror", (err) => pageLog.push(`[pageerror] ${err.message}`));
-      page.on("framenavigated", (frame) => pageLog.push(`[navigated] ${frame.url()}`));
+      const stamp = () => `${(performance.now() / 1000).toFixed(3)}s`;
+      page.on("console", (msg) => pageLog.push(`${stamp()} [console.${msg.type()}] ${msg.text()}`));
+      page.on("pageerror", (err) => pageLog.push(`${stamp()} [pageerror] ${err.message}`));
+      page.on("framenavigated", (frame) => pageLog.push(`${stamp()} [navigated] ${frame.url()}`));
+      // Wrap replaceSelectOptions() as soon as station-combobox.js defines it, without
+      // adding a round-trip between page load and openJourneysLibrary() below — the
+      // original gate had none, and the flake is timing-sensitive.
+      await page.addInitScript(() => {
+        window.__qaReplaceSelectOptionsTrace = [];
+        Object.defineProperty(window, "nextTrainStationCombobox", {
+          configurable: true,
+          get() {
+            return undefined;
+          },
+          set(combobox) {
+            const original = combobox.replaceSelectOptions;
+            combobox.replaceSelectOptions = (selectEl, options) => {
+              window.__qaReplaceSelectOptionsTrace.push({
+                at: Math.round(performance.now()),
+                target: selectEl.id || selectEl.dataset?.qaProbe || "?",
+                labels: options.map((opt) => opt.label),
+              });
+              return original(selectEl, options);
+            };
+            Object.defineProperty(window, "nextTrainStationCombobox", {
+              value: combobox,
+              writable: true,
+              configurable: true,
+            });
+          },
+        });
+      });
       await page.route("**/api/directions**", (route) =>
         route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) })
       );
@@ -66,18 +95,6 @@ async function run() {
       );
       await page.goto(BASE);
       await page.waitForFunction(() => Boolean(window.nextTrainApp?.openJourneysLibrary));
-      await page.evaluate(() => {
-        const combobox = window.nextTrainStationCombobox;
-        const original = combobox.replaceSelectOptions;
-        window.__qaReplaceSelectOptionsTrace = [];
-        combobox.replaceSelectOptions = (selectEl, options) => {
-          window.__qaReplaceSelectOptionsTrace.push({
-            target: selectEl.id || selectEl.dataset.qaProbe || "?",
-            labels: options.map((opt) => opt.label),
-          });
-          return original(selectEl, options);
-        };
-      });
       // journey-detail.js is a deferred module (loaded after first paint) — opening the
       // journeys library kicks off loading it, but openJourneysLibrary() itself is
       // fire-and-forget for that (it must not block the UI paint on a slow chunk fetch).
@@ -86,8 +103,10 @@ async function run() {
       // {} and made every loadDirectionsForSelect() call silently no-op (empty select,
       // read back as ''). Wait for the real readiness promise instead of polling for the
       // function to merely exist.
+      pageLog.push(`${stamp()} [gate] openJourneysLibrary()`);
       await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
       await page.evaluate(() => window.nextTrainApp.ensureDeferredModulesReady());
+      pageLog.push(`${stamp()} [gate] deferred modules ready; calling loadDirectionsForSelect`);
       const result = await page.evaluate(async () => {
         const select = document.createElement("select");
         select.dataset.qaProbe = "qa-probe-select";
@@ -100,6 +119,7 @@ async function run() {
           selectHtml: select.innerHTML,
           moduleIdentityStable: moduleBefore === window.nextTrainJourneyDetail,
           deferredReady: Boolean(window.NextTrainDeferred?._ready),
+          pageNow: Math.round(performance.now()),
           replaceSelectOptionsTrace: window.__qaReplaceSelectOptionsTrace,
         };
         select.remove();
