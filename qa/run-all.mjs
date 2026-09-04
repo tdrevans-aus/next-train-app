@@ -109,7 +109,7 @@ const SMOKE_SCRIPTS = [
   "north-east-planned-gate.mjs",
   "west-of-england-dogfood-gate.mjs",
   "south-wales-planned-gate.mjs",
-  "west-yorkshire-planned-gate.mjs",
+  "west-yorkshire-dogfood-gate.mjs",
   "rest-of-wales-planned-gate.mjs",
   "rest-of-scotland-planned-gate.mjs",
   "glasgow-planned-gate.mjs",

@@ -308,7 +308,7 @@ if (!wy || wy.railCount !== 10 || wy.metroCount !== 0) {
 
 const wyRail = listRailStations("west-yorkshire");
 const wyCrsSet = new Set(wyRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["LDS", "BDQ", "BDI", "DDL", "WAD", "HUD", "HFX", "TOD", "HBN", "KEY"]) {
+for (const crs of ["LDS", "BDQ", "BDI", "DBD", "WDN", "HUD", "HFX", "TOD", "HBD", "KEI"]) {
   if (!wyCrsSet.has(crs)) {
     fail(`west-yorkshire missing ${crs}`);
   }

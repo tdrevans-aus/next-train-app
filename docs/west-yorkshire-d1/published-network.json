@@ -82,16 +82,48 @@
       "class": "secondary hub — main Bradford rail station, Network Rail. Connected to Bradford Interchange (BDI) by walk-link only, not a shared platform — doNotGroup applies."
     },
     "throughRunningOnly": [
-      { "name": "Bradford Interchange", "crs": "BDI", "class": "through-running point, not a merge with Bradford Forster Square (BDQ) — separate infrastructure, serves both bus (city-centre coach station) and rail (Northern Trains services). doNotGroup vs. BDQ." },
-      { "name": "Denby Dale", "crs": "DDL", "class": "through-running only, South Yorkshire boundary on the Penistone Line. Also carried in docs/south-yorkshire-d1/published-network.json (CRS left null there) — cross-region de-dup NOT resolved, flagged for D2." },
-      { "name": "Walsden", "crs": "WAD", "class": "through-running only, Greater Manchester boundary on the Calder Valley Line. No Greater Manchester pack exists yet to reconcile against." }
+      {
+        "name": "Bradford Interchange",
+        "crs": "BDI",
+        "class": "through-running point, not a merge with Bradford Forster Square (BDQ) — separate infrastructure, serves both bus (city-centre coach station) and rail (Northern Trains services). doNotGroup vs. BDQ."
+      },
+      {
+        "name": "Denby Dale",
+        "crs": "DBD",
+        "class": "through-running only, South Yorkshire boundary on the Penistone Line. Also carried in docs/south-yorkshire-d1/published-network.json (CRS left null there) — cross-region de-dup NOT resolved, flagged for D2."
+      },
+      {
+        "name": "Walsden",
+        "crs": "WDN",
+        "class": "through-running only, Greater Manchester boundary on the Calder Valley Line. No Greater Manchester pack exists yet to reconcile against."
+      }
     ],
     "regional": [
-      { "name": "Huddersfield", "crs": "HUD", "class": "regional station, Penistone Line hub — boundary to South Yorkshire via Denby Dale." },
-      { "name": "Halifax", "crs": "HFX", "class": "regional station, Calder Valley Line." },
-      { "name": "Todmorden", "crs": "TOD", "class": "regional station, Calder Valley Line, West Yorkshire side before the Walsden boundary." },
-      { "name": "Hebden Bridge", "crs": "HBN", "class": "regional station, Calder Valley Line." },
-      { "name": "Keighley", "crs": "KEY", "class": "regional station, Airedale Line from Leeds/Bradford, Northern Trains." }
+      {
+        "name": "Huddersfield",
+        "crs": "HUD",
+        "class": "regional station, Penistone Line hub — boundary to South Yorkshire via Denby Dale."
+      },
+      {
+        "name": "Halifax",
+        "crs": "HFX",
+        "class": "regional station, Calder Valley Line."
+      },
+      {
+        "name": "Todmorden",
+        "crs": "TOD",
+        "class": "regional station, Calder Valley Line, West Yorkshire side before the Walsden boundary."
+      },
+      {
+        "name": "Hebden Bridge",
+        "crs": "HBD",
+        "class": "regional station, Calder Valley Line."
+      },
+      {
+        "name": "Keighley",
+        "crs": "KEI",
+        "class": "regional station, Airedale Line from Leeds/Bradford, Northern Trains."
+      }
     ]
   }
 }
