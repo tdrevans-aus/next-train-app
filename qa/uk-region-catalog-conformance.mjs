@@ -738,7 +738,7 @@ if (!ga || ga.railCount !== 14 || ga.metroCount !== 0) {
 
 const gaRail = listRailStations("greater-anglia");
 const gaCrsSet = new Set(gaRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLY", "THF", "YRD", "SSD", "BST"]) {
+for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLN", "TTF", "GYM", "SSD", "BIS"]) {
   if (!gaCrsSet.has(crs)) {
     fail(`greater-anglia missing ${crs}`);
   }
@@ -781,8 +781,8 @@ const gaLowestoft = resolveRailEntry("Lowestoft", "greater-anglia");
 if (!gaLowestoft) {
   fail("greater-anglia Lowestoft must still resolve by name even with an unverified crs");
 }
-if (gaLowestoft?.crs) {
-  fail("greater-anglia Lowestoft crs must stay null/unverified — the oracle report's own LST code collides with Liverpool Street's real CRS");
+if (gaLowestoft?.crs !== "LWT") {
+  fail("greater-anglia Lowestoft must carry LWT (verified live against Darwin 5 Sep 2026; never LST, which is Liverpool Street)");
 }
 
 const swst = getRegion("southwest");

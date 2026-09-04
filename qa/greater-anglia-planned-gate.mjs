@@ -98,7 +98,7 @@ assert(
 
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLY", "THF", "YRD", "SSD", "BST"]) {
+for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLN", "TTF", "GYM", "SSD", "BIS"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
 assert(getNotInRegion(GREATER_ANGLIA_REGION).length === 0, "greater-anglia has no deliberate exclusions recorded");
@@ -130,11 +130,11 @@ assert(
 );
 
 // Lowestoft's CRS collision (report gives LST, which is Liverpool Street's real CRS) —
-// must stay unverified/null, never LST.
+// resolved to LWT (verified live 5 Sep 2026), never LST.
 const lowestoft = resolveCatalogEntry("Lowestoft");
 assert(lowestoft !== null, "Lowestoft must still resolve by name even with a null crs");
 assert(lowestoft?.crs !== "LST", "Lowestoft must never carry LST — that is Liverpool Street's real CRS");
-assert(lowestoft?.crs === null, "Lowestoft's crs must stay null/unverified, not guessed");
+assert(lowestoft?.crs === "LWT", "Lowestoft must carry LWT (verified live against Darwin 5 Sep 2026)");
 
 assert(resolveCatalogEntry("Norwich Station") !== null, "the doNotUse alias must still resolve to the hub entry");
 

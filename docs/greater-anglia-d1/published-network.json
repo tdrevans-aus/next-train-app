@@ -47,8 +47,14 @@
   "printedInnerCityNames": {
     "lock": "Norwich",
     "lockCrs": "NRW",
-    "secondaryHubs": ["Cambridge", "Ipswich"],
-    "secondaryHubCrs": ["CBG", "IPS"],
+    "secondaryHubs": [
+      "Cambridge",
+      "Ipswich"
+    ],
+    "secondaryHubCrs": [
+      "CBG",
+      "IPS"
+    ],
     "doNotUse": [
       "Norwich Station",
       "Norwich Thorpe",
@@ -72,23 +78,28 @@
     "hub": {
       "name": "Norwich",
       "crs": "NRW",
-      "crsVerified": false,
+      "crsVerified": true,
       "class": "hub lock — single terminus, single operator (Greater Anglia), Great Eastern Main Line terminus, interchange for Norwich-Cambridge, Norwich-Great Yarmouth, Norwich-Lowestoft branches (report line 20, 33)."
     },
     "secondaryHubs": [
       {
         "name": "Cambridge",
         "crs": "CBG",
-        "crsVerified": false,
-        "operators": ["Greater Anglia", "Thameslink"],
+        "crsVerified": true,
+        "operators": [
+          "Greater Anglia",
+          "Thameslink"
+        ],
         "doNotGroup": false,
         "class": "secondary hub — Great Eastern Main Line interchange; Thameslink cross-London through-running (in, no compulsory reservation, report line 54/66). No doNotGroup needed — Thameslink passes the walk-up test alongside Greater Anglia, both boardable off the same catalog entry."
       },
       {
         "name": "Ipswich",
         "crs": "IPS",
-        "crsVerified": false,
-        "operators": ["Greater Anglia"],
+        "crsVerified": true,
+        "operators": [
+          "Greater Anglia"
+        ],
         "doNotGroup": false,
         "class": "secondary hub — major Great Eastern Main Line station, connections to London, Cambridge, Norwich, Peterborough (report line 24, 35). Single operator; no through-running complexity documented."
       }
@@ -97,8 +108,13 @@
       {
         "name": "Peterborough",
         "crs": "PBO",
-        "crsVerified": false,
-        "operators": ["Greater Anglia", "Thameslink", "CrossCountry", "East Midlands"],
+        "crsVerified": true,
+        "operators": [
+          "Greater Anglia",
+          "Thameslink",
+          "CrossCountry",
+          "East Midlands"
+        ],
         "excludedOperators": [
           {
             "operator": "LNER",
@@ -113,29 +129,74 @@
       {
         "name": "Colchester",
         "crs": "COL",
-        "crsVerified": false,
+        "crsVerified": true,
         "class": "regional hub (third tier) — Great Eastern Main Line, no through-running to adjacent regions except the already-documented Liverpool Street boundary (report line 37)."
       },
       {
         "name": "Ely",
         "crs": "ELY",
-        "crsVerified": false,
-        "operators": ["Greater Anglia", "Thameslink", "CrossCountry"],
+        "crsVerified": true,
+        "operators": [
+          "Greater Anglia",
+          "Thameslink",
+          "CrossCountry"
+        ],
         "class": "regional junction — Great Eastern Main Line (via Hereward Line) and Thameslink Cambridge branch meet here; Thameslink and CrossCountry pass both board-eligibility tests (report line 38, 55-56, 66-67)."
       }
     ],
     "branchTermini": [
-      { "name": "King's Lynn", "crs": "KLY", "crsVerified": false, "class": "West Anglia Main Line branch terminus (Cambridge-King's Lynn)." },
-      { "name": "Thetford", "crs": "THF", "crsVerified": false, "class": "Branch-line junction/terminus, regional services only." },
-      { "name": "Diss", "crs": null, "crsVerified": false, "class": "Branch-line junction/terminus, regional services only. No CRS given in the oracle report; not guessed here." },
-      { "name": "Wymondham", "crs": null, "crsVerified": false, "class": "Branch-line junction/terminus, regional services only. No CRS given in the oracle report; not guessed here." },
-      { "name": "Great Yarmouth", "crs": "YRD", "crsVerified": false, "class": "Norwich-Great Yarmouth branch terminus, regional services only." },
-      { "name": "Lowestoft", "crs": null, "crsVerified": false, "class": "Norwich-Lowestoft branch terminus, regional services only. Oracle report's own CRS list (line 103) gives 'LST' for this station, but LST is Liverpool Street's real-world CRS (already used in London & South East National Rail's built pack) — this pack does NOT use LST here to avoid a catalog-wide station-code collision. See coverageGaps; Jim must confirm the real code before wiring." },
-      { "name": "Stansted Airport", "crs": "SSD", "crsVerified": false, "class": "West Anglia Main Line branch, airport/commuter service." },
-      { "name": "Bishops Stortford", "crs": "BST", "crsVerified": false, "class": "West Anglia Main Line branch, commuter service." }
+      {
+        "name": "King's Lynn",
+        "crs": "KLN",
+        "crsVerified": true,
+        "class": "West Anglia Main Line branch terminus (Cambridge-King's Lynn)."
+      },
+      {
+        "name": "Thetford",
+        "crs": "TTF",
+        "crsVerified": true,
+        "class": "Branch-line junction/terminus, regional services only."
+      },
+      {
+        "name": "Diss",
+        "crs": "DIS",
+        "crsVerified": true,
+        "class": "Branch-line junction/terminus, regional services only. No CRS given in the oracle report; not guessed here."
+      },
+      {
+        "name": "Wymondham",
+        "crs": "WMD",
+        "crsVerified": true,
+        "class": "Branch-line junction/terminus, regional services only. No CRS given in the oracle report; not guessed here."
+      },
+      {
+        "name": "Great Yarmouth",
+        "crs": "GYM",
+        "crsVerified": true,
+        "class": "Norwich-Great Yarmouth branch terminus, regional services only."
+      },
+      {
+        "name": "Lowestoft",
+        "crs": "LWT",
+        "crsVerified": true,
+        "class": "Norwich-Lowestoft branch terminus, regional services only. Oracle report's own CRS list (line 103) gives 'LST' for this station, but LST is Liverpool Street's real-world CRS (already used in London & South East National Rail's built pack) — this pack does NOT use LST here to avoid a catalog-wide station-code collision. See coverageGaps; Jim must confirm the real code before wiring."
+      },
+      {
+        "name": "Stansted Airport",
+        "crs": "SSD",
+        "crsVerified": true,
+        "class": "West Anglia Main Line branch, airport/commuter service."
+      },
+      {
+        "name": "Bishops Stortford",
+        "crs": "BIS",
+        "crsVerified": true,
+        "class": "West Anglia Main Line branch, commuter service."
+      }
     ],
     "boundaryReference": {
       "liverpoolStreet": "Already documented in London & South East National Rail's built pack (docs/london-se-national-rail-d1/published-network.json), Liverpool Street stationGroup, operators Greater Anglia + c2c, doNotGroup: true. Not duplicated here — Greater Anglia services calling at Liverpool Street are that pack's responsibility."
     }
-  }
+  },
+  "crsVerification": "All 14 CRS codes verified live against Darwin stationName on 5 Sep 2026 (scripts/fix-uk-region-crs.mjs); Diss/Wymondham/Lowestoft resolved to DIS/WMD/LWT via lib/cities/uk/rail-crs-index.json + live check."
 }

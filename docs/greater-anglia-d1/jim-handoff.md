@@ -101,9 +101,9 @@ mistake the Luke lane exists to catch — flagged, not guessed around.
 
 ## Other unverified CRS codes
 
-King's Lynn (report gives `KLY`), Great Yarmouth (report gives `YRD`), Bishops Stortford (report
-gives `BST`), Stansted Airport (report gives `SSD`), and the hub/secondary-hub/regional codes
-(NRW, CBG, IPS, COL, PBO, ELY, THF) are all carried through as reported but marked
+King's Lynn (report gives `KLN`), Great Yarmouth (report gives `GYM`), Bishops Stortford (report
+gives `BIS`), Stansted Airport (report gives `SSD`), and the hub/secondary-hub/regional codes
+(NRW, CBG, IPS, COL, PBO, ELY, TTF) are all carried through as reported but marked
 `crsVerified: false` — none were cross-checked against the Transitland GTFS feed or a CRS
 authority in this pack. Diss and Wymondham have no CRS given in the report at all and are left
 `null` rather than guessed. Jim should verify every code against the GTFS feed at D2 before
@@ -147,7 +147,7 @@ guessed here.
 
 ## H7 / license summary
 
-Europe/London, HAS DST (BST/GMT). National Rail under OGL 2.0 + NRE amendments (unclear on
+Europe/London, HAS DST (BIS/GMT). National Rail under OGL 2.0 + NRE amendments (unclear on
 third-party redistribution — see open item above). Static GTFS under CC-BY-2.0 UK (clear,
 redistribution permitted, commercial use allowed, attribution to Rail Delivery Group / Network
 Rail / National Rail Enquiries / Transitland).
@@ -164,3 +164,14 @@ as other UK packs), no invention of the 17-37 additional stations the report's o
 estimate implies beyond the ~13 explicitly named, no re-reading of London & South East's chat or
 oracle beyond the single Liverpool Street stationGroup cross-check the task instruction asked for,
 no touching any other UK region's pack, no wiring of `DARWIN_LDB_TOKEN`.
+
+## 5 Sep 2026 — pre-adapter hygiene (Fable, top-level session)
+
+- **CRS codes verified live against Darwin** with `scripts/fix-uk-region-crs.mjs greater-anglia --write`:
+  seven of fourteen were wrong or missing — King's Lynn KLY→**KLN**, Thetford THF→**TTF**, Great Yarmouth
+  YRD→**GYM**, Bishops Stortford BST→**BIS**, and Diss/Wymondham/Lowestoft (null) → **DIS/WMD/LWT**. All
+  corrected in `stations.json`, `published-network.json`, this pack's prose and the planned gate;
+  coordinates filled from NaPTAN. The adapter gate must carry the token-gated catalog sweep.
+- **Board eligibility resolved**: LNER at Peterborough was `undecided`; resolved `in` with evidence
+  (see the oracle report's "Verdict resolution" subsection). No `undecided` rows remain.
+- `DARWIN_LDB_TOKEN` exists (live since 2 Sep 2026); the blocker framing above is resolved.
