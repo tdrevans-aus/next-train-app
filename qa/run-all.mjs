@@ -32,6 +32,7 @@ const SMOKE_SCRIPTS = [
   "smoke-browser.mjs",
   "smoke-11-13.mjs",
   "reminders-dialog.mjs",
+  "hub-printed-destination-render.mjs",
   "reminders-permission-gate.mjs",
   "template-wizard-coach-overlap.mjs",
   "journey-detail-footer-above-ad.mjs",

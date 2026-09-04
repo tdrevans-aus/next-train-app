@@ -2354,7 +2354,9 @@ function renderNearbyBoard({ stale = false } = {}) {
   }
   if (deps.departDisplayTimeEl) {
     const linePart = next.line ? `${next.line} · ` : "";
-    deps.departDisplayTimeEl.textContent = `${next.displayTime} · ${linePart}towards ${focusedEntry.direction}`;
+    const printed = typeof next.printedDestination === "string" ? next.printedDestination.trim() : "";
+    const printedPart = printed && printed !== focusedEntry.direction ? ` · to ${printed}` : "";
+    deps.departDisplayTimeEl.textContent = `${next.displayTime} · ${linePart}towards ${focusedEntry.direction}${printedPart}`;
     deps.departDisplayTimeEl.dataset.time = next.displayTime;
   }
 

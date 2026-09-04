@@ -189,6 +189,12 @@ var NextTrainTimes = (() => {
       displayTime: trip.displayTime,
       platform: trip.platform ?? "",
       destination: trip.destination,
+      // Additive, optional field (docs/jim-brief-uk-west-midlands-hub-anchoring.md):
+      // the Darwin-printed destination before any hub/exact-chip remap, so a
+      // row can show a secondary "to <printedDestination>" label when it
+      // differs from the chosen direction. Undefined/omitted for every
+      // provider that doesn't set it.
+      printedDestination: trip.printedDestination,
       cars: trip.cars,
       line: trip.line,
       id: trip.id
@@ -239,6 +245,7 @@ var NextTrainTimes = (() => {
       platform: timing.platform,
       status: timing.status,
       destination: timing.destination,
+      printedDestination: timing.printedDestination ?? null,
       cars: timing.cars,
       line: timing.line,
       leaveBy: new Date(leaveByMs).toISOString(),
