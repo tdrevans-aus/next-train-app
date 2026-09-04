@@ -1,0 +1,27 @@
+{
+  "region": "uk-west-midlands",
+  "notes": [
+    "A hub chip means 'every train that calls at filterCrs', fetched server-side via Darwin filterCrs/filterType=to.",
+    "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
+    "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
+    "Hub chips carry no operator suffix — several operators may call at the hub.",
+    "v1 scope: Kidderminster only (FB-50). Other West Midlands stations on this corridor (Hagley, Blakedown, Stourbridge Junction, Rowley Regis, etc.) are a proposal for Tim's review, not added here.",
+    "London Marylebone (Chiltern Railways) also calls at Snow Hill but is deliberately NOT absorbed — it keeps its own chip; its trains also appear under the Birmingham hub chip. See PR for Tim's confirmation."
+  ],
+  "hubs": [
+    {
+      "label": "Birmingham",
+      "filterCrs": "BSW",
+      "filterName": "Birmingham Snow Hill",
+      "appliesFrom": ["KID"],
+      "absorbs": [
+        "Dorridge",
+        "Whitlocks End",
+        "Stratford-upon-Avon",
+        "Birmingham Snow Hill",
+        "Birmingham Moor Street"
+      ],
+      "reason": "Snow Hill line through-runs past Birmingham onto the Shakespeare Line; riders anchor on Birmingham. BSW not BMO because a Snow Hill-terminating train never calls at Moor Street. Note: the brief's original draft used code \"BSH\" for Snow Hill, which is actually Bushey (Hertfordshire) in Darwin's CRS scheme — Birmingham Snow Hill's real code is BSW. Corrected here after live-probing on 4 Sep 2026 confirmed BSW returns the full absorbed set at Kidderminster; see PR for the transcript."
+    }
+  ]
+}

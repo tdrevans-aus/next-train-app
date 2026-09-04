@@ -43,7 +43,7 @@ if (!tfl || tfl.stopCount < 4) {
 
 const wmRail = listRailStations("uk-west-midlands");
 const crsSet = new Set(wmRail.map((s) => s.crs));
-for (const crs of ["BHM", "BMO", "BSH", "BHI", "COV", "WVH", "UNI", "WSL", "SBJ", "KID", "MOV", "KIH", "PIR", "DAS", "WLE"]) {
+for (const crs of ["BHM", "BMO", "BSW", "BHI", "COV", "WVH", "UNI", "WSL", "SBJ", "KID", "MOV", "KIH", "PIR", "DAS", "WLE"]) {
   if (!crsSet.has(crs)) {
     fail(`uk-west-midlands missing ${crs}`);
   }
