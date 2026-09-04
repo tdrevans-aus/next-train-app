@@ -1329,6 +1329,19 @@ window.dismissNearMeOnboarding = function dismissNearMeOnboarding(event) {
   completeOnboarding();
 };
 
+// Step 1's "Got it" advances to step 2 (Routes) — it does not end the wizard.
+// A prior fix (b87f5b0) had this calling markRegionExplicit(), which makes
+// canShowOnboardingCoach() permanently false and turned showOnboardingStep2()
+// into a silent no-op (the card looked "stuck"); that fix papered over it by
+// dismissing the whole wizard instead of advancing. Fixed properly here by
+// just not calling markRegionExplicit() from this button at all.
+window.advanceNearMeOnboarding = function advanceNearMeOnboarding(event) {
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  clearOnboardingSchedule();
+  showOnboardingStep2();
+};
+
 function deferOnboardingForSession() {
   if (hasCompletedOnboarding()) {
     return;
@@ -4398,13 +4411,14 @@ function openTravelLibrary(tab) {
   chromeTravelTab = tab;
   journeyModeActive = true;
   exitNearbyMode();
-  if (journeyDetail()) {
-    journeyDetail().setLibraryKind?.(tab);
-  } else {
-    // First paint can fail (offline/429) without ever loading the deferred
-    // modules; the library must still open in the requested kind.
-    void ensureDeferredModulesReady().then(() => journeyDetail()?.setLibraryKind?.(tab));
-  }
+  // Always route through ensureDeferredModulesReady() rather than short-circuiting on
+  // journeyDetail() being truthy — the deferred script can finish loading (making
+  // journeyDetail() truthy) before its own .init(deps) has actually run, so a "just call
+  // it directly" fast path could call setLibraryKind while journey-detail.js's internal
+  // deps are still {}. ensureDeferredModulesReady() already has its own fast path for the
+  // already-loaded case (synchronous init call, resolved promise), so this costs nothing
+  // and doesn't block the rest of this function — it's still fire-and-forget.
+  void ensureDeferredModulesReady().then(() => journeyDetail()?.setLibraryKind?.(tab));
   dismissLeaveHint();
   dismissTemplateRouteCoach();
   showSettingsListView();
@@ -6841,16 +6855,16 @@ heroEmptyAddBtn?.addEventListener("click", (event) => {
 });
 
 onboardingGotItBtn?.addEventListener("click", (event) => {
-  window.dismissNearMeOnboarding(event);
+  window.advanceNearMeOnboarding(event);
 });
 onboardingGotItBtn?.addEventListener("pointerup", (event) => {
-  window.dismissNearMeOnboarding(event);
+  window.advanceNearMeOnboarding(event);
 });
 document.addEventListener(
   "click",
   (event) => {
     if (event.target.closest("#onboarding-got-it-btn")) {
-      window.dismissNearMeOnboarding(event);
+      window.advanceNearMeOnboarding(event);
     }
   },
   true
@@ -8124,6 +8138,7 @@ window.nextTrainApp = {
   openJourneys,
   openRoutesLibrary,
   openJourneysLibrary,
+  ensureDeferredModulesReady,
   openJourneyDetail,
   openAppDialog,
   closeAppDialog,

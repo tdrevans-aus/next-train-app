@@ -8,8 +8,13 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(__dirname, "..", "..");
-export const BASE = "http://localhost:3000";
-export const DEV_PORT = 3000;
+/**
+ * QA_BASE (e.g. http://localhost:3101) moves the whole helper — probe, spawn and the
+ * BASE that scripts import — off :3000 for local runs when another project holds it.
+ * CI never sets it.
+ */
+export const BASE = (process.env.QA_BASE || "http://localhost:3000").replace(/\/$/, "");
+export const DEV_PORT = Number(new URL(BASE).port) || 3000;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -55,7 +60,7 @@ export async function ensureDevServer({ force = false } = {}) {
     // QA hammers this dev-server with many scripts against one long-lived
     // process; always bypass its soft rate limit (dev-server.js checks
     // CI==="true"), not just when the outer run is GitHub Actions CI.
-    env: { ...process.env, CI: "true" },
+    env: { ...process.env, CI: "true", PORT: String(DEV_PORT) },
     detached: process.platform !== "win32",
   });
 
