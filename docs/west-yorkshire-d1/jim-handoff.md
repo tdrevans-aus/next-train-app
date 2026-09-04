@@ -129,3 +129,105 @@ the Denby Dale boundary check only, per this task's explicit instruction), no wi
   rows). Mark's checklist item (1) passes.
 - `DARWIN_LDB_TOKEN` exists (live since 2 Sep 2026); the account-level blocker described above is
   resolved, so the adapter can be built and verified live now.
+
+## 5 Sep 2026 — Adapter wired (Jim, docs/jim-brief-west-yorkshire-adapter.md)
+
+**What was built:** `lib/cities/west-yorkshire/dogfood-next-train.js`
+(`getWestYorkshireDogfoodDirections`, `getWestYorkshireDogfoodNextTrain`,
+`planWestYorkshireNextTrainFetch`, `listWestYorkshireDogfoodStations`) over
+`fetchStationBoard`/`fetchRegionalDepartureBoard` from
+`lib/providers/uk-darwin.js` via the existing `lib/providers/west-yorkshire.js`
+region config, wired through the shared hub helper
+(`lib/cities/uk/direction-hubs.js`) with the national CRS index
+(`lib/cities/uk/rail-crs-index.js`) as the exact-chip fallback — same shape as
+West of England, copied structurally, not forked. `lib/cities/live-city-api.js`
+gained `west-yorkshire` switch-cases in `directionsFor()` and
+`getMultiCityNextTrain()` (dispatch is safe ahead of the flip — production
+routes gate on `assertCityLive()` first, not on `MULTI_CITY_IDS` membership).
+`qa/west-yorkshire-planned-gate.mjs` retired; replaced by
+`qa/west-yorkshire-dogfood-gate.mjs`, registered in `qa/run-all.mjs`'s smoke
+tier. `lib/providers/registry.js`'s west-yorkshire `notes` field updated to
+record the live-verified adapter and the flip-commit list additions Mark still
+owns; **`status` stays `"planned"`** — not flipped by this pass.
+`west-yorkshire` was deliberately **not** added to `MULTI_CITY_IDS`, the
+`MultiCityId` typedef, `brisbane-dogfood.js`'s mount/available map, or
+`journey-model.js`'s persisted-city/country lists — those are Mark's flip
+commit (`qa/live-city-lists-sync.mjs` enforces they equal the registry's live
+set).
+
+**Live evidence:** all ten CRS codes (LDS, BDQ, BDI, DBD, WDN, HUD, HFX, TOD,
+HBD, KEI) resolve at Darwin to their catalogued station name — the CRS sweep
+in `qa/west-yorkshire-dogfood-gate.mjs` (10 cheap `numRows=1` calls) passes
+with `DARWIN_LDB_TOKEN` set. Sample Leeds Station board (5 Sep 2026, live):
+Blackpool North (Northern), Bradford Forster Square (Northern/LNER), Carlisle
+(Northern), Chester (Northern), Doncaster (Northern), Glasgow Central
+(CrossCountry), Hull (Northern), London Kings Cross (LNER), Manchester
+Victoria (Northern/TransPennine Express), Nottingham (Northern), Plymouth
+(CrossCountry), Poppleton (Northern), Saltburn (TransPennine Express), Skipton
+(Northern), Wigan Wallgate (Northern), York (Northern).
+
+**Hub decision: no `direction-hubs.json` shipped for v1.** Every one of the
+ten catalogued stations' live chip sets was probed
+(`node scripts/probe-uk-board.mjs "<name>" --region=west-yorkshire`) looking
+for the two candidates the brief named:
+
+- **Operator split on "Leeds"** (would take the Liverpool shape: label
+  "Leeds", `filterCrs: LDS`, absorbing "Leeds"): not found. Every station that
+  prints a "Leeds" chip prints it under exactly one operator — Northern at
+  Bradford Forster Square, Bradford Interchange, Denby Dale (via
+  Huddersfield/Sheffield direction only, no direct Leeds chip), Walsden,
+  Halifax, Todmorden, Hebden Bridge, and Keighley; TransPennine Express at
+  Huddersfield. No station shows both.
+- **Through-service past Leeds to an unrecognisable terminus** (Kidderminster
+  shape): not found. Every non-Leeds chip at every regional station is itself
+  a real, board-recognisable terminus (Chester, Blackpool North, Manchester
+  Victoria, York, Hull, Sheffield, Carlisle, Skipton, Ilkley, Blackburn,
+  Wigan Wallgate, Cottingley), not an obscure through-run a rider would rather
+  see collapsed to "Leeds".
+
+Full per-station chip tables (live, 5 Sep 2026):
+
+| station | destinations (operator) |
+| --- | --- |
+| Leeds Station (LDS) | Blackpool North (Northern), Bradford Forster Square (Northern), Carlisle (Northern), Chester (Northern), Doncaster (Northern), Glasgow Central (CrossCountry), London Kings Cross (LNER), Manchester Victoria (Northern), Manchester Victoria (TransPennine Express), Plymouth (CrossCountry), Saltburn (TransPennine Express), Skipton (Northern), Wigan Wallgate (Northern), York (Northern) |
+| Bradford Forster Square (BDQ) | Ilkley (Northern), Leeds (Northern), Skipton (Northern) |
+| Bradford Interchange (BDI) | Blackpool North (Northern), Chester (Northern), Cottingley (Northern), Halifax (Northern), Hull (Northern), Leeds (Northern), Manchester Victoria (Northern), York (Northern) |
+| Denby Dale (DBD) | Huddersfield (Northern), Sheffield (Northern) |
+| Walsden (WDN) | Blackburn (Northern), Leeds (Northern), Wigan Wallgate (Northern) |
+| Huddersfield (HUD) | Hull (TransPennine Express), Leeds (TransPennine Express), Liverpool Lime Street (TransPennine Express), Manchester Airport (TransPennine Express), Manchester Piccadilly (TransPennine Express), Manchester Victoria (TransPennine Express), Newcastle (TransPennine Express), Redcar Central (TransPennine Express), Scarborough (TransPennine Express), Sheffield (Northern), York (TransPennine Express) |
+| Halifax (HFX) | Blackpool North (Northern), Bradford Interchange (Northern), Chester (Northern), Hull (Northern), Leeds (Northern), Manchester Victoria (Northern), York (Northern) |
+| Todmorden (TOD) | Blackburn (Northern), Chester (Northern), Leeds (Northern), Manchester Victoria (Northern), Wigan Wallgate (Northern) |
+| Hebden Bridge (HBD) | Blackpool North (Northern), Chester (Northern), Leeds (Northern), Manchester Victoria (Northern), Wigan Wallgate (Northern), York (Northern) |
+| Keighley (KEI) | Bradford Forster Square (Northern), Carlisle (Northern), Leeds (Northern), Skipton (Northern) |
+
+If a future live pull shows an operator split or an obscure through-run
+appearing at any of these stations, that is a fresh probe result, not a
+retrofit of this evidence — re-run the probe script and update this section
+(or add `lib/cities/west-yorkshire/direction-hubs.json`) at that point.
+
+**Board eligibility:** unchanged from the "5 Sep 2026 — pre-adapter hygiene"
+section above — all four operators (Northern, LNER, CrossCountry,
+TransPennine Express) verdict `in`, no `undecided` rows; this adapter applies
+no operator-level filtering.
+
+**`public/city-directions/west-yorkshire.json`:** not generated. Per
+`qa/bundled-city-directions.mjs`, that file is only required for every
+`MULTI_CITY_IDS` entry, and `scripts/write-city-directions.mjs`'s
+`EXTRA_BUNDLED_CITY_IDS` (the pre-flip bundling escape hatch) is currently
+empty — no other adapter-ready-but-planned UK region uses it either. Nothing
+in the current QA suite requires this file before the flip; if Mark's flip
+adds `west-yorkshire` to `MULTI_CITY_IDS`, `scripts/write-city-directions.mjs`
+will pick it up automatically at that point.
+
+**QA:** `node qa/west-yorkshire-dogfood-gate.mjs` passes both token-free
+(MissingDarwinTokenError-tolerant branches) and with `DARWIN_LDB_TOKEN` loaded
+via `loadEnvLocal()` (exercises the live dispatch, live next-train, and the
+10-station CRS sweep for real). `node qa/run-all.mjs --smoke` green.
+
+**Not done in this pass:** no hub file (see decision above), no
+`MULTI_CITY_IDS`/typedef/`brisbane-dogfood.js`/`journey-model.js` list edits
+(Mark's flip commit), no resolution of the Denby Dale/Walsden cross-region
+de-dup (still open, unchanged from the D1 pack), no live flip
+(`status` stays `"planned"`), no shared-helper edit
+(`lib/providers/uk-darwin.js`, `lib/providers/uk/catalog.js`,
+`lib/cities/uk/*` untouched beyond the read-only imports above).
