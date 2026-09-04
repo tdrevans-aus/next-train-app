@@ -53,6 +53,7 @@ const SMOKE_SCRIPTS = [
   "sydney-banksia-perth-route.mjs",
   "sydney-new-journey-not-perth.mjs",
   "nearby-region-preference.mjs",
+  "nearby-relocate-ignores-region.mjs",
   "adelaide-dogfood-gate.mjs",
   "amsterdam-dogfood-gate.mjs",
   "amsterdam-line-map-conformance.mjs",
@@ -100,7 +101,8 @@ const SMOKE_SCRIPTS = [
   "oslo-dogfood-gate.mjs",
   "oslo-line-map-conformance.mjs",
   "brussels-planned-gate.mjs",
-  "east-midlands-planned-gate.mjs",
+  "east-midlands-dogfood-gate.mjs",
+  "uk-west-midlands-dogfood-gate.mjs",
   "south-yorkshire-planned-gate.mjs",
   "north-east-planned-gate.mjs",
   "west-of-england-dogfood-gate.mjs",
@@ -114,6 +116,7 @@ const SMOKE_SCRIPTS = [
   "thames-valley-planned-gate.mjs",
   "greater-manchester-planned-gate.mjs",
   "cumbria-planned-gate.mjs",
+  "liverpool-city-region-dogfood-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

@@ -22,6 +22,37 @@ Match rule: published NET tram stop name vs. National Rail station print vs. off
 
 NET tram lines do not extend beyond Nottingham city. Through-running stations are served by East Midlands Trains (Keolis) regional services only; they are not de-dup points but may appear in both regions' feeds if both regions add National Rail slices. Flag for Luke at D1 pack stage.
 
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier).
+
+**Verdict summary (National Rail + NET tram at in-catalog stations):**
+
+**National Rail services at Nottingham and through-running stations:**
+- **East Midlands Railway (EMR/Keolis regional services)**: `in` (open seating, no compulsory reservation; walk-up boarding confirmed via operator help pages)
+- **CrossCountry**: `in` (optional reservations only, walk-up boardable)
+- **Northern Rail**: `in` (regional commuter services, optional reservations only, walk-up boardable)
+- **LNER**: Not applicable — East Coast Main Line (London–Edinburgh) does not serve Nottingham, Chesterfield, or Alfreton. LNER operates via Peterborough and Doncaster only.
+- **Sleeper services (Caledonian Sleeper, Night Riviera)**: Not confirmed at any East Midlands in-catalog stations. If any call at through-running points (e.g., Chesterfield), they would be `out-reservation` (compulsory sleeping-car reservation).
+
+**NET tram services at Nottingham Station:**
+- **NET Lines 1 & 2 (Hucknall–Beeston/Chilwell and Phoenix Park–Nottingham Station)**: `out-product` — Walk-up service (light rail, no reservation system), passes both boarding-contract tests, but excluded due to unconfirmed feed status. **Feed verification:** DFT Bus Open Data bulk GTFS archive (pulled 31 Aug 2026) does not contain Nottingham Express Transit as an agency (confirmed by Jim's D2 finding). No public GTFS-RT real-time feed confirmed in Transitland or Mobility Database. Adapter surfaces `NetFeedUnconfirmedError` explicitly (error-surfacing preferred to silent board omission per board-eligibility principle). **Reason:** "Feed unconfirmed (no GTFS-RT; static GTFS pull 31 Aug 2026 found NET absent from DFT aggregator). Board surfaces error until feed is confirmed." **Note:** Tim's explicit approval of the error-surfacing approach (and NET verdict) is required at flip-PR merge time.
+
+**Stations with multi-operator overlaps (National Rail only):**
+- **Nottingham Station (NOT, hub-lock):** National Rail platforms (East Midlands, CrossCountry, Northern) separate from NET tram viaduct. Two distinct operator sets; each boarded separately (doNotGroup by mode: rail vs. metro).
+
+**No check-in barriers:** Platform access at all in-catalog East Midlands and NET stations is unrestricted. Ticket checking is on-board by conductors or low-level gating (not airport-style). Walk-up boarding is unobstructed for all `in` services listed above.
+
+| Service | Calls at in-catalog stations | Compulsory reservation? | Check-in barrier? | Verdict | Evidence URL |
+|---|---|---|---|---|---|
+| **East Midlands Railway (regional services)** | Nottingham, Leicester, Kettering, Wellingborough, Chesterfield, Alfreton, and regional stations | No (open seating, no compulsory reservation on regional services) | No | `in` | [East Midlands Railway travel info](https://www.eastmidlandsrailway.co.uk/); [ShowMeTheJourney: UK rail seat reservations](https://showmethejourney.com/train-ticket-guides/seat-reservations-when-booking-online/); walk-up boarding available on all services |
+| **CrossCountry (through-running services)** | Nottingham and through-running stations (Leicester, Kettering, Wellingborough, Chesterfield, Alfreton) | No (optional reservation only, not compulsory) | No | `in` | [CrossCountry seat reservations](https://www.crosscountrytrains.co.uk/); walk-up boardable |
+| **Northern Rail (regional services via through-running)** | Chesterfield, Alfreton, and regional stations (if services call these points via East Midlands region) | No (optional reservation only; open seating on most regional services) | No | `in` | [Northern Rail help pages](https://help.northernrailway.co.uk/); walk-up boarding available |
+| **NET Tram Line 1 (Hucknall – Beeston/Chilwell)** | Nottingham Station (and intermediate tram stops) | No (walk-up only, light rail with no reservation system) | No | `out-product` | Feed unconfirmed (no GTFS-RT; static GTFS pull 31 Aug 2026 found NET absent from DFT aggregator; see [Transitland NET operator](https://www.transit.land/operators/o-gcrj-nottinghamexpresstransittram)). Board surfaces explicit error until feed is confirmed. |
+| **NET Tram Line 2 (Phoenix Park – Nottingham Station)** | Nottingham Station (and intermediate tram stops) | No (walk-up only, light rail with no reservation system) | No | `out-product` | Feed unconfirmed (no GTFS-RT; static GTFS pull 31 Aug 2026 found NET absent from DFT aggregator). Board surfaces explicit error until feed is confirmed. |
+
+**Board eligibility summary:** All walk-up National Rail services (East Midlands, CrossCountry, Northern) calling at Nottingham and through-running stations pass both boarding-contract tests (`in` verdicts recorded). NET tram services pass both tests but are excluded by product decision due to unconfirmed feed status (`out-product` verdicts recorded). **All verdicts decided; no silent omissions. Tim's approval of NET error-surfacing approach to be confirmed at flip-PR merge.**
+
 ## H2 clash surface
 
 **NET:** No product `lib/cities/east-midlands/` exists. No live adapter. GTFS from DFT aggregator is static (monthly refresh). No official Nottingham Express Transit GTFS landing page; data served via national DFT feed only. No published next-train GTFS-RT endpoint.
@@ -60,4 +91,3 @@ NET tram lines do not extend beyond Nottingham city. Through-running stations ar
   - **Confidence:** `unclear` on third-party rider redistribution. The RDM Platform Agreement text (data sharing agreement) specifies limits on how data may be used; the exact language permitting or prohibiting downstream API provision to end users is not stated in public sources checked. Tim must review the signed RDM Data Sharing Agreement once EvansAppStudio re-registers and receives a token. Do not assume OGL 2.0 baseline permits public API relay; confirm with RDM / NRE before launch.
 
 - **Keyed feeds:** DARWIN_LDB_TOKEN is a subscription token, not a secret API key; no HMAC or signature. Free tier: 100,000 calls/month (public sector orgs avoid overage charges). Subscription terms govern API use, not a separate data license.
-

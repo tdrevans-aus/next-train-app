@@ -6,6 +6,20 @@ Evidence: `docs/liverpool-city-region-d1/oracle-clash-report.md` (Nico) only. No
 packed so far (Greater Manchester's pack flagged this as overdue; still not written). Per the
 "files, not chat" rule, no other city's in-progress pack was read for context.
 
+## RESCOPED 4 Sep 2026 — full-network rescope, 6 stations to 98
+
+This pack originally catalogued 6 stations (2 National Rail hub/secondary-hub, 4 named Merseyrail
+stations). Tim rejected that as too thin for a real launch (`docs/luke-brief-liverpool-full-network-
+rescope.md`) — it was a leftover from an abandoned `uk-ellesmere-port` thin-corridor plan and never
+expanded, despite the oracle report itself flagging the gap (report line 19: "Verify station count
+during D1 pack stage; do not assume all 96 are in-scope"). The catalog is now **29 National Rail +
+69 Merseyrail = 98 stations**, sourced from ORR Table 6329 (filtered to Combined authority =
+Liverpool City Region for National Rail, Station facility owner = Merseyrail for Merseyrail, plus
+Chester and Lime Street's Merseyrail presence to reach the report's confirmed 69-station total) and
+NaPTAN for coordinates. Full before/after detail, sourcing, and what could not be sourced:
+`docs/liverpool-city-region-d1/rescope-addendum.md`. Every hazard finding below (H1–H7) was
+re-checked against the new scale and is unchanged unless explicitly noted as updated.
+
 ## H1 — parent + child
 
 **One agency pair, one named hub station, but the report contradicts itself on whether the two
@@ -68,6 +82,34 @@ Restated from the report (lines 3, 90, 94):
 **Gap, not resolved.** The report gives no detail on short turns, peak extras, event-only stops,
 or overlay services for either Merseyrail or the seven National Rail operators. Nothing to report
 here beyond: do not invent any.
+
+### Northern Line vs Wirral Line membership for ~60 Merseyrail stations — real gap, recorded here, not silently dropped
+
+**Added at the 4 Sep 2026 rescope.** The 69-station Merseyrail catalog is complete as a *station
+list* (source: ORR Table 6329 + NaPTAN, see rescope-addendum.md), but it is **not** a complete
+*line-membership* map. Only 8 of the 69 Merseyrail stations carry a line assignment in
+`stations.json`: Liverpool Central and Moorfields (dual-line interchange, both lines, report lines
+50–51), Southport, Ormskirk, and Headbolt Lane (Northern Line termini, report line 21), and
+Ellesmere Port, West Kirby, and Chester (Wirral Line termini, report line 21). The remaining
+**~60 stations have no `line` field at all.**
+
+Two sources were tried and both failed, per the brief's escalation instructions (do not guess, flag
+instead):
+
+1. **ORR Table 6329** — has no route/line column. It carries station identity, facility owner, and
+   local-authority district, not which line(s) call at a station.
+2. **Transitland's REST API** (the source that would carry the `stop_times`/`routes` join needed to
+   derive line membership from the confirmed-live `f-gc-rail~delivery~group~planar~gtfs` feed) —
+   returned **401 Unauthorized** on every attempt. The feed's public browse page has no no-key
+   static bulk-download link, only the authenticated API, and no `TRANSITLAND_API_KEY` (or
+   equivalent) exists in this environment.
+
+**Do not infer the remaining ~60 stations' line membership from geography, borough name, or
+proximity to a named terminus** — that would be exactly the kind of invented station-graph fact
+this pipeline's guardrails exist to prevent. This is a genuine sourcing gap, not a judgment call:
+per the brief's section 3, it should be handed back for a short, scoped Nico follow-up (confirm
+line membership only, e.g. via a Transitland API key or a transcribed public Merseyrail line
+diagram) rather than resolved here by inference.
 
 ## H4 — branches (doNotGroup candidates)
 
@@ -132,12 +174,18 @@ every other UK region packed so far.
 No generator, no invented Merseyrail stop order or route topology beyond the report's
 line/terminus summary (Northern Line: Liverpool–Southport/Ormskirk/Headbolt Lane, 39 stations;
 Wirral Line: Liverpool–Ellesmere Port/West Kirby/Chester, 34 stations), no invented National Rail
-destination strings, no GTFS fetch/parse (Transitland's `f-gc-rail~delivery~group~planar~gtfs` is
-cited by the report as reference-only, not pulled here), no CRS-code verification against a live
-GTFS dump or Darwin response, no resolution of the Lime Street/Merseyrail structural ambiguity (H1,
-flagged not resolved), no resolution of the Ellesmere Port registry discrepancy (Jim/Tim call), no
-resolution of the OpenLDBWS redistribution-terms ambiguity (open item for Tim, same as every other
-UK NR region), no resolution of the Merseyrail real-time feed status (open item for Tim/Merseyrail
-contact, same shape as Greater Manchester's Metrolink gap and South Yorkshire's Supertram/SYFTL
-gap), no wiring of `DARWIN_LDB_TOKEN`, no product edit, no `lib/providers/` edit, no reading of any
-other city's in-progress (unfinished) pack.
+destination strings, no CRS-code verification against a live Darwin response, no resolution of the
+Lime Street/Merseyrail structural ambiguity (H1, flagged not resolved), no resolution of the
+Ellesmere Port registry discrepancy (Jim/Tim call), no resolution of the OpenLDBWS
+redistribution-terms ambiguity (open item for Tim, same as every other UK NR region), no
+resolution of the Merseyrail real-time feed status (open item for Tim/Merseyrail contact, same
+shape as Greater Manchester's Metrolink gap and South Yorkshire's Supertram/SYFTL gap), no wiring
+of `DARWIN_LDB_TOKEN`, no product edit, no `lib/providers/` edit, no reading of any other city's
+in-progress (unfinished) pack.
+
+**Updated at the 4 Sep 2026 rescope:** ORR Table 6329 and NaPTAN *were* pulled this pass (not a
+GTFS fetch — Transitland's REST API returned 401 with no API key available, see H3) to build the
+full 98-station catalog and real coordinates for every station; that is the one exception to "no
+GTFS fetch/parse" above and is scoped narrowly to station identity + lat/lng, not to line
+membership, route topology, or timetable order — those remain unsourced gaps (see H3, "Northern
+Line vs Wirral Line membership").

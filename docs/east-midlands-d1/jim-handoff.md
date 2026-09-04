@@ -93,3 +93,55 @@ logic, no resolution of the RDM redistribution ambiguity, no touching West Midla
 Manchester / Liverpool City Region packs, no touching Edinburgh or Glasgow (their oracle reports
 were lost in the same wipe and haven't been redone — someone else decides whether to re-run
 Nico for those, out of scope here).
+
+## Flip commit — list additions for Mark (added 2 Sep 2026, Jim's code-side follow-through)
+
+Darwin's OpenLDBWS is genuinely live now (`lib/providers/uk-darwin.js` REST rewrite, PR #188,
+verified against Bristol Temple Meads) — Tim has authorized flipping East Midlands live. Ahead of
+that, this pass landed the code-side follow-through only: `lib/cities/east-midlands/
+dogfood-next-train.js`, the `east-midlands` switch-cases in `lib/cities/live-city-api.js`'s
+`directionsFor`/`getMultiCityNextTrain`, and `qa/east-midlands-dogfood-gate.mjs` (replacing
+`qa/east-midlands-planned-gate.mjs` in `qa/run-all.mjs`'s smoke list).
+
+**Deliberately NOT done in this pass — bundle these into the actual status-flip commit** (same
+split West of England's flip used: code in 237fcb9, list membership in a1d0e5d):
+
+1. `lib/providers/registry.js` — flip the `east-midlands` entry's `status` from `"planned"` to
+   `"live"`. Also worth updating the `notes`/`integration` prose the same way West of England's
+   flip commit did (record the Darwin unblock + flip date), though that's prose, not a gate.
+2. `lib/cities/live-city-api.js` — add `"east-midlands"` to the `MultiCityId` typedef union and to
+   the `MULTI_CITY_IDS` array (both currently end in `..."oslo","west-of-england"]`/`|"oslo"|
+   "west-of-england"`).
+3. `public/app.js` — add `"east-midlands"` to `NEARBY_MULTI_CITY_IDS` and to the `LIVE_CITY_IDS`
+   `Set`.
+4. `public/brisbane-dogfood.js` — add `"east-midlands"` to the `MULTI_CITY_IDS` array and add
+   `"east-midlands": true` to the `available` map.
+5. `public/city-session.js` — add `"east-midlands"` to the `MULTI_CITY_IDS` array; add a picker
+   region entry under the `gb` country's regions list, e.g.
+   `{ id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false }`
+   (West of England's flip added the equivalent line for its own id — follow that exact shape,
+   inserted after the existing `uk-london-tfl` entry or wherever the gb regions array currently
+   ends); add a `CITY_BOUNDS` entry, e.g. Nottingham/East Midlands bounding box
+   `"east-midlands": { minLat: 52.55, maxLat: 53.10, minLng: -1.55, maxLng: -0.55 }` (illustrative
+   — confirm against the actual catalog stations' area before shipping; coordinates in this D1
+   pack are all `null` per stations.json, so this box cannot be derived from catalog data and
+   needs an independent check, not a guess carried over from this note).
+6. `public/journey-model.js` — add `"east-midlands"` to `PERSISTED_CITY_IDS` (the `"gb"` country id
+   is already in `PERSISTED_COUNTRY_IDS` from `uk-london-tfl`, no change needed there).
+7. `qa/uk-planned-gate.mjs` — add `"east-midlands"` to the `LIVE_UK_REGION_IDS` `Set` (currently
+   `new Set(["uk-london-tfl", "west-of-england"])`), and update the trailing `console.log` summary
+   string to mention east-midlands is live. **This assertion cannot be made to pass both before and
+   after the flip** — `LIVE_UK_REGION_IDS` is a hardcoded set checked directly against
+   `getCity(id)?.status`, not derived from the registry, so adding `"east-midlands"` to it before
+   the status flip lands would make the gate fail *now* (status still `"planned"`) instead of
+   *after* (status `"live"`). This mirrors exactly what happened for West of England: PR #188's
+   code-side commit (237fcb9) left `uk-planned-gate.mjs` untouched, and the very next commit
+   (a1d0e5d, the flip) needed a follow-up fix (caf8e18) to add `west-of-england` to
+   `LIVE_UK_REGION_IDS` once its status actually flipped. Do the same here — add
+   `"east-midlands"` to `LIVE_UK_REGION_IDS` in the same commit (or the very next one) that flips
+   `registry.js`'s status line, not before.
+
+Verify with `node qa/live-city-lists-sync.mjs` after all of the above — it derives the expected
+membership directly from the registry's `status === "live"` set and will catch any list that's
+missing `east-midlands` or, just as importantly, any list where it was added too early relative to
+the others.

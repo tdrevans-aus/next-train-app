@@ -198,10 +198,9 @@ assert(!hubChips.some((label) => /inbound|outbound|to city/i.test(label)), "chip
 assert(!hubChips.some((label) => /airport|disneyland|light rail/i.test(label)), "Admiralty chips must not name AEL/DIS/LR");
 
 const session = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(/id:\s*"hk"/.test(session) && /name:\s*"Hong Kong"/.test(session), "picker country is hk (Hong Kong), not city=hk");
 assert(
-  /id:\s*"hong-kong",\s*name:\s*"Hong Kong",\s*timeZone:\s*"Asia\/Hong_Kong",\s*comingSoon:\s*true/.test(session),
-  "picker must list Hong Kong as Coming Soon / planned"
+  !/id:\s*"hk"/.test(session) && !/id:\s*"hong-kong"/.test(session),
+  "picker must not list Hong Kong at all (removed from the launch picker 4 Sep 2026; city stays planned in registry)"
 );
 assert(
   /id:\s*"melbourne",\s*name:\s*"Melbourne",\s*timeZone:\s*"Australia\/Melbourne",\s*comingSoon:\s*true/.test(

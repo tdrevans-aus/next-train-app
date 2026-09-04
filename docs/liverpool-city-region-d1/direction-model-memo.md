@@ -131,6 +131,42 @@ illustrative shape only, not written into `published-network.json` as confirmed 
 | **B. National Rail only, Merseyrail deferred to H2 (report's own literal recommendation)** | Only Lime Street + South Parkway + NR regional/City Line stations in v1 | Matches the report's headline recommendation literally; smaller v1 surface | Excludes the majority of the region's rail network and both named Merseyrail hubs for a reason (real-time uncertainty) that Metrolink and Supertram both shipped through as schedule-only rather than exclusion; inconsistent precedent without a Merseyrail-specific reason the report doesn't supply |
 | **C. Merge Lime Street's NR and Merseyrail presence into one stationGroup (assume "platform level" language, line 41, is correct)** | One combined "Liverpool Lime Street" entry for both agencies | Simpler board if the relationship really is one building | Contradicted by two of the report's own three mentions of the relationship (line 73, C2/C3 point 2); risks silently merging two operators' boards if the true relationship is actually a walk-link pair |
 
+## RESCOPED 4 Sep 2026 — direction model unchanged at 98-station scale
+
+The catalog grew from 6 to 98 stations (29 National Rail + 69 Merseyrail — see
+`docs/liverpool-city-region-d1/rescope-addendum.md` for full sourcing). **The direction model built
+above does not change with scale, and is deliberately not rebuilt as per-station chips for all 69
+Merseyrail stops.**
+
+- **Merseyrail stays line + terminus, not per-station chips.** Going from 4 named Merseyrail
+  stations to 69 does not create new terminus facts — the network still has exactly six confirmed
+  branch destinations (Southport, Ormskirk, Headbolt Lane on the Northern Line; Ellesmere Port,
+  West Kirby, Chester on the Wirral Line), the same six this memo's original table already listed.
+  Building 69 stations' worth of per-station chips would require knowing, for every individual
+  station, which of the six branches actually call there — and per hazard-pack.md H3, that is
+  exactly the fact this rescope could not source (ORR Table 6329 has no route/line column;
+  Transitland's REST API returned 401 with no key available). Attempting per-station chips at this
+  scale without that data would mean either fabricating line membership (guessing which stations
+  see which branches) or generating identical six-chip lists for all 69 stations regardless of
+  which line they're actually on — both worse than the existing line+terminus model, which only
+  needs the (already-confirmed) branch termini, not full stop-to-line assignment. `marketing-
+  directions.js`'s `marketingLabelsForStation()` continues to generate chips only for the
+  originally-named interchange/terminus stations (Ellesmere Port, Liverpool Central, Moorfields);
+  it is Jim's call at wiring time whether to extend that function to the newly-catalogued named
+  termini (Southport, Ormskirk, Headbolt Lane, West Kirby, Chester) using the same terminus-only
+  logic — see jim-handoff.md.
+- **National Rail stays destination + operator, derived live.** Growing from 2 to 29 National Rail
+  stations doesn't change this model at all — Darwin departure boards are destination lists at any
+  of the 29 stations, not printed line maps, exactly as they were at the original 2. No new
+  modelling decision is needed; the existing `fetchNationalRailBoard()` reuse of `uk-darwin.js`
+  already generalises to any CRS in the region's allow-list, National Rail's Combined-Authority
+  membership per ORR Table 6329.
+- **What is new:** the scale of the H3 gap (line membership for ~60 Merseyrail stations) is larger
+  in absolute terms than it was in the 6-station pack (where it didn't really apply — all 4 named
+  Merseyrail stations already had a line note). It remains the same *kind* of gap the original pack
+  already carried for intermediate stop order (open item 6 below still stands, now joined by the
+  line-membership gap) — not a new category of risk, just a bigger surface for an existing one.
+
 ## Open items for Tim
 
 1. **Confirm the National Rail + Merseyrail (schedule-only) v1 scope decision** before Jim wires an
@@ -157,3 +193,8 @@ illustrative shape only, not written into `published-network.json` as confirmed 
 7. **UK country ledger retrofit is still overdue** — no `docs/united-kingdom-ledger.md` exists as
    of this pack. The Lime Street structural ambiguity recorded here is exactly the kind of
    cross-region fact that ledger should hold once it exists.
+8. **Added 4 Sep 2026 rescope: Northern Line vs Wirral Line membership for ~60 Merseyrail
+   stations is unsourced** — ORR Table 6329 has no route/line column, and Transitland's REST API
+   returned 401 with no API key available in this environment. Confirm with a Transitland API key,
+   or a transcribed public Merseyrail line diagram, before any per-station line assignment is
+   built. See hazard-pack.md H3 and rescope-addendum.md.

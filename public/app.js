@@ -206,7 +206,7 @@ let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
 let stationCoords = null;
-const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "west-of-england"];
+const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region"];
 const nearbyCoordsCache = new Map();
 const nearbyStationNamesCache = new Map();
 let nearbyCityHint = "perth";
@@ -659,7 +659,7 @@ function getActiveFixture() {
   return new URLSearchParams(window.location.search).get("fixture");
 }
 
-const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "west-of-england"]);
+const LIVE_CITY_IDS = new Set(["perth", "sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region"]);
 
 function normalizeCityId(raw) {
   const city = String(raw || "").trim().toLowerCase();
@@ -5120,10 +5120,18 @@ async function getGeolocationPosition() {
   }
 }
 
+/**
+ * Nearest station to the current GPS fix.
+ *
+ * Journey/template callers (default) resolve inside the saved region and throw
+ * REGION_MISMATCH when GPS is elsewhere. Near me passes followGps: true — it
+ * doesn't care which region is selected and resolves in whatever city GPS says.
+ */
 async function findNearestStation({
   forceFresh = false,
   allowSessionShortcut = true,
   maximumAge,
+  followGps = false,
 } = {}) {
   const planningCity = planningCityId();
   const regionMismatch = Object.assign(
@@ -5134,7 +5142,7 @@ async function findNearestStation({
   if (isTestMode()) {
     const nearest = testModeNearestStation();
     const nearestCity = normalizeCityId(nearest.city) || "perth";
-    if (nearestCity !== planningCity) {
+    if (!followGps && nearestCity !== planningCity) {
       throw regionMismatch;
     }
     return nearest;
@@ -5144,7 +5152,10 @@ async function findNearestStation({
   if (allowSessionShortcut && !forceFresh && nearbyMode().getNearbySession()?.station) {
     const session = nearbyMode().getNearbySession();
     const sessionCity = normalizeCityId(session.city || readNearbyCity()) || "perth";
-    if (sessionCity === planningCity && isStationInNearbyCity(session.station, sessionCity)) {
+    if (
+      (followGps || sessionCity === planningCity) &&
+      isStationInNearbyCity(session.station, sessionCity)
+    ) {
       return {
         station: session.station,
         city: sessionCity,
@@ -5171,9 +5182,12 @@ async function findNearestStation({
   const nearbyCity = nearbyCityFromCoords(latitude, longitude);
   nearbyCityHint = nearbyCity;
 
-  if ((normalizeCityId(nearbyCity) || "perth") !== planningCity) {
+  const gpsCity = normalizeCityId(nearbyCity) || "perth";
+  if (!followGps && gpsCity !== planningCity) {
     throw regionMismatch;
   }
+  // Near me resolves in the GPS city; everything else stays region-scoped.
+  const targetCity = followGps ? gpsCity : planningCity;
 
   // Cache the last successful GPS fix.
   try {
@@ -5185,13 +5199,13 @@ async function findNearestStation({
     }));
   } catch {}
 
-  const coords = await loadStationCoordsForCity(planningCity);
-  await loadNearbyStationNames(planningCity);
+  const coords = await loadStationCoordsForCity(targetCity);
+  await loadNearbyStationNames(targetCity);
 
   // If we don't have coords yet, return raw position for server resolution.
   if (Object.keys(coords).length === 0) {
     console.log("[App] findNearestStation: no coords loaded, returning raw position");
-    return { lat: latitude, lng: longitude, city: planningCity, distanceKm: 0 };
+    return { lat: latitude, lng: longitude, city: targetCity, distanceKm: 0 };
   }
 
   let nearest = null;
@@ -5209,13 +5223,13 @@ async function findNearestStation({
     throw new Error("Could not find a nearby station");
   }
 
-  if (!isStationInNearbyCity(nearest, planningCity)) {
+  if (!isStationInNearbyCity(nearest, targetCity)) {
     throw new Error("Could not find a nearby station.");
   }
 
   return {
     station: nearest,
-    city: planningCity,
+    city: targetCity,
     distanceKm: bestDistance,
     lat: latitude,
     lng: longitude,
@@ -6597,6 +6611,27 @@ function openMainScreenFromWidget() {
   void enterNearbyMode();
 }
 
+
+function activateSwipeCue(handler) {
+  return (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    handler();
+  };
+}
+
+heroSwipePrevEl?.addEventListener("click", activateSwipeCue(() => skipToEarlierTrain()));
+heroSwipeNextEl?.addEventListener("click", activateSwipeCue(() => skipToNextTrain()));
+heroSwipePrevEl?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    activateSwipeCue(() => skipToEarlierTrain())(event);
+  }
+});
+heroSwipeNextEl?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    activateSwipeCue(() => skipToNextTrain())(event);
+  }
+});
 
 routesBtn?.addEventListener("click", () => enterRouteMode());
 journeysBtn?.addEventListener("click", () => enterJourneyMode());
@@ -8116,6 +8151,7 @@ window.nextTrainApp = {
   readLastNearbyStationCache,
   writeLastNearbyStationCache,
   clearLastNearbyStationCache,
+  findNearestStation,
   leaveByArmedForDisplayedTrip,
   preferredHintForJourney,
   tripMatchesPreferredOrLater,

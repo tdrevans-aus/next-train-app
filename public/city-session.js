@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "west-of-england"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -35,9 +35,11 @@
       id: "gb",
       name: "England",
       regions: [
-        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: true },
+        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false },
+        { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false },
+        { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false },
       ],
     },
     {
@@ -79,21 +81,7 @@
         { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
       ],
     },
-    {
-      id: "jp",
-      name: "Japan",
-      regions: [
-        { id: "osaka", name: "Osaka", timeZone: "Asia/Tokyo", comingSoon: true },
-      ],
-    },
 
-    {
-      id: "hk",
-      name: "Hong Kong",
-      regions: [
-        { id: "hong-kong", name: "Hong Kong", timeZone: "Asia/Hong_Kong", comingSoon: true },
-      ],
-    },
   ];
 
   const CITY_BOUNDS = {
@@ -116,7 +104,10 @@
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
     oslo: { minLat: 59.60, maxLat: 60.25, minLng: 10.40, maxLng: 11.20 },
+    "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
     "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.20, maxLng: -2.10 },
+    "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
+    "liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 },
   };
 
   function dogfood() {
