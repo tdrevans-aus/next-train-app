@@ -150,7 +150,7 @@ async function run() {
     });
 
     if (selection.country === "gb" && selection.city === "uk-london-tfl" && selection.label === "London") {
-      console.log("    PASS — Selector UI correctly shows England/London");
+      console.log("    PASS — Selector UI correctly shows United Kingdom/London");
     } else {
       console.error("    FAIL — Selector UI incorrect", selection);
       process.exitCode = 1;

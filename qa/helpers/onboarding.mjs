@@ -33,7 +33,7 @@ export async function waitForOnboardingStep1(page, { timeout = 30000 } = {}) {
   }
 }
 
-/** Dismiss the Near me wizard via Got it (completes onboarding). */
+/** Click through step 1 (Near Me) and step 2 (Routes) Got it, landing on step 3 (Journeys). */
 export async function advanceOnboardingToJourneysStep(page) {
   const step1Visible = await page.locator("#onboarding-step-1").isVisible().catch(() => false);
   if (!step1Visible) {
@@ -42,6 +42,12 @@ export async function advanceOnboardingToJourneysStep(page) {
 
   await page.locator("#onboarding-got-it-btn").click();
   await page.waitForTimeout(300);
+
+  const step2Visible = await page.locator("#onboarding-routes-got-it-btn").isVisible().catch(() => false);
+  if (step2Visible) {
+    await page.locator("#onboarding-routes-got-it-btn").click();
+    await page.waitForTimeout(300);
+  }
   return true;
 }
 
@@ -73,7 +79,6 @@ export async function dismissOnboardingIfVisible(page) {
   if (step1Visible) {
     await page.locator("#onboarding-got-it-btn").click();
     await page.waitForTimeout(300);
-    return true;
   }
 
   const routesVisible = await page.locator("#onboarding-routes-got-it-btn").isVisible().catch(() => false);

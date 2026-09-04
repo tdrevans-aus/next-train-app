@@ -35,6 +35,10 @@ async function runWizardPath({ geoDelayMs = 0, label }) {
   await advanceOnboardingToJourneysStep(page);
   await page.waitForTimeout(600);
 
+  // Two Got its lands on step 3 (Journeys) — Maybe later is what actually dismisses.
+  await page.locator("#onboarding-later-btn").click().catch(() => {});
+  await page.waitForTimeout(300);
+
   const afterGotIt = await page.evaluate(() => ({
     coachHidden: document.getElementById("onboarding-coach")?.hidden === true,
     done: Boolean(localStorage.getItem("nextTrainOnboardingDone")),

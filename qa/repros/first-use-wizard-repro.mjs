@@ -1,5 +1,6 @@
 /**
- * First-use Near me wizard: Got it dismisses the coach.
+ * First-use Near me wizard: Got it advances through all 3 steps (Near Me -> Routes ->
+ * Journeys), then Maybe later dismisses the coach and marks onboarding done.
  * Usage: node qa/first-use-wizard-repro.mjs
  */
 import { chromium } from "playwright";
@@ -35,19 +36,34 @@ async function run() {
 
   await advanceOnboardingToJourneysStep(page);
 
-  const afterGotIt = await page.evaluate(() => ({
+  const afterTwoGotIts = await page.evaluate(() => ({
+    step3Visible: document.getElementById("onboarding-step-3")?.hidden === false,
+    coachVisible: document.getElementById("onboarding-coach")?.hidden === false,
+    done: Boolean(localStorage.getItem("nextTrainOnboardingDone")),
+  }));
+
+  if (!afterTwoGotIts.step3Visible || !afterTwoGotIts.coachVisible || afterTwoGotIts.done) {
+    console.error("FAIL — two Got its should land on step 3 (Journeys), still open", afterTwoGotIts);
+    await browser.close();
+    process.exit(1);
+  }
+
+  await page.locator("#onboarding-later-btn").click();
+  await page.waitForTimeout(300);
+
+  const afterLater = await page.evaluate(() => ({
     coachHidden: document.getElementById("onboarding-coach")?.hidden === true,
     done: Boolean(localStorage.getItem("nextTrainOnboardingDone")),
   }));
 
   await browser.close();
 
-  if (!afterGotIt.coachHidden || !afterGotIt.done) {
-    console.error("FAIL — Got it did not dismiss Near me wizard", afterGotIt);
+  if (!afterLater.coachHidden || !afterLater.done) {
+    console.error("FAIL — Maybe later did not dismiss Near me wizard", afterLater);
     process.exit(1);
   }
 
-  console.log("PASS — first-use Near me wizard dismisses on Got it");
+  console.log("PASS — first-use Near me wizard advances through all 3 steps, dismisses on Maybe later");
 }
 
 run().catch((error) => {
