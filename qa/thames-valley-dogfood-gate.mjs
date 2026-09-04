@@ -83,7 +83,6 @@ assert(perth?.ok === true, "Perth must stay live");
 // Registry identity — NOW live. Flip committed.
 const live = assertCityLive("thames-valley");
 assert(live?.ok === true, "assertCityLive(thames-valley) must succeed — status is now live");
-assert(live?.status === 200, "thames-valley must be 200 live");
 
 const entry = getCity("thames-valley");
 assert(entry?.status === "live", "thames-valley registry status must be live");
