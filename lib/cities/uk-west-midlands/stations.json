@@ -88,13 +88,13 @@
     {
       "mode": "train",
       "name": "Birmingham Snow Hill",
-      "crs": "BSH",
+      "crs": "BSW",
       "borough": "Birmingham",
       "aliases": [
         "Snow Hill"
       ],
-      "lat": 51.64558157546,
-      "lng": -0.38474907806
+      "lat": 52.4834,
+      "lng": -1.899
     },
     {
       "mode": "train",

@@ -11,8 +11,8 @@
   "hubs": [
     {
       "label": "Birmingham",
-      "filterCrs": "BMO",
-      "filterName": "Birmingham Moor Street",
+      "filterCrs": "BSW",
+      "filterName": "Birmingham Snow Hill",
       "appliesFrom": ["KID"],
       "absorbs": [
         "Dorridge",
@@ -21,7 +21,7 @@
         "Birmingham Snow Hill",
         "Birmingham Moor Street"
       ],
-      "reason": "Kidderminster's Worcester/Stratford-upon-Avon corridor through-runs past Birmingham; riders anchor on Birmingham. filterCrs corrected to BMO (Moor Street) from the brief's proposed BSH (Snow Hill) after live-probing on 4 Sep 2026: node scripts/probe-uk-board.mjs \"Kidderminster\" --region=uk-west-midlands --filter-crs=BSH returned 0 trips against real Darwin data, while --filter-crs=BMO returned all 8 Dorridge/Whitlocks End/Stratford-upon-Avon services on the board at that time (the exact absorbed set) — see PR for the full before/after transcript. Tim to confirm this correction."
+      "reason": "Snow Hill line through-runs past Birmingham onto the Shakespeare Line; riders anchor on Birmingham. BSW not BMO because a Snow Hill-terminating train never calls at Moor Street. Note: the brief's original draft used code \"BSH\" for Snow Hill, which is actually Bushey (Hertfordshire) in Darwin's CRS scheme — Birmingham Snow Hill's real code is BSW. Corrected here after live-probing on 4 Sep 2026 confirmed BSW returns the full absorbed set at Kidderminster; see PR for the transcript."
     }
   ]
 }

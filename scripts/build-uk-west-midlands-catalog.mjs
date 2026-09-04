@@ -17,7 +17,7 @@ const RAIL = [
   ["Aston", "AST", "Birmingham"],
   ["Birmingham Moor Street", "BMO", "Birmingham"],
   ["Birmingham New Street", "BHM", "Birmingham"],
-  ["Birmingham Snow Hill", "BSH", "Birmingham"],
+  ["Birmingham Snow Hill", "BSW", "Birmingham"],
   ["Blake Street", "BLT", "Birmingham"],
   ["Bordesley", "BBS", "Birmingham"],
   ["Bournville", "BOV", "Birmingham"],
@@ -92,7 +92,7 @@ const RAIL = [
 const RAIL_ALIASES = {
   BHM: ["Birmingham", "Birmingham New Street Station"],
   BMO: ["Moor Street"],
-  BSH: ["Snow Hill"],
+  BSW: ["Snow Hill"],
   BHI: ["Birmingham International Airport"],
   WVH: ["Wolverhampton Station"],
   JEQ: ["Jewellery Quarter Station"],

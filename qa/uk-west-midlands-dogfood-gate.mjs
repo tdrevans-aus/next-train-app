@@ -40,7 +40,7 @@ import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
-import { MissingDarwinTokenError } from "../lib/providers/uk-darwin.js";
+import { MissingDarwinTokenError, fetchDepartureBoard } from "../lib/providers/uk-darwin.js";
 import { MissingTfwmCredentialsError } from "../lib/providers/uk-metro-wm.js";
 import { getRegion, resolveRailEntry, resolveMetroEntry } from "../lib/providers/uk/catalog.js";
 import {
@@ -153,20 +153,21 @@ assert(grandCentralEntries[0]?.mode === "metro", "Grand Central's dogfood entry 
 // Direction hub anchoring (FB-50, docs/jim-brief-uk-west-midlands-hub-anchoring.md).
 // Pure/data-only — no Darwin token needed for any of this section.
 
-// 1. direction-hubs.json loads and validates: BMO and KID resolve in the
+// 1. direction-hubs.json loads and validates: BSW and KID resolve in the
 // catalog; absorbs strings carry no operator suffix (loadDirectionHubs()
 // throws if either check fails, so simply loading it successfully is the
-// assertion). filterCrs is BMO (Birmingham Moor Street), not the brief's
-// originally-proposed BSH (Snow Hill) — corrected after live-probing showed
-// Kidderminster's Dorridge/Whitlocks End/Stratford-upon-Avon services call
-// at Moor Street, not Snow Hill (BSH filter returned 0 trips against real
-// Darwin data; BMO returned all 8). See direction-hubs.json's "reason" field
-// and the PR description for the transcript; Tim to confirm.
+// assertion). filterCrs is BSW (Birmingham Snow Hill's real Darwin CRS) —
+// the brief's original draft used "BSH", which is actually Bushey
+// (Hertfordshire) in Darwin's CRS scheme, not Snow Hill; corrected after
+// live-probing on 4 Sep 2026 confirmed BSW returns the full absorbed set
+// (all 8 Dorridge/Whitlocks End/Stratford-upon-Avon services on Kidderminster's
+// board at that time). See direction-hubs.json's "reason" field and the PR
+// description for the transcript.
 const { hubs } = loadDirectionHubs(UK_WEST_MIDLANDS_REGION);
 assert(hubs.length === 1, "uk-west-midlands direction-hubs.json must define exactly one hub for v1");
 const birminghamHub = hubs[0];
 assert(birminghamHub.label === "Birmingham", "v1 hub label must be Birmingham");
-assert(birminghamHub.filterCrs === "BMO", "v1 hub filterCrs must be BMO (Birmingham Moor Street) per live-probe correction");
+assert(birminghamHub.filterCrs === "BSW", "v1 hub filterCrs must be BSW (Birmingham Snow Hill's real Darwin CRS — \"BSH\" is Bushey)");
 assert(
   JSON.stringify(birminghamHub.appliesFrom) === JSON.stringify(["KID"]),
   "v1 hub appliesFrom must be Kidderminster only"
@@ -178,6 +179,34 @@ assert(
   birminghamHub.absorbs.includes("London Marylebone") === false,
   "London Marylebone must NOT be absorbed — it keeps its own chip alongside the Birmingham hub chip"
 );
+
+// CRS/name sanity check (added after the BSH/Bushey mix-up that produced the
+// original BSH->BMO misdiagnosis): the hub's filterCrs must resolve, live
+// against Darwin, to a stationName that actually contains "Snow Hill" —
+// catching exactly the class of bug where a catalog entry's crs points at
+// the wrong physical station. Token-tolerant like every other live probe in
+// this gate; narrow (one station, not a full-catalog sweep) to stay cheap.
+async function probeHubCrsName() {
+  try {
+    return { ok: true, board: await fetchDepartureBoard({ crs: birminghamHub.filterCrs, numRows: 1 }) };
+  } catch (err) {
+    if (err instanceof MissingDarwinTokenError) {
+      return { ok: false, blocked: true };
+    }
+    throw err;
+  }
+}
+const hubCrsNameProbe = await probeHubCrsName();
+if (hubCrsNameProbe.ok) {
+  assert(
+    hubCrsNameProbe.board.stationName.includes("Snow Hill"),
+    `direction-hubs.json hub filterCrs "${birminghamHub.filterCrs}" must resolve at Darwin to Birmingham Snow Hill, got stationName "${hubCrsNameProbe.board.stationName}"`
+  );
+} else {
+  console.log(
+    "uk-west-midlands-dogfood-gate: DARWIN_LDB_TOKEN not set — hub filterCrs/Darwin-stationName agreement not exercised here (this is exactly the check that would have caught the BSH=Bushey mix-up, so it only has teeth with a token)."
+  );
+}
 
 // 2. applyDirectionHubs() with the brief's fixture chip set at KID.
 const fixtureChips = [
@@ -206,7 +235,7 @@ assert(
 // brief, assertable without a Darwin token.
 const kidEntry = resolveRailEntry(KID, UK_WEST_MIDLANDS_REGION);
 const hubPlan = planUkWestMidlandsNextTrainFetch(kidEntry, "train", "Birmingham", hubs);
-assert(hubPlan.kind === "hub" && hubPlan.filterCrs === "BMO", "destination \"Birmingham\" at Kidderminster must route to the hub-filtered fetch (BMO)");
+assert(hubPlan.kind === "hub" && hubPlan.filterCrs === "BSW", "destination \"Birmingham\" at Kidderminster must route to the hub-filtered fetch (BSW)");
 
 const exactPlan = planUkWestMidlandsNextTrainFetch(
   kidEntry,
@@ -243,7 +272,7 @@ async function probeHubNextTrain() {
   try {
     return {
       ok: true,
-      payload: await getUkWestMidlandsDogfoodNextTrain({ station: KID, destination: "Birmingham" }),
+      payload: await getUkWestMidlandsDogfoodNextTrain({ station: KID, destination: "Birmingham", leaveBeforeMinutes: 5, refreshSeconds: 60 }),
     };
   } catch (err) {
     if (err instanceof MissingDarwinTokenError) {

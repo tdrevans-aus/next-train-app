@@ -6,7 +6,7 @@
  *   node scripts/probe-uk-board.mjs "Birmingham New Street" --region=uk-west-midlands
  *   node scripts/probe-uk-board.mjs --crs=ELP          # raw CRS, bypasses region catalogs
  *   node scripts/probe-uk-board.mjs --crs=ELP,LVC,MRF  # several, one summary line per trip
- *   node scripts/probe-uk-board.mjs "Kidderminster" --region=uk-west-midlands --filter-crs=BSH
+ *   node scripts/probe-uk-board.mjs "Kidderminster" --region=uk-west-midlands --filter-crs=BSW
  *
  * --crs asks Darwin directly for that station code, whatever any region
  * catalog says about it. Use it to establish what Darwin actually serves
