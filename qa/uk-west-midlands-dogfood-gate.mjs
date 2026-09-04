@@ -218,7 +218,7 @@ if (hubCrsNameProbe.ok) {
 function normaliseStationName(value) {
   return String(value ?? "")
     .toLowerCase()
-    .replace(/s*(.*?)/g, "")
+    .replace(/\s*\(.*?\)/g, "")
     .replace(/[^a-z0-9]/g, "");
 }
 async function sweepCatalogCrsNames() {
