@@ -209,3 +209,59 @@ returning real trips.
 Scope note: this pass is adapter/wiring only (`lib/providers/uk-metro-wm.js`). It does not touch
 `lib/providers/registry.js` (already `"live"` for uk-west-midlands, unrelated to this change), the
 Darwin/National Rail path (untouched, already working), or the catalog's `stopId` values.
+
+## 5 Sep 2026 (later same day) — real TfWM stop_ids populated; new direction-collapse gap found, verdict recommendation
+
+`lib/cities/uk-west-midlands/metro-stops-source.json` (source of truth) and the built
+`lib/cities/uk-west-midlands/stations.json` now carry real, TfWM-verified GTFS stop data for all
+35 Metro stops (`scripts/enrich-wm-metro-stop-ids.mjs`, re-run through
+`scripts/build-uk-west-midlands-catalog.mjs`). Verified two ways and cross-checked against each
+other: the TfWM GTFS **static** feed's `stops.txt` (`http://api.tfwm.org.uk/gtfs/tfwm_gtfs.zip`)
+and a live pull of the **realtime** `trip_updates` feed itself — both agreed on the same 35
+station-level codes, a clean 1:1 match against the 35 catalog entries (matched by TfWM code, not
+fuzzy name matching — see below for why).
+
+**Station-graph finding — this is a hazard, not a routine data fill:** TfWM's GTFS models every
+Metro stop as one parent station id (`940GZZWM<code>`, GTFS `location_type=1`) with **two
+directional platform-level ids** (`9400ZZWM<code><1|2>`, `location_type=0`). Confirmed against a
+live `trip_updates` pull: `stop_time_update.stop_id` **only ever carries the platform-level id,
+never the parent** (0 of 67 distinct WM-prefixed stop_ids in a live sample were parent-style
+`940GZZWM...`; all were platform-style `9400ZZWM<code><n>`). Three stations (Millennium Point,
+Wolverhampton Station, Wolverhampton St George's — all line-end/single-track stops) genuinely have
+only one platform id; every other station has two, one per direction.
+
+`lib/providers/uk-metro-wm.js`'s `fetchMetroStopBoard()`/`buildMetroTrips()` filters on a single
+scalar `entry.stopId` with an **exact match** against `stop_time_update.stop_id`
+(`uk-metro-wm.js:165`). There is no shape in that adapter for "one board, both directions" — unlike
+every other GTFS-RT city in this repo, which gets that via
+`lib/providers/gtfs/realtime-board.js`'s `resolveStopIds` (plural). Filling the legacy `stopId`
+scalar with just one of the two platform ids would make the board "work" in the sense of returning
+real, non-fabricated trips — but it would **silently show only one direction's departures**,
+dropping every walk-up-boardable service in the other direction with no recorded exclusion. That is
+exactly the kind of silent direction-collapse the pipeline exists to catch, so this pass did not do
+it.
+
+**What was actually populated instead:** a new `stopIds` array field (both platform ids, TfWM-code-
+verified) plus a reference-only `stationId` (the GTFS parent id, which never appears in the live
+feed) on every Metro entry. The legacy `stopId` scalar is left as `null`, so
+`MetroStopIdNotCatalogedError` keeps firing — the board still doesn't return trips yet, but it
+fails loudly and honestly rather than silently half-working. Full reasoning, the TfWM-code mapping
+table, and the static-feed-under-reports-one-platform gotcha (Five Ways' second platform has an
+empty `location_type`/`parent_station` in `stops.txt` and was only caught by cross-checking against
+the live feed) are documented in `scripts/enrich-wm-metro-stop-ids.mjs`'s header comment.
+
+**Recommended follow-up (Jim's lane, not done here):** extend `fetchMetroStopBoard()` /
+`buildMetroTrips()` to accept `entry.stopIds` (array) and merge matching trips across all of a
+station's platform ids into one board — the data is now populated and ready to consume; this is a
+small, mechanical adapter change, not a new research task. Once that lands, `metroNameByStopId()`
+(currently keyed off the singular `stopId`, used to resolve destination names for terminus stops)
+should also be updated to index off `stopIds`.
+
+**Board-eligibility verdict recommendation (Nico/Mark's call, not changed here):** do **not** move
+West Midlands Metro's verdict from `out-product` to `in` yet. Both the credentials gap and the
+literal "stop_id is null" catalog gap are now closed, but a third, previously-undiscovered gap
+blocks the board from actually returning correct data: the adapter's single-scalar stop-id model
+can't represent TfWM's two-platform-per-station shape without silently dropping one direction's
+departures. Recommend the verdict reason text be updated to reflect this specific remaining
+blocker (adapter needs `stopIds[]` merge support) rather than moving to `in`, until that adapter
+change lands and is QA-verified to return both directions.
