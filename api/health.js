@@ -1,5 +1,4 @@
 import { applyCors } from "../lib/api-cors.js";
-import { runGtfsRefresh } from "../lib/gtfs-refresh.js";
 
 /**
  * Cheap liveness for uptime monitors — no Transperth, no rate limit.
@@ -7,11 +6,15 @@ import { runGtfsRefresh } from "../lib/gtfs-refresh.js";
  *
  * Also doubles as the GTFS refresh cron target (vercel.json "crons").
  * The Hobby plan caps a deployment at 12 Serverless Functions and this
- * project is already at that limit, so the refresh job lives in
+ * project is already near that limit, so the refresh job lives in
  * lib/gtfs-refresh.js and is dispatched from here instead of its own
  * api/cron/*.js file. Vercel's own cron trigger is the only caller that
  * sends Authorization: Bearer $CRON_SECRET, so this never fires for a
  * normal health check.
+ *
+ * IMPORTANT: do not statically import lib/gtfs-refresh.js at the top
+ * level. That module graph (fflate, city trims, Blob) OOMs Hobby cold
+ * starts on plain GET. Load it only inside the cron auth branch.
  */
 // memory + maxDuration are set in vercel.json's "functions" block instead
 // of here - a `memory` field in this in-file config export is silently
@@ -26,6 +29,7 @@ export default async function handler(req, res) {
   const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers["authorization"];
   if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+    const { runGtfsRefresh } = await import("../lib/gtfs-refresh.js");
     const report = await runGtfsRefresh();
     console.log("gtfs-refresh:", JSON.stringify(report));
     res.status(report.ok ? 200 : 500).json(report);
