@@ -1,0 +1,29 @@
+{
+  "region": "solent",
+  "notes": [
+    "A hub chip means 'every train that calls at filterCrs', fetched server-side via Darwin filterCrs/filterType=to.",
+    "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
+    "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
+    "Hub chips carry no operator suffix — several operators may call at the hub.",
+    "Live-probed 5 Sep 2026 (docs/jim-brief-solent-adapter.md, scripts/probe-uk-board.mjs --crs=SOU,PMH,PMS,FRM,ESL,WSB,WAT and --filter-crs against FRM/ESL). Fareham (FRM) is the operator-split (Liverpool) shape for BOTH hubs: FRM's own board prints 'Portsmouth Harbour' under Great Western Railway (18:29, 19:28) and South Western Railway (18:52), and prints 'Southampton Central' under Southern (18:38, 19:05, 19:37) and South Western Railway (19:12) — the same terminus name split across operator tags at the same station, same shape as Liverpool Lime Street at Runcorn/St Helens.",
+    "Eastleigh (ESL) checked for the same operator-split shape and rejected: its live board prints 'Portsmouth Harbour' only under South Western Railway (18:34, 19:34) and 'Southampton Central' only under South Western Railway (18:55, 20:00) — one operator each, no split, no hub needed at ESL.",
+    "The Kidderminster-shape candidate the brief named ('from Eastleigh, Poole/Weymouth/Bournemouth print as termini but riders may anchor on Southampton') was probed and rejected: node scripts/probe-uk-board.mjs \"Eastleigh\" --region=solent --filter-crs=SOU returned only Southampton Central and Salisbury (4 trips) — no Poole/Weymouth/Bournemouth service calls at Southampton Central from Eastleigh in the live sample. Per the brief's own rule ('if the filtered board doesn't show it, it isn't'), no hub is built for this candidate.",
+    "FRM filtered to calls-at-SOU (node scripts/probe-uk-board.mjs \"Fareham\" --region=solent --filter-crs=SOU) also returned two Cardiff Central (Great Western Railway) rows alongside Southampton Central — a genuinely separate, recognisable terminus (unlike the rejected Kidderminster candidate above), which would need to stay unabsorbed if a Southampton Central hub were ever configured at Fareham.",
+    "No hub warranted at Southampton Central, Portsmouth Harbour or Portsmouth & Southsea themselves — each is a hub/secondary-hub board in its own right (direction-model-memo.md), not a through-station a rider anchors past. No hub warranted at Westbury or Waterloo — both are boundary-only through-running stations outside this region's own board-eligible catalog work (see stations.json), not fan-out corridors probed for hub anchoring.",
+    "INFRA LIMITATION, flagged for Tim/Luke, not resolved here: Fareham's live board shows the SAME operator-split (Liverpool) shape on BOTH 'Portsmouth Harbour' (Great Western Railway + South Western Railway) AND 'Southampton Central' (Southern + South Western Railway) — see the two probe outputs above. The shared lib/cities/uk/direction-hubs.js helper's findHubForStation() returns only the FIRST hub whose appliesFrom includes a given station CRS, so a single station can carry at most one configured hub; a second hub entry with FRM in its own appliesFrom would simply never be reached by planUkNextTrainFetch()/applyDirectionHubs(). Editing that shared helper is out of scope for this pack (guardrail: no edits to lib/cities/uk/*). Portsmouth Harbour is built below (evidence is symmetric between the two candidates; Portsmouth Harbour is named first in the brief's candidate list). Southampton Central's identical operator-split at Fareham is NOT collapsed by a hub chip as a result — riders there still see 'Southampton Central (Southern)' and 'Southampton Central (South Western Railway)' as two separate chips (both still route correctly via the exact-chip path, filterCrs=SOU, just not merged into one label). Revisit if the shared helper is ever extended to support multiple hubs per station."
+  ],
+  "hubs": [
+    {
+      "label": "Portsmouth Harbour",
+      "filterCrs": "PMH",
+      "filterName": "Portsmouth Harbour",
+      "appliesFrom": [
+        "FRM"
+      ],
+      "absorbs": [
+        "Portsmouth Harbour"
+      ],
+      "reason": "Fareham's live board prints 'Portsmouth Harbour' under both Great Western Railway and South Western Railway — an operator-split duplicate of the same terminus, same shape as Liverpool Lime Street at Runcorn/St Helens. A hub whose label is the terminus itself, fetched via filterCrs=PMH, collapses the operator split into one chip covering every operator's train toward Portsmouth Harbour. Southampton Central shows the identical shape at Fareham but is not also configured here — see the INFRA LIMITATION note above."
+    }
+  ]
+}

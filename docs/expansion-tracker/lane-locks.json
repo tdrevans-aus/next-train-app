@@ -1,8 +1,8 @@
 {
   "united-kingdom": {
-    "region": "west-yorkshire",
-    "stage": "jim",
+    "region": "solent",
+    "stage": "adapter",
     "branch": null,
-    "locked_at": "2026-09-04T17:05:30.541Z"
+    "locked_at": "2026-09-04T17:34:40.958Z"
   }
 }
