@@ -1,6 +1,12 @@
 /**
- * Build lib/cities/uk-west-midlands/stations.json (75 NR + 35 Metro).
+ * Build lib/cities/uk-west-midlands/stations.json (74 NR + 35 Metro).
  * CRS from uk-coding-brief.md / National Rail. Camp Hill: MOV, KIH, PIR.
+ *
+ * 4 Sep 2026: 17 of the original 75 CRS codes were wrong (they resolved at Darwin
+ * to Bushey, Thatcham, Warminster, Whittlesea ... — see qa/uk-west-midlands-dogfood-gate.mjs
+ * catalog sweep). 16 corrected against live Darwin stationName; Willenhall (WLE was
+ * Whittlesea) has no Darwin CRS yet — new station, not yet in the feed — so it is
+ * held in NOT_YET_IN_DARWIN below and excluded from the catalog until it resolves.
  * lat/lng from NaPTAN (CRS / Metro id join).
  */
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
@@ -18,27 +24,27 @@ const RAIL = [
   ["Birmingham Moor Street", "BMO", "Birmingham"],
   ["Birmingham New Street", "BHM", "Birmingham"],
   ["Birmingham Snow Hill", "BSW", "Birmingham"],
-  ["Blake Street", "BLT", "Birmingham"],
+  ["Blake Street", "BKT", "Birmingham"],
   ["Bordesley", "BBS", "Birmingham"],
-  ["Bournville", "BOV", "Birmingham"],
+  ["Bournville", "BRV", "Birmingham"],
   ["Butlers Lane", "BUL", "Birmingham"],
-  ["Chester Road", "CDR", "Birmingham"],
+  ["Chester Road", "CRD", "Birmingham"],
   ["Duddeston", "DUD", "Birmingham"],
   ["Erdington", "ERD", "Birmingham"],
-  ["Five Ways", "FIW", "Birmingham"],
+  ["Five Ways", "FWY", "Birmingham"],
   ["Four Oaks", "FOK", "Birmingham"],
-  ["Gravelly Hill", "GLH", "Birmingham"],
+  ["Gravelly Hill", "GVH", "Birmingham"],
   ["Hall Green", "HLG", "Birmingham"],
   ["Hamstead", "HSD", "Birmingham"],
   ["Jewellery Quarter", "JEQ", "Birmingham"],
   ["Kings Norton", "KNN", "Birmingham"],
   ["Lea Hall", "LEH", "Birmingham"],
-  ["Longbridge", "LGN", "Birmingham"],
+  ["Longbridge", "LOB", "Birmingham"],
   ["Northfield", "NFD", "Birmingham"],
-  ["Perry Barr", "PRB", "Birmingham"],
-  ["Selly Oak", "SEA", "Birmingham"],
-  ["Small Heath", "SMH", "Birmingham"],
-  ["Spring Road", "SRD", "Birmingham"],
+  ["Perry Barr", "PRY", "Birmingham"],
+  ["Selly Oak", "SLY", "Birmingham"],
+  ["Small Heath", "SMA", "Birmingham"],
+  ["Spring Road", "SRI", "Birmingham"],
   ["Stechford", "SCF", "Birmingham"],
   ["Sutton Coldfield", "SUT", "Birmingham"],
   ["Tyseley", "TYS", "Birmingham"],
@@ -49,14 +55,14 @@ const RAIL = [
   ["Berkswell", "BKW", "Solihull"],
   ["Birmingham International", "BHI", "Solihull"],
   ["Dorridge", "DDG", "Solihull"],
-  ["Earlswood (West Midlands)", "ERL", "Solihull"],
+  ["Earlswood (West Midlands)", "EWD", "Solihull"],
   ["Hampton-in-Arden", "HIA", "Solihull"],
   ["Marston Green", "MGN", "Solihull"],
   ["Olton", "OLT", "Solihull"],
   ["Shirley", "SRL", "Solihull"],
   ["Solihull", "SOL", "Solihull"],
   ["Whitlocks End", "WTE", "Solihull"],
-  ["Widney Manor", "WMN", "Solihull"],
+  ["Widney Manor", "WMR", "Solihull"],
   ["Bescot Stadium", "BSC", "Sandwell"],
   ["Cradley Heath", "CRA", "Sandwell"],
   ["Dudley Port", "DDP", "Sandwell"],
@@ -67,14 +73,13 @@ const RAIL = [
   ["Smethwick Galton Bridge", "SGB", "Sandwell"],
   ["Smethwick Rolfe Street", "SMR", "Sandwell"],
   ["Tame Bridge Parkway", "TAB", "Sandwell"],
-  ["The Hawthorns", "THA", "Sandwell"],
+  ["The Hawthorns", "THW", "Sandwell"],
   ["Tipton", "TIP", "Sandwell"],
-  ["Bloxwich", "BXW", "Walsall"],
-  ["Bloxwich North", "BXN", "Walsall"],
+  ["Bloxwich", "BLX", "Walsall"],
+  ["Bloxwich North", "BWN", "Walsall"],
   ["Darlaston", "DAS", "Walsall"],
   ["Walsall", "WSL", "Walsall"],
-  ["Willenhall", "WLE", "Walsall"],
-  ["Coseley", "COS", "Dudley"],
+  ["Coseley", "CSY", "Dudley"],
   ["Lye", "LYE", "Dudley"],
   ["Stourbridge Junction", "SBJ", "Dudley"],
   ["Stourbridge Town", "SBT", "Dudley"],
@@ -131,8 +136,8 @@ const railStops = RAIL.map(([name, crs, borough]) => {
   };
 });
 
-if (railStops.length !== 75) {
-  throw new Error(`Expected 75 rail stops, got ${railStops.length}`);
+if (railStops.length !== 74) {
+  throw new Error(`Expected 74 rail stops, got ${railStops.length}`);
 }
 
 const payload = {
@@ -142,6 +147,8 @@ const payload = {
   source: "docs/uk-coding-brief.md — ORR 6329 + Camp Hill + Kidderminster + WM Metro; coords NaPTAN",
   retrievedAt: new Date().toISOString().slice(0, 10),
   feeds: { train: "darwin", metro: "tfwm-gtfs-rt" },
+  /** In-region stations with no Darwin CRS yet (opened after the feed's station list); re-check and promote to RAIL when they resolve. */
+  notYetInDarwin: ["Willenhall"],
   notInRegion: [
     "Wythall",
     "Hagley",

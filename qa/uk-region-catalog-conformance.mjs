@@ -32,7 +32,7 @@ if (regions.length !== 20) {
 }
 
 const wm = getRegion("uk-west-midlands");
-if (!wm || wm.railCount !== 75 || wm.metroCount !== 35) {
+if (!wm || wm.railCount !== 74 || wm.metroCount !== 35) {
   fail(`uk-west-midlands counts rail=${wm?.railCount} metro=${wm?.metroCount}`);
 }
 
@@ -43,7 +43,7 @@ if (!tfl || tfl.stopCount < 4) {
 
 const wmRail = listRailStations("uk-west-midlands");
 const crsSet = new Set(wmRail.map((s) => s.crs));
-for (const crs of ["BHM", "BMO", "BSW", "BHI", "COV", "WVH", "UNI", "WSL", "SBJ", "KID", "MOV", "KIH", "PIR", "DAS", "WLE"]) {
+for (const crs of ["BHM", "BMO", "BSW", "BHI", "COV", "WVH", "UNI", "WSL", "SBJ", "KID", "MOV", "KIH", "PIR", "DAS", "THW", "SLY"]) {
   if (!crsSet.has(crs)) {
     fail(`uk-west-midlands missing ${crs}`);
   }
@@ -74,8 +74,8 @@ if (!kx?.naptanId) {
 }
 
 const catalogAll = listCatalogStations("uk-west-midlands");
-if (catalogAll.length !== 110) {
-  fail(`WM combined catalog ${catalogAll.length}, expected 110`);
+if (catalogAll.length !== 109) {
+  fail(`WM combined catalog ${catalogAll.length}, expected 109`);
 }
 
 const em = getRegion("east-midlands");

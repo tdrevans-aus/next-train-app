@@ -3,11 +3,14 @@
   "displayName": "West Midlands",
   "timeZone": "Europe/London",
   "source": "docs/uk-coding-brief.md — ORR 6329 + Camp Hill + Kidderminster + WM Metro; coords NaPTAN",
-  "retrievedAt": "2026-08-23",
+  "retrievedAt": "2026-09-04",
   "feeds": {
     "train": "darwin",
     "metro": "tfwm-gtfs-rt"
   },
+  "notYetInDarwin": [
+    "Willenhall"
+  ],
   "notInRegion": [
     "Wythall",
     "Hagley",
@@ -93,17 +96,17 @@
       "aliases": [
         "Snow Hill"
       ],
-      "lat": 52.4834,
-      "lng": -1.899
+      "lat": 52.48335525735,
+      "lng": -1.89908845865
     },
     {
       "mode": "train",
       "name": "Blake Street",
-      "crs": "BLT",
+      "crs": "BKT",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 55.7973256008,
-      "lng": -4.08697074349
+      "lat": 52.60488473632,
+      "lng": -1.84491438218
     },
     {
       "mode": "train",
@@ -117,7 +120,7 @@
     {
       "mode": "train",
       "name": "Bournville",
-      "crs": "BOV",
+      "crs": "BRV",
       "borough": "Birmingham",
       "aliases": [],
       "lat": 52.42696311913,
@@ -135,11 +138,11 @@
     {
       "mode": "train",
       "name": "Chester Road",
-      "crs": "CDR",
+      "crs": "CRD",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 55.96037865007,
-      "lng": -4.65307320297
+      "lat": 52.53564614509,
+      "lng": -1.83247928713
     },
     {
       "mode": "train",
@@ -162,7 +165,7 @@
     {
       "mode": "train",
       "name": "Five Ways",
-      "crs": "FIW",
+      "crs": "FWY",
       "borough": "Birmingham",
       "aliases": [],
       "lat": 52.47109493838,
@@ -180,11 +183,11 @@
     {
       "mode": "train",
       "name": "Gravelly Hill",
-      "crs": "GLH",
+      "crs": "GVH",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 53.70904301993,
-      "lng": -1.34200506295
+      "lat": 52.51499610139,
+      "lng": -1.85259840324
     },
     {
       "mode": "train",
@@ -236,11 +239,11 @@
     {
       "mode": "train",
       "name": "Longbridge",
-      "crs": "LGN",
+      "crs": "LOB",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 52.98995274882,
-      "lng": -2.1370105607
+      "lat": 52.3964181941,
+      "lng": -1.98129153073
     },
     {
       "mode": "train",
@@ -254,38 +257,38 @@
     {
       "mode": "train",
       "name": "Perry Barr",
-      "crs": "PRB",
+      "crs": "PRY",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 53.29338287721,
-      "lng": -2.14548249893
+      "lat": 52.51648555837,
+      "lng": -1.90196003454
     },
     {
       "mode": "train",
       "name": "Selly Oak",
-      "crs": "SEA",
+      "crs": "SLY",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 54.83905560445,
-      "lng": -1.34633708067
+      "lat": 52.44198191533,
+      "lng": -1.93581421427
     },
     {
       "mode": "train",
       "name": "Small Heath",
-      "crs": "SMH",
+      "crs": "SMA",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 51.57446738866,
-      "lng": -0.07668192282
+      "lat": 52.4637616379,
+      "lng": -1.85939268957
     },
     {
       "mode": "train",
       "name": "Spring Road",
-      "crs": "SRD",
+      "crs": "SRI",
       "borough": "Birmingham",
       "aliases": [],
-      "lat": 51.46750678691,
-      "lng": -2.56621684378
+      "lat": 52.4434160721,
+      "lng": -1.83738948242
     },
     {
       "mode": "train",
@@ -384,11 +387,11 @@
     {
       "mode": "train",
       "name": "Earlswood (West Midlands)",
-      "crs": "ERL",
+      "crs": "EWD",
       "borough": "Solihull",
       "aliases": [],
-      "lat": 53.45113672322,
-      "lng": -2.63766325712
+      "lat": 52.36658114792,
+      "lng": -1.86116948255
     },
     {
       "mode": "train",
@@ -447,11 +450,11 @@
     {
       "mode": "train",
       "name": "Widney Manor",
-      "crs": "WMN",
+      "crs": "WMR",
       "borough": "Solihull",
       "aliases": [],
-      "lat": 51.2067765844,
-      "lng": -2.17673403563
+      "lat": 52.39593512662,
+      "lng": -1.77437043168
     },
     {
       "mode": "train",
@@ -546,11 +549,11 @@
     {
       "mode": "train",
       "name": "The Hawthorns",
-      "crs": "THA",
+      "crs": "THW",
       "borough": "Sandwell",
       "aliases": [],
-      "lat": 51.3938442377,
-      "lng": -1.24319001016
+      "lat": 52.50537306373,
+      "lng": -1.96400884667
     },
     {
       "mode": "train",
@@ -564,16 +567,16 @@
     {
       "mode": "train",
       "name": "Bloxwich",
-      "crs": "BXW",
+      "crs": "BLX",
       "borough": "Walsall",
       "aliases": [],
-      "lat": 51.25401185327,
-      "lng": -0.32848987487
+      "lat": 52.6182002707,
+      "lng": -2.01147782643
     },
     {
       "mode": "train",
       "name": "Bloxwich North",
-      "crs": "BXN",
+      "crs": "BWN",
       "borough": "Walsall",
       "aliases": [],
       "lat": 52.62543623428,
@@ -599,21 +602,12 @@
     },
     {
       "mode": "train",
-      "name": "Willenhall",
-      "crs": "WLE",
-      "borough": "Walsall",
-      "aliases": [],
-      "lat": 52.54952909591,
-      "lng": -0.1189909353
-    },
-    {
-      "mode": "train",
       "name": "Coseley",
-      "crs": "COS",
+      "crs": "CSY",
       "borough": "Dudley",
       "aliases": [],
-      "lat": 52.64483387472,
-      "lng": -2.30027466756
+      "lat": 52.54508249646,
+      "lng": -2.08577748289
     },
     {
       "mode": "train",
