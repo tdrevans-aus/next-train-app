@@ -62,10 +62,18 @@
     const dogfoodApi = window.NextTrainBrisbaneDogfood;
 
     if (isMultiCityCatalog(city)) {
-      if (dogfoodApi && dogfoodApi.getCity?.() !== city) {
-        await dogfoodApi.mount?.(city);
+      // mount() itself is race-proof (a monotonic token discards stale writes),
+      // but a call here can still lose the race to a newer getStationsList()
+      // call for a *different* city that started after this one. Retry a bounded
+      // number of times so we never hand back another city's station list —
+      // if we can't converge on our own city, return an empty list rather than
+      // silently wrong data. See docs/jim-brief-station-combobox-mount-race.md.
+      if (dogfoodApi) {
+        for (let attempt = 0; dogfoodApi.getCity?.() !== city && attempt < 3; attempt += 1) {
+          await dogfoodApi.mount?.(city);
+        }
       }
-      const dogfood = dogfoodApi?.getStations?.() ?? [];
+      const dogfood = dogfoodApi?.getCity?.() === city ? (dogfoodApi?.getStations?.() ?? []) : [];
       stationsCache = dogfood;
       return stationsCache;
     }

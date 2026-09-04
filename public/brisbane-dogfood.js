@@ -179,19 +179,28 @@
     return { ...state.available, origin: state.origin };
   }
 
+  // Monotonic token so an overlapping mount() call for a different (or the same)
+  // city can never clobber a newer call's result. Whichever mount() was *called*
+  // most recently owns the right to write `state`, regardless of which call's
+  // promises happen to resolve first. See docs/jim-brief-station-combobox-mount-race.md.
+  let mountToken = 0;
+
   async function mount(city) {
     const id = String(city || "").toLowerCase();
     console.log(`[NextTrainDogfood] mount(${id})`);
+    const myToken = ++mountToken;
     if (!id) {
       return Boolean(state.active);
     }
     if (!MULTI_CITY_IDS.includes(id)) {
       console.warn(`[NextTrainDogfood] City not in multi-city list: ${id}`);
-      state.active = false;
-      state.city = "";
-      state.stations = [];
-      state.coords = {};
-      state.directionsByStation = {};
+      if (myToken === mountToken) {
+        state.active = false;
+        state.city = "";
+        state.stations = [];
+        state.coords = {};
+        state.directionsByStation = {};
+      }
       return false;
     }
     // Load only this city. probe() walks every live catalog (Sydney/Brisbane GTFS
@@ -201,11 +210,17 @@
       try {
         console.log(`[NextTrainDogfood] loading catalog for ${id}...`);
         catalog = await loadCatalog(id);
+        // Per-city cache, not the shared "active city" state — safe to write
+        // even if a newer mount() call has since started.
         state[`${id}Catalog`] = catalog;
       } catch (error) {
         console.error(`[NextTrainDogfood] Failed to load catalog for ${id}:`, error);
         catalog = null;
       }
+    }
+    if (myToken !== mountToken) {
+      // A newer mount() call has started since we began; don't clobber its result.
+      return false;
     }
     if (!catalog?.stations?.length) {
       console.error(`[NextTrainDogfood] No stations found for ${id}`);
@@ -214,6 +229,10 @@
       return false;
     }
     const directionMap = await loadDirectionsMap(id);
+    if (myToken !== mountToken) {
+      // A newer mount() call has started since we began; don't clobber its result.
+      return false;
+    }
     state.city = id;
     state.stations = catalog.stations;
     state.coords = catalog.coords;
