@@ -57,7 +57,9 @@ import {
   listEastMidlandsDogfoodStations,
   getEastMidlandsDogfoodDirections,
   getEastMidlandsDogfoodNextTrain,
+  planEastMidlandsNextTrainFetch,
 } from "../lib/cities/east-midlands/dogfood-next-train.js";
+import { loadDirectionHubs, applyDirectionHubs } from "../lib/cities/uk/direction-hubs.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -146,6 +148,74 @@ assert(resolveCatalogEntry("nottingham") === null, "the marketing token 'notting
 assert(resolveCatalogEntry("net") === null, "the marketing token 'net' must never resolve as a station");
 assert(isForbiddenCollapseName("city centre") === true, "'city centre' must never resolve as a station");
 
+// Direction hub anchoring (FB-51, docs/jim-brief-fb51-uk-hub-rollout.md) — East
+// Midlands is the first region on the shared lib/cities/uk/direction-hubs.js
+// helper lifted out of uk-west-midlands's FB-50 work. Token-free: hub file
+// load/validation, applyDirectionHubs() and the pure planner are all data-only.
+const { hubs: emHubs } = loadDirectionHubs(EAST_MIDLANDS_REGION);
+assert(emHubs.length === 1, "east-midlands direction-hubs.json must define exactly one hub for v1");
+const nottinghamHub = emHubs[0];
+assert(nottinghamHub.label === "Nottingham", "the v1 hub label must be Nottingham");
+assert(nottinghamHub.filterCrs === "NOT", "the Nottingham hub filterCrs must be NOT");
+assert(
+  JSON.stringify([...nottinghamHub.appliesFrom].sort()) === JSON.stringify(["ALF", "CHD"]),
+  `Nottingham hub appliesFrom must be exactly [ALF, CHD], got ${JSON.stringify(nottinghamHub.appliesFrom)}`
+);
+
+// applyDirectionHubs() with the brief's live-probed Alfreton chip set.
+const alfChips = [
+  "Leeds (Northern)",
+  "Liverpool Lime Street (East Midlands Railway)",
+  "Norwich (East Midlands Railway)",
+  "Nottingham (East Midlands Railway)",
+  "Nottingham (Northern)",
+];
+const alfResult = applyDirectionHubs(alfChips, "ALF", emHubs);
+assert(
+  JSON.stringify(alfResult) ===
+    JSON.stringify(["Leeds (Northern)", "Liverpool Lime Street (East Midlands Railway)", "Nottingham"]),
+  `applyDirectionHubs at ALF must absorb Nottingham/Norwich under Nottingham, got ${JSON.stringify(alfResult)}`
+);
+
+// Same fixture at NOT (not in appliesFrom) must be returned unchanged (sorted).
+const notResult = applyDirectionHubs(alfChips, "NOT", emHubs);
+assert(
+  JSON.stringify(notResult) === JSON.stringify([...alfChips].sort((a, b) => a.localeCompare(b))),
+  `applyDirectionHubs at NOT (not appliesFrom) must return the fixture chips unchanged (sorted), got ${JSON.stringify(notResult)}`
+);
+
+// planEastMidlandsNextTrainFetch() — pure routing decision table, token-free.
+const alfEntry = resolveCatalogEntry("Alfreton", "train");
+const notEntry = resolveCatalogEntry(EAST_MIDLANDS_HUB, "train");
+const hubPlan = planEastMidlandsNextTrainFetch(alfEntry, "train", "Nottingham", emHubs);
+assert(
+  hubPlan.kind === "hub" && hubPlan.filterCrs === "NOT",
+  `planEastMidlandsNextTrainFetch at ALF for "Nottingham" must be a hub plan filtered to NOT, got ${JSON.stringify(hubPlan)}`
+);
+
+// The exact-chip path must fire for an out-of-region terminus via the national
+// rail-crs-index fallback — this is the sparse-results fix at Nottingham Station.
+const exactPlan = planEastMidlandsNextTrainFetch(
+  notEntry,
+  "train",
+  "London St Pancras (Intl) (East Midlands Railway)",
+  emHubs
+);
+assert(
+  exactPlan.kind === "exact" && exactPlan.filterCrs === "STP",
+  `planEastMidlandsNextTrainFetch at Nottingham Station for London St Pancras must be an exact plan filtered to STP, got ${JSON.stringify(exactPlan)}`
+);
+
+const undirectedPlan = planEastMidlandsNextTrainFetch(notEntry, "train", "Nowhere (X)", emHubs);
+assert(
+  undirectedPlan.kind === "undirected",
+  `planEastMidlandsNextTrainFetch for an unresolvable destination must be undirected, got ${JSON.stringify(undirectedPlan)}`
+);
+
+// mode !== "train" is always undirected; metro/NET never consults hubs.
+const metroPlan = planEastMidlandsNextTrainFetch(alfEntry, "metro", "Nottingham", emHubs);
+assert(metroPlan.kind === "undirected", "metro mode must never consult the hub file");
+
 // Direction model (still the design-time labels — NET's own catalog/label shape
 // is unaffected by the flip; only the dogfood *dispatch* treats it as unconfirmed,
 // see below). Hub never shows itself as its own destination.
@@ -212,6 +282,43 @@ if (hubProbe.ok) {
     dispatchBlocked = err instanceof MissingDarwinTokenError;
   }
   assert(dispatchBlocked, "live-city-api dispatch must surface MissingDarwinTokenError for the rail layer, not swallow it");
+}
+
+// End-to-end hub/exact next-train, with token: both paths must return trips
+// with printedDestination populated (FB-51). Skipped (not failed) without a
+// token, same tolerance as every other Darwin-backed check in this gate.
+if (hubProbe.ok) {
+  const hubNextTrain = await getEastMidlandsDogfoodNextTrain({
+    station: "Alfreton",
+    mode: "train",
+    destination: "Nottingham",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+  assert(hubNextTrain.config?.destination === "Nottingham", "hub next-train destination must be the hub label Nottingham");
+  for (const trip of hubNextTrain.upcoming ?? []) {
+    assert(typeof trip.printedDestination === "string" && trip.printedDestination.length > 0, "hub next-train trips must carry printedDestination");
+  }
+
+  const notreDirections = await getEastMidlandsDogfoodDirections(EAST_MIDLANDS_HUB, { mode: "train" });
+  const stpChip = notreDirections.directions.find((chip) => chip.startsWith("London St Pancras"));
+  if (stpChip) {
+    const exactNextTrain = await getEastMidlandsDogfoodNextTrain({
+      station: EAST_MIDLANDS_HUB,
+      mode: "train",
+      destination: stpChip,
+      leaveBeforeMinutes: 5,
+      refreshSeconds: 60,
+    });
+    assert(exactNextTrain.config?.destination === stpChip, "exact-chip next-train destination must equal the chosen chip");
+    for (const trip of exactNextTrain.upcoming ?? []) {
+      assert(typeof trip.printedDestination === "string" && trip.printedDestination.length > 0, "exact-chip next-train trips must carry printedDestination");
+    }
+  } else {
+    console.log(
+      "east-midlands-dogfood-gate: no London St Pancras chip in this live sample at Nottingham Station — exact-chip end-to-end check skipped (hub-path end-to-end above still exercised)."
+    );
+  }
 }
 
 // NET tram: no confirmed feed at all (see file header). fetchNetStopBoard() must
@@ -302,5 +409,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "east-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 6 rail + 4 NET stations, doNotGroup at Nottingham Station across both modes, National Rail directions derived live from Darwin with no static line map, NET dispatch correctly surfaces NetFeedUnconfirmedError rather than the static label list, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL stay green)"
+  "east-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 6 rail + 4 NET stations, doNotGroup at Nottingham Station across both modes, National Rail directions derived live from Darwin with no static line map, direction-hubs.json loads/validates and Alfreton/Chesterfield->Nottingham hub anchoring collapses the operator-split Nottingham/Norwich chips, exact-chip routing table (hub/exact/undirected) proven token-free via planEastMidlandsNextTrainFetch with the national rail-crs-index fallback for out-of-region termini, NET dispatch correctly surfaces NetFeedUnconfirmedError rather than the static label list, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL stay green)"
 );

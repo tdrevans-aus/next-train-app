@@ -1,0 +1,27 @@
+{
+  "region": "east-midlands",
+  "notes": [
+    "A hub chip means 'every train that calls at filterCrs', fetched server-side via Darwin filterCrs/filterType=to.",
+    "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
+    "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
+    "Hub chips carry no operator suffix — several operators may call at the hub.",
+    "Live-probed 4 Sep 2026 (see docs/jim-brief-fb51-uk-hub-rollout.md and the PR): Alfreton and Chesterfield both print 'Nottingham (East Midlands Railway)', 'Nottingham (Northern)' and 'Norwich (East Midlands Railway)' — the Liverpool-Norwich EMR service and the Leeds-Nottingham Northern service both call at Nottingham on their way through. Riders on this corridor anchor on Nottingham, and the operator split ('Nottingham' twice under two different operator tags) is confusing on its own even before the through-running issue.",
+    "Do NOT add hubs at Nottingham Station, Leicester, Kettering or Wellingborough (brief, 4 Sep 2026): their chips are genuine termini riders recognise; the sparse-results problem there is fixed by the national-index exact-chip path, not by a hub."
+  ],
+  "hubs": [
+    {
+      "label": "Nottingham",
+      "filterCrs": "NOT",
+      "filterName": "Nottingham Station",
+      "appliesFrom": [
+        "ALF",
+        "CHD"
+      ],
+      "absorbs": [
+        "Nottingham",
+        "Norwich"
+      ],
+      "reason": "Liverpool Lime Street-Norwich (EMR) and Leeds-Nottingham (Northern) both call at Nottingham from Alfreton/Chesterfield; riders anchor on Nottingham, not on the Norwich terminus or on Northern's own printed 'Nottingham' vs EMR's separate 'Nottingham' operator split. Collapses the operator-split duplicate chip too."
+    }
+  ]
+}
