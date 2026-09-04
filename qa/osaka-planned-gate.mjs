@@ -184,10 +184,9 @@ assert(hubChips.includes("Midosuji + Nakamozu"), "Hommachi chips must include Mi
 assert(!hubChips.some((label) => /inbound|outbound|to city/i.test(label)), "chips are line + terminus, never to City");
 
 const session = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
-assert(/id:\s*"jp"/.test(session) && /name:\s*"Japan"/.test(session), "picker country is jp (Japan), not city=japan");
 assert(
-  /id:\s*"osaka",\s*name:\s*"Osaka",\s*timeZone:\s*"Asia\/Tokyo",\s*comingSoon:\s*true/.test(session),
-  "picker must list Osaka as Coming Soon / planned"
+  !/id:\s*"jp"/.test(session) && !/id:\s*"osaka"/.test(session),
+  "picker must not list Japan/Osaka at all (removed from the launch picker 4 Sep 2026; city stays planned in registry)"
 );
 assert(
   /id:\s*"melbourne",\s*name:\s*"Melbourne",\s*timeZone:\s*"Australia\/Melbourne",\s*comingSoon:\s*true/.test(

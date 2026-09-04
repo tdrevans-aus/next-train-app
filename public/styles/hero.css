@@ -169,7 +169,19 @@
   line-height: 1;
   color: var(--muted);
   opacity: 0.45;
-  pointer-events: none;
+  cursor: pointer;
+  padding: 0.6rem 0.5rem;
+  margin: -0.6rem -0.5rem;
+}
+
+.hero-swipe-cue:hover,
+.hero-swipe-cue:focus-visible {
+  opacity: 0.8;
+}
+
+.hero-swipe-cue:focus-visible {
+  outline: 2px solid rgba(11, 110, 106, 0.45);
+  outline-offset: 2px;
 }
 
 .hero-swipe-cue--prev {
