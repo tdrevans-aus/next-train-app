@@ -259,9 +259,9 @@ async function run() {
     await context.close();
   }
 
-  // 6. Osaka stays Coming Soon — no live board
+  // 6. Melbourne stays Coming Soon — no live board (Osaka / Hong Kong rows removed from the picker 4 Sep 2026)
   {
-    console.log("  Test 6: Osaka picker Coming Soon...");
+    console.log("  Test 6: Melbourne picker Coming Soon...");
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
@@ -272,81 +272,33 @@ async function run() {
 
     const picker = await page.evaluate(() => {
       const countrySelect = document.querySelector("[data-region-country]");
-      const japan = [...(countrySelect?.options ?? [])].find((option) => option.value === "jp");
-      countrySelect.value = "jp";
+      countrySelect.value = "au";
       countrySelect.dispatchEvent(new Event("change", { bubbles: true }));
       const citySelect = document.querySelector("[data-region-city]");
-      const osaka = [...(citySelect?.options ?? [])].find((option) => option.value === "osaka");
+      const melbourne = [...(citySelect?.options ?? [])].find((option) => option.value === "melbourne");
+      const countryValues = [...(countrySelect?.options ?? [])].map((option) => option.value);
       return {
-        japanLabel: japan?.textContent?.trim() ?? "",
-        osakaLabel: osaka?.textContent?.trim() ?? "",
-        osakaValue: citySelect?.value ?? "",
-        savedCity: window.NextTrainCitySession.readSavedCity(),
+        melbourneLabel: melbourne?.textContent?.trim() ?? "",
+        hasJapan: countryValues.includes("jp"),
+        hasHongKong: countryValues.includes("hk"),
       };
     });
 
     const applied = await page.evaluate(async () => {
-      await window.NextTrainCitySession.applyCity("osaka", { persist: true, explicit: true });
+      await window.NextTrainCitySession.applyCity("melbourne", { persist: true, explicit: true });
       return { savedCity: window.NextTrainCitySession.readSavedCity() };
     });
 
     if (
-      picker.japanLabel === "Japan (Coming Soon)" &&
-      picker.osakaLabel === "Osaka (Coming Soon)" &&
-      picker.osakaValue === "osaka" &&
-      applied.savedCity !== "osaka" &&
+      picker.melbourneLabel === "Melbourne (Coming Soon)" &&
+      !picker.hasJapan &&
+      !picker.hasHongKong &&
+      applied.savedCity !== "melbourne" &&
       (applied.savedCity === "perth" || applied.savedCity === "")
     ) {
-      console.log("    PASS — Japan/Osaka Coming Soon; applyCity does not persist (falls back to Perth)");
+      console.log("    PASS — Melbourne Coming Soon, Japan/Hong Kong absent; applyCity does not persist (falls back to Perth)");
     } else {
-      console.error("    FAIL — Osaka picker / applyCity", { picker, applied });
-      process.exitCode = 1;
-    }
-    await context.close();
-  }
-
-
-  // 7. Hong Kong stays Coming Soon — no live board
-  {
-    console.log("  Test 7: Hong Kong picker Coming Soon...");
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
-    await page.waitForTimeout(4000);
-
-    await page.evaluate(() => window.NextTrainCitySession.openRegionScreen());
-    await page.waitForTimeout(500);
-
-    const picker = await page.evaluate(() => {
-      const countrySelect = document.querySelector("[data-region-country]");
-      const hongKong = [...(countrySelect?.options ?? [])].find((option) => option.value === "hk");
-      countrySelect.value = "hk";
-      countrySelect.dispatchEvent(new Event("change", { bubbles: true }));
-      const citySelect = document.querySelector("[data-region-city]");
-      const city = [...(citySelect?.options ?? [])].find((option) => option.value === "hong-kong");
-      return {
-        countryLabel: hongKong?.textContent?.trim() ?? "",
-        cityLabel: city?.textContent?.trim() ?? "",
-        cityValue: citySelect?.value ?? "",
-        savedCity: window.NextTrainCitySession.readSavedCity(),
-      };
-    });
-
-    const applied = await page.evaluate(async () => {
-      await window.NextTrainCitySession.applyCity("hong-kong", { persist: true, explicit: true });
-      return { savedCity: window.NextTrainCitySession.readSavedCity() };
-    });
-
-    if (
-      picker.countryLabel === "Hong Kong (Coming Soon)" &&
-      picker.cityLabel === "Hong Kong (Coming Soon)" &&
-      picker.cityValue === "hong-kong" &&
-      applied.savedCity !== "hong-kong" &&
-      (applied.savedCity === "perth" || applied.savedCity === "")
-    ) {
-      console.log("    PASS — Hong Kong Coming Soon; applyCity does not persist (falls back to Perth)");
-    } else {
-      console.error("    FAIL — Hong Kong picker / applyCity", { picker, applied });
+      console.error("    FAIL — Melbourne picker / applyCity", { picker, applied });
       process.exitCode = 1;
     }
     await context.close();
