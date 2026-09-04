@@ -79,21 +79,7 @@
         { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
       ],
     },
-    {
-      id: "jp",
-      name: "Japan",
-      regions: [
-        { id: "osaka", name: "Osaka", timeZone: "Asia/Tokyo", comingSoon: true },
-      ],
-    },
 
-    {
-      id: "hk",
-      name: "Hong Kong",
-      regions: [
-        { id: "hong-kong", name: "Hong Kong", timeZone: "Asia/Hong_Kong", comingSoon: true },
-      ],
-    },
   ];
 
   const CITY_BOUNDS = {
