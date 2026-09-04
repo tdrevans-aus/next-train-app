@@ -591,7 +591,7 @@ if (!tv || tv.railCount !== 8 || tv.metroCount !== 0) {
 
 const tvRail = listRailStations("thames-valley");
 const tvCrsSet = new Set(tvRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["RDG", "OXF", "SWI", "BAN", "WSB", "HEY", "DID"]) {
+for (const crs of ["RDG", "OXF", "SWI", "BAN", "WSB", "HOT", "DID"]) {
   if (!tvCrsSet.has(crs)) {
     fail(`thames-valley missing ${crs}`);
   }
