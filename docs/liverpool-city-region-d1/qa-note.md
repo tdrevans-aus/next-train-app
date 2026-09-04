@@ -108,3 +108,48 @@ deleted and board eligibility is `in`. Lime Street's H1 doNotGroup split is clos
 option B, 4 Sep 2026) — one catalog entry, one Darwin board. This history section is kept for
 record, not deleted; Mark re-QAs this branch per the normal PR process (region already live, not a
 new flip).
+
+---
+
+## 4 Sep 2026 QA Re-Check: PR #202 (liverpool-merseyrail-via-darwin branch)
+
+**Date:** 4 Sep 2026  
+**QA Gate:** Mark (PR #202, branch: liverpool-merseyrail-via-darwin)  
+**Status:** ✓ FULLY GREEN
+
+### Verification Checklist
+
+| Check | Result | Notes |
+|-------|--------|-------|
+| **Probe script (ELP, LVC, MRF, LIV)** | ✓ PASS | ELP: 4 Merseyrail trips, platform 1, live status ("3 min late"). LVC: 15 Merseyrail trips, platforms 1–3, live status ("9 min late", "3 min late", etc.). MRF: 15 Merseyrail trips, platforms 1–3, live status ("6 min late", "3 min late", etc.). LIV: 15 trips total including Merseyrail (5 trips, platform "A") + Northern (3) + Avanti (1) + TPE (1) + EMR (1) + LNR & WMR (1) + TfW (1), all with live status ("On Time", "9 min late", etc.). Platforms on Merseyrail verified: "A" for low-level Lime Street platforms; numbered 1–3 for other stations. All returned with operator "Merseyrail" in payload. |
+| **Liverpool City Region dogfood gate (with DARWIN_LDB_TOKEN)** | ✓ PASS | 29 rail + 68 Merseyrail stations = 97 total. Lime Street H1 closed as moot (one entry, mode train, CRS LIV). Merseyrail Darwin-served via shared uk-darwin.js path (no operator filters). Perth/London TfL/West of England stay green. |
+| **Liverpool City Region dogfood gate (without token)** | ✓ PASS | Structural-only pass: all 68 Merseyrail entries resolve to a CRS and fail closed with MissingDarwinTokenError (same shape as National Rail, not swallowed). |
+| **UK region catalog conformance** | ✓ PASS | liverpool-city-region 29+68 (full-network rescope 4 Sep 2026). Merseyrail via Darwin, H1 closed as moot. Two structurally separate agency shapes. |
+| **UK planned gate** | ✓ PASS | uk-london-tfl + west-of-england + east-midlands + uk-west-midlands + liverpool-city-region live; remaining UK regions planned/501. |
+| **Live city lists sync** | ✓ PASS | 23 live cities consistent across registry, live-city-api, app.js, city-session, brisbane-dogfood, journey-model. |
+| **Station counts** | ✓ PASS | 29 National Rail (mode train), 68 Merseyrail (mode metro), 97 total. Lime Street single entry confirmed (mode train, CRS LIV, no doNotGroup). |
+| **Operator filters** | ✓ PASS | No excludeOperators or includeOperators found in lib/providers/liverpool-city-region.js or lib/cities/liverpool-city-region/dogfood-next-train.js. Every board shows every train Darwin returns (walk-up rule applied literally). |
+| **Lime Street resolution** | ✓ PASS | "Liverpool Lime Street" + train mode resolves to single entry (CRS LIV, mode train). "Liverpool Lime Street" + metro mode resolves to null (correct — no metro-only entry exists). |
+| **Liverpool South Parkway** | ✓ PASS | Both train and metro entries present, same CRS (LPY), both call Darwin (same board returned for both modes). Merseyrail trains visible alongside Northern/TfW. |
+| **MerseyrailFeedUnconfirmedError deletion** | ✓ PASS | Zero references in lib/, api/, public/, qa/ code. Removed from: lib/cities/liverpool-city-region/dogfood-next-train.js, lib/providers/liverpool-city-region.js, qa/directions-error-messaging.mjs (import + test). Comments updated in api/directions.js, public/journey-detail.js, lib/cities/live-city-api.js to reference other unconfirmed-feed examples (NetFeedUnconfirmedError, MetrolinkFeedUnconfirmedError, etc.) instead. |
+| **Shared uk-darwin.js changes** | ✓ PASS | Additive only. Added optional `entry` (pre-resolved catalog entry) and `mode` (override returned board's mode label) parameters to fetchStationBoard(). No behavior change for existing callers (entry defaults to resolveRailEntry, mode defaults to "train"). All other UK regions' gates remain green in individual tests. |
+| **Documentation updates** | ✓ PASS | oracle-clash-report.md: Board eligibility section has dated corrections (lines 69–70, superseding the 2 Sep correction) stating Merseyrail verdict is `in` with probe evidence. registry.js liverpool-city-region entry updated: integration and notes fields mention 4 Sep 2026 correction, Darwin-served, verdict `in`. published-network.json: notes field has "MERSEYRAIL-VIA-DARWIN CORRECTION, 4 Sep 2026" and "LIME STREET (H1) CLOSED AS MOOT, 4 Sep 2026" sections with dated history preservation. Hazard pack H1, rescope-addendum, jim-handoff updated per brief section 2e. |
+| **Related file changes (no behavior)** | ✓ PASS | api/directions.js: comment only (removed MerseyrailFeedUnconfirmedError from example, replaced with NetFeedUnconfirmedError). public/journey-detail.js: comment only (replaced MerseyrailFeedUnconfirmedError with MetrolinkFeedUnconfirmedError in error-handling prose). lib/cities/live-city-api.js: comment only (updated to reflect Merseyrail is Darwin-served). qa/directions-error-messaging.mjs: removed import and test for deleted error class, no other changes. |
+
+### Board Eligibility Verification
+
+**Lime Street (LIV) live board sample:** Merseyrail services returned with platform "A" + lateness ("On Time", "9 min late", etc.), appearing alongside Northern, Avanti, TPE, LNR & WMR, EMR, TfW — all with their own platform numbers. No operator filtered out. ✓
+
+**Liverpool South Parkway (LPY) mixed-operator sample:** Train-mode board includes Merseyrail (5 trips, platforms shown) + Northern (2) + TfW (2) + EMR (1) + LNR & WMR (2). No operator filtered out. ✓
+
+**Merseyrail-only sample (Liverpool Central / Moorfields):** Boards resolve to metro mode, call Darwin, return Merseyrail services with platforms and live status. ✓
+
+### Findings
+
+**FULLY GREEN.** All verification checks pass. Merseyrail real-time is live via Darwin, boards show every operator (walk-up rule applied literally), Lime Street is one catalog entry, operator filters are absent, MerseyrailFeedUnconfirmedError is completely deleted, documentation is updated with dated corrections, shared-file changes are additive and safe for other regions.
+
+**ONE FLAG (documentation inconsistency, non-blocking):** oracle-clash-report.md Board eligibility section, line 87 (board eligibility table row for Merseyrail) still shows verdict `out-product` with outdated reasoning ("board throws MerseyrailFeedUnconfirmedError..."). This row contradicts the corrected prose in lines 69–70 and lines 72–73 (HISTORICAL sections) which correctly state verdict `in`. The table row should be updated to match the corrected verdict, or clearly marked as historical artifact (unlike the prose sections, which are already marked HISTORICAL / CORRECTED AGAIN). Current form is confusing — a reader seeing the table would not know the verdict changed. Flag to fix before merge (Jim/Tim decision on whether the table should be rewritten with the correction inline, or the outdated row deleted + replaced with corrected version). No code impact; documentation consistency issue only.
+
+**Smoke suite:** ✓ PASS — 90 PASS, 0 FAIL, 389s total. Includes liverpool-city-region-dogfood-gate.mjs (line 100 of output) plus all other city gates, browser tests, region selection, and cross-city consistency checks. Full run confirms no blast radius on other cities.
+
+Ready to merge.
