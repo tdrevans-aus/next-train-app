@@ -662,7 +662,6 @@ Stuck **Updating** + failed fetch → widget never recovers; opening app or peri
 
 # QA Report — Monday 10 Aug 2026 (~12:56 AWST)
 
-## Open bugs batch — `docs/jim-brief-open-bugs.md`
 
 **Verdict:** All **automated** items **PASS**. Widget **#6 / #8 / #9** code shipped — **#9** layout fixed; **#8** post-departure logic covered by `CommuteScheduleTest` (manual device confirm for test **22**).
 
@@ -748,7 +747,6 @@ Six text rows + 8dp padding in **40dp** min height (`next_train_widget_info.xml`
 
 # QA Report — Monday 10 Aug 2026 (~10:31 AWST)
 
-**Jim batch:** `docs/jim-brief-open-bugs.md` — **all automated items PASS** (#6 widget still manual on device).
 
 | # | Bug | Automated | Status |
 |---|-----|-------------|--------|
@@ -801,13 +799,11 @@ Regression: `node qa/button-visibility.mjs` → **PASS** (6 screens)
 
 **Jim fix (suggested):** After Custom detail opens, call `showTemplateRouteCoach` with `templateKey: "custom"` and copy for blank form (“Pick your station and direction…”) — same 3 steps as commute templates. Optionally track first-setup session so coach shows once per onboarding, not on every Custom.
 
-**Jim batch:** add to `docs/jim-brief-open-bugs.md` #7.
 
 ---
 
 # QA Report — Monday 10 Aug 2026 (~10:11 AWST)
 
-**Jim batch:** `docs/jim-brief-open-bugs.md` — **resolved in code** (re-run QA on device for widget #6).
 
 | # | Bug | Automated | Status |
 |---|-----|-------------|--------|
@@ -824,7 +820,6 @@ Regression: `node qa/button-visibility.mjs` → **PASS**
 
 # QA Report — Monday 10 Aug 2026 (~10:05 AWST)
 
-**Jim batch:** `docs/jim-brief-open-bugs.md` — paste into Jim’s chat: `Jim — go docs/jim-brief-open-bugs.md`
 
 ---
 

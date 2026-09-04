@@ -589,7 +589,6 @@ node qa/repros/custom-template-no-wizard-repro.mjs
 
 **Expect:** **PASS** — onboarding → **Custom** shows 3-step template coach (“Pick your route” / time to station / active hours), same flow as Morning/Evening.
 
-Jim brief: `docs/jim-brief-open-bugs.md` (#7)
 
 ### 27. Active days (journey Timing)
 

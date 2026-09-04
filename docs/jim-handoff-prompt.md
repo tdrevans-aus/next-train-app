@@ -15,10 +15,8 @@ Jim — go code docs/jim-prompt-latest.md
 **QA bug batch (Tim):**
 
 ```
-Jim — go docs/jim-brief-open-bugs.md
 ```
 
-QA maintains the checklist in **`docs/jim-brief-open-bugs.md`** + **`qa/latest.md`**. When bugs are fixed and verified, update or archive the open-bugs brief.
 
 If the file name changes, update the **Current line** below.
 
@@ -74,7 +72,6 @@ Archive old prompts as `docs/jim-prompt-YYYY-MM-DD-short-name.md` if useful.
 | `jim-brief-station-typeahead.md` | Type-to-filter station picker (detail + Near me) |
 | `jim-brief-widget-empty-leave-layout.md` | Widget 2×1 when leave hidden — no lonely Updated |
 | `jim-brief-yanchep-whitfords-direction.md` | Whitfords → Yanchep line direction collapse |
-| `jim-brief-open-bugs.md` | **Current open QA bugs (Tim → Jim batch)** |
 | `simon-brief-security-hardening.md` | Pre-ship security locks (S-01→S-06) |
 | `jim-brief-security-xss.md` | **S-01** Stop DOM XSS + URL station allowlist |
 | `jim-brief-security-privacy-copy.md` | **S-02** Privacy / store honesty copy |
