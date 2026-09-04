@@ -730,7 +730,8 @@ if (resolveRailEntry("Liverpool Central", "liverpool-city-region")) {
 // greater-anglia: single primary agency (National Rail), TWO co-equal secondary hubs
 // (Cambridge, Ipswich) alongside the Norwich hub lock — a deliberate departure from
 // west-of-england/solent/thames-valley's single-secondary-hub shape. Peterborough is a flat
-// through-running boundary entry with LNER excluded (excludeOperators), not a doNotGroup hub.
+// through-running boundary entry, not a doNotGroup hub — LNER's board-eligibility verdict
+// resolved to `in` 5 Sep 2026, so no excludeOperators is carried there.
 const ga = getRegion("greater-anglia");
 if (!ga || ga.railCount !== 14 || ga.metroCount !== 0) {
   fail(`greater-anglia counts rail=${ga?.railCount} metro=${ga?.metroCount}`);
@@ -738,13 +739,16 @@ if (!ga || ga.railCount !== 14 || ga.metroCount !== 0) {
 
 const gaRail = listRailStations("greater-anglia");
 const gaCrsSet = new Set(gaRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLN", "TTF", "GYM", "SSD", "BIS"]) {
+for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLN", "TTF", "DIS", "WMD", "GYM", "LWT", "SSD", "BIS"]) {
   if (!gaCrsSet.has(crs)) {
     fail(`greater-anglia missing ${crs}`);
   }
 }
 if (gaCrsSet.has("LST")) {
   fail("greater-anglia must not carry LST anywhere — that CRS belongs to Liverpool Street in london-se-national-rail");
+}
+if (gaRail.some((s) => s.crsVerified !== true)) {
+  fail("greater-anglia every rail entry must carry crsVerified: true (verified live 5 Sep 2026)");
 }
 for (const name of getNotInRegion("greater-anglia")) {
   if (gaRail.some((s) => s.name === name)) {
@@ -769,8 +773,8 @@ const gaPeterborough = resolveRailEntry("Peterborough", "greater-anglia");
 if (!gaPeterborough || gaPeterborough.crs !== "PBO") {
   fail("greater-anglia Peterborough must resolve as a rail entry with crs PBO");
 }
-if (!(gaPeterborough?.excludeOperators ?? []).includes("LNER")) {
-  fail("greater-anglia Peterborough must carry excludeOperators: [LNER] — undecided board-eligibility verdict");
+if ((gaPeterborough?.excludeOperators ?? []).length) {
+  fail("greater-anglia Peterborough must carry no excludeOperators — LNER's board-eligibility verdict resolved to `in` 5 Sep 2026, the exclusion is removed");
 }
 
 if (resolveRailEntry("Liverpool Street", "greater-anglia")) {
@@ -856,5 +860,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 74+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat excludeOperators boundary, southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 74+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
 );
