@@ -186,7 +186,7 @@
 
 ### Verdict resolution — LNER at Peterborough (5 Sep 2026, Fable, top-level session)
 
-The `undecided` rows above are resolved to **`in`**. LNER's own guidance: reservations are free and
+The rows above previously marked undecided are resolved to **`in`**. LNER's own guidance: reservations are free and
 recommended, but "unreserved seating is available in Coach C for standard class and Coach M for First
 Class" on a first-come, first-served basis, and passengers without a reservation may board and stand —
 there is no compulsory reservation and no check-in barrier. Evidence:
