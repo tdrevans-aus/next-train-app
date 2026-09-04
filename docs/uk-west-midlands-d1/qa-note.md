@@ -66,3 +66,18 @@ Run this command after the flip PR is merged to unlock the UK lane for the next 
 ---
 
 **Status: GREEN. Ready to flip.**
+
+## 4 Sep 2026 — catalog CRS sweep (after PR #205)
+
+Sweeping every rail entry's `crs` against Darwin's `stationName` (now a token-gated check in
+`qa/uk-west-midlands-dogfood-gate.mjs`) found **17 of 75 codes wrong**, each silently serving
+another station's board: Blake Street→Blantyre, Bournville→400, Chester Road→Cardross, Five
+Ways→400, Gravelly Hill→Glasshoughton, Longbridge→Longton, Perry Barr→Prestbury, Selly
+Oak→Seaham, Small Heath→Stamford Hill, Spring Road→Stapleton Road, Earlswood→Earlestown, Widney
+Manor→Warminster, The Hawthorns→Thatcham, Bloxwich→Boxhill & Westhumble, Bloxwich North→400,
+Willenhall→Whittlesea, Coseley→Cosford (plus Snow Hill→Bushey, fixed in #205). 16 corrected
+(BKT, BRV, CRD, FWY, GVH, LOB, PRY, SLY, SMA, SRI, EWD, WMR, THW, BLX, BWN, CSY), each verified
+live. **Willenhall** has no Darwin CRS yet (new station, not in the feed) and is held in
+`notYetInDarwin` rather than shipped with a wrong board — rail count is now **74**. East Midlands,
+West of England and Liverpool City Region were swept the same way: no wrong codes (Liverpool's
+"Wavertree Technology Park" vs Darwin "Wavertree Tech Park" is a naming difference only).
