@@ -57,15 +57,91 @@
     return Array.isArray(ids) && ids.includes(city);
   }
 
+  // Per-region operator names for the picker's "same printed name, different
+  // mode" disambiguation (docs/jim-brief-donotgroup-picker-disambiguation.md).
+  // Reuses the exact operator names already used throughout each region's
+  // own lib/cities/<region>/stations.json notes/class prose — not invented
+  // copy. "train" is National Rail everywhere in these UK catalogs; each
+  // region's own metro/tram system has one name used for all its metro-mode
+  // doNotGroup entries, so this is keyed by region, not by station.
+  const REGION_MODE_LABELS = {
+    "liverpool-city-region": { train: "National Rail", metro: "Merseyrail" },
+    "east-midlands": { train: "National Rail", metro: "NET tram" },
+    "greater-manchester": { train: "National Rail", metro: "Metrolink" },
+    "south-yorkshire": { train: "National Rail", metro: "Supertram" },
+    "north-east": { train: "National Rail", metro: "Tyne and Wear Metro" },
+    glasgow: { train: "National Rail", metro: "Subway" },
+    edinburgh: { train: "National Rail", metro: "Trams" },
+    "uk-west-midlands": { train: "National Rail", metro: "West Midlands Metro" },
+  };
+
+  function modeDisplayLabel(city, mode) {
+    const known = REGION_MODE_LABELS[city]?.[mode];
+    if (known) {
+      return known;
+    }
+    const raw = String(mode || "").trim();
+    if (!raw) {
+      return "";
+    }
+    return raw.charAt(0).toUpperCase() + raw.slice(1);
+  }
+
+  /** Map of printed name -> every mode seen for that name, in catalog order,
+   * for the currently-active multi-city catalog (empty for non-multi-city
+   * boards, where doNotGroup pairs with an identical name don't occur). */
+  function stationModesByNameForCurrentCity() {
+    const city = planningCityId();
+    if (!isMultiCityCatalog(city)) {
+      return {};
+    }
+    return window.NextTrainBrisbaneDogfood?.getStationModesByName?.() ?? {};
+  }
+
+  /** Given the full ordered list of names about to be rendered (post-filter,
+   * so duplicate entries always travel together — see brief), returns a
+   * parallel array of disambiguation suffixes ("" when a name is unique). */
+  function disambiguationSuffixesFor(names) {
+    const modesByName = stationModesByNameForCurrentCity();
+    const city = planningCityId();
+    const counts = {};
+    for (const name of names) {
+      counts[name] = (counts[name] || 0) + 1;
+    }
+    const occurrenceSeen = {};
+    return names.map((name) => {
+      if (counts[name] <= 1) {
+        return "";
+      }
+      const modes = modesByName[name];
+      if (!Array.isArray(modes) || modes.length < 2) {
+        return "";
+      }
+      const occurrence = occurrenceSeen[name] || 0;
+      occurrenceSeen[name] = occurrence + 1;
+      const mode = modes[occurrence];
+      const label = modeDisplayLabel(city, mode);
+      return label ? ` — ${label}` : "";
+    });
+  }
+
   async function getStationsList() {
     const city = planningCityId();
     const dogfoodApi = window.NextTrainBrisbaneDogfood;
 
     if (isMultiCityCatalog(city)) {
-      if (dogfoodApi && dogfoodApi.getCity?.() !== city) {
-        await dogfoodApi.mount?.(city);
+      // mount() itself is race-proof (a monotonic token discards stale writes),
+      // but a call here can still lose the race to a newer getStationsList()
+      // call for a *different* city that started after this one. Retry a bounded
+      // number of times so we never hand back another city's station list —
+      // if we can't converge on our own city, return an empty list rather than
+      // silently wrong data. See docs/jim-brief-station-combobox-mount-race.md.
+      if (dogfoodApi) {
+        for (let attempt = 0; dogfoodApi.getCity?.() !== city && attempt < 3; attempt += 1) {
+          await dogfoodApi.mount?.(city);
+        }
       }
-      const dogfood = dogfoodApi?.getStations?.() ?? [];
+      const dogfood = dogfoodApi?.getCity?.() === city ? (dogfoodApi?.getStations?.() ?? []) : [];
       stationsCache = dogfood;
       return stationsCache;
     }
@@ -383,12 +459,17 @@
       }
 
       const optionOffset = mode === "browse" ? 1 : 0;
+      // Two catalog entries can share a printed name (doNotGroup pairs, e.g.
+      // Liverpool Lime Street's National Rail vs Merseyrail presence). Compute
+      // suffixes across the whole visible list so duplicate rows stay
+      // distinguishable instead of two identical, unpickable-apart options.
+      const suffixes = disambiguationSuffixesFor(matches);
       matches.forEach((name, index) => {
         const item = document.createElement("li");
         item.className = "station-combobox-option";
         item.setAttribute("role", "option");
         item.dataset.value = name;
-        item.textContent = deps.formatStationLabel(name);
+        item.textContent = deps.formatStationLabel(name) + suffixes[index];
         if (name === selectedValue) {
           item.setAttribute("aria-selected", "true");
         }
@@ -671,6 +752,8 @@
     setStationComboboxValue,
     getDetailCombobox: () => detailStationCombobox,
     getNearbyCombobox: () => nearbyStationCombobox,
+    disambiguationSuffixesFor,
+    modeDisplayLabel,
   };
 
   global.nextTrainStationCombobox = api;

@@ -14,6 +14,7 @@
     stations: [],
     coords: {},
     directionsByStation: {},
+    modesByName: {},
     available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true },
   };
 
@@ -129,6 +130,12 @@
     const stations = [];
     const coords = {};
     const directionsByStation = {};
+    // Some UK region catalogs deliberately carry two entries with the same
+    // printed name (doNotGroup pairs, e.g. Liverpool Lime Street's National
+    // Rail vs Merseyrail presence) distinguished only by `mode`. Keep every
+    // occurrence's mode, in catalog order, so the picker can disambiguate
+    // duplicate labels — see docs/jim-brief-donotgroup-picker-disambiguation.md.
+    const modesByName = {};
     const list = Array.isArray(rows) ? rows : (Array.isArray(rows?.stops) ? rows.stops : (Array.isArray(rows?.stations) ? rows.stations : []));
     for (const row of list) {
       const name = typeof row === "string" ? row : row?.name;
@@ -144,8 +151,13 @@
       if (Array.isArray(row?.directions) && row.directions.length) {
         directionsByStation[name] = row.directions.slice();
       }
+      const mode = typeof row === "object" && row ? row.mode : null;
+      if (!modesByName[name]) {
+        modesByName[name] = [];
+      }
+      modesByName[name].push(mode || null);
     }
-    return { stations, coords, directionsByStation };
+    return { stations, coords, directionsByStation, modesByName };
   }
 
   async function loadCatalog(city) {
@@ -179,19 +191,29 @@
     return { ...state.available, origin: state.origin };
   }
 
+  // Monotonic token so an overlapping mount() call for a different (or the same)
+  // city can never clobber a newer call's result. Whichever mount() was *called*
+  // most recently owns the right to write `state`, regardless of which call's
+  // promises happen to resolve first. See docs/jim-brief-station-combobox-mount-race.md.
+  let mountToken = 0;
+
   async function mount(city) {
     const id = String(city || "").toLowerCase();
     console.log(`[NextTrainDogfood] mount(${id})`);
+    const myToken = ++mountToken;
     if (!id) {
       return Boolean(state.active);
     }
     if (!MULTI_CITY_IDS.includes(id)) {
       console.warn(`[NextTrainDogfood] City not in multi-city list: ${id}`);
-      state.active = false;
-      state.city = "";
-      state.stations = [];
-      state.coords = {};
-      state.directionsByStation = {};
+      if (myToken === mountToken) {
+        state.active = false;
+        state.city = "";
+        state.stations = [];
+        state.coords = {};
+        state.directionsByStation = {};
+        state.modesByName = {};
+      }
       return false;
     }
     // Load only this city. probe() walks every live catalog (Sydney/Brisbane GTFS
@@ -201,11 +223,17 @@
       try {
         console.log(`[NextTrainDogfood] loading catalog for ${id}...`);
         catalog = await loadCatalog(id);
+        // Per-city cache, not the shared "active city" state — safe to write
+        // even if a newer mount() call has since started.
         state[`${id}Catalog`] = catalog;
       } catch (error) {
         console.error(`[NextTrainDogfood] Failed to load catalog for ${id}:`, error);
         catalog = null;
       }
+    }
+    if (myToken !== mountToken) {
+      // A newer mount() call has started since we began; don't clobber its result.
+      return false;
     }
     if (!catalog?.stations?.length) {
       console.error(`[NextTrainDogfood] No stations found for ${id}`);
@@ -214,6 +242,10 @@
       return false;
     }
     const directionMap = await loadDirectionsMap(id);
+    if (myToken !== mountToken) {
+      // A newer mount() call has started since we began; don't clobber its result.
+      return false;
+    }
     state.city = id;
     state.stations = catalog.stations;
     state.coords = catalog.coords;
@@ -221,6 +253,7 @@
       ...directionMap,
       ...(catalog.directionsByStation ?? {}),
     };
+    state.modesByName = catalog.modesByName ?? {};
     state.active = true;
     state.ready = true;
     console.log(`[NextTrainDogfood] city mounted: ${id} (${catalog.stations.length} stations)`);
@@ -234,6 +267,7 @@
     state.stations = [];
     state.coords = {};
     state.directionsByStation = {};
+    state.modesByName = {};
   }
 
   async function loadCoordsForCity(city) {
@@ -256,6 +290,12 @@
     getOrigin: () => state.origin,
     getStations: () => state.stations,
     getCoords: () => state.coords,
+    // Doesn't disambiguate a picked station, only what a picker can show:
+    // for a printed name shared by two doNotGroup catalog entries, returns
+    // every mode seen for that name, in catalog order (e.g.
+    // ["train", "metro"] for Liverpool Lime Street). See
+    // docs/jim-brief-donotgroup-picker-disambiguation.md.
+    getStationModesByName: () => state.modesByName,
     getDirectionsForStation(station) {
       const name = String(station || "").trim();
       if (!name) {
