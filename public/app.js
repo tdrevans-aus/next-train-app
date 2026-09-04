@@ -364,8 +364,25 @@ function isIosNativeApp() {
   return isNativeApp() && window.Capacitor?.getPlatform?.() === "ios";
 }
 
+// Deliberately narrower than isNativeApp(): isNativeApp()'s localhost/no-port
+// shortcut exists so a developer's plain browser can exercise the
+// dogfood-origin / production-Vercel resolution path during local testing
+// (see getApiOrigin/readDogfoodOrigin, and git history commit 2d29769) — it's
+// not meant to simulate a device with a real OS Settings app. The
+// location-permission help text needs to know whether there's an actual
+// native Settings screen to point at, so it checks the real Capacitor signal
+// directly. public/index.html's inline shim always sets
+// window.Capacitor.isNativePlatform to return false on the web, so this is
+// false for every plain browser, including one hitting bare localhost.
+function isRealNativeShell() {
+  return Boolean(window.Capacitor?.isNativePlatform?.());
+}
+
 function locationPermissionHelpMessage() {
-  if (isIosNativeApp()) {
+  if (!isRealNativeShell()) {
+    return "Location is blocked for this site. Allow it from your browser's address-bar or site-settings menu, or choose a station below.";
+  }
+  if (window.Capacitor?.getPlatform?.() === "ios") {
     return "Location is off for this visit. Tap Near me and choose While Using the App, or open Settings → Next Train → Location. You can also pick a station below.";
   }
   return "Location permission is needed for Near me. Open Settings → Apps → Next Train → Location → Allow, or choose a station below.";
@@ -8007,6 +8024,8 @@ if (window.NextTrainDeferred) {
 init();
 
 window.nextTrainApp = {
+  locationPermissionHelpMessage,
+  isRealNativeShell,
   migrateSettings,
   getSettings,
   getSettingsDraftJourneys,
