@@ -80,13 +80,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STILL planned. Do not flip in this gate or this PR.
+// Registry identity — NOW live. Flip committed.
 const live = assertCityLive("thames-valley");
-assert(live?.ok === false, "assertCityLive(thames-valley) must still fail — status stays planned");
-assert(live?.status === 501, "thames-valley must still be 501 planned");
+assert(live?.ok === true, "assertCityLive(thames-valley) must succeed — status is now live");
+assert(live?.status === 200, "thames-valley must be 200 live");
 
 const entry = getCity("thames-valley");
-assert(entry?.status === "planned", "thames-valley registry status must stay planned (Mark/Tim's flip call, not this gate's)");
+assert(entry?.status === "live", "thames-valley registry status must be live");
 assert(entry?.adapterReady === true, "thames-valley adapterReady must be true");
 assert(
   entry?.displayName === "Thames Valley (Reading / Oxford)",
@@ -101,9 +101,8 @@ for (const forbiddenId of ["reading", "oxford", "greater-thames-valley"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip, but MULTI_CITY_IDS
-// membership is not (that's Mark's flip commit) — assert both halves.
-assert(isMultiCity("thames-valley") === false, "thames-valley must NOT be in MULTI_CITY_IDS yet (list membership is the flip commit's job)");
+// Dispatch switch-cases and MULTI_CITY_IDS membership are both now wired.
+assert(isMultiCity("thames-valley") === true, "thames-valley must now be in MULTI_CITY_IDS (flip commit bundled list membership)");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/thames-valley-d1");
