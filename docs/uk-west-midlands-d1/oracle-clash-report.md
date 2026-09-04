@@ -178,3 +178,34 @@ Verify with `node qa/live-city-lists-sync.mjs` after all of the above — it der
 membership directly from the registry's `status === "live"` set and will catch any list that's
 missing `uk-west-midlands` or, just as importantly, any list where it was added too early
 relative to the others.
+
+## 5 Sep 2026 — TfWM credentials unblocked (FB-48 closed); Metro board still gated on a catalog gap
+
+TFWM_API_APP_ID/TFWM_API_APP_KEY are now confirmed working in `.env.local` (Tim registered at the
+TfWM API portal, FB-48 closed) — not yet in Vercel prod, which is a separate deploy step. This
+pass implemented the actual TfWM GTFS-RT `trip_updates` fetch/decode in
+`lib/providers/uk-metro-wm.js`'s `fetchMetroStopBoard()`, reusing the shared decoder every other
+GTFS-RT city adapter uses (`lib/providers/gtfs/realtime.js`'s `fetchTripUpdates()`, wrapping the
+vendored `gtfs-realtime-bindings` protobuf parser) rather than a new one.
+
+**Credentials are no longer the blocker, but the Metro board still cannot resolve any of the 35
+stops**, for a separate, pre-existing reason: `lib/cities/uk-west-midlands/stations.json`'s
+`stopId` field is `null` for every Metro entry. Per `docs/uk-coding-brief.md` ("Key Metro stops by
+the operator's stop id, not a fake CRS"), the catalog was always supposed to carry TfWM's real
+GTFS stop_ids for filtering the feed; that population never happened. `fetchMetroStopBoard()` now
+throws a new, distinct `MetroStopIdNotCatalogedError` for this case — separate from
+`MissingTfwmCredentialsError` (still thrown first, unconditionally, when the env vars are unset)
+and from the new `MetroFeedFetchError`/`MetroFeedParseError` pair (network/HTTP vs malformed-
+protobuf failures reaching the feed itself, once credentials and stop_id are both present). No
+fabricated board, no silent empty board — per the board-eligibility rule.
+
+**Verdict unchanged for now:** West Midlands Metro stays `out-product` in the board-eligibility
+table above. The reason text should be updated at next review from "credentials missing" to
+"TfWM credentials resolved (FB-48); catalog stop_id population still outstanding" — a Luke/catalog
+task, not an adapter/wiring one. Once `stationId` values are populated for the 35 stops, no
+adapter change is needed; `fetchMetroStopBoard()` already filters on `entry.stopId` and will start
+returning real trips.
+
+Scope note: this pass is adapter/wiring only (`lib/providers/uk-metro-wm.js`). It does not touch
+`lib/providers/registry.js` (already `"live"` for uk-west-midlands, unrelated to this change), the
+Darwin/National Rail path (untouched, already working), or the catalog's `stopId` values.
