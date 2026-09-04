@@ -14,6 +14,7 @@
     stations: [],
     coords: {},
     directionsByStation: {},
+    modesByName: {},
     available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "west-of-england": true },
   };
 
@@ -129,6 +130,12 @@
     const stations = [];
     const coords = {};
     const directionsByStation = {};
+    // Some UK region catalogs deliberately carry two entries with the same
+    // printed name (doNotGroup pairs, e.g. Liverpool Lime Street's National
+    // Rail vs Merseyrail presence) distinguished only by `mode`. Keep every
+    // occurrence's mode, in catalog order, so the picker can disambiguate
+    // duplicate labels — see docs/jim-brief-donotgroup-picker-disambiguation.md.
+    const modesByName = {};
     const list = Array.isArray(rows) ? rows : (Array.isArray(rows?.stops) ? rows.stops : (Array.isArray(rows?.stations) ? rows.stations : []));
     for (const row of list) {
       const name = typeof row === "string" ? row : row?.name;
@@ -144,8 +151,13 @@
       if (Array.isArray(row?.directions) && row.directions.length) {
         directionsByStation[name] = row.directions.slice();
       }
+      const mode = typeof row === "object" && row ? row.mode : null;
+      if (!modesByName[name]) {
+        modesByName[name] = [];
+      }
+      modesByName[name].push(mode || null);
     }
-    return { stations, coords, directionsByStation };
+    return { stations, coords, directionsByStation, modesByName };
   }
 
   async function loadCatalog(city) {
@@ -200,6 +212,7 @@
         state.stations = [];
         state.coords = {};
         state.directionsByStation = {};
+        state.modesByName = {};
       }
       return false;
     }
@@ -240,6 +253,7 @@
       ...directionMap,
       ...(catalog.directionsByStation ?? {}),
     };
+    state.modesByName = catalog.modesByName ?? {};
     state.active = true;
     state.ready = true;
     console.log(`[NextTrainDogfood] city mounted: ${id} (${catalog.stations.length} stations)`);
@@ -253,6 +267,7 @@
     state.stations = [];
     state.coords = {};
     state.directionsByStation = {};
+    state.modesByName = {};
   }
 
   async function loadCoordsForCity(city) {
@@ -275,6 +290,12 @@
     getOrigin: () => state.origin,
     getStations: () => state.stations,
     getCoords: () => state.coords,
+    // Doesn't disambiguate a picked station, only what a picker can show:
+    // for a printed name shared by two doNotGroup catalog entries, returns
+    // every mode seen for that name, in catalog order (e.g.
+    // ["train", "metro"] for Liverpool Lime Street). See
+    // docs/jim-brief-donotgroup-picker-disambiguation.md.
+    getStationModesByName: () => state.modesByName,
     getDirectionsForStation(station) {
       const name = String(station || "").trim();
       if (!name) {
