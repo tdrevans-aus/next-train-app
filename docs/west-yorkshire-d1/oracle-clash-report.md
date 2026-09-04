@@ -17,13 +17,13 @@ Match rule: published National Rail station name vs. CRS code vs. official Netwo
 | Leeds Station | LDS | **hub lock** — major interchange, 18 platforms (0–17). Network Rail. Central hub for West Yorkshire Metro transit authority. |
 | Bradford Forster Square | BDQ | **secondary hub** — main Bradford rail station. Network Rail. Connected to Bradford Interchange (BDI) by walk-link (bus/rail interchange). |
 | Bradford Interchange | BDI | **through-running point, not merge** — serves both bus (city-centre coach station) and rail (Northern Trains services). Separate from BDQ platform infrastructure. |
-| Denby Dale | DDL | **through-running point, South Yorkshire boundary** — last station in West Yorkshire on Penistone Line. Northern Trains continue south into South Yorkshire (Penistone, Barnsley, Sheffield). De-duplicate if both WY and South Yorkshire regions enter the app. |
-| Walsden | WAD | **through-running point, Greater Manchester boundary** — Calder Valley Line crosses into Rochdale District (GM). Services continue to Manchester Victoria. De-duplicate if both WY and Greater Manchester regions enter the app. |
+| Denby Dale | DBD | **through-running point, South Yorkshire boundary** — last station in West Yorkshire on Penistone Line. Northern Trains continue south into South Yorkshire (Penistone, Barnsley, Sheffield). De-duplicate if both WY and South Yorkshire regions enter the app. |
+| Walsden | WDN | **through-running point, Greater Manchester boundary** — Calder Valley Line crosses into Rochdale District (GM). Services continue to Manchester Victoria. De-duplicate if both WY and Greater Manchester regions enter the app. |
 | Huddersfield | HUD | **regional station, Penistone Line hub** — serves North of England routes; boundary to South Yorkshire via Penistone Line (Denby Dale). |
 | Halifax | HFX | **regional station, Calder Valley Line** — serves West Yorkshire; continuation west to Manchester. |
 | Todmorden | TOD | **regional station, Calder Valley Line** — West Yorkshire side before Walsden boundary. |
-| Hebden Bridge | HBN | **regional station, Calder Valley Line** — West Yorkshire side. |
-| Keighley | KEY | **regional station, branch** — Airedale Line from Leeds/Bradford. Northern Trains. |
+| Hebden Bridge | HBD | **regional station, Calder Valley Line** — West Yorkshire side. |
+| Keighley | KEI | **regional station, branch** — Airedale Line from Leeds/Bradford. Northern Trains. |
 
 National Rail Enquiries (NRE) publishes three-letter CRS codes; match boards to the code as the de-dup key across regions. Through-running stations (Denby Dale / Walsden) are pass-throughs where the same operator continues across regional boundary, not shared platforms requiring merge logic.
 
@@ -63,8 +63,8 @@ National Rail Enquiries (NRE) publishes three-letter CRS codes; match boards to 
 - **Leeds Station (LDS, hub-lock)**: Northern Trains + LNER + CrossCountry + TransPennine Express services on separate platforms within station complex
 - **Bradford Forster Square (BDQ, secondary hub)**: Northern Trains + LNER services
 - **Bradford Interchange (BDI, through-running point)**: Northern Trains services (separate from BDQ rail; bus/rail interchange)
-- **Denby Dale (DDL, through-running point)**: Northern Trains + CrossCountry (Penistone Line, South Yorkshire boundary)
-- **Walsden (WAD, through-running point)**: Northern Trains + TransPennine Express (Calder Valley Line, Greater Manchester boundary)
+- **Denby Dale (DBD, through-running point)**: Northern Trains + CrossCountry (Penistone Line, South Yorkshire boundary)
+- **Walsden (WDN, through-running point)**: Northern Trains + TransPennine Express (Calder Valley Line, Greater Manchester boundary)
 
 **No check-in barriers:** Platform access at all in-catalog stations is unrestricted. Ticket checking is on-board by conductors or at platform barriers (low-level gating, not airport-style check-in). Walk-up boarding is unobstructed for all National Rail services listed.
 

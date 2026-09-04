@@ -63,15 +63,15 @@ connected to BDQ only by walk-link, not a shared platform — doNotGroup applies
 
 ## Boundary de-dup: Denby Dale and Walsden — NOT resolved, flag for D2
 
-**Denby Dale (DDL)** is the South Yorkshire boundary point on the Penistone Line (report line 20).
+**Denby Dale (DBD)** is the South Yorkshire boundary point on the Penistone Line (report line 20).
 `docs/south-yorkshire-d1/published-network.json` already carries Denby Dale in its own
 `throughRunningOnly` list (CRS left `null` there, flagged as a West Yorkshire de-dup concern in
-that pack's hazard-pack.md and jim-handoff.md). This pack supplies the CRS code (DDL) from this
+that pack's hazard-pack.md and jim-handoff.md). This pack supplies the CRS code (DBD) from this
 report's own station table but does **not** resolve which region's catalog entry should survive at
 D2, or whether both regions keep independent through-running-only entries permanently. Same open
 shape as South Wales' Severn Tunnel Junction vs. Chepstow discrepancy — flagged, not guessed at.
 
-**Walsden (WAD)** is the Greater Manchester boundary point on the Calder Valley Line (report line
+**Walsden (WDN)** is the Greater Manchester boundary point on the Calder Valley Line (report line
 21). No Greater Manchester D1 pack exists yet (still account-blocked/unpacked per report line 32)
 — nothing to reconcile against yet; flagged for whenever that pack is written.
 
@@ -115,3 +115,17 @@ cross-region de-dup or the RDM redistribution ambiguity (all flagged for Tim/Nic
 of any other city's in-progress pack (South Yorkshire's merged, finished pack was read once for
 the Denby Dale boundary check only, per this task's explicit instruction), no wiring of
 `DARWIN_LDB_TOKEN`.
+
+## 5 Sep 2026 — pre-adapter hygiene (Fable, top-level session)
+
+- **CRS codes verified live against Darwin** with `scripts/fix-uk-region-crs.mjs west-yorkshire --write`:
+  four of ten were wrong (Denby Dale DDL→**DBD**, Walsden WAD→**WDN**, Hebden Bridge HBN→**HBD**,
+  Keighley KEY→**KEI**; the old codes resolved to a 400, Wadhurst, Hollingbourne and Keyham). Codes are
+  corrected in `stations.json`, `published-network.json`, this pack's prose and the planned gate;
+  lat/lng (previously null) filled from NaPTAN. Same defect class as West Midlands' 17 wrong codes
+  (#208) — the adapter gate must carry the token-gated catalog sweep so it cannot regress.
+- **The "STOP CONDITION FOR MARK" above is stale**: `oracle-clash-report.md` now carries a Board
+  eligibility section (Northern, LNER, CrossCountry, TransPennine Express — all `in`, no `undecided`
+  rows). Mark's checklist item (1) passes.
+- `DARWIN_LDB_TOKEN` exists (live since 2 Sep 2026); the account-level blocker described above is
+  resolved, so the adapter can be built and verified live now.

@@ -113,7 +113,7 @@ assert(
 
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["LDS", "BDQ", "BDI", "DDL", "WAD", "HUD", "HFX", "TOD", "HBN", "KEY"]) {
+for (const crs of ["LDS", "BDQ", "BDI", "DBD", "WDN", "HUD", "HFX", "TOD", "HBD", "KEI"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
 assert(getNotInRegion(WEST_YORKSHIRE_REGION).length === 0, "west-yorkshire has no deliberate exclusions recorded");
