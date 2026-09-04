@@ -523,6 +523,7 @@ const PERSISTED_CITY_IDS = new Set([
   "uk-west-midlands",
   "west-of-england",
   "east-midlands",
+  "liverpool-city-region",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 
