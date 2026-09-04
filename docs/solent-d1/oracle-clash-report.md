@@ -21,7 +21,7 @@ D1 (as of 2026-09-01): **National Rail** (Darwin/OpenLDBWS) covers Southampton a
 | **Portsmouth Harbour (PMH)** | SWR (Portsmouth Direct Line terminus), Southern (West Coastway line), GWR (through-running), ferry to Isle of Wight (Ryde Pier Head) | East/north: London Waterloo via Guildford, Brighton via West Coastway, ferry dock | Primary terminus for east-side services; ferry gateway (out-of-scope) |
 | **Portsmouth & Southsea (PMS)** | SWR (Portsmouth Direct Line stop), Southern (West Coastway line), GWR (through-running) | East/north: London Waterloo via Woking, Brighton, Southampton | Secondary station to Portsmouth Harbour; both on Portsmouth waterfront |
 
-**Fareham** (FAR, 15 min from both Southampton and Portsmouth) is a junction station on the South West Main Line–Portsmouth Direct Line connection, but not a terminus. Services are frequent (every 15 min) but it's not a regional hub.
+**Fareham** (FRM, 15 min from both Southampton and Portsmouth) is a junction station on the South West Main Line–Portsmouth Direct Line connection, but not a terminus. Services are frequent (every 15 min) but it's not a regional hub.
 
 **Design decision pending:** 
 1. **Single hub (Southampton Central)** — models the west-side dominance (South West Main Line is the core route through the region), but leaves Portsmouth (Harbour/Southsea) as secondary or separate. Simpler adapter code, but potentially incomplete for riders using east-side termini.
@@ -39,7 +39,7 @@ Match rule: published National Rail print name vs. CRS code vs. operator timetab
 | Southampton Central | SOU | **hub lock candidate (primary west-side terminus)** — South West Main Line principal terminus for the city. All regional, InterCity, and long-distance services call here. GWR ticket office, SWR frequent local/regional/InterCity services, Southern connections, CrossCountry through-running. |
 | Portsmouth Harbour | PMH | **hub lock candidate (primary east-side terminus)** — Portsmouth Direct Line terminus, ferry dock (Ryde Pier Head link, out-of-scope). South Western Railway primary operator; Southern West Coastway line; GWR through-running. Historic Dockyard, ferry gateway. |
 | Portsmouth & Southsea | PMS | **secondary east-side station** — Portsmouth Direct Line call, West Coastway line call. Less heavily used than Portsmouth Harbour for mainline services, but key commuter interchange (London Waterloo direct service via Woking). |
-| Fareham | FAR | **junction station (not a merge)** — junction between South West Main Line and Portsmouth Direct Line. Through-running only; both SWR and Southern pass through. Not a regional hub; 15 min to both Southampton Central and Portsmouth Harbour. Flag for potential de-dup at D2 if adjacent regions enter app. |
+| Fareham | FRM | **junction station (not a merge)** — junction between South West Main Line and Portsmouth Direct Line. Through-running only; both SWR and Southern pass through. Not a regional hub; 15 min to both Southampton Central and Portsmouth Harbour. Flag for potential de-dup at D2 if adjacent regions enter app. |
 | Eastleigh | ESL | **junction station (not a merge)** — junction for Eastleigh–Fareham Line (to Portsmouth) and Eastleigh–Romsey Line (north). South West Main Line pass-through. Through-running; SWR only. Local commuter significance but not a primary hub. |
 | Westbury | WSB | **through-running boundary to West of England region** — junction where South West Main Line meets main Oxford/Reading/Bristol routes. GWR and SWR services cross here (separate franchises). Not a shared platform. De-duplicate at D2 if West of England region enters the app. |
 | Waterloo | WAT | **through-running London termini, boundary to London & South East National Rail region** — SWR London terminus; services to Solent originate/terminate here. Waterloo is in-scope for London & South East region separately; Solent services are the outlying direction. De-duplicate at D2 if London & South East region enters app. |
@@ -103,7 +103,7 @@ All **walk-up National Rail regional and InterCity services** (optional reservat
    - **Geography:** Southampton Central, Portsmouth Harbour, Portsmouth & Southsea, plus South West Main Line (Waterloo–Weymouth) and Portsmouth Direct Line (Woking–Portsmouth) stations within Solent region bounds
    - **Board eligibility:** Exclude Island Line (out-mode), sleepers (out-reservation), other compulsory-reservation services
 
-6. **Real-time (Darwin):** Account-level blocker must be unblocked first (Tim re-registering EvansAppStudio on RDM with UK address). Once DARWIN_LDB_TOKEN provisioned, use LDB Webservice JSON API for live departures. Filter by station code (CRS; in-scope: SOU, PMH, PMS, FAR, ESL, WAT boundary). Latency ~1 minute.
+6. **Real-time (Darwin):** Account-level blocker must be unblocked first (Tim re-registering EvansAppStudio on RDM with UK address). Once DARWIN_LDB_TOKEN provisioned, use LDB Webservice JSON API for live departures. Filter by station code (CRS; in-scope: SOU, PMH, PMS, FRM, ESL, WAT boundary). Latency ~1 minute.
 
 7. **Multi-operator platform handling:** Both Southampton Central and Portsmouth Harbour have multiple operators (SWR + Southern + GWR + CrossCountry), but they are physically separate stations, not multi-operator platforms at the same building. Standard National Rail station boarding logic applies (separate boards per platform, all walk-up eligible services shown). No special doNotGroup logic needed unless hub-lock decision specifies multi-group architecture.
 
@@ -118,7 +118,7 @@ All **walk-up National Rail regional and InterCity services** (optional reservat
     - **South West Main Line:** Waterloo (WAT, boundary), Woking (WOK), Basingstoke (BSK), Winchester (WIN), Eastleigh (ESL), Southampton Airport Parkway (SOU nearby), plus smaller stations toward Weymouth
     - **Portsmouth Direct Line:** Woking (WOK, junction), Guildford (GLD), Haslemere (HSM), Petersfield (PES), Havant (HAV), Portsmouth (PMH/PMS)
     - **West Coastway line:** Portsmouth & Southsea (PMS), plus Brighton-direction stations
-    - **Junctions:** Fareham (FAR), Eastleigh (ESL), Westbury (WSB, boundary)
+    - **Junctions:** Fareham (FRM), Eastleigh (ESL), Westbury (WSB, boundary)
     - Exact count and published-network.json scope: pending hub-lock decision and Luke's D1 pack station review.
 
 11. **No buses, no light rail, no trams, no ferries in v1 scope.** MetroWest (planned); no tram networks; buses out. National Rail National Rail Darwin only.

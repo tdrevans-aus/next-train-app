@@ -556,7 +556,7 @@ if (!sol || sol.railCount !== 7 || sol.metroCount !== 0) {
 
 const solRail = listRailStations("solent");
 const solCrsSet = new Set(solRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["SOU", "PMH", "PMS", "FAR", "ESL", "WSB", "WAT"]) {
+for (const crs of ["SOU", "PMH", "PMS", "FRM", "ESL", "WSB", "WAT"]) {
   if (!solCrsSet.has(crs)) {
     fail(`solent missing ${crs}`);
   }

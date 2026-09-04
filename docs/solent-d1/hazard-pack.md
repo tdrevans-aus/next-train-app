@@ -26,7 +26,7 @@ doNotGroup (established from the report, not GTFS):
   separate stations (report line 22/41: "secondary station to Portsmouth Harbour"). Not a merge
   point; treated the same way West of England treats Bristol Temple Meads/Bath Spa as separate
   hub + secondary-hub boards rather than one combined board.
-- **Fareham (FAR)** and **Eastleigh (ESL)** — explicitly flagged by the report as junction
+- **Fareham (FRM)** and **Eastleigh (ESL)** — explicitly flagged by the report as junction
   stations, "not a merge" (report lines 24, 42-43). Through-running only; not hub candidates.
 - **Westbury (WSB)** — through-running boundary to West of England region. West of England's own
   D1 pack (`docs/west-of-england-d1/published-network.json` line 74) already lists Westbury as
@@ -59,7 +59,7 @@ invented here.
 
 | node | branches | evidence |
 | --- | --- | --- |
-| Fareham (FAR) | South West Main Line (via Eastleigh, toward Southampton) vs Portsmouth Direct Line (via Havant, toward Portsmouth) | Report line 24, 42 |
+| Fareham (FRM) | South West Main Line (via Eastleigh, toward Southampton) vs Portsmouth Direct Line (via Havant, toward Portsmouth) | Report line 24, 42 |
 | Eastleigh (ESL) | Eastleigh–Fareham Line (toward Portsmouth) vs Eastleigh–Romsey Line (north) vs South West Main Line pass-through | Report line 43 |
 | Woking (implied, not in-scope detail beyond naming) | South West Main Line (toward Southampton/Weymouth) vs Portsmouth Direct Line (toward Guildford/Portsmouth) | Report line 118-119 (named as junction on both lines, no further detail given) |
 

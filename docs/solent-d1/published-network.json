@@ -49,7 +49,12 @@
       "name": "Southampton Central",
       "crs": "SOU",
       "crsVerified": false,
-      "operators": ["South Western Railway", "Southern", "Great Western Railway", "CrossCountry"],
+      "operators": [
+        "South Western Railway",
+        "Southern",
+        "Great Western Railway",
+        "CrossCountry"
+      ],
       "doNotGroup": false,
       "class": "West-side hub. South West Main Line principal terminus for the city (SWR dominant, regional/InterCity). Southern local, GWR (Bristol/Cardiff) and CrossCountry (long-distance) through-running. Single flat departure board, destination + operator.",
       "role": "primary west-side hub, independent of Portsmouth side",
@@ -60,7 +65,11 @@
       "name": "Portsmouth Harbour",
       "crs": "PMH",
       "crsVerified": false,
-      "operators": ["South Western Railway", "Southern", "Great Western Railway"],
+      "operators": [
+        "South Western Railway",
+        "Southern",
+        "Great Western Railway"
+      ],
       "doNotGroup": false,
       "class": "East-side hub. Portsmouth Direct Line terminus (SWR primary), West Coastway line (Southern), GWR through-running. Also a ferry dock (Ryde Pier Head, Isle of Wight) — ferry leg is out-of-scope mode, not part of this board. Single flat departure board, destination + operator.",
       "role": "primary east-side hub, independent of Southampton side",
@@ -77,7 +86,11 @@
       "name": "Portsmouth & Southsea",
       "crs": "PMS",
       "crsVerified": false,
-      "operators": ["South Western Railway", "Southern", "Great Western Railway"],
+      "operators": [
+        "South Western Railway",
+        "Southern",
+        "Great Western Railway"
+      ],
       "doNotGroup": false,
       "class": "Secondary board on the same Portsmouth Direct Line / West Coastway corridor as Portsmouth Harbour. Same waterfront, separate physical station — not merged into the Portsmouth Harbour board (same pattern West of England uses for Bristol Temple Meads hub + Bath Spa secondary hub). Key commuter interchange (direct SWR service to London Waterloo via Woking) per report line 41, but not treated as a third independent hub — see direction-model-memo.md.",
       "role": "secondary board, Portsmouth side (paired with portsmouth-harbour, not merged with it)",
@@ -85,15 +98,41 @@
     }
   ],
   "junctions": [
-    { "name": "Fareham", "crs": "FAR", "crsVerified": false, "class": "Junction between South West Main Line and Portsmouth Direct Line. Through-running only, not a regional hub (report line 24: 15 min from both SOU and PMH). Not a stationGroup." },
-    { "name": "Eastleigh", "crs": "ESL", "crsVerified": false, "class": "Junction for Eastleigh–Fareham Line and Eastleigh–Romsey Line. South West Main Line pass-through, SWR only. Local commuter significance, not a hub. Not a stationGroup." }
+    {
+      "name": "Fareham",
+      "crs": "FRM",
+      "crsVerified": false,
+      "class": "Junction between South West Main Line and Portsmouth Direct Line. Through-running only, not a regional hub (report line 24: 15 min from both SOU and PMH). Not a stationGroup."
+    },
+    {
+      "name": "Eastleigh",
+      "crs": "ESL",
+      "crsVerified": false,
+      "class": "Junction for Eastleigh–Fareham Line and Eastleigh–Romsey Line. South West Main Line pass-through, SWR only. Local commuter significance, not a hub. Not a stationGroup."
+    }
   ],
   "boundaryThroughRunning": [
-    { "name": "Westbury", "crs": "WSB", "crsVerified": false, "boundaryTo": "West of England", "class": "GWR and SWR services cross here from/toward Bristol/Bath. Already flagged as a Solent boundary in docs/west-of-england-d1/published-network.json. Not a merge; not a Solent stationGroup." },
-    { "name": "Waterloo", "crs": "WAT", "crsVerified": false, "boundaryTo": "London & South East National Rail", "class": "SWR London terminus; Solent services are the outlying direction from Waterloo's perspective. Already flagged as a Solent/West-of-England boundary in docs/london-se-national-rail-d1/published-network.json (stationGroups.waterloo.boundaryNote). Not a merge; not a Solent stationGroup." }
+    {
+      "name": "Westbury",
+      "crs": "WSB",
+      "crsVerified": false,
+      "boundaryTo": "West of England",
+      "class": "GWR and SWR services cross here from/toward Bristol/Bath. Already flagged as a Solent boundary in docs/west-of-england-d1/published-network.json. Not a merge; not a Solent stationGroup."
+    },
+    {
+      "name": "Waterloo",
+      "crs": "WAT",
+      "crsVerified": false,
+      "boundaryTo": "London & South East National Rail",
+      "class": "SWR London terminus; Solent services are the outlying direction from Waterloo's perspective. Already flagged as a Solent/West-of-England boundary in docs/london-se-national-rail-d1/published-network.json (stationGroups.waterloo.boundaryNote). Not a merge; not a Solent stationGroup."
+    }
   ],
   "excludedServices": [
-    { "operator": "Island Line (Ryde Pier Head–Shanklin, via Wightlink FastCat)", "verdict": "out-mode", "station": "Portsmouth Harbour" }
+    {
+      "operator": "Island Line (Ryde Pier Head–Shanklin, via Wightlink FastCat)",
+      "verdict": "out-mode",
+      "station": "Portsmouth Harbour"
+    }
   ],
   "coverageGaps": [
     "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
