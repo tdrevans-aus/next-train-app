@@ -1,11 +1,4 @@
 {
-  "Newcastle Interchange": [
-    "NLR + Newcastle Beach"
-  ],
-  "Honeysuckle": [
-    "NLR + Newcastle Beach",
-    "NLR + Newcastle Interchange"
-  ],
   "Civic": [
     "NLR + Newcastle Beach",
     "NLR + Newcastle Interchange"
@@ -14,11 +7,18 @@
     "NLR + Newcastle Beach",
     "NLR + Newcastle Interchange"
   ],
-  "Queens Wharf": [
+  "Honeysuckle": [
     "NLR + Newcastle Beach",
     "NLR + Newcastle Interchange"
   ],
   "Newcastle Beach": [
+    "NLR + Newcastle Interchange"
+  ],
+  "Newcastle Interchange": [
+    "NLR + Newcastle Beach"
+  ],
+  "Queens Wharf": [
+    "NLR + Newcastle Beach",
     "NLR + Newcastle Interchange"
   ]
 }

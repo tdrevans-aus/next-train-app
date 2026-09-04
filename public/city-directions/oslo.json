@@ -1,0 +1,560 @@
+{
+  "Ammerud": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Åsjordet": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Avløs": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Bekkestua": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Berg": [
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Bergkrystallen": [
+    "1 + Frognerseteren",
+    "4 + Vestli"
+  ],
+  "Besserud": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Bjørnsletta": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Blindern": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Bogerud": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Bøler": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Borgen": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Brattlikollen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Brynseng": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Carl Berners plass": [
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Eiksmarka": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Ekraveien": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Ellingsrudåsen": [
+    "2 + Østerås"
+  ],
+  "Ensjø": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Forskningsparken": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Frøen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Frognerseteren": [
+    "1 + Bergkrystallen"
+  ],
+  "Furuset": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Gaustad": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Gjettum": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Gjønnes": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Godlia": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Gråkammen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Grønland": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Grorud": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Gulleråsen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Hasle": [
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Haslum": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Hauger": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Haugerud": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Hellerud": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Helsfyr": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Holmen": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Holmenkollen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Holstein": [
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Hovseter": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Høyenhall": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Jar": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Jernbanetorget": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli",
+    "FLY1 + Drammen",
+    "FLY1 + Oslo Airport",
+    "FLY2 + Oslo Airport",
+    "FLY2 + Stabekk",
+    "L1 + Lillestrøm",
+    "L1 + Spikkestad",
+    "L2 + Ski",
+    "L2 + Stabekk",
+    "R12 + Eidsvoll",
+    "R12 + Kongsberg",
+    "R13 + Dal",
+    "R13 + Drammen",
+    "R14 + Asker",
+    "R14 + Kongsvinger",
+    "R21 + Moss",
+    "RE10 + Drammen",
+    "RE10 + Lillehammer",
+    "RE11 + Eidsvoll",
+    "RE11 + Skien"
+  ],
+  "Kalbakken": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Karlsrud": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Kolsås": [
+    "3 + Mortensrud"
+  ],
+  "Kringsjå": [
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Lambertseter": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Lijordet": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Lillevann": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Lindeberg": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Linderud": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Løren": [
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Majorstuen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Makrellbekken": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Manglerud": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Midtstuen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Montebello": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Mortensrud": [
+    "3 + Kolsås"
+  ],
+  "Munkelia": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Nationaltheatret": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli",
+    "FLY1 + Drammen",
+    "FLY1 + Oslo Airport",
+    "FLY2 + Oslo Airport",
+    "FLY2 + Stabekk",
+    "L1 + Lillestrøm",
+    "L1 + Spikkestad",
+    "L2 + Ski",
+    "L2 + Stabekk",
+    "R12 + Eidsvoll",
+    "R12 + Kongsberg",
+    "R13 + Dal",
+    "R13 + Drammen",
+    "R14 + Asker",
+    "R14 + Kongsvinger",
+    "R21 + Moss",
+    "RE10 + Drammen",
+    "RE10 + Lillehammer",
+    "RE11 + Eidsvoll",
+    "RE11 + Skien"
+  ],
+  "Nydalen": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Økern": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Oppsal": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Østerås": [
+    "2 + Ellingsrudåsen"
+  ],
+  "Østhorn": [
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Ringstabekk": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Ris": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Risløkka": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Røa": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Rødtvet": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Rommen": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Romsås": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Ryen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "4 + Bergkrystallen",
+    "4 + Vestli"
+  ],
+  "Sinsen": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Skådalen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Skogen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Skøyenåsen": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Skullerud": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Slemdal": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Smestad": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Sognsvann": [
+    "5 + Vestli"
+  ],
+  "Steinerud": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Storo": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Stortinget": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Stovner": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Tåsen": [
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Tøyen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren",
+    "2 + Ellingsrudåsen",
+    "2 + Østerås",
+    "3 + Kolsås",
+    "3 + Mortensrud",
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Trosterud": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Tveita": [
+    "2 + Ellingsrudåsen",
+    "2 + Østerås"
+  ],
+  "Ullernåsen": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Ullevål stadion": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Ulsrud": [
+    "3 + Kolsås",
+    "3 + Mortensrud"
+  ],
+  "Veitvet": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ],
+  "Vestli": [
+    "4 + Bergkrystallen",
+    "5 + Sognsvann"
+  ],
+  "Vettakollen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Vinderen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Voksenkollen": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Voksenlia": [
+    "1 + Bergkrystallen",
+    "1 + Frognerseteren"
+  ],
+  "Vollebekk": [
+    "4 + Bergkrystallen",
+    "4 + Vestli",
+    "5 + Sognsvann",
+    "5 + Vestli"
+  ]
+}

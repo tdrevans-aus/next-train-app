@@ -1,4 +1,8 @@
 {
+  "Älvkarleby": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
+  ],
   "Arlanda C": [
     "Mälartåg mot Flemingsberg",
     "Mälartåg mot Stockholm C"
@@ -22,6 +26,9 @@
     "Mälartåg mot Gävle C",
     "Mälartåg mot Uppsala C"
   ],
+  "Märsta": [
+    "Mälartåg mot Stockholm C"
+  ],
   "Mehedeby": [
     "Mälartåg mot Gävle C",
     "Mälartåg mot Uppsala C"
@@ -30,8 +37,9 @@
     "Mälartåg mot Sala",
     "Mälartåg mot Uppsala C"
   ],
-  "Märsta": [
-    "Mälartåg mot Stockholm C"
+  "Örbyhus": [
+    "Mälartåg mot Gävle C",
+    "Mälartåg mot Uppsala C"
   ],
   "Sala": [
     "Mälartåg mot Uppsala C"
@@ -63,14 +71,6 @@
     "Mälartåg mot Stockholm C"
   ],
   "Vattholma": [
-    "Mälartåg mot Gävle C",
-    "Mälartåg mot Uppsala C"
-  ],
-  "Älvkarleby": [
-    "Mälartåg mot Gävle C",
-    "Mälartåg mot Uppsala C"
-  ],
-  "Örbyhus": [
     "Mälartåg mot Gävle C",
     "Mälartåg mot Uppsala C"
   ]

@@ -16,6 +16,9 @@
     "4 + Angered",
     "4 + Mölndal"
   ],
+  "Älvängen resecentrum": [
+    "Västtågen + Göteborg Central"
+  ],
   "Angereds Centrum": [
     "4 + Mölndal",
     "8 + Frölunda",
@@ -66,6 +69,10 @@
     "6 + Länsmansgården",
     "7 + Bergsjön",
     "7 + Tynnered"
+  ],
+  "Bögatan": [
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset"
   ],
   "Bohus Station": [
     "Västtågen + Ale",
@@ -118,10 +125,6 @@
     "7 + Tynnered",
     "9 + Angered",
     "9 + Kungssten"
-  ],
-  "Bögatan": [
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset"
   ],
   "Chalmers": [
     "10 + Guldheden",
@@ -256,13 +259,10 @@
     "11 + Bergsjön",
     "11 + Saltholmen"
   ],
-  "Gropegårdsgatan": [
-    "2 + Biskopsgården",
-    "2 + Högsbotorp",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset",
-    "6 + Kortedala",
-    "6 + Länsmansgården"
+  "Göteborg Central": [
+    "Västtågen + Ale",
+    "Västtågen + Alingsås",
+    "Västtågen + Kungsbacka"
   ],
   "Grönsakstorget": [
     "2 + Biskopsgården",
@@ -272,10 +272,13 @@
     "9 + Angered",
     "9 + Kungssten"
   ],
-  "Göteborg Central": [
-    "Västtågen + Ale",
-    "Västtågen + Alingsås",
-    "Västtågen + Kungsbacka"
+  "Gropegårdsgatan": [
+    "2 + Biskopsgården",
+    "2 + Högsbotorp",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset",
+    "6 + Kortedala",
+    "6 + Länsmansgården"
   ],
   "Hagakyrkan": [
     "3 + Kålltorp",
@@ -301,6 +304,12 @@
     "2 + Biskopsgården",
     "2 + Högsbotorp"
   ],
+  "Härlanda": [
+    "1 + Tynnered",
+    "1 + Östra Sjukhuset",
+    "3 + Kålltorp",
+    "3 + Marklandsgatan"
+  ],
   "Hede Station": [
     "Västtågen + Göteborg Central",
     "Västtågen + Kungsbacka"
@@ -308,14 +317,6 @@
   "Hinsholmen": [
     "11 + Bergsjön",
     "11 + Saltholmen"
-  ],
-  "Hjalmar Brantingsplatsen": [
-    "2 + Biskopsgården",
-    "2 + Högsbotorp",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset",
-    "6 + Kortedala",
-    "6 + Länsmansgården"
   ],
   "Hjällbo": [
     "4 + Angered",
@@ -325,11 +326,13 @@
     "9 + Angered",
     "9 + Kungssten"
   ],
-  "Härlanda": [
-    "1 + Tynnered",
-    "1 + Östra Sjukhuset",
-    "3 + Kålltorp",
-    "3 + Marklandsgatan"
+  "Hjalmar Brantingsplatsen": [
+    "2 + Biskopsgården",
+    "2 + Högsbotorp",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset",
+    "6 + Kortedala",
+    "6 + Länsmansgården"
   ],
   "Högsbogatan": [
     "3 + Kålltorp",
@@ -347,16 +350,6 @@
     "7 + Bergsjön",
     "7 + Tynnered"
   ],
-  "Jonsered Station": [
-    "Västtågen + Alingsås",
-    "Västtågen + Göteborg Central"
-  ],
-  "Jubileumsparken": [
-    "10 + Guldheden",
-    "10 + Lindholmen",
-    "12 + Lindholmen",
-    "12 + Mölndal"
-  ],
   "Järntorget": [
     "1 + Tynnered",
     "1 + Östra Sjukhuset",
@@ -369,11 +362,25 @@
     "9 + Angered",
     "9 + Kungssten"
   ],
+  "Jonsered Station": [
+    "Västtågen + Alingsås",
+    "Västtågen + Göteborg Central"
+  ],
+  "Jubileumsparken": [
+    "10 + Guldheden",
+    "10 + Lindholmen",
+    "12 + Lindholmen",
+    "12 + Mölndal"
+  ],
   "Kaggeledstorget": [
     "1 + Tynnered",
     "1 + Östra Sjukhuset",
     "5 + Länsmansgården",
     "5 + Östra Sjukhuset"
+  ],
+  "Kållered Station": [
+    "Västtågen + Göteborg Central",
+    "Västtågen + Kungsbacka"
   ],
   "Kapellplatsen": [
     "10 + Guldheden",
@@ -386,6 +393,10 @@
     "3 + Marklandsgatan",
     "9 + Angered",
     "9 + Kungssten"
+  ],
+  "Käringberget": [
+    "11 + Bergsjön",
+    "11 + Saltholmen"
   ],
   "Klintens Väg": [
     "3 + Kålltorp",
@@ -455,14 +466,6 @@
     "7 + Bergsjön",
     "7 + Tynnered"
   ],
-  "Kållered Station": [
-    "Västtågen + Göteborg Central",
-    "Västtågen + Kungsbacka"
-  ],
-  "Käringberget": [
-    "11 + Bergsjön",
-    "11 + Saltholmen"
-  ],
   "Lackarebäck": [
     "12 + Lindholmen",
     "12 + Mölndal",
@@ -474,6 +477,10 @@
     "12 + Mölndal",
     "4 + Angered",
     "4 + Mölndal"
+  ],
+  "Långedrag": [
+    "11 + Bergsjön",
+    "11 + Saltholmen"
   ],
   "Lantmilsgatan": [
     "1 + Tynnered",
@@ -509,6 +516,12 @@
     "6 + Kortedala",
     "6 + Länsmansgården"
   ],
+  "Liseberg Södra": [
+    "12 + Lindholmen",
+    "12 + Mölndal",
+    "4 + Angered",
+    "4 + Mölndal"
+  ],
   "Liseberg Station": [
     "5 + Länsmansgården",
     "5 + Östra Sjukhuset"
@@ -516,16 +529,6 @@
   "Liseberg Station (tåg)": [
     "Västtågen + Göteborg Central",
     "Västtågen + Kungsbacka"
-  ],
-  "Liseberg Södra": [
-    "12 + Lindholmen",
-    "12 + Mölndal",
-    "4 + Angered",
-    "4 + Mölndal"
-  ],
-  "Långedrag": [
-    "11 + Bergsjön",
-    "11 + Saltholmen"
   ],
   "Majvallen": [
     "11 + Bergsjön",
@@ -568,20 +571,6 @@
     "5 + Länsmansgården",
     "5 + Östra Sjukhuset"
   ],
-  "Munkebäckstorget": [
-    "1 + Tynnered",
-    "1 + Östra Sjukhuset",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset"
-  ],
-  "Musikvägen": [
-    "1 + Tynnered",
-    "1 + Östra Sjukhuset",
-    "7 + Bergsjön",
-    "7 + Tynnered",
-    "8 + Angered",
-    "8 + Frölunda"
-  ],
   "Mölndal Station": [
     "Västtågen + Göteborg Central",
     "Västtågen + Kungsbacka"
@@ -596,9 +585,27 @@
     "4 + Angered",
     "4 + Mölndal"
   ],
+  "Munkebäckstorget": [
+    "1 + Tynnered",
+    "1 + Östra Sjukhuset",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset"
+  ],
+  "Musikvägen": [
+    "1 + Tynnered",
+    "1 + Östra Sjukhuset",
+    "7 + Bergsjön",
+    "7 + Tynnered",
+    "8 + Angered",
+    "8 + Frölunda"
+  ],
   "Nils Ericsonsplatsen": [
     "2 + Biskopsgården",
     "2 + Högsbotorp"
+  ],
+  "Nödinge Station": [
+    "Västtågen + Ale",
+    "Västtågen + Göteborg Central"
   ],
   "Nol Station": [
     "Västtågen + Ale",
@@ -620,14 +627,6 @@
     "11 + Bergsjön",
     "11 + Saltholmen"
   ],
-  "Nymilsgatan": [
-    "1 + Tynnered",
-    "1 + Östra Sjukhuset",
-    "7 + Bergsjön",
-    "7 + Tynnered",
-    "8 + Angered",
-    "8 + Frölunda"
-  ],
   "Nymånegatan": [
     "11 + Bergsjön",
     "11 + Saltholmen",
@@ -636,9 +635,13 @@
     "7 + Bergsjön",
     "7 + Tynnered"
   ],
-  "Nödinge Station": [
-    "Västtågen + Ale",
-    "Västtågen + Göteborg Central"
+  "Nymilsgatan": [
+    "1 + Tynnered",
+    "1 + Östra Sjukhuset",
+    "7 + Bergsjön",
+    "7 + Tynnered",
+    "8 + Angered",
+    "8 + Frölunda"
   ],
   "Olivedalsgatan": [
     "1 + Tynnered",
@@ -658,6 +661,12 @@
     "8 + Angered",
     "8 + Frölunda"
   ],
+  "Önskevädersgatan": [
+    "2 + Biskopsgården",
+    "2 + Högsbotorp",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset"
+  ],
   "Opaltorget": [
     "1 + Östra Sjukhuset",
     "7 + Bergsjön"
@@ -667,6 +676,10 @@
     "3 + Marklandsgatan",
     "9 + Angered",
     "9 + Kungssten"
+  ],
+  "Östra Sjukhuset": [
+    "1 + Tynnered",
+    "5 + Länsmansgården"
   ],
   "Partille Station": [
     "Västtågen + Alingsås",
@@ -730,6 +743,12 @@
     "8 + Angered",
     "8 + Frölunda"
   ],
+  "Sälöfjordsgatan": [
+    "2 + Biskopsgården",
+    "2 + Högsbotorp",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset"
+  ],
   "Saltholmen": [
     "11 + Bergsjön"
   ],
@@ -744,6 +763,10 @@
   "Sannaplan": [
     "11 + Bergsjön",
     "11 + Saltholmen"
+  ],
+  "Sävenäs Station": [
+    "Västtågen + Alingsås",
+    "Västtågen + Göteborg Central"
   ],
   "Scandinavium": [
     "12 + Lindholmen",
@@ -817,16 +840,6 @@
     "8 + Angered",
     "8 + Frölunda"
   ],
-  "Sälöfjordsgatan": [
-    "2 + Biskopsgården",
-    "2 + Högsbotorp",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset"
-  ],
-  "Sävenäs Station": [
-    "Västtågen + Alingsås",
-    "Västtågen + Göteborg Central"
-  ],
   "Teleskopgatan": [
     "11 + Bergsjön",
     "11 + Saltholmen",
@@ -845,13 +858,13 @@
     "5 + Länsmansgården",
     "5 + Östra Sjukhuset"
   ],
-  "Tranered": [
-    "11 + Bergsjön",
-    "11 + Saltholmen"
-  ],
   "Töpelsgatan": [
     "5 + Länsmansgården",
     "5 + Östra Sjukhuset"
+  ],
+  "Tranered": [
+    "11 + Bergsjön",
+    "11 + Saltholmen"
   ],
   "Ullevi Norra": [
     "6 + Kortedala",
@@ -866,6 +879,19 @@
     "6 + Länsmansgården",
     "8 + Angered",
     "8 + Frölunda"
+  ],
+  "Väderilsgatan": [
+    "2 + Högsbotorp",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset"
+  ],
+  "Vågmästareplatsen": [
+    "2 + Biskopsgården",
+    "2 + Högsbotorp",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset",
+    "6 + Kortedala",
+    "6 + Länsmansgården"
   ],
   "Vagnhallen Majorna": [
     "3 + Kålltorp",
@@ -893,6 +919,12 @@
     "5 + Östra Sjukhuset",
     "6 + Kortedala"
   ],
+  "Vårväderstorget": [
+    "2 + Biskopsgården",
+    "2 + Högsbotorp",
+    "5 + Länsmansgården",
+    "5 + Östra Sjukhuset"
+  ],
   "Vasa Viktoriagatan": [
     "3 + Kålltorp",
     "3 + Marklandsgatan"
@@ -907,33 +939,14 @@
     "7 + Bergsjön",
     "7 + Tynnered"
   ],
+  "Västra Bodarna Station": [
+    "Västtågen + Alingsås",
+    "Västtågen + Göteborg Central"
+  ],
   "Virginsgatan": [
     "3 + Marklandsgatan",
     "5 + Länsmansgården",
     "5 + Östra Sjukhuset"
-  ],
-  "Vågmästareplatsen": [
-    "2 + Biskopsgården",
-    "2 + Högsbotorp",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset",
-    "6 + Kortedala",
-    "6 + Länsmansgården"
-  ],
-  "Vårväderstorget": [
-    "2 + Biskopsgården",
-    "2 + Högsbotorp",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset"
-  ],
-  "Väderilsgatan": [
-    "2 + Högsbotorp",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset"
-  ],
-  "Västra Bodarna Station": [
-    "Västtågen + Alingsås",
-    "Västtågen + Göteborg Central"
   ],
   "Wavrinskys Plats": [
     "10 + Guldheden",
@@ -956,18 +969,5 @@
     "5 + Östra Sjukhuset",
     "6 + Kortedala",
     "6 + Länsmansgården"
-  ],
-  "Älvängen resecentrum": [
-    "Västtågen + Göteborg Central"
-  ],
-  "Önskevädersgatan": [
-    "2 + Biskopsgården",
-    "2 + Högsbotorp",
-    "5 + Länsmansgården",
-    "5 + Östra Sjukhuset"
-  ],
-  "Östra Sjukhuset": [
-    "1 + Tynnered",
-    "5 + Länsmansgården"
   ]
 }
