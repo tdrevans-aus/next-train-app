@@ -9,7 +9,7 @@ const RAIL_REF_URLS = [
   "https://gist.githubusercontent.com/crablab/93a50eeb338646614287eddc3c2776b1/raw/RailReferences.csv",
 ];
 
-function parseCsvRow(line) {
+export function parseCsvRow(line) {
   const out = [];
   let cur = "";
   let quoted = false;
@@ -54,7 +54,7 @@ function normalizeMetroLabel(label) {
   );
 }
 
-async function fetchRailReferencesCsv() {
+export async function fetchRailReferencesCsv() {
   for (const url of RAIL_REF_URLS) {
     const response = await fetch(url);
     if (!response.ok) {
