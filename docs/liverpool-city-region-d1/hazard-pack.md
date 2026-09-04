@@ -49,6 +49,15 @@ merges the two); if the true relationship is a walk-link pair, treating them as 
 would have been wrong. Flagged as an open item for Tim/Nico to confirm with a walk-distance figure
 before Jim wires an adapter — see jim-handoff.md.
 
+**CLOSED AS MOOT, 4 Sep 2026 (Tim's option B, docs/jim-brief-liverpool-merseyrail-via-darwin.md):**
+the "one building or two" question above no longer needs answering. Liverpool Lime Street is now
+one catalog entry (mode train, CRS LIV) returning the full Darwin board — Northern, Avanti, TPE,
+LNR & WMR and Merseyrail together, each with its own platform (Merseyrail's low-level platforms
+show as "A"). Whichever physical reading of the report was correct, a single board with real
+platform numbers makes the distinction immaterial to the rider. The doNotGroup split described
+above is removed from the product catalog; this section is kept as the historical record of why it
+existed, not deleted.
+
 ## H2 — clash surface
 
 Restated from the report (lines 3, 90, 94):

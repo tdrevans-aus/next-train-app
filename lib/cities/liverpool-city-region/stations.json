@@ -6,14 +6,14 @@
   "retrievedAt": "2026-09-04",
   "feeds": {
     "train": "darwin",
-    "metro": "merseyrail-static-gtfs-confirmed-no-realtime-confirmed"
+    "metro": "darwin"
   },
   "notes": [
-    "RESCOPED 4 Sep 2026: full-network rescope from the original 6-station D1 pack (2 National Rail + 4 named Merseyrail stations) to the full Liverpool City Region + Merseyrail network - 29 National Rail stations (Combined authority = Liverpool City Region per ORR Table 6329) + 69 Merseyrail stations (Station facility owner = Merseyrail per the same table, plus Chester and Lime Street's Merseyrail presence) = 98 total. See docs/liverpool-city-region-d1/rescope-addendum.md for full before/after detail and sourcing.",
+    "RESCOPED 4 Sep 2026: full-network rescope from the original 6-station D1 pack (2 National Rail + 4 named Merseyrail stations) to the full Liverpool City Region + Merseyrail network - 29 National Rail stations (Combined authority = Liverpool City Region per ORR Table 6329) + 68 Merseyrail stations (Station facility owner = Merseyrail per the same table, plus Chester; Lime Street's Merseyrail presence folded into the single mode-train Lime Street entry, see H1-closed note below) = 97 total. See docs/liverpool-city-region-d1/rescope-addendum.md for full before/after detail and sourcing.",
     "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level - DARWIN_LDB_TOKEN not set. Same blocker as every other UK region in this wave.",
-    "Merseyrail: static GTFS confirmed live via Transitland (f-gc-rail~delivery~group~planar~gtfs, verified 2026-08-31), but no confirmed public GTFS-RT feed exists anywhere - only an undocumented mobile-app ('Train Check') internal API. fetchMerseyrailStopBoard() in lib/providers/liverpool-city-region.js throws MerseyrailFeedUnconfirmedError rather than fabricating a schedule. Board-eligibility verdict is out-product (corrected 2 Sep 2026, oracle report Board eligibility section) - walk-up test passes, but no board can ever be shown. This verdict is unchanged by this rescope; it applies to all 69 Merseyrail stations, not just the originally-named 4.",
+    "MERSEYRAIL REAL-TIME CORRECTED 4 Sep 2026 (supersedes the 2 Sep out-product verdict below): Merseyrail is a National Rail train operating company, not a metro system without a public feed - its stations carry CRS codes and its services are served by Darwin/OpenLDBWS exactly like any other TOC. Probed 4 Sep 2026 (ELP, LVC, MRF, LIV all returned live Merseyrail trips with platform + status). fetchMerseyrailStopBoard() in lib/providers/liverpool-city-region.js now calls Darwin via fetchStationBoard()'s entry/mode passthrough, the same shared path as National Rail. Board-eligibility verdict is now in (docs/liverpool-city-region-d1/oracle-clash-report.md Board eligibility section, dated correction). No operator filters are applied anywhere in this region - every board shows every operator Darwin returns for that CRS. HISTORICAL, superseded: static GTFS was confirmed live via Transitland (f-gc-rail~delivery~group~planar~gtfs, verified 2026-08-31) while real-time was believed genuinely unconfirmed - no public GTFS-RT endpoint was found, only an undocumented mobile-app (\"Train Check\") internal API. That search was the wrong lens (GTFS-RT, not Darwin) and the out-product verdict it produced was wrong; see the 4 Sep correction above.",
     "TWO SEPARATE AGENCY STRUCTURES, NOT ONE SHARED HUB: National Rail hub lock Liverpool Lime Street (LIV), secondary hub Liverpool South Parkway (LPY). Merseyrail's own interchange pair is Liverpool Central and Moorfields - neither ranked above the other by the report. See docs/liverpool-city-region-d1/hazard-pack.md H6.",
-    "LIME STREET STRUCTURAL AMBIGUITY (H1), UNRESOLVED - CARRIED AS-IS FROM THE D1 PACK, NOT RESOLVED BY THIS RESCOPE: built as TWO SEPARATE stationGroups (mode train Liverpool Lime Street and mode metro Liverpool Lime Street), doNotGroup: true between them. Do not merge these two entries. See docs/liverpool-city-region-d1/hazard-pack.md H1.",
+    "LIME STREET STRUCTURAL AMBIGUITY (H1) - CLOSED AS MOOT 4 Sep 2026 (Tim's option B): the two-stationGroup / doNotGroup split carried from the D1 pack is removed. One Darwin CRS (LIV), one board, platform numbers (including Merseyrail's low-level platform \"A\") on every train Darwin returns - the \"same building or two\" question does not matter once there is one board with platforms. HISTORICAL, carried for record: the D1 pack built two separate stationGroups (mode train Liverpool Lime Street and mode metro Liverpool Lime Street) with doNotGroup: true, because the oracle report contradicted itself on whether Merseyrail's Northern/Wirral Line presence at Lime Street shares platforms with National Rail (\"platform level\", report line 41) or is separate infrastructure connected by footbridge (report line 73, C2/C3 point 2). See docs/liverpool-city-region-d1/hazard-pack.md H1.",
     "ELLESMERE PORT REGISTRY DISCREPANCY - RESOLVED 2 Sep 2026: the standalone uk-ellesmere-port registry.js entry was deleted. This catalog's Ellesmere Port entry (mode metro, catalogId merseyrail:ellesmere-port) is unchanged in identity, now sourced from ORR Table 6329 + NaPTAN instead of the oracle report's prose.",
     "Merseyrail Northern Line vs Wirral Line membership is NOT individually asserted per station in this file (no 'line' field on most metro stops) - ORR Table 6329 does not carry a route/line column, and no GTFS route/stop_times data was pulled (Transitland's REST API requires an API key this pipeline does not have; the public feed browse page has no no-key static download link). Only stations individually named by the oracle report (Liverpool Central, Moorfields - dual-line interchange; Ellesmere Port, West Kirby, Chester - Wirral Line termini; Southport, Ormskirk, Headbolt Lane - Northern Line termini) carry a line note. This is a real, flagged gap - see hazard-pack.md H3 and jim-handoff.md. Do not infer line membership for the remaining ~60 stations from geography or borough name.",
     "lat/lng are now populated for every station via NaPTAN (RailReferences.csv CRS->ATCO join + access-nodes CSV ATCO->lat/lng), the same method scripts/lib/uk-naptan.mjs uses for West Midlands. This closes the 'lat/lng null for every station' gap flagged in the original pack's header.",
@@ -38,7 +38,7 @@
       "aliases": [],
       "lat": 53.40730825272,
       "lng": -2.97772602818,
-      "class": "National Rail hub lock - main terminus, seven TOCs (Northern Trains primary franchise; Avanti West Coast, TransPennine Express, East Midlands Railway, Transport for Wales, West Midlands Trains, CrossCountry through-running). doNotGroup vs the mode metro Liverpool Lime Street entry below - structural relationship UNRESOLVED, see hazard-pack.md H1. Never merge the two. ORR Table 6329 (31 Mar 2026): Station facility owner = Network Rail."
+      "class": "National Rail hub lock - main terminus, seven TOCs (Northern Trains primary franchise; Avanti West Coast, TransPennine Express, East Midlands Railway, Transport for Wales, West Midlands Trains, CrossCountry through-running) plus Merseyrail low-level platforms (platform \"A\"), all on one Darwin board (CRS LIV). H1 closed as moot 4 Sep 2026 - see notes."
     },
     {
       "mode": "train",
@@ -320,16 +320,6 @@
       "lat": 53.37849659103,
       "lng": -2.73353666796,
       "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner Northern Trains)."
-    },
-    {
-      "mode": "metro",
-      "name": "Liverpool Lime Street",
-      "catalogId": "merseyrail:liverpool-lime-street",
-      "stopId": null,
-      "aliases": [],
-      "lat": 53.40730825272,
-      "lng": -2.97772602818,
-      "class": "Merseyrail Northern/Wirral Line presence at or adjacent to Lime Street. doNotGroup vs the mode train Liverpool Lime Street entry above - the oracle report contradicts itself on whether this is the same building ('platform level', line 41) or separate infrastructure connected by footbridge (line 73, C2/C3 point 2). Built as a separate stationGroup pending confirmation, using the more conservative separate-infrastructure reading - see hazard-pack.md H1. UNRESOLVED, not confirmed. Counted as 1 of the 69 Merseyrail network stations (ORR Table 6329 lists Lime Street's facility owner as Network Rail, not Merseyrail, but Merseyrail platforms genuinely exist here per the oracle report)."
     },
     {
       "mode": "metro",

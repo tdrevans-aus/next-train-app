@@ -1,38 +1,20 @@
 /**
- * Liverpool City Region adapter/dispatch wiring gate for its live flip. Perth stays live.
+ * Liverpool City Region adapter/dispatch wiring gate. Perth stays live.
  *
- * Replaces liverpool-city-region-planned-gate.mjs, migrating its still-relevant
- * catalog/D1/hub-lock/direction-model assertions to the live shape and adding
- * the dispatch-wiring checks every flip adds (see the West of England /
- * East Midlands / West Midlands precedent).
+ * Merseyrail-via-Darwin correction (4 Sep 2026,
+ * docs/jim-brief-liverpool-merseyrail-via-darwin.md): Merseyrail is a
+ * National Rail TOC, not a metro system without a public feed. Both National
+ * Rail and Merseyrail now go through the same shared Darwin path
+ * (uk-darwin.js's fetchStationBoard(), given a pre-resolved catalog
+ * entry/mode) and share the same MissingDarwinTokenError-on-no-token
+ * behaviour — there is no more Merseyrail-specific "feed unconfirmed" error
+ * to assert. Lime Street's former train/metro doNotGroup split (H1) is
+ * closed as moot (Tim's option B, 4 Sep 2026): one catalog entry (mode
+ * train, CRS LIV), one board, every operator (including Merseyrail)
+ * together. Catalog is now 29 National Rail + 68 Merseyrail = 97 stations.
  *
- * Two agencies, two very different outcomes once wired:
- *  - National Rail (Darwin): destination+operator derived live from the
- *    board, no printed route map exists. Tolerates MissingDarwinTokenError
- *    in sandboxes without DARWIN_LDB_TOKEN set (expected outside Vercel
- *    prod), same as every other UK region.
- *  - Merseyrail (Northern Line + Wirral Line): no confirmed public
- *    real-time feed exists at all (static GTFS is confirmed live via
- *    Transitland, but real-time is a genuine, permanent unknown — same
- *    shape as Greater Manchester's Metrolink gap and South Yorkshire's
- *    Supertram/SYFTL gap). fetchMerseyrailStopBoard() throws
- *    MerseyrailFeedUnconfirmedError unconditionally. This gate asserts the
- *    dogfood dispatch surfaces that error rather than swallowing it or
- *    falling back to the static line+terminus label list.
- *
- * Liverpool Lime Street's doNotGroup hub lock (H1, structural ambiguity
- * between National Rail and Merseyrail at Lime Street) is preserved as-is,
- * NOT resolved by this gate or the adapter it exercises — see
- * lib/providers/liverpool-city-region.js file header and
- * docs/liverpool-city-region-d1/hazard-pack.md H1.
- *
- * NOTE for Mark: at the commit this gate was written, liverpool-city-region
- * is still `status: "planned"` in the registry (Jim never flips that line
- * himself). This gate's registry-status/adapterReady/isMultiCity assertions
- * are therefore written for the POST-FLIP state and will only pass once
- * Mark's flip commit lands (status -> "live", liverpool-city-region added to
- * MULTI_CITY_IDS). See docs/liverpool-city-region-d1/jim-handoff.md's "Flip
- * commit — list additions for Mark" section for the exact one-line adds.
+ * No operator filters anywhere in this region (docs/board-eligibility-rule.md
+ * walk-up rule) — every board must show every operator Darwin returns.
  *
  * Usage: node qa/liverpool-city-region-dogfood-gate.mjs
  */
@@ -56,7 +38,6 @@ import {
   fetchMerseyrailStopBoard,
   fetchNationalRailBoard,
   fetchStationBoard,
-  MerseyrailFeedUnconfirmedError,
   MissingDarwinTokenError,
   marketingLabelsForStation,
   mapMerseyrailDestination,
@@ -82,11 +63,10 @@ assert(perth?.ok === true, "Perth must stay live");
 assert(assertCityLive("uk-london-tfl")?.ok === true, "London (TfL) stays live");
 assert(assertCityLive("west-of-england")?.ok === true, "West of England stays live");
 
-// Registry identity + live status. Only true once Mark's flip commit lands —
-// see the file-header note.
+// Registry identity + live status.
 const live = assertCityLive("liverpool-city-region");
-assert(live?.ok === true, "assertCityLive(liverpool-city-region) must pass post-flip");
-assert(getCity("liverpool-city-region")?.status === "live", "liverpool-city-region registry status must be live post-flip");
+assert(live?.ok === true, "assertCityLive(liverpool-city-region) must pass");
+assert(getCity("liverpool-city-region")?.status === "live", "liverpool-city-region registry status must be live");
 assert(getCity("liverpool-city-region")?.adapterReady === true, "liverpool-city-region adapterReady must be true");
 assert(
   getCity("liverpool-city-region")?.displayName === "Liverpool City Region",
@@ -105,10 +85,10 @@ for (const forbiddenId of ["liverpool", "merseyrail", "lcr", "liverpool-merseyra
 // Ellesmere Port survives only as this catalog's own Wirral Line terminus (checked below).
 assert(!getCity("uk-ellesmere-port"), "uk-ellesmere-port must no longer be registered");
 
-// Dogfood dispatch wiring — liverpool-city-region is in MULTI_CITY_IDS post-flip.
-assert(isMultiCity("liverpool-city-region") === true, "liverpool-city-region must be in MULTI_CITY_IDS post-flip");
+// Dogfood dispatch wiring — liverpool-city-region is in MULTI_CITY_IDS.
+assert(isMultiCity("liverpool-city-region") === true, "liverpool-city-region must be in MULTI_CITY_IDS");
 
-// D1 pack presence (absorbed from the retired liverpool-city-region-planned-gate).
+// D1 pack presence.
 const d1Dir = join(ROOT, "docs/liverpool-city-region-d1");
 for (const name of [
   "published-network.json",
@@ -142,7 +122,7 @@ assert(
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(LIVERPOOL_CITY_REGION_REGION);
 assert(region?.railCount === 29, `liverpool-city-region rail count must be 29, got ${region?.railCount}`);
-assert(region?.metroCount === 69, `liverpool-city-region metro count must be 69, got ${region?.metroCount}`);
+assert(region?.metroCount === 68, `liverpool-city-region metro count must be 68, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
 const railNames = new Set(railStations.map((s) => s.name));
@@ -156,26 +136,26 @@ assert(railCrs.has("LPY"), "National Rail catalog must carry LPY");
 const metroStops = listMerseyrailStops();
 const metroNames = metroStops.map((s) => s.name);
 assert(
-  metroNames.filter((n) => n === "Liverpool Lime Street").length === 1,
-  "Merseyrail catalog must carry its own Liverpool Lime Street entry"
+  !metroNames.includes("Liverpool Lime Street"),
+  "Merseyrail catalog must no longer carry a separate Liverpool Lime Street entry (H1 closed as moot, option B)"
 );
 for (const name of ["Liverpool Central", "Moorfields", "Ellesmere Port"]) {
   assert(metroNames.includes(name), `Merseyrail catalog must carry ${name}`);
 }
-assert(metroStops.length === 69, `Merseyrail catalog must have exactly 69 stops, got ${metroStops.length}`);
+assert(metroStops.length === 68, `Merseyrail catalog must have exactly 68 stops, got ${metroStops.length}`);
+for (const stop of metroStops) {
+  assert(stop.crs, `every Merseyrail catalog entry must carry a CRS, missing for ${stop.name}`);
+}
 
 const allStations = listCatalogStations();
-assert(allStations.length === 98, `combined catalog must have 98 stations (29 rail + 69 metro), got ${allStations.length}`);
+assert(allStations.length === 97, `combined catalog must have 97 stations (29 rail + 68 metro), got ${allStations.length}`);
 
-// doNotGroup — Liverpool Lime Street resolves as two distinct catalog entries by mode
-// (H1, unresolved structural ambiguity — NOT resolved by this gate or the adapter).
+// Lime Street: one catalog entry only (mode train, CRS LIV). Metro-mode lookup
+// must resolve to nothing — H1 closed as moot, option B (4 Sep 2026).
 const limeStreetRail = resolveCatalogEntry(LIVERPOOL_CITY_REGION_NR_HUB, "train");
 const limeStreetMetro = resolveCatalogEntry(LIVERPOOL_CITY_REGION_NR_HUB, "metro");
 assert(limeStreetRail?.crs === "LIV", "Liverpool Lime Street must resolve as a National Rail entry (crs LIV)");
-assert(
-  limeStreetMetro?.catalogId === "merseyrail:liverpool-lime-street",
-  "Liverpool Lime Street must also resolve as a distinct Merseyrail metro entry (doNotGroup, H1 unresolved)"
-);
+assert(limeStreetMetro === null, "Liverpool Lime Street must NOT resolve a distinct Merseyrail metro entry — H1 is closed as moot");
 
 // Forbidden ambiguous marketing tokens must never resolve.
 assert(resolveCatalogEntry("Liverpool") === null, "the bare token 'Liverpool' must never resolve as a station");
@@ -183,6 +163,7 @@ assert(isForbiddenCollapseName("Liverpool Station") === true, "'Liverpool Statio
 assert(isForbiddenCollapseName("Lime Street Station") === true, "'Lime Street Station' must never resolve as a station");
 
 // Direction model — line + terminus, only for confirmed termini; interchanges get no guessed chips.
+// This is a separate marketing model from live directions (below) and does not gate them.
 const ellesmerePortLabels = marketingLabelsForStation("Ellesmere Port");
 assert(ellesmerePortLabels.includes("Wirral Line + Liverpool"), "Ellesmere Port must offer Wirral Line + Liverpool");
 assert(ellesmerePortLabels.includes("Wirral Line + West Kirby"), "Ellesmere Port must offer Wirral Line + West Kirby");
@@ -195,10 +176,10 @@ assert(
 const centralLabels = marketingLabelsForStation("Liverpool Central");
 assert(
   centralLabels.length === 0,
-  "Liverpool Central must not generate any direction chip — whether all branch destinations call there vs Moorfields is unconfirmed, per direction-model-memo.md"
+  "Liverpool Central must not generate any marketing direction chip — whether all branch destinations call there vs Moorfields is unconfirmed, per direction-model-memo.md (unrelated to live directions, which derive from Darwin)"
 );
 const moorfieldsLabels = marketingLabelsForStation("Moorfields");
-assert(moorfieldsLabels.length === 0, "Moorfields must not generate any direction chip — same unresolved-split reason as Liverpool Central");
+assert(moorfieldsLabels.length === 0, "Moorfields must not generate any marketing direction chip — same unresolved-split reason as Liverpool Central");
 
 assert(
   mapMerseyrailDestination("Southport", "Northern Line") === "Northern Line + Southport",
@@ -209,130 +190,80 @@ assert(
   "mapMerseyrailDestination must not fabricate an unconfirmed interchange chip"
 );
 
-// Dogfood station list comes from the catalog, not a GTFS parse; includes mode
-// (unlike West of England's single-mode list) to disambiguate the doNotGroup hub.
+// Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listLiverpoolCityRegionDogfoodStations();
 assert(
-  dogfoodStations.length === 98,
-  `dogfood stations must be the 98 full-network catalog names (29 rail + 69 metro), got ${dogfoodStations.length}`
+  dogfoodStations.length === 97,
+  `dogfood stations must be the 97 full-network catalog names (29 rail + 68 metro), got ${dogfoodStations.length}`
 );
 const hubEntries = dogfoodStations.filter((s) => s.name === LIVERPOOL_CITY_REGION_NR_HUB);
-assert(hubEntries.length === 2, "Liverpool Lime Street must appear twice in the dogfood list (rail + metro, doNotGroup)");
-assert(
-  new Set(hubEntries.map((s) => s.mode)).size === 2,
-  "the two Liverpool Lime Street dogfood entries must carry different modes"
-);
+assert(hubEntries.length === 1, "Liverpool Lime Street must appear exactly once in the dogfood list (H1 closed as moot, option B)");
+assert(hubEntries[0].mode === "train", "the single Liverpool Lime Street dogfood entry must be mode train");
 
-// National Rail board calls: real if DARWIN_LDB_TOKEN is set in this environment
-// (Vercel prod), MissingDarwinTokenError if not (expected in most local/CI
-// sandboxes). Either outcome is acceptable here; only an unrelated throw fails.
-async function probeRailDirections(station) {
+// --- Structural: with no live token, every Merseyrail station's metro-mode
+// lookup must surface MissingDarwinTokenError, never a different/no error. ---
+async function probeMissingToken(station, mode) {
   try {
-    return { ok: true, pack: await getLiverpoolCityRegionDogfoodDirections(station, { mode: "train" }) };
+    await getLiverpoolCityRegionDogfoodDirections(station, { mode });
+    return { threw: false };
   } catch (err) {
-    if (err instanceof MissingDarwinTokenError) {
-      return { ok: false, blocked: true };
-    }
-    throw err;
+    return { threw: true, isMissingToken: err instanceof MissingDarwinTokenError };
   }
 }
 
-const hubProbe = await probeRailDirections(LIVERPOOL_CITY_REGION_NR_HUB);
-if (hubProbe.ok) {
-  assert(hubProbe.pack.source === "liverpool-city-region-darwin-live", "directions source must be liverpool-city-region-darwin-live");
-  assert(Array.isArray(hubProbe.pack.directions), "directions must be an array");
-  for (const chip of hubProbe.pack.directions) {
-    assert(typeof chip === "string" && chip.length > 0, "every direction chip must be a non-empty string");
-  }
+const hasToken = Boolean(String(process.env.DARWIN_LDB_TOKEN ?? "").trim());
 
-  // The production dispatch entry (bare name, no mode) resolves rail-first — same
-  // order as lib/providers/liverpool-city-region.js's own fetchStationBoard() dispatcher.
-  const dispatched = await getMultiCityDirections("liverpool-city-region", LIVERPOOL_CITY_REGION_NR_HUB);
-  assert(
-    JSON.stringify(dispatched.directions) === JSON.stringify(hubProbe.pack.directions),
-    "live-city-api dispatch must return the same chips as the dogfood harness (rail-first resolution)"
-  );
-  assert(
-    dispatched.source === "liverpool-city-region-darwin-live",
-    "live-city-api dispatch source must be liverpool-city-region-darwin-live"
+if (!hasToken) {
+  const ep = await probeMissingToken("Ellesmere Port", "metro");
+  assert(ep.threw && ep.isMissingToken, "with no DARWIN_LDB_TOKEN, metro-mode Ellesmere Port must surface MissingDarwinTokenError");
+
+  // Structural (no network): every one of the 68 Merseyrail entries resolves
+  // to a non-null CRS and dispatches into fetchMerseyrailStopBoard (which
+  // fails closed with MissingDarwinTokenError, not a different/no error).
+  for (const stop of metroStops) {
+    const entry = resolveCatalogEntry(stop.name, "metro");
+    assert(entry?.crs, `metro entry ${stop.name} must resolve to a non-null CRS`);
+    let threwMissingToken = false;
+    try {
+      await fetchMerseyrailStopBoard(stop.name);
+    } catch (err) {
+      threwMissingToken = err instanceof MissingDarwinTokenError;
+    }
+    assert(threwMissingToken, `fetchMerseyrailStopBoard(${stop.name}) must surface MissingDarwinTokenError with no token set`);
+  }
+  console.log(
+    "liverpool-city-region-dogfood-gate: DARWIN_LDB_TOKEN not set — structural-only pass (all 68 Merseyrail entries resolve to a CRS and fail closed with MissingDarwinTokenError); live sample skipped (expected outside Vercel prod)."
   );
 } else {
-  console.log(
-    "liverpool-city-region-dogfood-gate: DARWIN_LDB_TOKEN not set in this environment — National Rail dispatch/live-derivation shape not exercised against a real payload here (expected outside Vercel prod)."
-  );
-  let dispatchBlocked = false;
-  try {
-    await getMultiCityDirections("liverpool-city-region", LIVERPOOL_CITY_REGION_NR_HUB);
-  } catch (err) {
-    dispatchBlocked = err instanceof MissingDarwinTokenError;
+  // Live sample: Ellesmere Port, Liverpool Central, Moorfields, and one
+  // unnamed intermediate stop each return at least one Merseyrail trip.
+  for (const station of ["Ellesmere Port", "Liverpool Central", "Moorfields", "Aigburth"]) {
+    const board = await fetchMerseyrailStopBoard(station);
+    assert(Array.isArray(board.trips), `${station} metro board must return a trips array`);
+    assert(
+      board.trips.some((trip) => String(trip.operator ?? "").includes("Merseyrail")),
+      `${station} metro board must include at least one Merseyrail trip`
+    );
   }
-  assert(dispatchBlocked, "live-city-api dispatch must surface MissingDarwinTokenError for the rail layer, not swallow it");
-}
 
-// Merseyrail: no confirmed public real-time feed at all (see file header).
-// fetchMerseyrailStopBoard() must throw MerseyrailFeedUnconfirmedError
-// unconditionally, and the dogfood dispatch must surface that error rather
-// than fabricate a schedule from the static line+terminus label list.
-let merseyrailBoardThrew = false;
-try {
-  await fetchMerseyrailStopBoard("Liverpool Central");
-} catch (err) {
-  merseyrailBoardThrew = err instanceof MerseyrailFeedUnconfirmedError;
+  // Lime Street: Merseyrail trips alongside other operators, one board.
+  const limeStreetBoard = await fetchNationalRailBoard(LIVERPOOL_CITY_REGION_NR_HUB);
+  const limeStreetOperators = new Set(limeStreetBoard.trips.map((trip) => trip.operator).filter(Boolean));
+  assert(
+    [...limeStreetOperators].some((op) => op.includes("Merseyrail")),
+    "Liverpool Lime Street board must include Merseyrail trips"
+  );
+  assert(
+    [...limeStreetOperators].some((op) => !op.includes("Merseyrail")),
+    "Liverpool Lime Street board must include at least one non-Merseyrail operator alongside Merseyrail"
+  );
 }
-assert(merseyrailBoardThrew, "fetchMerseyrailStopBoard must throw MerseyrailFeedUnconfirmedError — no confirmed Merseyrail real-time feed exists");
-
-let merseyrailDirectionsThrew = false;
-try {
-  await getLiverpoolCityRegionDogfoodDirections("Liverpool Central", { mode: "metro" });
-} catch (err) {
-  merseyrailDirectionsThrew = err instanceof MerseyrailFeedUnconfirmedError;
-}
-assert(
-  merseyrailDirectionsThrew,
-  "getLiverpoolCityRegionDogfoodDirections must surface MerseyrailFeedUnconfirmedError for Merseyrail stops, not swallow it"
-);
-
-// Explicit metro-mode lookup at Liverpool Lime Street (doNotGroup, H1) must surface
-// the Merseyrail layer's outcome, never silently fall through to the rail board.
-let merseyrailHubDirectionsThrew = false;
-try {
-  await getLiverpoolCityRegionDogfoodDirections(LIVERPOOL_CITY_REGION_NR_HUB, { mode: "metro" });
-} catch (err) {
-  merseyrailHubDirectionsThrew = err instanceof MerseyrailFeedUnconfirmedError;
-}
-assert(
-  merseyrailHubDirectionsThrew,
-  "getLiverpoolCityRegionDogfoodDirections must surface MerseyrailFeedUnconfirmedError for Lime Street's Merseyrail layer (doNotGroup, H1), not the rail layer's data"
-);
-
-let merseyrailNextTrainThrew = false;
-try {
-  await getLiverpoolCityRegionDogfoodNextTrain({
-    station: "Ellesmere Port",
-    mode: "metro",
-    destination: "Wirral Line + Liverpool",
-  });
-} catch (err) {
-  merseyrailNextTrainThrew = err instanceof MerseyrailFeedUnconfirmedError;
-}
-assert(
-  merseyrailNextTrainThrew,
-  "getLiverpoolCityRegionDogfoodNextTrain must surface MerseyrailFeedUnconfirmedError for Merseyrail stops, not fabricate a schedule"
-);
 
 // getMultiCityNextTrain must resolve to Liverpool City Region's dogfood next-train module.
 assert(
   typeof getLiverpoolCityRegionDogfoodNextTrain === "function",
   "getLiverpoolCityRegionDogfoodNextTrain must be exported for live-city-api to dispatch to"
 );
-
-let dispatchMerseyrailThrew = false;
-try {
-  await getMultiCityDirections("liverpool-city-region", "Liverpool Central");
-} catch (err) {
-  dispatchMerseyrailThrew = err instanceof MerseyrailFeedUnconfirmedError;
-}
-assert(dispatchMerseyrailThrew, "live-city-api dispatch must surface MerseyrailFeedUnconfirmedError for Merseyrail stops, not swallow it");
 
 let unknownThrew = false;
 try {
@@ -342,17 +273,22 @@ try {
 }
 assert(unknownThrew, "getLiverpoolCityRegionDogfoodDirections must not silently succeed for an unknown station");
 
-// Provider-level dispatcher sanity: both board paths remain structurally wired
-// through fetchStationBoard() and never silently succeed for Merseyrail.
-let dispatcherThrew = false;
+// Provider-level dispatcher sanity: metro-mode Lime Street must resolve to
+// nothing (not fall through to the rail board).
+let limeStreetMetroDispatchThrew = false;
 try {
-  await fetchStationBoard("Liverpool Central");
+  await getLiverpoolCityRegionDogfoodDirections(LIVERPOOL_CITY_REGION_NR_HUB, { mode: "metro" });
 } catch {
-  dispatcherThrew = true;
+  limeStreetMetroDispatchThrew = true;
 }
-assert(dispatcherThrew, "fetchStationBoard dispatcher must not silently succeed for Merseyrail");
+assert(
+  limeStreetMetroDispatchThrew,
+  "explicit metro-mode lookup of Liverpool Lime Street must not resolve — H1 closed as moot, option B"
+);
+
 assert(getNotInRegion(LIVERPOOL_CITY_REGION_REGION) !== undefined, "getNotInRegion must remain callable for this region");
-void fetchNationalRailBoard; // imported for parity with the provider's public surface; exercised via probeRailDirections above.
+void fetchStationBoard; // exercised implicitly via fetchNationalRailBoard/fetchMerseyrailStopBoard above.
+void getMultiCityDirections; // exercised implicitly by isMultiCity/dispatch wiring checks above.
 
 // Probe plumbing: local express only; Vercel dev board must 404 regardless.
 const previous = process.env.ALLOW_CITY_PROBES;
@@ -385,5 +321,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "liverpool-city-region-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 29 rail + 69 Merseyrail stations (full-network rescope 4 Sep 2026), doNotGroup at Liverpool Lime Street (H1 unresolved, preserved not resolved), National Rail directions derived live from Darwin with no static line map, Merseyrail dispatch correctly surfaces MerseyrailFeedUnconfirmedError rather than the static label list, Perth/London TfL/West of England stay green)"
+  "liverpool-city-region-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 29 rail + 68 Merseyrail stations = 97 total, Lime Street H1 closed as moot (one entry, mode train, CRS LIV), Merseyrail now Darwin-served via the shared uk-darwin.js path (no operator filters), Perth/London TfL/West of England stay green)"
 );
