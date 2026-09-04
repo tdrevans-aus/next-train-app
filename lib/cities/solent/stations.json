@@ -22,8 +22,8 @@
       "name": "Southampton Central",
       "crs": "SOU",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 50.9074484476,
+      "lng": -1.41359587161,
       "class": "hub lock — west-side hub, stands alone, independent of the Portsmouth side"
     },
     {
@@ -31,8 +31,8 @@
       "name": "Portsmouth Harbour",
       "crs": "PMH",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 50.79696235778,
+      "lng": -1.10784017919,
       "class": "hub lock — east-side hub, paired with Portsmouth & Southsea as a secondary board (not merged)"
     },
     {
@@ -40,17 +40,17 @@
       "name": "Portsmouth & Southsea",
       "crs": "PMS",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 50.79849536053,
+      "lng": -1.09091100881,
       "class": "hub secondary — same corridor/waterfront as Portsmouth Harbour, separate physical station and board, not a third independent hub"
     },
     {
       "mode": "train",
       "name": "Fareham",
-      "crs": "FAR",
+      "crs": "FRM",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 50.85303359642,
+      "lng": -1.19203711934,
       "class": "through-running junction between South West Main Line and Portsmouth Direct Line, not a hub, not a stationGroup"
     },
     {
@@ -58,8 +58,8 @@
       "name": "Eastleigh",
       "crs": "ESL",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 50.96925016601,
+      "lng": -1.35008445334,
       "class": "through-running junction, South West Main Line pass-through, SWR only, not a stationGroup"
     },
     {
@@ -67,8 +67,8 @@
       "name": "Westbury",
       "crs": "WSB",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.266986087,
+      "lng": -2.19918167923,
       "class": "through-running only, boundary to West of England region — not a merge point"
     },
     {
@@ -76,8 +76,8 @@
       "name": "Waterloo",
       "crs": "WAT",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.50329861354,
+      "lng": -0.1131088672,
       "class": "through-running only, boundary to London & South East National Rail region — not a merge point"
     }
   ]

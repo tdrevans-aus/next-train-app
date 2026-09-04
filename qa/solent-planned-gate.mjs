@@ -88,7 +88,7 @@ assert((region?.modes ?? []).join(",") === "train", "solent must be train-only i
 
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["SOU", "PMH", "PMS", "FAR", "ESL", "WSB", "WAT"]) {
+for (const crs of ["SOU", "PMH", "PMS", "FRM", "ESL", "WSB", "WAT"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
 assert(getNotInRegion(SOLENT_REGION).length === 0, "solent has no deliberate exclusions recorded");

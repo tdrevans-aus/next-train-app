@@ -146,3 +146,13 @@ wiring of `DARWIN_LDB_TOKEN`, no reading of any other city's in-progress (unfini
 West of England and london-se-national-rail's finished published-network.json files were read only
 for the specific Westbury/Waterloo reciprocal-flag consistency check the dispatch instruction
 named, not for general context.
+
+## 5 Sep 2026 — pre-adapter hygiene (Fable, top-level session)
+
+- **CRS codes verified live against Darwin** with `scripts/fix-uk-region-crs.mjs solent --write`:
+  Fareham was FAR (a 400 at Darwin) and is now **FRM**; the other six were right. Corrected in
+  `stations.json`, `published-network.json`, this pack's prose, `lib/providers/solent.js` and the
+  planned gate. Coordinates filled from NaPTAN where missing. The adapter gate must carry the
+  token-gated catalog sweep (as `qa/uk-west-midlands-dogfood-gate.mjs`) so this cannot regress.
+- `DARWIN_LDB_TOKEN` exists (live since 2 Sep 2026); the account-level blocker above is resolved.
+- Board eligibility section present in the oracle report, no `undecided` rows.
