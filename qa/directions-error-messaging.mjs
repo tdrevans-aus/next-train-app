@@ -12,9 +12,7 @@ import { classifyDirectionsError } from "../api/directions.js";
 import { NetFeedUnconfirmedError } from "../lib/providers/east-midlands.js";
 import { MissingDarwinTokenError } from "../lib/providers/uk-darwin.js";
 import { MissingTfwmCredentialsError } from "../lib/providers/uk-metro-wm.js";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
-
-const BASE = "http://localhost:3000";
+import { BASE, ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 
 function assert(condition, message) {
   if (!condition) {
