@@ -51,48 +51,17 @@ async function run() {
     async function copyForMockedResponse(status, body) {
       const context = await browser.newContext();
       const page = await context.newPage();
-      // Diagnostics, printed only when this call comes back empty/wrong: the page
-      // console, uncaught page errors, navigations, and a trace of every
-      // replaceSelectOptions() call the app made (CI-only flake, see FAIL branch).
-      const pageLog = [];
-      const stamp = () => `${(performance.now() / 1000).toFixed(3)}s`;
-      page.on("console", (msg) => pageLog.push(`${stamp()} [console.${msg.type()}] ${msg.text()}`));
-      page.on("pageerror", (err) => pageLog.push(`${stamp()} [pageerror] ${err.message}`));
-      page.on("framenavigated", (frame) => pageLog.push(`${stamp()} [navigated] ${frame.url()}`));
-      // Wrap replaceSelectOptions() as soon as station-combobox.js defines it, without
-      // adding a round-trip between page load and openJourneysLibrary() below — the
-      // original gate had none, and the flake is timing-sensitive.
-      await page.addInitScript(() => {
-        window.__qaReplaceSelectOptionsTrace = [];
-        Object.defineProperty(window, "nextTrainStationCombobox", {
-          configurable: true,
-          get() {
-            return undefined;
-          },
-          set(combobox) {
-            const original = combobox.replaceSelectOptions;
-            combobox.replaceSelectOptions = (selectEl, options) => {
-              window.__qaReplaceSelectOptionsTrace.push({
-                at: Math.round(performance.now()),
-                target: selectEl.id || selectEl.dataset?.qaProbe || "?",
-                labels: options.map((opt) => opt.label),
-              });
-              return original(selectEl, options);
-            };
-            Object.defineProperty(window, "nextTrainStationCombobox", {
-              value: combobox,
-              writable: true,
-              configurable: true,
-            });
-          },
-        });
-      });
-      await page.route("**/api/directions**", (route) =>
-        route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) })
-      );
-      await page.route("**/api/destinations**", (route) =>
-        route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) })
-      );
+      // Diagnostics are collected only after the probe has run (no init script, no
+      // console listener, no extra round-trips before openJourneysLibrary()) so the
+      // gate's timing stays identical to the original — the CI-only flake is
+      // timing-sensitive and an earlier diagnostics build hid it.
+      const apiCalls = [];
+      const fulfil = (route) => {
+        apiCalls.push(`${Math.round(performance.now())}ms ${route.request().url()}`);
+        return route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
+      };
+      await page.route("**/api/directions**", fulfil);
+      await page.route("**/api/destinations**", fulfil);
       await page.goto(BASE);
       await page.waitForFunction(() => Boolean(window.nextTrainApp?.openJourneysLibrary));
       // journey-detail.js is a deferred module (loaded after first paint) — opening the
@@ -103,30 +72,42 @@ async function run() {
       // {} and made every loadDirectionsForSelect() call silently no-op (empty select,
       // read back as ''). Wait for the real readiness promise instead of polling for the
       // function to merely exist.
-      pageLog.push(`${stamp()} [gate] openJourneysLibrary()`);
       await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
       await page.evaluate(() => window.nextTrainApp.ensureDeferredModulesReady());
-      pageLog.push(`${stamp()} [gate] deferred modules ready; calling loadDirectionsForSelect`);
       const result = await page.evaluate(async () => {
         const select = document.createElement("select");
-        select.dataset.qaProbe = "qa-probe-select";
         document.body.appendChild(select);
-        const moduleBefore = window.nextTrainJourneyDetail;
         await window.nextTrainJourneyDetail.loadDirectionsForSelect(select, "Some Station", null);
         const label = select.options[0]?.textContent ?? "";
-        const diagnostics = {
-          optionCount: select.options.length,
-          selectHtml: select.innerHTML,
-          moduleIdentityStable: moduleBefore === window.nextTrainJourneyDetail,
-          deferredReady: Boolean(window.NextTrainDeferred?._ready),
-          pageNow: Math.round(performance.now()),
-          replaceSelectOptionsTrace: window.__qaReplaceSelectOptionsTrace,
-        };
+        const selectHtml = select.innerHTML;
         select.remove();
-        return { label, diagnostics };
+        // Is journey-detail.js actually wired to app.js? With no station the client
+        // writes "Choose station first" synchronously through deps.replaceSelectOptions —
+        // an empty select here means init(deps) never ran for this module instance.
+        const wiringProbe = document.createElement("select");
+        document.body.appendChild(wiringProbe);
+        void window.nextTrainJourneyDetail.loadDirectionsForSelect(wiringProbe, "", null);
+        const depsWired = wiringProbe.options.length > 0;
+        wiringProbe.remove();
+        const scriptTiming = performance
+          .getEntriesByType("resource")
+          .filter((entry) => /\.js(\?|$)/.test(entry.name))
+          .map((entry) => `${Math.round(entry.startTime)}-${Math.round(entry.responseEnd)}ms ${entry.name.replace(location.origin, "")}`);
+        return {
+          label,
+          diagnostics: {
+            selectHtml,
+            depsWired,
+            deferredReady: Boolean(window.NextTrainDeferred?._ready),
+            journeyDetailPresent: Boolean(window.nextTrainJourneyDetail),
+            templateWizardPresent: Boolean(window.nextTrainTemplateWizard),
+            pageNow: Math.round(performance.now()),
+            scriptTiming,
+          },
+        };
       });
       await context.close();
-      return { label: result.label, diagnostics: { ...result.diagnostics, pageLog } };
+      return { label: result.label, diagnostics: { ...result.diagnostics, apiCalls } };
     }
 
     const generic = await copyForMockedResponse(500, { error: "boom" });
