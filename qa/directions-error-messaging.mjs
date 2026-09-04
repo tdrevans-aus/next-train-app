@@ -59,11 +59,16 @@ async function run() {
       );
       await page.goto(BASE);
       await page.waitForFunction(() => Boolean(window.nextTrainApp?.openJourneysLibrary));
-      // journey-detail.js is a deferred module (loaded after first paint) —
-      // opening the journeys library is what triggers ensureDeferredModulesReady()
-      // on a real page load, same as any other qa script that needs it.
+      // journey-detail.js is a deferred module (loaded after first paint) — opening the
+      // journeys library kicks off loading it, but openJourneysLibrary() itself is
+      // fire-and-forget for that (it must not block the UI paint on a slow chunk fetch).
+      // window.nextTrainJourneyDetail can go truthy (script loaded) before its own
+      // .init(deps) call has actually run, which under CI's heavier load left deps at
+      // {} and made every loadDirectionsForSelect() call silently no-op (empty select,
+      // read back as ''). Wait for the real readiness promise instead of polling for the
+      // function to merely exist.
       await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
-      await page.waitForFunction(() => Boolean(window.nextTrainJourneyDetail?.loadDirectionsForSelect));
+      await page.evaluate(() => window.nextTrainApp.ensureDeferredModulesReady());
       const label = await page.evaluate(async () => {
         const select = document.createElement("select");
         document.body.appendChild(select);
