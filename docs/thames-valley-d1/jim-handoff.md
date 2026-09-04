@@ -118,3 +118,131 @@ instruction named, not for general context.
   where missing. The adapter gate must carry the token-gated catalog sweep so this cannot regress.
 - `DARWIN_LDB_TOKEN` exists (live since 2 Sep 2026); the account-level blocker framing above is
   resolved. Board eligibility section present, no `undecided` rows.
+
+## 5 Sep 2026 — Adapter wired (Jim, docs/jim-brief-thames-valley-adapter.md)
+
+**What was built:** `lib/cities/thames-valley/dogfood-next-train.js`
+(`getThamesValleyDogfoodDirections`, `getThamesValleyDogfoodNextTrain`,
+`planThamesValleyNextTrainFetch`, `listThamesValleyDogfoodStations`) over
+`fetchStationBoard`/`fetchRegionalDepartureBoard` from
+`lib/providers/uk-darwin.js` via the existing `lib/providers/thames-valley.js`
+region config, wired through the shared hub helper
+(`lib/cities/uk/direction-hubs.js`) with the national CRS index
+(`lib/cities/uk/rail-crs-index.js`) as the exact-chip fallback — same shape as
+West Yorkshire/Solent, copied structurally, not forked.
+`lib/cities/live-city-api.js` gained `thames-valley` switch-cases in
+`directionsFor()` and `getMultiCityNextTrain()` (dispatch is safe ahead of the
+flip — production routes gate on `assertCityLive()` first, not on
+`MULTI_CITY_IDS` membership). `qa/thames-valley-planned-gate.mjs` retired;
+replaced by `qa/thames-valley-dogfood-gate.mjs`, registered in
+`qa/run-all.mjs`'s smoke tier. `lib/providers/registry.js`'s thames-valley
+`notes` field updated to record the live-verified adapter and the flip-commit
+list additions Mark still owns; **`status` stays `"planned"`** — not flipped
+by this pass. `thames-valley` was deliberately **not** added to
+`MULTI_CITY_IDS`, the `MultiCityId` typedef, `brisbane-dogfood.js`'s
+mount/available map, or `journey-model.js`'s persisted-city/country lists —
+those are Mark's flip commit (`qa/live-city-lists-sync.mjs` enforces they
+equal the registry's live set). `public/city-directions/thames-valley.json`
+is **not generated pre-flip** — same posture as West Yorkshire (#215) and
+Solent (#216): `qa/bundled-city-directions.mjs` only requires that file for
+`MULTI_CITY_IDS` entries, and the pre-flip bundling escape hatch
+(`EXTRA_BUNDLED_CITY_IDS`) is currently empty. It will be picked up
+automatically by `scripts/write-city-directions.mjs` once Mark's flip adds
+`thames-valley` to `MULTI_CITY_IDS`.
+
+**CrossCountry discovery at Oxford (live-probed, not named by the D1
+report):** the oracle report only names GWR and Chiltern Railways as
+Oxford's two operators (report line 16, 37). Live probing 5 Sep 2026
+(`scripts/probe-uk-board.mjs --crs=OXF`, and `--filter-crs=OXF` from
+Banbury) showed CrossCountry genuinely calling at Oxford — Newcastle,
+Manchester Piccadilly, Bournemouth, and Reading destinations, all on the
+same main-line platforms GWR uses, not Chiltern's separate Marylebone-branch
+infrastructure. CrossCountry's board-eligibility verdict is already recorded
+`in` generally by the report (optional reservation only) — it just wasn't
+station-scoped to Oxford. Adding it to the "Oxford (GWR)" board's
+`operators`/`includeOperators` list (rather than a third sub-board) keeps
+the walk-up rule satisfied without inventing a boarding-section split the
+live evidence doesn't support: CrossCountry shares GWR's main-line
+infrastructure at Oxford, not Chiltern's. Confirmed via live chip tables
+below that neither Oxford board leaks the other's operator.
+
+**Live evidence — Reading (hub, flat, no doNotGroup):** GWR/CrossCountry/SWR
+all appear on one board, confirming report line 36 live. Sample (5 Sep 2026):
+Basingstoke (GWR), Cheltenham Spa (GWR), Gatwick Airport (GWR), Great Malvern
+(GWR), London Paddington (GWR), London Waterloo (SWR), Manchester Piccadilly
+(CrossCountry), Newbury (GWR), Swansea (GWR).
+
+**Live evidence — Oxford doNotGroup confirmed:**
+
+| board | live chips (5 Sep 2026) |
+| --- | --- |
+| Oxford (GWR) — GWR + CrossCountry | Banbury (GWR), Bournemouth (CrossCountry), Didcot Parkway (GWR), Great Malvern (GWR), London Paddington (GWR), Manchester Piccadilly (CrossCountry), Newcastle (CrossCountry), Reading (CrossCountry) |
+| Oxford (Chiltern) — Chiltern only | London Marylebone (Chiltern Railways) |
+
+No chip crosses boards either direction — the split holds against a real
+Darwin payload, not just the catalog config.
+
+**Live evidence — the five through-running-only stations (all resolve, all
+flat, no doNotGroup):**
+
+| station (CRS) | live chips (5 Sep 2026) |
+| --- | --- |
+| Swindon (SWI) | Bristol Parkway, Bristol Temple Meads, Cheltenham Spa, London Paddington, Oxford, Swansea, Westbury, Weston-super-Mare (all Great Western Railway) |
+| Banbury (BAN) | Birmingham Moor Street, Birmingham Snow Hill, Stourbridge Junction, London Marylebone (all Chiltern Railways); Bournemouth, Manchester Piccadilly, Reading (all CrossCountry); Didcot Parkway, London Paddington (Great Western Railway) |
+| Westbury (WSB) | Bristol Temple Meads, Cardiff Central, Cheltenham Spa, Frome, London Paddington, Plymouth, Portsmouth Harbour, Salisbury (all Great Western Railway) |
+| Henley-on-Thames (HOT) | Twyford (Great Western Railway) only |
+| Didcot Parkway (DID) | Banbury, Bristol Parkway, Bristol Temple Meads, Cheltenham Spa, London Paddington, Oxford, Weston-super-Mare (all Great Western Railway) |
+
+**Catalog CRS sweep:** all seven unique CRS codes (RDG, OXF, SWI, BAN, WSB,
+HOT, DID — OXF shared by both Oxford boards, swept once) resolve at Darwin to
+their catalogued station name; `qa/thames-valley-dogfood-gate.mjs`'s sweep
+passes with `DARWIN_LDB_TOKEN` set.
+
+**Hub decision: no `direction-hubs.json` shipped for v1.** All three
+candidates the brief named were live-probed and rejected:
+
+1. **Henley branch through to Reading** (would be a Kidderminster-shape hub,
+   label "Reading", `filterCrs: RDG`): rejected. `node
+   scripts/probe-uk-board.mjs "Henley-on-Thames" --region=thames-valley
+   --filter-crs=RDG` returned **0 trips** — every HOT departure terminates at
+   Twyford; none reaches Reading. Per the "if the filtered board doesn't show
+   it, it isn't" rule, no hub is built.
+2. **Operator split on "London Paddington"/"Reading" at Didcot/Swindon**
+   (Liverpool shape): rejected. Both stations' boards filtered to
+   calls-at-RDG (`--filter-crs=RDG`) show Great Western Railway only — no
+   second operator prints the same terminus to collapse.
+3. **Operator split on "Oxford" at Banbury** (Chiltern vs CrossCountry):
+   rejected. Neither Banbury's full board nor its `--filter-crs=OXF` sample
+   shows any train printing "Oxford" itself as a destination — GWR and
+   CrossCountry trains that call at Oxford continue past it (to Didcot,
+   Paddington, Bournemouth, Reading, Manchester Piccadilly), and Chiltern's
+   Banbury departures go to Marylebone/Birmingham, never Oxford. No
+   destination string exists to split.
+
+If a future live pull shows a genuine split or through-run at any of these
+stations, that is a fresh probe result, not a retrofit of this evidence —
+re-run the probe script and update this section (or add
+`lib/cities/thames-valley/direction-hubs.json`) at that point.
+
+**Board eligibility:** unchanged from the "5 Sep 2026 — pre-adapter hygiene"
+section above — GWR, CrossCountry, Chiltern Railways, and SWR all verdict
+`in`, no `undecided` rows. CrossCountry's presence at Oxford (discovered
+above) is covered by its existing general `in` verdict, not a new exclusion
+question.
+
+**QA:** `node qa/thames-valley-dogfood-gate.mjs` passes both token-free
+(MissingDarwinTokenError-tolerant branches) and with `DARWIN_LDB_TOKEN`
+loaded via `loadEnvLocal()` (exercises the live dispatch, live next-train,
+the Oxford doNotGroup chip-leak assertions, and the 7-unique-CRS sweep for
+real). `node qa/run-all.mjs --smoke` green.
+
+**Not done in this pass:** no hub file (see decision above), no
+`MULTI_CITY_IDS`/typedef/`brisbane-dogfood.js`/`journey-model.js` list edits
+(Mark's flip commit), no `public/city-directions/thames-valley.json`
+generation (picked up automatically once flipped), no live flip (`status`
+stays `"planned"`), no shared-helper edit (`lib/providers/uk-darwin.js`,
+`lib/providers/uk/catalog.js`, `lib/cities/uk/*` untouched beyond the
+read-only imports above), no resolution of the Westbury/Paddington/Marylebone
+boundary flags (still open, unchanged from the D1 pack), no
+`docs/united-kingdom-ledger.md` creation (still overdue, flagged again, not
+this pass's job).

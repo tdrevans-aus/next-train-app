@@ -50,9 +50,10 @@
       "groupId": "oxford",
       "doNotGroup": true,
       "operators": [
-        "Great Western Railway"
+        "Great Western Railway",
+        "CrossCountry"
       ],
-      "class": "station group (1 of 2 sharing CRS OXF) — GWR board only. Internal doNotGroup: GWR main line (London/Reading/Bristol direction) and Chiltern Railways (Marylebone branch) sit on separate platforms/infrastructure at Oxford (report line 16, 37, 56); do not merge with the Chiltern board. Secondary hub, subordinate to Reading on the same corridor."
+      "class": "station group (1 of 2 sharing CRS OXF) — GWR main-line board, CrossCountry included. Internal doNotGroup: the GWR main line (London/Reading/Bristol direction, CrossCountry through-running on the same infrastructure) and Chiltern Railways (Marylebone branch) sit on separate platforms/infrastructure at Oxford (report line 16, 37, 56); do not merge with the Chiltern board. CrossCountry was not named at Oxford by the D1 oracle report (only Reading, line 15/36) but live-probed 5 Sep 2026 (scripts/probe-uk-board.mjs --crs=OXF and --filter-crs=OXF from Banbury): CrossCountry (Newcastle/Manchester Piccadilly/Bournemouth/Reading) genuinely calls at Oxford on the same main-line platforms as GWR — added here so CrossCountry's board-eligibility 'in' verdict (already recorded generally in the report, not station-limited) isn't silently dropped by the operator includeOperators filter. See docs/thames-valley-d1/jim-handoff.md 'Adapter wired' section. Secondary hub, subordinate to Reading on the same corridor."
     },
     {
       "mode": "train",
