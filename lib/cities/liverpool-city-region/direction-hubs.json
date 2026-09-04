@@ -1,0 +1,34 @@
+{
+  "region": "liverpool-city-region",
+  "notes": [
+    "A hub chip means 'every train that calls at filterCrs', fetched server-side via Darwin filterCrs/filterType=to.",
+    "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
+    "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
+    "Hub chips carry no operator suffix — several operators may call at the hub.",
+    "This is the operator-split shape, not the through-running shape the other regions use: the hub label IS the terminus itself (Liverpool Lime Street), and the only thing being collapsed is directionChip()'s operator suffix printing the same terminus as several different chips.",
+    "Live-probed 4 Sep 2026 (docs/jim-brief-fb51-liverpool-city-region.md) and re-probed 4 Sep 2026 during this wiring pass with scripts/probe-uk-board.mjs across all 29 in-catalog rail stations: Runcorn (RUN), St Helens Central (SNH) and St Helens Junction (SHJ) are named directly in the brief. This pass's own probe of the full 29-station rail catalog additionally found Liverpool Lime Street printed under two or more operators, in the same live sample, at Liverpool South Parkway (LPY: Northern, LNR & WMR, East Midlands Railway, Transport for Wales), Lea Green (LEG: Northern, TransPennine Express), Mossley Hill (MSH: Northern, LNR & WMR), Newton-le-Willows (NLW: Northern, TransPennine Express) and Widnes (WID: Northern, East Midlands Railway) — all eight are included in appliesFrom per the brief's own rule ('any other in-catalog rail station whose live board prints Liverpool Lime Street under two or more operators'). A live sample fluctuates row to row (RUN/SNH/SHJ's own current 15-row sample this pass showed fewer distinct Lime Street operators than the brief's 13:30 UTC snapshot for SNH/SHJ specifically), so appliesFrom is not re-derived per snapshot — RUN/SNH/SHJ stay in per the brief's own decision, and the five newly found stations are added on the same structural basis (their catalog CRS codes recur on multi-operator Lime Street corridors, not a one-off sampling artefact: LPY/WID sit on the EMR Liverpool-Norwich/Nottingham corridor plus Northern/LNR&WMR/TfW local services; LEG/NLW/MSH sit on the Northern/TransPennine Express and Northern/LNR&WMR shared corridors into Lime Street).",
+    "No other terminus is absorbed at any of these eight stations — checked against each station's own live chip list; none show an intermediate terminus (e.g. Liverpool South Parkway) as a distinct printed destination that could be mistakenly folded in.",
+    "St Helens Central's CRS is SNH, not SHC — verified against lib/cities/liverpool-city-region/stations.json and Darwin."
+  ],
+  "hubs": [
+    {
+      "label": "Liverpool Lime Street",
+      "filterCrs": "LIV",
+      "filterName": "Liverpool Lime Street",
+      "appliesFrom": [
+        "LEG",
+        "LPY",
+        "MSH",
+        "NLW",
+        "RUN",
+        "SHJ",
+        "SNH",
+        "WID"
+      ],
+      "absorbs": [
+        "Liverpool Lime Street"
+      ],
+      "reason": "The same terminus (Liverpool Lime Street) prints as up to four separate chips at these stations because directionChip() carries the operator suffix (e.g. 'Liverpool Lime Street (Avanti West Coast)', 'Liverpool Lime Street (LNR & WMR)', 'Liverpool Lime Street (Transport for Wales)' at Runcorn). A hub whose label is the terminus itself, fetched via filterCrs=LIV, collapses the operator split into one chip that shows every operator's train toward Lime Street; printedDestination stays 'Liverpool Lime Street' so the render suffix stays hidden. Nothing else is absorbed — every other terminus at these stations keeps its own chip."
+    }
+  ]
+}
