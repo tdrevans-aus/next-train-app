@@ -1,18 +1,11 @@
 /**
- * Solent adapter/dispatch wiring gate. Replaces solent-planned-gate.mjs
- * (retired) the way West Yorkshire's did — Solent STAYS `status: "planned"`
- * here (this is the pre-flip dogfood wiring pass,
- * docs/jim-brief-solent-adapter.md).
+ * Solent adapter/dispatch wiring gate. Flipped live 5 Sep 2026.
  *
- * Per CLAUDE.md's flip-follow-through split (added 30 Aug 2026, corrected
- * same day): the dogfood module, the live-city-api.js dispatch
- * switch-cases, and this gate are safe to land ahead of the flip because
- * production routes gate on assertCityLive() first, not on MULTI_CITY_IDS
- * membership. Solent is deliberately NOT added to MULTI_CITY_IDS,
- * brisbane-dogfood.js's mount/available map, or journey-model.js's
- * persisted-city/country lists yet — those three list-membership edits are
- * Mark's flip commit, not this one (qa/live-city-lists-sync.mjs enforces
- * that they equal the registry's live set).
+ * LIVE (status: "live", 5 Sep 2026). All list memberships included:
+ * MULTI_CITY_IDS, brisbane-dogfood.js mount/available map,
+ * journey-model.js persisted-city/country lists bundled into flip commit
+ * per CLAUDE.md's flip-follow-through split and qa/live-city-lists-sync.mjs
+ * enforcement.
  *
  * DARWIN_LDB_TOKEN is live (docs/solent-d1/jim-handoff.md's 5 Sep 2026
  * hygiene section). This gate stays token-tolerant throughout: with a
@@ -75,13 +68,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STILL planned. Do not flip in this gate or this PR.
+// Registry identity — NOW LIVE (5 Sep 2026 flip).
 const live = assertCityLive("solent");
-assert(live?.ok === false, "assertCityLive(solent) must still fail — status stays planned");
-assert(live?.status === 501, "solent must still be 501 planned");
+assert(live?.ok === true, "assertCityLive(solent) must pass — status is now live");
+assert(live?.status !== 501, "solent must not be 501 planned anymore");
 
 const entry = getCity("solent");
-assert(entry?.status === "planned", "solent registry status must stay planned (Mark/Tim's flip call, not this gate's)");
+assert(entry?.status === "live", "solent registry status must be live (5 Sep 2026 flip)");
 assert(entry?.adapterReady === true, "solent adapterReady must be true");
 assert(
   entry?.displayName === "Solent (Southampton / Portsmouth)",
@@ -93,9 +86,8 @@ for (const forbiddenId of ["southampton", "portsmouth", "greater-solent"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip, but MULTI_CITY_IDS
-// membership is not (that's Mark's flip commit) — assert both halves.
-assert(isMultiCity("solent") === false, "solent must NOT be in MULTI_CITY_IDS yet (list membership is the flip commit's job)");
+// Flipped live 5 Sep 2026 — dispatch switch-cases + MULTI_CITY_IDS both wired.
+assert(isMultiCity("solent") === true, "solent must be in MULTI_CITY_IDS (flip is complete)");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/solent-d1");
