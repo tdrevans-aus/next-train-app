@@ -229,6 +229,7 @@ async function run() {
         stockholmLabel: stockholm?.textContent?.trim() ?? "",
         goteborgLabel: goteborg?.textContent?.trim() ?? "",
         cityValue: citySelect?.value ?? "",
+        firstCityValue: citySelect?.options?.[0]?.value ?? "",
         savedCity: window.NextTrainCitySession.readSavedCity(),
       };
     });
@@ -247,7 +248,9 @@ async function run() {
       picker.swedenLabel === "Sweden" &&
       picker.stockholmLabel === "Stockholm" &&
       picker.goteborgLabel === "Göteborg" &&
-      picker.cityValue === "stockholm" &&
+      // Picker default is the first Sweden option (alphabetical since Sep 2026) — order-independent.
+      picker.cityValue === picker.firstCityValue &&
+      picker.cityValue !== "" &&
       applied.afterStockholm === "stockholm" &&
       applied.afterGoteborg === "goteborg"
     ) {

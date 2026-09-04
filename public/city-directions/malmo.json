@@ -1,5 +1,27 @@
 {
+  "Åkarp": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Simrishamn",
+    "Pågatågen mot Trelleborg"
+  ],
+  "Älmhult": [
+    "PågatågenExpress mot Svågertorp"
+  ],
+  "Ängelholm": [
+    "Pågatågen mot Halmstad",
+    "Pågatågen mot Helsingborg C"
+  ],
+  "Åstorp": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Hyllie",
+    "Pågatågen mot Kristianstad C"
+  ],
   "Barkåkra": [
+    "Pågatågen mot Halmstad",
+    "Pågatågen mot Helsingborg C"
+  ],
+  "Båstad": [
     "Pågatågen mot Halmstad",
     "Pågatågen mot Helsingborg C"
   ],
@@ -11,13 +33,13 @@
     "Pågatågen mot Hyllie",
     "Pågatågen mot Åstorp"
   ],
-  "Bjuv": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Kristianstad C"
-  ],
   "Bjärnum": [
     "Pågatågen mot Hässleholm C",
     "Pågatågen mot Markaryd"
+  ],
+  "Bjuv": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Kristianstad C"
   ],
   "Bromölla": [
     "Pågatågen mot Karlshamn",
@@ -32,10 +54,6 @@
     "Pågatågen mot Åstorp",
     "PågatågenExpress mot Svågertorp",
     "PågatågenExpress mot Älmhult"
-  ],
-  "Båstad": [
-    "Pågatågen mot Halmstad",
-    "Pågatågen mot Helsingborg C"
   ],
   "Dösjebro": [
     "Pågatågen mot Helsingborg C",
@@ -53,17 +71,21 @@
     "Pågatågen mot Karlshamn",
     "Pågatågen mot Kristianstad C"
   ],
-  "Furulund": [
-    "Malmöring. v Östervärn",
-    "Malmöringen mot Kävlinge"
-  ],
   "Förslöv": [
     "Pågatågen mot Halmstad",
     "Pågatågen mot Helsingborg C"
   ],
+  "Furulund": [
+    "Malmöring. v Östervärn",
+    "Malmöringen mot Kävlinge"
+  ],
   "Gantofta": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Hyllie"
+  ],
+  "Gärsnäs": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Simrishamn"
   ],
   "Glumslöv": [
     "Pågatågen mot Helsingborg C",
@@ -75,12 +97,20 @@
     "Pågatågen mot Simrishamn",
     "Pågatågen mot Åstorp"
   ],
-  "Gärsnäs": [
+  "Häljarp": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Simrishamn"
   ],
   "Halmstad": [
     "Pågatågen mot Helsingborg C"
+  ],
+  "Hässleholm C": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Markaryd",
+    "Pågatågen mot Trelleborg",
+    "PågatågenExpress mot Svågertorp",
+    "PågatågenExpress mot Älmhult"
   ],
   "Helsingborg C": [
     "Pågatågen mot Halmstad",
@@ -94,6 +124,12 @@
     "Pågatågen mot Simrishamn",
     "Pågatågen mot Trelleborg"
   ],
+  "Höör": [
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Trelleborg",
+    "PågatågenExpress mot Svågertorp",
+    "PågatågenExpress mot Älmhult"
+  ],
   "Hyllie": [
     "Malmöring. v Östervärn",
     "Malmöringen mot Kävlinge",
@@ -105,23 +141,9 @@
     "PågatågenExpress mot Svågertorp",
     "PågatågenExpress mot Älmhult"
   ],
-  "Häljarp": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Simrishamn"
-  ],
-  "Hässleholm C": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Markaryd",
-    "Pågatågen mot Trelleborg",
-    "PågatågenExpress mot Svågertorp",
-    "PågatågenExpress mot Älmhult"
-  ],
-  "Höör": [
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Trelleborg",
-    "PågatågenExpress mot Svågertorp",
-    "PågatågenExpress mot Älmhult"
+  "Kågeröd": [
+    "Pågatågen mot Hyllie",
+    "Pågatågen mot Åstorp"
   ],
   "Karlshamn": [
     "Pågatågen mot Kristianstad C"
@@ -129,6 +151,14 @@
   "Kattarp": [
     "Pågatågen mot Halmstad",
     "Pågatågen mot Helsingborg C"
+  ],
+  "Kävlinge": [
+    "Malmöring. v Östervärn",
+    "Malmöringen mot Kävlinge",
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Hyllie",
+    "Pågatågen mot Simrishamn",
+    "Pågatågen mot Åstorp"
   ],
   "Klippan": [
     "Pågatågen mot Helsingborg C",
@@ -140,6 +170,10 @@
     "Pågatågen mot Simrishamn",
     "Pågatågen mot Trelleborg"
   ],
+  "Köpingebro": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Simrishamn"
+  ],
   "Kristianstad C": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Karlshamn",
@@ -148,22 +182,6 @@
   "Kvidinge": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Kristianstad C"
-  ],
-  "Kågeröd": [
-    "Pågatågen mot Hyllie",
-    "Pågatågen mot Åstorp"
-  ],
-  "Kävlinge": [
-    "Malmöring. v Östervärn",
-    "Malmöringen mot Kävlinge",
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Hyllie",
-    "Pågatågen mot Simrishamn",
-    "Pågatågen mot Åstorp"
-  ],
-  "Köpingebro": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Simrishamn"
   ],
   "Laholm": [
     "Pågatågen mot Halmstad",
@@ -222,19 +240,40 @@
     "Pågatågen mot Karlshamn",
     "Pågatågen mot Kristianstad C"
   ],
+  "Ödåkra": [
+    "Pågatågen mot Halmstad",
+    "Pågatågen mot Helsingborg C"
+  ],
+  "Önnestad": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Trelleborg"
+  ],
+  "Örtofta": [
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Trelleborg"
+  ],
+  "Östervärn": [
+    "Malmöring. v Östervärn",
+    "Malmöringen mot Kävlinge"
+  ],
+  "Östra Grevie": [
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Trelleborg"
+  ],
   "Oxie": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Simrishamn"
+  ],
+  "Påarp": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Kristianstad C"
   ],
   "Persborg": [
     "Malmöring. v Östervärn",
     "Malmöringen mot Kävlinge"
   ],
   "Perstorp": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Kristianstad C"
-  ],
-  "Påarp": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Kristianstad C"
   ],
@@ -267,13 +306,28 @@
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Simrishamn"
   ],
-  "Stehag": [
+  "Sölvesborg": [
+    "Pågatågen mot Karlshamn",
+    "Pågatågen mot Kristianstad C"
+  ],
+  "Sösdala": [
     "Pågatågen mot Kristianstad C",
     "Pågatågen mot Trelleborg"
   ],
   "Stångby": [
     "Pågatågen mot Kristianstad C",
     "Pågatågen mot Trelleborg"
+  ],
+  "Stehag": [
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Trelleborg"
+  ],
+  "Svågertorp": [
+    "Malmöring. v Östervärn",
+    "Malmöringen mot Kävlinge",
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Trelleborg",
+    "PågatågenExpress mot Älmhult"
   ],
   "Svalöv": [
     "Pågatågen mot Hyllie",
@@ -287,20 +341,9 @@
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Simrishamn"
   ],
-  "Svågertorp": [
-    "Malmöring. v Östervärn",
-    "Malmöringen mot Kävlinge",
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Trelleborg",
-    "PågatågenExpress mot Älmhult"
-  ],
-  "Sölvesborg": [
-    "Pågatågen mot Karlshamn",
-    "Pågatågen mot Kristianstad C"
-  ],
-  "Sösdala": [
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Trelleborg"
+  "Tågarp": [
+    "Pågatågen mot Helsingborg C",
+    "Pågatågen mot Hyllie"
   ],
   "Teckomatorp": [
     "Pågatågen mot Helsingborg C",
@@ -334,13 +377,13 @@
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Kristianstad C"
   ],
-  "Tågarp": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Hyllie"
-  ],
   "Vallåkra": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Hyllie"
+  ],
+  "Västra Ingelstad": [
+    "Pågatågen mot Kristianstad C",
+    "Pågatågen mot Trelleborg"
   ],
   "Vinslöv": [
     "Pågatågen mot Helsingborg C",
@@ -351,51 +394,8 @@
     "Pågatågen mot Hässleholm C",
     "Pågatågen mot Markaryd"
   ],
-  "Västra Ingelstad": [
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Trelleborg"
-  ],
   "Ystad": [
     "Pågatågen mot Helsingborg C",
     "Pågatågen mot Simrishamn"
-  ],
-  "Åkarp": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Simrishamn",
-    "Pågatågen mot Trelleborg"
-  ],
-  "Åstorp": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Hyllie",
-    "Pågatågen mot Kristianstad C"
-  ],
-  "Älmhult": [
-    "PågatågenExpress mot Svågertorp"
-  ],
-  "Ängelholm": [
-    "Pågatågen mot Halmstad",
-    "Pågatågen mot Helsingborg C"
-  ],
-  "Ödåkra": [
-    "Pågatågen mot Halmstad",
-    "Pågatågen mot Helsingborg C"
-  ],
-  "Önnestad": [
-    "Pågatågen mot Helsingborg C",
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Trelleborg"
-  ],
-  "Örtofta": [
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Trelleborg"
-  ],
-  "Östervärn": [
-    "Malmöring. v Östervärn",
-    "Malmöringen mot Kävlinge"
-  ],
-  "Östra Grevie": [
-    "Pågatågen mot Kristianstad C",
-    "Pågatågen mot Trelleborg"
   ]
 }

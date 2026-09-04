@@ -1,6 +1,29 @@
 {
+  "Alinga Street": [
+    "R1 Gungahlin Place"
+  ],
+  "Dickson Interchange": [
+    "R1 Alinga Street",
+    "R1 Gungahlin Place"
+  ],
+  "Elouera Street": [
+    "R1 Alinga Street",
+    "R1 Gungahlin Place"
+  ],
+  "EPIC and Racecourse": [
+    "R1 Alinga Street",
+    "R1 Gungahlin Place"
+  ],
   "Gungahlin Place": [
     "R1 Alinga Street"
+  ],
+  "Ipima Street": [
+    "R1 Alinga Street",
+    "R1 Gungahlin Place"
+  ],
+  "Macarthur Avenue": [
+    "R1 Alinga Street",
+    "R1 Gungahlin Place"
   ],
   "Manning Clark North": [
     "R1 Alinga Street",
@@ -14,7 +37,7 @@
     "R1 Alinga Street",
     "R1 Gungahlin Place"
   ],
-  "Well Station Drive": [
+  "Phillip Avenue": [
     "R1 Alinga Street",
     "R1 Gungahlin Place"
   ],
@@ -22,35 +45,12 @@
     "R1 Alinga Street",
     "R1 Gungahlin Place"
   ],
-  "EPIC and Racecourse": [
-    "R1 Alinga Street",
-    "R1 Gungahlin Place"
-  ],
-  "Phillip Avenue": [
-    "R1 Alinga Street",
-    "R1 Gungahlin Place"
-  ],
   "Swinden Street": [
     "R1 Alinga Street",
     "R1 Gungahlin Place"
   ],
-  "Dickson Interchange": [
+  "Well Station Drive": [
     "R1 Alinga Street",
-    "R1 Gungahlin Place"
-  ],
-  "Macarthur Avenue": [
-    "R1 Alinga Street",
-    "R1 Gungahlin Place"
-  ],
-  "Ipima Street": [
-    "R1 Alinga Street",
-    "R1 Gungahlin Place"
-  ],
-  "Elouera Street": [
-    "R1 Alinga Street",
-    "R1 Gungahlin Place"
-  ],
-  "Alinga Street": [
     "R1 Gungahlin Place"
   ]
 }

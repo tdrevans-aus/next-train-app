@@ -1,0 +1,150 @@
+{
+  "Aalto-yliopisto": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Espoonlahti": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Finnoo": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Hakaniemi": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Helsingin yliopisto": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Herttoniemi": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Itäkeskus": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Kaitaa": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Kalasatama": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Kamppi": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Keilaniemi": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Kivenlahti": [
+    "M1 + Vuosaari"
+  ],
+  "Koivusaari": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Kontula": [
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Kulosaari": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Lauttasaari": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Matinkylä": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Mellunmäki": [
+    "M2 + Tapiola"
+  ],
+  "Myllypuro": [
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Niittykumpu": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Puotila": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Rastila": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Rautatientori": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Ruoholahti": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Siilitie": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Sörnäinen": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki",
+    "M2 + Tapiola"
+  ],
+  "Soukka": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Tapiola": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari",
+    "M2 + Mellunmäki"
+  ],
+  "Urheilupuisto": [
+    "M1 + Kivenlahti",
+    "M1 + Vuosaari"
+  ],
+  "Vuosaari": [
+    "M1 + Kivenlahti"
+  ]
+}
