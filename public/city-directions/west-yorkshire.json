@@ -1,0 +1,86 @@
+{
+  "Bradford Forster Square": [
+    "Ilkley (Northern)",
+    "Leeds (Northern)",
+    "Shipley (Northern)",
+    "Skipton (Northern)"
+  ],
+  "Bradford Interchange": [
+    "Blackpool North (Northern)",
+    "Chester (Northern)",
+    "Cottingley (Northern)",
+    "Halifax (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "Manchester Victoria (Northern)",
+    "York (Northern)"
+  ],
+  "Denby Dale": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Halifax": [
+    "Blackpool North (Northern)",
+    "Bradford Interchange (Grand Central)",
+    "Bradford Interchange (Northern)",
+    "Chester (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "Manchester Victoria (Northern)",
+    "York (Northern)"
+  ],
+  "Hebden Bridge": [
+    "Blackpool North (Northern)",
+    "Chester (Northern)",
+    "Leeds (Northern)",
+    "Manchester Victoria (Northern)",
+    "Preston (Northern)",
+    "Wigan Wallgate (Northern)",
+    "York (Northern)"
+  ],
+  "Huddersfield": [
+    "Hull (TransPennine Express)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Manchester Airport (TransPennine Express)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "Manchester Victoria (TransPennine Express)",
+    "Newcastle (TransPennine Express)",
+    "Redcar Central (TransPennine Express)",
+    "Scarborough (TransPennine Express)",
+    "Sheffield (Northern)",
+    "York (TransPennine Express)"
+  ],
+  "Keighley": [
+    "Bradford Forster Square (Northern)",
+    "Lancaster (Northern)",
+    "Leeds (Northern)",
+    "Ribblehead (Northern)",
+    "Skipton (Northern)"
+  ],
+  "Leeds Station": [
+    "Blackpool North (Northern)",
+    "Bradford Forster Square (Northern)",
+    "Edinburgh (CrossCountry)",
+    "Harrogate (LNER)",
+    "Ilkley (Northern)",
+    "Knottingley (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "London Kings Cross (LNER)",
+    "Manchester Victoria (Northern)",
+    "Manchester Victoria (TransPennine Express)",
+    "Nottingham (Northern)",
+    "Poppleton (Northern)",
+    "York (Northern)"
+  ],
+  "Todmorden": [
+    "Blackburn (Northern)",
+    "Chester (Northern)",
+    "Leeds (Northern)",
+    "Manchester Victoria (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Walsden": [
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ]
+}
