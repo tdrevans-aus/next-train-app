@@ -4411,13 +4411,14 @@ function openTravelLibrary(tab) {
   chromeTravelTab = tab;
   journeyModeActive = true;
   exitNearbyMode();
-  if (journeyDetail()) {
-    journeyDetail().setLibraryKind?.(tab);
-  } else {
-    // First paint can fail (offline/429) without ever loading the deferred
-    // modules; the library must still open in the requested kind.
-    void ensureDeferredModulesReady().then(() => journeyDetail()?.setLibraryKind?.(tab));
-  }
+  // Always route through ensureDeferredModulesReady() rather than short-circuiting on
+  // journeyDetail() being truthy — the deferred script can finish loading (making
+  // journeyDetail() truthy) before its own .init(deps) has actually run, so a "just call
+  // it directly" fast path could call setLibraryKind while journey-detail.js's internal
+  // deps are still {}. ensureDeferredModulesReady() already has its own fast path for the
+  // already-loaded case (synchronous init call, resolved promise), so this costs nothing
+  // and doesn't block the rest of this function — it's still fire-and-forget.
+  void ensureDeferredModulesReady().then(() => journeyDetail()?.setLibraryKind?.(tab));
   dismissLeaveHint();
   dismissTemplateRouteCoach();
   showSettingsListView();
@@ -8137,6 +8138,7 @@ window.nextTrainApp = {
   openJourneys,
   openRoutesLibrary,
   openJourneysLibrary,
+  ensureDeferredModulesReady,
   openJourneyDetail,
   openAppDialog,
   closeAppDialog,
