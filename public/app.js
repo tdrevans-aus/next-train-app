@@ -3784,6 +3784,18 @@ function resolveDepartureBoardSkip(data, { pinTrip = null, heroShowsPin = false,
   return boardSkip;
 }
 
+/**
+ * " · to <printed terminus>" when the chosen direction is a hub chip (FB-50) and the
+ * provider kept the train's own printed destination; empty for every other trip.
+ */
+function printedDestinationSuffix(trip) {
+  const printed = typeof trip?.printedDestination === "string" ? trip.printedDestination.trim() : "";
+  if (!printed || printed === String(trip?.destination ?? "").trim()) {
+    return "";
+  }
+  return ` · to ${printed}`;
+}
+
 function renderUpcomingDepartureBoard(data, skipCount = skipTrains) {
   const sectionEl = document.getElementById("upcoming-departures");
   const listEl = document.getElementById("upcoming-departures-list");
@@ -3823,7 +3835,7 @@ function renderUpcomingDepartureBoard(data, skipCount = skipTrains) {
     time.textContent = trip.displayTime ?? "—";
     const meta = document.createElement("span");
     meta.className = "upcoming-departures-meta";
-    meta.textContent = `Pl ${trip.platform ?? "—"} · ${trip.status ?? "On Time"}`;
+    meta.textContent = `Pl ${trip.platform ?? "—"} · ${trip.status ?? "On Time"}${printedDestinationSuffix(trip)}`;
     button.append(time, meta);
     item.appendChild(button);
     listEl.appendChild(item);
@@ -3926,7 +3938,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     renderDepartureCountdown(departCountdownEl, heroTrip);
   }
   if (departDisplayTimeEl) {
-    departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
+    departDisplayTimeEl.textContent = (heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime) + printedDestinationSuffix(heroTrip);
     departDisplayTimeEl.dataset.time = heroTrip.displayTime;
   }
 
@@ -4228,7 +4240,7 @@ function render(data, { stale = false } = {}) {
     }
   }
   if (departDisplayTimeEl) {
-    departDisplayTimeEl.textContent = heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime;
+    departDisplayTimeEl.textContent = (heroTrip.line ? `${heroTrip.displayTime} · ${heroTrip.line}` : heroTrip.displayTime) + printedDestinationSuffix(heroTrip);
     departDisplayTimeEl.dataset.time = heroTrip.displayTime;
   }
 
