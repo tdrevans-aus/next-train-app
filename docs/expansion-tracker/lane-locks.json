@@ -1,1 +1,8 @@
-{}
+{
+  "united-kingdom": {
+    "region": "liverpool-city-region",
+    "stage": "adapter",
+    "branch": null,
+    "locked_at": "2026-09-04T07:05:58.760Z"
+  }
+}

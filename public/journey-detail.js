@@ -1015,7 +1015,7 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
       ]);
     } else if (error?.reason === "feed_unavailable") {
       // A feed that throws unconditionally by design (e.g.
-      // MerseyrailFeedUnconfirmedError) — retrying can never help.
+      // MetrolinkFeedUnconfirmedError) — retrying can never help.
       replaceSelectOptions(selectEl, [
         { value: "", label: "This service isn’t available yet" },
       ]);

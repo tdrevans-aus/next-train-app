@@ -9,7 +9,6 @@
  */
 import { chromium } from "playwright";
 import { classifyDirectionsError } from "../api/directions.js";
-import { MerseyrailFeedUnconfirmedError } from "../lib/providers/liverpool-city-region.js";
 import { NetFeedUnconfirmedError } from "../lib/providers/east-midlands.js";
 import { MissingDarwinTokenError } from "../lib/providers/uk-darwin.js";
 import { MissingTfwmCredentialsError } from "../lib/providers/uk-metro-wm.js";
@@ -24,10 +23,6 @@ function assert(condition, message) {
 }
 
 // --- 1. Server-side classification: real adapter error classes, not guessed ---
-assert(
-  classifyDirectionsError(new MerseyrailFeedUnconfirmedError("Liverpool Lime Street")) === "feed_unavailable",
-  "MerseyrailFeedUnconfirmedError must classify as feed_unavailable"
-);
 assert(
   classifyDirectionsError(new NetFeedUnconfirmedError("Nottingham Station")) === "feed_unavailable",
   "NetFeedUnconfirmedError must classify as feed_unavailable"

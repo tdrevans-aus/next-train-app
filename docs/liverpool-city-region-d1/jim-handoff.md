@@ -257,3 +257,13 @@ Verify with `node qa/live-city-lists-sync.mjs` after all of the above — it der
 membership directly from the registry's `status === "live"` set and will catch any list that's
 missing `liverpool-city-region` or, just as importantly, any list where it was added too early
 relative to the others.
+
+---
+
+**4 Sep 2026 addendum:** see `docs/jim-brief-liverpool-merseyrail-via-darwin.md`. Merseyrail is
+Darwin-served (corrected from the "no confirmed public real-time feed" premise this handoff and
+the D1 pack were built on) and Lime Street's H1 doNotGroup split is closed as moot (Tim's option
+B — one catalog entry, one Darwin board). `MerseyrailFeedUnconfirmedError` is deleted; board
+eligibility is `in`, not `out-product`. The region was already live at the time of this addendum
+(flip predates this brief) — this was a normal branch PR against master, re-QA'd by Mark per this
+file's own instruction above, not a new flip.
