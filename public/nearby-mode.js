@@ -1817,6 +1817,9 @@ async function locateNearbyInBackground({ forceFresh = false, maximumAge } = {})
     const nearest = await deps.findNearestStation?.({
       forceFresh,
       allowSessionShortcut: false,
+      // followGps: Near me ignores the saved region and resolves in the GPS city —
+      // otherwise a Perth rider with Netherlands selected stays stuck on the cached station.
+      followGps: true,
       ...(typeof maximumAge === "number" ? { maximumAge } : {}),
     });
     // User may have left Near me (or started a newer locate) while GPS resolved.
