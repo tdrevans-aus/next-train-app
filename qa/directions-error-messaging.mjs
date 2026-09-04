@@ -51,6 +51,13 @@ async function run() {
     async function copyForMockedResponse(status, body) {
       const context = await browser.newContext();
       const page = await context.newPage();
+      // Diagnostics, printed only when this call comes back empty/wrong: the page
+      // console, uncaught page errors, navigations, and a trace of every
+      // replaceSelectOptions() call the app made (CI-only flake, see FAIL branch).
+      const pageLog = [];
+      page.on("console", (msg) => pageLog.push(`[console.${msg.type()}] ${msg.text()}`));
+      page.on("pageerror", (err) => pageLog.push(`[pageerror] ${err.message}`));
+      page.on("framenavigated", (frame) => pageLog.push(`[navigated] ${frame.url()}`));
       await page.route("**/api/directions**", (route) =>
         route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) })
       );
@@ -59,6 +66,18 @@ async function run() {
       );
       await page.goto(BASE);
       await page.waitForFunction(() => Boolean(window.nextTrainApp?.openJourneysLibrary));
+      await page.evaluate(() => {
+        const combobox = window.nextTrainStationCombobox;
+        const original = combobox.replaceSelectOptions;
+        window.__qaReplaceSelectOptionsTrace = [];
+        combobox.replaceSelectOptions = (selectEl, options) => {
+          window.__qaReplaceSelectOptionsTrace.push({
+            target: selectEl.id || selectEl.dataset.qaProbe || "?",
+            labels: options.map((opt) => opt.label),
+          });
+          return original(selectEl, options);
+        };
+      });
       // journey-detail.js is a deferred module (loaded after first paint) — opening the
       // journeys library kicks off loading it, but openJourneysLibrary() itself is
       // fire-and-forget for that (it must not block the UI paint on a slow chunk fetch).
@@ -69,29 +88,42 @@ async function run() {
       // function to merely exist.
       await page.evaluate(() => window.nextTrainApp.openJourneysLibrary());
       await page.evaluate(() => window.nextTrainApp.ensureDeferredModulesReady());
-      const label = await page.evaluate(async () => {
+      const result = await page.evaluate(async () => {
         const select = document.createElement("select");
+        select.dataset.qaProbe = "qa-probe-select";
         document.body.appendChild(select);
+        const moduleBefore = window.nextTrainJourneyDetail;
         await window.nextTrainJourneyDetail.loadDirectionsForSelect(select, "Some Station", null);
         const label = select.options[0]?.textContent ?? "";
+        const diagnostics = {
+          optionCount: select.options.length,
+          selectHtml: select.innerHTML,
+          moduleIdentityStable: moduleBefore === window.nextTrainJourneyDetail,
+          deferredReady: Boolean(window.NextTrainDeferred?._ready),
+          replaceSelectOptionsTrace: window.__qaReplaceSelectOptionsTrace,
+        };
         select.remove();
-        return label;
+        return { label, diagnostics };
       });
       await context.close();
-      return label;
+      return { label: result.label, diagnostics: { ...result.diagnostics, pageLog } };
     }
 
-    const genericFailureCopy = await copyForMockedResponse(500, { error: "boom" });
-    const feedUnavailableCopy = await copyForMockedResponse(500, {
+    const generic = await copyForMockedResponse(500, { error: "boom" });
+    const feedUnavailable = await copyForMockedResponse(500, {
       error: "Merseyrail has no confirmed public GTFS-RT feed",
       reason: "feed_unavailable",
     });
-    const missingConfigCopy = await copyForMockedResponse(500, {
+    const missingConfig = await copyForMockedResponse(500, {
       error: "DARWIN_LDB_TOKEN is not set",
       reason: "missing_config",
     });
-    const emptyResultCopy = await copyForMockedResponse(200, { directions: [] });
+    const emptyResult = await copyForMockedResponse(200, { directions: [] });
 
+    const genericFailureCopy = generic.label;
+    const feedUnavailableCopy = feedUnavailable.label;
+    const missingConfigCopy = missingConfig.label;
+    const emptyResultCopy = emptyResult.label;
     const results = { genericFailureCopy, feedUnavailableCopy, missingConfigCopy, emptyResultCopy };
 
     const pass =
@@ -107,6 +139,10 @@ async function run() {
 
     if (!pass) {
       console.error("FAIL", results);
+      for (const [name, call] of Object.entries({ generic, feedUnavailable, missingConfig, emptyResult })) {
+        console.error(`--- diagnostics: ${name} ---`);
+        console.error(JSON.stringify(call.diagnostics, null, 2));
+      }
       process.exit(1);
     }
     console.log("PASS directions-error-messaging: client-side copy per reason:", results);
