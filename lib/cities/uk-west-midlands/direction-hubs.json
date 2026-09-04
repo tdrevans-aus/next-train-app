@@ -1,0 +1,27 @@
+{
+  "region": "uk-west-midlands",
+  "notes": [
+    "A hub chip means 'every train that calls at filterCrs', fetched server-side via Darwin filterCrs/filterType=to.",
+    "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
+    "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
+    "Hub chips carry no operator suffix — several operators may call at the hub.",
+    "v1 scope: Kidderminster only (FB-50). Other West Midlands stations on this corridor (Hagley, Blakedown, Stourbridge Junction, Rowley Regis, etc.) are a proposal for Tim's review, not added here.",
+    "London Marylebone (Chiltern Railways) also calls at Snow Hill but is deliberately NOT absorbed — it keeps its own chip; its trains also appear under the Birmingham hub chip. See PR for Tim's confirmation."
+  ],
+  "hubs": [
+    {
+      "label": "Birmingham",
+      "filterCrs": "BMO",
+      "filterName": "Birmingham Moor Street",
+      "appliesFrom": ["KID"],
+      "absorbs": [
+        "Dorridge",
+        "Whitlocks End",
+        "Stratford-upon-Avon",
+        "Birmingham Snow Hill",
+        "Birmingham Moor Street"
+      ],
+      "reason": "Kidderminster's Worcester/Stratford-upon-Avon corridor through-runs past Birmingham; riders anchor on Birmingham. filterCrs corrected to BMO (Moor Street) from the brief's proposed BSH (Snow Hill) after live-probing on 4 Sep 2026: node scripts/probe-uk-board.mjs \"Kidderminster\" --region=uk-west-midlands --filter-crs=BSH returned 0 trips against real Darwin data, while --filter-crs=BMO returned all 8 Dorridge/Whitlocks End/Stratford-upon-Avon services on the board at that time (the exact absorbed set) — see PR for the full before/after transcript. Tim to confirm this correction."
+    }
+  ]
+}

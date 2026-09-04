@@ -49,7 +49,12 @@ import {
   listUkWestMidlandsDogfoodStations,
   getUkWestMidlandsDogfoodDirections,
   getUkWestMidlandsDogfoodNextTrain,
+  planUkWestMidlandsNextTrainFetch,
 } from "../lib/cities/uk-west-midlands/dogfood-next-train.js";
+import {
+  loadDirectionHubs,
+  applyDirectionHubs,
+} from "../lib/cities/uk-west-midlands/direction-hubs.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BHM = "Birmingham New Street";
@@ -144,6 +149,125 @@ assert(bhmEntries[0]?.mode === "train", "Birmingham New Street's dogfood entry m
 const grandCentralEntries = dogfoodStations.filter((s) => s.name === "Grand Central");
 assert(grandCentralEntries.length === 1, "Grand Central must appear once in the dogfood list (metro only)");
 assert(grandCentralEntries[0]?.mode === "metro", "Grand Central's dogfood entry must be mode metro");
+
+// Direction hub anchoring (FB-50, docs/jim-brief-uk-west-midlands-hub-anchoring.md).
+// Pure/data-only — no Darwin token needed for any of this section.
+
+// 1. direction-hubs.json loads and validates: BMO and KID resolve in the
+// catalog; absorbs strings carry no operator suffix (loadDirectionHubs()
+// throws if either check fails, so simply loading it successfully is the
+// assertion). filterCrs is BMO (Birmingham Moor Street), not the brief's
+// originally-proposed BSH (Snow Hill) — corrected after live-probing showed
+// Kidderminster's Dorridge/Whitlocks End/Stratford-upon-Avon services call
+// at Moor Street, not Snow Hill (BSH filter returned 0 trips against real
+// Darwin data; BMO returned all 8). See direction-hubs.json's "reason" field
+// and the PR description for the transcript; Tim to confirm.
+const { hubs } = loadDirectionHubs(UK_WEST_MIDLANDS_REGION);
+assert(hubs.length === 1, "uk-west-midlands direction-hubs.json must define exactly one hub for v1");
+const birminghamHub = hubs[0];
+assert(birminghamHub.label === "Birmingham", "v1 hub label must be Birmingham");
+assert(birminghamHub.filterCrs === "BMO", "v1 hub filterCrs must be BMO (Birmingham Moor Street) per live-probe correction");
+assert(
+  JSON.stringify(birminghamHub.appliesFrom) === JSON.stringify(["KID"]),
+  "v1 hub appliesFrom must be Kidderminster only"
+);
+for (const absorbed of birminghamHub.absorbs) {
+  assert(!/ \([^()]+\)$/.test(absorbed), `absorbs entry "${absorbed}" must not carry an operator suffix`);
+}
+assert(
+  birminghamHub.absorbs.includes("London Marylebone") === false,
+  "London Marylebone must NOT be absorbed — it keeps its own chip alongside the Birmingham hub chip"
+);
+
+// 2. applyDirectionHubs() with the brief's fixture chip set at KID.
+const fixtureChips = [
+  "Dorridge (West Midlands Railway)",
+  "Whitlocks End (West Midlands Railway)",
+  "Stratford-upon-Avon (West Midlands Railway)",
+  "Worcester Foregate Street (West Midlands Railway)",
+  "London Marylebone (Chiltern Railways)",
+];
+const kidChips = applyDirectionHubs(fixtureChips, "KID", hubs);
+assert(
+  JSON.stringify(kidChips) ===
+    JSON.stringify(["Birmingham", "London Marylebone (Chiltern Railways)", "Worcester Foregate Street (West Midlands Railway)"]),
+  `applyDirectionHubs at KID must absorb Dorridge/Whitlocks End/Stratford-upon-Avon under Birmingham, got ${JSON.stringify(kidChips)}`
+);
+
+// 3. The same fixture at BHM (not in appliesFrom) is returned unchanged (aside
+// from the existing localeCompare sort).
+const bhmChips = applyDirectionHubs(fixtureChips, "BHM", hubs);
+assert(
+  JSON.stringify(bhmChips) === JSON.stringify([...fixtureChips].sort((a, b) => a.localeCompare(b))),
+  `applyDirectionHubs at BHM (not appliesFrom) must return the fixture chips unchanged (sorted), got ${JSON.stringify(bhmChips)}`
+);
+
+// 4. planUkWestMidlandsNextTrainFetch() — pure routing decision table from the
+// brief, assertable without a Darwin token.
+const kidEntry = resolveRailEntry(KID, UK_WEST_MIDLANDS_REGION);
+const hubPlan = planUkWestMidlandsNextTrainFetch(kidEntry, "train", "Birmingham", hubs);
+assert(hubPlan.kind === "hub" && hubPlan.filterCrs === "BMO", "destination \"Birmingham\" at Kidderminster must route to the hub-filtered fetch (BMO)");
+
+const exactPlan = planUkWestMidlandsNextTrainFetch(
+  kidEntry,
+  "train",
+  "Birmingham New Street (West Midlands Railway)",
+  hubs
+);
+assert(
+  exactPlan.kind === "exact" && exactPlan.filterCrs === "BHM",
+  "an exact chip resolving to an in-catalog station must route to the exact-CRS-filtered fetch"
+);
+
+// 5. An unresolvable exact chip (out-of-region destination) falls back to the
+// undirected path.
+const undirectedPlan = planUkWestMidlandsNextTrainFetch(
+  kidEntry,
+  "train",
+  "London Euston (Avanti West Coast)",
+  hubs
+);
+assert(undirectedPlan.kind === "undirected", "an unresolvable exact chip must fall back to the undirected path");
+
+// Metro mode never consults the hub file, even for a station that happens to
+// share a CRS-shaped resolution — mode "metro" short-circuits to undirected.
+const metroPlan = planUkWestMidlandsNextTrainFetch(kidEntry, "metro", "Birmingham", hubs);
+assert(metroPlan.kind === "undirected", "metro mode must never route through the rail-only hub file");
+
+// End-to-end (token-tolerant): calling getUkWestMidlandsDogfoodNextTrain with
+// destination "Birmingham" at Kidderminster must exercise the hub-filtered
+// fetch path — either a real payload (DARWIN_LDB_TOKEN set) or
+// MissingDarwinTokenError (not set), same tolerance as the directions probe
+// above. Either way it must not silently succeed with fabricated data.
+async function probeHubNextTrain() {
+  try {
+    return {
+      ok: true,
+      payload: await getUkWestMidlandsDogfoodNextTrain({ station: KID, destination: "Birmingham" }),
+    };
+  } catch (err) {
+    if (err instanceof MissingDarwinTokenError) {
+      return { ok: false, blocked: true };
+    }
+    throw err;
+  }
+}
+const hubNextTrainProbe = await probeHubNextTrain();
+if (hubNextTrainProbe.ok) {
+  const { payload } = hubNextTrainProbe;
+  assert(payload.config.destination === "Birmingham", "hub next-train payload destination must be Birmingham");
+  for (const trip of payload.upcoming ?? []) {
+    assert(trip.destination === "Birmingham", "every upcoming trip's destination must be remapped to the hub label");
+    assert(
+      typeof trip.printedDestination === "string" && trip.printedDestination.length > 0,
+      "every upcoming trip must carry a populated printedDestination (the Darwin-printed destination before remap)"
+    );
+  }
+} else {
+  console.log(
+    "uk-west-midlands-dogfood-gate: DARWIN_LDB_TOKEN not set — hub next-train end-to-end payload not exercised here (routing itself is proven token-free above via planUkWestMidlandsNextTrainFetch)."
+  );
+}
 
 // National Rail board calls: real if DARWIN_LDB_TOKEN is set in this environment
 // (Vercel prod), MissingDarwinTokenError if not (expected in most local/CI
@@ -290,5 +414,5 @@ if (previousProbeFlag === undefined) {
 }
 
 console.log(
-  "uk-west-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, oracle report present, 75 rail + 35 metro stations, Birmingham New Street/Grand Central mode-aware resolution (no shared printed name, unlike Nottingham Station), Kidderminster rail-only with Severn Valley Railway excluded, National Rail directions derived live from Darwin with no static line map, Metro dispatch correctly surfaces MissingTfwmCredentialsError rather than fabricating a schedule, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL/West of England/East Midlands stay green)"
+  "uk-west-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, oracle report present, 75 rail + 35 metro stations, Birmingham New Street/Grand Central mode-aware resolution (no shared printed name, unlike Nottingham Station), Kidderminster rail-only with Severn Valley Railway excluded, National Rail directions derived live from Darwin with no static line map, Metro dispatch correctly surfaces MissingTfwmCredentialsError rather than fabricating a schedule, direction-hubs.json loads/validates and Kidderminster->Birmingham hub anchoring collapses Dorridge/Whitlocks End/Stratford-upon-Avon without touching Marylebone or non-appliesFrom stations, next-train routing table (hub/exact/undirected) proven token-free via planUkWestMidlandsNextTrainFetch, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL/West of England/East Midlands stay green)"
 );
