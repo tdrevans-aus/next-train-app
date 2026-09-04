@@ -116,6 +116,7 @@ const SMOKE_SCRIPTS = [
   "edinburgh-planned-gate.mjs",
   "solent-dogfood-gate.mjs",
   "thames-valley-dogfood-gate.mjs",
+  "greater-anglia-dogfood-gate.mjs",
   "greater-manchester-planned-gate.mjs",
   "cumbria-planned-gate.mjs",
   "liverpool-city-region-dogfood-gate.mjs",

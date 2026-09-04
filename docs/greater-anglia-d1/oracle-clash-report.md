@@ -8,7 +8,7 @@
 
 **Through-running operators at Greater Anglia stations (boundary & shared-platform context):**
 - **Thameslink** at Cambridge (CBG) and Peterborough (PBO): no compulsory reservations, open seating — `in`
-- **LNER** at Peterborough: reserved-by-default policy (skip risk flagged; same policy question as London & South East oracle, line 128–129) — `undecided` pending operator confirmation
+- **LNER** at Peterborough: reserved-by-default policy (skip risk flagged; same policy question as London & South East oracle, line 128–129) — `in` pending operator confirmation
 - **CrossCountry** at Peterborough/Ely corridor (Hereward Line): optional reservations only, walk-up boardable — `in`
 - **East Midlands** at Peterborough (EMR services to Norwich/Liverpool direction): optional reservation policy, walk-up available — `in`
 - **Liverpool Street (London & South East National Rail boundary):** Greater Anglia services calling at Liverpool Street are already documented in London & South East oracle (line 23 explicitly names Greater Anglia as separate region, line 152 marks Greater Anglia Liverpool Street services as `in`). Do not re-document Liverpool Street group; reference as boundary/through-running point only.
@@ -54,7 +54,7 @@
 - **Thameslink at Cambridge and Peterborough:** `in` (no reservations available; open seating; walk-up boardable)
 - **CrossCountry at Peterborough/Ely (Hereward Line):** `in` (optional reservations only; walk-up boardable)
 - **East Midlands at Peterborough:** `in` (optional reservations; walk-up boardable)
-- **LNER at Peterborough:** `undecided` (reserved-by-default company policy; maintains one unreserved carriage per service but policy is compulsory-default; **skip risk flagged** — requires operator confirmation whether one unreserved carriage constitutes walk-up boardable [in] or compulsory-default [out-reservation] before D1 lock)
+- **LNER at Peterborough:** `in` (reserved-by-default company policy; maintains one unreserved carriage per service but policy is compulsory-default; **skip risk flagged** — requires operator confirmation whether one unreserved carriage constitutes walk-up boardable [in] or compulsory-default [out-reservation] before D1 lock)
 
 **No check-in barriers:** Platform access at all in-catalog Greater Anglia stations is unrestricted. Ticket checking is on-board by conductors or low-level gating (not airport-style). Walk-up boarding is unobstructed for all `in` services listed above.
 
@@ -66,7 +66,7 @@
 | **Thameslink (Cambridge, Peterborough)** | Cambridge, Peterborough (Thameslink cross-London route via Ely/Cambridge branch) | No (no reservations available; open seating mandatory) | No | `in` | [Thameslink station information: Cambridge](https://www.thameslinkrailway.com/travel-information/station-information/CBG/cambridge); [RailUK Forums: Thameslink reservations](https://www.railforums.co.uk/threads/thameslink-seat-reservations.222628/) — no seat reservations offered; walk-up, first-come-first-served |
 | **CrossCountry (Peterborough, Ely, via Hereward Line)** | Peterborough, Ely, intermediate stations on Hereward Line (Ely–Peterborough regional service) | No (optional only; walk-up available) | No | `in` | [CrossCountry seat reservations policy](https://www.crosscountrytrains.co.uk/); walk-up boardable; compulsory only on Birmingham–Wolverhampton service (not relevant to this region) |
 | **East Midlands Railway (Peterborough)** | Peterborough (East Coast Main Line, Norwich–Liverpool direction; shared platform with Thameslink/LNER) | No (optional only; walk-up available) | No | `in` | [East Midlands Trains travel information](https://www.eastmidlandstrains.co.uk/); walk-up boarding available on regional services |
-| **LNER (Peterborough only)** | Peterborough (East Coast Main Line, King's Cross direction; shared platform with Greater Anglia/Thameslink/East Midlands) | **Yes (compulsory default policy, BUT one unreserved carriage maintained per service; SKIP RISK)** | No | `undecided` | [LNER reservations policy](https://www.lner.co.uk/); [RailUK Forum: LNER mandatory reservations](https://www.railforums.co.uk/); **Verify whether one unreserved carriage = walk-up boardable (in) or compulsory-default = out-reservation before D1. Same skip risk as London & South East oracle (line 128–129).** |
+| **LNER (Peterborough only)** | Peterborough (East Coast Main Line, King's Cross direction; shared platform with Greater Anglia/Thameslink/East Midlands) | No (reserved-by-default, but an unreserved coach is always available and walk-up boarding is permitted — resolved 5 Sep 2026) | No | `in` | [LNER reservations policy](https://www.lner.co.uk/); [RailUK Forum: LNER mandatory reservations](https://www.railforums.co.uk/); **Verify whether one unreserved carriage = walk-up boardable (in) or compulsory-default = out-reservation before D1. Same skip risk as London & South East oracle (line 128–129).** |
 
 **Board eligibility summary:** All Greater Anglia regional/InterCity services (no compulsory reservation) and through-running services at secondary hubs (Thameslink, CrossCountry, East Midlands) pass both boarding-contract tests at their respective in-catalog stations. LNER verdict **undecided** pending operator confirmation on unreserved-carriage walk-up policy (same issue as London & South East). **All verdicts recorded; no silent omissions.** Peterborough's through-running services (LNER, East Midlands) are marked undecided (LNER) or in (East Midlands, CrossCountry, Thameslink); the platform is shared but services are cross-regional — each service's verdict applies regardless of platform location.
 
@@ -80,7 +80,7 @@
 1. **Hub-lock works:** Norwich is a clean single terminus with one operator (Greater Anglia). No multi-terminus complexity like London & South East.
 2. **Secondary hubs as through-routing stations:** Cambridge, Ipswich, Peterborough are on main corridors, not independent termini. Boards at these stations must show all services passing through (Greater Anglia, Thameslink, CrossCountry, East Midlands, LNER if verdict resolved).
 3. **Boundary/through-running handling:** Peterborough is an East Anglia/East Midlands/LNER boundary station. Services cross region boundaries; greater region's adapter must not filter out East Midlands or LNER services at Peterborough (those are handled by downstream regions' rules). **Flag for multi-region ledger at D2** (cross-regional services at shared platforms).
-4. **Board eligibility filtering:** LNER at Peterborough must be explicitly excluded or marked undecided pending operator confirmation. East Midlands, CrossCountry, Thameslink pass both tests — include on boards.
+4. **Board eligibility filtering:** LNER at Peterborough: verdict resolved `in` on 5 Sep 2026 (see Verdict resolution below); the earlier exclusion rested only on the open verdict. East Midlands, CrossCountry, Thameslink pass both tests — include on boards.
 5. **Real-time filtering complexity:** Darwin API returns all UK services; adapter must filter by:
    - **Greater Anglia agency** (primary filter)
    - **Station code (CRS)** — Norwich (NRW), Cambridge (CBG), Ipswich (IPS), Colchester (COL), Peterborough (PBO), Ely, King's Lynn, Thetford, etc.
@@ -100,7 +100,7 @@
 - **LDB Webservice (JSON API):** `https://api.darwin.nationalrail.co.uk/api/v3/ldb/{crs}` (requires DARWIN_LDB_TOKEN, registered on RDM)
 - **Covers:** All in-catalog Greater Anglia stations (OpenLDBWS covers entire GB network; adapter filters by station code: NRW, CBG, IPS, COL, PBO, etc.)
 - **Latency:** ~1 minute (confirmed per South Wales oracle)
-- **Station codes required:** NRW (Norwich), CBG (Cambridge), IPS (Ipswich), COL (Colchester), PBO (Peterborough), ELY, KLY (King's Lynn), THF (Thetford), YRD (Great Yarmouth), LST (Lowestoft), SSD (Stansted Airport), BST (Bishops Stortford), and others per final D1 scope selection
+- **Station codes required:** NRW (Norwich), CBG (Cambridge), IPS (Ipswich), COL (Colchester), PBO (Peterborough), ELY, KLN (King's Lynn), TTF (Thetford), GYM (Great Yarmouth), LST (Lowestoft), SSD (Stansted Airport), BIS (Bishops Stortford), and others per final D1 scope selection
 
 **TimeZone:** Europe/London (UTC±0, DST last Sunday March / October per UK rules)
 
@@ -133,11 +133,11 @@
 4. **Static GTFS:** Transitland `f-gc-rail~delivery~group~planar~gtfs` covers all GB National Rail. Adapter filters by:
    - **Greater Anglia agency_id** (primary)
    - **Geography:** Norwich, Cambridge, Ipswich, Colchester, Peterborough, Ely, King's Lynn, and 150+ franchise stations (confirm final D1 selection with Luke)
-   - **Board eligibility:** Include Greater Anglia, Thameslink (Cambridge, Peterborough), CrossCountry (Hereward Line), East Midlands (Peterborough). Exclude or mark undecided: LNER (reserved-policy skip risk pending operator confirmation).
+   - **Board eligibility:** Include Greater Anglia, Thameslink (Cambridge, Peterborough), CrossCountry (Hereward Line), East Midlands (Peterborough). LNER at Peterborough resolved `in` on 5 Sep 2026 (see Verdict resolution).
 
 5. **Real-time (Darwin):** Account-level blocker must be unblocked first (Tim re-registering EvansAppStudio on RDM with UK address). Once DARWIN_LDB_TOKEN provisioned, use LDB Webservice JSON API for live departures. Filter by station code (CRS; NRW, CBG, IPS, COL, PBO, etc.). Latency ~1 minute. Note: Peterborough is shared with LNER/East Midlands; don't filter out through-running services.
 
-6. **Board eligibility:** All Greater Anglia services pass both tests (no compulsory reservation). Thameslink, CrossCountry, East Midlands at shared platforms also pass. LNER at Peterborough is `undecided` — requires operator confirmation on unreserved-carriage walk-up policy before D1 lock (same skip risk as London & South East oracle, line 128–129).
+6. **Board eligibility:** All Greater Anglia services pass both tests (no compulsory reservation). Thameslink, CrossCountry, East Midlands at shared platforms also pass. LNER at Peterborough is `in` — requires operator confirmation on unreserved-carriage walk-up policy before D1 lock (same skip risk as London & South East oracle, line 128–129).
 
 7. **Through-running boundary handling:**
    - **Liverpool Street (London & South East boundary):** Already documented in London & South East oracle (line 23 names Greater Anglia as separate region, line 152 marks Greater Anglia at Liverpool Street as `in`). Do not re-document. Greater Anglia services from Liverpool Street are the London & South East region's responsibility; they don't re-enter this region's scope.
@@ -183,3 +183,15 @@
 ---
 
 **Nico's final note on skip risks:** No major blockers identified beyond the account-level Darwin unblock (same pattern across all UK regions this wave) and the LNER reserved-policy question (same skip risk as London & South East; requires operator confirmation, not a feed problem). Static GTFS is live and verified. Regional scope is coherent (single operator, single terminus hub, clear boundaries with East Midlands/LNER at Peterborough and London & South East at Liverpool Street). This region is buildable once Darwin account is unblocked and LNER policy is confirmed.
+
+### Verdict resolution — LNER at Peterborough (5 Sep 2026, Fable, top-level session)
+
+The rows above previously marked undecided are resolved to **`in`**. LNER's own guidance: reservations are free and
+recommended, but "unreserved seating is available in Coach C for standard class and Coach M for First
+Class" on a first-come, first-served basis, and passengers without a reservation may board and stand —
+there is no compulsory reservation and no check-in barrier. Evidence:
+[LNER — Make a seat reservation](https://www.lner.co.uk/travel-information/make-a-reservation/) and
+LNER's public reply on X (unreserved Coach C / Coach M). This matches the `in` verdict already recorded
+for LNER at Leeds in `docs/west-yorkshire-d1/oracle-clash-report.md`, so the two regions are consistent
+(a UK ledger item once one exists). Whether LNER services appear on Peterborough's board is therefore
+governed only by this pack's `excludeOperators` boundary rule, not by eligibility.
