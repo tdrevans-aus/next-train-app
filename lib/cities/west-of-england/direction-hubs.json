@@ -1,0 +1,30 @@
+{
+  "region": "west-of-england",
+  "notes": [
+    "A hub chip means 'every train that calls at filterCrs', fetched server-side via Darwin filterCrs/filterType=to.",
+    "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
+    "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
+    "Hub chips carry no operator suffix — several operators may call at the hub.",
+    "Live-probed 4 Sep 2026 (docs/jim-brief-fb51-west-of-england.md and the PR) with scripts/probe-uk-board.mjs --filter-crs=BRI: Bath Spa filtered to calls-at-BRI returned Gloucester, Weston-super-Mare, Bristol Temple Meads and Cardiff Central (12 trips); Westbury filtered to calls-at-BRI returned Bristol Temple Meads, Gloucester and Cardiff Central (7 trips). Every westbound train from Bath/Westbury runs via Temple Meads, so riders on this corridor anchor on Bristol rather than the eventual terminus.",
+    "Weston-super-Mare was not in the brief's proposed candidate list (Cheltenham Spa, Avonmouth and Severn Beach were, in its place) but the live BTH-filtered board actually showed it and did not show the other three — per the brief's own rule ('if the filtered board contains a terminus, it is a candidate; if it doesn't, it isn't'), Weston-super-Mare is included and Cheltenham Spa/Avonmouth/Severn Beach are not. Flagged for Tim's explicit sign-off in the PR since it departs from the proposed table.",
+    "Do NOT add hubs at Bristol Temple Meads, Gloucester, Chepstow or Taunton (brief, 4 Sep 2026): Bristol Temple Meads and Gloucester are themselves fan-out termini/hubs, not through-stations that need anchoring; Chepstow and Taunton's boards reach Bristol only on some services and their chips are recognisable termini in their own right."
+  ],
+  "hubs": [
+    {
+      "label": "Bristol Temple Meads",
+      "filterCrs": "BRI",
+      "filterName": "Bristol Temple Meads",
+      "appliesFrom": [
+        "BTH",
+        "WSB"
+      ],
+      "absorbs": [
+        "Bristol Temple Meads",
+        "Cardiff Central",
+        "Gloucester",
+        "Weston-super-Mare"
+      ],
+      "reason": "From Bath Spa and Westbury every westbound train runs via Temple Meads (Portsmouth Harbour-Cardiff Central and Cardiff Central-bound GWR services, Bath-Gloucester locals, and the Weston-super-Mare branch all call at Bristol Temple Meads); riders anchor on Bristol rather than the eventual printed terminus."
+    }
+  ]
+}

@@ -41,7 +41,9 @@ import {
   listWestOfEnglandDogfoodStations,
   getWestOfEnglandDogfoodDirections,
   getWestOfEnglandDogfoodNextTrain,
+  planWestOfEnglandNextTrainFetch,
 } from "../lib/cities/west-of-england/dogfood-next-train.js";
+import { loadDirectionHubs, applyDirectionHubs } from "../lib/cities/uk/direction-hubs.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -128,6 +130,79 @@ const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(WEST_OF_ENGLAND_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodNames.has(WEST_OF_ENGLAND_SECONDARY_HUB), "secondary hub must be listed by the dogfood harness");
 
+// Direction hub anchoring (FB-51, docs/jim-brief-fb51-west-of-england.md) — West
+// of England is on the shared lib/cities/uk/direction-hubs.js helper. Token-free:
+// hub file load/validation, applyDirectionHubs() and the pure planner are all
+// data-only.
+const { hubs: woeHubs } = loadDirectionHubs(WEST_OF_ENGLAND_REGION);
+assert(woeHubs.length === 1, "west-of-england direction-hubs.json must define exactly one hub for v1");
+const bristolHub = woeHubs[0];
+assert(bristolHub.label === WEST_OF_ENGLAND_HUB, `the v1 hub label must be ${WEST_OF_ENGLAND_HUB}`);
+assert(bristolHub.filterCrs === "BRI", "the Bristol Temple Meads hub filterCrs must be BRI");
+assert(
+  JSON.stringify([...bristolHub.appliesFrom].sort()) === JSON.stringify(["BTH", "WSB"]),
+  `Bristol Temple Meads hub appliesFrom must be exactly [BTH, WSB], got ${JSON.stringify(bristolHub.appliesFrom)}`
+);
+
+// applyDirectionHubs() with the brief's live-probed Bath Spa chip set (filtered
+// to calls-at-BRI, plus London Paddington which does not call at BRI from BTH
+// and must keep its own chip).
+const bthChips = [
+  "Bristol Temple Meads (Great Western Railway)",
+  "Cardiff Central (Great Western Railway)",
+  "Frome (Great Western Railway)",
+  "Gloucester (Great Western Railway)",
+  "London Paddington (Great Western Railway)",
+  "Oxford (Great Western Railway)",
+  "Weston-super-Mare (Great Western Railway)",
+];
+const bthResult = applyDirectionHubs(bthChips, "BTH", woeHubs);
+assert(
+  JSON.stringify(bthResult) ===
+    JSON.stringify([
+      "Bristol Temple Meads",
+      "Frome (Great Western Railway)",
+      "London Paddington (Great Western Railway)",
+      "Oxford (Great Western Railway)",
+    ]),
+  `applyDirectionHubs at BTH must absorb Cardiff Central/Gloucester/Weston-super-Mare under Bristol Temple Meads and keep Frome/Paddington/Oxford separate, got ${JSON.stringify(bthResult)}`
+);
+
+// Same fixture at BRI (not in appliesFrom) must be returned unchanged (sorted).
+const briResult = applyDirectionHubs(bthChips, "BRI", woeHubs);
+assert(
+  JSON.stringify(briResult) === JSON.stringify([...bthChips].sort((a, b) => a.localeCompare(b))),
+  `applyDirectionHubs at BRI (not appliesFrom) must return the fixture chips unchanged (sorted), got ${JSON.stringify(briResult)}`
+);
+
+// planWestOfEnglandNextTrainFetch() — pure routing decision table, token-free.
+const bthEntry = resolveCatalogEntry(WEST_OF_ENGLAND_SECONDARY_HUB);
+const briEntry = resolveCatalogEntry(WEST_OF_ENGLAND_HUB);
+const hubPlan = planWestOfEnglandNextTrainFetch(bthEntry, WEST_OF_ENGLAND_HUB, woeHubs);
+assert(
+  hubPlan.kind === "hub" && hubPlan.filterCrs === "BRI",
+  `planWestOfEnglandNextTrainFetch at BTH for "${WEST_OF_ENGLAND_HUB}" must be a hub plan filtered to BRI, got ${JSON.stringify(hubPlan)}`
+);
+
+// The exact-chip path must fire for an out-of-region terminus via the national
+// rail-crs-index fallback — this is the sparse-results fix at Bristol Temple
+// Meads itself.
+const exactPlan = planWestOfEnglandNextTrainFetch(
+  briEntry,
+  "London Paddington (Great Western Railway)",
+  woeHubs
+);
+assert(
+  exactPlan.kind === "exact" && exactPlan.filterCrs === "PAD",
+  `planWestOfEnglandNextTrainFetch at Bristol Temple Meads for London Paddington must be an exact plan filtered to PAD, got ${JSON.stringify(exactPlan)}`
+);
+
+const undirectedPlan = planWestOfEnglandNextTrainFetch(briEntry, "Nowhere (X)", woeHubs);
+assert(
+  undirectedPlan.kind === "undirected",
+  `planWestOfEnglandNextTrainFetch for an unresolvable destination must be undirected, got ${JSON.stringify(undirectedPlan)}`
+);
+
 // Board calls: real if DARWIN_LDB_TOKEN is set in this environment (Vercel prod),
 // MissingDarwinTokenError if not (expected in most local/CI sandboxes — the token
 // is an env secret, not something this gate provisions). Either outcome is
@@ -158,6 +233,37 @@ if (hubProbe.ok) {
     "live-city-api dispatch must return the same chips as the dogfood harness"
   );
   assert(dispatched.source === "west-of-england-darwin-live", "live-city-api dispatch source must be west-of-england-darwin-live");
+
+  // End-to-end hub/exact next-train, with token: both paths must return trips
+  // with printedDestination populated (FB-51).
+  const hubNextTrain = await getWestOfEnglandDogfoodNextTrain({
+    station: WEST_OF_ENGLAND_SECONDARY_HUB,
+    destination: WEST_OF_ENGLAND_HUB,
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+  assert(hubNextTrain.config?.destination === WEST_OF_ENGLAND_HUB, "hub next-train destination must be the hub label Bristol Temple Meads");
+  for (const trip of hubNextTrain.upcoming ?? []) {
+    assert(typeof trip.printedDestination === "string" && trip.printedDestination.length > 0, "hub next-train trips must carry printedDestination");
+  }
+
+  const padChip = hubProbe.pack.directions.find((chip) => chip.startsWith("London Paddington"));
+  if (padChip) {
+    const exactNextTrain = await getWestOfEnglandDogfoodNextTrain({
+      station: WEST_OF_ENGLAND_HUB,
+      destination: padChip,
+      leaveBeforeMinutes: 5,
+      refreshSeconds: 60,
+    });
+    assert(exactNextTrain.config?.destination === padChip, "exact-chip next-train destination must equal the chosen chip");
+    for (const trip of exactNextTrain.upcoming ?? []) {
+      assert(typeof trip.printedDestination === "string" && trip.printedDestination.length > 0, "exact-chip next-train trips must carry printedDestination");
+    }
+  } else {
+    console.log(
+      "west-of-england-dogfood-gate: no London Paddington chip in this live sample at Bristol Temple Meads — exact-chip end-to-end check skipped (hub-path end-to-end above still exercised)."
+    );
+  }
 } else {
   console.log(
     "west-of-england-dogfood-gate: DARWIN_LDB_TOKEN not set in this environment — dispatch/live-derivation shape not exercised against a real payload here (expected outside Vercel prod)."
@@ -217,5 +323,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "west-of-england-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 6 rail-only stations, no doNotGroup at BRI/BTH, boundary through-running stations catalogued flat, directions derived live from Darwin with no static line map, Perth/London TfL stay green)"
+  "west-of-england-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 6 rail-only stations, no doNotGroup at BRI/BTH, boundary through-running stations catalogued flat, directions derived live from Darwin with no static line map, direction-hubs.json loads/validates and Bath Spa/Westbury->Bristol Temple Meads hub anchoring collapses the Cardiff Central/Gloucester/Weston-super-Mare through-running chips while keeping Frome/Paddington/Oxford separate, exact-chip routing table (hub/exact/undirected) proven token-free via planWestOfEnglandNextTrainFetch with the national rail-crs-index fallback for out-of-region termini, Perth/London TfL stay green)"
 );
