@@ -14,7 +14,7 @@ import {
  * jim-brief-directions-error-messaging: distinguish "retrying could help"
  * from "retrying can never help" without the client needing to know every
  * adapter's error class. lib/providers/* consistently sets `error.name` to
- * the thrown class's own name (see e.g. MerseyrailFeedUnconfirmedError,
+ * the thrown class's own name (see e.g. NetFeedUnconfirmedError,
  * MissingDarwinTokenError) — that name doesn't otherwise survive the HTTP
  * round-trip (the client only ever saw `error.message` before this), so
  * surface a coarse, generic `reason` alongside the existing message rather
@@ -25,13 +25,14 @@ import {
  * MissingProviderApiKeyError, MissingActGtfsCredentialsError,
  * MissingTflAppKeyError, MissingActGtfsCredentialsError) is an operator
  * config problem, not a rider one. Every other named adapter error thrown
- * unconditionally by design (MerseyrailFeedUnconfirmedError,
- * NetFeedUnconfirmedError, MetrolinkFeedUnconfirmedError,
- * SupertramFeedUnconfirmedError, EdinburghTramsFeedUnverifiedError,
- * GlasgowSubwayFeedUnverifiedError, MetroGtfsTooLargeError, ...) means this
- * feed will never return data until a real one exists — retrying can't help
- * either. An unnamed/generic Error (network hiccup, transient upstream
- * failure) keeps the existing "try again" treatment.
+ * unconditionally by design (NetFeedUnconfirmedError,
+ * MetrolinkFeedUnconfirmedError, SupertramFeedUnconfirmedError,
+ * EdinburghTramsFeedUnverifiedError, GlasgowSubwayFeedUnverifiedError,
+ * MetroGtfsTooLargeError, ...) means this feed will never return data until
+ * a real one exists — retrying can't help either. An unnamed/generic Error
+ * (network hiccup, transient upstream failure) keeps the existing "try
+ * again" treatment. Liverpool City Region's Merseyrail no longer has such
+ * an error — see docs/jim-brief-liverpool-merseyrail-via-darwin.md.
  */
 export function classifyDirectionsError(error) {
   const name = String(error?.name || "");

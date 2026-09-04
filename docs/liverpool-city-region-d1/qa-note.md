@@ -97,3 +97,14 @@ This releases the UK lane for the next region (if any queued) after this PR merg
 ## Summary
 
 **All checks PASS.** National Rail live via Darwin OpenLDBWS (REST rewrite, PR #188, UK registration authorized 2 Sep 2026). Merseyrail schedule-only with explicit error-surfacing (real-time unconfirmed, static confirmed via Transitland). H1 structural ambiguity at Lime Street preserved as two separate stationGroups (unresolved, not settled). Board eligibility verdicts recorded and verified at Liverpool Lime Street. Merseyrail real-time gap is known/permanent, not a blocker. No ledger exists (overdue, separate future PR). Ready for live.
+
+---
+
+**4 Sep 2026 correction (Jim, docs/jim-brief-liverpool-merseyrail-via-darwin.md):** the Merseyrail
+"KNOWN PERMANENT GAP" verdict above and the H1 doNotGroup preservation below are both superseded.
+Merseyrail is Darwin-served (probed live: Ellesmere Port, Liverpool Central, Moorfields, Lime
+Street all returned Merseyrail trips with platform + status); `MerseyrailFeedUnconfirmedError` is
+deleted and board eligibility is `in`. Lime Street's H1 doNotGroup split is closed as moot (Tim's
+option B, 4 Sep 2026) — one catalog entry, one Darwin board. This history section is kept for
+record, not deleted; Mark re-QAs this branch per the normal PR process (region already live, not a
+new flip).
