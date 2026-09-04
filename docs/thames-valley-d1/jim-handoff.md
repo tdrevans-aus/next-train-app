@@ -40,7 +40,7 @@ Five through-running-only points, none are merge/hub candidates at D1:
   (Southampton/Portsmouth) share the platform, separate franchises. Already flagged reciprocally in
   both those regions' finished packs (`west-of-england-d1/published-network.json`,
   `solent-d1/published-network.json`) — consistent with this pack.
-- **Henley-on-Thames (HEY)** — GWR branch, single operator, no through-running.
+- **Henley-on-Thames (HOT)** — GWR branch, single operator, no through-running.
 - **Didcot Parkway (DID)** — GWR main line, Cotswold Line connection point, single operator.
 
 **London Paddington (PAD) and London Marylebone (MYB)** are the two London termini Thames Valley's
@@ -108,3 +108,13 @@ wiring of `DARWIN_LDB_TOKEN`, no reading of any other city's in-progress (unfini
 of England, Solent, and london-se-national-rail's finished `published-network.json` files were read
 only for the specific Westbury/Paddington-Marylebone reciprocal-flag consistency check the dispatch
 instruction named, not for general context.
+
+## 5 Sep 2026 — pre-adapter hygiene (Fable, top-level session)
+
+- **CRS codes verified live against Darwin** with `scripts/fix-uk-region-crs.mjs thames-valley --write`:
+  Henley-on-Thames was HEY (a 400 at Darwin) and is now **HOT**; the other seven entries were right
+  (Oxford's two operator-split entries both resolve to OXF as designed). Corrected in `stations.json`,
+  `published-network.json`, this pack's prose and the planned gate; coordinates filled from NaPTAN
+  where missing. The adapter gate must carry the token-gated catalog sweep so this cannot regress.
+- `DARWIN_LDB_TOKEN` exists (live since 2 Sep 2026); the account-level blocker framing above is
+  resolved. Board eligibility section present, no `undecided` rows.

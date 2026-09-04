@@ -89,7 +89,7 @@ const railStations = listNationalRailStations();
 // Reading + 2 Oxford sub-boards + Swindon + Banbury + Westbury + Henley-on-Thames + Didcot Parkway = 8.
 assert(railStations.length === 8, `catalog must have 8 boards, got ${railStations.length}`);
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["RDG", "OXF", "SWI", "BAN", "WSB", "HEY", "DID"]) {
+for (const crs of ["RDG", "OXF", "SWI", "BAN", "WSB", "HOT", "DID"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
 assert(getNotInRegion(THAMES_VALLEY_REGION).length === 0, "thames-valley has no deliberate exclusions recorded");
@@ -133,7 +133,7 @@ for (const [name, crs] of [
   ["Swindon", "SWI"],
   ["Banbury", "BAN"],
   ["Westbury", "WSB"],
-  ["Henley-on-Thames", "HEY"],
+  ["Henley-on-Thames", "HOT"],
   ["Didcot Parkway", "DID"],
 ]) {
   const hit = resolveCatalogEntry(name);
