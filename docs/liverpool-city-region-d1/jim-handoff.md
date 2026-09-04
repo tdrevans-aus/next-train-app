@@ -1,3 +1,41 @@
+## RESCOPED 4 Sep 2026 — full-network rescope, read this before rewiring
+
+**The catalog grew from 6 stations to 98 (29 National Rail + 69 Merseyrail).** This happened
+*after* the city was already flipped live (commit `222f89a`, `#194` currently open/merged on the
+old 6-station shape — see qa-note.md's sign-off for that flip). **`#194` (or whatever the flip PR
+built on the 6-station catalog is called) must be superseded, not merged as-is** — a fresh QA pass
+and, if needed, a fresh flip PR must run against this 98-station catalog before anyone treats the
+old flip as final. Full before/after detail, sourcing (ORR Table 6329 + NaPTAN, not the DFT Bus
+Open Data precedent the brief initially suggested — that precedent doesn't apply here, see below),
+and the one real unsourced gap: `docs/liverpool-city-region-d1/rescope-addendum.md`.
+
+**What Jim needs to re-check against the new 98-station catalog:**
+
+1. **`lib/providers/liverpool-city-region.js` and `lib/cities/liverpool-city-region/dogfood-
+   next-train.js` are generic** — they call `listRailStations`/`listMetroStops`/
+   `listCatalogStations` from `lib/providers/uk/catalog.js`, which derives counts directly from
+   `stations.json`. No hand-written station lists exist in either file, so **no code change should
+   be needed there** for the count to update — verify this holds (it did when this rescope ran
+   `node qa/liverpool-city-region-dogfood-gate.mjs` and `node qa/uk-region-catalog-conformance.mjs`,
+   both green after only updating the two gates' own hardcoded count assertions).
+2. **`marketing-directions.js`'s `marketingLabelsForStation()`** still only generates chips for the
+   originally-named termini/interchanges (Ellesmere Port, Liverpool Central, Moorfields). The
+   rescope did not extend it to the five newly-catalogued named termini (Southport, Ormskirk,
+   Headbolt Lane, West Kirby, Chester) — that's a product decision (should they get the same
+   terminus-only chip treatment?), left to Jim per direction-model-memo.md's rescope addendum.
+3. **CITY_BOUNDS in `public/city-session.js`** (see qa-note.md's illustrative box, `minLat: 53.25,
+   maxLat: 53.43, minLng: -3.02, maxLng: -2.85`) was derived from only 5 station coordinates and
+   flagged as needing a real geocode pass. `stations.json` now has real NaPTAN-sourced lat/lng for
+   all 98 stations — recompute the bounding box from the full set rather than the old 5-point
+   estimate before the next flip lands.
+4. **Do not resolve the Northern/Wirral line-membership gap by inference.** ~60 of the 69
+   Merseyrail stations have no `line` field in `stations.json` — ORR Table 6329 has no route/line
+   column and Transitland's REST API returned 401 with no key available. See hazard-pack.md H3 and
+   rescope-addendum.md. This is a genuine sourcing gap for Nico to close with a scoped follow-up,
+   not something to fill in from geography at wiring time.
+
+## Original D1 pack (1–2 Sep 2026), still accurate for everything not listed above
+
 Liverpool City Region D1 + research pack. City stays **planned** / "Coming Soon" until (a)
 National Rail is unblocked (`DARWIN_LDB_TOKEN`), (b) Merseyrail's real-time feed status is
 confirmed with Merseyrail (or explicitly accepted as permanently schedule-only), (c) the Lime

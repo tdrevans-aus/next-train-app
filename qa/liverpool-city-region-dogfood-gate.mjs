@@ -141,8 +141,8 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(LIVERPOOL_CITY_REGION_REGION);
-assert(region?.railCount === 2, `liverpool-city-region rail count must be 2, got ${region?.railCount}`);
-assert(region?.metroCount === 4, `liverpool-city-region metro count must be 4, got ${region?.metroCount}`);
+assert(region?.railCount === 29, `liverpool-city-region rail count must be 29, got ${region?.railCount}`);
+assert(region?.metroCount === 69, `liverpool-city-region metro count must be 69, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
 const railNames = new Set(railStations.map((s) => s.name));
@@ -162,10 +162,10 @@ assert(
 for (const name of ["Liverpool Central", "Moorfields", "Ellesmere Port"]) {
   assert(metroNames.includes(name), `Merseyrail catalog must carry ${name}`);
 }
-assert(metroStops.length === 4, `Merseyrail catalog must have exactly 4 stops, got ${metroStops.length}`);
+assert(metroStops.length === 69, `Merseyrail catalog must have exactly 69 stops, got ${metroStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 6, `combined catalog must have 6 stations (2 rail + 4 metro), got ${allStations.length}`);
+assert(allStations.length === 98, `combined catalog must have 98 stations (29 rail + 69 metro), got ${allStations.length}`);
 
 // doNotGroup — Liverpool Lime Street resolves as two distinct catalog entries by mode
 // (H1, unresolved structural ambiguity — NOT resolved by this gate or the adapter).
@@ -212,7 +212,10 @@ assert(
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (unlike West of England's single-mode list) to disambiguate the doNotGroup hub.
 const dogfoodStations = listLiverpoolCityRegionDogfoodStations();
-assert(dogfoodStations.length === 6, `dogfood stations must be the 6 D1 catalog names, got ${dogfoodStations.length}`);
+assert(
+  dogfoodStations.length === 98,
+  `dogfood stations must be the 98 full-network catalog names (29 rail + 69 metro), got ${dogfoodStations.length}`
+);
 const hubEntries = dogfoodStations.filter((s) => s.name === LIVERPOOL_CITY_REGION_NR_HUB);
 assert(hubEntries.length === 2, "Liverpool Lime Street must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(
@@ -382,5 +385,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "liverpool-city-region-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 2 rail + 4 Merseyrail stations, doNotGroup at Liverpool Lime Street (H1 unresolved, preserved not resolved), National Rail directions derived live from Darwin with no static line map, Merseyrail dispatch correctly surfaces MerseyrailFeedUnconfirmedError rather than the static label list, Perth/London TfL/West of England stay green)"
+  "liverpool-city-region-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 29 rail + 69 Merseyrail stations (full-network rescope 4 Sep 2026), doNotGroup at Liverpool Lime Street (H1 unresolved, preserved not resolved), National Rail directions derived live from Darwin with no static line map, Merseyrail dispatch correctly surfaces MerseyrailFeedUnconfirmedError rather than the static label list, Perth/London TfL/West of England stay green)"
 );
