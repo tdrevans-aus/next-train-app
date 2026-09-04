@@ -5,15 +5,22 @@
     "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
     "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
     "Hub chips carry no operator suffix — several operators may call at the hub.",
-    "v1 scope: Kidderminster only (FB-50). Other West Midlands stations on this corridor (Hagley, Blakedown, Stourbridge Junction, Rowley Regis, etc.) are a proposal for Tim's review, not added here.",
-    "London Marylebone (Chiltern Railways) also calls at Snow Hill but is deliberately NOT absorbed — it keeps its own chip; its trains also appear under the Birmingham hub chip. See PR for Tim's confirmation."
+    "London Marylebone (Chiltern Railways) also calls at Snow Hill but is deliberately NOT absorbed — it keeps its own chip; its trains also appear under the Birmingham hub chip. See PR for Tim's confirmation.",
+    "appliesFrom (4 Sep 2026, Tim): Kidderminster plus the in-catalog Stourbridge/Snow Hill corridor stations west of Birmingham whose live picker showed the same Dorridge / Whitlocks End / Stratford-upon-Avon chip set: Stourbridge Junction, Cradley Heath, Old Hill, Rowley Regis, Langley Green. Hagley and Blakedown are notInRegion (D1 boundary), so they cannot carry the hub without a catalog decision. Smethwick Galton Bridge is left out: its board mixes the New Street line (Wolverhampton/Liverpool/Shrewsbury/Walsall) so 'Birmingham' would be ambiguous there. Jewellery Quarter is one stop from Snow Hill and left out."
   ],
   "hubs": [
     {
       "label": "Birmingham",
       "filterCrs": "BSW",
       "filterName": "Birmingham Snow Hill",
-      "appliesFrom": ["KID"],
+      "appliesFrom": [
+        "KID",
+        "SBJ",
+        "CRA",
+        "OHL",
+        "ROW",
+        "LGG"
+      ],
       "absorbs": [
         "Dorridge",
         "Whitlocks End",

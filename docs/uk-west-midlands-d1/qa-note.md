@@ -81,3 +81,15 @@ live. **Willenhall** has no Darwin CRS yet (new station, not in the feed) and is
 `notYetInDarwin` rather than shipped with a wrong board — rail count is now **74**. East Midlands,
 West of England and Liverpool City Region were swept the same way: no wrong codes (Liverpool's
 "Wavertree Technology Park" vs Darwin "Wavertree Tech Park" is a naming difference only).
+
+## 4 Sep 2026 — hub appliesFrom extended (FB-50 follow-up)
+
+Tim asked for Hagley, Blakedown, Stourbridge Junction and Rowley Regis as extra Birmingham-hub
+stations. Hagley and Blakedown are `notInRegion` (D1 boundary), so they cannot carry the hub without
+a catalog decision. Live picker chips were pulled for every in-catalog station on the corridor;
+Stourbridge Junction, Cradley Heath, Old Hill, Rowley Regis and Langley Green all showed the same
+Dorridge / Whitlocks End / Stratford-upon-Avon set, so all five join `appliesFrom` (leaving one out
+would be inconsistent along the line). Smethwick Galton Bridge is excluded (New Street line mixes
+in, so "Birmingham" would be ambiguous); Jewellery Quarter is one stop from Snow Hill. After the
+change every one of the six stations lists "Birmingham" plus its westbound/branch chips, and a
+Rowley Regis → Birmingham board returns hub-filtered trips with `printedDestination` populated.

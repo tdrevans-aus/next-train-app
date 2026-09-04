@@ -169,8 +169,8 @@ const birminghamHub = hubs[0];
 assert(birminghamHub.label === "Birmingham", "v1 hub label must be Birmingham");
 assert(birminghamHub.filterCrs === "BSW", "v1 hub filterCrs must be BSW (Birmingham Snow Hill's real Darwin CRS — \"BSH\" is Bushey)");
 assert(
-  JSON.stringify(birminghamHub.appliesFrom) === JSON.stringify(["KID"]),
-  "v1 hub appliesFrom must be Kidderminster only"
+  JSON.stringify(birminghamHub.appliesFrom) === JSON.stringify(["KID", "SBJ", "CRA", "OHL", "ROW", "LGG"]),
+  "hub appliesFrom must be Kidderminster + Stourbridge Junction, Cradley Heath, Old Hill, Rowley Regis, Langley Green (4 Sep 2026)"
 );
 for (const absorbed of birminghamHub.absorbs) {
   assert(!/ \([^()]+\)$/.test(absorbed), `absorbs entry "${absorbed}" must not carry an operator suffix`);
@@ -277,6 +277,26 @@ assert(
   JSON.stringify(bhmChips) === JSON.stringify([...fixtureChips].sort((a, b) => a.localeCompare(b))),
   `applyDirectionHubs at BHM (not appliesFrom) must return the fixture chips unchanged (sorted), got ${JSON.stringify(bhmChips)}`
 );
+
+// 3b. Corridor stations added 4 Sep 2026: a Stourbridge Junction chip set (live
+// shape that day) collapses the same three termini under Birmingham while its
+// westbound/branch chips (Kidderminster, Stourbridge Town, Worcester) stay put.
+const sbjFixture = [
+  "Dorridge (LNR & WMR)",
+  "Kidderminster (LNR & WMR)",
+  "Stourbridge Town (LNR & WMR)",
+  "Stratford-upon-Avon (LNR & WMR)",
+  "Whitlocks End (LNR & WMR)",
+  "Worcester Foregate Street (LNR & WMR)",
+];
+for (const crs of ["SBJ", "CRA", "OHL", "ROW", "LGG"]) {
+  const chips = applyDirectionHubs(sbjFixture, crs, hubs);
+  assert(
+    JSON.stringify(chips) ===
+      JSON.stringify(["Birmingham", "Kidderminster (LNR & WMR)", "Stourbridge Town (LNR & WMR)", "Worcester Foregate Street (LNR & WMR)"]),
+    `applyDirectionHubs at ${crs} must collapse Dorridge/Whitlocks End/Stratford-upon-Avon under Birmingham, got ${JSON.stringify(chips)}`
+  );
+}
 
 // 4. planUkWestMidlandsNextTrainFetch() — pure routing decision table from the
 // brief, assertable without a Darwin token.
