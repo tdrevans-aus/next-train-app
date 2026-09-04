@@ -2765,7 +2765,14 @@ function apiResultError(result, fallback = "Could not load train times") {
     return error;
   }
 
-  return new Error(result?.data?.error ?? result?.error ?? fallback);
+  const error = new Error(result?.data?.error ?? result?.error ?? fallback);
+  // jim-brief-directions-error-messaging: coarse "why can't retrying help"
+  // signal from api/directions.js's classifyDirectionsError, when present —
+  // undefined for every other API route/error, so this is a no-op elsewhere.
+  if (result?.data?.reason) {
+    error.reason = result.data.reason;
+  }
+  return error;
 }
 
 async function fetchJson(url, timeoutMs = 10000) {

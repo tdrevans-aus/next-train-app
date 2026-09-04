@@ -10,6 +10,40 @@ import {
   resolveMultiCityStation,
 } from "../lib/cities/live-city-api.js";
 
+/**
+ * jim-brief-directions-error-messaging: distinguish "retrying could help"
+ * from "retrying can never help" without the client needing to know every
+ * adapter's error class. lib/providers/* consistently sets `error.name` to
+ * the thrown class's own name (see e.g. MerseyrailFeedUnconfirmedError,
+ * MissingDarwinTokenError) — that name doesn't otherwise survive the HTTP
+ * round-trip (the client only ever saw `error.message` before this), so
+ * surface a coarse, generic `reason` alongside the existing message rather
+ * than leaking internal class names to the browser.
+ *
+ * Every "Missing*" adapter error (MissingDarwinTokenError,
+ * MissingTfwmCredentialsError, MissingPtvCredentialsError,
+ * MissingProviderApiKeyError, MissingActGtfsCredentialsError,
+ * MissingTflAppKeyError, MissingActGtfsCredentialsError) is an operator
+ * config problem, not a rider one. Every other named adapter error thrown
+ * unconditionally by design (MerseyrailFeedUnconfirmedError,
+ * NetFeedUnconfirmedError, MetrolinkFeedUnconfirmedError,
+ * SupertramFeedUnconfirmedError, EdinburghTramsFeedUnverifiedError,
+ * GlasgowSubwayFeedUnverifiedError, MetroGtfsTooLargeError, ...) means this
+ * feed will never return data until a real one exists — retrying can't help
+ * either. An unnamed/generic Error (network hiccup, transient upstream
+ * failure) keeps the existing "try again" treatment.
+ */
+export function classifyDirectionsError(error) {
+  const name = String(error?.name || "");
+  if (!name || name === "Error") {
+    return undefined;
+  }
+  if (name.startsWith("Missing")) {
+    return "missing_config";
+  }
+  return "feed_unavailable";
+}
+
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
     return;
@@ -43,7 +77,10 @@ export default async function handler(req, res) {
       res.status(200).json({ directions: pack.directions, source: pack.source });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: error.message ?? "Failed to load directions" });
+      res.status(500).json({
+        error: error.message ?? "Failed to load directions",
+        reason: classifyDirectionsError(error),
+      });
     }
     return;
   }
@@ -66,6 +103,9 @@ export default async function handler(req, res) {
       res.status(200).json({ directions: fallback.directions, source: fallback.source });
       return;
     }
-    res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
+    res.status(500).json({
+      error: error.message ?? "Failed to fetch directions",
+      reason: classifyDirectionsError(error),
+    });
   }
 }

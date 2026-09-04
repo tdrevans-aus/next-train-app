@@ -1013,6 +1013,19 @@ async function loadDirectionsForSelect(selectEl, station, preferredDirection) {
         { value: "Perth", label: "Perth" },
         { value: "Mandurah", label: "Mandurah" },
       ]);
+    } else if (error?.reason === "feed_unavailable") {
+      // A feed that throws unconditionally by design (e.g.
+      // MerseyrailFeedUnconfirmedError) — retrying can never help.
+      replaceSelectOptions(selectEl, [
+        { value: "", label: "This service isn’t available yet" },
+      ]);
+    } else if (error?.reason === "missing_config") {
+      // A missing server-side token/credential — an operator problem, not
+      // a rider one; don't expose internal error names or "contact
+      // support" copy.
+      replaceSelectOptions(selectEl, [
+        { value: "", label: "Departures aren’t available right now" },
+      ]);
     } else {
       replaceSelectOptions(selectEl, [
         { value: "", label: "Couldn’t load directions — try again" },

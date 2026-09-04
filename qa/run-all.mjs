@@ -48,6 +48,7 @@ const SMOKE_SCRIPTS = [
   "dogfood-mount-race-gate.mjs",
   "location-permission-web-copy.mjs",
   "donotgroup-picker-disambiguation.mjs",
+  "directions-error-messaging.mjs",
   "sydney-dogfood-gate.mjs",
   "sydney-banksia-perth-route.mjs",
   "sydney-new-journey-not-perth.mjs",
