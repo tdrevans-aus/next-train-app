@@ -1,0 +1,195 @@
+{
+  "city": "copenhagen",
+  "source": "docs/copenhagen-d1/published-network.json (Wikipedia Copenhagen Metro station list + station infoboxes, hand-transcribed and cross-validated). Not generated from GTFS. Copenhagen is a config over the shared Rejseplanen national platform per docs/denmark-ledger.md — not city=denmark, not merged with any future Aarhus pack.",
+  "timeZone": "Europe/Copenhagen",
+  "dst": true,
+  "hub": "Kongens Nytorv",
+  "notes": [
+    "v1: Metro M1-M4 (44 stations, full network) PLUS S-tog (A, B, Bx, C, E, H, F) PLUS DSB Regional/InterCity/InterCityLyn PLUS Öresundståg, the latter three scoped ONLY to the four shared stations (Nørreport, Nørrebro, København H, Nordhavn) named in the oracle report's board-eligibility table - not the full S-tog/DSB network.",
+    "Direction model: Metro linear lines (M1, M2, M4) use line + terminus. M3 is a true ring (Cityringen) - direction is clockwise/counter-clockwise, never a fake terminus pair. S-tog uses line letter + official terminus, scoped to the shared stations only. DSB Regional/InterCity/InterCityLyn/Öresundståg have no printed line code - direction is service type + destination. See docs/copenhagen-d1/direction-model-memo.md.",
+    "Kongens Nytorv is the locked Metro-only hub (all four lines, confirmed zero rail/S-tog transfer) - never a direction token.",
+    "DSB EuroCity (out-reservation, compulsory 26 Jun-16 Aug), SJ X2000 (out-reservation, unverdicted for board-eligibility per hazard-pack.md H3 - not decided either way), České dráhy ComfortJet (out-reservation, unverdicted), and harbour buses (out-mode) are excluded from every board.",
+    "Europe/Copenhagen has DST."
+  ],
+  "shortTurnGroups": {
+    "stog-a": {
+      "fullRoute": ["Hillerød", "Køge"],
+      "shortTurns": ["Hundige", "Solrød Strand"],
+      "note": "Daytime trains mostly short-turn Hundige (every 2nd extended Solrød Strand); evening trains run through to Køge. Fixed chip pair per D1/D5, per-trip overlay deferred to D2+ (direction-model-memo.md open question 2)."
+    }
+  },
+  "doNotGroup": [
+    { "a": "Kongens Nytorv", "b": "Nørreport / København H / Nørrebro / Nordhavn", "reason": "Hub lock (Metro-only, all four lines, confirmed zero rail/S-tog transfer) vs the four multi-operator shared stations" },
+    { "a": "Nørreport", "b": "Metro (M1, M2) vs S-tog (A,B,Bx,C,E,H) vs DSB/Öresundståg (Kystbanen platform)", "reason": "Three-way, widest single-node surface (hazard-pack.md H2)" },
+    { "a": "Nørrebro", "b": "Metro (M3) vs S-tog (F only)", "reason": "Two-way, simplest shared station - no DSB/Öresundståg here" },
+    { "a": "København H", "b": "Metro (M3, M4) vs S-tog (A,B,Bx,C,E,H) vs DSB/Öresundståg (Regionaltog/InterCity/InterCityLyn/Öresundståg) vs EuroCity (excluded)", "reason": "Four-way, widest overall - three groups live, EuroCity never rendered" },
+    { "a": "Nordhavn", "b": "Metro (M4) vs S-tog (A,B,Bx,C,E - not H)", "reason": "Two-way, one shared S-train island platform, five lines keep line-letter as primary token (hazard-pack.md H2)" },
+    { "a": "Havneholmen", "b": "Enghave Plads", "reason": "Adjacent geographically (M4 vs M3), different lines - do not conflate" },
+    { "a": "copenhagen", "b": "denmark / rejseplanen / aarhus", "reason": "Separate city id; Rejseplanen is a shared-provider-config platform per docs/denmark-ledger.md, not a merge" }
+  ],
+  "lines": [
+    {
+      "id": "m1",
+      "number": "M1",
+      "name": "M1",
+      "operator": "Metroselskabet",
+      "gtfsRouteIdsIfKnown": ["M1"],
+      "mapGroup": "Metro",
+      "shape": "linear",
+      "termini": ["Vanløse", "Vestamager"],
+      "stations": ["Vanløse", "Flintholm", "Lindevang", "Fasanvej", "Frederiksberg", "Forum", "Nørreport", "Kongens Nytorv", "Christianshavn", "Islands Brygge", "DR Byen", "Sundby", "Bella Center", "Ørestad", "Vestamager"]
+    },
+    {
+      "id": "m2",
+      "number": "M2",
+      "name": "M2",
+      "operator": "Metroselskabet",
+      "gtfsRouteIdsIfKnown": ["M2"],
+      "mapGroup": "Metro",
+      "shape": "linear",
+      "termini": ["Vanløse", "Lufthavnen"],
+      "stations": ["Vanløse", "Flintholm", "Lindevang", "Fasanvej", "Frederiksberg", "Forum", "Nørreport", "Kongens Nytorv", "Christianshavn", "Amagerbro", "Lergravsparken", "Øresund", "Amager Strand", "Femøren", "Kastrup", "Lufthavnen"]
+    },
+    {
+      "id": "m3",
+      "number": "M3",
+      "name": "M3",
+      "operator": "Metroselskabet",
+      "gtfsRouteIdsIfKnown": ["M3"],
+      "mapGroup": "Metro",
+      "shape": "ring",
+      "termini": [],
+      "stations": ["København H", "Rådhuspladsen", "Gammel Strand", "Kongens Nytorv", "Marmorkirken", "Østerport", "Trianglen", "Poul Henningsens Plads", "Vibenshus Runddel", "Skjolds Plads", "Nørrebros Runddel", "Nørrebro", "Nuuks Plads", "Aksel Møllers Have", "Frederiksberg", "Frederiksberg Allé", "Enghave Plads"],
+      "note": "True ring (Cityringen), no linear terminus. Direction is clockwise/counter-clockwise, sourced from Nørrebro's own Adjacent-stations table."
+    },
+    {
+      "id": "m4",
+      "number": "M4",
+      "name": "M4",
+      "operator": "Metroselskabet",
+      "gtfsRouteIdsIfKnown": ["M4"],
+      "mapGroup": "Metro",
+      "shape": "linear",
+      "termini": ["Orientkaj", "København S"],
+      "stations": ["Orientkaj", "Nordhavn", "Østerport", "Marmorkirken", "Kongens Nytorv", "Gammel Strand", "Rådhuspladsen", "København H", "Havneholmen", "Enghave Brygge", "Sluseholmen", "Mozarts Plads", "København S"]
+    },
+    {
+      "id": "stog-a",
+      "number": "A",
+      "name": "A",
+      "operator": "S-tog (DSB)",
+      "gtfsRouteIdsIfKnown": ["A"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Hillerød", "Køge"],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "In-catalog scope is these three shared stations only. Short-turn overlay per shortTurnGroups.stog-a."
+    },
+    {
+      "id": "stog-b",
+      "number": "B",
+      "name": "B",
+      "operator": "S-tog (DSB)",
+      "gtfsRouteIdsIfKnown": ["B"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Farum", "Høje Taastrup"],
+      "stations": ["Nørreport", "København H", "Nordhavn"]
+    },
+    {
+      "id": "stog-bx",
+      "number": "Bx",
+      "name": "Bx",
+      "operator": "S-tog (DSB)",
+      "gtfsRouteIdsIfKnown": ["Bx"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Buddinge", "Høje Taastrup"],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "Peak-hours-only limited-stop service, own service letter."
+    },
+    {
+      "id": "stog-c",
+      "number": "C",
+      "name": "C",
+      "operator": "S-tog (DSB)",
+      "gtfsRouteIdsIfKnown": ["C"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Klampenborg", "Frederikssund"],
+      "stations": ["Nørreport", "København H", "Nordhavn"]
+    },
+    {
+      "id": "stog-e",
+      "number": "E",
+      "name": "E",
+      "operator": "S-tog (DSB)",
+      "gtfsRouteIdsIfKnown": ["E"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Holte", "Køge"],
+      "stations": ["Nørreport", "København H", "Nordhavn"],
+      "note": "Mon-Fri only - weekend gap is a realtime-layer fact, not a station-graph fact."
+    },
+    {
+      "id": "stog-h",
+      "number": "H",
+      "name": "H",
+      "operator": "S-tog (DSB)",
+      "gtfsRouteIdsIfKnown": ["H"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Frederikssund", "Østerport"],
+      "stations": ["Nørreport", "København H"],
+      "note": "Does NOT call at Nordhavn (moved to line B's routing in 2017) - hazard-pack.md H2 correction against the oracle report."
+    },
+    {
+      "id": "stog-f",
+      "number": "F",
+      "name": "F",
+      "operator": "S-tog (DSB)",
+      "gtfsRouteIdsIfKnown": ["F"],
+      "mapGroup": "S-tog",
+      "shape": "linear",
+      "termini": ["Hellerup", "København S"],
+      "stations": ["Nørrebro"],
+      "note": "Ring Line - the only S-tog service at Nørrebro. Does not call at Nørreport, København H, or Nordhavn."
+    },
+    {
+      "id": "dsb-regional",
+      "number": null,
+      "name": "Regionaltog",
+      "operator": "DSB",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "DSB/Öresundståg",
+      "shape": "linear",
+      "termini": [],
+      "stations": ["Nørreport", "København H"],
+      "note": "No printed line code - direction is 'Regionaltog + <destination>'. Destinations indicative, not exhaustive (Valby, København S, Høje Taastrup, Ringsted)."
+    },
+    {
+      "id": "dsb-intercity",
+      "number": null,
+      "name": "InterCity",
+      "operator": "DSB",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "DSB/Öresundståg",
+      "shape": "linear",
+      "termini": [],
+      "stations": ["Nørreport", "København H"],
+      "note": "No printed line code - direction is 'InterCity + <destination>' or 'InterCityLyn + <destination>'. Destinations indicative: Valby, København S, Ringsted (IC); Copenhagen Airport, Odense (ICL)."
+    },
+    {
+      "id": "oresundstag",
+      "number": null,
+      "name": "Öresundståg",
+      "operator": "Öresundståg / Skånetrafiken",
+      "gtfsRouteIdsIfKnown": [],
+      "mapGroup": "DSB/Öresundståg",
+      "shape": "linear",
+      "termini": [],
+      "stations": ["Nørreport", "København H"],
+      "note": "No printed line code - direction is 'Öresundståg + <destination>' using the printed corridor name (Lund, Gothenburg, Kalmar, Karlskrona). Nørreport inclusion flagged for Tim confirmation (direction-model-memo.md open question 4)."
+    }
+  ]
+}

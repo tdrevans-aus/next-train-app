@@ -105,3 +105,52 @@ gets resolved).
 by the shape of every other `docs/<city>-d1/` folder (4 files) and every claim in it is sourced.
 The **adapter build is intentionally NOT started** - that's the one open item, and it's open by
 design (supervised session), not because this pack is incomplete.
+
+## Jim's note for Mark (adapter wired, 6 Sep 2026, supervised session)
+
+City stays `planned`/`adapterReady`; `assertCityLive("copenhagen")` still fails (501). Files:
+`lib/providers/rejseplanen.js` (shared provider — Copenhagen is a config over it per
+docs/denmark-ledger.md, so Aarhus can be a second config later without a fork),
+`lib/providers/copenhagen.js` (allow-list + direction model config),
+`lib/cities/copenhagen/{stations.json,line-map.json,marketing-directions.js}`, registry entry,
+`qa/copenhagen-planned-gate.mjs` (registered in `qa/run-all.mjs` smoke tier).
+
+**Schedule-only, by design, not a shortcut.** Static GTFS
+(`https://www.rejseplanen.info/labs/GTFS.zip`) needs no key, so that's what's wired. Real-time
+(Rejseplanen API 2.0 `departureBoard` or SIRI-ET) both require a key registered at
+labs.rejseplanen.dk — per this task's explicit instruction, I did not register for one.
+`MissingRejseplanenApiKeyError` is exported from `rejseplanen.js` for whoever wires that path
+next; nothing currently throws it because the static path never needs it.
+
+**No stopIds baked into the catalog** (none in this D1 pack) — `fetchStationBoard` resolves
+GTFS stop_ids at request time by name match against the live static feed
+(`findRailStopIdsForName`), same runtime-resolution pattern as `lib/providers/malmo.js`'s
+`resolveStopIds`. This means the catalog has never been checked against a real parsed feed —
+that check is still open, see below.
+
+**What's unverified — please confirm live before any flip, not assumed here:**
+1. Exact GTFS `route_type`/`agency_id` values separating Metro / S-tog / DSB / Öresundståg on
+   this feed (hazard-pack.md items 5-6). Filtering here uses `route_short_name` allow-lists for
+   Metro/S-tog (both have real line codes) and a `route_long_name`/`route_desc` regex heuristic
+   for DSB/Öresundståg (`classifyDsbService` in `lib/cities/copenhagen/marketing-directions.js`,
+   which has none) — modelled on `lib/providers/malmo.js`'s route_desc precedent for
+   Öresundståg/Krösatågen, but not itself confirmed against a live Rejseplanen payload.
+2. Whether `findRailStopIdsForName("Nørreport")` etc. actually resolve to the right stop_ids
+   once the real GTFS.zip is parsed and doesn't collide with a same-named stop elsewhere in the
+   national feed (this is a 25+ operator, 37,287+ stop feed — much bigger namespace than
+   Malmö's regional file).
+3. M3's real headsign wording for clockwise/counter-clockwise (`mapM3Direction` in
+   marketing-directions.js normalizes English + the Danish "med uret"/"mod uret", but the exact
+   printed convention is still open question 1 in direction-model-memo.md — needs Tim).
+4. The two hazard-pack.md open items that are Nico/Tim's call, not mine: SJ Stockholm /
+   České dráhy Prague board-eligibility verdict at København H (excluded, not decided), and
+   whether Öresundståg's `in` verdict extends to Nørreport (currently included here on the
+   evidence-shape reasoning in published-network.json, flagged not settled).
+
+**QA run this session:** `node qa/copenhagen-planned-gate.mjs` (unit-tests the allow-list/
+direction-model logic against synthetic trip objects — deliberately does NOT live-fetch the
+national GTFS.zip in-gate, since it's a large nationwide download, not appropriate for the
+smoke tier) and `node qa/live-city-lists-sync.mjs` both green. `node qa/run-all.mjs --smoke`
+was started but ran very slowly in this shared/contended dev environment (unrelated Next.js/
+vitest processes for another project competing for CPU on the same machine) — see the PR body
+for exactly how far it got before I stopped waiting and relied on CI for the rest.
