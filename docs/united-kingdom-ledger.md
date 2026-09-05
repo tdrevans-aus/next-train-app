@@ -164,6 +164,7 @@ exists; verified independently where noted.
 | Lumo (open-access) | `in` | Boardable without a reservation; some seats unreserved (green-light marked), reservation "highly recommended," not compulsory | Not built in any region pack read for this ledger | Verified via web research, [RailUK Forums](https://www.railforums.co.uk/threads/lumo-reservation-only.271303/), [Lumo's own ticket page](https://www.lumo.co.uk/tickets/our-tickets) |
 | Hull Trains (open-access) | `in` (unconditional — Tim, 5 Sep 2026) | Unreserved carriage (Carriage A) exists; the operator says reservations are "strongly recommended and may be compulsory" at busy periods/engineering works | Not built in any region pack read | Verified via web research, [Hull Trains seating plan](https://www.hulltrains.co.uk/travel-information/seating-plan). Caveat recorded here only: no catalogued station is served by Hull Trains today. Revisit whether a generic "reservation recommended" tag is worth building if a future region adds Hull, Doncaster or Retford |
 | Grand Central (open-access) | `in` | Reservations complimentary, not guaranteed, not included by default on off-peak/anytime tickets | Not built in any region pack read | Verified via web research, [Grand Central seating info](https://uk.trip.com/trains/guide/grand-central-seating-plan) |
+| Tyne and Wear Metro | `out-product` | no confirmed real-time feed; static-timetable boards not offered (Tim, 5 Sep 2026); pending Nexus outreach | all 60 Metro stations | reg: north-east — see docs/jim-brief-north-east-metro-out-product.md |
 
 **Consistency check requested by the brief:** where existing region packs already gave a verdict,
 this ledger cites the pack rather than re-deriving. **One pack-to-pack contradiction found, not
@@ -197,11 +198,15 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
   no key), no confirmed real-time feed — `out-product`, board surfaces `NetFeedUnconfirmedError`.
 - **Sheffield Supertram / SYFTL** — South Yorkshire: no public feed confirmed at all
   (post-transition operator gap, not an account block).
-- **Tyne and Wear Metro** — North East: static GTFS genuinely confirmed and pulled (D2, Jim,
-  31 Aug 2026) but unparseable by the shared `static-cache.js` helper (~5.4GB uncompressed exceeds
-  its whole-zip `TextDecoder.decode()` string-length limit — `MetroGtfsTooLargeError`, a shared-code
-  gap affecting ~10 other live cities' helper, not this region alone). No public real-time feed
-  either (`metro-rti.nexus.org.uk` is undocumented/app-only).
+- **Tyne and Wear Metro** — North East: **OUT-PRODUCT (Tim, 5 Sep 2026)** — static GTFS was
+  genuinely confirmed and pulled (D2, Jim, 31 Aug 2026), and the shared `static-cache.js` helper's
+  earlier ~5.4GB whole-zip `TextDecoder.decode()` string-length limit was lifted generally by the
+  streaming parser in PR #253, but that never was the real blocker: no public real-time feed
+  exists at all (`metro-rti.nexus.org.uk` is undocumented/app-only), and the only public data is
+  the static timetable inside the DfT BODS national archive, which the app does not fetch, at
+  request time or in any job. Per the walk-up rule's East Midlands NET precedent, the app does not
+  offer a static-timetable board dressed up as live. `fetchMetroStopBoard()` surfaces
+  `MetroFeedUnconfirmedError`. See docs/jim-brief-north-east-metro-out-product.md.
 - **TfW Valley Lines** — **CORRECTED 5 Sep 2026: on Darwin.** The South Wales pack recorded "no
   confirmed public GTFS static or GTFS-RT feed of any kind" — true for GTFS, but the walk-up board
   only needs Darwin, and a live probe of Cardiff Central (CDF) returned Valley Lines departures
@@ -239,6 +244,23 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
   Darwin already covers what it was proposed for.
 
 ---
+
+## Parked second modes (local tram / metro / subway)
+
+Each is `out-product` under the walk-up rule because no confirmed real-time feed exists; each is
+a separate work package in the tracker (child row "Region · Mode"), not a product region. None is
+chased before store launch (FB-56 is the model). Nobody is currently chasing any of them except
+Nexus.
+
+| Work package | Parked on | Chasing? |
+|---|---|---|
+| East Midlands · NET tram | Tramlink Nottingham publishing a live feed | No |
+| North East · Metro | Nexus reply (draft ready, send after store launch - FB-56) | Yes, after launch |
+| Greater Manchester · Metrolink | TfGM publishing a feed | No |
+| South Yorkshire · Supertram | SYFTL publishing any public feed | No |
+| Edinburgh · Trams | Edinburgh Trams publishing a feed | No |
+| Glasgow · Subway | SPT publishing an official feed | No |
+| West Midlands · Metro | not parked - code done; confirm TfWM keys in production (FB-48) | Tim |
 
 ## Open items for Tim
 
@@ -278,6 +300,7 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 | 5 Sep 2026 | (ledger) | Tim resolved all nine contested stop-ownership rows: Denby Dale, Walsden → West Yorkshire; Tamworth → West Midlands; Darlington, Berwick-upon-Tweed → North East; Taunton, Westbury, Gloucester → West of England; Peterborough → Greater Anglia. Walsden CRS conflict closed (WDN). | Catalog additions owed in West Midlands (TAM) and West of England (TAU, WSB, GCR); South Yorkshire drops Denby Dale; East Midlands must not add Peterborough |
 | 5 Sep 2026 | london-se-national-rail | LNER at King's Cross verdict `undecided` → `in` (Tim). Same operator/evidence as Leeds and Peterborough. | Remove LNER from King's Cross `excludeOperators` in the London SE adapter config (Jim brief 5 Sep). Pack file unchanged |
 | 5 Sep 2026 | edinburgh, glasgow | Falkirk High ruled Edinburgh's boundary station, through-running-only (Tim). | Next Scottish region cites this row; neither pack edited |
+| 5 Sep 2026 | north-east | Tyne and Wear Metro board-eligibility verdict resolved `out-product` (Tim, option 1 of the Metro design discussion): no confirmed real-time feed; static-timetable boards not offered. `MetroGtfsTooLargeError` retired (the streaming parser landed in PR #253, but the real blocker was always the missing feed, not the parser). | `lib/providers/north-east.js` now throws `MetroFeedUnconfirmedError`; 60-station Metro catalog kept, not deleted; docs/jim-brief-north-east-metro-out-product.md |
 | 5 Sep 2026 | (ledger) | Hull Trains verdict fixed as unconditional `in`; peak-reservation caveat recorded in §3 only (Tim). | No adapter effect — no catalogued station is served by Hull Trains |
 | 5 Sep 2026 | (ledger) | RDM Live Departure Board DSA read by Tim: redistribution to third parties expressly permitted (Sched. 1 §5), Open licence, no fair-usage cap; attribution to Rail Delivery Group required (cl. 3.3.1, Sched. 1 §8). | Closes the "do not relay Darwin data" open item everywhere. Attribution wiring owed on Darwin boards; per-region licence copies stripped in the registry sweep |
 | 5 Sep 2026 | rdg-attribution | RDG attribution wired on all Darwin boards, PR #235 | `public/city-session.js` gates the required RDG line on every `feed: "darwin"` region (live + planned) via `feedAttributionForCity`; `uk-london-tfl` unaffected. Open item 1 closed |

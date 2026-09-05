@@ -8,11 +8,10 @@
     "train": "darwin"
   },
   "notes": [
-    "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as uk-west-midlands / uk-ellesmere-port / east-midlands / south-yorkshire / north-east / west-of-england.",
-    "Single agency (National Rail), single mode (train). Transport for Wales Valley Lines is deliberately EXCLUDED — no confirmed public GTFS static or GTFS-RT feed of any kind exists for TfW (report confidence 'not found' throughout); this is a genuine feed-doesn't-exist gap, not the usual account block. See docs/south-wales-d1/jim-handoff.md.",
-    "A reference static GTFS dump for National Rail exists (Transitland, CC-BY-2.0 UK) but is NOT used to build this catalog's station list — the two stations below are taken directly from the oracle report's station name table.",
-    "No doNotGroup needed — Cardiff Central is a shared physical hub with Valley Lines on separate infrastructure (footbridge connect), but there is no Valley Lines board to group against since Valley Lines has no feed at all.",
-    "Severn Tunnel Junction (STJ) is catalogued flat as through-running-only, NOT a merge point. This pack's oracle report names STJ as the Wales-England boundary; West of England's already-merged pack instead names Chepstow (CPW) for the same corridor — a boundary discrepancy NOT reconciled here, flagged for D2/Tim. See docs/south-wales-d1/jim-handoff.md and hazard-pack.md."
+    "National Rail (Darwin/OpenLDBWS) is catalogued here and live via DARWIN_LDB_TOKEN (set 2 Sep 2026, PR #230) — same shared uk-darwin.js provider as every other UK region. Registry status stays `planned` (docs/jim-brief-south-wales-flip.md) until Mark/Tim's flip call.",
+    "Single agency (National Rail), single mode (train). Transport for Wales Valley Lines is DELIBERATELY EXCLUDED — no confirmed public GTFS static or GTFS-RT feed of any kind exists for it (see lib/providers/south-wales.js file header). No fallback path exists here for it.",
+    "No doNotGroup needed at Cardiff Central — shared physical station with (unbuilt) Valley Lines on separate infrastructure, footbridge connect, no board to group against yet.",
+    "Severn Tunnel Junction is catalogued flat, NOT a merge point — through-running-only Wales-England boundary station. Open D2 item: West of England's merged pack instead names Chepstow (CPW) for the same corridor; not reconciled here."
   ],
   "notInRegion": [],
   "stops": [
@@ -23,7 +22,7 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — interchange between Valley Lines (unbuilt, separate infrastructure) and National Rail through-running services (London/Bristol direction via Severn Tunnel Junction; North Wales direction via Wrexham/Welsh Marches Line)"
+      "class": "hub lock — interchange between Valley Lines (unbuilt, separate infrastructure) and National Rail through-running services"
     },
     {
       "mode": "train",
@@ -32,7 +31,7 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, Wales-England boundary on the South Wales Main Line — not a merge point. See boundary discrepancy note vs. West of England's Chepstow (CPW) entry."
+      "class": "through-running only, Wales-England boundary on the South Wales Main Line — not a merge point"
     }
   ]
 }

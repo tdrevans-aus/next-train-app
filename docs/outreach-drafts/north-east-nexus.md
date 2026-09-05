@@ -1,41 +1,48 @@
 # North East (Tyne and Wear Metro) — Real-time data request draft
 
-**To:** Nexus (tyne-and-wear-metro@nexus.org.uk or Nexus Open Data contact via nexus.org.uk; cc DB Regio UK if Nexus refers enquiry)
+**To:** customerrelations@nexus.org.uk (Nexus general enquiries — published address; ask in the first line to be forwarded to the Metro real-time information owner)
+**Cc:** mediarelations@nexus.org.uk (Nexus communications — published, fast-response)
 
-**Subject:** Next Train app — real-time API for Tyne and Wear Metro
+**Subject:** Live Metro times for the Next Train app
 
 ---
 
 Dear Nexus,
 
-We operate Next Train, a walk-up passenger information app for public transport. We already show live departures for National Rail services across Great Britain, powered by the Rail Data Marketplace and credited to Rail Delivery Group.
+Could this be passed to whoever looks after live train information for the Metro? Thank you.
 
-We'd like to add Tyne and Wear Metro to the app. We have confirmed access to the static timetable data (via the Department for Transport Bus Open Data Service), and our team has verified the route and stop data. However, without a real-time departures feed, the Metro will appear as "no live data available" on our board screens, rather than showing actual train times.
+I run Next Train, a small app that answers one question for passengers: when is my next train from this station? It already shows live departures for National Rail stations across Great Britain, using the industry's official live data service, and credits Rail Delivery Group as the source.
 
-I have two questions:
+I'd like to add the Tyne and Wear Metro. I have the published timetable, but passengers at the platform want to know whether the 08:14 is actually coming, and I won't show scheduled times as if they were live. Without live running information, the Metro will show as "no live times available".
 
-1. Does Nexus publish (or plan to publish) a public real-time departures API or feed for the Metro? We can work with GTFS-RT, SIRI, or a documented custom API.
+Your own Pop app shows live Metro times, so that information clearly exists. I'd like to ask two things:
 
-2. If a public feed is not available, would Nexus be willing to grant us access to the endpoint that powers the Nexus Pop app (currently at metro-rti.nexus.org.uk)? If so, what licence terms and rate limits would apply?
+1. Does Nexus publish live Metro running information for outside developers, or have plans to? Any of the standard formats used by other operators would be fine.
 
-We'd be happy to credit Nexus as the real-time data source and comply with any applicable licence conditions. If you'd prefer to handle this enquiry through DB Regio UK, please let me know and I'll reach out to them directly.
+2. If not, would Nexus be willing to let Next Train use the live information behind the Pop app? I've deliberately not connected to it without asking, because there are no published terms for it. If access is possible, I'd want to know what conditions and usage limits you'd want me to respect.
+
+I'd credit Nexus as the source of the live times and follow whatever conditions you set. If this is better handled by DB Regio, please point me to the right person there.
 
 Thank you for your time.
 
 Best regards,
 Tim Evans
-next-train-app
+Next Train
 
 ---
 
-## Contact paths to try:
+## Contact details (verified 5 Sep 2026 from nexus.org.uk)
 
-- **Nexus main:** https://www.nexus.org.uk → Contact/Support pages
-- **Possible data contact:** tyne-and-wear-metro@nexus.org.uk or data-queries@nexus.org.uk (standard pattern; verify on website)
-- **DB Regio UK alternative:** if Nexus refers the enquiry
+- **General enquiries:** customerrelations@nexus.org.uk · 0191 20 20 747
+- **Media / communications:** mediarelations@nexus.org.uk
+- **Post:** Nexus, The Spark, Newcastle Helix, St James Boulevard, Newcastle upon Tyne NE4 5DE
+- Nexus publishes no developer or open-data contact. The regional UTMC open-data platform
+  (netraveldata.co.uk, five Tyne and Wear councils) carries road/traffic data only, not Metro
+  real-time — not worth a separate approach unless Nexus points there.
+- DB Regio UK: fallback only if Nexus refers the enquiry.
 
 ---
 
 ## Note for Tim:
 
-The oracle-clash-report.md did not cite a specific email address or contact. The report suggests confirming with Nexus/DB Regio and notes that the unofficial metro-rti.nexus.org.uk endpoint exists but is undocumented/app-only. I've drafted the request to cover both scenarios (public feed + permission for existing endpoint) in one ask. You'll need to find the current Nexus contact email or use their website form—there may also be a DB Regio UK contact page if they're more responsive than Nexus.
+The oracle-clash-report.md did not cite a specific email address or contact. The report suggests confirming with Nexus/DB Regio and notes that the unofficial metro-rti.nexus.org.uk endpoint exists but is undocumented/app-only. I've drafted the request to cover both scenarios (public feed + permission for existing endpoint) in one ask. Recipient resolved 5 Sep 2026 by the top-level session (see Contact details above); the earlier guessed addresses were removed.
