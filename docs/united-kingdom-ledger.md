@@ -44,13 +44,24 @@ still appears verbatim in the `integration` string of every region that hasn't h
 pass since (south-yorkshire, north-east, southwest, cumbria, south-wales, west-yorkshire,
 rest-of-wales, rest-of-scotland, london-se-national-rail, glasgow, edinburgh, greater-manchester —
 12 of 20 regions). **This is a stale-text problem, not a live blocker** — flagged once here per
-`docs/uk-build-out-recommendation.md` item 4, not re-flagged per region. **Standing open item,
-recorded once here as the single source (region packs should cite this ledger, not repeat the
-question):** whether OpenLDBWS/RDM redistribution terms to third-party riders are confirmed
-against the signed Rail Data Marketplace Data Sharing Agreement is **unknown** — every region pack
-that reached D1 after 2 Sep 2026 repeats "do not relay Darwin data to end users until Tim confirms"
-as an open item; no pack or registry note records that confirmation having happened. Do not treat
-silence on this item as resolution.
+`docs/uk-build-out-recommendation.md` item 4, not re-flagged per region. **Licensing — RESOLVED (Tim read the signed agreement, 5 Sep 2026; copy at
+`docs/P-d81d6eaf-8060-4467-a339-1c833e50cbbe.pdf`, private repo).** The Live Departure Board
+Data Sharing Agreement (publisher: Rail Delivery Group; product P-d81d6eaf-8060-4467-a339-1c833e50cbbe)
+grants, in Schedule 1: **Permitted Purposes — "The raw data may be made freely available or
+otherwise distributed to third parties"**; Permitted Recipients — all registered users; Territory —
+global (standard sanctioned-country exclusions). Schedule 2: Licence Fee Type **Open** (no charge),
+Fair Usage Policy **not applicable**, no non-chargeable limit, update frequency Live. So relaying
+Darwin departures to riders is expressly permitted, and there is no rate or cache condition in the
+DSA itself — the only capacity lever is the RDM Platform Agreement clause 3.3 (RDG may throttle on a
+"Material Capacity Impact"), which the 20s server-side cache (Jim brief 5 Sep) addresses.
+**Conditions that DO bind the app:** (a) clause 3.3.1 + Schedule 1 §8 — **Rail Delivery Group must
+be attributed** as the source when the data is published, "in any reasonable manner" that does not
+imply endorsement; (b) clause 3.3.2 — onward distribution should carry appropriate accuracy /
+liability notices; (c) clause 3.3.3 — notify RDG of data defects; (d) Schedule 1 §9 — on termination,
+delete received data within 1 year and confirm in writing (moot for a 20s cache, relevant only if
+boards are ever persisted); (e) term 1 year auto-renewing, 1 week notice to terminate for
+convenience. Region packs should cite this paragraph rather than repeat the old "do not relay until
+Tim confirms" line; the per-region copies are stripped in the registry sweep (open item 3).
 
 **A second, separate cost/architecture gap, not a licensing question:** the 15–30s server-side
 `(crs, filterCrs)` cache specified in `docs/uk-architecture.md` and `docs/uk-provider-design.md`
@@ -223,14 +234,11 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
 
 ## Open items for Tim
 
-1. **OpenLDBWS/RDM redistribution terms to third-party riders** — unconfirmed against the signed
-   Data Sharing Agreement, carried as an open item on every UK region since 2 Sep 2026. Needs a
-   single yes/no from Tim, once, closing it everywhere rather than per region.
-   **Where to look (5 Sep 2026):** the terms are the Data Sharing Agreement accepted when the
-   `Live Departure Board` product was subscribed on https://raildata.org.uk — My Account →
-   My Subscriptions → Live Departure Board → the Licence / Terms tab, plus the platform-level
-   Rail Data Marketplace Terms of Use linked from the site footer. Check three things: display to
-   end users permitted; attribution wording required on the board; any cache/rate condition.
+1. **RDM licence — resolved 5 Sep 2026 (see §1); one follow-up owed.** Wire the required
+   attribution on every Darwin-backed board: credit "Rail Delivery Group" (source of the Live
+   Departure Board data) in the app's existing attribution line, plus a short accuracy notice per
+   clause 3.3.2. Fold into the registry sweep (item 3) or earlier — five regions are already live
+   without it. Attribution must not imply RDG endorsement.
 
 2. **Catalog follow-ups from the 5 Sep stop-ownership decisions** (§2): add Tamworth (TAM) to
    the live West Midlands catalog; add Taunton (TAU), Westbury (WSB) and Gloucester (GCR) to West
@@ -266,3 +274,4 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 | 5 Sep 2026 | london-se-national-rail | LNER at King's Cross verdict `undecided` → `in` (Tim). Same operator/evidence as Leeds and Peterborough. | Remove LNER from King's Cross `excludeOperators` in the London SE adapter config (Jim brief 5 Sep). Pack file unchanged |
 | 5 Sep 2026 | edinburgh, glasgow | Falkirk High ruled Edinburgh's boundary station, through-running-only (Tim). | Next Scottish region cites this row; neither pack edited |
 | 5 Sep 2026 | (ledger) | Hull Trains verdict fixed as unconditional `in`; peak-reservation caveat recorded in §3 only (Tim). | No adapter effect — no catalogued station is served by Hull Trains |
+| 5 Sep 2026 | (ledger) | RDM Live Departure Board DSA read by Tim: redistribution to third parties expressly permitted (Sched. 1 §5), Open licence, no fair-usage cap; attribution to Rail Delivery Group required (cl. 3.3.1, Sched. 1 §8). | Closes the "do not relay Darwin data" open item everywhere. Attribution wiring owed on Darwin boards; per-region licence copies stripped in the registry sweep |
