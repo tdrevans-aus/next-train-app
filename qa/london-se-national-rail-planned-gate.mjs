@@ -9,9 +9,10 @@
  *    each expose the correct number of per-operator sub-boards sharing one
  *    physical CRS, and that fetchNationalRailBoard() passes the new
  *    includeOperators filter (not just excludeOperators) for those boards;
- *  - the three single-exclusion groups (King's Cross/LNER,
- *    St Pancras International/Eurostar, Paddington/Night Riviera Sleeper)
- *    pass excludeOperators correctly and ONLY there;
+ *  - the two single-exclusion groups (St Pancras International/Eurostar,
+ *    Paddington/Night Riviera Sleeper) pass excludeOperators correctly and
+ *    ONLY there; King's Cross no longer excludes LNER (resolved to `in`
+ *    per the UK ledger, 5 Sep 2026);
  *  - Euston and the seven secondary termini are NOT registered as catalog
  *    entries (deliberately not built per the D1 pack);
  *  - the board path throws MissingDarwinTokenError with no network calls.
@@ -139,11 +140,14 @@ for (const op of ["Greater Anglia", "c2c"]) {
   assert(liverpoolStreetOperators.includes(op), `Liverpool Street sub-boards must cover operator ${op}`);
 }
 
-// Single-exclusion groups: excludeOperators recorded, no doNotGroup.
+// King's Cross: LNER resolved to IN per the UK ledger, 5 Sep 2026 — no
+// excludeOperators anymore (previously excluded pending a verdict).
 const kingsCross = resolveCatalogEntry("London King's Cross");
 assert(kingsCross?.crs === "KGX", "King's Cross must resolve with crs KGX");
 assert(kingsCross?.doNotGroup === false, "King's Cross must not be doNotGroup");
-assert(kingsCross?.excludeOperators?.includes("LNER"), "King's Cross must exclude LNER");
+assert(!kingsCross?.excludeOperators?.length, "King's Cross must not exclude any operator (LNER resolved to in)");
+
+// Single-exclusion groups: excludeOperators recorded, no doNotGroup.
 
 const stPancras = resolveCatalogEntry("St Pancras International");
 assert(stPancras?.crs === "STP", "St Pancras International must resolve with crs STP");
@@ -224,5 +228,5 @@ try {
 assert(eustonThrew, "fetchStationBoard(Euston) must throw — Euston is not built");
 
 console.log(
-  "london-se-national-rail-planned-gate: ok (planned/501, adapterReady, D1 pack, 7 station groups / 10 boards resolve, London Bridge (3) and Liverpool Street (2) internal doNotGroup sub-boards enforced via includeOperators, King's Cross/St Pancras International/Paddington excludeOperators enforced, Euston and secondary termini correctly unbuilt, National Rail board correctly blocked on MissingDarwinTokenError)"
+  "london-se-national-rail-planned-gate: ok (planned/501, adapterReady, D1 pack, 7 station groups / 10 boards resolve, London Bridge (3) and Liverpool Street (2) internal doNotGroup sub-boards enforced via includeOperators, St Pancras International/Paddington excludeOperators enforced, King's Cross LNER resolved to in (no excludeOperators) per the UK ledger 5 Sep 2026, Euston and secondary termini correctly unbuilt, National Rail board correctly blocked on MissingDarwinTokenError)"
 );
