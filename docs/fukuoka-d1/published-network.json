@@ -1,0 +1,300 @@
+{
+  "city": "fukuoka",
+  "displayName": "Fukuoka",
+  "status": "planned",
+  "agency": "Fukuoka City Transportation Bureau (福岡市交通局)",
+  "timezone": "Asia/Tokyo",
+  "source": "https://subway.city.fukuoka.lg.jp/eng/route/",
+  "sources": [
+    {
+      "role": "D1 official route information (EN) — ordered stops + official codes",
+      "title": "Route information｜Fukuoka City Subway",
+      "url": "https://subway.city.fukuoka.lg.jp/eng/route/",
+      "linkedFrom": "https://subway.city.fukuoka.lg.jp/eng/",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Official EN station names and codes (K01-K13, H01-H07, N01-N18) transcribed from the official rider site's ordered station list, not from the route-map PDF bytes. Hand-transcribed. Not generated from GTFS (none exists)."
+    },
+    {
+      "role": "D1 official route information (JP) — JP print lock",
+      "title": "路線情報｜Fukuoka City Subway",
+      "url": "https://subway.city.fukuoka.lg.jp/route/",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Official JP names: 空港線 (Kūkō) / 箱崎線 (Hakozaki) / 七隧線 (Nanakuma). Hub 博多 (Hakata)."
+    },
+    {
+      "role": "D1 official route map PDF",
+      "title": "Route map (EN)",
+      "url": "https://subway.city.fukuoka.lg.jp/eng/route/deta/map.pdf",
+      "linkedFrom": "https://subway.city.fukuoka.lg.jp/eng/route/",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "contentLength": 4823449,
+      "note": "Oracle PDF route map 200 (application/pdf; 4.6 MB; Adobe Illustrator). Ordered stops taken from the official station list, not from PDF bytes. Not a GTFS dump."
+    },
+    {
+      "role": "Cross-check station list",
+      "title": "List of Fukuoka City Subway stations (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/List_of_Fukuoka_City_Subway_stations",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Cross-check only, not the D1 source of record. Official rider site is authoritative for names/codes."
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "D1 oracle is the official Fukuoka City Subway EN route information (https://subway.city.fukuoka.lg.jp/eng/route/) HAND-TRANSCRIBED from the official station roster, confirmed against the official JP sister page and the official route-map PDF (bytes not parsed). Stations arrays are official EN names in official code order. Not generated from GTFS, Wikipedia, Transitland, Mobility Database, or ODPT.",
+    "City id fukuoka. Display Fukuoka. Agency Fukuoka City Transportation Bureau (福岡市交通局). Not Tokyo Metro, not Osaka Metro. Do not invent city=fuk, fukuoka-metro, fukuoka-city, or merge into another Japanese city.",
+    "City stays planned. Modes v1: Fukuoka City Subway only — three official lines: Kūkō (Airport Line, K01-K13, orange), Hakozaki (H01-H07, blue), Nanakuma (N01-N18, green, includes the 27 March 2023 Hakata extension N17-N18). 36 unique station names, 38 line ticks (13+7+18) across the three lines.",
+    "Timezone Asia/Tokyo. NO DST.",
+    "No official public GTFS or GTFS-RT. Transitland: no Onestop ID. Mobility Database feeds_v2.csv: 0 rows for Fukuoka City Subway (checked 2026-09-06). ODPT membership list (checked 2026-09-02) does not include Fukuoka City Transportation Bureau. A community GTFS exists on GitHub (kuwayamamasayuki/GTFS-FukuokaCitySubway) but is NOT an official feed and was not used as a D1 source. Do not invent an ODPT zip because Tokyo Metro / Osaka Metro have one. No env key. adapterReady false.",
+    "Locked inner-city hub: Hakata (K11 x N18), the Kuko-Nanakuma metro interchange. doNotGroup vs JR Hakata (separate mainline/Shinkansen facility, not subway). Nakasu-Kawabata (K09 x H01) is the Kuko-Hakozaki interchange, not a three-line hub. Tenjin (K08, Kuko only) and Tenjin-Minami (N16, Nanakuma only) are distinct metro stations on opposite sides of Tenjin Chikagai underground mall; doNotGroup against each other and against Nishitetsu Fukuoka (Tenjin), a different private-rail network.",
+    "Through-run OUT of the line-graph v1 but IN at board eligibility: JR Chikuhi Line operates mutual through-service onto the Kuko line at Meinohama (K01). Riders board the walk-up, no-reservation JR through-train at the in-catalog K01 platform (verdict `in`, board eligibility rule). Chikuhi-only stations west of Meinohama (Chikuzen-Maebaru, Karatsu, Nishi-Karatsu, etc.) have no K-codes and are out of v1 scope entirely — not metro facilities.",
+    "36 unique official EN stop strings. 38 line ticks (K 13 + H 7 + N 18). Interchanges counted once in unique names: Nakasu-Kawabata (K09/H01), Hakata (K11/N18).",
+    "No stopIds in this file. No GTFS route ids. Passenger line tokens are the official letters K / H / N plus the official EN line names (Kuko, Hakozaki, Nanakuma).",
+    "KNOWN REPORT INCONSISTENCY (flag for Nico, not resolved here): the oracle report's prose 'Station name table' section (rows for Hakata, Tenjin, Akasaka, Nakasu-Kawabata) cites different K-codes (e.g. Tenjin=K05, Akasaka=K04, Nakasu-Kawabata=K03) than the dated 'Station roster (D1 transcription, 6 Sep 2026)' section (Tenjin=K08, Akasaka=K07, Nakasu-Kawabata=K09), which itself is internally consistent and carries per-station EN/JP sourcing. This pack uses the dated roster section as canonical per the build brief; the earlier prose table's codes are stale/wrong and should be corrected at the report source. See hazard-pack.md H1.",
+    "Report header states '62 line ticks' (oracle-clash-report.md line 44) but the roster's own station-count arithmetic (13+7+18=38 ticks, 36 unique) is the section explicitly labelled canonical for this transcription. This pack uses 38/36. Flagged for Nico in hazard-pack.md."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Hakata",
+    "doNotUse": [
+      "JR Hakata",
+      "Hakata Station (JR)",
+      "City",
+      "Downtown"
+    ],
+    "doNotCollapse": [
+      "Hakata",
+      "Nakasu-Kawabata",
+      "Tenjin",
+      "Tenjin-Minami"
+    ],
+    "alsoOnSharedApproaches": [
+      "Nakasu-Kawabata",
+      "Tenjin"
+    ]
+  },
+  "coverageGaps": [
+    "JR Chikuhi Line west of Meinohama (K01) — Chikuzen-Maebaru, Karatsu, Nishi-Karatsu, etc. No K-codes, not Fukuoka City Subway facilities. Out of v1. Through-running at Meinohama is `in` for board eligibility only (see boardEligibility below), not a v1 line-graph node.",
+    "JR Hakata mainline / Shinkansen / Tokaido / Sanyo / Kyushu operations at the separate JR Hakata station facility. Not subway. Out of v1.",
+    "Nishitetsu Fukuoka (Tenjin) / Nishitetsu Tenjin-Omuta Line. Different private-rail operator sharing the Tenjin area name, not the Fukuoka City Subway Tenjin (K08). Out of v1.",
+    "Buses, trams, ferries, other private operators. Out of v1.",
+    "No official public GTFS / GTFS-RT. Do not generate this file from a feed that does not exist. Community GTFS (kuwayamamasayuki/GTFS-FukuokaCitySubway) exists but is unofficial and was not used."
+  ],
+  "boardEligibility": {
+    "note": "Restated from the oracle report's Board eligibility section (oracle-clash-report.md lines 64-75) — this pack transcribes verdicts, it does not derive new ones.",
+    "verdicts": [
+      { "service": "Fukuoka City Subway — Kūkō line (K01-K13)", "verdict": "in", "reason": "Walk-up boardable, no reservation required. Official subway service." },
+      { "service": "Fukuoka City Subway — Hakozaki line (H01-H07)", "verdict": "in", "reason": "Walk-up boardable, no reservation required. Official subway service." },
+      { "service": "Fukuoka City Subway — Nanakuma line (N01-N18)", "verdict": "in", "reason": "Walk-up boardable, no reservation required. Official subway service. Includes the March 2023 Hakata extension (N17-N18)." },
+      { "service": "JR Chikuhi Line (through-service on Kuko, Meinohama K01 only)", "verdict": "in", "reason": "Walk-up boardable commuter rail, no compulsory reservation; local and rapid services through-run onto the Kuko line K01 platform. Chikuhi stations west of Meinohama are not in-catalog and are out of v1 scope entirely (not this verdict)." },
+      { "service": "Other JR services (Hakata mainline, Shinkansen, Kyushu Line, etc.)", "verdict": "out-mode", "reason": "Operate at a separate JR Hakata station facility, not the Fukuoka City Subway metro station. Different operator and ticketing." },
+      { "service": "Nishitetsu Rail — Tenjin-Omuta Line", "verdict": "out-mode", "reason": "Different rail operator and station (Nishitetsu Fukuoka / Tenjin), not the Fukuoka City Subway Tenjin (K08). Shared area name is not a shared station." }
+    ],
+    "excluded": "JR mainline/Shinkansen at Hakata (separate facility) and Nishitetsu Tenjin-Omuta (separate operator) are the only exclusions identified in this catalog's scope; both are out-mode, not silent drops."
+  },
+  "lines": [
+    {
+      "id": "kuko",
+      "number": "K",
+      "name": "Kuko",
+      "officialPageTitle": "Kuko Line (Airport Line)",
+      "jpName": "空港線",
+      "mapGroup": "Fukuoka City Subway",
+      "mode": "METRO",
+      "termini": [
+        "Meinohama",
+        "Fukuoka Airport"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Meinohama",
+          "note": "West terminus (K01). Official JR Chikuhi Line mutual through-service point. v1 line-graph ends here; through-run is `in` for board eligibility only, not a v1 node. Chikuhi stations beyond Meinohama have no K-codes."
+        },
+        {
+          "at": "Nakasu-Kawabata",
+          "note": "Official K09/H01 interchange with Hakozaki. Not the hub. doNotGroup vs Hakata."
+        },
+        {
+          "at": "Hakata",
+          "note": "Hub lock. Official K11/N18 interchange with Nanakuma. doNotGroup vs JR Hakata (separate mainline/Shinkansen facility)."
+        },
+        {
+          "at": "Tenjin",
+          "note": "K08, Kuko line only, no Nanakuma. doNotGroup vs Tenjin-Minami (N16) and Nishitetsu Fukuoka (Tenjin, different operator)."
+        }
+      ],
+      "stations": [
+        "Meinohama",
+        "Muromi",
+        "Fujisaki",
+        "Nishijin",
+        "Tōjinmachi",
+        "Ōhorikōen",
+        "Akasaka",
+        "Tenjin",
+        "Nakasu-Kawabata",
+        "Gion",
+        "Hakata",
+        "Higashi-Hie",
+        "Fukuoka Airport"
+      ],
+      "stationCodes": [
+        "K01",
+        "K02",
+        "K03",
+        "K04",
+        "K05",
+        "K06",
+        "K07",
+        "K08",
+        "K09",
+        "K10",
+        "K11",
+        "K12",
+        "K13"
+      ]
+    },
+    {
+      "id": "hakozaki",
+      "number": "H",
+      "name": "Hakozaki",
+      "officialPageTitle": "Hakozaki Line",
+      "jpName": "箱崎線",
+      "mapGroup": "Fukuoka City Subway",
+      "mode": "METRO",
+      "termini": [
+        "Nakasu-Kawabata",
+        "Kaizuka"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Nakasu-Kawabata",
+          "note": "South/west terminus (H01). Official interchange with Kuko (K09). Not the hub."
+        }
+      ],
+      "stations": [
+        "Nakasu-Kawabata",
+        "Gofukumachi",
+        "Chiyo-Kenchōguchi",
+        "Maidashi-Kyūdai-byōin-mae",
+        "Hakozaki-Miyamae",
+        "Hakozaki-Kyūdai-mae",
+        "Kaizuka"
+      ],
+      "stationCodes": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06",
+        "H07"
+      ]
+    },
+    {
+      "id": "nanakuma",
+      "number": "N",
+      "name": "Nanakuma",
+      "officialPageTitle": "Nanakuma Line",
+      "jpName": "七隧線",
+      "mapGroup": "Fukuoka City Subway",
+      "mode": "METRO",
+      "termini": [
+        "Hashimoto",
+        "Hakata"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Tenjin-Minami",
+          "note": "N16, Nanakuma line only, no Kuko. Underground-linked to Tenjin (K08) via Tenjin Chikagai but a different station. doNotGroup."
+        },
+        {
+          "at": "Hakata",
+          "note": "Hub lock. East terminus (N18) as of the 27 March 2023 extension. Official interchange with Kuko (K11). doNotGroup vs JR Hakata."
+        }
+      ],
+      "stations": [
+        "Hashimoto",
+        "Jirōmaru",
+        "Kamo",
+        "Noke",
+        "Umebayashi",
+        "Fukudai-mae",
+        "Nanakuma",
+        "Kanayama",
+        "Chayama",
+        "Befu",
+        "Ropponmatsu",
+        "Sakurazaka",
+        "Yakuin-ōdōri",
+        "Yakuin",
+        "Watanabe-dōri",
+        "Tenjin-Minami",
+        "Kushida Shrine",
+        "Hakata"
+      ],
+      "stationCodes": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N13",
+        "N14",
+        "N15",
+        "N16",
+        "N17",
+        "N18"
+      ]
+    }
+  ],
+  "uniqueStationCount": 36,
+  "uniqueStations": [
+    "Akasaka",
+    "Befu",
+    "Chayama",
+    "Chiyo-Kenchōguchi",
+    "Fujisaki",
+    "Fukudai-mae",
+    "Fukuoka Airport",
+    "Gion",
+    "Gofukumachi",
+    "Hakata",
+    "Hakozaki-Kyūdai-mae",
+    "Hakozaki-Miyamae",
+    "Hashimoto",
+    "Higashi-Hie",
+    "Jirōmaru",
+    "Kaizuka",
+    "Kamo",
+    "Kanayama",
+    "Kushida Shrine",
+    "Maidashi-Kyūdai-byōin-mae",
+    "Meinohama",
+    "Muromi",
+    "Nakasu-Kawabata",
+    "Nanakuma",
+    "Nishijin",
+    "Noke",
+    "Ōhorikōen",
+    "Ropponmatsu",
+    "Sakurazaka",
+    "Tenjin",
+    "Tenjin-Minami",
+    "Tōjinmachi",
+    "Umebayashi",
+    "Watanabe-dōri",
+    "Yakuin",
+    "Yakuin-ōdōri"
+  ]
+}

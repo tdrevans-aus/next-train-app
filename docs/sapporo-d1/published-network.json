@@ -1,0 +1,325 @@
+{
+  "city": "sapporo",
+  "displayName": "Sapporo",
+  "status": "planned",
+  "agency": "Sapporo City Transportation Bureau (Sapporo Municipal Subway Co., Ltd.)",
+  "timezone": "Asia/Tokyo",
+  "source": "https://www.city.sapporo.jp/st/subway/",
+  "sources": [
+    {
+      "role": "D1 official rider site / station guide",
+      "title": "地下鉄 (Subway) — Sapporo City Transportation Bureau",
+      "url": "https://www.city.sapporo.jp/st/subway/",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Official city site for the three-line network; official English/Japanese station-guide title is the D1 name-of-record. The full 49-station ordered roster carried in this file was transcribed from Wikipedia (see next source entry), not directly re-keyed from this page in this pass — cross-check against this official site and the 2020 GTFS stops.txt before any product/adapter edit relies on exact spelling, ordering, or station codes."
+    },
+    {
+      "role": "D1 station roster (transcription source)",
+      "title": "Namboku Line (Sapporo); Tōzai Line (Sapporo); List of Sapporo Municipal Subway station — Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Namboku_Line_(Sapporo); https://en.wikipedia.org/wiki/T%C5%8Dzai_Line_(Sapporo); https://en.wikipedia.org/wiki/List_of_Sapporo_Municipal_Subway_station",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Full ordered 49-station roster (station names, Japanese names, official codes N01-N16/T01-T19/H01-H14) per docs/sapporo-d1/oracle-clash-report.md 'Station roster (D1 transcription)' section, added 2026-09-06. Wikipedia is NOT the official city source and must be cross-checked against the official Bureau site (https://www.city.sapporo.jp/st/subway/) and the 2020 GTFS stops.txt (see stale-GTFS source below) before this roster is treated as product-edit-ready. Prior oracle summary had misstated the Tozai/Tohou split as 13/20; the verified Wikipedia distribution used here is Namboku 16, Tozai 19, Tohou 14 (total 49)."
+    },
+    {
+      "role": "Corporate parent page",
+      "title": "Sapporo City Transportation Bureau",
+      "url": "https://www.city.sapporo.jp/st/",
+      "retrievedAt": "2026-09-06T00:00:00Z"
+    },
+    {
+      "role": "Static GTFS (stale — not used to generate this file)",
+      "title": "Hokkaido Open Data Platform (HODA) — gtfs_sapporo1.000.zip",
+      "url": "https://ckan.hoda.jp/dataset/24d1dd70-5395-4d6b-b41f-0d83e8eabdb9/resource/3efff7e5-b604-4850-8888-38f0e60bb238/download/gtfs_sapporo1.000.zip",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "httpStatus": 200,
+      "lastModified": "2020-03-24",
+      "note": "Confirmed empty-key 200 by the oracle report on 2026-09-06. 306.8 KiB. 6+ years stale as of this pack. NOT parsed to build this file — D1 is meant to be the hand-transcribed official map/station list, and this GTFS is a hazard (staleness) and a future cross-check target (stops.txt), not a source, per the oracle report's instruction: 'Do not generate a published-network.json from GTFS.'"
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "D1 oracle is the official Sapporo City Transportation Bureau rider site (https://www.city.sapporo.jp/st/subway/), per docs/sapporo-d1/oracle-clash-report.md. The full 49-station roster (names + official N/T/H codes) is now transcribed, sourced from Wikipedia per the oracle report's 'Station roster (D1 transcription)' section added 2026-09-06. Wikipedia is a stand-in for the official EN/JP station lists, not the official source itself — it must be cross-checked against https://www.city.sapporo.jp/st/subway/ and the 2020 GTFS stops.txt before this roster is treated as final for product/adapter edits.",
+    "City id sapporo. Display Sapporo. Agency Sapporo City Transportation Bureau / Sapporo Municipal Subway Co., Ltd. (札幌市交通局 / 札幌市営地下鉄). Do not invent city=sms, sapporo-metro, or merge into another Hokkaido city.",
+    "City stays planned. Modes v1: Sapporo Municipal Subway only — three official lines Namboku (N), Tōzai (T), Tōhō (H). Streetcar (Sapporo City Tram), city/regional bus, and JR Hokkaido commuter/regional rail (Hakodate Main Line, Chitose Line, Gakuen-Toshi Line) are out of v1.",
+    "Timezone Asia/Tokyo. NO DST.",
+    "No official public GTFS-RT. No published next-train API. Static GTFS on HODA is dated 2020-03-24 (6+ years stale as of this pack) — confirmed empty-key 200 but NOT used to generate this file. adapterReady false. envKeys: none.",
+    "Locked hub: Odori / 大通駅 (all three lines N x T x H). Secondary two-line nodes: Sapporo (N06 x H07, no Tozai) and Susukino (Namboku N08 x Tohou H09, no Tozai) — NOTE: the roster shows the Tohou-side station is officially named 'Hosui-Susukino' (豊水すすきの), a distinct printed name from Namboku's 'Susukino' (すすきの), even though the two are the same passenger interchange precinct. Treat as two station entries with a doNotGroup-by-default posture pending official confirmation of a single combined interchange treatment, same discipline as Sapporo (Metro) vs JR Sapporo. doNotGroup Sapporo (Metro) vs JR Sapporo; Susukino vs Hosui-Susukino vs any JR co-location; Shin-Sapporo (Metro, Tozai eastern terminus) vs JR Shin-Sapporo (Chitose Line). All JR stations are separate stations connected by underground passage only — not Sapporo Municipal Subway platforms.",
+    "49 total official stations across all three lines per the oracle report's station roster (Namboku 16, Tozai 19, Tohou 14). Hub/secondary interchanges (Odori x3, Sapporo x2) collapse the unique count to 46 distinct station names — see uniqueStationCount/uniqueStations. Station codes are official (N01-N16, T01-T19, H01-H14) per the oracle report's roster table.",
+    "Direction: line + official terminus (Namboku + Makomanai). Not compass N/S/E/W, not City, not inbound/outbound. See direction-model-memo.md.",
+    "No stopIds in this file. No GTFS route ids used. Passenger line tokens are the official single letters N / T / H plus the official English line names."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Odori",
+    "doNotUse": [
+      "City",
+      "Downtown",
+      "to City",
+      "Odori Station"
+    ],
+    "doNotCollapse": [
+      "Odori",
+      "Sapporo",
+      "Susukino",
+      "Hosui-Susukino",
+      "Shin-Sapporo"
+    ],
+    "alsoOnSharedApproaches": [
+      "Sapporo",
+      "Susukino",
+      "Hosui-Susukino"
+    ]
+  },
+  "coverageGaps": [
+    "Official station names/order/codes now transcribed for all 49 stations (source: Wikipedia, per oracle report's 'Station roster (D1 transcription)' section, 2026-09-06). REMAINING GAP: this roster has not yet been cross-checked against the official Sapporo City Transportation Bureau site (https://www.city.sapporo.jp/st/subway/) or the 2020 GTFS stops.txt — do that cross-check before any product edit treats this roster as final, especially for exact romanised spelling and the Susukino/Hosui-Susukino interchange treatment.",
+    "Static GTFS on HODA (gtfs_sapporo1.000.zip) is dated 2020-03-24 — 6+ years stale as of 2026-09-06. Not used as a source for the station list in this file beyond being a future cross-check target. Do not treat it as current without re-verification.",
+    "No official GTFS-RT / next-train API. Live path is unverified — @operation_st (X/Twitter) posts operational updates only, not a machine-readable feed.",
+    "Sapporo City Tram (streetcar). Out of v1 — separate operator.",
+    "City bus / regional bus. Out of v1.",
+    "JR Hokkaido commuter/regional rail (Hakodate Main Line at JR Sapporo; Chitose Line at JR Shin-Sapporo; Gakuen-Toshi Line). Separate JR stations connected by underground passage only. Out of v1. doNotGroup vs Metro Sapporo / Metro Shin-Sapporo."
+  ],
+  "lines": [
+    {
+      "id": "namboku",
+      "number": "N",
+      "name": "Namboku",
+      "officialPageTitle": "Namboku Line",
+      "jpName": "南北線",
+      "mapGroup": "Sapporo Municipal Subway",
+      "mode": "METRO",
+      "termini": [
+        "Asabu",
+        "Makomanai"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Odori",
+          "note": "N07. Hub lock. All three lines (N x T x H) officially interchange here."
+        },
+        {
+          "at": "Sapporo",
+          "note": "N06. Namboku + Tohou only, no Tozai. doNotGroup vs JR Sapporo (separate JR Hokkaido station, underground-passage-connected)."
+        },
+        {
+          "at": "Susukino",
+          "note": "N08. Namboku + Tohou interchange precinct, no Tozai. Tohou side is officially named Hosui-Susukino (H09), a different printed station name — doNotGroup pending official confirmation of combined treatment."
+        }
+      ],
+      "stations": [
+        "Asabu",
+        "Kita-Sanjuyo-Jo",
+        "Kita-Nijuyo-Jo",
+        "Kita-Juhachi-Jo",
+        "Kita-Juni-Jo",
+        "Sapporo",
+        "Odori",
+        "Susukino",
+        "Nakajima-Koen",
+        "Horohira-Bashi",
+        "Nakanoshima",
+        "Hiragishi",
+        "Minami-Hiragishi",
+        "Sumikawa",
+        "Jieitai-Mae",
+        "Makomanai"
+      ],
+      "stationCodes": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N13",
+        "N14",
+        "N15",
+        "N16"
+      ],
+      "coverageNote": "COMPLETE: 16 official Namboku stations transcribed in official north-south order (Asabu to Makomanai) with official codes N01-N16, per oracle report roster. Source is Wikipedia, not yet cross-checked against the official Bureau site or 2020 GTFS stops.txt — see coverageGaps."
+    },
+    {
+      "id": "tozai",
+      "number": "T",
+      "name": "Tōzai",
+      "officialPageTitle": "Tozai Line",
+      "jpName": "東西線",
+      "mapGroup": "Sapporo Municipal Subway",
+      "mode": "METRO",
+      "termini": [
+        "Miyanosawa",
+        "Shin-Sapporo"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Odori",
+          "note": "T09. Hub lock. All three lines (N x T x H) officially interchange here."
+        },
+        {
+          "at": "Shin-Sapporo",
+          "note": "T19. Eastern Tozai terminus (Metro side). doNotGroup vs JR Shin-Sapporo (Chitose Line, separate JR Hokkaido station, underground-passage-connected)."
+        }
+      ],
+      "stations": [
+        "Miyanosawa",
+        "Hassamu-Minami",
+        "Kotoni",
+        "Nijuyon-Ken",
+        "Nishi-Nijuhatchome",
+        "Maruyama-Koen",
+        "Nishi-Juhatchome",
+        "Nishi-Juitchome",
+        "Odori",
+        "Bus Center-Mae",
+        "Kikusui",
+        "Higashi-Sapporo",
+        "Shiroishi",
+        "Nango-Nana-Chome",
+        "Nango-Jusan-Chome",
+        "Nango-Juhatchome",
+        "Oyachi",
+        "Hibarigaoka",
+        "Shin-Sapporo"
+      ],
+      "stationCodes": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15",
+        "T16",
+        "T17",
+        "T18",
+        "T19"
+      ],
+      "coverageNote": "COMPLETE: 19 official Tozai stations transcribed in official west-east order (Miyanosawa to Shin-Sapporo) with official codes T01-T19, per oracle report roster (corrects a prior oracle summary that had misstated this line as 13 stations). Source is Wikipedia, not yet cross-checked against the official Bureau site or 2020 GTFS stops.txt — see coverageGaps. Note Tozai does NOT call at Sapporo or Susukino."
+    },
+    {
+      "id": "tohou",
+      "number": "H",
+      "name": "Tōhō",
+      "officialPageTitle": "Tohou Line",
+      "jpName": "東豊線",
+      "mapGroup": "Sapporo Municipal Subway",
+      "mode": "METRO",
+      "termini": [
+        "Sakaemachi",
+        "Fukuzumi"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Odori",
+          "note": "H08. Hub lock. All three lines (N x T x H) officially interchange here."
+        },
+        {
+          "at": "Sapporo",
+          "note": "H07. Namboku + Tohou only, no Tozai. doNotGroup vs JR Sapporo."
+        },
+        {
+          "at": "Hosui-Susukino",
+          "note": "H09. Namboku + Tohou interchange precinct with Susukino (N08), no Tozai. Officially a different printed station name from Namboku's Susukino — doNotGroup pending official confirmation of combined treatment."
+        }
+      ],
+      "stations": [
+        "Sakaemachi",
+        "Shindo-Higashi",
+        "Motomachi",
+        "Kanjo-Dori-Higashi",
+        "Higashi-Kuyakusho-Mae",
+        "Kita-Jusan-Jo-Higashi",
+        "Sapporo",
+        "Odori",
+        "Hosui-Susukino",
+        "Gakuen-Mae",
+        "Toyohira-Koen",
+        "Misono",
+        "Tsukisamu-Chuo",
+        "Fukuzumi"
+      ],
+      "stationCodes": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06",
+        "H07",
+        "H08",
+        "H09",
+        "H10",
+        "H11",
+        "H12",
+        "H13",
+        "H14"
+      ],
+      "coverageNote": "COMPLETE: 14 official Tohou stations transcribed in official north-south order (Sakaemachi to Fukuzumi) with official codes H01-H14, per oracle report roster (corrects a prior oracle summary that had misstated this line as 20 stations). Source is Wikipedia, not yet cross-checked against the official Bureau site or 2020 GTFS stops.txt — see coverageGaps."
+    }
+  ],
+  "uniqueStationCount": 46,
+  "uniqueStationCountNote": "49 total roster entries across the three lines (Namboku 16 + Tozai 19 + Tohou 14) collapse to 46 unique station names once shared interchange nodes are counted once: Odori (shared by all 3 lines, -2) and Sapporo (shared by Namboku + Tohou, -1). Susukino (Namboku N08) and Hosui-Susukino (Tohou H09) are officially distinct printed names and are NOT collapsed — see doNotCollapse/doNotGroup notes.",
+  "uniqueStations": [
+    "Asabu",
+    "Bus Center-Mae",
+    "Fukuzumi",
+    "Gakuen-Mae",
+    "Hassamu-Minami",
+    "Hibarigaoka",
+    "Higashi-Kuyakusho-Mae",
+    "Higashi-Sapporo",
+    "Hiragishi",
+    "Horohira-Bashi",
+    "Hosui-Susukino",
+    "Jieitai-Mae",
+    "Kanjo-Dori-Higashi",
+    "Kikusui",
+    "Kita-Juhachi-Jo",
+    "Kita-Juni-Jo",
+    "Kita-Jusan-Jo-Higashi",
+    "Kita-Nijuyo-Jo",
+    "Kita-Sanjuyo-Jo",
+    "Kotoni",
+    "Makomanai",
+    "Maruyama-Koen",
+    "Minami-Hiragishi",
+    "Misono",
+    "Miyanosawa",
+    "Motomachi",
+    "Nakajima-Koen",
+    "Nakanoshima",
+    "Nango-Juhatchome",
+    "Nango-Jusan-Chome",
+    "Nango-Nana-Chome",
+    "Nijuyon-Ken",
+    "Nishi-Juhatchome",
+    "Nishi-Juitchome",
+    "Nishi-Nijuhatchome",
+    "Odori",
+    "Oyachi",
+    "Sakaemachi",
+    "Sapporo",
+    "Shin-Sapporo",
+    "Shindo-Higashi",
+    "Shiroishi",
+    "Sumikawa",
+    "Susukino",
+    "Toyohira-Koen",
+    "Tsukisamu-Chuo"
+  ]
+}
