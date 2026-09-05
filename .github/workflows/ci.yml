@@ -16,6 +16,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# One run per ref: a new push to a PR branch (or a `gh pr update-branch`) cancels the run it
+# supersedes instead of letting both finish. Master pushes get their own group per SHA so a merge
+# never cancels the release run of the merge before it.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name == 'push' && github.sha || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   web-qa:
     runs-on: ubuntu-latest
