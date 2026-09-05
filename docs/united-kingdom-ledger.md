@@ -245,6 +245,23 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
 
 ---
 
+## Parked second modes (local tram / metro / subway)
+
+Each is `out-product` under the walk-up rule because no confirmed real-time feed exists; each is
+a separate work package in the tracker (child row "Region · Mode"), not a product region. None is
+chased before store launch (FB-56 is the model). Nobody is currently chasing any of them except
+Nexus.
+
+| Work package | Parked on | Chasing? |
+|---|---|---|
+| East Midlands · NET tram | Tramlink Nottingham publishing a live feed | No |
+| North East · Metro | Nexus reply (draft ready, send after store launch - FB-56) | Yes, after launch |
+| Greater Manchester · Metrolink | TfGM publishing a feed | No |
+| South Yorkshire · Supertram | SYFTL publishing any public feed | No |
+| Edinburgh · Trams | Edinburgh Trams publishing a feed | No |
+| Glasgow · Subway | SPT publishing an official feed | No |
+| West Midlands · Metro | not parked - code done; confirm TfWM keys in production (FB-48) | Tim |
+
 ## Open items for Tim
 
 1. **RDM licence — resolved 5 Sep 2026 (see §1); attribution follow-up done.** ~~Wire the
