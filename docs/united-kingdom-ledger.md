@@ -91,18 +91,18 @@ than through-running-only.
 
 | Station | CRS | Home region | Other regions that touch it | Basis | Status |
 |---|---|---|---|---|---|
-| Denby Dale | DBD (was catalogued as DDL, corrected 5 Sep) | West Yorkshire | South Yorkshire (CRS left null there) | reg: west-yorkshire, south-yorkshire | **contested — Tim** (both packs carry it; South Yorkshire's own entry has no CRS, suggesting it never confirmed the station independently, but this ledger does not pick for Tim) |
-| Tamworth | — (no CRS confirmed by any pack) | none | West Midlands (unbuilt catalog boundary), East Midlands (deliberately excludes it) | reg: east-midlands ("Tamworth deliberately excluded — genuine shared platform with West Midlands, D2 de-dup boundary for a future West Midlands pack, not built here") | **unclaimed — contested — Tim** |
-| Darlington | DRL | none | North East, East Midlands | reg: north-east ("Darlington deliberately excluded — confirmed unclaimed by both this pack and East Midlands' own already-merged pack") | **unclaimed — contested — Tim** |
-| Walsden | WDN (West Yorkshire's own pack) / WAD (Greater Manchester's own pack — same physical station, CRS mismatch) | West Yorkshire (through-running-only entry exists there) | Greater Manchester (no built counterpart catalog yet) | reg: west-yorkshire, greater-manchester | **contested — Tim** — this is a CRS-value conflict as well as an ownership one; neither pack resolved which CRS is correct against a live Darwin call |
+| Denby Dale | DBD (was catalogued as DDL, corrected 5 Sep) | West Yorkshire | South Yorkshire (listed with null CRS; drops it) | reg: west-yorkshire, south-yorkshire | **decided** (Tim, 5 Sep 2026) — administratively Kirklees, West Yorkshire; South Yorkshire never confirmed the station independently. South Yorkshire keeps it as a destination only |
+| Tamworth | TAM | West Midlands (not yet in the live catalog — add on next catalog touch) | East Midlands (deliberately excludes it) | reg: east-midlands; East Midlands pack `sharedPlatformFlaggedForD2` gives CRS TAM | **decided** (Tim, 5 Sep 2026) — Birmingham commuter territory (West Midlands Railway, Cross-City line). Gap in a live region, not a contest: today nobody can pick it |
+| Darlington | DRL | North East | East Midlands (never claimed it) | reg: north-east | **decided** (Tim, 5 Sep 2026) — County Durham, ECML; no real second claimant, the North East pack was cautious rather than torn |
+| Walsden | WDN | West Yorkshire | Greater Manchester (through-running-only, destination only) | reg: west-yorkshire, greater-manchester | **decided** (Tim, 5 Sep 2026) — Calderdale, West Yorkshire. The apparent CRS conflict is closed: both packs now carry WDN; WAD was West Yorkshire's original error (corrected 5 Sep) and is actually Wadhurst, Sussex |
 | Chepstow | CPW | West of England (through-running-only) | South Wales (which instead names Severn Tunnel Junction, a *different physical station*, as its own side's Wales–England corridor boundary) | reg: west-of-england, south-wales | **decided as two distinct stations, not a shared-station contest** — flagged because the two regions independently named different stations as "the" Wales–England boundary; South Wales's own registry note calls this a known open item versus West of England's Chepstow naming. Neither station is claimed as a *home* station by either region — both are through-running-only in their own catalogs |
-| Berwick-upon-Tweed | BWK | none | North East (through-running-only, "Scotland boundary open/unresolved"), Rest of Scotland (its own pack does not mention Berwick at all) | reg: north-east | **unclaimed — contested — Tim** |
-| Taunton | TAU | none (through-running-only on both sides) | West of England (through-running-only, "toward Southwest/Devon region"), Southwest (through-running-only, "West of England boundary — not a merge, matches West of England's own Taunton flag from the other side") | reg: west-of-england, southwest | **contested — Tim** — both regions agree it's a boundary and neither claims it as a home/hub station; "first home region wins" does not resolve a station neither side actually owns |
+| Berwick-upon-Tweed | BWK | North East | Rest of Scotland (pack does not mention it; sees it as a destination only) | reg: north-east | **decided** (Tim, 5 Sep 2026) — Northumberland, England, three miles south of the border |
+| Taunton | TAU | West of England | Southwest (through-running-only, destination only) | reg: west-of-england, southwest | **decided** (Tim, 5 Sep 2026) — Somerset, geographically a toss-up between Bristol and Exeter; West of England is live and Southwest is planned, so this is the only choice that lets a Taunton rider use the app today |
 | Chester | CTR/CHE | Liverpool City Region | Rest of Wales (excludes it explicitly, "Chester, England") | reg: liverpool-city-region (genuine Wirral Line Merseyrail terminus, in the 97-station catalog), reg: rest-of-wales ("Boundary/pass-through stations NOT in catalog: Chester (CTR, England)") | **decided** — Liverpool City Region catalogues it as a real terminus; Rest of Wales explicitly stays out |
-| Peterborough | PBO | Greater Anglia (flat catalog entry, not a hub) | East Midlands (implied but not directly confirmed — Greater Anglia's own note flags "a future East Midlands/LNER Peterborough entry" as an unresolved cross-region shared-platform de-dup question), London & South East NR (boundary reference only, not built there) | reg: greater-anglia | **contested — Tim** — Greater Anglia is the only region that actually catalogues it today, but the possibility of an East Midlands entry is explicitly flagged as unresolved by Greater Anglia's own pack, not by this ledger inventing it |
+| Peterborough | PBO | Greater Anglia (flat catalog entry, not a hub) | East Midlands (must NOT add it), London & South East NR (boundary reference only) | reg: greater-anglia | **decided** (Tim, 5 Sep 2026) — Greater Anglia is the only region that catalogues it. The board shows LNER/EMR/Thameslink/CrossCountry regardless of owner; ownership only decides the picker |
 | Fareham | FRM (was catalogued as FAR, corrected 5 Sep) | Solent | London & South East NR (not claimed there) | reg: solent (hub-anchor station, "Portsmouth Harbour" direction hub wired at Fareham) | **decided** |
-| Westbury | WSB | none (through-running-only on all three sides) | West of England, Solent, Thames Valley — each lists Westbury as a through-running-only boundary station "reciprocally consistent" with the others' own already-merged packs | reg: west-of-england, solent, thames-valley | **contested — Tim** — three-way symmetric agreement that it's a boundary, no region claims it as a home/hub station |
-| Gloucester | GCR | none | West of England (through-running-only, "West Midlands boundary") | reg: west-of-england; no West Midlands catalog exists yet to confirm or deny (uk-west-midlands's 75-station National Rail list was not re-read station-by-station for this ledger) | **unknown — contested — Tim** |
+| Westbury | WSB | West of England | Solent, Thames Valley (through-running-only, destination only) | reg: west-of-england, solent, thames-valley | **decided** (Tim, 5 Sep 2026) — Wiltshire junction; Bath (12 mi) is the nearest hub in any region, the other two only pass through. Left unpickable otherwise |
+| Gloucester | GCR | West of England | West Midlands (not in the live catalog; boundary reference only) | reg: west-of-england | **decided** (Tim, 5 Sep 2026) — Gloucester–Bristol is a commuter flow, Birmingham is not. Mirror of Tamworth |
 | Preston / Wigan / Lockerbie / Settle | — | Settle (SLF) only — Cumbria (regional boundary, in-catalog) | Preston, Wigan, Lockerbie: none | reg: cumbria ("Regional boundaries checked against already-merged adjacent packs (Rest of Scotland, Greater Manchester) — no live overlap found... remains an open D2 coordination point") | Settle: **decided** (Cumbria). Preston/Wigan/Lockerbie: **unclaimed — not contested (no second claimant either) — flagged for whoever builds the adjacent region** |
 
 **doNotGroup two-layer stations (ownership-adjacent, not ownership contests):**
@@ -232,12 +232,12 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
 1. **OpenLDBWS/RDM redistribution terms to third-party riders** — unconfirmed against the signed
    Data Sharing Agreement, carried as an open item on every UK region since 2 Sep 2026. Needs a
    single yes/no from Tim, once, closing it everywhere rather than per region.
-2. **Contested stop-ownership rows** (§2): Denby Dale, Tamworth, Darlington, Walsden (also a CRS
-   value conflict — WDN vs WAD for the same physical station), Berwick-upon-Tweed, Taunton,
-   Peterborough (possible future East Midlands entry), Westbury, Gloucester. Chepstow vs Severn
-   Tunnel Junction is not a shared-station contest but is a naming inconsistency between two
-   regions about which physical station is "the" Wales–England boundary — worth a decision even
-   though no ownership conflict exists.
+2. **Catalog follow-ups from the 5 Sep stop-ownership decisions** (§2): add Tamworth (TAM) to
+   the live West Midlands catalog; add Taunton (TAU), Westbury (WSB) and Gloucester (GCR) to West
+   of England as pickable stations (currently through-running-only there); South Yorkshire drops
+   Denby Dale; East Midlands must not add Peterborough. Chepstow vs Severn Tunnel Junction remains
+   a naming inconsistency (not an ownership conflict) about which physical station is "the"
+   Wales–England boundary — still undecided.
 3. **Pack contradiction** (§3): LNER's board-eligibility verdict is `in` at Leeds and Peterborough
    but still `undecided` at King's Cross in `london-se-national-rail`'s own registry note. Same
    operator, same evidence shape reached twice elsewhere — recommend applying the same resolution,
@@ -269,4 +269,4 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 
 | Date | Region | Finding | Effect |
 |---|---|---|---|
-| | | | |
+| 5 Sep 2026 | (ledger) | Tim resolved all nine contested stop-ownership rows: Denby Dale, Walsden → West Yorkshire; Tamworth → West Midlands; Darlington, Berwick-upon-Tweed → North East; Taunton, Westbury, Gloucester → West of England; Peterborough → Greater Anglia. Walsden CRS conflict closed (WDN). | Catalog additions owed in West Midlands (TAM) and West of England (TAU, WSB, GCR); South Yorkshire drops Denby Dale; East Midlands must not add Peterborough |
