@@ -38,7 +38,9 @@
       "aliases": [],
       "lat": 53.40730825272,
       "lng": -2.97772602818,
-      "class": "National Rail hub lock - main terminus, seven TOCs (Northern Trains primary franchise; Avanti West Coast, TransPennine Express, East Midlands Railway, Transport for Wales, West Midlands Trains, CrossCountry through-running) plus Merseyrail low-level platforms (platform \"A\"), all on one Darwin board (CRS LIV). H1 closed as moot 4 Sep 2026 - see notes."
+      "class": "National Rail hub lock - main terminus, seven TOCs (Northern Trains primary franchise; Avanti West Coast, TransPennine Express, East Midlands Railway, Transport for Wales, West Midlands Trains, CrossCountry through-running) plus Merseyrail low-level platforms (platform \"A\"), all on one Darwin board (CRS LIV). H1 closed as moot 4 Sep 2026 - see notes.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -47,7 +49,9 @@
       "aliases": [],
       "lat": 53.3577440907,
       "lng": -2.88912776514,
-      "class": "National Rail secondary hub - airport connector (Liverpool John Lennon Airport), regional and long-distance services. Not a shared-building/doNotGroup case with Merseyrail in this pack's architecture (see hazard-pack.md H6), though ORR Table 6329 (31 Mar 2026) lists its Station facility owner as Merseyrail (joint station, Merseyrail's Northern Line also calls here) - flagged as a minor architecture note, not resolved as a doNotGroup split without a walk-distance/platform-separation figure the way Lime Street's H1 has."
+      "class": "National Rail secondary hub - airport connector (Liverpool John Lennon Airport), regional and long-distance services. Not a shared-building/doNotGroup case with Merseyrail in this pack's architecture (see hazard-pack.md H6), though ORR Table 6329 (31 Mar 2026) lists its Station facility owner as Merseyrail (joint station, Merseyrail's Northern Line also calls here) - flagged as a minor architecture note, not resolved as a doNotGroup split without a walk-distance/platform-separation figure the way Lime Street's H1 has.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -57,7 +61,9 @@
       "aliases": [],
       "lat": 53.40650328883,
       "lng": -2.89348391276,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -67,7 +73,9 @@
       "aliases": [],
       "lat": 53.45113672322,
       "lng": -2.63766325712,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -77,7 +85,9 @@
       "aliases": [],
       "lat": 53.4307861016,
       "lng": -2.78004151413,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -87,7 +97,9 @@
       "aliases": [],
       "lat": 53.40261614879,
       "lng": -2.94648295952,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -97,7 +109,9 @@
       "aliases": [],
       "lat": 53.48852016952,
       "lng": -2.67213456299,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -107,7 +121,9 @@
       "aliases": [],
       "lat": 53.36447931893,
       "lng": -2.83013392459,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -117,7 +133,9 @@
       "aliases": [],
       "lat": 53.32971706307,
       "lng": -3.07370272813,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Wirral; station facility owner TfW Rail)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Wirral; station facility owner TfW Rail).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -127,7 +145,9 @@
       "aliases": [],
       "lat": 53.37239135849,
       "lng": -2.77506593727,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -137,7 +157,9 @@
       "aliases": [],
       "lat": 53.40968404177,
       "lng": -2.84298882748,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -147,7 +169,9 @@
       "aliases": [],
       "lat": 53.42680954725,
       "lng": -2.72497749591,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -157,7 +181,9 @@
       "aliases": [],
       "lat": 53.64627181393,
       "lng": -2.97580377061,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Sefton; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Sefton; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -167,7 +193,9 @@
       "aliases": [],
       "lat": 53.37903763319,
       "lng": -2.91544302228,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -177,7 +205,9 @@
       "aliases": [],
       "lat": 53.45306051839,
       "lng": -2.6135980844,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -187,7 +217,9 @@
       "aliases": [],
       "lat": 53.42355847466,
       "lng": -2.79917121477,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -197,7 +229,9 @@
       "aliases": [],
       "lat": 53.51710547926,
       "lng": -2.78946905426,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -207,7 +241,9 @@
       "aliases": [],
       "lat": 53.41712164479,
       "lng": -2.76640023607,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -217,7 +253,9 @@
       "aliases": [],
       "lat": 53.41004137491,
       "lng": -2.85593353755,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -227,7 +265,9 @@
       "aliases": [],
       "lat": 53.33869472748,
       "lng": -2.73925114117,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner Avanti West Coast)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner Avanti West Coast).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -237,7 +277,9 @@
       "aliases": [],
       "lat": 53.32756824498,
       "lng": -2.66569743193,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner TfW Rail)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner TfW Rail).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -247,7 +289,9 @@
       "aliases": [],
       "lat": 53.45312298341,
       "lng": -2.73030479223,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -257,7 +301,9 @@
       "aliases": [],
       "lat": 53.43372556882,
       "lng": -2.70025944775,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -267,7 +313,9 @@
       "aliases": [],
       "lat": 53.43658222646,
       "lng": -2.75937447258,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district St. Helens; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -279,7 +327,9 @@
       ],
       "lat": 53.38648747522,
       "lng": -3.08415251712,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Wirral; station facility owner TfW Rail)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Wirral; station facility owner TfW Rail).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -289,7 +339,9 @@
       "aliases": [],
       "lat": 53.4051917769,
       "lng": -2.92290891019,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -299,7 +351,9 @@
       "aliases": [],
       "lat": 53.36912466911,
       "lng": -2.90696423376,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Liverpool; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -309,7 +363,9 @@
       "aliases": [],
       "lat": 53.41386889749,
       "lng": -2.79643183204,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Knowsley; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -319,7 +375,9 @@
       "aliases": [],
       "lat": 53.37849659103,
       "lng": -2.73353666796,
-      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner Northern Trains)."
+      "class": "National Rail station within Liverpool City Region Combined Authority (ORR Table 6329, 31 Mar 2026 snapshot; district Halton; station facility owner Northern Trains).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -331,7 +389,9 @@
       "aliases": [],
       "lat": 53.36456492063,
       "lng": -2.92715492547,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -343,7 +403,9 @@
       "aliases": [],
       "lat": 53.60203225634,
       "lng": -3.04265200904,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -355,7 +417,9 @@
       "aliases": [],
       "lat": 53.47390962432,
       "lng": -2.9562803142,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -367,7 +431,9 @@
       "aliases": [],
       "lat": 53.55424741626,
       "lng": -2.89522081448,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district West Lancashire)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district West Lancashire).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -379,7 +445,9 @@
       "aliases": [],
       "lat": 53.20878566244,
       "lng": -2.89167004578,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -391,7 +459,9 @@
       "aliases": [],
       "lat": 53.43749336469,
       "lng": -2.98751140146,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -403,7 +473,9 @@
       "aliases": [],
       "lat": 53.35765385894,
       "lng": -3.00363467306,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -415,7 +487,9 @@
       "aliases": [],
       "lat": 53.40913653201,
       "lng": -3.07856057923,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -427,7 +501,9 @@
       "aliases": [],
       "lat": 53.63404958229,
       "lng": -3.01444960865,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -439,7 +515,9 @@
       "aliases": [],
       "lat": 53.38831339142,
       "lng": -3.02082065372,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -451,7 +529,9 @@
       "aliases": [],
       "lat": 53.39469350167,
       "lng": -3.01367966331,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -463,7 +543,9 @@
       "aliases": [],
       "lat": 53.40443464169,
       "lng": -3.05753314281,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -475,7 +557,9 @@
       "aliases": [],
       "lat": 53.39740532129,
       "lng": -3.0391007784,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -487,7 +571,9 @@
       "aliases": [],
       "lat": 53.48768343484,
       "lng": -3.03985977525,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -499,7 +585,9 @@
       "aliases": [],
       "lat": 53.45338857285,
       "lng": -2.99474724324,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -511,7 +599,9 @@
       "aliases": [],
       "lat": 53.44662072206,
       "lng": -2.9957333951,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -523,7 +613,9 @@
       "aliases": [],
       "lat": 53.32184635744,
       "lng": -2.98689536144,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -535,7 +627,9 @@
       "aliases": [],
       "lat": 53.32990619305,
       "lng": -2.98946892637,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -547,7 +641,9 @@
       "aliases": [],
       "lat": 53.38324037885,
       "lng": -2.97607686688,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -559,7 +655,9 @@
       "aliases": [],
       "lat": 53.26017358053,
       "lng": -2.94228478229,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -571,7 +669,9 @@
       "aliases": [],
       "lat": 53.39335835082,
       "lng": -3.02267078544,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -583,7 +683,9 @@
       "aliases": [],
       "lat": 53.3587489882,
       "lng": -2.91200286503,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -595,7 +697,9 @@
       "aliases": [],
       "lat": 53.30753837031,
       "lng": -2.98113242826,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -607,7 +711,9 @@
       "aliases": [],
       "lat": 53.2821909626,
       "lng": -2.89642257273,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -619,7 +725,9 @@
       "aliases": [],
       "lat": 53.46908477784,
       "lng": -2.93672322211,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -631,7 +739,9 @@
       "aliases": [],
       "lat": 53.55347711615,
       "lng": -3.07090769388,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -643,7 +753,9 @@
       "aliases": [],
       "lat": 53.5660531443,
       "lng": -3.07182942955,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -655,7 +767,9 @@
       "aliases": [],
       "lat": 53.38325423778,
       "lng": -3.0164147583,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -667,7 +781,9 @@
       "aliases": [],
       "lat": 53.4974857731,
       "lng": -3.04962704604,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -679,7 +795,9 @@
       "aliases": [],
       "lat": 53.491136,
       "lng": -2.885591,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Knowsley)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Knowsley).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -691,7 +809,9 @@
       "aliases": [],
       "lat": 53.52510579355,
       "lng": -3.05706794581,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -703,7 +823,9 @@
       "aliases": [],
       "lat": 53.62210610057,
       "lng": -3.02471637702,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -715,7 +837,9 @@
       "aliases": [],
       "lat": 53.2971988261,
       "lng": -2.97700928654,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -727,7 +851,9 @@
       "aliases": [],
       "lat": 53.39021032012,
       "lng": -3.17883078784,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -739,7 +865,9 @@
       "aliases": [],
       "lat": 53.36071099127,
       "lng": -2.85586095655,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -753,7 +881,9 @@
       ],
       "lat": 53.48619068825,
       "lng": -2.90282920116,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Knowsley)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Knowsley).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -765,7 +895,9 @@
       "aliases": [],
       "lat": 53.44089892405,
       "lng": -2.98111681294,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -777,7 +909,9 @@
       "aliases": [],
       "lat": 53.40804575435,
       "lng": -3.09959370195,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -789,7 +923,9 @@
       "aliases": [],
       "lat": 53.28551485986,
       "lng": -2.94329238719,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -801,7 +937,9 @@
       "aliases": [],
       "lat": 53.40459987883,
       "lng": -2.97915307006,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -813,7 +951,9 @@
       "aliases": [],
       "lat": 53.40476383468,
       "lng": -2.9919576404,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -825,7 +965,9 @@
       "aliases": [],
       "lat": 53.3577440907,
       "lng": -2.88912776514,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -837,7 +979,9 @@
       "aliases": [],
       "lat": 53.50647001156,
       "lng": -2.93085292101,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -849,7 +993,9 @@
       "aliases": [],
       "lat": 53.5167,
       "lng": -2.9213,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -861,7 +1007,9 @@
       "aliases": [],
       "lat": 53.39477766321,
       "lng": -3.17143762364,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -873,7 +1021,9 @@
       "aliases": [],
       "lat": 53.39943946159,
       "lng": -3.15426918066,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -885,7 +1035,9 @@
       "aliases": [],
       "lat": 53.40856229497,
       "lng": -2.9891727421,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -899,7 +1051,9 @@
       ],
       "lat": 53.40720670502,
       "lng": -3.11350197116,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -911,7 +1065,9 @@
       "aliases": [],
       "lat": 53.43740063626,
       "lng": -3.04796467635,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -923,7 +1079,9 @@
       "aliases": [],
       "lat": 53.48689507047,
       "lng": -2.95107150899,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -935,7 +1093,9 @@
       "aliases": [],
       "lat": 53.56927273711,
       "lng": -2.88119295403,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district West Lancashire)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district West Lancashire).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -947,7 +1107,9 @@
       "aliases": [],
       "lat": 53.46189796864,
       "lng": -2.96331546828,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -959,7 +1121,9 @@
       "aliases": [],
       "lat": 53.28404743498,
       "lng": -2.92406060411,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Cheshire West and Chester).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -971,7 +1135,9 @@
       "aliases": [],
       "lat": 53.34925120099,
       "lng": -2.99802912874,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -983,7 +1149,9 @@
       "aliases": [],
       "lat": 53.45777114192,
       "lng": -2.9623183852,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -995,7 +1163,9 @@
       "aliases": [],
       "lat": 53.37264974405,
       "lng": -3.01082627118,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1007,7 +1177,9 @@
       "aliases": [],
       "lat": 53.42993669093,
       "lng": -2.99149025289,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1019,7 +1191,9 @@
       "aliases": [],
       "lat": 53.46626843365,
       "lng": -3.00562324392,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1031,7 +1205,9 @@
       "aliases": [],
       "lat": 53.64651914099,
       "lng": -3.00243474538,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1043,7 +1219,9 @@
       "aliases": [],
       "lat": 53.3399370268,
       "lng": -2.99390656946,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1055,7 +1233,9 @@
       "aliases": [],
       "lat": 53.37559911654,
       "lng": -2.95279826465,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1067,7 +1247,9 @@
       "aliases": [],
       "lat": 53.54280702829,
       "lng": -2.90448658186,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district West Lancashire)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district West Lancashire).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1079,7 +1261,9 @@
       "aliases": [],
       "lat": 53.42800316114,
       "lng": -3.06970700441,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1091,7 +1275,9 @@
       "aliases": [],
       "lat": 53.42288464228,
       "lng": -3.06912702186,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1105,7 +1291,9 @@
       ],
       "lat": 53.45621536637,
       "lng": -2.96574705133,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Liverpool).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1119,7 +1307,9 @@
       ],
       "lat": 53.47495317496,
       "lng": -3.02553616691,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Sefton).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1131,7 +1321,9 @@
       "aliases": [],
       "lat": 53.37317195515,
       "lng": -3.1837713705,
-      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral)."
+      "class": "Merseyrail station (ORR Table 6329, 31 Mar 2026 snapshot: Station facility owner = Merseyrail; district Wirral).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -1143,7 +1335,9 @@
       "aliases": [],
       "lat": 53.19669513735,
       "lng": -2.87959353783,
-      "class": "Merseyrail Wirral Line terminus (report line 21). ORR Table 6329 (31 Mar 2026): Station facility owner = TfW Rail (joint/shared station with Transport for Wales services), not Merseyrail — still a genuine Wirral Line terminus per the oracle report and included in the 69-station Merseyrail network count on that basis, not on facility-ownership."
+      "class": "Merseyrail Wirral Line terminus (report line 21). ORR Table 6329 (31 Mar 2026): Station facility owner = TfW Rail (joint/shared station with Transport for Wales services), not Merseyrail — still a genuine Wirral Line terminus per the oracle report and included in the 69-station Merseyrail network count on that basis, not on facility-ownership.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     }
   ]
 }

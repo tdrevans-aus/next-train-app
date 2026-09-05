@@ -116,7 +116,7 @@ assert((region?.modes ?? []).join(",") === "train", "cumbria must be train-only 
 
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["CAR", "OXO", "BIF", "PEN", "WND", "KND", "SLF"]) {
+for (const crs of ["CAR", "OXN", "BIF", "PNR", "WDM", "KEN", "SET"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
 assert(getNotInRegion(CUMBRIA_REGION).length === 0, "cumbria has no deliberate exclusions recorded");
@@ -132,7 +132,7 @@ const carlisle = resolveCatalogEntry("Carlisle");
 assert(carlisle?.crs === "CAR", "Carlisle must resolve with crs CAR");
 assert(/hub lock — tier 1/i.test(carlisle.class ?? ""), "Carlisle must be classed as the tier-1 hub lock");
 
-const secondaryHubCrsByName = { "Oxenholme Lake District": "OXO", "Barrow-in-Furness": "BIF" };
+const secondaryHubCrsByName = { "Oxenholme Lake District": "OXN", "Barrow-in-Furness": "BIF" };
 for (const [name, crs] of Object.entries(secondaryHubCrsByName)) {
   const hub = resolveCatalogEntry(name);
   assert(hub?.crs === crs, `${name} must resolve with crs ${crs}`);
@@ -141,7 +141,7 @@ for (const [name, crs] of Object.entries(secondaryHubCrsByName)) {
 
 // Penrith must stay regional, never a hub-classed entry.
 const penrith = resolveCatalogEntry("Penrith");
-assert(penrith?.crs === "PEN", "Penrith must resolve with crs PEN");
+assert(penrith?.crs === "PNR", "Penrith must resolve with crs PNR");
 assert(!/hub lock/i.test(penrith.class ?? ""), "Penrith must NOT be classed as a hub lock");
 
 // Caledonian Sleeper out-reservation exclusion — per-station, enforced in code.

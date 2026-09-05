@@ -23,7 +23,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — principal rail terminus for Exeter city; all GWR InterCity and regional services call here. Main interchange between London Paddington services and Southwest corridor. Through-running point for CrossCountry services via Midlands/Bristol."
+      "class": "hub lock — principal rail terminus for Exeter city; all GWR InterCity and regional services call here. Main interchange between London Paddington services and Southwest corridor. Through-running point for CrossCountry services via Midlands/Bristol.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -32,7 +34,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub secondary — Plymouth city station; frequent service to Exeter St Davids (30-60 min), direct service to Penzance via Riviera Line. Served by GWR and CrossCountry. Largest passenger station in region after Exeter."
+      "class": "hub secondary — Plymouth city station; frequent service to Exeter St Davids (30-60 min), direct service to Penzance via Riviera Line. Served by GWR and CrossCountry. Largest passenger station in region after Exeter.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -41,7 +45,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus — westernmost and southernmost station on National Rail network; terminus of Cornish Main Line. GWR regional/InterCity terminus. Night Riviera Sleeper also terminates here but is excluded (out-reservation)."
+      "class": "terminus — westernmost and southernmost station on National Rail network; terminus of Cornish Main Line. GWR regional/InterCity terminus. Night Riviera Sleeper also terminates here but is excluded (out-reservation).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -50,25 +56,31 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, boundary to West of England region — not a merge point"
+      "class": "through-running only, boundary to West of England region — not a merge point",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Newton Abbot",
-      "crs": "NAB",
+      "crs": "NTA",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only (South West Main Line). GWR and CrossCountry services continue south to Plymouth. No through-running to adjacent regions."
+      "class": "through-running only (South West Main Line). GWR and CrossCountry services continue south to Plymouth. No through-running to adjacent regions.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Totnes",
-      "crs": "TON",
+      "crs": "TOT",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only (Riviera Line branch). GWR regional services continue south to Plymouth. No through-running to adjacent regions."
+      "class": "through-running only (Riviera Line branch). GWR regional services continue south to Plymouth. No through-running to adjacent regions.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -77,7 +89,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate stop (Cornish Main Line, Truro branch). GWR services call between Exeter and Penzance. No through-running to adjacent regions."
+      "class": "intermediate stop (Cornish Main Line, Truro branch). GWR services call between Exeter and Penzance. No through-running to adjacent regions.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -86,7 +100,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate stop between Truro and Penzance (Cornish Main Line, St Austell branch). No through-running to adjacent regions."
+      "class": "intermediate stop between Truro and Penzance (Cornish Main Line, St Austell branch). No through-running to adjacent regions.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -95,7 +111,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "penultimate station before Penzance terminus (Cornish Main Line, St Erth branch). No through-running to adjacent regions."
+      "class": "penultimate station before Penzance terminus (Cornish Main Line, St Erth branch). No through-running to adjacent regions.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     }
   ]
 }

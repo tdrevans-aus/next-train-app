@@ -142,6 +142,11 @@ const syCrsSet = new Set(syRail.map((s) => s.crs).filter(Boolean));
 if (!syCrsSet.has("SHF") || !syCrsSet.has("MHS")) {
   fail("south-yorkshire must carry SHF and MHS CRS codes");
 }
+for (const crs of ["RMC", "DRT", "SES", "MRP"]) {
+  if (!syCrsSet.has(crs)) {
+    fail(`south-yorkshire missing ${crs} (live-verified 5 Sep 2026 CRS fill)`);
+  }
+}
 if (syCrsSet.has("CHD") || syRailNames.has("Chesterfield")) {
   fail("south-yorkshire must not carry Chesterfield (owned by East Midlands)");
 }
@@ -210,6 +215,9 @@ const neCrsSet = new Set(neRail.map((s) => s.crs).filter(Boolean));
 if (!neCrsSet.has("NCL") || !neCrsSet.has("BWK")) {
   fail("north-east must carry NCL and BWK CRS codes");
 }
+if (!neCrsSet.has("SUN")) {
+  fail("north-east missing SUN (Sunderland, live-verified 5 Sep 2026 CRS fill)");
+}
 if (neRailNames.has("Darlington")) {
   fail("north-east must not carry Darlington (unresolved cross-region boundary)");
 }
@@ -241,8 +249,8 @@ if (!neHubMetro || !neHubMetro.catalogId?.startsWith("metro:")) {
 
 const neSunderlandRail = resolveRailEntry("Sunderland", "north-east");
 const neSunderlandMetro = resolveMetroEntry("Sunderland", "north-east");
-if (!neSunderlandRail) {
-  fail("north-east Sunderland must resolve as a rail entry (shared-platform case, CRS null — not guessed)");
+if (!neSunderlandRail || neSunderlandRail.crs !== "SUN") {
+  fail("north-east Sunderland must resolve as a rail entry with crs SUN (shared-platform case, live-verified 5 Sep 2026)");
 }
 if (!neSunderlandMetro || neSunderlandMetro.catalogId !== "metro:sunderland") {
   fail("north-east Sunderland must also resolve as the Green Line metro entry");
@@ -630,7 +638,7 @@ if (!gm || gm.railCount !== 4 || gm.metroCount !== 15) {
 
 const gmRail = listRailStations("greater-manchester");
 const gmCrsSet = new Set(gmRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["MAN", "MCV", "SMN", "WDN"]) {
+for (const crs of ["MAN", "MCV", "SPT", "WDN"]) {
   if (!gmCrsSet.has(crs)) {
     fail(`greater-manchester missing ${crs}`);
   }
@@ -799,7 +807,7 @@ if (!swst || swst.railCount !== 9 || swst.metroCount !== 0) {
 
 const swstRail = listRailStations("southwest");
 const swstCrsSet = new Set(swstRail.map((s) => s.crs));
-for (const crs of ["EXD", "PLY", "PNZ", "TAU", "NAB", "TON", "TRU", "SAU", "SER"]) {
+for (const crs of ["EXD", "PLY", "PNZ", "TAU", "NTA", "TOT", "TRU", "SAU", "SER"]) {
   if (!swstCrsSet.has(crs)) {
     fail(`southwest missing ${crs}`);
   }
@@ -830,7 +838,7 @@ if (!cum || cum.railCount !== 7 || cum.metroCount !== 0) {
 
 const cumRail = listRailStations("cumbria");
 const cumCrsSet = new Set(cumRail.map((s) => s.crs));
-for (const crs of ["CAR", "OXO", "BIF", "PEN", "WND", "KND", "SLF"]) {
+for (const crs of ["CAR", "OXN", "BIF", "PNR", "WDM", "KEN", "SET"]) {
   if (!cumCrsSet.has(crs)) {
     fail(`cumbria missing ${crs}`);
   }
@@ -847,8 +855,8 @@ const cumSecondary2 = resolveRailEntry("Barrow-in-Furness", "cumbria");
 if (!cumHub || cumHub.crs !== "CAR") {
   fail("cumbria Carlisle must resolve as a rail entry with crs CAR");
 }
-if (!cumSecondary1 || cumSecondary1.crs !== "OXO") {
-  fail("cumbria Oxenholme Lake District must resolve as a rail entry with crs OXO");
+if (!cumSecondary1 || cumSecondary1.crs !== "OXN") {
+  fail("cumbria Oxenholme Lake District must resolve as a rail entry with crs OXN");
 }
 if (!cumSecondary2 || cumSecondary2.crs !== "BIF") {
   fail("cumbria Barrow-in-Furness must resolve as a rail entry with crs BIF");

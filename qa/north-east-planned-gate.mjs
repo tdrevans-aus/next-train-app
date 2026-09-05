@@ -141,7 +141,7 @@ assert(isForbiddenCollapseName("Tyne and Wear Metro") === true, "'Tyne and Wear 
 // board-merging pass.
 const sunderlandRail = resolveCatalogEntry("Sunderland", "train");
 const sunderlandMetro = resolveCatalogEntry("Sunderland", "metro");
-assert(sunderlandRail?.crs == null, "Sunderland's National Rail entry must not have a guessed CRS");
+assert(sunderlandRail?.crs === "SUN", "Sunderland's National Rail entry must carry crs SUN (live-verified 5 Sep 2026)");
 assert(sunderlandMetro?.catalogId === "metro:sunderland", "Sunderland must resolve as a Green Line metro entry");
 assert(SUNDERLAND_SHARED_PLATFORM?.name === "Sunderland", "SUNDERLAND_SHARED_PLATFORM must be exported");
 assert(

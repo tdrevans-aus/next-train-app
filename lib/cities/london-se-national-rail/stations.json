@@ -23,133 +23,189 @@
       "mode": "train",
       "name": "London Waterloo",
       "crs": "WAT",
-      "crsVerified": false,
-      "aliases": ["Waterloo"],
+      "crsVerified": true,
+      "aliases": [
+        "Waterloo"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "waterloo",
       "doNotGroup": false,
-      "operators": ["South Western Railway"],
-      "class": "station group — SWR terminus (southwest, Solent corridor). Single operator, no internal doNotGroup. Part of the seven-group Option A architecture, not a region-wide hub-lock."
+      "operators": [
+        "South Western Railway"
+      ],
+      "class": "station group — SWR terminus (southwest, Solent corridor). Single operator, no internal doNotGroup. Part of the seven-group Option A architecture, not a region-wide hub-lock.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "London Victoria",
       "crs": "VIC",
-      "crsVerified": false,
-      "aliases": ["Victoria"],
+      "crsVerified": true,
+      "aliases": [
+        "Victoria"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "victoria",
       "doNotGroup": false,
-      "operators": ["Southern", "Gatwick Express"],
-      "class": "station group — Southern/Gatwick Express (south coast, Gatwick Airport). Same agency family, one board, distinguished by destination+operator, not a doNotGroup case."
+      "operators": [
+        "Southern",
+        "Gatwick Express"
+      ],
+      "class": "station group — Southern/Gatwick Express (south coast, Gatwick Airport). Same agency family, one board, distinguished by destination+operator, not a doNotGroup case.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "London Bridge (Southeastern)",
       "crs": "LBG",
-      "crsVerified": false,
-      "aliases": ["London Bridge Southeastern"],
+      "crsVerified": true,
+      "aliases": [
+        "London Bridge Southeastern"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "london-bridge",
       "doNotGroup": true,
-      "operators": ["Southeastern"],
-      "class": "station group (1 of 3 sharing CRS LBG) — Southeastern board only. Internal doNotGroup: London Bridge has three operators at one physical station with separate boarding sections (Southeastern/Southern/Thameslink); do not merge with the other two London Bridge boards."
+      "operators": [
+        "Southeastern"
+      ],
+      "class": "station group (1 of 3 sharing CRS LBG) — Southeastern board only. Internal doNotGroup: London Bridge has three operators at one physical station with separate boarding sections (Southeastern/Southern/Thameslink); do not merge with the other two London Bridge boards.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "London Bridge (Southern)",
       "crs": "LBG",
-      "crsVerified": false,
-      "aliases": ["London Bridge Southern"],
+      "crsVerified": true,
+      "aliases": [
+        "London Bridge Southern"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "london-bridge",
       "doNotGroup": true,
-      "operators": ["Southern"],
-      "class": "station group (2 of 3 sharing CRS LBG) — Southern board only. See London Bridge (Southeastern) for the doNotGroup rationale."
+      "operators": [
+        "Southern"
+      ],
+      "class": "station group (2 of 3 sharing CRS LBG) — Southern board only. See London Bridge (Southeastern) for the doNotGroup rationale.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "London Bridge (Thameslink)",
       "crs": "LBG",
-      "crsVerified": false,
-      "aliases": ["London Bridge Thameslink"],
+      "crsVerified": true,
+      "aliases": [
+        "London Bridge Thameslink"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "london-bridge",
       "doNotGroup": true,
-      "operators": ["Thameslink"],
-      "class": "station group (3 of 3 sharing CRS LBG) — Thameslink board only. See London Bridge (Southeastern) for the doNotGroup rationale."
+      "operators": [
+        "Thameslink"
+      ],
+      "class": "station group (3 of 3 sharing CRS LBG) — Thameslink board only. See London Bridge (Southeastern) for the doNotGroup rationale.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Liverpool Street (Greater Anglia)",
       "crs": "LST",
-      "crsVerified": false,
-      "aliases": ["Liverpool Street Greater Anglia"],
+      "crsVerified": true,
+      "aliases": [
+        "Liverpool Street Greater Anglia"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "liverpool-street",
       "doNotGroup": true,
-      "operators": ["Greater Anglia"],
-      "class": "station group (1 of 2 sharing CRS LST) — Greater Anglia board only. Internal doNotGroup: Liverpool Street has two operators at one physical station with separate boarding sections (Greater Anglia/c2c); do not merge with the c2c board."
+      "operators": [
+        "Greater Anglia"
+      ],
+      "class": "station group (1 of 2 sharing CRS LST) — Greater Anglia board only. Internal doNotGroup: Liverpool Street has two operators at one physical station with separate boarding sections (Greater Anglia/c2c); do not merge with the c2c board.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Liverpool Street (c2c)",
       "crs": "LST",
-      "crsVerified": false,
-      "aliases": ["Liverpool Street c2c"],
+      "crsVerified": true,
+      "aliases": [
+        "Liverpool Street c2c"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "liverpool-street",
       "doNotGroup": true,
-      "operators": ["c2c"],
-      "class": "station group (2 of 2 sharing CRS LST) — c2c board only. See Liverpool Street (Greater Anglia) for the doNotGroup rationale."
+      "operators": [
+        "c2c"
+      ],
+      "class": "station group (2 of 2 sharing CRS LST) — c2c board only. See Liverpool Street (Greater Anglia) for the doNotGroup rationale.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "London King's Cross",
       "crs": "KGX",
-      "crsVerified": false,
-      "aliases": ["King's Cross", "Kings Cross"],
+      "crsVerified": true,
+      "aliases": [
+        "King's Cross",
+        "Kings Cross"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "kings-cross",
       "doNotGroup": false,
-      "operators": ["Great Northern"],
-      "class": "station group — Great Northern hub (north via East Coast Main Line, regional). LNER also calls here and is IN per the UK ledger, 5 Sep 2026 (Tim resolved the board-eligibility verdict; previously excluded pending a verdict). See docs/london-se-national-rail-d1/jim-handoff.md for the prior undecided history (immutable) and docs/united-kingdom-ledger.md §3 for the resolution."
+      "operators": [
+        "Great Northern"
+      ],
+      "class": "station group — Great Northern hub (north via East Coast Main Line, regional). LNER also calls here and is IN per the UK ledger, 5 Sep 2026 (Tim resolved the board-eligibility verdict; previously excluded pending a verdict). See docs/london-se-national-rail-d1/jim-handoff.md for the prior undecided history (immutable) and docs/united-kingdom-ledger.md §3 for the resolution.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "St Pancras International",
       "crs": "STP",
-      "crsVerified": false,
-      "aliases": ["St Pancras"],
+      "crsVerified": true,
+      "aliases": [
+        "St Pancras"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "st-pancras-international",
       "doNotGroup": false,
-      "operators": ["Thameslink"],
-      "excludeOperators": ["Eurostar"],
-      "class": "station group — Thameslink (below-ground). Eurostar also calls here (above-ground) but is EXCLUDED — out-checkin, compulsory pre-departure check-in, international service out of v1 scope by design."
+      "operators": [
+        "Thameslink"
+      ],
+      "excludeOperators": [
+        "Eurostar"
+      ],
+      "class": "station group — Thameslink (below-ground). Eurostar also calls here (above-ground) but is EXCLUDED — out-checkin, compulsory pre-departure check-in, international service out of v1 scope by design.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "London Paddington",
       "crs": "PAD",
-      "crsVerified": false,
-      "aliases": ["Paddington"],
+      "crsVerified": true,
+      "aliases": [
+        "Paddington"
+      ],
       "lat": null,
       "lng": null,
       "groupId": "paddington",
       "doNotGroup": false,
-      "operators": ["Great Western Railway"],
-      "excludeOperators": ["Night Riviera Sleeper"],
-      "class": "station group — GWR hub (southwest via Great Western Main Line, Wales). Night Riviera Sleeper also calls here but is EXCLUDED — out-reservation, compulsory reservation for sleeping cars. GWR continues west into the already-built West of England region (Bristol Temple Meads) — through-running only, not a merge point, flagged for D2."
+      "operators": [
+        "Great Western Railway"
+      ],
+      "excludeOperators": [
+        "Night Riviera Sleeper"
+      ],
+      "class": "station group — GWR hub (southwest via Great Western Main Line, Wales). Night Riviera Sleeper also calls here but is EXCLUDED — out-reservation, compulsory reservation for sleeping cars. GWR continues west into the already-built West of England region (Bristol Temple Meads) — through-running only, not a merge point, flagged for D2.",
+      "crsSource": "live Darwin probe 5 Sep 2026"
     }
   ]
 }
