@@ -1,0 +1,94 @@
+{
+  "city": "copenhagen",
+  "status": "planned",
+  "source": "docs/copenhagen-d1/published-network.json (Wikipedia Copenhagen Metro station list + station infoboxes, hand-transcribed 30 Aug 2026). Not generated from GTFS. No stopIds baked in here (none in the D1 pack) - the adapter resolves Rejseplanen GTFS stop_ids at request time by name match (lib/providers/gtfs/static-cache.js findRailStopIdsForName), same runtime-resolution pattern as lib/providers/malmo.js resolveStopIds(). Verify the resolved stop_ids against a live Rejseplanen payload before any flip.",
+  "timeZone": "Europe/Copenhagen",
+  "dst": true,
+  "stations": [
+    { "name": "Vanløse", "aliases": [], "mode": "metro", "lines": ["M1", "M2"] },
+    { "name": "Flintholm", "aliases": [], "mode": "metro", "lines": ["M1", "M2"] },
+    { "name": "Lindevang", "aliases": [], "mode": "metro", "lines": ["M1", "M2"] },
+    { "name": "Fasanvej", "aliases": [], "mode": "metro", "lines": ["M1", "M2"] },
+    { "name": "Frederiksberg", "aliases": [], "mode": "metro", "lines": ["M1", "M2", "M3"] },
+    { "name": "Forum", "aliases": [], "mode": "metro", "lines": ["M1", "M2"] },
+    {
+      "name": "Nørreport",
+      "aliases": [],
+      "mode": "metro",
+      "lines": ["M1", "M2"],
+      "sharedOperators": {
+        "stog": ["A", "B", "Bx", "C", "E", "H"],
+        "dsbOresundstag": ["Regionaltog", "InterCity", "InterCityLyn", "Öresundståg"]
+      },
+      "note": "Three-way doNotGroup: Metro (M1, M2) vs S-tog (six lines) vs DSB/Öresundståg (Kystbanen platform). Widest single-node surface - hazard-pack.md H2. Öresundståg inclusion here is flagged for Tim confirmation, not settled (direction-model-memo.md open question 4)."
+    },
+    {
+      "name": "Kongens Nytorv",
+      "aliases": [],
+      "mode": "metro",
+      "lines": ["M1", "M2", "M3", "M4"],
+      "hub": true,
+      "note": "Locked Metro-only hub - all four lines, confirmed zero rail/S-tog transfer. Never a direction token."
+    },
+    { "name": "Christianshavn", "aliases": [], "mode": "metro", "lines": ["M1", "M2"] },
+    { "name": "Islands Brygge", "aliases": [], "mode": "metro", "lines": ["M1"] },
+    { "name": "DR Byen", "aliases": [], "mode": "metro", "lines": ["M1"] },
+    { "name": "Sundby", "aliases": [], "mode": "metro", "lines": ["M1"] },
+    { "name": "Bella Center", "aliases": [], "mode": "metro", "lines": ["M1"] },
+    { "name": "Ørestad", "aliases": [], "mode": "metro", "lines": ["M1"] },
+    { "name": "Vestamager", "aliases": [], "mode": "metro", "lines": ["M1"] },
+    { "name": "Amagerbro", "aliases": [], "mode": "metro", "lines": ["M2"] },
+    { "name": "Lergravsparken", "aliases": [], "mode": "metro", "lines": ["M2"] },
+    { "name": "Øresund", "aliases": [], "mode": "metro", "lines": ["M2"] },
+    { "name": "Amager Strand", "aliases": [], "mode": "metro", "lines": ["M2"] },
+    { "name": "Femøren", "aliases": [], "mode": "metro", "lines": ["M2"] },
+    { "name": "Kastrup", "aliases": [], "mode": "metro", "lines": ["M2"] },
+    { "name": "Lufthavnen", "aliases": ["Copenhagen Airport"], "mode": "metro", "lines": ["M2"] },
+    {
+      "name": "København H",
+      "aliases": ["Copenhagen Central Station", "Central Station"],
+      "mode": "metro",
+      "lines": ["M3", "M4"],
+      "sharedOperators": {
+        "stog": ["A", "B", "Bx", "C", "E", "H"],
+        "dsbOresundstag": ["Regionaltog", "InterCity", "InterCityLyn", "Öresundståg"]
+      },
+      "note": "Four-way doNotGroup: Metro (M3, M4) vs S-tog (six lines) vs DSB/Öresundståg vs EuroCity (excluded, out-reservation, never rendered). SJ (Stockholm) and České dráhy (Prague) also call here but are unverdicted for board-eligibility - not included, not excluded, flagged for Nico/Tim (hazard-pack.md H3)."
+    },
+    { "name": "Rådhuspladsen", "aliases": [], "mode": "metro", "lines": ["M3", "M4"] },
+    { "name": "Gammel Strand", "aliases": [], "mode": "metro", "lines": ["M3", "M4"] },
+    { "name": "Marmorkirken", "aliases": [], "mode": "metro", "lines": ["M3", "M4"] },
+    { "name": "Østerport", "aliases": [], "mode": "metro", "lines": ["M3", "M4"] },
+    { "name": "Trianglen", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Poul Henningsens Plads", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Vibenshus Runddel", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Skjolds Plads", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Nørrebros Runddel", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    {
+      "name": "Nørrebro",
+      "aliases": [],
+      "mode": "metro",
+      "lines": ["M3"],
+      "sharedOperators": { "stog": ["F"] },
+      "note": "Two-way doNotGroup: Metro (M3) vs S-tog F (Ring Line) only. Simplest shared station - no DSB/Öresundståg here."
+    },
+    { "name": "Nuuks Plads", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Aksel Møllers Have", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Frederiksberg Allé", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Enghave Plads", "aliases": [], "mode": "metro", "lines": ["M3"] },
+    { "name": "Orientkaj", "aliases": [], "mode": "metro", "lines": ["M4"], "note": "M4 terminus. Harbour bus (Havnebus 991/992) connection is out-mode, excluded." },
+    {
+      "name": "Nordhavn",
+      "aliases": [],
+      "mode": "metro",
+      "lines": ["M4"],
+      "sharedOperators": { "stog": ["A", "B", "Bx", "C", "E"] },
+      "note": "Two-way doNotGroup: Metro (M4) vs S-tog (A, B, Bx, C, E - NOT H, hazard-pack.md H2 correction). One shared S-train island platform, five lines - keep the line letter as the primary token on every row, never collapse to a bare neighbour-station direction."
+    },
+    { "name": "Havneholmen", "aliases": [], "mode": "metro", "lines": ["M4"], "note": "M4-only, not M3, despite sitting near the M3 ring's western arc." },
+    { "name": "Enghave Brygge", "aliases": [], "mode": "metro", "lines": ["M4"] },
+    { "name": "Sluseholmen", "aliases": [], "mode": "metro", "lines": ["M4"] },
+    { "name": "Mozarts Plads", "aliases": [], "mode": "metro", "lines": ["M4"] },
+    { "name": "København S", "aliases": ["Ny Ellebjerg", "Ny Ellebjerg St."], "mode": "metro", "lines": ["M4"], "note": "Renamed 2024 (was Ny Ellebjerg St.). M4 southern terminus. Has its own S-train/regional interchange per the Metro station-list, but is NOT one of the four named shared stations - out of doNotGroup scope here (see published-network.json coverageGaps)." }
+  ]
+}
