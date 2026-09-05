@@ -186,14 +186,14 @@
     },
     {
       "mode": "train",
-      "name": "Fishguard & Goodwick",
-      "crs": "FGW",
+      "name": "Fishguard Harbour",
+      "crs": "FGH",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus, West Wales corridor — DARWIN_LDB_TOKEN not set in this sandbox so FGH (Fishguard Harbour) could not be live-verified per docs/jim-brief-uk-crs-corrections.md; kept FGW and renamed the entry from 'Fishguard Harbour' to its actual station name 'Fishguard & Goodwick' per the brief's fallback instruction. Re-probe FGH when Darwin access is available.",
-      "crsVerified": false,
-      "crsSource": "live Darwin probe 5 Sep 2026 (FGW/FGH ambiguity unresolved — no DARWIN_LDB_TOKEN available to re-probe)"
+      "class": "terminus, West Wales corridor (ferry port). The pack's original code FGW is the separate Fishguard & Goodwick station one stop short of the harbour; FGH is the harbour terminus.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026 07:00 UK — FGH returned Fishguard Harbour (07:59 Cardiff Central, TfW); FGW returned Fishguard & Goodwick"
     },
     {
       "mode": "train",
