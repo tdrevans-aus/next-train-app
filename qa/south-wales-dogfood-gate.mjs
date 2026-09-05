@@ -71,14 +71,12 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STAYS planned, adapterReady, NOT in MULTI_CITY_IDS.
+// Registry identity — NOW live, and in MULTI_CITY_IDS (flip PR #262).
 const live = assertCityLive("south-wales");
-assert(live?.ok === false, "assertCityLive(south-wales) must fail — status stays planned");
-assert(live?.status === 501, "south-wales must be 501 planned");
+assert(live?.ok === true, "assertCityLive(south-wales) must pass — status is now live");
 
 const entry = getCity("south-wales");
-assert(entry?.status === "planned", "south-wales registry status must stay planned");
-assert(entry?.adapterReady === true, "south-wales adapterReady must be true");
+assert(entry?.status === "live", "south-wales registry status must be live");
 assert(entry?.displayName === "South Wales", "south-wales display name must be South Wales");
 assert(entry?.timeZone === "Europe/London", "south-wales timezone must be Europe/London");
 assert(
@@ -89,9 +87,8 @@ for (const forbiddenId of ["southwales", "cardiff", "valley-lines", "valleylines
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip; MULTI_CITY_IDS membership
-// is deliberately NOT (that's Mark's flip commit).
-assert(isMultiCity("south-wales") === false, "south-wales must NOT be in MULTI_CITY_IDS yet — that is Mark's flip commit");
+// Dispatch switch-cases and MULTI_CITY_IDS membership are both wired (flip commit).
+assert(isMultiCity("south-wales") === true, "south-wales must be in MULTI_CITY_IDS (live flip)");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/south-wales-d1");
@@ -351,5 +348,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "south-wales-dogfood-gate: ok (stays planned/501, adapterReady, NOT in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 2 rail-only stations, no doNotGroup at CDF, Valley Lines not wired, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
+  "south-wales-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 2 rail-only stations, no doNotGroup at CDF, Valley Lines not wired, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
 );

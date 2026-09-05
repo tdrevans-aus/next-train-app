@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "west-yorkshire", "thames-valley", "greater-anglia"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -48,7 +48,7 @@
         { id: "rest-of-scotland", name: "Rest of Scotland", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
         { id: "rest-of-wales", name: "Rest of Wales", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
         { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
         { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
         { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
@@ -125,6 +125,7 @@
     "greater-anglia": { minLat: 52.0, maxLat: 52.9, minLng: 0.0, maxLng: 1.4 },
     "liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 },
     solent: { minLat: 50.75, maxLat: 51.55, minLng: -2.30, maxLng: -0.05 },
+    "south-wales": { minLat: 51.30, maxLat: 51.70, minLng: -3.65, maxLng: -2.70 },
     "west-yorkshire": { minLat: 53.65, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
     "thames-valley": { minLat: 51.0, maxLat: 52.0, minLng: -1.5, maxLng: -0.5 },
   };

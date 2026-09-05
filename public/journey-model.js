@@ -526,6 +526,7 @@ const PERSISTED_CITY_IDS = new Set([
   "greater-anglia",
   "liverpool-city-region",
   "solent",
+  "south-wales",
   "west-yorkshire",
   "thames-valley",
 ]);
