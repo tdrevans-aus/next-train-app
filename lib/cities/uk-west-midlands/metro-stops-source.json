@@ -6,7 +6,8 @@
   "retrievedAt": "2026-08-23",
   "stopCount": 35,
   "notes": [
-    "stopId from TfWM GTFS (api.tfwm.org.uk) — run scripts/enrich-wm-metro-stop-ids.mjs when TFWM_API_APP_ID + TFWM_API_KEY are set.",
+    "stopIds (array, both directional platform ids) populated 5 Sep 2026 via scripts/enrich-wm-metro-stop-ids.mjs, TfWM-code-verified against both the GTFS static feed and a live trip_updates pull. Legacy singular stopId is deliberately left null — TfWM's feed keys stop_time_update.stop_id by platform, not by station, so a single scalar can't represent both directions without silently dropping one; see docs/uk-west-midlands-d1/oracle-clash-report.md's 5 Sep addendum and the script's header comment for the adapter follow-up this unblocks (accept stopIds[], merge trips).",
+    "stationId (reference only, GTFS parent/location_type=1 id) never appears in the live trip_updates feed — do not filter on it.",
     "Do not use CRS for Metro stops. catalogId disambiguates NR interchanges (Grand Central vs BHM, Wolverhampton Station vs WVH).",
     "Wednesbury–Brierley Hill / Dudley extension stops are out until operator lists under Current Service."
   ],
@@ -15,216 +16,409 @@
       "name": "Edgbaston Village",
       "catalogId": "metro:edgbaston-village",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMEDG1",
+        "9400ZZWMEDG2"
+      ],
+      "stationId": "940GZZWMEDG"
     },
     {
       "name": "Five Ways",
       "catalogId": "metro:five-ways",
       "stopId": null,
       "aliases": [],
-      "note": "Metro stop; NR Five Ways is FIW (separate catalog)"
+      "note": "Metro stop; NR Five Ways is FIW (separate catalog)",
+      "stopIds": [
+        "9400ZZWMFW1",
+        "9400ZZWMFW2"
+      ],
+      "stationId": "940GZZWMFW"
     },
     {
       "name": "Brindleyplace",
       "catalogId": "metro:brindleyplace",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMBPL1",
+        "9400ZZWMBPL2"
+      ],
+      "stationId": "940GZZWMBPL"
     },
     {
       "name": "Library Centenary Square",
       "catalogId": "metro:library-centenary-square",
       "stopId": null,
-      "aliases": ["Centenary Square"]
+      "aliases": [
+        "Centenary Square"
+      ],
+      "stopIds": [
+        "9400ZZWMCSQ1",
+        "9400ZZWMCSQ2"
+      ],
+      "stationId": "940GZZWMCSQ"
     },
     {
       "name": "Town Hall",
       "catalogId": "metro:town-hall",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMTOH1",
+        "9400ZZWMTOH2"
+      ],
+      "stationId": "940GZZWMTOH"
     },
     {
       "name": "Grand Central",
       "catalogId": "metro:grand-central",
       "stopId": null,
-      "aliases": ["Grand Central New Street"],
-      "interchange": { "nationalRailCrs": "BHM", "nationalRailName": "Birmingham New Street" }
+      "aliases": [
+        "Grand Central New Street"
+      ],
+      "interchange": {
+        "nationalRailCrs": "BHM",
+        "nationalRailName": "Birmingham New Street"
+      },
+      "stopIds": [
+        "9400ZZWMNWS1",
+        "9400ZZWMNWS2"
+      ],
+      "stationId": "940GZZWMNWS"
     },
     {
       "name": "Corporation Street",
       "catalogId": "metro:corporation-street",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMCOR1",
+        "9400ZZWMCOR2"
+      ],
+      "stationId": "940GZZWMCOR"
     },
     {
       "name": "Bull Street",
       "catalogId": "metro:bull-street",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMBUL1",
+        "9400ZZWMBUL2"
+      ],
+      "stationId": "940GZZWMBUL"
     },
     {
       "name": "Albert Street",
       "catalogId": "metro:albert-street",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMAS1",
+        "9400ZZWMAS2"
+      ],
+      "stationId": "940GZZWMAS"
     },
     {
       "name": "Millennium Point",
       "catalogId": "metro:millennium-point",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMMP1"
+      ],
+      "stationId": "940GZZWMMP"
     },
     {
       "name": "St Chads",
       "catalogId": "metro:st-chads",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMBS4",
+        "9400ZZWMBS5"
+      ],
+      "stationId": "940GZZWMBS"
     },
     {
       "name": "St Paul's",
       "catalogId": "metro:st-pauls",
       "stopId": null,
-      "aliases": ["St Pauls"]
+      "aliases": [
+        "St Pauls"
+      ],
+      "stopIds": [
+        "9400ZZWMST1",
+        "9400ZZWMST2"
+      ],
+      "stationId": "940GZZWMST"
     },
     {
       "name": "Jewellery Quarter",
       "catalogId": "metro:jewellery-quarter",
       "stopId": null,
       "aliases": [],
-      "note": "Metro stop; NR Jewellery Quarter is JEQ (separate catalog)"
+      "note": "Metro stop; NR Jewellery Quarter is JEQ (separate catalog)",
+      "stopIds": [
+        "9400ZZWMJQ3",
+        "9400ZZWMJQ4"
+      ],
+      "stationId": "940GZZWMJQ"
     },
     {
       "name": "Soho Benson Road",
       "catalogId": "metro:soho-benson-road",
       "stopId": null,
-      "aliases": ["Soho"]
+      "aliases": [
+        "Soho"
+      ],
+      "stopIds": [
+        "9400ZZWMSH1",
+        "9400ZZWMSH2"
+      ],
+      "stationId": "940GZZWMSH"
     },
     {
       "name": "Winson Green",
       "catalogId": "metro:winson-green",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMWI1",
+        "9400ZZWMWI2"
+      ],
+      "stationId": "940GZZWMWI"
     },
     {
       "name": "Handsworth Booth Street",
       "catalogId": "metro:handsworth-booth-street",
       "stopId": null,
-      "aliases": ["Handsworth"]
+      "aliases": [
+        "Handsworth"
+      ],
+      "stopIds": [
+        "9400ZZWMBO1",
+        "9400ZZWMBO2"
+      ],
+      "stationId": "940GZZWMBO"
     },
     {
       "name": "The Hawthorns",
       "catalogId": "metro:the-hawthorns",
       "stopId": null,
       "aliases": [],
-      "note": "Metro stop; NR The Hawthorns is THA (separate catalog)"
+      "note": "Metro stop; NR The Hawthorns is THA (separate catalog)",
+      "stopIds": [
+        "9400ZZWMHA3",
+        "9400ZZWMHA4"
+      ],
+      "stationId": "940GZZWMHA"
     },
     {
       "name": "Kenrick Park",
       "catalogId": "metro:kenrick-park",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMKE1",
+        "9400ZZWMKE2"
+      ],
+      "stationId": "940GZZWMKE"
     },
     {
       "name": "Trinity Way",
       "catalogId": "metro:trinity-way",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMTR1",
+        "9400ZZWMTR2"
+      ],
+      "stationId": "940GZZWMTR"
     },
     {
       "name": "West Bromwich Central",
       "catalogId": "metro:west-bromwich-central",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMWB1",
+        "9400ZZWMWB2"
+      ],
+      "stationId": "940GZZWMWB"
     },
     {
       "name": "Lodge Road",
       "catalogId": "metro:lodge-road",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMLR1",
+        "9400ZZWMLR2"
+      ],
+      "stationId": "940GZZWMLR"
     },
     {
       "name": "Dartmouth Street",
       "catalogId": "metro:dartmouth-street",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMDR1",
+        "9400ZZWMDR2"
+      ],
+      "stationId": "940GZZWMDR"
     },
     {
       "name": "Dudley Street",
       "catalogId": "metro:dudley-street",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMSG1",
+        "9400ZZWMSG2"
+      ],
+      "stationId": "940GZZWMSG"
     },
     {
       "name": "Black Lake",
       "catalogId": "metro:black-lake",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMBL1",
+        "9400ZZWMBL2"
+      ],
+      "stationId": "940GZZWMBL"
     },
     {
       "name": "Wednesbury Great Western Street",
       "catalogId": "metro:wednesbury-great-western-street",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMWW1",
+        "9400ZZWMWW2"
+      ],
+      "stationId": "940GZZWMWW"
     },
     {
       "name": "Wednesbury Parkway",
       "catalogId": "metro:wednesbury-parkway",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMWP1",
+        "9400ZZWMWP2"
+      ],
+      "stationId": "940GZZWMWP"
     },
     {
       "name": "Bradley Lane",
       "catalogId": "metro:bradley-lane",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMBR1",
+        "9400ZZWMBR2"
+      ],
+      "stationId": "940GZZWMBR"
     },
     {
       "name": "Loxdale",
       "catalogId": "metro:loxdale",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMLO1",
+        "9400ZZWMLO2"
+      ],
+      "stationId": "940GZZWMLO"
     },
     {
       "name": "Bilston Central",
       "catalogId": "metro:bilston-central",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMBI1",
+        "9400ZZWMBI2"
+      ],
+      "stationId": "940GZZWMBI"
     },
     {
       "name": "The Crescent",
       "catalogId": "metro:the-crescent",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMCR1",
+        "9400ZZWMCR2"
+      ],
+      "stationId": "940GZZWMCR"
     },
     {
       "name": "Priestfield",
       "catalogId": "metro:priestfield",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMPR1",
+        "9400ZZWMPR2"
+      ],
+      "stationId": "940GZZWMPR"
     },
     {
       "name": "The Royal",
       "catalogId": "metro:the-royal",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMRO1",
+        "9400ZZWMRO2"
+      ],
+      "stationId": "940GZZWMRO"
     },
     {
       "name": "Pipers Row",
       "catalogId": "metro:pipers-row",
       "stopId": null,
-      "aliases": []
+      "aliases": [],
+      "stopIds": [
+        "9400ZZWMPI1",
+        "9400ZZWMPI2"
+      ],
+      "stationId": "940GZZWMXR"
     },
     {
       "name": "Wolverhampton Station",
       "catalogId": "metro:wolverhampton-station",
       "stopId": null,
-      "aliases": ["Wolverhampton Metro"],
-      "interchange": { "nationalRailCrs": "WVH", "nationalRailName": "Wolverhampton" }
+      "aliases": [
+        "Wolverhampton Metro"
+      ],
+      "interchange": {
+        "nationalRailCrs": "WVH",
+        "nationalRailName": "Wolverhampton"
+      },
+      "stopIds": [
+        "9400ZZWMWR1"
+      ],
+      "stationId": "940GZZWMWR"
     },
     {
       "name": "Wolverhampton St George's",
       "catalogId": "metro:wolverhampton-st-georges",
       "stopId": null,
-      "aliases": ["St George's", "St Georges"]
+      "aliases": [
+        "St George's",
+        "St Georges"
+      ],
+      "stopIds": [
+        "9400ZZWMWS1"
+      ],
+      "stationId": "940GZZWMWS"
     }
   ]
 }
