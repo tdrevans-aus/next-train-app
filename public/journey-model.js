@@ -530,6 +530,7 @@ const PERSISTED_CITY_IDS = new Set([
   "south-wales",
   "west-yorkshire",
   "thames-valley",
+  "southwest",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 
