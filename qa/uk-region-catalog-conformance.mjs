@@ -345,7 +345,7 @@ const rowCrsSet = new Set(rowRail.map((s) => s.crs).filter(Boolean));
 for (const crs of [
   "WRX", "LLJ", "CNW", "BNG", "HHD",
   "WLP", "MCN", "AYW", "PWL",
-  "CMN", "WTL", "NAR", "TEN", "PMD", "MFH", "FGW", "LLE",
+  "CMN", "WTL", "NAR", "TEN", "PMD", "MFH", "FGH", "LLE",
 ]) {
   if (!rowCrsSet.has(crs)) {
     fail(`rest-of-wales missing ${crs}`);
