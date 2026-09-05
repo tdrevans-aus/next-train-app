@@ -7,11 +7,14 @@
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { loadEnvLocal } from "../lib/load-env-local.js";
 import {
   MULTI_CITY_IDS,
   listMultiCityStations,
   getMultiCityDirections,
 } from "../lib/cities/live-city-api.js";
+
+loadEnvLocal();
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = join(ROOT, "public", "city-directions");

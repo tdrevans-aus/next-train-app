@@ -37,7 +37,7 @@ In,Every country with urban passenger rail. Every metro city. Major S-Bahn / com
 Out,Villages with a mainline station. Bus-only cities. Heritage-only trams. Airport people-movers. SeaBus / ferries. Sunshine Coast stays inside Brisbane SEQ. Wollongong / Central Coast stay with Sydney.
 v1 cuts (locked),"Amsterdam: no tram, bus, ferry, NS, Schiphol. Vancouver v1: SkyTrain Expo / Millennium / Canada Line only — no SeaBus, bus, West Coast Express. Canberra R1 only. Gold Coast G:link L1 only. Newcastle NSW NLR only. Auckland CRL out until passenger-open."
 Known feed / key facts,Short notes already on city rows. Do not invent new statuses for these.
-Darwin / RDM,"UK National Rail live boards need DARWIN_LDB_TOKEN. EvansAppStudio is AU-registered on Rail Data Marketplace. This is Tim/RDM, not a city skip. WM and Ellesmere Port stay In flight / Coming Soon until the token exists."
+Darwin / RDM,"UK National Rail live boards need DARWIN_LDB_TOKEN. RDM registration resolved (Tim, 5 Sep 2026) — token confirmed usable; no longer a flip blocker for WM / Ellesmere Port or any Darwin region."
 PTV,Melbourne blocked on PTV Timetable API key. Parked. No follow-up unless Tim says.
 OVapi,"Netherlands: no key. Amsterdam metro tester-live; Rotterdam pack uses OVapi, not merged into Amsterdam."
 Trafiklab,Sweden keys already on Vercel.

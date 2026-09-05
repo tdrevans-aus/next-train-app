@@ -114,7 +114,20 @@ const metroStops = (metro.stops ?? []).map((stop) => {
     mode: "metro",
     name: stop.name,
     catalogId: stop.catalogId,
+    // Legacy scalar, consumed by lib/providers/uk-metro-wm.js's exact-match
+    // filter. Deliberately left null even where stopIds[] is populated —
+    // TfWM's GTFS-RT feed carries one stop_id per directional platform, and
+    // this single field can't represent both without silently collapsing
+    // one direction off the board. See scripts/enrich-wm-metro-stop-ids.mjs
+    // header and docs/uk-west-midlands-d1/oracle-clash-report.md.
     stopId: stop.stopId ?? null,
+    // Real TfWM GTFS-RT platform-level stop_ids for this station (both
+    // directions where the station has two platforms). Not yet consumed by
+    // the adapter — populated ahead of that follow-up so the data is ready.
+    stopIds: stop.stopIds ?? undefined,
+    // TfWM GTFS static parent-station id (location_type=1). Reference only;
+    // never appears in the live trip_updates feed.
+    stationId: stop.stationId ?? undefined,
     aliases: stop.aliases ?? [],
     lat,
     lng,
