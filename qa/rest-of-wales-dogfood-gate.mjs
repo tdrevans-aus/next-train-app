@@ -88,14 +88,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STAYS planned, adapterReady, NOT in MULTI_CITY_IDS.
+// Registry identity — NOW live, adapterReady removed, IS in MULTI_CITY_IDS.
 const live = assertCityLive("rest-of-wales");
-assert(live?.ok === false, "assertCityLive(rest-of-wales) must fail — status stays planned");
-assert(live?.status === 501, "rest-of-wales must be 501 planned");
+assert(live?.ok === true, "assertCityLive(rest-of-wales) must pass — status is now live");
 
 const entry = getCity("rest-of-wales");
-assert(entry?.status === "planned", "rest-of-wales registry status must stay planned");
-assert(entry?.adapterReady === true, "rest-of-wales adapterReady must be true");
+assert(entry?.status === "live", "rest-of-wales registry status must be live");
+assert(entry?.adapterReady === undefined, "rest-of-wales adapterReady flag is removed once live");
 assert(entry?.displayName === "Rest of Wales", "rest-of-wales display name must be Rest of Wales");
 assert(entry?.timeZone === "Europe/London", "rest-of-wales timezone must be Europe/London");
 assert(
@@ -106,9 +105,8 @@ for (const forbiddenId of ["uk-wales", "wales", "rest-wales-nr", "uk-rest-of-wal
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip; MULTI_CITY_IDS membership
-// is deliberately NOT (that's Mark's flip commit).
-assert(isMultiCity("rest-of-wales") === false, "rest-of-wales must NOT be in MULTI_CITY_IDS yet — that is Mark's flip commit");
+// Dispatch switch-cases and MULTI_CITY_IDS membership are now wired (Mark's flip commit).
+assert(isMultiCity("rest-of-wales") === true, "rest-of-wales must be in MULTI_CITY_IDS");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/rest-of-wales-d1");
@@ -401,5 +399,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "rest-of-wales-dogfood-gate: ok (stays planned/501, adapterReady, NOT in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 17 rail-only stations, no doNotGroup enforced at Wrexham General/Carmarthen/Whitland/Machynlleth, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
+  "rest-of-wales-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 17 rail-only stations, no doNotGroup enforced at Wrexham General/Carmarthen/Whitland/Machynlleth, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
 );
