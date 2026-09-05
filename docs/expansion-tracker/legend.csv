@@ -49,3 +49,6 @@ Dropdowns,"Status is a data-validation list on Cities and Countries, including ~
 Filters,Header row is frozen; autofilter is on. Filter Status or Wave to run stand-up.
 Colours,"Done = green, In flight = amber, To Do = none, Blocked = red, Not doing = grey. Header is navy with one gold accent rule. Do not rainbow-code countries."
 Sheets,Burndown = work done vs remaining (opens first; COUNTIF on Cities Status). Cities = working list. Countries = roll-up. Legend = this page. Do not add a fourth status vocabulary.
+Stage (Cities),"Pipeline position, UK rows since 5 Sep 2026. 1 Researched (Nico report) - 2 Packed (Luke) - 3 Provider built (Coming Soon tile) - 4 Verified (codes live-checked, licence, verdicts in the country ledger) - 5 Wired (board module + dispatch + dogfood gate, Jim) - 6 QA passed (Mark checklist, flip PR open) - 7 Live. Status stays the dropdown; Stage says how far along."
+Waiting on (Cities),"The one thing between this row and its next Stage, with the owner named. Blank when nothing is owed."
+Child rows (Region · Mode),"A local tram/metro/subway inside a region is a separate WORK PACKAGE, not a separate product region: it never gets its own city id or registry entry. Named ""Region · Mode"". Status Blocked + Stage Parked = out-product pending a named operator; nobody chases these before store launch (FB-56 is the model)."
