@@ -114,7 +114,7 @@ assert(
 
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["EXD", "PLY", "PNZ", "TAU", "NAB", "TON", "TRU", "SAU", "SER"]) {
+for (const crs of ["EXD", "PLY", "PNZ", "TAU", "NTA", "TOT", "TRU", "SAU", "SER"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
 assert(getNotInRegion(SOUTHWEST_REGION).length === 0, "southwest has no deliberate exclusions recorded");

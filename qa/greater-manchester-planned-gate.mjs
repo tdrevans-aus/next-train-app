@@ -96,7 +96,7 @@ for (const name of ["Manchester Piccadilly", "Manchester Victoria", "Stockport",
 const railCrs = new Set(railStations.map((s) => s.crs).filter(Boolean));
 assert(railCrs.has("MAN"), "National Rail catalog must carry MAN");
 assert(railCrs.has("MCV"), "National Rail catalog must carry MCV");
-assert(railCrs.has("SMN"), "National Rail catalog must carry SMN");
+assert(railCrs.has("SPT"), "National Rail catalog must carry SPT (Stockport, live-verified 5 Sep 2026 — corrected from SMN)");
 assert(railCrs.has("WDN"), "National Rail catalog must carry WDN (this region's own oracle report's Walsden code)");
 assert(!railCrs.has("WAD"), "National Rail catalog must NOT silently adopt West Yorkshire's WAD code for Walsden");
 

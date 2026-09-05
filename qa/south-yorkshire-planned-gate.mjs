@@ -97,6 +97,9 @@ for (const name of [
 const railCrs = new Set(railStations.map((s) => s.crs).filter(Boolean));
 assert(railCrs.has("SHF"), "National Rail catalog must carry SHF");
 assert(railCrs.has("MHS"), "National Rail catalog must carry MHS");
+for (const crs of ["RMC", "DRT", "SES", "MRP"]) {
+  assert(railCrs.has(crs), `National Rail catalog must carry ${crs} (live-verified 5 Sep 2026 CRS fill)`);
+}
 assert(!railCrs.has("CHD"), "National Rail catalog must not carry Chesterfield (owned by East Midlands)");
 assert(!railNames.has("Chesterfield"), "National Rail catalog must not carry Chesterfield by name either");
 assert(

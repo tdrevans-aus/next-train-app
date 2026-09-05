@@ -9,7 +9,8 @@
   },
   "notes": [
     "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as every other UK region packed so far.",
-    "One tier-1 hub lock (Carlisle, CAR) plus two tier-2 secondary hubs (Oxenholme Lake District, OXO; Barrow-in-Furness, BIF) — each a genuine two-line junction, not co-equal with Carlisle. Penrith (PEN) is a major WCML station but not a junction, so it stays regional, not promoted to hub. See docs/cumbria-d1/direction-model-memo.md.",
+    "One tier-1 hub lock (Carlisle, CAR) plus two tier-2 secondary hubs (Oxenholme Lake District, OXN; Barrow-in-Furness, BIF) — each a genuine two-line junction, not co-equal with Carlisle. Penrith (PNR) is a major WCML station but not a junction, so it stays regional, not promoted to hub. See docs/cumbria-d1/direction-model-memo.md.",
+    "CRS codes live-verified against Darwin 5 Sep 2026 (see docs/jim-brief-uk-crs-sweep-2.md) — Oxenholme Lake District (OXO->OXN), Penrith (PEN->PNR), Windermere (WND->WDM), Kendal (KND->KEN), and Settle (SLF->SET) were all corrected from their originally-catalogued codes, which Darwin either rejected or resolved to unrelated stations elsewhere in Great Britain.",
     "No doNotGroup case anywhere in this catalog — every junction (Carlisle, Oxenholme, Barrow-in-Furness) is a single physical station, unlike Liverpool City Region's Lime Street or Greater Manchester's Piccadilly/Piccadilly Gardens.",
     "Caledonian Sleeper carries board-eligibility verdict out-reservation (compulsory berth booking) and is EXCLUDED from the board at Carlisle only — the sole Cumbrian station it calls. Northern Trains, TransPennine Express, Avanti West Coast all verdict 'in' at every station they call. CrossCountry's Cumbrian calling pattern is unconfirmed and not added to any station's operator list. See lib/providers/cumbria.js.",
     "Only 7 of the report's claimed 48 Cumbrian stations are catalogued (Carlisle, Penrith, Oxenholme Lake District, Windermere, Kendal, Barrow-in-Furness, Settle) — the remaining ~41 are a recorded D2 gap, not invented. See docs/cumbria-d1/jim-handoff.md open item 2.",
@@ -25,15 +26,19 @@
       "aliases": [],
       "lat": null,
       "lng": null,
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026",
       "class": "hub lock — tier 1. 8 platforms. Junction of West Coast Main Line, Settle-Carlisle Line, Tyne Valley Line, Cumbrian Coast Line (four lines directly; a fifth, Lakes Line, reachable via Oxenholme). Northern Trains, Avanti West Coast, TransPennine Express all 'in'; Caledonian Sleeper 'out-reservation', excluded from board."
     },
     {
       "mode": "train",
       "name": "Oxenholme Lake District",
-      "crs": "OXO",
+      "crs": "OXN",
       "aliases": ["Oxenholme"],
       "lat": null,
       "lng": null,
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026",
       "class": "hub lock — tier 2. West Coast Main Line junction with branch point to Lakes Line (Kendal, Windermere). Northern Trains, Avanti West Coast, TransPennine Express all 'in'."
     },
     {
@@ -43,42 +48,52 @@
       "aliases": [],
       "lat": null,
       "lng": null,
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026",
       "class": "hub lock — tier 2. 3 platforms. Junction of Furness Line and Cumbrian Coast Line. Northern Trains only, 'in'."
     },
     {
       "mode": "train",
       "name": "Penrith",
-      "crs": "PEN",
+      "crs": "PNR",
       "aliases": [],
       "lat": null,
       "lng": null,
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026",
       "class": "regional major station (not a junction — not promoted to tier-2 hub). West Coast Main Line, ~17 miles south of Carlisle. Northern Trains, Avanti West Coast, TransPennine Express all 'in'."
     },
     {
       "mode": "train",
       "name": "Windermere",
-      "crs": "WND",
+      "crs": "WDM",
       "aliases": [],
       "lat": null,
       "lng": null,
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026",
       "class": "Lakes Line branch terminus (Oxenholme -> Kendal -> Windermere). Northern Trains only, 'in'."
     },
     {
       "mode": "train",
       "name": "Kendal",
-      "crs": "KND",
+      "crs": "KEN",
       "aliases": [],
       "lat": null,
       "lng": null,
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026",
       "class": "Lakes Line, between Oxenholme and Windermere. Northern Trains only, 'in'."
     },
     {
       "mode": "train",
       "name": "Settle",
-      "crs": "SLF",
+      "crs": "SET",
       "aliases": [],
       "lat": null,
       "lng": null,
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026",
       "class": "Settle-Carlisle Line, ~48 miles south of Carlisle — southern boundary of Cumbria on this line (route continues south to Hellifield, outside Cumbria scope). Northern Trains only, 'in'."
     }
   ]

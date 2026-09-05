@@ -15,7 +15,7 @@
     "Metro real-time: still NO confirmed public feed (genuine 'no source exists publicly' gap, not an account block - the only candidate, metro-rti.nexus.org.uk, is undocumented and app-only).",
     "Metro static board is ALSO currently blocked, for a third and genuinely different reason: the confirmed DFT bulk archive's stop_times.txt is ~5.4GB uncompressed (whole-UK bus network) and deterministically exceeds the ~537M UTF-16 unit string limit lib/providers/gtfs/static-cache.js's whole-zip TextDecoder.decode() step can handle (Node ERR_STRING_TOO_LONG - verified directly, not a timeout or flaky network condition). No smaller no-key per-operator download exists (BODS per-dataset API requires an API key, checked 31 Aug 2026, 401 without one). fetchMetroStopBoard() in lib/providers/north-east.js throws MetroGtfsTooLargeError immediately rather than attempting the doomed download. Fixing this needs a streaming/row-filtering GTFS parser in the shared static-cache.js helper (used by ~10 other live cities) - flagged, not solved here; out of scope for a single region's adapter to build.",
     "Newcastle Central hub: National Rail platforms use CRS NCL and the printed name 'Newcastle Central'. Metro's own GTFS stop_name for the same hub is 'Central Station' (Tyne and Wear Metro Station) - different printed names, consistent with doNotGroup (no name-collapse risk since the strings differ).",
-    "Sunderland: genuine shared-platform case, NOT doNotGroup - see the 'class' field on both the train and metro Sunderland entries below and docs/north-east-d1/direction-model-memo.md. CRS not given in the oracle report for the National Rail side - not guessed.",
+    "Sunderland: genuine shared-platform case, NOT doNotGroup - see the 'class' field on both the train and metro Sunderland entries below and docs/north-east-d1/direction-model-memo.md. CRS SUN live-verified 5 Sep 2026 for the National Rail side (the oracle report gave no code).",
     "Pelaw: Metro-only junction/station (both Green and Yellow call it, confirmed by GTFS - see above). No separate National Rail station exists at Pelaw per the oracle report - not catalogued under mode train.",
     "Berwick-upon-Tweed (BWK) included as National Rail-only per the oracle report's station table. Northern boundary against a future Rest-of-Scotland pack is open/unresolved - not closed here.",
     "Darlington (DRL) is EXCLUDED - confirmed unclaimed by both North East's own report and East Midlands' already-merged pack (checked directly, no match). Do not add without a boundary resolution.",
@@ -32,16 +32,20 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock - National Rail main platforms (NCL). doNotGroup vs Metro Central Station platforms (deep-tube box directly below, separate infrastructure/operator, no walk-through connection named in the oracle report). See lib/providers/north-east.js file header."
+      "class": "hub lock - National Rail main platforms (NCL). doNotGroup vs Metro Central Station platforms (deep-tube box directly below, separate infrastructure/operator, no walk-through connection named in the oracle report). See lib/providers/north-east.js file header.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Sunderland",
-      "crs": null,
+      "crs": "SUN",
       "aliases": [],
       "lat": 54.90543040531,
       "lng": -1.38247442934,
-      "class": "genuine shared-platform through-running station - NOT doNotGroup. Metro Green Line and National Rail Northern Trains share the same platforms/track Pelaw-Sunderland (oracle report line 16, line 39). Board must mix both services once National Rail is unblocked, tagged by mode/operator, not split into separate tabs. CRS code not given in the oracle report - do not guess (real-world CRS SUN is NOT used here per that constraint). See docs/north-east-d1/direction-model-memo.md and hazard-pack.md H1."
+      "class": "genuine shared-platform through-running station - NOT doNotGroup. Metro Green Line and National Rail Northern Trains share the same platforms/track Pelaw-Sunderland (oracle report line 16, line 39). Board must mix both services once National Rail is unblocked, tagged by mode/operator, not split into separate tabs. CRS SUN live-verified 5 Sep 2026. See docs/north-east-d1/direction-model-memo.md and hazard-pack.md H1.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -50,7 +54,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, England's northernmost East Coast Main Line station, Scotland boundary. No Metro service. Boundary against a future Rest-of-Scotland pack unresolved - do not treat as closed."
+      "class": "through-running only, England's northernmost East Coast Main Line station, Scotland boundary. No Metro service. Boundary against a future Rest-of-Scotland pack unresolved - do not treat as closed.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",

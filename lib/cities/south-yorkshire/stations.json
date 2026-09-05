@@ -16,8 +16,8 @@
     "lat/lng are null for every Supertram stop — no coordinate source confirmed (no GTFS feed exists to pull from).",
     "Sheffield Station (SHF) is the hub lock — Supertram tram viaduct above National Rail main platforms, footbridge connects. doNotGroup: separate catalog entries by mode (train vs metro), same printed name, same pattern as East Midlands' Nottingham Station.",
     "Meadowhall Interchange (MHS, National Rail entry) / Meadowhall (Supertram Yellow terminus + Tram-Train through-running point) is a through-running/infrastructure-switch point, NOT a second hub lock — Tram-Train switches onto National Rail infrastructure here. Modelled as two mode-tagged catalog entries (aliased to each other's printed name), same doNotGroup-by-mode pattern as Sheffield Station.",
-    "Rotherham Central appears both as a Supertram Tram-Train through-running stop (metro entry) and a National Rail through-running-only station (train entry, crs null — not given by the report, do not guess). No shared platform with National Rail main-line trains per the report.",
-    "Darton, South Elmsall, Moorthorpe are National Rail-only West Yorkshire/South Yorkshire boundary stations, crs null (not given by the report — do not guess). May appear in a future West Yorkshire region's feed too — D2 de-dup boundary, not resolved here. Denby Dale is ruled West Yorkshire's home station per docs/united-kingdom-ledger.md (5 Sep 2026) and is no longer catalogued here.",
+    "Rotherham Central appears both as a Supertram Tram-Train through-running stop (metro entry) and a National Rail through-running-only station (train entry, crs RMC, live-verified 5 Sep 2026 — the oracle report gave no code). No shared platform with National Rail main-line trains per the report.",
+    "Darton (DRT), South Elmsall (SES), Moorthorpe (MRP) are National Rail-only West Yorkshire/South Yorkshire boundary stations; CRS codes live-verified 5 Sep 2026 (the oracle report gave no codes). May appear in a future West Yorkshire region's feed too — D2 de-dup boundary, not resolved here. Denby Dale is ruled West Yorkshire's home station per docs/united-kingdom-ledger.md (5 Sep 2026) and is no longer catalogued here.",
     "Chesterfield is deliberately NOT in this catalog — it is East Midlands' station (docs/east-midlands-d1/published-network.json throughRunningOnly, crs CHD). See notInRegion below."
   ],
   "notInRegion": [
@@ -31,52 +31,66 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — National Rail main platforms. doNotGroup vs Supertram tram viaduct platforms (same printed name, separate catalog entry, mode metro)."
+      "class": "hub lock — National Rail main platforms. doNotGroup vs Supertram tram viaduct platforms (same printed name, separate catalog entry, mode metro).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Meadowhall Interchange",
       "crs": "MHS",
-      "aliases": ["Meadowhall"],
+      "aliases": [
+        "Meadowhall"
+      ],
       "lat": null,
       "lng": null,
-      "class": "through-running/infrastructure-switch point, not a hub lock. doNotGroup vs Supertram catalog entries (metro mode) at Meadowhall — Tram-Train switches onto National Rail infrastructure here."
+      "class": "through-running/infrastructure-switch point, not a hub lock. doNotGroup vs Supertram catalog entries (metro mode) at Meadowhall — Tram-Train switches onto National Rail infrastructure here.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Rotherham Central",
-      "crs": null,
+      "crs": "RMC",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, not a merge point. Tram-Train (Supertram) also serves this stop but no shared platform with National Rail main-line trains per the report. CRS code not given in the oracle report — do not guess."
+      "class": "through-running only, not a merge point. Tram-Train (Supertram) also serves this stop but no shared platform with National Rail main-line trains per the report.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Darton",
-      "crs": null,
+      "crs": "DRT",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, South Yorkshire/West Yorkshire boundary. CRS code not given in the oracle report — do not guess."
+      "class": "through-running only, South Yorkshire/West Yorkshire boundary.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "South Elmsall",
-      "crs": null,
+      "crs": "SES",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, West Yorkshire/South Yorkshire boundary, ticketing schemes valid both ways. CRS code not given in the oracle report — do not guess."
+      "class": "through-running only, West Yorkshire/South Yorkshire boundary, ticketing schemes valid both ways.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Moorthorpe",
-      "crs": null,
+      "crs": "MRP",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, West Yorkshire/South Yorkshire boundary. CRS code not given in the oracle report — do not guess."
+      "class": "through-running only, West Yorkshire/South Yorkshire boundary.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "metro",
@@ -173,7 +187,9 @@
       "name": "Meadowhall",
       "catalogId": "supertram:meadowhall",
       "stopId": null,
-      "aliases": ["Meadowhall Interchange"],
+      "aliases": [
+        "Meadowhall Interchange"
+      ],
       "lat": null,
       "lng": null,
       "class": "Yellow line terminus; also a Tram-Train through-running/infrastructure-switch point (see meadowhallThroughRunningSwitch in docs/south-yorkshire-d1/published-network.json). doNotGroup vs the National Rail Meadowhall Interchange catalog entry (mode train)."
