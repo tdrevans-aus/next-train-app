@@ -292,6 +292,20 @@ const HEAVY_SCRIPT_TIMEOUT_MS = {
   "fb-23-web.mjs": 4 * 60 * 1000,
 };
 
+/**
+ * Browser scripts with a known timing flake (CI history, 100 runs to 5 Sep 2026: smoke-browser 6
+ * failures, pin-behavior 4, pin-swipe-notify 1 — every one passed on re-run with no code change).
+ * A FAIL on the first attempt gets exactly one re-run; a pass on the second attempt is reported
+ * PASS with a "(passed on retry)" note so the flake stays visible without costing a 7-minute
+ * job re-run. Timeouts are not retried. QA_NO_RETRY=1 disables this (use when hunting a real bug).
+ */
+const RETRY_ONCE_SCRIPTS = new Set(["smoke-browser.mjs", "pin-behavior.mjs", "pin-swipe-notify.mjs"]);
+
+function shouldRetry(scriptName, result) {
+  if (process.env.QA_NO_RETRY === "1") return false;
+  return RETRY_ONCE_SCRIPTS.has(scriptName) && result.code !== 0 && !result.timedOut;
+}
+
 function getScriptTimeoutMs(scriptName) {
   const override = Number(process.env.QA_SCRIPT_TIMEOUT_MS);
   if (Number.isFinite(override) && override > 0) {
@@ -451,8 +465,10 @@ async function main() {
   };
 
   /** Record one finished run; fullLine=true prints the whole "→ name … " line at once. */
-  const recordResult = ({ scriptName, code, output, timedOut, timeoutMs, elapsedMs }, fullLine) => {
-    const { status, note } = classifyResult(scriptName, code, { timedOut, timeoutMs });
+  const recordResult = ({ scriptName, code, output, timedOut, timeoutMs, elapsedMs, retried }, fullLine) => {
+    let { status, note } = classifyResult(scriptName, code, { timedOut, timeoutMs });
+    if (retried && status === "PASS") note = "passed on retry";
+    else if (retried) note = `${note}, failed twice`;
     const elapsedSec = Math.round(elapsedMs / 1000);
     results.push({ scriptName, status, code, note, elapsedSec });
     const suffix = `${status}${note ? ` (${note})` : ""} · ${elapsedSec}s`;
@@ -486,7 +502,17 @@ async function main() {
   /** Phase 2: browser/dev-server scripts, strictly serial in suite order. */
   for (const scriptName of serialScripts) {
     process.stdout.write(`→ ${scriptName}${limitLabelFor(scriptName)} … `);
-    recordResult(await runScript(scriptName), false);
+    let result = await runScript(scriptName);
+    if (shouldRetry(scriptName, result)) {
+      process.stdout.write(`FAIL (exit ${result.code}) · ${Math.round(result.elapsedMs / 1000)}s — retrying once … `);
+      const firstOutput = result.output;
+      const firstElapsed = result.elapsedMs;
+      result = await runScript(scriptName);
+      result.retried = true;
+      result.elapsedMs += firstElapsed;
+      if (result.code !== 0) result.output = `${firstOutput}\n--- retry ---\n${result.output}`;
+    }
+    recordResult(result, false);
   }
 
   /** Keep the summary table in suite-list order regardless of finish order. */

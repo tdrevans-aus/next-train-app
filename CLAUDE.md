@@ -113,8 +113,16 @@ rubber-stamp, which was the single largest latency in the pipeline.
 longer requires a PR branch to be up to date with master (the strict policy made every merge
 invalidate every other open PR, each needing another 7-minute run). The push-to-master release run
 is the backstop for two PRs that pass separately but conflict semantically; if it goes red, fix
-forward. Docs-only PRs (`docs/**`, `*.md`, `.claude/**`) short-circuit every CI job to a no-op
-success, mirroring the "no suite at all" tier above.
+forward. Every CI job first classifies the diff with `.github/scripts/ci-scope.sh` and no-ops
+(still reporting green) unless the change can reach what it tests: docs-only diffs (`docs/**`,
+`*.md`, `.claude/**`) skip everything; another city's adapter, catalog, direction JSON, gate, or
+a new gate registration in `run-all.mjs` skips `pin-qa` (which only exercises Perth-fixture
+journey/pin behaviour in `public/`, `api/`, core `lib/`); anything outside `android/`, `public/`,
+`web-sources/`, `patches/` and package files skips `android-unit`. Unrecognised paths fail safe
+to "run". The three known-flaky browser scripts (`smoke-browser`, `pin-behavior`,
+`pin-swipe-notify`) get one in-runner retry in `run-all.mjs`, reported as `PASS (passed on
+retry)`; set `QA_NO_RETRY=1` when hunting a real bug. Don't re-run a whole CI job for a flake
+before checking whether the summary already shows it passed on retry.
 
 Full agent roster, model rationale, and wave-by-wave roadmap: see the Expansion Playbook artifact —
 <https://claude.ai/code/artifact/f1e97865-bafc-4197-9424-a8dfa4c09c8f> (owned by Tim; read it with

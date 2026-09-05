@@ -461,7 +461,16 @@ async function run() {
   );
 
   await page.locator("#hero-pin-btn").click();
-  await page.waitForTimeout(400);
+  // Wait for the pressed state rather than a fixed 400ms: on a cold CI runner the click handler's
+  // re-render can land later than that, which was the "re-pin target train shows pressed pin
+  // immediately" flake (5 of the last 100 CI runs). The check below still asserts the full state.
+  await page
+    .waitForFunction(
+      () => document.getElementById("hero-pin-btn")?.getAttribute("aria-pressed") === "true",
+      null,
+      { timeout: 5000 }
+    )
+    .catch(() => {});
 
   const targetPinUi = await page.evaluate((dateKey) => {
     const settings = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
