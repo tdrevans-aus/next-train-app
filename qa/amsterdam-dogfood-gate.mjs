@@ -9,6 +9,13 @@ import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { marketingLabelsForStation, HUB } from "../lib/cities/amsterdam/marketing-directions.js";
+import { fetchStationBoard, AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL } from "../lib/providers/amsterdam.js";
+import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
+import { zipFixtureGtfs, encodeTripUpdates, stubFetch, discoverFixtureTrips } from "./lib/nl-realtime-stub.mjs";
+import {
+  OVAPI_TRIPUPDATES_CACHE_TTL_MS,
+  _resetOvapiTripUpdatesCacheForTests,
+} from "../lib/providers/gtfs/ovapi-tripupdates-cache.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -69,4 +76,144 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("amsterdam-dogfood-gate: ok (live, picker city, no city=nl, Vercel board 404, Wellington planned)");
+// OVapi GTFS-RT re-enable (docs/jim-brief-nl-realtime-reenable.md): prove the
+// live join against the trimmed fixture — a delay moves a board row, a
+// cancellation removes one, and an RT fetch failure degrades to static.
+{
+  const staticUrl = gtfsFixtureBlobUrl("amsterdam");
+  const staticZip = await zipFixtureGtfs("amsterdam", staticUrl);
+  // Trip ids are discovered from the loaded fixture (local dir or published Blob copy), never
+  // hardcoded from one snapshot — see discoverFixtureTrips in qa/lib/nl-realtime-stub.mjs.
+  const picked = await discoverFixtureTrips({
+    staticZip, staticUrl, rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL, fetchStationBoard, station: "Centraal Station",
+  });
+  const { now, delayedTripId, cancelledTripId, stopId, scheduledEpochSec } = picked;
+  const expectedDelayedDisplay = picked.delayedDisplayTime(240);
+
+  _resetOvapiTripUpdatesCacheForTests();
+  let restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: encodeTripUpdates([
+      { tripId: delayedTripId, stopId, delaySec: 240, scheduledEpochSec },
+      { tripId: cancelledTripId, cancelled: true },
+    ]),
+  });
+  let board;
+  try {
+    board = await fetchStationBoard("Centraal Station", { now });
+  } finally {
+    restore();
+  }
+  const delayed = board.trips.find((trip) => trip.tripId === delayedTripId);
+  assert(delayed, "delayed trip must still appear on the board");
+  assert(delayed.status === "4 min late", `delay must move the board row (got ${delayed?.status})`);
+  assert(delayed.displayTime === expectedDelayedDisplay, `delayed displayTime must shift to ${expectedDelayedDisplay} (got ${delayed?.displayTime})`);
+  assert(
+    !board.trips.some((trip) => trip.tripId === cancelledTripId),
+    "a CANCELED TripUpdate must remove the trip from the board"
+  );
+  assert(board.realtime === "live", `delayed board must report realtime="live" (got ${board.realtime})`);
+
+  _resetOvapiTripUpdatesCacheForTests();
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: null,
+    rtFails: true,
+  });
+  let fallbackBoard;
+  try {
+    fallbackBoard = await fetchStationBoard("Centraal Station", { now });
+  } finally {
+    restore();
+  }
+  const fallback = fallbackBoard.trips.find((trip) => trip.tripId === delayedTripId);
+  assert(fallback, "a failed RT fetch must still degrade to the static board");
+  assert(fallback.status === "On Time", "a failed RT fetch must not carry over a stale delay");
+  assert(
+    fallback.liveDeparture === fallback.scheduledDeparture,
+    "a failed RT fetch must report the static scheduled time, not a stale live one"
+  );
+  assert(
+    fallbackBoard.realtime === "timetable",
+    `a total RT miss must report realtime="timetable" (got ${fallbackBoard.realtime})`
+  );
+
+  // Shared cache: coalescing, TTL refetch, and stale-on-error (docs/jim-brief-nl-realtime-cache.md).
+  _resetOvapiTripUpdatesCacheForTests();
+  let rtFetchCount = 0;
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: encodeTripUpdates([
+      { tripId: delayedTripId, stopId, delaySec: 240, scheduledEpochSec },
+    ]),
+    onRtFetch: () => {
+      rtFetchCount += 1;
+    },
+  });
+  try {
+    // 1. Two concurrent board calls produce one upstream fetch.
+    await Promise.all([
+      fetchStationBoard("Centraal Station", { now }),
+      fetchStationBoard("Centraal Station", { now }),
+    ]);
+    assert(rtFetchCount === 1, `expected 1 upstream fetch for concurrent calls, got ${rtFetchCount}`);
+
+    // Still within TTL: no refetch.
+    await fetchStationBoard("Centraal Station", { now });
+    assert(rtFetchCount === 1, `expected cached hit within TTL, got ${rtFetchCount} fetches`);
+
+    // 2. A call after the TTL produces a second upstream fetch.
+    await new Promise((resolve) => setTimeout(resolve, OVAPI_TRIPUPDATES_CACHE_TTL_MS + 500));
+    await fetchStationBoard("Centraal Station", { now });
+    assert(rtFetchCount === 2, `expected a second upstream fetch after TTL, got ${rtFetchCount}`);
+  } finally {
+    restore();
+  }
+
+  // 3. A rejected refresh with a <60s entry serves the stale copy (still "live").
+  _resetOvapiTripUpdatesCacheForTests();
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: encodeTripUpdates([
+      { tripId: delayedTripId, stopId, delaySec: 240, scheduledEpochSec },
+    ]),
+  });
+  try {
+    const primed = await fetchStationBoard("Centraal Station", { now });
+    assert(primed.realtime === "live", "priming fetch must be live");
+  } finally {
+    restore();
+  }
+  await new Promise((resolve) => setTimeout(resolve, OVAPI_TRIPUPDATES_CACHE_TTL_MS + 500));
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: null,
+    rtFails: true,
+  });
+  let staleBoard;
+  try {
+    staleBoard = await fetchStationBoard("Centraal Station", { now });
+  } finally {
+    restore();
+  }
+  assert(
+    staleBoard.trips.some((trip) => trip.tripId === delayedTripId && trip.status === "4 min late"),
+    "a rejected refresh with a <60s entry must still apply the stale delay"
+  );
+  assert(
+    staleBoard.realtime === "live",
+    `a stale-but-usable serve must still report realtime="live" (got ${staleBoard.realtime})`
+  );
+}
+
+console.log("amsterdam-dogfood-gate: ok (live, picker city, no city=nl, Vercel board 404, Wellington planned, OVapi RT join verified)");

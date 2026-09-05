@@ -22,7 +22,7 @@ const USER_AGENT = "next-train";
 // Explicit column allow-lists — only fields actually read anywhere in
 // lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md).
 const STOP_TIME_COLUMNS = ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type"];
-const TRIP_COLUMNS = ["route_id", "service_id", "trip_id", "trip_headsign"];
+const TRIP_COLUMNS = ["route_id", "service_id", "trip_id", "realtime_trip_id", "trip_headsign"];
 
 function toCsv(rows, columns) {
   if (!rows.length) {
