@@ -118,6 +118,56 @@ Hub lock: **Lausanne-Flon** (metro lines M1 × M2 intersect). Only station where
 - **Keyed feeds:** Bearer key is personal and non-transferable per SBB ToU. Key agreement (API Manager terms) does not explicitly restrict data redistribution to users, but follow opentransportdata.swiss terms. Never paste a key.
 - **Confidence:** `unclear` (same as Zürich). Platform ToU requires attribution and regular updates, but does not spell out sublicensing or third-party redistribution explicitly. "Open Data" language and paid-tier offering suggest commercial use is acceptable, but formal license name (CC BY, CC0, ODbL) is absent. Do not assume either direction without explicit platform clarification or Tim sign-off.
 
+## Station roster (D1 transcription, 6 Sep 2026)
+
+**Line M1 (eastern terminus Lausanne-Flon to western terminus Renens-Gare):** 15 stations, 7.8 km, opened 2 June 1991. Rack railway light rail.
+
+1. Lausanne-Flon
+2. Vigie
+3. Montelly
+4. Provence
+5. Malley
+6. Bourdonnette
+7. UNIL-Chamberonne
+8. UNIL-Mouline
+9. UNIL-Sorge
+10. EPFL
+11. Bassenges
+12. Cerisaie
+13. Crochy
+14. Epenex
+15. Renens-Gare
+
+**Source:** [Ligne M1 du métro de Lausanne (French Wikipedia)](https://fr.wikipedia.org/wiki/Ligne_M1_du_m%C3%A9tro_de_Lausanne); cross-reference [Lausanne Metro Line M1 (English Wikipedia)](https://en.wikipedia.org/wiki/Lausanne_Metro_Line_M1); official map [t-l.ch/en/maps](https://www.t-l.ch/en/maps)
+
+**Line M2 (southern terminus Ouchy-Olympique to northern terminus Croisettes):** 14 stations, 5.9 km, opened 27 October 2008. Rubber-tyred automated metro.
+
+1. Ouchy-Olympique
+2. Jordils
+3. Délices
+4. Grancy
+5. Lausanne-Gare
+6. Lausanne-Flon
+7. Riponne-Maurice-Béjart
+8. Bessières
+9. Ours
+10. CHUV
+11. Sallaz
+12. Fourmi
+13. Vennes
+14. Croisettes
+
+**Source:** [Ligne M2 du métro de Lausanne (French Wikipedia)](https://fr.wikipedia.org/wiki/Ligne_M2_du_m%C3%A9tro_de_Lausanne); cross-reference [Lausanne Metro Line M2 (English Wikipedia)](https://en.wikipedia.org/wiki/Lausanne_Metro_Line_M2); official map [t-l.ch/en/maps](https://www.t-l.ch/en/maps)
+
+**Shared interchanges:**
+- **Lausanne-Flon** (M1 + M2 only; also serves LEB R20 commuter rail on separate lower platform level)
+
+**Stations shared with other rail operators (separate platforms / do not merge):**
+- **Lausanne-Gare** (M2 metro + CFF/SBB regional mainline; S-Bahn excluded v1)
+- **Renens-Gare** (M1 metro + CFF/SBB regional; S-Bahn excluded v1)
+
+**Total v1 catalog stations:** 15 (M1) + 14 (M2) - 1 (Flon shared across both metro lines) = **28 stations**. Station roster locked and verified from official French-language Wikipedia sources (Ligne M1, Ligne M2). No interim construction stations, temporary closures, or roster changes documented as of 6 September 2026. Ready for hand-transcription into D1 published-network.json by Luke.
+
 ## What I did not do
 
 No line-map generation, no station hand-transcription from the official map (D1 pack responsibility), no GTFS station arrays, no live city flip, no GitHub PR, no adapter code, no DST deep-dive on timezones, no M3 integration, no public-transit coverage boundary map, no stopIds in the published JSON, no S-Bahn or bus integration, no LEB commuter rail integration beyond board eligibility verdict.

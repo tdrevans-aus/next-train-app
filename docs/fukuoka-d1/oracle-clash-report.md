@@ -81,3 +81,86 @@ All rail services calling at in-catalog Fukuoka City Subway stations have verdic
 3. Modes v1 Fukuoka City Subway only (Kūkō / Hakozaki / Nanakuma, all three lines; 36 stations). JR Chikuhi through-run `in` for board eligibility at Meinohama (K01) platform. Chikuhi-only stations west of Meinohama out. JR mainline / Shinkansen / private rail / buses / trams out.
 4. assertCityLive("fukuoka") must fail (planned / 501). adapterReady false. No official public feed.
 5. Board eligibility: metro lines `in`; JR Chikuhi Meinohama `in`; other JR / private operators `out-mode`.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+**Kūkō Line (Airport Line / K line — orange) — 13 stations, 13.1 km**
+Termini: Meinohama (K01, west; JR Chikuhi through-run boundary) ↔ Fukuoka Airport (K13, east).
+Interchange: Nakasu-Kawabata (K09, with H-line); Hakata (K11, with N-line; hub).
+
+| # | Code | English (official EN site) | Japanese (official JP print) |
+|---|---|---|---|
+| 1 | K01 | Meinohama | 姪浜 |
+| 2 | K02 | Muromi | 室見 |
+| 3 | K03 | Fujisaki | 藤崎 |
+| 4 | K04 | Nishijin | 西新 |
+| 5 | K05 | Tōjinmachi | 天神町 |
+| 6 | K06 | Ōhorikōen | 大濠公園 |
+| 7 | K07 | Akasaka | 赤坂 |
+| 8 | K08 | Tenjin | 天神 |
+| 9 | K09 | Nakasu-Kawabata | 中洲川端 |
+| 10 | K10 | Gion | 祇園 |
+| 11 | K11 | Hakata | 博多 |
+| 12 | K12 | Higashi-Hie | 東比恵 |
+| 13 | K13 | Fukuoka Airport | 福岡空港 |
+
+Sources: [Fukuoka City Subway route information (English)](https://subway.city.fukuoka.lg.jp/eng/route/), [Kuko Line Fukuoka Subway](https://www.japan-experience.com/plan-your-trip/travel-by-train/train-in-japan/kuko-line-fukuoka-subway), [List of Fukuoka City Subway stations (Wikipedia)](https://en.wikipedia.org/wiki/List_of_Fukuoka_City_Subway_stations).
+
+**Hakozaki Line (H line — blue) — 7 stations, 4.7 km**
+Termini: Nakasu-Kawabata (H01, west; shared with K-line) ↔ Kaizuka (H07, north).
+Interchange: Nakasu-Kawabata (H01, with K-line).
+
+| # | Code | English (official EN site) | Japanese (official JP print) |
+|---|---|---|---|
+| 1 | H01 | Nakasu-Kawabata | 中洲川端 |
+| 2 | H02 | Gofukumachi | 呉服町 |
+| 3 | H03 | Chiyo-Kenchōguchi | 千代県庁口 |
+| 4 | H04 | Maidashi-Kyūdai-byōin-mae | 舞鶴・九大病院前 |
+| 5 | H05 | Hakozaki-Miyamae | 箱崎宮前 |
+| 6 | H06 | Hakozaki-Kyūdai-mae | 箱崎九大前 |
+| 7 | H07 | Kaizuka | 貝塚 |
+
+Sources: [Fukuoka City Subway route information (English)](https://subway.city.fukuoka.lg.jp/eng/route/), [Hakozaki-Kyūdai-mae Station (Wikipedia)](https://en.wikipedia.org/wiki/Hakozaki-Ky%C5%ABdai-mae_Station), [Hakozaki-Miyamae Station (Wikipedia)](https://en.wikipedia.org/wiki/Hakozaki-Miyamae_Station), [Kaizuka Station Fukuoka (Wikipedia)](https://en.wikipedia.org/wiki/Kaizuka_Station_(Fukuoka)).
+
+**Nanakuma Line (N line — green) — 18 stations, 13.6 km**
+Termini: Hashimoto (N01, west) ↔ Hakata (N18, east; opened 27 March 2023 extension; hub with K-line).
+Interchange: Hakata (N18, with K-line; hub).
+Extension note: Stations N17–N18 (Kushida Shrine, Hakata) opened 27 March 2023, extending service from N16 (Tenjin-Minami) to Hakata.
+
+| # | Code | English (official EN site) | Japanese (official JP print) |
+|---|---|---|---|
+| 1 | N01 | Hashimoto | 橋本 |
+| 2 | N02 | Jirōmaru | 次郎丸 |
+| 3 | N03 | Kamo | 賀茂 |
+| 4 | N04 | Noke | 野芥 |
+| 5 | N05 | Umebayashi | 梅林 |
+| 6 | N06 | Fukudai-mae | 福大前 |
+| 7 | N07 | Nanakuma | 七隈 |
+| 8 | N08 | Kanayama | 金山 |
+| 9 | N09 | Chayama | 茶山 |
+| 10 | N10 | Befu | 別府 |
+| 11 | N11 | Ropponmatsu | 六本松 |
+| 12 | N12 | Sakurazaka | 桜坂 |
+| 13 | N13 | Yakuin-ōdōri | 薬院大通 |
+| 14 | N14 | Yakuin | 薬院 |
+| 15 | N15 | Watanabe-dōri | 渡辺通 |
+| 16 | N16 | Tenjin-Minami | 天神南 |
+| 17 | N17 | Kushida Shrine | 櫛田神社前 |
+| 18 | N18 | Hakata | 博多 |
+
+Sources: [Fukuoka City Subway route information (English)](https://subway.city.fukuoka.lg.jp/eng/route/), [Nanakuma Line (Wikipedia)](https://en.wikipedia.org/wiki/Nanakuma_Line), [List of Fukuoka City Subway stations (Wikipedia)](https://en.wikipedia.org/wiki/List_of_Fukuoka_City_Subway_stations), [Kushida Shrine Station (Wikipedia)](https://en.wikipedia.org/wiki/Kushida_Shrine_Station), individual station Wikipedia pages: [Hashimoto](https://en.wikipedia.org/wiki/Hashimoto_Station_(Fukuoka)), [Jirōmaru](https://en.wikipedia.org/wiki/Jir%C5%8Dmaru_Station), [Kamo](https://en.wikipedia.org/wiki/Kamo_Station_(Fukuoka)), [Noke](https://en.wikipedia.org/wiki/Noke_Station), [Umebayashi](https://en.wikipedia.org/wiki/Umebayashi_Station), [Nanakuma](https://en.wikipedia.org/wiki/Nanakuma_Station), [Kanayama](https://en.wikipedia.org/wiki/Kanayama_Station_(Fukuoka)), [Chayama](https://en.wikipedia.org/wiki/Chayama_Station_(Fukuoka)), [Befu](https://en.wikipedia.org/wiki/Befu_Station_(Fukuoka)), [Ropponmatsu](https://en.wikipedia.org/wiki/Ropponmatsu_Station), [Sakurazaka](https://en.wikipedia.org/wiki/Sakurazaka_Station), [Yakuin-ōdōri](https://en.wikipedia.org/wiki/Yakuin-%C5%8Dd%C5%8Dri_Station), [Yakuin](https://en.wikipedia.org/wiki/Yakuin_Station), [Watanabe-dōri](https://en.wikipedia.org/wiki/Watanabe-d%C5%8Dri_Station), [Tenjin-Minami](https://en.wikipedia.org/wiki/Tenjin-Minami_Station).
+
+**Total station count: 36 unique stations**
+- K-line: 13 (K01–K13)
+- H-line: 7 (H01–H07)
+- N-line: 18 (N01–N18)
+- Shared stations (counted once): Nakasu-Kawabata (K09 / H01), Hakata (K11 / N18)
+- Unique totals: 13 + 7 + 18 − 2 shared = **36 unique named stations**
+
+JR Chikuhi through-run boundary: Meinohama (K01). JR Chikuhi operates west of Meinohama to Karatsu / Nishi-Karatsu; stations beyond K01 (Chikuzen-Maebaru, etc.) are outside D1 v1 scope (not Fukuoka City Subway metro facilities).
+
+**Sources (overall):**
+- Official Fukuoka City Subway English site: [https://subway.city.fukuoka.lg.jp/eng/](https://subway.city.fukuoka.lg.jp/eng/)
+- Official Fukuoka City Subway Japanese site: [https://subway.city.fukuoka.lg.jp/](https://subway.city.fukuoka.lg.jp/)
+- Official route map (PDF): [https://subway.city.fukuoka.lg.jp/eng/route/deta/map.pdf](https://subway.city.fukuoka.lg.jp/eng/route/deta/map.pdf)
+- Wikipedia list (cross-check): [List of Fukuoka City Subway stations](https://en.wikipedia.org/wiki/List_of_Fukuoka_City_Subway_stations)

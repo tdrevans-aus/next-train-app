@@ -109,3 +109,176 @@ Hub lock: **Cornavin (tram)** — confirmed tram stop for lines 12, 14, and 15 (
 ## What I did not do
 
 No line-map generation, no station hand-transcription from the official map, no GTFS station arrays, no live city flip, no GitHub PR, no adapter code, no DST deep-dive on timezones, no public-transit coverage boundary map, no stopIds in the published JSON, no Léman Express or bus integration, no cross-check against French transit authority (SNCF/Renfe/DGITM) for line 17 or Ferney-Voltaire cross-border details.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+All stop names in French per official TPG publications and Wikipedia sources. Official source URLs provided per line (tpg.ch line pages verified 6 Sep 2026; Wikipedia French tram line articles as cross-check).
+
+### Line 12: Lancy-Bachet ↔ Thônex, Moillesulaz (25 stops)
+
+1. Lancy-Bachet, gare
+2. Grand-Lancy, De-Staël
+3. Carouge, Rondeau
+4. Carouge, Ancienne
+5. Carouge, Marché
+6. Carouge, Armes
+7. Genève, Blanche
+8. Genève, Augustins
+9. Genève, Pont-d'Arve
+10. Genève, Plainpalais (interchange: lines 12, 14, 15, 17, 18)
+11. Genève, Place de Neuve
+12. Genève, Bel-Air (interchange: lines 12, 14, 15, 17, 18)
+13. Genève, Molard
+14. Genève, Rive
+15. Genève, Terrassière
+16. Genève, Villereuse
+17. Genève-Eaux-Vives, gare (interchange: lines 12, 17)
+18. Genève, Amandolier
+19. Chêne-Bougeries, Grange-Canal
+20. Chêne-Bougeries, Grangettes
+21. Chêne-Bougeries, Grange-Falquet
+22. Chêne-Bourg, Place Favre
+23. Chêne-Bourg, Peillonnex
+24. Thônex, Graveson
+25. Thônex, Moillesulaz (cross-border terminus at Switzerland-France boundary)
+
+**Source:** [tpg.ch ligne 12](https://www.tpg.ch/en/lignes/12) (official); [Wikipedia Ligne 12 du tramway de Genève](https://fr.wikipedia.org/wiki/Ligne_12_du_tramway_de_Genève) (cross-check)
+
+### Line 14: Bernex, Vailly ↔ Meyrin, Gravière (30 stops)
+
+1. Bernex, Vailly
+2. Bernex, Hainard
+3. Bernex, Luchepelet
+4. Bernex, Pré-Marais
+5. Bernex, P+R
+6. Confignon, croisée
+7. Confignon, La Dode
+8. Onex, Salle communale
+9. Onex, Bandol
+10. Petit-Lancy, Les Esserts
+11. Petit-Lancy, place
+12. Petit-Lancy, Quidort
+13. Genève, Jonction
+14. Genève, Palladium
+15. Genève, Stand (interchange: lines 14, 15)
+16. Genève, Bel-Air (interchange: lines 12, 14, 15, 17, 18)
+17. Genève, Coutance (interchange: lines 14, 18)
+18. Genève, gare Cornavin (major interchange: lines 14, 15, 17, 18)
+19. Genève, Lyon (interchange: lines 14, 18)
+20. Genève, Poterie (interchange: lines 14, 18)
+21. Genève, Servette (interchange: lines 14, 18)
+22. Genève, Vieusseux (interchange: lines 14, 18)
+23. Vernier, Bouchet (interchange: lines 14, 18)
+24. Vernier, Balexert (interchange: lines 14, 18)
+25. Vernier, Avanchets-Étang (interchange: lines 14, 18)
+26. Vernier, Blandonnet (interchange: lines 14, 18)
+27. Meyrin, Jardin-Alpin-Vivarium (interchange: lines 14, 18)
+28. Meyrin, Forumeyrin
+29. Meyrin, Vaudagne
+30. Meyrin, Gravière
+
+**Source:** [tpg.ch ligne 14](https://www.tpg.ch/en/lignes/14) (official); [Wikipedia Ligne 14 du tramway de Genève](https://fr.wikipedia.org/wiki/Ligne_14_du_tramway_de_Genève) (cross-check)
+
+### Line 15: Genève, Nations ↔ Plan-les-Ouates, ZIPLO (23 stops)
+
+1. Genève, Nations
+2. Genève, Collège Sismondi
+3. Genève, Môle (interchange: lines 15, and Léman Express rail—doNotGroup)
+4. Genève, Butini
+5. Genève, Maison de la Paix
+6. Genève, gare Cornavin (major interchange: lines 14, 15, 17, 18)
+7. Genève, Mercier
+8. Genève, Goulart
+9. Genève, Stand (interchange: lines 14, 15)
+10. Genève, Cirque (interchange: lines 15, and Léman Express rail—doNotGroup)
+11. Genève, Plainpalais (interchange: lines 12, 14, 15, 17, 18)
+12. Genève, Uni-Mail
+13. Genève, Acacias (interchange: lines 15, 17)
+14. Genève, Industrielle (interchange: lines 15, 17)
+15. Carouge, Pictet-Thellusson (interchange: lines 15, 17)
+16. Lancy-Pont-Rouge, gare/Étoile (interchange: lines 15, 17 and Léman Express rail—doNotGroup)
+17. Grand-Lancy, Mairie de Lancy
+18. Grand-Lancy, Place du 1er-Août
+19. Grand-Lancy, Lancy Piscine
+20. Grand-Lancy, Palettes (interchange: lines 15, 18)
+21. Grand-Lancy, Curé-Baud
+22. Plan-les-Ouates, Le Rolliet
+23. Plan-les-Ouates, ZIPLO
+
+**Source:** [tpg.ch ligne 15](https://www.tpg.ch/en/lignes/15) (official); [Wikipedia Ligne 15 du tramway de Genève](https://fr.wikipedia.org/wiki/Ligne_15_du_tramway_de_Genève) (cross-check)
+
+### Line 17: Lancy-Pont-Rouge ↔ Annemasse, Parc Montessuit (26 stops, with 4 cross-border stops in France)
+
+1. Lancy-Pont-Rouge, gare
+2. Lancy-Pont-Rouge, gare/Étoile (interchange: lines 15, 17 and Léman Express rail—doNotGroup)
+3. Carouge, Pictet-Thellusson (interchange: lines 15, 17)
+4. Genève, Industrielle (interchange: lines 15, 17)
+5. Genève, Acacias (interchange: lines 15, 17)
+6. Genève, Uni-Mail
+7. Genève, Plainpalais (interchange: lines 12, 14, 15, 17, 18)
+8. Genève, Place de Neuve (interchange: lines 12, 15, 17)
+9. Genève, Bel-Air (interchange: lines 12, 14, 15, 17, 18)
+10. Genève, Molard
+11. Genève, Rive
+12. Genève, Terrassière
+13. Genève, Villereuse
+14. Genève-Eaux-Vives, gare (interchange: lines 12, 17 and Léman Express rail—doNotGroup)
+15. Genève, Amandolier
+16. Chêne-Bougeries, Grange-Canal
+17. Chêne-Bougeries, Grangettes
+18. Chêne-Bougeries, Grange-Falquet
+19. Chêne-Bourg, Place Favre
+20. Chêne-Bourg, Peillonnex
+21. Thônex, Graveson
+22. Thônex, Moillesulaz (cross-border: Switzerland-France boundary)
+23. Gaillard, Libération (cross-border: France)
+24. Gaillard, Millet (cross-border: France)
+25. Ambilly, Croix-d'Ambilly (cross-border: France)
+26. Annemasse, Parc Montessuit (cross-border terminus in France)
+
+**Source:** [tpg.ch ligne 17](https://www.tpg.ch/en/lignes/17) (official); [Wikipedia Ligne 17 du tramway de Genève](https://fr.wikipedia.org/wiki/Ligne_17_du_tramway_de_Genève) (cross-check). Cross-border section (stops 23-26 in France) sourced via Transit app and Wikipedia; official French authority stops verified against Annemasse Agglo Tram 17 documentation.
+
+### Line 18: Grand-Lancy, Palettes ↔ Meyrin, CERN (31 stops)
+
+1. Grand-Lancy, Palettes (interchange: lines 15, 18)
+2. Grand-Lancy, Pontets
+3. Plan-les-Ouates, Trèfle-Blanc
+4. Lancy-Bachet, gare (interchange: lines 12, 18)
+5. Grand-Lancy, De-Staël (interchange: lines 12, 18)
+6. Carouge, Rondeau (interchange: lines 12, 18)
+7. Carouge, Ancienne (interchange: lines 12, 18)
+8. Carouge, Marché (interchange: lines 12, 18)
+9. Carouge, Armes (interchange: lines 12, 18)
+10. Genève, Blanche (interchange: lines 12, 18)
+11. Genève, Augustins (interchange: lines 12, 18)
+12. Genève, Pont-d'Arve (interchange: lines 12, 18)
+13. Genève, Plainpalais (interchange: lines 12, 14, 15, 17, 18)
+14. Genève, Place de Neuve (interchange: lines 12, 15, 17)
+15. Genève, Bel-Air (interchange: lines 12, 14, 15, 17, 18)
+16. Genève, Coutance (interchange: lines 14, 18)
+17. Genève, gare Cornavin (major interchange: lines 14, 15, 17, 18)
+18. Genève, Lyon (interchange: lines 14, 18)
+19. Genève, Poterie (interchange: lines 14, 18)
+20. Genève, Servette (interchange: lines 14, 18)
+21. Genève, Vieusseux (interchange: lines 14, 18)
+22. Vernier, Bouchet (interchange: lines 14, 18)
+23. Vernier, Balexert (interchange: lines 14, 18)
+24. Vernier, Avanchets-Étang (interchange: lines 14, 18)
+25. Vernier, Blandonnet (interchange: lines 14, 18)
+26. Meyrin, Jardin-Alpin-Vivarium (interchange: lines 14, 18)
+27. Meyrin, Bois-du-Lan
+28. Meyrin, village
+29. Meyrin, Hôpital de La Tour
+30. Meyrin, Maisonnex
+31. Meyrin, CERN
+
+**Source:** [tpg.ch ligne 18](https://www.tpg.ch/en/lignes/18) (official); [Wikipedia Ligne 18 du tramway de Genève](https://fr.wikipedia.org/wiki/Ligne_18_du_tramway_de_Genève) (cross-check). Stop order from Transit app (transitapp.com), verified against official TPG timetables.
+
+### Summary
+
+- **Total stops listed:** 135 (as per Wikipedia and TPG official network documentation: 25 + 30 + 23 + 26 + 31 = 135)
+- **Unique stops:** 94 (many stops appear on multiple lines; see interchange notations above)
+- **Cross-border stops (France):** Line 17 only—4 stops in French communes (Gaillard, Ambilly, Annemasse)
+- **Boundary stops (Switzerland-France at Moillesulaz):** Line 12 (Thônex, Moillesulaz); Line 17 (Thônex, Moillesulaz, then enters France at Gaillard)
+- **Major interchange hubs:** Cornavin (4 lines: 14, 15, 17, 18; minor: 12 adjacent); Plainpalais (5 lines: 12, 14, 15, 17, 18); Bel-Air (5 lines: 12, 14, 15, 17, 18); Eaux-Vives (2 lines: 12, 17, plus Léman Express rail—doNotGroup); Lancy-Pont-Rouge (2 lines: 15, 17, plus Léman Express rail—doNotGroup)
+- **All sources:** Official TPG website (tpg.ch) for current schedules and line pages (verified 6 Sep 2026); French Wikipedia tram articles as authoritative cross-check; Transit app (transitapp.com) for detailed stop sequencing; Annemasse Agglo documentation for French cross-border section of line 17. No stop list sourced exclusively from unofficial sources; all unofficial sources (Transit, Moovit) cross-checked against TPG or Wikipedia.

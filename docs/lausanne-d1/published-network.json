@@ -1,0 +1,200 @@
+{
+  "city": "lausanne",
+  "displayName": "Lausanne",
+  "status": "planned",
+  "agency": "TL (Transports publics de la région lausannoise)",
+  "timezone": "Europe/Zurich",
+  "source": "docs/lausanne-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 board-eligibility oracle (agency/auth, hub-lock, mode cut, board-eligibility verdicts, licence confidence, station roster)",
+      "title": "Lausanne oracle-clash-report.md",
+      "url": "docs/lausanne-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Nico research pass, 2026-09-06. Includes a 'Station roster (D1 transcription, 6 Sep 2026)' section hand-transcribing M1 (15 stations) and M2 (14 stations) directly into the report. This pack's stations[]/termini are taken from that section verbatim, not independently re-fetched."
+    },
+    {
+      "role": "D1 station graph — hand-transcribed by Nico into the oracle report, reshaped (not re-verified) by this pack",
+      "title": "Ligne M1 du métro de Lausanne (French Wikipedia)",
+      "url": "https://fr.wikipedia.org/wiki/Ligne_M1_du_m%C3%A9tro_de_Lausanne",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Named in the oracle report's station-roster section as the M1 transcription source, cross-referenced against English Wikipedia and the official t-l.ch map."
+    },
+    {
+      "role": "D1 station graph — hand-transcribed by Nico into the oracle report, reshaped (not re-verified) by this pack",
+      "title": "Ligne M2 du métro de Lausanne (French Wikipedia)",
+      "url": "https://fr.wikipedia.org/wiki/Ligne_M2_du_m%C3%A9tro_de_Lausanne",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Named in the oracle report's station-roster section as the M2 transcription source, cross-referenced against English Wikipedia and the official t-l.ch map."
+    },
+    {
+      "role": "Official TL line map (cross-reference only)",
+      "title": "Lausanne Metro network map",
+      "url": "https://www.t-l.ch/en/maps",
+      "retrievedAt": null,
+      "note": "Named by the oracle report as the official map cross-reference for both M1 and M2 rosters. Not independently re-opened in this pass; the oracle report's transcription is used as-is."
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/lausanne-d1/oracle-clash-report.md, which itself already hand-transcribed the M1 and M2 station rosters (from French Wikipedia, cross-referenced against English Wikipedia and the official t-l.ch map) into its 'Station roster (D1 transcription, 6 Sep 2026)' section. This pack's stations[]/termini reshape that transcription verbatim into D1 pack format. Do not generate published-network.json from GTFS (oracle report explicit instruction). No stopIds in this file.",
+    "City id lausanne is unused in existing packs. Display Lausanne. Agency TL (Transports publics de la région lausannoise). Do not invent city=laus, city=lsn, city=vd, and do not merge into another Swiss city (Zürich is a separate, unrelated pack in this same wave).",
+    "City stays planned. assertCityLive(\"lausanne\") must fail (city not in lib/providers/registry.js CITIES).",
+    "Modes v1: TL METRO M1 + M2 ONLY. No M3 (infrastructure concession approved June 2026, building permits pending, no confirmed construction start/opening date — out until officially open). No S-Bahn/SBB regional-mainline (out-mode, v1 metro-only cut). No buses. No funicular. No LEB integration as a metro line (LEB R20 at Lausanne-Flon is `in` on the board-eligibility table but stays a separate service, not a line in this file's lines[]).",
+    "Station roster (28 total, locked per oracle report): M1 = 15 stations, Lausanne-Flon to Renens-Gare. M2 = 14 stations, Ouchy-Olympique to Croisettes. Lausanne-Flon is shared between the two rosters (M1 terminus, M2 through-call) so the unique station count is 15 + 14 - 1 = 28.",
+    "Hub lock: LAUSANNE-FLON. Only station where M1 and M2 both call (M1 eastern terminus; M2 call between Grancy and Riponne-Maurice-Béjart). Verified on the official TL map per the oracle report. Lausanne-Flon is a hub stop string, never a direction token. LEB R20 commuter rail also calls at Lausanne-Flon on a separate lower platform level - doNotGroup, not a second metro line at this hub.",
+    "Rejected alternative hub: Lausanne-Gare (M2 only; also CFF/SBB mainline). Oracle report: 'not a true hub for metro, so not locked.' Kept only as a documented alternative, not used as the lock.",
+    "doNotGroup: Lausanne-Flon (TL metro M1 x M2) vs LEB Lausanne-Echallens-Bercher R20 (separate operator, separate lower platform level). LEB R20 is walk-up boardable and `in` on the board-eligibility table but is a distinct service with its own route identifiers - never merge into the metro board at Flon.",
+    "doNotGroup: Lausanne-Gare (TL metro M2 only) vs CFF/SBB mainline. Shared address, separate platforms. CFF regional trains here are walk-up boardable and `in`; SBB S-Bahn/long-distance is `out-mode` by the v1 metro-only cut. Metro and CFF stay on separate boards regardless of eligibility overlap.",
+    "doNotGroup: Renens-Gare (TL metro M1 only) vs CFF/SBB regional. Same shape as Lausanne-Gare: shared address, separate platforms, CFF walk-up boardable and `in`, S-Bahn `out-mode`.",
+    "Timezone Europe/Zurich HAS DST (UTC+1 standard / UTC+2 summer, last Sunday March-last Sunday October). Do not copy Perth/Brisbane no-DST assumptions.",
+    "LICENCE HAZARD, flagged for Tim, not resolved here: opentransportdata.swiss Terms of Use has no named licence (not CC BY, not CC0, not ODbL) - platform 'Open Data' language only, attribution required, third-party redistribution to end users of a commercial app not explicitly addressed. Oracle report confidence rating: unclear (same feed and same wording as the Zürich pack). See hazard-pack.md.",
+    "AUTH HAZARD, flagged for Tim, not resolved here: GTFS-RT (https://api.opentransportdata.swiss/la/gtfs-rt) requires a Bearer API key (401 without one), registered via https://api-manager.opentransportdata.swiss/, personal/non-transferable per SBB terms, rate-limited to 2 queries per minute (sliding window). No key is present in this pack; no live calls were made. See hazard-pack.md.",
+    "gtfsRouteIdsIfKnown are the printed line names (M1, M2) per the oracle report (not extracted from a live GTFS pull in this pass). Feed filtering for the eventual adapter must use agency=TL and route_type=0/1 to avoid S-Bahn/bus/LEB bleed from the shared Switzerland-national opentransportdata.swiss stream.",
+    "shortTurns left empty on both lines - NOT verified as 'none exist'. The oracle report does not check for peak-only short-workings either way; treat as unchecked, not as a confirmed empty roster (same caution as the Zürich pack's H5).",
+    "Feed / live (Jim D2, not a D1 generator, and not buildable until the licence-confidence hazard above is resolved by Tim): opentransportdata.swiss GTFS-RT, filtered to agency=TL and route_type=0/1 (light rail/metro) to exclude S-Bahn, bus, and LEB bleed from the shared national protobuf stream. Static GTFS from the same Switzerland-national feed, same filter requirement. D1 stays planned."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Lausanne-Flon",
+    "lockNote": "Hub lock. Only station where M1 and M2 both call (M1 eastern terminus; M2 mid-line call between Grancy and Riponne-Maurice-Béjart). Verified on the official TL map per the oracle report. Also hosts LEB R20 commuter rail on a separate lower platform level (doNotGroup, not a second metro line). Not a direction token.",
+    "doNotUse": [
+      "Flon",
+      "City",
+      "Centre",
+      "Centre-ville",
+      "Lausanne",
+      "laus",
+      "lsn",
+      "vd",
+      "tl"
+    ],
+    "doNotCollapse": [
+      "Lausanne-Flon",
+      "Lausanne-Gare",
+      "Renens-Gare"
+    ]
+  },
+  "coverageGaps": [
+    "M3 (infrastructure concession approved June 2026, building permits pending, no confirmed construction start or opening date; Central Station to Blécherette, 3.5 km, 6 stations, fully automated) - out until officially open. Not inserted; no station rows invented.",
+    "SBB S-Bahn / long-distance regional rail - out of v1 mode scope entirely, not just untranscribed.",
+    "LEB Lausanne-Echallens-Bercher R20 commuter rail - `in` on the board-eligibility table (walk-up boardable at Lausanne-Flon) but not integrated as a metro line in this file's lines[]; doNotGroup vs the metro hub.",
+    "Buses (TL or external) - out of v1 mode scope.",
+    "Funicular - out of v1 mode scope (minor accessory mode per oracle report).",
+    "Short turns on M1/M2 - not checked either way (see hazard-pack.md H5); shortTurns: [] means unchecked, not verified-empty.",
+    "Printed line-token/livery convention (M1 vs Métro 1 vs bare '1') - not independently checked against a live map render in this pass; assumed M1/M2 per the oracle report's own naming."
+  ],
+  "liveBoards": {
+    "status": "feed_exists_licence_unclear_city_planned",
+    "endpoint": "https://api.opentransportdata.swiss/la/gtfs-rt",
+    "auth": "Bearer API key, registered via https://api-manager.opentransportdata.swiss/, personal/non-transferable, 401 without a key",
+    "rateLimit": "2 queries per minute (sliding window) per key",
+    "cachedTripUpdates": "30 seconds",
+    "licence": {
+      "confidence": "unclear",
+      "note": "No named licence (not CC BY/CC0/ODbL). Attribution required by opentransportdata.swiss Terms of Use; third-party redistribution to end users of a commercial app not explicitly addressed. Flagged for Tim, not resolved here."
+    },
+    "keyPolicy": "Never paste a key. This pack contains no key and made no live calls. D1 stays planned. assertCityLive(lausanne) must fail.",
+    "d1": "planned. Adapter build (Jim, D2) should wait on Tim's licence sign-off - see hazard-pack.md and jim-handoff.md. Feed filtering must use agency=TL, route_type=0/1 to exclude S-Bahn/bus/LEB bleed from the shared Switzerland-national stream."
+  },
+  "stats": {
+    "lines": 2,
+    "lineNames": ["M1", "M2"],
+    "m1Stops": 15,
+    "m2Stops": 14,
+    "uniqueStations": 28,
+    "hubLock": ["Lausanne-Flon"],
+    "excludedFutureLines": ["M3"],
+    "stationsTranscribed": 28
+  },
+  "lines": [
+    {
+      "id": "M1",
+      "number": "M1",
+      "name": "M1",
+      "officialPageTitle": "M1 Lausanne-Flon – Renens-Gare",
+      "gtfsRouteIdsIfKnown": ["M1"],
+      "mapGroup": "Metro",
+      "mode": "light rail (rack railway)",
+      "openedDate": "1991-06-02",
+      "lengthKm": 7.8,
+      "shape": "linear",
+      "termini": [
+        "Lausanne-Flon",
+        "Renens-Gare"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Lausanne-Flon",
+          "otherLine": "M2",
+          "note": "Hub lock. M1's eastern terminus; M2 calls through here. Only station on both metro lines. Not a direction token. LEB R20 also calls on a separate lower platform - doNotGroup, not a second metro line here."
+        },
+        {
+          "at": "Renens-Gare",
+          "note": "M1 western terminus. doNotGroup vs CFF/SBB regional mainline (shared address, separate platforms). CFF walk-up boardable and `in`; S-Bahn `out-mode`."
+        }
+      ],
+      "stations": [
+        "Lausanne-Flon",
+        "Vigie",
+        "Montelly",
+        "Provence",
+        "Malley",
+        "Bourdonnette",
+        "UNIL-Chamberonne",
+        "UNIL-Mouline",
+        "UNIL-Sorge",
+        "EPFL",
+        "Bassenges",
+        "Cerisaie",
+        "Crochy",
+        "Epenex",
+        "Renens-Gare"
+      ]
+    },
+    {
+      "id": "M2",
+      "number": "M2",
+      "name": "M2",
+      "officialPageTitle": "M2 Ouchy-Olympique – Croisettes",
+      "gtfsRouteIdsIfKnown": ["M2"],
+      "mapGroup": "Metro",
+      "mode": "rubber-tyred automated metro",
+      "openedDate": "2008-10-27",
+      "lengthKm": 5.9,
+      "shape": "linear",
+      "termini": [
+        "Ouchy-Olympique",
+        "Croisettes"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Lausanne-Gare",
+          "note": "M2 station 5 of 14. doNotGroup vs CFF/SBB mainline (shared address, separate platforms). CFF walk-up boardable and `in`; S-Bahn `out-mode`. Considered and rejected as an alternative hub - oracle report: 'not a true hub for metro, so not locked.'"
+        },
+        {
+          "at": "Lausanne-Flon",
+          "otherLine": "M1",
+          "note": "Hub lock. M2's mid-line call (station 6 of 14, between Grancy and Riponne-Maurice-Béjart); M1's eastern terminus. Only station on both metro lines. Not a direction token. LEB R20 also calls on a separate lower platform - doNotGroup, not a second metro line here."
+        }
+      ],
+      "stations": [
+        "Ouchy-Olympique",
+        "Jordils",
+        "Délices",
+        "Grancy",
+        "Lausanne-Gare",
+        "Lausanne-Flon",
+        "Riponne-Maurice-Béjart",
+        "Bessières",
+        "Ours",
+        "CHUV",
+        "Sallaz",
+        "Fourmi",
+        "Vennes",
+        "Croisettes"
+      ]
+    }
+  ]
+}
