@@ -41,7 +41,12 @@ import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { MissingDarwinTokenError, fetchDepartureBoard, listRailStations } from "../lib/providers/uk-darwin.js";
-import { MissingTfwmCredentialsError } from "../lib/providers/uk-metro-wm.js";
+import {
+  MissingTfwmCredentialsError,
+  MetroStopIdNotCatalogedError,
+  stopIdsForEntry,
+  buildMetroTrips,
+} from "../lib/providers/uk-metro-wm.js";
 import { getRegion, resolveRailEntry, resolveMetroEntry } from "../lib/providers/uk/catalog.js";
 import {
   UK_WEST_MIDLANDS_REGION,
@@ -462,6 +467,96 @@ if (previousAppKey === undefined) {
 } else {
   process.env.TFWM_API_APP_KEY = previousAppKey;
 }
+
+// Metro platform-id merge (stopIds[], 5 Sep 2026 direction-collapse fix). Pure/
+// synthetic — no feed or credentials needed, so this runs unconditionally.
+//
+// stopIdsForEntry(): legacy scalar stopId + stopIds[] both contribute, de-duped;
+// MetroStopIdNotCatalogedError fires only when an entry has neither.
+assert(
+  JSON.stringify(stopIdsForEntry({ stopId: "A", stopIds: ["A", "B"] })) === JSON.stringify(["A", "B"]),
+  "stopIdsForEntry must merge legacy stopId + stopIds[] and de-dupe"
+);
+assert(
+  JSON.stringify(stopIdsForEntry({ stopId: "A" })) === JSON.stringify(["A"]),
+  "stopIdsForEntry must fall back to the legacy scalar stopId alone"
+);
+assert(
+  JSON.stringify(stopIdsForEntry({ stopIds: ["B", "C"] })) === JSON.stringify(["B", "C"]),
+  "stopIdsForEntry must work off stopIds[] alone (current catalog shape, stopId null)"
+);
+assert(stopIdsForEntry({}).length === 0, "stopIdsForEntry must return [] when neither field is populated");
+let notCatalogedThrew = false;
+try {
+  const fakeEntry = { name: "Nowhere", catalogId: "metro:nowhere" };
+  const ids = stopIdsForEntry(fakeEntry);
+  if (!ids.length) {
+    throw new MetroStopIdNotCatalogedError(fakeEntry);
+  }
+} catch (err) {
+  notCatalogedThrew = err instanceof MetroStopIdNotCatalogedError;
+}
+assert(notCatalogedThrew, "MetroStopIdNotCatalogedError must fire when an entry has neither stopId nor stopIds");
+
+// buildMetroTrips(): a two-platform station (e.g. Jewellery Quarter's
+// 9400ZZWMJQ3/JQ4) must merge trips terminating via EITHER platform id into one
+// board, both directions present, sorted by departure time — the gap this pass
+// fixes (previously only entry.stopId, a single scalar, was ever matched).
+const NOW = Math.floor(Date.now() / 1000);
+const nameByStopId = new Map([
+  ["PLATFORM_A", "Jewellery Quarter"],
+  ["PLATFORM_B", "Jewellery Quarter"],
+  ["TERMINUS_NORTH", "Wolverhampton St George's"],
+  ["TERMINUS_SOUTH", "Birmingham New Street"],
+]);
+const syntheticEntities = [
+  {
+    // Northbound trip: passes through platform A, terminates north.
+    tripUpdate: {
+      trip: {},
+      stopTimeUpdate: [
+        { stopId: "PLATFORM_A", departure: { time: NOW + 60 } },
+        { stopId: "TERMINUS_NORTH", arrival: { time: NOW + 600 } },
+      ],
+    },
+  },
+  {
+    // Southbound trip: passes through platform B, terminates south.
+    tripUpdate: {
+      trip: {},
+      stopTimeUpdate: [
+        { stopId: "PLATFORM_B", departure: { time: NOW + 120 } },
+        { stopId: "TERMINUS_SOUTH", arrival: { time: NOW + 700 } },
+      ],
+    },
+  },
+  {
+    // Unrelated trip at a different station entirely — must not appear.
+    tripUpdate: {
+      trip: {},
+      stopTimeUpdate: [
+        { stopId: "SOMEWHERE_ELSE", departure: { time: NOW + 30 } },
+        { stopId: "TERMINUS_SOUTH", arrival: { time: NOW + 500 } },
+      ],
+    },
+  },
+];
+const mergedTrips = buildMetroTrips(syntheticEntities, ["PLATFORM_A", "PLATFORM_B"], nameByStopId);
+assert(mergedTrips.length === 2, `buildMetroTrips must merge both platforms' trips into one board, got ${mergedTrips.length}`);
+assert(
+  mergedTrips.some((t) => t.destination === "Wolverhampton St George's") &&
+    mergedTrips.some((t) => t.destination === "Birmingham New Street"),
+  "merged board must include both directions' destinations"
+);
+assert(
+  new Date(mergedTrips[0].liveDeparture).getTime() <= new Date(mergedTrips[1].liveDeparture).getTime(),
+  "merged trips across both platforms must stay sorted by departure time"
+);
+// Single-id station (end-of-line stop, e.g. Wolverhampton St George's stopIds
+// with one entry) must still work unchanged.
+const singleIdTrips = buildMetroTrips(syntheticEntities, ["PLATFORM_A"], nameByStopId);
+assert(singleIdTrips.length === 1 && singleIdTrips[0].destination === "Wolverhampton St George's", "a single-id station must still match its one platform");
+console.log("uk-west-midlands-dogfood-gate: metro stopIds[] platform-merge logic ok (synthetic feed, both directions present, single-id stations unaffected)");
 
 let unknownThrew = false;
 try {
