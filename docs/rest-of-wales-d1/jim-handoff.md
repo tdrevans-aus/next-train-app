@@ -142,3 +142,31 @@ the TfW real-time-feed-status unknown, the RDM redistribution ambiguity, or the 
 inconsistency (all three flagged for Tim/Jim above), no reading of any other city's in-progress
 pack (South Wales' finished/merged pack was read once for the cross-UK-fact check noted in
 hazard-pack.md, not for Rest of Wales station-graph fact), no wiring of `DARWIN_LDB_TOKEN`.
+
+
+## Jim flip follow-through (5 Sep 2026) — note for Mark
+
+Per `docs/jim-brief-rest-of-wales-flip.md`, this pass wired the dogfood module
+(`lib/cities/rest-of-wales/dogfood-next-train.js` + `stations.json`), the `directionsFor()` /
+`getMultiCityNextTrain()` dispatch switch-cases in `lib/cities/live-city-api.js`, and
+`qa/rest-of-wales-dogfood-gate.mjs` (replacing the retired `qa/rest-of-wales-planned-gate.mjs`).
+Registry status stays `planned` — this pass does not flip it.
+
+**Deliberately NOT done here — these three one-line additions belong in your flip commit**
+(same as Malmö/Uppsala/Göteborg/Greater Anglia/South Wales' flips did it;
+`qa/live-city-lists-sync.mjs` enforces that they exactly equal the registry's `status === "live"`
+set):
+
+1. Add `"rest-of-wales"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add Rest of Wales to `brisbane-dogfood.js`'s mount/available map.
+3. Add Rest of Wales to `journey-model.js`'s persisted-city/country lists.
+
+No direction-hubs.json was built — the D1 pack names Wrexham General as the sole hub lock but no
+intermediate through-station (like Thetford/Ely anchoring on Norwich for Greater Anglia) that
+prints "Wrexham General" as a destination without it being the trip's own terminus.
+`loadDirectionHubs("rest-of-wales")` degrades to an empty hub list, a no-op, which
+`qa/rest-of-wales-dogfood-gate.mjs` asserts explicitly. The four doNotGroup proposals (Wrexham
+General route directions, Carmarthen branch-vs-through-running, Whitland three-way branch,
+Machynlleth Aberystwyth/Pwllheli split) remain proposed-only, same as before this pass — no
+platform/service-pattern detail to build an enforced rule from.
