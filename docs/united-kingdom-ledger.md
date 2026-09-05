@@ -234,11 +234,13 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
 
 ## Open items for Tim
 
-1. **RDM licence — resolved 5 Sep 2026 (see §1); one follow-up owed.** Wire the required
-   attribution on every Darwin-backed board: credit "Rail Delivery Group" (source of the Live
-   Departure Board data) in the app's existing attribution line, plus a short accuracy notice per
-   clause 3.3.2. Fold into the registry sweep (item 3) or earlier — five regions are already live
-   without it. Attribution must not imply RDG endorsement.
+1. **RDM licence — resolved 5 Sep 2026 (see §1); attribution follow-up done.** ~~Wire the
+   required attribution on every Darwin-backed board: credit "Rail Delivery Group" (source of the
+   Live Departure Board data) in the app's existing attribution line, plus a short accuracy notice
+   per clause 3.3.2.~~ Done 5 Sep 2026: `feedAttributionForCity` in `public/city-session.js` now
+   returns the required RDG line for every city whose region row carries `feed: "darwin"` (all UK
+   regions except `uk-london-tfl`, live and planned alike), gated via `qa/uk-rdg-attribution.mjs`.
+   No endorsement wording used. See Propagation log.
 
 2. **Catalog follow-ups from the 5 Sep stop-ownership decisions** (§2): add Tamworth (TAM) to
    the live West Midlands catalog; add Taunton (TAU), Westbury (WSB) and Gloucester (GCR) to West
@@ -275,3 +277,4 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 | 5 Sep 2026 | edinburgh, glasgow | Falkirk High ruled Edinburgh's boundary station, through-running-only (Tim). | Next Scottish region cites this row; neither pack edited |
 | 5 Sep 2026 | (ledger) | Hull Trains verdict fixed as unconditional `in`; peak-reservation caveat recorded in §3 only (Tim). | No adapter effect — no catalogued station is served by Hull Trains |
 | 5 Sep 2026 | (ledger) | RDM Live Departure Board DSA read by Tim: redistribution to third parties expressly permitted (Sched. 1 §5), Open licence, no fair-usage cap; attribution to Rail Delivery Group required (cl. 3.3.1, Sched. 1 §8). | Closes the "do not relay Darwin data" open item everywhere. Attribution wiring owed on Darwin boards; per-region licence copies stripped in the registry sweep |
+| 5 Sep 2026 | rdg-attribution | RDG attribution wired on all Darwin boards, PR #<PR_NUMBER> | `public/city-session.js` gates the required RDG line on every `feed: "darwin"` region (live + planned) via `feedAttributionForCity`; `uk-london-tfl` unaffected. Open item 1 closed |

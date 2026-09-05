@@ -64,6 +64,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-overnight-lookahead.mjs",
   "vancouver-dogfood-gate.mjs",
   "vancouver-attribution.mjs",
+  "uk-rdg-attribution.mjs",
   "vancouver-line-map-conformance.mjs",
   "canberra-dogfood-gate.mjs",
   "canberra-line-map-conformance.mjs",
@@ -220,6 +221,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   /** Static file/source assertions. */
   "nearby-pin-notify-label.mjs",
   "vancouver-attribution.mjs",
+  "uk-rdg-attribution.mjs",
   /** Direct provider-lib imports, no :3000. */
   "gtfs-overnight-lookahead.mjs",
   /** Registry vs. the six live-city list copies (docs/live-flip-checklist.md). */
