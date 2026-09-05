@@ -123,6 +123,7 @@ const SMOKE_SCRIPTS = [
   "greater-manchester-planned-gate.mjs",
   "cumbria-planned-gate.mjs",
   "liverpool-city-region-dogfood-gate.mjs",
+  "southwest-dogfood-gate.mjs",
   "uk-darwin-cache.mjs",
 ];
 

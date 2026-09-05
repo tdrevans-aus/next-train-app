@@ -113,6 +113,25 @@ Europe/London, HAS DST (BST/GMT). National Rail under OGL 2.0 + NRE amendments (
 third-party redistribution — see open item above). Same license posture as every other UK National
 Rail region (same underlying feed).
 
+## Flip follow-through (5 Sep 2026, docs/jim-brief-southwest-flip.md)
+
+Dogfood wiring landed ahead of the flip, status stays `planned`:
+`lib/cities/southwest/dogfood-next-train.js`, dispatch switch-cases in
+`lib/cities/live-city-api.js` (`directionsFor`/`getMultiCityNextTrain`), and
+`qa/southwest-dogfood-gate.mjs` (replacing the retired
+`qa/southwest-planned-gate.mjs`, registered in `qa/run-all.mjs`'s
+`SMOKE_SCRIPTS`).
+
+**Note for Mark — bundle these three one-line additions into the actual
+flip commit, not before** (per CLAUDE.md's flip-follow-through split; adding
+them early breaks `qa/live-city-lists-sync.mjs` for every city, not just
+this one):
+
+1. Add `"southwest"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add southwest to `brisbane-dogfood.js`'s mount/available map.
+3. Add southwest to `journey-model.js`'s persisted-city/country lists.
+
 ## Not done in this pack (by design)
 
 No generator, no assertion tables, no live city flip, no `lib/providers/` or `registry.js` edit,
