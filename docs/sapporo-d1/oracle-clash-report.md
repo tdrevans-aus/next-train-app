@@ -65,3 +65,79 @@ GTFS data is **March 24, 2020 — 6+ years old** as of 2026. No official GTFS-RT
 3. Modes v1 Sapporo Municipal Subway Namboku / Tōzai / Tōhō only. Streetcar, bus, JR, other operators out.
 4. assertCityLive("sapporo") must fail (planned / 501). adapterReady false.
 5. **Stale GTFS risk:** Feed dated March 24, 2020. Confirm refresh status and no hidden real-time API before wiring adapter. This is tracker friction for Luke/Jim, not a skip.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+**Verified station counts (Wikipedia 2026-09):** Namboku Line 16 stations, Tōzai Line 19 stations, Tōhō Line 14 stations. **Total: 49 stations** (16 + 19 + 14). Note: prior report summary listed Tōzai as 13 and Tōhō as 20; actual distribution per Wikipedia is 19 and 14 respectively.
+
+### Namboku Line (N01–N16, north–south, Asabu to Makomanai)
+
+| # | Station Name (Romanised) | Japanese Name | Notes |
+|---|---|---|---|
+| N01 | Asabu | 麻生 | **TERMINUS (north)** |
+| N02 | Kita-Sanjūyo-Jō | 北34条 | |
+| N03 | Kita-Nijūyo-Jō | 北24条 | |
+| N04 | Kita-Jūhachi-Jō | 北18条 | |
+| N05 | Kita-Jūni-Jō | 北12条 | |
+| N06 | Sapporo | 札幌 | Interchange with Tōhō (H07) |
+| N07 | Ōdōri | 大通 | **HUB INTERCHANGE (N × T × H)** — lock station |
+| N08 | Susukino | すすきの | Interchange with Tōhō (H09) |
+| N09 | Nakajima-Kōen | 中島公園 | |
+| N10 | Horohira-Bashi | 幌平橋 | |
+| N11 | Nakanoshima | 中の島 | |
+| N12 | Hiragishi | 平岸 | |
+| N13 | Minami-Hiragishi | 南平岸 | |
+| N14 | Sumikawa | 澄川 | |
+| N15 | Jieitai-Mae | 自衛隊前 | |
+| N16 | Makomanai | 真駒内 | **TERMINUS (south)** |
+
+**Source:** Wikipedia — [Namboku Line (Sapporo)](https://en.wikipedia.org/wiki/Namboku_Line_(Sapporo))
+
+### Tōzai Line (T01–T19, west–east, Miyanosawa to Shin-Sapporo)
+
+| # | Station Name (Romanised) | Japanese Name | Notes |
+|---|---|---|---|
+| T01 | Miyanosawa | 宮の沢 | **TERMINUS (west)** |
+| T02 | Hassamu-Minami | 発寒南 | |
+| T03 | Kotoni | 琴似 | |
+| T04 | Nijūyon-Ken | 二十四軒 | |
+| T05 | Nishi-Nijūhatchōme | 西28丁目 | |
+| T06 | Maruyama-Kōen | 円山公園 | |
+| T07 | Nishi-Jūhatchōme | 西18丁目 | |
+| T08 | Nishi-Jūitchōme | 西11丁目 | |
+| T09 | Ōdōri | 大通 | **HUB INTERCHANGE (N × T × H)** — lock station |
+| T10 | Bus Center-Mae | バスセンター前 | |
+| T11 | Kikusui | 菊水 | |
+| T12 | Higashi-Sapporo | 東札幌 | |
+| T13 | Shiroishi | 白石 | |
+| T14 | Nangō-Nana-Chōme | 南郷7丁目 | |
+| T15 | Nangō-Jūsan-Chōme | 南郷13丁目 | |
+| T16 | Nangō-Jūhatchōme | 南郷18丁目 | |
+| T17 | Ōyachi | 大谷地 | |
+| T18 | Hibarigaoka | ひばりが丘 | |
+| T19 | Shin-Sapporo | 新さっぽろ | **TERMINUS (east)** — served by JR Chitose Line; doNotGroup |
+
+**Source:** Wikipedia — [Tōzai Line (Sapporo)](https://en.wikipedia.org/wiki/T%C5%8Dzai_Line_(Sapporo))
+
+### Tōhō Line (H01–H14, north–south, Sakaemachi to Fukuzumi)
+
+| # | Station Name (Romanised) | Japanese Name | Notes |
+|---|---|---|---|
+| H01 | Sakaemachi | 栄町 | **TERMINUS (north)** |
+| H02 | Shindō-Higashi | 新道東 | |
+| H03 | Motomachi | 元町 | |
+| H04 | Kanjō-Dōri-Higashi | 環状通東 | |
+| H05 | Higashi-Kuyakusho-Mae | 東区役所前 | |
+| H06 | Kita-Jūsan-Jō-Higashi | 北13条東 | |
+| H07 | Sapporo | 札幌 | Interchange with Namboku (N06) |
+| H08 | Ōdōri | 大通 | **HUB INTERCHANGE (N × T × H)** — lock station |
+| H09 | Hōsui-Susukino | 豊水すすきの | Interchange with Namboku (N08) |
+| H10 | Gakuen-Mae | 学園前 | |
+| H11 | Toyohira-Kōen | 豊平公園 | |
+| H12 | Misono | 美園 | |
+| H13 | Tsukisamu-Chūō | 月寒中央 | |
+| H14 | Fukuzumi | 福住 | **TERMINUS (south)** |
+
+**Source:** Wikipedia — [List of Sapporo Municipal Subway station](https://en.wikipedia.org/wiki/List_of_Sapporo_Municipal_Subway_station)
+
+**Total verification:** 16 + 19 + 14 = 49 stations. All three lines confirmed; all termini, interchanges, and hub lock at Ōdōri verified.
