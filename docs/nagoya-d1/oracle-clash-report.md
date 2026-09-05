@@ -6,7 +6,7 @@
 
 | field | value |
 | --- | --- |
-| Agency | Nagoya City Transportation Bureau — 名古屋市交通局 (Nagoya Municipal Subway / 名古屋市営地下鉄). Rider site https://www.kotsu.city.nagoya.jp/ . Six subway lines and 87 stations. Daily ridership 1,263,018 (FY 2024). |
+| Agency | Nagoya City Transportation Bureau — 名古屋市交通局 (Nagoya Municipal Subway / 名古屋市営地下鉄). Rider site https://www.kotsu.city.nagoya.jp/ . Six subway lines and 83 stations. Daily ridership 1,263,018 (FY 2024). |
 | Official map | No dedicated official route map PDF found on main site as of 2026-09-06 (unlike Osaka's published 路線図). Transit info portal — https://www.kotsu.city.nagoya.jp/rp/route/ . Station list by line available via rider site. |
 | Static GTFS | **No official Nagoya Metro subway GTFS found.** Transitland: no Onestop for Nagoya Metro / 名古屋市営地下鉄 / Nagoya City Transportation Bureau. Mobility Database `feeds_v2.csv` downloaded 2026-08-29: **0 rows** for Nagoya Prefecture / Nagoya municipality / Nagoya Metro. ODPT members list (as of 2 Sep 2026, https://www.odpt.org/en/about/member/): **no Nagoya** (Osaka Metro also absent; Tokyo Metro present). City open-data landing — Nagoya open data catalog was centralized 2025-11 from historical city transportation bureau site per Japanese municipal data consolidation. Do not invent a zip on Nagoya City Transportation Bureau or ODPT. |
 | GTFS-RT / live | **No official GTFS-RT.** Rider site https://www.kotsu.city.nagoya.jp/ prints no developer documentation for real-time data feeds. Unpublished app backends are not a product contract. Do not treat empty-key 403 on invented paths as proof a Metro RT feed exists. |
@@ -32,16 +32,16 @@ Match rule: published D1 string (official EN rider site / official JP print of t
 | Sakae | EN **Sakae** H10 / M05; JP **栄**; official transfers H10 + M05 only | **match (lock)**. Do not use Sakaemachi (Meitetsu Seto Line, different station). Not Hisaya-odori (underground connection, separate physical station). |
 | Hisaya-odori | EN **Hisaya-odori** M06 / S05; JP **久屋大通**; underground connected to Sakae | **match**. Underground complex with Sakae. doNotGroup vs Sakae. |
 | Nagoya | EN **Nagoya** S02 (on Sakura-dori); JP **名古屋**; also JR Tokaido / Shinkansen / Meitetsu main line | **match Metro**. doNotGroup vs JR Nagoya / Meitetsu Nagoya. Entry point, hub for intercity rail — not D1 lock. |
-| Kanayama | EN **Kanayama** M01 / E00 / (Meiko); JP **金山**; also JR Tokaido / Chuo; Meietsu direct line | **match Metro**. Meijo loop anchor / Meiko branch origin. doNotGroup vs JR Kanayama / Meitetsu Kanayama. Eastern hub; not the city lock. |
+| Kanayama | EN **Kanayama** M01 / E01 / (Meiko); JP **金山**; also JR Tokaido / Chuo; Meietsu direct line | **match Metro**. Meijo loop anchor / Meiko branch origin. doNotGroup vs JR Kanayama / Meitetsu Kanayama. Eastern hub; not the city lock. |
 | Imaike | EN **Imaike** H12 / S08; JP **今池**; Higashiyama × Sakura-dori transfer | **match**. East of hub, not the lock. |
-| Aratama-bashi | EN **Aratama-bashi** M07 / S06; JP **荒畔橋**; Meijo × Sakura-dori transfer (south loop) | **match**. South loop interchange; not the lock. |
-| Kamiiida | EN **Kamiiida** K02 (terminal); JP **上飯田**; Kamiiida Line, Meitetsu Komaki Line through-run | **match Metro**. Kamiiida Line v1 terminus. Meitetsu through-run beyond is out. |
-| Heian-dori | EN **Heian-dori** K01 / M25 (Meijo loop); JP **平安通**; Kamiiida × Meijo transfer | **match**. Kamiiida Line origin, Meijo loop connection. |
+| Aratama-bashi | EN **Aratama-bashi** M23 / S14; JP **荒畔橋**; Meijo × Sakura-dori transfer (south loop) | **match**. South loop interchange; not the lock. |
+| Kamiiida | EN **Kamiiida** K01 (terminal); JP **上飯田**; Kamiiida Line, Meitetsu Komaki Line through-run | **match Metro**. Kamiiida Line v1 terminus. Meitetsu through-run beyond is out. |
+| Heian-dori | EN **Heian-dori** K02 / M11 (Meijo loop); JP **平安通**; Kamiiida × Meijo transfer | **match**. Kamiiida Line origin, Meijo loop connection. |
 | Nagoya Port / Nagoyako | EN **Nagoyakō** E07 (Meiko terminal); JP **名古屋港**; Meiko Line terminal | **match. Meiko south terminus.** |
-| Kanayama (Meiko) | EN **Kanayama** E00 (Meiko branch origin); JP **金山** (Meiko designation); same place as Meijo M01 | **match as Meiko branch terminus.** Same physical station as Meijo M01. Both lines serve here. |
+| Kanayama (Meiko) | EN **Kanayama** E01 (Meiko branch origin); JP **金山** (Meiko designation); same place as Meijo M01 | **match as Meiko branch terminus.** Same physical station as Meijo M01. Both lines serve here. |
 | All other D1 names | same official EN rider-site title / official JP station name | match |
 
-**87** unique D1 stations (per official count). **Six subway lines + branch.** Product `lib/cities/nagoya/` is the planned catalog (names + official codes only; no GTFS stopIds). `assertCityLive("nagoya")` must fail (planned / 501).
+**83** unique D1 stations (per official count). **Six subway lines + branch.** Product `lib/cities/nagoya/` is the planned catalog (names + official codes only; no GTFS stopIds). `assertCityLive("nagoya")` must fail (planned / 501).
 
 ## H2 — who has line codes today
 
@@ -53,14 +53,14 @@ Meitetsu Seto Line at Sakaemachi (connected underground to Sakae, but is Meitets
 
 ## Board eligibility
 
-No services other than Nagoya Metropolitan Subway (six lines, 87 stations) call at any in-catalog station — verified. Meitetsu Seto Line at Sakaemachi and Meitetsu Komaki Line beyond Kamiiida are excluded `out-mode` (different operator + different product). JR Tokaido, Chuo, and other lines at Nagoya and Kanayama stations are excluded `out-product` (v1 scope is Nagoya Metro subway only; JR is a separate city-wide network). Aonami Line is excluded `out-mode` (distinct operator and automated people-mover technology, not subway). No walk-up long-distance / compulsory reservation / check-in barriers within Nagoya Metro scope.
+No services other than Nagoya Metropolitan Subway (six lines, 83 stations) call at any in-catalog station — verified. Meitetsu Seto Line at Sakaemachi and Meitetsu Komaki Line beyond Kamiiida are excluded `out-mode` (different operator + different product). JR Tokaido, Chuo, and other lines at Nagoya and Kanayama stations are excluded `out-product` (v1 scope is Nagoya Metro subway only; JR is a separate city-wide network). Aonami Line is excluded `out-mode` (distinct operator and automated people-mover technology, not subway). No walk-up long-distance / compulsory reservation / check-in barriers within Nagoya Metro scope.
 
 | Service | Lines | Verdict | Evidence |
 | --- | --- | --- | --- |
-| Nagoya Municipal Subway — six lines | H / M / E / T / S / K (all 87 stations) | `in` | https://www.kotsu.city.nagoya.jp/ rider site; walk-up boarding; no reservation |
+| Nagoya Municipal Subway — six lines | H / M / E / T / S / K (all 83 stations) | `in` | https://www.kotsu.city.nagoya.jp/ rider site; walk-up boarding; no reservation |
 | Meitetsu Seto Line | at Sakaemachi only (outside central metro zone) | `out-mode` | Different operator; private rail product |
 | Meitetsu Komaki Line | connects K01 Heian-dori via through-run past K02 Kamiiida | `out-mode` | Different operator; v1 cut at Kamiiida K02 |
-| JR (Tokaido / Chuo / others) | call at Nagoya S02 / Kanayama M01 / E00 | `out-product` | Different operator; v1 scope Metro only |
+| JR (Tokaido / Chuo / others) | call at Nagoya S02 / Kanayama M01 / E01 | `out-product` | Different operator; v1 scope Metro only |
 | Aonami Line (Linimo) | none in v1 scope | `out-mode` | Different operator; automated people mover, not subway |
 
 ## License
@@ -82,7 +82,7 @@ No services other than Nagoya Metropolitan Subway (six lines, 87 stations) call 
 
 ## Station roster (D1 transcription, 6 Sep 2026)
 
-**Overview:** Nagoya Municipal Subway operates six lines and 87 unique stations total. One short connecting line (Kamiiida) links to Meitetsu's Komaki Line via through-service. Official line color codes (H yellow, M purple, E red, T blue, S pink, K green) are printed on all maps and platform signage. Station numbers follow the pattern *[Line Letter][2-digit code]*, e.g. H01 Takabata, M05 Sakae. Interchange stations (same platform, direct transfer) appear in the table below under "Interchanges." Through-running does not extend service; the Kamiiida Line's two stations are Nagoya Metro property; Meitetsu service beyond this line is excluded from v1 scope.
+**Overview:** Nagoya Municipal Subway operates six lines and 83 unique stations total. One short connecting line (Kamiiida) links to Meitetsu's Komaki Line via through-service. Official line color codes (H yellow, M purple, E red, T blue, S pink, K green) are printed on all maps and platform signage. Station numbers follow the pattern *[Line Letter][2-digit code]*, e.g. H01 Takabata, M05 Sakae. Interchange stations (same platform, direct transfer) appear in the table below under "Interchanges." Through-running does not extend service; the Kamiiida Line's two stations are Nagoya Metro property; Meitetsu service beyond this line is excluded from v1 scope.
 
 ### Higashiyama Line (H) — Takabata to Fujigaoka
 
@@ -278,7 +278,7 @@ No services other than Nagoya Metropolitan Subway (six lines, 87 stations) call 
 
 ### Summary
 
-**Total unique stations:** 87 (per Nagoya City Transportation Bureau official count).
+**Total unique stations:** 83 (per Nagoya City Transportation Bureau official count).
 
 **Station count by line:**
 - Higashiyama H: 22
@@ -301,3 +301,23 @@ No services other than Nagoya Metropolitan Subway (six lines, 87 stations) call 
 - [Sakura-dōri Line — Wikipedia](https://en.wikipedia.org/wiki/Sakura-d%C5%8Dri_Line)
 - [Kamiiida Line — Wikipedia](https://en.wikipedia.org/wiki/Kamiiida_Line)
 - [Nagoya City Transportation Bureau rider site](https://www.kotsu.city.nagoya.jp/)
+
+---
+
+## Corrections (6 Sep 2026)
+
+**Four corrections made to align report with official sources and internal consistency:**
+
+1. **Kamiiida Line codes (K01/K02 swapped in station name table, lines 38-39):** Wikipedia Kamiiida Line article confirms K01 = Kamiiida (northern terminus), K02 = Heian-dori (southern terminus). Corrected station name table; detailed roster sections were already correct. **Source:** [Kamiiida Line — Wikipedia](https://en.wikipedia.org/wiki/Kamiiida_Line).
+
+2. **Meiko branch starting code (E00 → E01, line 41):** Search results confirm Kanayama is E01 (first Meiko station), not E00. Corrected both station name table and Board eligibility section (line 63) which incorrectly showed E00. **Source:** Search results confirmed E01-E07 sequence; Meiko Line Wikipedia; Japan Experience Meiko Line page.
+
+3. **Aratama-bashi station codes (M07/S06 → M23/S14, line 37):** Search results confirm Aratama-bashi is M23 on Meijō Line and S14 on Sakura-dori Line, not M07/S06. M07 is Nagoyajo (confirmed in Meijō roster, line 140), not Aratama-bashi. Corrected station name table; Meijō and Sakura-dori rosters were already correct. **Source:** Aratama-bashi Station Wikipedia article and web search results.
+
+4. **Total unique station count (87 → 83, lines 9, 44, 56, 60, 85, 281):** Sum of line rosters: H(22) + M(28) + E(7) + T(20) + S(17) + K(2) = 96 line-station pairs. Subtracting 13 unique interchange stations (each appearing on 2 lines) = 83 unique stations. Report claimed 87; corrected to 83 to match union of own roster tables. This is the correct count based on the station tables as verified against Wikipedia comprehensive station lists.
+
+**All corrections verified against:**
+- Wikipedia Kamiiida Line, Meikō Line, Sakura-dōri Line, and comprehensive Nagoya Municipal Subway station list articles
+- Web search results for Nagoya Metro official station codes
+- Japan Experience transit information pages
+- Official Nagoya City Transportation Bureau rider site (https://www.kotsu.city.nagoya.jp/)

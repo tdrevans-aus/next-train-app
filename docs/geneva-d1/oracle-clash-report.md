@@ -23,7 +23,7 @@ Do not generate a published-network.json from GTFS. D1 is the official TPG tram 
 
 **Rationale for tram-only cut:** Léman Express, while walk-up boardable (RER-type, no compulsory reservations), introduces cross-border complexity (France/Switzerland operators, ticketing, regulatory boundaries), separate operator chain (CFF/SNCF vs TPG), and shared-station conflicts (Cornavin, Eaux-Vives, airport). Commuter rail is deferred to v1 phase 2 or country-wide integration. Tram network is unified, urban, and single-operator (TPG), consistent with Zürich's tram-only v1 cut (out S-Bahn) and Brussels's metro-only v1 cut (out tram/premetro/rail).
 
-Hub lock: **Cornavin (tram)** — confirmed tram stop for lines 12, 14, and 15 (minimum 3-line intersection at this central, downtown hub). **doNotGroup Léman Express Cornavin / SBB Cornavin — separate rail station and platforms.** Cornavin is the primary arrival hub for both tram riders and rail commuters, but in-scope tram boarding is tram-only. Alternative candidate: **Eaux-Vives** (tram 14 and others; also Léman Express / CEVA line station; same doNotGroup rule applies). D1 transcription should choose based on confirmed line roster; Cornavin is likely the tram hub choice due to lines 12, 14, 15 convergence and downtown location.
+Hub lock: **Cornavin (tram)** — confirmed tram stop for lines 14, 15, and 18 (minimum 3-line intersection at this central, downtown hub). **doNotGroup Léman Express Cornavin / SBB Cornavin — separate rail station and platforms.** Cornavin is the primary arrival hub for both tram riders and rail commuters, but in-scope tram boarding is tram-only. Alternative candidate: **Eaux-Vives** (tram 14 and others; also Léman Express / CEVA line station; same doNotGroup rule applies). D1 transcription should choose based on confirmed line roster; Cornavin is likely the tram hub choice due to lines 14, 15, 18 convergence and downtown location.
 
 ## Skip risk
 
@@ -82,7 +82,7 @@ Hub lock: **Cornavin (tram)** — confirmed tram stop for lines 12, 14, and 15 (
 
 1. **city=geneva**. displayName Geneva. Not `ge`, `gva`, `tpg`, or `lemanis`. Do not merge into another Swiss city. Do not merge with Léman Express or bus operators.
 
-2. **Hub-lock choice:** **Cornavin (tram)** (lines 12, 14, 15 confirmed; downtown central hub) or **Eaux-Vives (tram)** (line 14 at minimum; also central). Transcriber picks based on D1 data and confirmed line roster. Note the chosen hub in published-network.json.
+2. **Hub-lock choice:** **Cornavin (tram)** (lines 14, 15, 18 confirmed; downtown central hub) or **Eaux-Vives (tram)** (line 14 at minimum; also central). Transcriber picks based on D1 data and confirmed line roster. Note the chosen hub in published-network.json.
 
 3. **doNotGroup Léman Express Cornavin / SBB Cornavin / Léman Express Eaux-Vives vs TPG tram (Cornavin, Eaux-Vives, Airport).** Shared addresses, separate platforms and operators; never merge. Léman Express is out of v1 scope entirely.
 
@@ -163,7 +163,7 @@ All stop names in French per official TPG publications and Wikipedia sources. Of
 15. Genève, Stand (interchange: lines 14, 15)
 16. Genève, Bel-Air (interchange: lines 12, 14, 15, 17, 18)
 17. Genève, Coutance (interchange: lines 14, 18)
-18. Genève, gare Cornavin (major interchange: lines 14, 15, 17, 18)
+18. Genève, gare Cornavin (major interchange: lines 14, 15, 18)
 19. Genève, Lyon (interchange: lines 14, 18)
 20. Genève, Poterie (interchange: lines 14, 18)
 21. Genève, Servette (interchange: lines 14, 18)
@@ -186,7 +186,7 @@ All stop names in French per official TPG publications and Wikipedia sources. Of
 3. Genève, Môle (interchange: lines 15, and Léman Express rail—doNotGroup)
 4. Genève, Butini
 5. Genève, Maison de la Paix
-6. Genève, gare Cornavin (major interchange: lines 14, 15, 17, 18)
+6. Genève, gare Cornavin (major interchange: lines 14, 15, 18)
 7. Genève, Mercier
 8. Genève, Goulart
 9. Genève, Stand (interchange: lines 14, 15)
@@ -256,7 +256,7 @@ All stop names in French per official TPG publications and Wikipedia sources. Of
 14. Genève, Place de Neuve (interchange: lines 12, 15, 17)
 15. Genève, Bel-Air (interchange: lines 12, 14, 15, 17, 18)
 16. Genève, Coutance (interchange: lines 14, 18)
-17. Genève, gare Cornavin (major interchange: lines 14, 15, 17, 18)
+17. Genève, gare Cornavin (major interchange: lines 14, 15, 18)
 18. Genève, Lyon (interchange: lines 14, 18)
 19. Genève, Poterie (interchange: lines 14, 18)
 20. Genève, Servette (interchange: lines 14, 18)
@@ -277,8 +277,30 @@ All stop names in French per official TPG publications and Wikipedia sources. Of
 ### Summary
 
 - **Total stops listed:** 135 (as per Wikipedia and TPG official network documentation: 25 + 30 + 23 + 26 + 31 = 135)
-- **Unique stops:** 94 (many stops appear on multiple lines; see interchange notations above)
+- **Unique stops:** 86 (many stops appear on multiple lines; see interchange notations above)
 - **Cross-border stops (France):** Line 17 only—4 stops in French communes (Gaillard, Ambilly, Annemasse)
 - **Boundary stops (Switzerland-France at Moillesulaz):** Line 12 (Thônex, Moillesulaz); Line 17 (Thônex, Moillesulaz, then enters France at Gaillard)
-- **Major interchange hubs:** Cornavin (4 lines: 14, 15, 17, 18; minor: 12 adjacent); Plainpalais (5 lines: 12, 14, 15, 17, 18); Bel-Air (5 lines: 12, 14, 15, 17, 18); Eaux-Vives (2 lines: 12, 17, plus Léman Express rail—doNotGroup); Lancy-Pont-Rouge (2 lines: 15, 17, plus Léman Express rail—doNotGroup)
+- **Major interchange hubs:** Cornavin (3 lines: 14, 15, 18); Plainpalais (5 lines: 12, 14, 15, 17, 18); Bel-Air (5 lines: 12, 14, 15, 17, 18); Eaux-Vives (2 lines: 12, 17, plus Léman Express rail—doNotGroup); Lancy-Pont-Rouge (2 lines: 15, 17, plus Léman Express rail—doNotGroup)
 - **All sources:** Official TPG website (tpg.ch) for current schedules and line pages (verified 6 Sep 2026); French Wikipedia tram articles as authoritative cross-check; Transit app (transitapp.com) for detailed stop sequencing; Annemasse Agglo documentation for French cross-border section of line 17. No stop list sourced exclusively from unofficial sources; all unofficial sources (Transit, Moovit) cross-checked against TPG or Wikipedia.
+
+## Corrections (6 Sep 2026)
+
+**Amended after Luke's internal-consistency audit:**
+
+1. **Hub-lock line list (line 26):** Changed "lines 12, 14, and 15" to "lines 14, 15, and 18". Line 12 does not serve Genève gare Cornavin (verified via tpg.ch ligne 12 schedule). Line 17 does not serve Cornavin (verified via tpg.ch ligne 17 schedule).
+
+2. **Hub-lock convergence prose (line 26):** Changed "lines 12, 14, 15 convergence" to "lines 14, 15, 18 convergence" for consistency with corrected line list.
+
+3. **Line 14, stop 18 annotation:** Changed interchange list from "lines 14, 15, 17, 18" to "lines 14, 15, 18". Line 17 does not call at Cornavin.
+
+4. **Line 15, stop 6 annotation:** Changed interchange list from "lines 14, 15, 17, 18" to "lines 14, 15, 18". Line 17 does not call at Cornavin.
+
+5. **Line 18, stop 17 annotation:** Changed interchange list from "lines 14, 15, 17, 18" to "lines 14, 15, 18". Line 17 does not call at Cornavin.
+
+6. **C2/C3 hub-lock note (line 85):** Changed "lines 12, 14, 15 confirmed" to "lines 14, 15, 18 confirmed".
+
+7. **Summary: Unique stop count (line 280):** Changed from "94" to "86". Deduplicated list of all stops across 5 lines yields 86 unique stops, not 94.
+
+8. **Summary: Cornavin hub description (line 283):** Changed "Cornavin (4 lines: 14, 15, 17, 18; minor: 12 adjacent)" to "Cornavin (3 lines: 14, 15, 18)". Only 3 lines serve this station. Line 12 does not; Line 17 does not.
+
+**Source verification:** All corrections verified against official TPG.ch line schedule pages (ligne 12, 14, 15, 17, 18) accessed 6 Sep 2026.

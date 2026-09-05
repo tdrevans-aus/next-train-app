@@ -17,9 +17,9 @@ Do not generate a published-network.json from GTFS. D1 is the official route map
 
 ## v1 mode cut
 
-**Fukuoka City Subway all three lines:** official subway lines on the 2026 route map and official station list — **Kūkō** (Airport Line; K01 Meinohama–K13 Fukuoka Airport; 13 stations, 13.1 km; orange), **Hakozaki** (H01 Kaizuka–H07 Nakasu-Kawabata; 7 stations, 4.7 km; blue), **Nanakuma** (N01 Hashimoto–N18 Hakata; 18 stations, 13.6 km; green). JP print: 空港線 / 箱崎線 / 七隈線. Nanakuma extension to Hakata (27 March 2023) is on the official current map — in. **Through-run out of v1-scope-strictly, in at board-eligibility:** official Kūkō (K01–K13) has mutual line operation / through-service with JR Chikuhi Line (commuter rail, walk-up boardable, no compulsory reservation; local + rapid trains). Chikuhi operates to Meinohama (K01 mutual point) and continues to Karatsu / Nishi-Karatsu beyond. v1 is Fukuoka City Subway-operated Kūkō stations K01–K13 only, not Chikuhi stations beyond Meinohama. JR through-train riders boarding at Meinohama (K01) on Fukuoka City Subway platform are walk-up boardable at that in-catalog station — verdict `in` for Chikuhi Line (board eligibility rule §6). **Out:** Nishitetsu Fukuoka (Tenjin) / Nishitetsu Tenjin-Omuta Line (a different private rail network sharing Tenjin area but not a subway station); JR Hakata mainline / Shinkansen / Tokaido / Sanyo / Kyushu operations (separate JR Hakata station, not subway); buses; trams; ferries; other private operators.
+**Fukuoka City Subway all three lines:** official subway lines on the 2026 route map and official station list — **Kūkō** (Airport Line; K01 Meinohama–K13 Fukuoka Airport; 13 stations, 13.1 km; orange), **Hakozaki** (H01 Nakasu-Kawabata–H07 Kaizuka; 7 stations, 4.7 km; blue), **Nanakuma** (N01 Hashimoto–N18 Hakata; 18 stations, 13.6 km; green). JP print: 空港線 / 箱崎線 / 七隈線. Nanakuma extension to Hakata (27 March 2023) is on the official current map — in. **Through-run out of v1-scope-strictly, in at board-eligibility:** official Kūkō (K01–K13) has mutual line operation / through-service with JR Chikuhi Line (commuter rail, walk-up boardable, no compulsory reservation; local + rapid trains). Chikuhi operates to Meinohama (K01 mutual point) and continues to Karatsu / Nishi-Karatsu beyond. v1 is Fukuoka City Subway-operated Kūkō stations K01–K13 only, not Chikuhi stations beyond Meinohama. JR through-train riders boarding at Meinohama (K01) on Fukuoka City Subway platform are walk-up boardable at that in-catalog station — verdict `in` for Chikuhi Line (board eligibility rule §6). **Out:** Nishitetsu Fukuoka (Tenjin) / Nishitetsu Tenjin-Omuta Line (a different private rail network sharing Tenjin area but not a subway station); JR Hakata mainline / Shinkansen / Tokaido / Sanyo / Kyushu operations (separate JR Hakata station, not subway); buses; trams; ferries; other private operators.
 
-Hub lock: **Hakata** (K11 × N18). Official rider site (https://subway.city.fukuoka.lg.jp/ and EN version) lists Hakata as a transfer point between Kūkō line (K11, between Gion–Higashi-Hie) and Nanakuma line (N18, southern terminus as of 27 March 2023 extension). Hakata is the main city transport hub, serving JR Hakata station (mainline + Shinkansen, not subway). doNotGroup Hakata (K11 × N18 metro) vs JR Hakata (separate facility). No station on all three lines — Hakata is the central metro interchange (Kūkō × Nanakuma). Nakasu-Kawabata (K03 × H07) is the Kūkō–Hakozaki interchange (not all three). doNotGroup Hakata vs Nakasu-Kawabata vs Tenjin (K05, only Kūkō, no Nanakuma) vs Tenjin-Minami (N16, only Nanakuma, no Kūkō, not a hub).
+Hub lock: **Hakata** (K11 × N18). Official rider site (https://subway.city.fukuoka.lg.jp/ and EN version) lists Hakata as a transfer point between Kūkō line (K11, between Gion–Higashi-Hie) and Nanakuma line (N18, southern terminus as of 27 March 2023 extension). Hakata is the main city transport hub, serving JR Hakata station (mainline + Shinkansen, not subway). doNotGroup Hakata (K11 × N18 metro) vs JR Hakata (separate facility). No station on all three lines — Hakata is the central metro interchange (Kūkō × Nanakuma). Nakasu-Kawabata (K09 × H01) is the Kūkō–Hakozaki interchange (not all three). doNotGroup Hakata vs Nakasu-Kawabata vs Tenjin (K08, only Kūkō, no Nanakuma) vs Tenjin-Minami (N16, only Nanakuma, no Kūkō, not a hub).
 
 ## Station name table
 
@@ -30,18 +30,18 @@ Match rule: published D1 string (official route map + EN rider site) vs official
 | Hakata | EN/JP **Hakata** K11 (Kūkō) and N18 (Nanakuma); transfer point between two metro lines; JR Hakata is separate | **match (lock)**. doNotGroup JR Hakata mainline / Shinkansen facility. Not Tenjin. |
 | Meinohama | EN/JP **Meinohama** K01 (Kūkō); JR Chikuhi through-service mutual point | **match**. Through-run terminus (K01). Chikuhi west of Meinohama out of v1. |
 | Fukuoka Airport | EN/JP **Fukuoka Airport** K13 (Kūkō); airport station; southern terminus | **match**. K-line south end. |
-| Tenjin | EN/JP **Tenjin** K05 (Kūkō only); not on Nanakuma or Hakozaki | **match Metro**. K-line only. doNotGroup Tenjin-Minami (N-line), Nishitetsu Fukuoka (Tenjin) [different network]. |
+| Tenjin | EN/JP **Tenjin** K08 (Kūkō only); not on Nanakuma or Hakozaki | **match Metro**. K-line only. doNotGroup Tenjin-Minami (N-line), Nishitetsu Fukuoka (Tenjin) [different network]. |
 | Tenjin-Minami | EN/JP **Tenjin-Minami** N16 (Nanakuma); underground linked to Tenjin via Tenjin Chikagai | **match Metro**. N-line only. Not hub. doNotGroup Tenjin. |
-| Nakasu-Kawabata | EN/JP **Nakasu-Kawabata** K03 (Kūkō) and H07 (Hakozaki); transfer point | **match**. Kūkō–Hakozaki interchange. Not all three. |
-| Kaizuka | EN/JP **Kaizuka** H01 (Hakozaki); north terminus | **match**. H-line north end. |
+| Nakasu-Kawabata | EN/JP **Nakasu-Kawabata** K09 (Kūkō) and H01 (Hakozaki); transfer point | **match**. Kūkō–Hakozaki interchange. Not all three. |
+| Kaizuka | EN/JP **Kaizuka** H07 (Hakozaki); north terminus | **match**. H-line north end. |
 | Hashimoto | EN/JP **Hashimoto** N01 (Nanakuma); north terminus | **match**. N-line north end. |
 | Kushida Shrine | EN/JP **Kushida Shrine** N17 (Nanakuma); opened 27 March 2023 in Nanakuma extension | **match**. N-line. |
 | Higashi-Hie | EN/JP **Higashi-Hie** K12 (Kūkō); between Hakata–Gion | **match**. K-line. |
 | Gion | EN/JP **Gion** K10 (Kūkō) | **match**. K-line. |
-| Akasaka | EN/JP **Akasaka** K04 (Kūkō); between Tenjin–Nakasu-Kawabata | **match**. K-line. |
+| Akasaka | EN/JP **Akasaka** K07 (Kūkō); between Tenjin–Nakasu-Kawabata | **match**. K-line. |
 | All other D1 names on the route map / EN rider site station list | same official title | match |
 
-**36** unique D1 names. **62** line ticks. Product `lib/cities/fukuoka/` is the planned catalog (names + official codes only; no GTFS stopIds). `assertCityLive("fukuoka")` must fail (planned / 501).
+**36** unique D1 names. **38** line ticks. Product `lib/cities/fukuoka/` is the planned catalog (names + official codes only; no GTFS stopIds). `assertCityLive("fukuoka")` must fail (planned / 501).
 
 ## H2 — who has line codes today
 
@@ -49,7 +49,7 @@ No official public GTFS, so there is **no feed route_id** to clash against. Offi
 
 ## Skip risk
 
-JR Chikuhi Line through-run leaking past Meinohama (K01) into western Chikuhi territory beyond v1 scope (boarding at in-catalog K-line stations is still `in`; Chikuhi-only stations west of Meinohama are out of v1, not a metro station). Hakata station name shared with JR mainline / Shinkansen facility (separate rail operator, not confused with metro). Nishitetsu Fukuoka (Tenjin) / Tenjin-Omuta Line name family folded into Tenjin (K05 metro only). Tenjin vs Tenjin-Minami confusion (K-line vs N-line, different metro stations). Inventing city=`fuk` / `fukuoka-metro` / `fukuoka-city` or merging into Tokyo / Osaka / Keihanshin / Kyushu regional. Inventing an ODPT GTFS zip because Tokyo Metro / Osaka has one. **No official public GTFS / GTFS-RT** — live path is unverified; that is tracker friction for a later adapter, not a missing map. Official subway map + station list are verified. Not a skip.
+JR Chikuhi Line through-run leaking past Meinohama (K01) into western Chikuhi territory beyond v1 scope (boarding at in-catalog K-line stations is still `in`; Chikuhi-only stations west of Meinohama are out of v1, not a metro station). Hakata station name shared with JR mainline / Shinkansen facility (separate rail operator, not confused with metro). Nishitetsu Fukuoka (Tenjin) / Tenjin-Omuta Line name family folded into Tenjin (K08 metro only). Tenjin vs Tenjin-Minami confusion (K-line vs N-line, different metro stations). Inventing city=`fuk` / `fukuoka-metro` / `fukuoka-city` or merging into Tokyo / Osaka / Keihanshin / Kyushu regional. Inventing an ODPT GTFS zip because Tokyo Metro / Osaka has one. **No official public GTFS / GTFS-RT** — live path is unverified; that is tracker friction for a later adapter, not a missing map. Official subway map + station list are verified. Not a skip.
 
 ## License
 
@@ -70,7 +70,7 @@ JR Chikuhi Line through-run leaking past Meinohama (K01) into western Chikuhi te
 | Fukuoka City Subway — Nanakuma line (N01–N18) | All N-line stations in-catalog | `in` | Walk-up boardable, no reservation required. Official subway service. Includes March 2023 Hakata extension (N17–N18). |
 | JR Chikuhi Line (through-service on Kūkō) | Meinohama (K01 only; JR mutual point) | `in` | Walk-up boardable commuter rail, no compulsory reservation. Local + rapid services. Through-service operates on Fukuoka City Subway Kūkō line K01–K13 platform at Meinohama. Rider boarding at K01 platform has walk-up access to JR through-train. JR Chikuhi stations west of Meinohama (Chikuzen-Maebaru, Karatsu, Nishi-Karatsu, etc.) are not in-catalog metro stations — out of v1 scope / `out-mode` (not metro). |
 | Other JR services (Hakata mainline, Shinkansen, Kyushu Line, etc.) | Hakata (N18 metro separate from JR Hakata) | `out-mode` | JR mainline / Shinkansen / Tokaido / Sanyo / Kyushu services operate at a different JR Hakata station facility, not the Fukuoka City Subway metro station. Not a metro service; separate operator and ticketing. |
-| Nishitetsu Rail — Tenjin-Omuta Line | Tenjin area (Nishitetsu Fukuoka Tenjin, not K05 metro) | `out-mode` | Nishitetsu Tenjin is a different rail operator and station, not the Fukuoka City Subway Tenjin (K05). Shared city name does not make it the same in-catalog station. |
+| Nishitetsu Rail — Tenjin-Omuta Line | Tenjin area (Nishitetsu Fukuoka Tenjin, not K08 metro) | `out-mode` | Nishitetsu Tenjin is a different rail operator and station, not the Fukuoka City Subway Tenjin (K08). Shared city name does not make it the same in-catalog station. |
 
 All rail services calling at in-catalog Fukuoka City Subway stations have verdicts recorded. No services other than the three official metro lines and JR Chikuhi through-run on the Kūkō platform call at in-catalog stations — verified.
 
@@ -164,3 +164,7 @@ JR Chikuhi through-run boundary: Meinohama (K01). JR Chikuhi operates west of Me
 - Official Fukuoka City Subway Japanese site: [https://subway.city.fukuoka.lg.jp/](https://subway.city.fukuoka.lg.jp/)
 - Official route map (PDF): [https://subway.city.fukuoka.lg.jp/eng/route/deta/map.pdf](https://subway.city.fukuoka.lg.jp/eng/route/deta/map.pdf)
 - Wikipedia list (cross-check): [List of Fukuoka City Subway stations](https://en.wikipedia.org/wiki/List_of_Fukuoka_City_Subway_stations)
+
+## Corrections (6 Sep 2026)
+
+Station name table corrections: Tenjin code fixed K05→K08, Akasaka fixed K04→K07, Nakasu-Kawabata fixed K03/H07→K09/H01, Kaizuka terminus code fixed H01→H07; line tick count in header corrected 62→38 (K+H+N = 13+7+18). All codes verified against Wikipedia list of Fukuoka City Subway stations with official codes. Station roster table already correct and internally consistent.
