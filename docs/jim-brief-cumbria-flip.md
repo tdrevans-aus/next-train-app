@@ -1,0 +1,24 @@
+# Jim brief — Cumbria flip follow-through (5 Sep 2026)
+
+Region: `cumbria` (lib/providers/cumbria.js, docs/cumbria-d1/). Status stays `planned` in this PR —
+Mark flips it. Five CRS codes were corrected live in PR #252 (merged: OXN, PNR, WDM, KEN, SET) —
+start from current master and use the corrected codes, not the D1 pack's originals.
+
+Do the flip follow-through exactly as your definition's "Do now, ahead of the flip" list, copying the
+shape of the most recent UK flip (`lib/cities/south-wales/`, PR #258, or `lib/cities/greater-anglia/`):
+
+1. `lib/cities/cumbria/dogfood-next-train.js` (+ `stations.json` / `direction-hubs.json` as the
+   pattern needs).
+2. Dispatch switch-cases in `lib/cities/live-city-api.js` (`directionsFor` / `getMultiCityNextTrain`).
+3. `qa/cumbria-dogfood-gate.mjs` replacing `qa/cumbria-planned-gate.mjs`, and the `run-all.mjs`
+   registration swapped accordingly (gate live-probes Darwin with the local `DARWIN_LDB_TOKEN`).
+4. Do NOT touch `MULTI_CITY_IDS`, `brisbane-dogfood.js`, or `journey-model.js` lists — leave a note
+   for Mark in `docs/cumbria-d1/jim-handoff.md` naming the three one-line additions.
+
+Lane lock: run `node qa/lane-lock.mjs check "United Kingdom"` first (it must report free), then
+`acquire "United Kingdom" cumbria jim <branch>` before touching shared files.
+
+Branch from master: `cumbria-flip-followthrough`. Run `node qa/cumbria-dogfood-gate.mjs` and
+`node qa/run-all.mjs --smoke`, then open a normal (non-flip) PR with results in the description. Do
+not merge it. If port 3000 is held by an unrelated process, say so in the PR and rely on CI's web-qa
+rather than killing it.
