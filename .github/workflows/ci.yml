@@ -1,8 +1,10 @@
 # FB-33 / QA-P2-03: smoke on every PR; full web + Android unit on main pushes.
 #
-# Docs-only diffs (docs/**, *.md, .claude/**) short-circuit every job to a no-op success — the
-# job names still report, so the master ruleset's required `web-qa` check is satisfied without
-# spending three runners on prose. See CLAUDE.md "QA suite tiers".
+# Each job first classifies the diff (.github/scripts/ci-scope.sh) and no-ops unless the change can
+# reach what it tests: docs/prose skip everything; other cities' adapters, catalogs and gates skip
+# pin-qa; non-native changes skip android-unit. The job names still report, so the master ruleset's
+# required `web-qa` check is satisfied. Known-flaky browser scripts also get one in-runner retry
+# (qa/run-all.mjs RETRY_ONCE_SCRIPTS). See CLAUDE.md "CI shape".
 #
 # workflow_dispatch exists so flip-automerge.yml can trigger the release run on master after it
 # merges a flip PR: merges made with GITHUB_TOKEN don't fire `push` workflows on their own.
@@ -23,24 +25,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: diff
-        name: Docs-only diff?
+        name: CI scope from diff
         env:
           BEFORE_SHA: ${{ github.event.before }}
-        run: bash .github/scripts/docs-only.sh
-      - if: steps.diff.outputs.docs_only != 'true'
+        run: bash .github/scripts/ci-scope.sh
+      - if: steps.diff.outputs.run_web == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-      - if: steps.diff.outputs.docs_only != 'true'
+      - if: steps.diff.outputs.run_web == 'true'
         run: npm ci
-      - if: steps.diff.outputs.docs_only != 'true'
+      - if: steps.diff.outputs.run_web == 'true'
         run: npx playwright install chromium --with-deps
       - name: Web smoke (pull requests)
-        if: steps.diff.outputs.docs_only != 'true' && github.event_name == 'pull_request'
+        if: steps.diff.outputs.run_web == 'true' && github.event_name == 'pull_request'
         run: npm run test:smoke
       - name: Release web suite (main)
-        if: steps.diff.outputs.docs_only != 'true' && github.event_name != 'pull_request'
+        if: steps.diff.outputs.run_web == 'true' && github.event_name != 'pull_request'
         run: npm run test:web:release
 
   # Pin scenarios are deterministic since the derived-active-hours fixture fixes
@@ -54,21 +56,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: diff
-        name: Docs-only diff?
+        name: CI scope from diff
         env:
           BEFORE_SHA: ${{ github.event.before }}
-        run: bash .github/scripts/docs-only.sh
-      - if: steps.diff.outputs.docs_only != 'true'
+        run: bash .github/scripts/ci-scope.sh
+      - if: steps.diff.outputs.run_pin == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-      - if: steps.diff.outputs.docs_only != 'true'
+      - if: steps.diff.outputs.run_pin == 'true'
         run: npm ci
-      - if: steps.diff.outputs.docs_only != 'true'
+      - if: steps.diff.outputs.run_pin == 'true'
         run: npx playwright install chromium --with-deps
       - name: Journey pin gates (fresh dev-server)
-        if: steps.diff.outputs.docs_only != 'true'
+        if: steps.diff.outputs.run_pin == 'true'
         run: npm run test:pin
 
   android-unit:
@@ -76,27 +78,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: diff
-        name: Docs-only diff?
+        name: CI scope from diff
         env:
           BEFORE_SHA: ${{ github.event.before }}
-        run: bash .github/scripts/docs-only.sh
-      - if: steps.diff.outputs.docs_only != 'true'
+        run: bash .github/scripts/ci-scope.sh
+      - if: steps.diff.outputs.run_android == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-      - if: steps.diff.outputs.docs_only != 'true'
+      - if: steps.diff.outputs.run_android == 'true'
         run: npm ci
-      - if: steps.diff.outputs.docs_only != 'true'
+      - if: steps.diff.outputs.run_android == 'true'
         run: npx cap sync android
-      - if: steps.diff.outputs.docs_only != 'true'
+      - if: steps.diff.outputs.run_android == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
       - name: Widget unit tests (pull requests)
-        if: steps.diff.outputs.docs_only != 'true' && github.event_name == 'pull_request'
+        if: steps.diff.outputs.run_android == 'true' && github.event_name == 'pull_request'
         run: node qa/run-android-unit.mjs --widget
       - name: Full Android unit tests (main)
-        if: steps.diff.outputs.docs_only != 'true' && github.event_name != 'pull_request'
+        if: steps.diff.outputs.run_android == 'true' && github.event_name != 'pull_request'
         run: node qa/run-android-unit.mjs
