@@ -120,6 +120,7 @@ const SMOKE_SCRIPTS = [
   "greater-manchester-planned-gate.mjs",
   "cumbria-planned-gate.mjs",
   "liverpool-city-region-dogfood-gate.mjs",
+  "uk-darwin-cache.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

@@ -12,7 +12,7 @@
     "FIRST MULTI-GROUP REGION: no single hub-lock. Tim's Option A decision (docs/london-se-national-rail-d1/jim-handoff.md) is seven independent per-terminus station groups, no forced merge into one board. Each `stops` entry below is one BOARD, not necessarily one physical station — London Bridge (LBG) and Liverpool Street (LST) each share one physical CRS across multiple entries, split by operator (internal doNotGroup, see hazard-pack.md H4). This is genuine reuse of the existing allow-list catalog shape (entries keyed by name/alias, not forced to be 1:1 with CRS) — no change needed to lib/providers/uk/catalog.js itself.",
     "groupId groups the entries that share one physical station: london-bridge (3 entries, 1 CRS) and liverpool-street (2 entries, 1 CRS). All other entries are groupId === id (their own single-board group).",
     "operators lists the in-scope operator(s) for that specific board. includeOperators (same list) is passed to the shared uk-darwin.js fetchStationBoard() for the two doNotGroup groups only, to split one CRS's Darwin board into per-operator boards — the split is enforced in code (see lib/providers/london-se-national-rail.js), not just documented.",
-    "excludeOperators records a board-eligibility exclusion enforced via the shared uk-darwin.js excludeOperators option: LNER at King's Cross (undecided verdict, excluded — not defaulted to in), Eurostar at St Pancras International (out-checkin), Night Riviera Sleeper at Paddington (out-reservation).",
+    "excludeOperators records a board-eligibility exclusion enforced via the shared uk-darwin.js excludeOperators option: Eurostar at St Pancras International (out-checkin), Night Riviera Sleeper at Paddington (out-reservation). LNER at King's Cross was previously excluded pending a verdict; resolved to IN per the UK ledger, 5 Sep 2026 (see docs/united-kingdom-ledger.md §3).",
     "CRS codes are UNVERIFIED against a live GTFS dump or Darwin response — carried from the oracle report's own 'examples' list, crsVerified: false throughout. Confirm before treating as authoritative once Darwin is unblocked.",
     "Euston (regional operator never named in the oracle report) and seven secondary termini (Blackfriars, Cannon Street, Charing Cross, Farringdon, Fenchurch Street, Marylebone, Moorgate, all report-marked TBD) are NOT built — see docs/london-se-national-rail-d1/published-network.json notBuilt.",
     "Regional boundaries flagged, not resolved here: GWR continues west from Paddington into West of England (Bristol Temple Meads); SWR continues southwest from Waterloo (no adjacent region built yet); CrossCountry through-runs nationally. See jim-handoff.md."
@@ -121,8 +121,7 @@
       "groupId": "kings-cross",
       "doNotGroup": false,
       "operators": ["Great Northern"],
-      "excludeOperators": ["LNER"],
-      "class": "station group — Great Northern hub (north via East Coast Main Line, regional). LNER also calls here but is EXCLUDED — board-eligibility verdict undecided (this pack's own research could not obtain verifiable operator-policy text), excluded per the walk-up rule, not defaulted to in. See docs/london-se-national-rail-d1/jim-handoff.md."
+      "class": "station group — Great Northern hub (north via East Coast Main Line, regional). LNER also calls here and is IN per the UK ledger, 5 Sep 2026 (Tim resolved the board-eligibility verdict; previously excluded pending a verdict). See docs/london-se-national-rail-d1/jim-handoff.md for the prior undecided history (immutable) and docs/united-kingdom-ledger.md §3 for the resolution."
     },
     {
       "mode": "train",
