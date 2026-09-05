@@ -128,3 +128,34 @@ four hub locks into a single primary + secondaries hierarchy, no resolution of t
 High/Central Belt boundary dispute or the RDM redistribution ambiguity (both flagged for Tim/D2),
 no inclusion of any Central Belt station, no reading of any other city's in-progress pack, no
 wiring of `DARWIN_LDB_TOKEN`.
+
+## Jim flip follow-through (5 Sep 2026) — note for Mark
+
+Per `docs/jim-brief-rest-of-scotland-flip.md`, this pass wired the dogfood module
+(`lib/cities/rest-of-scotland/dogfood-next-train.js`, reusing the existing
+`lib/cities/rest-of-scotland/stations.json`), the `directionsFor()` / `getMultiCityNextTrain()`
+dispatch switch-cases in `lib/cities/live-city-api.js`, and
+`qa/rest-of-scotland-dogfood-gate.mjs` (replacing the retired
+`qa/rest-of-scotland-planned-gate.mjs`). Registry status stays `planned` — this pass does not flip
+it.
+
+**Deliberately NOT done here — these three one-line additions belong in your flip commit**
+(same as Malmö/Uppsala/Göteborg/Greater Anglia/South Wales/Rest of Wales' flips did it;
+`qa/live-city-lists-sync.mjs` enforces that they exactly equal the registry's `status === "live"`
+set):
+
+1. Add `"rest-of-scotland"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add Rest of Scotland to `brisbane-dogfood.js`'s mount/available map.
+3. Add Rest of Scotland to `journey-model.js`'s persisted-city/country lists.
+
+No direction-hubs.json was built — all four hub locks (Perth, Inverness, Aberdeen, Dundee) are
+themselves the anchors a rider selects directly, unlike Greater Anglia's Thetford/Ely printing
+"Norwich" as an intermediate destination; there is no intermediate through-station candidate in
+this catalog. `loadDirectionHubs("rest-of-scotland")` degrades to an empty hub list, a no-op, which
+`qa/rest-of-scotland-dogfood-gate.mjs` asserts explicitly. The Caledonian Sleeper out-reservation
+exclusion (Aberdeen, Inverness, Fort William, Mallaig) is enforced inside
+`lib/providers/rest-of-scotland.js`'s `fetchStationBoard()`, reused unchanged by the dogfood
+module, and this gate additionally asserts no live-derived direction chip ever carries a
+"Caledonian Sleeper" operator tag. The Perth/Perth (Scotland vs. Australia) display-name collision
+remains unresolved — still a UI/product decision for Tim, not something wired around here.
