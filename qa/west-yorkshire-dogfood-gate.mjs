@@ -1,17 +1,8 @@
 /**
  * West Yorkshire adapter/dispatch wiring gate. Replaces
- * west-yorkshire-planned-gate.mjs (retired) the way West of England's did —
- * except West Yorkshire STAYS `status: "planned"` here (this is the
- * pre-flip dogfood wiring pass, docs/jim-brief-west-yorkshire-adapter.md).
- * Per CLAUDE.md's flip-follow-through split (added 30 Aug 2026, corrected
- * same day): the dogfood module, the live-city-api.js dispatch
- * switch-cases, and this gate are safe to land ahead of the flip because
- * production routes gate on assertCityLive() first, not on MULTI_CITY_IDS
- * membership. West Yorkshire is deliberately NOT added to MULTI_CITY_IDS,
- * brisbane-dogfood.js's mount/available map, or journey-model.js's
- * persisted-city/country lists yet — those three list-membership edits are
- * Mark's flip commit, not this one (qa/live-city-lists-sync.mjs enforces
- * that they equal the registry's live set).
+ * west-yorkshire-planned-gate.mjs (retired) the way West of England's did.
+ * The flip is now committed: West Yorkshire is `status: "live"` and in
+ * MULTI_CITY_IDS. This gate asserts the post-flip state.
  *
  * DARWIN_LDB_TOKEN is live (since 2 Sep 2026, docs/west-yorkshire-d1/
  * jim-handoff.md). This gate stays token-tolerant throughout: with a token
@@ -67,13 +58,12 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STILL planned. Do not flip in this gate or this PR.
+// Registry identity — flip is committed.
 const live = assertCityLive("west-yorkshire");
-assert(live?.ok === false, "assertCityLive(west-yorkshire) must still fail — status stays planned");
-assert(live?.status === 501, "west-yorkshire must still be 501 planned");
+assert(live?.ok === true, "assertCityLive(west-yorkshire) must pass post-flip");
 
 const entry = getCity("west-yorkshire");
-assert(entry?.status === "planned", "west-yorkshire registry status must stay planned (Mark/Tim's flip call, not this gate's)");
+assert(entry?.status === "live", "west-yorkshire registry status must be live post-flip");
 assert(entry?.adapterReady === true, "west-yorkshire adapterReady must be true");
 assert(entry?.displayName === "West Yorkshire", "west-yorkshire display name must be West Yorkshire");
 assert(entry?.timeZone === "Europe/London", "west-yorkshire timezone must be Europe/London");
@@ -85,9 +75,8 @@ for (const forbiddenId of ["westyorkshire", "leeds", "bradford", "west-yorks"]) 
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip, but MULTI_CITY_IDS
-// membership is not (that's Mark's flip commit) — assert both halves.
-assert(isMultiCity("west-yorkshire") === false, "west-yorkshire must NOT be in MULTI_CITY_IDS yet (list membership is the flip commit's job)");
+// Flip is committed — MULTI_CITY_IDS membership is in place too.
+assert(isMultiCity("west-yorkshire") === true, "west-yorkshire must be in MULTI_CITY_IDS post-flip");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/west-yorkshire-d1");
@@ -370,5 +359,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "west-yorkshire-dogfood-gate: ok (still planned/adapterReady, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired ahead of flip, D1 pack, Board eligibility all-in, 10 rail-only stations, doNotGroup BDQ/BDI, catalog CRS sweep, directions derived live from Darwin with no static line map, no direction-hubs.json shipped (chip-table evidence found no qualifying hub case), routing table (exact/undirected; hub branch inert with zero configured hubs) proven token-free, Perth stays green)"
+  "west-yorkshire-dogfood-gate: ok (post-flip live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, Board eligibility all-in, 10 rail-only stations, doNotGroup BDQ/BDI, catalog CRS sweep, directions derived live from Darwin with no static line map, no direction-hubs.json shipped (chip-table evidence found no qualifying hub case), routing table (exact/undirected; hub branch inert with zero configured hubs) proven token-free, Perth stays green)"
 );

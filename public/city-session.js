@@ -4,7 +4,11 @@
  */
 (function () {
   const LIVE_CITY = "perth";
+<<<<<<< HEAD
   const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "thames-valley"];
+=======
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "west-yorkshire"];
+>>>>>>> origin/master
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -47,14 +51,14 @@
         { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: true },
         { id: "rest-of-scotland", name: "Rest of Scotland", timeZone: "Europe/London", comingSoon: true },
         { id: "rest-of-wales", name: "Rest of Wales", timeZone: "Europe/London", comingSoon: true },
-        { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: true },
+        { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false },
         { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: true },
         { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: true },
         { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: true },
         { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false },
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false },
-        { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: true },
+        { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: false },
       ],
     },
     {
@@ -123,7 +127,12 @@
     "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.20, maxLng: -2.10 },
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
     "liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 },
+<<<<<<< HEAD
     "thames-valley": { minLat: 51.0, maxLat: 52.0, minLng: -1.5, maxLng: -0.5 },
+=======
+    solent: { minLat: 50.75, maxLat: 51.55, minLng: -2.30, maxLng: -0.05 },
+    "west-yorkshire": { minLat: 53.65, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
+>>>>>>> origin/master
   };
 
   function dogfood() {
