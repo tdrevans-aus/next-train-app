@@ -124,3 +124,26 @@ destination strings beyond illustrative placeholders explicitly marked as such, 
 station graph, direction model, or catalog entry of any kind (see scope decision above), no
 resolution of the STJ-vs-Chepstow discrepancy or the RDM redistribution ambiguity (both flagged for
 Tim/D2), no reading of any other city's in-progress pack, no wiring of `DARWIN_LDB_TOKEN`.
+
+## Jim flip follow-through (5 Sep 2026) — note for Mark
+
+Per `docs/jim-brief-south-wales-flip.md`, this pass wired the dogfood module
+(`lib/cities/south-wales/dogfood-next-train.js` + `stations.json`), the `directionsFor()` /
+`getMultiCityNextTrain()` dispatch switch-cases in `lib/cities/live-city-api.js`, and
+`qa/south-wales-dogfood-gate.mjs` (replacing the retired `qa/south-wales-planned-gate.mjs`).
+Registry status stays `planned` — this pass does not flip it.
+
+**Deliberately NOT done here — these three one-line additions belong in your flip commit**
+(same as Malmö/Uppsala/Göteborg/Greater Anglia's flips did it; `qa/live-city-lists-sync.mjs`
+enforces that they exactly equal the registry's `status === "live"` set):
+
+1. Add `"south-wales"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add South Wales to `brisbane-dogfood.js`'s mount/available map.
+3. Add South Wales to `journey-model.js`'s persisted-city/country lists.
+
+No direction-hubs.json was built — this catalog is only Cardiff Central (hub) and Severn Tunnel
+Junction (flat through-running boundary), with no intermediate through-station to anchor riders on,
+so there is no hub candidate the way West of England (Bristol Temple Meads) or Greater Anglia
+(Norwich) had one. `loadDirectionHubs("south-wales")` degrades to an empty hub list, a no-op, which
+`qa/south-wales-dogfood-gate.mjs` asserts explicitly.
