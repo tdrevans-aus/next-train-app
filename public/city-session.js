@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "west-yorkshire", "thames-valley"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "west-yorkshire", "thames-valley", "greater-anglia"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -39,7 +39,7 @@
         { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false },
         { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: true },
         { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: true },
-        { id: "greater-anglia", name: "Greater Anglia", timeZone: "Europe/London", comingSoon: true },
+        { id: "greater-anglia", name: "Greater Anglia", timeZone: "Europe/London", comingSoon: false },
         { id: "greater-manchester", name: "Greater Manchester", timeZone: "Europe/London", comingSoon: true },
         { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
@@ -122,6 +122,7 @@
     "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
     "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.20, maxLng: -2.10 },
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
+    "greater-anglia": { minLat: 52.0, maxLat: 52.9, minLng: 0.0, maxLng: 1.4 },
     "liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 },
     solent: { minLat: 50.75, maxLat: 51.55, minLng: -2.30, maxLng: -0.05 },
     "west-yorkshire": { minLat: 53.65, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
