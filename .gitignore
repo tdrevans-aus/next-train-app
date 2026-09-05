@@ -46,3 +46,6 @@ qa/fixtures/wellington/gtfs/*.txt
 # lockfile there we don't want to track (no other package.json in the repo
 # carries one either — the root package-lock.json is the real one).
 /api/package-lock.json
+
+# Signed data-sharing agreements stay out of the repo (see docs/united-kingdom-ledger.md §1)
+docs/*.pdf
