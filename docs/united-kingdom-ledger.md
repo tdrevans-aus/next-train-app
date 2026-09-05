@@ -45,7 +45,7 @@ pass since (south-yorkshire, north-east, southwest, cumbria, south-wales, west-y
 rest-of-wales, rest-of-scotland, london-se-national-rail, glasgow, edinburgh, greater-manchester —
 12 of 20 regions). **This is a stale-text problem, not a live blocker** — flagged once here per
 `docs/uk-build-out-recommendation.md` item 4, not re-flagged per region. **Licensing — RESOLVED (Tim read the signed agreement, 5 Sep 2026; copy at
-`docs/P-d81d6eaf-8060-4467-a339-1c833e50cbbe.pdf`, private repo).** The Live Departure Board
+signed copy held by Tim, not committed — retrieve from https://raildata.org.uk → My Subscriptions → Live Departure Board → Licence tab; product P-d81d6eaf-8060-4467-a339-1c833e50cbbe).** The Live Departure Board
 Data Sharing Agreement (publisher: Rail Delivery Group; product P-d81d6eaf-8060-4467-a339-1c833e50cbbe)
 grants, in Schedule 1: **Permitted Purposes — "The raw data may be made freely available or
 otherwise distributed to third parties"**; Permitted Recipients — all registered users; Territory —
@@ -106,7 +106,7 @@ than through-running-only.
 | Tamworth | TAM | West Midlands (not yet in the live catalog — add on next catalog touch) | East Midlands (deliberately excludes it) | reg: east-midlands; East Midlands pack `sharedPlatformFlaggedForD2` gives CRS TAM | **decided** (Tim, 5 Sep 2026) — Birmingham commuter territory (West Midlands Railway, Cross-City line). Gap in a live region, not a contest: today nobody can pick it |
 | Darlington | DRL | North East | East Midlands (never claimed it) | reg: north-east | **decided** (Tim, 5 Sep 2026) — County Durham, ECML; no real second claimant, the North East pack was cautious rather than torn |
 | Walsden | WDN | West Yorkshire | Greater Manchester (through-running-only, destination only) | reg: west-yorkshire, greater-manchester | **decided** (Tim, 5 Sep 2026) — Calderdale, West Yorkshire. The apparent CRS conflict is closed: both packs now carry WDN; WAD was West Yorkshire's original error (corrected 5 Sep) and is actually Wadhurst, Sussex |
-| Chepstow | CPW | West of England (through-running-only) | South Wales (which instead names Severn Tunnel Junction, a *different physical station*, as its own side's Wales–England corridor boundary) | reg: west-of-england, south-wales | **decided as two distinct stations, not a shared-station contest** — flagged because the two regions independently named different stations as "the" Wales–England boundary; South Wales's own registry note calls this a known open item versus West of England's Chepstow naming. Neither station is claimed as a *home* station by either region — both are through-running-only in their own catalogs |
+| Chepstow | CPW | South Wales (through-running-only; Welsh station on the Gloucester–Newport line) | West of England (destination only) | reg: west-of-england, south-wales | **decided** (Tim, 5 Sep 2026) — NOT a contest. Chepstow and Severn Tunnel Junction are both in Wales, on different corridors: Severn Tunnel Junction (STJ, home South Wales) is the boundary on the South Wales Main Line (Bristol–Cardiff via the tunnel); Chepstow is the boundary on the Gloucester–Newport (Wye Valley) line, which does not pass through Bristol. Each pack named the boundary for the corridor it was looking at; both were right. Neither region promotes either station; West of England's flat Chepstow entry stays through-running-only |
 | Berwick-upon-Tweed | BWK | North East | Rest of Scotland (pack does not mention it; sees it as a destination only) | reg: north-east | **decided** (Tim, 5 Sep 2026) — Northumberland, England, three miles south of the border |
 | Taunton | TAU | West of England | Southwest (through-running-only, destination only) | reg: west-of-england, southwest | **decided** (Tim, 5 Sep 2026) — Somerset, geographically a toss-up between Bristol and Exeter; West of England is live and Southwest is planned, so this is the only choice that lets a Taunton rider use the app today |
 | Chester | CTR/CHE | Liverpool City Region | Rest of Wales (excludes it explicitly, "Chester, England") | reg: liverpool-city-region (genuine Wirral Line Merseyrail terminus, in the 97-station catalog), reg: rest-of-wales ("Boundary/pass-through stations NOT in catalog: Chester (CTR, England)") | **decided** — Liverpool City Region catalogues it as a real terminus; Rest of Wales explicitly stays out |
@@ -245,9 +245,7 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
 2. **Catalog follow-ups from the 5 Sep stop-ownership decisions** (§2): add Tamworth (TAM) to
    the live West Midlands catalog; add Taunton (TAU), Westbury (WSB) and Gloucester (GCR) to West
    of England as pickable stations (currently through-running-only there); South Yorkshire drops
-   Denby Dale; East Midlands must not add Peterborough. Chepstow vs Severn Tunnel Junction remains
-   a naming inconsistency (not an ownership conflict) about which physical station is "the"
-   Wales–England boundary — still undecided.
+   Denby Dale; East Midlands must not add Peterborough.
 3. **Stale "DARWIN_LDB_TOKEN not set" blocker text** on 12 planned regions' registry `integration`
    strings — the token has existed since 2 Sep 2026; cosmetic but misdescribes why those regions
    aren't live. **Sequenced (Tim, 5 Sep 2026):** one registry sweep after the Darwin cache brief
@@ -278,3 +276,4 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 | 5 Sep 2026 | (ledger) | Hull Trains verdict fixed as unconditional `in`; peak-reservation caveat recorded in §3 only (Tim). | No adapter effect — no catalogued station is served by Hull Trains |
 | 5 Sep 2026 | (ledger) | RDM Live Departure Board DSA read by Tim: redistribution to third parties expressly permitted (Sched. 1 §5), Open licence, no fair-usage cap; attribution to Rail Delivery Group required (cl. 3.3.1, Sched. 1 §8). | Closes the "do not relay Darwin data" open item everywhere. Attribution wiring owed on Darwin boards; per-region licence copies stripped in the registry sweep |
 | 5 Sep 2026 | rdg-attribution | RDG attribution wired on all Darwin boards, PR #235 | `public/city-session.js` gates the required RDG line on every `feed: "darwin"` region (live + planned) via `feedAttributionForCity`; `uk-london-tfl` unaffected. Open item 1 closed |
+| 5 Sep 2026 | west-of-england, south-wales | Chepstow vs Severn Tunnel Junction ruled not a contest: both Welsh, on different corridors (STJ = South Wales Main Line, CPW = Gloucester–Newport line), both home South Wales, both through-running-only (Tim). | No catalog change; next Welsh/Gloucestershire region cites this row |
