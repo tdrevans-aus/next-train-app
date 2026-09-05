@@ -35,26 +35,26 @@
       id: "gb",
       name: "United Kingdom",
       regions: [
-        { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", comingSoon: true },
-        { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false },
-        { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: true },
-        { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: true },
-        { id: "greater-anglia", name: "Greater Anglia", timeZone: "Europe/London", comingSoon: false },
-        { id: "greater-manchester", name: "Greater Manchester", timeZone: "Europe/London", comingSoon: true },
-        { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false },
+        { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "greater-anglia", name: "Greater Anglia", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "greater-manchester", name: "Greater Manchester", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
-        { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: true },
-        { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: true },
-        { id: "rest-of-scotland", name: "Rest of Scotland", timeZone: "Europe/London", comingSoon: true },
-        { id: "rest-of-wales", name: "Rest of Wales", timeZone: "Europe/London", comingSoon: true },
-        { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false },
-        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: true },
-        { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: true },
-        { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: true },
-        { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false },
-        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false },
-        { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false },
-        { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: false },
+        { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "rest-of-scotland", name: "Rest of Scotland", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "rest-of-wales", name: "Rest of Wales", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
       ],
     },
     {
@@ -163,6 +163,14 @@
   const TFL_OPEN_DATA_LINE = "Powered by TfL Open Data";
   const VANCOUVER_TRANSLINK_DISCLAIMER =
     "Some of the data used in this product or service is provided by permission of TransLink. TransLink assumes no responsibility for the accuracy or currency of the Data used in this product or service.";
+  const RDG_LDB_LINE =
+    "Live departure data © Rail Delivery Group, via the Rail Data Marketplace. Times may change — check station displays.";
+
+  function isDarwinCityId(cityId) {
+    const id = String(cityId || "").toLowerCase();
+    const found = regionById(id);
+    return Boolean(found && found.region.feed === "darwin");
+  }
 
   function feedAttributionForCity(cityId) {
     const id = String(cityId || "").toLowerCase();
@@ -171,6 +179,9 @@
     }
     if (id === "uk-london-tfl") {
       return { text: TFL_OPEN_DATA_LINE, required: false };
+    }
+    if (isDarwinCityId(id)) {
+      return { text: RDG_LDB_LINE, required: true };
     }
     return null;
   }
@@ -692,6 +703,7 @@
     feedAttributionForCity,
     VANCOUVER_TRANSLINK_DISCLAIMER,
     TFL_OPEN_DATA_LINE,
+    RDG_LDB_LINE,
     openRegionScreen,
     closeRegionScreen,
     COUNTRIES,
