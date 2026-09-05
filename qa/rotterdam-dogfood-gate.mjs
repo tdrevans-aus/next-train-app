@@ -11,7 +11,7 @@ import vercelBoard from "../api/dev/board.js";
 import { marketingLabelsForStation, HUB } from "../lib/cities/rotterdam/marketing-directions.js";
 import { fetchStationBoard, ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL } from "../lib/providers/rotterdam.js";
 import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
-import { zipFixtureGtfs, encodeTripUpdates, stubFetch } from "./lib/nl-realtime-stub.mjs";
+import { zipFixtureGtfs, encodeTripUpdates, stubFetch, discoverFixtureTrips } from "./lib/nl-realtime-stub.mjs";
 import {
   OVAPI_TRIPUPDATES_CACHE_TTL_MS,
   _resetOvapiTripUpdatesCacheForTests,
@@ -86,12 +86,15 @@ if (previous === undefined) {
 // live join against the trimmed fixture — a delay moves a board row, a
 // cancellation removes one, and an RT fetch failure degrades to static.
 {
-  const staticZip = zipFixtureGtfs("rotterdam");
   const staticUrl = gtfsFixtureBlobUrl("rotterdam");
-  const delayedTripId = "381818212"; // RET Metro A, Beurs stop 3989213, scheduled 10:04 on 2026-09-27
-  const cancelledTripId = "381818213"; // same service_id, scheduled 11:19
-  const scheduledEpochSec = 1790496240; // 2026-09-27T10:04:00+02:00
-  const now = new Date("2026-09-27T08:30:00+02:00");
+  const staticZip = await zipFixtureGtfs("rotterdam", staticUrl);
+  // Trip ids are discovered from the loaded fixture (local dir or published Blob copy), never
+  // hardcoded from one snapshot — see discoverFixtureTrips in qa/lib/nl-realtime-stub.mjs.
+  const picked = await discoverFixtureTrips({
+    staticZip, staticUrl, rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL, fetchStationBoard, station: "Beurs",
+  });
+  const { now, delayedTripId, cancelledTripId, stopId, scheduledEpochSec } = picked;
+  const expectedDelayedDisplay = picked.delayedDisplayTime(300);
 
   _resetOvapiTripUpdatesCacheForTests();
   let restore = stubFetch({
@@ -99,7 +102,7 @@ if (previous === undefined) {
     staticZip,
     rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
     rtBuffer: encodeTripUpdates([
-      { tripId: delayedTripId, stopId: "3989213", delaySec: 300, scheduledEpochSec },
+      { tripId: delayedTripId, stopId, delaySec: 300, scheduledEpochSec },
       { tripId: cancelledTripId, cancelled: true },
     ]),
   });
@@ -112,7 +115,7 @@ if (previous === undefined) {
   const delayed = board.trips.find((trip) => trip.tripId === delayedTripId);
   assert(delayed, "delayed trip must still appear on the board");
   assert(delayed.status === "5 min late", `delay must move the board row (got ${delayed?.status})`);
-  assert(delayed.displayTime === "10:09", `delayed displayTime must shift (got ${delayed?.displayTime})`);
+  assert(delayed.displayTime === expectedDelayedDisplay, `delayed displayTime must shift to ${expectedDelayedDisplay} (got ${delayed?.displayTime})`);
   assert(
     !board.trips.some((trip) => trip.tripId === cancelledTripId),
     "a CANCELED TripUpdate must remove the trip from the board"
@@ -153,7 +156,7 @@ if (previous === undefined) {
     staticZip,
     rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
     rtBuffer: encodeTripUpdates([
-      { tripId: delayedTripId, stopId: "3989213", delaySec: 300, scheduledEpochSec },
+      { tripId: delayedTripId, stopId, delaySec: 300, scheduledEpochSec },
     ]),
     onRtFetch: () => {
       rtFetchCount += 1;
@@ -183,7 +186,7 @@ if (previous === undefined) {
     staticZip,
     rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
     rtBuffer: encodeTripUpdates([
-      { tripId: delayedTripId, stopId: "3989213", delaySec: 300, scheduledEpochSec },
+      { tripId: delayedTripId, stopId, delaySec: 300, scheduledEpochSec },
     ]),
   });
   try {
