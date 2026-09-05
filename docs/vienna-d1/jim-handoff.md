@@ -90,3 +90,65 @@ Luke needs no lane-lock check (per CLAUDE.md: "Luke needs no check" — his whol
 `docs/vienna-d1/`, which no other lane touches). The pack is complete by the shape of every other
 `docs/<city>-d1/` folder (4 files) and every claim in it is sourced. **The adapter build is
 intentionally NOT started** — that's Jim's job (D2–D6), not this pack's.
+
+---
+
+## Jim → Mark note (adapter wired, 6 Sep 2026)
+
+`lib/providers/vienna.js` + `lib/cities/vienna/{stations.json,marketing-directions.js}` wired.
+Registry entry `status: "planned"`, `adapterReady: true` — **not** flipped live; that stays
+Tim/Mark's call. `assertCityLive("vienna")` still returns 501 (verified in
+`qa/vienna-planned-gate.mjs`, registered in `qa/run-all.mjs`'s smoke tier).
+
+- **Standalone adapter, not a shared-provider config.** Wiener Linien is Vienna's own agency
+  with no other Next Train city on the same feed, so this follows the Adelaide/Perth/Boston
+  storage pattern (`loadGtfsStatic({url})` over a committed catalog object,
+  `lib/cities/vienna/stations.json`) rather than the config-over-shared-provider shape used for
+  Copenhagen/UK-Darwin regions. Austria has no country-lane ledger (single-region country).
+- **99-station catalog** generated directly from `published-network.json`'s per-line
+  `stations[]` arrays (union across all five lines, order preserved from each line's own
+  transcription) — not hand-retyped, to avoid introducing a fresh transcription error on top of
+  the pack's own H2 correction. Confirmed programmatically: exactly 99 unique names, exactly the
+  ten interchange stations named in hazard-pack.md H1 (Karlsplatz as a triple; the other nine as
+  pairs), matching the pack's stats exactly.
+- **Karlsplatz hub lock implemented as documented, including its unusual shape.** U1 and U4 get
+  the ordinary two-terminus chip set. **U2's `LINE_TERMINI` deliberately excludes Karlsplatz** —
+  only `U2 + Seestadt` is ever synthesized anywhere in the network, per direction-model-memo.md
+  section 2. This is a real behavioural difference from Boston/Copenhagen's hub locks (both pure
+  through-crosses) and is covered by an explicit gate assertion
+  (`mapLineTerminusDestination("Karlsplatz", "u2") === "U2"`, never `"U2 + Karlsplatz"`).
+- **Kaisermühlen-VIC** locked as the canonical name (station's own Wikipedia article title,
+  matches the U1 line article), with `Kaisermühlen` (the alphabetical master table's truncated
+  form) as its only alias — resolves correctly in the gate.
+- **Route classification**: GTFS `route_type` "1" (subway/metro) as a first-pass filter, then
+  exact `route_id` match (U1/U2/U3/U4/U6) via the trip table, same two-layer shape as
+  `lib/providers/boston.js`. **Unverified against a live GTFS payload** — no GTFS pull was
+  performed at D1 (the oracle report's H2 explicitly says not to generate
+  `published-network.json` from GTFS), so confirm both the route_type value and the exact
+  route_id strings against a real pull before any live flip.
+- **Two non-blocking D1 flags carried forward, not resolved here** (also tracked in
+  `docs/expansion-tracker/pack-readiness-2026-09-06.md`): (1) the oracle report's claimed
+  "Schedifkaplatz" (U6 x Badner Bahn interchange) is unverified against any primary source
+  pulled for this pack — doesn't change v1 scope since Badner Bahn is out-product regardless;
+  (2) no nested short-turn codes were found at D1, but only against Wikipedia prose, not GTFS
+  trip patterns — a genuine D2 timetable-pass item, not assumed resolved by this wiring pass.
+- **Real-time is explicitly NOT wired.** The official Wiener Linien OGD Realtime Monitor
+  (`https://www.wienerlinien.at/ogd_realtime/monitor`, no key) is a **proprietary JSON schema,
+  not GTFS-RT protobuf** (jim-handoff.md item 3 / hazard-pack.md H2-H3) — it cannot be handed to
+  the shared `gtfs/realtime-board.js` path unmodified and needs its own parsing/mapping layer,
+  which is a genuine follow-up, not attempted here. `MissingViennaRealtimeMonitorError` is
+  exported and documented in the `lib/providers/vienna.js` file header for whoever wires that
+  path later — it is not thrown anywhere in the current code path (schedule-only GTFS static
+  board, same posture as Copenhagen/Boston).
+- **Follow-through NOT done, by design:** no dogfood module, no `live-city-api.js` dispatch
+  wiring, no `*-dogfood-gate.mjs`. Per the current guardrails that bundle only happens once
+  Mark's QA is green and the flip is imminent, and even then the `MULTI_CITY_IDS`/
+  `brisbane-dogfood.js`/`journey-model.js` three-list additions get bundled into the actual
+  status-flip commit, not before.
+- **Open items for Tim, carried from D1, not resolved by Jim:** direction-model-memo.md's open
+  question 1 (U2's single-direction chip at Karlsplatz — implemented as documented, but Tim's
+  confirmation is still requested before D5 assertion tables are written) and open question 3
+  ("Schedifkaplatz" naming gap).
+
+No product edit, no Perth edit, no live flip, no merge of other PRs, no API key registered/
+pasted, no other city's adapter touched.

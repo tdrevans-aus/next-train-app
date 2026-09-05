@@ -1,0 +1,713 @@
+{
+  "city": "vienna",
+  "hub": "Karlsplatz",
+  "stations": [
+    {
+      "name": "Oberlaa",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Neulaa",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Alaudagasse",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Altes Landgut",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Troststraße",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Reumannplatz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Keplerplatz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Südtiroler Platz-Hauptbahnhof",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Taubstummengasse",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Karlsplatz",
+      "lines": [
+        "u1",
+        "u2",
+        "u4"
+      ],
+      "aliases": [],
+      "hub": true
+    },
+    {
+      "name": "Stephansplatz",
+      "lines": [
+        "u1",
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Schwedenplatz",
+      "lines": [
+        "u1",
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Nestroyplatz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Praterstern",
+      "lines": [
+        "u1",
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Vorgartenstraße",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Donauinsel",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Kaisermühlen-VIC",
+      "lines": [
+        "u1"
+      ],
+      "aliases": [
+        "Kaisermühlen"
+      ]
+    },
+    {
+      "name": "Alte Donau",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Kagran",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Kagraner Platz",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Rennbahnweg",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Aderklaaer Straße",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Großfeldsiedlung",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Leopoldau",
+      "lines": [
+        "u1"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Museumsquartier",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Volkstheater",
+      "lines": [
+        "u2",
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Rathaus",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Schottentor",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Schottenring",
+      "lines": [
+        "u2",
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Taborstraße",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Messe-Prater",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Krieau",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Stadion",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Donaumarina",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Donaustadtbrücke",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Stadlau",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Hardeggasse",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Donauspital",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Aspernstraße",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Lina-Loos-Platz",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Hausfeldstraße",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Aspern Nord",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Seestadt",
+      "lines": [
+        "u2"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Ottakring",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Kendlerstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Hütteldorfer Straße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Johnstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Schweglerstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Westbahnhof",
+      "lines": [
+        "u3",
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Zieglergasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Neubaugasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Herrengasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Stubentor",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Landstraße",
+      "lines": [
+        "u3",
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Rochusgasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Kardinal-Nagl-Platz",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Schlachthausgasse",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Erdberg",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Gasometer",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Zippererstraße",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Enkplatz",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Simmering",
+      "lines": [
+        "u3"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Hütteldorf",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Ober St. Veit",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Unter St. Veit",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Braunschweiggasse",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Hietzing",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Schönbrunn",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Meidling Hauptstraße",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Längenfeldgasse",
+      "lines": [
+        "u4",
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Margaretengürtel",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Pilgramgasse",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Kettenbrückengasse",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Stadtpark",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Roßauer Lände",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Friedensbrücke",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Spittelau",
+      "lines": [
+        "u4",
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Heiligenstadt",
+      "lines": [
+        "u4"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Floridsdorf",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Neue Donau",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Handelskai",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Dresdner Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Jägerstraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Nußdorfer Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Währinger Straße-Volksoper",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Michelbeuern-AKH",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Alser Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Josefstädter Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Thaliastraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Burggasse-Stadthalle",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Gumpendorfer Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Niederhofstraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Bahnhof Meidling",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Tscherttegasse",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Am Schöpfwerk",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Alterlaa",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Erlaaer Straße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Perfektastraße",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Siebenhirten",
+      "lines": [
+        "u6"
+      ],
+      "aliases": []
+    }
+  ]
+}
