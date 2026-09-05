@@ -1,0 +1,325 @@
+{
+  "city": "lisbon",
+  "displayName": "Lisbon",
+  "status": "planned",
+  "agency": "Metropolitano de Lisboa, EPE",
+  "timezone": "Europe/Lisbon",
+  "source": "https://www.metrolisboa.pt/wp-content/uploads/2026/08/DiagramaRedeAgosto2026.pdf",
+  "sources": [
+    {
+      "role": "D1 official network diagram (ordered stops + Azul/Amarela/Verde/Vermelha + interchanges). Metro-only plate. Hand-transcribed.",
+      "title": "Rede do Metropolitano de Lisboa — Network diagram",
+      "pdfTitle": "Diagrama da Rede_site_download2026",
+      "url": "https://www.metrolisboa.pt/wp-content/uploads/2026/08/DiagramaRedeAgosto2026.pdf",
+      "linkedFrom": "https://www.metrolisboa.pt/en/travel/diagrams-and-maps/",
+      "retrievedAt": "2026-09-06T16:33:00Z",
+      "pdfCreationDate": "2026-07-27T13:27:34+01:00",
+      "pdfModDate": "2026-07-27T13:27:34+01:00",
+      "creator": "Adobe Illustrator 30.6 (Macintosh)",
+      "producer": "Adobe PDF library 18.00",
+      "pageCount": 1,
+      "note": "Official single-plate diagram covering only the four Metro lines plus a beige CP/suburban-rail overlay for context (Sintra, Cascais, Azambuja/Porto, Setúbal/Faro corridors, and river ferry/boat links). Stations[] HAND-TRANSCRIBED from a 300dpi PNG render of the PDF, read visually line by line. pdftotext -layout was tried first and is layout-scrambled on this plate (station names print out of column order); it was NOT used to build stations[]. Not generated from GTFS. Not generated from Wikipedia or lines.json."
+    },
+    {
+      "role": "D1 diagram index page (links the PDF; confirms no other official station-level map exists)",
+      "title": "Diagrams and maps — Metropolitano de Lisboa",
+      "url": "https://www.metrolisboa.pt/en/travel/diagrams-and-maps/",
+      "retrievedAt": "2026-09-06T16:32:00Z",
+      "alsoLinkedFromIndex": [
+        "DiagramadaRedeAcessibilidades_EN_Agosto_2026.pdf (accessibility variant of the same diagram — not used; same station set)",
+        "MapadaCidadeAgosto2026.pdf (city street map overlay — not a stop oracle)"
+      ]
+    },
+    {
+      "role": "static GTFS exists (empty-key 200) — NOT a D1 generator",
+      "title": "Metro de Lisboa static GTFS",
+      "url": "https://www.metrolisboa.pt/google_transit/googleTransit.zip",
+      "retrievedAt": "2026-09-06T16:36:00Z",
+      "http": 200,
+      "note": "Anonymous 200 confirmed 2026-09-06 (also verified by the oracle report on the same date). Stations[] were not built from this zip per the oracle report's explicit instruction. Do not generate published-network.json from GTFS."
+    },
+    {
+      "role": "live status API probe (line-status only, not next-train; confirms auth-gated, not a D1 blocker)",
+      "title": "EstadoServicoML REST API",
+      "url": "https://api.metrolisboa.pt/",
+      "retrievedAt": "2026-09-06T16:36:00Z",
+      "http": 403,
+      "note": "Empty-key probe returns 403 (auth required), confirmed 2026-09-06. Per the oracle report this API is line-status only (operational state per line), not departures/arrivals, even with a valid key. Never paste a key. Not a D1 generator. D1 stays planned."
+    }
+  ],
+  "retrievedAt": "2026-09-06T16:40:00Z",
+  "notes": [
+    "D1 oracle is the official Metropolitano de Lisboa network diagram DiagramaRedeAgosto2026.pdf (PDF title 'Diagrama da Rede_site_download2026', Illustrator 30.6, created/modified 2026-07-27T13:27:34+01:00) HAND-TRANSCRIBED from a 300dpi rendered PNG. pdftotext is layout-scrambled on this plate and was not used to build stations[]. Not generated from GTFS. Not generated from Wikipedia. Map printed line ticks win.",
+    "City id lisbon is unused in existing packs. Display Lisbon. Agency Metropolitano de Lisboa, EPE. Do not invent city=tml, city=mlisboa, city=metrolisboa, or merge into another Portuguese city. Do not edit Perth. Do not flip live.",
+    "City stays planned until Jim wires testers and Mark's QA confirms schedule-only boards (no real-time) are an accepted product state. Modes v1: Metro Azul/Amarela/Verde/Vermelha only (56 line ticks / 50 unique stations after dedupe — see stats). OUT: CP urban commuter rail (Cascais, Sintra, Sul, Azambuja lines); Carris historic tram; Transtejo ferries; Carris Metropolitana / TUL bus.",
+    "Timezone Europe/Lisbon HAS DST (WET/UTC+0 standard, WEST/UTC+1 late Mar-late Oct). Do not copy Perth/Brisbane/Adelaide no-DST.",
+    "Four printed lines on the official diagram: Azul Reboleira - Santa Apolónia (18 stops), Amarela Odivelas - Rato (13 stops), Verde Telheiras - Cais do Sodré (13 stops), Vermelha S. Sebastião - Aeroporto (12 stops). 56 line ticks total. 50 unique open metro stations after dedupe (6 stations are each shared by exactly two lines - see interchanges). This corrects the oracle report's approximate 'Total: 56 unique' figure (marked '(approximate; exact dedupe at D1)' in the report) - the exact hand-transcribed unique count is 50, since Marquês de Pombal, Campo Grande, Saldanha, Baixa-Chiado, S. Sebastião, and Alameda each appear on two lines' printed stop lists.",
+    "Hub-lock (reference point, NOT a direction token): Marquês de Pombal (Azul x Amarela). Chosen over Alameda (Verde x Vermelha) per the direction-model memo: more central (Praça do Marquês de Pombal, top of Avenida da Liberdade), richest icon row on the diagram (bus, customer-care, wheelchair, bike, police - the only station with all five).",
+    "doNotGroup: the six interchange stations (Marquês de Pombal, Campo Grande, Saldanha, Baixa-Chiado, S. Sebastião, Alameda) are each shared by exactly two lines; no station on the official diagram is shared by three or four lines (unlike Brussels' Arts-Loi/Kunst-Wet). doNotGroup Roma vs Areeiro vs 'Roma/Areeiro' (the latter is a CP interchange pedestrian-link node, not a Metro stop - not inserted into stations[]).",
+    "CORRECTION TO ORACLE REPORT: the report's board-eligibility table lists 'Alcântara Terra (M Vermelha): + CP Linha do Sul' as an overlapping station. The official Aug 2026 network diagram does NOT show Alcântara-Terra or Alcântara-Mar on any Metro line - both print only on the CP-only beige corridor near Belém/Santos, nowhere near the Vermelha line's actual route (S. Sebastião to Aeroporto). Not inserted into stations[]. Flagged for Nico/Jim to confirm rather than silently guessed either way.",
+    "gtfsRouteIdsIfKnown are the official printed line names (Azul, Amarela, Verde, Vermelha) as they appear on the diagram legend, not extracted from the GTFS zip. No stopIds in this file.",
+    "Feed / live (Jim D2+, not a D1 generator): no public GTFS-RT, no public next-train API. EstadoServicoML is OAuth-gated line-status only (empty-key probe 403, confirmed 2026-09-06) and does not carry departures even with a key. Never paste a key. D1 stays planned. assertCityLive(\"lisbon\") must fail (Unknown city / 400 - city is not in lib/providers/registry.js CITIES today)."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Marquês de Pombal",
+    "lockSet": [
+      "Marquês de Pombal"
+    ],
+    "lockNote": "Reference-point lock for prose/UI copy only - NOT a direction token (directions are always line + terminus; see direction-model-memo.md). Chosen over Alameda per the memo's geography/amenity-density comparison. Azul x Amarela interchange.",
+    "doNotUse": [
+      "Alameda",
+      "Campo Grande",
+      "Saldanha",
+      "Baixa-Chiado",
+      "S. Sebastião",
+      "São Sebastião",
+      "City",
+      "Centre",
+      "Centro",
+      "Baixa",
+      "Lisboa",
+      "tml",
+      "mlisboa",
+      "metrolisboa"
+    ],
+    "doNotCollapse": [
+      "Marquês de Pombal",
+      "Campo Grande",
+      "Saldanha",
+      "Baixa-Chiado",
+      "S. Sebastião",
+      "Alameda",
+      "Roma",
+      "Areeiro"
+    ]
+  },
+  "coverageGaps": [
+    "CP urban commuter rail (Linha de Cascais, Linha de Sintra, Linha do Sul, Linha de Azambuja) - separate operator, separate boarding contract. Shares six stations with Metro (Oriente, Santa Apolónia, Terreiro do Paço, Cais do Sodré, Reboleira, and a pedestrian link near S. Sebastião) - all out of v1.",
+    "Carris historic tram network (Tram 12, 15, 18, 24, 25, 28, etc.) - separate operator, no GTFS-RT, out of v1.",
+    "Transtejo/Soflusa river ferries - out of v1 (mode exclusion); shown only as a beige/blue overlay on the official diagram for river-crossing context.",
+    "Carris Metropolitana / TUL bus - out of v1 (mode exclusion).",
+    "Alcântara-Terra / Alcântara-Mar - CP-only stations on the western Cascais/Sintra corridor near Belém/Santos; NOT on any Metro line per the official diagram. See notes for the oracle-report correction.",
+    "Roma/Areeiro CP interchange node - pedestrian link between Metro's Roma and Areeiro stops and the CP Roma-Areeiro railway station; not itself a Metro stop.",
+    "No 'Linha Circular' or other planned/under-construction line on this diagram edition - v1 is the four operating lines only."
+  ],
+  "liveBoards": {
+    "status": "no_public_realtime_api",
+    "estadoServicoApi": "https://api.metrolisboa.pt/",
+    "estadoServicoNote": "Line-level operational status only (open/delays/closures per line), not next-train arrivals, per the oracle report. OAuth key required. Empty-key probe returned 403 (confirmed 2026-09-06).",
+    "emptyKey": {
+      "probedAt": "2026-09-06T16:36:00Z",
+      "http": 403,
+      "url": "https://api.metrolisboa.pt/",
+      "note": "Empty-key only. Did not send a real key."
+    },
+    "keyPolicy": "No key obtained or referenced in this pack. Even with a key, EstadoServicoML does not provide departures/arrivals per the oracle report - so a key would not unblock live boards. Boards stay schedule-based from static GTFS. Never paste a key.",
+    "d1": "planned. assertCityLive(lisbon) must fail. Mark's QA checklist must explicitly confirm schedule-only (no live delays, no next-train countdown) is an accepted product state before any flip - this is a material product limitation, not a data-quality gap Jim can close."
+  },
+  "stats": {
+    "lines": 4,
+    "lineAzulStops": 18,
+    "lineAmarelaStops": 13,
+    "lineVerdeStops": 13,
+    "lineVermelhaStops": 12,
+    "lineTicks": 56,
+    "uniqueStations": 50,
+    "interchangeCount": 6,
+    "innerCityLock": [
+      "Marquês de Pombal"
+    ]
+  },
+  "lines": [
+    {
+      "id": "azul",
+      "name": "Azul",
+      "displayName": "Azul (Blue line)",
+      "officialPageTitle": "Azul: Reboleira – Santa Apolónia",
+      "gtfsRouteIdsIfKnown": [
+        "Azul"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Reboleira",
+        "Santa Apolónia"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Marquês de Pombal",
+          "otherLine": "Amarela",
+          "note": "Reference-point lock (not a direction token). Richest icon row on the diagram: bus, customer-care, wheelchair, bike, police."
+        },
+        {
+          "at": "S. Sebastião",
+          "otherLine": "Vermelha",
+          "note": "Vermelha's west terminus; Azul runs through. Diagram prints the abbreviated form S. Sebastião."
+        },
+        {
+          "at": "Baixa-Chiado",
+          "otherLine": "Verde",
+          "note": "Azul's diagonal crosses Verde's descent toward Cais do Sodré at a single tick."
+        }
+      ],
+      "stations": [
+        "Reboleira",
+        "Amadora Este",
+        "Alfornelos",
+        "Pontinha",
+        "Carnide",
+        "Colégio Militar/Luz",
+        "Alto dos Moinhos",
+        "Laranjeiras",
+        "Jardim Zoológico",
+        "Praça de Espanha",
+        "S. Sebastião",
+        "Parque",
+        "Marquês de Pombal",
+        "Avenida",
+        "Restauradores",
+        "Baixa-Chiado",
+        "Terreiro do Paço",
+        "Santa Apolónia"
+      ]
+    },
+    {
+      "id": "amarela",
+      "name": "Amarela",
+      "displayName": "Amarela (Yellow line)",
+      "officialPageTitle": "Amarela: Odivelas – Rato",
+      "gtfsRouteIdsIfKnown": [
+        "Amarela"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Odivelas",
+        "Rato"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Campo Grande",
+          "otherLine": "Verde",
+          "note": "Amarela runs straight through; Verde's Telheiras terminus feeds in immediately to the west."
+        },
+        {
+          "at": "Marquês de Pombal",
+          "otherLine": "Azul",
+          "note": "Reference-point lock (not a direction token)."
+        },
+        {
+          "at": "Saldanha",
+          "otherLine": "Vermelha",
+          "note": "Amarela's vertical run crosses Vermelha's horizontal run at a single tick."
+        }
+      ],
+      "stations": [
+        "Odivelas",
+        "Senhor Roubado",
+        "Ameixoeira",
+        "Lumiar",
+        "Quinta das Conchas",
+        "Campo Grande",
+        "Cidade Universitária",
+        "Entre Campos",
+        "Campo Pequeno",
+        "Saldanha",
+        "Picoas",
+        "Marquês de Pombal",
+        "Rato"
+      ]
+    },
+    {
+      "id": "verde",
+      "name": "Verde",
+      "displayName": "Verde (Green line)",
+      "officialPageTitle": "Verde: Telheiras – Cais do Sodré",
+      "gtfsRouteIdsIfKnown": [
+        "Verde"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Telheiras",
+        "Cais do Sodré"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Campo Grande",
+          "otherLine": "Amarela",
+          "note": "Telheiras terminus feeds directly into Campo Grande, shared with Amarela."
+        },
+        {
+          "at": "Alameda",
+          "otherLine": "Vermelha",
+          "note": "Alternate hub-lock candidate per the oracle report; not chosen (see direction-model-memo.md)."
+        },
+        {
+          "at": "Baixa-Chiado",
+          "otherLine": "Azul",
+          "note": "Verde's descent toward Cais do Sodré crosses Azul's diagonal at a single tick."
+        }
+      ],
+      "stations": [
+        "Telheiras",
+        "Campo Grande",
+        "Alvalade",
+        "Roma",
+        "Areeiro",
+        "Alameda",
+        "Arroios",
+        "Anjos",
+        "Intendente",
+        "Martim Moniz",
+        "Rossio",
+        "Baixa-Chiado",
+        "Cais do Sodré"
+      ]
+    },
+    {
+      "id": "vermelha",
+      "name": "Vermelha",
+      "displayName": "Vermelha (Red line)",
+      "officialPageTitle": "Vermelha: S. Sebastião – Aeroporto",
+      "gtfsRouteIdsIfKnown": [
+        "Vermelha"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "S. Sebastião",
+        "Aeroporto"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "S. Sebastião",
+          "otherLine": "Azul",
+          "note": "Vermelha's west terminus, shared with Azul (through-station for Azul)."
+        },
+        {
+          "at": "Saldanha",
+          "otherLine": "Amarela",
+          "note": "Vermelha's horizontal run crosses Amarela's vertical run at a single tick."
+        },
+        {
+          "at": "Alameda",
+          "otherLine": "Verde",
+          "note": "Alternate hub-lock candidate per the oracle report; not chosen (see direction-model-memo.md)."
+        }
+      ],
+      "stations": [
+        "S. Sebastião",
+        "Saldanha",
+        "Alameda",
+        "Olaias",
+        "Bela Vista",
+        "Chelas",
+        "Olivais",
+        "Cabo Ruivo",
+        "Oriente",
+        "Moscavide",
+        "Encarnação",
+        "Aeroporto"
+      ]
+    }
+  ]
+}
