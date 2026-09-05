@@ -242,10 +242,11 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
    regions except `uk-london-tfl`, live and planned alike), gated via `qa/uk-rdg-attribution.mjs`.
    No endorsement wording used. See Propagation log.
 
-2. **Catalog follow-ups from the 5 Sep stop-ownership decisions** (§2): add Tamworth (TAM) to
-   the live West Midlands catalog; add Taunton (TAU), Westbury (WSB) and Gloucester (GCR) to West
-   of England as pickable stations (currently through-running-only there); South Yorkshire drops
-   Denby Dale; East Midlands must not add Peterborough.
+2. **Catalog follow-ups from the 5 Sep stop-ownership decisions** (§2) — done PR #238: Tamworth
+   (TAM) added to the live West Midlands catalog with live-confirmed CRS and observed direction
+   chips; Taunton (TAU), Westbury (WSB) and Gloucester (GCR) already pickable in West of England,
+   `class` prose updated to record home-region ownership per this ledger; South Yorkshire drops
+   Denby Dale. East Midlands must not add Peterborough (unchanged, not actioned here).
 3. **Stale "DARWIN_LDB_TOKEN not set" blocker text** on 12 planned regions' registry `integration`
    strings — the token has existed since 2 Sep 2026; cosmetic but misdescribes why those regions
    aren't live. **Sequenced (Tim, 5 Sep 2026):** one registry sweep after the Darwin cache brief
@@ -277,3 +278,4 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 | 5 Sep 2026 | (ledger) | RDM Live Departure Board DSA read by Tim: redistribution to third parties expressly permitted (Sched. 1 §5), Open licence, no fair-usage cap; attribution to Rail Delivery Group required (cl. 3.3.1, Sched. 1 §8). | Closes the "do not relay Darwin data" open item everywhere. Attribution wiring owed on Darwin boards; per-region licence copies stripped in the registry sweep |
 | 5 Sep 2026 | rdg-attribution | RDG attribution wired on all Darwin boards, PR #235 | `public/city-session.js` gates the required RDG line on every `feed: "darwin"` region (live + planned) via `feedAttributionForCity`; `uk-london-tfl` unaffected. Open item 1 closed |
 | 5 Sep 2026 | west-of-england, south-wales | Chepstow vs Severn Tunnel Junction ruled not a contest: both Welsh, on different corridors (STJ = South Wales Main Line, CPW = Gloucester–Newport line), both home South Wales, both through-running-only (Tim). | No catalog change; next Welsh/Gloucestershire region cites this row |
+| 5 Sep 2026 | ledger-catalog-followups | Catalog follow-ups from the stop-ownership decisions actioned, PR #238: Tamworth (TAM) added to West Midlands (`lib/cities/uk-west-midlands/stations.json`, real NaPTAN coordinates, live-probed via `scripts/probe-uk-board.mjs --crs=TAM`, no hub-anchoring entry added — no Birmingham New Street chip observed live); Gloucester/Westbury/Taunton `class` prose in `lib/cities/west-of-england/stations.json` updated to record West of England as home region; Denby Dale removed from `lib/cities/south-yorkshire/stations.json` (West Yorkshire's per row above). | Open item 2 closed |

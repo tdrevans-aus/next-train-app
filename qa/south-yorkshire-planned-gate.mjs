@@ -79,7 +79,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(SOUTH_YORKSHIRE_REGION);
-assert(region?.railCount === 7, `south-yorkshire rail count must be 7, got ${region?.railCount}`);
+assert(region?.railCount === 6, `south-yorkshire rail count must be 6, got ${region?.railCount}`);
 assert(region?.metroCount === 12, `south-yorkshire metro count must be 12, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -88,7 +88,6 @@ for (const name of [
   "Sheffield Station",
   "Meadowhall Interchange",
   "Rotherham Central",
-  "Denby Dale",
   "Darton",
   "South Elmsall",
   "Moorthorpe",
@@ -126,7 +125,7 @@ for (const name of [
 assert(supertramStops.length === 12, `Supertram catalog must have exactly 12 stops, got ${supertramStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 19, `combined catalog must have 19 stations (7 rail + 12 metro), got ${allStations.length}`);
+assert(allStations.length === 18, `combined catalog must have 18 stations (6 rail + 12 metro), got ${allStations.length}`);
 
 // doNotGroup — Sheffield Station resolves as two distinct catalog entries by mode.
 const hubRail = resolveCatalogEntry(SOUTH_YORKSHIRE_HUB, "train");
@@ -205,5 +204,5 @@ try {
 assert(dispatchThrew, "fetchStationBoard dispatcher must not silently succeed for Supertram");
 
 console.log(
-  "south-yorkshire-planned-gate: ok (planned/501, adapterReady, D1 pack, 7 rail + 12 Supertram stations, Chesterfield excluded, doNotGroup at Sheffield Station and Meadowhall, line+terminus direction model with Purple's Gleadless Townend branch correctly unresolved, both board paths correctly blocked, Perth green)"
+  "south-yorkshire-planned-gate: ok (planned/501, adapterReady, D1 pack, 6 rail + 12 Supertram stations, Chesterfield excluded, doNotGroup at Sheffield Station and Meadowhall, line+terminus direction model with Purple's Gleadless Townend branch correctly unresolved, both board paths correctly blocked, Perth green)"
 );
