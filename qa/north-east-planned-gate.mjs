@@ -2,15 +2,15 @@
  * North East stays planned (adapter wired, not flipped live). Perth stays live.
  * Usage: node qa/north-east-planned-gate.mjs
  *
- * North East's Metro static GTFS is genuinely confirmed to exist (Jim's D2
- * pull, 31 Aug 2026) — UNLIKE East Midlands' NET / South Yorkshire's
- * Supertram — but cannot currently be parsed by the shared
- * static-cache.js helper (its ~5.4GB uncompressed stop_times.txt
- * deterministically exceeds V8's string length limit, Node
- * ERR_STRING_TOO_LONG). fetchMetroStopBoard() throws MetroGtfsTooLargeError
- * immediately without touching the network — see
- * lib/providers/north-east.js file header. This gate asserts that, plus all
- * the catalog/direction-model wiring, with no network calls at all.
+ * Tyne and Wear Metro is OUT-PRODUCT (Tim, 5 Sep 2026 — see
+ * docs/jim-brief-north-east-metro-out-product.md and
+ * docs/united-kingdom-ledger.md §3/§4): no confirmed public real-time feed
+ * exists, so per the walk-up rule's East Midlands NET precedent the app does
+ * not offer a static-timetable board dressed up as live.
+ * fetchMetroStopBoard() throws MetroFeedUnconfirmedError immediately
+ * without touching the network — see lib/providers/north-east.js file
+ * header. This gate asserts that, plus all the catalog/direction-model
+ * wiring, with no network calls at all.
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -35,7 +35,7 @@ import {
   linesForStation,
   isForbiddenCollapseName,
   MissingDarwinTokenError,
-  MetroGtfsTooLargeError,
+  MetroFeedUnconfirmedError,
 } from "../lib/providers/north-east.js";
 import { getRegion, getNotInRegion } from "../lib/providers/uk/catalog.js";
 
@@ -191,19 +191,18 @@ try {
 }
 assert(darwinBlocked, "fetchNationalRailBoard must throw MissingDarwinTokenError until DARWIN_LDB_TOKEN exists");
 
-// Metro board path is structurally wired but blocked — a genuine third kind of gap (confirmed
-// GTFS source, unparseable at current scale by the shared static-cache.js helper — see
-// lib/providers/north-east.js file header). No network call needed: fetchMetroStopBoard() throws
-// before attempting the download.
+// Metro board path is out-product — no confirmed public real-time feed exists (walk-up rule,
+// East Midlands NET precedent; see lib/providers/north-east.js file header). No network call
+// needed: fetchMetroStopBoard() throws before attempting anything.
 let metroBlocked = false;
 try {
   await fetchMetroStopBoard("Monument");
 } catch (err) {
-  metroBlocked = err instanceof MetroGtfsTooLargeError;
+  metroBlocked = err instanceof MetroFeedUnconfirmedError;
 }
 assert(
   metroBlocked,
-  "fetchMetroStopBoard must throw MetroGtfsTooLargeError — the confirmed GTFS source cannot currently be parsed"
+  "fetchMetroStopBoard must throw MetroFeedUnconfirmedError — Metro is out-product, no confirmed real-time feed"
 );
 
 let dispatchThrew = false;
@@ -215,5 +214,5 @@ try {
 assert(dispatchThrew, "fetchStationBoard dispatcher must not silently succeed for Metro");
 
 console.log(
-  "north-east-planned-gate: ok (planned/501, adapterReady, D1 pack, 3 rail + 60 GTFS-confirmed Metro stations, Darlington excluded, doNotGroup at Newcastle Central via distinct printed names, Sunderland correctly modelled as NOT doNotGroup, Pelaw confirmed Metro-only and served by both lines, line+terminus direction model with full confirmed station lists, National Rail and Metro both correctly blocked (account block vs GTFS-too-large), Perth green)"
+  "north-east-planned-gate: ok (planned/501, adapterReady, D1 pack, 3 rail + 60 GTFS-confirmed Metro stations, Darlington excluded, doNotGroup at Newcastle Central via distinct printed names, Sunderland correctly modelled as NOT doNotGroup, Pelaw confirmed Metro-only and served by both lines, line+terminus direction model with full confirmed station lists, National Rail blocked (account block) and Metro out-product (no confirmed real-time feed), Perth green)"
 );

@@ -28,7 +28,7 @@ import {
  * unconditionally by design (NetFeedUnconfirmedError,
  * MetrolinkFeedUnconfirmedError, SupertramFeedUnconfirmedError,
  * EdinburghTramsFeedUnverifiedError, GlasgowSubwayFeedUnverifiedError,
- * MetroGtfsTooLargeError, ...) means this feed will never return data until
+ * MetroFeedUnconfirmedError, ...) means this feed will never return data until
  * a real one exists — retrying can't help either. An unnamed/generic Error
  * (network hiccup, transient upstream failure) keeps the existing "try
  * again" treatment. Liverpool City Region's Merseyrail no longer has such
