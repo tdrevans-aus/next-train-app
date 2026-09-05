@@ -149,7 +149,7 @@ exists; verified independently where noted.
 | EMR (East Midlands Railway) | `in` | No compulsory reservation | East Midlands hub; discovered as the operator-split partner at Greater Anglia's Norwich hub (Thetford/Ely) | reg: east-midlands, greater-anglia |
 | Northern (Trains) | `in` | No compulsory reservation | West Yorkshire, South Yorkshire, North East, Greater Manchester, Liverpool City Region, Cumbria | reg: multiple |
 | ScotRail | `in` | No compulsory reservation | Glasgow, Edinburgh, Rest of Scotland | reg: multiple |
-| Transport for Wales | `in` | No compulsory reservation (real-time feed status via Darwin itself is a separate, **unconfirmed** question — see Coverage boundaries §4) | South Wales, Rest of Wales | reg: south-wales, rest-of-wales |
+| Transport for Wales | `in` | No compulsory reservation. Live TfW departures on Darwin **confirmed 5 Sep 2026** at every probed Welsh station (see §4) | South Wales, Rest of Wales | reg: south-wales, rest-of-wales |
 | Greater Anglia (operator) | `in` | No compulsory reservation | Own region, plus Liverpool Street (documented `in` in london-se-national-rail's built pack, not duplicated in greater-anglia's own) | reg: greater-anglia, london-se-national-rail |
 | Southeastern / Southern / Thameslink | `in` | No compulsory reservation | London & South East NR (London Bridge — three-operator `includeOperators` split), Solent (Southern at Fareham) | reg: london-se-national-rail, solent |
 | South Western Railway | `in` | No compulsory reservation | Waterloo hub (london-se-national-rail), Solent (both hubs), Thames Valley (Reading) | reg: multiple |
@@ -202,9 +202,12 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
   its whole-zip `TextDecoder.decode()` string-length limit — `MetroGtfsTooLargeError`, a shared-code
   gap affecting ~10 other live cities' helper, not this region alone). No public real-time feed
   either (`metro-rti.nexus.org.uk` is undocumented/app-only).
-- **TfW Valley Lines** — South Wales: no confirmed public GTFS static or GTFS-RT feed of any kind
-  ("not found" throughout the region's own oracle report). Genuinely no feed, not a skip risk to
-  chase further without a TfW reply.
+- **TfW Valley Lines** — **CORRECTED 5 Sep 2026: on Darwin.** The South Wales pack recorded "no
+  confirmed public GTFS static or GTFS-RT feed of any kind" — true for GTFS, but the walk-up board
+  only needs Darwin, and a live probe of Cardiff Central (CDF) returned Valley Lines departures
+  (Rhymney, Coryton, TfW) alongside main-line services. The Valley Lines are heavy rail with CRS
+  codes and are therefore in scope for South Wales whenever Tim chooses to rescope; the pack's
+  "not wired" status is a scope decision now, not a data gap.
 - **Edinburgh Trams** — static GTFS confirmed reachable (DFT BODS, OGL 3.0) but not fetched/parsed;
   no confirmed real-time successor (TfE Open Data API inactive).
 - **Glasgow Subway** — schedule-only at best: static candidate (TravelWhiz community aggregation)
@@ -216,11 +219,16 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
   keys; existing keys continue on an unconfirmed timeline; no public GTFS-RT confirmed anywhere.
 - **Merseyrail** — **not** a coverage gap; corrected 4 Sep 2026 to run through Darwin like any
   other TOC (see §1). Recorded here only to close the door on re-treating it as one.
-- **Transport for Wales's real-time status specifically through Darwin** — genuinely unconfirmed
-  (narrower than South Wales's Valley Lines "no feed at all"): static GTFS via Transitland is
-  live, but whether Darwin/OpenLDBWS actually carries live TfW departure data has not been
-  confirmed (`data@tfw.wales` not yet contacted, per Rest of Wales's own pack). Do not assume it
-  works once regions using TfW flip live — verify against a real Darwin payload first.
+- **Transport for Wales through Darwin — CONFIRMED 5 Sep 2026.** Live probe (`scripts/probe-uk-board.mjs`)
+  of all 17 Rest of Wales catalog CRS codes plus CDF/STJ returned TfW-operated departures with
+  platforms and running status at every Welsh station (Wrexham General, Llandudno Junction, Conwy,
+  Bangor, Holyhead, Welshpool, Machynlleth, Aberystwyth, Pwllheli, Carmarthen, Whitland, Narberth,
+  Tenby, Pembroke Dock, Milford Haven, Fishguard, Llanelli, Cardiff Central). No further TfW
+  contact needed for real-time. The same probe found **8 of Rest of Wales's 17 CRS codes wrong**
+  (5 non-existent, 3 silently resolving to English stations — Holyhead→Honley, Machynlleth→March,
+  Milford Haven→Mill Hill) and **3 of Rest of Scotland's 9 wrong** (Dundee, Kyle of Lochalsh,
+  Thurso) — corrected in PR #249, see Propagation log. Every other Scottish CRS (GLC, GLQ, EDB,
+  HYM, SLA, PTH, INV, ABD, WCK, MLG, FTW) verified live the same day.
 - **traini.ac** — a no-auth, CORS-open third-party aggregator over Network Rail TRUST/TD/VSTP and
   Darwin Push Port, evaluated and explicitly **rejected** for the request path 4 Sep 2026
   (`docs/uk-build-out-recommendation.md` §3): rate limit too low for production (120 units/min per
@@ -247,16 +255,12 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
    chips; Taunton (TAU), Westbury (WSB) and Gloucester (GCR) already pickable in West of England,
    `class` prose updated to record home-region ownership per this ledger; South Yorkshire drops
    Denby Dale. East Midlands must not add Peterborough (unchanged, not actioned here).
-3. **Stale "DARWIN_LDB_TOKEN not set" blocker text** on 12 planned regions' registry `integration`
-   strings — the token has existed since 2 Sep 2026; cosmetic but misdescribes why those regions
-   aren't live. **Sequenced (Tim, 5 Sep 2026):** one registry sweep after the Darwin cache brief
-   lands and the four open flip PRs (Solent, Thames Valley, Greater Anglia, West Yorkshire) merge,
-   bundled with stripping the per-region RDM-terms copies once item 1 is answered.
+3. **Stale "DARWIN_LDB_TOKEN not set" blocker text** — done PR #242 (5 Sep 2026): 14 token
+   strings, 3 licence copies and 3 "ledger does not exist" pointers replaced across the 20 UK
+   registry entries; prose-only.
 
-4. **The 15–30s Darwin server-side cache** — specified in `docs/uk-architecture.md` and
-   `docs/uk-provider-design.md`, never built; five regions live without it. **Decided (Tim, 5 Sep
-   2026): build before the four open flip PRs merge.** Jim brief dispatched 5 Sep
-   (`docs/jim-brief-uk-darwin-cache.md`), which also carries the King's Cross LNER exclusion removal.
+4. **The 15–30s Darwin server-side cache** — done PR #230 (5 Sep 2026): 20s TTL, in-flight
+   coalescing, stale-on-error, bounded eviction, gated by `qa/uk-darwin-cache.mjs`.
 
 5. **Heathrow Express / Gatwick Express / Stansted Express** have verdicts recorded in §3 but no
    station to attach them to — none of the three airports is in any built UK catalog yet. Not
@@ -279,3 +283,6 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 | 5 Sep 2026 | rdg-attribution | RDG attribution wired on all Darwin boards, PR #235 | `public/city-session.js` gates the required RDG line on every `feed: "darwin"` region (live + planned) via `feedAttributionForCity`; `uk-london-tfl` unaffected. Open item 1 closed |
 | 5 Sep 2026 | west-of-england, south-wales | Chepstow vs Severn Tunnel Junction ruled not a contest: both Welsh, on different corridors (STJ = South Wales Main Line, CPW = Gloucester–Newport line), both home South Wales, both through-running-only (Tim). | No catalog change; next Welsh/Gloucestershire region cites this row |
 | 5 Sep 2026 | ledger-catalog-followups | Catalog follow-ups from the stop-ownership decisions actioned, PR #238: Tamworth (TAM) added to West Midlands (`lib/cities/uk-west-midlands/stations.json`, real NaPTAN coordinates, live-probed via `scripts/probe-uk-board.mjs --crs=TAM`, no hub-anchoring entry added — no Birmingham New Street chip observed live); Gloucester/Westbury/Taunton `class` prose in `lib/cities/west-of-england/stations.json` updated to record West of England as home region; Denby Dale removed from `lib/cities/south-yorkshire/stations.json` (West Yorkshire's per row above). | Open item 2 closed |
+| 5 Sep 2026 | uk-west-midlands | Tamworth service-hours probe (FB-54): Birmingham direction is CrossCountry through-running printing Cardiff Central/Reading/Bournemouth/Plymouth — the Kidderminster shape, no operator split. | Birmingham hub chip (BHM) added for TAM only, PR #245 |
+| 5 Sep 2026 | rest-of-wales, south-wales | TfW live on Darwin confirmed at every Welsh catalog station; Cardiff Valley Lines are on Darwin (Rhymney/Coryton seen at CDF). | Rest of Wales real-time unknown closed; South Wales Valley Lines reclassified from "no feed" to "scope decision" |
+| 5 Sep 2026 | rest-of-wales, rest-of-scotland | 11 CRS codes wrong in the two planned packs (CON→CNW, HOY→HHD, WEL→WLP, MCH→MCN, WLD→WTL, TNB→TEN, MLH→MFH, Fishguard Harbour FGW→FGH (FGH live-verified 07:00, FGW is the separate Fishguard & Goodwick station); DDE→DEE, KLS→KYL, THR→THS). | Corrected with crsVerified set, PR #249. Packs untouched (immutable history) |
