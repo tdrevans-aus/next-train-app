@@ -73,7 +73,7 @@ lane needing cross-region facts reads the ledger, not other cities' packs.
 
 - **UK** — required before the next NR region: formalize the one-Darwin-provider decision,
   fold the ad-hoc "Cross-Region Boundary" sections from the glasgow/edinburgh/east-midlands
-  oracle reports into `docs/uk-ledger.md`, verdicts for Eurostar (`out-checkin`) and sleepers.
+  oracle reports into `docs/united-kingdom-ledger.md`, verdicts for Eurostar (`out-checkin`) and sleepers.
 - **Sweden** — before Malmö/Uppsala flip: shared-Trafiklab provider decision, line-40
   stop-ownership (Uppsala C / Knivsta / Arlanda C), SJ / Öresundståg / Krösatågen verdicts.
 - **Netherlands** — light: record the shared-OVapi provider and the forward-looking NS stance
