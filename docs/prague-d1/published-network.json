@@ -1,0 +1,269 @@
+{
+  "city": "prague",
+  "displayName": "Prague",
+  "status": "planned",
+  "agency": "PID (Pražská integrovaná doprava) / DPP (Dopravní podnik hlavního města Prahy)",
+  "timezone": "Europe/Prague",
+  "source": "https://en.wikipedia.org/wiki/List_of_Prague_Metro_stations",
+  "sources": [
+    {
+      "role": "D1 passenger metro roster (line membership, station order, interchange hubs) cited by the oracle report; not independently re-fetched in this lane (no live-fetch tool available). Topology is stable/well-documented (three lines, unchanged counts for several years) and matches the oracle report's verified per-line counts (A 17, B 24, C 20) and named interchanges (Muzeum A/C, Můstek A/B, Florenc B/C).",
+      "title": "List of Prague Metro stations",
+      "url": "https://en.wikipedia.org/wiki/List_of_Prague_Metro_stations",
+      "note": "Cited in docs/prague-d1/oracle-clash-report.md H2 as the confirmed station roster + line membership + interchange hubs source. stations[] below reproduces that cited roster's order. FLAG: not re-verified against PID GTFS stop_name at this pass — confirm at D2 before product edit."
+    },
+    {
+      "role": "official network map / line legend (line letters, colours, hub-lock evidence)",
+      "title": "PID network maps",
+      "url": "https://pid.cz/en/",
+      "note": "Per oracle report: three lines A (green), B (yellow), C (red); interchange triangle marked; Line D not shown (not yet open)."
+    },
+    {
+      "role": "static GTFS exists (verified live 200 anonymous) — NOT a D1 generator",
+      "title": "PID GTFS static feed",
+      "url": "https://data.pid.cz/PID_GTFS.zip",
+      "verifiedAt": "2026-08-28",
+      "http": 200,
+      "contentType": "application/zip",
+      "note": "Verified live per oracle report, no key required. Full multi-mode feed (metro + tram + bus + trolleybus + regional rail + funicular + ferries). v1 adapter must filter to metro routes only. Do not generate published-network.json from routes.txt or stops.txt — per oracle report explicit instruction."
+    },
+    {
+      "role": "live-board path (Golemio API — not wired; no key in this pack)",
+      "title": "Golemio API",
+      "url": "https://api.golemio.cz/docs/openapi/",
+      "keyManagement": "https://api.golemio.cz/api-keys",
+      "note": "Proprietary JSON, not GTFS-RT. Requires X-Access-Token (free registration, non-commercial tier). Not a D1 generator. Never paste a key. D1 stays planned."
+    },
+    {
+      "role": "Line D out-of-scope confirmation",
+      "title": "Wikipedia: Line D (Prague Metro)",
+      "url": "https://en.wikipedia.org/wiki/Line_D_(Prague_Metro)",
+      "note": "Under construction; first section not expected until 2031-2032; no passenger service as of 2026. Out of v1."
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/prague-d1/oracle-clash-report.md (Nico, 2026-09-06), which verifies per-line station counts (A 17, B 24, C 20) and names the three interchange hubs (Muzeum, Můstek, Florenc) but does not itself transcribe every station name. stations[] below is reproduced from the cited Wikipedia roster (stable, well-documented topology) — flagged in hazard-pack.md for D2 cross-check against PID GTFS stop_name before any product edit.",
+    "City id prague is unused in existing packs. Display Prague. Agency PID (coordinator ROPID) / DPP (operator). Do not invent city=praha, city=pida, city=pid, or merge into another Czech city — none exists yet.",
+    "City stays planned until Jim wires testers. Modes v1: Metro A, B, C only. OUT: Line D (under construction, no passenger service as of 2026, earliest 2031-2032); tram; bus; trolleybus; funicular (Petřín); regional rail (Esko); ferries; bike-sharing. Tracker's 'Metro A-C + Esko' / 'A/B/C/D' notes are stale per the oracle report's explicit correction.",
+    "Timezone Europe/Prague HAS DST (CEST/CET), last Sunday of March / October. Do not copy Perth / Brisbane / Auckland no-DST handling.",
+    "Three lines: A Nemocnice Motol - Depo Hostivař (17 stations); B Zličín - Černý Most (24 stations, longest); C Letňany - Háje (20 stations, oldest, opened 1974). 61 line-station ticks (17+24+20); 58 unique station strings after removing the three double-counted interchange names (Muzeum, Můstek, Florenc each counted on two lines). The oracle report's phrase '61 unique D1 metro names' is the tick count, not the unique-name count — flagged as a hazard, resolved the same way Brussels distinguished lineTicks (94) from uniqueNames (60).",
+    "Hub lock: Muzeum (A x C), per this task's instruction and the oracle report's 'Muzeum listed first' tracker note. Secondary interchange: Můstek (A x B). Third vertex: Florenc (B x C). No single station serves all three lines. Muzeum is a hub stop string, not a direction token.",
+    "doNotGroup Muzeum vs Můstek vs Florenc (three distinct two-line nodes forming an interchange triangle, not one hub). doNotGroup Metro A/B/C vs Line D, tram, bus, trolleybus, funicular, Esko, ferries (all out of v1, same PID GTFS zip carries all modes).",
+    "Diacritics are load-bearing, not decorative (Můstek, Náměstí Míru, Jiřího z Poděbrad, Vysočanská, Nádraží Holešovice, etc.). Lock the full-diacritic official form; a stripped-diacritic string is a different, wrong string, not a rename. Confirm PID GTFS stop_name uses matching diacritic forms at D2 (some feeds ASCII-fold).",
+    "gtfsRouteIdsIfKnown are the official line letters A, B, C printed on the PID map (not extracted from GTFS). No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Golemio API (api.golemio.cz) via X-Access-Token header. Free registration required, non-commercial tier. No public GTFS-RT confirmed. Static PID GTFS zip verified live 200 empty-key 2026-08-28 — not a D1 generator, filter to metro routes only. Never paste a key. D1 stays planned. assertCityLive(\"prague\") must fail (Unknown city / 400 — city is not in lib/providers/registry.js CITIES).",
+    "Board eligibility: all three lines verdict 'in' per oracle report (open honor-system boarding, pre-boarding validators not gate barriers, no compulsory reservation, no check-in barrier). No excluded metro services in v1 scope.",
+    "Shortturns: oracle report does not document any nested/partial-route service codes for A/B/C. shortTurns left empty on all three lines as a default, NOT a confirmed empty — flagged in hazard-pack.md H5 for D2 verification against GTFS trip_headsign / stop_times before treating as final."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Muzeum",
+    "lockSet": [
+      "Muzeum"
+    ],
+    "lockNote": "Printed hub lock. Metro A x C beneath Wenceslas Square / National Museum. Line A opened this section 1978, Line C 1974. Not a direction token. Line B does not call here — B riders interchange at Můstek or Florenc.",
+    "doNotUse": [
+      "Můstek",
+      "Florenc",
+      "Downtown",
+      "Centre",
+      "Centrum",
+      "City",
+      "CBD",
+      "Prague",
+      "Praha",
+      "prague",
+      "praha",
+      "pida",
+      "pid"
+    ],
+    "doNotCollapse": [
+      "Muzeum",
+      "Můstek",
+      "Florenc"
+    ],
+    "alsoOnSharedApproaches": []
+  },
+  "coverageGaps": [
+    "Line D. Under construction, no passenger service as of 2026 (earliest 2031-2032). Out of v1.",
+    "Esko (regional rail), despite riding the same PID GTFS zip. Tracker footnote confirms out.",
+    "Tram, bus, trolleybus. Out of v1.",
+    "Funicular (Petřín). Out of v1.",
+    "Ferries, bike-sharing. Out of v1.",
+    "Golemio real-time API endpoint coverage for metro departures/vehicle positions not yet confirmed — Jim's D2 concern.",
+    "Golemio API license/ToS terms (non-commercial tier restrictions on redistribution) not yet confirmed — Tim to review before D1 wiring per oracle report license section."
+  ],
+  "liveBoards": {
+    "status": "keyed_api_exists_city_planned",
+    "portal": "https://api.golemio.cz/docs/openapi/",
+    "keyManagement": "https://api.golemio.cz/api-keys",
+    "defaultNextTrain": {
+      "name": "Golemio API (departure boards, vehicle positions)",
+      "header": "X-Access-Token",
+      "note": "Not GTFS-RT. No public GTFS-RT confirmed for PID. Jim D2. Not a D1 generator."
+    },
+    "keyPolicy": "Free registration, email verification, non-commercial tier. Key is personal and non-transferable. The key is for live boards later, NOT a D1 blocker. This pack does not contain a key and did not call the API. Never paste a key.",
+    "d1": "planned. assertCityLive(prague) must fail."
+  },
+  "stats": {
+    "lines": 3,
+    "lineAStops": 17,
+    "lineBStops": 24,
+    "lineCStops": 20,
+    "lineTicks": 61,
+    "uniqueNames": 58,
+    "innerCityLock": [
+      "Muzeum"
+    ]
+  },
+  "lines": [
+    {
+      "id": "A",
+      "number": "A",
+      "name": "A",
+      "officialPageTitle": "A Nemocnice Motol - Depo Hostivař",
+      "gtfsRouteIdsIfKnown": [
+        "A"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Nemocnice Motol",
+        "Depo Hostivař"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Muzeum",
+          "otherLine": "C",
+          "note": "Hub lock. Metro A x C beneath Wenceslas Square. Not a direction token."
+        },
+        {
+          "at": "Můstek",
+          "otherLine": "B",
+          "note": "Secondary interchange, doNotGroup vs Muzeum. Metro A x B."
+        }
+      ],
+      "stations": [
+        "Nemocnice Motol",
+        "Petřiny",
+        "Nádraží Veleslavín",
+        "Bořislavka",
+        "Dejvická",
+        "Hradčanská",
+        "Malostranská",
+        "Staroměstská",
+        "Můstek",
+        "Muzeum",
+        "Náměstí Míru",
+        "Jiřího z Poděbrad",
+        "Flora",
+        "Želivského",
+        "Strašnická",
+        "Skalka",
+        "Depo Hostivař"
+      ]
+    },
+    {
+      "id": "B",
+      "number": "B",
+      "name": "B",
+      "officialPageTitle": "B Zličín - Černý Most",
+      "gtfsRouteIdsIfKnown": [
+        "B"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Zličín",
+        "Černý Most"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Můstek",
+          "otherLine": "A",
+          "note": "Metro A x B. doNotGroup vs Muzeum and Florenc."
+        },
+        {
+          "at": "Florenc",
+          "otherLine": "C",
+          "note": "Third vertex of the interchange triangle. Metro B x C. doNotGroup vs Muzeum and Můstek."
+        }
+      ],
+      "stations": [
+        "Zličín",
+        "Stodůlky",
+        "Luka",
+        "Lužiny",
+        "Hůrka",
+        "Nové Butovice",
+        "Jinonice",
+        "Radlická",
+        "Smíchovské nádraží",
+        "Anděl",
+        "Karlovo náměstí",
+        "Národní třída",
+        "Můstek",
+        "Náměstí Republiky",
+        "Florenc",
+        "Křižíkova",
+        "Invalidovna",
+        "Palmovka",
+        "Českomoravská",
+        "Vysočanská",
+        "Kolbenova",
+        "Hloubětín",
+        "Rajská zahrada",
+        "Černý Most"
+      ]
+    },
+    {
+      "id": "C",
+      "number": "C",
+      "name": "C",
+      "officialPageTitle": "C Letňany - Háje",
+      "gtfsRouteIdsIfKnown": [
+        "C"
+      ],
+      "mapGroup": "Metro",
+      "termini": [
+        "Letňany",
+        "Háje"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Florenc",
+          "otherLine": "B",
+          "note": "Metro B x C. doNotGroup vs Muzeum and Můstek."
+        },
+        {
+          "at": "Muzeum",
+          "otherLine": "A",
+          "note": "Hub lock. Metro A x C beneath Wenceslas Square. Not a direction token."
+        }
+      ],
+      "stations": [
+        "Letňany",
+        "Prosek",
+        "Střížkov",
+        "Ládví",
+        "Kobylisy",
+        "Nádraží Holešovice",
+        "Vltavská",
+        "Florenc",
+        "Hlavní nádraží",
+        "Muzeum",
+        "I. P. Pavlova",
+        "Vyšehrad",
+        "Pražského povstání",
+        "Pankrác",
+        "Budějovická",
+        "Kačerov",
+        "Roztyly",
+        "Chodov",
+        "Opatov",
+        "Háje"
+      ]
+    }
+  ]
+}

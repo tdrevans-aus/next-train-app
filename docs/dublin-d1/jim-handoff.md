@@ -1,0 +1,21 @@
+Dublin D1 + research pack. City stays **planned** until Jim wires testers live. All other cities' live-gates untouched — this pack only writes inside `docs/dublin-d1/`. **assertCityLive("dublin") must still fail** (city is not in `lib/providers/registry.js` CITIES today — Unknown city / 400). No generator, no product edit. Jim owns D2–D6. Do not flip dublin live from this pack. Do not invent city=dub, city=ie, or merge into a national multi-city Irish feed.
+
+Drop later (Jim D2): `qa/fixtures/dublin/published-network.json`. Research pack is `docs/dublin-d1/`: `published-network.json`, `oracle-clash-report.md`, `hazard-pack.md`, `direction-model-memo.md`, `jim-handoff.md` (this file).
+
+D1 = official **Luas Network Map** PNG (DatoCMS asset 225949/1784119177, linked from https://www.luas.ie/luas-map/), hand-transcribed from the rendered image by this pack — the oracle report explicitly deferred station-array transcription to this step. **Not generated from GTFS.** Static NTA GTFS zip verified 200 (no key) by the oracle report — do not use it to build stations[].
+
+Two colour lines, no printed route numbers: **Red** — two southwestern branches forking at **Belgard** (Saggart via Fettercairn/Cheeverstown/Citywest Campus/Fortunestown, 29 stops end-to-end; Tallaght via Cookstown/Hospital, 27 stops end-to-end; 24-stop common trunk east to The Point) — **32 unique stops total**. **Green** — Broombridge to Brides Glen, **35 unique stops**, including a **one-way city-centre loop** between Parnell and Trinity. **67 unique Luas stops total** across both lines.
+
+Hub lock **Abbey Street** (Red trunk, between Jervis and Busáras; confirmed by dot position on the map). Not Connolly (Red only, DART interchange, no Green access). Green interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a **~200 m walk**, not a shared platform.
+
+**Sharpest hazard in this pack — read before D5:** the Green Line's Parnell↔Trinity loop is direction-exclusive, not a simple branch. `O'Connell - GPO` and `O'Connell Upper` are served **northbound only** (towards Broombridge); `Marlborough` is served **southbound only** (towards Brides Glen). If the product's station/board model assumes every stop has both directions, these three stops will need a design decision, not a default — flagged as an open §3 question for Tim in `direction-model-memo.md`. Full detail and evidence in `hazard-pack.md` H4a and the `cityCentreLoop` object in `published-network.json`.
+
+**Second hazard:** the oracle report's Red Line terminus claim ("Terminates Malahide or Howth") is **factually wrong** — those are DART termini, not Luas. Not carried into this pack's files; flagged in `hazard-pack.md` "What the oracle report didn't have" in case it resurfaces when DART (v2) is picked up.
+
+**Third hazard:** the oracle report's DST claim ("no daylight saving observed since 2024") is unverified and likely wrong — Ireland's clock-change abolition proposal stalled at EU level and was never enacted. Recommend Jim use the IANA identifier `Europe/Dublin` directly (tzdata handles the real rule) rather than any hand-rolled fixed-offset table. See `hazard-pack.md` H7.
+
+C2/C3: (1) Separate city dublin, agency Luas (Keolis/NTA). Do not invent city=dub/ie. (2) Lock Abbey Street. (3) Luas Red+Green only — no DART (v2), no bus (out of mode), no premetro. (4) doNotGroup Abbey Street vs Marlborough/O'Connell-GPO/O'Connell Upper; O'Connell-GPO vs O'Connell Upper; Tallaght vs Saggart; Red Cow vs Kingswood vs Belgard. (5) No printed route numbers — colour-only branding, gtfsRouteIdsIfKnown left empty for Jim to verify against the real NTA feed in D2, do not invent.
+
+**Live boards: NTA GTFS-RT v2 keyed later — not a D1 blocker.** Portal https://developer.nationaltransport.ie/. Header `x-api-key`. This pack made no keyed calls and did not paste a key. D1 stays planned. assertCityLive("dublin") must fail.
+
+§3 rec: colour + terminus (`Red + Tallaght`, `Red + Saggart`, `Green + Broombridge`, `Green + Brides Glen`). Abbey Street is a hub stop string, never a direction token. Hold D5 on the Parnell/Trinity direction-exclusive question above. Jim owns D2–D6. When Jim wires, testers can pick city id **dublin**. Do not flip from this pack — that's Jim/Mark's job once QA is green.

@@ -1,0 +1,333 @@
+{
+  "city": "dublin",
+  "displayName": "Dublin",
+  "status": "planned",
+  "agency": "Luas (Keolis / National Transport Authority)",
+  "timezone": "Europe/Dublin",
+  "source": "https://www.datocms-assets.com/225949/1784119177-luas_networkmap.png",
+  "sources": [
+    {
+      "role": "D1 official network map (ordered stops + hub lock + city-centre loop). Hand-transcribed from the rendered PNG. Not generated from GTFS.",
+      "title": "Luas Network Map",
+      "url": "https://www.datocms-assets.com/225949/1784119177-luas_networkmap.png",
+      "linkedFrom": "https://www.luas.ie/luas-map/",
+      "retrievedAt": "2026-09-06T16:17:00Z",
+      "assetSize": "800x748 PNG, 104174 bytes",
+      "note": "Fetched via the Gatsby page-data.json for /luas-map/ (the rendered HTML does not embed the asset URL directly; the 'Network Map' content block does). Hand-transcribed by reading dot positions and printed names directly off the image, cropped and upscaled per segment for legibility. No pdftotext, no GTFS, no lines.json used to build stations[]."
+    },
+    {
+      "role": "D1 oracle report (agency/feed/mode-cut/hub-lock/board-eligibility decisions; station-array transcription explicitly deferred to this pack)",
+      "title": "Dublin oracle clash report",
+      "url": "docs/dublin-d1/oracle-clash-report.md",
+      "note": "Locks hub=Abbey Street, mode cut=Luas Red+Green only (no DART/bus), city id=dublin. Its Red Line 'Terminates Malahide or Howth' claim is factually wrong (those are DART termini) and is NOT carried into this file — see hazard-pack.md."
+    },
+    {
+      "role": "static GTFS exists (200, no key) — NOT a D1 generator",
+      "title": "NTA static GTFS (all Irish operators, including Luas)",
+      "url": "https://www.transportforireland.ie/transitData/Data/GTFS_All.zip",
+      "note": "Verified 200 by the oracle report 2026-09-06. Stations[] were not built from this zip. Do not generate published-network.json from GTFS. Adapter (Jim, D2) must filter to Luas agency, Red/Green routes only."
+    },
+    {
+      "role": "live-board path (NTA GTFS-RT v2 — not wired; no key in this pack)",
+      "title": "NTA GTFS-RT v2 TripUpdates + Vehicles",
+      "tripUpdates": "https://api.nationaltransport.ie/gtfsr/v2/TripUpdates",
+      "vehicles": "https://api.nationaltransport.ie/gtfsr/v2/Vehicles",
+      "portal": "https://developer.nationaltransport.ie/",
+      "note": "Requires x-api-key header; 404 without key. This pack made no keyed calls and did not paste a key. Jim D2, not a D1 generator. D1 stays planned."
+    }
+  ],
+  "retrievedAt": "2026-09-06T16:20:00Z",
+  "notes": [
+    "D1 oracle is the official Luas Network Map PNG (DatoCMS asset 225949/1784119177, linked from https://www.luas.ie/luas-map/) HAND-TRANSCRIBED from the rendered image by this pack — the oracle report explicitly deferred this step. Not generated from GTFS, not generated from routes.txt, not generated from Wikipedia.",
+    "City id dublin is unused in existing packs. Display Dublin. Agency Luas (Keolis / NTA). Do not invent city=dub, city=ie, or merge into a national multi-city Irish feed. Do not edit any other city. Do not flip live.",
+    "City stays planned until Jim wires testers. Modes v1: Luas Red + Green light rail only. OUT: DART/Iarnród Éireann (commuter rail, v2), Dublin Bus, Bus Éireann, Go-Ahead Ireland (buses, out of mode). No premetro, no bus.",
+    "Timezone Europe/Dublin. The oracle report's 'no daylight saving observed since 2024' claim is UNVERIFIED and likely incorrect (the EU/Ireland clock-change abolition proposal stalled and was never enacted) — do not hand-roll a fixed-offset table; use the IANA tzdatabase identifier Europe/Dublin directly so real transition rules are picked up automatically. See hazard-pack.md H7.",
+    "Red Line: 32 unique stops. Two southwestern branches fork at Belgard — Tallaght (via Cookstown, Hospital) and Saggart (via Fettercairn, Cheeverstown, Citywest Campus, Fortunestown) — sharing one common trunk east to The Point. No printed route number; Luas brands by colour only.",
+    "Green Line: 35 unique stops. Broombridge (north) to Brides Glen (south), with a one-way city-centre loop between Parnell and Trinity: O'Connell - GPO and O'Connell Upper are northbound-only (towards Broombridge); Marlborough is southbound-only (towards Brides Glen). See cityCentreLoop below and direction-model-memo.md — this is the sharpest hazard in this pack.",
+    "Locked hub: Abbey Street (Red Line trunk stop, between Jervis and Busáras; confirmed by dot position on the official map). Not Connolly (Red only, DART interchange, no Green access). Green interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a ~200 m walk, not a shared platform — Abbey Street boards must never show a Green chip.",
+    "doNotGroup Abbey Street vs Marlborough / O'Connell - GPO / O'Connell Upper (hub vs walkable Green cluster). doNotGroup O'Connell - GPO vs O'Connell Upper (two distinct Green stops, same name family, direction-exclusive). doNotGroup Tallaght vs Saggart (two distinct Red termini forking at Belgard). doNotGroup Red Cow vs Kingswood vs Belgard (three consecutive distinct stops; Belgard, not Red Cow, is the actual fork).",
+    "gtfsRouteIdsIfKnown intentionally omitted: Luas has no printed route number on the official map (colour-only branding). Jim must verify actual GTFS route_id values against the NTA static feed in D2 — do not invent them here.",
+    "P&R / bus / bike / accessibility icons printed next to some stop names (e.g. 'P&R Red Cow', 'Tallaght P&R') are amenity tags, stripped from the D1 stop names below (Red Cow, Tallaght).",
+    "Feed / live (Jim D2, not a D1 generator): NTA GTFS-RT v2 TripUpdates + Vehicles via developer.nationaltransport.ie (x-api-key header). Never paste a key. D1 stays planned. assertCityLive(\"dublin\") must fail (city is not in lib/providers/registry.js CITIES today — Unknown city / 400)."
+  ],
+  "hubLock": {
+    "lock": "Abbey Street",
+    "line": "Red",
+    "lockNote": "Red Line trunk stop between Jervis and Busáras. Not a direction token — never print 'to Abbey Street' / 'to City' / 'to Centre'.",
+    "walkableGreenInterchange": [
+      "Marlborough",
+      "O'Connell - GPO",
+      "O'Connell Upper"
+    ],
+    "walkableInterchangeNote": "~200 m walk, same operator (Luas/Keolis), same fare system (Leap Card / TFI). No shared platform — never printed as if Green trains call at Abbey Street.",
+    "doNotUse": [
+      "Connolly",
+      "Busáras",
+      "O'Connell Bridge",
+      "City",
+      "Centre",
+      "Downtown",
+      "CBD",
+      "Dublin",
+      "dub"
+    ]
+  },
+  "cityCentreLoop": {
+    "line": "Green",
+    "locked": false,
+    "segment": "Parnell <-> Trinity",
+    "note": "One-way loop on the official map: two parallel tracks with opposite-direction arrows. Northbound-only and southbound-only stops must never be shown the wrong direction on a board. See direction-model-memo.md and hazard-pack.md H4a.",
+    "northboundTowardsBroombridge": [
+      "Trinity",
+      "O'Connell - GPO",
+      "O'Connell Upper",
+      "Parnell"
+    ],
+    "southboundTowardsBridesGlen": [
+      "Parnell",
+      "Marlborough",
+      "Trinity"
+    ],
+    "directionExclusiveStops": {
+      "O'Connell - GPO": "northbound only (towards Broombridge)",
+      "O'Connell Upper": "northbound only (towards Broombridge)",
+      "Marlborough": "southbound only (towards Brides Glen)"
+    },
+    "bothDirections": [
+      "Parnell",
+      "Trinity"
+    ]
+  },
+  "coverageGaps": [
+    "DART / Iarnród Éireann commuter rail. Deferred to v2 per oracle report. Not inserted.",
+    "Dublin Bus, Bus Éireann, Go-Ahead Ireland. Out of v1 mode cut (buses). Not inserted.",
+    "Peak-time short workings (e.g. Green trips turning at Sandyford or Dundrum) are not printed on the official network map and are not represented in shortTurns. Possible D2 finding once GTFS-RT trip headsigns are examined.",
+    "Fare zones (Zone Red 1-4, Zone Green 1-5 printed on the same map plate) are fare metadata, not stop-graph data. Not inserted."
+  ],
+  "liveBoards": {
+    "status": "developer_api_exists_city_planned",
+    "portal": "https://developer.nationaltransport.ie/",
+    "tripUpdates": "https://api.nationaltransport.ie/gtfsr/v2/TripUpdates",
+    "vehicles": "https://api.nationaltransport.ie/gtfsr/v2/Vehicles",
+    "authHeader": "x-api-key",
+    "note": "Verified functional 2026-09-06 per oracle report (covers multiple operators including Luas). This pack made no keyed calls. Never paste a key. Jim D2, not a D1 generator.",
+    "d1": "planned. assertCityLive(dublin) must fail."
+  },
+  "stats": {
+    "lines": 2,
+    "redUniqueStops": 32,
+    "redSaggartBranchStops": 29,
+    "redTallaghtBranchStops": 27,
+    "redCommonTrunkStops": 24,
+    "greenUniqueStops": 35,
+    "totalUniqueStops": 67,
+    "innerCityLock": [
+      "Abbey Street"
+    ]
+  },
+  "lines": [
+    {
+      "id": "red",
+      "name": "Red",
+      "officialPageTitle": "Luas Red Line — Saggart / Tallaght – The Point",
+      "colour": "#E2231A",
+      "gtfsRouteIdsIfKnown": [],
+      "termini": [
+        "Saggart",
+        "Tallaght",
+        "The Point"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Belgard",
+          "note": "Fork point. Saggart branch continues via Fettercairn, Cheeverstown, Citywest Campus, Fortunestown. Tallaght branch continues via Cookstown, Hospital."
+        },
+        {
+          "at": "Abbey Street",
+          "note": "Hub lock. Red trunk only — no Green track through this dot. Green interchange (Marlborough / O'Connell - GPO / O'Connell Upper) is a ~200 m walk."
+        },
+        {
+          "at": "Connolly",
+          "note": "DART/rail interchange. Drawn with a dogleg on the official map (curves to a named dot, trunk continues straight to George's Dock) — treated as inline per general Luas-operations knowledge, flagged for Tim to confirm (hazard-pack.md H4)."
+        }
+      ],
+      "commonTrunk": [
+        "Belgard",
+        "Kingswood",
+        "Red Cow",
+        "Kylemore",
+        "Bluebell",
+        "Blackhorse",
+        "Drimnagh",
+        "Goldenbridge",
+        "Suir Road",
+        "Rialto",
+        "Fatima",
+        "James's",
+        "Heuston",
+        "Museum",
+        "Smithfield",
+        "Four Courts",
+        "Jervis",
+        "Abbey Street",
+        "Busáras",
+        "Connolly",
+        "George's Dock",
+        "Mayor Square - NCI",
+        "Spencer Dock",
+        "The Point"
+      ],
+      "stationsSaggart": [
+        "Saggart",
+        "Fortunestown",
+        "Citywest Campus",
+        "Cheeverstown",
+        "Fettercairn",
+        "Belgard",
+        "Kingswood",
+        "Red Cow",
+        "Kylemore",
+        "Bluebell",
+        "Blackhorse",
+        "Drimnagh",
+        "Goldenbridge",
+        "Suir Road",
+        "Rialto",
+        "Fatima",
+        "James's",
+        "Heuston",
+        "Museum",
+        "Smithfield",
+        "Four Courts",
+        "Jervis",
+        "Abbey Street",
+        "Busáras",
+        "Connolly",
+        "George's Dock",
+        "Mayor Square - NCI",
+        "Spencer Dock",
+        "The Point"
+      ],
+      "stationsTallaght": [
+        "Tallaght",
+        "Hospital",
+        "Cookstown",
+        "Belgard",
+        "Kingswood",
+        "Red Cow",
+        "Kylemore",
+        "Bluebell",
+        "Blackhorse",
+        "Drimnagh",
+        "Goldenbridge",
+        "Suir Road",
+        "Rialto",
+        "Fatima",
+        "James's",
+        "Heuston",
+        "Museum",
+        "Smithfield",
+        "Four Courts",
+        "Jervis",
+        "Abbey Street",
+        "Busáras",
+        "Connolly",
+        "George's Dock",
+        "Mayor Square - NCI",
+        "Spencer Dock",
+        "The Point"
+      ],
+      "stations": [
+        "Saggart",
+        "Fortunestown",
+        "Citywest Campus",
+        "Cheeverstown",
+        "Fettercairn",
+        "Tallaght",
+        "Hospital",
+        "Cookstown",
+        "Belgard",
+        "Kingswood",
+        "Red Cow",
+        "Kylemore",
+        "Bluebell",
+        "Blackhorse",
+        "Drimnagh",
+        "Goldenbridge",
+        "Suir Road",
+        "Rialto",
+        "Fatima",
+        "James's",
+        "Heuston",
+        "Museum",
+        "Smithfield",
+        "Four Courts",
+        "Jervis",
+        "Abbey Street",
+        "Busáras",
+        "Connolly",
+        "George's Dock",
+        "Mayor Square - NCI",
+        "Spencer Dock",
+        "The Point"
+      ]
+    },
+    {
+      "id": "green",
+      "name": "Green",
+      "officialPageTitle": "Luas Green Line — Broombridge – Brides Glen",
+      "colour": "#39B54A",
+      "gtfsRouteIdsIfKnown": [],
+      "termini": [
+        "Broombridge",
+        "Brides Glen"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Parnell / Trinity",
+          "note": "City-centre one-way loop, not a branch in the usual sense — direction-exclusive stop set. See cityCentreLoop above and direction-model-memo.md."
+        }
+      ],
+      "stations": [
+        "Broombridge",
+        "Cabra",
+        "Phibsborough",
+        "Grangegorman",
+        "Broadstone - University",
+        "Dominick",
+        "Parnell",
+        "O'Connell Upper",
+        "O'Connell - GPO",
+        "Marlborough",
+        "Trinity",
+        "Westmoreland",
+        "Dawson",
+        "St. Stephen's Green",
+        "Harcourt",
+        "Charlemont",
+        "Ranelagh",
+        "Beechwood",
+        "Cowper",
+        "Milltown",
+        "Windy Arbour",
+        "Dundrum",
+        "Balally",
+        "Kilmacud",
+        "Stillorgan",
+        "Sandyford",
+        "Central Park",
+        "Glencairn",
+        "The Gallops",
+        "Leopardstown Valley",
+        "Ballyogan Wood",
+        "Carrickmines",
+        "Laughanstown",
+        "Cherrywood",
+        "Brides Glen"
+      ],
+      "stationsNote": "This 35-entry list is the full unique-name roster in geographic order, NOT a single valid direction of travel through the Parnell-O'Connell Upper-O'Connell - GPO-Marlborough-Trinity bracket (see cityCentreLoop). A real northbound trip skips Marlborough; a real southbound trip skips O'Connell Upper and O'Connell - GPO."
+    }
+  ]
+}
