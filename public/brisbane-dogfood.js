@@ -4,11 +4,7 @@
  */
 (function () {
   const STORAGE_KEY = "nextTrainDogfoodOrigin";
-<<<<<<< HEAD
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "thames-valley"];
-=======
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "west-yorkshire"];
->>>>>>> origin/master
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "west-yorkshire", "thames-valley"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   const state = {
@@ -19,11 +15,7 @@
     coords: {},
     directionsByStation: {},
     modesByName: {},
-<<<<<<< HEAD
-    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true, "thames-valley": true },
-=======
-    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true, solent: true, "west-yorkshire": true },
->>>>>>> origin/master
+    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true, solent: true, "west-yorkshire": true, "thames-valley": true },
   };
 
   async function isDebugNative() {

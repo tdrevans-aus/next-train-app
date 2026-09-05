@@ -8,11 +8,7 @@
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { UK_REGION_IDS } from "../lib/providers/uk/catalog.js";
 
-<<<<<<< HEAD
-const LIVE_UK_REGION_IDS = new Set(["uk-london-tfl", "west-of-england", "east-midlands", "uk-west-midlands", "liverpool-city-region", "thames-valley"]);
-=======
-const LIVE_UK_REGION_IDS = new Set(["uk-london-tfl", "west-of-england", "east-midlands", "uk-west-midlands", "liverpool-city-region", "solent", "west-yorkshire"]);
->>>>>>> origin/master
+const LIVE_UK_REGION_IDS = new Set(["uk-london-tfl", "west-of-england", "east-midlands", "uk-west-midlands", "liverpool-city-region", "solent", "west-yorkshire", "thames-valley"]);
 
 function assert(condition, message) {
   if (!condition) {

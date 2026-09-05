@@ -524,12 +524,9 @@ const PERSISTED_CITY_IDS = new Set([
   "west-of-england",
   "east-midlands",
   "liverpool-city-region",
-<<<<<<< HEAD
-  "thames-valley",
-=======
   "solent",
   "west-yorkshire",
->>>>>>> origin/master
+  "thames-valley",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 
