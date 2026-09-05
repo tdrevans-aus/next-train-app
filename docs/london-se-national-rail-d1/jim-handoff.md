@@ -166,3 +166,52 @@ verification against a live feed, no resolution of the GWR/SWR/CrossCountry boun
 the RDM redistribution ambiguity (all flagged for Tim/D2/ledger), no wiring of `DARWIN_LDB_TOKEN`,
 no creation of a UK country ledger (flagged as overdue, not this pack's job to write), no reading
 of any other city's in-progress pack.
+
+## Flip follow-through (5 Sep 2026, docs/jim-brief-london-se-national-rail-flip.md)
+
+Adapter wiring is done, registry status stays `planned` — Mark/Tim's flip call, not made here.
+CRS codes were verified live against Darwin in an earlier pass (5 Sep 2026, see
+`lib/cities/london-se-national-rail/stations.json`'s `crsSource` fields) and King's Cross's LNER
+exclusion was already resolved to `in` per the UK ledger before this pass began (see
+`docs/united-kingdom-ledger.md` §3) — both untouched here.
+
+**Done in this pass:**
+- `lib/cities/london-se-national-rail/dogfood-next-train.js` — reuses the shared
+  `uk-darwin.js` + `uk/direction-hubs.js` helpers (allow-list, no fork). No
+  `direction-hubs.json` ships — the seven station groups are themselves the anchors a rider
+  selects (no intermediate through-station candidate), same shape as Rest of Scotland's four
+  co-equal hub locks and Thames Valley's own v1 (no hub candidate held up on live evidence).
+  `getLondonSeNationalRailDogfoodDirections()`/`getLondonSeNationalRailDogfoodNextTrain()` take
+  a board name/CRS exactly like every other UK region's dogfood module — no multi-group
+  special-casing needed in this file (the group structure lives entirely in
+  `lib/providers/london-se-national-rail.js` and `stations.json`).
+- Dispatch switch-cases wired in `lib/cities/live-city-api.js`'s `directionsFor()` and
+  `getMultiCityNextTrain()` — safe ahead of the flip because production routes gate on
+  `assertCityLive()` first, not on `MULTI_CITY_IDS` membership.
+- `qa/london-se-national-rail-dogfood-gate.mjs` replaces the retired
+  `qa/london-se-national-rail-planned-gate.mjs` in `qa/run-all.mjs`'s smoke tier. Token-tolerant:
+  verified passing both without `DARWIN_LDB_TOKEN` (MissingDarwinTokenError-tolerant branches)
+  and with the token loaded from `.env.local` (exercises live dispatch, live next-train, the
+  London Bridge/Liverpool Street doNotGroup sub-board assertions, and a 7-distinct-CRS sweep for
+  real). One live quirk found and handled in the gate's own CRS-sweep comparison, not the
+  adapter: Darwin's real station name for STP is "London St Pancras (Intl)", which shares no
+  useful substring with the catalog's own display name "St Pancras International" once the
+  parenthetical is stripped — a deliberate, pre-existing naming choice, not a wrong CRS; the
+  gate's sweep now also compares a `london`/`international`/`intl`-stripped "core" name as a
+  second, looser check before flagging a mismatch.
+- `uk-london-tfl` untouched — verified as a separate live city throughout (see the gate's own
+  assertion) and not read or modified by this pass.
+
+**Note for Mark, for the actual flip commit — the three one-line list-membership additions
+(do NOT add these before the flip; `qa/live-city-lists-sync.mjs` enforces that they equal the
+registry's live set):**
+1. Add `"london-se-national-rail"` to `lib/cities/live-city-api.js`'s `MULTI_CITY_IDS` array and
+   its `MultiCityId` typedef.
+2. Add it to `brisbane-dogfood.js`'s mount/available map.
+3. Add it to `journey-model.js`'s persisted-city/country lists.
+
+**Not done in this pass:** no registry.js status change (stays `planned`), no
+`public/city-directions/london-se-national-rail.json` generation (picked up automatically once
+flipped), no shared-helper edit beyond the read-only imports above, no resolution of the
+GWR/SWR/CrossCountry regional-boundary flags (still open, unchanged from the D1 pack), no
+Euston or secondary-termini catalog entries (still not built, per the D1 pack's own gaps).
