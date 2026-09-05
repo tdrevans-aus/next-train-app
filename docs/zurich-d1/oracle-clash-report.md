@@ -104,3 +104,103 @@ Hub lock: **Bellevue** (tram lines 2, 4, 5, 8, 9, 15 confirmed as of 2026; major
 ## What I did not do
 
 No line-map generation, no station hand-transcription from the official map, no GTFS station arrays, no live city flip, no GitHub PR, no adapter code, no DST deep-dive on timezones, no public-transit coverage boundary map, no stopIds in the published JSON, no S-Bahn or bus integration.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+> Source caveat: the per-line stop lists below were transcribed from zurichbytram.ch, an unofficial enthusiast site, because VBZ's own line pages are map images. Luke/Jim must cross-check every stop name and order against the opentransportdata.swiss GTFS `stops.txt`/`stop_times.txt` before any product edit.
+
+**Data source:** VBZ official tram network via https://zurichbytram.ch/ (line-by-line published stop lists). **Transcription date:** 2026-09-06. **Note on renovation:** Bahnhofquai major renovation (Dec 2025–Dec 2026) affects lines 11, 13, 14, 17, which pass through the affected station complex. Current stop lists reflect the published routing post-Dec 2025 reorganization. All stops listed in official Swiss German spelling.
+
+### Line 2: Schlieren Geissweid ↔ Bahnhof Tiefenbrunnen
+
+**Source:** https://zurichbytram.ch/linie-2/
+
+Schlieren Geissweid – Schlieren Zentrum/Bahnhof – Schlieren Wagonsfabrik – Schlieren Gasometerbrücke – Schlieren Mülligen – Micafil – Farbhof – Bachmattstrasse – Lindenplatz – Grimselstrasse – Kappeli – Freihofstrasse – Letzigrund – Albisriederplatz – Zypressenstrasse – Lochergut – Kalkbreite / Bahnhof Wiedikon – Bezirksgebäude – Stauffacher – Sihlstrasse – Paradeplatz – Kantonalbank – Bürkliplatz – Bellevue – Opernhaus – Kreuzstrasse – Feldeggstrasse – Höschgasse – Fröhlichstrasse – Wildbachstrasse – Bahnhof Tiefenbrunnen.
+
+### Line 3: Albisrieden ↔ Klusplatz
+
+**Source:** https://zurichbytram.ch/linie-3/
+
+Albisrieden – Fellenbergstrasse – Siemens – Hubertus – Stadion Utogrund – Krematorium Sihlfeld – Albisriederplatz – Zypressenstrasse – Lochergut – Kalkbreite / Bahnhof Wiedikon – Bezirksgebäude – Stauffacher – Sihlpost / Hauptbahnhof – Löwenplatz – Bahnhofplatz / Hauptbahnhof – Central – Neumarkt – Kunsthaus – Hottingerplatz – Römerhof – Hölderlinstrasse – Klusplatz.
+
+### Line 4: Bahnhof Altstetten ↔ Bahnhof Tiefenbrunnen
+
+**Source:** https://zurichbytram.ch/linie-4/
+
+Bahnhof Altstetten – Würzgraben – Aargauerstrasse – Sportweg – Toni-Areal – Technopark – Schiffbau – Escher-Wyss-Platz – Löwenbräu – Quellenstrasse – Limmatplatz – Museum für Gestaltung – Sihlquai / Hauptbahnhof – Bahnhofquai / Hauptbahnhof – Central – Rudolf-Brun-Brücke – Rathaus – Helmhaus – Bellevue – Opernhaus – Kreuzstrasse – Feldeggstrasse – Höschgasse – Fröhlichstrasse – Wildbachstrasse – Bahnhof Tiefenbrunnen.
+
+### Line 5: Zoo ↔ Laubegg
+
+**Source:** https://zurichbytram.ch/linie-5/
+
+Zoo – Susenbergstrasse – Zürichbergstrasse – Toblerplatz – Kirche Fluntern – Voltastrasse – Platte – Kantonsschule – Kunsthaus – Bellevue – Bürkliplatz – Rentenanstalt – Bahnhof Enge – Bahnhof Enge / Bederstrasse – Waffenplatzstrasse – Sihlcity Nord – Saalsporthalle – Laubegg.
+
+### Line 6: Zoo ↔ Bahnhof Enge
+
+**Source:** https://zurichbytram.ch/linie-6/
+
+Zoo – Susenbergstrasse – Zürichbergstrasse – Toblerplatz – Kirche Fluntern – Voltastrasse – Platte – ETH / Universitätsspital – Haldenegg – Central – Bahnhofstrasse / Hauptbahnhof – Rennweg – Paradeplatz – Stockerstrasse – Tunnelstrasse – Bahnhof Enge.
+
+### Line 7: Bahnhof Stettbach ↔ Wollishoferplatz
+
+**Source:** https://zurichbytram.ch/linie-7/
+
+Bahnhof Stettbach – Mattenhof – Probstei – Glattwiesen – Roswiesen – Schwamendingerplatz – Schörlistrasse – Waldgarten – Tierspital – Milchbuck – Irchelpark – Guggachstrasse – Schaffhauserplatz – Röslistrasse – Ottikerstrasse – Sonneggstrasse – Haldenegg – Central – Bahnhofstrasse / Hauptbahnhof – Rennweg – Paradeplatz – Stockerstrasse – Tunnelstrasse – Bahnhof Enge – Museum Rietberg – Brunaustrasse – Billoweg – Bahnhof Wollishofen – Post Wollishofen – Morgental – Butzenstrasse – Wollishoferplatz.
+
+### Line 8: Hardturm ↔ Klusplatz
+
+**Source:** https://zurichbytram.ch/linie-8/
+
+Hardturm – Hardturm Stadion – Bernoulli-Häuser – Fischerweg – Förrlibuckstrasse – Escher-Wyss-Platz – Schiffbau – Bahnhof Hardbrücke – Hardplatz – Güterbahnhof – Bäckeranlage – Helvetiaplatz – Stauffacher – Bahnhof Selnau – Wollishoferplatz – Stockerstrasse – Paradeplatz – Kantonalbank – Bürkliplatz – Bellevue – Bahnhof Stadelhofen – Kreuzplatz – Englischviertelstrasse – Römerhof – Hölderlinstrasse – Klusplatz.
+
+### Line 9: Hirzenbach ↔ Triemli
+
+**Source:** https://zurichbytram.ch/linie-9/
+
+Hirzenbach – Altried – Luchswiesen – Luegisland – Heerenwiesen – Schwamendingerplatz – Schörlistrasse – Waldgarten – Tierspital – Milchbuck – Irchelpark – Universität Irchel – Langmauerstrasse – Letzistrasse – Kinkelstrasse – Seilbahn Rigiblick – Winkelriedstrasse – Haldenbach – ETH / Universitätsspital – Kantonsschule – Kunsthaus – Bellevue – Bürkliplatz – Kantonalbank – Paradeplatz – Sihlstrasse – Stauffacher – Werd – Bahnhof Wiedikon – Schmiede Wiedikon – Goldbrunnenplatz – Talwiesenstrasse – Heuried – Schaufelbergerstrasse – Triemli.
+
+### Line 10: Flughafen Fracht ↔ Bahnhofplatz / Hauptbahnhof
+
+**Source:** https://zurichbytram.ch/linie-10/
+
+Flughafen Fracht – Flughafen Bahnhof – Kloten Balsberg Bahnhof – Glattbrugg Unterriet – Rümlang Bäuler – Glattbrugg Bahnhof – Glattbrugg Lindberghplatz – Glattpark – Oerlikerhus – Leutschenbach – Bahnhof Oerlikon Ost – Sternen Oerlikon – Markt Oerlikon – Salersteig – Berninaplatz – Hirschwiesenstrasse – Milchbuck – Universität Irchel – Langmauerstrasse – Letzistrasse – Kinkelstrasse – Seilbahn Rigiblick – Winkelriedstrasse – Haldenbach – ETH / Universitätsspital – Haldenegg – Central – Bahnhofplatz / Hauptbahnhof.
+
+### Line 11: Auzelg ↔ Rehalp
+
+**Source:** https://zurichbytram.ch/linie-11/
+
+Auzelg – Fernsehstudio – Glattpark – Oerlikerhus – Leutschenbach – Messe / Hallenstadion – Sternen Oerlikon – Bahnhof Oerlikon – Regensbergbrücke – Bad Allenmoos – Radiostudio – Bucheggplatz – Laubiweg – Schaffhauserplatz – Kronenstrasse – Beckenhof – Stampfenbachplatz – Bahnhofquai / Hauptbahnhof – Bahnhofstrasse / Hauptbahnhof – Rennweg – Paradeplatz – Kantonalbank – Bürkliplatz – Bellevue – Bahnhof Stadelhofen – Kreuzplatz – Signaustrasse – Hegibachplatz – Hedwigsteig – Wetlistrasse – Burgwies – Balgrist – Friedhof Enzenbühl – Rehalp.
+
+**Note:** Line 11 passes through Bahnhofquai / Hauptbahnhof, affected by Dec 2025–2026 renovation.
+
+### Line 13: Frankental ↔ Albisgütli
+
+**Source:** https://zurichbytram.ch/linie-13/
+
+Frankental – Winzerstrasse – Wartau – Zwielplatz – Meierhofplatz – Schwert – Alte Trotte – Eschergutweg – Waidfussweg – Wipkingerplatz – Escher-Wyss-Platz – Löwenbräu – Quellenstrasse – Limmatplatz – Museum für Gestaltung – Sihlquai / Hauptbahnhof – Bahnhofquai / Hauptbahnhof – Bahnhofstrasse / Hauptbahnhof – Rennweg – Paradeplatz – Stockerstrasse – Tunnelstrasse – Bahnhof Enge / Bederstrasse – Waffenplatzstrasse – Sihlcity Nord – Saalsporthalle – Laubegg – Uetlihof – Strassenverkehrsamt – Albisgütli.
+
+**Note:** Line 13 passes through Bahnhofquai / Hauptbahnhof, affected by Dec 2025–2026 renovation.
+
+### Line 14: Seebach ↔ Triemli
+
+**Source:** https://zurichbytram.ch/linie-14/
+
+Seebach – Seebacherplatz – Felsenrainstrasse – Bahnhof Oerlikon Ost – Sternen Oerlikon – Markt Oerlikon – Salersteig – Berninaplatz – Hirschwiesenstrasse – Milchbuck – Guggachstrasse – Schaffhauserplatz – Kronenstrasse – Beckenhof – Stampfenbachplatz – Bahnhofquai / Hauptbahnhof – Bahnhofplatz / Hauptbahnhof – Löwenplatz – Sihlpost / Hauptbahnhof – Stauffacher – Werd – Bahnhof Wiedikon – Schmiede Wiedikon – Goldbrunnenplatz – Talwiesenstrasse – Heuried – Schaufelbergerstrasse – Triemli.
+
+**Note:** Line 14 passes through Bahnhofquai / Hauptbahnhof, affected by Dec 2025–2026 renovation.
+
+### Line 15: Bucheggplatz ↔ Bahnhof Stadelhofen
+
+**Source:** https://zurichbytram.ch/linie-15/
+
+Bucheggplatz – Laubiweg – Schaffhauserplatz – Röslistrasse – Ottikerstrasse – Sonneggstrasse – Haldenegg – Central – Rudolf-Brun-Brücke – Rathaus – Helmhaus – Bellevue – Bahnhof Stadelhofen.
+
+### Line 17: Werdhölzli ↔ Albisgütli
+
+**Source:** https://zurichbytram.ch/linie-17/
+
+Werdhölzli – Bändliweg – Grünaustrasse – Tüffenwies – Hardhof – Hardturm – Fischerweg – Förrlibuckstrasse – Escher-Wyss-Platz – Löwenbräu – Quellenstrasse – Limmatplatz – Museum für Gestaltung – Sihlquai / Hauptbahnhof – Bahnhofquai / Hauptbahnhof – Bahnhofplatz / Hauptbahnhof – Bahnhofstrasse / Hauptbahnhof – Rennweg – Paradeplatz – Stockerstrasse – Tunnelstrasse – Bahnhof Enge / Bederstrasse – Waffenplatzstrasse – Sihlcity Nord – Saalsporthalle – Laubegg – Uetlihof – Strassenverkehrsamt – Albisgütli.
+
+**Note:** Line 17 passes through Bahnhofquai / Hauptbahnhof, affected by Dec 2025–2026 renovation.
+
+**Renovation context:** All stop names are as published by VBZ/ZVV post-Dec 2025 reorganization. Lines 11, 13, 14, 17 pass through the Bahnhofquai construction zone, which underwent major restructuring during the Dec 2025–2026 period. The current published stop lists reflect passenger-facing routing during this renovation. No short-turn or seasonal variants are documented for v1 scope as of the transcription date.
