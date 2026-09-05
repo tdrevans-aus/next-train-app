@@ -44,13 +44,24 @@ still appears verbatim in the `integration` string of every region that hasn't h
 pass since (south-yorkshire, north-east, southwest, cumbria, south-wales, west-yorkshire,
 rest-of-wales, rest-of-scotland, london-se-national-rail, glasgow, edinburgh, greater-manchester —
 12 of 20 regions). **This is a stale-text problem, not a live blocker** — flagged once here per
-`docs/uk-build-out-recommendation.md` item 4, not re-flagged per region. **Standing open item,
-recorded once here as the single source (region packs should cite this ledger, not repeat the
-question):** whether OpenLDBWS/RDM redistribution terms to third-party riders are confirmed
-against the signed Rail Data Marketplace Data Sharing Agreement is **unknown** — every region pack
-that reached D1 after 2 Sep 2026 repeats "do not relay Darwin data to end users until Tim confirms"
-as an open item; no pack or registry note records that confirmation having happened. Do not treat
-silence on this item as resolution.
+`docs/uk-build-out-recommendation.md` item 4, not re-flagged per region. **Licensing — RESOLVED (Tim read the signed agreement, 5 Sep 2026; copy at
+`docs/P-d81d6eaf-8060-4467-a339-1c833e50cbbe.pdf`, private repo).** The Live Departure Board
+Data Sharing Agreement (publisher: Rail Delivery Group; product P-d81d6eaf-8060-4467-a339-1c833e50cbbe)
+grants, in Schedule 1: **Permitted Purposes — "The raw data may be made freely available or
+otherwise distributed to third parties"**; Permitted Recipients — all registered users; Territory —
+global (standard sanctioned-country exclusions). Schedule 2: Licence Fee Type **Open** (no charge),
+Fair Usage Policy **not applicable**, no non-chargeable limit, update frequency Live. So relaying
+Darwin departures to riders is expressly permitted, and there is no rate or cache condition in the
+DSA itself — the only capacity lever is the RDM Platform Agreement clause 3.3 (RDG may throttle on a
+"Material Capacity Impact"), which the 20s server-side cache (Jim brief 5 Sep) addresses.
+**Conditions that DO bind the app:** (a) clause 3.3.1 + Schedule 1 §8 — **Rail Delivery Group must
+be attributed** as the source when the data is published, "in any reasonable manner" that does not
+imply endorsement; (b) clause 3.3.2 — onward distribution should carry appropriate accuracy /
+liability notices; (c) clause 3.3.3 — notify RDG of data defects; (d) Schedule 1 §9 — on termination,
+delete received data within 1 year and confirm in writing (moot for a 20s cache, relevant only if
+boards are ever persisted); (e) term 1 year auto-renewing, 1 week notice to terminate for
+convenience. Region packs should cite this paragraph rather than repeat the old "do not relay until
+Tim confirms" line; the per-region copies are stripped in the registry sweep (open item 3).
 
 **A second, separate cost/architecture gap, not a licensing question:** the 15–30s server-side
 `(crs, filterCrs)` cache specified in `docs/uk-architecture.md` and `docs/uk-provider-design.md`
@@ -91,19 +102,20 @@ than through-running-only.
 
 | Station | CRS | Home region | Other regions that touch it | Basis | Status |
 |---|---|---|---|---|---|
-| Denby Dale | DBD (was catalogued as DDL, corrected 5 Sep) | West Yorkshire | South Yorkshire (CRS left null there) | reg: west-yorkshire, south-yorkshire | **contested — Tim** (both packs carry it; South Yorkshire's own entry has no CRS, suggesting it never confirmed the station independently, but this ledger does not pick for Tim) |
-| Tamworth | — (no CRS confirmed by any pack) | none | West Midlands (unbuilt catalog boundary), East Midlands (deliberately excludes it) | reg: east-midlands ("Tamworth deliberately excluded — genuine shared platform with West Midlands, D2 de-dup boundary for a future West Midlands pack, not built here") | **unclaimed — contested — Tim** |
-| Darlington | DRL | none | North East, East Midlands | reg: north-east ("Darlington deliberately excluded — confirmed unclaimed by both this pack and East Midlands' own already-merged pack") | **unclaimed — contested — Tim** |
-| Walsden | WDN (West Yorkshire's own pack) / WAD (Greater Manchester's own pack — same physical station, CRS mismatch) | West Yorkshire (through-running-only entry exists there) | Greater Manchester (no built counterpart catalog yet) | reg: west-yorkshire, greater-manchester | **contested — Tim** — this is a CRS-value conflict as well as an ownership one; neither pack resolved which CRS is correct against a live Darwin call |
+| Denby Dale | DBD (was catalogued as DDL, corrected 5 Sep) | West Yorkshire | South Yorkshire (listed with null CRS; drops it) | reg: west-yorkshire, south-yorkshire | **decided** (Tim, 5 Sep 2026) — administratively Kirklees, West Yorkshire; South Yorkshire never confirmed the station independently. South Yorkshire keeps it as a destination only |
+| Tamworth | TAM | West Midlands (not yet in the live catalog — add on next catalog touch) | East Midlands (deliberately excludes it) | reg: east-midlands; East Midlands pack `sharedPlatformFlaggedForD2` gives CRS TAM | **decided** (Tim, 5 Sep 2026) — Birmingham commuter territory (West Midlands Railway, Cross-City line). Gap in a live region, not a contest: today nobody can pick it |
+| Darlington | DRL | North East | East Midlands (never claimed it) | reg: north-east | **decided** (Tim, 5 Sep 2026) — County Durham, ECML; no real second claimant, the North East pack was cautious rather than torn |
+| Walsden | WDN | West Yorkshire | Greater Manchester (through-running-only, destination only) | reg: west-yorkshire, greater-manchester | **decided** (Tim, 5 Sep 2026) — Calderdale, West Yorkshire. The apparent CRS conflict is closed: both packs now carry WDN; WAD was West Yorkshire's original error (corrected 5 Sep) and is actually Wadhurst, Sussex |
 | Chepstow | CPW | West of England (through-running-only) | South Wales (which instead names Severn Tunnel Junction, a *different physical station*, as its own side's Wales–England corridor boundary) | reg: west-of-england, south-wales | **decided as two distinct stations, not a shared-station contest** — flagged because the two regions independently named different stations as "the" Wales–England boundary; South Wales's own registry note calls this a known open item versus West of England's Chepstow naming. Neither station is claimed as a *home* station by either region — both are through-running-only in their own catalogs |
-| Berwick-upon-Tweed | BWK | none | North East (through-running-only, "Scotland boundary open/unresolved"), Rest of Scotland (its own pack does not mention Berwick at all) | reg: north-east | **unclaimed — contested — Tim** |
-| Taunton | TAU | none (through-running-only on both sides) | West of England (through-running-only, "toward Southwest/Devon region"), Southwest (through-running-only, "West of England boundary — not a merge, matches West of England's own Taunton flag from the other side") | reg: west-of-england, southwest | **contested — Tim** — both regions agree it's a boundary and neither claims it as a home/hub station; "first home region wins" does not resolve a station neither side actually owns |
+| Berwick-upon-Tweed | BWK | North East | Rest of Scotland (pack does not mention it; sees it as a destination only) | reg: north-east | **decided** (Tim, 5 Sep 2026) — Northumberland, England, three miles south of the border |
+| Taunton | TAU | West of England | Southwest (through-running-only, destination only) | reg: west-of-england, southwest | **decided** (Tim, 5 Sep 2026) — Somerset, geographically a toss-up between Bristol and Exeter; West of England is live and Southwest is planned, so this is the only choice that lets a Taunton rider use the app today |
 | Chester | CTR/CHE | Liverpool City Region | Rest of Wales (excludes it explicitly, "Chester, England") | reg: liverpool-city-region (genuine Wirral Line Merseyrail terminus, in the 97-station catalog), reg: rest-of-wales ("Boundary/pass-through stations NOT in catalog: Chester (CTR, England)") | **decided** — Liverpool City Region catalogues it as a real terminus; Rest of Wales explicitly stays out |
-| Peterborough | PBO | Greater Anglia (flat catalog entry, not a hub) | East Midlands (implied but not directly confirmed — Greater Anglia's own note flags "a future East Midlands/LNER Peterborough entry" as an unresolved cross-region shared-platform de-dup question), London & South East NR (boundary reference only, not built there) | reg: greater-anglia | **contested — Tim** — Greater Anglia is the only region that actually catalogues it today, but the possibility of an East Midlands entry is explicitly flagged as unresolved by Greater Anglia's own pack, not by this ledger inventing it |
+| Peterborough | PBO | Greater Anglia (flat catalog entry, not a hub) | East Midlands (must NOT add it), London & South East NR (boundary reference only) | reg: greater-anglia | **decided** (Tim, 5 Sep 2026) — Greater Anglia is the only region that catalogues it. The board shows LNER/EMR/Thameslink/CrossCountry regardless of owner; ownership only decides the picker |
 | Fareham | FRM (was catalogued as FAR, corrected 5 Sep) | Solent | London & South East NR (not claimed there) | reg: solent (hub-anchor station, "Portsmouth Harbour" direction hub wired at Fareham) | **decided** |
-| Westbury | WSB | none (through-running-only on all three sides) | West of England, Solent, Thames Valley — each lists Westbury as a through-running-only boundary station "reciprocally consistent" with the others' own already-merged packs | reg: west-of-england, solent, thames-valley | **contested — Tim** — three-way symmetric agreement that it's a boundary, no region claims it as a home/hub station |
-| Gloucester | GCR | none | West of England (through-running-only, "West Midlands boundary") | reg: west-of-england; no West Midlands catalog exists yet to confirm or deny (uk-west-midlands's 75-station National Rail list was not re-read station-by-station for this ledger) | **unknown — contested — Tim** |
+| Westbury | WSB | West of England | Solent, Thames Valley (through-running-only, destination only) | reg: west-of-england, solent, thames-valley | **decided** (Tim, 5 Sep 2026) — Wiltshire junction; Bath (12 mi) is the nearest hub in any region, the other two only pass through. Left unpickable otherwise |
+| Gloucester | GCR | West of England | West Midlands (not in the live catalog; boundary reference only) | reg: west-of-england | **decided** (Tim, 5 Sep 2026) — Gloucester–Bristol is a commuter flow, Birmingham is not. Mirror of Tamworth |
 | Preston / Wigan / Lockerbie / Settle | — | Settle (SLF) only — Cumbria (regional boundary, in-catalog) | Preston, Wigan, Lockerbie: none | reg: cumbria ("Regional boundaries checked against already-merged adjacent packs (Rest of Scotland, Greater Manchester) — no live overlap found... remains an open D2 coordination point") | Settle: **decided** (Cumbria). Preston/Wigan/Lockerbie: **unclaimed — not contested (no second claimant either) — flagged for whoever builds the adjacent region** |
+| Falkirk High | FKK | Edinburgh (through-running-only until either region promotes it) | Glasgow (destination only) | pack: edinburgh, glasgow — the two packs' prose disagreed about whose boundary station it is; neither builds it | **decided** (Tim, 5 Sep 2026) — Edinburgh–Glasgow via Falkirk High is Edinburgh's flagship commuter corridor. Ruling exists so the next Scottish region does not inherit two contradictory sentences, not to add a station |
 
 **doNotGroup two-layer stations (ownership-adjacent, not ownership contests):**
 
@@ -129,7 +141,7 @@ exists; verified independently where noted.
 | Eurostar | `out-checkin` | Border control + check-in cutoff | St Pancras International | reg: london-se-national-rail |
 | Caledonian Sleeper | `out-reservation` | Compulsory berth booking | Glasgow Central, Edinburgh Waverley, Aberdeen, Inverness, Fort William, Mallaig, Carlisle | reg: rest-of-scotland, glasgow, edinburgh, cumbria — enforced via shared `uk-darwin.js` `excludeOperators` in each |
 | Night Riviera Sleeper | `out-reservation` | Compulsory sleeping-car cabin reservation | Paddington (london-se-national-rail), Exeter St Davids, Plymouth, Truro, St Austell, St Erth, Penzance (southwest) | reg: london-se-national-rail, southwest |
-| LNER (long-distance, unreserved-carriage policy) | `in` | Unreserved coach always available; walk-up permitted | West Yorkshire (Leeds), Greater Anglia (Peterborough, resolved 5 Sep 2026 — "unreserved coach always available, same evidence shape as West Yorkshire's LNER row at Leeds") | reg: west-yorkshire, greater-anglia. **See contradiction flagged below: `london-se-national-rail`'s own registry note still records LNER at King's Cross as `undecided`, not `in`.** |
+| LNER (long-distance, unreserved-carriage policy) | `in` | Unreserved coach always available; walk-up permitted | Everywhere it calls, including King's Cross (london-se-national-rail) | reg: west-yorkshire, greater-anglia. **King's Cross resolved `in` by Tim, 5 Sep 2026** — the pack's `undecided` stood only because its research fetch failed; same operator, same evidence. Adapter follow-up owed: remove `"LNER"` from King's Cross's `excludeOperators` in `lib/cities/london-se-national-rail/stations.json` (Jim brief 5 Sep). Pack file untouched per the propagation rule |
 | Avanti West Coast | `in` | No compulsory reservation | Cumbria, Rest of Scotland, and elsewhere it calls | reg: cumbria, rest-of-scotland |
 | CrossCountry | `in` | No compulsory reservation | Discovered live at Oxford (thames-valley, 5 Sep 2026, not in the original D1 report) and at Peterborough/Ely (greater-anglia) | reg: thames-valley, greater-anglia |
 | TransPennine Express | `in` | No compulsory reservation | West Yorkshire, Cumbria, elsewhere | reg: west-yorkshire, cumbria |
@@ -150,25 +162,18 @@ exists; verified independently where noted.
 | Gatwick Express | `in` | Same turn-up-and-go convention; no compulsory reservation | Not built in any region pack read | Verified via web research — same caveat as Heathrow Express |
 | Stansted Express | `in` | Same turn-up-and-go convention; no compulsory reservation | Not built in any region pack read (Stansted Airport station is named once in greater-anglia's discovery of CrossCountry, but the Stansted Express operator itself is not catalogued) | Verified via web research — same caveat |
 | Lumo (open-access) | `in` | Boardable without a reservation; some seats unreserved (green-light marked), reservation "highly recommended," not compulsory | Not built in any region pack read for this ledger | Verified via web research, [RailUK Forums](https://www.railforums.co.uk/threads/lumo-reservation-only.271303/), [Lumo's own ticket page](https://www.lumo.co.uk/tickets/our-tickets) |
-| Hull Trains (open-access) | `in`, with a caveat | Unreserved carriage (Carriage A) exists; reservation "strongly recommended and may be compulsory" during busy periods/engineering works | Not built in any region pack read | Verified via web research, [Hull Trains seating plan](https://www.hulltrains.co.uk/travel-information/seating-plan) — **flagged for Tim: this is the one open-access operator whose walk-up guarantee is not absolute ("may be compulsory" at peak), closer to a soft edge case than LNER/Avanti's clean `in`** |
+| Hull Trains (open-access) | `in` (unconditional — Tim, 5 Sep 2026) | Unreserved carriage (Carriage A) exists; the operator says reservations are "strongly recommended and may be compulsory" at busy periods/engineering works | Not built in any region pack read | Verified via web research, [Hull Trains seating plan](https://www.hulltrains.co.uk/travel-information/seating-plan). Caveat recorded here only: no catalogued station is served by Hull Trains today. Revisit whether a generic "reservation recommended" tag is worth building if a future region adds Hull, Doncaster or Retford |
 | Grand Central (open-access) | `in` | Reservations complimentary, not guaranteed, not included by default on off-peak/anytime tickets | Not built in any region pack read | Verified via web research, [Grand Central seating info](https://uk.trip.com/trains/guide/grand-central-seating-plan) |
 
 **Consistency check requested by the brief:** where existing region packs already gave a verdict,
 this ledger cites the pack rather than re-deriving. **One pack-to-pack contradiction found, not
 silently resolved:**
 
-> **LNER at King's Cross vs. LNER at Leeds/Peterborough.** `london-se-national-rail`'s registry
-> note records LNER's board-eligibility verdict at King's Cross as `undecided` — "curl fetches of
-> lner.co.uk/Wikipedia/Google/DuckDuckGo all failed to return verifiable operator-policy text;
-> excluded per the walk-up rule, not defaulted to in; flagged back to Nico/Tim for a proper
-> search-capable pass." That flag was never actioned for London & South East NR specifically. Two
-> other regions — `west-yorkshire` (Leeds) and `greater-anglia` (Peterborough, resolved 5 Sep
-> 2026) — independently reached `in` for the *same operator* on the same "unreserved coach always
-> available" evidence. This ledger does not resolve King's Cross's `undecided` row for
-> `london-se-national-rail` on that region's behalf (that pack is immutable per the propagation
-> rule); it records the contradiction and recommends whoever next touches
-> `london-se-national-rail`'s pack apply the same resolution already reached twice elsewhere,
-> subject to Tim's sign-off.
+> **LNER at King's Cross vs. LNER at Leeds/Peterborough — RESOLVED (Tim, 5 Sep 2026).** The
+> `london-se-national-rail` pack recorded LNER at King's Cross as `undecided` because its own
+> research fetch failed; Leeds and Peterborough independently reached `in` on the unreserved-coach
+> evidence. Tim applied `in` at King's Cross via this ledger (propagation log below). The pack
+> stays as written; the adapter's exclusion is removed in code.
 
 ---
 
@@ -229,34 +234,30 @@ Where Darwin's stop-level data ends, and which secondary feeds are confirmed/unc
 
 ## Open items for Tim
 
-1. **OpenLDBWS/RDM redistribution terms to third-party riders** — unconfirmed against the signed
-   Data Sharing Agreement, carried as an open item on every UK region since 2 Sep 2026. Needs a
-   single yes/no from Tim, once, closing it everywhere rather than per region.
-2. **Contested stop-ownership rows** (§2): Denby Dale, Tamworth, Darlington, Walsden (also a CRS
-   value conflict — WDN vs WAD for the same physical station), Berwick-upon-Tweed, Taunton,
-   Peterborough (possible future East Midlands entry), Westbury, Gloucester. Chepstow vs Severn
-   Tunnel Junction is not a shared-station contest but is a naming inconsistency between two
-   regions about which physical station is "the" Wales–England boundary — worth a decision even
-   though no ownership conflict exists.
-3. **Pack contradiction** (§3): LNER's board-eligibility verdict is `in` at Leeds and Peterborough
-   but still `undecided` at King's Cross in `london-se-national-rail`'s own registry note. Same
-   operator, same evidence shape reached twice elsewhere — recommend applying the same resolution,
-   subject to sign-off, next time that pack is touched.
-4. **Falkirk High / Glasgow–Edinburgh boundary** — both packs independently exclude the station
-   from their own catalogs (no functional contradiction — neither builds it), but their prose
-   disagrees about *whose* boundary station it is: Edinburgh's pack calls it "Glasgow's boundary
-   station"; Glasgow's pack instead says it's "owned by the Edinburgh region." Genuine prose
-   disagreement, not resolved here.
-5. **Hull Trains' soft edge case** (§3) — the one open-access operator whose walk-up guarantee is
-   qualified ("may be compulsory" at peak/engineering-work periods) rather than clean `in`. Worth
-   a product call on whether that's still `in` unconditionally or needs a caveat surfaced to riders.
-6. **Stale "DARWIN_LDB_TOKEN not set" blocker text** on 12 planned regions' registry `integration`
-   strings — the token has existed since 2 Sep 2026; this is cosmetic but misdescribes why those
-   regions aren't live (per `docs/uk-build-out-recommendation.md` item 4).
-7. **The 15–30s Darwin server-side cache has never been built** despite being specified in both
-   `docs/uk-architecture.md` and `docs/uk-provider-design.md`. Five regions are already live
-   without it. Recommend building it before the flip sweep passes ~10 live Darwin regions.
-8. **Heathrow Express / Gatwick Express / Stansted Express** have verdicts recorded in §3 but no
+1. **RDM licence — resolved 5 Sep 2026 (see §1); one follow-up owed.** Wire the required
+   attribution on every Darwin-backed board: credit "Rail Delivery Group" (source of the Live
+   Departure Board data) in the app's existing attribution line, plus a short accuracy notice per
+   clause 3.3.2. Fold into the registry sweep (item 3) or earlier — five regions are already live
+   without it. Attribution must not imply RDG endorsement.
+
+2. **Catalog follow-ups from the 5 Sep stop-ownership decisions** (§2): add Tamworth (TAM) to
+   the live West Midlands catalog; add Taunton (TAU), Westbury (WSB) and Gloucester (GCR) to West
+   of England as pickable stations (currently through-running-only there); South Yorkshire drops
+   Denby Dale; East Midlands must not add Peterborough. Chepstow vs Severn Tunnel Junction remains
+   a naming inconsistency (not an ownership conflict) about which physical station is "the"
+   Wales–England boundary — still undecided.
+3. **Stale "DARWIN_LDB_TOKEN not set" blocker text** on 12 planned regions' registry `integration`
+   strings — the token has existed since 2 Sep 2026; cosmetic but misdescribes why those regions
+   aren't live. **Sequenced (Tim, 5 Sep 2026):** one registry sweep after the Darwin cache brief
+   lands and the four open flip PRs (Solent, Thames Valley, Greater Anglia, West Yorkshire) merge,
+   bundled with stripping the per-region RDM-terms copies once item 1 is answered.
+
+4. **The 15–30s Darwin server-side cache** — specified in `docs/uk-architecture.md` and
+   `docs/uk-provider-design.md`, never built; five regions live without it. **Decided (Tim, 5 Sep
+   2026): build before the four open flip PRs merge.** Jim brief dispatched 5 Sep
+   (`docs/jim-brief-uk-darwin-cache.md`), which also carries the King's Cross LNER exclusion removal.
+
+5. **Heathrow Express / Gatwick Express / Stansted Express** have verdicts recorded in §3 but no
    station to attach them to — none of the three airports is in any built UK catalog yet. Not
    actionable until a region claims one of them; recorded so the verdict work isn't repeated then.
 
@@ -269,4 +270,8 @@ rule — the discovery goes into this ledger, never back into an earlier region'
 
 | Date | Region | Finding | Effect |
 |---|---|---|---|
-| | | | |
+| 5 Sep 2026 | (ledger) | Tim resolved all nine contested stop-ownership rows: Denby Dale, Walsden → West Yorkshire; Tamworth → West Midlands; Darlington, Berwick-upon-Tweed → North East; Taunton, Westbury, Gloucester → West of England; Peterborough → Greater Anglia. Walsden CRS conflict closed (WDN). | Catalog additions owed in West Midlands (TAM) and West of England (TAU, WSB, GCR); South Yorkshire drops Denby Dale; East Midlands must not add Peterborough |
+| 5 Sep 2026 | london-se-national-rail | LNER at King's Cross verdict `undecided` → `in` (Tim). Same operator/evidence as Leeds and Peterborough. | Remove LNER from King's Cross `excludeOperators` in the London SE adapter config (Jim brief 5 Sep). Pack file unchanged |
+| 5 Sep 2026 | edinburgh, glasgow | Falkirk High ruled Edinburgh's boundary station, through-running-only (Tim). | Next Scottish region cites this row; neither pack edited |
+| 5 Sep 2026 | (ledger) | Hull Trains verdict fixed as unconditional `in`; peak-reservation caveat recorded in §3 only (Tim). | No adapter effect — no catalogued station is served by Hull Trains |
+| 5 Sep 2026 | (ledger) | RDM Live Departure Board DSA read by Tim: redistribution to third parties expressly permitted (Sched. 1 §5), Open licence, no fair-usage cap; attribution to Rail Delivery Group required (cl. 3.3.1, Sched. 1 §8). | Closes the "do not relay Darwin data" open item everywhere. Attribution wiring owed on Darwin boards; per-region licence copies stripped in the registry sweep |

@@ -74,14 +74,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STILL planned. Do not flip in this gate or this PR.
+// Registry identity — NOW live, and in MULTI_CITY_IDS.
 const live = assertCityLive("greater-anglia");
-assert(live?.ok === false, "assertCityLive(greater-anglia) must still fail — status stays planned");
-assert(live?.status === 501, "greater-anglia must still be 501 planned");
+assert(live?.ok === true, "assertCityLive(greater-anglia) must pass — status is now live");
 
 const entry = getCity("greater-anglia");
-assert(entry?.status === "planned", "greater-anglia registry status must stay planned (Mark/Tim's flip call, not this gate's)");
-assert(entry?.adapterReady === true, "greater-anglia adapterReady must be true");
+assert(entry?.status === "live", "greater-anglia registry status must be live");
+assert(entry?.adapterReady === undefined, "greater-anglia adapterReady flag is removed once live");
 assert(entry?.displayName === "Greater Anglia", "greater-anglia display name must be Greater Anglia");
 assert(entry?.timeZone === "Europe/London", "greater-anglia timezone must be Europe/London");
 assert(
@@ -92,9 +91,8 @@ for (const forbiddenId of ["ga", "norwich", "east-anglia", "greater-anglia-train
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip, but MULTI_CITY_IDS
-// membership is not (that's Mark's flip commit) — assert both halves.
-assert(isMultiCity("greater-anglia") === false, "greater-anglia must NOT be in MULTI_CITY_IDS yet (list membership is the flip commit's job)");
+// Dispatch switch-cases and MULTI_CITY_IDS membership are both wired (flip commit).
+assert(isMultiCity("greater-anglia") === true, "greater-anglia must be in MULTI_CITY_IDS (live flip)");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/greater-anglia-d1");
@@ -110,7 +108,7 @@ for (const name of [
 
 const network = JSON.parse(readFileSync(join(d1Dir, "published-network.json"), "utf8"));
 assert(network.city === "greater-anglia", "D1 city id is greater-anglia");
-assert(network.status === "planned", "D1 pack stays planned");
+assert(network.status === "planned", "D1 pack status remains planned (pack is input, not updated on flip)");
 assert(
   network.printedInnerCityNames?.lock === GREATER_ANGLIA_HUB,
   `D1 lock must be ${GREATER_ANGLIA_HUB}`
@@ -455,5 +453,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "greater-anglia-dogfood-gate: ok (still planned/adapterReady, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired ahead of flip, D1 pack, Board eligibility all-in with LNER resolved not undecided, 14 rail-only stations all crsVerified, no doNotGroup at Norwich/Cambridge/Ipswich, Peterborough excludeOperators removed (LNER on board), Norwich hub wired at Thetford/Ely, directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (hub/exact/undirected) proven token-free, Perth stays green)"
+  "greater-anglia-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, Board eligibility all-in with LNER resolved not undecided, 14 rail-only stations all crsVerified, no doNotGroup at Norwich/Cambridge/Ipswich, Peterborough excludeOperators removed (LNER on board), Norwich hub wired at Thetford/Ely, directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (hub/exact/undirected) proven token-free, Perth stays green)"
 );

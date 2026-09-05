@@ -1,0 +1,68 @@
+{
+  "Reading": [
+    "Abbey Wood (Elizabeth Line)",
+    "Basingstoke (Great Western Railway)",
+    "Bournemouth (CrossCountry)",
+    "Cheltenham Spa (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "Gatwick Airport (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Oxford (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Oxford (GWR)": [
+    "Banbury (Great Western Railway)",
+    "Birmingham New Street (CrossCountry)",
+    "Bournemouth (CrossCountry)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "Great Malvern (Great Western Railway)",
+    "Hereford (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (CrossCountry)"
+  ],
+  "Oxford (Chiltern)": [
+    "London Marylebone (Chiltern Railways)"
+  ],
+  "Swindon": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cheltenham Spa (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Oxford (Great Western Railway)",
+    "Swansea (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Banbury": [
+    "Birmingham Moor Street (Chiltern Railways)",
+    "Birmingham New Street (CrossCountry)",
+    "Birmingham Snow Hill (Chiltern Railways)",
+    "Bournemouth (CrossCountry)",
+    "Didcot Parkway (Great Western Railway)",
+    "London Marylebone (Chiltern Railways)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Southampton Central (CrossCountry)",
+    "Stourbridge Junction (Chiltern Railways)"
+  ],
+  "Westbury": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Plymouth (Great Western Railway)",
+    "Portsmouth & Southsea (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Swindon (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Henley-on-Thames": [
+    "Twyford (Great Western Railway)"
+  ],
+  "Didcot Parkway": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cheltenham Spa (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Oxford (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ]
+}
