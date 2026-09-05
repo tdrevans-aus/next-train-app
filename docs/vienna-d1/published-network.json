@@ -1,0 +1,462 @@
+{
+  "city": "vienna",
+  "displayName": "Vienna",
+  "status": "planned",
+  "agency": "Wiener Linien GmbH",
+  "timezone": "Europe/Vienna",
+  "source": "https://en.wikipedia.org/wiki/List_of_Vienna_U-Bahn_stations",
+  "sources": [
+    {
+      "role": "D1 alphabetical master station list + per-station line membership (Lines column), used to cross-check the five line articles' ordered lists and to derive the final unique-station count",
+      "title": "List of Vienna U-Bahn stations",
+      "url": "https://en.wikipedia.org/wiki/List_of_Vienna_U-Bahn_stations",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Alphabetical wikitable (Station / Photo / Lines / Opened / Character / Notes). Line membership read from each row's line-icon template params (U1..U6). Unordered - not the station-order source, only the cross-check for line membership and total unique count (99, confirmed two independent ways, see hazard-pack.md H2)."
+    },
+    {
+      "role": "D1 ordered station list for U1 (Oberlaa <-> Leopoldau), termini, and the Kaisermühlen-VIC full name",
+      "title": "U1 (Vienna U-Bahn)",
+      "url": "https://en.wikipedia.org/wiki/U1_(Vienna_U-Bahn)",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "\"Stations\" section: ordered list, 'Line U1 currently serves the following stations:', Oberlaa to Leopoldau. 24 stations. Corrects the oracle report's claimed 28 (hazard-pack.md H2). Confirms full station name 'Kaisermühlen-VIC' (own article title), not the alphabetical table's truncated 'Kaisermühlen'."
+    },
+    {
+      "role": "D1 ordered station list for U2 (Karlsplatz <-> Seestadt)",
+      "title": "U2 (Vienna U-Bahn)",
+      "url": "https://en.wikipedia.org/wiki/U2_(Vienna_U-Bahn)",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "\"Stations\" section: ordered list, Karlsplatz to Seestadt. 21 stations. Corrects the oracle report's claimed 20 (hazard-pack.md H2). Karlsplatz is U2's own printed terminus here, not a through-station - see direction-model-memo.md section 2."
+    },
+    {
+      "role": "D1 ordered station list for U3 (Ottakring <-> Simmering)",
+      "title": "U3 (Vienna U-Bahn)",
+      "url": "https://en.wikipedia.org/wiki/U3_(Vienna_U-Bahn)",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "\"Stations\" section: ordered list, Ottakring to Simmering. 21 stations. Corrects the oracle report's claimed 20 (hazard-pack.md H2)."
+    },
+    {
+      "role": "D1 ordered station list for U4 (Hütteldorf <-> Heiligenstadt)",
+      "title": "U4 (Vienna U-Bahn)",
+      "url": "https://en.wikipedia.org/wiki/U4_(Vienna_U-Bahn)",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "\"Stations\" section: ordered list, Hütteldorf to Heiligenstadt. 20 stations. Corrects the oracle report's claimed 19 (hazard-pack.md H2)."
+    },
+    {
+      "role": "D1 ordered station list for U6 (Floridsdorf <-> Siebenhirten)",
+      "title": "U6 (Vienna U-Bahn)",
+      "url": "https://en.wikipedia.org/wiki/U6_(Vienna_U-Bahn)",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "\"Stations\" section: ordered list, Floridsdorf to Siebenhirten. 24 stations. Corrects the oracle report's claimed 22 (hazard-pack.md H2). No 'Schedifkaplatz' found in this list - see hazard-pack.md H3."
+    },
+    {
+      "role": "D1 oracle (agency/auth, mode cut, hub lock reasoning, board-eligibility verdicts, license)",
+      "title": "Vienna oracle-clash-report.md",
+      "url": "docs/vienna-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "U-Bahn U1-U4/U6 v1 scope (U5 excluded, service opens 2030). Hub lock Karlsplatz (U1 x U2 x U4). All overlapping S-Bahn/Badner Bahn/ÖBB service at shared stations verdicted out-product. This pack corrects the report's per-line/total station counts and flags one unverified station name ('Schedifkaplatz') - see hazard-pack.md H2/H3."
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "D1 station order is hand-transcribed from each of the five Wikipedia U-Bahn line articles' own ordered 'Stations' sections (terminus to terminus), cross-checked against the alphabetical master station-list table's Lines column for membership and total-count verification. Not generated from GTFS (the oracle report's H2 explicitly says not to), not generated from the OGD Realtime Monitor JSON.",
+    "City id vienna is unused in existing packs. Single agency (Wiener Linien), single mode (U-Bahn heavy metro) in v1 - not city=wien, not city=at-vienna, not merged into a multi-country feed. No Austria country-lane ledger exists (single-region country, per docs/country-lane.md's UK/Sweden/NL scope - country lane is not required here).",
+    "City stays planned until Jim wires testers. assertCityLive(\"vienna\") must fail (city not in lib/providers/registry.js today).",
+    "Modes v1: U1, U2, U3, U4, U6 only - 99 unique stations (see stats below; corrects the oracle report's ~109, see hazard-pack.md H2). U5 excluded (construction ~end 2026, service 2030). No S-Bahn, no Badner Bahn (Wiener Lokalbahnen), no ÖBB national rail, no tram, no bus - all out-product/out-mode per the oracle report's Board eligibility section, re-confirmed not contradicted by any primary source pulled for this pack.",
+    "Timezone Europe/Vienna HAS DST. Do not copy no-DST cities (Perth, Brisbane, Adelaide).",
+    "Locked inner-city hub: Karlsplatz (U1 x U2 x U4). U1 and U4 are through-stations here; U2 terminates here (its own printed southern terminus) - a different hub shape from Brussels'/Copenhagen's pure through-cross hubs. See direction-model-memo.md section 2. Not Stephansplatz (U1/U3 only, two lines), not Meidling/Westbahnhof/Hauptbahnhof (S-Bahn/ÖBB, out-scope).",
+    "STATION-COUNT CORRECTION vs the oracle report (hazard-pack.md H2): actual per-line counts are U1=24, U2=21, U3=21, U4=20, U6=24 (oracle report claimed 28/20/20/19/22). Actual unique station total is 99, not ~109 - ten stations are two-or-three-line interchanges (Karlsplatz triple + nine two-line pairs), confirmed two independent ways (merging the five line articles' own lists, and counting master-table rows with at least one U1-U6 line-icon param).",
+    "gtfsRouteIdsIfKnown are the printed passenger line codes (U1, U2, U3, U4, U6) - these ARE the signage codes, no separate GTFS route id lookup performed (oracle report explicitly says do not generate this file from GTFS). No stopIds in this file.",
+    "Feed / live (Jim D2, not a D1 generator): Wiener Linien OGD Realtime Monitor JSON https://www.wienerlinien.at/ogd_realtime/monitor (no key; remove/ignore the SENDER parameter per the official docs). Proprietary JSON schema, NOT GTFS-RT protobuf - do not assume the shared gtfs/realtime-board.js path works unmodified. Static GTFS zip exists (825 mixed-mode routes, tram/bus/U-Bahn) but is NOT the D1 station-graph source and is not a live-feed candidate either (daily snapshot).",
+    "Kaisermühlen-VIC: locked to the fuller form (confirmed by its own Wikipedia article title and the U1 line article), not the alphabetical master table's truncated 'Kaisermühlen' print - see hazard-pack.md H3.",
+    "'Schedifkaplatz' named in the oracle report's Board eligibility table (as a U6 x Badner Bahn interchange) is NOT found in any primary source pulled for this pack (not in the U6 line article's ordered list, not in the alphabetical master table). Flagged, not corrected to an alternative name, since Badner Bahn is out-product regardless - see hazard-pack.md H3.",
+    "License: CC BY 4.0 per the oracle report (Vienna OGD portal / Wiener Linien OGD publication). Attribution required, commercial reuse permitted, no resale-prohibition clause. Not re-verified in this pass (oracle report's license table is treated as settled; this pack only worked the station graph)."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Karlsplatz",
+    "doNotUse": [
+      "Vienna",
+      "Wien",
+      "City",
+      "Zentrum",
+      "Innere Stadt",
+      "CBD"
+    ],
+    "alsoOnSharedApproaches": [
+      "Praterstern",
+      "Stephansplatz",
+      "Volkstheater",
+      "Schottenring",
+      "Schwedenplatz",
+      "Landstraße",
+      "Westbahnhof",
+      "Längenfeldgasse",
+      "Spittelau"
+    ]
+  },
+  "coverageGaps": [
+    "U5 (turquoise, Karlsplatz-Frankhplatz) - under construction, completion ~end 2026, service opening deferred to 2030 per the oracle report. Not in this catalog.",
+    "S-Bahn (ÖBB Vienna suburban ring/radial lines) at shared stations (Heiligenstadt, Hütteldorf, Handelskai, Praterstern, Karlsplatz, Westbahnhof, ...) - out-product per the oracle report's Board eligibility section.",
+    "Badner Bahn (Wiener Lokalbahnen, Wien-Baden commuter rail) at Meidling and the oracle report's disputed 'Schedifkaplatz' - out-product; the station name itself is unverified (hazard-pack.md H3).",
+    "ÖBB national rail (Regional, Railjet, etc.) at Südtiroler Platz-Hauptbahnhof (near U1) and Westbahnhof (near U3/U6) - out-product.",
+    "Tram and bus - out of v1 (mode cut, not board-eligibility-verdicted individually since the oracle report treats the whole mode as out).",
+    "No premetro, no light rail, no monorail - U-Bahn is heavy metro only, fully grade-separated, driverless trains, per the oracle report."
+  ],
+  "liveBoards": {
+    "status": "public_json_exists_city_planned",
+    "url": "https://www.wienerlinien.at/ogd_realtime/monitor",
+    "docs": "https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-echtzeitdaten-dokumentation.pdf",
+    "auth": "none (open public endpoint, no key)",
+    "format": "proprietary Wiener Linien OGD JSON schema, NOT GTFS-RT protobuf",
+    "note": "Remove/ignore the SENDER parameter per the official documentation. Community GTFS-RT bridge projects exist (e.g. tuwrraphael/wienerlinien-gtfs-rt) but are unofficial - not used here. Jim D2, not a D1 generator.",
+    "staticGtfs": {
+      "url": "https://www.wienerlinien.at/ogd_realtime/doku/ogd/gtfs/gtfs.zip",
+      "note": "825 routes, mixed mode (tram/bus/U-Bahn). Adapter would filter to U-Bahn agency + route_type=1. NOT the D1 station-graph source (oracle report H2: do not generate published-network.json from GTFS)."
+    },
+    "d1": "planned. assertCityLive(vienna) must fail."
+  },
+  "stats": {
+    "lines": 5,
+    "line1Stops": 24,
+    "line2Stops": 21,
+    "line3Stops": 21,
+    "line4Stops": 20,
+    "line6Stops": 24,
+    "lineTicks": 110,
+    "uniqueNames": 99,
+    "innerCityLock": [
+      "Karlsplatz"
+    ]
+  },
+  "lines": [
+    {
+      "id": "u1",
+      "number": "U1",
+      "name": "U1",
+      "operator": "Wiener Linien",
+      "officialPageTitle": "U1 Oberlaa – Leopoldau",
+      "colour": "red",
+      "gtfsRouteIdsIfKnown": [
+        "U1"
+      ],
+      "mapGroup": "U-Bahn",
+      "shape": "linear",
+      "termini": [
+        "Oberlaa",
+        "Leopoldau"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Karlsplatz",
+          "otherLine": "U2",
+          "note": "Hub lock. U1 x U2 x U4. U1 is a through-station here; U2 terminates here. Never a direction token."
+        },
+        {
+          "at": "Stephansplatz",
+          "otherLine": "U3",
+          "note": "Two-line interchange, through-station on both. Not the hub."
+        },
+        {
+          "at": "Schwedenplatz",
+          "otherLine": "U4",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Praterstern",
+          "otherLine": "U2",
+          "note": "Two-line interchange, through-station on both."
+        }
+      ],
+      "stations": [
+        "Oberlaa",
+        "Neulaa",
+        "Alaudagasse",
+        "Altes Landgut",
+        "Troststraße",
+        "Reumannplatz",
+        "Keplerplatz",
+        "Südtiroler Platz-Hauptbahnhof",
+        "Taubstummengasse",
+        "Karlsplatz",
+        "Stephansplatz",
+        "Schwedenplatz",
+        "Nestroyplatz",
+        "Praterstern",
+        "Vorgartenstraße",
+        "Donauinsel",
+        "Kaisermühlen-VIC",
+        "Alte Donau",
+        "Kagran",
+        "Kagraner Platz",
+        "Rennbahnweg",
+        "Aderklaaer Straße",
+        "Großfeldsiedlung",
+        "Leopoldau"
+      ],
+      "note": "Order hand-transcribed from the U1 (Vienna U-Bahn) Wikipedia article's own ordered 'Stations' list (terminus to terminus), cross-checked against the alphabetical master station-list table's Lines column. 24 stations - see hazard-pack.md H2 for the correction against the oracle report's per-line counts."
+    },
+    {
+      "id": "u2",
+      "number": "U2",
+      "name": "U2",
+      "operator": "Wiener Linien",
+      "officialPageTitle": "U2 Karlsplatz – Seestadt",
+      "colour": "purple",
+      "gtfsRouteIdsIfKnown": [
+        "U2"
+      ],
+      "mapGroup": "U-Bahn",
+      "shape": "linear",
+      "termini": [
+        "Karlsplatz",
+        "Seestadt"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Karlsplatz",
+          "otherLine": "U1",
+          "note": "Hub lock. U1 x U2 x U4. U2's own printed southern terminus - not a through-station for U2, unlike U1/U4."
+        },
+        {
+          "at": "Volkstheater",
+          "otherLine": "U3",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Schottenring",
+          "otherLine": "U4",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Praterstern",
+          "otherLine": "U1",
+          "note": "Two-line interchange, through-station on both."
+        }
+      ],
+      "stations": [
+        "Karlsplatz",
+        "Museumsquartier",
+        "Volkstheater",
+        "Rathaus",
+        "Schottentor",
+        "Schottenring",
+        "Taborstraße",
+        "Praterstern",
+        "Messe-Prater",
+        "Krieau",
+        "Stadion",
+        "Donaumarina",
+        "Donaustadtbrücke",
+        "Stadlau",
+        "Hardeggasse",
+        "Donauspital",
+        "Aspernstraße",
+        "Lina-Loos-Platz",
+        "Hausfeldstraße",
+        "Aspern Nord",
+        "Seestadt"
+      ],
+      "note": "Order hand-transcribed from the U2 (Vienna U-Bahn) Wikipedia article's own ordered 'Stations' list (terminus to terminus), cross-checked against the alphabetical master station-list table's Lines column. 21 stations - see hazard-pack.md H2 for the correction against the oracle report's per-line counts."
+    },
+    {
+      "id": "u3",
+      "number": "U3",
+      "name": "U3",
+      "operator": "Wiener Linien",
+      "officialPageTitle": "U3 Ottakring – Simmering",
+      "colour": "orange",
+      "gtfsRouteIdsIfKnown": [
+        "U3"
+      ],
+      "mapGroup": "U-Bahn",
+      "shape": "linear",
+      "termini": [
+        "Ottakring",
+        "Simmering"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Westbahnhof",
+          "otherLine": "U6",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Volkstheater",
+          "otherLine": "U2",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Stephansplatz",
+          "otherLine": "U1",
+          "note": "Two-line interchange, through-station on both. Not the hub (U1/U3 only, two lines)."
+        },
+        {
+          "at": "Landstraße",
+          "otherLine": "U4",
+          "note": "Two-line interchange, through-station on both."
+        }
+      ],
+      "stations": [
+        "Ottakring",
+        "Kendlerstraße",
+        "Hütteldorfer Straße",
+        "Johnstraße",
+        "Schweglerstraße",
+        "Westbahnhof",
+        "Zieglergasse",
+        "Neubaugasse",
+        "Volkstheater",
+        "Herrengasse",
+        "Stephansplatz",
+        "Stubentor",
+        "Landstraße",
+        "Rochusgasse",
+        "Kardinal-Nagl-Platz",
+        "Schlachthausgasse",
+        "Erdberg",
+        "Gasometer",
+        "Zippererstraße",
+        "Enkplatz",
+        "Simmering"
+      ],
+      "note": "Order hand-transcribed from the U3 (Vienna U-Bahn) Wikipedia article's own ordered 'Stations' list (terminus to terminus), cross-checked against the alphabetical master station-list table's Lines column. 21 stations - see hazard-pack.md H2 for the correction against the oracle report's per-line counts."
+    },
+    {
+      "id": "u4",
+      "number": "U4",
+      "name": "U4",
+      "operator": "Wiener Linien",
+      "officialPageTitle": "U4 Hütteldorf – Heiligenstadt",
+      "colour": "green",
+      "gtfsRouteIdsIfKnown": [
+        "U4"
+      ],
+      "mapGroup": "U-Bahn",
+      "shape": "linear",
+      "termini": [
+        "Hütteldorf",
+        "Heiligenstadt"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Karlsplatz",
+          "otherLine": "U1",
+          "note": "Hub lock. U1 x U2 x U4. U4 is a through-station here; U2 terminates here."
+        },
+        {
+          "at": "Landstraße",
+          "otherLine": "U3",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Schwedenplatz",
+          "otherLine": "U1",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Schottenring",
+          "otherLine": "U2",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Längenfeldgasse",
+          "otherLine": "U6",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Spittelau",
+          "otherLine": "U6",
+          "note": "Two-line interchange, through-station on both."
+        }
+      ],
+      "stations": [
+        "Hütteldorf",
+        "Ober St. Veit",
+        "Unter St. Veit",
+        "Braunschweiggasse",
+        "Hietzing",
+        "Schönbrunn",
+        "Meidling Hauptstraße",
+        "Längenfeldgasse",
+        "Margaretengürtel",
+        "Pilgramgasse",
+        "Kettenbrückengasse",
+        "Karlsplatz",
+        "Stadtpark",
+        "Landstraße",
+        "Schwedenplatz",
+        "Schottenring",
+        "Roßauer Lände",
+        "Friedensbrücke",
+        "Spittelau",
+        "Heiligenstadt"
+      ],
+      "note": "Order hand-transcribed from the U4 (Vienna U-Bahn) Wikipedia article's own ordered 'Stations' list (terminus to terminus), cross-checked against the alphabetical master station-list table's Lines column. 20 stations - see hazard-pack.md H2 for the correction against the oracle report's per-line counts."
+    },
+    {
+      "id": "u6",
+      "number": "U6",
+      "name": "U6",
+      "operator": "Wiener Linien",
+      "officialPageTitle": "U6 Floridsdorf – Siebenhirten",
+      "colour": "brown",
+      "gtfsRouteIdsIfKnown": [
+        "U6"
+      ],
+      "mapGroup": "U-Bahn",
+      "shape": "linear",
+      "termini": [
+        "Floridsdorf",
+        "Siebenhirten"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Westbahnhof",
+          "otherLine": "U3",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Längenfeldgasse",
+          "otherLine": "U4",
+          "note": "Two-line interchange, through-station on both."
+        },
+        {
+          "at": "Spittelau",
+          "otherLine": "U4",
+          "note": "Two-line interchange, through-station on both."
+        }
+      ],
+      "stations": [
+        "Floridsdorf",
+        "Neue Donau",
+        "Handelskai",
+        "Dresdner Straße",
+        "Jägerstraße",
+        "Spittelau",
+        "Nußdorfer Straße",
+        "Währinger Straße-Volksoper",
+        "Michelbeuern-AKH",
+        "Alser Straße",
+        "Josefstädter Straße",
+        "Thaliastraße",
+        "Burggasse-Stadthalle",
+        "Westbahnhof",
+        "Gumpendorfer Straße",
+        "Längenfeldgasse",
+        "Niederhofstraße",
+        "Bahnhof Meidling",
+        "Tscherttegasse",
+        "Am Schöpfwerk",
+        "Alterlaa",
+        "Erlaaer Straße",
+        "Perfektastraße",
+        "Siebenhirten"
+      ],
+      "note": "Order hand-transcribed from the U6 (Vienna U-Bahn) Wikipedia article's own ordered 'Stations' list (terminus to terminus), cross-checked against the alphabetical master station-list table's Lines column. 24 stations - see hazard-pack.md H2 for the correction against the oracle report's per-line counts."
+    }
+  ]
+}
