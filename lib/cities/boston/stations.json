@@ -1,0 +1,994 @@
+{
+  "city": "boston",
+  "hub": "Park Street",
+  "stations": [
+    {
+      "name": "Alewife",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Davis",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Porter",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Harvard",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Central",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Kendall/MIT",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Charles/MGH",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Park Street",
+      "lines": [
+        "red",
+        "green-b",
+        "green-c",
+        "green-d",
+        "green-e"
+      ],
+      "aliases": [],
+      "hub": true
+    },
+    {
+      "name": "Downtown Crossing",
+      "lines": [
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "South Station",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Broadway",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Andrew",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "JFK/UMass",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Savin Hill",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Fields Corner",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Shawmut",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Ashmont",
+      "lines": [
+        "red",
+        "mattapan"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "North Quincy",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Wollaston",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Quincy Center",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Quincy Adams",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Braintree",
+      "lines": [
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Oak Grove",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Malden Center",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Wellington",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Assembly",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Sullivan Sq",
+      "lines": [
+        "orange"
+      ],
+      "aliases": [
+        "Sullivan Square"
+      ]
+    },
+    {
+      "name": "Community College",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "North Station",
+      "lines": [
+        "orange",
+        "green-d",
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Haymarket",
+      "lines": [
+        "orange",
+        "green-d",
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "State",
+      "lines": [
+        "orange",
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Chinatown",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Tufts Medical Ctr",
+      "lines": [
+        "orange"
+      ],
+      "aliases": [
+        "Tufts Medical Center"
+      ]
+    },
+    {
+      "name": "Back Bay",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Mass. Ave",
+      "lines": [
+        "orange"
+      ],
+      "aliases": [
+        "Massachusetts Avenue"
+      ]
+    },
+    {
+      "name": "Ruggles",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Roxbury Crossing",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Jackson Sq",
+      "lines": [
+        "orange"
+      ],
+      "aliases": [
+        "Jackson Square"
+      ]
+    },
+    {
+      "name": "Stony Brook",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Green St",
+      "lines": [
+        "orange"
+      ],
+      "aliases": [
+        "Green Street"
+      ]
+    },
+    {
+      "name": "Forest Hills",
+      "lines": [
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Wonderland",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Revere Beach",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Beachmont",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Suffolk Downs",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Orient Heights",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Wood Island",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Airport",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Maverick",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Aquarium",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Gov't Center",
+      "lines": [
+        "blue",
+        "green-b",
+        "green-c",
+        "green-d",
+        "green-e"
+      ],
+      "aliases": [
+        "Government Center"
+      ]
+    },
+    {
+      "name": "Bowdoin",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Boylston",
+      "lines": [
+        "green-b",
+        "green-c",
+        "green-d",
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Arlington",
+      "lines": [
+        "green-b",
+        "green-c",
+        "green-d",
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Copley",
+      "lines": [
+        "green-b",
+        "green-c",
+        "green-d",
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Hynes Convention Ctr",
+      "lines": [
+        "green-b",
+        "green-c",
+        "green-d"
+      ],
+      "aliases": [
+        "Hynes Convention Center"
+      ]
+    },
+    {
+      "name": "Kenmore",
+      "lines": [
+        "green-b",
+        "green-c",
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Blandford St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Blandford Street"
+      ]
+    },
+    {
+      "name": "BU East",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Boston University East"
+      ]
+    },
+    {
+      "name": "BU Central",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Boston University Central"
+      ]
+    },
+    {
+      "name": "Amory St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Amory Street"
+      ]
+    },
+    {
+      "name": "Babcock St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Babcock Street"
+      ]
+    },
+    {
+      "name": "Packard's Corner",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Harvard Ave",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Harvard Avenue"
+      ]
+    },
+    {
+      "name": "Griggs St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Griggs Street"
+      ]
+    },
+    {
+      "name": "Allston St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Allston Street"
+      ]
+    },
+    {
+      "name": "Warren St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Warren Street"
+      ]
+    },
+    {
+      "name": "Washington St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Washington Street"
+      ]
+    },
+    {
+      "name": "Sutherland Rd",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Sutherland Road"
+      ]
+    },
+    {
+      "name": "Chiswick Rd",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Chiswick Road"
+      ]
+    },
+    {
+      "name": "Chestnut Hill Ave",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "Chestnut Hill Avenue"
+      ]
+    },
+    {
+      "name": "South St",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": [
+        "South Street"
+      ]
+    },
+    {
+      "name": "Boston College",
+      "lines": [
+        "green-b"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "St. Mary's St",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "St. Mary's Street"
+      ]
+    },
+    {
+      "name": "Hawes St",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Hawes Street"
+      ]
+    },
+    {
+      "name": "Kent St",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Kent Street"
+      ]
+    },
+    {
+      "name": "St. Paul St",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "St. Paul Street"
+      ]
+    },
+    {
+      "name": "Coolidge Corner",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Summit Ave",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Summit Avenue"
+      ]
+    },
+    {
+      "name": "Brandon Hall",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Fairbanks St",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Fairbanks Street"
+      ]
+    },
+    {
+      "name": "Washington Sq",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Washington Square"
+      ]
+    },
+    {
+      "name": "Tappan St",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Tappan Street"
+      ]
+    },
+    {
+      "name": "Dean Rd",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Dean Road"
+      ]
+    },
+    {
+      "name": "Englewood Ave",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": [
+        "Englewood Avenue"
+      ]
+    },
+    {
+      "name": "Cleveland Circle",
+      "lines": [
+        "green-c"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Union Sq",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": [
+        "Union Square"
+      ]
+    },
+    {
+      "name": "Lechmere",
+      "lines": [
+        "green-d",
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Science Park/West End",
+      "lines": [
+        "green-d",
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Fenway",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Longwood",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Brookline Village",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Brookline Hills",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Beaconsfield",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Reservoir",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Chestnut Hill",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Newton Centre",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Newton Highlands",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Eliot",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Waban",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Woodland",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Riverside",
+      "lines": [
+        "green-d"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Medford/Tufts",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Ball Sq",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": [
+        "Ball Square"
+      ]
+    },
+    {
+      "name": "Magoun Sq",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": [
+        "Magoun Square"
+      ]
+    },
+    {
+      "name": "Gilman Sq",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": [
+        "Gilman Square"
+      ]
+    },
+    {
+      "name": "East Somerville",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Prudential",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Symphony",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Northeastern",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": [
+        "Northeastern University"
+      ]
+    },
+    {
+      "name": "Museum of Fine Arts",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Longwood Medical Area",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Brigham Circle",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Fenwood Rd",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": [
+        "Fenwood Road"
+      ]
+    },
+    {
+      "name": "Mission Park",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Riverway",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Back of the Hill",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Heath St",
+      "lines": [
+        "green-e"
+      ],
+      "aliases": [
+        "Heath Street"
+      ]
+    },
+    {
+      "name": "Cedar Grove",
+      "lines": [
+        "mattapan"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Butler",
+      "lines": [
+        "mattapan"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Milton",
+      "lines": [
+        "mattapan"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Central Ave",
+      "lines": [
+        "mattapan"
+      ],
+      "aliases": [
+        "Central Avenue"
+      ]
+    },
+    {
+      "name": "Valley Rd",
+      "lines": [
+        "mattapan"
+      ],
+      "aliases": [
+        "Valley Road"
+      ]
+    },
+    {
+      "name": "Capen St",
+      "lines": [
+        "mattapan"
+      ],
+      "aliases": [
+        "Capen Street"
+      ]
+    },
+    {
+      "name": "Mattapan",
+      "lines": [
+        "mattapan"
+      ],
+      "aliases": []
+    }
+  ]
+}
