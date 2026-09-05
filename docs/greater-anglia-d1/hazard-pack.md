@@ -83,7 +83,7 @@ genuinely has two separately-ticketed operators, Greater Anglia and c2c).
 
 ## H7 — DST
 
-Greater Anglia is in the UK, timezone **Europe/London**, which **observes DST** (BST in summer,
+Greater Anglia is in the UK, timezone **Europe/London**, which **observes DST** (BIS in summer,
 GMT in winter). Not to be treated as a no-DST region. UK-wide fact, stated here so Jim doesn't
 have to re-derive it (same as every other UK region packed so far).
 

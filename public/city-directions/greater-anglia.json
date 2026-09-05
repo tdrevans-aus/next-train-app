@@ -1,0 +1,106 @@
+{
+  "Norwich": [
+    "Beccles (Greater Anglia)",
+    "Cambridge (Greater Anglia)",
+    "Ely (Greater Anglia)",
+    "Great Yarmouth (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Lowestoft (Greater Anglia)",
+    "Sheringham (Greater Anglia)"
+  ],
+  "Cambridge": [
+    "Brighton (Thameslink)",
+    "Cambridge North (Greater Anglia)",
+    "Ely (Great Northern)",
+    "Ipswich (Greater Anglia)",
+    "Kings Lynn (Great Northern)",
+    "London Kings Cross (Great Northern)",
+    "London Liverpool Street (Greater Anglia)",
+    "Lowestoft (Greater Anglia)",
+    "Stansted Airport (CrossCountry)",
+    "Stansted Airport (Greater Anglia)"
+  ],
+  "Ipswich": [
+    "Bury St Edmunds (Greater Anglia)",
+    "Cambridge (Greater Anglia)",
+    "Colchester (Greater Anglia)",
+    "Felixstowe (Greater Anglia)",
+    "Harwich International (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Lowestoft (Greater Anglia)",
+    "Norwich (Greater Anglia)"
+  ],
+  "Peterborough": [
+    "Birmingham New Street (CrossCountry)",
+    "Colchester (Greater Anglia)",
+    "Derby (East Midlands Railway)",
+    "Edinburgh (LNER)",
+    "Horsham (Thameslink)",
+    "Leeds (LNER)",
+    "London Kings Cross (LNER)",
+    "Newcastle (LNER)",
+    "Norwich (East Midlands Railway)",
+    "Stansted Airport (CrossCountry)"
+  ],
+  "Colchester": [
+    "Clacton-on-Sea (Greater Anglia)",
+    "Colchester Town (Greater Anglia)",
+    "Harwich International (Greater Anglia)",
+    "Ipswich (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Norwich (Greater Anglia)",
+    "Walton-on-the-Naze (Greater Anglia)"
+  ],
+  "Ely": [
+    "Birmingham New Street (CrossCountry)",
+    "Cambridge (Great Northern)",
+    "Cambridge (Greater Anglia)",
+    "Derby (East Midlands Railway)",
+    "Kings Lynn (Great Northern)",
+    "London Kings Cross (Great Northern)",
+    "Lowestoft (Greater Anglia)",
+    "Norwich",
+    "Peterborough (Greater Anglia)",
+    "Stansted Airport (CrossCountry)"
+  ],
+  "King's Lynn": [
+    "Cambridge (Great Northern)",
+    "London Kings Cross (Great Northern)"
+  ],
+  "Thetford": [
+    "Cambridge (Greater Anglia)",
+    "Derby (East Midlands Railway)",
+    "Ely (Greater Anglia)",
+    "Lowestoft (Greater Anglia)",
+    "Norwich"
+  ],
+  "Diss": [
+    "London Liverpool Street (Greater Anglia)",
+    "Norwich (Greater Anglia)"
+  ],
+  "Wymondham": [
+    "Cambridge (Greater Anglia)",
+    "Ely (Greater Anglia)",
+    "Lowestoft (Greater Anglia)",
+    "Norwich (Greater Anglia)"
+  ],
+  "Great Yarmouth": [
+    "Norwich (Greater Anglia)"
+  ],
+  "Lowestoft": [
+    "Beccles (Greater Anglia)",
+    "Ipswich (Greater Anglia)",
+    "Norwich (Greater Anglia)"
+  ],
+  "Stansted Airport": [
+    "Cambridge (CrossCountry)",
+    "London Liverpool Street (Greater Anglia)",
+    "Norwich (Greater Anglia)"
+  ],
+  "Bishops Stortford": [
+    "Cambridge North (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Stansted Airport (Greater Anglia)",
+    "Stratford (London) (Greater Anglia)"
+  ]
+}

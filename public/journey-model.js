@@ -523,7 +523,11 @@ const PERSISTED_CITY_IDS = new Set([
   "uk-west-midlands",
   "west-of-england",
   "east-midlands",
+  "greater-anglia",
   "liverpool-city-region",
+  "solent",
+  "west-yorkshire",
+  "thames-valley",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 

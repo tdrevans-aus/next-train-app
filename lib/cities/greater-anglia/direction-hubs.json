@@ -1,0 +1,29 @@
+{
+  "region": "greater-anglia",
+  "notes": [
+    "A hub chip means 'every train that calls at filterCrs', fetched server-side via Darwin filterCrs/filterType=to.",
+    "absorbs = printed destinations that disappear from the picker because the hub chip covers them.",
+    "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
+    "Hub chips carry no operator suffix — several operators may call at the hub.",
+    "Live-probed 5 Sep 2026 (docs/jim-brief-greater-anglia-adapter.md, scripts/probe-uk-board.mjs --region=greater-anglia and --filter-crs against every catalogued station). Thetford (TTF) and Ely (ELY) are BOTH the operator-split (Liverpool) shape on 'Norwich': Thetford's own board prints 'Norwich' under both East Midlands Railway (19:47, 20:43) and Greater Anglia (20:04, 21:03), and Ely's own board prints 'Norwich' under both East Midlands Railway (20:22) and Greater Anglia (20:39) — the same terminus name split across operator tags at the same station, same shape as Liverpool Lime Street at Runcorn/St Helens. Filtered-board evidence (--filter-crs=NRW) confirms every one of those trains genuinely calls at Norwich (5 trips from Thetford, 3 from Ely, 5 Sep 2026).",
+    "Wymondham (WMD) and Diss (DIS) were also probed with --filter-crs=NRW for the same candidate and rejected: both show 'Norwich' under Greater Anglia only (no East Midlands Railway split) — no hub needed there.",
+    "A second candidate was found at Ely only: 'Cambridge' also splits by operator there (Great Northern prints 'Cambridge' repeatedly; Greater Anglia prints it once, 21:41) — filtered-board evidence via --filter-crs=CBG confirms 13 genuine calls. NOT built: the shared lib/cities/uk/direction-hubs.js helper's findHubForStation() returns only the FIRST configured hub whose appliesFrom includes a given station CRS, so Ely can carry at most one hub. Norwich is the one built (it also covers Thetford, the higher-value pick across two stations vs. Cambridge's one); Ely's Cambridge operator-split stays uncollapsed (functionally correct via the exact-chip path, shown as two operator-suffixed chips instead of one) — flagged as an infra limitation for Tim/Luke, same treatment as Solent's Southampton Central at Fareham. Editing lib/cities/uk/* is out of scope for this pack.",
+    "No operator split found on 'Cambridge' or 'London Liverpool Street' anywhere else in the catalog (King's Lynn, Wymondham print 'Cambridge' under one operator each; Colchester and Ipswich print 'London Liverpool Street' under Greater Anglia only, confirmed via --filter-crs=LST at both — 10 and 5 genuine calls respectively, single operator each). No Kidderminster-shape (obscure through-run past a recognised terminus) candidate was found at any station — every non-hub destination in the live chip tables is itself a real, board-recognisable terminus (Beccles, Sheringham, Cambridge North, Felixstowe, Harwich International, Colchester Town, Walton-on-the-Naze, Clacton-on-Sea, Stratford (London), Derby, Lincoln Central, Nottingham, Birmingham New Street, Edinburgh, Leeds, Horsham, Brighton). See docs/greater-anglia-d1/jim-handoff.md 'Adapter wired' section for full per-station chip tables.",
+    "No hub warranted at Norwich, Cambridge or Ipswich themselves — each is a hub/secondary-hub board in its own right, not a through-station a rider anchors past. No hub warranted at Peterborough — genuinely a boundary/through-running point, not a fan-out corridor a rider approaches from another catalogued station."
+  ],
+  "hubs": [
+    {
+      "label": "Norwich",
+      "filterCrs": "NRW",
+      "filterName": "Norwich",
+      "appliesFrom": [
+        "TTF",
+        "ELY"
+      ],
+      "absorbs": [
+        "Norwich"
+      ],
+      "reason": "Thetford's and Ely's live boards both print 'Norwich' under both East Midlands Railway and Greater Anglia — an operator-split duplicate of the same terminus at both stations, same shape as Liverpool Lime Street at Runcorn/St Helens. A hub whose label is the terminus itself, fetched via filterCrs=NRW, collapses the operator split into one chip covering every operator's train toward Norwich. Ely's identical operator-split on 'Cambridge' is not also configured here — see the INFRA LIMITATION note above."
+    }
+  ]
+}
