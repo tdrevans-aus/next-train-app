@@ -13,7 +13,7 @@ Could this be passed to whoever looks after live train information for the Metro
 
 I run Next Train, a small app that answers one question for passengers: when is my next train from this station? It already shows live departures for National Rail stations across Great Britain, using the industry's official live data service, and credits Rail Delivery Group as the source.
 
-I'd like to add the Tyne and Wear Metro. I have the published Metro timetable, so I can show scheduled times. But a timetable isn't what people at the platform want. They want to know whether the 08:14 is actually coming, and I'd rather show nothing than show a scheduled time dressed up as a live one. So the Metro will appear in the app as "no live times available" until I can get live running information.
+I'd like to add the Tyne and Wear Metro. I have the published timetable, but passengers at the platform want to know whether the 08:14 is actually coming, and I won't show scheduled times as if they were live. Without live running information, the Metro will show as "no live times available".
 
 Your own Pop app shows live Metro times, so that information clearly exists. I'd like to ask two things:
 
