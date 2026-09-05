@@ -3,31 +3,31 @@
 **To:** customerrelations@nexus.org.uk (Nexus general enquiries — published address; ask in the first line to be forwarded to the Metro real-time information owner)
 **Cc:** mediarelations@nexus.org.uk (Nexus communications — published, fast-response)
 
-**Subject:** Next Train app — real-time API for Tyne and Wear Metro
+**Subject:** Live Metro times for the Next Train app
 
 ---
 
 Dear Nexus,
 
-Could this be passed to whoever looks after the Metro real-time information system? Thank you.
+Could this be passed to whoever looks after live train information for the Metro? Thank you.
 
-We operate Next Train, a walk-up passenger information app for public transport. We already show live departures for National Rail services across Great Britain, powered by the Rail Data Marketplace and credited to Rail Delivery Group.
+I run Next Train, a small app that answers one question for passengers: when is my next train from this station? It already shows live departures for National Rail stations across Great Britain, using the industry's official live data service, and credits Rail Delivery Group as the source.
 
-We'd like to add Tyne and Wear Metro to the app. We have confirmed access to the static timetable data (via the Department for Transport Bus Open Data Service), and our team has verified the route and stop data. However, without a real-time departures feed, the Metro will appear as "no live data available" on our board screens, rather than showing actual train times.
+I'd like to add the Tyne and Wear Metro. I have the published Metro timetable, so I can show scheduled times. But a timetable isn't what people at the platform want. They want to know whether the 08:14 is actually coming, and I'd rather show nothing than show a scheduled time dressed up as a live one. So the Metro will appear in the app as "no live times available" until I can get live running information.
 
-I'm choosing not to use that endpoint without permission, which is why I'm writing. I have two questions:
+Your own Pop app shows live Metro times, so that information clearly exists. I'd like to ask two things:
 
-1. Does Nexus publish (or plan to publish) a public real-time departures API or feed for the Metro? We can work with GTFS-RT, SIRI, or a documented custom API.
+1. Does Nexus publish live Metro running information for outside developers, or have plans to? Any of the standard formats used by other operators would be fine.
 
-2. If a public feed is not available, would Nexus be willing to grant us access to the endpoint that powers the Nexus Pop app (metro-rti.nexus.org.uk, which third parties have documented but which carries no published licence or terms)? If so, what licence terms and rate limits would apply?
+2. If not, would Nexus be willing to let Next Train use the live information behind the Pop app? I've deliberately not connected to it without asking, because there are no published terms for it. If access is possible, I'd want to know what conditions and usage limits you'd want me to respect.
 
-We'd be happy to credit Nexus as the real-time data source and comply with any applicable licence conditions. If you'd prefer to handle this enquiry through DB Regio UK, please let me know and I'll reach out to them directly.
+I'd credit Nexus as the source of the live times and follow whatever conditions you set. If this is better handled by DB Regio, please point me to the right person there.
 
 Thank you for your time.
 
 Best regards,
 Tim Evans
-next-train-app
+Next Train
 
 ---
 
