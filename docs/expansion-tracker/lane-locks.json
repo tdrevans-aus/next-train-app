@@ -1,1 +1,8 @@
-{}
+{
+  "united-kingdom": {
+    "region": "ledger-catalog-followups",
+    "stage": "adapter",
+    "branch": null,
+    "locked_at": "2026-09-05T03:57:48.928Z"
+  }
+}
