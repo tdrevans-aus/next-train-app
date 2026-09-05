@@ -343,9 +343,9 @@ if (!row || row.railCount !== 17 || row.metroCount !== 0) {
 const rowRail = listRailStations("rest-of-wales");
 const rowCrsSet = new Set(rowRail.map((s) => s.crs).filter(Boolean));
 for (const crs of [
-  "WRX", "LLJ", "CON", "BNG", "HOY",
-  "WEL", "MCH", "AYW", "PWL",
-  "CMN", "WLD", "NAR", "TNB", "PMD", "MLH", "FGW", "LLE",
+  "WRX", "LLJ", "CNW", "BNG", "HHD",
+  "WLP", "MCN", "AYW", "PWL",
+  "CMN", "WTL", "NAR", "TEN", "PMD", "MFH", "FGW", "LLE",
 ]) {
   if (!rowCrsSet.has(crs)) {
     fail(`rest-of-wales missing ${crs}`);
@@ -386,7 +386,7 @@ if (!ros || ros.railCount !== 9 || ros.metroCount !== 0) {
 
 const rosRail = listRailStations("rest-of-scotland");
 const rosCrsSet = new Set(rosRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["PTH", "INV", "ABD", "DDE", "KLS", "THR", "WCK", "MLG", "FTW"]) {
+for (const crs of ["PTH", "INV", "ABD", "DEE", "KYL", "THS", "WCK", "MLG", "FTW"]) {
   if (!rosCrsSet.has(crs)) {
     fail(`rest-of-scotland missing ${crs}`);
   }
@@ -402,7 +402,7 @@ for (const [name, crs] of [
   ["Perth", "PTH"],
   ["Inverness", "INV"],
   ["Aberdeen", "ABD"],
-  ["Dundee", "DDE"],
+  ["Dundee", "DEE"],
 ]) {
   const hit = resolveRailEntry(name, "rest-of-scotland");
   if (!hit || hit.crs !== crs) {

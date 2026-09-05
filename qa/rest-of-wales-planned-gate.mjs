@@ -116,9 +116,9 @@ assert(
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
 for (const crs of [
-  "WRX", "LLJ", "CON", "BNG", "HOY",
-  "WEL", "MCH", "AYW", "PWL",
-  "CMN", "WLD", "NAR", "TNB", "PMD", "MLH", "FGW", "LLE",
+  "WRX", "LLJ", "CNW", "BNG", "HHD",
+  "WLP", "MCN", "AYW", "PWL",
+  "CMN", "WTL", "NAR", "TEN", "PMD", "MFH", "FGW", "LLE",
 ]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
@@ -148,11 +148,14 @@ assert(cmn.crs !== hub.crs, "Carmarthen must not be conflated with the Wrexham G
 // (Fishguard Harbour, Milford Haven, Pembroke Dock, Pwllheli) still resolve
 // as their own distinct in-catalog stations, not merged into the branch point.
 const whitland = resolveCatalogEntry("Whitland");
-assert(whitland?.crs === "WLD", "Whitland must resolve as its own catalog entry");
-const fishguard = resolveCatalogEntry("Fishguard Harbour");
-assert(fishguard?.crs === "FGW", "Fishguard Harbour must resolve as its own distinct catalog entry from Whitland");
+assert(whitland?.crs === "WTL", "Whitland must resolve as its own catalog entry");
+// FGH (Fishguard Harbour) could not be live-verified — no DARWIN_LDB_TOKEN available to
+// re-probe (see docs/jim-brief-uk-crs-corrections.md). Kept FGW and renamed the entry to its
+// actual station name, "Fishguard & Goodwick", per the brief's fallback instruction.
+const fishguard = resolveCatalogEntry("Fishguard & Goodwick");
+assert(fishguard?.crs === "FGW", "Fishguard & Goodwick must resolve as its own distinct catalog entry from Whitland");
 const machynlleth = resolveCatalogEntry("Machynlleth");
-assert(machynlleth?.crs === "MCH", "Machynlleth must resolve as its own catalog entry");
+assert(machynlleth?.crs === "MCN", "Machynlleth must resolve as its own catalog entry");
 const pwllheli = resolveCatalogEntry("Pwllheli");
 assert(pwllheli?.crs === "PWL", "Pwllheli must resolve as its own distinct catalog entry from Machynlleth");
 

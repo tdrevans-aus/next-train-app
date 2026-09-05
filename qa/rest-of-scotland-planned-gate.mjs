@@ -3,7 +3,7 @@
  * stays live. Usage: node qa/rest-of-scotland-planned-gate.mjs
  *
  * This region is the first UK region with FOUR co-equal tier-1 hub locks (Perth
- * Scotland/PTH, Inverness/INV, Aberdeen/ABD, Dundee/DDE), not a single primary hub.
+ * Scotland/PTH, Inverness/INV, Aberdeen/ABD, Dundee/DEE), not a single primary hub.
  * This gate asserts all four resolve as independent hub-class catalog entries, and
  * that "Perth" here resolves within the rest-of-scotland region only — never
  * conflated with the live city id `perth` (Perth, Australia).
@@ -110,7 +110,7 @@ assert(
 
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["PTH", "INV", "ABD", "DDE", "KLS", "THR", "WCK", "MLG", "FTW"]) {
+for (const crs of ["PTH", "INV", "ABD", "DEE", "KYL", "THS", "WCK", "MLG", "FTW"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
 assert(getNotInRegion(REST_OF_SCOTLAND_REGION).length === 0, "rest-of-scotland has no deliberate exclusions recorded");
@@ -120,7 +120,7 @@ assert(allStations.length === 9, `combined catalog must have 9 stations (train o
 
 // Four co-equal hub locks resolve independently — no single-hub assumption anywhere.
 assert(REST_OF_SCOTLAND_HUBS.length === 4, "must document exactly four co-equal hub locks");
-const hubCrsByName = { Perth: "PTH", Inverness: "INV", Aberdeen: "ABD", Dundee: "DDE" };
+const hubCrsByName = { Perth: "PTH", Inverness: "INV", Aberdeen: "ABD", Dundee: "DEE" };
 for (const [name, crs] of Object.entries(hubCrsByName)) {
   const hub = resolveCatalogEntry(name);
   assert(hub?.crs === crs, `${name} must resolve with crs ${crs}`);
@@ -170,5 +170,5 @@ try {
 assert(unknownThrew, "fetchStationBoard must throw for an unknown station");
 
 console.log(
-  "rest-of-scotland-planned-gate: ok (planned/501, adapterReady, D1 pack, Board eligibility section all-in, 9 rail-only stations, four co-equal hub locks PTH/INV/ABD/DDE resolve independently, Perth Scotland never conflated with city=perth Australia, Caledonian Sleeper out-reservation exclusion enforced per-station, National Rail board correctly blocked on MissingDarwinTokenError, Perth Australia green)"
+  "rest-of-scotland-planned-gate: ok (planned/501, adapterReady, D1 pack, Board eligibility section all-in, 9 rail-only stations, four co-equal hub locks PTH/INV/ABD/DEE resolve independently, Perth Scotland never conflated with city=perth Australia, Caledonian Sleeper out-reservation exclusion enforced per-station, National Rail board correctly blocked on MissingDarwinTokenError, Perth Australia green)"
 );

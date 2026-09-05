@@ -26,7 +26,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — junction of North Wales Main Line (Chester-Wrexham-Shrewsbury), North Wales Coast Line (Crewe-Wrexham-Holyhead), and Borderlands Line (Wrexham-Bidston/Merseyside); largest North Wales station by connectivity. Not Wrexham Central (southern Borderlands terminus, lower connectivity, never catalogued)."
+      "class": "hub lock — junction of North Wales Main Line (Chester-Wrexham-Shrewsbury), North Wales Coast Line (Crewe-Wrexham-Holyhead), and Borderlands Line (Wrexham-Bidston/Merseyside); largest North Wales station by connectivity. Not Wrexham Central (southern Borderlands terminus, lower connectivity, never catalogued).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -35,16 +37,20 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate, North Wales Coast Line"
+      "class": "intermediate, North Wales Coast Line",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Conwy",
-      "crs": "CON",
+      "crs": "CNW",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate, North Wales Coast Line"
+      "class": "intermediate, North Wales Coast Line",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -53,34 +59,42 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate, North Wales Coast Line"
+      "class": "intermediate, North Wales Coast Line",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Holyhead",
-      "crs": "HOY",
+      "crs": "HHD",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus, North Wales Coast Line"
+      "class": "terminus, North Wales Coast Line",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Welshpool",
-      "crs": "WEL",
+      "crs": "WLP",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate, Cambrian Line, Mid Wales corridor"
+      "class": "intermediate, Cambrian Line, Mid Wales corridor",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Machynlleth",
-      "crs": "MCH",
+      "crs": "MCN",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "junction — Cambrian Line splits toward Aberystwyth or Pwllheli. First in-Wales station east of Shrewsbury (England pass-through, not in catalog). Proposed doNotGroup candidate for the Aberystwyth/Pwllheli split — not built, see notes."
+      "class": "junction — Cambrian Line splits toward Aberystwyth or Pwllheli. First in-Wales station east of Shrewsbury (England pass-through, not in catalog). Proposed doNotGroup candidate for the Aberystwyth/Pwllheli split — not built, see notes.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -89,7 +103,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus, Mid Wales corridor — secondary hub candidate named in the oracle report but NOT hub-locked (Wrexham General is the sole lock)."
+      "class": "terminus, Mid Wales corridor — secondary hub candidate named in the oracle report but NOT hub-locked (Wrexham General is the sole lock).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -98,7 +114,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus, Cambrian Line north branch from Machynlleth"
+      "class": "terminus, Cambrian Line north branch from Machynlleth",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -107,16 +125,20 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "junction, West Wales corridor — tertiary hub candidate named in the oracle report but NOT hub-locked. Continues east toward Swansea on the South Wales Main Line (South Wales region, not Rest of Wales) — through-running only in that direction, no specific boundary station named in the report. Proposed doNotGroup candidate for the branch-vs-through-running split — not built, see notes."
+      "class": "junction, West Wales corridor — tertiary hub candidate named in the oracle report but NOT hub-locked. Continues east toward Swansea on the South Wales Main Line (South Wales region, not Rest of Wales) — through-running only in that direction, no specific boundary station named in the report. Proposed doNotGroup candidate for the branch-vs-through-running split — not built, see notes.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Whitland",
-      "crs": "WLD",
+      "crs": "WTL",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "branch point — Fishguard Harbour / Milford Haven / Pembroke Dock branches split here. Proposed doNotGroup candidate — not built, see notes."
+      "class": "branch point — Fishguard Harbour / Milford Haven / Pembroke Dock branches split here. Proposed doNotGroup candidate — not built, see notes.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -125,16 +147,20 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate, West Wales corridor"
+      "class": "intermediate, West Wales corridor",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Tenby",
-      "crs": "TNB",
+      "crs": "TEN",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "intermediate, West Wales corridor"
+      "class": "intermediate, West Wales corridor",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -143,25 +169,31 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus, West Wales corridor"
+      "class": "terminus, West Wales corridor",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Milford Haven",
-      "crs": "MLH",
+      "crs": "MFH",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus, West Wales corridor"
+      "class": "terminus, West Wales corridor",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
-      "name": "Fishguard Harbour",
+      "name": "Fishguard & Goodwick",
       "crs": "FGW",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "terminus, West Wales corridor"
+      "class": "terminus, West Wales corridor — DARWIN_LDB_TOKEN not set in this sandbox so FGH (Fishguard Harbour) could not be live-verified per docs/jim-brief-uk-crs-corrections.md; kept FGW and renamed the entry from 'Fishguard Harbour' to its actual station name 'Fishguard & Goodwick' per the brief's fallback instruction. Re-probe FGH when Darwin access is available.",
+      "crsVerified": false,
+      "crsSource": "live Darwin probe 5 Sep 2026 (FGW/FGH ambiguity unresolved — no DARWIN_LDB_TOKEN available to re-probe)"
     },
     {
       "mode": "train",
@@ -170,7 +202,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "branch off Carmarthen, stays within catalog — not a through-running boundary"
+      "class": "branch off Carmarthen, stays within catalog — not a through-running boundary",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     }
   ]
 }
