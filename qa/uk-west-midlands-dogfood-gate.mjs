@@ -64,6 +64,8 @@ import {
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BHM = "Birmingham New Street";
 const KID = "Kidderminster";
+const TAM = "Tamworth";
+const BHI = "Birmingham International";
 
 function assert(condition, message) {
   if (!condition) {
@@ -169,7 +171,7 @@ assert(grandCentralEntries[0]?.mode === "metro", "Grand Central's dogfood entry 
 // board at that time). See direction-hubs.json's "reason" field and the PR
 // description for the transcript.
 const { hubs } = loadDirectionHubs(UK_WEST_MIDLANDS_REGION);
-assert(hubs.length === 1, "uk-west-midlands direction-hubs.json must define exactly one hub for v1");
+assert(hubs.length === 2, "uk-west-midlands direction-hubs.json must define exactly two hubs (Kidderminster/Snow Hill v1 + Tamworth/New Street FB-54)");
 const birminghamHub = hubs[0];
 assert(birminghamHub.label === "Birmingham", "v1 hub label must be Birmingham");
 assert(birminghamHub.filterCrs === "BSW", "v1 hub filterCrs must be BSW (Birmingham Snow Hill's real Darwin CRS — \"BSH\" is Bushey)");
@@ -302,6 +304,83 @@ for (const crs of ["SBJ", "CRA", "OHL", "ROW", "LGG"]) {
     `applyDirectionHubs at ${crs} must collapse Dorridge/Whitlocks End/Stratford-upon-Avon under Birmingham, got ${JSON.stringify(chips)}`
   );
 }
+
+// 3c. Tamworth (TAM) hub added 5 Sep 2026 (FB-54): CrossCountry
+// Birmingham–Derby line trips through-running to the South West/South Coast
+// collapse under Birmingham at the New Street CRS (BHM), not Snow Hill (BSW).
+// docs/jim-brief-uk-tamworth-hub.md's live probe (7 trips, all CrossCountry,
+// platform 4, printed Cardiff Central x2/Reading x2/Bournemouth/Plymouth/
+// Birmingham New Street) is the fixture below.
+const tamworthHub = hubs[1];
+assert(tamworthHub.label === "Birmingham", "Tamworth hub label must be Birmingham");
+assert(tamworthHub.filterCrs === "BHM", "Tamworth hub filterCrs must be BHM (Birmingham New Street), not BSW/BMO");
+assert(
+  JSON.stringify(tamworthHub.appliesFrom) === JSON.stringify(["TAM"]),
+  "Tamworth hub appliesFrom must be TAM only (Wilnecote/Polesworth are not in the catalog)"
+);
+for (const absorbed of tamworthHub.absorbs) {
+  assert(!/ \([^()]+\)$/.test(absorbed), `absorbs entry "${absorbed}" must not carry an operator suffix`);
+}
+for (const kept of ["Nottingham", "Edinburgh", "London Euston", "Crewe", "Liverpool Lime Street"]) {
+  assert(!tamworthHub.absorbs.includes(kept), `Tamworth hub must NOT absorb "${kept}" — it keeps its own chip`);
+}
+
+const tamFixture = [
+  "Cardiff Central (CrossCountry)",
+  "Reading (CrossCountry)",
+  "Bournemouth (CrossCountry)",
+  "Plymouth (CrossCountry)",
+  "Birmingham New Street (CrossCountry)",
+  "Nottingham (CrossCountry)",
+  "Edinburgh (CrossCountry)",
+  "London Euston (Avanti West Coast)",
+  "Crewe (West Midlands Railway)",
+  "Liverpool Lime Street (West Midlands Railway)",
+];
+const tamChips = applyDirectionHubs(tamFixture, "TAM", hubs);
+assert(
+  JSON.stringify(tamChips) ===
+    JSON.stringify(
+      [
+        "Birmingham",
+        "Crewe (West Midlands Railway)",
+        "Edinburgh (CrossCountry)",
+        "Liverpool Lime Street (West Midlands Railway)",
+        "London Euston (Avanti West Coast)",
+        "Nottingham (CrossCountry)",
+      ].sort((a, b) => a.localeCompare(b))
+    ),
+  `applyDirectionHubs at TAM must collapse Cardiff Central/Reading/Bournemouth/Plymouth/Birmingham New Street under Birmingham while keeping Nottingham/Edinburgh/Euston/Crewe/Liverpool, got ${JSON.stringify(tamChips)}`
+);
+
+// Kidderminster's own hub-anchoring assertions (above) must be unaffected by
+// adding the Tamworth hub — re-run the same fixture/expectation here to be
+// explicit that the two hubs don't interfere.
+const kidChipsAfterTamworthAdded = applyDirectionHubs(fixtureChips, "KID", hubs);
+assert(
+  JSON.stringify(kidChipsAfterTamworthAdded) === JSON.stringify(kidChips),
+  "Kidderminster's hub-anchoring result must be unchanged by the addition of the Tamworth hub"
+);
+
+// A station NOT in either hub's appliesFrom (Birmingham International, BHI) is
+// unaffected by the new Tamworth hub — same as the existing BHM check above.
+const bhiEntry = resolveRailEntry(BHI, UK_WEST_MIDLANDS_REGION);
+assert(bhiEntry?.crs === "BHI", "Birmingham International must resolve as a National Rail entry (crs BHI)");
+const bhiChips = applyDirectionHubs(tamFixture, "BHI", hubs);
+assert(
+  JSON.stringify(bhiChips) === JSON.stringify([...tamFixture].sort((a, b) => a.localeCompare(b))),
+  `applyDirectionHubs at BHI (not in any hub's appliesFrom) must return the fixture chips unchanged (sorted), got ${JSON.stringify(bhiChips)}`
+);
+const tamworthNextTrainPlan = planUkWestMidlandsNextTrainFetch(
+  resolveRailEntry(TAM, UK_WEST_MIDLANDS_REGION),
+  "train",
+  "Birmingham",
+  hubs
+);
+assert(
+  tamworthNextTrainPlan.kind === "hub" && tamworthNextTrainPlan.filterCrs === "BHM",
+  "destination \"Birmingham\" at Tamworth must route to the hub-filtered fetch (BHM)"
+);
 
 // 4. planUkWestMidlandsNextTrainFetch() — pure routing decision table from the
 // brief, assertable without a Darwin token.
@@ -605,5 +684,5 @@ if (previousProbeFlag === undefined) {
 }
 
 console.log(
-  "uk-west-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, oracle report present, 75 rail + 35 metro stations, Birmingham New Street/Grand Central mode-aware resolution (no shared printed name, unlike Nottingham Station), Kidderminster rail-only with Severn Valley Railway excluded, National Rail directions derived live from Darwin with no static line map, Metro dispatch correctly surfaces MissingTfwmCredentialsError rather than fabricating a schedule, direction-hubs.json loads/validates and Kidderminster->Birmingham hub anchoring collapses Dorridge/Whitlocks End/Stratford-upon-Avon without touching Marylebone or non-appliesFrom stations, next-train routing table (hub/exact/undirected) proven token-free via planUkWestMidlandsNextTrainFetch, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL/West of England/East Midlands stay green)"
+  "uk-west-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, oracle report present, 75 rail + 35 metro stations, Birmingham New Street/Grand Central mode-aware resolution (no shared printed name, unlike Nottingham Station), Kidderminster rail-only with Severn Valley Railway excluded, National Rail directions derived live from Darwin with no static line map, Metro dispatch correctly surfaces MissingTfwmCredentialsError rather than fabricating a schedule, direction-hubs.json loads/validates two hubs (Kidderminster/Snow Hill BSW + Tamworth/New Street BHM, FB-54) and both hub-anchoring sets collapse their respective absorbed termini without touching Marylebone, Nottingham/Edinburgh/Euston/Crewe/Liverpool, or non-appliesFrom stations (Birmingham New Street, Birmingham International), next-train routing table (hub/exact/undirected) proven token-free via planUkWestMidlandsNextTrainFetch, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL/West of England/East Midlands stay green)"
 );

@@ -6,7 +6,8 @@
     "A printed destination NOT in absorbs keeps its own chip AND its trains also appear under the hub chip.",
     "Hub chips carry no operator suffix — several operators may call at the hub.",
     "London Marylebone (Chiltern Railways) also calls at Snow Hill but is deliberately NOT absorbed — it keeps its own chip; its trains also appear under the Birmingham hub chip. See PR for Tim's confirmation.",
-    "appliesFrom (4 Sep 2026, Tim): Kidderminster plus the in-catalog Stourbridge/Snow Hill corridor stations west of Birmingham whose live picker showed the same Dorridge / Whitlocks End / Stratford-upon-Avon chip set: Stourbridge Junction, Cradley Heath, Old Hill, Rowley Regis, Langley Green. Hagley and Blakedown are notInRegion (D1 boundary), so they cannot carry the hub without a catalog decision. Smethwick Galton Bridge is left out: its board mixes the New Street line (Wolverhampton/Liverpool/Shrewsbury/Walsall) so 'Birmingham' would be ambiguous there. Jewellery Quarter is one stop from Snow Hill and left out."
+    "appliesFrom (4 Sep 2026, Tim): Kidderminster plus the in-catalog Stourbridge/Snow Hill corridor stations west of Birmingham whose live picker showed the same Dorridge / Whitlocks End / Stratford-upon-Avon chip set: Stourbridge Junction, Cradley Heath, Old Hill, Rowley Regis, Langley Green. Hagley and Blakedown are notInRegion (D1 boundary), so they cannot carry the hub without a catalog decision. Smethwick Galton Bridge is left out: its board mixes the New Street line (Wolverhampton/Liverpool/Shrewsbury/Walsall) so 'Birmingham' would be ambiguous there. Jewellery Quarter is one stop from Snow Hill and left out.",
+    "Second hub added 5 Sep 2026 (FB-54, Tim's call): Tamworth (TAM) only. Probe run 5 Sep 2026, 06:45–08:30 Europe/London: `node scripts/probe-uk-board.mjs \"Tamworth\" --region=uk-west-midlands --filter-crs=BHM` returned 7 trips, all CrossCountry, all platform 4, printed destinations Cardiff Central x2, Reading x2, Bournemouth, Plymouth, Birmingham New Street — every one calls at Birmingham New Street. Same shape as the FB-50 Kidderminster hub (one rider hub hidden behind several printed termini), not a doNotGroup case (no operator split anywhere). Tamworth is NOT on the Cross-City line; its Birmingham service is CrossCountry on the Birmingham–Derby line. Nottingham and Edinburgh (the opposite-direction, northbound high-level CrossCountry services) keep their own chips and are NOT absorbed; London Euston/Crewe/Liverpool Lime Street (low-level WCML) also keep their own chips. appliesFrom is TAM only — Wilnecote and Polesworth are also on the Birmingham–Derby line but are not in the catalog; extending the hub to them is a catalog decision, left to Tim/Nico, not made here. See docs/jim-brief-uk-tamworth-hub.md."
   ],
   "hubs": [
     {
@@ -29,6 +30,23 @@
         "Birmingham Moor Street"
       ],
       "reason": "Snow Hill line through-runs past Birmingham onto the Shakespeare Line; riders anchor on Birmingham. BSW not BMO because a Snow Hill-terminating train never calls at Moor Street. Note: the brief's original draft used code \"BSH\" for Snow Hill, which is actually Bushey (Hertfordshire) in Darwin's CRS scheme — Birmingham Snow Hill's real code is BSW. Corrected here after live-probing on 4 Sep 2026 confirmed BSW returns the full absorbed set at Kidderminster; see PR for the transcript."
+    },
+    {
+      "label": "Birmingham",
+      "filterCrs": "BHM",
+      "filterName": "Birmingham New Street",
+      "appliesFrom": [
+        "TAM"
+      ],
+      "absorbs": [
+        "Cardiff Central",
+        "Reading",
+        "Bournemouth",
+        "Plymouth",
+        "Birmingham New Street"
+      ],
+      "reason": "Tamworth's Birmingham direction is CrossCountry through-running to the South West / South Coast (Cardiff Central, Reading, Bournemouth, Plymouth), all calling at Birmingham New Street on the Birmingham–Derby line; riders anchor on Birmingham. BHM not BSW/BMO because these trains use New Street only, never Snow Hill or Moor Street. See docs/jim-brief-uk-tamworth-hub.md (FB-54) and its probe transcript for the live evidence.",
+      "notes": "Nottingham and Edinburgh are the opposite (northbound) direction and are deliberately not absorbed — they keep their own chips. London Euston / Crewe / Liverpool Lime Street are low-level WCML services and also keep their own chips."
     }
   ]
 }
