@@ -9,6 +9,9 @@ import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { marketingLabelsForStation, HUB } from "../lib/cities/rotterdam/marketing-directions.js";
+import { fetchStationBoard, ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL } from "../lib/providers/rotterdam.js";
+import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
+import { zipFixtureGtfs, encodeTripUpdates, stubFetch } from "./lib/nl-realtime-stub.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -75,4 +78,61 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("rotterdam-dogfood-gate: ok (live, picker city, not amsterdam, RET A–E, Beurs hub)");
+// OVapi GTFS-RT re-enable (docs/jim-brief-nl-realtime-reenable.md): prove the
+// live join against the trimmed fixture — a delay moves a board row, a
+// cancellation removes one, and an RT fetch failure degrades to static.
+{
+  const staticZip = zipFixtureGtfs("rotterdam");
+  const staticUrl = gtfsFixtureBlobUrl("rotterdam");
+  const delayedTripId = "381818212"; // RET Metro A, Beurs stop 3989213, scheduled 10:04 on 2026-09-27
+  const cancelledTripId = "381818213"; // same service_id, scheduled 11:19
+  const scheduledEpochSec = 1790496240; // 2026-09-27T10:04:00+02:00
+  const now = new Date("2026-09-27T08:30:00+02:00");
+
+  let restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: encodeTripUpdates([
+      { tripId: delayedTripId, stopId: "3989213", delaySec: 300, scheduledEpochSec },
+      { tripId: cancelledTripId, cancelled: true },
+    ]),
+  });
+  let board;
+  try {
+    board = await fetchStationBoard("Beurs", { now });
+  } finally {
+    restore();
+  }
+  const delayed = board.trips.find((trip) => trip.tripId === delayedTripId);
+  assert(delayed, "delayed trip must still appear on the board");
+  assert(delayed.status === "5 min late", `delay must move the board row (got ${delayed?.status})`);
+  assert(delayed.displayTime === "10:09", `delayed displayTime must shift (got ${delayed?.displayTime})`);
+  assert(
+    !board.trips.some((trip) => trip.tripId === cancelledTripId),
+    "a CANCELED TripUpdate must remove the trip from the board"
+  );
+
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: null,
+    rtFails: true,
+  });
+  let fallbackBoard;
+  try {
+    fallbackBoard = await fetchStationBoard("Beurs", { now });
+  } finally {
+    restore();
+  }
+  const fallback = fallbackBoard.trips.find((trip) => trip.tripId === delayedTripId);
+  assert(fallback, "a failed RT fetch must still degrade to the static board");
+  assert(fallback.status === "On Time", "a failed RT fetch must not carry over a stale delay");
+  assert(
+    fallback.liveDeparture === fallback.scheduledDeparture,
+    "a failed RT fetch must report the static scheduled time, not a stale live one"
+  );
+}
+
+console.log("rotterdam-dogfood-gate: ok (live, picker city, not amsterdam, RET A–E, Beurs hub, OVapi RT join verified)");
