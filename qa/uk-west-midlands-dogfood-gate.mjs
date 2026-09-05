@@ -107,9 +107,9 @@ assert(existsSync(join(d1Dir, "oracle-clash-report.md")), "docs/uk-west-midlands
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(UK_WEST_MIDLANDS_REGION);
-assert(region?.railCount === 74, `uk-west-midlands rail count must be 74, got ${region?.railCount}`);
+assert(region?.railCount === 75, `uk-west-midlands rail count must be 75, got ${region?.railCount}`);
 assert(region?.metroCount === 35, `uk-west-midlands metro count must be 35, got ${region?.metroCount}`);
-assert(region?.stopCount === 109, `uk-west-midlands combined catalog must have 109 stations, got ${region?.stopCount}`);
+assert(region?.stopCount === 110, `uk-west-midlands combined catalog must have 110 stations, got ${region?.stopCount}`);
 
 // Hub + special-case stations resolve in the expected mode.
 const hubRail = resolveRailEntry(BHM, UK_WEST_MIDLANDS_REGION);
@@ -147,7 +147,7 @@ for (const name of ["Severn Valley Railway", "Severn Valley"]) {
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // so callers can disambiguate BHM (train) from Grand Central (metro).
 const dogfoodStations = listUkWestMidlandsDogfoodStations();
-assert(dogfoodStations.length === 109, `dogfood stations must be the 109 catalog entries, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 110, `dogfood stations must be the 110 catalog entries, got ${dogfoodStations.length}`);
 const bhmEntries = dogfoodStations.filter((s) => s.name === BHM);
 assert(bhmEntries.length === 1, "Birmingham New Street must appear once in the dogfood list (rail only)");
 assert(bhmEntries[0]?.mode === "train", "Birmingham New Street's dogfood entry must be mode train");
@@ -605,5 +605,5 @@ if (previousProbeFlag === undefined) {
 }
 
 console.log(
-  "uk-west-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, oracle report present, 74 rail + 35 metro stations, Birmingham New Street/Grand Central mode-aware resolution (no shared printed name, unlike Nottingham Station), Kidderminster rail-only with Severn Valley Railway excluded, National Rail directions derived live from Darwin with no static line map, Metro dispatch correctly surfaces MissingTfwmCredentialsError rather than fabricating a schedule, direction-hubs.json loads/validates and Kidderminster->Birmingham hub anchoring collapses Dorridge/Whitlocks End/Stratford-upon-Avon without touching Marylebone or non-appliesFrom stations, next-train routing table (hub/exact/undirected) proven token-free via planUkWestMidlandsNextTrainFetch, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL/West of England/East Midlands stay green)"
+  "uk-west-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, oracle report present, 75 rail + 35 metro stations, Birmingham New Street/Grand Central mode-aware resolution (no shared printed name, unlike Nottingham Station), Kidderminster rail-only with Severn Valley Railway excluded, National Rail directions derived live from Darwin with no static line map, Metro dispatch correctly surfaces MissingTfwmCredentialsError rather than fabricating a schedule, direction-hubs.json loads/validates and Kidderminster->Birmingham hub anchoring collapses Dorridge/Whitlocks End/Stratford-upon-Avon without touching Marylebone or non-appliesFrom stations, next-train routing table (hub/exact/undirected) proven token-free via planUkWestMidlandsNextTrainFetch, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL/West of England/East Midlands stay green)"
 );

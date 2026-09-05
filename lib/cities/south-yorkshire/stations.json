@@ -17,7 +17,7 @@
     "Sheffield Station (SHF) is the hub lock — Supertram tram viaduct above National Rail main platforms, footbridge connects. doNotGroup: separate catalog entries by mode (train vs metro), same printed name, same pattern as East Midlands' Nottingham Station.",
     "Meadowhall Interchange (MHS, National Rail entry) / Meadowhall (Supertram Yellow terminus + Tram-Train through-running point) is a through-running/infrastructure-switch point, NOT a second hub lock — Tram-Train switches onto National Rail infrastructure here. Modelled as two mode-tagged catalog entries (aliased to each other's printed name), same doNotGroup-by-mode pattern as Sheffield Station.",
     "Rotherham Central appears both as a Supertram Tram-Train through-running stop (metro entry) and a National Rail through-running-only station (train entry, crs null — not given by the report, do not guess). No shared platform with National Rail main-line trains per the report.",
-    "Denby Dale, Darton, South Elmsall, Moorthorpe are National Rail-only West Yorkshire/South Yorkshire boundary stations, crs null (not given by the report — do not guess). May appear in a future West Yorkshire region's feed too — D2 de-dup boundary, not resolved here.",
+    "Darton, South Elmsall, Moorthorpe are National Rail-only West Yorkshire/South Yorkshire boundary stations, crs null (not given by the report — do not guess). May appear in a future West Yorkshire region's feed too — D2 de-dup boundary, not resolved here. Denby Dale is ruled West Yorkshire's home station per docs/united-kingdom-ledger.md (5 Sep 2026) and is no longer catalogued here.",
     "Chesterfield is deliberately NOT in this catalog — it is East Midlands' station (docs/east-midlands-d1/published-network.json throughRunningOnly, crs CHD). See notInRegion below."
   ],
   "notInRegion": [
@@ -50,15 +50,6 @@
       "lat": null,
       "lng": null,
       "class": "through-running only, not a merge point. Tram-Train (Supertram) also serves this stop but no shared platform with National Rail main-line trains per the report. CRS code not given in the oracle report — do not guess."
-    },
-    {
-      "mode": "train",
-      "name": "Denby Dale",
-      "crs": null,
-      "aliases": [],
-      "lat": null,
-      "lng": null,
-      "class": "through-running only, West Yorkshire/South Yorkshire boundary. CRS code not given in the oracle report — do not guess."
     },
     {
       "mode": "train",

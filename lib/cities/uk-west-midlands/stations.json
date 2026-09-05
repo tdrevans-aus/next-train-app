@@ -720,6 +720,15 @@
       "lng": -2.23847072681
     },
     {
+      "mode": "train",
+      "name": "Tamworth",
+      "crs": "TAM",
+      "borough": "Tamworth",
+      "aliases": [],
+      "lat": 52.63747425424,
+      "lng": -1.68646437388
+    },
+    {
       "mode": "metro",
       "name": "Edgbaston Village",
       "catalogId": "metro:edgbaston-village",

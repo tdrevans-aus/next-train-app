@@ -32,7 +32,7 @@ if (regions.length !== 20) {
 }
 
 const wm = getRegion("uk-west-midlands");
-if (!wm || wm.railCount !== 74 || wm.metroCount !== 35) {
+if (!wm || wm.railCount !== 75 || wm.metroCount !== 35) {
   fail(`uk-west-midlands counts rail=${wm?.railCount} metro=${wm?.metroCount}`);
 }
 
@@ -43,7 +43,7 @@ if (!tfl || tfl.stopCount < 4) {
 
 const wmRail = listRailStations("uk-west-midlands");
 const crsSet = new Set(wmRail.map((s) => s.crs));
-for (const crs of ["BHM", "BMO", "BSW", "BHI", "COV", "WVH", "UNI", "WSL", "SBJ", "KID", "MOV", "KIH", "PIR", "DAS", "THW", "SLY"]) {
+for (const crs of ["BHM", "BMO", "BSW", "BHI", "COV", "WVH", "UNI", "WSL", "SBJ", "KID", "MOV", "KIH", "PIR", "DAS", "THW", "SLY", "TAM"]) {
   if (!crsSet.has(crs)) {
     fail(`uk-west-midlands missing ${crs}`);
   }
@@ -74,8 +74,8 @@ if (!kx?.naptanId) {
 }
 
 const catalogAll = listCatalogStations("uk-west-midlands");
-if (catalogAll.length !== 109) {
-  fail(`WM combined catalog ${catalogAll.length}, expected 109`);
+if (catalogAll.length !== 110) {
+  fail(`WM combined catalog ${catalogAll.length}, expected 110`);
 }
 
 const em = getRegion("east-midlands");
@@ -120,7 +120,7 @@ if (!emHubMetro || !emHubMetro.catalogId?.startsWith("net:")) {
 }
 
 const sy = getRegion("south-yorkshire");
-if (!sy || sy.railCount !== 7 || sy.metroCount !== 12) {
+if (!sy || sy.railCount !== 6 || sy.metroCount !== 12) {
   fail(`south-yorkshire counts rail=${sy?.railCount} metro=${sy?.metroCount}`);
 }
 
@@ -130,7 +130,6 @@ for (const name of [
   "Sheffield Station",
   "Meadowhall Interchange",
   "Rotherham Central",
-  "Denby Dale",
   "Darton",
   "South Elmsall",
   "Moorthorpe",
@@ -145,6 +144,10 @@ if (!syCrsSet.has("SHF") || !syCrsSet.has("MHS")) {
 }
 if (syCrsSet.has("CHD") || syRailNames.has("Chesterfield")) {
   fail("south-yorkshire must not carry Chesterfield (owned by East Midlands)");
+}
+// Denby Dale is West Yorkshire's (DBD) per docs/united-kingdom-ledger.md, 5 Sep 2026 — must not reappear here.
+if (syRailNames.has("Denby Dale")) {
+  fail("south-yorkshire must not carry Denby Dale (owned by West Yorkshire)");
 }
 for (const name of getNotInRegion("south-yorkshire")) {
   if (syRail.some((s) => s.name === name)) {
@@ -860,5 +863,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 74+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 7+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 6+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
 );

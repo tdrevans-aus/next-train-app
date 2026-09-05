@@ -49,7 +49,7 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, boundary to West Midlands region — not a merge point"
+      "class": "regional — home region West of England per docs/united-kingdom-ledger.md (5 Sep 2026); also a boundary toward West Midlands, not a merge point"
     },
     {
       "mode": "train",
@@ -58,7 +58,7 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, boundary to Solent/Thames Valley regions — not a merge point"
+      "class": "regional — home region West of England per docs/united-kingdom-ledger.md (5 Sep 2026); also a boundary toward Solent/Thames Valley regions, not a merge point"
     },
     {
       "mode": "train",
@@ -67,7 +67,7 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "through-running only, boundary to Southwest region — not a merge point"
+      "class": "regional — home region West of England per docs/united-kingdom-ledger.md (5 Sep 2026); also a boundary toward Southwest region, not a merge point"
     }
   ]
 }
