@@ -265,3 +265,17 @@ can't represent TfWM's two-platform-per-station shape without silently dropping 
 departures. Recommend the verdict reason text be updated to reflect this specific remaining
 blocker (adapter needs `stopIds[]` merge support) rather than moving to `in`, until that adapter
 change lands and is QA-verified to return both directions.
+
+**5 Sep 2026 (adapter follow-up, Jim's lane) — `stopIds[]` merge landed, verdict still not moved:**
+`fetchMetroStopBoard()`/`buildMetroTrips()` in `lib/providers/uk-metro-wm.js` now accept
+`entry.stopIds` (matching a trip if its `stop_time_update.stop_id` hits ANY of a station's platform
+ids, merging both directions into one board), with the legacy scalar `entry.stopId` kept as a
+fallback and `MetroStopIdNotCatalogedError` firing only when an entry has neither.
+`metroNameByStopId()` now indexes off both fields too. A live pull against a mid-line station
+(Jewellery Quarter, two platform ids) and an end-of-line station (Wolverhampton St George's, one
+platform id) at ~02:00 BST on a Saturday returned zero Metro-prefixed (`9400ZZWM...`) stop_ids in
+the feed at all — consistent with no tram service running at that hour, not a bug in the merge
+logic (confirmed separately with a synthetic-feed unit test in
+`qa/uk-west-midlands-dogfood-gate.mjs` that both directions merge correctly and a single-id station
+is unaffected). The verdict move to `in` is still Mark's call, and should wait on a live QA re-check
+during Metro service hours confirming both directions actually appear on a real mid-line board.
