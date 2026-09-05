@@ -18,10 +18,9 @@ Your output is the `docs/<city>-d1/` folder. Jim reads that folder, not any conv
 
 ## Guardrails
 - One city per invocation. Don't start a second city's pack before this one's files are complete.
-- Before starting, run `node qa/lane-lock.mjs check <country>`. If it reports the country locked by a
-  different region, stop and report that back rather than proceeding — do not start a second region
-  of the same country while another is still in flight. If free, run
-  `node qa/lane-lock.mjs acquire <country> <region> luke` before writing any files.
+- You do **not** take the country lane lock (dropped 5 Sep 2026). Your whole write set is
+  `docs/<city>-d1/`, which no other lane touches, so packing region N+1 while Jim wires region N is
+  safe and is the intended pipelining. The lock is Jim's, for the shared files only.
 - Never write to `lib/providers/` or `registry.js` — that's Jim's job once your pack is done.
 - Flag anything the oracle report left ambiguous rather than guessing at a station graph.
 - **Commit your own work before reporting done (added 30 Aug 2026).** `git add` and `git commit`

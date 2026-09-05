@@ -1,0 +1,62 @@
+# Lazy-consensus live flips (CLAUDE.md, 5 Sep 2026).
+#
+# Mark opens each city's flip PR with the `flip` label. This merges it once it has been open
+# 12 hours, is green and mergeable, and nobody has objected: no `hold` label, no human comment,
+# no review of any kind. Tim keeps the veto by doing any of those; a bad flip is a one-line revert.
+#
+# Merges made with GITHUB_TOKEN don't fire `push` workflows, so after merging this dispatches CI
+# on master by hand to get the release run that a normal merge would have produced.
+name: Flip auto-merge
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  merge-ripe-flips:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      WINDOW_HOURS: "12"
+    steps:
+      - name: Merge flip PRs older than the window with no objection
+        run: |
+          set -euo pipefail
+          now=$(date -u +%s)
+          merged_any=false
+          for n in $(gh pr list --state open --label flip --json number --jq '.[].number'); do
+            pr=$(gh pr view "$n" --json number,title,createdAt,isDraft,mergeable,mergeStateStatus,labels,reviews,comments,author)
+            created=$(date -u -d "$(jq -r .createdAt <<<"$pr")" +%s)
+            age_h=$(( (now - created) / 3600 ))
+            title=$(jq -r .title <<<"$pr")
+            if [ "$age_h" -lt "$WINDOW_HOURS" ]; then echo "#$n '$title': ${age_h}h old, waiting"; continue; fi
+            if [ "$(jq -r .isDraft <<<"$pr")" = "true" ]; then echo "#$n: draft, skipping"; continue; fi
+            if jq -e '.labels[] | select(.name=="hold")' <<<"$pr" >/dev/null; then echo "#$n: hold label, skipping"; continue; fi
+            if [ "$(jq '.reviews | length' <<<"$pr")" != "0" ]; then echo "#$n: has a review, skipping"; continue; fi
+            humans=$(jq '[.comments[] | select(.author.login != "github-actions" and .author.is_bot != true and (.author.login | test("\[bot\]$") | not))] | length' <<<"$pr")
+            if [ "$humans" != "0" ]; then echo "#$n: has a human comment, skipping"; continue; fi
+            state=$(jq -r .mergeStateStatus <<<"$pr")
+            if [ "$state" != "CLEAN" ] && [ "$state" != "HAS_HOOKS" ] && [ "$state" != "UNSTABLE" ]; then echo "#$n: merge state $state, skipping"; continue; fi
+            # UNSTABLE means a non-required check failed (pin-qa flakes); the ruleset only requires web-qa,
+            # which the merge call below re-validates server-side. Anything else red -> skip.
+            if [ "$state" = "UNSTABLE" ]; then
+              if ! gh pr checks "$n" --json name,state --jq '.[] | select(.name=="web-qa") | .state' | grep -qx SUCCESS; then
+                echo "#$n: web-qa not green, skipping"; continue
+              fi
+            fi
+            echo "#$n '$title': ${age_h}h old, no objection — merging"
+            gh pr comment "$n" --body "Flip auto-merge: open ${age_h}h with no hold label, comment, or review. Merging per lazy consensus (CLAUDE.md)."
+            gh pr merge "$n" --merge --delete-branch
+            merged_any=true
+          done
+          if [ "$merged_any" = "true" ]; then
+            echo "Dispatching CI release run on master"
+            gh workflow run ci.yml --ref master
+          fi

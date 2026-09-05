@@ -9,9 +9,18 @@
  * This lock makes "one country lane at a time" a checked precondition instead of
  * a rule someone has to remember.
  *
- * Lock state lives in docs/expansion-tracker/lane-locks.json, committed to the
- * repo — so it's visible in git history and shared across machines/sessions,
- * not just local state.
+ * Lock state lives in docs/expansion-tracker/lane-locks.json, which is gitignored
+ * (since 5 Sep 2026). It used to be committed, but an `acquire` made on a feature
+ * branch only reached master once that branch's PR merged — i.e. after the lock
+ * had stopped mattering — so the committed copy never protected a second checkout,
+ * and every release needed its own PR (six of one day's forty PRs). The real
+ * collision surface is two lanes editing the same shared checkout, which the
+ * local file covers. Across checkouts the open PR is the lock: `check` and
+ * `acquire` look up the lock's recorded branch with `gh` and auto-release when
+ * its PR has merged, so no one has to remember to run `release` after a merge.
+ *
+ * Only Jim's stage needs the lock: Luke writes exclusively under docs/<city>-d1/
+ * and touches no shared file, so Luke on region N+1 may run alongside Jim on N.
  *
  * Usage:
  *   node qa/lane-lock.mjs status
@@ -20,11 +29,14 @@
  *   node qa/lane-lock.mjs release <country>
  *   node qa/lane-lock.mjs release <country> --force --reason "explanation"
  *
+ * Pass the branch to `acquire` — that's what lets the merged-PR auto-release work.
+ *
  * Exit codes: 0 = ok / free. 1 = locked by another region (check/acquire) or
  * bad usage.
  */
 import fs from "fs";
 import path from "path";
+import { execFileSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -102,8 +114,39 @@ function ageString(iso) {
   return hrs < 1 ? `${Math.round(ms / 60000)}m` : `${hrs.toFixed(1)}h`;
 }
 
+// True when the lock's branch has a merged PR — the lane is finished even if nobody ran `release`.
+// Returns false (keep the lock) whenever `gh` is unavailable, offline, or the lock has no branch,
+// so a lookup failure can never silently unlock a lane.
+function branchMerged(branch) {
+  if (!branch) return false;
+  try {
+    const out = execFileSync(
+      "gh",
+      ["pr", "list", "--head", branch, "--state", "merged", "--limit", "1", "--json", "number"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 15000, shell: process.platform === "win32" }
+    );
+    return JSON.parse(out).length > 0;
+  } catch {
+    return false;
+  }
+}
+
+// Drops any lock whose PR has merged. Returns the countries it released.
+function releaseMerged(locks) {
+  const released = [];
+  for (const country of Object.keys(locks)) {
+    if (branchMerged(locks[country].branch)) {
+      released.push(`${country} (${locks[country].region}, ${locks[country].branch} merged)`);
+      delete locks[country];
+    }
+  }
+  if (released.length) writeLocks(locks);
+  return released;
+}
+
 function cmdStatus() {
   const locks = readLocks();
+  for (const r of withMutex(() => releaseMerged(locks))) console.log(`Auto-released ${r}.`);
   const countries = Object.keys(locks);
   if (countries.length === 0) {
     console.log("No lanes locked.");
@@ -127,6 +170,7 @@ function cmdCheck(country) {
     return 1;
   }
   const locks = readLocks();
+  for (const r of withMutex(() => releaseMerged(locks))) console.log(`Auto-released ${r}.`);
   const l = locks[country];
   if (!l) {
     console.log(`${country}: free.`);
@@ -146,6 +190,7 @@ function cmdAcquire(country, region, stage, branch) {
     return 1;
   }
   const locks = readLocks();
+  for (const r of releaseMerged(locks)) console.log(`Auto-released ${r}.`);
   const existing = locks[country];
   if (existing && existing.region !== region) {
     const stale = Date.now() - new Date(existing.locked_at).getTime() > STALE_MS;
@@ -202,6 +247,14 @@ switch (cmd) {
     break;
   case "check":
     code = cmdCheck(positional[0]);
+    break;
+  case "auto-release":
+    // For scripts/hooks: release every lock whose PR has merged, print what changed.
+    code = withMutex(() => {
+      const released = releaseMerged(readLocks());
+      console.log(released.length ? released.map((r) => `Auto-released ${r}.`).join("\n") : "Nothing to release.");
+      return 0;
+    });
     break;
   case "acquire":
     code = withMutex(() => cmdAcquire(positional[0], positional[1], positional[2], positional[3]));

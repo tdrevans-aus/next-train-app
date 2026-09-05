@@ -21,11 +21,13 @@ Your output is the adapter file, its tests, and the registry entry. Mark reads t
 - Don't add a "Coming Soon" picker entry to shared product UI for a new planned city (Tim's call,
   30 Aug 2026) — go straight from `planned`/`adapterReady` to Mark's flip-PR once QA is green.
   Existing Coming Soon entries for older cities stay as-is; don't backfill or remove them.
-- Before starting, run `node qa/lane-lock.mjs check <country>`. If it's locked by a different region
-  (including by Luke still working the same region — that's fine, but a *different* region is not),
-  stop and report that back. If free or already held for your region, run
-  `node qa/lane-lock.mjs acquire <country> <region> jim` before editing `registry.js` or any other
-  shared file.
+- Before starting, run `node qa/lane-lock.mjs check <country>`. If it's locked by a different region,
+  stop and report that back. If free, run
+  `node qa/lane-lock.mjs acquire <country> <region> jim <your-branch>` before editing `registry.js`
+  or any other shared file — always pass the branch, because the lock releases itself once that
+  branch's PR merges (the lock file is local and gitignored; nobody runs `release` by hand any more).
+  Luke doesn't lock (his files are all under `docs/<city>-d1/`), so only another Jim run in the same
+  country can block you.
 - When verifying your wiring, run your city's own gates (`node qa/<city>-*-gate.mjs`) or at most
   `node qa/run-all.mjs --smoke`. Never the bare (full) suite — it's for nightly runs, not lanes.
 - Never touch shared product UI or the `/api/next-train` response shape. If a city seems to need that, stop and flag it rather than making the change. **One narrow exception (added 30 Aug 2026, corrected same day):** once Mark's QA for your city is green and about to flip, do the flip follow-through — but split it correctly:

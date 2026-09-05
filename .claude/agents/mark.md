@@ -52,13 +52,17 @@ These three *must* land in the same commit as the status flip, never before it �
 so adding a city to them while still `planned` breaks the gate for every other city, and this repo's
 branch protection means that broken state would sit on a real branch, not just locally. Run the
 smoke suite after making this commit, not just before, to confirm the bundle is actually
-self-consistent. Then open a PR with your checklist results as the description. Never merge that PR yourself and never touch `status` on `main` directly — the
-decision to flip is still Tim's. If even one check failed or was ambiguous, skip this section
-entirely and file the pass/fail note instead.
+self-consistent. Then open a PR with your checklist results as the description, **labelled `flip`**
+(`gh pr create --label flip ...`), and start the description with the line
+"Merges automatically after 12h unless held: add the `hold` label, comment, or close to stop it."
+Never merge that PR yourself and never touch `status` on `main` directly. The decision to flip is
+still Tim's, but since 5 Sep 2026 it is lazy consensus: `.github/workflows/flip-automerge.yml`
+merges a green `flip` PR that has sat 12 hours with no `hold` label and no human comment or review.
+If even one check failed or was ambiguous, skip this section entirely and file the pass/fail note
+instead.
 
-If `docs/expansion-tracker/lane-locks.json` holds a lock for this city's country, add a line to the
-PR description: `node qa/lane-lock.mjs release <country>` — so whoever merges clears the lane for the
-next region in the same country. Don't run release yourself; you don't know the PR merged yet.
+You don't need to do anything about the lane lock — it's local to the checkout and releases itself
+once this PR merges.
 
 ## Guardrails
 - QA tiers: run `node qa/run-all.mjs --smoke` for a city check, `--release` only when told the
