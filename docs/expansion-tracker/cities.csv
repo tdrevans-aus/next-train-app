@@ -27,7 +27,7 @@ United Kingdom,Leftover England,national rail slice,To Do,1 Finish started count
 United Kingdom,Liverpool City Region,National Rail + Merseyrail (EP absorbed),In flight,1 Finish started countries,Zoe,Packed 2026-08-28. City id uk-liverpool. 96 CRS. Coming Soon until Darwin. EP absorbed (not a separate picker city).,
 United Kingdom,London & South East National Rail,national rail slice,To Do,1 Finish started countries,Zoe,One Darwin contract for NR; TfL stays its own city. Darwin AU-org block on RDM.,
 United Kingdom,London TfL,"metro + light rail + commuter (Underground, Overground, Elizabeth, DLR, London Trams)",Done,1 Finish started countries,Zoe,Tester-live. National Rail is NOT done. TfL stays its own city.,
-United Kingdom,North East,metro + national rail slice (Tyne and Wear Metro + NR),To Do,1 Finish started countries,Zoe,Tyne and Wear Metro + NR. Darwin.,
+United Kingdom,North East,metro + national rail slice (Tyne and Wear Metro + NR),To Do,1 Finish started countries,Zoe,"National Rail only; Metro out-product (no RT feed), Nexus outreach drafted 5 Sep 2026",
 United Kingdom,Rest of Scotland,national rail slice,To Do,1 Finish started countries,Zoe,Darwin.,
 United Kingdom,Rest of Wales,national rail slice,To Do,1 Finish started countries,Zoe,Darwin.,
 United Kingdom,Solent,national rail slice (Southampton / Portsmouth),Done,1 Finish started countries,Zoe,"Live 5 Sep 2026 (#220). Adapter wired + QA green 5 Sep 2026 (#216, #219); flip PR #220 merged by Tim. Fareham FAR->FRM. One hub: Portsmouth Harbour at Fareham. Leftover England split. Darwin.",
