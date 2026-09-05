@@ -1,0 +1,614 @@
+{
+  "city": "nagoya",
+  "displayName": "Nagoya",
+  "status": "planned",
+  "agency": "Nagoya City Transportation Bureau",
+  "timezone": "Asia/Tokyo",
+  "source": "docs/nagoya-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 oracle-clash report (Nico, hand-transcribed station roster)",
+      "title": "Nagoya - oracle clash report",
+      "url": "docs/nagoya-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "No official Nagoya Metro GTFS/GTFS-RT/route-map PDF exists (Transitland 0 hits, Mobility Database 0 rows, Nagoya absent from ODPT membership as of 2 Sep 2026). Station graph hand-transcribed by the oracle report from Wikipedia's aggregate station list and six per-line articles because no dedicated official map PDF was found on the rider site as of 2026-09-06 (unlike Osaka). Not generated from GTFS. See hazard-pack.md H0."
+    },
+    {
+      "role": "Underlying station list cited by the oracle report",
+      "title": "List of Nagoya Municipal Subway stations - Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/List_of_Nagoya_Municipal_Subway_stations",
+      "retrievedAt": "2026-09-06T00:00:00Z"
+    },
+    {
+      "role": "Rider site (no official map PDF found; used for agency/mode-cut facts only, not the station graph)",
+      "title": "Nagoya City Transportation Bureau rider site",
+      "url": "https://www.kotsu.city.nagoya.jp/",
+      "retrievedAt": "2026-09-06T00:00:00Z"
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "D1 oracle is docs/nagoya-d1/oracle-clash-report.md's 'Station roster (D1 transcription)' section, hand-transcribed by Nico from Wikipedia's aggregate station list and six per-line articles. Not generated from GTFS - no official Nagoya Metro GTFS/GTFS-RT/route-map PDF exists (see hazard-pack.md H0, the top hazard in this pack).",
+    "City id nagoya. Display Nagoya. Agency Nagoya City Transportation Bureau (名古屋市交通局). Not Osaka, not Tokyo, not a Keihanshin/Japan super-city. Do not invent city=nagoya-metro, nagoya-subway, ngy.",
+    "City stays planned. Modes v1: Nagoya Municipal Subway only - six lines (Higashiyama, Meijo, Meiko, Tsurumai, Sakura-dori, Kamiiida). Meitetsu (all lines, incl. Seto Line at Sakaemachi, Komaki Line beyond Kamiiida, Inuyama Line beyond Kami Otai, Toyota/Mikawa Line beyond Akaike), JR (Tokaido, Chuo, Shinkansen), Aonami Line, Nagoya Municipal Bus are out.",
+    "Timezone Asia/Tokyo. NO DST.",
+    "No official public GTFS or GTFS-RT of any kind (harder starting position than Osaka, which at least has an official EN/JP station-list page and a dated route-map PDF). Transitland 0 hits. Mobility Database 0 rows for Nagoya Metro. Nagoya is not an ODPT member as of 2 Sep 2026 (Tokyo Metro is - not a safe generalisation for all Japan subways). No env key. adapterReady false. See hazard-pack.md H0.",
+    "Locked hub: Sakae / 栄 (H10 x M05 only, per the oracle report's explicit rider-site transfer statement). Underground-connected but NOT folded in: Hisaya-odori (M06 x S05, separate physical station) and Sakaemachi (Meitetsu Seto Line, different operator, out of v1).",
+    "Meijo (M) is a TRUE LOOP - no linear terminus, closes on itself at Kanayama (M01). Direction model is clockwise/anticlockwise, same topology as Copenhagen M3 Cityringen. See direction-model-memo.md section 3.",
+    "Meiko (E) is a BRANCH off the Meijo loop at Kanayama, with real through-running trains crossing the M/E boundary ('roughly every other anticlockwise Meijo loop train diverts here'). This pack flags but does not model that through-running board behaviour. See hazard-pack.md H4 and direction-model-memo.md section 4.",
+    "Through-run OUT: Meitetsu Seto Line at Sakaemachi (near Sakae, different operator); Meitetsu Komaki Line beyond Kamiiida K01; Meitetsu Inuyama Line beyond Kami Otai T01; Meitetsu Toyota Line / Meitetsu Mikawa Line beyond Akaike T20. JR Tokaido/Chuo at Nagoya and Kanayama stations. Aonami Line (separate operator, automated people mover).",
+    "INTERNAL SOURCE CONFLICTS flagged, not silently resolved (hazard-pack.md H1a): Kamiiida Line terminus codes (roster gives K01=Kamiiida/K02=Heian-dori; earlier oracle-report prose called Kamiiida 'K02'); Meiko branch origin code (roster gives E01=Kanayama; earlier oracle-report table gave 'E00'); Aratama-bashi's codes (roster gives M23/S14, doubly self-consistent across both lines' own tables; earlier oracle-report table gave 'M07/S06'). This pack uses the roster table's values throughout, none confirmed against the (nonexistent) official feed.",
+    "UNIQUE STATION COUNT DISCREPANCY (hazard-pack.md H1b): the oracle report's own summary claims 87 unique stations. Mechanically unioning the six roster tables as transcribed (96 raw line-ticks, merging one same-place spelling variant - Aratama-bashi/Aratamabashi) yields 83. uniqueStationCount below reflects the 83 actually present in these arrays. Not forced to match 87 - flagged for Nico to reconcile against the official Nagoya City Transportation Bureau count.",
+    "Direction: line + official terminus for the five linear/branch lines (e.g. H + Fujigaoka, E + Nagoyako). Meijo (loop) is clockwise/anticlockwise, never a fake terminus pair. See direction-model-memo.md.",
+    "No stopIds in this file. No GTFS route ids (none exist). Passenger line tokens are the official roman letters H / M / E / T / S / K plus the official EN/JP line names."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Sakae",
+    "doNotUse": [
+      "Sakaemachi",
+      "City",
+      "Downtown",
+      "to City",
+      "Nagoya Station (as a hub substitute)"
+    ],
+    "doNotCollapse": [
+      "Sakae",
+      "Hisaya-odori",
+      "Nagoya",
+      "Kanayama",
+      "Imaike",
+      "Aratama-bashi",
+      "Heian-dori"
+    ],
+    "alsoOnSharedApproaches": [
+      "Hisaya-odori",
+      "Nagoya",
+      "Kanayama",
+      "Imaike",
+      "Aratama-bashi",
+      "Heian-dori",
+      "Fushimi",
+      "Motoyama",
+      "Kamimaezu",
+      "Yagoto",
+      "Marunouchi",
+      "Gokiso"
+    ]
+  },
+  "coverageGaps": [
+    "No official public GTFS / GTFS-RT / route-map PDF of any kind exists for Nagoya Metro (top hazard, hazard-pack.md H0). Do not generate this file from a feed that does not exist.",
+    "Station graph is one hop further from a primary source than the Osaka precedent - hand-transcribed from Wikipedia's aggregate list and six per-line articles because the oracle report found no dedicated official map PDF on the rider site as of 2026-09-06.",
+    "Meitetsu Seto Line at Sakaemachi (near Sakae). Meitetsu Komaki Line beyond Kamiiida K01. Meitetsu Inuyama Line beyond Kami Otai T01. Meitetsu Toyota Line / Meitetsu Mikawa Line beyond Akaike T20. All out of v1.",
+    "JR Tokaido / Chuo / Shinkansen at Nagoya and Kanayama stations. Aonami Line. Nagoya Municipal Bus. All out of v1.",
+    "Meijo/Meiko through-running board behaviour (some physical trains cross the M/E boundary at Kanayama) is flagged, not modelled. See direction-model-memo.md section 4.",
+    "Kamiiida Line K01/K02 numbering and Meiko branch E00/E01 numbering both have an unresolved internal conflict between the oracle report's own prose and its Station roster table. Roster values used here; not confirmed against a live source. See hazard-pack.md H1a.",
+    "Aratama-bashi's M/S codes also have this internal conflict (roster: M23/S14; earlier oracle-report table: M07/S06). Roster value used here. See hazard-pack.md H1a.",
+    "Unique station count: oracle report claims 87; this pack's mechanical union of the roster tables yields 83. Not reconciled - see hazard-pack.md H1b.",
+    "No official EN wording confirmed for Meijo's clockwise/anticlockwise chip (direction-model-memo.md open question 1) - no official rider-site page was found to check this against."
+  ],
+  "lines": [
+    {
+      "id": "higashiyama",
+      "number": "H",
+      "name": "Higashiyama",
+      "jpName": "東山線",
+      "mapGroup": "Nagoya Municipal Subway",
+      "mode": "linear",
+      "termini": [
+        "Takabata",
+        "Fujigaoka"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Nagoya",
+          "note": "doNotGroup vs JR Tokaido / Shinkansen / Meitetsu Nagoya. Metro row only."
+        },
+        {
+          "at": "Fushimi",
+          "note": "Interchange with Tsurumai T07."
+        },
+        {
+          "at": "Sakae",
+          "note": "Hub lock (H10 x M05). Underground to Hisaya-odori (separate station)."
+        },
+        {
+          "at": "Imaike",
+          "note": "Interchange with Sakura-dori S08. Not the hub."
+        },
+        {
+          "at": "Motoyama",
+          "note": "Interchange with Meijo M17."
+        }
+      ],
+      "stations": [
+        "Takabata",
+        "Hatta",
+        "Iwatsuka",
+        "Nakamura Koen",
+        "Nakamura Nisseki",
+        "Honjin",
+        "Kamejima",
+        "Nagoya",
+        "Fushimi",
+        "Sakae",
+        "Shinsakae-machi",
+        "Chikusa",
+        "Imaike",
+        "Ikeshita",
+        "Kakuozan",
+        "Motoyama",
+        "Higashiyama Koen",
+        "Hoshigaoka",
+        "Issha",
+        "Kamiyashiro",
+        "Hongo",
+        "Fujigaoka"
+      ],
+      "stationCodes": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06",
+        "H07",
+        "H08",
+        "H09",
+        "H10",
+        "H11",
+        "H12",
+        "H13",
+        "H14",
+        "H15",
+        "H16",
+        "H17",
+        "H18",
+        "H19",
+        "H20",
+        "H21",
+        "H22"
+      ],
+      "note": "Opened 1957. 22 stations, all within Nagoya city. Source: oracle-clash-report.md Station roster, citing Higashiyama Line + List of Nagoya Municipal Subway stations (Wikipedia)."
+    },
+    {
+      "id": "meijo",
+      "number": "M",
+      "name": "Meijo",
+      "jpName": "名城線",
+      "mapGroup": "Nagoya Municipal Subway",
+      "mode": "loop",
+      "termini": [],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Kanayama",
+          "note": "Loop start/end (M01). Meiko branch origin E01 - same physical station. doNotGroup vs JR Tokaido/Chuo, Meitetsu Nagoya Line."
+        },
+        {
+          "at": "Sakae",
+          "note": "Hub lock (M05 x H10). Underground to Hisaya-odori M06 (separate station)."
+        },
+        {
+          "at": "Hisaya-odori",
+          "note": "M06 x S05. Underground complex with Sakae; doNotGroup vs Sakae (separate physical station)."
+        },
+        {
+          "at": "Heian-dori",
+          "note": "M11 x K02 Kamiiida. Confirmed M11 in roster despite a historical M25 reference elsewhere."
+        },
+        {
+          "at": "Motoyama",
+          "note": "M17 x H16 Higashiyama."
+        },
+        {
+          "at": "Yagoto",
+          "note": "M20 x T15 Tsurumai. Distinct from Yagoto Nisseki (M19), a different stop."
+        },
+        {
+          "at": "Aratama-bashi",
+          "note": "M23 x S14 Sakura-dori. Same-place spelling variant 'Aratamabashi' printed on the Sakura-dori table - treated as one D1 station (hazard-pack.md H1)."
+        },
+        {
+          "at": "Kamimaezu",
+          "note": "M03 x T09 Tsurumai."
+        }
+      ],
+      "stations": [
+        "Kanayama",
+        "Higashi Betsuin",
+        "Kamimaezu",
+        "Yabacho",
+        "Sakae",
+        "Hisaya-odori",
+        "Nagoyajo",
+        "Meijo Koen",
+        "Kurokawa",
+        "Shiga-hondori",
+        "Heian-dori",
+        "Ozone",
+        "Nagoya Dome-mae Yada",
+        "Sunadabashi",
+        "Chayagasaka",
+        "Jiyugaoka",
+        "Motoyama",
+        "Nagoya Daigaku",
+        "Yagoto Nisseki",
+        "Yagoto",
+        "Sogo Rihabiri Center",
+        "Mizuho Undojo Higashi",
+        "Aratama-bashi",
+        "Myoon-dori",
+        "Horita",
+        "Atsuta Jingu Tenma-cho",
+        "Atsuta Jingu Nishi",
+        "Nishi Takakura"
+      ],
+      "stationCodes": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10",
+        "M11",
+        "M12",
+        "M13",
+        "M14",
+        "M15",
+        "M16",
+        "M17",
+        "M18",
+        "M19",
+        "M20",
+        "M21",
+        "M22",
+        "M23",
+        "M24",
+        "M25",
+        "M26",
+        "M27",
+        "M28"
+      ],
+      "note": "Opened 1965. TRUE LOOP - no linear terminus. 28 stations. Roster: 'M01 Kanayama (start/end point) -> M02-M27 -> M28 Nishi Takakura (final station before loop closes back to M01)... Loop runs anticlockwise (when viewed on standard map orientation).' Same topology as Copenhagen M3 Cityringen (docs/copenhagen-d1/direction-model-memo.md section 1) - direction model is clockwise/anticlockwise, not line+terminus; see direction-model-memo.md section 3. Do not invent a fake linear terminus pair. Meiko (E) branches off this loop at Kanayama with real through-running trains - see meiko line note and direction-model-memo.md section 4."
+    },
+    {
+      "id": "meiko",
+      "number": "E",
+      "name": "Meiko",
+      "jpName": "名港線",
+      "mapGroup": "Nagoya Municipal Subway",
+      "mode": "branch",
+      "termini": [
+        "Kanayama",
+        "Nagoyako"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Kanayama",
+          "note": "Junction with Meijo M01 - same physical station. Roster uses E01 for this branch origin; an earlier oracle-report table used E00 for the same place (hazard-pack.md H1a) - E01 used here as the roster's own tabulated value."
+        }
+      ],
+      "stations": [
+        "Kanayama",
+        "Hibino",
+        "Rokuban-cho",
+        "Tokai-dori",
+        "Minato Kuyakusho",
+        "Tsukijiguchi",
+        "Nagoyako"
+      ],
+      "stationCodes": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05",
+        "E06",
+        "E07"
+      ],
+      "note": "Opened 1971. Branch off the Meijo loop at Kanayama, serving the port district. 7 stations. Roster: 'Roughly every other anticlockwise Meijo loop train diverts here rather than continuing to Nagoya Daigaku; integrated service.' This is a genuine through-running hazard, not a cosmetic branch note - see hazard-pack.md H4 and direction-model-memo.md section 4. This pack does not model the through-running board behaviour, only flags it."
+    },
+    {
+      "id": "tsurumai",
+      "number": "T",
+      "name": "Tsurumai",
+      "jpName": "つるまい線",
+      "mapGroup": "Nagoya Municipal Subway",
+      "mode": "linear",
+      "termini": [
+        "Kami Otai",
+        "Akaike"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Kami Otai",
+          "note": "Northern terminus (T01). Meitetsu Inuyama Line through-run begins here - out of v1. Never chip 'T + Inuyama'."
+        },
+        {
+          "at": "Fushimi",
+          "note": "T07 x H09 Higashiyama."
+        },
+        {
+          "at": "Kamimaezu",
+          "note": "T09 x M03 Meijo."
+        },
+        {
+          "at": "Marunouchi",
+          "note": "T06 x S04 Sakura-dori."
+        },
+        {
+          "at": "Gokiso",
+          "note": "T12 x S10 Sakura-dori."
+        },
+        {
+          "at": "Yagoto",
+          "note": "T15 x M20 Meijo."
+        },
+        {
+          "at": "Akaike",
+          "note": "Southern terminus (T20), outside Nagoya city. Meitetsu Toyota Line / Meitetsu Mikawa Line through-run beyond here - out of v1. Never chip 'T + Toyota'."
+        }
+      ],
+      "stations": [
+        "Kami Otai",
+        "Shonai Ryokuchi Koen",
+        "Shonai-dori",
+        "Joshin",
+        "Sengen-cho",
+        "Marunouchi",
+        "Fushimi",
+        "Osu Kannon",
+        "Kamimaezu",
+        "Tsurumai",
+        "Arahata",
+        "Gokiso",
+        "Kawana",
+        "Irinaka",
+        "Yagoto",
+        "Shiogama-guchi",
+        "Ueda",
+        "Hara",
+        "Hirabari",
+        "Akaike"
+      ],
+      "stationCodes": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15",
+        "T16",
+        "T17",
+        "T18",
+        "T19",
+        "T20"
+      ],
+      "note": "Opened 1977. Only Nagoya Metro line extending beyond city limits (Akaike is in Nisshin). 20 stations. Both termini are Meitetsu through-running hinges - v1 stops at the Metro terminus string in both directions (hazard-pack.md H1)."
+    },
+    {
+      "id": "sakuradori",
+      "number": "S",
+      "name": "Sakura-dori",
+      "jpName": "桜通線",
+      "mapGroup": "Nagoya Municipal Subway",
+      "mode": "linear",
+      "termini": [
+        "Taiko-dori",
+        "Nonami"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Nagoya",
+          "note": "S02. doNotGroup vs JR Tokaido / Shinkansen / Meitetsu / Aonami. Metro row only."
+        },
+        {
+          "at": "Marunouchi",
+          "note": "S04 x T06 Tsurumai."
+        },
+        {
+          "at": "Hisaya-odori",
+          "note": "S05 x M06 Meijo. Underground complex with Sakae; doNotGroup vs Sakae."
+        },
+        {
+          "at": "Imaike",
+          "note": "S08 x H13 Higashiyama."
+        },
+        {
+          "at": "Gokiso",
+          "note": "S10 x T12 Tsurumai."
+        },
+        {
+          "at": "Aratama-bashi",
+          "note": "S14 x M23 Meijo. Printed 'Aratamabashi' (no hyphen) on this line's own table - same place as Meijo's 'Aratama-bashi' (hazard-pack.md H1)."
+        },
+        {
+          "at": "Takaoka",
+          "note": "Future Kamiiida Line extension planned but not completed as of 2026-09-06 - not a chip, not a connection today."
+        },
+        {
+          "at": "Fukiage",
+          "note": "Future Tobu Line connection planned but not completed - not a chip, not a connection today."
+        },
+        {
+          "at": "Sakura-hommachi",
+          "note": "Future Nambu Line connection planned but not completed - not a chip, not a connection today."
+        }
+      ],
+      "stations": [
+        "Taiko-dori",
+        "Nagoya",
+        "Kokusai Center",
+        "Marunouchi",
+        "Hisaya-odori",
+        "Takaoka",
+        "Kurumamichi",
+        "Imaike",
+        "Fukiage",
+        "Gokiso",
+        "Sakurayama",
+        "Mizuho Kuyakusho",
+        "Mizuho Undojo Nishi",
+        "Aratama-bashi",
+        "Sakura-hommachi",
+        "Tsurusato",
+        "Nonami"
+      ],
+      "stationCodes": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12",
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17"
+      ],
+      "note": "Opened 1989. 17 stations. Three future-extension stations (Takaoka, Fukiage, Sakura-hommachi) are ordinary in-v1 Sakura-dori stops today; only their prospective transfers are not-yet-real."
+    },
+    {
+      "id": "kamiiida",
+      "number": "K",
+      "name": "Kamiiida",
+      "jpName": "上飯田線",
+      "mapGroup": "Nagoya Municipal Subway",
+      "mode": "linear",
+      "termini": [
+        "Kamiiida",
+        "Heian-dori"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Kamiiida",
+          "note": "Northern terminus (K01 per the roster table). Meitetsu Komaki Line through-run begins here - out of v1. Never chip 'K + Komaki' or 'K + Inuyama'. NOTE: earlier sections of the oracle report call this station 'K02' - internal conflict, flagged hazard-pack.md H1a, roster value used here."
+        },
+        {
+          "at": "Heian-dori",
+          "note": "Southern terminus (K02 per the roster table). Interchange with Meijo M11 via underground passage (no direct platform transfer)."
+        }
+      ],
+      "stations": [
+        "Kamiiida",
+        "Heian-dori"
+      ],
+      "stationCodes": [
+        "K01",
+        "K02"
+      ],
+      "note": "Opened 2003. Only 2 stations, 0.8 km - shortest subway line in Japan by station count. Meitetsu Komaki Line through-run beyond Kamiiida (K01) continues to Komaki and Inuyama - out of v1; v1 stops at K01."
+    }
+  ],
+  "uniqueStationCount": 83,
+  "uniqueStations": [
+    "Akaike",
+    "Arahata",
+    "Aratama-bashi",
+    "Atsuta Jingu Nishi",
+    "Atsuta Jingu Tenma-cho",
+    "Chayagasaka",
+    "Chikusa",
+    "Fujigaoka",
+    "Fukiage",
+    "Fushimi",
+    "Gokiso",
+    "Hara",
+    "Hatta",
+    "Heian-dori",
+    "Hibino",
+    "Higashi Betsuin",
+    "Higashiyama Koen",
+    "Hirabari",
+    "Hisaya-odori",
+    "Hongo",
+    "Honjin",
+    "Horita",
+    "Hoshigaoka",
+    "Ikeshita",
+    "Imaike",
+    "Irinaka",
+    "Issha",
+    "Iwatsuka",
+    "Jiyugaoka",
+    "Joshin",
+    "Kakuozan",
+    "Kamejima",
+    "Kami Otai",
+    "Kamiiida",
+    "Kamimaezu",
+    "Kamiyashiro",
+    "Kanayama",
+    "Kawana",
+    "Kokusai Center",
+    "Kurokawa",
+    "Kurumamichi",
+    "Marunouchi",
+    "Meijo Koen",
+    "Minato Kuyakusho",
+    "Mizuho Kuyakusho",
+    "Mizuho Undojo Higashi",
+    "Mizuho Undojo Nishi",
+    "Motoyama",
+    "Myoon-dori",
+    "Nagoya",
+    "Nagoya Daigaku",
+    "Nagoya Dome-mae Yada",
+    "Nagoyajo",
+    "Nagoyako",
+    "Nakamura Koen",
+    "Nakamura Nisseki",
+    "Nishi Takakura",
+    "Nonami",
+    "Osu Kannon",
+    "Ozone",
+    "Rokuban-cho",
+    "Sakae",
+    "Sakura-hommachi",
+    "Sakurayama",
+    "Sengen-cho",
+    "Shiga-hondori",
+    "Shinsakae-machi",
+    "Shiogama-guchi",
+    "Shonai Ryokuchi Koen",
+    "Shonai-dori",
+    "Sogo Rihabiri Center",
+    "Sunadabashi",
+    "Taiko-dori",
+    "Takabata",
+    "Takaoka",
+    "Tokai-dori",
+    "Tsukijiguchi",
+    "Tsurumai",
+    "Tsurusato",
+    "Ueda",
+    "Yabacho",
+    "Yagoto",
+    "Yagoto Nisseki"
+  ]
+}

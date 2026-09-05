@@ -1,0 +1,1050 @@
+{
+  "city": "geneva",
+  "displayName": "Geneva",
+  "status": "planned",
+  "agency": "TPG (Transports publics genevois)",
+  "timezone": "Europe/Zurich",
+  "source": "docs/geneva-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 board-eligibility oracle + full hand-transcribed station roster (agency/auth, hub-lock candidates, mode cut, board-eligibility verdicts, licence confidence, five-line stop arrays)",
+      "title": "Geneva oracle-clash-report.md",
+      "url": "docs/geneva-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Nico research pass, 2026-09-06. Hand-transcribed all five TPG tram lines from tpg.ch official line pages, cross-checked against French Wikipedia tram-line articles, Transit app stop sequencing, and Annemasse Agglo documentation for the French cross-border section of line 17."
+    },
+    {
+      "role": "D1 station graph primary source (per-line official pages)",
+      "title": "tpg.ch lignes 12, 14, 15, 17, 18",
+      "url": "https://www.tpg.ch/en/lignes/12 (and /14, /15, /17, /18)",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Cited per-line in the oracle report's Station roster section. Not independently re-opened in this Luke pass; this pack reshapes the oracle report's own transcription."
+    },
+    {
+      "role": "D1 station graph cross-check",
+      "title": "Wikipedia - Trams in Geneva + French per-line tram articles",
+      "url": "https://en.wikipedia.org/wiki/Trams_in_Geneva",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Used by the oracle report as a cross-check against tpg.ch for line roster, routes, terminals."
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "FULL STATION GRAPH PACK: unlike the Zurich pack in this same wave (roster-only, no web-fetch tool), this published-network.json contains all five TPG tram lines' full ordered stops[] arrays, hand-transcribed by the oracle report itself and reshaped (not re-verified against a live source) by this Luke pass.",
+    "City id geneva is unused in existing packs. Display Geneva. Agency TPG (Transports publics genevois), within the unireso fare community. Do not invent city=ge, city=gva, city=tpg, or city=lemanis. Do not merge into another Swiss city (Zurich, Lausanne). Do not merge with Leman Express or bus operators.",
+    "City stays planned until Jim wires an adapter and Tim resolves the licence-confidence hazard. assertCityLive(\"geneva\") must fail (city not in lib/providers/registry.js CITIES).",
+    "Modes v1: TPG TRAM ONLY (lines 12, 14, 15, 17, 18). No Leman Express (CFF/SNCF commuter rail), no buses (TPG or external), no trolleybuses, no boats. No metro exists in Geneva.",
+    "Passenger tram line roster (2026, per oracle report): 12, 14, 15, 17, 18. Future line 6 / Ferney-Voltaire extension (construction Sep 2025-end 2028, exact line assignment unclear) is explicitly OUT of the v1 passenger roster.",
+    "Hub lock: CORNAVIN (tram), i.e. Genève, gare Cornavin. Chosen per explicit task instruction. WARNING (see hazard-pack.md H4): the oracle report gives three different, mutually inconsistent claims about which lines call Cornavin (hub-lock prose says 12/14/15; inline stop annotations say 14/15/17/18; this pack's own recount directly from the five transcribed stations[] arrays says 14/15/18). This file uses the recount (14, 15, 18) in each line's branches[] entry, but that figure is NOT independently re-verified against the official TPG map either - confirm before building a line-map generator on top of it.",
+    "doNotGroup Leman Express / SBB Genf-Cornavin vs TPG tram gare Cornavin (hub, shared address, separate platforms/operator). Same shape at Genève-Eaux-Vives, gare (vs Leman Express Eaux-Vives/CEVA), Lancy-Pont-Rouge, gare and Lancy-Pont-Rouge, gare/Etoile (vs Leman Express Lancy-Pont-Rouge - two distinct tram stops, do not collapse into each other either), and Lancy-Bachet, gare (vs Leman Express Lancy-Bachet). See each station object's doNotGroup field and hazard-pack.md H1.",
+    "Moillesulaz asymmetry hazard: Thonex, Moillesulaz is a TERMINUS on line 12 (Switzerland-France boundary, does not cross into France) but a THROUGH-STATION on line 17 (continues into France: Gaillard, Ambilly, Annemasse). Do not model it as a symmetric hub - see direction-model-memo.md.",
+    "Cross-border hazard: line 17's final four stops (Gaillard x2, Ambilly, Annemasse) are in France. GTFS-RT data quality for this segment is unconfirmed per the oracle report's skip-risk section - flagged, not resolved. See each stop's country/note fields and line 17's crossBorder block below.",
+    "ARITHMETIC HAZARD, found in this pass: the oracle report's own Summary section states unique stops = 94, but a direct recount from the five transcribed stations[] arrays in this same file (identical station-name dedup) yields 86 unique stations (135 total stop-line appearances, 49 repeats at interchange stations). stats.stationsTranscribed below reports 86, computed directly from this file's own data, NOT the report's 94 summary figure. Flagged for Tim/Nico, not silently reconciled - see hazard-pack.md H2.",
+    "Timezone Europe/Zurich HAS DST (UTC+1 standard / UTC+2 summer, last Sunday March-last Sunday October). Do not copy Perth/Brisbane no-DST assumptions. Line 17's French terminus (Annemasse) observes the same EU DST schedule; not independently verified against a French-authority source.",
+    "LICENCE HAZARD, flagged for Tim, not resolved here: opentransportdata.swiss Terms of Use has no named licence (not CC BY, not CC0, not ODbL) - platform 'Open Data' language only, attribution required, third-party redistribution to end users of a commercial app not explicitly addressed. Oracle report confidence rating: unclear. Same underlying feed as the Zurich and Lausanne packs. See hazard-pack.md.",
+    "AUTH HAZARD, flagged for Tim, not resolved here: GTFS-RT (https://api.opentransportdata.swiss/la/gtfs-rt) requires a Bearer API key (401 without one), registered via https://api-manager.opentransportdata.swiss/, personal/non-transferable per SBB terms, rate-limited to 2 queries per minute (sliding window) - shared feed with Zurich and Lausanne, now a third city competing for the same rate-limited key pool if all three are wired. No key is present in this pack; no live calls were made. See hazard-pack.md.",
+    "gtfsRouteIdsIfKnown are the printed passenger line numbers per the oracle report (not extracted from a live GTFS pull in this pass). No stopIds in this file - product child stopIds stay out of D1 per task instruction.",
+    "Feed / live (Jim D2, not a D1 generator, and not buildable until the licence-confidence hazard above is resolved by Tim): opentransportdata.swiss GTFS-RT, filtered to agency=TPG and route_type=0 (tram) to exclude Leman Express, S-Bahn, and bus bleed from the shared national protobuf stream. Static GTFS from the same Switzerland-national feed, same filter requirement. D1 stays planned."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Cornavin",
+    "lockNote": "Hub lock chosen per explicit task instruction. Genève, gare Cornavin is the downtown central arrival hub, primary tram + Leman Express + SBB interchange point. This pack's direct recount from the five transcribed stations[] arrays finds lines 14, 15, 18 calling here (not 12 or 17) - see hazard-pack.md H4 for the three-way discrepancy with the oracle report's own prose/annotations. Not a direction token.",
+    "doNotUse": [
+      "Cornavin",
+      "Genève Cornavin",
+      "Geneva Cornavin",
+      "SBB Cornavin",
+      "Léman Express Cornavin",
+      "gare Cornavin",
+      "City",
+      "Centre",
+      "Genève",
+      "Geneva",
+      "ge",
+      "gva",
+      "tpg",
+      "lemanis"
+    ],
+    "doNotCollapse": [
+      "Genève, gare Cornavin",
+      "Léman Express / SBB Genève-Cornavin",
+      "Genève-Eaux-Vives, gare",
+      "Léman Express Eaux-Vives",
+      "Lancy-Pont-Rouge, gare",
+      "Lancy-Pont-Rouge, gare/Étoile",
+      "Léman Express Lancy-Pont-Rouge",
+      "Lancy-Bachet, gare",
+      "Léman Express Lancy-Bachet"
+    ]
+  },
+  "coverageGaps": [
+    "Léman Express (CFF/SNCF commuter rail) - out of v1 mode scope entirely (out-product on the board-eligibility table, not a boarding-contract failure). No station rows for Léman Express-only stops (e.g. Genève-Aéroport, Champel, Sécheron) in this file.",
+    "TPG buses and external bus operators - out of v1 mode scope.",
+    "Trolleybuses (TPG) - out of v1 mode scope.",
+    "Boat/ferry services (Lake Geneva, Rhône) - out of v1 mode scope.",
+    "Future line 6 / Ferney-Voltaire tram extension (construction Sep 2025-end 2028) - out of the v1 passenger roster, exact line assignment unclear per oracle report. No station rows invented.",
+    "Cornavin's true line set is not independently re-verified against the official TPG map - see the three-way discrepancy in hazard-pack.md H4.",
+    "Unique-stop-count arithmetic discrepancy between this file's computed 86 and the oracle report's stated 94 - not resolved, see hazard-pack.md H2.",
+    "GTFS-RT data quality for line 17's four French stops (Gaillard x2, Ambilly, Annemasse) is unconfirmed - see hazard-pack.md cross-border section.",
+    "Short turns not checked on any of the five lines - do not assume none exist."
+  ],
+  "liveBoards": {
+    "status": "feed_exists_licence_unclear_city_planned",
+    "endpoint": "https://api.opentransportdata.swiss/la/gtfs-rt",
+    "auth": "Bearer API key, registered via https://api-manager.opentransportdata.swiss/, personal/non-transferable, 401 without a key",
+    "rateLimit": "2 queries per minute (sliding window) per key - shared national feed also used by the Zurich and Lausanne packs",
+    "cachedTripUpdates": "30 seconds",
+    "licence": {
+      "confidence": "unclear",
+      "note": "No named licence (not CC BY/CC0/ODbL). Attribution required by opentransportdata.swiss Terms of Use; third-party redistribution to end users of a commercial app not explicitly addressed. Flagged for Tim, not resolved here."
+    },
+    "keyPolicy": "Never paste a key. This pack contains no key and made no live calls. D1 stays planned. assertCityLive(geneva) must fail.",
+    "d1": "planned. Adapter build (Jim, D2) should wait on Tim's licence sign-off and should independently verify GTFS-RT coverage quality for line 17's French stops before shipping - see hazard-pack.md and jim-handoff.md."
+  },
+  "stats": {
+    "lines": 5,
+    "lineNumbers": [
+      "12",
+      "14",
+      "15",
+      "17",
+      "18"
+    ],
+    "excludedFutureLines": [
+      "6 (Ferney-Voltaire extension, under construction, exact line TBD)"
+    ],
+    "hubLock": [
+      "Cornavin"
+    ],
+    "totalStopAppearances": 135,
+    "stationsTranscribed": 86,
+    "oracleReportStatedUniqueStops": 94,
+    "arithmeticNote": "stationsTranscribed (86) is computed directly from this file's own stations[] arrays. The oracle report's own Summary section states 94 unique stops for the same five lines - the two numbers disagree and are not reconciled here. See hazard-pack.md H2."
+  },
+  "lines": [
+    {
+      "id": "12",
+      "number": "12",
+      "name": "12",
+      "operator": "TPG",
+      "mapGroup": "Tram",
+      "shape": "linear",
+      "termini": [
+        "Lancy-Bachet, gare",
+        "Thônex, Moillesulaz"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Genève, Plainpalais",
+          "interchangeWith": [
+            "15",
+            "17",
+            "18"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        },
+        {
+          "at": "Genève, Bel-Air",
+          "interchangeWith": [
+            "14",
+            "17",
+            "18"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        }
+      ],
+      "stations": [
+        {
+          "name": "Lancy-Bachet, gare",
+          "interchange": [
+            "18"
+          ],
+          "doNotGroup": "Léman Express Lancy-Bachet - doNotGroup"
+        },
+        {
+          "name": "Grand-Lancy, De-Staël",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Carouge, Rondeau",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Carouge, Ancienne",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Carouge, Marché",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Carouge, Armes",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Blanche",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Augustins",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Pont-d'Arve",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Plainpalais",
+          "interchange": [
+            "15",
+            "17",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Place de Neuve",
+          "interchange": [
+            "17",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Bel-Air",
+          "interchange": [
+            "14",
+            "17",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Molard",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Rive",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Terrassière",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Villereuse",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Genève-Eaux-Vives, gare",
+          "interchange": [
+            "17"
+          ],
+          "doNotGroup": "Léman Express Eaux-Vives / CEVA underground station - doNotGroup"
+        },
+        {
+          "name": "Genève, Amandolier",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Chêne-Bougeries, Grange-Canal",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Chêne-Bougeries, Grangettes",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Chêne-Bougeries, Grange-Falquet",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Chêne-Bourg, Place Favre",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Chêne-Bourg, Peillonnex",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Thônex, Graveson",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Thônex, Moillesulaz",
+          "interchange": [
+            "17"
+          ],
+          "note": "Switzerland-France boundary stop. Terminus on line 12 (does not cross into France); through-station on line 17 (continues into France). See direction-model-memo.md Moillesulaz asymmetry note."
+        }
+      ],
+      "stopCount": 25,
+      "note": "Full station graph hand-transcribed by Nico into the oracle report; reshaped into this pack without independent re-verification against the live TPG map (see hazard-pack.md)."
+    },
+    {
+      "id": "14",
+      "number": "14",
+      "name": "14",
+      "operator": "TPG",
+      "mapGroup": "Tram",
+      "shape": "linear",
+      "termini": [
+        "Bernex, Vailly",
+        "Meyrin, Gravière"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Genève, gare Cornavin",
+          "interchangeWith": [
+            "15",
+            "18"
+          ],
+          "note": "Hub lock. Not a direction token."
+        },
+        {
+          "at": "Genève, Bel-Air",
+          "interchangeWith": [
+            "12",
+            "17",
+            "18"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        }
+      ],
+      "stations": [
+        {
+          "name": "Bernex, Vailly"
+        },
+        {
+          "name": "Bernex, Hainard"
+        },
+        {
+          "name": "Bernex, Luchepelet"
+        },
+        {
+          "name": "Bernex, Pré-Marais"
+        },
+        {
+          "name": "Bernex, P+R"
+        },
+        {
+          "name": "Confignon, croisée"
+        },
+        {
+          "name": "Confignon, La Dode"
+        },
+        {
+          "name": "Onex, Salle communale"
+        },
+        {
+          "name": "Onex, Bandol"
+        },
+        {
+          "name": "Petit-Lancy, Les Esserts"
+        },
+        {
+          "name": "Petit-Lancy, place"
+        },
+        {
+          "name": "Petit-Lancy, Quidort"
+        },
+        {
+          "name": "Genève, Jonction"
+        },
+        {
+          "name": "Genève, Palladium"
+        },
+        {
+          "name": "Genève, Stand",
+          "interchange": [
+            "15"
+          ]
+        },
+        {
+          "name": "Genève, Bel-Air",
+          "interchange": [
+            "12",
+            "17",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Coutance",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, gare Cornavin",
+          "interchange": [
+            "15",
+            "18"
+          ],
+          "doNotGroup": "Léman Express / SBB Genève-Cornavin (shared address, separate platforms/operator) - HUB LOCK, doNotGroup"
+        },
+        {
+          "name": "Genève, Lyon",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Poterie",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Servette",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Vieusseux",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Vernier, Bouchet",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Vernier, Balexert",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Vernier, Avanchets-Étang",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Vernier, Blandonnet",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Meyrin, Jardin-Alpin-Vivarium",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Meyrin, Forumeyrin"
+        },
+        {
+          "name": "Meyrin, Vaudagne"
+        },
+        {
+          "name": "Meyrin, Gravière"
+        }
+      ],
+      "stopCount": 30,
+      "note": "Full station graph hand-transcribed by Nico into the oracle report; reshaped into this pack without independent re-verification against the live TPG map (see hazard-pack.md)."
+    },
+    {
+      "id": "15",
+      "number": "15",
+      "name": "15",
+      "operator": "TPG",
+      "mapGroup": "Tram",
+      "shape": "linear",
+      "termini": [
+        "Genève, Nations",
+        "Plan-les-Ouates, ZIPLO"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Genève, gare Cornavin",
+          "interchangeWith": [
+            "14",
+            "18"
+          ],
+          "note": "Hub lock. Not a direction token."
+        },
+        {
+          "at": "Genève, Plainpalais",
+          "interchangeWith": [
+            "12",
+            "17",
+            "18"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        }
+      ],
+      "stations": [
+        {
+          "name": "Genève, Nations"
+        },
+        {
+          "name": "Genève, Collège Sismondi"
+        },
+        {
+          "name": "Genève, Môle"
+        },
+        {
+          "name": "Genève, Butini"
+        },
+        {
+          "name": "Genève, Maison de la Paix"
+        },
+        {
+          "name": "Genève, gare Cornavin",
+          "interchange": [
+            "14",
+            "18"
+          ],
+          "doNotGroup": "Léman Express / SBB Genève-Cornavin (shared address, separate platforms/operator) - HUB LOCK, doNotGroup"
+        },
+        {
+          "name": "Genève, Mercier"
+        },
+        {
+          "name": "Genève, Goulart"
+        },
+        {
+          "name": "Genève, Stand",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Genève, Cirque"
+        },
+        {
+          "name": "Genève, Plainpalais",
+          "interchange": [
+            "12",
+            "17",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Uni-Mail",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Acacias",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Industrielle",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Carouge, Pictet-Thellusson",
+          "interchange": [
+            "17"
+          ]
+        },
+        {
+          "name": "Lancy-Pont-Rouge, gare/Étoile",
+          "interchange": [
+            "17"
+          ],
+          "doNotGroup": "Léman Express Lancy-Pont-Rouge - doNotGroup"
+        },
+        {
+          "name": "Grand-Lancy, Mairie de Lancy"
+        },
+        {
+          "name": "Grand-Lancy, Place du 1er-Août"
+        },
+        {
+          "name": "Grand-Lancy, Lancy Piscine"
+        },
+        {
+          "name": "Grand-Lancy, Palettes",
+          "interchange": [
+            "18"
+          ]
+        },
+        {
+          "name": "Grand-Lancy, Curé-Baud"
+        },
+        {
+          "name": "Plan-les-Ouates, Le Rolliet"
+        },
+        {
+          "name": "Plan-les-Ouates, ZIPLO"
+        }
+      ],
+      "stopCount": 23,
+      "note": "Full station graph hand-transcribed by Nico into the oracle report; reshaped into this pack without independent re-verification against the live TPG map (see hazard-pack.md)."
+    },
+    {
+      "id": "17",
+      "number": "17",
+      "name": "17",
+      "operator": "TPG",
+      "mapGroup": "Tram",
+      "shape": "linear",
+      "termini": [
+        "Lancy-Pont-Rouge, gare",
+        "Annemasse, Parc Montessuit"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Genève, Plainpalais",
+          "interchangeWith": [
+            "12",
+            "15",
+            "18"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        },
+        {
+          "at": "Genève, Bel-Air",
+          "interchangeWith": [
+            "12",
+            "14",
+            "18"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        }
+      ],
+      "stations": [
+        {
+          "name": "Lancy-Pont-Rouge, gare",
+          "doNotGroup": "Léman Express Lancy-Pont-Rouge - doNotGroup"
+        },
+        {
+          "name": "Lancy-Pont-Rouge, gare/Étoile",
+          "interchange": [
+            "15"
+          ],
+          "doNotGroup": "Léman Express Lancy-Pont-Rouge - doNotGroup"
+        },
+        {
+          "name": "Carouge, Pictet-Thellusson",
+          "interchange": [
+            "15"
+          ]
+        },
+        {
+          "name": "Genève, Industrielle",
+          "interchange": [
+            "15"
+          ]
+        },
+        {
+          "name": "Genève, Acacias",
+          "interchange": [
+            "15"
+          ]
+        },
+        {
+          "name": "Genève, Uni-Mail",
+          "interchange": [
+            "15"
+          ]
+        },
+        {
+          "name": "Genève, Plainpalais",
+          "interchange": [
+            "12",
+            "15",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Place de Neuve",
+          "interchange": [
+            "12",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Bel-Air",
+          "interchange": [
+            "12",
+            "14",
+            "18"
+          ]
+        },
+        {
+          "name": "Genève, Molard",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève, Rive",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève, Terrassière",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève, Villereuse",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève-Eaux-Vives, gare",
+          "interchange": [
+            "12"
+          ],
+          "doNotGroup": "Léman Express Eaux-Vives / CEVA underground station - doNotGroup"
+        },
+        {
+          "name": "Genève, Amandolier",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Chêne-Bougeries, Grange-Canal",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Chêne-Bougeries, Grangettes",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Chêne-Bougeries, Grange-Falquet",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Chêne-Bourg, Place Favre",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Chêne-Bourg, Peillonnex",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Thônex, Graveson",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Thônex, Moillesulaz",
+          "interchange": [
+            "12"
+          ],
+          "note": "Switzerland-France boundary stop. Terminus on line 12 (does not cross into France); through-station on line 17 (continues into France). See direction-model-memo.md Moillesulaz asymmetry note."
+        },
+        {
+          "name": "Gaillard, Libération",
+          "country": "FR",
+          "note": "Cross-border stop in France (line 17 extension to Annemasse, completed 2026). GTFS-RT data quality for this segment unconfirmed - see hazard-pack.md."
+        },
+        {
+          "name": "Gaillard, Millet",
+          "country": "FR",
+          "note": "Cross-border stop in France (line 17 extension to Annemasse, completed 2026). GTFS-RT data quality for this segment unconfirmed - see hazard-pack.md."
+        },
+        {
+          "name": "Ambilly, Croix-d'Ambilly",
+          "country": "FR",
+          "note": "Cross-border stop in France (line 17 extension to Annemasse, completed 2026). GTFS-RT data quality for this segment unconfirmed - see hazard-pack.md."
+        },
+        {
+          "name": "Annemasse, Parc Montessuit",
+          "country": "FR",
+          "note": "Cross-border stop in France (line 17 extension to Annemasse, completed 2026). GTFS-RT data quality for this segment unconfirmed - see hazard-pack.md."
+        }
+      ],
+      "stopCount": 26,
+      "note": "Full station graph hand-transcribed by Nico into the oracle report; reshaped into this pack without independent re-verification against the live TPG map (see hazard-pack.md).",
+      "crossBorder": {
+        "country": "FR",
+        "stops": [
+          "Gaillard, Libération",
+          "Gaillard, Millet",
+          "Ambilly, Croix-d'Ambilly",
+          "Annemasse, Parc Montessuit"
+        ],
+        "note": "Four French stops on the Annemasse extension (completed 2026). GTFS-RT data quality for this segment is unconfirmed - see hazard-pack.md cross-border section."
+      }
+    },
+    {
+      "id": "18",
+      "number": "18",
+      "name": "18",
+      "operator": "TPG",
+      "mapGroup": "Tram",
+      "shape": "linear",
+      "termini": [
+        "Grand-Lancy, Palettes",
+        "Meyrin, CERN"
+      ],
+      "shortTurns": [],
+      "branches": [
+        {
+          "at": "Genève, gare Cornavin",
+          "interchangeWith": [
+            "14",
+            "15"
+          ],
+          "note": "Hub lock. Not a direction token."
+        },
+        {
+          "at": "Genève, Plainpalais",
+          "interchangeWith": [
+            "12",
+            "15",
+            "17"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        },
+        {
+          "at": "Genève, Bel-Air",
+          "interchangeWith": [
+            "12",
+            "14",
+            "17"
+          ],
+          "note": "Interchange point (see hazard-pack.md H4 for line-count discrepancy notes)."
+        }
+      ],
+      "stations": [
+        {
+          "name": "Grand-Lancy, Palettes",
+          "interchange": [
+            "15"
+          ]
+        },
+        {
+          "name": "Grand-Lancy, Pontets"
+        },
+        {
+          "name": "Plan-les-Ouates, Trèfle-Blanc"
+        },
+        {
+          "name": "Lancy-Bachet, gare",
+          "interchange": [
+            "12"
+          ],
+          "doNotGroup": "Léman Express Lancy-Bachet - doNotGroup"
+        },
+        {
+          "name": "Grand-Lancy, De-Staël",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Carouge, Rondeau",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Carouge, Ancienne",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Carouge, Marché",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Carouge, Armes",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève, Blanche",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève, Augustins",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève, Pont-d'Arve",
+          "interchange": [
+            "12"
+          ]
+        },
+        {
+          "name": "Genève, Plainpalais",
+          "interchange": [
+            "12",
+            "15",
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Place de Neuve",
+          "interchange": [
+            "12",
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Bel-Air",
+          "interchange": [
+            "12",
+            "14",
+            "17"
+          ]
+        },
+        {
+          "name": "Genève, Coutance",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Genève, gare Cornavin",
+          "interchange": [
+            "14",
+            "15"
+          ],
+          "doNotGroup": "Léman Express / SBB Genève-Cornavin (shared address, separate platforms/operator) - HUB LOCK, doNotGroup"
+        },
+        {
+          "name": "Genève, Lyon",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Genève, Poterie",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Genève, Servette",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Genève, Vieusseux",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Vernier, Bouchet",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Vernier, Balexert",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Vernier, Avanchets-Étang",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Vernier, Blandonnet",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Meyrin, Jardin-Alpin-Vivarium",
+          "interchange": [
+            "14"
+          ]
+        },
+        {
+          "name": "Meyrin, Bois-du-Lan"
+        },
+        {
+          "name": "Meyrin, village"
+        },
+        {
+          "name": "Meyrin, Hôpital de La Tour"
+        },
+        {
+          "name": "Meyrin, Maisonnex"
+        },
+        {
+          "name": "Meyrin, CERN"
+        }
+      ],
+      "stopCount": 31,
+      "note": "Full station graph hand-transcribed by Nico into the oracle report; reshaped into this pack without independent re-verification against the live TPG map (see hazard-pack.md)."
+    }
+  ]
+}
