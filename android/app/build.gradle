@@ -108,3 +108,21 @@ try {
 } catch(Exception e) {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
 }
+
+// android/app/src/main/assets/public is gitignored, generated from the repo's
+// public/ dir by `npx cap copy`/`cap sync`. Skipping that step before a build
+// silently packages whichever stale copy is sitting on disk — this bit us
+// repeatedly after adding new city regions (FB-53 fallout, Sep 2026): the app
+// showed regions as "coming soon" that were already live on master because
+// the assets folder predated the flip. Every build now refreshes it first.
+tasks.register('capacitorCopyWebAssets', Exec) {
+    workingDir "${projectDir}/../.."
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        commandLine 'cmd', '/c', 'npx', 'cap', 'copy', 'android'
+    } else {
+        commandLine 'npx', 'cap', 'copy', 'android'
+    }
+}
+tasks.matching { it.name == 'preBuild' }.configureEach {
+    it.dependsOn 'capacitorCopyWebAssets'
+}
