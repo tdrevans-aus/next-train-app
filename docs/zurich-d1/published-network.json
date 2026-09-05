@@ -1,0 +1,117 @@
+{
+  "city": "zurich",
+  "displayName": "Zürich",
+  "status": "planned",
+  "agency": "VBZ (Verkehrsbetriebe Zürich)",
+  "timezone": "Europe/Zurich",
+  "source": "docs/zurich-d1/oracle-clash-report.md",
+  "sources": [
+    {
+      "role": "D1 board-eligibility oracle (agency/auth, hub-lock candidates, mode cut, board-eligibility verdicts, licence confidence)",
+      "title": "Zürich oracle-clash-report.md",
+      "url": "docs/zurich-d1/oracle-clash-report.md",
+      "retrievedAt": "2026-09-06T00:00:00Z",
+      "note": "Nico research pass, 2026-09-06. Named the ZVV/VBZ official tram map and the Wikipedia 'Trams in Zurich' page as D1 sources but did not itself hand-transcribe a station graph from either."
+    },
+    {
+      "role": "D1 station graph — NOT transcribed in this pass (see note below and hazard-pack.md header)",
+      "title": "ZVV network maps / transport companies",
+      "url": "https://www.zvv.ch/en/about-us/zurich-transport-network/transport-companies.html",
+      "retrievedAt": null,
+      "note": "Named by the oracle report as the official map source. This Luke invocation had no web-fetch tool available and could not open or transcribe this page. Flagged as a gap for the next pass, not inferred."
+    },
+    {
+      "role": "D1 station graph — NOT transcribed in this pass (see note below and hazard-pack.md header)",
+      "title": "Trams in Zurich — Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Trams_in_Zurich",
+      "retrievedAt": null,
+      "note": "Named by the oracle report as a D1 source (line routes and operations). Not opened/transcribed in this pass for the same tool-availability reason. The Copenhagen pack used an equivalent Wikipedia page successfully when a web-fetch tool was available - recommend the same approach for the follow-up pass on this city."
+    }
+  ],
+  "retrievedAt": "2026-09-06T00:00:00Z",
+  "notes": [
+    "ROSTER-ONLY PACK: this published-network.json lists the passenger-facing VBZ tram line numbers from the oracle report only. It does NOT contain a hand-transcribed station graph (stations[], termini[] are empty on every line) because no web-fetch tool was available to this Luke invocation to open the ZVV/VBZ official map or the Wikipedia 'Trams in Zurich' page that the oracle report named as D1 sources. This is a gap to flag back for a follow-up Nico/Luke pass with web access, per the task's own guardrail ('if the report doesn't have what you need, that's a gap to flag back, not something to infer'). Do not fill stations[]/termini[] by guessing from general knowledge of the Zürich tram network.",
+    "City id zurich is unused in existing packs. Display Zürich. Agency VBZ (Verkehrsbetriebe Zürich), operating within ZVV (Zürcher Verkehrsverbund). Do not invent city=zh, city=zrh, city=vbz, and do not merge into another Swiss city.",
+    "City stays planned until a station graph exists and Jim wires testers. assertCityLive(\"zurich\") must fail (city not in lib/providers/registry.js CITIES).",
+    "Modes v1: VBZ TRAM ONLY. No S-Bahn (SBB regional/commuter), no buses (VBZ or external), no boats (Lake Zürich ferries), no funicular, no metro (none exists in Zürich).",
+    "Passenger tram line roster (2026, per oracle report, NOT independently re-verified against a live map in this pass): 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 17. Construction lines 50 and 51 (Bahnhofquai renovation, Dec 2025-2026) are explicitly OUT of the v1 passenger roster per the oracle report's own framing.",
+    "Hub lock: BELLEVUE. Chosen per explicit task instruction because Zürich HB (tram) is under renovation (Bahnhofquai works, Dec 2025-2026) and its exact line roster is a moving target during that period. Bellevue's reported line set (2, 4, 5, 8, 9, 15) is smaller and stable. Bellevue is a hub stop string, never a direction token.",
+    "Rejected alternative hub: Zürich HB (tram) - lines 3, 4, 6, 7, 10, 11, 13, 14, 17, 50, 51 per the oracle report. Kept only as a documented alternative in hazard-pack.md; not used as the lock.",
+    "doNotGroup: SBB Zürich HB (mainline/S-Bahn station) vs VBZ Zürich HB tram (separate platforms, same address). SBB is out of v1 scope entirely by the tram-only mode cut, and must never be merged into a tram board even as a transfer note. Same shape recurs at Stadelhofen (VBZ tram lines 2, 4, 5 per Wikipedia, per oracle report + SBB rail) and Wiedikon (VBZ tram + SBB) - SBB excluded at both.",
+    "Timezone Europe/Zurich HAS DST (UTC+1 standard / UTC+2 summer, last Sunday March-last Sunday October). Do not copy Perth/Brisbane no-DST assumptions.",
+    "LICENCE HAZARD, flagged for Tim, not resolved here: opentransportdata.swiss Terms of Use has no named licence (not CC BY, not CC0, not ODbL) - platform 'Open Data' language only, attribution required, third-party redistribution to end users of a commercial app not explicitly addressed. Oracle report confidence rating: unclear. See hazard-pack.md.",
+    "AUTH HAZARD, flagged for Tim, not resolved here: GTFS-RT (https://api.opentransportdata.swiss/la/gtfs-rt) requires a Bearer API key (401 without one), registered via https://api-manager.opentransportdata.swiss/, personal/non-transferable per SBB terms, rate-limited to 2 queries per minute (sliding window). No key is present in this pack; no live calls were made. See hazard-pack.md.",
+    "gtfsRouteIdsIfKnown are the printed passenger line numbers per the oracle report (not extracted from a live GTFS pull in this pass). No stopIds in this file. No termini, no station arrays - both are unsourced gaps, not omissions.",
+    "Feed / live (Jim D2, not a D1 generator, and not buildable until the licence-confidence hazard above is resolved by Tim): opentransportdata.swiss GTFS-RT, filtered to agency=VBZ and route_type=0 (tram) to exclude S-Bahn and bus bleed from the shared national protobuf stream. Static GTFS from the same Switzerland-national feed, same filter requirement. D1 stays planned."
+  ],
+  "printedInnerCityNames": {
+    "lock": "Bellevue",
+    "lockNote": "Hub lock chosen because Zürich HB (tram) is mid-renovation (Bahnhofquai, Dec 2025-2026) with an unstable line roster during that period. Bellevue's line set (2, 4, 5, 8, 9, 15 per oracle report) is reported smaller and stable, with no co-located SBB station. Not a direction token.",
+    "doNotUse": [
+      "Zürich HB",
+      "Zurich HB",
+      "Hauptbahnhof",
+      "Zürich Hauptbahnhof",
+      "SBB Zürich HB",
+      "City",
+      "Centre",
+      "Zurich",
+      "Zürich",
+      "zh",
+      "zrh",
+      "vbz"
+    ],
+    "doNotCollapse": [
+      "Bellevue",
+      "Zürich HB (tram)",
+      "SBB Zürich HB",
+      "Stadelhofen",
+      "Wiedikon"
+    ]
+  },
+  "coverageGaps": [
+    "Full VBZ tram station graph (stop order per line, both termini, branch points, short turns) - NOT transcribed in this pass, no web-fetch tool available. Follow-up Nico/Luke pass required before D2/D5 work. See hazard-pack.md header and direction-model-memo.md.",
+    "SBB S-Bahn (regional/commuter rail) - out of v1 mode scope entirely, not just untranscribed.",
+    "VBZ buses and external bus operators - out of v1 mode scope.",
+    "Lake Zürich boat/ferry services - out of v1 mode scope.",
+    "Funicular - out of v1 mode scope (minor accessory mode per oracle report).",
+    "Construction lines 50, 51 (Bahnhofquai renovation) - out of the v1 passenger roster.",
+    "Bellevue's exact line set (2, 4, 5, 8, 9, 15) is per the oracle report's narrative only, not re-verified against a live official map citation in this pass."
+  ],
+  "liveBoards": {
+    "status": "feed_exists_licence_unclear_city_planned",
+    "endpoint": "https://api.opentransportdata.swiss/la/gtfs-rt",
+    "auth": "Bearer API key, registered via https://api-manager.opentransportdata.swiss/, personal/non-transferable, 401 without a key",
+    "rateLimit": "2 queries per minute (sliding window) per key",
+    "cachedTripUpdates": "30 seconds",
+    "licence": {
+      "confidence": "unclear",
+      "note": "No named licence (not CC BY/CC0/ODbL). Attribution required by opentransportdata.swiss Terms of Use; third-party redistribution to end users of a commercial app not explicitly addressed. Flagged for Tim, not resolved here."
+    },
+    "keyPolicy": "Never paste a key. This pack contains no key and made no live calls. D1 stays planned. assertCityLive(zurich) must fail.",
+    "d1": "planned. Adapter build (Jim, D2) should wait on both the station-graph follow-up pass and Tim's licence sign-off - see hazard-pack.md and jim-handoff.md."
+  },
+  "stats": {
+    "lines": 14,
+    "lineNumbers": ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "13", "14", "15", "17"],
+    "excludedConstructionLines": ["50", "51"],
+    "hubLock": ["Bellevue"],
+    "stationsTranscribed": 0
+  },
+  "lines": [
+    { "id": "2", "number": "2", "name": "2", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Bellevue", "note": "Hub lock. Not a direction token." } ], "stations": [], "note": "Station graph not transcribed in this pass - see published-network.json notes and hazard-pack.md. Calls at Bellevue per oracle report." },
+    { "id": "3", "number": "3", "name": "3", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. doNotGroup vs SBB Zürich HB. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." },
+    { "id": "4", "number": "4", "name": "4", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Bellevue", "note": "Hub lock." }, { "at": "Zürich HB (tram)", "note": "Also calls here per oracle report. doNotGroup vs SBB Zürich HB." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at both Bellevue and Zürich HB (tram) per oracle report." },
+    { "id": "5", "number": "5", "name": "5", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Bellevue", "note": "Hub lock." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Bellevue per oracle report." },
+    { "id": "6", "number": "6", "name": "6", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." },
+    { "id": "7", "number": "7", "name": "7", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." },
+    { "id": "8", "number": "8", "name": "8", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Bellevue", "note": "Hub lock." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Bellevue per oracle report." },
+    { "id": "9", "number": "9", "name": "9", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Bellevue", "note": "Hub lock." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Bellevue per oracle report." },
+    { "id": "10", "number": "10", "name": "10", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." },
+    { "id": "11", "number": "11", "name": "11", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." },
+    { "id": "13", "number": "13", "name": "13", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." },
+    { "id": "14", "number": "14", "name": "14", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." },
+    { "id": "15", "number": "15", "name": "15", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Bellevue", "note": "Hub lock." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Bellevue per oracle report." },
+    { "id": "17", "number": "17", "name": "17", "operator": "VBZ", "mapGroup": "Tram", "shape": "unknown", "termini": [], "shortTurns": [], "branches": [ { "at": "Zürich HB (tram)", "note": "Rejected hub alternative. Not transcribed." } ], "stations": [], "note": "Station graph not transcribed in this pass. Calls at Zürich HB (tram) per oracle report." }
+  ]
+}
