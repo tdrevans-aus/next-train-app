@@ -24,7 +24,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — tier 1, co-equal with Inverness/Aberdeen/Dundee. Three-line junction (Highland Main Line north, Tayside line east, cross-country south). ScotRail, CrossCountry, LNER all 'in'. No Caledonian Sleeper documented here. NOT Perth, Australia (separate city id 'perth') — see notes."
+      "class": "hub lock — tier 1, co-equal with Inverness/Aberdeen/Dundee. Three-line junction (Highland Main Line north, Tayside line east, cross-country south). ScotRail, CrossCountry, LNER all 'in'. No Caledonian Sleeper documented here. NOT Perth, Australia (separate city id 'perth') — see notes.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -33,7 +35,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — tier 1, co-equal with Perth/Aberdeen/Dundee. Four-line terminus (Highland Main Line, Aberdeen-Inverness line, Kyle of Lochalsh line, Far North Line), 7 platforms. ScotRail, CrossCountry, LNER Highland Chieftain all 'in'; Caledonian Sleeper 'out-reservation', excluded from board."
+      "class": "hub lock — tier 1, co-equal with Perth/Aberdeen/Dundee. Four-line terminus (Highland Main Line, Aberdeen-Inverness line, Kyle of Lochalsh line, Far North Line), 7 platforms. ScotRail, CrossCountry, LNER Highland Chieftain all 'in'; Caledonian Sleeper 'out-reservation', excluded from board.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -42,34 +46,42 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — tier 1, co-equal with Perth/Inverness/Dundee. Terminus/junction: Dundee-Aberdeen line (south), Aberdeen-Inverness line (north), 6 platforms. ScotRail, CrossCountry both 'in'; Caledonian Sleeper 'out-reservation', excluded from board."
+      "class": "hub lock — tier 1, co-equal with Perth/Inverness/Dundee. Terminus/junction: Dundee-Aberdeen line (south), Aberdeen-Inverness line (north), 6 platforms. ScotRail, CrossCountry both 'in'; Caledonian Sleeper 'out-reservation', excluded from board.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Dundee",
-      "crs": "DDE",
+      "crs": "DEE",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "hub lock — tier 1, co-equal with Perth/Inverness/Aberdeen. Junction of three lines: Dundee-Perth (west), Dundee-Aberdeen (north), Dundee-Edinburgh (south — unresolved Central Belt boundary direction, see notes). ScotRail, CrossCountry both 'in'. No Caledonian Sleeper documented here."
+      "class": "hub lock — tier 1, co-equal with Perth/Inverness/Aberdeen. Junction of three lines: Dundee-Perth (west), Dundee-Aberdeen (north), Dundee-Edinburgh (south — unresolved Central Belt boundary direction, see notes). ScotRail, CrossCountry both 'in'. No Caledonian Sleeper documented here.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Kyle of Lochalsh",
-      "crs": "KLS",
+      "crs": "KYL",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "branch terminus, west coast, Inverness-Kyle line. ScotRail only, 'in'. End-of-line, no through-running."
+      "class": "branch terminus, west coast, Inverness-Kyle line. ScotRail only, 'in'. End-of-line, no through-running.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
       "name": "Thurso",
-      "crs": "THR",
+      "crs": "THS",
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "Far North Line terminus, northernmost passenger railway station in Great Britain. ScotRail only, 'in'. No through-running."
+      "class": "Far North Line terminus, northernmost passenger railway station in Great Britain. ScotRail only, 'in'. No through-running.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -78,7 +90,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "Far North Line terminus. ScotRail only, 'in'. No through-running."
+      "class": "Far North Line terminus. ScotRail only, 'in'. No through-running.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -87,7 +101,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "West Highland Line terminus (Inverness-Mallaig). ScotRail 'in'; Caledonian Sleeper calls nights only, 'out-reservation', excluded from board."
+      "class": "West Highland Line terminus (Inverness-Mallaig). ScotRail 'in'; Caledonian Sleeper calls nights only, 'out-reservation', excluded from board.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     },
     {
       "mode": "train",
@@ -96,7 +112,9 @@
       "aliases": [],
       "lat": null,
       "lng": null,
-      "class": "West Highland Line, through-running to Inverness. ScotRail, CrossCountry both 'in'; Caledonian Sleeper calls nights only, 'out-reservation', excluded from board."
+      "class": "West Highland Line, through-running to Inverness. ScotRail, CrossCountry both 'in'; Caledonian Sleeper calls nights only, 'out-reservation', excluded from board.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 5 Sep 2026"
     }
   ]
 }
