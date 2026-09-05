@@ -61,7 +61,7 @@ export function encodeTripUpdates(updates) {
  * RT TripUpdates URL from in-memory buffers, and returns a restore function.
  * @param {{ staticUrl: string, staticZip: Buffer, rtUrl: string, rtBuffer: Buffer | null, rtFails?: boolean }} options
  */
-export function stubFetch({ staticUrl, staticZip, rtUrl, rtBuffer, rtFails = false }) {
+export function stubFetch({ staticUrl, staticZip, rtUrl, rtBuffer, rtFails = false, onRtFetch }) {
   const original = global.fetch;
   global.fetch = async (url, options = {}) => {
     const href = String(url);
@@ -74,6 +74,7 @@ export function stubFetch({ staticUrl, staticZip, rtUrl, rtBuffer, rtFails = fal
       };
     }
     if (href === rtUrl) {
+      onRtFetch?.();
       if (rtFails) {
         throw new Error("simulated OVapi RT fetch failure");
       }

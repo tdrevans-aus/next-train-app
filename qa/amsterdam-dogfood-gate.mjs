@@ -12,6 +12,10 @@ import { marketingLabelsForStation, HUB } from "../lib/cities/amsterdam/marketin
 import { fetchStationBoard, AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL } from "../lib/providers/amsterdam.js";
 import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
 import { zipFixtureGtfs, encodeTripUpdates, stubFetch } from "./lib/nl-realtime-stub.mjs";
+import {
+  OVAPI_TRIPUPDATES_CACHE_TTL_MS,
+  _resetOvapiTripUpdatesCacheForTests,
+} from "../lib/providers/gtfs/ovapi-tripupdates-cache.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -83,6 +87,7 @@ if (previous === undefined) {
   const scheduledEpochSec = 1788492270; // 2026-09-04T05:24:30+02:00
   const now = new Date("2026-09-04T05:00:00+02:00");
 
+  _resetOvapiTripUpdatesCacheForTests();
   let restore = stubFetch({
     staticUrl,
     staticZip,
@@ -106,7 +111,9 @@ if (previous === undefined) {
     !board.trips.some((trip) => trip.tripId === cancelledTripId),
     "a CANCELED TripUpdate must remove the trip from the board"
   );
+  assert(board.realtime === "live", `delayed board must report realtime="live" (got ${board.realtime})`);
 
+  _resetOvapiTripUpdatesCacheForTests();
   restore = stubFetch({
     staticUrl,
     staticZip,
@@ -126,6 +133,83 @@ if (previous === undefined) {
   assert(
     fallback.liveDeparture === fallback.scheduledDeparture,
     "a failed RT fetch must report the static scheduled time, not a stale live one"
+  );
+  assert(
+    fallbackBoard.realtime === "timetable",
+    `a total RT miss must report realtime="timetable" (got ${fallbackBoard.realtime})`
+  );
+
+  // Shared cache: coalescing, TTL refetch, and stale-on-error (docs/jim-brief-nl-realtime-cache.md).
+  _resetOvapiTripUpdatesCacheForTests();
+  let rtFetchCount = 0;
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: encodeTripUpdates([
+      { tripId: delayedTripId, stopId: "3979722", delaySec: 240, scheduledEpochSec },
+    ]),
+    onRtFetch: () => {
+      rtFetchCount += 1;
+    },
+  });
+  try {
+    // 1. Two concurrent board calls produce one upstream fetch.
+    await Promise.all([
+      fetchStationBoard("Centraal Station", { now }),
+      fetchStationBoard("Centraal Station", { now }),
+    ]);
+    assert(rtFetchCount === 1, `expected 1 upstream fetch for concurrent calls, got ${rtFetchCount}`);
+
+    // Still within TTL: no refetch.
+    await fetchStationBoard("Centraal Station", { now });
+    assert(rtFetchCount === 1, `expected cached hit within TTL, got ${rtFetchCount} fetches`);
+
+    // 2. A call after the TTL produces a second upstream fetch.
+    await new Promise((resolve) => setTimeout(resolve, OVAPI_TRIPUPDATES_CACHE_TTL_MS + 500));
+    await fetchStationBoard("Centraal Station", { now });
+    assert(rtFetchCount === 2, `expected a second upstream fetch after TTL, got ${rtFetchCount}`);
+  } finally {
+    restore();
+  }
+
+  // 3. A rejected refresh with a <60s entry serves the stale copy (still "live").
+  _resetOvapiTripUpdatesCacheForTests();
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: encodeTripUpdates([
+      { tripId: delayedTripId, stopId: "3979722", delaySec: 240, scheduledEpochSec },
+    ]),
+  });
+  try {
+    const primed = await fetchStationBoard("Centraal Station", { now });
+    assert(primed.realtime === "live", "priming fetch must be live");
+  } finally {
+    restore();
+  }
+  await new Promise((resolve) => setTimeout(resolve, OVAPI_TRIPUPDATES_CACHE_TTL_MS + 500));
+  restore = stubFetch({
+    staticUrl,
+    staticZip,
+    rtUrl: AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+    rtBuffer: null,
+    rtFails: true,
+  });
+  let staleBoard;
+  try {
+    staleBoard = await fetchStationBoard("Centraal Station", { now });
+  } finally {
+    restore();
+  }
+  assert(
+    staleBoard.trips.some((trip) => trip.tripId === delayedTripId && trip.status === "4 min late"),
+    "a rejected refresh with a <60s entry must still apply the stale delay"
+  );
+  assert(
+    staleBoard.realtime === "live",
+    `a stale-but-usable serve must still report realtime="live" (got ${staleBoard.realtime})`
   );
 }
 
