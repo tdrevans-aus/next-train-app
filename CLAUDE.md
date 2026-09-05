@@ -77,30 +77,44 @@ Sweden wave 1 (PR #157, "sweden-wave1-rebuild"): overlapping Malmö/Uppsala bran
 branch conflict, a duplicate QA gate registration landed as a merge artifact, and unrelated cities
 (Osaka, Hong Kong) needed follow-up fixes for stale cross-references — enough rework that Malmö and
 Uppsala's adapters were rebuilt from scratch. `qa/lane-lock.mjs` exists so this is checked, not
-remembered: Luke and Jim each run `check <country>` before starting and `acquire <country> <region>
-<stage>` before touching shared files (see their guardrails), refusing to proceed if a different
-region in the same country already holds the lock. The lock releases only after that region's PR
-actually merges to master — Mark's flip-PR description includes the release command, and it's run
-post-merge, not by Mark himself. `node qa/lane-lock.mjs status` shows what's currently locked. See
-the tracker's own "finish started countries before new ones" rule, which this makes mechanical.
+remembered. **Since 5 Sep 2026 the lock is Jim's only**: Luke's whole write set is `docs/<city>-d1/`,
+which no other lane touches, so Luke packing region N+1 while Jim wires region N is the intended
+pipelining, not a collision. Jim runs `check <country>` before starting and `acquire <country>
+<region> jim <branch>` before touching shared files, refusing to proceed if a different region in
+the same country already holds the lock. The lock file (`docs/expansion-tracker/lane-locks.json`)
+is local and gitignored — the committed copy only ever reached master after the guarded PR had
+merged, so it protected nothing and cost a release PR per region. The lock releases itself: `check`,
+`status`, and `acquire` look up the lock's branch with `gh` and drop it once that branch's PR has
+merged, so no one runs `release` by hand after a merge. `node qa/lane-lock.mjs status` shows what's
+currently locked. See the tracker's own "finish started countries before new ones" rule, which this
+makes mechanical.
 
-**The top-level session checks first — don't rely on Luke/Jim's own check.** Before any `Agent` call
-with `subagent_type: luke` or `subagent_type: jim`, run `node qa/lane-lock.mjs check <country>`
-yourself and report the result before dispatching. The in-agent check in their `.md` files is a
-backstop for when this is missed, not the primary gate — by the time a subagent's own check would
-fire, you've already spent the round-trip of starting it. Two back-to-back `Agent` calls for
-different regions of the same country, fired before either subagent has run, would both pass their
-own checks and still collide — the top-level check is what actually prevents that. If the check
-reports the country locked, stop and tell the user rather than proceeding or queuing the call for
-later.
+**The top-level session checks first — don't rely on Jim's own check.** Before any `Agent` call
+with `subagent_type: jim`, run `node qa/lane-lock.mjs check <country>` yourself and report the
+result before dispatching. The in-agent check in Jim's `.md` file is a backstop for when this is
+missed, not the primary gate — by the time a subagent's own check would fire, you've already spent
+the round-trip of starting it. Two back-to-back Jim calls for different regions of the same
+country, fired before either subagent has run, would both pass their own checks and still collide —
+the top-level check is what actually prevents that. If the check reports the country locked, stop
+and tell the user rather than proceeding or queuing the call for later. Luke needs no check.
 
-**Live-flip decision stays human; preparing it doesn't.** No agent merges or directly edits
-`status: "live"` into `main`'s `lib/providers/registry.js` — same as the tracker already insists
-("Do not flip live" appears on multiple rows). But once Mark's QA checklist is fully green for a
-city, he opens a small PR that changes only that city's `status` line, with the checklist results
-in the PR description. Tim's job is then to review and merge one line, not to hunt through
-`registry.js` for which cities are ready and hand-edit it himself. This is still Tim's call —
-Mark proposes, he decides — it just removes the manual busywork around the decision.
+**Live flips are lazy consensus (since 5 Sep 2026).** No agent merges or directly edits
+`status: "live"` into `main`'s `lib/providers/registry.js`. Once Mark's QA checklist is fully green
+for a city, he opens a small PR that changes only that city's `status` line (plus the three
+live-list additions), labelled `flip`, with the checklist results in the description.
+`.github/workflows/flip-automerge.yml` runs hourly and merges any `flip` PR that has been open 12
+hours, is green and mergeable, and carries no `hold` label, no human comment, and no review. Tim
+keeps the veto — add `hold`, comment, or close the PR — and a bad flip is a one-line revert. The
+top-level session still never merges a flip PR itself; it either waits for the window or asks Tim.
+Before this, flip PRs sat about a day each waiting for a review that in practice was a
+rubber-stamp, which was the single largest latency in the pipeline.
+
+**CI shape (since 5 Sep 2026).** Only `web-qa` is a required check on master, and the ruleset no
+longer requires a PR branch to be up to date with master (the strict policy made every merge
+invalidate every other open PR, each needing another 7-minute run). The push-to-master release run
+is the backstop for two PRs that pass separately but conflict semantically; if it goes red, fix
+forward. Docs-only PRs (`docs/**`, `*.md`, `.claude/**`) short-circuit every CI job to a no-op
+success, mirroring the "no suite at all" tier above.
 
 Full agent roster, model rationale, and wave-by-wave roadmap: see the Expansion Playbook artifact —
 <https://claude.ai/code/artifact/f1e97865-bafc-4197-9424-a8dfa4c09c8f> (owned by Tim; read it with

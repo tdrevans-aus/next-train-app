@@ -1,10 +1,18 @@
 # FB-33 / QA-P2-03: smoke on every PR; full web + Android unit on main pushes.
+#
+# Docs-only diffs (docs/**, *.md, .claude/**) short-circuit every job to a no-op success — the
+# job names still report, so the master ruleset's required `web-qa` check is satisfied without
+# spending three runners on prose. See CLAUDE.md "QA suite tiers".
+#
+# workflow_dispatch exists so flip-automerge.yml can trigger the release run on master after it
+# merges a flip PR: merges made with GITHUB_TOKEN don't fire `push` workflows on their own.
 name: CI
 
 on:
   push:
     branches: [main, master]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   web-qa:
@@ -14,17 +22,25 @@ jobs:
       QA_VERBOSE: "1"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - id: diff
+        name: Docs-only diff?
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: bash .github/scripts/docs-only.sh
+      - if: steps.diff.outputs.docs_only != 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
-      - run: npx playwright install chromium --with-deps
+      - if: steps.diff.outputs.docs_only != 'true'
+        run: npm ci
+      - if: steps.diff.outputs.docs_only != 'true'
+        run: npx playwright install chromium --with-deps
       - name: Web smoke (pull requests)
-        if: github.event_name == 'pull_request'
+        if: steps.diff.outputs.docs_only != 'true' && github.event_name == 'pull_request'
         run: npm run test:smoke
       - name: Release web suite (main)
-        if: github.event_name == 'push'
+        if: steps.diff.outputs.docs_only != 'true' && github.event_name != 'pull_request'
         run: npm run test:web:release
 
   # Pin scenarios are deterministic since the derived-active-hours fixture fixes
@@ -37,32 +53,50 @@ jobs:
       QA_VERBOSE: "1"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - id: diff
+        name: Docs-only diff?
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: bash .github/scripts/docs-only.sh
+      - if: steps.diff.outputs.docs_only != 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
-      - run: npx playwright install chromium --with-deps
+      - if: steps.diff.outputs.docs_only != 'true'
+        run: npm ci
+      - if: steps.diff.outputs.docs_only != 'true'
+        run: npx playwright install chromium --with-deps
       - name: Journey pin gates (fresh dev-server)
+        if: steps.diff.outputs.docs_only != 'true'
         run: npm run test:pin
 
   android-unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - id: diff
+        name: Docs-only diff?
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: bash .github/scripts/docs-only.sh
+      - if: steps.diff.outputs.docs_only != 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
-      - run: npx cap sync android
-      - uses: actions/setup-java@v4
+      - if: steps.diff.outputs.docs_only != 'true'
+        run: npm ci
+      - if: steps.diff.outputs.docs_only != 'true'
+        run: npx cap sync android
+      - if: steps.diff.outputs.docs_only != 'true'
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
       - name: Widget unit tests (pull requests)
-        if: github.event_name == 'pull_request'
+        if: steps.diff.outputs.docs_only != 'true' && github.event_name == 'pull_request'
         run: node qa/run-android-unit.mjs --widget
       - name: Full Android unit tests (main)
-        if: github.event_name == 'push'
+        if: steps.diff.outputs.docs_only != 'true' && github.event_name != 'pull_request'
         run: node qa/run-android-unit.mjs

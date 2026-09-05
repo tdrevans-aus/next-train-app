@@ -49,3 +49,10 @@ qa/fixtures/wellington/gtfs/*.txt
 
 # Signed data-sharing agreements stay out of the repo (see docs/united-kingdom-ledger.md §1)
 docs/*.pdf
+
+# Lane-lock state is local to this checkout (see qa/lane-lock.mjs). It used to be committed, but
+# the acquire only ever reached master after the PR it guarded had merged, so the committed copy
+# protected nothing and every release needed its own PR. Cross-checkout coordination is the open
+# PR itself: `check` auto-releases once the lock's branch has merged.
+docs/expansion-tracker/lane-locks.json
+docs/expansion-tracker/lane-locks.json.mutex
