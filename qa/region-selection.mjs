@@ -8,6 +8,7 @@ const BASE = process.env.QA_BASE || "http://localhost:3000";
 const LONDON = { latitude: 51.5074, longitude: -0.1278 };
 const SYDNEY = { latitude: -33.8688, longitude: 151.2093 };
 const PERTH = { latitude: -31.9505, longitude: 115.8605 };
+const CARDIFF = { latitude: 51.4760, longitude: -3.1790 };
 
 async function run() {
   console.log("region-selection: starting Playwright suite...");
@@ -149,8 +150,8 @@ async function run() {
       return { country, city, label };
     });
 
-    if (selection.country === "gb" && selection.city === "uk-london-tfl" && selection.label === "London") {
-      console.log("    PASS — Selector UI correctly shows United Kingdom/London");
+    if (selection.country === "gb-eng" && selection.city === "uk-london-tfl" && selection.label === "London") {
+      console.log("    PASS — Selector UI correctly shows England/London");
     } else {
       console.error("    FAIL — Selector UI incorrect", selection);
       process.exitCode = 1;
@@ -302,6 +303,80 @@ async function run() {
       console.log("    PASS — Melbourne Coming Soon, Japan/Hong Kong absent; applyCity does not persist (falls back to Perth)");
     } else {
       console.error("    FAIL — Melbourne picker / applyCity", { picker, applied });
+      process.exitCode = 1;
+    }
+    await context.close();
+  }
+
+  // 7. Picker-country migration: a stored savedCountry:"gb" (pre-split) must resolve to
+  // Scotland/Glasgow with no mismatch prompt and no data loss (docs/jim-brief-picker-countries-england-scotland-wales.md).
+  {
+    console.log("  Test 7: Old savedCountry:\"gb\" migrates to Scotland/Glasgow...");
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(2000);
+
+    // Seed the pre-split stored shape directly, then reload so runInit reads it fresh.
+    await page.evaluate(() => {
+      localStorage.setItem(
+        "nextTrainSettings",
+        JSON.stringify({ savedCountry: "gb", savedCity: "glasgow", regionExplicit: true })
+      );
+    });
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(4000);
+
+    const state = await page.evaluate(() => {
+      window.NextTrainCitySession.openRegionScreen();
+      const countrySelect = document.querySelector("[data-region-country]");
+      const citySelect = document.querySelector("[data-region-city]");
+      const label = citySelect?.selectedOptions?.[0]?.textContent?.trim() ?? "";
+      const dialog = document.getElementById("region-mismatch-dialog");
+      return {
+        savedCountry: window.NextTrainCitySession.readSavedCountry(),
+        savedCity: window.NextTrainCitySession.readSavedCity(),
+        countryValue: countrySelect?.value,
+        cityValue: citySelect?.value,
+        label,
+        dialogOpen: Boolean(dialog && dialog.hasAttribute("open")),
+      };
+    });
+
+    if (
+      state.savedCountry === "gb-sct" &&
+      state.savedCity === "glasgow" &&
+      state.countryValue === "gb-sct" &&
+      state.cityValue === "glasgow" &&
+      state.label === "Glasgow" &&
+      !state.dialogOpen
+    ) {
+      console.log("    PASS — savedCountry:\"gb\" migrated to Scotland/Glasgow, no mismatch prompt");
+    } else {
+      console.error("    FAIL — gb -> gb-sct migration", state);
+      process.exitCode = 1;
+    }
+    await context.close();
+  }
+
+  // 8. First load with GPS in Cardiff follows to Wales / South Wales (PR #318 behaviour,
+  // still true under the split countries).
+  {
+    console.log("  Test 8: First load in Cardiff follows to Wales/South Wales...");
+    const context = await browser.newContext({ geolocation: CARDIFF, permissions: ["geolocation"] });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(6000);
+
+    const state = await page.evaluate(() => ({
+      savedCity: window.NextTrainCitySession.readSavedCity(),
+      savedCountry: window.NextTrainCitySession.readSavedCountry(),
+    }));
+
+    if (state.savedCity === "south-wales" && state.savedCountry === "gb-wls") {
+      console.log("    PASS — Cardiff GPS followed to Wales/South Wales");
+    } else {
+      console.error("    FAIL — Cardiff GPS follow", state);
       process.exitCode = 1;
     }
     await context.close();
