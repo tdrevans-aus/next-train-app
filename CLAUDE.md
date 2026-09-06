@@ -149,3 +149,34 @@ Tim re-uploading it. It's the row-level detail (per-city feed URLs, auth type, w
 skip-risk notes) behind the playbook's summary — check `cities.csv`'s `Wave`/`Status` columns for
 the current, authoritative wave assignment before trusting the playbook's prose, which can lag it.
 Re-sync these CSVs whenever Tim shares a newer export.
+
+## Bug-fix lane (adopted 6 Sep 2026) — the top-level session is the PM, not the fixer
+
+Tim's rule: the top-level (Fable) session never fixes bugs inline — "too expensive". It triages,
+briefs, dispatches, and merges. The lane reuses the pipeline agents on their pinned models
+(Jim `sonnet`, Mark `sonnet`; never pass `model` on the call).
+
+1. **Triage (top-level, read-only, short).** Reproduce or gather evidence (QA script, emulator
+   log, screenshot), find the suspect files, then stop. Do not start editing "because it's
+   nearly there" — that's how a 5-minute triage became a two-hour Fable debug session on 6 Sep.
+2. **Brief (top-level).** Write `docs/jim-brief-<slug>.md`: symptom, reproduction, evidence,
+   suspected files/lines, acceptance criteria, which QA scripts must pass and which new/updated
+   script proves the fix. The brief is the whole handoff — never paste chat into Jim's prompt.
+3. **Fix (Jim, `subagent_type: jim`, `isolation: "worktree"`).** Investigate, fix, add or update
+   the QA script named in the brief, run that script plus `node qa/run-all.mjs --smoke`, commit,
+   push, and open a PR that links the brief. Jim's prompt must say all of that explicitly (his
+   older non-expansion prompt says "don't commit unless Tim asks"; the brief overrides it).
+   One Jim per bug; the worktree keeps him off the controller's checkout. Jim needs no lane lock
+   unless the fix touches `lib/providers/` for a city (then `node qa/lane-lock.mjs check`
+   first, as for expansion work).
+4. **QA (Mark, `subagent_type: mark`).** Reads the PR diff and the brief, runs the named scripts
+   and `--smoke`, checks the acceptance criteria one by one, and leaves a pass/fail note as a PR
+   comment. Mark flags, never fixes; a fail goes back to a fresh Jim call with the note's path in
+   the brief.
+5. **Merge (top-level).** Mark green + `web-qa` green → the top-level session merges (same
+   standing authority as planned-expansion PRs). A brief marked `tim-review: yes` waits for Tim.
+   Product bugs that change copy, IA, or the API response shape are `tim-review` by default.
+
+No new agent types for this: the pipeline roster already covers investigate/fix (Jim) and
+verify (Mark), and a Haiku "triage" agent would just re-derive what the top-level session
+learns while reproducing. Revisit if bug volume makes step 1 the bottleneck.

@@ -5205,7 +5205,12 @@ async function findNearestStation({
   });
 
   const { latitude, longitude } = position.coords;
-  const nearbyCity = nearbyCityFromCoords(latitude, longitude);
+  // Raw hint: null when the fix is inside no region we cover. nearbyCityFromCoords
+  // folds that to "perth", which is right for region-scoped callers but wrong for
+  // Near me — it made an outback (or Manchester, pre-fix) rider measure the distance
+  // to Warwick and get the Perth out-of-area card.
+  const hintCity = window.NextTrainCitySession?.hintCityFromCoords?.(latitude, longitude) || null;
+  const nearbyCity = hintCity || "perth";
   nearbyCityHint = nearbyCity;
 
   const gpsCity = normalizeCityId(nearbyCity) || "perth";
@@ -5225,13 +5230,30 @@ async function findNearestStation({
     }));
   } catch {}
 
+  if (followGps && !hintCity) {
+    // Outside every region's bounds. Don't borrow Perth's catalog to prove it —
+    // report the coverage miss and let Near me render a region-neutral card.
+    console.log("[App] findNearestStation: GPS fix is outside all covered regions");
+    return {
+      station: null,
+      city: null,
+      distanceKm: Infinity,
+      outsideCoverage: true,
+      lat: latitude,
+      lng: longitude,
+    };
+  }
+
   const coords = await loadStationCoordsForCity(targetCity);
   await loadNearbyStationNames(targetCity);
 
-  // If we don't have coords yet, return raw position for server resolution.
+  // No coordinates for this region's catalog (several UK packs ship lat/lng: null).
+  // Neither the app nor the server can pick a nearest station, so hand back the raw
+  // position and flag it — Near me shows the region's station picker instead of
+  // asking the server to resolve something it can't.
   if (Object.keys(coords).length === 0) {
     console.log("[App] findNearestStation: no coords loaded, returning raw position");
-    return { lat: latitude, lng: longitude, city: targetCity, distanceKm: 0 };
+    return { lat: latitude, lng: longitude, city: targetCity, distanceKm: 0, noCoords: true };
   }
 
   let nearest = null;

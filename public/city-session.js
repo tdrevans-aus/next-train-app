@@ -35,23 +35,27 @@
       id: "gb",
       name: "United Kingdom",
       regions: [
+        // Listed in the order the picker shows them (alphabetical by display name).
+        // Names lead with the place a rider would look for — "Manchester", not
+        // "Greater Manchester" under G; "Scotland (…)" not "Rest of Scotland" under R
+        // (Tim, 6 Sep 2026). Ids are unchanged; only the label and position moved.
         { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "greater-anglia", name: "East Anglia", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "greater-anglia", name: "Greater Anglia", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "greater-manchester", name: "Greater Manchester", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
         { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "greater-manchester", name: "Manchester", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "rest-of-scotland", name: "Rest of Scotland", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "rest-of-wales", name: "Rest of Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "rest-of-scotland", name: "Scotland (Aberdeen / Inverness / Dundee)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "southwest", name: "South West (Devon / Cornwall)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "rest-of-wales", name: "Wales (North / Mid / West)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
@@ -482,8 +486,8 @@
     if (savedCity || explicit) {
       label = regionDisplayName(savedCity || LIVE_CITY);
     } else {
-      // Jim brief: don't show the hint in the label automatically on first load.
-      // Let the user see "Choose..." until they pick or a mismatch prompt fires.
+      // No pick and no GPS-followed region yet (runInit applies an open GPS hint
+      // as a non-explicit saved city, which lands in the branch above).
       label = "Choose...";
     }
     document.querySelectorAll("[data-region-summary]").forEach((el) => {
@@ -655,7 +659,8 @@
 
     if (!explicit) {
       // Background city detection — don't block initial paint.
-      // Jim brief: compare lat/lng to CITY_BOUNDS on device. Do not download other city catalog until confirmed.
+      // Compare lat/lng to CITY_BOUNDS on device; only the confirmed region's
+      // catalog is downloaded.
       void (async () => {
         const hint = await geolocateHint();
         if (hint) {
@@ -663,8 +668,18 @@
           syncRegionSummaries();
         }
         if (hint && hint !== initialCity && isRegionOpen(regionById(hint)?.region)) {
-          // Note: we don't applyCity(hint) here because that would download the catalog.
-          // App will call scheduleRegionMismatchPrompt after first paint.
+          // First load (or any load while the rider has never picked a region):
+          // follow the GPS. Until 6 Sep 2026 this branch was deliberately empty and
+          // the app stayed on Perth, so a rider opening the app in Manchester got
+          // Perth stations in My Routes/Journeys and a Perth-only card in Near me.
+          // The pick stays non-explicit, so a later trip elsewhere re-follows the
+          // GPS, and an explicit pick in the region screen still wins for good.
+          console.log(`[NextTrainCitySession] First load: following GPS region ${hint}`);
+          try {
+            await applyCity(hint, { persist: true, explicit: false });
+          } catch (error) {
+            console.warn(`[NextTrainCitySession] Could not follow GPS region ${hint}`, error);
+          }
         }
       })();
     }

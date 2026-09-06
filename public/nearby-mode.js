@@ -514,36 +514,46 @@ function isUnsupportedRegion(distanceKm) {
   return typeof distanceKm === "number" && distanceKm > UNSUPPORTED_REGION_KM;
 }
 
-function renderUnsupportedRegionBoard() {
-  const city = readActiveCity();
-  const copyByCity = {
-    perth: {
-      title: "Perth rail only",
-      text: "Next Train's Near me board works near Transperth stations. You're outside that area right now.",
-      hint: "You can still save routes and journeys when you're back in Perth.",
-    },
-    brisbane: {
-      title: "Brisbane rail only",
-      text: "Near me works near South East Queensland rail stations. You're outside that area right now.",
-      hint: "You can still save routes and journeys when you're back on the network.",
-    },
-    sydney: {
-      title: "Sydney rail only",
-      text: "Near me works near Sydney Trains and Metro stations. You're outside that area right now.",
-      hint: "You can still save routes and journeys when you're back on the network.",
-    },
-    adelaide: {
-      title: "Adelaide rail only",
-      text: "Near me works near Adelaide Metro rail stations. You're outside that area right now.",
-      hint: "You can still save routes and journeys when you're back on the network.",
-    },
-    "uk-london-tfl": {
-      title: "London rail only",
-      text: "Near me works near TfL rail stations. You're outside that area right now.",
-      hint: "You can still save routes and journeys when you're back on the network.",
-    },
+function regionNameForCity(city) {
+  const id = String(city || "").trim().toLowerCase();
+  if (!id) {
+    return null;
+  }
+  return window.NextTrainCitySession?.regionById?.(id)?.region?.name || null;
+}
+
+/**
+ * Out-of-area copy is built from the GPS region, never from a hard-coded city
+ * table with a Perth fallthrough — that table is what told a rider standing in
+ * Manchester that Near me was "Perth rail only" (6 Sep 2026). Three cases:
+ * inside a covered region but far from its nearest catalogued station (name the
+ * region and the station), inside a region with no station measured, or outside
+ * every region (say so, and point at the region picker).
+ */
+function unsupportedRegionCopy() {
+  const regionName = regionNameForCity(nearbySession?.city);
+  const nearestStation = nearbySession?.nearestStation || null;
+  const distanceKm = nearbySession?.distanceKm;
+  if (regionName) {
+    const roundedKm = Number.isFinite(distanceKm) ? Math.round(distanceKm) : null;
+    return {
+      title: `No ${regionName} station nearby`,
+      text:
+        nearestStation && roundedKm != null
+          ? `Near me works near ${regionName} stations. The closest one we cover is ${nearestStation}, about ${roundedKm} km away.`
+          : `Near me works near ${regionName} stations. You're outside that area right now.`,
+      hint: "You can still save routes and journeys for when you're near the network.",
+    };
+  }
+  return {
+    title: "Outside covered areas",
+    text: "Near me works near stations in the regions Next Train covers. You're not in one of them right now.",
+    hint: "Choose a region from the menu to browse its stations and save journeys.",
   };
-  const copy = copyByCity[city] || copyByCity.perth;
+}
+
+function renderUnsupportedRegionBoard() {
+  const copy = unsupportedRegionCopy();
 
   setLastRenderedNext(null);
   if (deps.errorEl) {
@@ -1725,7 +1735,7 @@ function showNearbyDontWaitOffer() {
   syncNearbyDontWaitButton();
 }
 
-function showNearbyEarlyPicker() {
+function showNearbyEarlyPicker({ text = "Choose a station — we’ll show the next train." } = {}) {
   if (!nearbyDirectionsEl || nearbyLocatePickerVisible) {
     return;
   }
@@ -1743,7 +1753,7 @@ function showNearbyEarlyPicker() {
   }
   nearbyFallbackEl.hidden = false;
   if (nearbyFallbackTextEl) {
-    nearbyFallbackTextEl.textContent = "Choose a station — we’ll show the next train.";
+    nearbyFallbackTextEl.textContent = text;
   }
   ensureNearbyStationOptions();
 }
@@ -1851,11 +1861,16 @@ async function locateNearbyInBackground({ forceFresh = false, maximumAge } = {})
       return;
     }
 
-    if (isUnsupportedRegion(nearest.distanceKm)) {
+    if (nearest.outsideCoverage || isUnsupportedRegion(nearest.distanceKm)) {
       clearLastNearbyStationCache();
       nearbySession.unsupportedRegion = true;
       nearbySession.station = null;
-      nearbySession.distanceKm = nearest.distanceKm;
+      // Keep the GPS region (null when outside every region) and the station we
+      // measured against so the out-of-area card can say which network it means,
+      // instead of always talking about Perth.
+      nearbySession.city = nearest.city || null;
+      nearbySession.nearestStation = nearest.station || null;
+      nearbySession.distanceKm = Number.isFinite(nearest.distanceKm) ? nearest.distanceKm : null;
       nearbySession.fromCache = false;
       setNearbyGpsRefining(false);
       nearbyBoard = null;
@@ -1864,6 +1879,44 @@ async function locateNearbyInBackground({ forceFresh = false, maximumAge } = {})
       nearbyLocatePickerVisible = false;
       nearbyDontWaitVisible = false;
       syncNearbyDontWaitButton();
+      renderNearbyBoard();
+      return;
+    }
+
+    if (nearest.noCoords && !nearest.station) {
+      // GPS puts the rider in a region we cover, but that region's catalog has no
+      // coordinates yet, so nobody can pick the nearest station. Offer the region's
+      // own station list rather than a dead end (or a card about another city).
+      const cityChanged = nearbySession.city && nearbySession.city !== nearest.city;
+      clearLastNearbyStationCache();
+      nearbySession.unsupportedRegion = false;
+      nearbySession.station = null;
+      nearbySession.nearestStation = null;
+      nearbySession.city = nearest.city;
+      nearbySession.lat = nearest.lat ?? null;
+      nearbySession.lng = nearest.lng ?? null;
+      nearbySession.distanceKm = null;
+      nearbySession.fromCache = false;
+      setNearbyGpsRefining(false);
+      nearbyBoard = null;
+      nearbyLoading = false;
+      stopNearbyLocateTimers();
+      nearbyDontWaitVisible = false;
+      syncNearbyDontWaitButton();
+      const regionName = regionNameForCity(nearest.city);
+      // renderNearbyBoard paints this message in the hero and repeats it above
+      // the picker, so it carries the instruction as well as the region.
+      setNearbyError(
+        regionName
+          ? `You're in ${regionName} — choose a station below`
+          : "Choose a station below",
+        "location"
+      );
+      if (cityChanged) {
+        nearbyLocatePickerVisible = false;
+        await ensureNearbyStationOptions({ force: true });
+      }
+      showNearbyEarlyPicker();
       renderNearbyBoard();
       return;
     }
@@ -2141,6 +2194,11 @@ function renderNearbyBoard({ stale = false } = {}) {
   syncNearbyDontWaitButton();
 
   if (nearbyLocatePickerVisible && !nearbySession?.station && !nearbyUserPickedStation) {
+    // A location-kind error carries context worth showing over the generic prompt —
+    // e.g. "You're in Manchester — choose a station below" when the region has no
+    // station coordinates yet.
+    const pickerMessage =
+      nearbyErrorKind === "location" && nearbyError ? nearbyError : "Choose a station below";
     setLastRenderedNext(null);
     setRouteDisplay("Near me");
     setHeroUrgency("calm");
@@ -2151,7 +2209,7 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.departCountdownEl.textContent = "—";
     }
     if (deps.departDisplayTimeEl) {
-      deps.departDisplayTimeEl.textContent = "Choose a station below";
+      deps.departDisplayTimeEl.textContent = pickerMessage;
     }
     if (deps.heroScheduledTimeEl) {
       deps.heroScheduledTimeEl.hidden = true;
@@ -2166,7 +2224,7 @@ function renderNearbyBoard({ stale = false } = {}) {
       nearbyFallbackEl.hidden = false;
     }
     if (nearbyFallbackTextEl) {
-      nearbyFallbackTextEl.textContent = "Choose a station below";
+      nearbyFallbackTextEl.textContent = pickerMessage;
     }
     void ensureNearbyStationOptions();
     if (deps.platformEl) {

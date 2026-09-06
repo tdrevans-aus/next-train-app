@@ -81,7 +81,7 @@ assert(live?.ok === true, "assertCityLive(greater-anglia) must pass — status i
 const entry = getCity("greater-anglia");
 assert(entry?.status === "live", "greater-anglia registry status must be live");
 assert(entry?.adapterReady === undefined, "greater-anglia adapterReady flag is removed once live");
-assert(entry?.displayName === "Greater Anglia", "greater-anglia display name must be Greater Anglia");
+assert(entry?.displayName === "East Anglia", "greater-anglia display name must be East Anglia");
 assert(entry?.timeZone === "Europe/London", "greater-anglia timezone must be Europe/London");
 assert(
   CITIES.filter((city) => city.id === "greater-anglia").length === 1,

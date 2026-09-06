@@ -93,7 +93,7 @@ assert(live?.ok === true, "assertCityLive(rest-of-scotland) must pass — status
 const entry = getCity("rest-of-scotland");
 assert(entry?.status === "live", "rest-of-scotland registry status must be live");
 assert(entry?.adapterReady === undefined, "rest-of-scotland adapterReady flag is removed once live");
-assert(entry?.displayName === "Rest of Scotland", "rest-of-scotland display name must be Rest of Scotland");
+assert(entry?.displayName === "Scotland (Aberdeen / Inverness / Dundee)", "rest-of-scotland display name must be Scotland (Aberdeen / Inverness / Dundee)");
 assert(entry?.timeZone === "Europe/London", "rest-of-scotland timezone must be Europe/London");
 assert(
   CITIES.filter((city) => city.id === "rest-of-scotland").length === 1,
@@ -172,7 +172,7 @@ for (const [name, crs] of Object.entries(hubCrsByName)) {
 // (Perth, Australia) — different registry entries, different provider modules.
 const perthScotland = resolveCatalogEntry("Perth");
 assert(perthScotland?.regionId === "rest-of-scotland", "Perth (Scotland) must resolve within rest-of-scotland only");
-assert(getCity("perth")?.displayName !== "Rest of Scotland", "city id perth must remain Perth, Australia's own registry entry");
+assert(getCity("perth")?.displayName !== "Scotland (Aberdeen / Inverness / Dundee)", "city id perth must remain Perth, Australia's own registry entry");
 
 // Caledonian Sleeper out-reservation exclusion — per-station, enforced in code.
 assert(excludesCaledonianSleeper("Aberdeen") === true, "Aberdeen must exclude Caledonian Sleeper");

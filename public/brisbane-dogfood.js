@@ -143,8 +143,12 @@
         continue;
       }
       stations.push(name);
-      const lat = Number(row?.lat);
-      const lng = Number(row?.lng);
+      // UK packs ship `lat: null` for stations that haven't been geocoded yet.
+      // Number(null) is 0, so without the null check every such station landed
+      // at (0, 0) in the Gulf of Guinea and Near me measured thousands of km to
+      // the "nearest" one — the Manchester "Perth rail only" bug (6 Sep 2026).
+      const lat = row?.lat == null ? NaN : Number(row.lat);
+      const lng = row?.lng == null ? NaN : Number(row.lng);
       if (Number.isFinite(lat) && Number.isFinite(lng)) {
         coords[name] = { lat, lng };
       }
