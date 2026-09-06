@@ -1,35 +1,35 @@
 /**
  * South Wales adapter/dispatch wiring gate. Replaces
- * south-wales-planned-gate.mjs (retired) — South Wales STAYS
- * `status: "planned"` here (this is the pre-flip dogfood wiring pass,
- * docs/jim-brief-south-wales-flip.md). Per CLAUDE.md's flip-follow-through
- * split (added 30 Aug 2026, corrected same day): the dogfood module, the
- * live-city-api.js dispatch switch-cases, and this gate are safe to land
- * ahead of the flip because production routes gate on assertCityLive()
- * first, not on MULTI_CITY_IDS membership. South Wales is deliberately NOT
- * added to MULTI_CITY_IDS, brisbane-dogfood.js's mount/available map, or
- * journey-model.js's persisted-city/country lists yet — those three
- * list-membership edits are Mark's flip commit, not this one
- * (qa/live-city-lists-sync.mjs enforces that they equal the registry's
- * live set). See docs/south-wales-d1/jim-handoff.md for the exact note
- * left for Mark.
+ * south-wales-planned-gate.mjs (retired) — South Wales is `status: "live"`
+ * (flip PR #262), and this gate now covers the 7 Sep 2026 re-scope from a
+ * 2-station to a 16-station catalog (docs/south-wales-d1/jim-handoff.md).
+ * Per CLAUDE.md's flip-follow-through split (added 30 Aug 2026, corrected
+ * same day): the dogfood module, the live-city-api.js dispatch
+ * switch-cases, and this gate are safe to land ahead of/alongside a flip
+ * because production routes gate on assertCityLive() first, not on
+ * MULTI_CITY_IDS membership — and this region is already flipped, so no
+ * such caveat even applies here any more.
  *
  * DARWIN_LDB_TOKEN is live (since 2 Sep 2026, PR #230). This gate stays
- * token-tolerant throughout: with a token it exercises real Darwin calls (2
- * cheap numRows=1 CRS-sweep calls plus a couple of real boards); without
- * one every live-probing section degrades to MissingDarwinTokenError
- * assertions instead of a throw/skip.
+ * token-tolerant throughout: with a token it exercises real Darwin calls
+ * (16 cheap numRows=1 CRS-sweep calls plus a couple of real boards);
+ * without one every live-probing section degrades to
+ * MissingDarwinTokenError assertions instead of a throw/skip.
  *
- * Also asserts Transport for Wales Valley Lines is NOT wired in any form —
- * no feed exists for it (a genuine gap, not the account-level Darwin
- * block that other regions had), per docs/south-wales-d1/jim-handoff.md.
+ * Transport for Wales Valley Lines is now IN-CATALOG via Darwin (confirmed
+ * live-probed 5 Sep 2026, all 16 catalog CRS codes) — this gate asserts
+ * Valley Lines termini (Pontypridd, Merthyr Tydfil, Aberdare, Treherbert,
+ * Rhymney, Caerphilly) DO resolve, and that the region's western boundary
+ * (Llanelli/Carmarthen, Rest of Wales's stations per
+ * docs/united-kingdom-ledger.md SS2) do NOT resolve here.
  *
- * Direction model has no printed line/route map (destination + operator,
- * derived live from the board — see lib/cities/south-wales/
- * dogfood-next-train.js file header and docs/south-wales-d1/
- * direction-model-memo.md), so like every other National Rail-only region
- * this gate asserts the live-derivation shape and the dispatch wiring
- * rather than a static marketing-directions.js chip list.
+ * Direction model has no printed line/route map for mainline (destination
+ * + operator, derived live from the board — see
+ * lib/cities/south-wales/dogfood-next-train.js file header and
+ * docs/south-wales-d1/direction-model-memo.md); Valley Lines is line +
+ * terminus, termini-only. Like every other National Rail-only region this
+ * gate asserts the live-derivation shape and the dispatch wiring rather
+ * than a static marketing-directions.js chip list.
  *
  * Usage: node qa/south-wales-dogfood-gate.mjs
  */
@@ -71,9 +71,9 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — NOW live, and in MULTI_CITY_IDS (flip PR #262).
+// Registry identity.
 const live = assertCityLive("south-wales");
-assert(live?.ok === true, "assertCityLive(south-wales) must pass — status is now live");
+assert(live?.ok === true, "assertCityLive(south-wales) must pass — status is live");
 
 const entry = getCity("south-wales");
 assert(entry?.status === "live", "south-wales registry status must be live");
@@ -104,48 +104,82 @@ for (const name of [
 
 const network = JSON.parse(readFileSync(join(d1Dir, "published-network.json"), "utf8"));
 assert(network.city === "south-wales", "D1 city id is south-wales");
-assert(network.status === "planned", "D1 pack stays planned");
 assert(
   network.printedInnerCityNames?.lock === SOUTH_WALES_HUB,
   `D1 lock must be ${SOUTH_WALES_HUB}`
 );
 assert(network.printedInnerCityNames?.lockCrs === "CDF", "D1 lock CRS must be CDF");
+assert(
+  network.printedInnerCityNames?.secondaryHub === "Cardiff Queen Street",
+  "D1 secondary hub must be Cardiff Queen Street"
+);
+assert(network.printedInnerCityNames?.secondaryHubCrs === "CDQ", "D1 secondary hub CRS must be CDQ");
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(SOUTH_WALES_REGION);
-assert(region?.railCount === 2, `south-wales rail count must be 2, got ${region?.railCount}`);
+assert(region?.railCount === 16, `south-wales rail count must be 16, got ${region?.railCount}`);
 assert(region?.metroCount === 0, `south-wales must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
   "south-wales must be train-only in regions.json"
 );
 
+const EXPECTED_CRS = [
+  "CDF",
+  "CDQ",
+  "PPD",
+  "NWP",
+  "SWA",
+  "BGN",
+  "BYI",
+  "PEN",
+  "CPH",
+  "MER",
+  "ABA",
+  "TRB",
+  "RHY",
+  "NTH",
+  "PTA",
+  "STJ",
+];
+
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-for (const crs of ["CDF", "STJ"]) {
+for (const crs of EXPECTED_CRS) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
-assert(railCrs.size === 2, `south-wales catalog must carry exactly 2 distinct CRS codes, got ${railCrs.size}`);
+assert(
+  railCrs.size === EXPECTED_CRS.length,
+  `south-wales catalog must carry exactly ${EXPECTED_CRS.length} distinct CRS codes, got ${railCrs.size}`
+);
 assert(getNotInRegion(SOUTH_WALES_REGION).length === 0, "south-wales has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 2, `combined catalog must have 2 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 16, `combined catalog must have 16 stations (train only), got ${allStations.length}`);
 
-// No doNotGroup — hub resolves to a single catalog entry.
+// Hub + secondary hub, no doNotGroup — both resolve as distinct catalog entries.
 const hub = resolveCatalogEntry(SOUTH_WALES_HUB);
 assert(hub?.crs === "CDF", "Cardiff Central must resolve with crs CDF");
+const secondaryHub = resolveCatalogEntry("Cardiff Queen Street");
+assert(secondaryHub?.crs === "CDQ", "Cardiff Queen Street must resolve with crs CDQ — own catalog entry, own board");
 assert(resolveCatalogEntry("Cardiff") === null, "the marketing token 'Cardiff' must never resolve as a station");
-assert(resolveCatalogEntry("Cardiff Queen Street") === null, "Cardiff Queen Street must never resolve — it is a different, unbuilt Valley Lines station");
-assert(resolveCatalogEntry("Cardiff Bay") === null, "Cardiff Bay must never resolve — it is a different, unbuilt Valley Lines station");
+assert(resolveCatalogEntry("Cardiff Bay") === null, "Cardiff Bay must never resolve — ambiguous alias, not a real station");
 
-// Transport for Wales Valley Lines must not be wired in any form.
+// Valley Lines termini and local station now resolve — in catalog via Darwin.
+for (const name of ["Pontypridd", "Merthyr Tydfil", "Aberdare", "Treherbert", "Rhymney", "Caerphilly"]) {
+  assert(resolveCatalogEntry(name) !== null, `${name} (Valley Lines) must resolve — in-catalog via Darwin per the 7 Sep 2026 re-scope`);
+}
+
+// Swansea is the catalogued western boundary; Llanelli/Carmarthen stay Rest of Wales.
+const swansea = resolveCatalogEntry("Swansea");
+assert(swansea?.crs === "SWA", "Swansea must resolve with crs SWA — western boundary of South Wales");
+assert(resolveCatalogEntry("Llanelli") === null, "Llanelli must NOT resolve — Rest of Wales's station per the ledger SS2 stop ownership");
+assert(resolveCatalogEntry("Carmarthen") === null, "Carmarthen must NOT resolve — Rest of Wales's station per the ledger SS2 stop ownership");
+
+// D1 pack records Valley Lines as in-catalog now, not "not built".
 assert(
-  network.transportForWalesValleyLines?.status === "not built",
-  "D1 pack must record Valley Lines as not built"
-);
-assert(
-  resolveCatalogEntry("Pontypridd") === null,
-  "Pontypridd (Valley Lines) must not resolve — no Valley Lines feed exists"
+  network.transportForWalesValleyLines?.status === "in catalog as of this rescope",
+  "D1 pack must record Valley Lines as in-catalog as of the re-scope"
 );
 
 // No direction-hubs.json for this region (no hub candidate identified) — the
@@ -159,10 +193,15 @@ assert(swHubs.length === 0, `south-wales must have zero configured hubs, got ${s
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listSouthWalesDogfoodStations();
-assert(dogfoodStations.length === 2, `dogfood stations must be the 2 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 16, `dogfood stations must be the 16 D1 names, got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(SOUTH_WALES_HUB), "hub must be listed by the dogfood harness");
+assert(dogfoodNames.has("Cardiff Queen Street"), "secondary hub must be listed by the dogfood harness");
 assert(dogfoodNames.has("Severn Tunnel Junction"), "Severn Tunnel Junction must be listed by the dogfood harness");
+assert(dogfoodNames.has("Swansea"), "Swansea must be listed by the dogfood harness");
+for (const row of dogfoodStations) {
+  assert(typeof row.lat === "number" && typeof row.lng === "number", `${row.name} must carry real lat/lng, not null`);
+}
 
 // planSouthWalesNextTrainFetch() — pure routing decision table, token-free.
 const cdfEntry = resolveCatalogEntry(SOUTH_WALES_HUB);
@@ -216,9 +255,7 @@ if (hubProbe.ok) {
     assert(typeof chip === "string" && chip.length > 0, "every direction chip must be a non-empty string");
   }
 
-  // The dispatch switch-case (not yet gated by MULTI_CITY_IDS) still returns
-  // the same live-derived chips — this is exactly the "safe ahead of the
-  // flip" property the brief relies on.
+  // The dispatch switch-case still returns the same live-derived chips.
   const dispatched = await getMultiCityDirections("south-wales", SOUTH_WALES_HUB);
   assert(
     JSON.stringify(dispatched.directions) === JSON.stringify(hubProbe.pack.directions),
@@ -267,7 +304,7 @@ if (hubProbe.ok) {
 
 // Full-catalog CRS -> Darwin stationName sweep (per the greater-anglia
 // dogfood gate pattern, itself copied from qa/uk-west-midlands-dogfood-gate.mjs
-// — the wrong-code defect class this catches). Token-tolerant; 2 cheap
+// — the wrong-code defect class this catches). Token-tolerant; 16 cheap
 // numRows=1 calls when the token is present.
 function normaliseStationName(value) {
   return String(value ?? "")
@@ -348,5 +385,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "south-wales-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 2 rail-only stations, no doNotGroup at CDF, Valley Lines not wired, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
+  "south-wales-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 16 rail-only stations incl. Valley Lines, hub CDF + secondary hub CDQ both resolve with no doNotGroup, Swansea boundary, Llanelli/Carmarthen do not resolve, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
 );

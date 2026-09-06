@@ -112,6 +112,7 @@ const SMOKE_SCRIPTS = [
   "north-east-dogfood-gate.mjs",
   "west-of-england-dogfood-gate.mjs",
   "south-wales-dogfood-gate.mjs",
+  "uk-city-bounds-overlap-gate.mjs",
   "west-yorkshire-dogfood-gate.mjs",
   "rest-of-wales-dogfood-gate.mjs",
   "rest-of-scotland-dogfood-gate.mjs",
@@ -238,6 +239,8 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   /** Offline UK catalog checks. */
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-lazy-load.mjs",
+  /** Parses CITY_BOUNDS out of public/city-session.js as text; no dev server. */
+  "uk-city-bounds-overlap-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
