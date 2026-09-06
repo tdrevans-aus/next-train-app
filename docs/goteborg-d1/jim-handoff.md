@@ -120,3 +120,61 @@ against `lib/providers/vasttrafik.js` and `lib/providers/goteborg.js` (not commi
 run from the scratchpad) additionally pulled live departures for Brunnsparken, Korsvägen,
 Kungsbacka, Lerum, Nödinge and Alingsås stop areas and the real `vt.zip` GTFS static feed to
 confirm the corridor-detection findings above. `node qa/run-all.mjs --smoke` run after the fix.
+
+## Update 6 Sep 2026 (third pass) — Västtågen destination-label normalisation
+
+Per `docs/jim-brief-goteborg-vasttagen-destination-labels.md` (production sweep after this
+handoff's Planera Resa v4 rollout went live): every pendeltåg station returned an empty board
+for every chip it offers, because the live path's `destination` came straight from
+`serviceJourney.direction` (`"Göteborg"`, `"Floda"`, `"Stockholm"`) while the chips are
+marketing-ends labels (`"Västtågen + Göteborg Central"`, `"Västtågen + Alingsås"`) —
+`pickUpcomingProviderTrips` never matched anything. The Trafiklab timetable fallback had the
+same latent bug (same unmapped `trip.destination` text), just less visible since the live path
+usually answers first.
+
+**Mapping rule implemented in `mapGoteborgDestination` (`lib/cities/goteborg/marketing-directions.js`),
+now given the corridor code and the queried station name as well as the raw destination:**
+
+1. A Göteborg-name-family destination (`Göteborg`, `Göteborg C`, `Göteborg Central`, `Göteborg
+   Centralstation`) → the hub chip (`Göteborg Central`).
+2. A destination that is itself one of the corridor's own stations (`line-map.json`'s per-corridor
+   `stations` list, already ordered Göteborg Central → ... → terminus) — compare its position to
+   the queried station's position on that same list:
+   - ahead of (or at) the requested station → the corridor's outer terminus chip (train still
+     outbound: `Floda` seen from Lerum on the Alingsås corridor → `Alingsås`);
+   - behind the requested station (closer to Göteborg) → the hub chip (train already passed it,
+     now inbound) — this is the "must not relabel a train that's already passed" case the brief
+     called out; it's dead in the two D1 stations checked live (no such row observed) but is real,
+     symmetric corridor-order logic, not a special case.
+   - the destination *is* the corridor terminus itself → the terminus chip, unchanged.
+3. Anything not on the corridor's own station list (through-running past the terminus — confirmed
+   live: `Stockholm` at Alingsås, and also `Töreboda` at Alingsås, not anticipated by the brief's
+   named examples but caught by treating *any* unrecognised place this way rather than a
+   hard-coded list of three names) → the corridor's outer terminus chip, the same "still heading
+   out" default the un-normalised feed text implied. No corridor position exists to compare
+   against the requested station, so there's no inbound branch for this case in practice.
+4. **New:** if the computed chip's place name folds equal to the *queried station's own name*
+   (only possible via rule 3, seen live at Alingsås and Kungsbacka — a through-running train
+   continuing past the very terminus you're standing at), there is no chip that station offers
+   matching a trip "toward itself". `mapGoteborgDestination` returns `null` for this case and the
+   adapter drops the trip from the board rather than emit an unmatchable label — mirrors
+   `marketingLabelsForStation` already excluding a station's own terminus from its own chip list.
+   This is what actually closes the "through-running trains" open item from the second-pass update
+   above, as far as *destination labels* go — the trip is now either correctly labelled or
+   correctly absent, never mislabelled. The underlying data question flagged there (a genuine
+   trip/route-pattern-level distinction between an in-scope corridor service and one that shares
+   track further out) is unchanged and still open for Luke/Mark; this fix only stops the symptom
+   (wrong/unmatched label) from reaching the board.
+
+The original feed text is preserved as an additive `rawDestination` field on the trip (both the
+live and timetable-fallback paths) so nothing is lost even though the rider-facing `destination`
+is now always a marketing chip.
+
+**Verified live 6 Sep 2026** against Lerum, Alingsås and Kungsbacka stop areas with real
+`VASTTRAFIK_CLIENT_ID`/`SECRET`: every trip on Lerum's and Alingsås's live boards now maps to a
+chip those stations actually offer (`Västtågen + Göteborg Central`, and `Västtågen + Alingsås` at
+Lerum), and `getMultiCityNextTrain("goteborg", { station: "Lerum Station", destination:
+"Västtågen + Göteborg Central", ... })` returns a non-null `next`. `qa/goteborg-dogfood-gate.mjs`
+now asserts both the live conformance (creds present) and an offline fixture
+(`qa/fixtures/goteborg/vasttagen-destinations.json`) covering `Göteborg`/`Floda`/`Stockholm`/
+`Varberg` cases including the terminus self-reference drop.

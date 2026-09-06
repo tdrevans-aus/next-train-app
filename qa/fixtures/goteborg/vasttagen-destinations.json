@@ -1,0 +1,49 @@
+{
+  "_comment": "Synthetic Västtrafik serviceJourney.direction values reproducing the 6 Sep 2026 regression (docs/jim-brief-goteborg-vasttagen-destination-labels.md) — offline check that mapGoteborgDestination normalises every one of these to a chip the queried station actually offers.",
+  "cases": [
+    {
+      "queryStation": "Lerum Station",
+      "corridorCode": "Alingsås",
+      "rawDestination": "Göteborg",
+      "expectedChip": "Västtågen + Göteborg Central"
+    },
+    {
+      "queryStation": "Lerum Station",
+      "corridorCode": "Alingsås",
+      "rawDestination": "Floda",
+      "expectedChip": "Västtågen + Alingsås"
+    },
+    {
+      "queryStation": "Lerum Station",
+      "corridorCode": "Alingsås",
+      "rawDestination": "Stockholm",
+      "expectedChip": "Västtågen + Alingsås"
+    },
+    {
+      "queryStation": "Alingsås Station",
+      "corridorCode": "Alingsås",
+      "rawDestination": "Göteborg",
+      "expectedChip": "Västtågen + Göteborg Central"
+    },
+    {
+      "queryStation": "Alingsås Station",
+      "corridorCode": "Alingsås",
+      "rawDestination": "Stockholm",
+      "expectedChip": null,
+      "note": "through-running past the v1 terminus, seen from the terminus itself — no chip Alingsås offers matches it, so it must be dropped, not mislabelled onto its own chip."
+    },
+    {
+      "queryStation": "Kungsbacka Station",
+      "corridorCode": "Kungsbacka",
+      "rawDestination": "Göteborg",
+      "expectedChip": "Västtågen + Göteborg Central"
+    },
+    {
+      "queryStation": "Kungsbacka Station",
+      "corridorCode": "Kungsbacka",
+      "rawDestination": "Varberg",
+      "expectedChip": null,
+      "note": "through-running past the v1 terminus, seen from the terminus itself."
+    }
+  ]
+}
