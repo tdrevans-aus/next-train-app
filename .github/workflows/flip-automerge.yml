@@ -40,7 +40,9 @@ jobs:
             if [ "$(jq -r .isDraft <<<"$pr")" = "true" ]; then echo "#$n: draft, skipping"; continue; fi
             if jq -e '.labels[] | select(.name=="hold")' <<<"$pr" >/dev/null; then echo "#$n: hold label, skipping"; continue; fi
             if [ "$(jq '.reviews | length' <<<"$pr")" != "0" ]; then echo "#$n: has a review, skipping"; continue; fi
-            humans=$(jq '[.comments[] | select(.author.login != "github-actions" and .author.is_bot != true and (.author.login | test("\[bot\]$") | not))] | length' <<<"$pr")
+            # `gh pr view` strips the "[bot]" suffix and carries no is_bot field (Vercel's comment
+            # shows as login "vercel"), so count humans via REST, where user.type is "Bot"/"User".
+            humans=$(gh api "repos/${GITHUB_REPOSITORY}/issues/$n/comments" --paginate --jq '[.[] | select(.user.type != "Bot" and .user.login != "github-actions")] | length')
             if [ "$humans" != "0" ]; then echo "#$n: has a human comment, skipping"; continue; fi
             state=$(jq -r .mergeStateStatus <<<"$pr")
             if [ "$state" != "CLEAN" ] && [ "$state" != "HAS_HOOKS" ] && [ "$state" != "UNSTABLE" ]; then echo "#$n: merge state $state, skipping"; continue; fi

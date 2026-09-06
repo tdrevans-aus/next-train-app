@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "greater-manchester"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -43,14 +43,14 @@
         { id: "greater-manchester", name: "Greater Manchester", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
-        { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
-        { id: "rest-of-scotland", name: "Rest of Scotland", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "rest-of-scotland", name: "Rest of Scotland", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "rest-of-wales", name: "Rest of Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
-        { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
@@ -130,6 +130,9 @@
     "west-yorkshire": { minLat: 53.65, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
     "thames-valley": { minLat: 51.0, maxLat: 52.0, minLng: -1.5, maxLng: -0.5 },
     "rest-of-wales": { minLat: 51.55, maxLat: 53.4, minLng: -5.5, maxLng: -2.6 },
+    "rest-of-scotland": { minLat: 55.4, maxLat: 58.6, minLng: -5.5, maxLng: -2.0 },
+    "london-se-national-rail": { minLat: 50.7, maxLat: 51.7, minLng: -0.5, maxLng: 0.8 },
+    southwest: { minLat: 50.5, maxLat: 51.3, minLng: -4.7, maxLng: -3.0 },
   };
 
   function dogfood() {

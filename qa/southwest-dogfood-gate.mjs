@@ -1,17 +1,12 @@
 /**
  * Southwest adapter/dispatch wiring gate. Replaces southwest-planned-gate.mjs
- * (retired) — Southwest STAYS `status: "planned"` here (this is the
- * pre-flip dogfood wiring pass, docs/jim-brief-southwest-flip.md). Per
- * CLAUDE.md's flip-follow-through split (added 30 Aug 2026, corrected same
- * day): the dogfood module, the live-city-api.js dispatch switch-cases, and
- * this gate are safe to land ahead of the flip because production routes
- * gate on assertCityLive() first, not on MULTI_CITY_IDS membership.
- * Southwest is deliberately NOT added to MULTI_CITY_IDS, brisbane-dogfood.js's
- * mount/available map, or journey-model.js's persisted-city/country lists
- * yet — those three list-membership edits are Mark's flip commit, not this
- * one (qa/live-city-lists-sync.mjs enforces that they equal the registry's
- * live set). See docs/southwest-d1/jim-handoff.md for the exact note left
- * for Mark.
+ * (retired). Southwest is now `status: "live"` (this is the post-flip gate,
+ * docs/jim-brief-southwest-flip.md). The dogfood module, live-city-api.js
+ * dispatch switch-cases, list memberships (MULTI_CITY_IDS, brisbane-dogfood.js
+ * mount/available, journey-model.js persisted-city/country), and QA gate
+ * assertions are now all wired for live operation. Production routes gate on
+ * assertCityLive() first; once live, both dispatch paths and list membership
+ * are enforced together.
  *
  * DARWIN_LDB_TOKEN is BLOCKED at the account level (AU-registered RDM
  * account; Tim re-registering with UK address) — same blocker as most other
@@ -81,14 +76,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity — STAYS planned (Mark/Tim's flip call, not made here).
+// Registry identity — NOW live, adapterReady removed, IS in MULTI_CITY_IDS.
 const live = assertCityLive("southwest");
-assert(live?.ok === false, "assertCityLive(southwest) must fail — status is still planned");
-assert(live?.status === 501, "southwest must be 501 planned");
+assert(live?.ok === true, "assertCityLive(southwest) must pass — status is now live");
 
 const entry = getCity("southwest");
-assert(entry?.status === "planned", "southwest registry status must stay planned");
-assert(entry?.adapterReady === true, "southwest adapterReady must be true");
+assert(entry?.status === "live", "southwest registry status must be live");
+assert(entry?.adapterReady === undefined, "southwest adapterReady flag is removed once live");
 assert(entry?.displayName === "Southwest", "southwest display name must be Southwest");
 assert(entry?.timeZone === "Europe/London", "southwest timezone must be Europe/London");
 assert(
@@ -99,8 +93,8 @@ for (const forbiddenId of ["uk-southwest", "devon-cornwall", "south-west-england
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// NOT yet in MULTI_CITY_IDS — that's Mark's flip commit, not this pass.
-assert(isMultiCity("southwest") === false, "southwest must NOT be in MULTI_CITY_IDS yet — that's Mark's flip commit");
+// Dispatch switch-cases and MULTI_CITY_IDS membership are now wired (Mark's flip commit).
+assert(isMultiCity("southwest") === true, "southwest must be in MULTI_CITY_IDS");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/southwest-d1");
@@ -409,5 +403,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "southwest-dogfood-gate: ok (planned/501, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired, D1 pack, 9 rail-only stations, no doNotGroup at EXD/PLY/PNZ, no hub configured (helper degrades to no-op), Night Riviera Sleeper out-reservation exclusion enforced per-station, directions derived live from Darwin with no static line map, routing table (exact/undirected) proven token-free, Perth Australia stays green)"
+  "southwest-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 9 rail-only stations, no doNotGroup at EXD/PLY/PNZ, no hub configured (helper degrades to no-op), Night Riviera Sleeper out-reservation exclusion enforced per-station, directions derived live from Darwin with no static line map, routing table (exact/undirected) proven token-free, Perth Australia stays green)"
 );
