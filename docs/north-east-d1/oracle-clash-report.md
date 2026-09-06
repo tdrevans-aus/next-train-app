@@ -23,6 +23,43 @@ Match rule: published Metro stop name vs. National Rail station print vs. offici
 
 Green Line and Yellow Line do not extend beyond Tyne and Wear county boundaries. Through-running stations are served by Northern Trains regional services only; they are not de-dup points but may appear in both regions' feeds if both regions add National Rail slices. Green Line's unique shared-platform arrangement at Sunderland must be explicitly modeled in v1 boards: passengers can walk up to the same platform and board either Metro (light rail) or National Rail (heavy rail) services.
 
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier).
+
+**Verdict summary:**
+
+### Tyne and Wear Metro (all services, schedule-only v1)
+- **All Metro services** (Yellow and Green lines, 72 stops total): `out-product` — No confirmed public GTFS-RT or documented real-time API found. Static GTFS is confirmed via DFT Bus Open Data Service, but no real-time feed exists publicly (Tim, 5 Sep 2026, decision per docs/jim-brief-north-east-metro-out-product.md). Unofficial metro-rti.nexus.org.uk API serves Pop app only, not documented public API. Schedule-only v1 assumed.
+
+### National Rail at Newcastle Central and Sunderland (optional reservation or unreserved only)
+- **LNER (long-distance, unreserved-coach policy)**: `in` — unreserved coach always available; walk-up permitted
+- **Northern Railway (regional commuter services)**: `in` — optional seat reservations only, not compulsory for walk-up boarding
+- **TransPennine Express (regional/intercity)**: `in` — optional seat reservations only for premium fares; walk-up available on standard fares
+- **CrossCountry (through-running intercity)**: `in` — optional seat reservations only, not compulsory for walk-up
+- **Lumo (open-access)**: `in` — boardable without compulsory reservation; some seats unreserved (green-light marked)
+
+**Excluded services (confirmed not calling at in-catalog stations):**
+- Caledonian Sleeper does not call at Newcastle Central, Sunderland, or other North East stations.
+- No Eurostar or check-in-barrier services.
+
+**No check-in barriers:** Platform access at Newcastle Central and Sunderland is unrestricted. Ticket checking is on-board by conductors or at low-level gating (not airport-style). Walk-up boarding is unobstructed for all National Rail services listed above.
+
+**Stations with multi-operator platforms:**
+- **Newcastle Central (National Rail only in v1):** Five National Rail operators (LNER, Northern, TPE, CrossCountry, Lumo) call same location on separate platforms. Each operator has walk-up boarding available. (Metro runs in separate deep-tube box, doNotGroup, but is `out-product` in v1 due to missing real-time feed.)
+- **Sunderland Station (shared-platform unique case):** Metro Green Line and Northern Trains share same platforms on same track (Pelaw–Sunderland). Both services depart from same boarding area. v1 must model this as one mixed board with per-service mode/operator tagging, not split by mode tab. Both Metro `out-product` and National Rail `in` verdicts apply at same station.
+
+| Service | Calls at in-catalog stations | Compulsory reservation? | Check-in barrier? | Verdict | Evidence URL |
+|---|---|---|---|---|---|
+| **Tyne and Wear Metro (all lines)** | Newcastle Central, Sunderland, St James, Tynemouth, South Hylton, South Shields, 66 other stops | Data source known (static GTFS confirmed) but no real-time confirmed | No | `out-product` | [DFT Bus Open Data Service](https://data.bus-data.dft.gov.uk/downloads/) — static GTFS confirmed (OGL 3.0), no public GTFS-RT found; official decision per docs/jim-brief-north-east-metro-out-product.md (Tim, 5 Sep 2026) |
+| **LNER (long-distance)** | Newcastle Central, plus through-running stations | No (unreserved coach always available, walk-up permitted) | No | `in` | [LNER unreserved coach policy](https://www.lner.co.uk/); walk-up boarding standard on all services |
+| **Northern Railway (regional)** | Newcastle Central, Sunderland, Berwick-upon-Tweed, plus North East and cross-boundary stations | No (optional seat reservations only, not compulsory) | No | `in` | [Northern Trains seat reservations](https://www.northernrailway.co.uk/); walk-up boarding available for all services |
+| **TransPennine Express (regional/intercity)** | Newcastle Central, plus regional stations | No (optional reservations only for premium products, walk-up available) | No | `in` | [TransPennine Express seat reservations](https://www.tpexpress.co.uk/travelling-with-us/seat-reservations-and-upgrades); standard and walk-up fares available without reservation |
+| **CrossCountry (intercity through-running)** | Newcastle Central, plus through-running stations | No (optional reservations only, not compulsory for walk-up) | No | `in` | [CrossCountry seat reservations](https://www.crosscountrytrains.co.uk/); walk-up standard fares available |
+| **Lumo (open-access)** | Newcastle Central | No (boardable without compulsory reservation; some seats unreserved) | No | `in` | [Lumo tickets](https://www.lumo.co.uk/tickets/our-tickets); unreserved carriage always available |
+
+**Board eligibility summary:** Tyne and Wear Metro (both lines, walk-up frequency-based in principle, but no real-time feed publicly available) is `out-product` in v1 per Tim's decision (5 Sep 2026). Static boards offered for Metro in v1, but boards must surface `MetroFeedUnconfirmedError` (no real-time data). All National Rail operators calling at Newcastle Central and other in-catalog stations (LNER, Northern, TPE, CrossCountry, Lumo) offer walk-up boarding with optional reservations only (or unreserved) — no compulsory booking and no check-in barriers. **All verdicts recorded; no silent omissions.** Sunderland's unique shared-platform arrangement requires explicit mixed-mode modeling once National Rail is unblocked: board must show both Metro and National Rail services on same platform with per-service operator/mode tags, not split into separate mode tabs. Once National Rail adapter is unblocked at Tim's account level (UK re-registration on RDM), Jim will wire Darwin departures to boards at Newcastle Central and Sunderland with these verdicts enforced in filtering logic.
+
 ## H2 clash surface
 
 **Metro:** DB Regio operator; Nexus owner (Tyne and Wear Passenger Transport Executive). No product `lib/cities/north-east/` exists. No live adapter. GTFS from DFT aggregator is static (monthly refresh). No official Nexus/DB Regio GTFS landing page; data served via national DFT feed only. No published next-train GTFS-RT endpoint (unofficial metro-rti.nexus.org.uk API is Pop app only, not documented public API).
@@ -66,4 +103,3 @@ Green Line and Yellow Line do not extend beyond Tyne and Wear county boundaries.
   - **Confidence:** `unclear` on third-party rider redistribution. The RDM Platform Agreement text (data sharing agreement) specifies limits on how data may be used; the exact language permitting or prohibiting downstream API provision to end users is not stated in public sources checked. Tim must review the signed RDM Data Sharing Agreement once EvansAppStudio re-registers and receives a token. Do not assume OGL 2.0 baseline permits public API relay; confirm with RDM / NRE before launch.
 
 - **Keyed feeds:** DARWIN_LDB_TOKEN is a subscription token, not a secret API key; no HMAC or signature. Free tier: 100,000 calls/month (public sector orgs avoid overage charges). Subscription terms govern API use, not a separate data license.
-
