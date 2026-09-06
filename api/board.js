@@ -1,6 +1,7 @@
 import { applyCors } from "../lib/api-cors.js";
 import { checkRateLimit } from "../lib/api-rate-limit.js";
 import { assertCityLive } from "../lib/providers/registry.js";
+import { riderMessageForFeedUnconfirmed } from "../lib/providers/contract.js";
 import {
   isMultiCity,
   resolveMultiCityStation,
@@ -165,6 +166,33 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: error.message ?? "Failed to fetch station board" });
+    // jim-brief-feed-unconfirmed-rider-copy: a *FeedUnconfirmedError carries
+    // its long pipeline explanation in `detail`, never in `message` — the
+    // rider sentence below is built server-side from agency/station/
+    // alternative, never from a doc path or agent name. MissingDarwinTokenError
+    // is an ops failure (no token set), not a rider-facing feed gap, so it
+    // gets its own generic copy. Anything else keeps the existing 500 shape,
+    // but with a generic `error` and the raw message moved to `detail` so it
+    // never leaks doc paths/agent names to the client either.
+    if (error?.code === "FEED_UNCONFIRMED") {
+      res.status(503).json({
+        error: riderMessageForFeedUnconfirmed(error),
+        code: "FEED_UNCONFIRMED",
+        agency: error.agency,
+        station: error.station,
+      });
+      return;
+    }
+    if (error?.name === "MissingDarwinTokenError") {
+      res.status(503).json({
+        error: "Live times are temporarily unavailable — please try again shortly.",
+        code: "PROVIDER_UNAVAILABLE",
+      });
+      return;
+    }
+    res.status(500).json({
+      error: "Could not load departures for this station",
+      detail: error?.message ?? String(error),
+    });
   }
 }
