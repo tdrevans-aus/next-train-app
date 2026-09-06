@@ -60,3 +60,75 @@ None identified. Static GTFS feed is verified and actively maintained (last fetc
 ## What I did not do
 
 No `line-map` generator, no `stopIds` in published JSON, no live city flip, no GitHub clone/push/PR, no product edit, no Perth edit, no GTFS-derived station arrays, no invent city=hou / metro / metrorail, no API key in this file, no merge with chicago / los-angeles / washington / bart.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+**Red Line: Fannin South → Northline Transit Center** (25 stations, south to north)
+Source: https://en.wikipedia.org/wiki/METRORail_Red_Line
+
+1. Fannin South
+2. Stadium Park/Astrodome
+3. Smith Lands
+4. Texas Medical Center Transit Center
+5. Dryden/TMC
+6. Memorial Hermann Hospital/Houston Zoo
+7. Hermann Park/Rice University
+8. Museum District
+9. Wheeler Transit Center
+10. Ensemble/HCC
+11. McGowen
+12. Downtown Transit Center
+13. Bell
+14. Main Street Square
+15. Central Station
+16. Preston
+17. UH–Downtown
+18. Burnett Transit Center
+19. Quitman/Near Northside
+20. Fulton/North Central
+21. Moody Park
+22. Cavalcade
+23. Lindale Park
+24. Melbourne/North Lindale
+25. Northline Transit Center/HCC
+
+**Green Line: Theater District → Magnolia Park Transit Center** (9 stations, west to east)
+Source: https://en.wikipedia.org/wiki/METRORail_Green_Line
+
+1. Theater District
+2. Central Station (Capitol platform)
+3. Convention District
+4. EaDo/Stadium
+5. Coffee Plant/Second Ward
+6. Lockwood/Eastwood
+7. Altic/Howard Hughes
+8. Cesar Chavez/67th Street
+9. Magnolia Park Transit Center
+
+**Purple Line: Theater District → Palm Center Transit Center** (10 stations, north to south)
+Source: https://en.wikipedia.org/wiki/METRORail_Purple_Line
+
+1. Theater District
+2. Central Station (Rusk platform)
+3. Convention District
+4. EaDo/Stadium
+5. Leeland/Third Ward
+6. Elgin/Third Ward
+7. TSU/UH Athletics District
+8. UH South/University Oaks
+9. MacGregor Park/Martin Luther King Jr.
+10. Palm Center Transit Center
+
+**Shared downtown segment (Green & Purple):** Theater District → Central Station → Convention District → EaDo/Stadium (4 stations; westbound on Capitol St northbound on Green, eastbound on Rusk St southbound on Purple at Central Station per the platform split noted above).
+
+**Interchange stations:**
+- Central Station: Red × Green × Purple (only three-line transfer in the system)
+- Theater District: Green × Purple
+- Convention District: Green × Purple
+- EaDo/Stadium: Green × Purple
+
+**Total unique stations: 39**
+- Red Line: 25 stations
+- Green Line: 9 stations (includes 4 shared with Purple)
+- Purple Line: 10 stations (includes 4 shared with Green, 1 with Red)
+- Unique formula: 25 + 9 + 10 − 2 (Central counted thrice) − 1 (Theater) − 1 (Convention) − 1 (EaDo/Stadium) = 39

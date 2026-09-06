@@ -86,14 +86,13 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity — STAYS planned, adapterReady, NOT in MULTI_CITY_IDS.
+// Registry identity — NOW live, adapterReady removed, IS in MULTI_CITY_IDS.
 const live = assertCityLive("rest-of-scotland");
-assert(live?.ok === false, "assertCityLive(rest-of-scotland) must fail — status stays planned");
-assert(live?.status === 501, "rest-of-scotland must be 501 planned");
+assert(live?.ok === true, "assertCityLive(rest-of-scotland) must pass — status is now live");
 
 const entry = getCity("rest-of-scotland");
-assert(entry?.status === "planned", "rest-of-scotland registry status must stay planned");
-assert(entry?.adapterReady === true, "rest-of-scotland adapterReady must be true");
+assert(entry?.status === "live", "rest-of-scotland registry status must be live");
+assert(entry?.adapterReady === undefined, "rest-of-scotland adapterReady flag is removed once live");
 assert(entry?.displayName === "Rest of Scotland", "rest-of-scotland display name must be Rest of Scotland");
 assert(entry?.timeZone === "Europe/London", "rest-of-scotland timezone must be Europe/London");
 assert(
@@ -104,9 +103,8 @@ for (const forbiddenId of ["scotland", "highlands", "perth-scotland", "uk-scotla
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip; MULTI_CITY_IDS membership
-// is deliberately NOT (that's Mark's flip commit).
-assert(isMultiCity("rest-of-scotland") === false, "rest-of-scotland must NOT be in MULTI_CITY_IDS yet — that is Mark's flip commit");
+// Dispatch switch-cases and MULTI_CITY_IDS membership are now wired (Mark's flip commit).
+assert(isMultiCity("rest-of-scotland") === true, "rest-of-scotland must be in MULTI_CITY_IDS");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/rest-of-scotland-d1");
@@ -408,5 +406,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "rest-of-scotland-dogfood-gate: ok (stays planned/501, adapterReady, NOT in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 9 rail-only stations, four co-equal hub locks PTH/INV/ABD/DEE resolve independently, Perth Scotland never conflated with city=perth Australia, Caledonian Sleeper out-reservation exclusion enforced per-station and absent from live chips, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia stays green)"
+  "rest-of-scotland-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 9 rail-only stations, four co-equal hub locks PTH/INV/ABD/DEE resolve independently, Perth Scotland never conflated with city=perth Australia, Caledonian Sleeper out-reservation exclusion enforced per-station and absent from live chips, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia stays green)"
 );

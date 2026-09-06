@@ -70,3 +70,47 @@ Alternative hubs: Salt Lake Central (Blue line only); City Center (Blue + Green)
 3. **Daylight saving time:** America/Denver timezone (Mountain Time, DST observed). Do not copy Perth/Brisbane no-DST handling.
 4. **S-Line and FrontRunner boarding:** Both are walk-up (no compulsory reservation), but correctly marked `out-mode` per v1 scope cut (TRAX-only). If v1 scope expands in future, these would be `in`, not excluded.
 5. **License contact:** UTA developer portal or main office (https://www.rideuta.com) should clarify data-use terms before D1 pack ships.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+### Blue Line (Route 701) — 25 stations
+**Termini:** Salt Lake Central ↔ Draper Town Center
+
+Salt Lake Central → Old GreekTown → Planetarium → Arena* → Temple Square* → City Center* → Gallivan Plaza* → Courthouse** → 600 South** → 900 South** → Ballpark** → Central Pointe** → Millcreek → Meadowbrook → Murray North → Murray Central → Fashion Place West → Midvale Fort Union → Midvale Center → Historic Sandy → Sandy Expo → Sandy Civic Center → Crescent View → Kimballs Lane → Draper Town Center
+
+**Shared/interchange notes:**
+- *Arena, Temple Square, City Center, Gallivan Plaza: interchanges with Green Line (downtown west section)
+- **Courthouse through Central Pointe: downtown core shared with Red and Green lines
+- Millcreek through Fashion Place West: shared with Red Line (southern section)
+
+**Source:** https://en.wikipedia.org/wiki/Blue_Line_(TRAX)
+
+### Red Line (Route 703) — 27 stations
+**Termini:** University Medical Center ↔ Daybreak Parkway
+
+University Medical Center → Fort Douglas → University South Campus → Stadium → 900 East → Trolley → Library → Courthouse** → 600 South** → 900 South** → Ballpark** → Central Pointe** → Millcreek → Meadowbrook → Murray North → Murray Central → Fashion Place West → Bingham Junction → Historic Gardner → West Jordan City Center → 2700 W Sugar Factory Rd → Jordan Valley → 4800 W Old Bingham Hwy → 5600 W Old Bingham Hwy → South Jordan Parkway → South Jordan Downtown → Daybreak Parkway
+
+**Shared/interchange notes:**
+- **Courthouse through Central Pointe: downtown core shared with Blue and Green lines
+- Millcreek through Fashion Place West: shared with Blue Line (northern section within the Line)
+
+**Source:** https://en.wikipedia.org/wiki/Red_Line_(TRAX)
+
+### Green Line (Route 704) — 19 stations
+**Termini:** Airport ↔ West Valley Central
+
+Airport → 1940 West North Temple → Power → Fairpark → Jackson/Euclid → North Temple Bridge/Guadalupe → Arena* → Temple Square* → City Center* → Gallivan Plaza* → Courthouse** → 600 South** → 900 South** → Ballpark** → Central Pointe** → River Trail → Redwood Junction → Decker Lake → West Valley Central
+
+**Shared/interchange notes:**
+- *Arena, Temple Square, City Center, Gallivan Plaza: interchanges with Blue Line (downtown east section)
+- **Courthouse through Central Pointe: downtown core shared with Blue and Red lines
+
+**Source:** https://en.wikipedia.org/wiki/Green_Line_(TRAX)
+
+### Station inventory summary
+
+**Unique stations across all three lines:** 52 unique stations (accounting for shared downtown core and dual-line interchanges).
+
+**Downtown convergence zone (all three lines):** Courthouse, 600 South, 900 South, Ballpark, Central Pointe (5 stations).
+
+**Note:** Official UTA reporting references 50 stations in planning documents; current Wikipedia enumeration from active line rosters identifies 52 unique stops. Luke should verify final count against current GTFS feed during D1 pack (stations may have been added, renamed, or consolidated).

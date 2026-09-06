@@ -75,6 +75,146 @@ The following services call at in-catalog stations (all Blue, Orange, Green line
 - No Amtrak / intercity rail scope
 - Copper Line left to a later wave (newer, outside this v1 cut)
 
+## Station roster (D1 transcription, 6 Sep 2026)
+
+Station lists compiled from Wikipedia line articles (cross-referenced with MTS official network maps and operations documentation) for all v1-scope lines, plus Copper Line listed separately as out-of-scope.
+
+### Blue Line (UTC ↔ San Ysidro)
+
+**Source:** https://en.wikipedia.org/wiki/Blue_Line_(San_Diego_Trolley)
+
+**Termini and shared segments:**
+- Northern terminus: **UTC** (University Town Center Transit Center)
+- Southern terminus: **San Ysidro**
+- Shared with Orange Line (5 stations): Civic Center, Fifth Avenue, City College, Park & Market, 12th & Imperial
+- Shared with Green Line (6 stations): County Center/Little Italy, Santa Fe Depot, Middletown, Washington Street, Old Town, 12th & Imperial
+- Hub lock: **12th & Imperial Transit Center** (served by all three v1 lines)
+
+**32 stations, north to south:**
+1. UTC
+2. Executive Drive
+3. UC San Diego Health La Jolla
+4. UC San Diego Central Campus
+5. VA Medical Center
+6. Nobel Drive
+7. Balboa Avenue
+8. Clairemont Drive
+9. Tecolote Road
+10. Old Town (Blue-Green shared)
+11. Washington Street (Blue-Green shared)
+12. Middletown (Blue-Green shared)
+13. County Center/Little Italy (Blue-Green shared)
+14. Santa Fe Depot (Blue-Green shared)
+15. America Plaza
+16. Civic Center (Blue-Orange shared)
+17. Fifth Avenue (Blue-Orange shared)
+18. City College (Blue-Orange shared)
+19. Park & Market (Blue-Orange shared)
+20. 12th & Imperial (hub lock; Blue-Orange-Green shared)
+21. Barrio Logan
+22. Harborside
+23. Pacific Fleet
+24. 8th Street
+25. 24th Street
+26. E Street
+27. H Street
+28. Palomar Street
+29. Palm Avenue
+30. Iris Avenue
+31. Beyer Blvd.
+32. San Ysidro
+
+### Orange Line (Courthouse ↔ El Cajon)
+
+**Source:** https://en.wikipedia.org/wiki/Orange_Line_(San_Diego_Trolley)
+
+**Termini and shared segments:**
+- Western terminus: **Courthouse**
+- Eastern terminus: **El Cajon Transit Center**
+- Shared with Blue Line (5 stations): Civic Center, Fifth Avenue, City College, Park & Market, 12th & Imperial
+- Shared with Green Line (3 stations): 12th & Imperial, Grossmont, Amaya Drive, El Cajon
+- Hub lock: **12th & Imperial Transit Center**
+
+**18 stations, west to east:**
+1. Courthouse
+2. Civic Center (Orange-Blue shared)
+3. Fifth Avenue (Orange-Blue shared)
+4. City College (Orange-Blue shared)
+5. Park & Market (Orange-Blue shared)
+6. 12th & Imperial (hub lock; Orange-Blue-Green shared)
+7. 25th & Commercial
+8. 32nd & Commercial
+9. 47th Street
+10. Euclid Avenue
+11. Encanto/62nd Street
+12. Massachusetts Avenue
+13. Lemon Grove Depot
+14. Spring Street
+15. La Mesa Blvd.
+16. Grossmont (Orange-Green shared)
+17. Amaya Drive (Orange-Green shared)
+18. El Cajon (Orange-Green shared)
+
+### Green Line (12th & Imperial ↔ El Cajon)
+
+**Source:** https://en.wikipedia.org/wiki/Green_Line_(San_Diego_Trolley)
+
+**Termini and shared segments:**
+- Western terminus: **12th & Imperial Transit Center** (hub lock; shared with Blue and Orange)
+- Eastern terminus: **El Cajon Transit Center**
+- Shared with Blue Line (6 stations): County Center/Little Italy, Santa Fe Depot, Middletown, Washington Street, Old Town, 12th & Imperial
+- Shared with Orange Line (4 stations): 12th & Imperial, Grossmont, Amaya Drive, El Cajon
+- Hub lock: **12th & Imperial Transit Center**
+
+**24 stations, west to east:**
+1. 12th & Imperial (hub lock; Green-Blue-Orange shared)
+2. Gaslamp Quarter
+3. Convention Center
+4. Seaport Village
+5. Santa Fe Depot (Green-Blue shared)
+6. County Center/Little Italy (Green-Blue shared)
+7. Middletown (Green-Blue shared)
+8. Washington Street (Green-Blue shared)
+9. Old Town (Green-Blue shared)
+10. Morena/Linda Vista
+11. Fashion Valley
+12. Hazard Center
+13. Mission Valley Center
+14. Rio Vista
+15. Fenton Parkway
+16. Stadium
+17. Mission San Diego
+18. Grantville
+19. SDSU
+20. UC San Diego Health East
+21. 70th Street
+22. Grossmont (Green-Orange shared)
+23. Amaya Drive (Green-Orange shared)
+24. El Cajon (Green-Orange shared)
+
+### Copper Line (El Cajon ↔ Santee) — Out of v1 scope
+
+**Status:** In service since 29 Sep 2024; omitted from v1 network per v1 cut decision (newer line, scheduled for post-v1 expansion).
+
+**Source:** https://en.wikipedia.org/wiki/Copper_Line_(San_Diego_Trolley)
+
+**4 stations, west to east:**
+1. El Cajon Transit Center (shared with Orange and Green lines)
+2. Arnele Avenue
+3. Gillespie Field
+4. Santee
+
+### Unique station count
+
+- **Blue Line only:** 22 stations (UTC, Executive Drive, UC San Diego Health La Jolla, UC San Diego Central Campus, VA Medical Center, Nobel Drive, Balboa Avenue, Clairemont Drive, Tecolote Road, America Plaza, Barrio Logan, Harborside, Pacific Fleet, 8th Street, 24th Street, E Street, H Street, Palomar Street, Palm Avenue, Iris Avenue, Beyer Blvd., San Ysidro)
+- **Orange Line only:** 10 stations (Courthouse, 25th & Commercial, 32nd & Commercial, 47th Street, Euclid Avenue, Encanto/62nd Street, Massachusetts Avenue, Lemon Grove Depot, Spring Street, La Mesa Blvd.)
+- **Green Line only:** 15 stations (Gaslamp Quarter, Convention Center, Seaport Village, Morena/Linda Vista, Fashion Valley, Hazard Center, Mission Valley Center, Rio Vista, Fenton Parkway, Stadium, Mission San Diego, Grantville, SDSU, UC San Diego Health East, 70th Street)
+- **Shared across lines (v1 scope):** 13 stations
+
+**Total unique stations (v1 scope: Blue, Orange, Green):** **60 stations**
+
+**Total unique stations (including out-of-scope Copper Line):** **63 stations** (adds Arnele Avenue, Gillespie Field, Santee)
+
 ## References & sources
 
 - Transitland feed page (f-mts~rt~onebusaway): https://www.transit.land/feeds/f-mts~rt~onebusaway
@@ -84,3 +224,7 @@ The following services call at in-catalog stations (all Blue, Orange, Green line
 - 12th & Imperial Transit Center (Wikipedia): https://en.wikipedia.org/wiki/12th_%26_Imperial_Transit_Center
 - Silver Line (heritage) route: https://en.wikipedia.org/wiki/Silver_Line_(San_Diego_Trolley)
 - COASTER Santa Fe Depot shared platform: https://www.subwaynut.com/california/san_diego_trolley/santa_fe_depot/index.php
+- Blue Line (San Diego Trolley) Wikipedia: https://en.wikipedia.org/wiki/Blue_Line_(San_Diego_Trolley)
+- Orange Line (San Diego Trolley) Wikipedia: https://en.wikipedia.org/wiki/Orange_Line_(San_Diego_Trolley)
+- Green Line (San Diego Trolley) Wikipedia: https://en.wikipedia.org/wiki/Green_Line_(San_Diego_Trolley)
+- Copper Line (San Diego Trolley) Wikipedia: https://en.wikipedia.org/wiki/Copper_Line_(San_Diego_Trolley)

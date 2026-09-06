@@ -145,3 +145,180 @@ D1 (published, as of 5 September 2026): RTD Denver rail system comprises 10 acti
 ## What I did not do
 
 No product edit, no adapter wiring, no live flip, no GitHub operations, no API calls with real credentials, no GTFS-derived manual station lists (feeds are authoritative), no merge with Chicago / BART / Washington / other US city.
+
+---
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+**v1 scope:** Active light rail lines C, E, R, W only. Suspended lines (D, H, L) listed for completeness. Stations listed by official RTD name and geographic location. Interchange stations marked where lines meet. Source URLs per line are from Wikipedia line articles (authoritative for station order and naming) cross-checked against RTD official line pages.
+
+### C Line (Southwest Corridor)
+
+**Status:** Active | **Termini:** Union Station – Littleton–Mineral | **Stations:** 12 | **Source:** [Wikipedia: C Line (RTD)](https://en.wikipedia.org/wiki/C_Line_(RTD))
+
+1. Union Station (Denver) — *Interchange: A, B, E, G, N, W Lines; Amtrak*
+2. Ball Arena–Elitch Gardens (Denver) — *Interchange: E, W Lines*
+3. Empower Field at Mile High (Denver) — *Interchange: E, W Lines*
+4. Auraria West (Denver) — *Interchange: E, W Lines*
+5. 10th & Osage (Denver) — *Interchange: E, H, L Lines*
+6. Alameda (Denver) — *Interchange: E, H, L Lines*
+7. I-25 & Broadway (Denver) — *Interchange: E, H, L Lines*
+8. Evans (Denver)
+9. Englewood (Englewood)
+10. Oxford–City of Sheridan (Sheridan)
+11. Littleton–Downtown (Littleton)
+12. Littleton–Mineral (Littleton) — *Southern terminus*
+
+**Note:** Station Bates (Englewood) is planned but not yet operational; excluded from count.
+
+### E Line (Southeast Corridor)
+
+**Status:** Active | **Termini:** Union Station – RidgeGate Parkway | **Stations:** 21 | **Source:** [Wikipedia: E Line (RTD)](https://en.wikipedia.org/wiki/E_Line_(RTD))
+
+1. Union Station (Denver) — *Interchange: A, B, C, G, N, W Lines; Amtrak*
+2. Ball Arena–Elitch Gardens (Denver) — *Interchange: C, W Lines*
+3. Empower Field at Mile High (Denver) — *Interchange: C, W Lines*
+4. Auraria West (Denver) — *Interchange: C, W Lines*
+5. 10th & Osage (Denver) — *Interchange: C, H, L Lines*
+6. Alameda (Denver) — *Interchange: C, H, L Lines*
+7. I-25 & Broadway (Denver) — *Interchange: C, H, L Lines*
+8. Louisiana–Pearl (Denver) — *Interchange: H Line*
+9. University of Denver (Denver)
+10. Colorado (Denver)
+11. Yale (Denver)
+12. Southmoor (Denver) — *Interchange: H Line*
+13. Belleview (Denver) — *Interchange: R Line*
+14. Orchard (Greenwood Village) — *Interchange: R Line*
+15. Arapahoe at Village Center (Greenwood Village) — *Interchange: R Line*
+16. Dry Creek (Centennial) — *Interchange: R Line*
+17. County Line (Lone Tree) — *Interchange: R Line*
+18. Lincoln (Lone Tree) — *Interchange: R Line (southern terminus of original R Line before 2026 extension)*
+19. Sky Ridge (Lone Tree)
+20. Lone Tree City Center (Lone Tree)
+21. RidgeGate Parkway (Lone Tree) — *Southern terminus; 1,300 parking spaces*
+
+### R Line (Aurora to RidgeGate Parkway Extension)
+
+**Status:** Active | **Termini:** Peoria – RidgeGate Parkway | **Stations:** 19 | **Source:** [Wikipedia: R Line (RTD)](https://en.wikipedia.org/wiki/R_Line_(RTD))
+
+**Note:** R Line does not serve downtown Denver; operates entirely in Aurora, Centennial, and Lone Tree. Extended to RidgeGate Parkway in June 2026, sharing the southern segment with E Line.
+
+1. Peoria (Aurora) — *Northern terminus*
+2. Fitzsimons (Aurora)
+3. Colfax (Aurora)
+4. 13th Avenue (Aurora)
+5. 2nd Avenue & Abilene (Aurora)
+6. Aurora Metro Center (Aurora)
+7. Florida (Aurora) — *Interchange: H Line (suspended)*
+8. Iliff (Aurora)
+9. Nine Mile (Aurora)
+10. Dayton (Aurora)
+11. Belleview (Denver) — *Interchange: E Line*
+12. Orchard (Greenwood Village) — *Interchange: E Line*
+13. Arapahoe at Village Center (Greenwood Village) — *Interchange: E Line*
+14. Dry Creek (Centennial) — *Interchange: E Line*
+15. County Line (Lone Tree) — *Interchange: E Line*
+16. Lincoln (Lone Tree) — *Interchange: E Line; original terminus before 2026 extension*
+17. Sky Ridge (Lone Tree)
+18. Lone Tree City Center (Lone Tree)
+19. RidgeGate Parkway (Lone Tree) — *Southern terminus; shared with E Line*
+
+### W Line (West Line)
+
+**Status:** Active | **Termini:** Union Station – Jefferson County Government Center–Golden | **Stations:** 15 | **Source:** [Wikipedia: W Line (RTD)](https://en.wikipedia.org/wiki/W_Line_(RTD))
+
+**Note:** Single-track section between Federal Center and Jefferson County Government Center–Golden limits headways to no better than 15 minutes; weekend service may terminate at Federal Center instead of continuing to Golden.
+
+1. Union Station (Denver) — *Interchange: A, B, C, E, G, N Lines; Amtrak*
+2. Ball Arena–Elitch Gardens (Denver) — *Interchange: C, E Lines*
+3. Empower Field at Mile High (Denver) — *Interchange: C, E Lines*
+4. Auraria West (Denver) — *Interchange: C, E Lines*
+5. Decatur–Federal (Denver)
+6. Knox (Denver)
+7. Perry (Denver)
+8. Sheridan (Denver/Lakewood)
+9. Lamar (Lakewood)
+10. Lakewood–Wadsworth (Lakewood)
+11. Garrison (Lakewood)
+12. Oak (Lakewood)
+13. Federal Center (Lakewood)
+14. Red Rocks College (Lakewood)
+15. Jefferson County Government Center–Golden (Golden) — *Western terminus*
+
+### D Line (Central Line) — Suspended
+
+**Status:** Suspended (Downtown Rail Reconstruction Project) | **Termini:** 18th & California/18th & Stout – Littleton–Mineral | **Stations:** 12 | **Reopening:** 2027 (post-reconstruction) | **Source:** [Wikipedia: D Line (RTD)](https://en.wikipedia.org/wiki/D_Line_(RTD))
+
+**Note:** Operated 1994–2026; eliminated June 2026. Downtown downtown rail reconstruction; capacity transferred to R Line frequency increases. When reopened, D Line will serve the downtown core and Southwest Corridor shared with C Line.
+
+1. 18th & California/18th & Stout (Denver) — *Northern terminus*
+2. 16th & California/16th & Stout (Denver)
+3. Theatre District–Convention Center (Denver)
+4. Colfax at Auraria (Denver)
+5. 10th & Osage (Denver)
+6. Alameda (Denver)
+7. I-25 & Broadway (Denver)
+8. Evans (Denver)
+9. Englewood (Englewood)
+10. Oxford–City of Sheridan (Sheridan)
+11. Littleton–Downtown (Littleton)
+12. Littleton–Mineral (Littleton) — *Southern terminus*
+
+### H Line (Aurora Line) — Suspended
+
+**Status:** Suspended (Downtown Rail Reconstruction Project) | **Termini:** 18th & California/18th & Stout – Florida | **Stations:** 16 | **Reopening:** 2027 (post-reconstruction) | **Source:** [Wikipedia: H Line (RTD)](https://en.wikipedia.org/wiki/H_Line_(RTD))
+
+**Note:** Forms a "V" shape between downtown Denver and central Aurora. Began service 2006 as Aurora Line; renamed H Line in 2026. When reopened, L Line will be extended to I-25 & Broadway to restore lost downtown capacity on the northern branch. All stations shared with at least one other RTD line.
+
+1. 18th & California/18th & Stout (Denver) — *Northern terminus (downtown core)*
+2. 16th & California/16th & Stout (Denver)
+3. Theatre District–Convention Center (Denver)
+4. Colfax at Auraria (Denver)
+5. 10th & Osage (Denver) — *Interchange: C, E, L Lines*
+6. Alameda (Denver) — *Interchange: C, E, L Lines*
+7. I-25 & Broadway (Denver) — *Interchange: C, E, L Lines*
+8. Louisiana–Pearl (Denver) — *Interchange: E Line*
+9. University of Denver (Denver)
+10. Colorado (Denver)
+11. Yale (Denver)
+12. Southmoor (Denver) — *Interchange: E Line*
+13. Dayton (Aurora) — *Interchange: R Line*
+14. Nine Mile (Aurora) — *Interchange: R Line*
+15. Iliff (Aurora)
+16. Florida (Aurora) — *Southern terminus; Interchange: R Line*
+
+### L Line (Central Platte Valley Line) — Suspended
+
+**Status:** Suspended (Downtown Rail Reconstruction Project) | **Termini:** 30th & Downing – I-25 & Broadway (2027 extension) | **Stations:** 11 (12 post-2027 extension) | **Reopening:** 2027 (with extension) | **Source:** [Wikipedia: L Line (RTD)](https://en.wikipedia.org/wiki/L_Line_(RTD))
+
+**Note:** Denver's longest-running light rail line (30+ years). Currently suspended for downtown reconstruction as part of the larger Downtown Rail Reconstruction Project. When reopened in 2027, will extend to I-25 & Broadway (replacing downstream terminus), restoring lost H Line downtown capacity on the northern segment. Future unfunded extensions would add stations at 38th & Blake, 35th & Downing, and 33rd & Downing.
+
+1. 30th & Downing (Denver) — *Northern terminus*
+2. 27th & Welton (Denver)
+3. 25th & Welton (Denver)
+4. 20th & Welton (Denver)
+5. 18th & California/18th & Stout (Denver) — *Interchange: D, H Lines (both suspended)*
+6. 16th & California/16th & Stout (Denver)
+7. Theatre District–Convention Center (Denver)
+8. Colfax at Auraria (Denver)
+9. 10th & Osage (Denver) — *Interchange: C, E, H Lines*
+10. Alameda (Denver) — *Interchange: C, E, H Lines*
+11. I-25 & Broadway (Denver) — *Current temporary southern terminus; will be permanent 2027*
+
+---
+
+## Unique v1 station count
+
+**Total unique stations on v1 lines (C, E, R, W):** **47 stations**
+
+**Breakdown by sharing pattern:**
+
+- **Shared by 3 v1 lines (C, E, W):** Union Station, Ball Arena–Elitch Gardens, Empower Field at Mile High, Auraria West (4 stations)
+- **Shared by 2 v1 lines (C, E):** 10th & Osage, Alameda, I-25 & Broadway (3 stations)
+- **Shared by 2 v1 lines (E, R):** Belleview, Orchard, Arapahoe at Village Center, Dry Creek, County Line, Lincoln, Sky Ridge, Lone Tree City Center, RidgeGate Parkway (9 stations)
+- **C Line exclusive:** Evans, Englewood, Oxford–City of Sheridan, Littleton–Downtown, Littleton–Mineral (5 stations)
+- **E Line exclusive:** Louisiana–Pearl, University of Denver, Colorado, Yale, Southmoor (5 stations)
+- **R Line exclusive:** Peoria, Fitzsimons, Colfax, 13th Avenue, 2nd Avenue & Abilene, Aurora Metro Center, Florida, Iliff, Nine Mile, Dayton (10 stations)
+- **W Line exclusive:** Decatur–Federal, Knox, Perry, Sheridan, Lamar, Lakewood–Wadsworth, Garrison, Oak, Federal Center, Red Rocks College, Jefferson County Government Center–Golden (11 stations)
+
+**Total: 4 + 3 + 9 + 5 + 5 + 10 + 11 = 47 unique v1 stations**
