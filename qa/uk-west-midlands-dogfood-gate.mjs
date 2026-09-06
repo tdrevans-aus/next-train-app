@@ -14,13 +14,12 @@
  *    and East Midlands' own dogfood modules. Tolerates
  *    MissingDarwinTokenError in sandboxes without DARWIN_LDB_TOKEN set
  *    (expected outside Vercel prod), same as every other UK region.
- *  - West Midlands Metro (TfWM GTFS-RT): TFWM_API_APP_ID/TFWM_API_APP_KEY
- *    are not set anywhere and are not expected to be until Tim self-serves
- *    TfWM API portal registration (FB-48, docs/feature-backlog.md).
- *    fetchMetroStopBoard() throws MissingTfwmCredentialsError
- *    unconditionally in every environment right now. This gate asserts the
- *    dogfood dispatch surfaces that error rather than swallowing it or
- *    fabricating a schedule.
+ *  - West Midlands Metro (TfWM GTFS-RT): credentials exist (FB-48) and live
+ *    both-directions boards were proven 5 Sep 2026 (FB-53), but
+ *    TFWM_API_APP_ID/TFWM_API_APP_KEY are per-environment. With them unset,
+ *    fetchMetroStopBoard() throws MissingTfwmCredentialsError. This gate
+ *    strips the keys and asserts the dogfood dispatch surfaces that error
+ *    rather than swallowing it or fabricating a schedule.
  *
  * NOTE for Mark: at the commit this gate was written, uk-west-midlands is
  * still `status: "planned"` in the registry (Jim never flips that line
@@ -492,10 +491,11 @@ if (hubProbe.ok) {
   assert(dispatchBlocked, "live-city-api dispatch must surface MissingDarwinTokenError for the rail layer, not swallow it");
 }
 
-// Metro: TFWM_API_APP_ID/TFWM_API_APP_KEY are not set (permanent until Tim
-// self-serves TfWM API portal registration, FB-48). fetchMetroStopBoard() must
-// throw MissingTfwmCredentialsError unconditionally, and the dogfood dispatch
-// must surface that error rather than fabricate a schedule.
+// Metro: with TFWM_API_APP_ID/TFWM_API_APP_KEY unset (credentials exist per FB-48
+// but are per-environment), fetchMetroStopBoard() must throw
+// MissingTfwmCredentialsError, and the dogfood dispatch must surface that error
+// rather than fabricate a schedule. The keys are stripped here so the check is
+// deterministic regardless of the local environment.
 const previousAppId = process.env.TFWM_API_APP_ID;
 const previousAppKey = process.env.TFWM_API_APP_KEY;
 delete process.env.TFWM_API_APP_ID;
