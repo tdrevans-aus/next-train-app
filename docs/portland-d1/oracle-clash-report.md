@@ -93,3 +93,208 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 ## Skip risk
 
 **None identified at D1 scope.** TriMet GTFS feeds are live and current (last verified 6 Sep 2026 via Transitland). GTFS-RT feeds require AppID registration but are documented and accessible. All five MAX lines are operational and serve the downtown Portland hub. Portland Streetcar and WES board-eligibility verdicts are clear (out-product). No feed availability, licensing, or scope ambiguity blocks progression to Luke for D1 pack.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+All station names transcribed from [TriMet MAX Stations Index](https://trimet.org/max/stations.htm) (official source, verified 6 Sep 2026). Per-line termini and shared segments identified per official route descriptions.
+
+### MAX Blue Line
+**Terminus (West):** Hatfield Government Center | **Terminus (East):** Cleveland Ave | **Stations:** 47  
+[TriMet MAX Blue Line schedule](https://trimet.org/schedules/maxblueline)
+
+1. Hatfield Government Center (western terminus)
+2. Hillsboro Central/SE 3rd Ave Transit Center
+3. Hillsboro Health District
+4. Washington/SE 12th Ave
+5. Hillsboro Airport/Fairgrounds
+6. Hawthorn Farm
+7. Orenco
+8. Quatama
+9. Willow Creek/SW 185th Ave Transit Center
+10. Elmonica/SW 170th Ave
+11. Merlo/SW 158th Ave
+12. Beaverton Creek
+13. Millikan Way
+14. Beaverton Central
+15. Beaverton Transit Center
+16. Sunset Transit Center
+17. Washington Park
+18. Goose Hollow/SW Jefferson St
+19. Providence Park
+20. Galleria/SW 10th Ave
+21. Library/SW 9th Ave
+22. Pioneer Square North [downtown transit mall - shared with Red Line]
+23. Pioneer Square South [downtown transit mall - shared with Red Line]
+24. Morrison/SW 3rd Ave
+25. Yamhill District
+26. Oak/SW 1st Ave
+27. Old Town/Chinatown
+28. Rose Quarter Transit Center [shared with Red Line and Yellow Line]
+29. Convention Center
+30. NE 7th Ave
+31. Lloyd/NE 11th Ave
+32. Hollywood/NE 42nd Ave
+33. NE 60th Ave
+34. NE 82nd Ave
+35. Gateway/NE 99th Ave Transit Center [shared with Red Line and Green Line - transfer point]
+36. E 102nd Ave
+37. E 122nd Ave
+38. E 148th Ave
+39. E 162nd Ave
+40. E 172nd Ave
+41. E 181st Ave
+42. Rockwood/E 188th Ave
+43. Ruby Junction/E 197th Ave
+44. Civic Dr
+45. Gresham City Hall
+46. Gresham Central Transit Center
+47. Cleveland Ave (eastern terminus)
+
+### MAX Red Line
+**Terminus (West):** Hillsboro Airport/Fairgrounds | **Terminus (East):** Portland International Airport | **Stations:** 36  
+[TriMet MAX Red Line schedule](https://trimet.org/schedules/maxredline)
+
+*Westbound leg (stations 1-31 shared with Blue Line, Hillsboro to downtown):*
+
+1. Hillsboro Airport/Fairgrounds (western terminus) [shared with Blue Line]
+2. Hawthorn Farm [shared with Blue Line]
+3. Orenco [shared with Blue Line]
+4. Quatama [shared with Blue Line]
+5. Willow Creek/SW 185th Ave Transit Center [shared with Blue Line]
+6. Elmonica/SW 170th Ave [shared with Blue Line]
+7. Merlo/SW 158th Ave [shared with Blue Line]
+8. Beaverton Creek [shared with Blue Line]
+9. Millikan Way [shared with Blue Line]
+10. Beaverton Central [shared with Blue Line]
+11. Beaverton Transit Center [shared with Blue Line]
+12. Sunset Transit Center [shared with Blue Line]
+13. Washington Park [shared with Blue Line]
+14. Goose Hollow/SW Jefferson St [shared with Blue Line]
+15. Providence Park [shared with Blue Line]
+16. Library/SW 9th Ave [shared with Blue Line]
+17. Galleria/SW 10th Ave [shared with Blue Line]
+18. Pioneer Square North [downtown transit mall - shared with Blue Line]
+19. Pioneer Square South [downtown transit mall - shared with Blue Line]
+20. Yamhill District [shared with Blue Line]
+21. Morrison/SW 3rd Ave [shared with Blue Line]
+22. Oak/SW 1st Ave [shared with Blue Line]
+23. Old Town/Chinatown [shared with Blue Line]
+24. Rose Quarter Transit Center [shared with Blue Line and Yellow Line]
+25. Convention Center [shared with Blue Line]
+26. NE 7th Ave [shared with Blue Line]
+27. Lloyd/NE 11th Ave [shared with Blue Line]
+28. Hollywood/NE 42nd Ave [shared with Blue Line]
+29. NE 60th Ave [shared with Blue Line]
+30. NE 82nd Ave [shared with Blue Line]
+31. Gateway/NE 99th Ave Transit Center [shared with Blue Line and Green Line - transfer point]
+
+*Eastbound branch (stations 32-36, Red Line unique, airport leg):*
+
+32. Gateway North [Red Line unique]
+33. Parkrose/Sumner Transit Center [Red Line unique]
+34. Cascades [Red Line unique]
+35. Mt Hood Ave [Red Line unique]
+36. Portland International Airport (eastern terminus) [Red Line unique]
+
+### MAX Green Line
+**Terminus (North):** Gateway/NE 99th Ave Transit Center | **Terminus (South):** Clackamas Town Center Transit Center | **Stations:** 9  
+[TriMet MAX Green Line schedule](https://trimet.org/schedules/maxgreenline)
+
+*Note: As of 23 Aug 2026, Green Line operates Gateway–Clackamas only (downtown service discontinued). Stations below reflect current routing.*
+
+1. Gateway/NE 99th Ave Transit Center (northern terminus) [shared with Blue Line and Red Line - transfer point]
+2. SE Main St
+3. SE Division St
+4. SE Powell Blvd
+5. SE Holgate Blvd
+6. Lents Town Center/SE Foster Rd
+7. SE Flavel St
+8. SE Fuller Rd
+9. Clackamas Town Center Transit Center (southern terminus)
+
+### MAX Yellow Line
+**Terminus (North):** Expo Center | **Terminus (South):** PSU South/SW 6th & College | **Stations:** 18  
+[TriMet MAX Yellow Line schedule](https://trimet.org/schedules/maxyellowline)
+
+*Northbound leg (Expo Center to Convention Center):*
+
+1. PSU South/SW 6th & College (southern terminus)
+2. PSU Urban Center/SW 6th & Montgomery
+3. SW 6th & Madison St
+4. Pioneer Courthouse/SW 6th [downtown hub - interconnect point (Yellow/Orange/Blue/Red)]
+5. SW 6th & Pine St
+6. NW 6th & Davis St
+7. Union Station/NW 6th & Hoyt [downtown transfer (Yellow/Orange at different street)]
+8. Rose Quarter Transit Center [shared with Blue Line and Red Line]
+9. Interstate/Rose Quarter
+10. Albina/Mississippi
+11. Overlook Park
+12. N Prescott St
+13. N Killingsworth St
+14. Rosa Parks
+15. N Lombard Transit Center
+16. Kenton/N Denver Ave
+17. Delta Park/Vanport
+18. Expo Center (northern terminus)
+
+### MAX Orange Line
+**Terminus (North):** Union Station/NW 5th & Glisan | **Terminus (South):** SE Park Ave | **Stations:** 17  
+[TriMet MAX Orange Line schedule](https://trimet.org/schedules/maxorangeline)
+
+*Northbound leg (downtown):*
+
+1. Union Station/NW 5th & Glisan St (northern terminus) [downtown transfer (Orange/Yellow at different street)]
+2. NW 5th & Couch St
+3. SW 5th & Oak St
+4. Pioneer Place/SW 5th Ave [downtown hub - interconnect point (Orange/Yellow/Blue/Red)]
+5. City Hall/SW 5th & Jefferson St
+6. PSU Urban Center/SW 5th & Mill [downtown (Orange/Yellow at different location)]
+7. PSU South/SW 5th & Jackson [downtown (Orange/Yellow at different location)]
+8. Lincoln/SW 3rd Ave
+
+*Southbound leg (south of downtown):*
+
+9. South Waterfront/S Moody
+10. OMSI/SE Water
+11. Clinton/SE 12th Ave
+12. SE 17th & Rhine St
+13. SE 17th & Holgate Blvd
+14. SE Bybee Blvd
+15. SE Tacoma/Johnson Creek
+16. Milwaukie/Main St
+17. SE Park Ave (southern terminus)
+
+### Shared segments summary
+
+- **Beaverton to downtown loop (Blue/Red shared):** Hillsboro Airport/Fairgrounds through Gateway/NE 99th Ave Transit Center (31 shared stations) — both lines traverse west, central, and east corridors identically; diverge only at Gateway (Red continues to Airport, Blue to Gresham).
+- **Downtown Transit Mall (Blue/Red shared):** Pioneer Square North/South, Morrison, Yamhill District, Oak, Old Town/Chinatown, Rose Quarter, Convention Center, NE 7th–NE 82nd, Gateway Transit Center (13 consecutive shared stations through downtown corridor).
+- **Rose Quarter Transit Center (Blue/Red/Yellow shared):** Only point where three lines meet; serves as primary downtown convergence before line-specific routing (Blue/Red east, Yellow north).
+- **Gateway Transit Center (Blue/Red/Green shared):** Southern terminus of downtown shared corridor; junction for Green Line branch to I-205 Clackamas corridor.
+- **Pioneer Courthouse/Pioneer Place downtown complex (Yellow/Orange/Blue/Red in zone):** Not a single stop but a three-platform complex (Pioneer Square South/North for Blue/Red; Pioneer Courthouse/SW 6th for Yellow; Pioneer Place/SW 5th for Orange) within ~200 meters, walkable as transfer.
+- **PSU Urban Center and PSU South (Yellow/Orange different streets):** Both lines serve PSU stations but on different downtown streets (Yellow on SW 6th, Orange on SW 5th); ~150 meters apart, not interlined.
+- **Union Station complex (Yellow/Orange different streets):** Both lines serve Union Station but on different downtown streets (Yellow at NW 6th & Hoyt, Orange at NW 5th & Glisan); not interlined, separate platforms.
+- **I-205 Clackamas corridor (Green Line only):** Green Line runs from Gateway south on dedicated I-205 alignment, does not share track with Blue/Red/Yellow/Orange; terminus Clackamas Town Center.
+
+### Interchange stations
+
+| Station | Lines | Location | Notes |
+| --- | --- | --- | --- |
+| Gateway/NE 99th Ave Transit Center | Blue, Red, Green | East Portland | Primary eastern hub; Green branches south to Clackamas; Blue/Red diverge (Red east to Airport, Blue east to Gresham) |
+| Rose Quarter Transit Center | Blue, Red, Yellow | Downtown/NE Portland | Secondary hub; Yellow joins Blue/Red downtown corridor |
+| Pioneer Courthouse/SW 6th & Pioneer Place/SW 5th | Yellow, Orange, Blue, Red (zone) | Downtown Pioneer Square | Three-platform transfer zone (Pioneer Square South/North, Pioneer Courthouse, Pioneer Place); all five MAX colors meet within walking distance |
+| Pioneer Square North/South | Blue, Red | Downtown | Directional pair; east-west downtown routing for Blue/Red |
+| Union Station | Yellow (NW 6th), Orange (NW 5th) | Downtown | Not unified; separate platforms 150 meters apart; both serve downtown, different routing |
+| PSU Urban Center & PSU South | Yellow (SW 6th), Orange (SW 5th) | Downtown PSU | Two separate stations; line-specific downtown downtown routing, not unified interchange |
+
+### Total unique station count
+
+**94 unique stations** across all five MAX lines.
+
+Station count by line:
+- MAX Blue Line: 47 stations (31 shared with Red; 2 shared with Green at Gateway; 1 shared with Yellow/Red at Rose Quarter)
+- MAX Red Line: 36 stations (31 shared with Blue; 1 shared with Yellow at Rose Quarter; 1 shared with Green at Gateway; 5 unique: Gateway North, Parkrose/Sumner, Cascades, Mt Hood Ave, Portland International Airport)
+- MAX Yellow Line: 18 stations (1 shared with Blue/Red at Rose Quarter; 17 unique)
+- MAX Orange Line: 17 stations (all unique to Orange Line)
+- MAX Green Line: 9 stations (1 shared with Blue/Red at Gateway; 8 unique)
+
+Unique count: 47 (Blue) + 5 (Red unique) + 17 (Yellow) + 17 (Orange) + 8 (Green unique) = **94 unique stations**

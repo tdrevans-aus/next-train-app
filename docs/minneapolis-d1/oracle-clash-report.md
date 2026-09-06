@@ -85,3 +85,78 @@ Northstar commuter rail service ended January 5, 2026; v1 is light rail only (Bl
 7. Northstar Commuter Rail is permanently ended — do not attempt to include in RT feeds. Bus replacements operate under different route codes.
 8. No key friction: both static and realtime feeds are free/public. Verify license terms directly with Metro Transit to close the "unclear" confidence level if a formal CC0 or agency license document exists.
 9. Do not invent city=msp, mpls, or twin-cities-metro; use city=minneapolis per tracker convention. Verify final city token at D1.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+### METRO Blue Line (Target Field → Mall of America)
+**19 stations, north to south**
+
+1. Target Field
+2. Warehouse District/Hennepin Avenue
+3. Nicollet Mall
+4. Government Plaza
+5. U.S. Bank Stadium
+6. Cedar–Riverside
+7. Franklin Avenue
+8. Lake Street/Midtown
+9. 38th Street
+10. 46th Street
+11. 50th Street/Minnehaha Park
+12. VA Medical Center
+13. Fort Snelling
+14. Terminal 1–Lindbergh
+15. Terminal 2–Humphrey
+16. American Boulevard
+17. Bloomington Central
+18. 30th Avenue
+19. Mall of America
+
+**Source:** https://en.wikipedia.org/wiki/Metro_Blue_Line_(Minnesota)
+
+### METRO Green Line (Target Field → Saint Paul Union Depot)
+**23 stations, west to east**
+
+1. Target Field
+2. Warehouse District/Hennepin Avenue
+3. Nicollet Mall
+4. Government Plaza
+5. U.S. Bank Stadium
+6. West Bank
+7. East Bank
+8. Stadium Village
+9. Prospect Park
+10. Westgate
+11. Raymond Avenue
+12. Fairview Avenue
+13. Snelling Avenue
+14. Hamline Avenue
+15. Lexington Parkway
+16. Victoria Street
+17. Dale Street
+18. Western Avenue
+19. Capitol/Rice Street
+20. Robert Street
+21. 10th Street
+22. Central
+23. Saint Paul Union Depot
+
+**Source:** https://en.wikipedia.org/wiki/Metro_Green_Line_(Minnesota)
+
+### Shared downtown Minneapolis segment (interchange stations)
+**5 stations where both lines run:**
+1. Target Field
+2. Warehouse District/Hennepin Avenue
+3. Nicollet Mall
+4. Government Plaza
+5. U.S. Bank Stadium
+
+### Green Line extensions status (as of 2026-09-06)
+**Southwest Light Rail Transit (Southwest LRT / Green Line Extension):** Planned 16-station, 14.5-mile light rail corridor from Minneapolis to Eden Prairie, with service projected to open in 2027. Not in v1 scope; no stations on this extension are operational as of 6 September 2026.
+
+### Summary
+- **Blue Line:** 19 stations
+- **Green Line:** 23 stations
+- **Shared stations:** 5 stations
+- **Total unique stations:** 37
+
+The 5 shared stations (Target Field through U.S. Bank Stadium) form a contiguous downtown Minneapolis corridor where riders can walk between lines at any of these 5 interchange stations before the network diverges: Blue continues southwest/south to the airport and Mall of America; Green continues east/northeast through the University of Minnesota campus to downtown Saint Paul.

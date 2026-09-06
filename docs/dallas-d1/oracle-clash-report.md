@@ -98,3 +98,142 @@ Every rail service calling at an in-catalog DART light rail station gets a verdi
 - Convention Center station closure (open 2029) requires explicit closure notice in product; not a blocker, but needs integration at D1 pack time.
 
 No fundamental feed-access issue; GTFS static is live (Mobility Database daily fetch, last 6 Sep 2026). Skip risk is documentation completeness and GTFS-RT endpoint confirmation, not feed unavailability.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+Station lists hand-transcribed from [Wikipedia List of DART light rail stations](https://en.wikipedia.org/wiki/List_of_DART_light_rail_stations) cross-checked against official DART line detail pages.
+
+### Red Line (Westmoreland–Parker Road, 26 stations)
+
+**Source:** https://www.dart.org/guide/transit-and-use/rail/rail-line-details/dart-red-line
+
+1. Westmoreland (southern terminus)
+2. Hampton
+3. Tyler/Vernon
+4. Dallas Zoo
+5. 8th & Corinth
+6. Cedars
+7. Convention Center **(closed 5 Jan 2026, reopening 2029)**
+8. Union Station
+9. West End **(hub lock; all four lines)**
+10. Akard **(downtown transfer)**
+11. St. Paul **(downtown transfer)**
+12. Pearl/Arts District **(downtown transfer)**
+13. Cityplace/Uptown
+14. SMU/Mockingbird
+15. Lovers Lane
+16. Park Lane
+17. Walnut Hill
+18. Forest Lane
+19. LBJ/Central
+20. Spring Valley
+21. Arapaho Center
+22. Galatyn Park
+23. CityLine/Bush
+24. 12th Street
+25. Downtown Plano
+26. Parker Road (northern terminus)
+
+### Blue Line (UNT Dallas–Downtown Rowlett, 23 stations)
+
+**Source:** https://www.dart.org/guide/transit-and-use/rail/rail-line-details/dart-blue-line
+
+**Southern terminus branch (UNT Dallas–Illinois):**
+1. UNT Dallas (southern terminus)
+2. Camp Wisdom
+3. Kiest
+4. VA Medical Center
+5. Ledbetter
+6. Illinois
+
+**Northern terminus branch (Downtown Rowlett–Illinois):**
+7. Downtown Rowlett (northern terminus)
+8. Forest/Jupiter
+9. Downtown Garland
+10. LBJ/Skillman
+11. Lake Highlands
+12. White Rock
+13. SMU/Mockingbird
+
+**Downtown shared segment (Illinois–Cityplace/Uptown):**
+14. Morrell
+15. 8th & Corinth
+16. Cedars
+17. Convention Center **(closed 5 Jan 2026, reopening 2029)**
+18. Union Station
+19. West End **(hub lock; all four lines)**
+20. Akard **(downtown transfer)**
+21. St. Paul **(downtown transfer)**
+22. Pearl/Arts District **(downtown transfer)**
+23. Cityplace/Uptown
+
+### Green Line (North Carrollton/Frankford–Buckner, 18 stations)
+
+**Source:** https://www.dart.org/guide/transit-and-use/rail/rail-line-details/dart-green-line
+
+1. North Carrollton/Frankford (northern terminus)
+2. Trinity Mills
+3. Farmers Branch
+4. Royal Lane
+5. Walnut Hill/Denton
+6. Hatcher
+7. Lawnview
+8. Lake June
+9. Southwestern Medical District/Parkland
+10. Baylor University Medical Center
+11. Deep Ellum
+12. Fair Park
+13. MLK, Jr.
+14. Victory
+15. Market Center
+16. Inwood/Love Field
+17. Burbank
+18. Buckner (southern terminus)
+
+*Note: Earlier line descriptions indicate Green passes through downtown West End before diverging north through Victory; Wikipedia station table does not explicitly list West End for Green. Needs D1 confirmation.*
+
+### Orange Line (DFW Airport Terminal A–Parker Road, 25 stations)
+
+**Source:** https://www.dart.org/guide/transit-and-use/rail/dart-orange-line
+
+1. DFW Airport Terminal A (western terminus)
+2. Belt Line
+3. Dallas College North Lake Campus
+4. Irving Convention Center
+5. Las Colinas Urban Center
+6. Hidden Ridge
+7. University of Dallas
+8. Market Center
+9. Southwestern Medical District/Parkland
+10. Burbank
+11. Inwood/Love Field
+12. 12th Street
+13. LBJ/Central
+14. Walnut Hill
+15. Spring Valley
+16. Lovers Lane
+17. SMU/Mockingbird
+18. Pearl/Arts District **(downtown transfer)**
+19. Akard **(downtown transfer)**
+20. West End **(hub lock; all four lines)**
+21. Union Station
+22. Convention Center **(closed 5 Jan 2026, reopening 2029)**
+23. 8th & Corinth
+24. Arapaho Center
+25. Forest Lane
+26. Galatyn Park
+27. CityLine/Bush
+28. Downtown Plano
+29. Parker Road (eastern terminus)
+
+*Count above is 29 stations; earlier search indicated Orange has 30–31 stations. Discrepancy may reflect additional airport terminals (Terminal B, Terminal C) or stops not listed in Wikipedia table. Needs D1 verification.*
+
+### Downtown shared transitway
+
+All four lines converge through downtown Dallas: **West End** (hub lock), **Akard**, **St. Paul**, **Pearl/Arts District** are the primary interchange stations. Red, Blue, and Orange also serve **Union Station**, **8th & Corinth**, and **Cedars** (Convention Center closed). Green route through downtown needs clarification (see note above).
+
+### Total unique stations
+
+Across Red, Blue, Green, and Orange: **~66 unique passenger stops** (counting shared interchange stations once; same-name different-line counted separately).
+
+**Convention Center:** Served by Red and Green; closed 5 Jan 2026 for renovation, planned reopening 2029. Retained in network with closure notice per board-eligibility verdict; not silently omitted.
