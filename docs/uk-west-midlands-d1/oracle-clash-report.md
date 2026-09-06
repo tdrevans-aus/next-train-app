@@ -106,8 +106,9 @@ oracle-clash-report.md, per the top-level session's instruction to put this sect
 West Midlands Metro's situation is a **credentials gap, not a feed-unconfirmed gap** (unlike East
 Midlands' NET tram): `lib/providers/uk-metro-wm.js`'s `fetchMetroStopBoard()` checks
 `TFWM_API_APP_ID`/`TFWM_API_APP_KEY` first and throws `MissingTfwmCredentialsError`
-unconditionally while they're unset — permanent until Tim self-serves TfWM API portal
-registration (FB-48, `docs/feature-backlog.md`). The dogfood dispatch surfaces that error rather
+while they're unset. Credentials were registered (FB-48) and live both-directions boards proven on
+5 Sep 2026 (FB-53); the keys are per-environment, so any deployment without them shows the error
+instead of a board. The dogfood dispatch surfaces that error rather
 than swallowing it or fabricating a schedule, same shape as every other UK second-agency case.
 
 **Hub-lock correction found while wiring (worth Mark/Tim knowing):** the task brief for this pass

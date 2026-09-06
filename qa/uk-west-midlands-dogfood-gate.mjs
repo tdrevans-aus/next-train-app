@@ -492,10 +492,11 @@ if (hubProbe.ok) {
   assert(dispatchBlocked, "live-city-api dispatch must surface MissingDarwinTokenError for the rail layer, not swallow it");
 }
 
-// Metro: TFWM_API_APP_ID/TFWM_API_APP_KEY are not set (permanent until Tim
-// self-serves TfWM API portal registration, FB-48). fetchMetroStopBoard() must
-// throw MissingTfwmCredentialsError unconditionally, and the dogfood dispatch
-// must surface that error rather than fabricate a schedule.
+// Metro: with TFWM_API_APP_ID/TFWM_API_APP_KEY unset (credentials exist per FB-48
+// but are per-environment), fetchMetroStopBoard() must throw
+// MissingTfwmCredentialsError, and the dogfood dispatch must surface that error
+// rather than fabricate a schedule. The keys are stripped here so the check is
+// deterministic regardless of the local environment.
 const previousAppId = process.env.TFWM_API_APP_ID;
 const previousAppKey = process.env.TFWM_API_APP_KEY;
 delete process.env.TFWM_API_APP_ID;
