@@ -121,7 +121,7 @@ const SMOKE_SCRIPTS = [
   "greater-anglia-dogfood-gate.mjs",
   "london-se-national-rail-dogfood-gate.mjs",
   "greater-manchester-dogfood-gate.mjs",
-  "cumbria-planned-gate.mjs",
+  "cumbria-dogfood-gate.mjs",
   "liverpool-city-region-dogfood-gate.mjs",
   "southwest-dogfood-gate.mjs",
   "uk-darwin-cache.mjs",

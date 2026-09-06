@@ -139,6 +139,33 @@ entirely, so there's nothing to model. See direction-model-memo.md.
    region packs whether the queue has genuinely been exhausted or whether new regions have been
    added to scope since this pack was written.
 
+## Flip follow-through (Jim, 6 Sep 2026) — done ahead of the flip, and what's left for Mark
+
+Per CLAUDE.md's flip-follow-through split (added 30 Aug 2026, corrected same day) and
+docs/jim-brief-cumbria-flip.md, the following is code (not list membership) and is landed here,
+ahead of the flip, with cumbria still `status: "planned"`:
+
+- `lib/cities/cumbria/dogfood-next-train.js` — National Rail dogfood module, same shape as
+  south-wales/greater-anglia/north-east. No `direction-hubs.json` ships (no live Darwin payload
+  has ever been pulled to evidence a hub-chip candidate the way Greater Anglia's Norwich hub was)
+  — `loadDirectionHubs()` degrades to an empty, no-op hub list.
+- Dispatch switch-cases added to `directionsFor()`/`getMultiCityNextTrain()` in
+  `lib/cities/live-city-api.js` for `cityId === "cumbria"`. Safe ahead of the flip: production
+  routes gate on `assertCityLive()` first, not on `MULTI_CITY_IDS` membership.
+- `qa/cumbria-dogfood-gate.mjs` replaces the retired `qa/cumbria-planned-gate.mjs`, registered in
+  `qa/run-all.mjs` in its place.
+
+**NOT done here — bundle these three one-line additions into Mark's actual status-flip commit**
+(same as every other UK region's flip so far):
+
+1. Add `"cumbria"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add cumbria to `brisbane-dogfood.js`'s mount/available map.
+3. Add cumbria to `journey-model.js`'s persisted-city/country lists.
+
+`qa/live-city-lists-sync.mjs` enforces that those three lists exactly equal the registry's
+`status === "live"` set — adding cumbria to them while status is still `planned` breaks that gate.
+
 ## H7 / license summary
 
 Europe/London, HAS DST (BST/GMT). National Rail under OGL 2.0 + NRE amendments (unclear on
