@@ -1,17 +1,12 @@
 /**
- * Glasgow adapter/dispatch wiring gate. Replaces glasgow-planned-gate.mjs
- * (retired) — Glasgow STAYS `status: "planned"` here (this is the pre-flip
- * dogfood wiring pass, docs/jim-brief-glasgow-flip.md). Per CLAUDE.md's
- * flip-follow-through split (added 30 Aug 2026, corrected same day): the
- * dogfood module, the live-city-api.js dispatch switch-cases, and this gate
- * are safe to land ahead of the flip because production routes gate on
- * assertCityLive() first, not on MULTI_CITY_IDS membership. Glasgow is
- * deliberately NOT added to MULTI_CITY_IDS, brisbane-dogfood.js's
- * mount/available map, or journey-model.js's persisted-city/country lists
- * yet — those three list-membership edits are Mark's flip commit, not this
- * one (qa/live-city-lists-sync.mjs enforces that they equal the registry's
- * live set). See docs/glasgow-d1/jim-handoff.md for the exact note left for
- * Mark.
+ * Glasgow adapter/dispatch wiring gate + flip-commit assertions. Wired by
+ * Jim (dogfood module, dispatch switch-cases), flipped by Mark (this commit:
+ * status live, list additions). Per CLAUDE.md's flip-follow-through split
+ * (added 30 Aug 2026, corrected same day): status flip, MULTI_CITY_IDS
+ * addition to live-city-api.js / brisbane-dogfood.js / journey-model.js /
+ * app.js / city-session.js, LIVE_UK_REGION_IDS in uk-planned-gate.mjs, and
+ * this gate's assertions all land in Mark's flip commit. See
+ * docs/glasgow-d1/jim-handoff.md for the handoff note.
  *
  * TWO INDEPENDENT NETWORKS UNDER ONE CITY ID, no single hub-lock ("Option A
  * at n=2" — Glasgow Central GLC + Glasgow Queen Street GLQ, separate
@@ -94,14 +89,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity — STAYS planned (Mark/Tim's flip call, not made here).
+// Registry identity — now live (Mark's flip call).
 const live = assertCityLive("glasgow");
-assert(live?.ok === false, "assertCityLive(glasgow) must fail — status is still planned");
-assert(live?.status === 501, "glasgow must be 501 planned");
+assert(live?.ok === true, "assertCityLive(glasgow) must succeed — status is live");
 
 const entry = getCity("glasgow");
-assert(entry?.status === "planned", "glasgow registry status must stay planned");
-assert(entry?.adapterReady === true, "glasgow adapterReady must be true");
+assert(entry?.status === "live", "glasgow registry status must be live");
+assert(entry?.adapterReady === undefined, "glasgow adapterReady flag is removed once live");
 assert(entry?.displayName === "Glasgow", "glasgow display name must be Glasgow");
 assert(entry?.timeZone === "Europe/London", "glasgow timezone must be Europe/London");
 assert(CITIES.filter((city) => city.id === "glasgow").length === 1, "glasgow must appear once in the registry");
@@ -109,8 +103,8 @@ for (const forbiddenId of ["glasgow-subway", "spt", "scotland-glasgow"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// NOT yet in MULTI_CITY_IDS — that's Mark's flip commit, not this pass.
-assert(isMultiCity("glasgow") === false, "glasgow must NOT be in MULTI_CITY_IDS yet — that's Mark's flip commit");
+// Now in MULTI_CITY_IDS — this is the flip commit.
+assert(isMultiCity("glasgow") === true, "glasgow must be in MULTI_CITY_IDS");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/glasgow-d1");
@@ -467,5 +461,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "glasgow-dogfood-gate: ok (planned/501, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired, D1 pack, 2 rail + 15 Subway stations, 'Option A at n=2' proven at both Glasgow Central and Glasgow Queen Street independently with no hub-lock between them, doNotGroup at Buchanan Street/Glasgow Queen Street and St Enoch/Glasgow Central, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Subway dispatch correctly surfaces GlasgowSubwayFeedUnverifiedError rather than the static Outer/Inner Circle label list, Perth Australia stays green)"
+  "glasgow-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 2 rail + 15 Subway stations, 'Option A at n=2' proven at both Glasgow Central and Glasgow Queen Street independently with no hub-lock between them, doNotGroup at Buchanan Street/Glasgow Queen Street and St Enoch/Glasgow Central, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Subway dispatch correctly surfaces GlasgowSubwayFeedUnverifiedError rather than the static Outer/Inner Circle label list, Perth Australia stays green)"
 );
