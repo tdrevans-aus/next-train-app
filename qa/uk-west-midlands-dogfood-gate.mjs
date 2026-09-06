@@ -156,6 +156,42 @@ const grandCentralEntries = dogfoodStations.filter((s) => s.name === "Grand Cent
 assert(grandCentralEntries.length === 1, "Grand Central must appear once in the dogfood list (metro only)");
 assert(grandCentralEntries[0]?.mode === "metro", "Grand Central's dogfood entry must be mode metro");
 
+// Shared-name Metro disambiguation (6 Sep 2026,
+// docs/jim-brief-uk-west-midlands-metro-shared-names.md): Five Ways,
+// Jewellery Quarter and The Hawthorns each share a printed name with a
+// National Rail station in this same catalog. The Metro entries were renamed
+// with a "(Metro)" suffix so /api/city-stations never lists two identical
+// rows for one station, and so a rider can actually reach the tram board
+// (neither /api/directions nor /api/next-train accepts a mode parameter, so
+// resolveCatalogEntry()'s rail-first default would otherwise always win).
+const dogfoodNameCounts = new Map();
+for (const s of dogfoodStations) {
+  dogfoodNameCounts.set(s.name, (dogfoodNameCounts.get(s.name) ?? 0) + 1);
+}
+const duplicateDogfoodNames = [...dogfoodNameCounts.entries()].filter(([, count]) => count > 1);
+assert(
+  duplicateDogfoodNames.length === 0,
+  `dogfood catalog must have no duplicate printed names, found: ${JSON.stringify(duplicateDogfoodNames)}`
+);
+
+const jqMetro = resolveCatalogEntry("Jewellery Quarter (Metro)");
+assert(jqMetro?.mode === "metro", 'resolveCatalogEntry("Jewellery Quarter (Metro)") must resolve to the Metro entry with no mode given');
+assert(jqMetro?.catalogId === "metro:jewellery-quarter", 'resolveCatalogEntry("Jewellery Quarter (Metro)") must resolve to catalogId metro:jewellery-quarter');
+
+const jqRail = resolveCatalogEntry("Jewellery Quarter");
+assert(jqRail?.mode === "train", 'resolveCatalogEntry("Jewellery Quarter") must still resolve to rail (rail-first default unaffected by the Metro alias)');
+assert(jqRail?.crs === "JEQ", 'resolveCatalogEntry("Jewellery Quarter") must resolve to CRS JEQ');
+
+for (const [bare, suffixed, catalogId] of [
+  ["Five Ways", "Five Ways (Metro)", "metro:five-ways"],
+  ["The Hawthorns", "The Hawthorns (Metro)", "metro:the-hawthorns"],
+]) {
+  const metroEntry = resolveCatalogEntry(suffixed);
+  assert(metroEntry?.mode === "metro" && metroEntry?.catalogId === catalogId, `resolveCatalogEntry("${suffixed}") must resolve to the Metro entry (${catalogId})`);
+  const railEntry = resolveCatalogEntry(bare);
+  assert(railEntry?.mode === "train", `resolveCatalogEntry("${bare}") must still resolve to rail, rail-first default unaffected by the Metro alias`);
+}
+
 // Direction hub anchoring (FB-50, docs/jim-brief-uk-west-midlands-hub-anchoring.md).
 // Pure/data-only — no Darwin token needed for any of this section.
 
@@ -545,6 +581,25 @@ if (previousAppKey === undefined) {
   delete process.env.TFWM_API_APP_KEY;
 } else {
   process.env.TFWM_API_APP_KEY = previousAppKey;
+}
+
+// Live positive check for the renamed Metro entry (6 Sep 2026 brief item 3d):
+// with TFWM_API_APP_ID/TFWM_API_APP_KEY present, the renamed catalog name
+// must actually reach the tram board with no mode given — proving the
+// rename, not just the resolver, closes the "rider can never reach the tram
+// board" bug the brief describes. Skipped with a printed note when the keys
+// are absent (same tolerance as every other live probe in this gate).
+if (String(process.env.TFWM_API_APP_ID ?? "").trim() && String(process.env.TFWM_API_APP_KEY ?? "").trim()) {
+  const jqMetroLive = await getUkWestMidlandsDogfoodDirections("Jewellery Quarter (Metro)");
+  assert(
+    Array.isArray(jqMetroLive.directions) && jqMetroLive.directions.length > 0,
+    'getUkWestMidlandsDogfoodDirections("Jewellery Quarter (Metro)") must return live tram directions with no mode given, got: ' +
+      JSON.stringify(jqMetroLive)
+  );
+} else {
+  console.log(
+    "uk-west-midlands-dogfood-gate: TFWM_API_APP_ID/TFWM_API_APP_KEY not set in this environment — live tram-directions assertion for \"Jewellery Quarter (Metro)\" not exercised here (expected outside an environment with TfWM keys)."
+  );
 }
 
 // Metro platform-id merge (stopIds[], 5 Sep 2026 direction-collapse fix). Pure/

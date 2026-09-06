@@ -9,7 +9,8 @@
     "stopIds (array, both directional platform ids) populated 5 Sep 2026 via scripts/enrich-wm-metro-stop-ids.mjs, TfWM-code-verified against both the GTFS static feed and a live trip_updates pull. Legacy singular stopId is deliberately left null — TfWM's feed keys stop_time_update.stop_id by platform, not by station, so a single scalar can't represent both directions without silently dropping one; see docs/uk-west-midlands-d1/oracle-clash-report.md's 5 Sep addendum and the script's header comment for the adapter follow-up this unblocks (accept stopIds[], merge trips).",
     "stationId (reference only, GTFS parent/location_type=1 id) never appears in the live trip_updates feed — do not filter on it.",
     "Do not use CRS for Metro stops. catalogId disambiguates NR interchanges (Grand Central vs BHM, Wolverhampton Station vs WVH).",
-    "Wednesbury–Brierley Hill / Dudley extension stops are out until operator lists under Current Service."
+    "Wednesbury–Brierley Hill / Dudley extension stops are out until operator lists under Current Service.",
+    "This file records TfWM's own published stop names verbatim and is deliberately NOT renamed. Three of these names (Five Ways, Jewellery Quarter, The Hawthorns) collide with a National Rail station of the same printed name already in this region's catalog; lib/cities/uk-west-midlands/stations.json's catalog entries for those three are suffixed \"(Metro)\" to disambiguate (6 Sep 2026, see docs/uk-west-midlands-d1/oracle-clash-report.md's 6 Sep addendum). The adapter (lib/providers/uk-metro-wm.js) resolves stops via the stations.json catalog entry's catalogId/stopIds, never by matching this file's `name` field directly, so no mapping field is needed here."
   ],
   "stops": [
     {
