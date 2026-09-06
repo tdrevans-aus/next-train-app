@@ -8,7 +8,7 @@
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { UK_REGION_IDS } from "../lib/providers/uk/catalog.js";
 
-const LIVE_UK_REGION_IDS = new Set(["uk-london-tfl", "west-of-england", "east-midlands", "uk-west-midlands", "liverpool-city-region", "solent", "west-yorkshire", "thames-valley", "greater-anglia", "south-wales", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "glasgow"]);
+const LIVE_UK_REGION_IDS = new Set(["uk-london-tfl", "west-of-england", "east-midlands", "uk-west-midlands", "liverpool-city-region", "solent", "west-yorkshire", "thames-valley", "greater-anglia", "south-wales", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow"]);
 
 function assert(condition, message) {
   if (!condition) {
@@ -39,5 +39,5 @@ const ukDump = getCity("uk");
 assert(!ukDump, "city=uk must not exist in registry");
 
 console.log(
-  "uk-planned-gate: ok (remaining UK regions planned/501; uk-london-tfl + west-of-england + east-midlands + uk-west-midlands + greater-anglia + liverpool-city-region + rest-of-scotland + london-se-national-rail + southwest + greater-manchester + south-yorkshire + glasgow live; no city=uk; Perth green)"
+  "uk-planned-gate: ok (remaining UK regions planned/501; uk-london-tfl + west-of-england + east-midlands + uk-west-midlands + greater-anglia + liverpool-city-region + rest-of-scotland + london-se-national-rail + southwest + greater-manchester + south-yorkshire + north-east + glasgow live; no city=uk; Perth green)"
 );
