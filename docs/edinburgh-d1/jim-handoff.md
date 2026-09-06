@@ -125,6 +125,26 @@ GTFS (DFT BODS) is OGL 3.0, confidence `clear`; Trams real-time confidence `not 
 confirmed). National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence `clear`,
 reference-only, not used to derive this catalog.
 
+## Flip follow-through wired 6 Sep 2026 (Jim) — note for Mark
+
+Per docs/jim-brief-edinburgh-flip.md and CLAUDE.md's flip-follow-through split, this pass added
+(status stays `planned`):
+- `lib/cities/edinburgh/dogfood-next-train.js` (National Rail single-hub-lock/two-satellite
+  direction derivation live from Darwin; Edinburgh Trams surfaces
+  `EdinburghTramsFeedUnverifiedError` unconditionally, never fabricated).
+- Dispatch switch-cases for `"edinburgh"` in `lib/cities/live-city-api.js`'s `directionsFor()`
+  and `getMultiCityNextTrain()`.
+- `qa/edinburgh-dogfood-gate.mjs`, replacing the retired `qa/edinburgh-planned-gate.mjs`, and the
+  `qa/run-all.mjs` registration swapped to match.
+
+**Deliberately NOT done here** (per CLAUDE.md — these are list-membership edits gated by
+`qa/live-city-lists-sync.mjs` against the registry's live set, not code, and belong in your actual
+flip commit alongside `status: "live"`):
+1. Add `"edinburgh"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add `"edinburgh"` to `brisbane-dogfood.js`'s mount/available map.
+3. Add `"edinburgh"` to `journey-model.js`'s persisted-city/country lists.
+
 ## Not done in this pack (by design)
 
 No generator, no assertion tables, no live city flip, no `lib/providers/` or `registry.js` edit, no
