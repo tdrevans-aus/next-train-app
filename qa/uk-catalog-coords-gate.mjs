@@ -36,6 +36,15 @@ function fail(msg) {
 // south-wales is out of scope here — its 16-station coordinate catalog lands in PR #326.
 const SKIP_REGIONS = new Set(["south-wales"]);
 
+// Boundary through-running stations catalogued flat in two regions (not a
+// merge point — see each region's own stations.json "notes" line), whose
+// coordinates therefore only fall inside ONE of the two regions' CITY_BOUNDS
+// boxes. docs/jim-brief-city-bounds-order-after-geocode.md item 2: Taunton
+// is Southwest's GPS-hint home region (see the uk-city-bounds-overlap-gate.mjs
+// allow-list), so West of England's own box was tightened to exclude it —
+// its board listing there is still correct data, just outside the hint box.
+const BOX_CHECK_EXEMPT = new Set(["west-of-england::Taunton"]);
+
 const liveIds = new Set(CITIES.filter((c) => c.status === "live").map((c) => c.id));
 
 const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
@@ -83,7 +92,11 @@ for (const regionId of UK_REGION_IDS) {
       fail(`${regionId} "${s.name}": coordinates are (0, 0) — placeholder, not a real geocode`);
     }
 
-    if (box && (s.lat < box.minLat || s.lat > box.maxLat || s.lng < box.minLng || s.lng > box.maxLng)) {
+    if (
+      box &&
+      (s.lat < box.minLat || s.lat > box.maxLat || s.lng < box.minLng || s.lng > box.maxLng) &&
+      !BOX_CHECK_EXEMPT.has(`${regionId}::${s.name}`)
+    ) {
       fail(
         `${regionId} "${s.name}": (${s.lat}, ${s.lng}) is outside CITY_BOUNDS ${JSON.stringify(box)}`
       );

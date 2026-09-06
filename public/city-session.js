@@ -117,6 +117,14 @@
     },
   ];
 
+  // Order rule (7 Sep 2026, docs/jim-brief-city-bounds-order-after-geocode.md):
+  // hintCityFromCoords() returns the FIRST matching box in object order. Where
+  // one region's box geometrically contains a smaller region's box (or a
+  // smaller region's stations), the smaller/more specific box MUST be
+  // declared before the larger one, or every GPS hint inside the smaller
+  // region silently resolves to the larger one instead. Enforced by
+  // qa/uk-city-bounds-overlap-gate.mjs's containment-order check — that gate
+  // fails the build if this is violated, so don't reorder without rerunning it.
   const CITY_BOUNDS = {
     sydney: { minLat: -34.15, maxLat: -33.45, minLng: 150.6, maxLng: 151.35 },
     newcastle: { minLat: -32.94, maxLat: -32.91, minLng: 151.75, maxLng: 151.80 },
@@ -158,7 +166,19 @@
     // south-wales precedes this entry above, hintCityFromCoords resolves
     // Newport to south-wales before it ever reaches this box. Trade-off
     // documented rather than solved with unsupported multi-box logic.
-    "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.15, maxLng: -2.10 },
+    // minLat raised from 50.90 to 51.20 (7 Sep 2026, uk-catalog-geocode fix):
+    // West of England's own catalogued stations (lib/cities/west-of-england/
+    // stations.json) are Westbury (51.267), Bath Spa, Bristol Temple Meads,
+    // Chepstow, Gloucester — all >= 51.267 — except Taunton (51.023), which
+    // is a boundary through-running station also catalogued in Southwest
+    // (docs/jim-brief-city-bounds-order-after-geocode.md item 2); Southwest
+    // is Taunton's home region for the GPS hint. The old 50.90 floor put
+    // Taunton inside this box too, so a rider standing there got hinted into
+    // West of England instead. 51.20 sits just south of Westbury and north
+    // of Taunton, so Taunton now falls out of this box entirely (see
+    // "west-of-england" allow-list entry below for Taunton's own catalog
+    // listing, which now legitimately resolves to southwest instead).
+    "west-of-england": { minLat: 51.20, maxLat: 51.95, minLng: -3.15, maxLng: -2.10 },
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
     // minLat/minLng/maxLng widened 7 Sep 2026 (uk-catalog-geocode): Colchester, Stansted
     // Airport, Bishops Stortford (lat), Peterborough (lng), Great Yarmouth/Lowestoft (lng)
@@ -182,6 +202,18 @@
     // are real, NaPTAN-verified catalog stations the old box excluded.
     "thames-valley": { minLat: 51.0, maxLat: 52.10, minLng: -2.25, maxLng: -0.5 },
     "rest-of-wales": { minLat: 51.55, maxLat: 53.4, minLng: -5.5, maxLng: -2.6 },
+    // glasgow and edinburgh are listed BEFORE rest-of-scotland (7 Sep 2026,
+    // uk-catalog-geocode fix — docs/jim-brief-city-bounds-order-after-geocode.md
+    // item 1): both cities' boxes below sit entirely inside rest-of-scotland's
+    // much larger (55.4-58.6, -5.9 to -2.0) box. With rest-of-scotland listed
+    // first (as it was), every Glasgow/Edinburgh GPS hint silently resolved to
+    // rest-of-scotland instead of the city-specific region. Per the order rule
+    // above (contained box first), these two now precede it.
+    glasgow: { minLat: 55.80, maxLat: 55.92, minLng: -4.40, maxLng: -4.15 },
+    // maxLat widened from 55.98 to 55.985 (7 Sep 2026, uk-catalog-geocode):
+    // Ocean Terminal (55.980204) is a real, NaPTAN-verified catalog station
+    // that the old 55.98 ceiling excluded by a fraction of a degree.
+    edinburgh: { minLat: 55.88, maxLat: 55.985, minLng: -3.38, maxLng: -3.05 },
     // minLng widened 7 Sep 2026 (uk-catalog-geocode): Kyle of Lochalsh (-5.71) and Mallaig
     // (-5.83) are real, NaPTAN-verified stations the old -5.5 floor excluded.
     "rest-of-scotland": { minLat: 55.4, maxLat: 58.6, minLng: -5.9, maxLng: -2.0 },
@@ -190,8 +222,6 @@
     // Austell/Plymouth/Totnes are real, NaPTAN-verified stations the old 50.5/-4.7 floor
     // excluded (the box was drawn well east/north of Devon & Cornwall's actual extent).
     southwest: { minLat: 50.05, maxLat: 51.3, minLng: -5.6, maxLng: -3.0 },
-    glasgow: { minLat: 55.80, maxLat: 55.92, minLng: -4.40, maxLng: -4.15 },
-    edinburgh: { minLat: 55.88, maxLat: 55.98, minLng: -3.38, maxLng: -3.05 },
     cumbria: { minLat: 54.00, maxLat: 55.00, minLng: -3.30, maxLng: -2.20 },
   };
 
