@@ -128,6 +128,7 @@ const SMOKE_SCRIPTS = [
   "uk-darwin-cache.mjs",
   "copenhagen-planned-gate.mjs",
   "boston-planned-gate.mjs",
+  "write-city-directions-resilience.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
