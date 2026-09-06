@@ -14,26 +14,163 @@
     "Three corridors (North Wales, Mid Wales, West Wales) with no inter-corridor through-running within Wales; corridor recorded per station in `class`, not a separate grouping structure (uk/catalog.js has no corridor-grouping concept).",
     "Four doNotGroup candidates (Wrexham General route directions, Carmarthen branch-vs-through-running, Whitland three-way branch, Machynlleth Aberystwyth/Pwllheli split) are PROPOSED ONLY — no platform/service-pattern detail in the D1 pack to build an enforced rule from. Not built here.",
     "No direction-hubs.json for this region — no anchoring through-station candidate (like Greater Anglia's Thetford/Ely -> Norwich) identified in the D1 pack. loadDirectionHubs() degrades to an empty, no-op hub list, same call shape as every other UK region.",
-    "CRS codes live-verified 5 Sep 2026 (see docs/jim-brief-uk-crs-corrections.md): Conwy CON->CNW, Holyhead HOY->HHD, Welshpool WEL->WLP, Machynlleth MCH->MCN, Whitland WLD->WTL, Tenby TNB->TEN, Milford Haven MLH->MFH, Fishguard Harbour FGW->FGH (FGW is the separate Fishguard & Goodwick station). All 17 stops crsVerified: true."
+    "CRS codes live-verified 5 Sep 2026 (see docs/jim-brief-uk-crs-corrections.md): Conwy CON->CNW, Holyhead HOY->HHD, Welshpool WEL->WLP, Machynlleth MCH->MCN, Whitland WLD->WTL, Tenby TNB->TEN, Milford Haven MLH->MFH, Fishguard Harbour FGW->FGH (FGW is the separate Fishguard & Goodwick station). All 17 stops crsVerified: true.",
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 17/17 rail stations geocoded; no exceptions"
   ],
   "notInRegion": [],
   "stops": [
-    { "mode": "train", "name": "Wrexham General", "crs": "WRX", "aliases": [], "lat": null, "lng": null, "class": "hub lock — junction of North Wales Main Line, North Wales Coast Line, and Borderlands Line; largest North Wales station by connectivity. Not Wrexham Central." },
-    { "mode": "train", "name": "Llandudno Junction", "crs": "LLJ", "aliases": [], "lat": null, "lng": null, "class": "intermediate, North Wales Coast Line" },
-    { "mode": "train", "name": "Conwy", "crs": "CNW", "aliases": [], "lat": null, "lng": null, "class": "intermediate, North Wales Coast Line" },
-    { "mode": "train", "name": "Bangor", "crs": "BNG", "aliases": [], "lat": null, "lng": null, "class": "intermediate, North Wales Coast Line" },
-    { "mode": "train", "name": "Holyhead", "crs": "HHD", "aliases": [], "lat": null, "lng": null, "class": "terminus, North Wales Coast Line" },
-    { "mode": "train", "name": "Welshpool", "crs": "WLP", "aliases": [], "lat": null, "lng": null, "class": "intermediate, Cambrian Line, Mid Wales corridor" },
-    { "mode": "train", "name": "Machynlleth", "crs": "MCN", "aliases": [], "lat": null, "lng": null, "class": "junction — Cambrian Line splits toward Aberystwyth or Pwllheli. Proposed doNotGroup candidate, not built." },
-    { "mode": "train", "name": "Aberystwyth", "crs": "AYW", "aliases": [], "lat": null, "lng": null, "class": "terminus, Mid Wales corridor — corridor-significant but NOT hub-locked" },
-    { "mode": "train", "name": "Pwllheli", "crs": "PWL", "aliases": [], "lat": null, "lng": null, "class": "terminus, Cambrian Line north branch from Machynlleth" },
-    { "mode": "train", "name": "Carmarthen", "crs": "CMN", "aliases": [], "lat": null, "lng": null, "class": "junction, West Wales corridor — corridor-significant but NOT hub-locked. Proposed doNotGroup candidate (branch vs. through-running to Swansea/South Wales), not built." },
-    { "mode": "train", "name": "Whitland", "crs": "WTL", "aliases": [], "lat": null, "lng": null, "class": "branch point — Fishguard Harbour / Milford Haven / Pembroke Dock branches split here. Proposed doNotGroup candidate, not built." },
-    { "mode": "train", "name": "Narberth", "crs": "NAR", "aliases": [], "lat": null, "lng": null, "class": "intermediate, West Wales corridor" },
-    { "mode": "train", "name": "Tenby", "crs": "TEN", "aliases": [], "lat": null, "lng": null, "class": "intermediate, West Wales corridor" },
-    { "mode": "train", "name": "Pembroke Dock", "crs": "PMD", "aliases": [], "lat": null, "lng": null, "class": "terminus, West Wales corridor" },
-    { "mode": "train", "name": "Milford Haven", "crs": "MFH", "aliases": [], "lat": null, "lng": null, "class": "terminus, West Wales corridor" },
-    { "mode": "train", "name": "Fishguard Harbour", "crs": "FGH", "aliases": [], "lat": null, "lng": null, "class": "terminus, West Wales corridor (ferry port). FGW is the separate Fishguard & Goodwick station, one stop short of the harbour — never used here." },
-    { "mode": "train", "name": "Llanelli", "crs": "LLE", "aliases": [], "lat": null, "lng": null, "class": "branch off Carmarthen, stays within catalog — not a through-running boundary" }
+    {
+      "mode": "train",
+      "name": "Wrexham General",
+      "crs": "WRX",
+      "aliases": [],
+      "lat": 53.05023181072,
+      "lng": -3.00244303859,
+      "class": "hub lock — junction of North Wales Main Line, North Wales Coast Line, and Borderlands Line; largest North Wales station by connectivity. Not Wrexham Central."
+    },
+    {
+      "mode": "train",
+      "name": "Llandudno Junction",
+      "crs": "LLJ",
+      "aliases": [],
+      "lat": 53.28394383957,
+      "lng": -3.80910184854,
+      "class": "intermediate, North Wales Coast Line"
+    },
+    {
+      "mode": "train",
+      "name": "Conwy",
+      "crs": "CNW",
+      "aliases": [],
+      "lat": 53.28010171044,
+      "lng": -3.83052420242,
+      "class": "intermediate, North Wales Coast Line"
+    },
+    {
+      "mode": "train",
+      "name": "Bangor",
+      "crs": "BNG",
+      "aliases": [],
+      "lat": 53.22228257233,
+      "lng": -4.13587993187,
+      "class": "intermediate, North Wales Coast Line"
+    },
+    {
+      "mode": "train",
+      "name": "Holyhead",
+      "crs": "HHD",
+      "aliases": [],
+      "lat": 53.30768384883,
+      "lng": -4.63100242778,
+      "class": "terminus, North Wales Coast Line"
+    },
+    {
+      "mode": "train",
+      "name": "Welshpool",
+      "crs": "WLP",
+      "aliases": [],
+      "lat": 52.65749435578,
+      "lng": -3.13987122419,
+      "class": "intermediate, Cambrian Line, Mid Wales corridor"
+    },
+    {
+      "mode": "train",
+      "name": "Machynlleth",
+      "crs": "MCN",
+      "aliases": [],
+      "lat": 52.59513665481,
+      "lng": -3.85452744938,
+      "class": "junction — Cambrian Line splits toward Aberystwyth or Pwllheli. Proposed doNotGroup candidate, not built."
+    },
+    {
+      "mode": "train",
+      "name": "Aberystwyth",
+      "crs": "AYW",
+      "aliases": [],
+      "lat": 52.41404494843,
+      "lng": -4.08189352291,
+      "class": "terminus, Mid Wales corridor — corridor-significant but NOT hub-locked"
+    },
+    {
+      "mode": "train",
+      "name": "Pwllheli",
+      "crs": "PWL",
+      "aliases": [],
+      "lat": 52.88783440984,
+      "lng": -4.41669751279,
+      "class": "terminus, Cambrian Line north branch from Machynlleth"
+    },
+    {
+      "mode": "train",
+      "name": "Carmarthen",
+      "crs": "CMN",
+      "aliases": [],
+      "lat": 51.85335256797,
+      "lng": -4.3059608974,
+      "class": "junction, West Wales corridor — corridor-significant but NOT hub-locked. Proposed doNotGroup candidate (branch vs. through-running to Swansea/South Wales), not built."
+    },
+    {
+      "mode": "train",
+      "name": "Whitland",
+      "crs": "WTL",
+      "aliases": [],
+      "lat": 51.81803004385,
+      "lng": -4.61439067006,
+      "class": "branch point — Fishguard Harbour / Milford Haven / Pembroke Dock branches split here. Proposed doNotGroup candidate, not built."
+    },
+    {
+      "mode": "train",
+      "name": "Narberth",
+      "crs": "NAR",
+      "aliases": [],
+      "lat": 51.79936861559,
+      "lng": -4.72717510325,
+      "class": "intermediate, West Wales corridor"
+    },
+    {
+      "mode": "train",
+      "name": "Tenby",
+      "crs": "TEN",
+      "aliases": [],
+      "lat": 51.67294483154,
+      "lng": -4.7066959505,
+      "class": "intermediate, West Wales corridor"
+    },
+    {
+      "mode": "train",
+      "name": "Pembroke Dock",
+      "crs": "PMD",
+      "aliases": [],
+      "lat": 51.69391311621,
+      "lng": -4.9380475556,
+      "class": "terminus, West Wales corridor"
+    },
+    {
+      "mode": "train",
+      "name": "Milford Haven",
+      "crs": "MFH",
+      "aliases": [],
+      "lat": 51.71497307927,
+      "lng": -5.04096849514,
+      "class": "terminus, West Wales corridor"
+    },
+    {
+      "mode": "train",
+      "name": "Fishguard Harbour",
+      "crs": "FGH",
+      "aliases": [],
+      "lat": 52.01154268235,
+      "lng": -4.98564201974,
+      "class": "terminus, West Wales corridor (ferry port). FGW is the separate Fishguard & Goodwick station, one stop short of the harbour — never used here."
+    },
+    {
+      "mode": "train",
+      "name": "Llanelli",
+      "crs": "LLE",
+      "aliases": [],
+      "lat": 51.67386667446,
+      "lng": -4.16130348862,
+      "class": "branch off Carmarthen, stays within catalog — not a through-running boundary"
+    }
   ]
 }

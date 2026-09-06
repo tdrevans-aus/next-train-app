@@ -21,7 +21,8 @@
     "Green and Purple Metrolink lines share the same terminus pair (Altrincham-Bury) with opposite line names/colours — the report does not explain the routing difference. Not resolved here; do not guess which physical routing distinguishes them.",
     "The Eccles line's 'Manchester' terminus (as printed in the oracle report) is NOT catalogued as a station here — genuinely ambiguous which physical Manchester stop this refers to, not given by the report. Do not guess a resolution; the Eccles Line + Manchester chip is left as an unresolved marketing string only, generated (if at all) from the Eccles terminus, never as a resolvable catalog entry.",
     "'Piccadilly' as printed in the oracle report's Metrolink line-termini table (Yellow, Airport lines) refers to the Piccadilly Gardens Metrolink stop, NOT Manchester Piccadilly National Rail station — aliased accordingly below. Never conflate the two; see doNotUse list in docs/greater-manchester-d1/published-network.json.",
-    "lat/lng are null for every Metrolink stop — no coordinate source confirmed (static GTFS is verified live but not pulled by this pack; Jim's job at adapter time per published-network.json, not yet done here beyond structural wiring)."
+    "Metrolink lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — NaPTAN carries confirmed stop-level coordinates (StopType TMU, ATCO prefix 1800ZZMA / \"(Manchester Metrolink)\" suffix) independent of the GTFS-RT feed gap noted elsewhere, which is about real-time data, not the stop registry. 14/15 stops matched; Stockport (tram stop) has no NaPTAN Metrolink entry at all and was left null rather than guessed — see the Coordinates note below.",
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 4/4 rail stations geocoded | NaPTAN StopType TMU (ATCO prefix 1800ZZMA / \"(Manchester Metrolink)\" suffix) pulled 2026-09-07; 14/15 tram/metro stops geocoded; exceptions: Stockport (tram stop): no confident match in NaPTAN StopType TMU (ATCO prefix 1800ZZMA / \"(Manchester Metrolink)\" suffix)"
   ],
   "notInRegion": [],
   "stops": [
@@ -30,8 +31,8 @@
       "name": "Manchester Piccadilly",
       "crs": "MAN",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.47736139295,
+      "lng": -2.23090989998,
       "class": "National Rail hub lock — 14 platforms, all six TOCs (Northern, Avanti West Coast, TransPennine Express, CrossCountry, East Midlands Railway, Transport for Wales). doNotGroup vs Piccadilly Gardens (Metrolink, separate stationGroup, ~100m walk-link).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -41,8 +42,8 @@
       "name": "Manchester Victoria",
       "crs": "MCV",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.48746819921,
+      "lng": -2.24259943794,
       "class": "National Rail secondary hub — 6 platforms, Northern + TransPennine Express only. Shared building with Metrolink's secondary hub (mode metro entry below); doNotGroup between the two layers.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -52,8 +53,8 @@
       "name": "Stockport",
       "crs": "SPT",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.40553843992,
+      "lng": -2.16301308614,
       "class": "Regional National Rail station, served by East Midlands Railway and Northern. NOT co-located with the Metrolink 'Stockport' tram stop (~0.5km away, different lines) — do not conflate.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -63,8 +64,8 @@
       "name": "Walsden",
       "crs": "WDN",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.69625983954,
+      "lng": -2.10446403134,
       "class": "Through-running only, Calder Valley Line, Greater Manchester/West Yorkshire boundary (single operator, Northern, continues at same platform, not a merge). CRS MISMATCH NOT RESOLVED: West Yorkshire's stations.json gives WAD for the same physical station — this catalog uses WDN per this region's own oracle report. See top-level notes.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -75,8 +76,8 @@
       "catalogId": "metrolink:st-peters-square",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.47844,
+      "lng": -2.2429,
       "class": "Metrolink hub lock — most-used stop on the network, convergence point for most lines, operational hub for tram planning per the report. Red and Eccles lines' exact routing through here is not independently confirmed (see direction-model-memo.md) — do not assume all eight lines call here without a real timetable check."
     },
     {
@@ -85,8 +86,8 @@
       "catalogId": "metrolink:manchester-victoria",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.48661,
+      "lng": -2.24175,
       "class": "Metrolink secondary hub — same building as the National Rail secondary hub (mode train entry above); doNotGroup between the two layers, same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands). Yellow line named stop (Bury-Piccadilly)."
     },
     {
@@ -97,8 +98,8 @@
       "aliases": [
         "Piccadilly"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 53.48001,
+      "lng": -2.236454,
       "class": "Metrolink stop nearest Manchester Piccadilly National Rail station but NOT co-located — undercroft/basement level, ~100m/5-10 min walk via moving walkways. doNotGroup vs Manchester Piccadilly (mode train, separate stationGroup). Yellow and Airport line terminus (printed as 'Piccadilly' in the oracle report's line-termini table — aliased here, never conflated with the National Rail station of the same informal name)."
     },
     {
@@ -107,8 +108,8 @@
       "catalogId": "metrolink:bury",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.59177,
+      "lng": -2.29759,
       "class": "Green, Yellow, and Purple line terminus."
     },
     {
@@ -117,8 +118,8 @@
       "catalogId": "metrolink:altrincham",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.38809,
+      "lng": -2.347193,
       "class": "Green, Purple, and Orange line terminus. Green and Purple share this Altrincham-Bury terminus pair with opposite line names — unexplained by the report, not resolved here."
     },
     {
@@ -127,8 +128,8 @@
       "catalogId": "metrolink:ashton-under-lyne",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.49038,
+      "lng": -2.09737,
       "class": "Blue line terminus."
     },
     {
@@ -137,8 +138,8 @@
       "catalogId": "metrolink:eccles",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.48296,
+      "lng": -2.335339,
       "class": "Blue and Eccles line terminus."
     },
     {
@@ -147,8 +148,8 @@
       "catalogId": "metrolink:trafford-centre",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.46813,
+      "lng": -2.34824,
       "class": "Red line terminus."
     },
     {
@@ -157,8 +158,8 @@
       "catalogId": "metrolink:cornbrook",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.46999,
+      "lng": -2.267793,
       "class": "Red line terminus/named via-point per the report's line summary."
     },
     {
@@ -167,8 +168,8 @@
       "catalogId": "metrolink:imperial-war-museum",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.46885,
+      "lng": -2.2974,
       "class": "Named via-point on the Red line, between Trafford Centre and Cornbrook."
     },
     {
@@ -177,8 +178,8 @@
       "catalogId": "metrolink:wharfside",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.4665,
+      "lng": -2.28821,
       "class": "Named via-point on the Red line."
     },
     {
@@ -187,8 +188,8 @@
       "catalogId": "metrolink:pomona",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.46511,
+      "lng": -2.278668,
       "class": "Named via-point on the Red line."
     },
     {
@@ -197,8 +198,8 @@
       "catalogId": "metrolink:rochdale",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.61726,
+      "lng": -2.155862,
       "class": "Orange line terminus."
     },
     {
@@ -207,8 +208,8 @@
       "catalogId": "metrolink:manchester-airport",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.36504,
+      "lng": -2.272979,
       "class": "Airport line terminus."
     },
     {

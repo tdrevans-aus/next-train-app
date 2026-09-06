@@ -47,6 +47,10 @@ const TFL_COMMUTER_BELT_REASON =
   "TfL Rail/Elizabeth Line's catalog reaches west into the Thames Valley/Solent commuter belt, but uk-london-tfl's CITY_BOUNDS box is deliberately tight around Greater London and doesn't extend this far west — pre-existing overlap, not introduced by this PR (out of scope: South Wales/West of England).";
 const WIRRAL_CHESHIRE_VS_REST_OF_WALES_REASON =
   "Rest of Wales's CITY_BOUNDS box is a broad three-corridor rectangle (North/Mid/West Wales) that also geometrically covers this Wirral/Cheshire station's coordinates; Liverpool City Region's own box doesn't reach this far south/west — pre-existing overlap, not introduced by this PR (out of scope: South Wales/West of England).";
+const LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON =
+  "central London: TfL and National Rail regions legitimately overlap; GPS hint prefers TfL, the rider picks National Rail from the region screen (docs/jim-brief-city-bounds-order-after-geocode.md item 3 — product question for Tim recorded in the PR, not decided here).";
+const TAUNTON_BOUNDARY_DUPLICATE_REASON =
+  "Taunton (TAU) is a boundary through-running station catalogued flat in both West of England and Southwest, not a merge point (lib/cities/southwest/stations.json note, lib/cities/west-of-england/stations.json note). Southwest is Taunton's GPS-hint home region (docs/jim-brief-city-bounds-order-after-geocode.md item 2); West of England's own minLat was raised to exclude it, so West of England's own catalog listing for Taunton now resolves to southwest instead of itself — expected, not a defect.";
 
 const ALLOW_LIST = [
   {
@@ -115,6 +119,23 @@ const ALLOW_LIST = [
   { region: "liverpool-city-region", station: "Meols", reason: WIRRAL_CHESHIRE_VS_REST_OF_WALES_REASON },
   { region: "liverpool-city-region", station: "West Kirby", reason: WIRRAL_CHESHIRE_VS_REST_OF_WALES_REASON },
   { region: "liverpool-city-region", station: "Chester", reason: WIRRAL_CHESHIRE_VS_REST_OF_WALES_REASON },
+  // London National Rail termini inside the TfL box (docs/jim-brief-
+  // city-bounds-order-after-geocode.md item 3) — both regions genuinely
+  // cover central London; not a box error, a product ambiguity for Tim.
+  { region: "london-se-national-rail", station: "London Waterloo", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "London Victoria", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "London Bridge (Southeastern)", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "London Bridge (Southern)", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "London Bridge (Thameslink)", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "Liverpool Street (Greater Anglia)", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "Liverpool Street (c2c)", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "London King's Cross", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "St Pancras International", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  { region: "london-se-national-rail", station: "London Paddington", reason: LONDON_TFL_NATIONAL_RAIL_OVERLAP_REASON },
+  // Taunton is catalogued in West of England too (boundary through-running
+  // duplicate, see reason) — its own listing there now resolves to southwest
+  // since West of England's minLat was raised to fix item 2 of the brief.
+  { region: "west-of-england", station: "Taunton", reason: TAUNTON_BOUNDARY_DUPLICATE_REASON },
 ];
 
 function allowListReason(regionId, stationName) {
@@ -197,7 +218,59 @@ for (const regionId of UK_REGION_IDS) {
   }
 }
 
-// --- Spot checks from docs/jim-brief-south-wales-rescope-wiring.md ---------
+// --- Containment-order check (docs/jim-brief-city-bounds-order-after-geocode.md) --
+//
+// hintCityFromCoords() is first-match-wins in Object.entries(CITY_BOUNDS)
+// order. Whenever one region's box geometrically contains another region's
+// box in full, the contained (smaller) box MUST be declared before the
+// containing (larger) one — otherwise every GPS hint inside the smaller
+// region silently resolves to the larger one (the Glasgow/Edinburgh vs.
+// rest-of-scotland defect this check was added to catch). Two identical
+// boxes contain each other and are skipped (order genuinely doesn't matter).
+function boxArea(box) {
+  return (box.maxLat - box.minLat) * (box.maxLng - box.minLng);
+}
+
+function boxFullyContains(outer, inner) {
+  return (
+    outer.minLat <= inner.minLat &&
+    outer.maxLat >= inner.maxLat &&
+    outer.minLng <= inner.minLng &&
+    outer.maxLng >= inner.maxLng
+  );
+}
+
+const boundsEntries = Object.entries(CITY_BOUNDS);
+let containmentPairsChecked = 0;
+for (let i = 0; i < boundsEntries.length; i += 1) {
+  for (let j = 0; j < boundsEntries.length; j += 1) {
+    if (i === j) {
+      continue;
+    }
+    const [idA, boxA] = boundsEntries[i];
+    const [idB, boxB] = boundsEntries[j];
+    if (boxArea(boxA) === boxArea(boxB)) {
+      continue; // identical/equal-area boxes — order is not meaningful here
+    }
+    // Only consider the strictly-larger box as a candidate "outer" box, so
+    // each genuinely-nested pair is checked exactly once (from the larger
+    // box's perspective), not twice with contradictory expectations.
+    if (boxArea(boxA) < boxArea(boxB)) {
+      continue;
+    }
+    if (!boxFullyContains(boxA, boxB)) {
+      continue;
+    }
+    containmentPairsChecked += 1;
+    check(
+      j < i,
+      `"${idB}" is fully contained inside "${idA}"'s CITY_BOUNDS box but is declared AFTER it — hintCityFromCoords first-match-wins means every GPS hint inside "${idB}" resolves to "${idA}" instead. Move "${idB}" above "${idA}".`
+    );
+  }
+}
+
+// --- Spot checks (docs/jim-brief-south-wales-rescope-wiring.md,
+// docs/jim-brief-city-bounds-order-after-geocode.md) -------------------------
 check(
   hintCityFromCoords(51.476, -3.179) === "south-wales",
   `Cardiff Central coords must resolve to south-wales, got ${hintCityFromCoords(51.476, -3.179)}`
@@ -210,6 +283,22 @@ check(
   hintCityFromCoords(51.6251, -3.9415) === "south-wales",
   `Swansea coords must resolve to south-wales, got ${hintCityFromCoords(51.6251, -3.9415)}`
 );
+check(
+  hintCityFromCoords(55.8598, -4.2576) === "glasgow",
+  `Glasgow Central coords must resolve to glasgow, got ${hintCityFromCoords(55.8598, -4.2576)}`
+);
+check(
+  hintCityFromCoords(55.9520, -3.1883) === "edinburgh",
+  `Edinburgh Waverley coords must resolve to edinburgh, got ${hintCityFromCoords(55.9520, -3.1883)}`
+);
+check(
+  hintCityFromCoords(57.1437, -2.0983) === "rest-of-scotland",
+  `Aberdeen coords must resolve to rest-of-scotland, got ${hintCityFromCoords(57.1437, -2.0983)}`
+);
+check(
+  hintCityFromCoords(51.0233, -3.1027) === "southwest",
+  `Taunton coords must resolve to southwest, got ${hintCityFromCoords(51.0233, -3.1027)}`
+);
 
 if (failures > 0) {
   console.error(`uk-city-bounds-overlap-gate: ${failures} failure(s)`);
@@ -217,5 +306,5 @@ if (failures > 0) {
 }
 
 console.log(
-  `uk-city-bounds-overlap-gate: ok (${checkedCount} geocoded stations checked across UK regions, ${allowListedCount} allow-listed, 3 brief spot-checks passed)`
+  `uk-city-bounds-overlap-gate: ok (${checkedCount} geocoded stations checked across UK regions, ${allowListedCount} allow-listed, ${containmentPairsChecked} containment-order pair(s) checked, 7 brief spot-checks passed)`
 );
