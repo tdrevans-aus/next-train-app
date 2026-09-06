@@ -78,7 +78,7 @@ sameSet(
 // and its country id must be in journey-model's PERSISTED_COUNTRY_IDS below.
 const countryByCity = new Map();
 for (const country of citySession.matchAll(
-  /id:\s*"([a-z]{2})",\s*name:\s*"[^"]+",\s*regions:\s*\[([\s\S]*?)\]/g
+  /id:\s*"([a-z]{2}(?:-[a-z]{3})?)",\s*name:\s*"[^"]+",\s*regions:\s*\[([\s\S]*?)\]/g
 )) {
   for (const region of country[2].matchAll(/\{\s*id:\s*"([a-z-]+)"([^}]*)\}/g)) {
     countryByCity.set(region[1], { country: country[1], comingSoon: /comingSoon:\s*true/.test(region[2]) });

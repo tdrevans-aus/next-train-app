@@ -24,41 +24,44 @@
       ],
     },
     {
-      id: "nz",
-      name: "New Zealand",
+      id: "ca",
+      name: "Canada",
       regions: [
-        { id: "auckland", name: "Auckland", timeZone: "Pacific/Auckland" },
-        { id: "wellington", name: "Wellington", timeZone: "Pacific/Auckland" },
+        { id: "vancouver", name: "Vancouver", timeZone: "America/Vancouver" },
       ],
     },
     {
-      id: "gb",
-      name: "United Kingdom",
+      id: "gb-eng",
+      name: "England",
       regions: [
         // Listed in the order the picker shows them (alphabetical by display name).
         // Names lead with the place a rider would look for — "Manchester", not
-        // "Greater Manchester" under G; "Scotland (…)" not "Rest of Scotland" under R
-        // (Tim, 6 Sep 2026). Ids are unchanged; only the label and position moved.
+        // "Greater Manchester" under G (Tim, 6 Sep 2026). Ids are unchanged; only the
+        // label and position moved. United Kingdom split into England/Scotland/Wales
+        // countries 7 Sep 2026 (docs/jim-brief-picker-countries-england-scotland-wales.md)
+        // — region ids, timeZones, comingSoon, and feed fields are unchanged.
         { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "greater-anglia", name: "East Anglia", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "liverpool-city-region", name: "Liverpool City Region", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-london-tfl", name: "London", timeZone: "Europe/London" },
         { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "greater-manchester", name: "Manchester", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "rest-of-scotland", name: "Scotland (Aberdeen / Inverness / Dundee)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "southwest", name: "South West (Devon / Cornwall)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "rest-of-wales", name: "Wales (North / Mid / West)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "west-of-england", name: "West of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "west-yorkshire", name: "West Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+      ],
+    },
+    {
+      id: "fi",
+      name: "Finland",
+      regions: [
+        { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
       ],
     },
     {
@@ -67,6 +70,31 @@
       regions: [
         { id: "amsterdam", name: "Amsterdam", timeZone: "Europe/Amsterdam" },
         { id: "rotterdam", name: "Rotterdam", timeZone: "Europe/Amsterdam" },
+      ],
+    },
+    {
+      id: "nz",
+      name: "New Zealand",
+      regions: [
+        { id: "auckland", name: "Auckland", timeZone: "Pacific/Auckland" },
+        { id: "wellington", name: "Wellington", timeZone: "Pacific/Auckland" },
+      ],
+    },
+    {
+      id: "no",
+      name: "Norway",
+      regions: [
+        { id: "oslo", name: "Oslo", timeZone: "Europe/Oslo" },
+      ],
+    },
+    {
+      id: "gb-sct",
+      name: "Scotland",
+      regions: [
+        // "Scotland (…)" prefix dropped inside a Scotland-only list — redundant (Tim, 6 Sep 2026).
+        { id: "rest-of-scotland", name: "Aberdeen / Inverness / Dundee", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
       ],
     },
     {
@@ -80,27 +108,13 @@
       ],
     },
     {
-      id: "no",
-      name: "Norway",
+      id: "gb-wls",
+      name: "Wales",
       regions: [
-        { id: "oslo", name: "Oslo", timeZone: "Europe/Oslo" },
+        { id: "rest-of-wales", name: "North, Mid & West Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
       ],
     },
-    {
-      id: "ca",
-      name: "Canada",
-      regions: [
-        { id: "vancouver", name: "Vancouver", timeZone: "America/Vancouver" },
-      ],
-    },
-    {
-      id: "fi",
-      name: "Finland",
-      regions: [
-        { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
-      ],
-    },
-
   ];
 
   const CITY_BOUNDS = {
@@ -124,6 +138,11 @@
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
     oslo: { minLat: 59.60, maxLat: 60.25, minLng: 10.40, maxLng: 11.20 },
     "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
+    // south-wales is listed ahead of the larger, overlapping west-of-england box so a
+    // GPS hint inside both (e.g. Cardiff, 51.4760/-3.1790) resolves to the more specific
+    // region — first match wins in hintCityFromCoords (docs/jim-brief-picker-countries-england-scotland-wales.md).
+    // No coordinate values changed, only declaration order relative to west-of-england.
+    "south-wales": { minLat: 51.30, maxLat: 51.70, minLng: -3.65, maxLng: -2.70 },
     "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.20, maxLng: -2.10 },
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
     "greater-anglia": { minLat: 52.0, maxLat: 52.9, minLng: 0.0, maxLng: 1.4 },
@@ -132,7 +151,6 @@
     "north-east": { minLat: 54.85, maxLat: 55.80, minLng: -2.10, maxLng: -1.35 },
     "liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 },
     solent: { minLat: 50.75, maxLat: 51.55, minLng: -2.30, maxLng: -0.05 },
-    "south-wales": { minLat: 51.30, maxLat: 51.70, minLng: -3.65, maxLng: -2.70 },
     "west-yorkshire": { minLat: 53.65, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
     "thames-valley": { minLat: 51.0, maxLat: 52.0, minLng: -1.5, maxLng: -0.5 },
     "rest-of-wales": { minLat: 51.55, maxLat: 53.4, minLng: -5.5, maxLng: -2.6 },
