@@ -1,18 +1,12 @@
 /**
- * South Yorkshire adapter/dispatch wiring gate. Replaces
- * south-yorkshire-planned-gate.mjs (retired) — South Yorkshire STAYS
- * `status: "planned"` here (this is the pre-flip dogfood wiring pass,
- * docs/jim-brief-south-yorkshire-flip.md). Per CLAUDE.md's
- * flip-follow-through split (added 30 Aug 2026, corrected same day): the
- * dogfood module, the live-city-api.js dispatch switch-cases, and this gate
- * are safe to land ahead of the flip because production routes gate on
- * assertCityLive() first, not on MULTI_CITY_IDS membership. South Yorkshire
- * is deliberately NOT added to MULTI_CITY_IDS, brisbane-dogfood.js's
- * mount/available map, or journey-model.js's persisted-city/country lists yet
- * — those three list-membership edits are Mark's flip commit, not this one
- * (qa/live-city-lists-sync.mjs enforces that they equal the registry's live
- * set). See docs/south-yorkshire-d1/jim-handoff.md for the exact note left
- * for Mark.
+ * South Yorkshire adapter/dispatch wiring gate + flip-commit assertions.
+ * Wired by Jim (PR #294: dogfood module, dispatch switch-cases), flipped by
+ * Mark (this commit: status live, list additions). Per CLAUDE.md's
+ * flip-follow-through split (added 30 Aug 2026, corrected same day): status
+ * flip, MULTI_CITY_IDS addition to live-city-api.js / brisbane-dogfood.js /
+ * journey-model.js / app.js / city-session.js, LIVE_UK_REGION_IDS in
+ * uk-planned-gate.mjs, and this gate's assertions all land in Mark's flip
+ * commit. See docs/south-yorkshire-d1/jim-handoff.md for the handoff note.
  *
  * Two agencies, two very different outcomes once wired (same two-layer shape
  * as East Midlands' National Rail + NET pair and Greater Manchester's
@@ -84,14 +78,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity — STAYS planned (Mark/Tim's flip call, not made here).
+// Registry identity — now live (Mark's flip call).
 const live = assertCityLive("south-yorkshire");
-assert(live?.ok === false, "assertCityLive(south-yorkshire) must fail — status is still planned");
-assert(live?.status === 501, "south-yorkshire must be 501 planned");
+assert(live?.ok === true, "assertCityLive(south-yorkshire) must succeed — status is live");
 
 const entry = getCity("south-yorkshire");
-assert(entry?.status === "planned", "south-yorkshire registry status must stay planned");
-assert(entry?.adapterReady === true, "south-yorkshire adapterReady must be true");
+assert(entry?.status === "live", "south-yorkshire registry status must be live");
+assert(entry?.adapterReady === undefined, "south-yorkshire adapterReady flag is removed once live");
 assert(entry?.displayName === "South Yorkshire", "south-yorkshire display name must be South Yorkshire");
 assert(entry?.timeZone === "Europe/London", "south-yorkshire timezone must be Europe/London");
 assert(
@@ -102,10 +95,10 @@ for (const forbiddenId of ["sy", "sheffield", "supertram", "south-yorkshire-supe
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// NOT yet in MULTI_CITY_IDS — that's Mark's flip commit, not this pass.
+// Now in MULTI_CITY_IDS — this is the flip commit.
 assert(
-  isMultiCity("south-yorkshire") === false,
-  "south-yorkshire must NOT be in MULTI_CITY_IDS yet — that's Mark's flip commit"
+  isMultiCity("south-yorkshire") === true,
+  "south-yorkshire must be in MULTI_CITY_IDS"
 );
 
 // D1 pack presence.
@@ -489,5 +482,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "south-yorkshire-dogfood-gate: ok (planned/501, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired, D1 pack, 6 rail + 12 Supertram stations, doNotGroup at Sheffield Station and Meadowhall Interchange/Meadowhall (through-running switch point, not a second hub lock), National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Supertram dispatch correctly surfaces SupertramFeedUnconfirmedError rather than the static label list, Perth Australia stays green)"
+  "south-yorkshire-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 6 rail + 12 Supertram stations, doNotGroup at Sheffield Station and Meadowhall Interchange/Meadowhall (through-running switch point, not a second hub lock), National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Supertram dispatch correctly surfaces SupertramFeedUnconfirmedError rather than the static label list, Perth Australia stays green)"
 );

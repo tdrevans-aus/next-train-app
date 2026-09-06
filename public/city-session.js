@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -49,7 +49,7 @@
         { id: "rest-of-wales", name: "Rest of Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-wales", name: "South Wales", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
-        { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "southwest", name: "Southwest", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "thames-valley", name: "Thames Valley (Reading / Oxford)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "uk-west-midlands", name: "West Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
@@ -124,6 +124,7 @@
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
     "greater-anglia": { minLat: 52.0, maxLat: 52.9, minLng: 0.0, maxLng: 1.4 },
     "greater-manchester": { minLat: 53.35, maxLat: 53.55, minLng: -2.35, maxLng: -2.10 },
+    "south-yorkshire": { minLat: 53.30, maxLat: 53.62, minLng: -1.58, maxLng: -1.25 },
     "liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 },
     solent: { minLat: 50.75, maxLat: 51.55, minLng: -2.30, maxLng: -0.05 },
     "south-wales": { minLat: 51.30, maxLat: 51.70, minLng: -3.65, maxLng: -2.70 },
