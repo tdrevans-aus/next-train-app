@@ -744,7 +744,7 @@
     },
     {
       "mode": "metro",
-      "name": "Five Ways",
+      "name": "Five Ways (Metro)",
       "catalogId": "metro:five-ways",
       "stopId": null,
       "stopIds": [
@@ -752,10 +752,12 @@
         "9400ZZWMFW2"
       ],
       "stationId": "940GZZWMFW",
-      "aliases": [],
+      "aliases": [
+        "Five Ways"
+      ],
       "lat": 52.47473,
       "lng": -1.91504,
-      "note": "Metro stop; NR Five Ways is FIW (separate catalog)"
+      "note": "Metro stop; NR Five Ways is FIW (separate catalog); renamed with (Metro) suffix 6 Sep 2026 because both catalog entries printed \"Five Ways\" (see docs/uk-west-midlands-d1/oracle-clash-report.md). Bare \"Five Ways\" kept as an alias only because resolveCatalogEntry()'s rail-first default still resolves it to the rail entry."
     },
     {
       "mode": "metro",
@@ -908,7 +910,7 @@
     },
     {
       "mode": "metro",
-      "name": "Jewellery Quarter",
+      "name": "Jewellery Quarter (Metro)",
       "catalogId": "metro:jewellery-quarter",
       "stopId": null,
       "stopIds": [
@@ -916,10 +918,12 @@
         "9400ZZWMJQ4"
       ],
       "stationId": "940GZZWMJQ",
-      "aliases": [],
+      "aliases": [
+        "Jewellery Quarter"
+      ],
       "lat": 52.48965,
       "lng": -1.91324,
-      "note": "Metro stop; NR Jewellery Quarter is JEQ (separate catalog)"
+      "note": "Metro stop; NR Jewellery Quarter is JEQ (separate catalog); renamed with (Metro) suffix 6 Sep 2026 because both catalog entries printed \"Jewellery Quarter\" (see docs/uk-west-midlands-d1/oracle-clash-report.md). Bare \"Jewellery Quarter\" kept as an alias only because resolveCatalogEntry()'s rail-first default still resolves it to the rail entry."
     },
     {
       "mode": "metro",
@@ -969,7 +973,7 @@
     },
     {
       "mode": "metro",
-      "name": "The Hawthorns",
+      "name": "The Hawthorns (Metro)",
       "catalogId": "metro:the-hawthorns",
       "stopId": null,
       "stopIds": [
@@ -977,10 +981,12 @@
         "9400ZZWMHA4"
       ],
       "stationId": "940GZZWMHA",
-      "aliases": [],
+      "aliases": [
+        "The Hawthorns"
+      ],
       "lat": 52.5057,
       "lng": -1.96497,
-      "note": "Metro stop; NR The Hawthorns is THA (separate catalog)"
+      "note": "Metro stop; NR The Hawthorns is THA (separate catalog); renamed with (Metro) suffix 6 Sep 2026 because both catalog entries printed \"The Hawthorns\" (see docs/uk-west-midlands-d1/oracle-clash-report.md). Bare \"The Hawthorns\" kept as an alias only because resolveCatalogEntry()'s rail-first default still resolves it to the rail entry."
     },
     {
       "mode": "metro",

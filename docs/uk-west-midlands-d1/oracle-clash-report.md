@@ -291,3 +291,20 @@ bug, and confirms the `stopIds[]` two-platform merge (landed #232, 5 Sep 2026) a
 both directions against the live feed, not just the synthetic fixture. Board-eligibility verdict
 moved from `out-product` to `in` in the summary and table above. Probe script:
 `scripts/fb53-metro-live-check.mjs`.
+
+**6 Sep 2026 (Jim's lane) — Five Ways, Jewellery Quarter, The Hawthorns renamed to disambiguate
+from National Rail:** With TfWM credentials live in production, three Metro stops turned out to
+share their printed name with a National Rail station already in this region's catalog (Five Ways
+FWY, Jewellery Quarter JEQ, The Hawthorns THA), producing duplicate names on
+`/api/city-stations?city=uk-west-midlands` and an unreachable tram board — neither `/api/directions`
+nor `/api/next-train` accepts a `mode` parameter, so `resolveCatalogEntry()`'s rail-first default
+always won at those three stops. Per Sash's decision (brief:
+`docs/jim-brief-uk-west-midlands-metro-shared-names.md`), the three Metro catalog entries in
+`lib/cities/uk-west-midlands/stations.json` were renamed to `Five Ways (Metro)`,
+`Jewellery Quarter (Metro)`, `The Hawthorns (Metro)` — same shape as Grand Central vs Birmingham New
+Street (distinct printed names). The bare names are kept as aliases on the Metro entries only
+because `resolveCatalogEntry()`'s rail-first default still wins the bare lookup, so `"Five Ways"`
+etc. continue to resolve to the rail (National Rail) entry exactly as before; only the new
+`(Metro)`-suffixed name reaches the tram board. No API or client change was needed. Threading a
+`mode` query parameter through the API stack is the longer-term fix if a third dual-mode region
+appears; tracked as a new row in `docs/feature-backlog.md`, out of scope here.

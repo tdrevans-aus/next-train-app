@@ -143,8 +143,15 @@ async function run() {
     // the UK catalogs (not just the two the brief happened to name) must get
     // a real, non-generic label for each of its modes — proving the fix
     // covers the whole current set, not just Liverpool/East Midlands.
+    // Floor was 8 until 6 Sep 2026, when West Midlands' three Metro/National
+    // Rail name clashes (Five Ways, Jewellery Quarter, The Hawthorns) were
+    // resolved by renaming the Metro entries "... (Metro)" — the API has no
+    // mode parameter, so a picked same-name row always routed to the rail
+    // board (docs/jim-brief-uk-west-midlands-metro-shared-names.md, FB-60).
+    // Seven pairs remain across five regions; the floor guards the scan, not a
+    // specific count.
     const pairs = findSameNameDoNotGroupPairs();
-    assert(pairs.length >= 8, `expected to find several same-name doNotGroup pairs, found ${pairs.length}`);
+    assert(pairs.length >= 5, `expected to find several same-name doNotGroup pairs, found ${pairs.length}`);
 
     const genericFallback = (mode) => {
       const raw = String(mode || "").trim();
