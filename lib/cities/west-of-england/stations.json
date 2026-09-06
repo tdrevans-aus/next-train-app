@@ -11,7 +11,8 @@
     "National Rail (Darwin/OpenLDBWS) is structurally catalogued here but blocked at the account level — DARWIN_LDB_TOKEN not set. Same blocker as uk-west-midlands / uk-ellesmere-port / east-midlands / south-yorkshire / north-east.",
     "Single agency (National Rail), single mode (train). No light rail, no metro, no buses. No static GTFS exists for this feed at all — unlike East Midlands' NET or North East's Metro, there is no schedule-only fallback; this region is Darwin-or-nothing until DARWIN_LDB_TOKEN exists.",
     "No doNotGroup needed at either hub — Bristol Temple Meads and Bath Spa are single-layer, GWR-dominated, platforms distinguished by route not operator.",
-    "Boundary through-running stations (Chepstow, Gloucester, Westbury, Taunton) are catalogued flat, NOT merge points — D2 de-dup concern for future South Wales / West Midlands / Solent / Thames Valley / Southwest packs, not built here."
+    "Boundary through-running stations (Chepstow, Gloucester, Westbury, Taunton) are catalogued flat, NOT merge points — D2 de-dup concern for future South Wales / West Midlands / Solent / Thames Valley / Southwest packs, not built here.",
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 6/6 rail stations geocoded; no exceptions"
   ],
   "notInRegion": [],
   "stops": [
@@ -20,8 +21,8 @@
       "name": "Bristol Temple Meads",
       "crs": "BRI",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.44914390068,
+      "lng": -2.58131524969,
       "class": "hub lock — principal rail terminus for Bristol city, all regional and inter-city services call here"
     },
     {
@@ -29,8 +30,8 @@
       "name": "Bath Spa",
       "crs": "BTH",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.37768623236,
+      "lng": -2.35701815017,
       "class": "hub secondary — direct service to Bristol Temple Meads, 11-19 min frequency"
     },
     {
@@ -38,8 +39,8 @@
       "name": "Chepstow",
       "crs": "CPW",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.6401792332,
+      "lng": -2.67190520826,
       "class": "through-running only, boundary to South Wales region — not a merge point"
     },
     {
@@ -47,8 +48,8 @@
       "name": "Gloucester",
       "crs": "GCR",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.86555855048,
+      "lng": -2.23848761103,
       "class": "regional — home region West of England per docs/united-kingdom-ledger.md (5 Sep 2026); also a boundary toward West Midlands, not a merge point"
     },
     {
@@ -56,8 +57,8 @@
       "name": "Westbury",
       "crs": "WSB",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.266986087,
+      "lng": -2.19918167923,
       "class": "regional — home region West of England per docs/united-kingdom-ledger.md (5 Sep 2026); also a boundary toward Solent/Thames Valley regions, not a merge point"
     },
     {
@@ -65,8 +66,8 @@
       "name": "Taunton",
       "crs": "TAU",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 51.0233024374,
+      "lng": -3.10274155452,
       "class": "regional — home region West of England per docs/united-kingdom-ledger.md (5 Sep 2026); also a boundary toward Southwest region, not a merge point"
     }
   ]

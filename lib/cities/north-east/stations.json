@@ -18,7 +18,8 @@
     "Pelaw: Metro-only junction/station (both Green and Yellow call it, confirmed by GTFS - see above). No separate National Rail station exists at Pelaw per the oracle report - not catalogued under mode train.",
     "Berwick-upon-Tweed (BWK) included as National Rail-only per the oracle report's station table. Northern boundary against a future Rest-of-Scotland pack is open/unresolved - not closed here.",
     "Darlington (DRL) is EXCLUDED - confirmed unclaimed by both North East's own report and East Midlands' already-merged pack (checked directly, no match). Do not add without a boundary resolution.",
-    "lat/lng are null for the two National Rail-only entries with no confirmed coordinate source (Newcastle Central, Berwick-upon-Tweed) - do not backfill guessed coordinates. Sunderland's train entry reuses its Metro/GTFS coordinate since it is the same physical platform."
+    "Newcastle Central and Berwick-upon-Tweed lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — NaPTAN RailReferences now supplies confirmed CRS-keyed coordinates for both, independent of the coordinate source gap that previously applied. Sunderland's train entry reuses its Metro/GTFS coordinate since it is the same physical platform (unchanged).",
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 3/3 rail stations geocoded | no confirmed source pulled 2026-09-07; 60/60 tram/metro stops geocoded; no exceptions"
   ],
   "notInRegion": [
     "Darlington"
@@ -29,8 +30,8 @@
       "name": "Newcastle Central",
       "crs": "NCL",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 54.968401771,
+      "lng": -1.61727980875,
       "class": "hub lock - National Rail main platforms (NCL). doNotGroup vs Metro Central Station platforms (deep-tube box directly below, separate infrastructure/operator, no walk-through connection named in the oracle report). See lib/providers/north-east.js file header.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -51,8 +52,8 @@
       "name": "Berwick-upon-Tweed",
       "crs": "BWK",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 55.77433724723,
+      "lng": -2.01097332759,
       "class": "through-running only, England's northernmost East Coast Main Line station, Scotland boundary. No Metro service. Boundary against a future Rest-of-Scotland pack unresolved - do not treat as closed.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"

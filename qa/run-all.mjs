@@ -78,6 +78,7 @@ const SMOKE_SCRIPTS = [
   "region-selection.mjs",
   "live-city-lists-sync.mjs",
   "uk-region-catalog-conformance.mjs",
+  "uk-catalog-coords-gate.mjs",
   "uk-catalog-lazy-load.mjs",
   "uk-planned-gate.mjs",
   "nz-planned-gate.mjs",
@@ -237,6 +238,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "live-city-lists-sync.mjs",
   /** Offline UK catalog checks. */
   "uk-region-catalog-conformance.mjs",
+  "uk-catalog-coords-gate.mjs",
   "uk-catalog-lazy-load.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;

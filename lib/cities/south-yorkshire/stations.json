@@ -13,12 +13,13 @@
     "Sheffield Supertram: SYFTL (South Yorkshire Future Tram Limited) took over from Stagecoach on 22 Mar 2024. No public GTFS or GTFS-RT feed has been confirmed under SYFTL — this is a genuine operator-transition skip risk, distinct in kind from the National Rail account block. fetchSupertramStopBoard() in lib/providers/south-yorkshire.js throws SupertramFeedUnconfirmedError rather than fabricating a schedule. See docs/south-yorkshire-d1/hazard-pack.md H2.",
     "Only the printed termini + named via-points + hub given by the oracle report's line descriptions (report line 39) are catalogued below — NOT a full ordered 51-stop list. See docs/south-yorkshire-d1/published-network.json coverageGaps.",
     "Purple line's Gleadless Townend branch junction point is not given by the report — Gleadless Townend is catalogued as a stop (shared with Blue) but no direction chip is generated for it on the Purple line (see marketing-directions.js); do not guess the junction.",
-    "lat/lng are null for every Supertram stop — no coordinate source confirmed (no GTFS feed exists to pull from).",
+    "Supertram lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — no GTFS feed exists (unchanged, see H2), but NaPTAN carries confirmed stop-level coordinates (StopType TMU, ATCO prefix 3700ZZSY). Most stops match a direct NaPTAN stem after stripping directional \"Platform to <destination>\" suffixes; Sheffield Station and Sheffield Arena needed an explicit name mapping to NaPTAN's own combined-stop labels (\"Sheffield Stn/Hallam Uni\", \"Arena/Olympic Legacy Park\") — see the Coordinates note below.",
     "Sheffield Station (SHF) is the hub lock — Supertram tram viaduct above National Rail main platforms, footbridge connects. doNotGroup: separate catalog entries by mode (train vs metro), same printed name, same pattern as East Midlands' Nottingham Station.",
     "Meadowhall Interchange (MHS, National Rail entry) / Meadowhall (Supertram Yellow terminus + Tram-Train through-running point) is a through-running/infrastructure-switch point, NOT a second hub lock — Tram-Train switches onto National Rail infrastructure here. Modelled as two mode-tagged catalog entries (aliased to each other's printed name), same doNotGroup-by-mode pattern as Sheffield Station.",
     "Rotherham Central appears both as a Supertram Tram-Train through-running stop (metro entry) and a National Rail through-running-only station (train entry, crs RMC, live-verified 5 Sep 2026 — the oracle report gave no code). No shared platform with National Rail main-line trains per the report.",
     "Darton (DRT), South Elmsall (SES), Moorthorpe (MRP) are National Rail-only West Yorkshire/South Yorkshire boundary stations; CRS codes live-verified 5 Sep 2026 (the oracle report gave no codes). May appear in a future West Yorkshire region's feed too — D2 de-dup boundary, not resolved here. Denby Dale is ruled West Yorkshire's home station per docs/united-kingdom-ledger.md (5 Sep 2026) and is no longer catalogued here.",
-    "Chesterfield is deliberately NOT in this catalog — it is East Midlands' station (docs/east-midlands-d1/published-network.json throughRunningOnly, crs CHD). See notInRegion below."
+    "Chesterfield is deliberately NOT in this catalog — it is East Midlands' station (docs/east-midlands-d1/published-network.json throughRunningOnly, crs CHD). See notInRegion below.",
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 6/6 rail stations geocoded | NaPTAN StopType TMU (ATCO prefix 3700ZZSY, Sheffield Supertram) pulled 2026-09-07; 12/12 tram/metro stops geocoded; no exceptions"
   ],
   "notInRegion": [
     "Chesterfield"
@@ -29,8 +30,8 @@
       "name": "Sheffield Station",
       "crs": "SHF",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.3782198729,
+      "lng": -1.46211083296,
       "class": "hub lock — National Rail main platforms. doNotGroup vs Supertram tram viaduct platforms (same printed name, separate catalog entry, mode metro).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -42,8 +43,8 @@
       "aliases": [
         "Meadowhall"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 53.4174662288,
+      "lng": -1.41285146834,
       "class": "through-running/infrastructure-switch point, not a hub lock. doNotGroup vs Supertram catalog entries (metro mode) at Meadowhall — Tram-Train switches onto National Rail infrastructure here.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -53,8 +54,8 @@
       "name": "Rotherham Central",
       "crs": "RMC",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.43225319174,
+      "lng": -1.36043453053,
       "class": "through-running only, not a merge point. Tram-Train (Supertram) also serves this stop but no shared platform with National Rail main-line trains per the report.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -64,8 +65,8 @@
       "name": "Darton",
       "crs": "DRT",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.58836771948,
+      "lng": -1.53165740985,
       "class": "through-running only, South Yorkshire/West Yorkshire boundary.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -75,8 +76,8 @@
       "name": "South Elmsall",
       "crs": "SES",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.59460814519,
+      "lng": -1.28485824285,
       "class": "through-running only, West Yorkshire/South Yorkshire boundary, ticketing schemes valid both ways.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -86,8 +87,8 @@
       "name": "Moorthorpe",
       "crs": "MRP",
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.5949961282,
+      "lng": -1.30494699382,
       "class": "through-running only, West Yorkshire/South Yorkshire boundary.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 5 Sep 2026"
@@ -98,8 +99,8 @@
       "catalogId": "supertram:sheffield-station",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.378161811,
+      "lng": -1.461194597,
       "class": "hub lock — Supertram tram viaduct platforms. doNotGroup vs National Rail main platforms (same printed name, separate catalog entry, mode train). Purple terminus and Tram-Train terminus."
     },
     {
@@ -108,8 +109,8 @@
       "catalogId": "supertram:malin-bridge",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.400648607,
+      "lng": -1.508467678,
       "class": "Blue line terminus"
     },
     {
@@ -118,8 +119,8 @@
       "catalogId": "supertram:halfway",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.328382081,
+      "lng": -1.344391049,
       "class": "Blue line terminus"
     },
     {
@@ -128,8 +129,8 @@
       "catalogId": "supertram:gleadless-townend",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.345989163,
+      "lng": -1.426045537,
       "class": "named via-point on Blue; also named as a branch off Purple, but the branch junction point is not given by the report — no Purple direction chip is generated for it (see marketing-directions.js)."
     },
     {
@@ -138,8 +139,8 @@
       "catalogId": "supertram:crystal-peaks",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.341640256,
+      "lng": -1.355887968,
       "class": "named via-point on Blue"
     },
     {
@@ -148,8 +149,8 @@
       "catalogId": "supertram:herdings-park",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.342430497,
+      "lng": -1.439475853,
       "class": "Purple line terminus"
     },
     {
@@ -158,8 +159,8 @@
       "catalogId": "supertram:middlewood",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.416387676,
+      "lng": -1.510648481,
       "class": "Yellow line terminus"
     },
     {
@@ -168,8 +169,8 @@
       "catalogId": "supertram:hillsborough",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.401871256,
+      "lng": -1.499850387,
       "class": "named via-point on Yellow"
     },
     {
@@ -178,8 +179,8 @@
       "catalogId": "supertram:sheffield-arena",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.398346284,
+      "lng": -1.420002614,
       "class": "named via-point on Yellow and Tram-Train"
     },
     {
@@ -190,8 +191,8 @@
       "aliases": [
         "Meadowhall Interchange"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 53.416885108,
+      "lng": -1.413491399,
       "class": "Yellow line terminus; also a Tram-Train through-running/infrastructure-switch point (see meadowhallThroughRunningSwitch in docs/south-yorkshire-d1/published-network.json). doNotGroup vs the National Rail Meadowhall Interchange catalog entry (mode train)."
     },
     {
@@ -200,8 +201,8 @@
       "catalogId": "supertram:rotherham-central",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.432351818,
+      "lng": -1.360387896,
       "class": "Tram-Train through-running stop, switches to National Rail infrastructure post-Meadowhall South/Tinsley. No shared platform with National Rail main-line trains per the report."
     },
     {
@@ -210,8 +211,8 @@
       "catalogId": "supertram:parkgate",
       "stopId": null,
       "aliases": [],
-      "lat": null,
-      "lng": null,
+      "lat": 53.443028088,
+      "lng": -1.343395881,
       "class": "Tram-Train terminus. Not served by National Rail per the report."
     }
   ]

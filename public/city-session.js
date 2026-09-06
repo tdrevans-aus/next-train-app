@@ -145,18 +145,36 @@
     "south-wales": { minLat: 51.30, maxLat: 51.70, minLng: -3.65, maxLng: -2.70 },
     "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.20, maxLng: -2.10 },
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
-    "greater-anglia": { minLat: 52.0, maxLat: 52.9, minLng: 0.0, maxLng: 1.4 },
-    "greater-manchester": { minLat: 53.35, maxLat: 53.55, minLng: -2.35, maxLng: -2.10 },
+    // minLat/minLng/maxLng widened 7 Sep 2026 (uk-catalog-geocode): Colchester, Stansted
+    // Airport, Bishops Stortford (lat), Peterborough (lng), Great Yarmouth/Lowestoft (lng)
+    // are real, NaPTAN-verified catalog stations the old box excluded.
+    "greater-anglia": { minLat: 51.80, maxLat: 52.9, minLng: -0.30, maxLng: 1.8 },
+    // maxLat widened 7 Sep 2026 (uk-catalog-geocode): Walsden (WDN, 53.696) is a real,
+    // NaPTAN-verified boundary station the old 53.55 ceiling excluded.
+    "greater-manchester": { minLat: 53.35, maxLat: 53.70, minLng: -2.35, maxLng: -2.10 },
     "south-yorkshire": { minLat: 53.30, maxLat: 53.62, minLng: -1.58, maxLng: -1.25 },
     "north-east": { minLat: 54.85, maxLat: 55.80, minLng: -2.10, maxLng: -1.35 },
-    "liverpool-city-region": { minLat: 53.25, maxLat: 53.43, minLng: -3.02, maxLng: -2.85 },
+    // Box widened 7 Sep 2026 (uk-catalog-geocode): the 98-station rescope (Merseyrail +
+    // National Rail) reaches well beyond the original 5-point estimate this box was drawn
+    // from (see docs/liverpool-city-region-d1/jim-handoff.md item 3) — Earlestown, Garswood,
+    // Heswall, Upton (Merseyside), Meols Cop etc. are real, NaPTAN-verified stations.
+    "liverpool-city-region": { minLat: 53.25, maxLat: 53.70, minLng: -3.10, maxLng: -2.55 },
     solent: { minLat: 50.75, maxLat: 51.55, minLng: -2.30, maxLng: -0.05 },
-    "west-yorkshire": { minLat: 53.65, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
-    "thames-valley": { minLat: 51.0, maxLat: 52.0, minLng: -1.5, maxLng: -0.5 },
+    // minLat widened 7 Sep 2026 (uk-catalog-geocode): Denby Dale (53.573) and Huddersfield
+    // (53.649) are real, NaPTAN-verified catalog stations the old 53.65 floor excluded.
+    "west-yorkshire": { minLat: 53.55, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
+    // Box widened 7 Sep 2026 (uk-catalog-geocode): Swindon/Westbury (lng) and Banbury (lat)
+    // are real, NaPTAN-verified catalog stations the old box excluded.
+    "thames-valley": { minLat: 51.0, maxLat: 52.10, minLng: -2.25, maxLng: -0.5 },
     "rest-of-wales": { minLat: 51.55, maxLat: 53.4, minLng: -5.5, maxLng: -2.6 },
-    "rest-of-scotland": { minLat: 55.4, maxLat: 58.6, minLng: -5.5, maxLng: -2.0 },
+    // minLng widened 7 Sep 2026 (uk-catalog-geocode): Kyle of Lochalsh (-5.71) and Mallaig
+    // (-5.83) are real, NaPTAN-verified stations the old -5.5 floor excluded.
+    "rest-of-scotland": { minLat: 55.4, maxLat: 58.6, minLng: -5.9, maxLng: -2.0 },
     "london-se-national-rail": { minLat: 50.7, maxLat: 51.7, minLng: -0.5, maxLng: 0.8 },
-    southwest: { minLat: 50.5, maxLat: 51.3, minLng: -4.7, maxLng: -3.0 },
+    // minLat/minLng widened 7 Sep 2026 (uk-catalog-geocode): Penzance/Truro/St Erth/St
+    // Austell/Plymouth/Totnes are real, NaPTAN-verified stations the old 50.5/-4.7 floor
+    // excluded (the box was drawn well east/north of Devon & Cornwall's actual extent).
+    southwest: { minLat: 50.05, maxLat: 51.3, minLng: -5.6, maxLng: -3.0 },
     glasgow: { minLat: 55.80, maxLat: 55.92, minLng: -4.40, maxLng: -4.15 },
     edinburgh: { minLat: 55.88, maxLat: 55.98, minLng: -3.38, maxLng: -3.05 },
     cumbria: { minLat: 54.00, maxLat: 55.00, minLng: -3.30, maxLng: -2.20 },

@@ -15,7 +15,8 @@
     "excludeOperators records a board-eligibility exclusion enforced via the shared uk-darwin.js excludeOperators option: Eurostar at St Pancras International (out-checkin), Night Riviera Sleeper at Paddington (out-reservation). LNER at King's Cross was previously excluded pending a verdict; resolved to IN per the UK ledger, 5 Sep 2026 (see docs/united-kingdom-ledger.md §3).",
     "CRS codes are UNVERIFIED against a live GTFS dump or Darwin response — carried from the oracle report's own 'examples' list, crsVerified: false throughout. Confirm before treating as authoritative once Darwin is unblocked.",
     "Euston (regional operator never named in the oracle report) and seven secondary termini (Blackfriars, Cannon Street, Charing Cross, Farringdon, Fenchurch Street, Marylebone, Moorgate, all report-marked TBD) are NOT built — see docs/london-se-national-rail-d1/published-network.json notBuilt.",
-    "Regional boundaries flagged, not resolved here: GWR continues west from Paddington into West of England (Bristol Temple Meads); SWR continues southwest from Waterloo (no adjacent region built yet); CrossCountry through-runs nationally. See jim-handoff.md."
+    "Regional boundaries flagged, not resolved here: GWR continues west from Paddington into West of England (Bristol Temple Meads); SWR continues southwest from Waterloo (no adjacent region built yet); CrossCountry through-runs nationally. See jim-handoff.md.",
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 10/10 rail stations geocoded; no exceptions"
   ],
   "notInRegion": [],
   "stops": [
@@ -27,8 +28,8 @@
       "aliases": [
         "Waterloo"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.50329861354,
+      "lng": -0.1131088672,
       "groupId": "waterloo",
       "doNotGroup": false,
       "operators": [
@@ -45,8 +46,8 @@
       "aliases": [
         "Victoria"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.49525727011,
+      "lng": -0.14454433186,
       "groupId": "victoria",
       "doNotGroup": false,
       "operators": [
@@ -64,8 +65,8 @@
       "aliases": [
         "London Bridge Southeastern"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.50510890486,
+      "lng": -0.0860882393,
       "groupId": "london-bridge",
       "doNotGroup": true,
       "operators": [
@@ -82,8 +83,8 @@
       "aliases": [
         "London Bridge Southern"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.50510890486,
+      "lng": -0.0860882393,
       "groupId": "london-bridge",
       "doNotGroup": true,
       "operators": [
@@ -100,8 +101,8 @@
       "aliases": [
         "London Bridge Thameslink"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.50510890486,
+      "lng": -0.0860882393,
       "groupId": "london-bridge",
       "doNotGroup": true,
       "operators": [
@@ -118,8 +119,8 @@
       "aliases": [
         "Liverpool Street Greater Anglia"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.51799102983,
+      "lng": -0.08142594391,
       "groupId": "liverpool-street",
       "doNotGroup": true,
       "operators": [
@@ -136,8 +137,8 @@
       "aliases": [
         "Liverpool Street c2c"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.51799102983,
+      "lng": -0.08142594391,
       "groupId": "liverpool-street",
       "doNotGroup": true,
       "operators": [
@@ -155,8 +156,8 @@
         "King's Cross",
         "Kings Cross"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.53088333892,
+      "lng": -0.12292591146,
       "groupId": "kings-cross",
       "doNotGroup": false,
       "operators": [
@@ -173,8 +174,8 @@
       "aliases": [
         "St Pancras"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.5325135782,
+      "lng": -0.1264633895,
       "groupId": "st-pancras-international",
       "doNotGroup": false,
       "operators": [
@@ -194,8 +195,8 @@
       "aliases": [
         "Paddington"
       ],
-      "lat": null,
-      "lng": null,
+      "lat": 51.51599550289,
+      "lng": -0.17617389915,
       "groupId": "paddington",
       "doNotGroup": false,
       "operators": [
