@@ -107,7 +107,7 @@ const SMOKE_SCRIPTS = [
   "east-midlands-dogfood-gate.mjs",
   "uk-west-midlands-dogfood-gate.mjs",
   "uk-rail-crs-index.mjs",
-  "south-yorkshire-planned-gate.mjs",
+  "south-yorkshire-dogfood-gate.mjs",
   "north-east-planned-gate.mjs",
   "west-of-england-dogfood-gate.mjs",
   "south-wales-dogfood-gate.mjs",
