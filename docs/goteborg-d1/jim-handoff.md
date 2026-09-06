@@ -178,3 +178,11 @@ Lerum), and `getMultiCityNextTrain("goteborg", { station: "Lerum Station", desti
 now asserts both the live conformance (creds present) and an offline fixture
 (`qa/fixtures/goteborg/vasttagen-destinations.json`) covering `Göteborg`/`Floda`/`Stockholm`/
 `Varberg` cases including the terminus self-reference drop.
+
+**Rule added 6/7 Sep 2026 (docs/jim-brief-goteborg-bus-rows-on-tram-codes.md):** a Västtrafik live
+row only counts as tram line N or Västtågen if the row's own `transportMode` agrees
+(`"tram"`/`"train"`) — a designation match against the allow-list is not enough, because
+Kungsbacka's town buses reuse designations ("1", "2", "3", "4") that collide with Göteborg tram
+numbers. `mapVasttrafikDeparture` no longer falls back to the raw `line.designation`/`.name` when
+`goteborgLineCode` rejects a row, and every admitted trip now carries a normalised
+`transportMode: "tram"|"train"` field the board can assert on.

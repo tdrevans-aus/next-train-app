@@ -180,3 +180,10 @@ briefs, dispatches, and merges. The lane reuses the pipeline agents on their pin
 No new agent types for this: the pipeline roster already covers investigate/fix (Jim) and
 verify (Mark), and a Haiku "triage" agent would just re-derive what the top-level session
 learns while reproducing. Revisit if bug volume makes step 1 the bottleneck.
+
+**Jim's two modes (7 Sep 2026).** Jim's definition now has an explicit bug-fix / product mode: a
+`docs/jim-brief-<slug>.md` written under this lane authorises shared-UI, API, scripts, qa and
+multi-region data changes that his expansion-mode guardrails forbid. The first Help-notes dispatch
+was refused for exactly that reason — say "bug-fix / product mode" in the dispatch prompt and point
+at the brief. Also tell every Jim/Mark dispatch to leave no background sleep/poll loops running:
+two finished Jim runs kept re-waking on leftover timers and had to be killed with TaskStop.

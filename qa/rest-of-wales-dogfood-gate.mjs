@@ -95,7 +95,7 @@ assert(live?.ok === true, "assertCityLive(rest-of-wales) must pass — status is
 const entry = getCity("rest-of-wales");
 assert(entry?.status === "live", "rest-of-wales registry status must be live");
 assert(entry?.adapterReady === undefined, "rest-of-wales adapterReady flag is removed once live");
-assert(entry?.displayName === "Wales (North / Mid / West)", "rest-of-wales display name must be Wales (North / Mid / West)");
+assert(entry?.displayName === "North, Mid & West Wales", "rest-of-wales display name must be North, Mid & West Wales (docs/jim-brief-picker-countries-england-scotland-wales.md)");
 assert(entry?.timeZone === "Europe/London", "rest-of-wales timezone must be Europe/London");
 assert(
   CITIES.filter((city) => city.id === "rest-of-wales").length === 1,

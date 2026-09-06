@@ -540,7 +540,10 @@ const PERSISTED_CITY_IDS = new Set([
   "edinburgh",
   "cumbria",
 ]);
-const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
+// "gb" kept alongside the split gb-eng/gb-sct/gb-wls ids so an older stored savedCountry
+// survives the sanitizer until city-session.js's readSavedCountry() migration rewrites it
+// on next launch (docs/jim-brief-picker-countries-england-scotland-wales.md item 3).
+const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "gb-eng", "gb-sct", "gb-wls", "nl", "ca", "nz", "se", "fi", "no"]);
 
 function pickSavedCityFields(raw = {}) {
   const city = String(raw.savedCity ?? "").trim().toLowerCase();
