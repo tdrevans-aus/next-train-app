@@ -55,6 +55,7 @@ const FEED_UNCONFIRMED_CASES = [
   { city: "north-east", station: "Bank Foot", agency: "Tyne and Wear Metro" },
   { city: "south-yorkshire", station: "Malin Bridge", agency: "Sheffield Supertram" },
   { city: "glasgow", station: "Kelvinhall", agency: "Glasgow Subway" },
+  { city: "edinburgh", station: "Newhaven", agency: "Edinburgh Trams" },
 ];
 
 const allErrorStrings = [];
@@ -89,7 +90,7 @@ for (const { city, station, agency } of FEED_UNCONFIRMED_CASES) {
   console.log(`  ok ${city}/${station}: 503 FEED_UNCONFIRMED — "${res.body.error}"`);
 }
 
-console.log("PASS feed-unconfirmed-rider-copy: all 5 no-live-feed stops return 503 FEED_UNCONFIRMED with rider copy");
+console.log("PASS feed-unconfirmed-rider-copy: all 6 no-live-feed stops return 503 FEED_UNCONFIRMED with rider copy");
 
 // MissingDarwinTokenError is an ops failure, not a rider-facing feed gap —
 // only exercise this (network-free — the token check happens before any
