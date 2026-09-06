@@ -1,19 +1,13 @@
 /**
  * London & South East National Rail adapter/dispatch wiring gate. Replaces
- * london-se-national-rail-planned-gate.mjs (retired) — London & South East
- * National Rail STAYS `status: "planned"` here (this is the pre-flip
- * dogfood wiring pass, docs/jim-brief-london-se-national-rail-flip.md). Per
- * CLAUDE.md's flip-follow-through split (added 30 Aug 2026, corrected same
- * day): the dogfood module, the live-city-api.js dispatch switch-cases, and
- * this gate are safe to land ahead of the flip because production routes
- * gate on assertCityLive() first, not on MULTI_CITY_IDS membership. London &
- * South East National Rail is deliberately NOT added to MULTI_CITY_IDS,
- * brisbane-dogfood.js's mount/available map, or journey-model.js's
- * persisted-city/country lists yet — those three list-membership edits are
- * Mark's flip commit, not this one (qa/live-city-lists-sync.mjs enforces
- * that they equal the registry's live set). See
- * docs/london-se-national-rail-d1/jim-handoff.md for the exact note left
- * for Mark.
+ * london-se-national-rail-planned-gate.mjs (retired). London & South East
+ * National Rail is now `status: "live"` (this is the post-flip gate,
+ * docs/jim-brief-london-se-national-rail-flip.md). The dogfood module,
+ * live-city-api.js dispatch switch-cases, list memberships
+ * (MULTI_CITY_IDS, brisbane-dogfood.js mount/available, journey-model.js
+ * persisted-city/country), and QA gate assertions are now all wired for
+ * live operation. Production routes gate on assertCityLive() first; once
+ * live, both dispatch paths and list membership are enforced together.
  *
  * FIRST MULTI-GROUP UK REGION, NO SINGLE HUB-LOCK: seven independent
  * per-terminus station groups (Waterloo, Victoria, London Bridge, Liverpool
@@ -90,14 +84,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STAYS planned, adapterReady, NOT in MULTI_CITY_IDS.
+// Registry identity — NOW live, adapterReady removed, IS in MULTI_CITY_IDS.
 const live = assertCityLive("london-se-national-rail");
-assert(live?.ok === false, "assertCityLive(london-se-national-rail) must fail — status stays planned");
-assert(live?.status === 501, "london-se-national-rail must be 501 planned");
+assert(live?.ok === true, "assertCityLive(london-se-national-rail) must pass — status is now live");
 
 const entry = getCity("london-se-national-rail");
-assert(entry?.status === "planned", "london-se-national-rail registry status must stay planned");
-assert(entry?.adapterReady === true, "london-se-national-rail adapterReady must be true");
+assert(entry?.status === "live", "london-se-national-rail registry status must be live");
+assert(entry?.adapterReady === undefined, "london-se-national-rail adapterReady flag is removed once live");
 assert(
   entry?.displayName === "London & South East National Rail",
   "display name must be London & South East National Rail"
@@ -114,11 +107,10 @@ for (const forbiddenId of ["london-se", "london-national-rail", "uk-london-se", 
 const tflEntry = getCity("uk-london-tfl");
 assert(tflEntry?.status === "live", "uk-london-tfl must remain a separate live city, untouched here");
 
-// Dispatch switch-cases are wired ahead of the flip; MULTI_CITY_IDS membership
-// is deliberately NOT (that's Mark's flip commit).
+// Dispatch switch-cases and MULTI_CITY_IDS membership are now wired (Mark's flip commit).
 assert(
-  isMultiCity("london-se-national-rail") === false,
-  "london-se-national-rail must NOT be in MULTI_CITY_IDS yet — that is Mark's flip commit"
+  isMultiCity("london-se-national-rail") === true,
+  "london-se-national-rail must be in MULTI_CITY_IDS"
 );
 
 // D1 pack presence.
@@ -545,5 +537,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "london-se-national-rail-dogfood-gate: ok (stays planned/501, adapterReady, NOT in MULTI_CITY_IDS, uk-london-tfl untouched, dispatch switch-cases wired, D1 pack, 7 station groups / 10 boards resolve, London Bridge (3) and Liverpool Street (2) internal doNotGroup sub-boards enforced via includeOperators, St Pancras International/Paddington excludeOperators enforced, King's Cross LNER resolved to in (no excludeOperators) per the UK ledger 5 Sep 2026, Euston and secondary termini correctly unbuilt, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep deduplicated over 7 distinct CRS, routing table (exact/undirected) proven token-free, Perth stays green)"
+  "london-se-national-rail-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 7 station groups / 10 boards resolve, London Bridge (3) and Liverpool Street (2) internal doNotGroup sub-boards enforced via includeOperators, St Pancras International/Paddington excludeOperators enforced, King's Cross LNER resolved to in (no excludeOperators) per the UK ledger 5 Sep 2026, Euston and secondary termini correctly unbuilt, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep deduplicated over 7 distinct CRS, routing table (exact/undirected) proven token-free, Perth stays green)"
 );
