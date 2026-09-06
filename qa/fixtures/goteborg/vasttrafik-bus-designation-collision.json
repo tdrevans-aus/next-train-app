@@ -1,0 +1,66 @@
+{
+  "_comment": "Synthetic Västtrafik /departures rows reproducing the 6 Sep 2026 defect (docs/jim-brief-goteborg-bus-rows-on-tram-codes.md): Kungsbacka town buses whose line.designation collides with a Göteborg tram number, plus one genuine tram and one genuine Västtågen row for contrast. Offline check that the bus rows are dropped before labelling — must fail on pre-fix code (bus 'Hede station' rows survive as tram line 2/1/4) and pass after the fix.",
+  "queryStation": "Kungsbacka Station",
+  "rows": [
+    {
+      "serviceJourney": {
+        "line": { "designation": "2", "name": "2", "transportMode": "bus" },
+        "direction": "Hede station"
+      },
+      "plannedTime": "2026-09-06T18:05:00+02:00",
+      "estimatedTime": "2026-09-06T18:05:00+02:00",
+      "isCancelled": false,
+      "expectDropped": true
+    },
+    {
+      "serviceJourney": {
+        "line": { "designation": "1", "name": "1", "transportMode": "bus" },
+        "direction": "Hede station"
+      },
+      "plannedTime": "2026-09-06T18:10:00+02:00",
+      "estimatedTime": "2026-09-06T18:10:00+02:00",
+      "isCancelled": false,
+      "expectDropped": true
+    },
+    {
+      "serviceJourney": {
+        "line": { "designation": "4", "name": "4", "transportMode": "bus" },
+        "direction": "Hede station"
+      },
+      "plannedTime": "2026-09-06T18:15:00+02:00",
+      "estimatedTime": "2026-09-06T18:15:00+02:00",
+      "isCancelled": false,
+      "expectDropped": true
+    },
+    {
+      "serviceJourney": {
+        "line": { "designation": "2", "name": "2", "transportMode": "bus" },
+        "direction": "Kolla"
+      },
+      "plannedTime": "2026-09-06T18:20:00+02:00",
+      "estimatedTime": "2026-09-06T18:20:00+02:00",
+      "isCancelled": false,
+      "expectDropped": true
+    },
+    {
+      "serviceJourney": {
+        "line": { "designation": "3", "name": "3", "transportMode": "bus" },
+        "direction": "Britta Lena"
+      },
+      "plannedTime": "2026-09-06T18:25:00+02:00",
+      "estimatedTime": "2026-09-06T18:25:00+02:00",
+      "isCancelled": false,
+      "expectDropped": true
+    },
+    {
+      "serviceJourney": {
+        "line": { "designation": "Kungsbacka", "name": "Västtågen", "transportMode": "train" },
+        "direction": "Göteborg"
+      },
+      "plannedTime": "2026-09-06T18:30:00+02:00",
+      "estimatedTime": "2026-09-06T18:30:00+02:00",
+      "isCancelled": false,
+      "expectDropped": false
+    }
+  ]
+}

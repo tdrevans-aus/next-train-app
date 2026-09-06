@@ -14,7 +14,11 @@ import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
-import { fetchStationBoard, MissingVasttrafikCredentialsError } from "../lib/providers/goteborg.js";
+import {
+  fetchStationBoard,
+  MissingVasttrafikCredentialsError,
+  _mapAndFilterVasttrafikDepartureForTests,
+} from "../lib/providers/goteborg.js";
 import {
   marketingLabelsForStation,
   mapGoteborgDestination,
@@ -188,7 +192,56 @@ for (const testCase of vasttagenFixture.cases) {
   );
 }
 
+// Bus rows on tram codes (6 Sep 2026 regression:
+// docs/jim-brief-goteborg-bus-rows-on-tram-codes.md). A Kungsbacka town bus
+// whose designation collides with a Göteborg tram number (e.g. "2") must
+// never survive as a tram row — offline, no network required, must fail on
+// pre-fix code and pass after the fix.
+const busCollisionFixture = JSON.parse(
+  readFileSync(join(ROOT, "qa/fixtures/goteborg/vasttrafik-bus-designation-collision.json"), "utf8")
+);
+for (const row of busCollisionFixture.rows) {
+  const { trip, allowed } = _mapAndFilterVasttrafikDepartureForTests(row, busCollisionFixture.queryStation);
+  const mode = row.serviceJourney.line.transportMode;
+  const designation = row.serviceJourney.line.designation;
+  if (row.expectDropped) {
+    assert(
+      allowed === false,
+      `offline: ${mode} designation "${designation}" toward "${row.serviceJourney.direction}" must be ` +
+        `dropped, not admitted as tram/train (got routeShortName=${JSON.stringify(trip.routeShortName)}, ` +
+        `transportMode=${JSON.stringify(trip.transportMode)})`
+    );
+  } else {
+    assert(
+      allowed === true,
+      `offline: genuine ${mode} designation "${designation}" must still be admitted`
+    );
+    assert(
+      trip.transportMode === "tram" || trip.transportMode === "train",
+      `offline: admitted trip must carry transportMode tram/train, got ${JSON.stringify(trip.transportMode)}`
+    );
+  }
+}
+
 if (hasVasttrafikCreds) {
+  const modeCheckStations = ["Kungsbacka Station", "Lerum Station", TRAM_HUB];
+  for (const station of modeCheckStations) {
+    const board = await fetchStationBoard(station);
+    for (const trip of board.trips) {
+      assert(
+        trip.transportMode === "tram" || trip.transportMode === "train",
+        `live: ${station} board trip "${trip.routeShortName} + ${trip.destination}" must have ` +
+          `transportMode tram/train, got ${JSON.stringify(trip.transportMode)} ` +
+          `(raw "${trip.rawDestination}")`
+      );
+      assert(
+        !/påstigning/i.test(trip.destination || "") && !/påstigning/i.test(trip.rawDestination || ""),
+        `live: ${station} board trip destination must not contain "Påstigning" (bus wording): ` +
+          `${JSON.stringify(trip.destination)} / raw ${JSON.stringify(trip.rawDestination)}`
+      );
+    }
+  }
+
   for (const station of ["Lerum Station", "Alingsås Station"]) {
     const chips = new Set((await getMultiCityDirections("goteborg", station)).directions);
     const board = await fetchStationBoard(station);
