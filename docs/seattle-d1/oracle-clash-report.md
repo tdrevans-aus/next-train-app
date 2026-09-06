@@ -68,3 +68,86 @@ All services listed below call at in-catalog stations (Link 1 Line and 2 Line st
 ## What I did not do
 
 No system map hand-transcription in this report (D1 scope); no stopIds in this report; no live city flip; no GitHub edits; no adapter wiring; no GTFS-derived station arrays; no API key storage or testing; no merge of Seattle into other cities (Washington D.C., Chicago, BART, etc.); no Sounder or streetcar as primary v1 data; no product invention of city codes.
+
+## Station roster (D1 transcription, 6 Sep 2026)
+
+**Link 1 Line — Lynnwood City Center to Federal Way Downtown**
+
+Terminus north to terminus south (27 stations):
+
+1. Lynnwood City Center (terminus; northern terminus)
+2. Mountlake Terrace
+3. Shoreline North/185th
+4. Shoreline South/148th
+5. Pinehurst (scheduled to open 30 Sep 2026)
+6. Northgate
+7. Roosevelt
+8. U District
+9. University of Washington
+10. Capitol Hill
+11. Westlake (downtown transit tunnel, shared with 2 Line, interchange)
+12. Symphony (downtown transit tunnel, shared with 2 Line)
+13. Pioneer Square (downtown transit tunnel, shared with 2 Line)
+14. International District/Chinatown (downtown transit tunnel, shared with 2 Line)
+15. Stadium
+16. SODO
+17. Beacon Hill
+18. Mount Baker
+19. Columbia City
+20. Othello
+21. Rainier Beach
+22. Tukwila International Boulevard
+23. SeaTac/Airport
+24. Angle Lake
+25. Kent Des Moines
+26. Star Lake
+27. Federal Way Downtown (terminus; southern terminus)
+
+Source: [Wikipedia: 1 Line (Sound Transit)](https://en.wikipedia.org/wiki/1_Line_(Sound_Transit))
+
+**Link 2 Line — Lynnwood City Center to Downtown Redmond**
+
+Terminus west to terminus east (26 stations; shares 14 stations with 1 Line through International District/Chinatown):
+
+Shared segment (westbound to downtown):
+1. Lynnwood City Center (terminus; western terminus; shared with 1 Line)
+2. Mountlake Terrace (shared with 1 Line)
+3. Shoreline North/185th (shared with 1 Line)
+4. Shoreline South/148th (shared with 1 Line)
+5. Pinehurst (shared with 1 Line; scheduled to open 30 Sep 2026)
+6. Northgate (shared with 1 Line)
+7. Roosevelt (shared with 1 Line)
+8. U District (shared with 1 Line)
+9. University of Washington (shared with 1 Line)
+10. Capitol Hill (shared with 1 Line)
+11. Westlake (downtown transit tunnel, shared with 1 Line, interchange)
+12. Symphony (downtown transit tunnel, shared with 1 Line)
+13. Pioneer Square (downtown transit tunnel, shared with 1 Line)
+14. International District/Chinatown (downtown transit tunnel, shared with 1 Line)
+
+Exclusive eastbound segment (branch from downtown to Redmond):
+15. Judkins Park
+16. Mercer Island (interchange, spans Lake Washington)
+17. South Bellevue
+18. East Main
+19. Bellevue Downtown
+20. Wilburton
+21. Spring District
+22. BelRed
+23. Overlake Village
+24. Redmond Technology
+25. Marymoor Village
+26. Downtown Redmond (terminus; eastern terminus)
+
+Source: [Wikipedia: 2 Line (Sound Transit)](https://en.wikipedia.org/wiki/2_Line_(Sound_Transit))
+
+**Downtown Seattle transit tunnel (shared by both lines):**
+Westlake, Symphony, Pioneer Square, International District/Chinatown (4 stations; both lines run all four).
+
+**Interchange stations:**
+Westlake (1 Line ↔ 2 Line transfer within downtown tunnel), Mercer Island (2 Line only; serves Lake Washington crossing).
+
+**Total unique station count:** 39 stations
+- Line 1 exclusive: 13 stations (Stadium through Federal Way Downtown)
+- Line 2 exclusive: 12 stations (Judkins Park through Downtown Redmond)
+- Shared (both lines): 14 stations (Lynnwood through International District/Chinatown, including 4 in downtown tunnel)

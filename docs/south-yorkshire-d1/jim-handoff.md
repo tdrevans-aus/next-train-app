@@ -127,6 +127,25 @@ published explicit GTFS/data-sharing terms in sources checked; do not assume ope
 National Rail under OGL 2.0 + NRE amendments (`unclear` on third-party redistribution — see open
 item above).
 
+## Flip follow-through (6 Sep 2026, docs/jim-brief-south-yorkshire-flip.md)
+
+Dogfood wiring landed ahead of the flip, status stays `planned`:
+`lib/cities/south-yorkshire/dogfood-next-train.js`, dispatch switch-cases in
+`lib/cities/live-city-api.js` (`directionsFor`/`getMultiCityNextTrain`), and
+`qa/south-yorkshire-dogfood-gate.mjs` (replacing the retired
+`qa/south-yorkshire-planned-gate.mjs`, registered in `qa/run-all.mjs`'s
+`SMOKE_SCRIPTS`).
+
+**Note for Mark — bundle these three one-line additions into the actual
+flip commit, not before** (per CLAUDE.md's flip-follow-through split; adding
+them early breaks `qa/live-city-lists-sync.mjs` for every city, not just
+this one):
+
+1. Add `"south-yorkshire"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add south-yorkshire to `brisbane-dogfood.js`'s mount/available map.
+3. Add south-yorkshire to `journey-model.js`'s persisted-city/country lists.
+
 ## Not done in this pack (by design)
 
 No generator, no assertion tables, no live city flip, no `lib/providers/` or `registry.js` edit,
