@@ -538,6 +538,7 @@ const PERSISTED_CITY_IDS = new Set([
   "north-east",
   "glasgow",
   "edinburgh",
+  "cumbria",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 
