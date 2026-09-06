@@ -14,13 +14,12 @@
  *    and East Midlands' own dogfood modules. Tolerates
  *    MissingDarwinTokenError in sandboxes without DARWIN_LDB_TOKEN set
  *    (expected outside Vercel prod), same as every other UK region.
- *  - West Midlands Metro (TfWM GTFS-RT): TFWM_API_APP_ID/TFWM_API_APP_KEY
- *    are not set anywhere and are not expected to be until Tim self-serves
- *    TfWM API portal registration (FB-48, docs/feature-backlog.md).
- *    fetchMetroStopBoard() throws MissingTfwmCredentialsError
- *    unconditionally in every environment right now. This gate asserts the
- *    dogfood dispatch surfaces that error rather than swallowing it or
- *    fabricating a schedule.
+ *  - West Midlands Metro (TfWM GTFS-RT): credentials exist (FB-48) and live
+ *    both-directions boards were proven 5 Sep 2026 (FB-53), but
+ *    TFWM_API_APP_ID/TFWM_API_APP_KEY are per-environment. With them unset,
+ *    fetchMetroStopBoard() throws MissingTfwmCredentialsError. This gate
+ *    strips the keys and asserts the dogfood dispatch surfaces that error
+ *    rather than swallowing it or fabricating a schedule.
  *
  * NOTE for Mark: at the commit this gate was written, uk-west-midlands is
  * still `status: "planned"` in the registry (Jim never flips that line
