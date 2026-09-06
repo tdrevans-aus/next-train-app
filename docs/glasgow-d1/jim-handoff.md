@@ -124,6 +124,47 @@ directly rather than re-flagged silently by every region forever.
 6. **UK country ledger retrofit** — overdue across nine+ NR regions now; should run before the
    region after this one, not indefinitely deferred.
 
+## Jim's flip follow-through (6 Sep 2026) — note for Mark
+
+Wired ahead of the flip, per CLAUDE.md's "Do now, ahead of the flip" list (code, not list
+membership):
+
+- `lib/cities/glasgow/dogfood-next-train.js` — National Rail directions/next-train derived live
+  from Darwin (regionId "glasgow"), proven independently at both Glasgow Central (GLC) and Glasgow
+  Queen Street (GLQ) with no hub-lock between them ("Option A at n=2"). No
+  `lib/cities/glasgow/direction-hubs.json` ships (no intermediate through-station candidate, same
+  as South Yorkshire) — `loadDirectionHubs()` degrades to a no-op empty hub list. Glasgow Subway's
+  `fetchSubwayStopBoard()` throws `GlasgowSubwayFeedUnverifiedError` unconditionally; this module
+  does not catch it or fall back to the static Outer/Inner Circle label list.
+- Dispatch switch-cases added in `lib/cities/live-city-api.js`'s `directionsFor()` and
+  `getMultiCityNextTrain()` for `cityId === "glasgow"`.
+- `qa/glasgow-dogfood-gate.mjs` replaces the retired `qa/glasgow-planned-gate.mjs` (swapped in
+  `qa/run-all.mjs`'s registration list too). Live-probes Darwin at both GLC and GLQ with the local
+  `DARWIN_LDB_TOKEN` when set; asserts `MissingDarwinTokenError` at both termini when not. Asserts
+  `GlasgowSubwayFeedUnverifiedError` surfaces through the dogfood dispatch and `live-city-api.js`
+  for the Subway layer regardless of token state.
+
+**Left for Mark's flip commit — exactly three one-line list-membership additions, not done here**
+(per CLAUDE.md: these must equal the registry's live set, `qa/live-city-lists-sync.mjs` enforces
+it, and adding them early breaks that gate for everyone):
+1. Add `"glasgow"` to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. Add `"glasgow"` to `brisbane-dogfood.js`'s mount/available map.
+3. Add `"glasgow"` to `journey-model.js`'s persisted-city/country lists.
+
+**Subway licence question — explicitly carried forward for Tim, not resolved here.** The
+TravelWhiz static feed's own curation is CC BY 4.0, but whether the underlying SPT timetable data
+may be redistributed via a public API at all is unclear (oracle report line 105/109, and see "Open
+items for Tim only" above, item 4). Because of this — and because the feed's stop order was never
+verified against an SPT map or the TravelWhiz GTFS's `stop_sequence` — the Subway layer cannot
+currently back a live board under any code change short of resolving both the licence and the stop
+order; `fetchSubwayStopBoard()` throws `GlasgowSubwayFeedUnverifiedError` and the dogfood gate
+asserts that error class rather than a live Subway board. The National Rail layer (Darwin, both
+termini) is what `qa/glasgow-dogfood-gate.mjs` proves live-capable; Subway proves only that it
+fails safely and legibly. Mark should carry this open question into the flip PR for Tim to `hold`
+on if he wants to gate the flip on Subway resolution, or flip on National Rail alone with Subway
+staying in its documented-error state.
+
 ## H7 / license summary
 
 Europe/London, HAS DST (BST/GMT). National Rail under OGL 2.0 + NRE amendments (unclear on
