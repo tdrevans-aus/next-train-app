@@ -2,16 +2,16 @@
   "region": "south-wales",
   "displayName": "South Wales",
   "timeZone": "Europe/London",
-  "source": "docs/south-wales-d1/published-network.json (Nico oracle-clash-report, 1 Sep 2026)",
-  "retrievedAt": "2026-09-01",
+  "source": "docs/south-wales-d1/published-network.json (Nico oracle-clash-report, Re-scope 7 Sep 2026 section)",
+  "retrievedAt": "2026-09-07",
   "feeds": {
     "train": "darwin"
   },
   "notes": [
-    "National Rail (Darwin/OpenLDBWS) is catalogued here and live via DARWIN_LDB_TOKEN (set 2 Sep 2026, PR #230) — same shared uk-darwin.js provider as every other UK region. Registry status stays `planned` (docs/jim-brief-south-wales-flip.md) until Mark/Tim's flip call.",
-    "Single agency (National Rail), single mode (train). Transport for Wales Valley Lines is DELIBERATELY EXCLUDED — no confirmed public GTFS static or GTFS-RT feed of any kind exists for it (see lib/providers/south-wales.js file header). No fallback path exists here for it.",
-    "No doNotGroup needed at Cardiff Central — shared physical station with (unbuilt) Valley Lines on separate infrastructure, footbridge connect, no board to group against yet.",
-    "Severn Tunnel Junction is catalogued flat, NOT a merge point — through-running-only Wales-England boundary station. Open D2 item: West of England's merged pack instead names Chepstow (CPW) for the same corridor; not reconciled here."
+    "National Rail (Darwin/OpenLDBWS) is catalogued here and live via DARWIN_LDB_TOKEN (set 2 Sep 2026, PR #230) — same shared uk-darwin.js provider as every other UK region.",
+    "Single agency in scope (National Rail incl. Transport for Wales through-running), single mode (train). Transport for Wales Valley Lines is IN-CATALOG via Darwin — confirmed on Darwin by a live probe of all 16 catalog CRS codes 5 Sep 2026 (see docs/south-wales-d1/oracle-clash-report.md 'Re-scope 7 Sep 2026' section). Modelled as line + terminus, termini-only: four of the six named Valley Lines routes have a catalogued terminus here (Merthyr, Aberdare, Treherbert/Rhondda, Rhymney) — Coryton and Ebbw Vale termini have no confirmed CRS in this probe and are NOT catalogued (Tim/D2 item, not resolved here). The ~70 intermediate Valley Lines halts across all six lines also remain out of catalog — a future expansion pass, not a gap in this one.",
+    "No doNotGroup needed anywhere in this catalog. Cardiff Central (CDF) is a single Darwin CRS/board, operator-mixed (Valley Lines shares CDF's board with mainline services rather than getting a separate board) — nothing to group against, just for a different reason than the old 'no Valley Lines board exists yet' framing. Cardiff Queen Street (CDQ) is a separate CRS ~600 m away with no shared-board evidence — built as its own plain entry, not grouped with CDF.",
+    "Severn Tunnel Junction is catalogued flat, NOT a merge point — through-running-only Wales-England boundary station. RESOLVED per docs/united-kingdom-ledger.md SS2 (Tim, 5 Sep 2026): STJ and West of England's Chepstow (CPW) are both in Wales on different corridors, both home South Wales/West of England respectively, both stay through-running-only — this is no longer an open D2 item."
   ],
   "notInRegion": [],
   "stops": [
@@ -19,19 +19,161 @@
       "mode": "train",
       "name": "Cardiff Central",
       "crs": "CDF",
+      "crsVerified": true,
       "aliases": [],
-      "lat": null,
-      "lng": null,
-      "class": "hub lock — interchange between Valley Lines (unbuilt, separate infrastructure) and National Rail through-running services"
+      "lat": 51.47602538995,
+      "lng": -3.17930174024,
+      "class": "hub lock — Valley Lines (all six lines) + National Rail mainline, single Darwin board, operator-mixed. Not Cardiff Queen Street, not Cardiff Bay (both remain ambiguous aliases, not used as names for this entry)."
+    },
+    {
+      "mode": "train",
+      "name": "Cardiff Queen Street",
+      "crs": "CDQ",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.48196153284,
+      "lng": -3.17018055435,
+      "class": "secondary hub — Valley Lines Rhondda/Merthyr junction only, no mainline through-running. Own catalog entry, own board, ~600 m from Cardiff Central with no shared-board evidence — doNotGroup not needed."
+    },
+    {
+      "mode": "train",
+      "name": "Pontypridd",
+      "crs": "PPD",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.59937017229,
+      "lng": -3.34137470984,
+      "class": "third-tier local hub — Valley Lines junction (Merthyr/Rhondda)"
+    },
+    {
+      "mode": "train",
+      "name": "Newport",
+      "crs": "NWP",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.58878898755,
+      "lng": -3.00054347097,
+      "class": "National Rail mainline hub, east of Cardiff"
+    },
+    {
+      "mode": "train",
+      "name": "Swansea",
+      "crs": "SWA",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.62514582504,
+      "lng": -3.94154604946,
+      "class": "National Rail mainline hub, boundary station — western edge of South Wales region"
+    },
+    {
+      "mode": "train",
+      "name": "Bridgend",
+      "crs": "BGN",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.50697351056,
+      "lng": -3.57527568317,
+      "class": "National Rail mainline, Cardiff-Swansea corridor"
+    },
+    {
+      "mode": "train",
+      "name": "Barry Island",
+      "crs": "BYI",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.39241342391,
+      "lng": -3.27336341989,
+      "class": "National Rail branch terminus"
+    },
+    {
+      "mode": "train",
+      "name": "Penarth",
+      "crs": "PEN",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.4358891543,
+      "lng": -3.17444075133,
+      "class": "National Rail branch"
+    },
+    {
+      "mode": "train",
+      "name": "Caerphilly",
+      "crs": "CPH",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.57157711257,
+      "lng": -3.21848198941,
+      "class": "Valley Lines local station"
+    },
+    {
+      "mode": "train",
+      "name": "Merthyr Tydfil",
+      "crs": "MER",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.74462170957,
+      "lng": -3.37725039469,
+      "class": "Valley Lines terminus (Merthyr line)"
+    },
+    {
+      "mode": "train",
+      "name": "Aberdare",
+      "crs": "ABA",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.71505790608,
+      "lng": -3.44308344608,
+      "class": "Valley Lines terminus (Aberdare line)"
+    },
+    {
+      "mode": "train",
+      "name": "Treherbert",
+      "crs": "TRB",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.6722431206,
+      "lng": -3.53630247917,
+      "class": "Valley Lines terminus (Rhondda line)"
+    },
+    {
+      "mode": "train",
+      "name": "Rhymney",
+      "crs": "RHY",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.75883740042,
+      "lng": -3.28929833943,
+      "class": "Valley Lines terminus (Rhymney line)"
+    },
+    {
+      "mode": "train",
+      "name": "Neath",
+      "crs": "NTH",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.66236095463,
+      "lng": -3.80721896671,
+      "class": "National Rail mainline, Swansea-Neath-Bridgend junction"
+    },
+    {
+      "mode": "train",
+      "name": "Port Talbot Parkway",
+      "crs": "PTA",
+      "crsVerified": true,
+      "aliases": [],
+      "lat": 51.59171799928,
+      "lng": -3.78131427074,
+      "class": "National Rail mainline"
     },
     {
       "mode": "train",
       "name": "Severn Tunnel Junction",
       "crs": "STJ",
+      "crsVerified": true,
       "aliases": [],
-      "lat": null,
-      "lng": null,
-      "class": "through-running only, Wales-England boundary on the South Wales Main Line — not a merge point"
+      "lat": 51.58467671176,
+      "lng": -2.77789143612,
+      "class": "through-running only, Wales-England boundary on the South Wales Main Line — not a merge with Chepstow (CPW). Resolved per docs/united-kingdom-ledger.md SS2 (Tim, 5 Sep 2026)."
     }
   ]
 }
