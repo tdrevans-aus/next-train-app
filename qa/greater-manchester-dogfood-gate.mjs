@@ -1,18 +1,12 @@
 /**
- * Greater Manchester adapter/dispatch wiring gate. Replaces
- * greater-manchester-planned-gate.mjs (retired) — Greater Manchester STAYS
- * `status: "planned"` here (this is the pre-flip dogfood wiring pass,
- * docs/jim-brief-greater-manchester-flip.md). Per CLAUDE.md's
- * flip-follow-through split (added 30 Aug 2026, corrected same day): the
- * dogfood module, the live-city-api.js dispatch switch-cases, and this gate
- * are safe to land ahead of the flip because production routes gate on
- * assertCityLive() first, not on MULTI_CITY_IDS membership. Greater
- * Manchester is deliberately NOT added to MULTI_CITY_IDS, brisbane-dogfood.js's
- * mount/available map, or journey-model.js's persisted-city/country lists yet
- * — those three list-membership edits are Mark's flip commit, not this one
- * (qa/live-city-lists-sync.mjs enforces that they equal the registry's live
- * set). See docs/greater-manchester-d1/jim-handoff.md for the exact note left
- * for Mark.
+ * Greater Manchester adapter/dispatch wiring gate + flip-commit assertions.
+ * Wired by Jim (PR #277: dogfood module, dispatch switch-cases), flipped by Mark
+ * (this commit: status live, list additions). Per CLAUDE.md's flip-follow-through
+ * split (added 30 Aug 2026, corrected same day): status flip, MULTI_CITY_IDS
+ * addition to live-city-api.js / brisbane-dogfood.js / journey-model.js / app.js /
+ * city-session.js, LIVE_UK_REGION_IDS in uk-planned-gate.mjs, and this gate's
+ * assertions all land in Mark's flip commit. See docs/greater-manchester-d1/jim-handoff.md
+ * for the handoff note.
  *
  * Two agencies, two very different outcomes once wired (same two-layer shape
  * as East Midlands' National Rail + NET pair, qa/east-midlands-dogfood-gate.mjs):
@@ -83,14 +77,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity — STAYS planned (Mark/Tim's flip call, not made here).
+// Registry identity — now live (Mark's flip call).
 const live = assertCityLive("greater-manchester");
-assert(live?.ok === false, "assertCityLive(greater-manchester) must fail — status is still planned");
-assert(live?.status === 501, "greater-manchester must be 501 planned");
+assert(live?.ok === true, "assertCityLive(greater-manchester) must succeed — status is live");
 
 const entry = getCity("greater-manchester");
-assert(entry?.status === "planned", "greater-manchester registry status must stay planned");
-assert(entry?.adapterReady === true, "greater-manchester adapterReady must be true");
+assert(entry?.status === "live", "greater-manchester registry status must be live");
+assert(entry?.adapterReady === undefined, "greater-manchester adapterReady flag is removed once live");
 assert(entry?.displayName === "Greater Manchester", "greater-manchester display name must be Greater Manchester");
 assert(entry?.timeZone === "Europe/London", "greater-manchester timezone must be Europe/London");
 assert(
@@ -101,10 +94,10 @@ for (const forbiddenId of ["gm", "manchester", "metrolink", "greater-manchester-
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// NOT yet in MULTI_CITY_IDS — that's Mark's flip commit, not this pass.
+// Now in MULTI_CITY_IDS — this is the flip commit.
 assert(
-  isMultiCity("greater-manchester") === false,
-  "greater-manchester must NOT be in MULTI_CITY_IDS yet — that's Mark's flip commit"
+  isMultiCity("greater-manchester") === true,
+  "greater-manchester must be in MULTI_CITY_IDS"
 );
 
 // D1 pack presence.
@@ -478,5 +471,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "greater-manchester-dogfood-gate: ok (planned/501, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired, D1 pack, 4 rail + 15 Metrolink stations, doNotGroup at Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, Perth Australia stays green)"
+  "greater-manchester-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 4 rail + 15 Metrolink stations, doNotGroup at Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, Perth Australia stays green)"
 );
