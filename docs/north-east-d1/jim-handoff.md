@@ -138,6 +138,30 @@ Europe/London, HAS DST (BST/GMT). Metro (Tyne and Wear GTFS via DFT aggregator) 
 clear, commercial redistribution with attribution permitted. National Rail under OGL 2.0 + NRE
 amendments (`unclear` on third-party redistribution — see open item above).
 
+## Flip follow-through (5 Sep 2026, docs/jim-brief-north-east-flip.md)
+
+Ahead of the flip, this pass wired the code half of flip follow-through — safe because production
+routes gate on `assertCityLive()` first, not on list membership:
+
+- `lib/cities/north-east/dogfood-next-train.js` (National Rail derives directions live from
+  Darwin; Metro surfaces `MetroFeedUnconfirmedError` unconditionally — never fabricates a board
+  from the static label list).
+- The `north-east` dispatch switch-cases in `lib/cities/live-city-api.js`'s `directionsFor()` /
+  `getMultiCityNextTrain()`.
+- `qa/north-east-dogfood-gate.mjs`, replacing the retired `qa/north-east-planned-gate.mjs`, and
+  the matching swap in `qa/run-all.mjs`'s gate list.
+
+**For Mark, at the actual flip commit — do NOT add these now:** three one-line list-membership
+additions, gated by `qa/live-city-lists-sync.mjs` to exactly match the registry's `status ===
+"live"` set:
+
+1. `"north-east"` added to `MULTI_CITY_IDS` (and the `MultiCityId` typedef) in
+   `lib/cities/live-city-api.js`.
+2. `"north-east"` added to `brisbane-dogfood.js`'s mount/available map.
+3. `"north-east"` added to `journey-model.js`'s persisted-city/country lists.
+
+Registry `status` itself also stays `"planned"` until Mark's flip PR — not touched here.
+
 ## Not done in this pack (by design)
 
 No generator, no assertion tables, no live city flip, no `lib/providers/` or `registry.js` edit,
