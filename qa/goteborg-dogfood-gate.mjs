@@ -1,7 +1,10 @@
 /**
- * Göteborg is tester-live (flipped by Tim 29 Aug 2026). Schedule-only RT
- * (Trafiklab publishes no TripUpdates for vt) is documented and surfaced
- * honestly — never asserted away.
+ * Göteborg is tester-live (flipped by Tim 29 Aug 2026). Boards are primarily
+ * Västtrafik Planera Resa v4 live departures (docs/jim-brief-goteborg-vasttrafik-live.md),
+ * falling back to Trafiklab GTFS Regional `vt` schedule-only (Trafiklab still
+ * publishes no TripUpdates for vt) when Västtrafik departures are missing or
+ * the fetch fails — surfaced honestly via realtime "live"/"timetable", never
+ * asserted away. Missing VASTTRAFIK_CLIENT_ID/SECRET is a hard error.
  * Usage: node qa/goteborg-dogfood-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
@@ -11,6 +14,7 @@ import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
+import { fetchStationBoard, MissingVasttrafikCredentialsError } from "../lib/providers/goteborg.js";
 import {
   marketingLabelsForStation,
   TRAM_HUB,
@@ -44,6 +48,8 @@ const entry = getCity("goteborg");
 assert(entry?.displayName === "Göteborg", "goteborg display name must be Göteborg");
 assert(entry?.agency === "Västtrafik", "Göteborg agency is Västtrafik");
 assert((entry.envKeys ?? []).includes("TRAFIKLAB_API_KEY"), "goteborg needs TRAFIKLAB_API_KEY");
+assert((entry.envKeys ?? []).includes("VASTTRAFIK_CLIENT_ID"), "goteborg needs VASTTRAFIK_CLIENT_ID");
+assert((entry.envKeys ?? []).includes("VASTTRAFIK_CLIENT_SECRET"), "goteborg needs VASTTRAFIK_CLIENT_SECRET");
 assert(!entry.modes?.includes("metro"), "goteborg has no metro");
 assert(entry.modes?.includes("tram") && entry.modes?.includes("train"), "goteborg modes v1 are tram + train");
 assert(!getCity("sweden") && !getCity("gothenburg"), "city id is goteborg — no sweden/gothenburg");
@@ -121,13 +127,43 @@ assert(
   "bundled hub chips must match marketingLabelsForStation"
 );
 
-// Schedule-only honesty: adapter documents the vt RT gap and still attempts the
+// Live-board honesty: adapter uses Västtrafik as primary, still documents the
+// Trafiklab vt RT gap for the timetable fallback, and still attempts the
 // standard Trafiklab RT URL so nothing changes if TripUpdates appear later.
 const adapterSrc = readFileSync(join(ROOT, "lib/providers/goteborg.js"), "utf8");
-assert(/schedule-only/i.test(adapterSrc), "adapter must document the schedule-only RT reality");
-assert(adapterSrc.includes("trafiklabGtfsRtTripUpdatesUrl"), "adapter must still attempt the standard RT URL");
-assert(adapterSrc.includes("realtime: board.realtime === true"), "board must surface the honest realtime flag");
+assert(/schedule-only/i.test(adapterSrc), "adapter must document the schedule-only fallback reality");
+assert(adapterSrc.includes("trafiklabGtfsRtTripUpdatesUrl"), "adapter must still attempt the standard RT URL for the fallback");
+assert(adapterSrc.includes("fetchStopAreaDepartures"), "adapter must call the Västtrafik departures cache");
+assert(adapterSrc.includes("readVasttrafikCredentials()"), "missing Västtrafik credentials must be a hard error, not a silent fallback");
 assert(/TripUpdates not published for vt/i.test(getCity("goteborg")?.integration ?? ""), "registry must document the vt RT gap");
+
+// Live board (creds present) or documented hard error (creds absent) — never
+// a silent timetable board when Västtrafik credentials are simply missing.
+const hasVasttrafikCreds = Boolean(process.env.VASTTRAFIK_CLIENT_ID) && Boolean(process.env.VASTTRAFIK_CLIENT_SECRET);
+if (hasVasttrafikCreds) {
+  const liveBoard = await fetchStationBoard(TRAM_HUB);
+  assert(
+    liveBoard.realtime === "live" || liveBoard.realtime === "timetable",
+    "board realtime marker must be live or timetable"
+  );
+  if (liveBoard.realtime === "live") {
+    assert(
+      liveBoard.trips.some((trip) => Boolean(trip.liveDeparture)),
+      "a live board must carry estimated departure times"
+    );
+  }
+} else {
+  let thrown = null;
+  try {
+    await fetchStationBoard(TRAM_HUB);
+  } catch (error) {
+    thrown = error;
+  }
+  assert(
+    thrown instanceof MissingVasttrafikCredentialsError,
+    "missing VASTTRAFIK_CLIENT_ID/SECRET must throw MissingVasttrafikCredentialsError, not fall back silently"
+  );
+}
 
 // Probe plumbing: local express only; Vercel dev board must 404 regardless.
 const previous = process.env.ALLOW_CITY_PROBES;
@@ -160,5 +196,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "goteborg-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, schedule-only documented, Brunnsparken/Göteborg Central hubs)"
+  "goteborg-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Västtrafik live board / Trafiklab fallback documented, Brunnsparken/Göteborg Central hubs)"
 );
