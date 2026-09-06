@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "cumbria"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -35,7 +35,7 @@
       id: "gb",
       name: "United Kingdom",
       regions: [
-        { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
+        { id: "cumbria", name: "Cumbria", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "east-midlands", name: "East Midlands", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "edinburgh", name: "Edinburgh", timeZone: "Europe/London", comingSoon: true, feed: "darwin" },
         { id: "glasgow", name: "Glasgow", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
@@ -136,6 +136,7 @@
     "london-se-national-rail": { minLat: 50.7, maxLat: 51.7, minLng: -0.5, maxLng: 0.8 },
     southwest: { minLat: 50.5, maxLat: 51.3, minLng: -4.7, maxLng: -3.0 },
     glasgow: { minLat: 55.80, maxLat: 55.92, minLng: -4.40, maxLng: -4.15 },
+    cumbria: { minLat: 54.00, maxLat: 55.00, minLng: -3.30, maxLng: -2.20 },
   };
 
   function dogfood() {

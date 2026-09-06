@@ -1,17 +1,12 @@
 /**
- * Cumbria adapter/dispatch wiring gate. Replaces cumbria-planned-gate.mjs
- * (retired) — Cumbria STAYS `status: "planned"` here (this is the pre-flip
- * dogfood wiring pass, docs/jim-brief-cumbria-flip.md). Per CLAUDE.md's
- * flip-follow-through split (added 30 Aug 2026, corrected same day): the
- * dogfood module, the live-city-api.js dispatch switch-cases, and this gate
- * are safe to land ahead of the flip because production routes gate on
- * assertCityLive() first, not on MULTI_CITY_IDS membership. Cumbria is
- * deliberately NOT added to MULTI_CITY_IDS, brisbane-dogfood.js's
- * mount/available map, or journey-model.js's persisted-city/country lists
- * yet — those three one-line list-membership edits are Mark's flip commit,
- * not this one (qa/live-city-lists-sync.mjs enforces that they equal the
- * registry's live set). See docs/cumbria-d1/jim-handoff.md for the exact
- * note left for Mark.
+ * Cumbria adapter/dispatch wiring gate + flip-commit assertions. Wired by
+ * Jim (dogfood module, dispatch switch-cases), flipped by Mark (this commit:
+ * status live, list additions). Per CLAUDE.md's flip-follow-through split
+ * (added 30 Aug 2026, corrected same day): status flip, MULTI_CITY_IDS
+ * addition to live-city-api.js / brisbane-dogfood.js / journey-model.js /
+ * app.js / city-session.js, LIVE_UK_REGION_IDS in uk-planned-gate.mjs, and
+ * this gate's assertions all land in Mark's flip commit. See
+ * docs/cumbria-d1/jim-handoff.md for the handoff note.
  *
  * One agency, one mode: National Rail only (Darwin/OpenLDBWS). This gate
  * stays token-tolerant throughout: with DARWIN_LDB_TOKEN set (e.g. this
@@ -81,14 +76,13 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity — STAYS planned (Mark/Tim's flip call, not made here).
+// Registry identity — now live (Mark's flip call).
 const live = assertCityLive("cumbria");
-assert(live?.ok === false, "assertCityLive(cumbria) must fail — status is still planned");
-assert(live?.status === 501, "cumbria must be 501 planned");
+assert(live?.ok === true, "assertCityLive(cumbria) must succeed — status is live");
 
 const entry = getCity("cumbria");
-assert(entry?.status === "planned", "cumbria registry status must stay planned");
-assert(entry?.adapterReady === true, "cumbria adapterReady must be true");
+assert(entry?.status === "live", "cumbria registry status must be live");
+assert(entry?.adapterReady === undefined, "cumbria adapterReady flag is removed once live");
 assert(entry?.displayName === "Cumbria", "cumbria display name must be Cumbria");
 assert(entry?.timeZone === "Europe/London", "cumbria timezone must be Europe/London");
 assert(CITIES.filter((city) => city.id === "cumbria").length === 1, "cumbria must appear once in the registry");
@@ -96,8 +90,8 @@ for (const forbiddenId of ["cumbria-lakes", "carlisle", "lake-district", "uk-cum
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// NOT yet in MULTI_CITY_IDS — that's Mark's flip commit, not this pass.
-assert(isMultiCity("cumbria") === false, "cumbria must NOT be in MULTI_CITY_IDS yet — that's Mark's flip commit");
+// Now in MULTI_CITY_IDS — this is the flip commit.
+assert(isMultiCity("cumbria") === true, "cumbria must be in MULTI_CITY_IDS");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/cumbria-d1");
@@ -407,5 +401,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "cumbria-dogfood-gate: ok (planned/501, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired, D1 pack, 7 rail-only stations, single tier-1 hub Carlisle + two tier-2 secondary hubs Oxenholme/Barrow-in-Furness, Penrith correctly stays regional, Caledonian Sleeper out-reservation exclusion enforced at Carlisle only, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia green)"
+  "cumbria-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 7 rail-only stations, single tier-1 hub Carlisle + two tier-2 secondary hubs Oxenholme/Barrow-in-Furness, Penrith correctly stays regional, Caledonian Sleeper out-reservation exclusion enforced at Carlisle only, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia green)"
 );
