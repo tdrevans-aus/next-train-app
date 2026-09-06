@@ -1,0 +1,28 @@
+{
+  "region": "edinburgh",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Edinburgh Waverley, Haymarket and Slateford, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [
+    {
+      "label": "Edinburgh Trams",
+      "detail": "No confirmed live-times feed at the moment, so the tram board shows an explicit message rather than made-up times."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Caledonian Sleeper",
+      "detail": "Excluded at Edinburgh Waverley — booking a berth is compulsory."
+    },
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "25 stations and stops: Edinburgh Waverley, Haymarket and Slateford by rail, plus the Trams line from Newhaven to the Airport.",
+  "notes": "The Trams stop named Edinburgh Waverley is a separate stop from the rail station of the same name, with no automatic interchange."
+}

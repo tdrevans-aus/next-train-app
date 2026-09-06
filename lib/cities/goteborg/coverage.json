@@ -1,0 +1,23 @@
+{
+  "region": "goteborg",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Göteborg trams",
+      "detail": "Lines 1 through 12, with live estimated times from Västtrafik."
+    },
+    {
+      "label": "Regional pendeltåg",
+      "detail": "Trains toward Kungsbacka, Alingsås and Ale, with live times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Metro, stombuss and boat services, and Västtågen outside the city map",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "157 stops. Brunnsparken is the main hub, though lines 8 and 12 don't call there.",
+  "notes": ""
+}

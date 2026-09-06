@@ -1,0 +1,23 @@
+{
+  "region": "uppsala",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Mälartåg regional trains",
+      "detail": "All Mälartåg services, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "UL local buses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "SL commuter trains (line 40)",
+      "detail": "Not this region's board — SL's own Stockholm board already covers Knivsta, where the lines share a stop."
+    }
+  ],
+  "stations": "19 stations, hubbed on Uppsala C. Only stations with published coordinates are included, so a few named corridors aren't yet on the map.",
+  "notes": ""
+}

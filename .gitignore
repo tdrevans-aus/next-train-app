@@ -15,6 +15,7 @@ android/keystore.properties
 
 public/site-config.json
 public/dogfood-origin.json
+public/coverage-notes/
 
 public/_*.txt
 

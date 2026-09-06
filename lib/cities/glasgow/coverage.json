@@ -1,0 +1,28 @@
+{
+  "region": "glasgow",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Glasgow Central and Glasgow Queen Street, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [
+    {
+      "label": "Glasgow Subway",
+      "detail": "No confirmed official live-times feed exists yet, so the Subway board shows an explicit message rather than made-up times."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Caledonian Sleeper",
+      "detail": "Excluded at Glasgow Central — booking a berth is compulsory."
+    },
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "17 stations and stops: Glasgow Central and Glasgow Queen Street (separate buildings, not rail-connected) plus the Subway loop.",
+  "notes": ""
+}

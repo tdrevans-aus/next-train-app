@@ -337,6 +337,67 @@ body.native-ad-banner .journeys-dialog.journeys-dialog--detail:not([hidden]) {
   font-weight: 700;
 }
 
+.help-coverage-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.help-coverage-list[hidden] {
+  display: none;
+}
+
+.help-coverage-updated {
+  font-size: 0.76rem;
+  opacity: 0.75;
+}
+
+/*
+ * Entry point B's "?" button lives OUTSIDE the <label> as a sibling, not nested
+ * inside it — a button nested inside a <label> becomes that label's implicit
+ * control, so any click on a label descendant (e.g. deep inside the station
+ * picker's dropdown list) auto-forwards a synthetic click to it. See
+ * docs/jim-brief-help-coverage-notes.md.
+ */
+.station-field-with-help {
+  position: relative;
+}
+
+.station-field-help-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.help-inline-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  min-width: 44px;
+  min-height: 44px;
+  margin-left: 0.15rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.station-picker-coverage-row {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.85rem;
+  color: var(--brand, #1d4ed8);
+  cursor: pointer;
+  border-top: 1px solid var(--line);
+}
+
 .widget-debug-panel {
   margin: 0.9rem 0 0;
   padding: 0.65rem 0.75rem;

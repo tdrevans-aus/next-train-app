@@ -1,0 +1,19 @@
+{
+  "region": "thames-valley",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Reading and Oxford, and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "Eight stations. Reading is the main hub; Oxford is a second hub, shown as separate boards for the main line and the Chiltern branch since they use different platforms.",
+  "notes": ""
+}

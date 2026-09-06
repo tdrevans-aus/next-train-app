@@ -1,0 +1,27 @@
+{
+  "region": "oslo",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "T-bane (metro)",
+      "detail": "All five lines, every one of the 101 stations, with live running times."
+    },
+    {
+      "label": "Airport and regional trains at two stops",
+      "detail": "Flytoget airport express and Vy regional/commuter trains are shown, but only at Jernbanetorget and Nationaltheatret."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Trikk (tram), buses and ferries",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Vy/Flytoget elsewhere in Oslo",
+      "detail": "Only shown at the two stops above, not at every station they call."
+    }
+  ],
+  "stations": "101 T-bane stations plus the two combined stops.",
+  "notes": "Stortinget is the metro's shared hub — all five lines call there."
+}

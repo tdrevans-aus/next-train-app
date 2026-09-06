@@ -1,0 +1,19 @@
+{
+  "region": "perth",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Transperth trains",
+      "detail": "Every train on all five Perth suburban lines, with live times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses and ferries",
+      "detail": "Not a rail app."
+    }
+  ],
+  "stations": "All Transperth train stations across the Perth network.",
+  "notes": "The original city this app was built for — the reference board every other region is measured against."
+}

@@ -1,0 +1,27 @@
+{
+  "region": "malmo",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Pågatågen regional trains",
+      "detail": "All ten corridors, shown by destination rather than line number, with live running times."
+    },
+    {
+      "label": "Öresundståg and Krösatågen",
+      "detail": "Both are walk-up, no-reservation services on the same feed, shown as their own service type."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Snälltåget",
+      "detail": "Excluded — booking a seat is compulsory."
+    },
+    {
+      "label": "Buses and light rail",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "84 stations, hubbed on Malmö C.",
+  "notes": ""
+}

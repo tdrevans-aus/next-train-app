@@ -1,0 +1,19 @@
+{
+  "region": "gold-coast",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "G:link light rail",
+      "detail": "The full L1 line, Helensvale to Burleigh Heads, including the Stage 3 extension, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "27 stops.",
+  "notes": "A separate region from Brisbane — different network, different app city."
+}

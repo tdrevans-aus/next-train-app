@@ -543,12 +543,16 @@ function unsupportedRegionCopy() {
           ? `Near me works near ${regionName} stations. The closest one we cover is ${nearestStation}, about ${roundedKm} km away.`
           : `Near me works near ${regionName} stations. You're outside that area right now.`,
       hint: "You can still save routes and journeys for when you're near the network.",
+      // docs/jim-brief-help-coverage-notes.md — region is known, so the "See what's
+      // covered" link can point at that region's coverage notes.
+      coverageCityId: nearbySession?.city || null,
     };
   }
   return {
     title: "Outside covered areas",
     text: "Near me works near stations in the regions Next Train covers. You're not in one of them right now.",
     hint: "Choose a region from the menu to browse its stations and save journeys.",
+    coverageCityId: null,
   };
 }
 
@@ -613,7 +617,20 @@ function renderUnsupportedRegionBoard() {
     emptyJourneysBtn.textContent = "My Journeys";
     emptyJourneysBtn.addEventListener("click", () => deps.enterJourneyMode?.());
 
-    deps.departCountdownEl.append(title, text, hint, emptyJourneysBtn);
+    const children = [title, text, hint];
+    if (copy.coverageCityId && window.NextTrainHelpCoverage) {
+      const coverageLink = document.createElement("a");
+      coverageLink.href = "#";
+      coverageLink.className = "hero-empty-coverage-link";
+      coverageLink.textContent = "See what's covered";
+      coverageLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.NextTrainHelpCoverage.open();
+      });
+      children.push(coverageLink);
+    }
+    children.push(emptyJourneysBtn);
+    deps.departCountdownEl.append(...children);
   }
 
   if (deps.heroEl) {

@@ -1,0 +1,23 @@
+{
+  "region": "stockholm",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Tunnelbana (metro)",
+      "detail": "All metro lines, with live running times."
+    },
+    {
+      "label": "Pendeltåg (commuter rail)",
+      "detail": "Lines 40, 41, 43 and 48, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses and trams",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "153 stations across the metro and commuter network.",
+  "notes": "T-Centralen (metro) and Stockholm City / Stockholms central (commuter rail) are separate hubs, not the same station."
+}

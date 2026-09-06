@@ -1,0 +1,23 @@
+{
+  "region": "sydney",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Sydney Trains",
+      "detail": "Every Sydney Trains service shown on the station board, with live running times."
+    },
+    {
+      "label": "Sydney Metro",
+      "detail": "Metro trains on the shared network, live."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses, light rail and ferries",
+      "detail": "Not a rail app."
+    }
+  ],
+  "stations": "182 stations across the Sydney Trains and Sydney Metro network.",
+  "notes": ""
+}

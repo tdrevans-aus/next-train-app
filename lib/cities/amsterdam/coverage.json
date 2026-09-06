@@ -1,0 +1,23 @@
+{
+  "region": "amsterdam",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "GVB Metro",
+      "detail": "Lines M50 through M54, with live running times where the network publishes them."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Trams and buses",
+      "detail": "Not a rail app."
+    },
+    {
+      "label": "NS national trains",
+      "detail": "This region covers metro only, not the wider Dutch rail network."
+    }
+  ],
+  "stations": "39 metro stations, hubbed on Centraal Station.",
+  "notes": ""
+}

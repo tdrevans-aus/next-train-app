@@ -1,0 +1,23 @@
+{
+  "region": "cumbria",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Carlisle and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Caledonian Sleeper",
+      "detail": "Excluded at Carlisle — booking a berth is compulsory."
+    },
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "Seven stations, hubbed on Carlisle, with Oxenholme Lake District and Barrow-in-Furness as secondary hubs.",
+  "notes": "Only a handful of Cumbria's stations are on the catalog so far — more are being added."
+}

@@ -1,0 +1,23 @@
+{
+  "region": "southwest",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Exeter St Davids, Plymouth, Penzance and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Night Riviera Sleeper",
+      "detail": "Excluded at Exeter St Davids, Plymouth, Truro, St Austell, St Erth and Penzance — booking a berth is compulsory."
+    },
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "Nine stations: Exeter St Davids as the main hub, Plymouth as a second hub, and Penzance as the western terminus.",
+  "notes": ""
+}

@@ -1,0 +1,23 @@
+{
+  "region": "solent",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Southampton Central, Portsmouth Harbour and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Isle of Wight Island Line",
+      "detail": "Excluded — it depends on the Wightlink ferry connection, outside this region's scope."
+    }
+  ],
+  "stations": "Seven stations, with Southampton Central as the western hub and Portsmouth Harbour as the eastern hub.",
+  "notes": ""
+}

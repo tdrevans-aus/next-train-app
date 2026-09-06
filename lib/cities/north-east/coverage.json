@@ -1,0 +1,23 @@
+{
+  "region": "north-east",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Newcastle Central, Sunderland and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Tyne and Wear Metro",
+      "detail": "Not covered — no confirmed public live-times feed exists for Metro, so no Metro board is offered rather than showing a stale timetable dressed up as live."
+    },
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "63 stations and stops, mostly Metro stops kept on file for when a Metro feed exists; National Rail today is Newcastle Central, Sunderland and Berwick-upon-Tweed.",
+  "notes": "At Sunderland, Metro and National Rail trains share the same platforms — shown together, not yet split into separate boards."
+}

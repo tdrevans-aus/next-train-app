@@ -455,6 +455,9 @@
         empty.setAttribute("aria-disabled", "true");
         list.appendChild(empty);
         activeIndex = -1;
+        if (mode === "search") {
+          appendCoverageRow();
+        }
         return;
       }
 
@@ -494,6 +497,37 @@
         });
         list.appendChild(item);
       });
+      if (mode === "search") {
+        appendCoverageRow();
+      }
+    }
+
+    /**
+     * Entry point A (docs/jim-brief-help-coverage-notes.md) — a final, non-selectable
+     * "Can't find your station?" row that opens Help scrolled to the coverage entry for
+     * the active region. Shared handler for entry point B (the "?" icon button) too.
+     */
+    function appendCoverageRow() {
+      if (!window.NextTrainHelpCoverage) {
+        return;
+      }
+      const region = planningCityId();
+      const row = document.createElement("li");
+      row.className = "station-combobox-coverage-row station-picker-coverage-row";
+      row.setAttribute("role", "option");
+      row.setAttribute("aria-disabled", "true");
+      row.textContent = `Can't find your station? See what's covered in ${window.NextTrainHelpCoverage.regionLabel(region)}`;
+      row.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+        suppressBlurClose = true;
+      });
+      row.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeList({ restoreSelection: true });
+        window.NextTrainHelpCoverage.open();
+      });
+      list.appendChild(row);
     }
 
     function openBrowse() {

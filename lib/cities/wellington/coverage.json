@@ -1,0 +1,19 @@
+{
+  "region": "wellington",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Metlink trains",
+      "detail": "Kāpiti, Hutt Valley, Melling and Johnsonville lines, plus the Wairarapa line, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses, ferries and the cable car",
+      "detail": "Not a rail app."
+    }
+  ],
+  "stations": "47 stations. Melling line trains currently terminate at Western Hutt while Melling Station is closed.",
+  "notes": "A separate app region from Auckland — different network, different city."
+}
