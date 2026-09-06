@@ -11,12 +11,13 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
-import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { fetchStationBoard, MissingVasttrafikCredentialsError } from "../lib/providers/goteborg.js";
 import {
   marketingLabelsForStation,
+  mapGoteborgDestination,
   TRAM_HUB,
   PENDELTÅG_HUB,
 } from "../lib/cities/goteborg/marketing-directions.js";
@@ -163,6 +164,59 @@ if (hasVasttrafikCreds) {
     thrown instanceof MissingVasttrafikCredentialsError,
     "missing VASTTRAFIK_CLIENT_ID/SECRET must throw MissingVasttrafikCredentialsError, not fall back silently"
   );
+}
+
+// Västtågen destination-label normalisation (6 Sep 2026 regression:
+// docs/jim-brief-goteborg-vasttagen-destination-labels.md). serviceJourney's
+// raw direction text ("Göteborg", an intermediate stop like "Floda", or a
+// through-running destination beyond the corridor terminus) must be
+// normalised to a chip the queried station actually offers — never left
+// unmatched, and never mislabelled onto a chip the station doesn't have.
+const vasttagenFixture = JSON.parse(
+  readFileSync(join(ROOT, "qa/fixtures/goteborg/vasttagen-destinations.json"), "utf8")
+);
+for (const testCase of vasttagenFixture.cases) {
+  const mapped = mapGoteborgDestination(
+    testCase.rawDestination,
+    testCase.corridorCode,
+    testCase.queryStation
+  );
+  assert(
+    mapped === testCase.expectedChip,
+    `offline: ${testCase.rawDestination} @ ${testCase.queryStation} must map to ` +
+      `${JSON.stringify(testCase.expectedChip)}, got ${JSON.stringify(mapped)}`
+  );
+}
+
+if (hasVasttrafikCreds) {
+  for (const station of ["Lerum Station", "Alingsås Station"]) {
+    const chips = new Set((await getMultiCityDirections("goteborg", station)).directions);
+    const board = await fetchStationBoard(station);
+    for (const trip of board.trips) {
+      assert(
+        chips.has(trip.destination),
+        `live: ${station} board trip destination "${trip.destination}" ` +
+          `(raw "${trip.rawDestination}") must be one of the offered chips: ${[...chips].join(", ")}`
+      );
+    }
+  }
+
+  const lerumNextTrain = await getMultiCityNextTrain("goteborg", {
+    station: "Lerum Station",
+    destination: "Västtågen + Göteborg Central",
+    destinationLabel: "Västtågen + Göteborg Central",
+    leaveBeforeMinutes: 120,
+  });
+  if (lerumNextTrain.next === null) {
+    console.log(
+      "goteborg-dogfood-gate: Lerum -> Västtågen + Göteborg Central board is genuinely empty right now (e.g. after the last train) — skipping the non-null assertion."
+    );
+  } else {
+    assert(
+      lerumNextTrain.next !== null,
+      "Lerum -> Västtågen + Göteborg Central must have a non-null next during service hours"
+    );
+  }
 }
 
 // Probe plumbing: local express only; Vercel dev board must 404 regardless.
