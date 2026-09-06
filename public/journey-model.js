@@ -533,6 +533,7 @@ const PERSISTED_CITY_IDS = new Set([
   "thames-valley",
   "london-se-national-rail",
   "southwest",
+  "greater-manchester",
 ]);
 const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "nl", "ca", "nz", "se", "fi", "no"]);
 
