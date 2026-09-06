@@ -1,69 +1,101 @@
-# South Wales direction model memo (§3)
+# South Wales direction model memo (SS3)
 
-Context **today (1 Sep 2026)**: two agencies in the report, but only **one** can be modelled at
-all in this pack — Transport for Wales Valley Lines has no confirmed public feed to derive a
-direction model from (see hazard-pack.md H2). This memo covers National Rail only; Valley Lines is
-explicitly left unmodelled below rather than guessed at.
+**Rewritten 7 Sep 2026** against the re-scoped `docs/south-wales-d1/oracle-clash-report.md`.
+Supersedes the 1 Sep 2026 version, which modelled National Rail only and explicitly left Valley
+Lines unmodelled pending a feed confirmation. That confirmation has since landed (Darwin,
+live-probed 5 Sep 2026) - this memo now covers both.
 
-## National Rail (Darwin/OpenLDBWS) at Cardiff Central
+## Two direction models, one feed
 
-Same structural fact as every National Rail-only region packed so far (East Midlands, North East,
-West of England): Darwin has **no printed route/line map** — it is a per-station real-time
-departure-board API, not a fixed-route product. Real-world National Rail boards label services by
-**destination (headsign) and operator**, not by a line name.
+Both Transport for Wales Valley Lines and National Rail mainline/through-running ride the single
+Darwin/OpenLDBWS feed (hazard-pack.md H2), but they are structurally different products on a
+departure board and get different direction models, same split West of England and every other
+UK region uses between a branded closed network and open-ended mainline through-running.
 
-### Recommendation — National Rail: destination + operator
+## Valley Lines: line + terminus (termini-only model)
 
-Once `DARWIN_LDB_TOKEN` exists and this slot is built, direction should be modelled as
-**destination (as returned by Darwin) + operator**, e.g. `London Paddington (GWR)`,
-`Manchester Piccadilly (TfW)`, `Nottingham (CrossCountry)` — matching how National Rail boards
-actually present, and identical in shape to the East Midlands, North East, and West of England
-recommendations (see `docs/west-of-england-d1/direction-model-memo.md` for the parallel case).
+**Recommendation: line + terminus**, using the six named line termini as the terminus label -
+**not a full stop-order model**. The report gives six closed, branded commuter routes radiating
+from Cardiff (report D1 summary, line 17: "six commuter rail lines radiating from Cardiff
+Central"), each named by its terminus in the station table:
 
-**This is a recommendation only** — National Rail is blocked at the account level (hazard-pack H2)
-and no destination strings can be verified against a live Darwin response until Tim's RDM
-re-registration completes. Do not build direction logic against guessed destination strings;
-confirm against a real Darwin payload first.
+| Line (inferred from terminus) | Terminus station | CRS |
+| --- | --- | --- |
+| Merthyr line | Merthyr Tydfil | MER |
+| Aberdare line | Aberdare | ABA |
+| Rhondda line | Treherbert | TRB |
+| Rhymney line | Rhymney | RHY |
+| Coryton line | (not in this 16-station catalog - not live-probed, no CRS confirmed) | - |
+| Ebbw Vale line | (not in this 16-station catalog - not live-probed, no CRS confirmed) | - |
 
-### §3 examples (illustrative — cannot be confirmed without a live Darwin payload)
+Termini-only, not a full 81-stop model, because: (1) the report's own catalog note (line 50)
+recommends a ~15-25 station v1, explicitly deferring "intermediate Valley Lines halts on the six
+main lines" and other secondary-tier stations (Pengam, Nantgarw, Taff's Well, Ebbw Vale Town) to a
+later expansion; (2) no full stop-order was live-probed or given in the report for any line beyond
+its terminus and known junctions (CDF, CDQ, PPD, CPH); (3) inventing an 81-stop order from a route
+name list alone is exactly the "guess at a station graph" this lane is told not to do (same
+reasoning the 1 Sep 2026 memo already gave for why Valley Lines wasn't modelled at all - the
+termini-only model here is the minimum step forward the newly-confirmed feed supports, not a full
+retraction of that caution). Coryton and Ebbw Vale termini are **not** in this pack's 16-station
+catalog (no CRS in the report's live-probed table) - do not invent CRS codes for them; treat as a
+gap for a future catalog-expansion pass, same posture as the report's own secondary-tier note.
 
-Assume model A. Locked hub **Cardiff Central (CDF)**.
+Junction/hub stations on the Valley Lines network (Cardiff Central, Cardiff Queen Street,
+Pontypridd, Caerphilly) are catalogued as **hub/plain stations in their own right**, not folded
+into any single line's terminus label - a rider at CDQ or PPD sees a junction board (multiple line
+directions), not a single-line terminus board.
 
-Illustrative destination+operator strings only (not verified against Darwin), drawn from the
-report's named through-running directions (line 19, C2/C3 points 5 and 7): `London Paddington
-(GWR)`, `Bristol Temple Meads (GWR)`, `Manchester Piccadilly (TfW)` (North Wales/Wrexham
-direction), `Portsmouth Harbour (CrossCountry)`. **Placeholder — confirm every string against a
-real Darwin response before shipping**; the report does not enumerate actual destination strings,
-only the operator/corridor facts (report C2/C3 point 7: "North Wales through-running... background
-context only, not a D1 scope point").
+## National Rail mainline/through-running: destination + operator
 
-Severn Tunnel Junction (STJ) is a through-running-only point, not a hub — no §3 illustration given
-for it, same treatment as West of England's boundary stations.
+Same model as every National Rail-only UK region packed so far (East Midlands, North East, West
+of England, Solent, etc.) - Darwin has no printed route/line map, it is a per-station real-time
+departure-board API. Real-world National Rail boards label services by **destination (headsign)
+and operator**, not by a line name.
 
-## Why not line + terminus (National Rail)
+**Recommendation:** destination (as returned by Darwin) + operator, e.g. `London Paddington
+(GWR)`, `Manchester Piccadilly (TfW)`, `Bristol Temple Meads (CrossCountry)` - once wired, verify
+every destination string against a live Darwin payload (`scripts/probe-uk-board.mjs`) rather than
+the illustrative names below.
 
-Same reasoning as West of England: National Rail through-running at Cardiff Central runs a
-corridor (London / Bristol direction via Severn Tunnel; North Wales direction via Wrexham) served
-by multiple operators, not a small enumerable set of branded "line names" a rider would recognise
-on a board. Forcing a line+terminus model would require inventing names the report does not give.
+### SS3 examples (illustrative only - confirm against a live Darwin payload before shipping)
 
-## Transport for Wales Valley Lines: NOT MODELLED
+Assume model A (destination + operator) for mainline stations; model B (line + terminus,
+termini-only) for Valley Lines. Locked hub **Cardiff Central (CDF)**; secondary hub **Cardiff
+Queen Street (CDQ)**.
 
-**No direction model is proposed for Valley Lines in this pack.** The report names six routes by
-terminus (Merthyr, Rhondda, Aberdare, Coryton, Ebbw Vale, Taffy Vale — report C2/C3 point 6), which
-might look like ready-made line+terminus material, but:
+Illustrative destination+operator strings drawn from the report's named corridors (D1 summary
+line 17, C2/C3 point 4): `London Paddington (GWR)`, `Bristol Temple Meads (GWR)`, `Manchester
+Piccadilly (TfW)` (North Wales/Wrexham direction), `Swansea (GWR)`. **Placeholder - confirm every
+string against a real Darwin response before shipping**; the report's line 9 live probe confirms
+trip *counts* at each CRS (e.g. CDF 15 trips) but does not enumerate destination strings.
 
-- There is no confirmed feed (static or real-time) to validate that these six names are what a
-  real TfW departure board or timetable actually displays as a "line."
-- The 81-station list behind them is sourced from Wikipedia and explicitly marked "pending
-  verification against official TfW operator map" (report line 29) — not verified station-level
-  data.
-- Building a direction model on top of an unverified station list and an unconfirmed feed would be
-  exactly the kind of "guess at a station graph" this lane is told not to do.
+Illustrative line+terminus labels for Valley Lines: `Merthyr Tydfil` (Merthyr line), `Rhondda -
+Treherbert`, `Rhymney` (Rhymney line), `Aberdare` (Aberdare line). Same placeholder caveat -
+confirm against a live Darwin payload's `trip_headsign`/destination field before shipping; the
+report's operator column ("TfW Valley Lines (Merthyr line only)" etc.) supports the terminus
+label but not a verified on-board display string.
 
-If TfW confirms a public GTFS/GTFS-RT feed (see `docs/outreach-drafts/south-wales.md`), a follow-up
-pack should model Valley Lines as **line + terminus** (six named routes, matching a real
-GTFS `route_short_name`/`trip_headsign` pair once one exists) rather than destination+operator —
-Valley Lines is a branded, closed six-route commuter network unlike National Rail's operator-mixed
-corridor, so line+terminus is the right target shape *once there is a feed to confirm it against*.
-This is a forward note for whoever picks up Valley Lines later, not a model built now.
+Severn Tunnel Junction (STJ) is a through-running-only point, not a hub - no SS3 illustration
+given for it, consistent with the ledger's Chepstow/STJ resolution (hazard-pack.md doNotGroup
+proposals) and every other UK region's boundary-station treatment.
+
+## Why not line + terminus for National Rail mainline
+
+Same reasoning as every prior UK National Rail region: mainline through-running at Cardiff Central
+and Newport runs corridors (London/Bristol via Severn Tunnel; North Wales via Wrexham; West Wales
+via Swansea) served by multiple operators (GWR, CrossCountry, TfW), not a small enumerable set of
+branded "line names" a rider would recognise on a board. Forcing a line+terminus model here would
+require inventing names the report does not give.
+
+## Why termini-only (not full stop-order) for Valley Lines
+
+Valley Lines *is* a closed, branded, six-route commuter network - the shape that would normally
+warrant a full line+terminus model with intermediate stops (per the 1 Sep 2026 memo's own forward
+note: "Valley Lines is a branded, closed six-route commuter network unlike National Rail's
+operator-mixed corridor, so line+terminus is the right target shape once there is a feed to
+confirm it against"). The feed now exists (Darwin), but the report only live-probed and named 16
+stations total, four of them Valley Lines junctions (CDF, CDQ, PPD, CPH) and four termini (MER,
+ABA, TRB, RHY) - it does not give the ~70 intermediate-halt stop order needed for a full model.
+Termini-only is the model this evidence actually supports; a future catalog-expansion pass (report
+line 50's secondary tier) is the place to add intermediate stops and complete the full stop-order
+model, not this pack.

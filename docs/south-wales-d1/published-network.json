@@ -3,76 +3,104 @@
   "displayName": "South Wales",
   "status": "planned",
   "agency": [
-    "National Rail (Darwin/OpenLDBWS — through-running services at Cardiff Central; Transport for Wales, CrossCountry, GWR at boundaries)"
+    "National Rail (Darwin/OpenLDBWS) - carries both Transport for Wales Valley Lines (six commuter lines, CRS-coded heavy rail) and National Rail mainline/through-running (GWR, CrossCountry, TfW through-running)"
   ],
   "timezone": "Europe/London",
   "source": "docs/south-wales-d1/oracle-clash-report.md",
   "sources": [
     {
-      "role": "D1 oracle clash report (Nico)",
+      "role": "D1 oracle clash report (Nico, re-scoped 7 Sep 2026)",
       "title": "South Wales oracle clash report",
       "url": "docs/south-wales-d1/oracle-clash-report.md",
-      "note": "Sole input to this pack per the Luke lane's read-only-the-report rule. Scope is National Rail only — Transport for Wales Valley Lines is out of this catalog entirely; see scopeNote below and jim-handoff.md."
+      "note": "Sole report input to this pack per the Luke lane's read-only-the-report rule. Re-scope corrects the prior two-station catalog (Cardiff Central + Severn Tunnel Junction only) to 16 walk-up-boardable stations including Transport for Wales Valley Lines."
     },
     {
-      "role": "National Rail Darwin/OpenLDBWS (blocked at account level, not called for this pack)",
+      "role": "United Kingdom country ledger (stop ownership, coverage boundaries)",
+      "title": "United Kingdom country ledger",
+      "url": "docs/united-kingdom-ledger.md",
+      "note": "SS2 stop ownership constrains this catalog's western boundary (Llanelli/Carmarthen stay Rest of Wales, not claimed here). SS4 coverage boundaries records the TfW-on-Darwin correction that unblocked this re-scope. Read per docs/country-lane.md; not backfilled into Rest of Wales's pack."
+    },
+    {
+      "role": "National Rail Darwin/OpenLDBWS (account unblocked, live-probed 5 Sep 2026)",
       "title": "National Rail Enquiries Darwin data feeds",
       "url": "https://www.nationalrail.co.uk/developers/darwin-data-feeds/",
       "rdmPortal": "https://raildata.org.uk/",
-      "note": "Blocked: EvansAppStudio's Rail Data Marketplace registration is Australian; RDM's geography check rejects AU registrations for GB services. Tim is re-registering with a UK company address. Same blocker as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / North East / West of England. Not a feed problem — do not treat this as a reason to skip building the National Rail catalog, only as a reason DARWIN_LDB_TOKEN cannot be wired yet."
+      "note": "DARWIN_LDB_TOKEN provisioned 2 Sep 2026 (ledger SS1). Live probe 5 Sep 2026 (`scripts/probe-uk-board.mjs --crs=`) returned boards at all 16 catalog CRS codes, per report line 9."
     },
     {
-      "role": "National Rail static GTFS (Transitland, reference only — Darwin is the live path)",
+      "role": "National Rail static GTFS (Transitland, reference only - Darwin is the live path)",
       "title": "National Rail static GTFS feed",
       "url": "https://www.transit.land/feeds/f-gc-rail~delivery~group~planar~gtfs/",
-      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, verified live 31 Aug 2026 per oracle report. CC-BY-2.0 UK. Not used to derive this catalog's station list — Cardiff Central and Severn Tunnel Junction are taken directly from the oracle report's station name table, not generated from a GTFS dump."
+      "note": "Onestop ID f-gc-rail~delivery~group~planar~gtfs, verified live 31 Aug 2026 per oracle report. CC-BY-2.0 UK. Not used to derive this catalog's station list - stations are taken directly from the oracle report's live-probed station table."
+    },
+    {
+      "role": "Coordinates: NaPTAN RailReferences by CRS",
+      "title": "NaPTAN RailReferences.csv (CRS -> ATCO) + access-nodes.csv (ATCO -> lat/lng)",
+      "url": "https://naptan.api.dft.gov.uk/v1/access-nodes?dataFormat=csv",
+      "note": "Pulled 7 Sep 2026 via scripts/lib/uk-naptan.mjs's loadUkNaptanIndex()/coordsForCrs(), the same method used for Liverpool City Region (docs/liverpool-city-region-d1/jim-handoff.md) and West Midlands. 16/16 catalog stations geocoded, no exceptions."
     }
   ],
-  "retrievedAt": "2026-09-01T00:00:00Z",
-  "scopeNote": "Transport for Wales Valley Lines (six commuter routes, 81 stations) is EXCLUDED from this catalog. TfW has no confirmed public GTFS static or GTFS-RT feed of any kind (report lines 9, 33, 66-80; confidence 'not found'). This is a distinct blocker from the National Rail account-level block below — there is no account to unblock, no token to wire; the feed itself does not appear to exist publicly. An outreach draft (docs/outreach-drafts/south-wales.md, Viv) has been prepared asking TfW to confirm GTFS/GTFS-RT availability, but no reply is recorded as of this pack. If TfW confirms a feed, Valley Lines needs its own follow-up oracle report and D1 pack pass, not a retrofit into this file. See jim-handoff.md.",
+  "retrievedAt": "2026-09-07T00:10:00Z",
+  "scopeNote": "This is a re-scope of the 1 Sep 2026 pack, which catalogued only Cardiff Central and Severn Tunnel Junction and excluded Transport for Wales Valley Lines entirely on a since-corrected premise (\"no confirmed public feed\"). The walk-up rule (docs/board-eligibility-rule.md) requires Darwin coverage, not a separate TfW feed - Darwin carries Valley Lines departures at every catalog station (live-probed 5 Sep 2026). Catalog now covers 16 walk-up-boardable National Rail stations spanning Cardiff-area Valley Lines and the South Wales Main Line mainline corridor from Severn Tunnel Junction (Wales-England boundary) to Swansea (western boundary of this region; Llanelli/Carmarthen stay Rest of Wales per the ledger).",
   "notes": [
-    "D1 oracle is docs/south-wales-d1/oracle-clash-report.md only. No product lib/cities/south-wales/ exists yet. Not generated from GTFS. No stopIds in this file.",
-    "This catalog covers National Rail through-running only. Cardiff Central is a shared physical hub with Valley Lines (separate infrastructure, footbridge connect per report line 19), but Valley Lines itself has no entry here — see scopeNote.",
-    "National Rail has NO static GTFS feed used to build this catalog (a Transitland GTFS dump exists per the oracle report and is listed above for reference/license purposes only) — Darwin is the intended live path once unblocked, same open product question as West of England (Darwin-only vs. GTFS base layer) is NOT raised here because a GTFS dump does exist for National Rail in this report, unlike West of England's report.",
+    "D1 oracle is docs/south-wales-d1/oracle-clash-report.md, re-scoped 7 Sep 2026. No product lib/cities/south-wales/ exists yet. Not generated from GTFS. No stopIds in this file.",
+    "Catalog: 16 stations total. Hub lock Cardiff Central (CDF). Secondary hub Cardiff Queen Street (CDQ). Third-tier local hub Pontypridd (PPD). Valley Lines termini: Merthyr Tydfil (MER), Aberdare (ABA), Treherbert (TRB), Rhymney (RHY). Valley Lines local station: Caerphilly (CPH). National Rail mainline: Newport (NWP), Swansea (SWA, boundary), Bridgend (BGN), Neath (NTH), Port Talbot Parkway (PTA). National Rail branches: Barry Island (BYI), Penarth (PEN). Through-running boundary: Severn Tunnel Junction (STJ).",
+    "No doNotGroup pair built at Cardiff Central or between Cardiff Central and Cardiff Queen Street - see hazard-pack.md H4/H6/doNotGroup proposals. CDF is a single Darwin CRS/board carrying both Valley Lines and mainline operators (operator-mixed, like any multi-TOC UK hub); CDQ is a separate CRS/board ~600 m away with no shared-board evidence found - two plain entries, not a group.",
+    "Severn Tunnel Junction (STJ) vs Chepstow (CPW) boundary discrepancy from the 1 Sep 2026 pack is RESOLVED per docs/united-kingdom-ledger.md SS2 (Tim, 5 Sep 2026): both stations are in Wales, on different corridors (STJ = South Wales Main Line; CPW = Gloucester-Newport/Wye Valley line), both home South Wales, both stay through-running-only. No catalog change needed.",
+    "Catalog boundary: Swansea (SWA) is the westernmost mainline hub in this region. Neath (NTH) and Port Talbot Parkway (PTA) are the westernmost stations short of Swansea. Llanelli (LLE) and Carmarthen (CMN) are Rest of Wales's per docs/united-kingdom-ledger.md SS2 stop ownership and are NOT catalogued here. Rest of Wales's own pack is untouched by this rescope (propagation rule, docs/country-lane.md).",
     "Timezone Europe/London HAS DST (BST/GMT).",
-    "Hub lock: Cardiff Central (CDF). Shared hub with Valley Lines on separate infrastructure — proposed doNotGroup between the two agencies' boards at this station if Valley Lines ever ships; not built (no Valley Lines board exists to group against). See hazard-pack.md H6.",
-    "Severn Tunnel Junction (STJ) is a through-running-only boundary point per this report (line 20, C2/C3 point 5). West of England's merged pack instead names Chepstow (CPW) as its boundary station toward South Wales — a DISCREPANCY, not resolved in this pack. Both stations stay through-running-only (not merge points) at D1; flagged for Jim/Tim to reconcile at D2. See hazard-pack.md doNotGroup proposals.",
-    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as West Midlands / Greater Manchester / Liverpool City Region / East Midlands / North East / West of England.",
-    "No 'lines' array is provided for National Rail — no printed route/line map to transcribe, same as every National Rail-only region packed so far. This is a flat station list (hub, through-running-only).",
-    "License: OGL 2.0 baseline with NRE amendments for Darwin. Confidence 'unclear' on third-party rider redistribution — same open item as every other UK National Rail region. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', but is reference-only per above."
+    "Direction model: Valley Lines = line + terminus, termini-only (not a full stop-order model - only 4 of 6 line termini have a confirmed CRS in this 16-station catalog; Coryton and Ebbw Vale termini are not yet catalogued). National Rail mainline/through-running = destination + operator, illustrative only pending a live Darwin destination-string pull. See direction-model-memo.md.",
+    "Coordinates: NaPTAN RailReferences by CRS, pulled 7 Sep 2026 via scripts/lib/uk-naptan.mjs; 16/16 stations geocoded, no exceptions, no null coordinates. See stationList below for lat/lng per station.",
+    "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until Jim wires the adapter and Mark's QA checklist is green. This pack does not flip anything.",
+    "License: OGL 2.0 baseline with NRE amendments for Darwin, redistribution to third parties expressly permitted per the signed RDM Data Sharing Agreement (Tim read it 5 Sep 2026 - see report's License section and united-kingdom-ledger.md SS1). Attribution to Rail Delivery Group required. National Rail static GTFS (Transitland) is CC-BY-2.0 UK, confidence 'clear', reference-only."
   ],
   "printedInnerCityNames": {
     "lock": "Cardiff Central",
     "lockCrs": "CDF",
+    "secondaryHub": "Cardiff Queen Street",
+    "secondaryHubCrs": "CDQ",
     "doNotUse": [
       "Cardiff",
       "Cardiff Central Station",
-      "Cardiff Queen Street",
       "Cardiff Bay"
     ],
-    "note": "Cardiff Central is the sole hub lock (report C2/C3 point 2: 'Not Cardiff Queen Street, not Cardiff Bay, not Pontypridd'). Shared with Valley Lines on separate infrastructure (proposed doNotGroup, not built — see hazard-pack.md H6)."
+    "note": "Cardiff Central is the hub lock (report C2/C3 point 2). Cardiff Queen Street is a secondary hub, catalogued as a separate plain entry - not grouped with Cardiff Central and not referred to as plain 'Cardiff' (ambiguous with Cardiff Central). See hazard-pack.md H6 for why no doNotGroup rule is built between the two, or within Cardiff Central's Valley-Lines/mainline mix."
   },
   "coverageGaps": [
-    "National Rail real-time: OpenLDBWS documented and technically live, but BLOCKED at the account level (AU-registered RDM account; Tim re-registering with UK address). Not a feed problem. Do not wire DARWIN_LDB_TOKEN until it exists.",
-    "Transport for Wales Valley Lines: NO CONFIRMED PUBLIC FEED OF ANY KIND. Not an account-level block — no static GTFS, no GTFS-RT, no public API found. TransXChange-format timetables available only via direct contact (data@tfw.wales). Confidence 'not found' throughout the oracle report's TfW license section. Outreach draft prepared (docs/outreach-drafts/south-wales.md) but no reply recorded. Excluded from this catalog entirely — see scopeNote.",
-    "National Rail licensing: OGL 2.0 baseline permits redistribution with attribution, but the RDM Platform Agreement's language on downstream redistribution to third-party rider clients is UNCLEAR in public sources. Confidence: unclear (per oracle report License section). OPEN ITEM FOR TIM ONLY — do not resolve here.",
-    "National Rail has no printed route/line map to transcribe — no 'lines' array is provided, only the hub/through-running station list. See direction-model-memo.md for the destination+operator model recommended instead.",
-    "Severn Tunnel Junction (STJ) vs. Chepstow (CPW) boundary discrepancy with West of England's merged pack — NOT reconciled in this pack. Flagged for D2. See hazard-pack.md.",
-    "81-station Valley Lines list is Wikipedia-sourced and explicitly marked unverified against an official TfW operator map in the oracle report (report line 29) — even if a feed later appears, that station list needs independent verification, not a straight import from the oracle report's prose."
+    "Coryton line and Ebbw Vale line termini are named in the report's D1 summary as two of the six Valley Lines routes but have no CRS confirmed in this pack's 16-station live-probed table - not catalogued, not modelled. Flagged for a future catalog-expansion pass (report line 50's secondary tier).",
+    "National Rail mainline destination strings (e.g. exact Darwin headsigns for London/Bristol/North Wales/West Wales services) are illustrative only pending a live Darwin destination-string pull - see direction-model-memo.md.",
+    "Valley Lines on-board terminus display strings are illustrative only pending a live Darwin trip_headsign pull for each of the four modelled termini (MER, ABA, TRB, RHY).",
+    "No intermediate Valley Lines halt stop-order is given for any of the six lines - termini-only direction model, not a full stop-order model. See direction-model-memo.md.",
+    "National Rail licensing redistribution-to-third-parties question: RESOLVED per report's License section (Tim read the signed RDM DSA, 5 Sep 2026) - recorded here only so this pack does not re-flag it as open."
+  ],
+  "stationList": [
+    { "name": "Cardiff Central", "crs": "CDF", "class": "hub lock", "lines": ["Valley Lines (all six lines)", "National Rail mainline through-running"], "operators": ["TfW Valley Lines", "TfW through-running", "GWR", "CrossCountry"], "lat": 51.47602538995, "lng": -3.17930174024, "crsVerified": true },
+    { "name": "Cardiff Queen Street", "crs": "CDQ", "class": "secondary hub", "lines": ["Valley Lines Rhondda/Merthyr junction"], "operators": ["TfW Valley Lines"], "lat": 51.48196153284, "lng": -3.17018055435, "crsVerified": true },
+    { "name": "Pontypridd", "crs": "PPD", "class": "third-tier local hub - Valley Lines junction (Merthyr/Rhondda)", "lines": ["Valley Lines"], "operators": ["TfW Valley Lines"], "lat": 51.59937017229, "lng": -3.34137470984, "crsVerified": true },
+    { "name": "Newport", "crs": "NWP", "class": "National Rail mainline hub, east of Cardiff", "lines": ["South Wales Main Line"], "operators": ["GWR", "CrossCountry", "TfW through-running"], "lat": 51.58878898755, "lng": -3.00054347097, "crsVerified": true },
+    { "name": "Swansea", "crs": "SWA", "class": "National Rail mainline hub, boundary station (western edge of South Wales region)", "lines": ["South Wales Main Line", "West Wales branches"], "operators": ["TfW through-running", "GWR", "CrossCountry"], "lat": 51.62514582504, "lng": -3.94154604946, "crsVerified": true },
+    { "name": "Bridgend", "crs": "BGN", "class": "National Rail mainline, Cardiff-Swansea corridor", "lines": ["South Wales Main Line"], "operators": ["GWR", "CrossCountry", "TfW through-running"], "lat": 51.50697351056, "lng": -3.57527568317, "crsVerified": true },
+    { "name": "Barry Island", "crs": "BYI", "class": "National Rail branch terminus, Barry docks line", "lines": ["Barry branch"], "operators": ["GWR"], "lat": 51.39241342391, "lng": -3.27336341989, "crsVerified": true },
+    { "name": "Penarth", "crs": "PEN", "class": "National Rail branch, Penarth branch", "lines": ["Penarth branch"], "operators": ["GWR"], "lat": 51.4358891543, "lng": -3.17444075133, "crsVerified": true },
+    { "name": "Caerphilly", "crs": "CPH", "class": "Valley Lines local station, north of Cardiff", "lines": ["Valley Lines"], "operators": ["TfW Valley Lines"], "lat": 51.57157711257, "lng": -3.21848198941, "crsVerified": true },
+    { "name": "Merthyr Tydfil", "crs": "MER", "class": "Valley Lines terminus (Merthyr line)", "lines": ["Merthyr line"], "operators": ["TfW Valley Lines"], "lat": 51.74462170957, "lng": -3.37725039469, "crsVerified": true },
+    { "name": "Aberdare", "crs": "ABA", "class": "Valley Lines terminus (Aberdare line)", "lines": ["Aberdare line"], "operators": ["TfW Valley Lines"], "lat": 51.71505790608, "lng": -3.44308344608, "crsVerified": true },
+    { "name": "Treherbert", "crs": "TRB", "class": "Valley Lines terminus (Rhondda line)", "lines": ["Rhondda line"], "operators": ["TfW Valley Lines"], "lat": 51.6722431206, "lng": -3.53630247917, "crsVerified": true },
+    { "name": "Rhymney", "crs": "RHY", "class": "Valley Lines terminus (Rhymney line)", "lines": ["Rhymney line"], "operators": ["TfW Valley Lines"], "lat": 51.75883740042, "lng": -3.28929833943, "crsVerified": true },
+    { "name": "Neath", "crs": "NTH", "class": "National Rail mainline, Swansea-Neath-Bridgend corridor junction", "lines": ["South Wales Main Line", "Neath Valley Line"], "operators": ["GWR", "CrossCountry", "TfW through-running"], "lat": 51.66236095463, "lng": -3.80721896671, "crsVerified": true },
+    { "name": "Port Talbot Parkway", "crs": "PTA", "class": "National Rail mainline, Swansea-Neath-Port Talbot corridor", "lines": ["South Wales Main Line"], "operators": ["GWR", "CrossCountry"], "lat": 51.59171799928, "lng": -3.78131427074, "crsVerified": true },
+    { "name": "Severn Tunnel Junction", "crs": "STJ", "class": "through-running only, Wales-England boundary on the South Wales Main Line - not a merge with Chepstow (CPW); see hazard-pack.md doNotGroup proposals", "lines": ["South Wales Main Line"], "operators": ["GWR", "CrossCountry", "TfW through-running"], "lat": 51.58467671176, "lng": -2.77789143612, "crsVerified": true }
   ],
   "nationalRailStations": {
-    "note": "No printed route/line map exists for National Rail in the oracle report — Darwin is a per-station real-time board, not a fixed-route product. This is a flat station list, not a 'lines' array. BLOCKED pending DARWIN_LDB_TOKEN.",
-    "hub": {
-      "name": "Cardiff Central",
-      "crs": "CDF",
-      "class": "hub lock — interchange between Valley Lines and National Rail through-running services (London/Bristol direction via Severn Tunnel; North Wales direction via Wrexham). Shared with Valley Lines on separate infrastructure (footbridge connect); not a merge with Valley Lines' (unbuilt) board."
-    },
+    "note": "No printed route/line map exists for National Rail mainline/through-running - Darwin is a per-station real-time board, not a fixed-route product. See stationList above for the full 16-station catalog with coordinates.",
+    "hub": { "name": "Cardiff Central", "crs": "CDF" },
+    "secondaryHub": { "name": "Cardiff Queen Street", "crs": "CDQ" },
     "throughRunningOnly": [
-      { "name": "Severn Tunnel Junction", "crs": "STJ", "class": "through-running only, Wales-England boundary on the South Wales Main Line — not a merge. National Rail only (no Valley Lines service). De-duplicate at D2 against West of England's Chepstow (CPW) boundary entry once reconciled — see hazard-pack.md discrepancy note." }
+      { "name": "Severn Tunnel Junction", "crs": "STJ", "class": "through-running only, Wales-England boundary on the South Wales Main Line - not a merge. De-dup at D2 if West of England's adjacent packs enter live; see docs/united-kingdom-ledger.md SS2 Chepstow row for why STJ and CPW are both legitimate, non-conflicting boundary stations." }
     ]
   },
   "transportForWalesValleyLines": {
-    "status": "not built",
-    "note": "Excluded from this catalog. See scopeNote and coverageGaps above, and jim-handoff.md."
+    "status": "in catalog as of this rescope",
+    "note": "Confirmed on Darwin (live-probed 5 Sep 2026). Modelled as line + terminus, termini-only - see direction-model-memo.md. Four of six named line termini have a confirmed CRS in this pack's 16-station catalog (Merthyr, Aberdare, Rhondda/Treherbert, Rhymney); Coryton and Ebbw Vale termini are not yet catalogued - see coverageGaps."
   }
 }

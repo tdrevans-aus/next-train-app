@@ -138,12 +138,27 @@
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
     oslo: { minLat: 59.60, maxLat: 60.25, minLng: 10.40, maxLng: 11.20 },
     "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
-    // south-wales is listed ahead of the larger, overlapping west-of-england box so a
-    // GPS hint inside both (e.g. Cardiff, 51.4760/-3.1790) resolves to the more specific
-    // region — first match wins in hintCityFromCoords (docs/jim-brief-picker-countries-england-scotland-wales.md).
-    // No coordinate values changed, only declaration order relative to west-of-england.
-    "south-wales": { minLat: 51.30, maxLat: 51.70, minLng: -3.65, maxLng: -2.70 },
-    "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.20, maxLng: -2.10 },
+    // south-wales is listed BEFORE west-of-england so hintCityFromCoords's
+    // first-match lookup resolves the Severn-estuary stations correctly:
+    // Newport (NWP, lat 51.589, lng -3.0005) geometrically falls inside
+    // BOTH boxes below (West of England's own catalog needs Taunton at lng
+    // -3.10, which is further west than Newport, so no single rectangle can
+    // hold Taunton while excluding Newport by longitude alone) — south-wales
+    // being checked first is what actually resolves Newport correctly, not
+    // the box shape. Widened 7 Sep 2026 (docs/south-wales-d1/jim-handoff.md
+    // re-scope) to cover all 16 catalog stations incl. Swansea (-3.94),
+    // Neath (-3.81), Port Talbot Parkway (-3.78), Merthyr Tydfil (51.74),
+    // Rhymney (51.76), with a small margin.
+    "south-wales": { minLat: 51.35, maxLat: 51.80, minLng: -4.05, maxLng: -2.70 },
+    // Western edge pulled back from -3.20 to -3.15 (7 Sep 2026) — just west
+    // of Taunton (-3.1028, West of England's own westernmost catalog
+    // station) so Cardiff (-3.179) and Barry Island (-3.273) no longer fall
+    // in this box. Newport (-3.0005) still does, geometrically, because
+    // Taunton is further west than Newport and both must fit — but since
+    // south-wales precedes this entry above, hintCityFromCoords resolves
+    // Newport to south-wales before it ever reaches this box. Trade-off
+    // documented rather than solved with unsupported multi-box logic.
+    "west-of-england": { minLat: 50.90, maxLat: 51.95, minLng: -3.15, maxLng: -2.10 },
     "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
     // minLat/minLng/maxLng widened 7 Sep 2026 (uk-catalog-geocode): Colchester, Stansted
     // Airport, Bishops Stortford (lat), Peterborough (lng), Great Yarmouth/Lowestoft (lng)

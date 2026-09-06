@@ -283,14 +283,35 @@ if (!woeSecondary || woeSecondary.crs !== "BTH") {
   fail("west-of-england Bath Spa must resolve as a rail entry with crs BTH");
 }
 
+// Re-scope 7 Sep 2026 (docs/south-wales-d1/jim-handoff.md): 2-station ->
+// 16-station catalog, Valley Lines now IN-CATALOG via Darwin (confirmed
+// live-probed 5 Sep 2026, all 16 catalog CRS codes) — see
+// qa/south-wales-dogfood-gate.mjs for the full assertion set.
 const sw = getRegion("south-wales");
-if (!sw || sw.railCount !== 2 || sw.metroCount !== 0) {
+if (!sw || sw.railCount !== 16 || sw.metroCount !== 0) {
   fail(`south-wales counts rail=${sw?.railCount} metro=${sw?.metroCount}`);
 }
 
 const swRail = listRailStations("south-wales");
 const swCrsSet = new Set(swRail.map((s) => s.crs).filter(Boolean));
-for (const crs of ["CDF", "STJ"]) {
+for (const crs of [
+  "CDF",
+  "CDQ",
+  "PPD",
+  "NWP",
+  "SWA",
+  "BGN",
+  "BYI",
+  "PEN",
+  "CPH",
+  "MER",
+  "ABA",
+  "TRB",
+  "RHY",
+  "NTH",
+  "PTA",
+  "STJ",
+]) {
   if (!swCrsSet.has(crs)) {
     fail(`south-wales missing ${crs}`);
   }
@@ -305,11 +326,22 @@ const swHub = resolveRailEntry("Cardiff Central", "south-wales");
 if (!swHub || swHub.crs !== "CDF") {
   fail("south-wales Cardiff Central must resolve as a rail entry with crs CDF");
 }
-if (resolveRailEntry("Cardiff Queen Street", "south-wales")) {
-  fail("south-wales must not resolve Cardiff Queen Street — Valley Lines has no feed and is not catalogued");
+const swSecondaryHub = resolveRailEntry("Cardiff Queen Street", "south-wales");
+if (!swSecondaryHub || swSecondaryHub.crs !== "CDQ") {
+  fail("south-wales Cardiff Queen Street must resolve as a rail entry with crs CDQ — secondary hub, in-catalog via Darwin");
 }
-if (resolveRailEntry("Pontypridd", "south-wales")) {
-  fail("south-wales must not resolve Pontypridd — Valley Lines has no feed and is not catalogued");
+if (resolveRailEntry("Cardiff Bay", "south-wales")) {
+  fail("south-wales must not resolve Cardiff Bay — ambiguous alias, not a real station");
+}
+const swPontypridd = resolveRailEntry("Pontypridd", "south-wales");
+if (!swPontypridd || swPontypridd.crs !== "PPD") {
+  fail("south-wales Pontypridd must resolve as a rail entry with crs PPD — Valley Lines in-catalog via Darwin");
+}
+if (resolveRailEntry("Llanelli", "south-wales")) {
+  fail("south-wales must not resolve Llanelli — Rest of Wales's station per docs/united-kingdom-ledger.md SS2");
+}
+if (resolveRailEntry("Carmarthen", "south-wales")) {
+  fail("south-wales must not resolve Carmarthen — Rest of Wales's station per docs/united-kingdom-ledger.md SS2");
 }
 
 const wy = getRegion("west-yorkshire");
@@ -871,5 +903,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 6+12, north-east 3+60, west-of-england 6+0, south-wales 2+0, west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 6+12, north-east 3+60, west-of-england 6+0, south-wales 16+0 (re-scope 7 Sep 2026, Valley Lines in-catalog via Darwin), west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
 );
