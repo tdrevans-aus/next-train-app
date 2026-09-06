@@ -35,6 +35,19 @@ and the tracker's Cities/Countries sheets). Their definitions, including pinned 
 `.claude/agents/*.md` — each is invoked with the `Agent` tool using its `subagent_type`
 (`nico`, `luke`, `jim`, `mark`, `viv`).
 
+**Model pins (adopted 6 Sep 2026).** Each agent's `model:` line in `.claude/agents/*.md` is the
+model it runs on, full stop: Nico `haiku`, Viv `haiku`, Luke `sonnet`, Jim `sonnet`, Mark `sonnet`.
+Never pass `model` on an `Agent` call for these five, in either direction — not up to Opus/Fable
+for a "hard" city, not down to Haiku to save budget. The 5 Sep burst that ran 16 pipeline agents
+on Fable overrides burned the session limit in minutes and delivered nothing; the same work later
+completed on the pinned models. Escalating one city to Opus is a deliberate decision Tim makes in
+chat, recorded at the top of that city's brief file, and made by a top-level `Agent` call with the
+override — never by an agent on itself. Why these pins: Nico and Viv produce prose that a stronger
+lane checks next (Luke caught every Nico inconsistency today), so breadth per dollar wins; Luke,
+Jim and Mark each make judgments that are expensive to unwind (a station graph, a merged adapter,
+a live flip), so they get Sonnet. Concurrency is part of cost too: at most six Haiku Nicos and two
+Sonnet agents in flight at once, and never more than one Jim per country.
+
 **Files, not chat, between agents.** Each agent reads a specific input file and writes a specific
 output file; that file *is* the handoff. Never paste one agent's conversation or summary into
 another agent's prompt as "context." If a handoff needs more than what's in the file, the file is
