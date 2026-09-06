@@ -83,7 +83,7 @@ assert(live?.ok === true, "assertCityLive(southwest) must pass — status is now
 const entry = getCity("southwest");
 assert(entry?.status === "live", "southwest registry status must be live");
 assert(entry?.adapterReady === undefined, "southwest adapterReady flag is removed once live");
-assert(entry?.displayName === "Southwest", "southwest display name must be Southwest");
+assert(entry?.displayName === "South West (Devon / Cornwall)", "southwest display name must be South West (Devon / Cornwall)");
 assert(entry?.timeZone === "Europe/London", "southwest timezone must be Europe/London");
 assert(
   CITIES.filter((city) => city.id === "southwest").length === 1,

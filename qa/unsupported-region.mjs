@@ -32,12 +32,12 @@ async function run() {
   });
 
   if (
-    unsupported.title === "Perth rail only" &&
+    unsupported.title === "Outside covered areas" &&
     unsupported.directionsHidden &&
     unsupported.nearbyMode &&
     !unsupported.journeysMode
   ) {
-    console.log("PASS — Outback geo shows Perth rail only empty state");
+    console.log("PASS — Outback geo shows the Outside covered areas empty state");
   } else {
     console.error("FAIL — unsupported state", unsupported);
     process.exitCode = 1;
@@ -73,7 +73,7 @@ async function run() {
     return { title, route, nearbyCity };
   });
 
-  if (sydneyNearby.title === "Perth rail only") {
+  if (/rail only|Outside covered areas|station nearby/.test(sydneyNearby.title || "")) {
     console.error("FAIL — Sydney geo should not use Perth unsupported copy", sydneyNearby);
     process.exitCode = 1;
   } else if (sydneyNearby.nearbyCity === "sydney" || sydneyNearby.route.includes("Near you")) {

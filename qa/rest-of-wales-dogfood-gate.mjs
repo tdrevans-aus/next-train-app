@@ -95,7 +95,7 @@ assert(live?.ok === true, "assertCityLive(rest-of-wales) must pass — status is
 const entry = getCity("rest-of-wales");
 assert(entry?.status === "live", "rest-of-wales registry status must be live");
 assert(entry?.adapterReady === undefined, "rest-of-wales adapterReady flag is removed once live");
-assert(entry?.displayName === "Rest of Wales", "rest-of-wales display name must be Rest of Wales");
+assert(entry?.displayName === "Wales (North / Mid / West)", "rest-of-wales display name must be Wales (North / Mid / West)");
 assert(entry?.timeZone === "Europe/London", "rest-of-wales timezone must be Europe/London");
 assert(
   CITIES.filter((city) => city.id === "rest-of-wales").length === 1,

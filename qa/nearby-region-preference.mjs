@@ -75,7 +75,7 @@ async function run() {
   } else if (!afterSwitch.nearbyMode) {
     console.error("FAIL — Near me should stay open after region change", afterSwitch);
     process.exitCode = 1;
-  } else if (afterSwitch.unsupported === "Perth rail only" || afterSwitch.unsupported === "London rail only") {
+  } else if (/rail only|Outside covered areas|station nearby/.test(afterSwitch.unsupported)) {
     console.error("FAIL — unsupported empty state after London switch in Perth", afterSwitch);
     process.exitCode = 1;
   } else if (!isClockTime(afterSwitch.hero) && afterSwitch.directionsHidden) {

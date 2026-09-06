@@ -84,7 +84,7 @@ assert(live?.ok === true, "assertCityLive(greater-manchester) must succeed — s
 const entry = getCity("greater-manchester");
 assert(entry?.status === "live", "greater-manchester registry status must be live");
 assert(entry?.adapterReady === undefined, "greater-manchester adapterReady flag is removed once live");
-assert(entry?.displayName === "Greater Manchester", "greater-manchester display name must be Greater Manchester");
+assert(entry?.displayName === "Manchester", "greater-manchester display name must be Manchester (place-first, not \"Greater Manchester\" under G)");
 assert(entry?.timeZone === "Europe/London", "greater-manchester timezone must be Europe/London");
 assert(
   CITIES.filter((city) => city.id === "greater-manchester").length === 1,
