@@ -31,14 +31,14 @@ function main() {
   const failures = [];
 
   const live = assertCityLive("auckland");
-  if (live?.ok !== true) {
-    failures.push("C0: assertCityLive(auckland) must pass (testers live)");
+  if (live?.ok !== false) {
+    failures.push("C0: assertCityLive(auckland) must fail (retired from release 1, 7 Sep 2026)");
   }
-  if (getCity("auckland")?.status !== "live") {
-    failures.push("C0: auckland registry status must be live");
+  if (getCity("auckland")?.status !== "retired") {
+    failures.push("C0: auckland registry status must be retired");
   }
-  if (!isMultiCity("auckland")) {
-    failures.push("C0: auckland must be in MULTI_CITY_IDS");
+  if (isMultiCity("auckland")) {
+    failures.push("C0: auckland must not be in MULTI_CITY_IDS");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
@@ -168,7 +168,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("auckland-line-map-conformance: ok (tester-live, D1 pack present, TRAIN only)");
+  console.log("auckland-line-map-conformance: ok (retired from release 1, D1 pack kept, TRAIN only)");
 }
 
 main();

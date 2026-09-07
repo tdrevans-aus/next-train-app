@@ -53,7 +53,7 @@ function middayWednesdayInFixtureWindow(staticData) {
 
 const NOW = middayWednesdayInFixtureWindow(await loadRotterdamStatic());
 
-assert(assertCityLive("rotterdam")?.ok === true, "assertCityLive(rotterdam) must pass");
+assert(assertCityLive("rotterdam")?.ok === false, "rotterdam is retired from release 1, 7 Sep 2026");
 assert(MARK_PROBES.length === 13, "Mark probes are 13 stations");
 assert(MARK_PROBES[0] === "Beurs", "First probe is hub Beurs");
 assert(MARK_PROBES[12] === "Hoek van Holland Haven", "Haven is the 13th probe");

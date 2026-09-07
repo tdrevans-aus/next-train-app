@@ -34,20 +34,20 @@ function main() {
   const catalog = loadJson("lib/cities/rotterdam/stations.json");
   const failures = [];
 
-  if (assertCityLive("rotterdam")?.ok !== true) {
-    failures.push("C0: assertCityLive(rotterdam) must pass (testers live)");
+  if (assertCityLive("rotterdam")?.ok !== false) {
+    failures.push("C0: assertCityLive(rotterdam) must fail (retired from release 1, 7 Sep 2026)");
   }
-  if (getCity("rotterdam")?.status !== "live") {
-    failures.push("C0: rotterdam registry status must be live");
+  if (getCity("rotterdam")?.status !== "retired") {
+    failures.push("C0: rotterdam registry status must be retired");
   }
-  if (!isMultiCity("rotterdam")) {
-    failures.push("C0: rotterdam must be in MULTI_CITY_IDS");
+  if (isMultiCity("rotterdam")) {
+    failures.push("C0: rotterdam must not be in MULTI_CITY_IDS");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
   }
-  if (assertCityLive("amsterdam")?.ok !== true) {
-    failures.push("C0: Amsterdam stays live");
+  if (assertCityLive("amsterdam")?.ok !== false) {
+    failures.push("C0: Amsterdam is also retired");
   }
   if (assertCityLive("melbourne")?.ok !== false) {
     failures.push("C0: Melbourne stays planned");
@@ -236,7 +236,7 @@ function main() {
     }
     process.exit(1);
   }
-  console.log("rotterdam-line-map-conformance: ok (live testers, RET A–E, 71 stops, Beurs hub, D1 lock)");
+  console.log("rotterdam-line-map-conformance: ok (retired from release 1, RET A–E kept, 71 stops, Beurs hub, D1 lock)");
 }
 
 main();

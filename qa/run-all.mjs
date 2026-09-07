@@ -61,8 +61,6 @@ const SMOKE_SCRIPTS = [
   "amsterdam-line-map-conformance.mjs",
   "rotterdam-dogfood-gate.mjs",
   "rotterdam-line-map-conformance.mjs",
-  "rotterdam-mark-probes.mjs",
-  "gtfs-overnight-lookahead.mjs",
   "gtfs-static-streaming.mjs",
   "gtfs-realtime-accept.mjs",
   "gtfs-error-redaction.mjs",
@@ -217,6 +215,22 @@ const RUNNER_EXCLUDE = new Set([
   "goteborg-network-sweep.mjs",
   /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
   "pin-exclusive.mjs",
+  /**
+   * Live-probed Amsterdam OVapi GTFS-RT (real network fetch, ~5.7MB TripUpdates) as its
+   * overnight-lookahead example city. Amsterdam retired from release 1, 7 Sep 2026
+   * (docs/jim-brief-release-1-scope-cut.md) — dropped from the smoke tier per that brief's
+   * "drop any that live-probe the agency" instruction rather than repointed at a live city,
+   * since the overnight-lookahead feature itself has no other dedicated gate to preserve.
+   */
+  "gtfs-overnight-lookahead.mjs",
+  /**
+   * Fetches Rotterdam's blob-hosted static GTFS fixture over the network to validate Mark's
+   * 13 probe stations against live fixture data. Rotterdam retired from release 1, 7 Sep 2026
+   * (docs/jim-brief-release-1-scope-cut.md) — dropped from the smoke tier per that brief's
+   * "drop any that live-probe the agency" instruction; the probe-list/hub assertions this
+   * checked are still covered offline by qa/rotterdam-line-map-conformance.mjs.
+   */
+  "rotterdam-mark-probes.mjs",
 ]);
 
 /**
@@ -239,7 +253,6 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "vancouver-attribution.mjs",
   "uk-rdg-attribution.mjs",
   /** Direct provider-lib imports, no :3000. */
-  "gtfs-overnight-lookahead.mjs",
   "gtfs-static-streaming.mjs",
   "gtfs-realtime-accept.mjs",
   "gtfs-error-redaction.mjs",

@@ -61,7 +61,6 @@ assert(getCity("goteborg")?.status === "live", "goteborg registry status must be
 assert(getCity("goteborg")?.adapterReady === true, "goteborg adapterReady must be true");
 assert(isMultiCity("goteborg") === true, "goteborg must be in MULTI_CITY_IDS");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
-assert(assertCityLive("rotterdam")?.ok === true, "Rotterdam stays live");
 assert(assertCityLive("stockholm")?.ok === true, "Stockholm stays live");
 
 // Live-only, no fallback: the board path must never load static GTFS at all

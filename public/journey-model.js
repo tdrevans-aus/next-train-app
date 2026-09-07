@@ -506,16 +506,11 @@ const PERSISTED_CITY_IDS = new Set([
   "brisbane",
   "adelaide",
   "uk-london-tfl",
-  "amsterdam",
-  "rotterdam",
-  "vancouver",
   "canberra",
   "gold-coast",
   "newcastle",
-  "auckland",
   "stockholm",
   "goteborg",
-  "wellington",
   "malmo",
   "uppsala",
   "helsinki",
@@ -543,7 +538,10 @@ const PERSISTED_CITY_IDS = new Set([
 // "gb" kept alongside the split gb-eng/gb-sct/gb-wls ids so an older stored savedCountry
 // survives the sanitizer until city-session.js's readSavedCountry() migration rewrites it
 // on next launch (docs/jim-brief-picker-countries-england-scotland-wales.md item 3).
-const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "gb-eng", "gb-sct", "gb-wls", "nl", "ca", "nz", "se", "fi", "no"]);
+// "nl", "ca", "nz" dropped 7 Sep 2026 (release 1 scope cut) — Netherlands, Canada, and
+// New Zealand no longer have any live city, so an old savedCountry for them degrades the
+// same way an unknown country does today.
+const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "gb-eng", "gb-sct", "gb-wls", "se", "fi", "no"]);
 
 function pickSavedCityFields(raw = {}) {
   const city = String(raw.savedCity ?? "").trim().toLowerCase();

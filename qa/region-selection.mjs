@@ -159,21 +159,43 @@ async function run() {
     await context.close();
   }
 
-  // 4. Netherlands / Canada persist (allowlist used to strip savedCity)
+  // 4a. Retired cities (Netherlands/Canada out entirely, NZ retired) do NOT persist —
+  // release-1 scope cut, 7 Sep 2026 (docs/jim-brief-release-1-scope-cut.md). This used
+  // to assert the opposite (that these cities persisted); now that they're retired the
+  // requirement flips to "degrades the same way an unknown city does today."
   {
-    console.log("    Test 4: Amsterdam and Vancouver persist...");
+    console.log("    Test 4a: retired cities do not persist via applyCity...");
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
     await page.waitForTimeout(4000);
 
+    for (const city of ["amsterdam", "rotterdam", "vancouver", "auckland", "wellington"]) {
+      await page.evaluate(async (id) => {
+        await window.NextTrainCitySession.applyCity(id, { persist: true, explicit: true });
+      }, city);
+      await page.waitForTimeout(1000);
+
+      const state = await page.evaluate(() => {
+        const raw = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
+        return {
+          savedCity: window.NextTrainCitySession.readSavedCity(),
+          storedCity: raw.savedCity,
+        };
+      });
+
+      if (state.storedCity === city) {
+        console.error(`    FAIL — retired city ${city} must not be persisted`, state);
+        process.exitCode = 1;
+      } else {
+        console.log(`    PASS — ${city} did not persist (retired)`);
+      }
+    }
+
+    // Newcastle/Gold Coast/AU cities remain live and must still persist normally.
     for (const { city, country, station } of [
-      { city: "amsterdam", country: "nl", station: "Centraal Station" },
-      { city: "rotterdam", country: "nl", station: "Beurs" },
-      { city: "vancouver", country: "ca", station: "Waterfront" },
       { city: "newcastle", country: "au", station: "Newcastle Interchange" },
       { city: "gold-coast", country: "au", station: "Helensvale" },
-      { city: "auckland", country: "nz", station: "Waitematā Station" },
     ]) {
       await page.evaluate(async (id) => {
         await window.NextTrainCitySession.applyCity(id, { persist: true, explicit: true });
@@ -204,6 +226,55 @@ async function run() {
       }
     }
     await context.close();
+  }
+
+  // 4b. A rider with an old saved journey/pin in a retired city must not crash — the app
+  // degrades to its default city instead, the same as an unknown/unrecognized savedCity
+  // does today. Seeds localStorage directly (simulating an install from before the
+  // release-1 scope cut) rather than going through applyCity.
+  {
+    console.log("    Test 4b: old saved Vancouver/Amsterdam journeys degrade without crashing...");
+    for (const city of ["vancouver", "amsterdam"]) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const pageErrors = [];
+      page.on("pageerror", (err) => pageErrors.push(String(err)));
+
+      await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
+      await page.waitForTimeout(1000);
+      await page.evaluate((id) => {
+        localStorage.setItem(
+          "nextTrainSettings",
+          JSON.stringify({
+            settingsSchemaVersion: 1,
+            savedCity: id,
+            savedCountry: id === "vancouver" ? "ca" : "nl",
+            regionExplicit: true,
+            journeys: [],
+            activeJourneyId: null,
+          })
+        );
+      }, city);
+
+      await page.reload();
+      await page.waitForTimeout(4000);
+
+      const state = await page.evaluate(() => ({
+        savedCity: window.NextTrainCitySession?.readSavedCity?.() ?? null,
+        bodyHasStations: (window.NextTrainBrisbaneDogfood?.getStations?.() ?? []).length >= 0,
+      }));
+
+      if (pageErrors.length > 0) {
+        console.error(`    FAIL — old saved ${city} journey threw`, pageErrors);
+        process.exitCode = 1;
+      } else if (state.savedCity === city) {
+        console.error(`    FAIL — retired city ${city} must not still be the active saved city`, state);
+        process.exitCode = 1;
+      } else {
+        console.log(`    PASS — old saved ${city} journey degraded without crashing (active city now "${state.savedCity || "(default)"}")`);
+      }
+      await context.close();
+    }
   }
 
   // 5. Stockholm and Göteborg are both tester-live
