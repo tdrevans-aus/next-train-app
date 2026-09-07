@@ -74,6 +74,7 @@ const leaveBufferEditBtn = document.getElementById("leave-buffer-edit-btn");
 const leaveCardLabelEl = document.getElementById("leave-card-label");
 const leaveTimeEl = document.getElementById("leave-time");
 const leaveCountdownEl = document.getElementById("leave-countdown");
+const leaveCardReasonEl = document.getElementById("leave-card-reason");
 const leaveHintEl = document.getElementById("leave-hint");
 const preferredHintEl = document.getElementById("preferred-hint");
 const leaveAckBtn = document.getElementById("leave-ack-btn");
@@ -2905,6 +2906,49 @@ function formatLeaveMessage(next) {
   return `Leave in ${minutesUntilLeave} minutes`;
 }
 
+// Reason subline shown once a leave card is late/missed: derives "N min to
+// train" and "N min to station" straight from the timing already on `next`
+// (leaveBy = departure - timeToStation, so the buffer is recoverable without
+// re-reading nearby/route pin settings). Kept short, no em-dash.
+function formatLeaveLateReasonLine(next) {
+  const { minutesUntilDeparture, minutesUntilLeave } = getLiveTiming(next);
+  const minutesToTrain = Math.max(0, Math.round(minutesUntilDeparture));
+  const minutesToStation = Math.max(
+    0,
+    Math.round(minutesUntilDeparture - minutesUntilLeave)
+  );
+  return `${minutesToTrain} min to train · ${minutesToStation} min to station`;
+}
+
+function updateLeaveCardReason(next) {
+  if (!leaveCardReasonEl) {
+    return;
+  }
+  // Defensive: never let a malformed `next` (e.g. a stale/partial trip during
+  // a journey-switch race) throw mid-render and leave the leave card's
+  // visibility half-applied — fail safe to hidden instead.
+  try {
+    const { leavePhase } = getLiveTiming(next);
+    const showReason = leavePhase === "late" || leavePhase === "missed";
+    leaveCardReasonEl.hidden = !showReason;
+    leaveCardReasonEl.textContent = showReason ? formatLeaveLateReasonLine(next) : "";
+  } catch {
+    leaveCardReasonEl.hidden = true;
+    leaveCardReasonEl.textContent = "";
+  }
+}
+
+// Every render exit that hides #leave-card must also clear the reason
+// subline — otherwise a stale "N min to train..." line from a previous
+// late/missed render can linger in the DOM (invisible while the card itself
+// is [hidden], but a real gap all the same; see jim-brief-late-leave-slider-ci).
+function hideLeaveCardReason() {
+  if (leaveCardReasonEl) {
+    leaveCardReasonEl.hidden = true;
+    leaveCardReasonEl.textContent = "";
+  }
+}
+
 function leaveAckStorageKey(next, ackContext = null) {
   const departure = resolveTripDeparture(next);
   if (ackContext?.nearbyStation) {
@@ -3121,6 +3165,7 @@ function applyLeaveAcknowledgedUi(next, resolvedContext) {
   }
   if (leaveCardEl && (resolvedContext?.nearbyStation || isNearbyModeActive())) {
     leaveCardEl.hidden = true;
+    hideLeaveCardReason();
     hideNearbyPinLeaveSurfaces();
   }
   if (resolvedContext?.nearbyStation || isNearbyModeActive()) {
@@ -3885,6 +3930,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
     }
+    hideLeaveCardReason();
   }
   hideUpcomingDepartureBoard();
 
@@ -3917,6 +3963,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
     }
+    hideLeaveCardReason();
     if (preferredHintEl) {
       preferredHintEl.hidden = true;
     }
@@ -3988,6 +4035,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
     }
+    hideLeaveCardReason();
     hideNearbyPinLeaveSurfaces();
   }
   if (preferredHintEl) {
@@ -4063,6 +4111,7 @@ function renderJourneyTargetPreviewFace(journey, pinState) {
     leaveCardEl.hidden = true;
     leaveCardEl.classList.remove("leave-card--context");
   }
+  hideLeaveCardReason();
   if (preferredHintEl) {
     preferredHintEl.hidden = true;
   }
@@ -4154,6 +4203,7 @@ function render(data, { stale = false } = {}) {
       leaveCardEl.hidden = true;
       leaveCardEl.classList.remove("leave-card--context");
     }
+    hideLeaveCardReason();
     if (preferredHintEl) {
       preferredHintEl.hidden = true;
     }
@@ -4304,6 +4354,7 @@ function render(data, { stale = false } = {}) {
     if (leaveCountdownEl) {
       leaveCountdownEl.textContent = formatLeaveCardTargetSubline(leaveTrip);
     }
+    updateLeaveCardReason(leaveTrip);
     updateLeaveCardState(live.leavePhase);
   }
 
@@ -4402,6 +4453,7 @@ function renderRefreshErrorState() {
     leaveCardEl.hidden = true;
     leaveCardEl.classList.remove("leave-card--context");
   }
+  hideLeaveCardReason();
   platformEl.textContent = "—";
   statusEl.textContent = "—";
   followingSectionEl.hidden = true;
@@ -4522,6 +4574,7 @@ function paintJourneyBoardLoadingState() {
   if (leaveCardEl) {
     leaveCardEl.hidden = true;
   }
+  hideLeaveCardReason();
   if (updatedEl) {
     updatedEl.textContent = "Updating…";
   }
@@ -4667,6 +4720,7 @@ function renderTravelTabEmptyState() {
     leaveCardEl.hidden = true;
     leaveCardEl.classList.remove("leave-card--context");
   }
+  hideLeaveCardReason();
 
   if (departCountdownEl) {
     departCountdownEl.hidden = true;
@@ -7676,6 +7730,8 @@ function initNearbyModeFromModule() {
     formatLeaveCardLabel,
     formatLeaveCardSubline,
     formatLeaveCardTargetSubline,
+    formatLeaveLateReasonLine,
+    updateLeaveCardReason,
     isLeavePhasePastLeaveBy,
     updateLeaveCardState,
     renderLeaveMinutesCountdown,
@@ -7757,6 +7813,7 @@ function initNearbyModeFromModule() {
     leaveCardLabelEl,
     leaveTimeEl,
     leaveCountdownEl,
+    leaveCardReasonEl,
     leaveCardActionsEl,
     leaveBufferEditBtn,
     platformEl,
@@ -7791,6 +7848,7 @@ async function mountNearbyMode() {
     leaveCardLabelEl,
     leaveTimeEl,
     leaveCountdownEl,
+    leaveCardReasonEl,
     leaveCardActionsEl,
     leaveBufferEditBtn,
     platformEl,

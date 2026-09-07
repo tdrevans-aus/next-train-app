@@ -243,6 +243,14 @@ async function run() {
   await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
   await page.goto(`${BASE}/?test=1&fixture=empty`);
   await ensureJourneyMode(page);
+  // Cold boot + ensureJourneyMode's own enterJourneyMode() can each kick off a
+  // fetchNextTrain() call; the app's fetchId guard correctly renders only the
+  // winner, but that leaves the assertion racing an implicit double fetch. Force
+  // one settled, uncontended fetch so the wait below isn't timing-dependent on
+  // page-load asset contention (jim-brief-late-leave-slider-ci).
+  await page.evaluate(async () => {
+    await window.nextTrainApp?.fetchNextTrain?.();
+  });
   await page.waitForFunction(
     () => {
       const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";

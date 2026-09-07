@@ -1041,8 +1041,14 @@ function renderPinLeaveCardContent(leaveNext, { forTarget = false } = {}) {
   if (nearbyPinLeaveControlsEl) {
     nearbyPinLeaveControlsEl.hidden = false;
   }
+  // The Time to station slider stays visible and usable through every leave
+  // phase (calm/soon/urgent/now/late/missed) — a rider who drags it down
+  // into "late" territory must be able to drag it back up without leaving
+  // the card (docs/jim-brief-late-leave-slider.md). Only the "Remind me
+  // when to leave" toggle keeps the past-leave-by hide: once you're already
+  // late there's nothing left to remind you of.
   if (nearbyLeaveBeforeFieldEl) {
-    nearbyLeaveBeforeFieldEl.hidden = pastLeaveBy;
+    nearbyLeaveBeforeFieldEl.hidden = false;
   }
   if (nearbyNotifySectionEl) {
     nearbyNotifySectionEl.hidden = pastLeaveBy;
@@ -1064,6 +1070,7 @@ function renderPinLeaveCardContent(leaveNext, { forTarget = false } = {}) {
       ? deps.formatLeaveCardTargetSubline?.(leaveNext) ?? formatLeaveCardSubline(leaveNext)
       : formatLeaveCardSubline(leaveNext);
   }
+  deps.updateLeaveCardReason?.(leaveNext);
   updateLeaveCardState(live.leavePhase);
 
   const showLeaveAckActions =

@@ -141,6 +141,7 @@ const SMOKE_SCRIPTS = [
   "copenhagen-planned-gate.mjs",
   "boston-planned-gate.mjs",
   "write-city-directions-resilience.mjs",
+  "late-leave-slider-stays.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
