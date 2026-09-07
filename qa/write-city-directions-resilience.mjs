@@ -3,7 +3,7 @@
  *
  * scripts/write-city-directions.mjs must not abort its whole build when one
  * station's provider throws by design (board-eligibility-rule exclusion,
- * e.g. NET's unconfirmed-GTFS Beeston/Chilwell stop). Exercises the exported
+ * e.g. NET's unconfirmed-GTFS Toton Lane stop). Exercises the exported
  * `writeCityDirections()` helper directly with a stubbed `getDirections` so
  * this gate needs no network/credentials:
  *

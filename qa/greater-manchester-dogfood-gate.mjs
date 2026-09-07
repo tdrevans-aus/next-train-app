@@ -127,7 +127,7 @@ assert(
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(GREATER_MANCHESTER_REGION);
 assert(region?.railCount === 4, `greater-manchester rail count must be 4, got ${region?.railCount}`);
-assert(region?.metroCount === 15, `greater-manchester metro count must be 15, got ${region?.metroCount}`);
+assert(region?.metroCount === 14, `greater-manchester metro count must be 14, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
 const railNames = new Set(railStations.map((s) => s.name));
@@ -159,14 +159,14 @@ for (const name of [
   "Pomona",
   "Rochdale",
   "Manchester Airport",
-  "Stockport (tram stop)",
 ]) {
   assert(metroNames.has(name), `Metrolink catalog must carry ${name}`);
 }
-assert(metroStops.length === 15, `Metrolink catalog must have exactly 15 stops, got ${metroStops.length}`);
+assert(!metroNames.has("Stockport (tram stop)"), "Metrolink catalog must not carry the non-existent 'Stockport (tram stop)' entry (removed 7 Sep 2026 — Metrolink has never served Stockport)");
+assert(metroStops.length === 14, `Metrolink catalog must have exactly 14 stops, got ${metroStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 19, `combined catalog must have 19 stations (4 rail + 15 metro), got ${allStations.length}`);
+assert(allStations.length === 18, `combined catalog must have 18 stations (4 rail + 14 metro), got ${allStations.length}`);
 
 // doNotGroup — Manchester Victoria resolves as two distinct catalog entries by mode.
 const victoriaRail = resolveCatalogEntry(GREATER_MANCHESTER_NR_SECONDARY_HUB, "train");
@@ -267,7 +267,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Manchester Victoria's doNotGroup lock needs it to disambiguate).
 const dogfoodStations = listGreaterManchesterDogfoodStations();
-assert(dogfoodStations.length === 19, `dogfood stations must be the 19 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 18, `dogfood stations must be the 18 D1 names, got ${dogfoodStations.length}`);
 const victoriaEntries = dogfoodStations.filter((s) => s.name === GREATER_MANCHESTER_NR_SECONDARY_HUB);
 assert(victoriaEntries.length === 2, "Manchester Victoria must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(
@@ -471,5 +471,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "greater-manchester-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 4 rail + 15 Metrolink stations, doNotGroup at Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, Perth Australia stays green)"
+  "greater-manchester-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 4 rail + 14 Metrolink stations, doNotGroup at Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, Perth Australia stays green)"
 );
