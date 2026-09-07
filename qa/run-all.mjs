@@ -28,6 +28,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const SMOKE_SCRIPTS = [
   "stickiness-coaches-logic.mjs",
+  "upcoming-board-depth.mjs",
   "fremantle-claremont-direction.mjs",
   "smoke-browser.mjs",
   "smoke-11-13.mjs",

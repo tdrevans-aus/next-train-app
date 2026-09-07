@@ -25,6 +25,7 @@ var NextTrainTimes = (() => {
 
   // lib/train-times-core.js
   var DEFAULT_TIME_ZONE = "Australia/Perth";
+  var UPCOMING_TRIP_LIMIT = 12;
   var DESTINATION_ALIASES = {
     "Perth Underground": "Perth",
     "Perth Underground Stn": "Perth",
@@ -290,7 +291,7 @@ var NextTrainTimes = (() => {
       hour12: false,
       timeZone
     }) : lastUpdated;
-    const upcomingPayloads = upcomingTrips.slice(0, 8).map((trip) => buildTripPayload(trip, leaveBeforeMinutes, now));
+    const upcomingPayloads = upcomingTrips.slice(0, UPCOMING_TRIP_LIMIT).map((trip) => buildTripPayload(trip, leaveBeforeMinutes, now));
     const nextPayload = upcomingPayloads[skip] ?? null;
     return {
       station,
