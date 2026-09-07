@@ -78,6 +78,8 @@ const SMOKE_SCRIPTS = [
   "auckland-dogfood-gate.mjs",
   "region-selection.mjs",
   "live-city-lists-sync.mjs",
+  "coverage-notes-gate.mjs",
+  "help-coverage-entry.mjs",
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-coords-gate.mjs",
   "uk-catalog-lazy-load.mjs",

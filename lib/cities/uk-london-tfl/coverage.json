@@ -1,0 +1,23 @@
+{
+  "region": "uk-london-tfl",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "London Underground, Elizabeth line, DLR, London Overground and London Tram",
+      "detail": "Every TfL rail mode, with live running times from TfL's own feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "National Rail (mainline trains)",
+      "detail": "This app's National Rail coverage sits in the separate London & South East region — the London region here is TfL rail modes only."
+    }
+  ],
+  "stations": "575 stops across the Underground, Elizabeth line, DLR, Overground and Tram.",
+  "notes": ""
+}

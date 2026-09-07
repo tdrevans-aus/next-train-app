@@ -1,0 +1,19 @@
+{
+  "region": "brisbane",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Queensland Rail City network",
+      "detail": "Every Brisbane suburban and interurban train, live."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses and ferries",
+      "detail": "Not a rail app."
+    }
+  ],
+  "stations": "155 stations across the Brisbane rail network.",
+  "notes": ""
+}

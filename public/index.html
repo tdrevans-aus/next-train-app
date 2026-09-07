@@ -357,6 +357,7 @@
         <ul class="nearby-directions-list" id="nearby-directions-list"></ul>
         <div class="nearby-fallback" id="nearby-fallback" hidden>
           <p class="nearby-fallback-text" id="nearby-fallback-text"></p>
+          <div class="station-field-with-help">
           <label class="nearby-station-field">
             <span>Choose station</span>
             <div class="station-combobox" id="nearby-station-combobox">
@@ -380,6 +381,13 @@
               ></ul>
             </div>
           </label>
+          <button
+            type="button"
+            class="help-inline-icon-btn help-coverage-icon-btn station-field-help-btn"
+            id="nearby-station-coverage-btn"
+            aria-label="What's covered"
+          >?</button>
+          </div>
           <button type="button" class="btn-secondary nearby-station-btn" id="nearby-station-btn">
             Show departures
           </button>
@@ -723,6 +731,7 @@
               </label>
               <div id="detail-route-core">
               <div class="route-station-group">
+                <div class="station-field-with-help">
                 <label class="field route-field">
                   <span>Departure station</span>
                   <div class="station-combobox" id="detail-station-combobox">
@@ -746,6 +755,13 @@
                     ></ul>
                   </div>
                 </label>
+                <button
+                  type="button"
+                  class="help-inline-icon-btn help-coverage-icon-btn station-field-help-btn"
+                  id="detail-station-coverage-btn"
+                  aria-label="What's covered"
+                >?</button>
+                </div>
                 <div class="route-nearest-row" id="detail-nearest-row">
                   <button type="button" class="route-nearest-btn" id="detail-nearest-btn" hidden>
                     <svg class="route-nearest-btn__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1389,6 +1405,22 @@
             </div>
           </details>
 
+          <details class="help-faq" id="help-coverage-faq">
+            <summary class="help-faq-summary">
+              <span class="help-faq-title" id="help-coverage-title">What's covered</span>
+              <svg class="help-faq-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </summary>
+            <div class="help-faq-body" id="help-coverage-body">
+              <ul class="help-coverage-list" id="help-coverage-covered"></ul>
+              <ul class="help-coverage-list help-coverage-list-partial" id="help-coverage-partial"></ul>
+              <ul class="help-coverage-list help-coverage-list-not-covered" id="help-coverage-not-covered"></ul>
+              <p id="help-coverage-stations"></p>
+              <p id="help-coverage-notes"></p>
+              <p class="help-coverage-updated" id="help-coverage-updated"></p>
+              <p><a href="#" id="help-coverage-other-regions-link">Other regions</a></p>
+            </div>
+          </details>
+
         </div>
         <pre class="widget-debug-panel" id="widget-debug-panel" hidden></pre>
       </div>
@@ -1550,6 +1582,7 @@
     <script src="geo-bundle.js"></script>
     <script src="brisbane-dogfood.js"></script>
     <script src="city-session.js"></script>
+    <script src="help-coverage.js"></script>
     <script src="train-times-bundle.js"></script>
     <script src="station-combobox.js"></script>
     <script src="journey-model.js"></script>

@@ -1,0 +1,24 @@
+{
+  "region": "south-yorkshire",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Sheffield Station and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [
+    {
+      "label": "Sheffield Supertram",
+      "detail": "On the catalog, but the tram operator has no confirmed public live-times feed since changing hands in 2024, so tram boards show an explicit message rather than made-up times."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "18 stations and stops. Sheffield Station's rail platforms and the tram viaduct are shown as two separate entries.",
+  "notes": ""
+}

@@ -1,0 +1,23 @@
+{
+  "region": "auckland",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Auckland trains",
+      "detail": "Southern, Eastern, Western and Onehunga lines, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses and ferries",
+      "detail": "Not a rail app."
+    },
+    {
+      "label": "City Rail Link",
+      "detail": "Not open to passengers yet."
+    }
+  ],
+  "stations": "41 stations, including Waitematā, Pukekohe and Drury.",
+  "notes": ""
+}

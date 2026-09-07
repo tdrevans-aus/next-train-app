@@ -1,0 +1,23 @@
+{
+  "region": "vancouver",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "SkyTrain",
+      "detail": "Expo Line, Millennium Line and Canada Line, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses, SeaBus and West Coast Express",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Broadway Subway",
+      "detail": "Not open to passengers yet."
+    }
+  ],
+  "stations": "54 SkyTrain stations, hubbed on Waterfront.",
+  "notes": "Live data is used with permission of TransLink, who assume no responsibility for its accuracy or currency."
+}

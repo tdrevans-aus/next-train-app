@@ -1,0 +1,24 @@
+{
+  "region": "east-midlands",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Nottingham Station and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [
+    {
+      "label": "Nottingham Express Transit (NET) tram",
+      "detail": "On the catalog, but Nottingham's tram operator has no confirmed live-times feed, so the tram board shows an explicit message rather than made-up times."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "10 stations and stops. Nottingham Station's rail platforms and the tram viaduct are shown as two separate entries.",
+  "notes": ""
+}

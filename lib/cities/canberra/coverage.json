@@ -1,0 +1,23 @@
+{
+  "region": "canberra",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Canberra light rail",
+      "detail": "The full line, Gungahlin Place to Alinga Street, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Stage 2A / Woden extension",
+      "detail": "Not open to passengers yet."
+    }
+  ],
+  "stations": "14 stops, hubbed on Alinga Street.",
+  "notes": ""
+}

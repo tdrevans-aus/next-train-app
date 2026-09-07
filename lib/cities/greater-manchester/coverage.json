@@ -1,0 +1,24 @@
+{
+  "region": "greater-manchester",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Manchester Piccadilly, Manchester Victoria and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [
+    {
+      "label": "Manchester Metrolink tram",
+      "detail": "Only the line ends and a few major stops are listed so far (15 of about 99 tram stops), and the tram operator has no confirmed public live-times feed yet, so tram boards show an explicit message rather than made-up times."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "19 stations and stops: 4 National Rail stations and 15 Metrolink stops. Manchester Piccadilly is the National Rail hub; Manchester Victoria is shown twice, once for trains and once for trams, since they're on different platforms in the same building.",
+  "notes": ""
+}

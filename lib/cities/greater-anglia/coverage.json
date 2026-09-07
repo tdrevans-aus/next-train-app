@@ -1,0 +1,19 @@
+{
+  "region": "greater-anglia",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Norwich, Cambridge, Ipswich and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "14 stations, with Norwich as the main hub and Cambridge and Ipswich as secondary hubs.",
+  "notes": ""
+}

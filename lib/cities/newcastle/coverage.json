@@ -1,0 +1,23 @@
+{
+  "region": "newcastle",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Newcastle Light Rail",
+      "detail": "The full line, Newcastle Interchange to Newcastle Beach, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses and the Stockton ferry",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Hunter Line and Central Coast trains",
+      "detail": "Not covered — this region is light rail only."
+    }
+  ],
+  "stations": "Six stops.",
+  "notes": "A separate region from Sydney, and not part of the Sydney Trains network."
+}

@@ -1,0 +1,27 @@
+{
+  "region": "london-se-national-rail",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Waterloo, Victoria, London Bridge, Liverpool Street, King's Cross, St Pancras and Paddington, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Eurostar",
+      "detail": "Excluded at St Pancras International — it needs border check-in, unlike a walk-up domestic train."
+    },
+    {
+      "label": "Night Riviera Sleeper",
+      "detail": "Excluded at Paddington — booking a berth is compulsory."
+    },
+    {
+      "label": "London Underground, DLR, Overground and buses",
+      "detail": "Not covered here — see the separate London (TfL) region."
+    }
+  ],
+  "stations": "10 station groups: Waterloo, Victoria, London Bridge, Liverpool Street, King's Cross, St Pancras International and Paddington, each its own board.",
+  "notes": "This region is National Rail only. For the Underground, Elizabeth line, DLR, Overground and Tram, see the London region."
+}

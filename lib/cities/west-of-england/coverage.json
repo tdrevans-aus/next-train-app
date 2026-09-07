@@ -1,0 +1,19 @@
+{
+  "region": "west-of-england",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Bristol Temple Meads, Bath Spa and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "Six stations, hubbed on Bristol Temple Meads, with Bath Spa as a second hub.",
+  "notes": ""
+}

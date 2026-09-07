@@ -1,0 +1,24 @@
+{
+  "region": "uk-west-midlands",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train on the station board, from the same UK national real-time feed used across every region."
+    }
+  ],
+  "partial": [
+    {
+      "label": "West Midlands Metro",
+      "detail": "The tram network is on the catalog, but real-time credentials aren't wired up on our side yet, so trams show an explicit 'not available yet' message rather than live times."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "110 stations and stops: 75 National Rail, 35 Metro tram.",
+  "notes": "Birmingham New Street's rail platforms and the Metro tram stop are shown as two separate entries."
+}

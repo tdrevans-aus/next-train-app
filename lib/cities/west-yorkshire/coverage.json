@@ -1,0 +1,19 @@
+{
+  "region": "west-yorkshire",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Leeds Station and this region's other stations, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "10 stations. Leeds is the main hub, with Bradford Forster Square as a second hub and Bradford Interchange a short walk from it.",
+  "notes": ""
+}

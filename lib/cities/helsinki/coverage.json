@@ -1,0 +1,23 @@
+{
+  "region": "helsinki",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Helsinki Metro",
+      "detail": "Lines M1 and M2, with live running times, blended with the timetable in one feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Trams and buses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "HSL/VR commuter trains and the Suomenlinna ferry",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "30 stations. Current termini are Kivenlahti and Vuosaari (M1) and Tapiola and Mellunmäki (M2).",
+  "notes": ""
+}

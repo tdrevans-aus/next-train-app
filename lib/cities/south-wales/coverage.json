@@ -1,0 +1,19 @@
+{
+  "region": "south-wales",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train calling at Cardiff Central, from the UK's national real-time feed, including Transport for Wales Valley Lines services that call there."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "Two stations: Cardiff Central and Severn Tunnel Junction.",
+  "notes": "Cardiff Queen Street and the wider Valley Lines network aren't in the catalog yet."
+}

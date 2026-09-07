@@ -1,0 +1,23 @@
+{
+  "region": "liverpool-city-region",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "Every train on the national real-time feed."
+    },
+    {
+      "label": "Merseyrail",
+      "detail": "Northern Line and Wirral Line, live, from the same national feed — Merseyrail is a National Rail operator, not a separate metro system."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses and ferries",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "97 stations: 29 National Rail plus 68 Merseyrail.",
+  "notes": "Liverpool Lime Street is shown as a single combined board — National Rail and Merseyrail together."
+}

@@ -1,0 +1,23 @@
+{
+  "region": "adelaide",
+  "updated": "2026-09-07",
+  "covered": [
+    {
+      "label": "Adelaide Metro trains",
+      "detail": "Every Adelaide Metro train line, with live running times."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses and the O-Bahn",
+      "detail": "Not a rail app."
+    },
+    {
+      "label": "Trams",
+      "detail": "The Glenelg tram line isn't covered — only heavy rail."
+    }
+  ],
+  "stations": "89 stations across the Adelaide train network.",
+  "notes": ""
+}
