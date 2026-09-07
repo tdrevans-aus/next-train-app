@@ -33,6 +33,18 @@ assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
 assert(assertCityLive("stockholm")?.ok === true, "Stockholm stays live");
 assert(assertCityLive("malmo")?.ok === true, "Malmö stays live");
 
+// Static GTFS must load from the blob snapshot, never Trafiklab directly on
+// the request path (docs/jim-brief-sweden-static-429-and-key-leak.md).
+const uppsalaProviderSrc = readFileSync(join(ROOT, "lib/providers/uppsala.js"), "utf8");
+assert(
+  /gtfsFixtureBlobUrl\("uppsala"\)/.test(uppsalaProviderSrc),
+  "uppsala static loader must use the blob snapshot"
+);
+assert(
+  !/trafiklabGtfsStaticUrl/.test(uppsalaProviderSrc),
+  "uppsala must not build a Trafiklab static URL (429 risk) — RT only"
+);
+
 // Registry identity + D1 pack (absorbed from the retired uppsala-planned-gate).
 const entry = getCity("uppsala");
 assert(entry?.displayName === "Uppsala", "uppsala display name must be Uppsala");

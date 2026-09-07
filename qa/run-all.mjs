@@ -64,6 +64,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-overnight-lookahead.mjs",
   "gtfs-static-streaming.mjs",
   "gtfs-realtime-accept.mjs",
+  "gtfs-error-redaction.mjs",
   "vancouver-dogfood-gate.mjs",
   "vancouver-attribution.mjs",
   "uk-rdg-attribution.mjs",
@@ -235,6 +236,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "gtfs-overnight-lookahead.mjs",
   "gtfs-static-streaming.mjs",
   "gtfs-realtime-accept.mjs",
+  "gtfs-error-redaction.mjs",
   /** Registry vs. the six live-city list copies (docs/live-flip-checklist.md). */
   "live-city-lists-sync.mjs",
   /** Offline UK catalog checks. */
