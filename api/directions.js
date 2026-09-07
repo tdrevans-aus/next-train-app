@@ -33,6 +33,16 @@ import {
  * (network hiccup, transient upstream failure) keeps the existing "try
  * again" treatment. Liverpool City Region's Merseyrail no longer has such
  * an error — see docs/jim-brief-liverpool-merseyrail-via-darwin.md.
+ *
+ * VasttrafikUnavailableError (lib/providers/vasttrafik.js) is a deliberate
+ * exception to the "every other named error is permanent" rule above: it's
+ * thrown for a transient live-fetch failure (HTTP error, auth failure,
+ * timeout, malformed body) on Göteborg's live-only board (no timetable
+ * fallback — docs/jim-brief-goteborg-live-only-no-fallback.md), and retrying
+ * once Västtrafik recovers genuinely can help. It must not fall into the
+ * generic "feed_unavailable" bucket other named errors get below, so it's
+ * excluded before that default and gets the same treatment as an unnamed
+ * Error (the "try again" copy).
  */
 export function classifyDirectionsError(error) {
   const name = String(error?.name || "");
@@ -41,6 +51,9 @@ export function classifyDirectionsError(error) {
   }
   if (name.startsWith("Missing")) {
     return "missing_config";
+  }
+  if (name === "VasttrafikUnavailableError") {
+    return undefined;
   }
   return "feed_unavailable";
 }

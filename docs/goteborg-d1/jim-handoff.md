@@ -186,3 +186,69 @@ Kungsbacka's town buses reuse designations ("1", "2", "3", "4") that collide wit
 numbers. `mapVasttrafikDeparture` no longer falls back to the raw `line.designation`/`.name` when
 `goteborgLineCode` rejects a row, and every admitted trip now carries a normalised
 `transportMode: "tram"|"train"` field the board can assert on.
+
+## Update 7 Sep 2026 — live-only board, no timetable fallback, no static GTFS on the board path
+
+Per `docs/jim-brief-goteborg-live-only-no-fallback.md` (Tim, 7 Sep 2026: "definitely remove the
+fallback" — a city with a usable live feed must use it, and once the live feed fails the rider
+must see an explicit error rather than a timetable dressed as a board, since the live/timetable UI
+marker FB-57 doesn't exist yet). Two problems this fixes: (1) the board used to load the Trafiklab
+static GTFS **before** calling Västtrafik just to map catalog stations to stop-area GIDs, and a
+429 on that download (6 Sep) took every Göteborg board down even though Västtrafik itself was
+healthy; (2) a failed/empty live call silently fell back to the Trafiklab timetable
+(`realtime: "timetable"`), indistinguishable from live times to a rider.
+
+**Decoupled the catalog from GTFS at request time.** Every station in
+`lib/cities/goteborg/stations.json` now carries a `vasttrafikStopAreaGids` array (16-digit
+Västtrafik stop-area GIDs, e.g. Brunnsparken `9021014001760000`). Generated once, offline, by
+`scripts/generate-goteborg-stop-area-gids.mjs`, which reproduces exactly the resolution the
+adapter used to do at request time (`findRailStopIdsForName` against the Trafiklab `vt` static
+feed, filtered to the GID pattern — Västtrafik's own GTFS export uses the GID as its `stop_id`,
+so that filter was already selecting genuine stop-area ids) and writes the result into the
+catalog. Two catalog names didn't substring-match the feed's own spelling and needed a one-line
+search-name override in the generator (`Angereds Centrum` → GTFS `Angered Centrum`;
+`Liseberg Station (tåg)` shares `Liseberg Station`'s stop-area). `lib/providers/goteborg.js` no
+longer imports any GTFS static-loading code at all — `fetchStationBoard` reads
+`vasttrafikStopAreaGids` straight from the resolved catalog entry.
+
+**Known catalog gap, not invented around: "Nordstan".** No coordinates were ever found for it
+(already flagged `unresolved` in `docs/goteborg-d1/station-coordinates.json`), and it has no
+matching `stop_name` anywhere in the Trafiklab `vt` feed, in any mode — it appears to be a printed
+inner-city place name (shopping district) on the official line map rather than a distinct
+Västtrafik stop-area, unlike the genuinely separate nearby stops Brunnsparken/Lilla Bommen. Left
+as a documented exception (`KNOWN_UNRESOLVED_GID_STATIONS` in `scripts/generate-goteborg-stop-area-gids.mjs`
+and `qa/goteborg-dogfood-gate.mjs`) rather than guessed at. Requesting its board throws
+`MissingVasttrafikStopAreaGidError` — verified live in the gate. **Flag for Luke/Tim:** resolve
+Nordstan's real stop-area (or drop it from the D1 catalog if it was never a genuine boardable
+stop) — this is a data question, not something to guess in the adapter lane.
+
+**No fallback.** `fetchStationBoard` throws instead of ever building a second board:
+`MissingVasttrafikCredentialsError` (unset keys, unchanged), `MissingVasttrafikStopAreaGidError`
+(new — catalog gap, e.g. Nordstan above), and `VasttrafikUnavailableError` (new — the live fetch
+itself failed: HTTP error, auth failure, timeout, or malformed body). `api/directions.js`'s
+`classifyDirectionsError` deliberately does **not** bucket `VasttrafikUnavailableError` with the
+other named adapter errors it treats as permanent (`feed_unavailable`) — it's transient, retrying
+once Västtrafik recovers can genuinely help, so it keeps the same "try again" treatment as an
+unnamed `Error`. An **empty** live result (e.g. genuinely no in-scope-line departures right now —
+verified live at 02:44 Europe/Stockholm: Brunnsparken's only current departure was a night tram
+"Spårvagn X", correctly filtered out since `X` isn't in `ALLOWED_LINE_CODES`) is returned as a
+valid `realtime: "live"` board with zero trips, not an error.
+
+**Verification.** `node --env-file=.env.local qa/goteborg-dogfood-gate.mjs` now additionally
+asserts (with real credentials): every catalog station (bar the documented Nordstan exception) has
+≥1 `vasttrafikStopAreaGids` entry; a fetch spy proves Brunnsparken/Lerum Station/Kungsbacka
+Station boards never hit a static-GTFS URL (only `ext-api.vasttrafik.se`); Nordstan's board throws
+`MissingVasttrafikStopAreaGidError`; and a fully-mocked Västtrafik 503 throws
+`VasttrafikUnavailableError` without returning a board (this last check needs no real credentials
+— it mocks `fetch` end-to-end, including the token exchange). `qa/goteborg-direction-match.mjs`,
+`qa/goteborg-line-map-conformance.mjs` and `qa/live-city-lists-sync.mjs` all still pass unchanged.
+Direct `getMultiCityNextTrain("goteborg", …)` calls for Brunnsparken → `1 + Tynnered` and Lerum
+Station → `Västtågen + Göteborg Central` both returned `next: null` when run (02:34
+Europe/Stockholm) — checked against the raw board (`fetchStationBoard`, 0 trips at both stations)
+and the raw Västtrafik feed directly (Brunnsparken: exactly one current departure, the same
+out-of-scope night tram above) to confirm this is a genuine off-hours empty board, not a
+regression — **not independently re-verified during daytime service** in this pass; Mark/CI should
+re-check `next !== null` during Göteborg service hours before treating this as fully proven.
+Registry `integration`/`notes` text (unchanged — out of scope, "Do not touch ... the registry")
+still describes the retired Trafiklab timetable fallback and is now stale; flagged for whoever
+next edits `lib/providers/registry.js`'s Göteborg entry.
