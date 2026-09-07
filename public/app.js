@@ -74,6 +74,7 @@ const leaveBufferEditBtn = document.getElementById("leave-buffer-edit-btn");
 const leaveCardLabelEl = document.getElementById("leave-card-label");
 const leaveTimeEl = document.getElementById("leave-time");
 const leaveCountdownEl = document.getElementById("leave-countdown");
+const leaveCardReasonEl = document.getElementById("leave-card-reason");
 const leaveHintEl = document.getElementById("leave-hint");
 const preferredHintEl = document.getElementById("preferred-hint");
 const leaveAckBtn = document.getElementById("leave-ack-btn");
@@ -2905,6 +2906,30 @@ function formatLeaveMessage(next) {
   return `Leave in ${minutesUntilLeave} minutes`;
 }
 
+// Reason subline shown once a leave card is late/missed: derives "N min to
+// train" and "N min to station" straight from the timing already on `next`
+// (leaveBy = departure - timeToStation, so the buffer is recoverable without
+// re-reading nearby/route pin settings). Kept short, no em-dash.
+function formatLeaveLateReasonLine(next) {
+  const { minutesUntilDeparture, minutesUntilLeave } = getLiveTiming(next);
+  const minutesToTrain = Math.max(0, Math.round(minutesUntilDeparture));
+  const minutesToStation = Math.max(
+    0,
+    Math.round(minutesUntilDeparture - minutesUntilLeave)
+  );
+  return `${minutesToTrain} min to train · ${minutesToStation} min to station`;
+}
+
+function updateLeaveCardReason(next) {
+  if (!leaveCardReasonEl) {
+    return;
+  }
+  const { leavePhase } = getLiveTiming(next);
+  const showReason = leavePhase === "late" || leavePhase === "missed";
+  leaveCardReasonEl.hidden = !showReason;
+  leaveCardReasonEl.textContent = showReason ? formatLeaveLateReasonLine(next) : "";
+}
+
 function leaveAckStorageKey(next, ackContext = null) {
   const departure = resolveTripDeparture(next);
   if (ackContext?.nearbyStation) {
@@ -4304,6 +4329,7 @@ function render(data, { stale = false } = {}) {
     if (leaveCountdownEl) {
       leaveCountdownEl.textContent = formatLeaveCardTargetSubline(leaveTrip);
     }
+    updateLeaveCardReason(leaveTrip);
     updateLeaveCardState(live.leavePhase);
   }
 
@@ -7676,6 +7702,8 @@ function initNearbyModeFromModule() {
     formatLeaveCardLabel,
     formatLeaveCardSubline,
     formatLeaveCardTargetSubline,
+    formatLeaveLateReasonLine,
+    updateLeaveCardReason,
     isLeavePhasePastLeaveBy,
     updateLeaveCardState,
     renderLeaveMinutesCountdown,
@@ -7757,6 +7785,7 @@ function initNearbyModeFromModule() {
     leaveCardLabelEl,
     leaveTimeEl,
     leaveCountdownEl,
+    leaveCardReasonEl,
     leaveCardActionsEl,
     leaveBufferEditBtn,
     platformEl,
@@ -7791,6 +7820,7 @@ async function mountNearbyMode() {
     leaveCardLabelEl,
     leaveTimeEl,
     leaveCountdownEl,
+    leaveCardReasonEl,
     leaveCardActionsEl,
     leaveBufferEditBtn,
     platformEl,
