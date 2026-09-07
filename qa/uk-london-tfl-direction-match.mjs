@@ -45,13 +45,41 @@
  * with "London " (London Bridge, London City Airport, London Euston, London Fields) — a naive
  * `^London\s+` regex fix passes the fixture checks above but fails these.
  *
+ * Extended for docs/jim-brief-terminus-no-published-departures.md (7 Sep 2026): tube termini
+ * (940G stops) have no `ArrivalDepartures` at all, so `/Arrivals` is the only feed, and it
+ * publishes essentially no forward departures — a terminating train's `destinationName`/`towards`
+ * is the station itself. The prior sections of this gate cover the Overground `ArrivalDepartures`
+ * path; this section covers the tube `/Arrivals`-only terminus case with a fresh live-captured
+ * fixture (qa/fixtures/uk-london-tfl/terminus-arrivals.json, captured live 7 Sep 2026,
+ * TFL_APP_KEY-authenticated, no network needed to run this gate) for six real tube termini
+ * (Walthamstow Central, Brixton, Morden, Epping, Cockfosters, High Barnet). Asserts the three
+ * states from the brief's QA section:
+ *   1. terminus-with-arrivals-only — the offered direction resolves zero upcoming trips AND the
+ *      fixture holds real trips terminating here on that line; buildNextTrainResponse's additive
+ *      `arrivalsOnly` field must be populated with those trips' real (unmodified) times, and
+ *      `upcoming`/`next`/`following` must stay exactly as they'd be without terminatingTrips
+ *      (additive, not a reshape).
+ *   2. genuinely empty — no trips at all (synthetic, zero-trip input) must leave `arrivalsOnly`
+ *      absent and `next` null, i.e. "No upcoming trains" is unaffected.
+ *   3. normal board with departures — an existing Overground fixture station (Barking Riverside)
+ *      with real upcoming trips must not have `arrivalsOnly` set even though other lines at that
+ *      stop also publish terminating rows; and, separately, every other already-covered station in
+ *      this gate's fixtures is asserted to have byte-identical `buildNextTrainResponse` output with
+ *      and without the new `terminatingTrips` param, proving the change doesn't touch any board it
+ *      isn't the fix for (acceptance criterion 4).
+ *
  * Usage: node qa/uk-london-tfl-direction-match.mjs
  */
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { parseTflArrival, parseTflArrivalDeparture, resolveTflStop } from "../lib/providers/uk-tfl.js";
-import { pickUpcomingTrips } from "../lib/train-times-core.js";
+import {
+  parseTflArrival,
+  parseTflArrivalDeparture,
+  resolveTflStop,
+  findTerminatingArrivals,
+} from "../lib/providers/uk-tfl.js";
+import { pickUpcomingTrips, buildNextTrainResponse } from "../lib/train-times-core.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
@@ -280,6 +308,168 @@ for (const name of ["London Bridge", "London City Airport", "London Fields", "Li
   const stop = resolveTflStop(name);
   assert(stop && stop.name === name, `resolveTflStop("${name}") must resolve to its own catalog entry`);
   console.log(`  OK   resolveTflStop("${name}") -> ${stop.naptanId} (${stop.name})`);
+}
+
+// --- Terminus arrivals-only board (docs/jim-brief-terminus-no-published-departures.md) ---
+
+console.log("\nTerminus arrivals-only checks:");
+
+const terminusFixture = JSON.parse(
+  readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "terminus-arrivals.json"), "utf8")
+);
+const terminusNow = new Date(terminusFixture.capturedAt);
+assert(!Number.isNaN(terminusNow.getTime()), "terminus fixture.capturedAt must be a valid timestamp");
+
+// State 1: terminus-with-arrivals-only. Real tube termini (940G, /Arrivals-only — no
+// ArrivalDepartures exists for these) where the offered direction resolves zero upcoming trips
+// but the board holds real trips terminating here on that line.
+const TERMINUS_STATIONS = {
+  "Walthamstow Central": "Victoria Brixton",
+  Brixton: "Victoria Walthamstow Central",
+  Morden: "Northern High Barnet",
+  Epping: "Central Ealing Broadway",
+  Cockfosters: "Piccadilly Uxbridge",
+  "High Barnet": "Northern Morden",
+};
+
+for (const [stationName, direction] of Object.entries(TERMINUS_STATIONS)) {
+  const stationFixture = terminusFixture.stations[stationName];
+  assert(stationFixture, `terminus fixture missing station: ${stationName}`);
+  const rows = stationFixture.arrivals[stationFixture.naptanId];
+  const trips = rows.map((row) => parseTflArrival(row, terminusNow)).filter(Boolean);
+
+  const upcoming = pickUpcomingTrips(trips, direction, terminusNow);
+  if (upcoming.length !== 0) {
+    console.error(
+      `  FAIL ${stationName}: expected 0 upcoming trips for "${direction}" in this fixture (got ${upcoming.length}) — fixture no longer exercises the terminus case`
+    );
+    failures++;
+    continue;
+  }
+
+  const terminating = findTerminatingArrivals(trips, stationName, direction, terminusNow);
+  if (terminating.length === 0) {
+    console.error(
+      `  FAIL ${stationName}: expected real trips terminating here on "${direction}"'s line, found none`
+    );
+    failures++;
+    continue;
+  }
+
+  const withoutTerminating = buildNextTrainResponse({
+    station: stationName,
+    destination: direction,
+    destinationLabel: direction,
+    leaveBeforeMinutes: 10,
+    refreshSeconds: 30,
+    now: terminusNow,
+    lastUpdated: terminusNow,
+    upcomingTrips: upcoming,
+  });
+  const withTerminating = buildNextTrainResponse({
+    station: stationName,
+    destination: direction,
+    destinationLabel: direction,
+    leaveBeforeMinutes: 10,
+    refreshSeconds: 30,
+    now: terminusNow,
+    lastUpdated: terminusNow,
+    upcomingTrips: upcoming,
+    terminatingTrips: terminating,
+  });
+
+  // Additive, not a reshape: upcoming/next/following must be identical whether or not
+  // terminatingTrips is passed.
+  for (const key of ["next", "following", "upcoming"]) {
+    const before = JSON.stringify(withoutTerminating[key]);
+    const after = JSON.stringify(withTerminating[key]);
+    if (before !== after) {
+      console.error(`  FAIL ${stationName}: "${key}" changed when terminatingTrips was passed — must be additive only`);
+      failures++;
+    }
+  }
+  assert(withoutTerminating.arrivalsOnly === undefined, `${stationName}: arrivalsOnly must be absent without terminatingTrips`);
+
+  if (!withTerminating.arrivalsOnly || !withTerminating.arrivalsOnly.arrivals?.length) {
+    console.error(`  FAIL ${stationName}: expected arrivalsOnly.arrivals to be populated`);
+    failures++;
+    continue;
+  }
+  // No estimated/derived time anywhere: every arrival's departure/arrival timestamp must trace
+  // back to one of the terminating trips' own liveDeparture (the real TfL-predicted arrival).
+  const realTimes = new Set(terminating.map((t) => t.liveDeparture.toISOString()));
+  for (const arrival of withTerminating.arrivalsOnly.arrivals) {
+    if (!realTimes.has(arrival.departure)) {
+      console.error(`  FAIL ${stationName}: arrivalsOnly arrival time "${arrival.departure}" is not one of the real terminating trips' own times`);
+      failures++;
+    }
+  }
+  console.log(
+    `  OK   ${stationName} ("${direction}"): 0 upcoming, ${terminating.length} terminating -> arrivalsOnly with ${withTerminating.arrivalsOnly.arrivals.length} real arrival(s), message present: ${Boolean(withTerminating.arrivalsOnly.message)}`
+  );
+}
+
+// State 2: genuinely empty. No trips at all must leave `next` null and `arrivalsOnly` absent —
+// "No upcoming trains" is unaffected by this change.
+{
+  const empty = buildNextTrainResponse({
+    station: "Test Empty",
+    destination: "Victoria Brixton",
+    destinationLabel: "Victoria Brixton",
+    leaveBeforeMinutes: 10,
+    refreshSeconds: 30,
+    now: terminusNow,
+    lastUpdated: terminusNow,
+    upcomingTrips: [],
+    terminatingTrips: [],
+  });
+  assert(empty.next === null, "genuinely-empty board: next must be null");
+  assert(empty.arrivalsOnly === undefined, "genuinely-empty board: arrivalsOnly must be absent, not an empty/false object");
+  console.log("  OK   genuinely empty board (no trips at all) -> next=null, arrivalsOnly absent");
+}
+
+// State 3: normal board with departures. An existing Overground station with real upcoming
+// trips must not get arrivalsOnly, and its output must be byte-identical whether or not a caller
+// happens to pass terminatingTrips — proving no other board's behaviour changes (acceptance
+// criterion 4).
+{
+  const gospelOakFixture = fixture.stations["Gospel Oak"];
+  const gospelOakTrips = parseStationTrips(gospelOakFixture, now);
+  const gospelOakDirection = "Suffragette Barking Riverside";
+  const gospelOakUpcoming = pickUpcomingTrips(gospelOakTrips, gospelOakDirection, now);
+  assert(gospelOakUpcoming.length > 0, "Gospel Oak fixture must still have real upcoming departures for this check to be meaningful");
+
+  const gospelOakTerminating = findTerminatingArrivals(gospelOakTrips, "Gospel Oak", gospelOakDirection, now);
+
+  const before = buildNextTrainResponse({
+    station: "Gospel Oak",
+    destination: gospelOakDirection,
+    destinationLabel: gospelOakDirection,
+    leaveBeforeMinutes: 10,
+    refreshSeconds: 30,
+    now,
+    lastUpdated: now,
+    upcomingTrips: gospelOakUpcoming,
+  });
+  const after = buildNextTrainResponse({
+    station: "Gospel Oak",
+    destination: gospelOakDirection,
+    destinationLabel: gospelOakDirection,
+    leaveBeforeMinutes: 10,
+    refreshSeconds: 30,
+    now,
+    lastUpdated: now,
+    upcomingTrips: gospelOakUpcoming,
+    terminatingTrips: gospelOakTerminating,
+  });
+  if (JSON.stringify(before) !== JSON.stringify(after)) {
+    console.error("  FAIL Gospel Oak (normal board with departures): output changed when terminatingTrips was passed — must be a no-op whenever upcoming is non-empty");
+    failures++;
+  } else {
+    console.log(
+      `  OK   Gospel Oak (normal board, ${gospelOakUpcoming.length} upcoming) unaffected — byte-identical with/without terminatingTrips, arrivalsOnly absent: ${before.arrivalsOnly === undefined}`
+    );
+  }
 }
 
 if (failures > 0) {

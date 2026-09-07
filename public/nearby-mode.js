@@ -242,6 +242,14 @@
     return deps.hideUpcomingDepartureBoard?.();
   }
 
+  function renderTerminusArrivalsBoard(data) {
+    return deps.renderTerminusArrivalsBoard?.(data) ?? false;
+  }
+
+  function hideTerminusArrivalsBoard() {
+    return deps.hideTerminusArrivalsBoard?.();
+  }
+
   function formatScheduledLine(next) {
     return deps.formatScheduledLine?.(next) ?? "";
   }
@@ -669,6 +677,7 @@ function renderUnsupportedRegionBoard() {
     deps.followingSectionEl.hidden = true;
   }
   hideUpcomingDepartureBoard();
+  hideTerminusArrivalsBoard();
   if (deps.journeySwitcherEl) {
     deps.journeySwitcherEl.hidden = true;
   }
@@ -2210,6 +2219,7 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.followingSectionEl.hidden = true;
     }
     hideUpcomingDepartureBoard();
+    hideTerminusArrivalsBoard();
     if (nearbySession?.gpsRefining) {
       if (deps.updatedEl) {
         deps.updatedEl.textContent = "Checking location…";
@@ -2273,6 +2283,7 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.followingSectionEl.hidden = true;
     }
     hideUpcomingDepartureBoard();
+    hideTerminusArrivalsBoard();
     if (deps.updatedEl) {
       deps.updatedEl.textContent = "Choose a station below";
     }
@@ -2327,6 +2338,7 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.followingSectionEl.hidden = true;
     }
     hideUpcomingDepartureBoard();
+    hideTerminusArrivalsBoard();
     if (deps.updatedEl) {
       deps.updatedEl.textContent = stale
         ? "Update failed — times may be out of date"
@@ -2397,6 +2409,21 @@ function renderNearbyBoard({ stale = false } = {}) {
       return;
     }
 
+    // docs/jim-brief-terminus-no-published-departures.md: the chosen direction has no
+    // upcoming trips, but the board holds real trips terminating here on this line — show
+    // those arrivals with the explanation instead of a bare "No upcoming trains". A
+    // genuinely empty board (no arrivalsOnly on boardData) falls through unchanged below.
+    if (renderTerminusArrivalsBoard(boardData)) {
+      if (nearbyDirectionsEl) {
+        nearbyDirectionsEl.hidden = false;
+      }
+      renderNearbyDirectionsList();
+      updateSwipeHint();
+      updateSwipeCues();
+      maybeScheduleOnboarding();
+      return;
+    }
+
     setLastRenderedNext(null);
     setHeroUrgency("calm");
     if (deps.heroDepartLabelEl) {
@@ -2421,6 +2448,7 @@ function renderNearbyBoard({ stale = false } = {}) {
       deps.followingSectionEl.hidden = true;
     }
     hideUpcomingDepartureBoard();
+    hideTerminusArrivalsBoard();
     if (nearbyDirectionsEl) {
       nearbyDirectionsEl.hidden = false;
     }
@@ -2920,6 +2948,7 @@ function exitNearbyMode() {
     nearbyDirectionsListEl.innerHTML = "";
   }
   hideUpcomingDepartureBoard();
+  hideTerminusArrivalsBoard();
 }
 
 async function applyNearbyManualStation(station) {

@@ -278,7 +278,13 @@ var NextTrainTimes = (() => {
     now = /* @__PURE__ */ new Date(),
     lastUpdated = null,
     upcomingTrips,
-    timeZone = DEFAULT_TIME_ZONE
+    timeZone = DEFAULT_TIME_ZONE,
+    // Additive/optional (docs/jim-brief-terminus-no-published-departures.md): trips terminating
+    // at this station on the selected direction's line, which pickUpcomingTrips correctly
+    // excludes from `upcoming` because their destination is this station, not the chosen
+    // direction. Every existing caller omits this and gets byte-identical output — it is only
+    // consulted when upcomingTrips resolves empty, and never reshapes upcoming/next/following.
+    terminatingTrips = []
   }) {
     const skip = Math.max(0, Math.floor(Number(skipTrains) || 0));
     const formatLastUpdated = lastUpdated instanceof Date ? lastUpdated.toLocaleString("en-AU", {
@@ -293,7 +299,7 @@ var NextTrainTimes = (() => {
     }) : lastUpdated;
     const upcomingPayloads = upcomingTrips.slice(0, UPCOMING_TRIP_LIMIT).map((trip) => buildTripPayload(trip, leaveBeforeMinutes, now));
     const nextPayload = upcomingPayloads[skip] ?? null;
-    return {
+    const response = {
       station,
       lastUpdated: formatLastUpdated,
       config: {
@@ -308,6 +314,17 @@ var NextTrainTimes = (() => {
       following: upcomingPayloads[skip + 1] ? slimTripSummary(upcomingPayloads[skip + 1]) : null,
       upcoming: upcomingPayloads
     };
+    if (upcomingPayloads.length === 0 && Array.isArray(terminatingTrips) && terminatingTrips.length > 0) {
+      const arrivals = terminatingTrips.filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture).slice(0, UPCOMING_TRIP_LIMIT).map((trip) => buildTripPayload(trip, leaveBeforeMinutes, now));
+      if (arrivals.length > 0) {
+        response.arrivalsOnly = {
+          reason: "terminus-no-published-departures",
+          message: "This is the end of the line here \u2014 the operator doesn't publish departure times from this stop. Times below are arrivals.",
+          arrivals
+        };
+      }
+    }
+    return response;
   }
 
   // lib/providers/perth.js
