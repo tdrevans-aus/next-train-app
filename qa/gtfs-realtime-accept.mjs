@@ -2,10 +2,29 @@
  * Auckland/Wellington outage (6 Sep 2026): AT and Metlink now content-negotiate and answer
  * `Accept: application/x-google-protobuf, application/x-protobuf, application/octet-stream`
  * with JSON (AT wraps it in `{status, response}`; Metlink returns a plain feed), which broke
- * `FeedMessage.decode()`. This asserts:
- *   1. The outgoing Accept header is exactly `application/x-protobuf`.
+ * `FeedMessage.decode()`.
+ *
+ * West Midlands Metro outage (7 Sep 2026): PR #316 narrowed the shared default Accept header
+ * to `application/x-protobuf` only to stop AT/Metlink answering JSON — but TfWM does the
+ * opposite: it serves only `application/octet-stream` and 406s a protobuf-only Accept. The
+ * fix is a two-value header, `application/x-protobuf, application/octet-stream`, combined with
+ * the JSON-tolerant decode below.
+ *
+ * Agency compatibility table (keep this current — the next change here can re-break either side):
+ *   | Agency              | protobuf-only Accept | + `application/octet-stream`        |
+ *   |---------------------|-----------------------|--------------------------------------|
+ *   | TfWM (trip_updates) | 406 (needs octet-stream present) | 200 octet-stream, protobuf |
+ *   | AT (legacy tripupdates)   | 200 protobuf     | 200 JSON (wrapped) — decoder handles it |
+ *   | Metlink (v1/gtfs-rt)      | 200 protobuf     | 200 JSON — decoder handles it       |
+ *   | Trafiklab (TripUpdates.pb)| not tested       | 200 octet-stream, protobuf           |
+ *   | TransLink SEQ (TripUpdates)| not tested      | 200 x-protobuf, protobuf             |
+ *
+ * This asserts:
+ *   1. The outgoing Accept header is exactly `application/x-protobuf, application/octet-stream`.
  *   2. The decoder yields the same header/entity shape whether fed a real protobuf buffer,
  *      a plain JSON feed (Metlink-style), or an AT-style `{status, response}`-wrapped JSON feed.
+ *   3. A 406 `application/problem+json` response (TfWM's protobuf-only-Accept behaviour) throws
+ *      the existing redacted "GTFS-RT fetch failed (406)" error rather than reaching the decoder.
  *
  * Usage: node qa/gtfs-realtime-accept.mjs
  */
@@ -112,8 +131,36 @@ try {
   globalThis.fetch = originalFetch;
 }
 check(
-  `outgoing Accept header is exactly "application/x-protobuf" (got ${JSON.stringify(capturedHeaders?.Accept)})`,
-  capturedHeaders?.Accept === "application/x-protobuf",
+  `outgoing Accept header is exactly "application/x-protobuf, application/octet-stream" (got ${JSON.stringify(capturedHeaders?.Accept)})`,
+  capturedHeaders?.Accept === "application/x-protobuf, application/octet-stream",
+);
+
+// --- 406 application/problem+json (TfWM's protobuf-only-Accept response) throws the redacted
+// fetch-failed error, never reaches the decoder. ---
+const problemJsonBody = new TextEncoder().encode(
+  JSON.stringify({ type: "about:blank", title: "Not Acceptable", status: 406 }),
+).buffer;
+globalThis.fetch = async () => ({
+  ok: false,
+  status: 406,
+  headers: { get: (name) => (name.toLowerCase() === "content-type" ? "application/problem+json" : null) },
+  arrayBuffer: async () => problemJsonBody,
+});
+let threw406 = null;
+try {
+  await fetchTripUpdates("https://api.tfwm.org.uk/gtfs/trip_updates?key=SECRET");
+} catch (err) {
+  threw406 = err;
+} finally {
+  globalThis.fetch = originalFetch;
+}
+check(
+  `406 problem+json throws redacted "GTFS-RT fetch failed (406)" error (got ${threw406 ? threw406.message : "no throw"})`,
+  Boolean(
+    threw406 &&
+      /GTFS-RT fetch failed \(406\)/.test(threw406.message) &&
+      !threw406.message.includes("SECRET"),
+  ),
 );
 
 if (failures.length > 0) {
