@@ -43,7 +43,8 @@
     "Leicester, Kettering, Wellingborough, Chesterfield, Alfreton are through-running-only National Rail stations (same operator continuing across the regional boundary, not a shared-platform merge point). Routing/filter concern for whichever regions ship National Rail, not a station-graph merge concern.",
     "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked, same as West Midlands / Greater Manchester / Liverpool City Region.",
     "NET Line 1/Line 2 station arrays below are TERMINI-ONLY — the oracle report does not give an intermediate stop order. This is a real gap, not an omission; see hazard-pack.md H4/H5 and direction-model-memo.md. Jim should confirm the full ordered stop list against the DFT GTFS feed before building the adapter's station graph.",
-    "gtfsRouteIdsIfKnown is left empty for NET — the report does not state the GTFS route_id for either line. Do not guess it; read it off the DFT feed at D2."
+    "gtfsRouteIdsIfKnown is left empty for NET — the report does not state the GTFS route_id for either line. Do not guess it; read it off the DFT feed at D2.",
+    "Renamed 7 Sep 2026: 'Beeston/Chilwell' was never a real stop name — it was NET's own label for the Line 1 branch. The real Line 1 terminus is Toton Lane (in Chilwell, NaPTAN ATCO 9400ZZNOTOT); Beeston's own main stop (Beeston Centre) is a separate, uncatalogued intermediate stop between Toton Lane and Nottingham. See docs/jim-brief-net-toton-lane-and-stockport-tram.md."
   ],
   "printedInnerCityNames": {
     "lock": "Nottingham Station",
@@ -73,11 +74,11 @@
       "name": "NET Line 1",
       "agency": "Nottingham Express Transit (Keolis)",
       "mapGroup": "Tram",
-      "termini": ["Hucknall", "Beeston/Chilwell"],
+      "termini": ["Hucknall", "Toton Lane"],
       "shortTurns": [],
       "branches": [],
       "gtfsRouteIdsIfKnown": [],
-      "stations": ["Hucknall", "Nottingham Station", "Beeston/Chilwell"],
+      "stations": ["Hucknall", "Nottingham Station", "Toton Lane"],
       "stationsNote": "TERMINI + hub only. Full intermediate stop order not in the oracle report — do not treat as complete. See coverageGaps."
     },
     {

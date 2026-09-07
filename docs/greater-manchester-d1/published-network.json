@@ -54,7 +54,7 @@
     "Hub lock (Metrolink): St Peter's Square, all 8 lines converge (Zone 1 city centre, most-used stop on the network). Secondary hub (Metrolink): Manchester Victoria.",
     "doNotGroup: Manchester Victoria Metrolink tram platforms (4) vs National Rail platforms (6) — same building, escalator/lift connect, separate operators/infrastructure. Same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands).",
     "doNotGroup: Manchester Piccadilly (National Rail) vs Piccadilly Gardens (Metrolink) — ~100m apart, 5-10 min walk, undercroft vs street-level main platforms. NOT a shared-building case; closer to Bradford Forster Square/Bradford Interchange (West Yorkshire) than to Victoria.",
-    "Stockport (SMN CRS): National Rail only. Metrolink does not serve Stockport rail station — separate tram-only stops exist nearby on the Altrincham/Ashton lines, not co-located. Do not conflate.",
+    "No Metrolink stop at Stockport — the earlier 'two Stockports' hazard was an error (7 Sep 2026). Manchester Metrolink has never served Stockport; a Stockport extension has only been proposed. See docs/jim-brief-net-toton-lane-and-stockport-tram.md.",
     "Walsden: through-running-only boundary station toward West Yorkshire on the Calder Valley Line, single operator (Northern) continuing across the boundary, same platform — not a merge. CRS CODE MISMATCH FOUND, NOT RESOLVED: this report gives WDN; docs/west-yorkshire-d1/published-network.json (which explicitly flagged this as an open item pending this pack) gives WAD for the same station. Neither is treated as authoritative here — flagged for Tim/Nico to resolve against a live Darwin response before either pack's Walsden CRS is used in an adapter. See hazard-pack.md.",
     "City lands as 'Coming Soon' (status stays planned; there is no separate coming-soon enum value in registry.js) until National Rail is unblocked (DARWIN_LDB_TOKEN) AND Metrolink's real-time feed status is confirmed with TfGM (or explicitly accepted as permanently schedule-only) — same overall status shape as South Yorkshire's dual-gate condition.",
     "Metrolink line arrays below are TERMINI ONLY, as given by the report's C2/C3 point 10 line summary — NOT a full ordered 99-stop intermediate list. This is a real gap; see coverageGaps and hazard-pack.md H3.",
@@ -110,8 +110,7 @@
       "class": "Metrolink secondary hub — also National Rail's secondary hub, same building. See stationGroups.manchesterVictoria for the combined entry and doNotGroup detail."
     },
     "separateFromNationalRail": [
-      { "name": "Piccadilly Gardens", "class": "Metrolink stop nearest Manchester Piccadilly NR station, but NOT co-located — undercroft/basement, ~100m/5-10 min walk from NR main platforms. doNotGroup vs Manchester Piccadilly stationGroup. See stationGroups.manchesterPiccadilly." },
-      { "name": "Stockport (tram stop)", "class": "Metrolink-only stop on the Altrincham and Ashton lines. NOT co-located with Stockport National Rail station (~0.5km walk). Do not conflate with the Stockport NR entry below." }
+      { "name": "Piccadilly Gardens", "class": "Metrolink stop nearest Manchester Piccadilly NR station, but NOT co-located — undercroft/basement, ~100m/5-10 min walk from NR main platforms. doNotGroup vs Manchester Piccadilly stationGroup. See stationGroups.manchesterPiccadilly." }
     ],
     "note": "99 stops total across 8 lines (report line 3, 21). Only the hub, secondary hub, and the two National-Rail-adjacent stops are enumerated here — the remaining ~95 stops are not individually catalogued in this pack; see coverageGaps."
   },
@@ -157,7 +156,7 @@
     { "name": "Walsden", "crs": "WDN", "crsSource": "This report's own station table (line 18). CRS MISMATCH: docs/west-yorkshire-d1/published-network.json gives WAD for the same station — NOT resolved, see coverageGaps.", "crsVerified": false, "boundaryTo": "West Yorkshire", "class": "Through-running point, Calder Valley Line. Northern Railway continues across the Greater Manchester/West Yorkshire boundary at the same platform (single operator, not a merge). Report line 18, C2/C3 point 8." }
   ],
   "regional": [
-    { "name": "Stockport", "crs": "SMN", "crsVerified": false, "class": "National Rail station south of Manchester. NOT served by Metrolink at this location — separate tram-only stops exist ~0.5km away on the Altrincham and Ashton lines (report line 19). Served by East Midlands Railway and Northern per report line 92." }
+    { "name": "Stockport", "crs": "SMN", "crsVerified": false, "class": "National Rail station south of Manchester. Served by East Midlands Railway and Northern per report line 92." }
   ],
   "excludedServices": [],
   "boardEligibility": {

@@ -130,7 +130,7 @@ assert(getNotInRegion(EAST_MIDLANDS_REGION).includes("Tamworth"), "Tamworth must
 
 const netStops = listNetStops();
 const netNames = new Set(netStops.map((s) => s.name));
-for (const name of ["Hucknall", "Nottingham Station", "Beeston/Chilwell", "Phoenix Park"]) {
+for (const name of ["Hucknall", "Nottingham Station", "Toton Lane", "Phoenix Park"]) {
   assert(netNames.has(name), `NET catalog must carry ${name}`);
 }
 assert(!netNames.has("city centre"), "NET catalog must not carry the unconfirmed 'city centre' placeholder");
@@ -221,14 +221,15 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // see below). Hub never shows itself as its own destination.
 const hubLabels = marketingLabelsForStation(EAST_MIDLANDS_HUB);
 assert(hubLabels.includes("1 + Hucknall"), "hub must offer 1 + Hucknall");
-assert(hubLabels.includes("1 + Beeston/Chilwell"), "hub must offer 1 + Beeston/Chilwell");
+assert(hubLabels.includes("1 + Toton Lane"), "hub must offer 1 + Toton Lane");
 assert(hubLabels.includes("2 + Phoenix Park"), "hub must offer 2 + Phoenix Park");
 assert(
   !hubLabels.some((label) => label.includes(EAST_MIDLANDS_HUB)),
   "the hub must never appear as its own chip terminus"
 );
 assert(mapNetDestination("Hucknall", "1") === "1 + Hucknall", "mapNetDestination must map a confirmed terminus");
-assert(mapNetDestination("Toton Lane", "1") === null, "mapNetDestination must not fabricate an unconfirmed intermediate-stop chip");
+assert(mapNetDestination("Toton Lane", "1") === "1 + Toton Lane", "mapNetDestination must map the renamed Toton Lane terminus");
+assert(mapNetDestination("Beeston Centre", "1") === null, "mapNetDestination must not fabricate an unconfirmed intermediate-stop chip (Beeston Centre is a real, uncatalogued intermediate stop, not the Line 1 terminus)");
 
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (unlike West of England's single-mode list) to disambiguate the doNotGroup hub.
@@ -353,7 +354,7 @@ assert(
 
 let netNextTrainThrew = false;
 try {
-  await getEastMidlandsDogfoodNextTrain({ station: "Hucknall", mode: "metro", destination: "1 + Beeston/Chilwell" });
+  await getEastMidlandsDogfoodNextTrain({ station: "Hucknall", mode: "metro", destination: "1 + Toton Lane" });
 } catch (err) {
   netNextTrainThrew = err instanceof NetFeedUnconfirmedError;
 }

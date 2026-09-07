@@ -101,7 +101,7 @@ for (const name of getNotInRegion("east-midlands")) {
 
 const emMetro = listMetroStops("east-midlands");
 const emMetroNames = new Set(emMetro.map((s) => s.name));
-for (const name of ["Hucknall", "Nottingham Station", "Beeston/Chilwell", "Phoenix Park"]) {
+for (const name of ["Hucknall", "Nottingham Station", "Toton Lane", "Phoenix Park"]) {
   if (!emMetroNames.has(name)) {
     fail(`east-midlands NET catalog missing ${name}`);
   }
@@ -664,7 +664,7 @@ if (!tvSecondaryChiltern || tvSecondaryChiltern.crs !== "OXF" || tvSecondaryChil
 // unlike every prior two-agency region (Sheffield Station / Nottingham Station) which shared
 // one hub name across both modes.
 const gm = getRegion("greater-manchester");
-if (!gm || gm.railCount !== 4 || gm.metroCount !== 15) {
+if (!gm || gm.railCount !== 4 || gm.metroCount !== 14) {
   fail(`greater-manchester counts rail=${gm?.railCount} metro=${gm?.metroCount}`);
 }
 

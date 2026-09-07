@@ -53,6 +53,8 @@ NET tram lines do not extend beyond Nottingham city. Through-running stations ar
 
 **Board eligibility summary:** All walk-up National Rail services (East Midlands, CrossCountry, Northern) calling at Nottingham and through-running stations pass both boarding-contract tests (`in` verdicts recorded). NET tram services pass both tests but are excluded by product decision due to unconfirmed feed status (`out-product` verdicts recorded). **All verdicts decided; no silent omissions. Tim's approval of NET error-surfacing approach to be confirmed at flip-PR merge.**
 
+**Correction (7 Sep 2026):** The Line 1 terminus catalogued above as "Beeston/Chilwell" was never a real stop name — it is NET's own label for the branch. The real, geocoded terminus is **Toton Lane** (in Chilwell, NaPTAN ATCO 9400ZZNOTOT); Beeston's own main stop (Beeston Centre) is a separate, uncatalogued intermediate stop, consistent with the termini-only rule already in force for both lines. This is a naming correction only — the board eligibility verdict for NET Line 1 (`out-product`, unconfirmed feed) is unchanged. See `docs/jim-brief-net-toton-lane-and-stockport-tram.md`.
+
 ## H2 clash surface
 
 **NET:** No product `lib/cities/east-midlands/` exists. No live adapter. GTFS from DFT aggregator is static (monthly refresh). No official Nottingham Express Transit GTFS landing page; data served via national DFT feed only. No published next-train GTFS-RT endpoint.
