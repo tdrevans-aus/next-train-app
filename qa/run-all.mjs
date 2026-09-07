@@ -79,6 +79,7 @@ const SMOKE_SCRIPTS = [
   "region-selection.mjs",
   "live-city-lists-sync.mjs",
   "coverage-notes-gate.mjs",
+  "bundle-freshness.mjs",
   "help-coverage-entry.mjs",
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-coords-gate.mjs",
