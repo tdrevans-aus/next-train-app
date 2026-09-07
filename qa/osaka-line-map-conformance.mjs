@@ -89,11 +89,11 @@ function main() {
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
   }
-  if (assertCityLive("amsterdam")?.ok !== true) {
-    failures.push("C0: Amsterdam live-gate must stay green");
+  if (assertCityLive("sydney")?.ok !== true) {
+    failures.push("C0: Sydney live-gate must stay green");
   }
-  if (assertCityLive("rotterdam")?.ok !== true) {
-    failures.push("C0: Rotterdam tester-live must stay green");
+  if (assertCityLive("stockholm")?.ok !== true) {
+    failures.push("C0: Stockholm tester-live must stay green");
   }
   if (lineMap.timeZone !== "Asia/Tokyo" || lineMap.dst !== false) {
     failures.push("C0: Asia/Tokyo must record no DST");

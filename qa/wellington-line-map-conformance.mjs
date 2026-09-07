@@ -38,20 +38,20 @@ function main() {
   const failures = [];
 
   const live = assertCityLive("wellington");
-  if (live?.ok !== true) {
-    failures.push("C0: assertCityLive(wellington) must pass (tester-live)");
+  if (live?.ok !== false) {
+    failures.push("C0: assertCityLive(wellington) must fail (retired from release 1, 7 Sep 2026)");
   }
-  if (getCity("wellington")?.status !== "live") {
-    failures.push("C0: wellington registry status must be live");
+  if (getCity("wellington")?.status !== "retired") {
+    failures.push("C0: wellington registry status must be retired");
   }
-  if (!isMultiCity("wellington")) {
-    failures.push("C0: wellington must be in MULTI_CITY_IDS");
+  if (isMultiCity("wellington")) {
+    failures.push("C0: wellington must not be in MULTI_CITY_IDS");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
   }
-  if (assertCityLive("auckland")?.ok !== true) {
-    failures.push("C0: Auckland live-gate must stay green");
+  if (assertCityLive("auckland")?.ok !== false) {
+    failures.push("C0: Auckland is also retired");
   }
   if (lineMap.timeZone !== "Pacific/Auckland" || lineMap.dst !== true) {
     failures.push("C0: Pacific/Auckland must record DST");
@@ -159,7 +159,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("wellington-line-map-conformance: ok (tester-live, D1 pack present, TRAIN only, MEL→Western Hutt)");
+  console.log("wellington-line-map-conformance: ok (retired from release 1, D1 pack kept, TRAIN only, MEL→Western Hutt)");
 }
 
 main();

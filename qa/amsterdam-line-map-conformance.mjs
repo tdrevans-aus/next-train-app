@@ -26,14 +26,14 @@ function main() {
   const catalog = loadJson("lib/cities/amsterdam/stations.json");
   const failures = [];
 
-  if (assertCityLive("amsterdam")?.ok !== true) {
-    failures.push("C0: assertCityLive(amsterdam) must pass (testers live)");
+  if (assertCityLive("amsterdam")?.ok !== false) {
+    failures.push("C0: assertCityLive(amsterdam) must fail (retired from release 1, 7 Sep 2026)");
   }
-  if (getCity("amsterdam")?.status !== "live") {
-    failures.push("C0: amsterdam registry status must be live");
+  if (getCity("amsterdam")?.status !== "retired") {
+    failures.push("C0: amsterdam registry status must be retired");
   }
-  if (!isMultiCity("amsterdam")) {
-    failures.push("C0: amsterdam must be in MULTI_CITY_IDS");
+  if (isMultiCity("amsterdam")) {
+    failures.push("C0: amsterdam must not be in MULTI_CITY_IDS");
   }
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
@@ -116,7 +116,7 @@ function main() {
     }
     process.exit(1);
   }
-  console.log("amsterdam-line-map-conformance: ok (live testers, official map lock, no GTFS D1)");
+  console.log("amsterdam-line-map-conformance: ok (retired from release 1, official map lock kept, no GTFS D1)");
 }
 
 main();

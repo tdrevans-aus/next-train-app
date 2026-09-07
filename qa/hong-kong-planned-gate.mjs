@@ -1,7 +1,7 @@
 /**
  * Hong Kong stays planned. Picker Coming Soon. D1 pack in docs/hong-kong-d1/.
  * Next Train REST exists and is not wired. adapterReady false.
- * Perth / Amsterdam / Rotterdam live-gates untouched.
+ * Perth / Sydney / Stockholm live-gates untouched.
  * Usage: node qa/hong-kong-planned-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
@@ -76,8 +76,8 @@ function mockRes() {
 
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
-assert(assertCityLive("amsterdam")?.ok === true, "Amsterdam live-gate must stay green");
-assert(assertCityLive("rotterdam")?.ok === true, "Rotterdam tester-live must stay green");
+assert(assertCityLive("sydney")?.ok === true, "Sydney live-gate must stay green");
+assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must stay green");
 assert(assertCityLive("melbourne")?.ok === false, "Melbourne stays planned");
 
 const live = assertCityLive("hong-kong");
@@ -113,7 +113,6 @@ const stockholm = getCity("stockholm");
 assert(stockholm?.status === "live", "Stockholm is tester-live");
 const goteborg = getCity("goteborg");
 assert(goteborg?.status === "live", "Göteborg tester-live must stay green");
-assert(getCity("rotterdam")?.status === "live", "Rotterdam stays live");
 
 const d1Dir = join(ROOT, "docs/hong-kong-d1");
 for (const name of D1_FILES) {
@@ -208,17 +207,14 @@ assert(
   ),
   "Melbourne stays Coming Soon"
 );
-assert(/id:\s*"rotterdam"/.test(session), "Rotterdam must remain in the NL picker");
 assert(/id:\s*"stockholm"/.test(session), "Stockholm must remain in the Sweden picker");
 assert(!/id:\s*"china"|id:\s*"mtr"|id:\s*"kowloon"/.test(session), "do not start China / mtr / kowloon");
 assert(!/MULTI_CITY_IDS = \[[^\]]*hong-kong/.test(session), "hong-kong must not be in city-session MULTI_CITY_IDS");
-assert(/MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(session), "rotterdam must remain in city-session MULTI_CITY_IDS");
+assert(/MULTI_CITY_IDS = \[[^\]]*stockholm/.test(session), "stockholm must remain in city-session MULTI_CITY_IDS");
 
 const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
 assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*hong-kong/.test(appJs), "hong-kong must not be in LIVE_CITY_IDS");
 assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*hong-kong/.test(appJs), "hong-kong must not be in the live nearby list");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*amsterdam/.test(appJs), "Amsterdam must remain in LIVE_CITY_IDS");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*rotterdam/.test(appJs), "Rotterdam must remain in LIVE_CITY_IDS");
 assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*perth/.test(appJs), "Perth must remain in LIVE_CITY_IDS");
 
 const liveCityApi = readFileSync(join(ROOT, "lib/cities/live-city-api.js"), "utf8");
@@ -230,5 +226,5 @@ assert(!/"hong-kong"/.test(pkg), "do not add hong-kong scripts or bump version f
 void blob;
 
 console.log(
-  "hong-kong-planned-gate: ok (planned/501, D1 pack + D2 fixture, picker Coming Soon, adapterReady false, 95 stations, REST not wired, Perth/Amsterdam/Rotterdam green)"
+  "hong-kong-planned-gate: ok (planned/501, D1 pack + D2 fixture, picker Coming Soon, adapterReady false, 95 stations, REST not wired, Perth/Sydney/Stockholm green)"
 );

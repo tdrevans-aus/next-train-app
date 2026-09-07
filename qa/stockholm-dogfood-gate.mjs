@@ -58,7 +58,6 @@ assert(getCity("stockholm")?.status === "live", "stockholm registry status must 
 assert(getCity("stockholm")?.adapterReady === true, "stockholm adapterReady must be true");
 assert(isMultiCity("stockholm") === true, "stockholm must be in MULTI_CITY_IDS");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
-assert(assertCityLive("rotterdam")?.ok === true, "Rotterdam stays live");
 assert(assertCityLive("goteborg")?.ok === true, "Göteborg is tester-live");
 
 // Registry identity + D1 pack (absorbed from the retired stockholm-planned-gate).
@@ -78,9 +77,6 @@ if (getCity("malmo")) {
   assert(getCity("malmo").agency !== entry.agency, "malmo (Skånetrafiken) must not share stockholm's SL agency");
 }
 assert(!CITIES.some((city) => city.id === "sweden"), "registry must not invent city=sweden");
-const rotterdam = getCity("rotterdam");
-assert(rotterdam?.status === "live", "Rotterdam from #112 must remain live");
-assert(rotterdam?.agency === "RET", "Rotterdam stays RET (no GVB leak)");
 const goteborgEntry = getCity("goteborg");
 assert(!goteborgEntry || goteborgEntry.id === "goteborg", "Göteborg if present is a separate city");
 assert(goteborgEntry?.id !== "stockholm", "do not merge Göteborg into Stockholm");
@@ -130,8 +126,6 @@ assert(!byName.has("Göteborg") && ![...byName.keys()].some((name) => /gothenbur
 const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
 assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*stockholm/.test(appJs), "stockholm must be in LIVE_CITY_IDS");
 assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*stockholm/.test(appJs), "stockholm must be in NEARBY_MULTI_CITY_IDS");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*amsterdam/.test(appJs), "Amsterdam must remain in LIVE_CITY_IDS");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*rotterdam/.test(appJs), "Rotterdam must remain in LIVE_CITY_IDS");
 const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
 assert(
   /id:\s*"stockholm",\s*name:\s*"Stockholm",\s*timeZone:\s*"Europe\/Stockholm"/.test(citySession),
@@ -146,7 +140,6 @@ assert(
   "Göteborg is a separate picker sibling, not merged into Stockholm"
 );
 assert(/MULTI_CITY_IDS = \[[^\]]*stockholm/.test(citySession), "stockholm must be in city-session MULTI_CITY_IDS");
-assert(/MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(citySession), "rotterdam must remain in city-session MULTI_CITY_IDS");
 
 // Dogfood station list + directions come from the catalog.
 const stations = listStockholmDogfoodStations();

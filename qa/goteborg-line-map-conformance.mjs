@@ -73,8 +73,8 @@ function main() {
   if (assertCityLive("perth")?.ok !== true) {
     failures.push("C0: Perth live-gate must stay green");
   }
-  if (assertCityLive("amsterdam")?.ok !== true) {
-    failures.push("C0: Amsterdam live-gate must stay green");
+  if (assertCityLive("sydney")?.ok !== true) {
+    failures.push("C0: Sydney live-gate must stay green");
   }
   if (lineMap.timeZone !== "Europe/Stockholm" || lineMap.dst !== true) {
     failures.push("C0: Europe/Stockholm must record DST");

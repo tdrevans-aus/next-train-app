@@ -1,21 +1,19 @@
 /**
- * Rotterdam is live for testers; hub Beurs; RET A–E only; not city=nl / the-hague.
+ * Rotterdam retired from release 1, 7 Sep 2026 (Tim, docs/jim-brief-release-1-scope-cut.md):
+ * static-join city outside launch markets. Adapter + catalog kept, status "retired",
+ * 501 from assertCityLive, not in any live list, not in the picker. Amsterdam also retired
+ * (Netherlands is out entirely). The live OVapi GTFS-RT join test that used to run here is
+ * dropped with the retirement — it exercised a live-network fixture fetch that is no longer
+ * meaningful to verify for a city no rider can reach.
+ * Usage: node qa/rotterdam-dogfood-gate.mjs
  */
-import { existsSync } from "fs";
+import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
-import { isCityProbeAllowed } from "../lib/dev-city-board.js";
-import vercelBoard from "../api/dev/board.js";
 import { marketingLabelsForStation, HUB } from "../lib/cities/rotterdam/marketing-directions.js";
-import { fetchStationBoard, ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL } from "../lib/providers/rotterdam.js";
-import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
-import { zipFixtureGtfs, encodeTripUpdates, stubFetch, discoverFixtureTrips } from "./lib/nl-realtime-stub.mjs";
-import {
-  OVAPI_TRIPUPDATES_CACHE_TTL_MS,
-  _resetOvapiTripUpdatesCacheForTests,
-} from "../lib/providers/gtfs/ovapi-tripupdates-cache.js";
+import { fetchStationBoard } from "../lib/providers/rotterdam.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -25,198 +23,54 @@ function assert(condition, message) {
   }
 }
 
-const live = assertCityLive("rotterdam");
-assert(live && live.ok === true, "assertCityLive(rotterdam) must pass");
-assert(getCity("rotterdam")?.status === "live", "rotterdam registry must be live");
-assert(isMultiCity("rotterdam") === true, "rotterdam must be in MULTI_CITY_IDS");
-assert(getCity("rotterdam")?.id !== "amsterdam", "rotterdam is not Amsterdam");
+const retired = assertCityLive("rotterdam");
+assert(retired?.ok === false, "assertCityLive(rotterdam) must fail now that it is retired");
+assert(retired?.status === 501, "rotterdam must 501 like any non-live city");
+assert(getCity("rotterdam")?.status === "retired", "rotterdam registry status must be retired");
+assert(getCity("rotterdam")?.adapterReady === true, "rotterdam adapterReady stays true — adapter kept");
+assert(/retired from release 1/i.test(getCity("rotterdam")?.notes ?? ""), "notes must record the retirement");
+assert(isMultiCity("rotterdam") === false, "rotterdam must not be in MULTI_CITY_IDS");
 assert(!getCity("nl"), "city=nl must not exist");
 assert(!getCity("the-hague"), "the-hague must not exist");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
+assert(assertCityLive("amsterdam")?.ok === false, "Amsterdam is also retired");
 assert(assertCityLive("sydney")?.ok === true, "Sydney stays live");
-assert(assertCityLive("brisbane")?.ok === true, "Brisbane stays live");
-assert(assertCityLive("adelaide")?.ok === true, "Adelaide stays live");
-assert(assertCityLive("amsterdam")?.ok === true, "Amsterdam stays live");
-assert(assertCityLive("melbourne")?.ok === false, "Melbourne stays planned");
+assert(typeof fetchStationBoard === "function", "rotterdam adapter module must still load");
+
+// Picker: must not list Rotterdam or Netherlands at all — no comingSoon flag either.
+const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
+assert(!/id:\s*"rotterdam"/.test(citySession), "rotterdam must not appear in the picker at all");
+assert(!/id:\s*"nl"/.test(citySession), "Netherlands must disappear from the picker once empty");
+assert(!/MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(citySession), "rotterdam must not be in city-session MULTI_CITY_IDS");
+assert(!/rotterdam:\s*\{/.test(citySession.match(/CITY_BOUNDS = \{[\s\S]*?\n  \};/)?.[0] ?? ""), "rotterdam must not resolve GPS via CITY_BOUNDS");
+
+// Nearby/GPS + live lists in app.js.
+const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
+assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*rotterdam/.test(appJs), "rotterdam must not be in LIVE_CITY_IDS");
+assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(appJs), "rotterdam must not be in NEARBY_MULTI_CITY_IDS");
+
+// Dogfood mount map.
+const dogfood = readFileSync(join(ROOT, "public/brisbane-dogfood.js"), "utf8");
+assert(!/MULTI_CITY_IDS = \[[^\]]*rotterdam/.test(dogfood), "rotterdam must not be in brisbane-dogfood MULTI_CITY_IDS");
+assert(!/available:\s*\{[^}]*rotterdam/.test(dogfood), "rotterdam must not be in the brisbane-dogfood available map");
+
+// Persisted journeys: an old saved Rotterdam journey must degrade like an unknown city, not crash.
+const journeyModel = readFileSync(join(ROOT, "public/journey-model.js"), "utf8");
 assert(
-  existsSync(join(ROOT, "qa/fixtures/rotterdam/published-network.json")),
-  "D2: copy docs/rotterdam-d1/published-network.json into qa/fixtures/rotterdam/"
+  !/PERSISTED_CITY_IDS = new Set\(\[[\s\S]*?"rotterdam"/.test(journeyModel),
+  "rotterdam must be dropped from PERSISTED_CITY_IDS so old saved state degrades safely"
+);
+assert(
+  !/PERSISTED_COUNTRY_IDS = new Set\(\[[^\]]*"nl"/.test(journeyModel),
+  "nl must be dropped from PERSISTED_COUNTRY_IDS"
 );
 
-const previous = process.env.ALLOW_CITY_PROBES;
-delete process.env.ALLOW_CITY_PROBES;
-assert(isCityProbeAllowed() === false, "CI/default must not allow city probes");
-process.env.ALLOW_CITY_PROBES = "1";
-assert(isCityProbeAllowed() === true, "ALLOW_CITY_PROBES=1 enables local express probes only");
-
-const res = {
-  statusCode: 0,
-  body: null,
-  setHeader() {},
-  status(code) {
-    this.statusCode = code;
-    return this;
-  },
-  json(payload) {
-    this.body = payload;
-    return this;
-  },
-  end() {},
-};
-
-await vercelBoard({ method: "GET", query: { city: "rotterdam", station: HUB } }, res);
-assert(res.statusCode === 404, "Vercel /api/dev/board must 404 even if ALLOW_CITY_PROBES=1");
-
+// Adapter + catalog data survives intact — this is retirement, not deletion.
 const hub = marketingLabelsForStation(HUB);
-assert(HUB === "Beurs", "Hub lock is Beurs");
-assert(hub.includes("Metro A + Binnenhof"), "Hub must offer Metro A + Binnenhof");
-assert(hub.includes("Metro A + Schiedam Centrum"), "Hub must offer Metro A + Schiedam Centrum");
-assert(hub.includes("Metro B + Hoek van Holland Strand"), "Hub must offer Metro B + Hoek van Holland Strand");
-assert(hub.includes("Metro E + Den Haag Centraal"), "Hub must offer Metro E + Den Haag Centraal");
-assert(!hub.some((label) => /nesselande/i.test(label) && /metro a/i.test(label)), "A does not go to Nesselande");
-assert(!hub.some((label) => /m50|m51|m52|m53|m54|gvb|inbound|outbound/i.test(label)), "No GVB / inbound-outbound chips");
+assert(HUB === "Beurs", "hub lock is still Beurs (adapter kept)");
+assert(hub.includes("Metro A + Binnenhof"), "Hub must still offer Metro A + Binnenhof (adapter kept)");
+assert(hub.includes("Metro E + Den Haag Centraal"), "Hub must still offer Metro E + Den Haag Centraal (adapter kept)");
 
-if (previous === undefined) {
-  delete process.env.ALLOW_CITY_PROBES;
-} else {
-  process.env.ALLOW_CITY_PROBES = previous;
-}
-
-// OVapi GTFS-RT re-enable (docs/jim-brief-nl-realtime-reenable.md): prove the
-// live join against the trimmed fixture — a delay moves a board row, a
-// cancellation removes one, and an RT fetch failure degrades to static.
-{
-  const staticUrl = gtfsFixtureBlobUrl("rotterdam");
-  const staticZip = await zipFixtureGtfs("rotterdam", staticUrl);
-  // Trip ids are discovered from the loaded fixture (local dir or published Blob copy), never
-  // hardcoded from one snapshot — see discoverFixtureTrips in qa/lib/nl-realtime-stub.mjs.
-  const picked = await discoverFixtureTrips({
-    staticZip, staticUrl, rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL, fetchStationBoard, station: "Beurs",
-  });
-  const { now, delayedTripId, cancelledTripId, stopId, scheduledEpochSec } = picked;
-  const expectedDelayedDisplay = picked.delayedDisplayTime(300);
-
-  _resetOvapiTripUpdatesCacheForTests();
-  let restore = stubFetch({
-    staticUrl,
-    staticZip,
-    rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
-    rtBuffer: encodeTripUpdates([
-      { tripId: delayedTripId, stopId, delaySec: 300, scheduledEpochSec },
-      { tripId: cancelledTripId, cancelled: true },
-    ]),
-  });
-  let board;
-  try {
-    board = await fetchStationBoard("Beurs", { now });
-  } finally {
-    restore();
-  }
-  const delayed = board.trips.find((trip) => trip.tripId === delayedTripId);
-  assert(delayed, "delayed trip must still appear on the board");
-  assert(delayed.status === "5 min late", `delay must move the board row (got ${delayed?.status})`);
-  assert(delayed.displayTime === expectedDelayedDisplay, `delayed displayTime must shift to ${expectedDelayedDisplay} (got ${delayed?.displayTime})`);
-  assert(
-    !board.trips.some((trip) => trip.tripId === cancelledTripId),
-    "a CANCELED TripUpdate must remove the trip from the board"
-  );
-  assert(board.realtime === "live", `delayed board must report realtime="live" (got ${board.realtime})`);
-
-  _resetOvapiTripUpdatesCacheForTests();
-  restore = stubFetch({
-    staticUrl,
-    staticZip,
-    rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
-    rtBuffer: null,
-    rtFails: true,
-  });
-  let fallbackBoard;
-  try {
-    fallbackBoard = await fetchStationBoard("Beurs", { now });
-  } finally {
-    restore();
-  }
-  const fallback = fallbackBoard.trips.find((trip) => trip.tripId === delayedTripId);
-  assert(fallback, "a failed RT fetch must still degrade to the static board");
-  assert(fallback.status === "On Time", "a failed RT fetch must not carry over a stale delay");
-  assert(
-    fallback.liveDeparture === fallback.scheduledDeparture,
-    "a failed RT fetch must report the static scheduled time, not a stale live one"
-  );
-  assert(
-    fallbackBoard.realtime === "timetable",
-    `a total RT miss must report realtime="timetable" (got ${fallbackBoard.realtime})`
-  );
-
-  // Shared cache: coalescing, TTL refetch, and stale-on-error (docs/jim-brief-nl-realtime-cache.md).
-  _resetOvapiTripUpdatesCacheForTests();
-  let rtFetchCount = 0;
-  restore = stubFetch({
-    staticUrl,
-    staticZip,
-    rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
-    rtBuffer: encodeTripUpdates([
-      { tripId: delayedTripId, stopId, delaySec: 300, scheduledEpochSec },
-    ]),
-    onRtFetch: () => {
-      rtFetchCount += 1;
-    },
-  });
-  try {
-    // 1. Two concurrent board calls produce one upstream fetch.
-    await Promise.all([fetchStationBoard("Beurs", { now }), fetchStationBoard("Beurs", { now })]);
-    assert(rtFetchCount === 1, `expected 1 upstream fetch for concurrent calls, got ${rtFetchCount}`);
-
-    // Still within TTL: no refetch.
-    await fetchStationBoard("Beurs", { now });
-    assert(rtFetchCount === 1, `expected cached hit within TTL, got ${rtFetchCount} fetches`);
-
-    // 2. A call after the TTL produces a second upstream fetch.
-    await new Promise((resolve) => setTimeout(resolve, OVAPI_TRIPUPDATES_CACHE_TTL_MS + 500));
-    await fetchStationBoard("Beurs", { now });
-    assert(rtFetchCount === 2, `expected a second upstream fetch after TTL, got ${rtFetchCount}`);
-  } finally {
-    restore();
-  }
-
-  // 3. A rejected refresh with a <60s entry serves the stale copy (still "live").
-  _resetOvapiTripUpdatesCacheForTests();
-  restore = stubFetch({
-    staticUrl,
-    staticZip,
-    rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
-    rtBuffer: encodeTripUpdates([
-      { tripId: delayedTripId, stopId, delaySec: 300, scheduledEpochSec },
-    ]),
-  });
-  try {
-    const primed = await fetchStationBoard("Beurs", { now });
-    assert(primed.realtime === "live", "priming fetch must be live");
-  } finally {
-    restore();
-  }
-  await new Promise((resolve) => setTimeout(resolve, OVAPI_TRIPUPDATES_CACHE_TTL_MS + 500));
-  restore = stubFetch({
-    staticUrl,
-    staticZip,
-    rtUrl: ROTTERDAM_GTFS_RT_TRIP_UPDATES_URL,
-    rtBuffer: null,
-    rtFails: true,
-  });
-  let staleBoard;
-  try {
-    staleBoard = await fetchStationBoard("Beurs", { now });
-  } finally {
-    restore();
-  }
-  assert(
-    staleBoard.trips.some((trip) => trip.tripId === delayedTripId && trip.status === "5 min late"),
-    "a rejected refresh with a <60s entry must still apply the stale delay"
-  );
-  assert(
-    staleBoard.realtime === "live",
-    `a stale-but-usable serve must still report realtime="live" (got ${staleBoard.realtime})`
-  );
-}
-
-console.log("rotterdam-dogfood-gate: ok (live, picker city, not amsterdam, RET A–E, Beurs hub, OVapi RT join verified)");
+console.log(
+  "rotterdam-dogfood-gate: ok (retired from release 1, 501, not in any live/picker list, adapter + catalog kept)"
+);
