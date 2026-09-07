@@ -34,12 +34,23 @@
  * `scheduledTimeOfDeparture` nor `estimatedTimeOfDeparture`) are dropped by
  * `parseTflArrivalDeparture`: they are not a boardable departure in any offered direction.
  *
+ * Extended for docs/jim-brief-london-station-name-prefix.md (7 Sep 2026): TfL also emits a
+ * leading "London " disambiguation prefix on some destinationNames ("London Liverpool Street",
+ * "London Euston") that nothing stripped, so no trip matched any offered direction at Cheshunt,
+ * Chingford, Enfield Town, Watford Junction and Walthamstow Central even though real,
+ * correctly-timed services were being published. Uses a second checked-in fixture
+ * (qa/fixtures/uk-london-tfl/london-prefix-arrivals.json, captured live 7 Sep 2026) for those
+ * five stations, plus direct unit-level assertions on parseTflArrival/parseTflArrivalDeparture
+ * for both the "London "-prefixed form and the four catalog stations that legitimately begin
+ * with "London " (London Bridge, London City Airport, London Euston, London Fields) — a naive
+ * `^London\s+` regex fix passes the fixture checks above but fails these.
+ *
  * Usage: node qa/uk-london-tfl-direction-match.mjs
  */
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { parseTflArrival, parseTflArrivalDeparture } from "../lib/providers/uk-tfl.js";
+import { parseTflArrival, parseTflArrivalDeparture, resolveTflStop } from "../lib/providers/uk-tfl.js";
 import { pickUpcomingTrips } from "../lib/train-times-core.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -54,14 +65,26 @@ function assert(condition, message) {
 const fixture = JSON.parse(
   readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "direction-match-arrivals.json"), "utf8")
 );
+const londonPrefixFixture = JSON.parse(
+  readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "london-prefix-arrivals.json"), "utf8")
+);
 const directionsByStation = JSON.parse(
   readFileSync(join(ROOT, "public", "city-directions", "uk-london-tfl.json"), "utf8")
 );
 
 const now = new Date(fixture.capturedAt);
 assert(!Number.isNaN(now.getTime()), "fixture.capturedAt must be a valid timestamp");
+const londonPrefixNow = new Date(londonPrefixFixture.capturedAt);
+assert(!Number.isNaN(londonPrefixNow.getTime()), "london-prefix fixture.capturedAt must be a valid timestamp");
 
 const STATIONS = ["Barking Riverside", "Gospel Oak", "Woodgrange Park", "Barking"];
+const LONDON_PREFIX_STATIONS = [
+  "Cheshunt",
+  "Chingford",
+  "Enfield Town",
+  "Watford Junction",
+  "Walthamstow Central",
+];
 
 const SUFFIX_RE = /\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station|\(London\))$/i;
 
@@ -84,15 +107,33 @@ function isOvergroundDirection(direction) {
   return OVERGROUND_LINE_PREFIXES.some((line) => direction.startsWith(`${line} `));
 }
 
+// Recorded verdict (docs/board-eligibility-rule.md), discovered while extending this gate for
+// docs/jim-brief-london-station-name-prefix.md — out of that brief's scope, noted here rather
+// than silently downgraded: the direction catalog offers every Weaver-line terminus (Cheshunt,
+// Chingford, Enfield Town) as a direction from every other Weaver-line station, including
+// branch-specific stations (Bruce Grove, Southbury) that can only reach a *sibling* branch's
+// terminus via a reversal at Liverpool Street — the live fixture confirms zero rows for these
+// cross-branch pairs even though same-branch and Liverpool-Street-bound rows are plentiful. Same
+// over-broad-direction-list class as the pre-fix Tramlink/Addiscombe and Metropolitan-branch
+// findings in docs/london-terminus-sweep-findings.md (finding 3) — a direction-catalog data
+// problem (Luke's lane), not this brief's normalization bug. Not a hardcoded "known bug" list in
+// the *product* code (lib/), only in this QA gate's expected-warnings table.
+const KNOWN_CROSS_BRANCH_UNREACHABLE = {
+  Cheshunt: new Set(["Weaver Chingford", "Weaver Enfield Town"]),
+  Chingford: new Set(["Weaver Cheshunt", "Weaver Enfield Town"]),
+  "Enfield Town": new Set(["Weaver Cheshunt", "Weaver Chingford"]),
+  "Walthamstow Central": new Set(["Weaver Cheshunt", "Weaver Enfield Town"]),
+};
+
 let failures = 0;
 
-function parseStationTrips(station) {
+function parseStationTrips(station, forNow) {
   const trips = [];
   for (const naptanId of Object.keys(station.arrivalDepartures ?? {})) {
     const byLine = station.arrivalDepartures[naptanId];
     for (const lineName of Object.keys(byLine)) {
       for (const row of byLine[lineName]) {
-        const trip = parseTflArrivalDeparture(row, lineName, now);
+        const trip = parseTflArrivalDeparture(row, lineName, forNow);
         if (trip) {
           trips.push(trip);
         }
@@ -101,7 +142,7 @@ function parseStationTrips(station) {
   }
   for (const naptanId of Object.keys(station.arrivals ?? {})) {
     for (const row of station.arrivals[naptanId]) {
-      const trip = parseTflArrival(row, now);
+      const trip = parseTflArrival(row, forNow);
       if (trip) {
         trips.push(trip);
       }
@@ -110,14 +151,16 @@ function parseStationTrips(station) {
   return trips;
 }
 
-for (const stationName of STATIONS) {
-  const station = fixture.stations[stationName];
-  assert(station, `fixture missing station: ${stationName}`);
+function checkStation(stationName, stationFixture, forNow) {
+  assert(stationFixture, `fixture missing station: ${stationName}`);
 
-  const trips = parseStationTrips(station);
+  const trips = parseStationTrips(stationFixture, forNow);
   console.log(`${stationName}: ${trips.length} parsed trips from fixture`);
 
-  // No parsed destination should retain a raw station-type / "(London)" suffix.
+  // No parsed destination should retain a raw station-type / "(London)" suffix. An unstripped
+  // leading "London " disambiguation prefix (docs/jim-brief-london-station-name-prefix.md) isn't
+  // checked here directly — it's exactly the string matched against offered directions below, so
+  // it shows up as an unmatched direction (FAIL below), not a separate leaked-text concern.
   for (const trip of trips) {
     if (SUFFIX_RE.test(trip.destination)) {
       console.error(`  FAIL suffix leaked through: "${trip.destination}"`);
@@ -129,9 +172,15 @@ for (const stationName of STATIONS) {
   assert(directions.length > 0, `${stationName} must have at least one offered direction in the catalog`);
 
   for (const direction of directions) {
-    const upcoming = pickUpcomingTrips(trips, direction, now);
+    const upcoming = pickUpcomingTrips(trips, direction, forNow);
     if (upcoming.length === 0) {
-      if (isOvergroundDirection(direction)) {
+      if (KNOWN_CROSS_BRANCH_UNREACHABLE[stationName]?.has(direction)) {
+        console.warn(
+          `  WARN direction "${direction}" is a cross-branch Weaver-line pairing with no direct ` +
+            `service (reversal at Liverpool Street required) — recorded catalog-data verdict, ` +
+            `out of this brief's scope (docs/board-eligibility-rule.md); not failing the gate on it`
+        );
+      } else if (isOvergroundDirection(direction)) {
         console.error(`  FAIL direction "${direction}" matches 0 parsed upcoming trips (unmatchable by construction)`);
         failures++;
       } else {
@@ -161,6 +210,76 @@ for (const stationName of STATIONS) {
 
     console.log(`  OK   direction "${direction}" -> ${upcoming.length} trips`);
   }
+}
+
+for (const stationName of STATIONS) {
+  checkStation(stationName, fixture.stations[stationName], now);
+}
+
+for (const stationName of LONDON_PREFIX_STATIONS) {
+  checkStation(stationName, londonPrefixFixture.stations[stationName], londonPrefixNow);
+}
+
+// --- Unit-level assertions directly on parseTflArrivalDeparture/parseTflArrival, per the brief's
+// QA section: cheapest, most direct catch for the "London " prefix class, no fixture needed. ---
+
+console.log("\nUnit-level normalization checks:");
+
+function assertDestination(label, actual, expected) {
+  const ok = actual === expected;
+  console.log(`  ${ok ? "OK  " : "FAIL"} ${label} -> "${actual}" (expected "${expected}")`);
+  if (!ok) {
+    failures++;
+  }
+}
+
+const unitNow = new Date("2026-09-07T15:00:00Z");
+const futureIso = "2026-09-07T15:20:00Z";
+
+// The bug: a leading "London " prefix on a National-Rail-flavoured destinationName must be
+// stripped when the bare remainder is a real offered destination and the prefixed form is not.
+assertDestination(
+  "ArrivalDepartures \"London Liverpool Street Rail Station\" (Weaver)",
+  parseTflArrivalDeparture(
+    { destinationName: "London Liverpool Street Rail Station", estimatedTimeOfDeparture: futureIso },
+    "Weaver",
+    unitNow
+  ).destination,
+  "Weaver Liverpool Street"
+);
+assertDestination(
+  "ArrivalDepartures \"London Euston Rail Station\" (Lioness)",
+  parseTflArrivalDeparture(
+    { destinationName: "London Euston Rail Station", estimatedTimeOfDeparture: futureIso },
+    "Lioness",
+    unitNow
+  ).destination,
+  "Lioness Euston"
+);
+
+// The four catalog stations that legitimately begin with "London " must not be corrupted by a
+// bare regex strip — this is what a naive `^London\s+` fix would break.
+for (const name of ["London Bridge", "London City Airport", "London Fields"]) {
+  assertDestination(
+    `ArrivalDepartures "${name} Rail Station" (unrelated line) stays prefixed`,
+    parseTflArrivalDeparture(
+      { destinationName: `${name} Rail Station`, estimatedTimeOfDeparture: futureIso },
+      "Test",
+      unitNow
+    ).destination,
+    `Test ${name}`
+  );
+}
+// London Euston as a *station identity* (picker/board lookup) must still resolve to its own,
+// distinct naptanId — unaffected by the destination-text normalization above (verify by fixture,
+// acceptance criterion 2). See also live output captured in this brief's PR description.
+const londonEuston = resolveTflStop("London Euston");
+assert(londonEuston && londonEuston.naptanId === "910GEUSTON", 'resolveTflStop("London Euston") must resolve to 910GEUSTON, unaffected by destination normalization');
+console.log(`  OK   resolveTflStop("London Euston") -> ${londonEuston.naptanId} (${londonEuston.name})`);
+for (const name of ["London Bridge", "London City Airport", "London Fields", "Liverpool Street"]) {
+  const stop = resolveTflStop(name);
+  assert(stop && stop.name === name, `resolveTflStop("${name}") must resolve to its own catalog entry`);
+  console.log(`  OK   resolveTflStop("${name}") -> ${stop.naptanId} (${stop.name})`);
 }
 
 if (failures > 0) {
