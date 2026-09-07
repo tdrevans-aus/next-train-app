@@ -402,6 +402,23 @@ async function ensureGeoBridge() {
   await loadScriptOnce("geo-bundle.js");
 }
 
+// jim-brief-feed-unconfirmed-rider-copy: last line of defense — api/board.js
+// and api/next-train.js now send short rider copy for known error shapes,
+// but this stops the *next* provider's raw error.message (a doc path, an
+// agent name, GTFS jargon) from painting straight into the hero.
+const RIDER_UNSAFE_MESSAGE_PATTERN = /docs\/|\.md\b|GTFS/;
+function sanitizeRiderErrorMessage(message) {
+  const text = String(message ?? "");
+  if (!text) {
+    return text;
+  }
+  if (text.length > 160 || RIDER_UNSAFE_MESSAGE_PATTERN.test(text)) {
+    console.warn("[App] suppressed internal error message from rider-facing copy:", text);
+    return "Could not load departures for this station";
+  }
+  return text;
+}
+
 function locationErrorFrom(error) {
   const codeStr = String(error?.code || "");
   const code = Number(error?.code);
@@ -5514,7 +5531,7 @@ async function fetchNextTrain() {
         renderNearbyBoard({ stale: true });
         return;
       }
-      errorEl.textContent = error.message;
+      errorEl.textContent = sanitizeRiderErrorMessage(error.message);
       errorEl.hidden = false;
       renderNearbyBoard({ stale: true });
     }
@@ -5571,7 +5588,7 @@ async function fetchNextTrain() {
     // Deferred features (reminders, journey detail) must still become
     // available when the first fetch fails (offline/429).
     window.NextTrainDeferred?.load?.();
-    errorEl.textContent = error.message;
+    errorEl.textContent = sanitizeRiderErrorMessage(error.message);
     errorEl.hidden = false;
     trackProductEvent("api_error_shown", {
       surface: "journey",

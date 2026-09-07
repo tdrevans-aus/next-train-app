@@ -378,9 +378,28 @@ function classifyNearbyError(message) {
   return "location";
 }
 
+// jim-brief-feed-unconfirmed-rider-copy: api/board.js now sends short rider
+// copy for a known FEED_UNCONFIRMED/PROVIDER_UNAVAILABLE error, but this is
+// the last line of defense against the *next* provider leaking a doc path,
+// an agent name, or GTFS jargon straight into the hero via a raw
+// error.message. Swap it for the existing generic copy and log the original
+// for whoever's debugging, rather than painting it for a rider.
+const RIDER_UNSAFE_MESSAGE_PATTERN = /docs\/|\.md\b|GTFS/;
+function sanitizeRiderErrorMessage(message) {
+  const text = String(message ?? "");
+  if (!text) {
+    return text;
+  }
+  if (text.length > 160 || RIDER_UNSAFE_MESSAGE_PATTERN.test(text)) {
+    console.warn("[nearby] suppressed internal error message from rider-facing copy:", text);
+    return "Could not load departures for this station";
+  }
+  return text;
+}
+
 function setNearbyError(message, kind = null) {
-  nearbyError = message;
-  nearbyErrorKind = kind || (message ? classifyNearbyError(message) : null);
+  nearbyError = sanitizeRiderErrorMessage(message);
+  nearbyErrorKind = kind || (nearbyError ? classifyNearbyError(nearbyError) : null);
 }
 
 function keepNearbyBoardWithLocationHint() {
