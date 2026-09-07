@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "amsterdam", "rotterdam", "vancouver", "canberra", "gold-coast", "newcastle", "auckland", "stockholm", "goteborg", "wellington", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -21,13 +21,6 @@
         { id: "newcastle", name: "Newcastle", timeZone: "Australia/Sydney" },
         { id: "perth", name: "Perth", timeZone: "Australia/Perth" },
         { id: "sydney", name: "Sydney", timeZone: "Australia/Sydney" },
-      ],
-    },
-    {
-      id: "ca",
-      name: "Canada",
-      regions: [
-        { id: "vancouver", name: "Vancouver", timeZone: "America/Vancouver" },
       ],
     },
     {
@@ -62,22 +55,6 @@
       name: "Finland",
       regions: [
         { id: "helsinki", name: "Helsinki", timeZone: "Europe/Helsinki", comingSoon: false },
-      ],
-    },
-    {
-      id: "nl",
-      name: "Netherlands",
-      regions: [
-        { id: "amsterdam", name: "Amsterdam", timeZone: "Europe/Amsterdam" },
-        { id: "rotterdam", name: "Rotterdam", timeZone: "Europe/Amsterdam" },
-      ],
-    },
-    {
-      id: "nz",
-      name: "New Zealand",
-      regions: [
-        { id: "auckland", name: "Auckland", timeZone: "Pacific/Auckland" },
-        { id: "wellington", name: "Wellington", timeZone: "Pacific/Auckland" },
       ],
     },
     {
@@ -133,14 +110,9 @@
     brisbane: { minLat: -28.2, maxLat: -27.0, minLng: 152.6, maxLng: 153.6 },
     adelaide: { minLat: -35.3, maxLat: -34.55, minLng: 138.35, maxLng: 138.85 },
     "uk-london-tfl": { minLat: 51.28, maxLat: 51.7, minLng: -0.52, maxLng: 0.35 },
-    amsterdam: { minLat: 52.28, maxLat: 52.43, minLng: 4.75, maxLng: 5.05 },
-    rotterdam: { minLat: 51.82, maxLat: 52.12, minLng: 4.08, maxLng: 4.60 },
-    vancouver: { minLat: 49.0, maxLat: 49.35, minLng: -123.3, maxLng: -122.7 },
     canberra: { minLat: -35.32, maxLat: -35.16, minLng: 149.10, maxLng: 149.17 },
-    auckland: { minLat: -37.12, maxLat: -36.72, minLng: 174.62, maxLng: 175.05 },
     stockholm: { minLat: 58.85, maxLat: 59.60, minLng: 17.50, maxLng: 18.40 },
     goteborg: { minLat: 57.55, maxLat: 57.85, minLng: 11.75, maxLng: 12.25 },
-    wellington: { minLat: -41.45, maxLat: -40.80, minLng: 174.75, maxLng: 175.70 },
     malmo: { minLat: 55.30, maxLat: 56.75, minLng: 12.60, maxLng: 15.55 },
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
@@ -310,7 +282,14 @@
 
   function readSavedCity() {
     const city = String(readStore().savedCity || "").toLowerCase();
-    return regionById(city)?.region.comingSoon ? "" : city;
+    const found = regionById(city);
+    // No matching picker region at all (e.g. a retired city — release-1 scope cut,
+    // 7 Sep 2026) degrades the same way a comingSoon region does: fall through to the
+    // caller's default rather than surfacing a city the app can no longer resolve.
+    if (!found || found.region.comingSoon) {
+      return "";
+    }
+    return city;
   }
 
   function readSavedCountry() {

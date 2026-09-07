@@ -1,7 +1,7 @@
 /**
  * Near me relocation ignores the saved region.
  *
- * Bug (4 Sep 2026): with Netherlands (amsterdam) selected and GPS in Perth, every Near me
+ * Bug (4 Sep 2026): with Sweden (stockholm) selected and GPS in Perth, every Near me
  * relocation threw REGION_MISMATCH inside findNearestStation, so the cached station
  * (Edgewater) stuck all day while the rider moved around Perth. Near me must resolve in
  * the GPS city regardless of the region preference; journey/template callers stay
@@ -72,13 +72,13 @@ async function run() {
 
   await page.goto(`${BASE}/?reset=1&fixture=normal`);
   await page.waitForTimeout(500);
-  // Region = Netherlands (amsterdam), explicit so the wizard doesn't open; last Near me
+  // Region = Sweden (stockholm), explicit so the wizard doesn't open; last Near me
   // station = Edgewater in Perth, the shape the rider's phone was in.
   await page.evaluate(
     ({ cacheKey, settingsKey }) => {
       localStorage.setItem(
         settingsKey,
-        JSON.stringify({ savedCity: "amsterdam", savedCountry: "nl", regionExplicit: true })
+        JSON.stringify({ savedCity: "stockholm", savedCountry: "se", regionExplicit: true })
       );
       localStorage.setItem(
         cacheKey,
@@ -133,7 +133,7 @@ async function run() {
   });
 
   const setupOk =
-    setup.preferenceCity === "amsterdam" &&
+    setup.preferenceCity === "stockholm" &&
     setup.nearbyMode &&
     String(initialStation || "").includes("Edgewater");
   const relocateOk = String(movedStation || "").includes("Joondalup");
@@ -144,7 +144,7 @@ async function run() {
 
   if (setupOk && relocateOk && cityOk && boardCityOk && journeyScopedOk && pageErrors.length === 0) {
     console.log(
-      "PASS — amsterdam selected, Perth GPS: Near me relocated Edgewater → Joondalup; journeys still region-scoped"
+      "PASS — stockholm selected, Perth GPS: Near me relocated Edgewater → Joondalup; journeys still region-scoped"
     );
   } else {
     console.error("FAIL — nearby relocate ignores region", {

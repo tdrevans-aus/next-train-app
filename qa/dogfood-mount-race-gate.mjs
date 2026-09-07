@@ -99,17 +99,17 @@ async function testReversedResolutionOrder() {
 
 async function testRepeatedRapidSwitching() {
   // Three overlapping calls with deliberately scrambled resolution timing —
-  // the last call (vancouver) is neither the fastest nor the slowest to
+  // the last call (canberra) is neither the fastest nor the slowest to
   // resolve, so this can't pass by accident of ordering.
-  const api = loadDogfoodApi({ sydney: 30, adelaide: 60, vancouver: 15 });
-  await Promise.all([api.mount("sydney"), api.mount("adelaide"), api.mount("vancouver")]);
+  const api = loadDogfoodApi({ sydney: 30, adelaide: 60, canberra: 15 });
+  await Promise.all([api.mount("sydney"), api.mount("adelaide"), api.mount("canberra")]);
 
   assert(
-    api.getCity() === "vancouver",
+    api.getCity() === "canberra",
     `expected the last of three overlapping mount() calls to win, got "${api.getCity()}"`
   );
   assert(
-    api.getStations().every((name) => name.startsWith("vancouver")),
+    api.getStations().every((name) => name.startsWith("canberra")),
     "stations after rapid switching must belong to the last-selected city"
   );
 }

@@ -1,5 +1,9 @@
 /**
- * Auckland and Wellington are both tester-live, separate cities. No city=nz. Perth live-gate untouched.
+ * New Zealand — both Auckland and Wellington retired from release 1, 7 Sep 2026 (Tim,
+ * docs/jim-brief-release-1-scope-cut.md). No city=nz ever existed. Per-city assertions live in
+ * qa/auckland-dogfood-gate.mjs and qa/wellington-dogfood-gate.mjs; this gate is the
+ * country-level check that the New Zealand picker entry itself is gone (not just Coming Soon)
+ * once both regions are retired.
  * Usage: node qa/nz-planned-gate.mjs
  */
 import { existsSync, readFileSync } from "fs";
@@ -18,16 +22,16 @@ function assert(condition, message) {
 
 assert(assertCityLive("perth")?.ok === true, "Perth must stay live");
 
-const aucklandLive = assertCityLive("auckland");
-assert(aucklandLive?.ok === true, "assertCityLive(auckland) must pass");
-assert(getCity("auckland")?.status === "live", "auckland registry status must be live");
-assert(isMultiCity("auckland") === true, "auckland must be in MULTI_CITY_IDS");
+const auckland = assertCityLive("auckland");
+assert(auckland?.ok === false, "assertCityLive(auckland) must fail — retired");
+assert(getCity("auckland")?.status === "retired", "auckland registry status must be retired");
+assert(isMultiCity("auckland") === false, "auckland must not be in MULTI_CITY_IDS");
 
-const wellingtonLive = assertCityLive("wellington");
-assert(wellingtonLive?.ok === true, "assertCityLive(wellington) must pass");
-assert(getCity("wellington")?.status === "live", "wellington registry status must be live");
-assert(getCity("wellington")?.adapterReady === true, "wellington adapterReady must be true");
-assert(isMultiCity("wellington") === true, "wellington must be in MULTI_CITY_IDS");
+const wellington = assertCityLive("wellington");
+assert(wellington?.ok === false, "assertCityLive(wellington) must fail — retired");
+assert(getCity("wellington")?.status === "retired", "wellington registry status must be retired");
+assert(getCity("wellington")?.adapterReady === true, "wellington adapterReady must stay true — adapter kept");
+assert(isMultiCity("wellington") === false, "wellington must not be in MULTI_CITY_IDS");
 
 for (const id of ["auckland", "wellington"]) {
   const entry = getCity(id);
@@ -36,26 +40,24 @@ for (const id of ["auckland", "wellington"]) {
 }
 
 assert(!getCity("nz"), "city=nz must not exist as a registry city");
-assert(
-  !CITIES.some((city) => city.id === "nz"),
-  "registry must not contain a combined NZ city"
-);
+assert(!CITIES.some((city) => city.id === "nz"), "registry must not contain a combined NZ city");
 
-const auckland = getCity("auckland");
-assert(auckland.agency === "Auckland Transport", "Auckland agency is AT");
-assert((auckland.envKeys ?? []).includes("AT_API_KEY"), "Auckland uses AT_API_KEY");
+const aucklandEntry = getCity("auckland");
+assert(aucklandEntry.agency === "Auckland Transport", "Auckland agency is AT");
+assert((aucklandEntry.envKeys ?? []).includes("AT_API_KEY"), "Auckland uses AT_API_KEY");
 
-const wellington = getCity("wellington");
-assert(wellington.agency === "Metlink", "Wellington is a separate Metlink city");
-assert((wellington.envKeys ?? []).includes("METLINK_API_KEY"), "Wellington uses METLINK_API_KEY");
+const wellingtonEntry = getCity("wellington");
+assert(wellingtonEntry.agency === "Metlink", "Wellington is a separate Metlink city");
+assert((wellingtonEntry.envKeys ?? []).includes("METLINK_API_KEY"), "Wellington uses METLINK_API_KEY");
 
+// D1 packs, adapters, catalogs stay in the repo — retirement is not deletion.
 assert(
   existsSync(join(ROOT, "docs/wellington-d1/published-network.json")),
-  "Luke D1 published-network.json must exist under docs/wellington-d1/"
+  "Luke D1 published-network.json must still exist under docs/wellington-d1/"
 );
 assert(
   existsSync(join(ROOT, "qa/fixtures/wellington/published-network.json")),
-  "Luke D1 published-network.json must be copied into qa/fixtures/wellington/"
+  "Luke D1 published-network.json must still be copied into qa/fixtures/wellington/"
 );
 assert(
   readFileSync(join(ROOT, "docs/wellington-d1/published-network.json"), "utf8") ===
@@ -74,12 +76,18 @@ assert(
   "Do not invent Melling Station while MEL terminates Western Hutt"
 );
 
+// Picker: New Zealand disappears entirely once both its regions are retired — no comingSoon flag.
+const citySession = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
+assert(!/id:\s*"nz"/.test(citySession), "New Zealand must not appear in the picker at all");
+assert(!/id:\s*"auckland"/.test(citySession), "auckland must not appear in the picker at all");
+assert(!/id:\s*"wellington"/.test(citySession), "wellington must not appear in the picker at all");
+
 const appJs = readFileSync(join(ROOT, "public/app.js"), "utf8");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*auckland/.test(appJs), "auckland must be in LIVE_CITY_IDS");
-assert(/LIVE_CITY_IDS = new Set\(\[[^\]]*wellington/.test(appJs), "wellington must be in LIVE_CITY_IDS");
-assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*auckland/.test(appJs), "auckland must be in the city picker nearby list");
-assert(/NEARBY_MULTI_CITY_IDS = \[[^\]]*wellington/.test(appJs), "wellington must be in the city picker nearby list");
+assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*auckland/.test(appJs), "auckland must not be in LIVE_CITY_IDS");
+assert(!/LIVE_CITY_IDS = new Set\(\[[^\]]*wellington/.test(appJs), "wellington must not be in LIVE_CITY_IDS");
+assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*auckland/.test(appJs), "auckland must not be in the nearby list");
+assert(!/NEARBY_MULTI_CITY_IDS = \[[^\]]*wellington/.test(appJs), "wellington must not be in the nearby list");
 
 console.log(
-  "nz-planned-gate: ok (auckland + wellington both tester-live, separate cities, no city=nz, Perth green)"
+  "nz-planned-gate: ok (auckland + wellington both retired from release 1, no city=nz, New Zealand dropped from the picker, Perth green)"
 );
