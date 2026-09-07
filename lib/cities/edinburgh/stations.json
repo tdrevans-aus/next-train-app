@@ -21,7 +21,8 @@
     "Caledonian Sleeper is EXCLUDED at Edinburgh Waverley only - board-eligibility verdict out-reservation (compulsory berth booking, no walk-up boarding).",
     "Edinburgh Park (National Rail station) is EXCLUDED - report line 20: not listed as a National Rail station in the main catalog; only the Trams stop (Edinburgh Park Central) is in v1 scope.",
     "lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — the oracle report itself gave no coordinate source, but NaPTAN carries confirmed stop-level coordinates for both National Rail (RailReferences, CRS-keyed) and Edinburgh Trams (StopType MET, \"(Edinburgh Trams)\" suffix); see the Coordinates note below.",
-    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 3/3 rail stations geocoded | NaPTAN StopType MET (\"(Edinburgh Trams)\" suffix — Newhaven-extension stops are filed under Tyne-and-Wear-prefixed ATCO codes in this NaPTAN export, so matched by name suffix, not ATCO prefix) pulled 2026-09-07; 22/22 tram/metro stops geocoded; no exceptions"
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 3/3 rail stations geocoded | NaPTAN StopType MET (\"(Edinburgh Trams)\" suffix — Newhaven-extension stops are filed under Tyne-and-Wear-prefixed ATCO codes in this NaPTAN export, so matched by name suffix, not ATCO prefix) pulled 2026-09-07; 22/22 tram/metro stops geocoded; no exceptions",
+    "7 Sep 2026 (docs/jim-brief-no-live-feed-stops-out-of-picker.md): all 22 Edinburgh Trams (mode metro) stops flagged liveFeed: false — EdinburghTramsFeedUnverifiedError means no board can ever be produced, so these stops stay in the catalog (coordinates kept for coverage notes and a future re-enable) but are no longer offered in the station picker or Near me. National Rail (mode train) stops are unaffected."
   ],
   "notInRegion": [
     "Falkirk High",
@@ -85,7 +86,8 @@
       "aliases": [],
       "lat": 55.979921,
       "lng": -3.1884628,
-      "class": "Edinburgh Trams T50 terminus. Schedule-only v1, no confirmed real-time feed. Stop order carried in the oracle report's list order, not independently verified - see lib/cities/edinburgh/tram-directions.js."
+      "class": "Edinburgh Trams T50 terminus. Schedule-only v1, no confirmed real-time feed. Stop order carried in the oracle report's list order, not independently verified - see lib/cities/edinburgh/tram-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -95,7 +97,8 @@
       "aliases": [],
       "lat": 55.980204,
       "lng": -3.1776696,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -105,7 +108,8 @@
       "aliases": [],
       "lat": 55.978074,
       "lng": -3.1663549,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -115,7 +119,8 @@
       "aliases": [],
       "lat": 55.974815,
       "lng": -3.167026,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -125,7 +130,8 @@
       "aliases": [],
       "lat": 55.970777,
       "lng": -3.1711344,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -135,7 +141,8 @@
       "aliases": [],
       "lat": 55.965364,
       "lng": -3.1762575,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -145,7 +152,8 @@
       "aliases": [],
       "lat": 55.960678,
       "lng": -3.1814655,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -155,7 +163,8 @@
       "aliases": [],
       "lat": 55.956817,
       "lng": -3.1867936,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -165,7 +174,8 @@
       "aliases": [],
       "lat": 55.95461766514,
       "lng": -3.19231585862,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -175,7 +185,8 @@
       "aliases": [],
       "lat": 55.95170953761,
       "lng": -3.19847221611,
-      "class": "Edinburgh Trams T50 intermediate stop, nearest tram stop to Edinburgh Waverley (National Rail) but not merged - see doNotGroup. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop, nearest tram stop to Edinburgh Waverley (National Rail) but not merged - see doNotGroup. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -185,7 +196,8 @@
       "aliases": [],
       "lat": 55.94841338106,
       "lng": -3.21209388435,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -195,7 +207,8 @@
       "aliases": [],
       "lat": 55.94579511408,
       "lng": -3.21973003985,
-      "class": "Edinburgh Trams T50 intermediate stop, nearby the Haymarket National Rail station but kept as a distinct catalog entry (different mode, not merged). Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop, nearby the Haymarket National Rail station but kept as a distinct catalog entry (different mode, not merged). Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -205,7 +218,8 @@
       "aliases": [],
       "lat": 55.9419816991,
       "lng": -3.23720605439,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -215,7 +229,8 @@
       "aliases": [],
       "lat": 55.93811903816,
       "lng": -3.25221165933,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -225,7 +240,8 @@
       "aliases": [],
       "lat": 55.93232757912,
       "lng": -3.27544293701,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -235,7 +251,8 @@
       "aliases": [],
       "lat": 55.92895005919,
       "lng": -3.29343427112,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -245,7 +262,8 @@
       "aliases": [],
       "lat": 55.93131184549,
       "lng": -3.31478574772,
-      "class": "Edinburgh Trams T50 intermediate stop. Only Edinburgh Park stop in v1 scope - the National Rail 'Edinburgh Park' station is excluded, see notInRegion. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Only Edinburgh Park stop in v1 scope - the National Rail 'Edinburgh Park' station is excluded, see notInRegion. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -255,7 +273,8 @@
       "aliases": [],
       "lat": 55.93795104615,
       "lng": -3.31826059385,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -265,7 +284,8 @@
       "aliases": [],
       "lat": 55.94046551171,
       "lng": -3.32175624086,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -275,7 +295,8 @@
       "aliases": [],
       "lat": 55.93792631235,
       "lng": -3.33225195206,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -285,7 +306,8 @@
       "aliases": [],
       "lat": 55.94043509974,
       "lng": -3.35596953325,
-      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified."
+      "class": "Edinburgh Trams T50 intermediate stop. Schedule-only v1, no confirmed real-time feed. Stop order unverified.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -295,7 +317,8 @@
       "aliases": [],
       "lat": 55.94761850016,
       "lng": -3.36051223861,
-      "class": "Edinburgh Trams T50 terminus. Schedule-only v1, no confirmed real-time feed. Stop order carried in the oracle report's list order, not independently verified."
+      "class": "Edinburgh Trams T50 terminus. Schedule-only v1, no confirmed real-time feed. Stop order carried in the oracle report's list order, not independently verified.",
+      "liveFeed": false
     }
   ]
 }

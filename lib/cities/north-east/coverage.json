@@ -11,7 +11,7 @@
   "notCovered": [
     {
       "label": "Tyne and Wear Metro",
-      "detail": "Not covered — no confirmed public live-times feed exists for Metro, so no Metro board is offered rather than showing a stale timetable dressed up as live."
+      "detail": "Not covered — no confirmed public live-times feed exists for Metro, so Metro stops aren't offered in the station picker or Near me for now, and no Metro board is offered rather than showing a stale timetable dressed up as live. They stay on file for when a confirmed feed exists."
     },
     {
       "label": "Buses",

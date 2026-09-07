@@ -22,7 +22,8 @@
     "The Eccles line's 'Manchester' terminus (as printed in the oracle report) is NOT catalogued as a station here — genuinely ambiguous which physical Manchester stop this refers to, not given by the report. Do not guess a resolution; the Eccles Line + Manchester chip is left as an unresolved marketing string only, generated (if at all) from the Eccles terminus, never as a resolvable catalog entry.",
     "'Piccadilly' as printed in the oracle report's Metrolink line-termini table (Yellow, Airport lines) refers to the Piccadilly Gardens Metrolink stop, NOT Manchester Piccadilly National Rail station — aliased accordingly below. Never conflate the two; see doNotUse list in docs/greater-manchester-d1/published-network.json.",
     "Metrolink lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — NaPTAN carries confirmed stop-level coordinates (StopType TMU, ATCO prefix 1800ZZMA / \"(Manchester Metrolink)\" suffix) independent of the GTFS-RT feed gap noted elsewhere, which is about real-time data, not the stop registry. 14/14 stops matched — the earlier 'Stockport (tram stop)' entry that failed to geocode was removed 7 Sep 2026 as a non-existent stop, not left as an unresolved gap.",
-    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 4/4 rail stations geocoded | NaPTAN StopType TMU (ATCO prefix 1800ZZMA / \"(Manchester Metrolink)\" suffix) pulled 2026-09-07; 14/14 tram/metro stops geocoded; no exceptions"
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 4/4 rail stations geocoded | NaPTAN StopType TMU (ATCO prefix 1800ZZMA / \"(Manchester Metrolink)\" suffix) pulled 2026-09-07; 14/14 tram/metro stops geocoded; no exceptions",
+    "7 Sep 2026 (docs/jim-brief-no-live-feed-stops-out-of-picker.md): all 14 Metrolink (mode metro) stops flagged liveFeed: false — MetrolinkFeedUnconfirmedError means no board can ever be produced, so these stops stay in the catalog (coordinates kept for coverage notes and a future re-enable) but are no longer offered in the station picker or Near me. National Rail (mode train) stops are unaffected."
   ],
   "notInRegion": [],
   "stops": [
@@ -78,7 +79,8 @@
       "aliases": [],
       "lat": 53.47844,
       "lng": -2.2429,
-      "class": "Metrolink hub lock — most-used stop on the network, convergence point for most lines, operational hub for tram planning per the report. Red and Eccles lines' exact routing through here is not independently confirmed (see direction-model-memo.md) — do not assume all eight lines call here without a real timetable check."
+      "class": "Metrolink hub lock — most-used stop on the network, convergence point for most lines, operational hub for tram planning per the report. Red and Eccles lines' exact routing through here is not independently confirmed (see direction-model-memo.md) — do not assume all eight lines call here without a real timetable check.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -88,7 +90,8 @@
       "aliases": [],
       "lat": 53.48661,
       "lng": -2.24175,
-      "class": "Metrolink secondary hub — same building as the National Rail secondary hub (mode train entry above); doNotGroup between the two layers, same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands). Yellow line named stop (Bury-Piccadilly)."
+      "class": "Metrolink secondary hub — same building as the National Rail secondary hub (mode train entry above); doNotGroup between the two layers, same shape as Sheffield Station (South Yorkshire) and Nottingham Station (East Midlands). Yellow line named stop (Bury-Piccadilly).",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -100,7 +103,8 @@
       ],
       "lat": 53.48001,
       "lng": -2.236454,
-      "class": "Metrolink stop nearest Manchester Piccadilly National Rail station but NOT co-located — undercroft/basement level, ~100m/5-10 min walk via moving walkways. doNotGroup vs Manchester Piccadilly (mode train, separate stationGroup). Yellow and Airport line terminus (printed as 'Piccadilly' in the oracle report's line-termini table — aliased here, never conflated with the National Rail station of the same informal name)."
+      "class": "Metrolink stop nearest Manchester Piccadilly National Rail station but NOT co-located — undercroft/basement level, ~100m/5-10 min walk via moving walkways. doNotGroup vs Manchester Piccadilly (mode train, separate stationGroup). Yellow and Airport line terminus (printed as 'Piccadilly' in the oracle report's line-termini table — aliased here, never conflated with the National Rail station of the same informal name).",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -110,7 +114,8 @@
       "aliases": [],
       "lat": 53.59177,
       "lng": -2.29759,
-      "class": "Green, Yellow, and Purple line terminus."
+      "class": "Green, Yellow, and Purple line terminus.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -120,7 +125,8 @@
       "aliases": [],
       "lat": 53.38809,
       "lng": -2.347193,
-      "class": "Green, Purple, and Orange line terminus. Green and Purple share this Altrincham-Bury terminus pair with opposite line names — unexplained by the report, not resolved here."
+      "class": "Green, Purple, and Orange line terminus. Green and Purple share this Altrincham-Bury terminus pair with opposite line names — unexplained by the report, not resolved here.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -130,7 +136,8 @@
       "aliases": [],
       "lat": 53.49038,
       "lng": -2.09737,
-      "class": "Blue line terminus."
+      "class": "Blue line terminus.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -140,7 +147,8 @@
       "aliases": [],
       "lat": 53.48296,
       "lng": -2.335339,
-      "class": "Blue and Eccles line terminus."
+      "class": "Blue and Eccles line terminus.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -150,7 +158,8 @@
       "aliases": [],
       "lat": 53.46813,
       "lng": -2.34824,
-      "class": "Red line terminus."
+      "class": "Red line terminus.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -160,7 +169,8 @@
       "aliases": [],
       "lat": 53.46999,
       "lng": -2.267793,
-      "class": "Red line terminus/named via-point per the report's line summary."
+      "class": "Red line terminus/named via-point per the report's line summary.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -170,7 +180,8 @@
       "aliases": [],
       "lat": 53.46885,
       "lng": -2.2974,
-      "class": "Named via-point on the Red line, between Trafford Centre and Cornbrook."
+      "class": "Named via-point on the Red line, between Trafford Centre and Cornbrook.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -180,7 +191,8 @@
       "aliases": [],
       "lat": 53.4665,
       "lng": -2.28821,
-      "class": "Named via-point on the Red line."
+      "class": "Named via-point on the Red line.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -190,7 +202,8 @@
       "aliases": [],
       "lat": 53.46511,
       "lng": -2.278668,
-      "class": "Named via-point on the Red line."
+      "class": "Named via-point on the Red line.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -200,7 +213,8 @@
       "aliases": [],
       "lat": 53.61726,
       "lng": -2.155862,
-      "class": "Orange line terminus."
+      "class": "Orange line terminus.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -210,7 +224,8 @@
       "aliases": [],
       "lat": 53.36504,
       "lng": -2.272979,
-      "class": "Airport line terminus."
+      "class": "Airport line terminus.",
+      "liveFeed": false
     }
   ]
 }

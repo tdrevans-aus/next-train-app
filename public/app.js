@@ -5276,6 +5276,12 @@ async function findNearestStation({
   let nearest = null;
   let bestDistance = Infinity;
 
+  // docs/jim-brief-no-live-feed-stops-out-of-picker.md: `coords` (from
+  // NextTrainBrisbaneDogfood.loadCoordsForCity -> parseCatalogRows) already
+  // excludes every stop whose operator has no confirmed live-departures feed
+  // (liveFeed: false) — a station that can never produce a board must never
+  // be the nearest-station answer here, and the exclusion happens once at the
+  // catalog layer rather than being re-checked per candidate below.
   for (const [name, point] of Object.entries(coords)) {
     const distance = distanceKm(latitude, longitude, point.lat, point.lng);
     if (distance < bestDistance) {

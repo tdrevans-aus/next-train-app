@@ -41,7 +41,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
-import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain, listMultiCityStations, findNearestStation } from "../lib/cities/live-city-api.js";
+import { assertNoLiveFeedStopsExcluded } from "./lib/no-live-feed-gate-helper.mjs";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import {
@@ -460,6 +461,21 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
+// docs/jim-brief-no-live-feed-stops-out-of-picker.md: every Subway stop
+// carries liveFeed: false, matches scripts/list-no-live-feed-stops.mjs, is
+// carried through by listMultiCityStations, and is never nominated by
+// findNearestStation.
+assertNoLiveFeedStopsExcluded({
+  region: "glasgow",
+  readFileSync,
+  join,
+  ROOT,
+  listMultiCityStations,
+  findNearestStation,
+  assert,
+  sample: { name: "Kelvinhall", lat: 55.8708975779, lng: -4.30001055254 },
+});
+
 console.log(
-  "glasgow-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 2 rail + 15 Subway stations, 'Option A at n=2' proven at both Glasgow Central and Glasgow Queen Street independently with no hub-lock between them, doNotGroup at Buchanan Street/Glasgow Queen Street and St Enoch/Glasgow Central, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Subway dispatch correctly surfaces GlasgowSubwayFeedUnverifiedError rather than the static Outer/Inner Circle label list, Perth Australia stays green)"
+  "glasgow-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 2 rail + 15 Subway stations, 'Option A at n=2' proven at both Glasgow Central and Glasgow Queen Street independently with no hub-lock between them, doNotGroup at Buchanan Street/Glasgow Queen Street and St Enoch/Glasgow Central, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Subway dispatch correctly surfaces GlasgowSubwayFeedUnverifiedError rather than the static Outer/Inner Circle label list, all 15 Subway stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
 );

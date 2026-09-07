@@ -19,7 +19,8 @@
     "Berwick-upon-Tweed (BWK) included as National Rail-only per the oracle report's station table. Northern boundary against a future Rest-of-Scotland pack is open/unresolved - not closed here.",
     "Darlington (DRL) is EXCLUDED - confirmed unclaimed by both North East's own report and East Midlands' already-merged pack (checked directly, no match). Do not add without a boundary resolution.",
     "Newcastle Central and Berwick-upon-Tweed lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — NaPTAN RailReferences now supplies confirmed CRS-keyed coordinates for both, independent of the coordinate source gap that previously applied. Sunderland's train entry reuses its Metro/GTFS coordinate since it is the same physical platform (unchanged).",
-    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 3/3 rail stations geocoded | no confirmed source pulled 2026-09-07; 60/60 tram/metro stops geocoded; no exceptions"
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 3/3 rail stations geocoded | no confirmed source pulled 2026-09-07; 60/60 tram/metro stops geocoded; no exceptions",
+    "7 Sep 2026 (docs/jim-brief-no-live-feed-stops-out-of-picker.md): all 60 Tyne and Wear Metro (mode metro) stops flagged liveFeed: false — MetroFeedUnconfirmedError means no board can ever be produced, so these stops stay in the catalog (coordinates kept for coverage notes and a future re-enable) but are no longer offered in the station picker or Near me. National Rail (mode train) stops are unaffected."
   ],
   "notInRegion": [
     "Darlington"
@@ -66,7 +67,8 @@
       "aliases": [],
       "lat": 55.01377620486,
       "lng": -1.67724082616,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -76,7 +78,8 @@
       "aliases": [],
       "lat": 54.97439205154,
       "lng": -1.46601323617,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -86,7 +89,8 @@
       "aliases": [],
       "lat": 55.01384986572,
       "lng": -1.56766669271,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -96,7 +100,8 @@
       "aliases": [],
       "lat": 54.95939032991,
       "lng": -1.46113667124,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -106,7 +111,8 @@
       "aliases": [],
       "lat": 54.97612425289,
       "lng": -1.58011723614,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -116,7 +122,8 @@
       "aliases": [],
       "lat": 55.02787074618,
       "lng": -1.70365844263,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -126,7 +133,8 @@
       "aliases": [],
       "lat": 54.96950498418,
       "lng": -1.61661326598,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -136,7 +144,8 @@
       "aliases": [],
       "lat": 54.9864689031,
       "lng": -1.43209824213,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -146,7 +155,8 @@
       "aliases": [],
       "lat": 54.98294356755,
       "lng": -1.57201448465,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -156,7 +166,8 @@
       "aliases": [],
       "lat": 55.03516826762,
       "lng": -1.43654195068,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -166,7 +177,8 @@
       "aliases": [],
       "lat": 54.94669733284,
       "lng": -1.42109042248,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -176,7 +188,8 @@
       "aliases": [],
       "lat": 55.01360173027,
       "lng": -1.64366828619,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -186,7 +199,8 @@
       "aliases": [],
       "lat": 54.95735034075,
       "lng": -1.48604006203,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -196,7 +210,8 @@
       "aliases": [],
       "lat": 54.95304456244,
       "lng": -1.57155134611,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -206,7 +221,8 @@
       "aliases": [],
       "lat": 55.01005997559,
       "lng": -1.5785746518,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -216,7 +232,8 @@
       "aliases": [],
       "lat": 54.96167478608,
       "lng": -1.60439683256,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -226,7 +243,8 @@
       "aliases": [],
       "lat": 54.95763096924,
       "lng": -1.58814914549,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -236,7 +254,8 @@
       "aliases": [],
       "lat": 54.99229490737,
       "lng": -1.51594617302,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -246,7 +265,8 @@
       "aliases": [],
       "lat": 54.97750335483,
       "lng": -1.61395922501,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -256,7 +276,8 @@
       "aliases": [],
       "lat": 54.9748670917,
       "lng": -1.52190483381,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -266,7 +287,8 @@
       "aliases": [],
       "lat": 54.95150584132,
       "lng": -1.55593853976,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -276,7 +298,8 @@
       "aliases": [],
       "lat": 54.99575075569,
       "lng": -1.49508441429,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -286,7 +309,8 @@
       "aliases": [],
       "lat": 55.00016568938,
       "lng": -1.61083418691,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -296,7 +320,8 @@
       "aliases": [],
       "lat": 54.97964121609,
       "lng": -1.49361465536,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -306,7 +331,8 @@
       "aliases": [],
       "lat": 54.9830932967,
       "lng": -1.6057020944,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -316,7 +342,8 @@
       "aliases": [],
       "lat": 55.01437241862,
       "lng": -1.66508539316,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -326,7 +353,8 @@
       "aliases": [],
       "lat": 55.00888242947,
       "lng": -1.59165853275,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -336,7 +364,8 @@
       "aliases": [],
       "lat": 54.97402330918,
       "lng": -1.60482232044,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -346,7 +375,8 @@
       "aliases": [],
       "lat": 55.00157417667,
       "lng": -1.46568371261,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -356,7 +386,8 @@
       "aliases": [],
       "lat": 54.90673710025,
       "lng": -1.40117007545,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -366,7 +397,8 @@
       "aliases": [],
       "lat": 55.0422049412,
       "lng": -1.45842993942,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -376,7 +408,8 @@
       "aliases": [],
       "lat": 54.97386184869,
       "lng": -1.61330675482,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -388,7 +421,8 @@
       ],
       "lat": 55.03594951086,
       "lng": -1.71123426208,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -398,7 +432,8 @@
       "aliases": [],
       "lat": 55.00814063309,
       "lng": -1.4489914336,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -408,7 +443,8 @@
       "aliases": [],
       "lat": 55.03263480916,
       "lng": -1.52065448926,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -418,7 +454,8 @@
       "aliases": [],
       "lat": 54.91293816224,
       "lng": -1.41790910626,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -428,7 +465,8 @@
       "aliases": [],
       "lat": 55.02372703724,
       "lng": -1.54101664308,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -438,7 +476,8 @@
       "aliases": [],
       "lat": 54.90240215041,
       "lng": -1.38428295326,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -448,7 +487,8 @@
       "aliases": [],
       "lat": 54.9525960757,
       "lng": -1.54217060807,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -458,7 +498,8 @@
       "aliases": [],
       "lat": 54.99952954111,
       "lng": -1.47491827584,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -468,7 +509,8 @@
       "aliases": [],
       "lat": 55.01198235307,
       "lng": -1.62218177013,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -478,7 +520,8 @@
       "aliases": [],
       "lat": 54.92978681346,
       "lng": -1.38664267232,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -488,7 +531,8 @@
       "aliases": [],
       "lat": 55.03693956757,
       "lng": -1.50501892067,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -498,7 +542,8 @@
       "aliases": [],
       "lat": 54.97197698787,
       "lng": -1.45637550935,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -508,7 +553,8 @@
       "aliases": [],
       "lat": 55.00576519741,
       "lng": -1.60837228959,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -518,7 +564,8 @@
       "aliases": [],
       "lat": 54.90395831116,
       "lng": -1.44823100362,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -528,7 +575,8 @@
       "aliases": [],
       "lat": 54.99827407893,
       "lng": -1.43341662084,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -538,7 +586,8 @@
       "aliases": [],
       "lat": 54.97403159839,
       "lng": -1.6215692964,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -548,7 +597,8 @@
       "aliases": [],
       "lat": 54.91106269758,
       "lng": -1.38380767128,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -558,7 +608,8 @@
       "aliases": [],
       "lat": 54.91827502022,
       "lng": -1.38305789058,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -568,7 +619,8 @@
       "aliases": [],
       "lat": 54.90543040531,
       "lng": -1.38247442934,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -578,7 +630,8 @@
       "aliases": [],
       "lat": 54.97608924473,
       "lng": -1.44171231452,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -588,7 +641,8 @@
       "aliases": [],
       "lat": 55.01733077453,
       "lng": -1.42887855129,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -598,7 +652,8 @@
       "aliases": [],
       "lat": 54.9028465283,
       "lng": -1.39222955624,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -608,7 +663,8 @@
       "aliases": [],
       "lat": 54.98538750564,
       "lng": -1.55933087669,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -618,7 +674,8 @@
       "aliases": [],
       "lat": 54.98968126767,
       "lng": -1.53238742484,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -628,7 +685,8 @@
       "aliases": [],
       "lat": 55.01416900695,
       "lng": -1.63495298368,
-      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -638,7 +696,8 @@
       "aliases": [],
       "lat": 54.99366619643,
       "lng": -1.61006865697,
-      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Green/Yellow lines) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -648,7 +707,8 @@
       "aliases": [],
       "lat": 55.04038710194,
       "lng": -1.47632466606,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -658,7 +718,8 @@
       "aliases": [],
       "lat": 55.0398177723,
       "lng": -1.44318971004,
-      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026."
+      "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
+      "liveFeed": false
     }
   ]
 }

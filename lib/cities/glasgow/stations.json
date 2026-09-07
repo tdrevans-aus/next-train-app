@@ -19,7 +19,8 @@
     "Falkirk High (FKK) is EXCLUDED - owned by the Edinburgh region per the exclusive-territory split (Tim's decision, oracle report line 11/91). Not catalogued here at all.",
     "Caledonian Sleeper is EXCLUDED at Glasgow Central - board-eligibility verdict out-reservation (compulsory berth booking, no walk-up boarding).",
     "lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — the oracle report itself gave no coordinate source, but NaPTAN carries confirmed stop-level coordinates for both National Rail (RailReferences, CRS-keyed) and Glasgow Subway (StopType MET, ATCO prefix 9400ZZGL / \"SPT Subway Station\" suffix); see the Coordinates note below.",
-    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 2/2 rail stations geocoded | no confirmed source pulled 2026-09-07; 15/15 tram/metro stops geocoded; no exceptions"
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 2/2 rail stations geocoded | no confirmed source pulled 2026-09-07; 15/15 tram/metro stops geocoded; no exceptions",
+    "7 Sep 2026 (docs/jim-brief-no-live-feed-stops-out-of-picker.md): all 15 Glasgow Subway (mode metro) stops flagged liveFeed: false — GlasgowSubwayFeedUnverifiedError means no board can ever be produced, so these stops stay in the catalog (coordinates kept for coverage notes and a future re-enable) but are no longer offered in the station picker or Near me. National Rail (mode train) stops are unaffected."
   ],
   "notInRegion": [
     "Falkirk High"
@@ -62,7 +63,8 @@
       "aliases": [],
       "lat": 55.86983622479,
       "lng": -4.30869133846,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -72,7 +74,8 @@
       "aliases": [],
       "lat": 55.8708975779,
       "lng": -4.30001055254,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -82,7 +85,8 @@
       "aliases": [],
       "lat": 55.87522699462,
       "lng": -4.29340831336,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -92,7 +96,8 @@
       "aliases": [],
       "lat": 55.8742974606,
       "lng": -4.27958927553,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -102,7 +107,8 @@
       "aliases": [],
       "lat": 55.8712002241,
       "lng": -4.2691933216,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -112,7 +118,8 @@
       "aliases": [],
       "lat": 55.86807229659,
       "lng": -4.25993211474,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -122,7 +129,8 @@
       "aliases": [],
       "lat": 55.86245803082,
       "lng": -4.25340522299,
-      "class": "Glasgow Subway (SPT) hub lock - busiest station, city-centre. doNotGroup vs Glasgow Queen Street (National Rail) - travelator-connected but separate station entities/operators/infrastructure. Schedule-only v1, no confirmed GTFS-RT."
+      "class": "Glasgow Subway (SPT) hub lock - busiest station, city-centre. doNotGroup vs Glasgow Queen Street (National Rail) - travelator-connected but separate station entities/operators/infrastructure. Schedule-only v1, no confirmed GTFS-RT.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -132,7 +140,8 @@
       "aliases": [],
       "lat": 55.85726550166,
       "lng": -4.25524572622,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. doNotGroup vs Glasgow Central (National Rail) - within a short walk, not physically connected. Schedule-only v1, no confirmed GTFS-RT."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. doNotGroup vs Glasgow Central (National Rail) - within a short walk, not physically connected. Schedule-only v1, no confirmed GTFS-RT.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -142,7 +151,8 @@
       "aliases": [],
       "lat": 55.85191619732,
       "lng": -4.2587702279,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -152,7 +162,8 @@
       "aliases": [],
       "lat": 55.84953756907,
       "lng": -4.265933243,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -162,7 +173,8 @@
       "aliases": [],
       "lat": 55.84993831696,
       "lng": -4.27538255433,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -172,7 +184,8 @@
       "aliases": [],
       "lat": 55.85050849125,
       "lng": -4.28776573565,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -182,7 +195,8 @@
       "aliases": [],
       "lat": 55.85208517602,
       "lng": -4.29431320651,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -192,7 +206,8 @@
       "aliases": [],
       "lat": 55.85459678089,
       "lng": -4.30467139431,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -202,7 +217,8 @@
       "aliases": [],
       "lat": 55.8622596831,
       "lng": -4.31060695954,
-      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js."
+      "class": "Glasgow Subway (SPT) - closed loop, no termini. Schedule-only v1, no confirmed GTFS-RT. Stop order carried in the oracle report's table order, not independently verified - see lib/cities/glasgow/subway-directions.js.",
+      "liveFeed": false
     }
   ]
 }

@@ -16,7 +16,8 @@
     "Renamed 7 Sep 2026: 'Beeston/Chilwell' was never a stop name — it is NET's own label for the Line 1 branch. The real terminus is Toton Lane (in Chilwell, NaPTAN ATCO 9400ZZNOTOT, StopType MET); Beeston's own main stop (Beeston Centre) is a separate, uncatalogued intermediate stop per the termini-only rule. See docs/jim-brief-net-toton-lane-and-stockport-tram.md.",
     "NET stop lat/lng superseded 7 Sep 2026 (uk-catalog-geocode): NaPTAN carries confirmed stop-level coordinates for NET tram stops (StopType TMU/MET, ATCO prefix 3390ZZNO/9400ZZNO) independent of the GTFS-feed-verification gap noted above — that gap is about the real-time/schedule feed, not the stop registry. 4 of 4 stops matched once 'Beeston/Chilwell' was corrected to Toton Lane (NaPTAN ATCO 9400ZZNOTOT, 'Toton Lane Tram Stop', StopType MET) 7 Sep 2026 — the original ambiguity was against the wrong candidate name, not a real NaPTAN gap.",
     "Tamworth (TAM) is deliberately NOT in this catalog — genuine shared National Rail platform with West Midlands, flagged as a D2 de-dup boundary for a future West Midlands pack. See notInRegion below and hazard-pack.md H1.",
-    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 6/6 rail stations geocoded | NaPTAN StopType TMU/MET (ATCO prefix 3390ZZNO/9400ZZNO, Nottingham Express Transit) pulled 2026-09-07; 4/4 tram/metro stops geocoded — no exceptions (Toton Lane, ATCO 9400ZZNOTOT, matched 7 Sep 2026 once the catalog entry was corrected from the non-stop label 'Beeston/Chilwell')"
+    "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 6/6 rail stations geocoded | NaPTAN StopType TMU/MET (ATCO prefix 3390ZZNO/9400ZZNO, Nottingham Express Transit) pulled 2026-09-07; 4/4 tram/metro stops geocoded — no exceptions (Toton Lane, ATCO 9400ZZNOTOT, matched 7 Sep 2026 once the catalog entry was corrected from the non-stop label 'Beeston/Chilwell')",
+    "7 Sep 2026 (docs/jim-brief-no-live-feed-stops-out-of-picker.md): all 4 NET (mode metro) stops flagged liveFeed: false — NetFeedUnconfirmedError means no board can ever be produced, so these stops stay in the catalog (coordinates kept for coverage notes and a future re-enable) but are no longer offered in the station picker or Near me. National Rail (mode train) stops are unaffected."
   ],
   "notInRegion": [
     "Tamworth"
@@ -84,7 +85,8 @@
       "aliases": [],
       "lat": 53.038777,
       "lng": -1.196193,
-      "class": "NET Line 1 terminus"
+      "class": "NET Line 1 terminus",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -94,17 +96,22 @@
       "aliases": [],
       "lat": 52.9468743,
       "lng": -1.1457034,
-      "class": "hub lock — NET tram viaduct platforms. doNotGroup vs National Rail main platforms (same printed name, separate catalog entry, mode train). Also Line 2's inner terminus per the D1 pack's own stations array."
+      "class": "hub lock — NET tram viaduct platforms. doNotGroup vs National Rail main platforms (same printed name, separate catalog entry, mode train). Also Line 2's inner terminus per the D1 pack's own stations array.",
+      "liveFeed": false
     },
     {
       "mode": "metro",
       "name": "Toton Lane",
       "catalogId": "net:toton-lane",
       "stopId": "9400ZZNOTOT",
-      "aliases": ["Beeston/Chilwell", "Toton"],
+      "aliases": [
+        "Beeston/Chilwell",
+        "Toton"
+      ],
       "lat": 52.91843689308,
       "lng": -1.26234261331,
-      "class": "NET Line 1 terminus (Chilwell)"
+      "class": "NET Line 1 terminus (Chilwell)",
+      "liveFeed": false
     },
     {
       "mode": "metro",
@@ -114,7 +121,8 @@
       "aliases": [],
       "lat": 52.9889036,
       "lng": -1.2070264,
-      "class": "NET Line 2 terminus"
+      "class": "NET Line 2 terminus",
+      "liveFeed": false
     }
   ]
 }
