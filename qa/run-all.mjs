@@ -55,6 +55,7 @@ const SMOKE_SCRIPTS = [
   "sydney-new-journey-not-perth.mjs",
   "nearby-region-preference.mjs",
   "nearby-relocate-ignores-region.mjs",
+  "route-swipe-keeps-active-route.mjs",
   "adelaide-dogfood-gate.mjs",
   "amsterdam-dogfood-gate.mjs",
   "amsterdam-line-map-conformance.mjs",
