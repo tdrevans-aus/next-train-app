@@ -8,6 +8,8 @@ import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
+import { loadNewcastleStatic } from "../lib/providers/newcastle.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { marketingLabelsForStation, HUB } from "../lib/cities/newcastle/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -68,4 +70,6 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("newcastle-dogfood-gate: ok (live, picker city, not Sydney, NLR only)");
+await assertSnapshotNotStaleTodayOrSkip("newcastle", loadNewcastleStatic);
+
+console.log("newcastle-dogfood-gate: ok (live, picker city, not Sydney, NLR only, snapshot not stale today)");

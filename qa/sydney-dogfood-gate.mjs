@@ -7,6 +7,8 @@ import vercelBoard from "../api/dev/board.js";
 import directionsHandler from "../api/directions.js";
 import { getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import { marketingLabelsForStation } from "../lib/cities/sydney/marketing-directions.js";
+import { loadSydneyStatic } from "../lib/providers/sydney.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 
 function assert(condition, message) {
   if (!condition) {
@@ -100,4 +102,6 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("sydney-dogfood-gate: ok (live, Vercel board 404, City Circle not a terminus, disjoint chips)");
+await assertSnapshotNotStaleTodayOrSkip("sydney", loadSydneyStatic);
+
+console.log("sydney-dogfood-gate: ok (live, Vercel board 404, City Circle not a terminus, disjoint chips, snapshot not stale today)");

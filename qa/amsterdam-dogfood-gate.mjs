@@ -9,7 +9,12 @@ import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { marketingLabelsForStation, HUB } from "../lib/cities/amsterdam/marketing-directions.js";
-import { fetchStationBoard, AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL } from "../lib/providers/amsterdam.js";
+import {
+  fetchStationBoard,
+  AMSTERDAM_GTFS_RT_TRIP_UPDATES_URL,
+  loadAmsterdamStatic,
+} from "../lib/providers/amsterdam.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
 import { zipFixtureGtfs, encodeTripUpdates, stubFetch, discoverFixtureTrips } from "./lib/nl-realtime-stub.mjs";
 import {
@@ -216,4 +221,6 @@ if (previous === undefined) {
   );
 }
 
-console.log("amsterdam-dogfood-gate: ok (live, picker city, no city=nl, Vercel board 404, Wellington planned, OVapi RT join verified)");
+await assertSnapshotNotStaleTodayOrSkip("amsterdam", loadAmsterdamStatic);
+
+console.log("amsterdam-dogfood-gate: ok (live, picker city, no city=nl, Vercel board 404, Wellington planned, OVapi RT join verified, snapshot not stale today)");

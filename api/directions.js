@@ -43,6 +43,13 @@ import {
  * generic "feed_unavailable" bucket other named errors get below, so it's
  * excluded before that default and gets the same treatment as an unnamed
  * Error (the "try again" copy).
+ *
+ * GtfsSnapshotStaleError (lib/providers/gtfs/errors.js,
+ * docs/jim-brief-gtfs-snapshot-freshness.md) gets the same exception for the
+ * same reason: the shared GTFS static+RT board refused to serve a board it
+ * judged stale (calendar coverage lapsed, or realtime trip IDs no longer
+ * resolve against the snapshot), and a refresh — the change-driven cron, or
+ * the next GitHub Actions run for a large feed — can genuinely fix it.
  */
 export function classifyDirectionsError(error) {
   const name = String(error?.name || "");
@@ -52,7 +59,7 @@ export function classifyDirectionsError(error) {
   if (name.startsWith("Missing")) {
     return "missing_config";
   }
-  if (name === "VasttrafikUnavailableError") {
+  if (name === "VasttrafikUnavailableError" || name === "GtfsSnapshotStaleError") {
     return undefined;
   }
   return "feed_unavailable";

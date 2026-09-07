@@ -99,3 +99,6 @@ this pass, specifically and only to broaden Öresundståg/Krösatågen board eli
 product decision — see oracle-clash-report.md and hazard-pack.md for the reasoning. This is a
 narrower edit than a full D2 wiring pass; the D2 items below (key scope, per-feed stop ids) are
 still open.
+
+
+7 Sep 2026 (docs/jim-brief-gtfs-snapshot-freshness.md): static snapshot refresh is now change-driven (manifest-probed, not daily-regardless) and the shared board join refuses a stale snapshot at request time (GtfsSnapshotStaleError) instead of silently serving a scheduled-times-as-live board.

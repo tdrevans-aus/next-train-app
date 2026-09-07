@@ -15,3 +15,6 @@ H2: Keyed GTFS `https://api.transport.nsw.gov.au/v1/gtfs/schedule/lightrail/newc
 H7: Australia/Sydney **HAS DST**. Do not copy Brisbane no-DST.
 
 §3 rec: line + terminus (NLR + Newcastle Beach). Hold D5. Jim owns D2–D6. When Jim wires, testers can pick city id **newcastle**. Do not flip from this pack.
+
+
+7 Sep 2026 (docs/jim-brief-gtfs-snapshot-freshness.md): static snapshot refresh is now change-driven (manifest-probed, not daily-regardless) and the shared board join refuses a stale snapshot at request time (GtfsSnapshotStaleError) instead of silently serving a scheduled-times-as-live board.

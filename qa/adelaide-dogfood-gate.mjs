@@ -6,6 +6,8 @@ import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { marketingLabelsForStation } from "../lib/cities/adelaide/marketing-directions.js";
 import { readAdelaideMetroApiKey } from "../lib/providers/gtfs/auth.js";
+import { loadAdelaideStatic } from "../lib/providers/adelaide.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 
 function assert(condition, message) {
   if (!condition) {
@@ -69,6 +71,8 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
+await assertSnapshotNotStaleTodayOrSkip("adelaide", loadAdelaideStatic);
+
 console.log(
-  "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips, Melbourne stays planned)"
+  "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips, Melbourne stays planned, snapshot not stale today)"
 );

@@ -1,0 +1,40 @@
+# Change-driven GTFS static refresh for the large-feed cities (Amsterdam,
+# Rotterdam) whose shared OVapi upstream (~230MB) OOMs a Vercel Hobby-plan
+# function — see lib/gtfs-refresh.js and scripts/gtfs-refresh-large-feeds.mjs.
+# Runs the same probe-then-publish logic as the Vercel cron
+# (lib/providers/gtfs/snapshot-manifest.js): an unchanged upstream ETag/
+# Last-Modified costs one HEAD and no download.
+#
+# The Vercel cron (api/health.js -> lib/gtfs-refresh.js) still covers every
+# other Blob-backed city on its own schedule — this workflow exists only
+# because those two cities' upstream doesn't fit in that function.
+#
+# Uses only the repo's BLOB_READ_WRITE_TOKEN secret; no key is ever pasted
+# into this file.
+#
+# @see docs/jim-brief-gtfs-snapshot-freshness.md
+name: GTFS large-feed refresh
+
+on:
+  schedule:
+    - cron: "43 3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: gtfs-refresh-large-feeds
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: node scripts/gtfs-refresh-large-feeds.mjs

@@ -15,3 +15,6 @@ H2: Public SEQ GTFS+GTFS-RT **no key**. Static https://gtfsrt.api.translink.com.
 H7: Australia/Brisbane **NO DST**. Same as Brisbane. Do not copy Sydney DST.
 
 §3 rec: line + terminus (G:link + Burleigh Heads). Hold D5. Jim owns D2–D6. When Jim wires, testers can pick city id **gold-coast**. Do not flip from this pack.
+
+
+7 Sep 2026 (docs/jim-brief-gtfs-snapshot-freshness.md): static snapshot refresh is now change-driven (manifest-probed, not daily-regardless) and the shared board join refuses a stale snapshot at request time (GtfsSnapshotStaleError) instead of silently serving a scheduled-times-as-live board.

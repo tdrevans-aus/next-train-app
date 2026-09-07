@@ -15,3 +15,6 @@ H2: GTFS-RT **no key still works**: http://files.transport.act.gov.au/feeds/ligh
 H7: Australia/Sydney **HAS DST**. Do not copy Brisbane no-DST.
 
 §3 rec: line + terminus (R1 + Gungahlin Place). Flag: official UI is to City / Civic. Hold D5. Jim owns D2–D6. When Jim wires, testers can pick city id **canberra**. Do not flip from this pack.
+
+
+7 Sep 2026 (docs/jim-brief-gtfs-snapshot-freshness.md): static snapshot refresh is now change-driven (manifest-probed, not daily-regardless) and the shared board join refuses a stale snapshot at request time (GtfsSnapshotStaleError) instead of silently serving a scheduled-times-as-live board.
