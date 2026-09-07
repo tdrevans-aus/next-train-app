@@ -1,4 +1,5 @@
 import { applyCors } from "../lib/api-cors.js";
+import { getStaleCityReport } from "../lib/providers/gtfs/staleness-registry.js";
 
 /**
  * Cheap liveness for uptime monitors — no Transperth, no rate limit.
@@ -43,9 +44,15 @@ export default async function handler(req, res) {
   }
 
   res.setHeader("Cache-Control", "no-store");
+  // stale: cities whose GTFS static snapshot the shared board join has
+  // judged stale on this instance (docs/jim-brief-gtfs-snapshot-freshness.md)
+  // — calendar coverage lapsed, or too few realtime trip IDs resolve against
+  // the snapshot. Per-instance (resets on cold start), same scope as
+  // static-cache.js's TTL cache; not a substitute for checking the cron log.
   res.status(200).json({
     ok: true,
     service: "next-train-api",
     ts: new Date().toISOString(),
+    stale: getStaleCityReport(),
   });
 }

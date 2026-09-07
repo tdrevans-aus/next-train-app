@@ -8,6 +8,8 @@ import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
+import { loadCanberraStatic } from "../lib/providers/canberra.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { marketingLabelsForStation, HUB } from "../lib/cities/canberra/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -65,4 +67,6 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("canberra-dogfood-gate: ok (live, picker city, light rail only, D1 oracle copied, no MyWay+ key, Melbourne planned)");
+await assertSnapshotNotStaleTodayOrSkip("canberra", loadCanberraStatic);
+
+console.log("canberra-dogfood-gate: ok (live, picker city, light rail only, D1 oracle copied, no MyWay+ key, Melbourne planned, snapshot not stale today)");

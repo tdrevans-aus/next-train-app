@@ -15,6 +15,8 @@ import {
   listUppsalaDogfoodStations,
   getUppsalaDogfoodDirections,
 } from "../lib/cities/uppsala/dogfood-next-train.js";
+import { loadUppsalaStatic } from "../lib/providers/uppsala.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -145,6 +147,8 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
+await assertSnapshotNotStaleTodayOrSkip("uppsala", loadUppsalaStatic);
+
 console.log(
-  "uppsala-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Mälartåg-only, Uppsala C hub, no SL Line 40 leak)"
+  "uppsala-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Mälartåg-only, Uppsala C hub, no SL Line 40 leak, snapshot not stale today)"
 );

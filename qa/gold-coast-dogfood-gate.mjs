@@ -8,6 +8,8 @@ import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
+import { loadGoldCoastStatic } from "../lib/providers/gold-coast.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { marketingLabelsForStation, HUB } from "../lib/cities/gold-coast/marketing-directions.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -66,4 +68,6 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-console.log("gold-coast-dogfood-gate: ok (live, picker city, not Brisbane, G:link only)");
+await assertSnapshotNotStaleTodayOrSkip("gold-coast", loadGoldCoastStatic);
+
+console.log("gold-coast-dogfood-gate: ok (live, picker city, not Brisbane, G:link only, snapshot not stale today)");

@@ -16,7 +16,8 @@ import {
   listMalmoDogfoodStations,
   getMalmoDogfoodDirections,
 } from "../lib/cities/malmo/dogfood-next-train.js";
-import { tripAllowed, malmoLineId } from "../lib/providers/malmo.js";
+import { tripAllowed, malmoLineId, loadMalmoStatic } from "../lib/providers/malmo.js";
+import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -163,6 +164,8 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
+await assertSnapshotNotStaleTodayOrSkip("malmo", loadMalmoStatic);
+
 console.log(
-  "malmo-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Öresundståg/Krösatågen shown, Malmö C hub, no raw-corridor leaks)"
+  "malmo-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Öresundståg/Krösatågen shown, Malmö C hub, no raw-corridor leaks, snapshot not stale today)"
 );

@@ -75,3 +75,6 @@ No `lib/providers/` or `registry.js` edit, no live flip, no UI wiring, no D5 ass
 second Trafiklab/GTFS-Sweden feed pulled to close the Västerås/Eskilstuna/Örebro/Stockholm-side
 gap, no `calendar.txt` service-day analysis, no printed-map station-name verification, no edits to
 any other city's pack.
+
+
+7 Sep 2026 (docs/jim-brief-gtfs-snapshot-freshness.md): static snapshot refresh is now change-driven (manifest-probed, not daily-regardless) and the shared board join refuses a stale snapshot at request time (GtfsSnapshotStaleError) instead of silently serving a scheduled-times-as-live board.
