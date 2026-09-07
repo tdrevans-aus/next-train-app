@@ -102,6 +102,8 @@ const SMOKE_SCRIPTS = [
   "hong-kong-line-map-conformance.mjs",
   "perth-line-map-conformance.mjs",
   "london-nearby-chips.mjs",
+  "london-catalog-no-duplicate-stops.mjs",
+  "london-picker-no-duplicate-stops.mjs",
   "uppsala-dogfood-gate.mjs",
   "uppsala-line-map-conformance.mjs",
   "helsinki-dogfood-gate.mjs",
