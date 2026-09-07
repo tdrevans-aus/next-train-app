@@ -7,9 +7,8 @@
  * Usage: node qa/late-leave-slider-stays.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
-
-const BASE = "http://localhost:3000";
+import { BASE, ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { armFixtureLeaveCard, waitForLeaveCardPhase } from "./helpers/journey-smoke.mjs";
 
 async function readLeaveCardState(page) {
   return page.evaluate(() => ({
@@ -156,7 +155,37 @@ async function run() {
         throw new Error(`A2 FAIL — route pin label did not recover to "Leave in": ${JSON.stringify(routeRecovered)}`);
       }
 
-      console.log("PASS — late-leave-slider-stays (A1 nearby pin, A2 route pin, A3 late reason line)");
+      // --- A4: late render -> empty fixture -> reason line cleared with the
+      // leave card (jim-brief-cold-boot-double-fetch). A late reason line
+      // must not linger once the leave card itself hides.
+      await armFixtureLeaveCard(page, { fixture: "late" });
+      await waitForLeaveCardPhase(page, "late", { timeout: 45000 });
+
+      const beforeEmpty = await readLeaveCardState(page);
+      if (beforeEmpty.cardHidden || beforeEmpty.reasonHidden || !beforeEmpty.reasonText) {
+        throw new Error(`A4 SETUP FAIL — expected a visible late reason before switching fixtures: ${JSON.stringify(beforeEmpty)}`);
+      }
+
+      await page.evaluate(async () => {
+        const url = new URL(location.href);
+        url.searchParams.set("fixture", "empty");
+        history.replaceState(null, "", url);
+        await window.nextTrainApp?.fetchNextTrain?.();
+      });
+      await page.waitForFunction(
+        () => document.getElementById("leave-card")?.hidden === true,
+        null,
+        { timeout: 15000 }
+      );
+      const afterEmpty = await readLeaveCardState(page);
+      if (!afterEmpty.cardHidden) {
+        throw new Error(`A4 FAIL — leave card did not hide on empty fixture: ${JSON.stringify(afterEmpty)}`);
+      }
+      if (!afterEmpty.reasonHidden || afterEmpty.reasonText) {
+        throw new Error(`A4 FAIL — reason line not cleared when leave card hid: ${JSON.stringify(afterEmpty)}`);
+      }
+
+      console.log("PASS — late-leave-slider-stays (A1 nearby pin, A2 route pin, A3 late reason line, A4 reason cleared on hide)");
     } finally {
       await browser.close();
     }

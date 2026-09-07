@@ -2,7 +2,7 @@
  * Shared helpers for pin behaviour regression tests.
  */
 
-export const BASE = "http://localhost:3000";
+export const BASE = process.env.QA_BASE || "http://localhost:3000";
 
 export function perthTodayKey(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-AU", {

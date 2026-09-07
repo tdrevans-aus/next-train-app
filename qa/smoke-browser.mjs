@@ -243,20 +243,18 @@ async function run() {
   await injectSwitcherJourneys(page, { activeId: "j-in-smoke" });
   await page.goto(`${BASE}/?test=1&fixture=empty`);
   await ensureJourneyMode(page);
-  // Cold boot + ensureJourneyMode's own enterJourneyMode() can each kick off a
-  // fetchNextTrain() call; the app's fetchId guard correctly renders only the
-  // winner, but that leaves the assertion racing an implicit double fetch. Force
-  // one settled, uncontended fetch so the wait below isn't timing-dependent on
-  // page-load asset contention (jim-brief-late-leave-slider-ci).
-  await page.evaluate(async () => {
-    await window.nextTrainApp?.fetchNextTrain?.();
-  });
+  // Cold boot + ensureJourneyMode's own enterJourneyMode() can each trigger
+  // fetchNextTrain(); app.js now coalesces concurrent triggers onto one
+  // in-flight request (jim-brief-cold-boot-double-fetch), so no forced extra
+  // fetch is needed here any more — the wait below proves the real behaviour.
   await page.waitForFunction(
     () => {
       const depart = document.getElementById("depart-display-time")?.textContent?.trim() ?? "";
       const label = document.getElementById("hero-depart-label")?.textContent?.trim() ?? "";
       const leaveHidden = Boolean(document.getElementById("leave-card")?.hidden);
-      if (!leaveHidden || !depart || depart === "—") {
+      const reasonEl = document.getElementById("leave-card-reason");
+      const reasonCleared = Boolean(reasonEl?.hidden) && !(reasonEl?.textContent?.trim());
+      if (!leaveHidden || !reasonCleared || !depart || depart === "—") {
         return false;
       }
       return depart.includes("No upcoming") || label === "Target train";
@@ -267,10 +265,17 @@ async function run() {
   const depart8 = (await page.locator("#depart-display-time").textContent())?.trim();
   const label8 = (await page.locator("#hero-depart-label").textContent())?.trim();
   const leaveHidden8 = await page.locator("#leave-card").isHidden();
-  if ((depart8?.includes("No upcoming") || label8 === "Target train") && leaveHidden8) {
+  const reasonHidden8 = await page.locator("#leave-card-reason").isHidden();
+  const reasonText8 = (await page.locator("#leave-card-reason").textContent())?.trim();
+  if (
+    (depart8?.includes("No upcoming") || label8 === "Target train") &&
+    leaveHidden8 &&
+    reasonHidden8 &&
+    !reasonText8
+  ) {
     pass(8, `${label8}: ${depart8}`);
   } else {
-    fail(8, JSON.stringify({ depart8, label8, leaveHidden8 }));
+    fail(8, JSON.stringify({ depart8, label8, leaveHidden8, reasonHidden8, reasonText8 }));
   }
 
   await page.goto(`${BASE}/?reset=1&test=1&fixture=error`);

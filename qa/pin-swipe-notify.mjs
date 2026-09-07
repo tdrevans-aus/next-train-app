@@ -10,10 +10,9 @@
  * Usage: node qa/pin-swipe-notify.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { BASE, ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 import { ensureJourneyMode } from "./helpers/journey-smoke.mjs";
 
-const BASE = "http://localhost:3000";
 const JOURNEY_ID = "j-pin-swipe";
 const HERO_TIMEOUT_MS = process.env.CI === "true" ? 90_000 : 45_000;
 

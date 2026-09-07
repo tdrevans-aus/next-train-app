@@ -206,6 +206,12 @@ let lastResumeRefreshAt = 0;
 let lastRenderedNext = null;
 let lastApiData = null;
 let journeyBoardFetchId = 0;
+// Cold-boot race fix: init and enterJourneyMode() (or route/journey switches)
+// can each trigger fetchNextTrain() before the first request settles. Coalesce
+// concurrent triggers onto one in-flight request instead of firing two.
+let journeyBoardFetchInFlight = null;
+let journeyBoardFetchInFlightStartId = null;
+let journeyBoardFetchRerunRequested = false;
 let stationCoords = null;
 const NEARBY_MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria"];
 const nearbyCoordsCache = new Map();
@@ -2932,7 +2938,8 @@ function updateLeaveCardReason(next) {
     const showReason = leavePhase === "late" || leavePhase === "missed";
     leaveCardReasonEl.hidden = !showReason;
     leaveCardReasonEl.textContent = showReason ? formatLeaveLateReasonLine(next) : "";
-  } catch {
+  } catch (error) {
+    console.warn("updateLeaveCardReason failed, hiding reason line", error);
     leaveCardReasonEl.hidden = true;
     leaveCardReasonEl.textContent = "";
   }
@@ -5632,6 +5639,37 @@ async function fetchNextTrain() {
     return;
   }
 
+  return fetchJourneyBoardCoalesced();
+}
+
+// Coalesces concurrent fetchNextTrain() triggers so only one
+// /api/next-train request is ever in flight for the journey board at a time.
+// A second trigger while a request is already in flight either reuses that
+// promise (nothing changed) or, if journeyBoardFetchId moved on in the
+// meantime (e.g. discardStaleJourneyBoard() from a mode/route switch),
+// schedules exactly one follow-up request after the in-flight one settles.
+function fetchJourneyBoardCoalesced() {
+  if (journeyBoardFetchInFlight) {
+    if (journeyBoardFetchId !== journeyBoardFetchInFlightStartId) {
+      journeyBoardFetchRerunRequested = true;
+    }
+    return journeyBoardFetchInFlight;
+  }
+
+  journeyBoardFetchInFlightStartId = journeyBoardFetchId;
+  journeyBoardFetchRerunRequested = false;
+  journeyBoardFetchInFlight = runJourneyBoardFetchCycle().finally(() => {
+    journeyBoardFetchInFlight = null;
+    journeyBoardFetchInFlightStartId = null;
+    if (journeyBoardFetchRerunRequested) {
+      journeyBoardFetchRerunRequested = false;
+      void fetchJourneyBoardCoalesced();
+    }
+  });
+  return journeyBoardFetchInFlight;
+}
+
+async function runJourneyBoardFetchCycle() {
   const fetchId = ++journeyBoardFetchId;
 
   try {
