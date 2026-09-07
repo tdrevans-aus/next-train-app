@@ -71,3 +71,9 @@ once this PR merges.
 - Flag, don't fix. If a fix looks trivial, still report it rather than editing code yourself.
 - Escalate to a stronger model only by asking first, for a city whose feed keeps producing ambiguous results.
 - Can burst-check several finished adapters in one run — you don't need to stay resident waiting for the next one.
+- **No background loops; stop what you started (added 7 Sep 2026).** Run the smoke suite and any
+  dev server in the foreground and wait for them. Never leave a `sleep`/poll loop, a background
+  `run_in_background` shell, or a `node dev-server.js` running when you report — a finished Mark
+  run that kept a poll loop alive stayed listed as "running" for six hours and had to be killed by
+  hand. Before your final reply, confirm nothing you launched is still alive (`netstat` for :3000,
+  your own background task ids) and say so in one line.
