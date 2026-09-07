@@ -5656,9 +5656,15 @@ function fetchJourneyBoardCoalesced() {
     return journeyBoardFetchInFlight;
   }
 
-  journeyBoardFetchInFlightStartId = journeyBoardFetchId;
+  // Bump the id here, synchronously, and snapshot the freshly-bumped value
+  // *after* the bump — not before calling the cycle — so a second trigger
+  // that arrives while this cycle is still in flight (with no intervening
+  // discardStaleJourneyBoard()/route switch) sees a matching id and does
+  // not schedule a spurious follow-up fetch.
+  const fetchId = ++journeyBoardFetchId;
+  journeyBoardFetchInFlightStartId = fetchId;
   journeyBoardFetchRerunRequested = false;
-  journeyBoardFetchInFlight = runJourneyBoardFetchCycle().finally(() => {
+  journeyBoardFetchInFlight = runJourneyBoardFetchCycle(fetchId).finally(() => {
     journeyBoardFetchInFlight = null;
     journeyBoardFetchInFlightStartId = null;
     if (journeyBoardFetchRerunRequested) {
@@ -5669,9 +5675,7 @@ function fetchJourneyBoardCoalesced() {
   return journeyBoardFetchInFlight;
 }
 
-async function runJourneyBoardFetchCycle() {
-  const fetchId = ++journeyBoardFetchId;
-
+async function runJourneyBoardFetchCycle(fetchId) {
   try {
     const result = await fetchJson(apiUrl(`/api/next-train?${buildApiParams()}`), 20000);
 
