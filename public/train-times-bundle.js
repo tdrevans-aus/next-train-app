@@ -52,7 +52,7 @@ var NextTrainTimes = (() => {
     if (DESTINATION_ALIASES[trimmed]) {
       return DESTINATION_ALIASES[trimmed];
     }
-    const cleaned = trimmed.replace(/\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station)$/i, "").replace(/\s+(&|and)\s+/g, " and ").replace(/\s+via\s+.*$/i, "").replace(/check front of train/i, "").trim();
+    const cleaned = trimmed.replace(/\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station)$/i, "").replace(/\s+\(London\)$/i, "").replace(/\s+(&|and)\s+/g, " and ").replace(/\s+via\s+.*$/i, "").replace(/check front of train/i, "").trim();
     if (DESTINATION_ALIASES[cleaned]) {
       return DESTINATION_ALIASES[cleaned];
     }
