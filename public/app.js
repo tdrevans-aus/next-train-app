@@ -2229,8 +2229,21 @@ function maybeAutoSelectJourney() {
     return;
   }
 
+  // Pinned-commute and scheduled-window auto-select are Journeys-tab concepts only
+  // (findActiveCommuteTargetPinId/findScheduledJourneyId both filter to Journey-kind
+  // journeys). While a Route is the active board (Routes tab), a Journey elsewhere
+  // becoming pinned or entering its Active window must never hijack the Route — the
+  // Routes tab's active journey is owned solely by ensureActiveJourneyForTab/switchJourney.
+  if (chromeTravelTab === "routes") {
+    return;
+  }
+
   const pinnedCommuteId = findActiveCommuteTargetPinId();
   if (pinnedCommuteId) {
+    if (isManualOverrideBlockingAuto(pinnedCommuteId)) {
+      return;
+    }
+
     const pinnedInSchedule = settings.journeys.some(
       (journey) => journey.id === pinnedCommuteId && journeyMatchesSchedule(journey),
     );
