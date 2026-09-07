@@ -32,6 +32,10 @@ export default async function handler(req, res) {
     name: entry.name,
     lat: entry.lat ?? null,
     lng: entry.lng ?? null,
+    // docs/jim-brief-no-live-feed-stops-out-of-picker.md: carried through as-is
+    // (listMultiCityStations already defaults it to true when absent) so
+    // every other live city's response is byte-identical apart from this key.
+    liveFeed: entry.liveFeed,
   }));
 
   res.setHeader("Cache-Control", "public, s-maxage=3600");

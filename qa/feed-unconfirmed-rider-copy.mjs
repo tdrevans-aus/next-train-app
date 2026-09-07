@@ -9,9 +9,23 @@
  * region and asserts the rider-facing shape — then asserts, across every
  * probed response, that no `error` string leaks a doc path, an agent name,
  * or GTFS jargon.
+ *
+ * docs/jim-brief-no-live-feed-stops-out-of-picker.md (7 Sep 2026): these six
+ * stops now also carry `liveFeed: false` in their region's stations.json, so
+ * they're no longer offered by a picker or Near me — but /api/board must
+ * keep resolving them exactly as before when addressed directly by name.
+ * That's the safety net for a journey saved on one of these stops before
+ * this change (rare, but possible) — this gate re-asserts it every stop
+ * flagged `liveFeed: false` still 503s here, not a silent 400/404.
+ *
  * Usage: node qa/feed-unconfirmed-rider-copy.mjs
  */
 import board from "../api/board.js";
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 function assert(condition, message) {
   if (!condition) {
@@ -51,7 +65,9 @@ async function callBoard(query) {
 // api/board.js as 503 FEED_UNCONFIRMED with server-built rider copy.
 const FEED_UNCONFIRMED_CASES = [
   { city: "greater-manchester", station: "Altrincham", agency: "Manchester Metrolink" },
-  { city: "east-midlands", station: "Beeston/Chilwell", agency: "Nottingham Express Transit (NET)" },
+  // Renamed from "Beeston/Chilwell" (docs/jim-brief-net-toton-lane-and-stockport-tram.md,
+  // 7 Sep 2026) — that was NET's own label for the branch, not a real stop name.
+  { city: "east-midlands", station: "Toton Lane", agency: "Nottingham Express Transit (NET)" },
   { city: "north-east", station: "Bank Foot", agency: "Tyne and Wear Metro" },
   { city: "south-yorkshire", station: "Malin Bridge", agency: "Sheffield Supertram" },
   { city: "glasgow", station: "Kelvinhall", agency: "Glasgow Subway" },
@@ -87,10 +103,20 @@ for (const { city, station, agency } of FEED_UNCONFIRMED_CASES) {
     `${city}/${station} rider error must name both the agency and the station: "${res.body.error}"`
   );
   allErrorStrings.push(res.body.error);
-  console.log(`  ok ${city}/${station}: 503 FEED_UNCONFIRMED — "${res.body.error}"`);
+
+  // docs/jim-brief-no-live-feed-stops-out-of-picker.md: confirm this is
+  // actually one of the newly-flagged liveFeed: false stops (not some other
+  // reason it 503s) — the safety net this gate exists to prove.
+  const stops = JSON.parse(readFileSync(join(ROOT, "lib", "cities", city, "stations.json"), "utf8")).stops;
+  const catalogStop = stops.find(
+    (s) => s.name === station || (s.aliases ?? []).includes(station)
+  );
+  assert(catalogStop?.liveFeed === false, `${city}/${station} must resolve to a stations.json entry carrying liveFeed: false`);
+
+  console.log(`  ok ${city}/${station}: 503 FEED_UNCONFIRMED — "${res.body.error}" (liveFeed: false, picker/Near me exclusion doesn't block direct /api/board)`);
 }
 
-console.log("PASS feed-unconfirmed-rider-copy: all 6 no-live-feed stops return 503 FEED_UNCONFIRMED with rider copy");
+console.log("PASS feed-unconfirmed-rider-copy: all 6 no-live-feed stops return 503 FEED_UNCONFIRMED with rider copy, and /api/board still resolves them directly despite liveFeed: false");
 
 // MissingDarwinTokenError is an ops failure, not a rider-facing feed gap —
 // only exercise this (network-free — the token check happens before any

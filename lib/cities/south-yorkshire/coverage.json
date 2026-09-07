@@ -10,7 +10,7 @@
   "partial": [
     {
       "label": "Sheffield Supertram",
-      "detail": "On the catalog, but the tram operator has no confirmed public live-times feed since changing hands in 2024, so tram boards show an explicit message rather than made-up times."
+      "detail": "On the catalog, but the tram operator has no confirmed public live-times feed since changing hands in 2024 — its stops aren't offered in the station picker or Near me for now, rather than being selectable and then showing an error. They stay on file for when a confirmed feed exists."
     }
   ],
   "notCovered": [

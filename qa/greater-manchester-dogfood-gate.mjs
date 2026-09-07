@@ -33,7 +33,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
-import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain, listMultiCityStations, findNearestStation } from "../lib/cities/live-city-api.js";
+import { assertNoLiveFeedStopsExcluded } from "./lib/no-live-feed-gate-helper.mjs";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import {
@@ -470,6 +471,21 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
+// docs/jim-brief-no-live-feed-stops-out-of-picker.md: every Metrolink stop
+// carries liveFeed: false, matches scripts/list-no-live-feed-stops.mjs, is
+// carried through by listMultiCityStations, and is never nominated by
+// findNearestStation.
+assertNoLiveFeedStopsExcluded({
+  region: "greater-manchester",
+  readFileSync,
+  join,
+  ROOT,
+  listMultiCityStations,
+  findNearestStation,
+  assert,
+  sample: { name: "Altrincham", lat: 53.38809, lng: -2.347193 },
+});
+
 console.log(
-  "greater-manchester-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 4 rail + 14 Metrolink stations, doNotGroup at Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, Perth Australia stays green)"
+  "greater-manchester-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 4 rail + 14 Metrolink stations, doNotGroup at Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, all 14 Metrolink stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
 );

@@ -128,6 +128,7 @@ const SMOKE_SCRIPTS = [
   "london-se-national-rail-dogfood-gate.mjs",
   "greater-manchester-dogfood-gate.mjs",
   "feed-unconfirmed-rider-copy.mjs",
+  "no-live-feed-stops-gate.mjs",
   "cumbria-dogfood-gate.mjs",
   "liverpool-city-region-dogfood-gate.mjs",
   "southwest-dogfood-gate.mjs",

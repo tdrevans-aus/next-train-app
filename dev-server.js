@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import express from "express";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -557,10 +558,52 @@ app.get("/api/city-stations", (req, res) => {
     name: entry.name,
     lat: entry.lat ?? null,
     lng: entry.lng ?? null,
+    // docs/jim-brief-no-live-feed-stops-out-of-picker.md: keep this in sync
+    // with api/city-stations.js — carried through as-is (listMultiCityStations
+    // already defaults it to true when absent).
+    liveFeed: entry.liveFeed,
   }));
 
   res.setHeader("Cache-Control", "public, s-maxage=3600");
   res.json({ city, stations });
+});
+
+// docs/jim-brief-help-coverage-notes.md: mirrors api/coverage-notes.js so
+// public/help-coverage.js's dev-server fallback (bundled file, then this
+// route) actually has something to load locally — the bundled
+// public/coverage-notes/<city>.json is gitignored and only exists after
+// scripts/write-coverage-notes.mjs runs, which most local sessions haven't.
+app.get("/api/coverage-notes", (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+
+  if (!gateRequest(req, res)) {
+    return;
+  }
+
+  const city = req.query.city ?? "";
+  const cityGate = assertCityLive(city);
+  if (!cityGate.ok) {
+    res.status(cityGate.status).json({
+      error: cityGate.error,
+      city: cityGate.city,
+      integration: cityGate.integration,
+    });
+    return;
+  }
+
+  const file = join(__dirname, "lib", "cities", cityGate.city.id, "coverage.json");
+  let notes;
+  try {
+    notes = JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    res.status(404).json({ error: "No coverage notes for this city yet", city: cityGate.city.id });
+    return;
+  }
+
+  res.setHeader("Cache-Control", "public, s-maxage=3600");
+  res.json({ region: cityGate.city.id, ...notes });
 });
 
 app.get("/api/dev/board", async (req, res) => {

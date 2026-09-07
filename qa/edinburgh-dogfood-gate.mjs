@@ -41,7 +41,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
-import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain, listMultiCityStations, findNearestStation } from "../lib/cities/live-city-api.js";
+import { assertNoLiveFeedStopsExcluded } from "./lib/no-live-feed-gate-helper.mjs";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import {
@@ -463,6 +464,21 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
+// docs/jim-brief-no-live-feed-stops-out-of-picker.md: every Trams stop
+// carries liveFeed: false, matches scripts/list-no-live-feed-stops.mjs, is
+// carried through by listMultiCityStations, and is never nominated by
+// findNearestStation.
+assertNoLiveFeedStopsExcluded({
+  region: "edinburgh",
+  readFileSync,
+  join,
+  ROOT,
+  listMultiCityStations,
+  findNearestStation,
+  assert,
+  sample: { name: "Newhaven", lat: 55.979921, lng: -3.1884628 },
+});
+
 console.log(
-  "edinburgh-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 3 rail + 22 Trams stations, single-hub shape distinct from Glasgow, doNotGroup at Edinburgh Waverley and Haymarket, Falkirk High + Edinburgh Park excluded, Caledonian Sleeper excluded at Waverley only, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Trams dispatch correctly surfaces EdinburghTramsFeedUnverifiedError rather than the static label list, Perth Australia stays green)"
+  "edinburgh-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 3 rail + 22 Trams stations, single-hub shape distinct from Glasgow, doNotGroup at Edinburgh Waverley and Haymarket, Falkirk High + Edinburgh Park excluded, Caledonian Sleeper excluded at Waverley only, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Trams dispatch correctly surfaces EdinburghTramsFeedUnverifiedError rather than the static label list, all 22 Trams stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
 );

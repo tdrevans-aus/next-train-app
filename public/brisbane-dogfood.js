@@ -15,6 +15,7 @@
     coords: {},
     directionsByStation: {},
     modesByName: {},
+    liveFeedByName: {},
     available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, amsterdam: true, rotterdam: true, vancouver: true, canberra: true, "gold-coast": true, newcastle: true, auckland: true, stockholm: true, goteborg: true, wellington: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true, solent: true, "south-wales": true, "west-yorkshire": true, "thames-valley": true, "greater-anglia": true, "rest-of-wales": true, "rest-of-scotland": true, "london-se-national-rail": true, "southwest": true, "greater-manchester": true, "south-yorkshire": true, "north-east": true, glasgow: true, "edinburgh": true, "cumbria": true },
   };
 
@@ -136,12 +137,42 @@
     // occurrence's mode, in catalog order, so the picker can disambiguate
     // duplicate labels — see docs/jim-brief-donotgroup-picker-disambiguation.md.
     const modesByName = {};
+    // Parallel to modesByName, same push order per occurrence — carries
+    // `liveFeed` through from the catalog row, for every occurrence, whether
+    // or not it ends up in `stations`/`coords` below
+    // (docs/jim-brief-no-live-feed-stops-out-of-picker.md).
+    const liveFeedByName = {};
     const list = Array.isArray(rows) ? rows : (Array.isArray(rows?.stops) ? rows.stops : (Array.isArray(rows?.stations) ? rows.stations : []));
     for (const row of list) {
       const name = typeof row === "string" ? row : row?.name;
       if (!name) {
         continue;
       }
+      const mode = typeof row === "object" && row ? row.mode : null;
+      if (!modesByName[name]) {
+        modesByName[name] = [];
+      }
+      modesByName[name].push(mode || null);
+
+      const liveFeed = typeof row === "object" && row && row.liveFeed === false ? false : true;
+      if (!liveFeedByName[name]) {
+        liveFeedByName[name] = [];
+      }
+      liveFeedByName[name].push(liveFeed);
+
+      if (!liveFeed) {
+        // This occurrence's operator has no confirmed live-departures feed and
+        // can never produce a board, so it's excluded from the selectable
+        // stations/coords/directions below — a picker, Near me, or the
+        // nearest-station calculation must never offer or nominate it. It
+        // stays visible via modesByName/liveFeedByName above (and in the raw
+        // catalog this function reads from) for callers that need the full
+        // picture. A same-named doNotGroup entry that IS live (e.g. Manchester
+        // Victoria's National Rail layer) is unaffected — this only drops the
+        // dead occurrence, never the whole name.
+        continue;
+      }
+
       stations.push(name);
       // UK packs ship `lat: null` for stations that haven't been geocoded yet.
       // Number(null) is 0, so without the null check every such station landed
@@ -155,13 +186,8 @@
       if (Array.isArray(row?.directions) && row.directions.length) {
         directionsByStation[name] = row.directions.slice();
       }
-      const mode = typeof row === "object" && row ? row.mode : null;
-      if (!modesByName[name]) {
-        modesByName[name] = [];
-      }
-      modesByName[name].push(mode || null);
     }
-    return { stations, coords, directionsByStation, modesByName };
+    return { stations, coords, directionsByStation, modesByName, liveFeedByName };
   }
 
   async function loadCatalog(city) {
@@ -217,6 +243,7 @@
         state.coords = {};
         state.directionsByStation = {};
         state.modesByName = {};
+        state.liveFeedByName = {};
       }
       return false;
     }
@@ -258,6 +285,7 @@
       ...(catalog.directionsByStation ?? {}),
     };
     state.modesByName = catalog.modesByName ?? {};
+    state.liveFeedByName = catalog.liveFeedByName ?? {};
     state.active = true;
     state.ready = true;
     console.log(`[NextTrainDogfood] city mounted: ${id} (${catalog.stations.length} stations)`);
@@ -272,6 +300,7 @@
     state.coords = {};
     state.directionsByStation = {};
     state.modesByName = {};
+    state.liveFeedByName = {};
   }
 
   async function loadCoordsForCity(city) {
@@ -300,6 +329,15 @@
     // ["train", "metro"] for Liverpool Lime Street). See
     // docs/jim-brief-donotgroup-picker-disambiguation.md.
     getStationModesByName: () => state.modesByName,
+    // Same shape as getStationModesByName — per printed name, one boolean per
+    // catalog occurrence, in catalog order (docs/jim-brief-no-live-feed-stops-out-of-picker.md).
+    // A stop whose operator has no confirmed live-departures feed is `false`;
+    // absent/true otherwise. Records every occurrence, including the ones
+    // already dropped from getStations()/getCoords() above (see
+    // parseCatalogRows) — kept for callers that need the full picture (e.g.
+    // a future "why isn't my stop here?" surface), not currently consumed by
+    // the picker, which relies on getStations() already excluding them.
+    getStationLiveFeedByName: () => state.liveFeedByName,
     getDirectionsForStation(station) {
       const name = String(station || "").trim();
       if (!name) {

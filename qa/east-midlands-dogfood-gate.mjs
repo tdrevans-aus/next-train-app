@@ -33,7 +33,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
-import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
+import { isMultiCity, getMultiCityDirections, listMultiCityStations, findNearestStation } from "../lib/cities/live-city-api.js";
+import { assertNoLiveFeedStopsExcluded } from "./lib/no-live-feed-gate-helper.mjs";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import {
@@ -409,6 +410,20 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
+// docs/jim-brief-no-live-feed-stops-out-of-picker.md: every NET stop carries
+// liveFeed: false, matches scripts/list-no-live-feed-stops.mjs, is carried
+// through by listMultiCityStations, and is never nominated by findNearestStation.
+assertNoLiveFeedStopsExcluded({
+  region: "east-midlands",
+  readFileSync,
+  join,
+  ROOT,
+  listMultiCityStations,
+  findNearestStation,
+  assert,
+  sample: { name: "Toton Lane", lat: 52.91843689308, lng: -1.26234261331 },
+});
+
 console.log(
-  "east-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 6 rail + 4 NET stations, doNotGroup at Nottingham Station across both modes, National Rail directions derived live from Darwin with no static line map, direction-hubs.json loads/validates and Alfreton/Chesterfield->Nottingham hub anchoring collapses the operator-split Nottingham/Norwich chips, exact-chip routing table (hub/exact/undirected) proven token-free via planEastMidlandsNextTrainFetch with the national rail-crs-index fallback for out-of-region termini, NET dispatch correctly surfaces NetFeedUnconfirmedError rather than the static label list, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL stay green)"
+  "east-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 6 rail + 4 NET stations, doNotGroup at Nottingham Station across both modes, National Rail directions derived live from Darwin with no static line map, direction-hubs.json loads/validates and Alfreton/Chesterfield->Nottingham hub anchoring collapses the operator-split Nottingham/Norwich chips, exact-chip routing table (hub/exact/undirected) proven token-free via planEastMidlandsNextTrainFetch with the national rail-crs-index fallback for out-of-region termini, NET dispatch correctly surfaces NetFeedUnconfirmedError rather than the static label list, all 4 NET stops flagged liveFeed: false and excluded from the picker/Near me, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL stay green)"
 );
