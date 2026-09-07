@@ -13,6 +13,7 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
+import { assertLiveBoardTripsHaveDisplayTimes } from "../lib/providers/contract.js";
 import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
@@ -417,6 +418,24 @@ if (hasVasttrafikCreds) {
         chips.has(trip.destination),
         `live: ${station} board trip destination "${trip.destination}" ` +
           `(raw "${trip.rawDestination}") must be one of the offered chips: ${[...chips].join(", ")}`
+      );
+    }
+  }
+
+  // docs/jim-brief-goteborg-display-time.md: every live board trip must carry
+  // a rider-facing displayTime/scheduledDisplayTime string — regression
+  // introduced by PR #332's live-only rewrite, which never set them.
+  for (const station of [TRAM_HUB, "Lerum Station", "Alingsås Station"]) {
+    const board = await fetchStationBoard(station);
+    assertLiveBoardTripsHaveDisplayTimes(board, `goteborg ${station}`);
+    for (const trip of board.trips) {
+      assert(
+        /^\d{2}:\d{2}$/.test(trip.displayTime),
+        `live: ${station} board trip displayTime must be HH:mm, got ${JSON.stringify(trip.displayTime)}`
+      );
+      assert(
+        /^\d{2}:\d{2}$/.test(trip.scheduledDisplayTime),
+        `live: ${station} board trip scheduledDisplayTime must be HH:mm, got ${JSON.stringify(trip.scheduledDisplayTime)}`
       );
     }
   }

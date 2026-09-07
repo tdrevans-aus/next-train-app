@@ -252,3 +252,13 @@ re-check `next !== null` during Göteborg service hours before treating this as 
 Registry `integration`/`notes` text (unchanged — out of scope, "Do not touch ... the registry")
 still describes the retired Trafiklab timetable fallback and is now stale; flagged for whoever
 next edits `lib/providers/registry.js`'s Göteborg entry.
+
+**7 Sep 2026 (docs/jim-brief-goteborg-display-time.md).** Every live trip `mapVasttrafikDeparture`
+(`lib/providers/goteborg.js`) emits must carry `displayTime`/`scheduledDisplayTime` (`HH:mm`,
+`Europe/Stockholm`, via the formatter now exported as `formatClock` from
+`lib/providers/stockholm.js`), `platform` (`stopPoint.platform` / `stopPoint.designation`, else
+`""`), and `realtime: true|false` (`estimatedTime` present) — the live-only rewrite in PR #332
+dropped the shared GTFS board builder that used to derive these, leaving riders with a blank
+time. `lib/providers/contract.js` now exports `assertLiveBoardTripsHaveDisplayTimes(board,
+label)`, wired into `qa/goteborg-dogfood-gate.mjs` against Brunnsparken/Lerum Station/Alingsås
+Station with real credentials.
