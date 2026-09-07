@@ -3,8 +3,7 @@
  * Usage: node qa/journey-kind.mjs
  */
 import { chromium } from "playwright";
-
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });
