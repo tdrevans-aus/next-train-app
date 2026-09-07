@@ -52,7 +52,7 @@ var NextTrainTimes = (() => {
     if (DESTINATION_ALIASES[trimmed]) {
       return DESTINATION_ALIASES[trimmed];
     }
-    const cleaned = trimmed.replace(/\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station)$/i, "").replace(/\s+(&|and)\s+/g, " and ").replace(/\s+via\s+.*$/i, "").replace(/check front of train/i, "").trim();
+    const cleaned = trimmed.replace(/\s+(Underground Station|DLR Station|Rail Station|Tram Stop|Station)$/i, "").replace(/\s+\(London\)$/i, "").replace(/\s+(&|and)\s+/g, " and ").replace(/\s+via\s+.*$/i, "").replace(/check front of train/i, "").trim();
     if (DESTINATION_ALIASES[cleaned]) {
       return DESTINATION_ALIASES[cleaned];
     }
@@ -74,6 +74,7 @@ var NextTrainTimes = (() => {
     }
     return aliased;
   }
+  var UPCOMING_BOARDING_GRACE_MS = 3 * 60 * 1e3;
   function destinationMatchesFilter(tripDestination, filterDestination, tripLine = "") {
     const trip = normalizeDestination(tripDestination);
     const filter = normalizeDestination(filterDestination);
@@ -202,7 +203,8 @@ var NextTrainTimes = (() => {
     return enrichTripTiming(internal);
   }
   function pickUpcomingTrips(trips, destination, now = /* @__PURE__ */ new Date()) {
-    return trips.filter((trip) => destinationMatchesFilter(trip.destination, destination, trip.line)).filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture);
+    const cutoff = now.getTime() - UPCOMING_BOARDING_GRACE_MS;
+    return trips.filter((trip) => destinationMatchesFilter(trip.destination, destination, trip.line)).filter((trip) => trip.liveDeparture.getTime() > cutoff).sort((a, b) => a.liveDeparture - b.liveDeparture);
   }
   function roundMinutes(ms) {
     return Math.round(ms / 6e4);
