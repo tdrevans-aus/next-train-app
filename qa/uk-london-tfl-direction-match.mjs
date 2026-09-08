@@ -78,6 +78,8 @@ import {
   parseTflArrivalDeparture,
   resolveTflStop,
   findTerminatingArrivals,
+  dedupeTrips,
+  tripDedupKey,
 } from "../lib/providers/uk-tfl.js";
 import { pickUpcomingTrips, buildNextTrainResponse } from "../lib/train-times-core.js";
 
@@ -469,6 +471,229 @@ for (const [stationName, direction] of Object.entries(TERMINUS_STATIONS)) {
     console.log(
       `  OK   Gospel Oak (normal board, ${gospelOakUpcoming.length} upcoming) unaffected — byte-identical with/without terminatingTrips, arrivalsOnly absent: ${before.arrivalsOnly === undefined}`
     );
+  }
+}
+
+// --- DLR dedup-key checks (docs/jim-brief-dlr-dedup-key.md) ---
+//
+// Root cause: TfL's DLR /Arrivals feed sometimes reuses the same `id`/`vehicleId` across rows
+// with genuinely different destinations (confirmed live at Abbey Road and Beckton Park, 7 Sep
+// 2026). fetchStopBoard used to dedupe allTripsMap by trip.id, so 5 of 6 trains at Abbey Road
+// were silently dropped. The fix replaces the dedup key with tripDedupKey (line + resolved
+// destination + platform + departure time) — mode-agnostic, not DLR-special-cased.
+
+console.log("\nDLR dedup-key checks:");
+
+const dlrFixture = JSON.parse(
+  readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "dlr-dedup-arrivals.json"), "utf8")
+);
+const dlrNow = new Date(dlrFixture.capturedAt);
+assert(!Number.isNaN(dlrNow.getTime()), "dlr fixture.capturedAt must be a valid timestamp");
+
+const DLR_COLLISION_STATIONS = {
+  "Abbey Road": {
+    directions: ["DLR Beckton", "DLR Woolwich Arsenal", "DLR Stratford International"],
+    rawRowCount: 6,
+  },
+  "Beckton Park": {
+    directions: ["DLR Tower Gateway", "DLR Beckton"],
+    rawRowCount: 6,
+  },
+};
+
+for (const [stationName, expectation] of Object.entries(DLR_COLLISION_STATIONS)) {
+  const stationFixture = dlrFixture.stations[stationName];
+  assert(stationFixture, `dlr fixture missing station: ${stationName}`);
+  const naptanId = stationFixture.naptanId;
+  const rawRows = stationFixture.arrivals[naptanId];
+  assert(rawRows.length === expectation.rawRowCount, `${stationName}: expected ${expectation.rawRowCount} raw rows in fixture, found ${rawRows.length}`);
+
+  const parsedTrips = rawRows.map((row) => parseTflArrival(row, dlrNow)).filter(Boolean);
+  assert(parsedTrips.length === rawRows.length, `${stationName}: every raw row must parse to a trip (all are valid future DLR predictions)`);
+
+  // Sanity: the fixture really does reproduce the defect's shape — one shared upstream id across
+  // more than one distinct destination. If this ever stops being true the fixture has drifted
+  // from the live-confirmed defect and this gate would silently stop testing anything.
+  const uniqueUpstreamIds = new Set(rawRows.map((row) => row.id));
+  const uniqueDestinations = new Set(parsedTrips.map((trip) => trip.destination));
+  assert(uniqueUpstreamIds.size === 1, `${stationName}: fixture must reproduce a single shared upstream id (found ${uniqueUpstreamIds.size})`);
+  assert(uniqueDestinations.size > 1, `${stationName}: fixture must reproduce >1 distinct destination sharing that id (found ${uniqueDestinations.size})`);
+
+  // BEFORE: the old (pre-fix) dedup key — trip.id, which equals the colliding upstream id/vehicleId
+  // here — collapses all rows sharing that id down to one, regardless of destination. Simulated
+  // directly (not by calling production code, which no longer does this) purely to report the
+  // regression-proof before/after contrast this gate exists to guard.
+  const beforeMap = new Map();
+  for (const trip of parsedTrips) {
+    const existing = beforeMap.get(trip.id);
+    if (!existing || trip.liveDeparture < existing.liveDeparture) {
+      beforeMap.set(trip.id, trip);
+    }
+  }
+  const beforeCount = beforeMap.size;
+
+  // AFTER: production dedup path — dedupeTrips keyed by tripDedupKey. Passed as a single-fetch
+  // list here (mirrors fetchStopBoard fetching one naptanId and getting back rows that collide on
+  // TfL's own id) — every genuinely distinct destination/time survives.
+  const afterTrips = dedupeTrips([parsedTrips]);
+
+  console.log(
+    `  ${stationName}: ${rawRows.length} raw rows, 1 shared upstream id, ${uniqueDestinations.size} distinct destinations -> ` +
+      `before (id-keyed): ${beforeCount} surviving trip(s), after (tripDedupKey): ${afterTrips.length} surviving trip(s)`
+  );
+
+  if (beforeCount >= rawRows.length) {
+    console.error(`  FAIL ${stationName}: fixture doesn't reproduce the old bug (id-keyed dedup should have collapsed rows, got ${beforeCount})`);
+    failures++;
+  }
+  if (afterTrips.length !== rawRows.length) {
+    console.error(`  FAIL ${stationName}: expected all ${rawRows.length} rows to survive tripDedupKey dedup, got ${afterTrips.length}`);
+    failures++;
+  }
+
+  for (const direction of expectation.directions) {
+    const upcoming = pickUpcomingTrips(afterTrips, direction, dlrNow);
+    if (upcoming.length === 0) {
+      console.error(`  FAIL ${stationName}: direction "${direction}" matches 0 trips after the dedup fix (would still be broken)`);
+      failures++;
+    } else {
+      console.log(`  OK   ${stationName}: direction "${direction}" -> ${upcoming.length} trip(s)`);
+    }
+  }
+}
+
+// --- alsoNaptanIds fan-out must still collapse to one row (docs/jim-brief-london-tram-duplicate-stops.md, PR #344) ---
+//
+// Mocked rather than live-captured: no DLR station has alsoNaptanIds (the fold-in is a
+// tram/Overground platform-id pattern), and this must hold for every mode tripDedupKey serves, not
+// just DLR — a synthetic same-train-fetched-twice pair proves the key's collapse half of the
+// contract independently of live traffic/time of day.
+{
+  console.log("\nalsoNaptanIds fan-out collapse check (mocked):");
+
+  const now = new Date("2026-09-07T15:00:00Z");
+  // Same physical train, fetched twice: once via the hub naptanId, once via a folded-in
+  // alsoNaptanId platform stop. The `id` field identifies the vehicle prediction itself, not the
+  // queried stop (see tripDedupKey's doc comment), so it's realistic for it to be identical across
+  // both fetches — everything else about the row (line/destination/platform/time) is identical too.
+  const sameTrainViaHub = parseTflArrival(
+    {
+      id: "999111",
+      vehicleId: "999111",
+      modeName: "tram",
+      lineName: "Tram",
+      towards: "",
+      destinationName: "Elmers End Tram Stop",
+      platformName: "1",
+      timeToStation: 300,
+    },
+    now
+  );
+  const sameTrainViaFoldedId = parseTflArrival(
+    {
+      id: "999111",
+      vehicleId: "999111",
+      modeName: "tram",
+      lineName: "Tram",
+      towards: "",
+      destinationName: "Elmers End Tram Stop",
+      platformName: "1",
+      timeToStation: 300,
+    },
+    now
+  );
+  // A genuinely different train that happens to share the duplicate's upstream id (the DLR
+  // pattern) — must still be preserved because destination/platform/time differ.
+  const genuinelyDifferentTrainSharedId = parseTflArrival(
+    {
+      id: "999111",
+      vehicleId: "999111",
+      modeName: "tram",
+      lineName: "Tram",
+      towards: "",
+      destinationName: "New Addington Tram Stop",
+      platformName: "2",
+      timeToStation: 600,
+    },
+    now
+  );
+  // A genuinely different train, on the same line/destination/platform at the exact same
+  // to-the-second time, but a different upstream id — the real Walthamstow Central case found
+  // while extending this gate (see tripDedupKey's doc comment). Must also be preserved.
+  const genuinelyDifferentTrainSameTime = parseTflArrival(
+    {
+      id: "888222",
+      vehicleId: "888222",
+      modeName: "tram",
+      lineName: "Tram",
+      towards: "",
+      destinationName: "Elmers End Tram Stop",
+      platformName: "1",
+      timeToStation: 300,
+    },
+    now
+  );
+
+  assert(
+    sameTrainViaHub && sameTrainViaFoldedId && genuinelyDifferentTrainSharedId && genuinelyDifferentTrainSameTime,
+    "fan-out fixture trips must all parse"
+  );
+  assert(
+    tripDedupKey(sameTrainViaHub) === tripDedupKey(sameTrainViaFoldedId),
+    "same train fetched via hub vs folded-in alsoNaptanId must produce an identical dedup key"
+  );
+  assert(
+    tripDedupKey(sameTrainViaHub) !== tripDedupKey(genuinelyDifferentTrainSameTime),
+    "two distinct trains sharing line/destination/platform/time but differing id must not produce the same dedup key"
+  );
+
+  // Mirrors fetchStopBoard: each naptanId fetched is its own per-fetch trip list, merged by
+  // dedupeTrips.
+  const merged = dedupeTrips([
+    [sameTrainViaHub],
+    [sameTrainViaFoldedId, genuinelyDifferentTrainSharedId, genuinelyDifferentTrainSameTime],
+  ]);
+
+  if (merged.length !== 3) {
+    console.error(`  FAIL expected 3 surviving trips (1 collapsed duplicate + 2 genuinely distinct), got ${merged.length}`);
+    failures++;
+  } else {
+    console.log(
+      `  OK   4 input rows across 2 fetches (1 genuine duplicate + 1 distinct train sharing the duplicate's ` +
+        `upstream id + 1 distinct train sharing line/destination/platform/time but not id) -> ${merged.length} surviving trips`
+    );
+  }
+}
+
+// --- No regression for tube/Overground: dedupeTrips must not introduce new collisions on
+// feeds whose ids were already unique (acceptance criterion 4) ---
+{
+  console.log("\nNo-regression checks (tube, Overground):");
+
+  const gospelOakTrips = parseStationTrips(fixture.stations["Gospel Oak"], now);
+  const gospelOakDeduped = dedupeTrips([gospelOakTrips]);
+  if (gospelOakDeduped.length !== gospelOakTrips.length) {
+    console.error(
+      `  FAIL Gospel Oak (Overground): trip count changed after dedupeTrips (${gospelOakTrips.length} -> ${gospelOakDeduped.length}) — regression`
+    );
+    failures++;
+  } else {
+    console.log(`  OK   Gospel Oak (Overground): ${gospelOakTrips.length} trips before and after dedupeTrips — unchanged`);
+  }
+
+  const walthamstowTrips = terminusFixture.stations["Walthamstow Central"].arrivals[
+    terminusFixture.stations["Walthamstow Central"].naptanId
+  ]
+    .map((row) => parseTflArrival(row, terminusNow))
+    .filter(Boolean);
+  const walthamstowDeduped = dedupeTrips([walthamstowTrips]);
+  if (walthamstowDeduped.length !== walthamstowTrips.length) {
+    console.error(
+      `  FAIL Walthamstow Central (tube): trip count changed after dedupeTrips (${walthamstowTrips.length} -> ${walthamstowDeduped.length}) — regression`
+    );
+    failures++;
+  } else {
+    console.log(`  OK   Walthamstow Central (tube): ${walthamstowTrips.length} trips before and after dedupeTrips — unchanged`);
   }
 }
 

@@ -1,0 +1,154 @@
+{
+  "_note": "DLR /Arrivals rows reproducing the id-collision defect (docs/jim-brief-dlr-dedup-key.md, docs/london-destination-reconciliation-audit.md section 2c). Abbey Road's 6 rows are the exact times/destinations confirmed live at 940GZZDLABR on 7 Sep 2026 (quoted verbatim in the brief's root-cause section: 'id=322784161 -> Beckton@96s | Woolwich Arsenal@216s | Woolwich Arsenal@757s | Stratford International@395s | @995s | @1476s'). Beckton Park's 6 rows reconstruct the audit's textual description of the second live-confirmed collision at 940GZZDLBPK (id -1340095081, 3 rows to Tower Gateway + 3 to Beckton) with representative spaced timeToStation values -- the audit quoted the destinations and row count but not per-row times for this station, and DLR was closed overnight (Europe/London ~02:00) at the point this fix was implemented, so a fresh live re-capture wasn't possible; captured/quoted Abbey Road data is used wherever exact live values exist. Both stations share one upstream id/vehicleId across genuinely distinct destinations, which is exactly the shape that broke id-keyed dedup.",
+  "capturedAt": "2026-09-07T15:32:00Z",
+  "stations": {
+    "Abbey Road": {
+      "naptanId": "940GZZDLABR",
+      "source": "live, quoted verbatim from docs/jim-brief-dlr-dedup-key.md root-cause section",
+      "arrivals": {
+        "940GZZDLABR": [
+          {
+            "id": "322784161",
+            "vehicleId": "322784161",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Beckton DLR Station",
+            "platformName": "1",
+            "timeToStation": 96
+          },
+          {
+            "id": "322784161",
+            "vehicleId": "322784161",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Woolwich Arsenal DLR Station",
+            "platformName": "1",
+            "timeToStation": 216
+          },
+          {
+            "id": "322784161",
+            "vehicleId": "322784161",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Woolwich Arsenal DLR Station",
+            "platformName": "1",
+            "timeToStation": 757
+          },
+          {
+            "id": "322784161",
+            "vehicleId": "322784161",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Stratford International DLR Station",
+            "platformName": "2",
+            "timeToStation": 395
+          },
+          {
+            "id": "322784161",
+            "vehicleId": "322784161",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Stratford International DLR Station",
+            "platformName": "2",
+            "timeToStation": 995
+          },
+          {
+            "id": "322784161",
+            "vehicleId": "322784161",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Stratford International DLR Station",
+            "platformName": "2",
+            "timeToStation": 1476
+          }
+        ]
+      }
+    },
+    "Beckton Park": {
+      "naptanId": "940GZZDLBPK",
+      "source": "reconstructed from docs/london-destination-gaps.json's textual description (id -1340095081, 3 rows Tower Gateway + 3 rows Beckton) -- exact per-row times not quoted there; DLR closed overnight at implementation time so a fresh live capture wasn't possible",
+      "arrivals": {
+        "940GZZDLBPK": [
+          {
+            "id": "-1340095081",
+            "vehicleId": "-1340095081",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Tower Gateway DLR Station",
+            "platformName": "1",
+            "timeToStation": 150
+          },
+          {
+            "id": "-1340095081",
+            "vehicleId": "-1340095081",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Tower Gateway DLR Station",
+            "platformName": "1",
+            "timeToStation": 550
+          },
+          {
+            "id": "-1340095081",
+            "vehicleId": "-1340095081",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Tower Gateway DLR Station",
+            "platformName": "1",
+            "timeToStation": 980
+          },
+          {
+            "id": "-1340095081",
+            "vehicleId": "-1340095081",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Beckton DLR Station",
+            "platformName": "2",
+            "timeToStation": 220
+          },
+          {
+            "id": "-1340095081",
+            "vehicleId": "-1340095081",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Beckton DLR Station",
+            "platformName": "2",
+            "timeToStation": 650
+          },
+          {
+            "id": "-1340095081",
+            "vehicleId": "-1340095081",
+            "modeName": "dlr",
+            "lineName": "DLR",
+            "lineId": "dlr",
+            "towards": "",
+            "destinationName": "Beckton DLR Station",
+            "platformName": "2",
+            "timeToStation": 1200
+          }
+        ]
+      }
+    }
+  }
+}
