@@ -55,6 +55,48 @@
  * (Walthamstow Central, Brixton, Morden, Epping, Cockfosters, High Barnet). Asserts the three
  * states from the brief's QA section:
  *
+ * Extended for docs/jim-brief-elizabeth-heathrow-normalization.md (8 Sep 2026): two independent
+ * 100%-failure normalization defects found by the full-network audit
+ * (docs/london-destination-reconciliation-audit.md).
+ *   1. Elizabeth line: TfL's raw `lineName` is the literal string "Elizabeth line", so every parsed
+ *      trip read e.g. "Elizabeth line Heathrow Terminal 4" against the catalog's offered "Elizabeth
+ *      Heathrow Terminal 4" -- never equal. Fixed by stripping a trailing `/\s+line$/i` from the
+ *      line-name portion before concatenation (`stripLineNameSuffix` in uk-tfl.js) -- confirmed live
+ *      against every rail-mode lineName TfL's `/Line/Mode/...` metadata currently emits (8 Sep 2026)
+ *      that "Elizabeth line" is the *only* one ending in " line"; the five Overground line names
+ *      (Mildmay, Windrush, Weaver, Lioness, Suffragette) plus Liberty and Waterloo & City are
+ *      unaffected, asserted directly below.
+ *   2. Piccadilly Heathrow: `towards` carries a branch-loop label ("Heathrow via T4 Loop", "Heathrow
+ *      T123 + 5") for Heathrow-branch trains, and the existing `via`-strip (load-bearing for genuine
+ *      cases like "Grange Hill via Woodford", "Hainault via Newbury Park" on the Central line, so
+ *      never removed) collapsed both terminals to bare "Heathrow". Fixed with a catalog-driven rule
+ *      (`stationOffersDestination` in lib/providers/uk/catalog.js): when the `towards`-derived
+ *      destination doesn't resolve to an offered direction at this station but `destinationName`'s
+ *      does, prefer `destinationName` -- never a hardcoded terminal-name special case, and it
+ *      degrades safely (keeps the `via`-stripped form) when neither resolves.
+ *
+ * While investigating, found a third, structurally distinct issue in the same defect class but not
+ * a text-normalization bug: `lib/cities/uk-london-tfl/stops.json` had Stratford's elizabeth-line/
+ * overground-carrying naptanId (910GSTFD) registered under a *different* catalog name, "Stratford
+ * (London)", than the tube/DLR entries' plain "Stratford" -- so `resolveTflStops("Stratford")`
+ * (name-matched only, per `matchTflEntry`) never included it, and `fetchStopBoard("Stratford")`
+ * structurally never fetched the one naptanId carrying Elizabeth-line (and Mildmay) arrivals at all,
+ * regardless of any text fix. Corrected the same way the tram-duplicate-stops fix
+ * (docs/jim-brief-london-tram-duplicate-stops.md) already handles this exact shape: fold the id into
+ * the surviving "Stratford" tube entry's `alsoNaptanIds` and drop the standalone duplicate-name
+ * entry, rather than adding new adapter logic. Live-confirmed both Elizabeth *and* Mildmay arrivals
+ * now reach the Stratford board.
+ *
+ * QA fixture (qa/fixtures/uk-london-tfl/elizabeth-piccadilly-heathrow-arrivals.json) is live-captured
+ * (8 Sep 2026, TFL_APP_KEY-authenticated, 450-600ms-paced requests) across Stratford, Tottenham Court
+ * Road (Elizabeth), Arnos Grove, Hatton Cross, Heathrow Terminals 2 & 3, Cockfosters (Piccadilly
+ * Heathrow), and Hainault (Central-line `via` regression). Each station's `capturedAt` is TfL's own
+ * earliest per-row `timestamp` field (not a locally-recorded wall-clock value), which avoids a real
+ * race this fixture's first draft hit: sequential 450-600ms-paced fetches across 7 stations drift the
+ * *local* capture clock tens of seconds past TfL's own data-generation time, which spuriously aged
+ * out a near-departure (Cockfosters' Terminal 4 service, 16 seconds out at TfL's own timestamp) by
+ * the time a single global "now" was recorded after the whole batch finished.
+ *
  * Extended for docs/jim-brief-dlr-dedup-key.md and its two 8 Sep 2026 amendments: `tripDedupKey`
  * and `dedupeTrips` are covered directly (below) with the DLR id-collision fixture and a
  * live-captured `alsoNaptanIds` fan-out fixture (qa/fixtures/uk-london-tfl/fanout-dedup-arrivals.json,
@@ -323,6 +365,285 @@ for (const name of ["London Bridge", "London City Airport", "London Fields", "Li
   const stop = resolveTflStop(name);
   assert(stop && stop.name === name, `resolveTflStop("${name}") must resolve to its own catalog entry`);
   console.log(`  OK   resolveTflStop("${name}") -> ${stop.naptanId} (${stop.name})`);
+}
+
+// --- Elizabeth line / Piccadilly Heathrow normalization
+// (docs/jim-brief-elizabeth-heathrow-normalization.md) ---
+
+console.log("\nElizabeth line suffix + Piccadilly Heathrow via-loop unit checks:");
+
+const ehNow = new Date("2026-09-08T06:00:00Z");
+const ehFuture = "2026-09-08T06:20:00Z";
+
+// Defect 1: "Elizabeth line" lineName must not leak a stray " line" token into the parsed
+// destination — the catalog's offered directions are "Elizabeth <terminus>", never "Elizabeth line
+// <terminus>".
+assertDestination(
+  'Elizabeth line "Heathrow Terminal 4 Rail Station" (Stratford)',
+  parseTflArrival(
+    { modeName: "elizabeth-line", lineName: "Elizabeth line", towards: "", destinationName: "Heathrow Terminal 4 Rail Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Stratford"
+  ).destination,
+  "Elizabeth Heathrow Terminal 4"
+);
+assertDestination(
+  'Elizabeth line "Shenfield Rail Station" (Tottenham Court Road)',
+  parseTflArrival(
+    { modeName: "elizabeth-line", lineName: "Elizabeth line", towards: "", destinationName: "Shenfield Rail Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Tottenham Court Road"
+  ).destination,
+  "Elizabeth Shenfield"
+);
+// The other two of Stratford's five offered Elizabeth termini (Abbey Wood, Reading) had zero raw
+// rows in the live fixture below (an early-Monday-morning service-frequency snapshot gap, not a
+// text-matching failure — see the fixture check's WARN for the live evidence) — covered here
+// deterministically so criterion 1 doesn't depend on catching a live train at capture time.
+assertDestination(
+  'Elizabeth line "Abbey Wood Rail Station" (Stratford)',
+  parseTflArrival(
+    { modeName: "elizabeth-line", lineName: "Elizabeth line", towards: "", destinationName: "Abbey Wood", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Stratford"
+  ).destination,
+  "Elizabeth Abbey Wood"
+);
+assertDestination(
+  'Elizabeth line "Reading Rail Station" (Stratford)',
+  parseTflArrival(
+    { modeName: "elizabeth-line", lineName: "Elizabeth line", towards: "", destinationName: "Reading Rail Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Stratford"
+  ).destination,
+  "Elizabeth Reading"
+);
+
+// Every other rail-mode lineName TfL currently emits (confirmed live 8 Sep 2026 against
+// /Line/Mode/tube,overground,elizabeth-line,dlr,tram) must be unaffected by the trailing-" line"
+// strip — none of them end in " line". The five Overground line names named explicitly in the
+// brief, plus Liberty (the sixth Overground brand) and Waterloo & City (the one other tube line
+// with an "&"/multi-word name), and DLR/Tram themselves.
+const UNAFFECTED_LINE_NAMES = [
+  "Mildmay",
+  "Windrush",
+  "Weaver",
+  "Lioness",
+  "Suffragette",
+  "Liberty",
+  "Waterloo & City",
+  "DLR",
+  "Tram",
+  "Bakerloo",
+  "Central",
+  "Circle",
+  "District",
+  "Hammersmith & City",
+  "Jubilee",
+  "Metropolitan",
+  "Northern",
+  "Piccadilly",
+  "Victoria",
+];
+for (const lineName of UNAFFECTED_LINE_NAMES) {
+  const trip = parseTflArrival(
+    { modeName: "tube", lineName, towards: "", destinationName: "Test Destination", expectedArrival: ehFuture },
+    ehNow
+  );
+  // normalizeDestination always spells out "&" as "and" (pre-existing, unrelated to this fix) —
+  // account for that in the expectation rather than asserting the raw "&" survives.
+  const expected = `${lineName.replace(/\s+&\s+/g, " and ")} Test Destination`;
+  assertDestination(`lineName "${lineName}" unaffected by the " line" strip`, trip.destination, expected);
+}
+
+// Defect 2: `towards` carries a branch-loop label that the (load-bearing, never-removed) `via`
+// strip collapses to bare "Heathrow" — must fall back to `destinationName`, which retains the
+// terminal number, and Terminal 4 / Terminal 5 must stay distinguished (a fix that collapses both
+// to the same string is a fail).
+assertDestination(
+  'Piccadilly "Heathrow via T4 Loop" (Arnos Grove)',
+  parseTflArrival(
+    { modeName: "tube", lineName: "Piccadilly", towards: "Heathrow via T4 Loop", destinationName: "Heathrow Terminal 4 Underground Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Arnos Grove"
+  ).destination,
+  "Piccadilly Heathrow Terminal 4"
+);
+assertDestination(
+  'Piccadilly "Heathrow T123 + 5" (Arnos Grove)',
+  parseTflArrival(
+    { modeName: "tube", lineName: "Piccadilly", towards: "Heathrow T123 + 5", destinationName: "Heathrow Terminal 5 Underground Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Arnos Grove"
+  ).destination,
+  "Piccadilly Heathrow Terminal 5"
+);
+{
+  const t4 = parseTflArrival(
+    { modeName: "tube", lineName: "Piccadilly", towards: "Heathrow via T4 Loop", destinationName: "Heathrow Terminal 4 Underground Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Cockfosters"
+  );
+  const t5 = parseTflArrival(
+    { modeName: "tube", lineName: "Piccadilly", towards: "Heathrow T123 + 5", destinationName: "Heathrow Terminal 5 Underground Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Cockfosters"
+  );
+  if (t4.destination === t5.destination) {
+    console.error(`  FAIL Terminal 4 and Terminal 5 collapsed to the same destination: "${t4.destination}"`);
+    failures++;
+  } else {
+    console.log(`  OK   Terminal 4 ("${t4.destination}") and Terminal 5 ("${t5.destination}") stay distinguished`);
+  }
+}
+
+// Regression guard: the `via` strip itself must still work for genuine Central-line cases, and the
+// new catalog-driven override must not fire when it shouldn't.
+assertDestination(
+  'Central "Hainault via Newbury Park" (Hainault) still resolves via the catalog-grouped canonical form',
+  parseTflArrival(
+    { modeName: "tube", lineName: "Central", towards: "Hainault via Newbury Park", destinationName: "Hainault Underground Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Hainault"
+  ).destination,
+  "Central Epping"
+);
+assertDestination(
+  'Central "Grange Hill via Woodford" (Grange Hill) — via strip still applies; safe degrade when neither form resolves to an offered direction',
+  parseTflArrival(
+    { modeName: "tube", lineName: "Central", towards: "Grange Hill via Woodford", destinationName: "Grange Hill Underground Station", expectedArrival: ehFuture },
+    ehNow,
+    undefined,
+    "Grange Hill"
+  ).destination,
+  "Central Grange Hill"
+);
+// Without a stationName (existing callers/tests that predate this fix), the override must never
+// fire — behaviour must be byte-identical to before this brief.
+assertDestination(
+  'Piccadilly "Heathrow via T4 Loop" with no stationName (backward-compatible default) stays via-stripped, not overridden',
+  parseTflArrival(
+    { modeName: "tube", lineName: "Piccadilly", towards: "Heathrow via T4 Loop", destinationName: "Heathrow Terminal 4 Underground Station", expectedArrival: ehFuture },
+    ehNow
+  ).destination,
+  "Piccadilly Heathrow"
+);
+
+// --- Live-captured fixture: Elizabeth line (Stratford, Tottenham Court Road) and Piccadilly
+// Heathrow (Arnos Grove, Hatton Cross, Heathrow Terminals 2 & 3, Cockfosters), plus Hainault for the
+// Central-line `via` regression — captured live 8 Sep 2026 (see file header for the capturedAt-race
+// note). ---
+
+console.log("\nElizabeth line / Piccadilly Heathrow live-fixture checks:");
+
+const ehFixture = JSON.parse(
+  readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "elizabeth-piccadilly-heathrow-arrivals.json"), "utf8")
+);
+
+function parseEhStation(stationName) {
+  const station = ehFixture.stations[stationName];
+  assert(station, `elizabeth/piccadilly fixture missing station: ${stationName}`);
+  const now = new Date(station.capturedAt);
+  assert(!Number.isNaN(now.getTime()), `${stationName}: capturedAt must be a valid timestamp`);
+  const trips = [];
+  for (const naptanId of Object.keys(station.arrivals)) {
+    for (const row of station.arrivals[naptanId]) {
+      const trip = parseTflArrival(row, now, undefined, stationName);
+      if (trip) {
+        trips.push(trip);
+      }
+    }
+  }
+  return { trips, now };
+}
+
+// Known-thin-at-capture-time directions: TfL's own raw feed held zero rows for these at capture
+// time (confirmed by inspecting the fixture's raw rows directly — not a matching failure, a real
+// service-frequency snapshot fact, same class as the existing gate's cross-branch-Weaver /
+// low-frequency-District WARN entries above and the audit's §4 category-4 "genuine absence of
+// service" verdict). Recorded here, not silently skipped.
+const EH_KNOWN_THIN_AT_CAPTURE = {
+  Stratford: new Set(["Elizabeth Abbey Wood", "Elizabeth Heathrow Terminal 4", "Elizabeth Reading"]),
+  Cockfosters: new Set(["Piccadilly Heathrow Terminal 4"]),
+};
+
+const EH_STATIONS = [
+  { name: "Stratford", prefixes: ["Elizabeth "] },
+  { name: "Tottenham Court Road", prefixes: ["Elizabeth "] },
+  { name: "Arnos Grove", prefixes: ["Piccadilly Heathrow"] },
+  { name: "Hatton Cross", prefixes: ["Piccadilly Heathrow"] },
+  { name: "Heathrow Terminals 2 & 3", prefixes: ["Piccadilly Heathrow"] },
+  { name: "Cockfosters", prefixes: ["Piccadilly Heathrow"] },
+];
+
+for (const { name, prefixes } of EH_STATIONS) {
+  const { trips, now } = parseEhStation(name);
+
+  // No leaked "line"/"via" text anywhere on this board.
+  for (const trip of trips) {
+    if (/\bvia\b/i.test(trip.destination) || /\bline\b/i.test(trip.destination)) {
+      console.error(`  FAIL ${name}: leaked "line"/"via" text in destination: "${trip.destination}"`);
+      failures++;
+    }
+  }
+
+  const directions = (directionsByStation[name] ?? []).filter((d) => prefixes.some((p) => d.startsWith(p)));
+  assert(directions.length > 0, `${name} must have at least one relevant offered direction in the catalog`);
+
+  for (const direction of directions) {
+    const upcoming = pickUpcomingTrips(trips, direction, now);
+    if (upcoming.length === 0) {
+      if (EH_KNOWN_THIN_AT_CAPTURE[name]?.has(direction)) {
+        console.warn(
+          `  WARN ${name}: direction "${direction}" had 0 raw rows in this live capture — a real ` +
+            `service-frequency snapshot gap, not a matching failure; not failing the gate on it`
+        );
+      } else {
+        console.error(`  FAIL ${name}: direction "${direction}" matches 0 parsed upcoming trips`);
+        failures++;
+      }
+      continue;
+    }
+    console.log(`  OK   ${name}: direction "${direction}" -> ${upcoming.length} trip(s)`);
+  }
+}
+
+// Distinction check: everywhere both Terminal 4 and Terminal 5 raw rows exist in the fixture, their
+// parsed destinations must differ (never collapse to the same string).
+for (const { name } of EH_STATIONS) {
+  const { trips } = parseEhStation(name);
+  const t4 = trips.filter((t) => t.destination === "Piccadilly Heathrow Terminal 4");
+  const t5 = trips.filter((t) => t.destination === "Piccadilly Heathrow Terminal 5");
+  if (t4.length > 0 && t5.length > 0) {
+    console.log(`  OK   ${name}: Terminal 4 (${t4.length}) and Terminal 5 (${t5.length}) both present and distinguished`);
+  }
+  const bareHeathrow = trips.filter((t) => t.destination === "Piccadilly Heathrow");
+  if (bareHeathrow.length > 0) {
+    console.error(`  FAIL ${name}: ${bareHeathrow.length} trip(s) still parsed to bare "Piccadilly Heathrow" (terminal number lost)`);
+    failures++;
+  }
+}
+
+// Central-line `via` regression, against the live-captured Hainault fixture (real "Hainault via
+// Newbury Park" rows).
+{
+  const { trips, now } = parseEhStation("Hainault");
+  const upcoming = pickUpcomingTrips(trips, "Central Epping", now);
+  if (upcoming.length === 0) {
+    console.error(`  FAIL Hainault: "Central Epping" (via-strip-dependent) matches 0 trips — via-strip regression`);
+    failures++;
+  } else {
+    console.log(`  OK   Hainault: "Central Epping" (via "Hainault via Newbury Park") -> ${upcoming.length} trip(s)`);
+  }
 }
 
 // --- Terminus arrivals-only board (docs/jim-brief-terminus-no-published-departures.md) ---

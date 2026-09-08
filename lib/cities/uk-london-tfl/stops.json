@@ -20,7 +20,7 @@
     "coach",
     "national-rail-only"
   ],
-  "stopCount": 508,
+  "stopCount": 507,
   "stops": [
     {
       "name": "Baker Street",
@@ -1076,7 +1076,9 @@
       "aliases": [
         "Stratford Underground Station"
       ],
-      "alsoNaptanIds": []
+      "alsoNaptanIds": [
+        "910GSTFD"
+      ]
     },
     {
       "name": "South Woodford",
@@ -3595,23 +3597,6 @@
       "lng": -0.59151,
       "aliases": [
         "Slough Rail Station"
-      ],
-      "alsoNaptanIds": []
-    },
-    {
-      "name": "Stratford (London)",
-      "naptanId": "910GSTFD",
-      "modes": [
-        "elizabeth-line",
-        "overground"
-      ],
-      "lines": [
-        "Elizabeth line"
-      ],
-      "lat": 51.541895,
-      "lng": -0.003397,
-      "aliases": [
-        "Stratford (London) Rail Station"
       ],
       "alsoNaptanIds": []
     },
