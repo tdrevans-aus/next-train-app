@@ -3865,7 +3865,7 @@ function renderTerminusArrivalsBoard(data) {
   if (terminusArrivalsEl && terminusArrivalsListEl && terminusArrivalsNoticeEl) {
     terminusArrivalsNoticeEl.textContent =
       arrivalsOnly.message ||
-      "This is the end of the line here — the operator doesn't publish departure times from this stop. Times below are arrivals.";
+      "Trains terminate here. Departure times aren't published — these are arrivals.";
     terminusArrivalsListEl.innerHTML = "";
     arrivals.forEach((trip) => {
       const item = document.createElement("li");

@@ -319,7 +319,7 @@ var NextTrainTimes = (() => {
       if (arrivals.length > 0) {
         response.arrivalsOnly = {
           reason: "terminus-no-published-departures",
-          message: "This is the end of the line here \u2014 the operator doesn't publish departure times from this stop. Times below are arrivals.",
+          message: "Trains terminate here. Departure times aren't published \u2014 these are arrivals.",
           arrivals
         };
       }
