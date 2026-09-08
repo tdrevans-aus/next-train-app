@@ -77,6 +77,9 @@ const leaveCountdownEl = document.getElementById("leave-countdown");
 const leaveCardReasonEl = document.getElementById("leave-card-reason");
 const leaveHintEl = document.getElementById("leave-hint");
 const preferredHintEl = document.getElementById("preferred-hint");
+const terminusArrivalsEl = document.getElementById("terminus-arrivals");
+const terminusArrivalsNoticeEl = document.getElementById("terminus-arrivals-notice");
+const terminusArrivalsListEl = document.getElementById("terminus-arrivals-list");
 const leaveAckBtn = document.getElementById("leave-ack-btn");
 const leaveNextTrainBtn = document.getElementById("leave-next-train-btn");
 const leaveCardActionsEl = document.getElementById("leave-card-actions");
@@ -3852,6 +3855,92 @@ function hideUpcomingDepartureBoard() {
   }
 }
 
+function hideTerminusArrivalsBoard() {
+  if (terminusArrivalsEl) {
+    terminusArrivalsEl.hidden = true;
+  }
+  if (terminusArrivalsListEl) {
+    terminusArrivalsListEl.innerHTML = "";
+  }
+}
+
+/**
+ * docs/jim-brief-terminus-no-published-departures.md — when the API's additive/optional
+ * `arrivalsOnly` field is present (only true at a terminus where the chosen direction has no
+ * published departures but the board holds real terminating arrivals), populate the hero and a
+ * dedicated list with those arrivals, clearly labelled as arrivals, plus the explanation. Every
+ * other board shape (including a genuinely empty one) leaves `arrivalsOnly` undefined and this
+ * is a no-op. Returns true when it rendered the arrivals-only state, so callers know not to fall
+ * through to "No upcoming trains".
+ */
+function renderTerminusArrivalsBoard(data) {
+  const arrivalsOnly = data?.arrivalsOnly;
+  const arrivals = Array.isArray(arrivalsOnly?.arrivals) ? arrivalsOnly.arrivals : [];
+  if (!arrivals.length) {
+    hideTerminusArrivalsBoard();
+    return false;
+  }
+
+  lastRenderedNext = null;
+  setHeroUrgency("calm");
+  if (heroDepartLabelEl) {
+    heroDepartLabelEl.textContent = "Arrives";
+  }
+  if (departCountdownEl) {
+    departCountdownEl.textContent = "—";
+  }
+  const first = arrivals[0];
+  if (departDisplayTimeEl) {
+    departDisplayTimeEl.textContent =
+      (first.line ? `${first.displayTime} · ${first.line} · Arriving` : `${first.displayTime} · Arriving`);
+    departDisplayTimeEl.dataset.time = first.displayTime;
+  }
+  if (heroScheduledTimeEl) {
+    heroScheduledTimeEl.hidden = true;
+  }
+  if (leaveCardEl) {
+    leaveCardEl.hidden = true;
+    leaveCardEl.classList.remove("leave-card--context");
+  }
+  if (preferredHintEl) {
+    preferredHintEl.hidden = true;
+  }
+  if (leaveCardActionsEl) {
+    leaveCardActionsEl.hidden = true;
+    leaveCardActionsEl.classList.remove("leave-card-actions--visible");
+  }
+  platformEl.textContent = first.platform || "—";
+  statusEl.textContent = "Arrival";
+  followingSectionEl.hidden = true;
+  hideUpcomingDepartureBoard();
+
+  if (terminusArrivalsEl && terminusArrivalsListEl && terminusArrivalsNoticeEl) {
+    terminusArrivalsNoticeEl.textContent =
+      arrivalsOnly.message ||
+      "Trains terminate here. Departure times aren't published — these are arrivals.";
+    terminusArrivalsListEl.innerHTML = "";
+    arrivals.forEach((trip) => {
+      const item = document.createElement("li");
+      const time = document.createElement("span");
+      time.className = "terminus-arrivals-time";
+      time.textContent = trip.displayTime ?? "—";
+      const meta = document.createElement("span");
+      meta.className = "terminus-arrivals-meta";
+      meta.textContent = `Arr · Pl ${trip.platform ?? "—"}${trip.line ? ` · ${trip.line}` : ""}`;
+      item.append(time, meta);
+      terminusArrivalsListEl.appendChild(item);
+    });
+    terminusArrivalsEl.hidden = false;
+  }
+
+  updateSwipeHint();
+  updateSwipeCues();
+  updateLeaveHint?.();
+  syncHeroPinChrome();
+  renderJourneySwitcher();
+  return true;
+}
+
 function resolveDepartureBoardSkip(data, { pinTrip = null, heroShowsPin = false, skipCount = skipTrains } = {}) {
   let boardSkip = skipCount;
   if (heroShowsPin && pinTrip) {
@@ -3940,6 +4029,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     hideLeaveCardReason();
   }
   hideUpcomingDepartureBoard();
+  hideTerminusArrivalsBoard();
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
@@ -3953,6 +4043,9 @@ function renderRouteJourney(data, { stale = false } = {}) {
       : "Updated just now";
 
   if (!next) {
+    if (renderTerminusArrivalsBoard(data)) {
+      return;
+    }
     lastRenderedNext = null;
     setHeroUrgency("calm");
     if (heroDepartLabelEl) {
@@ -4147,6 +4240,7 @@ function render(data, { stale = false } = {}) {
   lastLiveDisplayMinute = getPerthMinutesSinceMidnight();
   hideNearbyPinLeaveSurfaces();
   hideUpcomingDepartureBoard();
+  hideTerminusArrivalsBoard();
 
   if (!stale) {
     errorEl.hidden = true;
@@ -4189,6 +4283,10 @@ function render(data, { stale = false } = {}) {
       (emptyBoardPinState.heroMode === "preview" || emptyBoardPinState.showsTargetTrain)
     ) {
       renderJourneyTargetPreviewFace(journey, emptyBoardPinState);
+      return;
+    }
+
+    if (renderTerminusArrivalsBoard(data)) {
       return;
     }
 
@@ -7781,6 +7879,8 @@ function initNearbyModeFromModule() {
     getHeroDepartLabel,
     renderUpcomingDepartureBoard,
     hideUpcomingDepartureBoard,
+    renderTerminusArrivalsBoard,
+    hideTerminusArrivalsBoard,
     formatScheduledLine,
     formatHeroScheduledLine,
     renderStatusDisplay,

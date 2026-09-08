@@ -549,3 +549,56 @@ button.upcoming-departures-item:disabled {
   color: var(--muted);
   text-align: right;
 }
+
+/* Terminus arrivals-only board (docs/jim-brief-terminus-no-published-departures.md):
+   the operator publishes no forward departure times from this stop, so the board
+   shows terminating arrivals instead of a bare "No upcoming trains". */
+.terminus-arrivals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  animation: rise-in 0.55s ease 0.14s both;
+}
+
+.terminus-arrivals[hidden] {
+  display: none !important;
+}
+
+.terminus-arrivals-notice {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.terminus-arrivals-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.terminus-arrivals-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-muted, transparent);
+}
+
+.terminus-arrivals-time {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.terminus-arrivals-meta {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-align: right;
+}
