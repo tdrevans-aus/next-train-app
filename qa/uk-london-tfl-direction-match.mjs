@@ -55,12 +55,18 @@
  * (Walthamstow Central, Brixton, Morden, Epping, Cockfosters, High Barnet). Asserts the three
  * states from the brief's QA section:
  *
- * Extended for docs/jim-brief-dlr-dedup-key.md and its 8 Sep 2026 amendment: `tripDedupKey` and
- * `dedupeTrips` are covered directly (below) with the DLR id-collision fixture and a live-captured
- * `alsoNaptanIds` fan-out fixture (qa/fixtures/uk-london-tfl/fanout-dedup-arrivals.json, captured
- * live at Clapham Junction 8 Sep 2026 — not a mock) that proves `id` genuinely differs between the
- * hub naptanId fetch and its folded-in fetch for the same physical train, so the dedup key must
- * exclude `id` and instead rely on scoping (collapse only *across* fetches, never *within* one).
+ * Extended for docs/jim-brief-dlr-dedup-key.md and its two 8 Sep 2026 amendments: `tripDedupKey`
+ * and `dedupeTrips` are covered directly (below) with the DLR id-collision fixture and a
+ * live-captured `alsoNaptanIds` fan-out fixture (qa/fixtures/uk-london-tfl/fanout-dedup-arrivals.json,
+ * captured live at Clapham Junction 8 Sep 2026 — not a mock) that proves `id` genuinely differs
+ * between the hub naptanId fetch and its folded-in fetch for the same physical train, while
+ * `vehicleId` (also captured in that fixture) is stable across the same two fetches — including
+ * inside a 4-way same-key collision, where the *set* of vehicleIds the hub group reports equals
+ * the set the folded group reports. AMENDMENT 2 (Mark's 2+1-split counterexample against the
+ * prior "largest single-response group" heuristic) is covered by a direct constructed test against
+ * `dedupeTrips`, plus the two controls that already passed; the Walthamstow Central
+ * platform-ambiguity duplicate ("Also fold in" section of the amendment) is covered against the
+ * existing terminus-arrivals.json fixture, which independently reproduces that exact shape.
  *   1. terminus-with-arrivals-only — the offered direction resolves zero upcoming trips AND the
  *      fixture holds real trips terminating here on that line; buildNextTrainResponse's additive
  *      `arrivalsOnly` field must be populated with those trips' real (unmodified) times, and
@@ -727,10 +733,12 @@ for (const [stationName, expectation] of Object.entries(DLR_COLLISION_STATIONS))
   }
 }
 
-// --- No regression for tube/Overground: dedupeTrips must not introduce new collisions on
-// feeds whose ids were already unique (acceptance criterion 4) ---
+// --- No regression for Overground (acceptance criterion 4): dedupeTrips must not introduce new
+// collisions on a feed whose rows carry no vehicleId at all (ArrivalDepartures has none — see
+// parseTflArrivalDeparture), so every row falls to the tripDedupKey composite path, single
+// response, never collapsed. ---
 {
-  console.log("\nNo-regression checks (tube, Overground):");
+  console.log("\nNo-regression checks (Overground):");
 
   const gospelOakTrips = parseStationTrips(fixture.stations["Gospel Oak"], now);
   const gospelOakDeduped = dedupeTrips([gospelOakTrips]);
@@ -742,20 +750,252 @@ for (const [stationName, expectation] of Object.entries(DLR_COLLISION_STATIONS))
   } else {
     console.log(`  OK   Gospel Oak (Overground): ${gospelOakTrips.length} trips before and after dedupeTrips — unchanged`);
   }
+}
 
-  const walthamstowTrips = terminusFixture.stations["Walthamstow Central"].arrivals[
-    terminusFixture.stations["Walthamstow Central"].naptanId
-  ]
-    .map((row) => parseTflArrival(row, terminusNow))
-    .filter(Boolean);
-  const walthamstowDeduped = dedupeTrips([walthamstowTrips]);
-  if (walthamstowDeduped.length !== walthamstowTrips.length) {
+// --- Walthamstow Central (tube) platform-ambiguity duplicate collapse — "Also fold in" section
+// of docs/jim-brief-dlr-dedup-key.md's AMENDMENT 2: Mark found TfL hedges an unconfirmed
+// platform by duplicating one physical train's prediction under both candidate platforms (the
+// "4x Victoria Walthamstow Central@05:10" case at 05:10, 2 real vehicles each reported twice).
+// The existing terminus-arrivals.json fixture (captured 7 Sep 2026, unrelated to that brief)
+// independently reproduces the exact same shape: nearly every Victoria-line vehicleId here has
+// two rows to "Walthamstow Central" itself (a terminating arrival, self-platform-hedged) —
+// dedupeTrips must now collapse each such pair by vehicleId, dropping this count materially
+// (this is the intended behaviour change, not a regression: these rows were genuine rider-visible
+// duplicates before this fix). One vehicleId (205) is a legitimate exception: TfL reports it
+// once terminating ("Walthamstow Central") and once continuing onward ("Brixton") — two
+// different, real destinations for the same physical train — so findPollutedVehicleIds correctly
+// leaves both of its rows uncollapsed. ---
+{
+  console.log("\nWalthamstow Central (tube) platform-ambiguity collapse check:");
+
+  const walthamstowStation = terminusFixture.stations["Walthamstow Central"];
+  const walthamstowNaptanId = walthamstowStation.naptanId;
+  const rawRows = walthamstowStation.arrivals[walthamstowNaptanId].filter((row) => row.lineName === "Victoria");
+  const walthamstowTrips = rawRows.map((row) => parseTflArrival(row, terminusNow)).filter(Boolean);
+  assert(walthamstowTrips.length === rawRows.length, "every raw Victoria-line row must parse to a trip");
+
+  // Sanity: the fixture must still contain vehicleIds duplicated across exactly 2 platforms with
+  // the SAME destination (the hedged-platform shape) for this check to mean anything.
+  const byVehicleId = new Map();
+  for (const trip of walthamstowTrips) {
+    if (!byVehicleId.has(trip.vehicleId)) byVehicleId.set(trip.vehicleId, []);
+    byVehicleId.get(trip.vehicleId).push(trip);
+  }
+  const hedgedPlatformVehicleIds = [...byVehicleId.entries()].filter(
+    ([, trips]) => trips.length > 1 && new Set(trips.map((t) => t.destination)).size === 1
+  );
+  const dualPurposeVehicleIds = [...byVehicleId.entries()].filter(
+    ([, trips]) => new Set(trips.map((t) => t.destination)).size > 1
+  );
+  assert(
+    hedgedPlatformVehicleIds.length > 0,
+    "fixture must contain at least one vehicleId duplicated across platforms with the same destination (the hedged-platform shape) for this check to be meaningful"
+  );
+  assert(
+    dualPurposeVehicleIds.length > 0,
+    "fixture must contain at least one vehicleId legitimately attached to >1 destination (terminating + continuing) for the pollution-detection half of this check to be meaningful"
+  );
+
+  const expectedAfter =
+    hedgedPlatformVehicleIds.length /* 1 survivor per hedged-platform vehicleId */ +
+    dualPurposeVehicleIds.reduce((sum, [, trips]) => sum + trips.length, 0) /* all rows kept */ +
+    [...byVehicleId.values()].filter((trips) => trips.length === 1).length; /* untouched singles */
+
+  const deduped = dedupeTrips([walthamstowTrips]);
+  console.log(
+    `  ${rawRows.length} raw Victoria-line rows, ${hedgedPlatformVehicleIds.length} hedged-platform vehicleId group(s), ` +
+      `${dualPurposeVehicleIds.length} dual-purpose (terminating+continuing) vehicleId(s) -> ${deduped.length} surviving trip(s)`
+  );
+  if (deduped.length !== expectedAfter) {
     console.error(
-      `  FAIL Walthamstow Central (tube): trip count changed after dedupeTrips (${walthamstowTrips.length} -> ${walthamstowDeduped.length}) — regression`
+      `  FAIL expected ${expectedAfter} surviving trips (each hedged-platform vehicleId collapsed to 1, dual-purpose and single-row vehicleIds untouched), got ${deduped.length}`
     );
     failures++;
+  } else if (deduped.length >= rawRows.length) {
+    console.error(`  FAIL expected a real reduction from the raw row count (${rawRows.length}), got ${deduped.length} — fixture may have drifted`);
+    failures++;
   } else {
-    console.log(`  OK   Walthamstow Central (tube): ${walthamstowTrips.length} trips before and after dedupeTrips — unchanged`);
+    console.log(`  OK   platform-hedged duplicates collapsed by vehicleId (${rawRows.length} -> ${deduped.length}), dual-purpose vehicleId(s) correctly untouched`);
+  }
+}
+
+// --- vehicleId stability across naptan fetches — direct sanity check on the live-captured
+// fan-out fixture (docs/jim-brief-dlr-dedup-key.md AMENDMENT 2, requirement 1). Matches the hub
+// and folded fetch by line + destination + expectedArrival (independent of id/vehicleId), then
+// asserts vehicleId is identical for every matched pair despite id differing for all of them —
+// including inside the 4-way same-key Stratford collision, where the *set* of vehicleIds in the
+// hub group equals the set in the folded group. This is the live evidence `dedupeTrips`'s
+// vehicleId path relies on. ---
+{
+  console.log("\nvehicleId cross-fetch stability check (live-captured, Clapham Junction):");
+
+  const fanoutFixture = JSON.parse(
+    readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "fanout-dedup-arrivals.json"), "utf8")
+  );
+  const fanoutNow = new Date(fanoutFixture.capturedAt);
+  const hubNaptanId = fanoutFixture.station.naptanId;
+  const foldedNaptanId = fanoutFixture.station.alsoNaptanIds[0];
+  const hubTrips = fanoutFixture.arrivals[hubNaptanId].map((row) => parseTflArrival(row, fanoutNow)).filter(Boolean);
+  const foldedTrips = fanoutFixture.arrivals[foldedNaptanId].map((row) => parseTflArrival(row, fanoutNow)).filter(Boolean);
+
+  const rowKey = (t) => `${t.line}|${t.destination}|${t.liveDeparture.getTime()}`;
+  const hubGroups = new Map();
+  for (const trip of hubTrips) {
+    if (!hubGroups.has(rowKey(trip))) hubGroups.set(rowKey(trip), []);
+    hubGroups.get(rowKey(trip)).push(trip);
+  }
+  const foldedGroups = new Map();
+  for (const trip of foldedTrips) {
+    if (!foldedGroups.has(rowKey(trip))) foldedGroups.set(rowKey(trip), []);
+    foldedGroups.get(rowKey(trip)).push(trip);
+  }
+
+  let matchedKeys = 0;
+  let vehicleIdSetsEqual = 0;
+  let idsAllDiffer = 0;
+  for (const [key, hubGroup] of hubGroups) {
+    const foldedGroup = foldedGroups.get(key);
+    if (!foldedGroup) continue;
+    matchedKeys++;
+    const hubVehicleIds = new Set(hubGroup.map((t) => t.vehicleId));
+    const foldedVehicleIds = new Set(foldedGroup.map((t) => t.vehicleId));
+    const setsEqual =
+      hubVehicleIds.size === foldedVehicleIds.size && [...hubVehicleIds].every((v) => foldedVehicleIds.has(v));
+    if (setsEqual) vehicleIdSetsEqual++;
+    const hubIds = new Set(hubGroup.map((t) => t.id));
+    const foldedIds = new Set(foldedGroup.map((t) => t.id));
+    const noOverlappingIds = [...hubIds].every((id) => !foldedIds.has(id));
+    if (noOverlappingIds) idsAllDiffer++;
+    console.log(
+      `  key "${key}" (${hubGroup.length} hub / ${foldedGroup.length} folded row(s)): vehicleId sets equal=${setsEqual}, id sets disjoint=${noOverlappingIds}`
+    );
+  }
+
+  assert(matchedKeys > 0, "fixture must contain at least one matched key across both fetches");
+  if (vehicleIdSetsEqual !== matchedKeys) {
+    console.error(`  FAIL expected vehicleId sets to match for all ${matchedKeys} matched keys, matched for ${vehicleIdSetsEqual}`);
+    failures++;
+  } else {
+    console.log(`  OK   vehicleId is stable across the hub/folded naptan fetch for all ${matchedKeys} matched key(s)`);
+  }
+  if (idsAllDiffer !== matchedKeys) {
+    console.error(`  FAIL expected id to differ for all ${matchedKeys} matched keys (that's why id can't be the key), held for ${idsAllDiffer}`);
+    failures++;
+  } else {
+    console.log(`  OK   id differs across the hub/folded naptan fetch for all ${matchedKeys} matched key(s) — confirms id alone is unusable`);
+  }
+}
+
+// --- Scoping-heuristic 2+1 undercount (docs/jim-brief-dlr-dedup-key.md AMENDMENT 2) — the
+// counterexample Mark found against the pre-amendment-2 "largest single-response group"
+// heuristic, plus the two controls that already passed. Constructed directly against
+// dedupeTrips: these trips carry no vehicleId (the ambiguous case this section exists to guard —
+// with a trustworthy vehicleId the cross-fetch merge is a plain identity collapse, not a
+// heuristic at all). ---
+{
+  console.log("\nScoping-heuristic 2+1 counterexample and controls:");
+
+  function syntheticTrip(n) {
+    return {
+      line: "Test",
+      destination: "Test Destination",
+      platform: "1",
+      liveDeparture: new Date("2026-09-08T12:00:00Z"),
+      id: `synthetic-${n}`,
+      vehicleId: undefined,
+    };
+  }
+
+  // 3 distinct trains sharing one key, split 2 (one response) + 1 (a different response, e.g. a
+  // folded-in fetch) -> must survive as 3, not undercount to 2.
+  {
+    const [a, b, c] = [syntheticTrip(1), syntheticTrip(2), syntheticTrip(3)];
+    const result = dedupeTrips([[a, b], [c]]);
+    if (result.length !== 3) {
+      console.error(`  FAIL 2+1 split of 3 distinct trains: expected 3 survivors, got ${result.length}`);
+      failures++;
+    } else {
+      console.log("  OK   2+1 split of 3 distinct trains across 2 fetches -> 3 survive (not undercounted to 2)");
+    }
+  }
+
+  // Control: the same physical train reported once per fetch (echo) -> must still collapse to 1.
+  {
+    const [a, aEcho] = [syntheticTrip(1), syntheticTrip(1)];
+    const result = dedupeTrips([[a], [aEcho]]);
+    if (result.length !== 1) {
+      console.error(`  FAIL same train via 2 fetches: expected 1 survivor, got ${result.length}`);
+      failures++;
+    } else {
+      console.log("  OK   same train seen via 2 fetches -> collapses to 1 (control)");
+    }
+  }
+
+  // Control: 2 distinct trains in one response (no fan-out involved at all) -> both must survive.
+  {
+    const [a, b] = [syntheticTrip(1), syntheticTrip(2)];
+    const result = dedupeTrips([[a, b]]);
+    if (result.length !== 2) {
+      console.error(`  FAIL 2 distinct trains in one response: expected 2 survivors, got ${result.length}`);
+      failures++;
+    } else {
+      console.log("  OK   2 distinct trains in one response -> both survive (control)");
+    }
+  }
+
+  // DLR shape: one shared vehicleId reused across 3 rows to genuinely different destinations ->
+  // findPollutedVehicleIds must flag it as polluted (untrustworthy) and every row must fall back
+  // to the composite tripDedupKey path, where all 3 survive (never collapsed by the shared
+  // vehicleId, which is exactly the DLR /Arrivals defect this fix guards against).
+  {
+    function dlrShapeTrip(destination, n) {
+      return {
+        line: "DLR",
+        destination,
+        platform: "1",
+        liveDeparture: new Date(`2026-09-08T12:0${n}:00Z`),
+        id: `dlr-shared-id`,
+        vehicleId: "dlr-shared-vehicle",
+      };
+    }
+    const trips = [dlrShapeTrip("DLR Beckton", 0), dlrShapeTrip("DLR Woolwich Arsenal", 1), dlrShapeTrip("DLR Stratford International", 2)];
+    const result = dedupeTrips([trips]);
+    if (result.length !== 3) {
+      console.error(`  FAIL DLR shape (1 shared vehicleId, 3 distinct destinations): expected 3 survivors, got ${result.length}`);
+      failures++;
+    } else {
+      console.log("  OK   DLR shape: 1 shared vehicleId, 3 distinct destinations -> 3 survive (vehicleId distrusted, falls back to composite key)");
+    }
+  }
+
+  // Unassigned platform, same vehicle, reported under 2 different platform guesses -> a
+  // trustworthy (non-polluted) vehicleId collapses this to 1, per the Walthamstow Central
+  // hedged-platform case (TfL duplicating one physical train's prediction under both candidate
+  // platforms before assignment is confirmed).
+  {
+    const a = {
+      line: "Victoria",
+      destination: "Victoria Walthamstow Central",
+      platform: undefined,
+      liveDeparture: new Date("2026-09-08T12:05:00Z"),
+      id: "walthamstow-a",
+      vehicleId: "walthamstow-shared-vehicle",
+    };
+    const b = {
+      line: "Victoria",
+      destination: "Victoria Walthamstow Central",
+      platform: "2",
+      liveDeparture: new Date("2026-09-08T12:05:00Z"),
+      id: "walthamstow-b",
+      vehicleId: "walthamstow-shared-vehicle",
+    };
+    const result = dedupeTrips([[a, b]]);
+    if (result.length !== 1) {
+      console.error(`  FAIL unassigned platform, same vehicle, 2 platform guesses: expected 1 survivor, got ${result.length}`);
+      failures++;
+    } else {
+      console.log("  OK   unassigned platform, same vehicle, 2 platform guesses -> collapses to 1 (trustworthy vehicleId)");
+    }
   }
 }
 
