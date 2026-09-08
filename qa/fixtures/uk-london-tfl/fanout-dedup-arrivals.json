@@ -1,0 +1,230 @@
+{
+  "_note": "Live-captured TfL /Arrivals rows at Clapham Junction (docs/jim-brief-dlr-dedup-key.md amendment, 8 Sep 2026) proving id genuinely differs by queried naptanId for the same physical train. Captured directly from the TfL Unified API on 8 Sep 2026 while London Overground service (Mildmay/Windrush lines) was running -- NOT a mock. Hub naptanId 910GCLPHMJ1 and its alsoNaptanIds fold-in 910GCLPHMJC (PR #344 tram/platform-fold pattern) each returned rows for the same physical trains (matched by line + destination + expectedArrival) carrying different id/vehicleId values but identical platformName -- exactly the shape this fix scopes dedup around. Hub also has 2 Windrush-line rows to Dalston Junction that the folded naptan did not echo back at all -- genuinely unique to the hub fetch, must survive uncollapsed.",
+  "capturedAt": "2026-09-08T03:33:55.060Z",
+  "station": {
+    "name": "Clapham Junction",
+    "naptanId": "910GCLPHMJ1",
+    "alsoNaptanIds": [
+      "910GCLPHMJC"
+    ]
+  },
+  "arrivals": {
+    "910GCLPHMJ1": [
+      {
+        "id": "-601250985",
+        "vehicleId": "202609087107161",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 38,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "-1487251455",
+        "vehicleId": "202609087107163",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 38,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "1464308899",
+        "vehicleId": "202609087107165",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 38,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "-1542693464",
+        "vehicleId": "202609087107168",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 38,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "-1472919837",
+        "vehicleId": "202609087624670",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Clapham Junction Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 6051,
+        "expectedArrival": "2026-09-08T05:14:00Z"
+      },
+      {
+        "id": "592672847",
+        "vehicleId": "202609087624674",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Clapham Junction Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 6951,
+        "expectedArrival": "2026-09-08T05:29:00Z"
+      },
+      {
+        "id": "-1061955792",
+        "vehicleId": "202609088704887",
+        "modeName": "overground",
+        "lineName": "Windrush",
+        "towards": "",
+        "destinationName": "Dalston Junction Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 38,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "279744658",
+        "vehicleId": "202609088704889",
+        "modeName": "overground",
+        "lineName": "Windrush",
+        "towards": "",
+        "destinationName": "Dalston Junction Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 38,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      }
+    ],
+    "910GCLPHMJC": [
+      {
+        "id": "436042125",
+        "vehicleId": "202609087107161",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 37,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "1653506779",
+        "vehicleId": "202609087107163",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 37,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "-1835839879",
+        "vehicleId": "202609087107165",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 37,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "1641580402",
+        "vehicleId": "202609087107168",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Stratford (London) Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 37,
+        "expectedArrival": "2026-09-08T03:33:47Z"
+      },
+      {
+        "id": "1843518521",
+        "vehicleId": "202609087624670",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Clapham Junction Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 6050,
+        "expectedArrival": "2026-09-08T05:14:00Z"
+      },
+      {
+        "id": "-427318635",
+        "vehicleId": "202609087624674",
+        "modeName": "overground",
+        "lineName": "Mildmay",
+        "towards": "",
+        "destinationName": "Clapham Junction Rail Station",
+        "platformName": "Platform Unknown",
+        "timeToStation": 6950,
+        "expectedArrival": "2026-09-08T05:29:00Z"
+      }
+    ]
+  },
+  "spotCheckStations": {
+    "East Croydon": {
+      "naptanId": "940GZZCRECR",
+      "alsoNaptanIds": [
+        "9400ZZCRECR1",
+        "9400ZZCRECR2"
+      ],
+      "arrivals": {
+        "940GZZCRECR": [
+          {
+            "id": "-1116467124",
+            "vehicleId": "2530",
+            "modeName": "tram",
+            "lineName": "Tram",
+            "towards": "Elmers End",
+            "destinationName": "Elmers End",
+            "platformName": "Eastbound - Platform 1",
+            "timeToStation": 193,
+            "expectedArrival": "2026-09-08T03:36:24Z"
+          },
+          {
+            "id": "-568554207",
+            "vehicleId": "2540",
+            "modeName": "tram",
+            "lineName": "Tram",
+            "towards": "New Addington",
+            "destinationName": "New Addington",
+            "platformName": "Eastbound - Platform 1",
+            "timeToStation": 618,
+            "expectedArrival": "2026-09-08T03:43:29Z"
+          }
+        ],
+        "9400ZZCRECR1": [],
+        "9400ZZCRECR2": []
+      }
+    },
+    "West Croydon": {
+      "naptanId": "940GZZCRWCR",
+      "alsoNaptanIds": [
+        "9400ZZCRWCR1"
+      ],
+      "arrivals": {
+        "940GZZCRWCR": [
+          {
+            "id": "-568554153",
+            "vehicleId": "2540",
+            "modeName": "tram",
+            "lineName": "Tram",
+            "towards": "New Addington",
+            "destinationName": "New Addington",
+            "platformName": "Eastbound Platform",
+            "timeToStation": 318,
+            "expectedArrival": "2026-09-08T03:38:32Z"
+          }
+        ],
+        "9400ZZCRWCR1": []
+      }
+    }
+  }
+}
