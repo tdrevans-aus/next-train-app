@@ -54,6 +54,13 @@
  * TFL_APP_KEY-authenticated, no network needed to run this gate) for six real tube termini
  * (Walthamstow Central, Brixton, Morden, Epping, Cockfosters, High Barnet). Asserts the three
  * states from the brief's QA section:
+ *
+ * Extended for docs/jim-brief-dlr-dedup-key.md and its 8 Sep 2026 amendment: `tripDedupKey` and
+ * `dedupeTrips` are covered directly (below) with the DLR id-collision fixture and a live-captured
+ * `alsoNaptanIds` fan-out fixture (qa/fixtures/uk-london-tfl/fanout-dedup-arrivals.json, captured
+ * live at Clapham Junction 8 Sep 2026 — not a mock) that proves `id` genuinely differs between the
+ * hub naptanId fetch and its folded-in fetch for the same physical train, so the dedup key must
+ * exclude `id` and instead rely on scoping (collapse only *across* fetches, never *within* one).
  *   1. terminus-with-arrivals-only — the offered direction resolves zero upcoming trips AND the
  *      fixture holds real trips terminating here on that line; buildNextTrainResponse's additive
  *      `arrivalsOnly` field must be populated with those trips' real (unmodified) times, and
@@ -480,7 +487,8 @@ for (const [stationName, direction] of Object.entries(TERMINUS_STATIONS)) {
 // with genuinely different destinations (confirmed live at Abbey Road and Beckton Park, 7 Sep
 // 2026). fetchStopBoard used to dedupe allTripsMap by trip.id, so 5 of 6 trains at Abbey Road
 // were silently dropped. The fix replaces the dedup key with tripDedupKey (line + resolved
-// destination + platform + departure time) — mode-agnostic, not DLR-special-cased.
+// destination + platform + departure time, deliberately excluding id/vehicleId — see the 8 Sep
+// 2026 amendment in docs/jim-brief-dlr-dedup-key.md) — mode-agnostic, not DLR-special-cased.
 
 console.log("\nDLR dedup-key checks:");
 
@@ -562,106 +570,160 @@ for (const [stationName, expectation] of Object.entries(DLR_COLLISION_STATIONS))
   }
 }
 
-// --- alsoNaptanIds fan-out must still collapse to one row (docs/jim-brief-london-tram-duplicate-stops.md, PR #344) ---
+// --- alsoNaptanIds fan-out must still collapse, scoped so it never eats a genuine same-response
+// duplicate (docs/jim-brief-london-tram-duplicate-stops.md PR #344; docs/jim-brief-dlr-dedup-key.md
+// 8 Sep 2026 amendment) ---
 //
-// Mocked rather than live-captured: no DLR station has alsoNaptanIds (the fold-in is a
-// tram/Overground platform-id pattern), and this must hold for every mode tripDedupKey serves, not
-// just DLR — a synthetic same-train-fetched-twice pair proves the key's collapse half of the
-// contract independently of live traffic/time of day.
+// Live-captured, not mocked (qa/fixtures/uk-london-tfl/fanout-dedup-arrivals.json, Clapham
+// Junction, 8 Sep 2026, while London Overground service was running) — a mock reusing one id
+// across both fetches is exactly what let the fan-out duplication defect through the first time,
+// per the brief's amendment. This capture independently proves the amendment's central live
+// finding: matching the same physical train across the hub naptanId (910GCLPHMJ1) and its
+// alsoNaptanIds fold-in (910GCLPHMJC) by line + destination + expectedArrival, every matched pair
+// carries a DIFFERENT `id`, so any dedup key containing `id` can never collapse this fan-out.
 {
-  console.log("\nalsoNaptanIds fan-out collapse check (mocked):");
+  console.log("\nalsoNaptanIds fan-out collapse check (live-captured, Clapham Junction):");
 
-  const now = new Date("2026-09-07T15:00:00Z");
-  // Same physical train, fetched twice: once via the hub naptanId, once via a folded-in
-  // alsoNaptanId platform stop. The `id` field identifies the vehicle prediction itself, not the
-  // queried stop (see tripDedupKey's doc comment), so it's realistic for it to be identical across
-  // both fetches — everything else about the row (line/destination/platform/time) is identical too.
-  const sameTrainViaHub = parseTflArrival(
-    {
-      id: "999111",
-      vehicleId: "999111",
-      modeName: "tram",
-      lineName: "Tram",
-      towards: "",
-      destinationName: "Elmers End Tram Stop",
-      platformName: "1",
-      timeToStation: 300,
-    },
-    now
+  const fanoutFixture = JSON.parse(
+    readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "fanout-dedup-arrivals.json"), "utf8")
   );
-  const sameTrainViaFoldedId = parseTflArrival(
-    {
-      id: "999111",
-      vehicleId: "999111",
-      modeName: "tram",
-      lineName: "Tram",
-      towards: "",
-      destinationName: "Elmers End Tram Stop",
-      platformName: "1",
-      timeToStation: 300,
-    },
-    now
-  );
-  // A genuinely different train that happens to share the duplicate's upstream id (the DLR
-  // pattern) — must still be preserved because destination/platform/time differ.
-  const genuinelyDifferentTrainSharedId = parseTflArrival(
-    {
-      id: "999111",
-      vehicleId: "999111",
-      modeName: "tram",
-      lineName: "Tram",
-      towards: "",
-      destinationName: "New Addington Tram Stop",
-      platformName: "2",
-      timeToStation: 600,
-    },
-    now
-  );
-  // A genuinely different train, on the same line/destination/platform at the exact same
-  // to-the-second time, but a different upstream id — the real Walthamstow Central case found
-  // while extending this gate (see tripDedupKey's doc comment). Must also be preserved.
-  const genuinelyDifferentTrainSameTime = parseTflArrival(
-    {
-      id: "888222",
-      vehicleId: "888222",
-      modeName: "tram",
-      lineName: "Tram",
-      towards: "",
-      destinationName: "Elmers End Tram Stop",
-      platformName: "1",
-      timeToStation: 300,
-    },
-    now
-  );
+  const fanoutNow = new Date(fanoutFixture.capturedAt);
+  assert(!Number.isNaN(fanoutNow.getTime()), "fanout fixture capturedAt must be a valid timestamp");
 
+  const hubNaptanId = fanoutFixture.station.naptanId;
+  const foldedNaptanId = fanoutFixture.station.alsoNaptanIds[0];
+  const rawHubRows = fanoutFixture.arrivals[hubNaptanId];
+  const rawFoldedRows = fanoutFixture.arrivals[foldedNaptanId];
+
+  const hubTrips = rawHubRows.map((row) => parseTflArrival(row, fanoutNow)).filter(Boolean);
+  const foldedTrips = rawFoldedRows.map((row) => parseTflArrival(row, fanoutNow)).filter(Boolean);
+  assert(hubTrips.length === rawHubRows.length, "every raw hub row must parse to a trip");
+  assert(foldedTrips.length === rawFoldedRows.length, "every raw folded row must parse to a trip");
+
+  // Sanity: the fixture really does reproduce the amendment's live finding — matched pairs (same
+  // line + destination + expectedArrival) across the two fetches must carry different ids. If this
+  // ever stops being true, the fixture has drifted from the live-confirmed defect.
+  let matchedPairs = 0;
+  let matchedPairsWithDifferentId = 0;
+  for (const hubTrip of hubTrips) {
+    const partner = foldedTrips.find(
+      (t) => t.line === hubTrip.line && t.destination === hubTrip.destination && t.liveDeparture.getTime() === hubTrip.liveDeparture.getTime()
+    );
+    if (partner) {
+      matchedPairs++;
+      if (partner.id !== hubTrip.id) {
+        matchedPairsWithDifferentId++;
+      }
+    }
+  }
+  assert(matchedPairs > 0, "fixture must contain at least one matched train across the hub and folded fetches");
   assert(
-    sameTrainViaHub && sameTrainViaFoldedId && genuinelyDifferentTrainSharedId && genuinelyDifferentTrainSameTime,
-    "fan-out fixture trips must all parse"
+    matchedPairsWithDifferentId === matchedPairs,
+    `every matched pair must carry a different id (found ${matchedPairsWithDifferentId}/${matchedPairs}) — otherwise this fixture no longer exercises the live finding`
   );
+  console.log(`  live finding reproduced: ${matchedPairs} matched train(s) across both fetches, all ${matchedPairsWithDifferentId} with differing id`);
+
+  // Direct check on tripDedupKey itself: despite the differing id, the scoped key (no id) must
+  // still match for a real matched pair — this is exactly what lets dedupeTrips collapse it.
+  const firstHubStratford = hubTrips.find((t) => t.destination.includes("Stratford"));
+  const firstFoldedStratford = foldedTrips.find((t) => t.destination.includes("Stratford"));
+  assert(firstHubStratford && firstFoldedStratford, "fixture must contain a Stratford-bound row in both fetches");
+  assert(firstHubStratford.id !== firstFoldedStratford.id, "sanity: these two rows must have different ids (that's the live finding)");
   assert(
-    tripDedupKey(sameTrainViaHub) === tripDedupKey(sameTrainViaFoldedId),
-    "same train fetched via hub vs folded-in alsoNaptanId must produce an identical dedup key"
-  );
-  assert(
-    tripDedupKey(sameTrainViaHub) !== tripDedupKey(genuinelyDifferentTrainSameTime),
-    "two distinct trains sharing line/destination/platform/time but differing id must not produce the same dedup key"
+    tripDedupKey(firstHubStratford) === tripDedupKey(firstFoldedStratford),
+    "tripDedupKey (no id) must match across the hub/folded fetch for the same physical train despite differing id"
   );
 
-  // Mirrors fetchStopBoard: each naptanId fetched is its own per-fetch trip list, merged by
-  // dedupeTrips.
-  const merged = dedupeTrips([
-    [sameTrainViaHub],
-    [sameTrainViaFoldedId, genuinelyDifferentTrainSharedId, genuinelyDifferentTrainSameTime],
-  ]);
+  // BEFORE: the pre-8-Sep-fix key (id-inclusive) can never collapse this fan-out, because every
+  // row's id is unique across the two fetches (that's the live finding above) — simulated directly
+  // since production code no longer does this, purely to demonstrate the live defect that shipped
+  // since PR #344 (duplicate rows at every alsoNaptanIds station).
+  const combinedRaw = [...hubTrips, ...foldedTrips];
+  const beforeIds = new Set(combinedRaw.map((t) => t.id));
+  const beforeCount = beforeIds.size; // no collapsing at all: every id is unique
 
-  if (merged.length !== 3) {
-    console.error(`  FAIL expected 3 surviving trips (1 collapsed duplicate + 2 genuinely distinct), got ${merged.length}`);
+  // AFTER: production dedupeTrips, scoped across the two fetches.
+  const merged = dedupeTrips([hubTrips, foldedTrips]);
+
+  console.log(
+    `  Clapham Junction: ${combinedRaw.length} raw rows across 2 fetches (${hubTrips.length} hub + ${foldedTrips.length} folded) -> ` +
+      `before (id-keyed): ${beforeCount} surviving trip(s) [bug: duplicates not collapsed], after (scoped tripDedupKey): ${merged.length} surviving trip(s)`
+  );
+
+  if (beforeCount !== combinedRaw.length) {
+    console.error(`  FAIL fixture doesn't reproduce the live defect (id-keyed dedup should not collapse anything here, got ${beforeCount} of ${combinedRaw.length})`);
+    failures++;
+  }
+  if (merged.length !== combinedRaw.length - matchedPairs) {
+    console.error(
+      `  FAIL expected ${combinedRaw.length - matchedPairs} surviving trips (${combinedRaw.length} raw - ${matchedPairs} collapsed fan-out duplicate(s)), got ${merged.length}`
+    );
+    failures++;
+  }
+
+  // No duplicate destination@displayTime pairs (acceptance criterion 6): group the merged result
+  // and assert each group's size never exceeds the largest same-key group seen in any *single*
+  // fetch's raw response (i.e. nothing that was only a fan-out duplicate survived twice).
+  function groupSize(trips, key) {
+    return trips.filter((t) => `${t.line}|${t.destination}|${t.platform}|${t.liveDeparture.getTime()}` === key).length;
+  }
+  const mergedKeys = new Set(merged.map((t) => `${t.line}|${t.destination}|${t.platform}|${t.liveDeparture.getTime()}`));
+  let overCounted = 0;
+  for (const key of mergedKeys) {
+    const mergedGroupSize = groupSize(merged, key);
+    const maxSingleResponseSize = Math.max(groupSize(hubTrips, key), groupSize(foldedTrips, key));
+    if (mergedGroupSize > maxSingleResponseSize) {
+      overCounted++;
+      console.error(`  FAIL key "${key}": ${mergedGroupSize} rows survived merge but no single fetch reported more than ${maxSingleResponseSize} — fan-out duplicate leaked through`);
+    }
+  }
+  if (overCounted === 0) {
+    console.log(`  OK   no duplicate destination@time pairs survive the merge (${mergedKeys.size} distinct keys, ${merged.length} trips)`);
+  } else {
+    failures += overCounted;
+  }
+
+  // Within-response preservation (acceptance criterion 7, Walthamstow Central shape): the hub
+  // fetch's two "Windrush -> Dalston Junction" rows share line/destination/platform/time and
+  // differ only by id — same-response, must both survive uncollapsed.
+  const dalstonRows = merged.filter((t) => t.destination.includes("Dalston Junction"));
+  if (dalstonRows.length !== 2) {
+    console.error(`  FAIL expected the 2 same-response Dalston Junction rows (Walthamstow Central shape) to both survive, got ${dalstonRows.length}`);
     failures++;
   } else {
-    console.log(
-      `  OK   4 input rows across 2 fetches (1 genuine duplicate + 1 distinct train sharing the duplicate's ` +
-        `upstream id + 1 distinct train sharing line/destination/platform/time but not id) -> ${merged.length} surviving trips`
-    );
+    console.log(`  OK   2 same-response same-key rows (genuinely distinct trains, differing only by id) both preserved, not collapsed`);
+  }
+}
+
+// --- Spot-check two more alsoNaptanIds stations (acceptance criterion 8) — East Croydon and West
+// Croydon, live-captured 8 Sep 2026 alongside the Clapham Junction fixture above. Tramlink service
+// at these two was light at capture time (folded naptans returned 0 rows), so there is nothing to
+// collapse — which is itself the assertion: dedupeTrips must not fabricate or drop trips when a
+// fold-in fetch is empty, and duplicate count must be zero. ---
+{
+  console.log("\nalsoNaptanIds spot-check (live-captured, East Croydon / West Croydon):");
+
+  const spotFixture = JSON.parse(
+    readFileSync(join(ROOT, "qa", "fixtures", "uk-london-tfl", "fanout-dedup-arrivals.json"), "utf8")
+  );
+  const spotNow = new Date(spotFixture.capturedAt);
+  for (const [stationName, spec] of Object.entries(spotFixture.spotCheckStations)) {
+    const hubTrips = spec.arrivals[spec.naptanId].map((r) => parseTflArrival(r, spotNow)).filter(Boolean);
+    const foldedLists = spec.alsoNaptanIds.map((id) => spec.arrivals[id].map((r) => parseTflArrival(r, spotNow)).filter(Boolean));
+    const totalFoldedRows = foldedLists.reduce((sum, list) => sum + list.length, 0);
+    const merged = dedupeTrips([hubTrips, ...foldedLists]);
+    // No station in this spot-check has any overlapping key between hub and folded rows (folded
+    // naptans were quiet at capture time), so the merge must be a pure union — zero duplicates.
+    if (merged.length !== hubTrips.length + totalFoldedRows) {
+      console.error(
+        `  FAIL ${stationName}: expected ${hubTrips.length + totalFoldedRows} trip(s) (union, no overlapping keys captured), got ${merged.length}`
+      );
+      failures++;
+    } else {
+      console.log(
+        `  OK   ${stationName}: ${hubTrips.length} hub row(s) + ${totalFoldedRows} folded row(s) -> ${merged.length} trip(s), 0 unexpected duplicates`
+      );
+    }
   }
 }
 
