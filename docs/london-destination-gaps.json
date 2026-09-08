@@ -1,0 +1,5490 @@
+{
+  "auditedAt": "2026-09-07T15:39:04.787Z",
+  "windowNote": "Monday 7 Sep 2026 ~15:28-15:39 UTC (16:28-16:39 BST) -- normal weekday afternoon service, every mode running",
+  "requestCount": 545,
+  "retry429Count": 0,
+  "stationsAudited": 434,
+  "method": "Fetched each of the 434 catalog stations' raw TfL rows through the same endpoint the adapter chooses (usesArrivalDepartures), including alsoNaptanIds; parsed through the adapter's own parseTflArrival/parseTflArrivalDeparture + normalizeDestination; matched against public/city-directions/uk-london-tfl.json via pickUpcomingTrips.",
+  "fixedClassesStatus": {
+    "trailingLondonParenSuffix": {
+      "status": "closed-network-wide",
+      "evidence": "0 raw or parsed destinationName retaining a trailing \"(London)\" suffix in 434 stations / 545 requests"
+    },
+    "leadingLondonPrefix": {
+      "status": "closed-network-wide",
+      "evidence": "0 parsed destination anywhere in the network retains an unstripped leading \"London \" prefix; the 4 legitimate \"London X\" catalog stations (London Bridge, London City Airport, London Euston, London Fields) are unaffected"
+    },
+    "placeholderTiming": {
+      "status": "closed-network-wide",
+      "evidence": "0 raw ArrivalDepartures rows with real (non-null) timing show a near-identical (<10s spread) cluster of 3+ departures anywhere in the network at capture time"
+    }
+  },
+  "confirmedNewDefects": [
+    {
+      "id": "elizabeth-line-suffix",
+      "severity": "hard-fail (walk-up rule)",
+      "lane": "jim",
+      "category": "normalization-defect",
+      "scope": "100% -- 10/10 offered Elizabeth-prefixed directions (Stratford x5, Tottenham Court Road x5, the only 2 catalog stations offering Elizabeth-line directions) never match, at every sample taken",
+      "rootCause": "TfL's raw lineName for the Elizabeth line is the literal string \"Elizabeth line\" (not \"Elizabeth\"). lib/providers/uk-tfl.js builds fullDestination as `${lineName} ${destination}`, so every parsed trip reads e.g. \"Elizabeth line Heathrow Terminal 4\" while the catalog's offered direction is \"Elizabeth Heathrow Terminal 4\" -- never equal. normalizeDestination has no rule that strips a trailing \" line\" token from the line-name portion of the string (lineNameToId does this but only for URL construction, never for the display/matching path).",
+      "evidence": [
+        {
+          "raw": "Heathrow Terminal 4 Rail Station",
+          "lineName": "Elizabeth line",
+          "parsedDestination": "Elizabeth line Heathrow Terminal 4",
+          "offeredDirection": "Elizabeth Heathrow Terminal 4",
+          "station": "Tottenham Court Road"
+        }
+      ],
+      "suggestedFixDirection": "Strip a trailing /\\s+line$/i from lineName before building fullDestination (or add \"Elizabeth line\" -> \"Elizabeth\" as a normalizeDestination/line alias) -- flagged, not fixed, per Mark's lane"
+    },
+    {
+      "id": "piccadilly-heathrow-via-loop",
+      "severity": "hard-fail (walk-up rule)",
+      "lane": "jim",
+      "category": "normalization-defect",
+      "scope": "100% -- 66/66 offered \"Piccadilly Heathrow Terminal 4\"/\"Piccadilly Heathrow Terminal 5\" instances across 33 stations never match, at every sample taken",
+      "rootCause": "For Piccadilly-line Heathrow-branch trains, TfL's `towards` field carries a branch-loop label (\"Heathrow via T4 Loop\", \"Heathrow via T5 Loop\", \"Heathrow T123 + 5\"), not the terminal name. parseTflArrival prefers a non-blank, non-compass `towards` over `destinationName`, so the branch-loop text is used as rawDestination; normalizeDestination's `.replace(/\\s+via\\s+.*$/i, \"\")` strips the \" via T4/T5 Loop\" part, collapsing both terminals to bare \"Heathrow\" -- which matches neither offered direction. destinationName itself (\"Heathrow Terminal 4 Underground Station\"/\"...5...\") would normalize correctly if used instead.",
+      "evidence": [
+        {
+          "towards": "Heathrow via T4 Loop",
+          "destinationName": "Heathrow Terminal 4 Underground Station",
+          "parsedDestination": "Piccadilly Heathrow",
+          "offeredDirections": [
+            "Piccadilly Heathrow Terminal 4",
+            "Piccadilly Heathrow Terminal 5"
+          ],
+          "station": "Arnos Grove"
+        }
+      ],
+      "affectedStations": [
+        "Alperton",
+        "Arnos Grove",
+        "Arsenal",
+        "Boston Manor",
+        "Bounds Green",
+        "Caledonian Road",
+        "Cockfosters",
+        "Covent Garden",
+        "Finsbury Park",
+        "Hatton Cross",
+        "Heathrow Terminal 4",
+        "Heathrow Terminal 5",
+        "Heathrow Terminals 2 & 3",
+        "Holloway Road",
+        "Hounslow Central",
+        "Hounslow East",
+        "Hounslow West",
+        "Hyde Park Corner",
+        "King's Cross St. Pancras",
+        "Knightsbridge",
+        "Manor House",
+        "North Ealing",
+        "Northfields",
+        "Oakwood",
+        "Osterley",
+        "Park Royal",
+        "Russell Square",
+        "South Ealing",
+        "South Harrow",
+        "Southgate",
+        "Sudbury Hill",
+        "Sudbury Town",
+        "Turnpike Lane",
+        "Wood Green"
+      ],
+      "suggestedFixDirection": "Prefer destinationName over a \"via ... Loop\" towards value for this branch (or special-case strip \" via T4/T5 Loop\" to retain the terminal number instead of discarding it) -- flagged, not fixed"
+    },
+    {
+      "id": "dlr-arrival-id-collision",
+      "severity": "hard-fail (walk-up rule)",
+      "lane": "jim",
+      "category": "adapter-defect (trip-dedup key, not text normalization)",
+      "scope": "86% -- 265/308 offered DLR-prefixed directions show 0 matching trips at capture time, across 44 of the DLR-served catalog stations",
+      "rootCause": "TfL's DLR /Arrivals feed sometimes reuses the same `id` field across rows with genuinely different destinationName/platform/timeToStation (confirmed live at Abbey Road: id 322784161 shared by 3 rows going to Woolwich Arsenal, Beckton, and Stratford International at three different times; confirmed again at Beckton Park: id -1340095081 shared by rows to both Tower Gateway and Beckton). fetchStopBoard's allTripsMap dedupes by `trip.id` (`arrival.id || arrival.vehicleId || ...`), so when TfL's id collides across distinct destinations, only one of the colliding trips survives -- the others (often to a completely different, otherwise-real, offered direction) are silently dropped from the board.",
+      "evidence": [
+        {
+          "naptanId": "940GZZDLABR",
+          "stationName": "Abbey Road",
+          "collidingId": "322784161",
+          "droppedDestinations": [
+            "Woolwich Arsenal DLR Station",
+            "Beckton DLR Station"
+          ],
+          "survivingDestination": "Stratford International DLR Station"
+        },
+        {
+          "naptanId": "940GZZDLBPK",
+          "stationName": "Beckton Park",
+          "collidingId": "-1340095081",
+          "note": "6 rows, 2 genuinely distinct destinations (Tower Gateway, Beckton), only 1 survives dedup"
+        }
+      ],
+      "affectedStations": [
+        "Abbey Road",
+        "All Saints",
+        "Bank",
+        "Beckton",
+        "Beckton Park",
+        "Blackwall",
+        "Bow Church",
+        "Canary Wharf",
+        "Canning Town",
+        "Crossharbour",
+        "Custom House (for ExCel)",
+        "Cutty Sark",
+        "Cyprus",
+        "Deptford Bridge",
+        "Devons Road",
+        "East India",
+        "Elverson Road",
+        "Gallions Reach",
+        "Greenwich",
+        "Heron Quays",
+        "Island Gardens",
+        "King George V",
+        "Langdon Park",
+        "Lewisham",
+        "Limehouse",
+        "London City Airport",
+        "Mudchute",
+        "Pontoon Dock",
+        "Poplar",
+        "Prince Regent",
+        "Pudding Mill Lane",
+        "Royal Albert",
+        "Royal Victoria",
+        "Shadwell",
+        "South Quay",
+        "Star Lane",
+        "Stratford",
+        "Stratford High Street",
+        "Stratford International",
+        "Tower Gateway",
+        "West Ham",
+        "West India Quay",
+        "West Silvertown",
+        "Westferry",
+        "Woolwich Arsenal"
+      ],
+      "caveat": "This is the largest-by-volume defect found. NOT confirmed row-by-row for all 44 stations -- confirmed live at 2 (Abbey Road, Beckton Park); the other 42 are inferred from the same raw-row-count-vs-parsed-trip-count gap signature (rawRowCount - parsedTripCount > 2, all on the Arrivals/DLR path where every row should otherwise parse). High confidence given the mechanism is now understood and DLR is a single shared feed quirk, but not each station individually live-verified.",
+      "suggestedFixDirection": "Stop deduping DLR trips by TfL's raw prediction id; use a composite key that includes destinationNaptanId (e.g. naptanId+destinationNaptanId+timeToStation) so genuinely distinct destinations never collide -- flagged, not fixed"
+    }
+  ],
+  "catalogDataFindings_LukesLane": [
+    {
+      "id": "battersea-power-never-offered",
+      "severity": "high -- whole branch unreachable from every station",
+      "status": "new-this-pass",
+      "finding": "The Northern line's Battersea Power Station branch (opened 2021) is not offered as a direction from ANY catalog station. 103 real, live raw departures toward it were observed from 24 different originating stations in this single snapshot -- a rider on the Battersea branch has no offered direction anywhere on the network that reaches it. The catalog station itself is named \"Battersea Power\" (naptanId 940GZZBPSUST); no station's direction list contains any Battersea-referencing entry.",
+      "recommendation": "Luke's lane -- add \"Northern Battersea Power\" (or equivalent) as an offered direction at stations along that branch; not a code fix."
+    },
+    {
+      "id": "windrush-terminus-naming-mismatch",
+      "severity": "medium -- corroborates and quantifies docs/london-terminus-sweep-findings.md finding 4",
+      "status": "corroborated-and-quantified",
+      "finding": "TfL's real Windrush-line destinationNames \"Dalston Junction\" (200 raw occurrences, 15 stations) and \"New Cross ELL\" (83 raw occurrences, 10 stations) are never offered as a direction anywhere in the catalog. The catalog instead offers \"Windrush Clapham Junction\"/\"Windrush Crystal Palace\"/\"Windrush New Cross\"/\"Windrush West Croydon\"/\"Windrush Highbury & Islington\", of which only 70/132 (53%) instances matched at capture time.",
+      "recommendation": "Luke's lane -- already flagged in the terminus sweep; this pass adds full-network scale."
+    },
+    {
+      "id": "cross-branch-generic-direction-lists",
+      "severity": "medium -- not re-investigated, referenced only",
+      "status": "previously-documented, not re-litigated",
+      "finding": "docs/london-terminus-sweep-findings.md finding 3 (Tramlink generic termini lists, Metropolitan branch cross-listing) accounts for a large share of the Tram (109 zero-match) and Metropolitan (86 zero-match) totals in this pass's Table B. Not re-verified station-by-station here.",
+      "recommendation": "Luke's lane, already tracked."
+    }
+  ],
+  "outOfScope_awaitingProductDecision": {
+    "id": "check-front-of-train-stub-termini",
+    "reference": "docs/london-terminus-sweep-findings.md addendum -- awaiting Tim's product decision, NOT re-litigated or proposed a fix here per this brief's explicit instruction",
+    "scaleConfirmedThisPass": {
+      "rawRowsWithCfotTowards": 240,
+      "stationsAffected": [
+        "Acton Town",
+        "Aldgate",
+        "Alperton",
+        "Amersham",
+        "Baker Street",
+        "Barbican",
+        "Barking",
+        "Barons Court",
+        "Bayswater",
+        "Becontree",
+        "Blackfriars",
+        "Bow Road",
+        "Bromley-by-Bow",
+        "Cannon Street",
+        "Chalfont & Latimer",
+        "Chesham",
+        "Croxley",
+        "Dagenham East",
+        "Dagenham Heathway",
+        "Ealing Common",
+        "Earl's Court",
+        "East Ham",
+        "East Putney",
+        "Eastcote",
+        "Edgware Road (Circle Line)",
+        "Elm Park",
+        "Embankment",
+        "Euston Square",
+        "Farringdon",
+        "Finchley Road",
+        "Fulham Broadway",
+        "Great Portland Street",
+        "Hammersmith (Dist&Pic Line)",
+        "Harrow-on-the-Hill",
+        "High Street Kensington",
+        "Hornchurch",
+        "Ickenham",
+        "King's Cross St. Pancras",
+        "Liverpool Street",
+        "Mansion House",
+        "Mile End",
+        "Monument",
+        "Moor Park",
+        "Moorgate",
+        "Neasden",
+        "North Harrow",
+        "Northfields",
+        "Northwood",
+        "Northwood Hills",
+        "Notting Hill Gate",
+        "Paddington",
+        "Parsons Green",
+        "Pinner",
+        "Plaistow",
+        "Preston Road",
+        "Putney Bridge",
+        "Rayners Lane",
+        "Rickmansworth",
+        "Ruislip",
+        "Ruislip Manor",
+        "Southfields",
+        "St. James's Park",
+        "Stepney Green",
+        "Temple",
+        "Tower Hill",
+        "Turnham Green",
+        "Upminster",
+        "Upminster Bridge",
+        "Upton Park",
+        "Uxbridge",
+        "Wembley Park",
+        "West Brompton",
+        "West Ham",
+        "West Harrow",
+        "West Kensington",
+        "Westminster",
+        "Willesden Green",
+        "Wimbledon",
+        "Wimbledon Park"
+      ],
+      "stationCount": 79
+    }
+  },
+  "tableB_summary": {
+    "totalUnreachableDirectionInstances": 862,
+    "byLinePrefix": {
+      "DLR": 265,
+      "Mildmay": 13,
+      "District": 75,
+      "Tram": 109,
+      "Piccadilly": 90,
+      "Metropolitan": 86,
+      "Windrush": 62,
+      "Northern": 58,
+      "Waterloo": 2,
+      "Central": 44,
+      "Victoria": 3,
+      "Weaver": 34,
+      "Bakerloo": 6,
+      "Circle": 2,
+      "Lioness": 1,
+      "Jubilee": 2,
+      "Elizabeth": 10
+    },
+    "bySuspectedCause": {
+      "dlr-arrival-id-collision-suspected": 265,
+      "unclassified": 459,
+      "piccadilly-heathrow-via-loop": 66,
+      "windrush-terminus-catalog-mismatch-suspected": 62,
+      "elizabeth-line-suffix": 10
+    },
+    "note": "Not every row below has been individually root-caused. suspectedCause is a mechanical tag (by line prefix) for the 3 confirmed defects above plus the Windrush catalog-mismatch class; \"unclassified\" rows are a mix of already-documented catalog/data issues (Tramlink, Metropolitan cross-branch), the out-of-scope CFOT/stub-terminus pattern (see cfotObservedAtStation), and ordinary headway/snapshot-timing noise that a second sample minutes later would likely clear -- docs/london-terminus-sweep-findings.md signature 1 already documents that this ambiguity is inherent to a single-snapshot sweep."
+  },
+  "tableB_full": [
+    {
+      "station": "Abbey Road",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Abbey Road",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Abbey Road",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Abbey Road",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Abbey Road",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Abbey Road",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Acton Central",
+      "direction": "Mildmay Clapham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Acton Town",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Acton Town",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Acton Town",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Addington Village",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Addington Village",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Addington Village",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Addiscombe",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Addiscombe",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "All Saints",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "All Saints",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "All Saints",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "All Saints",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "All Saints",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "All Saints",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Alperton",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Alperton",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Alperton",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Amersham",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Amersham",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Amersham",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Amersham",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ampere Way",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ampere Way",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Anerley",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Anerley",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Anerley",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Archway",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Arena",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Arena",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Arnos Grove",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Arnos Grove",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Arnos Grove",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Arsenal",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Arsenal",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Avenue Road",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Avenue Road",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Avenue Road",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Baker Street",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Baker Street",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Baker Street",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Bank",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bank",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bank",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bank",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bank",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bank",
+      "direction": "Waterloo and City Waterloo",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Barking",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Barkingside",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Barkingside",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Barons Court",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Barons Court",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Battersea Power",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Battersea Power",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Battersea Power",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Battersea Power",
+      "direction": "Northern Morden",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckenham Junction",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckenham Junction",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckenham Junction",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckenham Junction",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckenham Road",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckenham Road",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckenham Road",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton Park",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton Park",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton Park",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton Park",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton Park",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beckton Park",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Becontree",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Beddington Lane",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Beddington Lane",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Belgrave Walk",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Belgrave Walk",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Belsize Park",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Belsize Park",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Birkbeck",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Birkbeck",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Birkbeck",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackhorse Lane",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackhorse Lane",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackhorse Road",
+      "direction": "Victoria Brixton",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackwall",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackwall",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackwall",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackwall",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackwall",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Blackwall",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Boston Manor",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Boston Manor",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Boston Manor",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bounds Green",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bounds Green",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bow Church",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bow Church",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bow Church",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bow Church",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bow Church",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bow Church",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Brent Cross",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Brent Cross",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Brixton",
+      "direction": "Victoria Walthamstow Central",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Brockley",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Brockley",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bruce Grove",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Buckhurst Hill",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Buckhurst Hill",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Burnt Oak",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Burnt Oak",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Burnt Oak",
+      "direction": "Northern Morden",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bush Hill Park",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Bush Hill Park",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Caledonian Road",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Caledonian Road",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cambridge Heath (London)",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canada Water",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canary Wharf",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canary Wharf",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canary Wharf",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canary Wharf",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canary Wharf",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canary Wharf",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canning Town",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canning Town",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canning Town",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canning Town",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canning Town",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Canning Town",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Centrale",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Centrale",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Centrale",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chalfont & Latimer",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Chalfont & Latimer",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Chalfont & Latimer",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Chalfont & Latimer",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Chalk Farm",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chalk Farm",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chesham",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Chesham",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Chesham",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Chesham",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Cheshunt",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cheshunt",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chigwell",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chigwell",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chigwell",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chingford",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chingford",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chiswick Park",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chiswick Park",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chiswick Park",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chorleywood",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Chorleywood",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Church Street",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Church Street",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Church Street",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Church Street",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Clapham High Street",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Clapham High Street",
+      "direction": "Windrush Highbury & Islington",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Clapham High Street",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Clapham High Street",
+      "direction": "Windrush West Croydon",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Clapham Junction",
+      "direction": "Mildmay Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Clapton",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Clapton",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cockfosters",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cockfosters",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cockfosters",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Colindale",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Colindale",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Colliers Wood",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Colliers Wood",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Coombe Lane",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Coombe Lane",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Coombe Lane",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Covent Garden",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Covent Garden",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crossharbour",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crossharbour",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crossharbour",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crossharbour",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crossharbour",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crossharbour",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Croxley",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Croxley",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Croxley",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Croxley",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Crystal Palace",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crystal Palace",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Crystal Palace",
+      "direction": "Windrush West Croydon",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Custom House (for ExCel)",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Custom House (for ExCel)",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Custom House (for ExCel)",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Custom House (for ExCel)",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Custom House (for ExCel)",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Custom House (for ExCel)",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cutty Sark",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cutty Sark",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cutty Sark",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cutty Sark",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cutty Sark",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cutty Sark",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cyprus",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cyprus",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cyprus",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cyprus",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cyprus",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Cyprus",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Dagenham East",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Dagenham Heathway",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Dalston Junction",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Debden",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Debden",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Denmark Hill",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Denmark Hill",
+      "direction": "Windrush Highbury & Islington",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Denmark Hill",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Denmark Hill",
+      "direction": "Windrush West Croydon",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Deptford Bridge",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Deptford Bridge",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Deptford Bridge",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Deptford Bridge",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Deptford Bridge",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Deptford Bridge",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Devons Road",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Devons Road",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Devons Road",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Devons Road",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Devons Road",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Devons Road",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Dundonald Road",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Dundonald Road",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Dundonald Road",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Dundonald Road",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ealing Broadway",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ealing Broadway",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ealing Common",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ealing Common",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Earl's Court",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Earl's Court",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Earl's Court",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "East Croydon",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East Croydon",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East Finchley",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East Ham",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "East India",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East India",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East India",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East India",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East India",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East India",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "East Putney",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "East Putney",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "East Putney",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Eastcote",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Eastcote",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Eastcote",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Eastcote",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Edgware",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Edgware",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Edgware",
+      "direction": "Northern Morden",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Edmonton Green",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elephant & Castle",
+      "direction": "Bakerloo Harrow and Wealdstone",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elm Park",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Elm Park",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Elmers End",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elmers End",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elmers End",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elmers End",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elverson Road",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elverson Road",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elverson Road",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elverson Road",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elverson Road",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Elverson Road",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Embankment",
+      "direction": "Bakerloo Harrow and Wealdstone",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Enfield Town",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Enfield Town",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Epping",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Epping",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Fairlop",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Fieldway",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Fieldway",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Fieldway",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Finchley Central",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Finsbury Park",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Finsbury Park",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Forest Hill",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Forest Hill",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Fulham Broadway",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Fulham Broadway",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Gallions Reach",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gallions Reach",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gallions Reach",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gallions Reach",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gallions Reach",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gallions Reach",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gants Hill",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "George Street",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "George Street",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "George Street",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Golders Green",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Golders Green",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Grange Hill",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Grange Hill",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gravel Hill",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gravel Hill",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gravel Hill",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Greenford",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Greenwich",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Greenwich",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Greenwich",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Greenwich",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Greenwich",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Greenwich",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gunnersbury",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gunnersbury",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gunnersbury",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Gunnersbury",
+      "direction": "Mildmay Clapham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Haggerston",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hainault",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hainault",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hammersmith (Dist&Pic Line)",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Hammersmith (H&C Line)",
+      "direction": "Circle",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hampstead",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hampstead",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hanger Lane",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Harrington Road",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Harrington Road",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Harrington Road",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Harrow & Wealdstone",
+      "direction": "Bakerloo Elephant and Castle",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Harrow-on-the-Hill",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Harrow-on-the-Hill",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Hatton Cross",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hatton Cross",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hatton Cross",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hatton Cross",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminal 4",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminal 4",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminal 4",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminal 5",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminal 5",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminal 5",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminals 2 & 3",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminals 2 & 3",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heathrow Terminals 2 & 3",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hendon Central",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hendon Central",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heron Quays",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heron Quays",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heron Quays",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heron Quays",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heron Quays",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Heron Quays",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "High Barnet",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "High Barnet",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "High Barnet",
+      "direction": "Northern Morden",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Highams Park",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Highams Park",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Highbury & Islington",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Highbury & Islington",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Highgate",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hillingdon",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hillingdon",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hillingdon",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hillingdon",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Holloway Road",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Holloway Road",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Honor Oak Park",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Honor Oak Park",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hornchurch",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Hornchurch",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Hornchurch",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Hounslow Central",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow Central",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow Central",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow East",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow East",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow East",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow West",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow West",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hounslow West",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hoxton",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hyde Park Corner",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Hyde Park Corner",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ickenham",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ickenham",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ickenham",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ickenham",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Imperial Wharf",
+      "direction": "Mildmay Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Island Gardens",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Island Gardens",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Island Gardens",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Island Gardens",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Island Gardens",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Island Gardens",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kensington (Olympia)",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kensington (Olympia)",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kensington (Olympia)",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kensington (Olympia)",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kensington (Olympia)",
+      "direction": "Mildmay Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kentish Town",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kew Gardens",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kew Gardens",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kew Gardens",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Kew Gardens",
+      "direction": "Mildmay Clapham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King George V",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King George V",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King George V",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King George V",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King George V",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King George V",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King Henry's Drive",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King Henry's Drive",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King Henry's Drive",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "King's Cross St. Pancras",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "King's Cross St. Pancras",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "King's Cross St. Pancras",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "King's Cross St. Pancras",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "King's Cross St. Pancras",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "King's Cross St. Pancras",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Knightsbridge",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Knightsbridge",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lambeth North",
+      "direction": "Bakerloo Harrow and Wealdstone",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Langdon Park",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Langdon Park",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Langdon Park",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Langdon Park",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Langdon Park",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Langdon Park",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lebanon Road",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lewisham",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lewisham",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lewisham",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lewisham",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lewisham",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Limehouse",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Limehouse",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Limehouse",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Limehouse",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Limehouse",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Limehouse",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lloyd Park",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lloyd Park",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Lloyd Park",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London City Airport",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London City Airport",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London City Airport",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London City Airport",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London City Airport",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London City Airport",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London Euston",
+      "direction": "Lioness Euston",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "London Fields",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Loughton",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Loughton",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Manor House",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Manor House",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Merton Park",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Merton Park",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Merton Park",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Merton Park",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mill Hill East",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mill Hill East",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mill Hill East",
+      "direction": "Northern Morden",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mitcham",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mitcham",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mitcham",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mitcham Junction",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mitcham Junction",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Moor Park",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Moor Park",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Morden",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Morden",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Morden",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Morden Road",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Morden Road",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Morden Road",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Morden Road",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mudchute",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mudchute",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mudchute",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mudchute",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mudchute",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Mudchute",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Addington",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Addington",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Addington",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Cross ELL",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Cross ELL",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Cross ELL",
+      "direction": "Windrush Highbury & Islington",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Cross ELL",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Cross ELL",
+      "direction": "Windrush West Croydon",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Cross Gate",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "New Cross Gate",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Nine Elms",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Nine Elms",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Nine Elms",
+      "direction": "Northern Morden",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "North Ealing",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "North Ealing",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "North Ealing",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "North Harrow",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "North Harrow",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "North Harrow",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northfields",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northfields",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northfields",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northolt",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Northolt",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Northwick Park",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Northwick Park",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Northwick Park",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Northwick Park",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Northwood",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northwood",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northwood Hills",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northwood Hills",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Northwood Hills",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Norwood Junction",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Norwood Junction",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Norwood Junction",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Oakwood",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Oakwood",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Oakwood",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Osterley",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Osterley",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Osterley",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Park Royal",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Park Royal",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Park Royal",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Parsons Green",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Parsons Green",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Peckham Rye",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Peckham Rye",
+      "direction": "Windrush Highbury & Islington",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Peckham Rye",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Peckham Rye",
+      "direction": "Windrush West Croydon",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Penge West",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Penge West",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Penge West",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Perivale",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Perivale",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Phipps Bridge",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Phipps Bridge",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Phipps Bridge",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Phipps Bridge",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Piccadilly Circus",
+      "direction": "Bakerloo Harrow and Wealdstone",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pinner",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Pinner",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Plaistow",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Pontoon Dock",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pontoon Dock",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pontoon Dock",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pontoon Dock",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pontoon Dock",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pontoon Dock",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Poplar",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Poplar",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Poplar",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Poplar",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Poplar",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Poplar",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Preston Road",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Preston Road",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Preston Road",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Prince Regent",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Prince Regent",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Prince Regent",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Prince Regent",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Prince Regent",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Prince Regent",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pudding Mill Lane",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pudding Mill Lane",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pudding Mill Lane",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pudding Mill Lane",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pudding Mill Lane",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pudding Mill Lane",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Pudding Mill Lane",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Putney Bridge",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Putney Bridge",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Queens Road Peckham",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Queens Road Peckham",
+      "direction": "Windrush Highbury & Islington",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Queens Road Peckham",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Queens Road Peckham",
+      "direction": "Windrush West Croydon",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ravenscourt Park",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ravenscourt Park",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Rayners Lane",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Rayners Lane",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Rayners Lane",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Rayners Lane",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Rectory Road",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Reeves Corner",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Reeves Corner",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Reeves Corner",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Richmond",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Richmond",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Richmond",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Richmond (London)",
+      "direction": "Mildmay Clapham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Richmond (London)",
+      "direction": "Mildmay Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Rickmansworth",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Rickmansworth",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Rickmansworth",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Roding Valley",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Roding Valley",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Roding Valley",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Rotherhithe",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Albert",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Albert",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Albert",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Albert",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Albert",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Albert",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Oak",
+      "direction": "Circle",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Victoria",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Victoria",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Victoria",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Victoria",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Victoria",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Royal Victoria",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ruislip",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ruislip",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ruislip",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ruislip",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ruislip Gardens",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ruislip Gardens",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Ruislip Manor",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ruislip Manor",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ruislip Manor",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Ruislip Manor",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Russell Square",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Russell Square",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sandilands",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sandilands",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Seven Sisters",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shadwell",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shadwell",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shadwell",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shadwell",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shadwell",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shadwell",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shadwell",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shepherds Bush",
+      "direction": "Mildmay Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Shoreditch High Street",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Silver Street",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Snaresbrook",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Acton",
+      "direction": "Mildmay Clapham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Ealing",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Ealing",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Ealing",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Harrow",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Harrow",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Harrow",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Quay",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Quay",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Quay",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Quay",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Quay",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Quay",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Ruislip",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Ruislip",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Wimbledon",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Wimbledon",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Wimbledon",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "South Woodford",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Southbury",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Southbury",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Southfields",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Southfields",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Southfields",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Southgate",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Southgate",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Southgate",
+      "direction": "Piccadilly Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "St James Street (London)",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "St James Street (London)",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stamford Brook",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stamford Brook",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stamford Hill",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stanmore",
+      "direction": "Jubilee Stratford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Star Lane",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Star Lane",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Star Lane",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Star Lane",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Star Lane",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Star Lane",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stoke Newington",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Elizabeth Abbey Wood",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Elizabeth Heathrow Terminal 4",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Elizabeth Heathrow Terminal 5",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Elizabeth Reading",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Elizabeth Shenfield",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Jubilee Stanmore",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Mildmay Clapham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford",
+      "direction": "Mildmay Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford High Street",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford High Street",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford High Street",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford High Street",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford High Street",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford High Street",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford International",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford International",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford International",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford International",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Stratford International",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sudbury Hill",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sudbury Hill",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sudbury Hill",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sudbury Town",
+      "direction": "Piccadilly Cockfosters",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sudbury Town",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sudbury Town",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Surrey Quays",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sydenham",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Sydenham",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Theobalds Grove",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Theobalds Grove",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Therapia Lane",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Therapia Lane",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Theydon Bois",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Theydon Bois",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tooting Bec",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tooting Bec",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tooting Broadway",
+      "direction": "Northern High Barnet",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tooting Broadway",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tottenham Court Road",
+      "direction": "Elizabeth Abbey Wood",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tottenham Court Road",
+      "direction": "Elizabeth Heathrow Terminal 4",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tottenham Court Road",
+      "direction": "Elizabeth Heathrow Terminal 5",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tottenham Court Road",
+      "direction": "Elizabeth Reading",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tottenham Court Road",
+      "direction": "Elizabeth Shenfield",
+      "suspectedCause": "elizabeth-line-suffix",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Totteridge & Whetstone",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Totteridge & Whetstone",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tower Gateway",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tower Gateway",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tower Gateway",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tower Gateway",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tower Gateway",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Tufnell Park",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Turkey Street",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Turkey Street",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Turnham Green",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Turnpike Lane",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Turnpike Lane",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Upminster",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Upminster",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Upminster",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Upminster Bridge",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Upminster Bridge",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Upminster Bridge",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Upney",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Upton Park",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Uxbridge",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Uxbridge",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Uxbridge",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Uxbridge",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Waddon Marsh",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Waddon Marsh",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Walthamstow Central",
+      "direction": "Victoria Brixton",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Walthamstow Central",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Walthamstow Central",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wandle Park",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wandle Park",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wandsworth Road",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wandsworth Road",
+      "direction": "Windrush Highbury & Islington",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wandsworth Road",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wandsworth Road",
+      "direction": "Windrush West Croydon",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wapping",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Waterloo",
+      "direction": "Bakerloo Harrow and Wealdstone",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Waterloo",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Waterloo",
+      "direction": "Waterloo and City Bank",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Watford",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Watford",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Watford",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Watford",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wellesley Road",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wellesley Road",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wellesley Road",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Acton",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Acton",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Brompton",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Brompton",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Brompton",
+      "direction": "Mildmay Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Croydon",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Croydon",
+      "direction": "Tram Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Croydon",
+      "direction": "Windrush Clapham Junction",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Croydon",
+      "direction": "Windrush Crystal Palace",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Croydon",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Finchley",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Finchley",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Ham",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Ham",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Ham",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Ham",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Ham",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Ham",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Ham",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Harrow",
+      "direction": "Metropolitan Aldgate",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Harrow",
+      "direction": "Metropolitan Amersham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Harrow",
+      "direction": "Metropolitan Chesham",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Harrow",
+      "direction": "Metropolitan Uxbridge",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Harrow",
+      "direction": "Metropolitan Watford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West India Quay",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West India Quay",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West India Quay",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West India Quay",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West India Quay",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West India Quay",
+      "direction": "DLR Woolwich Arsenal",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Kensington",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Kensington",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Kensington",
+      "direction": "District Wimbledon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "West Ruislip",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Ruislip",
+      "direction": "Central Epping",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Silvertown",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Silvertown",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Silvertown",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Silvertown",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Silvertown",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "West Silvertown",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Westferry",
+      "direction": "DLR Bank",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Westferry",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Westferry",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Westferry",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Westferry",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Westferry",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "White Hart Lane",
+      "direction": "Weaver Chingford",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Whitechapel",
+      "direction": "Windrush New Cross",
+      "suspectedCause": "windrush-terminus-catalog-mismatch-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wimbledon",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon",
+      "direction": "Tram Beckenham Junction",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon",
+      "direction": "Tram Elmers End",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon Park",
+      "direction": "District Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon Park",
+      "direction": "District Richmond",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wimbledon Park",
+      "direction": "District Upminster",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": true
+    },
+    {
+      "station": "Wood Green",
+      "direction": "Piccadilly Heathrow Terminal 4",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wood Green",
+      "direction": "Piccadilly Heathrow Terminal 5",
+      "suspectedCause": "piccadilly-heathrow-via-loop",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wood Street",
+      "direction": "Weaver Cheshunt",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Wood Street",
+      "direction": "Weaver Enfield Town",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woodford",
+      "direction": "Central Ealing Broadway",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woodford",
+      "direction": "Central West Ruislip",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woodside",
+      "direction": "Tram New Addington",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woodside",
+      "direction": "Tram West Croydon",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woodside Park",
+      "direction": "Northern Edgware",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woodside Park",
+      "direction": "Northern Mill Hill East",
+      "suspectedCause": "unclassified",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woolwich Arsenal",
+      "direction": "DLR Beckton",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woolwich Arsenal",
+      "direction": "DLR Lewisham",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woolwich Arsenal",
+      "direction": "DLR Stratford",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woolwich Arsenal",
+      "direction": "DLR Stratford International",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    },
+    {
+      "station": "Woolwich Arsenal",
+      "direction": "DLR Tower Gateway",
+      "suspectedCause": "dlr-arrival-id-collision-suspected",
+      "cfotObservedAtStation": false
+    }
+  ]
+}

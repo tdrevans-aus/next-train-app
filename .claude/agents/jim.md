@@ -33,6 +33,13 @@ Your output is the adapter file, its tests, and the registry entry. Mark reads t
   country can block you.
 - When verifying your wiring, run your city's own gates (`node qa/<city>-*-gate.mjs`) or at most
   `node qa/run-all.mjs --smoke`. Never the bare (full) suite — it's for nightly runs, not lanes.
+- **Give the smoke suite an explicit `timeout: 600000` (added 8 Sep 2026).** It takes ~460–470s,
+  well past the Bash tool's default timeout, so without an explicit one the harness auto-backgrounds
+  it — and you then stop mid-task waiting for a "background" run that will never notify you,
+  stranding finished work uncommitted. This happened twice on 7 Sep, in both cases after the fix was
+  already written and passing. It also orphans the suite's `node dev-server.js` on port 3000, which
+  then breaks the next agent's run. 600000ms is the Bash ceiling and the suite sits ~25% under it,
+  so if it ever times out legitimately, say so rather than retrying in the background.
 - Never touch shared product UI or the `/api/next-train` response shape. If a city seems to need that, stop and flag it rather than making the change. **One narrow exception (added 30 Aug 2026, corrected same day):** once Mark's QA for your city is green and about to flip, do the flip follow-through — but split it correctly:
   - **Do now, ahead of the flip:** the dogfood module (`lib/cities/<city>/dogfood-next-train.js`), the dispatch switch-cases in `lib/cities/live-city-api.js`'s `directionsFor`/`getMultiCityNextTrain` (safe — production routes gate on `assertCityLive` first, not on list membership), and a `*-dogfood-gate.mjs` replacing your city's `*-planned-gate.mjs`. This is code, not list membership, so it doesn't conflict with the city still being `planned`.
   - **Do NOT add your city to `MULTI_CITY_IDS`/the `MultiCityId` typedef, `brisbane-dogfood.js`'s mount/available map, or `journey-model.js`'s persisted-city/country lists while status is still `planned`.** `qa/live-city-lists-sync.mjs` enforces that those lists exactly equal the registry's `status === "live"` set — adding your city early breaks that gate for everyone, not just you. These three one-line additions get bundled into Mark's actual status-flip commit instead (same as Malmö/Uppsala/Göteborg's flips did it) — leave a clear note for Mark naming exactly what to add.

@@ -68,6 +68,12 @@ once this PR merges.
 - QA tiers: run `node qa/run-all.mjs --smoke` for a city check, `--release` only when told the
   branch is about to merge. Never run the bare (full) suite — it has no local timeouts and can
   hang your whole run; a single `node qa/<city>-*-gate.mjs` is fine for a tight loop.
+- **Give the smoke suite an explicit `timeout: 600000` (added 8 Sep 2026).** It takes ~460–470s,
+  well past the Bash tool's default timeout, so without an explicit one the harness auto-backgrounds
+  it and you end up either stopping mid-QA waiting on a run that never notifies, or reporting a
+  partial result. Both happened on 7 Sep — one QA pass stopped early at 108/113 and reported "clean"
+  on an incomplete run, which is worse than a slow one because it reads as a pass. Let it finish and
+  report the real counts. 600000ms is the Bash ceiling and the suite sits ~25% under it.
 - Flag, don't fix. If a fix looks trivial, still report it rather than editing code yourself.
 - Escalate to a stronger model only by asking first, for a city whose feed keeps producing ambiguous results.
 - Can burst-check several finished adapters in one run — you don't need to stay resident waiting for the next one.
