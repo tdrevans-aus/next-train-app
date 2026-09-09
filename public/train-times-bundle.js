@@ -38,15 +38,60 @@ var NextTrainTimes = (() => {
     Mandurah: ["Mandurah", "Cockburn"],
     Fremantle: ["Fremantle", "Claremont"],
     "Bakerloo Harrow and Wealdstone": ["Bakerloo Harrow and Wealdstone", "Bakerloo Queen's Park", "Bakerloo Stonebridge Park"],
-    "Central Epping": ["Central Epping", "Central Loughton", "Central Hainault"],
-    "Central West Ruislip": ["Central West Ruislip", "Central Northolt"],
-    "District Upminster": ["District Upminster", "District Barking"],
+    // Central line short workings (docs/jim-brief-london-catalog-coverage.md). North Acton, White
+    // City and Ruislip Gardens are all on the West Ruislip branch; Grange Hill, Newbury Park and
+    // Debden are all on the Epping/Hainault-loop branch (already folded to Epping via Loughton and
+    // Hainault below). Leytonstone, Woodford and Marble Arch are excluded deliberately: they sit
+    // before/at a branch fork, so which canonical terminus a short working "would have" reached
+    // can't be told from the destination text alone.
+    "Central Epping": ["Central Epping", "Central Loughton", "Central Hainault", "Central Grange Hill", "Central Newbury Park", "Central Debden"],
+    "Central West Ruislip": ["Central West Ruislip", "Central Northolt", "Central North Acton", "Central White City", "Central Ruislip Gardens"],
+    "District Upminster": ["District Upminster", "District Barking", "District Dagenham East", "District Tower Hill"],
     "District Ealing Broadway": ["District Ealing Broadway", "District Kensington (Olympia)"],
     "Piccadilly Heathrow Terminal 5": ["Piccadilly Heathrow Terminal 5", "Piccadilly Heathrow Terminals 2 and 3"],
+    // Oakwood, Arnos Grove and Wood Green are all on the Cockfosters branch (well-documented
+    // scheduled short workings, not just noise). Northfields and bare "Heathrow" are excluded:
+    // Northfields sits before the Uxbridge/Heathrow fork and bare "Heathrow" doesn't say which
+    // terminal, so neither can be resolved from the text alone.
+    "Piccadilly Cockfosters": ["Piccadilly Cockfosters", "Piccadilly Oakwood", "Piccadilly Arnos Grove", "Piccadilly Wood Green"],
     "Piccadilly Uxbridge": ["Piccadilly Uxbridge", "Piccadilly Rayners Lane"],
     "Victoria Walthamstow Central": ["Victoria Walthamstow Central", "Victoria Seven Sisters", "Victoria Blackhorse Road"],
     "Hammersmith and City Barking": ["Hammersmith and City Barking", "Hammersmith & City Barking"],
-    "Hammersmith and City Hammersmith": ["Hammersmith and City Hammersmith", "Hammersmith & City Hammersmith"]
+    "Hammersmith and City Hammersmith": ["Hammersmith and City Hammersmith", "Hammersmith & City Hammersmith"],
+    // The Circle line's canonical direction is the bare loop entry "Circle" (see the catalog
+    // entry at Aldgate/Barbican etc.) — Edgware Road (Circle) and Hammersmith are the line's own
+    // documented short-turn/self-terminating points on that loop.
+    Circle: ["Circle", "Circle Edgware Road (Circle)", "Circle Hammersmith"],
+    // Elizabeth line short workings: Gidea Park is a documented short-of-Shenfield turnback,
+    // Maidenhead is a plain intermediate stop on the single-track Reading branch. Paddington,
+    // Whitechapel, Liverpool Street (central-section turnbacks) and Hayes & Harlington (before the
+    // Reading/Heathrow fork) are excluded — direction can't be told from the text alone.
+    "Elizabeth Shenfield": ["Elizabeth Shenfield", "Elizabeth Gidea Park"],
+    "Elizabeth Reading": ["Elizabeth Reading", "Elizabeth Maidenhead"],
+    // Jubilee line has no branches, so every intermediate short working resolves unambiguously to
+    // whichever end it's short of. Stanmore branch: Wembley Park, Willesden Green. Stratford
+    // branch: North Greenwich, West Ham.
+    "Jubilee Stanmore": ["Jubilee Stanmore", "Jubilee Wembley Park", "Jubilee Willesden Green"],
+    "Jubilee Stratford": ["Jubilee Stratford", "Jubilee North Greenwich", "Jubilee West Ham"],
+    // Metropolitan line: Baker Street sits between the suburban stations and the line's only City
+    // terminus (Aldgate), so a short-of-Aldgate working there is unambiguous.
+    "Metropolitan Aldgate": ["Metropolitan Aldgate", "Metropolitan Baker Street"],
+    // Mildmay (London Overground) forks at Willesden Junction: the West London Line spur to
+    // Clapham Junction runs via Shepherd's Bush, unambiguously. Willesden Junction, Camden Road and
+    // Highbury & Islington sit on the shared Stratford<->Richmond trunk *before* that fork, so
+    // whether a short working there is short-of-Stratford or short-of-Richmond can't be told from
+    // the text alone — excluded deliberately.
+    "Mildmay Clapham Junction": ["Mildmay Clapham Junction", "Mildmay Shepherds Bush"],
+    // Windrush (London Overground, former East London Line): Dalston Junction is one stop short of
+    // the Highbury & Islington extension: Battersea Park is a plain intermediate stop on the
+    // unambiguous Clapham Junction (West London Line) spur; "New Cross ELL" is a legacy label for
+    // the existing New Cross canonical, not a different destination. New Cross Gate is a genuine
+    // separate branch terminus (not a short working) and Canary Wharf/All Saints/Canning
+    // Town/Poplar (DLR) sit at multi-way junctions — none of those are foldable from the text
+    // alone; see the PR description.
+    "Windrush Highbury & Islington": ["Windrush Highbury & Islington", "Windrush Dalston Junction"],
+    "Windrush Clapham Junction": ["Windrush Clapham Junction", "Windrush Battersea Park"],
+    "Windrush New Cross": ["Windrush New Cross", "Windrush New Cross ELL"]
   };
   function applyDestinationAliases(destination) {
     const trimmed = destination.trim();
