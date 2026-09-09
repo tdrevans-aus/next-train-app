@@ -1,0 +1,8664 @@
+{
+ "generatedAt": "2026-09-09",
+ "sampleFiles": [
+  "sample-2.json",
+  "sample-3.json",
+  "sample-4.json",
+  "sample-london-1405.json",
+  "sample-london-1453.json",
+  "sample-london-1538.json",
+  "sample-london-1624.json",
+  "sample-london-1712.json",
+  "sample-london-1800.json",
+  "sample-london-1845.json",
+  "sample-london-1932.json",
+  "sample-london-2017.json",
+  "sample-london-2104.json",
+  "sample-london-2153.json",
+  "sample-london-2238.json",
+  "sample-london-2323.json"
+ ],
+ "sampleCount": 16,
+ "window": "2026-09-08T13:55:58.888Z .. 2026-09-08T23:33:15.305Z",
+ "criterion": "Observed running live in >=1 sample and not offered by the catalog. Positive evidence only; absence of observation is never evidence of absence, so counts are a lower bound.",
+ "notActionable": "No direction may be REMOVED on this data: the probe topology derivation under-produces (mean ~1.3 vs ~4.1 offered) and refuted itself on hundreds of rows.",
+ "classA_lineEntirelyAbsent": [
+  {
+   "station": "Acton Town",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Acton Town",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Acton Town",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Acton Town",
+   "direction": "Piccadilly Northfields",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Acton Town",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Acton Town",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate",
+   "direction": "Metropolitan Aldgate",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate",
+   "direction": "Metropolitan Chesham",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate East",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate East",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barbican",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barbican",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barbican",
+   "direction": "Metropolitan Aldgate",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barbican",
+   "direction": "Metropolitan Chesham",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barbican",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barbican",
+   "direction": "Metropolitan Watford",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barking",
+   "direction": "Hammersmith and City Barking",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barking",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barking",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bayswater",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "District Olympia",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "District Tower Hill",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "District Wimbledon",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Gidea Park",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Paddington",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Reading",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Shenfield",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Elizabeth Whitechapel",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Jubilee Stanmore",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Jubilee Stratford",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bow Road",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bow Road",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bow Road",
+   "direction": "Hammersmith and City Hammersmith (H&C Line)",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bow Road",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bromley-by-Bow",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bromley-by-Bow",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bromley-by-Bow",
+   "direction": "Hammersmith and City Hammersmith (H&C Line)",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bromley-by-Bow",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Elizabeth Paddington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Elizabeth Reading",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Jubilee North Greenwich",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Jubilee Stanmore",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Jubilee Stratford",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Jubilee Wembley Park",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Jubilee West Ham",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "Jubilee Willesden Green",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "District Ealing Broadway",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "District Olympia",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "District Tower Hill",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "District Wimbledon",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Charing Cross",
+   "direction": "Northern Battersea",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Charing Cross",
+   "direction": "Northern Edgware",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Charing Cross",
+   "direction": "Northern Golders Green",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Charing Cross",
+   "direction": "Northern High Barnet",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Charing Cross",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Charing Cross",
+   "direction": "Northern Mill Hill East",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Charing Cross",
+   "direction": "Northern Morden",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "District Ealing Common",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "District Upminster",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth London Paddington",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth Reading",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Elizabeth Shenfield",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Common",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Common",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Common",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "Piccadilly Northfields",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Ham",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Ham",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Ham",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Eastcote",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "direction": "District Wimbledon",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "direction": "Hammersmith and City Edgware Road",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elephant & Castle",
+   "direction": "Northern Edgware",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elephant & Castle",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elephant & Castle",
+   "direction": "Northern Golders Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elephant & Castle",
+   "direction": "Northern High Barnet",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elephant & Castle",
+   "direction": "Northern Mill Hill East",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elephant & Castle",
+   "direction": "Northern Morden",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Circle Hammersmith",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "District Dagenham East",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "District Olympia",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "District Tower Hill",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "District Wimbledon",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Northern Battersea",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Northern Edgware",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Northern Golders Green",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Northern High Barnet",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Northern Mill Hill East",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Embankment",
+   "direction": "Northern Morden",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston",
+   "direction": "Victoria Brixton",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston",
+   "direction": "Victoria Walthamstow Central",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston Square",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston Square",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston Square",
+   "direction": "Metropolitan Aldgate",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston Square",
+   "direction": "Metropolitan Chesham",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston Square",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston Square",
+   "direction": "Metropolitan Watford",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Gidea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Paddington",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Reading",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Shenfield",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Elizabeth Whitechapel",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Metropolitan Aldgate",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Metropolitan Chesham",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Metropolitan Watford",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Metropolitan Aldgate",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Metropolitan Amersham",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Metropolitan Baker Street",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Metropolitan Chesham",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Metropolitan Watford",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finsbury Park",
+   "direction": "Victoria Brixton",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finsbury Park",
+   "direction": "Victoria Walthamstow Central",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "District Olympia",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "District Tower Hill",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "District Upminster",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "District Wimbledon",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Piccadilly Northfields",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Goldhawk Road",
+   "direction": "Hammersmith and City Barking",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Goldhawk Road",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Great Portland Street",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Great Portland Street",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Great Portland Street",
+   "direction": "Metropolitan Aldgate",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Great Portland Street",
+   "direction": "Metropolitan Chesham",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Great Portland Street",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Great Portland Street",
+   "direction": "Metropolitan Watford",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Victoria Brixton",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Victoria Walthamstow Central",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (H&C Line)",
+   "direction": "Hammersmith and City Barking",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (H&C Line)",
+   "direction": "Hammersmith and City Edgware Road (Circle)",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (H&C Line)",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (H&C Line)",
+   "direction": "Hammersmith and City Hammersmith (H&C Line)",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (H&C Line)",
+   "direction": "Hammersmith and City Plaistow",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 4",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 4",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 4",
+   "direction": "Elizabeth London Paddington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 4",
+   "direction": "Elizabeth Shenfield",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 5",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 5",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 5",
+   "direction": "Elizabeth London Paddington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 5",
+   "direction": "Elizabeth Shenfield",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminals 2 & 3",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminals 2 & 3",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminals 2 & 3",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminals 2 & 3",
+   "direction": "Elizabeth London Paddington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminals 2 & 3",
+   "direction": "Elizabeth Shenfield",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "direction": "District Ealing Broadway",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "direction": "District Edgware Road",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "direction": "District Olympia",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "direction": "District Wimbledon",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hillingdon",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ickenham",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ladbroke Grove",
+   "direction": "Hammersmith and City Barking",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ladbroke Grove",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Latimer Road",
+   "direction": "Hammersmith and City Barking",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Latimer Road",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Gidea Park",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Liverpool Street",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Paddington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Reading",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Shenfield",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Elizabeth Whitechapel",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Metropolitan Aldgate",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Metropolitan Chesham",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Metropolitan Watford",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Northern Edgware",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Northern Finchley Central",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Northern Golders Green",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Northern High Barnet",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Northern Mill Hill East",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Northern Morden",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "District Ealing Broadway",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "District Richmond",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "District Tower Hill",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "District Wimbledon",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "District Ealing Broadway",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "District Richmond",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "District Wimbledon",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "District Ealing Broadway",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "District Richmond",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "District Tower Hill",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "District Wimbledon",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Metropolitan Aldgate",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Metropolitan Chesham",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Metropolitan Watford",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Northern Edgware",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Northern Golders Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Northern High Barnet",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Northern Mill Hill East",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Northern Morden",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Neasden",
+   "direction": "Metropolitan Aldgate",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Neasden",
+   "direction": "Metropolitan Baker Street",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "District Edgware Road",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "District Wimbledon",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Gidea Park",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth London Paddington",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Paddington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Reading",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Shenfield",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Elizabeth Whitechapel",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Hammersmith and City Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington (H&C Line)",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington (H&C Line)",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Piccadilly Circus",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Piccadilly Circus",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Piccadilly Circus",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Piccadilly Circus",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Piccadilly Circus",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Piccadilly Circus",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Plaistow",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Plaistow",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Plaistow",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Rayners Lane",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Royal Oak",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Royal Oak",
+   "direction": "Hammersmith and City Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Royal Oak",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ruislip",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ruislip Manor",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush Market",
+   "direction": "Hammersmith and City Barking",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush Market",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "District Olympia",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "District Tower Hill",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "District Upminster",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "District Wimbledon",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "District Olympia",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "District Tower Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "District Upminster",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "District Wimbledon",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "District Olympia",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "District Tower Hill",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "District Upminster",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "District Wimbledon",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stepney Green",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stepney Green",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stepney Green",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stockwell",
+   "direction": "Victoria Brixton",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stockwell",
+   "direction": "Victoria Walthamstow Central",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "District Dagenham East",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "District Ealing Broadway",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "District Tower Hill",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "District Wimbledon",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central Ealing Broadway",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central Epping",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central Marble Arch",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central Newbury Park",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central West Ruislip",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Central White City",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Northern Battersea",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Northern Edgware",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Northern Golders Green",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Northern High Barnet",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Northern Mill Hill East",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Northern Morden",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "District Ealing Broadway",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "District Richmond",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "District Tower Hill",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "District Wimbledon",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "Piccadilly Heathrow",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Upton Park",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Upton Park",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Upton Park",
+   "direction": "Hammersmith and City Hammersmith (H&C Line)",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Upton Park",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Uxbridge",
+   "direction": "Piccadilly Uxbridge",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "District Olympia",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "District Tower Hill",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "District Wimbledon",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "Victoria Brixton",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "Victoria Walthamstow Central",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Warren Street",
+   "direction": "Victoria Brixton",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Warren Street",
+   "direction": "Victoria Walthamstow Central",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Metropolitan Aldgate",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Metropolitan Amersham",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Metropolitan Baker Street",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Metropolitan Chesham",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Metropolitan Harrow On The Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Metropolitan Watford",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Hammersmith and City Out Of Service",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Jubilee Stanmore",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Jubilee Stratford",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Jubilee Wembley Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "Jubilee Willesden Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westbourne Park",
+   "direction": "Hammersmith and City Barking",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westbourne Park",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "District Ealing Broadway",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "District Olympia",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "District Richmond",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "District Tower Hill",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "District Wimbledon",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Jubilee Stanmore",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Jubilee Stratford",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Jubilee Wembley Park",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Jubilee West Ham",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Abbey Wood",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Gidea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Heathrow Terminal 4",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Heathrow Terminal 5",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Paddington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Reading",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Shenfield",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Elizabeth Whitechapel",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Hammersmith and City Barking",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Willesden Green",
+   "direction": "Metropolitan Aldgate",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Willesden Green",
+   "direction": "Metropolitan Baker Street",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wood Lane",
+   "direction": "Hammersmith and City Barking",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wood Lane",
+   "direction": "Hammersmith and City Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  }
+ ],
+ "classB_shortWorkingFoldCandidate": [
+  {
+   "station": "Abbey Road",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Abbey Road",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Acton Central",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Acton Town",
+   "direction": "District Tower Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Addington Village",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Addiscombe",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate",
+   "direction": "Circle Hammersmith",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Aldgate East",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "All Saints",
+   "direction": "DLR All Saints",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "All Saints",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Alperton",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Amersham",
+   "direction": "Metropolitan Amersham",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ampere Way",
+   "direction": "Tram Therapia Lane",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Anerley",
+   "direction": "Windrush Dalston Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Anerley",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Angel",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Angel",
+   "direction": "Northern Golders Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Archway",
+   "direction": "Northern Battersea",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Archway",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Archway",
+   "direction": "Northern Kennington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arena",
+   "direction": "Tram Therapia Lane",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arnos Grove",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arnos Grove",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arnos Grove",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arsenal",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arsenal",
+   "direction": "Piccadilly Northfields",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arsenal",
+   "direction": "Piccadilly Oakwood",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Arsenal",
+   "direction": "Piccadilly Wood Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Avenue Road",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Hammersmith and City Edgware Road",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Jubilee Willesden Green",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Metropolitan Baker Street",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Baker Street",
+   "direction": "Metropolitan Harrow On The Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Balham",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central Liverpool Street",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central Marble Arch",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central Newbury Park",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Central White City",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "DLR Bank",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Northern Golders Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bank",
+   "direction": "Waterloo and City Bank",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barbican",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barking",
+   "direction": "District Dagenham East",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barkingside",
+   "direction": "Central North Acton",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barkingside",
+   "direction": "Central White City",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "District Dagenham East",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Barons Court",
+   "direction": "District Tower Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Battersea Power",
+   "direction": "Northern Battersea",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Battersea Power",
+   "direction": "Northern Golders Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bayswater",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Beckenham Junction",
+   "direction": "Tram Beckenham Junction",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Beckenham Junction",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Beckenham Road",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Becontree",
+   "direction": "District Dagenham East",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Belsize Park",
+   "direction": "Northern Battersea",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Belsize Park",
+   "direction": "Northern Golders Green",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Belsize Park",
+   "direction": "Northern Kennington",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bermondsey",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bermondsey",
+   "direction": "Jubilee Wembley Park",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bermondsey",
+   "direction": "Jubilee West Ham",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bermondsey",
+   "direction": "Jubilee Willesden Green",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bethnal Green",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bethnal Green",
+   "direction": "Central Grange Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bethnal Green",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bethnal Green",
+   "direction": "Central Marble Arch",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bethnal Green",
+   "direction": "Central Newbury Park",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bethnal Green",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bethnal Green",
+   "direction": "Central White City",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Birkbeck",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackfriars",
+   "direction": "Circle Hammersmith",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackhorse Lane",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Blackwall",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Central Leytonstone",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Central Marble Arch",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Central Newbury Park",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Central North Acton",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bond Street",
+   "direction": "Central White City",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Borough",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Borough",
+   "direction": "Northern Golders Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Boston Manor",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Boston Manor",
+   "direction": "Piccadilly Oakwood",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bounds Green",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bounds Green",
+   "direction": "Piccadilly Northfields",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bounds Green",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bow Church",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bow Road",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Brent Cross",
+   "direction": "Northern Battersea",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Brent Cross",
+   "direction": "Northern Kennington",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Brixton",
+   "direction": "Victoria Brixton",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Brockley",
+   "direction": "Windrush Dalston Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Brockley",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Bromley-by-Bow",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Brondesbury",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Brondesbury Park",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Buckhurst Hill",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Buckhurst Hill",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Buckhurst Hill",
+   "direction": "Central North Acton",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Buckhurst Hill",
+   "direction": "Central White City",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Burnt Oak",
+   "direction": "Northern Battersea",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Burnt Oak",
+   "direction": "Northern Kennington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Caledonian Road",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Caledonian Road",
+   "direction": "Piccadilly Northfields",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Caledonian Road",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Caledonian Road",
+   "direction": "Piccadilly Wood Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Caledonian Road & Barnsbury",
+   "direction": "Mildmay Camden Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Caledonian Road & Barnsbury",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Camden Road",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Camden Town",
+   "direction": "Northern Battersea",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Camden Town",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Camden Town",
+   "direction": "Northern Golders Green",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Camden Town",
+   "direction": "Northern Kennington",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Jubilee Wembley Park",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Jubilee West Ham",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Jubilee Willesden Green",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canada Water",
+   "direction": "Windrush New Cross Gate",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "DLR ALL SAINTS",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canary Wharf",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canning Town",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canning Town",
+   "direction": "Jubilee Wembley Park",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canning Town",
+   "direction": "Jubilee West Ham",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canning Town",
+   "direction": "Jubilee Willesden Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cannon Street",
+   "direction": "Circle Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canonbury",
+   "direction": "Mildmay Camden Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canonbury",
+   "direction": "Mildmay Highbury and Islington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Canons Park",
+   "direction": "Jubilee North Greenwich",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chalk Farm",
+   "direction": "Northern Battersea",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chalk Farm",
+   "direction": "Northern Golders Green",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chalk Farm",
+   "direction": "Northern Kennington",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chancery Lane",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chancery Lane",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chancery Lane",
+   "direction": "Central Marble Arch",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chancery Lane",
+   "direction": "Central Newbury Park",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chancery Lane",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chancery Lane",
+   "direction": "Central White City",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chesham",
+   "direction": "Metropolitan Chesham",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chigwell",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chiswick Park",
+   "direction": "District Dagenham East",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Chiswick Park",
+   "direction": "District Tower Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Church Street",
+   "direction": "Tram Church Street",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Church Street",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham Common",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham Common",
+   "direction": "Northern Golders Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham High Street",
+   "direction": "Windrush Battersea Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham High Street",
+   "direction": "Windrush Dalston Junction",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham High Street",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham Junction",
+   "direction": "Mildmay Shepherds Bush",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham Junction",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham North",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham North",
+   "direction": "Northern Golders Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Clapham South",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cockfosters",
+   "direction": "Piccadilly Cockfosters",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cockfosters",
+   "direction": "Piccadilly Northfields",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Colindale",
+   "direction": "Northern Battersea",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Colindale",
+   "direction": "Northern Kennington",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Colliers Wood",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Coombe Lane",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Covent Garden",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Covent Garden",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Covent Garden",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Crossharbour",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Crossharbour",
+   "direction": "DLR All Saints",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Crossharbour",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Crystal Palace",
+   "direction": "Windrush Dalston Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Crystal Palace",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cutty Sark",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Cutty Sark",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dagenham East",
+   "direction": "District Dagenham East",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dagenham Heathway",
+   "direction": "District Dagenham East",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dalston Junction",
+   "direction": "Windrush Battersea Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dalston Junction",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dalston Junction",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dalston Junction",
+   "direction": "Windrush New Cross Gate",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dalston Kingsland",
+   "direction": "Mildmay Camden Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dalston Kingsland",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Debden",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Debden",
+   "direction": "Central North Acton",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Denmark Hill",
+   "direction": "Windrush Battersea Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Denmark Hill",
+   "direction": "Windrush Dalston Junction",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Denmark Hill",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Deptford Bridge",
+   "direction": "DLR ALL SAINTS",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Deptford Bridge",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Devons Road",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dollis Hill",
+   "direction": "Jubilee North Greenwich",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dollis Hill",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Dollis Hill",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Central Ealing Broadway",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Central Newbury Park",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Broadway",
+   "direction": "Central White City",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ealing Common",
+   "direction": "District Tower Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "District Edgware Road",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "direction": "District Tower Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Acton",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Acton",
+   "direction": "Central Newbury Park",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Acton",
+   "direction": "Central North Acton",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Croydon",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Finchley",
+   "direction": "Northern Battersea",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Finchley",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Finchley",
+   "direction": "Northern Kennington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Ham",
+   "direction": "District Dagenham East",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "East India",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Putney",
+   "direction": "District Earls Court",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Putney",
+   "direction": "District Edgware Road",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "East Putney",
+   "direction": "District Tower Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Edgware",
+   "direction": "Northern Edgware",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Edgware",
+   "direction": "Northern Kennington",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elmers End",
+   "direction": "Tram Elmers End",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elmers End",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elverson Road",
+   "direction": "DLR ALL SAINTS",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Elverson Road",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Epping",
+   "direction": "Central Epping",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Epping",
+   "direction": "Central North Acton",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Epping",
+   "direction": "Central White City",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston",
+   "direction": "Northern Battersea",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston",
+   "direction": "Northern Golders Green",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Euston Square",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Fairlop",
+   "direction": "Central North Acton",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Farringdon",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Fieldway",
+   "direction": "Tram Therapia Lane",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Central",
+   "direction": "Northern Battersea",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Central",
+   "direction": "Northern Kennington",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Jubilee West Ham",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finchley Road & Frognal",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finsbury Park",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finsbury Park",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finsbury Park",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Finsbury Park",
+   "direction": "Piccadilly Wood Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Forest Hill",
+   "direction": "Windrush Dalston Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Forest Hill",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Fulham Broadway",
+   "direction": "District Earls Court",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Fulham Broadway",
+   "direction": "District Edgware Road",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Fulham Broadway",
+   "direction": "District Tower Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gants Hill",
+   "direction": "Central Newbury Park",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gants Hill",
+   "direction": "Central North Acton",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gants Hill",
+   "direction": "Central White City",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "George Street",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gloucester Road",
+   "direction": "Circle Hammersmith",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Golders Green",
+   "direction": "Northern Battersea",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Golders Green",
+   "direction": "Northern Golders Green",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Golders Green",
+   "direction": "Northern Kennington",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Goldhawk Road",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Goodge Street",
+   "direction": "Northern Battersea",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Goodge Street",
+   "direction": "Northern Golders Green",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Goodge Street",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gospel Oak",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Grange Hill",
+   "direction": "Central Grange Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Grange Hill",
+   "direction": "Central Woodford",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gravel Hill",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Great Portland Street",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Jubilee Wembley Park",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Green Park",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Greenford",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Greenwich",
+   "direction": "DLR ALL SAINTS",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Greenwich",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Gunnersbury",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hackney Central",
+   "direction": "Mildmay Camden Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hackney Central",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hackney Wick",
+   "direction": "Mildmay Camden Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hackney Wick",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Haggerston",
+   "direction": "Windrush Battersea Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Haggerston",
+   "direction": "Windrush Dalston Junction",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Haggerston",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Haggerston",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Haggerston",
+   "direction": "Windrush New Cross Gate",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hainault",
+   "direction": "Central North Acton",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hainault",
+   "direction": "Central White City",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hainault",
+   "direction": "Central Woodford",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "District Dagenham East",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "direction": "District Tower Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hampstead",
+   "direction": "Northern Battersea",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hampstead",
+   "direction": "Northern Golders Green",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hampstead",
+   "direction": "Northern Kennington",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hampstead Heath",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hanger Lane",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hanger Lane",
+   "direction": "Central Newbury Park",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Harrington Road",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Harrow-on-the-Hill",
+   "direction": "Metropolitan Baker Street",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hatton Cross",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminal 4",
+   "direction": "Piccadilly Heathrow",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heathrow Terminals 2 & 3",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hendon Central",
+   "direction": "Northern Battersea",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hendon Central",
+   "direction": "Northern Kennington",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heron Quays",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Heron Quays",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Barnet",
+   "direction": "Northern Battersea",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Barnet",
+   "direction": "Northern High Barnet",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "direction": "Circle Hammersmith",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Highbury & Islington",
+   "direction": "Mildmay Camden Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Highbury & Islington",
+   "direction": "Windrush New Cross Gate",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Highgate",
+   "direction": "Northern Battersea",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Highgate",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Highgate",
+   "direction": "Northern Kennington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Central Leytonstone",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Central Marble Arch",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Central Newbury Park",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holborn",
+   "direction": "Central White City",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holland Park",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holland Park",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holland Park",
+   "direction": "Central Newbury Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holland Park",
+   "direction": "Central North Acton",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holland Park",
+   "direction": "Central White City",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holloway Road",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holloway Road",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holloway Road",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Holloway Road",
+   "direction": "Piccadilly Wood Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Homerton",
+   "direction": "Mildmay Camden Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Homerton",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Honor Oak Park",
+   "direction": "Windrush Dalston Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Honor Oak Park",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hounslow Central",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hounslow Central",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hounslow East",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hounslow East",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hounslow West",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hounslow West",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hoxton",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hoxton",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hoxton",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hoxton",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hoxton",
+   "direction": "Windrush New Cross Gate",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hyde Park Corner",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hyde Park Corner",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Hyde Park Corner",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Imperial Wharf",
+   "direction": "Mildmay Shepherds Bush",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Imperial Wharf",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Island Gardens",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Island Gardens",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kennington",
+   "direction": "Northern Battersea",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kennington",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kennington",
+   "direction": "Northern Golders Green",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kennington",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kensal Rise",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kensington (Olympia)",
+   "direction": "Mildmay Shepherds Bush",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kensington (Olympia)",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kentish Town",
+   "direction": "Northern Battersea",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kentish Town",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kentish Town",
+   "direction": "Northern Kennington",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kentish Town West",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kew Gardens",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kilburn",
+   "direction": "Jubilee North Greenwich",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kilburn",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kilburn",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kilburn",
+   "direction": "Jubilee Willesden Green",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "King George V",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "King George V",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "direction": "Northern Golders Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "direction": "Piccadilly Oakwood",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Kingsbury",
+   "direction": "Jubilee North Greenwich",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Knightsbridge",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Knightsbridge",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Knightsbridge",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ladbroke Grove",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lancaster Gate",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lancaster Gate",
+   "direction": "Central Leytonstone",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lancaster Gate",
+   "direction": "Central Newbury Park",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lancaster Gate",
+   "direction": "Central North Acton",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lancaster Gate",
+   "direction": "Central White City",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Langdon Park",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Latimer Road",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lebanon Road",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Northern Battersea",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Northern Golders Green",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leicester Square",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lewisham",
+   "direction": "DLR ALL SAINTS",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lewisham",
+   "direction": "DLR All Saints",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lewisham",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leyton",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leyton",
+   "direction": "Central Grange Hill",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leyton",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leyton",
+   "direction": "Central Marble Arch",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leyton",
+   "direction": "Central Newbury Park",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leyton",
+   "direction": "Central North Acton",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leyton",
+   "direction": "Central White City",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leytonstone",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leytonstone",
+   "direction": "Central Grange Hill",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leytonstone",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leytonstone",
+   "direction": "Central Marble Arch",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leytonstone",
+   "direction": "Central Newbury Park",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leytonstone",
+   "direction": "Central North Acton",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Leytonstone",
+   "direction": "Central White City",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Central Grange Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Central Marble Arch",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Central Newbury Park",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "direction": "Central White City",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Lloyd Park",
+   "direction": "Tram Therapia Lane",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Jubilee Wembley Park",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "London Bridge",
+   "direction": "Jubilee Willesden Green",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "London City Airport",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "London City Airport",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "London City Airport",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Loughton",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Loughton",
+   "direction": "Central North Acton",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Loughton",
+   "direction": "Central White City",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Manor House",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Manor House",
+   "direction": "Piccadilly Northfields",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Manor House",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Manor House",
+   "direction": "Piccadilly Wood Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mansion House",
+   "direction": "Circle Hammersmith",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Marble Arch",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Marble Arch",
+   "direction": "Central Leytonstone",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Marble Arch",
+   "direction": "Central Marble Arch",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Marble Arch",
+   "direction": "Central Newbury Park",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Marble Arch",
+   "direction": "Central North Acton",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Marble Arch",
+   "direction": "Central White City",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Merton Park",
+   "direction": "Tram Therapia Lane",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Central Grange Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Central Marble Arch",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Central Newbury Park",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Central North Acton",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mile End",
+   "direction": "Central White City",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mill Hill East",
+   "direction": "Northern Battersea",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mill Hill East",
+   "direction": "Northern Mill Hill East",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mitcham",
+   "direction": "Tram Therapia Lane",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mitcham Junction",
+   "direction": "Tram Therapia Lane",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Monument",
+   "direction": "Circle Hammersmith",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Moorgate",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Morden",
+   "direction": "Northern Morden",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Morden Road",
+   "direction": "Tram Therapia Lane",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mornington Crescent",
+   "direction": "Northern Battersea",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mornington Crescent",
+   "direction": "Northern Golders Green",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mornington Crescent",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mudchute",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Mudchute",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Neasden",
+   "direction": "Jubilee North Greenwich",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Neasden",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Neasden",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "New Addington",
+   "direction": "Tram New Addington",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "New Cross ELL",
+   "direction": "Windrush Dalston Junction",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "New Cross ELL",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "New Cross Gate",
+   "direction": "Windrush Dalston Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "New Cross Gate",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Newbury Park",
+   "direction": "Central Newbury Park",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Newbury Park",
+   "direction": "Central North Acton",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Newbury Park",
+   "direction": "Central White City",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Nine Elms",
+   "direction": "Northern Battersea",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Nine Elms",
+   "direction": "Northern Golders Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Acton",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Acton",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Acton",
+   "direction": "Central Newbury Park",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Acton",
+   "direction": "Central North Acton",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Acton",
+   "direction": "Central White City",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Ealing",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Ealing",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Greenwich",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Greenwich",
+   "direction": "Jubilee Wembley Park",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Greenwich",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Greenwich",
+   "direction": "Jubilee Willesden Green",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "North Harrow",
+   "direction": "Metropolitan Baker Street",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Northfields",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Northfields",
+   "direction": "Piccadilly Northfields",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Northfields",
+   "direction": "Piccadilly Oakwood",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Northwood Hills",
+   "direction": "Metropolitan Baker Street",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Norwood Junction",
+   "direction": "Windrush Dalston Junction",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Norwood Junction",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "direction": "Central Leytonstone",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "direction": "Central Newbury Park",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "direction": "Central White City",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oakwood",
+   "direction": "Piccadilly Northfields",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Old Street",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Old Street",
+   "direction": "Northern Golders Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Osterley",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Osterley",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oval",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oval",
+   "direction": "Northern Golders Green",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oxford Circus",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oxford Circus",
+   "direction": "Central Leytonstone",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oxford Circus",
+   "direction": "Central Marble Arch",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oxford Circus",
+   "direction": "Central Newbury Park",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oxford Circus",
+   "direction": "Central North Acton",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Oxford Circus",
+   "direction": "Central White City",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Paddington (H&C Line)",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Park Royal",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Park Royal",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Parsons Green",
+   "direction": "District Earls Court",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Parsons Green",
+   "direction": "District Edgware Road",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Parsons Green",
+   "direction": "District Tower Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Peckham Rye",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Peckham Rye",
+   "direction": "Windrush Dalston Junction",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Peckham Rye",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Penge West",
+   "direction": "Windrush Dalston Junction",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Penge West",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Perivale",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Phipps Bridge",
+   "direction": "Tram Therapia Lane",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Pinner",
+   "direction": "Metropolitan Baker Street",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Plaistow",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Pontoon Dock",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Pontoon Dock",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Pontoon Dock",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Poplar",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Poplar",
+   "direction": "DLR All Saints",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Poplar",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Preston Road",
+   "direction": "Metropolitan Baker Street",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Pudding Mill Lane",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Putney Bridge",
+   "direction": "District Edgware Road",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Putney Bridge",
+   "direction": "District Tower Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queens Road Peckham",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queens Road Peckham",
+   "direction": "Windrush Dalston Junction",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queens Road Peckham",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queensbury",
+   "direction": "Jubilee North Greenwich",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queensway",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queensway",
+   "direction": "Central Leytonstone",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queensway",
+   "direction": "Central Newbury Park",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queensway",
+   "direction": "Central North Acton",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Queensway",
+   "direction": "Central White City",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ravenscourt Park",
+   "direction": "District Dagenham East",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Ravenscourt Park",
+   "direction": "District Tower Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Redbridge",
+   "direction": "Central Newbury Park",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Redbridge",
+   "direction": "Central North Acton",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Redbridge",
+   "direction": "Central White City",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Richmond",
+   "direction": "District Richmond",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Richmond (London)",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Roding Valley",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Roding Valley",
+   "direction": "Central Woodford",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Rotherhithe",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Rotherhithe",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Rotherhithe",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Rotherhithe",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Rotherhithe",
+   "direction": "Windrush New Cross Gate",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Russell Square",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Russell Square",
+   "direction": "Piccadilly Northfields",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Russell Square",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sandilands",
+   "direction": "Tram Therapia Lane",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shadwell",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shadwell",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shadwell",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shadwell",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shadwell",
+   "direction": "Windrush New Cross Gate",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush (Central)",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush (Central)",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush (Central)",
+   "direction": "Central Newbury Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush (Central)",
+   "direction": "Central North Acton",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush (Central)",
+   "direction": "Central White City",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherd's Bush Market",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shepherds Bush",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shoreditch High Street",
+   "direction": "Windrush Battersea Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shoreditch High Street",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shoreditch High Street",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shoreditch High Street",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Shoreditch High Street",
+   "direction": "Windrush New Cross Gate",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sloane Square",
+   "direction": "Circle Hammersmith",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Snaresbrook",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Snaresbrook",
+   "direction": "Central Grange Hill",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Snaresbrook",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Snaresbrook",
+   "direction": "Central North Acton",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Snaresbrook",
+   "direction": "Central White City",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Acton",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Ealing",
+   "direction": "Piccadilly Northfields",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Ealing",
+   "direction": "Piccadilly Oakwood",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Harrow",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Harrow",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Kensington",
+   "direction": "Circle Hammersmith",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Quay",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Quay",
+   "direction": "DLR Canary Wharf",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Woodford",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Woodford",
+   "direction": "Central Grange Hill",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Woodford",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Woodford",
+   "direction": "Central North Acton",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "South Woodford",
+   "direction": "Central White City",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Southfields",
+   "direction": "District Edgware Road",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Southgate",
+   "direction": "Piccadilly Northfields",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Southwark",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Southwark",
+   "direction": "Jubilee Wembley Park",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Southwark",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Southwark",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "direction": "Circle Hammersmith",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. John's Wood",
+   "direction": "Jubilee North Greenwich",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. John's Wood",
+   "direction": "Jubilee Wembley Park",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. John's Wood",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. John's Wood",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. Paul's",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. Paul's",
+   "direction": "Central Leytonstone",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. Paul's",
+   "direction": "Central Marble Arch",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. Paul's",
+   "direction": "Central Newbury Park",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. Paul's",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "St. Paul's",
+   "direction": "Central White City",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stamford Brook",
+   "direction": "District Dagenham East",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stamford Brook",
+   "direction": "District Tower Hill",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stanmore",
+   "direction": "Jubilee North Greenwich",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stanmore",
+   "direction": "Jubilee Stanmore",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Star Lane",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Star Lane",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stepney Green",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stockwell",
+   "direction": "Northern Finchley Central",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stockwell",
+   "direction": "Northern Golders Green",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Central Grange Hill",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Central Leytonstone",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Central Marble Arch",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Central Newbury Park",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Central North Acton",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Central White City",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Elizabeth Gidea Park",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Elizabeth Liverpool Street",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Elizabeth Paddington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Jubilee Stratford",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Jubilee Wembley Park",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Jubilee Willesden Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Mildmay Camden Road",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Mildmay Stratford",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford High Street",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford High Street",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford International",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Stratford International",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sudbury Hill",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sudbury Hill",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sudbury Town",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sudbury Town",
+   "direction": "Piccadilly Oakwood",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Surrey Quays",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Surrey Quays",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Surrey Quays",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Surrey Quays",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Surrey Quays",
+   "direction": "Windrush New Cross Gate",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Swiss Cottage",
+   "direction": "Jubilee North Greenwich",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Swiss Cottage",
+   "direction": "Jubilee Wembley Park",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Swiss Cottage",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Swiss Cottage",
+   "direction": "Jubilee Willesden Green",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sydenham",
+   "direction": "Windrush Dalston Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Sydenham",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Temple",
+   "direction": "Circle Hammersmith",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Therapia Lane",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Theydon Bois",
+   "direction": "Central White City",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tooting Bec",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tooting Bec",
+   "direction": "Northern Golders Green",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tooting Broadway",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tooting Broadway",
+   "direction": "Northern Golders Green",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Elizabeth Gidea Park",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Elizabeth Hayes and Harlington",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Elizabeth Maidenhead",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Elizabeth Paddington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tottenham Court Road",
+   "direction": "Elizabeth Whitechapel",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Totteridge & Whetstone",
+   "direction": "Northern Battersea",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Totteridge & Whetstone",
+   "direction": "Northern Kennington",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tower Hill",
+   "direction": "Circle Hammersmith",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tufnell Park",
+   "direction": "Northern Battersea",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tufnell Park",
+   "direction": "Northern Finchley Central",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Tufnell Park",
+   "direction": "Northern Kennington",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "District Dagenham East",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnham Green",
+   "direction": "District Tower Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnpike Lane",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnpike Lane",
+   "direction": "Piccadilly Northfields",
+   "samples": 5,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnpike Lane",
+   "direction": "Piccadilly Oakwood",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Turnpike Lane",
+   "direction": "Piccadilly Wood Green",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Upminster",
+   "direction": "District Upminster",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Upney",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Upton Park",
+   "direction": "District Dagenham East",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Uxbridge",
+   "direction": "Metropolitan Uxbridge",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Victoria",
+   "direction": "Circle Hammersmith",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waddon Marsh",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Walthamstow Central",
+   "direction": "Victoria Walthamstow Central",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wandle Park",
+   "direction": "Tram Therapia Lane",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wandsworth Road",
+   "direction": "Windrush Battersea Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wandsworth Road",
+   "direction": "Windrush Dalston Junction",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wandsworth Road",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wanstead",
+   "direction": "Central Newbury Park",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wanstead",
+   "direction": "Central North Acton",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wanstead",
+   "direction": "Central White City",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wapping",
+   "direction": "Windrush Battersea Park",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wapping",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wapping",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wapping",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wapping",
+   "direction": "Windrush New Cross Gate",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Warren Street",
+   "direction": "Northern Battersea",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Warren Street",
+   "direction": "Northern Golders Green",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "Warren Street",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Jubilee North Greenwich",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Jubilee Wembley Park",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Jubilee West Ham",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Northern Battersea",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Northern Golders Green",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Northern Kennington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Waterloo",
+   "direction": "Waterloo and City Waterloo",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Watford",
+   "direction": "Metropolitan Watford",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Jubilee North Greenwich",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wembley Park",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Acton",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Brompton",
+   "direction": "District Earls Court",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Brompton",
+   "direction": "District Edgware Road",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Brompton",
+   "direction": "District Tower Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Brompton",
+   "direction": "Mildmay Shepherds Bush",
+   "samples": 7,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Brompton",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Croydon",
+   "direction": "Windrush Dalston Junction",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Croydon",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Finchley",
+   "direction": "Northern Battersea",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Finchley",
+   "direction": "Northern Kennington",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ham",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Hampstead",
+   "direction": "Jubilee North Greenwich",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Hampstead",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Hampstead",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Hampstead",
+   "direction": "Jubilee Willesden Green",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Hampstead",
+   "direction": "Mildmay Willesden Junction",
+   "samples": 4,
+   "ofSamples": 16
+  },
+  {
+   "station": "West India Quay",
+   "direction": "DLR ALL SAINTS",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West India Quay",
+   "direction": "DLR All Saints",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West India Quay",
+   "direction": "DLR Canary Wharf",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Kensington",
+   "direction": "District Dagenham East",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Kensington",
+   "direction": "District Out Of Service",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Kensington",
+   "direction": "District Tower Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ruislip",
+   "direction": "Central Ruislip Gardens",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Ruislip",
+   "direction": "Central West Ruislip",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Silvertown",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Silvertown",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "West Silvertown",
+   "direction": "DLR POPLAR",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westbourne Park",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Westminster",
+   "direction": "Circle Hammersmith",
+   "samples": 11,
+   "ofSamples": 16
+  },
+  {
+   "station": "White City",
+   "direction": "Central Grange Hill",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "White City",
+   "direction": "Central Leytonstone",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "White City",
+   "direction": "Central Newbury Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "White City",
+   "direction": "Central North Acton",
+   "samples": 13,
+   "ofSamples": 16
+  },
+  {
+   "station": "White City",
+   "direction": "Central White City",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "District Dagenham East",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Windrush Battersea Park",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Windrush Dalston Junction",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Windrush Highbury and Islington",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Windrush New Cross ELL",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Whitechapel",
+   "direction": "Windrush New Cross Gate",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Willesden Green",
+   "direction": "Jubilee North Greenwich",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Willesden Green",
+   "direction": "Jubilee Wembley Park",
+   "samples": 15,
+   "ofSamples": 16
+  },
+  {
+   "station": "Willesden Green",
+   "direction": "Jubilee West Ham",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Willesden Green",
+   "direction": "Jubilee Willesden Green",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon",
+   "direction": "District Dagenham East",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon",
+   "direction": "District Earls Court",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon",
+   "direction": "District Edgware Road",
+   "samples": 8,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon",
+   "direction": "District High St Kensington",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon",
+   "direction": "District Tower Hill",
+   "samples": 6,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon",
+   "direction": "District Wimbledon",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon",
+   "direction": "Tram Wimbledon",
+   "samples": 16,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wimbledon Park",
+   "direction": "District Edgware Road",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wood Green",
+   "direction": "Piccadilly Arnos Grove",
+   "samples": 14,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wood Green",
+   "direction": "Piccadilly Northfields",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wood Green",
+   "direction": "Piccadilly Oakwood",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wood Green",
+   "direction": "Piccadilly Wood Green",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Wood Lane",
+   "direction": "Circle Edgware Road (Circle)",
+   "samples": 12,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodford",
+   "direction": "Central Debden",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodford",
+   "direction": "Central Grange Hill",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodford",
+   "direction": "Central Leytonstone",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodford",
+   "direction": "Central North Acton",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodford",
+   "direction": "Central White City",
+   "samples": 2,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodford",
+   "direction": "Central Woodford",
+   "samples": 10,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodside",
+   "direction": "Tram Therapia Lane",
+   "samples": 3,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodside Park",
+   "direction": "Northern Battersea",
+   "samples": 9,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woodside Park",
+   "direction": "Northern Kennington",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woolwich Arsenal",
+   "direction": "DLR CANNING TOWN",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woolwich Arsenal",
+   "direction": "DLR Canning Town",
+   "samples": 1,
+   "ofSamples": 16
+  },
+  {
+   "station": "Woolwich Arsenal",
+   "direction": "DLR Poplar",
+   "samples": 1,
+   "ofSamples": 16
+  }
+ ],
+ "classC_artefact": [
+  {
+   "station": "Acton Town",
+   "value": "District",
+   "samples": 3
+  },
+  {
+   "station": "Acton Town",
+   "value": "Piccadilly",
+   "samples": 8
+  },
+  {
+   "station": "Acton Town",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Aldgate",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Aldgate",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "Aldgate East",
+   "value": "District",
+   "samples": 1
+  },
+  {
+   "station": "Aldgate East",
+   "value": "Hammersmith and City",
+   "samples": 1
+  },
+  {
+   "station": "Alperton",
+   "value": "Piccadilly",
+   "samples": 14
+  },
+  {
+   "station": "Amersham",
+   "value": "Metropolitan",
+   "samples": 13
+  },
+  {
+   "station": "Arnos Grove",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Baker Street",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Baker Street",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Baker Street",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "Bank",
+   "value": "Waterloo and City",
+   "samples": 2
+  },
+  {
+   "station": "Barbican",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Barbican",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "Barking",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "Barking",
+   "value": "Hammersmith and City",
+   "samples": 15
+  },
+  {
+   "station": "Barons Court",
+   "value": "District",
+   "samples": 10
+  },
+  {
+   "station": "Barons Court",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Bayswater",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Bayswater",
+   "value": "Hammersmith and City Circle Line",
+   "samples": 5
+  },
+  {
+   "station": "Becontree",
+   "value": "District",
+   "samples": 13
+  },
+  {
+   "station": "Blackfriars",
+   "value": "District",
+   "samples": 9
+  },
+  {
+   "station": "Blackfriars",
+   "value": "Hammersmith and City",
+   "samples": 14
+  },
+  {
+   "station": "Bow Road",
+   "value": "District",
+   "samples": 4
+  },
+  {
+   "station": "Bow Road",
+   "value": "Hammersmith and City",
+   "samples": 3
+  },
+  {
+   "station": "Bromley-by-Bow",
+   "value": "District",
+   "samples": 6
+  },
+  {
+   "station": "Bromley-by-Bow",
+   "value": "Hammersmith and City",
+   "samples": 5
+  },
+  {
+   "station": "Cannon Street",
+   "value": "District",
+   "samples": 8
+  },
+  {
+   "station": "Cannon Street",
+   "value": "Hammersmith and City",
+   "samples": 14
+  },
+  {
+   "station": "Chalfont & Latimer",
+   "value": "Metropolitan",
+   "samples": 14
+  },
+  {
+   "station": "Charing Cross",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Chesham",
+   "value": "Metropolitan",
+   "samples": 11
+  },
+  {
+   "station": "Chorleywood",
+   "value": "Metropolitan",
+   "samples": 8
+  },
+  {
+   "station": "Cockfosters",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Croxley",
+   "value": "Metropolitan",
+   "samples": 8
+  },
+  {
+   "station": "Dagenham East",
+   "value": "District",
+   "samples": 15
+  },
+  {
+   "station": "Dagenham Heathway",
+   "value": "District",
+   "samples": 14
+  },
+  {
+   "station": "Ealing Common",
+   "value": "District",
+   "samples": 2
+  },
+  {
+   "station": "Ealing Common",
+   "value": "Piccadilly",
+   "samples": 9
+  },
+  {
+   "station": "Earl's Court",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "Earl's Court",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "East Ham",
+   "value": "District",
+   "samples": 14
+  },
+  {
+   "station": "East Ham",
+   "value": "Hammersmith and City",
+   "samples": 14
+  },
+  {
+   "station": "East Putney",
+   "value": "District",
+   "samples": 10
+  },
+  {
+   "station": "Eastcote",
+   "value": "Metropolitan",
+   "samples": 15
+  },
+  {
+   "station": "Eastcote",
+   "value": "Piccadilly",
+   "samples": 10
+  },
+  {
+   "station": "Edgware Road (Bakerloo)",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "value": "District Edgware Road (Circle Line)",
+   "samples": 15
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "value": "Hammersmith and City Circle Line",
+   "samples": 11
+  },
+  {
+   "station": "Edgware Road (Circle Line)",
+   "value": "Hammersmith and City Edgware Road (Circle Line)",
+   "samples": 1
+  },
+  {
+   "station": "Elephant & Castle",
+   "value": "Bakerloo",
+   "samples": 1
+  },
+  {
+   "station": "Elm Park",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "Embankment",
+   "value": "Bakerloo",
+   "samples": 1
+  },
+  {
+   "station": "Embankment",
+   "value": "District",
+   "samples": 7
+  },
+  {
+   "station": "Embankment",
+   "value": "Hammersmith and City",
+   "samples": 11
+  },
+  {
+   "station": "Euston Square",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Euston Square",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "Farringdon",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Farringdon",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Finchley Road",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "Finsbury Park",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Fulham Broadway",
+   "value": "District",
+   "samples": 13
+  },
+  {
+   "station": "Gloucester Road",
+   "value": "District",
+   "samples": 5
+  },
+  {
+   "station": "Gloucester Road",
+   "value": "Hammersmith and City",
+   "samples": 2
+  },
+  {
+   "station": "Gloucester Road",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Goldhawk Road",
+   "value": "Hammersmith and City",
+   "samples": 1
+  },
+  {
+   "station": "Great Portland Street",
+   "value": "Hammersmith and City",
+   "samples": 15
+  },
+  {
+   "station": "Great Portland Street",
+   "value": "Metropolitan",
+   "samples": 15
+  },
+  {
+   "station": "Green Park",
+   "value": "Jubilee",
+   "samples": 1
+  },
+  {
+   "station": "Green Park",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Green Park",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Gunnersbury",
+   "value": "District",
+   "samples": 10
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "value": "District",
+   "samples": 14
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Hammersmith (Dist&Pic Line)",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Hammersmith (H&C Line)",
+   "value": "Hammersmith and City",
+   "samples": 2
+  },
+  {
+   "station": "Hammersmith (H&C Line)",
+   "value": "Hammersmith and City Circle Line",
+   "samples": 14
+  },
+  {
+   "station": "Harlesden",
+   "value": "Bakerloo",
+   "samples": 3
+  },
+  {
+   "station": "Harrow & Wealdstone",
+   "value": "Bakerloo",
+   "samples": 3
+  },
+  {
+   "station": "Harrow-on-the-Hill",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "value": "Circle Circle Line",
+   "samples": 3
+  },
+  {
+   "station": "High Street Kensington",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "High Street Kensington",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Hillingdon",
+   "value": "Metropolitan",
+   "samples": 8
+  },
+  {
+   "station": "Hillingdon",
+   "value": "Piccadilly",
+   "samples": 4
+  },
+  {
+   "station": "Holborn",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Holborn",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Holloway Road",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Hornchurch",
+   "value": "District",
+   "samples": 15
+  },
+  {
+   "station": "Hyde Park Corner",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Ickenham",
+   "value": "Metropolitan",
+   "samples": 11
+  },
+  {
+   "station": "Ickenham",
+   "value": "Piccadilly",
+   "samples": 5
+  },
+  {
+   "station": "Kensal Green",
+   "value": "Bakerloo",
+   "samples": 4
+  },
+  {
+   "station": "Kenton",
+   "value": "Bakerloo",
+   "samples": 4
+  },
+  {
+   "station": "Kew Gardens",
+   "value": "District",
+   "samples": 6
+  },
+  {
+   "station": "Kilburn Park",
+   "value": "Bakerloo",
+   "samples": 5
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "King's Cross St. Pancras",
+   "value": "Piccadilly",
+   "samples": 2
+  },
+  {
+   "station": "Knightsbridge",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Ladbroke Grove",
+   "value": "Hammersmith and City",
+   "samples": 2
+  },
+  {
+   "station": "Lambeth North",
+   "value": "Bakerloo",
+   "samples": 1
+  },
+  {
+   "station": "Latimer Road",
+   "value": "Hammersmith and City",
+   "samples": 2
+  },
+  {
+   "station": "Leicester Square",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Leicester Square",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Liverpool Street",
+   "value": "Hammersmith and City",
+   "samples": 15
+  },
+  {
+   "station": "Liverpool Street",
+   "value": "Metropolitan",
+   "samples": 15
+  },
+  {
+   "station": "Maida Vale",
+   "value": "Bakerloo",
+   "samples": 5
+  },
+  {
+   "station": "Manor House",
+   "value": "Piccadilly",
+   "samples": 2
+  },
+  {
+   "station": "Mansion House",
+   "value": "District",
+   "samples": 10
+  },
+  {
+   "station": "Mansion House",
+   "value": "Hammersmith and City",
+   "samples": 15
+  },
+  {
+   "station": "Marylebone",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Mile End",
+   "value": "District",
+   "samples": 3
+  },
+  {
+   "station": "Mile End",
+   "value": "Hammersmith and City",
+   "samples": 3
+  },
+  {
+   "station": "Monument",
+   "value": "District",
+   "samples": 10
+  },
+  {
+   "station": "Monument",
+   "value": "Hammersmith and City",
+   "samples": 15
+  },
+  {
+   "station": "Moor Park",
+   "value": "Metropolitan",
+   "samples": 12
+  },
+  {
+   "station": "Moorgate",
+   "value": "Hammersmith and City",
+   "samples": 15
+  },
+  {
+   "station": "Moorgate",
+   "value": "Metropolitan",
+   "samples": 15
+  },
+  {
+   "station": "Neasden",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "North Ealing",
+   "value": "Piccadilly",
+   "samples": 12
+  },
+  {
+   "station": "North Harrow",
+   "value": "Metropolitan",
+   "samples": 12
+  },
+  {
+   "station": "North Wembley",
+   "value": "Bakerloo",
+   "samples": 1
+  },
+  {
+   "station": "Northwood",
+   "value": "Metropolitan",
+   "samples": 12
+  },
+  {
+   "station": "Northwood Hills",
+   "value": "Metropolitan",
+   "samples": 12
+  },
+  {
+   "station": "Notting Hill Gate",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Notting Hill Gate",
+   "value": "Hammersmith and City Circle Line",
+   "samples": 4
+  },
+  {
+   "station": "Oxford Circus",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Paddington",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Paddington",
+   "value": "Circle Circle Line",
+   "samples": 12
+  },
+  {
+   "station": "Paddington",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "Paddington",
+   "value": "Hammersmith and City",
+   "samples": 16
+  },
+  {
+   "station": "Paddington (H&C Line)",
+   "value": "Hammersmith and City",
+   "samples": 3
+  },
+  {
+   "station": "Park Royal",
+   "value": "Piccadilly",
+   "samples": 12
+  },
+  {
+   "station": "Parsons Green",
+   "value": "District",
+   "samples": 12
+  },
+  {
+   "station": "Piccadilly Circus",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Piccadilly Circus",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Piccadilly Circus",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Pinner",
+   "value": "Metropolitan",
+   "samples": 12
+  },
+  {
+   "station": "Plaistow",
+   "value": "District",
+   "samples": 11
+  },
+  {
+   "station": "Plaistow",
+   "value": "Hammersmith and City",
+   "samples": 11
+  },
+  {
+   "station": "Preston Road",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "Putney Bridge",
+   "value": "District",
+   "samples": 11
+  },
+  {
+   "station": "Queen's Park",
+   "value": "Bakerloo",
+   "samples": 3
+  },
+  {
+   "station": "Ravenscourt Park",
+   "value": "District",
+   "samples": 12
+  },
+  {
+   "station": "Rayners Lane",
+   "value": "Metropolitan",
+   "samples": 13
+  },
+  {
+   "station": "Rayners Lane",
+   "value": "Piccadilly",
+   "samples": 12
+  },
+  {
+   "station": "Regent's Park",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Richmond",
+   "value": "District",
+   "samples": 9
+  },
+  {
+   "station": "Rickmansworth",
+   "value": "Metropolitan",
+   "samples": 7
+  },
+  {
+   "station": "Royal Oak",
+   "value": "Hammersmith and City",
+   "samples": 3
+  },
+  {
+   "station": "Ruislip",
+   "value": "Metropolitan",
+   "samples": 13
+  },
+  {
+   "station": "Ruislip",
+   "value": "Piccadilly",
+   "samples": 8
+  },
+  {
+   "station": "Ruislip Manor",
+   "value": "Metropolitan",
+   "samples": 14
+  },
+  {
+   "station": "Ruislip Manor",
+   "value": "Piccadilly",
+   "samples": 10
+  },
+  {
+   "station": "Russell Square",
+   "value": "Piccadilly",
+   "samples": 2
+  },
+  {
+   "station": "Shepherd's Bush Market",
+   "value": "Hammersmith and City",
+   "samples": 2
+  },
+  {
+   "station": "Sloane Square",
+   "value": "District",
+   "samples": 4
+  },
+  {
+   "station": "Sloane Square",
+   "value": "Hammersmith and City",
+   "samples": 8
+  },
+  {
+   "station": "South Harrow",
+   "value": "Piccadilly",
+   "samples": 12
+  },
+  {
+   "station": "South Kensington",
+   "value": "District",
+   "samples": 5
+  },
+  {
+   "station": "South Kensington",
+   "value": "Hammersmith and City",
+   "samples": 7
+  },
+  {
+   "station": "South Kensington",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "South Kenton",
+   "value": "Bakerloo",
+   "samples": 1
+  },
+  {
+   "station": "Southfields",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "St. James's Park",
+   "value": "District",
+   "samples": 7
+  },
+  {
+   "station": "St. James's Park",
+   "value": "Hammersmith and City",
+   "samples": 10
+  },
+  {
+   "station": "Stamford Brook",
+   "value": "District",
+   "samples": 12
+  },
+  {
+   "station": "Stepney Green",
+   "value": "District",
+   "samples": 4
+  },
+  {
+   "station": "Stepney Green",
+   "value": "Hammersmith and City",
+   "samples": 4
+  },
+  {
+   "station": "Stonebridge Park",
+   "value": "Bakerloo",
+   "samples": 2
+  },
+  {
+   "station": "Sudbury Hill",
+   "value": "Piccadilly",
+   "samples": 11
+  },
+  {
+   "station": "Sudbury Town",
+   "value": "Piccadilly",
+   "samples": 11
+  },
+  {
+   "station": "Temple",
+   "value": "District",
+   "samples": 8
+  },
+  {
+   "station": "Temple",
+   "value": "Hammersmith and City",
+   "samples": 14
+  },
+  {
+   "station": "Tower Hill",
+   "value": "District",
+   "samples": 6
+  },
+  {
+   "station": "Tower Hill",
+   "value": "Hammersmith and City",
+   "samples": 15
+  },
+  {
+   "station": "Turnham Green",
+   "value": "District",
+   "samples": 12
+  },
+  {
+   "station": "Turnham Green",
+   "value": "Piccadilly",
+   "samples": 3
+  },
+  {
+   "station": "Turnham Green",
+   "value": "Piccadilly Heathrow T123 + 5",
+   "samples": 16
+  },
+  {
+   "station": "Turnpike Lane",
+   "value": "Piccadilly",
+   "samples": 2
+  },
+  {
+   "station": "Upminster",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "Upminster Bridge",
+   "value": "District",
+   "samples": 14
+  },
+  {
+   "station": "Upney",
+   "value": "District",
+   "samples": 11
+  },
+  {
+   "station": "Upton Park",
+   "value": "District",
+   "samples": 11
+  },
+  {
+   "station": "Upton Park",
+   "value": "Hammersmith and City",
+   "samples": 11
+  },
+  {
+   "station": "Uxbridge",
+   "value": "Metropolitan",
+   "samples": 12
+  },
+  {
+   "station": "Uxbridge",
+   "value": "Piccadilly",
+   "samples": 6
+  },
+  {
+   "station": "Victoria",
+   "value": "District",
+   "samples": 3
+  },
+  {
+   "station": "Victoria",
+   "value": "Hammersmith and City",
+   "samples": 9
+  },
+  {
+   "station": "Warwick Avenue",
+   "value": "Bakerloo",
+   "samples": 4
+  },
+  {
+   "station": "Waterloo",
+   "value": "Bakerloo",
+   "samples": 1
+  },
+  {
+   "station": "Watford",
+   "value": "Metropolitan",
+   "samples": 13
+  },
+  {
+   "station": "Wembley Central",
+   "value": "Bakerloo",
+   "samples": 3
+  },
+  {
+   "station": "Wembley Park",
+   "value": "Hammersmith and City",
+   "samples": 11
+  },
+  {
+   "station": "Wembley Park",
+   "value": "Metropolitan",
+   "samples": 16
+  },
+  {
+   "station": "West Brompton",
+   "value": "District",
+   "samples": 12
+  },
+  {
+   "station": "West Ham",
+   "value": "District",
+   "samples": 11
+  },
+  {
+   "station": "West Ham",
+   "value": "Hammersmith and City",
+   "samples": 11
+  },
+  {
+   "station": "West Harrow",
+   "value": "Metropolitan",
+   "samples": 14
+  },
+  {
+   "station": "West Kensington",
+   "value": "District",
+   "samples": 12
+  },
+  {
+   "station": "Westbourne Park",
+   "value": "Hammersmith and City",
+   "samples": 2
+  },
+  {
+   "station": "Westminster",
+   "value": "District",
+   "samples": 5
+  },
+  {
+   "station": "Westminster",
+   "value": "Hammersmith and City",
+   "samples": 10
+  },
+  {
+   "station": "Whitechapel",
+   "value": "District",
+   "samples": 1
+  },
+  {
+   "station": "Whitechapel",
+   "value": "Hammersmith and City",
+   "samples": 1
+  },
+  {
+   "station": "Willesden Green",
+   "value": "Metropolitan",
+   "samples": 15
+  },
+  {
+   "station": "Willesden Junction",
+   "value": "Bakerloo",
+   "samples": 4
+  },
+  {
+   "station": "Wimbledon",
+   "value": "District",
+   "samples": 5
+  },
+  {
+   "station": "Wimbledon Park",
+   "value": "District",
+   "samples": 16
+  },
+  {
+   "station": "Wood Green",
+   "value": "Piccadilly",
+   "samples": 1
+  },
+  {
+   "station": "Wood Lane",
+   "value": "Hammersmith and City",
+   "samples": 2
+  }
+ ]
+}

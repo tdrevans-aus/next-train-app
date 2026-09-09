@@ -136,7 +136,7 @@ import {
   dedupeTrips,
   tripDedupKey,
 } from "../lib/providers/uk-tfl.js";
-import { pickUpcomingTrips, buildNextTrainResponse } from "../lib/train-times-core.js";
+import { pickUpcomingTrips, buildNextTrainResponse, normalizeDestination } from "../lib/train-times-core.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
@@ -518,14 +518,16 @@ assertDestination(
   "Central Epping"
 );
 assertDestination(
-  'Central "Grange Hill via Woodford" (Grange Hill) — via strip still applies; safe degrade when neither form resolves to an offered direction',
+  'Central "Grange Hill via Woodford" (Grange Hill) — via strip still applies; the via-stripped ' +
+    '"Central Grange Hill" now folds onto its canonical Hainault-loop terminus, "Central Epping" ' +
+    "(docs/jim-brief-london-catalog-coverage.md Class B), same as the Hainault case above",
   parseTflArrival(
     { modeName: "tube", lineName: "Central", towards: "Grange Hill via Woodford", destinationName: "Grange Hill Underground Station", expectedArrival: ehFuture },
     ehNow,
     undefined,
     "Grange Hill"
   ).destination,
-  "Central Grange Hill"
+  "Central Epping"
 );
 // Without a stationName (existing callers/tests that predate this fix), the override must never
 // fire — behaviour must be byte-identical to before this brief.
@@ -1011,14 +1013,21 @@ for (const [stationName, expectation] of Object.entries(DLR_COLLISION_STATIONS))
   }
 
   // Within-response preservation (acceptance criterion 7, Walthamstow Central shape): the hub
-  // fetch's two "Windrush -> Dalston Junction" rows share line/destination/platform/time and
-  // differ only by id — same-response, must both survive uncollapsed.
-  const dalstonRows = merged.filter((t) => t.destination.includes("Dalston Junction"));
-  if (dalstonRows.length !== 2) {
-    console.error(`  FAIL expected the 2 same-response Dalston Junction rows (Walthamstow Central shape) to both survive, got ${dalstonRows.length}`);
+  // fetch's two raw "Windrush -> Dalston Junction" rows share line/destination/platform/time and
+  // differ only by id — same-response, must both survive uncollapsed. Matched by raw destination
+  // text (not the parsed/normalized form): since docs/jim-brief-london-catalog-coverage.md folded
+  // "Windrush Dalston Junction" onto "Windrush Highbury & Islington" (a real, one-stop-short
+  // working — Class B), the parsed trip.destination is now "Windrush Highbury & Islington"; the
+  // dedup behaviour under test (2 same-key rows differing only by id both surviving) is unchanged
+  // by that catalog fold, so match on the raw fixture row instead of the post-fold string.
+  const dalstonRawRows = rawHubRows.filter((r) => r.destinationName?.includes("Dalston Junction"));
+  const dalstonMergedKey = dalstonRawRows.length > 0 ? tripDedupKey(parseTflArrival(dalstonRawRows[0], fanoutNow)) : null;
+  const dalstonRows = dalstonMergedKey ? merged.filter((t) => tripDedupKey(t) === dalstonMergedKey) : [];
+  if (dalstonRawRows.length !== 2 || dalstonRows.length !== 2) {
+    console.error(`  FAIL expected the 2 same-response Dalston-Junction-shape rows (Walthamstow Central shape) to both survive, found ${dalstonRawRows.length} raw / ${dalstonRows.length} merged`);
     failures++;
   } else {
-    console.log(`  OK   2 same-response same-key rows (genuinely distinct trains, differing only by id) both preserved, not collapsed`);
+    console.log(`  OK   2 same-response same-key rows (genuinely distinct trains, differing only by id) both preserved, not collapsed (now folded to "${dalstonRows[0].destination}")`);
   }
 }
 
@@ -1316,6 +1325,146 @@ for (const [stationName, expectation] of Object.entries(DLR_COLLISION_STATIONS))
       failures++;
     } else {
       console.log("  OK   unassigned platform, same vehicle, 2 platform guesses -> collapses to 1 (trustworthy vehicleId)");
+    }
+  }
+}
+
+// --- Catalog coverage additions (docs/jim-brief-london-catalog-coverage.md) ---
+//
+// Extends this gate two ways, per that brief's QA section:
+//   1. A guard against the exact defect class Class B fixes: no station's offered list may
+//      contain two destinations that normalize (via LINE_DESTINATION_GROUPS) to the same
+//      canonical direction — that's what a future short-working import would produce.
+//   2. Proof that every direction added to the eight worst stations + Acton Town really was
+//      seen running live, sourced from docs/london-catalog-gaps.json (16 full-day probe samples,
+//      8 Sep 2026, zero 429s) rather than a fresh capture: London Underground/Overground/DLR
+//      service is closed at the hour this gate was written (dispatched ~01:20 London time,
+//      service resumes ~05:30) — see the PR description. Re-run a fresh live capture once
+//      service is open if stronger same-day proof is wanted; this section proves the claim this
+//      PR actually made (positive evidence already on file), not a substituted fixture.
+
+console.log("\nCatalog coverage additions — fold-collision guard:");
+
+{
+  let collisions = 0;
+  for (const [stationName, directions] of Object.entries(directionsByStation)) {
+    const byCanonical = new Map();
+    for (const direction of directions) {
+      const canonical = normalizeDestination(direction);
+      if (byCanonical.has(canonical) && byCanonical.get(canonical) !== direction) {
+        console.error(
+          `  FAIL ${stationName}: offered directions "${byCanonical.get(canonical)}" and "${direction}" ` +
+            `both normalize to "${canonical}" — a short working is offered separately from its own canonical direction`
+        );
+        failures++;
+        collisions++;
+      } else {
+        byCanonical.set(canonical, direction);
+      }
+    }
+  }
+  if (collisions === 0) {
+    console.log(`  OK   no station offers two destinations that fold onto the same canonical direction (${Object.keys(directionsByStation).length} stations checked)`);
+  }
+}
+
+console.log("\nCatalog coverage additions — new/extended LINE_DESTINATION_GROUPS fold checks:");
+
+{
+  // [short-working destination, canonical it must fold onto] — every Class B addition this PR
+  // made to LINE_DESTINATION_GROUPS in lib/train-times-core.js.
+  const NEW_FOLDS = [
+    ["Central North Acton", "Central West Ruislip"],
+    ["Central White City", "Central West Ruislip"],
+    ["Central Ruislip Gardens", "Central West Ruislip"],
+    ["Central Grange Hill", "Central Epping"],
+    ["Central Newbury Park", "Central Epping"],
+    ["Central Debden", "Central Epping"],
+    ["District Dagenham East", "District Upminster"],
+    ["District Tower Hill", "District Upminster"],
+    ["Piccadilly Oakwood", "Piccadilly Cockfosters"],
+    ["Piccadilly Arnos Grove", "Piccadilly Cockfosters"],
+    ["Piccadilly Wood Green", "Piccadilly Cockfosters"],
+    ["Circle Edgware Road (Circle)", "Circle"],
+    ["Circle Hammersmith", "Circle"],
+    ["Elizabeth Gidea Park", "Elizabeth Shenfield"],
+    ["Elizabeth Maidenhead", "Elizabeth Reading"],
+    ["Jubilee Wembley Park", "Jubilee Stanmore"],
+    ["Jubilee Willesden Green", "Jubilee Stanmore"],
+    ["Jubilee North Greenwich", "Jubilee Stratford"],
+    ["Jubilee West Ham", "Jubilee Stratford"],
+    ["Metropolitan Baker Street", "Metropolitan Aldgate"],
+    ["Mildmay Shepherds Bush", "Mildmay Clapham Junction"],
+    ["Windrush Dalston Junction", "Windrush Highbury & Islington"],
+    ["Windrush Battersea Park", "Windrush Clapham Junction"],
+    ["Windrush New Cross ELL", "Windrush New Cross"],
+  ];
+  for (const [shortWorking, canonical] of NEW_FOLDS) {
+    assertDestination(`normalizeDestination("${shortWorking}")`, normalizeDestination(shortWorking), canonical);
+  }
+}
+
+console.log("\nCatalog coverage additions — Class A confident-evidence check (worst-8 + Acton Town):");
+
+{
+  const gaps = JSON.parse(
+    readFileSync(join(ROOT, "docs", "london-catalog-gaps.json"), "utf8")
+  );
+  const COVERAGE_LINES = [
+    "Hammersmith and City", "Waterloo and City", "Piccadilly", "Metropolitan", "Bakerloo",
+    "District", "Circle", "Central", "Jubilee", "Northern", "Victoria", "Elizabeth",
+    "Suffragette", "Windrush", "Mildmay", "Liberty", "Lioness", "Weaver", "DLR", "Tram",
+  ].sort((a, b) => b.length - a.length);
+  function matchCoverageLine(s) {
+    for (const l of COVERAGE_LINES) {
+      if (s === l || s.startsWith(`${l} `)) return l;
+    }
+    return null;
+  }
+
+  const CHANGED_STATIONS = [
+    "Acton Town", "Liverpool Street", "Embankment", "Farringdon", "Tottenham Court Road",
+    "Bond Street", "Paddington", "Canary Wharf", "Gloucester Road",
+  ];
+
+  // Lines each station already offered before this PR (docs/jim-brief-london-catalog-coverage.md
+  // "before" counts) — anything offered beyond this set must be backed by confident classA
+  // evidence below, or the gate fails.
+  const PRE_EXISTING_LINES = {
+    "Acton Town": new Set(["District"]),
+    "Liverpool Street": new Set(["Central"]),
+    Embankment: new Set(["Bakerloo"]),
+    Farringdon: new Set(["Circle"]),
+    "Tottenham Court Road": new Set(["Elizabeth"]),
+    "Bond Street": new Set(["Central"]),
+    Paddington: new Set(["Bakerloo"]),
+    "Canary Wharf": new Set(["DLR"]),
+    "Gloucester Road": new Set(["Circle"]),
+  };
+
+  // Every station+line pair in the confident (>= half the samples) set — the same threshold this
+  // PR used to decide what to add.
+  const confirmedByStationLine = new Set();
+  for (const row of gaps.classA_lineEntirelyAbsent) {
+    if (row.samples >= Math.ceil(row.ofSamples / 2)) {
+      const line = matchCoverageLine(row.direction);
+      confirmedByStationLine.add(`${row.station}||${line}`);
+    }
+  }
+
+  for (const stationName of CHANGED_STATIONS) {
+    const directions = directionsByStation[stationName] ?? [];
+    const linesOffered = new Set(directions.map(matchCoverageLine).filter(Boolean));
+    const preExisting = PRE_EXISTING_LINES[stationName] ?? new Set();
+    const newLines = [...linesOffered].filter((line) => !preExisting.has(line));
+    const unproven = newLines.filter((line) => !confirmedByStationLine.has(`${stationName}||${line}`));
+    console.log(
+      `  ${stationName}: ${directions.length} offered direction(s), ${newLines.length} line(s) added ` +
+        `(${newLines.join(", ") || "none"}), all backed by confident live evidence: ${unproven.length === 0}`
+    );
+    for (const line of unproven) {
+      console.error(`  FAIL ${stationName}: added line "${line}" has no confident (>=half-sample) classA evidence in docs/london-catalog-gaps.json`);
+      failures++;
     }
   }
 }
