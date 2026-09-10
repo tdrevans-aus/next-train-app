@@ -52,6 +52,7 @@ const SMOKE_SCRIPTS = [
   "donotgroup-picker-disambiguation.mjs",
   "directions-error-messaging.mjs",
   "sydney-dogfood-gate.mjs",
+  "sydney-direction-match.mjs",
   "sydney-banksia-perth-route.mjs",
   "sydney-new-journey-not-perth.mjs",
   "nearby-region-preference.mjs",
