@@ -115,36 +115,51 @@ reads the registry, never a hand-maintained list.
 
 ---
 
-## Production sweep (FB-64, added 10 Sep 2026)
+## Production sweep (FB-64, added 10 Sep 2026; fixed up same day after a QA FAIL)
 
 `qa/prod-sweep.mjs` extends monitoring past Perth (the only city the three UptimeRobot monitors
 above cover) to every `status: "live"` city in `lib/providers/registry.js` — no other file to
 update when a city flips or retires, the sweep just picks it up. Full detail:
-`docs/jim-brief-prod-sweep.md`.
+`docs/jim-brief-prod-sweep.md`, and the fix-up round: `docs/jim-brief-prod-sweep-fixups.md` /
+`docs/mark-note-prod-sweep.md`.
 
 **What it covers.** For each live city it samples up to two stations (Perth uses the same
-`Edgewater Stn` → `Perth` pair as monitor 3 above), fetches `/api/directions`, then calls
-`/api/next-train` for the first chip — all against production, so no agency API keys are ever
-needed by the sweep itself. Each city is classified:
+`Edgewater Stn` → `Perth` pair as monitor 3 above), preferring each city's derivable hub station
+(from `lib/cities/<city>/direction-hubs.json` where one exists — today, all UK regions; a city
+with no such file falls back to the previous alphabetical-first station order). At each sampled
+station it fetches `/api/directions`, then calls `/api/next-train` for up to three chips — all
+against production, so no agency API keys are ever needed by the sweep itself. A station is only
+`empty` once none of its checked chips has a trip; checking only the first chip is what produced
+a false Brisbane alert on PR #355 (a genuinely quiet branch terminus happened to sort first).
+Each city is then classified:
 
-- **ok** — a sampled station returned an upcoming trip (or a terminus arrival).
-- **empty** — every sampled station returned zero trips, and it's within that city's plausible
-  local service hours (a conservative 06:00–23:00 window in the city's own `timeZone`).
+- **ok** — a sampled station returned an upcoming trip (or a terminus arrival) on any checked chip.
+- **empty** — every checked chip at every sampled station returned zero trips, and it's within
+  that city's plausible local service hours (a conservative 06:00–23:00 window in the city's own
+  `timeZone`).
 - **error** — a non-200 response, a malformed body, or a thrown parse, at *any* hour.
-- **skipped (outside service hours)** — every sampled station returned zero trips, but it's
-  outside that window (e.g. an overnight Underground closure) — reported as a distinct state
-  from "empty" so a quiet board never gets read as "checked and healthy" or silently dropped.
+- **skipped (outside service hours)** — every checked chip returned zero trips, but it's outside
+  that window (e.g. an overnight Underground closure) — reported as a distinct state from "empty"
+  so a quiet board never gets read as "checked and healthy" or silently dropped.
 
-**Alerting.** State (consecutive `error` / in-hours `empty` runs per city) persists in the
-committed `qa/prod-sweep-state.json`, updated and pushed back by the workflow after each run. A
-city only fails the workflow — which reaches Tim through normal GitHub Actions run-failure email
-— once it crosses **3 consecutive hourly runs**; a single bad run logs and exits green, so one
-flaky upstream response never pages.
+**Alerting.** State (consecutive `error` / in-hours `empty` runs per city) persists between runs
+via GitHub Actions cache (`prod-sweep-state-<run id>`, restored by prefix match to the most recent
+entry) — **not** a commit to master. An earlier version of this workflow committed
+`qa/prod-sweep-state.json` back to the branch every run; QA found that had no precedent in this
+repo for a bot push to master, was never verified against master's `web-qa`-required ruleset, and
+committed unconditionally (the timestamp always differs) rather than only on a real change. The
+cache never touches a protected branch, so it can't be silently rejected by branch protection. Its
+trade-off: if the cache is evicted (GitHub's standard 7-day/10GB policy) or this is the very first
+run, every city's counters restart at 0 — a real alert is *delayed* by however many fresh runs it
+takes to re-cross the threshold, not lost. A city fails the workflow — which reaches Tim through
+normal GitHub Actions run-failure email — once it crosses **3 consecutive hourly runs**; a single
+bad run logs and exits green, so one flaky upstream response never pages.
 
 **How it runs.** `.github/workflows/prod-sweep.yml` on an hourly cron, plus `workflow_dispatch`
 for an ad-hoc run (optionally pointed at a preview deploy via the `base` input). It never runs on
-`push` or `pull_request`, is not a required check, and `qa/prod-sweep.mjs` is never registered in
-`qa/run-all.mjs` at any tier — it cannot gate a PR.
+`push` or `pull_request`, is not a required check, makes no writes to the repository (`contents:
+read`), and `qa/prod-sweep.mjs` is never registered in `qa/run-all.mjs` at any tier — it cannot
+gate a PR.
 
 **By hand:**
 
@@ -215,5 +230,6 @@ See `docs/support-reply-templates.md`.
 | Date | Note |
 | --- | --- |
 | 2026-09-10 | FB-64: `qa/prod-sweep.mjs` + hourly `prod-sweep.yml` monitor all 33 live cities (Perth still separately covered by UptimeRobot); corrected stale "Brisbane/Sydney planned" note — `docs/jim-brief-prod-sweep.md` |
+| 2026-09-10 | FB-64 fix-up (Mark QA FAIL on PR #355): station "empty" now requires every checked chip empty, not just the first; sampling prefers a derivable hub station; state persistence moved from a commit-to-master to Actions cache (no repo writes) — `docs/jim-brief-prod-sweep-fixups.md`, `docs/mark-note-prod-sweep.md` |
 | 2026-08-13 | Sentry app integration verified; `docs/sentry-integration-now.md` for GitHub alert + Cursor automation |
 | 2026-08-11 | First ops doc; `/api/health` added; support templates + Jim crash/analytics brief |

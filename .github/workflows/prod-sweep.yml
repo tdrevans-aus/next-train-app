@@ -5,13 +5,27 @@
 # required check on any branch ruleset, and qa/prod-sweep.mjs is never registered in
 # qa/run-all.mjs at any tier — see the RUNNER_EXCLUDE entry there.
 #
-# State (consecutive error / empty-in-service-hours counts per city, used to avoid paging
-# on single-run flapping) is a small JSON file committed back to the branch this workflow
-# runs on, chosen over the Actions cache because cache entries are immutable per key and
-# would need a new key (and eviction of the old one) every single hourly run — a plain
-# committed file is one line to update and survives across runs with no extra machinery.
-# The `contents: write` permission and concurrency group below are scoped to make that
-# commit-back safe.
+# State (docs/jim-brief-prod-sweep-fixups.md, after Mark's QA FAIL on PR #355): this used to
+# commit qa/prod-sweep-state.json back to master every run. Mark found two problems with
+# that — no github-actions[bot] push to master has any precedent in this repo, and master's
+# `web-qa`-required ruleset had never been exercised against a raw non-PR push, so a
+# rejected push would break alerting silently and look identical to a real alert (a rejected
+# push also leaves updateState()'s consecutive counters unpersisted, quietly disabling the
+# N-consecutive threshold). It also committed on every run regardless of change, because
+# `lastRunAt` always differs.
+#
+# Replaced with actions/cache: no repo writes at all, so master's ruleset is never in the
+# loop. Each run restores the most recent `prod-sweep-state-*` cache entry (restore-keys
+# prefix match picks the newest), runs the sweep against that state, and saves a new
+# cache entry under a run-unique key (cache entries are immutable per key, so "update in
+# place" isn't an option — a fresh key per run is the standard idiom for cache-as-state).
+# Trade-off: if the cache is evicted (GitHub's standard 7-day-unused / 10GB-per-repo policy)
+# or this is the very first run, state starts empty and every city's consecutive counters
+# restart at 0 — an in-progress alert streak is *delayed*, not lost, since it just needs
+# ALERT_THRESHOLD fresh consecutive runs to re-accumulate. At an hourly cadence with
+# ALERT_THRESHOLD=3 that's a worst case of a few hours' delay on an already-marginal city,
+# which is an acceptable trade for a mechanism that can never silently break against branch
+# protection.
 name: Production sweep
 
 on:
@@ -29,7 +43,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   sweep:
@@ -44,18 +58,19 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - name: Restore sweep state
+        uses: actions/cache/restore@v4
+        with:
+          path: qa/prod-sweep-state.json
+          key: prod-sweep-state-${{ github.run_id }}
+          restore-keys: |
+            prod-sweep-state-
       - name: Run sweep
         id: sweep
         run: node qa/prod-sweep.mjs
-      - name: Commit updated state
+      - name: Save sweep state
         if: always()
-        run: |
-          if ! git diff --quiet -- qa/prod-sweep-state.json; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add qa/prod-sweep-state.json
-            git commit -m "prod-sweep: update state [skip ci]"
-            git push
-          else
-            echo "no state change"
-          fi
+        uses: actions/cache/save@v4
+        with:
+          path: qa/prod-sweep-state.json
+          key: prod-sweep-state-${{ github.run_id }}

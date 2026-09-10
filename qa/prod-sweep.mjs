@@ -11,6 +11,20 @@
  * not be reported as a finding — see docs/jim-brief-prod-sweep.md section 2. An `error`
  * (non-200, malformed body, thrown parse) is always a finding, at any hour.
  *
+ * FB-64 fix-up (docs/jim-brief-prod-sweep-fixups.md, after Mark's QA FAIL on PR #355):
+ * a single unlucky sampled chip must not condemn a whole city. Two changes:
+ *  - `checkStation` now checks up to CHIPS_PER_STATION chips at a station and only reports
+ *    the station `empty` when none of them return a trip (previously it checked only the
+ *    first chip — Brisbane's Albion/Alderley "empty" was an artifact of that station's
+ *    first-listed direction being a genuinely quiet branch, while its other directions run
+ *    fine).
+ *  - `sampleStations` now prefers each city's derivable hub station (from
+ *    lib/cities/<city>/direction-hubs.json — the same data UK regions already use for chip
+ *    anchoring, loaded via the shared lib/cities/uk/direction-hubs.js helper, which returns
+ *    an empty hub list — not an error — for any city with no such file) ahead of whatever
+ *    station happens to sort first alphabetically. Cities with no hub file (all of AU/SE/NO/FI
+ *    today — see Mark's note) fall back unchanged to the previous alphabetical-first sampling.
+ *
  * This script never gates a PR: it is not registered in qa/run-all.mjs at any tier (see the
  * RUNNER_EXCLUDE entry there) and .github/workflows/prod-sweep.yml never runs on push or
  * pull_request.
@@ -27,6 +41,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { CITIES } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
+import { loadDirectionHubs } from "../lib/cities/uk/direction-hubs.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -41,6 +56,13 @@ export const ALERT_THRESHOLD = Number(process.env.PROD_SWEEP_THRESHOLD) || 3;
 
 /** A small, stable sample per city — cheap enough to run hourly without hammering upstreams. */
 const SAMPLE_SIZE = 2;
+
+/**
+ * A station is only reported `empty` once every one of its first few chips is checked and
+ * none returns a trip — three is plenty to rule out "this one direction happens to be a
+ * quiet branch right now" without turning the sweep into a full-board fetch.
+ */
+const CHIPS_PER_STATION = 3;
 
 const STATE_PATH = path.join(REPO_ROOT, "qa", "prod-sweep-state.json");
 
@@ -78,9 +100,37 @@ async function fetchJsonSafe(url) {
 }
 
 /**
+ * Each city's derivable hub station name(s), sourced from
+ * lib/cities/<city>/direction-hubs.json via the shared UK helper (which returns
+ * `{ hubs: [] }` — not an error — for any city with no such file, so this is a no-op for
+ * cities without one). `filterName` is the hub's real, catalog-resolvable station name
+ * (e.g. "Birmingham New Street"), not the display label, so it's usable directly as a
+ * sample station.
+ */
+function hubCandidateNames(city) {
+  const { hubs } = loadDirectionHubs(city.id);
+  const names = [];
+  const seen = new Set();
+  for (const hub of hubs) {
+    const name = String(hub.filterName || "").trim();
+    const key = name.toLowerCase();
+    if (name && !seen.has(key)) {
+      seen.add(key);
+      names.push(name);
+    }
+  }
+  return names;
+}
+
+/**
  * Stations with `liveFeed: false` never produce a board by design
  * (docs/jim-brief-no-live-feed-stops-out-of-picker.md) — sampling one would report every
  * run as "empty" for a reason that isn't a finding. Skip them.
+ *
+ * Prefers each city's derivable hub station(s) (see hubCandidateNames) ahead of whatever
+ * sorts first alphabetically, since a hub is a curated, well-connected interchange and much
+ * less likely to be genuinely quiet than an arbitrary branch terminus. Cities with no
+ * derivable hub keep the previous alphabetical-first behaviour unchanged.
  */
 async function sampleStations(city) {
   if (city.id === "perth") {
@@ -94,26 +144,30 @@ async function sampleStations(city) {
     return { error: result.error ?? "city-stations returned no station list" };
   }
   const usable = result.data.stations.filter((s) => s.liveFeed !== false);
-  return usable.slice(0, SAMPLE_SIZE).map((s) => s.name);
+
+  const hubNames = hubCandidateNames(city);
+  const byLowerName = new Map(usable.map((s) => [String(s.name).toLowerCase(), s]));
+  const hubStations = [];
+  for (const name of hubNames) {
+    const match = byLowerName.get(name.toLowerCase());
+    if (match) {
+      hubStations.push(match);
+    }
+  }
+  const rest = usable.filter((s) => !hubStations.includes(s));
+  const ordered = [...hubStations, ...rest];
+  return ordered.slice(0, SAMPLE_SIZE).map((s) => s.name);
+}
+
+/** Best-of across a set of results: one working chip/station means it works. */
+const OUTCOME_RANK = { ok: 0, empty: 1, error: 2 };
+
+function bestOutcome(results) {
+  return results.reduce((best, cur) => (OUTCOME_RANK[cur.outcome] < OUTCOME_RANK[best.outcome] ? cur : best));
 }
 
 /** @returns {Promise<{outcome: "ok"|"empty"|"error", detail: string}>} */
-async function checkStation(city, station) {
-  const directionsUrl = `${BASE}/api/directions?city=${encodeURIComponent(city.id)}&station=${encodeURIComponent(
-    station
-  )}`;
-  const directionsResult = await fetchJsonSafe(directionsUrl);
-  if (!directionsResult.ok) {
-    return { outcome: "error", detail: `directions: ${directionsResult.error}` };
-  }
-  const directions = Array.isArray(directionsResult.data?.directions)
-    ? directionsResult.data.directions
-    : [];
-  if (directions.length === 0) {
-    return { outcome: "empty", detail: `${station}: no directions returned` };
-  }
-
-  const direction = directions[0];
+async function checkChip(city, station, direction) {
   const nextTrainUrl =
     `${BASE}/api/next-train?city=${encodeURIComponent(city.id)}&station=${encodeURIComponent(station)}` +
     `&direction=${encodeURIComponent(direction)}&destination=${encodeURIComponent(direction)}`;
@@ -132,11 +186,34 @@ async function checkStation(city, station) {
   return { outcome: "empty", detail: `${station} -> ${direction}: no upcoming trips` };
 }
 
-/** Best-of across a city's sampled stations: one working station means the city works. */
-const OUTCOME_RANK = { ok: 0, empty: 1, error: 2 };
+/**
+ * @returns {Promise<{outcome: "ok"|"empty"|"error", detail: string}>}
+ *
+ * FB-64 fix-up: checks up to CHIPS_PER_STATION chips and only reports `empty` when none of
+ * them has a trip — a station is only empty if every chip it offers is empty, not just
+ * whichever chip happened to be listed first.
+ */
+async function checkStation(city, station) {
+  const directionsUrl = `${BASE}/api/directions?city=${encodeURIComponent(city.id)}&station=${encodeURIComponent(
+    station
+  )}`;
+  const directionsResult = await fetchJsonSafe(directionsUrl);
+  if (!directionsResult.ok) {
+    return { outcome: "error", detail: `directions: ${directionsResult.error}` };
+  }
+  const directions = Array.isArray(directionsResult.data?.directions)
+    ? directionsResult.data.directions
+    : [];
+  if (directions.length === 0) {
+    return { outcome: "empty", detail: `${station}: no directions returned` };
+  }
 
-function bestOutcome(results) {
-  return results.reduce((best, cur) => (OUTCOME_RANK[cur.outcome] < OUTCOME_RANK[best.outcome] ? cur : best));
+  const chipResults = [];
+  for (const direction of directions.slice(0, CHIPS_PER_STATION)) {
+    // eslint-disable-next-line no-await-in-loop
+    chipResults.push(await checkChip(city, station, direction));
+  }
+  return bestOutcome(chipResults);
 }
 
 /**
