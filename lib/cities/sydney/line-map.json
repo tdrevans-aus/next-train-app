@@ -7,7 +7,7 @@
     "D2: freeze shortTurnGroups empty (§3 line+terminus; do not collapse opposite through-run ends).",
     "C2: Central, Martin Place, Epping, Chatswood, Sydenham Metro vs Trains must not share stopIds.",
     "Helensburgh is suppressed (SCO on T4 PDF, out of modes v1).",
-    "D5 labels: line + terminus (T1 Emu Plains). City Circle is not a terminus."
+    "D5 labels: line + terminus (T1 Emu Plains). EXCEPTION (Tim, 10 Sep 2026, FB-62): lines whose city end is the City Circle loop (T2, T3, T8) carry a \"<line> City Circle\" city-bound chip, because the loop is a real destination riders recognise and without it Macarthur offered no direction at all."
   ],
   "shortTurnGroups": {},
   "doNotGroup": [
