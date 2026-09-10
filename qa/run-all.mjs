@@ -67,6 +67,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-realtime-accept.mjs",
   "gtfs-error-redaction.mjs",
   "gtfs-snapshot-freshness.mjs",
+  "gtfs-live-blob-snapshot-integrity.mjs",
   "vancouver-dogfood-gate.mjs",
   "vancouver-attribution.mjs",
   "uk-rdg-attribution.mjs",
@@ -274,6 +275,14 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "gtfs-realtime-accept.mjs",
   "gtfs-error-redaction.mjs",
   "gtfs-snapshot-freshness.mjs",
+  /**
+   * Fetches every live blob-backed city's real published static snapshot
+   * (+ realtime for the credential-free ones) over the network — the same
+   * class of live fetch as the dogfood gates and rotterdam-mark-probes.mjs
+   * above. See qa/gtfs-live-blob-snapshot-integrity.mjs header;
+   * docs/jim-brief-newcastle-stale-snapshot.md.
+   */
+  "gtfs-live-blob-snapshot-integrity.mjs",
   /** Registry vs. the six live-city list copies (docs/live-flip-checklist.md). */
   "live-city-lists-sync.mjs",
   /** Offline UK catalog checks. */
