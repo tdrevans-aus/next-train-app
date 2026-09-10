@@ -142,6 +142,20 @@ Each city is then classified:
   that window (e.g. an overnight Underground closure) — reported as a distinct state from "empty"
   so a quiet board never gets read as "checked and healthy" or silently dropped.
 
+**Pacing (FB-64 second fix-up, 10 Sep 2026).** `lib/api-rate-limit.js` allows 60 requests/60s/IP;
+the sweep's ~100+ requests across 33 cities used to fire back-to-back, tripping that limiter on
+the same eight UK regions every run — a repeatable false alarm, not flake (two independent
+consecutive runs produced identical `error=8`, all HTTP 429). The fix paces every request against
+`BASE` with a minimum gap (`REQUEST_INTERVAL_MS`, default 1100ms — comfortably under 60/minute),
+which is free given the sweep is hourly with no deadline. **`lib/api-rate-limit.js` itself was not
+touched** — weakening it to suit a monitor would fix the wrong thing. A full run now takes roughly
+3–5 minutes (well inside the workflow's 10-minute job timeout) instead of under a minute. If a 429
+does slip through anyway (shared runner IP, etc.), it's never read as a city finding: it's
+classified as its own `throttled` outcome (one automatic retry backed off by the server's own
+`Retry-After` header first), can never move a city's `consecutiveError`/`consecutiveEmptyInHours`
+counter, and is called out in the run's own output as a sweep-pacing defect (`SWEEP PACING
+DEFECT: N cities were rate-limited...`) rather than folded into the per-city summary line.
+
 **Alerting.** State (consecutive `error` / in-hours `empty` runs per city) persists between runs
 via GitHub Actions cache (`prod-sweep-state-<run id>`, restored by prefix match to the most recent
 entry) — **not** a commit to master. An earlier version of this workflow committed
@@ -231,5 +245,6 @@ See `docs/support-reply-templates.md`.
 | --- | --- |
 | 2026-09-10 | FB-64: `qa/prod-sweep.mjs` + hourly `prod-sweep.yml` monitor all 33 live cities (Perth still separately covered by UptimeRobot); corrected stale "Brisbane/Sydney planned" note — `docs/jim-brief-prod-sweep.md` |
 | 2026-09-10 | FB-64 fix-up (Mark QA FAIL on PR #355): station "empty" now requires every checked chip empty, not just the first; sampling prefers a derivable hub station; state persistence moved from a commit-to-master to Actions cache (no repo writes) — `docs/jim-brief-prod-sweep-fixups.md`, `docs/mark-note-prod-sweep.md` |
+| 2026-09-10 | FB-64 second fix-up: sweep was tripping our own `lib/api-rate-limit.js` on the same eight UK regions every run (repeatable, not flaky) — every request now paced under 60/minute, a 429 is classified as its own `throttled` outcome that can never count as a city finding or move a consecutive-failure counter, and `Retry-After` is honoured on one automatic retry; `lib/api-rate-limit.js` itself unchanged — `docs/jim-brief-prod-sweep-ratelimit.md` |
 | 2026-08-13 | Sentry app integration verified; `docs/sentry-integration-now.md` for GitHub alert + Cursor automation |
 | 2026-08-11 | First ops doc; `/api/health` added; support templates + Jim crash/analytics brief |

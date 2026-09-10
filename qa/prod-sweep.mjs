@@ -25,6 +25,25 @@
  *    station happens to sort first alphabetically. Cities with no hub file (all of AU/SE/NO/FI
  *    today — see Mark's note) fall back unchanged to the previous alphabetical-first sampling.
  *
+ * FB-64 second fix-up (docs/jim-brief-prod-sweep-ratelimit.md, after a repeatable error=8):
+ * the sweep was tripping our own `lib/api-rate-limit.js` (60 req/60s/IP) — 33 cities x up to
+ * four requests each is 100+ requests, and issuing them back-to-back is faster than the
+ * limiter's window. This is structural, not flaky: the same eight UK regions failed the same
+ * way on two independent runs. Two changes, deliberately *not* touching the limiter itself:
+ *  - Every request this script makes against `BASE` is paced through `paceRequest`/
+ *    `fetchJsonSafe`, which enforce a minimum gap between requests (`REQUEST_INTERVAL_MS`,
+ *    default comfortably under 60/minute). The sweep is hourly with no deadline, so trading
+ *    burst speed for headroom is free — a full run now takes a few minutes, not seconds.
+ *  - A 429 is never a city finding. `fetchJsonSafe` classifies HTTP 429 distinctly (`throttled`,
+ *    carrying the `Retry-After` value) rather than folding it into the generic `error` case; one
+ *    automatic retry is made after waiting the server's own `Retry-After` seconds (defence in
+ *    depth — pacing should already keep the sweep under the limit). `checkChip`/`checkStation`/
+ *    `sweepCity` propagate `throttled` as its own outcome, `updateState` never lets it move a
+ *    city's `consecutiveError`/`consecutiveEmptyInHours` counter (the previous run's counts are
+ *    carried forward unchanged, since a throttled run said nothing about health either way), and
+ *    a `throttled` result can never appear in the alerting set. If a run ever does end with a
+ *    throttled city, that's printed as a sweep-pacing defect, not folded into the per-city table.
+ *
  * This script never gates a PR: it is not registered in qa/run-all.mjs at any tier (see the
  * RUNNER_EXCLUDE entry there) and .github/workflows/prod-sweep.yml never runs on push or
  * pull_request.
@@ -77,11 +96,58 @@ function fetchTimeoutMs() {
   return Number(process.env.PROD_SWEEP_TIMEOUT_MS) || 15000;
 }
 
-async function fetchJsonSafe(url) {
+/**
+ * `lib/api-rate-limit.js` allows 60 requests/60s/IP. This sweep issues 100+ requests across
+ * 33 cities in one run, so every request against `BASE` is paced through this gate rather than
+ * fired back-to-back. Default keeps us comfortably under the limit (well under 60/minute) with
+ * margin for GitHub Actions runners sharing an egress IP with other traffic; override for local
+ * testing against a preview deploy that has no rate limiter in front of it.
+ */
+const REQUEST_INTERVAL_MS = Number(process.env.PROD_SWEEP_REQUEST_INTERVAL_MS) || 1100;
+
+let nextRequestAt = 0;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function paceRequest() {
+  const now = Date.now();
+  const waitMs = nextRequestAt - now;
+  nextRequestAt = Math.max(now, nextRequestAt) + REQUEST_INTERVAL_MS;
+  if (waitMs > 0) {
+    await sleep(waitMs);
+  }
+}
+
+/**
+ * A 429 from our own API is a fact about the sweep's request rate, never about the city being
+ * checked — classified distinctly here (`status: 429`, `retryAfterMs`) so callers can keep it
+ * out of the ok/empty/error taxonomy entirely. One retry is attempted, backed off by the
+ * server's own `Retry-After` header (the limiter always sets it) rather than a guess; this is
+ * defence in depth only — `paceRequest` should already keep every request under the limit.
+ */
+async function fetchJsonSafe(url, { retried = false } = {}) {
+  await paceRequest();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), fetchTimeoutMs());
   try {
     const res = await fetch(url, { signal: controller.signal });
+    if (res.status === 429) {
+      const retryAfterHeader = res.headers.get("retry-after");
+      const retryAfterMs = Number(retryAfterHeader) > 0 ? Number(retryAfterHeader) * 1000 : 60_000;
+      if (!retried) {
+        await sleep(Math.min(retryAfterMs, 65_000));
+        return fetchJsonSafe(url, { retried: true });
+      }
+      return {
+        ok: false,
+        status: 429,
+        throttled: true,
+        retryAfterMs,
+        error: `HTTP 429: rate-limited by our own API after 1 retry`,
+      };
+    }
     const text = await res.text();
     if (!res.ok) {
       return { ok: false, status: res.status, error: `HTTP ${res.status}: ${text.slice(0, 200)}` };
@@ -140,6 +206,9 @@ async function sampleStations(city) {
     return [];
   }
   const result = await fetchJsonSafe(`${BASE}/api/city-stations?city=${encodeURIComponent(city.id)}`);
+  if (result.throttled) {
+    return { throttled: true, retryAfterMs: result.retryAfterMs, error: result.error };
+  }
   if (!result.ok || !Array.isArray(result.data?.stations)) {
     return { error: result.error ?? "city-stations returned no station list" };
   }
@@ -159,19 +228,27 @@ async function sampleStations(city) {
   return ordered.slice(0, SAMPLE_SIZE).map((s) => s.name);
 }
 
-/** Best-of across a set of results: one working chip/station means it works. */
-const OUTCOME_RANK = { ok: 0, empty: 1, error: 2 };
+/**
+ * Best-of across a set of results: one working chip/station means it works. `throttled` ranks
+ * worse than `empty` (an inconclusive result should not masquerade as "checked and quiet") but
+ * strictly better than `error` — a 429 is never allowed to read as a defect finding, only as
+ * "we don't yet know."
+ */
+const OUTCOME_RANK = { ok: 0, empty: 1, throttled: 2, error: 3 };
 
 function bestOutcome(results) {
   return results.reduce((best, cur) => (OUTCOME_RANK[cur.outcome] < OUTCOME_RANK[best.outcome] ? cur : best));
 }
 
-/** @returns {Promise<{outcome: "ok"|"empty"|"error", detail: string}>} */
+/** @returns {Promise<{outcome: "ok"|"empty"|"throttled"|"error", detail: string}>} */
 async function checkChip(city, station, direction) {
   const nextTrainUrl =
     `${BASE}/api/next-train?city=${encodeURIComponent(city.id)}&station=${encodeURIComponent(station)}` +
     `&direction=${encodeURIComponent(direction)}&destination=${encodeURIComponent(direction)}`;
   const nextTrainResult = await fetchJsonSafe(nextTrainUrl);
+  if (nextTrainResult.throttled) {
+    return { outcome: "throttled", detail: `next-train: ${nextTrainResult.error}` };
+  }
   if (!nextTrainResult.ok) {
     return { outcome: "error", detail: `next-train: ${nextTrainResult.error}` };
   }
@@ -187,7 +264,7 @@ async function checkChip(city, station, direction) {
 }
 
 /**
- * @returns {Promise<{outcome: "ok"|"empty"|"error", detail: string}>}
+ * @returns {Promise<{outcome: "ok"|"empty"|"throttled"|"error", detail: string}>}
  *
  * FB-64 fix-up: checks up to CHIPS_PER_STATION chips and only reports `empty` when none of
  * them has a trip — a station is only empty if every chip it offers is empty, not just
@@ -198,6 +275,9 @@ async function checkStation(city, station) {
     station
   )}`;
   const directionsResult = await fetchJsonSafe(directionsUrl);
+  if (directionsResult.throttled) {
+    return { outcome: "throttled", detail: `directions: ${directionsResult.error}` };
+  }
   if (!directionsResult.ok) {
     return { outcome: "error", detail: `directions: ${directionsResult.error}` };
   }
@@ -238,6 +318,9 @@ export async function sweepCity(city, now = new Date()) {
   const stations = await sampleStations(city);
   if (!Array.isArray(stations)) {
     // sampleStations itself failed (city-stations catalog call errored).
+    if (stations.throttled) {
+      return { id: city.id, displayName: city.displayName, status: "throttled", detail: stations.error };
+    }
     return { id: city.id, displayName: city.displayName, status: "error", detail: stations.error };
   }
   if (stations.length === 0) {
@@ -259,6 +342,13 @@ export async function sweepCity(city, now = new Date()) {
 
   if (worst.outcome === "error") {
     return { id: city.id, displayName: city.displayName, status: "error", detail: worst.detail };
+  }
+  if (worst.outcome === "throttled") {
+    // Every sampled chip/station was rate-limited by our own API and none produced a real
+    // ok/empty signal — this is a fact about the sweep's own request rate, not a city finding.
+    // Never allowed to read as `error` or `empty`, and (see updateState) never allowed to move
+    // a consecutive-failure counter.
+    return { id: city.id, displayName: city.displayName, status: "throttled", detail: worst.detail };
   }
   if (worst.outcome === "empty") {
     if (!inServiceHours) {
@@ -286,6 +376,20 @@ function updateState(state, results, now = new Date()) {
   const cities = { ...state.cities };
   for (const result of results) {
     const prev = cities[result.id] ?? { consecutiveError: 0, consecutiveEmptyInHours: 0 };
+    if (result.status === "throttled") {
+      // A 429 is a fact about the sweep, not the city: never increments a counter, and never
+      // resets one either — an in-progress error/empty streak survives a throttled run
+      // untouched, it's simply neither confirmed nor denied this run. Only lastStatus/lastDetail/
+      // lastRunAt move, so the throttled run is still visible in state for debugging.
+      cities[result.id] = {
+        consecutiveError: prev.consecutiveError,
+        consecutiveEmptyInHours: prev.consecutiveEmptyInHours,
+        lastStatus: result.status,
+        lastDetail: result.detail,
+        lastRunAt: now.toISOString(),
+      };
+      continue;
+    }
     let consecutiveError = 0;
     let consecutiveEmptyInHours = 0;
     if (result.status === "error") {
@@ -333,7 +437,7 @@ async function main() {
 
   console.log(`prod-sweep: ${BASE} — ${cities.length} live cities, ${now.toISOString()}`);
   console.log("");
-  const byStatus = { ok: 0, empty: 0, error: 0, skipped: 0 };
+  const byStatus = { ok: 0, empty: 0, error: 0, skipped: 0, throttled: 0 };
   for (const r of results) {
     byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
     const s = nextState.cities[r.id];
@@ -347,8 +451,21 @@ async function main() {
   }
   console.log("");
   console.log(
-    `Summary: ok=${byStatus.ok} empty=${byStatus.empty} error=${byStatus.error} skipped=${byStatus.skipped}`
+    `Summary: ok=${byStatus.ok} empty=${byStatus.empty} error=${byStatus.error} skipped=${byStatus.skipped}` +
+      (byStatus.throttled > 0 ? ` throttled=${byStatus.throttled}` : "")
   );
+
+  if (byStatus.throttled > 0) {
+    console.log("");
+    console.log(
+      `SWEEP PACING DEFECT: ${byStatus.throttled} ${
+        byStatus.throttled === 1 ? "city was" : "cities were"
+      } rate-limited by our own API (lib/api-rate-limit.js) even after pacing and one retry. ` +
+        "This is a fact about the sweep, not the listed cities — none of them contributed to " +
+        "any consecutive-failure counter this run. If this keeps happening, raise " +
+        "REQUEST_INTERVAL_MS (qa/prod-sweep.mjs), don't raise the limiter's LIMIT."
+    );
+  }
 
   if (alerting.length > 0) {
     console.log("");
