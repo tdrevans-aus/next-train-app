@@ -11,7 +11,7 @@
   "notes": [
     "Hand-locked from TfL published maps / What we do / Overground six-name launch (28 Nov 2024). Never generate chips from GTFS or compass.",
     "Modes v1: tube, elizabeth-line, dlr, overground, tram. No buses, no NR-only.",
-    "\u00a73 chips are line + terminus. Circle is a loop, not a terminus chip (same rule as Sydney City Circle).",
+    "§3 chips are line + terminus. Circle is a loop, not a terminus chip (same rule as Sydney City Circle).",
     "Overground line ids: lioness, mildmay, windrush, weaver, suffragette, liberty.",
     "Shared complexes (Paddington LU vs Elizabeth, King's Cross children) stay separate StopPoints. Do not merge NR into this oracle.",
     "Short workings nest under the published terminus (see shortTurns). Do not promote a short as a primary chip.",
@@ -196,7 +196,179 @@
         "Beckton",
         "Woolwich Arsenal",
         "Lewisham"
-      ]
+      ],
+      "segments": [
+        {
+          "termini": [
+            "Bank",
+            "Lewisham"
+          ],
+          "stations": [
+            "Bank",
+            "Shadwell",
+            "Limehouse",
+            "Westferry",
+            "Canary Wharf",
+            "Heron Quays",
+            "South Quay",
+            "Crossharbour",
+            "Mudchute",
+            "Island Gardens",
+            "Cutty Sark",
+            "Greenwich",
+            "Deptford Bridge",
+            "Elverson Road",
+            "Lewisham"
+          ]
+        },
+        {
+          "termini": [
+            "Bank",
+            "Woolwich Arsenal"
+          ],
+          "stations": [
+            "Bank",
+            "Shadwell",
+            "Limehouse",
+            "Westferry",
+            "Poplar",
+            "Blackwall",
+            "East India",
+            "Canning Town",
+            "West Silvertown",
+            "Pontoon Dock",
+            "London City Airport",
+            "King George V",
+            "Woolwich Arsenal"
+          ]
+        },
+        {
+          "termini": [
+            "Beckton",
+            "Tower Gateway"
+          ],
+          "stations": [
+            "Beckton",
+            "Gallions Reach",
+            "Cyprus",
+            "Beckton Park",
+            "Royal Albert",
+            "Prince Regent",
+            "Custom House (for ExCel)",
+            "Royal Victoria",
+            "Canning Town",
+            "East India",
+            "Blackwall",
+            "Poplar",
+            "Westferry",
+            "Limehouse",
+            "Shadwell",
+            "Tower Gateway"
+          ]
+        },
+        {
+          "termini": [
+            "Lewisham",
+            "Stratford"
+          ],
+          "stations": [
+            "Lewisham",
+            "Elverson Road",
+            "Deptford Bridge",
+            "Greenwich",
+            "Cutty Sark",
+            "Island Gardens",
+            "Mudchute",
+            "Crossharbour",
+            "South Quay",
+            "Heron Quays",
+            "Canary Wharf",
+            "West India Quay",
+            "Poplar",
+            "All Saints",
+            "Langdon Park",
+            "Devons Road",
+            "Bow Church",
+            "Pudding Mill Lane",
+            "Stratford"
+          ]
+        },
+        {
+          "termini": [
+            "Lewisham",
+            "Bank"
+          ],
+          "stations": [
+            "Lewisham",
+            "Elverson Road",
+            "Deptford Bridge",
+            "Greenwich",
+            "Cutty Sark",
+            "Island Gardens",
+            "Mudchute",
+            "Crossharbour",
+            "South Quay",
+            "Heron Quays",
+            "Canary Wharf",
+            "West India Quay",
+            "Westferry",
+            "Limehouse",
+            "Shadwell",
+            "Bank"
+          ]
+        },
+        {
+          "termini": [
+            "Stratford",
+            "Canary Wharf"
+          ],
+          "stations": [
+            "Stratford",
+            "Pudding Mill Lane",
+            "Bow Church",
+            "Devons Road",
+            "Langdon Park",
+            "All Saints",
+            "Poplar",
+            "West India Quay",
+            "Canary Wharf"
+          ]
+        },
+        {
+          "termini": [
+            "Stratford International",
+            "Woolwich Arsenal"
+          ],
+          "stations": [
+            "Stratford International",
+            "Stratford",
+            "Stratford High Street",
+            "Abbey Road",
+            "West Ham",
+            "Star Lane",
+            "Canning Town",
+            "West Silvertown",
+            "Pontoon Dock",
+            "London City Airport",
+            "King George V",
+            "Woolwich Arsenal"
+          ],
+          "extraTerminus": {
+            "name": "Beckton",
+            "stations": [
+              "Stratford International",
+              "Stratford",
+              "Stratford High Street",
+              "Abbey Road",
+              "West Ham",
+              "Star Lane",
+              "Canning Town"
+            ],
+            "source": "confirmed live 7 Sep 2026 (docs/jim-brief-dlr-dedup-key.md, docs/london-destination-reconciliation-audit.md sec 2c) — Stratford International-bound DLR services diverge onto the Beckton branch at Canning Town instead of continuing to Woolwich Arsenal; re-confirmed via TfL Route/Sequence API + raw Arrivals evidence during FB-61 (10 Sep 2026)"
+          }
+        }
+      ],
+      "segmentsSource": "TfL Line/dlr/Route/Sequence/all (serviceTypes=Regular), fetched 10 Sep 2026 for FB-61 (docs/jim-brief-fb61-branch-reachable-chips.md) — 7 unique physical route corridors after de-duplicating direction-reversed pairs; termini list above stays the flat line-family list for CHIP_HEADSIGN_GROUPS / board-matching, segments is additive and used only to filter which termini are OFFERED as chips per station."
     },
     {
       "id": "lioness",
