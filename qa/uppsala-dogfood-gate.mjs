@@ -15,7 +15,8 @@ import {
   listUppsalaDogfoodStations,
   getUppsalaDogfoodDirections,
 } from "../lib/cities/uppsala/dogfood-next-train.js";
-import { loadUppsalaStatic } from "../lib/providers/uppsala.js";
+import { UPPSALA_TIMEZONE } from "../lib/providers/uppsala.js";
+import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -147,7 +148,12 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-await assertSnapshotNotStaleTodayOrSkip("uppsala", loadUppsalaStatic);
+// Local fixture (real Samtrafiken calendar data, trimmed), not the live
+// Blob store — see qa/lib/local-gtfs-snapshot.mjs and
+// docs/jim-brief-blob-transfer-reduction.md (item 1).
+await assertSnapshotNotStaleTodayOrSkip("uppsala", () =>
+  loadLocalGtfsSnapshotForStaleCheck("uppsala", UPPSALA_TIMEZONE)
+);
 
 console.log(
   "uppsala-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Mälartåg-only, Uppsala C hub, no SL Line 40 leak, snapshot not stale today)"

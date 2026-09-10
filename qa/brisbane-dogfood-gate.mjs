@@ -4,7 +4,8 @@
 import { assertCityLive } from "../lib/providers/registry.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
-import { loadBrisbaneStatic } from "../lib/providers/brisbane.js";
+import { BRISBANE_TIME_ZONE } from "../lib/providers/brisbane.js";
+import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 
 function assert(condition, message) {
@@ -52,6 +53,10 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-await assertSnapshotNotStaleTodayOrSkip("brisbane", loadBrisbaneStatic);
+// Local fixture, not the live Translink feed — see qa/lib/local-gtfs-snapshot.mjs
+// and docs/jim-brief-blob-transfer-reduction.md (item 1).
+await assertSnapshotNotStaleTodayOrSkip("brisbane", () =>
+  loadLocalGtfsSnapshotForStaleCheck("brisbane", BRISBANE_TIME_ZONE)
+);
 
 console.log("brisbane-dogfood-gate: ok (live, Vercel board 404, probes off by default, snapshot not stale today)");

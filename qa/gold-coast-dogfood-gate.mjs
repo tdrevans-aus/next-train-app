@@ -8,7 +8,8 @@ import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
-import { loadGoldCoastStatic } from "../lib/providers/gold-coast.js";
+import { GOLD_COAST_TIME_ZONE } from "../lib/providers/gold-coast.js";
+import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { marketingLabelsForStation, HUB } from "../lib/cities/gold-coast/marketing-directions.js";
 
@@ -68,6 +69,10 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-await assertSnapshotNotStaleTodayOrSkip("gold-coast", loadGoldCoastStatic);
+// Local fixture, not the live Blob store — see qa/lib/local-gtfs-snapshot.mjs
+// and docs/jim-brief-blob-transfer-reduction.md (item 1).
+await assertSnapshotNotStaleTodayOrSkip("gold-coast", () =>
+  loadLocalGtfsSnapshotForStaleCheck("gold-coast", GOLD_COAST_TIME_ZONE)
+);
 
 console.log("gold-coast-dogfood-gate: ok (live, picker city, not Brisbane, G:link only, snapshot not stale today)");
