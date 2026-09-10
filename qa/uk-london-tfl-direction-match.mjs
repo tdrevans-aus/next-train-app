@@ -1368,6 +1368,57 @@ console.log("\nCatalog coverage additions — fold-collision guard:");
   }
 }
 
+console.log("\nCatalog coverage additions — self-reference guard:");
+
+// docs/jim-brief-london-catalog-coverage-fixups.md, item 1: the PR's derivation added
+// "Hammersmith and City Hammersmith" at the station "Hammersmith (H&C Line)" — a direction
+// pointing back at the station itself. Root cause: the derivation's self-match compared a
+// candidate direction's terminus against the *plain* station name and never stripped the
+// trailing "(H&C Line)" disambiguator, so at that one station the comparison ran against
+// "Hammersmith (H&C Line)" (never equal to "Hammersmith") instead of "Hammersmith" (equal). The
+// sibling disambiguated stations ("Hammersmith (Dist&Pic Line)", "Edgware Road (Bakerloo)",
+// "Edgware Road (Circle Line)", "Paddington (H&C Line)") were unaffected only because none of
+// their own lines' canonical termini happens to equal their own un-stripped station string
+// either — coincidence, not evidence the old comparison was doing the strip.
+//
+// The fix is the rule, not the row: `stationBaseName` strips *any* trailing parenthetical
+// disambiguator ("(H&C Line)", "(Dist&Pic Line)", "(London)", "(for ExCel)", …) before a
+// self-match comparison, and this assertion runs it across the whole catalog — every station,
+// every offered direction — not just the nine changed stations, so it also catches
+// "Richmond (London)" offering "Mildmay Richmond" (a pre-existing instance of the same defect
+// class, predating this PR, found by running this same rule catalog-wide; corrected in the same
+// commit as the Hammersmith fix since acceptance criterion 1 is a whole-catalog invariant, not
+// scoped to what this PR touched).
+function stationBaseName(stationName) {
+  return stationName.replace(/\s*\([^)]*\)\s*$/, "").trim();
+}
+
+{
+  let selfRefs = 0;
+  for (const [stationName, directions] of Object.entries(directionsByStation)) {
+    const base = stationBaseName(stationName);
+    for (const direction of directions) {
+      // Format is always "<Line> <Terminus>" (or a bare line name like "Circle"); a direction
+      // is self-referential if its terminus — the trailing word(s) — equals the station's own
+      // base name, under any disambiguator form the station name carries.
+      const isSelfReferential = direction === base || direction.endsWith(` ${base}`);
+      if (isSelfReferential) {
+        console.error(
+          `  FAIL ${stationName}: offers "${direction}" — a direction naming the station itself ` +
+            `(base name "${base}")`
+        );
+        failures++;
+        selfRefs++;
+      }
+    }
+  }
+  if (selfRefs === 0) {
+    console.log(
+      `  OK   no station offers a direction naming itself, under any disambiguator form (${Object.keys(directionsByStation).length} stations checked)`
+    );
+  }
+}
+
 console.log("\nCatalog coverage additions — new/extended LINE_DESTINATION_GROUPS fold checks:");
 
 {
