@@ -99,11 +99,89 @@ Enable email on all three monitors. SMS optional on monitor 3 only if you want f
 4. **Integrations & API → Alert contacts** — EvansAppStudio@gmail.com on all monitors (free tier: one contact).
 5. **Test:** open `/api/ready` and `/api/next-train?...` in browser — both should return 200.
 
-### Do not monitor (until city is live)
+### Do not monitor (still `planned`/`retired`)
 
-`/api/dev/board?city=brisbane`, `?city=sydney`, or `?city=melbourne` (internal dogfood — gated by `ALLOW_CITY_PROBES=1`; Sydney needs `TFNSW_API_KEY`, Melbourne needs `PTV_DEVID` + `PTV_API_KEY`).  
-`/api/next-train?city=brisbane`, `?city=sydney`, or `?city=melbourne` (returns **501** while `planned`).  
-No synthetic checks for non-Perth cities until Tim flips them live — see `docs/mark-dogfood-brisbane.md`.
+Brisbane and Sydney flipped `live` weeks ago and are now covered by the production sweep below —
+this section used to name them as `planned`/501 and was stale. Rather than hand-list the current
+`planned`/`retired` set here (it drifts every wave — as of 10 Sep 2026 it includes Melbourne,
+Osaka, Hong Kong, Brussels, Copenhagen, Boston, plus NZ/NL/Canada retired from release 1, see
+`docs/jim-brief-release-1-scope-cut.md`), check `lib/providers/registry.js` for the current,
+authoritative status list rather than trusting a copy pasted into this doc.
+
+`/api/dev/board?city=<planned-city>` (internal dogfood — gated by `ALLOW_CITY_PROBES=1`).  
+`/api/next-train?city=<planned-city>` (returns **501** while not `live`).  
+The production sweep below only ever queries `status: "live"` cities for the same reason — it
+reads the registry, never a hand-maintained list.
+
+---
+
+## Production sweep (FB-64, added 10 Sep 2026; fixed up same day after a QA FAIL)
+
+`qa/prod-sweep.mjs` extends monitoring past Perth (the only city the three UptimeRobot monitors
+above cover) to every `status: "live"` city in `lib/providers/registry.js` — no other file to
+update when a city flips or retires, the sweep just picks it up. Full detail:
+`docs/jim-brief-prod-sweep.md`, and the fix-up round: `docs/jim-brief-prod-sweep-fixups.md` /
+`docs/mark-note-prod-sweep.md`.
+
+**What it covers.** For each live city it samples up to two stations (Perth uses the same
+`Edgewater Stn` → `Perth` pair as monitor 3 above), preferring each city's derivable hub station
+(from `lib/cities/<city>/direction-hubs.json` where one exists — today, all UK regions; a city
+with no such file falls back to the previous alphabetical-first station order). At each sampled
+station it fetches `/api/directions`, then calls `/api/next-train` for up to three chips — all
+against production, so no agency API keys are ever needed by the sweep itself. A station is only
+`empty` once none of its checked chips has a trip; checking only the first chip is what produced
+a false Brisbane alert on PR #355 (a genuinely quiet branch terminus happened to sort first).
+Each city is then classified:
+
+- **ok** — a sampled station returned an upcoming trip (or a terminus arrival) on any checked chip.
+- **empty** — every checked chip at every sampled station returned zero trips, and it's within
+  that city's plausible local service hours (a conservative 06:00–23:00 window in the city's own
+  `timeZone`).
+- **error** — a non-200 response, a malformed body, or a thrown parse, at *any* hour.
+- **skipped (outside service hours)** — every checked chip returned zero trips, but it's outside
+  that window (e.g. an overnight Underground closure) — reported as a distinct state from "empty"
+  so a quiet board never gets read as "checked and healthy" or silently dropped.
+
+**Pacing (FB-64 second fix-up, 10 Sep 2026).** `lib/api-rate-limit.js` allows 60 requests/60s/IP;
+the sweep's ~100+ requests across 33 cities used to fire back-to-back, tripping that limiter on
+the same eight UK regions every run — a repeatable false alarm, not flake (two independent
+consecutive runs produced identical `error=8`, all HTTP 429). The fix paces every request against
+`BASE` with a minimum gap (`REQUEST_INTERVAL_MS`, default 1100ms — comfortably under 60/minute),
+which is free given the sweep is hourly with no deadline. **`lib/api-rate-limit.js` itself was not
+touched** — weakening it to suit a monitor would fix the wrong thing. A full run now takes roughly
+3–5 minutes (well inside the workflow's 10-minute job timeout) instead of under a minute. If a 429
+does slip through anyway (shared runner IP, etc.), it's never read as a city finding: it's
+classified as its own `throttled` outcome (one automatic retry backed off by the server's own
+`Retry-After` header first), can never move a city's `consecutiveError`/`consecutiveEmptyInHours`
+counter, and is called out in the run's own output as a sweep-pacing defect (`SWEEP PACING
+DEFECT: N cities were rate-limited...`) rather than folded into the per-city summary line.
+
+**Alerting.** State (consecutive `error` / in-hours `empty` runs per city) persists between runs
+via GitHub Actions cache (`prod-sweep-state-<run id>`, restored by prefix match to the most recent
+entry) — **not** a commit to master. An earlier version of this workflow committed
+`qa/prod-sweep-state.json` back to the branch every run; QA found that had no precedent in this
+repo for a bot push to master, was never verified against master's `web-qa`-required ruleset, and
+committed unconditionally (the timestamp always differs) rather than only on a real change. The
+cache never touches a protected branch, so it can't be silently rejected by branch protection. Its
+trade-off: if the cache is evicted (GitHub's standard 7-day/10GB policy) or this is the very first
+run, every city's counters restart at 0 — a real alert is *delayed* by however many fresh runs it
+takes to re-cross the threshold, not lost. A city fails the workflow — which reaches Tim through
+normal GitHub Actions run-failure email — once it crosses **3 consecutive hourly runs**; a single
+bad run logs and exits green, so one flaky upstream response never pages.
+
+**How it runs.** `.github/workflows/prod-sweep.yml` on an hourly cron, plus `workflow_dispatch`
+for an ad-hoc run (optionally pointed at a preview deploy via the `base` input). It never runs on
+`push` or `pull_request`, is not a required check, makes no writes to the repository (`contents:
+read`), and `qa/prod-sweep.mjs` is never registered in `qa/run-all.mjs` at any tier — it cannot
+gate a PR.
+
+**By hand:**
+
+```
+npm run sweep:prod
+# or, against a preview deploy:
+PROD_SWEEP_BASE=https://<preview>.vercel.app npm run sweep:prod
+```
 
 ---
 
@@ -165,5 +243,8 @@ See `docs/support-reply-templates.md`.
 
 | Date | Note |
 | --- | --- |
+| 2026-09-10 | FB-64: `qa/prod-sweep.mjs` + hourly `prod-sweep.yml` monitor all 33 live cities (Perth still separately covered by UptimeRobot); corrected stale "Brisbane/Sydney planned" note — `docs/jim-brief-prod-sweep.md` |
+| 2026-09-10 | FB-64 fix-up (Mark QA FAIL on PR #355): station "empty" now requires every checked chip empty, not just the first; sampling prefers a derivable hub station; state persistence moved from a commit-to-master to Actions cache (no repo writes) — `docs/jim-brief-prod-sweep-fixups.md`, `docs/mark-note-prod-sweep.md` |
+| 2026-09-10 | FB-64 second fix-up: sweep was tripping our own `lib/api-rate-limit.js` on the same eight UK regions every run (repeatable, not flaky) — every request now paced under 60/minute, a 429 is classified as its own `throttled` outcome that can never count as a city finding or move a consecutive-failure counter, and `Retry-After` is honoured on one automatic retry; `lib/api-rate-limit.js` itself unchanged — `docs/jim-brief-prod-sweep-ratelimit.md` |
 | 2026-08-13 | Sentry app integration verified; `docs/sentry-integration-now.md` for GitHub alert + Cursor automation |
 | 2026-08-11 | First ops doc; `/api/health` added; support templates + Jim crash/analytics brief |

@@ -220,6 +220,13 @@ const RUNNER_EXCLUDE = new Set([
   "newcastle-network-sweep.mjs",
   /** Live Göteborg Västtrafik sweep (schedule-only, needs TRAFIKLAB_API_KEY) — D6; never gate PRs. npm run sweep:goteborg */
   "goteborg-network-sweep.mjs",
+  /**
+   * FB-64 production sweep (docs/jim-brief-prod-sweep.md) — hits production for every live
+   * city on an hourly GitHub Actions cron (.github/workflows/prod-sweep.yml), never a PR
+   * gate. Must never join any run-all.mjs tier, including the untiered full glob — same
+   * reasoning as the per-city network-sweep scripts above. npm run sweep:prod
+   */
+  "prod-sweep.mjs",
   /** Deprecated alias of pin-behavior.mjs — running both doubled the last-check flake. */
   "pin-exclusive.mjs",
   /**

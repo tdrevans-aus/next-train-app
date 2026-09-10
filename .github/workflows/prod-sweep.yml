@@ -1,0 +1,76 @@
+# FB-64 production sweep (docs/jim-brief-prod-sweep.md) — hourly health check of every
+# live city against production, since UptimeRobot only watches Perth (docs/go-live-ops.md).
+#
+# This workflow is monitoring, not CI: it never runs on push or pull_request, is not a
+# required check on any branch ruleset, and qa/prod-sweep.mjs is never registered in
+# qa/run-all.mjs at any tier — see the RUNNER_EXCLUDE entry there.
+#
+# State (docs/jim-brief-prod-sweep-fixups.md, after Mark's QA FAIL on PR #355): this used to
+# commit qa/prod-sweep-state.json back to master every run. Mark found two problems with
+# that — no github-actions[bot] push to master has any precedent in this repo, and master's
+# `web-qa`-required ruleset had never been exercised against a raw non-PR push, so a
+# rejected push would break alerting silently and look identical to a real alert (a rejected
+# push also leaves updateState()'s consecutive counters unpersisted, quietly disabling the
+# N-consecutive threshold). It also committed on every run regardless of change, because
+# `lastRunAt` always differs.
+#
+# Replaced with actions/cache: no repo writes at all, so master's ruleset is never in the
+# loop. Each run restores the most recent `prod-sweep-state-*` cache entry (restore-keys
+# prefix match picks the newest), runs the sweep against that state, and saves a new
+# cache entry under a run-unique key (cache entries are immutable per key, so "update in
+# place" isn't an option — a fresh key per run is the standard idiom for cache-as-state).
+# Trade-off: if the cache is evicted (GitHub's standard 7-day-unused / 10GB-per-repo policy)
+# or this is the very first run, state starts empty and every city's consecutive counters
+# restart at 0 — an in-progress alert streak is *delayed*, not lost, since it just needs
+# ALERT_THRESHOLD fresh consecutive runs to re-accumulate. At an hourly cadence with
+# ALERT_THRESHOLD=3 that's a worst case of a few hours' delay on an already-marginal city,
+# which is an acceptable trade for a mechanism that can never silently break against branch
+# protection.
+name: Production sweep
+
+on:
+  schedule:
+    - cron: "7 * * * *"
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Override target base URL (defaults to production)"
+        required: false
+        type: string
+
+concurrency:
+  group: prod-sweep
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROD_SWEEP_BASE: ${{ inputs.base }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Restore sweep state
+        uses: actions/cache/restore@v4
+        with:
+          path: qa/prod-sweep-state.json
+          key: prod-sweep-state-${{ github.run_id }}
+          restore-keys: |
+            prod-sweep-state-
+      - name: Run sweep
+        id: sweep
+        run: node qa/prod-sweep.mjs
+      - name: Save sweep state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: qa/prod-sweep-state.json
+          key: prod-sweep-state-${{ github.run_id }}
