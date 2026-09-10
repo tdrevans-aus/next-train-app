@@ -51,7 +51,15 @@ assert(res.statusCode === 404, "Vercel /api/dev/board must 404 even if ALLOW_CIT
 
 const central = marketingLabelsForStation("Central");
 assert(central.includes("T1 Emu Plains"), "Central must offer T1 Emu Plains");
-assert(!central.some((label) => /city circle/i.test(label)), "City Circle is not a terminus chip");
+// FB-62 (10 Sep 2026, tim-review): T2/T3/T8 now carry a real city-bound "City
+// Circle" chip (thousands of live GTFS headsigns each) — Central is on those
+// lines, so it legitimately offers e.g. "T8 City Circle". T1/T4/T5/T9/M1 never
+// end at the City Circle and must never show one; see
+// qa/sydney-direction-match.mjs for the full FB-62 gate.
+assert(
+  !central.some((label) => /^(T1|T4|T5|T9|M1) .*city circle/i.test(label)),
+  "T1/T4/T5/T9/M1 must never show a City Circle chip"
+);
 assert(!central.some((label) => label.startsWith("M1 ")), "Central trains must not show Metro chips");
 
 const metro = marketingLabelsForStation("Central Metro");
