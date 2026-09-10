@@ -33,7 +33,7 @@
     "T2 and T3 line pages each link a PDF; the two files are byte-identical (SHA-256 44EC82B0…8DE4FC) and the booklet title is T2/3.",
     "T4 PDF columns include Helensburgh marked SCO (NSW TrainLink South Coast). Not a T4 terminus and not in modes v1 — see oracle-clash-report C3.",
     "M1 printed name is Metro North West & Bankstown. Published stopping pattern still ends at Sydenham. Remaining heavy rail on the Bankstown corridor is T6 Bankstown–Lidcombe.",
-    "City Circle is a loop, not a terminus. Do not invent a City Circle terminus chip.",
+    "City Circle is a loop, not a terminus. SUPERSEDED (Tim, 10 Sep 2026, FB-62, PR #354): T2/T3/T8 now carry a city-bound \"<line> City Circle\" chip. The loop is still not a terminus; the chip names the direction riders travel, matching Sydney Trains signage.",
     "Same place-names on Metro and Trains (Central, Martin Place, Epping, Chatswood, Sydenham) must not share stopIds.",
     "T1 is one T-number with two current PDFs (North Shore + Western). Through-running uses Wynyard–Town Hall–Central, not City Circle."
   ],
