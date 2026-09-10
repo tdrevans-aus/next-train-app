@@ -1,0 +1,236 @@
+{
+  "updatedAt": "2026-09-10T03:09:23.468Z",
+  "cities": {
+    "perth": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Edgewater Stn -> Perth: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "sydney": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Allawah -> T4 Bondi Junction: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "brisbane": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 3,
+      "lastStatus": "empty",
+      "lastDetail": "Albion -> T3 towards Doomben: no upcoming trips",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "adelaide": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Adelaide Railway Station -> Belair line Belair: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "uk-west-midlands": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Acocks Green -> Stratford-upon-Avon (LNR & WMR): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "uk-london-tfl": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "skipped",
+      "lastDetail": "outside service hours (Europe/London); Abbey Road -> DLR Bank: no upcoming trips",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "stockholm": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Abrahamsberg -> Gröna linjen + Farsta strand: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "goteborg": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Alingsås Station -> Västtågen + Göteborg Central: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "canberra": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Alinga Street -> R1 Gungahlin Place: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "gold-coast": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Broadbeach North -> L1 Burleigh Heads: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "newcastle": {
+      "consecutiveError": 3,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "error",
+      "lastDetail": "next-train: HTTP 500: {\"error\":\"GTFS static snapshot is stale for \\\"newcastle\\\": only 0/31 realtime trip IDs resolved against the snapshot (< 50%)\"}",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "malmo": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Åkarp -> Pågatågen mot Helsingborg C: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "helsinki": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Aalto-yliopisto -> M1 + Kivenlahti: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "oslo": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Ammerud -> 4 + Bergkrystallen: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "uppsala": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "skipped",
+      "lastDetail": "outside service hours (Europe/Stockholm); Älvkarleby -> Mälartåg mot Gävle C: no upcoming trips",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "east-midlands": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Alfreton -> Nottingham: has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "south-yorkshire": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Darton -> Leeds (Northern): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "north-east": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Berwick-upon-Tweed -> London Kings Cross (LNER): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "west-of-england": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Bristol Temple Meads -> Bristol Parkway (Great Western Railway): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "southwest": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Exeter St Davids -> Barnstaple (Great Western Railway): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "cumbria": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Barrow-in-Furness -> Corkickle (Northern): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "south-wales": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Aberdare -> Cardiff Central (Transport for Wales): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "west-yorkshire": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Bradford Forster Square -> Ilkley (Northern): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "rest-of-wales": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Aberystwyth -> Birmingham International (Transport for Wales): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "rest-of-scotland": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Aberdeen -> Edinburgh (ScotRail): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "london-se-national-rail": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Liverpool Street (Greater Anglia) -> Clacton-on-Sea (Greater Anglia): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "glasgow": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Glasgow Central -> Ayr (ScotRail): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "edinburgh": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Edinburgh Waverley -> Aberdeen (ScotRail): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "solent": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Eastleigh -> London Waterloo (South Western Railway): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "thames-valley": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Banbury -> Birmingham Moor Street (Chiltern Railways): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "greater-manchester": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Manchester Piccadilly -> Blackpool North (Northern): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "liverpool-city-region": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Ainsdale -> Liverpool Central (Merseyrail): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    },
+    "greater-anglia": {
+      "consecutiveError": 0,
+      "consecutiveEmptyInHours": 0,
+      "lastStatus": "ok",
+      "lastDetail": "Bishops Stortford -> Cambridge (Greater Anglia): has upcoming trip",
+      "lastRunAt": "2026-09-10T03:09:23.468Z"
+    }
+  }
+}

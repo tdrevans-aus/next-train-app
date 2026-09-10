@@ -99,11 +99,60 @@ Enable email on all three monitors. SMS optional on monitor 3 only if you want f
 4. **Integrations & API → Alert contacts** — EvansAppStudio@gmail.com on all monitors (free tier: one contact).
 5. **Test:** open `/api/ready` and `/api/next-train?...` in browser — both should return 200.
 
-### Do not monitor (until city is live)
+### Do not monitor (still `planned`/`retired`)
 
-`/api/dev/board?city=brisbane`, `?city=sydney`, or `?city=melbourne` (internal dogfood — gated by `ALLOW_CITY_PROBES=1`; Sydney needs `TFNSW_API_KEY`, Melbourne needs `PTV_DEVID` + `PTV_API_KEY`).  
-`/api/next-train?city=brisbane`, `?city=sydney`, or `?city=melbourne` (returns **501** while `planned`).  
-No synthetic checks for non-Perth cities until Tim flips them live — see `docs/mark-dogfood-brisbane.md`.
+Brisbane and Sydney flipped `live` weeks ago and are now covered by the production sweep below —
+this section used to name them as `planned`/501 and was stale. Rather than hand-list the current
+`planned`/`retired` set here (it drifts every wave — as of 10 Sep 2026 it includes Melbourne,
+Osaka, Hong Kong, Brussels, Copenhagen, Boston, plus NZ/NL/Canada retired from release 1, see
+`docs/jim-brief-release-1-scope-cut.md`), check `lib/providers/registry.js` for the current,
+authoritative status list rather than trusting a copy pasted into this doc.
+
+`/api/dev/board?city=<planned-city>` (internal dogfood — gated by `ALLOW_CITY_PROBES=1`).  
+`/api/next-train?city=<planned-city>` (returns **501** while not `live`).  
+The production sweep below only ever queries `status: "live"` cities for the same reason — it
+reads the registry, never a hand-maintained list.
+
+---
+
+## Production sweep (FB-64, added 10 Sep 2026)
+
+`qa/prod-sweep.mjs` extends monitoring past Perth (the only city the three UptimeRobot monitors
+above cover) to every `status: "live"` city in `lib/providers/registry.js` — no other file to
+update when a city flips or retires, the sweep just picks it up. Full detail:
+`docs/jim-brief-prod-sweep.md`.
+
+**What it covers.** For each live city it samples up to two stations (Perth uses the same
+`Edgewater Stn` → `Perth` pair as monitor 3 above), fetches `/api/directions`, then calls
+`/api/next-train` for the first chip — all against production, so no agency API keys are ever
+needed by the sweep itself. Each city is classified:
+
+- **ok** — a sampled station returned an upcoming trip (or a terminus arrival).
+- **empty** — every sampled station returned zero trips, and it's within that city's plausible
+  local service hours (a conservative 06:00–23:00 window in the city's own `timeZone`).
+- **error** — a non-200 response, a malformed body, or a thrown parse, at *any* hour.
+- **skipped (outside service hours)** — every sampled station returned zero trips, but it's
+  outside that window (e.g. an overnight Underground closure) — reported as a distinct state
+  from "empty" so a quiet board never gets read as "checked and healthy" or silently dropped.
+
+**Alerting.** State (consecutive `error` / in-hours `empty` runs per city) persists in the
+committed `qa/prod-sweep-state.json`, updated and pushed back by the workflow after each run. A
+city only fails the workflow — which reaches Tim through normal GitHub Actions run-failure email
+— once it crosses **3 consecutive hourly runs**; a single bad run logs and exits green, so one
+flaky upstream response never pages.
+
+**How it runs.** `.github/workflows/prod-sweep.yml` on an hourly cron, plus `workflow_dispatch`
+for an ad-hoc run (optionally pointed at a preview deploy via the `base` input). It never runs on
+`push` or `pull_request`, is not a required check, and `qa/prod-sweep.mjs` is never registered in
+`qa/run-all.mjs` at any tier — it cannot gate a PR.
+
+**By hand:**
+
+```
+npm run sweep:prod
+# or, against a preview deploy:
+PROD_SWEEP_BASE=https://<preview>.vercel.app npm run sweep:prod
+```
 
 ---
 
@@ -165,5 +214,6 @@ See `docs/support-reply-templates.md`.
 
 | Date | Note |
 | --- | --- |
+| 2026-09-10 | FB-64: `qa/prod-sweep.mjs` + hourly `prod-sweep.yml` monitor all 33 live cities (Perth still separately covered by UptimeRobot); corrected stale "Brisbane/Sydney planned" note — `docs/jim-brief-prod-sweep.md` |
 | 2026-08-13 | Sentry app integration verified; `docs/sentry-integration-now.md` for GitHub alert + Cursor automation |
 | 2026-08-11 | First ops doc; `/api/health` added; support templates + Jim crash/analytics brief |

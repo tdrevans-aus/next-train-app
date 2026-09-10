@@ -74,6 +74,7 @@
     "sweep:newcastle": "node qa/newcastle-network-sweep.mjs",
     "sweep:goteborg": "node qa/goteborg-network-sweep.mjs",
     "sweep:perth": "node qa/perth-network-sweep.mjs",
+    "sweep:prod": "node qa/prod-sweep.mjs",
     "trim:auckland-gtfs": "node scripts/trim-auckland-gtfs.mjs",
     "trim:wellington-gtfs": "node scripts/trim-wellington-gtfs.mjs",
     "trim:amsterdam-gtfs": "node scripts/trim-amsterdam-gtfs.mjs",
