@@ -87,6 +87,7 @@ const SMOKE_SCRIPTS = [
   "uk-catalog-coords-gate.mjs",
   "uk-catalog-lazy-load.mjs",
   "uk-london-tfl-direction-match.mjs",
+  "branch-reachable-chips-gate.mjs",
   "uk-planned-gate.mjs",
   "nz-planned-gate.mjs",
   "stockholm-dogfood-gate.mjs",
