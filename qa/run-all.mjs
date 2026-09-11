@@ -147,6 +147,7 @@ const SMOKE_SCRIPTS = [
   "late-leave-slider-stays.mjs",
   "cold-boot-fetch-coalesce.mjs",
   "lib-bare-import-gate.mjs",
+  "gtfs-refresh-retired-city-skip-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -293,6 +294,13 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "uk-city-bounds-overlap-gate.mjs",
   /** Pure static-text scan of api/ + reachable lib/ files; no dev server. */
   "lib-bare-import-gate.mjs",
+  /**
+   * Construction proof (no dev server, no real network - global.fetch/putImpl
+   * are stubbed to throw if invoked): proves runGtfsRefresh() skips any city
+   * whose registry status isn't "live". docs/jim-brief-356-rebase-and-
+   * retired-city-oom.md, 11 Sep 2026.
+   */
+  "gtfs-refresh-retired-city-skip-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
