@@ -16,6 +16,15 @@ import { getStaleCityReport } from "../lib/providers/gtfs/staleness-registry.js"
  * IMPORTANT: do not statically import lib/gtfs-refresh.js at the top
  * level. That module graph (fflate, city trims, Blob) OOMs Hobby cold
  * starts on plain GET. Load it only inside the cron auth branch.
+ *
+ * IMPORTANT: "@vercel/blob" is imported here (a file under api/), NOT
+ * inside lib/gtfs-refresh.js. Confirmed on a real Vercel preview deploy
+ * (docs/jim-brief-gtfs-refresh-cron-crash.md, 11 Sep 2026): a bare npm
+ * import in a file under lib/ throws ERR_MODULE_NOT_FOUND in the deployed
+ * bundle even though the same package resolves fine from a file under
+ * api/ - this is what crashed the cron on every run since 4 Sep. `put` is
+ * passed into runGtfsRefresh() as `putImpl` rather than gtfs-refresh.js
+ * importing the package itself.
  */
 // memory + maxDuration are set in vercel.json's "functions" block instead
 // of here - a `memory` field in this in-file config export is silently
@@ -30,8 +39,11 @@ export default async function handler(req, res) {
   const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers["authorization"];
   if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
-    const { runGtfsRefresh } = await import("../lib/gtfs-refresh.js");
-    const report = await runGtfsRefresh();
+    const [{ put }, { runGtfsRefresh }] = await Promise.all([
+      import("@vercel/blob"),
+      import("../lib/gtfs-refresh.js"),
+    ]);
+    const report = await runGtfsRefresh({ putImpl: put });
     console.log("gtfs-refresh:", JSON.stringify(report));
     res.status(report.ok ? 200 : 500).json(report);
     return;
