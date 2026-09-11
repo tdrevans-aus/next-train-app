@@ -61,6 +61,7 @@ import { fileURLToPath } from "url";
 import { CITIES } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { loadDirectionHubs } from "../lib/cities/uk/direction-hubs.js";
+import { gtfsRefreshStatusBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -84,6 +85,60 @@ const SAMPLE_SIZE = 2;
 const CHIPS_PER_STATION = 3;
 
 const STATE_PATH = path.join(REPO_ROOT, "qa", "prod-sweep-state.json");
+
+/**
+ * Daily GTFS refresh cron freshness (docs/jim-brief-gtfs-refresh-cron-crash.md,
+ * 11 Sep 2026): the cron is dispatched from /api/health, which must always
+ * return 200 for a healthy platform regardless of whether the *cron branch*
+ * succeeded — that's exactly how it crashed on every run for a week (4-11
+ * Sep) and stayed invisible. lib/gtfs-refresh.js records each run's outcome
+ * to a single non-city-scoped blob (gtfs/_refresh-status.json); this sweep
+ * — already the hourly, non-required, monitoring-only GitHub Actions run
+ * that's allowed to go red without touching UptimeRobot's liveness check —
+ * is the visibility surface for it, per that brief's item 3.
+ *
+ * The cron runs once daily (vercel.json, 03:17 UTC); 30h gives a full day
+ * plus buffer before "hasn't run recently" is treated as a finding.
+ */
+const REFRESH_STALE_AFTER_MS = 30 * 60 * 60 * 1000;
+
+async function checkRefreshStatus() {
+  let response;
+  try {
+    response = await fetch(gtfsRefreshStatusBlobUrl());
+  } catch (error) {
+    return { status: "unknown", detail: `refresh status fetch failed: ${error.message}` };
+  }
+  if (!response.ok) {
+    // Most likely: this PR hasn't had its first post-merge cron run yet.
+    // Not a finding — nothing to compare freshness against.
+    return { status: "unknown", detail: `refresh status not found (HTTP ${response.status})` };
+  }
+  let report;
+  try {
+    report = await response.json();
+  } catch (error) {
+    return { status: "error", detail: `refresh status body unparsable: ${error.message}` };
+  }
+  const ranAt = report?.ranAt ? new Date(report.ranAt) : null;
+  const ageMs = ranAt ? Date.now() - ranAt.getTime() : null;
+  if (!report?.ok) {
+    return {
+      status: "error",
+      detail: `last refresh run reported failure (ranAt=${report?.ranAt ?? "unknown"}, failed=${report?.failed ?? "?"})`,
+    };
+  }
+  if (ageMs === null || Number.isNaN(ageMs) || ageMs > REFRESH_STALE_AFTER_MS) {
+    return {
+      status: "error",
+      detail: `last successful refresh was ${report?.ranAt ?? "never recorded"} — over ${(
+        REFRESH_STALE_AFTER_MS /
+        (60 * 60 * 1000)
+      ).toFixed(0)}h ago, cron may be crashing again`,
+    };
+  }
+  return { status: "ok", detail: `last refresh ${report.ranAt}, ${report.succeeded}/${report.results?.length ?? "?"} cities ok` };
+}
 
 /**
  * Perth is not a multi-city id (lib/cities/live-city-api.js MULTI_CITY_IDS), so
@@ -435,7 +490,11 @@ async function main() {
     return s.consecutiveError >= ALERT_THRESHOLD || s.consecutiveEmptyInHours >= ALERT_THRESHOLD;
   });
 
+  const refreshStatus = await checkRefreshStatus();
+
   console.log(`prod-sweep: ${BASE} — ${cities.length} live cities, ${now.toISOString()}`);
+  console.log("");
+  console.log(`GTFS refresh cron: [${refreshStatus.status}] ${refreshStatus.detail}`);
   console.log("");
   const byStatus = { ok: 0, empty: 0, error: 0, skipped: 0, throttled: 0 };
   for (const r of results) {
@@ -467,6 +526,12 @@ async function main() {
     );
   }
 
+  if (refreshStatus.status === "error") {
+    console.log("");
+    console.log(`GTFS REFRESH CRON FINDING: ${refreshStatus.detail}`);
+    process.exitCode = 1;
+  }
+
   if (alerting.length > 0) {
     console.log("");
     console.log(
@@ -475,6 +540,10 @@ async function main() {
         .join(", ")}`
     );
     process.exitCode = 1;
+    return;
+  }
+
+  if (process.exitCode === 1) {
     return;
   }
   console.log("");

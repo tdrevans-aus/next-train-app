@@ -19,6 +19,7 @@
  *
  * @see docs/jim-brief-gtfs-snapshot-freshness.md
  */
+import { put } from "@vercel/blob";
 import { loadEnvLocal } from "../lib/load-env-local.js";
 import { downloadZip, publishCity } from "../lib/gtfs-refresh.js";
 import {
@@ -71,7 +72,7 @@ async function main() {
       }
 
       const { output, summary } = entry.build(sharedBuffer);
-      const published = await publishCity(entry.city, output);
+      const published = await publishCity(entry.city, output, { putImpl: put });
       await writeManifest(
         entry.city,
         buildManifest({
@@ -79,7 +80,8 @@ async function main() {
           etag: probe.etag,
           lastModified: probe.lastModified,
           calendarRange: calendarRangeFromTrimmedOutput(output),
-        })
+        }),
+        { putImpl: put }
       );
       const reason = forced ? `${probe.reason} (forced: city flagged stale)` : probe.reason;
       console.log(`gtfs-refresh-large-feeds: ${entry.city}: ${reason}`);

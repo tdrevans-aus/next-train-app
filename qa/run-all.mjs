@@ -145,6 +145,7 @@ const SMOKE_SCRIPTS = [
   "write-city-directions-resilience.mjs",
   "late-leave-slider-stays.mjs",
   "cold-boot-fetch-coalesce.mjs",
+  "lib-bare-import-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -281,6 +282,8 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "uk-catalog-lazy-load.mjs",
   /** Parses CITY_BOUNDS out of public/city-session.js as text; no dev server. */
   "uk-city-bounds-overlap-gate.mjs",
+  /** Pure static-text scan of api/ + reachable lib/ files; no dev server. */
+  "lib-bare-import-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
