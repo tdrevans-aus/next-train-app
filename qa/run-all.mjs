@@ -67,6 +67,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-realtime-accept.mjs",
   "gtfs-error-redaction.mjs",
   "gtfs-snapshot-freshness.mjs",
+  "gtfs-live-blob-snapshot-integrity.mjs",
   "vancouver-dogfood-gate.mjs",
   "vancouver-attribution.mjs",
   "uk-rdg-attribution.mjs",
@@ -146,6 +147,7 @@ const SMOKE_SCRIPTS = [
   "late-leave-slider-stays.mjs",
   "cold-boot-fetch-coalesce.mjs",
   "lib-bare-import-gate.mjs",
+  "gtfs-refresh-retired-city-skip-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -274,6 +276,14 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "gtfs-realtime-accept.mjs",
   "gtfs-error-redaction.mjs",
   "gtfs-snapshot-freshness.mjs",
+  /**
+   * Fetches every live blob-backed city's real published static snapshot
+   * (+ realtime for the credential-free ones) over the network — the same
+   * class of live fetch as the dogfood gates and rotterdam-mark-probes.mjs
+   * above. See qa/gtfs-live-blob-snapshot-integrity.mjs header;
+   * docs/jim-brief-newcastle-stale-snapshot.md.
+   */
+  "gtfs-live-blob-snapshot-integrity.mjs",
   /** Registry vs. the six live-city list copies (docs/live-flip-checklist.md). */
   "live-city-lists-sync.mjs",
   /** Offline UK catalog checks. */
@@ -284,6 +294,13 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "uk-city-bounds-overlap-gate.mjs",
   /** Pure static-text scan of api/ + reachable lib/ files; no dev server. */
   "lib-bare-import-gate.mjs",
+  /**
+   * Construction proof (no dev server, no real network - global.fetch/putImpl
+   * are stubbed to throw if invoked): proves runGtfsRefresh() skips any city
+   * whose registry status isn't "live". docs/jim-brief-356-rebase-and-
+   * retired-city-oom.md, 11 Sep 2026.
+   */
+  "gtfs-refresh-retired-city-skip-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
@@ -454,6 +471,23 @@ function runScript(scriptName) {
   });
 }
 
+/**
+ * gtfs-live-blob-snapshot-integrity.mjs exits 2 (rather than the usual 1)
+ * when every failure it found is the specific, already-diagnosed Newcastle
+ * synthetic-dogfood-fixture issue (docs/jim-brief-newcastle-stale-snapshot.md)
+ * — still a real FAIL, not suppressed, but distinguishable in this summary
+ * from a new/different regression the same way "(passed on retry)" marks a
+ * known browser flake. This self-clears with no edit here: once Tim
+ * republishes real Newcastle data the gate's own signals stop firing and it
+ * exits 0 (PASS) instead.
+ */
+const KNOWN_TRACKED_EXIT_CODES = {
+  "gtfs-live-blob-snapshot-integrity.mjs": {
+    code: 2,
+    note: "known, tracked — see docs/jim-brief-newcastle-stale-snapshot.md; self-clears once Tim republishes real Newcastle GTFS data",
+  },
+};
+
 function classifyResult(scriptName, code, { timedOut = false, timeoutMs = 0 } = {}) {
   if (timedOut) {
     const limitSec = Math.round(timeoutMs / 1000);
@@ -463,6 +497,12 @@ function classifyResult(scriptName, code, { timedOut = false, timeoutMs = 0 } = 
   if (code === 0) {
     return { status: "PASS", note: "" };
   }
+
+  const known = KNOWN_TRACKED_EXIT_CODES[scriptName];
+  if (known && code === known.code) {
+    return { status: "FAIL", note: known.note };
+  }
+
   return { status: "FAIL", note: `exit ${code}` };
 }
 
