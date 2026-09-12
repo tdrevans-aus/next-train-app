@@ -8,8 +8,8 @@
 import { mkdirSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { unzipSync } from "../lib/vendor/fflate.mjs";
-import { parseCsv } from "../lib/providers/gtfs/csv.js";
+import { parseCsv, filterCsvRows } from "../lib/providers/gtfs/csv.js";
+import { unzipSeqEntries } from "../lib/providers/gtfs/seq-shared-unzip.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -62,20 +62,29 @@ function uniqueBy(rows, keyFn) {
 /**
  * Given a raw upstream GTFS zip buffer, return the trimmed+dieted file
  * contents keyed by filename (excluding README.md, which is a local-dev
- * nicety only). Statically imported by api/cron/refresh-gtfs.js - keep
- * this pure (no fs/network access).
+ * nicety only). Statically imported by lib/gtfs-refresh.js - keep this
+ * pure (no fs/network access).
+ *
+ * @param {Buffer} buffer
+ * @param {{ files?: Record<string, Uint8Array> }} [options] - pass a
+ *   pre-unzipped `files` map (from unzipSeqEntries) to skip unzipping the
+ *   shared SEQ_GTFS.zip again - lib/gtfs-refresh.js's SHARED_GROUPS loop
+ *   unzips once and passes it to both cities' build(); standalone CLI use
+ *   (npm run trim:brisbane-gtfs) omits it and unzips locally, unchanged.
+ *   See docs/jim-brief-seq-refresh-oom.md - stop_times.txt is also no
+ *   longer fully parsed into rows before filtering (filterCsvRows streams
+ *   it), since that alone was enough to exceed a 2048MB heap in isolation.
  */
-export function buildTrimmedFiles(buffer) {
-  const files = unzipSync(new Uint8Array(buffer));
+export function buildTrimmedFiles(buffer, { files } = {}) {
+  const zipFiles = files ?? unzipSeqEntries(buffer);
 
-  const routes = parseCsv(readZipText(files, "routes.txt"));
-  const trips = parseCsv(readZipText(files, "trips.txt"));
-  const stops = parseCsv(readZipText(files, "stops.txt"));
-  const stopTimes = parseCsv(readZipText(files, "stop_times.txt"));
-  const calendar = parseCsv(readZipText(files, "calendar.txt"));
-  const calendarDates = parseCsv(readZipText(files, "calendar_dates.txt"));
-  const feedInfo = parseCsv(readZipText(files, "feed_info.txt"));
-  const agency = parseCsv(readZipText(files, "agency.txt"));
+  const routes = parseCsv(readZipText(zipFiles, "routes.txt"));
+  const trips = parseCsv(readZipText(zipFiles, "trips.txt"));
+  const stops = parseCsv(readZipText(zipFiles, "stops.txt"));
+  const calendar = parseCsv(readZipText(zipFiles, "calendar.txt"));
+  const calendarDates = parseCsv(readZipText(zipFiles, "calendar_dates.txt"));
+  const feedInfo = parseCsv(readZipText(zipFiles, "feed_info.txt"));
+  const agency = parseCsv(readZipText(zipFiles, "agency.txt"));
 
   const railRouteIds = new Set(
     routes.filter((route) => route.route_type === RAIL_ROUTE_TYPE).map((route) => route.route_id)
@@ -83,7 +92,9 @@ export function buildTrimmedFiles(buffer) {
   const railRoutes = routes.filter((route) => railRouteIds.has(route.route_id));
   const railTrips = trips.filter((trip) => railRouteIds.has(trip.route_id));
   const railTripIds = new Set(railTrips.map((trip) => trip.trip_id));
-  const railStopTimes = stopTimes.filter((row) => railTripIds.has(row.trip_id));
+  // Streamed: stop_times.txt covers the whole SEQ network (bus + rail +
+  // ferry) - never materialize every row, only the rail-matching ones.
+  const railStopTimes = filterCsvRows(readZipText(zipFiles, "stop_times.txt"), (row) => railTripIds.has(row.trip_id));
 
   const usedStopIds = new Set(railStopTimes.map((row) => row.stop_id));
   const stopsById = new Map(stops.map((stop) => [stop.stop_id, stop]));
