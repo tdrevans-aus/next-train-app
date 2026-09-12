@@ -147,7 +147,7 @@ the sweep's ~100+ requests across 33 cities used to fire back-to-back, tripping 
 the same eight UK regions every run — a repeatable false alarm, not flake (two independent
 consecutive runs produced identical `error=8`, all HTTP 429). The fix paces every request against
 `BASE` with a minimum gap (`REQUEST_INTERVAL_MS`, default 1100ms — comfortably under 60/minute),
-which is free given the sweep is hourly with no deadline. **`lib/api-rate-limit.js` itself was not
+which is free given the sweep runs every 6 hours with no deadline. **`lib/api-rate-limit.js` itself was not
 touched** — weakening it to suit a monitor would fix the wrong thing. A full run now takes roughly
 3–5 minutes (well inside the workflow's 10-minute job timeout) instead of under a minute. If a 429
 does slip through anyway (shared runner IP, etc.), it's never read as a city finding: it's
@@ -166,10 +166,10 @@ cache never touches a protected branch, so it can't be silently rejected by bran
 trade-off: if the cache is evicted (GitHub's standard 7-day/10GB policy) or this is the very first
 run, every city's counters restart at 0 — a real alert is *delayed* by however many fresh runs it
 takes to re-cross the threshold, not lost. A city fails the workflow — which reaches Tim through
-normal GitHub Actions run-failure email — once it crosses **3 consecutive hourly runs**; a single
+normal GitHub Actions run-failure email — once it crosses **3 consecutive runs** (six-hourly, so ~18 h to an alert on errors; longer for in-service empties); a single
 bad run logs and exits green, so one flaky upstream response never pages.
 
-**How it runs.** `.github/workflows/prod-sweep.yml` on an hourly cron, plus `workflow_dispatch`
+**How it runs.** `.github/workflows/prod-sweep.yml` on a six-hourly cron (`7 */6 * * *`), plus `workflow_dispatch`
 for an ad-hoc run (optionally pointed at a preview deploy via the `base` input). It never runs on
 `push` or `pull_request`, is not a required check, makes no writes to the repository (`contents:
 read`), and `qa/prod-sweep.mjs` is never registered in `qa/run-all.mjs` at any tier — it cannot
@@ -246,5 +246,6 @@ See `docs/support-reply-templates.md`.
 | 2026-09-10 | FB-64: `qa/prod-sweep.mjs` + hourly `prod-sweep.yml` monitor all 33 live cities (Perth still separately covered by UptimeRobot); corrected stale "Brisbane/Sydney planned" note — `docs/jim-brief-prod-sweep.md` |
 | 2026-09-10 | FB-64 fix-up (Mark QA FAIL on PR #355): station "empty" now requires every checked chip empty, not just the first; sampling prefers a derivable hub station; state persistence moved from a commit-to-master to Actions cache (no repo writes) — `docs/jim-brief-prod-sweep-fixups.md`, `docs/mark-note-prod-sweep.md` |
 | 2026-09-10 | FB-64 second fix-up: sweep was tripping our own `lib/api-rate-limit.js` on the same eight UK regions every run (repeatable, not flaky) — every request now paced under 60/minute, a 429 is classified as its own `throttled` outcome that can never count as a city finding or move a consecutive-failure counter, and `Retry-After` is honoured on one automatic retry; `lib/api-rate-limit.js` itself unchanged — `docs/jim-brief-prod-sweep-ratelimit.md` |
+| 2026-09-12 | Production sweep cut from hourly to every 6 hours (`7 */6 * * *`). Hourly would have cost ~3,600 GitHub Actions minutes/month — about twice the free allowance on its own — for a one-person app with no on-call, where 6 h vs 1 h detection latency changes nothing. September's actual burn was CI volume (193 runs), not the sweep (9 runs); Tim raised the Actions spending cap to unblock merges. Alert now ~18 h after a city starts erroring. |
 | 2026-08-13 | Sentry app integration verified; `docs/sentry-integration-now.md` for GitHub alert + Cursor automation |
 | 2026-08-11 | First ops doc; `/api/health` added; support templates + Jim crash/analytics brief |
