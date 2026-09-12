@@ -16,8 +16,9 @@ import {
   listMalmoDogfoodStations,
   getMalmoDogfoodDirections,
 } from "../lib/cities/malmo/dogfood-next-train.js";
-import { tripAllowed, malmoLineId, loadMalmoStatic } from "../lib/providers/malmo.js";
+import { tripAllowed, malmoLineId, MALMO_TIMEZONE } from "../lib/providers/malmo.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
+import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -164,7 +165,12 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-await assertSnapshotNotStaleTodayOrSkip("malmo", loadMalmoStatic);
+// Local fixture (real Samtrafiken calendar data, trimmed), not the live
+// Blob store — see qa/lib/local-gtfs-snapshot.mjs and
+// docs/jim-brief-blob-transfer-reduction.md (item 1).
+await assertSnapshotNotStaleTodayOrSkip("malmo", () =>
+  loadLocalGtfsSnapshotForStaleCheck("malmo", MALMO_TIMEZONE)
+);
 
 console.log(
   "malmo-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Öresundståg/Krösatågen shown, Malmö C hub, no raw-corridor leaks, snapshot not stale today)"

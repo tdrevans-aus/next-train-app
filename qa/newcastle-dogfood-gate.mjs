@@ -8,7 +8,8 @@ import { assertCityLive, getCity } from "../lib/providers/registry.js";
 import { isMultiCity } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
-import { loadNewcastleStatic } from "../lib/providers/newcastle.js";
+import { NEWCASTLE_TIME_ZONE } from "../lib/providers/newcastle.js";
+import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { marketingLabelsForStation, HUB } from "../lib/cities/newcastle/marketing-directions.js";
 
@@ -70,6 +71,13 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-await assertSnapshotNotStaleTodayOrSkip("newcastle", loadNewcastleStatic);
+// Local fixture, not the live Blob store — see qa/lib/local-gtfs-snapshot.mjs
+// and docs/jim-brief-blob-transfer-reduction.md (item 1). Real-snapshot
+// content integrity (including Newcastle's synthetic-fixture incident,
+// docs/jim-brief-newcastle-stale-snapshot.md) is checked on a schedule by
+// qa/gtfs-live-blob-snapshot-integrity.mjs, not per-PR here.
+await assertSnapshotNotStaleTodayOrSkip("newcastle", () =>
+  loadLocalGtfsSnapshotForStaleCheck("newcastle", NEWCASTLE_TIME_ZONE)
+);
 
 console.log("newcastle-dogfood-gate: ok (live, picker city, not Sydney, NLR only, snapshot not stale today)");

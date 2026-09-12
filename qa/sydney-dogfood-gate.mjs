@@ -7,8 +7,9 @@ import vercelBoard from "../api/dev/board.js";
 import directionsHandler from "../api/directions.js";
 import { getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import { marketingLabelsForStation } from "../lib/cities/sydney/marketing-directions.js";
-import { loadSydneyStatic } from "../lib/providers/sydney.js";
+import { SYDNEY_TIME_ZONE } from "../lib/providers/sydney.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
+import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 
 function assert(condition, message) {
   if (!condition) {
@@ -110,6 +111,12 @@ if (previous === undefined) {
   process.env.ALLOW_CITY_PROBES = previous;
 }
 
-await assertSnapshotNotStaleTodayOrSkip("sydney", loadSydneyStatic);
+// Local fixture, not the live TfNSW feed — see qa/lib/local-gtfs-snapshot.mjs
+// and docs/jim-brief-blob-transfer-reduction.md (item 1). Real-snapshot
+// freshness is monitored on a schedule by qa/prod-sweep.mjs and
+// qa/gtfs-live-blob-snapshot-integrity.mjs, not per-PR here.
+await assertSnapshotNotStaleTodayOrSkip("sydney", () =>
+  loadLocalGtfsSnapshotForStaleCheck("sydney", SYDNEY_TIME_ZONE)
+);
 
 console.log("sydney-dogfood-gate: ok (live, Vercel board 404, City Circle not a terminus, disjoint chips, snapshot not stale today)");
