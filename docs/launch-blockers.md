@@ -1,5 +1,7 @@
 # Launch blockers — Play before Tim holiday (27 Sep)
 
+> **Superseded (12 Sep 2026).** Item states below were last ranked **11 Aug 2026** against closed Alpha **2.1.0**; the app is now **3.0.0 / versionCode 24** with 33 live cities, and most P0 rows are long done. The current picture — what's merged, what's blocked, and what only Tim can do — is the **Next Train Launch Board** artifact and `docs/release-notes-3.0.0.md`. Rows still genuinely open as of 12 Sep: **LB-09** (Dwayne security sign-off), **LB-10** (Ruth Play listing), **LB-02/LB-03** (device sign-off on Tim's phone). Treat everything else here as history.
+
 **Bull target:** Play public **~18 Sep**, staged rollout **100% by 26 Sep**, Tim OOO **27 Sep – 9 Oct**.  
 **Program:** [launch-program.md](launch-program.md) · Gantt canvas `store-launch-gantt`  
 **Rule:** Slip date before shipping red. Fix in priority order.

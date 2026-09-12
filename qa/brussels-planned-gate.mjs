@@ -1,7 +1,27 @@
 /**
  * Brussels stays planned (adapter wired, not flipped live). Perth stays live.
+ *
+ * Offline by construction (docs/jim-brief-brussels-gate-pinned-clock.md): this gate must never
+ * reach the network. `globalThis.fetch` is stubbed to throw immediately below, before any other
+ * import runs a request, so a future change that reintroduces a live call fails loudly here
+ * instead of passing today and expiring the next time STIB rolls its calendar. The "live schedule
+ * board" assertions run against a small committed fixture
+ * (qa/fixtures/brussels/gtfs-static/, see its README) via `loadGtfsStaticFromDirectory` — the
+ * same swap PR #357 made for the seven dogfood gates' staleness check — rather than
+ * `lib/providers/brussels.js`'s real `fetchStationBoard`/`loadBrusselsStatic`, which fetch STIB's
+ * live feed and are correctly left untouched (lib/providers/gtfs/board.js's staleness check is
+ * doing its job; this gate is what was wrong, not that check).
+ *
  * Usage: node qa/brussels-planned-gate.mjs
  */
+globalThis.fetch = async (input) => {
+  throw new Error(
+    `brussels-planned-gate: network access is forbidden in this gate (attempted fetch: ${
+      typeof input === "string" ? input : input?.url ?? input
+    }) — see docs/jim-brief-brussels-gate-pinned-clock.md`
+  );
+};
+
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -10,18 +30,21 @@ import {
   BRUSSELS_HUB,
   resolveCatalogEntry,
   listCatalogStations,
-  fetchStationBoard,
   BRUSSELS_METRO_SHORT_NAMES,
+  BRUSSELS_TIMEZONE,
 } from "../lib/providers/brussels.js";
 import {
   marketingLabelsForStation,
   mapBrusselsDestination,
   resolveTerminus,
+  marketingLabel,
   foldKey,
   isForbiddenCollapseName,
   isForbiddenHubProxy,
   bilingualHalves,
 } from "../lib/cities/brussels/marketing-directions.js";
+import { loadGtfsStaticFromDirectory, snapshotCalendarRange } from "../lib/providers/gtfs/static-cache.js";
+import { buildBoardForStops, NEAR_HORIZON_MINUTES } from "../lib/providers/gtfs/board.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -160,10 +183,77 @@ assert(halves.fr === "Stockel" && halves.nl === "Stokkel", "bilingualHalves must
 const singleHalves = bilingualHalves("Simonis");
 assert(singleHalves.fr === "Simonis" && singleHalves.nl === "Simonis", "same-in-both-languages names fold to themselves for both halves");
 
-// Live schedule board (GTFS static, real network fetch) — self-referential-arrival + overlay
-// filtering, exercised against real STIB/MIVB data.
-const now = new Date("2026-09-01T08:00:00+02:00");
-const hubBoard = await fetchStationBoard(BRUSSELS_HUB, { now });
+// Schedule board (GTFS static, LOCAL FIXTURE — no network) — self-referential-arrival + overlay
+// filtering, exercised against qa/fixtures/brussels/gtfs-static/ (real STIB/MIVB stop_ids and
+// headsign conventions, trimmed). Mirrors lib/providers/brussels.js's fetchStationBoard exactly
+// (tripAllowed by BRUSSELS_METRO_SHORT_NAMES, resolveTerminus, self-referential-arrival drop,
+// marketingLabel) but loads staticData from the fixture directory instead of STIB's live feed —
+// the actual network fetch (lib/providers/brussels.js's loadBrusselsStatic) is deliberately left
+// untouched; this gate tests our logic against local data, not STIB's currently published
+// calendar (docs/jim-brief-brussels-gate-pinned-clock.md).
+const FIXTURE_DIR = join(ROOT, "qa/fixtures/brussels/gtfs-static");
+const fixtureStatic = loadGtfsStaticFromDirectory(FIXTURE_DIR, {
+  routeTypes: ["1"],
+  includeRouteShortNames: BRUSSELS_METRO_SHORT_NAMES,
+  agencyIds: ["STIB/MIVB"],
+  timeZone: BRUSSELS_TIMEZONE,
+  sourceUrl: "local-fixture:brussels",
+});
+
+/**
+ * `now` is derived FROM the fixture's own calendar coverage, one day after its start_date, so
+ * this gate can never again drift out of sync with a second, independently hardcoded date the
+ * way the old live-fetch version did (that was exactly how it broke: a frozen "now" checked
+ * against a calendar it didn't control).
+ */
+function deriveNowFromLocalCalendar(staticData) {
+  const { minDate } = snapshotCalendarRange(staticData);
+  assert(minDate, "fixture calendar must have a start_date to derive `now` from");
+  const y = Number(minDate.slice(0, 4));
+  const m = Number(minDate.slice(4, 6));
+  const d = Number(minDate.slice(6, 8));
+  // Brussels is UTC+1 (CET) in January, so a fixed +01:00 offset is exact here — no DST
+  // ambiguity, since the fixture's start_date is always 1 Jan.
+  return new Date(Date.UTC(y, m - 1, d + 1, 7, 0, 0)); // 08:00 local (UTC+1)
+}
+const now = deriveNowFromLocalCalendar(fixtureStatic);
+
+function fetchLocalStationBoard(stationIdOrName, options = {}) {
+  const catalogEntry = resolveCatalogEntry(stationIdOrName);
+  const stopIds = catalogEntry?.stopIds ?? [];
+  assert(stopIds.length > 0, `fixture board: unknown Brussels station ${stationIdOrName}`);
+  const stationKey = foldKey(catalogEntry?.name ?? stationIdOrName);
+
+  const trips = buildBoardForStops({
+    stopIds,
+    staticData: fixtureStatic,
+    realtimeIndex: { tripDelaySec: new Map(), stopUpdates: new Map(), cancelledTrips: new Set() },
+    timeZone: BRUSSELS_TIMEZONE,
+    now: options.now,
+    horizonMinutes: options.horizonMinutes ?? NEAR_HORIZON_MINUTES,
+  })
+    .filter((trip) => BRUSSELS_METRO_SHORT_NAMES.includes(String(trip.routeShortName).trim()))
+    .map((trip) => {
+      const terminus = resolveTerminus(trip.destination, trip.routeShortName);
+      if (!terminus) {
+        return null;
+      }
+      if (foldKey(terminus) === stationKey) {
+        return null;
+      }
+      return { ...trip, destination: marketingLabel(trip.routeShortName, terminus) };
+    })
+    .filter(Boolean);
+
+  return {
+    stationName: catalogEntry?.name ?? String(stationIdOrName),
+    lastUpdate: new Date().toISOString(),
+    trips,
+    realtime: false,
+  };
+}
+
+const hubBoard = fetchLocalStationBoard(BRUSSELS_HUB, { now });
 assert(hubBoard.trips.length > 0, "Arts-Loi / Kunst-Wet board must have upcoming trips");
 assert(hubBoard.realtime === false, "board must report realtime:false — schedule-only until the live JSON path is confirmed");
 assert(
@@ -171,7 +261,7 @@ assert(
   "no trip at the hub may show the hub itself as a destination"
 );
 
-const simonisBoard = await fetchStationBoard("Simonis", { now });
+const simonisBoard = fetchLocalStationBoard("Simonis", { now });
 assert(simonisBoard.trips.length > 0, "Simonis board must have upcoming trips");
 assert(
   !simonisBoard.trips.some((trip) => trip.destination === "2 + Simonis"),
@@ -182,12 +272,12 @@ assert(
   "Simonis board must show line 6 continuing to Roi Baudouin / Koning Boudewijn"
 );
 
-const elisabethBoard = await fetchStationBoard("Elisabeth", { now });
+const elisabethBoard = fetchLocalStationBoard("Elisabeth", { now });
 assert(
   !elisabethBoard.trips.some((trip) => trip.destination.includes("+ Elisabeth")),
   "Elisabeth board must never show itself as a destination (self-referential arrival)"
 );
 
 console.log(
-  "brussels-planned-gate: ok (planned/501, adapterReady, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, self-referential-arrival filter, schedule-only real GTFS board, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
+  "brussels-planned-gate: ok (planned/501, adapterReady, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, self-referential-arrival filter, offline schedule board via local fixture, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
 );
