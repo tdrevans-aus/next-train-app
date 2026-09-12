@@ -3,7 +3,7 @@
 **For:** Tim  
 **Purpose:** Cut and upload a signed Android App Bundle to Play **closed testing** (not production).  
 **When:** After you can build the app; **before** inviting 5–15 friends. Full public QA sign-off is **not** required yet.  
-**App ID:** `com.tdrevans.nexttrain` · current `versionName` **2.3.0** · `versionCode` **13** ([`android/app/build.gradle`](../android/app/build.gradle))
+**App ID:** `com.tdrevans.nexttrain` · current `versionName` **3.0.0** · `versionCode` **24** ([`android/app/build.gradle`](../android/app/build.gradle))
 
 **Related:** [launch-blockers.md](launch-blockers.md) · [play-data-safety-cheatsheet.md](play-data-safety-cheatsheet.md) · AdMob gate `docs/jim-brief-security-admob-ship-gate.md`
 
