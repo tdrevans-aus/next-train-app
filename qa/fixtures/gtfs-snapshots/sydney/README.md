@@ -1,17 +1,22 @@
-# sydney — local calendar-only GTFS fixture (hand-authored)
+# sydney — local calendar-only GTFS fixture
 
-No last-known-good real zip was available for sydney when this fixture was created
-(the Vercel Blob store next-train-gtfs was suspended — docs/jim-brief-blob-transfer-reduction.md).
-This is a deliberately wide, hand-authored validity window (2024-01-01..2030-12-31), NOT live
-agency data — it exists only so `assertSnapshotNotStaleTodayOrSkip` can exercise real
-staleness-detection LOGIC in qa/sydney-dogfood-gate.mjs without a network fetch.
+Not the whole feed — just enough for `assertSnapshotNotStaleTodayOrSkip` to exercise real
+staleness-detection logic without a network fetch
+(docs/jim-brief-blob-transfer-reduction.md). `stops.txt`/`routes.txt`/`trips.txt`/
+`stop_times.txt` are header-only (loadGtfsStaticFromDirectory requires the file to exist,
+but nothing here reads their rows). Real-snapshot freshness in production is monitored on
+a schedule by qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, not here.
 
-Real-snapshot freshness/content in production is monitored on a schedule by
-qa/prod-sweep.mjs and qa/gtfs-live-blob-snapshot-integrity.mjs, not here — this fixture
-makes no claim about what is actually published today.
+**Source zip:** C:\Users\tdrev\AppData\Local\Temp\claude\C--Users-tdrev-Projects-next-train-app\1bbd2b25-bfba-41a6-8789-fda413e3cdec\scratchpad/sydney.zip
+**Extracted:** 2026-09-12
+**Real validity window:** 20260823 .. 20261121
 
-## Replace with real data once the store/agency feed is reachable again
+## Regenerate
 
 ```bash
-node scripts/extract-gtfs-calendar-fixture.mjs sydney <path-to-real-zip>
+node scripts/extract-gtfs-calendar-fixture.mjs sydney <path-to-fresh-zip>
 ```
+
+This fixture stops covering "today" after 20261121 — the dogfood gate will start
+failing then (correctly: the logic is doing its job) and this needs a refresh with a newer
+zip. That is expected maintenance, not a bug.
