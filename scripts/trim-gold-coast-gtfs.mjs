@@ -8,8 +8,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { unzipSync } from "../lib/vendor/fflate.mjs";
-import { parseCsv } from "../lib/providers/gtfs/csv.js";
+import { parseCsv, filterCsvRows } from "../lib/providers/gtfs/csv.js";
+import { unzipSeqEntries } from "../lib/providers/gtfs/seq-shared-unzip.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const outArg = process.argv.find((arg) => arg.startsWith("--out="));
@@ -69,19 +69,27 @@ async function loadZipBuffer(zipPath, url) {
 
 /**
  * Given a raw upstream GTFS zip buffer, return the trimmed+dieted file
- * contents keyed by filename. Statically imported by
- * api/cron/refresh-gtfs.js - keep this pure (no fs/network access).
+ * contents keyed by filename. Statically imported by lib/gtfs-refresh.js -
+ * keep this pure (no fs/network access).
+ *
+ * @param {Buffer} buffer
+ * @param {{ files?: Record<string, Uint8Array> }} [options] - pass a
+ *   pre-unzipped `files` map (from unzipSeqEntries) to skip unzipping the
+ *   shared SEQ_GTFS.zip again - see buildTrimmedFiles's doc comment in
+ *   scripts/trim-brisbane-gtfs.mjs and docs/jim-brief-seq-refresh-oom.md.
  */
-export function buildTrimmedFiles(buffer) {
-  const files = unzipSync(new Uint8Array(buffer));
-  const routes = parseCsv(zipText(files, "routes.txt")).filter(isGlinkRoute);
+export function buildTrimmedFiles(buffer, { files } = {}) {
+  const zipFiles = files ?? unzipSeqEntries(buffer);
+  const routes = parseCsv(zipText(zipFiles, "routes.txt")).filter(isGlinkRoute);
   const routeIds = new Set(routes.map((row) => row.route_id));
-  const trips = parseCsv(zipText(files, "trips.txt")).filter((row) => routeIds.has(row.route_id));
+  const trips = parseCsv(zipText(zipFiles, "trips.txt")).filter((row) => routeIds.has(row.route_id));
   const tripIds = new Set(trips.map((row) => row.trip_id));
   const serviceIds = new Set(trips.map((row) => row.service_id));
-  const stopTimes = parseCsv(zipText(files, "stop_times.txt")).filter((row) => tripIds.has(row.trip_id));
+  // Streamed: stop_times.txt covers the whole SEQ network (bus + rail +
+  // ferry) - never materialize every row, only the G:link-matching ones.
+  const stopTimes = filterCsvRows(zipText(zipFiles, "stop_times.txt"), (row) => tripIds.has(row.trip_id));
   const usedStopIds = new Set(stopTimes.map((row) => row.stop_id));
-  const allStops = parseCsv(zipText(files, "stops.txt"));
+  const allStops = parseCsv(zipText(zipFiles, "stops.txt"));
   const parentIds = new Set();
   for (const stop of allStops) {
     if (usedStopIds.has(stop.stop_id)) {
@@ -89,11 +97,11 @@ export function buildTrimmedFiles(buffer) {
     }
   }
   const stops = allStops.filter((stop) => parentIds.has(stop.stop_id) || parentIds.has(stop.parent_station));
-  const calendar = parseCsv(zipText(files, "calendar.txt")).filter((row) => serviceIds.has(row.service_id));
-  const calendarDates = parseCsv(zipText(files, "calendar_dates.txt")).filter((row) =>
+  const calendar = parseCsv(zipText(zipFiles, "calendar.txt")).filter((row) => serviceIds.has(row.service_id));
+  const calendarDates = parseCsv(zipText(zipFiles, "calendar_dates.txt")).filter((row) =>
     serviceIds.has(row.service_id)
   );
-  const agency = parseCsv(zipText(files, "agency.txt"));
+  const agency = parseCsv(zipText(zipFiles, "agency.txt"));
 
   const output = {
     "agency.txt": toCsv(agency, Object.keys(agency[0] ?? { agency_id: "" })),
@@ -104,7 +112,7 @@ export function buildTrimmedFiles(buffer) {
     "calendar.txt": toCsv(calendar, Object.keys(calendar[0] ?? { service_id: "" })),
     "calendar_dates.txt": toCsv(calendarDates, Object.keys(calendarDates[0] ?? { service_id: "" })),
   };
-  const feed = zipText(files, "feed_info.txt");
+  const feed = zipText(zipFiles, "feed_info.txt");
   if (feed) {
     output["feed_info.txt"] = feed.endsWith("\n") ? feed : `${feed}\n`;
   }

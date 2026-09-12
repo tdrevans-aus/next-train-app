@@ -148,6 +148,7 @@ const SMOKE_SCRIPTS = [
   "cold-boot-fetch-coalesce.mjs",
   "lib-bare-import-gate.mjs",
   "gtfs-refresh-retired-city-skip-gate.mjs",
+  "gtfs-refresh-partial-status-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -303,6 +304,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
    * retired-city-oom.md, 11 Sep 2026.
    */
   "gtfs-refresh-retired-city-skip-gate.mjs",
+  "gtfs-refresh-partial-status-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
