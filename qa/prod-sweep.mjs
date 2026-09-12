@@ -32,7 +32,7 @@
  * way on two independent runs. Two changes, deliberately *not* touching the limiter itself:
  *  - Every request this script makes against `BASE` is paced through `paceRequest`/
  *    `fetchJsonSafe`, which enforce a minimum gap between requests (`REQUEST_INTERVAL_MS`,
- *    default comfortably under 60/minute). The sweep is hourly with no deadline, so trading
+ *    default comfortably under 60/minute). The sweep runs every 6 hours with no deadline, so trading
  *    burst speed for headroom is free — a full run now takes a few minutes, not seconds.
  *  - A 429 is never a city finding. `fetchJsonSafe` classifies HTTP 429 distinctly (`throttled`,
  *    carrying the `Retry-After` value) rather than folding it into the generic `error` case; one
@@ -71,7 +71,7 @@ export const BASE = (process.env.PROD_SWEEP_BASE || "https://next-train-app.verc
   ""
 );
 
-/** Hourly cron, cheap and conservative: N consecutive in-service findings before alerting. */
+/** Six-hourly cron (Tim, 12 Sep 2026 — hourly cost ~3,600 Actions min/month, ~2x the free tier): N consecutive in-service findings before alerting. */
 export const ALERT_THRESHOLD = Number(process.env.PROD_SWEEP_THRESHOLD) || 3;
 
 /** A small, stable sample per city — cheap enough to run hourly without hammering upstreams. */
