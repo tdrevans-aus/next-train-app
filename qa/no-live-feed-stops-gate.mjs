@@ -24,6 +24,7 @@ import { listMultiCityStations } from "../lib/cities/live-city-api.js";
 import cityStationsHandler from "../api/city-stations.js";
 import { BASE, ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 import { openStationSearch } from "./helpers/station-combobox.mjs";
+import { dismissOnboardingIfVisible } from "./helpers/onboarding.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -162,20 +163,53 @@ async function checkBrowser() {
     const { openCustomJourneyCreate } = await import("./helpers/open-custom-journey.mjs");
     await openCustomJourneyCreate(page);
     await page.waitForTimeout(500);
+    await dismissOnboardingIfVisible(page).catch(() => {});
     await page.locator("#detail-station-input").waitFor({ state: "visible", timeout: 15000 });
-    await openStationSearch(page, {
-      rootSelector: "#detail-station-combobox",
-      inputSelector: "#detail-station-input",
-      listboxSelector: "#detail-station-listbox",
-    });
-    // Extra settle time before typing (13 Sep 2026, UK station fill phase 1):
-    // entering search mode kicks off an async ensureLocalStationsLoaded()
-    // chain that re-renders the list and re-focuses the search input once it
-    // resolves; on a heavier page load that resolution can land AFTER a fast
-    // scripted .fill(), clobbering the typed query back to unfiltered and
+
+    // UK station fill phase 2a (14 Sep 2026): greater-manchester's catalog grew from 18 to 65
+    // stations, shifting this page's load timing enough that the CUSTOM-JOURNEY TEMPLATE WIZARD
+    // (#template-route-coach, isTemplateWizardActive() — a different dialog from the general
+    // #onboarding-coach dismissOnboardingIfVisible() already handles) now sometimes activates a
+    // few hundred ms after openStationSearch() returns, reclaiming focus and hiding the search
+    // row it just opened. Dismiss it (same button qa/repros/custom-template-no-wizard-repro.mjs
+    // uses) before and retry opening search until the input stays visible.
+    async function dismissTemplateWizardIfVisible() {
+      for (let step = 0; step < 6; step++) {
+        const visible = await page
+          .evaluate(() => !document.getElementById("template-route-coach")?.hidden)
+          .catch(() => false);
+        if (!visible) return;
+        await page.locator("#template-wizard-primary-btn").click().catch(() => {});
+        await page.waitForTimeout(200);
+      }
+    }
+
+    const searchInputLocator = page.locator("#detail-station-combobox .station-combobox-search-input");
+    let searchOpen = false;
+    for (let attempt = 0; attempt < 5 && !searchOpen; attempt++) {
+      await dismissTemplateWizardIfVisible();
+      await openStationSearch(page, {
+        rootSelector: "#detail-station-combobox",
+        inputSelector: "#detail-station-input",
+        listboxSelector: "#detail-station-listbox",
+      });
+      await dismissOnboardingIfVisible(page).catch(() => {});
+      await dismissTemplateWizardIfVisible();
+      searchOpen = await searchInputLocator
+        .waitFor({ state: "visible", timeout: 2000 })
+        .then(() => true)
+        .catch(() => false);
+    }
+    assert(searchOpen, "greater-manchester station search input never stayed open (template wizard kept reclaiming it)");
+
+    // Extra settle time before typing (13 Sep 2026, UK station fill phase 1): entering search
+    // mode kicks off an async ensureLocalStationsLoaded() chain that re-renders the list and
+    // re-focuses the search input once it resolves; on a heavier page load that resolution can
+    // land AFTER a fast scripted .fill(), clobbering the typed query back to unfiltered and
     // racing focus/blur. Waiting for that chain to settle first avoids it.
     await page.waitForTimeout(800);
-    await page.locator("#detail-station-combobox .station-combobox-search-input").fill("Altrincham");
+    await searchInputLocator.waitFor({ state: "visible", timeout: 5000 });
+    await searchInputLocator.fill("Altrincham");
     await page.waitForTimeout(800);
     const altrinchamOptionCount = await page
       .locator("#detail-station-listbox .station-combobox-option", { hasText: "Altrincham" })

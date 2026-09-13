@@ -54,6 +54,14 @@ const BOX_CHECK_EXEMPT = new Set([
   "west-of-england::Taunton",
   "east-midlands::Kings Sutton",
   "east-midlands::Northampton",
+  // UK station fill phase 2a (14 Sep 2026) — real, Darwin-verified stations whose coordinates
+  // fall just outside their own region's CITY_BOUNDS box (out of scope this phase — public/
+  // city-session.js is not touched, docs/jim-brief-uk-station-fill-phase2a.md).
+  "north-east::Darlington", // docs/united-kingdom-ledger.md section 2 decided North East as home
+  "west-of-england::Cheltenham Spa",
+  "solent::Newbury Racecourse",
+  "greater-manchester::Wigan North Western", // Greater Manchester Combined Authority borough
+  "greater-manchester::Wigan Wallgate",
 ]);
 
 const liveIds = new Set(CITIES.filter((c) => c.status === "live").map((c) => c.id));

@@ -143,7 +143,7 @@ assert(!/`undecided`/.test(oracleReport), "Board eligibility section must have n
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(REST_OF_WALES_REGION);
-assert(region?.railCount === 17, `rest-of-wales rail count must be 17, got ${region?.railCount}`);
+assert(region?.railCount === 118, `rest-of-wales rail count must be 118 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `rest-of-wales must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -159,18 +159,23 @@ for (const crs of [
 ]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
-assert(railCrs.size === 17, `rest-of-wales catalog must carry exactly 17 distinct CRS codes, got ${railCrs.size}`);
+assert(railCrs.size === 118, `rest-of-wales catalog must carry exactly 118 distinct CRS codes (UK station fill phase 2a, 14 Sep 2026), got ${railCrs.size}`);
 assert(getNotInRegion(REST_OF_WALES_REGION).length === 0, "rest-of-wales has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 17, `combined catalog must have 17 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 118, `combined catalog must have 118 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // Hub lock resolves; boundary/pass-through stations never resolve (not catalog points).
 const hub = resolveCatalogEntry(REST_OF_WALES_HUB);
 assert(hub?.crs === "WRX", "Wrexham General must resolve with crs WRX");
-assert(resolveCatalogEntry("Wrexham Central") === null, "Wrexham Central must never resolve — lower-connectivity terminus, not the hub lock");
-assert(resolveCatalogEntry("Chester") === null, "Chester must never resolve — England pass-through, not a Rest of Wales catalog station");
-assert(resolveCatalogEntry("Shrewsbury") === null, "Shrewsbury must never resolve — England pass-through, not a Rest of Wales catalog station");
+// UK station fill phase 2a (14 Sep 2026): Wrexham Central is a real, Darwin-verified terminus
+// (CRS WXC), distinct from the Wrexham General hub lock — previously excluded only because it had
+// never been added to the catalog, not because of any genuine ambiguity.
+const wrexhamCentral = resolveCatalogEntry("Wrexham Central");
+assert(wrexhamCentral?.crs === "WXC", "Wrexham Central must resolve with crs WXC (UK station fill phase 2a)");
+assert(wrexhamCentral.crs !== hub.crs, "Wrexham Central must not be conflated with the Wrexham General hub lock");
+assert(resolveCatalogEntry("Chester") === null, "Chester must never resolve — England pass-through, Liverpool City Region's station per the ledger (not added here)");
+assert(resolveCatalogEntry("Shrewsbury") === null, "Shrewsbury must never resolve — England pass-through, no target region claims it (docs/uk-station-fill/unassigned-england.md)");
 
 // Aberystwyth and Carmarthen are corridor-significant but NOT hub-locked (single hub only).
 const ayw = resolveCatalogEntry("Aberystwyth");
@@ -207,7 +212,7 @@ assert(rowHubs.length === 0, `rest-of-wales must have zero configured hubs, got 
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listRestOfWalesDogfoodStations();
-assert(dogfoodStations.length === 17, `dogfood stations must be the 17 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 118, `dogfood stations must be the 118 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(REST_OF_WALES_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodNames.has("Aberystwyth"), "Aberystwyth must be listed by the dogfood harness");

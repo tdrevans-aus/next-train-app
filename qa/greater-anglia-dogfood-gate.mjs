@@ -135,7 +135,7 @@ assert(/Verdict resolution/.test(oracleReport), "oracle report must carry the LN
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(GREATER_ANGLIA_REGION);
-assert(region?.railCount === 14, `greater-anglia rail count must be 14, got ${region?.railCount}`);
+assert(region?.railCount === 121, `greater-anglia rail count must be 121 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `greater-anglia must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -147,7 +147,7 @@ const railCrs = new Set(railStations.map((s) => s.crs));
 for (const crs of ["NRW", "CBG", "IPS", "PBO", "COL", "ELY", "KLN", "TTF", "DIS", "WMD", "GYM", "LWT", "SSD", "BIS"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
-assert(railCrs.size === 14, `greater-anglia catalog must carry exactly 14 distinct CRS codes, got ${railCrs.size}`);
+assert(railCrs.size === 121, `greater-anglia catalog must carry exactly 121 distinct CRS codes (UK station fill phase 2a, 14 Sep 2026), got ${railCrs.size}`);
 assert(!railCrs.has("LST"), "greater-anglia must never carry LST — that CRS belongs to Liverpool Street in london-se-national-rail");
 for (const stationEntry of railStations) {
   assert(stationEntry.crsVerified === true, `${stationEntry.name} (${stationEntry.crs}) must carry crsVerified: true`);
@@ -155,7 +155,7 @@ for (const stationEntry of railStations) {
 assert(getNotInRegion(GREATER_ANGLIA_REGION).length === 0, "greater-anglia has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 14, `combined catalog must have 14 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 121, `combined catalog must have 121 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // Hub + two co-equal secondary hubs — no doNotGroup within Norwich/Cambridge/Ipswich.
 const hub = resolveCatalogEntry(GREATER_ANGLIA_HUB);
@@ -191,7 +191,7 @@ assert(resolveCatalogEntry("Norwich Station") !== null, "the doNotUse alias must
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listGreaterAngliaDogfoodStations();
-assert(dogfoodStations.length === 14, `dogfood stations must be the 14 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 121, `dogfood stations must be the 121 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(GREATER_ANGLIA_HUB), "hub must be listed by the dogfood harness");
 for (const secondary of GREATER_ANGLIA_SECONDARY_HUBS) {

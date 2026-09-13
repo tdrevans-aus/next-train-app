@@ -227,6 +227,171 @@
       "lng": -1.343395881,
       "class": "Tram-Train terminus. Not served by National Rail per the report.",
       "liveFeed": false
+    },
+    {
+      "mode": "train",
+      "name": "Barnsley",
+      "crs": "BNY",
+      "aliases": [],
+      "lat": 53.5543007868,
+      "lng": -1.47716468299,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Bolton-on-Dearne",
+      "crs": "BTD",
+      "aliases": [],
+      "lat": 53.51894653477,
+      "lng": -1.31154602347,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Chapeltown",
+      "crs": "CLN",
+      "aliases": [],
+      "lat": 53.46233625267,
+      "lng": -1.4662752287,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Darnall",
+      "crs": "DAN",
+      "aliases": [],
+      "lat": 53.38458419982,
+      "lng": -1.41256706782,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Dodworth",
+      "crs": "DOD",
+      "aliases": [],
+      "lat": 53.54432472608,
+      "lng": -1.53169071566,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Dore",
+      "crs": "DOR",
+      "aliases": [],
+      "lat": 53.32763431059,
+      "lng": -1.51529759405,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Elsecar",
+      "crs": "ELR",
+      "aliases": [],
+      "lat": 53.49865904794,
+      "lng": -1.4274237643,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Goldthorpe",
+      "crs": "GOE",
+      "aliases": [],
+      "lat": 53.53418938827,
+      "lng": -1.312807649,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Kiveton Bridge",
+      "crs": "KIV",
+      "aliases": [],
+      "lat": 53.34095788541,
+      "lng": -1.26717935845,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Mexborough",
+      "crs": "MEX",
+      "aliases": [],
+      "lat": 53.49099231092,
+      "lng": -1.28856130714,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Silkstone Common",
+      "crs": "SLK",
+      "aliases": [],
+      "lat": 53.534917177,
+      "lng": -1.56347853949,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Swinton (South Yorkshire)",
+      "crs": "SWN",
+      "aliases": [],
+      "lat": 53.48623990981,
+      "lng": -1.30582124974,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Thurnscoe",
+      "crs": "THC",
+      "aliases": [],
+      "lat": 53.54504233369,
+      "lng": -1.30878362182,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Wombwell",
+      "crs": "WOM",
+      "aliases": [],
+      "lat": 53.51734568399,
+      "lng": -1.41616248315,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Woodhouse",
+      "crs": "WDH",
+      "aliases": [],
+      "lat": 53.36374367509,
+      "lng": -1.35755342307,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

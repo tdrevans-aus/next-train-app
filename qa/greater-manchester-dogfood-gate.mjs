@@ -127,7 +127,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(GREATER_MANCHESTER_REGION);
-assert(region?.railCount === 4, `greater-manchester rail count must be 4, got ${region?.railCount}`);
+assert(region?.railCount === 47, `greater-manchester rail count must be 47 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 14, `greater-manchester metro count must be 14, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -167,7 +167,7 @@ assert(!metroNames.has("Stockport (tram stop)"), "Metrolink catalog must not car
 assert(metroStops.length === 14, `Metrolink catalog must have exactly 14 stops, got ${metroStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 18, `combined catalog must have 18 stations (4 rail + 14 metro), got ${allStations.length}`);
+assert(allStations.length === 61, `combined catalog must have 61 stations (47 rail + 14 metro, UK station fill phase 2a), got ${allStations.length}`);
 
 // doNotGroup — Manchester Victoria resolves as two distinct catalog entries by mode.
 const victoriaRail = resolveCatalogEntry(GREATER_MANCHESTER_NR_SECONDARY_HUB, "train");
@@ -268,7 +268,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Manchester Victoria's doNotGroup lock needs it to disambiguate).
 const dogfoodStations = listGreaterManchesterDogfoodStations();
-assert(dogfoodStations.length === 18, `dogfood stations must be the 18 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 61, `dogfood stations must be the 61 catalog entries (47 rail + 14 metro, UK station fill phase 2a), got ${dogfoodStations.length}`);
 const victoriaEntries = dogfoodStations.filter((s) => s.name === GREATER_MANCHESTER_NR_SECONDARY_HUB);
 assert(victoriaEntries.length === 2, "Manchester Victoria must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(

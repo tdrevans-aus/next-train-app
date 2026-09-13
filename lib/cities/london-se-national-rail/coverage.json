@@ -22,6 +22,6 @@
       "detail": "Not covered here — see the separate London (TfL) region."
     }
   ],
-  "stations": "10 station groups: Waterloo, Victoria, London Bridge, Liverpool Street, King's Cross, St Pancras International and Paddington, each its own board.",
+  "stations": "530 stations and stops: 530 National Rail stations across London, Kent, Surrey, Sussex and Essex's National Rail commuter network (14 Sep 2026 UK station fill, phase 2a). Elizabeth line-exclusive/London Overground-exclusive stations (Bond Street, Canary Wharf, Custom House, Tottenham Court Road, Woolwich Elizabeth line platforms, Barking Riverside) are not catalogued here — they are uk-london-tfl's per docs/united-kingdom-ledger.md.",
   "notes": "This region is National Rail only. For the Underground, Elizabeth line, DLR, Overground and Tram, see the London region."
 }

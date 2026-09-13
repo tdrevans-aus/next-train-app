@@ -36,3 +36,21 @@ list was finalised — recorded here for completeness, not exclusions:
 - **0 name mismatches** beyond the one accepted abbreviation variant (Prestwick).
 - Every other candidate probed against Darwin returned a 200 with a matching `locationName` and
   is shipped with `crsVerified: true`.
+
+# UK station fill phase 2a — excluded / unverified candidates
+
+Companion to `docs/jim-brief-uk-station-fill-phase2a.md`. Same rule as phase 1: a CRS that returns
+an HTTP error, or a station whose Darwin `stationName` doesn't match the candidate name, is
+excluded and listed here, not shipped. Includes candidates that would otherwise have landed in
+one of the fifteen regions' catalogs or in `unassigned-england.md`.
+
+## unassigned-england
+
+| Station | CRS | Result | Notes |
+|---|---|---|---|
+| Bingham | BIN | **excluded** — Darwin LDBWS returned 404 |  |
+| Parton | PRN | **excluded** — Darwin LDBWS returned 404 |  |
+
+## Phase 2a summary
+
+- **2 exclusions/unverified** out of the phase 2a candidate pool (fifteen regions plus the unassigned-England bucket).

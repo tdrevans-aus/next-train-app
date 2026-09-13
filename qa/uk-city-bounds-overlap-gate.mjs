@@ -206,6 +206,140 @@ const ALLOW_LIST = [
     reason:
       "East Midlands' CITY_BOUNDS box was widened 13 Sep 2026 (UK station fill phase 1) east to cover Lincolnshire's Skegness branch, which reaches into the same longitude band as Greater Anglia's Cambridgeshire stations — not fixable with a tighter East Midlands box without excluding its own real Lincolnshire coast stations (Skegness, Boston, etc.) from the hint entirely.",
   })),
+  // ---- UK station fill phase 2a (14 Sep 2026) additions: auto-generated from every
+  // catalogued station whose coordinates resolve to a DIFFERENT region than their own via
+  // hintCityFromCoords, across the fifteen phase 2a regions plus any pre-existing region whose
+  // box the new stations now also intersect. CITY_BOUNDS itself is out of scope this phase
+  // (docs/jim-brief-uk-station-fill-phase2a.md); some entries duplicate an already-present
+  // hand-written reason above (harmless -- allowListReason() returns the first match).
+  ...["Burnham (Berks)","Langley (Berks)","Maidenhead","Reading","Slough","Taplow","Twyford"].map((station) => ({
+    region: "uk-london-tfl",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): uk-london-tfl's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside solent's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Amersham","Chalfont & Latimer","Chesham"].map((station) => ({
+    region: "uk-london-tfl",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): uk-london-tfl's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside thames-valley's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Kings Sutton"].map((station) => ({
+    region: "east-midlands",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): east-midlands's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside thames-valley's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Sheffield Station","Meadowhall Interchange","Rotherham Central","Sheffield Station","Malin Bridge","Halfway","Gleadless Townend","Crystal Peaks","Herdings Park","Middlewood","Hillsborough","Sheffield Arena","Meadowhall","Rotherham Central","Parkgate","Chapeltown","Darnall","Dore","Kiveton Bridge","Woodhouse"].map((station) => ({
+    region: "south-yorkshire",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): south-yorkshire's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside east-midlands's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Taunton"].map((station) => ({
+    region: "west-of-england",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): west-of-england's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside southwest's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Cheltenham Spa"].map((station) => ({
+    region: "west-of-england",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): west-of-england's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside thames-valley's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Nailsea & Backwell","Worle","Yatton"].map((station) => ({
+    region: "west-of-england",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): west-of-england's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside south-wales's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Walsden"].map((station) => ({
+    region: "west-yorkshire",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): west-yorkshire's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside greater-manchester's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Abergavenny"].map((station) => ({
+    region: "rest-of-wales",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): rest-of-wales's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside west-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Aberdour","Burntisland","Dalgety Bay","Inverkeithing","North Queensferry","Rosyth"].map((station) => ({
+    region: "rest-of-scotland",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): rest-of-scotland's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside edinburgh's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Camelon","Cardross","Craigendoran","Falkirk Grahamston","Helensburgh Central","Polmont"].map((station) => ({
+    region: "rest-of-scotland",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): rest-of-scotland's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside glasgow's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["London Waterloo","London Victoria","London Bridge (Southeastern)","London Bridge (Southern)","London Bridge (Thameslink)","Liverpool Street (Greater Anglia)","Liverpool Street (c2c)","London King's Cross","St Pancras International","London Paddington","Abbey Wood","Acton Central","Acton Main Line","Addlestone","Albany Park","Alexandra Palace","Anerley","Ashford (Surrey)","Ashtead","Balham","Banstead","Barking","Barnehurst","Barnes","Barnes Bridge","Bat & Ball","Battersea Park","Beckenham Hill","Beckenham Junction","Bellingham","Belmont","Belvedere","Berrylands","Bethnal Green","Bexley","Bexleyheath","Bickley","Birkbeck","Blackheath","Blackhorse Road","Bookham","Borough Green & Wrotham","Bowes Park","Brent Cross West","Brentford","Brentwood","Brimsdown","Brixton","Brockley","Bromley North","Bromley South","Brondesbury","Brondesbury Park","Bruce Grove","Bush Hill Park","Bushey","Byfleet & New Haw","Caledonian Rd & Barnsbury","Cambridge Heath","Camden Road","Canada Water","Canonbury","Carpenders Park","Carshalton","Carshalton Beeches","Castle Bar Park","Caterham","Catford","Catford Bridge","Chadwell Heath","Chafford Hundred","Charlton","Cheam","Chelsfield","Chessington North","Chessington South","Chingford","Chipstead","Chislehurst","Chiswick","City Thameslink","Clapham High Street","Clapham Junction","Clapton","Claygate","Clock House","Cobham & Stoke d'Abernon","Coulsdon South","Coulsdon Town","Crayford","Crews Hill","Cricklewood","Crofton Park","Crouch Hill","Crystal Palace","Dagenham Dock","Dalston Junction","Dalston Kingsland","Dartford","Denham","Denmark Hill","Deptford","Drayton Green","Drayton Park","Dunton Green","Ealing Broadway","Earlsfield","East Croydon","East Dulwich","Ebbsfleet International","Eden Park","Edmonton Green","Effingham Junction","Elephant & Castle","Elmers End","Elmstead Woods","Elstree & Borehamwood","Eltham","Emerson Park","Enfield Chase","Enfield Lock","Enfield Town","Epsom","Epsom Downs","Erith","Esher","Essex Road","Ewell East","Ewell West","Eynsford","Falconwood","Farningham Road","Farringdon","Feltham","Finchley Road & Frognal","Finsbury Park","Forest Gate","Forest Hill","Fulwell","Garston (Hertfordshire)","Gidea Park","Gipsy Hill","Goodmayes","Gordon Hill","Gospel Oak","Grange Park","Grays","Greenford","Greenhithe for Bluewater","Greenwich","Grove Park","Gunnersbury","Hackbridge","Hackney Central","Hackney Downs","Hackney Wick","Hadley Wood","Haggerston","Hampstead Heath","Hampton","Hampton Court","Hampton Wick","Hanwell","Harlesden","Harold Wood","Harringay","Harringay Green Lanes","Harrow & Wealdstone","Harrow-on-the-Hill","Hatch End","Haydons Road","Hayes (Kent)","Hayes & Harlington","Headstone Lane","Heathrow Airport T123","Heathrow Airport T4","Heathrow Airport T5","Hendon","Herne Hill","Hersham","Highams Park","Highbury & Islington","Hinchley Wood","Hither Green","Homerton","Honor Oak Park","Hornsey","Hounslow","Hoxton","Ilford","Imperial Wharf","Isleworth","Kempton Park","Kemsing","Kenley","Kensal Green","Kensal Rise","Kensington Olympia","Kent House","Kentish Town","Kentish Town West","Kenton","Kew Bridge","Kew Gardens","Kidbrooke","Kilburn High Road","Kingston","Kingswood","Knockholt","Ladywell","Lea Bridge","Leatherhead","Lee","Lewisham","Leyton Midland Road","Leytonstone High Road","Limehouse","London Blackfriars","London Cannon Street","London Charing Cross","London Euston","London Fenchurch Street","London Fields","London Marylebone","London Waterloo East","Longfield","Loughborough Junction","Lower Sydenham","Malden Manor","Manor Park","Maryland","Maze Hill","Meridian Water","Mill Hill Broadway","Mitcham Eastfields","Mitcham Junction","Moorgate","Morden South","Mortlake","Motspur Park","Mottingham","New Barnet","New Beckenham","New Cross","New Cross Gate","New Eltham","New Malden","New Southgate","Norbiton","Norbury","North Dulwich","North Sheen","North Wembley","Northfleet","Northolt Park","Northumberland Park","Norwood Junction","Nunhead","Oakleigh Park","Ockendon","Old Street","Orpington","Otford","Oxshott","Palmers Green","Peckham Rye","Penge East","Penge West","Petts Wood","Plumstead","Ponders End","Potters Bar","Purfleet","Purley","Purley Oaks","Putney","Queens Park (London)","Queens Road Peckham","Queenstown Road Battersea","Radlett","Rainham (Essex)","Ravensbourne","Raynes Park","Rectory Road","Reedham (Surrey)","Richmond","Rickmansworth","Riddlesdown","Romford","Rotherhithe","Sanderstead","Selhurst","Seven Kings","Seven Sisters","Shadwell","Shenfield","Shepherds Bush","Shepperton","Shoreditch High Street","Shoreham (Kent)","Shortlands","Sidcup","Silver Street","Slade Green","South Acton","South Bermondsey","South Croydon","South Greenford","South Hampstead","South Kenton","South Merton","South Ruislip","South Tottenham","Southall","Southbury","St Helier","St James Street","St Johns","St Margarets (London)","St Mary Cray","Stamford Hill","Stoke Newington","Stone Crossing","Stonebridge Park","Stoneleigh","Stratford (London)","Stratford International","Strawberry Hill","Streatham","Streatham Common","Streatham Hill","Sudbury & Harrow Road","Sudbury Hill Harrow","Sunbury","Sundridge Park","Surbiton","Surrey Quays","Sutton (London)","Sutton Common","Swanley","Swanscombe","Sydenham","Sydenham Hill","Syon Lane","Tadworth","Tattenham Corner","Teddington","Thames Ditton","Theobalds Grove","Thornton Heath","Tolworth","Tooting","Tottenham Hale","Tulse Hill","Turkey Street","Twickenham","Upminster","Upper Halliford","Upper Holloway","Upper Warlingham","Vauxhall","Waddon","Wallington","Waltham Cross","Walthamstow Central","Walthamstow Queens Road","Walton-on-Thames","Wandsworth Common","Wandsworth Road","Wandsworth Town","Wanstead Park","Wapping","Watford High Street","Watford Junction","Watford North","Welling","Wembley Central","Wembley Stadium","West Brompton","West Croydon","West Drayton","West Dulwich","West Ealing","West Ham","West Hampstead","West Hampstead Thameslink","West Horndon","West Norwood","West Ruislip","West Sutton","West Wickham","Westcombe Park","Weybridge","White Hart Lane","Whitechapel","Whitton","Whyteleafe","Whyteleafe South","Willesden Junction","Wimbledon","Wimbledon Chase","Winchmore Hill","Woldingham","Wood Street","Woodgrange Park","Woodmansterne","Woolwich Arsenal","Woolwich Dockyard","Worcester Park"].map((station) => ({
+    region: "london-se-national-rail",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): london-se-national-rail's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside uk-london-tfl's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Armadale","Blackridge","Breich","Falkirk High","Fauldhouse"].map((station) => ({
+    region: "edinburgh",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): edinburgh's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside glasgow's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Westbury"].map((station) => ({
+    region: "solent",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): solent's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside west-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Waterloo","Newbury Racecourse"].map((station) => ({
+    region: "solent",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): solent's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside uk-london-tfl's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Reading","Henley-on-Thames"].map((station) => ({
+    region: "thames-valley",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): thames-valley's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside solent's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Westbury"].map((station) => ({
+    region: "thames-valley",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): thames-valley's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside west-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Wigan North Western","Wigan Wallgate"].map((station) => ({
+    region: "greater-manchester",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): greater-manchester's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside liverpool-city-region's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Bache","Hoylake","Manor Road","Meols","West Kirby","Chester"].map((station) => ({
+    region: "liverpool-city-region",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): liverpool-city-region's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside rest-of-wales's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Peterborough","Ely","Huntingdon","Littleport","Manea","March","Soham","Waterbeach","Whittlesea"].map((station) => ({
+    region: "greater-anglia",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): greater-anglia's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside east-midlands's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Bardon Mill","Brampton (Cumbria)","Haltwhistle","Haydon Bridge"].map((station) => ({
+    region: "cumbria",
+    station,
+    reason:
+      "UK station fill phase 2a (14 Sep 2026): cumbria's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside rest-of-scotland's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+
+
 ];
 
 function allowListReason(regionId, stationName) {

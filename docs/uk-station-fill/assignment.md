@@ -102,3 +102,190 @@ note on each entry's `class` field, which this follows.
 throughout this pack as shorthand for Nottingham Express Transit (the tram operator). No functional
 collision — CRS codes and mode/operator abbreviations are different fields, never compared to each
 other — but noted here in case a future prose pass conflates them.
+
+---
+
+# UK station fill phase 2a — region assignment
+
+Companion to `docs/jim-brief-uk-station-fill-phase2a.md`. Same candidate dataset and probe method
+as phase 1 (`docs/uk-station-fill/source.md`), applied to the fifteen remaining Darwin regions
+(every UK region except edinburgh/glasgow/rest-of-scotland/east-midlands, done in phase 1, and
+uk-london-tfl, which is TfL not Darwin).
+
+## Method
+
+1. Every candidate CRS already catalogued anywhere (any mode, not just `mode: "train"` — see the
+   Merseyrail correction below) is excluded from consideration.
+2. Welsh candidates (`constituentCountry: "wales"`) go to south-wales if their coordinates fall in
+   its own `CITY_BOUNDS` box (public/city-session.js, read-only reference — not edited this
+   phase), else rest-of-wales. Wales ends fully assigned.
+3. English candidates are matched against the fifteen target regions' own `CITY_BOUNDS` boxes, in
+   the same relative order they appear in that file (so e.g. south-wales is still checked before
+   west-of-england for a genuinely Welsh-adjacent boundary station). A candidate with no box match
+   goes to `unassigned-england.md`.
+4. Each region's own existing `notInRegion` array and any hardcoded "must never resolve" gate
+   assertion is treated as a higher-priority signal than the geometry (per the brief's assignment
+   order: own pack/registry note, then the ledger, then geography) — see the West Midlands and
+   Rest of Wales findings below.
+
+## Corrections made to the box-only geometry pass (found before shipping)
+
+**"Already catalogued" must check every mode, not just `mode: "train"`.** Liverpool City
+Region catalogues all 68 Merseyrail stations under `mode: "metro"` (Merseyrail is Darwin-served,
+see `docs/united-kingdom-ledger.md` §3), but each entry still carries a real `crs` field. A
+train-mode-only exclusion check would have re-added all 55 of those as "new" National Rail
+stations, duplicating existing metro entries under a different mode. Fixed before generating any
+output — the classifier now excludes any stop with a `crs` field, any mode.
+
+**solent's and thames-valley's `CITY_BOUNDS` boxes reach across all of Greater London.** Both
+boxes are drawn wide (tuned only for GPS-hint purposes around their small pre-existing catalogs),
+and geometrically also cover central London — sampling caught 211 of solent's 399 raw candidates
+being inner-London stations (Balham, Brixton, Bethnal Green, Bond Street, Battersea Park). None of
+those are Solent or Thames Valley territory; london-se-national-rail's own box legitimately covers
+the same area and is the correct home. Fixed by excluding solent/thames-valley from the England
+box-match whenever a candidate also falls inside Greater London (the same rectangle as
+uk-london-tfl's own `CITY_BOUNDS` entry) — the candidate then falls through to
+london-se-national-rail's box instead, which is what actually happens (526 additions there, a
+number that size only made sense once this was traced and fixed).
+
+**south-wales's and rest-of-wales's own boxes reach into England.** Similarly, rest-of-wales's box
+(a broad three-corridor North/Mid/West Wales rectangle) geometrically also covers 17 genuinely
+English Welsh-Marches/Shropshire/Herefordshire border stations (Shrewsbury, Hereford, Ludlow,
+Leominster, Craven Arms, Church Stretton, Gobowen, Knighton, Wem, Whitchurch (Shropshire), Broome,
+Bucknell, Hopton Heath, Prees, Yorton, Delamere, Mouldsworth), and south-wales's box similarly
+covers 3 Somerset stations near Weston-super-Mare (Nailsea & Backwell, Worle, Yatton). Since a
+Welsh candidate is always routed to a Wales region regardless of box match (per the brief's "Wales
+ends fully assigned" rule), this only affected *English* candidates being wrongly pulled into a
+Wales region by geometry. Fixed by excluding south-wales/rest-of-wales from the England box-match
+entirely — English candidates never resolve to a Welsh region regardless of box overlap; the
+dataset's own `constituentCountry` field decides Wales vs England, never the box. The three
+Somerset stations correctly land in west-of-england instead (its own box already covers them).
+
+## West Midlands: zero new stations this phase (not an oversight)
+
+Every one of uk-west-midlands's 39 raw box-matched candidates (Albrighton, Alvechurch, Atherstone,
+Barnt Green, Bedworth, Bermuda Park, Bilbrook, Blakedown, Bromsgrove, Cannock, Claverdon, Codsall,
+Coleshill Parkway, Cosford, Danzey, Droitwich Spa, Hagley, Hartlebury, Hatton, Henley-in-Arden,
+Kenilworth, Landywood, Lapworth, Leamington Spa, Lichfield City, Lichfield Trent Valley, Nuneaton,
+Polesworth, Redditch, Shenstone, The Lakes, Warwick, Warwick Parkway, Water Orton, Wilnecote,
+Willenhall, Wood End, Wootton Wawen, Wythall) is either already named in uk-west-midlands's own
+24-entry `notInRegion` array or geographically the same kind of station (Staffordshire,
+Warwickshire, Worcestershire or Shropshire) — all outside the West Midlands *metropolitan county*
+boundary that array already establishes, a tighter boundary than uk-west-midlands's own
+`CITY_BOUNDS` box (which, like every other region's box, is a GPS-hint rectangle, not the region's
+actual served-area boundary). None of the other fourteen target regions is named for those
+counties either. Per the brief's explicit "do not widen a region beyond its name to absorb
+stragglers" instruction, all 39 go to `unassigned-england.md` instead of being force-fit into
+uk-west-midlands. This is the single largest concrete illustration of why phase 2b (a dedicated
+"Rest of England" region) is needed, not a gap in this pass.
+
+## Liverpool City Region: Warrington excluded, Wigan reassigned
+
+Liverpool City Region's own `notInRegion` array already named nine stations as deliberately not
+its own (Warrington Bank Quay/Central/West, Wigan North Western/Wallgate, Manchester
+Piccadilly/Victoria/Oxford Road/Manchester Airport) — the last four already live in
+greater-manchester's own catalog or box-match there correctly. The remaining five needed a
+decision:
+- **Warrington Bank Quay/Central/West** → `unassigned-england.md`. Warrington Borough Council is a
+  unitary authority in the ceremonial county of Cheshire, in neither Merseyside (Liverpool City
+  Region) nor Greater Manchester's combined authority.
+- **Wigan North Western/Wallgate** → **greater-manchester**. Wigan Metropolitan Borough is one of
+  the ten Greater Manchester Combined Authority boroughs, and `docs/united-kingdom-ledger.md`
+  section 2 explicitly flagged Wigan as "unclaimed — not contested — flagged for whoever builds
+  the adjacent region" — this phase builds greater-manchester, so it claims it. (Their coordinates
+  fall outside greater-manchester's own tight `CITY_BOUNDS` box, same trade-off already documented
+  elsewhere in `public/city-session.js` for other real boundary stations — not fixed this phase,
+  box is out of scope.)
+
+## Preston: still deliberately unclaimed
+
+`docs/united-kingdom-ledger.md` section 2 names Preston (Lancashire) as "unclaimed — not contested
+— flagged for whoever builds the adjacent region." No target region in this phase is named for
+Lancashire, so per the same "don't widen a region to absorb stragglers" rule as West Midlands,
+Preston stays unclaimed — listed in `unassigned-england.md`, not force-fit into
+liverpool-city-region or greater-manchester.
+
+## Ledger-decided overrides that superseded a region's own stale exclusion note
+
+**Darlington (DAR) → north-east.** North East's own `stations.json` note said "EXCLUDED -
+confirmed unclaimed... do not add without a boundary resolution," written before
+`docs/united-kingdom-ledger.md` section 2 later decided (Tim, 5 Sep 2026) that Darlington's home
+region is North East (County Durham/ECML, no real second claimant). Per the brief's assignment
+rule order (own pack, THEN the ledger, THEN geography), the ledger's later, more specific ruling
+wins — Darlington is added, the stale note and the region's own `notInRegion` entry are both
+corrected, and `qa/north-east-dogfood-gate.mjs`'s previous "Darlington must not resolve" assertion
+is inverted to "must resolve."
+
+## Previously-excluded stations that are real once added
+
+Three stations were previously the subject of "must never resolve" QA assertions written when a
+pack was small and each name looked like an ambiguous/unbuilt alias — station-filling proved all
+three are real, Darwin-verified, distinct stations:
+- **Cardiff Bay (CDB)**, south-wales — a real Bay Line terminus, not a Cardiff Central/Queen
+  Street alias.
+- **Wrexham Central (WXC)**, rest-of-wales — a real, lower-connectivity terminus distinct from the
+  Wrexham General hub lock.
+- **London Euston, London Blackfriars, London Cannon Street, London Charing Cross, London
+  Fenchurch Street, London Marylebone, Farringdon, Moorgate**, london-se-national-rail — the
+  D1 pack's original seven-group scope deliberately left these unbuilt; the full station fill adds
+  them as real stations (Darwin's own `stationName` carries a "London " prefix for six of them,
+  which is why the bare marketing tokens — "Euston", "Blackfriars", etc. — still correctly fail to
+  resolve, only the full printed name does).
+
+Each of these three regions' `qa/*-dogfood-gate.mjs` and `qa/uk-region-catalog-conformance.mjs`
+assertions were updated from "must not resolve" to "must resolve with crs X," not just relaxed.
+
+## Elizabeth line/London Overground-exclusive stations are uk-london-tfl's, not Darwin's
+
+Six candidates in london-se-national-rail's raw box match — Bond Street, Canary Wharf (Elizabeth
+line), Custom House, Tottenham Court Road, Woolwich (Elizabeth line), Barking Riverside — all
+verified against Darwin (it does answer a `stationName` for them) but all shipped with `(0, 0)`
+coordinates from the NaPTAN lookup, the tell that surfaced this: NaPTAN's `RailReferences.csv` has
+no coordinate record for any of them, because none of them are legacy National Rail facilities.
+Per `docs/united-kingdom-ledger.md` §3 ("every Elizabeth line stop [is] TfL's... same for
+[London] Overground... no Darwin-side Elizabeth line entries exist in any region pack"), these six
+are uk-london-tfl's, not london-se-national-rail's, regardless of Darwin technically answering for
+them. Removed from the catalog (530 shipped, not 536); `qa/uk-station-fill-audit.mjs` carries a
+small named exception set for these six CRS so the audit doesn't wrongly flag them as unowned
+(uk-london-tfl's own catalog format has no `crs` field to cross-reference against).
+
+## Direction-model collisions held back, not force-added
+
+Nine genuine, Darwin-verified National Rail stations share a printed name with an existing
+Metrolink/Tyne and Wear Metro stop **whose bare name is also hardcoded in that region's own
+`marketing-directions.js` line+terminus direction model** (unlike east-midlands's Hucknall or the
+uk-west-midlands/edinburgh/glasgow "(Metro)"-suffix precedent, where no direction-model file
+referenced the bare name): greater-manchester's Altrincham, Eccles, Manchester Airport, Rochdale;
+north-east's Brockley Whins, East Boldon, Heworth, Manors, Seaburn. Renaming the metro-mode
+catalog entry (the usual fix for this class of collision) would decouple it from its own
+direction-model termini list — real "second modes... untouched" territory the brief rules out
+touching. Held back from this phase's catalog additions and listed in `unassigned-england.md`
+instead, with the specific reason recorded per station; a follow-up that also touches
+`marketing-directions.js` can resolve it properly.
+
+## Per-region counts
+
+| Region | Before (rail) | New (this pass) | After (rail) | Other-mode (unchanged) | Total |
+|---|---|---|---|---|---|
+| uk-west-midlands | 75 | +0 | 75 | 35 | 110 |
+| south-yorkshire | 6 | +15 | 21 | 12 | 33 |
+| north-east | 3 | +25 | 28 | 60 | 88 |
+| west-of-england | 6 | +41 | 47 | 0 | 47 |
+| southwest | 9 | +80 | 89 | 0 | 89 |
+| cumbria | 7 | +42 | 49 | 0 | 49 |
+| south-wales | 16 | +88 | 104 | 0 | 104 |
+| west-yorkshire | 10 | +72 | 82 | 0 | 82 |
+| rest-of-wales | 17 | +101 | 118 | 0 | 118 |
+| london-se-national-rail | 10 | +520 | 530 | 0 | 530 |
+| solent | 7 | +188 | 195 | 0 | 195 |
+| thames-valley | 8 | +56 | 64 | 0 | 64 |
+| greater-manchester | 4 | +43 | 47 | 14 | 61 |
+| liverpool-city-region | 29 | +30 | 59 | 68 | 127 |
+| greater-anglia | 14 | +107 | 121 | 0 | 121 |
+
+`unassigned-england.md`: 445 verified English stations with no home this phase (includes West
+Midlands' 39, Warrington's 3, Preston, and the 9 direction-model collisions). `unverified.md`
+gained 3 genuine exclusions (Bingham — already known from phase 1 as the same station; Parton —
+new, live Darwin 404 gap) plus 20 name-mismatch candidates accepted on manual review as
+abbreviation/punctuation variants (same pattern as phase 1's Prestwick review) — see
+`docs/uk-station-fill/unverified.md`.
