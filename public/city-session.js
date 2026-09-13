@@ -502,6 +502,11 @@
     select.value = countryId;
   }
 
+  // docs/jim-brief-country-wide-station-picker.md #1: Region is now an
+  // optional filter over the whole country's station list, not a required
+  // pick. "All" (value "") is always the first entry. `regionId === ""`
+  // (or omitted) selects it; a real region id still narrows the list and
+  // sets the active region exactly as before.
   function fillRegionSelect(select, countryId, regionId) {
     if (!select) {
       return;
@@ -509,6 +514,12 @@
     select.replaceChildren();
     const country = countryById(countryId);
     const hasOpen = country.regions.some((region) => isRegionOpen(region));
+
+    const allOption = document.createElement("option");
+    allOption.value = "";
+    allOption.textContent = "All";
+    select.append(allOption);
+
     for (const region of country.regions) {
       const option = document.createElement("option");
       option.value = region.id;
@@ -522,17 +533,15 @@
       }
       select.append(option);
     }
-    const open = firstOpenRegion(countryId);
-    const soon = country.regions.find((region) => region.comingSoon);
+
+    if (!regionId) {
+      select.value = "";
+      return;
+    }
     const wantedOpen = country.regions.some(
       (region) => region.id === regionId && isRegionOpen(region)
     );
-    const wanted = wantedOpen ? regionId : open?.id ?? soon?.id ?? "";
-    if (wanted && ![...select.options].some((option) => option.value === wanted && !option.disabled)) {
-      select.value = open?.id ?? select.options[0]?.value ?? "";
-    } else {
-      select.value = wanted;
-    }
+    select.value = wantedOpen ? regionId : "";
   }
 
   function regionDisplayName(city) {
@@ -557,14 +566,30 @@
 
   function syncRegionControls() {
     const countryId = readSavedCountry();
-    const savedCity = readSavedCity() || LIVE_CITY;
+    // The Region select shows "All" until the rider has explicitly picked a
+    // region (docs/jim-brief-country-wide-station-picker.md #1/AC1) — a
+    // GPS-followed or default-Perth savedCity is still tracked internally
+    // (boards, journeys, coverage notes all keep working) but the visible
+    // filter only shows a specific region once that pick was explicit.
+    const explicit = readRegionExplicit();
+    const savedCity = readSavedCity();
+    const regionFilterValue = explicit ? savedCity || LIVE_CITY : "";
     document.querySelectorAll("[data-region-country]").forEach((select) => {
       fillCountrySelect(select, countryId);
     });
     document.querySelectorAll("[data-region-city]").forEach((select) => {
-      fillRegionSelect(select, countryId, savedCity);
+      fillRegionSelect(select, countryId, regionFilterValue);
     });
     syncRegionSummaries();
+  }
+
+  /** Current Region-select filter value: "" for "All", or a region id. */
+  function readRegionFilter() {
+    const select = document.querySelector("[data-region-city]");
+    if (select) {
+      return select.value || "";
+    }
+    return readRegionExplicit() ? readSavedCity() || LIVE_CITY : "";
   }
 
   function closeRegionScreen() {
@@ -667,11 +692,25 @@
 
   async function onCityChange(select) {
     const city = select.value;
+    if (!city) {
+      // "All" chosen: the Region select becomes a pure filter again — the
+      // active region (boards/journeys/GPS-follow) is untouched, only the
+      // "explicit region pick" flag clears so the filter shows "All".
+      persistRegion({ city: readSavedCity() || LIVE_CITY, explicit: false });
+      syncRegionControls();
+      document.dispatchEvent(
+        new CustomEvent("nexttrain:region-filter-changed", { detail: { filter: "" } })
+      );
+      return;
+    }
     if (!regionById(city) || !isRegionOpen(regionById(city).region)) {
       syncRegionControls();
       return;
     }
     await applyCity(city, { persist: true, explicit: true });
+    document.dispatchEvent(
+      new CustomEvent("nexttrain:region-filter-changed", { detail: { filter: city } })
+    );
   }
 
   function bindControls() {
@@ -785,6 +824,7 @@
       });
     },
     syncRegionControls,
+    readRegionFilter,
     syncFeedAttribution,
     feedAttributionForCity,
     VANCOUVER_TRANSLINK_DISCLAIMER,

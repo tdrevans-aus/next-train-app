@@ -125,6 +125,88 @@
     });
   }
 
+  // docs/jim-brief-country-wide-station-picker.md — the "Choose station"
+  // combobox searches the whole country, not just the active region. Cached
+  // in memory + localStorage per country id (with a fetchedAt "version" so a
+  // second visit opens instantly and a stale cache expires on its own).
+  const countryStationsCache = new Map();
+  const COUNTRY_CACHE_KEY_PREFIX = "nextTrainCountryStations:";
+  const COUNTRY_CACHE_TTL_MS = 60 * 60 * 1000;
+
+  function readCountryCacheFromStorage(countryId) {
+    try {
+      const raw = localStorage.getItem(COUNTRY_CACHE_KEY_PREFIX + countryId);
+      if (!raw) {
+        return null;
+      }
+      const parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.stations) || typeof parsed.fetchedAt !== "number") {
+        return null;
+      }
+      if (Date.now() - parsed.fetchedAt > COUNTRY_CACHE_TTL_MS) {
+        return null;
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeCountryCacheToStorage(countryId, payload) {
+    try {
+      localStorage.setItem(COUNTRY_CACHE_KEY_PREFIX + countryId, JSON.stringify(payload));
+    } catch {
+      /* storage unavailable/full — memory cache for this session still works */
+    }
+  }
+
+  /** Fetches (or returns cached) { countryId, regions, stations, fetchedAt } for a country. */
+  async function loadCountryStations(countryId) {
+    const id = String(countryId || "").trim().toLowerCase();
+    if (!id) {
+      return null;
+    }
+    const inMemory = countryStationsCache.get(id);
+    if (inMemory && Date.now() - inMemory.fetchedAt < COUNTRY_CACHE_TTL_MS) {
+      return inMemory;
+    }
+    const fromStorage = readCountryCacheFromStorage(id);
+    if (fromStorage) {
+      countryStationsCache.set(id, fromStorage);
+      return fromStorage;
+    }
+    try {
+      const response = await fetch(`/api/country-stations?country=${encodeURIComponent(id)}`);
+      if (!response.ok) {
+        throw new Error(`country-stations ${response.status}`);
+      }
+      const data = await response.json();
+      const payload = {
+        countryId: id,
+        regions: Array.isArray(data.regions) ? data.regions : [],
+        stations: Array.isArray(data.stations) ? data.stations : [],
+        fetchedAt: Date.now(),
+      };
+      countryStationsCache.set(id, payload);
+      writeCountryCacheToStorage(id, payload);
+      return payload;
+    } catch (error) {
+      console.warn("Could not load /api/country-stations", error);
+      return inMemory || null;
+    }
+  }
+
+  function comingSoonRegionsForCountry(countryId) {
+    const id = String(countryId || "").trim().toLowerCase();
+    const country = (window.NextTrainCitySession?.COUNTRIES ?? []).find((entry) => entry.id === id);
+    if (!country) {
+      return [];
+    }
+    return country.regions
+      .filter((region) => region.comingSoon)
+      .map((region) => ({ id: region.id, name: region.name }));
+  }
+
   async function getStationsList() {
     const city = planningCityId();
     const dogfoodApi = window.NextTrainBrisbaneDogfood;
@@ -292,6 +374,10 @@
     const resolveStationsList = loadStations || (isNearbyPicker ? getNearbyStationsList : getStationsList);
     let localStationsCache = null;
     let localCacheCity = "";
+    // docs/jim-brief-country-wide-station-picker.md: only the primary
+    // "Choose station" combobox (detail picker) goes country-wide; the
+    // nearby-mode manual override keeps searching the active region only.
+    let countryData = null;
     let selectedValue = "";
     let activeIndex = -1;
     let suppressBlurClose = false;
@@ -414,22 +500,47 @@
 
     function ensureLocalStationsLoaded() {
       const city = planningCityId();
-      if (localStationsCache?.length && localCacheCity === city) {
-        return Promise.resolve(localStationsCache);
+      const legacyPromise =
+        localStationsCache?.length && localCacheCity === city
+          ? Promise.resolve(localStationsCache)
+          : resolveStationsList().then((list) => {
+              localStationsCache = Array.isArray(list) ? list : [];
+              localCacheCity = city;
+              return localStationsCache;
+            });
+
+      if (!isDetailPicker) {
+        return legacyPromise;
       }
-      return resolveStationsList().then((list) => {
-        localStationsCache = Array.isArray(list) ? list : [];
-        localCacheCity = city;
-        return localStationsCache;
-      });
+
+      // Country-wide catalog for the primary "Choose station" combobox
+      // (docs/jim-brief-country-wide-station-picker.md). The legacy
+      // single-region list above still loads in parallel as a fallback for
+      // when the country fetch fails or the active region has no country
+      // mapping (renderList falls back to it when countryData is empty).
+      const countryId = String(window.NextTrainCitySession?.readSavedCountry?.() || "").toLowerCase();
+      const countryPromise =
+        countryData && countryData.countryId === countryId
+          ? Promise.resolve(countryData)
+          : loadCountryStations(countryId).then((data) => {
+              countryData = data;
+              return countryData;
+            });
+
+      return Promise.all([legacyPromise, countryPromise]).then(() => localStationsCache);
     }
 
     function clearLocalStationsCache() {
       localStationsCache = null;
       localCacheCity = "";
+      countryData = null;
     }
 
     function renderList(query = "") {
+      if (isDetailPicker && countryData?.stations?.length) {
+        renderCountryList(query);
+        return;
+      }
       const matches = filterLocalStationsByQuery(query);
       list.innerHTML = "";
 
@@ -503,6 +614,222 @@
     }
 
     /**
+     * docs/jim-brief-country-wide-station-picker.md — country-wide render path for
+     * the primary "Choose station" combobox. Region filter narrows the dataset;
+     * an empty query shows "Your routes"/"Near you" then the region-grouped list
+     * with sticky headers; a query flattens to tagged results across the country.
+     */
+    function activeRegionFilter() {
+      return window.NextTrainCitySession?.readRegionFilter?.() || "";
+    }
+
+    function labelForStation(station) {
+      return deps.formatStationLabel(station.name);
+    }
+
+    function appendGroupHeader(label, { sticky = false, disabled = false } = {}) {
+      const header = document.createElement("li");
+      header.className = "station-combobox-group-header";
+      if (sticky) {
+        header.classList.add("station-combobox-group-header--sticky");
+      }
+      if (disabled) {
+        header.classList.add("station-combobox-group-header--coming-soon");
+      }
+      header.setAttribute("role", "presentation");
+      header.setAttribute("aria-disabled", "true");
+      header.textContent = label;
+      list.appendChild(header);
+    }
+
+    function appendCountryStationRows(stations, { showTag, rowCounter = { value: 0 } }) {
+      const names = stations.map((station) => station.name);
+      // The existing same-name/different-mode suffix (e.g. Liverpool Lime
+      // Street's National Rail vs Merseyrail rows) only applies within a
+      // single active region's own catalog — cross-region name collisions
+      // are already disambiguated by the region tag instead.
+      const suffixes = showTag ? names.map(() => "") : disambiguationSuffixesFor(names);
+      stations.forEach((station, index) => {
+        const item = document.createElement("li");
+        item.className = "station-combobox-option";
+        item.setAttribute("role", "option");
+        item.dataset.value = station.name;
+        item.dataset.region = station.region?.id || "";
+        item.textContent = labelForStation(station) + suffixes[index];
+        if (showTag && station.region?.displayName) {
+          const tag = document.createElement("span");
+          tag.className = "station-combobox-region-tag";
+          tag.textContent = ` · ${station.region.displayName}`;
+          item.appendChild(tag);
+        }
+        if (station.name === selectedValue) {
+          item.setAttribute("aria-selected", "true");
+        }
+        if (rowCounter.value === activeIndex) {
+          item.classList.add("station-combobox-option--active");
+        }
+        rowCounter.value += 1;
+        item.addEventListener("pointerdown", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          suppressBlurClose = true;
+        });
+        item.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          suppressBlurClose = true;
+        });
+        item.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          void selectCountryStation(station.name, station.region?.id || "");
+        });
+        list.appendChild(item);
+      });
+    }
+
+    /** "Your routes" — stations from saved journeys, de-duplicated, most recent first. */
+    function buildYourRoutesGroup(scoped) {
+      const journeys =
+        typeof deps.getConfiguredJourneys === "function" ? deps.getConfiguredJourneys() : [];
+      if (!Array.isArray(journeys) || !journeys.length) {
+        return [];
+      }
+      const byName = new Map(scoped.map((station) => [station.name, station]));
+      const ordered = [...journeys].sort((a, b) => String(b.id || "").localeCompare(String(a.id || "")));
+      const seen = new Set();
+      const result = [];
+      for (const journey of ordered) {
+        const name = journey?.station;
+        if (!name || seen.has(name)) {
+          continue;
+        }
+        const station = byName.get(name);
+        if (!station) {
+          continue;
+        }
+        seen.add(name);
+        result.push(station);
+      }
+      return result;
+    }
+
+    /**
+     * "Near you" — the app never keeps a raw, reusable lat/lng cache outside
+     * an active geolocation request (only nearby-mode's single winning
+     * station survives a reload, in nextTrainLastNearbyStation). Rather than
+     * trigger a new location prompt from the picker (explicitly disallowed
+     * by the brief), this group reuses that one cached station instead of
+     * computing a fresh nearest-5 — see PR description for the follow-up.
+     */
+    function buildNearYouGroup(scoped) {
+      const cache = window.nextTrainNearby?.readLastNearbyStationCache?.();
+      if (!cache?.station) {
+        return [];
+      }
+      const station = scoped.find((entry) => entry.name === cache.station);
+      return station ? [station] : [];
+    }
+
+    function renderCountryList(query) {
+      const normalized = String(query || "").trim().toLowerCase();
+      const filterRegion = activeRegionFilter();
+      const allStations = countryData?.stations ?? [];
+      const scoped = filterRegion
+        ? allStations.filter((station) => station.region?.id === filterRegion)
+        : allStations;
+
+      list.innerHTML = "";
+      activeIndex = normalized ? 0 : -1;
+
+      if (normalized) {
+        const matches = scoped.filter((station) =>
+          labelForStation(station).toLowerCase().includes(normalized)
+        );
+        if (!matches.length) {
+          const empty = document.createElement("li");
+          empty.className = "station-combobox-empty";
+          const comingSoon = comingSoonRegionsForCountry(countryData?.countryId).map((r) => r.name);
+          empty.textContent = comingSoon.length
+            ? `No match. Coming soon in this country: ${comingSoon.join(", ")}`
+            : "No stations match";
+          empty.setAttribute("aria-disabled", "true");
+          list.appendChild(empty);
+          appendCoverageRow();
+          return;
+        }
+        appendCountryStationRows(matches, { showTag: !filterRegion });
+        appendCoverageRow();
+        return;
+      }
+
+      let anyRows = false;
+      const rowCounter = { value: 0 };
+
+      const yourRoutes = buildYourRoutesGroup(scoped);
+      if (yourRoutes.length) {
+        anyRows = true;
+        appendGroupHeader("Your routes");
+        appendCountryStationRows(yourRoutes, { showTag: !filterRegion, rowCounter });
+      }
+
+      const nearYou = buildNearYouGroup(scoped);
+      if (nearYou.length) {
+        anyRows = true;
+        appendGroupHeader("Near you");
+        appendCountryStationRows(nearYou, { showTag: !filterRegion, rowCounter });
+      }
+
+      const byRegion = new Map();
+      for (const station of scoped) {
+        const key = station.region?.id || "";
+        if (!byRegion.has(key)) {
+          byRegion.set(key, { displayName: station.region?.displayName || key, stations: [] });
+        }
+        byRegion.get(key).stations.push(station);
+      }
+      const regionGroups = [...byRegion.values()].sort((a, b) => a.displayName.localeCompare(b.displayName));
+      for (const group of regionGroups) {
+        anyRows = true;
+        group.stations.sort((a, b) => labelForStation(a).localeCompare(labelForStation(b)));
+        // Region already named by the sticky header, so the tag is redundant here.
+        appendGroupHeader(group.displayName, { sticky: true });
+        appendCountryStationRows(group.stations, { showTag: false, rowCounter });
+      }
+
+      if (!filterRegion) {
+        for (const region of comingSoonRegionsForCountry(countryData?.countryId)) {
+          anyRows = true;
+          appendGroupHeader(`${region.name} (Coming Soon)`, { sticky: true, disabled: true });
+        }
+      }
+
+      if (!anyRows) {
+        const empty = document.createElement("li");
+        empty.className = "station-combobox-empty";
+        empty.textContent = "No stations available";
+        empty.setAttribute("aria-disabled", "true");
+        list.appendChild(empty);
+      }
+    }
+
+    /**
+     * Picking a country-wide row sets the active region silently (brief #6)
+     * before the selection fires onChange, so direction lookups etc. see the
+     * newly-mounted region's catalog rather than racing it.
+     */
+    async function selectCountryStation(name, regionId) {
+      if (regionId && regionId !== planningCityId()) {
+        try {
+          await window.NextTrainCitySession?.applyCity?.(regionId, { persist: true, explicit: false });
+        } catch (error) {
+          console.warn("[station-combobox] Could not switch region for station pick", error);
+        }
+      }
+      selectStation(name);
+    }
+
+    /**
      * Entry point A (docs/jim-brief-help-coverage-notes.md) — a final, non-selectable
      * "Can't find your station?" row that opens Help scrolled to the coverage entry for
      * the active region. Shared handler for entry point B (the "?" icon button) too.
@@ -531,6 +858,14 @@
     }
 
     function openBrowse() {
+      // docs/jim-brief-country-wide-station-picker.md #2: the search field is
+      // now the primary interaction for the "Choose station" combobox —
+      // opening it goes straight to search mode (keyboard up on mobile)
+      // instead of an intermediate "Search stations" row.
+      if (isDetailPicker) {
+        enterSearchMode();
+        return;
+      }
       mode = "browse";
       activeIndex = -1;
       searchInput.hidden = true;
@@ -538,7 +873,12 @@
       setExpanded(true);
       setFooterHidden(true);
       void ensureLocalStationsLoaded().then(() => {
-        renderList("");
+        // The country-wide fetch (docs/jim-brief-country-wide-station-picker.md)
+        // is a real network round trip, unlike the old in-memory catalog read —
+        // by the time it resolves the rider (or a fast Playwright test) may
+        // already have typed a query, so re-render against the CURRENT search
+        // value rather than unconditionally blanking it back to "".
+        renderList(searchInput.hidden ? "" : searchInput.value);
         if (isDetailPicker) {
           syncDetailDropdownPosition();
           bindDetailDropdownPositionListeners();
@@ -550,12 +890,17 @@
     function enterSearchMode() {
       mode = "search";
       activeIndex = 0;
+      setExpanded(true);
+      setFooterHidden(true);
       searchInput.hidden = false;
       searchInput.value = "";
       void ensureLocalStationsLoaded().then(() => {
-        renderList("");
+        // See the matching comment in openBrowse() above — don't clobber a
+        // query the rider already typed while this was still in flight.
+        renderList(searchInput.value);
         if (isDetailPicker) {
           syncDetailDropdownPosition();
+          bindDetailDropdownPositionListeners();
           window.requestAnimationFrame(syncDetailDropdownPosition);
         }
         window.setTimeout(() => {
@@ -668,7 +1013,11 @@
           return;
         }
         if (pick?.dataset.value) {
-          selectStation(pick.dataset.value);
+          if (isDetailPicker && countryData?.stations?.length) {
+            void selectCountryStation(pick.dataset.value, pick.dataset.region || "");
+          } else {
+            selectStation(pick.dataset.value);
+          }
         }
       }
     });
@@ -698,6 +1047,16 @@
         trigger.focus();
       }
     });
+
+    if (isDetailPicker) {
+      // Region filter changed (Region screen's select) while the list is
+      // open — re-render immediately against the new scope.
+      document.addEventListener("nexttrain:region-filter-changed", () => {
+        if (mode !== "closed") {
+          renderList(searchInput.hidden ? "" : searchInput.value);
+        }
+      });
+    }
 
     return {
       getValue,

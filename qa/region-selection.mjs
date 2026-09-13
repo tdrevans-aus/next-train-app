@@ -295,12 +295,17 @@ async function run() {
       const citySelect = document.querySelector("[data-region-city]");
       const stockholm = [...(citySelect?.options ?? [])].find((option) => option.value === "stockholm");
       const goteborg = [...(citySelect?.options ?? [])].find((option) => option.value === "goteborg");
+      // "All" is always the first Region-select entry now (country-wide
+      // picker, docs/jim-brief-country-wide-station-picker.md AC1) — the
+      // first *region* option (after "All") is what used to be options[0].
+      const firstRegionOption = [...(citySelect?.options ?? [])].find((option) => option.value !== "");
       return {
         swedenLabel: sweden?.textContent?.trim() ?? "",
         stockholmLabel: stockholm?.textContent?.trim() ?? "",
         goteborgLabel: goteborg?.textContent?.trim() ?? "",
+        allOptionFirst: citySelect?.options?.[0]?.value === "",
         cityValue: citySelect?.value ?? "",
-        firstCityValue: citySelect?.options?.[0]?.value ?? "",
+        firstCityValue: firstRegionOption?.value ?? "",
         savedCity: window.NextTrainCitySession.readSavedCity(),
       };
     });
@@ -319,7 +324,8 @@ async function run() {
       picker.swedenLabel === "Sweden" &&
       picker.stockholmLabel === "Stockholm" &&
       picker.goteborgLabel === "Göteborg" &&
-      // Picker default is the first Sweden option (alphabetical since Sep 2026) — order-independent.
+      picker.allOptionFirst &&
+      // Picker default is the first Sweden region option (alphabetical since Sep 2026) — order-independent.
       picker.cityValue === picker.firstCityValue &&
       picker.cityValue !== "" &&
       applied.afterStockholm === "stockholm" &&

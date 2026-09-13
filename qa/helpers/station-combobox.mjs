@@ -11,19 +11,38 @@ export function stationDisplayLabel(canonical) {
 
 export async function openStationSearch(page, { rootSelector, inputSelector, listboxSelector }) {
   const input = page.locator(inputSelector);
+  const searchInput = page.locator(`${rootSelector} .station-combobox-search-input`);
   const searchRow = page.locator(`${listboxSelector} .station-combobox-search`);
 
   await input.click();
-  const opened = await searchRow
+
+  // docs/jim-brief-country-wide-station-picker.md #2: the detail ("Choose
+  // station") combobox now jumps straight to search mode on open — no
+  // intermediate "Search stations" row. The nearby-mode combobox is
+  // unchanged and still shows that row first.
+  let searchInputVisible = await searchInput
     .waitFor({ state: "visible", timeout: 4000 })
     .then(() => true)
     .catch(() => false);
 
-  if (!opened) {
+  if (!searchInputVisible) {
+    // The click may have landed inside the picker's brief re-open
+    // suppression window right after a previous close (markPickerJustClosed
+    // in station-combobox.js) — Enter bypasses that gate, and also opens
+    // straight to search mode the same way a click would.
     await input.press("Enter");
-    await searchRow.waitFor({ state: "visible", timeout: 20000 });
+    searchInputVisible = await searchInput
+      .waitFor({ state: "visible", timeout: 4000 })
+      .then(() => true)
+      .catch(() => false);
   }
 
+  if (searchInputVisible) {
+    return;
+  }
+
+  // Fall back to the nearby-mode picker's browse-then-search shape.
+  await searchRow.waitFor({ state: "visible", timeout: 20000 });
   await searchRow.click();
   await page.waitForSelector(`${rootSelector} .station-combobox-search-input`, {
     state: "visible",
