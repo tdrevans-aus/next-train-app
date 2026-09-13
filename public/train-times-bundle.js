@@ -329,7 +329,13 @@ var NextTrainTimes = (() => {
     // excludes from `upcoming` because their destination is this station, not the chosen
     // direction. Every existing caller omits this and gets byte-identical output — it is only
     // consulted when upcomingTrips resolves empty, and never reshapes upcoming/next/following.
-    terminatingTrips = []
+    terminatingTrips = [],
+    // Additive/optional (docs/jim-brief-malmo-planned-closure-empty-board.md): the earliest
+    // date (YYYY-MM-DD, city-local) service resumes at this station, when the static feed can
+    // tell us and the board is genuinely empty (e.g. a planned line closure). Every existing
+    // caller omits this and gets byte-identical output — it only ever adds `nextServiceDate` to
+    // the response, and only when `upcoming` is empty.
+    nextServiceDate = null
   }) {
     const skip = Math.max(0, Math.floor(Number(skipTrains) || 0));
     const formatLastUpdated = lastUpdated instanceof Date ? lastUpdated.toLocaleString("en-AU", {
@@ -359,6 +365,9 @@ var NextTrainTimes = (() => {
       following: upcomingPayloads[skip + 1] ? slimTripSummary(upcomingPayloads[skip + 1]) : null,
       upcoming: upcomingPayloads
     };
+    if (upcomingPayloads.length === 0 && nextServiceDate) {
+      response.nextServiceDate = nextServiceDate;
+    }
     if (upcomingPayloads.length === 0 && Array.isArray(terminatingTrips) && terminatingTrips.length > 0) {
       const arrivals = terminatingTrips.filter((trip) => trip.liveDeparture > now).sort((a, b) => a.liveDeparture - b.liveDeparture).slice(0, UPCOMING_TRIP_LIMIT).map((trip) => buildTripPayload(trip, leaveBeforeMinutes, now));
       if (arrivals.length > 0) {

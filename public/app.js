@@ -80,6 +80,7 @@ const preferredHintEl = document.getElementById("preferred-hint");
 const terminusArrivalsEl = document.getElementById("terminus-arrivals");
 const terminusArrivalsNoticeEl = document.getElementById("terminus-arrivals-notice");
 const terminusArrivalsListEl = document.getElementById("terminus-arrivals-list");
+const nextServiceDateNoticeEl = document.getElementById("next-service-date-notice");
 const leaveAckBtn = document.getElementById("leave-ack-btn");
 const leaveNextTrainBtn = document.getElementById("leave-next-train-btn");
 const leaveCardActionsEl = document.getElementById("leave-card-actions");
@@ -3870,6 +3871,59 @@ function hideUpcomingDepartureBoard() {
   }
 }
 
+/**
+ * docs/jim-brief-malmo-planned-closure-empty-board.md — when the API's additive/optional
+ * `nextServiceDate` field is present on a genuinely empty board (e.g. a planned line closure),
+ * format it as a plain-language "no trains until <date>" line in the active city's timezone.
+ * `nextServiceDate` is a city-local calendar date (`YYYY-MM-DD`), not a UTC instant, so it's
+ * formatted from its own y/m/d parts (anchored at UTC noon) rather than re-converted through
+ * another timezone, which would risk shifting the displayed day.
+ */
+function formatNextServiceDateNotice(nextServiceDate) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(nextServiceDate || ""));
+  if (!match) {
+    return "";
+  }
+  const [, y, m, d] = match;
+  const anchor = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d), 12, 0, 0));
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).formatToParts(anchor);
+  const weekday = parts.find((p) => p.type === "weekday")?.value ?? "";
+  const day = parts.find((p) => p.type === "day")?.value ?? "";
+  const month = parts.find((p) => p.type === "month")?.value ?? "";
+  const formatted = [weekday, day, month].filter(Boolean).join(" ");
+  if (!formatted) {
+    return "";
+  }
+  return `No trains scheduled here until ${formatted}. Check the operator for replacement buses.`;
+}
+
+/** Shows/hides the empty-board "no trains until X" explanation. No-op when there's no date. */
+function renderNextServiceDateNotice(data) {
+  if (!nextServiceDateNoticeEl) {
+    return;
+  }
+  const message = formatNextServiceDateNotice(data?.nextServiceDate);
+  if (!message) {
+    nextServiceDateNoticeEl.hidden = true;
+    nextServiceDateNoticeEl.textContent = "";
+    return;
+  }
+  nextServiceDateNoticeEl.hidden = false;
+  nextServiceDateNoticeEl.textContent = message;
+}
+
+function hideNextServiceDateNotice() {
+  if (nextServiceDateNoticeEl) {
+    nextServiceDateNoticeEl.hidden = true;
+    nextServiceDateNoticeEl.textContent = "";
+  }
+}
+
 function hideTerminusArrivalsBoard() {
   if (terminusArrivalsEl) {
     terminusArrivalsEl.hidden = true;
@@ -4045,6 +4099,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
   }
   hideUpcomingDepartureBoard();
   hideTerminusArrivalsBoard();
+  hideNextServiceDateNotice();
 
   const { next, lastUpdated } = data;
   setRouteDisplay(journey ? formatJourneyRoute(journey) : "Set up a journey");
@@ -4075,6 +4130,7 @@ function renderRouteJourney(data, { stale = false } = {}) {
     if (heroScheduledTimeEl) {
       heroScheduledTimeEl.hidden = true;
     }
+    renderNextServiceDateNotice(data);
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
     }
@@ -4256,6 +4312,7 @@ function render(data, { stale = false } = {}) {
   hideNearbyPinLeaveSurfaces();
   hideUpcomingDepartureBoard();
   hideTerminusArrivalsBoard();
+  hideNextServiceDateNotice();
 
   if (!stale) {
     errorEl.hidden = true;
@@ -4319,6 +4376,7 @@ function render(data, { stale = false } = {}) {
     if (heroScheduledTimeEl) {
       heroScheduledTimeEl.hidden = true;
     }
+    renderNextServiceDateNotice(data);
     if (leaveCardEl) {
       leaveCardEl.hidden = true;
       leaveCardEl.classList.remove("leave-card--context");
