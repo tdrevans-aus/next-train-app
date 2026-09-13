@@ -31,14 +31,6 @@ import { getStaleCityReport } from "../lib/providers/gtfs/staleness-registry.js"
 // ignored by the Vercel Node builder (confirmed by inspecting the actual
 // deployed .vc-config.json, which had no "memory" key despite this export
 // declaring one); only vercel.json's functions.<path>.memory took effect.
-//
-// That value is 4096 (4 GB), the documented Pro/Enterprise maximum as of
-// 13 Sep 2026 (docs/jim-brief-refresh-status-cache-and-memory.md) - raised
-// from 2048 after Mark's review of PR #366 measured the full
-// runGtfsRefresh() shape at 1441 MB RSS / 1021 MB heap, ~30% headroom on
-// the old ceiling. (An earlier brief assumed 3009 MB as "the Pro maximum";
-// current Vercel docs state 4 GB / 2 vCPU instead, so that figure is used
-// here, not 3009.)
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
     return;
