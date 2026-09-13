@@ -51,6 +51,43 @@ one of the fifteen regions' catalogs or in `unassigned-england.md`.
 | Bingham | BIN | **excluded** — Darwin LDBWS returned 404 |  |
 | Parton | PRN | **excluded** — Darwin LDBWS returned 404 |  |
 
+## Name-variant candidates accepted on manual review (phase 2a)
+
+`docs/uk-station-fill/assignment.md`'s "Per-region counts" section said phase 2a's manual review
+accepted 20 name-mismatch candidates as abbreviation/punctuation variants (same pattern as phase
+1's Prestwick review) without itemising them. Itemised here (14 Sep 2026, UK station fill phase
+2b tidy-up, docs/jim-brief-uk-station-fill-phase2b.md addendum): every station carrying an
+`accepted on manual review` note in a phase 2a `stations.json` `class` field, with the dataset
+name, Darwin's own name, and the CRS.
+
+| Region | CRS | Candidate dataset name | Darwin's own stationName |
+|---|---|---|---|
+| london-se-national-rail | CIR | Caledonian Road & Barnsbury | Caledonian Rd & Barnsbury |
+| london-se-national-rail | CSD | Cobham & Stoke Dabernon | Cobham & Stoke d'Abernon |
+| london-se-national-rail | HXX | Heathrow Terminals 2 & 3 Rail | Heathrow Airport T123 |
+| london-se-national-rail | HAF | Heathrow Terminal 4 Rail | Heathrow Airport T4 |
+| london-se-national-rail | HWV | Heathrow Terminal 5 Rail | Heathrow Airport T5 |
+| london-se-national-rail | RHM | Reedham (London) | Reedham (Surrey) |
+| west-of-england | PRI | Portway Park & Ride | Portway Park and Ride |
+| greater-manchester | MUF | Manchester United Football Club | Manchester United FC |
+| north-east | MCE | Metrocentre | Metro Centre |
+| north-east | NOP | Northumberland Park (Tyne and Wear) | Northumberland Park (T&W) |
+| solent | BXW | Box Hill & Westhumble | Boxhill & Westhumble |
+| solent | BMY | Bramley (Hants) | Bramley (Hampshire) |
+| solent | MBK | Millbrook (Hants) | Millbrook (Hampshire) |
+| south-wales | PPL | Pontypool and New Inn | Pontypool & New Inn |
+| south-wales | RIA | Rhoose Cardiff Airport | Rhoose Cardiff Intl Airport |
+| south-wales | WHT | Whitchurch (Cardiff) | Whitchurch (Glamorgan) |
+
+**Only 16 of the 20 claimed in `assignment.md` could be itemised this way** — a full-repo search
+for every phase 2a `stations.json`'s `accepted on manual review`/`abbreviation/punctuation
+variant` class-field text finds exactly these 16 across six regions (london-se-national-rail x6,
+solent x3, south-wales x3, north-east x2, greater-manchester x1, west-of-england x1); the other
+nine phase 2a regions (east-midlands, uk-west-midlands, south-yorkshire, west-yorkshire,
+rest-of-wales, rest-of-scotland, thames-valley, liverpool-city-region, greater-anglia, cumbria,
+southwest) carry none. `assignment.md`'s "20" is not reconciled against this count — flagged as a
+discrepancy for whoever next touches phase 2a's own records, not guessed around here.
+
 ## Phase 2a summary
 
 - **2 exclusions/unverified** out of the phase 2a candidate pool (fifteen regions plus the unassigned-England bucket).

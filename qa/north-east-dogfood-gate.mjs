@@ -131,7 +131,7 @@ assert(network.printedInnerCityNames?.lock === NORTH_EAST_HUB, `D1 lock must be 
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(NORTH_EAST_REGION);
-assert(region?.railCount === 28, `north-east rail count must be 28 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
+assert(region?.railCount === 33, `north-east rail count must be 33 (UK station fill phase 2b, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 60, `north-east metro count must be 60, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -170,7 +170,7 @@ assert(metroStops.length === 60, `Metro catalog must have exactly 60 stops, got 
 assert(!metroNames.has("Newcastle Central"), "Metro catalog must use 'Central Station', not 'Newcastle Central'");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 88, `combined catalog must have 88 stations (28 rail + 60 metro, UK station fill phase 2a), got ${allStations.length}`);
+assert(allStations.length === 93, `combined catalog must have 93 stations (33 rail + 60 metro, UK station fill phase 2b), got ${allStations.length}`);
 
 // doNotGroup at Newcastle Central — two catalog entries, DIFFERENT printed names (no collapse risk).
 const hubRail = resolveCatalogEntry(NORTH_EAST_HUB, "train");
@@ -273,7 +273,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Newcastle Central's doNotGroup lock needs it to disambiguate the two catalog entries).
 const dogfoodStations = listNorthEastDogfoodStations();
-assert(dogfoodStations.length === 88, `dogfood stations must be the 88 catalog entries (28 rail + 60 metro, UK station fill phase 2a), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 93, `dogfood stations must be the 93 catalog entries (33 rail + 60 metro, UK station fill phase 2b), got ${dogfoodStations.length}`);
 const hubRailEntries = dogfoodStations.filter((s) => s.name === NORTH_EAST_HUB);
 assert(hubRailEntries.length === 1, "Newcastle Central must appear once in the dogfood list (National Rail only)");
 const hubMetroEntries = dogfoodStations.filter((s) => s.name === METRO_HUB_STATION_NAME);
@@ -501,5 +501,5 @@ assertNoLiveFeedStopsExcluded({
 });
 
 console.log(
-  "north-east-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 3 rail + 60 Metro stations, doNotGroup at Newcastle Central via distinct printed names, Sunderland correctly modelled as NOT doNotGroup (still Metro-feed-blocked), Pelaw confirmed Metro-only and served by both lines, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metro dispatch correctly surfaces MetroFeedUnconfirmedError rather than the static label list, all 60 Metro stops flagged liveFeed: false and excluded from the picker/Near me, Newcastle (Australia) and Perth (Australia) stay green)"
+  "north-east-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 33 rail + 60 Metro stations, doNotGroup at Brockley Whins/East Boldon/Heworth/Manors/Seaburn (UK station fill phase 2b) and Newcastle Central via distinct printed names, Sunderland correctly modelled as NOT doNotGroup (still Metro-feed-blocked), Pelaw confirmed Metro-only and served by both lines, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metro dispatch correctly surfaces MetroFeedUnconfirmedError rather than the static label list, all 60 Metro stops flagged liveFeed: false and excluded from the picker/Near me, Newcastle (Australia) and Perth (Australia) stay green)"
 );

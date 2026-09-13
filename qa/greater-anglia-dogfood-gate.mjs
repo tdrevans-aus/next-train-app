@@ -453,5 +453,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "greater-anglia-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, Board eligibility all-in with LNER resolved not undecided, 14 rail-only stations all crsVerified, no doNotGroup at Norwich/Cambridge/Ipswich, Peterborough excludeOperators removed (LNER on board), Norwich hub wired at Thetford/Ely, directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (hub/exact/undirected) proven token-free, Perth stays green)"
+  "greater-anglia-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, Board eligibility all-in with LNER resolved not undecided, 121 rail-only stations all crsVerified, no doNotGroup at Norwich/Cambridge/Ipswich, Peterborough excludeOperators removed (LNER on board), Norwich hub wired at Thetford/Ely, directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (hub/exact/undirected) proven token-free, Perth stays green)"
 );

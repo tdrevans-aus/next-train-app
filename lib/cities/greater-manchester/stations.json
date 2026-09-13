@@ -699,6 +699,50 @@
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Altrincham",
+      "crs": "ALT",
+      "aliases": [],
+      "lat": 53.3874,
+      "lng": -2.347212,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Metrolink stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metrolink stop of the same name — see lib/cities/greater-manchester/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Eccles",
+      "crs": "ECC",
+      "aliases": [],
+      "lat": 53.485527,
+      "lng": -2.334052,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Metrolink stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metrolink stop of the same name — see lib/cities/greater-manchester/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Manchester Airport",
+      "crs": "MIA",
+      "aliases": [],
+      "lat": 53.365183,
+      "lng": -2.272038,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Metrolink stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metrolink stop of the same name — see lib/cities/greater-manchester/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Rochdale",
+      "crs": "RCD",
+      "aliases": [],
+      "lat": 53.610573,
+      "lng": -2.152835,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Metrolink stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metrolink stop of the same name — see lib/cities/greater-manchester/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

@@ -289,3 +289,48 @@ gained 3 genuine exclusions (Bingham — already known from phase 1 as the same 
 new, live Darwin 404 gap) plus 20 name-mismatch candidates accepted on manual review as
 abbreviation/punctuation variants (same pattern as phase 1's Prestwick review) — see
 `docs/uk-station-fill/unverified.md`.
+
+## UK station fill phase 2b — Rest of England (14 Sep 2026)
+
+Companion to `docs/jim-brief-uk-station-fill-phase2b.md`. Builds a new `rest-of-england` region
+(status `planned`) directly from `docs/uk-station-fill/unassigned-england.md`'s 445-station list —
+no Nico/Luke D1 pack, no bounding-box/county classification pass: every row in that file that
+wasn't held back (see below) is catalogued as-is, since phase 2a already live-verified each one
+against Darwin and recorded exactly why no named region claimed it.
+
+**436 stations → `rest-of-england`.** `lib/cities/rest-of-england/stations.json`, flat train-only
+allow-list, no hub lock, no corridor grouping — this catalog spans the whole of England so no
+single station is structurally a hub. `crsVerified: true`/`crsSource: "live Darwin probe
+2026-09-14"` carried forward from phase 2a rather than re-probed (the brief's own instruction:
+"they already were in 2a"). Region config over the shared `uk-darwin.js` provider (allow-list, no
+fork), same pattern as every other UK region.
+
+**9 stations → `greater-manchester`/`north-east` instead, not `rest-of-england`.** The nine
+direction-model collisions phase 2a held back (Altrincham, Eccles, Manchester Airport, Rochdale;
+Brockley Whins, East Boldon, Heworth, Manors, Seaburn) are real, busy, Darwin-verified stations —
+in scope under Tim's walk-up rule, just not Rest of England's. Added directly to their own region
+as `mode: "train"` entries with an explicit `doNotGroup` pair against the same-name Metro/
+Metrolink stop (the Edinburgh Gateway/Partick pattern from phase 1) — see
+`lib/cities/greater-manchester/marketing-directions.js` and
+`lib/cities/north-east/marketing-directions.js` `DO_NOT_GROUP_PAIRS`. This is the one permitted
+touch of a second-mode direction-model file in this phase; the Metro/Metrolink entries themselves
+are unchanged. greater-manchester's rail count moves 47 → 51 (61 → 65 total); north-east's moves
+28 → 33 (88 → 93 total).
+
+**CITY_BOUNDS.** `rest-of-england`'s box necessarily spans most of England and overlaps every
+named region's own tighter box — it is listed LAST in `public/city-session.js`'s `CITY_BOUNDS`
+(first-match-wins order) so every more specific region's hint still wins. 71 of
+`rest-of-england`'s own stations and 5 other regions' own stations (uk-london-tfl/Cheshunt,
+east-midlands/Northampton, north-east/Darlington, greater-manchester/Ashton-under-Lyne,
+liverpool-city-region/Moreton) resolve across this boundary and are allow-listed in
+`qa/uk-city-bounds-overlap-gate.mjs` with reasons, same trade-off as every other UK region's
+boundary overlaps.
+
+**No Coming Soon picker entry** — per Tim's 30 Aug 2026 rule, `rest-of-england` goes straight from
+`planned`/`adapterReady` to Mark's flip-PR once QA is green, same as every other planned UK
+region wired since that rule.
+
+**`unassigned-england.md` is now resolved** — rewritten to record all 445 stations' new home
+(436 rest-of-england, 9 greater-manchester/north-east) in a non-table format so
+`qa/uk-station-fill-audit.mjs`'s flat-CRS-column parser doesn't double-count them as still
+unassigned; the audit now reports 0 unassigned English stations.

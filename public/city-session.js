@@ -221,6 +221,14 @@
     // excluded (the box was drawn well east/north of Devon & Cornwall's actual extent).
     southwest: { minLat: 50.05, maxLat: 51.3, minLng: -5.6, maxLng: -3.0 },
     cumbria: { minLat: 54.00, maxLat: 55.00, minLng: -3.30, maxLng: -2.20 },
+    // rest-of-england is a flat English catch-all (436 stations with no home in any
+    // named region, docs/uk-station-fill/unassigned-england.md) — its box necessarily
+    // spans most of England and would swallow every more specific English region's
+    // hint above it, so it is listed LAST (first-match-wins order) per this file's own
+    // rule, same as rest-of-scotland/rest-of-wales being wide catch-alls relative to
+    // Glasgow/Edinburgh. Bounds are the min/max lat/lng actually present in the
+    // catalog (docs/jim-brief-uk-station-fill-phase2b.md), not a hand-drawn estimate.
+    "rest-of-england": { minLat: 50.6, maxLat: 54.85, minLng: -3.6, maxLng: 1.45 },
   };
 
   function dogfood() {

@@ -993,6 +993,61 @@
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Brockley Whins",
+      "crs": "BNR",
+      "aliases": [],
+      "lat": 54.959519,
+      "lng": -1.460684,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Tyne and Wear Metro stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metro stop of the same name — see lib/cities/north-east/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "East Boldon",
+      "crs": "EBL",
+      "aliases": [],
+      "lat": 54.946345,
+      "lng": -1.420154,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Tyne and Wear Metro stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metro stop of the same name — see lib/cities/north-east/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Heworth",
+      "crs": "HEW",
+      "aliases": [],
+      "lat": 54.951594,
+      "lng": -1.55758,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Tyne and Wear Metro stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metro stop of the same name — see lib/cities/north-east/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Manors",
+      "crs": "MAS",
+      "aliases": [],
+      "lat": 54.972698,
+      "lng": -1.606296,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Tyne and Wear Metro stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metro stop of the same name — see lib/cities/north-east/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Seaburn",
+      "crs": "SEB",
+      "aliases": [],
+      "lat": 54.929558,
+      "lng": -1.38667,
+      "class": "UK station fill phase 2b (14 Sep 2026): held back from phase 2a's unassigned-england.md because it shares this printed name with the existing Tyne and Wear Metro stop below, whose bare name is hardcoded in this region's marketing-directions.js line+terminus direction model. Catalogued here instead, doNotGroup vs the Metro stop of the same name — see lib/cities/north-east/marketing-directions.js DO_NOT_GROUP_PAIRS.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

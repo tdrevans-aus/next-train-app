@@ -9,8 +9,9 @@
  * /api/city-stations (in-process, no server) must carry the flag through.
  *
  * Browser part (starts its own dev server if one isn't already running, and
- * stops only what it started): one region, greater-manchester — Altrincham
- * (a Metrolink-only stop) must not appear in the nearby station picker, and
+ * stops only what it started): one region, greater-manchester — St Peter's Square
+ * (a Metrolink-only stop with no same-name National Rail collision) must not appear in the
+ * nearby station picker, and
  * Help's coverage entry for the region must mention Metrolink.
  *
  * Usage: node qa/no-live-feed-stops-gate.mjs
@@ -113,7 +114,7 @@ async function checkOffline() {
   );
 }
 
-const ALTRINCHAM = { latitude: 53.3877, longitude: -2.3475 };
+const NO_COLLISION_METRO_STOP = { latitude: 53.47844, longitude: -2.2429 }; // St Peter's Square — a Metrolink-only hub with no same-name National Rail station (UK station fill phase 2b, 14 Sep 2026, gave Altrincham a real, walk-up National Rail entry of its own, so it no longer works as this gate's "must never resolve" sample)
 
 async function checkBrowser() {
   const server = await ensureDevServer();
@@ -124,7 +125,7 @@ async function checkBrowser() {
     // this check meaningless. Mock geolocation directly instead, same
     // approach as qa/nearby-adaptive-relocate.mjs.
     const context = await browser.newContext({
-      geolocation: ALTRINCHAM,
+      geolocation: NO_COLLISION_METRO_STOP,
       permissions: ["geolocation"],
     });
     const page = await context.newPage();
@@ -139,18 +140,18 @@ async function checkBrowser() {
       navigator.geolocation.watchPosition = original
         ? navigator.geolocation.watchPosition.bind(navigator.geolocation)
         : () => 1;
-    }, ALTRINCHAM);
+    }, NO_COLLISION_METRO_STOP);
 
     await page.goto(`${BASE}/?reset=1&fixture=normal`);
     await page.waitForTimeout(4000);
 
     // Near me (GPS-driven, cold start) must resolve to a real served station,
-    // never Altrincham (Metrolink-only, liveFeed: false) and never leak the
+    // never St Peter's Square (Metrolink-only, liveFeed: false) and never leak the
     // Metrolink FeedUnconfirmedError rider message (PR #329) into a
     // nearest-station result — findNearestStation must have skipped it.
     const nearby = await page.evaluate(() => window.nextTrainNearby?.getNearbySession?.() ?? null);
-    assert(nearby?.city === "greater-manchester", `Near me at Altrincham must resolve within greater-manchester, got ${JSON.stringify(nearby)}`);
-    assert(nearby?.station !== "Altrincham", `Near me must never resolve to Altrincham itself, got "${nearby?.station}"`);
+    assert(nearby?.city === "greater-manchester", `Near me at St Peter's Square must resolve within greater-manchester, got ${JSON.stringify(nearby)}`);
+    assert(nearby?.station !== "St Peter's Square", `Near me must never resolve to St Peter's Square itself, got "${nearby?.station}"`);
     const heroText = (await page.locator(".hero-empty-title").textContent().catch(() => "")) || "";
     assert(
       !/Metrolink/.test(heroText),
@@ -159,7 +160,7 @@ async function checkBrowser() {
 
     // The station picker (journey-detail combobox — same shared data path as
     // Near me's own manual fallback, public/station-combobox.js) must not
-    // offer Altrincham at all.
+    // offer St Peter's Square at all.
     const { openCustomJourneyCreate } = await import("./helpers/open-custom-journey.mjs");
     await openCustomJourneyCreate(page);
     await page.waitForTimeout(500);
@@ -209,12 +210,12 @@ async function checkBrowser() {
     // racing focus/blur. Waiting for that chain to settle first avoids it.
     await page.waitForTimeout(800);
     await searchInputLocator.waitFor({ state: "visible", timeout: 5000 });
-    await searchInputLocator.fill("Altrincham");
+    await searchInputLocator.fill("St Peter's Square");
     await page.waitForTimeout(800);
     const altrinchamOptionCount = await page
-      .locator("#detail-station-listbox .station-combobox-option", { hasText: "Altrincham" })
+      .locator("#detail-station-listbox .station-combobox-option", { hasText: "St Peter's Square" })
       .count();
-    assert(altrinchamOptionCount === 0, `greater-manchester picker must not offer Altrincham (Metrolink, liveFeed: false), found ${altrinchamOptionCount} match(es)`);
+    assert(altrinchamOptionCount === 0, `greater-manchester picker must not offer St Peter's Square (Metrolink, liveFeed: false), found ${altrinchamOptionCount} match(es)`);
     // waitFor (auto-retrying) rather than a one-shot isVisible() snapshot —
     // the .station-combobox-empty node is present in the DOM immediately
     // (confirmed by debugging during UK station fill phase 1, 13 Sep 2026)
@@ -230,7 +231,7 @@ async function checkBrowser() {
       .waitFor({ state: "visible", timeout: 5000 })
       .then(() => true)
       .catch(() => false);
-    assert(emptyVisible, "greater-manchester picker must show the empty state for an Altrincham-only search");
+    assert(emptyVisible, "greater-manchester picker must show the empty state for a St Peter's Square-only search");
 
     // Help's coverage entry for this region must mention Metrolink (the
     // explanation path the picker's "Can't find your station?" row points at).

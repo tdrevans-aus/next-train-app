@@ -339,6 +339,72 @@ const ALLOW_LIST = [
       "UK station fill phase 2a (14 Sep 2026): cumbria's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside rest-of-scotland's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
   })),
 
+  // UK station fill phase 2b (14 Sep 2026, docs/jim-brief-uk-station-fill-phase2b.md): rest-of-england
+  // is a flat catch-all spanning most of England, necessarily overlapping every named region's own
+  // tighter box; its own box is listed LAST (first-match-wins) so a rest-of-england station only
+  // resolves here if the coordinates also happen to fall inside an earlier, more specific region's
+  // box. CITY_BOUNDS itself is out of scope for this phase, so the geometric overlap is allow-listed
+  // instead of solved with a tighter/wider rectangle, same trade-off as every phase 2a batch above.
+  ...["Cheshunt"].map((station) => ({
+    region: "uk-london-tfl",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): uk-london-tfl's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Northampton"].map((station) => ({
+    region: "east-midlands",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): east-midlands's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Darlington"].map((station) => ({
+    region: "north-east",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): north-east's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Ashton-under-Lyne"].map((station) => ({
+    region: "greater-manchester",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): greater-manchester's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Moreton (Merseyside)"].map((station) => ({
+    region: "liverpool-city-region",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): liverpool-city-region's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Albrighton","Alvechurch","Atherstone","Barnt Green","Bedworth","Bermuda Park (Nuneaton)","Bilbrook","Blakedown","Bromsgrove","Cannock","Claverdon","Codsall","Coleshill Parkway","Cosford","Danzey","Droitwich Spa","Hagley","Hartlebury","Hatton","Henley-in-Arden","Kenilworth","Landywood","Lapworth","Leamington Spa","Lichfield City","Lichfield Trent Valley","Nuneaton","Polesworth","Redditch","Shenstone","The Lakes","Warwick","Warwick Parkway","Water Orton","Willenhall","Wilnecote","Wood End","Wootton Wawen","Wythall"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside uk-west-midlands's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Broome","Bucknell","Church Stretton","Craven Arms","Delamere","Gobowen","Hereford","Hopton Heath","Knighton","Leominster","Ludlow","Mouldsworth","Prees","Shrewsbury","Wem","Whitchurch (Shropshire)","Yorton"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-wales's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Burton-on-Trent","Kiveton Park","Rugby","Rugeley Town","Rugeley Trent Valley","Uttoxeter"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside east-midlands's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Chertsey","Chorleywood","Denham Golf Club","Iver","Staines","West Byfleet"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside uk-london-tfl's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
+  ...["Warrington Bank Quay","Warrington Central","Warrington West"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside liverpool-city-region's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+  })),
 
 ];
 

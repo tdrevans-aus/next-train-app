@@ -41,6 +41,7 @@ const ALL_UK_DARWIN_REGIONS = [
   "uk-west-midlands", "south-yorkshire", "north-east", "west-of-england", "southwest",
   "cumbria", "south-wales", "west-yorkshire", "rest-of-wales", "london-se-national-rail",
   "solent", "thames-valley", "greater-manchester", "liverpool-city-region", "greater-anglia",
+  "rest-of-england",
 ];
 
 const dataset = JSON.parse(

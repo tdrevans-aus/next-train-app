@@ -146,6 +146,13 @@
       "catalogPath": "../../cities/cumbria/stations.json",
       "modes": ["train"],
       "feeds": { "train": "darwin" }
+    },
+    {
+      "id": "rest-of-england",
+      "name": "Rest of England",
+      "catalogPath": "../../cities/rest-of-england/stations.json",
+      "modes": ["train"],
+      "feeds": { "train": "darwin" }
     }
   ]
 }

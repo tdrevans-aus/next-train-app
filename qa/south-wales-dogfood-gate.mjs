@@ -392,5 +392,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "south-wales-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 16 rail-only stations incl. Valley Lines, hub CDF + secondary hub CDQ both resolve with no doNotGroup, Swansea boundary, Llanelli/Carmarthen do not resolve, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
+  "south-wales-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 104 rail-only stations incl. Valley Lines, hub CDF + secondary hub CDQ both resolve with no doNotGroup, Swansea boundary, Llanelli/Carmarthen do not resolve, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
 );
