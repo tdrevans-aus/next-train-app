@@ -338,6 +338,11 @@
     // a future "why isn't my stop here?" surface), not currently consumed by
     // the picker, which relies on getStations() already excluding them.
     getStationLiveFeedByName: () => state.liveFeedByName,
+    // Same predicate parseCatalogRows uses to drop a dead occurrence above —
+    // exported so any other picker path (e.g. station-combobox.js's
+    // country-wide list, docs/jim-brief-country-list-hides-no-live-feed-stops.md)
+    // excludes liveFeed:false rows the same way instead of re-deriving the rule.
+    isLiveFeedRow: (row) => (typeof row === "object" && row && row.liveFeed === false ? false : true),
     getDirectionsForStation(station) {
       const name = String(station || "").trim();
       if (!name) {

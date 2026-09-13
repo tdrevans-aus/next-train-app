@@ -731,10 +731,25 @@
       return station ? [station] : [];
     }
 
+    /**
+     * A station that can never produce a board must never be offered, in
+     * the country-wide list exactly as in the region list — this is the one
+     * shared point every group and search result below flows through, using
+     * the same predicate parseCatalogRows (public/brisbane-dogfood.js)
+     * applies to the region list, so the two paths can't drift again.
+     * Filtering here (not only server-side/at fetch time) also covers a
+     * list cached in localStorage from before this fix shipped.
+     * docs/jim-brief-country-list-hides-no-live-feed-stops.md
+     */
+    function isLiveFeedCountryStation(station) {
+      const predicate = window.NextTrainBrisbaneDogfood?.isLiveFeedRow;
+      return typeof predicate === "function" ? predicate(station) : station?.liveFeed !== false;
+    }
+
     function renderCountryList(query) {
       const normalized = String(query || "").trim().toLowerCase();
       const filterRegion = activeRegionFilter();
-      const allStations = countryData?.stations ?? [];
+      const allStations = (countryData?.stations ?? []).filter(isLiveFeedCountryStation);
       const scoped = filterRegion
         ? allStations.filter((station) => station.region?.id === filterRegion)
         : allStations;
