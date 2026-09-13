@@ -1,5 +1,21 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <application
         android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_security_config_debug" />
+        android:networkSecurityConfig="@xml/network_security_config_debug">
+
+        <!-- D-08 (docs/dwayne-security-review-play-3.0.0.md): the nexttrain://test/seed deep
+             link is only meaningful in debug builds (DeepLinkHelper.java gates the handler on
+             BuildConfig.DEBUG already) and must not be declared in the release manifest. -->
+        <activity
+            android:name=".MainActivity"
+            tools:node="merge">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="nexttrain" android:host="test" android:path="/seed" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

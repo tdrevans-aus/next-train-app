@@ -5,9 +5,16 @@
  * Optional: FEEDBACK_TO=EvansAppStudio@gmail.com (shown in mailto fallback only)
  *
  * Before production: bury Menu → Send feedback (see FB-18).
+ *
+ * Abuse control (D-04, docs/dwayne-security-review-play-3.0.0.md): a tighter,
+ * named rate-limit bucket than the shared 60/min default, plus a hidden
+ * honeypot field the client sends but no real user can see or fill.
  */
+import { checkRateLimit } from "../lib/api-rate-limit.js";
+
 const MAX_NOTE = 4000;
 const MAX_EMAIL = 200;
+const FEEDBACK_RATE_LIMIT = { bucket: "feedback", limit: 5, windowMs: 10 * 60_000 };
 
 function readBody(req) {
   if (req.body && typeof req.body === "object") {
@@ -41,6 +48,10 @@ export default async function handler(req, res) {
     return;
   }
 
+  if (!checkRateLimit(req, res, FEEDBACK_RATE_LIMIT)) {
+    return;
+  }
+
   const webhook = String(process.env.FEEDBACK_WEBHOOK_URL || "").trim();
   const mailtoFallback = String(
     process.env.FEEDBACK_TO || "EvansAppStudio@gmail.com"
@@ -55,6 +66,16 @@ export default async function handler(req, res) {
   }
 
   const body = readBody(req);
+
+  // Honeypot: a hidden field no human sees or fills (public/index.html,
+  // off-screen + aria-hidden). A bot that fills every field trips this; give
+  // it a normal-looking 200 so it gets no signal, but never call the webhook.
+  const honeypot = String(body.website || "").trim();
+  if (honeypot) {
+    res.status(200).json({ ok: true });
+    return;
+  }
+
   const note = String(body.note || "").trim();
   const email = String(body.email || "").trim();
   const version = String(body.version || "").trim().slice(0, 80);
