@@ -149,6 +149,7 @@ const SMOKE_SCRIPTS = [
   "lib-bare-import-gate.mjs",
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
+  "vercel-json-no-inert-memory-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -297,6 +298,8 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "uk-city-bounds-overlap-gate.mjs",
   /** Pure static-text scan of api/ + reachable lib/ files; no dev server. */
   "lib-bare-import-gate.mjs",
+  /** Parses vercel.json as JSON; no dev server, no deployment. */
+  "vercel-json-no-inert-memory-gate.mjs",
   /**
    * Construction proof (no dev server, no real network - global.fetch/putImpl
    * are stubbed to throw if invoked): proves runGtfsRefresh() skips any city
