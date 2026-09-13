@@ -4,7 +4,7 @@
  * alongside Pågatågen, not hidden.
  * Usage: node qa/malmo-dogfood-gate.mjs
  */
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, rmSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity } from "../lib/providers/registry.js";
@@ -12,13 +12,12 @@ import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
 import { MALMO_HUB, mapMalmoDestination } from "../lib/cities/malmo/marketing-directions.js";
-import {
-  listMalmoDogfoodStations,
-  getMalmoDogfoodDirections,
-} from "../lib/cities/malmo/dogfood-next-train.js";
-import { tripAllowed, malmoLineId, MALMO_TIMEZONE } from "../lib/providers/malmo.js";
+import { listMalmoDogfoodStations, getMalmoDogfoodDirections } from "../lib/cities/malmo/dogfood-next-train.js";
+import { tripAllowed, malmoLineId, MALMO_TIMEZONE, fetchStationBoard } from "../lib/providers/malmo.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
+import { loadGtfsStaticFromDirectory } from "../lib/providers/gtfs/static-cache.js";
+import { buildFixtureDir, NOW as CLOSURE_NOW, GAP_RESUMES_ON } from "./planned-closure-empty-board.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -171,6 +170,44 @@ if (previous === undefined) {
 await assertSnapshotNotStaleTodayOrSkip("malmo", () =>
   loadLocalGtfsSnapshotForStaleCheck("malmo", MALMO_TIMEZONE)
 );
+
+// Round 3 (docs/jim-brief-malmo-planned-closure-empty-board.md): end-to-end assertion that
+// nextServiceDate, computed correctly by the shared GTFS board helper, actually survives
+// malmo.js's fetchStationBoard() wrapper — the bug Mark's round-1 PR #381 review caught was
+// the wrapper's return object literal silently dropping the field. Round 2 fixed the wrapper
+// but proved it with a live Vercel Blob fetch of the real Bjuv closure, which (a) downloads
+// the Malmö GTFS zip on every smoke run — smoke-tier Blob traffic was deliberately closed
+// 13 Sep 2026 (docs/jim-brief-blob-transfer-reduction.md, #357/#369) — and (b) hard-codes that
+// Bjuv is mid-closure, so the gate would start failing on 9 Nov 2026 when service resumes, for
+// a reason unrelated to the code. Round 3 replaces that with the offline seam: fetchStationBoard
+// takes an optional `loadStatic` override, and here it's driven by the same synthetic
+// gap-in-progress fixture qa/planned-closure-empty-board.mjs uses (exported as buildFixtureDir),
+// with a route_long_name that satisfies malmo.js's Pågatåg-only filterTrip so the fixture reads
+// as in-scope, and a fixed `now` inside the fixture's gap. No network, no Blob, no dependence on
+// today's date.
+{
+  const fixtureDir = buildFixtureDir({ routeLongName: "Pågatåg Testlinje" });
+  try {
+    const staticData = loadGtfsStaticFromDirectory(fixtureDir, { timeZone: MALMO_TIMEZONE });
+    const gapBoard = await fetchStationBoard("Gap Stop", {
+      loadStatic: async () => staticData,
+      now: CLOSURE_NOW,
+    });
+    assert(
+      Array.isArray(gapBoard.trips) && gapBoard.trips.length === 0,
+      "Gap Stop: expected an empty board during the synthetic closure"
+    );
+    assert(
+      gapBoard.nextServiceDate === GAP_RESUMES_ON,
+      `Gap Stop: expected fetchStationBoard() to surface nextServiceDate "${GAP_RESUMES_ON}", got ${JSON.stringify(gapBoard.nextServiceDate)}`
+    );
+    console.log(
+      `malmo-dogfood-gate: offline nextServiceDate ok through fetchStationBoard() (${gapBoard.nextServiceDate})`
+    );
+  } finally {
+    rmSync(fixtureDir, { recursive: true, force: true });
+  }
+}
 
 console.log(
   "malmo-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Öresundståg/Krösatågen shown, Malmö C hub, no raw-corridor leaks, snapshot not stale today)"

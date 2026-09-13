@@ -74,6 +74,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-error-redaction.mjs",
   "gtfs-snapshot-freshness.mjs",
   "gtfs-local-snapshot-fixture-freshness.mjs",
+  "planned-closure-empty-board.mjs",
   "vancouver-dogfood-gate.mjs",
   "vancouver-attribution.mjs",
   "uk-rdg-attribution.mjs",
