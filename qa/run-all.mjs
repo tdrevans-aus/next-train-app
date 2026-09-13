@@ -160,6 +160,7 @@ const SMOKE_SCRIPTS = [
   "ad-consent-gate.mjs",
   "feedback-abuse.mjs",
   "vercel-health-region-gate.mjs",
+  "vercel-json-no-inert-memory-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -325,6 +326,8 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
    * 2026.
    */
   "vercel-health-region-gate.mjs",
+  /** Parses vercel.json as JSON; no dev server, no deployment. */
+  "vercel-json-no-inert-memory-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
