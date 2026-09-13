@@ -106,6 +106,7 @@ const feedbackDialog = document.getElementById("feedback-dialog");
 const feedbackForm = document.getElementById("feedback-form");
 const feedbackNoteInput = document.getElementById("feedback-note");
 const feedbackEmailInput = document.getElementById("feedback-email");
+const feedbackWebsiteInput = document.getElementById("feedback-website");
 const feedbackStatusEl = document.getElementById("feedback-status");
 const feedbackSendBtn = document.getElementById("feedback-send-btn");
 const feedbackCancelBtn = document.getElementById("feedback-cancel-btn");
@@ -6717,10 +6718,17 @@ async function submitFeedback(event) {
     return;
   }
 
+  const website = String(feedbackWebsiteInput?.value || "").trim();
   const config = await loadFeedbackSiteConfig();
   const version = feedbackVersionLabel(config);
   const platform = feedbackPlatformLabel();
-  const payload = { note, email: email || undefined, version, platform };
+  const payload = {
+    note,
+    email: email || undefined,
+    version,
+    platform,
+    website: website || undefined,
+  };
 
   if (feedbackSendBtn) {
     feedbackSendBtn.disabled = true;

@@ -1249,6 +1249,21 @@
           What’s broken, confusing, or missing? A couple of sentences is enough.
         </p>
         <form id="feedback-form" class="feedback-form" novalidate>
+          <label
+            class="field feedback-honeypot"
+            for="feedback-website"
+            style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;"
+            aria-hidden="true"
+          >
+            <span>Website</span>
+            <input
+              id="feedback-website"
+              name="website"
+              type="text"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </label>
           <label class="field" for="feedback-note">
             <span>Your note</span>
             <textarea
