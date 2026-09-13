@@ -159,6 +159,7 @@ const SMOKE_SCRIPTS = [
   "no-hardcoded-qa-port.mjs",
   "ad-consent-gate.mjs",
   "feedback-abuse.mjs",
+  "vercel-health-region-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -318,6 +319,12 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "gtfs-refresh-status-cache-gate.mjs",
   /** Pure static-text scan of qa/*.mjs for hardcoded :3000; no dev server. */
   "no-hardcoded-qa-port.mjs",
+  /**
+   * Static assertion on vercel.json + lib/gtfs-refresh.js text - no dev
+   * server, no network. docs/jim-brief-canberra-refresh-region.md, 13 Sep
+   * 2026.
+   */
+  "vercel-health-region-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
