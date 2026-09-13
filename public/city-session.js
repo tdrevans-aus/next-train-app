@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
 
@@ -41,6 +41,7 @@
         { id: "london-se-national-rail", name: "London & South East National Rail", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "greater-manchester", name: "Manchester", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "north-east", name: "North East (Tyne and Wear)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
+        { id: "rest-of-england", name: "Rest of England", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "solent", name: "Solent (Southampton / Portsmouth)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "southwest", name: "South West (Devon / Cornwall)", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
         { id: "south-yorkshire", name: "South Yorkshire", timeZone: "Europe/London", comingSoon: false, feed: "darwin" },
