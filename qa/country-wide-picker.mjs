@@ -10,7 +10,7 @@
  * Usage: node qa/country-wide-picker.mjs
  */
 import { chromium } from "playwright";
-import { BASE } from "./helpers/dev-server.mjs";
+import { BASE, ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 import { openJourneySetup } from "./helpers/travel-library.mjs";
 
 let failed = false;
@@ -27,6 +27,18 @@ function fail(id, notes) {
 async function run() {
   console.log("country-wide-picker: starting Playwright suite...");
 
+  // This script runs last in the smoke list. Round 2 (docs/jim-brief-
+  // country-wide-station-picker.md): under a full --smoke run its first
+  // fetch got ECONNREFUSED even though it passes standalone — the runner's
+  // shared dev-server.js had died by the time ~190 scripts ahead of it had
+  // finished. ensureDevServer() here is the same self-healing discovery
+  // reset-param-gated.mjs and other standalone-callable scripts already use:
+  // it attaches (returns null) if the runner's server still answers on
+  // BASE, or spawns a fresh one and waits for it to be ready if not — either
+  // way the first fetch below only runs once something is actually live.
+  const serverChild = await ensureDevServer();
+
+  try {
   // 1. GET /api/country-stations — server contract.
   {
     const ukRes = await fetch(`${BASE}/api/country-stations?country=gb-eng`);
@@ -164,10 +176,58 @@ async function run() {
     await context.close();
   }
 
+  // 4. Upgrade regression (Round 2, Mark FAIL #1): a pre-PR install had
+  // `savedCity` but no `regionExplicit` key at all (the key never existed
+  // before this feature) — not `regionExplicit: false`, which is what the
+  // new GPS-follow path writes. Seeding exactly that pre-PR shape must keep
+  // the stored region selected, not reset to "All" on first open post-upgrade.
+  {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.evaluate(() => {
+      localStorage.setItem(
+        "nextTrainSettings",
+        JSON.stringify({
+          settingsSchemaVersion: 2,
+          savedCity: "stockholm",
+          savedCountry: "se",
+          refreshSeconds: 60,
+        })
+      );
+    });
+    // Reload without reset=1&test=1 so runInit() re-reads the seeded,
+    // pre-PR-style localStorage instead of clearing it again.
+    await page.goto(`${BASE}/?fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(4000);
+
+    await page.evaluate(() => window.NextTrainCitySession.openRegionScreen());
+    await page.waitForTimeout(300);
+
+    const state = await page.evaluate(() => {
+      const select = document.querySelector("[data-region-city]");
+      return {
+        value: select?.value ?? null,
+        explicit: window.NextTrainCitySession.readRegionExplicit(),
+        savedCity: window.NextTrainCitySession.readSavedCity(),
+      };
+    });
+
+    if (state.value === "stockholm" && state.explicit === true && state.savedCity === "stockholm") {
+      pass("Pre-PR localStorage (savedCity, no regionExplicit key) keeps its stored region on upgrade", JSON.stringify(state));
+    } else {
+      fail("Pre-PR localStorage (savedCity, no regionExplicit key) keeps its stored region on upgrade", JSON.stringify(state));
+    }
+    await context.close();
+  }
+
   await browser.close();
 
   if (failed) {
     process.exitCode = 1;
+  }
+  } finally {
+    stopDevServer(serverChild);
   }
 }
 

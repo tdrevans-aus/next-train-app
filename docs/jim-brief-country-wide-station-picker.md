@@ -94,3 +94,29 @@ Worktree; copy this brief in; commit, push; PR titled "Picker: country-wide stat
 region becomes an optional filter" linking this brief and marked **tim-review** with the copy
 strings and two screenshots (list before typing, list mid-query) captured with the existing
 headless screenshot script if it's convenient.
+
+## Round 2 (14 Sep 2026) — Mark FAIL on PR #383 (commit 2d72133)
+
+Mark's note: https://github.com/tdrevans-aus/next-train-app/pull/383#issuecomment-5654848780
+
+Two real failures; everything else passed (criteria 2–6 and 8; the two flagged deviations are
+accepted).
+
+1. **Upgrade regression (criterion 1).** `syncRegionControls()` in `public/city-session.js`
+   only shows the stored region when `regionExplicit` is true, but that flag was already false
+   for the pre-existing GPS-follow path, a live population. An install seeded with
+   `savedCity: "stockholm"` and no `regionExplicit` opened with the Region select reset to
+   "All". Fix: treat any install with a stored region and no `regionExplicit` flag as explicit
+   (migrate once on load, writing the flag), so nobody's picker changes on upgrade. Only genuinely
+   fresh installs default to "All". Add a case to `qa/country-wide-picker.mjs` that seeds a
+   pre-PR-style localStorage and asserts the stored region is still selected.
+2. **`qa/country-wide-picker.mjs` fails inside `--smoke`** (2 of 2 runs, `ECONNREFUSED` on its
+   first fetch) while passing standalone. It runs last in the suite; the shared dev server is
+   gone or unresponsive by then. Look at how other late-scheduled browser scripts obtain the
+   server (`QA_BASE` / the run-all dev-server helper, and the memory note that most scripts
+   hard-code :3000) and make this script use the same mechanism, with a readiness wait before the
+   first fetch. Prove it with two consecutive full `--smoke` runs that pass. If the real cause
+   is the run-all server dying after ~190 scripts, say so in the PR and fix that instead — but
+   do not just move the script earlier in the order.
+
+Push to the same branch; comment on the PR that round 2 is ready with both smoke results.

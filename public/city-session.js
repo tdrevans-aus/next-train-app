@@ -304,6 +304,28 @@
     return readStore().regionExplicit === true;
   }
 
+  let legacyRegionExplicitMigrated = false;
+
+  // Pre-PR installs wrote `savedCity` from the old mandatory region picker but
+  // never had a `regionExplicit` flag at all (the key is absent, not `false`).
+  // Without this, syncRegionControls() below treats that the same as the new
+  // GPS-follow path (savedCity set, explicit: false) and resets a stored
+  // Stockholm/etc. pick back to "All" on first open after the upgrade
+  // (docs/jim-brief-country-wide-station-picker.md Round 2, Mark FAIL #1).
+  // Runs once: after it writes the flag, the key exists and this is a no-op.
+  function migrateLegacyRegionExplicit() {
+    if (legacyRegionExplicitMigrated) {
+      return;
+    }
+    legacyRegionExplicitMigrated = true;
+    const store = readStore();
+    const hasFlag = Object.prototype.hasOwnProperty.call(store, "regionExplicit");
+    const savedCity = String(store.savedCity || "").trim();
+    if (!hasFlag && savedCity) {
+      persistRegion({ city: savedCity, country: store.savedCountry, explicit: true });
+    }
+  }
+
   function persistRegion({ city, country, explicit }) {
     const patch = {
       savedCity: city,
@@ -750,6 +772,7 @@
 
   async function runInit() {
     bindControls();
+    migrateLegacyRegionExplicit();
     // Do not probe every live city before first paint. Sydney/Brisbane catalogs
     // parse large GTFS fixtures and were blocking Near me on Perth cold start.
 
