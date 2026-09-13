@@ -124,7 +124,7 @@ assert(!/`undecided`/.test(oracleReport), "Board eligibility section must have n
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(SOLENT_REGION);
-assert(region?.railCount === 7, `solent rail count must be 7, got ${region?.railCount}`);
+assert(region?.railCount === 195, `solent rail count must be 195 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `solent must have no metro stations, got ${region?.metroCount}`);
 assert((region?.modes ?? []).join(",") === "train", "solent must be train-only in regions.json");
 
@@ -136,7 +136,7 @@ for (const crs of ["SOU", "PMH", "PMS", "FRM", "ESL", "WSB", "WAT"]) {
 assert(getNotInRegion(SOLENT_REGION).length === 0, "solent has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 7, `combined catalog must have 7 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 195, `combined catalog must have 195 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // Two-hub, hub+secondary architecture — three independent catalog resolutions,
 // no doNotGroup merge; boundary points resolve flat.
@@ -157,7 +157,7 @@ assert(waterloo?.crs === "WAT", "Waterloo boundary station must resolve with crs
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listSolentDogfoodStations();
-assert(dogfoodStations.length === 7, `dogfood stations must be the 7 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 195, `dogfood stations must be the 195 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(SOLENT_HUB), "Southampton Central must be listed by the dogfood harness");
 assert(dogfoodNames.has(SOLENT_EAST_HUB), "Portsmouth Harbour must be listed by the dogfood harness");

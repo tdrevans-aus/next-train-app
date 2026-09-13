@@ -119,7 +119,7 @@ assert(!/`undecided`/.test(oracleReport), "Board eligibility section must have n
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(WEST_YORKSHIRE_REGION);
-assert(region?.railCount === 10, `west-yorkshire rail count must be 10, got ${region?.railCount}`);
+assert(region?.railCount === 82, `west-yorkshire rail count must be 82 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `west-yorkshire must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -134,7 +134,7 @@ for (const crs of ["LDS", "BDQ", "BDI", "DBD", "WDN", "HUD", "HFX", "TOD", "HBD"
 assert(getNotInRegion(WEST_YORKSHIRE_REGION).length === 0, "west-yorkshire has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 10, `combined catalog must have 10 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 82, `combined catalog must have 82 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // doNotGroup: Bradford Forster Square (BDQ) vs Bradford Interchange (BDI) —
 // two distinct catalog entries, walk-link connect only, never merged.
@@ -149,7 +149,7 @@ assert(resolveCatalogEntry("Bradford") === null, "the ambiguous token 'Bradford'
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listWestYorkshireDogfoodStations();
-assert(dogfoodStations.length === 10, `dogfood stations must be the 10 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 82, `dogfood stations must be the 82 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(WEST_YORKSHIRE_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodNames.has(WEST_YORKSHIRE_SECONDARY_HUB), "secondary hub must be listed by the dogfood harness");

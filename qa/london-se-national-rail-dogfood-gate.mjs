@@ -151,15 +151,16 @@ assert(
 );
 
 const railStations = listNationalRailStations();
-// 5 single-board groups + 3 London Bridge sub-boards + 2 Liverpool Street sub-boards = 10.
-assert(railStations.length === 10, `catalog must have 10 boards, got ${railStations.length}`);
+// 5 single-board groups + 3 London Bridge sub-boards + 2 Liverpool Street sub-boards = 10
+// original D1 boards, plus 526 UK station fill phase 2a additions (14 Sep 2026) = 530.
+assert(railStations.length === 530, `catalog must have 530 boards (UK station fill phase 2a, 14 Sep 2026), got ${railStations.length}`);
 assert(getNotInRegion(LONDON_SE_NATIONAL_RAIL_REGION).length === 0, "no deliberate exclusions recorded in notInRegion");
 for (const stationEntry of railStations) {
   assert(stationEntry.crsVerified === true, `${stationEntry.name} (${stationEntry.crs}) must carry crsVerified: true`);
 }
 
 const allStations = listCatalogStations();
-assert(allStations.length === 10, `combined catalog must have 10 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 530, `combined catalog must have 530 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // All seven groups resolve independently — no single-hub assumption anywhere.
 assert(LONDON_SE_NATIONAL_RAIL_GROUPS.length === 7, "must document exactly seven station groups");
@@ -220,19 +221,26 @@ assert(
   "Paddington must exclude Night Riviera Sleeper"
 );
 
-// Not built: Euston and the seven secondary termini must not resolve as catalog entries.
-for (const name of [
-  "Euston",
-  "London Euston",
-  "Blackfriars",
-  "Cannon Street",
-  "Charing Cross",
-  "Farringdon",
-  "Fenchurch Street",
-  "Marylebone",
-  "Moorgate",
-]) {
-  assert(!resolveCatalogEntry(name), `${name} must NOT resolve as a catalog entry — not built in this pack`);
+// UK station fill phase 2a (14 Sep 2026): Euston and the other D1-era "not built" secondary
+// termini are now real, Darwin-verified catalog entries (per Tim's rule, "any station reachable
+// through an API is in scope") — Darwin's own stationName carries the "London " prefix for six of
+// these, so the bare marketing tokens below must still fail while the full printed names resolve.
+const PHASE_2A_TERMINI = {
+  "London Euston": "EUS",
+  "London Blackfriars": "BFR",
+  "London Cannon Street": "CST",
+  "London Charing Cross": "CHX",
+  "London Fenchurch Street": "FST",
+  "London Marylebone": "MYB",
+  Farringdon: "ZFD",
+  Moorgate: "MOG",
+};
+for (const [name, crs] of Object.entries(PHASE_2A_TERMINI)) {
+  const hit = resolveCatalogEntry(name);
+  assert(hit?.crs === crs, `${name} must resolve with crs ${crs} (UK station fill phase 2a)`);
+}
+for (const bareToken of ["Euston", "Blackfriars", "Cannon Street", "Charing Cross", "Fenchurch Street", "Marylebone"]) {
+  assert(!resolveCatalogEntry(bareToken), `the bare marketing token '${bareToken}' must never resolve as a station`);
 }
 
 // No direction-hubs.json for this region — each of the seven groups IS the
@@ -247,7 +255,7 @@ assert(lseHubs.length === 0, `london-se-national-rail must have zero configured 
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listLondonSeNationalRailDogfoodStations();
-assert(dogfoodStations.length === 10, `dogfood stations must be the 10 D1 boards, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 530, `dogfood stations must be the 530 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 for (const boardName of [
   "London Waterloo",

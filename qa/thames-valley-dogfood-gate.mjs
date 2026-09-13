@@ -136,7 +136,7 @@ assert(!/`undecided`/.test(oracleReport), "Board eligibility section must have n
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(THAMES_VALLEY_REGION);
-assert(region?.railCount === 8, `thames-valley rail count must be 8, got ${region?.railCount}`);
+assert(region?.railCount === 64, `thames-valley rail count must be 64 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `thames-valley must have no metro stations, got ${region?.metroCount}`);
 assert((region?.modes ?? []).join(",") === "train", "thames-valley must be train-only in regions.json");
 
@@ -148,7 +148,7 @@ for (const crs of ["RDG", "OXF", "SWI", "BAN", "WSB", "HOT", "DID"]) {
 assert(getNotInRegion(THAMES_VALLEY_REGION).length === 0, "thames-valley has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 8, `combined catalog must have 8 boards (train only), got ${allStations.length}`);
+assert(allStations.length === 64, `combined catalog must have 64 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // Reading: hub lock, three operators, no doNotGroup.
 const reading = resolveCatalogEntry(THAMES_VALLEY_HUB);
@@ -206,7 +206,7 @@ for (const name of ["London Paddington", "Paddington", "London Marylebone", "Mar
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listThamesValleyDogfoodStations();
-assert(dogfoodStations.length === 8, `dogfood stations must be the 8 D1 boards, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 64, `dogfood stations must be the 64 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(THAMES_VALLEY_HUB), "Reading must be listed by the dogfood harness");
 assert(dogfoodNames.has(THAMES_VALLEY_SECONDARY_HUB), "Oxford (GWR) must be listed by the dogfood harness");

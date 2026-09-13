@@ -120,7 +120,7 @@ if (!emHubMetro || !emHubMetro.catalogId?.startsWith("net:")) {
 }
 
 const sy = getRegion("south-yorkshire");
-if (!sy || sy.railCount !== 6 || sy.metroCount !== 12) {
+if (!sy || sy.railCount !== 21 || sy.metroCount !== 12) {
   fail(`south-yorkshire counts rail=${sy?.railCount} metro=${sy?.metroCount}`);
 }
 
@@ -200,7 +200,7 @@ if (!syMeadowhallMetro || syMeadowhallMetro.catalogId !== "supertram:meadowhall"
 }
 
 const ne = getRegion("north-east");
-if (!ne || ne.railCount !== 3 || ne.metroCount !== 60) {
+if (!ne || ne.railCount !== 28 || ne.metroCount !== 60) {
   fail(`north-east counts rail=${ne?.railCount} metro=${ne?.metroCount}`);
 }
 
@@ -218,8 +218,10 @@ if (!neCrsSet.has("NCL") || !neCrsSet.has("BWK")) {
 if (!neCrsSet.has("SUN")) {
   fail("north-east missing SUN (Sunderland, live-verified 5 Sep 2026 CRS fill)");
 }
-if (neRailNames.has("Darlington")) {
-  fail("north-east must not carry Darlington (unresolved cross-region boundary)");
+// docs/united-kingdom-ledger.md section 2 decided Darlington's home region as North East
+// (Tim, 5 Sep 2026) — added in UK station fill phase 2a (14 Sep 2026).
+if (!neRailNames.has("Darlington")) {
+  fail("north-east must carry Darlington (ledger-decided home region, UK station fill phase 2a)");
 }
 for (const name of getNotInRegion("north-east")) {
   if (neRail.some((s) => s.name === name)) {
@@ -257,7 +259,7 @@ if (!neSunderlandMetro || neSunderlandMetro.catalogId !== "metro:sunderland") {
 }
 
 const woe = getRegion("west-of-england");
-if (!woe || woe.railCount !== 6 || woe.metroCount !== 0) {
+if (!woe || woe.railCount !== 47 || woe.metroCount !== 0) {
   fail(`west-of-england counts rail=${woe?.railCount} metro=${woe?.metroCount}`);
 }
 
@@ -288,7 +290,7 @@ if (!woeSecondary || woeSecondary.crs !== "BTH") {
 // live-probed 5 Sep 2026, all 16 catalog CRS codes) — see
 // qa/south-wales-dogfood-gate.mjs for the full assertion set.
 const sw = getRegion("south-wales");
-if (!sw || sw.railCount !== 16 || sw.metroCount !== 0) {
+if (!sw || sw.railCount !== 104 || sw.metroCount !== 0) {
   fail(`south-wales counts rail=${sw?.railCount} metro=${sw?.metroCount}`);
 }
 
@@ -330,8 +332,11 @@ const swSecondaryHub = resolveRailEntry("Cardiff Queen Street", "south-wales");
 if (!swSecondaryHub || swSecondaryHub.crs !== "CDQ") {
   fail("south-wales Cardiff Queen Street must resolve as a rail entry with crs CDQ — secondary hub, in-catalog via Darwin");
 }
-if (resolveRailEntry("Cardiff Bay", "south-wales")) {
-  fail("south-wales must not resolve Cardiff Bay — ambiguous alias, not a real station");
+// UK station fill phase 2a (14 Sep 2026): Cardiff Bay is a real, Darwin-verified Bay Line
+// terminus (CRS CDB) — previously an ambiguous non-station alias before it was ever catalogued.
+const swCardiffBay = resolveRailEntry("Cardiff Bay", "south-wales");
+if (!swCardiffBay || swCardiffBay.crs !== "CDB") {
+  fail("south-wales Cardiff Bay must resolve as a rail entry with crs CDB (UK station fill phase 2a)");
 }
 const swPontypridd = resolveRailEntry("Pontypridd", "south-wales");
 if (!swPontypridd || swPontypridd.crs !== "PPD") {
@@ -345,7 +350,7 @@ if (resolveRailEntry("Carmarthen", "south-wales")) {
 }
 
 const wy = getRegion("west-yorkshire");
-if (!wy || wy.railCount !== 10 || wy.metroCount !== 0) {
+if (!wy || wy.railCount !== 82 || wy.metroCount !== 0) {
   fail(`west-yorkshire counts rail=${wy?.railCount} metro=${wy?.metroCount}`);
 }
 
@@ -376,7 +381,7 @@ if (!wyBdi || wyBdi.crs !== "BDI") {
 }
 
 const row = getRegion("rest-of-wales");
-if (!row || row.railCount !== 17 || row.metroCount !== 0) {
+if (!row || row.railCount !== 118 || row.metroCount !== 0) {
   fail(`rest-of-wales counts rail=${row?.railCount} metro=${row?.metroCount}`);
 }
 
@@ -401,8 +406,11 @@ const rowHub = resolveRailEntry("Wrexham General", "rest-of-wales");
 if (!rowHub || rowHub.crs !== "WRX") {
   fail("rest-of-wales Wrexham General must resolve as a rail entry with crs WRX");
 }
-if (resolveRailEntry("Wrexham Central", "rest-of-wales")) {
-  fail("rest-of-wales must not resolve Wrexham Central — lower-connectivity terminus, not the hub lock");
+// UK station fill phase 2a (14 Sep 2026): Wrexham Central is a real, Darwin-verified terminus
+// (CRS WXC), distinct from the Wrexham General hub lock.
+const rowWrexhamCentral = resolveRailEntry("Wrexham Central", "rest-of-wales");
+if (!rowWrexhamCentral || rowWrexhamCentral.crs !== "WXC") {
+  fail("rest-of-wales Wrexham Central must resolve as a rail entry with crs WXC (UK station fill phase 2a)");
 }
 if (resolveRailEntry("Chester", "rest-of-wales")) {
   fail("rest-of-wales must not resolve Chester — England pass-through, not a catalog station");
@@ -456,7 +464,7 @@ if (resolveRailEntry("Falkirk High", "rest-of-scotland")) {
 // london-se-national-rail: FIRST multi-group region, no single hub-lock — 10 boards
 // (5 single-board groups + 3 London Bridge sub-boards + 2 Liverpool Street sub-boards).
 const lse = getRegion("london-se-national-rail");
-if (!lse || lse.railCount !== 10 || lse.metroCount !== 0) {
+if (!lse || lse.railCount !== 530 || lse.metroCount !== 0) {
   fail(`london-se-national-rail counts rail=${lse?.railCount} metro=${lse?.metroCount}`);
 }
 
@@ -596,7 +604,7 @@ if (resolveMetroEntry("Edinburgh Waverley", "edinburgh")) {
 // (Portsmouth & Southsea) via the West-of-England hub+secondary-hub pattern — not a single
 // hub-lock, not full flat multi-group like london-se-national-rail's seven groups.
 const sol = getRegion("solent");
-if (!sol || sol.railCount !== 7 || sol.metroCount !== 0) {
+if (!sol || sol.railCount !== 195 || sol.metroCount !== 0) {
   fail(`solent counts rail=${sol?.railCount} metro=${sol?.metroCount}`);
 }
 
@@ -631,7 +639,7 @@ if (!solEastSecondary || solEastSecondary.crs !== "PMS") {
 // separate platforms/infrastructure, one CRS (OXF) split into two catalog entries. FIRST TIME a
 // secondary hub (not a primary terminus) has needed this in the pipeline.
 const tv = getRegion("thames-valley");
-if (!tv || tv.railCount !== 8 || tv.metroCount !== 0) {
+if (!tv || tv.railCount !== 64 || tv.metroCount !== 0) {
   fail(`thames-valley counts rail=${tv?.railCount} metro=${tv?.metroCount}`);
 }
 
@@ -667,7 +675,7 @@ if (!tvSecondaryChiltern || tvSecondaryChiltern.crs !== "OXF" || tvSecondaryChil
 // unlike every prior two-agency region (Sheffield Station / Nottingham Station) which shared
 // one hub name across both modes.
 const gm = getRegion("greater-manchester");
-if (!gm || gm.railCount !== 4 || gm.metroCount !== 14) {
+if (!gm || gm.railCount !== 47 || gm.metroCount !== 14) {
   fail(`greater-manchester counts rail=${gm?.railCount} metro=${gm?.metroCount}`);
 }
 
@@ -723,7 +731,7 @@ if (resolveRailEntry("Piccadilly Gardens", "greater-manchester")) {
 // (Tim's option B): one catalog entry only (mode train, CRS LIV) — see
 // docs/liverpool-city-region-d1/hazard-pack.md for the closed history.
 const lcr = getRegion("liverpool-city-region");
-if (!lcr || lcr.railCount !== 29 || lcr.metroCount !== 68) {
+if (!lcr || lcr.railCount !== 59 || lcr.metroCount !== 68) {
   fail(`liverpool-city-region counts rail=${lcr?.railCount} metro=${lcr?.metroCount}`);
 }
 
@@ -779,7 +787,7 @@ if (resolveRailEntry("Liverpool Central", "liverpool-city-region")) {
 // through-running boundary entry, not a doNotGroup hub — LNER's board-eligibility verdict
 // resolved to `in` 5 Sep 2026, so no excludeOperators is carried there.
 const ga = getRegion("greater-anglia");
-if (!ga || ga.railCount !== 14 || ga.metroCount !== 0) {
+if (!ga || ga.railCount !== 121 || ga.metroCount !== 0) {
   fail(`greater-anglia counts rail=${ga?.railCount} metro=${ga?.metroCount}`);
 }
 
@@ -836,7 +844,7 @@ if (gaLowestoft?.crs !== "LWT") {
 }
 
 const swst = getRegion("southwest");
-if (!swst || swst.railCount !== 9 || swst.metroCount !== 0) {
+if (!swst || swst.railCount !== 89 || swst.metroCount !== 0) {
   fail(`southwest counts rail=${swst?.railCount} metro=${swst?.metroCount}`);
 }
 
@@ -867,7 +875,7 @@ if (!swstTerminus || swstTerminus.crs !== "PNZ") {
 }
 
 const cum = getRegion("cumbria");
-if (!cum || cum.railCount !== 7 || cum.metroCount !== 0) {
+if (!cum || cum.railCount !== 49 || cum.metroCount !== 0) {
   fail(`cumbria counts rail=${cum?.railCount} metro=${cum?.metroCount}`);
 }
 

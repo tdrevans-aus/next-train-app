@@ -131,6 +131,7 @@ const SMOKE_SCRIPTS = [
   "west-of-england-dogfood-gate.mjs",
   "south-wales-dogfood-gate.mjs",
   "uk-city-bounds-overlap-gate.mjs",
+  "uk-station-fill-audit.mjs",
   "west-yorkshire-dogfood-gate.mjs",
   "rest-of-wales-dogfood-gate.mjs",
   "rest-of-scotland-dogfood-gate.mjs",
@@ -312,6 +313,9 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "uk-catalog-lazy-load.mjs",
   /** Parses CITY_BOUNDS out of public/city-session.js as text; no dev server. */
   "uk-city-bounds-overlap-gate.mjs",
+  /** Cross-checks the davwheat candidate dataset against every UK region catalog plus
+   *  docs/uk-station-fill/{unassigned-england,unverified}.md; no dev server. */
+  "uk-station-fill-audit.mjs",
   /** Pure static-text scan of api/ + reachable lib/ files; no dev server. */
   "lib-bare-import-gate.mjs",
   /**

@@ -133,7 +133,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(SOUTHWEST_REGION);
-assert(region?.railCount === 9, `southwest rail count must be 9, got ${region?.railCount}`);
+assert(region?.railCount === 89, `southwest rail count must be 89 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `southwest must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -145,11 +145,11 @@ const railCrs = new Set(railStations.map((s) => s.crs));
 for (const crs of ["EXD", "PLY", "PNZ", "TAU", "NTA", "TOT", "TRU", "SAU", "SER"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
-assert(railCrs.size === 9, `southwest catalog must carry exactly 9 distinct CRS codes, got ${railCrs.size}`);
+assert(railCrs.size === 89, `southwest catalog must carry exactly 89 distinct CRS codes (UK station fill phase 2a, 14 Sep 2026), got ${railCrs.size}`);
 assert(getNotInRegion(SOUTHWEST_REGION).length === 0, "southwest has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 9, `combined catalog must have 9 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 89, `combined catalog must have 89 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // No doNotGroup — hub, secondary hub, and terminus each resolve to a single catalog entry.
 const hub = resolveCatalogEntry(SOUTHWEST_HUB);
@@ -184,7 +184,7 @@ for (const name of ["Taunton", "Newton Abbot", "Totnes"]) {
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listSouthwestDogfoodStations();
-assert(dogfoodStations.length === 9, `dogfood stations must be the 9 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 89, `dogfood stations must be the 89 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 for (const name of [SOUTHWEST_HUB, SOUTHWEST_SECONDARY_HUB, SOUTHWEST_TERMINUS, "Taunton"]) {
   assert(dogfoodNames.has(name), `${name} must be listed by the dogfood harness`);

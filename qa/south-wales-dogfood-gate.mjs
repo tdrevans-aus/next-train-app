@@ -117,7 +117,7 @@ assert(network.printedInnerCityNames?.secondaryHubCrs === "CDQ", "D1 secondary h
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(SOUTH_WALES_REGION);
-assert(region?.railCount === 16, `south-wales rail count must be 16, got ${region?.railCount}`);
+assert(region?.railCount === 104, `south-wales rail count must be 104 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `south-wales must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -148,14 +148,17 @@ const railCrs = new Set(railStations.map((s) => s.crs));
 for (const crs of EXPECTED_CRS) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
+// UK station fill phase 2a (14 Sep 2026) grew the catalog from 16 to 104 CRS codes (every Valley
+// Lines/South Wales Main Line station Darwin-verifies, per docs/uk-station-fill/assignment.md) —
+// EXPECTED_CRS above stays the original 16-station membership check, this asserts the new total.
 assert(
-  railCrs.size === EXPECTED_CRS.length,
-  `south-wales catalog must carry exactly ${EXPECTED_CRS.length} distinct CRS codes, got ${railCrs.size}`
+  railCrs.size === 104,
+  `south-wales catalog must carry exactly 104 distinct CRS codes (UK station fill phase 2a), got ${railCrs.size}`
 );
 assert(getNotInRegion(SOUTH_WALES_REGION).length === 0, "south-wales has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 16, `combined catalog must have 16 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 104, `combined catalog must have 104 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // Hub + secondary hub, no doNotGroup — both resolve as distinct catalog entries.
 const hub = resolveCatalogEntry(SOUTH_WALES_HUB);
@@ -163,7 +166,11 @@ assert(hub?.crs === "CDF", "Cardiff Central must resolve with crs CDF");
 const secondaryHub = resolveCatalogEntry("Cardiff Queen Street");
 assert(secondaryHub?.crs === "CDQ", "Cardiff Queen Street must resolve with crs CDQ — own catalog entry, own board");
 assert(resolveCatalogEntry("Cardiff") === null, "the marketing token 'Cardiff' must never resolve as a station");
-assert(resolveCatalogEntry("Cardiff Bay") === null, "Cardiff Bay must never resolve — ambiguous alias, not a real station");
+// UK station fill phase 2a (14 Sep 2026): Cardiff Bay is a real, Darwin-verified Bay Line
+// terminus (CRS CDB) — previously treated as an ambiguous non-station alias before it was ever
+// added to the catalog. Now a genuine standalone entry, distinct from Cardiff Central/Queen Street.
+const cardiffBay = resolveCatalogEntry("Cardiff Bay");
+assert(cardiffBay?.crs === "CDB", "Cardiff Bay must resolve with crs CDB (UK station fill phase 2a)");
 
 // Valley Lines termini and local station now resolve — in catalog via Darwin.
 for (const name of ["Pontypridd", "Merthyr Tydfil", "Aberdare", "Treherbert", "Rhymney", "Caerphilly"]) {
@@ -193,7 +200,7 @@ assert(swHubs.length === 0, `south-wales must have zero configured hubs, got ${s
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listSouthWalesDogfoodStations();
-assert(dogfoodStations.length === 16, `dogfood stations must be the 16 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 104, `dogfood stations must be the 104 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(SOUTH_WALES_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodNames.has("Cardiff Queen Street"), "secondary hub must be listed by the dogfood harness");

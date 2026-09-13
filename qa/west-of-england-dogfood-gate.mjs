@@ -98,7 +98,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(WEST_OF_ENGLAND_REGION);
-assert(region?.railCount === 6, `west-of-england rail count must be 6, got ${region?.railCount}`);
+assert(region?.railCount === 47, `west-of-england rail count must be 47 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `west-of-england must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -113,7 +113,7 @@ for (const crs of ["BRI", "BTH", "CPW", "GCR", "WSB", "TAU"]) {
 assert(getNotInRegion(WEST_OF_ENGLAND_REGION).length === 0, "west-of-england has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 6, `combined catalog must have 6 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 47, `combined catalog must have 47 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
 
 // No doNotGroup — hub and secondary hub each resolve to a single catalog entry.
 const hub = resolveCatalogEntry(WEST_OF_ENGLAND_HUB);
@@ -125,7 +125,7 @@ assert(resolveCatalogEntry("Bath") === null, "the marketing token 'Bath' must ne
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listWestOfEnglandDogfoodStations();
-assert(dogfoodStations.length === 6, `dogfood stations must be the 6 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 47, `dogfood stations must be the 47 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has(WEST_OF_ENGLAND_HUB), "hub must be listed by the dogfood harness");
 assert(dogfoodNames.has(WEST_OF_ENGLAND_SECONDARY_HUB), "secondary hub must be listed by the dogfood harness");

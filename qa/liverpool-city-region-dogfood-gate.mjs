@@ -123,7 +123,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(LIVERPOOL_CITY_REGION_REGION);
-assert(region?.railCount === 29, `liverpool-city-region rail count must be 29, got ${region?.railCount}`);
+assert(region?.railCount === 59, `liverpool-city-region rail count must be 59 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 68, `liverpool-city-region metro count must be 68, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -150,7 +150,7 @@ for (const stop of metroStops) {
 }
 
 const allStations = listCatalogStations();
-assert(allStations.length === 97, `combined catalog must have 97 stations (29 rail + 68 metro), got ${allStations.length}`);
+assert(allStations.length === 127, `combined catalog must have 127 stations (59 rail + 68 metro, UK station fill phase 2a), got ${allStations.length}`);
 
 // Lime Street: one catalog entry only (mode train, CRS LIV). Metro-mode lookup
 // must resolve to nothing — H1 closed as moot, option B (4 Sep 2026).
@@ -195,8 +195,8 @@ assert(
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listLiverpoolCityRegionDogfoodStations();
 assert(
-  dogfoodStations.length === 97,
-  `dogfood stations must be the 97 full-network catalog names (29 rail + 68 metro), got ${dogfoodStations.length}`
+  dogfoodStations.length === 127,
+  `dogfood stations must be the 127 full-network catalog names (59 rail + 68 metro, UK station fill phase 2a), got ${dogfoodStations.length}`
 );
 const hubEntries = dogfoodStations.filter((s) => s.name === LIVERPOOL_CITY_REGION_NR_HUB);
 assert(hubEntries.length === 1, "Liverpool Lime Street must appear exactly once in the dogfood list (H1 closed as moot, option B)");

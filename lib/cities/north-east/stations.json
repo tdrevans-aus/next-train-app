@@ -17,14 +17,12 @@
     "Sunderland: genuine shared-platform case, NOT doNotGroup - see the 'class' field on both the train and metro Sunderland entries below and docs/north-east-d1/direction-model-memo.md. CRS SUN live-verified 5 Sep 2026 for the National Rail side (the oracle report gave no code).",
     "Pelaw: Metro-only junction/station (both Green and Yellow call it, confirmed by GTFS - see above). No separate National Rail station exists at Pelaw per the oracle report - not catalogued under mode train.",
     "Berwick-upon-Tweed (BWK) included as National Rail-only per the oracle report's station table. Northern boundary against a future Rest-of-Scotland pack is open/unresolved - not closed here.",
-    "Darlington (DRL) is EXCLUDED - confirmed unclaimed by both North East's own report and East Midlands' already-merged pack (checked directly, no match). Do not add without a boundary resolution.",
+    "Darlington (DAR) was EXCLUDED (unclaimed by both North East's own report and East Midlands' already-merged pack) until docs/united-kingdom-ledger.md section 2 decided its home region as North East (Tim, 5 Sep 2026, County Durham/ECML, no real second claimant). Added in UK station fill phase 2a (14 Sep 2026) per that ruling — see docs/uk-station-fill/assignment.md.",
     "Newcastle Central and Berwick-upon-Tweed lat/lng superseded 7 Sep 2026 (uk-catalog-geocode) — NaPTAN RailReferences now supplies confirmed CRS-keyed coordinates for both, independent of the coordinate source gap that previously applied. Sunderland's train entry reuses its Metro/GTFS coordinate since it is the same physical platform (unchanged).",
     "Coordinates: NaPTAN RailReferences (CRS->coords) pulled 2026-09-07; 3/3 rail stations geocoded | no confirmed source pulled 2026-09-07; 60/60 tram/metro stops geocoded; no exceptions",
     "7 Sep 2026 (docs/jim-brief-no-live-feed-stops-out-of-picker.md): all 60 Tyne and Wear Metro (mode metro) stops flagged liveFeed: false — MetroFeedUnconfirmedError means no board can ever be produced, so these stops stay in the catalog (coordinates kept for coverage notes and a future re-enable) but are no longer offered in the station picker or Near me. National Rail (mode train) stops are unaffected."
   ],
-  "notInRegion": [
-    "Darlington"
-  ],
+  "notInRegion": [],
   "stops": [
     {
       "mode": "train",
@@ -720,6 +718,281 @@
       "lng": -1.44318971004,
       "class": "Tyne and Wear Metro (Yellow line) - schedule-only v1, no confirmed public real-time feed. Static GTFS confirmed via DFT Bus Open Data Service (f-bus~dft~gov~uk), agency_id OP241, Jim D2 pull 31 Aug 2026.",
       "liveFeed": false
+    },
+    {
+      "mode": "train",
+      "name": "Acklington",
+      "crs": "ACK",
+      "aliases": [],
+      "lat": 55.3070982414,
+      "lng": -1.65183461346,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Alnmouth",
+      "crs": "ALM",
+      "aliases": [],
+      "lat": 55.39277757806,
+      "lng": -1.63663765884,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Ashington",
+      "crs": "ASL",
+      "aliases": [],
+      "lat": 55.18224,
+      "lng": -1.57278,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Bedlington",
+      "crs": "BEJ",
+      "aliases": [],
+      "lat": 55.14051,
+      "lng": -1.56867,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Blaydon",
+      "crs": "BLO",
+      "aliases": [],
+      "lat": 54.96578851561,
+      "lng": -1.71258069635,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Blyth Bebside",
+      "crs": "BLI",
+      "aliases": [],
+      "lat": 55.12486,
+      "lng": -1.55711,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Chathill",
+      "crs": "CHT",
+      "aliases": [],
+      "lat": 55.53673284417,
+      "lng": -1.70637513188,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Chester-le-Street",
+      "crs": "CLS",
+      "aliases": [],
+      "lat": 54.85459440939,
+      "lng": -1.57801525009,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Corbridge",
+      "crs": "CRB",
+      "aliases": [],
+      "lat": 54.96626087452,
+      "lng": -2.01840007432,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Cramlington",
+      "crs": "CRM",
+      "aliases": [],
+      "lat": 55.08776801002,
+      "lng": -1.59859494517,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Darlington",
+      "crs": "DAR",
+      "aliases": [],
+      "lat": 54.52044786572,
+      "lng": -1.54732382418,
+      "class": "docs/united-kingdom-ledger.md section 2 decided this station's home region (Tim, 5 Sep 2026), overriding this region's own earlier notInRegion-adjacent exclusion note — added in UK station fill phase 2a (14 Sep 2026), Darwin-verified, walk-up National Rail station.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Dunston",
+      "crs": "DOT",
+      "aliases": [],
+      "lat": 54.95005526229,
+      "lng": -1.64204440719,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Hexham",
+      "crs": "HEX",
+      "aliases": [],
+      "lat": 54.97345905351,
+      "lng": -2.09479457481,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Metro Centre",
+      "crs": "MCE",
+      "aliases": [],
+      "lat": 54.95874916619,
+      "lng": -1.66562588404,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station Darwin's own stationName is \"Metro Centre\" (candidate dataset name \"Metrocentre\") — accepted on manual review as the same station (abbreviation/punctuation variant), same pattern as phase 1's \"Prestwick Intl Airport\" review.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Morpeth",
+      "crs": "MPT",
+      "aliases": [],
+      "lat": 55.1623761927,
+      "lng": -1.68307448768,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Newsham",
+      "crs": "NWH",
+      "aliases": [],
+      "lat": 55.10284,
+      "lng": -1.5239,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Northumberland Park (T&W)",
+      "crs": "NOP",
+      "aliases": [],
+      "lat": 55.033,
+      "lng": -1.52,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station Coordinates from the candidate dataset (not NaPTAN RailReferences.csv, which is missing this CRS) — see docs/uk-station-fill/source.md. Darwin's own stationName is \"Northumberland Park (T&W)\" (candidate dataset name \"Northumberland Park (Tyne and Wear)\") — accepted on manual review as the same station (abbreviation/punctuation variant), same pattern as phase 1's \"Prestwick Intl Airport\" review.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Pegswood",
+      "crs": "PEG",
+      "aliases": [],
+      "lat": 55.17812915628,
+      "lng": -1.64416577816,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Prudhoe",
+      "crs": "PRU",
+      "aliases": [],
+      "lat": 54.96582807481,
+      "lng": -1.86486554784,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Riding Mill",
+      "crs": "RDM",
+      "aliases": [],
+      "lat": 54.94873591698,
+      "lng": -1.97155498582,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Seaton Delaval",
+      "crs": "SEJ",
+      "aliases": [],
+      "lat": 55.074809,
+      "lng": -1.5382113,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "St Peters (T & W Metro)",
+      "crs": "STZ",
+      "aliases": [],
+      "lat": 54.91144009976,
+      "lng": -1.38380190882,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Stocksfield",
+      "crs": "SKS",
+      "aliases": [],
+      "lat": 54.9470484166,
+      "lng": -1.91675919875,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Widdrington",
+      "crs": "WDD",
+      "aliases": [],
+      "lat": 55.24130609509,
+      "lng": -1.61647340637,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Wylam",
+      "crs": "WYM",
+      "aliases": [],
+      "lat": 54.97497199449,
+      "lng": -1.81406171603,
+      "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }
