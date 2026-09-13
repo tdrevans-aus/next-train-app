@@ -31,6 +31,17 @@ import { getStaleCityReport } from "../lib/providers/gtfs/staleness-registry.js"
 // ignored by the Vercel Node builder (confirmed by inspecting the actual
 // deployed .vc-config.json, which had no "memory" key despite this export
 // declaring one); only vercel.json's functions.<path>.memory took effect.
+//
+// This function is also pinned to region "syd1" in vercel.json's
+// functions["api/health.js"] block (docs/jim-brief-canberra-refresh-region.md,
+// 13 Sep 2026). The Canberra GTFS refresh (below) downloads from
+// www.transport.act.gov.au, which sits behind Cloudflare; Cloudflare serves
+// a managed JS challenge (403, `cf-mitigated: challenge`) to this project's
+// default US egress (iad1) but returns 200 from syd1. Pinning the whole
+// function - rather than only the fetch - is the only way to change which
+// region Vercel actually runs it in. Side effect: the UptimeRobot liveness
+// check now also runs from Sydney instead of the US - fine, same platform,
+// just noted here so it isn't a surprise later.
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
     return;
