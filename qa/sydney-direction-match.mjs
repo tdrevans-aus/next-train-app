@@ -1,17 +1,32 @@
 /**
  * Sydney direction-match gate (FB-62, 10 Sep 2026).
  *
- * Two things this proves, using the same published static GTFS fixture that
- * Vercel production serves from (`gtfsFixtureBlobUrl("sydney")` via
- * `loadGtfsStatic`), so a "match" here is a real captured trip, not a
- * hand-built fixture round-trip:
+ * Offline by construction (since 13 Sep 2026): this gate used to call
+ * `loadGtfsStatic` against `gtfsFixtureBlobUrl("sydney")` — a full static-zip
+ * download from the Vercel Blob store on every `--smoke` and CI run — and was
+ * the last smoke-tier consumer of the Blob transfer allowance after PR #357
+ * moved the seven dogfood gates onto local fixtures (the 10 Sep 2026
+ * exhaustion took seven live cities down). It now reads the trimmed local
+ * fixture at qa/fixtures/gtfs-snapshots/sydney/ via `loadLocalGtfsSnapshot`
+ * (qa/lib/local-gtfs-snapshot.mjs → `loadGtfsStaticFromDirectory`), and
+ * `globalThis.fetch` is stubbed to throw before any other import runs so a
+ * future change that reintroduces a live call fails loudly here (same shape
+ * as qa/brussels-planned-gate.mjs). The fixture's README says what its trip
+ * rows are: one representative trip per (station, chip) pair asserted below,
+ * with the catalog's real stop ids, real T-line short names and verbatim
+ * CHIP_HEADSIGN_GROUPS headsigns — so this is a logic check that chip
+ * matching works against the shapes the real feed uses. Whether the
+ * currently published snapshot still carries those headsigns is
+ * qa/prod-sweep.mjs's job, on a schedule.
+ *
+ * Two things this proves:
  *
  *  1. No catalog station offers an empty direction list, except a station
  *     recorded in line-map.json `suppressedTermini` (Helensburgh SCO — out of
  *     modes v1, see hazard-pack.md).
  *  2. Every chip FB-62 touches — the new "T2/T3/T8 City Circle" city-bound
  *     chips, and the outbound chips they now sit alongside — matches at least
- *     one real scheduled GTFS trip, both network-wide and at each of the
+ *     one scheduled GTFS trip, both network-wide and at each of the
  *     specific stations named in the brief's acceptance criteria 1–2
  *     (Macarthur, Campbelltown, Revesby, Leppington, Liverpool). T6/T7
  *     (Bankstown, Olympic Park) are pinned unchanged: FB-62 investigated them
@@ -31,13 +46,24 @@
  * out of scope for FB-62 and not something this gate should fail CI over.
  *
  * Usage: node qa/sydney-direction-match.mjs
+ *   SYDNEY_DIRECTION_MATCH_FIXTURE=<dir> points the gate at a different
+ *   fixture directory; qa/sydney-direction-match-negative.mjs uses it to prove
+ *   the gate still fails when a chip has no matching trip.
  */
+globalThis.fetch = async (input) => {
+  throw new Error(
+    `sydney-direction-match: network access is forbidden in this gate (attempted fetch: ${
+      typeof input === "string" ? input : input?.url ?? input
+    }) — it reads qa/fixtures/gtfs-snapshots/sydney/ instead`
+  );
+};
+
 import {
   SYDNEY_TIME_ZONE,
   listCatalogStations,
 } from "../lib/providers/sydney.js";
-import { loadGtfsStatic } from "../lib/providers/gtfs/static-cache.js";
-import { gtfsFixtureBlobUrl } from "../lib/providers/gtfs/blob-fixtures.js";
+import { loadGtfsStaticFromDirectory } from "../lib/providers/gtfs/static-cache.js";
+import { loadLocalGtfsSnapshot } from "./lib/local-gtfs-snapshot.mjs";
 import {
   marketingLabelsForStation,
   tripMatchesMarketingChip,
@@ -65,11 +91,18 @@ function normalizeKey(value) {
 
 const suppressed = new Set((lineMap.suppressedTermini ?? []).map(normalizeKey));
 
-const staticData = await loadGtfsStatic({
-  url: gtfsFixtureBlobUrl("sydney"),
-  routeTypes: ["2", "401"],
-  timeZone: SYDNEY_TIME_ZONE,
-});
+const fixtureOverride = process.env.SYDNEY_DIRECTION_MATCH_FIXTURE;
+const staticData = fixtureOverride
+  ? loadGtfsStaticFromDirectory(fixtureOverride, {
+      routeTypes: ["2", "401"],
+      timeZone: SYDNEY_TIME_ZONE,
+      sourceUrl: `local-fixture:${fixtureOverride}`,
+    })
+  : loadLocalGtfsSnapshot("sydney", { routeTypes: ["2", "401"], timeZone: SYDNEY_TIME_ZONE });
+assert(
+  staticData.tripsById.size > 0,
+  `fixture at ${staticData.sourceUrl} has no trips — nothing to match chips against`
+);
 
 const stations = listCatalogStations();
 const stationsByName = new Map(stations.map((s) => [s.name, s]));
@@ -187,7 +220,7 @@ assert(
 );
 
 console.log(
-  `sydney-direction-match: ok (${stations.length} stations, no unrecorded empty direction lists; ` +
-    "T2/T3/T8 City Circle chips match real scheduled trips network-wide and at every FB-62 acceptance station; " +
+  `sydney-direction-match: ok (offline, ${staticData.sourceUrl}; ${stations.length} stations, no unrecorded empty direction lists; ` +
+    "T2/T3/T8 City Circle chips match scheduled fixture trips network-wide and at every FB-62 acceptance station; " +
     "T6/T7 pinned unchanged; M1/T1/T4/T5/T9 spot-checked unchanged)"
 );

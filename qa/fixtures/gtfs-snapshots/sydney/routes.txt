@@ -1,1 +1,6 @@
 route_id,agency_id,route_short_name,route_long_name,route_type
+T2,SydneyTrains,T2,Inner West & Leppington Line,2
+T3,SydneyTrains,T3,Bankstown Line,2
+T6,SydneyTrains,T6,Lidcombe & Bankstown Line,2
+T7,SydneyTrains,T7,Olympic Park Line,2
+T8,SydneyTrains,T8,Airport & South Line,2

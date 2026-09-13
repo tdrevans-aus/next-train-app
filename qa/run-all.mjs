@@ -53,6 +53,7 @@ const SMOKE_SCRIPTS = [
   "directions-error-messaging.mjs",
   "sydney-dogfood-gate.mjs",
   "sydney-direction-match.mjs",
+  "sydney-direction-match-negative.mjs",
   "sydney-banksia-perth-route.mjs",
   "sydney-new-journey-not-perth.mjs",
   "nearby-region-preference.mjs",

@@ -39,9 +39,24 @@ const FIXTURES_ROOT = join(__dirname, "../fixtures/gtfs-snapshots");
  *   calendarDates, timeZone, ...) — enough for `assertSnapshotNotStaleTodayOrSkip`.
  */
 export function loadLocalGtfsSnapshotForStaleCheck(cityId, timeZone = "UTC") {
+  return loadLocalGtfsSnapshot(cityId, { timeZone });
+}
+
+/**
+ * General form: the same local fixture directory, with any of
+ * `loadGtfsStaticFromDirectory`'s filters (routeTypes, railOnly, agencyIds, …)
+ * passed through — for gates that need the fixture's trips/stop_times, not
+ * just its calendar (e.g. qa/sydney-direction-match.mjs, which asserts chip
+ * matches against the trimmed trip rows in qa/fixtures/gtfs-snapshots/sydney/).
+ *
+ * @param {string} cityId Matches the fixture directory name under qa/fixtures/gtfs-snapshots/.
+ * @param {object} [options] Forwarded to loadGtfsStaticFromDirectory; `timeZone` defaults to UTC.
+ */
+export function loadLocalGtfsSnapshot(cityId, options = {}) {
   const directory = join(FIXTURES_ROOT, cityId);
   return loadGtfsStaticFromDirectory(directory, {
-    timeZone,
-    sourceUrl: `local-fixture:${cityId}`,
+    ...options,
+    timeZone: options.timeZone ?? "UTC",
+    sourceUrl: options.sourceUrl ?? `local-fixture:${cityId}`,
   });
 }
