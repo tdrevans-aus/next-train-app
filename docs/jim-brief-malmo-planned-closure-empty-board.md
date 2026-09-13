@@ -64,3 +64,26 @@ so and, when the static feed can tell us, say when service resumes:
 Worktree; copy this brief in; commit, push, open a PR titled "Board: explain empty boards during
 planned closures (nextServiceDate)" linking this brief and marked **tim-review** in the
 description with the proposed copy string.
+
+## Round 2 (14 Sep 2026) — Mark FAIL on PR #381
+
+Mark's note: https://github.com/tdrevans-aus/next-train-app/pull/381#issuecomment-5654497050
+
+`lib/providers/malmo.js` `fetchStationBoard()` (about line 227) rebuilds its return object as
+`{ stationName, lastUpdate, trips, realtime }` and drops `board.nextServiceDate`, so the live
+`/api/board?city=malmo&station=Bjuv` response has no field at all. The computation itself is
+right (Mark probed `findNextServiceDate` against the real snapshot: `2026-11-09`).
+
+Fix on the existing PR branch (`jim/...` branch of #381), not a new PR:
+
+1. Pass `nextServiceDate` through in `malmo.js` — and check every other GTFS city wrapper that
+   rebuilds the board object the same way (grep `fetchGtfsRealtimeBoard(` callers) so the field
+   survives for all of them, not just Malmö.
+2. Add an end-to-end assertion that goes through the real wrapper path: extend
+   `qa/planned-closure-empty-board.mjs` (still offline, still synthetic fixture) to call the
+   Malmö dogfood path (`getMalmoDogfoodNextTrain` or the equivalent entry `api/board.js` uses)
+   with the fixture injected, and assert the field appears per direction entry. If injection
+   isn't possible offline, add the assertion to `qa/malmo-dogfood-gate.mjs` behind the existing
+   live-token skip.
+3. Re-run the named scripts and `--smoke`, push to the same branch, comment on the PR that
+   round 2 is ready.

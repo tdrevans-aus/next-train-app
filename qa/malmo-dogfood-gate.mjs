@@ -15,8 +15,9 @@ import { MALMO_HUB, mapMalmoDestination } from "../lib/cities/malmo/marketing-di
 import {
   listMalmoDogfoodStations,
   getMalmoDogfoodDirections,
+  getMalmoDogfoodNextTrain,
 } from "../lib/cities/malmo/dogfood-next-train.js";
-import { tripAllowed, malmoLineId, MALMO_TIMEZONE } from "../lib/providers/malmo.js";
+import { tripAllowed, malmoLineId, MALMO_TIMEZONE, fetchStationBoard } from "../lib/providers/malmo.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 
@@ -171,6 +172,53 @@ if (previous === undefined) {
 await assertSnapshotNotStaleTodayOrSkip("malmo", () =>
   loadLocalGtfsSnapshotForStaleCheck("malmo", MALMO_TIMEZONE)
 );
+
+// Round 2 (docs/jim-brief-malmo-planned-closure-empty-board.md): end-to-end assertion that
+// nextServiceDate, computed correctly by the shared GTFS board helper, actually survives
+// malmo.js's fetchStationBoard() and getMalmoDogfoodNextTrain() wrappers — the bug Mark's
+// round-1 PR #381 review caught was the wrapper's return object literal silently dropping
+// the field. Bjuv is mid-closure (Trafikverket Skånebanan works, 9 Sep – 9 Nov 2026), so its
+// board is genuinely empty and nextServiceDate must be populated. malmo.js's static loader
+// has no injection point, so this is a live fetch of the published Vercel Blob snapshot (one
+// download, no Trafiklab key needed — it's a public blob URL) rather than the offline
+// synthetic fixture qa/planned-closure-empty-board.mjs uses; it's wrapped to skip rather than
+// fail when the snapshot itself isn't reachable from this environment, same "Missing*"/network
+// skip pattern as assertSnapshotNotStaleTodayOrSkip above.
+try {
+  const bjuvBoard = await fetchStationBoard("Bjuv");
+  assert(
+    Array.isArray(bjuvBoard.trips) && bjuvBoard.trips.length === 0,
+    "Bjuv: expected an empty board during the Skånebanan closure"
+  );
+  assert(
+    typeof bjuvBoard.nextServiceDate === "string" && bjuvBoard.nextServiceDate.length > 0,
+    `Bjuv: expected fetchStationBoard() to surface nextServiceDate, got ${JSON.stringify(bjuvBoard.nextServiceDate)}`
+  );
+
+  const dogfoodResponse = await getMalmoDogfoodNextTrain({
+    station: "Bjuv",
+    destination: "Helsingborg C",
+    destinationLabel: "Helsingborg C",
+    leaveBeforeMinutes: 60,
+    refreshSeconds: 60,
+  });
+  assert(
+    dogfoodResponse.nextServiceDate === bjuvBoard.nextServiceDate,
+    "Bjuv: getMalmoDogfoodNextTrain must surface the same nextServiceDate as fetchStationBoard()"
+  );
+  console.log(
+    `malmo-dogfood-gate: Bjuv end-to-end nextServiceDate ok (${dogfoodResponse.nextServiceDate})`
+  );
+} catch (error) {
+  if (
+    String(error?.name || "").startsWith("Missing") ||
+    /fetch failed|ENOTFOUND|ECONNREFUSED|ETIMEDOUT/i.test(String(error?.message || ""))
+  ) {
+    console.log(`malmo-dogfood-gate: Bjuv nextServiceDate end-to-end check skipped (${error.message})`);
+  } else {
+    throw error;
+  }
+}
 
 console.log(
   "malmo-dogfood-gate: ok (tester-live, dispatch ready, bundled chips, Öresundståg/Krösatågen shown, Malmö C hub, no raw-corridor leaks, snapshot not stale today)"
