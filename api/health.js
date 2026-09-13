@@ -26,11 +26,7 @@ import { getStaleCityReport } from "../lib/providers/gtfs/staleness-registry.js"
  * passed into runGtfsRefresh() as `putImpl` rather than gtfs-refresh.js
  * importing the package itself.
  */
-// memory + maxDuration are set in vercel.json's "functions" block instead
-// of here - a `memory` field in this in-file config export is silently
-// ignored by the Vercel Node builder (confirmed by inspecting the actual
-// deployed .vc-config.json, which had no "memory" key despite this export
-// declaring one); only vercel.json's functions.<path>.memory took effect.
+// maxDuration is set in vercel.json's "functions" block instead of here.
 //
 // This function is also pinned to region "syd1" in vercel.json's
 // functions["api/health.js"] block (docs/jim-brief-canberra-refresh-region.md,
@@ -42,6 +38,20 @@ import { getStaleCityReport } from "../lib/providers/gtfs/staleness-registry.js"
 // region Vercel actually runs it in. Side effect: the UptimeRobot liveness
 // check now also runs from Sydney instead of the US - fine, same platform,
 // just noted here so it isn't a surprise later.
+//
+// Function memory/CPU is NOT settable via vercel.json on this project, at
+// all - confirmed on a real deployment (docs/jim-brief-vercel-memory-not-
+// applied.md, 13 Sep 2026): `vercel deploy` prints "Provided `memory`
+// setting in vercel.json is ignored on Active CPU billing" and
+// `vercel inspect --json` on the resulting deployment showed every
+// function, including this one, at memorySize 2048 regardless of what
+// vercel.json requested. This project runs on Fluid Compute / Active CPU
+// billing, where memory is a project-wide dashboard setting, not a
+// per-function vercel.json override: Settings -> Functions -> Advanced
+// Settings -> Function CPU, choosing Standard (2 GB / 1 vCPU, the current
+// default) or Performance (4 GB / 2 vCPUs). A vercel.json "memory" key was
+// removed from this project's functions block because it was silently
+// inert - do not re-add one.
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
     return;
