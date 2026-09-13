@@ -49,6 +49,7 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | Shipped | **2.5.6** | **22** | — | Rotterdam RET metro tester-live; Near me Got it dismiss |
 | Shipped | **2.5.7** | **23** | `v2.5.7` | Auckland tester-live; AU D1 packs; nearest hide when GPS is another region |
 | **Public launch** | **3.0.0** | **24** | `v3.0.0` | 33 cities across AU/UK/SE/FI/NO; NZ/NL/Canada retired; London catalog coverage; Sydney City Circle; production sweep — see `docs/release-notes-3.0.0.md` |
+| Security + consent fixes | **3.0.1** | **25** | `v3.0.1` | Fixes-only PATCH ahead of Play production submission: EU/UK ad consent, security hardening (release cleartext off, test deep link removed) — see `docs/release-notes-3.0.1.md` |
 
 Update this table when you ship.
 

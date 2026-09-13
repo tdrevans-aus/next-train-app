@@ -5,7 +5,7 @@
 
 **Why MAJOR:** `docs/release-versioning.md` reserves a major bump for "public launch, second city,
 breaking API". This release is the first two at once — public launch, and the app going from a Perth
-app with a handful of extras to a **33-city** departure board across six countries.
+app with a handful of extras to a **33-city** departure board across five countries.
 
 ---
 
@@ -27,7 +27,7 @@ app with a handful of extras to a **33-city** departure board across six countri
 | Country | Cities / regions |
 |---|---|
 | Australia | Perth, Sydney, Brisbane, Adelaide, Canberra, Gold Coast, Newcastle |
-| United Kingdom | 18 regions — London TfL, London & South East National Rail, West Midlands, Greater Manchester, Liverpool City Region, Greater Anglia, West Yorkshire, South Yorkshire, East Midlands, North East, West of England, Southwest, Cumbria, South Wales, Rest of Wales, Glasgow, Edinburgh, Rest of Scotland, Solent, Thames Valley |
+| United Kingdom | 20 regions — London TfL, London & South East National Rail, West Midlands, Greater Manchester, Liverpool City Region, Greater Anglia, West Yorkshire, South Yorkshire, East Midlands, North East, West of England, Southwest, Cumbria, South Wales, Rest of Wales, Glasgow, Edinburgh, Rest of Scotland, Solent, Thames Valley |
 | Sweden | Stockholm, Göteborg, Malmö, Uppsala |
 | Finland | Helsinki |
 | Norway | Oslo |
