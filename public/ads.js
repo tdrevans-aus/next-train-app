@@ -461,6 +461,10 @@ window.NextTrainAds = {
   reload: initAds,
   hideNativeBanner: hideNativeBannerSafe,
   syncOverlaySuppression: queueAdOverlaySuppressionSync,
+  // Exposed so Menu → Privacy options (public/app.js) can check
+  // NextTrainAdsNative.isPrivacyOptionsRequired() without duplicating the
+  // lazy-load-on-first-use logic that already lives here.
+  ensureNativeAdsBridge,
 };
 
 window.addEventListener("load", () => {

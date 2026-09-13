@@ -116,6 +116,8 @@ const menuDialog = document.getElementById("menu-dialog");
 const menuAppVersionEl = document.getElementById("menu-app-version");
 const menuHelpBtn = document.getElementById("menu-help-btn");
 const menuFeedbackBtn = document.getElementById("menu-feedback-btn");
+const menuPrivacyOptionsBtn = document.getElementById("menu-privacy-options-btn");
+const menuPrivacyOptionsSep = document.getElementById("menu-privacy-options-sep");
 const settingsListView = document.getElementById("settings-list-view");
 const settingsDetailView = document.getElementById("settings-detail-view");
 const journeysDetailChrome = document.getElementById("journeys-detail-chrome");
@@ -6562,11 +6564,35 @@ async function refreshMenuAppVersionLabel() {
   }
 }
 
+/**
+ * D-01 (docs/dwayne-security-review-play-3.0.0.md, docs/jim-brief-eu-ad-consent.md):
+ * Google requires an ongoing way for a user to change ad consent. Shown only
+ * when the AdMob UMP SDK says it's required (EEA/UK, not ad-free) — never on
+ * web, never for AU-only users.
+ */
+async function syncPrivacyOptionsMenuItem() {
+  if (!menuPrivacyOptionsBtn || !window.Capacitor?.isNativePlatform?.()) {
+    return;
+  }
+  let required = false;
+  try {
+    await window.NextTrainAds?.ensureNativeAdsBridge?.();
+    required = Boolean(await window.NextTrainAdsNative?.isPrivacyOptionsRequired?.());
+  } catch {
+    required = false;
+  }
+  menuPrivacyOptionsBtn.hidden = !required;
+  if (menuPrivacyOptionsSep) {
+    menuPrivacyOptionsSep.hidden = !required;
+  }
+}
+
 function openMenu() {
   dismissLeaveHint();
   window.NextTrainAdFree?.renderMenuAdFree?.();
   window.nextTrainWidget?.refreshNativeWidgetMenuItems?.();
   void refreshMenuAppVersionLabel();
+  void syncPrivacyOptionsMenuItem();
   openAppDialog(menuDialog);
   menuBtn?.setAttribute("aria-expanded", "true");
   menuChromeAction?.classList.add("chrome-action--open");
@@ -6970,6 +6996,15 @@ feedbackDialog?.addEventListener("click", (event) => {
 feedbackDialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
   closeFeedbackDialog();
+});
+menuPrivacyOptionsBtn?.addEventListener("click", async (event) => {
+  event.preventDefault();
+  try {
+    await window.NextTrainAds?.ensureNativeAdsBridge?.();
+    await window.NextTrainAdsNative?.showPrivacyOptionsForm?.();
+  } catch (error) {
+    console.warn("Could not open privacy options form", error);
+  }
 });
 menuHelpBtn?.addEventListener("click", () => {
   helpOpenedFromMenu = true;
