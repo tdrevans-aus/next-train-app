@@ -3,7 +3,7 @@
  * Usage: node qa/route-pin-after-nearby-pin.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 
 async function readHero(page) {
   return page.evaluate(() => {
@@ -39,7 +39,7 @@ async function run() {
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
     try {
-      await page.goto("http://localhost:3000/?reset=1&test=1&fixture=normal");
+      await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
       await page.evaluate(() => {
         localStorage.setItem(
           "nextTrainSettings",
@@ -62,7 +62,7 @@ async function run() {
         localStorage.setItem("nextTrainOnboardingDone", "1");
       });
 
-      await page.goto("http://localhost:3000/?test=1&fixture=normal");
+      await page.goto(`${BASE}/?test=1&fixture=normal`);
       await page.evaluate(async () => {
         await window.nextTrainApp.enterNearbyMode();
       });

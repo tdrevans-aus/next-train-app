@@ -13,7 +13,7 @@ import {
 } from "./helpers/journeys-dialog.mjs";
 import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const VIEWPORT = { width: 390, height: 844 };
 const TOLERANCE_PX = 2;
 

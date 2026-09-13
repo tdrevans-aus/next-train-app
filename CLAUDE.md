@@ -19,6 +19,11 @@
 
 A single city gate can also be run directly (`node qa/<city>-dogfood-gate.mjs`) for a tight loop.
 
+Each `run-all.mjs` invocation gets its own dev server on a free port it picks at runtime, so
+parallel runs from different worktrees are safe (docs/jim-brief-qa-port-per-worktree.md, 13 Sep
+2026) — never attach to a server another run started. To point a run at a server you started
+yourself, set `QA_BASE=http://localhost:<port>` and `QA_ATTACH=1`.
+
 ## Board eligibility — the walk-up rule (adopted 30 Aug 2026)
 
 What appears on a station board is governed by `docs/board-eligibility-rule.md`: a board must

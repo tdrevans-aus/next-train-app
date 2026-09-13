@@ -5,8 +5,7 @@
  * Usage: node qa/fetchjson-deps-ok.mjs
  */
 import { chromium } from "playwright";
-
-const BASE = process.env.QA_BASE || "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });

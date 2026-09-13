@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 import { openJourneysLibrary } from "./helpers/travel-library.mjs";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const PHONE_VIEWPORT = { width: 412, height: 915 };
 
 function evaluateCoachOverlap() {

@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 import { openJourneysLibraryDialog } from "./helpers/journeys-dialog.mjs";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function dismissCoach(page) {
   const skip = page.locator("#template-wizard-skip-btn");

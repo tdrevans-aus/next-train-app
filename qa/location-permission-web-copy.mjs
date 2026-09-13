@@ -7,7 +7,7 @@
 import { chromium } from "playwright";
 import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function readMessage(page, platform) {
   // Playwright serializes addInitScript's argument through structured clone,

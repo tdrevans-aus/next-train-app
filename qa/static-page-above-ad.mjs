@@ -9,7 +9,7 @@ import {
   NATIVE_AD_GAP_PX,
 } from "./helpers/native-ad-sim.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const VIEWPORT = { width: 390, height: 844 };
 
 const STATIC_PAGES = [

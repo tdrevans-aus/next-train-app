@@ -4,7 +4,7 @@
  * Usage: node qa/sanitize-journey-pin-fields.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 
 async function run() {
   let serverChild = null;
@@ -18,7 +18,7 @@ async function run() {
         pageErrors.push(String(error?.message ?? error));
       });
 
-      await page.goto("http://localhost:3000/?reset=1&test=1&fixture=normal");
+      await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
       await page.waitForFunction(
         () =>
           typeof window.nextTrainPinState?.sanitizeJourneyPinFields === "function" &&

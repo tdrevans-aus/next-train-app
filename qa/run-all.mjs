@@ -13,6 +13,11 @@
  * Local runs cap each script at 10 min (heavier of that and the CI ceiling).
  * Override all script limits with QA_SCRIPT_TIMEOUT_MS.
  *
+ * Local runs pick a free port per invocation and spawn their own dev-server.js
+ * on it — safe to run from several worktrees at once. To point a run at a
+ * server you started yourself instead, set QA_BASE=http://localhost:XXXX and
+ * QA_ATTACH=1 (docs/jim-brief-qa-port-per-worktree.md).
+ *
  * Only top-level qa/*.mjs files are suite candidates. One-off bug repros live
  * in qa/repros/ and debug utilities in qa/tools/ — both invisible to the full
  * suite's glob on purpose. A new gate belongs in qa/ root; a new repro or
@@ -22,7 +27,7 @@ import { spawn } from "child_process";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { ensureDevServer, stopDevServer, REPO_ROOT } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, REPO_ROOT, BASE } from "./helpers/dev-server.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -150,6 +155,7 @@ const SMOKE_SCRIPTS = [
   "lib-bare-import-gate.mjs",
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
+  "no-hardcoded-qa-port.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -306,6 +312,8 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
    */
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
+  /** Pure static-text scan of qa/*.mjs for hardcoded :3000; no dev server. */
+  "no-hardcoded-qa-port.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
@@ -542,11 +550,11 @@ async function main() {
   let serverChild = null;
 
   if (needsServer) {
-    serverChild = await ensureDevServer({ force: process.env.CI === "true" });
+    serverChild = await ensureDevServer({ force: process.env.CI === "true", isRunner: true });
     if (serverChild) {
-      console.log("Started dev-server.js on http://localhost:3000\n");
+      console.log(`Started dev-server.js on ${BASE}\n`);
     } else {
-      console.log("Using existing server on http://localhost:3000\n");
+      console.log(`Using existing server on ${BASE} (QA_ATTACH=1)\n`);
     }
   }
 

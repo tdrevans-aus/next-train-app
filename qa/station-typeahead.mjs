@@ -9,7 +9,7 @@ import {
   waitForDetailStationCombobox,
 } from "./helpers/station-combobox.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function dismissCoach(page) {
   const skip = page.locator("#template-wizard-skip-btn");

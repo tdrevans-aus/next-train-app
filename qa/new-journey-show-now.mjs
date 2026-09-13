@@ -7,7 +7,7 @@ import { pickStationCombobox } from "./helpers/station-combobox.mjs";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function dismissCoach(page) {
   const skip = page.locator("#template-wizard-skip-btn");

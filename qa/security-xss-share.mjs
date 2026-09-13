@@ -4,7 +4,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const ATTACK_STATION = "<img src=x onerror=alert(1)>";
 const VALID_STATION = "Edgewater Stn";
 

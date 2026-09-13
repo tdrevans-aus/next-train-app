@@ -5,7 +5,7 @@
 import { chromium } from "playwright";
 import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const SETTINGS_KEY = "nextTrainSettings";
 
 async function run() {

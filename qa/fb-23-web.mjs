@@ -11,7 +11,7 @@ import {
   seedMixedJourneys,
 } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 function fail(message, detail) {
   console.error(`FAIL — ${message}`, detail ?? "");

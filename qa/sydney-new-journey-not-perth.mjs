@@ -6,7 +6,7 @@
 import { chromium } from "playwright";
 import { dismissTemplateWizardCoach, openJourneySetup } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const PERTH = { latitude: -31.7739, longitude: 115.7716 };
 
 function isPerthDefaultRoute(station, direction, coachText) {

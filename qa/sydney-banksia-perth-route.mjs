@@ -13,7 +13,7 @@ import {
   seedPersistedJourneys,
 } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 function isClockTime(text) {
   return /^\d{1,2}:\d{2}/.test(String(text || "").trim());

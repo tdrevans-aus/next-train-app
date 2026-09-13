@@ -3,7 +3,7 @@
  * Usage: node qa/nearby-swipe-no-stale-flash.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 
 async function swipeHeroLeft(page) {
   const hero = page.locator("#hero");
@@ -39,7 +39,7 @@ async function run() {
       await route.continue();
     });
 
-    await page.goto("http://localhost:3000/?reset=1&test=1&fixture=normal");
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
     await page.evaluate(async () => {
       localStorage.setItem("nextTrainOnboardingDone", "1");
       await window.nextTrainApp.enterNearbyMode();

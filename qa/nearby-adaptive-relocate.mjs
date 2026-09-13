@@ -5,7 +5,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const CACHE_KEY = "nextTrainLastNearbyStation";
 const EDGEWATER = { latitude: -31.7872, longitude: 115.7723 };
 const JOONDALUP = { latitude: -31.7444, longitude: 115.7656 };

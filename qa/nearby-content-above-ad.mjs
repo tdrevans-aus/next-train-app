@@ -6,7 +6,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const VIEWPORT = { width: 390, height: 844 };
 const GAP_PX = 4;
 const MANY_DIRECTIONS = [
