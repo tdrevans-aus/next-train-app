@@ -107,6 +107,18 @@ const REFRESH_STALE_AFTER_MS = 30 * 60 * 60 * 1000;
  * construction and with global.fetch stubbed (no real network), that this
  * fetch always cache-busts rather than trusting an edge copy of the status
  * record (docs/jim-brief-refresh-status-cache-and-memory.md, 13 Sep 2026).
+ *
+ * Also catches a *partial* failure (docs/jim-brief-prod-sweep-refresh-failed-
+ * alarm.md, 13 Sep 2026): the writer's `ok` flag is only false when *every*
+ * city fails (`lib/gtfs-refresh.js` buildReport: `ok: failed.length !==
+ * results.length`), so one city failing every night forever is otherwise
+ * invisible — exactly what happened to Canberra from 12 Sep. This function
+ * does not change that writer semantics (other readers may rely on it); it
+ * just also treats any individual `results[]` entry with `ok: false` as a
+ * finding, separately from the "every city failed" and "stale" branches.
+ * `report.skipped[]` (sydney, auckland, wellington, amsterdam, rotterdam,
+ * malmo, uppsala) is a documented allowlist of cities never attempted, not a
+ * failure, and is never part of `results[]`, so it is left out of this count.
  */
 export async function checkRefreshStatus() {
   let response;
@@ -148,6 +160,19 @@ export async function checkRefreshStatus() {
         REFRESH_STALE_AFTER_MS /
         (60 * 60 * 1000)
       ).toFixed(0)}h ago, cron may be crashing again`,
+    };
+  }
+  const failedResults = Array.isArray(report?.results) ? report.results.filter((r) => r && r.ok === false) : [];
+  if ((report?.failed ?? failedResults.length) > 0 || failedResults.length > 0) {
+    const total = report?.results?.length ?? report?.failed + report?.succeeded ?? "?";
+    const named = failedResults
+      .map((r) => `${r.city ?? "unknown"} — ${r.error ?? "no error recorded"}`)
+      .join(", ");
+    return {
+      status: "error",
+      detail: `refresh failed for ${report?.failed ?? failedResults.length}/${total} cities: ${
+        named || "(no per-city detail recorded)"
+      }`,
     };
   }
   return { status: "ok", detail: `last refresh ${report.ranAt}, ${report.succeeded}/${report.results?.length ?? "?"} cities ok` };

@@ -156,6 +156,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
   "gtfs-refresh-status-cache-gate.mjs",
+  "prod-sweep-refresh-failed-gate.mjs",
   "no-hardcoded-qa-port.mjs",
   "ad-consent-gate.mjs",
   "feedback-abuse.mjs",
@@ -316,6 +317,13 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
   "gtfs-refresh-status-cache-gate.mjs",
+  /**
+   * Construction proof (no dev server, no real network - global.fetch is
+   * stubbed): proves qa/prod-sweep.mjs's checkRefreshStatus() alarms on a
+   * single named city's refresh failure, not just an all-cities failure.
+   * docs/jim-brief-prod-sweep-refresh-failed-alarm.md, 13 Sep 2026.
+   */
+  "prod-sweep-refresh-failed-gate.mjs",
   /** Pure static-text scan of qa/*.mjs for hardcoded :3000; no dev server. */
   "no-hardcoded-qa-port.mjs",
 ]);
