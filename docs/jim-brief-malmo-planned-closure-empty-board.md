@@ -87,3 +87,37 @@ Fix on the existing PR branch (`jim/...` branch of #381), not a new PR:
    live-token skip.
 3. Re-run the named scripts and `--smoke`, push to the same branch, comment on the PR that
    round 2 is ready.
+
+## Round 3 (14 Sep 2026) — controller review of round 2 (commit d398a71)
+
+The wrapper fix (malmo.js + uppsala.js) is right. The new end-to-end assertion in
+`qa/malmo-dogfood-gate.mjs` is not acceptable as written, for two reasons:
+
+1. It downloads the Malmö GTFS zip from Vercel Blob on every smoke run. Smoke-tier Blob traffic
+   was deliberately closed on 13 Sep 2026 (`docs/jim-brief-blob-transfer-reduction.md`, PRs #357
+   and #369) after the Hobby transfer cap suspended the store. Only scheduled prod-sweep /
+   integrity gates may hit the store. A "one download" per run across every CI job and every
+   local smoke is what burned it last time.
+2. It hard-codes that Bjuv is mid-closure. On 9 Nov 2026 the board stops being empty and the
+   gate fails for a reason that has nothing to do with the code.
+
+Replace it:
+
+- Give `fetchStationBoard()` in `lib/providers/malmo.js` an optional `loadStatic` override in
+  its `options` (default `loadMalmoStatic`, so production behaviour is unchanged). Same for
+  `uppsala.js` for symmetry.
+- In `qa/malmo-dogfood-gate.mjs`, drive the wrapper with the **local fixture** from
+  `qa/lib/local-gtfs-snapshot.mjs` (`loadLocalGtfsSnapshot("malmo")`) or, if that fixture has
+  no station with a service gap, with the synthetic fixture builder from
+  `qa/planned-closure-empty-board.mjs` (export it) — passing it via `loadStatic` and a fixed
+  `now` inside the gap. Assert `nextServiceDate` survives `fetchStationBoard()` and
+  `getMalmoDogfoodNextTrain()` (thread `loadStatic`/`now` through the dogfood path only if it
+  already accepts options; otherwise assert at the `fetchStationBoard()` level and add the
+  dogfood-level assertion in `qa/planned-closure-empty-board.mjs` with the synthetic fixture).
+  No network, no Blob, no dependence on today's date.
+- Remove the live Bjuv fetch and its skip wrapper entirely.
+- Confirm by running the gate with network disabled (or with the Blob URL env pointed at an
+  unreachable host) that it still passes.
+
+Push to the same branch, re-run the named scripts and `--smoke`, comment on the PR that round 3
+is ready.

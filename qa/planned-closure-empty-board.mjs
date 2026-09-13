@@ -23,8 +23,10 @@ import { loadGtfsStaticFromDirectory } from "../lib/providers/gtfs/static-cache.
 import { findNextServiceDate } from "../lib/providers/gtfs/board.js";
 import { fetchGtfsRealtimeBoard } from "../lib/providers/gtfs/realtime-board.js";
 
-const TIME_ZONE = "UTC";
-const NOW = new Date("2026-09-13T00:00:00Z");
+export const TIME_ZONE = "UTC";
+export const NOW = new Date("2026-09-13T00:00:00Z");
+/** Resumption date baked into the GAP_B calendar_dates.txt row below. */
+export const GAP_RESUMES_ON = "2026-11-09";
 
 function assert(condition, message) {
   if (!condition) {
@@ -32,7 +34,15 @@ function assert(condition, message) {
   }
 }
 
-function buildFixtureDir() {
+/**
+ * Exported (round 3, docs/jim-brief-malmo-planned-closure-empty-board.md) so a city gate can
+ * drive its own real wrapper (e.g. malmo.js's `fetchStationBoard({ loadStatic })`) with this
+ * fixture instead of a live Vercel Blob fetch. `routeLongName`/`routeDesc` are overridable
+ * because a city's `filterTrip` (e.g. Malmö's Pågatåg-only `tripAllowed`) may need the
+ * synthetic route to read as in-scope — the default ("Test Line", no route_desc) is what the
+ * generic tests below use, where no filterTrip is applied.
+ */
+export function buildFixtureDir({ routeLongName = "Test Line", routeDesc = "" } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "planned-closure-fixture-"));
 
   writeFileSync(
@@ -46,7 +56,7 @@ function buildFixtureDir() {
   writeFileSync(
     join(dir, "routes.txt"),
     "route_id,agency_id,route_short_name,route_long_name,route_type,route_desc\n" +
-      "R1,AG,1,Test Line,2,\n"
+      `R1,AG,1,${routeLongName},2,${routeDesc}\n`
   );
 
   writeFileSync(
