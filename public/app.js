@@ -7564,6 +7564,8 @@ function initStationComboboxesFromModule() {
     isNearbyModeActive,
     applyNearbyManualStation,
     getNearbyStationsList,
+    // docs/jim-brief-country-wide-station-picker.md #3: "Your routes" group.
+    getConfiguredJourneys,
   });
 }
 

@@ -7,6 +7,7 @@ import {
   DEFAULT_REFRESH_SECONDS,
   getNextTrainData,
   fetchTripsForStation,
+  PERTH_CLUSTER_STATIONS,
 } from "./lib/train-times.js";
 import {
   FIXTURE_CATALOG,
@@ -17,7 +18,8 @@ import {
 import { checkRateLimit } from "./lib/api-rate-limit.js";
 import { resolveDirectionsForStation } from "./lib/cities/perth/static-directions.js";
 import { resolveAllowedStation } from "./lib/api-station-allowlist.js";
-import { listCities, assertCityLive, getCity } from "./lib/providers/registry.js";
+import { listCities, assertCityLive, getCity, CITIES } from "./lib/providers/registry.js";
+import { isKnownCountry, regionIdsForCountry } from "./lib/cities/country-regions.js";
 import { applyCors } from "./lib/api-cors.js";
 import { isCityProbeAllowed, fetchDevCityBoard } from "./lib/dev-city-board.js";
 import { loadEnvLocal } from "./lib/load-env-local.js";
@@ -566,6 +568,92 @@ app.get("/api/city-stations", (req, res) => {
 
   res.setHeader("Cache-Control", "public, s-maxage=3600");
   res.json({ city, stations });
+});
+
+// docs/jim-brief-country-wide-station-picker.md: mirrors api/country-stations.js
+// (dev-server.js doesn't auto-route api/*.js — every route is hand-wired here).
+let devPerthStationsCache = null;
+function loadDevPerthStations() {
+  if (devPerthStationsCache) {
+    return devPerthStationsCache;
+  }
+  const perthStationSet = new Set(PERTH_CLUSTER_STATIONS);
+  const canonicalPerthStation = PERTH_CLUSTER_STATIONS[0];
+  try {
+    const rawNames = JSON.parse(readFileSync(join(__dirname, "public", "stations.json"), "utf8"));
+    const coords = JSON.parse(readFileSync(join(__dirname, "public", "station-coords.json"), "utf8"));
+    const collapsed = [];
+    let perthAdded = false;
+    for (const name of Array.isArray(rawNames) ? rawNames : []) {
+      if (perthStationSet.has(name)) {
+        if (!perthAdded) {
+          collapsed.push(canonicalPerthStation);
+          perthAdded = true;
+        }
+        continue;
+      }
+      collapsed.push(name);
+    }
+    devPerthStationsCache = collapsed.map((name) => ({
+      name,
+      lat: coords?.[name]?.lat ?? null,
+      lng: coords?.[name]?.lng ?? null,
+      liveFeed: true,
+    }));
+  } catch (error) {
+    console.error("[dev-server] Could not load Perth catalog for country-stations", error);
+    devPerthStationsCache = [];
+  }
+  return devPerthStationsCache;
+}
+
+app.get("/api/country-stations", (req, res) => {
+  if (applyCors(req, res)) {
+    return;
+  }
+  if (!gateRequest(req, res)) {
+    return;
+  }
+
+  const country = String(req.query.country ?? "").trim().toLowerCase();
+  if (!isKnownCountry(country)) {
+    res.status(400).json({ error: "Unknown country", country });
+    return;
+  }
+
+  const regions = [];
+  const stations = [];
+  for (const regionId of regionIdsForCountry(country)) {
+    const entry = CITIES.find((c) => c.id === regionId);
+    if (!entry || entry.status !== "live") {
+      continue;
+    }
+    let regionStations;
+    if (regionId === "perth") {
+      regionStations = loadDevPerthStations();
+    } else if (isMultiCity(regionId)) {
+      regionStations = listMultiCityStations(regionId);
+    } else {
+      continue;
+    }
+    if (!regionStations.length) {
+      continue;
+    }
+    const region = { id: regionId, displayName: entry.displayName };
+    regions.push(region);
+    for (const station of regionStations) {
+      stations.push({
+        name: station.name,
+        lat: station.lat ?? null,
+        lng: station.lng ?? null,
+        liveFeed: station.liveFeed,
+        region,
+      });
+    }
+  }
+
+  res.setHeader("Cache-Control", "public, s-maxage=3600");
+  res.json({ country, regions, stations });
 });
 
 // docs/jim-brief-help-coverage-notes.md: mirrors api/coverage-notes.js so

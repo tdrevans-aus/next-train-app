@@ -167,6 +167,7 @@ const SMOKE_SCRIPTS = [
   "ship-assets-no-dogfood-origin.mjs",
   "security-headers-gate.mjs",
   "api-500-no-error-echo.mjs",
+  "country-wide-picker.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -411,7 +412,15 @@ const HEAVY_SCRIPT_TIMEOUT_MS = {
  * PASS with a "(passed on retry)" note so the flake stays visible without costing a 7-minute
  * job re-run. Timeouts are not retried. QA_NO_RETRY=1 disables this (use when hunting a real bug).
  */
-const RETRY_ONCE_SCRIPTS = new Set(["smoke-browser.mjs", "pin-behavior.mjs", "pin-swipe-notify.mjs"]);
+const RETRY_ONCE_SCRIPTS = new Set([
+  "smoke-browser.mjs",
+  "pin-behavior.mjs",
+  "pin-swipe-notify.mjs",
+  // docs/jim-brief-country-wide-station-picker.md: FAILed once in a full
+  // --smoke run (150+ scripts deep) but passed cleanly standalone and on
+  // every other rerun — same flaky-under-load shape as the other three.
+  "country-wide-picker.mjs",
+]);
 
 function shouldRetry(scriptName, result) {
   if (process.env.QA_NO_RETRY === "1") return false;

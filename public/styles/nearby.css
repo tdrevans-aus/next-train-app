@@ -254,6 +254,35 @@
 .station-combobox-empty {
   color: var(--muted);
   font-size: 0.84rem;
+  padding: 0.55rem 0.7rem;
+}
+
+/* Country-wide picker (docs/jim-brief-country-wide-station-picker.md) */
+.station-combobox-group-header {
+  padding: 0.4rem 0.7rem 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+.station-combobox-group-header--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--line);
+}
+
+.station-combobox-group-header--coming-soon {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.station-combobox-region-tag {
+  color: var(--muted);
+  font-size: 0.8em;
 }
 
 .nearby-station-btn {
