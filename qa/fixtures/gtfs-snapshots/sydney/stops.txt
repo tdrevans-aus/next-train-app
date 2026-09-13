@@ -1,1 +1,8 @@
 stop_id,stop_name,stop_lat,stop_lon
+2560711,Macarthur Station Platform 1,-34.07196991,150.79708025
+2560691,Campbelltown Station Platform 1,-34.06361651,150.81441406
+2212161,Revesby Station Platform 1,-33.95251624,151.01504009
+217934,Leppington Station Platform 1,-33.95448167,150.80839290
+2170821,Liverpool Station Platform 1,-33.92481121,150.92742855
+2200501,Bankstown Station Platform 1,-33.91785943,151.03443831
+2127102,Olympic Park Station Platform 1,-33.84664147,151.06914837

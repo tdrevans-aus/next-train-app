@@ -113,10 +113,28 @@ writeFileSync(
     ? `${calendarDatesText.trim()}\n`
     : "service_id,date,exception_type\n"
 );
-writeFileSync(join(outDir, "stops.txt"), "stop_id,stop_name,stop_lat,stop_lon\n");
-writeFileSync(join(outDir, "routes.txt"), "route_id,agency_id,route_short_name,route_long_name,route_type\n");
-writeFileSync(join(outDir, "trips.txt"), "trip_id,route_id,service_id\n");
-writeFileSync(join(outDir, "stop_times.txt"), "trip_id,arrival_time,departure_time,stop_id,stop_sequence\n");
+// The four non-calendar tables are written header-only UNLESS the fixture
+// already carries data rows in one of them: a city's fixture can double as a
+// trimmed trip fixture for another gate (sydney: qa/sydney-direction-match.mjs
+// reads routes/trips/stop_times from the same directory), and a calendar
+// refresh must not silently wipe those rows.
+const headerOnlyTables = {
+  "stops.txt": "stop_id,stop_name,stop_lat,stop_lon\n",
+  "routes.txt": "route_id,agency_id,route_short_name,route_long_name,route_type\n",
+  "trips.txt": "trip_id,route_id,service_id\n",
+  "stop_times.txt": "trip_id,arrival_time,departure_time,stop_id,stop_sequence\n",
+};
+const preservedTables = [];
+for (const [name, header] of Object.entries(headerOnlyTables)) {
+  const path = join(outDir, name);
+  const hasDataRows =
+    existsSync(path) && readFileSync(path, "utf8").split(/\r?\n/).filter((line) => line.trim()).length > 1;
+  if (hasDataRows) {
+    preservedTables.push(name);
+    continue;
+  }
+  writeFileSync(path, header);
+}
 
 const feedInfoRow = feedInfoText ? parseCsv(feedInfoText)[0] : null;
 const readmeLines = [
@@ -146,10 +164,26 @@ const readmeLines = [
   "zip. That is expected maintenance, not a bug.",
   "",
 ].filter((line) => line !== null);
-writeFileSync(join(outDir, "README.md"), readmeLines.join("\n"));
+const readmePath = join(outDir, "README.md");
+if (preservedTables.length && existsSync(readmePath)) {
+  // A fixture with hand-maintained trip rows has a hand-maintained README
+  // describing them; refresh only the calendar facts in it.
+  const refreshed = readFileSync(readmePath, "utf8")
+    .replace(/^\*\*Source zip:\*\* .*$/m, `**Source zip:** ${zipPath}`)
+    .replace(/^\*\*Extracted:\*\* .*$/m, `**Extracted:** ${new Date().toISOString().slice(0, 10)}`)
+    .replace(
+      /^\*\*Real validity window:\*\* .*$/m,
+      `**Real validity window:** ${range.minDate} .. ${range.maxDate}`
+    );
+  writeFileSync(readmePath, refreshed);
+} else {
+  writeFileSync(readmePath, readmeLines.join("\n"));
+}
 
 console.log(
   `extract-gtfs-calendar-fixture: wrote qa/fixtures/gtfs-snapshots/${city}/ ` +
     `(validity ${range.minDate}..${range.maxDate}, ${sampledRows.length} calendar rows, ` +
-    `calendar_dates ${keepCalendarDates || calendarDatesExtendsRange ? "kept" : "trimmed to header-only"})`
+    `calendar_dates ${keepCalendarDates || calendarDatesExtendsRange ? "kept" : "trimmed to header-only"}` +
+    (preservedTables.length ? `; preserved existing data rows in ${preservedTables.join(", ")}` : "") +
+    ")"
 );
