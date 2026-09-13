@@ -159,3 +159,70 @@ moves to the day after the fixes merge.
 **13 Sep, later:** Tim published the AdMob **European regulations (GDPR) message** for Next Train (Consent,
 Manage options, Do not consent). That was D-01's console prerequisite. D-01 stays open until the UMP code
 lands (`docs/jim-brief-eu-ad-consent.md`) and the consent form is verified on a device.
+
+---
+
+## Re-check — 13 Sep 2026, afternoon
+
+**Against:** `origin/master` @ `43abf1f` (fetched fresh; this is #370, #367, #368, #372, #373, #374, #375
+beyond the morning re-check's `57b6325`). **D-02 checked on the open PR branch** `jim/privacy-copy-3.0.0-v2`
+(`gh pr diff 376`), not master — that PR hasn't merged.
+
+**Trigger:** Tim wants Play public submitted today, production, staged rollout. Re-reading the actual diffs
+and running the three gates myself, not relying on Jim's or Mark's reports.
+
+| Finding | Evidence | Status |
+| --- | --- | --- |
+| **D-01** ad consent | `web-sources/ads-native.mjs` on master now has `ensureConsent()`: calls `requestConsentInfo()`, shows the UMP form when `status === REQUIRED`, fails closed (`canRequestAds: false`) on any error or timeout, and gates both the banner (`showNativeBanner`) and the privacy-options entry point on it. `public/ads.js` and `qa/ad-consent-gate.mjs` (new) exist on master. Ran `node qa/ad-consent-gate.mjs` myself: **PASS** — "UMP consent correctly gates every native ad request" (the logged "UMP unavailable (simulated)" line is the gate's own fail-closed test case, not a real error). Console prerequisite (the GDPR message) was published by Tim on 13 Sep per the prior re-check. | **Closed in code.** Residual: consent form rendering for a real EEA user is a device check only Tim can do — see conditions below. |
+| **D-02** privacy/Data safety copy | Master's `public/privacy.html` is still the stale 24 Aug version (checked directly: `Last updated: 24 August 2026`, no Sentry, no GDPR section). The fix is **PR #376** (`jim/privacy-copy-3.0.0-v2`, OPEN, `tim-review: yes`, mergeable). Read the full diff via `gh pr diff 376`: adds a Sentry crash/diagnostics disclosure, a "Send feedback" section describing the optional email to Formspree, replaces Perth/Transperth-only language with the 33-region AU/UK/SE/FI/NO list, fixes the Remove-ads price (`A$3.99` → `A$7.99`) in both `privacy.html` and the cheat sheet, adds a UK/EEA GDPR section (controller identity, legal basis, rights, international transfer, UMP consent description matching #370 as shipped — correctly describes "no ad request at all" pending consent, not a personalised/non-personalised fallback), updates `docs/play-data-safety-cheatsheet.md` row-by-row, and drops the dead GitHub-issues link from `about.html` (folds in D-11). PR body records `qa/run-all.mjs --smoke` PASS 128/128 from Mark's/Jim's run. | **Open — conditional on #376 merging as reviewed.** Not yet true on master. |
+| **D-03** cleartext in release manifest | `git show origin/master:android/app/src/main/AndroidManifest.xml` — no `usesCleartextTraffic` attribute, no `host="test"` entry. Landed in #367 (`77e35c7`), which moved both to `android/app/src/debug/AndroidManifest.xml` (confirmed: debug manifest carries `usesCleartextTraffic="true"` and the `nexttrain://test/seed` intent-filter, with a comment citing D-08/this review). | **Closed on master.** |
+| **D-04** `/api/feedback` open relay | `git show origin/master:api/feedback.js` — `checkRateLimit(req, res, FEEDBACK_RATE_LIMIT)` with a named `{bucket: "feedback", limit: 5, windowMs: 10*60_000}` bucket, and a honeypot check (`body.website`) that short-circuits to `200 {ok:true}` with no webhook call. Landed in #367. Ran `node qa/feedback-abuse.mjs` myself: **PASS** — "rate limit, honeypot and OPTIONS behaviour all correct." | **Closed on master.** |
+
+**Other gate run:** `node qa/lib-bare-import-gate.mjs` — **PASS**, 150 files reachable from `api/*.js`, no
+bare npm imports outside `api/`. Relevant because of the two mid-September Vercel bare-import outages
+(`@vercel/blob`, `fflate`) that `/api/health` stayed green through; #361 (already on master before this
+re-check window) is the fix for that class of bug and this gate is its regression guard. No new bare-import
+risk introduced by anything in this batch (#373 pins `api/health.js`'s region, #374 removes an inert
+`vercel.json` key, #375 adds a per-city sweep alarm, #368 is a cache-bust, #372 is QA port isolation — none
+touch `lib/`-from-`api/` import shape).
+
+**Not re-litigated:** D-05 through D-11 were "fix after launch" or "Tim action" items in the original review
+and none of today's merges regress them, except D-11 (About's dead GitHub-issues link), which #376 also
+fixes — folded into the D-02 row above rather than given its own line.
+
+### Conditions I cannot verify from code — Tim must confirm before rollout
+
+1. **The UMP consent form actually renders for an EEA/UK user on a device.** The code path is correct and
+   fails closed, but `requestConsentInfo()`'s behaviour depends on Google's live consent decision for this
+   app ID plus the published GDPR message — that only proves out on-device (or via AdMob's debug geography
+   override) after this build installs. If it doesn't render, the fail-closed path means no ads in that
+   region rather than an unconsented ad, so the risk is lost revenue, not a compliance breach — but it
+   should still be checked before or immediately after rollout.
+2. **D-09 Play Console permission declarations** (`USE_FULL_SCREEN_INTENT`, `SCHEDULE_EXACT_ALARM`
+   justification) — unchanged since the original review, still Tim's action in the Play Console, not
+   verifiable from source. Missing them doesn't block submission but silently drops the lock-screen leave-by
+   alarm (FB-34) on Android 14+ if Play revokes FSI by default.
+3. **PR #376 merging as reviewed.** D-02's "closed" status above is conditional on that exact diff (or an
+   equivalent one) landing — if Tim's review changes the substance of the GDPR section, Sentry disclosure, or
+   price, re-check before treating D-02 as closed.
+
+### Outcome
+
+D-01, D-03 and D-04 are closed on `origin/master` @ `43abf1f`, verified by reading the merged source (not
+the PR descriptions) and running `qa/ad-consent-gate.mjs` and `qa/feedback-abuse.mjs` myself in the
+foreground — both PASS. D-02 is not yet true on master; it's a reviewed, mergeable, QA-green open PR
+(#376) that matches what the checklist needs, waiting on Tim's review as its own gate (legal-facing copy).
+
+I'm comfortable signing off **conditional on #376 merging substantially as diffed**, plus the two device/
+console confirmations above that no amount of source-reading can substitute for. This isn't a full
+re-litigation of D-05–D-11 (unchanged, already accepted as post-launch) or a new pen test — same lean
+scope as the checklist.
+
+> I have completed a lean security review of Next Train (Android / Play 3.0.0) against the agreed checklist.
+> D-01, D-03 and D-04 are closed on `origin/master` @ `43abf1f`. D-02 is closed **conditional on PR #376
+> merging as reviewed** (`jim/privacy-copy-3.0.0-v2`) — Tim's copy review, not a code concern. Two items need
+> Tim's confirmation outside source that I cannot verify myself: the UMP consent form rendering for a real
+> EEA/UK user on-device, and the D-09 Play Console permission declarations (`USE_FULL_SCREEN_INTENT`,
+> `SCHEDULE_EXACT_ALARM`). D-05 through D-11 remain accepted for post-launch as before. **Signed off for Play
+> public release (production, staged rollout), conditional on #376 merging and the two confirmations above.**
+> — Dwayne, 13 Sep 2026
