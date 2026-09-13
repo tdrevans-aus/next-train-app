@@ -156,6 +156,7 @@ const SMOKE_SCRIPTS = [
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
   "no-hardcoded-qa-port.mjs",
+  "ad-consent-gate.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
