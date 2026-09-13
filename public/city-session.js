@@ -151,7 +151,19 @@
     // "west-of-england" allow-list entry below for Taunton's own catalog
     // listing, which now legitimately resolves to southwest instead).
     "west-of-england": { minLat: 51.20, maxLat: 51.95, minLng: -3.15, maxLng: -2.10 },
-    "east-midlands": { minLat: 52.25, maxLat: 53.28, minLng: -1.47, maxLng: -0.65 },
+    // Box widened 13 Sep 2026 (UK station fill phase 1, docs/jim-brief-uk-
+    // station-fill-phase1.md): the catalog grew from 6 to 105 rail stations
+    // across Nottinghamshire/Derbyshire/Leicestershire/Northamptonshire/
+    // Rutland/Lincolnshire. Tuned to 98% coverage of this region's own
+    // catalog (Kings Sutton/Northampton, both far-south Northamptonshire
+    // near Thames Valley, are the only two excluded — harmless no-hint, same
+    // trade-off already documented elsewhere in this file). This does
+    // genuinely overlap South Yorkshire (Sheffield/Meadowhall/Rotherham,
+    // Peak District stations sit right on that boundary) and Greater Anglia
+    // (Cambridge/Peterborough/Ely, Lincolnshire's Skegness branch reaches
+    // that far east) — resulting overlaps are allow-listed in
+    // qa/uk-city-bounds-overlap-gate.mjs with reasons.
+    "east-midlands": { minLat: 52.25, maxLat: 53.47, minLng: -1.99, maxLng: 0.34 },
     // minLat/minLng/maxLng widened 7 Sep 2026 (uk-catalog-geocode): Colchester, Stansted
     // Airport, Bishops Stortford (lat), Peterborough (lng), Great Yarmouth/Lowestoft (lng)
     // are real, NaPTAN-verified catalog stations the old box excluded.
@@ -181,14 +193,28 @@
     // first (as it was), every Glasgow/Edinburgh GPS hint silently resolved to
     // rest-of-scotland instead of the city-specific region. Per the order rule
     // above (contained box first), these two now precede it.
-    glasgow: { minLat: 55.80, maxLat: 55.92, minLng: -4.40, maxLng: -4.15 },
-    // maxLat widened from 55.98 to 55.985 (7 Sep 2026, uk-catalog-geocode):
-    // Ocean Terminal (55.980204) is a real, NaPTAN-verified catalog station
-    // that the old 55.98 ceiling excluded by a fraction of a degree.
-    edinburgh: { minLat: 55.88, maxLat: 55.985, minLng: -3.38, maxLng: -3.05 },
+    // Box widened 13 Sep 2026 (UK station fill phase 1): the catalog grew
+    // from 2 to 178 rail stations covering the whole Strathclyde (former
+    // SPT) suburban network — Inverclyde (Gourock, -4.81), Ayrshire to Ayr/
+    // Largs (55.40 lat), Lanarkshire, Dunbartonshire. Genuinely overlaps
+    // edinburgh's box in the Central Belt (both regions' commuter footprints
+    // are geographically adjacent) — resulting per-station overlaps are
+    // allow-listed in qa/uk-city-bounds-overlap-gate.mjs with reasons,
+    // rather than solved with unsupported multi-box logic (same trade-off
+    // already documented above for south-wales/west-of-england).
+    glasgow: { minLat: 55.40, maxLat: 56.01, minLng: -4.89, maxLng: -3.66 },
+    // Box widened 13 Sep 2026 (UK station fill phase 1): the catalog grew
+    // from 3 to 37 rail stations covering the City of Edinburgh plus East/
+    // Midlothian/West Lothian commuter stations into Waverley — North
+    // Berwick (56.06 lat), Bathgate/West Calder (-3.65/-3.79 lng), Falkirk
+    // High. See the glasgow overlap note above.
+    edinburgh: { minLat: 55.82, maxLat: 56.06, minLng: -3.80, maxLng: -2.51 },
     // minLng widened 7 Sep 2026 (uk-catalog-geocode): Kyle of Lochalsh (-5.71) and Mallaig
     // (-5.83) are real, NaPTAN-verified stations the old -5.5 floor excluded.
-    "rest-of-scotland": { minLat: 55.4, maxLat: 58.6, minLng: -5.9, maxLng: -2.0 },
+    // minLat lowered from 55.4 to 54.90 (13 Sep 2026, UK station fill phase 1):
+    // the catalog grew from 9 to 147 stations, reaching south to the
+    // Dumfries/Annan/Borders corridor (Gretna Green area, ~54.91 lat).
+    "rest-of-scotland": { minLat: 54.90, maxLat: 58.6, minLng: -5.9, maxLng: -2.0 },
     "london-se-national-rail": { minLat: 50.7, maxLat: 51.7, minLng: -0.5, maxLng: 0.8 },
     // minLat/minLng widened 7 Sep 2026 (uk-catalog-geocode): Penzance/Truro/St Erth/St
     // Austell/Plymouth/Totnes are real, NaPTAN-verified stations the old 50.5/-4.7 floor

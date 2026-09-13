@@ -129,7 +129,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(GLASGOW_REGION);
-assert(region?.railCount === 2, `glasgow rail count must be 2, got ${region?.railCount}`);
+assert(region?.railCount === 178, `glasgow rail count must be 178 (UK station fill phase 1), got ${region?.railCount}`);
 assert(region?.metroCount === 15, `glasgow metro count must be 15, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -154,7 +154,7 @@ for (const name of ["Buchanan Street", "St Enoch", "Partick", "Govan"]) {
 assert(subwayStops.length === 15, `Subway catalog must have exactly 15 stops, got ${subwayStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 17, `combined catalog must have 17 stations (2 rail + 15 metro), got ${allStations.length}`);
+assert(allStations.length === 193, `combined catalog must have 193 stations (178 rail + 15 metro), got ${allStations.length}`);
 
 // "Option A at n=2" — two independent National Rail groups, neither hub-locked to the other
 // or to the Subway.
@@ -165,7 +165,7 @@ assert(central?.crs === "GLC", "Glasgow Central must resolve with crs GLC");
 assert(queenStreet?.crs === "GLQ", "Glasgow Queen Street must resolve with crs GLQ");
 
 // doNotGroup pairs recorded and enforced structurally (distinct catalog entries, never merged).
-assert(DO_NOT_GROUP_PAIRS.length === 3, "must document three doNotGroup pairs");
+assert(DO_NOT_GROUP_PAIRS.length === 4, "must document four doNotGroup pairs (Buchanan St, St Enoch, Central/Queen St, Partick)");
 const buchananStreet = resolveCatalogEntry("Buchanan Street", "metro");
 assert(buchananStreet?.catalogId === "subway:buchanan-street", "Buchanan Street must resolve as the Subway hub entry");
 assert(buchananStreet?.name !== queenStreet?.name, "Buchanan Street and Glasgow Queen Street must be distinct catalog entries");
@@ -252,7 +252,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Buchanan Street/St Enoch doNotGroup pairs need it to disambiguate).
 const dogfoodStations = listGlasgowDogfoodStations();
-assert(dogfoodStations.length === 17, `dogfood stations must be the 17 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 193, `dogfood stations must be 193 (UK station fill phase 1), got ${dogfoodStations.length}`);
 
 // National Rail board calls: real if DARWIN_LDB_TOKEN is set in this environment
 // (Vercel prod, or exported locally), MissingDarwinTokenError if not (expected
@@ -352,6 +352,20 @@ if (centralProbe.ok) {
     }
     assert(darwinBlocked, `fetchNationalRailBoard(${station}) must throw MissingDarwinTokenError until DARWIN_LDB_TOKEN exists`);
   }
+}
+
+// UK station fill phase 1 (13 Sep 2026): a sample of the newly-added
+// stations must resolve via the catalog and, when a token is present,
+// return a real Darwin board — same skip-with-reason pattern as the termini
+// probes above.
+const partickEntry = resolveCatalogEntry("Partick", "train");
+assert(partickEntry?.crs === "PTK", "Partick (National Rail) must resolve with crs PTK");
+const partickProbe = await probeRailDirections("Partick");
+if (partickProbe.ok) {
+  assert(partickProbe.pack.source === "glasgow-darwin-live", "Partick directions source must be glasgow-darwin-live");
+  assert(Array.isArray(partickProbe.pack.directions), "Partick directions must be an array");
+} else {
+  console.log("glasgow-dogfood-gate: DARWIN_LDB_TOKEN not set — Partick board not probed against a real payload (expected outside Vercel prod).");
 }
 
 // Glasgow Subway: no confirmed GTFS-RT feed exists, and the static candidate's
@@ -477,5 +491,5 @@ assertNoLiveFeedStopsExcluded({
 });
 
 console.log(
-  "glasgow-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 2 rail + 15 Subway stations, 'Option A at n=2' proven at both Glasgow Central and Glasgow Queen Street independently with no hub-lock between them, doNotGroup at Buchanan Street/Glasgow Queen Street and St Enoch/Glasgow Central, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Subway dispatch correctly surfaces GlasgowSubwayFeedUnverifiedError rather than the static Outer/Inner Circle label list, all 15 Subway stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
+  "glasgow-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 178 rail + 15 Subway stations (UK station fill phase 1, 13 Sep 2026), 'Option A at n=2' proven at both Glasgow Central and Glasgow Queen Street independently with no hub-lock between them, doNotGroup at Buchanan Street/Glasgow Queen Street, St Enoch/Glasgow Central and Partick, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Subway dispatch correctly surfaces GlasgowSubwayFeedUnverifiedError rather than the static Outer/Inner Circle label list, all 15 Subway stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
 );

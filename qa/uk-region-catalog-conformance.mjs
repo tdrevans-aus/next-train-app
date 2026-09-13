@@ -79,7 +79,7 @@ if (catalogAll.length !== 110) {
 }
 
 const em = getRegion("east-midlands");
-if (!em || em.railCount !== 6 || em.metroCount !== 4) {
+if (!em || em.railCount !== 105 || em.metroCount !== 4) {
   fail(`east-midlands counts rail=${em?.railCount} metro=${em?.metroCount}`);
 }
 
@@ -420,7 +420,7 @@ if (!rowTertiary || rowTertiary.crs !== "CMN") {
 }
 
 const ros = getRegion("rest-of-scotland");
-if (!ros || ros.railCount !== 9 || ros.metroCount !== 0) {
+if (!ros || ros.railCount !== 147 || ros.metroCount !== 0) {
   fail(`rest-of-scotland counts rail=${ros?.railCount} metro=${ros?.metroCount}`);
 }
 
@@ -450,7 +450,7 @@ for (const [name, crs] of [
   }
 }
 if (resolveRailEntry("Falkirk High", "rest-of-scotland")) {
-  fail("rest-of-scotland must not resolve Falkirk High — unresolved Central Belt boundary, not a catalog station");
+  fail("rest-of-scotland must not resolve Falkirk High — Edinburgh's per docs/united-kingdom-ledger.md section 2");
 }
 
 // london-se-national-rail: FIRST multi-group region, no single hub-lock — 10 boards
@@ -492,7 +492,7 @@ if (resolveRailEntry("Euston", "london-se-national-rail")) {
 // glasgow: TWO independent National Rail groups (no single hub-lock, "Option A at n=2") plus a
 // hub-locked closed-loop Subway (first no-terminus metro in this pipeline).
 const gla = getRegion("glasgow");
-if (!gla || gla.railCount !== 2 || gla.metroCount !== 15) {
+if (!gla || gla.railCount !== 178 || gla.metroCount !== 15) {
   fail(`glasgow counts rail=${gla?.railCount} metro=${gla?.metroCount}`);
 }
 
@@ -541,7 +541,7 @@ if (resolveRailEntry("Buchanan Street", "glasgow")) {
 // termini — plus a hub-locked Trams line with two confirmed termini (standard line+terminus,
 // NOT glasgow Subway's closed-loop model).
 const edi = getRegion("edinburgh");
-if (!edi || edi.railCount !== 3 || edi.metroCount !== 22) {
+if (!edi || edi.railCount !== 37 || edi.metroCount !== 22) {
   fail(`edinburgh counts rail=${edi?.railCount} metro=${edi?.metroCount}`);
 }
 
@@ -557,8 +557,11 @@ for (const name of getNotInRegion("edinburgh")) {
     fail(`False friend ${name} in edinburgh catalog`);
   }
 }
-if (resolveRailEntry("Falkirk High", "edinburgh")) {
-  fail("edinburgh must not resolve Falkirk High — unresolved cross-pack ownership prose, excluded either way");
+// UK station fill phase 1 (13 Sep 2026): Falkirk High is now a real
+// Edinburgh catalog station per docs/united-kingdom-ledger.md section 2.
+const ediFalkirkHigh = resolveRailEntry("Falkirk High", "edinburgh");
+if (!ediFalkirkHigh || ediFalkirkHigh.crs !== "FKK") {
+  fail("edinburgh must resolve Falkirk High with crs FKK (UK station fill phase 1)");
 }
 
 const ediWaverley = resolveRailEntry("Edinburgh Waverley", "edinburgh");
@@ -903,5 +906,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-london-tfl seed, east-midlands 6+4, south-yorkshire 6+12, north-east 3+60, west-of-england 6+0, south-wales 16+0 (re-scope 7 Sep 2026, Valley Lines in-catalog via Darwin), west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 9+0 four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 2+15 two independent NR groups plus closed-loop Subway, edinburgh 3+22 single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-london-tfl seed, east-midlands 105+4 (UK station fill phase 1, 13 Sep 2026), south-yorkshire 6+12, north-east 3+60, west-of-england 6+0, south-wales 16+0 (re-scope 7 Sep 2026, Valley Lines in-catalog via Darwin), west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 147+0 (UK station fill phase 1) four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 178+15 (UK station fill phase 1) two independent NR groups plus closed-loop Subway, edinburgh 37+22 (UK station fill phase 1) single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 4+15 two-agency two-hub-pair shape cross-linked at Manchester Victoria, liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 7+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional)"
 );
