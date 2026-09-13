@@ -6,7 +6,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const PERTH = { latitude: -31.9505, longitude: 115.8605 };
 
 function isClockTime(text) {

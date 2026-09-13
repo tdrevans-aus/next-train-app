@@ -11,7 +11,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE_DIR = path.join(__dirname, "fixtures", "pin-resolution");
@@ -193,8 +193,8 @@ async function runResolutionFixtures(fixtures) {
 
   try {
     const page = await browser.newPage();
-    await page.goto("http://localhost:3000/");
-    await page.addScriptTag({ url: "http://localhost:3000/pin-state.js" });
+    await page.goto(`${BASE}/`);
+    await page.addScriptTag({ url: `${BASE}/pin-state.js` });
 
     const isStub = await page.evaluate(() => Boolean(window.nextTrainPinState?.FB26_STUB));
     if (isStub) {

@@ -3,7 +3,7 @@
  * Usage: node qa/nearby-swipe-after-route-pin.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 
 function perthTodayKey() {
   const parts = new Intl.DateTimeFormat("en-AU", {
@@ -56,7 +56,7 @@ async function run() {
     try {
     const today = perthTodayKey();
 
-    await page.goto("http://localhost:3000/?reset=1&test=1&fixture=normal");
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
     await page.evaluate((dateKey) => {
       localStorage.setItem(
         "nextTrainSettings",
@@ -79,7 +79,7 @@ async function run() {
       localStorage.setItem("nextTrainOnboardingDone", "1");
     }, today);
 
-    await page.goto("http://localhost:3000/?test=1&fixture=normal");
+    await page.goto(`${BASE}/?test=1&fixture=normal`);
     await page.evaluate(async () => {
       await window.nextTrainApp.enterNearbyMode();
     });

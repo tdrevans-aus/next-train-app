@@ -4,7 +4,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const QA_DAY = 1; // Monday
 
 function journeyItem(id, { from, until, target, name = "Journey" }) {

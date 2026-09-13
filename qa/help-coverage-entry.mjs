@@ -10,7 +10,7 @@ import { chromium } from "playwright";
 import { openCustomJourneyCreate } from "./helpers/open-custom-journey.mjs";
 import { openStationSearch } from "./helpers/station-combobox.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 const CASES = [
   { city: "perth", label: "Perth" },

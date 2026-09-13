@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 import { openJourneyDetail } from "./helpers/journeys-dialog.mjs";
 import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });

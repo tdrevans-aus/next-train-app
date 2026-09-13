@@ -3,8 +3,7 @@
  * Usage: node qa/region-selection.mjs
  */
 import { chromium } from "playwright";
-
-const BASE = process.env.QA_BASE || "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const LONDON = { latitude: 51.5074, longitude: -0.1278 };
 const SYDNEY = { latitude: -33.8688, longitude: 151.2093 };
 const PERTH = { latitude: -31.9505, longitude: 115.8605 };

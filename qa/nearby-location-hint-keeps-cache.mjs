@@ -3,7 +3,7 @@
  * Usage: node qa/nearby-location-hint-keeps-cache.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 
 const CACHE_KEY = "nextTrainLastNearbyStation";
 
@@ -20,7 +20,7 @@ async function run() {
     });
     const page = await context.newPage();
     try {
-      await page.goto("http://localhost:3000/?reset=1&fixture=normal");
+      await page.goto(`${BASE}/?reset=1&fixture=normal`);
       await page.evaluate((key) => {
         localStorage.setItem(
           key,
@@ -32,7 +32,7 @@ async function run() {
         );
         localStorage.setItem("nextTrainOnboardingDone", "1");
       }, CACHE_KEY);
-      await page.goto("http://localhost:3000/?fixture=normal");
+      await page.goto(`${BASE}/?fixture=normal`);
 
       await page.waitForFunction(
         () => {

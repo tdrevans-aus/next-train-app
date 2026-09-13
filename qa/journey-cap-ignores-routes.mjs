@@ -5,7 +5,7 @@
 import { chromium } from "playwright";
 import { openJourneysLibrary, seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 function route(id, name, station, direction) {
   return {

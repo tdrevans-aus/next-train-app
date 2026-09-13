@@ -5,7 +5,7 @@
 import { chromium } from "playwright";
 import { clickJourneyListItem } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const CONFIRM_TEXT = "Are you sure you want to delete this journey? This action cannot be undone.";
 
 async function run() {

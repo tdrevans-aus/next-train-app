@@ -14,7 +14,7 @@ import { chromium } from "playwright";
 import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 import { ensureJourneyMode } from "./helpers/journey-smoke.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const JOURNEY_ID = "j-pref";
 // Fixture `normal` trips: +18/+34/+48/+62/+76/+90. Journeys re-derive Active hours
 // to [target−60, target+15] on normalize, so a +90 target is still 30 min before

@@ -11,12 +11,11 @@
  */
 import { chromium } from "playwright";
 import { spawn } from "child_process";
-
-const ORIGIN = "http://localhost:3000";
+import { BASE, DEV_PORT } from "./helpers/dev-server.mjs";
 
 async function serverIsUp() {
   try {
-    const response = await fetch(ORIGIN, { signal: AbortSignal.timeout(1500) });
+    const response = await fetch(BASE, { signal: AbortSignal.timeout(1500) });
     return response.ok;
   } catch {
     return false;
@@ -31,6 +30,7 @@ async function ensureDevServer() {
   const child = spawn(process.execPath, ["dev-server.js"], {
     stdio: "ignore",
     detached: false,
+    env: { ...process.env, PORT: String(DEV_PORT) },
   });
 
   for (let attempt = 0; attempt < 40; attempt++) {
@@ -135,8 +135,8 @@ async function run() {
 
   try {
     const page = await browser.newPage();
-    await page.goto(`${ORIGIN}/`);
-    await page.addScriptTag({ url: `${ORIGIN}/pin-state.js` });
+    await page.goto(`${BASE}/`);
+    await page.addScriptTag({ url: `${BASE}/pin-state.js` });
 
     const available = await page.evaluate(
       () => typeof window.nextTrainPinState?.resolvePinState === "function"

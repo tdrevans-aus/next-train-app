@@ -9,7 +9,7 @@
  * Usage: node qa/nearby-fresh-gps-on-reopen.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 
 const CACHE_KEY = "nextTrainLastNearbyStation";
 const EDGEWATER = { latitude: -31.7872, longitude: 115.7723 };
@@ -82,7 +82,7 @@ async function run() {
       { stale: EDGEWATER, fresh: WARWICK }
     );
 
-    await page.goto("http://localhost:3000/?reset=1&fixture=normal");
+    await page.goto(`${BASE}/?reset=1&fixture=normal`);
     await page.waitForTimeout(400);
     await page.evaluate(
       ({ key }) => {

@@ -14,7 +14,7 @@ import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 function assert(condition, message) {
   if (!condition) {

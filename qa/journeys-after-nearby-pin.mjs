@@ -4,7 +4,7 @@
  * Usage: node qa/journeys-after-nearby-pin.mjs
  */
 import { chromium } from "playwright";
-import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { ensureDevServer, stopDevServer, BASE } from "./helpers/dev-server.mjs";
 import { commuteJourney } from "./helpers/pin-behavior.mjs";
 
 function perthHm(minutesFromNow) {
@@ -36,7 +36,7 @@ async function run() {
     const page = await browser.newPage();
     try {
       const preferredTrainTime = perthHm(34);
-      await page.goto("http://localhost:3000/?reset=1&test=1&fixture=normal");
+      await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
       await page.evaluate((journey) => {
         localStorage.setItem(
           "nextTrainSettings",
@@ -50,7 +50,7 @@ async function run() {
         localStorage.setItem("nextTrainOnboardingDone", "1");
       }, commuteJourney({ preferredTrainTime }));
 
-      await page.goto("http://localhost:3000/?test=1&fixture=normal");
+      await page.goto(`${BASE}/?test=1&fixture=normal`);
       await page.evaluate(async () => {
         await window.nextTrainApp.enterNearbyMode();
       });

@@ -4,7 +4,7 @@
 import { chromium } from "playwright";
 import { openJourneysLibraryDialog } from "./helpers/journeys-dialog.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });

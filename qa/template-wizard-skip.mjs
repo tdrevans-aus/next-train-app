@@ -5,7 +5,7 @@
 import { chromium } from "playwright";
 import { openJourneysLibraryDialog } from "./helpers/journeys-dialog.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function openMorningWizard(page) {
   await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);

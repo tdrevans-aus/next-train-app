@@ -5,7 +5,7 @@
 import { chromium } from "playwright";
 import { pickStationCombobox } from "./helpers/station-combobox.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 async function run() {
   const browser = await chromium.launch({ headless: true });

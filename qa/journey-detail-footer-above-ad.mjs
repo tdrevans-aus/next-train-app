@@ -16,7 +16,7 @@ import {
 } from "./helpers/native-ad-sim.mjs";
 import { seedPersistedJourneys } from "./helpers/travel-library.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const VIEWPORT = { width: 390, height: 844 };
 const FOOTER_BUTTON_IDS = [
   "detail-cancel-btn",

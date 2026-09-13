@@ -10,7 +10,7 @@ import {
   readLeaveRemindersMock,
 } from "./helpers/leave-reminders-native-mock.mjs";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 
 const SEED_JOURNEY = {
   id: "j-commute-strip",

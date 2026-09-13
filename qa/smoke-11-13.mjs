@@ -11,8 +11,7 @@ import {
   enableTargetTrainOnDetail,
 } from "./helpers/journeys-dialog.mjs";
 import { ensureJourneyMode, PERTH_GEO_CONTEXT, waitForMorningTemplateRoute, readMorningTemplateMeta } from "./helpers/journey-smoke.mjs";
-
-const BASE = process.env.QA_BASE || "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const results = [];
 
 function pass(id, notes) {

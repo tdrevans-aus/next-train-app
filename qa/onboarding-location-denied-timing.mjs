@@ -4,7 +4,7 @@
  */
 import { chromium } from "playwright";
 
-const BASE = "http://localhost:3000";
+import { BASE } from "./helpers/dev-server.mjs";
 const QUIET_MS = 4000;
 
 async function run() {
