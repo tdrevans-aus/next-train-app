@@ -162,6 +162,10 @@ const SMOKE_SCRIPTS = [
   "feedback-abuse.mjs",
   "vercel-health-region-gate.mjs",
   "vercel-json-no-inert-memory-gate.mjs",
+  "reset-param-gated.mjs",
+  "ship-assets-no-dogfood-origin.mjs",
+  "security-headers-gate.mjs",
+  "api-500-no-error-echo.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */

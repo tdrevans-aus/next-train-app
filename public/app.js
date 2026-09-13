@@ -725,6 +725,14 @@ function appendFixtureQuery(queryString) {
   return params.toString();
 }
 
+// D-05 (docs/dwayne-security-review-play-3.0.0.md): `?reset=1` must not wipe a public web
+// visitor's storage. Only honour it when `test=1` is also present AND the page is served from
+// localhost/127.0.0.1 or any non-production host — never on the production Vercel domain.
+function isResetHostAllowed() {
+  const host = String(location.hostname || "").toLowerCase();
+  return host !== "next-train-app.vercel.app";
+}
+
 async function applyTestQueryParams() {
   const params = new URLSearchParams(window.location.search);
   if (params.get("test") === "1") {
@@ -732,6 +740,10 @@ async function applyTestQueryParams() {
   }
 
   if (params.get("reset") !== "1") {
+    return;
+  }
+
+  if (params.get("test") !== "1" || !isResetHostAllowed()) {
     return;
   }
 

@@ -9,6 +9,7 @@ import {
   isMultiCity,
   resolveMultiCityStation,
 } from "../lib/cities/live-city-api.js";
+import { sendGenericServerError } from "../lib/api-error-response.js";
 
 export default async function handler(req, res) {
   if (applyCors(req, res)) {
@@ -42,8 +43,12 @@ export default async function handler(req, res) {
       const pack = await getMultiCityDirections(city, station);
       res.status(200).json({ destinations: pack.directions, source: pack.source });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message ?? "Failed to load destinations" });
+      sendGenericServerError(res, {
+        error,
+        fallbackMessage: "Failed to load destinations",
+        city,
+        station,
+      });
     }
     return;
   }
@@ -60,12 +65,17 @@ export default async function handler(req, res) {
     const { directions, source } = resolveDirectionsForStation(station, trips);
     res.status(200).json({ destinations: directions, source });
   } catch (error) {
-    console.error(error);
     const fallback = resolveDirectionsForStation(station, []);
     if (fallback.directions.length) {
+      console.warn(`[api/destinations] served fallback destinations after fetch failure city=${city} station=${station}:`, error);
       res.status(200).json({ destinations: fallback.directions, source: fallback.source });
       return;
     }
-    res.status(500).json({ error: error.message ?? "Failed to fetch destinations" });
+    sendGenericServerError(res, {
+      error,
+      fallbackMessage: "Failed to fetch destinations",
+      city,
+      station,
+    });
   }
 }

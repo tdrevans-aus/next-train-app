@@ -12,6 +12,7 @@ import {
   isMultiCity,
   resolveMultiCityStation,
 } from "../lib/cities/live-city-api.js";
+import { sendGenericServerError } from "../lib/api-error-response.js";
 
 function readParams(query = {}) {
   const station = query.station;
@@ -72,8 +73,12 @@ export default async function handler(req, res) {
       const data = await getMultiCityNextTrain(config.city, { ...config, station });
       res.status(200).json(data);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message ?? "Failed to fetch train times" });
+      sendGenericServerError(res, {
+        error,
+        fallbackMessage: "Failed to fetch train times",
+        city: config.city,
+        station,
+      });
     }
     return;
   }
@@ -90,7 +95,11 @@ export default async function handler(req, res) {
     const data = await getNextTrainData(config);
     res.status(200).json(data);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message ?? "Failed to fetch train times" });
+    sendGenericServerError(res, {
+      error,
+      fallbackMessage: "Failed to fetch train times",
+      city: config.city,
+      station: config.station,
+    });
   }
 }
