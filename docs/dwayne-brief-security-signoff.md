@@ -65,6 +65,17 @@ Engineering trail: `docs/simon-brief-security-hardening.md` + `docs/jim-brief-se
 
 > Checklist accepted with one add (dev/debug leftover spot-check). Soft window confirmed — review starts when Alpha 2.1.0 opt-in lands; written Play sign-off targeted **by 12 Sep**. Ping me the closed-test link when Google clears it. — Dwayne, 11 Aug 2026
 
+## Dwayne review (recorded 11 Sep 2026)
+
+> Lean review done against 3.0.0 (source + merged release manifest + live Vercel). Not signed off yet:
+> the scope has grown from Perth-only to 33 regions incl. UK/EEA since the checklist was agreed. Blocking:
+> D-01 EU/UK ad consent (Tim decision), D-02 privacy/Data safety accuracy, D-03 cleartext in release
+> manifest, D-04 open `/api/feedback`. Sign-off realistic **Tue 16 Sep** if fixes merge by Mon 15 Sep.
+> Full report: `docs/dwayne-security-review-play-3.0.0.md`. Jim brief: `docs/jim-brief-security-launch-fixes.md`.
+> — Dwayne
+>
+> **Re-check 13 Sep:** no change on master @ `57b6325`; D-01 to D-04 all still open. See the report's re-check section.
+
 ---
 
 ## Access we’ll provide
