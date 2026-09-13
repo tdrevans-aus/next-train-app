@@ -141,7 +141,7 @@ assert(!/`undecided`/.test(oracleReport), "Board eligibility section must have n
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(REST_OF_SCOTLAND_REGION);
-assert(region?.railCount === 9, `rest-of-scotland rail count must be 9, got ${region?.railCount}`);
+assert(region?.railCount === 147, `rest-of-scotland rail count must be 147 (UK station fill phase 1), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `rest-of-scotland must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -153,11 +153,11 @@ const railCrs = new Set(railStations.map((s) => s.crs));
 for (const crs of ["PTH", "INV", "ABD", "DEE", "KYL", "THS", "WCK", "MLG", "FTW"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
-assert(railCrs.size === 9, `rest-of-scotland catalog must carry exactly 9 distinct CRS codes, got ${railCrs.size}`);
+assert(railCrs.size === 147, `rest-of-scotland catalog must carry exactly 147 distinct CRS codes, got ${railCrs.size}`);
 assert(getNotInRegion(REST_OF_SCOTLAND_REGION).length === 0, "rest-of-scotland has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 9, `combined catalog must have 9 stations (train only), got ${allStations.length}`);
+assert(allStations.length === 147, `combined catalog must have 147 stations (train only), got ${allStations.length}`);
 
 // Four co-equal hub locks resolve independently — no single-hub assumption anywhere.
 assert(REST_OF_SCOTLAND_HUBS.length === 4, "must document exactly four co-equal hub locks");
@@ -195,7 +195,7 @@ assert(rosHubs.length === 0, `rest-of-scotland must have zero configured hubs, g
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listRestOfScotlandDogfoodStations();
-assert(dogfoodStations.length === 9, `dogfood stations must be the 9 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 147, `dogfood stations must be 147 (UK station fill phase 1), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 for (const hubName of ["Perth", "Inverness", "Aberdeen", "Dundee"]) {
   assert(dogfoodNames.has(hubName), `hub ${hubName} must be listed by the dogfood harness`);
@@ -323,6 +323,18 @@ if (!anyHubOk) {
   }
 }
 
+// UK station fill phase 1 (13 Sep 2026): Stirling must resolve via the
+// catalog and, when a token is present, return a real Darwin board.
+const stirlingEntry = resolveCatalogEntry("Stirling");
+assert(stirlingEntry?.crs === "STG", "Stirling must resolve with crs STG");
+const stirlingProbe = await probeDirections("Stirling");
+if (stirlingProbe.ok) {
+  assert(stirlingProbe.pack.source === "rest-of-scotland-darwin-live", "Stirling directions source must be rest-of-scotland-darwin-live");
+  assert(Array.isArray(stirlingProbe.pack.directions), "Stirling directions must be an array");
+} else {
+  console.log("rest-of-scotland-dogfood-gate: DARWIN_LDB_TOKEN not set — Stirling board not probed against a real payload (expected outside Vercel prod).");
+}
+
 // Full-catalog CRS -> Darwin stationName sweep (per the greater-anglia/
 // south-wales/rest-of-wales dogfood gate pattern, itself copied from
 // qa/uk-west-midlands-dogfood-gate.mjs — the wrong-code defect class this
@@ -406,5 +418,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "rest-of-scotland-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 9 rail-only stations, four co-equal hub locks PTH/INV/ABD/DEE resolve independently, Perth Scotland never conflated with city=perth Australia, Caledonian Sleeper out-reservation exclusion enforced per-station and absent from live chips, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia stays green)"
+  "rest-of-scotland-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 147 rail-only stations (UK station fill phase 1, 13 Sep 2026), four co-equal hub locks PTH/INV/ABD/DEE resolve independently, Perth Scotland never conflated with city=perth Australia, Caledonian Sleeper out-reservation exclusion enforced per-station and absent from live chips (not extended to any newly-added station without evidence), no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia stays green)"
 );

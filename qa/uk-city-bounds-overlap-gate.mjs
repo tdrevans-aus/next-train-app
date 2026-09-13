@@ -136,6 +136,76 @@ const ALLOW_LIST = [
   // duplicate, see reason) — its own listing there now resolves to southwest
   // since West of England's minLat was raised to fix item 2 of the brief.
   { region: "west-of-england", station: "Taunton", reason: TAUNTON_BOUNDARY_DUPLICATE_REASON },
+  // UK station fill phase 1 (13 Sep 2026, docs/jim-brief-uk-station-fill-
+  // phase1.md): four regions' catalogs grew from a handful of hub stations
+  // to their full Darwin-verified footprint, and CITY_BOUNDS boxes widened
+  // to match now genuinely overlap their neighbours — same trade-off as the
+  // pre-existing entries above (a single rectangle per region can't avoid
+  // every overlap with an adjacent, geographically-interleaved conurbation).
+  {
+    region: "east-midlands",
+    station: "Kings Sutton",
+    reason:
+      "Kings Sutton (KGS) is a flagged borderline call (docs/uk-station-fill/assignment.md) — on the Chiltern Banbury/Oxford corridor, geographically inside Thames Valley's own CITY_BOUNDS box even though it's catalogued in East Midlands per this brief's county rule.",
+  },
+  ...[
+    "Sheffield Station",
+    "Meadowhall Interchange",
+    "Rotherham Central",
+    "Malin Bridge",
+    "Halfway",
+    "Gleadless Townend",
+    "Crystal Peaks",
+    "Herdings Park",
+    "Middlewood",
+    "Hillsborough",
+    "Sheffield Arena",
+    "Meadowhall",
+    "Parkgate",
+  ].map((station) => ({
+    region: "south-yorkshire",
+    station,
+    reason:
+      "East Midlands' CITY_BOUNDS box was widened 13 Sep 2026 (UK station fill phase 1) to cover its Peak District/Derbyshire stations, which sit right on South Yorkshire's own boundary — the two boxes now genuinely overlap around Sheffield/Rotherham/Meadowhall. Not fixable with a tighter East Midlands box without excluding its own real Peak District stations (Bamford, Chinley, Dinting, etc.) from the hint entirely.",
+  })),
+  ...[
+    "Aberdour",
+    "Burntisland",
+    "Dalgety Bay",
+    "Inverkeithing",
+    "North Queensferry",
+    "Rosyth",
+  ].map((station) => ({
+    region: "rest-of-scotland",
+    station,
+    reason:
+      "Fife stations just north of the Forth Bridge sit geographically close to Edinburgh (docs/uk-station-fill/assignment.md — Fife Circle stays rest-of-scotland's per the brief's explicit carve-out, but the coordinates themselves are only ~10km from Edinburgh Waverley) — Edinburgh's widened CITY_BOUNDS box genuinely reaches this far north.",
+  })),
+  ...[
+    "Camelon",
+    "Cardross",
+    "Craigendoran",
+    "Falkirk Grahamston",
+    "Helensburgh Central",
+    "Polmont",
+  ].map((station) => ({
+    region: "rest-of-scotland",
+    station,
+    reason:
+      "Falkirk/Clydeside-corridor stations sit geographically close to Glasgow's Strathclyde suburban footprint (docs/uk-station-fill/assignment.md) — Glasgow's widened CITY_BOUNDS box genuinely reaches this far, same trade-off as the Fife/Edinburgh overlap above.",
+  })),
+  ...["Armadale", "Blackridge", "Breich", "Falkirk High", "Fauldhouse"].map((station) => ({
+    region: "edinburgh",
+    station,
+    reason:
+      "West Lothian's Bathgate-line commuter stations (docs/uk-station-fill/assignment.md) sit geographically close to Glasgow's Strathclyde footprint — the Central Belt is genuinely narrow here, both regions' widened CITY_BOUNDS boxes cover this corridor. Falkirk High specifically is Edinburgh's per docs/united-kingdom-ledger.md section 2, its coordinates just happen to sit nearer Glasgow's box.",
+  })),
+  ...["Peterborough", "Ely"].map((station) => ({
+    region: "greater-anglia",
+    station,
+    reason:
+      "East Midlands' CITY_BOUNDS box was widened 13 Sep 2026 (UK station fill phase 1) east to cover Lincolnshire's Skegness branch, which reaches into the same longitude band as Greater Anglia's Cambridgeshire stations — not fixable with a tighter East Midlands box without excluding its own real Lincolnshire coast stations (Skegness, Boston, etc.) from the hint entirely.",
+  })),
 ];
 
 function allowListReason(regionId, stationName) {

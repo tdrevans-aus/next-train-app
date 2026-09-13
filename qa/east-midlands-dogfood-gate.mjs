@@ -118,7 +118,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(EAST_MIDLANDS_REGION);
-assert(region?.railCount === 6, `east-midlands rail count must be 6, got ${region?.railCount}`);
+assert(region?.railCount === 105, `east-midlands rail count must be 105 (UK station fill phase 1), got ${region?.railCount}`);
 assert(region?.metroCount === 4, `east-midlands metro count must be 4, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -138,7 +138,7 @@ assert(!netNames.has("city centre"), "NET catalog must not carry the unconfirmed
 assert(netStops.length === 4, `NET catalog must have exactly 4 stops (termini + hub), got ${netStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 10, `combined catalog must have 10 stations (6 rail + 4 metro), got ${allStations.length}`);
+assert(allStations.length === 109, `combined catalog must have 109 stations (105 rail + 4 metro), got ${allStations.length}`);
 
 // doNotGroup — Nottingham Station resolves as two distinct catalog entries by mode.
 const hubRail = resolveCatalogEntry(EAST_MIDLANDS_HUB, "train");
@@ -235,7 +235,7 @@ assert(mapNetDestination("Beeston Centre", "1") === null, "mapNetDestination mus
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (unlike West of England's single-mode list) to disambiguate the doNotGroup hub.
 const dogfoodStations = listEastMidlandsDogfoodStations();
-assert(dogfoodStations.length === 10, `dogfood stations must be the 10 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 109, `dogfood stations must be 109 (UK station fill phase 1), got ${dogfoodStations.length}`);
 const hubEntries = dogfoodStations.filter((s) => s.name === EAST_MIDLANDS_HUB);
 assert(hubEntries.length === 2, "Nottingham Station must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(
@@ -323,6 +323,23 @@ if (hubProbe.ok) {
   }
 }
 
+// UK station fill phase 1 (13 Sep 2026): Carlton and Burton Joyce must
+// resolve via the catalog and, when a token is present, return a real
+// Darwin board — same skip-with-reason pattern as the hub probe above.
+const carltonEntry = resolveCatalogEntry("Carlton", "train");
+assert(carltonEntry?.crs === "CTO", "Carlton must resolve with crs CTO");
+const burtonJoyceEntry = resolveCatalogEntry("Burton Joyce", "train");
+assert(burtonJoyceEntry?.crs === "BUJ", "Burton Joyce must resolve with crs BUJ");
+for (const [name] of [["Carlton"], ["Burton Joyce"]]) {
+  const probe = await probeRailDirections(name);
+  if (probe.ok) {
+    assert(probe.pack.source === "east-midlands-darwin-live", `${name} directions source must be east-midlands-darwin-live`);
+    assert(Array.isArray(probe.pack.directions), `${name} directions must be an array`);
+  } else {
+    console.log(`east-midlands-dogfood-gate: DARWIN_LDB_TOKEN not set — ${name} board not probed against a real payload (expected outside Vercel prod).`);
+  }
+}
+
 // NET tram: no confirmed feed at all (see file header). fetchNetStopBoard() must
 // throw NetFeedUnconfirmedError unconditionally, and the dogfood dispatch must
 // surface that error rather than fabricate a schedule from the static label list.
@@ -364,13 +381,32 @@ assert(netNextTrainThrew, "getEastMidlandsDogfoodNextTrain must surface NetFeedU
 // getMultiCityNextTrain must resolve to East Midlands' dogfood next-train module.
 assert(typeof getEastMidlandsDogfoodNextTrain === "function", "getEastMidlandsDogfoodNextTrain must be exported for live-city-api to dispatch to");
 
+// UK station fill phase 1 (13 Sep 2026) added a National Rail "Hucknall"
+// (doNotGroup vs the NET terminus of the same name) — bare-name dispatch is
+// rail-first everywhere in this codebase (see edinburgh/glasgow gates), so
+// "Hucknall" alone now resolves to the rail layer, not NET. Use Toton Lane
+// (a genuinely NET-only stop, no rail collision) to keep proving the
+// dispatch surfaces NetFeedUnconfirmedError for a real NET-only station.
 let dispatchNextTrainThrew = false;
 try {
-  await getMultiCityDirections("east-midlands", "Hucknall");
+  await getMultiCityDirections("east-midlands", "Toton Lane");
 } catch (err) {
   dispatchNextTrainThrew = err instanceof NetFeedUnconfirmedError;
 }
 assert(dispatchNextTrainThrew, "live-city-api dispatch must surface NetFeedUnconfirmedError for NET stops, not swallow it");
+
+// Hucknall itself must now resolve rail-first through the same bare-name
+// dispatch (MissingDarwinTokenError if no token, or a live rail board) —
+// proving the doNotGroup split actually routes correctly, not just that it
+// is documented.
+let hucknallDispatchOk = false;
+try {
+  const hucknallDispatch = await getMultiCityDirections("east-midlands", "Hucknall");
+  hucknallDispatchOk = hucknallDispatch.source === "east-midlands-darwin-live";
+} catch (err) {
+  hucknallDispatchOk = err instanceof MissingDarwinTokenError;
+}
+assert(hucknallDispatchOk, "live-city-api dispatch at bare 'Hucknall' must resolve rail-first (live chips or MissingDarwinTokenError), not the NET layer");
 
 let unknownThrew = false;
 try {
@@ -425,5 +461,5 @@ assertNoLiveFeedStopsExcluded({
 });
 
 console.log(
-  "east-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 6 rail + 4 NET stations, doNotGroup at Nottingham Station across both modes, National Rail directions derived live from Darwin with no static line map, direction-hubs.json loads/validates and Alfreton/Chesterfield->Nottingham hub anchoring collapses the operator-split Nottingham/Norwich chips, exact-chip routing table (hub/exact/undirected) proven token-free via planEastMidlandsNextTrainFetch with the national rail-crs-index fallback for out-of-region termini, NET dispatch correctly surfaces NetFeedUnconfirmedError rather than the static label list, all 4 NET stops flagged liveFeed: false and excluded from the picker/Near me, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL stay green)"
+  "east-midlands-dogfood-gate: ok (live/adapterReady, dispatch switch-case wired, D1 pack, 105 rail + 4 NET stations (UK station fill phase 1, 13 Sep 2026), doNotGroup at Nottingham Station and Hucknall across both modes, National Rail directions derived live from Darwin with no static line map, direction-hubs.json loads/validates and Alfreton/Chesterfield->Nottingham hub anchoring collapses the operator-split Nottingham/Norwich chips, exact-chip routing table (hub/exact/undirected) proven token-free via planEastMidlandsNextTrainFetch with the national rail-crs-index fallback for out-of-region termini, NET dispatch correctly surfaces NetFeedUnconfirmedError rather than the static label list, all 4 NET stops flagged liveFeed: false and excluded from the picker/Near me, Perth/Stockholm/Göteborg/Malmö/Uppsala/London TfL stay green)"
 );

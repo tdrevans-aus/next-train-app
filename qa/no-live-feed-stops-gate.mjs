@@ -168,15 +168,33 @@ async function checkBrowser() {
       inputSelector: "#detail-station-input",
       listboxSelector: "#detail-station-listbox",
     });
+    // Extra settle time before typing (13 Sep 2026, UK station fill phase 1):
+    // entering search mode kicks off an async ensureLocalStationsLoaded()
+    // chain that re-renders the list and re-focuses the search input once it
+    // resolves; on a heavier page load that resolution can land AFTER a fast
+    // scripted .fill(), clobbering the typed query back to unfiltered and
+    // racing focus/blur. Waiting for that chain to settle first avoids it.
+    await page.waitForTimeout(800);
     await page.locator("#detail-station-combobox .station-combobox-search-input").fill("Altrincham");
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(800);
     const altrinchamOptionCount = await page
       .locator("#detail-station-listbox .station-combobox-option", { hasText: "Altrincham" })
       .count();
     assert(altrinchamOptionCount === 0, `greater-manchester picker must not offer Altrincham (Metrolink, liveFeed: false), found ${altrinchamOptionCount} match(es)`);
+    // waitFor (auto-retrying) rather than a one-shot isVisible() snapshot —
+    // the .station-combobox-empty node is present in the DOM immediately
+    // (confirmed by debugging during UK station fill phase 1, 13 Sep 2026)
+    // but a one-shot isVisible() check can race the dropdown's own
+    // reposition/layout pass on a slower page load, flaking the assertion
+    // even though the element is correct. This does not change what is
+    // asserted, only how patiently it's checked for.
+    // waitFor (auto-retrying) rather than a one-shot isVisible() snapshot —
+    // more tolerant of the dropdown's own reposition/layout pass than a
+    // single synchronous check, without changing what is asserted.
     const emptyVisible = await page
       .locator("#detail-station-listbox .station-combobox-empty")
-      .isVisible()
+      .waitFor({ state: "visible", timeout: 5000 })
+      .then(() => true)
       .catch(() => false);
     assert(emptyVisible, "greater-manchester picker must show the empty state for an Altrincham-only search");
 

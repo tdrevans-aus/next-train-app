@@ -131,7 +131,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(EDINBURGH_REGION);
-assert(region?.railCount === 3, `edinburgh rail count must be 3, got ${region?.railCount}`);
+assert(region?.railCount === 37, `edinburgh rail count must be 37 (UK station fill phase 1), got ${region?.railCount}`);
 assert(region?.metroCount === 22, `edinburgh tram count must be 22, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -143,13 +143,17 @@ const railCrs = new Set(railStations.map((s) => s.crs).filter(Boolean));
 for (const crs of ["EDB", "HYM", "SLA"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
-assert(!railNames.has("Falkirk High"), "National Rail catalog must not carry Falkirk High");
-assert(!railNames.has("Edinburgh Park"), "National Rail catalog must not carry Edinburgh Park (National Rail station)");
-assert(getNotInRegion(EDINBURGH_REGION).includes("Falkirk High"), "Falkirk High must be recorded as a deliberate exclusion");
-assert(
-  getNotInRegion(EDINBURGH_REGION).includes("Edinburgh Park (National Rail station)"),
-  "Edinburgh Park (National Rail station) must be recorded as a deliberate exclusion"
-);
+// UK station fill phase 1 (13 Sep 2026): Falkirk High and Edinburgh Park were
+// historically excluded here; docs/united-kingdom-ledger.md section 2 ruled
+// Falkirk High is Edinburgh's boundary station, and Tim's walk-up rule ("any
+// station with an API is in") brought Edinburgh Park into scope too — both
+// are now real catalog stations, not exclusions.
+assert(railNames.has("Falkirk High"), "National Rail catalog must carry Falkirk High (UK station fill phase 1)");
+assert(railNames.has("Edinburgh Park"), "National Rail catalog must carry Edinburgh Park (UK station fill phase 1)");
+assert(getNotInRegion(EDINBURGH_REGION).length === 0, "edinburgh must have no remaining deliberate exclusions after the station fill");
+for (const name of ["Haymarket", "South Gyle", "Wester Hailes", "Curriehill", "Kingsknowe", "Newcraighall", "Edinburgh Gateway", "North Berwick", "Bathgate"]) {
+  assert(railNames.has(name), `National Rail catalog must carry ${name} (UK station fill phase 1)`);
+}
 
 // Single-hub shape — one National Rail hub with two through-running satellites, NOT Glasgow's
 // "Option A at n=2" two-independent-termini shape.
@@ -170,10 +174,10 @@ for (const name of ["Newhaven", "Edinburgh Airport", "Princes Street", "Haymarke
 assert(tramStops.length === 22, `Trams catalog must have exactly 22 stops, got ${tramStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 25, `combined catalog must have 25 stations (3 rail + 22 tram), got ${allStations.length}`);
+assert(allStations.length === 59, `combined catalog must have 59 stations (37 rail + 22 tram), got ${allStations.length}`);
 
 // doNotGroup pairs recorded and enforced structurally (distinct catalog entries, never merged).
-assert(DO_NOT_GROUP_PAIRS.length === 2, "must document two doNotGroup pairs");
+assert(DO_NOT_GROUP_PAIRS.length === 3, "must document three doNotGroup pairs (Waverley, Haymarket, Edinburgh Gateway)");
 const waverleyTram = resolveCatalogEntry("Edinburgh Waverley", "metro");
 assert(waverleyTram === null, "Trams catalog must not carry an 'Edinburgh Waverley' stop by that exact name");
 const haymarketTram = resolveCatalogEntry("Haymarket", "metro");
@@ -260,7 +264,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Edinburgh Waverley's/Haymarket's doNotGroup locks need it to disambiguate).
 const dogfoodStations = listEdinburghDogfoodStations();
-assert(dogfoodStations.length === 25, `dogfood stations must be the 25 D1 names, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 59, `dogfood stations must be the 59 names (UK station fill phase 1), got ${dogfoodStations.length}`);
 const waverleyEntries = dogfoodStations.filter((s) => s.name === "Edinburgh Waverley");
 assert(waverleyEntries.length === 1, "Edinburgh Waverley must appear once in the dogfood list (National Rail only — Trams uses no exact-name match)");
 const haymarketEntries = dogfoodStations.filter((s) => s.name === "Haymarket");
@@ -351,6 +355,20 @@ if (hubProbe.ok) {
     }
     assert(darwinBlocked, `fetchNationalRailBoard(${stationName}) must throw MissingDarwinTokenError until DARWIN_LDB_TOKEN exists`);
   }
+}
+
+// UK station fill phase 1 (13 Sep 2026): a sample of the newly-added
+// stations must resolve via the catalog and, when a token is present,
+// return a real Darwin board — same skip-with-reason pattern as the hub
+// probe above (token-optional in local/CI sandboxes).
+const edinburghParkEntry = resolveCatalogEntry("Edinburgh Park", "train");
+assert(edinburghParkEntry?.crs === "EDP", "Edinburgh Park must resolve with crs EDP");
+const edinburghParkProbe = await probeRailDirections("Edinburgh Park");
+if (edinburghParkProbe.ok) {
+  assert(edinburghParkProbe.pack.source === "edinburgh-darwin-live", "Edinburgh Park directions source must be edinburgh-darwin-live");
+  assert(Array.isArray(edinburghParkProbe.pack.directions), "Edinburgh Park directions must be an array");
+} else {
+  console.log("edinburgh-dogfood-gate: DARWIN_LDB_TOKEN not set — Edinburgh Park board not probed against a real payload (expected outside Vercel prod).");
 }
 
 // Edinburgh Trams: no confirmed real-time feed exists at all (see file
@@ -480,5 +498,5 @@ assertNoLiveFeedStopsExcluded({
 });
 
 console.log(
-  "edinburgh-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 3 rail + 22 Trams stations, single-hub shape distinct from Glasgow, doNotGroup at Edinburgh Waverley and Haymarket, Falkirk High + Edinburgh Park excluded, Caledonian Sleeper excluded at Waverley only, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Trams dispatch correctly surfaces EdinburghTramsFeedUnverifiedError rather than the static label list, all 22 Trams stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
+  "edinburgh-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 37 rail + 22 Trams stations (UK station fill phase 1, 13 Sep 2026), single-hub shape distinct from Glasgow, doNotGroup at Edinburgh Waverley, Haymarket and Edinburgh Gateway, Falkirk High + Edinburgh Park now catalogued (no remaining exclusions), Caledonian Sleeper excluded at Waverley only, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Trams dispatch correctly surfaces EdinburghTramsFeedUnverifiedError rather than the static label list, all 22 Trams stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
 );

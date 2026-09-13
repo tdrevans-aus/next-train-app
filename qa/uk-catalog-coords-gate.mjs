@@ -43,7 +43,18 @@ const SKIP_REGIONS = new Set(["south-wales"]);
 // is Southwest's GPS-hint home region (see the uk-city-bounds-overlap-gate.mjs
 // allow-list), so West of England's own box was tightened to exclude it —
 // its board listing there is still correct data, just outside the hint box.
-const BOX_CHECK_EXEMPT = new Set(["west-of-england::Taunton"]);
+// UK station fill phase 1 (13 Sep 2026): Kings Sutton and Northampton are
+// real, Darwin-verified East Midlands stations (docs/uk-station-fill/
+// assignment.md — Kings Sutton is a flagged borderline call, closer to
+// Thames Valley's Banbury corridor than to Nottingham) whose coordinates
+// sit south of East Midlands' own CITY_BOUNDS box, which was tuned to avoid
+// swallowing Thames Valley's Banbury and South Yorkshire's Sheffield-area
+// stations instead (see the box's own comment in public/city-session.js).
+const BOX_CHECK_EXEMPT = new Set([
+  "west-of-england::Taunton",
+  "east-midlands::Kings Sutton",
+  "east-midlands::Northampton",
+]);
 
 const liveIds = new Set(CITIES.filter((c) => c.status === "live").map((c) => c.id));
 
