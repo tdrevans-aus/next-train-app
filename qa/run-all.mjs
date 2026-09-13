@@ -155,6 +155,7 @@ const SMOKE_SCRIPTS = [
   "lib-bare-import-gate.mjs",
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
+  "gtfs-refresh-status-cache-gate.mjs",
   "no-hardcoded-qa-port.mjs",
   "ad-consent-gate.mjs",
   "feedback-abuse.mjs",
@@ -314,6 +315,7 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
    */
   "gtfs-refresh-retired-city-skip-gate.mjs",
   "gtfs-refresh-partial-status-gate.mjs",
+  "gtfs-refresh-status-cache-gate.mjs",
   /** Pure static-text scan of qa/*.mjs for hardcoded :3000; no dev server. */
   "no-hardcoded-qa-port.mjs",
 ]);
