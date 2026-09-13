@@ -221,6 +221,95 @@ async function run() {
     await context.close();
   }
 
+  // 5. docs/jim-brief-country-list-hides-no-live-feed-stops.md — a
+  // liveFeed:false stop must never render in the country-wide "All" list,
+  // in any group, or in search, even when it comes from a country-stations
+  // cache written to localStorage before this fix shipped (the client must
+  // filter regardless of what the server or an old cache sent).
+  {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.evaluate(() => {
+      localStorage.setItem(
+        "nextTrainSettings",
+        JSON.stringify({
+          settingsSchemaVersion: 2,
+          savedCity: "glasgow",
+          savedCountry: "gb-sct",
+          regionExplicit: false,
+          refreshSeconds: 60,
+        })
+      );
+      const glasgow = { id: "glasgow", displayName: "Glasgow" };
+      localStorage.setItem(
+        "nextTrainCountryStations:gb-sct",
+        JSON.stringify({
+          countryId: "gb-sct",
+          fetchedAt: Date.now(),
+          regions: [glasgow],
+          stations: [
+            { name: "Kelvinhall", lat: 55.8752, lng: -4.2919, liveFeed: false, region: glasgow },
+            { name: "Glasgow Central", lat: 55.8592, lng: -4.2576, liveFeed: true, region: glasgow },
+          ],
+        })
+      );
+    });
+    // Reload without reset=1&test=1 so runInit() re-reads the seeded
+    // pre-fix-style cache instead of clearing it again (same pattern as
+    // case 4 above).
+    await page.goto(`${BASE}/?fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(4000);
+
+    await openJourneySetup(page);
+    await page.waitForSelector("#settings-detail-view", { state: "visible", timeout: 15000 });
+    await page.waitForTimeout(500);
+
+    await page.locator("#detail-station-combobox .station-combobox-input").click();
+    await page.waitForTimeout(600);
+
+    const defaultRows = await page.evaluate(() =>
+      [...document.querySelectorAll("#detail-station-combobox .station-combobox-option")].map(
+        (el) => el.dataset.value
+      )
+    );
+    if (!defaultRows.includes("Kelvinhall") && defaultRows.includes("Glasgow Central")) {
+      pass("Default (no query) country-wide list omits a liveFeed:false stop but keeps a live one", JSON.stringify(defaultRows));
+    } else {
+      fail("Default (no query) country-wide list omits a liveFeed:false stop but keeps a live one", JSON.stringify(defaultRows));
+    }
+
+    const searchInput = page.locator("#detail-station-combobox .station-combobox-search-input");
+    await searchInput.fill("kelv");
+    await page.waitForTimeout(600);
+
+    const kelvinhallMatches = await page
+      .locator("#detail-station-combobox .station-combobox-option", { hasText: "Kelvinhall" })
+      .count();
+    const emptyStateVisible = await page
+      .locator("#detail-station-combobox .station-combobox-empty")
+      .isVisible()
+      .catch(() => false);
+    if (kelvinhallMatches === 0 && emptyStateVisible) {
+      pass("Searching 'kelv' finds no match for a liveFeed:false stop (empty state shown)");
+    } else {
+      fail("Searching 'kelv' finds no match for a liveFeed:false stop (empty state shown)", `matches=${kelvinhallMatches} emptyStateVisible=${emptyStateVisible}`);
+    }
+
+    await searchInput.fill("glasgow c");
+    await page.waitForTimeout(600);
+    const glasgowCentralMatches = await page
+      .locator("#detail-station-combobox .station-combobox-option", { hasText: "Glasgow Central" })
+      .count();
+    if (glasgowCentralMatches > 0) {
+      pass("Searching still finds a live station in the same seeded cache", `matches=${glasgowCentralMatches}`);
+    } else {
+      fail("Searching still finds a live station in the same seeded cache", `matches=${glasgowCentralMatches}`);
+    }
+
+    await context.close();
+  }
+
   await browser.close();
 
   if (failed) {
