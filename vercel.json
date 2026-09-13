@@ -10,7 +10,7 @@
   ],
   "functions": {
     "api/health.js": {
-      "memory": 2048,
+      "memory": 4096,
       "maxDuration": 300
     }
   },

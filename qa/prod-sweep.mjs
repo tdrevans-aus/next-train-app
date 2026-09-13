@@ -102,10 +102,23 @@ const STATE_PATH = path.join(REPO_ROOT, "qa", "prod-sweep-state.json");
  */
 const REFRESH_STALE_AFTER_MS = 30 * 60 * 60 * 1000;
 
-async function checkRefreshStatus() {
+/**
+ * Exported so qa/gtfs-refresh-status-cache-gate.mjs can prove, by
+ * construction and with global.fetch stubbed (no real network), that this
+ * fetch always cache-busts rather than trusting an edge copy of the status
+ * record (docs/jim-brief-refresh-status-cache-and-memory.md, 13 Sep 2026).
+ */
+export async function checkRefreshStatus() {
   let response;
   try {
-    response = await fetch(gtfsRefreshStatusBlobUrl());
+    // Cache-bust: the writer sets a short cacheControlMaxAge (60s, see
+    // lib/gtfs-refresh.js writeRefreshStatus) but this sweep must never trust
+    // an edge copy regardless of what the writer did, so it also busts the
+    // CDN with a per-call query param and disables the local fetch cache
+    // (docs/jim-brief-refresh-status-cache-and-memory.md, 13 Sep 2026 - a
+    // stale read here can report a weeks-failing cron as healthy).
+    const url = `${gtfsRefreshStatusBlobUrl()}?_=${Date.now()}`;
+    response = await fetch(url, { cache: "no-store" });
   } catch (error) {
     return { status: "unknown", detail: `refresh status fetch failed: ${error.message}` };
   }
