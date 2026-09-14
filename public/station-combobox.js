@@ -642,7 +642,10 @@
       list.appendChild(header);
     }
 
-    function appendCountryStationRows(stations, { showTag, rowCounter = { value: 0 } }) {
+    function appendCountryStationRows(
+      stations,
+      { showTag, rowCounter = { value: 0 }, distanceByName = null }
+    ) {
       const names = stations.map((station) => station.name);
       // The existing same-name/different-mode suffix (e.g. Liverpool Lime
       // Street's National Rail vs Merseyrail rows) only applies within a
@@ -661,6 +664,14 @@
           tag.className = "station-combobox-region-tag";
           tag.textContent = ` · ${station.region.displayName}`;
           item.appendChild(tag);
+        }
+        const distanceKmValue = distanceByName?.get(station.name);
+        if (typeof distanceKmValue === "number" && Number.isFinite(distanceKmValue)) {
+          const distance = document.createElement("span");
+          distance.className = "station-combobox-distance";
+          distance.dataset.distanceKm = String(distanceKmValue);
+          distance.textContent = ` · ${formatNearYouDistance(distanceKmValue)}`;
+          item.appendChild(distance);
         }
         if (station.name === selectedValue) {
           item.setAttribute("aria-selected", "true");
@@ -714,21 +725,74 @@
       return result;
     }
 
+    const NEAR_YOU_STALE_MS = 30 * 60 * 1000;
+    const NEAR_YOU_COUNT = 5;
+
+    function toRadiansLocal(value) {
+      return (value * Math.PI) / 180;
+    }
+
+    function haversineDistanceKm(lat1, lng1, lat2, lng2) {
+      const earthRadiusKm = 6371;
+      const dLat = toRadiansLocal(lat2 - lat1);
+      const dLng = toRadiansLocal(lng2 - lng1);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRadiansLocal(lat1)) * Math.cos(toRadiansLocal(lat2)) * Math.sin(dLng / 2) ** 2;
+      return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function formatNearYouDistance(km) {
+      if (km < 10) {
+        return `${km.toFixed(1)} km`;
+      }
+      return `${Math.round(km)} km`;
+    }
+
     /**
-     * "Near you" — the app never keeps a raw, reusable lat/lng cache outside
-     * an active geolocation request (only nearby-mode's single winning
-     * station survives a reload, in nextTrainLastNearbyStation). Rather than
-     * trigger a new location prompt from the picker (explicitly disallowed
-     * by the brief), this group reuses that one cached station instead of
-     * computing a fresh nearest-5 — see PR description for the follow-up.
+     * docs/jim-brief-picker-near-you-nearest-five.md: reads the app-wide
+     * last-known-position cache (public/app.js, written only by existing
+     * geolocation call sites — this never makes a geolocation call itself).
+     * A fresh (<30 min) cache is used to compute the five nearest liveFeed
+     * stations by haversine distance; a missing/stale cache falls back to
+     * today's single-row behaviour (the last resolved Near me station).
      */
+    function readFreshLastKnownPosition() {
+      const cache = window.nextTrainLastPosition?.read?.();
+      if (
+        !cache ||
+        !Number.isFinite(cache.lat) ||
+        !Number.isFinite(cache.lng) ||
+        !Number.isFinite(cache.timestamp)
+      ) {
+        return null;
+      }
+      if (Date.now() - cache.timestamp > NEAR_YOU_STALE_MS) {
+        return null;
+      }
+      return cache;
+    }
+
     function buildNearYouGroup(scoped) {
+      const position = readFreshLastKnownPosition();
+      if (position) {
+        const rows = scoped
+          .filter((station) => Number.isFinite(station.lat) && Number.isFinite(station.lng))
+          .map((station) => ({
+            station,
+            distanceKm: haversineDistanceKm(position.lat, position.lng, station.lat, station.lng),
+          }))
+          .sort((a, b) => a.distanceKm - b.distanceKm)
+          .slice(0, NEAR_YOU_COUNT);
+        return { rows, usingPosition: true };
+      }
+
       const cache = window.nextTrainNearby?.readLastNearbyStationCache?.();
       if (!cache?.station) {
-        return [];
+        return { rows: [], usingPosition: false };
       }
       const station = scoped.find((entry) => entry.name === cache.station);
-      return station ? [station] : [];
+      return { rows: station ? [{ station, distanceKm: null }] : [], usingPosition: false };
     }
 
     /**
@@ -789,10 +853,20 @@
       }
 
       const nearYou = buildNearYouGroup(scoped);
-      if (nearYou.length) {
+      if (nearYou.rows.length) {
         anyRows = true;
         appendGroupHeader("Near you");
-        appendCountryStationRows(nearYou, { showTag: !filterRegion, rowCounter });
+        appendCountryStationRows(
+          nearYou.rows.map((entry) => entry.station),
+          {
+            // The fresh-position nearest-5 path always carries a region tag
+            // (it can span regions even under a filter — see brief). The
+            // fallback single row keeps today's showTag behaviour.
+            showTag: nearYou.usingPosition || !filterRegion,
+            rowCounter,
+            distanceByName: new Map(nearYou.rows.map((entry) => [entry.station.name, entry.distanceKm])),
+          }
+        );
       }
 
       const byRegion = new Map();

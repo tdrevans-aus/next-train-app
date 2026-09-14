@@ -535,6 +535,15 @@
           maximumAge: 300000,
         });
       });
+      // docs/jim-brief-picker-near-you-nearest-five.md: feed the app-wide
+      // last-known-position cache from this GPS-follow fix too, not just
+      // app.js's getAppGeolocationPosition — never a new geolocation request,
+      // just recording the fix this path already made.
+      window.nextTrainLastPosition?.write?.(
+        pos.coords.latitude,
+        pos.coords.longitude,
+        pos.timestamp
+      );
       return hintCityFromCoords(pos.coords.latitude, pos.coords.longitude);
     } catch {
       return null;
