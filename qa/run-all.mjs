@@ -171,6 +171,7 @@ const SMOKE_SCRIPTS = [
   "security-headers-gate.mjs",
   "api-500-no-error-echo.mjs",
   "country-wide-picker.mjs",
+  "bundled-city-directions.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -583,12 +584,6 @@ const KNOWN_RED_SCRIPTS = new Set([
   // this path. Needs a product decision on copy/placement; out of scope for
   // this triage.
   "nearby-location-hint-keeps-cache.mjs",
-  // Real gap: public/city-directions/ is missing the bundled direction-chip
-  // JSON for 16 of the 32 live multi-city regions (every UK region added
-  // since uk-west-midlands). Reconstructing 16 regions' rider-facing chip
-  // sets correctly needs real per-region verification, not a guess in this
-  // pass — flagged for a dedicated brief.
-  "bundled-city-directions.mjs",
   // Real gap: both scripts assert against `template-wizard-step-3`, which no
   // longer exists in public/index.html — the "Active hours" wizard step was
   // removed/consolidated at some point (current steps: name, step-1 station,

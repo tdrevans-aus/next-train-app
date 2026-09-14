@@ -50,7 +50,9 @@ uncommitted on purpose (`MULTI_CITY_IDS`/the `MultiCityId` typedef in `live-city
 These three *must* land in the same commit as the status flip, never before it —
 `qa/live-city-lists-sync.mjs` enforces that those lists exactly equal the registry's live-city set,
 so adding a city to them while still `planned` breaks the gate for every other city, and this repo's
-branch protection means that broken state would sit on a real branch, not just locally. Run the
+branch protection means that broken state would sit on a real branch, not just locally. In the same
+commit, also run `node scripts/write-city-directions.mjs --only=<city>` and commit the resulting
+`public/city-directions/<city>.json` — `qa/bundled-city-directions.mjs` (smoke tier) fails without it. Run the
 smoke suite after making this commit, not just before, to confirm the bundle is actually
 self-consistent. Then open a PR with your checklist results as the description, **labelled `flip`**
 (`gh pr create --label flip ...`), and start the description with the line

@@ -32,6 +32,7 @@ import {
   findNearestStation as findNearestMultiCityStation,
 } from "./lib/cities/live-city-api.js";
 import { buildNextTrainResponse, pickUpcomingTrips, parseLiveBoardTimestamp, pickUpcomingProviderTrips } from "./lib/train-times-core.js";
+import { sendGenericServerError } from "./lib/api-error-response.js";
 
 loadEnvLocal();
 
@@ -243,8 +244,12 @@ app.get("/api/directions", async (req, res) => {
       const pack = await getMultiCityDirections(req.query.city, station);
       res.json({ directions: pack.directions, source: pack.source });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
+      sendGenericServerError(res, {
+        error,
+        fallbackMessage: "Failed to fetch directions",
+        city: req.query.city,
+        station,
+      });
     }
     return;
   }
@@ -304,8 +309,12 @@ app.get("/api/destinations", async (req, res) => {
       const pack = await getMultiCityDirections(req.query.city, station);
       res.json({ destinations: pack.directions, source: pack.source });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message ?? "Failed to fetch destinations" });
+      sendGenericServerError(res, {
+        error,
+        fallbackMessage: "Failed to fetch destinations",
+        city: req.query.city,
+        station,
+      });
     }
     return;
   }

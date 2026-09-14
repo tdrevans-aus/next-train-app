@@ -1,0 +1,187 @@
+{
+  "Acklington": [
+    "Chathill (Northern)"
+  ],
+  "Alnmouth": [
+    "Bristol Temple Meads (CrossCountry)",
+    "Edinburgh (CrossCountry)",
+    "Edinburgh (LNER)",
+    "London Kings Cross (LNER)",
+    "Newcastle (TransPennine Express)",
+    "Plymouth (CrossCountry)"
+  ],
+  "Ashington": [
+    "Newcastle (Northern)"
+  ],
+  "Bedlington": [
+    "Ashington (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Berwick-upon-Tweed": [
+    "Aberdeen (CrossCountry)",
+    "Aberdeen (LNER)",
+    "Birmingham New Street (CrossCountry)",
+    "Bristol Temple Meads (CrossCountry)",
+    "Edinburgh (CrossCountry)",
+    "Edinburgh (TransPennine Express)",
+    "London Kings Cross (LNER)",
+    "Newcastle (TransPennine Express)"
+  ],
+  "Blaydon": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Blyth Bebside": [
+    "Ashington (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Brockley Whins": [
+    "Newcastle Airport (Tyne and Wear Metro)",
+    "South Hylton (T & W Metro) (Tyne and Wear Metro)"
+  ],
+  "Chester-le-Street": [
+    "Liverpool Lime Street (TransPennine Express)",
+    "Newcastle (TransPennine Express)"
+  ],
+  "Corbridge": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Cramlington": [
+    "Chathill (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Darlington": [
+    "Aberdeen (LNER)",
+    "Birmingham New Street (CrossCountry)",
+    "Bishop Auckland (Northern)",
+    "Edinburgh (CrossCountry)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "London Kings Cross (LNER)",
+    "Newcastle (CrossCountry)",
+    "Newcastle (LNER)",
+    "Newcastle (TransPennine Express)",
+    "Plymouth (CrossCountry)",
+    "Saltburn (Northern)"
+  ],
+  "Dunston": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "East Boldon": [
+    "Newcastle Airport (Tyne and Wear Metro)",
+    "South Hylton (T & W Metro) (Tyne and Wear Metro)"
+  ],
+  "Heworth": [
+    "Newcastle (Northern)",
+    "Nunthorpe (Northern)",
+    "Whitby (Northern)"
+  ],
+  "Hexham": [
+    "Carlisle (Northern)",
+    "Middlesbrough (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Manors": [
+    "Ashington (Northern)",
+    "Chathill (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Metro Centre": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Middlesbrough (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Morpeth": [
+    "Aberdeen (CrossCountry)",
+    "Birmingham New Street (CrossCountry)",
+    "Chathill (Northern)",
+    "Glasgow Queen Street (Lumo)",
+    "London Kings Cross (Lumo)",
+    "Newcastle (Northern)",
+    "Newcastle (TransPennine Express)"
+  ],
+  "Newcastle Central": [
+    "Aberdeen (CrossCountry)",
+    "Ashington (Northern)",
+    "Birmingham New Street (CrossCountry)",
+    "Carlisle (Northern)",
+    "Edinburgh (LNER)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "London Kings Cross (LNER)",
+    "London Kings Cross (Lumo)",
+    "Morpeth (Northern)",
+    "Plymouth (CrossCountry)",
+    "Whitby (Northern)"
+  ],
+  "Newsham": [
+    "Ashington (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Northumberland Park (T&W)": [
+    "Ashington (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Pegswood": [
+    "Chathill (Northern)"
+  ],
+  "Prudhoe": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Middlesbrough (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Riding Mill": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Seaburn": [
+    "Newcastle Airport (Tyne and Wear Metro)",
+    "South Hylton (T & W Metro) (Tyne and Wear Metro)"
+  ],
+  "Seaton Delaval": [
+    "Ashington (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "St Peters (T & W Metro)": [
+    "Newcastle Airport (Tyne and Wear Metro)",
+    "South Hylton (T & W Metro) (Tyne and Wear Metro)"
+  ],
+  "Stocksfield": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ],
+  "Sunderland": [
+    "Carlisle (Northern)",
+    "Middlesbrough (Northern)",
+    "Newcastle (Northern)",
+    "Newcastle Airport (Tyne and Wear Metro)",
+    "South Hylton (T & W Metro) (Tyne and Wear Metro)",
+    "Whitby (Northern)"
+  ],
+  "Widdrington": [
+    "Chathill (Northern)"
+  ],
+  "Wylam": [
+    "Carlisle (Northern)",
+    "Hexham (Northern)",
+    "Morpeth (Northern)",
+    "Newcastle (Northern)"
+  ]
+}

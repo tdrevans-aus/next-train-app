@@ -1,0 +1,129 @@
+{
+  "Barnsley": [
+    "Huddersfield (Northern)",
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)",
+    "Nottingham (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Bolton-on-Dearne": [
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Chapeltown": [
+    "Huddersfield (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Darnall": [
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)"
+  ],
+  "Darton": [
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Dodworth": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Dore": [
+    "Cleethorpes (TransPennine Express)",
+    "Manchester Piccadilly (Northern)",
+    "Norwich (East Midlands Railway)",
+    "Sheffield (Northern)"
+  ],
+  "Elsecar": [
+    "Huddersfield (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Goldthorpe": [
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Kiveton Bridge": [
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)"
+  ],
+  "Meadowhall": [
+    "Adwick (Northern)",
+    "Cleethorpes (TransPennine Express)",
+    "Huddersfield (Northern)",
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Scarborough (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Meadowhall Interchange": [
+    "Adwick (Northern)",
+    "Cleethorpes (TransPennine Express)",
+    "Huddersfield (Northern)",
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Scarborough (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Mexborough": [
+    "Adwick (Northern)",
+    "Doncaster (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Moorthorpe": [
+    "Leeds (Northern)",
+    "Sheffield (Northern)",
+    "York (Northern)"
+  ],
+  "Rotherham Central": [
+    "Adwick (Northern)",
+    "Doncaster (Northern)",
+    "Leeds (Northern)",
+    "Parkgate (Sheffield Supertram)",
+    "Sheffield (Northern)",
+    "Sheffield Cathedral(Tram) (Sheffield Supertram)"
+  ],
+  "Sheffield Station": [
+    "Adwick (Northern)",
+    "Cleethorpes (TransPennine Express)",
+    "Glasgow Central (CrossCountry)",
+    "Huddersfield (Northern)",
+    "Leeds (Northern)",
+    "Liverpool Lime Street (East Midlands Railway)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "London St Pancras (Intl) (East Midlands Railway)",
+    "Manchester Piccadilly (Northern)",
+    "Nottingham (Northern)",
+    "Plymouth (CrossCountry)",
+    "Reading (CrossCountry)",
+    "Scarborough (Northern)"
+  ],
+  "Silkstone Common": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "South Elmsall": [
+    "Doncaster (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Swinton (South Yorkshire)": [
+    "Adwick (Northern)",
+    "Doncaster (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Thurnscoe": [
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Wombwell": [
+    "Huddersfield (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Woodhouse": [
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)"
+  ]
+}

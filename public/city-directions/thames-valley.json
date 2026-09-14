@@ -1,68 +1,329 @@
 {
-  "Reading": [
-    "Abbey Wood (Elizabeth Line)",
-    "Basingstoke (Great Western Railway)",
-    "Bournemouth (CrossCountry)",
-    "Cheltenham Spa (Great Western Railway)",
-    "Didcot Parkway (Great Western Railway)",
-    "Gatwick Airport (Great Western Railway)",
-    "London Paddington (Great Western Railway)",
-    "Manchester Piccadilly (CrossCountry)",
-    "Oxford (Great Western Railway)",
-    "Weston-super-Mare (Great Western Railway)"
-  ],
-  "Oxford (GWR)": [
-    "Banbury (Great Western Railway)",
-    "Birmingham New Street (CrossCountry)",
-    "Bournemouth (CrossCountry)",
-    "Bristol Temple Meads (Great Western Railway)",
-    "Didcot Parkway (Great Western Railway)",
-    "Great Malvern (Great Western Railway)",
-    "Hereford (Great Western Railway)",
-    "London Paddington (Great Western Railway)",
-    "Manchester Piccadilly (CrossCountry)"
-  ],
-  "Oxford (Chiltern)": [
+  "Amersham": [
+    "Aylesbury (Chiltern Railways)",
+    "Aylesbury Vale Parkway (Chiltern Railways)",
     "London Marylebone (Chiltern Railways)"
   ],
-  "Swindon": [
+  "Appleford": [
+    "Banbury (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "Evesham (Great Western Railway)"
+  ],
+  "Ascott-under-Wychwood": [
+    "Evesham (Great Western Railway)"
+  ],
+  "Ashchurch for Tewkesbury": [
     "Bristol Temple Meads (Great Western Railway)",
-    "Cheltenham Spa (Great Western Railway)",
-    "London Paddington (Great Western Railway)",
-    "Oxford (Great Western Railway)",
-    "Swansea (Great Western Railway)",
-    "Weston-super-Mare (Great Western Railway)"
+    "Cardiff Central (CrossCountry)",
+    "Nottingham (CrossCountry)",
+    "Worcester Foregate Street (Great Western Railway)",
+    "Worcester Shrub Hill (Great Western Railway)"
+  ],
+  "Aspley Guise": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Aylesbury": [
+    "Aylesbury Vale Parkway (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Princes Risborough (Chiltern Railways)"
+  ],
+  "Aylesbury Vale Parkway": [
+    "Aylesbury (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)"
   ],
   "Banbury": [
     "Birmingham Moor Street (Chiltern Railways)",
-    "Birmingham New Street (CrossCountry)",
     "Birmingham Snow Hill (Chiltern Railways)",
     "Bournemouth (CrossCountry)",
     "Didcot Parkway (Great Western Railway)",
     "London Marylebone (Chiltern Railways)",
     "Manchester Piccadilly (CrossCountry)",
-    "Southampton Central (CrossCountry)",
+    "Reading (CrossCountry)",
+    "Stourbridge Junction (Chiltern Railways)",
+    "York (CrossCountry)"
+  ],
+  "Beaconsfield": [
+    "High Wycombe (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Berkhamsted": [
+    "London Euston (LNR & WMR)",
+    "Milton Keynes Central (LNR & WMR)",
+    "Tring (LNR & WMR)"
+  ],
+  "Bicester North": [
+    "Birmingham Moor Street (Chiltern Railways)",
+    "Birmingham Snow Hill (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
     "Stourbridge Junction (Chiltern Railways)"
   ],
-  "Westbury": [
-    "Bristol Temple Meads (Great Western Railway)",
-    "Cardiff Central (Great Western Railway)",
+  "Bicester Village": [
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Bletchley": [
+    "Bedford (LNR & WMR)",
+    "Birmingham New Street (LNR & WMR)",
+    "London Euston (LNR & WMR)",
+    "Milton Keynes Central (LNR & WMR)"
+  ],
+  "Bourne End": [
+    "Maidenhead (Great Western Railway)",
+    "Marlow (Great Western Railway)"
+  ],
+  "Bow Brickhill": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Chalfont & Latimer": [
+    "Aylesbury (Chiltern Railways)",
+    "Aylesbury Vale Parkway (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)"
+  ],
+  "Charlbury": [
+    "Evesham (Great Western Railway)",
+    "Great Malvern (Great Western Railway)",
     "London Paddington (Great Western Railway)",
-    "Plymouth (Great Western Railway)",
-    "Portsmouth & Southsea (Great Western Railway)",
-    "Portsmouth Harbour (Great Western Railway)",
-    "Salisbury (Great Western Railway)",
-    "Swindon (Great Western Railway)",
-    "Weymouth (Great Western Railway)"
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Cheddington": [
+    "London Euston (LNR & WMR)",
+    "Milton Keynes Central (LNR & WMR)"
+  ],
+  "Cholsey": [
+    "Didcot Parkway (Great Western Railway)",
+    "London Paddington (Great Western Railway)"
+  ],
+  "Combe": [
+    "Evesham (Great Western Railway)"
+  ],
+  "Cookham": [
+    "Bourne End (Great Western Railway)",
+    "Maidenhead (Great Western Railway)"
+  ],
+  "Culham": [
+    "Banbury (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "Evesham (Great Western Railway)",
+    "Oxford (Great Western Railway)"
+  ],
+  "Didcot Parkway": [
+    "Banbury (Great Western Railway)",
+    "Bristol Parkway (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cheltenham Spa (Great Western Railway)",
+    "Evesham (Great Western Railway)",
+    "London Paddington (Great Western Railway)"
+  ],
+  "Evesham": [
+    "Great Malvern (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Fenny Stratford": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Finstock": [
+    "Evesham (Great Western Railway)"
+  ],
+  "Gerrards Cross": [
+    "High Wycombe (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)"
+  ],
+  "Great Missenden": [
+    "Aylesbury (Chiltern Railways)",
+    "Aylesbury Vale Parkway (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)"
+  ],
+  "Haddenham & Thame Parkway": [
+    "Birmingham Moor Street (Chiltern Railways)",
+    "Birmingham Snow Hill (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Hanborough": [
+    "Evesham (Great Western Railway)",
+    "Great Malvern (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
   ],
   "Henley-on-Thames": [
     "Twyford (Great Western Railway)"
   ],
-  "Didcot Parkway": [
-    "Bristol Temple Meads (Great Western Railway)",
+  "Heyford": [
+    "Banbury (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)"
+  ],
+  "High Wycombe": [
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Islip": [
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Kemble": [
     "Cheltenham Spa (Great Western Railway)",
     "London Paddington (Great Western Railway)",
-    "Oxford (Great Western Railway)",
+    "Salisbury (Great Western Railway)"
+  ],
+  "Kempston Hardwick": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Kingham": [
+    "Evesham (Great Western Railway)",
+    "Great Malvern (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Leighton Buzzard": [
+    "Birmingham New Street (LNR & WMR)",
+    "London Euston (LNR & WMR)",
+    "Milton Keynes Central (LNR & WMR)"
+  ],
+  "Lidlington": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Little Kimble": [
+    "Aylesbury (Chiltern Railways)",
+    "Princes Risborough (Chiltern Railways)"
+  ],
+  "Marlow": [
+    "Bourne End (Great Western Railway)"
+  ],
+  "Millbrook (Bedfordshire)": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Milton Keynes Central": [
+    "Birmingham New Street (Avanti West Coast)",
+    "Birmingham New Street (LNR & WMR)",
+    "Crewe (LNR & WMR)",
+    "Liverpool Lime Street (Avanti West Coast)",
+    "London Euston (Avanti West Coast)",
+    "London Euston (LNR & WMR)",
+    "Manchester Piccadilly (Avanti West Coast)",
+    "Northampton (LNR & WMR)"
+  ],
+  "Monks Risborough": [
+    "Aylesbury (Chiltern Railways)",
+    "Princes Risborough (Chiltern Railways)"
+  ],
+  "Moreton-in-Marsh": [
+    "Evesham (Great Western Railway)",
+    "Great Malvern (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Oxford (Chiltern)": [
+    "London Marylebone (Chiltern Railways)"
+  ],
+  "Oxford (GWR)": [
+    "Banbury (Great Western Railway)",
+    "Bournemouth (CrossCountry)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "Evesham (Great Western Railway)",
+    "Great Malvern (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Reading (CrossCountry)"
+  ],
+  "Oxford Parkway": [
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Princes Risborough": [
+    "Aylesbury (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Radley": [
+    "Banbury (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "Evesham (Great Western Railway)",
+    "Oxford (Great Western Railway)"
+  ],
+  "Reading": [
+    "Abbey Wood (Elizabeth Line)",
+    "Basingstoke (Great Western Railway)",
+    "Bristol Parkway (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Newbury (Great Western Railway)",
+    "Penzance (Great Western Railway)"
+  ],
+  "Ridgmont": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Saunderton": [
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Seer Green": [
+    "High Wycombe (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Oxford (Chiltern Railways)"
+  ],
+  "Shipton": [
+    "Evesham (Great Western Railway)"
+  ],
+  "Stewartby": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Stoke Mandeville": [
+    "Aylesbury (Chiltern Railways)",
+    "Aylesbury Vale Parkway (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)"
+  ],
+  "Swindon": [
+    "Bristol Parkway (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Cheltenham Spa (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Swansea (Great Western Railway)",
+    "Taunton (Great Western Railway)",
     "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Tackley": [
+    "Banbury (Great Western Railway)"
+  ],
+  "Tring": [
+    "Bletchley (LNR & WMR)",
+    "London Euston (LNR & WMR)",
+    "Milton Keynes Central (LNR & WMR)"
+  ],
+  "Wendover": [
+    "Aylesbury (Chiltern Railways)",
+    "Aylesbury Vale Parkway (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)"
+  ],
+  "Westbury": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Newton Abbot (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Woburn Sands": [
+    "Bedford (LNR & WMR)",
+    "Bletchley (LNR & WMR)"
+  ],
+  "Wolverton": [
+    "Birmingham New Street (LNR & WMR)",
+    "London Euston (LNR & WMR)"
   ]
 }
