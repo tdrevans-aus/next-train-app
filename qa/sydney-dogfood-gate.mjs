@@ -7,7 +7,12 @@ import vercelBoard from "../api/dev/board.js";
 import directionsHandler from "../api/directions.js";
 import { getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import { marketingLabelsForStation } from "../lib/cities/sydney/marketing-directions.js";
-import { SYDNEY_TIME_ZONE } from "../lib/providers/sydney.js";
+import {
+  SYDNEY_TIME_ZONE,
+  fetchStationBoard,
+  listCatalogStations,
+} from "../lib/providers/sydney.js";
+import { readTfnswApiKey } from "../lib/providers/gtfs/auth.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
 import { loadLocalGtfsSnapshotForStaleCheck } from "./lib/local-gtfs-snapshot.mjs";
 
@@ -109,6 +114,38 @@ if (previous === undefined) {
   delete process.env.ALLOW_CITY_PROBES;
 } else {
   process.env.ALLOW_CITY_PROBES = previous;
+}
+
+// NSW TrainLink intercity + Hunter fill (14 Sep 2026,
+// docs/jim-brief-sydney-intercity-fill.md): catalog must have picked up the new stations, and
+// a live TfNSW board probe for four of them, skip-with-reason when TFNSW_API_KEY isn't set
+// (same pattern as qa/edinburgh-dogfood-gate.mjs's Darwin-token-optional probes).
+const catalogStations = new Set(listCatalogStations().map((s) => s.name));
+for (const name of [
+  "Gosford",
+  "Wyong",
+  "Newcastle Interchange",
+  "Katoomba",
+  "Lithgow",
+  "Wollongong",
+  "Kiama",
+  "Moss Vale",
+  "Maitland",
+  "Dungog",
+]) {
+  assert(catalogStations.has(name), `Sydney catalog must include ${name} (NSW TrainLink intercity fill)`);
+}
+
+if (readTfnswApiKey()) {
+  for (const name of ["Gosford", "Katoomba", "Wollongong", "Newcastle Interchange"]) {
+    const board = await fetchStationBoard(name);
+    assert(Array.isArray(board.trips), `${name} live board must return a trips array`);
+  }
+  console.log("sydney-dogfood-gate: TFNSW_API_KEY set — probed live intercity boards at Gosford/Katoomba/Wollongong/Newcastle Interchange");
+} else {
+  console.log(
+    "sydney-dogfood-gate: TFNSW_API_KEY not set in this environment — Gosford/Katoomba/Wollongong/Newcastle Interchange live board probe skipped (expected outside Vercel prod)."
+  );
 }
 
 // Local fixture, not the live TfNSW feed — see qa/lib/local-gtfs-snapshot.mjs

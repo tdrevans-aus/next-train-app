@@ -4,3 +4,8 @@ T3,SydneyTrains,T3,Bankstown Line,2
 T6,SydneyTrains,T6,Lidcombe & Bankstown Line,2
 T7,SydneyTrains,T7,Olympic Park Line,2
 T8,SydneyTrains,T8,Airport & South Line,2
+BMT,NSWTrainLink,BMT,Blue Mountains Line,2
+CCN,NSWTrainLink,CCN,Central Coast & Newcastle Line,2
+SCO,NSWTrainLink,SCO,South Coast Line,2
+SHL,NSWTrainLink,SHL,Southern Highlands Line,2
+HUN,NSWTrainLink,HUN,Hunter Line,2

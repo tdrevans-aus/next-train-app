@@ -24,6 +24,14 @@ const MARKETING_ENDS = {
   T7: ["Lidcombe", "Olympic Park"],
   T8: ["Macarthur"],
   T9: ["Hornsby", "Gordon"],
+  // NSW TrainLink intercity + Hunter (14 Sep 2026, API-in-scope fill,
+  // docs/jim-brief-sydney-intercity-fill.md) — mirrors
+  // lib/cities/sydney/marketing-directions.js MARKETING_ENDS.
+  BMT: ["Central", "Lithgow"],
+  CCN: ["Central", "Newcastle Interchange"],
+  SCO: ["Central", "Bomaderry"],
+  SHL: ["Central", "Goulburn"],
+  HUN: ["Dungog", "Scone"],
 };
 
 const SPLIT_PLACE_NAMES = ["central", "martin place", "epping", "chatswood", "sydenham"];
@@ -45,6 +53,10 @@ const LABEL_EXPECTATIONS = [
       "T8 Macarthur",
       "T9 Gordon",
       "T9 Hornsby",
+      "BMT Lithgow",
+      "CCN Newcastle Interchange",
+      "SCO Bomaderry",
+      "SHL Goulburn",
     ],
   },
   {
@@ -64,7 +76,9 @@ const H6_STATIONS = [
   "Martin Place Metro",
 ];
 
-const DIRECTION_CEILING = 16;
+// Raised 16 -> 20 (14 Sep 2026, docs/jim-brief-sydney-intercity-fill.md): Central legitimately
+// gains 4 more chips (BMT/CCN/SCO/SHL) on top of the 13 T-line ones already there.
+const DIRECTION_CEILING = 20;
 
 const DOCUMENTED_STATION_DIFFS = {
   T1: {

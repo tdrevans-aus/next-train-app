@@ -30,6 +30,20 @@ Deliberately absent: any T6/T7 trip headed for the City Circle. The gate asserts
 NOT gain a City Circle chip, and that the real feed has no such trips is the finding FB-62
 recorded — keep it that way here.
 
+**14 Sep 2026 (docs/jim-brief-sydney-intercity-fill.md):** added `BMT`/`CCN`/`SCO`/`SHL`/`HUN`
+routes and one trip each way for a representative acceptance station per new line — Katoomba
+(BMT), Gosford (CCN), Wollongong (SCO), Moss Vale (SHL), Maitland (HUN, both branches: Dungog
+and Scone). BMT has a second "Central"-headsign trip at Springwood (`BMT-CENTRAL-2`), same
+reason T2 has a second City Circle trip at Liverpool: so
+`qa/sydney-direction-match-negative.mjs` can drop only Katoomba's trip and hit the per-station
+assertion rather than the network-wide one. The Central-side stop_id on each of those trips reuses one of Central's own real
+platform ids (`2000321`) already in `lib/cities/sydney/stations.json`. The intercity-station
+stop_id on each (e.g. `nswtrains-pending-katoomba`) is the placeholder id
+`lib/providers/sydney.js`'s `resolveStopIds` was given for those stations — real platform ids
+weren't obtainable in this environment (no `TFNSW_API_KEY`); see that file's comment and
+`docs/sydney-d1/board-eligibility-intercity.md` for why, and the production-path gap this leaves
+(`scripts/trim-sydney-gtfs.py`'s header comment).
+
 `service_id` on every trip is a real calendar row from `calendar.txt`; the gate does not
 evaluate calendars, so which row is irrelevant, but the trips must reference something that
 exists.
