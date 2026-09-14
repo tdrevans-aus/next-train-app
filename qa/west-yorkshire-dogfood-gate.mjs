@@ -359,5 +359,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "west-yorkshire-dogfood-gate: ok (post-flip live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, Board eligibility all-in, 82 rail-only stations, doNotGroup BDQ/BDI, catalog CRS sweep, directions derived live from Darwin with no static line map, no direction-hubs.json shipped (chip-table evidence found no qualifying hub case), routing table (exact/undirected; hub branch inert with zero configured hubs) proven token-free, Perth stays green)"
+  `west-yorkshire-dogfood-gate: ok (post-flip live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, Board eligibility all-in, ${allStations.length} rail-only stations, doNotGroup BDQ/BDI, catalog CRS sweep, directions derived live from Darwin with no static line map, no direction-hubs.json shipped (chip-table evidence found no qualifying hub case), routing table (exact/undirected; hub branch inert with zero configured hubs) proven token-free, Perth stays green)`
 );

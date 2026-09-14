@@ -401,5 +401,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "cumbria-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 49 rail-only stations, single tier-1 hub Carlisle + two tier-2 secondary hubs Oxenholme/Barrow-in-Furness, Penrith correctly stays regional, Caledonian Sleeper out-reservation exclusion enforced at Carlisle only, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia green)"
+  `cumbria-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, ${allStations.length} rail-only stations, single tier-1 hub Carlisle + two tier-2 secondary hubs Oxenholme/Barrow-in-Furness, Penrith correctly stays regional, Caledonian Sleeper out-reservation exclusion enforced at Carlisle only, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth Australia green)`
 );

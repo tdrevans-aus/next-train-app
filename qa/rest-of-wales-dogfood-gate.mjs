@@ -404,5 +404,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "rest-of-wales-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 118 rail-only stations, no doNotGroup enforced at Wrexham General/Carmarthen/Whitland/Machynlleth, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)"
+  `rest-of-wales-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, ${allStations.length} rail-only stations, no doNotGroup enforced at Wrexham General/Carmarthen/Whitland/Machynlleth, no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, catalog CRS sweep, routing table (exact/undirected) proven token-free, Perth stays green)`
 );

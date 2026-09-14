@@ -12,6 +12,7 @@
 import { chromium } from "playwright";
 import { BASE, ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
 import { openJourneySetup } from "./helpers/travel-library.mjs";
+import { seedCountryStationsCache } from "./helpers/country-stations-fixture.mjs";
 
 let failed = false;
 
@@ -230,30 +231,16 @@ async function run() {
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    await page.evaluate(() => {
-      localStorage.setItem(
-        "nextTrainSettings",
-        JSON.stringify({
-          settingsSchemaVersion: 2,
-          savedCity: "glasgow",
-          savedCountry: "gb-sct",
-          regionExplicit: false,
-          refreshSeconds: 60,
-        })
-      );
-      const glasgow = { id: "glasgow", displayName: "Glasgow" };
-      localStorage.setItem(
-        "nextTrainCountryStations:gb-sct",
-        JSON.stringify({
-          countryId: "gb-sct",
-          fetchedAt: Date.now(),
-          regions: [glasgow],
-          stations: [
-            { name: "Kelvinhall", lat: 55.8752, lng: -4.2919, liveFeed: false, region: glasgow },
-            { name: "Glasgow Central", lat: 55.8592, lng: -4.2576, liveFeed: true, region: glasgow },
-          ],
-        })
-      );
+    const glasgow = { id: "glasgow", displayName: "Glasgow" };
+    await seedCountryStationsCache(page, {
+      savedCity: "glasgow",
+      savedCountry: "gb-sct",
+      countryId: "gb-sct",
+      regions: [glasgow],
+      stations: [
+        { name: "Kelvinhall", lat: 55.8752, lng: -4.2919, liveFeed: false, region: glasgow },
+        { name: "Glasgow Central", lat: 55.8592, lng: -4.2576, liveFeed: true, region: glasgow },
+      ],
     });
     // Reload without reset=1&test=1 so runInit() re-reads the seeded
     // pre-fix-style cache instead of clearing it again (same pattern as
