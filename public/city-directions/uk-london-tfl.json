@@ -1,11 +1,7 @@
 {
   "Abbey Road": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Acton Central": [
@@ -17,11 +13,7 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "District Wimbledon"
   ],
   "Addington Village": [
     "Tram Beckenham Junction",
@@ -38,28 +30,18 @@
     "Tram Wimbledon"
   ],
   "Aldgate": [
-    "Circle",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Circle"
   ],
   "Aldgate East": [
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "District Wimbledon"
   ],
   "All Saints": [
-    "DLR Bank",
-    "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Alperton": [
     "Piccadilly Cockfosters",
@@ -149,11 +131,7 @@
     "Central Ealing Broadway",
     "Central Epping",
     "Central West Ruislip",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal",
     "Northern Edgware",
     "Northern High Barnet",
@@ -162,21 +140,13 @@
     "Waterloo and City Waterloo"
   ],
   "Barbican": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Circle"
   ],
   "Barking": [
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
     "District Wimbledon",
-    "Hammersmith and City Hammersmith",
     "Suffragette Barking Riverside",
     "Suffragette Gospel Oak"
   ],
@@ -192,11 +162,7 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "District Wimbledon"
   ],
   "Battersea Power": [
     "Northern Edgware",
@@ -205,9 +171,7 @@
     "Northern Morden"
   ],
   "Bayswater": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Beckenham Junction": [
     "Tram Elmers End",
@@ -223,21 +187,11 @@
     "Tram Wimbledon"
   ],
   "Beckton": [
-    "DLR Bank",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Beckton Park": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Becontree": [
     "District Ealing Broadway",
@@ -286,11 +240,7 @@
     "Tram Wimbledon"
   ],
   "Blackfriars": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Blackhorse Lane": [
     "Tram Beckenham Junction",
@@ -308,23 +258,13 @@
   "Blackwall": [
     "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
     "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Bond Street": [
     "Central Ealing Broadway",
     "Central Epping",
-    "Central West Ruislip",
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
-    "Jubilee Stanmore",
-    "Jubilee Stratford"
+    "Central West Ruislip"
   ],
   "Borough": [
     "Northern Edgware",
@@ -345,21 +285,15 @@
     "Piccadilly Uxbridge"
   ],
   "Bow Church": [
-    "DLR Bank",
-    "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Bow Road": [
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "District Wimbledon"
   ],
   "Brent Cross": [
     "Northern Edgware",
@@ -381,9 +315,7 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "District Wimbledon"
   ],
   "Brondesbury": [
     "Mildmay Clapham Junction",
@@ -461,25 +393,12 @@
   ],
   "Canary Wharf": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal",
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
-    "Jubilee Stanmore",
-    "Jubilee Stratford"
+    "DLR Stratford"
   ],
   "Canning Town": [
     "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
     "DLR Tower Gateway",
     "DLR Woolwich Arsenal",
@@ -487,11 +406,7 @@
     "Jubilee Stratford"
   ],
   "Cannon Street": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Canonbury": [
     "Mildmay Clapham Junction",
@@ -533,11 +448,7 @@
   ],
   "Charing Cross": [
     "Bakerloo Elephant and Castle",
-    "Bakerloo Harrow and Wealdstone",
-    "Northern Edgware",
-    "Northern High Barnet",
-    "Northern Mill Hill East",
-    "Northern Morden"
+    "Bakerloo Harrow and Wealdstone"
   ],
   "Chesham": [
     "Metropolitan Aldgate",
@@ -647,12 +558,8 @@
   ],
   "Crossharbour": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Crouch Hill": [
     "Suffragette Barking Riverside",
@@ -672,31 +579,17 @@
     "Windrush West Croydon"
   ],
   "Custom House (for ExCel)": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Cutty Sark": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Cyprus": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Dagenham East": [
     "District Ealing Broadway",
@@ -736,21 +629,13 @@
   ],
   "Deptford Bridge": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Devons Road": [
-    "DLR Bank",
-    "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Dollis Hill": [
     "Jubilee Stanmore",
@@ -765,35 +650,19 @@
   ],
   "Ealing Broadway": [
     "Central Epping",
-    "Central West Ruislip",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield"
+    "Central West Ruislip"
   ],
   "Ealing Common": [
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "District Wimbledon"
   ],
   "Earl's Court": [
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "District Wimbledon"
   ],
   "East Acton": [
     "Central Ealing Broadway",
@@ -817,16 +686,11 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "District Wimbledon"
   ],
   "East India": [
     "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
     "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
@@ -841,11 +705,7 @@
     "Metropolitan Amersham",
     "Metropolitan Chesham",
     "Metropolitan Uxbridge",
-    "Metropolitan Watford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Metropolitan Watford"
   ],
   "Edgware": [
     "Northern High Barnet",
@@ -857,13 +717,7 @@
     "Bakerloo Harrow and Wealdstone"
   ],
   "Edgware Road (Circle Line)": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Edmonton Green": [
     "Weaver Cheshunt",
@@ -873,11 +727,7 @@
   ],
   "Elephant & Castle": [
     "Bakerloo Elephant and Castle",
-    "Bakerloo Harrow and Wealdstone",
-    "Northern Edgware",
-    "Northern High Barnet",
-    "Northern Mill Hill East",
-    "Northern Morden"
+    "Bakerloo Harrow and Wealdstone"
   ],
   "Elm Park": [
     "District Ealing Broadway",
@@ -893,25 +743,12 @@
   ],
   "Elverson Road": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Embankment": [
     "Bakerloo Elephant and Castle",
-    "Bakerloo Harrow and Wealdstone",
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Northern Edgware",
-    "Northern High Barnet",
-    "Northern Mill Hill East",
-    "Northern Morden"
+    "Bakerloo Harrow and Wealdstone"
   ],
   "Emerson Park": [
     "Liberty Romford",
@@ -930,19 +767,10 @@
     "Northern Edgware",
     "Northern High Barnet",
     "Northern Mill Hill East",
-    "Northern Morden",
-    "Victoria Brixton",
-    "Victoria Walthamstow Central"
+    "Northern Morden"
   ],
   "Euston Square": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Circle"
   ],
   "Fairlop": [
     "Central Ealing Broadway",
@@ -950,19 +778,7 @@
     "Central West Ruislip"
   ],
   "Farringdon": [
-    "Circle",
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Circle"
   ],
   "Fieldway": [
     "Tram Beckenham Junction",
@@ -979,12 +795,7 @@
   ],
   "Finchley Road": [
     "Jubilee Stanmore",
-    "Jubilee Stratford",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Jubilee Stratford"
   ],
   "Finchley Road & Frognal": [
     "Mildmay Clapham Junction",
@@ -995,9 +806,7 @@
     "Piccadilly Cockfosters",
     "Piccadilly Heathrow Terminal 4",
     "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge",
-    "Victoria Brixton",
-    "Victoria Walthamstow Central"
+    "Piccadilly Uxbridge"
   ],
   "Forest Hill": [
     "Windrush Clapham Junction",
@@ -1013,13 +822,8 @@
     "District Wimbledon"
   ],
   "Gallions Reach": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Gants Hill": [
     "Central Ealing Broadway",
@@ -1034,15 +838,7 @@
     "Tram Wimbledon"
   ],
   "Gloucester Road": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Circle"
   ],
   "Golders Green": [
     "Northern Edgware",
@@ -1051,9 +847,7 @@
     "Northern Morden"
   ],
   "Goldhawk Road": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Goodge Street": [
     "Northern Edgware",
@@ -1080,24 +874,11 @@
     "Tram Wimbledon"
   ],
   "Great Portland Street": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Circle"
   ],
   "Green Park": [
     "Jubilee Stanmore",
-    "Jubilee Stratford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge",
-    "Victoria Brixton",
-    "Victoria Walthamstow Central"
+    "Jubilee Stratford"
   ],
   "Greenford": [
     "Central Ealing Broadway",
@@ -1106,12 +887,8 @@
   ],
   "Greenwich": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Gunnersbury": [
     "District Ealing Broadway",
@@ -1154,15 +931,10 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "District Wimbledon"
   ],
   "Hammersmith (H&C Line)": [
-    "Circle",
-    "Hammersmith and City Barking"
+    "Circle"
   ],
   "Hampstead": [
     "Northern Edgware",
@@ -1225,29 +997,16 @@
     "Lioness Watford Junction"
   ],
   "Heathrow Terminal 4": [
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
     "Piccadilly Cockfosters",
     "Piccadilly Heathrow Terminal 5",
     "Piccadilly Uxbridge"
   ],
   "Heathrow Terminal 5": [
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
     "Piccadilly Cockfosters",
     "Piccadilly Heathrow Terminal 4",
     "Piccadilly Uxbridge"
   ],
   "Heathrow Terminals 2 & 3": [
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
     "Piccadilly Cockfosters",
     "Piccadilly Heathrow Terminal 4",
     "Piccadilly Heathrow Terminal 5",
@@ -1261,12 +1020,8 @@
   ],
   "Heron Quays": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "High Barnet": [
     "Northern Edgware",
@@ -1274,11 +1029,7 @@
     "Northern Morden"
   ],
   "High Street Kensington": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Highams Park": [
     "Weaver Cheshunt",
@@ -1308,20 +1059,12 @@
     "Metropolitan Amersham",
     "Metropolitan Chesham",
     "Metropolitan Uxbridge",
-    "Metropolitan Watford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Metropolitan Watford"
   ],
   "Holborn": [
     "Central Ealing Broadway",
     "Central Epping",
-    "Central West Ruislip",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Central West Ruislip"
   ],
   "Holland Park": [
     "Central Ealing Broadway",
@@ -1388,11 +1131,7 @@
     "Metropolitan Amersham",
     "Metropolitan Chesham",
     "Metropolitan Uxbridge",
-    "Metropolitan Watford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Metropolitan Watford"
   ],
   "Imperial Wharf": [
     "Mildmay Clapham Junction",
@@ -1401,12 +1140,8 @@
   ],
   "Island Gardens": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Kennington": [
     "Northern Edgware",
@@ -1474,11 +1209,7 @@
   ],
   "King George V": [
     "DLR Bank",
-    "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "King Henry's Drive": [
@@ -1519,9 +1250,7 @@
     "Piccadilly Uxbridge"
   ],
   "Ladbroke Grove": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Lambeth North": [
     "Bakerloo Elephant and Castle",
@@ -1533,18 +1262,12 @@
     "Central West Ruislip"
   ],
   "Langdon Park": [
-    "DLR Bank",
-    "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Latimer Road": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Lebanon Road": [
     "Tram Beckenham Junction",
@@ -1557,19 +1280,11 @@
     "Northern Edgware",
     "Northern High Barnet",
     "Northern Mill Hill East",
-    "Northern Morden",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Northern Morden"
   ],
   "Lewisham": [
     "DLR Bank",
-    "DLR Beckton",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Leyton": [
     "Central Ealing Broadway",
@@ -1593,28 +1308,13 @@
     "DLR Bank",
     "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
     "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Liverpool Street": [
     "Central Ealing Broadway",
     "Central Epping",
-    "Central West Ruislip",
-    "Circle",
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Central West Ruislip"
   ],
   "Lloyd Park": [
     "Tram Beckenham Junction",
@@ -1625,19 +1325,11 @@
   ],
   "London Bridge": [
     "Jubilee Stanmore",
-    "Jubilee Stratford",
-    "Northern Edgware",
-    "Northern High Barnet",
-    "Northern Mill Hill East",
-    "Northern Morden"
+    "Jubilee Stratford"
   ],
   "London City Airport": [
     "DLR Bank",
-    "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "London Euston": [
@@ -1666,11 +1358,7 @@
     "Piccadilly Uxbridge"
   ],
   "Mansion House": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Marble Arch": [
     "Central Ealing Broadway",
@@ -1691,13 +1379,7 @@
   "Mile End": [
     "Central Ealing Broadway",
     "Central Epping",
-    "Central West Ruislip",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Central West Ruislip"
   ],
   "Mill Hill East": [
     "Northern Edgware",
@@ -1719,11 +1401,7 @@
     "Tram Wimbledon"
   ],
   "Monument": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Moor Park": [
     "Metropolitan Aldgate",
@@ -1733,18 +1411,7 @@
     "Metropolitan Watford"
   ],
   "Moorgate": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford",
-    "Northern Edgware",
-    "Northern High Barnet",
-    "Northern Mill Hill East",
-    "Northern Morden"
+    "Circle"
   ],
   "Morden": [
     "Northern Edgware",
@@ -1766,21 +1433,12 @@
   ],
   "Mudchute": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Neasden": [
     "Jubilee Stanmore",
-    "Jubilee Stratford",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Jubilee Stratford"
   ],
   "New Addington": [
     "Tram Beckenham Junction",
@@ -1883,10 +1541,7 @@
   "Notting Hill Gate": [
     "Central Ealing Broadway",
     "Central Epping",
-    "Central West Ruislip",
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Central West Ruislip"
   ],
   "Oakwood": [
     "Piccadilly Cockfosters",
@@ -1923,23 +1578,10 @@
   ],
   "Paddington": [
     "Bakerloo Elephant and Castle",
-    "Bakerloo Harrow and Wealdstone",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Bakerloo Harrow and Wealdstone"
   ],
   "Paddington (H&C Line)": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Park Royal": [
     "Piccadilly Cockfosters",
@@ -1981,11 +1623,7 @@
   ],
   "Piccadilly Circus": [
     "Bakerloo Elephant and Castle",
-    "Bakerloo Harrow and Wealdstone",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Bakerloo Harrow and Wealdstone"
   ],
   "Pimlico": [
     "Victoria Brixton",
@@ -2002,25 +1640,19 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "District Wimbledon"
   ],
   "Pontoon Dock": [
     "DLR Bank",
-    "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Poplar": [
     "DLR Bank",
     "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
     "DLR Stratford",
-    "DLR Stratford International",
     "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
@@ -2032,22 +1664,13 @@
     "Metropolitan Watford"
   ],
   "Prince Regent": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Pudding Mill Lane": [
-    "DLR Bank",
-    "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "Putney Bridge": [
     "District Ealing Broadway",
@@ -2090,11 +1713,7 @@
     "Metropolitan Amersham",
     "Metropolitan Chesham",
     "Metropolitan Uxbridge",
-    "Metropolitan Watford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Metropolitan Watford"
   ],
   "Rectory Road": [
     "Weaver Cheshunt",
@@ -2147,38 +1766,22 @@
     "Windrush West Croydon"
   ],
   "Royal Albert": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Royal Oak": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Royal Victoria": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Tower Gateway"
   ],
   "Ruislip": [
     "Metropolitan Aldgate",
     "Metropolitan Amersham",
     "Metropolitan Chesham",
     "Metropolitan Uxbridge",
-    "Metropolitan Watford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Metropolitan Watford"
   ],
   "Ruislip Gardens": [
     "Central Ealing Broadway",
@@ -2190,11 +1793,7 @@
     "Metropolitan Amersham",
     "Metropolitan Chesham",
     "Metropolitan Uxbridge",
-    "Metropolitan Watford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Metropolitan Watford"
   ],
   "Russell Square": [
     "Piccadilly Cockfosters",
@@ -2221,8 +1820,6 @@
     "DLR Bank",
     "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
     "DLR Tower Gateway",
     "DLR Woolwich Arsenal",
     "Windrush Clapham Junction",
@@ -2237,9 +1834,7 @@
     "Central West Ruislip"
   ],
   "Shepherd's Bush Market": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Shepherds Bush": [
     "Mildmay Clapham Junction",
@@ -2260,11 +1855,7 @@
     "Weaver Liverpool Street"
   ],
   "Sloane Square": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Snaresbrook": [
     "Central Ealing Broadway",
@@ -2293,15 +1884,7 @@
     "Piccadilly Uxbridge"
   ],
   "South Kensington": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "Circle"
   ],
   "South Kenton": [
     "Bakerloo Elephant and Castle",
@@ -2311,12 +1894,8 @@
   ],
   "South Quay": [
     "DLR Bank",
-    "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "South Ruislip": [
     "Central Ealing Broadway",
@@ -2367,11 +1946,7 @@
     "Weaver Liverpool Street"
   ],
   "St. James's Park": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "St. John's Wood": [
     "Jubilee Stanmore",
@@ -2398,29 +1973,21 @@
     "Jubilee Stratford"
   ],
   "Star Lane": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Stepney Green": [
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "District Wimbledon"
   ],
   "Stockwell": [
     "Northern Edgware",
     "Northern High Barnet",
     "Northern Mill Hill East",
-    "Northern Morden",
-    "Victoria Brixton",
-    "Victoria Walthamstow Central"
+    "Northern Morden"
   ],
   "Stoke Newington": [
     "Weaver Cheshunt",
@@ -2438,11 +2005,10 @@
     "Central Ealing Broadway",
     "Central Epping",
     "Central West Ruislip",
-    "DLR Bank",
     "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal",
     "Elizabeth Abbey Wood",
     "Elizabeth Heathrow Terminal 4",
@@ -2454,20 +2020,12 @@
     "Mildmay Richmond"
   ],
   "Stratford High Street": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Stratford International": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Sudbury Hill": [
@@ -2501,11 +2059,7 @@
     "Windrush West Croydon"
   ],
   "Temple": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Theobalds Grove": [
     "Weaver Cheshunt",
@@ -2538,18 +2092,11 @@
     "Northern Morden"
   ],
   "Tottenham Court Road": [
-    "Central Ealing Broadway",
-    "Central Epping",
-    "Central West Ruislip",
     "Elizabeth Abbey Wood",
     "Elizabeth Heathrow Terminal 4",
     "Elizabeth Heathrow Terminal 5",
     "Elizabeth Reading",
-    "Elizabeth Shenfield",
-    "Northern Edgware",
-    "Northern High Barnet",
-    "Northern Mill Hill East",
-    "Northern Morden"
+    "Elizabeth Shenfield"
   ],
   "Tottenham Hale": [
     "Victoria Brixton",
@@ -2562,19 +2109,10 @@
     "Northern Morden"
   ],
   "Tower Gateway": [
-    "DLR Bank",
-    "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Woolwich Arsenal"
+    "DLR Beckton"
   ],
   "Tower Hill": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon"
+    "Circle"
   ],
   "Tufnell Park": [
     "Northern Edgware",
@@ -2592,11 +2130,7 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5",
-    "Piccadilly Uxbridge"
+    "District Wimbledon"
   ],
   "Turnpike Lane": [
     "Piccadilly Cockfosters",
@@ -2630,31 +2164,20 @@
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "District Wimbledon"
   ],
   "Uxbridge": [
     "Metropolitan Aldgate",
     "Metropolitan Amersham",
     "Metropolitan Chesham",
-    "Metropolitan Watford",
-    "Piccadilly Cockfosters",
-    "Piccadilly Heathrow Terminal 4",
-    "Piccadilly Heathrow Terminal 5"
+    "Metropolitan Watford"
   ],
   "Vauxhall": [
     "Victoria Brixton",
     "Victoria Walthamstow Central"
   ],
   "Victoria": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Victoria Brixton",
-    "Victoria Walthamstow Central"
+    "Circle"
   ],
   "Waddon Marsh": [
     "Tram Beckenham Junction",
@@ -2708,9 +2231,7 @@
     "Northern Edgware",
     "Northern High Barnet",
     "Northern Mill Hill East",
-    "Northern Morden",
-    "Victoria Brixton",
-    "Victoria Walthamstow Central"
+    "Northern Morden"
   ],
   "Warwick Avenue": [
     "Bakerloo Elephant and Castle",
@@ -2755,12 +2276,7 @@
   ],
   "Wembley Park": [
     "Jubilee Stanmore",
-    "Jubilee Stratford",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Jubilee Stratford"
   ],
   "West Acton": [
     "Central Ealing Broadway",
@@ -2793,21 +2309,13 @@
     "Northern Morden"
   ],
   "West Ham": [
-    "DLR Bank",
     "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal",
     "District Ealing Broadway",
     "District Richmond",
     "District Upminster",
-    "District Wimbledon",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
-    "Jubilee Stanmore",
-    "Jubilee Stratford"
+    "District Wimbledon"
   ],
   "West Hampstead": [
     "Jubilee Stanmore",
@@ -2825,12 +2333,9 @@
   ],
   "West India Quay": [
     "DLR Bank",
-    "DLR Beckton",
+    "DLR Canary Wharf",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway",
-    "DLR Woolwich Arsenal"
+    "DLR Stratford"
   ],
   "West Kensington": [
     "District Ealing Broadway",
@@ -2844,35 +2349,21 @@
   ],
   "West Silvertown": [
     "DLR Bank",
-    "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
     "DLR Stratford International",
-    "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Westbourne Park": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Westferry": [
     "DLR Bank",
     "DLR Beckton",
     "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
     "DLR Tower Gateway",
     "DLR Woolwich Arsenal"
   ],
   "Westminster": [
-    "Circle",
-    "District Ealing Broadway",
-    "District Richmond",
-    "District Upminster",
-    "District Wimbledon",
-    "Jubilee Stanmore",
-    "Jubilee Stratford"
+    "Circle"
   ],
   "White City": [
     "Central Ealing Broadway",
@@ -2890,13 +2381,6 @@
     "District Richmond",
     "District Upminster",
     "District Wimbledon",
-    "Elizabeth Abbey Wood",
-    "Elizabeth Heathrow Terminal 4",
-    "Elizabeth Heathrow Terminal 5",
-    "Elizabeth Reading",
-    "Elizabeth Shenfield",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith",
     "Windrush Clapham Junction",
     "Windrush Crystal Palace",
     "Windrush Highbury & Islington",
@@ -2905,12 +2389,7 @@
   ],
   "Willesden Green": [
     "Jubilee Stanmore",
-    "Jubilee Stratford",
-    "Metropolitan Aldgate",
-    "Metropolitan Amersham",
-    "Metropolitan Chesham",
-    "Metropolitan Uxbridge",
-    "Metropolitan Watford"
+    "Jubilee Stratford"
   ],
   "Willesden Junction": [
     "Bakerloo Elephant and Castle",
@@ -2940,9 +2419,7 @@
     "Piccadilly Uxbridge"
   ],
   "Wood Lane": [
-    "Circle",
-    "Hammersmith and City Barking",
-    "Hammersmith and City Hammersmith"
+    "Circle"
   ],
   "Wood Street": [
     "Weaver Cheshunt",
@@ -2974,10 +2451,6 @@
   ],
   "Woolwich Arsenal": [
     "DLR Bank",
-    "DLR Beckton",
-    "DLR Lewisham",
-    "DLR Stratford",
-    "DLR Stratford International",
-    "DLR Tower Gateway"
+    "DLR Stratford International"
   ]
 }
