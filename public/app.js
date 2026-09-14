@@ -489,6 +489,56 @@ function locationErrorFrom(error) {
   });
 }
 
+// docs/jim-brief-picker-near-you-nearest-five.md: a small, app-wide cache of
+// the last known lat/lng, written only by existing geolocation call sites
+// (this function, plus NextTrainCitySession's GPS-follow path in
+// city-session.js). Never triggers a geolocation request itself, and is
+// never read for anything safety-critical — the picker's "Near you" group
+// is the only consumer today.
+const LAST_KNOWN_POSITION_KEY = "nextTrainLastKnownPosition";
+const LAST_KNOWN_POSITION_MAX_AGE_MS = 30 * 60 * 1000;
+let lastKnownPositionMemory = null;
+
+function writeLastKnownPosition(lat, lng, timestamp = Date.now()) {
+  const numLat = Number(lat);
+  const numLng = Number(lng);
+  const numTimestamp = Number(timestamp);
+  if (!Number.isFinite(numLat) || !Number.isFinite(numLng) || !Number.isFinite(numTimestamp)) {
+    return;
+  }
+  const payload = { lat: numLat, lng: numLng, timestamp: numTimestamp };
+  lastKnownPositionMemory = payload;
+  try {
+    localStorage.setItem(LAST_KNOWN_POSITION_KEY, JSON.stringify(payload));
+  } catch {
+    /* ignore — in-memory cache still serves this session */
+  }
+}
+
+function readLastKnownPosition() {
+  if (lastKnownPositionMemory) {
+    return lastKnownPositionMemory;
+  }
+  try {
+    const raw = JSON.parse(localStorage.getItem(LAST_KNOWN_POSITION_KEY) || "null");
+    const lat = Number(raw?.lat);
+    const lng = Number(raw?.lng);
+    const timestamp = Number(raw?.timestamp);
+    if (Number.isFinite(lat) && Number.isFinite(lng) && Number.isFinite(timestamp)) {
+      return { lat, lng, timestamp };
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+window.nextTrainLastPosition = {
+  read: readLastKnownPosition,
+  write: writeLastKnownPosition,
+  MAX_AGE_MS: LAST_KNOWN_POSITION_MAX_AGE_MS,
+};
+
 async function getAppGeolocationPosition(options = {}) {
   console.log("[App] getAppGeolocationPosition starting...", options);
   if (isNativeApp()) {
@@ -498,7 +548,9 @@ async function getAppGeolocationPosition(options = {}) {
     }
 
     try {
-      return await window.NextTrainGeo.getCurrentPosition(options);
+      const position = await window.NextTrainGeo.getCurrentPosition(options);
+      writeLastKnownPosition(position?.coords?.latitude, position?.coords?.longitude, position?.timestamp);
+      return position;
     } catch (error) {
       throw locationErrorFrom(error);
     }
@@ -509,9 +561,11 @@ async function getAppGeolocationPosition(options = {}) {
   }
 
   try {
-    return await new Promise((resolve, reject) => {
+    const position = await new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject, options);
     });
+    writeLastKnownPosition(position?.coords?.latitude, position?.coords?.longitude, position?.timestamp);
+    return position;
   } catch (error) {
     throw locationErrorFrom(error);
   }
@@ -8017,6 +8071,8 @@ function initNearbyModeFromModule() {
     findNearestStation,
     getGeolocationPosition,
     getAppGeolocationPosition,
+    readLastKnownPosition,
+    writeLastKnownPosition,
     distanceKm,
     isLeaveAcknowledged,
     maybeSyncLeaveAckFromNative,

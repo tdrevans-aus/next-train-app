@@ -285,6 +285,11 @@
   font-size: 0.8em;
 }
 
+.station-combobox-distance {
+  color: var(--muted);
+  font-size: 0.8em;
+}
+
 .nearby-station-btn {
   width: 100%;
 }
