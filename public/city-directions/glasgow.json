@@ -1,0 +1,944 @@
+{
+  "Airbles": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)"
+  ],
+  "Airdrie": [
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Alexandra Parade": [
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Alexandria": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)"
+  ],
+  "Anderston": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Anniesland": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Ardrossan Harbour": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "Ardrossan South Beach": [
+    "Ardrossan Harbour (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Ardrossan Town": [
+    "Ardrossan Harbour (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Argyle Street": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Ashfield": [
+    "Anniesland (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Auchinleck": [
+    "Carlisle (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Ayr": [
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)",
+    "Stranraer (ScotRail)"
+  ],
+  "Baillieston": [
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Balloch": [
+    "Airdrie (ScotRail)"
+  ],
+  "Barassie": [
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Bargeddie": [
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Barnhill": [
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Barrhead": [
+    "Carlisle (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Bearsden": [
+    "Bathgate (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Bellgrove": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Bellshill": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Lanark (ScotRail)"
+  ],
+  "Bishopbriggs": [
+    "Alloa (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Bishopton": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Blairhill": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Blantyre": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)"
+  ],
+  "Bogston": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)"
+  ],
+  "Bowling": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)"
+  ],
+  "Branchton": [
+    "Glasgow Central (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Bridgeton": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Burnside": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Busby": [
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Caldercruix": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Cambuslang": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Lanark (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)"
+  ],
+  "Cardonald": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Carfin": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Carluke": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Lanark (ScotRail)"
+  ],
+  "Carmyle": [
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Carntyne": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Carstairs": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Cartsdyke": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)"
+  ],
+  "Cathcart": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)"
+  ],
+  "Charing Cross (Glasgow)": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Chatelherault": [
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)"
+  ],
+  "Clarkston": [
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Cleland": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Clydebank": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Coatbridge Central": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)"
+  ],
+  "Coatbridge Sunnyside": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Coatdyke": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Corkerhill": [
+    "Glasgow Central (ScotRail)",
+    "Paisley Canal (ScotRail)"
+  ],
+  "Croftfoot": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Crookston": [
+    "Glasgow Central (ScotRail)",
+    "Paisley Canal (ScotRail)"
+  ],
+  "Crosshill": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Crossmyloof": [
+    "Barrhead (ScotRail)",
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Croy": [
+    "Alloa (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Cumbernauld": [
+    "Dalmuir (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Dalmarnock": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Dalmuir": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Cumbernauld (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Oban (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Dalreoch": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Dalry": [
+    "Ardrossan Harbour (ScotRail)",
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Drumchapel": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)"
+  ],
+  "Drumfrochar": [
+    "Glasgow Central (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Drumgelloch": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Drumry": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)"
+  ],
+  "Duke Street": [
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Dumbarton Central": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Oban (ScotRail)"
+  ],
+  "Dumbarton East": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Dumbreck": [
+    "Glasgow Central (ScotRail)",
+    "Paisley Canal (ScotRail)"
+  ],
+  "Dunlop": [
+    "Carlisle (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "East Kilbride": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "Easterhouse": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Exhibition Centre": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Fairlie": [
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Fort Matilda": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)"
+  ],
+  "Garrowhill": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Garscadden": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Gartcosh": [
+    "Cumbernauld (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Giffnock": [
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Gilshochill": [
+    "Anniesland (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Glasgow Central": [
+    "Ardrossan Harbour (ScotRail)",
+    "Ayr (ScotRail)",
+    "Carlisle (ScotRail)",
+    "Cathcart (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "East Kilbride (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Gourock (ScotRail)",
+    "Kilmarnock (ScotRail)",
+    "Lanark (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Newton (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Glasgow Queen Street": [
+    "Aberdeen (ScotRail)",
+    "Airdrie (ScotRail)",
+    "Alloa (ScotRail)",
+    "Anniesland (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Oban (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Glengarnock": [
+    "Ardrossan Harbour (ScotRail)",
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Gourock": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "Greenfaulds": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "London Euston (Lumo Stirling)"
+  ],
+  "Greenock Central": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)"
+  ],
+  "Greenock West": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)"
+  ],
+  "Hairmyres": [
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Hamilton Central": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)"
+  ],
+  "Hamilton West": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)"
+  ],
+  "Hartwood": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Hawkhead": [
+    "Glasgow Central (ScotRail)",
+    "Paisley Canal (ScotRail)"
+  ],
+  "High Street": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Hillfoot": [
+    "Bathgate (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Hillington East": [
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Hillington West": [
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Holytown": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Howwood": [
+    "Ardrossan Harbour (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Hyndland": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Inverkip": [
+    "Glasgow Central (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Irvine": [
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Johnstone": [
+    "Ardrossan Harbour (ScotRail)",
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Jordanhill": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Kelvindale": [
+    "Anniesland (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Kennishead": [
+    "Barrhead (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Kilmarnock": [
+    "Carlisle (ScotRail)",
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Stranraer (ScotRail)"
+  ],
+  "Kilmaurs": [
+    "Carlisle (ScotRail)",
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Kilpatrick": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)"
+  ],
+  "Kilwinning": [
+    "Ardrossan Harbour (ScotRail)",
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Kings Park": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Kirkhill": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Kirkwood": [
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Lanark": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "Langbank": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Langside": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Largs": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "Larkhall": [
+    "Dalmuir (ScotRail)"
+  ],
+  "Lenzie": [
+    "Alloa (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Lochwinnoch": [
+    "Ardrossan Harbour (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Maryhill": [
+    "Anniesland (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Maxwell Park": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Merryton": [
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)"
+  ],
+  "Milliken Park": [
+    "Ardrossan Harbour (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Milngavie": [
+    "Bathgate (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Mosspark": [
+    "Glasgow Central (ScotRail)",
+    "Paisley Canal (ScotRail)"
+  ],
+  "Motherwell": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Glasgow Central (TransPennine Express)",
+    "Lanark (ScotRail)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "London Euston (Avanti West Coast)"
+  ],
+  "Mount Florida": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Mount Vernon": [
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Muirend": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)"
+  ],
+  "Neilston": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "New Cumnock": [
+    "Carlisle (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Newton": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)"
+  ],
+  "Newton-on-Ayr": [
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Nitshill": [
+    "Barrhead (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Paisley Canal": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "Paisley Gilmour Street": [
+    "Ardrossan Harbour (ScotRail)",
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Largs (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Paisley St James": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Partick": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Patterton": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)"
+  ],
+  "Pollokshaws East": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Pollokshaws West": [
+    "Barrhead (ScotRail)",
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Pollokshields East": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Pollokshields West": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Port Glasgow": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Possilpark & Parkhouse": [
+    "Anniesland (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Prestwick Intl Airport": [
+    "Ayr (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Prestwick Town": [
+    "Ayr (ScotRail)",
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)",
+    "Stranraer (ScotRail)"
+  ],
+  "Priesthill & Darnley": [
+    "Barrhead (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Queens Park (Glasgow)": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Renton": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)"
+  ],
+  "Robroyston": [
+    "Cumbernauld (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Rutherglen": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Saltcoats": [
+    "Ardrossan Harbour (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Scotstounhill": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ],
+  "Shawlands": [
+    "Glasgow Central (ScotRail)",
+    "Newton (ScotRail)"
+  ],
+  "Shettleston": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Shieldmuir": [
+    "Glasgow Central (ScotRail)",
+    "Lanark (ScotRail)"
+  ],
+  "Shotts": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Singer": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Larkhall (ScotRail)"
+  ],
+  "Springburn": [
+    "Cumbernauld (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Stepps": [
+    "Cumbernauld (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Stevenston": [
+    "Ardrossan Harbour (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Stewarton": [
+    "Carlisle (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)"
+  ],
+  "Summerston": [
+    "Anniesland (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Thornliebank": [
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Thorntonhall": [
+    "East Kilbride (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Troon": [
+    "Ayr (ScotRail)",
+    "Girvan (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Kilmarnock (ScotRail)",
+    "Stranraer (ScotRail)"
+  ],
+  "Uddingston": [
+    "Carstairs (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Lanark (ScotRail)"
+  ],
+  "Wemyss Bay": [
+    "Glasgow Central (ScotRail)"
+  ],
+  "West Kilbride": [
+    "Glasgow Central (ScotRail)",
+    "Largs (ScotRail)"
+  ],
+  "Westerton": [
+    "Airdrie (ScotRail)",
+    "Balloch (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Larkhall (ScotRail)",
+    "Milngavie (ScotRail)",
+    "Springburn (ScotRail)"
+  ],
+  "Whifflet": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "London Euston (Lumo Stirling)",
+    "Motherwell (ScotRail)"
+  ],
+  "Whinhill": [
+    "Glasgow Central (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Whitecraigs": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)"
+  ],
+  "Williamwood": [
+    "Glasgow Central (ScotRail)",
+    "Neilston (ScotRail)"
+  ],
+  "Wishaw": [
+    "Carstairs (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Lanark (ScotRail)"
+  ],
+  "Woodhall": [
+    "Glasgow Central (ScotRail)",
+    "Gourock (ScotRail)",
+    "Wemyss Bay (ScotRail)"
+  ],
+  "Yoker": [
+    "Cumbernauld (ScotRail)",
+    "Dalmuir (ScotRail)",
+    "Motherwell (ScotRail)",
+    "Whifflet (ScotRail)"
+  ]
+}

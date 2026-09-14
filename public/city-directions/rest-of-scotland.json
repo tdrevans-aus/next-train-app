@@ -1,0 +1,603 @@
+{
+  "Aberdeen": [
+    "Dundee (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)",
+    "Inverurie (ScotRail)",
+    "Montrose (ScotRail)"
+  ],
+  "Aberdour": [
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Achnashellach": [
+    "Inverness (ScotRail)"
+  ],
+  "Alloa": [
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Alness": [
+    "Ardgay (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Altnabreac": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Annan": [
+    "Carlisle (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Arbroath": [
+    "Aberdeen (LNER)",
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Ardlui": [
+    "Glasgow Queen Street (ScotRail)",
+    "Oban (ScotRail)"
+  ],
+  "Arisaig": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Arrochar & Tarbet": [
+    "Glasgow Queen Street (ScotRail)",
+    "Oban (ScotRail)"
+  ],
+  "Attadale": [
+    "Inverness (ScotRail)"
+  ],
+  "Aviemore": [
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Balmossie": [
+    "Arbroath (ScotRail)"
+  ],
+  "Banavie": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Barrhill": [
+    "Ayr (ScotRail)",
+    "Stranraer (ScotRail)"
+  ],
+  "Barry Links": [
+    "Arbroath (ScotRail)"
+  ],
+  "Beasdale": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Beauly": [
+    "Ardgay (ScotRail)",
+    "Inverness (ScotRail)",
+    "Kyle of Lochalsh (ScotRail)"
+  ],
+  "Blair Atholl": [
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Bridge of Allan": [
+    "Arbroath (ScotRail)",
+    "Dunblane (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Brora": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Broughty Ferry": [
+    "Aberdeen (ScotRail)",
+    "Arbroath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Burntisland": [
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Camelon": [
+    "Dunblane (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Falkirk Grahamston (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Cameron Bridge": [
+    "Edinburgh (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Cardenden": [
+    "Edinburgh (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Cardross": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Carnoustie": [
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Carrbridge": [
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Conon Bridge": [
+    "Ardgay (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Corpach": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Cowdenbeath": [
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Craigendoran": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)"
+  ],
+  "Cupar": [
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)"
+  ],
+  "Dalgety Bay": [
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Dalmally": [
+    "Oban (ScotRail)"
+  ],
+  "Dalwhinnie": [
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Dingwall": [
+    "Ardgay (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Duirinish": [
+    "Inverness (ScotRail)",
+    "Kyle of Lochalsh (ScotRail)"
+  ],
+  "Dumfries": [
+    "Carlisle (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Dunblane": [
+    "Arbroath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Duncraig": [
+    "Inverness (ScotRail)"
+  ],
+  "Dundee": [
+    "Aberdeen (ScotRail)",
+    "Arbroath (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Dunfermline City": [
+    "Cowdenbeath (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Dunfermline Queen Margaret": [
+    "Cowdenbeath (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Dunkeld & Birnam": [
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Dunrobin Castle": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Dyce": [
+    "Aberdeen (ScotRail)",
+    "Inverness (ScotRail)",
+    "Inverurie (ScotRail)",
+    "Montrose (ScotRail)"
+  ],
+  "Elgin": [
+    "Aberdeen (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Falkirk Grahamston": [
+    "Dunblane (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (LNER)"
+  ],
+  "Forres": [
+    "Aberdeen (ScotRail)",
+    "Elgin (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Forsinard": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Fort William": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Galashiels": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Garelochhead": [
+    "Glasgow Queen Street (ScotRail)",
+    "Oban (ScotRail)"
+  ],
+  "Georgemas Junction": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Girvan": [
+    "Ayr (ScotRail)",
+    "Kilmarnock (ScotRail)",
+    "Stranraer (ScotRail)"
+  ],
+  "Gleneagles": [
+    "Arbroath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (LNER)"
+  ],
+  "Glenfinnan": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Glenrothes with Thornton": [
+    "Edinburgh (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Golf Street": [
+    "Arbroath (ScotRail)"
+  ],
+  "Golspie": [
+    "Inverness (ScotRail)"
+  ],
+  "Gretna Green": [
+    "Carlisle (ScotRail)",
+    "Dumfries (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Helensburgh Central": [
+    "Edinburgh (ScotRail)"
+  ],
+  "Helensburgh Upper": [
+    "Glasgow Queen Street (ScotRail)",
+    "Oban (ScotRail)"
+  ],
+  "Helmsdale": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Huntly": [
+    "Aberdeen (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Insch": [
+    "Aberdeen (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Invergordon": [
+    "Ardgay (ScotRail)"
+  ],
+  "Invergowrie": [
+    "Arbroath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Inverkeithing": [
+    "Cowdenbeath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Leven (ScotRail)",
+    "London Kings Cross (LNER)",
+    "Perth (ScotRail)"
+  ],
+  "Inverness": [
+    "Aberdeen (ScotRail)",
+    "Ardgay (ScotRail)",
+    "Elgin (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Kyle of Lochalsh (ScotRail)"
+  ],
+  "Inverness Airport": [
+    "Aberdeen (ScotRail)",
+    "Elgin (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Inverurie": [
+    "Aberdeen (ScotRail)",
+    "Inverness (ScotRail)",
+    "Montrose (ScotRail)"
+  ],
+  "Keith": [
+    "Aberdeen (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Kildonan": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Kinbrace": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Kinghorn": [
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Kingussie": [
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Kintore": [
+    "Aberdeen (ScotRail)",
+    "Inverness (ScotRail)",
+    "Inverurie (ScotRail)",
+    "Montrose (ScotRail)"
+  ],
+  "Kirkcaldy": [
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)",
+    "London Kings Cross (LNER)",
+    "Perth (ScotRail)"
+  ],
+  "Kirkconnel": [
+    "Carlisle (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Kyle of Lochalsh": [
+    "Inverness (ScotRail)"
+  ],
+  "Ladybank": [
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Larbert": [
+    "Alloa (ScotRail)",
+    "Dunblane (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "London Euston (Lumo Stirling)",
+    "Stirling (Lumo Stirling)"
+  ],
+  "Laurencekirk": [
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Inverurie (ScotRail)",
+    "Montrose (ScotRail)"
+  ],
+  "Leuchars": [
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "London Kings Cross (LNER)"
+  ],
+  "Leven": [
+    "Edinburgh (ScotRail)"
+  ],
+  "Loch Awe": [
+    "Dalmally (ScotRail)",
+    "Oban (ScotRail)"
+  ],
+  "Loch Eil Outward Bound": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Lochailort": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Locheilside": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Lochgelly": [
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Lockerbie": [
+    "Edinburgh (TransPennine Express)",
+    "Glasgow Central (TransPennine Express)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Manchester Airport (TransPennine Express)",
+    "Stirling (Lumo Stirling)"
+  ],
+  "Mallaig": [
+    "Fort William (West Coast Railway Co)"
+  ],
+  "Markinch": [
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Maybole": [
+    "Girvan (ScotRail)",
+    "Kilmarnock (ScotRail)",
+    "Stranraer (ScotRail)"
+  ],
+  "Monifieth": [
+    "Aberdeen (ScotRail)",
+    "Arbroath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Montrose": [
+    "Aberdeen (LNER)",
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)",
+    "Inverurie (ScotRail)"
+  ],
+  "Morar": [
+    "Glasgow Queen Street (ScotRail)",
+    "Mallaig (ScotRail)"
+  ],
+  "Muir of Ord": [
+    "Ardgay (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Nairn": [
+    "Aberdeen (ScotRail)",
+    "Elgin (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Newtonmore": [
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "North Queensferry": [
+    "Cowdenbeath (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Oban": [
+    "Dalmally (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Perth": [
+    "Aberdeen (ScotRail)",
+    "Arbroath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (LNER)",
+    "Inverness (ScotRail)"
+  ],
+  "Pitlochry": [
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (ScotRail)"
+  ],
+  "Plockton": [
+    "Inverness (ScotRail)"
+  ],
+  "Polmont": [
+    "Dunblane (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Portlethen": [
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Inverurie (ScotRail)",
+    "Montrose (ScotRail)"
+  ],
+  "Reston": [
+    "Edinburgh (TransPennine Express)",
+    "Newcastle (TransPennine Express)"
+  ],
+  "Rosyth": [
+    "Cowdenbeath (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Roy Bridge": [
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Sanquhar": [
+    "Carlisle (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Scotscalder": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Spean Bridge": [
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Springfield": [
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)"
+  ],
+  "Stirling": [
+    "Aberdeen (ScotRail)",
+    "Alloa (ScotRail)",
+    "Arbroath (ScotRail)",
+    "Dunblane (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverness (LNER)",
+    "London Euston (Lumo Stirling)"
+  ],
+  "Stonehaven": [
+    "Aberdeen (LNER)",
+    "Aberdeen (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Inverurie (ScotRail)",
+    "Montrose (ScotRail)"
+  ],
+  "Stow": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Stranraer": [
+    "Ayr (ScotRail)"
+  ],
+  "Strathcarron": [
+    "Inverness (ScotRail)"
+  ],
+  "Stromeferry": [
+    "Inverness (ScotRail)"
+  ],
+  "Taynuilt": [
+    "Dalmally (ScotRail)",
+    "Oban (ScotRail)"
+  ],
+  "Thurso": [
+    "Inverness (ScotRail)",
+    "Wick (ScotRail)"
+  ],
+  "Tulloch": [
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Tweedbank": [
+    "Edinburgh (ScotRail)"
+  ]
+}

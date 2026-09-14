@@ -1,0 +1,188 @@
+{
+  "Addiewell": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Armadale": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Bathgate": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Blackridge": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Breich": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Brunstane": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Curriehill": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Dalmeny": [
+    "Cowdenbeath (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)"
+  ],
+  "Drem": [
+    "Edinburgh (ScotRail)",
+    "North Berwick (ScotRail)"
+  ],
+  "Dunbar": [
+    "Bristol Temple Meads (CrossCountry)",
+    "Edinburgh (ScotRail)",
+    "Edinburgh (TransPennine Express)",
+    "Newcastle (TransPennine Express)"
+  ],
+  "East Linton": [
+    "Dunbar (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Edinburgh (TransPennine Express)",
+    "Newcastle (TransPennine Express)"
+  ],
+  "Edinburgh Gateway": [
+    "Cowdenbeath (ScotRail)",
+    "Dundee (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Edinburgh Park": [
+    "Dunblane (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Edinburgh Waverley": [
+    "Aberdeen (ScotRail)",
+    "Dunbar (ScotRail)",
+    "Dunblane (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Inverness (LNER)",
+    "Leven (ScotRail)",
+    "London Kings Cross (LNER)",
+    "Milngavie (ScotRail)",
+    "North Berwick (ScotRail)",
+    "Perth (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Eskbank": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Falkirk High": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (Lumo)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Fauldhouse": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Gorebridge": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Haymarket": [
+    "Edinburgh (Avanti West Coast)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)",
+    "Glasgow Queen Street (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Leven (ScotRail)",
+    "Manchester Airport (TransPennine Express)"
+  ],
+  "Kingsknowe": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Kirknewton": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Linlithgow": [
+    "Dunblane (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "Glasgow Queen Street (ScotRail)"
+  ],
+  "Livingston North": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Livingston South": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Longniddry": [
+    "Edinburgh (ScotRail)",
+    "North Berwick (ScotRail)"
+  ],
+  "Musselburgh": [
+    "Dunbar (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "North Berwick (ScotRail)"
+  ],
+  "Newcraighall": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Newtongrange": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "North Berwick": [
+    "Edinburgh (ScotRail)"
+  ],
+  "Prestonpans": [
+    "Edinburgh (ScotRail)",
+    "North Berwick (ScotRail)"
+  ],
+  "Shawfair": [
+    "Edinburgh (ScotRail)",
+    "Tweedbank (ScotRail)"
+  ],
+  "Slateford": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "South Gyle": [
+    "Edinburgh (ScotRail)",
+    "Glenrothes with Thornton (ScotRail)",
+    "Leven (ScotRail)",
+    "Perth (ScotRail)"
+  ],
+  "Uphall": [
+    "Edinburgh (ScotRail)",
+    "Helensburgh Central (ScotRail)",
+    "Milngavie (ScotRail)"
+  ],
+  "Wallyford": [
+    "Dunbar (ScotRail)",
+    "Edinburgh (ScotRail)",
+    "North Berwick (ScotRail)"
+  ],
+  "West Calder": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ],
+  "Wester Hailes": [
+    "Edinburgh (ScotRail)",
+    "Glasgow Central (ScotRail)"
+  ]
+}

@@ -1,0 +1,320 @@
+{
+  "Ashley Down": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Filton Abbey Wood (Great Western Railway)"
+  ],
+  "Avoncliff": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Avonmouth": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Bath Spa": [
+    "Bristol Temple Meads",
+    "London Paddington (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Bedminster": [
+    "Cardiff Central (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Bradford-on-Avon": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Bristol Parkway": [
+    "Bristol Temple Meads (CrossCountry)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Edinburgh (CrossCountry)",
+    "Gloucester (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Plymouth (CrossCountry)",
+    "Swansea (Great Western Railway)",
+    "Weymouth (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Bristol Temple Meads": [
+    "Avonmouth (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Edinburgh (CrossCountry)",
+    "Filton Abbey Wood (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Plymouth (CrossCountry)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Cam & Dursley": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)",
+    "Worcester Shrub Hill (Great Western Railway)"
+  ],
+  "Cheltenham Spa": [
+    "Bristol Temple Meads (CrossCountry)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (CrossCountry)",
+    "Cardiff Central (Transport for Wales)",
+    "Edinburgh (CrossCountry)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Nottingham (CrossCountry)",
+    "Plymouth (CrossCountry)",
+    "Worcester Shrub Hill (Great Western Railway)"
+  ],
+  "Chepstow": [
+    "Cardiff Central (CrossCountry)",
+    "Cardiff Central (Transport for Wales)",
+    "Cheltenham Spa (Transport for Wales)",
+    "Nottingham (CrossCountry)"
+  ],
+  "Chippenham": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Oxford (Great Western Railway)",
+    "Swindon (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Westbury (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Clifton Down": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Dilton Marsh": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Warminster (Great Western Railway)"
+  ],
+  "Filton Abbey Wood": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Weymouth (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Freshford": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Frome": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Gloucester": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (CrossCountry)",
+    "Cardiff Central (Transport for Wales)",
+    "Cheltenham Spa (Great Western Railway)",
+    "Cheltenham Spa (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Nottingham (CrossCountry)",
+    "Weymouth (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)",
+    "Worcester Shrub Hill (Great Western Railway)"
+  ],
+  "Highbridge & Burnham": [
+    "Cardiff Central (Great Western Railway)",
+    "Taunton (Great Western Railway)"
+  ],
+  "Keynsham": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Lawrence Hill": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Filton Abbey Wood (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Lydney": [
+    "Cardiff Central (CrossCountry)",
+    "Cardiff Central (Transport for Wales)",
+    "Cheltenham Spa (Transport for Wales)",
+    "Nottingham (CrossCountry)"
+  ],
+  "Melksham": [
+    "Swindon (Great Western Railway)"
+  ],
+  "Montpelier": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Nailsea & Backwell": [
+    "Cardiff Central (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Oldfield Park": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Parson Street": [
+    "Cardiff Central (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Patchway": [
+    "Cardiff Central (Great Western Railway)",
+    "Taunton (Great Western Railway)"
+  ],
+  "Portway Park and Ride": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Redland": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Sea Mills": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Severn Beach": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)"
+  ],
+  "Shirehampton": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "St Andrews Road": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)"
+  ],
+  "Stapleton Road": [
+    "Avonmouth (Great Western Railway)",
+    "Bristol Temple Meads (Great Western Railway)",
+    "Filton Abbey Wood (Great Western Railway)",
+    "Salisbury (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Stonehouse": [
+    "Cheltenham Spa (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Salisbury (Great Western Railway)"
+  ],
+  "Stroud": [
+    "Cheltenham Spa (Great Western Railway)",
+    "London Paddington (Great Western Railway)"
+  ],
+  "Taunton": [
+    "Cardiff Central (Great Western Railway)",
+    "Leeds (CrossCountry)",
+    "London Paddington (Great Western Railway)",
+    "Newcastle (CrossCountry)",
+    "Paignton (CrossCountry)",
+    "Paignton (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (CrossCountry)"
+  ],
+  "Trowbridge": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Swindon (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Warminster": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)"
+  ],
+  "Westbury": [
+    "Bristol Temple Meads",
+    "London Paddington (Great Western Railway)",
+    "Newton Abbot (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Swindon (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Weston Milton": [
+    "Cardiff Central (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Weston-super-Mare": [
+    "Cardiff Central (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)"
+  ],
+  "Worle": [
+    "Cardiff Central (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ],
+  "Yate": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "Weymouth (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
+  ],
+  "Yatton": [
+    "Cardiff Central (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Severn Beach (Great Western Railway)",
+    "Taunton (Great Western Railway)",
+    "Weston-super-Mare (Great Western Railway)"
+  ]
+}

@@ -1,0 +1,429 @@
+{
+  "Axminster": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Barnstaple": [
+    "Exeter Central (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)"
+  ],
+  "Bere Alston": [
+    "Gunnislake (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Bere Ferrers": [
+    "Gunnislake (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Bodmin Parkway": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Bugle": [
+    "Newquay (Great Western Railway)",
+    "Par (Great Western Railway)"
+  ],
+  "Calstock": [
+    "Gunnislake (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Camborne": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Carbis Bay": [
+    "St Erth (Great Western Railway)",
+    "St Ives (Great Western Railway)"
+  ],
+  "Causeland": [
+    "Liskeard (Great Western Railway)",
+    "Looe (Great Western Railway)"
+  ],
+  "Chapleton": [
+    "Exeter Central (Great Western Railway)"
+  ],
+  "Copplestone": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)"
+  ],
+  "Cranbrook (Devon)": [
+    "Axminster (Great Western Railway)",
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Crediton": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)",
+    "Okehampton (Great Western Railway)"
+  ],
+  "Dawlish": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Dawlish Warren": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Devonport": [
+    "Gunnislake (Great Western Railway)",
+    "Liskeard (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Digby & Sowton": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Dockyard": [
+    "Gunnislake (Great Western Railway)",
+    "Liskeard (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Eggesford": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)"
+  ],
+  "Exeter Central": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter St Davids (South Western Railway)",
+    "Exmouth (Great Western Railway)",
+    "Okehampton (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Exeter St Davids": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)",
+    "Exmouth (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Newcastle (CrossCountry)",
+    "Okehampton (Great Western Railway)",
+    "Paignton (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (CrossCountry)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Exeter St Thomas": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Exmouth": [
+    "Paignton (Great Western Railway)"
+  ],
+  "Exton": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Falmouth Docks": [
+    "Truro (Great Western Railway)"
+  ],
+  "Falmouth Town": [
+    "Falmouth Docks (Great Western Railway)",
+    "Truro (Great Western Railway)"
+  ],
+  "Feniton": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Gunnislake": [
+    "Plymouth (Great Western Railway)"
+  ],
+  "Hayle": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Honiton": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Ivybridge": [
+    "Gloucester (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Keyham": [
+    "Gunnislake (Great Western Railway)",
+    "Liskeard (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Kings Nympton": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)"
+  ],
+  "Lapford": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)"
+  ],
+  "Lelant": [
+    "St Erth (Great Western Railway)",
+    "St Ives (Great Western Railway)"
+  ],
+  "Liskeard": [
+    "London Paddington (Great Western Railway)",
+    "Looe (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Looe": [
+    "Liskeard (Great Western Railway)"
+  ],
+  "Lostwithiel": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Luxulyan": [
+    "Newquay (Great Western Railway)",
+    "Par (Great Western Railway)"
+  ],
+  "Lympstone Commando": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Lympstone Village": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Marsh Barton": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Menheniot": [
+    "Liskeard (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Morchard Road": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)"
+  ],
+  "Newcourt": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Newquay": [
+    "Par (Great Western Railway)"
+  ],
+  "Newton Abbot": [
+    "Exmouth (Great Western Railway)",
+    "Leeds (CrossCountry)",
+    "London Paddington (Great Western Railway)",
+    "Paignton (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (CrossCountry)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Newton St Cyres": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)"
+  ],
+  "Okehampton": [
+    "Exeter Central (Great Western Railway)"
+  ],
+  "Okehampton Interchange": [
+    "Exeter Central (Great Western Railway)",
+    "Okehampton (Great Western Railway)"
+  ],
+  "Paignton": [
+    "Exmouth (Great Western Railway)"
+  ],
+  "Par": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Newquay (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Penmere": [
+    "Falmouth Docks (Great Western Railway)",
+    "Truro (Great Western Railway)"
+  ],
+  "Penryn": [
+    "Falmouth Docks (Great Western Railway)",
+    "Truro (Great Western Railway)"
+  ],
+  "Penzance": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Perranwell": [
+    "Falmouth Docks (Great Western Railway)",
+    "Truro (Great Western Railway)"
+  ],
+  "Pinhoe": [
+    "Axminster (Great Western Railway)",
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Plymouth": [
+    "Gloucester (Great Western Railway)",
+    "Gunnislake (Great Western Railway)",
+    "Leeds (CrossCountry)",
+    "Liskeard (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (Great Western Railway)"
+  ],
+  "Polsloe Bridge": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Portsmouth Arms": [
+    "Exeter Central (Great Western Railway)"
+  ],
+  "Quintrell Downs": [
+    "Newquay (Great Western Railway)",
+    "Par (Great Western Railway)"
+  ],
+  "Redruth": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Roche": [
+    "Newquay (Great Western Railway)",
+    "Par (Great Western Railway)"
+  ],
+  "Saltash": [
+    "Liskeard (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Sandplace": [
+    "Liskeard (Great Western Railway)",
+    "Looe (Great Western Railway)"
+  ],
+  "St Austell": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "St Budeaux Ferry Road": [
+    "Liskeard (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "St Budeaux Victoria Road": [
+    "Gunnislake (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "St Columb Road": [
+    "Newquay (Great Western Railway)",
+    "Par (Great Western Railway)"
+  ],
+  "St Erth": [
+    "Exeter St Davids (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)",
+    "St Ives (Great Western Railway)"
+  ],
+  "St Germans": [
+    "Liskeard (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "St Ives": [
+    "St Erth (Great Western Railway)"
+  ],
+  "St James' Park": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "St Keyne Wishing Well Halt": [
+    "Liskeard (Great Western Railway)",
+    "Looe (Great Western Railway)"
+  ],
+  "Starcross": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Taunton": [
+    "Cardiff Central (Great Western Railway)",
+    "Leeds (CrossCountry)",
+    "London Paddington (Great Western Railway)",
+    "Newcastle (CrossCountry)",
+    "Paignton (CrossCountry)",
+    "Paignton (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (CrossCountry)"
+  ],
+  "Teignmouth": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Tiverton Parkway": [
+    "Leeds (CrossCountry)",
+    "London Paddington (Great Western Railway)",
+    "Newcastle (CrossCountry)",
+    "Paignton (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (CrossCountry)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Topsham": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Torquay": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Torre": [
+    "Exmouth (Great Western Railway)",
+    "Paignton (Great Western Railway)"
+  ],
+  "Totnes": [
+    "Leeds (CrossCountry)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (CrossCountry)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Truro": [
+    "Exeter St Davids (Great Western Railway)",
+    "Falmouth Docks (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Penzance (CrossCountry)",
+    "Penzance (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
+  ],
+  "Umberleigh": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)"
+  ],
+  "Whimple": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Yeoford": [
+    "Barnstaple (Great Western Railway)",
+    "Exeter Central (Great Western Railway)",
+    "Exeter St Davids (Great Western Railway)"
+  ]
+}

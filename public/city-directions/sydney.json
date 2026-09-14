@@ -17,8 +17,10 @@
     "T9 Hornsby"
   ],
   "Ashfield": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -31,6 +33,7 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta"
   ],
@@ -47,6 +50,7 @@
     "M1 Tallawong"
   ],
   "Bardwell Park": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Beecroft": [
@@ -58,6 +62,7 @@
     "M1 Tallawong"
   ],
   "Berala": [
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T6 Bankstown",
@@ -68,9 +73,11 @@
     "T1 Richmond"
   ],
   "Beverly Hills": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Bexley North": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Birrong": [
@@ -92,25 +99,31 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T9 Gordon",
     "T9 Hornsby"
   ],
   "Cabramatta": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T5 Leppington",
     "T5 Richmond"
   ],
   "Campbelltown": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Canley Vale": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
@@ -127,6 +140,7 @@
     "T4 Waterfall"
   ],
   "Carramar": [
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -135,6 +149,7 @@
     "M1 Tallawong"
   ],
   "Casula": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
@@ -144,13 +159,16 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall",
+    "T8 City Circle",
     "T8 Macarthur",
     "T9 Gordon",
     "T9 Hornsby"
@@ -179,14 +197,18 @@
     "M1 Tallawong"
   ],
   "Chester Hill": [
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
   "Circular Quay": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Clarendon": [
@@ -200,6 +222,7 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta"
   ],
@@ -221,8 +244,10 @@
     "M1 Tallawong"
   ],
   "Croydon": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -231,6 +256,7 @@
     "T9 Hornsby"
   ],
   "Domestic Airport": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Doonside": [
@@ -239,6 +265,7 @@
     "T1 Richmond"
   ],
   "East Hills": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "East Richmond": [
@@ -258,6 +285,7 @@
     "T4 Waterfall"
   ],
   "Edmondson Park": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
@@ -281,17 +309,21 @@
     "M1 Tallawong"
   ],
   "Erskineville": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Fairfield": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
     "T5 Richmond"
   ],
   "Flemington": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -300,10 +332,12 @@
     "M1 Tallawong"
   ],
   "Glenfield": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
     "T5 Richmond",
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Gordon": [
@@ -316,13 +350,16 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta"
   ],
   "Green Square": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Guildford": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
@@ -337,6 +374,7 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
@@ -352,11 +390,14 @@
     "M1 Tallawong"
   ],
   "Holsworthy": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Homebush": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -372,9 +413,11 @@
     "T4 Waterfall"
   ],
   "Ingleburn": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "International Airport": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Jannali": [
@@ -399,6 +442,7 @@
     "T4 Waterfall"
   ],
   "Kingsgrove": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Kingswood": [
@@ -417,19 +461,24 @@
     "T4 Waterfall"
   ],
   "Leightonfield": [
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
   "Leppington": [
+    "T2 City Circle",
     "T2 Parramatta",
     "T5 Richmond"
   ],
   "Leumeah": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Lewisham": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -437,8 +486,10 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Liverpool",
     "T6 Bankstown",
     "T7 Olympic Park"
@@ -451,8 +502,10 @@
     "T9 Hornsby"
   ],
   "Liverpool": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T5 Leppington",
     "T5 Richmond"
@@ -462,13 +515,19 @@
     "T4 Cronulla",
     "T4 Waterfall"
   ],
+  "Macarthur": [
+    "T8 City Circle"
+  ],
   "Macdonaldtown": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
   "Macquarie Fields": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Macquarie Park": [
@@ -496,6 +555,7 @@
     "M1 Tallawong"
   ],
   "Mascot": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Meadowbank": [
@@ -503,6 +563,7 @@
     "T9 Hornsby"
   ],
   "Merrylands": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
@@ -516,6 +577,7 @@
     "T9 Hornsby"
   ],
   "Minto": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Miranda": [
@@ -551,18 +613,24 @@
     "T5 Richmond"
   ],
   "Museum": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Narwee": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Newtown": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -598,15 +666,18 @@
     "T7 Lidcombe"
   ],
   "Padstow": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Panania": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Parramatta": [
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T5 Leppington",
     "T5 Richmond"
@@ -633,8 +704,10 @@
     "T4 Waterfall"
   ],
   "Petersham": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -654,24 +727,29 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall",
+    "T8 City Circle",
     "T8 Macarthur",
     "T9 Gordon",
     "T9 Hornsby"
   ],
   "Regents Park": [
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T6 Bankstown",
     "T6 Lidcombe"
   ],
   "Revesby": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Rhodes": [
@@ -691,6 +769,7 @@
     "T5 Richmond"
   ],
   "Riverwood": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Rockdale": [
@@ -722,6 +801,7 @@
     "T5 Richmond"
   ],
   "Sefton": [
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -733,10 +813,13 @@
     "T5 Richmond"
   ],
   "St James": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "St Leonards": [
@@ -752,11 +835,14 @@
     "T1 Richmond"
   ],
   "St Peters": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Stanmore": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -764,16 +850,20 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T9 Gordon",
     "T9 Hornsby"
   ],
   "Summer Hill": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -786,6 +876,7 @@
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall",
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Sydenham Metro": [
@@ -814,13 +905,16 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall",
+    "T8 City Circle",
     "T8 Macarthur",
     "T9 Gordon",
     "T9 Hornsby"
@@ -831,6 +925,7 @@
     "T1 Richmond"
   ],
   "Turrella": [
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Victoria Cross": [
@@ -838,6 +933,7 @@
     "M1 Tallawong"
   ],
   "Villawood": [
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
@@ -864,8 +960,10 @@
     "T1 Richmond"
   ],
   "Warwick Farm": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
     "T5 Leppington",
@@ -920,6 +1018,7 @@
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall",
+    "T8 City Circle",
     "T8 Macarthur"
   ],
   "Wollstonecraft": [
@@ -938,10 +1037,13 @@
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
+    "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool",
+    "T8 City Circle",
     "T8 Macarthur",
     "T9 Gordon",
     "T9 Hornsby"
@@ -951,6 +1053,7 @@
     "T6 Lidcombe"
   ],
   "Yennora": [
+    "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",

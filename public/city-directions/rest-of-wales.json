@@ -1,0 +1,507 @@
+{
+  "Aberdovey": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Abererch": [
+    "Machynlleth (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Abergavenny": [
+    "Cardiff Central (Transport for Wales)",
+    "Chester (Transport for Wales)",
+    "Fishguard Harbour (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)"
+  ],
+  "Abergele & Pensarn": [
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)"
+  ],
+  "Aberystwyth": [
+    "Birmingham International (Transport for Wales)"
+  ],
+  "Bangor": [
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Barmouth": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Betws-y-Coed": [
+    "Blaenau Ffestiniog (Transport for Wales)",
+    "Llandudno (Transport for Wales)"
+  ],
+  "Blaenau Ffestiniog": [
+    "Llandudno (Transport for Wales)"
+  ],
+  "Bodorgan": [
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)"
+  ],
+  "Borth": [
+    "Aberystwyth (Transport for Wales)",
+    "Birmingham International (Transport for Wales)"
+  ],
+  "Bow Street": [
+    "Aberystwyth (Transport for Wales)",
+    "Birmingham International (Transport for Wales)"
+  ],
+  "Buckley": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
+  ],
+  "Builth Road": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Caergwrle": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
+  ],
+  "Caersws": [
+    "Aberystwyth (Transport for Wales)",
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham International (Transport for Wales)"
+  ],
+  "Carmarthen": [
+    "Cardiff Central (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Cefn-y-Bedd": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
+  ],
+  "Chirk": [
+    "Birmingham International (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)"
+  ],
+  "Cilmeri": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Clarbeston Road": [
+    "Cardiff Central (Transport for Wales)",
+    "Milford Haven (Transport for Wales)"
+  ],
+  "Clunderwen": [
+    "Cardiff Central (Transport for Wales)",
+    "Milford Haven (Transport for Wales)"
+  ],
+  "Colwyn Bay": [
+    "Birmingham International (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Avanti West Coast)",
+    "Holyhead (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Conwy": [
+    "Holyhead (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Criccieth": [
+    "Machynlleth (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Cynghordy": [
+    "Shrewsbury (Transport for Wales)"
+  ],
+  "Deganwy": [
+    "Blaenau Ffestiniog (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)"
+  ],
+  "Dolau": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Dolgarrog": [
+    "Blaenau Ffestiniog (Transport for Wales)"
+  ],
+  "Dolwyddelan": [
+    "Blaenau Ffestiniog (Transport for Wales)",
+    "Llandudno (Transport for Wales)"
+  ],
+  "Dovey Junction": [
+    "Aberystwyth (Transport for Wales)",
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Dyffryn Ardudwy": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Fairbourne": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Ferryside": [
+    "Cardiff Central (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Flint": [
+    "Birmingham International (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Avanti West Coast)",
+    "Holyhead (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
+    "London Euston (Avanti West Coast)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Garth (Powys)": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Glan Conwy": [
+    "Blaenau Ffestiniog (Transport for Wales)"
+  ],
+  "Gwersyllt": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
+  ],
+  "Harlech": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Haverfordwest": [
+    "Cardiff Central (Transport for Wales)",
+    "Milford Haven (Transport for Wales)"
+  ],
+  "Hawarden": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)"
+  ],
+  "Hawarden Bridge": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)"
+  ],
+  "Holyhead": [
+    "Cardiff Central (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Hope (Flintshire)": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
+  ],
+  "Johnston": [
+    "Cardiff Central (Transport for Wales)",
+    "Milford Haven (Transport for Wales)"
+  ],
+  "Kidwelly": [
+    "Cardiff Central (Transport for Wales)",
+    "Fishguard Harbour (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Kilgetty": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Knucklas": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Lamphey": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Llanaber": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Llanbedr": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Llanbister Road": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Llandanwg": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Llandecwyn": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Llandovery": [
+    "Shrewsbury (Transport for Wales)"
+  ],
+  "Llandrindod": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Llandudno": [
+    "Blaenau Ffestiniog (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)"
+  ],
+  "Llandudno Junction": [
+    "Birmingham International (Transport for Wales)",
+    "Blaenau Ffestiniog (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Avanti West Coast)",
+    "Holyhead (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Llanelli": [
+    "Cardiff Central (Transport for Wales)",
+    "Carmarthen (Great Western Railway)",
+    "Fishguard Harbour (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)",
+    "Shrewsbury (Transport for Wales)"
+  ],
+  "Llanfairfechan": [
+    "Holyhead (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Llanfairpwll": [
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Llangammarch": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Llangynllo": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Llanrwst": [
+    "Blaenau Ffestiniog (Transport for Wales)"
+  ],
+  "Llanwrtyd": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Llwyngwril": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Machynlleth": [
+    "Aberystwyth (Transport for Wales)",
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Manorbier": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Milford Haven": [
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Minffordd": [
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Morfa Mawddach": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Narberth": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Newtown (Powys)": [
+    "Aberystwyth (Transport for Wales)",
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham International (Transport for Wales)"
+  ],
+  "North Llanrwst": [
+    "Blaenau Ffestiniog (Transport for Wales)"
+  ],
+  "Pembrey & Burry Port": [
+    "Cardiff Central (Transport for Wales)",
+    "Carmarthen (Great Western Railway)",
+    "Fishguard Harbour (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Pembroke": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Pembroke Dock": [
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Pen-y-bont": [
+    "Shrewsbury (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Penally": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Penhelig": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Penmaenmawr": [
+    "Holyhead (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Penrhyndeudraeth": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Pensarn": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Penychain": [
+    "Machynlleth (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Penyffordd": [
+    "Bidston (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
+  ],
+  "Pont-y-Pant": [
+    "Blaenau Ffestiniog (Transport for Wales)",
+    "Llandudno (Transport for Wales)"
+  ],
+  "Porthmadog": [
+    "Machynlleth (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Prestatyn": [
+    "Birmingham International (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Avanti West Coast)",
+    "Holyhead (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Pwllheli": [
+    "Machynlleth (Transport for Wales)"
+  ],
+  "Rhosneigr": [
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)"
+  ],
+  "Rhyl": [
+    "Birmingham International (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Avanti West Coast)",
+    "Holyhead (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Roman Bridge": [
+    "Blaenau Ffestiniog (Transport for Wales)",
+    "Llandudno (Transport for Wales)"
+  ],
+  "Ruabon": [
+    "Birmingham International (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)"
+  ],
+  "Saundersfoot": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Shotton": [
+    "Bidston (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Liverpool Lime Street (Transport for Wales)",
+    "Llandudno (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)"
+  ],
+  "Sugar Loaf": [
+    "Shrewsbury (Transport for Wales)"
+  ],
+  "Tal-y-Cafn": [
+    "Blaenau Ffestiniog (Transport for Wales)"
+  ],
+  "Talsarnau": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Talybont": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Tenby": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Tonfanau": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Ty Croes": [
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)"
+  ],
+  "Tygwyn": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Tywyn": [
+    "Birmingham International (Transport for Wales)",
+    "Pwllheli (Transport for Wales)"
+  ],
+  "Valley": [
+    "Cardiff Central (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Welshpool": [
+    "Aberystwyth (Transport for Wales)",
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham International (Transport for Wales)"
+  ],
+  "Whitland": [
+    "Cardiff Central (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)"
+  ],
+  "Wrexham Central": [
+    "Bidston (Transport for Wales)"
+  ],
+  "Wrexham General": [
+    "Bidston (Transport for Wales)",
+    "Birmingham International (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Crewe (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
+    "Wrexham Central (Transport for Wales)"
+  ]
+}

@@ -1,0 +1,612 @@
+{
+  "Acocks Green": [
+    "Dorridge (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Adderley Park": [
+    "Birmingham International (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)"
+  ],
+  "Albert Street": [
+    "Edgbaston Village"
+  ],
+  "Aston": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)",
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Berkswell": [
+    "Birmingham New Street (LNR & WMR)",
+    "London Euston (LNR & WMR)"
+  ],
+  "Bescot Stadium": [
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Bilston Central": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Birmingham International": [
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham New Street (Avanti West Coast)",
+    "Birmingham New Street (LNR & WMR)",
+    "Bournemouth (CrossCountry)",
+    "Edinburgh (Avanti West Coast)",
+    "London Euston (Avanti West Coast)",
+    "London Euston (LNR & WMR)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Rugeley Trent Valley (LNR & WMR)"
+  ],
+  "Birmingham Moor Street": [
+    "Birmingham Snow Hill (Chiltern Railways)",
+    "Dorridge (LNR & WMR)",
+    "Kidderminster (LNR & WMR)",
+    "Leamington Spa (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Birmingham New Street": [
+    "Bournemouth (CrossCountry)",
+    "Edinburgh (Avanti West Coast)",
+    "Four Oaks (LNR & WMR)",
+    "Glasgow Central (CrossCountry)",
+    "Leicester (CrossCountry)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Liverpool Lime Street (LNR & WMR)",
+    "London Euston (LNR & WMR)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Nottingham (CrossCountry)",
+    "Plymouth (CrossCountry)",
+    "Redditch (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Birmingham Snow Hill": [
+    "Dorridge (LNR & WMR)",
+    "Kidderminster (LNR & WMR)",
+    "London Marylebone (Chiltern Railways)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Black Lake": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Blake Street": [
+    "Bromsgrove (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)"
+  ],
+  "Bloxwich": [
+    "Birmingham International (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)"
+  ],
+  "Bloxwich North": [
+    "Birmingham International (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)"
+  ],
+  "Bournville": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Bradley Lane": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Brindleyplace": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Bull Street": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Butlers Lane": [
+    "Bromsgrove (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)"
+  ],
+  "Canley": [
+    "Birmingham New Street (LNR & WMR)",
+    "London Euston (LNR & WMR)"
+  ],
+  "Chester Road": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Corporation Street": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Coseley": [
+    "Birmingham New Street (LNR & WMR)",
+    "Liverpool Lime Street (LNR & WMR)",
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Coventry": [
+    "Birmingham New Street (Avanti West Coast)",
+    "Birmingham New Street (LNR & WMR)",
+    "Bournemouth (CrossCountry)",
+    "Edinburgh (Avanti West Coast)",
+    "Glasgow Central (Avanti West Coast)",
+    "Leamington Spa (LNR & WMR)",
+    "London Euston (Avanti West Coast)",
+    "London Euston (LNR & WMR)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Nuneaton (LNR & WMR)"
+  ],
+  "Coventry Arena": [
+    "Leamington Spa (LNR & WMR)",
+    "Nuneaton (LNR & WMR)"
+  ],
+  "Cradley Heath": [
+    "Birmingham",
+    "Kidderminster (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Darlaston": [
+    "Birmingham New Street (LNR & WMR)",
+    "Shrewsbury (LNR & WMR)"
+  ],
+  "Dartmouth Street": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Dorridge": [
+    "Birmingham Moor Street (Chiltern Railways)",
+    "Birmingham Snow Hill (Chiltern Railways)",
+    "Leamington Spa (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Duddeston": [
+    "Bromsgrove (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Dudley Port": [
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Dudley Street": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Earlswood (West Midlands)": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)"
+  ],
+  "Edgbaston Village": [
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Erdington": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Five Ways": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Five Ways (Metro)": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Four Oaks": [
+    "Bromsgrove (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Grand Central": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Gravelly Hill": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Hall Green": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)"
+  ],
+  "Hampton-in-Arden": [
+    "Birmingham New Street (LNR & WMR)",
+    "London Euston (LNR & WMR)"
+  ],
+  "Hamstead": [
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Handsworth Booth Street": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Jewellery Quarter": [
+    "Dorridge (LNR & WMR)",
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Jewellery Quarter (Metro)": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Kenrick Park": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Kidderminster": [
+    "Birmingham",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Kings Heath": [
+    "Birmingham New Street (LNR & WMR)",
+    "Kings Norton (LNR & WMR)"
+  ],
+  "Kings Norton": [
+    "Birmingham New Street (LNR & WMR)",
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Langley Green": [
+    "Birmingham",
+    "Kidderminster (LNR & WMR)"
+  ],
+  "Lea Hall": [
+    "Birmingham International (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)"
+  ],
+  "Library Centenary Square": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Lodge Road": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Longbridge": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Loxdale": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Lye": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)"
+  ],
+  "Marston Green": [
+    "Birmingham International (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)"
+  ],
+  "Millennium Point": [
+    "Edgbaston Village"
+  ],
+  "Moseley Village": [
+    "Birmingham New Street (LNR & WMR)",
+    "Kings Norton (LNR & WMR)"
+  ],
+  "Northfield": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Old Hill": [
+    "Birmingham",
+    "Kidderminster (LNR & WMR)"
+  ],
+  "Olton": [
+    "Dorridge (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Perry Barr": [
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Pineapple Road": [
+    "Birmingham New Street (LNR & WMR)",
+    "Kings Norton (LNR & WMR)"
+  ],
+  "Pipers Row": [
+    "Edgbaston Village",
+    "Wolverhampton Station"
+  ],
+  "Priestfield": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Rowley Regis": [
+    "Birmingham",
+    "Kidderminster (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Sandwell & Dudley": [
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham International (Transport for Wales)",
+    "Edinburgh (Avanti West Coast)",
+    "Glasgow Central (Avanti West Coast)",
+    "Holyhead (Transport for Wales)",
+    "London Euston (Avanti West Coast)",
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Selly Oak": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Shirley": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)"
+  ],
+  "Small Heath": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Smethwick Galton Bridge": [
+    "Birmingham New Street (LNR & WMR)",
+    "Dorridge (LNR & WMR)",
+    "Kidderminster (LNR & WMR)",
+    "Liverpool Lime Street (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Walsall (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Smethwick Rolfe Street": [
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Soho Benson Road": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Solihull": [
+    "Birmingham Moor Street (Chiltern Railways)",
+    "Birmingham Snow Hill (Chiltern Railways)",
+    "Dorridge (LNR & WMR)",
+    "Leamington Spa (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Spring Road": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)"
+  ],
+  "St Chads": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "St Paul's": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Stechford": [
+    "Birmingham International (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)"
+  ],
+  "Stourbridge Junction": [
+    "Birmingham",
+    "Kidderminster (LNR & WMR)",
+    "Stourbridge Town (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Stourbridge Town": [
+    "Stourbridge Junction (LNR & WMR)"
+  ],
+  "Sutton Coldfield": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Tame Bridge Parkway": [
+    "Birmingham International (LNR & WMR)",
+    "Birmingham New Street (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)",
+    "Shrewsbury (LNR & WMR)",
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Tamworth": [
+    "Birmingham",
+    "Crewe (LNR & WMR)",
+    "Glasgow Central (CrossCountry)",
+    "Liverpool Lime Street (Avanti West Coast)",
+    "London Euston (Avanti West Coast)",
+    "London Euston (LNR & WMR)",
+    "Nottingham (CrossCountry)"
+  ],
+  "The Crescent": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "The Hawthorns": [
+    "Dorridge (LNR & WMR)",
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "The Hawthorns (Metro)": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "The Royal": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Tile Hill": [
+    "Birmingham New Street (LNR & WMR)",
+    "London Euston (LNR & WMR)"
+  ],
+  "Tipton": [
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Town Hall": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Trinity Way": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Tyseley": [
+    "Dorridge (LNR & WMR)",
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "University": [
+    "Birmingham New Street (LNR & WMR)",
+    "Bromsgrove (LNR & WMR)",
+    "Cardiff Central (CrossCountry)",
+    "Four Oaks (LNR & WMR)",
+    "Hereford (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Nottingham (CrossCountry)",
+    "Redditch (LNR & WMR)",
+    "Worcester Shrub Hill (LNR & WMR)"
+  ],
+  "Walsall": [
+    "Birmingham International (LNR & WMR)",
+    "Rugeley Trent Valley (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Wednesbury Great Western Street": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Wednesbury Parkway": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "West Bromwich Central": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Whitlocks End": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)"
+  ],
+  "Widney Manor": [
+    "Dorridge (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
+  ],
+  "Winson Green": [
+    "Edgbaston Village",
+    "Wolverhampton St George's",
+    "Wolverhampton Station"
+  ],
+  "Witton": [
+    "Walsall (LNR & WMR)",
+    "Wolverhampton (LNR & WMR)"
+  ],
+  "Wolverhampton": [
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham International (Transport for Wales)",
+    "Birmingham New Street (LNR & WMR)",
+    "Bournemouth (CrossCountry)",
+    "Bristol Temple Meads (CrossCountry)",
+    "Edinburgh (Avanti West Coast)",
+    "Liverpool Lime Street (LNR & WMR)",
+    "London Euston (Avanti West Coast)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Shrewsbury (LNR & WMR)",
+    "Walsall (LNR & WMR)"
+  ],
+  "Wolverhampton St George's": [
+    "Edgbaston Village"
+  ],
+  "Wolverhampton Station": [
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham International (Transport for Wales)",
+    "Birmingham New Street (LNR & WMR)",
+    "Bournemouth (CrossCountry)",
+    "Bristol Temple Meads (CrossCountry)",
+    "Edinburgh (Avanti West Coast)",
+    "Liverpool Lime Street (LNR & WMR)",
+    "London Euston (Avanti West Coast)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Shrewsbury (LNR & WMR)",
+    "Walsall (LNR & WMR)"
+  ],
+  "Wylde Green": [
+    "Bromsgrove (LNR & WMR)",
+    "Four Oaks (LNR & WMR)",
+    "Lichfield Trent Valley (LNR & WMR)",
+    "Redditch (LNR & WMR)"
+  ],
+  "Yardley Wood": [
+    "Kidderminster (LNR & WMR)",
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Whitlocks End (LNR & WMR)"
+  ]
+}

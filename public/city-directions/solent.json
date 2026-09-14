@@ -1,1 +1,1112 @@
-{"Southampton Central":["London Waterloo","Bournemouth","Weymouth","Bristol/Cardiff"],"Portsmouth Harbour":["London Waterloo","Brighton","Bristol/Cardiff"],"Portsmouth & Southsea":["London Waterloo","Brighton"],"Fareham":["London Waterloo","Bournemouth","Brighton"],"Eastleigh":["London Waterloo","Bournemouth","Brighton"],"Waterloo":["Southampton","Portsmouth","Bournemouth","Weymouth"],"Westbury":["Southampton","Bristol","Cardiff"]}
+{
+  "Aldermaston": [
+    "Newbury (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Aldershot": [
+    "Alton (South Western Railway)",
+    "Ascot (South Western Railway)",
+    "Farnham (South Western Railway)",
+    "Guildford (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Aldrington": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Portsmouth & Southsea (Southern)"
+  ],
+  "Alton": [
+    "London Waterloo (South Western Railway)"
+  ],
+  "Amberley": [
+    "Bognor Regis (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Andover": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Angmering": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Arundel": [
+    "Bognor Regis (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Ascot": [
+    "Aldershot (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Ash": [
+    "Farnham (South Western Railway)",
+    "Gatwick Airport (Great Western Railway)",
+    "Guildford (South Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Ash Vale": [
+    "Aldershot (South Western Railway)",
+    "Alton (South Western Railway)",
+    "Ascot (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Ashurst New Forest": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Poole (South Western Railway)"
+  ],
+  "Bagshot": [
+    "Aldershot (South Western Railway)",
+    "Ascot (South Western Railway)"
+  ],
+  "Balcombe": [
+    "Bedford (Thameslink)",
+    "Brighton (Thameslink)"
+  ],
+  "Barnham": [
+    "Bognor Regis (Southern)",
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Basingstoke": [
+    "Bournemouth (CrossCountry)",
+    "London Waterloo (South Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Reading (Great Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Weymouth and Poole (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Beaulieu Road": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Poole (South Western Railway)"
+  ],
+  "Bedhampton": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Bedwyn": [
+    "Newbury (Great Western Railway)"
+  ],
+  "Bentley (Hampshire)": [
+    "Alton (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Betchworth": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Billingshurst": [
+    "Bognor Regis (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Bitterne": [
+    "Portsmouth & Southsea (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Blackwater": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Bognor Regis": [
+    "Barnham (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Bosham": [
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)"
+  ],
+  "Botley": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Boxhill & Westhumble": [
+    "Dorking (South Western Railway)",
+    "Horsham (Southern)",
+    "London Victoria (Southern)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Bracknell": [
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Bramley (Hampshire)": [
+    "Basingstoke (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Brighton": [
+    "Bedford (Thameslink)",
+    "Cambridge (Thameslink)",
+    "Chichester (Southern)",
+    "Eastbourne (Southern)",
+    "London Victoria (Gatwick Express)",
+    "Ore (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Seaford (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Brockenhurst": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (CrossCountry)",
+    "Bournemouth (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Lymington Pier (South Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Poole (South Western Railway)",
+    "Weymouth (South Western Railway)"
+  ],
+  "Brookwood": [
+    "Alton (South Western Railway)",
+    "Basingstoke (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Burgess Hill": [
+    "Bedford (Thameslink)",
+    "Brighton (Gatwick Express)",
+    "Brighton (Thameslink)",
+    "Cambridge (Thameslink)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Burnham": [
+    "Abbey Wood (Elizabeth Line)",
+    "Maidenhead (Elizabeth Line)",
+    "Reading (Elizabeth Line)"
+  ],
+  "Bursledon": [
+    "Portsmouth & Southsea (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Camberley": [
+    "Aldershot (South Western Railway)",
+    "Ascot (South Western Railway)"
+  ],
+  "Chandlers Ford": [
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)"
+  ],
+  "Chichester": [
+    "Brighton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Chilworth": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Christs Hospital": [
+    "Bognor Regis (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Clandon": [
+    "Guildford (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Cosham": [
+    "Brighton (Southern)",
+    "Cardiff Central (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Southampton Central (South Western Railway)",
+    "Southampton Central (Southern)"
+  ],
+  "Crawley": [
+    "Horsham (Thameslink)",
+    "London Victoria (Southern)",
+    "Peterborough (Thameslink)",
+    "Portsmouth Harbour and Bognor Regis (Southern)"
+  ],
+  "Crowthorne": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Datchet": [
+    "London Waterloo (South Western Railway)",
+    "Windsor & Eton Riverside (South Western Railway)"
+  ],
+  "Dean": [
+    "Chandlers Ford (South Western Railway)",
+    "Salisbury (South Western Railway)"
+  ],
+  "Dorking": [
+    "Horsham (Southern)",
+    "London Victoria (Southern)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Dorking Deepdene": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Dorking West": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Durrington-on-Sea": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)"
+  ],
+  "Earley": [
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Earlswood (Surrey)": [
+    "Bedford (Thameslink)",
+    "Gatwick Airport (Southern)",
+    "Horsham (Thameslink)",
+    "Peterborough (Thameslink)",
+    "Three Bridges (Thameslink)"
+  ],
+  "East Worthing": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Portsmouth & Southsea (Southern)"
+  ],
+  "Eastleigh": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Brighton (Southern)",
+    "London Victoria (Unknown)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Egham": [
+    "Aldershot (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)",
+    "Weybridge (South Western Railway)"
+  ],
+  "Emsworth": [
+    "Brighton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Falmer": [
+    "Brighton (Southern)",
+    "Eastbourne (Southern)",
+    "Ore (Southern)",
+    "Seaford (Southern)"
+  ],
+  "Fareham": [
+    "Brighton (Southern)",
+    "Cardiff Central (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour",
+    "Southampton Central (South Western Railway)",
+    "Southampton Central (Southern)"
+  ],
+  "Farnborough (Main)": [
+    "Basingstoke (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Farnborough North": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Farncombe": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Farnham": [
+    "Alton (South Western Railway)",
+    "Guildford (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Faygate": [
+    "Horsham (Thameslink)",
+    "Peterborough (Thameslink)"
+  ],
+  "Fishbourne (West Sussex)": [
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)"
+  ],
+  "Fishersgate": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Portsmouth & Southsea (Southern)"
+  ],
+  "Fleet": [
+    "Basingstoke (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Ford": [
+    "Bognor Regis (Southern)",
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "London Victoria (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Fratton": [
+    "Brighton (Southern)",
+    "Cardiff Central (Great Western Railway)",
+    "London Victoria (Southern)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Frimley": [
+    "Aldershot (South Western Railway)",
+    "Ascot (South Western Railway)"
+  ],
+  "Furze Platt": [
+    "Bourne End (Great Western Railway)",
+    "Maidenhead (Great Western Railway)"
+  ],
+  "Gatwick Airport": [
+    "Bedford (Thameslink)",
+    "Brighton (Gatwick Express)",
+    "Brighton (Thameslink)",
+    "Cambridge (Thameslink)",
+    "Littlehampton (Southern)",
+    "London Victoria (Gatwick Express)",
+    "London Victoria (Southern)",
+    "Portsmouth Harbour and Bognor Regis (Southern)",
+    "Reading (Great Western Railway)",
+    "Three Bridges (Thameslink)"
+  ],
+  "Gillingham (Dorset)": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Godalming": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Godstone": [
+    "Redhill (Southern)",
+    "Tonbridge (Southern)"
+  ],
+  "Gomshall": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Goring & Streatley": [
+    "Didcot Parkway (Great Western Railway)",
+    "London Paddington (Great Western Railway)"
+  ],
+  "Goring-by-Sea": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)"
+  ],
+  "Grateley": [
+    "London Waterloo (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Guildford": [
+    "Farnham (South Western Railway)",
+    "Gatwick Airport (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Hamble": [
+    "Portsmouth & Southsea (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Haslemere": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Hassocks": [
+    "Bedford (Thameslink)",
+    "Brighton (Gatwick Express)",
+    "Brighton (Thameslink)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Havant": [
+    "Brighton (Southern)",
+    "London Victoria (Southern)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Haywards Heath": [
+    "Bedford (Thameslink)",
+    "Brighton (Gatwick Express)",
+    "Brighton (Thameslink)",
+    "Cambridge (Thameslink)",
+    "Littlehampton (Southern)",
+    "London Victoria (Gatwick Express)",
+    "London Victoria (Southern)"
+  ],
+  "Hedge End": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Hilsea": [
+    "London Victoria (Southern)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Hinton Admiral": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Poole (South Western Railway)"
+  ],
+  "Holmwood": [
+    "Horsham (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Hook": [
+    "Basingstoke (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Horley": [
+    "Bedford (Thameslink)",
+    "Gatwick Airport (Southern)",
+    "Horsham (Thameslink)",
+    "Littlehampton (Southern)",
+    "Peterborough (Thameslink)",
+    "Three Bridges (Thameslink)"
+  ],
+  "Horsham": [
+    "Bognor Regis (Southern)",
+    "London Victoria (Southern)",
+    "Peterborough (Thameslink)",
+    "Portsmouth Harbour (Southern)"
+  ],
+  "Horsley": [
+    "Guildford (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Hove": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Hungerford": [
+    "Bedwyn (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Newbury (Great Western Railway)",
+    "Newton Abbot (Great Western Railway)"
+  ],
+  "Ifield": [
+    "Horsham (Thameslink)",
+    "Peterborough (Thameslink)"
+  ],
+  "Kintbury": [
+    "Bedwyn (Great Western Railway)",
+    "Newbury (Great Western Railway)"
+  ],
+  "Lancing": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Langley": [
+    "Abbey Wood (Elizabeth Line)",
+    "Maidenhead (Elizabeth Line)",
+    "Reading (Elizabeth Line)"
+  ],
+  "Liphook": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Liss": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Littlehampton": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Littlehaven": [
+    "Horsham (Thameslink)",
+    "Peterborough (Thameslink)",
+    "Portsmouth Harbour and Bognor Regis (Southern)"
+  ],
+  "London Road (Brighton)": [
+    "Brighton (Southern)",
+    "Eastbourne (Southern)",
+    "Seaford (Southern)"
+  ],
+  "London Road (Guildford)": [
+    "Guildford (South Western Railway)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Longcross": [
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Lymington Pier": [
+    "Brockenhurst (South Western Railway)"
+  ],
+  "Lymington Town": [
+    "Brockenhurst (South Western Railway)",
+    "Lymington Pier (South Western Railway)"
+  ],
+  "Maidenhead": [
+    "Abbey Wood (Elizabeth Line)",
+    "Bourne End (Great Western Railway)",
+    "Didcot Parkway (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Reading (Elizabeth Line)"
+  ],
+  "Martins Heron": [
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Merstham": [
+    "Horsham (Thameslink)",
+    "London Victoria (Southern)",
+    "Peterborough (Thameslink)",
+    "Reigate and Gatwick Airport (Southern)",
+    "Three Bridges (Thameslink)"
+  ],
+  "Micheldever": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Midgham": [
+    "Newbury (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Milford (Surrey)": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)"
+  ],
+  "Millbrook (Hampshire)": [
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)"
+  ],
+  "Mortimer": [
+    "Basingstoke (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Mottisfont & Dunbridge": [
+    "Chandlers Ford (South Western Railway)",
+    "Salisbury (South Western Railway)"
+  ],
+  "Moulsecoomb": [
+    "Brighton (Southern)",
+    "Eastbourne (Southern)",
+    "Ore (Southern)",
+    "Seaford (Southern)"
+  ],
+  "Netley": [
+    "Portsmouth & Southsea (South Western Railway)",
+    "Southampton Central (South Western Railway)",
+    "Southampton Central (Southern)"
+  ],
+  "New Milton": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Poole (South Western Railway)"
+  ],
+  "Newbury": [
+    "Bedwyn (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Newton Abbot (Great Western Railway)",
+    "Plymouth (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Newbury Racecourse": [
+    "Newbury (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "North Camp": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Nutbourne": [
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)"
+  ],
+  "Nutfield": [
+    "Redhill (Southern)",
+    "Tonbridge (Southern)"
+  ],
+  "Ockley": [
+    "Horsham (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Overton": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Pangbourne": [
+    "Didcot Parkway (Great Western Railway)",
+    "London Paddington (Great Western Railway)"
+  ],
+  "Petersfield": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Pewsey": [
+    "London Paddington (Great Western Railway)",
+    "Newton Abbot (Great Western Railway)",
+    "Penzance (Great Western Railway)"
+  ],
+  "Plumpton": [
+    "Eastbourne (Southern)",
+    "London Victoria (Southern)",
+    "Ore (Southern)"
+  ],
+  "Portchester": [
+    "Brighton (Southern)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Southampton Central (South Western Railway)",
+    "Southampton Central (Southern)"
+  ],
+  "Portslade": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Portsmouth & Southsea": [
+    "Brighton (Southern)",
+    "Cardiff Central (Great Western Railway)",
+    "London Victoria (Southern)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Portsmouth Harbour": [
+    "Cardiff Central (Great Western Railway)",
+    "London Victoria (Southern)",
+    "London Waterloo (South Western Railway)"
+  ],
+  "Preston Park": [
+    "Bedford (Thameslink)",
+    "Brighton (Gatwick Express)",
+    "Brighton (Thameslink)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Pulborough": [
+    "Bognor Regis (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Reading Green Park": [
+    "Basingstoke (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Reading West": [
+    "Basingstoke (Great Western Railway)",
+    "Newbury (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Redbridge": [
+    "Bournemouth (South Western Railway)",
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)"
+  ],
+  "Redhill": [
+    "Bedford (Thameslink)",
+    "Gatwick Airport (Great Western Railway)",
+    "Gatwick Airport (Southern)",
+    "Horsham (Thameslink)",
+    "London Victoria (Southern)",
+    "Peterborough (Thameslink)",
+    "Reading (Great Western Railway)",
+    "Reigate (Southern)",
+    "Three Bridges (Thameslink)",
+    "Tonbridge (Southern)"
+  ],
+  "Reigate": [
+    "Gatwick Airport (Great Western Railway)",
+    "London Victoria (Southern)",
+    "Reading (Great Western Railway)"
+  ],
+  "Romsey": [
+    "Cardiff Central (Great Western Railway)",
+    "Chandlers Ford (South Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Redbridge (South Western Railway)",
+    "Salisbury (South Western Railway)"
+  ],
+  "Rowlands Castle": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Salfords": [
+    "Bedford (Thameslink)",
+    "Gatwick Airport (Southern)",
+    "Horsham (Thameslink)",
+    "Peterborough (Thameslink)",
+    "Three Bridges (Thameslink)"
+  ],
+  "Salisbury": [
+    "Cardiff Central (Great Western Railway)",
+    "Chandlers Ford (South Western Railway)",
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Sandhurst": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Shalford": [
+    "Gatwick Airport (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Shawford": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Southampton Central (South Western Railway)",
+    "Winchester (South Western Railway)"
+  ],
+  "Shiplake": [
+    "Henley-on-Thames (Great Western Railway)",
+    "Twyford (Great Western Railway)"
+  ],
+  "Sholing": [
+    "Portsmouth & Southsea (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Shoreham-by-Sea": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Slough": [
+    "Abbey Wood (Elizabeth Line)",
+    "Didcot Parkway (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Maidenhead (Elizabeth Line)",
+    "Reading (Elizabeth Line)",
+    "Windsor & Eton Central (Great Western Railway)"
+  ],
+  "Southampton Airport Parkway": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (CrossCountry)",
+    "Bournemouth (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Weymouth and Poole (South Western Railway)"
+  ],
+  "Southampton Central": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (CrossCountry)",
+    "Bournemouth (South Western Railway)",
+    "Brighton (Southern)",
+    "Cardiff Central (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Poole (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Weymouth (South Western Railway)"
+  ],
+  "Southbourne": [
+    "Brighton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Southwick": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "St Denys": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Sunningdale": [
+    "Aldershot (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Sunnymeads": [
+    "London Waterloo (South Western Railway)",
+    "Windsor & Eton Riverside (South Western Railway)"
+  ],
+  "Swanwick": [
+    "Brighton (Southern)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Southampton Central (South Western Railway)",
+    "Southampton Central (Southern)"
+  ],
+  "Sway": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Poole (South Western Railway)"
+  ],
+  "Swaythling": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Romsey (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Taplow": [
+    "Abbey Wood (Elizabeth Line)",
+    "Maidenhead (Elizabeth Line)",
+    "Reading (Elizabeth Line)"
+  ],
+  "Thatcham": [
+    "London Paddington (Great Western Railway)",
+    "Newbury (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Theale": [
+    "London Paddington (Great Western Railway)",
+    "Newbury (Great Western Railway)",
+    "Reading (Great Western Railway)"
+  ],
+  "Three Bridges": [
+    "Bedford (Thameslink)",
+    "Brighton (Thameslink)",
+    "Cambridge (Thameslink)",
+    "Horsham (Thameslink)",
+    "London Victoria (Southern)",
+    "Peterborough (Thameslink)",
+    "Portsmouth Harbour and Bognor Regis (Southern)"
+  ],
+  "Tilehurst": [
+    "Didcot Parkway (Great Western Railway)",
+    "London Paddington (Great Western Railway)"
+  ],
+  "Tisbury": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Totton": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (South Western Railway)",
+    "Poole (South Western Railway)"
+  ],
+  "Twyford": [
+    "Abbey Wood (Elizabeth Line)",
+    "Didcot Parkway (Great Western Railway)",
+    "Henley-on-Thames (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Reading (Elizabeth Line)"
+  ],
+  "Virginia Water": [
+    "Aldershot (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)",
+    "Weybridge (South Western Railway)"
+  ],
+  "Wanborough": [
+    "Farnham (South Western Railway)",
+    "Gatwick Airport (Great Western Railway)",
+    "Guildford (South Western Railway)"
+  ],
+  "Warblington": [
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Portsmouth Harbour (Southern)"
+  ],
+  "Wargrave": [
+    "Henley-on-Thames (Great Western Railway)",
+    "Twyford (Great Western Railway)"
+  ],
+  "Warnham": [
+    "Horsham (Southern)",
+    "London Victoria (Southern)"
+  ],
+  "Waterloo": [
+    "Addlestone (South Western Railway)",
+    "Alton (South Western Railway)",
+    "Basingstoke (South Western Railway)",
+    "Chessington South (South Western Railway)",
+    "Dorking (South Western Railway)",
+    "Guildford (South Western Railway)",
+    "Hampton Court (South Western Railway)",
+    "Hounslow (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Shepperton (South Western Railway)",
+    "Strawberry Hill (South Western Railway)",
+    "Teddington (South Western Railway)",
+    "Weymouth and Bournemouth (South Western Railway)",
+    "Windsor & Eton Riverside (South Western Railway)",
+    "Woking (South Western Railway)"
+  ],
+  "West Worthing": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)"
+  ],
+  "Westbury": [
+    "Bristol Temple Meads (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Newton Abbot (Great Western Railway)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Swindon (Great Western Railway)",
+    "Warminster (Great Western Railway)",
+    "Weymouth (Great Western Railway)"
+  ],
+  "Whitchurch (Hampshire)": [
+    "Exeter St Davids (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Salisbury (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Winchester": [
+    "Basingstoke (South Western Railway)",
+    "Bournemouth (CrossCountry)",
+    "Bournemouth (South Western Railway)",
+    "London Victoria (Unknown)",
+    "London Waterloo (South Western Railway)",
+    "Manchester Piccadilly (CrossCountry)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Weymouth and Poole (South Western Railway)"
+  ],
+  "Winchfield": [
+    "Basingstoke (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Southampton Central (South Western Railway)"
+  ],
+  "Windsor & Eton Central": [
+    "Slough (Great Western Railway)"
+  ],
+  "Windsor & Eton Riverside": [
+    "London Waterloo (South Western Railway)"
+  ],
+  "Winnersh": [
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Winnersh Triangle": [
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Witley": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)"
+  ],
+  "Wivelsfield": [
+    "Bedford (Thameslink)",
+    "Brighton (Thameslink)",
+    "Eastbourne (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Ore (Southern)"
+  ],
+  "Woking": [
+    "Alton (South Western Railway)",
+    "Basingstoke (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
+    "Southampton Central (South Western Railway)",
+    "Yeovil Junction (South Western Railway)"
+  ],
+  "Wokingham": [
+    "Gatwick Airport (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Reading (Great Western Railway)",
+    "Reading (South Western Railway)"
+  ],
+  "Woolston": [
+    "Brighton (Southern)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Southampton Central (South Western Railway)",
+    "Southampton Central (Southern)"
+  ],
+  "Worplesdon": [
+    "London Waterloo (South Western Railway)",
+    "Portsmouth & Southsea (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)"
+  ],
+  "Worthing": [
+    "Brighton (Southern)",
+    "Chichester (Southern)",
+    "Littlehampton (Southern)",
+    "London Victoria (Southern)",
+    "Portsmouth & Southsea (Southern)",
+    "Southampton Central (Southern)"
+  ],
+  "Wraysbury": [
+    "London Waterloo (South Western Railway)",
+    "Windsor & Eton Riverside (South Western Railway)"
+  ]
+}

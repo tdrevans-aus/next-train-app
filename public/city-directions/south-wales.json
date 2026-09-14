@@ -1,0 +1,558 @@
+{
+  "Aber": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Abercynon": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)"
+  ],
+  "Aberdare": [
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Baglan": [
+    "Cardiff Central (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Bargoed": [
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Barry": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Barry Docks": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Barry Island": [
+    "Bargoed (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Birchgrove": [
+    "Coryton (Transport for Wales)",
+    "Penarth (Transport for Wales)"
+  ],
+  "Bridgend": [
+    "Cardiff Central (Transport for Wales)",
+    "Carmarthen (Great Western Railway)",
+    "Ebbw Vale Town (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Maesteg (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)",
+    "Rhymney (Transport for Wales)",
+    "Swansea (Great Western Railway)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Brithdir": [
+    "Barry Island (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Briton Ferry": [
+    "Cardiff Central (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Cadoxton": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Caerphilly": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Penarth (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Caldicot": [
+    "Cardiff Central (Transport for Wales)",
+    "Cheltenham Spa (Transport for Wales)"
+  ],
+  "Cardiff Bay": [
+    "Cardiff Queen Street (Transport for Wales)",
+    "Pontypridd (Transport for Wales)"
+  ],
+  "Cardiff Central": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Carmarthen (Great Western Railway)",
+    "Cheltenham Spa (Transport for Wales)",
+    "Chester (Transport for Wales)",
+    "Coryton (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Maesteg (Transport for Wales)",
+    "Penarth (Transport for Wales)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Rhymney (Transport for Wales)",
+    "Swansea (Great Western Railway)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Cardiff Queen Street": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Caerphilly (Transport for Wales)",
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Coryton (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Penarth (Transport for Wales)",
+    "Pontypridd (Transport for Wales)",
+    "Rhymney (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Cathays": [
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Pontypridd (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Cogan": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Coryton": [
+    "Penarth (Transport for Wales)"
+  ],
+  "Crosskeys": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Cwmbach": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Cwmbran": [
+    "Cardiff Central (Transport for Wales)",
+    "Chester (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)"
+  ],
+  "Danescourt": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Dinas Powys": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Dinas Rhondda": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Dingle Road": [
+    "Caerphilly (Transport for Wales)",
+    "Coryton (Transport for Wales)",
+    "Penarth (Transport for Wales)"
+  ],
+  "Eastbrook": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Ebbw Vale Parkway": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Ebbw Vale Town": [
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Energlyn & Churchill Park": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)"
+  ],
+  "Fairwater": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Fernhill": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Garth (Mid Glamorgan)": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)"
+  ],
+  "Gilfach Fargoed": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)"
+  ],
+  "Gowerton": [
+    "Cardiff Central (Transport for Wales)",
+    "Fishguard Harbour (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)",
+    "Shrewsbury (Transport for Wales)"
+  ],
+  "Grangetown": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Caerphilly (Transport for Wales)",
+    "Coryton (Transport for Wales)",
+    "Penarth (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Heath High Level": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Caerphilly (Transport for Wales)",
+    "Penarth (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Heath Low Level": [
+    "Coryton (Transport for Wales)",
+    "Penarth (Transport for Wales)"
+  ],
+  "Hengoed": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Lisvane & Thornhill": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Caerphilly (Transport for Wales)",
+    "Penarth (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Llanbradach": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Llandaf": [
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Pontypridd (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Llanharan": [
+    "Cardiff Central (Transport for Wales)",
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Llanhilleth": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Llanishen": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Caerphilly (Transport for Wales)",
+    "Penarth (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Llansamlet": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Llantwit Major": [
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Llwynypia": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Maesteg": [
+    "Ebbw Vale Town (Transport for Wales)"
+  ],
+  "Maesteg (Ewenny Road)": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)"
+  ],
+  "Merthyr Tydfil": [
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Merthyr Vale": [
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)"
+  ],
+  "Mountain Ash": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Neath": [
+    "Cardiff Central (Transport for Wales)",
+    "Carmarthen (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)",
+    "Swansea (Great Western Railway)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Newbridge": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Newport": [
+    "Cardiff Central (CrossCountry)",
+    "Cardiff Central (Great Western Railway)",
+    "Cardiff Central (Transport for Wales)",
+    "Cheltenham Spa (Transport for Wales)",
+    "Chester (Transport for Wales)",
+    "Ebbw Vale Town (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Nottingham (CrossCountry)",
+    "Pembroke Dock and Llanelli (Transport for Wales)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Swansea (Great Western Railway)",
+    "Taunton (Great Western Railway)"
+  ],
+  "Ninian Park": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Penarth": [
+    "Caerphilly (Transport for Wales)",
+    "Coryton (Transport for Wales)"
+  ],
+  "Pencoed": [
+    "Cardiff Central (Transport for Wales)",
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Pengam": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Penrhiwceiber": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Pentre-bach": [
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)"
+  ],
+  "Pontlottyn": [
+    "Barry Island (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Pontyclun": [
+    "Cardiff Central (Transport for Wales)",
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Pontypool & New Inn": [
+    "Cardiff Central (Transport for Wales)",
+    "Chester (Transport for Wales)",
+    "Holyhead (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)"
+  ],
+  "Pontypridd": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Port Talbot Parkway": [
+    "Cardiff Central (Transport for Wales)",
+    "Carmarthen (Great Western Railway)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)",
+    "Swansea (Great Western Railway)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Porth": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Pye Corner": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Pyle": [
+    "Cardiff Central (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Quakers Yard": [
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)"
+  ],
+  "Radyr": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Pontypridd (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Rhiwbina": [
+    "Coryton (Transport for Wales)",
+    "Penarth (Transport for Wales)"
+  ],
+  "Rhoose Cardiff Intl Airport": [
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Rhymney": [
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)"
+  ],
+  "Risca & Pontymister": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Rogerstone": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)",
+    "Newport (South Wales) (Transport for Wales)"
+  ],
+  "Sarn": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)"
+  ],
+  "Severn Tunnel Junction": [
+    "Cardiff Central (Great Western Railway)",
+    "Cardiff Central (Transport for Wales)",
+    "Cheltenham Spa (Transport for Wales)",
+    "Portsmouth Harbour (Great Western Railway)",
+    "Taunton (Great Western Railway)"
+  ],
+  "Skewen": [
+    "Cardiff Central (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)",
+    "Swansea (Transport for Wales)"
+  ],
+  "Swansea": [
+    "Cardiff Central (Transport for Wales)",
+    "Carmarthen (Great Western Railway)",
+    "Fishguard Harbour (Transport for Wales)",
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Milford Haven (Transport for Wales)",
+    "Pembroke Dock (Transport for Wales)",
+    "Shrewsbury (Transport for Wales)"
+  ],
+  "Taffs Well": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Pontypridd (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Tir-phil": [
+    "Barry Island (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Ton Pentre": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Tondu": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)"
+  ],
+  "Tonypandy": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Trefforest": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Pontypridd (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Trefforest Estate": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Bay (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)",
+    "Pontypridd (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Trehafod": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Treherbert": [
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Treorchy": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Troed-y-rhiw": [
+    "Cardiff Central (Transport for Wales)",
+    "Merthyr Tydfil (Transport for Wales)"
+  ],
+  "Ty Glas": [
+    "Coryton (Transport for Wales)",
+    "Penarth (Transport for Wales)"
+  ],
+  "Waun-gron Park": [
+    "Aberdare Platform 2 (Transport for Wales)",
+    "Cardiff Central (Transport for Wales)"
+  ],
+  "Whitchurch (Glamorgan)": [
+    "Coryton (Transport for Wales)",
+    "Penarth (Transport for Wales)"
+  ],
+  "Wildmill": [
+    "Ebbw Vale Town (Transport for Wales)",
+    "Maesteg (Transport for Wales)"
+  ],
+  "Ynyswen": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ],
+  "Ystrad Mynach": [
+    "Bargoed (Transport for Wales)",
+    "Barry Island (Transport for Wales)",
+    "Bridgend (Transport for Wales)",
+    "Rhymney (Transport for Wales)"
+  ],
+  "Ystrad Rhondda": [
+    "Cardiff Central (Transport for Wales)",
+    "Treherbert (Transport for Wales)"
+  ]
+}

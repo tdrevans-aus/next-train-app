@@ -1,8 +1,45 @@
 {
+  "Accrington": [
+    "Blackburn (Northern)",
+    "Blackpool North (Northern)",
+    "Colne (Northern)",
+    "Headbolt Lane (Northern)",
+    "Preston (Northern)",
+    "York (Northern)"
+  ],
+  "Apperley Bridge": [
+    "Bradford Forster Square (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Baildon": [
+    "Bradford Forster Square (Northern)",
+    "Ilkley (Northern)"
+  ],
+  "Batley": [
+    "Bradford Interchange (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Ben Rhydding": [
+    "Bradford Forster Square (Northern)",
+    "Ilkley (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Berry Brow": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Bingley": [
+    "Bradford Forster Square (Northern)",
+    "Carlisle (Northern)",
+    "Leeds (Northern)",
+    "Morecambe (Northern)",
+    "Skipton (Northern)"
+  ],
   "Bradford Forster Square": [
     "Ilkley (Northern)",
     "Leeds (Northern)",
-    "Shipley (Northern)",
+    "London Kings Cross (LNER)",
     "Skipton (Northern)"
   ],
   "Bradford Interchange": [
@@ -15,13 +52,151 @@
     "Manchester Victoria (Northern)",
     "York (Northern)"
   ],
+  "Bramley (West Yorkshire)": [
+    "Chester (Northern)",
+    "Halifax (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "Manchester Victoria (Northern)"
+  ],
+  "Brierfield": [
+    "Colne (Northern)",
+    "Preston (Northern)"
+  ],
+  "Brighouse": [
+    "Bradford Interchange (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Brockholes": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Burley Park": [
+    "Harrogate (Northern)",
+    "Horsforth (Northern)",
+    "Knaresborough (Northern)",
+    "Leeds (Northern)",
+    "York (Northern)"
+  ],
+  "Burley-in-Wharfedale": [
+    "Bradford Forster Square (Northern)",
+    "Ilkley (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Burnley Barracks": [
+    "Colne (Northern)",
+    "Preston (Northern)"
+  ],
+  "Burnley Central": [
+    "Colne (Northern)",
+    "Preston (Northern)"
+  ],
+  "Burnley Manchester Road": [
+    "Blackburn (Northern)",
+    "Blackpool North (Northern)",
+    "Headbolt Lane (Northern)",
+    "York (Northern)"
+  ],
+  "Castleford": [
+    "Goole (Northern)",
+    "Knottingley (Northern)",
+    "Leeds (Northern)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "Sheffield (Northern)",
+    "York (TransPennine Express)"
+  ],
+  "Church & Oswaldtwistle": [
+    "Colne (Northern)",
+    "Preston (Northern)"
+  ],
+  "Clitheroe": [
+    "Rochdale (Northern)"
+  ],
+  "Colne": [
+    "Preston (Northern)"
+  ],
+  "Cononley": [
+    "Bradford Forster Square (Northern)",
+    "Leeds (Northern)",
+    "Skipton (Northern)"
+  ],
+  "Cottingley": [
+    "Bradford Interchange (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Cross Gates": [
+    "Halifax (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "York (Northern)"
+  ],
+  "Crossflatts": [
+    "Bradford Forster Square (Northern)",
+    "Leeds (Northern)",
+    "Skipton (Northern)"
+  ],
   "Denby Dale": [
     "Huddersfield (Northern)",
     "Sheffield (Northern)"
   ],
+  "Dewsbury": [
+    "Bradford Interchange (Northern)",
+    "Leeds (Northern)",
+    "Leeds (TransPennine Express)",
+    "Manchester Airport (TransPennine Express)",
+    "Manchester Victoria (TransPennine Express)",
+    "Redcar Central (TransPennine Express)",
+    "Saltburn (TransPennine Express)",
+    "Scarborough (TransPennine Express)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "East Garforth": [
+    "Halifax (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "York (Northern)"
+  ],
+  "Farnworth": [
+    "Clitheroe (Northern)",
+    "Southport (Northern)",
+    "Stalybridge (Northern)"
+  ],
+  "Featherstone": [
+    "Knottingley (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Fitzwilliam": [
+    "Doncaster (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Frizinghall": [
+    "Bradford Forster Square (Northern)",
+    "Ilkley (Northern)",
+    "Leeds (Northern)",
+    "Skipton (Northern)"
+  ],
+  "Garforth": [
+    "Blackpool North (Northern)",
+    "Halifax (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "Redcar Central (TransPennine Express)",
+    "York (Northern)"
+  ],
+  "Glasshoughton": [
+    "Knottingley (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Guiseley": [
+    "Bradford Forster Square (Northern)",
+    "Ilkley (Northern)",
+    "Leeds (Northern)"
+  ],
   "Halifax": [
     "Blackpool North (Northern)",
-    "Bradford Interchange (Grand Central)",
     "Bradford Interchange (Northern)",
     "Chester (Northern)",
     "Hull (Northern)",
@@ -29,17 +204,39 @@
     "Manchester Victoria (Northern)",
     "York (Northern)"
   ],
+  "Hapton": [
+    "Colne (Northern)",
+    "Preston (Northern)"
+  ],
+  "Headingley": [
+    "Harrogate (Northern)",
+    "Horsforth (Northern)",
+    "Knaresborough (Northern)",
+    "Leeds (Northern)",
+    "York (Northern)"
+  ],
   "Hebden Bridge": [
     "Blackpool North (Northern)",
     "Chester (Northern)",
     "Leeds (Northern)",
     "Manchester Victoria (Northern)",
-    "Preston (Northern)",
     "Wigan Wallgate (Northern)",
+    "York (Northern)"
+  ],
+  "Honley": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Horsforth": [
+    "Harrogate (Northern)",
+    "Knaresborough (Northern)",
+    "Leeds (Northern)",
+    "London Kings Cross (LNER)",
     "York (Northern)"
   ],
   "Huddersfield": [
     "Hull (TransPennine Express)",
+    "Leeds (TransPennine Express)",
     "Liverpool Lime Street (TransPennine Express)",
     "Manchester Airport (TransPennine Express)",
     "Manchester Piccadilly (TransPennine Express)",
@@ -50,37 +247,222 @@
     "Sheffield (Northern)",
     "York (TransPennine Express)"
   ],
+  "Huncoat": [
+    "Colne (Northern)",
+    "Preston (Northern)"
+  ],
+  "Ilkley": [
+    "Bradford Forster Square (Northern)",
+    "Leeds (Northern)"
+  ],
   "Keighley": [
     "Bradford Forster Square (Northern)",
-    "Lancaster (Northern)",
+    "Carlisle (Northern)",
     "Leeds (Northern)",
-    "Ribblehead (Northern)",
+    "Morecambe (Northern)",
     "Skipton (Northern)"
   ],
-  "Leeds Station": [
-    "Blackpool North (Northern)",
+  "Kirkstall Forge": [
     "Bradford Forster Square (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Leeds Station": [
     "Edinburgh (CrossCountry)",
-    "Harrogate (LNER)",
+    "Halifax (Northern)",
+    "Hull (TransPennine Express)",
     "Ilkley (Northern)",
     "Knottingley (Northern)",
+    "Lincoln Central (Northern)",
     "Liverpool Lime Street (TransPennine Express)",
     "London Kings Cross (LNER)",
-    "Manchester Victoria (Northern)",
     "Manchester Victoria (TransPennine Express)",
-    "Nottingham (Northern)",
     "Poppleton (Northern)",
+    "Sheffield (Northern)",
+    "Skipton (Northern)",
     "York (Northern)"
+  ],
+  "Littleborough": [
+    "Blackburn (Northern)",
+    "Headbolt Lane (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Lockwood": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Low Moor": [
+    "Bradford Interchange (Northern)",
+    "Chester (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Marsden": [
+    "Leeds (TransPennine Express)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "York (TransPennine Express)"
+  ],
+  "Menston": [
+    "Bradford Forster Square (Northern)",
+    "Ilkley (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Micklefield": [
+    "Blackpool North (Northern)",
+    "Halifax (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "York (Northern)"
+  ],
+  "Mirfield": [
+    "Bradford Interchange (Northern)",
+    "Leeds (Northern)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "Wigan Wallgate (Northern)",
+    "York (TransPennine Express)"
+  ],
+  "Morley": [
+    "Bradford Interchange (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Mytholmroyd": [
+    "Chester (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Nelson": [
+    "Colne (Northern)",
+    "Preston (Northern)"
+  ],
+  "New Pudsey": [
+    "Blackpool North (Northern)",
+    "Chester (Northern)",
+    "Halifax (Northern)",
+    "Hull (Northern)",
+    "Leeds (Northern)",
+    "Manchester Victoria (Northern)",
+    "York (Northern)"
+  ],
+  "Normanton": [
+    "Leeds (Northern)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "Nottingham (Northern)",
+    "Sheffield (Northern)",
+    "York (TransPennine Express)"
+  ],
+  "Outwood": [
+    "Doncaster (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Pontefract Baghill": [
+    "Sheffield (Northern)"
+  ],
+  "Pontefract Monkhill": [
+    "Knottingley (Northern)",
+    "Leeds (Northern)",
+    "London Kings Cross (Grand Central)"
+  ],
+  "Pontefract Tanshelf": [
+    "Knottingley (Northern)",
+    "Leeds (Northern)"
+  ],
+  "Rose Grove": [
+    "Blackburn (Northern)",
+    "Colne (Northern)",
+    "Headbolt Lane (Northern)",
+    "Preston (Northern)"
+  ],
+  "Saltaire": [
+    "Bradford Forster Square (Northern)",
+    "Leeds (Northern)",
+    "Skipton (Northern)"
+  ],
+  "Sandal & Agbrigg": [
+    "Doncaster (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Shepley": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Shipley": [
+    "Bradford Forster Square (Northern)",
+    "Carlisle (Northern)",
+    "Ilkley (Northern)",
+    "Leeds (Northern)",
+    "Skipton (Northern)"
+  ],
+  "Slaithwaite": [
+    "Leeds (TransPennine Express)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "York (TransPennine Express)"
+  ],
+  "Sowerby Bridge": [
+    "Blackpool North (Northern)",
+    "Chester (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Steeton & Silsden": [
+    "Bradford Forster Square (Northern)",
+    "Leeds (Northern)",
+    "Morecambe (Northern)",
+    "Skipton (Northern)"
+  ],
+  "Stocksmoor": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Streethouse": [
+    "Knottingley (Northern)",
+    "Leeds (Northern)"
   ],
   "Todmorden": [
     "Blackburn (Northern)",
     "Chester (Northern)",
+    "Headbolt Lane (Northern)",
     "Leeds (Northern)",
     "Manchester Victoria (Northern)",
     "Wigan Wallgate (Northern)"
   ],
+  "Wakefield Kirkgate": [
+    "Knottingley (Northern)",
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)",
+    "London Kings Cross (Grand Central)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "Nottingham (Northern)",
+    "Sheffield (Northern)",
+    "York (TransPennine Express)"
+  ],
+  "Wakefield Westgate": [
+    "Cardiff Central and Plymouth (CrossCountry)",
+    "Doncaster (Northern)",
+    "Glasgow Central (CrossCountry)",
+    "Harrogate (LNER)",
+    "Knottingley (Northern)",
+    "Leeds (LNER)",
+    "Leeds (Northern)",
+    "London Kings Cross (LNER)",
+    "Sheffield (Northern)"
+  ],
   "Walsden": [
+    "Blackburn (Northern)",
     "Leeds (Northern)",
     "Wigan Wallgate (Northern)"
+  ],
+  "Weeton": [
+    "Harrogate (Northern)",
+    "Knaresborough (Northern)",
+    "Leeds (Northern)",
+    "York (Northern)"
+  ],
+  "Woodlesford": [
+    "Goole (Northern)",
+    "Knottingley (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
   ]
 }
