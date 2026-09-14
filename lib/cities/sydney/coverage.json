@@ -1,6 +1,6 @@
 {
   "region": "sydney",
-  "updated": "2026-09-07",
+  "updated": "2026-09-14",
   "covered": [
     {
       "label": "Sydney Trains",
@@ -9,6 +9,10 @@
     {
       "label": "Sydney Metro",
       "detail": "Metro trains on the shared network, live."
+    },
+    {
+      "label": "NSW TrainLink intercity and Hunter",
+      "detail": "Blue Mountains, Central Coast & Newcastle, South Coast, Southern Highlands and Hunter Line walk-up services (BMT/CCN/SCO/SHL/HUN), live."
     }
   ],
   "partial": [],
@@ -16,8 +20,12 @@
     {
       "label": "Buses, light rail and ferries",
       "detail": "Not a rail app."
+    },
+    {
+      "label": "XPT, Xplorer and NSW TrainLink coaches",
+      "detail": "Compulsory-reservation regional/interstate services — not a walk-up board. See docs/sydney-d1/board-eligibility-intercity.md."
     }
   ],
-  "stations": "182 stations across the Sydney Trains and Sydney Metro network.",
-  "notes": ""
+  "stations": "284 stations across Sydney Trains, Sydney Metro and NSW TrainLink intercity/Hunter walk-up services.",
+  "notes": "14 Sep 2026: added NSW TrainLink intercity and Hunter (docs/jim-brief-sydney-intercity-fill.md, Tim's API-in-scope rule)."
 }
