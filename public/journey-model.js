@@ -554,8 +554,26 @@ function pickSavedCityFields(raw = {}) {
   if (PERSISTED_COUNTRY_IDS.has(country)) {
     out.savedCountry = country;
   }
-  if (raw.regionExplicit === true) {
-    out.regionExplicit = true;
+  // docs/jim-brief-region-explicit-false-dropped.md: this used to only copy
+  // the flag when it was `true`, so a rider-set `false` (GPS-follow) was
+  // silently dropped — the store then had no `regionExplicit` key at all,
+  // indistinguishable from a genuine pre-#383 legacy install, and
+  // migrateLegacyRegionExplicit() in city-session.js flipped it back to
+  // `true` on the very next load. Preserve both booleans.
+  if (typeof raw.regionExplicit === "boolean") {
+    out.regionExplicit = raw.regionExplicit;
+  }
+  // Marker fields city-session.js writes alongside regionExplicit so its
+  // legacy migration can tell "genuinely never touched by post-fix code"
+  // apart from "explicit was set for a real reason" — pass them through
+  // untouched rather than letting migrateSettings' allow-list drop them.
+  const regionExplicitSchemaVersion = Number(raw.regionExplicitSchemaVersion);
+  if (Number.isFinite(regionExplicitSchemaVersion) && regionExplicitSchemaVersion > 0) {
+    out.regionExplicitSchemaVersion = regionExplicitSchemaVersion;
+  }
+  const regionExplicitSource = String(raw.regionExplicitSource ?? "").trim();
+  if (regionExplicitSource === "migration" || regionExplicitSource === "picker") {
+    out.regionExplicitSource = regionExplicitSource;
   }
   const mismatch = String(raw.regionMismatchDismissed ?? "").trim();
   if (mismatch) {

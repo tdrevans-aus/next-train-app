@@ -515,6 +515,108 @@ async function run() {
     await context.close();
   }
 
+  // 8. docs/jim-brief-region-explicit-false-dropped.md AC1(a): a rider-set
+  // `regionExplicit: false` must survive a persistSettings() round trip —
+  // the key stays present and false, not dropped (which used to make the
+  // next load's migrateLegacyRegionExplicit() treat the store as pre-#383
+  // legacy and flip it back to true).
+  {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(2000);
+
+    const result = await page.evaluate(() => {
+      window.nextTrainJourneyModel.persistSettings({
+        savedCity: "stockholm",
+        savedCountry: "se",
+        regionExplicit: false,
+      });
+      const raw = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
+      return {
+        hasFlag: Object.prototype.hasOwnProperty.call(raw, "regionExplicit"),
+        value: raw.regionExplicit,
+      };
+    });
+
+    if (result.hasFlag && result.value === false) {
+      pass("persistSettings round trip keeps regionExplicit:false present (not dropped)", JSON.stringify(result));
+    } else {
+      fail("persistSettings round trip keeps regionExplicit:false present (not dropped)", JSON.stringify(result));
+    }
+    await context.close();
+  }
+
+  // 9. docs/jim-brief-region-explicit-false-dropped.md AC1(b): a GPS-set
+  // region (applyCity(..., { explicit: false }), exactly what the GPS-follow
+  // boot path in runInit() calls) must leave the Region select on "All" —
+  // not just once, but across two consecutive app opens. Before this fix,
+  // the first reload's persist dropped the `false`, and the *second* load's
+  // migrateLegacyRegionExplicit() saw no flag + savedCity and wrongly
+  // flipped it to explicit, showing a fixed region instead of "All".
+  {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(2000);
+
+    // Simulate the GPS-follow write runInit() makes on a background hint.
+    await page.evaluate(async () => {
+      await window.NextTrainCitySession.applyCity("stockholm", { persist: true, explicit: false });
+    });
+    await page.waitForTimeout(500);
+
+    async function readRegionState() {
+      await page.evaluate(() => window.NextTrainCitySession.openRegionScreen());
+      await page.waitForTimeout(300);
+      return page.evaluate(() => {
+        const select = document.querySelector("[data-region-city]");
+        return {
+          value: select?.value ?? null,
+          explicit: window.NextTrainCitySession.readRegionExplicit(),
+          savedCity: window.NextTrainCitySession.readSavedCity(),
+        };
+      });
+    }
+
+    // First reload after the GPS-follow write.
+    await page.goto(`${BASE}/?fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(4000);
+    const firstOpen = await readRegionState();
+
+    // Second reload in a row — the case that used to regress.
+    await page.goto(`${BASE}/?fixture=normal`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(4000);
+    const secondOpen = await readRegionState();
+
+    const ok =
+      firstOpen.value === "" &&
+      firstOpen.explicit === false &&
+      firstOpen.savedCity === "stockholm" &&
+      secondOpen.value === "" &&
+      secondOpen.explicit === false &&
+      secondOpen.savedCity === "stockholm";
+
+    if (ok) {
+      pass(
+        "A GPS-set region leaves Region select on 'All' across two consecutive opens",
+        JSON.stringify({ firstOpen, secondOpen })
+      );
+    } else {
+      fail(
+        "A GPS-set region leaves Region select on 'All' across two consecutive opens",
+        JSON.stringify({ firstOpen, secondOpen })
+      );
+    }
+    await context.close();
+  }
+
+  // Note: AC1(c) (the #383 round-2 legacy-upgrade case — savedCity, no flag,
+  // pre-#383 schema, still migrates to explicit) is already covered by case
+  // 4 above; re-verified passing after this fix's migrateLegacyRegionExplicit()
+  // change (it now also checks for the absence of regionExplicitSchemaVersion,
+  // which a genuinely pre-#383 store never has either).
+
   await browser.close();
 
   if (failed) {
