@@ -23,9 +23,9 @@
     },
     {
       "label": "XPT, Xplorer and NSW TrainLink coaches",
-      "detail": "Compulsory-reservation regional/interstate services — not a walk-up board. See docs/sydney-d1/board-eligibility-intercity.md."
+      "detail": "These need a booked, allocated seat, so they're not a walk-up board like the rest of this app."
     }
   ],
   "stations": "284 stations across Sydney Trains, Sydney Metro and NSW TrainLink intercity/Hunter walk-up services.",
-  "notes": "14 Sep 2026: added NSW TrainLink intercity and Hunter (docs/jim-brief-sydney-intercity-fill.md, Tim's API-in-scope rule)."
+  "notes": "Blue Mountains, Central Coast & Newcastle, South Coast, Southern Highlands and Hunter Line stations added 14 September 2026."
 }
