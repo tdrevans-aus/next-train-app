@@ -18,8 +18,24 @@ async function run() {
     await dialog.dismiss();
   });
 
+  // First, a plain reset+test load to start from clean storage — deliberately
+  // WITHOUT the station param, so this doesn't itself go through the
+  // fast-path branch being tested against below.
+  await page.goto(`${BASE}/?reset=1&test=1&fixture=normal`);
+  await page.waitForTimeout(500);
+
+  // The attack URL itself must NOT carry reset=1: D-05 (docs/dwayne-security-
+  // review-play-3.0.0.md, fixed in #380) made `?reset=1` a dev/QA-only fast
+  // path (applyTestQueryParams in public/app.js) that persists URL settings
+  // synchronously, before the station catalog loads, and skips the later
+  // catalog-validated readUrlSettings() re-check entirely
+  // (urlSettingsAppliedDuringReset guards it off). A real rider's share URL
+  // is never opened with reset=1 — it goes through readUrlSettings(), which
+  // rejects any station not present in the loaded catalog. Exercise that
+  // production-reachable path here rather than the reset=1 shortcut, which
+  // this test used to hit before the D-05 fix landed.
   await page.goto(
-    `${BASE}/?reset=1&test=1&fixture=normal&station=${encodeURIComponent(ATTACK_STATION)}&direction=Perth`
+    `${BASE}/?test=1&fixture=normal&station=${encodeURIComponent(ATTACK_STATION)}&direction=Perth`
   );
   await page.waitForTimeout(2000);
 

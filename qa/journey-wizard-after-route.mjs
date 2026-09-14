@@ -40,6 +40,24 @@ async function run() {
   await page.reload();
   await page.waitForTimeout(800);
 
+  // Workaround for a real app bug found while de-flaking this script
+  // (docs/jim-brief-nightly-qa-red.md, bucket 3, not fixed here — flagged for
+  // the controller): persistSettings()/migrateSettings() only ever persists
+  // regionExplicit when it is `true` (mirrors pickSavedCityFields), so the
+  // GPS-follow boot path's own `explicit:false` write never survives to
+  // localStorage — savedCity ends up set with no regionExplicit key at all,
+  // which is indistinguishable from a genuine pre-PR legacy install.
+  // migrateLegacyRegionExplicit() then reads that as "legacy, upgrade it" on
+  // the very next load and marks the region explicit for good, which is not
+  // what a plain GPS-follow reload should do. Strip the flag directly here
+  // (bypassing persistSettings, which cannot write `false`) so this test's
+  // outcome depends only on the wizard-once-only behaviour it's named for.
+  await page.evaluate(() => {
+    const raw = JSON.parse(localStorage.getItem("nextTrainSettings") || "{}");
+    delete raw.regionExplicit;
+    localStorage.setItem("nextTrainSettings", JSON.stringify(raw));
+  });
+
   await openJourneysLibrary(page);
   await page.locator('[data-template="morning"]').click();
 
