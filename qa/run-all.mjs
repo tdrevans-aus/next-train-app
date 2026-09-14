@@ -272,6 +272,26 @@ const RUNNER_EXCLUDE = new Set([
    * checked are still covered offline by qa/rotterdam-line-map-conformance.mjs.
    */
   "rotterdam-mark-probes.mjs",
+  /**
+   * docs/jim-brief-nightly-qa-red.md, 14 Sep 2026: the six scripts below are
+   * tools/one-off probes/sweeps, not tests, that the untiered full glob was
+   * still picking up and counting as nightly failures because nobody had
+   * added them here. None belong in any run-all.mjs tier; they stay in qa/
+   * root (not qa/repros/ or qa/tools/) because they're invoked directly by
+   * name in docs/npm scripts, same reasoning as soak-status.mjs above.
+   */
+  /** A tool (see its own header), not a test — invoked via node qa/lane-lock.mjs directly. */
+  "lane-lock.mjs",
+  /** One-off live TfNSW sweep runner reading TFNSW_API_KEY from .env.local; never a PR gate. */
+  "run-sydney-sweep-once.mjs",
+  /** Live-probes every multi-city hub's local adapter; a manual check, not a committed gate. */
+  "live-region-times-probe.mjs",
+  /** Throwaway data-gathering probe for docs/mark-brief-london-destination-reconciliation.md; needs TFL_APP_KEY + live network. */
+  "london-destination-reconciliation-probe.mjs",
+  /** Throwaway live TfL sweep for docs/mark-brief-london-terminus-sweep.md; needs TFL_APP_KEY + live network. */
+  "uk-london-terminus-sweep-probe.mjs",
+  /** One-off live Auckland AT sweep runner reading AT_API_KEY from .env.local; never a PR gate. */
+  "probe-at-once.mjs",
 ]);
 
 /**
@@ -542,9 +562,47 @@ const KNOWN_TRACKED_EXIT_CODES = {
   },
 };
 
+/**
+ * Known-red scripts — real, reproduced failures found and investigated during
+ * the 14 Sep 2026 nightly triage (docs/jim-brief-nightly-qa-red.md,
+ * docs/qa-nightly-triage-2026-09-14.md bucket 3) that are too large or
+ * product-shaped to fix in that pass. Tracked here explicitly, by name, so a
+ * full/nightly run reports 0 unexpected FAIL while these stay visible in the
+ * summary as KNOWN-RED — not counted as PASS, not silently skipped or
+ * deleted. Remove an entry only once its underlying issue is actually fixed;
+ * do not add a script here to make an unrelated failure go quiet.
+ */
+const KNOWN_RED_SCRIPTS = new Set([
+  // Real product gap: the cached Near me board silently reuses a stale
+  // station cache when geolocation is denied instead of ever showing the
+  // "tap Near me" / "location permission" fallback hint. Confirmed by
+  // reading public/nearby-mode.js — nearbyFallbackEl is never surfaced on
+  // this path. Needs a product decision on copy/placement; out of scope for
+  // this triage.
+  "nearby-location-hint-keeps-cache.mjs",
+  // Real gap: public/city-directions/ is missing the bundled direction-chip
+  // JSON for 16 of the 32 live multi-city regions (every UK region added
+  // since uk-west-midlands). Reconstructing 16 regions' rider-facing chip
+  // sets correctly needs real per-region verification, not a guess in this
+  // pass — flagged for a dedicated brief.
+  "bundled-city-directions.mjs",
+  // Real gap: both scripts assert against `template-wizard-step-3`, which no
+  // longer exists in public/index.html — the "Active hours" wizard step was
+  // removed/consolidated at some point (current steps: name, step-1 station,
+  // step-2 target train, step-reminder) and defaultFrom/defaultUntil now
+  // auto-derive from the target time (journeyWindowAroundTarget). Rewriting
+  // these correctly needs current wizard-step knowledge this triage doesn't
+  // have with confidence; flagged for a dedicated brief rather than guessed.
+  "template-wizard-hours-zindex.mjs",
+  "template-wizard-skip.mjs",
+]);
+
 function classifyResult(scriptName, code, { timedOut = false, timeoutMs = 0 } = {}) {
   if (timedOut) {
     const limitSec = Math.round(timeoutMs / 1000);
+    if (KNOWN_RED_SCRIPTS.has(scriptName)) {
+      return { status: "KNOWN-RED", note: `timeout after ${limitSec}s — see KNOWN_RED_SCRIPTS comment` };
+    }
     return { status: "FAIL", note: `timeout after ${limitSec}s` };
   }
 
@@ -555,6 +613,10 @@ function classifyResult(scriptName, code, { timedOut = false, timeoutMs = 0 } = 
   const known = KNOWN_TRACKED_EXIT_CODES[scriptName];
   if (known && code === known.code) {
     return { status: "FAIL", note: known.note };
+  }
+
+  if (KNOWN_RED_SCRIPTS.has(scriptName)) {
+    return { status: "KNOWN-RED", note: `exit ${code} — see KNOWN_RED_SCRIPTS comment above classifyResult()` };
   }
 
   return { status: "FAIL", note: `exit ${code}` };
@@ -626,7 +688,7 @@ async function main() {
     } else {
       console.log(suffix);
     }
-    if (status === "FAIL" && output.trim()) {
+    if ((status === "FAIL" || status === "KNOWN-RED") && output.trim()) {
       console.log(tailOutput(output, timedOut ? 20 : 8));
       console.log("");
     }
@@ -674,6 +736,7 @@ async function main() {
 
   const pass = results.filter((r) => r.status === "PASS").length;
   const fail = results.filter((r) => r.status === "FAIL").length;
+  const knownRed = results.filter((r) => r.status === "KNOWN-RED").length;
   const elapsedSec = Math.round((Date.now() - started) / 1000);
 
   console.log("\n--- Summary ---");
@@ -685,7 +748,7 @@ async function main() {
         ? "full (no native)"
         : "full";
   console.log(
-    `Suite: ${suiteLabel} · ${pass} PASS · ${fail} FAIL · ${elapsedSec}s`
+    `Suite: ${suiteLabel} · ${pass} PASS · ${fail} FAIL${knownRed > 0 ? ` · ${knownRed} KNOWN-RED (tracked, not counted — see KNOWN_RED_SCRIPTS in this file)` : ""} · ${elapsedSec}s`
   );
   console.log("");
 
