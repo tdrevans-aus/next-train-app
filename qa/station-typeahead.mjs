@@ -71,8 +71,14 @@ async function run() {
   await page.locator("#detail-station-input").click();
   await page.waitForTimeout(200);
 
-  const browseWithoutKeyboard = await page.evaluate(() => {
-    const active = document.activeElement;
+  // docs/jim-brief-country-wide-station-picker.md #2 (deliberate change): for
+  // the journey-detail picker specifically, openBrowse() now calls
+  // enterSearchMode() straight away — search is the primary interaction for
+  // this combobox, so the first tap opens directly into search mode
+  // (keyboard up) rather than an intermediate browse-only list. The Near me
+  // picker below is a different combobox instance (isDetailPicker: false)
+  // and keeps the old browse-first behaviour, still asserted further down.
+  const searchModeOnFirstTap = await page.evaluate(() => {
     const searchInput = document.querySelector(
       "#detail-station-combobox .station-combobox-search-input"
     );
@@ -82,13 +88,13 @@ async function run() {
       ?.classList.contains("station-picker-open");
     const listOpen =
       document.querySelectorAll("#detail-station-listbox .station-combobox-option").length > 0;
-    return listOpen && !searchVisible && footerHidden;
+    return listOpen && searchVisible && footerHidden;
   });
 
-  if (browseWithoutKeyboard) {
-    console.log("PASS — first tap opens browse list without keyboard");
+  if (searchModeOnFirstTap) {
+    console.log("PASS — first tap on the detail picker opens straight into search mode");
   } else {
-    console.error("FAIL — browse list / footer / keyboard state wrong on first tap");
+    console.error("FAIL — search list / footer / keyboard state wrong on first tap");
     process.exitCode = 1;
   }
 
