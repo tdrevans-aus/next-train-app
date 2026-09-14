@@ -28,12 +28,60 @@ function loadDirections(city) {
   return JSON.parse(readFileSync(file, "utf8"));
 }
 
+const DISAMBIGUATION_SUFFIX = /\s*\([^)]*\)\s*$/;
+
+/**
+ * Fold case/accents/whitespace for comparison. A separate helper strips the
+ * trailing disambiguation suffix — kept apart so plain (non-disambiguated)
+ * multi-word names are never suffix-matched against each other (e.g.
+ * "Springfield Central" must not be flagged as a self-reference chip for a
+ * station plainly named "Central" — that's a real, different terminus, not
+ * the same physical stop under a disambiguated catalog name).
+ */
+function foldKeyForBundleCheck(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .trim();
+}
+
+function stripDisambiguation(value) {
+  return String(value ?? "").replace(DISAMBIGUATION_SUFFIX, "").trim();
+}
+
 for (const city of MULTI_CITY_IDS) {
   const pack = loadDirections(city);
   const names = Object.keys(pack);
   assert(names.length > 0, `${city} bundled directions must include at least one station`);
   const first = pack[names[0]];
   assert(Array.isArray(first) && first.length > 0, `${city} ${names[0]} must have chips`);
+
+  // No station's own chip set may name itself as a destination (FB — London
+  // TfL Richmond/Richmond (London) self-reference, 15 Sep 2026): compare by
+  // canonical identity, not raw string equality, so a catalog-disambiguated
+  // stop still matches its own line's terminus string. Scoped to stations
+  // whose catalog name carries a disambiguation suffix — this is exactly the
+  // bug pattern (a stop's own un-suffixed base name appearing verbatim as a
+  // chip's trailing word(s)); plain multi-word names are never suffix-matched
+  // against each other, so a real different terminus that merely shares a
+  // last word (e.g. "Springfield Central" vs a station named "Central")
+  // never false-positives.
+  for (const station of names) {
+    if (!DISAMBIGUATION_SUFFIX.test(station)) {
+      continue;
+    }
+    const baseKey = foldKeyForBundleCheck(stripDisambiguation(station));
+    for (const chip of pack[station]) {
+      const chipKey = foldKeyForBundleCheck(chip);
+      const namesSelf = chipKey === baseKey || chipKey.endsWith(` ${baseKey}`);
+      assert(
+        !namesSelf,
+        `${city} station "${station}" must not offer a chip towards itself (found "${chip}")`
+      );
+    }
+  }
 }
 
 const amsterdam = loadDirections("amsterdam");
