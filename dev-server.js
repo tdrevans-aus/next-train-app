@@ -231,8 +231,21 @@ app.get("/api/directions", async (req, res) => {
       });
       return;
     }
-    const pack = await getMultiCityDirections(req.query.city, station);
-    res.json({ directions: pack.directions, source: pack.source });
+    // Was unguarded (docs/jim-brief-nightly-qa-red.md, 14 Sep 2026): a thrown
+    // MissingDarwinTokenError here (no DARWIN_LDB_TOKEN set, e.g. greater-manchester
+    // locally/in CI) was an uncaught exception with no process-level handler
+    // registered, crashing this whole shared dev-server process mid-suite —
+    // the actual root cause of ~15 unrelated nightly "FAIL"s that were really
+    // every script queued after whichever one first hit this endpoint. The
+    // real production route (api/directions.js) already wraps this same call
+    // in try/catch; this mirrors that.
+    try {
+      const pack = await getMultiCityDirections(req.query.city, station);
+      res.json({ directions: pack.directions, source: pack.source });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message ?? "Failed to fetch directions" });
+    }
     return;
   }
 
@@ -283,8 +296,17 @@ app.get("/api/destinations", async (req, res) => {
       });
       return;
     }
-    const pack = await getMultiCityDirections(req.query.city, station);
-    res.json({ destinations: pack.directions, source: pack.source });
+    // Same unguarded-throw bug as /api/directions above (docs/jim-brief-nightly-qa-red.md,
+    // 14 Sep 2026) — a rejected getMultiCityDirections() here crashed the
+    // whole shared dev-server process with no try/catch. Mirrors
+    // api/destinations.js's own handling of this same call.
+    try {
+      const pack = await getMultiCityDirections(req.query.city, station);
+      res.json({ destinations: pack.directions, source: pack.source });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message ?? "Failed to fetch destinations" });
+    }
     return;
   }
 
