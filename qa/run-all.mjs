@@ -88,6 +88,7 @@ const SMOKE_SCRIPTS = [
   "auckland-dogfood-gate.mjs",
   "region-selection.mjs",
   "live-city-lists-sync.mjs",
+  "country-regions-sync-gate.mjs",
   "coverage-notes-gate.mjs",
   "bundle-freshness.mjs",
   "help-coverage-entry.mjs",
@@ -310,6 +311,8 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "gtfs-live-blob-snapshot-integrity.mjs",
   /** Registry vs. the six live-city list copies (docs/live-flip-checklist.md). */
   "live-city-lists-sync.mjs",
+  /** country-regions.js vs. the picker's COUNTRIES table (docs/jim-brief-country-regions-sync.md). */
+  "country-regions-sync-gate.mjs",
   /** Offline UK catalog checks. */
   "uk-region-catalog-conformance.mjs",
   "uk-catalog-coords-gate.mjs",
