@@ -403,5 +403,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "southwest-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, 89 rail-only stations, no doNotGroup at EXD/PLY/PNZ, no hub configured (helper degrades to no-op), Night Riviera Sleeper out-reservation exclusion enforced per-station, directions derived live from Darwin with no static line map, routing table (exact/undirected) proven token-free, Perth Australia stays green)"
+  `southwest-dogfood-gate: ok (live, isMultiCity true, dispatch switch-cases wired, D1 pack, ${allStations.length} rail-only stations, no doNotGroup at EXD/PLY/PNZ, no hub configured (helper degrades to no-op), Night Riviera Sleeper out-reservation exclusion enforced per-station, directions derived live from Darwin with no static line map, routing table (exact/undirected) proven token-free, Perth Australia stays green)`
 );

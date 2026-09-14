@@ -469,5 +469,9 @@ if (previous === undefined) {
 }
 
 console.log(
-  "thames-valley-dogfood-gate: ok (still planned/adapterReady, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired ahead of flip, D1 pack, Board eligibility all-in, 8 rail-only boards, hub+secondary-hub with Oxford internal doNotGroup (GWR+CrossCountry board vs Chiltern board, live CrossCountry discovery 5 Sep 2026), WSB boundary resolves flat, catalog CRS sweep, directions derived live from Darwin with no static line map, no direction-hubs.json shipped (three brief-named candidates probed and rejected on filtered-board evidence), routing table (exact/undirected; hub branch inert with zero configured hubs) proven token-free, Perth stays green)"
+  // Was a stale literal "8 rail-only boards" (predated UK station fill
+  // phase 2a's growth of this catalog); now derived from the same
+  // allStations.length the gate already asserts on above so it can't go
+  // stale again (docs/jim-brief-no-live-feed-stops-flake.md addendum).
+  `thames-valley-dogfood-gate: ok (still planned/adapterReady, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired ahead of flip, D1 pack, Board eligibility all-in, ${allStations.length} rail-only stations, hub+secondary-hub with Oxford internal doNotGroup (GWR+CrossCountry board vs Chiltern board, live CrossCountry discovery 5 Sep 2026), WSB boundary resolves flat, catalog CRS sweep, directions derived live from Darwin with no static line map, no direction-hubs.json shipped (three brief-named candidates probed and rejected on filtered-board evidence), routing table (exact/undirected; hub branch inert with zero configured hubs) proven token-free, Perth stays green)`
 );
