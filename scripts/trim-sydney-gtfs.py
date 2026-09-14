@@ -10,9 +10,22 @@ import zipfile
 from datetime import date
 from pathlib import Path
 
+# KNOWN GAP (14 Sep 2026, docs/jim-brief-sydney-intercity-fill.md): this script only ever
+# took one input zip (the sydneytrains static feed). It does not merge the separate
+# nswtrains feed (v1/gtfs/schedule/nswtrains), so the BMT/CCN/SCO/SHL/HUN routes added to
+# lib/providers/sydney.js and the catalog in that brief are NOT in the Blob-published
+# gtfs/sydney.zip that lib/cities/sydney/dogfood-next-train.js's boardFromFixture() reads on
+# Vercel (process.env.VERCEL === "1") — that is the actual production board path, not
+# fetchStationBoard()'s live TfNSW call. Making the intercity fill visible in production
+# needs: (1) a real nswtrains zip (requires TFNSW_API_KEY, not present in the build
+# environment this session ran in), (2) extending this script (or a new sibling) to merge it
+# in, keeping BMT/CCN/SCO/SHL/HUN and excluding NSWTRAINS_EXCLUDED_ROUTE_SHORT_NAMES from
+# lib/providers/sydney.js, and (3) republishing via
+# scripts/publish-gtfs-fixture-to-blob.mjs sydney --allow-live. Flagged rather than guessed
+# at blind — this session had no zip to test a merge against.
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "qa" / "fixtures" / "sydney" / "gtfs"
-KEEP_SHORT = {f"T{i}" for i in range(1, 10)} | {"M1"}
+KEEP_SHORT = {f"T{i}" for i in range(1, 10)} | {"M1", "BMT", "CCN", "SCO", "SHL", "HUN"}
 
 # Explicit column allow-lists — only fields actually read anywhere in
 # lib/, scripts/, or qa/ (see docs/jim-brief-gtfs-fixture-diet.md). Keeps
