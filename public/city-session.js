@@ -7,6 +7,15 @@
   const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
+  // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
+  // stamps on every write, independent of the regionExplicit value itself, so
+  // migrateLegacyRegionExplicit() below can tell "this store has been through
+  // post-fix persistRegion() at least once" apart from "genuinely predates
+  // #383 (or is a bug-affected store from before this fix shipped)" without
+  // relying on the very flag that was the bug. Not the same counter as
+  // journey-model.js's SETTINGS_SCHEMA_VERSION, which triggers a destructive
+  // one-time journey reset when bumped — this one is inert.
+  const REGION_EXPLICIT_SCHEMA_VERSION = 1;
 
   const COUNTRIES = [
     {
@@ -348,6 +357,19 @@
   // Stockholm/etc. pick back to "All" on first open after the upgrade
   // (docs/jim-brief-country-wide-station-picker.md Round 2, Mark FAIL #1).
   // Runs once: after it writes the flag, the key exists and this is a no-op.
+  //
+  // Gated on REGION_EXPLICIT_SCHEMA_VERSION as well as the flag's presence
+  // (docs/jim-brief-region-explicit-false-dropped.md): a store that has been
+  // through post-fix persistRegion() at least once always carries the
+  // schema-version marker, whether regionExplicit is true or false, so a
+  // store missing the flag but carrying the marker is a real `false` — never
+  // treated as a legacy upgrade again. A store with neither the flag nor the
+  // marker is either a genuine pre-#383 legacy install, or (until every
+  // device has reloaded once since this fix shipped) an already-affected
+  // store from the dropped-`false` bug — those two are indistinguishable
+  // from what's on disk, so this still treats them as legacy, same as
+  // before. That known gap is deliberate, not an oversight: see the PR
+  // description for why it can't be resolved without guessing.
   function migrateLegacyRegionExplicit() {
     if (legacyRegionExplicitMigrated) {
       return;
@@ -355,19 +377,40 @@
     legacyRegionExplicitMigrated = true;
     const store = readStore();
     const hasFlag = Object.prototype.hasOwnProperty.call(store, "regionExplicit");
+    const hasSchemaMarker = Object.prototype.hasOwnProperty.call(
+      store,
+      "regionExplicitSchemaVersion"
+    );
     const savedCity = String(store.savedCity || "").trim();
-    if (!hasFlag && savedCity) {
-      persistRegion({ city: savedCity, country: store.savedCountry, explicit: true });
+    if (!hasFlag && !hasSchemaMarker && savedCity) {
+      persistRegion({
+        city: savedCity,
+        country: store.savedCountry,
+        explicit: true,
+        source: "migration",
+      });
     }
   }
 
-  function persistRegion({ city, country, explicit }) {
+  function persistRegion({ city, country, explicit, source }) {
     const patch = {
       savedCity: city,
       savedCountry: country || regionById(city)?.country.id || "au",
+      // Written on every persist, independent of `explicit`'s value, so its
+      // mere presence proves "this store has been through post-fix
+      // persistRegion() at least once" (see the constant's own comment).
+      regionExplicitSchemaVersion: REGION_EXPLICIT_SCHEMA_VERSION,
     };
     if (explicit !== undefined) {
       patch.regionExplicit = Boolean(explicit);
+      // Only meaningful when explicit is true — who set it, a rider's own
+      // pick or the legacy-upgrade migration above. Used to repair riders
+      // affected by a future recurrence of this same bug; today's already-
+      // affected riders predate this field, so it can't repair them (PR
+      // description).
+      if (explicit) {
+        patch.regionExplicitSource = source === "migration" ? "migration" : "picker";
+      }
     }
     const persist = window.nextTrainJourneyModel?.persistSettings;
     if (typeof persist === "function") {
