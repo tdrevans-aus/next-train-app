@@ -4,7 +4,7 @@
  */
 (function () {
   const STORAGE_KEY = "nextTrainDogfoodOrigin";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   const state = {
@@ -16,7 +16,7 @@
     directionsByStation: {},
     modesByName: {},
     liveFeedByName: {},
-    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, canberra: true, "gold-coast": true, newcastle: true, stockholm: true, goteborg: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true, solent: true, "south-wales": true, "west-yorkshire": true, "thames-valley": true, "greater-anglia": true, "rest-of-wales": true, "rest-of-scotland": true, "london-se-national-rail": true, "southwest": true, "greater-manchester": true, "south-yorkshire": true, "north-east": true, glasgow: true, "edinburgh": true, "cumbria": true },
+    available: { sydney: true, brisbane: true, adelaide: true, "uk-london-tfl": true, canberra: true, "gold-coast": true, newcastle: true, stockholm: true, goteborg: true, malmo: true, uppsala: true, helsinki: true, oslo: true, "uk-west-midlands": true, "west-of-england": true, "east-midlands": true, "liverpool-city-region": true, solent: true, "south-wales": true, "west-yorkshire": true, "thames-valley": true, "greater-anglia": true, "rest-of-wales": true, "rest-of-scotland": true, "london-se-national-rail": true, "southwest": true, "greater-manchester": true, "south-yorkshire": true, "north-east": true, glasgow: true, "edinburgh": true, "cumbria": true, "rest-of-england": true },
   };
 
   async function isDebugNative() {

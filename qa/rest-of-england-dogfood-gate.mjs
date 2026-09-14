@@ -1,15 +1,11 @@
 /**
  * Rest of England adapter/dispatch wiring gate. New region, UK station fill
- * phase 2b (14 Sep 2026, docs/jim-brief-uk-station-fill-phase2b.md). Rest
- * of England STAYS `status: "planned"` here — this is the pre-flip dogfood
- * wiring pass, same "safe ahead of the flip" property as every other UK
- * region: production routes gate on assertCityLive() first, not on
- * MULTI_CITY_IDS membership. Rest of England is deliberately NOT added to
- * MULTI_CITY_IDS, brisbane-dogfood.js's mount/available map, or
- * journey-model.js's persisted-city/country lists here — those three
- * list-membership edits are Mark's flip commit, not this one
- * (qa/live-city-lists-sync.mjs enforces that they equal the registry's
- * live set).
+ * phase 2b (14 Sep 2026, docs/jim-brief-uk-station-fill-phase2b.md).
+ * FLIPPED LIVE by Mark's flip commit: registry status is now "live", and
+ * rest-of-england is in MULTI_CITY_IDS, brisbane-dogfood.js's mount/
+ * available map, and journey-model.js's persisted-city list (the same
+ * list-membership edits qa/live-city-lists-sync.mjs enforces against the
+ * registry's live set).
  *
  * NO D1 PACK: unlike every other UK region, Rest of England was not built
  * from a Nico oracle report / Luke hazard-pack pipeline. It is an internal
@@ -76,12 +72,12 @@ function assert(condition, message) {
 const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 
-// Registry identity — STAYS planned here (Mark/Tim's flip call).
+// Registry identity — flipped live by Mark's flip commit.
 const live = assertCityLive("rest-of-england");
-assert(live?.ok === false, "assertCityLive(rest-of-england) must fail — status stays planned");
+assert(live?.ok === true, "assertCityLive(rest-of-england) must pass — status is now live");
 
 const entry = getCity("rest-of-england");
-assert(entry?.status === "planned", "rest-of-england registry status must stay planned");
+assert(entry?.status === "live", "rest-of-england registry status must be live");
 assert(entry?.adapterReady === true, "rest-of-england adapterReady must be true");
 assert(entry?.displayName === "Rest of England", "rest-of-england display name must be Rest of England");
 assert(entry?.timeZone === "Europe/London", "rest-of-england timezone must be Europe/London");
@@ -93,8 +89,8 @@ for (const forbiddenId of ["england", "uk-england", "rest-england", "rest-of-uk"
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// Dispatch switch-cases are wired ahead of the flip; MULTI_CITY_IDS membership is not.
-assert(isMultiCity("rest-of-england") === false, "rest-of-england must NOT be in MULTI_CITY_IDS yet (Mark's flip commit)");
+// Dispatch switch-cases were wired ahead of the flip; MULTI_CITY_IDS membership added by the flip commit.
+assert(isMultiCity("rest-of-england") === true, "rest-of-england is now in MULTI_CITY_IDS");
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(REST_OF_ENGLAND_REGION);
@@ -340,5 +336,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "rest-of-england-dogfood-gate: ok (still planned/adapterReady, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired ahead of flip, no D1 pack (built directly from docs/uk-station-fill/unassigned-england.md), 436 rail-only stations, no hub lock/no corridor grouping, nine held-back stations confirmed absent (Altrincham/Eccles/Manchester Airport/Rochdale/Brockley Whins/East Boldon/Heworth/Manors/Seaburn), no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, five-station spread live probe (Adisham/Bournemouth/Workington/York/Barnetby), routing table (exact/undirected) proven token-free, Perth stays green)"
+  "rest-of-england-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, no D1 pack (built directly from docs/uk-station-fill/unassigned-england.md), 436 rail-only stations, no hub lock/no corridor grouping, nine held-back stations confirmed absent (Altrincham/Eccles/Manchester Airport/Rochdale/Brockley Whins/East Boldon/Heworth/Manors/Seaburn), no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, five-station spread live probe (Adisham/Bournemouth/Workington/York/Barnetby), routing table (exact/undirected) proven token-free, Perth stays green)"
 );
