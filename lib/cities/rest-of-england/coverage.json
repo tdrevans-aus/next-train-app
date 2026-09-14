@@ -1,0 +1,19 @@
+{
+  "region": "rest-of-england",
+  "updated": "2026-09-14",
+  "covered": [
+    {
+      "label": "National Rail",
+      "detail": "436 English National Rail stations left without a home by UK station fill phase 2a's fifteen named regions, from the UK's national real-time feed."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Buses",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "436 stations: every Darwin-verified English National Rail station with no home region as of UK station fill phase 2a (14 Sep 2026 UK station fill, phase 2b).",
+  "notes": "This is an internal catch-all region, not a place a rider picks by name — the country-wide station picker searches across every region including this one."
+}

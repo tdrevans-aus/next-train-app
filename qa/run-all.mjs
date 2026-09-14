@@ -146,6 +146,7 @@ const SMOKE_SCRIPTS = [
   "feed-unconfirmed-rider-copy.mjs",
   "no-live-feed-stops-gate.mjs",
   "cumbria-dogfood-gate.mjs",
+  "rest-of-england-dogfood-gate.mjs",
   "liverpool-city-region-dogfood-gate.mjs",
   "southwest-dogfood-gate.mjs",
   "uk-darwin-cache.mjs",

@@ -64,7 +64,14 @@ async function callBoard(query) {
 // FeedUnconfirmedError/FeedUnverifiedError subclass must surface through
 // api/board.js as 503 FEED_UNCONFIRMED with server-built rider copy.
 const FEED_UNCONFIRMED_CASES = [
-  { city: "greater-manchester", station: "Altrincham", agency: "Manchester Metrolink" },
+  // Changed from "Altrincham" to "St Peter's Square" (UK station fill phase 2b,
+  // 14 Sep 2026): Altrincham now also has a real, walk-up National Rail entry of
+  // its own (same printed name, doNotGroup — see
+  // lib/cities/greater-manchester/marketing-directions.js DO_NOT_GROUP_PAIRS), so
+  // addressing "Altrincham" directly by name no longer unambiguously resolves to
+  // the Metrolink-only stop this gate is testing. St Peter's Square has no
+  // same-name National Rail collision.
+  { city: "greater-manchester", station: "St Peter's Square", agency: "Manchester Metrolink" },
   // Renamed from "Beeston/Chilwell" (docs/jim-brief-net-toton-lane-and-stockport-tram.md,
   // 7 Sep 2026) — that was NET's own label for the branch, not a real stop name.
   { city: "east-midlands", station: "Toton Lane", agency: "Nottingham Express Transit (NET)" },

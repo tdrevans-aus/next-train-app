@@ -127,7 +127,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(GREATER_MANCHESTER_REGION);
-assert(region?.railCount === 47, `greater-manchester rail count must be 47 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
+assert(region?.railCount === 51, `greater-manchester rail count must be 51 (UK station fill phase 2b, 14 Sep 2026), got ${region?.railCount}`);
 assert(region?.metroCount === 14, `greater-manchester metro count must be 14, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -167,7 +167,7 @@ assert(!metroNames.has("Stockport (tram stop)"), "Metrolink catalog must not car
 assert(metroStops.length === 14, `Metrolink catalog must have exactly 14 stops, got ${metroStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 61, `combined catalog must have 61 stations (47 rail + 14 metro, UK station fill phase 2a), got ${allStations.length}`);
+assert(allStations.length === 65, `combined catalog must have 65 stations (51 rail + 14 metro, UK station fill phase 2b), got ${allStations.length}`);
 
 // doNotGroup — Manchester Victoria resolves as two distinct catalog entries by mode.
 const victoriaRail = resolveCatalogEntry(GREATER_MANCHESTER_NR_SECONDARY_HUB, "train");
@@ -268,7 +268,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Manchester Victoria's doNotGroup lock needs it to disambiguate).
 const dogfoodStations = listGreaterManchesterDogfoodStations();
-assert(dogfoodStations.length === 61, `dogfood stations must be the 61 catalog entries (47 rail + 14 metro, UK station fill phase 2a), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 65, `dogfood stations must be the 65 catalog entries (51 rail + 14 metro, UK station fill phase 2b), got ${dogfoodStations.length}`);
 const victoriaEntries = dogfoodStations.filter((s) => s.name === GREATER_MANCHESTER_NR_SECONDARY_HUB);
 assert(victoriaEntries.length === 2, "Manchester Victoria must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(
@@ -483,9 +483,17 @@ assertNoLiveFeedStopsExcluded({
   listMultiCityStations,
   findNearestStation,
   assert,
-  sample: { name: "Altrincham", lat: 53.38809, lng: -2.347193 },
+  // Sample changed from Altrincham to St Peter's Square (UK station fill phase 2b,
+  // 14 Sep 2026): Altrincham, Eccles, Manchester Airport and Rochdale are now also real,
+  // walk-up National Rail stations (mode: train, liveFeed live) added at the SAME printed
+  // name — see lib/cities/greater-manchester/marketing-directions.js DO_NOT_GROUP_PAIRS —
+  // so findNearestStation correctly nominating "Altrincham" at that coordinate is no longer
+  // a no-live-feed-stop leak, it's the genuine walk-up National Rail station. St Peter's
+  // Square has no same-name National Rail collision, so it stays a clean test of the
+  // liveFeed: false exclusion.
+  sample: { name: "St Peter's Square", lat: 53.47844, lng: -2.2429 },
 });
 
 console.log(
-  "greater-manchester-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 4 rail + 14 Metrolink stations, doNotGroup at Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, all 14 Metrolink stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
+  "greater-manchester-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack, 51 rail + 14 Metrolink stations, doNotGroup at Altrincham/Eccles/Manchester Airport/Rochdale (UK station fill phase 2b) and Manchester Victoria and Manchester Piccadilly/Piccadilly Gardens, WDN Walsden CRS carried without adopting West Yorkshire's WAD, National Rail directions derived live from Darwin with no static line map, exact-chip routing table (exact/undirected) proven token-free with the national rail-crs-index fallback for out-of-region termini, Metrolink dispatch correctly surfaces MetrolinkFeedUnconfirmedError rather than the static label list, all 14 Metrolink stops flagged liveFeed: false and excluded from the picker/Near me, Perth Australia stays green)"
 );
