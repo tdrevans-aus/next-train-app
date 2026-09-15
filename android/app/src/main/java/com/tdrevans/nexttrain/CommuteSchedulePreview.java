@@ -10,6 +10,12 @@ public final class CommuteSchedulePreview {
 
   static final int DEGRADED_CLOCK_MINUTES_PAST = 20;
   public static final String DEGRADED_SECONDARY = "Open app";
+  /**
+   * A fetch that never produced any data (no payload, no cached departure to fall back to —
+   * e.g. an unroutable station, or a wrong/omitted city). Distinct copy from
+   * {@link #DEGRADED_SECONDARY} because there is no old train time to keep showing.
+   */
+  public static final String FETCH_FAILED_SECONDARY = "Couldn't update — tap to open";
 
   private CommuteSchedulePreview() {}
 
@@ -152,7 +158,19 @@ public final class CommuteSchedulePreview {
     return snapshot;
   }
 
-  static JSONObject loadingState(JSONObject journey) throws Exception {
+  /**
+   * A fetch that produced no payload and no trip at all — either the very first fetch for a
+   * newly pinned route, or every fetch since (an exception every time). {@code failedSinceMs}
+   * (0 on a brand-new pin) stamps {@code updatingSinceMs} so {@link CommuteScheduleSnapshot
+   * #repaintSnapshot} and the next scheduled refresh can time this out of "Updating…" into a
+   * clear error face instead of repainting the bare dots forever (FB widget-stuck-updating,
+   * 15 Sep 2026 — previously this state had no departureIso and no updatingSinceMs, so nothing
+   * ever advanced it).
+   */
+  static JSONObject fetchFailedState(JSONObject journey, long failedSinceMs) throws Exception {
+    long since = failedSinceMs > 0L ? failedSinceMs : System.currentTimeMillis();
+    long elapsed = System.currentTimeMillis() - since;
+
     JSONObject snapshot = new JSONObject();
     snapshot.put("empty", false);
     if (journey != null) {
@@ -161,13 +179,23 @@ public final class CommuteSchedulePreview {
       snapshot.put("stationLabel", WidgetDataService.formatRoute(journey));
     }
     snapshot.put("label", "NEXT TRAIN");
-    snapshot.put("primary", "…");
     snapshot.put("trainClock", "");
-    snapshot.put("secondary", "");
-    snapshot.put("updatedLine", "");
+    snapshot.put("departureIso", "");
+    snapshot.put("updatingSinceMs", since);
+    snapshot.put("staleWhileFetching", false);
     snapshot.put("stale", false);
     snapshot.put("urgent", false);
     snapshot.put("late", false);
+
+    if (elapsed >= CommuteSchedule.UPDATING_TIMEOUT_MS) {
+      snapshot.put("primary", "Open");
+      snapshot.put("secondary", FETCH_FAILED_SECONDARY);
+      snapshot.put("updatedLine", "Couldn't update");
+    } else {
+      snapshot.put("primary", "Updating…");
+      snapshot.put("secondary", "Fetching next train…");
+      snapshot.put("updatedLine", "");
+    }
     return snapshot;
   }
 

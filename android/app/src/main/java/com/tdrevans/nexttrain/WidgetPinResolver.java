@@ -59,7 +59,8 @@ public final class WidgetPinResolver {
       NextTrainApiClient.fetchNextTrain(
         pin.optString("station", ""),
         pin.optString("direction", ""),
-        leaveBefore
+        leaveBefore,
+        pin.optString("cityId", "")
       );
 
     String departureIso = pin.optString("departureIso", "");
@@ -91,7 +92,8 @@ public final class WidgetPinResolver {
       NextTrainApiClient.fetchNextTrain(
         journey.optString("station", ""),
         journey.optString("direction", ""),
-        leaveBefore
+        leaveBefore,
+        journey.optString("cityId", "")
       );
     JSONObject trip = JourneyPinHelper.resolvePinnedTrip(payload, journey);
     if (trip == null) {

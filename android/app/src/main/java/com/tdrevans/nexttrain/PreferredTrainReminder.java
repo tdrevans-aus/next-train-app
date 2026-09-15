@@ -26,21 +26,40 @@ public final class PreferredTrainReminder {
     public final int dayOfWeekIso;
     public final String localDateKey;
     public final boolean leaveNowFiredToday;
+    public final java.time.ZoneId zone;
 
     public ScheduleClock(long nowMs, int dayOfWeekIso, String localDateKey, boolean leaveNowFiredToday) {
+      this(nowMs, dayOfWeekIso, localDateKey, leaveNowFiredToday, CityTimeZones.zoneFor(null));
+    }
+
+    public ScheduleClock(
+      long nowMs,
+      int dayOfWeekIso,
+      String localDateKey,
+      boolean leaveNowFiredToday,
+      java.time.ZoneId zone
+    ) {
       this.nowMs = nowMs;
       this.dayOfWeekIso = dayOfWeekIso;
       this.localDateKey = localDateKey;
       this.leaveNowFiredToday = leaveNowFiredToday;
+      this.zone = zone != null ? zone : CityTimeZones.zoneFor(null);
     }
 
     public static ScheduleClock live(Context context, String journeyId) {
-      String localDate = PerthTime.localDateKey();
+      return live(context, journeyId, CityTimeZones.zoneFor(null));
+    }
+
+    /** Zone-aware variant — pass the pinned journey's own city zone (FB 15 Sep 2026). */
+    public static ScheduleClock live(Context context, String journeyId, java.time.ZoneId zone) {
+      long nowMs = System.currentTimeMillis();
+      String localDate = PerthTime.localDateKey(nowMs, zone);
       return new ScheduleClock(
-        System.currentTimeMillis(),
-        PerthTime.dayOfWeekIso(),
+        nowMs,
+        PerthTime.dayOfWeekIso(nowMs, zone),
         localDate,
-        LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, journeyId, localDate)
+        LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, journeyId, localDate),
+        zone
       );
     }
 
@@ -49,11 +68,18 @@ public final class PreferredTrainReminder {
      * (toggle/save after leave-by) must still resolve the upcoming preferred train.
      */
     public static ScheduleClock liveForStrip(Context context) {
+      return liveForStrip(context, CityTimeZones.zoneFor(null));
+    }
+
+    /** Zone-aware variant — pass the strip's own city zone (FB 15 Sep 2026). */
+    public static ScheduleClock liveForStrip(Context context, java.time.ZoneId zone) {
+      long nowMs = System.currentTimeMillis();
       return new ScheduleClock(
-        System.currentTimeMillis(),
-        PerthTime.dayOfWeekIso(),
-        PerthTime.localDateKey(),
-        false
+        nowMs,
+        PerthTime.dayOfWeekIso(nowMs, zone),
+        PerthTime.localDateKey(nowMs, zone),
+        false,
+        zone
       );
     }
   }
@@ -67,7 +93,8 @@ public final class PreferredTrainReminder {
     boolean stale
   ) throws Exception {
     String journeyId = journey != null ? journey.optString("id", "") : "";
-    return computeForJourney(journey, payload, stale, ScheduleClock.live(context, journeyId));
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey != null ? journey.optString("cityId", "") : "");
+    return computeForJourney(journey, payload, stale, ScheduleClock.live(context, journeyId, zone));
   }
 
   public static Target computeForJourney(
@@ -140,7 +167,7 @@ public final class PreferredTrainReminder {
     Target target = new Target();
     target.journeyId = journeyId;
     target.route = WidgetDataService.formatRoute(journey);
-    target.trainTime = trip.optString("displayTime", PerthTime.formatClockFromIso(departureIso));
+    target.trainTime = trip.optString("displayTime", PerthTime.formatClockFromIso(departureIso, clock.zone));
     target.departureIso = departureIso;
     target.dayKey = journeyId + ":" + clock.localDateKey;
     target.departureKey = journeyId + ":" + departureIso;

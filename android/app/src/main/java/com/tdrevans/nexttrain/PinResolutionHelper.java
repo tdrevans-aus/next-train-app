@@ -13,10 +13,17 @@ public final class PinResolutionHelper {
   public static final class Clock {
     public final long nowMs;
     public final String perthDateKey;
+    public final java.time.ZoneId zone;
 
+    /** Defaults to Australia/Perth for callers that haven't been updated to a city zone yet. */
     public Clock(long nowMs, String perthDateKey) {
+      this(nowMs, perthDateKey, CityTimeZones.zoneFor(null));
+    }
+
+    public Clock(long nowMs, String perthDateKey, java.time.ZoneId zone) {
       this.nowMs = nowMs;
       this.perthDateKey = perthDateKey;
+      this.zone = zone != null ? zone : CityTimeZones.zoneFor(null);
     }
   }
 
@@ -77,7 +84,7 @@ public final class PinResolutionHelper {
         : null;
     JSONObject journeyClean =
       "journey".equals(mode) ? sanitizeJourneyPinFields(journey, clock) : null;
-    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs, clock.zone);
     boolean insideActiveWindow =
       "journey".equals(mode)
         && journeyClean != null
@@ -118,7 +125,7 @@ public final class PinResolutionHelper {
     boolean preferredTargetIsToday =
       preferredTargetDeparture != null
         && clock.perthDateKey.equals(
-          localDateKeyFromEpochMs(PerthTime.epochMillisFromIso(preferredTargetDeparture))
+          localDateKeyFromEpochMs(PerthTime.epochMillisFromIso(preferredTargetDeparture), clock.zone)
         );
     boolean dismissalHidesTarget = result.isPinDismissedToday && preferredTargetIsToday;
 
@@ -266,7 +273,7 @@ public final class PinResolutionHelper {
       return null;
     }
 
-    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs, clock.zone);
     if (!matchesHoursWindow(journeyClean, nowMinutes)) {
       if (isOvernightActiveWindow(journeyClean)) {
         return resolveDepartedJourneyTargetDepartureIgnoringDismiss(payload, journeyClean, clock);
@@ -361,7 +368,7 @@ public final class PinResolutionHelper {
       return null;
     }
 
-    if (!matchesHoursWindow(journeyClean, PerthTime.minutesSinceMidnight(clock.nowMs))) {
+    if (!matchesHoursWindow(journeyClean, PerthTime.minutesSinceMidnight(clock.nowMs, clock.zone))) {
       if (!journeyMatchesActiveDay(journeyClean, clock)) {
         return resolveJourneyPreferredTargetDepartureOnRemindDays(payload, journeyClean, clock);
       }
@@ -561,7 +568,7 @@ public final class PinResolutionHelper {
     }
 
     boolean targetPassedToday =
-      skipTodaysPostTargetTrips && PerthTime.minutesSinceMidnight(clock.nowMs) > preferredMinutes;
+      skipTodaysPostTargetTrips && PerthTime.minutesSinceMidnight(clock.nowMs, clock.zone) > preferredMinutes;
     String todayDateKey = clock.perthDateKey;
 
     JSONArray upcoming = CommuteSchedule.collectUpcomingTrips(payload);
@@ -578,10 +585,10 @@ public final class PinResolutionHelper {
       if (departureMs <= 0 || departureMs <= clock.nowMs) {
         continue;
       }
-      if (!tripMatchesJourneyRemindDay(trip, journey)) {
+      if (!tripMatchesJourneyRemindDay(trip, journey, clock)) {
         continue;
       }
-      if (targetPassedToday && todayDateKey.equals(localDateKeyFromEpochMs(departureMs))) {
+      if (targetPassedToday && todayDateKey.equals(localDateKeyFromEpochMs(departureMs, clock.zone))) {
         continue;
       }
       int tripMinutes = PerthTime.minutesFromIso(departureIso);
@@ -637,7 +644,7 @@ public final class PinResolutionHelper {
       return resolveTrueNextDeparture(payload, clock);
     }
 
-    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+    int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs, clock.zone);
     if (matchesHoursWindow(journeyClean, nowMinutes)) {
       return resolveJourneyPreferredTargetDeparture(payload, journeyClean, clock);
     }
@@ -650,10 +657,8 @@ public final class PinResolutionHelper {
     );
   }
 
-  private static String localDateKeyFromEpochMs(long epochMs) {
-    return java.time.ZonedDateTime
-      .ofInstant(java.time.Instant.ofEpochMilli(epochMs), PerthTime.zone())
-      .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+  private static String localDateKeyFromEpochMs(long epochMs, java.time.ZoneId zone) {
+    return PerthTime.localDateKey(epochMs, zone);
   }
 
   private static boolean shouldShowPreviewHero(JSONObject journey, Clock clock) {
@@ -665,7 +670,7 @@ public final class PinResolutionHelper {
       return false;
     }
     if (journeyMatchesActiveDay(journey, clock)) {
-      int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs);
+      int nowMinutes = PerthTime.minutesSinceMidnight(clock.nowMs, clock.zone);
       if (!matchesHoursWindow(journey, nowMinutes)) {
         return true;
       }
@@ -716,10 +721,10 @@ public final class PinResolutionHelper {
 
   /** Web pin-state default: Mon–Fri when remindDays is empty. */
   private static boolean journeyMatchesActiveDay(JSONObject journey, Clock clock) {
-    return isPinRemindDay(journey, PerthTime.dayOfWeekIso(clock.nowMs));
+    return isPinRemindDay(journey, PerthTime.dayOfWeekIso(clock.nowMs, clock.zone));
   }
 
-  private static boolean tripMatchesJourneyRemindDay(JSONObject trip, JSONObject journey) {
+  private static boolean tripMatchesJourneyRemindDay(JSONObject trip, JSONObject journey, Clock clock) {
     String departureIso = CommuteSchedule.tripDepartureIso(trip);
     if (departureIso.isEmpty()) {
       return false;
@@ -728,7 +733,7 @@ public final class PinResolutionHelper {
     if (departureMs <= 0) {
       return false;
     }
-    return isPinRemindDay(journey, PerthTime.dayOfWeekIso(departureMs));
+    return isPinRemindDay(journey, PerthTime.dayOfWeekIso(departureMs, clock.zone));
   }
 
   private static boolean isPinRemindDay(JSONObject journey, int dayOfWeekIso) {
@@ -776,7 +781,7 @@ public final class PinResolutionHelper {
   }
 
   private static int minutesUntilPerthClockMinutes(int targetMinutes, Clock clock) {
-    int now = PerthTime.minutesSinceMidnight(clock.nowMs);
+    int now = PerthTime.minutesSinceMidnight(clock.nowMs, clock.zone);
     int diff = targetMinutes - now;
     if (diff < -12 * 60) {
       diff += 24 * 60;

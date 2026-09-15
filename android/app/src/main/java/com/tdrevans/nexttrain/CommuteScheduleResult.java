@@ -23,4 +23,12 @@ public class CommuteScheduleResult {
   public String status;
   public String leavePhase;
   public int minutesUntilLeave;
+  /**
+   * Set when {@link CommuteSchedule#load} threw before a fetch produced any usable data
+   * (no payload, no cached departure to fall back to) — the moment this failure episode
+   * started, carried forward across refreshes so the widget can time out of "Updating…"
+   * into a clear error face instead of sitting on it forever (FB widget-stuck-updating,
+   * 15 Sep 2026).
+   */
+  public long fetchFailedSinceMs;
 }

@@ -49,6 +49,12 @@ public final class JourneySelector {
     if (matching.length() == 0) {
       return null;
     }
+    if (matching.length() == 1) {
+      return matching.getJSONObject(0);
+    }
+    // Tie-break across candidates already confirmed in-window (each checked in its own city
+    // zone above) uses the device's default zone purely to order same-instant candidates —
+    // this does not affect whether any individual journey is considered active.
     return pickScheduledJourney(matching, PerthTime.minutesSinceMidnight());
   }
 
@@ -95,13 +101,18 @@ public final class JourneySelector {
     }
 
     JSONArray configured = configuredJourneys(journeys);
-    int minutes = PerthTime.minutesSinceMidnight();
+    long nowMs = System.currentTimeMillis();
     for (int index = 0; index < configured.length(); index += 1) {
       JSONObject journey = configured.getJSONObject(index);
       if (!isJourneyKind(journey)) {
         continue;
       }
-      if (matchesWindow(journey, minutes)) {
+      // Each journey's own city zone (FB widget-stuck-updating, 15 Sep 2026) — a shared
+      // Perth "now" pushed non-AU journeys outside their real Active window.
+      java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
+      int minutes = PerthTime.minutesSinceMidnight(nowMs, zone);
+      int dayOfWeekIso = PerthTime.dayOfWeekIso(nowMs, zone);
+      if (matchesWindow(journey, minutes, dayOfWeekIso)) {
         matching.put(journey);
       }
     }
@@ -179,7 +190,9 @@ public final class JourneySelector {
     if (journey == null || !hasWindow(journey)) {
       return false;
     }
-    return !matchesWindow(journey, PerthTime.minutesSinceMidnight());
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
+    long nowMs = System.currentTimeMillis();
+    return !matchesWindow(journey, PerthTime.minutesSinceMidnight(nowMs, zone), PerthTime.dayOfWeekIso(nowMs, zone));
   }
 
   private static JSONArray configuredJourneys(JSONArray journeys) throws Exception {
