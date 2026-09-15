@@ -436,11 +436,43 @@ const ALLOW_LIST = [
     reason:
       "15 Sep 2026 round 2 (docs/jim-brief-rest-of-england-reassignment.md, Mark PR #399 hard finding): these three are Surrey — london-se-national-rail's own coverage.json explicitly claims Kent/Surrey/Sussex/Essex, and SWR (the operator that actually serves them into Waterloo) is this pack's, not uk-london-tfl's — moved in from rest-of-england. uk-london-tfl's CITY_BOUNDS box (Greater London only) happens to geometrically cover this corner and is earlier in this file's first-match order, so widening london-se-national-rail's own box cannot change which region resolves first; allow-listed instead of solved with CITY_BOUNDS.",
   })),
-  ...["Burnham-on-Crouch", "Southminster"].map((station) => ({
+  // Burnham-on-Crouch/Southminster's rest-of-england allow-list entry (added 15 Sep 2026
+  // round 2, docs/jim-brief-rest-of-england-reassignment.md) is REMOVED: the Essex dual
+  // claim it recorded is resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md) —
+  // both stations, plus seven more Essex stations, moved to greater-anglia, whose widened
+  // CITY_BOUNDS box (minLat 51.62) now resolves them correctly with no allow-list needed.
+  // 16 Sep 2026 (round 2, Mark's PR #402 finding): the single-box widening from round 1
+  // (minLat 51.80 -> 51.62) made Cheshunt AND Cuffley — both genuinely rest-of-england,
+  // neither an Essex reassignment — fall inside greater-anglia's box too, which was a real
+  // GPS-hint regression, not just a QA-allow-listable geometric quirk (Cheshunt has no
+  // greater-anglia station at all). Fixed by splitting greater-anglia's CITY_BOUNDS entry
+  // into two boxes (public/city-session.js): the main box's minLat is now 51.72 (just above
+  // Cheshunt's 51.7027 and Cuffley's 51.7091, just below Chelmsford's 51.7366, the lowest of
+  // the seven higher-latitude reassigned stations), so both now correctly resolve to
+  // rest-of-england again — no allow-list entry needed for either. The remaining eight
+  // Hertfordshire stations below still overlap because their own latitude (51.72-51.80) sits
+  // in the same band as the reassigned cluster; a rectangle can't separate them without also
+  // losing Chelmsford/Beaulieu Park/Harlow/Hatfield Peverel/Roydon.
+  ...["Bayford", "Brookmans Park", "Broxbourne", "Hatfield", "Hertford East", "Hertford North", "Rye House", "St Margarets (Hertfordshire)", "Welham Green"].map((station) => ({
     region: "rest-of-england",
     station,
     reason:
-      "15 Sep 2026 round 2 (docs/jim-brief-rest-of-england-reassignment.md): both Essex (Maldon district, Crouch Valley line). Essex is claimed by *two* packs' coverage.json (greater-anglia's Essex/Suffolk/Norfolk/Cambs and london-se-national-rail's London/Kent/Surrey/Sussex/Essex) — a genuine conflict, not a single clean claim like Kent/Surrey — so per the brief's round 2 instruction they are left in rest-of-england rather than moved to either. london-se-national-rail's own CITY_BOUNDS box was widened east (maxLng 0.8 to 1.44) this round to fit its 38 real Kent reassignments and geometrically also now covers this pair; not fixable with a tighter London & South East box without losing Thanet/Ramsgate/Margate/Dover, its own real stations.",
+      "15-16 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md): greater-anglia's CITY_BOUNDS main box covers minLat 51.72-52.9, the same latitude band as these Hertfordshire commuter stations (Great Northern's Hertford Loop/branch, East Coast Main Line corridor) — genuinely unclaimed, staying in rest-of-england. Not fixable with a tighter greater-anglia box without losing real reassigned Essex stations in the same band (Chelmsford 51.7366, Beaulieu Park 51.7577, Roydon 51.7754, Hatfield Peverel 51.7803, Harlow Town 51.7816, Harlow Mill 51.7905).",
+  })),
+  // Burnham-on-Crouch (BUU, 51.6335, 0.8135) and Southminster (SMN, 51.6609, 0.8354) are the
+  // southernmost two of the nine reassigned Essex stations, now covered by greater-anglia's
+  // second (Crouch Valley) CITY_BOUNDS box, which is declared before london-se-national-rail
+  // and rest-of-england in Object.entries order — both correctly resolve to greater-anglia,
+  // their own region, with no allow-list needed. (Round 1 had a "greater-anglia"/"Burnham-on-
+  // Crouch" allow-list entry here claiming london-se-national-rail won first-match; that was
+  // backwards and dead — greater-anglia is declared before london-se-national-rail, so
+  // Burnham-on-Crouch's own coordinates always resolved to its own region, resolved ===
+  // regionId, and allowListReason() was never even reached for it. Removed 16 Sep 2026.)
+  ...["Althorne"].map((station) => ({
+    region: "london-se-national-rail",
+    station,
+    reason:
+      "15-16 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md): Althorne, a genuine Crouch Valley London & South East National Rail station (51.6479, 0.7525), sits inside greater-anglia's second (Crouch Valley) CITY_BOUNDS box, added to fit Burnham-on-Crouch/Southminster in the same latitude band — not fixable with a tighter box without losing those two real reassigned stations. Battlesbridge/Billericay/Ingatestone/North Fambridge/South Woodham Ferrers, allow-listed here in round 1 against the old single wide box, no longer overlap now that box is split (their longitude, 0.38-0.68, sits west of this box's 0.70 floor) — removed 16 Sep 2026.",
   })),
 ];
 
@@ -463,9 +495,17 @@ function inBounds(lat, lng, box) {
   return lat >= box.minLat && lat <= box.maxLat && lng >= box.minLng && lng <= box.maxLng;
 }
 
+// A CITY_BOUNDS value is normally a single box, but may be an array of boxes
+// (added 16 Sep 2026, docs/jim-brief-essex-to-greater-anglia.md round 2) — see the
+// matching comment in public/city-session.js's own inAnyBounds().
+function inAnyBounds(lat, lng, boxOrBoxes) {
+  const boxes = Array.isArray(boxOrBoxes) ? boxOrBoxes : [boxOrBoxes];
+  return boxes.some((box) => inBounds(lat, lng, box));
+}
+
 function hintCityFromCoords(lat, lng) {
-  for (const [id, box] of Object.entries(CITY_BOUNDS)) {
-    if (inBounds(lat, lng, box)) {
+  for (const [id, boxOrBoxes] of Object.entries(CITY_BOUNDS)) {
+    if (inAnyBounds(lat, lng, boxOrBoxes)) {
       return id;
     }
   }
@@ -546,31 +586,46 @@ function boxFullyContains(outer, inner) {
   );
 }
 
+// A CITY_BOUNDS value may be an array of boxes (added 16 Sep 2026, docs/jim-brief-essex-
+// to-greater-anglia.md round 2) — hintCityFromCoords/inAnyBounds treats all of a region's
+// boxes as one unit (checked together, in no particular sub-order), so containment only
+// matters BETWEEN different region ids, never between two sub-boxes of the same region.
 const boundsEntries = Object.entries(CITY_BOUNDS);
+const flatBoxes = [];
+boundsEntries.forEach(([id, boxOrBoxes], entryIndex) => {
+  const boxes = Array.isArray(boxOrBoxes) ? boxOrBoxes : [boxOrBoxes];
+  for (const box of boxes) {
+    flatBoxes.push({ id, box, entryIndex });
+  }
+});
+
 let containmentPairsChecked = 0;
-for (let i = 0; i < boundsEntries.length; i += 1) {
-  for (let j = 0; j < boundsEntries.length; j += 1) {
+for (let i = 0; i < flatBoxes.length; i += 1) {
+  for (let j = 0; j < flatBoxes.length; j += 1) {
     if (i === j) {
       continue;
     }
-    const [idA, boxA] = boundsEntries[i];
-    const [idB, boxB] = boundsEntries[j];
-    if (boxArea(boxA) === boxArea(boxB)) {
+    const a = flatBoxes[i];
+    const b = flatBoxes[j];
+    if (a.id === b.id) {
+      continue; // sub-boxes of the same multi-box region — order among them is not meaningful
+    }
+    if (boxArea(a.box) === boxArea(b.box)) {
       continue; // identical/equal-area boxes — order is not meaningful here
     }
     // Only consider the strictly-larger box as a candidate "outer" box, so
     // each genuinely-nested pair is checked exactly once (from the larger
     // box's perspective), not twice with contradictory expectations.
-    if (boxArea(boxA) < boxArea(boxB)) {
+    if (boxArea(a.box) < boxArea(b.box)) {
       continue;
     }
-    if (!boxFullyContains(boxA, boxB)) {
+    if (!boxFullyContains(a.box, b.box)) {
       continue;
     }
     containmentPairsChecked += 1;
     check(
-      j < i,
-      `"${idB}" is fully contained inside "${idA}"'s CITY_BOUNDS box but is declared AFTER it — hintCityFromCoords first-match-wins means every GPS hint inside "${idB}" resolves to "${idA}" instead. Move "${idB}" above "${idA}".`
+      b.entryIndex < a.entryIndex,
+      `"${b.id}" is fully contained inside "${a.id}"'s CITY_BOUNDS box but is declared AFTER it — hintCityFromCoords first-match-wins means every GPS hint inside "${b.id}" resolves to "${a.id}" instead. Move "${b.id}" above "${a.id}".`
     );
   }
 }

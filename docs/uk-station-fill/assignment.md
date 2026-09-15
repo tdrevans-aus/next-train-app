@@ -612,3 +612,84 @@ restates them station-by-station for the same literal-compliance reason.
 **Rest of England: 362 → 321.** `london-se-national-rail`: 530 → 571. Dogfood gate counts,
 `coverage.json` station-count sentences, `qa/uk-city-bounds-overlap-gate.mjs`'s allow-list and
 `public/city-directions/{london-se-national-rail,rest-of-england}.json` all updated to match.
+
+## Reassignment 15 Sep 2026 — Essex nine to greater-anglia (docs/jim-brief-essex-to-greater-anglia.md)
+
+The genuine conflict recorded just above (round 2) is now resolved, per PR #399's own body:
+**greater-anglia**. It operates every one of the nine Essex stations (Great Eastern main line,
+Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester,
+Braintree and Witham on the same lines; London & South East National Rail's Essex claim is only
+its Liverpool Street terminus group (its own genuine Fenchurch Street/c2c and Liverpool Street
+suburban Essex stations — Rainham, Grays, Upminster, Brentwood and the like — are unaffected and
+stay put; this ruling only concerns the nine disputed market-town stations).
+
+Moved from `rest-of-england/stations.json` (flat, no hub change) to
+`greater-anglia/stations.json`: Beaulieu Park, Burnham-on-Crouch, Chelmsford, Clacton-on-Sea,
+Harlow Mill, Harlow Town, Hatfield Peverel, Roydon, Southminster (CRS BPA, BUU, CHM, CLT, HWM,
+HWN, HAP, RYN, SMN). Each entry's `class` field now records "reassigned from rest-of-england,
+Essex dual-claim resolved 15 Sep 2026".
+
+**Rest of England: 321 → 312.** `greater-anglia`: 121 → 130. `docs/united-kingdom-ledger.md`
+section 2 records the decision. `public/city-session.js`'s `greater-anglia` CITY_BOUNDS box
+widened south (minLat 51.80 → 51.62, **Burnham-on-Crouch is the southernmost of the nine at
+51.6335**, not Southminster at 51.6609) — this genuinely does overlap several Hertfordshire
+rest-of-england stations and Cheshunt in the same newly-covered latitude band, allow-listed in
+`qa/uk-city-bounds-overlap-gate.mjs` (**not** "no new overlap allow-list entry needed" as an
+earlier draft of this paragraph claimed); the round-2 `Burnham-on-Crouch`/`Southminster`
+allow-list entry under `region: "rest-of-england"` in `qa/uk-city-bounds-overlap-gate.mjs` is
+removed as obsolete (they're not in that catalog any more). Dogfood gate counts,
+`coverage.json` station-count sentences, `qa/uk-region-catalog-conformance.mjs` and
+`public/city-directions/{greater-anglia,rest-of-england}.json` all updated to match.
+
+## Round 2 follow-up 16 Sep 2026 — Cheshunt Near-me regression (Mark's PR #402 finding)
+
+The single-box widening above (minLat 51.80 → 51.62) fixed the Essex nine but broke GPS
+"Near me" for a rider physically standing at Cheshunt (rest-of-england's own station, 51.7027,
+-0.0232): `hintCityFromCoords` sent them to greater-anglia, whose catalog has no Cheshunt, where
+before this PR they correctly fell through to rest-of-england. Root cause: Cheshunt's latitude
+sits *between* the two reassigned Essex clusters — Burnham-on-Crouch/Southminster at
+51.63-51.66, and Chelmsford/Beaulieu Park/Harlow Mill/Harlow Town/Hatfield Peverel/Roydon at
+51.74-51.79 — so no single rectangle spanning both clusters can exclude Cheshunt's 51.7027.
+
+Fixed by splitting `greater-anglia`'s `CITY_BOUNDS` entry into an array of two boxes (chosen
+over making `hintCityFromCoords` fall through to the next matching box on a no-nearby-station
+check, per the brief's option (b): that fixes the whole overlapping-Hertfordshire-station class,
+not just this regression, but requires loading each region's station coordinates into the
+client-side picker and a new QA distance check — a materially larger, riskier change for a fix
+this narrow needs):
+
+- Main box: `minLat: 51.72` (raised from 51.62) — just above Cheshunt (51.7027) and Cuffley
+  (51.7091), just below Chelmsford (51.7366), the lowest-latitude of the seven higher-latitude
+  reassigned stations. `maxLat`/`minLng`/`maxLng` unchanged.
+- New Crouch Valley box: `{ minLat: 51.60, maxLat: 51.70, minLng: 0.70, maxLng: 0.90 }`, scoped
+  to just Burnham-on-Crouch (51.6335, 0.8135) and Southminster (51.6609, 0.8354). `maxLat: 51.70`
+  sits just below Cheshunt's 51.7027, so Cheshunt falls outside both boxes and correctly
+  resolves to rest-of-england again (Cuffley too, incidentally, since 51.7091 > 51.72).
+
+`hintCityFromCoords`/`inBounds` in `public/city-session.js`, and the matching parse/match logic
+in `qa/uk-city-bounds-overlap-gate.mjs` and `qa/uk-catalog-coords-gate.mjs`, now accept a
+CITY_BOUNDS value that is either a single box or an array of boxes (checked as "in any of
+them") — the only structural change this fix needed; every other region's single-box entry is
+untouched. All 130 greater-anglia stations still resolve inside one of its two boxes
+(`qa/uk-catalog-coords-gate.mjs` stays green).
+
+**Allow-list changes.** Net **10** `qa/uk-city-bounds-overlap-gate.mjs` allow-list entries now
+trigger for this reassignment (not the "~17" or "no new entries" claimed by earlier drafts of
+this file): 8 Hertfordshire rest-of-england stations still overlap the raised main box's own
+51.72-52.9 latitude band (Bayford, Brookmans Park, Broxbourne, Hatfield, Hertford East, Hertford
+North, Rye House, St Margarets (Hertfordshire) — Cuffley dropped out, now resolves correctly),
+plus Althorne (london-se-national-rail's own Crouch Valley station) against the new second box
+(Battlesbridge/Billericay/Ingatestone/North Fambridge/South Woodham Ferrers dropped out, their
+longitude sits west of the new box's 0.70 floor). The `region: "greater-anglia"`,
+`station: "Burnham-on-Crouch"` allow-list entry from round 1 is **removed**: it claimed
+london-se-national-rail won first-match because it's "declared earlier" in `CITY_BOUNDS`, which
+was backwards — greater-anglia is declared *before* london-se-national-rail in
+`public/city-session.js`'s object order, so `resolved === regionId` was always true for
+Burnham-on-Crouch and `allowListReason()` was never reached for it; the entry never actually
+triggered.
+
+**Net result for a rider at each of the three named stations:** Cheshunt now correctly falls
+through to rest-of-england (its own catalog); Burnham-on-Crouch and Southminster correctly
+resolve to greater-anglia via the new second box (their own catalog, unchanged from round 1 —
+they already resolved correctly there too, just via the wide single box that also, incidentally,
+broke Cheshunt).

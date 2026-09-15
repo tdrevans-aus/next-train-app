@@ -17,7 +17,8 @@
     "CRS collision caught, not propagated: the oracle report's own station-code list (line 103) assigns LST to Lowestoft, but LST is Liverpool Street's real-world CRS, already used in London & South East National Rail's built pack. Lowestoft never carries LST. All 14 CRS codes (including Lowestoft -> LWT) were verified live against Darwin on 5 Sep 2026 (scripts/fix-uk-region-crs.mjs greater-anglia --write; seven were wrong or missing in the original D1 pack — King's Lynn KLY->KLN, Thetford THF->TTF, Great Yarmouth YRD->GYM, Bishops Stortford BST->BIS, Diss/Wymondham/Lowestoft null->DIS/WMD/LWT) — every entry above now carries crsVerified: true.",
     "Station scope is intentionally the ~13/14 stations the oracle report explicitly names, not the full 30-50 the report itself estimates for D1 — the remaining 16-36 stations are a flagged D2 gap (expand against the Transitland feed), not invented here.",
     "Peterborough is flagged for a future multi-region ledger (cross-regional shared-platform de-dup with any East Midlands National Rail or LNER region Peterborough entry) — not resolved in this pack. This is a station-grouping question, separate from the LNER board-eligibility exclusion, which is resolved (see above).",
-    "Great Northern (Cambridge, King's Lynn, Ely) and CrossCountry (Stansted Airport) were discovered calling at these stations during 5 Sep 2026 live adapter wiring, beyond what the D1 station table itemised per station — both operators already carry a recorded `in` board-eligibility verdict elsewhere (Great Northern: this pack's own oracle line 91 Greater Thameslink Railway family + London & South East's oracle line 148; CrossCountry: this pack's own oracle, Peterborough/Ely Hereward Line corridor), so including them at these newly-observed stations is not a fresh unverified inclusion — same precedent as Thames Valley's CrossCountry-at-Oxford discovery. See docs/greater-anglia-d1/jim-handoff.md 'Adapter wired' section for the live evidence."
+    "Great Northern (Cambridge, King's Lynn, Ely) and CrossCountry (Stansted Airport) were discovered calling at these stations during 5 Sep 2026 live adapter wiring, beyond what the D1 station table itemised per station — both operators already carry a recorded `in` board-eligibility verdict elsewhere (Great Northern: this pack's own oracle line 91 Greater Thameslink Railway family + London & South East's oracle line 148; CrossCountry: this pack's own oracle, Peterborough/Ely Hereward Line corridor), so including them at these newly-observed stations is not a fresh unverified inclusion — same precedent as Thames Valley's CrossCountry-at-Oxford discovery. See docs/greater-anglia-d1/jim-handoff.md 'Adapter wired' section for the live evidence.",
+    "Nine Essex stations reassigned in from rest-of-england 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md): Beaulieu Park, Burnham-on-Crouch, Chelmsford, Clacton-on-Sea, Harlow Mill, Harlow Town, Hatfield Peverel, Roydon, Southminster — resolving PR #399's Essex dual-claim between this pack and london-se-national-rail in Greater Anglia's favour (it operates every one of them: Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line; already owns Colchester/Braintree/Witham on the same lines). CITY_BOUNDS's greater-anglia box (public/city-session.js) widened south (minLat 51.80 -> 51.64) to cover them; these nine are Darwin-verified from UK station fill phase 2a/2b, not this pack's original D1 pass, so they carry crsVerified/crsSource fields the rest of this catalog's original 14 stations do not need re-probing for. Now 130 stations."
   ],
   "notInRegion": [],
   "stops": [
@@ -1376,6 +1377,105 @@
       "lat": 51.93950950641,
       "lng": 1.17149812063,
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Beaulieu Park",
+      "crs": "BPA",
+      "aliases": [],
+      "lat": 51.757694,
+      "lng": 0.519496,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Burnham-on-Crouch",
+      "crs": "BUU",
+      "aliases": [],
+      "lat": 51.633526,
+      "lng": 0.813459,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Chelmsford",
+      "crs": "CHM",
+      "aliases": [],
+      "lat": 51.736595,
+      "lng": 0.469316,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Clacton-on-Sea",
+      "crs": "CLT",
+      "aliases": [],
+      "lat": 51.794532,
+      "lng": 1.154327,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Harlow Mill",
+      "crs": "HWM",
+      "aliases": [],
+      "lat": 51.790482,
+      "lng": 0.132318,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Harlow Town",
+      "crs": "HWN",
+      "aliases": [],
+      "lat": 51.781639,
+      "lng": 0.094804,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Hatfield Peverel",
+      "crs": "HAP",
+      "aliases": [],
+      "lat": 51.780314,
+      "lng": 0.592772,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Roydon",
+      "crs": "RYN",
+      "aliases": [],
+      "lat": 51.775439,
+      "lng": 0.036514,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Southminster",
+      "crs": "SMN",
+      "aliases": [],
+      "lat": 51.660873,
+      "lng": 0.835397,
+      "class": "Reassigned from rest-of-england, Essex dual-claim resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md, docs/uk-station-fill/assignment.md) — Greater Anglia operates every Essex line these nine sit on (Great Eastern main line, Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester/Braintree/Witham on the same lines; London & South East National Rail's Essex claim is only its Liverpool Street terminus group.",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
     }

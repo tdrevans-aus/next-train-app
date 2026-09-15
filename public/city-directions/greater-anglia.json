@@ -20,6 +20,7 @@
   ],
   "Attleborough": [
     "Cambridge (Greater Anglia)",
+    "Liverpool Lime Street (East Midlands Railway)",
     "Norwich (Greater Anglia)",
     "Nottingham (East Midlands Railway)"
   ],
@@ -36,6 +37,14 @@
     "Cambridge (Great Northern)",
     "Cambridge (Thameslink)",
     "London Kings Cross (Great Northern)"
+  ],
+  "Beaulieu Park": [
+    "Clacton-on-Sea (Greater Anglia)",
+    "Clacton-on-Sea and Harwich Town (Greater Anglia)",
+    "Colchester Town (Greater Anglia)",
+    "Ipswich (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Witham (Greater Anglia)"
   ],
   "Beccles": [
     "Ipswich (Greater Anglia)",
@@ -84,6 +93,11 @@
     "Marks Tey (Greater Anglia)",
     "Sudbury (Greater Anglia)"
   ],
+  "Burnham-on-Crouch": [
+    "London Liverpool Street (Greater Anglia)",
+    "Southminster (Greater Anglia)",
+    "Wickford (Greater Anglia)"
+  ],
   "Bury St Edmunds": [
     "Cambridge (Greater Anglia)",
     "Ipswich (Greater Anglia)",
@@ -98,7 +112,6 @@
     "London Kings Cross (Great Northern)",
     "London Liverpool Street (Greater Anglia)",
     "Norwich (Greater Anglia)",
-    "Stansted Airport (CrossCountry)",
     "Stansted Airport (Greater Anglia)"
   ],
   "Cambridge North": [
@@ -119,7 +132,6 @@
     "Kings Lynn (Great Northern)",
     "London Kings Cross (Great Northern)",
     "London Liverpool Street (Greater Anglia)",
-    "Stansted Airport (CrossCountry)",
     "Stansted Airport (Greater Anglia)"
   ],
   "Cantley": [
@@ -129,6 +141,18 @@
   "Chappel & Wakes Colne": [
     "Marks Tey (Greater Anglia)",
     "Sudbury (Greater Anglia)"
+  ],
+  "Chelmsford": [
+    "Braintree (Greater Anglia)",
+    "Clacton-on-Sea and Harwich Town (Greater Anglia)",
+    "Clacton-on-Sea and Walton-on-the-Naze (Greater Anglia)",
+    "Colchester Town (Greater Anglia)",
+    "Ipswich (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Witham (Greater Anglia)"
+  ],
+  "Clacton-on-Sea": [
+    "London Liverpool Street (Greater Anglia)"
   ],
   "Colchester": [
     "Clacton-on-Sea (Greater Anglia)",
@@ -164,7 +188,6 @@
     "Manningtree (Greater Anglia)"
   ],
   "Downham Market": [
-    "Cambridge (Great Northern)",
     "Kings Lynn (Great Northern)",
     "London Kings Cross (Great Northern)"
   ],
@@ -188,11 +211,11 @@
   ],
   "Ely": [
     "Birmingham New Street (CrossCountry)",
-    "Cambridge (Great Northern)",
     "Cambridge (Greater Anglia)",
     "Ipswich (Greater Anglia)",
     "Kings Lynn (Great Northern)",
     "Liverpool Lime Street (East Midlands Railway)",
+    "London Kings Cross (Great Northern)",
     "Norwich",
     "Peterborough (Greater Anglia)",
     "Stansted Airport (CrossCountry)",
@@ -238,12 +261,34 @@
   "Harling Road": [
     "Cambridge (Greater Anglia)"
   ],
+  "Harlow Mill": [
+    "Bishops Stortford (Greater Anglia)",
+    "Cambridge (Greater Anglia)",
+    "Cambridge North (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Stratford (London) (Greater Anglia)"
+  ],
+  "Harlow Town": [
+    "Bishops Stortford (Greater Anglia)",
+    "Cambridge North (Greater Anglia)",
+    "Ely (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Stansted Airport (Greater Anglia)",
+    "Stratford (London) (Greater Anglia)"
+  ],
   "Harwich International": [
     "Harwich Town (Greater Anglia)",
     "Manningtree (Greater Anglia)"
   ],
   "Harwich Town": [
     "Manningtree (Greater Anglia)"
+  ],
+  "Hatfield Peverel": [
+    "Clacton-on-Sea (Greater Anglia)",
+    "Colchester Town (Greater Anglia)",
+    "Ipswich (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)",
+    "Witham (Greater Anglia)"
   ],
   "Hitchin": [
     "Brighton (Thameslink)",
@@ -279,7 +324,6 @@
   ],
   "Kelvedon": [
     "Clacton-on-Sea (Greater Anglia)",
-    "Colchester (Greater Anglia)",
     "Colchester Town (Greater Anglia)",
     "Ipswich (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)"
@@ -289,7 +333,6 @@
     "Ipswich (Greater Anglia)"
   ],
   "King's Lynn": [
-    "Cambridge (Great Northern)",
     "London Kings Cross (Great Northern)"
   ],
   "Kirby Cross": [
@@ -313,7 +356,6 @@
     "Norwich (Greater Anglia)"
   ],
   "Littleport": [
-    "Cambridge (Great Northern)",
     "Kings Lynn (Great Northern)",
     "London Kings Cross (Great Northern)"
   ],
@@ -382,6 +424,7 @@
   "Norwich": [
     "Cambridge (Greater Anglia)",
     "Great Yarmouth (Greater Anglia)",
+    "Liverpool Lime Street (East Midlands Railway)",
     "London Liverpool Street (Greater Anglia)",
     "Lowestoft (Greater Anglia)",
     "Manchester Piccadilly (East Midlands Railway)",
@@ -412,6 +455,12 @@
   "Reedham (Norfolk)": [
     "Lowestoft (Greater Anglia)",
     "Norwich (Greater Anglia)"
+  ],
+  "Roydon": [
+    "Bishops Stortford (Greater Anglia)",
+    "Cambridge (Greater Anglia)",
+    "Ely (Greater Anglia)",
+    "Stratford (London) (Greater Anglia)"
   ],
   "Royston": [
     "Brighton (Thameslink)",
@@ -458,6 +507,10 @@
     "Lowestoft (Greater Anglia)",
     "Norwich (Greater Anglia)"
   ],
+  "Southminster": [
+    "London Liverpool Street (Greater Anglia)",
+    "Wickford (Greater Anglia)"
+  ],
   "Spooner Row": [
     "Cambridge (Greater Anglia)"
   ],
@@ -502,6 +555,7 @@
   ],
   "Thetford": [
     "Cambridge (Greater Anglia)",
+    "Liverpool Lime Street (East Midlands Railway)",
     "Manchester Piccadilly (East Midlands Railway)",
     "Norwich",
     "Nottingham (East Midlands Railway)"
@@ -535,7 +589,6 @@
     "London Kings Cross (Great Northern)"
   ],
   "Watlington": [
-    "Cambridge (Great Northern)",
     "Kings Lynn (Great Northern)",
     "London Kings Cross (Great Northern)"
   ],

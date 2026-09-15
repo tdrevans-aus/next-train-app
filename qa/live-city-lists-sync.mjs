@@ -133,7 +133,10 @@ for (const id of registryLiveIds) {
 const boundsMatch = citySession.match(/CITY_BOUNDS = \{([\s\S]*?)\n  \};/);
 check(boundsMatch, "city-session CITY_BOUNDS: could not parse (pattern drift — update this gate)");
 if (boundsMatch) {
-  const boundsIds = [...boundsMatch[1].matchAll(/(?:"([a-z-]+)"|([a-z-]+)):\s*\{/g)].map(
+  // A CITY_BOUNDS value is normally a single box ({...}) but may be an array of boxes
+  // ([...], added 16 Sep 2026, docs/jim-brief-essex-to-greater-anglia.md round 2) —
+  // match either opening character.
+  const boundsIds = [...boundsMatch[1].matchAll(/(?:"([a-z-]+)"|([a-z-]+)):\s*[[{]/g)].map(
     (m) => m[1] ?? m[2]
   );
   const missingBounds = registryLiveIds.filter((id) => !boundsIds.includes(id));
