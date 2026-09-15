@@ -612,3 +612,29 @@ restates them station-by-station for the same literal-compliance reason.
 **Rest of England: 362 → 321.** `london-se-national-rail`: 530 → 571. Dogfood gate counts,
 `coverage.json` station-count sentences, `qa/uk-city-bounds-overlap-gate.mjs`'s allow-list and
 `public/city-directions/{london-se-national-rail,rest-of-england}.json` all updated to match.
+
+## Reassignment 15 Sep 2026 — Essex nine to greater-anglia (docs/jim-brief-essex-to-greater-anglia.md)
+
+The genuine conflict recorded just above (round 2) is now resolved, per PR #399's own body:
+**greater-anglia**. It operates every one of the nine Essex stations (Great Eastern main line,
+Sunshine Coast and Crouch Valley branches, West Anglia line) and already owns Colchester,
+Braintree and Witham on the same lines; London & South East National Rail's Essex claim is only
+its Liverpool Street terminus group (its own genuine Fenchurch Street/c2c and Liverpool Street
+suburban Essex stations — Rainham, Grays, Upminster, Brentwood and the like — are unaffected and
+stay put; this ruling only concerns the nine disputed market-town stations).
+
+Moved from `rest-of-england/stations.json` (flat, no hub change) to
+`greater-anglia/stations.json`: Beaulieu Park, Burnham-on-Crouch, Chelmsford, Clacton-on-Sea,
+Harlow Mill, Harlow Town, Hatfield Peverel, Roydon, Southminster (CRS BPA, BUU, CHM, CLT, HWM,
+HWN, HAP, RYN, SMN). Each entry's `class` field now records "reassigned from rest-of-england,
+Essex dual-claim resolved 15 Sep 2026".
+
+**Rest of England: 321 → 312.** `greater-anglia`: 121 → 130. `docs/united-kingdom-ledger.md`
+section 2 records the decision. `public/city-session.js`'s `greater-anglia` CITY_BOUNDS box
+widened south (minLat 51.80 → 51.64, Southminster is the southernmost of the nine at 51.6609) —
+none of the nine fall inside uk-london-tfl's or london-se-national-rail's boxes at their own
+longitudes, so the widening needs no new overlap allow-list entry; the round-2
+`Burnham-on-Crouch`/`Southminster` allow-list entry under `region: "rest-of-england"` in
+`qa/uk-city-bounds-overlap-gate.mjs` is removed as obsolete (they're not in that catalog any more).
+Dogfood gate counts, `coverage.json` station-count sentences, `qa/uk-region-catalog-conformance.mjs`
+and `public/city-directions/{greater-anglia,rest-of-england}.json` all updated to match.

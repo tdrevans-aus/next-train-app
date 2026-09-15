@@ -180,7 +180,17 @@
     // minLat/minLng/maxLng widened 7 Sep 2026 (uk-catalog-geocode): Colchester, Stansted
     // Airport, Bishops Stortford (lat), Peterborough (lng), Great Yarmouth/Lowestoft (lng)
     // are real, NaPTAN-verified catalog stations the old box excluded.
-    "greater-anglia": { minLat: 51.80, maxLat: 52.9, minLng: -0.30, maxLng: 1.8 },
+    // minLat widened from 51.80 to 51.62 (15 Sep 2026, docs/jim-brief-essex-to-greater-
+    // anglia.md): nine Essex stations reassigned in from rest-of-england (Beaulieu Park,
+    // Burnham-on-Crouch, Chelmsford, Clacton-on-Sea, Harlow Mill, Harlow Town, Hatfield
+    // Peverel, Roydon, Southminster) sit as far south as Burnham-on-Crouch itself
+    // (51.6335) — the old floor excluded all nine, including their own new home's box. This
+    // does genuinely overlap ten Hertfordshire rest-of-england stations and four Crouch
+    // Valley-adjacent london-se-national-rail stations (Althorne, Ingatestone, North
+    // Fambridge, South Woodham Ferrers) plus rest-of-england's own Cheshunt entry —
+    // allow-listed in qa/uk-city-bounds-overlap-gate.mjs with reasons, same trade-off as
+    // every other widened box in this file.
+    "greater-anglia": { minLat: 51.62, maxLat: 52.9, minLng: -0.30, maxLng: 1.8 },
     // maxLat widened 7 Sep 2026 (uk-catalog-geocode): Walsden (WDN, 53.696) is a real,
     // NaPTAN-verified boundary station the old 53.55 ceiling excluded.
     // Box widened 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): 33 stations

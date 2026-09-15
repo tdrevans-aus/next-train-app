@@ -436,11 +436,34 @@ const ALLOW_LIST = [
     reason:
       "15 Sep 2026 round 2 (docs/jim-brief-rest-of-england-reassignment.md, Mark PR #399 hard finding): these three are Surrey — london-se-national-rail's own coverage.json explicitly claims Kent/Surrey/Sussex/Essex, and SWR (the operator that actually serves them into Waterloo) is this pack's, not uk-london-tfl's — moved in from rest-of-england. uk-london-tfl's CITY_BOUNDS box (Greater London only) happens to geometrically cover this corner and is earlier in this file's first-match order, so widening london-se-national-rail's own box cannot change which region resolves first; allow-listed instead of solved with CITY_BOUNDS.",
   })),
-  ...["Burnham-on-Crouch", "Southminster"].map((station) => ({
+  // Burnham-on-Crouch/Southminster's rest-of-england allow-list entry (added 15 Sep 2026
+  // round 2, docs/jim-brief-rest-of-england-reassignment.md) is REMOVED: the Essex dual
+  // claim it recorded is resolved 15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md) —
+  // both stations, plus seven more Essex stations, moved to greater-anglia, whose widened
+  // CITY_BOUNDS box (minLat 51.62) now resolves them correctly with no allow-list needed.
+  ...["Bayford", "Brookmans Park", "Broxbourne", "Cuffley", "Hatfield", "Hertford East", "Hertford North", "Rye House", "St Margarets (Hertfordshire)", "Welham Green"].map((station) => ({
     region: "rest-of-england",
     station,
     reason:
-      "15 Sep 2026 round 2 (docs/jim-brief-rest-of-england-reassignment.md): both Essex (Maldon district, Crouch Valley line). Essex is claimed by *two* packs' coverage.json (greater-anglia's Essex/Suffolk/Norfolk/Cambs and london-se-national-rail's London/Kent/Surrey/Sussex/Essex) — a genuine conflict, not a single clean claim like Kent/Surrey — so per the brief's round 2 instruction they are left in rest-of-england rather than moved to either. london-se-national-rail's own CITY_BOUNDS box was widened east (maxLng 0.8 to 1.44) this round to fit its 38 real Kent reassignments and geometrically also now covers this pair; not fixable with a tighter London & South East box without losing Thanet/Ramsgate/Margate/Dover, its own real stations.",
+      "15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md): greater-anglia's CITY_BOUNDS box was widened south (minLat 51.80 -> 51.62) to fit nine Essex stations reassigned in from rest-of-england (Burnham-on-Crouch, the southernmost, sits at 51.6335) — these ten Hertfordshire commuter stations (Great Northern's Hertford Loop/branch, East Coast Main Line corridor) sit in the same newly-covered latitude band but are genuinely unclaimed, staying in rest-of-england. Not fixable with a tighter greater-anglia box without losing the nine real Essex stations it was widened for.",
+  })),
+  {
+    region: "rest-of-england",
+    station: "Cheshunt",
+    reason:
+      "15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md): same Hertfordshire-band overlap as the ten stations above — Cheshunt (CHN, 51.7027) newly falls inside greater-anglia's widened box too, ahead of the pre-existing uk-london-tfl allow-list entry for this same station name (a different catalog entry, uk-london-tfl's own Overground stop) elsewhere in this file. Genuinely unclaimed here, stays in rest-of-england.",
+  },
+  {
+    region: "greater-anglia",
+    station: "Burnham-on-Crouch",
+    reason:
+      "15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md): Burnham-on-Crouch (BUU, 51.6335, 0.8135) is the southernmost of the nine Essex stations this pack was widened south to fit, but london-se-national-rail's own box (maxLat 51.7, maxLng 1.44) also geometrically covers it and london-se-national-rail is declared earlier in this file's first-match order — same trade-off as the Chertsey/Staines/West Byfleet case above, not fixable with box priority without reordering every other resolved overlap in this file.",
+  },
+  ...["Althorne", "Battlesbridge", "Billericay", "Ingatestone", "North Fambridge", "South Woodham Ferrers"].map((station) => ({
+    region: "london-se-national-rail",
+    station,
+    reason:
+      "15 Sep 2026 (docs/jim-brief-essex-to-greater-anglia.md): these four Crouch Valley/Great Eastern-corridor London & South East National Rail stations sit inside greater-anglia's box, widened south to fit the nine reassigned Essex stations — genuinely this pack's own real catalog entries (not part of the Essex nine moved), staying here. Not fixable with a tighter greater-anglia box without losing the nine real Essex stations it was widened for.",
   })),
 ];
 
