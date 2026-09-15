@@ -61,6 +61,7 @@ const SMOKE_SCRIPTS = [
   "sydney-direction-match-negative.mjs",
   "sydney-banksia-perth-route.mjs",
   "sydney-new-journey-not-perth.mjs",
+  "sydney-line-map-conformance.mjs",
   "nearby-region-preference.mjs",
   "nearby-relocate-ignores-region.mjs",
   "route-swipe-keeps-active-route.mjs",
