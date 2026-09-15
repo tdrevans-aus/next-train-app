@@ -20,9 +20,6 @@
     "'borough' field is the ORR Table 6329 'Local authority: district or unitary' column value at the 31 Mar 2026 snapshot - informational only, not used for any doNotGroup or hub-lock decision."
   ],
   "notInRegion": [
-    "Warrington Bank Quay",
-    "Warrington Central",
-    "Warrington West",
     "Wigan North Western",
     "Wigan Wallgate",
     "Manchester Piccadilly",
@@ -1666,6 +1663,61 @@
       "lat": 53.52837938277,
       "lng": -2.74140489146,
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Glazebrook",
+      "crs": "GLZ",
+      "aliases": [],
+      "lat": 53.428291,
+      "lng": -2.459992,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Borough of Warrington, already this pack's de facto territory (Padgate, Sankey for Penketh already catalogued there).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Warrington Bank Quay",
+      "crs": "WBQ",
+      "aliases": [],
+      "lat": 53.385937,
+      "lng": -2.603178,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Borough of Warrington, already this pack's de facto territory (Padgate, Sankey for Penketh already catalogued there).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Warrington Central",
+      "crs": "WAC",
+      "aliases": [],
+      "lat": 53.391857,
+      "lng": -2.592434,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Borough of Warrington, already this pack's de facto territory (Padgate, Sankey for Penketh already catalogued there).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Warrington West",
+      "crs": "WAW",
+      "aliases": [],
+      "lat": 53.393744,
+      "lng": -2.636929,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Borough of Warrington, already this pack's de facto territory (Padgate, Sankey for Penketh already catalogued there).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Birchwood",
+      "crs": "BWD",
+      "aliases": [],
+      "lat": 53.412782,
+      "lng": -2.525139,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Borough of Warrington, this pack de facto territory (found via the CITY_BOUNDS box-check audit after the initial pass).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
     }

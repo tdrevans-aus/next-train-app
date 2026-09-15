@@ -10,7 +10,6 @@
     "Matlock (East Midlands Railway)"
   ],
   "Ancaster": [
-    "Nottingham (East Midlands Railway)",
     "Skegness (East Midlands Railway)"
   ],
   "Aslockton": [
@@ -33,8 +32,8 @@
   ],
   "Beeston": [
     "Cardiff Central (CrossCountry)",
+    "Cleethorpes (East Midlands Railway)",
     "Crewe (East Midlands Railway)",
-    "Gloucester (CrossCountry)",
     "Leicester (East Midlands Railway)",
     "Lincoln Central (East Midlands Railway)",
     "London St Pancras (Intl) (East Midlands Railway)",
@@ -45,7 +44,6 @@
   "Belper": [
     "Cleethorpes (East Midlands Railway)",
     "Lincoln Central (East Midlands Railway)",
-    "London St Pancras (Intl) (East Midlands Railway)",
     "Matlock (East Midlands Railway)"
   ],
   "Bleasby": [
@@ -80,8 +78,7 @@
     "Manchester Piccadilly (Northern)"
   ],
   "Chesterfield": [
-    "Cardiff Central and Plymouth (CrossCountry)",
-    "Glasgow Central (CrossCountry)",
+    "Edinburgh (CrossCountry)",
     "Leeds (Northern)",
     "Liverpool Lime Street (East Midlands Railway)",
     "London St Pancras (Intl) (East Midlands Railway)",
@@ -91,7 +88,6 @@
   ],
   "Chinley": [
     "Manchester Piccadilly (Northern)",
-    "Norwich (East Midlands Railway)",
     "Sheffield (Northern)"
   ],
   "Collingham": [
@@ -113,14 +109,16 @@
     "Matlock (East Midlands Railway)"
   ],
   "Derby": [
-    "Birmingham New Street (CrossCountry)",
     "Cardiff Central (CrossCountry)",
     "Crewe (East Midlands Railway)",
-    "Glasgow Central (CrossCountry)",
+    "Edinburgh (CrossCountry)",
     "Lincoln Central (East Midlands Railway)",
     "London St Pancras (Intl) (East Midlands Railway)",
+    "Matlock (East Midlands Railway)",
+    "Newcastle (CrossCountry)",
     "Nottingham (CrossCountry)",
     "Plymouth (CrossCountry)",
+    "Reading (CrossCountry)",
     "Sheffield (East Midlands Railway)"
   ],
   "Dinting": [
@@ -133,7 +131,6 @@
   ],
   "Dronfield": [
     "Leeds (Northern)",
-    "Norwich (East Midlands Railway)",
     "Nottingham (Northern)"
   ],
   "Duffield": [
@@ -151,9 +148,6 @@
     "Manchester Piccadilly (Northern)",
     "Sheffield (Northern)"
   ],
-  "Elton & Orston": [
-    "Skegness (East Midlands Railway)"
-  ],
   "Fiskerton": [
     "Crewe (East Midlands Railway)",
     "Lincoln Central (East Midlands Railway)"
@@ -161,6 +155,9 @@
   "Furness Vale": [
     "Buxton (Northern)",
     "Manchester Piccadilly (Northern)"
+  ],
+  "Gainsborough Central": [
+    "Sheffield (Northern)"
   ],
   "Gainsborough Lea Road": [
     "Doncaster (East Midlands Railway)",
@@ -176,7 +173,6 @@
     "Hull (Hull Trains)",
     "Leeds (LNER)",
     "Liverpool Lime Street (East Midlands Railway)",
-    "London Kings Cross (Hull Trains)",
     "London Kings Cross (LNER)",
     "Newcastle (LNER)",
     "Norwich (East Midlands Railway)",
@@ -194,19 +190,13 @@
     "Manchester Piccadilly (Northern)",
     "Sheffield (Northern)"
   ],
-  "Havenhouse": [
-    "Nottingham (East Midlands Railway)",
-    "Skegness (East Midlands Railway)"
-  ],
   "Heckington": [
     "Nottingham (East Midlands Railway)",
     "Skegness (East Midlands Railway)"
   ],
   "Hinckley": [
     "Birmingham New Street (CrossCountry)",
-    "Cambridge (CrossCountry)",
-    "Leicester (CrossCountry)",
-    "Stansted Airport (CrossCountry)"
+    "Leicester (CrossCountry)"
   ],
   "Hope (Derbyshire)": [
     "Manchester Piccadilly (Northern)",
@@ -217,7 +207,6 @@
     "Skegness (East Midlands Railway)"
   ],
   "Hucknall": [
-    "Mansfield Woodhouse (East Midlands Railway)",
     "Nottingham (East Midlands Railway)",
     "Worksop (East Midlands Railway)"
   ],
@@ -230,6 +219,7 @@
   "Ilkeston": [
     "Leeds (Northern)",
     "Liverpool Lime Street (East Midlands Railway)",
+    "Nottingham (East Midlands Railway)",
     "Nottingham (Northern)"
   ],
   "Kettering": [
@@ -244,13 +234,11 @@
     "London Marylebone (Chiltern Railways)"
   ],
   "Kirkby in Ashfield": [
-    "Mansfield Woodhouse (East Midlands Railway)",
     "Nottingham (East Midlands Railway)",
     "Worksop (East Midlands Railway)"
   ],
   "Langley Mill": [
     "Leeds (Northern)",
-    "Liverpool Lime Street (East Midlands Railway)",
     "Nottingham (Northern)"
   ],
   "Langwith-Whaley Thorns": [
@@ -269,6 +257,7 @@
     "Crewe (East Midlands Railway)",
     "Doncaster (East Midlands Railway)",
     "Leeds (Northern)",
+    "London Kings Cross (LNER)",
     "Matlock (East Midlands Railway)",
     "Peterborough (East Midlands Railway)"
   ],
@@ -280,7 +269,6 @@
     "Cardiff Central (CrossCountry)",
     "Cleethorpes (East Midlands Railway)",
     "Crewe (East Midlands Railway)",
-    "Gloucester (CrossCountry)",
     "Lincoln Central (East Midlands Railway)",
     "London St Pancras (Intl) (East Midlands Railway)",
     "Matlock (East Midlands Railway)",
@@ -298,7 +286,6 @@
     "Lincoln Central (East Midlands Railway)"
   ],
   "Mansfield": [
-    "Mansfield Woodhouse (East Midlands Railway)",
     "Nottingham (East Midlands Railway)",
     "Worksop (East Midlands Railway)"
   ],
@@ -333,12 +320,18 @@
   ],
   "Narborough": [
     "Birmingham New Street (CrossCountry)",
-    "Cambridge (CrossCountry)",
-    "Leicester (CrossCountry)",
-    "Stansted Airport (CrossCountry)"
+    "Leicester (CrossCountry)"
   ],
   "Netherfield": [
     "Skegness (East Midlands Railway)"
+  ],
+  "New Mills Central": [
+    "Manchester Piccadilly (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "New Mills Newtown": [
+    "Buxton (Northern)",
+    "Manchester Piccadilly (Northern)"
   ],
   "Newark Castle": [
     "Cleethorpes (East Midlands Railway)",
@@ -371,7 +364,6 @@
     "Lincoln Central (East Midlands Railway)",
     "Liverpool Lime Street (East Midlands Railway)",
     "London St Pancras (Intl) (East Midlands Railway)",
-    "Mansfield Woodhouse (East Midlands Railway)",
     "Matlock (East Midlands Railway)",
     "Norwich (East Midlands Railway)",
     "Skegness (East Midlands Railway)",
@@ -381,24 +373,17 @@
     "Birmingham New Street (CrossCountry)",
     "Stansted Airport (CrossCountry)"
   ],
-  "Peartree": [
-    "Lincoln Central (East Midlands Railway)"
-  ],
   "Radcliffe (Nottinghamshire)": [
-    "Nottingham (East Midlands Railway)",
-    "Skegness (East Midlands Railway)"
-  ],
-  "Rauceby": [
     "Nottingham (East Midlands Railway)",
     "Skegness (East Midlands Railway)"
   ],
   "Retford": [
     "Hull (Hull Trains)",
-    "Leeds (LNER)",
     "Leeds (Northern)",
     "Lincoln Central (Northern)",
     "London Kings Cross (Hull Trains)",
     "London Kings Cross (LNER)",
+    "Sheffield (Northern)",
     "York (LNER)"
   ],
   "Rolleston": [
@@ -445,7 +430,6 @@
     "Peterborough (East Midlands Railway)"
   ],
   "Spondon": [
-    "Birmingham New Street (CrossCountry)",
     "Cleethorpes (East Midlands Railway)",
     "Lincoln Central (East Midlands Railway)",
     "Matlock (East Midlands Railway)"
@@ -455,7 +439,6 @@
     "Stansted Airport (CrossCountry)"
   ],
   "Sutton Parkway": [
-    "Mansfield Woodhouse (East Midlands Railway)",
     "Nottingham (East Midlands Railway)",
     "Worksop (East Midlands Railway)"
   ],
@@ -471,10 +454,6 @@
     "Leicester (East Midlands Railway)",
     "Nottingham (East Midlands Railway)"
   ],
-  "Thorpe Culvert": [
-    "Nottingham (East Midlands Railway)",
-    "Skegness (East Midlands Railway)"
-  ],
   "Thurgarton": [
     "Crewe (East Midlands Railway)",
     "Lincoln Central (East Midlands Railway)"
@@ -489,7 +468,6 @@
   ],
   "Wellingborough": [
     "Corby (East Midlands Railway)",
-    "Kettering (East Midlands Railway)",
     "London St Pancras (Intl) (East Midlands Railway)"
   ],
   "Whaley Bridge": [
@@ -506,11 +484,13 @@
     "Worksop (East Midlands Railway)"
   ],
   "Willington": [
-    "Birmingham New Street (CrossCountry)"
+    "Birmingham New Street (CrossCountry)",
+    "Nottingham (CrossCountry)"
   ],
   "Worksop": [
     "Leeds (Northern)",
     "Lincoln Central (Northern)",
-    "Nottingham (East Midlands Railway)"
+    "Nottingham (East Midlands Railway)",
+    "Sheffield (Northern)"
   ]
 }

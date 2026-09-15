@@ -108,9 +108,9 @@ assert(existsSync(join(d1Dir, "oracle-clash-report.md")), "docs/uk-west-midlands
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(UK_WEST_MIDLANDS_REGION);
-assert(region?.railCount === 75, `uk-west-midlands rail count must be 75, got ${region?.railCount}`);
+assert(region?.railCount === 76, `uk-west-midlands rail count must be 76 (1 station reassigned in from rest-of-england 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), got ${region?.railCount}`);
 assert(region?.metroCount === 35, `uk-west-midlands metro count must be 35, got ${region?.metroCount}`);
-assert(region?.stopCount === 110, `uk-west-midlands combined catalog must have 110 stations, got ${region?.stopCount}`);
+assert(region?.stopCount === 111, `uk-west-midlands combined catalog must have 111 stations, got ${region?.stopCount}`);
 
 // Hub + special-case stations resolve in the expected mode.
 const hubRail = resolveRailEntry(BHM, UK_WEST_MIDLANDS_REGION);
@@ -148,7 +148,7 @@ for (const name of ["Severn Valley Railway", "Severn Valley"]) {
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // so callers can disambiguate BHM (train) from Grand Central (metro).
 const dogfoodStations = listUkWestMidlandsDogfoodStations();
-assert(dogfoodStations.length === 110, `dogfood stations must be the 110 catalog entries, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 111, `dogfood stations must be the 111 catalog entries, got ${dogfoodStations.length}`);
 const bhmEntries = dogfoodStations.filter((s) => s.name === BHM);
 assert(bhmEntries.length === 1, "Birmingham New Street must appear once in the dogfood list (rail only)");
 assert(bhmEntries[0]?.mode === "train", "Birmingham New Street's dogfood entry must be mode train");

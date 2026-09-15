@@ -196,10 +196,64 @@ check(
   `${englandTwoPlus.length} English station(s) in MORE THAN ONE of catalog/unassigned-england.md/unverified.md:\n  ${englandTwoPlus.slice(0, 30).join("\n  ")}`
 );
 
+// --- CITY_BOUNDS box check (added 15 Sep 2026, docs/jim-brief-rest-of-england-
+// reassignment.md item 4): no rest-of-england station may sit inside another live
+// region's CITY_BOUNDS box unless allow-listed with a reason. Box overlap alone isn't
+// proof of wrong-region ownership (a broad rectangle can cover a genuinely unclaimed
+// shire county too — see assignment.md), so this reuses the SAME allow-list the
+// uk-city-bounds-overlap-gate already maintains rather than duplicating a second list:
+// every rest-of-england station this check flags must already have a documented,
+// reviewed reason there.
+const cityBoundsSrc = readFileSync(join(ROOT, "public/city-session.js"), "utf8");
+const boundsBraceStart = cityBoundsSrc.indexOf("{", cityBoundsSrc.indexOf("const CITY_BOUNDS = {"));
+const boundsEnd = cityBoundsSrc.indexOf("\n  };", boundsBraceStart);
+const boundsCloseBrace = cityBoundsSrc.indexOf("}", boundsEnd);
+// eslint-disable-next-line no-eval -- same plain-text-parse approach as
+// qa/uk-city-bounds-overlap-gate.mjs and qa/live-city-lists-sync.mjs; offline, no browser.
+const CITY_BOUNDS = eval(`(${cityBoundsSrc.slice(boundsBraceStart, boundsCloseBrace + 1)})`);
+
+function inBox(lat, lng, box) {
+  return lat >= box.minLat && lat <= box.maxLat && lng >= box.minLng && lng <= box.maxLng;
+}
+
+function hintCityFromCoords(lat, lng) {
+  for (const [id, box] of Object.entries(CITY_BOUNDS)) {
+    if (inBox(lat, lng, box)) return id;
+  }
+  return null;
+}
+
+const overlapGateSrc = readFileSync(join(ROOT, "qa/uk-city-bounds-overlap-gate.mjs"), "utf8");
+
+const roePath = join(ROOT, "lib/cities/rest-of-england/stations.json");
+const roeStops = existsSync(roePath)
+  ? (JSON.parse(readFileSync(roePath, "utf8")).stops ?? [])
+  : [];
+
+let boxCheckCount = 0;
+const boxUnallowed = [];
+for (const stop of roeStops) {
+  if (typeof stop.lat !== "number" || typeof stop.lng !== "number") continue;
+  const resolved = hintCityFromCoords(stop.lat, stop.lng);
+  if (!resolved || resolved === "rest-of-england") continue;
+  boxCheckCount += 1;
+  // A station name literal inside the overlap gate's own allow-list source is treated
+  // as "reviewed with a reason" — good enough for an offline text-based cross-check;
+  // the overlap gate itself is the source of truth for the reason text.
+  const nameLiteral = JSON.stringify(stop.name);
+  if (!overlapGateSrc.includes(nameLiteral)) {
+    boxUnallowed.push(`${stop.name} (${stop.crs}) resolves to "${resolved}" via CITY_BOUNDS, not allow-listed`);
+  }
+}
+check(
+  boxUnallowed.length === 0,
+  `${boxUnallowed.length} rest-of-england station(s) sit inside another live region's CITY_BOUNDS box without an allow-list reason in qa/uk-city-bounds-overlap-gate.mjs:\n  ${boxUnallowed.slice(0, 30).join("\n  ")}`
+);
+
 if (failures > 0) {
   console.error(`\nuk-station-fill-audit: ${failures} check(s) failed`);
   process.exit(1);
 }
 console.log(
-  `uk-station-fill-audit: ok (${walesChecked} Welsh candidates all owned, ${englandChecked} English candidates each in exactly one place: catalog=${[...catalogCrs.values()].length} unassigned=${unassignedCrs.size} unverified=${unverifiedCrs.size})`
+  `uk-station-fill-audit: ok (${walesChecked} Welsh candidates all owned, ${englandChecked} English candidates each in exactly one place: catalog=${[...catalogCrs.values()].length} unassigned=${unassignedCrs.size} unverified=${unverifiedCrs.size}; ${boxCheckCount} rest-of-england/CITY_BOUNDS overlaps checked, all allow-listed)`
 );

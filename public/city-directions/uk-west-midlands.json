@@ -33,11 +33,11 @@
     "Wolverhampton Station"
   ],
   "Birmingham International": [
-    "Aberystwyth and Pwllheli (Transport for Wales)",
     "Birmingham New Street (Avanti West Coast)",
     "Birmingham New Street (LNR & WMR)",
     "Bournemouth (CrossCountry)",
-    "Edinburgh (Avanti West Coast)",
+    "Glasgow Central (Avanti West Coast)",
+    "Llandudno Junction (Transport for Wales)",
     "London Euston (Avanti West Coast)",
     "London Euston (LNR & WMR)",
     "Manchester Piccadilly (CrossCountry)",
@@ -54,25 +54,25 @@
     "Worcester Foregate Street (LNR & WMR)"
   ],
   "Birmingham New Street": [
-    "Bournemouth (CrossCountry)",
+    "Aberystwyth and Pwllheli (Transport for Wales)",
+    "Birmingham International (LNR & WMR)",
+    "Bromsgrove (LNR & WMR)",
     "Edinburgh (Avanti West Coast)",
+    "Edinburgh (CrossCountry)",
     "Four Oaks (LNR & WMR)",
-    "Glasgow Central (CrossCountry)",
-    "Leicester (CrossCountry)",
-    "Lichfield Trent Valley (LNR & WMR)",
-    "Liverpool Lime Street (LNR & WMR)",
-    "London Euston (LNR & WMR)",
-    "Manchester Piccadilly (CrossCountry)",
+    "Kings Norton (LNR & WMR)",
+    "London Euston (Avanti West Coast)",
+    "Newcastle (CrossCountry)",
     "Nottingham (CrossCountry)",
-    "Plymouth (CrossCountry)",
     "Redditch (LNR & WMR)",
     "Rugeley Trent Valley (LNR & WMR)",
-    "Wolverhampton (LNR & WMR)"
+    "Shrewsbury (LNR & WMR)",
+    "Stansted Airport (CrossCountry)"
   ],
   "Birmingham Snow Hill": [
     "Dorridge (LNR & WMR)",
     "Kidderminster (LNR & WMR)",
-    "London Marylebone (Chiltern Railways)",
+    "Leamington Spa (Chiltern Railways)",
     "Stratford-upon-Avon (LNR & WMR)",
     "Whitlocks End (LNR & WMR)",
     "Worcester Foregate Street (LNR & WMR)"
@@ -144,7 +144,6 @@
     "Birmingham New Street (Avanti West Coast)",
     "Birmingham New Street (LNR & WMR)",
     "Bournemouth (CrossCountry)",
-    "Edinburgh (Avanti West Coast)",
     "Glasgow Central (Avanti West Coast)",
     "Leamington Spa (LNR & WMR)",
     "London Euston (Avanti West Coast)",
@@ -371,7 +370,7 @@
     "Birmingham International (Transport for Wales)",
     "Edinburgh (Avanti West Coast)",
     "Glasgow Central (Avanti West Coast)",
-    "Holyhead (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
     "London Euston (Avanti West Coast)",
     "Walsall (LNR & WMR)",
     "Wolverhampton (LNR & WMR)"
@@ -398,6 +397,7 @@
     "Dorridge (LNR & WMR)",
     "Kidderminster (LNR & WMR)",
     "Liverpool Lime Street (LNR & WMR)",
+    "Shrewsbury (LNR & WMR)",
     "Stratford-upon-Avon (LNR & WMR)",
     "Walsall (LNR & WMR)",
     "Whitlocks End (LNR & WMR)",
@@ -467,7 +467,7 @@
   "Tamworth": [
     "Birmingham",
     "Crewe (LNR & WMR)",
-    "Glasgow Central (CrossCountry)",
+    "Edinburgh (CrossCountry)",
     "Liverpool Lime Street (Avanti West Coast)",
     "London Euston (Avanti West Coast)",
     "London Euston (LNR & WMR)",
@@ -528,8 +528,7 @@
     "Hereford (LNR & WMR)",
     "Lichfield Trent Valley (LNR & WMR)",
     "Nottingham (CrossCountry)",
-    "Redditch (LNR & WMR)",
-    "Worcester Shrub Hill (LNR & WMR)"
+    "Redditch (LNR & WMR)"
   ],
   "Walsall": [
     "Birmingham International (LNR & WMR)",
@@ -560,6 +559,10 @@
     "Stratford-upon-Avon (LNR & WMR)",
     "Worcester Foregate Street (LNR & WMR)"
   ],
+  "Willenhall": [
+    "Birmingham New Street (LNR & WMR)",
+    "Shrewsbury (LNR & WMR)"
+  ],
   "Winson Green": [
     "Edgbaston Village",
     "Wolverhampton St George's",
@@ -571,7 +574,6 @@
   ],
   "Wolverhampton": [
     "Aberystwyth and Pwllheli (Transport for Wales)",
-    "Birmingham International (Transport for Wales)",
     "Birmingham New Street (LNR & WMR)",
     "Bournemouth (CrossCountry)",
     "Bristol Temple Meads (CrossCountry)",
@@ -587,7 +589,6 @@
   ],
   "Wolverhampton Station": [
     "Aberystwyth and Pwllheli (Transport for Wales)",
-    "Birmingham International (Transport for Wales)",
     "Birmingham New Street (LNR & WMR)",
     "Bournemouth (CrossCountry)",
     "Bristol Temple Meads (CrossCountry)",

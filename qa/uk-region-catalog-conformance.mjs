@@ -32,7 +32,7 @@ if (regions.length !== 21) {
 }
 
 const wm = getRegion("uk-west-midlands");
-if (!wm || wm.railCount !== 75 || wm.metroCount !== 35) {
+if (!wm || wm.railCount !== 76 || wm.metroCount !== 35) {
   fail(`uk-west-midlands counts rail=${wm?.railCount} metro=${wm?.metroCount}`);
 }
 
@@ -74,12 +74,12 @@ if (!kx?.naptanId) {
 }
 
 const catalogAll = listCatalogStations("uk-west-midlands");
-if (catalogAll.length !== 110) {
-  fail(`WM combined catalog ${catalogAll.length}, expected 110`);
+if (catalogAll.length !== 111) {
+  fail(`WM combined catalog ${catalogAll.length}, expected 111`);
 }
 
 const em = getRegion("east-midlands");
-if (!em || em.railCount !== 105 || em.metroCount !== 4) {
+if (!em || em.railCount !== 107 || em.metroCount !== 4) {
   fail(`east-midlands counts rail=${em?.railCount} metro=${em?.metroCount}`);
 }
 
@@ -120,7 +120,7 @@ if (!emHubMetro || !emHubMetro.catalogId?.startsWith("net:")) {
 }
 
 const sy = getRegion("south-yorkshire");
-if (!sy || sy.railCount !== 21 || sy.metroCount !== 12) {
+if (!sy || sy.railCount !== 31 || sy.metroCount !== 12) {
   fail(`south-yorkshire counts rail=${sy?.railCount} metro=${sy?.metroCount}`);
 }
 
@@ -350,7 +350,7 @@ if (resolveRailEntry("Carmarthen", "south-wales")) {
 }
 
 const wy = getRegion("west-yorkshire");
-if (!wy || wy.railCount !== 82 || wy.metroCount !== 0) {
+if (!wy || wy.railCount !== 83 || wy.metroCount !== 0) {
   fail(`west-yorkshire counts rail=${wy?.railCount} metro=${wy?.metroCount}`);
 }
 
@@ -464,7 +464,7 @@ if (resolveRailEntry("Falkirk High", "rest-of-scotland")) {
 // london-se-national-rail: FIRST multi-group region, no single hub-lock — 10 boards
 // (5 single-board groups + 3 London Bridge sub-boards + 2 Liverpool Street sub-boards).
 const lse = getRegion("london-se-national-rail");
-if (!lse || lse.railCount !== 530 || lse.metroCount !== 0) {
+if (!lse || lse.railCount !== 571 || lse.metroCount !== 0) {
   fail(`london-se-national-rail counts rail=${lse?.railCount} metro=${lse?.metroCount}`);
 }
 
@@ -639,7 +639,7 @@ if (!solEastSecondary || solEastSecondary.crs !== "PMS") {
 // separate platforms/infrastructure, one CRS (OXF) split into two catalog entries. FIRST TIME a
 // secondary hub (not a primary terminus) has needed this in the pipeline.
 const tv = getRegion("thames-valley");
-if (!tv || tv.railCount !== 64 || tv.metroCount !== 0) {
+if (!tv || tv.railCount !== 67 || tv.metroCount !== 0) {
   fail(`thames-valley counts rail=${tv?.railCount} metro=${tv?.metroCount}`);
 }
 
@@ -675,7 +675,7 @@ if (!tvSecondaryChiltern || tvSecondaryChiltern.crs !== "OXF" || tvSecondaryChil
 // unlike every prior two-agency region (Sheffield Station / Nottingham Station) which shared
 // one hub name across both modes.
 const gm = getRegion("greater-manchester");
-if (!gm || gm.railCount !== 51 || gm.metroCount !== 14) {
+if (!gm || gm.railCount !== 87 || gm.metroCount !== 14) {
   fail(`greater-manchester counts rail=${gm?.railCount} metro=${gm?.metroCount}`);
 }
 
@@ -731,7 +731,7 @@ if (resolveRailEntry("Piccadilly Gardens", "greater-manchester")) {
 // (Tim's option B): one catalog entry only (mode train, CRS LIV) — see
 // docs/liverpool-city-region-d1/hazard-pack.md for the closed history.
 const lcr = getRegion("liverpool-city-region");
-if (!lcr || lcr.railCount !== 59 || lcr.metroCount !== 68) {
+if (!lcr || lcr.railCount !== 64 || lcr.metroCount !== 68) {
   fail(`liverpool-city-region counts rail=${lcr?.railCount} metro=${lcr?.metroCount}`);
 }
 
@@ -875,7 +875,7 @@ if (!swstTerminus || swstTerminus.crs !== "PNZ") {
 }
 
 const cum = getRegion("cumbria");
-if (!cum || cum.railCount !== 49 || cum.metroCount !== 0) {
+if (!cum || cum.railCount !== 65 || cum.metroCount !== 0) {
   fail(`cumbria counts rail=${cum?.railCount} metro=${cum?.metroCount}`);
 }
 
@@ -909,14 +909,17 @@ if (!cumSecondary2 || cumSecondary2.crs !== "BIF") {
 // catch-all for every English National Rail station phase 2a's fifteen named regions did not
 // claim. No hub lock, no corridor grouping (see lib/providers/rest-of-england.js file header).
 const roe = getRegion("rest-of-england");
-if (!roe || roe.railCount !== 436 || roe.metroCount !== 0) {
+if (!roe || roe.railCount !== 321 || roe.metroCount !== 0) {
   fail(`rest-of-england counts rail=${roe?.railCount} metro=${roe?.metroCount}`);
 }
 const roeRail = listRailStations("rest-of-england");
-for (const crs of ["ADM", "BMH", "WKG", "YRK", "BTB"]) {
+for (const crs of ["BUU", "BMH", "YRK", "BTB"]) {
   if (!roeRail.some((s) => s.crs === crs)) {
     fail(`rest-of-england missing ${crs}`);
   }
+}
+if (roeRail.some((s) => s.crs === "WKG")) {
+  fail("rest-of-england must not carry WKG (Workington) — reassigned to cumbria 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md");
 }
 for (const name of getNotInRegion("rest-of-england")) {
   if (roeRail.some((s) => s.name === name)) {
@@ -949,5 +952,5 @@ if (failures.length) {
 }
 
 console.log(
-  "uk-region-catalog-conformance: ok (uk-west-midlands 75+35, uk-london-tfl seed, east-midlands 105+4 (UK station fill phase 1, 13 Sep 2026), south-yorkshire 6+12, north-east 33+60 (UK station fill phase 2b: +5 direction-model collisions held back from rest-of-england), west-of-england 6+0, south-wales 16+0 (re-scope 7 Sep 2026, Valley Lines in-catalog via Darwin), west-yorkshire 10+0, rest-of-wales 17+0, rest-of-scotland 147+0 (UK station fill phase 1) four co-equal hubs, london-se-national-rail 10+0 seven multi-group station groups, glasgow 178+15 (UK station fill phase 1) two independent NR groups plus closed-loop Subway, edinburgh 37+22 (UK station fill phase 1) single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 8+0 hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 51+14 two-agency two-hub-pair shape cross-linked at Manchester Victoria (UK station fill phase 2b: +4 direction-model collisions held back from rest-of-england), liverpool-city-region 29+68 (full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 49+0 single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional, rest-of-england 436+0 (UK station fill phase 2b, 14 Sep 2026) flat English catch-all, no hub lock, nine direction-model collisions held back to greater-manchester/north-east instead)"
+  "uk-region-catalog-conformance: ok (uk-west-midlands 76+35, uk-london-tfl seed, east-midlands 107+4 (UK station fill phase 1, 13 Sep 2026; +2 from the 15 Sep 2026 rest-of-england reassignment), south-yorkshire 31+12 (+10 from the 15 Sep 2026 rest-of-england reassignment), north-east 33+60 (UK station fill phase 2b: +5 direction-model collisions held back from rest-of-england), west-of-england 6+0, south-wales 16+0 (re-scope 7 Sep 2026, Valley Lines in-catalog via Darwin), west-yorkshire 83+0 (+1 from the 15 Sep 2026 rest-of-england reassignment), rest-of-wales 17+0, rest-of-scotland 147+0 (UK station fill phase 1) four co-equal hubs, london-se-national-rail 530+0 seven multi-group station groups (+41 from the 15 Sep 2026 round 2 rest-of-england reassignment: 38 Kent, 3 Surrey), glasgow 178+15 (UK station fill phase 1) two independent NR groups plus closed-loop Subway, edinburgh 37+22 (UK station fill phase 1) single-hub NR plus line+terminus Trams, solent 7+0 two-hub NR shape with Portsmouth Harbour/Portsmouth & Southsea hub+secondary, thames-valley 67+0 (+3 from the 15 Sep 2026 rest-of-england reassignment) hub+secondary-hub with Oxford's first secondary-hub internal doNotGroup split, greater-manchester 87+14 (+36 from the 15 Sep 2026 rest-of-england reassignment) two-agency two-hub-pair shape cross-linked at Manchester Victoria (UK station fill phase 2b: +4 direction-model collisions held back from rest-of-england), liverpool-city-region 64+68 (+5 from the 15 Sep 2026 rest-of-england reassignment; full-network rescope 4 Sep 2026, ORR Table 6329 + NaPTAN; Merseyrail via Darwin, H1 closed as moot 4 Sep 2026) two structurally separate agency shapes, greater-anglia 14+0 hub Norwich with two co-equal secondary hubs Cambridge/Ipswich and Peterborough's flat boundary (LNER resolved in, no excludeOperators), southwest 9+0 hub+secondary+terminus (Exeter St Davids/Plymouth/Penzance) with Night Riviera Sleeper's per-station excludeOperators exclusion, cumbria 65+0 (+16 from the 15 Sep 2026 rest-of-england reassignment) single tier-1 hub Carlisle plus two tier-2 secondary hubs Oxenholme Lake District/Barrow-in-Furness with Penrith staying regional, rest-of-england 321+0 (UK station fill phase 2b, 14 Sep 2026; 74 reassigned out 15 Sep 2026 round 1, 41 more reassigned out to london-se-national-rail 15 Sep 2026 round 2) flat English catch-all, no hub lock, nine direction-model collisions held back to greater-manchester/north-east instead)"
 );

@@ -334,3 +334,281 @@ region wired since that rule.
 (436 rest-of-england, 9 greater-manchester/north-east) in a non-table format so
 `qa/uk-station-fill-audit.mjs`'s flat-CRS-column parser doesn't double-count them as still
 unassigned; the audit now reports 0 unassigned English stations.
+
+## Reassignment 15 Sep 2026 — Rest of England stations moved to their real regions
+
+Companion to `docs/jim-brief-rest-of-england-reassignment.md`. Triggered by Flixton (Trafford,
+Greater Manchester) being catalogued in `rest-of-england` — reachable only via "Rest of England"
+in a region-first picker, when Rest of England is meant to be an internal home for stations no
+real region owns, never something a rider must find. Phase 2b's own sweep only checked the
+fifteen phase 2a regions' *territory description*, never each station's coordinates against the
+regions' actual `CITY_BOUNDS` boxes or (better) NaPTAN ATCO area / true administrative boundary —
+that gap is what let Flixton and 73 others through.
+
+**The rule.** A station belongs to an existing region when it is inside that region's named
+administrative territory: the metropolitan county or combined authority for the metro regions
+(Greater Manchester, Merseyside/liverpool-city-region, West Midlands county, South/West Yorkshire,
+Tyne and Wear/north-east), the ceremonial counties/claimed corridor each county-based region's pack
+actually claims (thames-valley = Berks/Oxon/Bucks & Chilterns; solent = Hants/IoW; southwest =
+Devon/Cornwall; west-of-england = Bristol/Glos/Wilts boundary; cumbria = the ceremonial county;
+greater-anglia = Essex/Suffolk/Norfolk/Cambs; east-midlands = Notts/Derbys/Leics/Northants/Rutland/
+Lincs; london-se-national-rail = London/Kent/Surrey/Sussex/Essex commuter network), and the
+ledger's §2 named boundary-station decisions (e.g. Tamworth → West Midlands despite being
+Staffordshire, Kings Sutton flagged thames-valley-adjacent despite living in east-midlands).
+**Box overlap is evidence to check, never the verdict on its own** — a region's rectangle
+routinely oversails its true territory into a neighbouring, genuinely unclaimed shire county (see
+"reviewed and kept" below); CITY_BOUNDS boxes were only ever meant as a GPS hint's first-match
+heuristic, not a territory definition. Real calls used known NaPTAN/administrative geography
+(district/borough for each station), not just box arithmetic. This pass had no live NaPTAN pull
+available, so borderline shire-county calls (Cheshire East around Wilmslow/Handforth/Disley, the
+Home Counties commuter belt) were made conservatively — left in Rest of England unless the
+evidence was clear-cut — rather than guessed; a future pass with a real NaPTAN ATCO extract should
+re-check those.
+
+**74 stations moved.**
+
+| Station | From | To | Rule applied |
+|---|---|---|---|
+| Ashton-under-Lyne | rest-of-england | greater-manchester | Tameside borough (Greater Manchester met. county) — doNotGroup added vs the existing Metrolink stop of the same name |
+| Atherton | rest-of-england | greater-manchester | Wigan borough |
+| Bolton | rest-of-england | greater-manchester | Bolton borough |
+| Broadbottom | rest-of-england | greater-manchester | Tameside borough |
+| Bromley Cross | rest-of-england | greater-manchester | Bolton borough |
+| Chassen Road | rest-of-england | greater-manchester | Trafford borough |
+| Daisy Hill | rest-of-england | greater-manchester | Wigan borough |
+| Entwistle | rest-of-england | greater-manchester | Bolton borough (Turton) |
+| Flixton | rest-of-england | greater-manchester | Trafford borough — the reported case (0.03° west of the old box edge) |
+| Flowery Field | rest-of-england | greater-manchester | Tameside borough |
+| Godley | rest-of-england | greater-manchester | Tameside borough |
+| Greenfield | rest-of-england | greater-manchester | Oldham borough (Saddleworth) |
+| Hag Fold | rest-of-england | greater-manchester | Wigan borough |
+| Hall I' Th' Wood | rest-of-england | greater-manchester | Bolton borough |
+| Hattersley | rest-of-england | greater-manchester | Tameside borough |
+| Horwich Parkway | rest-of-england | greater-manchester | Bolton borough |
+| Hyde Central | rest-of-england | greater-manchester | Tameside borough |
+| Hyde North | rest-of-england | greater-manchester | Tameside borough |
+| Irlam | rest-of-england | greater-manchester | Salford borough |
+| Kearsley | rest-of-england | greater-manchester | Bolton borough |
+| Lostock | rest-of-england | greater-manchester | Bolton borough |
+| Marple | rest-of-england | greater-manchester | Stockport borough |
+| Middlewood | rest-of-england | greater-manchester | Stockport borough (Hazel Grove/Norbury side of the boundary; found via the box-check audit, not the original name scan) |
+| Moorside | rest-of-england | greater-manchester | Salford borough (Swinton) |
+| Moses Gate | rest-of-england | greater-manchester | Bolton borough |
+| Mossley | rest-of-england | greater-manchester | Tameside borough |
+| Newton for Hyde | rest-of-england | greater-manchester | Tameside borough |
+| Patricroft | rest-of-england | greater-manchester | Salford borough (Eccles); found via the box-check audit |
+| Romiley | rest-of-england | greater-manchester | Stockport borough |
+| Rose Hill Marple | rest-of-england | greater-manchester | Stockport borough |
+| Stalybridge | rest-of-england | greater-manchester | Tameside borough; found via the box-check audit |
+| Strines | rest-of-england | greater-manchester | Stockport borough |
+| Urmston | rest-of-england | greater-manchester | Trafford borough |
+| Walkden | rest-of-england | greater-manchester | Salford borough |
+| Westhoughton | rest-of-england | greater-manchester | Bolton borough |
+| Woodley | rest-of-england | greater-manchester | Stockport borough |
+| New Mills Central | rest-of-england | east-midlands | Derbyshire, High Peak district (east-midlands already catalogues this line's Chapel-en-le-Frith/Dove Holes/Glossop/Hadfield/Dinting) |
+| New Mills Newtown | rest-of-england | east-midlands | Derbyshire, High Peak district |
+| Adwick | rest-of-england | south-yorkshire | Doncaster borough |
+| Bentley (South Yorkshire) | rest-of-england | south-yorkshire | Doncaster borough |
+| Conisbrough | rest-of-england | south-yorkshire | Doncaster borough |
+| Doncaster | rest-of-england | south-yorkshire | Doncaster borough |
+| Hatfield & Stainforth | rest-of-england | south-yorkshire | Doncaster borough |
+| Kirk Sandall | rest-of-england | south-yorkshire | Doncaster borough |
+| Kiveton Park | rest-of-england | south-yorkshire | Rotherham borough (south-yorkshire already catalogues the neighbouring Kiveton Bridge) |
+| Penistone | rest-of-england | south-yorkshire | Barnsley borough |
+| Thorne North | rest-of-england | south-yorkshire | Doncaster borough |
+| Thorne South | rest-of-england | south-yorkshire | Doncaster borough |
+| Knottingley | rest-of-england | west-yorkshire | City of Wakefield borough |
+| Willenhall | rest-of-england | uk-west-midlands | Walsall borough (West Midlands met. county) |
+| Warrington Bank Quay | rest-of-england | liverpool-city-region | Borough of Warrington (this pack already catalogues Padgate/Sankey for Penketh, also Warrington) |
+| Warrington Central | rest-of-england | liverpool-city-region | Borough of Warrington |
+| Warrington West | rest-of-england | liverpool-city-region | Borough of Warrington |
+| Glazebrook | rest-of-england | liverpool-city-region | Rixton-with-Glazebrook parish, Borough of Warrington |
+| Birchwood | rest-of-england | liverpool-city-region | Borough of Warrington; found via the box-check audit |
+| Iver | rest-of-england | thames-valley | Buckinghamshire (South Bucks) |
+| Denham Golf Club | rest-of-england | thames-valley | Buckinghamshire (South Bucks) |
+| Chorleywood | rest-of-england | thames-valley | Hertfordshire, Chiltern line — thames-valley's pack claims "Thames Valley and Chilterns" |
+| Aspatria | rest-of-england | cumbria | Cumberland/Allerdale — West Cumbria coast line, a gap in cumbria's own catalog (no coast-line station was catalogued there before this pass) |
+| Flimby | rest-of-england | cumbria | Allerdale |
+| Maryport | rest-of-england | cumbria | Allerdale |
+| Workington | rest-of-england | cumbria | Allerdale |
+| Harrington | rest-of-england | cumbria | Allerdale |
+| Corkickle | rest-of-england | cumbria | Copeland |
+| Whitehaven | rest-of-england | cumbria | Copeland |
+| St Bees | rest-of-england | cumbria | Copeland |
+| Nethertown | rest-of-england | cumbria | Copeland |
+| Braystones | rest-of-england | cumbria | Copeland |
+| Sellafield | rest-of-england | cumbria | Copeland |
+| Seascale | rest-of-england | cumbria | Copeland |
+| Drigg | rest-of-england | cumbria | Copeland |
+| Ravenglass for Eskdale | rest-of-england | cumbria | Copeland |
+| Silecroft | rest-of-england | cumbria | Copeland |
+| Bootle | rest-of-england | cumbria | Copeland (not to be confused with the existing liverpool-city-region "Bootle New Strand"/"Bootle Oriel Road" in Sefton — a different place, same printed short name) |
+
+**Named acceptance-criteria cases, stated explicitly.** Flixton, Urmston, Chassen Road, Humphrey
+Park (already correctly in greater-manchester before this pass) and Irlam are all now (or already
+were) in `greater-manchester`. Warrington's three stations are in `liverpool-city-region`. Nuneaton,
+Bedworth and Atherstone are Warwickshire — **not claimed by any pack** (uk-west-midlands is the
+West Midlands metropolitan county only; Warwickshire/Worcestershire/Staffordshire/Shropshire are
+not any region's territory) — the rule gives them Rest of England, and they stay. Staines,
+Chertsey and West Byfleet are Surrey — also not claimed by any pack (uk-london-tfl is Greater
+London only; thames-valley is Berks/Oxon/Bucks) — the rule gives them Rest of England too, and
+they stay; Iver/Denham Golf Club/Chorleywood are the genuinely-Buckinghamshire/Chilterns members
+of that same six-station cluster and moved to thames-valley instead.
+
+**Reviewed and deliberately kept in Rest of England (not moved).** The rest of the 39-station
+uk-west-midlands box overlap (Albrighton, Alvechurch, Barnt Green, Bermuda Park, Bilbrook,
+Blakedown, Bromsgrove, Cannock, Claverdon, Codsall, Coleshill Parkway, Cosford, Danzey, Droitwich
+Spa, Hagley, Hartlebury, Hatton, Henley-in-Arden, Kenilworth, Landywood, Lapworth, Leamington Spa,
+Lichfield City, Lichfield Trent Valley, Polesworth, Redditch, Shenstone, The Lakes, Warwick,
+Warwick Parkway, Water Orton, Wilnecote, Wood End, Wootton Wawen, Wythall) are Warwickshire/
+Worcestershire/Staffordshire/Shropshire — real counties, none of them any pack's claimed
+territory. The 19-station rest-of-wales box overlap (Broome, Bucknell, Church Stretton, Craven
+Arms, Delamere, Gobowen, Hereford, Hopton Heath, Knighton, Leominster, Ludlow, Mouldsworth, Prees,
+Shrewsbury, Wem, Whitchurch (Shropshire), Yorton, plus Warrington's two already moved above) are
+English stations the Welsh box overhangs — Shropshire/Herefordshire/Cheshire, genuinely not
+Wales's and not claimed by any English pack either. Rugby, Rugeley Town, Rugeley Trent Valley,
+Uttoxeter and Burton-on-Trent overlap east-midlands's box but are Warwickshire/Staffordshire, not
+any of the six counties east-midlands's pack actually claims. Darwen (Blackburn with Darwen,
+Lancashire) and Disley (Cheshire East — genuinely ambiguous, close to the Stockport boundary but
+kept out without a firmer source than this pass had) sit inside greater-manchester's widened box
+but aren't Greater Manchester. Hednesford (Staffordshire, Cannock Chase) sits inside
+east-midlands's widened box but isn't Derbyshire. South Milford (North Yorkshire, Selby district)
+sits inside west-yorkshire's widened box but isn't West Yorkshire. All ten are allow-listed in
+`qa/uk-city-bounds-overlap-gate.mjs` under `region: "rest-of-england"` with the reason above.
+
+**Cheshire and the Home Counties, deferred rather than guessed.** A large share of the remaining
+362 stations are Cheshire (East/West — the Wilmslow/Alderley Edge/Knutsford/Sandbach/Crewe/
+Northwich corridor and the Potteries towns just over the Staffordshire line), Essex (Chelmsford,
+Harlow, Clacton — greater-anglia's own box floor sits at lat 51.80, and several of these sit just
+south of it, the same edge-case shape as Flixton's), and East Kent (Ashford International through
+Ramsgate/Margate — well outside london-se-national-rail's own box). None of these counties are
+unambiguously "claimed" by an existing pack's own description in the way Cheshire/Essex/Kent
+would need to be to move with confidence, and this pass had no live NaPTAN ATCO-prefix pull to
+settle them precisely — recorded here as a flagged follow-up rather than moved on a guess.
+
+**CITY_BOUNDS changes.** `greater-manchester` widened both edges (`-2.35..-2.10` →
+`-2.54..-2.01`) to fit its 36 reassigned stations — still doesn't reach Wigan North Western/
+Wallgate (already outside the old box; pre-existing gap, out of scope here). `south-yorkshire`
+widened both edges (`-1.58..-1.25` → `-1.63..-0.95`) for its 10. `west-yorkshire` widened east
+(`-1.30` → `-1.25`) for Knottingley. `east-midlands` widened west (`-1.99` → `-2.01`) for New
+Mills. `cumbria` widened west (`-3.30` → `-3.60`) for the West Cumbria coast line. `uk-west-
+midlands`, `liverpool-city-region` and `thames-valley` already covered their new stations without
+a box change. Every new cross-box resolution this caused (Kiveton Park, Farnworth/Littleborough,
+Glazebrook/Birchwood, Iver/Denham Golf Club/Chorleywood, plus the ten "kept" stations above) is
+allow-listed in `qa/uk-city-bounds-overlap-gate.mjs` with a reason; `node
+qa/uk-city-bounds-overlap-gate.mjs` is green.
+
+**`qa/uk-station-fill-audit.mjs` extended** with a CITY_BOUNDS box check: every `rest-of-england`
+station whose coordinates resolve (via `hintCityFromCoords`) into another live region's box must
+have a matching allow-list entry in `qa/uk-city-bounds-overlap-gate.mjs`, or the audit fails.
+Reuses that gate's allow-list as the single source of truth rather than maintaining a second one.
+
+**Rest of England: 436 → 362.** Dogfood gate counts, `coverage.json` station-count sentences and
+`public/city-directions/{greater-manchester,east-midlands,south-yorkshire,west-yorkshire,uk-west-
+midlands,liverpool-city-region,thames-valley,cumbria,rest-of-england}.json` all updated to match.
+
+## Reassignment 15 Sep 2026 round 2 — every pack's claimed counties, not just the nearest two
+
+Companion to the "Round 2" section of `docs/jim-brief-rest-of-england-reassignment.md`, triggered
+by Mark's QA FAIL on PR #399 (https://github.com/tdrevans-aus/next-train-app/pull/399#issuecomment-5681517329):
+Staines, Chertsey and West Byfleet (Surrey, SWR into Waterloo) were kept in `rest-of-england`
+because the round 1 "reviewed and kept" check only weighed them against `uk-london-tfl` and
+`thames-valley` — the two geographically nearest packs — never against `london-se-national-rail`,
+the one pack whose own `coverage.json` explicitly claims "London, Kent, Surrey, Sussex and
+Essex's National Rail commuter network."
+
+**The fix to the method.** Round 1's rule already named every pack's claimed counties in one place
+(see the rule text above), but the per-station review checked only the boxes/packs that
+geographically overhang each cluster, not the full list every time. Round 2 re-ran the "reviewed
+and kept" list (all ~60 stations still sitting in `rest-of-england` after round 1: the 34
+uk-west-midlands overlap, the 17 rest-of-wales/English-Marches overlap, Rugby/Rugeley
+Town/Rugeley Trent Valley/Uttoxeter/Burton-on-Trent, Darwen/Disley, Hednesford, South Milford) and
+every remaining East Kent/Surrey/Essex station against all nine named claims (thames-valley,
+solent, southwest, west-of-england, cumbria, greater-anglia, east-midlands, london-se-national-rail,
+plus the metro-county packs), not just the two nearest.
+
+**Result: no change to the 60-station "reviewed and kept" list.** None of Warwickshire,
+Worcestershire, Staffordshire, Shropshire, Herefordshire, Cheshire, Lancashire or North Yorkshire
+is named by any pack's claim — the round 1 verdict for all 60 stands.
+
+**41 more stations moved to `london-se-national-rail`.**
+
+| Station | From | To | Rule applied |
+|---|---|---|---|
+| Adisham | rest-of-england | london-se-national-rail | Kent, claimed explicitly by london-se-national-rail's coverage.json |
+| Appledore (Kent) | rest-of-england | london-se-national-rail | Kent, Marshlink line |
+| Ashford International | rest-of-england | london-se-national-rail | Kent, HS1 domestic/Southeastern hub |
+| Aylesham | rest-of-england | london-se-national-rail | Kent |
+| Bekesbourne | rest-of-england | london-se-national-rail | Kent |
+| Birchington-on-Sea | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Broadstairs | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Canterbury East | rest-of-england | london-se-national-rail | Kent |
+| Canterbury West | rest-of-england | london-se-national-rail | Kent |
+| Chartham | rest-of-england | london-se-national-rail | Kent |
+| Chestfield & Swalecliffe | rest-of-england | london-se-national-rail | Kent |
+| Chilham | rest-of-england | london-se-national-rail | Kent |
+| Chertsey | rest-of-england | london-se-national-rail | Surrey, claimed explicitly by london-se-national-rail's coverage.json; SWR (not uk-london-tfl, which doesn't reach it) is the operator that actually serves it |
+| Deal | rest-of-england | london-se-national-rail | Kent |
+| Dover Priory | rest-of-england | london-se-national-rail | Kent |
+| Dumpton Park | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Faversham | rest-of-england | london-se-national-rail | Kent |
+| Folkestone Central | rest-of-england | london-se-national-rail | Kent |
+| Folkestone West | rest-of-england | london-se-national-rail | Kent |
+| Ham Street | rest-of-england | london-se-national-rail | Kent, Marshlink line |
+| Herne Bay | rest-of-england | london-se-national-rail | Kent |
+| Kearsney | rest-of-england | london-se-national-rail | Kent |
+| Margate | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Martin Mill | rest-of-england | london-se-national-rail | Kent |
+| Minster | rest-of-england | london-se-national-rail | Kent |
+| Ramsgate | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Sandling | rest-of-england | london-se-national-rail | Kent |
+| Sandwich | rest-of-england | london-se-national-rail | Kent |
+| Selling | rest-of-england | london-se-national-rail | Kent |
+| Shepherds Well | rest-of-england | london-se-national-rail | Kent |
+| Snowdown | rest-of-england | london-se-national-rail | Kent |
+| Staines | rest-of-england | london-se-national-rail | Surrey, Mark's PR #399 hard finding; SWR Windsor Lines into Waterloo, not uk-london-tfl's territory |
+| Sturry | rest-of-england | london-se-national-rail | Kent |
+| Teynham | rest-of-england | london-se-national-rail | Kent |
+| Thanet Parkway | rest-of-england | london-se-national-rail | Kent, HS1 domestic |
+| Walmer | rest-of-england | london-se-national-rail | Kent |
+| West Byfleet | rest-of-england | london-se-national-rail | Surrey, SWR main line into Waterloo, not uk-london-tfl's territory |
+| Westenhanger | rest-of-england | london-se-national-rail | Kent |
+| Westgate-on-Sea | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Whitstable | rest-of-england | london-se-national-rail | Kent |
+| Wye | rest-of-england | london-se-national-rail | Kent |
+
+**Essex — a genuine conflict, left in place, not a fresh guess.** Round 1 deferred Essex "rather
+than guessed" (no NaPTAN pull); round 2's rule text makes explicit that two packs claim Essex by
+name: greater-anglia ("Essex/Suffolk/Norfolk/Cambs") and london-se-national-rail ("London, Kent,
+Surrey, Sussex and Essex"). Per the brief's round 2 instruction ("unless another pack claims the
+same county explicitly, in which case record the conflict... and leave the station where it is"),
+the nine Essex stations still in `rest-of-england` are not moved, and this dual claim is recorded
+here rather than resolved by guessing which pack should win: Beaulieu Park, Burnham-on-Crouch,
+Chelmsford, Clacton-on-Sea, Harlow Mill, Harlow Town, Hatfield Peverel, Roydon, Southminster.
+Whoever next reconciles greater-anglia's and london-se-national-rail's Essex boundary (a real
+NaPTAN ATCO-prefix pull would settle it precisely) should resolve this, not a future station-fill
+pass guessing again.
+
+**No Sussex stations remained in `rest-of-england`** to check — none of the 362 (post round 1)
+stations carry a recognisably Sussex place name, and no Sussex candidate appears anywhere in the
+round 1 "kept" lists either.
+
+**CITY_BOUNDS changes, round 2.** `london-se-national-rail` widened maxLng from 0.8 to 1.44 (fits
+all 38 Kent reassignments) and minLng from -0.5 to -0.51 (fits Chertsey/Staines/West Byfleet on
+paper, though uk-london-tfl's box — earlier in public/city-session.js's first-match order and
+itself unchanged — still resolves those three first; allow-listed in
+qa/uk-city-bounds-overlap-gate.mjs under region: "london-se-national-rail" instead of solved with
+box priority). The same widening geometrically swept in two of the nine Essex conflict stations
+(Burnham-on-Crouch, Southminster, both just inside the new maxLng) — allow-listed under region:
+"rest-of-england" rather than moved, since they're the conflict set above, not a clean claim.
+
+**The Cumbria block, one row per station (Mark's non-blocking nit on PR #399's body).** The
+round 1 section above already lists all 16 West Cumbria coast-line stations individually
+(Aspatria, Flimby, Maryport, Workington, Harrington, Corkickle, Whitehaven, St Bees, Nethertown,
+Braystones, Sellafield, Seascale, Drigg, Ravenglass for Eskdale, Silecroft, Bootle) — only the PR
+#399 body's own move table collapsed them into one comma-listed row. The round 2 PR comment
+restates them station-by-station for the same literal-compliance reason.
+
+**Rest of England: 362 → 321.** `london-se-national-rail`: 530 → 571. Dogfood gate counts,
+`coverage.json` station-count sentences, `qa/uk-city-bounds-overlap-gate.mjs`'s allow-list and
+`public/city-directions/{london-se-national-rail,rest-of-england}.json` all updated to match.

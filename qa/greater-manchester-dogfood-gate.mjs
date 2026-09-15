@@ -127,7 +127,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(GREATER_MANCHESTER_REGION);
-assert(region?.railCount === 51, `greater-manchester rail count must be 51 (UK station fill phase 2b, 14 Sep 2026), got ${region?.railCount}`);
+assert(region?.railCount === 87, `greater-manchester rail count must be 87 (36 stations reassigned in from rest-of-england 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), got ${region?.railCount}`);
 assert(region?.metroCount === 14, `greater-manchester metro count must be 14, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -167,7 +167,7 @@ assert(!metroNames.has("Stockport (tram stop)"), "Metrolink catalog must not car
 assert(metroStops.length === 14, `Metrolink catalog must have exactly 14 stops, got ${metroStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 65, `combined catalog must have 65 stations (51 rail + 14 metro, UK station fill phase 2b), got ${allStations.length}`);
+assert(allStations.length === 101, `combined catalog must have 101 stations (87 rail + 14 metro, 15 Sep 2026 rest-of-england reassignment), got ${allStations.length}`);
 
 // doNotGroup — Manchester Victoria resolves as two distinct catalog entries by mode.
 const victoriaRail = resolveCatalogEntry(GREATER_MANCHESTER_NR_SECONDARY_HUB, "train");
@@ -268,7 +268,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Manchester Victoria's doNotGroup lock needs it to disambiguate).
 const dogfoodStations = listGreaterManchesterDogfoodStations();
-assert(dogfoodStations.length === 65, `dogfood stations must be the 65 catalog entries (51 rail + 14 metro, UK station fill phase 2b), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 101, `dogfood stations must be the 101 catalog entries (87 rail + 14 metro, 15 Sep 2026 rest-of-england reassignment), got ${dogfoodStations.length}`);
 const victoriaEntries = dogfoodStations.filter((s) => s.name === GREATER_MANCHESTER_NR_SECONDARY_HUB);
 assert(victoriaEntries.length === 2, "Manchester Victoria must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(

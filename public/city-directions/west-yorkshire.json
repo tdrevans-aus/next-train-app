@@ -49,6 +49,7 @@
     "Halifax (Northern)",
     "Hull (Northern)",
     "Leeds (Northern)",
+    "London Kings Cross (Grand Central)",
     "Manchester Victoria (Northern)",
     "York (Northern)"
   ],
@@ -64,8 +65,10 @@
     "Preston (Northern)"
   ],
   "Brighouse": [
+    "Bradford Interchange (Grand Central)",
     "Bradford Interchange (Northern)",
     "Leeds (Northern)",
+    "London Kings Cross (Grand Central)",
     "Wigan Wallgate (Northern)"
   ],
   "Brockholes": [
@@ -73,9 +76,6 @@
     "Sheffield (Northern)"
   ],
   "Burley Park": [
-    "Harrogate (Northern)",
-    "Horsforth (Northern)",
-    "Knaresborough (Northern)",
     "Leeds (Northern)",
     "York (Northern)"
   ],
@@ -99,7 +99,6 @@
     "York (Northern)"
   ],
   "Castleford": [
-    "Goole (Northern)",
     "Knottingley (Northern)",
     "Leeds (Northern)",
     "Manchester Piccadilly (TransPennine Express)",
@@ -123,8 +122,7 @@
   ],
   "Cottingley": [
     "Bradford Interchange (Northern)",
-    "Leeds (Northern)",
-    "Wigan Wallgate (Northern)"
+    "Leeds (Northern)"
   ],
   "Cross Gates": [
     "Halifax (Northern)",
@@ -144,11 +142,9 @@
   "Dewsbury": [
     "Bradford Interchange (Northern)",
     "Leeds (Northern)",
-    "Leeds (TransPennine Express)",
     "Manchester Airport (TransPennine Express)",
     "Manchester Victoria (TransPennine Express)",
     "Redcar Central (TransPennine Express)",
-    "Saltburn (TransPennine Express)",
     "Scarborough (TransPennine Express)",
     "Wigan Wallgate (Northern)"
   ],
@@ -159,7 +155,6 @@
     "York (Northern)"
   ],
   "Farnworth": [
-    "Clitheroe (Northern)",
     "Southport (Northern)",
     "Stalybridge (Northern)"
   ],
@@ -183,7 +178,6 @@
     "Halifax (Northern)",
     "Hull (Northern)",
     "Leeds (Northern)",
-    "Redcar Central (TransPennine Express)",
     "York (Northern)"
   ],
   "Glasshoughton": [
@@ -209,9 +203,6 @@
     "Preston (Northern)"
   ],
   "Headingley": [
-    "Harrogate (Northern)",
-    "Horsforth (Northern)",
-    "Knaresborough (Northern)",
     "Leeds (Northern)",
     "York (Northern)"
   ],
@@ -228,15 +219,12 @@
     "Sheffield (Northern)"
   ],
   "Horsforth": [
-    "Harrogate (Northern)",
-    "Knaresborough (Northern)",
     "Leeds (Northern)",
     "London Kings Cross (LNER)",
     "York (Northern)"
   ],
   "Huddersfield": [
     "Hull (TransPennine Express)",
-    "Leeds (TransPennine Express)",
     "Liverpool Lime Street (TransPennine Express)",
     "Manchester Airport (TransPennine Express)",
     "Manchester Piccadilly (TransPennine Express)",
@@ -266,7 +254,12 @@
     "Bradford Forster Square (Northern)",
     "Leeds (Northern)"
   ],
+  "Knottingley": [
+    "Leeds (Northern)"
+  ],
   "Leeds Station": [
+    "Bradford Forster Square (Northern)",
+    "Doncaster (Northern)",
     "Edinburgh (CrossCountry)",
     "Halifax (Northern)",
     "Hull (TransPennine Express)",
@@ -275,7 +268,6 @@
     "Lincoln Central (Northern)",
     "Liverpool Lime Street (TransPennine Express)",
     "London Kings Cross (LNER)",
-    "Manchester Victoria (TransPennine Express)",
     "Poppleton (Northern)",
     "Sheffield (Northern)",
     "Skipton (Northern)",
@@ -292,9 +284,11 @@
     "Sheffield (Northern)"
   ],
   "Low Moor": [
+    "Bradford Interchange (Grand Central)",
     "Bradford Interchange (Northern)",
     "Chester (Northern)",
-    "Leeds (Northern)"
+    "Leeds (Northern)",
+    "London Kings Cross (Grand Central)"
   ],
   "Marsden": [
     "Leeds (TransPennine Express)",
@@ -307,15 +301,16 @@
     "Leeds (Northern)"
   ],
   "Micklefield": [
-    "Blackpool North (Northern)",
     "Halifax (Northern)",
     "Hull (Northern)",
     "Leeds (Northern)",
     "York (Northern)"
   ],
   "Mirfield": [
+    "Bradford Interchange (Grand Central)",
     "Bradford Interchange (Northern)",
     "Leeds (Northern)",
+    "London Kings Cross (Grand Central)",
     "Manchester Piccadilly (TransPennine Express)",
     "Wigan Wallgate (Northern)",
     "York (TransPennine Express)"
@@ -346,7 +341,6 @@
   "Normanton": [
     "Leeds (Northern)",
     "Manchester Piccadilly (TransPennine Express)",
-    "Nottingham (Northern)",
     "Sheffield (Northern)",
     "York (TransPennine Express)"
   ],
@@ -356,12 +350,12 @@
     "Sheffield (Northern)"
   ],
   "Pontefract Baghill": [
-    "Sheffield (Northern)"
+    "York (Northern)"
   ],
   "Pontefract Monkhill": [
+    "Bradford Interchange (Grand Central)",
     "Knottingley (Northern)",
-    "Leeds (Northern)",
-    "London Kings Cross (Grand Central)"
+    "Leeds (Northern)"
   ],
   "Pontefract Tanshelf": [
     "Knottingley (Northern)",
@@ -389,9 +383,9 @@
   ],
   "Shipley": [
     "Bradford Forster Square (Northern)",
-    "Carlisle (Northern)",
     "Ilkley (Northern)",
     "Leeds (Northern)",
+    "Morecambe (Northern)",
     "Skipton (Northern)"
   ],
   "Slaithwaite": [
@@ -400,7 +394,6 @@
     "York (TransPennine Express)"
   ],
   "Sowerby Bridge": [
-    "Blackpool North (Northern)",
     "Chester (Northern)",
     "Leeds (Northern)",
     "Wigan Wallgate (Northern)"
@@ -408,7 +401,6 @@
   "Steeton & Silsden": [
     "Bradford Forster Square (Northern)",
     "Leeds (Northern)",
-    "Morecambe (Northern)",
     "Skipton (Northern)"
   ],
   "Stocksmoor": [
@@ -428,39 +420,35 @@
     "Wigan Wallgate (Northern)"
   ],
   "Wakefield Kirkgate": [
+    "Bradford Interchange (Grand Central)",
     "Knottingley (Northern)",
     "Leeds (Northern)",
     "Lincoln Central (Northern)",
-    "London Kings Cross (Grand Central)",
     "Manchester Piccadilly (TransPennine Express)",
     "Nottingham (Northern)",
     "Sheffield (Northern)",
     "York (TransPennine Express)"
   ],
   "Wakefield Westgate": [
-    "Cardiff Central and Plymouth (CrossCountry)",
+    "Aberdeen (CrossCountry)",
     "Doncaster (Northern)",
-    "Glasgow Central (CrossCountry)",
     "Harrogate (LNER)",
     "Knottingley (Northern)",
     "Leeds (LNER)",
     "Leeds (Northern)",
     "London Kings Cross (LNER)",
+    "Plymouth (CrossCountry)",
     "Sheffield (Northern)"
   ],
   "Walsden": [
-    "Blackburn (Northern)",
     "Leeds (Northern)",
     "Wigan Wallgate (Northern)"
   ],
   "Weeton": [
-    "Harrogate (Northern)",
-    "Knaresborough (Northern)",
     "Leeds (Northern)",
     "York (Northern)"
   ],
   "Woodlesford": [
-    "Goole (Northern)",
     "Knottingley (Northern)",
     "Leeds (Northern)",
     "Sheffield (Northern)"

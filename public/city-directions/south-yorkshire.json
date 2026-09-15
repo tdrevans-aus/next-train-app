@@ -1,9 +1,20 @@
 {
+  "Adwick": [
+    "Doncaster (Northern)",
+    "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
   "Barnsley": [
     "Huddersfield (Northern)",
     "Leeds (Northern)",
     "Lincoln Central (Northern)",
     "Nottingham (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Bentley (South Yorkshire)": [
+    "Adwick (Northern)",
+    "Doncaster (Northern)",
+    "Leeds (Northern)",
     "Sheffield (Northern)"
   ],
   "Bolton-on-Dearne": [
@@ -13,6 +24,10 @@
   "Chapeltown": [
     "Huddersfield (Northern)",
     "Leeds (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Conisbrough": [
+    "Adwick (Northern)",
     "Sheffield (Northern)"
   ],
   "Darnall": [
@@ -27,10 +42,22 @@
     "Huddersfield (Northern)",
     "Sheffield (Northern)"
   ],
-  "Dore": [
+  "Doncaster": [
+    "Adwick (Northern)",
+    "Bradford Interchange (Grand Central)",
     "Cleethorpes (TransPennine Express)",
+    "Edinburgh (LNER)",
+    "Harrogate (LNER)",
+    "Leeds (LNER)",
+    "Leeds (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "London Kings Cross (LNER)",
+    "Scarborough (Northern)",
+    "Sheffield (Northern)",
+    "York (CrossCountry)"
+  ],
+  "Dore": [
     "Manchester Piccadilly (Northern)",
-    "Norwich (East Midlands Railway)",
     "Sheffield (Northern)"
   ],
   "Elsecar": [
@@ -42,33 +69,44 @@
     "Leeds (Northern)",
     "Sheffield (Northern)"
   ],
+  "Hatfield & Stainforth": [
+    "Doncaster (Northern)",
+    "Hull (Northern)",
+    "Scunthorpe (Northern)"
+  ],
+  "Kirk Sandall": [
+    "Doncaster (Northern)",
+    "Hull (Northern)",
+    "Scunthorpe (Northern)"
+  ],
   "Kiveton Bridge": [
     "Leeds (Northern)",
     "Lincoln Central (Northern)"
   ],
+  "Kiveton Park": [
+    "Leeds (Northern)",
+    "Lincoln Central (Northern)"
+  ],
   "Meadowhall": [
-    "Adwick (Northern)",
-    "Cleethorpes (TransPennine Express)",
     "Huddersfield (Northern)",
     "Leeds (Northern)",
     "Lincoln Central (Northern)",
     "Liverpool Lime Street (TransPennine Express)",
+    "Nottingham (Northern)",
     "Scarborough (Northern)",
     "Sheffield (Northern)"
   ],
   "Meadowhall Interchange": [
-    "Adwick (Northern)",
-    "Cleethorpes (TransPennine Express)",
     "Huddersfield (Northern)",
     "Leeds (Northern)",
     "Lincoln Central (Northern)",
     "Liverpool Lime Street (TransPennine Express)",
+    "Nottingham (Northern)",
     "Scarborough (Northern)",
     "Sheffield (Northern)"
   ],
   "Mexborough": [
     "Adwick (Northern)",
-    "Doncaster (Northern)",
     "Sheffield (Northern)"
   ],
   "Moorthorpe": [
@@ -76,28 +114,31 @@
     "Sheffield (Northern)",
     "York (Northern)"
   ],
+  "Penistone": [
+    "Huddersfield (Northern)",
+    "Sheffield (Northern)"
+  ],
   "Rotherham Central": [
     "Adwick (Northern)",
-    "Doncaster (Northern)",
     "Leeds (Northern)",
     "Parkgate (Sheffield Supertram)",
     "Sheffield (Northern)",
-    "Sheffield Cathedral(Tram) (Sheffield Supertram)"
+    "Sheffield Cathedral(Tram) (Sheffield Supertram)",
+    "York (Northern)"
   ],
   "Sheffield Station": [
+    "Aberdeen (CrossCountry)",
     "Adwick (Northern)",
-    "Cleethorpes (TransPennine Express)",
-    "Glasgow Central (CrossCountry)",
     "Huddersfield (Northern)",
     "Leeds (Northern)",
+    "Lincoln Central (Northern)",
     "Liverpool Lime Street (East Midlands Railway)",
-    "Liverpool Lime Street (TransPennine Express)",
     "London St Pancras (Intl) (East Midlands Railway)",
-    "Manchester Piccadilly (Northern)",
-    "Nottingham (Northern)",
+    "Nottingham (East Midlands Railway)",
     "Plymouth (CrossCountry)",
     "Reading (CrossCountry)",
-    "Scarborough (Northern)"
+    "Scarborough (Northern)",
+    "York (CrossCountry)"
   ],
   "Silkstone Common": [
     "Huddersfield (Northern)",
@@ -109,9 +150,17 @@
   ],
   "Swinton (South Yorkshire)": [
     "Adwick (Northern)",
-    "Doncaster (Northern)",
     "Leeds (Northern)",
-    "Sheffield (Northern)"
+    "Sheffield (Northern)",
+    "York (Northern)"
+  ],
+  "Thorne North": [
+    "Doncaster (Northern)",
+    "Hull (Northern)"
+  ],
+  "Thorne South": [
+    "Doncaster (Northern)",
+    "Scunthorpe (Northern)"
   ],
   "Thurnscoe": [
     "Leeds (Northern)",

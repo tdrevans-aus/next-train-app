@@ -4,12 +4,9 @@
     "Eltham (Southeastern)",
     "Heathrow Airport T4 (Elizabeth Line)",
     "London Cannon Street (Southeastern)",
-    "London Paddington (Elizabeth Line)",
     "Luton (Thameslink)",
-    "Maidenhead (Elizabeth Line)",
     "Rainham (Kent) (Thameslink)",
-    "Reading (Elizabeth Line)",
-    "Sidcup (Southeastern)"
+    "Reading (Elizabeth Line)"
   ],
   "Acton Central": [
     "Richmond (London Overground)",
@@ -23,17 +20,18 @@
     "London Waterloo (South Western Railway)",
     "Weybridge (South Western Railway)"
   ],
+  "Adisham": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
+  ],
   "Albany Park": [
     "Dartford (Southeastern)",
     "Gravesend (Southeastern)",
-    "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Woolwich Arsenal (Southeastern)"
   ],
   "Alexandra Palace": [
     "Cambridge (Great Northern)",
-    "Hertford North (Great Northern)",
-    "Letchworth Garden City (Great Northern)",
     "London Kings Cross (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)",
@@ -46,14 +44,26 @@
   ],
   "Anerley": [
     "Highbury & Islington (London Overground)",
-    "Sutton (London) (Southern)",
     "West Croydon (London Overground)"
   ],
+  "Appledore (Kent)": [
+    "Ashford International (Southern)",
+    "Eastbourne (Southern)"
+  ],
   "Ashford (Surrey)": [
-    "Aldershot (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Weybridge (South Western Railway)",
     "Windsor & Eton Riverside (South Western Railway)"
+  ],
+  "Ashford International": [
+    "Dover Priory (Southeastern)",
+    "Eastbourne (Southern)",
+    "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Margate (Southeastern)",
+    "Ramsgate (Southeastern)",
+    "Sandwich (Southeastern)"
   ],
   "Ashtead": [
     "Dorking (South Western Railway)",
@@ -64,7 +74,6 @@
     "London Waterloo (South Western Railway)"
   ],
   "Ashurst": [
-    "London Bridge (Southern)",
     "Uckfield (Southern)"
   ],
   "Aylesford": [
@@ -72,13 +81,17 @@
     "Strood (Southeastern)",
     "Tonbridge (Southeastern)"
   ],
+  "Aylesham": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
+  ],
   "Balham": [
     "Dorking (Southern)",
     "East Croydon (Southern)",
     "Epsom Downs (Southern)",
+    "Horsham (Southern)",
     "London Bridge (Southern)",
     "London Victoria (Southern)",
-    "Sutton (London) (Southern)",
     "Watford Junction (Southern)",
     "West Croydon (Southern)"
   ],
@@ -91,13 +104,12 @@
     "Gospel Oak (London Overground)",
     "Grays (c2c)",
     "London Fenchurch Street (c2c)",
-    "Pitsea (c2c)",
-    "Shoeburyness (c2c)"
+    "Shoeburyness (c2c)",
+    "Southend Central (c2c)"
   ],
   "Barming": [
     "Ashford International (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Barnehurst": [
     "Dartford (Southeastern)",
@@ -138,18 +150,16 @@
     "London Charing Cross (Southeastern)"
   ],
   "Battlesbridge": [
-    "London Liverpool Street (Greater Anglia)",
     "Southminster (Greater Anglia)",
     "Wickford (Greater Anglia)"
   ],
   "Bearsted": [
     "Ashford International (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Beckenham Hill": [
     "Kentish Town (Thameslink)",
-    "Luton (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
@@ -159,10 +169,13 @@
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)"
   ],
+  "Bekesbourne": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
+  ],
   "Bellingham": [
-    "Gillingham (Kent) (Southeastern)",
     "Kentish Town (Thameslink)",
-    "Luton (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
@@ -184,11 +197,13 @@
   ],
   "Benfleet": [
     "London Fenchurch Street (c2c)",
-    "Shoeburyness (c2c)"
+    "Shoeburyness (c2c)",
+    "Southend Central (c2c)"
   ],
   "Berwick (Sussex)": [
     "Brighton (Southern)",
-    "Eastbourne (Southern)"
+    "Eastbourne (Southern)",
+    "Ore (Southern)"
   ],
   "Bethnal Green": [
     "Cheshunt (London Overground)",
@@ -206,7 +221,6 @@
   "Bexley": [
     "Dartford (Southeastern)",
     "Gravesend (Southeastern)",
-    "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Woolwich Arsenal (Southeastern)"
   ],
@@ -220,16 +234,20 @@
   ],
   "Bickley": [
     "Kentish Town (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)",
-    "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
   ],
   "Billericay": [
     "London Liverpool Street (Greater Anglia)",
-    "Southend Victoria (Greater Anglia)",
-    "Southminster (Greater Anglia)"
+    "Southend Victoria (Greater Anglia)"
+  ],
+  "Birchington-on-Sea": [
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Birkbeck": [
     "Beckenham Junction (Southern)",
@@ -259,11 +277,9 @@
     "Ashford International (Southeastern)",
     "London Charing Cross (Southeastern)",
     "London Victoria (Southeastern)",
-    "Maidstone East (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "Maidstone East (Southeastern)"
   ],
   "Bowes Park": [
-    "Gordon Hill (Great Northern)",
     "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)"
@@ -295,6 +311,12 @@
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)"
   ],
+  "Broadstairs": [
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Margate (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
   "Brockley": [
     "Crystal Palace (London Overground)",
     "Highbury & Islington (London Overground)",
@@ -308,8 +330,8 @@
   "Bromley South": [
     "Ashford International (Southeastern)",
     "Dover Priory and Ramsgate (Southeastern)",
-    "Gillingham (Kent) (Southeastern)",
     "Kentish Town (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)",
     "Sevenoaks (Thameslink)",
@@ -338,7 +360,6 @@
     "London Euston (LNR & WMR)",
     "London Euston (London Overground)",
     "Milton Keynes Central (LNR & WMR)",
-    "Tring (LNR & WMR)",
     "Watford Junction (London Overground)"
   ],
   "Buxted": [
@@ -346,7 +367,6 @@
     "Uckfield (Southern)"
   ],
   "Byfleet & New Haw": [
-    "Guildford (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Woking (South Western Railway)"
   ],
@@ -381,6 +401,16 @@
     "Stratford (London) (London Overground)",
     "West Croydon (London Overground)"
   ],
+  "Canterbury East": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
+  ],
+  "Canterbury West": [
+    "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "Margate (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
   "Carpenders Park": [
     "London Euston (London Overground)",
     "Watford Junction (London Overground)"
@@ -396,8 +426,7 @@
     "Epsom (Southern)",
     "Epsom Downs (Southern)",
     "London Bridge (Southern)",
-    "London Victoria (Southern)",
-    "Sutton (London) (Southern)"
+    "London Victoria (Southern)"
   ],
   "Castle Bar Park": [
     "Greenford (Great Western Railway)",
@@ -408,7 +437,7 @@
   ],
   "Catford": [
     "Kentish Town (Thameslink)",
-    "Luton (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
@@ -418,7 +447,6 @@
     "London Charing Cross (Southeastern)"
   ],
   "Chadwell Heath": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
@@ -426,7 +454,8 @@
   "Chafford Hundred": [
     "Grays (c2c)",
     "London Fenchurch Street (c2c)",
-    "Pitsea (c2c)"
+    "Pitsea (c2c)",
+    "Southend Central (c2c)"
   ],
   "Chalkwell": [
     "London Fenchurch Street (c2c)",
@@ -443,6 +472,11 @@
     "Luton (Thameslink)",
     "Rainham (Kent) (Thameslink)",
     "Slade Green (Southeastern)"
+  ],
+  "Chartham": [
+    "Canterbury West (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Chatham": [
     "Dover Priory and Ramsgate (Southeastern)",
@@ -461,10 +495,13 @@
     "London Victoria (Southern)"
   ],
   "Chelsfield": [
-    "Hastings (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Sevenoaks (Southeastern)",
     "Tonbridge (Southeastern)"
+  ],
+  "Chertsey": [
+    "London Waterloo (South Western Railway)",
+    "Weybridge (South Western Railway)"
   ],
   "Chessington North": [
     "Chessington South (South Western Railway)",
@@ -472,6 +509,15 @@
   ],
   "Chessington South": [
     "London Waterloo (South Western Railway)"
+  ],
+  "Chestfield & Swalecliffe": [
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
+  "Chilham": [
+    "Canterbury West (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Chingford": [
     "London Liverpool Street (London Overground)"
@@ -496,13 +542,12 @@
     "Brighton (Thameslink)",
     "Cambridge (Thameslink)",
     "Horsham (Thameslink)",
-    "Kentish Town (Thameslink)",
-    "Orpington (Thameslink)",
+    "Luton (Thameslink)",
     "Peterborough (Thameslink)",
+    "Rainham (Kent) (Thameslink)",
     "St Albans (Thameslink)",
     "Sutton (London) (Thameslink)",
-    "Three Bridges (Thameslink)",
-    "Welwyn Garden City (Thameslink)"
+    "Three Bridges (Thameslink)"
   ],
   "Clapham High Street": [
     "Clapham Junction (London Overground)",
@@ -515,9 +560,10 @@
     "Hounslow (South Western Railway)",
     "London Victoria (Southern)",
     "London Waterloo (South Western Railway)",
-    "Reigate and Gatwick Airport (Southern)",
-    "Southampton Central (South Western Railway)",
-    "West Croydon (Southern)"
+    "Portsmouth Harbour (South Western Railway)",
+    "Reigate (Southern)",
+    "Shepperton (South Western Railway)",
+    "Stratford (London) (London Overground)"
   ],
   "Clapton": [
     "Chingford (London Overground)",
@@ -551,12 +597,14 @@
   ],
   "Cooksbridge": [
     "Eastbourne (Southern)",
+    "Haywards Heath (Southern)",
     "London Victoria (Southern)"
   ],
   "Coulsdon South": [
     "Horsham (Thameslink)",
     "London Victoria (Southern)",
     "Peterborough (Thameslink)",
+    "Reigate (Southern)",
     "Reigate and Gatwick Airport (Southern)",
     "Three Bridges (Thameslink)"
   ],
@@ -565,13 +613,11 @@
     "Tattenham Corner (Southern)"
   ],
   "Cowden": [
-    "London Bridge (Southern)",
     "Uckfield (Southern)"
   ],
   "Crayford": [
     "Dartford (Southeastern)",
     "Gravesend (Southeastern)",
-    "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Woolwich Arsenal (Southeastern)"
   ],
@@ -585,9 +631,8 @@
     "Sutton (London) (Thameslink)"
   ],
   "Crofton Park": [
-    "Gillingham (Kent) (Southeastern)",
     "Kentish Town (Thameslink)",
-    "Luton (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
@@ -613,7 +658,8 @@
   ],
   "Cuxton": [
     "Paddock Wood (Southeastern)",
-    "Strood (Southeastern)"
+    "Strood (Southeastern)",
+    "Tonbridge (Southeastern)"
   ],
   "Dagenham Dock": [
     "Grays (c2c)",
@@ -641,6 +687,11 @@
     "Luton (Thameslink)",
     "Rainham (Kent) (Thameslink)"
   ],
+  "Deal": [
+    "Faversham (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
   "Denham": [
     "High Wycombe (Chiltern Railways)",
     "London Marylebone (Chiltern Railways)"
@@ -650,11 +701,9 @@
     "Dalston Junction (London Overground)",
     "Gillingham (Kent) (Southeastern)",
     "Gravesend (Southeastern)",
-    "Kentish Town (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "London Victoria (Southeastern)",
-    "Orpington (Thameslink)",
-    "Sevenoaks (Thameslink)",
-    "Welwyn Garden City (Thameslink)"
+    "Sevenoaks (Thameslink)"
   ],
   "Deptford": [
     "London Cannon Street (Southeastern)",
@@ -662,24 +711,28 @@
     "Rainham (Kent) (Thameslink)",
     "Slade Green (Southeastern)"
   ],
-  "Doleham": [
-    "Ashford International (Southern)",
-    "Eastbourne (Southern)"
-  ],
   "Dormans": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
     "London Victoria (Southern)"
+  ],
+  "Dover Priory": [
+    "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Drayton Green": [
     "Greenford (Great Western Railway)",
     "West Ealing (Great Western Railway)"
   ],
   "Drayton Park": [
-    "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)",
     "Welwyn Garden City (Great Northern)"
+  ],
+  "Dumpton Park": [
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Dunton Green": [
     "London Charing Cross (Southeastern)",
@@ -689,7 +742,6 @@
     "Abbey Wood (Elizabeth Line)",
     "Heathrow Airport T4 (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
-    "Maidenhead (Elizabeth Line)",
     "Reading (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
   ],
@@ -700,7 +752,6 @@
     "Hampton Court (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Richmond (South Western Railway)",
-    "Shepperton (South Western Railway)",
     "Woking (South Western Railway)"
   ],
   "East Croydon": [
@@ -711,8 +762,9 @@
     "London Bridge (Southern)",
     "London Victoria (Southern)",
     "Peterborough (Thameslink)",
-    "Portsmouth Harbour and Bognor Regis (Southern)",
-    "Reigate and Gatwick Airport (Southern)"
+    "Portsmouth & Southsea and Bognor Regis (Southern)",
+    "Reigate (Southern)",
+    "Uckfield (Southern)"
   ],
   "East Dulwich": [
     "Beckenham Junction (Southern)",
@@ -729,13 +781,12 @@
   ],
   "East Malling": [
     "Ashford International (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "East Tilbury": [
-    "Leigh-on-Sea (c2c)",
     "London Fenchurch Street (c2c)",
-    "Pitsea (c2c)"
+    "Pitsea (c2c)",
+    "Southend Central (c2c)"
   ],
   "Eastbourne": [
     "Ashford International (Southern)",
@@ -747,10 +798,7 @@
     "Dover Priory (Southeastern)",
     "Faversham (Southeastern)",
     "London St Pancras (Intl) (Southeastern)",
-    "Maidstone West (Southeastern)",
-    "Margate (Southeastern)",
-    "Ramsgate (Southeastern)",
-    "Sandwich (Southeastern)"
+    "Margate (Southeastern)"
   ],
   "Eden Park": [
     "Hayes (Kent) (Southeastern)",
@@ -761,7 +809,6 @@
     "Tonbridge (Southern)"
   ],
   "Edenbridge Town": [
-    "London Bridge (Southern)",
     "Uckfield (Southern)"
   ],
   "Edmonton Green": [
@@ -775,11 +822,10 @@
   ],
   "Elephant & Castle": [
     "Kentish Town (Thameslink)",
-    "Orpington (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "Sevenoaks (Thameslink)",
     "St Albans (Thameslink)",
-    "Sutton (London) (Thameslink)",
-    "Welwyn Garden City (Thameslink)"
+    "Sutton (London) (Thameslink)"
   ],
   "Elmers End": [
     "Hayes (Kent) (Southeastern)",
@@ -810,7 +856,6 @@
     "Upminster (London Overground)"
   ],
   "Enfield Chase": [
-    "Gordon Hill (Great Northern)",
     "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)"
@@ -837,22 +882,18 @@
     "London Victoria (Southern)"
   ],
   "Eridge": [
-    "London Bridge (Southern)",
     "Uckfield (Southern)"
   ],
   "Erith": [
     "Dartford (Southeastern)",
     "Eltham (Southeastern)",
-    "London Cannon Street (Southeastern)",
-    "Sidcup (Southeastern)"
+    "London Cannon Street (Southeastern)"
   ],
   "Esher": [
-    "Guildford (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Woking (South Western Railway)"
   ],
   "Essex Road": [
-    "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)",
     "Welwyn Garden City (Great Northern)"
@@ -893,16 +934,21 @@
     "Abbey Wood (Elizabeth Line)",
     "Bedford (Thameslink)",
     "Brighton (Thameslink)",
+    "Cambridge (Thameslink)",
     "Heathrow Airport T4 (Elizabeth Line)",
+    "Heathrow Airport T5 (Elizabeth Line)",
     "Horsham (Thameslink)",
-    "Kentish Town (Thameslink)",
     "London Paddington (Elizabeth Line)",
-    "Maidenhead (Elizabeth Line)",
-    "Orpington (Thameslink)",
-    "Peterborough (Thameslink)",
+    "Reading (Elizabeth Line)",
     "Shenfield (Elizabeth Line)",
     "St Albans (Thameslink)",
     "Sutton (London) (Thameslink)"
+  ],
+  "Faversham": [
+    "Dover Priory (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Feltham": [
     "London Waterloo (South Western Railway)",
@@ -917,19 +963,28 @@
   ],
   "Finsbury Park": [
     "Brighton (Thameslink)",
+    "Cambridge (Great Northern)",
     "Cambridge (Thameslink)",
-    "Hertford North (Great Northern)",
     "Horsham (Thameslink)",
-    "Letchworth Garden City (Great Northern)",
     "London Kings Cross (Great Northern)",
     "Moorgate (Great Northern)",
     "Peterborough (Thameslink)",
-    "Sevenoaks (Thameslink)",
     "Stevenage (Great Northern)",
     "Welwyn Garden City (Great Northern)"
   ],
+  "Folkestone Central": [
+    "Dover Priory (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
+  "Folkestone West": [
+    "Dover Priory (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
   "Forest Gate": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
@@ -974,10 +1029,10 @@
   ],
   "Glynde": [
     "Brighton (Southern)",
-    "Eastbourne (Southern)"
+    "Eastbourne (Southern)",
+    "Ore (Southern)"
   ],
   "Goodmayes": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
@@ -994,7 +1049,6 @@
     "Stratford (London) (London Overground)"
   ],
   "Grange Park": [
-    "Gordon Hill (Great Northern)",
     "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)"
@@ -1010,7 +1064,8 @@
   "Grays": [
     "Leigh-on-Sea (c2c)",
     "London Fenchurch Street (c2c)",
-    "Pitsea (c2c)"
+    "Pitsea (c2c)",
+    "Southend Central (c2c)"
   ],
   "Greenford": [
     "West Ealing (Great Western Railway)"
@@ -1036,7 +1091,7 @@
     "Sevenoaks (Southeastern)"
   ],
   "Gunnersbury": [
-    "Dagenham East Underground (London Underground)",
+    "Barking Underground (London Underground)",
     "Richmond (London Overground)",
     "Richmond (London Underground)",
     "Stratford (London) (London Overground)",
@@ -1081,7 +1136,12 @@
   ],
   "Halling": [
     "Paddock Wood (Southeastern)",
-    "Strood (Southeastern)"
+    "Strood (Southeastern)",
+    "Tonbridge (Southeastern)"
+  ],
+  "Ham Street": [
+    "Ashford International (Southern)",
+    "Eastbourne (Southern)"
   ],
   "Hampden Park": [
     "Ashford International (Southern)",
@@ -1124,11 +1184,9 @@
   ],
   "Harrietsham": [
     "Ashford International (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Harringay": [
-    "Gordon Hill (Great Northern)",
     "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)",
@@ -1182,7 +1240,6 @@
   "Headcorn": [
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)",
-    "Sandwich (Southeastern)",
     "Sandwich and Canterbury West (Southeastern)"
   ],
   "Headstone Lane": [
@@ -1205,9 +1262,13 @@
     "Shenfield (Elizabeth Line)"
   ],
   "Hendon": [
-    "Luton (Thameslink)",
     "St Albans (Thameslink)",
     "Sutton (London) (Thameslink)"
+  ],
+  "Herne Bay": [
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Herne Hill": [
     "London Victoria (Southeastern)",
@@ -1216,12 +1277,10 @@
     "Sutton (London) (Thameslink)"
   ],
   "Hersham": [
-    "Guildford (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Woking (South Western Railway)"
   ],
   "Hever": [
-    "London Bridge (Southern)",
     "Uckfield (Southern)"
   ],
   "High Brooms": [
@@ -1231,8 +1290,7 @@
   ],
   "Higham": [
     "Luton (Thameslink)",
-    "Rainham (Kent) (Thameslink)",
-    "West Hampstead Thameslink (Thameslink)"
+    "Rainham (Kent) (Thameslink)"
   ],
   "Highams Park": [
     "Chingford (London Overground)",
@@ -1241,7 +1299,6 @@
   "Highbury & Islington": [
     "Clapham Junction (London Overground)",
     "Crystal Palace (London Overground)",
-    "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Richmond (London Overground)",
     "Stevenage (Great Northern)",
@@ -1250,7 +1307,7 @@
     "West Croydon (London Overground)"
   ],
   "Hildenborough": [
-    "Dover Priory (Southeastern)",
+    "Hastings (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Tunbridge Wells (Southeastern)"
   ],
@@ -1264,8 +1321,7 @@
     "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Orpington (Southeastern)",
-    "Sevenoaks (Southeastern)",
-    "Slade Green (Southeastern)"
+    "Sevenoaks (Southeastern)"
   ],
   "Hockley": [
     "London Liverpool Street (Greater Anglia)",
@@ -1273,8 +1329,7 @@
   ],
   "Hollingbourne": [
     "Ashford International (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Homerton": [
     "Clapham Junction (London Overground)",
@@ -1289,7 +1344,6 @@
     "West Croydon (London Overground)"
   ],
   "Hornsey": [
-    "Gordon Hill (Great Northern)",
     "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)",
@@ -1309,13 +1363,10 @@
   ],
   "Hurst Green": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
-    "London Bridge (Southern)",
     "London Victoria (Southern)",
     "Uckfield (Southern)"
   ],
   "Ilford": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
@@ -1323,19 +1374,23 @@
   "Imperial Wharf": [
     "Clapham Junction (London Overground)",
     "East Croydon (Southern)",
-    "Shepherds Bush (London Overground)",
     "Stratford (London) (London Overground)",
     "Watford Junction (Southern)"
   ],
   "Ingatestone": [
     "Braintree (Greater Anglia)",
+    "Clacton-on-Sea (Greater Anglia)",
     "Clacton-on-Sea and Walton-on-the-Naze (Greater Anglia)",
-    "London Liverpool Street (Greater Anglia)",
-    "Witham (Greater Anglia)"
+    "Colchester (Greater Anglia)",
+    "London Liverpool Street (Greater Anglia)"
   ],
   "Isleworth": [
     "London Waterloo (South Western Railway)",
     "Weybridge (South Western Railway)"
+  ],
+  "Kearsney": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
   ],
   "Kempton Park": [
     "London Waterloo (South Western Railway)",
@@ -1343,8 +1398,7 @@
   ],
   "Kemsing": [
     "Ashford International (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Kemsley": [
     "Sheerness-on-Sea (Southeastern)",
@@ -1369,12 +1423,10 @@
   "Kensington Olympia": [
     "Clapham Junction (London Overground)",
     "East Croydon (Southern)",
-    "Shepherds Bush (London Overground)",
     "Stratford (London) (London Overground)",
     "Watford Junction (Southern)"
   ],
   "Kent House": [
-    "Beckenham Junction (Southeastern)",
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)"
   ],
@@ -1396,12 +1448,12 @@
   ],
   "Kew Bridge": [
     "Hounslow (South Western Railway)",
+    "London Victoria (Unknown)",
     "London Waterloo (South Western Railway)",
     "Weybridge (South Western Railway)"
   ],
   "Kew Gardens": [
     "Barking Underground (London Underground)",
-    "Dagenham East Underground (London Underground)",
     "Richmond (London Overground)",
     "Richmond (London Underground)",
     "Stratford (London) (London Overground)",
@@ -1456,7 +1508,6 @@
   "Lee": [
     "Dartford (Southeastern)",
     "Gravesend (Southeastern)",
-    "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Slade Green (Southeastern)"
   ],
@@ -1500,19 +1551,18 @@
   ],
   "Limehouse": [
     "Grays (c2c)",
-    "Leigh-on-Sea (c2c)",
     "London Fenchurch Street (c2c)",
     "Pitsea (c2c)",
     "Shoeburyness (c2c)"
   ],
   "Lingfield": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
     "London Victoria (Southern)"
   ],
   "Liverpool Street (Greater Anglia)": [
     "Cambridge North (Greater Anglia)",
-    "Southend Victoria (Greater Anglia)",
+    "Clacton-on-Sea (Greater Anglia)",
+    "Norwich (Greater Anglia)",
     "Stansted Airport (Greater Anglia)"
   ],
   "London Blackfriars": [
@@ -1520,39 +1570,34 @@
     "Brighton (Thameslink)",
     "Cambridge (Thameslink)",
     "Horsham (Thameslink)",
-    "Kentish Town (Thameslink)",
     "Luton (Thameslink)",
-    "Orpington (Thameslink)",
+    "Peterborough (Thameslink)",
+    "Rainham (Kent) (Thameslink)",
     "Sevenoaks (Thameslink)",
     "St Albans (Thameslink)",
-    "Sutton (London) (Thameslink)",
-    "Three Bridges (Thameslink)",
-    "Welwyn Garden City (Thameslink)"
+    "Sutton (London) (Thameslink)"
   ],
   "London Bridge (Southeastern)": [
-    "Dartford (Southeastern)",
     "Hastings (Southeastern)",
     "Hayes (Kent) (Southeastern)",
     "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
-    "Sandwich and Canterbury West (Southeastern)",
+    "Orpington (Southeastern)",
     "Slade Green (Southeastern)"
+  ],
+  "London Bridge (Southern)": [
+    "Epsom (Southern)"
   ],
   "London Bridge (Thameslink)": [
     "Bedford (Thameslink)",
-    "Brighton (Thameslink)",
     "Cambridge (Thameslink)",
     "Rainham (Kent) (Thameslink)",
     "Three Bridges (Thameslink)"
   ],
   "London Cannon Street": [
     "Dartford (Southeastern)",
-    "Dover Priory (Southeastern)",
-    "Hastings (Southeastern)",
     "Orpington (Southeastern)",
-    "Ramsgate (Southeastern)",
-    "Slade Green (Southeastern)",
-    "Tonbridge (Southeastern)"
+    "Slade Green (Southeastern)"
   ],
   "London Charing Cross": [
     "Dartford (Southeastern)",
@@ -1567,19 +1612,18 @@
   "London Euston": [
     "Birmingham New Street (Avanti West Coast)",
     "Birmingham New Street (LNR & WMR)",
-    "Edinburgh (Avanti West Coast)",
+    "Crewe (LNR & WMR)",
     "Glasgow Central (Avanti West Coast)",
     "Liverpool Lime Street (Avanti West Coast)",
     "Manchester Piccadilly (Avanti West Coast)",
     "Milton Keynes Central (LNR & WMR)",
     "Northampton (LNR & WMR)",
-    "Stirling (Lumo Stirling)",
+    "St Albans Abbey (LNR & WMR)",
     "Tring (LNR & WMR)",
     "Watford Junction (London Overground)"
   ],
   "London Fenchurch Street": [
     "Grays (c2c)",
-    "Leigh-on-Sea (c2c)",
     "Pitsea (c2c)",
     "Shoeburyness (c2c)"
   ],
@@ -1589,16 +1633,18 @@
     "London Liverpool Street (London Overground)"
   ],
   "London King's Cross": [
+    "Aberdeen (LNER)",
+    "Bradford Forster Square (LNER)",
     "Bradford Interchange (Grand Central)",
     "Cambridge (Great Northern)",
     "Edinburgh (LNER)",
-    "Harrogate (LNER)",
+    "Hull (Hull Trains)",
     "Kings Lynn (Great Northern)",
     "Leeds (LNER)",
     "Letchworth Garden City (Great Northern)",
+    "Lincoln Central (LNER)",
     "Newcastle (LNER)",
-    "Peterborough (Great Northern)",
-    "Sunderland (Grand Central)"
+    "York (LNER)"
   ],
   "London Marylebone": [
     "Aylesbury (Chiltern Railways)",
@@ -1612,31 +1658,30 @@
   ],
   "London Paddington": [
     "Abbey Wood (Elizabeth Line)",
-    "Carmarthen (Great Western Railway)",
+    "Cardiff Central (Great Western Railway)",
+    "Cheltenham Spa (Great Western Railway)",
     "Heathrow Airport T4 (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "Heathrow Airport T5 (Heathrow Express)",
-    "Maidenhead (Elizabeth Line)",
-    "Oxford (Great Western Railway)",
     "Reading (Elizabeth Line)",
     "Shenfield (Elizabeth Line)",
-    "Taunton (Great Western Railway)"
+    "Weston-super-Mare (Great Western Railway)",
+    "Worcester Foregate Street (Great Western Railway)"
   ],
   "London Victoria": [
     "Ashford International (Southeastern)",
     "Brighton (Gatwick Express)",
+    "Dover Priory and Ramsgate (Southeastern)",
     "East Grinstead (Southern)",
-    "Eastbourne (Southern)",
     "Epsom Downs (Southern)",
+    "Gillingham (Kent) (Southeastern)",
     "Gravesend (Southeastern)",
     "Horsham (Southern)",
     "Littlehampton (Southern)",
     "London Bridge (Southern)",
     "Orpington (Southeastern)",
     "Portsmouth Harbour and Bognor Regis (Southern)",
-    "Ramsgate (Southeastern)",
-    "Reigate and Gatwick Airport (Southern)",
-    "Sutton (London) (Southern)",
+    "Reigate (Southern)",
     "West Croydon (Southern)"
   ],
   "London Waterloo": [
@@ -1644,6 +1689,7 @@
     "Alton (South Western Railway)",
     "Chessington South (South Western Railway)",
     "Dorking (South Western Railway)",
+    "Exeter St Davids (South Western Railway)",
     "Guildford (South Western Railway)",
     "Hampton Court (South Western Railway)",
     "Hounslow (South Western Railway)",
@@ -1651,10 +1697,9 @@
     "Reading (South Western Railway)",
     "Strawberry Hill (South Western Railway)",
     "Teddington (South Western Railway)",
-    "Weymouth and Bournemouth (South Western Railway)",
+    "Weymouth and Poole (South Western Railway)",
     "Windsor & Eton Riverside (South Western Railway)",
-    "Woking (South Western Railway)",
-    "Yeovil Junction (South Western Railway)"
+    "Woking (South Western Railway)"
   ],
   "London Waterloo East": [
     "Dartford (Southeastern)",
@@ -1663,17 +1708,16 @@
     "Hayes (Kent) (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Maidstone East (Southeastern)",
+    "Ramsgate (Southeastern)",
     "Sevenoaks (Southeastern)",
     "Tunbridge Wells (Southeastern)"
   ],
   "Longfield": [
     "Dover Priory and Ramsgate (Southeastern)",
     "Gillingham (Kent) (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Rochester (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Loughborough Junction": [
-    "Beckenham Junction (Southeastern)",
     "St Albans (Thameslink)",
     "Sutton (London) (Thameslink)"
   ],
@@ -1689,8 +1733,7 @@
   "Maidstone East": [
     "Ashford International (Southeastern)",
     "London Charing Cross (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Maidstone West": [
     "Paddock Wood (Southeastern)",
@@ -1702,7 +1745,6 @@
     "London Waterloo (South Western Railway)"
   ],
   "Manor Park": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
@@ -1710,11 +1752,19 @@
   "Marden": [
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)",
-    "Sandwich (Southeastern)",
     "Sandwich and Canterbury West (Southeastern)"
   ],
+  "Margate": [
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
+  "Martin Mill": [
+    "Faversham (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
   "Maryland": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
@@ -1728,8 +1778,7 @@
   "Meopham": [
     "Dover Priory and Ramsgate (Southeastern)",
     "Gillingham (Kent) (Southeastern)",
-    "London Victoria (Southeastern)",
-    "Rochester (Southeastern)"
+    "London Victoria (Southeastern)"
   ],
   "Meridian Water": [
     "Bishops Stortford (Greater Anglia)",
@@ -1740,6 +1789,11 @@
     "Rainham (Kent) (Thameslink)",
     "St Albans (Thameslink)",
     "Sutton (London) (Thameslink)"
+  ],
+  "Minster": [
+    "London Charing Cross (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Mitcham Eastfields": [
     "Dorking (Southern)",
@@ -1779,13 +1833,11 @@
   "Mottingham": [
     "Dartford (Southeastern)",
     "Gravesend (Southeastern)",
-    "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Slade Green (Southeastern)"
   ],
   "New Barnet": [
     "Moorgate (Great Northern)",
-    "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Great Northern)",
     "Welwyn Garden City (Thameslink)"
   ],
@@ -1810,7 +1862,6 @@
   "New Eltham": [
     "Dartford (Southeastern)",
     "Gravesend (Southeastern)",
-    "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Slade Green (Southeastern)"
   ],
@@ -1827,7 +1878,6 @@
   ],
   "New Southgate": [
     "Moorgate (Great Northern)",
-    "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Great Northern)",
     "Welwyn Garden City (Thameslink)"
   ],
@@ -1840,7 +1890,6 @@
     "Seaford (Southern)"
   ],
   "Newington": [
-    "Dover Priory (Southeastern)",
     "Dover Priory and Ramsgate (Southeastern)",
     "London Victoria (Southeastern)"
   ],
@@ -1854,7 +1903,6 @@
     "Epsom Downs (Southern)",
     "London Bridge (Southern)",
     "London Victoria (Southern)",
-    "Sutton (London) (Southern)",
     "Watford Junction (Southern)"
   ],
   "Normans Bay": [
@@ -1868,7 +1916,6 @@
     "London Bridge (Southern)"
   ],
   "North Fambridge": [
-    "London Liverpool Street (Greater Anglia)",
     "Southminster (Greater Anglia)",
     "Wickford (Greater Anglia)"
   ],
@@ -1887,8 +1934,7 @@
     "Gravesend (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Luton (Thameslink)",
-    "Rainham (Kent) (Thameslink)",
-    "West Hampstead Thameslink (Thameslink)"
+    "Rainham (Kent) (Thameslink)"
   ],
   "Northolt Park": [
     "High Wycombe (Chiltern Railways)",
@@ -1915,6 +1961,7 @@
   "Nunhead": [
     "Gravesend (Southeastern)",
     "Kentish Town (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "London Victoria (Southeastern)",
     "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
@@ -1922,14 +1969,14 @@
   ],
   "Oakleigh Park": [
     "Moorgate (Great Northern)",
-    "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Great Northern)",
     "Welwyn Garden City (Thameslink)"
   ],
   "Ockendon": [
     "Grays (c2c)",
     "London Fenchurch Street (c2c)",
-    "Pitsea (c2c)"
+    "Pitsea (c2c)",
+    "Southend Central (c2c)"
   ],
   "Old Street": [
     "Hertford North (Great Northern)",
@@ -1965,21 +2012,17 @@
   ],
   "Oxted": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
-    "London Bridge (Southern)",
     "London Victoria (Southern)",
     "Uckfield (Southern)"
   ],
   "Paddock Wood": [
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)",
-    "Sandwich (Southeastern)",
     "Sandwich and Canterbury West (Southeastern)",
     "Strood (Southeastern)",
     "Tonbridge (Southeastern)"
   ],
   "Palmers Green": [
-    "Gordon Hill (Great Northern)",
     "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)"
@@ -1990,21 +2033,17 @@
     "Dalston Junction (London Overground)",
     "East Croydon (Southern)",
     "Gravesend (Southeastern)",
-    "Kentish Town (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "London Bridge (Southern)",
     "London Victoria (Southeastern)",
-    "Orpington (Thameslink)",
-    "Sevenoaks (Thameslink)",
-    "Welwyn Garden City (Thameslink)"
+    "Sevenoaks (Thameslink)"
   ],
   "Penge East": [
-    "Beckenham Junction (Southeastern)",
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)"
   ],
   "Penge West": [
     "Highbury & Islington (London Overground)",
-    "Sutton (London) (Southern)",
     "West Croydon (London Overground)"
   ],
   "Penshurst": [
@@ -2032,11 +2071,13 @@
   ],
   "Pitsea": [
     "London Fenchurch Street (c2c)",
-    "Shoeburyness (c2c)"
+    "Shoeburyness (c2c)",
+    "Southend Central (c2c)"
   ],
   "Pluckley": [
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)",
+    "Sandwich (Southeastern)",
     "Sandwich and Canterbury West (Southeastern)"
   ],
   "Plumstead": [
@@ -2044,8 +2085,7 @@
     "Eltham (Southeastern)",
     "London Cannon Street (Southeastern)",
     "Luton (Thameslink)",
-    "Rainham (Kent) (Thameslink)",
-    "Sidcup (Southeastern)"
+    "Rainham (Kent) (Thameslink)"
   ],
   "Polegate": [
     "Brighton (Southern)",
@@ -2062,9 +2102,7 @@
     "Letchworth Garden City (Great Northern)",
     "London Kings Cross (Great Northern)",
     "Moorgate (Great Northern)",
-    "Sevenoaks (Thameslink)",
-    "Welwyn Garden City (Great Northern)",
-    "Welwyn Garden City (Thameslink)"
+    "Welwyn Garden City (Great Northern)"
   ],
   "Prittlewell": [
     "London Liverpool Street (Greater Anglia)",
@@ -2081,7 +2119,7 @@
     "Caterham (Southern)",
     "London Bridge (Southern)",
     "London Victoria (Southern)",
-    "Reigate and Gatwick Airport (Southern)",
+    "Reigate (Southern)",
     "Tattenham Corner (Southern)",
     "Three Bridges (Thameslink)"
   ],
@@ -2132,18 +2170,21 @@
     "Pitsea (c2c)"
   ],
   "Rainham (Kent)": [
-    "Dover Priory (Southeastern)",
     "Dover Priory and Ramsgate (Southeastern)",
     "Faversham (Southeastern)",
     "London St Pancras (Intl) (Southeastern)",
     "London Victoria (Southeastern)",
-    "Luton (Thameslink)",
-    "Ramsgate (Southeastern)",
-    "West Hampstead Thameslink (Thameslink)"
+    "Luton (Thameslink)"
+  ],
+  "Ramsgate": [
+    "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Margate (Southeastern)"
   ],
   "Ravensbourne": [
     "Kentish Town (Thameslink)",
-    "Luton (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
@@ -2172,7 +2213,6 @@
   "Richmond": [
     "Barking Underground (London Underground)",
     "Chiswick (South Western Railway)",
-    "Dagenham East Underground (London Underground)",
     "London Waterloo (South Western Railway)",
     "Reading (South Western Railway)",
     "Stratford (London) (London Overground)",
@@ -2187,7 +2227,6 @@
   ],
   "Riddlesdown": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
     "London Victoria (Southern)"
   ],
   "Robertsbridge": [
@@ -2208,11 +2247,11 @@
     "Southend Victoria (Greater Anglia)"
   ],
   "Romford": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Liverpool Street (Greater Anglia)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)",
+    "Southend Victoria (Greater Anglia)",
     "Upminster (London Overground)"
   ],
   "Rotherhithe": [
@@ -2229,8 +2268,16 @@
   ],
   "Sanderstead": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
     "London Victoria (Southern)"
+  ],
+  "Sandling": [
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
+  "Sandwich": [
+    "Faversham (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Seaford": [
     "Brighton (Southern)"
@@ -2240,11 +2287,13 @@
     "Epsom Downs (Southern)",
     "London Bridge (Southern)",
     "London Victoria (Southern)",
-    "Sutton (London) (Southern)",
     "Watford Junction (Southern)"
   ],
+  "Selling": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
+  ],
   "Seven Kings": [
-    "Gidea Park (Elizabeth Line)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "London Paddington (Elizabeth Line)",
     "Shenfield (Elizabeth Line)"
@@ -2257,6 +2306,7 @@
   "Sevenoaks": [
     "Hastings (Southeastern)",
     "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)",
     "Sandwich and Canterbury West (Southeastern)",
     "Tunbridge Wells (Southeastern)",
     "Welwyn Garden City (Thameslink)"
@@ -2273,7 +2323,7 @@
     "Sittingbourne (Southeastern)"
   ],
   "Shenfield": [
-    "Clacton-on-Sea and Walton-on-the-Naze (Greater Anglia)",
+    "Clacton-on-Sea (Greater Anglia)",
     "Heathrow Airport T5 (Elizabeth Line)",
     "Ipswich (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)",
@@ -2285,6 +2335,10 @@
     "East Croydon (Southern)",
     "Stratford (London) (London Overground)",
     "Watford Junction (Southern)"
+  ],
+  "Shepherds Well": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
   ],
   "Shepperton": [
     "London Waterloo (South Western Railway)"
@@ -2306,16 +2360,15 @@
   ],
   "Shortlands": [
     "Kentish Town (Thameslink)",
+    "London Blackfriars (Thameslink)",
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)",
-    "Orpington (Thameslink)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
   ],
   "Sidcup": [
     "Dartford (Southeastern)",
     "Gravesend (Southeastern)",
-    "London Cannon Street (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Woolwich Arsenal (Southeastern)"
   ],
@@ -2325,10 +2378,12 @@
     "London Liverpool Street (London Overground)"
   ],
   "Sittingbourne": [
+    "Dover Priory (Southeastern)",
     "Dover Priory and Ramsgate (Southeastern)",
     "Faversham (Southeastern)",
     "London St Pancras (Intl) (Southeastern)",
     "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)",
     "Sheerness-on-Sea (Southeastern)"
   ],
   "Slade Green": [
@@ -2338,9 +2393,13 @@
     "Rainham (Kent) (Thameslink)"
   ],
   "Snodland": [
-    "Maidstone West (Southeastern)",
     "Paddock Wood (Southeastern)",
-    "Strood (Southeastern)"
+    "Strood (Southeastern)",
+    "Tonbridge (Southeastern)"
+  ],
+  "Snowdown": [
+    "Dover Priory (Southeastern)",
+    "London Victoria (Southeastern)"
   ],
   "Sole Street": [
     "Gillingham (Kent) (Southeastern)",
@@ -2353,14 +2412,12 @@
   "South Bermondsey": [
     "Beckenham Junction (Southern)",
     "East Croydon (Southern)",
-    "London Bridge (Southern)",
-    "Sutton (London) (Southern)"
+    "London Bridge (Southern)"
   ],
   "South Croydon": [
     "Bedford (Thameslink)",
     "Caterham and Tattenham Corner (Southern)",
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
     "London Bridge (Southern)",
     "Three Bridges (Thameslink)"
   ],
@@ -2383,6 +2440,7 @@
     "Sutton (London) (Thameslink)"
   ],
   "South Ruislip": [
+    "High Wycombe (Chiltern Railways)",
     "London Marylebone (Chiltern Railways)",
     "West Ruislip (Chiltern Railways)"
   ],
@@ -2391,14 +2449,12 @@
     "Gospel Oak (London Overground)"
   ],
   "South Woodham Ferrers": [
-    "London Liverpool Street (Greater Anglia)",
     "Southminster (Greater Anglia)",
     "Wickford (Greater Anglia)"
   ],
   "Southall": [
     "Abbey Wood (Elizabeth Line)",
     "Heathrow Airport T4 (Elizabeth Line)",
-    "Maidenhead (Elizabeth Line)",
     "Reading (Elizabeth Line)"
   ],
   "Southbury": [
@@ -2456,8 +2512,6 @@
     "Ashford International (Southeastern)",
     "Gillingham (Kent) (Southeastern)",
     "London Victoria (Southeastern)",
-    "Ramsgate (Southeastern)",
-    "Rochester (Southeastern)",
     "Sevenoaks (Thameslink)",
     "Welwyn Garden City (Thameslink)"
   ],
@@ -2467,13 +2521,18 @@
     "Cambridge (Thameslink)",
     "Faversham (Southeastern)",
     "Horsham (Thameslink)",
-    "Kentish Town (Thameslink)",
-    "Luton (Thameslink)",
-    "Orpington (Thameslink)",
-    "Peterborough (Thameslink)",
+    "Nottingham (East Midlands Railway)",
     "Rainham (Kent) (Thameslink)",
+    "Sheffield (East Midlands Railway)",
     "St Albans (Thameslink)",
-    "Sutton (London) (Thameslink)"
+    "Sutton (London) (Thameslink)",
+    "Three Bridges (Thameslink)"
+  ],
+  "Staines": [
+    "London Waterloo (South Western Railway)",
+    "Reading (South Western Railway)",
+    "Weybridge (South Western Railway)",
+    "Windsor & Eton Riverside (South Western Railway)"
   ],
   "Stamford Hill": [
     "Cheshunt (London Overground)",
@@ -2481,14 +2540,13 @@
     "London Liverpool Street (London Overground)"
   ],
   "Stanford-le-Hope": [
-    "Leigh-on-Sea (c2c)",
     "London Fenchurch Street (c2c)",
-    "Pitsea (c2c)"
+    "Pitsea (c2c)",
+    "Southend Central (c2c)"
   ],
   "Staplehurst": [
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)",
-    "Sandwich (Southeastern)",
     "Sandwich and Canterbury West (Southeastern)"
   ],
   "Stoke Newington": [
@@ -2500,8 +2558,7 @@
     "Gravesend (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Luton (Thameslink)",
-    "Rainham (Kent) (Thameslink)",
-    "West Hampstead Thameslink (Thameslink)"
+    "Rainham (Kent) (Thameslink)"
   ],
   "Stonebridge Park": [
     "Elephant & Castle Underground (London Underground)",
@@ -2520,9 +2577,9 @@
   ],
   "Stratford (London)": [
     "Bishops Stortford (Greater Anglia)",
-    "Clacton-on-Sea and Walton-on-the-Naze (Greater Anglia)",
+    "Clacton-on-Sea (Greater Anglia)",
     "Clapham Junction (London Overground)",
-    "Gidea Park (Elizabeth Line)",
+    "Heathrow Airport T5 (Elizabeth Line)",
     "London Liverpool Street (Greater Anglia)",
     "London Paddington (Elizabeth Line)",
     "Richmond (London Overground)",
@@ -2533,14 +2590,10 @@
     "Dover Priory (Southeastern)",
     "Faversham (Southeastern)",
     "London St Pancras (Intl) (Southeastern)",
-    "Maidstone West (Southeastern)",
-    "Margate (Southeastern)",
-    "Ramsgate (Southeastern)",
-    "Sandwich (Southeastern)"
+    "Margate (Southeastern)"
   ],
   "Strawberry Hill": [
-    "London Waterloo (South Western Railway)",
-    "Shepperton (South Western Railway)"
+    "London Waterloo (South Western Railway)"
   ],
   "Streatham": [
     "East Croydon (Southern)",
@@ -2553,7 +2606,6 @@
     "Epsom Downs (Southern)",
     "London Bridge (Southern)",
     "London Victoria (Southern)",
-    "Sutton (London) (Southern)",
     "Watford Junction (Southern)"
   ],
   "Streatham Hill": [
@@ -2566,12 +2618,18 @@
     "London St Pancras (Intl) (Southeastern)",
     "Luton (Thameslink)",
     "Paddock Wood (Southeastern)",
-    "Rainham (Kent) (Thameslink)"
+    "Rainham (Kent) (Thameslink)",
+    "Tonbridge (Southeastern)"
+  ],
+  "Sturry": [
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Sudbury & Harrow Road": [
     "West Ruislip (Chiltern Railways)"
   ],
   "Sudbury Hill Harrow": [
+    "High Wycombe (Chiltern Railways)",
     "London Marylebone (Chiltern Railways)",
     "West Ruislip (Chiltern Railways)"
   ],
@@ -2589,7 +2647,7 @@
     "Guildford (South Western Railway)",
     "Hampton Court (South Western Railway)",
     "London Waterloo (South Western Railway)",
-    "Southampton Central (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
     "Woking (South Western Railway)"
   ],
   "Surrey Quays": [
@@ -2604,6 +2662,7 @@
     "Dorking (Southern)",
     "Epsom (Southern)",
     "Epsom Downs (Southern)",
+    "Horsham (Southern)",
     "London Bridge (Southern)",
     "London Victoria (Southern)",
     "St Albans (Thameslink)"
@@ -2629,8 +2688,7 @@
     "Gravesend (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Luton (Thameslink)",
-    "Rainham (Kent) (Thameslink)",
-    "West Hampstead Thameslink (Thameslink)"
+    "Rainham (Kent) (Thameslink)"
   ],
   "Sydenham": [
     "Crystal Palace (London Overground)",
@@ -2640,7 +2698,6 @@
     "West Croydon (London Overground)"
   ],
   "Sydenham Hill": [
-    "Beckenham Junction (Southeastern)",
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)"
   ],
@@ -2660,9 +2717,21 @@
     "London Waterloo (South Western Railway)",
     "Shepperton (South Western Railway)"
   ],
+  "Teynham": [
+    "Dover Priory (Southeastern)",
+    "Dover Priory and Ramsgate (Southeastern)",
+    "London Victoria (Southeastern)"
+  ],
   "Thames Ditton": [
     "Hampton Court (South Western Railway)",
     "London Waterloo (South Western Railway)"
+  ],
+  "Thanet Parkway": [
+    "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Margate (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Theobalds Grove": [
     "Cheshunt (London Overground)",
@@ -2673,7 +2742,6 @@
     "Epsom Downs (Southern)",
     "London Bridge (Southern)",
     "London Victoria (Southern)",
-    "Sutton (London) (Southern)",
     "Watford Junction (Southern)"
   ],
   "Thorpe Bay": [
@@ -2687,7 +2755,8 @@
   "Tilbury Town": [
     "Leigh-on-Sea (c2c)",
     "London Fenchurch Street (c2c)",
-    "Pitsea (c2c)"
+    "Pitsea (c2c)",
+    "Southend Central (c2c)"
   ],
   "Tolworth": [
     "Chessington South (South Western Railway)",
@@ -2741,11 +2810,11 @@
     "London Bridge (Southern)"
   ],
   "Upminster": [
-    "Grays (c2c)",
     "London Fenchurch Street (c2c)",
     "Pitsea (c2c)",
     "Romford (London Overground)",
-    "Shoeburyness (c2c)"
+    "Shoeburyness (c2c)",
+    "Southend Central (c2c)"
   ],
   "Upper Halliford": [
     "London Waterloo (South Western Railway)",
@@ -2757,7 +2826,6 @@
   ],
   "Upper Warlingham": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
     "London Victoria (Southern)"
   ],
   "Vauxhall": [
@@ -2766,6 +2834,7 @@
     "Hounslow (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Reading (South Western Railway)",
+    "Shepperton (South Western Railway)",
     "Strawberry Hill (South Western Railway)",
     "Weybridge (South Western Railway)",
     "Woking (South Western Railway)"
@@ -2788,10 +2857,13 @@
     "London Victoria (Southern)",
     "Sutton (London) (Southern)"
   ],
+  "Walmer": [
+    "Faversham (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
   "Waltham Cross": [
     "Bishops Stortford (Greater Anglia)",
-    "Cambridge North (Greater Anglia)",
-    "Ely (Greater Anglia)",
     "Hertford East (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)",
     "Stratford (London) (Greater Anglia)"
@@ -2806,8 +2878,8 @@
   ],
   "Walton-on-Thames": [
     "Basingstoke (South Western Railway)",
-    "Guildford (South Western Railway)",
     "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
     "Southampton Central (South Western Railway)",
     "Woking (South Western Railway)"
   ],
@@ -2849,12 +2921,12 @@
     "Watford Junction (London Overground)"
   ],
   "Watford Junction": [
-    "Birmingham New Street (Avanti West Coast)",
+    "Birmingham New Street (LNR & WMR)",
     "East Croydon (Southern)",
+    "Glasgow Central (Avanti West Coast)",
     "London Euston (LNR & WMR)",
     "London Euston (London Overground)",
     "Milton Keynes Central (LNR & WMR)",
-    "Northampton (LNR & WMR)",
     "St Albans Abbey (LNR & WMR)",
     "Tring (LNR & WMR)"
   ],
@@ -2875,27 +2947,30 @@
     "Elephant & Castle Underground (London Underground)",
     "Harrow & Wealdstone (London Underground)",
     "London Euston (London Overground)",
-    "Watford Junction (London Overground)",
-    "Watford Junction (Southern)"
+    "Watford Junction (London Overground)"
   ],
   "Wembley Stadium": [
+    "High Wycombe (Chiltern Railways)",
     "London Marylebone (Chiltern Railways)",
     "West Ruislip (Chiltern Railways)"
   ],
   "West Brompton": [
     "Clapham Junction (London Overground)",
     "East Croydon (Southern)",
-    "Shepherds Bush (London Overground)",
     "Stratford (London) (London Overground)",
     "Watford Junction (Southern)"
+  ],
+  "West Byfleet": [
+    "Alton (South Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Woking (South Western Railway)"
   ],
   "West Croydon": [
     "Epsom (Southern)",
     "Epsom Downs (Southern)",
     "Highbury & Islington (London Overground)",
     "London Bridge (Southern)",
-    "London Victoria (Southern)",
-    "Sutton (London) (Southern)"
+    "London Victoria (Southern)"
   ],
   "West Drayton": [
     "Abbey Wood (Elizabeth Line)",
@@ -2903,7 +2978,6 @@
     "Reading (Elizabeth Line)"
   ],
   "West Dulwich": [
-    "Beckenham Junction (Southeastern)",
     "London Victoria (Southeastern)",
     "Orpington (Southeastern)"
   ],
@@ -2916,7 +2990,6 @@
   ],
   "West Ham": [
     "Grays (c2c)",
-    "Leigh-on-Sea (c2c)",
     "London Fenchurch Street (c2c)",
     "Pitsea (c2c)",
     "Shoeburyness (c2c)"
@@ -2936,15 +3009,13 @@
   ],
   "West Horndon": [
     "London Fenchurch Street (c2c)",
-    "Shoeburyness (c2c)",
-    "Southend Central (c2c)"
+    "Shoeburyness (c2c)"
   ],
   "West Malling": [
     "Ashford International (Southeastern)",
     "London Charing Cross (Southeastern)",
     "London Victoria (Southeastern)",
-    "Maidstone East (Southeastern)",
-    "Ramsgate (Southeastern)"
+    "Maidstone East (Southeastern)"
   ],
   "West Norwood": [
     "Beckenham Junction (Southern)",
@@ -2979,11 +3050,19 @@
     "Rainham (Kent) (Thameslink)",
     "Slade Green (Southeastern)"
   ],
+  "Westenhanger": [
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
+  "Westgate-on-Sea": [
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
+  ],
   "Weybridge": [
     "Barnes (South Western Railway)",
     "Basingstoke (South Western Railway)",
-    "Guildford (South Western Railway)",
     "London Waterloo (South Western Railway)",
+    "Portsmouth Harbour (South Western Railway)",
     "Southampton Central (South Western Railway)",
     "Woking (South Western Railway)"
   ],
@@ -2994,6 +3073,7 @@
   ],
   "Whitechapel": [
     "Abbey Wood (Elizabeth Line)",
+    "Clapham Junction (London Overground)",
     "Crystal Palace (London Overground)",
     "Dalston Junction (London Overground)",
     "Heathrow Airport T4 (Elizabeth Line)",
@@ -3004,6 +3084,11 @@
     "Reading (Elizabeth Line)",
     "Shenfield (Elizabeth Line)",
     "West Croydon (London Overground)"
+  ],
+  "Whitstable": [
+    "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Whitton": [
     "Barnes Bridge (South Western Railway)",
@@ -3039,7 +3124,6 @@
     "Guildford (South Western Railway)",
     "Hampton Court (South Western Railway)",
     "London Waterloo (South Western Railway)",
-    "Richmond (South Western Railway)",
     "Shepperton (South Western Railway)",
     "St Albans (Thameslink)",
     "Sutton (London) (Thameslink)",
@@ -3054,14 +3138,12 @@
     "Eastbourne (Southern)"
   ],
   "Winchmore Hill": [
-    "Gordon Hill (Great Northern)",
     "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)"
   ],
   "Woldingham": [
     "East Grinstead (Southern)",
-    "East Grinstead (Thameslink)",
     "London Victoria (Southern)"
   ],
   "Wood Street": [
@@ -3081,8 +3163,7 @@
     "Eltham (Southeastern)",
     "London Cannon Street (Southeastern)",
     "Luton (Thameslink)",
-    "Rainham (Kent) (Thameslink)",
-    "Sidcup (Southeastern)"
+    "Rainham (Kent) (Thameslink)"
   ],
   "Woolwich Dockyard": [
     "Dartford (Southeastern)",
@@ -3093,6 +3174,11 @@
     "Dorking (South Western Railway)",
     "Guildford (South Western Railway)",
     "London Waterloo (South Western Railway)"
+  ],
+  "Wye": [
+    "Canterbury West (Southeastern)",
+    "London Charing Cross (Southeastern)",
+    "Ramsgate (Southeastern)"
   ],
   "Yalding": [
     "Paddock Wood (Southeastern)",

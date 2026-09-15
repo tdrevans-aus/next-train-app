@@ -48,7 +48,14 @@
   "Bidston": [
     "Liverpool Central (Merseyrail)",
     "West Kirby (Merseyrail)",
-    "Wrexham Central (Transport for Wales)"
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
+  ],
+  "Birchwood": [
+    "Cleethorpes (TransPennine Express)",
+    "Liverpool Lime Street (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Manchester Oxford Road (Northern)"
   ],
   "Birkdale": [
     "Liverpool Central (Merseyrail)",
@@ -95,7 +102,6 @@
   "Broad Green": [
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)",
     "Wigan North Western (Northern)"
   ],
   "Bromborough": [
@@ -113,7 +119,6 @@
     "Ormskirk (Merseyrail)"
   ],
   "Bryn": [
-    "Blackpool North (Northern)",
     "Liverpool Lime Street (Northern)",
     "Wigan North Western (Northern)"
   ],
@@ -150,7 +155,8 @@
   "Chorley": [
     "Barrow-in-Furness (Northern)",
     "Blackpool North (Northern)",
-    "Manchester Airport (Northern)"
+    "Manchester Airport (Northern)",
+    "Windermere (Northern)"
   ],
   "Conway Park": [
     "Liverpool Central (Merseyrail)",
@@ -172,7 +178,6 @@
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
     "Manchester Airport (Transport for Wales)",
-    "Manchester Victoria (Northern)",
     "Wigan North Western (Northern)"
   ],
   "Eastham Rake": [
@@ -181,7 +186,6 @@
     "Liverpool Central (Merseyrail)"
   ],
   "Eccleston Park": [
-    "Blackpool North (Northern)",
     "Liverpool Lime Street (Northern)",
     "Wigan North Western (Northern)"
   ],
@@ -189,7 +193,6 @@
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
     "Manchester Oxford Road (Northern)",
-    "Manchester Victoria (Northern)",
     "Wigan North Western (Northern)"
   ],
   "Ellesmere Port": [
@@ -212,15 +215,12 @@
     "Southport (Merseyrail)"
   ],
   "Frodsham": [
-    "Chester (Northern)",
     "Holyhead (Transport for Wales)",
-    "Leeds (Northern)",
     "Liverpool Lime Street (Transport for Wales)",
     "Llandudno (Transport for Wales)",
     "Manchester Airport (Transport for Wales)"
   ],
   "Garswood": [
-    "Blackpool North (Northern)",
     "Liverpool Lime Street (Northern)",
     "Wigan North Western (Northern)"
   ],
@@ -228,6 +228,10 @@
     "Manchester Oxford Road (Northern)",
     "Southport (Northern)",
     "Stalybridge (Northern)"
+  ],
+  "Glazebrook": [
+    "Liverpool Lime Street (Northern)",
+    "Manchester Oxford Road (Northern)"
   ],
   "Green Lane": [
     "Chester (Merseyrail)",
@@ -247,7 +251,6 @@
     "Liverpool Central (Merseyrail)"
   ],
   "Helsby": [
-    "Chester (Northern)",
     "Holyhead (Transport for Wales)",
     "Liverpool Lime Street (Transport for Wales)",
     "Llandudno (Transport for Wales)",
@@ -255,7 +258,8 @@
   ],
   "Heswall": [
     "Bidston (Transport for Wales)",
-    "Wrexham Central (Transport for Wales)"
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
   ],
   "Hightown": [
     "Liverpool Central (Merseyrail)",
@@ -301,7 +305,6 @@
     "Blackpool North (Northern)",
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)",
     "Wigan North Western (Northern)"
   ],
   "Ince": [
@@ -325,7 +328,7 @@
     "Hull (TransPennine Express)",
     "Liverpool Lime Street",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)"
+    "Wigan North Western (Northern)"
   ],
   "Leasowe": [
     "Liverpool Central (Merseyrail)",
@@ -359,13 +362,13 @@
   ],
   "Liverpool Lime Street": [
     "Birmingham New Street (LNR & WMR)",
+    "Blackpool North (Northern)",
     "Chester (Merseyrail)",
     "Cleethorpes (TransPennine Express)",
     "Ellesmere Port (Merseyrail)",
-    "Glasgow Central (TransPennine Express)",
+    "Llandudno (Transport for Wales)",
     "London Euston (Avanti West Coast)",
     "Manchester Oxford Road (Northern)",
-    "Manchester Victoria (Northern)",
     "New Brighton (Merseyrail)",
     "Newcastle (TransPennine Express)",
     "West Kirby (Merseyrail)",
@@ -376,9 +379,9 @@
     "Cleethorpes (TransPennine Express)",
     "Hunts Cross (Merseyrail)",
     "Liverpool Lime Street",
+    "London Euston (Avanti West Coast)",
     "Manchester Oxford Road (Northern)",
-    "Ormskirk (Merseyrail)",
-    "Warrington Central (Northern)"
+    "Ormskirk (Merseyrail)"
   ],
   "Maghull": [
     "Hunts Cross (Merseyrail)",
@@ -424,7 +427,8 @@
   ],
   "Neston": [
     "Bidston (Transport for Wales)",
-    "Wrexham Central (Transport for Wales)"
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
   ],
   "New Brighton": [
     "Liverpool Central (Merseyrail)"
@@ -440,7 +444,6 @@
     "Liverpool Lime Street",
     "Manchester Airport (Northern)",
     "Manchester Airport (Transport for Wales)",
-    "Manchester Victoria (Northern)",
     "Newcastle (TransPennine Express)"
   ],
   "Old Roan": [
@@ -465,8 +468,7 @@
   ],
   "Padgate": [
     "Liverpool Lime Street (Northern)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
+    "Manchester Oxford Road (Northern)"
   ],
   "Parbold": [
     "Manchester Oxford Road (Northern)",
@@ -483,7 +485,6 @@
     "Liverpool Central (Merseyrail)"
   ],
   "Prescot": [
-    "Blackpool North (Northern)",
     "Liverpool Lime Street (Northern)",
     "Wigan North Western (Northern)"
   ],
@@ -494,7 +495,7 @@
   "Rainhill": [
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)"
+    "Wigan North Western (Northern)"
   ],
   "Rice Lane": [
     "Headbolt Lane (Merseyrail)",
@@ -503,7 +504,6 @@
   "Roby": [
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)",
     "Wigan North Western (Northern)"
   ],
   "Rock Ferry": [
@@ -522,9 +522,7 @@
     "London Euston (Avanti West Coast)"
   ],
   "Runcorn East": [
-    "Chester (Northern)",
     "Holyhead (Transport for Wales)",
-    "Leeds (Northern)",
     "Manchester Airport (Transport for Wales)"
   ],
   "Sandhills": [
@@ -533,10 +531,6 @@
     "Liverpool Central (Merseyrail)",
     "Ormskirk (Merseyrail)",
     "Southport (Merseyrail)"
-  ],
-  "Sankey for Penketh": [
-    "Liverpool Lime Street (Northern)",
-    "Warrington Central (Northern)"
   ],
   "Seaforth and Litherland": [
     "Liverpool Central (Merseyrail)",
@@ -554,21 +548,19 @@
   ],
   "St Helens Central": [
     "Blackpool North (Northern)",
-    "Glasgow Central (TransPennine Express)",
     "Liverpool Lime Street",
     "Wigan North Western (Northern)"
   ],
   "St Helens Junction": [
     "Liverpool Lime Street",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)"
+    "Wigan North Western (Northern)"
   ],
   "St Michaels": [
     "Hunts Cross (Merseyrail)",
     "Ormskirk (Merseyrail)"
   ],
   "Thatto Heath": [
-    "Blackpool North (Northern)",
     "Liverpool Lime Street (Northern)",
     "Wigan North Western (Northern)"
   ],
@@ -582,7 +574,8 @@
   ],
   "Upton (Merseyside)": [
     "Bidston (Transport for Wales)",
-    "Wrexham Central (Transport for Wales)"
+    "Wrexham Central (Transport for Wales)",
+    "Wrexham General (Transport for Wales)"
   ],
   "Wallasey Grove Road": [
     "Liverpool Central (Merseyrail)",
@@ -596,6 +589,28 @@
     "Hunts Cross (Merseyrail)",
     "Ormskirk (Merseyrail)"
   ],
+  "Warrington Bank Quay": [
+    "Chester (Northern)",
+    "Edinburgh (Avanti West Coast)",
+    "Glasgow Central (Avanti West Coast)",
+    "Holyhead (Transport for Wales)",
+    "Leeds (Northern)",
+    "London Euston (Avanti West Coast)",
+    "Manchester Airport (Transport for Wales)"
+  ],
+  "Warrington Central": [
+    "Cleethorpes (TransPennine Express)",
+    "Liverpool Lime Street (East Midlands Railway)",
+    "Liverpool Lime Street (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Manchester Oxford Road (Northern)",
+    "Norwich (East Midlands Railway)"
+  ],
+  "Warrington West": [
+    "Liverpool Lime Street (Northern)",
+    "Manchester Oxford Road (Northern)",
+    "Warrington Central (Northern)"
+  ],
   "Waterloo (Merseyside)": [
     "Liverpool Central (Merseyrail)",
     "Southport (Merseyrail)"
@@ -603,7 +618,6 @@
   "Wavertree Technology Park": [
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)",
     "Wigan North Western (Northern)"
   ],
   "West Allerton": [
@@ -616,14 +630,11 @@
   ],
   "Whiston": [
     "Liverpool Lime Street (Northern)",
-    "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)"
+    "Manchester Airport (Northern)"
   ],
   "Widnes": [
     "Liverpool Lime Street",
-    "Manchester Oxford Road (Northern)",
     "Norwich (East Midlands Railway)",
-    "Nottingham (East Midlands Railway)",
     "Warrington Central (Northern)"
   ]
 }

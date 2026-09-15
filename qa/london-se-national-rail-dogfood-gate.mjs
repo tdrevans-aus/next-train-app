@@ -152,15 +152,17 @@ assert(
 
 const railStations = listNationalRailStations();
 // 5 single-board groups + 3 London Bridge sub-boards + 2 Liverpool Street sub-boards = 10
-// original D1 boards, plus 526 UK station fill phase 2a additions (14 Sep 2026) = 530.
-assert(railStations.length === 530, `catalog must have 530 boards (UK station fill phase 2a, 14 Sep 2026), got ${railStations.length}`);
+// original D1 boards, plus 526 UK station fill phase 2a additions (14 Sep 2026) = 530, plus 41
+// more (38 Kent, 3 Surrey) reassigned in from rest-of-england round 2, 15 Sep 2026
+// (docs/jim-brief-rest-of-england-reassignment.md) = 571.
+assert(railStations.length === 571, `catalog must have 571 boards (UK station fill phase 2a + 15 Sep 2026 round 2 reassignment), got ${railStations.length}`);
 assert(getNotInRegion(LONDON_SE_NATIONAL_RAIL_REGION).length === 0, "no deliberate exclusions recorded in notInRegion");
 for (const stationEntry of railStations) {
   assert(stationEntry.crsVerified === true, `${stationEntry.name} (${stationEntry.crs}) must carry crsVerified: true`);
 }
 
 const allStations = listCatalogStations();
-assert(allStations.length === 530, `combined catalog must have 530 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
+assert(allStations.length === 571, `combined catalog must have 571 stations (train only, UK station fill phase 2a + 15 Sep 2026 round 2 reassignment), got ${allStations.length}`);
 
 // All seven groups resolve independently — no single-hub assumption anywhere.
 assert(LONDON_SE_NATIONAL_RAIL_GROUPS.length === 7, "must document exactly seven station groups");
@@ -255,7 +257,7 @@ assert(lseHubs.length === 0, `london-se-national-rail must have zero configured 
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listLondonSeNationalRailDogfoodStations();
-assert(dogfoodStations.length === 530, `dogfood stations must be the 530 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 571, `dogfood stations must be the 571 catalog entries (UK station fill phase 2a + 15 Sep 2026 round 2 reassignment), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 for (const boardName of [
   "London Waterloo",

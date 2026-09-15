@@ -392,6 +392,116 @@
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Adwick",
+      "crs": "AWK",
+      "aliases": [],
+      "lat": 53.571932,
+      "lng": -1.17989,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Bentley (South Yorkshire)",
+      "crs": "BYK",
+      "aliases": [],
+      "lat": 53.54371,
+      "lng": -1.150718,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Conisbrough",
+      "crs": "CNS",
+      "aliases": [],
+      "lat": 53.489526,
+      "lng": -1.23461,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Doncaster",
+      "crs": "DON",
+      "aliases": [],
+      "lat": 53.521954,
+      "lng": -1.139915,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Hatfield & Stainforth",
+      "crs": "HFS",
+      "aliases": [],
+      "lat": 53.58887,
+      "lng": -1.023263,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Kirk Sandall",
+      "crs": "KKS",
+      "aliases": [],
+      "lat": 53.56347,
+      "lng": -1.075006,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Kiveton Park",
+      "crs": "KVP",
+      "aliases": [],
+      "lat": 53.336975,
+      "lng": -1.240052,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Penistone",
+      "crs": "PNS",
+      "aliases": [],
+      "lat": 53.525632,
+      "lng": -1.622676,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Thorne North",
+      "crs": "TNN",
+      "aliases": [],
+      "lat": 53.616329,
+      "lng": -0.972006,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Thorne South",
+      "crs": "TNS",
+      "aliases": [],
+      "lat": 53.603345,
+      "lng": -0.955256,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — South Yorkshire metropolitan county (Doncaster/Barnsley/Rotherham boroughs).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

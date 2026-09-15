@@ -124,7 +124,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(SOUTH_YORKSHIRE_REGION);
-assert(region?.railCount === 21, `south-yorkshire rail count must be 21 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
+assert(region?.railCount === 31, `south-yorkshire rail count must be 31 (10 stations reassigned in from rest-of-england 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), got ${region?.railCount}`);
 assert(region?.metroCount === 12, `south-yorkshire metro count must be 12, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -173,7 +173,7 @@ for (const name of [
 assert(supertramStops.length === 12, `Supertram catalog must have exactly 12 stops, got ${supertramStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 33, `combined catalog must have 33 stations (21 rail + 12 metro, UK station fill phase 2a), got ${allStations.length}`);
+assert(allStations.length === 43, `combined catalog must have 43 stations (31 rail + 12 metro, 15 Sep 2026 rest-of-england reassignment), got ${allStations.length}`);
 
 // doNotGroup — Sheffield Station resolves as two distinct catalog entries by mode.
 const hubRail = resolveCatalogEntry(SOUTH_YORKSHIRE_HUB, "train");
@@ -268,7 +268,7 @@ assert(metroPlan.kind === "undirected", "metro mode must never consult the hub f
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (Sheffield Station's doNotGroup lock needs it to disambiguate).
 const dogfoodStations = listSouthYorkshireDogfoodStations();
-assert(dogfoodStations.length === 33, `dogfood stations must be the 33 catalog entries (21 rail + 12 metro, UK station fill phase 2a), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 43, `dogfood stations must be the 43 catalog entries (31 rail + 12 metro, 15 Sep 2026 rest-of-england reassignment), got ${dogfoodStations.length}`);
 const hubEntries = dogfoodStations.filter((s) => s.name === SOUTH_YORKSHIRE_HUB);
 assert(hubEntries.length === 2, "Sheffield Station must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(

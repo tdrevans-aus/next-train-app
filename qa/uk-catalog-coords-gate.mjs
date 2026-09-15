@@ -62,6 +62,13 @@ const BOX_CHECK_EXEMPT = new Set([
   "solent::Newbury Racecourse",
   "greater-manchester::Wigan North Western", // Greater Manchester Combined Authority borough
   "greater-manchester::Wigan Wallgate",
+  // 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): Glazebrook and Birchwood
+  // (both Borough of Warrington) reassigned in from rest-of-england alongside Warrington's three
+  // main stations — real, NaPTAN-verified liverpool-city-region stations whose coordinates sit
+  // just east of this pack's own CITY_BOUNDS box (widening it would swallow greater-manchester's
+  // own reassigned stations instead, see qa/uk-city-bounds-overlap-gate.mjs).
+  "liverpool-city-region::Glazebrook",
+  "liverpool-city-region::Birchwood",
 ]);
 
 const liveIds = new Set(CITIES.filter((c) => c.status === "live").map((c) => c.id));

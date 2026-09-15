@@ -125,7 +125,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(CUMBRIA_REGION);
-assert(region?.railCount === 49, `cumbria rail count must be 49 (UK station fill phase 2a, 14 Sep 2026), got ${region?.railCount}`);
+assert(region?.railCount === 65, `cumbria rail count must be 65 (16 West Cumbria coast stations reassigned in from rest-of-england 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `cumbria must have no metro stations, got ${region?.metroCount}`);
 assert((region?.modes ?? []).join(",") === "train", "cumbria must be train-only in regions.json");
 
@@ -134,11 +134,11 @@ const railCrs = new Set(railStations.map((s) => s.crs));
 for (const crs of ["CAR", "OXN", "BIF", "PNR", "WDM", "KEN", "SET"]) {
   assert(railCrs.has(crs), `National Rail catalog must carry ${crs}`);
 }
-assert(railCrs.size === 49, `cumbria catalog must carry exactly 49 distinct CRS codes (UK station fill phase 2a, 14 Sep 2026), got ${railCrs.size}`);
+assert(railCrs.size === 65, `cumbria catalog must carry exactly 65 distinct CRS codes (16 West Cumbria coast stations reassigned in from rest-of-england 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), got ${railCrs.size}`);
 assert(getNotInRegion(CUMBRIA_REGION).length === 0, "cumbria has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 49, `combined catalog must have 49 stations (train only, UK station fill phase 2a), got ${allStations.length}`);
+assert(allStations.length === 65, `combined catalog must have 65 stations (train only, 15 Sep 2026 rest-of-england reassignment), got ${allStations.length}`);
 
 // Single tier-1 hub, two tier-2 secondary hubs — resolve independently.
 assert(CUMBRIA_HUB === "Carlisle", "must document Carlisle as the sole tier-1 hub");
@@ -182,7 +182,7 @@ assert(cumbriaHubs.length === 0, `cumbria must have zero configured hubs, got ${
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listCumbriaDogfoodStations();
-assert(dogfoodStations.length === 49, `dogfood stations must be the 49 catalog entries (UK station fill phase 2a), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 65, `dogfood stations must be the 65 catalog entries (15 Sep 2026 rest-of-england reassignment), got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 for (const name of ["Carlisle", "Oxenholme Lake District", "Barrow-in-Furness", "Penrith", "Windermere", "Kendal", "Settle"]) {
   assert(dogfoodNames.has(name), `${name} must be listed by the dogfood harness`);

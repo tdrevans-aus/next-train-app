@@ -3,9 +3,6 @@
     "Chester (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
-  "Ardwick": [
-    "New Mills Central (Northern)"
-  ],
   "Ashburys": [
     "Hadfield (Northern)",
     "Manchester Piccadilly (Northern)",
@@ -16,9 +13,31 @@
     "Chester (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
+  "Ashton-under-Lyne": [
+    "Southport (Northern)",
+    "Stalybridge (Northern)"
+  ],
+  "Atherton": [
+    "Blackburn (Northern)",
+    "Headbolt Lane (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
   "Belle Vue": [
     "Manchester Piccadilly (Northern)",
     "New Mills Central (Northern)"
+  ],
+  "Bolton": [
+    "Blackburn (Northern)",
+    "Blackpool North (Northern)",
+    "Clitheroe (Northern)",
+    "Edinburgh (TransPennine Express)",
+    "Manchester Airport (Northern)",
+    "Manchester Oxford Road (Northern)",
+    "Rochdale (Northern)",
+    "Southport (Northern)",
+    "Stalybridge (Northern)",
+    "Windermere (Northern)"
   ],
   "Bramhall": [
     "Manchester Piccadilly (Northern)",
@@ -34,6 +53,15 @@
     "New Mills Central (Northern)",
     "Sheffield (Northern)"
   ],
+  "Broadbottom": [
+    "Hadfield (Northern)",
+    "Manchester Piccadilly (Northern)"
+  ],
+  "Bromley Cross": [
+    "Blackburn (Northern)",
+    "Clitheroe (Northern)",
+    "Rochdale (Northern)"
+  ],
   "Burnage": [
     "Crewe (Northern)",
     "Liverpool Lime Street (Northern)",
@@ -45,11 +73,21 @@
     "Clitheroe (Northern)",
     "Rochdale (Northern)"
   ],
+  "Chassen Road": [
+    "Liverpool Lime Street (Northern)",
+    "Manchester Oxford Road (Northern)"
+  ],
   "Cheadle Hulme": [
     "Alderley Edge (Northern)",
     "Crewe (Northern)",
     "Manchester Piccadilly (Northern)",
     "Stoke-on-Trent (Northern)"
+  ],
+  "Daisy Hill": [
+    "Blackburn (Northern)",
+    "Headbolt Lane (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
   ],
   "Davenport": [
     "Buxton (Northern)",
@@ -63,7 +101,7 @@
     "Manchester Airport (Northern)",
     "Manchester Oxford Road (Northern)",
     "Southport (Northern)",
-    "Warrington Central (Northern)"
+    "Windermere (Northern)"
   ],
   "East Didsbury": [
     "Crewe (Northern)",
@@ -76,12 +114,23 @@
   "Eccles": [
     "Liverpool Lime Street (Northern)",
     "Manchester Airport (Northern)",
-    "Manchester Victoria (Northern)",
     "Wigan North Western (Northern)"
+  ],
+  "Entwistle": [
+    "Clitheroe (Northern)",
+    "Rochdale (Northern)"
   ],
   "Fairfield": [
     "Manchester Piccadilly (Northern)",
     "Rose Hill Marple (Northern)"
+  ],
+  "Flixton": [
+    "Liverpool Lime Street (Northern)",
+    "Manchester Oxford Road (Northern)"
+  ],
+  "Flowery Field": [
+    "Hadfield (Northern)",
+    "Manchester Piccadilly (Northern)"
   ],
   "Gatley": [
     "Barrow-in-Furness (Northern)",
@@ -91,18 +140,41 @@
     "Manchester Piccadilly (Northern)",
     "Windermere (Northern)"
   ],
-  "Gorton": [
+  "Godley": [
     "Hadfield (Northern)",
+    "Manchester Piccadilly (Northern)"
+  ],
+  "Gorton": [
     "Manchester Piccadilly (Northern)",
     "Rose Hill Marple (Northern)"
+  ],
+  "Greenfield": [
+    "Leeds (TransPennine Express)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "York (TransPennine Express)"
   ],
   "Guide Bridge": [
     "Hadfield (Northern)",
     "Manchester Piccadilly (Northern)",
     "Rose Hill Marple (Northern)"
   ],
+  "Hag Fold": [
+    "Blackburn (Northern)",
+    "Headbolt Lane (Northern)",
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
   "Hale": [
     "Chester (Northern)",
+    "Manchester Piccadilly (Northern)"
+  ],
+  "Hall I' Th' Wood": [
+    "Blackburn (Northern)",
+    "Clitheroe (Northern)",
+    "Rochdale (Northern)"
+  ],
+  "Hattersley": [
+    "Hadfield (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
   "Hazel Grove": [
@@ -123,9 +195,31 @@
     "Hazel Grove (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
+  "Horwich Parkway": [
+    "Blackpool North (Northern)",
+    "Manchester Airport (Northern)"
+  ],
   "Humphrey Park": [
     "Liverpool Lime Street (Northern)",
     "Manchester Oxford Road (Northern)"
+  ],
+  "Hyde Central": [
+    "Manchester Piccadilly (Northern)",
+    "Rose Hill Marple (Northern)"
+  ],
+  "Hyde North": [
+    "Manchester Piccadilly (Northern)",
+    "Rose Hill Marple (Northern)"
+  ],
+  "Irlam": [
+    "Cleethorpes (TransPennine Express)",
+    "Liverpool Lime Street (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Manchester Oxford Road (Northern)"
+  ],
+  "Kearsley": [
+    "Southport (Northern)",
+    "Stalybridge (Northern)"
   ],
   "Levenshulme": [
     "Alderley Edge (Northern)",
@@ -133,6 +227,10 @@
     "Crewe (Northern)",
     "Hazel Grove (Northern)",
     "Manchester Piccadilly (Northern)"
+  ],
+  "Lostock": [
+    "Blackpool North (Northern)",
+    "Manchester Airport (Northern)"
   ],
   "Manchester Airport": [
     "Barrow-in-Furness (Northern)",
@@ -143,7 +241,6 @@
     "Liverpool Lime Street (Northern)",
     "Manchester Piccadilly (Northern)",
     "Redcar Central (TransPennine Express)",
-    "Saltburn (TransPennine Express)",
     "Windermere (Northern)"
   ],
   "Manchester Oxford Road": [
@@ -152,43 +249,48 @@
     "Holyhead (Transport for Wales)",
     "Liverpool Lime Street (East Midlands Railway)",
     "Liverpool Lime Street (Northern)",
-    "Liverpool Lime Street (TransPennine Express)",
     "Manchester Airport (Northern)",
     "Manchester Airport (TransPennine Express)",
+    "Manchester Airport (Transport for Wales)",
     "Norwich (East Midlands Railway)",
-    "Redcar Central (TransPennine Express)",
     "Southport (Northern)",
-    "Warrington Central (Northern)"
+    "Windermere (Northern)"
   ],
   "Manchester Piccadilly": [
+    "Alderley Edge (Northern)",
     "Blackpool North (Northern)",
     "Bournemouth (CrossCountry)",
-    "Buxton (Northern)",
     "Cardiff Central (Transport for Wales)",
-    "Chester (Northern)",
-    "Cleethorpes (TransPennine Express)",
+    "Crewe (Northern)",
     "Edinburgh (TransPennine Express)",
-    "Leeds (TransPennine Express)",
-    "Liverpool Lime Street (TransPennine Express)",
+    "Hadfield (Northern)",
+    "Hazel Grove (Northern)",
+    "Holyhead (Transport for Wales)",
+    "Liverpool Lime Street (East Midlands Railway)",
     "London Euston (Avanti West Coast)",
     "Manchester Airport (Northern)",
     "Manchester Airport (TransPennine Express)",
-    "New Mills Central (Northern)"
+    "Norwich (East Midlands Railway)",
+    "Rose Hill Marple (Northern)"
   ],
   "Manchester Victoria": [
     "Blackburn (Northern)",
-    "Chester (Northern)",
     "Clitheroe (Northern)",
     "Headbolt Lane (Northern)",
     "Hull (TransPennine Express)",
     "Leeds (Northern)",
     "Liverpool Lime Street (TransPennine Express)",
     "Manchester Airport (TransPennine Express)",
-    "Redcar Central (TransPennine Express)",
+    "Newcastle (TransPennine Express)",
     "Rochdale (Northern)",
     "Scarborough (TransPennine Express)",
     "Stalybridge (Northern)",
-    "Wigan North Western (Northern)"
+    "Wigan Wallgate (Northern)"
+  ],
+  "Marple": [
+    "Manchester Piccadilly (Northern)",
+    "New Mills Central (Northern)",
+    "Sheffield (Northern)"
   ],
   "Mauldeth Road": [
     "Crewe (Northern)",
@@ -196,10 +298,27 @@
     "Manchester Airport (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
+  "Middlewood": [
+    "Buxton (Northern)",
+    "Manchester Piccadilly (Northern)"
+  ],
   "Mills Hill": [
     "Blackburn (Northern)",
     "Clitheroe (Northern)",
     "Rochdale (Northern)"
+  ],
+  "Moorside": [
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Moses Gate": [
+    "Southport (Northern)",
+    "Stalybridge (Northern)"
+  ],
+  "Mossley": [
+    "Leeds (TransPennine Express)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "York (TransPennine Express)"
   ],
   "Moston": [
     "Blackburn (Northern)",
@@ -209,6 +328,14 @@
   "Navigation Road": [
     "Chester (Northern)",
     "Manchester Piccadilly (Northern)"
+  ],
+  "Newton for Hyde": [
+    "Hadfield (Northern)",
+    "Manchester Piccadilly (Northern)"
+  ],
+  "Patricroft": [
+    "Liverpool Lime Street (Northern)",
+    "Manchester Airport (Northern)"
   ],
   "Poynton": [
     "Manchester Piccadilly (Northern)",
@@ -228,6 +355,15 @@
     "Manchester Victoria (Northern)",
     "Wigan Wallgate (Northern)"
   ],
+  "Romiley": [
+    "Manchester Piccadilly (Northern)",
+    "New Mills Central (Northern)",
+    "Rose Hill Marple (Northern)",
+    "Sheffield (Northern)"
+  ],
+  "Rose Hill Marple": [
+    "Manchester Piccadilly (Northern)"
+  ],
   "Ryder Brow": [
     "Manchester Piccadilly (Northern)",
     "New Mills Central (Northern)"
@@ -240,7 +376,6 @@
     "Rochdale (Northern)",
     "Southport (Northern)",
     "Stalybridge (Northern)",
-    "Wigan North Western (Northern)",
     "Wigan Wallgate (Northern)"
   ],
   "Salford Crescent": [
@@ -262,44 +397,69 @@
     "Leeds (Northern)",
     "Wigan Wallgate (Northern)"
   ],
+  "Stalybridge": [
+    "Hull (TransPennine Express)",
+    "Leeds (TransPennine Express)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Manchester Piccadilly (TransPennine Express)",
+    "Southport (Northern)",
+    "York (TransPennine Express)"
+  ],
   "Stockport": [
     "Bournemouth (CrossCountry)",
-    "Bristol Temple Meads (CrossCountry)",
-    "Buxton (Northern)",
-    "Chester (Northern)",
+    "Cardiff Central (Transport for Wales)",
     "Cleethorpes (TransPennine Express)",
     "Crewe (Northern)",
+    "Hazel Grove (Northern)",
     "Liverpool Lime Street (East Midlands Railway)",
-    "Liverpool Lime Street (TransPennine Express)",
     "London Euston (Avanti West Coast)",
     "Manchester Piccadilly (Avanti West Coast)",
     "Manchester Piccadilly (CrossCountry)",
     "Manchester Piccadilly (Northern)"
   ],
+  "Strines": [
+    "Manchester Piccadilly (Northern)",
+    "New Mills Central (Northern)"
+  ],
   "Swinton (Manchester)": [
     "Blackburn (Northern)",
     "Headbolt Lane (Northern)",
     "Leeds (Northern)",
-    "Wigan North Western (Northern)",
     "Wigan Wallgate (Northern)"
   ],
   "Trafford Park": [
     "Liverpool Lime Street (Northern)",
     "Manchester Oxford Road (Northern)"
   ],
-  "Walsden": [
+  "Urmston": [
+    "Cleethorpes (TransPennine Express)",
+    "Liverpool Lime Street (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
+    "Manchester Oxford Road (Northern)"
+  ],
+  "Walkden": [
     "Blackburn (Northern)",
+    "Headbolt Lane (Northern)",
     "Leeds (Northern)",
     "Wigan Wallgate (Northern)"
   ],
+  "Walsden": [
+    "Leeds (Northern)",
+    "Wigan Wallgate (Northern)"
+  ],
+  "Westhoughton": [
+    "Manchester Oxford Road (Northern)",
+    "Southport (Northern)",
+    "Stalybridge (Northern)"
+  ],
   "Wigan North Western": [
     "Blackpool North (Northern)",
+    "Edinburgh (Avanti West Coast)",
     "Glasgow Central (Avanti West Coast)",
-    "Glasgow Central (TransPennine Express)",
     "Liverpool Lime Street (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
     "London Euston (Avanti West Coast)",
-    "Manchester Victoria (Northern)",
-    "Preston (Avanti West Coast)"
+    "Manchester Victoria (Northern)"
   ],
   "Wigan Wallgate": [
     "Blackburn (Northern)",
@@ -308,6 +468,10 @@
     "Manchester Oxford Road (Northern)",
     "Southport (Northern)",
     "Stalybridge (Northern)"
+  ],
+  "Woodley": [
+    "Manchester Piccadilly (Northern)",
+    "Rose Hill Marple (Northern)"
   ],
   "Woodsmoor": [
     "Buxton (Northern)",
