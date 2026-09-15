@@ -5,17 +5,21 @@ verdict — `in` (walk-up, shown on boards) or `out-reservation` (compulsory res
 excluded by route in `lib/providers/sydney.js`, never by dropping a station). Written 14 Sep 2026
 as part of `docs/jim-brief-sydney-intercity-fill.md` (Tim's API-in-scope rule, 13 Sep 2026).
 
-**Caveat on route_short_name values below:** this environment has no `TFNSW_API_KEY` (checked in
-both the main checkout's `.env.local` and this worktree — absent from both, despite the brief's
-assumption it was present), so the live `nswtrains` static feed could not be pulled to read
-`routes.txt` directly. The five walk-up codes (BMT/CCN/SCO/SHL/HUN) are TfNSW's own published
-line codes (transportnsw.info route pages) and are high-confidence. The excluded long-distance
-codes are this session's best recollection of TfNSW's GTFS route_short_name convention for each
-corridor, not a value read from the feed — `NSWTRAINS_EXCLUDED_ROUTE_SHORT_NAMES` in
-`lib/providers/sydney.js` is the single place to correct them once a real pull is possible.
-`qa/sydney-network-sweep.mjs` (live, requires the key, not a CI gate) and `qa/prod-sweep.mjs` are
-where that confirmation should happen next — flagging this explicitly rather than shipping it
-silently as fact.
+**Round 2 update (15 Sep 2026):** `TFNSW_API_KEY` is now available and this has been verified
+against the live feeds. Two corrections to Round 1's best-guess:
+
+1. The five walk-up codes (BMT/CCN/SCO/SHL/HUN) and the four booked-reservation corridor codes
+   below are **all published under the `sydneytrains` static feed** (`agency_id: "NSWTrains"`,
+   `route_type: "2"`), not the standalone `nswtrains` feed. In the standalone `nswtrains` feed,
+   BMT/HUN/SCO/SHL exist but at `route_type: "100"` (excluded by the adapter's `railOnly` filter,
+   which only keeps `"2"`) and CCN is absent entirely. `lib/providers/sydney.js`'s
+   `loadSydneyStatic()` now applies `excludeRouteShortNames` to the `sydneytrains` load (it
+   previously only applied it to the `nswtrains` load, which — given the above — meant it was
+   excluding routes from a feed that contributed no matching trips anyway. The booked corridors
+   were not actually being filtered out of what reached a board).
+2. The real booked-reservation `route_short_name` values, read directly from `routes.txt`, are
+   **NRC / NRW / STH / WST** (below) — Round 1's guessed CAN/MEL/BRI/GRF/DBB/ARM do not exist in
+   either feed and have been replaced in `NSWTRAINS_EXCLUDED_ROUTE_SHORT_NAMES`.
 
 ## Walk-up (`in`)
 
@@ -29,26 +33,30 @@ silently as fact.
 
 ## Compulsory reservation (`out-reservation`)
 
-| Route (best-effort code, see caveat) | Corridor | Verdict | Reason |
+| Route (verified `route_short_name`) | Corridor | Verdict | Reason |
 |---|---|---|---|
-| CAN | XPT — Sydney–Canberra | `out-reservation` | XPT requires a booked, allocated seat; not a walk-up Opal service. |
-| MEL | XPT — Sydney–Melbourne (via Albury) | `out-reservation` | Same — compulsory reservation. |
-| BRI | XPT — Sydney–Brisbane (via Casino) | `out-reservation` | Same — compulsory reservation. |
-| GRF | Xplorer/XPT — North Coast beyond Dungog (Grafton/Casino) | `out-reservation` | Compulsory reservation; only the Hunter-line portion up to Dungog is walk-up (HUN, above). |
-| DBB | Xplorer — Sydney–Dubbo | `out-reservation` | Compulsory reservation. |
-| ARM | Xplorer — Sydney–Armidale/Moree | `out-reservation` | Compulsory reservation. |
-| NSW TrainLink coach routes (replacement/feeder coaches, e.g. Bathurst/Cooma/Griffith connections) | various | `out-reservation` | Coach seats are allocated at booking; also excluded structurally if published as `route_type=3` (bus) rather than rail, since the adapter only loads `route_type=2`. |
+| NRC | NSW TrainLink North Coast — Sydney (Central)↔Brisbane (Roma Street) (XPT) | `out-reservation` | XPT requires a booked, allocated seat; not a walk-up Opal service. |
+| NRW | NSW TrainLink North Western — Sydney (Central)↔Moree / Armidale (Xplorer) | `out-reservation` | Compulsory reservation. |
+| STH | NSW TrainLink Southern — Sydney (Central)↔Canberra / Griffith / Melbourne (Southern Cross) (XPT) | `out-reservation` | Compulsory reservation; only the Southern Highlands portion up to Goulburn is walk-up (SHL, above). |
+| WST | NSW TrainLink Western — Sydney (Central)↔Dubbo / Broken Hill (Xplorer) | `out-reservation` | Compulsory reservation. |
+| NSW TrainLink coach routes (numeric route_short_names, e.g. `135`/`223`/`2301` — replacement/feeder coaches such as Bathurst/Cooma/Griffith connections) | various | `out-reservation` | Coach seats are allocated at booking; also excluded structurally — these are `route_type` 106/204/205 (extended GTFS bus/coach types) in the `nswtrains` feed, not `2` (rail), so the adapter's `railOnly` filter drops them regardless. |
 
 ## Excluded stations
 
 None. Per the board-eligibility rule, exclusion is by route, never by dropping a station — every
 station the walk-up routes above call at is in the catalog (see the PR body for the full list).
-No station in the `nswtrains` feed is served *only* by an excluded route, so none had to be
-dropped from the catalog on that basis.
+No station is served *only* by an excluded route, so none had to be dropped from the catalog on
+that basis. Three catalog entries added in Round 1 were removed in Round 2 for an unrelated
+reason — no real GTFS stop, not even a booked/excluded one, corresponds to them: "Brooklyn" was a
+duplicate of the existing "Hawkesbury River" entry (same physical station, ~0.5km apart), and
+"Farley"/"Sutton Forest" are not present in any of the three feeds (closed/unserved stations).
 
 ## Code enforcement
 
 `lib/providers/sydney.js`: `NSWTRAINS_EXCLUDED_ROUTE_SHORT_NAMES` is passed as
-`excludeRouteShortNames` to `loadGtfsStatic` for the `nswtrains` source with `railOnly: true`, so
-excluded routes' trips are absent from `stopTimesByStopId` at the static-parse stage — they can
-never reach a board regardless of what the realtime feed reports for those trip ids.
+`excludeRouteShortNames` to `loadGtfsStatic` for the `sydneytrains` source (Round 2 correction —
+see above) with `railOnly: true`, so excluded routes' trips are absent from `stopTimesByStopId`
+at the static-parse stage — they can never reach a board regardless of what the realtime feed
+reports for those trip ids. Verified live 15 Sep 2026: `NRC`/`NRW`/`STH`/`WST` do not appear in
+`loadSydneyStatic()`'s resulting `railRouteIds`, and boards at Gosford/Katoomba/Wollongong/
+Newcastle Interchange return only BMT/CCN/SCO/SHL/HUN departures.
