@@ -3,7 +3,7 @@
 **For:** Tim  
 **Purpose:** Cut and upload a signed Android App Bundle to Play **closed testing** (not production).  
 **When:** After you can build the app; **before** inviting 5–15 friends. Full public QA sign-off is **not** required yet.  
-**App ID:** `com.tdrevans.nexttrain` · current `versionName` **3.0.1** · `versionCode` **25** ([`android/app/build.gradle`](../android/app/build.gradle))
+**App ID:** `com.tdrevans.nexttrain` · current `versionName` **3.0.2** · `versionCode` **26** ([`android/app/build.gradle`](../android/app/build.gradle))
 
 **Related:** [launch-blockers.md](launch-blockers.md) · [play-data-safety-cheatsheet.md](play-data-safety-cheatsheet.md) · AdMob gate `docs/jim-brief-security-admob-ship-gate.md`
 
@@ -60,7 +60,7 @@ Manual checklist:
 - [ ] Web assets you care about are in `public/` (Jim’s latest synced work).
 - [ ] Launcher icon: after any icon change run `npm run export:icon` (E3 Band → `mipmap-*` + `store-assets/exports/play-icon-512.png`). Confirm home-screen mipmaps exist before bundling — don’t ship Capacitor’s default foreground.
 - [ ] `applicationId` is still `com.tdrevans.nexttrain`
-- [ ] Bump **`versionCode`** (integer, must increase every Play upload). Current is **25**; next upload → **26**, …
+- [ ] Bump **`versionCode`** (integer, must increase every Play upload). Current is **26**; next upload → **27**, …
 - [ ] Set **`versionName`** if you want a human label (e.g. `2.3.0` or `3.0.0`)
 - [ ] Also bump `appVersion` / `appVersionCode` in `public/site-config.json` to match when you bump Gradle.
 - [ ] **NDK installed** for native debug symbols: Android Studio → SDK Manager → SDK Tools → **NDK (Side by side)** (AGP 9.3 defaults to **28.2.13676358**). Rebuild AAB after install.
