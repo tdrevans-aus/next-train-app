@@ -11,6 +11,7 @@ import {
   SYDNEY_TIME_ZONE,
   fetchStationBoard,
   listCatalogStations,
+  loadSydneyStatic,
 } from "../lib/providers/sydney.js";
 import { readTfnswApiKey } from "../lib/providers/gtfs/auth.js";
 import { assertSnapshotNotStaleTodayOrSkip } from "./lib/assert-not-stale.mjs";
@@ -145,6 +146,69 @@ if (readTfnswApiKey()) {
 } else {
   console.log(
     "sydney-dogfood-gate: TFNSW_API_KEY not set in this environment — Gosford/Katoomba/Wollongong/Newcastle Interchange live board probe skipped (expected outside Vercel prod)."
+  );
+}
+
+// Coordinate-distance assertion (docs/jim-brief-sydney-intercity-followups.md item 2 /
+// acceptance criterion 3 — the Sydney equivalent of qa/uk-catalog-coords-gate.mjs). #394's
+// Newcastle Interchange entry was ~2.2km from the feed's parent-station coordinates; every
+// catalog station's lat/lng must now be within 300m of the live feed's parent-station
+// coordinates for at least one of its stopIds. Skip-with-reason when TFNSW_API_KEY isn't set,
+// same pattern as the live board probe above.
+function haversineMeters(a, b) {
+  const R = 6371000;
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+if (readTfnswApiKey()) {
+  const staticData = await loadSydneyStatic();
+  const rawById = new Map(staticData.stops.map((s) => [s.stop_id, s]));
+  function effectiveCoords(stopId) {
+    let stop = rawById.get(stopId);
+    if (!stop) return null;
+    let hops = 0;
+    while (stop.parent_station && rawById.has(stop.parent_station) && hops < 5) {
+      stop = rawById.get(stop.parent_station);
+      hops += 1;
+    }
+    const lat = Number(stop.stop_lat);
+    const lng = Number(stop.stop_lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return { lat, lng };
+  }
+
+  const COORD_CEILING_M = 300;
+  const offenders = [];
+  for (const station of listCatalogStations()) {
+    let best = null;
+    for (const stopId of station.stopIds ?? []) {
+      const coords = effectiveCoords(stopId);
+      if (!coords) continue;
+      const dist = haversineMeters({ lat: station.lat, lng: station.lng }, coords);
+      if (best === null || dist < best) {
+        best = dist;
+      }
+    }
+    if (best !== null && best > COORD_CEILING_M) {
+      offenders.push(`${station.name} (${best.toFixed(0)}m)`);
+    }
+  }
+  assert(
+    offenders.length === 0,
+    `Catalog stations more than ${COORD_CEILING_M}m from their feed parent-station coordinates: ${offenders.join(", ")}`
+  );
+  console.log(
+    `sydney-dogfood-gate: TFNSW_API_KEY set — coordinate-distance check passed for ${listCatalogStations().length} catalog stations`
+  );
+} else {
+  console.log(
+    "sydney-dogfood-gate: TFNSW_API_KEY not set in this environment — coordinate-distance check skipped (expected outside Vercel prod)."
   );
 }
 
