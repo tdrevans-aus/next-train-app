@@ -152,7 +152,9 @@ public final class CommuteStripScheduler {
       return;
     }
 
-    String localDate = PerthTime.localDateKey();
+    // Only journeyId is in hand here (called from a broadcast receiver) — look its city zone up
+    // rather than assume Perth (closes #400 follow-up, 15 Sep 2026).
+    String localDate = DayKeys.forJourneyId(context, journeyId, now);
     // Starting I've left re-opens the glance even if they dismissed an earlier strip today.
     LeaveReminderSettingsStore.clearStripDismissedForDay(context, journeyId, localDate);
 
@@ -219,7 +221,7 @@ public final class CommuteStripScheduler {
       departureMs,
       endAtMs,
       stale,
-      alarmRequestCode(journeyId, "end")
+      alarmRequestCode(context, journeyId, "end")
     );
   }
 
@@ -325,7 +327,7 @@ public final class CommuteStripScheduler {
       departureMs,
       endAtMs,
       stale,
-      alarmRequestCode(journeyId, "end")
+      alarmRequestCode(context, journeyId, "end")
     );
     return true;
   }
@@ -347,7 +349,7 @@ public final class CommuteStripScheduler {
       return null;
     }
 
-    String localDate = PerthTime.localDateKey();
+    String localDate = DayKeys.forCityId(pin.optString("cityId", ""), System.currentTimeMillis());
     if (LeaveReminderSettingsStore.hasStripDismissedForDay(context, target.journeyId, localDate)) {
       return null;
     }
@@ -368,12 +370,12 @@ public final class CommuteStripScheduler {
       return;
     }
 
+    String planLocalDate = DayKeys.dateFromDayKey(plan.target.dayKey, plan.target.journeyId);
+    if (planLocalDate == null) {
+      planLocalDate = DayKeys.forJourney(null, now);
+    }
     if (
-      LeaveReminderSettingsStore.hasStripDismissedForDay(
-        context,
-        plan.target.journeyId,
-        PerthTime.localDateKey()
-      )
+      LeaveReminderSettingsStore.hasStripDismissedForDay(context, plan.target.journeyId, planLocalDate)
     ) {
       return;
     }
@@ -407,7 +409,7 @@ public final class CommuteStripScheduler {
         ACTION_SHOW,
         plan.startAtMs,
         plan,
-        alarmRequestCode(plan.target.journeyId, "show")
+        alarmRequestCode(context, plan.target.journeyId, "show")
       );
     }
 
@@ -417,7 +419,7 @@ public final class CommuteStripScheduler {
         ACTION_END,
         plan.endAtMs,
         plan,
-        alarmRequestCode(plan.target.journeyId, "end")
+        alarmRequestCode(context, plan.target.journeyId, "end")
       );
     }
   }
@@ -456,7 +458,7 @@ public final class CommuteStripScheduler {
       return null;
     }
 
-    String localDate = PerthTime.localDateKey();
+    String localDate = DayKeys.forJourney(journey, System.currentTimeMillis());
     // After leave-now for today: only keep strip for that same departure (mid-window),
     // never chain to the next afternoon train.
     if (LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate)) {
@@ -622,7 +624,7 @@ public final class CommuteStripScheduler {
         departureMs,
         endAtMs,
         stale,
-        alarmRequestCode(journeyId, "on_the_way_one_min")
+        alarmRequestCode(context, journeyId, "on_the_way_one_min")
       );
     }
 
@@ -638,7 +640,7 @@ public final class CommuteStripScheduler {
         departureMs,
         endAtMs,
         stale,
-        alarmRequestCode(journeyId, "on_the_way_depart")
+        alarmRequestCode(context, journeyId, "on_the_way_depart")
       );
     }
   }
@@ -665,7 +667,7 @@ public final class CommuteStripScheduler {
       departureMs,
       endAtMs,
       stale,
-      alarmRequestCode(journeyId, "leave")
+      alarmRequestCode(context, journeyId, "leave")
     );
   }
 
@@ -692,7 +694,10 @@ public final class CommuteStripScheduler {
     intent.putExtra(EXTRA_JOURNEY_ID, journeyId);
     intent.putExtra(EXTRA_ROUTE, route);
     intent.putExtra(EXTRA_TRAIN_TIME, trainTime);
-    intent.putExtra(EXTRA_DAY_KEY, PerthTime.localDateKey());
+    // Same zone-aware date as the alarm's own request code below — the receiver reads this
+    // value straight back for the dismissed-for-day check, so it must match (closes #400
+    // follow-up, 15 Sep 2026).
+    intent.putExtra(EXTRA_DAY_KEY, DayKeys.forJourneyId(context, journeyId, System.currentTimeMillis()));
     intent.putExtra(EXTRA_LEAVE_BY_MS, leaveByMs);
     intent.putExtra(EXTRA_DEPARTURE_MS, departureMs);
     intent.putExtra(EXTRA_END_AT_MS, endAtMs);
@@ -722,7 +727,14 @@ public final class CommuteStripScheduler {
     registerScheduledAlarm(context, requestCode);
   }
 
-  private static int alarmRequestCode(String journeyId, String kind) {
-    return ("strip:" + journeyId + ":" + PerthTime.localDateKey() + ":" + kind).hashCode();
+  /**
+   * Request codes must not collide across days for the same journey/kind, but must also not
+   * drift from the fired/dismissed-for-day keys and EXTRA_DAY_KEY they pair with — all derive
+   * from the journey's own city zone via {@link DayKeys}, not zero-arg Perth (closes #400
+   * follow-up, 15 Sep 2026).
+   */
+  private static int alarmRequestCode(Context context, String journeyId, String kind) {
+    String localDate = DayKeys.forJourneyId(context, journeyId, System.currentTimeMillis());
+    return ("strip:" + journeyId + ":" + localDate + ":" + kind).hashCode();
   }
 }

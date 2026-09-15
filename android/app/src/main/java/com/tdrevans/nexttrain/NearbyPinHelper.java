@@ -167,7 +167,9 @@ public final class NearbyPinHelper {
     target.trainTime =
       trip.optString("displayTime", PerthTime.formatClockFromEpochMs(departureMs));
     target.departureIso = departureIso;
-    String localDate = PerthTime.localDateKey();
+    // Nearby pin carries its own cityId (used above for fetchNextTrain) — use it for the day
+    // key too, not zero-arg Perth (closes #400 follow-up, 15 Sep 2026).
+    String localDate = DayKeys.forCityId(pin.optString("cityId", ""), System.currentTimeMillis());
     target.dayKey = JOURNEY_ID + ":" + localDate;
     target.departureKey = JOURNEY_ID + ":" + departureIso;
     target.leaveByMs = leaveByMs;

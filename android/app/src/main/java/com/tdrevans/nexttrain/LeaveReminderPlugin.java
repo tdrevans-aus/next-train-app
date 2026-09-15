@@ -136,7 +136,7 @@ public class LeaveReminderPlugin extends Plugin {
     LeaveReminderSettingsStore.markLeaveNowFiredForDay(
       getContext(),
       journeyId,
-      PerthTime.localDateKey()
+      DayKeys.forJourneyId(getContext(), journeyId, System.currentTimeMillis())
     );
     LeaveReminderNotifier.cancel(getContext());
     LeaveReminderScheduler.cancelAll(getContext());
