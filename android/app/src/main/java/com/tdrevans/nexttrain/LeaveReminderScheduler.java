@@ -767,7 +767,7 @@ public final class LeaveReminderScheduler {
         return result;
       }
 
-      if (!PreferredTrainReminder.isRemindDay(journey)) {
+      if (!PreferredTrainReminder.isRemindDay(journey, System.currentTimeMillis())) {
         result.put("reason", "wrong_day");
         return result;
       }
@@ -795,7 +795,8 @@ public final class LeaveReminderScheduler {
 
         PreferredTrainReminder.ScheduleClock clock = PreferredTrainReminder.ScheduleClock.live(
           context,
-          journeyId
+          journeyId,
+          CityTimeZones.zoneFor(journey.optString("cityId", ""))
         );
         result.put("reason", PreferredTrainReminder.diagnoseUnscheduled(journey, payload, clock));
         return result;
