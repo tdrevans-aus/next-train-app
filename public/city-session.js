@@ -181,16 +181,37 @@
     // Airport, Bishops Stortford (lat), Peterborough (lng), Great Yarmouth/Lowestoft (lng)
     // are real, NaPTAN-verified catalog stations the old box excluded.
     // minLat widened from 51.80 to 51.62 (15 Sep 2026, docs/jim-brief-essex-to-greater-
-    // anglia.md): nine Essex stations reassigned in from rest-of-england (Beaulieu Park,
-    // Burnham-on-Crouch, Chelmsford, Clacton-on-Sea, Harlow Mill, Harlow Town, Hatfield
-    // Peverel, Roydon, Southminster) sit as far south as Burnham-on-Crouch itself
-    // (51.6335) — the old floor excluded all nine, including their own new home's box. This
-    // does genuinely overlap ten Hertfordshire rest-of-england stations and four Crouch
-    // Valley-adjacent london-se-national-rail stations (Althorne, Ingatestone, North
-    // Fambridge, South Woodham Ferrers) plus rest-of-england's own Cheshunt entry —
-    // allow-listed in qa/uk-city-bounds-overlap-gate.mjs with reasons, same trade-off as
-    // every other widened box in this file.
-    "greater-anglia": { minLat: 51.62, maxLat: 52.9, minLng: -0.30, maxLng: 1.8 },
+    // anglia.md round 1): nine Essex stations reassigned in from rest-of-england sit as
+    // far south as Burnham-on-Crouch itself (51.6335) — the old floor excluded all nine.
+    // That single-box widening was reverted 16 Sep 2026 (round 2, Mark's PR #402 finding):
+    // it made hintCityFromCoords send a rider physically at Cheshunt (51.7027, rest-of-
+    // england's own station) into this box, which has no Cheshunt — Cheshunt's latitude
+    // sits BETWEEN the two reassigned clusters (Burnham-on-Crouch/Southminster at
+    // 51.63-51.66, and Chelmsford/Beaulieu Park/Harlow/Hatfield Peverel/Roydon at
+    // 51.74-51.79), so no single rectangle spanning both clusters can exclude it. Split
+    // into two boxes instead (CITY_BOUNDS values may now be a single box OR an array of
+    // boxes — see hintCityFromCoords/inAnyBounds below, and qa/uk-city-bounds-overlap-
+    // gate.mjs's/qa/uk-catalog-coords-gate.mjs's matching support). This box covers the
+    // higher-latitude cluster only; minLat 51.72 sits just above Cheshunt (51.7027) and
+    // just below Chelmsford (51.7366), the lowest of that cluster. The Crouch Valley
+    // cluster (Burnham-on-Crouch, Southminster) is the separate "greater-anglia" second
+    // box below. Still genuinely overlaps several Hertfordshire rest-of-england stations
+    // whose own latitude also falls in this band (Bayford, Broxbourne, Hatfield, Hertford
+    // East/North, Rye House, St Margarets, Welham Green, Brookmans Park) — allow-listed in
+    // qa/uk-city-bounds-overlap-gate.mjs with reasons, same pre-existing trade-off as every
+    // other widened box in this file; Cheshunt and Cuffley's latitude (51.7027/51.7091)
+    // both now fall below this floor, which is what fixes the regression.
+    "greater-anglia": [
+      { minLat: 51.72, maxLat: 52.9, minLng: -0.30, maxLng: 1.8 },
+      // Crouch Valley cluster: Burnham-on-Crouch (51.6335, 0.8135) and Southminster
+      // (51.6609, 0.8354), the two southernmost of the nine reassigned Essex stations.
+      // maxLat 51.70 sits just below Cheshunt (51.7027), so a rider at Cheshunt falls
+      // outside BOTH greater-anglia boxes and correctly falls through to rest-of-england
+      // further down this object. Also overlaps Althorne (51.6479, 0.7525), a genuine
+      // london-se-national-rail Crouch Valley station — allow-listed, same pre-existing
+      // trade-off as above.
+      { minLat: 51.60, maxLat: 51.70, minLng: 0.70, maxLng: 0.90 },
+    ],
     // maxLat widened 7 Sep 2026 (uk-catalog-geocode): Walsden (WDN, 53.696) is a real,
     // NaPTAN-verified boundary station the old 53.55 ceiling excluded.
     // Box widened 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): 33 stations
@@ -302,9 +323,19 @@
     return lat >= box.minLat && lat <= box.maxLat && lng >= box.minLng && lng <= box.maxLng;
   }
 
+  // A CITY_BOUNDS value is normally a single box, but may be an array of boxes
+  // (added 16 Sep 2026, docs/jim-brief-essex-to-greater-anglia.md round 2) for a
+  // region whose catalog forms two or more geographically separate clusters that
+  // no single rectangle can bound without also catching an unrelated neighbour
+  // (see the "greater-anglia" entry above) — true if lat/lng falls in ANY of them.
+  function inAnyBounds(lat, lng, boxOrBoxes) {
+    const boxes = Array.isArray(boxOrBoxes) ? boxOrBoxes : [boxOrBoxes];
+    return boxes.some((box) => inBounds(lat, lng, box));
+  }
+
   function hintCityFromCoords(lat, lng) {
-    for (const [id, box] of Object.entries(CITY_BOUNDS)) {
-      if (inBounds(lat, lng, box)) {
+    for (const [id, boxOrBoxes] of Object.entries(CITY_BOUNDS)) {
+      if (inAnyBounds(lat, lng, boxOrBoxes)) {
         return id;
       }
     }

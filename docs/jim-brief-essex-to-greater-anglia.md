@@ -38,3 +38,31 @@ National Rail's Essex claim is only its Liverpool Street terminus group.
 
 Worktree from current master; copy this brief in; commit, push; PR "UK stations: Essex nine to
 Greater Anglia (resolves #399 dual claim)".
+
+## Round 2 (16 Sep 2026) — Mark's #402 findings
+
+Mark's note: https://github.com/tdrevans-aus/next-train-app/pull/402#issuecomment-5683694667.
+Both acceptance criteria passed; two things to fix on the same branch before merge:
+
+1. **Cheshunt Near-me regression.** Widening greater-anglia's `CITY_BOUNDS` south to minLat 51.62
+   makes `hintCityFromCoords` send a rider physically at Cheshunt (Hertfordshire, 51.70, -0.02)
+   to greater-anglia, whose catalog has no Cheshunt; before this PR they fell through to
+   rest-of-england, which has it. Requirement: a rider standing at Cheshunt, at Burnham-on-Crouch
+   and at Southminster must each be hinted to a region whose catalog contains that station.
+   Choose the smaller correct fix and say why: (a) keep the old box (minLat 51.80) and let
+   `CITY_BOUNDS` carry a second, narrow box for the Crouch Valley (extend the structure to allow
+   an array of boxes per city if it doesn't already, with the overlap gate updated to iterate
+   them), or (b) make `hintCityFromCoords` fall through to the next matching box when the hinted
+   region's catalog has no station within a few km of the rider. (b) fixes the whole class
+   (the Hertfordshire allow-list entries are the same problem) but touches shared picker logic;
+   if you choose (b), add a QA case for Cheshunt and Burnham in `qa/country-wide-picker.mjs` or
+   the nearby-hint script that already exists.
+2. **Stale reasoning.** `docs/uk-station-fill/assignment.md`'s new paragraph states minLat 51.64
+   and Southminster as southernmost, and claims no new overlap allow-list entries; correct all
+   three (51.62, Burnham-on-Crouch, ~17 entries, or whatever your fix leaves). In
+   `qa/uk-city-bounds-overlap-gate.mjs` the `Burnham-on-Crouch (greater-anglia)` entry's
+   first-match claim is backwards and never triggers; fix or remove it.
+
+Re-run the touched gates and `node qa/run-all.mjs --smoke` (foreground, explicit 600000 ms
+timeout, tail in the foreground if backgrounded), push to the same branch, comment on the PR that
+round 2 is ready with the option chosen and what a rider at Cheshunt/Burnham/Southminster now gets.

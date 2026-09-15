@@ -78,18 +78,17 @@ const boundsMatch = citySession.match(/CITY_BOUNDS = \{([\s\S]*?)\n  \};/);
 if (!boundsMatch) {
   fail("city-session CITY_BOUNDS: could not parse (pattern drift — update this gate)");
 }
+// A CITY_BOUNDS value is normally a single box, but may be an array of boxes (added
+// 16 Sep 2026, docs/jim-brief-essex-to-greater-anglia.md round 2 — see the matching
+// comment in public/city-session.js). Evaluate the object literal itself, same
+// approach qa/uk-city-bounds-overlap-gate.mjs uses, rather than a regex that can only
+// match a single-box shape.
 const bounds = new Map();
 if (boundsMatch) {
-  const re = /(?:"([a-z-]+)"|([a-z-]+)):\s*\{\s*minLat:\s*(-?[\d.]+),\s*maxLat:\s*(-?[\d.]+),\s*minLng:\s*(-?[\d.]+),\s*maxLng:\s*(-?[\d.]+)\s*\}/g;
-  let m;
-  while ((m = re.exec(boundsMatch[1]))) {
-    const id = m[1] ?? m[2];
-    bounds.set(id, {
-      minLat: Number(m[3]),
-      maxLat: Number(m[4]),
-      minLng: Number(m[5]),
-      maxLng: Number(m[6]),
-    });
+  // eslint-disable-next-line no-new-func -- parsing a trusted local source file's own object literal
+  const parsed = new Function(`return {${boundsMatch[1]}};`)();
+  for (const [id, boxOrBoxes] of Object.entries(parsed)) {
+    bounds.set(id, Array.isArray(boxOrBoxes) ? boxOrBoxes : [boxOrBoxes]);
   }
 }
 
@@ -103,8 +102,8 @@ for (const regionId of UK_REGION_IDS) {
   if (!stations.length) continue; // e.g. uk-london-tfl has no mode:train stations
   checkedRegions++;
 
-  const box = bounds.get(regionId);
-  if (!box) {
+  const boxes = bounds.get(regionId);
+  if (!boxes) {
     fail(`${regionId}: no CITY_BOUNDS entry in public/city-session.js`);
   }
 
@@ -118,13 +117,12 @@ for (const regionId of UK_REGION_IDS) {
       fail(`${regionId} "${s.name}": coordinates are (0, 0) — placeholder, not a real geocode`);
     }
 
-    if (
-      box &&
-      (s.lat < box.minLat || s.lat > box.maxLat || s.lng < box.minLng || s.lng > box.maxLng) &&
-      !BOX_CHECK_EXEMPT.has(`${regionId}::${s.name}`)
-    ) {
+    const insideAnyBox = boxes && boxes.some(
+      (box) => s.lat >= box.minLat && s.lat <= box.maxLat && s.lng >= box.minLng && s.lng <= box.maxLng
+    );
+    if (boxes && !insideAnyBox && !BOX_CHECK_EXEMPT.has(`${regionId}::${s.name}`)) {
       fail(
-        `${regionId} "${s.name}": (${s.lat}, ${s.lng}) is outside CITY_BOUNDS ${JSON.stringify(box)}`
+        `${regionId} "${s.name}": (${s.lat}, ${s.lng}) is outside CITY_BOUNDS ${JSON.stringify(boxes)}`
       );
     }
   }
