@@ -427,6 +427,102 @@ public class CommuteScheduleTest {
   }
 
   @Test
+  public void toWidgetSnapshot_fetchFailureShowsUpdatingWithTimer() throws Exception {
+    // Regression for FB widget-stuck-updating (15 Sep 2026): a fetch that throws before
+    // producing any payload/next must not freeze on bare dots with no way to recover — it
+    // must at least carry an updatingSinceMs so the next repaint can time it out.
+    CommuteSchedule.Result result = new CommuteSchedule.Result();
+    result.empty = false;
+    result.journey = new JSONObject().put("id", "j1").put("station", "West Bromwich").put("direction", "Wolverhampton");
+    result.next = null;
+    result.payload = null;
+    result.fetchFailedSinceMs = 0L;
+
+    JSONObject snapshot = CommuteSchedule.toWidgetSnapshot(result);
+
+    assertEquals("Updating…", snapshot.optString("primary"));
+    assertTrue(snapshot.optLong("updatingSinceMs", 0L) > 0L);
+    assertEquals("", snapshot.optString("departureIso"));
+  }
+
+  @Test
+  public void toWidgetSnapshot_fetchFailureRecoversToClearErrorFaceAfterTimeout() throws Exception {
+    long nowMs = System.currentTimeMillis();
+
+    CommuteSchedule.Result result = new CommuteSchedule.Result();
+    result.empty = false;
+    result.journey = new JSONObject().put("id", "j1").put("station", "West Bromwich").put("direction", "Wolverhampton");
+    result.next = null;
+    result.payload = null;
+    // Fetch has been failing since well past UPDATING_TIMEOUT_MS (90s) ago — every refresh
+    // and every local repaint since has hit the same dead end with nothing to show but "…".
+    result.fetchFailedSinceMs = nowMs - CommuteSchedule.UPDATING_TIMEOUT_MS - 60_000L;
+
+    JSONObject snapshot = CommuteSchedule.toWidgetSnapshot(result);
+
+    assertEquals("Open", snapshot.optString("primary"));
+    assertEquals(CommuteSchedulePreview.FETCH_FAILED_SECONDARY, snapshot.optString("secondary"));
+    assertEquals("Couldn't update", snapshot.optString("updatedLine"));
+  }
+
+  @Test
+  public void repaintSnapshot_recoversFetchFailedStateAfterTimeout() throws Exception {
+    long nowMs = System.currentTimeMillis();
+
+    // Simulates the cached snapshot written by toWidgetSnapshot for a persistently-failing
+    // fetch: no departureIso (never had a real trip), but an updatingSinceMs from well before
+    // this repaint. Before the fix, repaintSnapshot bailed out on the empty departureIso and
+    // returned this exact snapshot unchanged forever.
+    JSONObject cached = new JSONObject();
+    cached.put("empty", false);
+    cached.put("journeyId", "j1");
+    cached.put("departureIso", "");
+    cached.put("trainClock", "");
+    cached.put("primary", "Updating…");
+    cached.put("secondary", "Fetching next train…");
+    cached.put("updatingSinceMs", nowMs - CommuteSchedule.UPDATING_TIMEOUT_MS - 60_000L);
+    cached.put("updatingRetried", true);
+    cached.put("refreshedAtMs", nowMs - 10L * 60_000L);
+
+    JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
+
+    assertEquals(CommuteSchedulePreview.FETCH_FAILED_SECONDARY, repainted.optString("secondary"));
+    assertEquals("Couldn't update", repainted.optString("updatedLine"));
+    assertTrue(repainted.optBoolean("stale"));
+    assertEquals(0L, repainted.optLong("updatingSinceMs", -1L));
+  }
+
+  @Test
+  public void repaintSnapshot_leavesFreshFetchFailureUnchangedWithinVisibleWindow() throws Exception {
+    long nowMs = System.currentTimeMillis();
+
+    JSONObject cached = new JSONObject();
+    cached.put("empty", false);
+    cached.put("journeyId", "j1");
+    cached.put("departureIso", "");
+    cached.put("trainClock", "");
+    cached.put("primary", "Updating…");
+    cached.put("secondary", "Fetching next train…");
+    cached.put("updatingSinceMs", nowMs - 5_000L);
+
+    JSONObject repainted = CommuteSchedule.repaintSnapshot(cached);
+
+    assertEquals("Updating…", repainted.optString("primary"));
+    assertFalse(repainted.optBoolean("stale"));
+  }
+
+  @Test
+  public void needsLocalRepaint_trueForFetchFailureWithNoDepartureIso() throws Exception {
+    JSONObject snapshot = new JSONObject();
+    snapshot.put("empty", false);
+    snapshot.put("departureIso", "");
+    snapshot.put("primary", "Updating…");
+    snapshot.put("updatingSinceMs", System.currentTimeMillis());
+
+    assertTrue(CommuteSchedule.needsLocalRepaint(snapshot));
+  }
+
+  @Test
   public void degradedPrimary_keepsCountdownWhileDepartureStillFuture() throws Exception {
     long nowMs = System.currentTimeMillis();
     long departureMs = nowMs + 12L * 60_000L;

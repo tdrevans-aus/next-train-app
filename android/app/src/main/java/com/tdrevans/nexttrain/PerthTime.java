@@ -23,7 +23,12 @@ public final class PerthTime {
   }
 
   public static int minutesSinceMidnight(long epochMs) {
-    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE);
+    return minutesSinceMidnight(epochMs, ZONE);
+  }
+
+  /** Zone-aware variant — use a journey's own city zone, not the Perth default (FB 15 Sep 2026). */
+  public static int minutesSinceMidnight(long epochMs, ZoneId zone) {
+    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), zone != null ? zone : ZONE);
     return time.getHour() * 60 + time.getMinute();
   }
 
@@ -64,7 +69,14 @@ public final class PerthTime {
   }
 
   public static int dayOfWeekIso(long epochMs) {
-    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE).getDayOfWeek().getValue();
+    return dayOfWeekIso(epochMs, ZONE);
+  }
+
+  /** Zone-aware variant — a departure just after midnight is "tomorrow" in its own city, not Perth. */
+  public static int dayOfWeekIso(long epochMs, ZoneId zone) {
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), zone != null ? zone : ZONE)
+      .getDayOfWeek()
+      .getValue();
   }
 
   public static String localDateKey() {
@@ -72,7 +84,12 @@ public final class PerthTime {
   }
 
   public static String localDateKey(long epochMs) {
-    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE)
+    return localDateKey(epochMs, ZONE);
+  }
+
+  /** Zone-aware variant of {@link #localDateKey(long)}. */
+  public static String localDateKey(long epochMs, ZoneId zone) {
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), zone != null ? zone : ZONE)
       .format(DateTimeFormatter.ISO_LOCAL_DATE);
   }
 
@@ -94,7 +111,12 @@ public final class PerthTime {
   }
 
   public static int minutesFromIso(String iso) {
-    ZonedDateTime time = parseIsoToPerth(iso);
+    return minutesFromIso(iso, ZONE);
+  }
+
+  /** Zone-aware variant of {@link #minutesFromIso(String)}. */
+  public static int minutesFromIso(String iso, ZoneId zone) {
+    ZonedDateTime time = parseIsoToZone(iso, zone != null ? zone : ZONE);
     if (time == null) {
       return -1;
     }
@@ -111,14 +133,20 @@ public final class PerthTime {
 
   /** Accepts `Z` instants and offset timestamps used by pin-resolution fixtures. */
   static ZonedDateTime parseIsoToPerth(String iso) {
+    return parseIsoToZone(iso, ZONE);
+  }
+
+  /** Zone-aware variant of {@link #parseIsoToPerth(String)}. */
+  static ZonedDateTime parseIsoToZone(String iso, ZoneId zone) {
     if (iso == null || iso.isEmpty()) {
       return null;
     }
+    ZoneId resolvedZone = zone != null ? zone : ZONE;
     try {
-      return Instant.parse(iso).atZone(ZONE);
+      return Instant.parse(iso).atZone(resolvedZone);
     } catch (Exception ignored) {
       try {
-        return OffsetDateTime.parse(iso).atZoneSameInstant(ZONE);
+        return OffsetDateTime.parse(iso).atZoneSameInstant(resolvedZone);
       } catch (Exception error) {
         return null;
       }
@@ -126,11 +154,16 @@ public final class PerthTime {
   }
 
   public static String formatClockFromIso(String iso) {
+    return formatClockFromIso(iso, ZONE);
+  }
+
+  /** Zone-aware variant of {@link #formatClockFromIso(String)}. */
+  public static String formatClockFromIso(String iso, ZoneId zone) {
     if (iso == null || iso.isEmpty()) {
       return "—";
     }
     try {
-      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.parse(iso), ZONE);
+      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.parse(iso), zone != null ? zone : ZONE);
       return time.format(DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault()));
     } catch (Exception error) {
       return "—";
@@ -138,11 +171,16 @@ public final class PerthTime {
   }
 
   public static String formatClockFromEpochMs(long epochMs) {
+    return formatClockFromEpochMs(epochMs, ZONE);
+  }
+
+  /** Zone-aware variant of {@link #formatClockFromEpochMs(long)}. */
+  public static String formatClockFromEpochMs(long epochMs, ZoneId zone) {
     if (epochMs <= 0) {
       return "—";
     }
     try {
-      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), ZONE);
+      ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMs), zone != null ? zone : ZONE);
       return time.format(DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault()));
     } catch (Exception error) {
       return "—";
@@ -170,6 +208,11 @@ public final class PerthTime {
   }
 
   public static String formatUpdatedAgo(long updatedAtMs) {
+    return formatUpdatedAgo(updatedAtMs, ZONE);
+  }
+
+  /** Zone-aware variant of {@link #formatUpdatedAgo(long)}. */
+  public static String formatUpdatedAgo(long updatedAtMs, ZoneId zone) {
     if (updatedAtMs <= 0) {
       return "Updating…";
     }
@@ -180,7 +223,7 @@ public final class PerthTime {
     if (minutes < 60) {
       return "Updated " + minutes + "m ago";
     }
-    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(updatedAtMs), ZONE);
+    ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(updatedAtMs), zone != null ? zone : ZONE);
     return time.format(DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault()));
   }
 }

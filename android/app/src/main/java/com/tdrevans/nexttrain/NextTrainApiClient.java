@@ -28,20 +28,7 @@ public final class NextTrainApiClient {
     int leaveBeforeMinutes,
     String cityId
   ) throws Exception {
-    String query =
-      "station=" +
-      URLEncoder.encode(station, StandardCharsets.UTF_8.name()) +
-      "&direction=" +
-      URLEncoder.encode(direction, StandardCharsets.UTF_8.name()) +
-      "&leaveBefore=" +
-      leaveBeforeMinutes;
-    // The API defaults to Perth when no city is given, so non-Perth
-    // journeys must always name theirs.
-    if (cityId != null && !cityId.isEmpty()) {
-      query += "&city=" + URLEncoder.encode(cityId, StandardCharsets.UTF_8.name());
-    }
-
-    URL url = new URL(API_BASE + "/api/next-train?" + query);
+    URL url = new URL(buildRequestUrl(station, direction, leaveBeforeMinutes, cityId));
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setConnectTimeout(15_000);
     connection.setReadTimeout(15_000);
@@ -68,5 +55,29 @@ public final class NextTrainApiClient {
     }
 
     return new JSONObject(response.toString());
+  }
+
+  /**
+   * Pure query-string builder, split out so callers (widget/pin resolution, reminders) can be
+   * regression-tested for always naming a non-Perth journey's city without needing real network
+   * (FB widget-stuck-updating, 15 Sep 2026 — {@code WidgetPinResolver} previously called the
+   * 3-arg overload here, silently dropping {@code cityId} and defaulting every pinned UK/etc.
+   * fetch to the Perth catalog, where the station is unresolvable).
+   */
+  static String buildRequestUrl(String station, String direction, int leaveBeforeMinutes, String cityId)
+    throws Exception {
+    String query =
+      "station=" +
+      URLEncoder.encode(station, StandardCharsets.UTF_8.name()) +
+      "&direction=" +
+      URLEncoder.encode(direction, StandardCharsets.UTF_8.name()) +
+      "&leaveBefore=" +
+      leaveBeforeMinutes;
+    // The API defaults to Perth when no city is given, so non-Perth
+    // journeys must always name theirs.
+    if (cityId != null && !cityId.isEmpty()) {
+      query += "&city=" + URLEncoder.encode(cityId, StandardCharsets.UTF_8.name());
+    }
+    return API_BASE + "/api/next-train?" + query;
   }
 }

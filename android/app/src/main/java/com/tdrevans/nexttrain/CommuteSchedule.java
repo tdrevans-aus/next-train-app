@@ -85,6 +85,12 @@ public final class CommuteSchedule {
             result.journeyId = cached.optString("journeyId");
             result.route = cached.optString("route");
             result.empty = cached.optBoolean("empty", false);
+            // Carry the original failure start forward so a persistently-failing route
+            // (unroutable station, stale pin, etc.) still times out of "Updating…" instead
+            // of restarting the visible window on every refresh (FB widget-stuck-updating).
+            long previousFailedSince = cached.optLong("updatingSinceMs", 0L);
+            result.fetchFailedSinceMs =
+              previousFailedSince > 0L ? previousFailedSince : System.currentTimeMillis();
           } catch (Exception ignored) {
             result.empty = true;
           }
@@ -264,7 +270,8 @@ public final class CommuteSchedule {
     if (preferredMinutes < 0) {
       return true;
     }
-    return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey));
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
+    return tripMatchesPreferredOrLater(trip, preferredMinutes, liveHorizonMinutes(journey), zone);
   }
 
   /** True when the widget live face is an actively pinned train (nearby, override, or commute pin). */
@@ -401,8 +408,17 @@ public final class CommuteSchedule {
     int preferredMinutes,
     int horizonMinutes
   ) {
+    return tripMatchesPreferredOrLater(trip, preferredMinutes, horizonMinutes, CityTimeZones.zoneFor(null));
+  }
+
+  static boolean tripMatchesPreferredOrLater(
+    JSONObject trip,
+    int preferredMinutes,
+    int horizonMinutes,
+    java.time.ZoneId zone
+  ) {
     String departureIso = tripDepartureIso(trip);
-    int departureMinutes = PerthTime.minutesFromIso(departureIso);
+    int departureMinutes = PerthTime.minutesFromIso(departureIso, zone);
     if (departureMinutes < 0) {
       return false;
     }

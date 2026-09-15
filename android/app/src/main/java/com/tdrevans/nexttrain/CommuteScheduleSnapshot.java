@@ -21,7 +21,7 @@ public final class CommuteScheduleSnapshot {
     }
 
     if (result.next == null && result.payload == null) {
-      return CommuteSchedulePreview.loadingState(result.journey);
+      return CommuteSchedulePreview.fetchFailedState(result.journey, result.fetchFailedSinceMs);
     }
 
     if (result.next == null) {
@@ -186,6 +186,12 @@ public final class CommuteScheduleSnapshot {
 
     String departureIso = cached.optString("departureIso", "");
     if (departureIso.isEmpty()) {
+      // No known departure to repaint a countdown from (brand-new pin, or every fetch since
+      // has failed) — but if we're mid an Updating episode, still let it time out instead of
+      // sitting on the bare dots forever (FB widget-stuck-updating, 15 Sep 2026).
+      if (cached.optLong("updatingSinceMs", 0L) > 0L) {
+        return applyUpdatingState(cached);
+      }
       return cached;
     }
 
@@ -313,17 +319,23 @@ public final class CommuteScheduleSnapshot {
 
   private static JSONObject applyStaleRefreshState(JSONObject cached) throws Exception {
     JSONObject snapshot = new JSONObject(cached.toString());
+    boolean neverHadDeparture = cached.optString("departureIso", "").isEmpty();
     snapshot.put("label", CommuteSchedule.preservedLiveLabel(cached));
     snapshot.put("primary", CommuteSchedulePreview.degradedPrimary(cached));
     snapshot.put("trainClock", "");
-    snapshot.put("secondary", CommuteSchedulePreview.DEGRADED_SECONDARY);
+    snapshot.put(
+      "secondary",
+      neverHadDeparture
+        ? CommuteSchedulePreview.FETCH_FAILED_SECONDARY
+        : CommuteSchedulePreview.DEGRADED_SECONDARY
+    );
     snapshot.put("urgent", false);
     snapshot.put("late", false);
     snapshot.put("statusCrumb", "");
     snapshot.put("stale", true);
     snapshot.put("updatingSinceMs", 0L);
     snapshot.put("updatingRetried", false);
-    snapshot.put("updatedLine", "Times may be out of date");
+    snapshot.put("updatedLine", neverHadDeparture ? "Couldn't update" : "Times may be out of date");
     return snapshot;
   }
 
@@ -413,14 +425,17 @@ public final class CommuteScheduleSnapshot {
       return false;
     }
 
+    if (snapshot.optLong("updatingSinceMs", 0L) > 0L) {
+      // Keep ticking through an Updating episode even with no known departure yet (a brand-new
+      // pin, or every fetch since has failed) so it can time out into a clear error face
+      // instead of repainting the bare dots forever (FB widget-stuck-updating, 15 Sep 2026).
+      return true;
+    }
+
     if (needsNetworkRefresh(snapshot)) {
       // Keep ticking during handoff fetch (brief Updating or staleWhileFetching).
       String primary = snapshot.optString("primary", "");
-      if (
-        "Updating…".equals(primary) ||
-        snapshot.optBoolean("staleWhileFetching", false) ||
-        snapshot.optLong("updatingSinceMs", 0L) > 0L
-      ) {
+      if ("Updating…".equals(primary) || snapshot.optBoolean("staleWhileFetching", false)) {
         return true;
       }
       return false;

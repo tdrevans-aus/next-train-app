@@ -12,19 +12,22 @@ public final class JourneyPinHelper {
     if (journey == null) {
       return false;
     }
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
     String overrideDate = journey.optString("journeyPinOverrideDate", "");
     String overrideIso = journey.optString("journeyPinOverrideIso", "");
     return !overrideDate.isEmpty()
       && !overrideIso.isEmpty()
-      && overrideDate.equals(PerthTime.localDateKey());
+      && overrideDate.equals(PerthTime.localDateKey(System.currentTimeMillis(), zone));
   }
 
   public static boolean isPinDismissedToday(JSONObject journey) {
     if (journey == null) {
       return false;
     }
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
     String dismissedDate = journey.optString("journeyPinDismissedDate", "");
-    return !dismissedDate.isEmpty() && dismissedDate.equals(PerthTime.localDateKey());
+    return !dismissedDate.isEmpty()
+      && dismissedDate.equals(PerthTime.localDateKey(System.currentTimeMillis(), zone));
   }
 
   /** Widget + hero pin chrome: override today, or preferred target in window and not dismissed today. */
@@ -41,7 +44,13 @@ public final class JourneyPinHelper {
     if (CommuteSchedule.preferredMinutesForLiveGlance(journey) < 0) {
       return false;
     }
-    return JourneySelector.matchesWindow(journey, PerthTime.minutesSinceMidnight());
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
+    long nowMs = System.currentTimeMillis();
+    return JourneySelector.matchesWindow(
+      journey,
+      PerthTime.minutesSinceMidnight(nowMs, zone),
+      PerthTime.dayOfWeekIso(nowMs, zone)
+    );
   }
 
   public static JSONObject resolvePinnedTrip(JSONObject payload, JSONObject journey) throws Exception {
@@ -49,8 +58,10 @@ public final class JourneyPinHelper {
       return null;
     }
 
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
+    long nowMs = System.currentTimeMillis();
     PinResolutionHelper.Clock clock =
-      new PinResolutionHelper.Clock(System.currentTimeMillis(), PerthTime.localDateKey());
+      new PinResolutionHelper.Clock(nowMs, PerthTime.localDateKey(nowMs, zone), zone);
     String widgetDeparture =
       PinResolutionHelper.resolveJourneyWidgetFaceDeparture(payload, journey, clock);
     if (widgetDeparture == null || widgetDeparture.isEmpty()) {
@@ -139,13 +150,14 @@ public final class JourneyPinHelper {
       return null;
     }
 
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
     PreferredTrainReminder.Target target = new PreferredTrainReminder.Target();
     target.journeyId = journeyId;
     target.route = WidgetDataService.formatRoute(journey);
     target.trainTime =
-      trip.optString("displayTime", PerthTime.formatClockFromEpochMs(departureMs));
+      trip.optString("displayTime", PerthTime.formatClockFromEpochMs(departureMs, zone));
     target.departureIso = departureIso;
-    String localDate = PerthTime.localDateKey();
+    String localDate = PerthTime.localDateKey(System.currentTimeMillis(), zone);
     target.dayKey = journeyId + ":" + localDate;
     target.departureKey = journeyId + ":" + departureIso;
     target.leaveByMs = leaveByMs;
@@ -165,12 +177,13 @@ public final class JourneyPinHelper {
 
     long leaveByMs = departureMs - leaveBeforeMinutes * 60_000L;
     String leaveByIso = PerthTime.formatIsoFromEpochMs(leaveByMs);
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey != null ? journey.optString("cityId", "") : "");
 
     JSONObject trip = new JSONObject();
     trip.put("departure", departureIso);
     trip.put("arrival", departureIso);
     trip.put("leaveBy", leaveByIso);
-    trip.put("displayTime", PerthTime.formatClockFromEpochMs(departureMs));
+    trip.put("displayTime", PerthTime.formatClockFromEpochMs(departureMs, zone));
     trip.put("minutesUntilDeparture", PerthTime.minutesUntilWallClock(departureIso, System.currentTimeMillis()));
     trip.put("platform", "—");
     trip.put("status", "On Time");
@@ -215,7 +228,8 @@ public final class JourneyPinHelper {
       return CommuteSchedule.resolveTrueNextTrip(payload);
     }
 
-    PinResolutionHelper.Clock pinClock = new PinResolutionHelper.Clock(clock.nowMs, clock.localDateKey);
+    PinResolutionHelper.Clock pinClock =
+      new PinResolutionHelper.Clock(clock.nowMs, clock.localDateKey, clock.zone);
     String departureIso = PinResolutionHelper.resolveReminderTargetDeparture(payload, journey, pinClock);
     if (departureIso != null && !departureIso.isEmpty()) {
       JSONObject preferredTrip = findTripByDeparture(upcoming, departureIso);
