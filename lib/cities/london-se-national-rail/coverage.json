@@ -22,6 +22,6 @@
       "detail": "Not covered here — see the separate London (TfL) region."
     }
   ],
-  "stations": "530 stations and stops: 530 National Rail stations across London, Kent, Surrey, Sussex and Essex's National Rail commuter network (14 Sep 2026 UK station fill, phase 2a). Elizabeth line-exclusive/London Overground-exclusive stations (Bond Street, Canary Wharf, Custom House, Tottenham Court Road, Woolwich Elizabeth line platforms, Barking Riverside) are not catalogued here — they are uk-london-tfl's per docs/united-kingdom-ledger.md.",
+  "stations": "571 stations and stops: 571 National Rail stations across London, Kent, Surrey, Sussex and Essex's National Rail commuter network (530 from the 14 Sep 2026 UK station fill, phase 2a; 41 more — 38 Kent, 3 Surrey — reassigned in from rest-of-england 15 Sep 2026 round 2, docs/jim-brief-rest-of-england-reassignment.md). Elizabeth line-exclusive/London Overground-exclusive stations (Bond Street, Canary Wharf, Custom House, Tottenham Court Road, Woolwich Elizabeth line platforms, Barking Riverside) are not catalogued here — they are uk-london-tfl's per docs/united-kingdom-ledger.md.",
   "notes": "This region is National Rail only. For the Underground, Elizabeth line, DLR, Overground and Tram, see the London region."
 }

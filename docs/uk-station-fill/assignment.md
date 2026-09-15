@@ -506,3 +506,109 @@ Reuses that gate's allow-list as the single source of truth rather than maintain
 **Rest of England: 436 → 362.** Dogfood gate counts, `coverage.json` station-count sentences and
 `public/city-directions/{greater-manchester,east-midlands,south-yorkshire,west-yorkshire,uk-west-
 midlands,liverpool-city-region,thames-valley,cumbria,rest-of-england}.json` all updated to match.
+
+## Reassignment 15 Sep 2026 round 2 — every pack's claimed counties, not just the nearest two
+
+Companion to the "Round 2" section of `docs/jim-brief-rest-of-england-reassignment.md`, triggered
+by Mark's QA FAIL on PR #399 (https://github.com/tdrevans-aus/next-train-app/pull/399#issuecomment-5681517329):
+Staines, Chertsey and West Byfleet (Surrey, SWR into Waterloo) were kept in `rest-of-england`
+because the round 1 "reviewed and kept" check only weighed them against `uk-london-tfl` and
+`thames-valley` — the two geographically nearest packs — never against `london-se-national-rail`,
+the one pack whose own `coverage.json` explicitly claims "London, Kent, Surrey, Sussex and
+Essex's National Rail commuter network."
+
+**The fix to the method.** Round 1's rule already named every pack's claimed counties in one place
+(see the rule text above), but the per-station review checked only the boxes/packs that
+geographically overhang each cluster, not the full list every time. Round 2 re-ran the "reviewed
+and kept" list (all ~60 stations still sitting in `rest-of-england` after round 1: the 34
+uk-west-midlands overlap, the 17 rest-of-wales/English-Marches overlap, Rugby/Rugeley
+Town/Rugeley Trent Valley/Uttoxeter/Burton-on-Trent, Darwen/Disley, Hednesford, South Milford) and
+every remaining East Kent/Surrey/Essex station against all nine named claims (thames-valley,
+solent, southwest, west-of-england, cumbria, greater-anglia, east-midlands, london-se-national-rail,
+plus the metro-county packs), not just the two nearest.
+
+**Result: no change to the 60-station "reviewed and kept" list.** None of Warwickshire,
+Worcestershire, Staffordshire, Shropshire, Herefordshire, Cheshire, Lancashire or North Yorkshire
+is named by any pack's claim — the round 1 verdict for all 60 stands.
+
+**41 more stations moved to `london-se-national-rail`.**
+
+| Station | From | To | Rule applied |
+|---|---|---|---|
+| Adisham | rest-of-england | london-se-national-rail | Kent, claimed explicitly by london-se-national-rail's coverage.json |
+| Appledore (Kent) | rest-of-england | london-se-national-rail | Kent, Marshlink line |
+| Ashford International | rest-of-england | london-se-national-rail | Kent, HS1 domestic/Southeastern hub |
+| Aylesham | rest-of-england | london-se-national-rail | Kent |
+| Bekesbourne | rest-of-england | london-se-national-rail | Kent |
+| Birchington-on-Sea | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Broadstairs | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Canterbury East | rest-of-england | london-se-national-rail | Kent |
+| Canterbury West | rest-of-england | london-se-national-rail | Kent |
+| Chartham | rest-of-england | london-se-national-rail | Kent |
+| Chestfield & Swalecliffe | rest-of-england | london-se-national-rail | Kent |
+| Chilham | rest-of-england | london-se-national-rail | Kent |
+| Chertsey | rest-of-england | london-se-national-rail | Surrey, claimed explicitly by london-se-national-rail's coverage.json; SWR (not uk-london-tfl, which doesn't reach it) is the operator that actually serves it |
+| Deal | rest-of-england | london-se-national-rail | Kent |
+| Dover Priory | rest-of-england | london-se-national-rail | Kent |
+| Dumpton Park | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Faversham | rest-of-england | london-se-national-rail | Kent |
+| Folkestone Central | rest-of-england | london-se-national-rail | Kent |
+| Folkestone West | rest-of-england | london-se-national-rail | Kent |
+| Ham Street | rest-of-england | london-se-national-rail | Kent, Marshlink line |
+| Herne Bay | rest-of-england | london-se-national-rail | Kent |
+| Kearsney | rest-of-england | london-se-national-rail | Kent |
+| Margate | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Martin Mill | rest-of-england | london-se-national-rail | Kent |
+| Minster | rest-of-england | london-se-national-rail | Kent |
+| Ramsgate | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Sandling | rest-of-england | london-se-national-rail | Kent |
+| Sandwich | rest-of-england | london-se-national-rail | Kent |
+| Selling | rest-of-england | london-se-national-rail | Kent |
+| Shepherds Well | rest-of-england | london-se-national-rail | Kent |
+| Snowdown | rest-of-england | london-se-national-rail | Kent |
+| Staines | rest-of-england | london-se-national-rail | Surrey, Mark's PR #399 hard finding; SWR Windsor Lines into Waterloo, not uk-london-tfl's territory |
+| Sturry | rest-of-england | london-se-national-rail | Kent |
+| Teynham | rest-of-england | london-se-national-rail | Kent |
+| Thanet Parkway | rest-of-england | london-se-national-rail | Kent, HS1 domestic |
+| Walmer | rest-of-england | london-se-national-rail | Kent |
+| West Byfleet | rest-of-england | london-se-national-rail | Surrey, SWR main line into Waterloo, not uk-london-tfl's territory |
+| Westenhanger | rest-of-england | london-se-national-rail | Kent |
+| Westgate-on-Sea | rest-of-england | london-se-national-rail | Kent, Thanet loop |
+| Whitstable | rest-of-england | london-se-national-rail | Kent |
+| Wye | rest-of-england | london-se-national-rail | Kent |
+
+**Essex — a genuine conflict, left in place, not a fresh guess.** Round 1 deferred Essex "rather
+than guessed" (no NaPTAN pull); round 2's rule text makes explicit that two packs claim Essex by
+name: greater-anglia ("Essex/Suffolk/Norfolk/Cambs") and london-se-national-rail ("London, Kent,
+Surrey, Sussex and Essex"). Per the brief's round 2 instruction ("unless another pack claims the
+same county explicitly, in which case record the conflict... and leave the station where it is"),
+the nine Essex stations still in `rest-of-england` are not moved, and this dual claim is recorded
+here rather than resolved by guessing which pack should win: Beaulieu Park, Burnham-on-Crouch,
+Chelmsford, Clacton-on-Sea, Harlow Mill, Harlow Town, Hatfield Peverel, Roydon, Southminster.
+Whoever next reconciles greater-anglia's and london-se-national-rail's Essex boundary (a real
+NaPTAN ATCO-prefix pull would settle it precisely) should resolve this, not a future station-fill
+pass guessing again.
+
+**No Sussex stations remained in `rest-of-england`** to check — none of the 362 (post round 1)
+stations carry a recognisably Sussex place name, and no Sussex candidate appears anywhere in the
+round 1 "kept" lists either.
+
+**CITY_BOUNDS changes, round 2.** `london-se-national-rail` widened maxLng from 0.8 to 1.44 (fits
+all 38 Kent reassignments) and minLng from -0.5 to -0.51 (fits Chertsey/Staines/West Byfleet on
+paper, though uk-london-tfl's box — earlier in public/city-session.js's first-match order and
+itself unchanged — still resolves those three first; allow-listed in
+qa/uk-city-bounds-overlap-gate.mjs under region: "london-se-national-rail" instead of solved with
+box priority). The same widening geometrically swept in two of the nine Essex conflict stations
+(Burnham-on-Crouch, Southminster, both just inside the new maxLng) — allow-listed under region:
+"rest-of-england" rather than moved, since they're the conflict set above, not a clean claim.
+
+**The Cumbria block, one row per station (Mark's non-blocking nit on PR #399's body).** The
+round 1 section above already lists all 16 West Cumbria coast-line stations individually
+(Aspatria, Flimby, Maryport, Workington, Harrington, Corkickle, Whitehaven, St Bees, Nethertown,
+Braystones, Sellafield, Seascale, Drigg, Ravenglass for Eskdale, Silecroft, Bootle) — only the PR
+#399 body's own move table collapsed them into one comma-listed row. The round 2 PR comment
+restates them station-by-station for the same literal-compliance reason.
+
+**Rest of England: 362 → 321.** `london-se-national-rail`: 530 → 571. Dogfood gate counts,
+`coverage.json` station-count sentences, `qa/uk-city-bounds-overlap-gate.mjs`'s allow-list and
+`public/city-directions/{london-se-national-rail,rest-of-england}.json` all updated to match.

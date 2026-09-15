@@ -4,7 +4,7 @@
   "covered": [
     {
       "label": "National Rail",
-      "detail": "362 English National Rail stations left without a home by UK station fill phase 2a's fifteen named regions and the 15 Sep 2026 reassignment, from the UK's national real-time feed."
+      "detail": "321 English National Rail stations left without a home by UK station fill phase 2a's fifteen named regions and the 15 Sep 2026 reassignment (round 1 and round 2), from the UK's national real-time feed."
     }
   ],
   "partial": [],
@@ -14,6 +14,6 @@
       "detail": "Not covered."
     }
   ],
-  "stations": "362 stations: every Darwin-verified English National Rail station with no home region, after UK station fill phase 2a (14 Sep 2026 UK station fill, phase 2b) and the 74-station reassignment out to real regions' administrative territory (15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md, docs/uk-station-fill/assignment.md).",
+  "stations": "321 stations: every Darwin-verified English National Rail station with no home region, after UK station fill phase 2a (14 Sep 2026 UK station fill, phase 2b) and the 15 Sep 2026 reassignment out to real regions' administrative territory (74 stations round 1, 41 more round 2 to london-se-national-rail — Kent/Surrey — docs/jim-brief-rest-of-england-reassignment.md, docs/uk-station-fill/assignment.md).",
   "notes": "This is an internal catch-all region, not a place a rider picks by name — the country-wide station picker searches across every region including this one."
 }

@@ -240,7 +240,17 @@
     // the catalog grew from 9 to 147 stations, reaching south to the
     // Dumfries/Annan/Borders corridor (Gretna Green area, ~54.91 lat).
     "rest-of-scotland": { minLat: 54.90, maxLat: 58.6, minLng: -5.9, maxLng: -2.0 },
-    "london-se-national-rail": { minLat: 50.7, maxLat: 51.7, minLng: -0.5, maxLng: 0.8 },
+    // maxLng widened from 0.8 to 1.44 and minLng from -0.5 to -0.51 (15 Sep 2026 round 2,
+    // docs/jim-brief-rest-of-england-reassignment.md): 41 stations (38 East Kent — Ashford
+    // International through Margate/Ramsgate/Dover Priory/Broadstairs — plus Chertsey/Staines/
+    // West Byfleet, Surrey) reassigned in from rest-of-england, Kent/Surrey claimed explicitly by
+    // this pack's own coverage.json. The Kent widening alone fixes their own-region resolution;
+    // Chertsey/Staines/West Byfleet still resolve to uk-london-tfl's box first regardless of this
+    // widening (uk-london-tfl is earlier in this object's first-match order and geometrically
+    // covers this corner too) — the coords gate needs them literally inside their own box even
+    // though the overlap gate's priority order still resolves them to uk-london-tfl, so
+    // allow-listed there instead of solved with box priority.
+    "london-se-national-rail": { minLat: 50.7, maxLat: 51.7, minLng: -0.51, maxLng: 1.44 },
     // minLat/minLng widened 7 Sep 2026 (uk-catalog-geocode): Penzance/Truro/St Erth/St
     // Austell/Plymouth/Totnes are real, NaPTAN-verified stations the old 50.5/-4.7 floor
     // excluded (the box was drawn well east/north of Devon & Cornwall's actual extent).

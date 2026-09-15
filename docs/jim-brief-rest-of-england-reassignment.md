@@ -72,3 +72,28 @@ rural North and South West).
 
 Worktree from current master; copy this brief in; commit, push; PR "UK stations: reassign
 Rest of England stations to their administrative regions".
+
+## Round 2 (15 Sep 2026) — Mark FAIL on PR #399
+
+Mark's note: https://github.com/tdrevans-aus/next-train-app/pull/399#issuecomment-5681517329
+
+Everything passed except one hard finding: Staines, Chertsey and West Byfleet were kept in
+rest-of-england, but `lib/cities/london-se-national-rail/coverage.json` claims "London, Kent,
+Surrey, Sussex and Essex's National Rail commuter network", and those three are Surrey
+stations on SWR services into Waterloo. The kept-station check compared them only against
+uk-london-tfl and thames-valley. Continue on the same PR branch:
+
+1. Re-run the kept-station review against **every** pack's claimed counties, not just the
+   geographically nearest two. Any rest-of-england station in Surrey, Kent, Sussex or Essex
+   moves to london-se-national-rail (that pack has no hub lock; it is per-terminus groups —
+   add the stations flat, no groupId, `class` noting the terminus line they serve), unless
+   another pack claims the same county explicitly, in which case record the conflict in
+   `assignment.md` and leave the station where it is.
+2. Apply the same "every pack's claimed counties" sweep to the ~30 other kept stations and
+   move any the sweep catches; list each in the move table.
+3. Regenerate `public/city-directions/london-se-national-rail.json` (and any other region
+   touched), update its dogfood gate count and the audit, re-run the touched gates and
+   `node qa/run-all.mjs --smoke` (foreground, explicit 600000 ms timeout, tail in the
+   foreground if backgrounded), push to the same branch, and comment on the PR that round 2 is
+   ready with the extra moves listed one row per station (Mark also asked for the Cumbria block
+   to be one row per station).

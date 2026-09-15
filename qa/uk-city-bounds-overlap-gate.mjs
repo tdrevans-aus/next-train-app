@@ -412,12 +412,6 @@ const ALLOW_LIST = [
     reason:
       "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside east-midlands's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
   })),
-  ...["Chertsey","Staines","West Byfleet"].map((station) => ({
-    region: "rest-of-england",
-    station,
-    reason:
-      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside uk-london-tfl's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead. Confirmed 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): these three are Surrey (Spelthorne/Runnymede/Woking), not claimed by any pack — Chorleywood/Denham Golf Club/Iver moved to thames-valley (Buckinghamshire/Chilterns), these three stay.",
-  })),
   ...["South Milford"].map((station) => ({
     region: "rest-of-england",
     station,
@@ -435,6 +429,18 @@ const ALLOW_LIST = [
     station,
     reason:
       "15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): east-midlands's CITY_BOUNDS box was widened west (minLng -1.99 to -2.01) to fit New Mills Central/Newtown (Derbyshire), reassigned in from rest-of-england — Hednesford (Cannock Chase, Staffordshire, genuinely unclaimed) sits just inside the same widened sliver. Not fixable with a tighter East Midlands box without losing New Mills itself.",
+  })),
+  ...["Chertsey", "Staines", "West Byfleet"].map((station) => ({
+    region: "london-se-national-rail",
+    station,
+    reason:
+      "15 Sep 2026 round 2 (docs/jim-brief-rest-of-england-reassignment.md, Mark PR #399 hard finding): these three are Surrey — london-se-national-rail's own coverage.json explicitly claims Kent/Surrey/Sussex/Essex, and SWR (the operator that actually serves them into Waterloo) is this pack's, not uk-london-tfl's — moved in from rest-of-england. uk-london-tfl's CITY_BOUNDS box (Greater London only) happens to geometrically cover this corner and is earlier in this file's first-match order, so widening london-se-national-rail's own box cannot change which region resolves first; allow-listed instead of solved with CITY_BOUNDS.",
+  })),
+  ...["Burnham-on-Crouch", "Southminster"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "15 Sep 2026 round 2 (docs/jim-brief-rest-of-england-reassignment.md): both Essex (Maldon district, Crouch Valley line). Essex is claimed by *two* packs' coverage.json (greater-anglia's Essex/Suffolk/Norfolk/Cambs and london-se-national-rail's London/Kent/Surrey/Sussex/Essex) — a genuine conflict, not a single clean claim like Kent/Surrey — so per the brief's round 2 instruction they are left in rest-of-england rather than moved to either. london-se-national-rail's own CITY_BOUNDS box was widened east (maxLng 0.8 to 1.44) this round to fit its 38 real Kent reassignments and geometrically also now covers this pair; not fixable with a tighter London & South East box without losing Thanet/Ramsgate/Margate/Dover, its own real stations.",
   })),
 ];
 
