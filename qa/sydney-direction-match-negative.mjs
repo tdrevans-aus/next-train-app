@@ -100,6 +100,13 @@ const cases = [
     keepTrip: (id) => id !== "T7-LIDCOMBE",
     expect: /Olympic Park "T7 Lidcombe" matches no scheduled GTFS trip/,
   },
+  {
+    // 14 Sep 2026, docs/jim-brief-sydney-intercity-fill.md: same proof-by-construction for
+    // the new NSW TrainLink intercity chips — drop Katoomba's only BMT trip.
+    label: "no-bmt-at-katoomba",
+    keepTrip: (id) => id !== "BMT-CENTRAL",
+    expect: /Katoomba "BMT Central" matches no scheduled GTFS trip at this station/,
+  },
 ];
 
 const baseline = runGate(null);

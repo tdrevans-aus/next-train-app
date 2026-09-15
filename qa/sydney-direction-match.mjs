@@ -67,6 +67,7 @@ import { loadLocalGtfsSnapshot } from "./lib/local-gtfs-snapshot.mjs";
 import {
   marketingLabelsForStation,
   tripMatchesMarketingChip,
+  MARKETING_ENDS,
 } from "../lib/cities/sydney/marketing-directions.js";
 import lineMap from "../lib/cities/sydney/line-map.json" with { type: "json" };
 
@@ -150,7 +151,9 @@ for (const chip of ["T2 City Circle", "T3 City Circle", "T8 City Circle"]) {
 // station's own stopIds (not just somewhere in the network).
 const expected = {
   Macarthur: ["T8 City Circle"],
-  Campbelltown: ["T8 City Circle", "T8 Macarthur"],
+  // Campbelltown also gained SHL chips 14 Sep 2026 (Southern Highlands Line calls here too;
+  // docs/jim-brief-sydney-intercity-fill.md).
+  Campbelltown: ["SHL Central", "SHL Goulburn", "T8 City Circle", "T8 Macarthur"],
   Revesby: ["T8 City Circle", "T8 Macarthur"],
 };
 for (const [name, expectedChips] of Object.entries(expected)) {
@@ -218,6 +221,67 @@ assert(
     JSON.stringify(["T4 Bondi Junction", "T4 Waterfall"]),
   "Cronulla T4 chips must be unchanged"
 );
+
+// 5. NSW TrainLink intercity + Hunter (14 Sep 2026, docs/jim-brief-sydney-intercity-fill.md).
+// Every new chip matches a scheduled fixture trip network-wide, and a representative
+// acceptance station per line offers the chip towards Central and it matches a trip at that
+// station's own stopIds.
+for (const chip of [
+  "BMT Central",
+  "BMT Lithgow",
+  "CCN Central",
+  "CCN Newcastle Interchange",
+  "SCO Central",
+  "SCO Bomaderry",
+  "SHL Central",
+  "SHL Goulburn",
+  "HUN Dungog",
+  "HUN Scone",
+]) {
+  const matched = allScheduledRows.some((row) => tripMatchesMarketingChip(row, chip));
+  assert(matched, `"${chip}" matches no scheduled GTFS trip anywhere in the network`);
+}
+
+const intercityAcceptance = {
+  Katoomba: "BMT Central",
+  Gosford: "CCN Central",
+  Wollongong: "SCO Central",
+  "Moss Vale": "SHL Central",
+};
+for (const [name, chip] of Object.entries(intercityAcceptance)) {
+  const station = stationsByName.get(name);
+  assert(station, `catalog is missing station ${name}`);
+  const chips = marketingLabelsForStation(name);
+  assert(chips.includes(chip), `${name} must offer "${chip}"`);
+  const rows = scheduledRowsForStopIds(station.stopIds);
+  assert(
+    rows.some((row) => tripMatchesMarketingChip(row, chip)),
+    `${name} "${chip}" matches no scheduled GTFS trip at this station`
+  );
+}
+
+// Maitland sits on both Hunter branches (Dungog via North Coast, Scone via Muswellbrook).
+const maitland = stationsByName.get("Maitland");
+assert(maitland, "catalog is missing station Maitland");
+const maitlandChips = marketingLabelsForStation("Maitland");
+const maitlandRows = scheduledRowsForStopIds(maitland.stopIds);
+for (const chip of ["HUN Dungog", "HUN Scone"]) {
+  assert(maitlandChips.includes(chip), `Maitland must offer "${chip}"`);
+  assert(
+    maitlandRows.some((row) => tripMatchesMarketingChip(row, chip)),
+    `Maitland "${chip}" matches no scheduled GTFS trip at this station`
+  );
+}
+
+// Excluded booked services never surface a chip: XPT/Xplorer/coach route codes aren't in
+// MARKETING_ENDS at all, so a headsign like "Melbourne" or "Dubbo" on an excluded route can
+// never become a chip — proven directly against the exclusion list.
+for (const excludedShort of ["CAN", "MEL", "BRI", "GRF", "DBB", "ARM"]) {
+  assert(
+    !Object.keys(MARKETING_ENDS).includes(excludedShort),
+    `${excludedShort} (compulsory reservation) must never have marketing chips`
+  );
+}
 
 console.log(
   `sydney-direction-match: ok (offline, ${staticData.sourceUrl}; ${stations.length} stations, no unrecorded empty direction lists; ` +

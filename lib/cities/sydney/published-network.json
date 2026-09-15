@@ -28,14 +28,14 @@
   },
   "notes": [
     "Hand-transcribed from TfNSW official line pages + current PDF timetables (D1, 2026-08-23). Never generate from GTFS.",
-    "Modes v1: Sydney Trains T1–T9 + Metro M1 only. No light rail, ferry, bus, or NSW TrainLink regional.",
-    "Index https://transportnsw.info/routes/train lists T1–T9 and M1 on the live page. Dedicated line pages were retrieved the same day.",
-    "T2 and T3 line pages each link a PDF; the two files are byte-identical (SHA-256 44EC82B0…8DE4FC) and the booklet title is T2/3.",
-    "T4 PDF columns include Helensburgh marked SCO (NSW TrainLink South Coast). Not a T4 terminus and not in modes v1 — see oracle-clash-report C3.",
-    "M1 printed name is Metro North West & Bankstown. Published stopping pattern still ends at Sydenham. Remaining heavy rail on the Bankstown corridor is T6 Bankstown–Lidcombe.",
+    "Modes v1 (D1, 2026-08-23): Sydney Trains T1-T9 + Metro M1 only. No light rail, ferry, or bus. SUPERSEDED for NSW TrainLink regional (Tim, 13 Sep 2026, API-in-scope rule): BMT/CCN/SCO/SHL/HUN walk-up intercity and Hunter services added 14 Sep 2026 (docs/jim-brief-sydney-intercity-fill.md). Booked-reservation NSW TrainLink services (XPT, Xplorer, coaches) stay out of scope; see docs/sydney-d1/board-eligibility-intercity.md for the route-by-route verdict.",
+    "Index https://transportnsw.info/routes/train lists T1\u00e2\u20ac\u201cT9 and M1 on the live page. Dedicated line pages were retrieved the same day.",
+    "T2 and T3 line pages each link a PDF; the two files are byte-identical (SHA-256 44EC82B0\u00e2\u20ac\u00a68DE4FC) and the booklet title is T2/3.",
+    "T4 PDF columns include Helensburgh marked SCO (NSW TrainLink South Coast). Not a T4 terminus. SUPERSEDED for SCO (14 Sep 2026): Helensburgh is now a walk-up SCO station (South Coast Line) and carries SCO chips; see oracle-clash-report C3 for the original T4-scope finding, which stands unchanged.",
+    "M1 printed name is Metro North West & Bankstown. Published stopping pattern still ends at Sydenham. Remaining heavy rail on the Bankstown corridor is T6 Bankstown\u00e2\u20ac\u201cLidcombe.",
     "City Circle is a loop, not a terminus. SUPERSEDED (Tim, 10 Sep 2026, FB-62, PR #354): T2/T3/T8 now carry a city-bound \"<line> City Circle\" chip. The loop is still not a terminus; the chip names the direction riders travel, matching Sydney Trains signage.",
     "Same place-names on Metro and Trains (Central, Martin Place, Epping, Chatswood, Sydenham) must not share stopIds.",
-    "T1 is one T-number with two current PDFs (North Shore + Western). Through-running uses Wynyard–Town Hall–Central, not City Circle."
+    "T1 is one T-number with two current PDFs (North Shore + Western). Through-running uses Wynyard\u00e2\u20ac\u201cTown Hall\u00e2\u20ac\u201cCentral, not City Circle."
   ],
   "lines": [
     {
@@ -43,8 +43,13 @@
       "number": "M1",
       "name": "Metro North West & Bankstown",
       "mode": "metro",
-      "gtfsRouteIdsIfKnown": ["M1"],
-      "termini": ["Tallawong", "Sydenham"],
+      "gtfsRouteIdsIfKnown": [
+        "M1"
+      ],
+      "termini": [
+        "Tallawong",
+        "Sydenham"
+      ],
       "stations": [
         "Tallawong",
         "Rouse Hill",
@@ -74,8 +79,14 @@
       "number": "T1",
       "name": "North Shore & Western Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T1"],
-      "termini": ["Berowra", "Emu Plains", "Richmond"],
+      "gtfsRouteIdsIfKnown": [
+        "T1"
+      ],
+      "termini": [
+        "Berowra",
+        "Emu Plains",
+        "Richmond"
+      ],
       "stations": [
         "Berowra",
         "Mount Kuring-gai",
@@ -141,8 +152,13 @@
       "number": "T2",
       "name": "Leppington & Inner West Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T2"],
-      "termini": ["Leppington", "Parramatta"],
+      "gtfsRouteIdsIfKnown": [
+        "T2"
+      ],
+      "termini": [
+        "Leppington",
+        "Parramatta"
+      ],
       "stations": [
         "Leppington",
         "Edmondson Park",
@@ -188,8 +204,13 @@
       "number": "T3",
       "name": "Liverpool & Inner West Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T3"],
-      "termini": ["Liverpool", "Lidcombe"],
+      "gtfsRouteIdsIfKnown": [
+        "T3"
+      ],
+      "termini": [
+        "Liverpool",
+        "Lidcombe"
+      ],
       "stations": [
         "Liverpool",
         "Warwick Farm",
@@ -228,8 +249,14 @@
       "number": "T4",
       "name": "Eastern Suburbs & Illawarra Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T4"],
-      "termini": ["Bondi Junction", "Waterfall", "Cronulla"],
+      "gtfsRouteIdsIfKnown": [
+        "T4"
+      ],
+      "termini": [
+        "Bondi Junction",
+        "Waterfall",
+        "Cronulla"
+      ],
       "stations": [
         "Bondi Junction",
         "Edgecliff",
@@ -271,8 +298,13 @@
       "number": "T5",
       "name": "Cumberland Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T5"],
-      "termini": ["Leppington", "Richmond"],
+      "gtfsRouteIdsIfKnown": [
+        "T5"
+      ],
+      "termini": [
+        "Leppington",
+        "Richmond"
+      ],
       "stations": [
         "Leppington",
         "Edmondson Park",
@@ -311,8 +343,13 @@
       "number": "T6",
       "name": "Lidcombe & Bankstown Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T6"],
-      "termini": ["Bankstown", "Lidcombe"],
+      "gtfsRouteIdsIfKnown": [
+        "T6"
+      ],
+      "termini": [
+        "Bankstown",
+        "Lidcombe"
+      ],
       "stations": [
         "Bankstown",
         "Yagoona",
@@ -327,17 +364,29 @@
       "number": "T7",
       "name": "Olympic Park Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T7"],
-      "termini": ["Lidcombe", "Olympic Park"],
-      "stations": ["Lidcombe", "Olympic Park"]
+      "gtfsRouteIdsIfKnown": [
+        "T7"
+      ],
+      "termini": [
+        "Lidcombe",
+        "Olympic Park"
+      ],
+      "stations": [
+        "Lidcombe",
+        "Olympic Park"
+      ]
     },
     {
       "id": "t8",
       "number": "T8",
       "name": "Airport & South Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T8"],
-      "termini": ["Macarthur"],
+      "gtfsRouteIdsIfKnown": [
+        "T8"
+      ],
+      "termini": [
+        "Macarthur"
+      ],
       "stations": [
         "Macarthur",
         "Campbelltown",
@@ -380,8 +429,13 @@
       "number": "T9",
       "name": "Northern Line",
       "mode": "train",
-      "gtfsRouteIdsIfKnown": ["T9"],
-      "termini": ["Hornsby", "Gordon"],
+      "gtfsRouteIdsIfKnown": [
+        "T9"
+      ],
+      "termini": [
+        "Hornsby",
+        "Gordon"
+      ],
       "stations": [
         "Hornsby",
         "Normanhurst",
@@ -414,6 +468,203 @@
         "Lindfield",
         "Killara",
         "Gordon"
+      ]
+    },
+    {
+      "id": "bmt",
+      "number": "BMT",
+      "name": "Blue Mountains Line",
+      "mode": "train",
+      "gtfsRouteIdsIfKnown": [
+        "BMT"
+      ],
+      "termini": [
+        "Central",
+        "Lithgow"
+      ],
+      "stations": [
+        "Central",
+        "Strathfield",
+        "Parramatta",
+        "Blacktown",
+        "Penrith",
+        "Emu Plains",
+        "Glenbrook",
+        "Blaxland",
+        "Warrimoo",
+        "Valley Heights",
+        "Springwood",
+        "Faulconbridge",
+        "Linden",
+        "Woodford",
+        "Hazelbrook",
+        "Lawson",
+        "Bullaburra",
+        "Wentworth Falls",
+        "Leura",
+        "Katoomba",
+        "Medlow Bath",
+        "Blackheath",
+        "Bell",
+        "Mount Victoria",
+        "Lithgow"
+      ]
+    },
+    {
+      "id": "ccn",
+      "number": "CCN",
+      "name": "Central Coast & Newcastle Line",
+      "mode": "train",
+      "gtfsRouteIdsIfKnown": [
+        "CCN"
+      ],
+      "termini": [
+        "Central",
+        "Newcastle Interchange"
+      ],
+      "stations": [
+        "Central",
+        "Strathfield",
+        "Hornsby",
+        "Berowra",
+        "Mount Kuring-gai",
+        "Cowan",
+        "Hawkesbury River",
+        "Woy Woy",
+        "Point Clare",
+        "Gosford",
+        "Narara",
+        "Niagara Park",
+        "Lisarow",
+        "Ourimbah",
+        "Tuggerah",
+        "Wyong",
+        "Warnervale",
+        "Wyee",
+        "Morisset",
+        "Dora Creek",
+        "Awaba",
+        "Fassifern",
+        "Teralba",
+        "Booragul",
+        "Cardiff",
+        "Cockle Creek",
+        "Adamstown",
+        "Broadmeadow",
+        "Hamilton",
+        "Newcastle Interchange"
+      ]
+    },
+    {
+      "id": "sco",
+      "number": "SCO",
+      "name": "South Coast Line",
+      "mode": "train",
+      "gtfsRouteIdsIfKnown": [
+        "SCO"
+      ],
+      "termini": [
+        "Central",
+        "Bomaderry"
+      ],
+      "stations": [
+        "Central",
+        "Sydenham",
+        "Hurstville",
+        "Sutherland",
+        "Waterfall",
+        "Helensburgh",
+        "Otford",
+        "Stanwell Park",
+        "Coalcliff",
+        "Scarborough",
+        "Wombarra",
+        "Coledale",
+        "Austinmer",
+        "Thirroul",
+        "Bulli",
+        "Woonona",
+        "Corrimal",
+        "Towradgi",
+        "Fairy Meadow",
+        "North Wollongong",
+        "Wollongong",
+        "Coniston",
+        "Unanderra",
+        "Dapto",
+        "Albion Park",
+        "Oak Flats",
+        "Bombo",
+        "Kiama",
+        "Gerringong",
+        "Berry",
+        "Bomaderry"
+      ]
+    },
+    {
+      "id": "shl",
+      "number": "SHL",
+      "name": "Southern Highlands Line",
+      "mode": "train",
+      "gtfsRouteIdsIfKnown": [
+        "SHL"
+      ],
+      "termini": [
+        "Central",
+        "Goulburn"
+      ],
+      "stations": [
+        "Central",
+        "Campbelltown",
+        "Menangle",
+        "Douglas Park",
+        "Picton",
+        "Tahmoor",
+        "Bargo",
+        "Yerrinbool",
+        "Mittagong",
+        "Bowral",
+        "Burradoo",
+        "Moss Vale",
+        "Exeter",
+        "Bundanoon",
+        "Wingello",
+        "Tallong",
+        "Marulan",
+        "Goulburn"
+      ]
+    },
+    {
+      "id": "hun",
+      "number": "HUN",
+      "name": "Hunter Line",
+      "mode": "train",
+      "gtfsRouteIdsIfKnown": [
+        "HUN"
+      ],
+      "termini": [
+        "Newcastle Interchange",
+        "Dungog",
+        "Scone"
+      ],
+      "stations": [
+        "Newcastle Interchange",
+        "Hamilton",
+        "Broadmeadow",
+        "Waratah",
+        "Sandgate",
+        "Tarro",
+        "Thornton",
+        "Metford",
+        "East Maitland",
+        "Maitland",
+        "Telarah",
+        "Branxton",
+        "Greta",
+        "Dungog",
+        "Aberdeen",
+        "Muswellbrook",
+        "Scone"
       ]
     }
   ]

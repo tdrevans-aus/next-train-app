@@ -1,4 +1,16 @@
 {
+  "Aberdeen": [
+    "HUN Dungog",
+    "HUN Scone"
+  ],
+  "Adamstown": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Albion Park": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Allawah": [
     "T4 Bondi Junction",
     "T4 Cronulla",
@@ -37,6 +49,14 @@
     "T2 Leppington",
     "T2 Parramatta"
   ],
+  "Austinmer": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Awaba": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
   "Banksia": [
     "T4 Bondi Junction",
     "T4 Cronulla",
@@ -53,9 +73,17 @@
     "T8 City Circle",
     "T8 Macarthur"
   ],
+  "Bargo": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
   "Beecroft": [
     "T9 Gordon",
     "T9 Hornsby"
+  ],
+  "Bell": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Bella Vista": [
     "M1 Sydenham",
@@ -69,8 +97,14 @@
     "T6 Lidcombe"
   ],
   "Berowra": [
+    "CCN Central",
+    "CCN Newcastle Interchange",
     "T1 Emu Plains",
     "T1 Richmond"
+  ],
+  "Berry": [
+    "SCO Bomaderry",
+    "SCO Central"
   ],
   "Beverly Hills": [
     "T8 City Circle",
@@ -84,16 +118,67 @@
     "T6 Bankstown",
     "T6 Lidcombe"
   ],
+  "Blackheath": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
   "Blacktown": [
+    "BMT Central",
+    "BMT Lithgow",
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
     "T5 Leppington",
     "T5 Richmond"
   ],
+  "Blaxland": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
+  "Bomaderry": [
+    "SCO Central"
+  ],
+  "Bombo": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Bondi Junction": [
     "T4 Cronulla",
     "T4 Waterfall"
+  ],
+  "Booragul": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Bowral": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
+  "Branxton": [
+    "HUN Dungog",
+    "HUN Scone"
+  ],
+  "Broadmeadow": [
+    "CCN Central",
+    "CCN Newcastle Interchange",
+    "HUN Dungog",
+    "HUN Scone"
+  ],
+  "Bullaburra": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
+  "Bulli": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Bundanoon": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
+  "Burradoo": [
+    "SHL Central",
+    "SHL Goulburn"
   ],
   "Burwood": [
     "T1 Berowra",
@@ -119,6 +204,8 @@
     "T5 Richmond"
   ],
   "Campbelltown": [
+    "SHL Central",
+    "SHL Goulburn",
     "T8 City Circle",
     "T8 Macarthur"
   ],
@@ -128,6 +215,10 @@
     "T2 Parramatta",
     "T5 Leppington",
     "T5 Richmond"
+  ],
+  "Cardiff": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
   ],
   "Caringbah": [
     "T4 Bondi Junction",
@@ -156,6 +247,10 @@
     "T5 Richmond"
   ],
   "Central": [
+    "BMT Lithgow",
+    "CCN Newcastle Interchange",
+    "SCO Bomaderry",
+    "SHL Goulburn",
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
@@ -226,6 +321,18 @@
     "T2 Leppington",
     "T2 Parramatta"
   ],
+  "Coalcliff": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Cockle Creek": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Coledale": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Como": [
     "T4 Bondi Junction",
     "T4 Cronulla",
@@ -234,6 +341,18 @@
   "Concord West": [
     "T9 Gordon",
     "T9 Hornsby"
+  ],
+  "Coniston": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Corrimal": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Cowan": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
   ],
   "Cronulla": [
     "T4 Bondi Junction",
@@ -251,6 +370,10 @@
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
+  "Dapto": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Denistone": [
     "T9 Gordon",
     "T9 Hornsby"
@@ -264,9 +387,24 @@
     "T1 Emu Plains",
     "T1 Richmond"
   ],
+  "Dora Creek": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Douglas Park": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
+  "Dungog": [
+    "HUN Scone"
+  ],
   "East Hills": [
     "T8 City Circle",
     "T8 Macarthur"
+  ],
+  "East Maitland": [
+    "HUN Dungog",
+    "HUN Scone"
   ],
   "East Richmond": [
     "T1 Berowra",
@@ -292,6 +430,8 @@
     "T5 Richmond"
   ],
   "Emu Plains": [
+    "BMT Central",
+    "BMT Lithgow",
     "T1 Berowra",
     "T1 Richmond"
   ],
@@ -312,12 +452,28 @@
     "T8 City Circle",
     "T8 Macarthur"
   ],
+  "Exeter": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
   "Fairfield": [
     "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
     "T5 Richmond"
+  ],
+  "Fairy Meadow": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Fassifern": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Faulconbridge": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Flemington": [
     "T2 City Circle",
@@ -330,6 +486,14 @@
   "Gadigal": [
     "M1 Sydenham",
     "M1 Tallawong"
+  ],
+  "Gerringong": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Glenbrook": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Glenfield": [
     "T2 City Circle",
@@ -346,6 +510,13 @@
     "T1 Richmond",
     "T9 Hornsby"
   ],
+  "Gosford": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Goulburn": [
+    "SHL Central"
+  ],
   "Granville": [
     "T1 Berowra",
     "T1 Emu Plains",
@@ -357,6 +528,10 @@
   "Green Square": [
     "T8 City Circle",
     "T8 Macarthur"
+  ],
+  "Greta": [
+    "HUN Dungog",
+    "HUN Scone"
   ],
   "Guildford": [
     "T2 City Circle",
@@ -370,6 +545,12 @@
     "T4 Cronulla",
     "T4 Waterfall"
   ],
+  "Hamilton": [
+    "CCN Central",
+    "CCN Newcastle Interchange",
+    "HUN Dungog",
+    "HUN Scone"
+  ],
   "Harris Park": [
     "T1 Berowra",
     "T1 Emu Plains",
@@ -380,10 +561,22 @@
     "T5 Leppington",
     "T5 Richmond"
   ],
+  "Hawkesbury River": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Hazelbrook": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
   "Heathcote": [
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall"
+  ],
+  "Helensburgh": [
+    "SCO Bomaderry",
+    "SCO Central"
   ],
   "Hills Showground": [
     "M1 Sydenham",
@@ -402,12 +595,16 @@
     "T3 Liverpool"
   ],
   "Hornsby": [
+    "CCN Central",
+    "CCN Newcastle Interchange",
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
     "T9 Gordon"
   ],
   "Hurstville": [
+    "SCO Bomaderry",
+    "SCO Central",
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall"
@@ -425,9 +622,17 @@
     "T4 Cronulla",
     "T4 Waterfall"
   ],
+  "Katoomba": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
   "Kellyville": [
     "M1 Sydenham",
     "M1 Tallawong"
+  ],
+  "Kiama": [
+    "SCO Bomaderry",
+    "SCO Central"
   ],
   "Killara": [
     "T1 Berowra",
@@ -460,6 +665,10 @@
     "T4 Cronulla",
     "T4 Waterfall"
   ],
+  "Lawson": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
   "Leightonfield": [
     "T3 City Circle",
     "T3 Lidcombe",
@@ -473,6 +682,10 @@
   "Leumeah": [
     "T8 City Circle",
     "T8 Macarthur"
+  ],
+  "Leura": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Lewisham": [
     "T2 City Circle",
@@ -494,12 +707,23 @@
     "T6 Bankstown",
     "T7 Olympic Park"
   ],
+  "Linden": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
   "Lindfield": [
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
     "T9 Gordon",
     "T9 Hornsby"
+  ],
+  "Lisarow": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Lithgow": [
+    "BMT Central"
   ],
   "Liverpool": [
     "T2 City Circle",
@@ -538,6 +762,10 @@
     "M1 Sydenham",
     "M1 Tallawong"
   ],
+  "Maitland": [
+    "HUN Dungog",
+    "HUN Scone"
+  ],
   "Marayong": [
     "T1 Berowra",
     "T1 Emu Plains",
@@ -554,6 +782,10 @@
     "M1 Sydenham",
     "M1 Tallawong"
   ],
+  "Marulan": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
   "Mascot": [
     "T8 City Circle",
     "T8 Macarthur"
@@ -562,12 +794,24 @@
     "T9 Gordon",
     "T9 Hornsby"
   ],
+  "Medlow Bath": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
+  "Menangle": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
   "Merrylands": [
     "T2 City Circle",
     "T2 Leppington",
     "T2 Parramatta",
     "T5 Leppington",
     "T5 Richmond"
+  ],
+  "Metford": [
+    "HUN Dungog",
+    "HUN Scone"
   ],
   "Milsons Point": [
     "T1 Berowra",
@@ -585,10 +829,22 @@
     "T4 Cronulla",
     "T4 Waterfall"
   ],
+  "Mittagong": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
+  "Morisset": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
   "Mortdale": [
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall"
+  ],
+  "Moss Vale": [
+    "SHL Central",
+    "SHL Goulburn"
   ],
   "Mount Colah": [
     "T1 Berowra",
@@ -601,9 +857,15 @@
     "T1 Richmond"
   ],
   "Mount Kuring-gai": [
+    "CCN Central",
+    "CCN Newcastle Interchange",
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond"
+  ],
+  "Mount Victoria": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Mulgrave": [
     "T1 Berowra",
@@ -622,9 +884,22 @@
     "T8 City Circle",
     "T8 Macarthur"
   ],
+  "Muswellbrook": [
+    "HUN Dungog",
+    "HUN Scone"
+  ],
+  "Narara": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
   "Narwee": [
     "T8 City Circle",
     "T8 Macarthur"
+  ],
+  "Newcastle Interchange": [
+    "CCN Central",
+    "HUN Dungog",
+    "HUN Scone"
   ],
   "Newtown": [
     "T2 City Circle",
@@ -633,6 +908,10 @@
     "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
+  ],
+  "Niagara Park": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
   ],
   "Normanhurst": [
     "T9 Gordon",
@@ -653,9 +932,17 @@
     "T9 Gordon",
     "T9 Hornsby"
   ],
+  "North Wollongong": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Norwest": [
     "M1 Sydenham",
     "M1 Tallawong"
+  ],
+  "Oak Flats": [
+    "SCO Bomaderry",
+    "SCO Central"
   ],
   "Oatley": [
     "T4 Bondi Junction",
@@ -664,6 +951,14 @@
   ],
   "Olympic Park": [
     "T7 Lidcombe"
+  ],
+  "Otford": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Ourimbah": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
   ],
   "Padstow": [
     "T8 City Circle",
@@ -674,6 +969,8 @@
     "T8 Macarthur"
   ],
   "Parramatta": [
+    "BMT Central",
+    "BMT Lithgow",
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
@@ -694,6 +991,8 @@
     "T9 Hornsby"
   ],
   "Penrith": [
+    "BMT Central",
+    "BMT Lithgow",
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond"
@@ -710,6 +1009,14 @@
     "T3 City Circle",
     "T3 Lidcombe",
     "T3 Liverpool"
+  ],
+  "Picton": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
+  "Point Clare": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
   ],
   "Pymble": [
     "T1 Berowra",
@@ -793,12 +1100,23 @@
     "M1 Sydenham",
     "M1 Tallawong"
   ],
+  "Sandgate": [
+    "HUN Dungog",
+    "HUN Scone"
+  ],
+  "Scarborough": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Schofields": [
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
     "T5 Leppington",
     "T5 Richmond"
+  ],
+  "Scone": [
+    "HUN Dungog"
   ],
   "Sefton": [
     "T3 City Circle",
@@ -811,6 +1129,10 @@
     "T1 Richmond",
     "T5 Leppington",
     "T5 Richmond"
+  ],
+  "Springwood": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "St James": [
     "T2 City Circle",
@@ -846,7 +1168,15 @@
     "T3 Lidcombe",
     "T3 Liverpool"
   ],
+  "Stanwell Park": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Strathfield": [
+    "BMT Central",
+    "BMT Lithgow",
+    "CCN Central",
+    "CCN Newcastle Interchange",
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond",
@@ -868,11 +1198,15 @@
     "T3 Liverpool"
   ],
   "Sutherland": [
+    "SCO Bomaderry",
+    "SCO Central",
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall"
   ],
   "Sydenham": [
+    "SCO Bomaderry",
+    "SCO Central",
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall",
@@ -882,17 +1216,45 @@
   "Sydenham Metro": [
     "M1 Tallawong"
   ],
+  "Tahmoor": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
   "Tallawong": [
     "M1 Sydenham"
+  ],
+  "Tallong": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
+  "Tarro": [
+    "HUN Dungog",
+    "HUN Scone"
+  ],
+  "Telarah": [
+    "HUN Dungog",
+    "HUN Scone"
   ],
   "Tempe": [
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall"
   ],
+  "Teralba": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Thirroul": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
   "Thornleigh": [
     "T9 Gordon",
     "T9 Hornsby"
+  ],
+  "Thornton": [
+    "HUN Dungog",
+    "HUN Scone"
   ],
   "Toongabbie": [
     "T1 Berowra",
@@ -919,6 +1281,14 @@
     "T9 Gordon",
     "T9 Hornsby"
   ],
+  "Towradgi": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Tuggerah": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
   "Turramurra": [
     "T1 Berowra",
     "T1 Emu Plains",
@@ -927,6 +1297,14 @@
   "Turrella": [
     "T8 City Circle",
     "T8 Macarthur"
+  ],
+  "Unanderra": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Valley Heights": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Victoria Cross": [
     "M1 Sydenham",
@@ -954,10 +1332,22 @@
     "T1 Emu Plains",
     "T1 Richmond"
   ],
+  "Waratah": [
+    "HUN Dungog",
+    "HUN Scone"
+  ],
+  "Warnervale": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
   "Warrawee": [
     "T1 Berowra",
     "T1 Emu Plains",
     "T1 Richmond"
+  ],
+  "Warrimoo": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Warwick Farm": [
     "T2 City Circle",
@@ -970,6 +1360,8 @@
     "T5 Richmond"
   ],
   "Waterfall": [
+    "SCO Bomaderry",
+    "SCO Central",
     "T4 Bondi Junction",
     "T4 Cronulla"
   ],
@@ -983,6 +1375,10 @@
     "T1 Richmond",
     "T9 Gordon",
     "T9 Hornsby"
+  ],
+  "Wentworth Falls": [
+    "BMT Central",
+    "BMT Lithgow"
   ],
   "Wentworthville": [
     "T1 Berowra",
@@ -1014,12 +1410,20 @@
     "T5 Leppington",
     "T5 Richmond"
   ],
+  "Wingello": [
+    "SHL Central",
+    "SHL Goulburn"
+  ],
   "Wolli Creek": [
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall",
     "T8 City Circle",
     "T8 Macarthur"
+  ],
+  "Wollongong": [
+    "SCO Bomaderry",
+    "SCO Central"
   ],
   "Wollstonecraft": [
     "T1 Berowra",
@@ -1028,10 +1432,30 @@
     "T9 Gordon",
     "T9 Hornsby"
   ],
+  "Wombarra": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Woodford": [
+    "BMT Central",
+    "BMT Lithgow"
+  ],
   "Woolooware": [
     "T4 Bondi Junction",
     "T4 Cronulla",
     "T4 Waterfall"
+  ],
+  "Woonona": [
+    "SCO Bomaderry",
+    "SCO Central"
+  ],
+  "Woy Woy": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
+  "Wyee": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
   ],
   "Wynyard": [
     "T1 Berowra",
@@ -1048,6 +1472,10 @@
     "T9 Gordon",
     "T9 Hornsby"
   ],
+  "Wyong": [
+    "CCN Central",
+    "CCN Newcastle Interchange"
+  ],
   "Yagoona": [
     "T6 Bankstown",
     "T6 Lidcombe"
@@ -1058,5 +1486,9 @@
     "T2 Parramatta",
     "T5 Leppington",
     "T5 Richmond"
+  ],
+  "Yerrinbool": [
+    "SHL Central",
+    "SHL Goulburn"
   ]
 }

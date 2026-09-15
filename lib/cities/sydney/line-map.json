@@ -3,11 +3,12 @@
   "source": "GTFS fixture qa/fixtures/sydney/gtfs (generated 2026-08-23)",
   "publishedOracle": "https://transportnsw.info/routes/train",
   "notes": [
-    "Generated from T1–T9 + M1 GTFS fixture — regenerate with scripts/build-line-map.mjs --city=sydney.",
-    "D2: freeze shortTurnGroups empty (§3 line+terminus; do not collapse opposite through-run ends).",
+    "Generated from T1\u00e2\u20ac\u201cT9 + M1 GTFS fixture \u00e2\u20ac\u201d regenerate with scripts/build-line-map.mjs --city=sydney.",
+    "D2: freeze shortTurnGroups empty (\u00c2\u00a73 line+terminus; do not collapse opposite through-run ends).",
     "C2: Central, Martin Place, Epping, Chatswood, Sydenham Metro vs Trains must not share stopIds.",
     "Helensburgh is suppressed (SCO on T4 PDF, out of modes v1).",
-    "D5 labels: line + terminus (T1 Emu Plains). EXCEPTION (Tim, 10 Sep 2026, FB-62): lines whose city end is the City Circle loop (T2, T3, T8) carry a \"<line> City Circle\" city-bound chip, because the loop is a real destination riders recognise and without it Macarthur offered no direction at all."
+    "D5 labels: line + terminus (T1 Emu Plains). EXCEPTION (Tim, 10 Sep 2026, FB-62): lines whose city end is the City Circle loop (T2, T3, T8) carry a \"<line> City Circle\" city-bound chip, because the loop is a real destination riders recognise and without it Macarthur offered no direction at all.",
+    "14 Sep 2026 (docs/jim-brief-sydney-intercity-fill.md): added BMT/CCN/SCO/SHL/HUN (NSW TrainLink walk-up intercity + Hunter). headsigns/firstLastService/sampleTripId are placeholders (PENDING.*) pending a live GTFS pull against TFNSW_API_KEY, which is not present in this environment \u2014 station names, published stopping order and termini are from TfNSW's public network map/line pages, same sourcing standard as the rest of this file's D1 pack. Helensburgh removed from suppressedTermini: it is now a real SCO stop."
   ],
   "shortTurnGroups": {},
   "doNotGroup": [
@@ -40,6 +41,11 @@
       "a": "Berowra",
       "b": "Hornsby",
       "reason": "H4 T1 vs T9 shared North Shore stations"
+    },
+    {
+      "a": "Dungog",
+      "b": "Scone",
+      "reason": "H4 HUN branch at Maitland/Whittingham (North Coast vs New England direction)"
     }
   ],
   "proposedShortTurnGroups": {
@@ -1139,9 +1145,7 @@
     "Sutherland",
     "Wolli Creek"
   ],
-  "suppressedTermini": [
-    "Helensburgh"
-  ],
+  "suppressedTermini": [],
   "lines": [
     {
       "id": "m1",
@@ -2178,6 +2182,414 @@
         }
       },
       "sampleTripId": "123V.807.166.16.A.8.91072753"
+    },
+    {
+      "id": "bmt",
+      "name": "Blue Mountains Line",
+      "routeShortName": "BMT",
+      "tLine": "BMT",
+      "termini": [
+        "Central",
+        "Lithgow"
+      ],
+      "stations": [
+        "Central",
+        "Strathfield",
+        "Parramatta",
+        "Blacktown",
+        "Penrith",
+        "Emu Plains",
+        "Glenbrook",
+        "Blaxland",
+        "Warrimoo",
+        "Valley Heights",
+        "Springwood",
+        "Faulconbridge",
+        "Linden",
+        "Woodford",
+        "Hazelbrook",
+        "Lawson",
+        "Bullaburra",
+        "Wentworth Falls",
+        "Leura",
+        "Katoomba",
+        "Medlow Bath",
+        "Blackheath",
+        "Bell",
+        "Mount Victoria",
+        "Lithgow"
+      ],
+      "longestStations": [
+        "Central",
+        "Strathfield",
+        "Parramatta",
+        "Blacktown",
+        "Penrith",
+        "Emu Plains",
+        "Glenbrook",
+        "Blaxland",
+        "Warrimoo",
+        "Valley Heights",
+        "Springwood",
+        "Faulconbridge",
+        "Linden",
+        "Woodford",
+        "Hazelbrook",
+        "Lawson",
+        "Bullaburra",
+        "Wentworth Falls",
+        "Leura",
+        "Katoomba",
+        "Medlow Bath",
+        "Blackheath",
+        "Bell",
+        "Mount Victoria",
+        "Lithgow"
+      ],
+      "headsigns": {
+        "Lithgow": null,
+        "Central": null
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "PENDING.BMT.sample"
+    },
+    {
+      "id": "ccn",
+      "name": "Central Coast & Newcastle Line",
+      "routeShortName": "CCN",
+      "tLine": "CCN",
+      "termini": [
+        "Central",
+        "Newcastle Interchange"
+      ],
+      "stations": [
+        "Central",
+        "Strathfield",
+        "Hornsby",
+        "Berowra",
+        "Mount Kuring-gai",
+        "Cowan",
+        "Hawkesbury River",
+        "Woy Woy",
+        "Point Clare",
+        "Gosford",
+        "Narara",
+        "Niagara Park",
+        "Lisarow",
+        "Ourimbah",
+        "Tuggerah",
+        "Wyong",
+        "Warnervale",
+        "Wyee",
+        "Morisset",
+        "Dora Creek",
+        "Awaba",
+        "Fassifern",
+        "Teralba",
+        "Booragul",
+        "Cardiff",
+        "Cockle Creek",
+        "Adamstown",
+        "Broadmeadow",
+        "Hamilton",
+        "Newcastle Interchange"
+      ],
+      "longestStations": [
+        "Central",
+        "Strathfield",
+        "Hornsby",
+        "Berowra",
+        "Mount Kuring-gai",
+        "Cowan",
+        "Hawkesbury River",
+        "Woy Woy",
+        "Point Clare",
+        "Gosford",
+        "Narara",
+        "Niagara Park",
+        "Lisarow",
+        "Ourimbah",
+        "Tuggerah",
+        "Wyong",
+        "Warnervale",
+        "Wyee",
+        "Morisset",
+        "Dora Creek",
+        "Awaba",
+        "Fassifern",
+        "Teralba",
+        "Booragul",
+        "Cardiff",
+        "Cockle Creek",
+        "Adamstown",
+        "Broadmeadow",
+        "Hamilton",
+        "Newcastle Interchange"
+      ],
+      "headsigns": {
+        "Newcastle Interchange": null,
+        "Central": null
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "PENDING.CCN.sample"
+    },
+    {
+      "id": "sco",
+      "name": "South Coast Line",
+      "routeShortName": "SCO",
+      "tLine": "SCO",
+      "termini": [
+        "Central",
+        "Bomaderry"
+      ],
+      "stations": [
+        "Central",
+        "Sydenham",
+        "Hurstville",
+        "Sutherland",
+        "Waterfall",
+        "Helensburgh",
+        "Otford",
+        "Stanwell Park",
+        "Coalcliff",
+        "Scarborough",
+        "Wombarra",
+        "Coledale",
+        "Austinmer",
+        "Thirroul",
+        "Bulli",
+        "Woonona",
+        "Corrimal",
+        "Towradgi",
+        "Fairy Meadow",
+        "North Wollongong",
+        "Wollongong",
+        "Coniston",
+        "Unanderra",
+        "Dapto",
+        "Albion Park",
+        "Oak Flats",
+        "Bombo",
+        "Kiama",
+        "Gerringong",
+        "Berry",
+        "Bomaderry"
+      ],
+      "longestStations": [
+        "Central",
+        "Sydenham",
+        "Hurstville",
+        "Sutherland",
+        "Waterfall",
+        "Helensburgh",
+        "Otford",
+        "Stanwell Park",
+        "Coalcliff",
+        "Scarborough",
+        "Wombarra",
+        "Coledale",
+        "Austinmer",
+        "Thirroul",
+        "Bulli",
+        "Woonona",
+        "Corrimal",
+        "Towradgi",
+        "Fairy Meadow",
+        "North Wollongong",
+        "Wollongong",
+        "Coniston",
+        "Unanderra",
+        "Dapto",
+        "Albion Park",
+        "Oak Flats",
+        "Bombo",
+        "Kiama",
+        "Gerringong",
+        "Berry",
+        "Bomaderry"
+      ],
+      "headsigns": {
+        "Bomaderry": null,
+        "Central": null
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "PENDING.SCO.sample"
+    },
+    {
+      "id": "shl",
+      "name": "Southern Highlands Line",
+      "routeShortName": "SHL",
+      "tLine": "SHL",
+      "termini": [
+        "Central",
+        "Goulburn"
+      ],
+      "stations": [
+        "Central",
+        "Campbelltown",
+        "Menangle",
+        "Douglas Park",
+        "Picton",
+        "Tahmoor",
+        "Bargo",
+        "Yerrinbool",
+        "Mittagong",
+        "Bowral",
+        "Burradoo",
+        "Moss Vale",
+        "Exeter",
+        "Bundanoon",
+        "Wingello",
+        "Tallong",
+        "Marulan",
+        "Goulburn"
+      ],
+      "longestStations": [
+        "Central",
+        "Campbelltown",
+        "Menangle",
+        "Douglas Park",
+        "Picton",
+        "Tahmoor",
+        "Bargo",
+        "Yerrinbool",
+        "Mittagong",
+        "Bowral",
+        "Burradoo",
+        "Moss Vale",
+        "Exeter",
+        "Bundanoon",
+        "Wingello",
+        "Tallong",
+        "Marulan",
+        "Goulburn"
+      ],
+      "headsigns": {
+        "Goulburn": null,
+        "Central": null
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "PENDING.SHL.sample"
+    },
+    {
+      "id": "hun",
+      "name": "Hunter Line",
+      "routeShortName": "HUN",
+      "tLine": "HUN",
+      "termini": [
+        "Newcastle Interchange",
+        "Dungog",
+        "Scone"
+      ],
+      "stations": [
+        "Newcastle Interchange",
+        "Hamilton",
+        "Broadmeadow",
+        "Waratah",
+        "Sandgate",
+        "Tarro",
+        "Thornton",
+        "Metford",
+        "East Maitland",
+        "Maitland",
+        "Telarah",
+        "Branxton",
+        "Greta",
+        "Dungog",
+        "Aberdeen",
+        "Muswellbrook",
+        "Scone"
+      ],
+      "longestStations": [
+        "Newcastle Interchange",
+        "Hamilton",
+        "Broadmeadow",
+        "Waratah",
+        "Sandgate",
+        "Tarro",
+        "Thornton",
+        "Metford",
+        "East Maitland",
+        "Maitland",
+        "Telarah",
+        "Branxton",
+        "Greta",
+        "Dungog",
+        "Aberdeen",
+        "Muswellbrook",
+        "Scone"
+      ],
+      "headsigns": {
+        "Dungog": null,
+        "Scone": null
+      },
+      "firstLastService": {
+        "weekday": {
+          "first": null,
+          "last": null
+        },
+        "saturday": {
+          "first": null,
+          "last": null
+        },
+        "sunday": {
+          "first": null,
+          "last": null
+        }
+      },
+      "sampleTripId": "PENDING.HUN.sample"
     }
   ],
   "coverageGaps": [
@@ -2187,6 +2599,6 @@
     "C3-4: City Circle is a loop, not a terminus",
     "C3-T2/T3/T8-circle: D1 lists Circle stations linearly; longest GTFS patterns are loops",
     "H2: public zip has T/M numbers; gateway schedule/RT still 401 without TFNSW_API_KEY",
-    "H7: Australia/Sydney observes DST — do not copy Brisbane no-DST"
+    "H7: Australia/Sydney observes DST \u00e2\u20ac\u201d do not copy Brisbane no-DST"
   ]
 }
