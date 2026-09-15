@@ -764,6 +764,39 @@
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Chorleywood",
+      "crs": "CLW",
+      "aliases": [],
+      "lat": 51.654188,
+      "lng": -0.51846,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Buckinghamshire/Chilterns, this pack's claimed territory (\"Thames Valley and Chilterns\").",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Denham Golf Club",
+      "crs": "DGC",
+      "aliases": [],
+      "lat": 51.580544,
+      "lng": -0.517774,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Buckinghamshire/Chilterns, this pack's claimed territory (\"Thames Valley and Chilterns\").",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Iver",
+      "crs": "IVR",
+      "aliases": [],
+      "lat": 51.508342,
+      "lng": -0.506659,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Buckinghamshire/Chilterns, this pack's claimed territory (\"Thames Valley and Chilterns\").",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

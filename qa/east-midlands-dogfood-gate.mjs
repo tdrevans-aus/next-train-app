@@ -118,7 +118,7 @@ assert(
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(EAST_MIDLANDS_REGION);
-assert(region?.railCount === 105, `east-midlands rail count must be 105 (UK station fill phase 1), got ${region?.railCount}`);
+assert(region?.railCount === 107, `east-midlands rail count must be 107 (2 stations reassigned in from rest-of-england 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), got ${region?.railCount}`);
 assert(region?.metroCount === 4, `east-midlands metro count must be 4, got ${region?.metroCount}`);
 
 const railStations = listNationalRailStations();
@@ -138,7 +138,7 @@ assert(!netNames.has("city centre"), "NET catalog must not carry the unconfirmed
 assert(netStops.length === 4, `NET catalog must have exactly 4 stops (termini + hub), got ${netStops.length}`);
 
 const allStations = listCatalogStations();
-assert(allStations.length === 109, `combined catalog must have 109 stations (105 rail + 4 metro), got ${allStations.length}`);
+assert(allStations.length === 111, `combined catalog must have 111 stations (107 rail + 4 metro, 15 Sep 2026 rest-of-england reassignment), got ${allStations.length}`);
 
 // doNotGroup — Nottingham Station resolves as two distinct catalog entries by mode.
 const hubRail = resolveCatalogEntry(EAST_MIDLANDS_HUB, "train");
@@ -235,7 +235,7 @@ assert(mapNetDestination("Beeston Centre", "1") === null, "mapNetDestination mus
 // Dogfood station list comes from the catalog, not a GTFS parse; includes mode
 // (unlike West of England's single-mode list) to disambiguate the doNotGroup hub.
 const dogfoodStations = listEastMidlandsDogfoodStations();
-assert(dogfoodStations.length === 109, `dogfood stations must be 109 (UK station fill phase 1), got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 111, `dogfood stations must be 111 (107 rail + 4 metro, 15 Sep 2026 rest-of-england reassignment), got ${dogfoodStations.length}`);
 const hubEntries = dogfoodStations.filter((s) => s.name === EAST_MIDLANDS_HUB);
 assert(hubEntries.length === 2, "Nottingham Station must appear twice in the dogfood list (rail + metro, doNotGroup)");
 assert(

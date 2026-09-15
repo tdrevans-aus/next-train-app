@@ -162,11 +162,12 @@ const ALLOW_LIST = [
     "Sheffield Arena",
     "Meadowhall",
     "Parkgate",
+    "Kiveton Park",
   ].map((station) => ({
     region: "south-yorkshire",
     station,
     reason:
-      "East Midlands' CITY_BOUNDS box was widened 13 Sep 2026 (UK station fill phase 1) to cover its Peak District/Derbyshire stations, which sit right on South Yorkshire's own boundary — the two boxes now genuinely overlap around Sheffield/Rotherham/Meadowhall. Not fixable with a tighter East Midlands box without excluding its own real Peak District stations (Bamford, Chinley, Dinting, etc.) from the hint entirely.",
+      "East Midlands' CITY_BOUNDS box was widened 13 Sep 2026 (UK station fill phase 1) to cover its Peak District/Derbyshire stations, which sit right on South Yorkshire's own boundary — the two boxes now genuinely overlap around Sheffield/Rotherham/Meadowhall. Not fixable with a tighter East Midlands box without excluding its own real Peak District stations (Bamford, Chinley, Dinting, etc.) from the hint entirely. Kiveton Park reassigned in from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — same pre-existing overlap band, not a new one.",
   })),
   ...[
     "Aberdour",
@@ -259,6 +260,24 @@ const ALLOW_LIST = [
     station,
     reason:
       "UK station fill phase 2a (14 Sep 2026): west-yorkshire's catalog grew substantially and now includes boundary-adjacent stations whose coordinates fall inside greater-manchester's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2a.md — public/city-session.js is not touched), so the geometric overlap is allow-listed here instead of solved with a tighter/wider rectangle.",
+  })),
+  ...["Farnworth", "Littleborough"].map((station) => ({
+    region: "west-yorkshire",
+    station,
+    reason:
+      "15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): greater-manchester's CITY_BOUNDS box was widened to cover 33 stations reassigned in from rest-of-england (Flixton and others on Bolton/Wigan/Tameside lines), and now genuinely overlaps these two West Yorkshire stations' coordinates near the Calder Valley boundary — same trade-off as Walsden above, not fixable with a tighter Greater Manchester box without losing its own real reassigned stations (Horwich Parkway, Westhoughton, etc.).",
+  })),
+  ...["Glazebrook", "Birchwood"].map((station) => ({
+    region: "liverpool-city-region",
+    station,
+    reason:
+      "15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): Glazebrook and Birchwood (both Borough of Warrington) reassigned in from rest-of-england alongside Warrington's three main stations, but their coordinates sit inside greater-manchester's CITY_BOUNDS box (widened the same PR for its own 36 reassigned stations) — greater-manchester is declared earlier in CITY_BOUNDS, so the GPS hint resolves there first. Liverpool City Region's own box doesn't reach this far east either; not fixable with a rectangle on either side without swallowing real stations of the other region.",
+  })),
+  ...["Iver", "Denham Golf Club", "Chorleywood"].map((station) => ({
+    region: "thames-valley",
+    station,
+    reason:
+      "15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): reassigned in from rest-of-england per the rule (Buckinghamshire/Chilterns, thames-valley's own claimed territory), but all three sit inside uk-london-tfl's CITY_BOUNDS box, which is declared earlier and reaches this far west/north into the Chiltern commuter belt — same trade-off already documented for Burnham/Langley/Maidenhead/Reading/Slough/Taplow/Twyford/Amersham/Chalfont & Latimer/Chesham above (TFL_COMMUTER_BELT_REASON), just in the other direction (a thames-valley station resolving into uk-london-tfl's box rather than the reverse).",
   })),
   ...["Abergavenny"].map((station) => ({
     region: "rest-of-wales",
@@ -375,7 +394,7 @@ const ALLOW_LIST = [
     reason:
       "UK station fill phase 2b (14 Sep 2026): liverpool-city-region's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-england's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
   })),
-  ...["Albrighton","Alvechurch","Atherstone","Barnt Green","Bedworth","Bermuda Park (Nuneaton)","Bilbrook","Blakedown","Bromsgrove","Cannock","Claverdon","Codsall","Coleshill Parkway","Cosford","Danzey","Droitwich Spa","Hagley","Hartlebury","Hatton","Henley-in-Arden","Kenilworth","Landywood","Lapworth","Leamington Spa","Lichfield City","Lichfield Trent Valley","Nuneaton","Polesworth","Redditch","Shenstone","The Lakes","Warwick","Warwick Parkway","Water Orton","Willenhall","Wilnecote","Wood End","Wootton Wawen","Wythall"].map((station) => ({
+  ...["Albrighton","Alvechurch","Atherstone","Barnt Green","Bedworth","Bermuda Park (Nuneaton)","Bilbrook","Blakedown","Bromsgrove","Cannock","Claverdon","Codsall","Coleshill Parkway","Cosford","Danzey","Droitwich Spa","Hagley","Hartlebury","Hatton","Henley-in-Arden","Kenilworth","Landywood","Lapworth","Leamington Spa","Lichfield City","Lichfield Trent Valley","Nuneaton","Polesworth","Redditch","Shenstone","The Lakes","Warwick","Warwick Parkway","Water Orton","Wilnecote","Wood End","Wootton Wawen","Wythall"].map((station) => ({
     region: "rest-of-england",
     station,
     reason:
@@ -387,25 +406,36 @@ const ALLOW_LIST = [
     reason:
       "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside rest-of-wales's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
   })),
-  ...["Burton-on-Trent","Kiveton Park","Rugby","Rugeley Town","Rugeley Trent Valley","Uttoxeter"].map((station) => ({
+  ...["Burton-on-Trent","Rugby","Rugeley Town","Rugeley Trent Valley","Uttoxeter"].map((station) => ({
     region: "rest-of-england",
     station,
     reason:
       "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside east-midlands's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
   })),
-  ...["Chertsey","Chorleywood","Denham Golf Club","Iver","Staines","West Byfleet"].map((station) => ({
+  ...["Chertsey","Staines","West Byfleet"].map((station) => ({
     region: "rest-of-england",
     station,
     reason:
-      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside uk-london-tfl's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside uk-london-tfl's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead. Confirmed 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): these three are Surrey (Spelthorne/Runnymede/Woking), not claimed by any pack — Chorleywood/Denham Golf Club/Iver moved to thames-valley (Buckinghamshire/Chilterns), these three stay.",
   })),
-  ...["Warrington Bank Quay","Warrington Central","Warrington West"].map((station) => ({
+  ...["South Milford"].map((station) => ({
     region: "rest-of-england",
     station,
     reason:
-      "UK station fill phase 2b (14 Sep 2026): rest-of-england's catalog includes boundary-adjacent stations whose coordinates fall inside liverpool-city-region's CITY_BOUNDS box; CITY_BOUNDS itself is out of scope for this phase (docs/jim-brief-uk-station-fill-phase2b.md — public/city-session.js's box shapes are not redrawn), so the geometric overlap is allow-listed here instead.",
+      "15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): west-yorkshire's CITY_BOUNDS box was widened east (maxLng -1.30 to -1.25) to fit Knottingley (City of Wakefield), reassigned in from rest-of-england — South Milford (North Yorkshire, Selby district, genuinely unclaimed) sits just inside the same widened sliver. Not fixable with a tighter West Yorkshire box without losing Knottingley itself.",
   })),
-
+  ...["Darwen", "Disley"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): greater-manchester's CITY_BOUNDS box was widened to fit 36 stations reassigned in from rest-of-england (Bolton/Wigan/Stockport lines) — Darwen (Blackburn with Darwen, Lancashire) and Disley (Cheshire East) sit just inside the same widened box but are administratively neither Greater Manchester nor claimed by any other pack; genuinely unowned, stay in rest-of-england. Not fixable with a tighter Greater Manchester box without losing its own real reassigned stations (Horwich Parkway, Westhoughton, Marple, etc.).",
+  })),
+  ...["Hednesford"].map((station) => ({
+    region: "rest-of-england",
+    station,
+    reason:
+      "15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): east-midlands's CITY_BOUNDS box was widened west (minLng -1.99 to -2.01) to fit New Mills Central/Newtown (Derbyshire), reassigned in from rest-of-england — Hednesford (Cannock Chase, Staffordshire, genuinely unclaimed) sits just inside the same widened sliver. Not fixable with a tighter East Midlands box without losing New Mills itself.",
+  })),
 ];
 
 function allowListReason(regionId, stationName) {

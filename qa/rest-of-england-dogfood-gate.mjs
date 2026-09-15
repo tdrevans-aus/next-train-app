@@ -94,7 +94,7 @@ assert(isMultiCity("rest-of-england") === true, "rest-of-england is now in MULTI
 
 // Region catalog wiring (uk/catalog.js region config, not a fork of uk-darwin.js).
 const region = getRegion(REST_OF_ENGLAND_REGION);
-assert(region?.railCount === 436, `rest-of-england rail count must be 436 (UK station fill phase 2b, 14 Sep 2026), got ${region?.railCount}`);
+assert(region?.railCount === 362, `rest-of-england rail count must be 362 (74 stations reassigned out 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), got ${region?.railCount}`);
 assert(region?.metroCount === 0, `rest-of-england must have no metro stations, got ${region?.metroCount}`);
 assert(
   (region?.modes ?? []).join(",") === "train",
@@ -103,11 +103,11 @@ assert(
 
 const railStations = listNationalRailStations();
 const railCrs = new Set(railStations.map((s) => s.crs));
-assert(railCrs.size === 436, `rest-of-england catalog must carry exactly 436 distinct CRS codes, got ${railCrs.size}`);
+assert(railCrs.size === 362, `rest-of-england catalog must carry exactly 362 distinct CRS codes, got ${railCrs.size}`);
 assert(getNotInRegion(REST_OF_ENGLAND_REGION).length === 0, "rest-of-england has no deliberate exclusions recorded");
 
 const allStations = listCatalogStations();
-assert(allStations.length === 436, `combined catalog must have 436 stations (train only, UK station fill phase 2b), got ${allStations.length}`);
+assert(allStations.length === 362, `combined catalog must have 362 stations (train only, 15 Sep 2026 rest-of-england reassignment), got ${allStations.length}`);
 
 // No hub lock, no corridor grouping — every catalogued station resolves flat.
 const adisham = resolveCatalogEntry("Adisham");
@@ -142,7 +142,7 @@ assert(roeHubs.length === 0, `rest-of-england must have zero configured hubs, go
 
 // Dogfood station list comes from the catalog, not a GTFS parse.
 const dogfoodStations = listRestOfEnglandDogfoodStations();
-assert(dogfoodStations.length === 436, `dogfood stations must be the 436 catalog entries, got ${dogfoodStations.length}`);
+assert(dogfoodStations.length === 362, `dogfood stations must be the 362 catalog entries, got ${dogfoodStations.length}`);
 const dogfoodNames = new Set(dogfoodStations.map((row) => row.name));
 assert(dogfoodNames.has("Adisham"), "Adisham must be listed by the dogfood harness");
 assert(dogfoodNames.has("York"), "York must be listed by the dogfood harness");
@@ -336,5 +336,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "rest-of-england-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, no D1 pack (built directly from docs/uk-station-fill/unassigned-england.md), 436 rail-only stations, no hub lock/no corridor grouping, nine held-back stations confirmed absent (Altrincham/Eccles/Manchester Airport/Rochdale/Brockley Whins/East Boldon/Heworth/Manors/Seaburn), no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, five-station spread live probe (Adisham/Bournemouth/Workington/York/Barnetby), routing table (exact/undirected) proven token-free, Perth stays green)"
+  "rest-of-england-dogfood-gate: ok (live, in MULTI_CITY_IDS, dispatch switch-cases wired, no D1 pack (built directly from docs/uk-station-fill/unassigned-england.md), 362 rail-only stations (74 reassigned out to real regions 15 Sep 2026, docs/jim-brief-rest-of-england-reassignment.md), no hub lock/no corridor grouping, nine held-back stations confirmed absent (Altrincham/Eccles/Manchester Airport/Rochdale/Brockley Whins/East Boldon/Heworth/Manors/Seaburn), no hub configured (helper degrades to no-op), directions derived live from Darwin with no static line map, five-station spread live probe (Adisham/Bournemouth/Workington/York/Barnetby), routing table (exact/undirected) proven token-free, Perth stays green)"
 );

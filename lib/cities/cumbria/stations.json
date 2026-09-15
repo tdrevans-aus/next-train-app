@@ -560,6 +560,182 @@
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Aspatria",
+      "crs": "ASP",
+      "aliases": [],
+      "lat": 54.759338,
+      "lng": -3.331752,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Bootle",
+      "crs": "BOC",
+      "aliases": [],
+      "lat": 54.291182,
+      "lng": -3.393836,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Braystones",
+      "crs": "BYS",
+      "aliases": [],
+      "lat": 54.439508,
+      "lng": -3.541971,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Corkickle",
+      "crs": "CKL",
+      "aliases": [],
+      "lat": 54.541657,
+      "lng": -3.582155,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Drigg",
+      "crs": "DRI",
+      "aliases": [],
+      "lat": 54.376968,
+      "lng": -3.444066,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Flimby",
+      "crs": "FLM",
+      "aliases": [],
+      "lat": 54.689815,
+      "lng": -3.520544,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Harrington",
+      "crs": "HRR",
+      "aliases": [],
+      "lat": 54.613551,
+      "lng": -3.565573,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Maryport",
+      "crs": "MRY",
+      "aliases": [],
+      "lat": 54.711299,
+      "lng": -3.494087,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Nethertown",
+      "crs": "NRT",
+      "aliases": [],
+      "lat": 54.456227,
+      "lng": -3.565624,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Ravenglass for Eskdale",
+      "crs": "RAV",
+      "aliases": [],
+      "lat": 54.355804,
+      "lng": -3.409456,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Seascale",
+      "crs": "SSC",
+      "aliases": [],
+      "lat": 54.396288,
+      "lng": -3.485171,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Sellafield",
+      "crs": "SEL",
+      "aliases": [],
+      "lat": 54.416571,
+      "lng": -3.510293,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Silecroft",
+      "crs": "SIC",
+      "aliases": [],
+      "lat": 54.225966,
+      "lng": -3.334281,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "St Bees",
+      "crs": "SBS",
+      "aliases": [],
+      "lat": 54.492465,
+      "lng": -3.591263,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Whitehaven",
+      "crs": "WTH",
+      "aliases": [],
+      "lat": 54.552864,
+      "lng": -3.586843,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Workington",
+      "crs": "WKG",
+      "aliases": [],
+      "lat": 54.645061,
+      "lng": -3.558626,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Cumberland/Copeland/Allerdale districts, ceremonial county Cumbria (West Cumbria coast line — a gap in this pack's own catalog, not a wrong-region case).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

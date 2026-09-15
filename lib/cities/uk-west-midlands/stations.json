@@ -1246,6 +1246,17 @@
       ],
       "lat": 52.58388,
       "lng": -2.12364
+    },
+    {
+      "mode": "train",
+      "name": "Willenhall",
+      "crs": "WIA",
+      "aliases": [],
+      "lat": 52.58192,
+      "lng": -2.05475,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — West Midlands metropolitan county (Walsall borough).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

@@ -7,11 +7,6 @@
     "Manchester Piccadilly (Northern)",
     "Stoke-on-Trent (Northern)"
   ],
-  "Adwick": [
-    "Doncaster (Northern)",
-    "Leeds (Northern)",
-    "Sheffield (Northern)"
-  ],
   "Albrighton": [
     "Birmingham New Street (LNR & WMR)",
     "Shrewsbury (LNR & WMR)"
@@ -29,7 +24,6 @@
     "Crewe (East Midlands Railway)",
     "Crewe (LNR & WMR)",
     "Lincoln Central (East Midlands Railway)",
-    "Nottingham (East Midlands Railway)",
     "Stafford (LNR & WMR)"
   ],
   "Althorpe": [
@@ -49,17 +43,10 @@
     "Eastbourne (Southern)"
   ],
   "Apsley": [
-    "Bletchley (LNR & WMR)",
     "London Euston (LNR & WMR)",
-    "Milton Keynes Central (LNR & WMR)",
-    "Tring (LNR & WMR)"
-  ],
-  "Arram": [
-    "Bridlington (Northern)",
-    "York (Northern)"
+    "Milton Keynes Central (LNR & WMR)"
   ],
   "Ashford International": [
-    "Canterbury West (Southeastern)",
     "Dover Priory (Southeastern)",
     "Eastbourne (Southern)",
     "London Charing Cross (Southeastern)",
@@ -69,24 +56,9 @@
     "Ramsgate (Southeastern)",
     "Sandwich (Southeastern)"
   ],
-  "Ashton-under-Lyne": [
-    "Southport (Northern)",
-    "Stalybridge (Northern)"
-  ],
-  "Aspatria": [
-    "Carlisle (Northern)",
-    "Whitehaven (Northern)"
-  ],
   "Atherstone": [
     "Crewe (LNR & WMR)",
     "London Euston (LNR & WMR)"
-  ],
-  "Atherton": [
-    "Blackburn (Northern)",
-    "Headbolt Lane (Northern)",
-    "Leeds (Northern)",
-    "Wigan North Western (Northern)",
-    "Wigan Wallgate (Northern)"
   ],
   "Aylesham": [
     "Dover Priory (Southeastern)",
@@ -94,8 +66,7 @@
   ],
   "Bamber Bridge": [
     "Colne (Northern)",
-    "Preston (Northern)",
-    "York (Northern)"
+    "Preston (Northern)"
   ],
   "Barnetby": [
     "Cleethorpes (East Midlands Railway)",
@@ -104,7 +75,6 @@
     "Matlock (East Midlands Railway)"
   ],
   "Barnt Green": [
-    "Birmingham New Street (LNR & WMR)",
     "Bromsgrove (LNR & WMR)",
     "Four Oaks (LNR & WMR)",
     "Lichfield Trent Valley (LNR & WMR)",
@@ -118,26 +88,20 @@
     "Cleethorpes (East Midlands Railway)"
   ],
   "Battersby": [
-    "Middlesbrough (Northern)"
+    "Whitby (Northern)"
   ],
   "Bayford": [
-    "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)"
   ],
   "Bearley": [
     "Leamington Spa (Chiltern Railways)",
-    "Stratford-upon-Avon (Chiltern Railways)",
-    "Stratford-upon-Avon (LNR & WMR)",
-    "Worcester Foregate Street (LNR & WMR)"
+    "Stratford-upon-Avon (Chiltern Railways)"
   ],
   "Beaulieu Park": [
-    "Clacton-on-Sea (Greater Anglia)",
-    "Clacton-on-Sea and Harwich Town (Greater Anglia)",
     "Colchester Town (Greater Anglia)",
     "Ipswich (Greater Anglia)",
-    "London Liverpool Street (Greater Anglia)",
-    "Witham (Greater Anglia)"
+    "London Liverpool Street (Greater Anglia)"
   ],
   "Bedford": [
     "Bletchley (LNR & WMR)",
@@ -163,12 +127,6 @@
     "Scarborough (Northern)",
     "Sheffield (Northern)"
   ],
-  "Bentley (South Yorkshire)": [
-    "Adwick (Northern)",
-    "Doncaster (Northern)",
-    "Leeds (Northern)",
-    "Sheffield (Northern)"
-  ],
   "Bermuda Park (Nuneaton)": [
     "Leamington Spa (LNR & WMR)",
     "Nuneaton (LNR & WMR)"
@@ -184,23 +142,13 @@
     "Shrewsbury (LNR & WMR)"
   ],
   "Billingham": [
-    "Great Ayton (Northern)",
-    "Middlesbrough (Northern)",
     "Newcastle (Northern)",
-    "Whitby (Northern)"
+    "Nunthorpe (Northern)"
   ],
   "Birchington-on-Sea": [
     "London St Pancras (Intl) (Southeastern)",
     "London Victoria (Southeastern)",
     "Ramsgate (Southeastern)"
-  ],
-  "Birchwood": [
-    "Cleethorpes (TransPennine Express)",
-    "Liverpool Lime Street (East Midlands Railway)",
-    "Liverpool Lime Street (Northern)",
-    "Liverpool Lime Street (TransPennine Express)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
   ],
   "Bishop Auckland": [
     "Saltburn (Northern)"
@@ -228,37 +176,20 @@
   ],
   "Blakedown": [
     "Dorridge (LNR & WMR)",
-    "Kidderminster (LNR & WMR)",
-    "Leamington Spa (LNR & WMR)",
     "Stratford-upon-Avon (LNR & WMR)",
     "Worcester Foregate Street (LNR & WMR)"
   ],
   "Blythe Bridge": [
     "Crewe (East Midlands Railway)",
-    "Lincoln Central (East Midlands Railway)",
-    "Nottingham (East Midlands Railway)"
-  ],
-  "Bolton": [
-    "Barrow-in-Furness (Northern)",
-    "Blackburn (Northern)",
-    "Blackpool North (Northern)",
-    "Clitheroe (Northern)",
-    "Manchester Airport (Northern)",
-    "Manchester Oxford Road (Northern)",
-    "Rochdale (Northern)",
-    "Southport (Northern)",
-    "Stalybridge (Northern)"
-  ],
-  "Bootle": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
+    "Lincoln Central (East Midlands Railway)"
   ],
   "Bournemouth": [
     "Basingstoke (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Manchester Piccadilly (CrossCountry)",
     "Poole (South Western Railway)",
-    "Weymouth (South Western Railway)"
+    "Weymouth (South Western Railway)",
+    "Winchester (South Western Railway)"
   ],
   "Brading": [
     "Ryde Pier Head (Island Line)",
@@ -269,25 +200,19 @@
     "Poole (South Western Railway)",
     "Weymouth (South Western Railway)"
   ],
-  "Braystones": [
-    "Lancaster (Northern)"
-  ],
   "Bricket Wood": [
     "St Albans Abbey (LNR & WMR)",
     "Watford Junction (LNR & WMR)"
   ],
   "Bridgwater": [
     "Cardiff Central (Great Western Railway)",
-    "Taunton (Great Western Railway)"
+    "Exeter St Davids (Great Western Railway)",
+    "Plymouth (Great Western Railway)"
   ],
   "Bridlington": [
     "Scarborough (Northern)",
     "Sheffield (Northern)",
     "York (Northern)"
-  ],
-  "Broadbottom": [
-    "Hadfield (Northern)",
-    "Manchester Piccadilly (Northern)"
   ],
   "Broadstairs": [
     "London St Pancras (Intl) (Southeastern)",
@@ -295,23 +220,14 @@
     "Margate (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
-  "Bromley Cross": [
-    "Blackburn (Northern)",
-    "Clitheroe (Northern)",
-    "Rochdale (Northern)"
-  ],
   "Bromsgrove": [
     "Birmingham New Street (LNR & WMR)",
     "Hereford (LNR & WMR)",
-    "Lichfield Trent Valley (LNR & WMR)",
-    "Worcester Shrub Hill (LNR & WMR)"
+    "Lichfield Trent Valley (LNR & WMR)"
   ],
   "Brookmans Park": [
     "Moorgate (Great Northern)",
     "Welwyn Garden City (Great Northern)"
-  ],
-  "Broome": [
-    "Swansea (Transport for Wales)"
   ],
   "Broomfleet": [
     "Doncaster (Northern)"
@@ -331,33 +247,26 @@
   ],
   "Broxbourne": [
     "Bishops Stortford (Greater Anglia)",
-    "Cambridge (Greater Anglia)",
     "Cambridge North (Greater Anglia)",
-    "Ely (Greater Anglia)",
     "Hertford East (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)",
     "Stratford (London) (Greater Anglia)"
   ],
   "Bruton": [
     "Gloucester (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
-  "Bucknell": [
-    "Swansea (Transport for Wales)"
-  ],
   "Burnham-on-Crouch": [
-    "London Liverpool Street (Greater Anglia)",
     "Southminster (Greater Anglia)",
     "Wickford (Greater Anglia)"
   ],
   "Burton-on-Trent": [
     "Birmingham New Street (CrossCountry)",
     "Cardiff Central (CrossCountry)",
-    "Cardiff Central and Plymouth (CrossCountry)",
-    "Edinburgh (CrossCountry)",
-    "Gloucester (CrossCountry)",
+    "Glasgow Central (CrossCountry)",
     "Nottingham (CrossCountry)",
-    "Reading (CrossCountry)"
+    "Plymouth (CrossCountry)"
   ],
   "Cannock": [
     "Birmingham International (LNR & WMR)",
@@ -376,26 +285,20 @@
   "Castle Cary": [
     "Gloucester (Great Western Railway)",
     "London Paddington (Great Western Railway)",
-    "Newton Abbot (Great Western Railway)",
-    "Penzance (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
+    "Paignton (Great Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
   "Castleton Moor": [
-    "Middlesbrough (Northern)"
+    "Whitby (Northern)"
   ],
   "Cattal": [
     "Leeds (Northern)",
     "York (Northern)"
   ],
   "Chartham": [
-    "Canterbury West (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)"
-  ],
-  "Chassen Road": [
-    "Liverpool Lime Street (Northern)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
   ],
   "Chelford": [
     "Crewe (Northern)",
@@ -403,11 +306,11 @@
   ],
   "Chelmsford": [
     "Braintree (Greater Anglia)",
-    "Clacton-on-Sea and Harwich Town (Greater Anglia)",
-    "Clacton-on-Sea and Walton-on-the-Naze (Greater Anglia)",
+    "Clacton-on-Sea (Greater Anglia)",
     "Colchester Town (Greater Anglia)",
     "Ipswich (Greater Anglia)",
-    "London Liverpool Street (Greater Anglia)"
+    "London Liverpool Street (Greater Anglia)",
+    "Norwich (Greater Anglia)"
   ],
   "Cherry Tree": [
     "Colne (Northern)",
@@ -420,7 +323,6 @@
   "Cheshunt": [
     "Bishops Stortford (Greater Anglia)",
     "Cambridge North (Greater Anglia)",
-    "Ely (Greater Anglia)",
     "Hertford East (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)",
     "London Liverpool Street (London Overground)",
@@ -431,36 +333,31 @@
     "Ramsgate (Southeastern)"
   ],
   "Chetnole": [
-    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
   "Chilham": [
-    "Canterbury West (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)"
-  ],
-  "Chorleywood": [
-    "Aylesbury (Chiltern Railways)",
-    "Aylesbury Vale Parkway (Chiltern Railways)",
-    "London Marylebone (Chiltern Railways)"
   ],
   "Christchurch": [
     "Basingstoke (South Western Railway)",
     "Bournemouth (South Western Railway)",
     "London Waterloo (South Western Railway)",
-    "Poole (South Western Railway)"
+    "Weymouth and Poole (South Western Railway)",
+    "Winchester (South Western Railway)"
   ],
   "Church Fenton": [
     "Blackpool North (Northern)",
     "Bridlington (Northern)",
-    "Sheffield (Northern)",
     "York (Northern)"
   ],
   "Church Stretton": [
     "Cardiff Central (Transport for Wales)",
-    "Chester (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
     "Holyhead (Transport for Wales)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)",
+    "Shrewsbury (Transport for Wales)",
     "Swansea (Transport for Wales)"
   ],
   "Clacton-on-Sea": [
@@ -468,8 +365,7 @@
   ],
   "Claverdon": [
     "Leamington Spa (Chiltern Railways)",
-    "Stratford-upon-Avon (Chiltern Railways)",
-    "Stratford-upon-Avon (LNR & WMR)"
+    "Stratford-upon-Avon (Chiltern Railways)"
   ],
   "Cleethorpes": [
     "Barton-on-Humber (East Midlands Railway)",
@@ -482,28 +378,21 @@
   ],
   "Coleshill Parkway": [
     "Birmingham New Street (CrossCountry)",
-    "Cambridge (CrossCountry)",
     "Leicester (CrossCountry)",
     "Stansted Airport (CrossCountry)"
   ],
   "Colwall": [
     "Birmingham New Street (LNR & WMR)",
-    "Hereford (LNR & WMR)"
+    "Hereford (Great Western Railway)",
+    "Hereford (LNR & WMR)",
+    "London Paddington (Great Western Railway)"
   ],
   "Commondale": [
-    "Middlesbrough (Northern)"
+    "Whitby (Northern)"
   ],
   "Congleton": [
     "Manchester Piccadilly (Northern)",
     "Stoke-on-Trent (Northern)"
-  ],
-  "Conisbrough": [
-    "Adwick (Northern)",
-    "Doncaster (Northern)",
-    "Sheffield (Northern)"
-  ],
-  "Corkickle": [
-    "Lancaster (Northern)"
   ],
   "Cosford": [
     "Birmingham New Street (LNR & WMR)",
@@ -517,15 +406,14 @@
   ],
   "Craven Arms": [
     "Cardiff Central (Transport for Wales)",
-    "Chester (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
     "Holyhead (Transport for Wales)",
-    "Swansea (Transport for Wales)"
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)"
   ],
   "Crewe": [
     "Birmingham New Street (LNR & WMR)",
+    "Chester (Avanti West Coast)",
     "Glasgow Central (Avanti West Coast)",
-    "Holyhead (Avanti West Coast)",
     "Lincoln Central (East Midlands Railway)",
     "Liverpool Lime Street (Avanti West Coast)",
     "Liverpool Lime Street (LNR & WMR)",
@@ -553,19 +441,11 @@
     "Manchester Piccadilly (Northern)"
   ],
   "Cuffley": [
-    "Hertford North (Great Northern)",
     "Moorgate (Great Northern)",
     "Stevenage (Great Northern)"
   ],
-  "Daisy Hill": [
-    "Blackburn (Northern)",
-    "Headbolt Lane (Northern)",
-    "Leeds (Northern)",
-    "Wigan North Western (Northern)",
-    "Wigan Wallgate (Northern)"
-  ],
   "Danby": [
-    "Middlesbrough (Northern)"
+    "Whitby (Northern)"
   ],
   "Danzey": [
     "Kidderminster (LNR & WMR)",
@@ -577,16 +457,14 @@
     "Rochdale (Northern)"
   ],
   "Deal": [
+    "Faversham (Southeastern)",
     "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
   "Delamere": [
     "Chester (Northern)",
     "Manchester Piccadilly (Northern)"
-  ],
-  "Denham Golf Club": [
-    "High Wycombe (Chiltern Railways)",
-    "London Marylebone (Chiltern Railways)"
   ],
   "Dinsdale": [
     "Bishop Auckland (Northern)",
@@ -597,26 +475,12 @@
     "Buxton (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
-  "Doncaster": [
-    "Adwick (Northern)",
-    "Cleethorpes (TransPennine Express)",
-    "Edinburgh (LNER)",
-    "Harrogate (LNER)",
-    "Hull (Northern)",
-    "Leeds (LNER)",
-    "Leeds (Northern)",
-    "Liverpool Lime Street (TransPennine Express)",
-    "London Kings Cross (LNER)",
-    "Reading (CrossCountry)",
-    "Scarborough (Northern)",
-    "Sheffield (Northern)"
-  ],
   "Dorchester South": [
     "London Waterloo (South Western Railway)",
     "Weymouth (South Western Railway)"
   ],
   "Dorchester West": [
-    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
   "Dover Priory": [
@@ -631,33 +495,27 @@
     "Sheffield (Northern)",
     "York (Northern)"
   ],
-  "Drigg": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
-  ],
   "Droitwich Spa": [
     "Birmingham New Street (LNR & WMR)",
     "Dorridge (LNR & WMR)",
     "Hereford (LNR & WMR)",
-    "Leamington Spa (LNR & WMR)",
     "Stratford-upon-Avon (LNR & WMR)",
-    "Worcester Foregate Street (LNR & WMR)",
-    "Worcester Shrub Hill (LNR & WMR)"
+    "Worcester Foregate Street (LNR & WMR)"
   ],
   "Dumpton Park": [
     "London Victoria (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
   "Durham": [
-    "Aberdeen (CrossCountry)",
-    "Birmingham New Street (CrossCountry)",
+    "Cardiff Central and Plymouth (CrossCountry)",
     "Edinburgh (CrossCountry)",
     "Liverpool Lime Street (TransPennine Express)",
     "London Kings Cross (LNER)",
     "Newcastle (CrossCountry)",
     "Newcastle (LNER)",
     "Newcastle (TransPennine Express)",
-    "Plymouth (CrossCountry)"
+    "Plymouth (CrossCountry)",
+    "Reading (CrossCountry)"
   ],
   "Eaglescliffe": [
     "Bishop Auckland (Northern)",
@@ -668,16 +526,8 @@
     "Saltburn (Northern)",
     "Sunderland (Grand Central)"
   ],
-  "Eastrington": [
-    "York (Northern)"
-  ],
   "Egton": [
-    "Middlesbrough (Northern)"
-  ],
-  "Entwistle": [
-    "Blackburn (Northern)",
-    "Clitheroe (Northern)",
-    "Rochdale (Northern)"
+    "Whitby (Northern)"
   ],
   "Faversham": [
     "Dover Priory (Southeastern)",
@@ -687,30 +537,16 @@
   ],
   "Ferriby": [
     "Doncaster (Northern)",
-    "Hull (Northern)",
-    "York (Northern)"
+    "Hull (Northern)"
   ],
   "Filey": [
     "Scarborough (Northern)",
     "Sheffield (Northern)"
   ],
-  "Flimby": [
-    "Carlisle (Northern)",
-    "Whitehaven (Northern)"
-  ],
   "Flitwick": [
     "Bedford (Thameslink)",
     "Brighton (Thameslink)",
     "Three Bridges (Thameslink)"
-  ],
-  "Flixton": [
-    "Liverpool Lime Street (Northern)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
-  ],
-  "Flowery Field": [
-    "Hadfield (Northern)",
-    "Manchester Piccadilly (Northern)"
   ],
   "Folkestone Central": [
     "Dover Priory (Southeastern)",
@@ -736,22 +572,13 @@
     "York (Northern)"
   ],
   "Glaisdale": [
-    "Middlesbrough (Northern)"
-  ],
-  "Glazebrook": [
-    "Liverpool Lime Street (Northern)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
+    "Whitby (Northern)"
   ],
   "Gobowen": [
     "Birmingham International (Transport for Wales)",
     "Cardiff Central (Transport for Wales)",
     "Holyhead (Transport for Wales)",
     "Llandudno Junction (Transport for Wales)"
-  ],
-  "Godley": [
-    "Hadfield (Northern)",
-    "Manchester Piccadilly (Northern)"
   ],
   "Goole": [
     "Doncaster (Northern)",
@@ -768,8 +595,7 @@
     "Cleethorpes (East Midlands Railway)"
   ],
   "Great Ayton": [
-    "Middlesbrough (Northern)",
-    "Newcastle (Northern)"
+    "Whitby (Northern)"
   ],
   "Great Coates": [
     "Barton-on-Humber (East Midlands Railway)",
@@ -777,6 +603,7 @@
   ],
   "Great Malvern": [
     "Birmingham New Street (LNR & WMR)",
+    "Hereford (Great Western Railway)",
     "Hereford (LNR & WMR)",
     "London Paddington (Great Western Railway)"
   ],
@@ -784,13 +611,7 @@
     "Chester (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
-  "Greenfield": [
-    "Leeds (TransPennine Express)",
-    "Manchester Piccadilly (TransPennine Express)",
-    "York (TransPennine Express)"
-  ],
   "Grimsby Docks": [
-    "Barton-on-Humber (East Midlands Railway)",
     "Cleethorpes (East Midlands Railway)",
     "Matlock (East Midlands Railway)"
   ],
@@ -804,13 +625,11 @@
   "Grosmont": [
     "Middlesbrough (Northern)",
     "Pickering (North Yorkshire Moors Railway)",
-    "Whitby (North Yorkshire Moors Railway)"
+    "Whitby (Northern)"
   ],
   "Gypsy Lane": [
-    "Great Ayton (Northern)",
-    "Middlesbrough (Northern)",
     "Newcastle (Northern)",
-    "Whitby (Northern)"
+    "Nunthorpe (Northern)"
   ],
   "Habrough": [
     "Barton-on-Humber (East Midlands Railway)",
@@ -819,25 +638,12 @@
     "Liverpool Lime Street (TransPennine Express)",
     "Matlock (East Midlands Railway)"
   ],
-  "Hag Fold": [
-    "Blackburn (Northern)",
-    "Headbolt Lane (Northern)",
-    "Leeds (Northern)",
-    "Wigan North Western (Northern)",
-    "Wigan Wallgate (Northern)"
-  ],
   "Hagley": [
     "Dorridge (LNR & WMR)",
     "Kidderminster (LNR & WMR)",
-    "Leamington Spa (LNR & WMR)",
     "Stratford-upon-Avon (LNR & WMR)",
     "Whitlocks End (LNR & WMR)",
     "Worcester Foregate Street (LNR & WMR)"
-  ],
-  "Hall I' Th' Wood": [
-    "Blackburn (Northern)",
-    "Clitheroe (Northern)",
-    "Rochdale (Northern)"
   ],
   "Ham Street": [
     "Ashford International (Southern)",
@@ -863,7 +669,6 @@
   ],
   "Harlow Mill": [
     "Bishops Stortford (Greater Anglia)",
-    "Cambridge (Greater Anglia)",
     "Cambridge North (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)",
     "Stratford (London) (Greater Anglia)"
@@ -871,7 +676,6 @@
   "Harlow Town": [
     "Bishops Stortford (Greater Anglia)",
     "Cambridge North (Greater Anglia)",
-    "Ely (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)",
     "Stansted Airport (Greater Anglia)",
     "Stratford (London) (Greater Anglia)"
@@ -879,14 +683,9 @@
   "Harpenden": [
     "Bedford (Thameslink)",
     "Brighton (Thameslink)",
-    "East Grinstead (Thameslink)",
     "Luton (Thameslink)",
     "Rainham (Kent) (Thameslink)",
     "Three Bridges (Thameslink)"
-  ],
-  "Harrington": [
-    "Carlisle (Northern)",
-    "Whitehaven (Northern)"
   ],
   "Harrogate": [
     "Leeds (Northern)",
@@ -903,42 +702,26 @@
   ],
   "Hartlepool": [
     "Carlisle (Northern)",
-    "Great Ayton (Northern)",
     "London Kings Cross (Grand Central)",
     "Middlesbrough (Northern)",
     "Newcastle (Northern)",
-    "Sunderland (Grand Central)",
-    "Whitby (Northern)"
+    "Seaton Carew (Northern)",
+    "Sunderland (Grand Central)"
   ],
   "Hatfield": [
     "Cambridge (Great Northern)",
-    "Letchworth Garden City (Great Northern)",
     "London Kings Cross (Great Northern)",
     "Moorgate (Great Northern)",
-    "Sevenoaks (Thameslink)",
-    "Welwyn Garden City (Great Northern)",
-    "Welwyn Garden City (Thameslink)"
-  ],
-  "Hatfield & Stainforth": [
-    "Doncaster (Northern)",
-    "Hull (Northern)",
-    "Scunthorpe (Northern)"
+    "Welwyn Garden City (Great Northern)"
   ],
   "Hatfield Peverel": [
-    "Clacton-on-Sea (Greater Anglia)",
-    "Colchester Town (Greater Anglia)",
+    "Colchester (Greater Anglia)",
     "Ipswich (Greater Anglia)",
-    "London Liverpool Street (Greater Anglia)",
-    "Witham (Greater Anglia)"
-  ],
-  "Hattersley": [
-    "Hadfield (Northern)",
-    "Manchester Piccadilly (Northern)"
+    "London Liverpool Street (Greater Anglia)"
   ],
   "Hatton": [
     "Birmingham Moor Street (Chiltern Railways)",
     "Leamington Spa (Chiltern Railways)",
-    "London Marylebone (Chiltern Railways)",
     "Stratford-upon-Avon (Chiltern Railways)"
   ],
   "Healing": [
@@ -965,10 +748,10 @@
   "Hereford": [
     "Birmingham New Street (LNR & WMR)",
     "Cardiff Central (Transport for Wales)",
-    "Chester (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
     "Holyhead (Transport for Wales)",
-    "Manchester Piccadilly (Transport for Wales)"
+    "London Paddington (Great Western Railway)",
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)"
   ],
   "Herne Bay": [
     "London St Pancras (Intl) (Southeastern)",
@@ -976,8 +759,7 @@
     "Ramsgate (Southeastern)"
   ],
   "Hertford East": [
-    "London Liverpool Street (Greater Anglia)",
-    "Stratford (London) (Greater Anglia)"
+    "London Liverpool Street (Greater Anglia)"
   ],
   "Hertford North": [
     "Moorgate (Great Northern)",
@@ -985,8 +767,7 @@
   ],
   "Hessle": [
     "Doncaster (Northern)",
-    "Hull (Northern)",
-    "York (Northern)"
+    "Hull (Northern)"
   ],
   "Holmes Chapel": [
     "Crewe (Northern)",
@@ -1001,23 +782,14 @@
     "London Paddington (Great Western Railway)",
     "Worcester Foregate Street (Great Western Railway)"
   ],
-  "Hopton Heath": [
-    "Swansea (Transport for Wales)"
-  ],
   "Horden": [
+    "Great Ayton (Northern)",
     "Newcastle (Northern)",
-    "Nunthorpe (Northern)",
-    "Whitby (Northern)"
+    "Seaton Carew (Northern)"
   ],
   "Hornbeam Park": [
-    "Harrogate (Northern)",
     "Leeds (Northern)",
     "York (Northern)"
-  ],
-  "Horwich Parkway": [
-    "Blackpool North (Northern)",
-    "Manchester Airport (Northern)",
-    "Windermere (Northern)"
   ],
   "How Wood": [
     "St Albans Abbey (LNR & WMR)",
@@ -1026,7 +798,6 @@
   "Howden": [
     "Bridlington (Northern)",
     "Hull (Hull Trains)",
-    "Hull (TransPennine Express)",
     "London Kings Cross (Hull Trains)",
     "York (Northern)"
   ],
@@ -1048,34 +819,9 @@
     "Bridlington (Northern)",
     "York (Northern)"
   ],
-  "Hyde Central": [
-    "Manchester Piccadilly (Northern)",
-    "Rose Hill Marple (Northern)"
-  ],
-  "Hyde North": [
-    "Manchester Piccadilly (Northern)",
-    "Rose Hill Marple (Northern)"
-  ],
-  "Irlam": [
-    "Liverpool Lime Street (Northern)",
-    "Liverpool Lime Street (TransPennine Express)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
-  ],
-  "Iver": [
-    "Abbey Wood (Elizabeth Line)",
-    "Maidenhead (Elizabeth Line)",
-    "Reading (Elizabeth Line)"
-  ],
   "James Cook": [
-    "Great Ayton (Northern)",
-    "Middlesbrough (Northern)",
     "Newcastle (Northern)",
-    "Whitby (Northern)"
-  ],
-  "Kearsley": [
-    "Southport (Northern)",
-    "Stalybridge (Northern)"
+    "Nunthorpe (Northern)"
   ],
   "Kearsney": [
     "Dover Priory (Southeastern)",
@@ -1090,22 +836,15 @@
     "Crewe (LNR & WMR)",
     "Lincoln Central (East Midlands Railway)",
     "Manchester Piccadilly (Northern)",
-    "Nottingham (East Midlands Railway)",
     "Stafford (LNR & WMR)",
     "Stoke-on-Trent (Northern)"
   ],
   "Kildale": [
-    "Middlesbrough (Northern)"
+    "Whitby (Northern)"
   ],
   "Kings Langley": [
     "London Euston (LNR & WMR)",
-    "Milton Keynes Central (LNR & WMR)",
-    "Tring (LNR & WMR)"
-  ],
-  "Kirk Sandall": [
-    "Doncaster (Northern)",
-    "Hull (Northern)",
-    "Scunthorpe (Northern)"
+    "Milton Keynes Central (LNR & WMR)"
   ],
   "Kirkham & Wesham": [
     "Blackpool North (Northern)",
@@ -1114,20 +853,9 @@
     "Preston (Northern)",
     "York (Northern)"
   ],
-  "Kiveton Park": [
-    "Leeds (Northern)",
-    "Lincoln Central (Northern)"
-  ],
   "Knaresborough": [
     "Leeds (Northern)",
     "York (Northern)"
-  ],
-  "Knighton": [
-    "Shrewsbury (Transport for Wales)",
-    "Swansea (Transport for Wales)"
-  ],
-  "Knottingley": [
-    "Leeds (Northern)"
   ],
   "Knutsford": [
     "Chester (Northern)",
@@ -1146,7 +874,7 @@
     "Rochdale (Northern)"
   ],
   "Lapworth": [
-    "Birmingham Moor Street (Chiltern Railways)",
+    "Birmingham Snow Hill (Chiltern Railways)",
     "Leamington Spa (Chiltern Railways)",
     "Stratford-upon-Avon (LNR & WMR)",
     "Worcester Foregate Street (LNR & WMR)"
@@ -1158,11 +886,10 @@
   "Leagrave": [
     "Bedford (Thameslink)",
     "Brighton (Thameslink)",
-    "East Grinstead (Thameslink)",
     "Three Bridges (Thameslink)"
   ],
   "Lealholm": [
-    "Middlesbrough (Northern)"
+    "Whitby (Northern)"
   ],
   "Leamington Spa": [
     "Birmingham Moor Street (Chiltern Railways)",
@@ -1170,21 +897,21 @@
     "Bournemouth (CrossCountry)",
     "London Marylebone (Chiltern Railways)",
     "Manchester Piccadilly (CrossCountry)",
+    "Newcastle (CrossCountry)",
     "Nuneaton (LNR & WMR)",
     "Reading (CrossCountry)",
-    "Stratford-upon-Avon (Chiltern Railways)",
-    "York (CrossCountry)"
+    "Stratford-upon-Avon (Chiltern Railways)"
   ],
   "Ledbury": [
     "Birmingham New Street (LNR & WMR)",
-    "Hereford (LNR & WMR)"
+    "Hereford (Great Western Railway)",
+    "Hereford (LNR & WMR)",
+    "London Paddington (Great Western Railway)"
   ],
   "Leominster": [
     "Cardiff Central (Transport for Wales)",
-    "Chester (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
-    "Holyhead (Transport for Wales)",
-    "Manchester Piccadilly (Transport for Wales)"
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)"
   ],
   "Lichfield City": [
     "Bromsgrove (LNR & WMR)",
@@ -1208,12 +935,7 @@
   ],
   "Longton": [
     "Crewe (East Midlands Railway)",
-    "Lincoln Central (East Midlands Railway)",
-    "Nottingham (East Midlands Railway)"
-  ],
-  "Lostock": [
-    "Blackpool North (Northern)",
-    "Manchester Airport (Northern)"
+    "Lincoln Central (East Midlands Railway)"
   ],
   "Lostock Gralam": [
     "Chester (Northern)",
@@ -1221,21 +943,18 @@
   ],
   "Lostock Hall": [
     "Colne (Northern)",
-    "Preston (Northern)",
-    "York (Northern)"
+    "Preston (Northern)"
   ],
   "Ludlow": [
     "Cardiff Central (Transport for Wales)",
-    "Chester (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
     "Holyhead (Transport for Wales)",
-    "Manchester Piccadilly (Transport for Wales)"
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)"
   ],
   "Luton": [
     "Bedford (Thameslink)",
     "Brighton (Thameslink)",
     "Corby (East Midlands Railway)",
-    "East Grinstead (Thameslink)",
     "London St Pancras (Intl) (East Midlands Railway)",
     "Rainham (Kent) (Thameslink)",
     "Three Bridges (Thameslink)"
@@ -1260,10 +979,11 @@
     "Manchester Piccadilly (Avanti West Coast)",
     "Manchester Piccadilly (CrossCountry)",
     "Manchester Piccadilly (Northern)",
+    "Paignton (CrossCountry)",
     "Stoke-on-Trent (Northern)"
   ],
   "Maiden Newton": [
-    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
   "Malton": [
@@ -1272,6 +992,8 @@
   ],
   "Malvern Link": [
     "Birmingham New Street (LNR & WMR)",
+    "Great Malvern (Great Western Railway)",
+    "Hereford (Great Western Railway)",
     "Hereford (LNR & WMR)",
     "London Paddington (Great Western Railway)"
   ],
@@ -1280,78 +1002,51 @@
     "London Victoria (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
-  "Marple": [
-    "Manchester Piccadilly (Northern)",
-    "New Mills Central (Northern)",
-    "Sheffield (Northern)"
-  ],
   "Marske": [
     "Bishop Auckland (Northern)",
     "Darlington (Northern)",
     "Saltburn (Northern)"
   ],
   "Martin Mill": [
+    "Faversham (Southeastern)",
     "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
   "Marton": [
-    "Great Ayton (Northern)",
-    "Middlesbrough (Northern)",
     "Newcastle (Northern)",
-    "Whitby (Northern)"
-  ],
-  "Maryport": [
-    "Carlisle (Northern)",
-    "Whitehaven (Northern)"
+    "Nunthorpe (Northern)"
   ],
   "Middlesbrough": [
     "Bishop Auckland (Northern)",
     "Carlisle (Northern)",
     "Darlington (Northern)",
-    "Great Ayton (Northern)",
     "Manchester Airport (TransPennine Express)",
     "Newcastle (Northern)",
+    "Nunthorpe (Northern)",
     "Redcar Central (TransPennine Express)",
     "Saltburn (Northern)"
   ],
-  "Middlewood": [
-    "Buxton (Northern)",
-    "Manchester Piccadilly (Northern)"
-  ],
   "Mill Hill (Lancashire)": [
     "Colne (Northern)",
-    "Preston (Northern)",
-    "York (Northern)"
+    "Preston (Northern)"
   ],
   "Minster": [
     "London Charing Cross (Southeastern)",
+    "London Victoria (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
   "Mobberley": [
     "Chester (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
-  "Moorside": [
-    "Leeds (Northern)",
-    "Wigan North Western (Northern)",
-    "Wigan Wallgate (Northern)"
-  ],
   "Moreton (Dorset)": [
     "London Waterloo (South Western Railway)",
     "Weymouth (South Western Railway)"
   ],
-  "Moses Gate": [
-    "Southport (Northern)",
-    "Stalybridge (Northern)"
-  ],
   "Moss Side": [
     "Blackpool South (Northern)",
     "Preston (Northern)"
-  ],
-  "Mossley": [
-    "Leeds (TransPennine Express)",
-    "Manchester Piccadilly (TransPennine Express)",
-    "York (TransPennine Express)"
   ],
   "Mouldsworth": [
     "Chester (Northern)",
@@ -1362,18 +1057,12 @@
     "York (Northern)"
   ],
   "Nantwich": [
-    "Cardiff Central (Transport for Wales)",
-    "Carmarthen (Transport for Wales)",
     "Crewe (Transport for Wales)",
     "Fishguard Harbour (Transport for Wales)",
     "Manchester Piccadilly (Transport for Wales)",
     "Shrewsbury (Transport for Wales)"
   ],
-  "Nethertown": [
-    "Lancaster (Northern)"
-  ],
   "New Clee": [
-    "Barton-on-Humber (East Midlands Railway)",
     "Cleethorpes (East Midlands Railway)",
     "Matlock (East Midlands Railway)"
   ],
@@ -1381,28 +1070,15 @@
     "Barton-on-Humber (East Midlands Railway)",
     "Cleethorpes (East Midlands Railway)"
   ],
-  "New Mills Central": [
-    "Manchester Piccadilly (Northern)",
-    "Sheffield (Northern)"
-  ],
-  "New Mills Newtown": [
-    "Buxton (Northern)",
-    "Manchester Piccadilly (Northern)"
-  ],
   "Newton Aycliffe": [
     "Bishop Auckland (Northern)",
     "Saltburn (Northern)"
-  ],
-  "Newton for Hyde": [
-    "Hadfield (Northern)",
-    "Manchester Piccadilly (Northern)"
   ],
   "North Road": [
     "Bishop Auckland (Northern)",
     "Saltburn (Northern)"
   ],
   "Northallerton": [
-    "London Kings Cross (Grand Central)",
     "London Kings Cross (LNER)",
     "Manchester Airport (TransPennine Express)",
     "Newcastle (LNER)",
@@ -1415,29 +1091,23 @@
   ],
   "Nuneaton": [
     "Birmingham New Street (CrossCountry)",
-    "Cambridge (CrossCountry)",
     "Crewe (LNR & WMR)",
     "Leamington Spa (LNR & WMR)",
     "Leicester (CrossCountry)",
     "London Euston (Avanti West Coast)",
     "London Euston (LNR & WMR)",
-    "London Euston (Lumo Stirling)",
     "Manchester Piccadilly (Avanti West Coast)",
-    "Stansted Airport (CrossCountry)"
+    "Stansted Airport (CrossCountry)",
+    "Stirling (Lumo Stirling)"
   ],
   "Nunthorpe": [
-    "Great Ayton (Northern)",
-    "Middlesbrough (Northern)",
-    "Newcastle (Northern)",
-    "Whitby (Northern)"
+    "Newcastle (Northern)"
   ],
   "Oakengates": [
     "Birmingham New Street (LNR & WMR)",
     "Shrewsbury (LNR & WMR)"
   ],
   "Pannal": [
-    "Harrogate (Northern)",
-    "Knaresborough (Northern)",
     "Leeds (Northern)",
     "York (Northern)"
   ],
@@ -1449,14 +1119,6 @@
     "London Waterloo (South Western Railway)",
     "Poole (South Western Railway)",
     "Weymouth (South Western Railway)"
-  ],
-  "Patricroft": [
-    "Liverpool Lime Street (Northern)",
-    "Manchester Airport (Northern)"
-  ],
-  "Penistone": [
-    "Huddersfield (Northern)",
-    "Sheffield (Northern)"
   ],
   "Penkridge": [
     "Birmingham New Street (LNR & WMR)",
@@ -1479,7 +1141,8 @@
     "Basingstoke (South Western Railway)",
     "Bournemouth (South Western Railway)",
     "London Waterloo (South Western Railway)",
-    "Poole (South Western Railway)"
+    "Weymouth and Poole (South Western Railway)",
+    "Winchester (South Western Railway)"
   ],
   "Poole": [
     "London Waterloo (South Western Railway)",
@@ -1510,10 +1173,10 @@
     "Colne (Northern)",
     "Glasgow Central (Avanti West Coast)",
     "Liverpool Lime Street (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
     "London Euston (Avanti West Coast)",
     "Manchester Airport (Northern)",
     "Manchester Airport (TransPennine Express)",
-    "Stirling (Lumo Stirling)",
     "York (Northern)"
   ],
   "Ramsgate": [
@@ -1525,10 +1188,6 @@
   "Ramsgreave & Wilpshire": [
     "Clitheroe (Northern)",
     "Rochdale (Northern)"
-  ],
-  "Ravenglass for Eskdale": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
   ],
   "Redcar Central": [
     "Bishop Auckland (Northern)",
@@ -1548,23 +1207,13 @@
     "Colne (Northern)",
     "Preston (Northern)"
   ],
-  "Romiley": [
-    "Manchester Piccadilly (Northern)",
-    "New Mills Central (Northern)",
-    "Rose Hill Marple (Northern)",
-    "Sheffield (Northern)"
-  ],
-  "Rose Hill Marple": [
-    "Manchester Piccadilly (Northern)"
-  ],
   "Roughton Road": [
     "Norwich (Greater Anglia)",
     "Sheringham (Greater Anglia)"
   ],
   "Roydon": [
     "Bishops Stortford (Greater Anglia)",
-    "Cambridge (Greater Anglia)",
-    "Ely (Greater Anglia)",
+    "Cambridge North (Greater Anglia)",
     "Stratford (London) (Greater Anglia)"
   ],
   "Rugby": [
@@ -1583,6 +1232,10 @@
     "Birmingham International (LNR & WMR)",
     "Crewe (LNR & WMR)",
     "London Euston (LNR & WMR)"
+  ],
+  "Ruswarp": [
+    "Middlesbrough (Northern)",
+    "Whitby (Northern)"
   ],
   "Ryde Esplanade": [
     "Ryde Pier Head (Island Line)",
@@ -1604,18 +1257,17 @@
     "Darlington (Northern)"
   ],
   "Saltmarshe": [
-    "Doncaster (Northern)",
-    "Hull (Northern)"
+    "Doncaster (Northern)"
   ],
   "Salwick": [
-    "Blackpool South (Northern)",
-    "Preston (Northern)"
+    "Blackpool South (Northern)"
   ],
   "Sandbach": [
     "Crewe (Northern)",
     "Manchester Piccadilly (Northern)"
   ],
   "Sandling": [
+    "Dover Priory (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
@@ -1624,7 +1276,9 @@
     "Shanklin (Island Line)"
   ],
   "Sandwich": [
+    "Faversham (Southeastern)",
     "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
   "Scarborough": [
@@ -1637,11 +1291,10 @@
     "Liverpool Lime Street (TransPennine Express)"
   ],
   "Seaham": [
+    "Great Ayton (Northern)",
     "London Kings Cross (Grand Central)",
     "Newcastle (Northern)",
-    "Nunthorpe (Northern)",
-    "Sunderland (Grand Central)",
-    "Whitby (Northern)"
+    "Seaton Carew (Northern)"
   ],
   "Seamer": [
     "Manchester Victoria (TransPennine Express)",
@@ -1649,15 +1302,9 @@
     "Scarborough (TransPennine Express)",
     "Sheffield (Northern)"
   ],
-  "Seascale": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
-  ],
   "Seaton Carew": [
-    "Great Ayton (Northern)",
-    "Middlesbrough (Northern)",
     "Newcastle (Northern)",
-    "Whitby (Northern)"
+    "Nunthorpe (Northern)"
   ],
   "Selby": [
     "Bridlington (Northern)",
@@ -1668,10 +1315,6 @@
     "Liverpool Lime Street (TransPennine Express)",
     "London Kings Cross (Hull Trains)",
     "York (Northern)"
-  ],
-  "Sellafield": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
   ],
   "Selling": [
     "Dover Priory (Southeastern)",
@@ -1695,7 +1338,6 @@
   ],
   "Sherburn-in-Elmet": [
     "Bridlington (Northern)",
-    "Sheffield (Northern)",
     "York (Northern)"
   ],
   "Sheringham": [
@@ -1710,25 +1352,25 @@
     "Saltburn (Northern)"
   ],
   "Shrewsbury": [
-    "Aberystwyth (Transport for Wales)",
     "Aberystwyth and Pwllheli (Transport for Wales)",
     "Birmingham International (Transport for Wales)",
     "Birmingham New Street (LNR & WMR)",
     "Cardiff Central (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
     "Holyhead (Transport for Wales)",
     "Llandudno Junction (Transport for Wales)",
-    "Manchester Piccadilly (Transport for Wales)"
-  ],
-  "Silecroft": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
+    "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)",
+    "Swansea (Transport for Wales)"
   ],
   "Skipton": [
     "Bradford Forster Square (Northern)",
     "Carlisle (Northern)",
     "Leeds (Northern)",
     "Morecambe (Northern)"
+  ],
+  "Sleights": [
+    "Middlesbrough (Northern)",
+    "Whitby (Northern)"
   ],
   "Smallbrook Junction": [
     "Ryde Pier Head (Island Line)",
@@ -1746,7 +1388,6 @@
     "Hull (Northern)"
   ],
   "Southminster": [
-    "London Liverpool Street (Greater Anglia)",
     "Wickford (Greater Anglia)"
   ],
   "Squires Gate": [
@@ -1756,7 +1397,6 @@
   "St Albans": [
     "Bedford (Thameslink)",
     "Brighton (Thameslink)",
-    "East Grinstead (Thameslink)",
     "Luton (Thameslink)",
     "Rainham (Kent) (Thameslink)",
     "Sutton (London) (Thameslink)",
@@ -1769,10 +1409,6 @@
     "Blackpool South (Northern)",
     "Preston (Northern)"
   ],
-  "St Bees": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
-  ],
   "St Margarets (Hertfordshire)": [
     "Hertford East (Greater Anglia)",
     "London Liverpool Street (Greater Anglia)"
@@ -1780,15 +1416,15 @@
   "Stafford": [
     "Birmingham New Street (LNR & WMR)",
     "Bournemouth (CrossCountry)",
-    "Bristol Temple Meads (CrossCountry)",
+    "Chester (Avanti West Coast)",
     "Crewe (LNR & WMR)",
     "Edinburgh (Avanti West Coast)",
-    "Holyhead (Avanti West Coast)",
     "Liverpool Lime Street (LNR & WMR)",
     "London Euston (Avanti West Coast)",
     "London Euston (LNR & WMR)",
     "Manchester Piccadilly (Avanti West Coast)",
-    "Manchester Piccadilly (CrossCountry)"
+    "Manchester Piccadilly (CrossCountry)",
+    "Paignton (CrossCountry)"
   ],
   "Staines": [
     "London Waterloo (South Western Railway)",
@@ -1800,28 +1436,18 @@
     "Barton-on-Humber (East Midlands Railway)",
     "Cleethorpes (East Midlands Railway)"
   ],
-  "Stalybridge": [
-    "Hull (TransPennine Express)",
-    "Leeds (TransPennine Express)",
-    "Liverpool Lime Street (TransPennine Express)",
-    "Manchester Piccadilly (TransPennine Express)",
-    "Southport (Northern)",
-    "York (TransPennine Express)"
-  ],
   "Starbeck": [
     "Leeds (Northern)",
     "York (Northern)"
   ],
   "Stockton": [
     "Carlisle (Northern)",
-    "Great Ayton (Northern)",
     "Middlesbrough (Northern)",
     "Newcastle (Northern)",
-    "Whitby (Northern)"
+    "Nunthorpe (Northern)"
   ],
   "Stoke-on-Trent": [
     "Bournemouth (CrossCountry)",
-    "Bristol Temple Meads (CrossCountry)",
     "Crewe (East Midlands Railway)",
     "Crewe (LNR & WMR)",
     "Lincoln Central (East Midlands Railway)",
@@ -1829,6 +1455,7 @@
     "Manchester Piccadilly (Avanti West Coast)",
     "Manchester Piccadilly (CrossCountry)",
     "Manchester Piccadilly (Northern)",
+    "Paignton (CrossCountry)",
     "Stafford (LNR & WMR)"
   ],
   "Stone": [
@@ -1847,10 +1474,6 @@
     "Leamington Spa (Chiltern Railways)",
     "Worcester Foregate Street (LNR & WMR)"
   ],
-  "Strines": [
-    "Manchester Piccadilly (Northern)",
-    "New Mills Central (Northern)"
-  ],
   "Sturry": [
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)"
@@ -1863,7 +1486,7 @@
     "Aberystwyth and Pwllheli (Transport for Wales)",
     "Birmingham International (Transport for Wales)",
     "Birmingham New Street (LNR & WMR)",
-    "Holyhead (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
     "Shrewsbury (LNR & WMR)"
   ],
   "Templecombe": [
@@ -1879,6 +1502,7 @@
   "Thanet Parkway": [
     "London Charing Cross (Southeastern)",
     "London St Pancras (Intl) (Southeastern)",
+    "London Victoria (Southeastern)",
     "Margate (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
@@ -1887,7 +1511,6 @@
     "Stratford-upon-Avon (LNR & WMR)"
   ],
   "Thirsk": [
-    "London Kings Cross (Grand Central)",
     "Manchester Airport (TransPennine Express)",
     "Redcar Central (TransPennine Express)",
     "Sunderland (Grand Central)"
@@ -1896,24 +1519,15 @@
     "Bishop Auckland (Northern)",
     "Carlisle (Northern)",
     "Darlington (Northern)",
-    "Great Ayton (Northern)",
     "Manchester Airport (TransPennine Express)",
     "Middlesbrough (Northern)",
     "Newcastle (Northern)",
+    "Nunthorpe (Northern)",
     "Redcar Central (TransPennine Express)",
     "Saltburn (Northern)"
   ],
-  "Thorne North": [
-    "Doncaster (Northern)",
-    "Hull (Northern)",
-    "Scarborough (Northern)"
-  ],
-  "Thorne South": [
-    "Doncaster (Northern)",
-    "Scunthorpe (Northern)"
-  ],
   "Thornford": [
-    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
   "Thornton Abbey": [
@@ -1925,82 +1539,44 @@
     "Cleethorpes (East Midlands Railway)"
   ],
   "Ulleskelf": [
-    "Leeds (Northern)",
-    "Sheffield (Northern)",
+    "Bridlington (Northern)",
     "York (Northern)"
   ],
   "Upwey": [
-    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
     "London Waterloo (South Western Railway)",
     "Weymouth (Great Western Railway)",
     "Weymouth (South Western Railway)"
   ],
-  "Urmston": [
-    "Liverpool Lime Street (Northern)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
-  ],
   "Uttoxeter": [
     "Crewe (East Midlands Railway)",
-    "Lincoln Central (East Midlands Railway)",
-    "Nottingham (East Midlands Railway)"
-  ],
-  "Walkden": [
-    "Blackburn (Northern)",
-    "Headbolt Lane (Northern)",
-    "Leeds (Northern)",
-    "Wigan North Western (Northern)",
-    "Wigan Wallgate (Northern)"
+    "Lincoln Central (East Midlands Railway)"
   ],
   "Walmer": [
+    "Faversham (Southeastern)",
     "London Charing Cross (Southeastern)",
+    "London St Pancras (Intl) (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
   "Wareham": [
     "London Waterloo (South Western Railway)",
     "Weymouth (South Western Railway)"
   ],
-  "Warrington Bank Quay": [
-    "Chester (Northern)",
-    "Edinburgh (Avanti West Coast)",
-    "Glasgow Central (Avanti West Coast)",
-    "Holyhead (Transport for Wales)",
-    "Leeds (Northern)",
-    "London Euston (Avanti West Coast)",
-    "Manchester Airport (Transport for Wales)"
-  ],
-  "Warrington Central": [
-    "Cleethorpes (TransPennine Express)",
-    "Liverpool Lime Street (East Midlands Railway)",
-    "Liverpool Lime Street (Northern)",
-    "Liverpool Lime Street (TransPennine Express)",
-    "Manchester Oxford Road (Northern)",
-    "Norwich (East Midlands Railway)",
-    "Nottingham (East Midlands Railway)"
-  ],
-  "Warrington West": [
-    "Cleethorpes (TransPennine Express)",
-    "Liverpool Lime Street (Northern)",
-    "Liverpool Lime Street (TransPennine Express)",
-    "Manchester Oxford Road (Northern)",
-    "Warrington Central (Northern)"
-  ],
   "Warwick": [
     "Birmingham Moor Street (Chiltern Railways)",
     "Birmingham Snow Hill (Chiltern Railways)",
     "Leamington Spa (Chiltern Railways)",
     "London Marylebone (Chiltern Railways)",
-    "Stourbridge Junction (Chiltern Railways)",
     "Stratford-upon-Avon (Chiltern Railways)"
   ],
   "Warwick Parkway": [
     "Birmingham Moor Street (Chiltern Railways)",
     "Birmingham Snow Hill (Chiltern Railways)",
-    "London Marylebone (Chiltern Railways)",
-    "Stourbridge Junction (Chiltern Railways)"
+    "Leamington Spa (Chiltern Railways)",
+    "London Marylebone (Chiltern Railways)"
   ],
   "Water Orton": [
-    "Gloucester (CrossCountry)",
+    "Birmingham New Street (CrossCountry)",
     "Leicester (CrossCountry)",
     "Nottingham (CrossCountry)"
   ],
@@ -2012,18 +1588,15 @@
     "Aberystwyth and Pwllheli (Transport for Wales)",
     "Birmingham International (Transport for Wales)",
     "Birmingham New Street (LNR & WMR)",
-    "Holyhead (Transport for Wales)",
+    "Llandudno Junction (Transport for Wales)",
     "Shrewsbury (LNR & WMR)"
   ],
   "Wem": [
     "Crewe (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
-    "Manchester Piccadilly (Transport for Wales)",
     "Shrewsbury (Transport for Wales)"
   ],
   "West Byfleet": [
     "Alton (South Western Railway)",
-    "Guildford (South Western Railway)",
     "London Waterloo (South Western Railway)",
     "Woking (South Western Railway)"
   ],
@@ -2032,6 +1605,7 @@
     "Sheringham (Greater Anglia)"
   ],
   "Westenhanger": [
+    "Dover Priory (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
@@ -2039,13 +1613,8 @@
     "London Victoria (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
-  "Westhoughton": [
-    "Manchester Oxford Road (Northern)",
-    "Southport (Northern)",
-    "Stalybridge (Northern)"
-  ],
   "Weymouth": [
-    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
     "London Waterloo (South Western Railway)"
   ],
   "Whalley": [
@@ -2053,36 +1622,31 @@
     "Rochdale (Northern)"
   ],
   "Whitby": [
-    "Pickering (North Yorkshire Moors Railway)"
+    "Middlesbrough (Northern)"
   ],
   "Whitchurch (Shropshire)": [
     "Crewe (Transport for Wales)",
-    "Fishguard Harbour (Transport for Wales)",
     "Manchester Piccadilly (Transport for Wales)",
+    "Pembroke Dock and Llanelli (Transport for Wales)",
     "Shrewsbury (Transport for Wales)"
-  ],
-  "Whitehaven": [
-    "Carlisle (Northern)"
   ],
   "Whitstable": [
     "London St Pancras (Intl) (Southeastern)",
     "London Victoria (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
-  "Willenhall": [
-    "Birmingham New Street (LNR & WMR)",
-    "Shrewsbury (LNR & WMR)"
-  ],
   "Wilmcote": [
     "Kidderminster (LNR & WMR)",
     "Leamington Spa (Chiltern Railways)",
     "Stratford-upon-Avon (Chiltern Railways)",
-    "Stratford-upon-Avon (LNR & WMR)"
+    "Stratford-upon-Avon (LNR & WMR)",
+    "Worcester Foregate Street (LNR & WMR)"
   ],
   "Wilmslow": [
     "Alderley Edge (Northern)",
     "Cardiff Central (Transport for Wales)",
     "Crewe (Northern)",
+    "Fishguard Harbour (Transport for Wales)",
     "London Euston (Avanti West Coast)",
     "Manchester Piccadilly (Avanti West Coast)",
     "Manchester Piccadilly (Northern)",
@@ -2100,10 +1664,6 @@
     "Kidderminster (LNR & WMR)",
     "Stratford-upon-Avon (LNR & WMR)"
   ],
-  "Woodley": [
-    "Manchester Piccadilly (Northern)",
-    "Rose Hill Marple (Northern)"
-  ],
   "Wool": [
     "London Waterloo (South Western Railway)",
     "Weymouth (South Western Railway)"
@@ -2118,42 +1678,32 @@
     "Dorridge (LNR & WMR)",
     "Great Malvern (Great Western Railway)",
     "Hereford (LNR & WMR)",
-    "Leamington Spa (LNR & WMR)",
     "London Paddington (Great Western Railway)",
     "Stratford-upon-Avon (LNR & WMR)"
   ],
   "Worcester Shrub Hill": [
-    "Birmingham New Street (LNR & WMR)",
     "Bristol Temple Meads (Great Western Railway)",
     "Great Malvern (Great Western Railway)",
-    "Hereford (LNR & WMR)",
-    "Leamington Spa (LNR & WMR)",
     "London Paddington (Great Western Railway)",
+    "Stratford-upon-Avon (LNR & WMR)",
     "Worcester Foregate Street (Great Western Railway)",
     "Worcester Foregate Street (LNR & WMR)"
   ],
   "Worcestershire Parkway": [
     "Bristol Temple Meads (CrossCountry)",
     "Cardiff Central (CrossCountry)",
-    "Edinburgh (CrossCountry)",
+    "Glasgow Central (CrossCountry)",
     "Great Malvern (Great Western Railway)",
     "London Paddington (Great Western Railway)",
     "Nottingham (CrossCountry)",
+    "Paignton (CrossCountry)",
     "Worcester Foregate Street (Great Western Railway)"
-  ],
-  "Workington": [
-    "Carlisle (Northern)",
-    "Whitehaven (Northern)"
   ],
   "Wrenbury": [
     "Crewe (Transport for Wales)",
     "Shrewsbury (Transport for Wales)"
   ],
-  "Wressle": [
-    "Bridlington (Northern)"
-  ],
   "Wye": [
-    "Canterbury West (Southeastern)",
     "London Charing Cross (Southeastern)",
     "Ramsgate (Southeastern)"
   ],
@@ -2170,12 +1720,12 @@
     "London Waterloo (South Western Railway)"
   ],
   "Yeovil Pen Mill": [
-    "Bristol Temple Meads (Great Western Railway)",
     "Gloucester (Great Western Railway)",
+    "London Waterloo (South Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
   "Yetminster": [
-    "Bristol Temple Meads (Great Western Railway)",
+    "Gloucester (Great Western Railway)",
     "Weymouth (Great Western Railway)"
   ],
   "York": [
@@ -2183,7 +1733,6 @@
     "Bridlington (Northern)",
     "Burley Park (Northern)",
     "Edinburgh (CrossCountry)",
-    "Edinburgh (LNER)",
     "London Kings Cross (LNER)",
     "Manchester Airport (TransPennine Express)",
     "Newcastle (CrossCountry)",

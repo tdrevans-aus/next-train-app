@@ -10,17 +10,19 @@
   "Arnside": [
     "Barrow-in-Furness (Northern)",
     "Corkickle (Northern)",
-    "Lancaster (Northern)",
     "Manchester Airport (Northern)"
   ],
   "Askam": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)"
+  ],
+  "Aspatria": [
+    "Carlisle (Northern)",
+    "Whitehaven (Northern)"
   ],
   "Bardon Mill": [
     "Carlisle (Northern)",
-    "Middlesbrough (Northern)",
-    "Newcastle (Northern)"
+    "Middlesbrough (Northern)"
   ],
   "Bare Lane": [
     "Lancaster (Northern)",
@@ -32,12 +34,23 @@
     "Lancaster (Northern)",
     "Manchester Airport (Northern)"
   ],
+  "Bentham": [
+    "Leeds (Northern)",
+    "Morecambe (Northern)"
+  ],
+  "Bootle": [
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)"
+  ],
   "Brampton (Cumbria)": [
     "Carlisle (Northern)",
-    "Middlesbrough (Northern)",
-    "Newcastle (Northern)"
+    "Middlesbrough (Northern)"
+  ],
+  "Braystones": [
+    "Corkickle (Northern)"
   ],
   "Burneside": [
+    "Manchester Airport (Northern)",
     "Oxenholme Lake District (Northern)",
     "Windermere (Northern)"
   ],
@@ -50,7 +63,6 @@
   "Carlisle": [
     "Dumfries (ScotRail)",
     "Edinburgh (Avanti West Coast)",
-    "Edinburgh (TransPennine Express)",
     "Glasgow Central (Avanti West Coast)",
     "Glasgow Central (TransPennine Express)",
     "Leeds (Northern)",
@@ -64,9 +76,17 @@
   "Carnforth": [
     "Barrow-in-Furness (Northern)",
     "Corkickle (Northern)",
-    "Lancaster (Northern)",
     "Leeds (Northern)",
-    "Manchester Airport (Northern)"
+    "Manchester Airport (Northern)",
+    "Morecambe (Northern)"
+  ],
+  "Clapham (North Yorkshire)": [
+    "Leeds (Northern)",
+    "Morecambe (Northern)"
+  ],
+  "Corkickle": [
+    "Barrow-in-Furness (Northern)",
+    "Lancaster (Northern)"
   ],
   "Dalston": [
     "Carlisle (Northern)",
@@ -82,37 +102,53 @@
     "Carlisle (Northern)",
     "Leeds (Northern)"
   ],
-  "Foxfield": [
+  "Drigg": [
+    "Barrow-in-Furness (Northern)",
     "Corkickle (Northern)",
     "Lancaster (Northern)"
+  ],
+  "Flimby": [
+    "Carlisle (Northern)",
+    "Whitehaven (Northern)"
+  ],
+  "Foxfield": [
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)"
   ],
   "Garsdale": [
     "Carlisle (Northern)",
     "Leeds (Northern)"
   ],
+  "Giggleswick": [
+    "Leeds (Northern)",
+    "Morecambe (Northern)"
+  ],
   "Grange-over-Sands": [
     "Barrow-in-Furness (Northern)",
     "Corkickle (Northern)",
-    "Lancaster (Northern)",
     "Manchester Airport (Northern)"
   ],
   "Green Road": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)"
   ],
   "Haltwhistle": [
     "Carlisle (Northern)",
     "Middlesbrough (Northern)",
     "Newcastle (Northern)"
   ],
+  "Harrington": [
+    "Carlisle (Northern)",
+    "Whitehaven (Northern)"
+  ],
   "Haydon Bridge": [
     "Carlisle (Northern)",
-    "Middlesbrough (Northern)",
-    "Newcastle (Northern)"
+    "Middlesbrough (Northern)"
   ],
   "Hellifield": [
     "Carlisle (Northern)",
-    "Leeds (Northern)"
+    "Leeds (Northern)",
+    "Morecambe (Northern)"
   ],
   "Horton-in-Ribblesdale": [
     "Carlisle (Northern)",
@@ -134,8 +170,8 @@
     "Leeds (Northern)"
   ],
   "Kirkby-in-Furness": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)"
   ],
   "Lancaster": [
     "Barrow-in-Furness (Northern)",
@@ -143,6 +179,8 @@
     "Edinburgh (TransPennine Express)",
     "Glasgow Central (Avanti West Coast)",
     "Glasgow Central (TransPennine Express)",
+    "Leeds (Northern)",
+    "Liverpool Lime Street (TransPennine Express)",
     "London Euston (Avanti West Coast)",
     "Manchester Airport (Northern)",
     "Manchester Airport (TransPennine Express)",
@@ -158,23 +196,29 @@
   ],
   "Long Preston": [
     "Carlisle (Northern)",
-    "Leeds (Northern)"
+    "Leeds (Northern)",
+    "Morecambe (Northern)"
+  ],
+  "Maryport": [
+    "Carlisle (Northern)",
+    "Whitehaven (Northern)"
   ],
   "Millom": [
-    "Corkickle (Northern)",
-    "Lancaster (Northern)"
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)"
   ],
   "Morecambe": [
     "Lancaster (Northern)",
     "Leeds (Northern)"
   ],
+  "Nethertown": [
+    "Corkickle (Northern)"
+  ],
   "Oxenholme Lake District": [
-    "Edinburgh (Avanti West Coast)",
     "Edinburgh (TransPennine Express)",
     "Glasgow Central (Avanti West Coast)",
     "Glasgow Central (TransPennine Express)",
     "London Euston (Avanti West Coast)",
-    "Manchester Airport (Northern)",
     "Manchester Airport (TransPennine Express)",
     "Windermere (Northern)"
   ],
@@ -186,6 +230,11 @@
     "London Euston (Avanti West Coast)",
     "Manchester Airport (TransPennine Express)"
   ],
+  "Ravenglass for Eskdale": [
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)",
+    "Lancaster (Northern)"
+  ],
   "Ribblehead": [
     "Carlisle (Northern)",
     "Leeds (Northern)"
@@ -196,17 +245,36 @@
     "Lancaster (Northern)",
     "Manchester Airport (Northern)"
   ],
+  "Seascale": [
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)",
+    "Lancaster (Northern)"
+  ],
+  "Sellafield": [
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)",
+    "Lancaster (Northern)"
+  ],
   "Settle": [
     "Carlisle (Northern)",
     "Leeds (Northern)"
   ],
+  "Silecroft": [
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)"
+  ],
   "Silverdale": [
     "Barrow-in-Furness (Northern)",
     "Corkickle (Northern)",
-    "Lancaster (Northern)",
     "Manchester Airport (Northern)"
   ],
+  "St Bees": [
+    "Barrow-in-Furness (Northern)",
+    "Corkickle (Northern)",
+    "Lancaster (Northern)"
+  ],
   "Staveley": [
+    "Manchester Airport (Northern)",
     "Oxenholme Lake District (Northern)",
     "Windermere (Northern)"
   ],
@@ -217,18 +285,26 @@
     "Manchester Airport (Northern)"
   ],
   "Wennington": [
-    "Leeds (Northern)"
+    "Leeds (Northern)",
+    "Morecambe (Northern)"
   ],
   "Wetheral": [
     "Carlisle (Northern)",
-    "Middlesbrough (Northern)",
-    "Newcastle (Northern)"
+    "Middlesbrough (Northern)"
+  ],
+  "Whitehaven": [
+    "Carlisle (Northern)"
   ],
   "Wigton": [
     "Carlisle (Northern)",
     "Whitehaven (Northern)"
   ],
   "Windermere": [
+    "Manchester Airport (Northern)",
     "Oxenholme Lake District (Northern)"
+  ],
+  "Workington": [
+    "Carlisle (Northern)",
+    "Whitehaven (Northern)"
   ]
 }

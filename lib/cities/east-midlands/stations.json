@@ -1213,6 +1213,28 @@
       "lng": -1.2070264,
       "class": "NET Line 2 terminus",
       "liveFeed": false
+    },
+    {
+      "mode": "train",
+      "name": "New Mills Central",
+      "crs": "NMC",
+      "aliases": [],
+      "lat": 53.364864,
+      "lng": -2.005569,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Derbyshire (High Peak district), a county east-midlands's pack already claims (Chapel-en-le-Frith/Dove Holes/Glossop/Hadfield/Dinting already catalogued there).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "New Mills Newtown",
+      "crs": "NMN",
+      "aliases": [],
+      "lat": 53.359464,
+      "lng": -2.008203,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — Derbyshire (High Peak district), a county east-midlands's pack already claims (Chapel-en-le-Frith/Dove Holes/Glossop/Hadfield/Dinting already catalogued there).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

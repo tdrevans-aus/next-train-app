@@ -14,7 +14,8 @@
     "Nine stations that would otherwise belong here were held back instead: Altrincham, Eccles, Manchester Airport, Rochdale share a printed name with an existing greater-manchester Metrolink stop, and Brockley Whins, East Boldon, Heworth, Manors, Seaburn share a printed name with an existing north-east Tyne and Wear Metro stop, in both cases a name that is hardcoded in that region's own marketing-directions.js direction model. These nine are catalogued as mode: \"train\" entries in their own regions (greater-manchester, north-east) with an explicit doNotGroup pair against the same-name Metro/Metrolink stop instead — see lib/cities/greater-manchester/marketing-directions.js and lib/cities/north-east/marketing-directions.js DO_NOT_GROUP_PAIRS.",
     "excludeOperators is not applied anywhere in this catalog — no station here was already flagged in docs/united-kingdom-ledger.md as a Caledonian Sleeper or Night Riviera calling point at the time of this pass; Crewe, Preston and Watford Junction (Caledonian Sleeper's English calling points) and any Night Riviera stop not already claimed by the Southwest pack are not in this dataset at all (checked against docs/uk-station-fill/unassigned-england.md's own 436-row list), so there is nothing to exclude here yet. Flagged for whoever next confirms a Sleeper calling point lands in this catalog.",
     "CRS codes carry crsVerified: true and crsSource \"live Darwin probe 2026-09-14\" — these 436 stations were already live-verified against Darwin during UK station fill phase 2a (docs/jim-brief-uk-station-fill-phase2a.md); phase 2b catalogues them into this new region without re-probing.",
-    "Coordinates are carried from docs/uk-station-fill/unassigned-england.md's own lat/lng columns (sourced from the phase 2a candidate dataset, docs/uk-station-fill/source.md), not re-geocoded here."
+    "Coordinates are carried from docs/uk-station-fill/unassigned-england.md's own lat/lng columns (sourced from the phase 2a candidate dataset, docs/uk-station-fill/source.md), not re-geocoded here.",
+    "70 stations reassigned out 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md, docs/uk-station-fill/assignment.md section 'Reassignment 15 Sep 2026'): each sat inside a real region's administrative territory (NaPTAN ATCO area / reverse geocoding, never CITY_BOUNDS boxes) that phase 2b's box-based sweep missed. 366 remain, genuinely unowned by any named region's territory (Warwickshire/Worcestershire/Staffordshire/Shropshire/Cheshire/Surrey/East Kent/Essex among them — reviewed and deliberately not claimed by any pack)."
   ],
   "notInRegion": [],
   "stops": [
@@ -36,17 +37,6 @@
       "aliases": [],
       "lat": 53.319542,
       "lng": -2.133571,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Adwick",
-      "crs": "AWK",
-      "aliases": [],
-      "lat": 53.571932,
-      "lng": -1.17989,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -174,44 +164,11 @@
     },
     {
       "mode": "train",
-      "name": "Ashton-under-Lyne",
-      "crs": "AHN",
-      "aliases": [],
-      "lat": 53.491264,
-      "lng": -2.093415,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Aspatria",
-      "crs": "ASP",
-      "aliases": [],
-      "lat": 54.759338,
-      "lng": -3.331752,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Atherstone",
       "crs": "ATH",
       "aliases": [],
       "lat": 52.57852,
       "lng": -1.552366,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Atherton",
-      "crs": "ATN",
-      "aliases": [],
-      "lat": 53.529076,
-      "lng": -2.477834,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -394,17 +351,6 @@
     },
     {
       "mode": "train",
-      "name": "Bentley (South Yorkshire)",
-      "crs": "BYK",
-      "aliases": [],
-      "lat": 53.54371,
-      "lng": -1.150718,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Bermuda Park (Nuneaton)",
       "crs": "BEP",
       "aliases": [],
@@ -454,17 +400,6 @@
       "aliases": [],
       "lat": 51.377502,
       "lng": 1.300904,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Birchwood",
-      "crs": "BWD",
-      "aliases": [],
-      "lat": 53.412782,
-      "lng": -2.525139,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -548,28 +483,6 @@
     },
     {
       "mode": "train",
-      "name": "Bolton",
-      "crs": "BON",
-      "aliases": [],
-      "lat": 53.573516,
-      "lng": -2.425126,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Bootle",
-      "crs": "BOC",
-      "aliases": [],
-      "lat": 54.291182,
-      "lng": -3.393836,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Bournemouth",
       "crs": "BMH",
       "aliases": [],
@@ -597,17 +510,6 @@
       "aliases": [],
       "lat": 50.727033,
       "lng": -1.919372,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Braystones",
-      "crs": "BYS",
-      "aliases": [],
-      "lat": 54.439508,
-      "lng": -3.541971,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -658,33 +560,11 @@
     },
     {
       "mode": "train",
-      "name": "Broadbottom",
-      "crs": "BDB",
-      "aliases": [],
-      "lat": 53.440968,
-      "lng": -2.01653,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Broadstairs",
       "crs": "BSR",
       "aliases": [],
       "lat": 51.360653,
       "lng": 1.43317,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Bromley Cross",
-      "crs": "BMC",
-      "aliases": [],
-      "lat": 53.613954,
-      "lng": -2.410835,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -878,17 +758,6 @@
     },
     {
       "mode": "train",
-      "name": "Chassen Road",
-      "crs": "CSR",
-      "aliases": [],
-      "lat": 53.44605,
-      "lng": -2.368171,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Chelford",
       "crs": "CEL",
       "aliases": [],
@@ -971,17 +840,6 @@
       "aliases": [],
       "lat": 51.244549,
       "lng": 0.975937,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Chorleywood",
-      "crs": "CLW",
-      "aliases": [],
-      "lat": 51.654188,
-      "lng": -0.51846,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -1109,28 +967,6 @@
     },
     {
       "mode": "train",
-      "name": "Conisbrough",
-      "crs": "CNS",
-      "aliases": [],
-      "lat": 53.489526,
-      "lng": -1.23461,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Corkickle",
-      "crs": "CKL",
-      "aliases": [],
-      "lat": 54.541657,
-      "lng": -3.582155,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Cosford",
       "crs": "COS",
       "aliases": [],
@@ -1230,17 +1066,6 @@
     },
     {
       "mode": "train",
-      "name": "Daisy Hill",
-      "crs": "DSY",
-      "aliases": [],
-      "lat": 53.539359,
-      "lng": -2.515178,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Danby",
       "crs": "DNY",
       "aliases": [],
@@ -1296,17 +1121,6 @@
     },
     {
       "mode": "train",
-      "name": "Denham Golf Club",
-      "crs": "DGC",
-      "aliases": [],
-      "lat": 51.580544,
-      "lng": -0.517774,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Dinsdale",
       "crs": "DND",
       "aliases": [],
@@ -1323,17 +1137,6 @@
       "aliases": [],
       "lat": 53.358146,
       "lng": -2.042465,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Doncaster",
-      "crs": "DON",
-      "aliases": [],
-      "lat": 53.521954,
-      "lng": -1.139915,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -1378,17 +1181,6 @@
       "aliases": [],
       "lat": 54.001526,
       "lng": -0.434627,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Drigg",
-      "crs": "DRI",
-      "aliases": [],
-      "lat": 54.376968,
-      "lng": -3.444066,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -1461,17 +1253,6 @@
     },
     {
       "mode": "train",
-      "name": "Entwistle",
-      "crs": "ENT",
-      "aliases": [],
-      "lat": 53.655591,
-      "lng": -2.413983,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Faversham",
       "crs": "FAV",
       "aliases": [],
@@ -1505,44 +1286,11 @@
     },
     {
       "mode": "train",
-      "name": "Flimby",
-      "crs": "FLM",
-      "aliases": [],
-      "lat": 54.689815,
-      "lng": -3.520544,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Flitwick",
       "crs": "FLT",
       "aliases": [],
       "lat": 52.003457,
       "lng": -0.4952,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Flixton",
-      "crs": "FLI",
-      "aliases": [],
-      "lat": 53.443746,
-      "lng": -2.383878,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Flowery Field",
-      "crs": "FLF",
-      "aliases": [],
-      "lat": 53.46139,
-      "lng": -2.080114,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -1604,33 +1352,11 @@
     },
     {
       "mode": "train",
-      "name": "Glazebrook",
-      "crs": "GLZ",
-      "aliases": [],
-      "lat": 53.428291,
-      "lng": -2.459992,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Gobowen",
       "crs": "GOB",
       "aliases": [],
       "lat": 52.893322,
       "lng": -3.036885,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Godley",
-      "crs": "GDL",
-      "aliases": [],
-      "lat": 53.452249,
-      "lng": -2.055636,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -1714,17 +1440,6 @@
     },
     {
       "mode": "train",
-      "name": "Greenfield",
-      "crs": "GNF",
-      "aliases": [],
-      "lat": 53.538835,
-      "lng": -2.014189,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Grimsby Docks",
       "crs": "GMD",
       "aliases": [],
@@ -1780,33 +1495,11 @@
     },
     {
       "mode": "train",
-      "name": "Hag Fold",
-      "crs": "HGF",
-      "aliases": [],
-      "lat": 53.533442,
-      "lng": -2.493744,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Hagley",
       "crs": "HAG",
       "aliases": [],
       "lat": 52.422375,
       "lng": -2.147018,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Hall I' Th' Wood",
-      "crs": "HID",
-      "aliases": [],
-      "lat": 53.597446,
-      "lng": -2.413076,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -1901,17 +1594,6 @@
     },
     {
       "mode": "train",
-      "name": "Harrington",
-      "crs": "HRR",
-      "aliases": [],
-      "lat": 54.613551,
-      "lng": -3.565573,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Harrogate",
       "crs": "HGT",
       "aliases": [],
@@ -1967,33 +1649,11 @@
     },
     {
       "mode": "train",
-      "name": "Hatfield & Stainforth",
-      "crs": "HFS",
-      "aliases": [],
-      "lat": 53.58887,
-      "lng": -1.023263,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Hatfield Peverel",
       "crs": "HAP",
       "aliases": [],
       "lat": 51.780314,
       "lng": 0.592772,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Hattersley",
-      "crs": "HTY",
-      "aliases": [],
-      "lat": 53.444938,
-      "lng": -2.039436,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -2198,17 +1858,6 @@
     },
     {
       "mode": "train",
-      "name": "Horwich Parkway",
-      "crs": "HWI",
-      "aliases": [],
-      "lat": 53.577983,
-      "lng": -2.539732,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "How Wood",
       "crs": "HWW",
       "aliases": [],
@@ -2264,66 +1913,11 @@
     },
     {
       "mode": "train",
-      "name": "Hyde Central",
-      "crs": "HYC",
-      "aliases": [],
-      "lat": 53.451682,
-      "lng": -2.085149,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Hyde North",
-      "crs": "HYT",
-      "aliases": [],
-      "lat": 53.464464,
-      "lng": -2.085034,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Irlam",
-      "crs": "IRL",
-      "aliases": [],
-      "lat": 53.434172,
-      "lng": -2.432989,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Iver",
-      "crs": "IVR",
-      "aliases": [],
-      "lat": 51.508342,
-      "lng": -0.506659,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "James Cook",
       "crs": "JCH",
       "aliases": [],
       "lat": 54.552,
       "lng": -1.208525,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Kearsley",
-      "crs": "KSL",
-      "aliases": [],
-      "lat": 53.54419,
-      "lng": -2.375032,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -2385,17 +1979,6 @@
     },
     {
       "mode": "train",
-      "name": "Kirk Sandall",
-      "crs": "KKS",
-      "aliases": [],
-      "lat": 53.56347,
-      "lng": -1.075006,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Kirkham & Wesham",
       "crs": "KKM",
       "aliases": [],
@@ -2418,17 +2001,6 @@
     },
     {
       "mode": "train",
-      "name": "Kiveton Park",
-      "crs": "KVP",
-      "aliases": [],
-      "lat": 53.336975,
-      "lng": -1.240052,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Knaresborough",
       "crs": "KNA",
       "aliases": [],
@@ -2445,17 +2017,6 @@
       "aliases": [],
       "lat": 52.345043,
       "lng": -3.042232,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Knottingley",
-      "crs": "KNO",
-      "aliases": [],
-      "lat": 53.706528,
-      "lng": -1.259172,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -2638,17 +2199,6 @@
     },
     {
       "mode": "train",
-      "name": "Lostock",
-      "crs": "LOT",
-      "aliases": [],
-      "lat": 53.572969,
-      "lng": -2.494276,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Lostock Gralam",
       "crs": "LTG",
       "aliases": [],
@@ -2770,17 +2320,6 @@
     },
     {
       "mode": "train",
-      "name": "Marple",
-      "crs": "MPL",
-      "aliases": [],
-      "lat": 53.400763,
-      "lng": -2.057168,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Marske",
       "crs": "MSK",
       "aliases": [],
@@ -2814,33 +2353,11 @@
     },
     {
       "mode": "train",
-      "name": "Maryport",
-      "crs": "MRY",
-      "aliases": [],
-      "lat": 54.711299,
-      "lng": -3.494087,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Middlesbrough",
       "crs": "MBR",
       "aliases": [],
       "lat": 54.579146,
       "lng": -1.234509,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Middlewood",
-      "crs": "MDL",
-      "aliases": [],
-      "lat": 53.360056,
-      "lng": -2.083528,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -2880,17 +2397,6 @@
     },
     {
       "mode": "train",
-      "name": "Moorside",
-      "crs": "MSD",
-      "aliases": [],
-      "lat": 53.516363,
-      "lng": -2.352749,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Moreton (Dorset)",
       "crs": "MTN",
       "aliases": [],
@@ -2902,33 +2408,11 @@
     },
     {
       "mode": "train",
-      "name": "Moses Gate",
-      "crs": "MSS",
-      "aliases": [],
-      "lat": 53.55604,
-      "lng": -2.400931,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Moss Side",
       "crs": "MOS",
       "aliases": [],
       "lat": 53.764753,
       "lng": -2.942962,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Mossley",
-      "crs": "MSL",
-      "aliases": [],
-      "lat": 53.514963,
-      "lng": -2.041263,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -2968,17 +2452,6 @@
     },
     {
       "mode": "train",
-      "name": "Nethertown",
-      "crs": "NRT",
-      "aliases": [],
-      "lat": 54.456227,
-      "lng": -3.565624,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "New Clee",
       "crs": "NCE",
       "aliases": [],
@@ -3001,44 +2474,11 @@
     },
     {
       "mode": "train",
-      "name": "New Mills Central",
-      "crs": "NMC",
-      "aliases": [],
-      "lat": 53.364864,
-      "lng": -2.005569,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "New Mills Newtown",
-      "crs": "NMN",
-      "aliases": [],
-      "lat": 53.359464,
-      "lng": -2.008203,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Newton Aycliffe",
       "crs": "NAY",
       "aliases": [],
       "lat": 54.613754,
       "lng": -1.589668,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Newton for Hyde",
-      "crs": "NWN",
-      "aliases": [],
-      "lat": 53.4567,
-      "lng": -2.067531,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -3138,28 +2578,6 @@
       "aliases": [],
       "lat": 50.722961,
       "lng": -1.947848,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Patricroft",
-      "crs": "PAT",
-      "aliases": [],
-      "lat": 53.484745,
-      "lng": -2.357919,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Penistone",
-      "crs": "PNS",
-      "aliases": [],
-      "lat": 53.525632,
-      "lng": -1.622676,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -3320,17 +2738,6 @@
     },
     {
       "mode": "train",
-      "name": "Ravenglass for Eskdale",
-      "crs": "RAV",
-      "aliases": [],
-      "lat": 54.355804,
-      "lng": -3.409456,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Rawcliffe",
       "crs": "RWC",
       "aliases": [],
@@ -3380,28 +2787,6 @@
       "aliases": [],
       "lat": 53.763813,
       "lng": -2.420165,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Romiley",
-      "crs": "RML",
-      "aliases": [],
-      "lat": 53.414026,
-      "lng": -2.089307,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Rose Hill Marple",
-      "crs": "RSH",
-      "aliases": [],
-      "lat": 53.396176,
-      "lng": -2.076502,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -3639,17 +3024,6 @@
     },
     {
       "mode": "train",
-      "name": "Seascale",
-      "crs": "SSC",
-      "aliases": [],
-      "lat": 54.396288,
-      "lng": -3.485171,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Seaton Carew",
       "crs": "SEC",
       "aliases": [],
@@ -3666,17 +3040,6 @@
       "aliases": [],
       "lat": 53.782915,
       "lng": -1.063423,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Sellafield",
-      "crs": "SEL",
-      "aliases": [],
-      "lat": 54.416571,
-      "lng": -3.510293,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -3787,17 +3150,6 @@
       "aliases": [],
       "lat": 52.711851,
       "lng": -2.749404,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Silecroft",
-      "crs": "SIC",
-      "aliases": [],
-      "lat": 54.225966,
-      "lng": -3.334281,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -3936,17 +3288,6 @@
     },
     {
       "mode": "train",
-      "name": "St Bees",
-      "crs": "SBS",
-      "aliases": [],
-      "lat": 54.492465,
-      "lng": -3.591263,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "St Margarets (Hertfordshire)",
       "crs": "SMT",
       "aliases": [],
@@ -3985,17 +3326,6 @@
       "aliases": [],
       "lat": 53.587167,
       "lng": -0.183436,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Stalybridge",
-      "crs": "SYB",
-      "aliases": [],
-      "lat": 53.484139,
-      "lng": -2.064223,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -4062,17 +3392,6 @@
       "aliases": [],
       "lat": 52.194945,
       "lng": -1.716304,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Strines",
-      "crs": "SRN",
-      "aliases": [],
-      "lat": 53.374932,
-      "lng": -2.033544,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -4189,28 +3508,6 @@
     },
     {
       "mode": "train",
-      "name": "Thorne North",
-      "crs": "TNN",
-      "aliases": [],
-      "lat": 53.616329,
-      "lng": -0.972006,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Thorne South",
-      "crs": "TNS",
-      "aliases": [],
-      "lat": 53.603345,
-      "lng": -0.955256,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Thornford",
       "crs": "THO",
       "aliases": [],
@@ -4266,33 +3563,11 @@
     },
     {
       "mode": "train",
-      "name": "Urmston",
-      "crs": "URM",
-      "aliases": [],
-      "lat": 53.448203,
-      "lng": -2.35344,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Uttoxeter",
       "crs": "UTT",
       "aliases": [],
       "lat": 52.89681,
       "lng": -1.856515,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Walkden",
-      "crs": "WKD",
-      "aliases": [],
-      "lat": 53.519786,
-      "lng": -2.395748,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -4315,39 +3590,6 @@
       "aliases": [],
       "lat": 50.692878,
       "lng": -2.115328,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Warrington Bank Quay",
-      "crs": "WBQ",
-      "aliases": [],
-      "lat": 53.385937,
-      "lng": -2.603178,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Warrington Central",
-      "crs": "WAC",
-      "aliases": [],
-      "lat": 53.391857,
-      "lng": -2.592434,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Warrington West",
-      "crs": "WAW",
-      "aliases": [],
-      "lat": 53.393744,
-      "lng": -2.636929,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -4475,17 +3717,6 @@
     },
     {
       "mode": "train",
-      "name": "Westhoughton",
-      "crs": "WHG",
-      "aliases": [],
-      "lat": 53.555775,
-      "lng": -2.523773,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Weymouth",
       "crs": "WEY",
       "aliases": [],
@@ -4530,17 +3761,6 @@
     },
     {
       "mode": "train",
-      "name": "Whitehaven",
-      "crs": "WTH",
-      "aliases": [],
-      "lat": 54.552864,
-      "lng": -3.586843,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Whitley Bridge",
       "crs": "WBD",
       "aliases": [],
@@ -4557,17 +3777,6 @@
       "aliases": [],
       "lat": 51.357686,
       "lng": 1.034365,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Willenhall",
-      "crs": "WIA",
-      "aliases": [],
-      "lat": 52.58192,
-      "lng": -2.05475,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
@@ -4629,17 +3838,6 @@
     },
     {
       "mode": "train",
-      "name": "Woodley",
-      "crs": "WLY",
-      "aliases": [],
-      "lat": 53.429245,
-      "lng": -2.093275,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
       "name": "Wool",
       "crs": "WOO",
       "aliases": [],
@@ -4689,17 +3887,6 @@
       "aliases": [],
       "lat": 52.15622,
       "lng": -2.1597,
-      "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
-      "crsVerified": true,
-      "crsSource": "live Darwin probe 2026-09-14"
-    },
-    {
-      "mode": "train",
-      "name": "Workington",
-      "crs": "WKG",
-      "aliases": [],
-      "lat": 54.645061,
-      "lng": -3.558626,
       "class": "UK station fill phase 2a (14 Sep 2026) English station with no home region that phase; catalogued here in phase 2b's new Rest of England region (docs/uk-station-fill/unassigned-england.md).",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"

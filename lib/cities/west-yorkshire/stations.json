@@ -897,6 +897,17 @@
       "class": "added in UK station fill phase 2a (14 Sep 2026) — Darwin-verified, walk-up National Rail station",
       "crsVerified": true,
       "crsSource": "live Darwin probe 2026-09-14"
+    },
+    {
+      "mode": "train",
+      "name": "Knottingley",
+      "crs": "KNO",
+      "aliases": [],
+      "lat": 53.706528,
+      "lng": -1.259172,
+      "class": "reassigned from rest-of-england 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md) — West Yorkshire metropolitan county (City of Wakefield borough).",
+      "crsVerified": true,
+      "crsSource": "live Darwin probe 2026-09-14"
     }
   ]
 }

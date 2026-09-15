@@ -173,15 +173,27 @@
     // (Cambridge/Peterborough/Ely, Lincolnshire's Skegness branch reaches
     // that far east) — resulting overlaps are allow-listed in
     // qa/uk-city-bounds-overlap-gate.mjs with reasons.
-    "east-midlands": { minLat: 52.25, maxLat: 53.47, minLng: -1.99, maxLng: 0.34 },
+    // minLng widened from -1.99 to -2.01 (15 Sep 2026, docs/jim-brief-rest-of-england-
+    // reassignment.md): New Mills Central/Newtown (Derbyshire, High Peak) reassigned in from
+    // rest-of-england — the old floor excluded these two real, NaPTAN-verified stations.
+    "east-midlands": { minLat: 52.25, maxLat: 53.47, minLng: -2.01, maxLng: 0.34 },
     // minLat/minLng/maxLng widened 7 Sep 2026 (uk-catalog-geocode): Colchester, Stansted
     // Airport, Bishops Stortford (lat), Peterborough (lng), Great Yarmouth/Lowestoft (lng)
     // are real, NaPTAN-verified catalog stations the old box excluded.
     "greater-anglia": { minLat: 51.80, maxLat: 52.9, minLng: -0.30, maxLng: 1.8 },
     // maxLat widened 7 Sep 2026 (uk-catalog-geocode): Walsden (WDN, 53.696) is a real,
     // NaPTAN-verified boundary station the old 53.55 ceiling excluded.
-    "greater-manchester": { minLat: 53.35, maxLat: 53.70, minLng: -2.35, maxLng: -2.10 },
-    "south-yorkshire": { minLat: 53.30, maxLat: 53.62, minLng: -1.58, maxLng: -1.25 },
+    // Box widened 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): 33 stations
+    // reassigned in from rest-of-england (Trafford/Salford/Bolton/Wigan/Tameside/Stockport/Oldham
+    // boroughs — Flixton, Urmston, Chassen Road, Irlam among them) sat outside the old -2.35/-2.10
+    // longitude band on both edges. Widening does not fix Wigan North Western/Wallgate (still
+    // outside this box on the far west, at -2.633) — a pre-existing gap, out of scope for this PR.
+    "greater-manchester": { minLat: 53.35, maxLat: 53.70, minLng: -2.54, maxLng: -2.01 },
+    // Box widened 15 Sep 2026 (docs/jim-brief-rest-of-england-reassignment.md): 10 stations
+    // reassigned in from rest-of-england (Doncaster/Barnsley/Rotherham boroughs — Adwick, Bentley,
+    // Conisbrough, Doncaster, Hatfield & Stainforth, Kirk Sandall, Kiveton Park, Penistone, Thorne
+    // North/South) sat outside the old -1.58/-1.25 longitude band on both edges.
+    "south-yorkshire": { minLat: 53.30, maxLat: 53.62, minLng: -1.63, maxLng: -0.95 },
     "north-east": { minLat: 54.85, maxLat: 55.80, minLng: -2.10, maxLng: -1.35 },
     // Box widened 7 Sep 2026 (uk-catalog-geocode): the 98-station rescope (Merseyrail +
     // National Rail) reaches well beyond the original 5-point estimate this box was drawn
@@ -191,7 +203,10 @@
     solent: { minLat: 50.75, maxLat: 51.55, minLng: -2.30, maxLng: -0.05 },
     // minLat widened 7 Sep 2026 (uk-catalog-geocode): Denby Dale (53.573) and Huddersfield
     // (53.649) are real, NaPTAN-verified catalog stations the old 53.65 floor excluded.
-    "west-yorkshire": { minLat: 53.55, maxLat: 53.95, minLng: -2.40, maxLng: -1.30 },
+    // maxLng widened from -1.30 to -1.25 (15 Sep 2026, docs/jim-brief-rest-of-england-
+    // reassignment.md): Knottingley (City of Wakefield borough) reassigned in from rest-of-england
+    // — the old ceiling excluded this real, NaPTAN-verified station.
+    "west-yorkshire": { minLat: 53.55, maxLat: 53.95, minLng: -2.40, maxLng: -1.25 },
     // Box widened 7 Sep 2026 (uk-catalog-geocode): Swindon/Westbury (lng) and Banbury (lat)
     // are real, NaPTAN-verified catalog stations the old box excluded.
     "thames-valley": { minLat: 51.0, maxLat: 52.10, minLng: -2.25, maxLng: -0.5 },
@@ -230,7 +245,11 @@
     // Austell/Plymouth/Totnes are real, NaPTAN-verified stations the old 50.5/-4.7 floor
     // excluded (the box was drawn well east/north of Devon & Cornwall's actual extent).
     southwest: { minLat: 50.05, maxLat: 51.3, minLng: -5.6, maxLng: -3.0 },
-    cumbria: { minLat: 54.00, maxLat: 55.00, minLng: -3.30, maxLng: -2.20 },
+    // minLng widened from -3.30 to -3.60 (15 Sep 2026, docs/jim-brief-rest-of-england-
+    // reassignment.md): the whole West Cumbria coast line (Aspatria through Bootle, 16 stations)
+    // reassigned in from rest-of-england — genuinely inside ceremonial Cumbria (Cumberland/
+    // Copeland/Allerdale), a gap in this pack's own catalog rather than a wrong-region case.
+    cumbria: { minLat: 54.00, maxLat: 55.00, minLng: -3.60, maxLng: -2.20 },
     // rest-of-england is a flat English catch-all (436 stations with no home in any
     // named region, docs/uk-station-fill/unassigned-england.md) — its box necessarily
     // spans most of England and would swallow every more specific English region's
