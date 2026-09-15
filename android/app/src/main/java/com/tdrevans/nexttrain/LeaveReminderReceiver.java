@@ -62,7 +62,10 @@ public class LeaveReminderReceiver extends BroadcastReceiver {
       return;
     }
 
-    String localDate = PerthTime.localDateKey();
+    // Read side of the fired-for-day guard must use the same zone the write side (this file,
+    // below) and the scheduler use — the journey's own city zone, not zero-arg Perth (closes
+    // #400 follow-up, 15 Sep 2026). The alarm's own EXTRA_DAY_KEY already carries that value.
+    String localDate = DayKeys.forJourneyId(appContext, journeyId, System.currentTimeMillis());
     if (LeaveReminderScheduler.TYPE_LEAVE_NOW.equals(type)) {
       if (!LeaveReminderScheduler.isLeaveNowStillArmed(appContext, journeyId)) {
         return;

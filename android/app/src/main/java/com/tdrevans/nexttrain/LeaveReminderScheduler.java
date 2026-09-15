@@ -72,8 +72,20 @@ public final class LeaveReminderScheduler {
     if (NearbyPinHelper.JOURNEY_ID.equals(target.journeyId)) {
       return false;
     }
-    String localDate = PerthTime.localDateKey();
+    // Target.dayKey is already zone-aware (journey's own city zone) — reuse it rather than
+    // recomputing with zero-arg Perth, which would drift from the read this guards (closes
+    // #400 follow-up, 15 Sep 2026).
+    String localDate = dayKeyDate(context, target);
     return LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate);
+  }
+
+  /** Zone-aware date for a target — reuses its own {@code dayKey} when present. */
+  private static String dayKeyDate(Context context, PreferredTrainReminder.Target target) {
+    String fromTarget = DayKeys.dateFromDayKey(target.dayKey, target.journeyId);
+    if (fromTarget != null) {
+      return fromTarget;
+    }
+    return DayKeys.forJourneyId(context, target.journeyId, System.currentTimeMillis());
   }
 
   static boolean shouldScheduleLeaveNow(
@@ -282,7 +294,7 @@ public final class LeaveReminderScheduler {
       }
 
       long now = System.currentTimeMillis();
-      String localDate = PerthTime.localDateKey();
+      String localDate = dayKeyDate(context, target);
       if (shouldScheduleLeaveNow(context, target, now)) {
         scheduleAlarm(
           context,
@@ -332,7 +344,7 @@ public final class LeaveReminderScheduler {
         }
 
         long now = System.currentTimeMillis();
-        String localDate = PerthTime.localDateKey();
+        String localDate = DayKeys.forJourney(journey, now);
         if (shouldScheduleLeaveNow(context, target, now)) {
           scheduleAlarm(
             context,
@@ -360,7 +372,7 @@ public final class LeaveReminderScheduler {
         return;
       }
 
-      String localDate = PerthTime.localDateKey();
+      String localDate = DayKeys.forJourney(journey, System.currentTimeMillis());
       if (plan.getReadyScheduled) {
         scheduleAlarm(
           context,
@@ -404,7 +416,6 @@ public final class LeaveReminderScheduler {
 
       long now = System.currentTimeMillis();
       long triggerAtMs = computeFastTestTriggerAtMs(now);
-      String localDate = PerthTime.localDateKey();
 
       JSONObject pin = settings.optJSONObject("nearbyPin");
       if (pin != null && NearbyPinHelper.isHolding(pin)) {
@@ -420,7 +431,7 @@ public final class LeaveReminderScheduler {
             triggerAtMs,
             nearbyTarget,
             0,
-            alarmRequestCode(nearbyTarget.journeyId, localDate, "fast_test:" + TYPE_LEAVE_NOW)
+            alarmRequestCode(nearbyTarget.journeyId, dayKeyDate(context, nearbyTarget), "fast_test:" + TYPE_LEAVE_NOW)
           );
           return;
         }
@@ -448,6 +459,9 @@ public final class LeaveReminderScheduler {
           continue;
         }
 
+        // Each journey may be in a different city zone — this must not be hoisted above the
+        // loop (closes #400 follow-up, 15 Sep 2026).
+        String localDate = DayKeys.forJourney(journey, now);
         String type;
         int getReadyMinutes = LeaveReminderSettingsStore.getReadyOffsetMinutes(context);
         if (LeaveReminderSettingsStore.isGetReadyEnabled(context)) {
@@ -525,7 +539,7 @@ public final class LeaveReminderScheduler {
     synthetic.route = WidgetDataService.formatRoute(journey);
     synthetic.trainTime = PerthTime.formatClockFromEpochMs(leaveByMs + leaveBefore * 60_000L);
     synthetic.departureIso = PerthTime.formatIsoFromEpochMs(leaveByMs + leaveBefore * 60_000L);
-    synthetic.dayKey = PerthTime.localDateKey();
+    synthetic.dayKey = journeyId + ":" + DayKeys.forJourney(journey, System.currentTimeMillis());
     synthetic.departureKey = journeyId + ":fast-test:" + synthetic.departureIso;
     synthetic.leaveByMs = leaveByMs;
     synthetic.stale = false;
@@ -851,7 +865,7 @@ public final class LeaveReminderScheduler {
     boolean scheduled = plan.getReadyScheduled || plan.leaveNowScheduled;
     result.put("scheduled", scheduled);
     if (!scheduled) {
-      String localDate = PerthTime.localDateKey();
+      String localDate = DayKeys.forJourney(journey, System.currentTimeMillis());
       if (
         LeaveReminderSettingsStore.hasLeaveNowFiredForDay(context, target.journeyId, localDate) ||
         LeaveReminderSettingsStore.hasGetReadyFiredForDay(context, target.journeyId, localDate)
@@ -917,7 +931,7 @@ public final class LeaveReminderScheduler {
     }
 
     long now = System.currentTimeMillis();
-    String localDate = PerthTime.localDateKey();
+    String localDate = DayKeys.forJourney(journey, now);
     int getReadyMinutes = LeaveReminderSettingsStore.getReadyOffsetMinutes(context);
     boolean getReadyScheduled = false;
     long getReadyAtMs = 0L;
@@ -1149,7 +1163,9 @@ public final class LeaveReminderScheduler {
     if (journeyId == null || journeyId.isEmpty()) {
       return;
     }
-    String date = PerthTime.localDateKey();
+    // Only a journeyId here (a plugin call from JS) — look its cityId up rather than assume
+    // Perth (closes #400 follow-up, 15 Sep 2026).
+    String date = DayKeys.forJourneyId(context, journeyId, System.currentTimeMillis());
     LeaveReminderSettingsStore.markLeaveNowFiredForDay(context, journeyId, date);
     LeaveReminderSettingsStore.markGetReadyFiredForDay(context, journeyId, date);
     CommuteRefreshService.refreshAll(context);
@@ -1157,8 +1173,10 @@ public final class LeaveReminderScheduler {
 
   static java.util.Set<String> collectDoneTodayIds(Context context, JSONObject widgetSettings) {
     java.util.Set<String> ids = new java.util.HashSet<>();
-    String date = PerthTime.localDateKey();
-    considerDoneToday(context, NearbyPinHelper.JOURNEY_ID, date, ids);
+    long nowMs = System.currentTimeMillis();
+    JSONObject nearbyPin = widgetSettings != null ? widgetSettings.optJSONObject("nearbyPin") : null;
+    String nearbyDate = DayKeys.forCityId(nearbyPin != null ? nearbyPin.optString("cityId", "") : "", nowMs);
+    considerDoneToday(context, NearbyPinHelper.JOURNEY_ID, nearbyDate, ids);
     if (widgetSettings == null) {
       return ids;
     }
@@ -1171,6 +1189,9 @@ public final class LeaveReminderScheduler {
       if (journey == null) {
         continue;
       }
+      // Each journey may be in a different city zone — compute per-journey, not once for the
+      // whole settings blob (closes #400 follow-up, 15 Sep 2026).
+      String date = DayKeys.forJourney(journey, nowMs);
       considerDoneToday(context, journey.optString("id", ""), date, ids);
     }
     return ids;

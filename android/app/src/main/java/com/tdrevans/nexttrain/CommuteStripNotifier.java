@@ -189,7 +189,13 @@ public final class CommuteStripNotifier {
     Intent dismissIntent = new Intent(context, CommuteStripReceiver.class);
     dismissIntent.setAction(CommuteStripScheduler.ACTION_DISMISS);
     dismissIntent.putExtra(CommuteStripScheduler.EXTRA_JOURNEY_ID, journeyId);
-    dismissIntent.putExtra(CommuteStripScheduler.EXTRA_DAY_KEY, PerthTime.localDateKey());
+    // Same zone-aware date CommuteStripScheduler uses for this journey's other day keys —
+    // dismissing must land on the same date the fired/dismissed-for-day checks read (closes
+    // #400 follow-up, 15 Sep 2026).
+    dismissIntent.putExtra(
+      CommuteStripScheduler.EXTRA_DAY_KEY,
+      DayKeys.forJourneyId(context, journeyId, System.currentTimeMillis())
+    );
 
     PendingIntent dismissPending = PendingIntent.getBroadcast(
       context,

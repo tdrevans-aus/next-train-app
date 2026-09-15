@@ -17,8 +17,42 @@ public final class LeaveReminderSettingsStore {
   private static final String KEY_FAST_TEST = "fast_test_enabled";
   private static final String KEY_ON_THE_WAY = "on_the_way_json";
   private static final String KEY_ACTIVE_LEAVE_ALARM = "active_leave_alarm_json";
+  private static final String KEY_DAY_KEY_ZONE_MIGRATED = "day_key_zone_migrated_v1";
 
   private LeaveReminderSettingsStore() {}
+
+  /**
+   * One-time cleanup for the zone-aware day-key fix (closes #400 follow-up, 15 Sep 2026). 3.0.1
+   * wrote every fired-for-day / dismissed-for-day / on-the-way day key in Perth-zone form;
+   * matching those against 3.0.2's zone-aware {@link DayKeys} reads for a non-Perth journey
+   * would either look like "never fired today" (a spurious extra ping) or, worse, silently
+   * compare against the wrong day entirely. Clearing once — rather than trying to accept both
+   * the old and new key forms side by side — is the simplest safe migration: at worst a user
+   * gets one extra leave-now/get-ready ping the first time the day-key store is touched on the
+   * new version, never a missed one and never a comparison against a stale key. Called from
+   * every read/write of the four affected key families below, guarded by a single persisted
+   * flag so it only ever runs once.
+   */
+  static void migrateDayKeysIfNeeded(Context context) {
+    SharedPreferences prefs = prefs(context);
+    if (prefs.getBoolean(KEY_DAY_KEY_ZONE_MIGRATED, false)) {
+      return;
+    }
+    SharedPreferences.Editor editor = prefs.edit();
+    for (String key : prefs.getAll().keySet()) {
+      if (
+        key.startsWith(KEY_DAY_LEAVE_PREFIX) ||
+        key.startsWith(KEY_DAY_LEAVE_DEP_PREFIX) ||
+        key.startsWith(KEY_DAY_GET_READY_PREFIX) ||
+        key.startsWith(KEY_STRIP_DISMISSED_PREFIX)
+      ) {
+        editor.remove(key);
+      }
+    }
+    editor.remove(KEY_ON_THE_WAY);
+    editor.putBoolean(KEY_DAY_KEY_ZONE_MIGRATED, true);
+    editor.apply();
+  }
 
   public static JSONObject readSettings(Context context) {
     try {
@@ -153,6 +187,7 @@ public final class LeaveReminderSettingsStore {
   }
 
   public static boolean hasLeaveNowFiredForDay(Context context, String journeyId, String localDate) {
+    migrateDayKeysIfNeeded(context);
     return prefs(context).getBoolean(KEY_DAY_LEAVE_PREFIX + journeyId + ":" + localDate, false);
   }
 
@@ -164,6 +199,7 @@ public final class LeaveReminderSettingsStore {
     if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
       return null;
     }
+    migrateDayKeysIfNeeded(context);
     return prefs(context).getString(KEY_DAY_LEAVE_DEP_PREFIX + journeyId + ":" + localDate, null);
   }
 
@@ -177,6 +213,7 @@ public final class LeaveReminderSettingsStore {
     String localDate,
     String departureKey
   ) {
+    migrateDayKeysIfNeeded(context);
     SharedPreferences.Editor editor = prefs(context)
       .edit()
       .putBoolean(KEY_DAY_LEAVE_PREFIX + journeyId + ":" + localDate, true);
@@ -187,10 +224,12 @@ public final class LeaveReminderSettingsStore {
   }
 
   public static boolean hasGetReadyFiredForDay(Context context, String journeyId, String localDate) {
+    migrateDayKeysIfNeeded(context);
     return prefs(context).getBoolean(KEY_DAY_GET_READY_PREFIX + journeyId + ":" + localDate, false);
   }
 
   public static void markGetReadyFiredForDay(Context context, String journeyId, String localDate) {
+    migrateDayKeysIfNeeded(context);
     prefs(context)
       .edit()
       .putBoolean(KEY_DAY_GET_READY_PREFIX + journeyId + ":" + localDate, true)
@@ -205,6 +244,7 @@ public final class LeaveReminderSettingsStore {
     if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
       return false;
     }
+    migrateDayKeysIfNeeded(context);
     return prefs(context).getBoolean(KEY_STRIP_DISMISSED_PREFIX + journeyId + ":" + localDate, false);
   }
 
@@ -212,6 +252,7 @@ public final class LeaveReminderSettingsStore {
     if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
       return;
     }
+    migrateDayKeysIfNeeded(context);
     prefs(context).edit().putBoolean(KEY_STRIP_DISMISSED_PREFIX + journeyId + ":" + localDate, true).apply();
   }
 
@@ -219,11 +260,19 @@ public final class LeaveReminderSettingsStore {
     if (journeyId == null || journeyId.isEmpty() || localDate == null || localDate.isEmpty()) {
       return;
     }
+    migrateDayKeysIfNeeded(context);
     prefs(context).edit().remove(KEY_STRIP_DISMISSED_PREFIX + journeyId + ":" + localDate).apply();
   }
 
-  /** FB-16: active “On my way” session (survives process death until end/dismiss). */
+  /**
+   * FB-16: active "On my way" session (survives process death until end/dismiss). The stored
+   * {@code dayKey} is written in the journey's own zone (see {@link DayKeys}) — re-derive the
+   * same zone from the session's {@code journeyId} here rather than comparing against the
+   * zero-argument Perth-zone key, or this would drop a still-valid session (or keep a stale one)
+   * across a local-vs-Perth day boundary (closes #400 follow-up, 15 Sep 2026).
+   */
   public static JSONObject readOnTheWaySession(Context context) {
+    migrateDayKeysIfNeeded(context);
     try {
       String raw = prefs(context).getString(KEY_ON_THE_WAY, null);
       if (raw == null || raw.isEmpty()) {
@@ -231,12 +280,14 @@ public final class LeaveReminderSettingsStore {
       }
       JSONObject session = new JSONObject(raw);
       long endAtMs = session.optLong("endAtMs", 0L);
-      if (endAtMs > 0 && System.currentTimeMillis() >= endAtMs) {
+      long nowMs = System.currentTimeMillis();
+      if (endAtMs > 0 && nowMs >= endAtMs) {
         clearOnTheWaySession(context);
         return null;
       }
       String dayKey = session.optString("dayKey", "");
-      if (!dayKey.isEmpty() && !dayKey.equals(PerthTime.localDateKey())) {
+      String journeyId = session.optString("journeyId", "");
+      if (!dayKey.isEmpty() && !dayKey.equals(DayKeys.forJourneyId(context, journeyId, nowMs))) {
         clearOnTheWaySession(context);
         return null;
       }
@@ -255,6 +306,7 @@ public final class LeaveReminderSettingsStore {
       clearOnTheWaySession(context);
       return;
     }
+    migrateDayKeysIfNeeded(context);
     prefs(context).edit().putString(KEY_ON_THE_WAY, session.toString()).apply();
   }
 
