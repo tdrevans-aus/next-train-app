@@ -1,6 +1,6 @@
 {
   "region": "sydney",
-  "updated": "2026-09-14",
+  "updated": "2026-09-15",
   "covered": [
     {
       "label": "Sydney Trains",
@@ -26,6 +26,6 @@
       "detail": "These need a booked, allocated seat, so they're not a walk-up board like the rest of this app."
     }
   ],
-  "stations": "284 stations across Sydney Trains, Sydney Metro and NSW TrainLink intercity/Hunter walk-up services.",
-  "notes": "Blue Mountains, Central Coast & Newcastle, South Coast, Southern Highlands and Hunter Line stations added 14 September 2026."
+  "stations": "281 stations across Sydney Trains, Sydney Metro and NSW TrainLink intercity/Hunter walk-up services.",
+  "notes": "Blue Mountains, Central Coast & Newcastle, South Coast, Southern Highlands and Hunter Line stations added 14 September 2026 (real TfNSW stop ids and a production Blob snapshot with intercity data confirmed 15 September 2026, Round 2)."
 }

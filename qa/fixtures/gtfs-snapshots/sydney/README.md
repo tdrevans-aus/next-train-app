@@ -37,12 +37,15 @@ and Scone). BMT has a second "Central"-headsign trip at Springwood (`BMT-CENTRAL
 reason T2 has a second City Circle trip at Liverpool: so
 `qa/sydney-direction-match-negative.mjs` can drop only Katoomba's trip and hit the per-station
 assertion rather than the network-wide one. The Central-side stop_id on each of those trips reuses one of Central's own real
-platform ids (`2000321`) already in `lib/cities/sydney/stations.json`. The intercity-station
-stop_id on each (e.g. `nswtrains-pending-katoomba`) is the placeholder id
-`lib/providers/sydney.js`'s `resolveStopIds` was given for those stations — real platform ids
-weren't obtainable in this environment (no `TFNSW_API_KEY`); see that file's comment and
-`docs/sydney-d1/board-eligibility-intercity.md` for why, and the production-path gap this leaves
-(`scripts/trim-sydney-gtfs.py`'s header comment).
+platform ids (`2000321`) already in `lib/cities/sydney/stations.json`.
+
+**15 Sep 2026 (Round 2, docs/jim-brief-sydney-intercity-fill.md):** `TFNSW_API_KEY` became
+available and `lib/cities/sydney/stations.json`'s `nswtrains-pending-*` placeholder ids were
+all resolved to real platform stop_ids. This fixture's intercity-station stop_id on each trip
+was updated to match: Katoomba `2780201`, Springwood `2777191`, Gosford `2250791`, Wollongong
+`2500401`, Moss Vale `2577201`, Maitland `2320311` — the catalog station's first real stopIds
+entry in each case. Keep these in sync if a future stop id re-resolution changes which id is
+first for a station (the gate matches by exact stop_id, not by name).
 
 `service_id` on every trip is a real calendar row from `calendar.txt`; the gate does not
 evaluate calendars, so which row is irrelevant, but the trips must reference something that

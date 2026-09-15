@@ -202,6 +202,39 @@ const DOCUMENTED_STATION_DIFFS = {
     ],
     extraPublished: [],
   },
+  CCN: {
+    id: "round2-ccn-brooklyn",
+    reason:
+      "Round 1's D1 pack (qa/fixtures/sydney/published-network.json, the oracle snapshot this " +
+      "gate checks against) listed a 'Brooklyn' stop on the Central Coast & Newcastle line. " +
+      "Round 2 (15 Sep 2026, docs/jim-brief-sydney-intercity-fill.md) found no such GTFS stop " +
+      "in any of the three merged feeds — the real station at that location is 'Hawkesbury " +
+      "River' (~0.5km away, same catalog entry, already in both lists), so 'Brooklyn' was a " +
+      "duplicate entry, not a missing one. Removed from lib/cities/sydney/{stations,line-map," +
+      "published-network}.json; the qa fixture oracle snapshot is left as-is (it's what Luke's " +
+      "D1 pack actually said) and the diff recorded here instead.",
+    extraGtfs: [],
+    extraPublished: ["Brooklyn"],
+  },
+  SHL: {
+    id: "round2-shl-sutton-forest",
+    reason:
+      "Same situation as CCN/Brooklyn above but for 'Sutton Forest' on the Southern Highlands " +
+      "Line: not present in any of the three merged GTFS feeds (Round 2, 15 Sep 2026) — nearest " +
+      "real stop is Exeter, ~6.5km away, too far to be the same station. Not currently served; " +
+      "removed from the catalog rather than added with an unreachable stop id.",
+    extraGtfs: [],
+    extraPublished: ["Sutton Forest"],
+  },
+  HUN: {
+    id: "round2-hun-farley",
+    reason:
+      "Same situation again for 'Farley' on the Hunter Line: not present in any of the three " +
+      "merged GTFS feeds (Round 2, 15 Sep 2026) — nearest real stop is Telarah, ~2km away. Not " +
+      "currently served; removed from the catalog rather than added with an unreachable stop id.",
+    extraGtfs: [],
+    extraPublished: ["Farley"],
+  },
 };
 
 const DOCUMENTED_ORDER_SKIP = {
