@@ -193,8 +193,15 @@ public final class PreferredTrainReminder {
     return !journey.optString("preferredTrainTime", "").isEmpty();
   }
 
-  static boolean isRemindDay(JSONObject journey) {
-    return isRemindDay(journey, PerthTime.dayOfWeekIso());
+  /**
+   * Zone-aware variant — resolves the journey's own city zone via {@link CityTimeZones} so a
+   * remind-day check near a UTC day boundary doesn't fall on the wrong day for non-Perth
+   * journeys (Mark's PR #398 review, follow-up 15 Sep 2026). Falls back to Perth only when
+   * {@code cityId} is empty (Perth-era journeys with no stored city).
+   */
+  static boolean isRemindDay(JSONObject journey, long nowMs) {
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey != null ? journey.optString("cityId", "") : "");
+    return isRemindDay(journey, PerthTime.dayOfWeekIso(nowMs, zone));
   }
 
   static boolean isRemindDay(JSONObject journey, int dayOfWeekIso) {

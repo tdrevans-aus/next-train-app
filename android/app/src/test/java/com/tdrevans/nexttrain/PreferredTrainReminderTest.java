@@ -264,6 +264,35 @@ public class PreferredTrainReminderTest {
   }
 
   @Test
+  public void isRemindDay_zoneAware_londonEveningStaysOnLocalMonday() throws Exception {
+    // 23:30 BST Monday — CommuteStripScheduler and LeaveReminderScheduler both call
+    // isRemindDay(journey, nowMs) (this method) instead of the zero-arg Perth-zone overload
+    // Mark flagged in #398. Perth is UTC+8 vs London's UTC+1 here, so the old bug would have
+    // evaluated this instant as Tuesday 06:30 Perth time and wrongly skipped a Monday-only
+    // reminder.
+    JSONObject journey = new JSONObject();
+    journey.put("cityId", "uk-west-midlands");
+    journey.put("remindDays", new org.json.JSONArray(new int[] {MONDAY_ISO}));
+    long londonMondayLateNightMs = Instant.parse("2026-08-10T23:30:00+01:00").toEpochMilli();
+
+    assertTrue(PreferredTrainReminder.isRemindDay(journey, londonMondayLateNightMs));
+  }
+
+  @Test
+  public void isRemindDay_zoneAware_londonEveningDoesNotFalsePositiveAsTuesday() throws Exception {
+    // Same instant as above, but remindDays is Tuesday-only: the old Perth-zone bug (which
+    // reads this instant as Tuesday 06:30 Perth time) would have wrongly fired here. The
+    // zone-aware check correctly says it's still Monday in London, so this must be false.
+    JSONObject journey = new JSONObject();
+    journey.put("cityId", "uk-west-midlands");
+    int tuesdayIso = 2;
+    journey.put("remindDays", new org.json.JSONArray(new int[] {tuesdayIso}));
+    long londonMondayLateNightMs = Instant.parse("2026-08-10T23:30:00+01:00").toEpochMilli();
+
+    assertTrue(!PreferredTrainReminder.isRemindDay(journey, londonMondayLateNightMs));
+  }
+
+  @Test
   public void getReadyOffsetMath() {
     long leaveByMs = Instant.parse("2026-08-10T07:20:00+08:00").toEpochMilli();
 

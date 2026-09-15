@@ -438,10 +438,11 @@ public final class CommuteStripScheduler {
       return null;
     }
 
-    if (!PreferredTrainReminder.isRemindDay(journey)) {
+    if (!PreferredTrainReminder.isRemindDay(journey, System.currentTimeMillis())) {
       return null;
     }
 
+    java.time.ZoneId zone = CityTimeZones.zoneFor(journey.optString("cityId", ""));
     int leaveBefore = journey.optInt("leaveBeforeMinutes", 10);
     JSONObject payload =
       NextTrainApiClient.fetchNextTrain(station, direction, leaveBefore, journey.optString("cityId", ""));
@@ -449,7 +450,7 @@ public final class CommuteStripScheduler {
       journey,
       payload,
       stale,
-      PreferredTrainReminder.ScheduleClock.liveForStrip(context)
+      PreferredTrainReminder.ScheduleClock.liveForStrip(context, zone)
     );
     if (target == null) {
       return null;
