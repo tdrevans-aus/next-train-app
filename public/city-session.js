@@ -371,13 +371,27 @@
    * { id, displayName } }`). Returns null — never CITY_BOUNDS — when no live
    * station is within radiusKm or the list has nothing usable, so callers can
    * fall back to hintCityFromCoords themselves; this function never guesses.
+   *
+   * Co-location tie rule (docs/jim-brief-near-me-nearest-station-region.md,
+   * round 2, Mark's PR #403 FAIL): at an interchange the closer coordinate is
+   * usually the metro/tram/TfL entrance, not the National Rail one, so plain
+   * "nearest wins" sent a King's Cross/Waterloo rider to uk-london-tfl even
+   * though they were standing on top of a Darwin station too. Any station
+   * within CO_LOCATION_TIE_KM of the single nearest candidate is treated as
+   * co-located; among co-located candidates a Darwin (National Rail) feed
+   * wins over a non-Darwin (metro/tram/TfL) one, decided by the region's own
+   * `feed` field (isDarwinCityId) — never a London/city-id special case, so
+   * Glasgow Queen Street vs Buchanan Street and Newcastle Interchange get the
+   * same treatment. When co-located candidates are all the same feed type
+   * (e.g. two Darwin stations at a shared interchange), nearest still wins.
    */
+  const CO_LOCATION_TIE_KM = 0.25;
+
   function hintCityFromNearestStation(lat, lng, stations, { radiusKm = NEAREST_STATION_HINT_RADIUS_KM } = {}) {
     if (!Array.isArray(stations) || !stations.length || !Number.isFinite(lat) || !Number.isFinite(lng)) {
       return null;
     }
-    let bestRegionId = null;
-    let bestDistance = Infinity;
+    const candidates = [];
     for (const station of stations) {
       if (!station || station.liveFeed === false) {
         continue;
@@ -388,16 +402,23 @@
       if (!regionId || !Number.isFinite(stationLat) || !Number.isFinite(stationLng)) {
         continue;
       }
-      const distance = haversineKm(lat, lng, stationLat, stationLng);
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestRegionId = regionId;
+      const distanceKm = haversineKm(lat, lng, stationLat, stationLng);
+      if (distanceKm > radiusKm) {
+        continue;
       }
+      candidates.push({ regionId, distanceKm });
     }
-    if (bestRegionId && bestDistance <= radiusKm) {
-      return bestRegionId;
+    if (!candidates.length) {
+      return null;
     }
-    return null;
+    candidates.sort((a, b) => a.distanceKm - b.distanceKm);
+    const nearest = candidates[0];
+    const coLocated = candidates.filter((c) => c.distanceKm - nearest.distanceKm <= CO_LOCATION_TIE_KM);
+    const darwinCandidate = coLocated.find((c) => isDarwinCityId(c.regionId));
+    if (darwinCandidate && !isDarwinCityId(nearest.regionId)) {
+      return darwinCandidate.regionId;
+    }
+    return nearest.regionId;
   }
 
   const TFL_OPEN_DATA_LINE = "Powered by TfL Open Data";

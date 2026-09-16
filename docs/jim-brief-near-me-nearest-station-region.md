@@ -71,3 +71,34 @@ Implementation notes:
 
 Worktree from current master; copy this brief in; commit, push; PR "Near me: hint the region
 of the nearest live station, not the first bounding box".
+
+## Round 2 (16 Sep 2026) — Mark FAIL on PR #403
+
+Mark's note: https://github.com/tdrevans-aus/next-train-app/pull/403#issuecomment-5690208145
+
+Everything passed except the headline case: at King's Cross (51.5308, -0.1238) the real UI
+still lands on `uk-london-tfl`, because the Tube stop "King's Cross St. Pancras" is 44.6 m away
+and National Rail's "London King's Cross" is 61.2 m away. "Nearest wins" is correct as coded and
+still gives the wrong answer at every major interchange, where the Tube entrance is usually the
+closer coordinate. The QA fixture seeded only the National Rail station, so it could not catch
+this. Continue on the same PR branch:
+
+1. **Tie rule (decided by the controller).** Treat stations within **250 m** of the nearest one
+   as co-located candidates. Among co-located candidates, prefer a National Rail (Darwin-fed)
+   station over a metro/tram/TfL one; otherwise keep nearest. Rationale: at an interchange the
+   National Rail board is the one a rider cannot get elsewhere (the Tube is one region-filter tap
+   away and its trains run every few minutes), and Tim's stated expectation for this option was
+   "a rider at King's Cross gets National Rail, a rider at Bank gets the Tube". Bank has no
+   National Rail station within 250 m, so it still resolves to TfL. Implement it as data-driven
+   (feed type from the region, `isDarwinCityId` already exists), not a London special case, so
+   Glasgow Queen Street/Buchanan Street and Newcastle Interchange behave the same way.
+2. **Fix the fixture.** `qa/near-me-nearest-station-region.mjs` must seed the competing stops:
+   King's Cross with both the Tube stop (closer) and the NR station, asserting NR wins; Bank with
+   only Tube stops within 250 m, asserting TfL; add Waterloo (Tube vs NR) and Glasgow Queen
+   Street vs Buchanan Street (Subway, liveFeed false so it must not even be a candidate). Also
+   add a case where two Darwin stations are co-located (e.g. a doNotGroup pair) asserting
+   nearest wins among equals.
+3. Re-run the named scripts and `node qa/run-all.mjs --smoke` (foreground, explicit 600000 ms
+   timeout, tail in the foreground if backgrounded), push to the same branch, and comment on
+   the PR that round 2 is ready, including the real-UI check Mark did (geolocation seeded at
+   King's Cross with `fixture=normal`, no `test=1`) and its result.
