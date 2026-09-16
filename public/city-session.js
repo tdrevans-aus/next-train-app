@@ -342,6 +342,110 @@
     return null;
   }
 
+  // docs/jim-brief-near-me-nearest-station-region.md — hintCityFromCoords picks
+  // the FIRST CITY_BOUNDS box that contains the rider, which is wrong wherever
+  // regions overlap (Central London: uk-london-tfl is listed before
+  // london-se-national-rail, so a rider at King's Cross/Waterloo/Victoria was
+  // hinted Tube even standing at a National Rail terminus). Near me already has
+  // (or can cheaply fetch) the country-wide station list, each row carrying its
+  // own region, so resolve the region from the nearest LIVE-FEED station across
+  // every region in that list instead of a bounding box. Radius mirrors the "no
+  // station nearby" cutoff Near me itself would apply; beyond it (or with no
+  // usable station list) the caller should fall back to hintCityFromCoords.
+  const NEAREST_STATION_HINT_RADIUS_KM = 15;
+
+  function haversineKm(lat1, lng1, lat2, lng2) {
+    const toRad = (value) => (value * Math.PI) / 180;
+    const earthRadiusKm = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  /**
+   * Resolve a region id from the nearest live-feed station in `stations` (the
+   * shape `/api/country-stations` returns: `{ name, lat, lng, liveFeed, region:
+   * { id, displayName } }`). Returns null — never CITY_BOUNDS — when no live
+   * station is within radiusKm or the list has nothing usable, so callers can
+   * fall back to hintCityFromCoords themselves; this function never guesses.
+   *
+   * Co-location tie rule (docs/jim-brief-near-me-nearest-station-region.md,
+   * round 2, Mark's PR #403 FAIL): at an interchange the closer coordinate is
+   * usually the metro/tram/TfL entrance, not the National Rail one, so plain
+   * "nearest wins" sent a King's Cross/Waterloo rider to uk-london-tfl even
+   * though they were standing on top of a Darwin station too. Among
+   * candidates co-located with the single nearest one, a Darwin (National
+   * Rail) feed wins over a non-Darwin (metro/tram/TfL) one, decided by the
+   * region's own `feed` field (isDarwinCityId) — never a London/city-id
+   * special case, so Glasgow Queen Street vs Buchanan Street and Newcastle
+   * Interchange get the same treatment. When co-located candidates are all
+   * the same feed type (e.g. two Darwin stations at a shared interchange),
+   * nearest still wins.
+   *
+   * Round 3 (Mark's FAIL on round 2, PR #403): the round-2 rule measured
+   * "distance from the candidate to the RIDER minus distance from the
+   * nearest station to the rider <= 250 m" — for a rider standing on top of
+   * the nearest stop that is "any Darwin station within 250 m of the rider",
+   * which swept in a separate nearby station rather than an interchange (Bank
+   * resolved to london-se-national-rail via London Cannon Street, 243 m from
+   * the rider but ~280 m from Bank itself). Co-location is now measured
+   * STATION-TO-STATION — the distance between the nearest station's own
+   * coordinates and the candidate's — with a much tighter CO_LOCATION_STATION_KM
+   * radius, since real interchange entrances are metres-to-low-tens-of-metres
+   * apart, not hundreds. Verified against real published coordinates: King's
+   * Cross St Pancras (Tube) vs London King's Cross (NR) ~129 m apart, London
+   * Waterloo (Tube) vs London Waterloo (NR) ~89 m apart — both co-located;
+   * Bank (Tube) vs Cannon Street (NR) ~226 m apart — not co-located, so Bank
+   * still correctly resolves to uk-london-tfl; Glasgow Queen Street vs
+   * Buchanan Street (Subway) ~122 m apart but Buchanan Street is
+   * `liveFeed: false` and so is never a candidate regardless of distance.
+   */
+  const CO_LOCATION_STATION_KM = 0.15;
+
+  function hintCityFromNearestStation(lat, lng, stations, { radiusKm = NEAREST_STATION_HINT_RADIUS_KM } = {}) {
+    if (!Array.isArray(stations) || !stations.length || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return null;
+    }
+    const candidates = [];
+    for (const station of stations) {
+      if (!station || station.liveFeed === false) {
+        continue;
+      }
+      const stationLat = Number(station.lat);
+      const stationLng = Number(station.lng);
+      const regionId = station.region?.id;
+      if (!regionId || !Number.isFinite(stationLat) || !Number.isFinite(stationLng)) {
+        continue;
+      }
+      const distanceKm = haversineKm(lat, lng, stationLat, stationLng);
+      if (distanceKm > radiusKm) {
+        continue;
+      }
+      candidates.push({ regionId, distanceKm, stationLat, stationLng });
+    }
+    if (!candidates.length) {
+      return null;
+    }
+    candidates.sort((a, b) => a.distanceKm - b.distanceKm);
+    const nearest = candidates[0];
+    // Station-to-station, not rider-to-candidate (round 3) — a candidate is
+    // co-located only if it sits within CO_LOCATION_STATION_KM of the
+    // NEAREST STATION'S coordinates, not the rider's.
+    const coLocated = candidates.filter(
+      (c) =>
+        c === nearest ||
+        haversineKm(nearest.stationLat, nearest.stationLng, c.stationLat, c.stationLng) <= CO_LOCATION_STATION_KM
+    );
+    const darwinCandidate = coLocated.find((c) => isDarwinCityId(c.regionId));
+    if (darwinCandidate && !isDarwinCityId(nearest.regionId)) {
+      return darwinCandidate.regionId;
+    }
+    return nearest.regionId;
+  }
+
   const TFL_OPEN_DATA_LINE = "Powered by TfL Open Data";
   const VANCOUVER_TRANSLINK_DISCLAIMER =
     "Some of the data used in this product or service is provided by permission of TransLink. TransLink assumes no responsibility for the accuracy or currency of the Data used in this product or service.";
@@ -984,6 +1088,7 @@
     readSavedCountry,
     readRegionExplicit,
     hintCityFromCoords,
+    hintCityFromNearestStation,
     geolocateHint,
     readActiveHint() {
       return currentHint;

@@ -1221,6 +1221,7 @@
     fetchLocalJson,
     getStationsList,
     getNearbyStationsList,
+    loadCountryStations,
     getStationsCache,
     getNearbyStationsCache,
     replaceStationsCache,
