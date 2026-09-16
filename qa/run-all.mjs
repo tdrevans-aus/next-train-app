@@ -64,6 +64,7 @@ const SMOKE_SCRIPTS = [
   "sydney-line-map-conformance.mjs",
   "nearby-region-preference.mjs",
   "nearby-relocate-ignores-region.mjs",
+  "near-me-nearest-station-region.mjs",
   "route-swipe-keeps-active-route.mjs",
   "adelaide-dogfood-gate.mjs",
   "amsterdam-dogfood-gate.mjs",

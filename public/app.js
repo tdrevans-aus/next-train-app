@@ -5463,6 +5463,40 @@ async function getGeolocationPosition() {
 }
 
 /**
+ * Region hint for a GPS fix: nearest live-feed station (across every region in
+ * the rider's country) wins over the first CITY_BOUNDS box that contains them.
+ * docs/jim-brief-near-me-nearest-station-region.md — the box order made a
+ * King's Cross/Waterloo/Victoria rider get hinted uk-london-tfl even though
+ * they're standing at a National Rail terminus, and the same first-match bug
+ * applies to any other overlapping pair of regions.
+ *
+ * Reuses the country-stations list the station picker already fetches/caches
+ * (/api/country-stations, each row carrying its own region) rather than adding
+ * a new geolocation prompt or round trip — loadCountryStations resolves from
+ * its in-memory/localStorage cache on every call after the first. Falls back
+ * to the box hint when no live station is close enough or the list isn't
+ * available (offline/cold start), and never overrides an explicit region pick
+ * — this only feeds GPS-follow/mismatch/Near me resolution, not the picker.
+ */
+async function resolveRegionHintFromCoords(lat, lng) {
+  try {
+    const countryId = window.NextTrainCitySession?.readSavedCountry?.() || "au";
+    const countryData = await window.nextTrainStationCombobox?.loadCountryStations?.(countryId);
+    const nearestHint = window.NextTrainCitySession?.hintCityFromNearestStation?.(
+      lat,
+      lng,
+      countryData?.stations || []
+    );
+    if (nearestHint) {
+      return nearestHint;
+    }
+  } catch (error) {
+    console.warn("[App] resolveRegionHintFromCoords: nearest-station lookup failed", error);
+  }
+  return window.NextTrainCitySession?.hintCityFromCoords?.(lat, lng) || null;
+}
+
+/**
  * Nearest station to the current GPS fix.
  *
  * Journey/template callers (default) resolve inside the saved region and throw
@@ -5525,7 +5559,7 @@ async function findNearestStation({
   // folds that to "perth", which is right for region-scoped callers but wrong for
   // Near me — it made an outback (or Manchester, pre-fix) rider measure the distance
   // to Warwick and get the Perth out-of-area card.
-  const hintCity = window.NextTrainCitySession?.hintCityFromCoords?.(latitude, longitude) || null;
+  const hintCity = await resolveRegionHintFromCoords(latitude, longitude);
   const nearbyCity = hintCity || "perth";
   nearbyCityHint = nearbyCity;
 

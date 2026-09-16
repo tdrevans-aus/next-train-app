@@ -342,6 +342,64 @@
     return null;
   }
 
+  // docs/jim-brief-near-me-nearest-station-region.md — hintCityFromCoords picks
+  // the FIRST CITY_BOUNDS box that contains the rider, which is wrong wherever
+  // regions overlap (Central London: uk-london-tfl is listed before
+  // london-se-national-rail, so a rider at King's Cross/Waterloo/Victoria was
+  // hinted Tube even standing at a National Rail terminus). Near me already has
+  // (or can cheaply fetch) the country-wide station list, each row carrying its
+  // own region, so resolve the region from the nearest LIVE-FEED station across
+  // every region in that list instead of a bounding box. Radius mirrors the "no
+  // station nearby" cutoff Near me itself would apply; beyond it (or with no
+  // usable station list) the caller should fall back to hintCityFromCoords.
+  const NEAREST_STATION_HINT_RADIUS_KM = 15;
+
+  function haversineKm(lat1, lng1, lat2, lng2) {
+    const toRad = (value) => (value * Math.PI) / 180;
+    const earthRadiusKm = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  /**
+   * Resolve a region id from the nearest live-feed station in `stations` (the
+   * shape `/api/country-stations` returns: `{ name, lat, lng, liveFeed, region:
+   * { id, displayName } }`). Returns null — never CITY_BOUNDS — when no live
+   * station is within radiusKm or the list has nothing usable, so callers can
+   * fall back to hintCityFromCoords themselves; this function never guesses.
+   */
+  function hintCityFromNearestStation(lat, lng, stations, { radiusKm = NEAREST_STATION_HINT_RADIUS_KM } = {}) {
+    if (!Array.isArray(stations) || !stations.length || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return null;
+    }
+    let bestRegionId = null;
+    let bestDistance = Infinity;
+    for (const station of stations) {
+      if (!station || station.liveFeed === false) {
+        continue;
+      }
+      const stationLat = Number(station.lat);
+      const stationLng = Number(station.lng);
+      const regionId = station.region?.id;
+      if (!regionId || !Number.isFinite(stationLat) || !Number.isFinite(stationLng)) {
+        continue;
+      }
+      const distance = haversineKm(lat, lng, stationLat, stationLng);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestRegionId = regionId;
+      }
+    }
+    if (bestRegionId && bestDistance <= radiusKm) {
+      return bestRegionId;
+    }
+    return null;
+  }
+
   const TFL_OPEN_DATA_LINE = "Powered by TfL Open Data";
   const VANCOUVER_TRANSLINK_DISCLAIMER =
     "Some of the data used in this product or service is provided by permission of TransLink. TransLink assumes no responsibility for the accuracy or currency of the Data used in this product or service.";
@@ -984,6 +1042,7 @@
     readSavedCountry,
     readRegionExplicit,
     hintCityFromCoords,
+    hintCityFromNearestStation,
     geolocateHint,
     readActiveHint() {
       return currentHint;
