@@ -102,3 +102,32 @@ this. Continue on the same PR branch:
    timeout, tail in the foreground if backgrounded), push to the same branch, and comment on
    the PR that round 2 is ready, including the real-UI check Mark did (geolocation seeded at
    King's Cross with `fixture=normal`, no `test=1`) and its result.
+
+## Round 3 (16 Sep 2026) — Mark FAIL on round 2
+
+Mark's note: https://github.com/tdrevans-aus/next-train-app/pull/403#issuecomment-5690733045
+
+King's Cross, Waterloo and Glasgow Queen Street now resolve correctly, but **Bank resolves to
+london-se-national-rail via London Cannon Street (243 m from the rider)**. Cause: the tie test
+is `candidate.distanceKm - nearest.distanceKm <= 0.25`, which for a rider standing on top of the
+nearest stop is "any Darwin station within 250 m of the rider" — it sweeps in a separate
+station, not an interchange. The fixture's Bank case had no National Rail station inside that
+radius, so it passed. Continue on the same PR branch:
+
+1. **Measure co-location station-to-station, not rider-to-candidate.** A candidate is
+   co-located with the nearest station only if the distance **between the two stations'
+   coordinates** is at most **150 m**. King's Cross Tube vs London King's Cross is ~60 m,
+   Waterloo Tube vs London Waterloo ~120 m, Bank vs Cannon Street ~280 m (not co-located),
+   Glasgow Queen Street vs Buchanan Street ~150 m but Subway is `liveFeed: false` and never a
+   candidate anyway. If a real interchange is found outside 150 m, list it in the PR rather
+   than widening the radius; a small explicit interchange allow-list keyed by station name pairs
+   is acceptable for those, with each pair justified.
+2. **Fixture:** Bank must seed London Cannon Street at its real coordinates (243 m from the
+   rider) and assert `uk-london-tfl`; add Monument/Cannon Street as a positive co-located pair
+   only if their real coordinates are within 150 m (check; otherwise skip). Keep the other eight
+   cases.
+3. Repeat the real-UI check at King's Cross, Bank, Waterloo and Glasgow Queen Street with live
+   `/api/country-stations` data (`fixture=normal`, no `test=1`) and put all four results in the
+   PR comment. Re-run the named scripts and `node qa/run-all.mjs --smoke` (foreground, explicit
+   600000 ms timeout, tail in the foreground if backgrounded), push to the same branch, comment
+   that round 3 is ready.

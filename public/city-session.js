@@ -376,16 +376,34 @@
    * round 2, Mark's PR #403 FAIL): at an interchange the closer coordinate is
    * usually the metro/tram/TfL entrance, not the National Rail one, so plain
    * "nearest wins" sent a King's Cross/Waterloo rider to uk-london-tfl even
-   * though they were standing on top of a Darwin station too. Any station
-   * within CO_LOCATION_TIE_KM of the single nearest candidate is treated as
-   * co-located; among co-located candidates a Darwin (National Rail) feed
-   * wins over a non-Darwin (metro/tram/TfL) one, decided by the region's own
-   * `feed` field (isDarwinCityId) — never a London/city-id special case, so
-   * Glasgow Queen Street vs Buchanan Street and Newcastle Interchange get the
-   * same treatment. When co-located candidates are all the same feed type
-   * (e.g. two Darwin stations at a shared interchange), nearest still wins.
+   * though they were standing on top of a Darwin station too. Among
+   * candidates co-located with the single nearest one, a Darwin (National
+   * Rail) feed wins over a non-Darwin (metro/tram/TfL) one, decided by the
+   * region's own `feed` field (isDarwinCityId) — never a London/city-id
+   * special case, so Glasgow Queen Street vs Buchanan Street and Newcastle
+   * Interchange get the same treatment. When co-located candidates are all
+   * the same feed type (e.g. two Darwin stations at a shared interchange),
+   * nearest still wins.
+   *
+   * Round 3 (Mark's FAIL on round 2, PR #403): the round-2 rule measured
+   * "distance from the candidate to the RIDER minus distance from the
+   * nearest station to the rider <= 250 m" — for a rider standing on top of
+   * the nearest stop that is "any Darwin station within 250 m of the rider",
+   * which swept in a separate nearby station rather than an interchange (Bank
+   * resolved to london-se-national-rail via London Cannon Street, 243 m from
+   * the rider but ~280 m from Bank itself). Co-location is now measured
+   * STATION-TO-STATION — the distance between the nearest station's own
+   * coordinates and the candidate's — with a much tighter CO_LOCATION_STATION_KM
+   * radius, since real interchange entrances are metres-to-low-tens-of-metres
+   * apart, not hundreds. Verified against real published coordinates: King's
+   * Cross St Pancras (Tube) vs London King's Cross (NR) ~129 m apart, London
+   * Waterloo (Tube) vs London Waterloo (NR) ~89 m apart — both co-located;
+   * Bank (Tube) vs Cannon Street (NR) ~226 m apart — not co-located, so Bank
+   * still correctly resolves to uk-london-tfl; Glasgow Queen Street vs
+   * Buchanan Street (Subway) ~122 m apart but Buchanan Street is
+   * `liveFeed: false` and so is never a candidate regardless of distance.
    */
-  const CO_LOCATION_TIE_KM = 0.25;
+  const CO_LOCATION_STATION_KM = 0.15;
 
   function hintCityFromNearestStation(lat, lng, stations, { radiusKm = NEAREST_STATION_HINT_RADIUS_KM } = {}) {
     if (!Array.isArray(stations) || !stations.length || !Number.isFinite(lat) || !Number.isFinite(lng)) {
@@ -406,14 +424,21 @@
       if (distanceKm > radiusKm) {
         continue;
       }
-      candidates.push({ regionId, distanceKm });
+      candidates.push({ regionId, distanceKm, stationLat, stationLng });
     }
     if (!candidates.length) {
       return null;
     }
     candidates.sort((a, b) => a.distanceKm - b.distanceKm);
     const nearest = candidates[0];
-    const coLocated = candidates.filter((c) => c.distanceKm - nearest.distanceKm <= CO_LOCATION_TIE_KM);
+    // Station-to-station, not rider-to-candidate (round 3) — a candidate is
+    // co-located only if it sits within CO_LOCATION_STATION_KM of the
+    // NEAREST STATION'S coordinates, not the rider's.
+    const coLocated = candidates.filter(
+      (c) =>
+        c === nearest ||
+        haversineKm(nearest.stationLat, nearest.stationLng, c.stationLat, c.stationLng) <= CO_LOCATION_STATION_KM
+    );
     const darwinCandidate = coLocated.find((c) => isDarwinCityId(c.regionId));
     if (darwinCandidate && !isDarwinCityId(nearest.regionId)) {
       return darwinCandidate.regionId;
