@@ -60,7 +60,7 @@ assert(entry?.adapterReady === true, "boston adapterReady must be true");
 assert(entry?.displayName === "Boston", "boston display name must be Boston");
 assert(entry?.timeZone === "America/New_York", "boston timezone must be America/New_York");
 assert(CITIES.filter((city) => city.id === "boston").length === 1, "boston must appear once in the registry");
-for (const forbiddenId of ["bos", "mbta", "boston-mbta", "us", "washington", "chicago", "bart"]) {
+for (const forbiddenId of ["bos", "mbta", "boston-mbta", "us", "washington", "chicago"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 

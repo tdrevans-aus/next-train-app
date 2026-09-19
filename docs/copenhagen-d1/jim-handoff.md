@@ -154,3 +154,72 @@ smoke tier) and `node qa/live-city-lists-sync.mjs` both green. `node qa/run-all.
 was started but ran very slowly in this shared/contended dev environment (unrelated Next.js/
 vitest processes for another project competing for CPU on the same machine) — see the PR body
 for exactly how far it got before I stopped waiting and relied on CI for the rest.
+
+## Jim's note for Mark (flip follow-through, 20 Sep 2026, REJSEPLANEN_API_KEY now available)
+
+Status stays `planned`; `assertCityLive("copenhagen")` still 501s. Added per the flip-follow-
+through split (CLAUDE.md, "Do now, ahead of the flip"): `lib/cities/copenhagen/
+dogfood-next-train.js`, the `copenhagen` dispatch cases in `lib/cities/live-city-api.js`'s
+`directionsFor`/`getMultiCityNextTrain`, and `qa/copenhagen-dogfood-gate.mjs` (replaces the
+retired `qa/copenhagen-planned-gate.mjs`, carrying forward every assertion it made). Not added
+(Mark's flip commit, per the same split): `copenhagen`/`denmark` to `MULTI_CITY_IDS`, the
+`MultiCityId` typedef, `brisbane-dogfood.js`'s mount/available map, or `journey-model.js`'s
+persisted-city/country lists — `qa/live-city-lists-sync.mjs` stays green with those four
+untouched.
+
+Directions are derived LIVE from the board's own already-computed chip strings (not a static
+marketing-directions enumeration) — see the dogfood module's file header for why: DSB
+Regional/InterCity/InterCityLyn/Öresundståg destinations are "indicative, not exhaustive" per
+this file's earlier open item 5, so a fixed chip list would fabricate coverage.
+
+**Ran with the now-available `REJSEPLANEN_API_KEY` set (`node --env-file=.env.local ...`) and
+also without it** — both pass identically, because the static GTFS path this adapter uses
+needs no key (only a future API 2.0 `departureBoard`/SIRI-ET real-time path would). The key's
+presence didn't change what got wired here; real-time is still not wired (see the adapter file
+headers) — this remains a schedule-only board, same posture as before.
+
+**Confirmed live against the real `GTFS.zip` and fixed two adapter defects found in the
+process** (previously flagged as "unverified — please confirm live before any flip" above,
+item 1 and item 3's underlying assumption):
+
+1. **Regionaltog/InterCity/InterCityLyn were being silently dropped from every board.**
+   `classifyDsbService()` only checked `route_long_name`/`route_desc`, which the D1-era
+   comment assumed carried the service-type text. The real feed leaves both EMPTY for these
+   three and instead puts a short code on `route_short_name`: `RE` (Regionaltog), `IC`
+   (InterCity), `ICL` (InterCityLyn) — confirmed by pulling the real feed at København H and
+   Nørreport. Fixed by adding a `DSB_SHORT_CODES` lookup checked first, before the text
+   heuristic. This is exactly the class of bug `docs/board-eligibility-rule.md` exists to
+   catch: all three are verdicted `in` by the oracle report and were being excluded anyway.
+   `qa/copenhagen-dogfood-gate.mjs` now asserts both the short-code classification and a live
+   check that København H's board actually surfaces at least one chip of each. EuroCity
+   (`ECE`) and České dráhy (`RJ`) also carry short codes on the same feed but are deliberately
+   NOT added to `DSB_SHORT_CODES` — both stay excluded per their `out-reservation` verdicts,
+   confirmed still excluded live after the fix.
+2. **Öresundståg was unaffected** — its live `route_short_name` is a bare corridor number
+   (802/803/804/805) with no stable meaning, but `route_desc` reliably carries the literal
+   string `"Öresundståg"`, so the existing text heuristic already worked. No change needed.
+3. **M2's "Lufthavnen" terminus didn't fold-match the live headsign.** The real feed's M2
+   airport-bound headsign is `"Københavns Lufthavn St. (Metro)"` — missing the "en" suffix
+   that `resolveTerminus()`'s plain substring test needed. Every other Metro/S-tog terminus in
+   this pack (Vanløse, Vestamager, Klampenborg, Frederikssund, ...) matched fine; only this
+   one needed a fix. Added a small `FEED_TERMINUS_ALIASES` map (one entry) rather than
+   loosening the general match, to avoid accidentally widening any other terminus's match.
+4. **M3's ring-direction headsign is NOT "clockwise"/"counter-clockwise" or the Danish
+   equivalent on the live feed — it's the next major interchange name plus "(Metro)"** (e.g.
+   `"M3 + København H (Metro)"`). This answers open question 1 (direction-model-memo.md) but
+   is a product-copy decision, not something I changed code for: `mapM3Direction()` still
+   passes the raw string through unchanged when it doesn't match the clockwise/counter-
+   clockwise words, which is what's happening here — honest, not fabricated, just not the
+   originally-assumed wording. Flagging for Tim/Mark to decide whether "M3 + København H
+   (Metro)" is acceptable rider-facing copy or whether the next-stop name should be mapped to
+   a clockwise/counter-clockwise label instead (would need a per-station lookup, since the
+   "next stop" differs by direction and by where you board).
+5. **SJ X2000 was not seen calling at København H or Nørreport in this live pull** (searched
+   by both route_short_name and route_desc/route_long_name text) — only `ECE` (EuroCity) and
+   `RJ` (České dráhy) appeared as excluded services in the multi-hour live window checked. Not
+   a contradiction of the oracle report's verdict (SJ may simply not have had a departure in
+   the checked window, or its GTFS route id differs from what was searched) — flagging for
+   Mark to note, not a claim that SJ doesn't call there.
+
+No live fetch of the API 2.0 `departureBoard` or SIRI-ET endpoints was attempted (out of
+scope for this pass — real-time wiring is separate D2+ work per the adapter file headers).
