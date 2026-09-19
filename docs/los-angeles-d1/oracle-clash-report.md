@@ -127,3 +127,21 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 - **Terms URL:** https://developer.metro.net/docs/policies/terms-conditions/ (same text at https://developer.metro.net/terms-conditions/). Transitland older pointer: http://developer.metro.net/the-basics/policies/terms-and-conditions/ . Swiftly: https://www.goswift.ly/api-license (updates effective 22 Sep 2025). Agency developer index: https://developer.metro.net/ . Static rail landing: https://developer.metro.net/gtfs-schedule-data/ .
 - **Confidence:** `clear` that feed-to-third-parties is prohibited (2.1.j) and that Swiftly RT is keyed / non-sublicensable; `unclear` on commercial use and on attribution (Metro vs Transitland disagree).
 - **Keyed feeds:** Swiftly key agreement governs GTFS-RT, not the static zip. Never paste a key. Metro T&C 5.3 also deactivates unused Metro developer keys after 60 days — that clause is for Metro Services, not the public GitLab zip.
+
+## Board eligibility
+
+Five rail services call at in-catalog LA Metro Rail stations. Metrolink and Amtrak Pacific Surfliner pass walk-up and leave-by tests; long-distance Amtrak services require compulsory seat reservations and are excluded. Metro G/J busway are buses — explicitly out of v1 mode cut. LAX people mover (SkyLink) is under construction as of 2026-08-29.
+
+| Service | Station(s) | Verdict | Evidence | Live API |
+| --- | --- | --- | --- | --- |
+| **Metrolink** | Union Station (A/B/D serve) | `in` | Walk-up ticketing available at station machines; no advance reservation requirement — https://metrolinktrains.com/ticketsOverview/ticket-info/ticket-types/ | Yes: GTFS-RT via https://metrolink-gtfsrt.gbsdigital.us/ + public keyless JSON rtt.metrolinktrains.com |
+| **Amtrak Pacific Surfliner** | Union Station (A/B/D serve) | `in` | Unreserved coach seating; walk-up ticketing at kiosks/staffed windows — https://www.pacificsurfliner.com/plan-your-trip/tickets/ | Yes: GTFS-RT derived from public Amtrak Track-A-Train data |
+| **Amtrak Coast Starlight** | Union Station (A/B/D serve) | `out-reservation` | Compulsory seat reservation; reserved seating policy — https://www.amtrak.com/coast-starlight-train | Yes: GTFS-RT |
+| **Amtrak Southwest Chief** | Union Station (A/B/D serve) | `out-reservation` | Compulsory seat reservation; long-distance reserved seating — Amtrak seating policy | Yes: GTFS-RT |
+| **Amtrak Sunset Limited** | Union Station (A/B/D serve) | `out-reservation` | Compulsory seat reservation; long-distance reserved seating — Amtrak seating policy | Yes: GTFS-RT |
+| **Amtrak Texas Eagle** | Union Station (A/B/D serve) | `out-reservation` | Compulsory seat reservation; long-distance reserved seating — Amtrak seating policy | Yes: GTFS-RT |
+| **LA Metro J Line (Silver, 910/950 bus)** | Union Station, 7th Street/Metro Center | `out-mode` | Bus rapid transit service; buses explicitly excluded from v1 mode cut — https://en.wikipedia.org/wiki/J_Line_(Los_Angeles_Metro) | Yes: Swiftly GTFS-RT for LA Metro bus |
+| **LA Metro G Line (Orange, bus)** | North Hollywood (B Line connects) | `out-mode` | Bus rapid transit service; buses explicitly excluded from v1 mode cut — https://www.metro.net/riding/guide/G-line/ | Yes: Swiftly GTFS-RT for LA Metro bus |
+| **LAX Automated People Mover (SkyLink)** | LAX/Metro Transit Center (C/K serve) | — | Under construction as of 2026-08-29; not yet operational. Will connect airport to Metro rail when opened. No verdict recorded until operation confirmed. | Pending |
+
+**Live format:** LA Metro Rail's real-time feed is **Swiftly GTFS-RT** (not a native prediction API) — keyed endpoints at https://api.goswift.ly/real-time/lametro-rail/ for vehicle positions and trip updates, updated every 5–10 seconds per Swiftly's standard cadence.

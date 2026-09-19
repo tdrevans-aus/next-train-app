@@ -95,3 +95,51 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 - **Terms URL:** https://developer.wmata.com/license and https://www.wmata.com/about/developers/WMATA-Developer-License-Agreement.cfm
 - **Confidence:** `clear` that a key is required for GTFS/API portal access; `clear` that redistribution is in-app only / non-sublicensable.
 - **Keyed feeds:** Registration + API key required. Account terms govern, not a public-domain dump.
+
+## Board eligibility
+
+**Rule basis:** `docs/board-eligibility-rule.md` (adopted 30 Aug 2026). Every service calling at an in-catalog station must pass two tests: walk-up boardable (no compulsory reservation) and leave-by valid (no check-in barrier). A service passing both is marked `in` and appears on boards.
+
+**Services calling at in-catalog Metrorail stations:**
+
+**MARC (Penn, Brunswick, Camden Lines) at Union Station, Rockville, Silver Spring, New Carrollton:** Both tests pass. MARC offers walk-up tickets at Quik-Trak machines and ticket agents at each station, and no seats require compulsory reservations (first-come-first-served seating). Platform access has no check-in cutoff or border control. Verdict: **`in`** ([MARC tickets](https://www.mta.maryland.gov/MARC_for_Metro); real-time via MARC Tracker).
+
+**VRE (Fredericksburg & Manassas Lines) at Union Station, L'Enfant Plaza, Franconia-Springfield:** Both tests pass. VRE requires ticket validation before boarding, but tickets are purchased at stations with walk-up availability and no seat reservations are compulsory; seating is unreserved and first-come-first-served. Platform access has no check-in barrier. Verdict: **`in`** ([VRE fares and tickets](https://www.vre.org/service/fares-and-tickets/); real-time via Transit app integration).
+
+**Amtrak Northeast Regional at Union Station, New Carrollton:** Both tests pass for coach class. The Northeast Regional offers walk-up ticket availability at stations and coach-class seating is first-come-first-served with no compulsory reservation (business class seats are automatically assigned but not required as a separate compulsory reservation). Platform access is unrestricted (controlled boarding at Union Station is flow management, not a check-in barrier comparable to Eurostar). Verdict: **`in`** ([Northeast Regional](https://www.amtrak.com/northeast-regional-train); [Union Station Amtrak](https://www.amtrak.com/stations/was)).
+
+**Amtrak other services (Acela Express, Capitol Limited, Cardinal, Crescent, Silver Meteor, Silver Star, Vermonter, Carolinian, Palmetto) at Union Station and other stations:** Test 1 fails. These services are all-reserved or have compulsory seat reservations ([Amtrak seat assignments](https://www.amtrak.com/reserved-seating)). Riders cannot board walk-up with a standard ticket; a reserved seat must be purchased in advance or with fare premium at the station. Verdict: **`out-reservation`** ([Amtrak reserved seating](https://www.amtrak.com/seats-cabins/acela-seats/)).
+
+**Maryland Purple Line (planned service, opening late 2027/early 2028):** Not yet operational as of the report date (29 Aug 2026). Future planned light rail service connecting to College Park and other Metrorail stations; verdict pending operational launch. No verdict recorded (service not currently calling at in-catalog stations).
+
+**DC Streetcar (historical service, ended 31 Mar 2026):** Service no longer operational as of the report date (29 Aug 2026). Previously offered free walk-up boarding on the H Street/Benning Road line, but shut down before this report. No verdict recorded (service not currently calling at in-catalog stations).
+
+| Service | Calls at in-catalog stations | Walk-up? | Compulsory reservation? | Check-in barrier? | Verdict | Evidence URL |
+|---|---|---|---|---|---|---|
+| **MARC (Penn, Brunswick, Camden Lines)** | Union Station, Rockville, Silver Spring, New Carrollton | Yes (Quik-Trak, agents) | No (first-come-first-served) | No | `in` | [MARC tickets and service](https://www.mta.maryland.gov/MARC_for_Metro); [Union Station ticketing](https://www.unionstationdc.com/rail/) |
+| **VRE (Fredericksburg & Manassas Lines)** | Union Station, L'Enfant Plaza, Franconia-Springfield | Yes (tickets at station) | No (unreserved seating) | No | `in` | [VRE fares and tickets](https://www.vre.org/service/fares-and-tickets/); [VRE stations](https://www.vre.org/stations/) |
+| **Amtrak Northeast Regional** | Union Station, New Carrollton | No (reserved coach) | Yes (all-reserved; a ticket is a reservation for a specific train) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating). Corrected by controller 20 Sep 2026 — Nico's first pass said `in`; the Boston pass and Amtrak's policy both say all-reserved. |
+| **Amtrak Acela Express** | Union Station | No (reserved-only service) | Yes (all-reserved) | No | `out-reservation` | [Acela seats](https://www.amtrak.com/seats-cabins/acela-seats/); all seats reserved |
+| **Amtrak Capitol Limited** | Union Station | No (reserved-only service) | Yes (long-distance all-reserved) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating); all seats include reservations |
+| **Amtrak Cardinal** | Union Station | No (reserved-only service) | Yes (long-distance all-reserved) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating); all seats include reservations |
+| **Amtrak Crescent** | Union Station | No (reserved-only service) | Yes (long-distance all-reserved) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating); all seats include reservations |
+| **Amtrak Silver Meteor** | Union Station | No (sleeper/reserved service) | Yes (sleeper cars compulsory) | No | `out-reservation` | [Amtrak sleeping cars](https://www.amtrak.com/reserved-seating); sleeper accommodations require reservation |
+| **Amtrak Silver Star** | Union Station | No (sleeper/reserved service) | Yes (sleeper cars compulsory) | No | `out-reservation` | [Amtrak sleeping cars](https://www.amtrak.com/reserved-seating); sleeper accommodations require reservation |
+| **Amtrak Vermonter** | New Carrollton | No (reserved-only service) | Yes (all-reserved) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating); all seats include reservations |
+| **Amtrak Carolinian** | Union Station | No (reserved-only service) | Yes (all-reserved) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating); all seats include reservations |
+| **Amtrak Palmetto** | New Carrollton | No (reserved-only service) | Yes (all-reserved) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating); all seats include reservations |
+
+**Summary for Jim and Luke:**
+1. v1 includes **MARC and VRE** regional commuter rail at in-catalog stations, plus **Amtrak Northeast Regional** at Union Station and New Carrollton (walk-up, no compulsory reservation).
+2. v1 excludes all other **Amtrak services** (`out-reservation`: Acela, Capitol Limited, Cardinal, Crescent, Silver Meteor/Star, Vermonter, Carolinian, Palmetto) which require advance reservations.
+3. **Stations with overlapping rail services:**
+   - **Union Station (Red Line):** MARC (three lines) + VRE + Amtrak Northeast Regional (walk-up) + Amtrak reserved services (excluded).
+   - **L'Enfant Plaza (Orange/Blue/Silver, Green, Yellow):** VRE only (no MARC or Amtrak).
+   - **Rockville (Red Line):** MARC Brunswick only.
+   - **Silver Spring (Red Line):** MARC Brunswick only.
+   - **New Carrollton (Orange, Silver):** MARC Penn + Amtrak Northeast Regional.
+   - **Franconia-Springfield (Blue):** VRE Manassas only.
+4. **doNotGroup implications:** Union Station boards must show Metro platforms separately from MARC/VRE/Amtrak platforms. L'Enfant Plaza must show Metro separately from VRE. New Carrollton must show Metro separately from MARC and Amtrak. Different operators, different line codes, different infrastructure.
+5. **No other operators call at in-catalog Metrorail stations.** DC Streetcar (ended 31 Mar 2026) and Maryland Purple Line (opening late 2027, not yet operational) are out of scope for current v1 catalog.
+
+**Controller note (20 Sep 2026):** MARC and VRE are `in` and come from feeds other than WMATA's API — the adapter cannot flip live until they are either on the Union Station / shared-station boards or Tim records an `out-product` sign-off.
