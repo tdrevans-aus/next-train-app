@@ -1,0 +1,302 @@
+{
+  "Alma": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "Arts-Loi / Kunst-Wet": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Aumale": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Beaulieu": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Beekkant": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Belgica": [
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Bizet": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Bockstael": [
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Botanique / Kruidtuin": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "CERIA / COOVI": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Clemenceau": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Comte de Flandre / Graaf van Vlaanderen": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Crainhem / Kraainem": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "De Brouckère": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Delacroix": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Delta": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Demey": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Eddy Merckx": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Elisabeth": [
+    "2 + Simonis",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Erasme / Erasmus": [
+    "5 + Herrmann-Debroux"
+  ],
+  "Étangs Noirs / Zwarte Vijvers": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Gare Centrale / Centraal Station": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Gare de l'Ouest / Weststation": [
+    "1 + Stockel / Stokkel",
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Gare du Midi / Zuidstation": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Gribaumont": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "Hankar": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Herrmann-Debroux": [
+    "5 + Erasme / Erasmus"
+  ],
+  "Heysel / Heizel": [
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Hôtel des Monnaies / Munthof": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Houba-Brugmann": [
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Jacques Brel": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Joséphine-Charlotte": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "La Roue / Het Rad": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Louise / Louiza": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Madou": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Maelbeek / Maalbeek": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Merode": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Montgomery": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "Osseghem / Ossegem": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Pannenhuis": [
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Parc / Park": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Pétillon": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Porte de Hal / Hallepoort": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Porte de Namur / Naamsepoort": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Ribaucourt": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Rogier": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Roi Baudouin / Koning Boudewijn": [
+    "6 + Elisabeth"
+  ],
+  "Roodebeek": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "Saint-Guidon / Sint-Guido": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Sainte-Catherine / Sint-Katelijne": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Schuman": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel",
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Simonis": [
+    "2 + Elisabeth",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Stockel / Stokkel": [
+    "1 + Gare de l'Ouest / Weststation"
+  ],
+  "Stuyvenbergh": [
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Thieffry": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Tomberg": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "Trône / Troon": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ],
+  "Vandervelde": [
+    "1 + Gare de l'Ouest / Weststation",
+    "1 + Stockel / Stokkel"
+  ],
+  "Veeweyde / Veeweide": [
+    "5 + Erasme / Erasmus",
+    "5 + Herrmann-Debroux"
+  ],
+  "Yser / IJzer": [
+    "2 + Elisabeth",
+    "2 + Simonis",
+    "6 + Elisabeth",
+    "6 + Roi Baudouin / Koning Boudewijn"
+  ]
+}
