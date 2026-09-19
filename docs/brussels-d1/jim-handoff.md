@@ -103,14 +103,34 @@ already-departed row that must both drop regardless of type) — the
 fetch stub already throws on any real network attempt, so omitting the
 `irailRawDepartures` escape hatch alone proves the degrade-to-partial path.
 
-**One open item for whoever flips this next:** the iRail vehicle-type
-codes used for the international filter (THA/TGV/OUI/NJ/EN/EUR) are built
-from documented iRail conventions, not re-verified against a fresh live
-capture in this pass — the 19 Sep 2026 live check that confirmed iRail
-itself works was against Brussels-Central's ordinary IC/S traffic only.
-Worth one live capture at Gare du Midi (where Thalys/Eurostar/TGV actually
-call) before flip, same "confirm at D2" caveat Boston's MBTA route_id
-mapping and Copenhagen's route-type regex both already carry.
+**Open item closed 20 Sep 2026 (Mark's PR #419 QA + this follow-up
+fix):** Mark's live QA found `classifySncbVehicleType`'s `IN_TYPES` had a
+bare `"S"` entry — but live iRail always sends S-trains as `S` + a
+sub-line number (S1/S2/S3/S8/S10, never bare `S`), so every real S-train
+at all three shared stations was silently dropped (Gare de l'Ouest showed
+0 rail rows despite two live S10 departures). Fixed by matching S-trains
+with a pattern instead of an exact string. Mark's same pass also found
+EC (EuroCity) and ECD (EuroCity Direct) running live at Gare du Midi with
+no oracle-report verdict — researched and closed in
+`docs/brussels-d1/board-eligibility-addendum.md` (`in`, no compulsory
+reservation) and added to the classifier. Rail-replacement `BUS` rows
+(also seen live at Gare du Midi) now classify `out-mode` rather than
+falling into the generic "unmapped" bucket. `mapIrailDepartures()` now
+returns an `unmapped` property (type + count) for any vehicle type it
+still doesn't recognise, surfaced on the board via `debug.irailUnmappedTypes`
+(never surfaced by `api/next-train.js` or any UI); `qa/brussels-dogfood-gate.mjs`
+fails if the captured-live fixture produces any unmapped row.
+`qa/fixtures/brussels/irail-liveboard.json` is now a real 20 Sep 2026
+iRail liveboard capture at Brussels-Central and Brussels-South (one call
+each), trimmed to a representative set with every `vehicleinfo.type`/
+`shortname` string kept verbatim, plus hand-authored rows (marked
+`"_source": "synthetic"`) for out-reservation kinds (THA/TGV/OUI/NJ/ES)
+that weren't running at capture time and for the whole `gareDeLOuest`
+(iRail "Brussels-West") block, which wasn't part of this capture. Live
+re-verified after the fix: Gare de l'Ouest / Weststation now shows real
+S10 SNCB departures; Gare du Midi shows a real ECD row; Gare Centrale
+shows a real EC row; no `debug.irailUnmappedTypes` on any of the three at
+verification time.
 
 **B. Belgium flip readiness.** `public/city-session.js` now has a
 `Belgium` country (id `be`) with Brussels as a `comingSoon: true` region,
