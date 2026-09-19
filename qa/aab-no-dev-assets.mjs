@@ -1,20 +1,30 @@
 /**
  * Confirms a built Android App Bundle (AAB) does not contain dev-only assets
- * (docs/jim-brief-gradle-copy-skips-prune.md). `android/app/build.gradle`'s
- * `capacitorCopyWebAssets` task re-runs `npx cap copy android` as a `preBuild`
- * dependency on every Gradle build, including release ones, so the packaged assets
+ * (docs/jim-brief-gradle-copy-skips-prune.md, docs/jim-brief-gradle-prune-by-variant.md).
+ * `android/app/build.gradle`'s `capacitorCopyWebAssets` task re-runs `npx cap copy android` as
+ * a `preBuild` dependency on every Gradle build, including release ones, so the packaged assets
  * can pick up dev-only files (`dogfood-origin.json`, `design/`, `lib/cities`, etc.)
  * even after `npm run cap:sync`'s own prune (`scripts/prune-ship-assets.mjs`) already
  * ran and `qa/ship-assets-no-dogfood-origin.mjs` passed — the prune has to happen again
  * as part of the release build itself, which is what this gate protects.
  *
+ * The release/debug decision is keyed off Gradle's actual task execution graph
+ * (`gradle.taskGraph.whenReady`, checking for `:app:assembleRelease`/`:app:bundleRelease`/
+ * `:app:packageRelease` in the graph), not off the literally requested task names — a bare
+ * `gradlew :app:bundle`, `gradlew assemble` or `gradlew build` has no "release" substring in
+ * what was typed but still executes a release packaging task as a dependency and must still be
+ * pruned. The wiring check below fails if the old task-name substring match
+ * (`gradle.startParameter.taskNames...contains('release')`) has come back, since that's exactly
+ * the mechanism that missed `gradlew :app:bundle`/`assemble`/`build`.
+ *
  * Reuses the exact prune list from scripts/prune-ship-assets.mjs (PRUNE_PATHS,
  * PRUNE_GLOB_SUFFIXES) rather than duplicating it, so the two can't drift.
  *
  * Two checks, both offline (never runs Gradle):
- *  1. android/app/build.gradle wiring check — asserts the release prune task exists and is
- *     actually wired into preBuild, so the fix can't be silently reverted/dropped later even
- *     when nobody has a fresh AAB on disk to catch the regression.
+ *  1. android/app/build.gradle wiring check — asserts the release prune task exists, is wired
+ *     into preBuild, is gated by the task-graph mechanism (not the old task-name substring
+ *     match), so the fix can't be silently reverted/dropped/regressed later even when nobody
+ *     has a fresh AAB on disk to catch the regression.
  *  2. AAB contents check — reads the AAB zip's central directory (via the vendored fflate) and
  *     fails on any prune-list path under base/assets/public/. Passes trivially with a clear
  *     message when no AAB is present (the normal case in CI, which builds no native artifacts).
@@ -26,7 +36,9 @@
  *   android/app/release/app-release.aab
  *
  * To see check 1 fail: remove the `pruneShipAssets` task or its `dependsOn`/preBuild wiring
- * from android/app/build.gradle.
+ * from android/app/build.gradle, or restore the old
+ * `gradle.startParameter.taskNames.any { it...contains('release') }` task-name substring match
+ * in place of the `gradle.taskGraph.whenReady` graph check.
  * To see check 2 fail: with public/dogfood-origin.json present, comment out the prune step in
  * capacitorCopyWebAssets/pruneShipAssets in android/app/build.gradle, run
  * `cd android && gradlew :app:bundleRelease`, then run this script against the resulting AAB.
@@ -87,8 +99,11 @@ function isPruneListViolation(assetRelPath) {
 
 /**
  * Offline wiring check: android/app/build.gradle must dependsOn a prune step (running
- * scripts/prune-ship-assets.mjs) from capacitorCopyWebAssets/preBuild, so the fix can't be
- * silently dropped by a future edit even when no AAB has been built to catch it.
+ * scripts/prune-ship-assets.mjs) from capacitorCopyWebAssets/preBuild, gated by Gradle's actual
+ * task execution graph (`gradle.taskGraph.whenReady` looking for a release packaging task in
+ * the graph) rather than a substring match on the requested task names, so the fix can't be
+ * silently dropped or regressed back to the task-name mechanism by a future edit even when no
+ * AAB has been built to catch it (docs/jim-brief-gradle-prune-by-variant.md).
  */
 function checkGradleWiring() {
   const gradlePath = path.join(REPO_ROOT, "android/app/build.gradle");
@@ -100,13 +115,23 @@ function checkGradleWiring() {
   const preBuildDependsOnPrune = /tasks\.matching[\s\S]*?dependsOn\s+['"]pruneShipAssets['"]/.test(
     text
   );
+  const usesTaskGraphDetection = /gradle\.taskGraph\.whenReady/.test(text);
+  const usesOldTaskNameSubstringMatch =
+    /gradle\.startParameter\.taskNames[\s\S]{0,80}contains\(\s*['"]release['"]\s*\)/i.test(text);
 
   return {
-    ok: hasPruneTask && pruneDependsOnCopy && preBuildDependsOnPrune,
+    ok:
+      hasPruneTask &&
+      pruneDependsOnCopy &&
+      preBuildDependsOnPrune &&
+      usesTaskGraphDetection &&
+      !usesOldTaskNameSubstringMatch,
     gradlePath,
     hasPruneTask,
     pruneDependsOnCopy,
     preBuildDependsOnPrune,
+    usesTaskGraphDetection,
+    usesOldTaskNameSubstringMatch,
   };
 }
 
@@ -116,9 +141,11 @@ function run() {
     console.error(
       `FAIL aab-no-dev-assets: ${path.relative(REPO_ROOT, wiring.gradlePath)} is missing the ` +
         `release prune wiring (a task running scripts/prune-ship-assets.mjs, depending on ` +
-        `capacitorCopyWebAssets, wired into preBuild). Found: prune task=${wiring.hasPruneTask}, ` +
-        `depends on copy=${wiring.pruneDependsOnCopy}, preBuild depends on prune=` +
-        `${wiring.preBuildDependsOnPrune}.`
+        `capacitorCopyWebAssets, wired into preBuild, gated by Gradle's actual task graph). ` +
+        `Found: prune task=${wiring.hasPruneTask}, depends on copy=${wiring.pruneDependsOnCopy}, ` +
+        `preBuild depends on prune=${wiring.preBuildDependsOnPrune}, uses task-graph detection=` +
+        `${wiring.usesTaskGraphDetection}, reverted to old task-name substring match=` +
+        `${wiring.usesOldTaskNameSubstringMatch}.`
     );
     process.exit(1);
   }

@@ -133,7 +133,26 @@ tasks.register('capacitorCopyWebAssets', Exec) {
 // (public/app.js readDogfoodOrigin, public/brisbane-dogfood.js), so the prune below only runs
 // for release-variant task invocations, never unconditionally. A prune failure fails the task
 // (and therefore the build) like any other Exec.
-def isReleaseBuild = gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }
+//
+// This must key off what Gradle is actually going to *execute*, not off the literally
+// requested task names (docs/jim-brief-gradle-prune-by-variant.md): a bare `gradlew
+// :app:bundle`, `gradlew assemble` or `gradlew build` has no "release" substring in what was
+// typed, but each still executes `:app:assembleRelease`/`:app:bundleRelease` as a dependency
+// and produces the exact same unpruned release AAB/APK a direct `:app:bundleRelease`/
+// `:app:assembleRelease` would. `gradle.taskGraph.whenReady` fires once Gradle has finalised
+// the full execution plan for this invocation but before any task has started running, so by
+// the time pruneShipAssets' `onlyIf` below is evaluated, `isReleaseBuild` reflects what will
+// actually run, not what was asked for. Mixed graphs (e.g. `gradlew build`, which builds both
+// the debug and release variants from the same synced assets dir) can't have both variants
+// "right" at once — release safety wins, so any release packaging task in the graph triggers
+// the prune even if a debug variant is also being built in the same invocation. A
+// debug-only invocation (no release packaging task in the graph, e.g. `assembleDebug`) is
+// unaffected and still gets dogfood-origin.json.
+def RELEASE_PACKAGING_TASKS = [':app:assembleRelease', ':app:bundleRelease', ':app:packageRelease']
+def isReleaseBuild = false
+gradle.taskGraph.whenReady { graph ->
+    isReleaseBuild = RELEASE_PACKAGING_TASKS.any { graph.hasTask(it) }
+}
 
 tasks.register('pruneShipAssets', Exec) {
     dependsOn 'capacitorCopyWebAssets'
