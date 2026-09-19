@@ -33,6 +33,17 @@
       ],
     },
     {
+      // Belgium (docs/jim-brief-brussels-flip-readiness.md, 20 Sep 2026): first Belgian region,
+      // Coming Soon only — Brussels stays `status: "planned"` in the registry until Mark/Tim's
+      // flip. See docs/brussels-d1/jim-handoff.md "Flip commit — exact edits" for what a flip
+      // still needs to touch beyond this picker entry.
+      id: "be",
+      name: "Belgium",
+      regions: [
+        { id: "brussels", name: "Brussels", timeZone: "Europe/Brussels", comingSoon: true },
+      ],
+    },
+    {
       id: "gb-eng",
       name: "England",
       regions: [
@@ -142,6 +153,11 @@
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
     oslo: { minLat: 59.60, maxLat: 60.25, minLng: 10.40, maxLng: 11.20 },
+    // Brussels (docs/jim-brief-brussels-flip-readiness.md, 20 Sep 2026) — comingSoon in the
+    // picker, box derived from lib/cities/brussels/stations.json's 60 catalogued stations
+    // (lat 50.812-50.897, lng 4.267-4.465) with a small margin. Doesn't overlap any other
+    // region's box, so its position here doesn't affect containment order.
+    brussels: { minLat: 50.79, maxLat: 50.92, minLng: 4.24, maxLng: 4.49 },
     "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
     // south-wales is listed BEFORE west-of-england so hintCityFromCoords's
     // first-match lookup resolves the Severn-estuary stations correctly:

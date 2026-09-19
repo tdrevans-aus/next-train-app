@@ -59,6 +59,29 @@
       "passingtimes": "[{\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:37:00.000+02:00\",\"lineId\":\"2\"}]"
     }
   ],
+  "gareCentrale": [
+    {
+      "_comment": "Added 20 Sep 2026 (docs/jim-brief-brussels-flip-readiness.md) — Gare Centrale / Centraal Station is on metro lines 1 and 5 (hazard-pack.md) and is one of the three SNCB-shared stations; point ids 8021/8022 per stations.json.",
+      "pointid": "8021",
+      "lineid": "1",
+      "passingtimes": "[{\"destination\":{\"fr\":\"STOCKEL\",\"nl\":\"STOKKEL\"},\"expectedArrivalTime\":\"2026-09-19T19:37:00.000+02:00\",\"lineId\":\"1\"}]"
+    },
+    {
+      "pointid": "8021",
+      "lineid": "5",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ERASME\",\"nl\":\"ERASMUS\"},\"expectedArrivalTime\":\"2026-09-19T19:39:00.000+02:00\",\"lineId\":\"5\"}]"
+    },
+    {
+      "pointid": "8022",
+      "lineid": "1",
+      "passingtimes": "[{\"destination\":{\"fr\":\"GARE DE L'OUEST\",\"nl\":\"WESTSTATION\"},\"expectedArrivalTime\":\"2026-09-19T19:41:00.000+02:00\",\"lineId\":\"1\"}]"
+    },
+    {
+      "pointid": "8022",
+      "lineid": "5",
+      "passingtimes": "[{\"destination\":{\"fr\":\"HERRMANN-DEBROUX\",\"nl\":\"HERRMANN-DEBROUX\"},\"expectedArrivalTime\":\"2026-09-19T19:43:00.000+02:00\",\"lineId\":\"5\"}]"
+    }
+  ],
   "elisabeth": [
     {
       "pointid": "8471",
