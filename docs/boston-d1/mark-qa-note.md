@@ -83,3 +83,148 @@ Do not flip. Route back to Nico/Luke for a Board eligibility section covering Co
 South Station/North Station (and Silver Line BRT's out-mode status), and to Jim for the
 dogfood-gate/dispatch follow-through — both need to land before Mark can re-run this checklist
 green.
+
+---
+
+## Second pass — 2026-09-20
+
+Re-QA against `origin/master` at commit `7c8594c` (PR #414, "Boston: flip follow-through +
+Commuter Rail on shared-station boards"), run against the **live** MBTA static GTFS feed and the
+**live, unauthenticated** MBTA V3 predictions API (`api-v3.mbta.com`) — no `MBTA_API_KEY` needed
+or set. `npm ci` run fresh in this worktree (`node_modules` was missing). No env vars copied — none
+required.
+
+### Blocking finding 1 (board eligibility) — RESOLVED
+
+`docs/boston-d1/oracle-clash-report.md` now carries a `## Board eligibility` section with a
+verdict row for every service named in the first-pass finding: MBTA Commuter Rail (`in`), Amtrak
+Acela/Northeast Regional/Lake Shore Limited (`out-reservation`), CapeFlyer (`in`, but unserved by
+the feed — recorded, not silent), MBTA Ferry (`out-mode`), Silver Line (`out-mode`). No
+`undecided` rows. `qa/boston-dogfood-gate.mjs` asserts the section exists and enumerates these
+same five services (lines 118-125 of the gate).
+
+I sampled the live boards directly rather than trusting the gate alone:
+
+| Station | Subway rows | Commuter Rail rows (live) | Amtrak/Ferry/Silver Line rows |
+|---|---|---|---|
+| South Station | 48 | 1 (`Fairmount Line + Fairmount`, live V3 prediction) | 0 — none possible, allow-list only contains MBTA CR route ids |
+| North Station | 84 | 0 at sample time (see amber below) | 0 |
+| Park Street (hub, not CR-eligible) | 48 | 0 (correctly never CR-eligible) | 0 |
+
+Confirmed directly against `api-v3.mbta.com/routes?filter[type]=2`: the live route list is
+`CR-Fairmount, CR-NewBedford, CR-Fitchburg, CR-Worcester, CR-Franklin, CR-Greenbush,
+CR-Haverhill, CR-Kingston, CR-Lowell, CR-Needham, CR-Newburyport, CR-Providence, CR-Foxboro` — no
+Amtrak, no CapeFlyer, confirming the registry note ("CapeFlyer is `in` but NOT served by
+api-v3.mbta.com... a feed gap, not a decision") is accurate, and `COMMUTER_RAIL_ROUTES` in
+`lib/cities/boston/marketing-directions.js` correctly excludes `CR-Foxboro` (Foxboro Event
+Service, non-standard/game-day product) from the allow-list, so it can never render even though
+MBTA files it under route_type 2.
+
+**Amber — not a fail:** at sample time (Sat 20 Sep, ~13:44-13:54 America/New_York), North Station
+showed **zero** live Commuter Rail departures even though the GTFS schedule has real outbound
+trips at 14:15/14:20/14:30. Direct inspection of `api-v3.mbta.com/predictions` showed MBTA was
+only publishing arrival-only predictions (`departure_time: null`, terminating inbound trains) at
+that moment — no outbound prediction existed yet for a departure ~20-30 minutes out. South
+Station's single live departure (`Fairmount Line + Fairmount`, direction 0) only became visible
+~3 minutes before its own departure. This is consistent with `fetchCommuterRailTrips`'s documented
+design (`docs/board-eligibility-rule.md`'s "no live times, no board" — never fabricate from
+static schedule) and is a real characteristic of MBTA's own V3 prediction horizon for
+terminus-originating Commuter Rail trips, not an adapter defect — the same code path is what
+produced South Station's correct live row. Flagging for Tim's awareness: CR boards at these five
+stations can look sparse for 15-30 minute stretches even when service exists shortly, which is a
+materially different rider experience from the subway rows on the same board (always populated
+from the static schedule). Not a hard fail — no walk-up service was silently dropped; the feed
+itself simply hadn't published a prediction yet, same as MBTA's own website would show at that
+moment.
+
+### Blocking finding 2 (flip follow-through) — PARTIALLY RESOLVED, new blocking gap found
+
+The dogfood-gate/module/dispatch bundle Jim was asked to land is done and verified:
+- `lib/cities/boston/dogfood-next-train.js` exists (`listBostonDogfoodStations`,
+  `getBostonDogfoodDirections`, `getBostonDogfoodNextTrain`).
+- `boston` dispatch cases exist in `lib/cities/live-city-api.js` (`directionsFor` line 220,
+  `getMultiCityNextTrain` line 611) and return identical chips to the dogfood harness
+  (`qa/boston-dogfood-gate.mjs` lines 264-269 assert this directly).
+- `qa/boston-dogfood-gate.mjs` replaces the retired `qa/boston-planned-gate.mjs`, is registered in
+  `qa/run-all.mjs`'s smoke tier, and passes: `node qa/boston-dogfood-gate.mjs` → `boston-dogfood-gate:
+  ok (...)`.
+- Boston correctly stays `status: "planned"` and is deliberately **not** yet in
+  `MULTI_CITY_IDS`/journey-model's persisted lists/`brisbane-dogfood.js`'s mount map — exactly the
+  documented "safe ahead of flip" shape, asserted by the gate itself (line 97:
+  `isMultiCity("boston") === false`).
+
+**New finding, blocking the flip PR:** Boston is the **first United States city** to reach this
+stage, and the flip-commit surface is larger than the "three lists" this task (and CLAUDE.md)
+describe. I read `qa/live-city-lists-sync.mjs` (the gate that actually enforces this, registered
+in the smoke tier) directly rather than relying on the summary — it checks **eight** independent
+copies of "which cities are live," not three:
+
+1. `lib/cities/live-city-api.js` `MULTI_CITY_IDS` — flagged, ready to add "boston".
+2. `public/app.js` `NEARBY_MULTI_CITY_IDS` — **not flagged anywhere**, needs "boston" added.
+3. `public/app.js` `LIVE_CITY_IDS` — **not flagged anywhere**, needs "boston" added.
+4. `public/city-session.js` `MULTI_CITY_IDS` — **not flagged anywhere**, needs "boston" added.
+5. `public/city-session.js` picker `COUNTRIES` — **no "United States" country entry exists at
+   all** (confirmed: zero matches for "boston" in `public/city-session.js`). Every other live
+   city's country (Australia/England/Finland/Norway/Scotland/Sweden/Wales) already has a picker
+   entry, built up over each country's own onboarding; Boston has none.
+6. `public/city-session.js` `CITY_BOUNDS` — same gap, and **cannot be mechanically derived**:
+   `lib/cities/boston/stations.json` carries no `lat`/`lng` on any of its 125 stations (confirmed
+   by reading the catalog directly), so there is no data in the D1/D2 pack to compute a bounding
+   box from, unlike every other city's `CITY_BOUNDS` entry.
+7. `public/journey-model.js` `PERSISTED_CITY_IDS` — flagged, ready to add "boston".
+8. `public/journey-model.js` `PERSISTED_COUNTRY_IDS` — flagged for the city list, but the country
+   id itself ("us"?) doesn't exist anywhere yet either, because item 5 doesn't exist.
+
+Items 2-6 and 8's country id were never flagged by Jim's handoff or the registry notes (which only
+name the three items in item 1/7 as "deliberately deferred to the status-flip commit"). Per this
+task's own guardrail — "If that's missing, flag it back rather than opening an incomplete PR" (the
+Helsinki #164 precedent) — I'm treating this as a blocking gap rather than authoring the missing
+picker/country/bounding-box content myself: the country display name, region label placement, and
+especially the `CITY_BOUNDS` geographic box are content/data decisions that need real Boston-area
+coordinates and a Jim/Luke call, not something QA should fabricate. Flipping `status` to `"live"`
+without these would fail `qa/live-city-lists-sync.mjs` immediately (registered in the smoke tier),
+so it isn't a style nitpick — it would break smoke on `main`.
+
+### Everything else re-checked green
+
+| Check | Result | Evidence |
+|---|---|---|
+| `node qa/boston-dogfood-gate.mjs` | PASS | `boston-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, ..., 125 stations, hub Park Street, live MBTA Commuter Rail predictions ..., CR-Foxboro excluded, Amtrak/ferry/Silver Line verdicts match adapter filtering, Perth Australia green)` |
+| `node qa/run-all.mjs --smoke` (foreground, 600000ms timeout, output to file) | PASS | 145 PASS · 0 FAIL · 582s; `boston-dogfood-gate.mjs PASS · 11s` present; no other city regressed |
+| DST edge cases | PASS (unchanged from first pass) | `America/New_York`, real IANA zone |
+| Hub-lock / doNotGroup | PASS (unchanged) | Park Street lock, doNotCollapse pairs enforced by the gate |
+| v1 mode cut | PASS (unchanged) | `BOSTON_ROUTE_TYPES` + exact route_id allow-list for subway; Commuter Rail is now a **separate, live, additively-scoped** path per the resolved Board eligibility verdict — does not reopen the subway mode cut |
+| Response-shape conformance | PASS | `fetchStationBoard` still returns `{ stationName, lastUpdate, trips, realtime: false }`; Commuter Rail rows are shape-compatible with subway rows (same trip fields) so no UI change needed |
+| Ledger-consistency check | N/A (unchanged) | No `docs/united-states-ledger.md`; MBTA is a standalone single-agency feed, no overlapping US region in the pipeline |
+| Direction model — Commuter Rail extension | AMBER (Tim review, not a fail) | `mapCommuterRailDestination` in `lib/cities/boston/marketing-directions.js` extends the memo's line+terminus pattern (which only covers subway) to Commuter Rail using each route's own two known termini, e.g. `"Framingham/Worcester Line + Worcester"` / `"...+ South Station"` — reads sensibly, follows the established pattern exactly, never fabricates a raw headsign. `direction-model-memo.md` §3 has no Commuter Rail guidance at all ("Commuter Rail out of this city" — written when CR was out-of-scope); flagging per the task's instruction, not failing it. |
+| No live-times-no-fallback rule | PASS | `fetchCommuterRailTrips` only builds a row from a prediction with a non-null `departure_time`; network/parse failures resolve to `[]` (confirmed by reading the function and by the North Station amber above — a real gap in the live feed produced zero rows, not a fabricated one) |
+
+### Suites run
+
+- `node qa/boston-dogfood-gate.mjs` — PASS
+- `node qa/run-all.mjs --smoke` (foreground, 600000ms timeout, output redirected to a file, read
+  after completion) — 145 PASS · 0 FAIL · 582s
+- Manual live-board sampling against `api-v3.mbta.com` (South Station, North Station, Park
+  Street) and `api-v3.mbta.com/routes?filter[type]=2` — see evidence above
+- No background processes or sleep/poll loops left running; dev server for the smoke run exited
+  with the suite; confirmed no other listener left on :3000/:56300 afterward
+
+### Verdict: AMBER-GREEN on QA content, RED on flip-readiness — no flip PR this pass
+
+Every item on Mark's standing checklist (board eligibility, DST, hub-lock, v1 mode cut,
+response-shape, ledger-consistency) is green, and both blocking findings from the first pass are
+resolved on the merits. But a **new, mechanical blocker** was found while verifying the flip
+commit would actually be self-consistent: Boston is a first-in-country flip and the picker
+country/`CITY_BOUNDS`/two more `MULTI_CITY_IDS` copies were never prepared, and `CITY_BOUNDS`
+can't be built at all without station coordinates the D1/D2 pack never captured. Per this task's
+own guardrail, this goes back rather than shipping an incomplete flip PR. **No flip PR opened
+this pass.**
+
+Recommended next step (for Jim, not Mark): add `lat`/`lng` to
+`lib/cities/boston/stations.json` (or otherwise source a Boston-area bounding box), add a "United
+States" entry to `public/city-session.js`'s `COUNTRIES` picker (region `boston`, `comingSoon:
+false` since this lands in the same commit as the flip) plus its `CITY_BOUNDS` box, and add
+"boston" to `public/app.js`'s `NEARBY_MULTI_CITY_IDS`/`LIVE_CITY_IDS` and
+`public/city-session.js`'s own `MULTI_CITY_IDS` — then re-request Mark QA. Everything else in this
+note stands; a second re-QA pass should only need to re-verify `qa/live-city-lists-sync.mjs` and
+re-run smoke once those are in place.
