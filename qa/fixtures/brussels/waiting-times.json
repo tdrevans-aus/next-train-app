@@ -1,0 +1,84 @@
+{
+  "_comment": "Captured-shape fixture for lib/providers/brussels.js's BMC Waiting Times pipeline (qa/brussels-dogfood-gate.mjs, no network — see docs/jim-brief-brussels-gate-pinned-clock.md). Point IDs, line IDs and destination pairs for Arts-Loi / Kunst-Wet, Simonis and Elisabeth are copied verbatim from a live call made 20 Sep 2026 (lib/providers/brussels.js file header). The 'Theoretical time' and 'Do not embark' message rows are added synthetic edge cases (flagged _synthetic) layered onto real point/line/destination combinations, to exercise the schedule-echo and non-boarding filters independently of the naturally-occurring self-referential-arrival rows.",
+  "artsLoiKunstWet": [
+    {
+      "pointid": "8041",
+      "lineid": "1",
+      "passingtimes": "[{\"destination\":{\"fr\":\"GARE DE L'OUEST\",\"nl\":\"WESTSTATION\"},\"expectedArrivalTime\":\"2026-09-19T19:34:14.546+02:00\",\"lineId\":\"1\"},{\"destination\":{\"fr\":\"GARE DE L'OUEST\",\"nl\":\"WESTSTATION\"},\"expectedArrivalTime\":\"2026-09-19T19:42:14.546+02:00\",\"lineId\":\"1\"}]"
+    },
+    {
+      "pointid": "8041",
+      "lineid": "5",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ERASME\",\"nl\":\"ERASMUS\"},\"expectedArrivalTime\":\"2026-09-19T19:38:14.546+02:00\",\"lineId\":\"5\"},{\"_synthetic\":true,\"destination\":{\"fr\":\"ERASME\",\"nl\":\"ERASMUS\"},\"expectedArrivalTime\":\"2026-09-19T19:46:14.546+02:00\",\"lineId\":\"5\",\"message\":{\"de\":\"TheoretischeZeit\",\"fr\":\"Temps théorique\",\"nl\":\"Theoretische tijd\",\"en\":\"Theoretical time\"}}]"
+    },
+    {
+      "pointid": "8042",
+      "lineid": "1",
+      "passingtimes": "[{\"destination\":{\"fr\":\"STOCKEL\",\"nl\":\"STOKKEL\"},\"expectedArrivalTime\":\"2026-09-19T19:40:16.457+02:00\",\"lineId\":\"1\"},{\"destination\":{\"fr\":\"STOCKEL\",\"nl\":\"STOKKEL\"},\"expectedArrivalTime\":\"2026-09-19T19:50:16.457+02:00\",\"lineId\":\"1\"}]"
+    },
+    {
+      "pointid": "8042",
+      "lineid": "5",
+      "passingtimes": "[{\"destination\":{\"fr\":\"HERRMANN-DEBROUX\",\"nl\":\"HERRMANN-DEBROUX\"},\"expectedArrivalTime\":\"2026-09-19T19:36:16.457+02:00\",\"lineId\":\"5\"},{\"destination\":{\"fr\":\"HERRMANN-DEBROUX\",\"nl\":\"HERRMANN-DEBROUX\"},\"expectedArrivalTime\":\"2026-09-19T19:45:16.457+02:00\",\"lineId\":\"5\"}]"
+    },
+    {
+      "pointid": "8401",
+      "lineid": "2",
+      "passingtimes": "[{\"destination\":{\"fr\":\"SIMONIS\",\"nl\":\"SIMONIS\"},\"expectedArrivalTime\":\"2026-09-19T19:45:19.815+02:00\",\"lineId\":\"2\"},{\"destination\":{\"fr\":\"SIMONIS\",\"nl\":\"SIMONIS\"},\"expectedArrivalTime\":\"2026-09-19T19:52:19.815+02:00\",\"lineId\":\"2\"}]"
+    },
+    {
+      "pointid": "8401",
+      "lineid": "6",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ROI BAUDOUIN\",\"nl\":\"KONING BOUDEWIJN\"},\"expectedArrivalTime\":\"2026-09-19T19:35:19.815+02:00\",\"lineId\":\"6\"},{\"destination\":{\"fr\":\"ROI BAUDOUIN\",\"nl\":\"KONING BOUDEWIJN\"},\"expectedArrivalTime\":\"2026-09-19T19:39:19.815+02:00\",\"lineId\":\"6\"}]"
+    },
+    {
+      "pointid": "8402",
+      "lineid": "2",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:36:19.815+02:00\",\"lineId\":\"2\"},{\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:48:19.815+02:00\",\"lineId\":\"2\"}]"
+    },
+    {
+      "pointid": "8402",
+      "lineid": "6",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:38:19.815+02:00\",\"lineId\":\"6\"},{\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:44:19.815+02:00\",\"lineId\":\"6\"}]"
+    }
+  ],
+  "simonis": [
+    {
+      "pointid": "8763",
+      "lineid": "2",
+      "passingtimes": "[{\"destination\":{\"fr\":\"SIMONIS\",\"nl\":\"SIMONIS\"},\"expectedArrivalTime\":\"2026-09-19T19:35:30.072+02:00\",\"lineId\":\"2\",\"message\":{\"de\":\"Nichteinsteigen\",\"fr\":\"Ne pas embarquer\",\"nl\":\"Niet instappen\",\"en\":\"Do not embark\"}},{\"destination\":{\"fr\":\"SIMONIS\",\"nl\":\"SIMONIS\"},\"expectedArrivalTime\":\"2026-09-19T19:43:30.072+02:00\",\"lineId\":\"2\",\"message\":{\"de\":\"Nichteinsteigen\",\"fr\":\"Ne pas embarquer\",\"nl\":\"Niet instappen\",\"en\":\"Do not embark\"}}]"
+    },
+    {
+      "pointid": "8763",
+      "lineid": "6",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ROI BAUDOUIN\",\"nl\":\"KONING BOUDEWIJN\"},\"expectedArrivalTime\":\"2026-09-19T19:40:30.072+02:00\",\"lineId\":\"6\"},{\"_synthetic\":true,\"destination\":{\"fr\":\"ROI BAUDOUIN\",\"nl\":\"KONING BOUDEWIJN\"},\"expectedArrivalTime\":\"2026-09-19T19:46:30.072+02:00\",\"lineId\":\"6\",\"message\":{\"de\":\"Nichteinsteigen\",\"fr\":\"Ne pas embarquer\",\"nl\":\"Niet instappen\",\"en\":\"Do not embark\"}}]"
+    },
+    {
+      "pointid": "8764",
+      "lineid": "2",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:37:00.000+02:00\",\"lineId\":\"2\"}]"
+    }
+  ],
+  "elisabeth": [
+    {
+      "pointid": "8471",
+      "lineid": "6",
+      "passingtimes": "[{\"destination\":{\"fr\":\"ROI BAUDOUIN\",\"nl\":\"KONING BOUDEWIJN\"},\"expectedArrivalTime\":\"2026-09-19T19:40:30.072+02:00\",\"lineId\":\"6\"},{\"destination\":{\"fr\":\"ROI BAUDOUIN\",\"nl\":\"KONING BOUDEWIJN\"},\"expectedArrivalTime\":\"2026-09-19T19:49:30.072+02:00\",\"lineId\":\"6\"}]"
+    },
+    {
+      "pointid": "8471",
+      "lineid": "2",
+      "passingtimes": "[{\"destination\":{\"fr\":\"SIMONIS\",\"nl\":\"SIMONIS\"},\"expectedArrivalTime\":\"2026-09-19T19:38:30.072+02:00\",\"lineId\":\"2\"},{\"destination\":{\"fr\":\"SIMONIS\",\"nl\":\"SIMONIS\"},\"expectedArrivalTime\":\"2026-09-19T19:44:30.072+02:00\",\"lineId\":\"2\"}]"
+    },
+    {
+      "pointid": "8472",
+      "lineid": "6",
+      "passingtimes": "[{\"_synthetic\":true,\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:41:00.000+02:00\",\"lineId\":\"6\"}]"
+    },
+    {
+      "pointid": "8472",
+      "lineid": "2",
+      "passingtimes": "[{\"_synthetic\":true,\"destination\":{\"fr\":\"ELISABETH\",\"nl\":\"ELISABETH\"},\"expectedArrivalTime\":\"2026-09-19T19:42:00.000+02:00\",\"lineId\":\"2\"}]"
+    }
+  ]
+}
