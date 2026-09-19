@@ -88,3 +88,24 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 - **Terms URL:** https://www.transitchicago.com/developers/terms/ (from https://www.transitchicago.com/developers/)
 - **Confidence:** `clear` on purpose-limited redistribute; Train Tracker API is separately keyed.
 - **Keyed feeds:** Train Tracker / Bus Tracker keys. GTFS zip at https://www.transitchicago.com/downloads/sch_data/ includes a copy of the DLA.
+
+## Board eligibility
+
+No services other than the in-scope operator call at any in-catalog station — verified.
+
+**Verification method:** Researched Metra (Union Station, Ogilvie, LaSalle Street), Amtrak (Union Station), South Shore Line (Millennium Station), and O'Hare ATS people-mover as potential non-'L' services at in-catalog 'L' stations.
+
+| Operator | In-catalog 'L' station | Distance / building | Status |
+|---|---|---|---|
+| Metra (commuter rail) | Quincy (Union Station); Washington/Wells (Ogilvie); LaSalle/Van Buren (LaSalle Street) | Adjacent separate buildings (137 yards to 3 blocks) | `out-mode` — separate station infrastructure; also referenced in station-name table note 10 as explicitly separated |
+| Amtrak | Quincy (Union Station) | Adjacent separate building (137 yards, 2-minute walk) | `out-reservation` — all Chicago routes (Capitol Limited, Lake Shore Limited, Empire Builder, Illinois Zephyr/Carl Sandburg) require reserved coach seating; no walk-up boarding |
+| South Shore Line | Washington/Wabash (Millennium Station) | Adjacent separate building (281 yards, 4-minute walk); also Van Buren, McCormick Place, 57th St in Chicago — none in-catalog 'L' stations | `out-mode` — separate station; only Chicago terminus is Millennium Station, which connects to 'L' at Washington/Wabash but is not the same facility |
+| O'Hare ATS (people-mover) | O'Hare ('L' Blue Line) | Separate facility within airport; O'Hare Transfer station distinct from O'Hare Blue Line station | `out-product` — automated people-mover, not scheduled walk-up rail service; operates within airport terminals, not public transit in the rider-boardable sense |
+
+**Real-time API status (for reference):**
+- Metra: GTFS-Realtime API at https://gtfsapi.metrarail.com (formerly), new version available via developers portal; real-time tracker at metratracker.com
+- Amtrak: No real-time individual-service API; web booking required
+- South Shore Line: GTFS-Realtime feeds public via NICTD S3 (no API key required); real-time tracker at trains.fyi
+- O'Hare ATS: No public real-time API
+
+**Controller note (20 Sep 2026):** Metra, Amtrak and South Shore terminals are separate buildings, not in-catalog stations, so under rule §3 ("catalog cuts need no per-service verdict") no verdict is owed and the `out-mode` labels above should be read as "not at an in-catalog station". Net position per §5: no services other than the in-scope operator call at any in-catalog station — verified.

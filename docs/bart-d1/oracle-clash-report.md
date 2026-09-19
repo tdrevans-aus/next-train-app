@@ -89,3 +89,18 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 - **Terms URL:** https://www.bart.gov/schedules/developers/developer-license-agreement
 - **Confidence:** `clear` on DLA redistribute; `unclear` whether Open Data Policy "public domain" overrides the DLA.
 - **Keyed feeds:** Static GTFS permalink needs no registration. Legacy API has a public key plus optional registered keys.
+
+## Board eligibility
+
+All non-BART rail services calling at in-catalog BART stations are documented below per the walk-up boarding rule. Every service passes both walk-up tests (no compulsory reservations; no check-in/security barriers), but all are explicitly excluded from v1 scope by the oracle report's **BART-only mode cut** (line 74). They are marked `in` per the rule to document eligibility; the filtering is a recorded product decision. Real-time departure data is available for all except eBART Yellow-line services, which are part of BART's network but have no published arrivals feed.
+
+| Service | Stations | Verdict | Evidence | Real-time API |
+| --- | --- | --- | --- | --- |
+| Muni Metro (J Church, K Ingleside, L Taraval, M Ocean View, N Judah) | Embarcadero, Montgomery St, Powell St, Civic Center/UN Plaza, Glen Park, Balboa Park | `out-mode` | Walk-up boardable with proof-of-payment system (Clipper, contactless, or $3 cash at machines). No mandatory reservations. No check-in barriers. [SFMTA fare system](https://www.sfmta.com/getting-around/muni/fares/proof-payment); lines serve [downtown subway](https://en.wikipedia.org/wiki/Embarcadero_station) and [surface platforms](https://en.wikipedia.org/wiki/Glen_Park_station). | YES — 511 SF Bay realtime portal |
+| Caltrain | Millbrae | `undecided` | Walk-up boardable; tickets purchased same day at station machines or via app. No advance reservations required (proof-of-payment service). No check-in barriers. Separate platform (4) from BART (3) with fare gates between. [Caltrain ticket types](https://www.caltrain.com/fares/ticket-types); [Millbrae transfer](https://www.bart.gov/news/articles/2021/news20210315). | YES — 511.org GTFS-Realtime |
+| Capitol Corridor (Amtrak) | Richmond, Oakland Coliseum | `undecided` | Unreserved service; walk-up tickets at kiosks, station agents, or on board (cash). No advance reservations required. No check-in barriers. [Unreserved service FAQ](https://www.capitolcorridor.org/?faq=do-i-need-to-make-a-reservation); [ticketing policy](https://www.capitolcorridor.org/ticket-policies-e-ticketing/). | YES — 511 SF Bay GTFS-Realtime |
+| VTA Light Rail (Orange, Green lines) | Milpitas | `out-mode` | Walk-up boardable with proof-of-payment system (Clipper, contactless, mobile wallet). No mandatory reservations. No check-in barriers. [VTA light rail info](https://www.vta.org/lightrail); [Milpitas station](https://www.vta.org/go/stations/milpitas-transit-center). | YES — VTA realtime updates |
+
+**Note:** eBART (Yellow-line extension to Pittsburg Center and Antioch) is operated by BART itself and is not a separate service; it is in scope as part of the Yellow line. All eBART stations in the D1 catalog are open walk-up boardable with standard BART fare; no real-time ETD feed is published.
+
+**Controller note (20 Sep 2026):** `in (v1 excluded)` is not a verdict in the rule's vocabulary — a service that passes both tests is `in` (shown) or `out-product` with Tim's recorded sign-off; "v1 is BART-only" alone does not justify exclusion (rule §6). The heavy-rail rows (Caltrain, Capitol Corridor) are therefore `undecided` — awaiting Tim, and must be resolved before any BART flip. The light-rail rows (Muni Metro, VTA) are `out-mode` (tram/light-rail vehicle type, a legitimate mode cut under §3/§6).

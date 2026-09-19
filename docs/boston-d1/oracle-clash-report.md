@@ -120,3 +120,17 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 - **Terms URL:** https://cdn.mbta.com/sites/default/files/2023-08/mbta-massdot-develop-license-agreement.pdf (linked from https://www.mbta.com/developers). Older Transitland pointer: https://www.mass.gov/files/documents/2017/10/27/develop_license_agree_0.pdf
 - **Confidence:** `clear` on attribution + revocable redistribute; `unclear` on passing the feed itself to third parties.
 - **Keyed feeds:** V3 API key agreement is the same MassDOT licence. Optional key.
+
+## Board eligibility
+
+Every rail service calling at an in-catalog v1 station — tested against walk-up boarding and no check-in barrier (rule §2).
+
+| Service | In-catalog station(s) | Verdict | Evidence |
+|---|---|---|---|
+| **MBTA Commuter Rail** (all lines) | South Station (Red), Forest Hills (Orange), Braintree (Red-Braintree), JFK/UMass (Red-Ashmont/Braintree) | `in` | Walk-up on-board ticketing with cash/card; no security or check-in barrier. https://www.mbta.com/guides/commuter-rail-guide |
+| **Amtrak Acela** | South Station (Red) | `out-reservation` | All-reserved service; seat sales capped per train capacity. https://www.amtrak.com/reserved-seating |
+| **Amtrak Northeast Regional** | South Station (Red) | `out-reservation` | All-reserved service; advance reservation required. https://www.amtrak.com/northeast-regional-train |
+| **Amtrak Lake Shore Limited** | South Station (Red) | `out-reservation` | Long-distance Amtrak; coach is reserved (a ticket is a reservation for a specific train). https://www.amtrak.com/reserved-seating — corrected by controller 20 Sep 2026 (first pass said `in`). |
+| **CapeFlyer** | South Station (Red) | `in` | No compulsory reservation; walk-up tickets available at station and on-board. Seasonal service (May–October). https://capeflyer.com |
+| **MBTA Ferry** | Various terminals (Long Wharf near Aquarium Blue Line; Rowes Wharf downtown) | `out-mode` | Ferry is a different vehicle type (boat, not rail); legitimate mode cut for v1 rapid-transit-only. Walk-up fares available but out of scope. https://www.mbta.com/guides/ferry-guide |
+| **Silver Line (BRT)** | South Station + citywide | `out-mode` | Bus rapid transit, not rail; legitimate mode cut for v1 rapid-transit-only. |
