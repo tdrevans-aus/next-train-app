@@ -1,0 +1,509 @@
+{
+  "city": "bart",
+  "hub": "Embarcadero",
+  "stations": [
+    {
+      "name": "Antioch",
+      "abbr": "ANTC",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Pittsburg Center",
+      "abbr": "PCTR",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Pittsburg/Bay Point",
+      "abbr": "PITT",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": [
+        "Pittsburg / Bay Point"
+      ]
+    },
+    {
+      "name": "North Concord/Martinez",
+      "abbr": "NCON",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": [
+        "North Concord / Martinez"
+      ]
+    },
+    {
+      "name": "Concord",
+      "abbr": "CONC",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Pleasant Hill/Contra Costa Centre",
+      "abbr": "PHIL",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": [
+        "Pleasant Hill / Contra Costa Centre"
+      ]
+    },
+    {
+      "name": "Walnut Creek",
+      "abbr": "WCRK",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Lafayette",
+      "abbr": "LAFY",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Orinda",
+      "abbr": "ORIN",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Rockridge",
+      "abbr": "ROCK",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "MacArthur",
+      "abbr": "MCAR",
+      "lines": [
+        "yellow",
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "19th St/Oakland",
+      "abbr": "19TH",
+      "lines": [
+        "yellow",
+        "red"
+      ],
+      "aliases": [
+        "19th St. Oakland"
+      ]
+    },
+    {
+      "name": "12th St/Oakland City Center",
+      "abbr": "12TH",
+      "lines": [
+        "yellow",
+        "red",
+        "orange"
+      ],
+      "aliases": [
+        "12th St. Oakland City Center"
+      ]
+    },
+    {
+      "name": "West Oakland",
+      "abbr": "WOAK",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Embarcadero",
+      "abbr": "EMBR",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": [],
+      "hub": true
+    },
+    {
+      "name": "Montgomery St",
+      "abbr": "MONT",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": [
+        "Montgomery St."
+      ]
+    },
+    {
+      "name": "Powell St",
+      "abbr": "POWL",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": [
+        "Powell St."
+      ]
+    },
+    {
+      "name": "Civic Center/UN Plaza",
+      "abbr": "CIVC",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": [
+        "Civic Center / UN Plaza"
+      ]
+    },
+    {
+      "name": "16th St Mission",
+      "abbr": "16TH",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": [
+        "16th St. Mission"
+      ]
+    },
+    {
+      "name": "24th St Mission",
+      "abbr": "24TH",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": [
+        "24th St. Mission"
+      ]
+    },
+    {
+      "name": "Glen Park",
+      "abbr": "GLEN",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Balboa Park",
+      "abbr": "BALB",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Daly City",
+      "abbr": "DALY",
+      "lines": [
+        "yellow",
+        "red",
+        "blue",
+        "green"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Colma",
+      "abbr": "COLM",
+      "lines": [
+        "yellow",
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "South San Francisco",
+      "abbr": "SSAN",
+      "lines": [
+        "yellow",
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "San Bruno",
+      "abbr": "SBRN",
+      "lines": [
+        "yellow",
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "San Francisco International Airport (SFO)",
+      "abbr": "SFIA",
+      "lines": [
+        "yellow"
+      ],
+      "aliases": [
+        "San Francisco International Airport",
+        "SFO Int’l Airport",
+        "SFO"
+      ]
+    },
+    {
+      "name": "Millbrae",
+      "abbr": "MLBR",
+      "lines": [
+        "yellow",
+        "red"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Dublin/Pleasanton",
+      "abbr": "DUBL",
+      "lines": [
+        "blue"
+      ],
+      "aliases": [
+        "Dublin / Pleasanton"
+      ]
+    },
+    {
+      "name": "West Dublin/Pleasanton",
+      "abbr": "WDUB",
+      "lines": [
+        "blue"
+      ],
+      "aliases": [
+        "West Dublin / Pleasanton"
+      ]
+    },
+    {
+      "name": "Castro Valley",
+      "abbr": "CAST",
+      "lines": [
+        "blue"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Bay Fair",
+      "abbr": "BAYF",
+      "lines": [
+        "blue",
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "San Leandro",
+      "abbr": "SANL",
+      "lines": [
+        "blue",
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Coliseum",
+      "abbr": "COLS",
+      "lines": [
+        "blue",
+        "green",
+        "orange",
+        "oak"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Fruitvale",
+      "abbr": "FTVL",
+      "lines": [
+        "blue",
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Lake Merritt",
+      "abbr": "LAKE",
+      "lines": [
+        "blue",
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Berryessa/North San José",
+      "abbr": "BERY",
+      "lines": [
+        "green",
+        "orange"
+      ],
+      "aliases": [
+        "Berryessa / North San Jose",
+        "Berryessa/N San Jose",
+        "Berryessa/North San Jose"
+      ]
+    },
+    {
+      "name": "Milpitas",
+      "abbr": "MLPT",
+      "lines": [
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Warm Springs/South Fremont",
+      "abbr": "WSPR",
+      "lines": [
+        "green",
+        "orange"
+      ],
+      "aliases": [
+        "Warm Springs / South Fremont"
+      ]
+    },
+    {
+      "name": "Fremont",
+      "abbr": "FRMT",
+      "lines": [
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Union City",
+      "abbr": "UCTY",
+      "lines": [
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "South Hayward",
+      "abbr": "SHAY",
+      "lines": [
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Hayward",
+      "abbr": "HAYW",
+      "lines": [
+        "green",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Richmond",
+      "abbr": "RICH",
+      "lines": [
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "El Cerrito del Norte",
+      "abbr": "DELN",
+      "lines": [
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "El Cerrito Plaza",
+      "abbr": "PLZA",
+      "lines": [
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "North Berkeley",
+      "abbr": "NBRK",
+      "lines": [
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Downtown Berkeley",
+      "abbr": "DBRK",
+      "lines": [
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Ashby",
+      "abbr": "ASHB",
+      "lines": [
+        "red",
+        "orange"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "Oakland International Airport (OAK)",
+      "abbr": "OAKL",
+      "lines": [
+        "oak"
+      ],
+      "aliases": [
+        "Oakland International Airport",
+        "Oakland Int’l Airport",
+        "OAK"
+      ],
+      "noEtd": true
+    }
+  ]
+}
