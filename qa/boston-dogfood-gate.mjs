@@ -85,7 +85,10 @@ assert(entry?.adapterReady === true, "boston adapterReady must be true");
 assert(entry?.displayName === "Boston", "boston display name must be Boston");
 assert(entry?.timeZone === "America/New_York", "boston timezone must be America/New_York");
 assert(CITIES.filter((city) => city.id === "boston").length === 1, "boston must appear once in the registry");
-for (const forbiddenId of ["bos", "mbta", "boston-mbta", "us", "washington", "chicago"]) {
+// "chicago" was in this forbidden list to prevent Boston/Chicago mix-in before Chicago had its
+// own registry entry — Chicago is now a real, separately-registered planned city
+// (lib/providers/chicago.js, docs/chicago-d1/), so getCity("chicago") is legitimately truthy.
+for (const forbiddenId of ["bos", "mbta", "boston-mbta", "us", "washington"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 assert((entry?.modes ?? []).includes("train"), "boston modes must include train (Commuter Rail addition)");
