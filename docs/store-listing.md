@@ -2,7 +2,7 @@
 
 **Marketing owner:** Ruth (sign-off)  
 **Capture / console:** Tim · **Creative polish:** Simon  
-**Status:** **Play copy shippable** — Ruth final pass 11 Aug 2026 (creative still needs screenshots + feature graphic)  
+**Status:** **Play copy updated 19 Sep 2026 for the first public release** — 34 regions across 5 countries, Remove ads A$7.99. Ruth's 11 Aug sign-off covered the Perth-only copy; the multi-country wording below has not had a Ruth pass.  
 **Privacy policy URL:** `https://next-train-app.vercel.app/privacy.html`  
 **About URL:** `https://next-train-app.vercel.app/about.html`  
 **Support / contact:** `EvansAppStudio@gmail.com` (locked — also on About / Privacy)
@@ -18,16 +18,17 @@
 | ----- | ---------- | --------- |
 | **App name / title** | Next Train | Next Train |
 | **Subtitle** (Apple, ~30 chars) | — | **Know when to walk out** |
-| **Short description** (Play, 80 chars) | **Know when to walk out. Live leave-by for Perth trains.** | — |
+| **Short description** (Play, 80 chars) | **Know when to walk out. Live leave-by for your train, across 5 countries.** | — |
 
 **Why this framing (even though the app opens on Nearby):**  
 Store copy sells the **niche** (leave-home / walk-out time for a saved commute). The default screen is Nearby for activation; Journeys + leave-by are why someone keeps the app and why we’re not “another departures board.” Screenshots can still lead with leave-by (marketing hero) while day-one UX is Nearby.
 
-**Locked (Ruth — Play Console paste):**  
-- Short description (**54**/80): `Know when to walk out. Live leave-by for Perth trains.`  
+**Play Console paste (updated 19 Sep 2026):**  
+- Short description (**72**/80): `Know when to walk out. Live leave-by for your train, across 5 countries.`  
+  Says "5 countries", not "34 regions", so it does not go stale each time a region flips live.  
 - Subtitle (Apple): `Know when to walk out` (**21** chars)  
-- Remove-ads price in listing: **A$3.99** one-time (must match Play Console product)  
-- Alt short (also fine): `Know when to walk out — leave-by for your rail train.` (53)
+- Remove-ads price in listing: **A$7.99** one-time (decided 11 Sep 2026; must match Play Console product)  
+- Alt short (also fine): `Know when to walk out. Live train times and leave-by for your commute.` (70)
 
 **Apple subtitle length check**
 
@@ -45,20 +46,21 @@ Do **not** use `Know when to leave for your train` as the Apple subtitle — App
 | Line | Issue |
 | ---- | ----- |
 | When to leave for your next Transperth train — live times, delays included | Generic train-times app |
+| Know when to walk out. Live leave-by for Perth trains. | Locked 11 Aug 2026 when the app was Perth-only; retired 19 Sep 2026 |
 
-**Title keyword note:** Keep **Next Train** as brand. Don’t stuff “Transperth” into the title (trademark / misleading). Put Transperth in description + keywords only, with “unofficial” clear.
+**Title keyword note:** Keep **Next Train** as brand. Don’t put any operator name (Transperth, TfL, National Rail, SL…) in the title (trademark / misleading). City and country names go in the description, with “unofficial” clear.
 
 ---
 
 ## 2. Keywords
 
 **Play — weave into short + full description (no separate keyword field):**  
-Perth train, Transperth, train times Perth, leave for train, train departures, commute, next train, station, Fremantle line, Joondalup, Mandurah, Midland, Armadale (light touch — don’t keyword-spam).
+train times, live departures, leave for train, commute, next train, station, plus the city and country names in the coverage block of the full description (Perth, Sydney, Brisbane, London, National Rail, Stockholm, Helsinki, Oslo…). Light touch — don’t keyword-spam, and no operator names as keywords.
 
 **Apple — Keyword field (100 characters, comma-separated, no spaces after commas preferred):**
 
 ```
-perth,train,transperth,commute,departures,leave,times,station,rail,joondalup,mandurah
+train,times,commute,departures,leave,station,rail,perth,sydney,london,uk,stockholm,oslo,helsinki
 ```
 
 Trim to ≤100 characters when finalising in App Store Connect (count carefully).
@@ -72,7 +74,14 @@ Trim to ≤100 characters when finalising in App Store Connect (count carefully)
 ```
 Should I leave now — or do I have another minute?
 
-Next Train is the leave-by companion for Perth rail. It uses live Transperth times (delays included) to tell you when to walk out the door for your train — not just another departure board to scroll.
+Next Train is the leave-by companion for your rail commute. It uses live train times (delays included) to tell you when to walk out the door for your train — not just another departure board to scroll.
+
+34 CITIES AND REGIONS, 5 COUNTRIES
+• Australia — Perth, Sydney, Brisbane, Adelaide, Canberra, Gold Coast, Newcastle
+• United Kingdom — every National Rail station in Great Britain, plus London Underground, Elizabeth line, DLR, Overground and Tram
+• Sweden — Stockholm, Göteborg, Malmö, Uppsala
+• Finland — Helsinki
+• Norway — Oslo
 
 NEAR ME
 Open the app and see what’s leaving from the station nearest you. No account. No setup required.
@@ -83,13 +92,14 @@ Add the commute you repeat: station, direction, and how long you need to get to 
 BUILT FOR REAL MORNINGS
 • Leave-by based on your walk or drive-to-station buffer
 • Live status when available
+• Search any station in your country by name
 • Optional Android home-screen widget
 • Optional leave reminders so you don’t watch the clock
 
 FREE, WITH OPTIONAL REMOVE ADS
-A small banner helps cover hosting. Remove ads forever with a one-time purchase (A$3.99) — not a subscription.
+A small banner helps cover hosting. Remove ads forever with a one-time purchase (A$7.99, or the local equivalent) — not a subscription.
 
-Unofficial — not affiliated with Transperth or the PTA. Always check station boards.
+Unofficial — not affiliated with any transport operator or authority. Always check station boards.
 ```
 
 **Note:** Full About / privacy detail lives in-app (`about.html` / `privacy.html`) and Play Data safety — not repeated here.
@@ -98,7 +108,7 @@ Unofficial — not affiliated with Transperth or the PTA. Always check station b
 `Know when to leave for your train — leave-by for your rail commute.`
 
 **What’s New (first release / Play release notes):**  
-`First release — Nearby board, saved Journeys with leave-by, optional Android widget and leave reminders. Free with optional one-time remove ads (A$3.99). Unofficial Transperth companion.`
+Use the 3.0.3 text in `docs/release-notes-3.0.3.md` (first public release, 492/500 characters, names no price). The 11 Aug Perth-only line is retired.
 
 ---
 
@@ -115,7 +125,7 @@ Ruth’s hero: kitchen → leave-by with delay. Aim **6–8** frames; stores nee
 | 4 | Journeys | Journey list or switcher with 2 named journeys | Save the commute you repeat |
 | 5 | Setup simplicity | Add journey / station + direction (clean) | Set up once |
 | 6 | Trust | Small unofficial line or About snippet style | Unofficial · check station boards |
-| 7 | (Optional) | Menu: Remove ads **A$3.99** one-time | Ads optional — pay once |
+| 7 | (Optional) | Menu: Remove ads **A$7.99** one-time | Ads optional — pay once |
 | 8 | Widget | Android home-screen widget (leave-in / leave-by) | Leave-by on your home screen |
 
 **Visual rules (Simon):** Light Next Train UI (teal accent); phone frame optional; caption type large and few words; no fake Transperth logo; no purple AI-slop gradients.
@@ -170,7 +180,7 @@ Historical note: Tim worried the label was wrong if Near me toggled to Journeys;
 
 ### Ruth (marketing)
 
-- [x] Play short + full description shippable (unofficial; leave-by hero; **A$3.99**)  
+- [ ] Play short + full description re-passed after the 19 Sep 2026 update (unofficial; leave-by hero; 34 regions; **A$7.99**)  
 - [x] What’s New includes widget / leave reminders (light)  
 - [ ] Screenshot set + feature graphic signed off (~15–17 Sep)  
 - [x] Closed-beta invite copy ready — `docs/closed-beta-invite.md`  
@@ -181,7 +191,7 @@ Historical note: Tim worried the label was wrong if Near me toggled to Journeys;
 - [x] Privacy + About HTTPS live (`next-train-app.vercel.app` — swap if custom domain later)  
 - [x] Contact email on About (`EvansAppStudio@gmail.com`)  
 - [ ] Screenshots from **production-like** build (not test ad placeholders if avoidable) — with Simon **8–15 Sep**  
-- [ ] Remove-ads IAP in Console = **A$3.99** one-time (matches listing)  
+- [ ] Remove-ads IAP in Console = **A$7.99** one-time (matches listing)  
 - [x] “Unofficial” visible in description  
 - [ ] App Access / login notes: no account required  
 
@@ -197,3 +207,4 @@ Historical note: Tim worried the label was wrong if Near me toggled to Journeys;
 | 2026-08-11 | Ruth shippable pass: ownership, A$3.99 in body, What’s New widget/reminders, checklist split |
 | 2026-08-11 | Play Console paste: stronger short + full description; asset readiness for Tim |
 | 2026-08-11 | Full description marketing-led; single unofficial closer (About holds the rest) |
+| 2026-09-19 | First public release: short + full description rewritten from Perth-only to 34 regions across 5 countries; Remove ads A$3.99 → A$7.99 (11 Sep decision); keywords, What’s New pointer and checklist updated. Frame 7 screenshot and feature-graphic route example need re-checking against the new copy |

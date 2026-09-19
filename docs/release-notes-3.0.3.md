@@ -39,10 +39,9 @@ For closed testers already on 3.0.2, the actual changes are: Near me now follows
 nearest you (King's Cross, Waterloo and Victoria show National Rail instead of the Tube), and
 nine Essex stations moved to Greater Anglia.
 
-**Check before pasting:** `docs/store-listing.md` still carries the Perth-only short description
-("Live leave-by for Perth trains") and a Remove-ads price of A$3.99. The app now covers 34
-regions and the 11 Sep 2026 decision set the price at A$7.99. The What's-new text above
-deliberately names no price. The listing itself needs the same update before production rollout.
+The store listing was updated alongside this release: `docs/store-listing.md` now carries the
+34-region, five-country description and Remove ads at A$7.99 (11 Sep 2026 decision). The
+What's-new text above deliberately names no price.
 
 ---
 
