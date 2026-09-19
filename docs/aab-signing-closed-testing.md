@@ -53,7 +53,7 @@ Run from repo root:
 npm run release:prep
 ```
 
-This runs `test:pre-upload` (Play hygiene + version/IAP/privacy checks), web smoke, and `cap:sync`, then prints version summary and AAB path. **Before public v3**, Tim should use this every time; for quick closed bumps, `npm run test:pre-upload` alone is enough if assets are already synced.
+This runs `cap:sync` first (so the checks below see the assets that will actually ship), then `test:pre-upload` (Play hygiene + version/IAP/privacy checks), then web smoke, then prints version summary and AAB path. **Before public v3**, Tim should use this every time; for quick closed bumps, `npm run test:pre-upload` alone is enough if assets are already synced — it checks the last `cap:sync`, so run that first if `public/` changed since.
 
 Manual checklist:
 

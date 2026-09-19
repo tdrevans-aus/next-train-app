@@ -171,6 +171,7 @@ const SMOKE_SCRIPTS = [
   "reset-param-gated.mjs",
   "ship-assets-no-dogfood-origin.mjs",
   "aab-no-dev-assets.mjs",
+  "release-prep-step-order-gate.mjs",
   "security-headers-gate.mjs",
   "api-500-no-error-echo.mjs",
   "country-wide-picker.mjs",
@@ -374,6 +375,12 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
   "vercel-health-region-gate.mjs",
   /** Parses vercel.json as JSON; no dev server, no deployment. */
   "vercel-json-no-inert-memory-gate.mjs",
+  /**
+   * Imports release-prep.mjs's exported STEPS list and checks ordering; no dev
+   * server, no network, no spawnSync (guarded behind an is-main check).
+   * docs/jim-brief-release-prep-sync-before-gates.md, 19 Sep 2026.
+   */
+  "release-prep-step-order-gate.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
