@@ -223,3 +223,75 @@ item 1 and item 3's underlying assumption):
 
 No live fetch of the API 2.0 `departureBoard` or SIRI-ET endpoints was attempted (out of
 scope for this pass — real-time wiring is separate D2+ work per the adapter file headers).
+
+## Jim's note — live-board wiring STOPPED, Metro has no real-time on API 2.0 (20 Sep 2026)
+
+`REJSEPLANEN_API_KEY` is now set (`.env.local` and Vercel). Dispatched to wire the API 2.0
+`departureBoard` as the live board source per Tim's standing rule (Göteborg, PR #332: no live
+times, no region). **Stopped before wiring anything** because the first-thing verification step
+this task required — confirm Metro carries real-time before proceeding — came back negative,
+reproducibly, at three different stations. This is a Tim decision, not something to paper over.
+
+**Evidence (live pulls, 2026-09-19/20, `https://www.rejseplanen.dk/api/departureBoard`,
+`format=json`).** Every non-Metro mode observed (S-tog, Regionaltog, ICL, Bus) carries a
+`prognosisType` field (`"PROGNOSED"` or `"CALCULATED"`) on **every** row, present whether or not
+the train is currently delayed — this is the real-time marker; `rtTime`/`rtDate`/`rtTrack`/
+`rtPlatform` are added on top of it only when there's an active deviation from schedule. Example,
+København H S-tog (`extId=8600626`): 27/27 rows have `prognosisType`, several also carry `rtTime`
+(e.g. `C` line: `"time":"19:38:00"`, `"rtTime":"19:39:00"`). Regionaltog at the same stop:
+18/18 rows have `prognosisType:"PROGNOSED"` (none delayed in that window, but the RT machinery is
+clearly running). ICL 50054 at the same stop: `"time":"19:18:00"`, `"rtTime":"19:37:00"`,
+`"platform":"6"`, `"rtPlatform":"5"` — an active 19-minute delay + platform change, i.e. definitely
+real-time-capable.
+
+**Metro rows have none of this, at every station checked:**
+- København H (Metro-tagged stop, `extId=8603330`): 12/12 Metro rows, 0 with `prognosisType`,
+  0 with `rtTime`/`rtDate`/`cancelled`.
+- Nørreport (`extId=8600646`, combined board): 6/6 Metro rows, same — 0 with any RT field.
+- Kongens Nytorv, the hub-lock station and Metro-only (`extId=8603308`): 17/17 Metro rows, 0 with
+  any RT field.
+
+Every Metro row across all three pulls has exactly `name`, `time`, `date`, `direction`,
+`track`/no-track, `JourneyStatus` — a pure schedule row, no `prognosisType` key present at all
+(not present-but-empty; absent). Note: København H and Nørreport's `departureBoard` responses
+combine every co-located stop within the walking radius regardless of which of that node's
+several `extId`s you query (verified: querying the rail extId and the Metro extId at København H
+returned byte-identical 151-row combined boards including Metro, S-tog, DSB, and bus) — so this
+isn't an artefact of asking the wrong stop id.
+
+**This does NOT match the "later corrected" note in the earlier entry above** (dated before this
+session): that entry implied Metro RT exclusion was an oracle-report-era misunderstanding, since
+fixed. My direct pull says otherwise — Metro genuinely has no real-time surface on the API 2.0
+`departureBoard` endpoint, full stop, as of today. I have not tried SIRI-ET via the Dataudveksleren
+NAP (a different endpoint, out of scope for this pass) — it's possible Metroselskabet's own
+real-time only flows through that path, or through a Metroselskabet-specific feed, not through
+Rejseplanen's aggregation. That's unverified, not assumed either way.
+
+**Why I stopped rather than wiring a partial board.** The task's stop condition was explicit: no
+Metro RT → stop, evidence into this file, docs-only PR, report back, Tim decides. Wiring live
+S-tog/DSB/Öresundståg while leaving Metro on the schedule-only static path would put schedule-only
+departures back on a Copenhagen board — the exact thing Tim's standing rule (no live times, no
+region) exists to prevent, since the pack's own scope is Metro + S-tog + DSB + Öresundståg
+together, not Metro carved out. A mixed board without a live/timetable marker (FB-57, still
+undecided) would be indistinguishable from live to a rider.
+
+**Options for Tim, not decided here:**
+1. Check whether SIRI-ET / Dataudveksleren carries Metro real-time separately from the aggregated
+   Rejseplanen API 2.0 board — if so, Copenhagen would need a two-source board (Rejseplanen for
+   S-tog/DSB/Öresundståg + a second feed for Metro), a materially bigger D2 than a single-provider
+   config.
+2. If no Metro RT exists anywhere reachable, decide whether Copenhagen ships as S-tog + DSB +
+   Öresundståg only (Metro excluded from v1, contradicting the pack's board-eligibility scope) or
+   stays parked entirely until a Metro RT source turns up.
+
+**No code changed this session.** `lib/providers/copenhagen.js`, `lib/providers/rejseplanen.js`,
+`registry.js`, and `qa/copenhagen-planned-gate.mjs` are untouched — still schedule-only, still
+`planned`, exactly as the previous entry left them. The M3 ring-direction wording question (open
+question 1, direction-model-memo.md, partially answered by the previous session's live pull —
+`"M3 + København H (Metro)"` next-interchange-name headsigns rather than clockwise/counter-
+clockwise) is still open and unchanged; no copy was touched this session either.
+
+**Quota note.** This session made 8 live calls total (3 `location.name`, 5 `departureBoard`)
+against the free tier's 50,000 calls/month — negligible, but flagging since no gate exists yet to
+bound this: any future live-wiring QA gate should mock the HTTP layer rather than hitting the
+real endpoint repeatedly per CI run, same pattern as the Göteborg/Helsinki dogfood gates.
