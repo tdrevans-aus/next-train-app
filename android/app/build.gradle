@@ -123,6 +123,29 @@ tasks.register('capacitorCopyWebAssets', Exec) {
         commandLine 'npx', 'cap', 'copy', 'android'
     }
 }
+
+// `npm run cap:sync` prunes dev-only files (dogfood-origin.json, design/, lib/cities, etc. —
+// scripts/prune-ship-assets.mjs) out of the synced assets dir, but capacitorCopyWebAssets above
+// re-runs `cap copy` on *every* Gradle build, including release ones started straight from
+// Android Studio without a prior `cap:sync`, silently re-copying those files back in moments
+// before packaging (docs/jim-brief-gradle-copy-skips-prune.md). Debug builds intentionally rely
+// on that re-copy to get dogfood-origin.json onto the device for LAN dogfooding
+// (public/app.js readDogfoodOrigin, public/brisbane-dogfood.js), so the prune below only runs
+// for release-variant task invocations, never unconditionally. A prune failure fails the task
+// (and therefore the build) like any other Exec.
+def isReleaseBuild = gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }
+
+tasks.register('pruneShipAssets', Exec) {
+    dependsOn 'capacitorCopyWebAssets'
+    onlyIf { isReleaseBuild }
+    workingDir "${projectDir}/../.."
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        commandLine 'cmd', '/c', 'node', 'scripts/prune-ship-assets.mjs'
+    } else {
+        commandLine 'node', 'scripts/prune-ship-assets.mjs'
+    }
+}
+
 tasks.matching { it.name == 'preBuild' }.configureEach {
-    it.dependsOn 'capacitorCopyWebAssets'
+    it.dependsOn 'pruneShipAssets'
 }

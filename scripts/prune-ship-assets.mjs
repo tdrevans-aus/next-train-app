@@ -9,19 +9,22 @@
  */
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const roots = [
+const SYNCED_ASSET_ROOTS = [
   "android/app/src/main/assets/public",
   "ios/App/App/public",
 ];
 
-const prunePaths = [
+// Exported so other tools (e.g. qa/aab-no-dev-assets.mjs) check the exact same
+// list against a packaged AAB/IPA rather than duplicating it and drifting.
+export const PRUNE_PATHS = [
   "design",
   "site-config.example.json",
   "lib/cities",
   "dogfood-origin.json",
 ];
-const pruneGlobs = [".mjs", ".ts", ".map"];
+export const PRUNE_GLOB_SUFFIXES = [".mjs", ".ts", ".map"];
 
 function rmrf(target) {
   if (!fs.existsSync(target)) {
@@ -31,26 +34,34 @@ function rmrf(target) {
   return true;
 }
 
-for (const root of roots) {
-  if (!fs.existsSync(root)) {
-    continue;
-  }
-
-  for (const rel of prunePaths) {
-    const target = path.join(root, rel);
-    if (rmrf(target)) {
-      console.log(`pruned ${target}`);
-    }
-  }
-
-  for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
-    if (!entry.isFile()) {
+export function pruneShipAssets(roots = SYNCED_ASSET_ROOTS) {
+  for (const root of roots) {
+    if (!fs.existsSync(root)) {
       continue;
     }
-    if (pruneGlobs.some((suffix) => entry.name.endsWith(suffix))) {
-      const target = path.join(root, entry.name);
-      fs.unlinkSync(target);
-      console.log(`pruned ${target}`);
+
+    for (const rel of PRUNE_PATHS) {
+      const target = path.join(root, rel);
+      if (rmrf(target)) {
+        console.log(`pruned ${target}`);
+      }
+    }
+
+    for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+      if (!entry.isFile()) {
+        continue;
+      }
+      if (PRUNE_GLOB_SUFFIXES.some((suffix) => entry.name.endsWith(suffix))) {
+        const target = path.join(root, entry.name);
+        fs.unlinkSync(target);
+        console.log(`pruned ${target}`);
+      }
     }
   }
+}
+
+const isMain =
+  process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+if (isMain) {
+  pruneShipAssets();
 }
