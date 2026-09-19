@@ -7,13 +7,47 @@ Drop later (Jim D2): qa/fixtures/brussels/published-network.json. Research pack 
 Dogfood wiring landed ahead of the flip, status stays `planned`:
 `lib/cities/brussels/dogfood-next-train.js` (single agency — STIB/MIVB
 metro 1/2/5/6, directions from the printed line map, board from the
-existing schedule-only `fetchStationBoard()`), dispatch switch-cases in
+LIVE `fetchStationBoard()`), dispatch switch-cases in
 `lib/cities/live-city-api.js` (`directionsFor`/`getMultiCityNextTrain`),
 and `qa/brussels-dogfood-gate.mjs` (replacing the retired
 `qa/brussels-planned-gate.mjs`, registered in `qa/run-all.mjs`'s smoke
 tier).
 
-**SNCB/NMBS — NOT wired, holds the flip.** The Board eligibility section
+## STIB live board CONFIRMED and wired (20 Sep 2026) — this pass
+
+The BMC Waiting Time live JSON path this pack's D1 note (below, "Live
+boards" line) flagged as unconfirmed **is now confirmed and wired**. The
+previous session's exhaustive path-guessing against the developer portal
+(`api-management-opendata-production.developer.azure-api.net/apis`, a
+client-side-rendered SPA) never found the real operation because it was
+guessing against the wrong surface. The fix: the portal itself exposes a
+public, unauthenticated content-listing endpoint used to render its own
+API catalogue —
+`GET https://api-management-opendata-production.developer.azure-api.net/mapi/apis?api-version=2018-06-01-preview`
+— which returns every published API's real `properties.path`. That listing
+named `api/datasets/stibmivb/rt/WaitingTimes` directly; its
+`/operations` sub-resource gave the exact `urlTemplate` (`/`, i.e. the
+API's own base path). The live call is against the **gateway** host, not
+the portal host:
+`GET https://api-management-opendata-production.azure-api.net/api/datasets/stibmivb/rt/WaitingTimes?where=...`,
+header `Ocp-Apim-Subscription-Key: STIB_API_KEY`. Verified live with the
+real key: Arts-Loi / Kunst-Wet (point IDs 8041/8042/8401/8402, matching
+this catalog's `stopIds` exactly — STIB point IDs and this catalog's GTFS
+stop IDs are the same numbering scheme, no separate mapping needed)
+returned all four v1 lines with genuine `expectedArrivalTime` timestamps;
+Simonis/Elisabeth returned lines 2 and 6, including a live-only
+`"message": "Do not embark"` entry that cannot exist in a static schedule
+— itself confirmation this is real vehicle tracking, not a schedule echo.
+No response headers exposed a numeric rate limit; the adapter uses a
+conservative 15s cache TTL per station (documented as a placeholder, same
+posture as Göteborg's Västtrafik cache). `lib/providers/brussels.js` is
+rewritten around this live source — no timetable fallback
+(`MissingStibCredentialsError` / `StibUnavailableError` are hard errors,
+per Tim's standing rule, Göteborg PR #332). This closes the "STIB metro
+live JSON also still unconfirmed" line in the registry `notes` — the
+**only** remaining flip blocker is SNCB below.
+
+**SNCB/NMBS — NOT wired, still holds the flip.** The Board eligibility section
 below rules SNCB domestic rail `in` at Gare Centrale / Gare du Midi / Gare
 de l'Ouest (walk-up, no compulsory reservation) and it has a confirmed
 free real-time source (iRail liveboard API, no key required — verified
@@ -49,7 +83,7 @@ C2/C3: (1) Separate city brussels, agency STIB/MIVB. Do not invent city=bru. (2)
 
 H2: no product brussels stations.json. Clash is **map-stack order vs FR/NL lock** plus **metro vs premetro / SNCB name family**.
 
-**Live boards: BMC Waiting Time + Vehicle Positions keyed later — not a D1 blocker.** Portal https://api-management-opendata-production.developer.azure-api.net/apis. Header `Ocp-Apim-Subscription-Key`. No STIB GTFS-RT (NAP). Empty-key WaitingTimes.json **404** on 29 Aug 2026. This pack has **no key** and did not call the API with a real key. Never paste a key. D1 stays planned. assertCityLive("brussels") must fail.
+**Live boards: BMC Waiting Time + Vehicle Positions keyed later — not a D1 blocker.** Portal https://api-management-opendata-production.developer.azure-api.net/apis. Header `Ocp-Apim-Subscription-Key`. No STIB GTFS-RT (NAP). Empty-key WaitingTimes.json **404** on 29 Aug 2026. This pack has **no key** and did not call the API with a real key. Never paste a key. D1 stays planned. assertCityLive("brussels") must fail. **UPDATE 20 Sep 2026: confirmed and wired — see the "STIB live board CONFIRMED and wired" section above.** The real operation path was `api/datasets/stibmivb/rt/WaitingTimes` on the gateway host, recovered from the developer portal's own public `/mapi/apis` content-listing endpoint, not the guessed paths this line originally referred to.
 
 H7: Europe/Brussels **HAS DST**. Do not copy Perth / Brisbane no-DST.
 

@@ -1,4 +1,0 @@
-route_id,agency_id,route_short_name,route_long_name,route_type
-L1,STIB/MIVB,1,GARE DE L'OUEST - STOCKEL,1
-L2,STIB/MIVB,2,SIMONIS - ELISABETH,1
-L6,STIB/MIVB,6,ROI BAUDOUIN - ELISABETH,1
