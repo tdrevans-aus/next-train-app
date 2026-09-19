@@ -1,23 +1,46 @@
 /**
- * Brussels stays planned (adapter wired, not flipped live). Perth stays live.
+ * Brussels adapter/dispatch wiring gate. Replaces brussels-planned-gate.mjs
+ * (retired) — Brussels STAYS `status: "planned"` here (this is the pre-flip
+ * dogfood wiring pass, docs/brussels-d1/jim-handoff.md "Flip follow-through"
+ * section). Per CLAUDE.md's flip-follow-through split (added 30 Aug 2026,
+ * corrected same day): the dogfood module, the live-city-api.js dispatch
+ * switch-cases, and this gate are safe to land ahead of the flip because
+ * production routes gate on assertCityLive() first, not on MULTI_CITY_IDS
+ * membership. Brussels is deliberately NOT added to MULTI_CITY_IDS,
+ * brisbane-dogfood.js's mount/available map, or journey-model.js's
+ * persisted-city/country lists yet — those three list-membership edits are
+ * Mark's flip commit, not this one (qa/live-city-lists-sync.mjs enforces
+ * that they equal the registry's live set). See
+ * docs/brussels-d1/jim-handoff.md for the exact note left for Mark.
  *
- * Offline by construction (docs/jim-brief-brussels-gate-pinned-clock.md): this gate must never
- * reach the network. `globalThis.fetch` is stubbed to throw immediately below, before any other
- * import runs a request, so a future change that reintroduces a live call fails loudly here
- * instead of passing today and expiring the next time STIB rolls its calendar. The "live schedule
- * board" assertions run against a small committed fixture
- * (qa/fixtures/brussels/gtfs-static/, see its README) via `loadGtfsStaticFromDirectory` — the
- * same swap PR #357 made for the seven dogfood gates' staleness check — injected into the REAL
- * `fetchStationBoard` in `lib/providers/brussels.js` through its `staticData` option, so the
- * production filter/map pipeline (tripAllowed, resolveTerminus, self-referential-arrival drop,
- * marketingLabel) is what runs here, not a copy of it. Only the live STIB fetch
- * (`loadBrusselsStatic`) is bypassed.
+ * Offline by construction (carried forward from the retired planned gate,
+ * docs/jim-brief-brussels-gate-pinned-clock.md): this gate must never reach
+ * the network. `globalThis.fetch` is stubbed to throw immediately below,
+ * before any other import runs a request. The "live schedule board"
+ * assertions run against a small committed fixture
+ * (qa/fixtures/brussels/gtfs-static/) via `loadGtfsStaticFromDirectory`,
+ * injected into the REAL fetchStationBoard() in lib/providers/brussels.js
+ * (and, through it, the REAL lib/cities/brussels/dogfood-next-train.js and
+ * live-city-api.js dispatch) via each function's own `staticData` option —
+ * so the production filter/map/dispatch pipeline is what runs here, not a
+ * copy of it. Only the live STIB fetch (loadBrusselsStatic) is bypassed.
  *
- * Usage: node qa/brussels-planned-gate.mjs
+ * Single agency (STIB/MIVB metro 1/2/5/6) — no second-agency
+ * throws-a-documented-error shape here (unlike South Yorkshire/Glasgow/
+ * Edinburgh's National-Rail-plus-unconfirmed-tram pairs). SNCB/NMBS is `in`
+ * per docs/brussels-d1/oracle-clash-report.md's Board eligibility section
+ * but is NOT wired at all yet (no catalog entry, no dispatch case) — see
+ * lib/cities/brussels/dogfood-next-train.js file header for why, and the
+ * registry `notes` for Mark. This gate does not assert anything about SNCB
+ * beyond confirming it is absent from the catalog (so Mark's QA correctly
+ * holds the flip until it lands or a decision is recorded to launch
+ * without it).
+ *
+ * Usage: node qa/brussels-dogfood-gate.mjs
  */
 globalThis.fetch = async (input) => {
   throw new Error(
-    `brussels-planned-gate: network access is forbidden in this gate (attempted fetch: ${
+    `brussels-dogfood-gate: network access is forbidden in this gate (attempted fetch: ${
       typeof input === "string" ? input : input?.url ?? input
     }) — see docs/jim-brief-brussels-gate-pinned-clock.md`
   );
@@ -27,6 +50,7 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
+import { isMultiCity, getMultiCityDirections, getMultiCityNextTrain } from "../lib/cities/live-city-api.js";
 import {
   BRUSSELS_HUB,
   resolveCatalogEntry,
@@ -44,6 +68,11 @@ import {
   isForbiddenHubProxy,
   bilingualHalves,
 } from "../lib/cities/brussels/marketing-directions.js";
+import {
+  listBrusselsDogfoodStations,
+  getBrusselsDogfoodDirections,
+  getBrusselsDogfoodNextTrain,
+} from "../lib/cities/brussels/dogfood-next-train.js";
 import { loadGtfsStaticFromDirectory, snapshotCalendarRange } from "../lib/providers/gtfs/static-cache.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -60,16 +89,14 @@ assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must sta
 assert(assertCityLive("goteborg")?.ok === true, "Göteborg tester-live must stay green");
 assert(assertCityLive("malmo")?.ok === true, "Malmö tester-live must stay green");
 assert(assertCityLive("uppsala")?.ok === true, "Uppsala tester-live must stay green");
-// Helsinki isn't in this registry yet - it's still on its own unmerged flip-PR (#164). This
-// assertion was written in a shared working tree where Helsinki appeared live; that was
-// contamination, not master's actual state. No Helsinki assertion here until #164 merges.
 
+// Registry identity — STAYS planned (Mark/Tim's flip call, not made here).
 const live = assertCityLive("brussels");
-assert(live?.ok === false, "assertCityLive(brussels) must fail");
+assert(live?.ok === false, "assertCityLive(brussels) must fail — status is still planned");
 assert(live?.status === 501, "brussels must be 501 planned");
 
 const entry = getCity("brussels");
-assert(entry?.status === "planned", "brussels registry status must be planned");
+assert(entry?.status === "planned", "brussels registry status must stay planned");
 assert(entry?.adapterReady === true, "brussels adapterReady must be true");
 assert(entry?.displayName === "Brussels", "brussels display name must be Brussels");
 assert(entry?.timeZone === "Europe/Brussels", "brussels timezone must be Europe/Brussels");
@@ -77,6 +104,12 @@ assert(CITIES.filter((city) => city.id === "brussels").length === 1, "brussels m
 for (const forbiddenId of ["bru", "bruxelles", "stib", "belgium"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
+
+// NOT yet in MULTI_CITY_IDS — that's Mark's flip commit, not this pass.
+assert(
+  isMultiCity("brussels") === false,
+  "brussels must NOT be in MULTI_CITY_IDS yet — that's Mark's flip commit"
+);
 
 const d1Dir = join(ROOT, "docs/brussels-d1");
 for (const name of [
@@ -132,6 +165,13 @@ for (const station of stations) {
 assert(!byName.has("Gare du Nord / Noordstation") && !byName.has("Gare du Nord"), "catalog must not carry Gare du Nord (no metro)");
 assert(!byName.has("Albert"), "catalog must not carry Albert (metro 3 frozen, not open)");
 
+// SNCB is `in` per the pack's Board eligibility section but has no catalog
+// entry — nothing here should silently resolve a bare "Gare du Midi" etc.
+// as anything other than the metro station it already is (doNotGroup vs
+// SNCB, per hazard-pack.md), and no SNCB-only station (e.g. Gare du Nord,
+// which has no metro at all) may leak in.
+assert(!byName.has("SNCB") && !byName.has("NMBS"), "catalog must not invent an SNCB/NMBS pseudo-station");
+
 assert(resolveCatalogEntry(BRUSSELS_HUB)?.name === BRUSSELS_HUB, "resolveCatalogEntry must resolve the hub by printed name");
 assert(resolveCatalogEntry("arts-loi")?.name === BRUSSELS_HUB, "resolveCatalogEntry must resolve the FR half");
 assert(resolveCatalogEntry("kunst-wet")?.name === BRUSSELS_HUB, "resolveCatalogEntry must resolve the NL half");
@@ -183,6 +223,19 @@ assert(halves.fr === "Stockel" && halves.nl === "Stokkel", "bilingualHalves must
 const singleHalves = bilingualHalves("Simonis");
 assert(singleHalves.fr === "Simonis" && singleHalves.nl === "Simonis", "same-in-both-languages names fold to themselves for both halves");
 
+// Dogfood station list comes from the catalog, not a GTFS parse.
+const dogfoodStations = listBrusselsDogfoodStations();
+assert(dogfoodStations.length === 60, `dogfood stations must be the 60 catalog entries, got ${dogfoodStations.length}`);
+
+// Dogfood directions are the static marketing labels — no network involved,
+// same as production's directionsFor()/getMultiCityDirections() dispatch.
+const hubDogfoodDirections = getBrusselsDogfoodDirections(BRUSSELS_HUB);
+assert(hubDogfoodDirections.source === "brussels-marketing-ends", "directions source must be brussels-marketing-ends");
+assert(
+  JSON.stringify(hubDogfoodDirections.directions) === JSON.stringify(hubLabels),
+  "dogfood directions must equal marketingLabelsForStation output"
+);
+
 // Schedule board (GTFS static, LOCAL FIXTURE — no network) — self-referential-arrival + overlay
 // filtering, exercised against qa/fixtures/brussels/gtfs-static/ (real STIB/MIVB stop_ids and
 // headsign conventions, trimmed). The fixture is handed to the REAL fetchStationBoard via its
@@ -201,9 +254,7 @@ const fixtureStatic = loadGtfsStaticFromDirectory(FIXTURE_DIR, {
 
 /**
  * `now` is derived FROM the fixture's own calendar coverage, one day after its start_date, so
- * this gate can never again drift out of sync with a second, independently hardcoded date the
- * way the old live-fetch version did (that was exactly how it broke: a frozen "now" checked
- * against a calendar it didn't control).
+ * this gate can never again drift out of sync with a second, independently hardcoded date.
  */
 function deriveNowFromLocalCalendar(staticData) {
   const { minDate } = snapshotCalendarRange(staticData);
@@ -244,6 +295,52 @@ assert(
   "Elisabeth board must never show itself as a destination (self-referential arrival)"
 );
 
+// End-to-end dogfood next-train, driven by the same fixture via the
+// staticData escape hatch — proves getBrusselsDogfoodNextTrain() is really
+// running the production fetchStationBoard()/filter/map pipeline, not a copy.
+const firstHubChip = hubLabels[0];
+assert(firstHubChip, "fixture must produce at least one hub direction chip to drive the next-train test");
+const nextTrain = await getBrusselsDogfoodNextTrain({
+  station: BRUSSELS_HUB,
+  destination: firstHubChip,
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+  now,
+  staticData: fixtureStatic,
+});
+assert(nextTrain.config?.destination === firstHubChip, "next-train destination must equal the chosen chip");
+
+// Same call through the live-city-api dispatch, end to end — proves the
+// switch-case in directionsFor()/getMultiCityNextTrain() is wired, even
+// though brussels is deliberately not in MULTI_CITY_IDS yet.
+const dispatchedDirections = await getMultiCityDirections("brussels", BRUSSELS_HUB);
+assert(
+  JSON.stringify(dispatchedDirections.directions) === JSON.stringify(hubDogfoodDirections.directions),
+  "live-city-api dispatch must return the same chips as the dogfood harness"
+);
+assert(dispatchedDirections.source === "brussels-marketing-ends", "live-city-api dispatch source must be brussels-marketing-ends");
+
+const dispatchedNextTrain = await getMultiCityNextTrain("brussels", {
+  station: BRUSSELS_HUB,
+  destination: firstHubChip,
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+  now,
+  staticData: fixtureStatic,
+});
+assert(
+  dispatchedNextTrain.config?.destination === firstHubChip,
+  "dispatched next-train destination must equal the chosen chip"
+);
+
+let unknownThrew = false;
+try {
+  await fetchFixtureBoard("Not A Real Station");
+} catch (err) {
+  unknownThrew = err instanceof Error;
+}
+assert(unknownThrew, "fetchStationBoard must not silently succeed for an unknown station");
+
 console.log(
-  "brussels-planned-gate: ok (planned/501, adapterReady, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, self-referential-arrival filter, offline schedule board via local fixture, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
+  "brussels-dogfood-gate: ok (planned/501, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, self-referential-arrival filter, offline schedule board + dogfood + dispatch all via local fixture, SNCB absent from catalog (in per pack, not yet wired — see registry notes), Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
 );
