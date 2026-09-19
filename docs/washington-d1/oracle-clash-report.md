@@ -106,7 +106,7 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 
 **VRE (Fredericksburg & Manassas Lines) at Union Station, L'Enfant Plaza, Franconia-Springfield:** Both tests pass. VRE requires ticket validation before boarding, but tickets are purchased at stations with walk-up availability and no seat reservations are compulsory; seating is unreserved and first-come-first-served. Platform access has no check-in barrier. Verdict: **`in`** ([VRE fares and tickets](https://www.vre.org/service/fares-and-tickets/); real-time via Transit app integration).
 
-**Amtrak Northeast Regional at Union Station, New Carrollton:** Both tests pass for coach class. The Northeast Regional offers walk-up ticket availability at stations and coach-class seating is first-come-first-served with no compulsory reservation (business class seats are automatically assigned but not required as a separate compulsory reservation). Platform access is unrestricted (controlled boarding at Union Station is flow management, not a check-in barrier comparable to Eurostar). Verdict: **`in`** ([Northeast Regional](https://www.amtrak.com/northeast-regional-train); [Union Station Amtrak](https://www.amtrak.com/stations/was)).
+**Amtrak Northeast Regional at Union Station, New Carrollton:** Verdict: **`out-reservation`** — coach is reserved (a ticket is a reservation for a specific train), so test 1 fails. *Controller correction, 20 Sep 2026: the first Nico pass argued `in` here; that contradicted the Boston pass and Amtrak's reserved-seating policy, and the table row below was corrected in #409. US packs disagree with each other on this service (`in` / `out-product` / `out-reservation`); the single authoritative verdict is to be recorded in `docs/united-states-ledger.md`.* ([Amtrak reserved seating](https://www.amtrak.com/reserved-seating))
 
 **Amtrak other services (Acela Express, Capitol Limited, Cardinal, Crescent, Silver Meteor, Silver Star, Vermonter, Carolinian, Palmetto) at Union Station and other stations:** Test 1 fails. These services are all-reserved or have compulsory seat reservations ([Amtrak seat assignments](https://www.amtrak.com/reserved-seating)). Riders cannot board walk-up with a standard ticket; a reserved seat must be purchased in advance or with fare premium at the station. Verdict: **`out-reservation`** ([Amtrak reserved seating](https://www.amtrak.com/seats-cabins/acela-seats/)).
 
@@ -130,14 +130,14 @@ No `line-map` generator, no `stopIds` in the published JSON, no live city flip, 
 | **Amtrak Palmetto** | New Carrollton | No (reserved-only service) | Yes (all-reserved) | No | `out-reservation` | [Amtrak reserved seating](https://www.amtrak.com/reserved-seating); all seats include reservations |
 
 **Summary for Jim and Luke:**
-1. v1 includes **MARC and VRE** regional commuter rail at in-catalog stations, plus **Amtrak Northeast Regional** at Union Station and New Carrollton (walk-up, no compulsory reservation).
+1. v1 includes **MARC and VRE** regional commuter rail at in-catalog stations. Amtrak Northeast Regional is `out-reservation` (controller correction, 20 Sep 2026 — see above).
 2. v1 excludes all other **Amtrak services** (`out-reservation`: Acela, Capitol Limited, Cardinal, Crescent, Silver Meteor/Star, Vermonter, Carolinian, Palmetto) which require advance reservations.
 3. **Stations with overlapping rail services:**
-   - **Union Station (Red Line):** MARC (three lines) + VRE + Amtrak Northeast Regional (walk-up) + Amtrak reserved services (excluded).
+   - **Union Station (Red Line):** MARC (three lines) + VRE; all Amtrak services excluded (`out-reservation`).
    - **L'Enfant Plaza (Orange/Blue/Silver, Green, Yellow):** VRE only (no MARC or Amtrak).
    - **Rockville (Red Line):** MARC Brunswick only.
    - **Silver Spring (Red Line):** MARC Brunswick only.
-   - **New Carrollton (Orange, Silver):** MARC Penn + Amtrak Northeast Regional.
+   - **New Carrollton (Orange, Silver):** MARC Penn.
    - **Franconia-Springfield (Blue):** VRE Manassas only.
 4. **doNotGroup implications:** Union Station boards must show Metro platforms separately from MARC/VRE/Amtrak platforms. L'Enfant Plaza must show Metro separately from VRE. New Carrollton must show Metro separately from MARC and Amtrak. Different operators, different line codes, different infrastructure.
 5. **No other operators call at in-catalog Metrorail stations.** DC Streetcar (ended 31 Mar 2026) and Maryland Purple Line (opening late 2027, not yet operational) are out of scope for current v1 catalog.

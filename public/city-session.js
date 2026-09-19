@@ -118,6 +118,9 @@
         { id: "bart", name: "BART (San Francisco Bay Area)", timeZone: "America/Los_Angeles", comingSoon: true },
         { id: "boston", name: "Boston", timeZone: "America/New_York", comingSoon: true },
         { id: "chicago", name: "Chicago", timeZone: "America/Chicago", comingSoon: true },
+        // docs/washington-d1/ — same Coming Soon shape (PR #418/#420 US wave 2
+        // pattern). status stays "planned" in the registry until a flip PR.
+        { id: "washington", name: "Washington, D.C.", timeZone: "America/New_York", comingSoon: true },
       ],
     },
     {
@@ -340,6 +343,10 @@
     bart: { minLat: 37.34, maxLat: 38.05, minLng: -122.5, maxLng: -121.75 },
     boston: { minLat: 42.15, maxLat: 42.48, minLng: -71.3, maxLng: -70.95 },
     chicago: { minLat: 41.68, maxLat: 42.12, minLng: -87.95, maxLng: -87.55 },
+    // docs/washington-d1/ — derived from lib/cities/washington/stations.json's actual
+    // coordinates (min 38.7665/-77.4915, max 39.1199/-76.8446) with a small margin. No
+    // overlap with any existing box (different region entirely).
+    washington: { minLat: 38.72, maxLat: 39.17, minLng: -77.55, maxLng: -76.8 },
   };
 
   function dogfood() {
