@@ -15,7 +15,9 @@
       "hub": true,
       "branch": null,
       "aliases": [],
-      "id": "clark-lake"
+      "id": "clark-lake",
+      "lat": 41.885737,
+      "lng": -87.630886
     },
     {
       "name": "State/Lake",
@@ -43,7 +45,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "washington-wabash"
+      "id": "washington-wabash",
+      "lat": 41.88322,
+      "lng": -87.626189
     },
     {
       "name": "Adams/Wabash",
@@ -57,7 +61,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "adams-wabash"
+      "id": "adams-wabash",
+      "lat": 41.879507,
+      "lng": -87.626037
     },
     {
       "name": "Library",
@@ -70,7 +76,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "library"
+      "id": "library",
+      "lat": 41.876862,
+      "lng": -87.628196
     },
     {
       "name": "LaSalle/Van Buren",
@@ -83,7 +91,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "lasalle-van-buren"
+      "id": "lasalle-van-buren",
+      "lat": 41.8768,
+      "lng": -87.631739
     },
     {
       "name": "Quincy",
@@ -96,7 +106,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "quincy"
+      "id": "quincy",
+      "lat": 41.878723,
+      "lng": -87.63374
     },
     {
       "name": "Washington/Wells",
@@ -109,7 +121,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "washington-wells"
+      "id": "washington-wells",
+      "lat": 41.882695,
+      "lng": -87.63378
     },
     {
       "name": "Merchandise Mart",
@@ -120,7 +134,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "merchandise-mart"
+      "id": "merchandise-mart",
+      "lat": 41.888969,
+      "lng": -87.633924
     },
     {
       "name": "Roosevelt",
@@ -132,7 +148,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "roosevelt"
+      "id": "roosevelt",
+      "lat": 41.8673785311,
+      "lng": -87.6270314058
     },
     {
       "name": "Howard",
@@ -144,7 +162,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "howard"
+      "id": "howard",
+      "lat": 42.019063,
+      "lng": -87.672892
     },
     {
       "name": "Jackson",
@@ -155,7 +175,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "jackson"
+      "id": "jackson",
+      "lat": 41.878183,
+      "lng": -87.629296
     },
     {
       "name": "Belmont",
@@ -167,7 +189,9 @@
       "hub": false,
       "branch": "Red/Brown/Purple (North Side Main Line)",
       "aliases": [],
-      "id": "belmont-red"
+      "id": "belmont-red",
+      "lat": 41.939751,
+      "lng": -87.65338
     },
     {
       "name": "Chicago",
@@ -178,7 +202,9 @@
       "hub": false,
       "branch": "Brown/Purple (Ravenswood-Loop connector)",
       "aliases": [],
-      "id": "chicago-brown"
+      "id": "chicago-brown",
+      "lat": 41.89681,
+      "lng": -87.635924
     },
     {
       "name": "Ashland",
@@ -189,7 +215,9 @@
       "hub": false,
       "branch": "Green/Pink (Lake Street elevated)",
       "aliases": [],
-      "id": "ashland-green"
+      "id": "ashland-green",
+      "lat": 41.885269,
+      "lng": -87.666969
     },
     {
       "name": "Wilson",
@@ -200,7 +228,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "wilson"
+      "id": "wilson",
+      "lat": 41.965481568,
+      "lng": -87.6579258145
     },
     {
       "name": "Wellington",
@@ -211,7 +241,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "wellington"
+      "id": "wellington",
+      "lat": 41.936033,
+      "lng": -87.653266
     },
     {
       "name": "Diversey",
@@ -222,7 +254,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "diversey"
+      "id": "diversey",
+      "lat": 41.932732,
+      "lng": -87.653131
     },
     {
       "name": "Fullerton",
@@ -234,7 +268,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "fullerton"
+      "id": "fullerton",
+      "lat": 41.9253003719,
+      "lng": -87.6528684398
     },
     {
       "name": "Armitage",
@@ -245,7 +281,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "armitage"
+      "id": "armitage",
+      "lat": 41.918217,
+      "lng": -87.652644
     },
     {
       "name": "Sedgwick",
@@ -256,7 +294,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "sedgwick"
+      "id": "sedgwick",
+      "lat": 41.910409,
+      "lng": -87.639302
     },
     {
       "name": "Morgan",
@@ -267,7 +307,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "morgan"
+      "id": "morgan",
+      "lat": 41.88557676,
+      "lng": -87.65212993
     },
     {
       "name": "Clinton",
@@ -278,7 +320,9 @@
       "hub": false,
       "branch": "Green/Pink (Lake Street elevated)",
       "aliases": [],
-      "id": "clinton-green"
+      "id": "clinton-green",
+      "lat": 41.885678,
+      "lng": -87.641782
     },
     {
       "name": "Harlem",
@@ -290,7 +334,9 @@
       "aliases": [
         "Harlem (Blue - O'Hare Branch)"
       ],
-      "id": "harlem-blue-line"
+      "id": "harlem-blue-line",
+      "lat": 41.98227,
+      "lng": -87.8089
     },
     {
       "name": "Harlem",
@@ -302,7 +348,9 @@
       "aliases": [
         "Harlem (Blue - Forest Park Branch)"
       ],
-      "id": "harlem-blue-line-2"
+      "id": "harlem-blue-line-2",
+      "lat": 41.87349,
+      "lng": -87.806961
     },
     {
       "name": "Western",
@@ -314,7 +362,9 @@
       "aliases": [
         "Western (Blue - O'Hare Branch)"
       ],
-      "id": "western-blue-line"
+      "id": "western-blue-line",
+      "lat": 41.916157,
+      "lng": -87.687364
     },
     {
       "name": "Western",
@@ -326,7 +376,9 @@
       "aliases": [
         "Western (Blue - Forest Park Branch)"
       ],
-      "id": "western-blue-line-2"
+      "id": "western-blue-line-2",
+      "lat": 41.875478,
+      "lng": -87.688436
     },
     {
       "name": "Western",
@@ -338,7 +390,9 @@
       "aliases": [
         "Western (Brown)"
       ],
-      "id": "western-brown-line"
+      "id": "western-brown-line",
+      "lat": 41.966163,
+      "lng": -87.688502
     },
     {
       "name": "Western",
@@ -350,7 +404,9 @@
       "aliases": [
         "Western (Pink)"
       ],
-      "id": "western-pink-line"
+      "id": "western-pink-line",
+      "lat": 41.854225,
+      "lng": -87.685129
     },
     {
       "name": "Western",
@@ -362,7 +418,9 @@
       "aliases": [
         "Western (Orange)"
       ],
-      "id": "western-orange-line"
+      "id": "western-orange-line",
+      "lat": 41.804546,
+      "lng": -87.684019
     },
     {
       "name": "Pulaski",
@@ -374,7 +432,9 @@
       "aliases": [
         "Pulaski (Blue)"
       ],
-      "id": "pulaski-blue-line"
+      "id": "pulaski-blue-line",
+      "lat": 41.873797,
+      "lng": -87.725663
     },
     {
       "name": "Pulaski",
@@ -386,7 +446,9 @@
       "aliases": [
         "Pulaski (Green)"
       ],
-      "id": "pulaski-green-line"
+      "id": "pulaski-green-line",
+      "lat": 41.885412,
+      "lng": -87.725404
     },
     {
       "name": "Pulaski",
@@ -398,7 +460,9 @@
       "aliases": [
         "Pulaski (Orange)"
       ],
-      "id": "pulaski-orange-line"
+      "id": "pulaski-orange-line",
+      "lat": 41.799756,
+      "lng": -87.724493
     },
     {
       "name": "Pulaski",
@@ -410,7 +474,9 @@
       "aliases": [
         "Pulaski (Pink)"
       ],
-      "id": "pulaski-pink-line"
+      "id": "pulaski-pink-line",
+      "lat": 41.853732,
+      "lng": -87.724311
     },
     {
       "name": "Cicero",
@@ -422,7 +488,9 @@
       "aliases": [
         "Cicero (Blue)"
       ],
-      "id": "cicero-blue-line"
+      "id": "cicero-blue-line",
+      "lat": 41.871574,
+      "lng": -87.745154
     },
     {
       "name": "Cicero",
@@ -434,7 +502,9 @@
       "aliases": [
         "Cicero (Green)"
       ],
-      "id": "cicero-green-line"
+      "id": "cicero-green-line",
+      "lat": 41.886519,
+      "lng": -87.744698
     },
     {
       "name": "Cicero",
@@ -446,7 +516,9 @@
       "aliases": [
         "Cicero (Pink)"
       ],
-      "id": "cicero-pink-line"
+      "id": "cicero-pink-line",
+      "lat": 41.85182,
+      "lng": -87.745336
     },
     {
       "name": "Kedzie",
@@ -458,7 +530,9 @@
       "aliases": [
         "Kedzie (Brown)"
       ],
-      "id": "kedzie-brown-line"
+      "id": "kedzie-brown-line",
+      "lat": 41.965996,
+      "lng": -87.708821
     },
     {
       "name": "Kedzie",
@@ -470,7 +544,9 @@
       "aliases": [
         "Kedzie (Green)"
       ],
-      "id": "kedzie-green-line"
+      "id": "kedzie-green-line",
+      "lat": 41.884321,
+      "lng": -87.706155
     },
     {
       "name": "Kedzie",
@@ -482,7 +558,9 @@
       "aliases": [
         "Kedzie (Orange)"
       ],
-      "id": "kedzie-orange-line"
+      "id": "kedzie-orange-line",
+      "lat": 41.804236,
+      "lng": -87.704406
     },
     {
       "name": "Kedzie",
@@ -494,7 +572,9 @@
       "aliases": [
         "Kedzie (Pink)"
       ],
-      "id": "kedzie-pink-line"
+      "id": "kedzie-pink-line",
+      "lat": 41.853964,
+      "lng": -87.705408
     },
     {
       "name": "Damen",
@@ -506,7 +586,9 @@
       "aliases": [
         "Damen (Blue)"
       ],
-      "id": "damen-blue-line"
+      "id": "damen-blue-line",
+      "lat": 41.9098452343,
+      "lng": -87.6775400139
     },
     {
       "name": "Damen",
@@ -518,7 +600,9 @@
       "aliases": [
         "Damen (Brown)"
       ],
-      "id": "damen-brown-line"
+      "id": "damen-brown-line",
+      "lat": 41.966286,
+      "lng": -87.678639
     },
     {
       "name": "Damen",
@@ -530,7 +614,9 @@
       "aliases": [
         "Damen (Green)"
       ],
-      "id": "damen-green-line"
+      "id": "damen-green-line",
+      "lat": 41.88497405,
+      "lng": -87.67689149
     },
     {
       "name": "Damen",
@@ -542,7 +628,9 @@
       "aliases": [
         "Damen (Pink)"
       ],
-      "id": "damen-pink-line"
+      "id": "damen-pink-line",
+      "lat": 41.854517,
+      "lng": -87.675975
     },
     {
       "name": "Belmont",
@@ -554,7 +642,9 @@
       "aliases": [
         "Belmont (Blue)"
       ],
-      "id": "belmont-blue-line"
+      "id": "belmont-blue-line",
+      "lat": 41.9391107041,
+      "lng": -87.71225212
     },
     {
       "name": "Chicago",
@@ -566,7 +656,9 @@
       "aliases": [
         "Chicago (Red)"
       ],
-      "id": "chicago-red-line"
+      "id": "chicago-red-line",
+      "lat": 41.896671,
+      "lng": -87.628176
     },
     {
       "name": "Chicago",
@@ -578,7 +670,9 @@
       "aliases": [
         "Chicago (Blue)"
       ],
-      "id": "chicago-blue-line"
+      "id": "chicago-blue-line",
+      "lat": 41.896075,
+      "lng": -87.655214
     },
     {
       "name": "Grand",
@@ -590,7 +684,9 @@
       "aliases": [
         "Grand (Red)"
       ],
-      "id": "grand-red-line"
+      "id": "grand-red-line",
+      "lat": 41.891665,
+      "lng": -87.628021
     },
     {
       "name": "Grand",
@@ -602,7 +698,9 @@
       "aliases": [
         "Grand (Blue)"
       ],
-      "id": "grand-blue-line"
+      "id": "grand-blue-line",
+      "lat": 41.891189,
+      "lng": -87.647578
     },
     {
       "name": "Monroe",
@@ -614,7 +712,9 @@
       "aliases": [
         "Monroe (Red)"
       ],
-      "id": "monroe-red-line"
+      "id": "monroe-red-line",
+      "lat": 41.880745,
+      "lng": -87.627696
     },
     {
       "name": "Monroe",
@@ -626,7 +726,9 @@
       "aliases": [
         "Monroe (Blue)"
       ],
-      "id": "monroe-blue-line"
+      "id": "monroe-blue-line",
+      "lat": 41.880703,
+      "lng": -87.629378
     },
     {
       "name": "Addison",
@@ -638,7 +740,9 @@
       "aliases": [
         "Addison (Red)"
       ],
-      "id": "addison-red-line"
+      "id": "addison-red-line",
+      "lat": 41.947316173,
+      "lng": -87.6536241013
     },
     {
       "name": "Addison",
@@ -650,7 +754,9 @@
       "aliases": [
         "Addison (Brown)"
       ],
-      "id": "addison-brown-line"
+      "id": "addison-brown-line",
+      "lat": 41.947028,
+      "lng": -87.674642
     },
     {
       "name": "Addison",
@@ -662,7 +768,9 @@
       "aliases": [
         "Addison (Blue)"
       ],
-      "id": "addison-blue-line"
+      "id": "addison-blue-line",
+      "lat": 41.9466037164,
+      "lng": -87.7184584172
     },
     {
       "name": "Ashland",
@@ -674,7 +782,9 @@
       "aliases": [
         "Ashland (Orange)"
       ],
-      "id": "ashland-orange-line"
+      "id": "ashland-orange-line",
+      "lat": 41.839234,
+      "lng": -87.665317
     },
     {
       "name": "California",
@@ -686,7 +796,9 @@
       "aliases": [
         "California (Blue)"
       ],
-      "id": "california-blue-line"
+      "id": "california-blue-line",
+      "lat": 41.9221583097,
+      "lng": -87.6972439537
     },
     {
       "name": "California",
@@ -698,7 +810,9 @@
       "aliases": [
         "California (Green)"
       ],
-      "id": "california-green-line"
+      "id": "california-green-line",
+      "lat": 41.88422,
+      "lng": -87.696234
     },
     {
       "name": "California",
@@ -710,7 +824,9 @@
       "aliases": [
         "California (Pink)"
       ],
-      "id": "california-pink-line"
+      "id": "california-pink-line",
+      "lat": 41.854109,
+      "lng": -87.694774
     },
     {
       "name": "Austin",
@@ -722,7 +838,9 @@
       "aliases": [
         "Austin (Blue)"
       ],
-      "id": "austin-blue-line"
+      "id": "austin-blue-line",
+      "lat": 41.870851,
+      "lng": -87.776812
     },
     {
       "name": "Austin",
@@ -734,7 +852,9 @@
       "aliases": [
         "Austin (Green)"
       ],
-      "id": "austin-green-line"
+      "id": "austin-green-line",
+      "lat": 41.887293,
+      "lng": -87.774135
     },
     {
       "name": "Oak Park",
@@ -746,7 +866,9 @@
       "aliases": [
         "Oak Park (Blue)"
       ],
-      "id": "oak-park-blue-line"
+      "id": "oak-park-blue-line",
+      "lat": 41.872108,
+      "lng": -87.791602
     },
     {
       "name": "Oak Park",
@@ -758,7 +880,9 @@
       "aliases": [
         "Oak Park (Green)"
       ],
-      "id": "oak-park-green-line"
+      "id": "oak-park-green-line",
+      "lat": 41.886988,
+      "lng": -87.793783
     },
     {
       "name": "Halsted",
@@ -770,7 +894,9 @@
       "aliases": [
         "Halsted (Green)"
       ],
-      "id": "halsted-green-line"
+      "id": "halsted-green-line",
+      "lat": 41.778943,
+      "lng": -87.644244
     },
     {
       "name": "Halsted",
@@ -782,7 +908,9 @@
       "aliases": [
         "Halsted (Orange)"
       ],
-      "id": "halsted-orange-line"
+      "id": "halsted-orange-line",
+      "lat": 41.84678,
+      "lng": -87.648088
     },
     {
       "name": "Garfield",
@@ -794,7 +922,9 @@
       "aliases": [
         "Garfield (Red)"
       ],
-      "id": "garfield-red-line"
+      "id": "garfield-red-line",
+      "lat": 41.79542,
+      "lng": -87.631157
     },
     {
       "name": "Garfield",
@@ -806,7 +936,9 @@
       "aliases": [
         "Garfield (Green)"
       ],
-      "id": "garfield-green-line"
+      "id": "garfield-green-line",
+      "lat": 41.795172,
+      "lng": -87.618327
     },
     {
       "name": "47th",
@@ -818,7 +950,9 @@
       "aliases": [
         "47th (Red)"
       ],
-      "id": "47th-red-line"
+      "id": "47th-red-line",
+      "lat": 41.810318,
+      "lng": -87.63094
     },
     {
       "name": "47th",
@@ -830,7 +964,9 @@
       "aliases": [
         "47th (Green)"
       ],
-      "id": "47th-green-line"
+      "id": "47th-green-line",
+      "lat": 41.809209,
+      "lng": -87.618826
     },
     {
       "name": "Montrose",
@@ -842,7 +978,9 @@
       "aliases": [
         "Montrose (Blue)"
       ],
-      "id": "montrose-blue-line"
+      "id": "montrose-blue-line",
+      "lat": 41.9609010454,
+      "lng": -87.7429034362
     },
     {
       "name": "Montrose",
@@ -854,7 +992,9 @@
       "aliases": [
         "Montrose (Brown)"
       ],
-      "id": "montrose-brown-line"
+      "id": "montrose-brown-line",
+      "lat": 41.961756,
+      "lng": -87.675047
     },
     {
       "name": "Irving Park",
@@ -866,7 +1006,9 @@
       "aliases": [
         "Irving Park (Blue)"
       ],
-      "id": "irving-park-blue-line"
+      "id": "irving-park-blue-line",
+      "lat": 41.952925,
+      "lng": -87.729229
     },
     {
       "name": "Irving Park",
@@ -878,7 +1020,9 @@
       "aliases": [
         "Irving Park (Brown)"
       ],
-      "id": "irving-park-brown-line"
+      "id": "irving-park-brown-line",
+      "lat": 41.954521,
+      "lng": -87.674868
     },
     {
       "name": "Central",
@@ -890,7 +1034,9 @@
       "aliases": [
         "Central (Green)"
       ],
-      "id": "central-green-line"
+      "id": "central-green-line",
+      "lat": 41.887389,
+      "lng": -87.76565
     },
     {
       "name": "Central",
@@ -902,7 +1048,9 @@
       "aliases": [
         "Central (Purple)"
       ],
-      "id": "central-purple-line"
+      "id": "central-purple-line",
+      "lat": 42.063987,
+      "lng": -87.685617
     },
     {
       "name": "Clinton",
@@ -914,7 +1062,9 @@
       "aliases": [
         "Clinton (Blue)"
       ],
-      "id": "clinton-blue-line"
+      "id": "clinton-blue-line",
+      "lat": 41.875539,
+      "lng": -87.640984
     },
     {
       "name": "Jarvis",
@@ -924,7 +1074,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "jarvis"
+      "id": "jarvis",
+      "lat": 42.0160204165,
+      "lng": -87.6692571266
     },
     {
       "name": "Morse",
@@ -934,7 +1086,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "morse"
+      "id": "morse",
+      "lat": 42.008362,
+      "lng": -87.665909
     },
     {
       "name": "Loyola",
@@ -944,7 +1098,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "loyola"
+      "id": "loyola",
+      "lat": 42.001073,
+      "lng": -87.661061
     },
     {
       "name": "Granville",
@@ -954,7 +1110,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "granville"
+      "id": "granville",
+      "lat": 41.9944830093,
+      "lng": -87.6591866269
     },
     {
       "name": "Thorndale",
@@ -964,7 +1122,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "thorndale"
+      "id": "thorndale",
+      "lat": 41.9900990857,
+      "lng": -87.6590684978
     },
     {
       "name": "Bryn Mawr",
@@ -974,7 +1134,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "bryn-mawr"
+      "id": "bryn-mawr",
+      "lat": 41.983504,
+      "lng": -87.65884
     },
     {
       "name": "Berwyn",
@@ -984,7 +1146,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "berwyn"
+      "id": "berwyn",
+      "lat": 41.977984,
+      "lng": -87.658668
     },
     {
       "name": "Argyle",
@@ -994,7 +1158,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "argyle"
+      "id": "argyle",
+      "lat": 41.9733220506,
+      "lng": -87.6585279483
     },
     {
       "name": "Lawrence",
@@ -1004,7 +1170,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "lawrence"
+      "id": "lawrence",
+      "lat": 41.9689762882,
+      "lng": -87.6584869372
     },
     {
       "name": "Sheridan",
@@ -1014,7 +1182,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "sheridan"
+      "id": "sheridan",
+      "lat": 41.9539048386,
+      "lng": -87.6546614127
     },
     {
       "name": "North/Clybourn",
@@ -1024,7 +1194,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "north-clybourn"
+      "id": "north-clybourn",
+      "lat": 41.910655,
+      "lng": -87.649177
     },
     {
       "name": "Clark/Division",
@@ -1034,7 +1206,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "clark-division"
+      "id": "clark-division",
+      "lat": 41.90392,
+      "lng": -87.631412
     },
     {
       "name": "Lake",
@@ -1044,7 +1218,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "lake"
+      "id": "lake",
+      "lat": 41.884809,
+      "lng": -87.627813
     },
     {
       "name": "Harrison",
@@ -1054,7 +1230,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "harrison"
+      "id": "harrison",
+      "lat": 41.874039,
+      "lng": -87.627479
     },
     {
       "name": "Cermak-Chinatown",
@@ -1064,7 +1242,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "cermak-chinatown"
+      "id": "cermak-chinatown",
+      "lat": 41.853206,
+      "lng": -87.630968
     },
     {
       "name": "Sox-35th",
@@ -1074,7 +1254,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "sox-35th"
+      "id": "sox-35th",
+      "lat": 41.831191,
+      "lng": -87.630636
     },
     {
       "name": "63rd",
@@ -1084,7 +1266,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "63rd"
+      "id": "63rd",
+      "lat": 41.780536,
+      "lng": -87.630952
     },
     {
       "name": "69th",
@@ -1094,7 +1278,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "69th"
+      "id": "69th",
+      "lat": 41.768367,
+      "lng": -87.625724
     },
     {
       "name": "79th",
@@ -1104,7 +1290,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "79th"
+      "id": "79th",
+      "lat": 41.750419,
+      "lng": -87.625112
     },
     {
       "name": "87th",
@@ -1114,7 +1302,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "87th"
+      "id": "87th",
+      "lat": 41.735372,
+      "lng": -87.624717
     },
     {
       "name": "95th/Dan Ryan",
@@ -1124,7 +1314,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "95th-dan-ryan"
+      "id": "95th-dan-ryan",
+      "lat": 41.722377,
+      "lng": -87.624342
     },
     {
       "name": "O'Hare",
@@ -1134,7 +1326,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "ohare"
+      "id": "ohare",
+      "lat": 41.97766526,
+      "lng": -87.90422307
     },
     {
       "name": "Rosemont",
@@ -1144,7 +1338,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "rosemont"
+      "id": "rosemont",
+      "lat": 41.983507,
+      "lng": -87.859388
     },
     {
       "name": "Cumberland",
@@ -1154,7 +1350,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "cumberland"
+      "id": "cumberland",
+      "lat": 41.984246,
+      "lng": -87.838028
     },
     {
       "name": "Jefferson Park",
@@ -1164,7 +1362,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "jefferson-park"
+      "id": "jefferson-park",
+      "lat": 41.9702338623,
+      "lng": -87.7615940115
     },
     {
       "name": "Logan Square",
@@ -1174,7 +1374,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "logan-square"
+      "id": "logan-square",
+      "lat": 41.9295342259,
+      "lng": -87.7076881549
     },
     {
       "name": "Division",
@@ -1184,7 +1386,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "division"
+      "id": "division",
+      "lat": 41.903355,
+      "lng": -87.666496
     },
     {
       "name": "Washington",
@@ -1194,7 +1398,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "washington"
+      "id": "washington",
+      "lat": 41.883164,
+      "lng": -87.62944
     },
     {
       "name": "LaSalle",
@@ -1204,7 +1410,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "lasalle"
+      "id": "lasalle",
+      "lat": 41.875568,
+      "lng": -87.631722
     },
     {
       "name": "UIC-Halsted",
@@ -1214,7 +1422,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "uic-halsted"
+      "id": "uic-halsted",
+      "lat": 41.875474,
+      "lng": -87.649707
     },
     {
       "name": "Racine",
@@ -1224,7 +1434,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "racine"
+      "id": "racine",
+      "lat": 41.87592,
+      "lng": -87.659458
     },
     {
       "name": "Illinois Medical District",
@@ -1234,7 +1446,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "illinois-medical-district"
+      "id": "illinois-medical-district",
+      "lat": 41.875706,
+      "lng": -87.673932
     },
     {
       "name": "Kedzie-Homan",
@@ -1244,7 +1458,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "kedzie-homan"
+      "id": "kedzie-homan",
+      "lat": 41.874341,
+      "lng": -87.70604
     },
     {
       "name": "Forest Park",
@@ -1254,7 +1470,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "forest-park"
+      "id": "forest-park",
+      "lat": 41.874257,
+      "lng": -87.817318
     },
     {
       "name": "Kimball",
@@ -1264,7 +1482,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "kimball"
+      "id": "kimball",
+      "lat": 41.967901,
+      "lng": -87.713065
     },
     {
       "name": "Francisco",
@@ -1274,7 +1494,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "francisco"
+      "id": "francisco",
+      "lat": 41.966046,
+      "lng": -87.701644
     },
     {
       "name": "Rockwell",
@@ -1284,7 +1506,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "rockwell"
+      "id": "rockwell",
+      "lat": 41.966115,
+      "lng": -87.6941
     },
     {
       "name": "Paulina",
@@ -1294,7 +1518,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "paulina"
+      "id": "paulina",
+      "lat": 41.943623,
+      "lng": -87.670907
     },
     {
       "name": "Southport",
@@ -1304,7 +1530,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "southport"
+      "id": "southport",
+      "lat": 41.943744,
+      "lng": -87.663619
     },
     {
       "name": "Harlem/Lake",
@@ -1314,7 +1542,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "harlem-lake"
+      "id": "harlem-lake",
+      "lat": 41.886848,
+      "lng": -87.803176
     },
     {
       "name": "Ridgeland",
@@ -1324,7 +1554,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "ridgeland"
+      "id": "ridgeland",
+      "lat": 41.887159,
+      "lng": -87.783661
     },
     {
       "name": "Laramie",
@@ -1334,7 +1566,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "laramie"
+      "id": "laramie",
+      "lat": 41.887163,
+      "lng": -87.754986
     },
     {
       "name": "Conservatory-Central Park Drive",
@@ -1344,7 +1578,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "conservatory-central-park-drive"
+      "id": "conservatory-central-park-drive",
+      "lat": 41.884904,
+      "lng": -87.716523
     },
     {
       "name": "Cermak-McCormick Place",
@@ -1354,7 +1590,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "cermak-mccormick-place"
+      "id": "cermak-mccormick-place",
+      "lat": 41.853115,
+      "lng": -87.626402
     },
     {
       "name": "35th-Bronzeville-IIT",
@@ -1364,7 +1602,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "35th-bronzeville-iit"
+      "id": "35th-bronzeville-iit",
+      "lat": 41.831677,
+      "lng": -87.625826
     },
     {
       "name": "Indiana",
@@ -1374,7 +1614,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "indiana"
+      "id": "indiana",
+      "lat": 41.821732,
+      "lng": -87.621371
     },
     {
       "name": "43rd",
@@ -1384,7 +1626,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "43rd"
+      "id": "43rd",
+      "lat": 41.816462,
+      "lng": -87.619021
     },
     {
       "name": "51st",
@@ -1394,7 +1638,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "51st"
+      "id": "51st",
+      "lat": 41.80209,
+      "lng": -87.618487
     },
     {
       "name": "Ashland/63rd",
@@ -1404,7 +1650,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "ashland-63rd"
+      "id": "ashland-63rd",
+      "lat": 41.77886,
+      "lng": -87.663766
     },
     {
       "name": "King Drive",
@@ -1414,7 +1662,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "king-drive"
+      "id": "king-drive",
+      "lat": 41.78013,
+      "lng": -87.615546
     },
     {
       "name": "Cottage Grove",
@@ -1424,7 +1674,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "cottage-grove"
+      "id": "cottage-grove",
+      "lat": 41.780309,
+      "lng": -87.605857
     },
     {
       "name": "Midway",
@@ -1434,7 +1686,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "midway"
+      "id": "midway",
+      "lat": 41.78661,
+      "lng": -87.737875
     },
     {
       "name": "35th/Archer",
@@ -1444,7 +1698,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "35th-archer"
+      "id": "35th-archer",
+      "lat": 41.829353,
+      "lng": -87.680622
     },
     {
       "name": "54th/Cermak",
@@ -1454,7 +1710,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "54th-cermak"
+      "id": "54th-cermak",
+      "lat": 41.85177331,
+      "lng": -87.75669201
     },
     {
       "name": "Kostner",
@@ -1464,7 +1722,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "kostner"
+      "id": "kostner",
+      "lat": 41.853751,
+      "lng": -87.733258
     },
     {
       "name": "Central Park",
@@ -1474,7 +1734,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "central-park"
+      "id": "central-park",
+      "lat": 41.853839,
+      "lng": -87.714842
     },
     {
       "name": "18th",
@@ -1484,7 +1746,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "18th"
+      "id": "18th",
+      "lat": 41.857908,
+      "lng": -87.669147
     },
     {
       "name": "Polk",
@@ -1494,7 +1758,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "polk"
+      "id": "polk",
+      "lat": 41.871551,
+      "lng": -87.66953
     },
     {
       "name": "Linden",
@@ -1504,7 +1770,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "linden"
+      "id": "linden",
+      "lat": 42.073153,
+      "lng": -87.69073
     },
     {
       "name": "Noyes",
@@ -1514,7 +1782,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "noyes"
+      "id": "noyes",
+      "lat": 42.058282,
+      "lng": -87.683337
     },
     {
       "name": "Foster",
@@ -1524,7 +1794,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "foster"
+      "id": "foster",
+      "lat": 42.05416,
+      "lng": -87.68356
     },
     {
       "name": "Davis",
@@ -1534,7 +1806,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "davis"
+      "id": "davis",
+      "lat": 42.04771,
+      "lng": -87.683543
     },
     {
       "name": "Dempster",
@@ -1544,7 +1818,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "dempster"
+      "id": "dempster",
+      "lat": 42.041655,
+      "lng": -87.681602
     },
     {
       "name": "Main",
@@ -1554,7 +1830,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "main"
+      "id": "main",
+      "lat": 42.033456,
+      "lng": -87.679538
     },
     {
       "name": "South Blvd",
@@ -1564,7 +1842,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "south-blvd"
+      "id": "south-blvd",
+      "lat": 42.027612,
+      "lng": -87.678329
     },
     {
       "name": "Dempster-Skokie",
@@ -1574,7 +1854,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "dempster-skokie"
+      "id": "dempster-skokie",
+      "lat": 42.038951,
+      "lng": -87.751919
     },
     {
       "name": "Oakton-Skokie",
@@ -1584,7 +1866,9 @@
       "hub": false,
       "branch": null,
       "aliases": [],
-      "id": "oakton-skokie"
+      "id": "oakton-skokie",
+      "lat": 42.02624348,
+      "lng": -87.74722084
     }
   ]
 }

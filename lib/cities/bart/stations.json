@@ -8,7 +8,9 @@
       "lines": [
         "yellow"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.995388,
+      "lng": -121.78042
     },
     {
       "name": "Pittsburg Center",
@@ -16,7 +18,9 @@
       "lines": [
         "yellow"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 38.016941,
+      "lng": -121.889457
     },
     {
       "name": "Pittsburg/Bay Point",
@@ -26,7 +30,9 @@
       ],
       "aliases": [
         "Pittsburg / Bay Point"
-      ]
+      ],
+      "lat": 38.018914,
+      "lng": -121.945154
     },
     {
       "name": "North Concord/Martinez",
@@ -36,7 +42,9 @@
       ],
       "aliases": [
         "North Concord / Martinez"
-      ]
+      ],
+      "lat": 38.003193,
+      "lng": -122.024653
     },
     {
       "name": "Concord",
@@ -44,7 +52,9 @@
       "lines": [
         "yellow"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.973737,
+      "lng": -122.029095
     },
     {
       "name": "Pleasant Hill/Contra Costa Centre",
@@ -54,7 +64,9 @@
       ],
       "aliases": [
         "Pleasant Hill / Contra Costa Centre"
-      ]
+      ],
+      "lat": 37.928468,
+      "lng": -122.056012
     },
     {
       "name": "Walnut Creek",
@@ -62,7 +74,9 @@
       "lines": [
         "yellow"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.905522,
+      "lng": -122.067527
     },
     {
       "name": "Lafayette",
@@ -70,7 +84,9 @@
       "lines": [
         "yellow"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.893176,
+      "lng": -122.12463
     },
     {
       "name": "Orinda",
@@ -78,7 +94,9 @@
       "lines": [
         "yellow"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.878361,
+      "lng": -122.183791
     },
     {
       "name": "Rockridge",
@@ -86,7 +104,9 @@
       "lines": [
         "yellow"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.844702,
+      "lng": -122.251371
     },
     {
       "name": "MacArthur",
@@ -96,7 +116,9 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.829065,
+      "lng": -122.26704
     },
     {
       "name": "19th St/Oakland",
@@ -107,7 +129,9 @@
       ],
       "aliases": [
         "19th St. Oakland"
-      ]
+      ],
+      "lat": 37.80835,
+      "lng": -122.268602
     },
     {
       "name": "12th St/Oakland City Center",
@@ -119,7 +143,9 @@
       ],
       "aliases": [
         "12th St. Oakland City Center"
-      ]
+      ],
+      "lat": 37.803768,
+      "lng": -122.27145
     },
     {
       "name": "West Oakland",
@@ -130,7 +156,9 @@
         "blue",
         "green"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.804872,
+      "lng": -122.29514
     },
     {
       "name": "Embarcadero",
@@ -142,7 +170,9 @@
         "green"
       ],
       "aliases": [],
-      "hub": true
+      "hub": true,
+      "lat": 37.792874,
+      "lng": -122.39702
     },
     {
       "name": "Montgomery St",
@@ -155,7 +185,9 @@
       ],
       "aliases": [
         "Montgomery St."
-      ]
+      ],
+      "lat": 37.789405,
+      "lng": -122.401066
     },
     {
       "name": "Powell St",
@@ -168,7 +200,9 @@
       ],
       "aliases": [
         "Powell St."
-      ]
+      ],
+      "lat": 37.784471,
+      "lng": -122.407974
     },
     {
       "name": "Civic Center/UN Plaza",
@@ -181,7 +215,9 @@
       ],
       "aliases": [
         "Civic Center / UN Plaza"
-      ]
+      ],
+      "lat": 37.779732,
+      "lng": -122.414123
     },
     {
       "name": "16th St Mission",
@@ -194,7 +230,9 @@
       ],
       "aliases": [
         "16th St. Mission"
-      ]
+      ],
+      "lat": 37.765062,
+      "lng": -122.419694
     },
     {
       "name": "24th St Mission",
@@ -207,7 +245,9 @@
       ],
       "aliases": [
         "24th St. Mission"
-      ]
+      ],
+      "lat": 37.75247,
+      "lng": -122.418143
     },
     {
       "name": "Glen Park",
@@ -218,7 +258,9 @@
         "blue",
         "green"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.733064,
+      "lng": -122.433817
     },
     {
       "name": "Balboa Park",
@@ -229,7 +271,9 @@
         "blue",
         "green"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.721585,
+      "lng": -122.447506
     },
     {
       "name": "Daly City",
@@ -240,7 +284,9 @@
         "blue",
         "green"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.706121,
+      "lng": -122.469081
     },
     {
       "name": "Colma",
@@ -249,7 +295,9 @@
         "yellow",
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.684638,
+      "lng": -122.466233
     },
     {
       "name": "South San Francisco",
@@ -258,7 +306,9 @@
         "yellow",
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.664245,
+      "lng": -122.44396
     },
     {
       "name": "San Bruno",
@@ -267,7 +317,9 @@
         "yellow",
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.637761,
+      "lng": -122.416287
     },
     {
       "name": "San Francisco International Airport (SFO)",
@@ -279,7 +331,9 @@
         "San Francisco International Airport",
         "SFO Int’l Airport",
         "SFO"
-      ]
+      ],
+      "lat": 37.615966,
+      "lng": -122.392409
     },
     {
       "name": "Millbrae",
@@ -288,7 +342,9 @@
         "yellow",
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.600271,
+      "lng": -122.386702
     },
     {
       "name": "Dublin/Pleasanton",
@@ -298,7 +354,9 @@
       ],
       "aliases": [
         "Dublin / Pleasanton"
-      ]
+      ],
+      "lat": 37.701687,
+      "lng": -121.899179
     },
     {
       "name": "West Dublin/Pleasanton",
@@ -308,7 +366,9 @@
       ],
       "aliases": [
         "West Dublin / Pleasanton"
-      ]
+      ],
+      "lat": 37.699756,
+      "lng": -121.92824
     },
     {
       "name": "Castro Valley",
@@ -316,7 +376,9 @@
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.690746,
+      "lng": -122.075602
     },
     {
       "name": "Bay Fair",
@@ -326,7 +388,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.696924,
+      "lng": -122.126514
     },
     {
       "name": "San Leandro",
@@ -336,7 +400,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.721947,
+      "lng": -122.160844
     },
     {
       "name": "Coliseum",
@@ -347,7 +413,9 @@
         "orange",
         "oak"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.753661,
+      "lng": -122.196869
     },
     {
       "name": "Fruitvale",
@@ -357,7 +425,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.774836,
+      "lng": -122.224175
     },
     {
       "name": "Lake Merritt",
@@ -367,7 +437,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.797027,
+      "lng": -122.26518
     },
     {
       "name": "Berryessa/North San José",
@@ -380,7 +452,9 @@
         "Berryessa / North San Jose",
         "Berryessa/N San Jose",
         "Berryessa/North San Jose"
-      ]
+      ],
+      "lat": 37.368473,
+      "lng": -121.874681
     },
     {
       "name": "Milpitas",
@@ -389,18 +463,22 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.410277,
+      "lng": -121.891081
     },
     {
       "name": "Warm Springs/South Fremont",
-      "abbr": "WSPR",
+      "abbr": "WARM",
       "lines": [
         "green",
         "orange"
       ],
       "aliases": [
         "Warm Springs / South Fremont"
-      ]
+      ],
+      "lat": 37.502171,
+      "lng": -121.939313
     },
     {
       "name": "Fremont",
@@ -409,7 +487,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.557465,
+      "lng": -121.976608
     },
     {
       "name": "Union City",
@@ -418,7 +498,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.59063,
+      "lng": -122.017388
     },
     {
       "name": "South Hayward",
@@ -427,7 +509,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.634375,
+      "lng": -122.057189
     },
     {
       "name": "Hayward",
@@ -436,7 +520,9 @@
         "green",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.669723,
+      "lng": -122.087018
     },
     {
       "name": "Richmond",
@@ -445,7 +531,9 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.936853,
+      "lng": -122.353099
     },
     {
       "name": "El Cerrito del Norte",
@@ -454,7 +542,9 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.925086,
+      "lng": -122.316794
     },
     {
       "name": "El Cerrito Plaza",
@@ -463,7 +553,9 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.902632,
+      "lng": -122.298904
     },
     {
       "name": "North Berkeley",
@@ -472,7 +564,9 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.873967,
+      "lng": -122.28344
     },
     {
       "name": "Downtown Berkeley",
@@ -481,7 +575,9 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.870104,
+      "lng": -122.268133
     },
     {
       "name": "Ashby",
@@ -490,7 +586,9 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 37.852803,
+      "lng": -122.270062
     },
     {
       "name": "Oakland International Airport (OAK)",
@@ -503,7 +601,9 @@
         "Oakland Int’l Airport",
         "OAK"
       ],
-      "noEtd": true
+      "noEtd": true,
+      "lat": 37.713238,
+      "lng": -122.212191
     }
   ]
 }

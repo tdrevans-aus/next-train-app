@@ -54,6 +54,7 @@ import {
   getChicagoDogfoodDirections,
   getChicagoDogfoodNextTrain,
 } from "../lib/cities/chicago/dogfood-next-train.js";
+import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -115,6 +116,24 @@ const stations = listCatalogStations();
 assert(stations.length === 143, `catalog must have 143 stations, got ${stations.length}`);
 const hubEntries = stations.filter((s) => s.name === CHICAGO_HUB);
 assert(hubEntries.length === 1 && hubEntries[0].hub === true, `catalog must lock ${CHICAGO_HUB} exactly once with hub:true`);
+
+// Coordinates (docs/jim-brief-us-flip-readiness.md) — every station geocoded from CTA's
+// public GTFS stops.txt (location_type=1 parent stations) by matching name/branch
+// qualifier, and inside Chicago's own CITY_BOUNDS box (public/city-session.js). State/Lake
+// is the sole exception: Wikipedia confirms it is a currently, temporarily closed 'L'
+// station absent from CTA's live GTFS feed entirely — no real stop id exists to source a
+// coordinate from, so it's listed here rather than guessed (brief: "list any you cannot
+// match ... rather than guessing").
+const CHICAGO_COORDS_EXEMPT = new Set(["State/Lake"]);
+const chicagoBoxes = cityBoundsFor("chicago");
+for (const station of stations) {
+  if (CHICAGO_COORDS_EXEMPT.has(station.name)) continue;
+  assert(typeof station.lat === "number" && typeof station.lng === "number", `${station.name} must carry lat/lng`);
+  assert(
+    inAnyBounds(station.lat, station.lng, chicagoBoxes),
+    `${station.name} (${station.lat}, ${station.lng}) must fall inside Chicago's CITY_BOUNDS box`
+  );
+}
 
 // resolveCatalogEntry — exact-match, ambiguous families throw, forbidden tokens reject.
 assert(resolveCatalogEntry(CHICAGO_HUB)?.name === CHICAGO_HUB, "resolveCatalogEntry must resolve the hub by printed name");

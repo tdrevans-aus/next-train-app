@@ -61,6 +61,7 @@ import {
   getBostonDogfoodDirections,
   getBostonDogfoodNextTrain,
 } from "../lib/cities/boston/dogfood-next-train.js";
+import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -132,6 +133,18 @@ assert(stations.length === 125, `catalog must have 125 stations, got ${stations.
 const byName = new Map(stations.map((s) => [s.name, s]));
 assert(byName.has(BOSTON_HUB), `catalog must lock ${BOSTON_HUB}`);
 assert(byName.get(BOSTON_HUB)?.hub === true, "hub entry must carry hub:true");
+
+// Coordinates (docs/jim-brief-us-flip-readiness.md) — every station geocoded from MBTA
+// v3 /stops by stop id, matched by name/alias, and inside Boston's own CITY_BOUNDS box
+// (public/city-session.js) so Near me and bounds hinting can work ahead of the flip.
+const bostonBoxes = cityBoundsFor("boston");
+for (const station of stations) {
+  assert(typeof station.lat === "number" && typeof station.lng === "number", `${station.name} must carry lat/lng`);
+  assert(
+    inAnyBounds(station.lat, station.lng, bostonBoxes),
+    `${station.name} (${station.lat}, ${station.lng}) must fall inside Boston's CITY_BOUNDS box`
+  );
+}
 
 // resolveCatalogEntry — exact-match aliasing (map abbreviation <-> official long form).
 assert(resolveCatalogEntry(BOSTON_HUB)?.name === BOSTON_HUB, "resolveCatalogEntry must resolve the hub by printed name");

@@ -7,49 +7,63 @@
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.39583,
+      "lng": -71.141287
     },
     {
       "name": "Davis",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.39674,
+      "lng": -71.121815
     },
     {
       "name": "Porter",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.3884,
+      "lng": -71.119149
     },
     {
       "name": "Harvard",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.373362,
+      "lng": -71.118956
     },
     {
       "name": "Central",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.365486,
+      "lng": -71.103802
     },
     {
       "name": "Kendall/MIT",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.3624908,
+      "lng": -71.0861765
     },
     {
       "name": "Charles/MGH",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.361166,
+      "lng": -71.070628
     },
     {
       "name": "Park Street",
@@ -61,7 +75,9 @@
         "green-e"
       ],
       "aliases": [],
-      "hub": true
+      "hub": true,
+      "lat": 42.3563946,
+      "lng": -71.0624242
     },
     {
       "name": "Downtown Crossing",
@@ -69,56 +85,72 @@
         "red",
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.355518,
+      "lng": -71.060225
     },
     {
       "name": "South Station",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.352271,
+      "lng": -71.055242
     },
     {
       "name": "Broadway",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.342622,
+      "lng": -71.056967
     },
     {
       "name": "Andrew",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.330154,
+      "lng": -71.057655
     },
     {
       "name": "JFK/UMass",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.320685,
+      "lng": -71.052391
     },
     {
       "name": "Savin Hill",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.31129,
+      "lng": -71.053331
     },
     {
       "name": "Fields Corner",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.300093,
+      "lng": -71.061667
     },
     {
       "name": "Shawmut",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.2931258,
+      "lng": -71.065738
     },
     {
       "name": "Ashmont",
@@ -126,70 +158,90 @@
         "red",
         "mattapan"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.28452,
+      "lng": -71.063777
     },
     {
       "name": "North Quincy",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.275275,
+      "lng": -71.029583
     },
     {
       "name": "Wollaston",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.2665139,
+      "lng": -71.0203369
     },
     {
       "name": "Quincy Center",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.251809,
+      "lng": -71.005409
     },
     {
       "name": "Quincy Adams",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.233391,
+      "lng": -71.007153
     },
     {
       "name": "Braintree",
       "lines": [
         "red"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.2078543,
+      "lng": -71.0011385
     },
     {
       "name": "Oak Grove",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.43668,
+      "lng": -71.071097
     },
     {
       "name": "Malden Center",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.426632,
+      "lng": -71.07411
     },
     {
       "name": "Wellington",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.40237,
+      "lng": -71.077082
     },
     {
       "name": "Assembly",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.392811,
+      "lng": -71.077257
     },
     {
       "name": "Sullivan Sq",
@@ -198,14 +250,18 @@
       ],
       "aliases": [
         "Sullivan Square"
-      ]
+      ],
+      "lat": 42.383975,
+      "lng": -71.076994
     },
     {
       "name": "Community College",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.373622,
+      "lng": -71.069533
     },
     {
       "name": "North Station",
@@ -214,7 +270,9 @@
         "green-d",
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.365577,
+      "lng": -71.06129
     },
     {
       "name": "Haymarket",
@@ -223,7 +281,9 @@
         "green-d",
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.363021,
+      "lng": -71.05829
     },
     {
       "name": "State",
@@ -231,14 +291,18 @@
         "orange",
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.358978,
+      "lng": -71.057598
     },
     {
       "name": "Chinatown",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.352547,
+      "lng": -71.062752
     },
     {
       "name": "Tufts Medical Ctr",
@@ -247,14 +311,18 @@
       ],
       "aliases": [
         "Tufts Medical Center"
-      ]
+      ],
+      "lat": 42.349662,
+      "lng": -71.063917
     },
     {
       "name": "Back Bay",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.34735,
+      "lng": -71.075727
     },
     {
       "name": "Mass. Ave",
@@ -263,21 +331,27 @@
       ],
       "aliases": [
         "Massachusetts Avenue"
-      ]
+      ],
+      "lat": 42.341512,
+      "lng": -71.083423
     },
     {
       "name": "Ruggles",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.336377,
+      "lng": -71.088961
     },
     {
       "name": "Roxbury Crossing",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.331397,
+      "lng": -71.095451
     },
     {
       "name": "Jackson Sq",
@@ -286,14 +360,18 @@
       ],
       "aliases": [
         "Jackson Square"
-      ]
+      ],
+      "lat": 42.323132,
+      "lng": -71.099592
     },
     {
       "name": "Stony Brook",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.317062,
+      "lng": -71.104248
     },
     {
       "name": "Green St",
@@ -302,77 +380,99 @@
       ],
       "aliases": [
         "Green Street"
-      ]
+      ],
+      "lat": 42.310525,
+      "lng": -71.107414
     },
     {
       "name": "Forest Hills",
       "lines": [
         "orange"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.300713,
+      "lng": -71.113943
     },
     {
       "name": "Wonderland",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.41342,
+      "lng": -70.991648
     },
     {
       "name": "Revere Beach",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.4078425,
+      "lng": -70.9925332
     },
     {
       "name": "Beachmont",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.3975423,
+      "lng": -70.9923194
     },
     {
       "name": "Suffolk Downs",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.3905007,
+      "lng": -70.9971226
     },
     {
       "name": "Orient Heights",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.386867,
+      "lng": -71.004736
     },
     {
       "name": "Wood Island",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.3796403,
+      "lng": -71.0228654
     },
     {
       "name": "Airport",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.374262,
+      "lng": -71.030395
     },
     {
       "name": "Maverick",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.3691186,
+      "lng": -71.0395296
     },
     {
       "name": "Aquarium",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.359784,
+      "lng": -71.051652
     },
     {
       "name": "Gov't Center",
@@ -385,14 +485,18 @@
       ],
       "aliases": [
         "Government Center"
-      ]
+      ],
+      "lat": 42.359705,
+      "lng": -71.059215
     },
     {
       "name": "Bowdoin",
       "lines": [
         "blue"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.361365,
+      "lng": -71.062037
     },
     {
       "name": "Boylston",
@@ -402,7 +506,9 @@
         "green-d",
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.35302,
+      "lng": -71.06459
     },
     {
       "name": "Arlington",
@@ -412,7 +518,9 @@
         "green-d",
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.351902,
+      "lng": -71.070893
     },
     {
       "name": "Copley",
@@ -422,7 +530,9 @@
         "green-d",
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.349974,
+      "lng": -71.077447
     },
     {
       "name": "Hynes Convention Ctr",
@@ -433,7 +543,9 @@
       ],
       "aliases": [
         "Hynes Convention Center"
-      ]
+      ],
+      "lat": 42.347888,
+      "lng": -71.087903
     },
     {
       "name": "Kenmore",
@@ -442,7 +554,9 @@
         "green-c",
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.348949,
+      "lng": -71.095169
     },
     {
       "name": "Blandford St",
@@ -451,7 +565,9 @@
       ],
       "aliases": [
         "Blandford Street"
-      ]
+      ],
+      "lat": 42.349293,
+      "lng": -71.100258
     },
     {
       "name": "BU East",
@@ -460,7 +576,9 @@
       ],
       "aliases": [
         "Boston University East"
-      ]
+      ],
+      "lat": 42.349735,
+      "lng": -71.103889
     },
     {
       "name": "BU Central",
@@ -469,7 +587,9 @@
       ],
       "aliases": [
         "Boston University Central"
-      ]
+      ],
+      "lat": 42.350082,
+      "lng": -71.106865
     },
     {
       "name": "Amory St",
@@ -478,7 +598,9 @@
       ],
       "aliases": [
         "Amory Street"
-      ]
+      ],
+      "lat": 42.350992,
+      "lng": -71.114748
     },
     {
       "name": "Babcock St",
@@ -487,14 +609,18 @@
       ],
       "aliases": [
         "Babcock Street"
-      ]
+      ],
+      "lat": 42.351616,
+      "lng": -71.119924
     },
     {
       "name": "Packard's Corner",
       "lines": [
         "green-b"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.351967,
+      "lng": -71.125031
     },
     {
       "name": "Harvard Ave",
@@ -503,7 +629,9 @@
       ],
       "aliases": [
         "Harvard Avenue"
-      ]
+      ],
+      "lat": 42.350243,
+      "lng": -71.131355
     },
     {
       "name": "Griggs St",
@@ -512,7 +640,9 @@
       ],
       "aliases": [
         "Griggs Street"
-      ]
+      ],
+      "lat": 42.348545,
+      "lng": -71.134949
     },
     {
       "name": "Allston St",
@@ -521,7 +651,9 @@
       ],
       "aliases": [
         "Allston Street"
-      ]
+      ],
+      "lat": 42.348701,
+      "lng": -71.137955
     },
     {
       "name": "Warren St",
@@ -530,7 +662,9 @@
       ],
       "aliases": [
         "Warren Street"
-      ]
+      ],
+      "lat": 42.348343,
+      "lng": -71.140457
     },
     {
       "name": "Washington St",
@@ -539,7 +673,9 @@
       ],
       "aliases": [
         "Washington Street"
-      ]
+      ],
+      "lat": 42.343864,
+      "lng": -71.142853
     },
     {
       "name": "Sutherland Rd",
@@ -548,7 +684,9 @@
       ],
       "aliases": [
         "Sutherland Road"
-      ]
+      ],
+      "lat": 42.341614,
+      "lng": -71.146202
     },
     {
       "name": "Chiswick Rd",
@@ -557,7 +695,9 @@
       ],
       "aliases": [
         "Chiswick Road"
-      ]
+      ],
+      "lat": 42.340805,
+      "lng": -71.150711
     },
     {
       "name": "Chestnut Hill Ave",
@@ -566,7 +706,9 @@
       ],
       "aliases": [
         "Chestnut Hill Avenue"
-      ]
+      ],
+      "lat": 42.338169,
+      "lng": -71.15316
     },
     {
       "name": "South St",
@@ -575,14 +717,18 @@
       ],
       "aliases": [
         "South Street"
-      ]
+      ],
+      "lat": 42.3396,
+      "lng": -71.157661
     },
     {
       "name": "Boston College",
       "lines": [
         "green-b"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.340081,
+      "lng": -71.166769
     },
     {
       "name": "St. Mary's St",
@@ -591,7 +737,9 @@
       ],
       "aliases": [
         "St. Mary's Street"
-      ]
+      ],
+      "lat": 42.345974,
+      "lng": -71.107353
     },
     {
       "name": "Hawes St",
@@ -600,7 +748,9 @@
       ],
       "aliases": [
         "Hawes Street"
-      ]
+      ],
+      "lat": 42.344906,
+      "lng": -71.111145
     },
     {
       "name": "Kent St",
@@ -609,7 +759,9 @@
       ],
       "aliases": [
         "Kent Street"
-      ]
+      ],
+      "lat": 42.344074,
+      "lng": -71.114197
     },
     {
       "name": "St. Paul St",
@@ -618,14 +770,18 @@
       ],
       "aliases": [
         "St. Paul Street"
-      ]
+      ],
+      "lat": 42.343327,
+      "lng": -71.116997
     },
     {
       "name": "Coolidge Corner",
       "lines": [
         "green-c"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.342116,
+      "lng": -71.121263
     },
     {
       "name": "Summit Ave",
@@ -634,14 +790,18 @@
       ],
       "aliases": [
         "Summit Avenue"
-      ]
+      ],
+      "lat": 42.34111,
+      "lng": -71.12561
     },
     {
       "name": "Brandon Hall",
       "lines": [
         "green-c"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.340023,
+      "lng": -71.129082
     },
     {
       "name": "Fairbanks St",
@@ -650,7 +810,9 @@
       ],
       "aliases": [
         "Fairbanks Street"
-      ]
+      ],
+      "lat": 42.339725,
+      "lng": -71.131073
     },
     {
       "name": "Washington Sq",
@@ -659,7 +821,9 @@
       ],
       "aliases": [
         "Washington Square"
-      ]
+      ],
+      "lat": 42.339394,
+      "lng": -71.13533
     },
     {
       "name": "Tappan St",
@@ -668,7 +832,9 @@
       ],
       "aliases": [
         "Tappan Street"
-      ]
+      ],
+      "lat": 42.338459,
+      "lng": -71.138702
     },
     {
       "name": "Dean Rd",
@@ -677,7 +843,9 @@
       ],
       "aliases": [
         "Dean Road"
-      ]
+      ],
+      "lat": 42.337656,
+      "lng": -71.142156
     },
     {
       "name": "Englewood Ave",
@@ -686,14 +854,18 @@
       ],
       "aliases": [
         "Englewood Avenue"
-      ]
+      ],
+      "lat": 42.337104,
+      "lng": -71.144852
     },
     {
       "name": "Cleveland Circle",
       "lines": [
         "green-c"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.336142,
+      "lng": -71.149326
     },
     {
       "name": "Union Sq",
@@ -702,7 +874,9 @@
       ],
       "aliases": [
         "Union Square"
-      ]
+      ],
+      "lat": 42.377359,
+      "lng": -71.094761
     },
     {
       "name": "Lechmere",
@@ -710,7 +884,9 @@
         "green-d",
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.371572,
+      "lng": -71.076584
     },
     {
       "name": "Science Park/West End",
@@ -718,105 +894,135 @@
         "green-d",
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.366664,
+      "lng": -71.067666
     },
     {
       "name": "Fenway",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.345403,
+      "lng": -71.104213
     },
     {
       "name": "Longwood",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.341702,
+      "lng": -71.109956
     },
     {
       "name": "Brookline Village",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.332608,
+      "lng": -71.116857
     },
     {
       "name": "Brookline Hills",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.331316,
+      "lng": -71.126683
     },
     {
       "name": "Beaconsfield",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.335765,
+      "lng": -71.140455
     },
     {
       "name": "Reservoir",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.335088,
+      "lng": -71.148758
     },
     {
       "name": "Chestnut Hill",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.326753,
+      "lng": -71.164699
     },
     {
       "name": "Newton Centre",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.329443,
+      "lng": -71.192414
     },
     {
       "name": "Newton Highlands",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.322381,
+      "lng": -71.205509
     },
     {
       "name": "Eliot",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.319045,
+      "lng": -71.216684
     },
     {
       "name": "Waban",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.325845,
+      "lng": -71.230609
     },
     {
       "name": "Woodland",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.332902,
+      "lng": -71.243362
     },
     {
       "name": "Riverside",
       "lines": [
         "green-d"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.337352,
+      "lng": -71.252685
     },
     {
       "name": "Medford/Tufts",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.407975,
+      "lng": -71.117044
     },
     {
       "name": "Ball Sq",
@@ -825,7 +1031,9 @@
       ],
       "aliases": [
         "Ball Square"
-      ]
+      ],
+      "lat": 42.399889,
+      "lng": -71.111003
     },
     {
       "name": "Magoun Sq",
@@ -834,7 +1042,9 @@
       ],
       "aliases": [
         "Magoun Square"
-      ]
+      ],
+      "lat": 42.393682,
+      "lng": -71.1063879
     },
     {
       "name": "Gilman Sq",
@@ -843,28 +1053,36 @@
       ],
       "aliases": [
         "Gilman Square"
-      ]
+      ],
+      "lat": 42.387928,
+      "lng": -71.096766
     },
     {
       "name": "East Somerville",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.379467,
+      "lng": -71.086625
     },
     {
       "name": "Prudential",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.34557,
+      "lng": -71.081696
     },
     {
       "name": "Symphony",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.342687,
+      "lng": -71.085056
     },
     {
       "name": "Northeastern",
@@ -873,28 +1091,36 @@
       ],
       "aliases": [
         "Northeastern University"
-      ]
+      ],
+      "lat": 42.340401,
+      "lng": -71.088806
     },
     {
       "name": "Museum of Fine Arts",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.337711,
+      "lng": -71.095512
     },
     {
       "name": "Longwood Medical Area",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.33596,
+      "lng": -71.100052
     },
     {
       "name": "Brigham Circle",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.334229,
+      "lng": -71.104609
     },
     {
       "name": "Fenwood Rd",
@@ -903,28 +1129,36 @@
       ],
       "aliases": [
         "Fenwood Road"
-      ]
+      ],
+      "lat": 42.333706,
+      "lng": -71.105728
     },
     {
       "name": "Mission Park",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.333195,
+      "lng": -71.109756
     },
     {
       "name": "Riverway",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.331684,
+      "lng": -71.111931
     },
     {
       "name": "Back of the Hill",
       "lines": [
         "green-e"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.330139,
+      "lng": -71.111313
     },
     {
       "name": "Heath St",
@@ -933,28 +1167,36 @@
       ],
       "aliases": [
         "Heath Street"
-      ]
+      ],
+      "lat": 42.328316,
+      "lng": -71.110252
     },
     {
       "name": "Cedar Grove",
       "lines": [
         "mattapan"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.279629,
+      "lng": -71.060394
     },
     {
       "name": "Butler",
       "lines": [
         "mattapan"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.272429,
+      "lng": -71.062519
     },
     {
       "name": "Milton",
       "lines": [
         "mattapan"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.270349,
+      "lng": -71.067266
     },
     {
       "name": "Central Ave",
@@ -963,7 +1205,9 @@
       ],
       "aliases": [
         "Central Avenue"
-      ]
+      ],
+      "lat": 42.270027,
+      "lng": -71.073444
     },
     {
       "name": "Valley Rd",
@@ -972,7 +1216,9 @@
       ],
       "aliases": [
         "Valley Road"
-      ]
+      ],
+      "lat": 42.268347,
+      "lng": -71.081343
     },
     {
       "name": "Capen St",
@@ -981,14 +1227,18 @@
       ],
       "aliases": [
         "Capen Street"
-      ]
+      ],
+      "lat": 42.267563,
+      "lng": -71.087338
     },
     {
       "name": "Mattapan",
       "lines": [
         "mattapan"
       ],
-      "aliases": []
+      "aliases": [],
+      "lat": 42.26762,
+      "lng": -71.092486
     }
   ]
 }
