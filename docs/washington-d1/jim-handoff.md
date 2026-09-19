@@ -17,3 +17,49 @@ H2: no product washington stations.json. Map-vs-board (Downtown Largo vs Largo; 
 H7: America/New_York **HAS DST**. Do not copy Perth / Brisbane no-DST.
 
 §3 rec: line + terminus (`Red Line + Glenmont`, `Silver Line + Ashburn`). Flag: inbound/outbound dies at Metro Center. **Metro Center is a hub stop string, not a direction token.** Hold D5. Jim owns D2–D6. When Jim wires, testers can pick city id **washington**. Do not flip from this pack. Testers live is Jim’s job, not this pack’s flip.
+
+## D2 addendum (Jim, 20 Sep 2026)
+
+Wired `lib/providers/washington.js` against WMATA's Station Prediction API
+(`StationPrediction.svc/json/GetPrediction`, header `api_key`) plus WMATA's Rail Station
+Information endpoint (`Rail.svc/json/jStations`) to resolve StationCodes by name at request time
+— never a hardcoded 98-row code table. `WMATA_API_KEY` was NOT available this session (checked
+`.env.local`, not present) — this adapter was never called against either live endpoint; the
+`jStations`/`GetPrediction` payload shapes are documented-only, UNVERIFIED against a real
+response. Confirm both once a key is set (register at https://developer.wmata.com/signup/).
+
+Station catalog (`lib/cities/washington/stations.json`, 98 stations) carries `lat`/`lng` sourced
+from DC GIS's public "Metro Stations Regional" ArcGIS FeatureServer layer
+(`maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Transportation_Rail_Bus_WebMercator/MapServer/51`,
+98 rows, matches all 98 D1 names) — a WMATA-sourced public open dataset, no key required —
+matched by name/rename-alias (Rd/Road, Av/Ave/Avenue abbreviation expansions plus the documented
+renames: Gallery Place-Chinatown/Gallery Pl-Chinatown, Archives-Navy Mem'l-Penn Quarter/Archives-
+Navy Memorial-Penn Quarter, West Falls Church-VT/West Falls Church, Potomac Yard-VT/Potomac Yard,
+Virginia Sq-GMU/Virginia Square-GMU), never fuzzy string matching. All 98 D1 stations matched —
+none exempted. **This dataset's embedded `TRAININFO_URL` station-code fragments were NOT used as
+WMATA StationCodes** — spot-checking found a data bug (Potomac Yard's fragment duplicates
+Huntington's real code C15) — so StationCodes are always resolved live from WMATA's own
+`jStations`, never from this coordinate source.
+
+**MARC/VRE/Amtrak Northeast Regional — NOT implemented, holds the flip.** The oracle report's
+Board eligibility section rules MARC (Penn/Brunswick/Camden) and VRE (Fredericksburg/Manassas)
+`in` at Union Station, Rockville, Silver Spring, New Carrollton, L'Enfant Plaza, and
+Franconia-Springfield, plus Amtrak Northeast Regional `in` at Union Station/New Carrollton — but
+all three come from feeds other than WMATA's Station Prediction API and are **not yet wired** in
+this v1 adapter (no fabricated/faked board). This holds the flip until either a second feed is
+wired for those services or Tim records an `out-product` sign-off overriding the walk-up rule's
+`in` verdict for this city. Everything else (all other Amtrak services) is `out-reservation`,
+already excluded correctly by only ever calling WMATA's own API.
+
+**Flip-commit — exact edits.** Per docs/boston-d1/jim-handoff.md's "Flip commit — exact edits"
+recipe (qa/live-city-lists-sync.mjs derived, 8-list requirement): once WMATA_API_KEY is set,
+`developer.wmata.com`/`Rail.svc`/`StationPrediction.svc` payloads are confirmed live, and the
+MARC/VRE/Amtrak question above is resolved one way or the other, Mark's flip PR changes
+`registry.js`'s washington `status` to `"live"` plus adds `washington` to the same three lists
+Boston's recipe names (`MULTI_CITY_IDS`/`MultiCityId` typedef, `brisbane-dogfood.js`'s mount/
+available map, `journey-model.js`'s persisted-city/country lists) — nothing else in this repo
+needs a second pass; the dogfood module, dispatch switch-cases, and gate already exist.
+
+Flip readiness (docs/jim-brief-us-flip-readiness.md): United States picker country, CITY_BOUNDS
+box, and `lib/cities/country-regions.js` entry added for `washington` alongside BART/Boston/
+Chicago (Coming Soon, `status: "planned"`, out of every live-city list).
