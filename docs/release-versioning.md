@@ -51,6 +51,7 @@ Play ignores custom schemes like “v9a”. Testers see `versionName`; Play enfo
 | **Public launch** | **3.0.0** | **24** | `v3.0.0` | 33 cities across AU/UK/SE/FI/NO; NZ/NL/Canada retired; London catalog coverage; Sydney City Circle; production sweep — see `docs/release-notes-3.0.0.md` |
 | Security + consent fixes | **3.0.1** | **25** | `v3.0.1` | Fixes-only PATCH ahead of Play production submission: EU/UK ad consent, security hardening (release cleartext off, test deep link removed) — see `docs/release-notes-3.0.1.md` |
 | Web-to-Android sync | **3.0.2** | **26** | `v3.0.2` | PATCH shipping the weekend's web changes to the APK: country-wide station search with Region as an optional filter, full UK National Rail catalogs, closure notice on empty boards, Sydney intercity lines, bundled directions — see `docs/release-notes-3.0.2.md` |
+| Near me region fix | **3.0.3** | **27** | `v3.0.3` | PATCH shipping two web changes to the APK: Near me resolves the region from the nearest live station (King’s Cross/Waterloo/Victoria now show National Rail), nine Essex stations moved to Greater Anglia — see `docs/release-notes-3.0.3.md` |
 
 Update this table when you ship.
 
