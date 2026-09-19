@@ -34,3 +34,37 @@ H7: America/New_York **HAS DST** (EDT/EST). Do not copy Perth / Brisbane no-DST.
 - **Open items carried from D1, not resolved by Jim:** direction-model-memo.md's open question 1 (spoken/printed line token wording) and open question 3 (Gov't Center vs Government Center chip wording) are both already locked in code as the map-print short forms (`Green Line B`, `Gov't Center`) — flag for Tim if that's not what he intended when he reviews.
 
 No product edit, no Perth edit, no live flip, no merge of other PRs, no API key registered/pasted, no `washington`/`chicago`/`bart` adapters touched.
+
+---
+
+## Flip commit — exact edits (docs/jim-brief-us-flip-readiness.md, 20 Sep 2026)
+
+Coordinates, the `United States` picker country (Coming Soon), `lib/cities/country-regions.js`,
+and Boston/BART/Chicago's `CITY_BOUNDS` boxes all landed ahead of the flip in the readiness PR —
+none of those need touching at flip time. `qa/live-city-lists-sync.mjs` derives its expected sets
+from `CITIES.filter(status === "live")`, so once Boston's status flips, these are the *only*
+remaining edits (worked out by reading that gate's own numbered checks 1–8):
+
+1. `lib/providers/registry.js` — Boston's `status: "planned"` → `status: "live"`.
+2. `lib/cities/live-city-api.js` — add `"boston"` to `MULTI_CITY_IDS`.
+3. `public/app.js` — add `"boston"` to both `NEARBY_MULTI_CITY_IDS` and `LIVE_CITY_IDS`.
+4. `public/city-session.js` — add `"boston"` to its own `MULTI_CITY_IDS`; on the picker's
+   `boston` region entry, drop `comingSoon: true` (or set it `false`).
+5. `public/brisbane-dogfood.js` — add `"boston"` to `MULTI_CITY_IDS`; add a `boston` key to the
+   `available` map.
+6. `public/journey-model.js` — add `"boston"` to `PERSISTED_CITY_IDS`; add `"us"` to
+   `PERSISTED_COUNTRY_IDS` (unless BART or Chicago flipped first and already added it).
+7. `public/city-session.js` `CITY_BOUNDS` — already present (this PR); no action.
+8. `lib/cities/country-regions.js` — already present (this PR); no action.
+
+Same recipe applies to BART (`docs/bart-d1/jim-handoff.md` references this section) and Chicago,
+swapping the city id and (for `PERSISTED_COUNTRY_IDS`) skipping step 6's country id add if a
+different US city already flipped first.
+
+**Not derived here, flagged as a follow-up instead (per the brief):** the eight-list requirement
+itself may be more duplication than necessary — `MULTI_CITY_IDS` appears three times
+(`live-city-api.js`, `app.js`'s `NEARBY_MULTI_CITY_IDS`, `city-session.js`) and could plausibly
+derive from the registry's `status === "live"` set at build/import time instead of being
+hand-copied per flip. Out of scope for this PR; a real refactor risks exactly the kind of
+"missed one copy" regression `live-city-lists-sync.mjs` exists to catch, so it deserves its own
+brief and gate re-verification rather than a drive-by change here.

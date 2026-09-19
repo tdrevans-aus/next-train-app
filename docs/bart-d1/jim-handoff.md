@@ -17,3 +17,21 @@ H2: no product bart stations.json. Map-vs-page rename (slash/accent/period) plus
 H7: America/Los_Angeles **HAS DST** (PDT/PST). Do not copy Perth / Brisbane no-DST.
 
 §3 rec: line + terminus (`Yellow + Antioch`, `Blue + Daly City`, `Orange + Richmond`). Flag: inbound/outbound dies at Embarcadero. **Embarcadero is a hub stop string, not a direction token.** Hold D5. Jim owns D2–D6. When Jim wires, testers can pick city id **bart**. Do not flip from this pack. Testers live is Jim’s job, not this pack’s flip. Not cut #1.
+
+---
+
+## Coordinates + flip commit (docs/jim-brief-us-flip-readiness.md, 20 Sep 2026)
+
+All 50 stations in `lib/cities/bart/stations.json` now carry `lat`/`lng`, sourced from BART's
+public `stn.aspx?cmd=stns` station list matched by `abbr` (BART's own 4-letter code), never by
+name. While matching, found and fixed a pre-existing catalog bug: Warm Springs/South Fremont's
+`abbr` was `WSPR`, but BART's real code for that station is `WARM` — `WSPR` isn't a valid BART
+station code at all, so any real-time ETD call for it would have 400'd. Corrected to `WARM` in
+the same edit that added its coordinates.
+
+BART's `CITY_BOUNDS` box (`public/city-session.js`) is derived from these coordinates with a
+small margin, kept tight at the southern edge specifically so it doesn't reach into Caltrain/
+VTA-only territory south of Berryessa/North San José (see that box's own comment).
+
+**Exact flip-commit edit list:** see "Flip commit — exact edits" in `docs/boston-d1/jim-handoff.md`
+— the same 8-item recipe applies here, swapping `boston` for `bart` throughout.

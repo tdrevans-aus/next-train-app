@@ -30,3 +30,23 @@ Same-printed-name-different-physical-place disambiguation (Harlem, Western, Pula
 isSch (schedule-based)/isFlt (fault) rows are dropped before ever reaching a rider — Tim's rule, no live times no board. isDly (delayed) rows are kept and flagged `delayed: true`, matching how Göteborg/Helsinki keep a real row while flagging degraded confidence rather than hiding it.
 
 City stays `status: "planned"` in the registry (`adapterReady: true`). Not flipped. `assertCityLive("chicago")` still fails (501). Flip follow-through (dogfood module, `live-city-api.js` dispatch, `chicago-dogfood-gate.mjs`) is done ahead of the key landing, per the Boston PR #414 shape — `chicago` is deliberately NOT added to `MULTI_CITY_IDS`/journey-model persisted lists/brisbane-dogfood mount map yet; add those in the same commit as the status flip (`qa/live-city-lists-sync.mjs` enforces this).
+
+---
+
+## Coordinates + flip commit (docs/jim-brief-us-flip-readiness.md, 20 Sep 2026)
+
+141 of 142 non-hub-duplicate catalog entries (142 of 143 stations total) now carry `lat`/`lng`,
+sourced from CTA's public static GTFS `stops.txt` (`location_type=1` parent stations) by matching
+each catalog station's name + branch qualifier against the GTFS station's own name + parenthetical
+line/branch qualifier (e.g. "Western (Blue - O'Hare Branch)"), never by fuzzy/plain-substring
+matching. Zero ambiguous matches. **State/Lake is the sole exception**: confirmed via Wikipedia
+that it is a currently, temporarily closed 'L' station, entirely absent from CTA's live GTFS feed
+— no real stop id exists to source a coordinate from, so it's left uncoordinated and exempted in
+`qa/chicago-dogfood-gate.mjs` rather than guessed from an unofficial source.
+
+Chicago's `CITY_BOUNDS` box (`public/city-session.js`) is derived from these coordinates with a
+small margin. `United States` picker entry (Coming Soon) and `lib/cities/country-regions.js`
+entry added in the same PR.
+
+**Exact flip-commit edit list:** see "Flip commit — exact edits" in `docs/boston-d1/jim-handoff.md`
+— the same 8-item recipe applies here, swapping `boston` for `chicago` throughout.

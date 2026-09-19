@@ -95,6 +95,21 @@
       ],
     },
     {
+      id: "us",
+      name: "United States",
+      regions: [
+        // docs/jim-brief-us-flip-readiness.md — Coming Soon only; none of these
+        // are live yet, per the pipeline's "no picker entry for a new planned
+        // city" rule (Tim, 30 Aug 2026) not applying here because Mark's Boston
+        // QA is green and this is the flip-readiness scaffolding, not a bare
+        // planned-city add. Kept comingSoon: true and out of MULTI_CITY_IDS —
+        // status stays "planned" in the registry until a separate flip PR.
+        { id: "bart", name: "BART (San Francisco Bay Area)", timeZone: "America/Los_Angeles", comingSoon: true },
+        { id: "boston", name: "Boston", timeZone: "America/New_York", comingSoon: true },
+        { id: "chicago", name: "Chicago", timeZone: "America/Chicago", comingSoon: true },
+      ],
+    },
+    {
       id: "gb-wls",
       name: "Wales",
       regions: [
@@ -299,6 +314,16 @@
     // Glasgow/Edinburgh. Bounds are the min/max lat/lng actually present in the
     // catalog (docs/jim-brief-uk-station-fill-phase2b.md), not a hand-drawn estimate.
     "rest-of-england": { minLat: 50.6, maxLat: 54.85, minLng: -3.6, maxLng: 1.45 },
+    // United States (docs/jim-brief-us-flip-readiness.md) — Coming Soon regions,
+    // no overlap risk with any existing box (different continent). Derived from
+    // each catalog's actual station coordinates with a small margin.
+    // BART's southern edge (Berryessa/North San José, 37.368) is BART's own
+    // real southernmost station — the small margin below (37.34) stops well
+    // short of Diridon (37.3297), Caltrain/VTA's own hub, so this box does not
+    // reach into Caltrain/VTA-only territory.
+    bart: { minLat: 37.34, maxLat: 38.05, minLng: -122.5, maxLng: -121.75 },
+    boston: { minLat: 42.15, maxLat: 42.48, minLng: -71.3, maxLng: -70.95 },
+    chicago: { minLat: 41.68, maxLat: 42.12, minLng: -87.95, maxLng: -87.55 },
   };
 
   function dogfood() {

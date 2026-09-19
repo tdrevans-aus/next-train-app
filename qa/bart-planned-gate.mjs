@@ -41,6 +41,7 @@ import {
   resolveTerminus,
   mapLineTerminusDestination,
 } from "../lib/cities/bart/marketing-directions.js";
+import { cityBoundsFor, inAnyBounds } from "./lib/city-bounds-from-picker.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -95,6 +96,18 @@ assert(
   (byName.get(BART_HUB)?.aliases ?? []).length === 0,
   "Embarcadero must not carry an alias — no doNotUse hub-proxy string may collapse into it"
 );
+
+// Coordinates (docs/jim-brief-us-flip-readiness.md) — every station geocoded from BART's
+// public stn.aspx station list by abbr, and inside BART's own CITY_BOUNDS box
+// (public/city-session.js), tight enough not to claim Caltrain/VTA-only territory.
+const bartBoxes = cityBoundsFor("bart");
+for (const station of stations) {
+  assert(typeof station.lat === "number" && typeof station.lng === "number", `${station.name} must carry lat/lng`);
+  assert(
+    inAnyBounds(station.lat, station.lng, bartBoxes),
+    `${station.name} (${station.lat}, ${station.lng}) must fall inside BART's CITY_BOUNDS box`
+  );
+}
 
 // resolveCatalogEntry — exact-match aliasing (map printed name <-> stations-index long form).
 assert(resolveCatalogEntry(BART_HUB)?.name === BART_HUB, "resolveCatalogEntry must resolve the hub by printed name");
