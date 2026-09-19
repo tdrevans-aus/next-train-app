@@ -126,7 +126,7 @@ const SMOKE_SCRIPTS = [
   "helsinki-line-map-conformance.mjs",
   "oslo-dogfood-gate.mjs",
   "oslo-line-map-conformance.mjs",
-  "brussels-planned-gate.mjs",
+  "brussels-dogfood-gate.mjs",
   "east-midlands-dogfood-gate.mjs",
   "uk-west-midlands-dogfood-gate.mjs",
   "uk-rail-crs-index.mjs",
