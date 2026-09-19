@@ -1,5 +1,8 @@
 /**
  * Play Console pre-upload sanity checks (no AAB build).
+ * Post-build step (after generating the signed AAB, before uploading to Play — see
+ * docs/aab-signing-closed-testing.md §2): run `node qa/aab-no-dev-assets.mjs` against the AAB to
+ * confirm dev-only files didn't get re-copied into the package by Gradle's asset copy.
  * Usage: node qa/pre-upload-check.mjs
  */
 import fs from "fs";
@@ -343,7 +346,10 @@ async function main() {
     process.exit(1);
   }
 
-  console.log("All checks passed. Build signed AAB in Android Studio (release).\n");
+  console.log("All checks passed. Build signed AAB in Android Studio (release).");
+  console.log(
+    "Post-build: run `node qa/aab-no-dev-assets.mjs` against the AAB before uploading — see docs/aab-signing-closed-testing.md §2.\n"
+  );
 }
 
 main().catch((err) => {
