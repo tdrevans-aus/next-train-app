@@ -83,6 +83,11 @@ Manual checklist:
 
 **Sanity:** file exists, size isn’t tiny (empty), dated “just now”.
 
+**Post-build check (before upload):** run `node qa/aab-no-dev-assets.mjs` against the AAB you
+just built. It confirms the packaged assets don’t contain dev-only files (`dogfood-origin.json`,
+`design/`, `lib/cities`, etc.) that Gradle’s pre-build asset copy can re-introduce even after
+`cap:sync`’s own prune. See `docs/jim-brief-gradle-copy-skips-prune.md`.
+
 ---
 
 ## 3. Upload to closed testing

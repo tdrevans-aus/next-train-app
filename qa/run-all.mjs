@@ -170,6 +170,7 @@ const SMOKE_SCRIPTS = [
   "vercel-json-no-inert-memory-gate.mjs",
   "reset-param-gated.mjs",
   "ship-assets-no-dogfood-origin.mjs",
+  "aab-no-dev-assets.mjs",
   "security-headers-gate.mjs",
   "api-500-no-error-echo.mjs",
   "country-wide-picker.mjs",
