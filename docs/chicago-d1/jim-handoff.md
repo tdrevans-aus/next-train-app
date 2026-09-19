@@ -17,3 +17,16 @@ H2: no product chicago stations.json. Map-vs-page rename (Library vs Harold Wash
 H7: America/Chicago **HAS DST** (CDT/CST). Do not copy Perth / Brisbane no-DST.
 
 §3 rec: line + terminus (`Red + Howard`, `Brown + Kimball`). Flag: inbound/outbound dies in the Loop. Clark/Lake is a hub stop string, not a direction token. Hold D5. Jim owns D2–D6. When Jim wires, testers can pick city id **chicago**. Do not flip from this pack. Testers live is Jim’s job, not this pack’s flip. Not cut #1.
+
+## D2 addendum (Jim, 20 Sep 2026)
+
+Adapter wired: `lib/providers/chicago.js` on the CTA Train Tracker Arrivals API (`ttarrivals.aspx`, JSON output). `CTA_TRAIN_TRACKER_KEY` was checked in `.env.local` and is **not present** — this session never called the live endpoint. Two things are therefore unverified against a real payload and need live confirmation once Tim registers the key:
+
+1. **Station `mapid`s.** Not hand-transcribed (143 memorized ids is a fabrication risk this pack explicitly warns against). Instead `resolveMapIdForCatalogEntry()` resolves a station's mapid at request time from CTA's published static GTFS (`loadGtfsStatic`, `routeTypes: ["1"]`), matching a parent stop's `stop_name` to the catalog's printed name and disambiguating same-name families (Western, Pulaski, Cicero, Kedzie, Damen, ...) by checking which line each candidate's child platform stops actually carry trips for. `CTA_GTFS_STATIC_URL` (`https://www.transitchicago.com/downloads/sch_data/google_transit.zip`) was never fetched this session — confirm the URL and the join once a key/network check is possible.
+2. **Train Tracker's own field shapes** (`rt` route codes, `destNm` destination strings, `isSch`/`isDly`/`isFlt` flags) are taken from the documented API page, not a live response.
+
+Same-printed-name-different-physical-place disambiguation (Harlem, Western, Pulaski, Cicero, Kedzie, Damen, Belmont, Chicago, Grand, Monroe, Addison, Ashland, Clinton, California, Austin, Oak Park, Halsted, Garfield, 47th, Montrose, Irving Park, Central — see `lib/cities/chicago/marketing-directions.js` file header) is a D2 judgment call cross-referenced against this pack's hazard-pack.md/oracle-clash-report.md doNotCollapse language and explicit place-counts, not extracted from a live payload or GTFS join. **Flagged for Tim/Nico sign-off before any live flip.**
+
+isSch (schedule-based)/isFlt (fault) rows are dropped before ever reaching a rider — Tim's rule, no live times no board. isDly (delayed) rows are kept and flagged `delayed: true`, matching how Göteborg/Helsinki keep a real row while flagging degraded confidence rather than hiding it.
+
+City stays `status: "planned"` in the registry (`adapterReady: true`). Not flipped. `assertCityLive("chicago")` still fails (501). Flip follow-through (dogfood module, `live-city-api.js` dispatch, `chicago-dogfood-gate.mjs`) is done ahead of the key landing, per the Boston PR #414 shape — `chicago` is deliberately NOT added to `MULTI_CITY_IDS`/journey-model persisted lists/brisbane-dogfood mount map yet; add those in the same commit as the status flip (`qa/live-city-lists-sync.mjs` enforces this).

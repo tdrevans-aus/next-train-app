@@ -1,0 +1,1590 @@
+{
+  "city": "chicago",
+  "hub": "Clark/Lake",
+  "stations": [
+    {
+      "name": "Clark/Lake",
+      "lines": [
+        "blue",
+        "brown",
+        "green",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": true,
+      "branch": null,
+      "aliases": [],
+      "id": "clark-lake"
+    },
+    {
+      "name": "State/Lake",
+      "lines": [
+        "brown",
+        "green",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "state-lake"
+    },
+    {
+      "name": "Washington/Wabash",
+      "lines": [
+        "brown",
+        "green",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "washington-wabash"
+    },
+    {
+      "name": "Adams/Wabash",
+      "lines": [
+        "brown",
+        "green",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "adams-wabash"
+    },
+    {
+      "name": "Library",
+      "lines": [
+        "brown",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "library"
+    },
+    {
+      "name": "LaSalle/Van Buren",
+      "lines": [
+        "brown",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "lasalle-van-buren"
+    },
+    {
+      "name": "Quincy",
+      "lines": [
+        "brown",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "quincy"
+    },
+    {
+      "name": "Washington/Wells",
+      "lines": [
+        "brown",
+        "orange",
+        "pink",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "washington-wells"
+    },
+    {
+      "name": "Merchandise Mart",
+      "lines": [
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "merchandise-mart"
+    },
+    {
+      "name": "Roosevelt",
+      "lines": [
+        "red",
+        "green",
+        "orange"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "roosevelt"
+    },
+    {
+      "name": "Howard",
+      "lines": [
+        "red",
+        "purple",
+        "yellow"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "howard"
+    },
+    {
+      "name": "Jackson",
+      "lines": [
+        "red",
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "jackson"
+    },
+    {
+      "name": "Belmont",
+      "lines": [
+        "red",
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": "Red/Brown/Purple (North Side Main Line)",
+      "aliases": [],
+      "id": "belmont-red"
+    },
+    {
+      "name": "Chicago",
+      "lines": [
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": "Brown/Purple (Ravenswood-Loop connector)",
+      "aliases": [],
+      "id": "chicago-brown"
+    },
+    {
+      "name": "Ashland",
+      "lines": [
+        "green",
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Green/Pink (Lake Street elevated)",
+      "aliases": [],
+      "id": "ashland-green"
+    },
+    {
+      "name": "Wilson",
+      "lines": [
+        "red",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "wilson"
+    },
+    {
+      "name": "Wellington",
+      "lines": [
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "wellington"
+    },
+    {
+      "name": "Diversey",
+      "lines": [
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "diversey"
+    },
+    {
+      "name": "Fullerton",
+      "lines": [
+        "red",
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "fullerton"
+    },
+    {
+      "name": "Armitage",
+      "lines": [
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "armitage"
+    },
+    {
+      "name": "Sedgwick",
+      "lines": [
+        "brown",
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "sedgwick"
+    },
+    {
+      "name": "Morgan",
+      "lines": [
+        "green",
+        "pink"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "morgan"
+    },
+    {
+      "name": "Clinton",
+      "lines": [
+        "green",
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Green/Pink (Lake Street elevated)",
+      "aliases": [],
+      "id": "clinton-green"
+    },
+    {
+      "name": "Harlem",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (O'Hare Branch)",
+      "aliases": [
+        "Harlem (Blue - O'Hare Branch)"
+      ],
+      "id": "harlem-blue-line"
+    },
+    {
+      "name": "Harlem",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (Forest Park Branch)",
+      "aliases": [
+        "Harlem (Blue - Forest Park Branch)"
+      ],
+      "id": "harlem-blue-line-2"
+    },
+    {
+      "name": "Western",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (O'Hare Branch)",
+      "aliases": [
+        "Western (Blue - O'Hare Branch)"
+      ],
+      "id": "western-blue-line"
+    },
+    {
+      "name": "Western",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (Forest Park Branch)",
+      "aliases": [
+        "Western (Blue - Forest Park Branch)"
+      ],
+      "id": "western-blue-line-2"
+    },
+    {
+      "name": "Western",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": "Brown Line",
+      "aliases": [
+        "Western (Brown)"
+      ],
+      "id": "western-brown-line"
+    },
+    {
+      "name": "Western",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Pink Line",
+      "aliases": [
+        "Western (Pink)"
+      ],
+      "id": "western-pink-line"
+    },
+    {
+      "name": "Western",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "branch": "Orange Line",
+      "aliases": [
+        "Western (Orange)"
+      ],
+      "id": "western-orange-line"
+    },
+    {
+      "name": "Pulaski",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (Forest Park Branch)",
+      "aliases": [
+        "Pulaski (Blue)"
+      ],
+      "id": "pulaski-blue-line"
+    },
+    {
+      "name": "Pulaski",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Pulaski (Green)"
+      ],
+      "id": "pulaski-green-line"
+    },
+    {
+      "name": "Pulaski",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "branch": "Orange Line",
+      "aliases": [
+        "Pulaski (Orange)"
+      ],
+      "id": "pulaski-orange-line"
+    },
+    {
+      "name": "Pulaski",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Pink Line",
+      "aliases": [
+        "Pulaski (Pink)"
+      ],
+      "id": "pulaski-pink-line"
+    },
+    {
+      "name": "Cicero",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (Forest Park Branch)",
+      "aliases": [
+        "Cicero (Blue)"
+      ],
+      "id": "cicero-blue-line"
+    },
+    {
+      "name": "Cicero",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Cicero (Green)"
+      ],
+      "id": "cicero-green-line"
+    },
+    {
+      "name": "Cicero",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Pink Line",
+      "aliases": [
+        "Cicero (Pink)"
+      ],
+      "id": "cicero-pink-line"
+    },
+    {
+      "name": "Kedzie",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": "Brown Line",
+      "aliases": [
+        "Kedzie (Brown)"
+      ],
+      "id": "kedzie-brown-line"
+    },
+    {
+      "name": "Kedzie",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Kedzie (Green)"
+      ],
+      "id": "kedzie-green-line"
+    },
+    {
+      "name": "Kedzie",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "branch": "Orange Line",
+      "aliases": [
+        "Kedzie (Orange)"
+      ],
+      "id": "kedzie-orange-line"
+    },
+    {
+      "name": "Kedzie",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Pink Line",
+      "aliases": [
+        "Kedzie (Pink)"
+      ],
+      "id": "kedzie-pink-line"
+    },
+    {
+      "name": "Damen",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (O'Hare Branch)",
+      "aliases": [
+        "Damen (Blue)"
+      ],
+      "id": "damen-blue-line"
+    },
+    {
+      "name": "Damen",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": "Brown Line",
+      "aliases": [
+        "Damen (Brown)"
+      ],
+      "id": "damen-brown-line"
+    },
+    {
+      "name": "Damen",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Damen (Green)"
+      ],
+      "id": "damen-green-line"
+    },
+    {
+      "name": "Damen",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Pink Line",
+      "aliases": [
+        "Damen (Pink)"
+      ],
+      "id": "damen-pink-line"
+    },
+    {
+      "name": "Belmont",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Belmont (Blue)"
+      ],
+      "id": "belmont-blue-line"
+    },
+    {
+      "name": "Chicago",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": "Red Line",
+      "aliases": [
+        "Chicago (Red)"
+      ],
+      "id": "chicago-red-line"
+    },
+    {
+      "name": "Chicago",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Chicago (Blue)"
+      ],
+      "id": "chicago-blue-line"
+    },
+    {
+      "name": "Grand",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": "Red Line (State St Subway)",
+      "aliases": [
+        "Grand (Red)"
+      ],
+      "id": "grand-red-line"
+    },
+    {
+      "name": "Grand",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (Dearborn St Subway)",
+      "aliases": [
+        "Grand (Blue)"
+      ],
+      "id": "grand-blue-line"
+    },
+    {
+      "name": "Monroe",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": "Red Line (State St Subway)",
+      "aliases": [
+        "Monroe (Red)"
+      ],
+      "id": "monroe-red-line"
+    },
+    {
+      "name": "Monroe",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line (Dearborn St Subway)",
+      "aliases": [
+        "Monroe (Blue)"
+      ],
+      "id": "monroe-blue-line"
+    },
+    {
+      "name": "Addison",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": "Red Line",
+      "aliases": [
+        "Addison (Red)"
+      ],
+      "id": "addison-red-line"
+    },
+    {
+      "name": "Addison",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": "Brown Line",
+      "aliases": [
+        "Addison (Brown)"
+      ],
+      "id": "addison-brown-line"
+    },
+    {
+      "name": "Addison",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Addison (Blue)"
+      ],
+      "id": "addison-blue-line"
+    },
+    {
+      "name": "Ashland",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "branch": "Orange Line",
+      "aliases": [
+        "Ashland (Orange)"
+      ],
+      "id": "ashland-orange-line"
+    },
+    {
+      "name": "California",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "California (Blue)"
+      ],
+      "id": "california-blue-line"
+    },
+    {
+      "name": "California",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "California (Green)"
+      ],
+      "id": "california-green-line"
+    },
+    {
+      "name": "California",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": "Pink Line",
+      "aliases": [
+        "California (Pink)"
+      ],
+      "id": "california-pink-line"
+    },
+    {
+      "name": "Austin",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Austin (Blue)"
+      ],
+      "id": "austin-blue-line"
+    },
+    {
+      "name": "Austin",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Austin (Green)"
+      ],
+      "id": "austin-green-line"
+    },
+    {
+      "name": "Oak Park",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Oak Park (Blue)"
+      ],
+      "id": "oak-park-blue-line"
+    },
+    {
+      "name": "Oak Park",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Oak Park (Green)"
+      ],
+      "id": "oak-park-green-line"
+    },
+    {
+      "name": "Halsted",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Halsted (Green)"
+      ],
+      "id": "halsted-green-line"
+    },
+    {
+      "name": "Halsted",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "branch": "Orange Line",
+      "aliases": [
+        "Halsted (Orange)"
+      ],
+      "id": "halsted-orange-line"
+    },
+    {
+      "name": "Garfield",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": "Red Line",
+      "aliases": [
+        "Garfield (Red)"
+      ],
+      "id": "garfield-red-line"
+    },
+    {
+      "name": "Garfield",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Garfield (Green)"
+      ],
+      "id": "garfield-green-line"
+    },
+    {
+      "name": "47th",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": "Red Line",
+      "aliases": [
+        "47th (Red)"
+      ],
+      "id": "47th-red-line"
+    },
+    {
+      "name": "47th",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "47th (Green)"
+      ],
+      "id": "47th-green-line"
+    },
+    {
+      "name": "Montrose",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Montrose (Blue)"
+      ],
+      "id": "montrose-blue-line"
+    },
+    {
+      "name": "Montrose",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": "Brown Line",
+      "aliases": [
+        "Montrose (Brown)"
+      ],
+      "id": "montrose-brown-line"
+    },
+    {
+      "name": "Irving Park",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Irving Park (Blue)"
+      ],
+      "id": "irving-park-blue-line"
+    },
+    {
+      "name": "Irving Park",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": "Brown Line",
+      "aliases": [
+        "Irving Park (Brown)"
+      ],
+      "id": "irving-park-brown-line"
+    },
+    {
+      "name": "Central",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": "Green Line",
+      "aliases": [
+        "Central (Green)"
+      ],
+      "id": "central-green-line"
+    },
+    {
+      "name": "Central",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": "Purple Line",
+      "aliases": [
+        "Central (Purple)"
+      ],
+      "id": "central-purple-line"
+    },
+    {
+      "name": "Clinton",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": "Blue Line",
+      "aliases": [
+        "Clinton (Blue)"
+      ],
+      "id": "clinton-blue-line"
+    },
+    {
+      "name": "Jarvis",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "jarvis"
+    },
+    {
+      "name": "Morse",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "morse"
+    },
+    {
+      "name": "Loyola",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "loyola"
+    },
+    {
+      "name": "Granville",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "granville"
+    },
+    {
+      "name": "Thorndale",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "thorndale"
+    },
+    {
+      "name": "Bryn Mawr",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "bryn-mawr"
+    },
+    {
+      "name": "Berwyn",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "berwyn"
+    },
+    {
+      "name": "Argyle",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "argyle"
+    },
+    {
+      "name": "Lawrence",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "lawrence"
+    },
+    {
+      "name": "Sheridan",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "sheridan"
+    },
+    {
+      "name": "North/Clybourn",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "north-clybourn"
+    },
+    {
+      "name": "Clark/Division",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "clark-division"
+    },
+    {
+      "name": "Lake",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "lake"
+    },
+    {
+      "name": "Harrison",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "harrison"
+    },
+    {
+      "name": "Cermak-Chinatown",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "cermak-chinatown"
+    },
+    {
+      "name": "Sox-35th",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "sox-35th"
+    },
+    {
+      "name": "63rd",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "63rd"
+    },
+    {
+      "name": "69th",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "69th"
+    },
+    {
+      "name": "79th",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "79th"
+    },
+    {
+      "name": "87th",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "87th"
+    },
+    {
+      "name": "95th/Dan Ryan",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "95th-dan-ryan"
+    },
+    {
+      "name": "O'Hare",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "ohare"
+    },
+    {
+      "name": "Rosemont",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "rosemont"
+    },
+    {
+      "name": "Cumberland",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "cumberland"
+    },
+    {
+      "name": "Jefferson Park",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "jefferson-park"
+    },
+    {
+      "name": "Logan Square",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "logan-square"
+    },
+    {
+      "name": "Division",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "division"
+    },
+    {
+      "name": "Washington",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "washington"
+    },
+    {
+      "name": "LaSalle",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "lasalle"
+    },
+    {
+      "name": "UIC-Halsted",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "uic-halsted"
+    },
+    {
+      "name": "Racine",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "racine"
+    },
+    {
+      "name": "Illinois Medical District",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "illinois-medical-district"
+    },
+    {
+      "name": "Kedzie-Homan",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "kedzie-homan"
+    },
+    {
+      "name": "Forest Park",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "forest-park"
+    },
+    {
+      "name": "Kimball",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "kimball"
+    },
+    {
+      "name": "Francisco",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "francisco"
+    },
+    {
+      "name": "Rockwell",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "rockwell"
+    },
+    {
+      "name": "Paulina",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "paulina"
+    },
+    {
+      "name": "Southport",
+      "lines": [
+        "brown"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "southport"
+    },
+    {
+      "name": "Harlem/Lake",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "harlem-lake"
+    },
+    {
+      "name": "Ridgeland",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "ridgeland"
+    },
+    {
+      "name": "Laramie",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "laramie"
+    },
+    {
+      "name": "Conservatory-Central Park Drive",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "conservatory-central-park-drive"
+    },
+    {
+      "name": "Cermak-McCormick Place",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "cermak-mccormick-place"
+    },
+    {
+      "name": "35th-Bronzeville-IIT",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "35th-bronzeville-iit"
+    },
+    {
+      "name": "Indiana",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "indiana"
+    },
+    {
+      "name": "43rd",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "43rd"
+    },
+    {
+      "name": "51st",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "51st"
+    },
+    {
+      "name": "Ashland/63rd",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "ashland-63rd"
+    },
+    {
+      "name": "King Drive",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "king-drive"
+    },
+    {
+      "name": "Cottage Grove",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "cottage-grove"
+    },
+    {
+      "name": "Midway",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "midway"
+    },
+    {
+      "name": "35th/Archer",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "35th-archer"
+    },
+    {
+      "name": "54th/Cermak",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "54th-cermak"
+    },
+    {
+      "name": "Kostner",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "kostner"
+    },
+    {
+      "name": "Central Park",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "central-park"
+    },
+    {
+      "name": "18th",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "18th"
+    },
+    {
+      "name": "Polk",
+      "lines": [
+        "pink"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "polk"
+    },
+    {
+      "name": "Linden",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "linden"
+    },
+    {
+      "name": "Noyes",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "noyes"
+    },
+    {
+      "name": "Foster",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "foster"
+    },
+    {
+      "name": "Davis",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "davis"
+    },
+    {
+      "name": "Dempster",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "dempster"
+    },
+    {
+      "name": "Main",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "main"
+    },
+    {
+      "name": "South Blvd",
+      "lines": [
+        "purple"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "south-blvd"
+    },
+    {
+      "name": "Dempster-Skokie",
+      "lines": [
+        "yellow"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "dempster-skokie"
+    },
+    {
+      "name": "Oakton-Skokie",
+      "lines": [
+        "yellow"
+      ],
+      "hub": false,
+      "branch": null,
+      "aliases": [],
+      "id": "oakton-skokie"
+    }
+  ]
+}
