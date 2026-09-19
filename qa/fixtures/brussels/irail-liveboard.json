@@ -1,0 +1,179 @@
+{
+  "_comment": "Synthetic-but-realistic iRail liveboard (https://api.irail.be/liveboard/) fixtures for qa/brussels-dogfood-gate.mjs's SNCB-on-shared-boards pass. Field shapes (id/station/time/delay/canceled/left/isExtra/vehicle/vehicleinfo.type-shortname-number/platform) follow iRail's documented liveboard response (docs.irail.be). `time` is a unix epoch second string; every departure here is timed after the gate's fixed `now` (2026-09-19T17:00:00.000Z). Each station's array deliberately contains one row of each board-eligibility-relevant vehicle type named in docs/brussels-d1/oracle-clash-report.md's Board eligibility section, plus a canceled row and an already-left row (both must be dropped regardless of type), so the gate can prove every cut in one pass: IC/S/L/P/ICT domestic + ICE (in), THA/TGV/OUI/NJ/EN (out-reservation), EUR (out-checkin).",
+  "gareCentrale": [
+    {
+      "id": "0",
+      "station": "Oostende",
+      "time": "1789839600",
+      "delay": "60",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.IC1832",
+      "vehicleinfo": { "name": "BE.NMBS.IC1832", "shortname": "IC1832", "number": "1832", "type": "IC" },
+      "platform": "3"
+    },
+    {
+      "id": "1",
+      "station": "Antwerpen-Centraal",
+      "time": "1789839900",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.S51527",
+      "vehicleinfo": { "name": "BE.NMBS.S51527", "shortname": "S51527", "number": "51527", "type": "S" },
+      "platform": "6"
+    },
+    {
+      "id": "2",
+      "station": "Paris-Nord",
+      "time": "1789840200",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.THA9924",
+      "vehicleinfo": { "name": "BE.NMBS.THA9924", "shortname": "THA9924", "number": "9924", "type": "THA" },
+      "platform": "1"
+    },
+    {
+      "id": "3",
+      "station": "London St Pancras",
+      "time": "1789840500",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.EUR9117",
+      "vehicleinfo": { "name": "BE.NMBS.EUR9117", "shortname": "EUR9117", "number": "9117", "type": "EUR" },
+      "platform": "1"
+    },
+    {
+      "id": "4",
+      "_comment": "Canceled IC — must be dropped regardless of type being board-eligible.",
+      "station": "Oostende",
+      "time": "1789840800",
+      "delay": "0",
+      "canceled": "1",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.IC1834",
+      "vehicleinfo": { "name": "BE.NMBS.IC1834", "shortname": "IC1834", "number": "1834", "type": "IC" },
+      "platform": "3"
+    },
+    {
+      "id": "5",
+      "_comment": "Already-left IC — must be dropped, it is not boardable.",
+      "station": "Oostende",
+      "time": "1789838400",
+      "delay": "0",
+      "canceled": "0",
+      "left": "1",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.IC1830",
+      "vehicleinfo": { "name": "BE.NMBS.IC1830", "shortname": "IC1830", "number": "1830", "type": "IC" },
+      "platform": "3"
+    }
+  ],
+  "gareDuMidi": [
+    {
+      "id": "0",
+      "station": "Paris-Nord",
+      "time": "1789841100",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.TGV9440",
+      "vehicleinfo": { "name": "BE.NMBS.TGV9440", "shortname": "TGV9440", "number": "9440", "type": "TGV" },
+      "platform": "20"
+    },
+    {
+      "id": "1",
+      "station": "Paris-Nord",
+      "time": "1789841400",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.OUI7830",
+      "vehicleinfo": { "name": "BE.NMBS.OUI7830", "shortname": "OUI7830", "number": "7830", "type": "OUI" },
+      "platform": "21"
+    },
+    {
+      "id": "2",
+      "station": "Wien Hbf",
+      "time": "1789841700",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.NJ40490",
+      "vehicleinfo": { "name": "BE.NMBS.NJ40490", "shortname": "NJ40490", "number": "40490", "type": "NJ" },
+      "platform": "18"
+    },
+    {
+      "id": "3",
+      "station": "Berlin Hbf",
+      "time": "1789842000",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.EN451",
+      "vehicleinfo": { "name": "BE.NMBS.EN451", "shortname": "EN451", "number": "451", "type": "EN" },
+      "platform": "19"
+    },
+    {
+      "id": "4",
+      "station": "Koeln Hbf",
+      "time": "1789842300",
+      "delay": "120",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.ICE13",
+      "vehicleinfo": { "name": "BE.NMBS.ICE13", "shortname": "ICE13", "number": "13", "type": "ICE" },
+      "platform": "5"
+    },
+    {
+      "id": "5",
+      "station": "Nivelles",
+      "time": "1789842600",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.L2547",
+      "vehicleinfo": { "name": "BE.NMBS.L2547", "shortname": "L2547", "number": "2547", "type": "L" },
+      "platform": "2"
+    }
+  ],
+  "gareDeLOuest": [
+    {
+      "id": "0",
+      "station": "Braine-le-Comte",
+      "time": "1789838700",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.P8034",
+      "vehicleinfo": { "name": "BE.NMBS.P8034", "shortname": "P8034", "number": "8034", "type": "P" },
+      "platform": "1"
+    },
+    {
+      "id": "1",
+      "station": "Mons",
+      "time": "1789839600",
+      "delay": "0",
+      "canceled": "0",
+      "left": "0",
+      "isExtra": "0",
+      "vehicle": "BE.NMBS.ICT2201",
+      "vehicleinfo": { "name": "BE.NMBS.ICT2201", "shortname": "ICT2201", "number": "2201", "type": "ICT" },
+      "platform": "2"
+    }
+  ]
+}

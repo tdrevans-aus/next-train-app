@@ -73,6 +73,87 @@ this one):
 2. Add brussels to `brisbane-dogfood.js`'s mount/available map.
 3. Add brussels to `journey-model.js`'s persisted-city/country lists.
 
+## SNCB/NMBS board-eligibility gap CLOSED + Belgium flip readiness (20 Sep 2026)
+
+Both remaining flip blockers from Mark's Boston second pass
+(`docs/boston-d1/mark-qa-note.md`, 20 Sep section) are addressed —
+`docs/jim-brief-brussels-flip-readiness.md` is the full brief; this is the
+short version for whoever opens the flip PR.
+
+**A. SNCB/NMBS is now on the three shared boards.** Gare Centrale /
+Centraal, Gare du Midi / Zuidstation, Gare de l'Ouest / Weststation
+(exactly the three the oracle report's Board eligibility section names —
+Schuman/Luxembourg were NOT added, the report doesn't name them as
+SNCB-shared) now show SNCB domestic rail alongside metro, via a second live
+source — iRail liveboard (`https://api.irail.be/liveboard/`, no key,
+`lib/providers/irail.js`), not a fork of the STIB pipeline. Every trip
+carries `mode`/`agency` (`"metro"`/`"STIB/MIVB"` vs `"rail"`/`"SNCB/NMBS"`)
+so the two are never merged into one direction group (doNotGroup-by-mode).
+Eurostar/Thalys/TGV INOUI/OUIGO/Nightjet/European Sleeper are filtered out
+by iRail vehicle type (`classifySncbVehicleType`); ICE stays `in`. iRail
+failing degrades that station's board to metro-only with `partial: true`
+on the returned board object (`lib/providers/contract.js`'s `StationBoard`
+typedef now documents this field) — it never refuses the board. STIB
+failing is unchanged: still a hard refusal of the whole board. Proven
+offline in `qa/brussels-dogfood-gate.mjs` against
+`qa/fixtures/brussels/irail-liveboard.json` (one row of every
+board-eligibility-relevant vehicle type, plus a canceled and an
+already-departed row that must both drop regardless of type) — the
+"iRail down" case needs no separate fixture, since the gate's top-of-file
+fetch stub already throws on any real network attempt, so omitting the
+`irailRawDepartures` escape hatch alone proves the degrade-to-partial path.
+
+**One open item for whoever flips this next:** the iRail vehicle-type
+codes used for the international filter (THA/TGV/OUI/NJ/EN/EUR) are built
+from documented iRail conventions, not re-verified against a fresh live
+capture in this pass — the 19 Sep 2026 live check that confirmed iRail
+itself works was against Brussels-Central's ordinary IC/S traffic only.
+Worth one live capture at Gare du Midi (where Thalys/Eurostar/TGV actually
+call) before flip, same "confirm at D2" caveat Boston's MBTA route_id
+mapping and Copenhagen's route-type regex both already carry.
+
+**B. Belgium flip readiness.** `public/city-session.js` now has a
+`Belgium` country (id `be`) with Brussels as a `comingSoon: true` region,
+placed after Australia/before England (alphabetical, matching the existing
+order), plus a `CITY_BOUNDS` box (`lat 50.79-50.92, lng 4.24-4.49`, padded
+from the 60-station catalog's actual extent). This does not change
+`assertCityLive("brussels")` or the registry `status` — both stay exactly
+as before this pass. `qa/live-city-lists-sync.mjs` and
+`qa/uk-city-bounds-overlap-gate.mjs` both stay green with Brussels still
+`planned` (verified this pass) — a `comingSoon` entry outside the live set
+isn't checked by either gate, only the live-city set is.
+
+### Flip commit — exact edits (for whoever opens Brussels' flip PR)
+
+Registry status flip PLUS these list-membership edits, exactly the pattern
+`qa/live-city-lists-sync.mjs` checks (8 copies of "which cities are live"):
+
+1. `lib/providers/registry.js` — brussels `status: "planned"` → `"live"`.
+2. `lib/cities/live-city-api.js` — add `"brussels"` to `MULTI_CITY_IDS` and
+   the `MultiCityId` typedef (already flagged above, repeated here for the
+   single combined list).
+3. `public/app.js` — add `"brussels"` to both `NEARBY_MULTI_CITY_IDS` and
+   `LIVE_CITY_IDS`.
+4. `public/city-session.js` — add `"brussels"` to `MULTI_CITY_IDS`, AND
+   flip the Belgium picker entry's `comingSoon: true` to `comingSoon:
+   false` (or drop the flag entirely, matching how other live single-region
+   countries like Finland/Norway are written) — the picker entry itself
+   from part B above does NOT need to move or be re-created, only that one
+   flag changes.
+5. `public/brisbane-dogfood.js` — add `brussels: true` to both its own
+   `MULTI_CITY_IDS` array and the `available` map.
+6. `public/journey-model.js` — add `"brussels"` to `PERSISTED_CITY_IDS`,
+   and `"be"` to `PERSISTED_COUNTRY_IDS` (not already present — this is
+   Belgium's first live region).
+7. `public/city-session.js`'s `CITY_BOUNDS` already carries the `brussels`
+   entry from part B above — no edit needed here at flip time, only
+   confirm `qa/live-city-lists-sync.mjs`'s "CITY_BOUNDS missing entries for
+   live cities" check passes (it will, the entry already exists).
+
+`qa/live-city-lists-sync.mjs` will fail loudly (naming exactly which of the
+8 copies is out of sync) if any of 1-6 above is missed — the same
+self-checking property it was built for.
+
 D1 = official STIB/MIVB **Map for metro, CHRONO lines and SNCB-NMBS** https://www.stib-mivb.be/files/live/sites/STIBMIVB/files/Travel/Plans%20r%C3%A9seau/Plan_Metro_Train.pdf (PDF title Plan_Metro_Train_240923; HTTP Last-Modified **Thu, 03 Oct 2024 15:13:01 GMT**) plus official district-map texts as support. Index https://www.stib-mivb.be/travel/network-and-district-maps. Mixed plate — v1 is the **metro legend only**. Stations hand-transcribed from the rendered map. **Not generated from GTFS.** Static NAP zip may 200 empty-key — do not use it to build JSON.
 
 Four lines: **1** Gare de l'Ouest / Weststation – Stockel / Stokkel (21), **2** Simonis – Elisabeth (19), **5** Erasme / Erasmus – Herrmann-Debroux (28), **6** Roi Baudouin / Koning Boudewijn – Elisabeth (26). **60** unique open metro stops. **94** line ticks. **No passenger metro 3 or 4.** Tracker M1–M6 overstates.
