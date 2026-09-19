@@ -316,7 +316,10 @@ async function main() {
     hint: "Run `npm run export:icon` then re-run pre-upload.",
   });
 
-  console.log("\nPlay pre-upload checks\n");
+  console.log("\nPlay pre-upload checks");
+  console.log(
+    "(checks the last `npm run cap:sync`; run that first if `public/` changed)\n"
+  );
   let fail = 0;
   for (const row of results) {
     const mark = row.ok ? "PASS" : "FAIL";
