@@ -14,13 +14,13 @@ from the installed APK until this bump.
 
 **This is the first public (production) release.** Everything before it went to closed testers
 only, so the "What's new" text introduces the app rather than listing the two changes since
-3.0.2. 500 of Play's 500 characters, en-AU:
+3.0.2. 492 of Play's 500 characters, en-AU:
 
 ```
 Welcome to Next Train. This is our first public release.
 
 • Live train departures for 34 cities and regions across Australia, the UK, Sweden, Finland and Norway
-• Save your commute and see exactly when to walk out the door, delays included
+• Save your commute and see when to walk out the door, delays included
 • Near me opens the board for your closest station
 • Search any station in your country by name
 • Leave-by reminders and a home screen widget
