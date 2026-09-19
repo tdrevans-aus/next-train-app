@@ -41,20 +41,21 @@ WMATA StationCodes** — spot-checking found a data bug (Potomac Yard's fragment
 Huntington's real code C15) — so StationCodes are always resolved live from WMATA's own
 `jStations`, never from this coordinate source.
 
-**MARC/VRE/Amtrak Northeast Regional — NOT implemented, holds the flip.** The oracle report's
+**MARC/VRE — NOT implemented, holds the flip.** The oracle report's
 Board eligibility section rules MARC (Penn/Brunswick/Camden) and VRE (Fredericksburg/Manassas)
 `in` at Union Station, Rockville, Silver Spring, New Carrollton, L'Enfant Plaza, and
-Franconia-Springfield, plus Amtrak Northeast Regional `in` at Union Station/New Carrollton — but
-all three come from feeds other than WMATA's Station Prediction API and are **not yet wired** in
+Franconia-Springfield — but
+both come from feeds other than WMATA's Station Prediction API and are **not yet wired** in
 this v1 adapter (no fabricated/faked board). This holds the flip until either a second feed is
 wired for those services or Tim records an `out-product` sign-off overriding the walk-up rule's
-`in` verdict for this city. Everything else (all other Amtrak services) is `out-reservation`,
+`in` verdict for this city. All Amtrak services, Northeast Regional included, are `out-reservation`
+(controller correction 20 Sep 2026; authoritative verdict to live in docs/united-states-ledger.md),
 already excluded correctly by only ever calling WMATA's own API.
 
 **Flip-commit — exact edits.** Per docs/boston-d1/jim-handoff.md's "Flip commit — exact edits"
 recipe (qa/live-city-lists-sync.mjs derived, 8-list requirement): once WMATA_API_KEY is set,
 `developer.wmata.com`/`Rail.svc`/`StationPrediction.svc` payloads are confirmed live, and the
-MARC/VRE/Amtrak question above is resolved one way or the other, Mark's flip PR changes
+MARC/VRE question above is resolved one way or the other, Mark's flip PR changes
 `registry.js`'s washington `status` to `"live"` plus adds `washington` to the same three lists
 Boston's recipe names (`MULTI_CITY_IDS`/`MultiCityId` typedef, `brisbane-dogfood.js`'s mount/
 available map, `journey-model.js`'s persisted-city/country lists) — nothing else in this repo
