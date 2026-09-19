@@ -12,13 +12,37 @@ from the installed APK until this bump.
 
 ## Play release notes (short form, for the Console)
 
+**This is the first public (production) release.** Everything before it went to closed testers
+only, so the "What's new" text introduces the app rather than listing the two changes since
+3.0.2. 500 of Play's 500 characters, en-AU:
+
 ```
-3.0.3 (27) — Near me picks the right region
-- Near me now follows the station nearest you, so standing at King's Cross, Waterloo or
-  Victoria shows National Rail departures instead of defaulting to the Tube
-- Nine Essex stations (Chelmsford, Clacton-on-Sea, Harlow Town and others) moved to
-  Greater Anglia, where riders expect them
+Welcome to Next Train. This is our first public release.
+
+• Live train departures for 34 cities and regions across Australia, the UK, Sweden, Finland and Norway
+• Save your commute and see exactly when to walk out the door, delays included
+• Near me opens the board for your closest station
+• Search any station in your country by name
+• Leave-by reminders and a home screen widget
+• Free with ads. One purchase removes them, no subscription
+
+Spot a problem? Menu, then Send feedback. We read it all.
 ```
+
+Shorter alternative if you want it tighter:
+
+```
+Welcome to Next Train, now public. Live train departures for 34 cities and regions across Australia, the UK, Sweden, Finland and Norway. Save your commute and see when to walk out the door, delays included. Free with ads, one purchase removes them.
+```
+
+For closed testers already on 3.0.2, the actual changes are: Near me now follows the station
+nearest you (King's Cross, Waterloo and Victoria show National Rail instead of the Tube), and
+nine Essex stations moved to Greater Anglia.
+
+**Check before pasting:** `docs/store-listing.md` still carries the Perth-only short description
+("Live leave-by for Perth trains") and a Remove-ads price of A$3.99. The app now covers 34
+regions and the 11 Sep 2026 decision set the price at A$7.99. The What's-new text above
+deliberately names no price. The listing itself needs the same update before production rollout.
 
 ---
 
