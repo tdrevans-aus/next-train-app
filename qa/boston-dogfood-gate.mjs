@@ -1,9 +1,9 @@
 /**
  * Boston flip follow-through gate. Replaces boston-planned-gate.mjs (retired) —
- * Boston stays `status: "planned"` (Mark/Tim's flip call), but the dogfood
- * module, live-city-api.js dispatch switch-cases, and this gate are wired
- * ahead of that per the flip-follow-through guardrail (see
- * docs/boston-d1/mark-qa-note.md blocking finding 2).
+ * the dogfood module and live-city-api.js dispatch switch-cases were wired ahead
+ * of the flip per the flip-follow-through guardrail (see docs/boston-d1/mark-qa-note.md
+ * blocking finding 2), and Boston flipped to `status: "live"` 20 Sep 2026 (third
+ * QA pass, docs/boston-d1/mark-qa-note.md).
  *
  * Also proves the board-eligibility fix for mark-qa-note.md blocking finding
  * 1: MBTA Commuter Rail is now `in` (live MBTA V3 predictions, no scheduled
@@ -75,13 +75,13 @@ function assert(condition, message) {
 const perthAustralia = assertCityLive("perth");
 assert(perthAustralia?.ok === true, "Perth (Australia) must stay live");
 
-// Registry identity + status — Boston stays planned; only the flip changes this.
+// Registry identity + status — Boston flipped live 20 Sep 2026 (docs/boston-d1/mark-qa-note.md
+// third pass); assertCityLive must now succeed.
 const live = assertCityLive("boston");
-assert(live?.ok === false, "assertCityLive(boston) must fail");
-assert(live?.status === 501, "boston must be 501 planned");
+assert(live?.ok === true, "assertCityLive(boston) must succeed now that boston is live");
 
 const entry = getCity("boston");
-assert(entry?.status === "planned", "boston registry status must be planned");
+assert(entry?.status === "live", "boston registry status must be live");
 assert(entry?.adapterReady === true, "boston adapterReady must be true");
 assert(entry?.displayName === "Boston", "boston display name must be Boston");
 assert(entry?.timeZone === "America/New_York", "boston timezone must be America/New_York");
@@ -94,11 +94,9 @@ for (const forbiddenId of ["bos", "mbta", "boston-mbta", "us", "washington"]) {
 }
 assert((entry?.modes ?? []).includes("train"), "boston modes must include train (Commuter Rail addition)");
 
-// Dogfood dispatch is wired ahead of the flip — NOT in MULTI_CITY_IDS yet, per the
-// documented "safe ahead of flip" pattern (production routes gate on assertCityLive()
-// first, not on this list membership) — qa/live-city-lists-sync.mjs would otherwise flag
-// this as a premature list addition.
-assert(isMultiCity("boston") === false, "boston must NOT be in MULTI_CITY_IDS while status stays planned");
+// Boston is now live — must be in MULTI_CITY_IDS (qa/live-city-lists-sync.mjs enforces this
+// against the registry's live-city set).
+assert(isMultiCity("boston") === true, "boston must be in MULTI_CITY_IDS now that status is live");
 
 // D1 pack presence.
 const d1Dir = join(ROOT, "docs/boston-d1");
@@ -303,10 +301,8 @@ const directDogfoodNextTrain = await getBostonDogfoodNextTrain({
 assert(directDogfoodNextTrain.config?.destination === "Red Line + Alewife", "dogfood next-train destination must equal the chosen chip");
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
-// brisbane-dogfood MULTI_CITY_IDS/available) are deliberately NOT touched yet — same
-// registry-status-derived invariant as MULTI_CITY_IDS above (qa/live-city-lists-sync.mjs
-// requires them to equal exactly the live-city set). Add "boston"/"united states" to all
-// four in the same commit as the status flip.
+// brisbane-dogfood MULTI_CITY_IDS/available) were added to all four in the same commit as
+// the status flip — qa/live-city-lists-sync.mjs enforces they equal exactly the live-city set.
 
 // Probe plumbing: local express only; Vercel dev board must 404 regardless.
 const previous = process.env.ALLOW_CITY_PROBES;
@@ -339,5 +335,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "boston-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section all-in, 125 stations, hub Park Street, live MBTA Commuter Rail predictions at South Station/North Station/Forest Hills/Braintree/JFK-UMass with no scheduled fallback, CR-Foxboro excluded, Amtrak/ferry/Silver Line verdicts match adapter filtering, Perth Australia green)"
+  "boston-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section all-in, 125 stations, hub Park Street, live MBTA Commuter Rail predictions at South Station/North Station/Forest Hills/Braintree/JFK-UMass with no scheduled fallback, CR-Foxboro excluded, Amtrak/ferry/Silver Line verdicts match adapter filtering, Perth Australia green)"
 );

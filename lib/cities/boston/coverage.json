@@ -1,0 +1,32 @@
+{
+  "region": "boston",
+  "updated": "2026-09-20",
+  "covered": [
+    {
+      "label": "Subway (Red, Orange, Blue, Green B/C/D/E, Mattapan)",
+      "detail": "All 125 rapid-transit stations, full network."
+    },
+    {
+      "label": "Commuter Rail",
+      "detail": "Live MBTA V3 predictions at the five stations where it meets the subway - South Station, North Station, Forest Hills, Braintree, JFK/UMass. Live-only: a train only appears once MBTA is actually predicting it, never backfilled from the printed timetable."
+    }
+  ],
+  "partial": [
+    {
+      "label": "CapeFlyer",
+      "detail": "Walk-up, no reservation required, but MBTA's live predictions feed carries no CapeFlyer route, so it can't be shown even though it's in scope."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Amtrak (Acela, Northeast Regional, Lake Shore Limited)",
+      "detail": "Excluded - booking a seat is compulsory."
+    },
+    {
+      "label": "Silver Line, buses, ferries, Massport shuttles",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "125 subway stations, plus MBTA Commuter Rail live predictions at 5 of them.",
+  "notes": "Park Street is the Red x Green hub; Downtown Crossing, Gov't Center, State, South Station, North Station and Haymarket are separate stations, not the same stop as Park Street."
+}
