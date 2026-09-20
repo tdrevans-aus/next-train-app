@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -33,14 +33,13 @@
       ],
     },
     {
-      // Belgium (docs/jim-brief-brussels-flip-readiness.md, 20 Sep 2026): first Belgian region,
-      // Coming Soon only — Brussels stays `status: "planned"` in the registry until Mark/Tim's
-      // flip. See docs/brussels-d1/jim-handoff.md "Flip commit — exact edits" for what a flip
-      // still needs to touch beyond this picker entry.
+      // Belgium: first Belgian region, flipped live 20 Sep 2026 (Mark's QA on PR #419,
+      // docs/brussels-d1/mark-qa-note.md). See docs/brussels-d1/jim-handoff.md
+      // "Flip commit — exact edits" for the full list-membership recipe.
       id: "be",
       name: "Belgium",
       regions: [
-        { id: "brussels", name: "Brussels", timeZone: "Europe/Brussels", comingSoon: true },
+        { id: "brussels", name: "Brussels", timeZone: "Europe/Brussels" },
       ],
     },
     {

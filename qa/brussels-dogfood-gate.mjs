@@ -1,17 +1,12 @@
 /**
- * Brussels adapter/dispatch wiring gate. Replaces brussels-planned-gate.mjs
- * (retired) — Brussels STAYS `status: "planned"` here (this is the pre-flip
- * dogfood wiring pass, docs/brussels-d1/jim-handoff.md "Flip follow-through"
- * section). Per CLAUDE.md's flip-follow-through split (added 30 Aug 2026,
- * corrected same day): the dogfood module, the live-city-api.js dispatch
- * switch-cases, and this gate are safe to land ahead of the flip because
- * production routes gate on assertCityLive() first, not on MULTI_CITY_IDS
- * membership. Brussels is deliberately NOT added to MULTI_CITY_IDS,
- * brisbane-dogfood.js's mount/available map, or journey-model.js's
- * persisted-city/country lists yet — those three list-membership edits are
- * Mark's flip commit, not this one (qa/live-city-lists-sync.mjs enforces
- * that they equal the registry's live set). See
- * docs/brussels-d1/jim-handoff.md for the exact note left for Mark.
+ * Brussels adapter/dispatch wiring gate for its live flip (20 Sep 2026,
+ * Mark's flip commit on PR #419's green QA note). Replaces
+ * brussels-planned-gate.mjs (retired) — registry-status/adapterReady/
+ * isMultiCity assertions below are written for the POST-FLIP state
+ * (status -> "live", brussels added to MULTI_CITY_IDS/brisbane-dogfood.js's
+ * available map/journey-model.js's persisted-city/country lists — see
+ * docs/brussels-d1/jim-handoff.md "Flip commit — exact edits"), matching the
+ * established pattern from East Midlands/West of England's flip gates.
  *
  * Offline by construction (carried forward from the retired planned gate,
  * docs/jim-brief-brussels-gate-pinned-clock.md): this gate must never reach
@@ -99,13 +94,12 @@ assert(assertCityLive("goteborg")?.ok === true, "Göteborg tester-live must stay
 assert(assertCityLive("malmo")?.ok === true, "Malmö tester-live must stay green");
 assert(assertCityLive("uppsala")?.ok === true, "Uppsala tester-live must stay green");
 
-// Registry identity — STAYS planned (Mark/Tim's flip call, not made here).
+// Registry identity + live status — true post-flip.
 const live = assertCityLive("brussels");
-assert(live?.ok === false, "assertCityLive(brussels) must fail — status is still planned");
-assert(live?.status === 501, "brussels must be 501 planned");
+assert(live?.ok === true, "assertCityLive(brussels) must pass post-flip");
 
 const entry = getCity("brussels");
-assert(entry?.status === "planned", "brussels registry status must stay planned");
+assert(entry?.status === "live", "brussels registry status must be live post-flip");
 assert(entry?.adapterReady === true, "brussels adapterReady must be true");
 assert(entry?.displayName === "Brussels", "brussels display name must be Brussels");
 assert(entry?.timeZone === "Europe/Brussels", "brussels timezone must be Europe/Brussels");
@@ -114,11 +108,8 @@ for (const forbiddenId of ["bru", "bruxelles", "stib", "belgium"]) {
   assert(!getCity(forbiddenId), `must not be registered as city=${forbiddenId}`);
 }
 
-// NOT yet in MULTI_CITY_IDS — that's Mark's flip commit, not this pass.
-assert(
-  isMultiCity("brussels") === false,
-  "brussels must NOT be in MULTI_CITY_IDS yet — that's Mark's flip commit"
-);
+// Dogfood dispatch wiring — brussels is in MULTI_CITY_IDS post-flip.
+assert(isMultiCity("brussels") === true, "brussels must be in MULTI_CITY_IDS post-flip");
 
 const d1Dir = join(ROOT, "docs/brussels-d1");
 for (const name of [
@@ -354,8 +345,8 @@ assert(nextTrain.config?.destination === firstHubChip, "next-train destination m
 assert(nextTrain.next?.displayTime, "next-train must resolve a real upcoming departure from the fixture (fixed `now` predates every fixture time)");
 
 // Same call through the live-city-api dispatch, end to end — proves the
-// switch-case in directionsFor()/getMultiCityNextTrain() is wired, even
-// though brussels is deliberately not in MULTI_CITY_IDS yet.
+// switch-case in directionsFor()/getMultiCityNextTrain() is wired now that
+// brussels is in MULTI_CITY_IDS post-flip.
 const dispatchedDirections = await getMultiCityDirections("brussels", BRUSSELS_HUB);
 assert(
   JSON.stringify(dispatchedDirections.directions) === JSON.stringify(hubDogfoodDirections.directions),
@@ -568,5 +559,5 @@ assert(
 assertLiveBoardTripsHaveDisplayTimes(gareCentraleIrailDownBoard, "Gare Centrale board (iRail down)");
 
 console.log(
-  "brussels-dogfood-gate: ok (planned/501, NOT in MULTI_CITY_IDS yet, dispatch switch-cases wired, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, live board via BMC Waiting Times (captured-live fixture, no network), self-referential-arrival + theoretical-time + do-not-embark filtering, missing-key refusal path proven, SNCB second source at the 3 shared stations (iRail fixture, no network) — doNotGroup-by-mode, forbidden-internationals filtered, ICE in, iRail-down degrades to partial rather than refusing, metro-only stations never partial/never show SNCB, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
+  "brussels-dogfood-gate: ok (live/200 post-flip, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, live board via BMC Waiting Times (captured-live fixture, no network), self-referential-arrival + theoretical-time + do-not-embark filtering, missing-key refusal path proven, SNCB second source at the 3 shared stations (iRail fixture, no network) — doNotGroup-by-mode, forbidden-internationals filtered, ICE in, iRail-down degrades to partial rather than refusing, metro-only stations never partial/never show SNCB, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
 );

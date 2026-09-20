@@ -1,0 +1,31 @@
+{
+  "region": "brussels",
+  "updated": "2026-09-20",
+  "covered": [
+    {
+      "label": "STIB/MIVB metro (lines 1, 2, 5, 6)",
+      "detail": "Every metro departure at all 60 stations on lines 1, 2, 5 and 6, from STIB/MIVB live vehicle-tracking feed."
+    },
+    {
+      "label": "SNCB/NMBS domestic rail (Gare Centrale/Centraal, Gare du Midi/Zuidstation, Gare de l'Ouest/Weststation)",
+      "detail": "IC, S-trains, L, P, EuroCity and EuroCity Direct trains at these three stations where metro and national rail share a building, from a second live feed. Shown separately from the metro departures, never merged into one list. If this second feed is briefly unavailable, the metro departures still show and the board is flagged as showing metro only until it recovers."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "Trams and premetro",
+      "detail": "Not covered."
+    },
+    {
+      "label": "Buses (STIB/MIVB, De Lijn, TEC), including rail-replacement buses",
+      "detail": "Not covered."
+    },
+    {
+      "label": "International trains (Eurostar, Thalys, TGV, OUIGO, Nightjet, European Sleeper)",
+      "detail": "Not shown - these need a reservation or check-in before boarding, unlike a walk-up domestic or regional train."
+    }
+  ],
+  "stations": "60 metro stations on lines 1, 2, 5 and 6. Three of them - Gare Centrale/Centraal, Gare du Midi/Zuidstation and Gare de l'Ouest/Weststation - also show SNCB/NMBS domestic rail departures alongside the metro.",
+  "notes": ""
+}
