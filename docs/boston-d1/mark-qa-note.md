@@ -227,4 +227,107 @@ false` since this lands in the same commit as the flip) plus its `CITY_BOUNDS` b
 "boston" to `public/app.js`'s `NEARBY_MULTI_CITY_IDS`/`LIVE_CITY_IDS` and
 `public/city-session.js`'s own `MULTI_CITY_IDS` — then re-request Mark QA. Everything else in this
 note stands; a second re-QA pass should only need to re-verify `qa/live-city-lists-sync.mjs` and
-re-run smoke once those are in place.
+
+---
+
+## Third pass — flip commit applied, PR opened (2026-09-20)
+
+**Verdict: GREEN — flip PR opened.**
+
+Starting point: `origin/master` at 4353cfe (PR #420, "US flip readiness: station coordinates,
+United States picker, CITY_BOUNDS"), which resolved every RED item from the second pass —
+station `lat`/`lng`, the "United States" picker country/region entries, `CITY_BOUNDS`, and
+`docs/boston-d1/jim-handoff.md`'s "Flip commit — exact edits" recipe (8 numbered items, derived
+from `qa/live-city-lists-sync.mjs`'s own checks).
+
+### Light re-check of the second pass's green items (still hold)
+
+| Check | Result | Evidence |
+|---|---|---|
+| `node qa/boston-dogfood-gate.mjs` (pre-flip) | PASS | Same message as second pass, unchanged code. |
+| Live sample board — South Station | PASS | `fetchStationBoard("South Station")` returns Red Line rows only (no Silver Line, no Amtrak); confirmed against the raw `api-v3.mbta.com/predictions?filter[stop]=place-sstat` feed that Silver Line (route type 3, routes 741-743) and two Commuter Rail routes (CR-Fairmount, CR-Worcester) ARE present in the raw feed but correctly excluded/filtered by the adapter's route-type and route-id allow-lists. At this snapshot the two live CR predictions at South Station both carried `departure_time: null` (arrival-only/terminating) so correctly produced zero CR rows — consistent with the documented "live-only, no fallback" rule, not a bug. |
+| Live sample board — Harvard (subway-only) | PASS | Red Line only, 48 trips, no Commuter Rail/Silver Line/Amtrak rows — confirms mode-cut filtering holds at a subway-only station too. |
+
+### Flip commit applied
+
+Per `docs/boston-d1/jim-handoff.md`'s "Flip commit — exact edits" section, applied exactly, plus
+one gap the recipe didn't cover (found only by actually running the gates, not by re-reading the
+recipe — "the gates win" per this task's own instruction):
+
+1. `lib/providers/registry.js` — `status: "planned"` → `"live"` for Boston. Also refreshed the
+   stale registry `notes` prose that described the pre-flip "not yet in MULTI_CITY_IDS" state.
+2. `lib/cities/live-city-api.js` — added `"boston"` to `MULTI_CITY_IDS` and its `MultiCityId`
+   typedef.
+3. `public/app.js` — added `"boston"` to `NEARBY_MULTI_CITY_IDS` and `LIVE_CITY_IDS`.
+4. `public/city-session.js` — added `"boston"` to its own `MULTI_CITY_IDS`; dropped
+   `comingSoon: true` from the picker's `boston` region entry.
+5. `public/brisbane-dogfood.js` — added `"boston"` to `MULTI_CITY_IDS` and to the `available` map.
+6. `public/journey-model.js` — added `"boston"` to `PERSISTED_CITY_IDS` and `"us"` to
+   `PERSISTED_COUNTRY_IDS`.
+7. `public/city-session.js` `CITY_BOUNDS` and 8. `lib/cities/country-regions.js` — already present
+   from PR #420, verified via `qa/country-regions-sync-gate.mjs`, no action needed.
+
+**Gap the recipe missed, found by the gates ("gates win" — recorded per instruction):**
+
+- **`qa/boston-dogfood-gate.mjs` itself hardcoded pre-flip assertions** (`assertCityLive("boston")
+  must fail`, `entry.status === "planned"`, `isMultiCity("boston") === false`) that would fail
+  forever once status flipped, since this city's dogfood gate was written and wired *ahead* of the
+  flip (an unusual front-loaded pattern — see the file's own header). Updated those four
+  assertions plus the header comment and final `console.log` message to assert the live-city
+  shape instead of the planned-ahead-of-flip shape. This is gate maintenance intrinsic to the flip
+  (the same category of change as updating `registry.js`'s own status line), not a product/adapter
+  fix, so it's in scope for this pass.
+- **`qa/coverage-notes-gate.mjs` requires `lib/cities/<city>/coverage.json` for every live city**
+  (rider-facing "what's covered / partial / not covered" prose) — this file didn't exist for
+  Boston and wasn't named anywhere in `jim-handoff.md`'s recipe or in the second-pass note. Authored
+  `lib/cities/boston/coverage.json` directly from verdicts already established and cross-checked in
+  this pass and the prior one (oracle report's Board eligibility section, registry notes): subway
+  fully covered (125 stations), Commuter Rail covered live-only at the 5 dual-mode stations,
+  CapeFlyer listed as `partial` (in-scope but absent from the live feed — a feed gap, not a
+  decision), Amtrak and Silver Line/buses/ferries/Massport shuttles listed as `notCovered` with
+  reasons. This is a transcription of already-decided verdicts into the required shape, not new
+  judgment calls.
+
+Also ran `node scripts/write-city-directions.mjs --only=boston` (per the flip-PR template) and
+committed the resulting `public/city-directions/boston.json` (125/125 stations with chips) —
+required by `qa/bundled-city-directions.mjs`, which failed with a missing-file error before this.
+
+### Suites run after the flip commit
+
+| Check | Result |
+|---|---|
+| `node qa/live-city-lists-sync.mjs` | PASS — "35 live cities consistent across registry, live-city-api, app.js, city-session, brisbane-dogfood, journey-model" |
+| `node qa/country-regions-sync-gate.mjs` | PASS — "38 country-regions.js entries match the picker's 38 regions" |
+| `node qa/boston-dogfood-gate.mjs` (post-flip, updated assertions) | PASS |
+| `node qa/coverage-notes-gate.mjs` | PASS — "35 live cities all have a valid coverage.json" |
+| `node qa/run-all.mjs --smoke` (foreground, 600000ms timeout, output to file, read after completion) — 1st run | **145 PASS · 1 FAIL · 573s** — `coverage-notes-gate.mjs FAIL` (missing `lib/cities/boston/coverage.json`, fixed mid-run then re-run below); everything else including `boston-dogfood-gate.mjs`, `region-selection.mjs` (picker/geolocation, 102s), `country-wide-picker.mjs`, and `bundled-city-directions.mjs` passed clean on this run too. |
+| `node qa/run-all.mjs --smoke` (foreground, 600000ms timeout, output to file, read after completion) — 2nd run, after the coverage.json fix | **146 PASS · 0 FAIL · 576s** — fully clean. |
+
+No background sleep/poll loops or servers left running after either run; confirmed no listener on
+`:3000` and both background smoke tasks reported `completed` before this note was written.
+
+### Verdict: GREEN — flip PR opened
+
+Every checklist item (board eligibility incl. live Commuter Rail, DST, hub-lock, v1 mode cut,
+response-shape, ledger-consistency N/A, follow-through) stays green from the second pass, the
+flip-readiness blockers from the second pass are resolved (PR #420), the flip commit is applied
+per the recipe plus the two gate-driven additions above, and two full smoke runs are clean
+(146/146 on the second). PR opened, labelled `flip`, for the standing 12-hour lazy-consensus
+window — not merged by this pass.
+
+**For Tim (ambers, not fails):**
+
+1. **Commuter Rail direction model is an extension of the memo, not something it covered.**
+   `direction-model-memo.md` §3 only recommends line+terminus for subway; the Commuter Rail
+   `mapCommuterRailDestination` (`"Framingham/Worcester Line + Worcester"` style) follows the same
+   pattern faithfully but was never reviewed against a live payload spec by that memo. Flagged
+   since the second pass, unchanged.
+2. **First United States city to flip live.** The picker gains a live "United States" country
+   entry for the first time; BART and Chicago remain `comingSoon` under it.
+3. **CapeFlyer is board-eligibility `in` but absent from the MBTA V3 predictions feed** — recorded
+   as a feed gap (not a decision to exclude) in the registry notes and in the new
+   `lib/cities/boston/coverage.json` (`partial` list). Worth a periodic re-check once the seasonal
+   service resumes, in case MBTA adds it to the feed.
+
+No further re-QA pass is expected unless the flip PR is held or a review comment surfaces a new
+issue — the standard 12-hour lazy-consensus window applies from here.

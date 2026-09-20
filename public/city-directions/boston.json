@@ -1,0 +1,597 @@
+{
+  "Airport": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Alewife": [
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Allston St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Amory St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Andrew": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Aquarium": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Arlington": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center",
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Ashmont": [
+    "Mattapan Line + Mattapan",
+    "Red Line + Alewife",
+    "Red Line + Braintree"
+  ],
+  "Assembly": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Babcock St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Back Bay": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Back of the Hill": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Ball Sq": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Beachmont": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Beaconsfield": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Blandford St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Boston College": [
+    "Green Line B + Gov't Center"
+  ],
+  "Bowdoin": [
+    "Blue Line + Wonderland"
+  ],
+  "Boylston": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center",
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Braintree": [
+    "Fall River/New Bedford Line + Fall River or New Bedford",
+    "Fall River/New Bedford Line + South Station",
+    "Greenbush Line + Greenbush",
+    "Greenbush Line + South Station",
+    "Kingston Line + Kingston",
+    "Kingston Line + South Station",
+    "Red Line + Alewife",
+    "Red Line + Ashmont"
+  ],
+  "Brandon Hall": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Brigham Circle": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Broadway": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Brookline Hills": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Brookline Village": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "BU Central": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "BU East": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Butler": [
+    "Mattapan Line + Ashmont",
+    "Mattapan Line + Mattapan"
+  ],
+  "Capen St": [
+    "Mattapan Line + Ashmont",
+    "Mattapan Line + Mattapan"
+  ],
+  "Cedar Grove": [
+    "Mattapan Line + Ashmont",
+    "Mattapan Line + Mattapan"
+  ],
+  "Central": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Central Ave": [
+    "Mattapan Line + Ashmont",
+    "Mattapan Line + Mattapan"
+  ],
+  "Charles/MGH": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Chestnut Hill": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Chestnut Hill Ave": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Chinatown": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Chiswick Rd": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Cleveland Circle": [
+    "Green Line C + Gov't Center"
+  ],
+  "Community College": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Coolidge Corner": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Copley": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center",
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Davis": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Dean Rd": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Downtown Crossing": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove",
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "East Somerville": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Eliot": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Englewood Ave": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Fairbanks St": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Fenway": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Fenwood Rd": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Fields Corner": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Forest Hills": [
+    "Franklin/Foxboro Line + Forge Park/495 or Foxboro",
+    "Franklin/Foxboro Line + South Station",
+    "Needham Line + Needham Heights",
+    "Needham Line + South Station",
+    "Orange Line + Oak Grove",
+    "Providence/Stoughton Line + South Station",
+    "Providence/Stoughton Line + Stoughton or Wickford Junction"
+  ],
+  "Gilman Sq": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Gov't Center": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland",
+    "Green Line B + Boston College",
+    "Green Line C + Cleveland Circle",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Green St": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Griggs St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Harvard": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Harvard Ave": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Hawes St": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Haymarket": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts",
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Heath St": [
+    "Green Line E + Medford/Tufts"
+  ],
+  "Hynes Convention Ctr": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center",
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Jackson Sq": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "JFK/UMass": [
+    "Fall River/New Bedford Line + Fall River or New Bedford",
+    "Fall River/New Bedford Line + South Station",
+    "Greenbush Line + Greenbush",
+    "Greenbush Line + South Station",
+    "Kingston Line + Kingston",
+    "Kingston Line + South Station",
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Kendall/MIT": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Kenmore": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center",
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Kent St": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Lechmere": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Longwood": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Longwood Medical Area": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Magoun Sq": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Malden Center": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Mass. Ave": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Mattapan": [
+    "Mattapan Line + Ashmont"
+  ],
+  "Maverick": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Medford/Tufts": [
+    "Green Line E + Heath St"
+  ],
+  "Milton": [
+    "Mattapan Line + Ashmont",
+    "Mattapan Line + Mattapan"
+  ],
+  "Mission Park": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Museum of Fine Arts": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Newton Centre": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Newton Highlands": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "North Quincy": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "North Station": [
+    "Fitchburg Line + Wachusett",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts",
+    "Haverhill Line + Haverhill",
+    "Lowell Line + Lowell",
+    "Newburyport/Rockport Line + Newburyport or Rockport",
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Northeastern": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Oak Grove": [
+    "Orange Line + Forest Hills"
+  ],
+  "Orient Heights": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Packard's Corner": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Park Street": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center",
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center",
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts",
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Porter": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Prudential": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Quincy Adams": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Quincy Center": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Reservoir": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Revere Beach": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Riverside": [
+    "Green Line D + Union Sq"
+  ],
+  "Riverway": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Roxbury Crossing": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Ruggles": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Savin Hill": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Science Park/West End": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq",
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Shawmut": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "South St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "South Station": [
+    "Fairmount Line + Fairmount",
+    "Fall River/New Bedford Line + Fall River or New Bedford",
+    "Framingham/Worcester Line + Worcester",
+    "Franklin/Foxboro Line + Forge Park/495 or Foxboro",
+    "Greenbush Line + Greenbush",
+    "Kingston Line + Kingston",
+    "Needham Line + Needham Heights",
+    "Providence/Stoughton Line + Stoughton or Wickford Junction",
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "St. Mary's St": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "St. Paul St": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "State": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland",
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Stony Brook": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Suffolk Downs": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Sullivan Sq": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Summit Ave": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Sutherland Rd": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Symphony": [
+    "Green Line E + Heath St",
+    "Green Line E + Medford/Tufts"
+  ],
+  "Tappan St": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Tufts Medical Ctr": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Union Sq": [
+    "Green Line D + Riverside"
+  ],
+  "Valley Rd": [
+    "Mattapan Line + Ashmont",
+    "Mattapan Line + Mattapan"
+  ],
+  "Waban": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ],
+  "Warren St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Washington Sq": [
+    "Green Line C + Cleveland Circle",
+    "Green Line C + Gov't Center"
+  ],
+  "Washington St": [
+    "Green Line B + Boston College",
+    "Green Line B + Gov't Center"
+  ],
+  "Wellington": [
+    "Orange Line + Forest Hills",
+    "Orange Line + Oak Grove"
+  ],
+  "Wollaston": [
+    "Red Line + Alewife",
+    "Red Line + Ashmont",
+    "Red Line + Braintree"
+  ],
+  "Wonderland": [
+    "Blue Line + Bowdoin"
+  ],
+  "Wood Island": [
+    "Blue Line + Bowdoin",
+    "Blue Line + Wonderland"
+  ],
+  "Woodland": [
+    "Green Line D + Riverside",
+    "Green Line D + Union Sq"
+  ]
+}
