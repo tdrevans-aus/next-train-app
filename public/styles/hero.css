@@ -943,6 +943,13 @@
   color: var(--good);
 }
 
+/* jim-brief-brussels-scheduled-tail-and-sncb-grouping: deliberately low-key — same muted
+   token used everywhere else in the app, no colour cue that would read as a warning or a
+   live pulse, no icon/badge. The time itself keeps its normal (non-muted) colour. */
+.detail-value.status.scheduled {
+  color: var(--muted);
+}
+
 .detail-value.status.has-scheduled {
   display: flex;
   flex-direction: column;

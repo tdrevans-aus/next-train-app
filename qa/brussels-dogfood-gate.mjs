@@ -59,10 +59,16 @@ import {
   listCatalogStations,
   fetchStationBoard,
   mapWaitingTimesResults,
+  mapScheduledTailRow,
+  appendScheduledMetroTail,
+  fetchScheduledMetroTail,
+  SCHEDULED_TAIL_MAX_PER_DIRECTION,
   BRUSSELS_METRO_SHORT_NAMES,
   SNCB_SHARED_STATION_IRAIL_NAMES,
   MissingStibCredentialsError,
 } from "../lib/providers/brussels.js";
+import { loadGtfsStaticFromDirectory } from "../lib/providers/gtfs/static-cache.js";
+import { enrichTripTiming } from "../lib/train-times-core.js";
 import { classifySncbVehicleType, isSncbBoardEligible, mapIrailDepartures } from "../lib/providers/irail.js";
 import {
   marketingLabelsForStation,
@@ -74,6 +80,11 @@ import {
   bilingualHalves,
   sncbDirectionLabel,
   tripMatchesSncbDirectionChip,
+  groupedSncbDirectionLabel,
+  tripMatchesGroupedSncbDirectionChip,
+  sncbCorridorForDestination,
+  SNCB_CORRIDORS,
+  SNCB_INTERCITY_TYPES,
 } from "../lib/cities/brussels/marketing-directions.js";
 import {
   listBrusselsDogfoodStations,
@@ -378,6 +389,128 @@ try {
 }
 assert(unknownThrew, "fetchStationBoard must not silently succeed for an unknown station");
 
+// --- Scheduled metro tail (20 Sep 2026, docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md) ---
+// The "Scheduled" status word itself, straight from train-times-core.js — a trip explicitly
+// marked realtime:false must show the literal word "Scheduled" regardless of any
+// scheduled/display time diff, and a trip with realtime:true or unset must be unaffected.
+assert(
+  enrichTripTiming({ scheduledDisplayTime: "19:26", displayTime: "19:26", realtime: false }).status === "Scheduled",
+  "a trip marked realtime:false must show the status word Scheduled"
+);
+assert(
+  enrichTripTiming({ scheduledDisplayTime: "19:26", displayTime: "19:26", realtime: true }).status === "On Time",
+  "a trip marked realtime:true must use the normal on-time/delayed status logic, unaffected"
+);
+assert(
+  enrichTripTiming({ scheduledDisplayTime: "19:26", displayTime: "19:26" }).status === "On Time",
+  "a trip with no realtime field at all (every existing provider) must be unaffected"
+);
+
+// mapScheduledTailRow: reuses the exact live-row terminus/marketing pipeline, drops
+// overlay/short-turn headsigns and self-referential arrivals exactly like mapWaitingTimesResults.
+const stockelHubKey = foldKey(BRUSSELS_HUB);
+const mappedStockel = mapScheduledTailRow(
+  { routeShortName: "1", destination: "STOCKEL", liveDeparture: "2026-09-19T17:03:00.000Z", scheduledDeparture: "2026-09-19T17:03:00.000Z", displayTime: "19:03", scheduledDisplayTime: "19:03" },
+  stockelHubKey
+);
+assert(mappedStockel?.destination === "1 + Stockel / Stokkel", "mapScheduledTailRow must reuse the live marketing label");
+assert(mappedStockel?.realtime === false, "mapScheduledTailRow must mark every row realtime:false");
+assert(mappedStockel?.mode === "metro" && mappedStockel?.agency === "STIB/MIVB", "mapScheduledTailRow rows must carry the same mode/agency tags as live metro rows");
+assert(
+  mapScheduledTailRow({ routeShortName: "1", destination: "RESERVE" }, stockelHubKey) === null,
+  "mapScheduledTailRow must drop an overlay/depot headsign, same as the live pipeline"
+);
+assert(
+  mapScheduledTailRow({ routeShortName: "1", destination: "ARTS-LOI" }, stockelHubKey) === null,
+  "mapScheduledTailRow must drop a self-referential arrival at the requested station"
+);
+
+// appendScheduledMetroTail: never before/between a direction's own live rows, dedupes a
+// near-duplicate, caps at SCHEDULED_TAIL_MAX_PER_DIRECTION.
+const stockelKey = "1|1 + Stockel / Stokkel";
+const syntheticCandidates = [
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:10:00.000Z" }, // before last live -> dropped
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:20:00.500Z" }, // within dedupe window of last live -> dropped
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:26:00.000Z" },
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:32:00.000Z" },
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:38:00.000Z" },
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:44:00.000Z" },
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:50:00.000Z" },
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:56:00.000Z" }, // 6th kept row
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T18:02:00.000Z" }, // 7th passing candidate -> dropped by the cap
+];
+const syntheticLive = [
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:03:00.000Z" },
+  { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:20:00.000Z" },
+];
+const appended = appendScheduledMetroTail(syntheticLive, syntheticCandidates);
+assert(appended.length === SCHEDULED_TAIL_MAX_PER_DIRECTION, `appendScheduledMetroTail must cap at ${SCHEDULED_TAIL_MAX_PER_DIRECTION} per direction, got ${appended.length}`);
+assert(
+  appended.every((trip) => new Date(trip.liveDeparture).getTime() > new Date("2026-09-19T17:21:30.000Z").getTime()),
+  "appendScheduledMetroTail must never keep a row before or within the dedupe window of a direction's last live row"
+);
+assert(appended[0].liveDeparture === "2026-09-19T17:26:00.000Z", "the first kept tail row must be the one immediately after the last live row + dedupe window");
+assert(
+  !appended.some((trip) => trip.liveDeparture === "2026-09-19T18:02:00.000Z"),
+  "a 7th otherwise-eligible candidate must be dropped by the per-direction cap"
+);
+
+// End-to-end tail against a tiny local GTFS fixture directory (offline — a plain directory
+// path never touches the stubbed fetch above), reusing the real buildBoardForStops() pipeline.
+const scheduledTailStaticData = loadGtfsStaticFromDirectory(
+  join(ROOT, "qa/fixtures/brussels/gtfs"),
+  { routeTypes: ["1"], includeRouteShortNames: BRUSSELS_METRO_SHORT_NAMES, timeZone: "Europe/Brussels" }
+);
+const tailNow = new Date("2026-09-19T17:00:00.000Z"); // 19:00 Brussels local
+
+const tailNoLive = await fetchScheduledMetroTail(["8041"], [], stockelHubKey, {
+  now: tailNow,
+  staticData: scheduledTailStaticData,
+});
+assert(tailNoLive.length === 12, `with zero live rows, both directions must each contribute up to ${SCHEDULED_TAIL_MAX_PER_DIRECTION} tail rows (got ${tailNoLive.length})`);
+assert(tailNoLive.every((trip) => trip.realtime === false), "every scheduled tail row must carry realtime:false");
+assert(!tailNoLive.some((trip) => trip.destination.includes("RESERVE")), "the depot/overlay fixture trip must never appear as a tail row");
+
+const tailWithLive = await fetchScheduledMetroTail(
+  ["8041"],
+  [
+    { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:03:00.000Z" },
+    { routeShortName: "1", destination: "1 + Stockel / Stokkel", liveDeparture: "2026-09-19T17:20:00.000Z" },
+  ],
+  stockelHubKey,
+  { now: tailNow, staticData: scheduledTailStaticData }
+);
+assert(
+  !tailWithLive.some((trip) => trip.destination === "1 + Stockel / Stokkel" && new Date(trip.liveDeparture) <= new Date("2026-09-19T17:20:00.000Z")),
+  "the Stockel direction's tail must never include a row at or before its own last live row"
+);
+assert(
+  tailWithLive.some((trip) => trip.destination === "1 + Gare de l'Ouest / Weststation"),
+  "a direction with zero live rows this refresh must still get its own tail rows"
+);
+
+// fetchStationBoard() end to end: live fixture (STIB) + local static tail fixture combined —
+// scheduled rows are additive, appear only after the fixture's own live rows, and STIB down
+// still means zero scheduled rows (the tail is never reached — see below). hubBoard above (no
+// staticData escape hatch) already proves the network-stubbed tail load fails silently and
+// leaves the live board's trip count (15) completely unaffected.
+const hubBoardTailed = await fetchStationBoard(BRUSSELS_HUB, {
+  rawResults: waitingTimesFixture.artsLoiKunstWet,
+  staticData: scheduledTailStaticData,
+  now: new Date("2026-09-19T17:00:00.000Z"),
+});
+const scheduledRows = hubBoardTailed.trips.filter((trip) => trip.realtime === false);
+assert(scheduledRows.length > 0, "a station with both a live fixture and a static tail fixture must actually show scheduled rows");
+assert(
+  hubBoardTailed.trips.filter((trip) => trip.realtime === true).length === hubBoard.trips.length,
+  "adding the tail must never change or remove the existing live rows"
+);
+assert(hubBoardTailed.realtime === "live", "board-level realtime marker stays 'live' even with a scheduled tail mixed in");
+
+// STIB down: proven above (missingKeyThrew) that fetchStationBoard throws before the tail is
+// ever computed — restated here for this section's own readability.
+assert(missingKeyThrew instanceof MissingStibCredentialsError, "STIB down must refuse the whole board before any scheduled row could ever be considered");
+
 // --- SNCB/NMBS second source (iRail liveboard), shared stations only ------------------------
 
 const GARE_CENTRALE = "Gare Centrale / Centraal Station";
@@ -476,12 +609,12 @@ assert(
   "no Eurostar/Thalys/TGV/OUIGO/Nightjet/European Sleeper/rail-replacement-bus row may ever appear on the board"
 );
 assert(
-  gcRail.filter((t) => t.routeShortName === "IC").length === 1,
-  "the canceled and already-left IC fixture rows must both be dropped, leaving exactly one genuine IC departure"
+  gcRail.filter((t) => t.routeShortName === "IC").length === 2,
+  "the canceled and already-left IC fixture rows must both be dropped, leaving exactly the two genuine IC departures (Brussels Airport + the Part 3 Kortrijk addition)"
 );
 assert(
-  gcRail.length === 7,
-  `Gare Centrale must show exactly the 7 board-eligible SNCB rows (live-captured S10/S1/S8/S3/EC/IC/S2), got ${gcRail.length}`
+  gcRail.length === 8,
+  `Gare Centrale must show exactly the 8 board-eligible SNCB rows (live-captured S10/S1/S8/S3/EC/IC/S2 + the Part 3 Kortrijk IC addition), got ${gcRail.length}`
 );
 assertLiveBoardTripsHaveDisplayTimes(gareCentraleBoard, "Gare Centrale board");
 assert(
@@ -526,6 +659,78 @@ assert(
   !gareCentraleDirections.directions.some((chip) => /^(THA|TGV|OUI|OUIGO|NJ|NIGHTJET|EN|ES|EUR|BUS) \+/.test(chip)),
   "Gare Centrale directions must never include an out-reservation/out-checkin/out-mode chip"
 );
+
+// --- SNCB chip grouping (Part 3, 20 Sep 2026, docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md) ---
+
+assert(sncbCorridorForDestination("Oostende") === "Ghent / Bruges / Ostend", "Oostende must resolve to the Ghent/Bruges/Ostend corridor");
+assert(sncbCorridorForDestination("Antwerpen-Centraal") === "Antwerp", "Antwerpen-Centraal must resolve to the Antwerp corridor");
+assert(sncbCorridorForDestination("Lëtzebuerg") === "Namur / Luxembourg", "iRail's Luxembourgish spelling must still resolve to the Namur/Luxembourg corridor");
+assert(sncbCorridorForDestination("Nowhere Made Up") === null, "an unrecognised destination must never be force-fit into a corridor");
+assert(SNCB_CORRIDORS.length === 5, "there must be exactly 5 named SNCB corridors");
+for (const type of SNCB_INTERCITY_TYPES) {
+  assert(["IC", "EC", "ECD", "ICE", "ICT"].includes(type), `unexpected type in SNCB_INTERCITY_TYPES: ${type}`);
+}
+
+// An InterCity trip toward a corridor destination collapses to the corridor label; a suburban
+// (S-train) trip toward the SAME destination string does NOT — grouping is type-gated, never
+// destination-only, which is what keeps it direction-safe (file header rationale).
+assert(groupedSncbDirectionLabel({ routeShortName: "IC", destination: "Oostende" }) === "Ghent / Bruges / Ostend", "an IC trip to a corridor destination must collapse to the corridor label");
+assert(groupedSncbDirectionLabel({ routeShortName: "EC", destination: "Genk" }) === "Leuven / Liège", "an EC trip to a corridor destination must also collapse (not just IC)");
+assert(groupedSncbDirectionLabel({ routeShortName: "S8", destination: "Zottegem" }) === "S8 + Zottegem", "a suburban S-train trip must never be corridor-grouped, even toward a corridor-listed station");
+assert(groupedSncbDirectionLabel({ routeShortName: "IC", destination: "Brussels Airport - Zaventem" }) === "IC + Brussels Airport - Zaventem", "an IC destination with no corridor match must fall back to the ungrouped chip, not be hidden or misclassified");
+assert(
+  tripMatchesGroupedSncbDirectionChip({ routeShortName: "IC", destination: "Kortrijk" }, "Ghent / Bruges / Ostend"),
+  "tripMatchesGroupedSncbDirectionChip must match an IC trip against its corridor chip"
+);
+assert(
+  !tripMatchesGroupedSncbDirectionChip({ routeShortName: "S3", destination: "Denderleeuw" }, "Ghent / Bruges / Ostend"),
+  "tripMatchesGroupedSncbDirectionChip must never match a suburban trip against a corridor chip"
+);
+
+// Live-shape reduction, driven by the real 20 Sep 2026 iRail capture — grouping must shrink the
+// chip count without hiding any of the named corridors or the S-train chips.
+const gareCentraleUngroupedChips = new Set();
+const gareCentraleTripsForGrouping = mapIrailDepartures(irailFixture.gareCentrale, { timeZone: "Europe/Brussels" });
+for (const trip of gareCentraleTripsForGrouping) {
+  const label = sncbDirectionLabel(trip);
+  if (label) {
+    gareCentraleUngroupedChips.add(label);
+  }
+}
+const gareCentraleSncbChips = gareCentraleDirections.directions.filter((chip) => !/^[1256] \+/.test(chip));
+assert(
+  gareCentraleSncbChips.length <= gareCentraleUngroupedChips.size,
+  `grouping must never increase the SNCB chip count (ungrouped ${gareCentraleUngroupedChips.size}, grouped ${gareCentraleSncbChips.length})`
+);
+assert(gareCentraleSncbChips.includes("S10 + Aalst"), "S-train chips must survive grouping unchanged");
+assert(
+  !gareCentraleSncbChips.some((chip) => SNCB_CORRIDORS.some((c) => c.label !== chip && foldKey(chip).includes(foldKey(c.label)))),
+  "no chip may accidentally contain another corridor's label as a substring (label collision check)"
+);
+
+// Metro first, then SNCB — never interleaved (doNotGroup-by-mode ordering requirement).
+const firstSncbIndex = gareCentraleDirections.directions.findIndex((chip) => !/^[1256] \+/.test(chip));
+const lastMetroIndex = gareCentraleDirections.directions.reduce(
+  (acc, chip, index) => (/^[1256] \+/.test(chip) ? index : acc),
+  -1
+);
+assert(firstSncbIndex === -1 || lastMetroIndex < firstSncbIndex, "every metro chip must come before every SNCB chip in /api/directions — never interleaved");
+
+// End-to-end next-train through a grouped corridor chip — proves the corridor label actually
+// resolves a real upcoming departure, not just that the label exists.
+const corridorChip = "Ghent / Bruges / Ostend";
+assert(gareCentraleDirections.directions.includes(corridorChip), "Gare Centrale directions must include the Ghent/Bruges/Ostend corridor chip");
+const corridorNextTrain = await getBrusselsDogfoodNextTrain({
+  station: GARE_CENTRALE,
+  destination: corridorChip,
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+  now,
+  rawResults: waitingTimesFixture.gareCentrale,
+  irailRawDepartures: irailFixture.gareCentrale,
+});
+assert(corridorNextTrain.config?.destination === corridorChip, "corridor next-train destination must equal the chosen corridor chip");
+assert(corridorNextTrain.next?.displayTime, "corridor next-train must resolve a real upcoming departure from an IC trip toward that corridor");
 
 // A metro-only station (no SNCB source at all) must never gain an SNCB chip, and iRail is never
 // even called for it (no irailStationName match — see getBrusselsDogfoodDirections).
@@ -636,5 +841,5 @@ assert(
 assertLiveBoardTripsHaveDisplayTimes(gareCentraleIrailDownBoard, "Gare Centrale board (iRail down)");
 
 console.log(
-  "brussels-dogfood-gate: ok (live/200 post-flip, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, live board via BMC Waiting Times (captured-live fixture, no network), self-referential-arrival + theoretical-time + do-not-embark filtering, missing-key refusal path proven, SNCB second source at the 3 shared stations (iRail fixture, no network) — doNotGroup-by-mode, forbidden-internationals filtered, ICE in, iRail-down degrades to partial rather than refusing, metro-only stations never partial/never show SNCB, SNCB directions surfaced in /api/directions at the 3 shared stations ('type + destination' chips, canceled/departed/out-of-scope rows never fabricate a chip, iRail-down falls back to metro-only chips silently) with a matching end-to-end next-train resolution, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
+  "brussels-dogfood-gate: ok (live/200 post-flip, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, live board via BMC Waiting Times (captured-live fixture, no network), self-referential-arrival + theoretical-time + do-not-embark filtering, missing-key refusal path proven, scheduled metro tail (Scheduled status word, mapScheduledTailRow/appendScheduledMetroTail cap+dedupe+never-before-live, end-to-end against a local GTFS fixture directory, network-stubbed tail load fails silently leaving live rows byte-identical, STIB-down proven to refuse before the tail is ever reached), SNCB second source at the 3 shared stations (iRail fixture, no network) — doNotGroup-by-mode, forbidden-internationals filtered, ICE in, iRail-down degrades to partial rather than refusing, metro-only stations never partial/never show SNCB, SNCB directions surfaced in /api/directions at the 3 shared stations ('type + destination' chips, canceled/departed/out-of-scope rows never fabricate a chip, iRail-down falls back to metro-only chips silently) with a matching end-to-end next-train resolution, SNCB corridor grouping (IC/EC/ECD/ICE/ICT only, never S/L/P, metro-first ordering, no chip-count increase, end-to-end next-train through a corridor chip), Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
 );

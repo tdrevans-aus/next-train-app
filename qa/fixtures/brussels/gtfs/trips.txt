@@ -1,0 +1,18 @@
+route_id,service_id,trip_id,trip_headsign,direction_id
+1,SVC1,stockel-1,STOCKEL,0
+1,SVC1,stockel-2,STOCKEL,0
+1,SVC1,stockel-3,STOCKEL,0
+1,SVC1,stockel-4,STOCKEL,0
+1,SVC1,stockel-5,STOCKEL,0
+1,SVC1,stockel-6,STOCKEL,0
+1,SVC1,stockel-7,STOCKEL,0
+1,SVC1,stockel-8,STOCKEL,0
+1,SVC1,ouest-1,GARE DE L'OUEST,1
+1,SVC1,ouest-2,GARE DE L'OUEST,1
+1,SVC1,ouest-3,GARE DE L'OUEST,1
+1,SVC1,ouest-4,GARE DE L'OUEST,1
+1,SVC1,ouest-5,GARE DE L'OUEST,1
+1,SVC1,ouest-6,GARE DE L'OUEST,1
+1,SVC1,ouest-7,GARE DE L'OUEST,1
+1,SVC1,ouest-8,GARE DE L'OUEST,1
+1,SVC1,depot-1,RESERVE,0

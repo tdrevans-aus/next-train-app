@@ -222,7 +222,7 @@ var NextTrainTimes = (() => {
       ...trip,
       timingOffsetMinutes,
       delayMinutes: Math.max(0, timingOffsetMinutes),
-      status: resolveTripDisplayStatus(timingOffsetMinutes, apiDisplayDelay)
+      status: trip.realtime === false ? "Scheduled" : resolveTripDisplayStatus(timingOffsetMinutes, apiDisplayDelay)
     };
   }
   function providerTripToInternal(trip) {
@@ -243,7 +243,10 @@ var NextTrainTimes = (() => {
       printedDestination: trip.printedDestination,
       cars: trip.cars,
       line: trip.line,
-      id: trip.id
+      id: trip.id,
+      // Additive, optional (docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md): see
+      // contract.js's ProviderTrip.realtime doc. Undefined for every provider that doesn't set it.
+      realtime: trip.realtime
     };
     return enrichTripTiming(internal);
   }
@@ -290,6 +293,11 @@ var NextTrainTimes = (() => {
       isDelayed,
       platform: timing.platform,
       status: timing.status,
+      // Additive, optional (docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md): survives
+      // to /api/board and /api/next-train JSON so the marker reaches the client even though the
+      // rendered UI keys off `status === "Scheduled"` rather than this raw field. Absent/undefined
+      // for every provider that hasn't adopted it.
+      realtime: timing.realtime,
       destination: timing.destination,
       printedDestination: timing.printedDestination ?? null,
       cars: timing.cars,
@@ -308,6 +316,7 @@ var NextTrainTimes = (() => {
       scheduledDisplayTime: trip.scheduledDisplayTime,
       platform: trip.platform,
       status: trip.status,
+      realtime: trip.realtime,
       line: trip.line,
       departure: trip.departure,
       arrival: trip.arrival

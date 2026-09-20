@@ -72,6 +72,97 @@ distinction... stop short of shipping the tail... any new copy is Tim's to appro
 **not built** this pass. Building the visible distinction (a "scheduled" badge/class + copy) is
 Tim's call, flagged as an open item.
 
+## Part 1/2/3 — low-key "Scheduled" UI, the scheduled tail, and SNCB corridor grouping (20 Sep 2026, docs/jim-brief-brussels-scheduled-tail-and-sncb-grouping.md)
+
+Tim's 20 Sep 2026 decisions (made after reading Part A/B/C above): Part A's "unraisable" finding
+is accepted, Brussels stays live; build the scheduled tail behind a deliberately **low-key**
+"Scheduled" UI treatment ("It needs to exist but not be in your face"); the standing rule is
+amended from "no scheduled times" to **scheduled times are never presented as live, and are
+never shown when live data is unavailable**; group SNCB chips "the way the UK Darwin regions do".
+
+**Part 1 — the low-key "Scheduled" treatment (shared UI).** `ProviderTrip.realtime` (contract.js)
+was already an informal per-trip field (Brussels' own live rows already set it `true`) but
+undocumented and unused by any UI. It's now documented, and `enrichTripTiming()`
+(lib/train-times-core.js) forces `status` to the literal word **"Scheduled"** whenever
+`realtime === false`, bypassing the normal on-time/delayed diff (meaningless for a row whose
+live and scheduled times are identical by construction). The word survives to `/api/board` and
+`/api/next-train` JSON via `buildTripPayload()`/`slimTripSummary()`. UI: `setStatusClass()`
+(public/app.js) adds a `.scheduled` class that's just `color: var(--muted)` — the same muted
+token used everywhere else, no icon/badge/banner/pulse (public/styles/hero.css); the hero status
+line (`renderStatusDisplay`) shows the plain word with no "Sched. HH:MM" sub-line (that sub-line
+would just repeat the big time already shown). One new Help sentence in the "Platform & status"
+FAQ (public/index.html): *"Times marked **Scheduled** come from the timetable; everything else
+is live."* See `docs/feature-backlog.md` FB-57 for the amended standing-rule wording. No other
+city's behaviour changed — grep of every static-join board-rendering path found none of them
+currently distinguish a no-realtime-update trip from a live one either (same gap Part B found
+for Brussels before this pass); left as-is per the brief, flagged here for a separate decision.
+
+**Part 2 — the scheduled metro tail (`lib/providers/brussels.js`).** After each direction's own
+last live STIB row, up to 6 further departures (60 minutes ahead cap) are appended from STIB's
+own static GTFS timetable (route_type=1, lines 1/2/5/6 only), each carrying `realtime: false`.
+Reuses the exact live-row `resolveTerminus()`/`marketingLabel()` pipeline, so tail chips are
+identical to live ones. Never before/between a live row for that exact direction — a candidate
+within the dedupe window (90s) of, or before, that direction's own last live departure is
+dropped (`appendScheduledMetroTail()`); a direction with zero live rows this refresh gets its
+full in-window tail (there's nothing for it to come "after", and this code path is only ever
+reached once the live STIB fetch has already succeeded — see file header). Any failure loading
+the static snapshot (network, stale calendar, malformed feed) is caught and the tail is silently
+empty; it never affects the live board. Static data is `loadGtfsStatic({ url:
+gtfsFixtureBlobUrl("brussels") })` — a metro-only (~2.4 MB, trimmed from STIB's own ~16 MB
+network-wide unauthenticated static GTFS discovery zip,
+`scripts/publish-brussels-gtfs-snapshot-to-blob.mjs`, published once to the Vercel Blob store —
+never a per-request or cold zip parse on the request path). Confirmed live 20 Sep 2026: the
+catalog's STIB point IDs (e.g. Arts-Loi 8041/8042/8401/8402) are exactly this static feed's
+`stop_id`s too, and `trip_headsign` values match the live payload's `destination.fr` convention
+exactly ("STOCKEL", "GARE DE L'OUEST", "ELISABETH", ...), including the same overlay/short-turn
+headsigns ("DELTA") that the live filter already drops. `lib/cities/brussels/coverage.json`
+updated to say plainly that the next couple of metro departures are live and later ones (to an
+hour ahead) are timetable times marked Scheduled.
+
+**Part 3 — SNCB chip grouping (`lib/cities/brussels/marketing-directions.js`).** Only the
+long-distance InterCity family (IC/EC/ECD/ICE/ICT) is grouped, into 5 named corridors radiating
+from Brussels:
+
+| Corridor label | Example member destinations |
+|---|---|
+| Antwerp | Antwerp-Central, Antwerp-Berchem |
+| Ghent / Bruges / Ostend | Ghent-Sint-Pieters, Bruges, Oostende, Kortrijk, Blankenberge, Knokke, De Panne, Poperinge |
+| Leuven / Liège | Leuven, Liège-Guillemins, Verviers-Central, Eupen, Landen, Hasselt, Genk, Aachen |
+| Namur / Luxembourg | Namur, Luxembourg (iRail: "Lëtzebuerg"), Arlon, Libramont, Dinant, Ciney |
+| Mons / Charleroi | Mons, Charleroi-Sud, Charleroi-Central, Tournai, Quévy, Binche |
+
+An InterCity trip toward a listed destination collapses to just the corridor label (e.g. "IC +
+Oostende" and "EC + Kortrijk" both become "Ghent / Bruges / Ostend"); an InterCity destination
+matching no corridor (a same-city reversal like Brussels-North/Jette/Schaarbeek, or an
+international edge case like Rotterdam CS) stays its own ungrouped "type + destination" chip
+rather than being force-fit or hidden. **Suburban S/L/P types are deliberately never grouped**:
+each already names one genuine, low-fan-out direction, and — unlike IC destinations, which all
+sit along one shared corridor out of the city — an S-line's two ends run in *opposite*
+directions through Brussels (e.g. S1 is Antwerp<->Nivelles), so grouping across an S-line's own
+destinations the way IC destinations are grouped would put two opposite-direction trains behind
+one chip — a real correctness bug (wrong-way boarding), not a cosmetic one. Metro chips are
+listed before SNCB chips (previously interleaved alphabetically — fixed as part of this pass),
+and metro/SNCB are never merged into each other (doNotGroup-by-mode, unchanged).
+
+**Live-verified 20 Sep 2026 at Gare Centrale** (iRail's own live snapshot varies minute to
+minute — these are one snapshot's counts, not a fixed number): ungrouped SNCB chips **32** ->
+grouped **21** (roughly a third fewer); combined with Gare Centrale's own 4 metro chips (only
+lines 1/5 call there), total chips **36 -> 25**. This falls short of the "roughly 8-12" target
+in Tim's brief. Getting further down would need also folding S/L/P into the same corridors
+(geometrically safe to do — each S-line's two real termini already land in two *different*
+corridors or one corridor + one ungrouped same-city stop in the current live data, so it
+wouldn't repeat the opposite-direction risk above) but was left out of this pass: it changes
+what a suburban rider sees more than an IC rider (their local-only stop might not be served by
+whichever train happens to be earliest in a merged corridor bucket), which felt like a call worth
+flagging rather than making silently. **Open item for Tim**: fold S/L/P into the corridor table
+too (would likely land close to the 8-12 target), or accept the current ~21-25 IC-only-grouped
+count as the shipped shape. Chip **stability**: corridor grouping is deterministic (same
+destination always maps to the same corridor label) and, if anything, more stable than the
+ungrouped chips it replaces — a corridor chip stays present as long as *any* train toward it is
+in iRail's live window, where an individual destination chip could disappear if that one station
+specifically has no departure in the next hour; full determinism isn't claimed since the
+underlying data is still live-derived (same posture Copenhagen's DSB chips already accepted).
+
 ## SNCB/NMBS directions in the rider-facing API (Part C, 20 Sep 2026)
 
 `/api/directions` previously returned only the 4 metro "line + terminus" chips at every

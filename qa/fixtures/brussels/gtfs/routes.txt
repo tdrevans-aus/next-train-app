@@ -1,0 +1,2 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+1,STIB/MIVB,1,GARE DE L'OUEST - STOCKEL,,1,,B5378C,FFFFFF
