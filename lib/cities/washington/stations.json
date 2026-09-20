@@ -241,8 +241,8 @@
       "hub": false,
       "aliases": [],
       "id": "court-house",
-      "lat": 38.890183,
-      "lng": -77.087134
+      "lat": 38.891499,
+      "lng": -77.08391
     },
     {
       "name": "Crystal City",
@@ -287,8 +287,8 @@
       "hub": false,
       "aliases": [],
       "id": "dunn-loring-merrifield",
-      "lat": 38.883633,
-      "lng": -77.227163
+      "lat": 38.883015,
+      "lng": -77.228939
     },
     {
       "name": "Dupont Circle",
@@ -333,7 +333,8 @@
       ],
       "hub": false,
       "aliases": [
-        "Eisenhower Ave"
+        "Eisenhower Ave",
+        "Eisenhower Avenue"
       ],
       "id": "eisenhower-av",
       "lat": 38.800433,
@@ -445,8 +446,8 @@
       "hub": false,
       "aliases": [],
       "id": "friendship-heights",
-      "lat": 38.959492,
-      "lng": -77.084998
+      "lat": 38.960744,
+      "lng": -77.085969
     },
     {
       "name": "Gallery Place-Chinatown",
@@ -474,8 +475,8 @@
         "Georgia Ave-Petworth"
       ],
       "id": "georgia-av-petworth",
-      "lat": 38.937442,
-      "lng": -77.023463
+      "lat": 38.936077,
+      "lng": -77.024728
     },
     {
       "name": "Glenmont",
@@ -508,8 +509,8 @@
       "hub": false,
       "aliases": [],
       "id": "greensboro",
-      "lat": 38.920963,
-      "lng": -77.23388
+      "lat": 38.919749,
+      "lng": -77.235192
     },
     {
       "name": "Grosvenor - Strathmore",
@@ -648,7 +649,9 @@
         "silver"
       ],
       "hub": false,
-      "aliases": [],
+      "aliases": [
+        "McPherson Square"
+      ],
       "id": "mcpherson-sq",
       "lat": 38.901341,
       "lng": -77.033636
@@ -688,8 +691,8 @@
         "Minnesota Ave"
       ],
       "id": "minnesota-av",
-      "lat": 38.899199,
-      "lng": -76.94675
+      "lat": 38.898284,
+      "lng": -76.948042
     },
     {
       "name": "Morgan Blvd",
@@ -702,8 +705,8 @@
         "Morgan Boulevard"
       ],
       "id": "morgan-blvd",
-      "lat": 38.893843,
-      "lng": -76.868077
+      "lat": 38.8913,
+      "lng": -76.8682
     },
     {
       "name": "Mt Vernon Sq/7th St-Convention Center",
@@ -1023,8 +1026,8 @@
       "hub": false,
       "aliases": [],
       "id": "tysons",
-      "lat": 38.920682,
-      "lng": -77.221718
+      "lat": 38.920056,
+      "lng": -77.223314
     },
     {
       "name": "U St/African-Amer Civil War Mem'l/Cardozo",
