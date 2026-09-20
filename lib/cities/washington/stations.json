@@ -1,0 +1,1187 @@
+{
+  "city": "washington",
+  "hub": "Metro Center",
+  "stations": [
+    {
+      "name": "Addison Rd-Seat Pleasant",
+      "lines": [
+        "blue",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [
+        "Addison Road-Seat Pleasant"
+      ],
+      "id": "addison-rd-seat-pleasant",
+      "lat": 38.886756,
+      "lng": -76.89411
+    },
+    {
+      "name": "Anacostia",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "anacostia",
+      "lat": 38.862971,
+      "lng": -76.995373
+    },
+    {
+      "name": "Archives-Navy Mem'l-Penn Quarter",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [
+        "Archives-Navy Memorial-Penn Quarter"
+      ],
+      "id": "archives-navy-mem-l-penn-quarter",
+      "lat": 38.893673,
+      "lng": -77.021917
+    },
+    {
+      "name": "Arlington Cemetery",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "arlington-cemetery",
+      "lat": 38.884695,
+      "lng": -77.062812
+    },
+    {
+      "name": "Ashburn",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "ashburn",
+      "lat": 39.005291,
+      "lng": -77.491539
+    },
+    {
+      "name": "Ballston-MU",
+      "lines": [
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "ballston-mu",
+      "lat": 38.882191,
+      "lng": -77.113171
+    },
+    {
+      "name": "Benning Rd",
+      "lines": [
+        "blue",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [
+        "Benning Road"
+      ],
+      "id": "benning-rd",
+      "lat": 38.890983,
+      "lng": -76.938367
+    },
+    {
+      "name": "Bethesda",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "bethesda",
+      "lat": 38.984401,
+      "lng": -77.094132
+    },
+    {
+      "name": "Braddock Rd",
+      "lines": [
+        "blue",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [
+        "Braddock Road"
+      ],
+      "id": "braddock-rd",
+      "lat": 38.814151,
+      "lng": -77.05367
+    },
+    {
+      "name": "Branch Av",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [
+        "Branch Ave"
+      ],
+      "id": "branch-av",
+      "lat": 38.826454,
+      "lng": -76.911466
+    },
+    {
+      "name": "Brookland-CUA",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "brookland-cua",
+      "lat": 38.933219,
+      "lng": -76.994537
+    },
+    {
+      "name": "Capitol Heights",
+      "lines": [
+        "blue",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "capitol-heights",
+      "lat": 38.889474,
+      "lng": -76.91181
+    },
+    {
+      "name": "Capitol South",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "capitol-south",
+      "lat": 38.88507,
+      "lng": -77.005142
+    },
+    {
+      "name": "Cheverly",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "cheverly",
+      "lat": 38.91664,
+      "lng": -76.91663
+    },
+    {
+      "name": "Clarendon",
+      "lines": [
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "clarendon",
+      "lat": 38.886713,
+      "lng": -77.095396
+    },
+    {
+      "name": "Cleveland Park",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "cleveland-park",
+      "lat": 38.934771,
+      "lng": -77.058045
+    },
+    {
+      "name": "College Park-U of Md",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "college-park-u-of-md",
+      "lat": 38.978641,
+      "lng": -76.928127
+    },
+    {
+      "name": "Columbia Heights",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "columbia-heights",
+      "lat": 38.927846,
+      "lng": -77.032554
+    },
+    {
+      "name": "Congress Heights",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "congress-heights",
+      "lat": 38.845665,
+      "lng": -76.988514
+    },
+    {
+      "name": "Court House",
+      "lines": [
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "court-house",
+      "lat": 38.891499,
+      "lng": -77.08391
+    },
+    {
+      "name": "Crystal City",
+      "lines": [
+        "blue",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "crystal-city",
+      "lat": 38.857912,
+      "lng": -77.050292
+    },
+    {
+      "name": "Deanwood",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "deanwood",
+      "lat": 38.908186,
+      "lng": -76.935259
+    },
+    {
+      "name": "Downtown Largo",
+      "lines": [
+        "blue",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "downtown-largo",
+      "lat": 38.900608,
+      "lng": -76.844554
+    },
+    {
+      "name": "Dunn Loring-Merrifield",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "dunn-loring-merrifield",
+      "lat": 38.883015,
+      "lng": -77.228939
+    },
+    {
+      "name": "Dupont Circle",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "dupont-circle",
+      "lat": 38.909606,
+      "lng": -77.043417
+    },
+    {
+      "name": "East Falls Church",
+      "lines": [
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "east-falls-church",
+      "lat": 38.885961,
+      "lng": -77.156885
+    },
+    {
+      "name": "Eastern Market",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "eastern-market",
+      "lat": 38.88463,
+      "lng": -76.996003
+    },
+    {
+      "name": "Eisenhower Av",
+      "lines": [
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [
+        "Eisenhower Ave",
+        "Eisenhower Avenue"
+      ],
+      "id": "eisenhower-av",
+      "lat": 38.800433,
+      "lng": -77.070877
+    },
+    {
+      "name": "Farragut North",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "farragut-north",
+      "lat": 38.90321,
+      "lng": -77.039703
+    },
+    {
+      "name": "Farragut West",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "farragut-west",
+      "lat": 38.901321,
+      "lng": -77.040698
+    },
+    {
+      "name": "Federal Center SW",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "federal-center-sw",
+      "lat": 38.88508,
+      "lng": -77.01587
+    },
+    {
+      "name": "Federal Triangle",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "federal-triangle",
+      "lat": 38.893189,
+      "lng": -77.028134
+    },
+    {
+      "name": "Foggy Bottom-GWU",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "foggy-bottom-gwu",
+      "lat": 38.900706,
+      "lng": -77.05028
+    },
+    {
+      "name": "Forest Glen",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "forest-glen",
+      "lat": 39.014962,
+      "lng": -77.042919
+    },
+    {
+      "name": "Fort Totten",
+      "lines": [
+        "green",
+        "red",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "fort-totten",
+      "lat": 38.951855,
+      "lng": -77.002205
+    },
+    {
+      "name": "Franconia-Springfield",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "franconia-springfield",
+      "lat": 38.76653,
+      "lng": -77.167973
+    },
+    {
+      "name": "Friendship Heights",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "friendship-heights",
+      "lat": 38.960744,
+      "lng": -77.085969
+    },
+    {
+      "name": "Gallery Place-Chinatown",
+      "lines": [
+        "green",
+        "red",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [
+        "Gallery Pl-Chinatown"
+      ],
+      "id": "gallery-place-chinatown",
+      "lat": 38.898325,
+      "lng": -77.021918
+    },
+    {
+      "name": "Georgia Av-Petworth",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [
+        "Georgia Ave-Petworth"
+      ],
+      "id": "georgia-av-petworth",
+      "lat": 38.936077,
+      "lng": -77.024728
+    },
+    {
+      "name": "Glenmont",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "glenmont",
+      "lat": 39.061792,
+      "lng": -77.05356
+    },
+    {
+      "name": "Greenbelt",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "greenbelt",
+      "lat": 39.011154,
+      "lng": -76.91106
+    },
+    {
+      "name": "Greensboro",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "greensboro",
+      "lat": 38.919749,
+      "lng": -77.235192
+    },
+    {
+      "name": "Grosvenor - Strathmore",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "grosvenor-strathmore",
+      "lat": 39.029277,
+      "lng": -77.103852
+    },
+    {
+      "name": "Herndon",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "herndon",
+      "lat": 38.952829,
+      "lng": -77.38518
+    },
+    {
+      "name": "Huntington",
+      "lines": [
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "huntington",
+      "lat": 38.793924,
+      "lng": -77.075208
+    },
+    {
+      "name": "Hyattsville Crossing",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "hyattsville-crossing",
+      "lat": 38.965393,
+      "lng": -76.955884
+    },
+    {
+      "name": "Innovation Center",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "innovation-center",
+      "lat": 38.960766,
+      "lng": -77.415297
+    },
+    {
+      "name": "Judiciary Sq",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [
+        "Judiciary Square"
+      ],
+      "id": "judiciary-sq",
+      "lat": 38.896098,
+      "lng": -77.016641
+    },
+    {
+      "name": "King St-Old Town",
+      "lines": [
+        "blue",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "king-st-old-town",
+      "lat": 38.806594,
+      "lng": -77.060813
+    },
+    {
+      "name": "L'Enfant Plaza",
+      "lines": [
+        "blue",
+        "green",
+        "orange",
+        "silver",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "l-enfant-plaza",
+      "lat": 38.884846,
+      "lng": -77.021911
+    },
+    {
+      "name": "Landover",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "landover",
+      "lat": 38.933514,
+      "lng": -76.8912
+    },
+    {
+      "name": "Loudoun Gateway",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "loudoun-gateway",
+      "lat": 38.992048,
+      "lng": -77.460687
+    },
+    {
+      "name": "McLean",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "mclean",
+      "lat": 38.92453,
+      "lng": -77.210081
+    },
+    {
+      "name": "McPherson Sq",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [
+        "McPherson Square"
+      ],
+      "id": "mcpherson-sq",
+      "lat": 38.901341,
+      "lng": -77.033636
+    },
+    {
+      "name": "Medical Center",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "medical-center",
+      "lat": 39.000064,
+      "lng": -77.096955
+    },
+    {
+      "name": "Metro Center",
+      "lines": [
+        "blue",
+        "orange",
+        "red",
+        "silver"
+      ],
+      "hub": true,
+      "aliases": [],
+      "id": "metro-center",
+      "lat": 38.898322,
+      "lng": -77.02808
+    },
+    {
+      "name": "Minnesota Av",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [
+        "Minnesota Ave"
+      ],
+      "id": "minnesota-av",
+      "lat": 38.898284,
+      "lng": -76.948042
+    },
+    {
+      "name": "Morgan Blvd",
+      "lines": [
+        "blue",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [
+        "Morgan Boulevard"
+      ],
+      "id": "morgan-blvd",
+      "lat": 38.8913,
+      "lng": -76.8682
+    },
+    {
+      "name": "Mt Vernon Sq/7th St-Convention Center",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "mt-vernon-sq-7th-st-convention-center",
+      "lat": 38.906445,
+      "lng": -77.021917
+    },
+    {
+      "name": "Navy Yard-Ballpark",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "navy-yard-ballpark",
+      "lat": 38.876489,
+      "lng": -77.005088
+    },
+    {
+      "name": "Naylor Rd",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [
+        "Naylor Road"
+      ],
+      "id": "naylor-rd",
+      "lat": 38.851309,
+      "lng": -76.956265
+    },
+    {
+      "name": "New Carrollton",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "new-carrollton",
+      "lat": 38.947793,
+      "lng": -76.871844
+    },
+    {
+      "name": "NoMa-Gallaudet U",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "noma-gallaudet-u",
+      "lat": 38.907024,
+      "lng": -77.003023
+    },
+    {
+      "name": "North Bethesda",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "north-bethesda",
+      "lat": 39.048159,
+      "lng": -77.112832
+    },
+    {
+      "name": "Pentagon",
+      "lines": [
+        "blue",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "pentagon",
+      "lat": 38.86947,
+      "lng": -77.053718
+    },
+    {
+      "name": "Pentagon City",
+      "lines": [
+        "blue",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "pentagon-city",
+      "lat": 38.86189,
+      "lng": -77.059541
+    },
+    {
+      "name": "Potomac Av",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [
+        "Potomac Ave"
+      ],
+      "id": "potomac-av",
+      "lat": 38.881271,
+      "lng": -76.985498
+    },
+    {
+      "name": "Potomac Yard-VT",
+      "lines": [
+        "blue",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [
+        "Potomac Yard"
+      ],
+      "id": "potomac-yard-vt",
+      "lat": 38.834014,
+      "lng": -77.046407
+    },
+    {
+      "name": "Reston Town Center",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "reston-town-center",
+      "lat": 38.952776,
+      "lng": -77.360187
+    },
+    {
+      "name": "Rhode Island Av-Brentwood",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [
+        "Rhode Island Ave-Brentwood"
+      ],
+      "id": "rhode-island-av-brentwood",
+      "lat": 38.921067,
+      "lng": -76.995939
+    },
+    {
+      "name": "Rockville",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "rockville",
+      "lat": 39.084329,
+      "lng": -77.146128
+    },
+    {
+      "name": "Ronald Reagan Washington National Airport",
+      "lines": [
+        "blue",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "ronald-reagan-washington-national-airport",
+      "lat": 38.853424,
+      "lng": -77.044045
+    },
+    {
+      "name": "Rosslyn",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "rosslyn",
+      "lat": 38.895987,
+      "lng": -77.070911
+    },
+    {
+      "name": "Shady Grove",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "shady-grove",
+      "lat": 39.119935,
+      "lng": -77.16463
+    },
+    {
+      "name": "Shaw-Howard U",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "shaw-howard-u",
+      "lat": 38.913485,
+      "lng": -77.021914
+    },
+    {
+      "name": "Silver Spring",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "silver-spring",
+      "lat": 38.993957,
+      "lng": -77.03102
+    },
+    {
+      "name": "Smithsonian",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "smithsonian",
+      "lat": 38.888026,
+      "lng": -77.028069
+    },
+    {
+      "name": "Southern Av",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [
+        "Southern Avenue"
+      ],
+      "id": "southern-av",
+      "lat": 38.841094,
+      "lng": -76.975056
+    },
+    {
+      "name": "Spring Hill",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "spring-hill",
+      "lat": 38.92896,
+      "lng": -77.24156
+    },
+    {
+      "name": "Stadium-Armory",
+      "lines": [
+        "blue",
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "stadium-armory",
+      "lat": 38.886717,
+      "lng": -76.977091
+    },
+    {
+      "name": "Suitland",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "suitland",
+      "lat": 38.843972,
+      "lng": -76.931872
+    },
+    {
+      "name": "Takoma",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "takoma",
+      "lat": 38.976086,
+      "lng": -77.018179
+    },
+    {
+      "name": "Tenleytown-AU",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "tenleytown-au",
+      "lat": 38.948859,
+      "lng": -77.07959
+    },
+    {
+      "name": "Twinbrook",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "twinbrook",
+      "lat": 39.062475,
+      "lng": -77.12082
+    },
+    {
+      "name": "Tysons",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "tysons",
+      "lat": 38.920056,
+      "lng": -77.223314
+    },
+    {
+      "name": "U St/African-Amer Civil War Mem'l/Cardozo",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [
+        "U Street/African-Amer Civil War Memorial/Cardozo"
+      ],
+      "id": "u-st-african-amer-civil-war-mem-l-cardozo",
+      "lat": 38.91701,
+      "lng": -77.027498
+    },
+    {
+      "name": "Union Station",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "union-station",
+      "lat": 38.897774,
+      "lng": -77.007417
+    },
+    {
+      "name": "Van Dorn St",
+      "lines": [
+        "blue"
+      ],
+      "hub": false,
+      "aliases": [
+        "Van Dorn Street"
+      ],
+      "id": "van-dorn-st",
+      "lat": 38.799315,
+      "lng": -77.129114
+    },
+    {
+      "name": "Van Ness-UDC",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "van-ness-udc",
+      "lat": 38.943273,
+      "lng": -77.062988
+    },
+    {
+      "name": "Vienna/Fairfax-GMU",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "vienna-fairfax-gmu",
+      "lat": 38.877609,
+      "lng": -77.272625
+    },
+    {
+      "name": "Virginia Sq-GMU",
+      "lines": [
+        "orange",
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [
+        "Virginia Square-GMU"
+      ],
+      "id": "virginia-sq-gmu",
+      "lat": 38.883374,
+      "lng": -77.10298
+    },
+    {
+      "name": "Washington Dulles International Airport",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "washington-dulles-international-airport",
+      "lat": 38.955792,
+      "lng": -77.44815
+    },
+    {
+      "name": "Waterfront",
+      "lines": [
+        "green"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "waterfront",
+      "lat": 38.87647,
+      "lng": -77.017507
+    },
+    {
+      "name": "West Falls Church-VT",
+      "lines": [
+        "orange"
+      ],
+      "hub": false,
+      "aliases": [
+        "West Falls Church"
+      ],
+      "id": "west-falls-church-vt",
+      "lat": 38.900788,
+      "lng": -77.189097
+    },
+    {
+      "name": "West Hyattsville",
+      "lines": [
+        "green",
+        "yellow"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "west-hyattsville",
+      "lat": 38.955048,
+      "lng": -76.969579
+    },
+    {
+      "name": "Wheaton",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "wheaton",
+      "lat": 39.037535,
+      "lng": -77.050109
+    },
+    {
+      "name": "Wiehle-Reston East",
+      "lines": [
+        "silver"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "wiehle-reston-east",
+      "lat": 38.947741,
+      "lng": -77.340062
+    },
+    {
+      "name": "Woodley Park-Zoo/Adams Morgan",
+      "lines": [
+        "red"
+      ],
+      "hub": false,
+      "aliases": [],
+      "id": "woodley-park-zoo-adams-morgan",
+      "lat": 38.925093,
+      "lng": -77.05242
+    }
+  ]
+}

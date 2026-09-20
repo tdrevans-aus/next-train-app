@@ -99,13 +99,24 @@ remembered. **Since 5 Sep 2026 the lock is Jim's only**: Luke's whole write set 
 which no other lane touches, so Luke packing region N+1 while Jim wires region N is the intended
 pipelining, not a collision. Jim runs `check <country>` before starting and `acquire <country>
 <region> jim <branch>` before touching shared files, refusing to proceed if a different region in
-the same country already holds the lock. The lock file (`docs/expansion-tracker/lane-locks.json`)
-is local and gitignored — the committed copy only ever reached master after the guarded PR had
-merged, so it protected nothing and cost a release PR per region. The lock releases itself: `check`,
-`status`, and `acquire` look up the lock's branch with `gh` and drop it once that branch's PR has
-merged, so no one runs `release` by hand after a merge. `node qa/lane-lock.mjs status` shows what's
-currently locked. See the tracker's own "finish started countries before new ones" rule, which this
-makes mechanical.
+the same country already holds the lock. The lock file lives at
+`<git-common-dir>/lane-locks.json` — i.e. inside the main repo's `.git/`, resolved via `git
+rev-parse --git-common-dir` and shared by the main checkout and every `git worktree` linked to it —
+never committed. It used to be committed at `docs/expansion-tracker/lane-locks.json`, but the
+committed copy only ever reached master after the guarded PR had merged, so it protected nothing
+and cost a release PR per region; it was then made local-and-gitignored at that same per-checkout
+path, but that broke again once Jim started running in isolated `.claude/worktrees/<name>/`
+checkouts (`isolation: "worktree"`): an `acquire` from Jim's worktree wrote a file the main checkout
+and every other worktree couldn't see, so `check`/`status` there kept reporting the country free
+while it was genuinely locked — two Jims acquired `united-states`/`bart` and `denmark`/`copenhagen`
+from their own worktrees on 20 Sep 2026 undetected
+(docs/jim-brief-lane-lock-shared-worktrees.md). The git-common-dir location fixes that by giving
+every checkout of the repo the same lock file regardless of which one a command runs from; a legacy
+per-checkout `docs/expansion-tracker/lane-locks.json` found in the current checkout is migrated into
+it once and then removed. The lock releases itself: `check`, `status`, and `acquire` look up the
+lock's branch with `gh` and drop it once that branch's PR has merged, so no one runs `release` by
+hand after a merge. `node qa/lane-lock.mjs status` shows what's currently locked. See the tracker's
+own "finish started countries before new ones" rule, which this makes mechanical.
 
 **The top-level session checks first — don't rely on Jim's own check.** Before any `Agent` call
 with `subagent_type: jim`, run `node qa/lane-lock.mjs check <country>` yourself and report the

@@ -9,15 +9,46 @@
  * This lock makes "one country lane at a time" a checked precondition instead of
  * a rule someone has to remember.
  *
- * Lock state lives in docs/expansion-tracker/lane-locks.json, which is gitignored
- * (since 5 Sep 2026). It used to be committed, but an `acquire` made on a feature
- * branch only reached master once that branch's PR merged — i.e. after the lock
- * had stopped mattering — so the committed copy never protected a second checkout,
- * and every release needed its own PR (six of one day's forty PRs). The real
- * collision surface is two lanes editing the same shared checkout, which the
- * local file covers. Across checkouts the open PR is the lock: `check` and
- * `acquire` look up the lock's recorded branch with `gh` and auto-release when
- * its PR has merged, so no one has to remember to run `release` after a merge.
+ * Lock state lives at `<git-common-dir>/lane-locks.json` — i.e. inside the main
+ * repo's `.git/`, resolved via `git rev-parse --git-common-dir` from whatever
+ * checkout the script runs in. That directory is the same for the main checkout
+ * and every `git worktree add` linked to it, which is what makes the lock
+ * actually cross-checkout: Jim runs with `isolation: "worktree"`
+ * (`.claude/worktrees/<name>/`), and an `acquire` resolved relative to *that*
+ * checkout (the old behaviour — `docs/expansion-tracker/lane-locks.json` inside
+ * whichever directory the script's `__dirname` sat in) was invisible to the main
+ * checkout's `status`/`check` and to every other worktree: two Jims acquired
+ * locks for `united-states`/`bart` and `denmark`/`copenhagen` from their own
+ * worktrees on 20 Sep 2026 while the main checkout kept reporting both countries
+ * free (docs/jim-brief-lane-lock-shared-worktrees.md). `.git/` is never
+ * committed, so nothing here needs `.gitignore` beyond the legacy path below. If
+ * `git rev-parse --git-common-dir` fails (not a git checkout at all), this falls
+ * back to the old per-checkout `docs/expansion-tracker/lane-locks.json` rather
+ * than crashing.
+ *
+ * The mutex file lives beside the lock file (shared for the same reason — a
+ * per-worktree mutex would bring back the clobbered-write race described below).
+ *
+ * Migration: a legacy `docs/expansion-tracker/lane-locks.json` in the checkout a
+ * command runs from is merged into the shared file the first time any command
+ * runs there (an entry already present in the shared file wins). Migration only
+ * ever looks at the checkout the command is invoked from, not every worktree.
+ * The path was tracked (committed as `{}`) before it was gitignored, so branches
+ * cut before that change still carry it: an empty (`{}`) legacy file is left
+ * completely alone (no delete, no restore, no log line — a tracked `{}` must
+ * never show up in `git status`); a legacy file with real entries is migrated
+ * and then, if the path is still tracked in this checkout, restored to its
+ * committed content with `git checkout --` (not deleted, so nothing appears
+ * modified/deleted in `git status`) — if untracked, it's deleted as before.
+ * Either way it is never re-imported on a later command.
+ *
+ * It used to be committed, but an `acquire` made on a feature branch only
+ * reached master once that branch's PR merged — i.e. after the lock had stopped
+ * mattering — so the committed copy never protected a second checkout, and every
+ * release needed its own PR (six of one day's forty PRs). Across checkouts the
+ * open PR is the lock: `check` and `acquire` look up the lock's recorded branch
+ * with `gh` and auto-release when its PR has merged, so no one has to remember
+ * to run `release` after a merge.
  *
  * Only Jim's stage needs the lock: Luke writes exclusively under docs/<city>-d1/
  * and touches no shared file, so Luke on region N+1 may run alongside Jim on N.
@@ -41,7 +72,30 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
-const LOCK_FILE = path.join(REPO_ROOT, "docs", "expansion-tracker", "lane-locks.json");
+
+// Resolves to the directory shared by the main checkout and every linked
+// `git worktree` of it (the main repo's `.git/`), so the lock file lives in one
+// place regardless of which checkout a command runs from. Returns null (never
+// throws) if `git` isn't available or this isn't a git checkout at all — callers
+// fall back to the old per-checkout path.
+function resolveGitCommonDir(cwd) {
+  try {
+    const out = execFileSync("git", ["rev-parse", "--git-common-dir"], {
+      cwd,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+      shell: process.platform === "win32",
+    }).trim();
+    if (!out) return null;
+    return path.resolve(cwd, out);
+  } catch {
+    return null;
+  }
+}
+
+const LEGACY_LOCK_FILE = path.join(REPO_ROOT, "docs", "expansion-tracker", "lane-locks.json");
+const GIT_COMMON_DIR = resolveGitCommonDir(REPO_ROOT);
+const LOCK_FILE = GIT_COMMON_DIR ? path.join(GIT_COMMON_DIR, "lane-locks.json") : LEGACY_LOCK_FILE;
 const MUTEX_FILE = LOCK_FILE + ".mutex";
 
 const STALE_MS = 6 * 60 * 60 * 1000; // 6h — long enough for a real session, short enough to flag forgetfulness.
@@ -59,11 +113,16 @@ function sleepSync(ms) {
 // other's addition — the exact way a country's entry (Denmark) vanished from this file
 // with no release ever having been run and no trace in git history. This mutex makes that
 // read-modify-write section exclusive across processes via an exclusive-create sentinel
-// file, so a second process blocks (briefly) instead of racing.
+// file, so a second process blocks (briefly) instead of racing. Since the lock file is now
+// genuinely shared across worktrees, this mutex is too — every command that touches
+// LOCK_FILE, including reads (which may migrate + auto-release, both writes), must go
+// through withMutex so a stale snapshot from one checkout can never overwrite a lock
+// another checkout just acquired.
 function withMutex(fn) {
   const start = Date.now();
   for (;;) {
     try {
+      fs.mkdirSync(path.dirname(MUTEX_FILE), { recursive: true });
       const fd = fs.openSync(MUTEX_FILE, "wx");
       fs.writeSync(fd, String(process.pid));
       fs.closeSync(fd);
@@ -95,17 +154,103 @@ function withMutex(fn) {
   }
 }
 
-function readLocks() {
+function readLocksRaw() {
   if (!fs.existsSync(LOCK_FILE)) return {};
-  return JSON.parse(fs.readFileSync(LOCK_FILE, "utf8"));
+  try {
+    return JSON.parse(fs.readFileSync(LOCK_FILE, "utf8"));
+  } catch {
+    return {};
+  }
 }
 
-function writeLocks(locks) {
+function writeLocksRaw(locks) {
   fs.mkdirSync(path.dirname(LOCK_FILE), { recursive: true });
   // Write-then-rename so a crash mid-write can never leave LOCK_FILE truncated or half-written.
   const tmp = `${LOCK_FILE}.${process.pid}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(locks, null, 2) + "\n");
   fs.renameSync(tmp, LOCK_FILE);
+}
+
+// True when `relPath` (relative to REPO_ROOT) is tracked by git in this
+// checkout. Never throws — an error (not a git repo, git missing) is treated
+// as "not tracked" so callers fall back to the untracked (delete) path.
+function isTrackedInRepo(relPath) {
+  try {
+    execFileSync("git", ["ls-files", "--error-unmatch", relPath], {
+      cwd: REPO_ROOT,
+      stdio: ["ignore", "ignore", "ignore"],
+      shell: process.platform === "win32",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Must be called from inside withMutex. Merges a legacy per-checkout lock file
+// (from the checkout this command is running in) into the shared lock file. A
+// no-op once LOCK_FILE and LEGACY_LOCK_FILE are the same path (the
+// git-unavailable fallback). An *empty* legacy file (`{}`, e.g. the tracked
+// file committed before this path was gitignored) is left completely alone —
+// no delete, no restore, no log line — so a tracked `{}` never shows up as a
+// change in `git status`. A legacy file with real entries is migrated and then
+// either restored to its committed content (if still tracked in this
+// checkout, via `git checkout --`, so it's never reported modified/deleted)
+// or deleted (if untracked) — either way it is never re-imported later.
+function migrateLegacyLocked() {
+  if (LOCK_FILE === LEGACY_LOCK_FILE) return;
+  if (!fs.existsSync(LEGACY_LOCK_FILE)) return;
+  let legacy;
+  try {
+    legacy = JSON.parse(fs.readFileSync(LEGACY_LOCK_FILE, "utf8"));
+  } catch {
+    legacy = {};
+  }
+  const legacyCountries = Object.keys(legacy);
+  if (legacyCountries.length === 0) return;
+
+  const locks = readLocksRaw();
+  const migrated = [];
+  for (const country of legacyCountries) {
+    // An entry already in the shared file wins for the same country.
+    if (!(country in locks)) {
+      locks[country] = legacy[country];
+      migrated.push(country);
+    }
+  }
+  if (migrated.length) writeLocksRaw(locks);
+
+  const relLegacyPath = path.relative(REPO_ROOT, LEGACY_LOCK_FILE);
+  if (isTrackedInRepo(relLegacyPath)) {
+    try {
+      execFileSync("git", ["checkout", "--", relLegacyPath], {
+        cwd: REPO_ROOT,
+        stdio: ["ignore", "ignore", "ignore"],
+        shell: process.platform === "win32",
+      });
+    } catch {
+      // Best-effort: if we can't restore the tracked file, leave it as-is
+      // (already-migrated content) rather than deleting something tracked.
+    }
+  } else {
+    fs.rmSync(LEGACY_LOCK_FILE, { force: true });
+  }
+  console.log(
+    migrated.length
+      ? `Migrated legacy lane lock(s) from ${LEGACY_LOCK_FILE} into ${LOCK_FILE}: ${migrated.join(", ")}.`
+      : `Cleared legacy lane lock file ${LEGACY_LOCK_FILE} (no new entries — already present in ${LOCK_FILE}).`
+  );
+}
+
+// Every command that reads or mutates lock state goes through here: takes the
+// mutex once, migrates any legacy file in this checkout, reads the current
+// locks, and hands them to `fn` for inspection/mutation. `fn` is responsible for
+// calling writeLocksRaw() itself if it changes anything, and returns the exit code.
+function withLocks(fn) {
+  return withMutex(() => {
+    migrateLegacyLocked();
+    return fn(readLocksRaw());
+  });
 }
 
 function ageString(iso) {
@@ -140,28 +285,29 @@ function releaseMerged(locks) {
       delete locks[country];
     }
   }
-  if (released.length) writeLocks(locks);
+  if (released.length) writeLocksRaw(locks);
   return released;
 }
 
 function cmdStatus() {
-  const locks = readLocks();
-  for (const r of withMutex(() => releaseMerged(locks))) console.log(`Auto-released ${r}.`);
-  const countries = Object.keys(locks);
-  if (countries.length === 0) {
-    console.log("No lanes locked.");
+  return withLocks((locks) => {
+    for (const r of releaseMerged(locks)) console.log(`Auto-released ${r}.`);
+    const countries = Object.keys(locks);
+    if (countries.length === 0) {
+      console.log("No lanes locked.");
+      return 0;
+    }
+    for (const country of countries) {
+      const l = locks[country];
+      const stale = Date.now() - new Date(l.locked_at).getTime() > STALE_MS;
+      console.log(
+        `${country}: ${l.region} (${l.stage})${l.branch ? ` on ${l.branch}` : ""} — locked ${ageString(
+          l.locked_at
+        )} ago${stale ? "  [STALE — verify before overriding]" : ""}`
+      );
+    }
     return 0;
-  }
-  for (const country of countries) {
-    const l = locks[country];
-    const stale = Date.now() - new Date(l.locked_at).getTime() > STALE_MS;
-    console.log(
-      `${country}: ${l.region} (${l.stage})${l.branch ? ` on ${l.branch}` : ""} — locked ${ageString(
-        l.locked_at
-      )} ago${stale ? "  [STALE — verify before overriding]" : ""}`
-    );
-  }
-  return 0;
+  });
 }
 
 function cmdCheck(country) {
@@ -169,19 +315,20 @@ function cmdCheck(country) {
     console.error("Usage: node qa/lane-lock.mjs check <country>");
     return 1;
   }
-  const locks = readLocks();
-  for (const r of withMutex(() => releaseMerged(locks))) console.log(`Auto-released ${r}.`);
-  const l = locks[country];
-  if (!l) {
-    console.log(`${country}: free.`);
-    return 0;
-  }
-  const stale = Date.now() - new Date(l.locked_at).getTime() > STALE_MS;
-  console.error(
-    `${country} is locked by ${l.region} (${l.stage})${l.branch ? ` on ${l.branch}` : ""}, ` +
-      `locked ${ageString(l.locked_at)} ago.${stale ? " Lock looks stale — confirm the prior region actually merged, then release with --force." : " Do not start another region in this country until it's merged and released."}`
-  );
-  return 1;
+  return withLocks((locks) => {
+    for (const r of releaseMerged(locks)) console.log(`Auto-released ${r}.`);
+    const l = locks[country];
+    if (!l) {
+      console.log(`${country}: free.`);
+      return 0;
+    }
+    const stale = Date.now() - new Date(l.locked_at).getTime() > STALE_MS;
+    console.error(
+      `${country} is locked by ${l.region} (${l.stage})${l.branch ? ` on ${l.branch}` : ""}, ` +
+        `locked ${ageString(l.locked_at)} ago.${stale ? " Lock looks stale — confirm the prior region actually merged, then release with --force." : " Do not start another region in this country until it's merged and released."}`
+    );
+    return 1;
+  });
 }
 
 function cmdAcquire(country, region, stage, branch) {
@@ -189,26 +336,27 @@ function cmdAcquire(country, region, stage, branch) {
     console.error("Usage: node qa/lane-lock.mjs acquire <country> <region> <stage> [branch]");
     return 1;
   }
-  const locks = readLocks();
-  for (const r of releaseMerged(locks)) console.log(`Auto-released ${r}.`);
-  const existing = locks[country];
-  if (existing && existing.region !== region) {
-    const stale = Date.now() - new Date(existing.locked_at).getTime() > STALE_MS;
-    console.error(
-      `Refusing: ${country} is already locked by ${existing.region} (${existing.stage}), ` +
-        `locked ${ageString(existing.locked_at)} ago.${stale ? " It looks stale — if you've confirmed it merged, release it first." : ""}`
-    );
-    return 1;
-  }
-  locks[country] = {
-    region,
-    stage,
-    branch: branch || null,
-    locked_at: new Date().toISOString(),
-  };
-  writeLocks(locks);
-  console.log(`Locked ${country} for ${region} (${stage}).`);
-  return 0;
+  return withLocks((locks) => {
+    for (const r of releaseMerged(locks)) console.log(`Auto-released ${r}.`);
+    const existing = locks[country];
+    if (existing && existing.region !== region) {
+      const stale = Date.now() - new Date(existing.locked_at).getTime() > STALE_MS;
+      console.error(
+        `Refusing: ${country} is already locked by ${existing.region} (${existing.stage}), ` +
+          `locked ${ageString(existing.locked_at)} ago.${stale ? " It looks stale — if you've confirmed it merged, release it first." : ""}`
+      );
+      return 1;
+    }
+    locks[country] = {
+      region,
+      stage,
+      branch: branch || null,
+      locked_at: new Date().toISOString(),
+    };
+    writeLocksRaw(locks);
+    console.log(`Locked ${country} for ${region} (${stage}).`);
+    return 0;
+  });
 }
 
 function cmdRelease(country, flags) {
@@ -216,15 +364,16 @@ function cmdRelease(country, flags) {
     console.error("Usage: node qa/lane-lock.mjs release <country> [--force --reason \"...\"]");
     return 1;
   }
-  const locks = readLocks();
-  if (!locks[country]) {
-    console.log(`${country}: already free.`);
+  return withLocks((locks) => {
+    if (!locks[country]) {
+      console.log(`${country}: already free.`);
+      return 0;
+    }
+    delete locks[country];
+    writeLocksRaw(locks);
+    console.log(`Released ${country}.${flags.reason ? ` (${flags.reason})` : ""}`);
     return 0;
-  }
-  delete locks[country];
-  writeLocks(locks);
-  console.log(`Released ${country}.${flags.reason ? ` (${flags.reason})` : ""}`);
-  return 0;
+  });
 }
 
 function parseFlags(argv) {
@@ -250,17 +399,17 @@ switch (cmd) {
     break;
   case "auto-release":
     // For scripts/hooks: release every lock whose PR has merged, print what changed.
-    code = withMutex(() => {
-      const released = releaseMerged(readLocks());
+    code = withLocks((locks) => {
+      const released = releaseMerged(locks);
       console.log(released.length ? released.map((r) => `Auto-released ${r}.`).join("\n") : "Nothing to release.");
       return 0;
     });
     break;
   case "acquire":
-    code = withMutex(() => cmdAcquire(positional[0], positional[1], positional[2], positional[3]));
+    code = cmdAcquire(positional[0], positional[1], positional[2], positional[3]);
     break;
   case "release":
-    code = withMutex(() => cmdRelease(positional[0], flags));
+    code = cmdRelease(positional[0], flags);
     break;
   default:
     console.error("Usage: node qa/lane-lock.mjs <status|check|acquire|release> ...");

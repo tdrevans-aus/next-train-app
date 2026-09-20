@@ -157,6 +157,7 @@ const SMOKE_SCRIPTS = [
   "boston-dogfood-gate.mjs",
   "bart-planned-gate.mjs",
   "chicago-dogfood-gate.mjs",
+  "washington-dogfood-gate.mjs",
   "write-city-directions-resilience.mjs",
   "late-leave-slider-stays.mjs",
   "cold-boot-fetch-coalesce.mjs",
@@ -178,6 +179,7 @@ const SMOKE_SCRIPTS = [
   "api-500-no-error-echo.mjs",
   "country-wide-picker.mjs",
   "bundled-city-directions.mjs",
+  "lane-lock-shared-worktree.mjs",
 ];
 
 /** Smoke + ship gates not in smoke — main-branch CI tier (FB-33 QA-P2-09). */
@@ -383,6 +385,13 @@ const OFFLINE_EXTRA_SCRIPTS = new Set([
    * docs/jim-brief-release-prep-sync-before-gates.md, 19 Sep 2026.
    */
   "release-prep-step-order-gate.mjs",
+  /**
+   * Builds its own throwaway git repo + linked worktree under os.tmpdir() and
+   * exercises qa/lane-lock.mjs's CLI as child processes; no dev server, no
+   * network, never touches the real repo's lock file or worktree list.
+   * docs/jim-brief-lane-lock-shared-worktrees.md, 20 Sep 2026.
+   */
+  "lane-lock-shared-worktree.mjs",
 ]);
 const OFFLINE_CONCURRENCY = 6;
 
