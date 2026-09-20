@@ -6,17 +6,25 @@
  * QA pass, docs/boston-d1/mark-qa-note.md).
  *
  * Also proves the board-eligibility fix for mark-qa-note.md blocking finding
- * 1: MBTA Commuter Rail is now `in` (live MBTA V3 predictions, no scheduled
+ * 1: MBTA Commuter Rail is `in` (live MBTA V3 predictions, no scheduled
  * fallback) at the five stations docs/boston-d1/oracle-clash-report.md's
  * Board eligibility section names — South Station, North Station, Forest
  * Hills, Braintree, JFK/UMass — while Amtrak (out-reservation), CapeFlyer
  * (in, but unserved by the feed), Silver Line/ferry (out-mode) all match
  * their recorded verdicts.
  *
- * Live-network sections (Commuter Rail predictions) run against the real
- * unauthenticated api-v3.mbta.com API — no MBTA_API_KEY required. A network
- * failure here is a real gate failure (unlike the UK Darwin gates, which
- * tolerate a missing token) since MBTA's V3 API needs no credential at all.
+ * Live-predictions fix (20 Sep 2026, docs/jim-brief-boston-subway-live-predictions.md):
+ * subway used to be built from static GTFS with `realtime: false` — a scheduled board
+ * presented as live, and catastrophically slow. Subway AND Commuter Rail now both come from
+ * one live MBTA V3 predictions call per station, `realtime: true`. Most of the
+ * prediction-shape/drop-rule assertions below run OFFLINE against qa/fixtures/boston/
+ * predictions.json (a trimmed REAL capture, 20 Sep 2026 — see that file's `_comment`),
+ * injected into the REAL fetchStationBoard() via its `rawPredictions`/`stopIds` options, so
+ * the production filter/map/sort pipeline (mapPredictionToTrip) is what runs here, not a copy
+ * of it. A handful of end-to-end checks near the bottom do hit the real unauthenticated
+ * api-v3.mbta.com API (no MBTA_API_KEY required) to prove the dispatch/dogfood wiring for
+ * real — thanks to the new per-station prediction cache, that's exactly two real upstream
+ * calls (Braintree, Park Street) for the whole gate, not one per assertion.
  *
  * Usage: node qa/boston-dogfood-gate.mjs
  */
@@ -34,12 +42,13 @@ import {
   resolveCatalogEntry,
   listCatalogStations,
   resolveStopIds,
-  lineIdForTrip,
   fetchStationBoard,
-  fetchCommuterRailTrips,
+  mapPredictionToTrip,
   COMMUTER_RAIL_STOP_IDS,
   MissingMbtaApiKeyError,
   MBTA_GTFS_STATIC_URL,
+  MBTA_V3_PREDICTIONS_URL,
+  _resetMbtaPredictionsCacheForTests,
 } from "../lib/providers/boston.js";
 import {
   foldKey,
@@ -165,24 +174,20 @@ assert(mapLineTerminusDestination("Park Street", "red") === "Red Line", "Park St
 assert(resolveTerminus("Some Unknown Headsign", "red") === null, "resolveTerminus must not fabricate an unknown terminus");
 
 // resolveStopIds — synthetic staticData shaped like gtfs/static-cache.js output, no network.
+// Structural reference data only (station name -> stop_id); never a source of a departure time.
 const syntheticStaticData = {
   stops: [
     { stop_id: "place-pktrm", stop_name: "Park Street", parent_station: "" },
     { stop_id: "70075", stop_name: "Park Street", parent_station: "place-pktrm" },
     { stop_id: "place-cntsq", stop_name: "Central", parent_station: "" },
   ],
-  tripsById: new Map([
-    ["trip-red-1", { route_id: "Red" }],
-    ["trip-commuter-1", { route_id: "CR-Fitchburg" }],
-  ]),
 };
 const parkStreetStopIds = resolveStopIds(syntheticStaticData, byName.get("Park Street"));
 assert(parkStreetStopIds.includes("place-pktrm") && parkStreetStopIds.includes("70075"), "resolveStopIds must expand Park Street to its child platform stops");
-assert(lineIdForTrip("trip-red-1", syntheticStaticData) === "red", "lineIdForTrip must resolve Red from route_id");
-assert(lineIdForTrip("trip-commuter-1", syntheticStaticData) === null, "lineIdForTrip must still reject Commuter Rail route_ids for the subway line-id map (CR is a separate live path)");
 
 // Provider wiring sanity.
 assert(MBTA_GTFS_STATIC_URL === "https://cdn.mbta.com/MBTA_GTFS.zip", "static GTFS URL must point at MBTA's CDN");
+assert(MBTA_V3_PREDICTIONS_URL === "https://api-v3.mbta.com/predictions", "predictions URL must point at MBTA's V3 API");
 assert(typeof MissingMbtaApiKeyError === "function", "MissingMbtaApiKeyError must be exported");
 
 let unknownThrew = false;
@@ -193,7 +198,7 @@ try {
 }
 assert(unknownThrew, "fetchStationBoard must throw for an unknown station without any network call");
 
-// --- Commuter Rail board eligibility: live MBTA V3, no scheduled fallback ---
+// --- Commuter Rail board eligibility tables (unaffected by the live-predictions rewrite) ---
 
 assert(
   JSON.stringify([...COMMUTER_RAIL_STATIONS].sort()) ===
@@ -238,23 +243,126 @@ assert(forestHillsLabels.includes("Providence/Stoughton Line + Stoughton or Wick
 assert(tripMatchesMarketingChip({ destination: "Red Line + Alewife" }, "Red Line + Alewife") === true, "tripMatchesMarketingChip must match an identical chip");
 assert(tripMatchesMarketingChip({ destination: "Red Line + Alewife" }, "Red Line + Braintree") === false, "tripMatchesMarketingChip must reject a mismatched chip");
 
-// --- Live network: MBTA V3 predictions, unauthenticated, no scheduled fallback ---
+// --- mapPredictionToTrip drop rules (pure function, no network) ---
 
-for (const [name, stopId] of Object.entries(COMMUTER_RAIL_STOP_IDS)) {
-  const trips = await fetchCommuterRailTrips(stopId);
-  assert(Array.isArray(trips), `fetchCommuterRailTrips(${name}) must return an array even when empty`);
-  for (const trip of trips) {
-    assert(typeof trip.displayTime === "string" && trip.displayTime.length > 0, `${name} Commuter Rail trip must carry a string displayTime`);
-    assert(typeof trip.destination === "string" && trip.destination.includes(" + "), `${name} Commuter Rail trip destination must be a line + terminus chip, got "${trip.destination}"`);
-    assert(trip.lineId === "commuter-rail", `${name} Commuter Rail trip must carry lineId "commuter-rail"`);
-    assert(trip.cancelled === false, `${name} Commuter Rail trip must not be a cancelled row (cancelled predictions are filtered out)`);
-  }
+const REAL_TRIP = new Map([["t1", { attributes: { headsign: "Alewife" } }]]);
+function syntheticPrediction(overrides) {
+  return {
+    id: "synthetic",
+    attributes: {
+      departure_time: "2026-09-20T12:00:00-04:00",
+      direction_id: 0,
+      revenue: "REVENUE",
+      schedule_relationship: null,
+      status: null,
+      ...overrides,
+    },
+    relationships: {
+      route: { data: { id: "Red" } },
+      trip: { data: { id: "t1" } },
+    },
+  };
 }
+assert(mapPredictionToTrip(syntheticPrediction({}), REAL_TRIP)?.lineId === "red", "a normal prediction must map to its line");
+assert(mapPredictionToTrip(syntheticPrediction({ departure_time: null }), REAL_TRIP) === null, "arrival-only (departure_time null) must be dropped, never backfilled");
+assert(mapPredictionToTrip(syntheticPrediction({ schedule_relationship: "CANCELLED" }), REAL_TRIP) === null, "CANCELLED must be dropped");
+assert(mapPredictionToTrip(syntheticPrediction({ schedule_relationship: "SKIPPED" }), REAL_TRIP) === null, "SKIPPED must be dropped");
+assert(mapPredictionToTrip(syntheticPrediction({ revenue: "NON_REVENUE" }), REAL_TRIP) === null, "NON_REVENUE (positioning run) must be dropped");
+const crPrediction = {
+  ...syntheticPrediction({}),
+  relationships: { route: { data: { id: "CR-Worcester" } }, trip: { data: { id: "t1" } } },
+};
+assert(mapPredictionToTrip(crPrediction, REAL_TRIP)?.lineId === "commuter-rail", "a Commuter Rail route_id must map to lineId commuter-rail");
+assert(
+  mapPredictionToTrip(crPrediction, REAL_TRIP)?.destination === "Framingham/Worcester Line + Worcester",
+  "Commuter Rail direction must come from COMMUTER_RAIL_ROUTES termini, never a raw headsign"
+);
+const unknownRoutePrediction = {
+  ...syntheticPrediction({}),
+  relationships: { route: { data: { id: "Amtrak-Acela" } }, trip: { data: { id: "t1" } } },
+};
+assert(mapPredictionToTrip(unknownRoutePrediction, REAL_TRIP) === null, "an unrecognized route_id (e.g. Amtrak) must be dropped, never shown");
 
-// A merged board at a dual-mode station: subway rows always present (schedule), Commuter Rail
-// rows present only when the live feed currently has one — sorted together either way.
+// --- Live-shape fixture: a trimmed REAL MBTA V3 capture (qa/fixtures/boston/predictions.json) ---
+
+const fixture = JSON.parse(readFileSync(join(ROOT, "qa/fixtures/boston/predictions.json"), "utf8"));
+const fixtureBoard = (station, key) => fetchStationBoard(station, { rawPredictions: fixture[key], stopIds: ["fixture-stub"] });
+
+// Harvard: subway-only (Red Line) station. The fixture's real CANCELLED row and both
+// synthetic SKIPPED/NON_REVENUE rows must all be absent from the board.
+const harvardBoard = await fixtureBoard("Harvard", "harvard");
+assert(harvardBoard.realtime === true, "Harvard board realtime must be true");
+assert(harvardBoard.trips.length === 3, `Harvard board must keep exactly the 3 non-dropped rows, got ${harvardBoard.trips.length}`);
+assert(harvardBoard.trips.every((t) => t.lineId === "red"), "Harvard is subway-only — every row must be Red");
+assert(
+  harvardBoard.trips.every((t) => typeof t.displayTime === "string" && t.displayTime.length > 0 && typeof t.scheduledDisplayTime === "string" && t.scheduledDisplayTime.length > 0),
+  "every Harvard trip must carry a string displayTime/scheduledDisplayTime (contract.js — never a blank rider-facing time)"
+);
+assert(harvardBoard.trips.some((t) => t.status === "Stopped 3 stops away"), "Harvard's real captured status string must pass through unedited");
+assert(
+  harvardBoard.trips.every((t) => t.destination === "Red Line + Alewife" || t.destination === "Red Line + Braintree"),
+  "Harvard directions must resolve to Red's known termini from the trip headsign"
+);
+
+// Kenmore: Green Line C/D trunk. The real arrival-only (ADDED, departure_time null) row must
+// be dropped; Cleveland Circle (Green-C) and Riverside (Green-D) must resolve from headsign.
+const kenmoreBoard = await fixtureBoard("Kenmore", "kenmoreGreenTrunk");
+assert(kenmoreBoard.realtime === true, "Kenmore board realtime must be true");
+assert(kenmoreBoard.trips.length === 2, `Kenmore board must drop the real arrival-only row, got ${kenmoreBoard.trips.length}`);
+assert(kenmoreBoard.trips.some((t) => t.destination === "Green Line C + Cleveland Circle"), "Kenmore must resolve a real Green-C headsign to its known terminus");
+assert(kenmoreBoard.trips.some((t) => t.destination === "Green Line D + Riverside"), "Kenmore must resolve a real Green-D headsign to its known terminus");
+
+// South Station: subway + Commuter Rail, one predictions call. The real arrival-only
+// CR-Worcester row must be dropped; Red Line and multiple CR routes coexist, sorted together.
+const southBoard = await fixtureBoard("South Station", "southStation");
+assert(southBoard.realtime === true, "South Station board realtime must be true");
+assert(southBoard.trips.length === 6, `South Station board must drop the real arrival-only CR-Worcester row, got ${southBoard.trips.length}`);
+assert(southBoard.trips.some((t) => t.lineId === "red"), "South Station must still carry Red Line rows");
+assert(southBoard.trips.some((t) => t.lineId === "commuter-rail"), "South Station must carry Commuter Rail rows from the same single predictions call");
+assert(southBoard.trips.some((t) => t.status === "All aboard"), "South Station's real captured Commuter Rail status must pass through unedited");
+const southSorted = southBoard.trips.every(
+  (t, i, arr) => i === 0 || new Date(arr[i - 1].liveDeparture) <= new Date(t.liveDeparture)
+);
+assert(southSorted, "South Station board must be sorted by liveDeparture across subway and Commuter Rail rows together");
+
+// --- One upstream fetch serves all directions of a station (docs/jim-brief-boston-subway- ---
+// --- live-predictions.md item 2) — stub fetch, no fixture injection this time.            ---
+
+const originalFetch = globalThis.fetch;
+let fetchCallCount = 0;
+globalThis.fetch = async () => {
+  fetchCallCount += 1;
+  return { ok: true, json: async () => ({ data: [], included: [] }) };
+};
+_resetMbtaPredictionsCacheForTests();
+await Promise.all(
+  Array.from({ length: 6 }, () => fetchStationBoard("Harvard", { stopIds: ["coalesce-test-stop"] }))
+);
+assert(fetchCallCount === 1, `6 concurrent per-direction fetchStationBoard calls for one station must make exactly 1 upstream request, got ${fetchCallCount}`);
+await fetchStationBoard("Harvard", { stopIds: ["coalesce-test-stop"] });
+assert(fetchCallCount === 1, "a later call within the cache TTL must not make a second upstream request");
+globalThis.fetch = originalFetch;
+_resetMbtaPredictionsCacheForTests();
+
+// --- Refusal path: MBTA down/rate-limited must refuse, never fall back to a scheduled time ---
+
+globalThis.fetch = async () => ({ ok: false, status: 429 });
+let refused = false;
+try {
+  await fetchStationBoard("Harvard", { stopIds: ["refusal-test-stop"] });
+} catch {
+  refused = true;
+}
+assert(refused, "fetchStationBoard must refuse (throw) when the MBTA V3 API fails, never degrade to a scheduled board");
+globalThis.fetch = originalFetch;
+_resetMbtaPredictionsCacheForTests();
+
+// --- End-to-end wiring against the real MBTA V3 API (2 real upstream calls total: Braintree ---
+// --- and Park Street — the per-station cache means every reuse below is free).              ---
+
 const braintreeBoard = await fetchStationBoard("Braintree");
-assert(braintreeBoard.trips.some((t) => t.lineId === "red"), "Braintree board must still carry Red Line subway rows");
+assert(braintreeBoard.realtime === true, "Braintree board realtime must be true");
+assert(braintreeBoard.trips.every((t) => t.cancelled === false), "no cancelled row should ever reach the board (dropped upstream)");
 const sorted = braintreeBoard.trips.every(
   (t, i, arr) => i === 0 || new Date(arr[i - 1].liveDeparture) <= new Date(t.liveDeparture)
 );
@@ -262,6 +370,7 @@ assert(sorted, "merged Braintree board must be sorted by liveDeparture across bo
 
 // A subway-only station (Park Street) must carry zero Commuter Rail rows, network or not.
 const parkStreetBoard = await fetchStationBoard(BOSTON_HUB);
+assert(parkStreetBoard.realtime === true, "Park Street board realtime must be true");
 assert(!parkStreetBoard.trips.some((t) => t.lineId === "commuter-rail"), "Park Street must never carry a Commuter Rail row (not board-eligible there)");
 
 // Dogfood station list + directions come from the catalog/route tables, not a live parse.
@@ -274,8 +383,7 @@ const hubPack = getBostonDogfoodDirections(BOSTON_HUB);
 assert(hubPack.source === "boston-marketing-ends", "directions source must be boston-marketing-ends");
 assert(JSON.stringify(hubPack.directions) === JSON.stringify(parkStreetLabels), "dogfood directions must match marketingLabelsForStation");
 
-// The production dispatch entry exists and returns the same chips as the dogfood harness,
-// even though boston is deliberately not in MULTI_CITY_IDS yet.
+// The production dispatch entry exists and returns the same chips as the dogfood harness.
 const dispatchedDirections = await getMultiCityDirections("boston", "South Station");
 assert(
   JSON.stringify(dispatchedDirections.directions) === JSON.stringify(southStationLabels),
@@ -284,7 +392,8 @@ assert(
 assert(dispatchedDirections.source === "boston-marketing-ends", "live-city-api dispatch source must be boston-marketing-ends");
 
 // End-to-end next-train through the dispatch, for a subway chip (always resolvable, no
-// dependency on which trains happen to be running live right now).
+// dependency on which trains happen to be running live right now). Reuses Braintree's
+// already-cached predictions payload — no extra upstream call.
 const dispatchedNextTrain = await getMultiCityNextTrain("boston", {
   station: "Braintree",
   destination: "Red Line + Alewife",
@@ -336,5 +445,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "boston-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section all-in, 125 stations, hub Park Street, live MBTA Commuter Rail predictions at South Station/North Station/Forest Hills/Braintree/JFK-UMass with no scheduled fallback, CR-Foxboro excluded, Amtrak/ferry/Silver Line verdicts match adapter filtering, Perth Australia green)"
+  "boston-dogfood-gate: ok (live, MULTI_CITY_IDS/mount/persistence lists in sync, D1 pack, Board eligibility section all-in, 125 stations, hub Park Street, subway AND Commuter Rail both from live MBTA V3 predictions with realtime:true and no scheduled fallback, CANCELLED/SKIPPED/NON_REVENUE/arrival-only all dropped, one upstream fetch serves every direction of a station, refusal path proven, CR-Foxboro excluded, Amtrak/ferry/Silver Line verdicts match adapter filtering, Perth Australia green)"
 );
