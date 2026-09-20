@@ -10,19 +10,26 @@
       "role": "D1 passenger train network map (ordered stops + line groups + hub lock)",
       "title": "Metropolitan Melbourne public transport maps — Train network map",
       "url": "https://transport.vic.gov.au/plan-a-journey/network-maps/melbourne-public-transport-maps",
-      "note": "Landing prints 'Train network map [PDF]' as the popular train plate; also linked from ptv.vic.gov.au/more/maps (302s here). Direct PDF bytes were Cloudflare-challenged from the oracle-clash research environment, and this D1 lane has no browser/PDF-fetch tool either — see 'Environment limitation' in notes below. This pack is hand-transcribed from established knowledge of the current Metro Trains passenger network (line groups, station order, interchanges) cross-checked against the Metro Trains line picker and the Metro Tunnel project pages, NOT generated from GTFS. It must be spot-checked stop-by-stop against the live PDF before flip."
+      "note": "Landing prints 'Train network map [PDF]' as the popular train plate. Still not independently re-rendered page-by-page in this or the first pass — but this SECOND pass reconciled every line's station list and order against the official Victorian GTFS Schedule static feed (see the GTFS source entry below and docs/melbourne-d1/gtfs-reconciliation.md), which is a materially stronger check than the first pass's pure hand-transcription. Precedence: the printed map's NAME FORM wins over GTFS spelling (e.g. 'Jolimont' not 'Jolimont-MCG'), but GTFS's station membership/order is treated as ground truth over the first pass's memory-only transcription."
+    },
+    {
+      "role": "GTFS Schedule static feed (folder 2, Metropolitan Train) — station graph reconciliation source for this pass",
+      "title": "Transport Victoria Open Data Portal — GTFS Schedule",
+      "url": "https://opendata.transport.vic.gov.au/dataset/gtfs-schedule",
+      "note": "Public, no-key CKAN download, resolved 2026-09-20 to https://opendata.transport.vic.gov.au/dataset/3f4e292e-7f8a-4ffe-831f-1953be0fe448/resource/fb152201-859f-4882-9206-b768060b50ad/download/gtfs.zip (a zip of per-mode zips; folder 2 = Metropolitan Train). Internal zip-entry timestamp for 2/google_transit.zip: 2026-09-18 08:12. calendar.txt's earliest service start_date is 20260918. No feed_info.txt / feed_version field in this feed (matches the addendum's existing note — use this date for change-driven refresh). Full per-line before/after diff in docs/melbourne-d1/gtfs-reconciliation.md. Not committed to the repo (large static download); Jim must re-fetch for the live adapter build, per jim-handoff.md.",
+      "downloadedNotCommitted": true
     },
     {
       "role": "D1 supporting line picker (named line groups, current as of 2026-08-29 per oracle report)",
       "title": "Metro Trains Melbourne — Maps",
       "url": "https://www.metrotrains.com.au/maps/",
-      "note": "17 named groups confirmed by oracle report fetch (200, 2026-08-29): Alamein, Belgrave, Craigieburn, Cranbourne, Frankston, Glen Waverley, Hurstbridge, Lilydale, Mernda, Pakenham, Racecourse, Sandringham, Stony Point, Sunbury, Upfield, Werribee, Williamstown."
+      "note": "17 named groups confirmed by oracle report fetch (200, 2026-08-29): Alamein, Belgrave, Craigieburn, Cranbourne, Frankston, Glen Waverley, Hurstbridge, Lilydale, Mernda, Pakenham, Racecourse, Sandringham, Stony Point, Sunbury, Upfield, Werribee, Williamstown. The GTFS feed's routes.txt confirms exactly these 17 route_ids (aus:vic:vic-02-{ALM,BEG,CGB,CBE,FKN,GWY,HBE,LIL,MDD,PKM,RCE,SHM,STY,SUY,UFD,WER,WIL}:) plus one 18th, 'City Circle' (aus:vic:vic-02-CCL:, a Flinders Street-loop-Flinders Street shuttle), which is NOT one of the 17 picker names and is kept OUT of this pack's line list — see gtfs-reconciliation.md."
     },
     {
       "role": "Metro Tunnel through-running (Sunbury/Cranbourne/Pakenham, passenger from 1 Feb 2026)",
       "title": "Metro Tunnel — more ways to move — Sunbury",
       "url": "https://transport.vic.gov.au/news-and-resources/projects/metro-tunnel/more-ways-to-move/sunbury",
-      "note": "Sunbury, Cranbourne and Pakenham lines now run through the new tunnel spine (Arden, Parkville, State Library, Town Hall, Anzac), not the City Loop and not Flinders Street. Town Hall <-> Flinders Street interchange via the Degraves Street Subway; State Library <-> Melbourne Central interchange via the underground concourse."
+      "note": "Sunbury, Cranbourne and Pakenham lines now run through the new tunnel spine (Arden, Parkville, State Library, Town Hall, Anzac), not the City Loop and not Flinders Street. Town Hall <-> Flinders Street interchange via the Degraves Street Subway; State Library <-> Melbourne Central interchange via the underground concourse. GTFS CONFIRMS a further structural fact the first pass did not have: the Sunbury route_id's own trips only run Sunbury <-> Town Hall/State Library (the west tunnel half); the Cranbourne and Pakenham route_ids' own trips only run Town Hall/Anzac <-> Cranbourne/Pakenham (the east tunnel half, sharing the whole Anzac-Malvern-Caulfield-Dandenong trunk). A single physical Sunbury-to-Cranbourne working is two chained trip_ids under two different route_ids, joined at Town Hall — not one route_id spanning the whole corridor. See metroTunnel block and gtfs-reconciliation.md."
     },
     {
       "role": "Stony Point route confirmation (Metro line, not V/Line)",
@@ -37,23 +44,23 @@
         "https://opendata.transport.vic.gov.au/dataset/gtfs-realtime",
         "https://opendata.transport.vic.gov.au/dataset/gtfs-schedule"
       ],
-      "note": "See docs/melbourne-d1/open-data-feed-and-eligibility.md for endpoints, auth (KeyID header, VIC_OPENDATA_API_KEY), rate limits and licence. Not used to generate this station graph."
+      "note": "See docs/melbourne-d1/open-data-feed-and-eligibility.md for endpoints, auth (KeyID header, VIC_OPENDATA_API_KEY), rate limits and licence. The static Schedule half of this dataset IS what generated this pass's station graph (see the GTFS source entry above) — the realtime half is still not used to generate the graph."
     }
   ],
   "retrievedAt": "2026-09-20T00:00:00Z",
   "notes": [
     "City id melbourne is a SEPARATE city. Do not invent city=mel, city=ptv, city=vic, or city=us. Do not merge V/Line long-distance or Yarra Trams into this city id. Agency Metro Trains Melbourne (PTV/Transport Victoria). Modes v1: Metro Trains suburban rail only (PTV route_type = 0 equivalent / GTFS folder 2 Metropolitan Train). No Yarra Trams, no buses (incl. Night Bus), no SkyBus, no V/Line long-distance beyond the walk-up services carried in docs/melbourne-d1/open-data-feed-and-eligibility.md, no coaches, no interstate, no Melbourne Airport Rail / Suburban Rail Loop (not yet printed as open on the official train map).",
-    "ENVIRONMENT LIMITATION (flagged, not guessed past): this pack was produced without a browser/PDF-fetch tool, so the official train-map PDF bytes were not directly re-rendered in this lane either (same Cloudflare block the oracle report hit). Station order and grouping below are a hand-transcription from established, well-documented knowledge of the current Metro Trains network plus the oracle report's verified line-group names and Metro Tunnel routing. Before any flip, Jim or Mark must diff this stations[] list against a fresh fetch of the official PDF page-by-page; do not treat this JSON as verified-by-image the way Washington/Boston's crop screenshots were.",
+    "SECOND PASS (20 Sep 2026): every line's stations[] below was reconciled against the official Victorian GTFS Schedule static feed (folder 2, Metropolitan Train; downloaded, not committed — see sources[] above). Full per-line before/after diff, with the feed's publication date, is in docs/melbourne-d1/gtfs-reconciliation.md. The first pass's hand-transcription (no browser/PDF/GTFS access) was materially wrong in multiple places: missing stations (Kensington on Craigieburn, Moreland on Upfield, Hawthorn/Glenferrie on the Burnley-group branches, Hawksburn/Toorak/Armadale/Parkdale/Mordialloc on Frankston, Laverton/Aircraft on Werribee, Williamstown Beach on Williamstown, West Richmond/North Richmond on Hurstbridge/Mernda, Bell on Mernda, Union and Tecoma/Ringwood East on Belgrave/Lilydale, Cardinia Road/East Pakenham on Pakenham, and the entire Anzac-Malvern-Caulfield-Dandenong trunk on Cranbourne/Pakenham), wrong order (the Belgrave/Lilydale Camberwell-Box Hill segment had East Camberwell out of sequence), a misspelling (Glenhuntly -> Glen Huntly), and a wrong doNotGroup attribution (Union is on Belgrave/Lilydale, not Pakenham/Cranbourne — see hazard-pack.md's H1 resolution). Do not re-transcribe from memory again; re-run the GTFS diff if the feed changes materially.",
     "Timezone Australia/Melbourne HAS DST (AEDT/AEST). Do not copy Perth/Brisbane/Adelaide no-DST assumptions.",
     "Hub lock: Flinders Street. It is the inner lock for the City Loop / cross-city surface groups (Sandringham direct; Frankston, Glen Waverley, Alamein, Belgrave, Lilydale, Hurstbridge, Mernda, Craigieburn, Upfield, Werribee, Williamstown, Racecourse via the loop or direct). Flinders Street is NOT on the Sunbury/Cranbourne/Pakenham Metro Tunnel spine — those three lines skip Flinders Street, North Melbourne, and the City Loop entirely after 1 Feb 2026 (see metroTunnel below). Existing dogfood catalog/probe conventions that use Flinders Street as the example stop are respected; do not contradict that lock for the non-tunnel line groups.",
-    "City Loop stations (Flagstaff, Melbourne Central, Parliament) plus the two surface hub buildings (Flinders Street, Southern Cross) are the shared inner set for the loop-serving line groups. Melbourne Central is City Loop only (not the tunnel). Parliament serves the Frankston/Sandringham-direction loop portal plus the Burnley-group loop portal, not every group. Town Hall is Metro Tunnel only (not the City Loop) and is a DIFFERENT building from Flinders Street, linked only by the surface Degraves Street Subway. State Library is Metro Tunnel only and is a DIFFERENT building from Melbourne Central, linked only by an underground concourse. See direction-model-memo.md for which lines use the loop vs run direct by time of day -- this file records the station graph, not the schedule pattern.",
+    "City Loop stations (Flagstaff, Melbourne Central, Parliament) plus the two surface hub buildings (Flinders Street, Southern Cross) are the shared inner set for the loop-serving line groups. Melbourne Central is City Loop only (not the tunnel). Parliament serves the Frankston/Sandringham-direction loop portal plus the Burnley-group loop portal, not every group. Town Hall is Metro Tunnel only (not the City Loop) and is a DIFFERENT building from Flinders Street, linked only by the surface Degraves Street Subway. State Library is Metro Tunnel only and is a DIFFERENT building from Melbourne Central, linked only by an underground concourse. GTFS confirms two distinct loop-traversal directions used by different line groups: the Burnley/Frankston-direction groups run Flinders St -> Southern Cross -> Flagstaff -> Melbourne Central -> Parliament -> (outbound), while the Northern-group lines (Craigieburn/Upfield, and pre-tunnel-era Sunbury) run the loop the OTHER way, Flinders St -> Parliament -> Melbourne Central -> Flagstaff -> North Melbourne -> (outbound), never touching Southern Cross on that via-loop working. See direction-model-memo.md for which lines use the loop vs run direct by time of day -- this file records the station graph, not the schedule pattern.",
     "Southern Cross is shared by Metro Trains (all loop/direct groups except Sandringham/Frankston-when-direct) AND V/Line long-distance. Same physical building, doNotGroup by mode in hazard-pack (Southern Cross Metro vs Southern Cross V/Line) so a V/Line-only walk-up service is never silently dropped nor double counted against the Metro board.",
     "Stony Point IS IN as a Metro line (Frankston-Stony Point diesel shuttle), confirmed by the official PTV route page and the Metro Trains line picker -- not V/Line.",
-    "Racecourse line (Flemington Racecourse, Showgrounds) is IN as printed Metro special-events stations, not a daily all-day spine. They run for race days / shows only. Kept on the map per the 'dashed special-events print' convention -- do not timetable them as regular weekday Metro service.",
-    "17 named line groups on the current Metro Trains picker: Alamein, Belgrave, Craigieburn, Cranbourne, Frankston, Glen Waverley, Hurstbridge, Lilydale, Mernda, Pakenham, Racecourse, Sandringham, Stony Point, Sunbury, Upfield, Werribee, Williamstown. 16 run as regular all-day service; Racecourse is special-events only.",
-    "Metro Tunnel through-running (passenger from 1 Feb 2026): Sunbury + Cranbourne + Pakenham now form one continuous corridor through Arden, Parkville, State Library, Town Hall, Anzac, bypassing Flinders Street / North Melbourne / the City Loop. See metroTunnel block below.",
-    "Board-eligibility verdicts for V/Line services calling at shared Metro stations (Southern Cross, Flinders Street, Richmond, Caulfield, Clayton, Dandenong, Pakenham, North Melbourne, Footscray, Sunshine, Broadmeadows) live in docs/melbourne-d1/open-data-feed-and-eligibility.md and are carried into hazard-pack.md. The Maryborough rows at Footscray and Sunshine are `undecided` and must be resolved before any flip.",
-    "This JSON does not carry stopIds -- Jim resolves GTFS stop_id / parent_station values against the static feed in folder 2 (Metropolitan Train) of the nested statewide zip, matched by name/alias, never by inventing IDs here."
+    "Racecourse line (Showgrounds) is IN as a printed Metro special-events station, not a daily all-day spine. Runs for race days / shows only. 'Flemington Racecourse' as a SEPARATE stop could not be confirmed in this GTFS snapshot (2026-09-18 week; no race meeting that week) — see the open item in hazard-pack.md and gtfs-reconciliation.md. Do not re-insert it into stations[] without a snapshot that actually calls at it.",
+    "17 named line groups on the current Metro Trains picker: Alamein, Belgrave, Craigieburn, Cranbourne, Frankston, Glen Waverley, Hurstbridge, Lilydale, Mernda, Pakenham, Racecourse, Sandringham, Stony Point, Sunbury, Upfield, Werribee, Williamstown. 16 run as regular all-day service; Racecourse is special-events only. GTFS's routes.txt has an 18th route_id, 'City Circle' (aus:vic:vic-02-CCL:), a short Flinders Street-loop-Flinders Street shuttle NOT on the 17-line picker — kept OUT of this pack's lines[] as a hazard note only (see H3 in hazard-pack.md), matching the 'published map wins for line inventory' precedence rule.",
+    "Metro Tunnel through-running (passenger from 1 Feb 2026): Sunbury + Cranbourne + Pakenham now form one continuous corridor through Arden, Parkville, State Library, Town Hall, Anzac, bypassing Flinders Street / North Melbourne / the City Loop. GTFS models this as THREE separate route_ids each covering only half the corridor (Sunbury: Sunbury<->Town Hall/State Library; Cranbourne and Pakenham: Town Hall/Anzac<->their own terminus, sharing the whole Anzac-Malvern-Caulfield-Dandenong trunk), joined operationally at Town Hall via chained trip_ids, not one route_id end to end. See metroTunnel block below.",
+    "Board-eligibility verdicts for V/Line services calling at shared Metro stations (Southern Cross, Flinders Street, Richmond, Caulfield, Clayton, Dandenong, Pakenham, North Melbourne, Footscray, Sunshine, Broadmeadows) live in docs/melbourne-d1/open-data-feed-and-eligibility.md and are carried into hazard-pack.md, with the Maryborough/Shepparton/Bairnsdale/Swan Hill rows resolved in the second pass per docs/melbourne-d1/vline-reservation-check.md — see hazard-pack.md's Board eligibility section. No `undecided` rows remain.",
+    "This JSON does not carry stopIds -- Jim resolves GTFS stop_id / parent_station values against the static feed in folder 2 (Metropolitan Train) of the nested statewide zip, matched by name/alias, never by inventing IDs here. Parent-station structure confirmed in this pass: platform-level stops (location_type blank) carry parent_station pointing at a location_type=1 station row (e.g. stop_id '10117' 'Jordanville Station' -> parent_station 'vic:rail:JOR' -> location_type=1 'Jordanville Railway Station'); location_type=2 rows are entrances, location_type=3 rows are generic access nodes (bike racks etc.) — both also carry parent_station back to the same location_type=1 row. See jim-handoff.md."
   ],
   "printedInnerCityNames": {
     "lock": "Flinders Street",
@@ -96,7 +103,7 @@
       "Arden",
       "Richmond"
     ],
-    "doNotCollapseNote": "Federation Square is NOT a station -- it is Town Hall's Swanston Street / Young & Jackson walk-up entrance, kept in this list only as a hazard reminder, not as a stations[] entry. 'Union' is carried from the oracle report's doNotGroup line ('Union (Pakenham/Cranbourne suburban, not Sydney)') but could not be independently confirmed against a current Metro Trains station list in this lane -- flagged as an open item in hazard-pack.md rather than inserted into any line's stations[] without verification.",
+    "doNotCollapseNote": "Federation Square is NOT a station -- it is Town Hall's Swanston Street / Young & Jackson walk-up entrance, kept in this list only as a hazard reminder, not as a stations[] entry. 'Union' is now CONFIRMED by the GTFS Schedule feed: it is a real station on the Belgrave AND Lilydale lines, between Chatham and Box Hill (Camberwell -> East Camberwell -> Canterbury -> Chatham -> Union -> Box Hill), NOT on Pakenham/Cranbourne as the oracle report's doNotGroup line said. It has been inserted into both lines' stations[] below in the correct position and its hazard-pack doNotGroup note corrected. See H1 in hazard-pack.md.",
     "alsoOnSharedApproaches": [
       "Richmond",
       "South Yarra",
@@ -116,23 +123,25 @@
       "williamstown", "racecourse"
     ],
     "notServedBy": ["sandringham", "sunbury", "cranbourne", "pakenham", "stony-point"],
-    "note": "Every loop-serving group runs via the loop for part of the timetable and direct (skipping Flagstaff/Melbourne Central/Parliament, calling only Flinders Street/Southern Cross) for the rest, reversing by time of day and by which portal that group is rostered to. See direction-model-memo.md -- this is the hardest hazard in the pack and needs Tim's copy decision on whether 'via City Loop' surfaces in the UI."
+    "note": "Every loop-serving group runs via the loop for part of the timetable and direct (skipping Flagstaff/Melbourne Central/Parliament, calling only Flinders Street/Southern Cross) for the rest, reversing by time of day and by which portal that group is rostered to. GTFS confirms two distinct loop-traversal directions (Burnley/Frankston-direction groups via Southern Cross first; Northern-group lines the other way via Parliament first, never touching Southern Cross on that working) — both converge on the same three loop stations, just approached from opposite ends. See direction-model-memo.md -- this is the hardest hazard in the pack and needed Tim's copy decision on whether 'via City Loop' surfaces in the UI (decided 20 Sep 2026, folded into direction-model-memo.md)."
   },
   "metroTunnel": {
     "openedPassenger": "2026-02-01",
     "stations": ["Arden", "Parkville", "State Library", "Town Hall", "Anzac"],
     "spineGroups": ["sunbury", "cranbourne", "pakenham"],
-    "note": "Sunbury (west) through-runs with Cranbourne and Pakenham (south-east) via the new twin tunnels, joining at Footscray on the west side and South Yarra on the east side. These three lines do NOT call Flinders Street, North Melbourne, or the City Loop. Town Hall interchanges to Flinders Street via the surface Degraves Street Subway; State Library interchanges to Melbourne Central via an underground concourse. No single hub-lock stop string exists on this spine -- see direction-model-memo.md."
+    "note": "Sunbury (west) through-runs with Cranbourne and Pakenham (south-east) via the new twin tunnels. These three lines do NOT call Flinders Street, North Melbourne, or the City Loop. Town Hall interchanges to Flinders Street via the surface Degraves Street Subway; State Library interchanges to Melbourne Central via an underground concourse. CORRECTED in this pass: GTFS shows the physical join between the Sunbury route_id and the Cranbourne/Pakenham route_ids is at TOWN HALL, not 'Footscray on the west side and South Yarra on the east side' as the first pass guessed — Sunbury's own trips run Sunbury<->Town Hall/State Library (never reaching Anzac), and Cranbourne/Pakenham's own trips run Town Hall/Anzac<->their terminus (never reaching Arden/Parkville/State Library). A single Sunbury-to-Cranbourne working is two chained trip_ids under two different route_ids joined at Town Hall. No single hub-lock stop string exists on this spine -- see direction-model-memo.md."
   },
   "coverageGaps": [
     "Yarra Trams. Out of v1.",
     "Buses, including Night Bus (separate PTV route_type equivalent). Out of v1.",
     "SkyBus. Out of v1.",
-    "V/Line long-distance beyond the walk-up services carried `in` per docs/melbourne-d1/open-data-feed-and-eligibility.md (Albury, Swan Hill, Shepparton, Bairnsdale, Warrnambool are `out-reservation`; Maryborough at Footscray/Sunshine is `undecided`).",
+    "V/Line long-distance beyond the walk-up services carried `in` per docs/melbourne-d1/open-data-feed-and-eligibility.md and docs/melbourne-d1/vline-reservation-check.md (Albury and Warrnambool are `out-reservation`, fully reserved; Shepparton, Bairnsdale and Swan Hill are `in` per the board-eligibility rule's §6 unreserved-carriage clause; Maryborough, Ararat and Echuca are `in`, verified unreserved).",
     "Coaches, interstate (NSW TrainLink XPT, The Overland). Out of v1, `out-reservation` even where they touch an in-catalog station.",
     "Melbourne Airport Rail / Suburban Rail Loop. Not printed as open on the official train map as of this pack -- do not insert.",
     "Rail-replacement buses, service deviations (skipped stops / changed routes), and platform information are NOT carried by the Open Data Portal's Metro trip-updates feed per the portal's own spec -- recorded as a hazard, not silently assumed present.",
-    "Live PDF re-fetch not performed in this lane (no browser/PDF tool available) -- station graph is a hand-transcription pending a page-by-page diff against the live map before flip."
+    "'City Circle' (GTFS route_id aus:vic:vic-02-CCL:) is a real short Flinders Street-loop-Flinders Street shuttle in the static feed, but is not one of the 17 named lines on the current Metro Trains picker -- kept out of lines[] per the 'published map wins for line inventory' rule. See gtfs-reconciliation.md.",
+    "'Flemington Racecourse' as a station distinct from 'Showgrounds' could not be confirmed calling in the 2026-09-18 GTFS snapshot week (no race meeting that week) -- removed from the racecourse line's stations[] pending a snapshot that actually serves it. See hazard-pack.md open item.",
+    "Live PDF re-fetch still not performed page-by-page in this lane -- but the station GRAPH (membership/order) is now GTFS-verified; only exact printed NAME FORMS (e.g. any further map-vs-GTFS renames beyond Jolimont) remain to be spot-checked against the live PDF before flip."
   ],
   "stats": {
     "lines": 17,
@@ -158,7 +167,7 @@
       ],
       "branches": [],
       "shortTurns": [],
-      "note": "Runs direct only -- never via the City Loop. Shares Richmond and South Yarra with the Frankston/Dandenong corridor."
+      "note": "Runs direct only -- never via the City Loop. Shares Richmond and South Yarra with the Frankston/Dandenong corridor. GTFS-verified unchanged from the first pass."
     },
     {
       "id": "frankston",
@@ -169,17 +178,18 @@
       "viaCityLoop": "by time of day",
       "termini": ["Flinders Street", "Frankston"],
       "stations": [
-        "Flinders Street", "Richmond", "South Yarra", "Malvern", "Caulfield",
-        "Glenhuntly", "Ormond", "McKinnon", "Bentleigh", "Patterson",
-        "Moorabbin", "Highett", "Southland", "Cheltenham", "Mentone",
-        "Aspendale", "Edithvale", "Bonbeach", "Chelsea", "Carrum",
-        "Seaford", "Kananook", "Frankston"
+        "Flinders Street", "Richmond", "South Yarra", "Hawksburn", "Toorak",
+        "Armadale", "Malvern", "Caulfield", "Glen Huntly", "Ormond", "McKinnon",
+        "Bentleigh", "Patterson", "Moorabbin", "Highett", "Southland",
+        "Cheltenham", "Mentone", "Parkdale", "Mordialloc", "Aspendale",
+        "Edithvale", "Bonbeach", "Chelsea", "Carrum", "Seaford", "Kananook",
+        "Frankston"
       ],
       "branches": [
         { "at": "Frankston", "otherLine": "stony-point", "note": "Stony Point diesel shuttle connects here." }
       ],
       "shortTurns": [],
-      "note": "Via-loop trips insert Southern Cross, Flagstaff, Melbourne Central, Parliament between Flinders Street and Richmond; direct trips call only Flinders Street then Richmond. See direction-model-memo.md."
+      "note": "CORRECTED in this pass: the first pass's transcription omitted Hawksburn, Toorak and Armadale (between South Yarra and Malvern) and Parkdale and Mordialloc (between Mentone and Aspendale), and misspelled 'Glen Huntly' as 'Glenhuntly'. Via-loop trips insert Southern Cross, Flagstaff, Melbourne Central, Parliament between Flinders Street and Richmond; direct trips call only Flinders Street then Richmond. See direction-model-memo.md."
     },
     {
       "id": "glen-waverley",
@@ -199,7 +209,7 @@
         { "at": "Burnley", "otherLine": "alamein", "note": "Burnley group fork: Glen Waverley peels off toward Heyington; Alamein/Belgrave/Lilydale continue via Auburn/Camberwell." }
       ],
       "shortTurns": [],
-      "note": "Shares Richmond/East Richmond/Burnley with Alamein/Belgrave/Lilydale."
+      "note": "Shares Richmond/East Richmond/Burnley with Alamein/Belgrave/Lilydale. GTFS-verified unchanged from the first pass."
     },
     {
       "id": "alamein",
@@ -210,14 +220,15 @@
       "viaCityLoop": "by time of day",
       "termini": ["Flinders Street", "Alamein"],
       "stations": [
-        "Flinders Street", "Richmond", "East Richmond", "Burnley", "Auburn",
-        "Camberwell", "Riversdale", "Willison", "Hartwell", "Alamein"
+        "Flinders Street", "Richmond", "East Richmond", "Burnley", "Hawthorn",
+        "Glenferrie", "Auburn", "Camberwell", "Riversdale", "Willison",
+        "Hartwell", "Burwood", "Ashburton", "Alamein"
       ],
       "branches": [
         { "at": "Camberwell", "otherLine": "belgrave", "note": "Alamein peels off toward Riversdale; Belgrave/Lilydale continue via Canterbury toward Ringwood." }
       ],
       "shortTurns": [],
-      "note": "Shortest Burnley-group branch; single-track shuttle beyond Camberwell in the real network -- kept as printed, not collapsed into Belgrave."
+      "note": "CORRECTED in this pass: the first pass omitted Hawthorn and Glenferrie (between Burnley and Auburn) and Burwood and Ashburton (between Hartwell and Alamein). Shortest Burnley-group branch; single-track shuttle beyond Camberwell in the real network -- kept as printed, not collapsed into Belgrave."
     },
     {
       "id": "belgrave",
@@ -228,17 +239,18 @@
       "viaCityLoop": "by time of day",
       "termini": ["Flinders Street", "Belgrave"],
       "stations": [
-        "Flinders Street", "Richmond", "East Richmond", "Burnley", "Auburn",
-        "Camberwell", "Canterbury", "Chatham", "East Camberwell", "Box Hill",
-        "Laburnum", "Blackburn", "Nunawading", "Mitcham", "Heatherdale",
-        "Ringwood", "Heathmont", "Bayswater", "Boronia", "Ferntree Gully",
-        "Upper Ferntree Gully", "Upwey", "Belgrave"
+        "Flinders Street", "Richmond", "East Richmond", "Burnley", "Hawthorn",
+        "Glenferrie", "Auburn", "Camberwell", "East Camberwell", "Canterbury",
+        "Chatham", "Union", "Box Hill", "Laburnum", "Blackburn", "Nunawading",
+        "Mitcham", "Heatherdale", "Ringwood", "Heathmont", "Bayswater",
+        "Boronia", "Ferntree Gully", "Upper Ferntree Gully", "Upwey", "Tecoma",
+        "Belgrave"
       ],
       "branches": [
         { "at": "Ringwood", "otherLine": "lilydale", "note": "Belgrave/Lilydale fork at Ringwood." }
       ],
       "shortTurns": [],
-      "note": "Shares the whole trunk to Ringwood with Lilydale."
+      "note": "CORRECTED in this pass: the first pass omitted Hawthorn and Glenferrie (between Burnley and Auburn), Union (between Chatham and Box Hill — see hazard-pack.md H1), and Tecoma (between Upwey and Belgrave), and had East Camberwell out of order (it belongs right after Camberwell, before Canterbury, not after Chatham). Shares the whole trunk to Ringwood with Lilydale."
     },
     {
       "id": "lilydale",
@@ -249,16 +261,17 @@
       "viaCityLoop": "by time of day",
       "termini": ["Flinders Street", "Lilydale"],
       "stations": [
-        "Flinders Street", "Richmond", "East Richmond", "Burnley", "Auburn",
-        "Camberwell", "Canterbury", "Chatham", "East Camberwell", "Box Hill",
-        "Laburnum", "Blackburn", "Nunawading", "Mitcham", "Heatherdale",
-        "Ringwood", "Croydon", "Mooroolbark", "Lilydale"
+        "Flinders Street", "Richmond", "East Richmond", "Burnley", "Hawthorn",
+        "Glenferrie", "Auburn", "Camberwell", "East Camberwell", "Canterbury",
+        "Chatham", "Union", "Box Hill", "Laburnum", "Blackburn", "Nunawading",
+        "Mitcham", "Heatherdale", "Ringwood", "Ringwood East", "Croydon",
+        "Mooroolbark", "Lilydale"
       ],
       "branches": [
         { "at": "Ringwood", "otherLine": "belgrave", "note": "Belgrave/Lilydale fork at Ringwood." }
       ],
       "shortTurns": [],
-      "note": "Shares the whole trunk to Ringwood with Belgrave."
+      "note": "CORRECTED in this pass: same Burnley-group fixes as Belgrave (Hawthorn, Glenferrie, Union, and the East Camberwell/Canterbury/Chatham order fix) plus Ringwood East (between Ringwood and Croydon), which the first pass also omitted. Shares the whole trunk to Ringwood with Belgrave."
     },
     {
       "id": "hurstbridge",
@@ -269,17 +282,17 @@
       "viaCityLoop": "by time of day",
       "termini": ["Flinders Street", "Hurstbridge"],
       "stations": [
-        "Flinders Street", "Jolimont", "Collingwood", "Victoria Park",
-        "Clifton Hill", "Westgarth", "Dennis", "Fairfield", "Alphington",
-        "Darebin", "Ivanhoe", "Eaglemont", "Heidelberg", "Rosanna",
-        "Macleod", "Watsonia", "Greensborough", "Montmorency", "Eltham",
-        "Diamond Creek", "Wattle Glen", "Hurstbridge"
+        "Flinders Street", "Jolimont", "West Richmond", "North Richmond",
+        "Collingwood", "Victoria Park", "Clifton Hill", "Westgarth", "Dennis",
+        "Fairfield", "Alphington", "Darebin", "Ivanhoe", "Eaglemont",
+        "Heidelberg", "Rosanna", "Macleod", "Watsonia", "Greensborough",
+        "Montmorency", "Eltham", "Diamond Creek", "Wattle Glen", "Hurstbridge"
       ],
       "branches": [
         { "at": "Clifton Hill", "otherLine": "mernda", "note": "Clifton Hill group fork: Hurstbridge continues north-east; Mernda continues via Rushall/Northcote." }
       ],
       "shortTurns": [],
-      "note": "Shares Jolimont/Collingwood/Victoria Park/Clifton Hill with Mernda."
+      "note": "CORRECTED in this pass: the first pass omitted West Richmond and North Richmond (between Jolimont and Collingwood). GTFS spells this station 'Jolimont-MCG'; kept as 'Jolimont' per the official map's NAME FORM (precedence rule) — 'Jolimont-MCG' recorded as the GTFS alias in hazard-pack.md. Shares Jolimont/West Richmond/North Richmond/Collingwood/Victoria Park/Clifton Hill with Mernda."
     },
     {
       "id": "mernda",
@@ -290,17 +303,17 @@
       "viaCityLoop": "by time of day",
       "termini": ["Flinders Street", "Mernda"],
       "stations": [
-        "Flinders Street", "Jolimont", "Collingwood", "Victoria Park",
-        "Clifton Hill", "Rushall", "Merri", "Northcote", "Croxton",
-        "Thornbury", "Preston", "Regent", "Reservoir", "Ruthven",
-        "Keon Park", "Thomastown", "Lalor", "Epping", "South Morang",
-        "Middle Gorge", "Hawkstowe", "Mernda"
+        "Flinders Street", "Jolimont", "West Richmond", "North Richmond",
+        "Collingwood", "Victoria Park", "Clifton Hill", "Rushall", "Merri",
+        "Northcote", "Croxton", "Thornbury", "Bell", "Preston", "Regent",
+        "Reservoir", "Ruthven", "Keon Park", "Thomastown", "Lalor", "Epping",
+        "South Morang", "Middle Gorge", "Hawkstowe", "Mernda"
       ],
       "branches": [
         { "at": "Clifton Hill", "otherLine": "hurstbridge", "note": "Clifton Hill group fork." }
       ],
       "shortTurns": [],
-      "note": "Not served by V/Line -- see open-data-feed-and-eligibility.md."
+      "note": "CORRECTED in this pass: same West Richmond/North Richmond fix as Hurstbridge, plus Bell (between Thornbury and Preston), which the first pass also omitted. 'Jolimont-MCG' kept as 'Jolimont' per the map's NAME FORM (see hurstbridge). Not served by V/Line -- see open-data-feed-and-eligibility.md."
     },
     {
       "id": "craigieburn",
@@ -311,16 +324,16 @@
       "viaCityLoop": "by time of day",
       "termini": ["Flinders Street", "Craigieburn"],
       "stations": [
-        "Flinders Street", "Southern Cross", "North Melbourne", "Newmarket",
-        "Ascot Vale", "Moonee Ponds", "Essendon", "Glenbervie", "Strathmore",
-        "Pascoe Vale", "Oak Park", "Glenroy", "Jacana", "Broadmeadows",
-        "Coolaroo", "Roxburgh Park", "Craigieburn"
+        "Flinders Street", "Southern Cross", "North Melbourne", "Kensington",
+        "Newmarket", "Ascot Vale", "Moonee Ponds", "Essendon", "Glenbervie",
+        "Strathmore", "Pascoe Vale", "Oak Park", "Glenroy", "Jacana",
+        "Broadmeadows", "Coolaroo", "Roxburgh Park", "Craigieburn"
       ],
       "branches": [
-        { "at": "Newmarket", "otherLine": "racecourse", "note": "Racecourse special-events spur to Flemington Racecourse / Showgrounds leaves the Craigieburn corridor here." }
+        { "at": "North Melbourne", "otherLine": "racecourse", "note": "CORRECTED in this pass: GTFS shows the Racecourse special-events service diverges from the Craigieburn corridor near North Melbourne, before Kensington -- the first pass's 'branches at Newmarket' was wrong; Racecourse trains do not call Newmarket or Kensington at all." }
       ],
       "shortTurns": [],
-      "note": "V/Line Seymour/Shepparton walk-up/reserved services also call Broadmeadows and North Melbourne on a shared corridor further out -- see open-data-feed-and-eligibility.md."
+      "note": "CORRECTED in this pass: the first pass omitted Kensington (between North Melbourne and Newmarket). V/Line Seymour/Shepparton walk-up/reserved services also call Broadmeadows and North Melbourne on a shared corridor further out -- see open-data-feed-and-eligibility.md."
     },
     {
       "id": "upfield",
@@ -333,11 +346,12 @@
       "stations": [
         "Flinders Street", "Southern Cross", "North Melbourne", "Macaulay",
         "Flemington Bridge", "Royal Park", "Jewell", "Brunswick", "Anstey",
-        "Coburg", "Batman", "Merlynston", "Fawkner", "Gowrie", "Upfield"
+        "Moreland", "Coburg", "Batman", "Merlynston", "Fawkner", "Gowrie",
+        "Upfield"
       ],
       "branches": [],
       "shortTurns": [],
-      "note": "Shares North Melbourne with Craigieburn/Werribee/Williamstown, diverges immediately after."
+      "note": "CORRECTED in this pass: the first pass omitted Moreland (between Anstey and Coburg). Shares North Melbourne with Craigieburn/Werribee/Williamstown, diverges immediately after."
     },
     {
       "id": "werribee",
@@ -350,13 +364,14 @@
       "stations": [
         "Flinders Street", "Southern Cross", "North Melbourne", "South Kensington",
         "Footscray", "Seddon", "Yarraville", "Spotswood", "Newport",
-        "Williams Landing", "Hoppers Crossing", "Werribee"
+        "Laverton", "Aircraft", "Williams Landing", "Hoppers Crossing",
+        "Werribee"
       ],
       "branches": [
         { "at": "Newport", "otherLine": "williamstown", "note": "Werribee/Williamstown fork at Newport." }
       ],
       "shortTurns": [],
-      "note": "A subset of Werribee trains run via the Altona Loop (Westona, Altona, Seaholme) instead of the direct Laverton-area alignment -- recorded here as a printed variant, not a separate line id. Some Werribee/Sunbury-corridor V/Line Regional Rail Link services also call Footscray/Sunshine -- see open-data-feed-and-eligibility.md."
+      "note": "CORRECTED in this pass: the first pass omitted Laverton and Aircraft (between Newport and Williams Landing) from the direct alignment entirely. A subset of Werribee trains run via the Altona Loop (Newport -> Seaholme -> Altona -> Westona -> rejoining at Laverton) instead of the direct alignment -- recorded here as a printed variant, not a separate line id; GTFS confirms the loop rejoins the direct alignment at Laverton, not before it. Some Werribee/Sunbury-corridor V/Line Regional Rail Link services also call Footscray/Sunshine -- see open-data-feed-and-eligibility.md."
     },
     {
       "id": "williamstown",
@@ -369,13 +384,13 @@
       "stations": [
         "Flinders Street", "Southern Cross", "North Melbourne", "South Kensington",
         "Footscray", "Seddon", "Yarraville", "Spotswood", "Newport",
-        "North Williamstown", "Williamstown"
+        "North Williamstown", "Williamstown Beach", "Williamstown"
       ],
       "branches": [
         { "at": "Newport", "otherLine": "werribee", "note": "Werribee/Williamstown fork at Newport." }
       ],
       "shortTurns": [],
-      "note": "Shares the whole trunk to Newport with Werribee."
+      "note": "CORRECTED in this pass: the first pass omitted Williamstown Beach (between North Williamstown and Williamstown). Shares the whole trunk to Newport with Werribee."
     },
     {
       "id": "racecourse",
@@ -384,16 +399,15 @@
       "mapGroup": "Special events (not a daily all-day spine)",
       "hub": "Flinders Street",
       "viaCityLoop": "special-event service pattern, not a regular timetable",
-      "termini": ["Flinders Street", "Flemington Racecourse"],
+      "termini": ["Flinders Street", "Showgrounds"],
       "stations": [
-        "Flinders Street", "Southern Cross", "North Melbourne", "Newmarket",
-        "Flemington Racecourse", "Showgrounds"
+        "Flinders Street", "Southern Cross", "North Melbourne", "Showgrounds"
       ],
       "branches": [
-        { "at": "Newmarket", "otherLine": "craigieburn", "note": "Racecourse spur leaves the Craigieburn corridor at Newmarket." }
+        { "at": "North Melbourne", "otherLine": "craigieburn", "note": "Racecourse spur leaves the Craigieburn corridor near North Melbourne, before Kensington." }
       ],
       "shortTurns": [],
-      "note": "Race days / shows only, per the Metro Trains line picker printing Racecourse as a line and Flemington Racecourse + Showgrounds as stations. Do not timetable as regular weekday Metro service; kept on the map like a dashed special-events print."
+      "note": "CORRECTED in this pass: GTFS's route_long_name for this route is 'Flemington Racecourse Line', but the only stop this line's trips actually call in the 2026-09-18 snapshot is Showgrounds -- no stop named 'Flemington Racecourse' exists in the feed's stops.txt at all, and Newmarket (the first pass's assumed fork point) is not called either. Race days / shows only, per the Metro Trains line picker printing Racecourse as a line. 'Flemington Racecourse' as a distinct calling point is an open item -- see hazard-pack.md and gtfs-reconciliation.md; do not re-insert it without a snapshot that calls at it. Do not timetable as regular weekday Metro service."
     },
     {
       "id": "stony-point",
@@ -411,7 +425,7 @@
         { "at": "Frankston", "otherLine": "frankston", "note": "Connects to the electrified Frankston line; the shuttle itself is diesel and does not continue to Flinders Street." }
       ],
       "shortTurns": [],
-      "note": "Confirmed a Metro line (not V/Line) by the official PTV route page. No hub-lock stop -- riders change at Frankston."
+      "note": "GTFS-verified unchanged from the first pass (same 10 stations, same order once read terminus-first as Frankston->Stony Point matching termini[]). No hub-lock stop -- riders change at Frankston."
     },
     {
       "id": "sunbury",
@@ -424,18 +438,16 @@
       "termini": ["Sunbury", "Cranbourne", "Pakenham"],
       "stations": [
         "Sunbury", "Diggers Rest", "Watergardens", "Keilor Plains", "St Albans",
-        "Ginifer", "Albion", "Sunshine", "Tottenham", "Footscray",
-        "Arden", "Parkville", "State Library", "Town Hall", "Anzac",
-        "South Yarra", "Caulfield", "Carnegie", "Murrumbeena", "Hughesdale",
-        "Oakleigh", "Huntingdale", "Clayton", "Westall", "Springvale",
-        "Sandown Park", "Noble Park", "Yarraman", "Dandenong"
+        "Ginifer", "Albion", "Sunshine", "Tottenham", "West Footscray",
+        "Middle Footscray", "Footscray", "Arden", "Parkville", "State Library",
+        "Town Hall"
       ],
       "branches": [
-        { "at": "Dandenong", "otherLine": "cranbourne", "note": "Dandenong corridor forks to Cranbourne." },
-        { "at": "Dandenong", "otherLine": "pakenham", "note": "Dandenong corridor forks to Pakenham." }
+        { "at": "Town Hall", "otherLine": "cranbourne", "note": "Sunbury's own GTFS route_id trips terminate at Town Hall/State Library; a through Sunbury-to-Cranbourne working continues as a Cranbourne route_id trip from here." },
+        { "at": "Town Hall", "otherLine": "pakenham", "note": "Sunbury's own GTFS route_id trips terminate at Town Hall/State Library; a through Sunbury-to-Pakenham working continues as a Pakenham route_id trip from here." }
       ],
       "shortTurns": [],
-      "note": "Does NOT call Flinders Street, Southern Cross, North Melbourne, or the City Loop after 1 Feb 2026 -- it now runs through the Metro Tunnel spine (Arden/Parkville/State Library/Town Hall/Anzac) to join the Caulfield/Dandenong corridor. This is the line group the oracle report and hazard-pack flag as skipping the hub lock. Footscray and Sunshine also carry V/Line walk-up services -- see open-data-feed-and-eligibility.md."
+      "note": "CORRECTED in this pass: the first pass's Sunbury stations[] wrongly continued all the way to Dandenong under this one line id, duplicating the Anzac-Caulfield-Dandenong trunk that actually belongs to the Cranbourne/Pakenham route_ids (and omitting West Footscray and Middle Footscray, which do exist in that GTFS route). GTFS shows the Sunbury route_id's own trips run ONLY Sunbury<->Town Hall/State Library (never reaching Anzac); a physical Sunbury-to-Cranbourne or -Pakenham working is two chained trip_ids under two different route_ids, joined at Town Hall -- not one route spanning the whole corridor. Full published run for a through service = this stations[] (ending Town Hall) + the relevant branch's stations[] from Town Hall onward (skip the duplicate Town Hall). Does NOT call Flinders Street, Southern Cross, North Melbourne, or the City Loop. Footscray and Sunshine also carry V/Line walk-up services -- see open-data-feed-and-eligibility.md."
     },
     {
       "id": "cranbourne",
@@ -447,13 +459,17 @@
       "viaMetroTunnel": true,
       "termini": ["Sunbury", "Cranbourne"],
       "stations": [
-        "Dandenong", "Merinda Park", "Lynbrook", "Cranbourne"
+        "Town Hall", "Anzac", "Malvern", "Caulfield", "Carnegie", "Murrumbeena",
+        "Hughesdale", "Oakleigh", "Huntingdale", "Clayton", "Westall",
+        "Springvale", "Sandown Park", "Noble Park", "Yarraman", "Dandenong",
+        "Lynbrook", "Merinda Park", "Cranbourne"
       ],
       "branches": [
-        { "at": "Dandenong", "otherLine": "sunbury", "note": "Shares the whole Metro Tunnel spine west of Dandenong with Sunbury and Pakenham." }
+        { "at": "Town Hall", "otherLine": "sunbury", "note": "Shares the whole Anzac-Caulfield-Dandenong trunk east of here with Pakenham; joins Sunbury's own route only via a chained through-trip at Town Hall, not a single GTFS route_id." },
+        { "at": "Dandenong", "otherLine": "pakenham", "note": "Cranbourne and Pakenham diverge after Dandenong." }
       ],
       "shortTurns": [],
-      "note": "Full published run is the sunbury line's stations[] followed by this branch's stations[] from Dandenong. Does not call Flinders Street or North Melbourne."
+      "note": "CORRECTED in this pass: the first pass's Cranbourne stations[] started at Dandenong, omitting the entire Town Hall-Anzac-Malvern-Caulfield-...-Dandenong trunk (which is real and shared with Pakenham, per GTFS's Cranbourne route_id). Full published run for a through service = the sunbury line's stations[] (ending Town Hall) + this branch's stations[] from Town Hall (skip the duplicate Town Hall). Does not call Flinders Street or North Melbourne."
     },
     {
       "id": "pakenham",
@@ -465,14 +481,18 @@
       "viaMetroTunnel": true,
       "termini": ["Sunbury", "Pakenham"],
       "stations": [
-        "Dandenong", "Hallam", "Narre Warren", "Berwick", "Beaconsfield",
-        "Officer", "Pakenham"
+        "Town Hall", "Anzac", "Malvern", "Caulfield", "Carnegie", "Murrumbeena",
+        "Hughesdale", "Oakleigh", "Huntingdale", "Clayton", "Westall",
+        "Springvale", "Sandown Park", "Noble Park", "Yarraman", "Dandenong",
+        "Hallam", "Narre Warren", "Berwick", "Beaconsfield", "Officer",
+        "Cardinia Road", "Pakenham", "East Pakenham"
       ],
       "branches": [
-        { "at": "Dandenong", "otherLine": "sunbury", "note": "Shares the whole Metro Tunnel spine west of Dandenong with Sunbury and Cranbourne." }
+        { "at": "Town Hall", "otherLine": "sunbury", "note": "Shares the whole Anzac-Caulfield-Dandenong trunk east of here with Cranbourne; joins Sunbury's own route only via a chained through-trip at Town Hall, not a single GTFS route_id." },
+        { "at": "Dandenong", "otherLine": "cranbourne", "note": "Cranbourne and Pakenham diverge after Dandenong." }
       ],
       "shortTurns": [],
-      "note": "Full published run is the sunbury line's stations[] followed by this branch's stations[] from Dandenong. V/Line's Gippsland line also calls Pakenham and several stations on this branch as a shared walk-up service -- see open-data-feed-and-eligibility.md. Does not call Flinders Street or North Melbourne."
+      "note": "CORRECTED in this pass: the first pass's Pakenham stations[] started at Dandenong (same omission as Cranbourne) and additionally omitted Cardinia Road (between Officer and Pakenham) and East Pakenham (the actual current terminus beyond Pakenham). Full published run for a through service = the sunbury line's stations[] (ending Town Hall) + this branch's stations[] from Town Hall (skip the duplicate Town Hall). V/Line's Gippsland line also calls Pakenham and several stations on this branch as a shared walk-up service -- see open-data-feed-and-eligibility.md. Does not call Flinders Street or North Melbourne."
     }
   ]
 }
