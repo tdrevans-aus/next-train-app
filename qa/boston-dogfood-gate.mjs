@@ -44,12 +44,14 @@ import {
   resolveStopIds,
   fetchStationBoard,
   mapPredictionToTrip,
+  mapPredictionsToTrips,
   COMMUTER_RAIL_STOP_IDS,
   MissingMbtaApiKeyError,
   MBTA_GTFS_STATIC_URL,
   MBTA_V3_PREDICTIONS_URL,
   _resetMbtaPredictionsCacheForTests,
 } from "../lib/providers/boston.js";
+import * as gtfsStaticCache from "../lib/providers/gtfs/static-cache.js";
 import {
   foldKey,
   isForbiddenCollapseName,
@@ -173,22 +175,68 @@ assert(MBTA_ROUTE_ID_TO_LINE.Red === "red" && MBTA_ROUTE_ID_TO_LINE.Mattapan ===
 assert(mapLineTerminusDestination("Park Street", "red") === "Red Line", "Park Street must never appear as a direction token");
 assert(resolveTerminus("Some Unknown Headsign", "red") === null, "resolveTerminus must not fabricate an unknown terminus");
 
-// resolveStopIds — synthetic staticData shaped like gtfs/static-cache.js output, no network.
-// Structural reference data only (station name -> stop_id); never a source of a departure time.
-const syntheticStaticData = {
-  stops: [
-    { stop_id: "place-pktrm", stop_name: "Park Street", parent_station: "" },
-    { stop_id: "70075", stop_name: "Park Street", parent_station: "place-pktrm" },
-    { stop_id: "place-cntsq", stop_name: "Central", parent_station: "" },
-  ],
-};
-const parkStreetStopIds = resolveStopIds(syntheticStaticData, byName.get("Park Street"));
-assert(parkStreetStopIds.includes("place-pktrm") && parkStreetStopIds.includes("70075"), "resolveStopIds must expand Park Street to its child platform stops");
+// resolveStopIds — bundled catalog data (lib/cities/boston/stations.json's mbtaStopIds,
+// generated offline by scripts/generate-boston-mbta-stop-ids.mjs), no network, no GTFS parse.
+// Exactly the single correct MBTA V3 id per station — never a parent AND its own children
+// together (PR #431 review finding 1 — that combination is what caused every board row to be
+// duplicated 2x against the live MBTA V3 API).
+const parkStreetStopIds = resolveStopIds(byName.get("Park Street"));
+assert(JSON.stringify(parkStreetStopIds) === JSON.stringify(["place-pktrm"]), "resolveStopIds(Park Street) must be exactly its single GTFS parent id, no platform children");
+for (const station of stations) {
+  const ids = resolveStopIds(station);
+  assert(Array.isArray(ids) && ids.length > 0, `${station.name} must resolve to at least one bundled mbtaStopId`);
+  assert(
+    ids.every((id) => !id.startsWith("door-") && !id.startsWith("node-")),
+    `${station.name}'s bundled mbtaStopIds must never include a door-*/node-* pathway/entrance pseudo-stop`
+  );
+}
 
 // Provider wiring sanity.
-assert(MBTA_GTFS_STATIC_URL === "https://cdn.mbta.com/MBTA_GTFS.zip", "static GTFS URL must point at MBTA's CDN");
+assert(MBTA_GTFS_STATIC_URL === "https://cdn.mbta.com/MBTA_GTFS.zip", "static GTFS URL constant must still point at MBTA's CDN (documentation only — see next assertion)");
 assert(MBTA_V3_PREDICTIONS_URL === "https://api-v3.mbta.com/predictions", "predictions URL must point at MBTA's V3 API");
 assert(typeof MissingMbtaApiKeyError === "function", "MissingMbtaApiKeyError must be exported");
+
+// --- No static GTFS anywhere on the Boston request path (PR #431 review finding 2) ---
+
+const bostonSource = readFileSync(join(ROOT, "lib/providers/boston.js"), "utf8");
+assert(
+  !/from\s+["']\.\/gtfs\/static-cache\.js["']/.test(bostonSource),
+  "lib/providers/boston.js must not import anything from gtfs/static-cache.js — station->stop_id resolution must come from the bundled catalog only, never a live GTFS parse"
+);
+
+const originalLoadGtfsStatic = gtfsStaticCache.loadGtfsStatic;
+let gtfsStaticCallCount = 0;
+try {
+  Object.defineProperty(gtfsStaticCache, "loadGtfsStatic", {
+    value: async () => {
+      gtfsStaticCallCount += 1;
+      throw new Error("loadGtfsStatic must never be called while serving a Boston board/next-train/directions request");
+    },
+    configurable: true,
+  });
+} catch {
+  // Namespace object not reconfigurable in this Node version — the source-text assertion above
+  // is the primary proof; fall through without the extra runtime stub.
+}
+const originalFetchForGtfsCheck = globalThis.fetch;
+globalThis.fetch = async (url) => {
+  const href = String(url);
+  if (href.startsWith("https://cdn.mbta.com/")) {
+    throw new Error(`must never fetch MBTA's static GTFS feed while serving a request: ${href}`);
+  }
+  return { ok: true, json: async () => ({ data: [], included: [] }) };
+};
+_resetMbtaPredictionsCacheForTests();
+await fetchStationBoard("South Station");
+await fetchStationBoard(BOSTON_HUB);
+assert(gtfsStaticCallCount === 0, "loadGtfsStatic must not have been called while resolving real catalog stations' boards");
+globalThis.fetch = originalFetchForGtfsCheck;
+try {
+  Object.defineProperty(gtfsStaticCache, "loadGtfsStatic", { value: originalLoadGtfsStatic, configurable: true });
+} catch {
+  // best-effort restore
+}
+_resetMbtaPredictionsCacheForTests();
 
 let unknownThrew = false;
 try {
@@ -324,6 +372,67 @@ const southSorted = southBoard.trips.every(
   (t, i, arr) => i === 0 || new Date(arr[i - 1].liveDeparture) <= new Date(t.liveDeparture)
 );
 assert(southSorted, "South Station board must be sorted by liveDeparture across subway and Commuter Rail rows together");
+
+// --- Duplicate-prediction defence (PR #431 review finding 1) — the real duplicated shape ---
+// --- Mark saw against the live MBTA V3 API, captured with the OLD (buggy) parent+platform ---
+// --- id set. mapPredictionsToTrips() must collapse it back to the true unique trip count. ---
+
+const rawMiltonDuplicated = fixture.miltonDuplicatedByOldIdSet.data;
+assert(rawMiltonDuplicated.length === 6, "the real captured duplicated payload must have 6 raw prediction resources (3 real trips, doubled)");
+const miltonIncludedById = new Map(
+  fixture.miltonDuplicatedByOldIdSet.included.filter((i) => i.type === "trip").map((i) => [i.id, i])
+);
+const dedupedMiltonTrips = mapPredictionsToTrips(rawMiltonDuplicated, miltonIncludedById);
+assert(dedupedMiltonTrips.length === 3, `mapPredictionsToTrips must dedupe the real captured 6-row duplicate payload down to 3 unique trips, got ${dedupedMiltonTrips.length}`);
+const dedupedMiltonTripIds = dedupedMiltonTrips.map((t) => t.tripId);
+assert(new Set(dedupedMiltonTripIds).size === dedupedMiltonTripIds.length, "deduped Milton trips must have no repeated tripId");
+const dedupedMiltonKeys = dedupedMiltonTrips.map((t) => `${t.tripId}|${t.liveDeparture}`);
+assert(new Set(dedupedMiltonKeys).size === dedupedMiltonKeys.length, "deduped Milton trips must have no two rows sharing the same trip+time");
+
+// Same fixture through the real fetchStationBoard() end-to-end (rawPredictions injection),
+// proving the production pipeline — not just the pure mapper — dedupes correctly.
+const miltonBoardViaOldIdSet = await fetchStationBoard("Milton", {
+  rawPredictions: fixture.miltonDuplicatedByOldIdSet,
+  stopIds: ["fixture-stub"],
+});
+assert(miltonBoardViaOldIdSet.trips.length === 3, `fetchStationBoard(Milton) with the real duplicated payload must still resolve to 3 unique rows, got ${miltonBoardViaOldIdSet.trips.length}`);
+const miltonBoardKeys = miltonBoardViaOldIdSet.trips.map((t) => `${t.tripId}|${t.liveDeparture}`);
+assert(new Set(miltonBoardKeys).size === miltonBoardKeys.length, "fetchStationBoard(Milton) board rows must have no two rows sharing the same trip+time");
+
+// General board-level guarantee for the single-mode fixture boards: no repeated tripId, no two
+// rows sharing the same trip+time. (South Station is checked separately below — its fixture
+// carries a genuine, documented MBTA quirk where CR-Providence and CR-Franklin share one real
+// trip id for a combined train that later splits, which is not the parent+child duplication
+// bug this gate is defending against, so a blanket tripId-uniqueness check would misfire there.)
+for (const [label, board] of [
+  ["Harvard", harvardBoard],
+  ["Kenmore", kenmoreBoard],
+]) {
+  const tripIds = board.trips.map((t) => t.tripId);
+  assert(new Set(tripIds).size === tripIds.length, `${label} board must have no repeated tripId`);
+  const keys = board.trips.map((t) => `${t.tripId}|${t.liveDeparture}`);
+  assert(new Set(keys).size === keys.length, `${label} board must have no two rows sharing the same trip+time`);
+}
+
+// South Station: any row sharing both tripId and liveDeparture with another row must differ in
+// routeLongName (the documented combined-train-splits-into-two-routes quirk) — proving it's a
+// real distinct service pairing, not the same MBTA prediction resource counted twice.
+const southByTripTime = new Map();
+for (const trip of southBoard.trips) {
+  const key = `${trip.tripId}|${trip.liveDeparture}`;
+  const bucket = southByTripTime.get(key) ?? [];
+  bucket.push(trip);
+  southByTripTime.set(key, bucket);
+}
+for (const [key, bucket] of southByTripTime) {
+  if (bucket.length > 1) {
+    const routeNames = new Set(bucket.map((t) => t.routeLongName));
+    assert(
+      routeNames.size === bucket.length,
+      `South Station rows sharing trip+time (${key}) must each be a distinct route (genuine combined-train quirk), never the exact same route repeated (that would be a real duplicate)`
+    );
+  }
+}
 
 // --- One upstream fetch serves all directions of a station (docs/jim-brief-boston-subway- ---
 // --- live-predictions.md item 2) — stub fetch, no fixture injection this time.            ---

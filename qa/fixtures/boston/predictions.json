@@ -689,6 +689,223 @@
       }
     ]
   },
+  "miltonDuplicatedByOldIdSet": {
+    "_comment": "REAL capture, 20 Sep 2026 (PR #431 review, Mark's finding), _source: live-capture-20260920-old-id-set: this is the exact duplicated shape the OLD resolveStopIds() produced by querying filter[stop]=place-miltt,70267,70268 (a station's GTFS parent place-* id together with its own platform child ids) in one request. MBTA's V3 API expands the parent id to its children's predictions, so each of the 3 real Mattapan Line trips running at capture time comes back as two prediction resources with the IDENTICAL prediction `id` (e.g. prediction-77714330-70267-4-Mattapan appears twice, byte-for-byte). Querying place-miltt alone (the fix; see lib/cities/boston/stations.json's mbtaStopIds and scripts/generate-boston-mbta-stop-ids.mjs) returns each of these 3 predictions exactly once, confirmed live the same day. Used by qa/boston-dogfood-gate.mjs to prove mapPredictionsToTrips()'s prediction-id dedupe collapses this real duplicated payload back down to 3 unique trips, and that no two rows share the same trip+stop+time either.",
+    "data": [
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T08:55:37-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T08:55:54-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 4,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-77714330-70267-4-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70267", "type": "stop" } },
+          "trip": { "data": { "id": "77714330", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T08:55:37-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T08:55:54-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 4,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-77714330-70267-4-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70267", "type": "stop" } },
+          "trip": { "data": { "id": "77714330", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:01:11-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:01:28-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714323-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714323", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10033", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:01:11-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:01:28-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714323-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714323", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10033", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:11:35-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:11:52-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714336-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714336", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:11:35-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:11:52-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714336-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714336", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      }
+    ],
+    "included": [
+      {
+        "attributes": {
+          "bikes_allowed": 2,
+          "block_id": "M899_-1",
+          "direction_id": 1,
+          "headsign": "Ashmont",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "77714323",
+        "links": { "self": "/trips/77714323" },
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "route_pattern": { "data": { "id": "Mattapan-_-1", "type": "route_pattern" } },
+          "service": { "data": { "id": "FallSunday", "type": "service" } },
+          "shape": { "data": { "id": "899_0008", "type": "shape" } }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 2,
+          "block_id": "M899_-2",
+          "direction_id": 0,
+          "headsign": "Mattapan",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "77714330",
+        "links": { "self": "/trips/77714330" },
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "route_pattern": { "data": { "id": "Mattapan-_-0", "type": "route_pattern" } },
+          "service": { "data": { "id": "FallSunday", "type": "service" } },
+          "shape": { "data": { "id": "899_0005", "type": "shape" } }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 2,
+          "block_id": "M899_-2",
+          "direction_id": 1,
+          "headsign": "Ashmont",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "77714336",
+        "links": { "self": "/trips/77714336" },
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "route_pattern": { "data": { "id": "Mattapan-_-1", "type": "route_pattern" } },
+          "service": { "data": { "id": "FallSunday", "type": "service" } },
+          "shape": { "data": { "id": "899_0008", "type": "shape" } }
+        },
+        "type": "trip"
+      }
+    ]
+  },
   "southStation": {
     "data": [
       {
