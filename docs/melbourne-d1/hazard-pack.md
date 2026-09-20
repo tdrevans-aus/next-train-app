@@ -2,12 +2,18 @@
 
 Evidence: `docs/melbourne-d1/oracle-clash-report.md` (Nico, 2026-08-29) plus
 `docs/melbourne-d1/open-data-feed-and-eligibility.md` (Nico addendum, 2026-09-20, on the Open
-Data Portal decision). Station graph is `docs/melbourne-d1/published-network.json`, hand-
-transcribed from established knowledge of the current Metro Trains network per the oracle's
-named line groups and the Metro Tunnel project pages — **no browser/PDF-fetch tool was available
-in this lane**, so the official PDF's bytes were not independently re-rendered here either (the
-oracle report hit the same Cloudflare block). Flagged as an open item below, not silently assumed
-correct.
+Data Portal decision), `docs/melbourne-d1/vline-reservation-check.md` (V/Line reservation
+verification, 20 Sep 2026), and `docs/melbourne-d1/tim-decisions-2026-09-20.md` (copy decisions
+and the reconciliation instruction). Station graph is `docs/melbourne-d1/published-network.json`.
+
+**SECOND PASS (20 Sep 2026):** the first pass's station graph was hand-transcribed from memory
+with no browser/PDF/GTFS access and was confirmed wrong in several places (see
+`docs/melbourne-d1/gtfs-reconciliation.md` for the full before/after diff). This pass downloaded
+and read the official Victorian GTFS Schedule static feed (public, no key) and reconciled every
+line's station list and order against it. The live official PDF map has still not been re-rendered
+page-by-page (still no browser/PDF-fetch tool in this lane), but the GTFS check is a materially
+stronger source for station membership/order than the first pass's pure transcription — remaining
+open items are name-form spot-checks, not graph correctness.
 
 ## H1 — parent + child
 
@@ -16,24 +22,35 @@ folder 2 (Metropolitan Train) by name/alias match, never by inventing IDs here. 
 and Flinders Street are the two multi-platform buildings most likely to need parent-station
 grouping once real GTFS is loaded.
 
-**doNotGroup** (carried from the oracle report's hub-lock section, verbatim scope):
+**doNotGroup** (carried from the oracle report's hub-lock section, with Union's line attribution
+corrected in this pass):
 **Flinders Street** vs **Federation Square** (not a station — Town Hall's Swanston Street /
 Young & Jackson walk-up) vs **Town Hall** vs **State Library** vs **Melbourne Central** vs
 **Parliament** vs **Flagstaff** vs **Southern Cross Metro** vs **Southern Cross V/Line** vs
-**North Melbourne** vs **Arden** vs **Union** (Pakenham/Cranbourne suburban, not Sydney) vs
-**Richmond**.
+**North Melbourne** vs **Arden** vs **Union** (Belgrave/Lilydale, between Chatham and Box Hill —
+see resolution below, NOT Pakenham/Cranbourne) vs **Richmond**.
 
-**Open item — "Union":** the oracle report lists a doNotGroup entry "Union (Pakenham/Cranbourne
-suburban, not Sydney)" alongside the other hub-adjacent names. This lane could not independently
-confirm a station named "Union" on the current Metro Trains Pakenham/Cranbourne (Metro Tunnel
-spine) line list against any source available in this environment — it is not part of the
-established real-world Dandenong-corridor station list transcribed into
-`published-network.json`. It has been carried into the doNotUse list as instructed so a future
-name collision is still guarded against, but **it has not been inserted as a stations[] entry
-anywhere**, since inventing its location would be guessing at the station graph. Jim/Mark:
-resolve against the live GTFS static feed or the official map before flip — if "Union" doesn't
-exist, drop it from the doNotUse list; if it does, place it correctly on the Metro Tunnel spine
-and add its own doNotGroup note.
+**RESOLVED — "Union" (was an open item; oracle report's line attribution was wrong):** the oracle
+report's doNotGroup entry read "Union (Pakenham/Cranbourne suburban, not Sydney)". The GTFS
+Schedule static feed (folder 2, Metropolitan Train; see `gtfs-reconciliation.md`) confirms Union
+is a real station (`stop_id vic:rail:UNI`, `location_type=1`, "Union Railway Station") on **both
+Belgrave and Lilydale**, sitting between Chatham and Box Hill:
+`Camberwell -> East Camberwell -> Canterbury -> Chatham -> Union -> Box Hill`. It is **not** on
+Pakenham or Cranbourne — the oracle report's line attribution was simply wrong, not the station's
+existence. It has been inserted into `published-network.json`'s `belgrave` and `lilydale`
+`stations[]` arrays in the correct position, and the "unverified existence" flag on it is removed.
+No corresponding station exists on the Pakenham/Cranbourne Metro Tunnel spine.
+
+**Also GTFS-confirmed alias:** the official map's "Jolimont" (kept as the printed NAME FORM) is
+spelled "Jolimont-MCG" in the GTFS feed (`stop_id vic:rail:JLI`). Record `Jolimont-MCG` as a
+doNotGroup alias of `Jolimont`, not a separate station — this is the map-vs-GTFS name-form
+difference the task brief called out by name; GTFS wins on membership/order, the map wins on
+which spelling riders see.
+
+**Also GTFS-confirmed, out of scope:** `routes.txt` has an 18th route_id, "City Circle"
+(`aus:vic:vic-02-CCL:`, a Flinders Street-loop-Flinders Street shuttle), not one of the 17 named
+lines on the current Metro Trains picker. Kept out of `lines[]` per the "published map wins for
+line inventory" rule — see H3 below and `gtfs-reconciliation.md`.
 
 ## H2 — Metro Tunnel and City Loop interchanges (physically separate stations)
 
@@ -48,9 +65,19 @@ and add its own doNotGroup note.
 
 ## H3 — thin / event / overlay
 
-- **Racecourse line (Flemington Racecourse, Showgrounds)**: printed Metro special-events stations
-  and line, race days / shows only — not a daily all-day spine. Kept on the map (dashed
-  special-events print convention); do not timetable as regular weekday Metro service.
+- **Racecourse line (Showgrounds)**: printed Metro special-events station and line, race days /
+  shows only — not a daily all-day spine. Kept on the map (dashed special-events print
+  convention); do not timetable as regular weekday Metro service. **"Flemington Racecourse" as a
+  separate calling point is an open item** — GTFS's `stops.txt` has no stop by that name, and the
+  route's only calling pattern in the 2026-09-18 snapshot week is Flinders St / Southern Cross /
+  North Melbourne / Showgrounds, even though the GTFS route's own `route_long_name` is "Flemington
+  Racecourse Line". See `gtfs-reconciliation.md` — do not re-insert it without a snapshot that
+  actually calls at it.
+- **"City Circle" (GTFS `aus:vic:vic-02-CCL:`)**: a real short Flinders Street → Southern Cross →
+  Flagstaff → Melbourne Central → Parliament → Flinders Street shuttle found in the GTFS feed, but
+  not one of the 17 named lines on the current Metro Trains picker. Out of scope for `lines[]` per
+  the published-map-wins-for-line-inventory rule; recorded here so Jim doesn't mistake a live
+  `vic-02-CCL` trip_update for a bug.
 - **Stony Point**: diesel shuttle off Frankston, confirmed a Metro line by the official PTV route
   page, not V/Line. No timetable overlay hazard beyond it having no hub-lock stop of its own.
 - **Metro Tunnel opening (1 Feb 2026)**: not an overlay — a permanent routing change. Sunbury,
@@ -75,10 +102,10 @@ and add its own doNotGroup note.
 | Camberwell | Alamein (via Riversdale) vs Belgrave/Lilydale (via Canterbury) | published-network.json |
 | Ringwood | Belgrave (via Heathmont) vs Lilydale (via Croydon) | published-network.json |
 | Clifton Hill | Hurstbridge (via Westgarth) vs Mernda (via Rushall/Northcote) | published-network.json |
-| Newmarket | Craigieburn (continues north) vs Racecourse (special-events spur) | published-network.json |
+| North Melbourne | Craigieburn (continues to Kensington/Newmarket) vs Racecourse (special-events spur, diverges before Kensington — CORRECTED this pass, was wrongly attributed to Newmarket, which Racecourse doesn't call) | gtfs-reconciliation.md |
 | Newport | Werribee (direct or via Altona Loop) vs Williamstown | published-network.json |
-| Footscray | Metro Tunnel spine (Sunbury west leg) continues toward Arden; also a V/Line Regional Rail Link stop | published-network.json + open-data-feed-and-eligibility.md |
-| Dandenong | Cranbourne vs Pakenham (Metro Tunnel spine east forks); also a V/Line Gippsland-line stop (Traralgon `in`, Bairnsdale `out-reservation`) | published-network.json + open-data-feed-and-eligibility.md |
+| Town Hall | Sunbury's own GTFS route ends here; a through Sunbury-to-Cranbourne/-Pakenham working continues as a chained trip on the Cranbourne/Pakenham route from here (CORRECTED this pass — the first pass said the tunnel spine joined at Footscray/South Yarra; GTFS shows the actual join is Town Hall) | gtfs-reconciliation.md |
+| Dandenong | Cranbourne vs Pakenham (Metro Tunnel spine east forks, sharing the whole Town Hall-Anzac-Malvern-Caulfield-Dandenong trunk before this point — CORRECTED this pass, the first pass's Cranbourne/Pakenham stations[] omitted that whole shared trunk); also a V/Line Gippsland-line stop (Traralgon `in`, Bairnsdale `in` per §6 this pass) | published-network.json + open-data-feed-and-eligibility.md + vline-reservation-check.md |
 | Frankston | Frankston line (electrified) vs Stony Point (diesel shuttle) | published-network.json |
 | Southern Cross | Metro (all loop/direct groups) vs V/Line long-distance | oracle report §hub lock |
 
@@ -138,29 +165,67 @@ Carried from `docs/melbourne-d1/open-data-feed-and-eligibility.md` and the oracl
 
 ## Board eligibility
 
-Carried in full from `docs/melbourne-d1/open-data-feed-and-eligibility.md` (Nico, 2026-09-20).
-Summary for the QA gate; the source file has the full per-station table and citations.
+**SECOND PASS (20 Sep 2026):** the first pass's board-eligibility table (from
+`open-data-feed-and-eligibility.md`) carried two `undecided` rows (Maryborough) and had marked
+Shepparton/Bairnsdale/Swan Hill as flatly `out-reservation` on a note flagging that V/Line's own
+FAQ actually describes those three as "a mixture of reserved and unreserved carriages." Both
+questions are now resolved by `docs/melbourne-d1/vline-reservation-check.md` (V/Line's official
+FAQ, https://www.vline.com.au/Information/FAQs/Question-1) and Tim's approach sign-off in
+`tim-decisions-2026-09-20.md`. **No `undecided` rows remain.**
 
-| Verdict | Count | Notes |
+| Service | Compulsory reservation? | Verdict | Reasoning |
+| --- | --- | --- | --- |
+| Maryborough | No | `in` | V/Line FAQ lists Maryborough under "all other destinations" where reservations are not required — falls outside the five named reserved-seating services (Albury, Bairnsdale, Shepparton, Swan Hill, Warrnambool). Verified, not assumed. |
+| Ararat | No | `in` | Same "all other destinations" grouping. Verified. |
+| Echuca | No | `in` | Same "all other destinations" grouping. Verified. |
+| Shepparton | No (mixed reserved/unreserved carriages) | `in` | V/Line's own FAQ describes this service as "a mixture of reserved and unreserved carriages" — a rider can walk up and board an unreserved carriage with a standard ticket. Per `docs/board-eligibility-rule.md` §2 test 1 ("a rider on the platform with a standard ticket... can board the next departure") and §6's optional-reservation clause (a service with SOME walk-up-boardable unreserved capacity is `in`, not `out-reservation`, because the reservation is optional for at least part of the train, not compulsory for the whole working), this is `in`, not `out-reservation`. |
+| Bairnsdale | No (mixed reserved/unreserved carriages) | `in` | Same reasoning as Shepparton — "mixture of reserved and unreserved carriages" per V/Line's FAQ; optional reservation, not compulsory, so §6 applies. |
+| Swan Hill | No (mixed reserved/unreserved carriages) | `in` | Same reasoning as Shepparton/Bairnsdale. |
+| Albury | Yes (all seats reserved) | `out-reservation` | V/Line FAQ: "all seating is reserved." No unreserved walk-up capacity — compulsory, not optional. |
+| Warrnambool | Yes (all seats reserved) | `out-reservation` | Same — "all seating is reserved," fully compulsory. |
+
+**In-catalog calling points for each `in` V/Line service** (at the shared Metro stations recorded
+in `open-data-feed-and-eligibility.md`):
+
+- **Geelong / Ballarat / Bendigo / Seymour / Traralgon** (previously verified `in`): Southern
+  Cross; Traralgon also at Flinders Street, Richmond, Caulfield, Clayton, Dandenong, Pakenham
+  (Gippsland line); Bendigo/Geelong/Ballarat also at Footscray/Sunshine (Regional Rail Link);
+  Seymour also at North Melbourne, Broadmeadows.
+- **Maryborough**: Southern Cross, Footscray, Sunshine.
+- **Ararat**: Southern Cross, Footscray, Sunshine.
+- **Echuca**: Southern Cross.
+- **Shepparton**: Southern Cross, North Melbourne, Broadmeadows.
+- **Bairnsdale**: Southern Cross, Flinders Street, Richmond, Caulfield, Clayton, Dandenong,
+  Pakenham (Gippsland line — same calling points as Traralgon, since Bairnsdale services are the
+  longer-distance Gippsland-line workings that Traralgon services also use as an intermediate
+  stop).
+
+| Verdict | Unique services | Notes |
 | --- | --- | --- |
-| `in` | 24 | V/Line walk-up unreserved services (Geelong, Ballarat, Bendigo, Seymour, Traralgon, Echuca, Ararat) at Southern Cross, Flinders Street, Richmond, Caulfield, Clayton, Dandenong, Pakenham, North Melbourne, Footscray, Sunshine, Broadmeadows. |
-| `out-reservation` | 16 | Albury, Swan Hill, Shepparton, Bairnsdale, Warrnambool — compulsory reservation. |
-| `undecided` | 2 | Maryborough at Footscray and Sunshine — reservation status unconfirmed. **Must be resolved (verified `in`/`out-reservation`, or escalated to Tim) before any flip.** |
+| `in` | 10 | Geelong, Ballarat, Bendigo, Seymour, Traralgon (previously verified `in`) + Echuca, Ararat, Maryborough (verified `in` this pass) + Shepparton, Bairnsdale, Swan Hill (reclassified `out-reservation` → `in` this pass, per §6). |
+| `out-reservation` | 2 | Albury, Warrnambool — fully compulsory reservation, no unreserved capacity. |
+| `undecided` | 0 | None remain. |
 | `out-mode` | — | Rail-replacement buses. |
 
-**Recommendation carried through (Nico's Option A, endorsed):** all V/Line walk-up services get
-`in` verdicts and are wired into the adapter via the second (V/Line) GTFS-R feed. Reserved
-services (`out-reservation`) and unverified feed-coverage rows stay excluded structurally (by
-route/destination, never by dropping a shared station) per `docs/board-eligibility-rule.md`.
+(Counted by unique V/Line service, not by per-station occurrence — a service with multiple
+calling points at shared Metro stations carries the same verdict at each. The source table in
+`open-data-feed-and-eligibility.md` has the full per-station-pair breakdown.)
 
-**Open items that hold the flip (per the rule's `undecided` = "must not survive to a live flip"):**
-1. Maryborough reservation status at Footscray and Sunshine — unresolved.
-2. Whether the V/Line GTFS-R trip-updates feed actually carries Albury, Swan Hill, and
-   Warrnambool departures (marked "Unverified" coverage in the source table) — needs live
-   verification once `VIC_OPENDATA_API_KEY` is available, not an assumption either way.
-3. Whether trip_ids/stop_ids in either GTFS-RT feed match the static schedule "by the book" —
-   the addendum records this as unverified; Jim's first live-verification pass (per
-   `jim-handoff.md`) must settle it for both Metro and V/Line before wiring boards.
+**Recommendation carried through (Nico's Option A, endorsed):** all V/Line walk-up-boardable
+services get `in` verdicts (including the mixed-carriage Shepparton/Bairnsdale/Swan Hill services,
+per §6) and are wired into the adapter via the second (V/Line) GTFS-R feed. Only the two
+fully-reserved destinations (Albury, Warrnambool) stay excluded structurally (by route/destination,
+never by dropping a shared station) per `docs/board-eligibility-rule.md`.
+
+**Open items still held for Jim's live-verification pass (feed coverage, not eligibility):**
+1. Whether the V/Line GTFS-R trip-updates feed actually carries Albury and Warrnambool departures
+   (excluded anyway, but Jim should confirm the adapter's exclusion filter matches what the feed
+   sends, not assume the feed omits them for free) and now also Shepparton/Bairnsdale/Swan Hill
+   (newly `in` — must be confirmed present in the V/Line feed before they can appear on a live
+   board, not assumed).
+2. Whether trip_ids/stop_ids in either GTFS-RT feed match the static schedule "by the book" —
+   still unverified; Jim's first live-verification pass (per `jim-handoff.md`) must settle it for
+   both Metro and V/Line before wiring boards.
 
 ## doNotGroup proposals (full list for `line-map.json` / hazard tooling)
 
@@ -173,7 +238,9 @@ route/destination, never by dropping a shared station) per `docs/board-eligibili
 | Melbourne Central vs Town Hall | Melbourne Central is City Loop only; Town Hall is Metro Tunnel only |
 | Southern Cross Metro vs Southern Cross V/Line | Same building, different operator/mode; per-service verdict, not a station split |
 | North Melbourne vs Arden | Different stations; North Melbourne is City Loop-group only, Arden is Metro Tunnel spine only |
-| "Union" (Pakenham/Cranbourne, per oracle report) vs a same-named station in another city | **Unverified existence — see H1 open item above.** |
+| "Union" (Belgrave/Lilydale, GTFS-confirmed between Chatham and Box Hill) vs a same-named station in another city | Resolved — see H1 above. |
+| "Jolimont" vs "Jolimont-MCG" (GTFS spelling) | Same station; map form wins, GTFS form is an alias — see H1 above. |
+| "City Circle" (GTFS route, not a picker line) vs the 17 named Metro lines | Out of scope for `lines[]` — see H3 above. |
 | Parliament vs Flagstaff | Both City Loop, different lock roles per line group |
 | Stony Point vs the Frankston electrified line | Diesel shuttle, no hub-lock stop of its own |
 | Racecourse / Showgrounds vs the Craigieburn line | Special-events only, not daily service |
@@ -181,7 +248,9 @@ route/destination, never by dropping a shared station) per `docs/board-eligibili
 
 ## What I did not do
 
-No generator run against GTFS, no live API call (real or empty key), no provider code edit, no
-`registry.js` edit, no live city flip, no edit to the oracle report, no invented station
-insertion for the unverified "Union" name, no product/copy decision on "via City Loop" /
-"via Metro Tunnel" labelling (left for Tim per direction-model-memo.md).
+**Second pass:** downloaded and read the public GTFS Schedule static feed (folder 2, Metropolitan
+Train) to reconcile the station graph — this was NOT done in the first pass. Still did not: run
+any live API call (real or empty key), edit provider code, edit `registry.js`, flip the city live,
+edit the oracle report, commit the downloaded GTFS zip to the repo (kept out of git per its size —
+Jim must re-fetch), or make a product/copy decision beyond folding in Tim's already-recorded
+decisions from `tim-decisions-2026-09-20.md` (no new copy calls invented here).

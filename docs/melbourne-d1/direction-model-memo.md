@@ -1,5 +1,8 @@
 # Melbourne direction model memo (§3 for Tim)
 
+**Tim's decisions (20 Sep 2026, recorded in `docs/melbourne-d1/tim-decisions-2026-09-20.md`) close
+all three open §3 questions below — see "Decided (20 Sep 2026)" at the end of this memo.**
+
 Context (20 Sep 2026): Melbourne has three overlapping direction hazards no other AU city in
 this pipeline has needed together — (1) **City Loop direction reversal by time of day and line
 group**, (2) **direct vs via-Loop variants of the same line**, and (3) **Metro Tunnel
@@ -82,8 +85,15 @@ unresolved live trip fails elsewhere in this codebase, not silently default to o
 This corridor has **no hub-lock stop** — it explicitly bypasses Flinders Street, North
 Melbourne, and the City Loop. The only shared "everyone passes through here" stops on this spine
 are the five Metro Tunnel stations (Arden, Parkville, State Library, Town Hall, Anzac) plus
-South Yarra and Caulfield/Dandenong, none of which are printed as *the* city hub the way Flinders
-Street is for every other line group.
+Caulfield/Dandenong, none of which are printed as *the* city hub the way Flinders Street is for
+every other line group. **GTFS-corrected (20 Sep 2026, see gtfs-reconciliation.md):** the actual
+physical join between Sunbury's own GTFS route and the Cranbourne/Pakenham routes is at **Town
+Hall** — Sunbury's trips run only Sunbury↔Town Hall/State Library and never reach Anzac;
+Cranbourne/Pakenham's trips run only Town Hall/Anzac↔their terminus and never reach
+Arden/Parkville/State Library. A single Sunbury-to-Cranbourne (or -Pakenham) working is two
+chained trip_ids under two different route_ids joined at Town Hall, not one route spanning the
+whole corridor — Jim's adapter needs to stitch these via `block_id` (or equivalent) to present one
+continuous journey to a rider, not surface a phantom "change at Town Hall."
 
 **Recommendation: line + terminus, using the far printed terminus in each direction** —
 `Sunbury Line + Sunbury` toward the west, `Sunbury Line + Cranbourne` / `Sunbury Line + Pakenham`
@@ -92,12 +102,8 @@ Dandenong, where the Cranbourne/Pakenham fork happens, the label must disambigua
 south-east termini the same way Stadium-Armory disambiguates Orange/Silver's two east ends in the
 Washington pack — do not let a bare "Sunbury Line" swallow both branches once past Dandenong.
 
-**Flag for Tim:** whether riders should ever see "Metro Tunnel" as a line name/brand distinct
-from "Sunbury"/"Cranbourne"/"Pakenham" — the official Metro Trains line picker still names these
-as three separate lines (Sunbury, Cranbourne, Pakenham), not one "Metro Tunnel line," so this
-memo recommends **not** inventing a fourth brand name, but the official passenger-facing signage
-at the five tunnel stations may use "Metro Tunnel" language this pack has not verified (no
-browser/PDF-fetch access in this lane — see hazard-pack.md's environment-limitation note).
+**Decided (20 Sep 2026):** no — see "Decided" section below. Riders never see "Metro Tunnel" as a
+line name/brand; labels stay `Sunbury`/`Cranbourne`/`Pakenham` matching the official picker.
 
 ## 5. Cross-city through-running (Frankston/Werribee/Williamstown/Sandringham)
 
@@ -123,12 +129,15 @@ so it's explicit that this memo has considered it and found nothing extra to fla
 **Line + terminus** as the base model (matches every other AU/US city packed so far: Sydney,
 Brisbane, Adelaide, Washington, Boston), with the City Loop's loop-vs-direct distinction layered
 on top **only at the stops where it changes what the rider sees next**, derived live from GTFS
-stop-sequence data with no timetable fallback. Do not write D5 assertion tables for the
-loop-serving line groups until Tim has decided the copy format for the loop/direct qualifier
-(§2) and, ideally, until Jim's live-verification pass (jim-handoff.md) has confirmed whether
-headsign text is a usable cross-check for it.
+stop-sequence data with no timetable fallback. Tim's copy decision for the loop/direct qualifier
+is now recorded ("Decided (20 Sep 2026)" below) — D5 assertion tables for the loop-serving line
+groups can proceed on that format. Jim's live-verification pass (jim-handoff.md) should still
+confirm whether headsign text is a usable cross-check for the stop-sequence signal (GTFS's static
+`trips.txt` reliably carries "via City Loop" in the headsign for every loop-serving line group
+sampled in this pass's reconciliation — see `gtfs-reconciliation.md` — but that is the static
+schedule, not the realtime `trip_update` payload Jim will actually poll).
 
-## Open §3 questions for Tim
+## Open §3 questions for Tim (historical — see "Decided" below)
 
 1. **Loop/direct qualifier format** (§2): parenthetical, second line, or chip — not decided here.
 2. **"Metro Tunnel" as a brand name** (§4): this memo recommends against inventing it as a
@@ -139,3 +148,42 @@ headsign text is a usable cross-check for it.
    correct course).
 4. Whether testers see melbourne as its own city picker entry (yes — do not invent city=mel /
    ptv / vic; already settled by the oracle report, restated here for completeness).
+
+## Decided (20 Sep 2026) — closes items 1–3 above
+
+Recorded by the controller session from Tim's replies in chat
+(`docs/melbourne-d1/tim-decisions-2026-09-20.md`). These are final for D5/build purposes; do not
+re-open without a fresh Tim decision.
+
+1. **Loop vs direct copy format (closes item 1).** Loop trains get a suffix on the direction
+   label: **"via City Loop"**. Direct trains are **unlabelled** — no "direct" wording anywhere.
+   Not a chip, not a parenthetical, not a second line: it's a plain suffix appended to the
+   line+terminus string, e.g. `Frankston Line + Frankston via City Loop` vs plain
+   `Frankston Line + Frankston`. The suffix is **derived live from the trip's own stop sequence**
+   (§3's stop-sequence signal — never a time-of-day table, never a static/timetable fallback) and
+   is shown **only** at the five stops where it changes what the rider sees next: **Flinders
+   Street, Southern Cross, Flagstaff, Melbourne Central, Parliament**. Everywhere else on a
+   loop-capable line, plain `{Line} Line + {terminus}` is sufficient (per §2/§6's existing
+   reasoning — both variants converge again south of the loop-adjacent stations). No new
+   chip/tag UI element is to be built for this.
+2. **"Metro Tunnel" is not a rider-facing line name or qualifier (closes item 2).** Labels stay
+   `Sunbury Line` / `Cranbourne Line` / `Pakenham Line` + terminus, matching the official line
+   picker — do not invent a fourth "Metro Tunnel" brand, and do not surface "via Metro Tunnel" as
+   a qualifier the way "via City Loop" is surfaced for the loop-serving groups. Rationale: every
+   train on these three lines uses the tunnel, so unlike "via City Loop" (which distinguishes two
+   real, different paths through the CBD), "via Metro Tunnel" would disambiguate nothing — it's
+   true of 100% of trips on these lines, not a fork. (This is despite GTFS's own trip_headsign
+   text literally containing "via Metro Tunnel" for some Cranbourne/Pakenham-to-Sunbury
+   through-workings — see `gtfs-reconciliation.md` — that headsign text is a scheduling/ops
+   artifact, not evidence riders should see it; do not build the rider-facing label from a
+   literal headsign passthrough here.) Revisit only if a Melbourne tester reports confusion about
+   trains that skip Flinders Street.
+3. **Dandenong fork (Cranbourne vs Pakenham) — no special visual treatment (closes item 3).**
+   Line + terminus already separates the two branches; no chip, colour, or icon beyond the plain
+   text label. The one hard requirement: **the terminus must never be blank** for a train on the
+   Sunbury/Cranbourne/Pakenham spine. A gate assertion must fail on a bare `Sunbury Line` /
+   blank-terminus label for any trip on this spine — see `jim-handoff.md`'s build requirements
+   and gate assertions for the exact check.
+
+Item 4 (melbourne as its own city picker entry) was already settled by the oracle report and
+needed no fresh decision.
