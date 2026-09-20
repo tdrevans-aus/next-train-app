@@ -11,7 +11,7 @@ Sweden,Stockholm,metro + commuter (Tunnelbana + Pendeltåg),Done,0 Close open ta
 United Kingdom,West Midlands,national rail slice + light rail (75 rail + 35 Metro + Kidderminster),Done,0 Close open tabs,Zoe,"Packed, Coming Soon. RDM registration resolved (Tim, 5 Sep 2026) — DARWIN_LDB_TOKEN confirmed usable, no longer blocks National Rail flip. Metro layer live in production 6 Sep 2026 (FB-48 done, #311).",,7 Live,
 Australia,Adelaide,commuter (metro rail lines),Done,1 Finish started countries,Luke,Tester-live. Adelaide metro rail lines.,,7 Live,
 Australia,Brisbane,commuter (QR SEQ T1–T6),Done,1 Finish started countries,Luke,Tester-live. SEQ T1–T6. Do not split Sunshine Coast out of Brisbane SEQ.,,7 Live,
-Australia,Melbourne,metro + commuter (PTV),Blocked,1 Finish started countries,Tim,PTV Timetable API key; parked. No follow-up unless Tim says.,,3 Provider built,Mark QA / flip follow-through
+Australia,Melbourne,metro + commuter (Transport Victoria Open Data Portal),Blocked,1 Finish started countries,Tim,PTV Timetable API path abandoned (key never arrived) - moved to Transport Victoria Open Data Portal GTFS-RT static join per Tim's 20 Sep 2026 decision; D1 pack written (docs/melbourne-d1/),,2 Packed,Vic open data key activation (Tim) -> Jim adapter
 Australia,Perth,commuter (Transperth heavy rail),Done,1 Finish started countries,Luke,Tester-live. Do not edit product. Transperth heavy rail only.,,7 Live,
 Australia,Sydney,commuter + metro (T1–T9 + M1 Metro),Done,1 Finish started countries,Luke,Tester-live. Wollongong / Central Coast stay with NSW/Sydney unless noted.,,7 Live,
 Canada,Toronto,metro + commuter (TTC subway + GO),Blocked,1 Finish started countries,Tim,Blocked; Vancouver-only until it unblocks.,,1 Researched,Luke D1 pack
