@@ -64,3 +64,100 @@ needs a second pass; the dogfood module, dispatch switch-cases, and gate already
 Flip readiness (docs/jim-brief-us-flip-readiness.md): United States picker country, CITY_BOUNDS
 box, and `lib/cities/country-regions.js` entry added for `washington` alongside BART/Boston/
 Chicago (Coming Soon, `status: "planned"`, out of every live-city list).
+
+## Live verification (Jim, 20 Sep 2026)
+
+`WMATA_API_KEY` was available this session. Ran a small, sequential batch (9 calls total: one
+`Rail.svc/json/jStations`, six per-station `StationPrediction.svc/json/GetPrediction` calls,
+one `GetPrediction/All` call, one repeat during the end-to-end adapter check) — well inside
+WMATA's ~10 req/s / 50,000 req/day default tier. City stays `planned`; `assertCityLive("washington")`
+still fails. MARC/VRE remain not wired, exactly as this pack's addendum above records — that
+still holds the flip pending Tim's decision.
+
+**Stations (`Rail.svc/json/jStations`, 102 rows for 98 unique stations — the 4 documented
+two-code transfer stations each have exactly two rows, confirmed via `StationTogether1/2`, no
+others exist):**
+- All 98 D1/catalog stations matched a live jStations row by name or existing alias, with two
+  exceptions fixed this pass: WMATA's live `Name` is "McPherson Square" (catalog printed
+  "McPherson Sq") and "Eisenhower Avenue" (catalog printed "Eisenhower Av") — both now carry the
+  live full-word form as an added alias in `lib/cities/washington/stations.json` so
+  `resolveStationCodesForCatalogEntry` matches them. No live station was missing from the D1
+  catalog and no live station outside the catalog's 98 (no stale-pack issue, no new station to
+  add).
+- The four two-code transfer stations matched `StationTogether1/2` exactly as documented: Metro
+  Center A01↔C01, Gallery Pl-Chinatown B01↔F01, L'Enfant Plaza D03↔F03, Fort Totten B06↔E06. No
+  other station carries a `StationTogether1/2` value.
+- Coordinates: compared every catalog `lat`/`lng` against its live jStations `Lat`/`Lon` (same
+  code). 90 of 98 were within ~150m already; 8 were 151–315m out (Court House, Dunn
+  Loring-Merrifield, Friendship Heights, Georgia Av-Petworth, Greensboro, Minnesota Av, Morgan
+  Blvd, Tysons) — likely street-entrance-vs-platform-centroid differences in the DC GIS source
+  dataset used to build the catalog. Fixed by replacing those 8 stations' `lat`/`lng` with
+  WMATA's own live values (the more authoritative source for a station a rider is trying to
+  reach); the other 90 were left as-is (already accurate).
+
+**Predictions (`StationPrediction.svc/json/GetPrediction`, called for Metro Center A01+C01,
+Gallery Pl-Chinatown B01+F01, L'Enfant Plaza D03+F03, Fort Totten B06+E06, terminal Shady Grove
+A15, ordinary mid-line Bethesda A09, plus once with `All` — 617 total train rows across all
+calls):**
+- Field shapes matched the adapter's documented parsing exactly: `Min` values seen included
+  numeric strings (1–40), `ARR`, `BRD`, and `---` (only on a `Line: "No"` no-passenger row in
+  this capture — a reliable `---` on a passenger line is possible per WMATA's own docs but wasn't
+  captured live, kept as a marked-synthetic fixture case). `Line` values seen: `RD`, `BL`, `OR`,
+  `SV`, `GR`, `No` — **zero `YL` (Yellow Line) rows appeared in the entire 561-row `All` capture**,
+  an off-peak/single-snapshot gap, not evidence Yellow was suspended; kept as a marked-synthetic
+  fixture case and flagged here as an open item to re-check on a future capture. `Line: "No"`
+  rows (no-passenger trains) were confirmed real and correctly dropped. Both codes of every
+  two-code transfer station merged into one board with no duplicates (`GetPrediction/A01,C01`
+  etc. returns one combined `Trains[]`, exactly as the adapter's `codes.join(",")` request shape
+  assumes).
+- **Real bug found and fixed:** WMATA's live `DestinationName` field is NOT reliably the full
+  canonical station name. Red Line trains toward Shady Grove came back as `"Shady Grv"` far more
+  often than the full `"Shady Grove"` in this capture; New Carrollton (both Orange and Silver)
+  came back as `"NewCrlton"`/`"New Crlton"` (two different spacings) rather than
+  `"New Carrollton"`. Neither abbreviation is a substring of the canonical terminus name, so the
+  existing exact/substring `resolveTerminus()` logic could not bridge them — without a fix, most
+  Shady-Grove-bound Red trains would have silently lost their terminus and shown only the bare
+  "Red Line" chip, a real rider-facing regression on very common destinations, not an edge case.
+  Fixed with a small `WMATA_DESTINATION_ABBREVIATIONS` normalization map in
+  `lib/cities/washington/marketing-directions.js`'s `resolveTerminus()`, applied before the
+  exact/substring match.
+- All-caps forms (`"GLENMONT"`, `"SHADY GROVE"`, `"LARGO"`→"Downtown Largo" via `DestinationName`,
+  `"GREENBELT"`, `"ASHBURN"`, `"NEW CARROLLTON"`, `"VIENNA"`) already resolved correctly — folding
+  is case-insensitive and "VIENNA" substring-matches "Vienna/Fairfax-GMU".
+- **Genuine short-turn confirmed live, handled correctly, no fix needed:** a real Blue Line train
+  at L'Enfant Plaza was signed `DestinationName: "Huntington"` — Huntington is not one of Blue's
+  two D1 termini (Franconia-Springfield, Downtown Largo). `mapLineTerminusDestination()`'s
+  existing fallback to the bare `"Blue Line"` label handles this exactly as intended: not dropped,
+  not mislabelled, just less specific than a full terminus chip. No code change needed for this
+  case — added as an explicit expectation in the new QA fixture so a future capture can't silently
+  regress it either way.
+- The full `Destination` (short) field is never used by the adapter — only `DestinationName` — so
+  short forms like `"Largo"`, `"Franconia"`, `"Hntingtn"`, `"Vienna"` never reach the direction
+  model; confirmed no case where `DestinationName` itself needed the `Destination` field as a
+  fallback.
+- `Group` values seen: `"1"`, `"2"` only (used as `platform`, unchanged).
+
+**End-to-end adapter check:** called `fetchStationBoard()` directly (not the gate, a live network
+call) for Metro Center, Gallery Place-Chinatown, L'Enfant Plaza, Fort Totten, Shady Grove, and
+Bethesda. All six returned trips with correctly merged multi-code boards, correct destinations
+(including the abbreviation-fix cases above resolving to full terminus chips), and no duplicates.
+
+**QA fixture replaced:** `qa/fixtures/washington/{jstations,predictions}.json` now hold a trimmed
+REAL capture (rows tagged `"_source": "live-capture-20260920"`), with a small number of
+explicitly `"_source": "synthetic"` rows for shapes the capture didn't happen to produce (a
+passenger-line `"---"` Min, an unrecognized Line code, a Yellow Line row). `qa/washington-
+dogfood-gate.mjs` replays these fixtures instead of hand-authored documentation-shaped objects,
+and now fails loudly (`checkNoSilentlyUnmappedRow`) if any fixture row's Line code or
+`(Line, DestinationName)` pair isn't in an explicit allow-list — a new WMATA abbreviation or a
+newly-observed short-turn destination must be triaged and added there, never silently absorbed
+by the graceful production fallback.
+
+**Open items:**
+- Yellow Line had zero live trains in this single capture — re-verify `Line: "YL"` and its
+  `DestinationName` values (in particular whether Yellow ever short-turns and signs something
+  other than "Greenbelt"/"Huntington"/"Mt Vernon Sq") on a future capture.
+- MARC/VRE still not wired — unchanged, still holds the flip pending Tim's decision (see D2
+  addendum above).
+- Coordinates fixed for 8 stations this pass; the DC GIS source dataset used for the other 90 may
+  be worth a full re-check against WMATA's own `Lat`/`Lon` at some point, though none of the other
+  90 exceeded the ~150m tolerance.
