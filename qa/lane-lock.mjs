@@ -31,9 +31,16 @@
  *
  * Migration: a legacy `docs/expansion-tracker/lane-locks.json` in the checkout a
  * command runs from is merged into the shared file the first time any command
- * runs there (an entry already present in the shared file wins), then removed so
- * it can't be re-imported later. Migration only ever looks at the checkout the
- * command is invoked from, not every worktree.
+ * runs there (an entry already present in the shared file wins). Migration only
+ * ever looks at the checkout the command is invoked from, not every worktree.
+ * The path was tracked (committed as `{}`) before it was gitignored, so branches
+ * cut before that change still carry it: an empty (`{}`) legacy file is left
+ * completely alone (no delete, no restore, no log line — a tracked `{}` must
+ * never show up in `git status`); a legacy file with real entries is migrated
+ * and then, if the path is still tracked in this checkout, restored to its
+ * committed content with `git checkout --` (not deleted, so nothing appears
+ * modified/deleted in `git status`) — if untracked, it's deleted as before.
+ * Either way it is never re-imported on a later command.
  *
  * It used to be committed, but an `acquire` made on a feature branch only
  * reached master once that branch's PR merged — i.e. after the lock had stopped
@@ -164,11 +171,32 @@ function writeLocksRaw(locks) {
   fs.renameSync(tmp, LOCK_FILE);
 }
 
+// True when `relPath` (relative to REPO_ROOT) is tracked by git in this
+// checkout. Never throws — an error (not a git repo, git missing) is treated
+// as "not tracked" so callers fall back to the untracked (delete) path.
+function isTrackedInRepo(relPath) {
+  try {
+    execFileSync("git", ["ls-files", "--error-unmatch", relPath], {
+      cwd: REPO_ROOT,
+      stdio: ["ignore", "ignore", "ignore"],
+      shell: process.platform === "win32",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Must be called from inside withMutex. Merges a legacy per-checkout lock file
-// (from the checkout this command is running in) into the shared lock file, then
-// removes the legacy file so it is never re-imported by a later command. A no-op
-// once LOCK_FILE and LEGACY_LOCK_FILE are the same path (the git-unavailable
-// fallback) or once the legacy file has already been migrated away.
+// (from the checkout this command is running in) into the shared lock file. A
+// no-op once LOCK_FILE and LEGACY_LOCK_FILE are the same path (the
+// git-unavailable fallback). An *empty* legacy file (`{}`, e.g. the tracked
+// file committed before this path was gitignored) is left completely alone —
+// no delete, no restore, no log line — so a tracked `{}` never shows up as a
+// change in `git status`. A legacy file with real entries is migrated and then
+// either restored to its committed content (if still tracked in this
+// checkout, via `git checkout --`, so it's never reported modified/deleted)
+// or deleted (if untracked) — either way it is never re-imported later.
 function migrateLegacyLocked() {
   if (LOCK_FILE === LEGACY_LOCK_FILE) return;
   if (!fs.existsSync(LEGACY_LOCK_FILE)) return;
@@ -178,9 +206,12 @@ function migrateLegacyLocked() {
   } catch {
     legacy = {};
   }
+  const legacyCountries = Object.keys(legacy);
+  if (legacyCountries.length === 0) return;
+
   const locks = readLocksRaw();
   const migrated = [];
-  for (const country of Object.keys(legacy)) {
+  for (const country of legacyCountries) {
     // An entry already in the shared file wins for the same country.
     if (!(country in locks)) {
       locks[country] = legacy[country];
@@ -188,11 +219,26 @@ function migrateLegacyLocked() {
     }
   }
   if (migrated.length) writeLocksRaw(locks);
-  fs.rmSync(LEGACY_LOCK_FILE, { force: true });
+
+  const relLegacyPath = path.relative(REPO_ROOT, LEGACY_LOCK_FILE);
+  if (isTrackedInRepo(relLegacyPath)) {
+    try {
+      execFileSync("git", ["checkout", "--", relLegacyPath], {
+        cwd: REPO_ROOT,
+        stdio: ["ignore", "ignore", "ignore"],
+        shell: process.platform === "win32",
+      });
+    } catch {
+      // Best-effort: if we can't restore the tracked file, leave it as-is
+      // (already-migrated content) rather than deleting something tracked.
+    }
+  } else {
+    fs.rmSync(LEGACY_LOCK_FILE, { force: true });
+  }
   console.log(
     migrated.length
       ? `Migrated legacy lane lock(s) from ${LEGACY_LOCK_FILE} into ${LOCK_FILE}: ${migrated.join(", ")}.`
-      : `Removed legacy lane lock file ${LEGACY_LOCK_FILE} (no new entries — already present in ${LOCK_FILE}).`
+      : `Cleared legacy lane lock file ${LEGACY_LOCK_FILE} (no new entries — already present in ${LOCK_FILE}).`
   );
 }
 

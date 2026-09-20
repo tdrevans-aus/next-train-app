@@ -12,6 +12,12 @@
  * two checkouts, asserting the shared file lands under the temp repo's `.git/`
  * and that neither checkout's docs/expansion-tracker/ gets a new lock file.
  *
+ * Also covers the 20 Sep 2026 follow-up: the legacy path was tracked (committed
+ * as `{}`) on master before it was gitignored, so migration must never leave a
+ * tracked legacy file modified/deleted in `git status` — an empty tracked file
+ * is left alone entirely, and a tracked file with real entries is migrated then
+ * restored to its committed content rather than deleted.
+ *
  * No dev server, no network — pure git + node child processes against a
  * throwaway repo. Never touches the real repo's lock file or `git worktree
  * list`.
@@ -183,6 +189,101 @@ function run() {
     // ever runs against a longer-lived temp dir; harmless either way since the
     // whole tmpRoot is removed below.
     runLock(mainRepo, ["release", "legacyland"]);
+
+    // --- Step 6: a *tracked* legacy file (the real repo's history: it was
+    // committed as `{}` before the path was gitignored). Must never appear
+    // modified/deleted in `git status` — see docs/jim-brief-lane-lock-shared-worktrees.md's
+    // 20 Sep 2026 follow-up.
+
+    // 6a: tracked, empty ({}) — ignored entirely, not touched at all.
+    fs.writeFileSync(legacyFile, "{}\n");
+    git(worktreeDir, ["add", legacyFile]);
+    git(worktreeDir, [
+      "-c",
+      "user.name=QA Bot",
+      "-c",
+      "user.email=qa-bot@example.com",
+      "commit",
+      "-q",
+      "-m",
+      "track empty legacy lock file",
+    ]);
+    const statusEmptyTracked = runLock(worktreeDir, ["status"]);
+    assert(
+      statusEmptyTracked.code === 0,
+      `status with tracked empty legacy file expected exit 0, got ${statusEmptyTracked.code}`
+    );
+    assert(
+      !statusEmptyTracked.stdout.includes("Migrated") && !statusEmptyTracked.stdout.includes("Cleared"),
+      `status with tracked empty legacy file should not log a migration line, got: ${statusEmptyTracked.stdout}`
+    );
+    let gitStatusPorcelain = git(worktreeDir, ["status", "--porcelain", "--", legacyFile]).trim();
+    assert(
+      gitStatusPorcelain === "",
+      `tracked empty legacy file should leave git status clean, got: ${JSON.stringify(gitStatusPorcelain)}`
+    );
+
+    // 6b: tracked, with entries — migrated, then restored to committed ({}) content.
+    fs.writeFileSync(
+      legacyFile,
+      JSON.stringify(
+        {
+          trackedland: { region: "region-y", stage: "jim", branch: null, locked_at: new Date().toISOString() },
+        },
+        null,
+        2
+      ) + "\n"
+    );
+    const statusTrackedMigrate = runLock(worktreeDir, ["status"]);
+    assert(
+      statusTrackedMigrate.code === 0,
+      `status with tracked legacy entries expected exit 0, got ${statusTrackedMigrate.code}`
+    );
+    assert(
+      statusTrackedMigrate.stdout.includes("Migrated"),
+      `status with tracked legacy entries expected a "Migrated" line, got: ${statusTrackedMigrate.stdout}`
+    );
+    assert(
+      fs.existsSync(legacyFile),
+      "tracked legacy file should still exist after migration (restored, not deleted)"
+    );
+    assert(
+      fs.readFileSync(legacyFile, "utf8").trim() === "{}",
+      `tracked legacy file should be restored to its committed ({}) content, got: ${fs.readFileSync(
+        legacyFile,
+        "utf8"
+      )}`
+    );
+    gitStatusPorcelain = git(worktreeDir, ["status", "--porcelain", "--", legacyFile]).trim();
+    assert(
+      gitStatusPorcelain === "",
+      `tracked legacy file should leave git status clean after migration, got: ${JSON.stringify(gitStatusPorcelain)}`
+    );
+
+    const checkTrackedland = runLock(mainRepo, ["check", "trackedland"]);
+    assert(checkTrackedland.code === 1, `check trackedland from main expected exit 1, got ${checkTrackedland.code}`);
+    assert(
+      checkTrackedland.stderr.includes("region-y"),
+      `check trackedland from main expected to name region-y, got: ${checkTrackedland.stderr}`
+    );
+
+    // Second `status` must not re-migrate (file is back to committed {} content).
+    const statusTrackedAgain = runLock(worktreeDir, ["status"]);
+    assert(
+      statusTrackedAgain.code === 0,
+      `second status after tracked-legacy migration expected exit 0, got ${statusTrackedAgain.code}`
+    );
+    assert(
+      !statusTrackedAgain.stdout.includes("Migrated") && !statusTrackedAgain.stdout.includes("Cleared"),
+      `second status after tracked-legacy migration should not re-migrate, got: ${statusTrackedAgain.stdout}`
+    );
+    gitStatusPorcelain = git(worktreeDir, ["status", "--porcelain", "--", legacyFile]).trim();
+    assert(
+      gitStatusPorcelain === "",
+      `tracked legacy file should still be clean after second status, got: ${JSON.stringify(gitStatusPorcelain)}`
+    );
+
+    runLock(mainRepo, ["release", "trackedland"]);
 
     console.log("PASS lane-lock-shared-worktree: lock file is shared across the main checkout and a linked worktree");
   } finally {

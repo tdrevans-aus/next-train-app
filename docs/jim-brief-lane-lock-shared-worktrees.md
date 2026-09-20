@@ -108,3 +108,32 @@ with the fix. Run the new script, then `node qa/run-all.mjs --smoke` with a tool
 600000 ms in the foreground (no background sleep/poll loops — leave nothing running when you
 finish). Commit, push, and open a PR against `master` that links this brief. This brief overrides
 the "don't commit unless Tim asks" line in your older prompt.
+
+## Follow-up (20 Sep 2026, after first pass — PR #425, branch `jim/lane-lock-shared-worktrees`)
+
+The first pass found that the legacy file `docs/expansion-tracker/lane-locks.json` is still
+**tracked** on master (committed as `{}` before the path was gitignored; `git ls-files` lists it).
+So the migration as built deletes a tracked file the first time any lane-lock command runs in any
+checkout, leaving `D docs/expansion-tracker/lane-locks.json` in `git status` — which an agent's
+`git add -A` would then commit, or which dirties a worktree that was meant to stay clean. The
+first pass worked around it with `git checkout --`; that is not a fix.
+
+Do, on the existing branch (push to the same PR, do not open a new one):
+
+1. `git rm` the tracked `docs/expansion-tracker/lane-locks.json` in this PR (keep the `.gitignore`
+   entries). After this merges, checkouts on master have no legacy file at all.
+2. Branches cut before this merges still carry the tracked file. Make migration safe there: a
+   legacy file with no entries (`{}`) is ignored entirely — not deleted, not reported. A legacy
+   file *with* entries is migrated; afterwards, if the path is tracked in that checkout
+   (`git ls-files --error-unmatch`), restore it to its committed content (e.g. `git checkout --
+   <path>`) instead of deleting it; if untracked, delete it as now. Either way it must not be
+   re-imported on the next command.
+3. Extend `qa/lane-lock-shared-worktree.mjs`: in the throwaway repo, commit a tracked `{}` legacy
+   file, then assert (a) any lane-lock command leaves `git status --porcelain` empty for that
+   path, and (b) after writing entries into the tracked legacy file and running `status`, the
+   entries are in the shared file, `git status --porcelain` is empty for that path, and a second
+   `status` does not re-migrate. Keep the existing untracked-legacy case.
+4. Re-run the new script and `node qa/run-all.mjs --smoke` (timeout 600000, foreground), push.
+
+Additional acceptance criterion 9: no lane-lock command ever leaves a tracked file modified or
+deleted in `git status`.
