@@ -168,6 +168,7 @@ const SMOKE_SCRIPTS = [
   "prod-sweep-refresh-failed-gate.mjs",
   "no-hardcoded-qa-port.mjs",
   "ad-consent-gate.mjs",
+  "ads-init-after-deferred-load.mjs",
   "feedback-abuse.mjs",
   "vercel-health-region-gate.mjs",
   "vercel-json-no-inert-memory-gate.mjs",
