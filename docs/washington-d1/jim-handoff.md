@@ -41,14 +41,14 @@ WMATA StationCodes** — spot-checking found a data bug (Potomac Yard's fragment
 Huntington's real code C15) — so StationCodes are always resolved live from WMATA's own
 `jStations`, never from this coordinate source.
 
-**MARC/VRE — NOT implemented, holds the flip.** The oracle report's
-Board eligibility section rules MARC (Penn/Brunswick/Camden) and VRE (Fredericksburg/Manassas)
-`in` at Union Station, Rockville, Silver Spring, New Carrollton, L'Enfant Plaza, and
-Franconia-Springfield — but
-both come from feeds other than WMATA's Station Prediction API and are **not yet wired** in
-this v1 adapter (no fabricated/faked board). This holds the flip until either a second feed is
-wired for those services or Tim records an `out-product` sign-off overriding the walk-up rule's
-`in` verdict for this city. All Amtrak services, Northeast Regional included, are `out-reservation`
+**MARC/VRE — resolved, `out-product` (Tim, 20 Sep 2026).** The oracle report's
+Board eligibility section shows MARC (Penn/Brunswick/Camden) and VRE (Fredericksburg/Manassas)
+pass both walk-up tests at Union Station, Rockville, Silver Spring, New Carrollton, L'Enfant Plaza,
+and Franconia-Springfield — but
+both come from feeds other than WMATA's Station Prediction API and are **not wired** in
+this v1 adapter (no fabricated/faked board). Tim's ruling (20 Sep 2026, docs/united-states-ledger.md):
+`out-product` for v1 — a second feed/provider relationship for MARC and VRE is not justified before
+launch; revisit post-launch. This no longer holds the flip. All Amtrak services, Northeast Regional included, are `out-reservation`
 (controller correction 20 Sep 2026; authoritative verdict to live in docs/united-states-ledger.md),
 already excluded correctly by only ever calling WMATA's own API.
 
@@ -71,8 +71,8 @@ Chicago (Coming Soon, `status: "planned"`, out of every live-city list).
 `Rail.svc/json/jStations`, six per-station `StationPrediction.svc/json/GetPrediction` calls,
 one `GetPrediction/All` call, one repeat during the end-to-end adapter check) — well inside
 WMATA's ~10 req/s / 50,000 req/day default tier. City stays `planned`; `assertCityLive("washington")`
-still fails. MARC/VRE remain not wired, exactly as this pack's addendum above records — that
-still holds the flip pending Tim's decision.
+still fails. MARC/VRE remain not wired, exactly as this pack's addendum above records — resolved
+`out-product`, Tim 20 Sep 2026, no longer holding the flip.
 
 **Stations (`Rail.svc/json/jStations`, 102 rows for 98 unique stations — the 4 documented
 two-code transfer stations each have exactly two rows, confirmed via `StationTogether1/2`, no
@@ -156,8 +156,8 @@ by the graceful production fallback.
 - Yellow Line had zero live trains in this single capture — re-verify `Line: "YL"` and its
   `DestinationName` values (in particular whether Yellow ever short-turns and signs something
   other than "Greenbelt"/"Huntington"/"Mt Vernon Sq") on a future capture.
-- MARC/VRE still not wired — unchanged, still holds the flip pending Tim's decision (see D2
-  addendum above).
+- MARC/VRE still not wired — resolved `out-product`, Tim 20 Sep 2026 (see D2 addendum above);
+  no longer holds the flip.
 - Coordinates fixed for 8 stations this pass; the DC GIS source dataset used for the other 90 may
   be worth a full re-check against WMATA's own `Lat`/`Lon` at some point, though none of the other
   90 exceeded the ~150m tolerance.

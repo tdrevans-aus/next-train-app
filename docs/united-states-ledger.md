@@ -88,6 +88,22 @@ The following region packs have Amtrak verdicts that contradict this ledger's fi
 
 ---
 
+## Tim's rulings (20 Sep 2026, `out-product`)
+
+Recorded per `docs/board-eligibility-rule.md` §3/§4 (`out-product` needs the reason and Tim's
+sign-off recorded). These services pass both walk-up tests but are excluded from v1 by an
+explicit product decision, not silently and not as `out-mode`. Source:
+`docs/jim-brief-us-out-product-dc-bart.md`.
+
+| City | Service | At | Verdict | Reason (Tim, 20 Sep 2026) |
+|---|---|---|---|---|
+| washington | MARC (Penn, Brunswick, Camden) | the shared in-catalog stations the oracle report lists | `out-product` | v1 ships on WMATA's own prediction API only; MARC needs a separate agency real-time feed and provider relationship that is not justified before launch. Revisit post-launch. |
+| washington | VRE (Fredericksburg, Manassas) | the shared in-catalog stations the oracle report lists | `out-product` | Same reason; VRE is also peak-direction weekday-only. Revisit post-launch. |
+| bart | Caltrain | Millbrae | `out-product` | v1 ships on BART's own ETD API only; Caltrain needs a separate feed (511.org). Revisit post-launch. |
+| bart | Capitol Corridor (Amtrak) | Richmond, Coliseum | `out-product` | Same reason; needs Amtrak's feed, whose availability and terms this ledger records as unverified (§1, §3). Revisit post-launch. |
+
+---
+
 ## Propagation log
 
 | Date | Finding | Effect |
