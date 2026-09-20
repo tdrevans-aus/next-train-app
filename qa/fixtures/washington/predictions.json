@@ -1,0 +1,492 @@
+{
+  "_comment": "WMATA StationPrediction.svc/json/GetPrediction fixtures for qa/washington-dogfood-gate.mjs. Rows marked _source: live-capture-20260920 are a REAL, unedited capture (WMATA_API_KEY, single call each to Metro Center A01+C01, Gallery Pl-Chinatown B01+F01, L'Enfant Plaza D03+F03, Fort Totten B06+E06, Shady Grove (terminal, A15), Bethesda (ordinary mid-line, A09), plus one GetPrediction/All call, 20 Sep 2026, docs/washington-d1/jim-handoff.md 'Live verification') trimmed to a representative subset per station. Rows marked _source: synthetic are hand-authored for cases the capture did not happen to catch live (a reliable '---' Min on a real passenger line, and an unrecognized Line code) — every board-relevant shape in lib/providers/washington.js's header comment is covered in one pass, same pattern as qa/fixtures/brussels/irail-liveboard.json.",
+  "metroCenter": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grove",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grove",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "A01",
+      "LocationName": "Metro Center",
+      "Min": "ARR"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Largo",
+      "DestinationCode": "G05",
+      "DestinationName": "Downtown Largo",
+      "Group": "1",
+      "Line": "BL",
+      "LocationCode": "C01",
+      "LocationName": "Metro Center",
+      "Min": "ARR"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Ashburn",
+      "DestinationCode": "N12",
+      "DestinationName": "Ashburn",
+      "Group": "2",
+      "Line": "SV",
+      "LocationCode": "C01",
+      "LocationName": "Metro Center",
+      "Min": "ARR"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Glenmont",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "A01",
+      "LocationName": "Metro Center",
+      "Min": "1"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Franconia",
+      "DestinationCode": "J03",
+      "DestinationName": "Franconia-Springfield",
+      "Group": "2",
+      "Line": "BL",
+      "LocationCode": "C01",
+      "LocationName": "Metro Center",
+      "Min": "2"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grove",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grove",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "A01",
+      "LocationName": "Metro Center",
+      "Min": "3"
+    }
+  ],
+  "galleryPlace": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Greenbelt",
+      "DestinationCode": null,
+      "DestinationName": "Greenbelt",
+      "Group": "1",
+      "Line": "GR",
+      "LocationCode": "F01",
+      "LocationName": "Gallery Pl-Chinatown",
+      "Min": "BRD"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grove",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grove",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "B01",
+      "LocationName": "Gallery Pl-Chinatown",
+      "Min": "1"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Glenmont",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "B01",
+      "LocationName": "Gallery Pl-Chinatown",
+      "Min": "3"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grove",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grove",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "B01",
+      "LocationName": "Gallery Pl-Chinatown",
+      "Min": "7"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Branch Av",
+      "DestinationCode": null,
+      "DestinationName": "Branch Av",
+      "Group": "2",
+      "Line": "GR",
+      "LocationCode": "F01",
+      "LocationName": "Gallery Pl-Chinatown",
+      "Min": "7"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Greenbelt",
+      "DestinationCode": null,
+      "DestinationName": "Greenbelt",
+      "Group": "1",
+      "Line": "GR",
+      "LocationCode": "F01",
+      "LocationName": "Gallery Pl-Chinatown",
+      "Min": "8"
+    }
+  ],
+  "lenfantPlaza": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Branch Av",
+      "DestinationCode": null,
+      "DestinationName": "Branch Av",
+      "Group": "2",
+      "Line": "GR",
+      "LocationCode": "F03",
+      "LocationName": "L'Enfant Plaza",
+      "Min": "ARR"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "New Crlton",
+      "DestinationCode": null,
+      "DestinationName": "New Crlton",
+      "Group": "1",
+      "Line": "OR",
+      "LocationCode": "D03",
+      "LocationName": "L'Enfant Plaza",
+      "Min": "3"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Vienna",
+      "DestinationCode": "K08",
+      "DestinationName": "Vienna/Fairfax-GMU",
+      "Group": "2",
+      "Line": "OR",
+      "LocationCode": "D03",
+      "LocationName": "L'Enfant Plaza",
+      "Min": "3"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Huntington",
+      "DestinationCode": null,
+      "DestinationName": "Huntington",
+      "Group": "2",
+      "Line": "BL",
+      "LocationCode": "D03",
+      "LocationName": "L'Enfant Plaza",
+      "Min": "4"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Greenbelt",
+      "DestinationCode": null,
+      "DestinationName": "Greenbelt",
+      "Group": "1",
+      "Line": "GR",
+      "LocationCode": "F03",
+      "LocationName": "L'Enfant Plaza",
+      "Min": "4"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Largo",
+      "DestinationCode": "G05",
+      "DestinationName": "Downtown Largo",
+      "Group": "1",
+      "Line": "BL",
+      "LocationCode": "D03",
+      "LocationName": "L'Enfant Plaza",
+      "Min": "5"
+    }
+  ],
+  "fortTotten": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grv",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grv",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "B06",
+      "LocationName": "Fort Totten",
+      "Min": "ARR"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Branch Av",
+      "DestinationCode": null,
+      "DestinationName": "Branch Av",
+      "Group": "2",
+      "Line": "GR",
+      "LocationCode": "E06",
+      "LocationName": "Fort Totten",
+      "Min": "2"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Greenbelt",
+      "DestinationCode": null,
+      "DestinationName": "Greenbelt",
+      "Group": "1",
+      "Line": "GR",
+      "LocationCode": "E06",
+      "LocationName": "Fort Totten",
+      "Min": "5"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Glenmont",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "B06",
+      "LocationName": "Fort Totten",
+      "Min": "6"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grv",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grv",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "B06",
+      "LocationName": "Fort Totten",
+      "Min": "8"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "Greenbelt",
+      "DestinationCode": null,
+      "DestinationName": "Greenbelt",
+      "Group": "1",
+      "Line": "GR",
+      "LocationCode": "E06",
+      "LocationName": "Fort Totten",
+      "Min": "12"
+    }
+  ],
+  "shadyGroveTerminal": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": null,
+      "Destination": "GLENMONT",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "A15",
+      "LocationName": "Shady Grove",
+      "Min": "5"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": null,
+      "Destination": "GLENMONT",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "A15",
+      "LocationName": "Shady Grove",
+      "Min": "5"
+    }
+  ],
+  "bethesdaOrdinary": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grv",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grv",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "A09",
+      "LocationName": "Bethesda",
+      "Min": "4"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Glenmont",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "A09",
+      "LocationName": "Bethesda",
+      "Min": "5"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Glenmont",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "A09",
+      "LocationName": "Bethesda",
+      "Min": "10"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "-",
+      "Destination": "Shady Grv",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grv",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "A09",
+      "LocationName": "Bethesda",
+      "Min": "10"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Glenmont",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "A09",
+      "LocationName": "Bethesda",
+      "Min": "16"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "8",
+      "Destination": "Shady Grv",
+      "DestinationCode": null,
+      "DestinationName": "Shady Grv",
+      "Group": "2",
+      "Line": "RD",
+      "LocationCode": "A09",
+      "LocationName": "Bethesda",
+      "Min": "18"
+    }
+  ],
+  "noPassengerReal": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": null,
+      "Destination": "ssenger",
+      "DestinationCode": null,
+      "DestinationName": "No Passenger",
+      "Group": "2",
+      "Line": "No",
+      "LocationCode": "A04",
+      "LocationName": "Woodley Park-Zoo/Adams Morgan",
+      "Min": "ARR"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": null,
+      "Destination": "ssenger",
+      "DestinationCode": null,
+      "DestinationName": "No Passenger",
+      "Group": "1",
+      "Line": "No",
+      "LocationCode": "A05",
+      "LocationName": "Cleveland Park",
+      "Min": "ARR"
+    }
+  ],
+  "silverNewCarrollton": [
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "New Crlton",
+      "DestinationCode": null,
+      "DestinationName": "New Crlton",
+      "Group": "1",
+      "Line": "SV",
+      "LocationCode": "K05",
+      "LocationName": "East Falls Church",
+      "Min": "BRD"
+    },
+    {
+      "_source": "live-capture-20260920",
+      "Car": "6",
+      "Destination": "NewCrlton",
+      "DestinationCode": null,
+      "DestinationName": "NewCrlton",
+      "Group": "1",
+      "Line": "SV",
+      "LocationCode": "N08",
+      "LocationName": "Herndon",
+      "Min": "BRD"
+    }
+  ],
+  "syntheticEdgeCases": [
+    {
+      "_source": "synthetic",
+      "_note": "Reliable '---' Min on a real passenger line was not seen live in this capture (the only '---' row captured was a Line=No no-passenger row, already covered above as noPassengerReal) — WMATA's own docs document '---' as a valid Min value on any line when no prediction is available.",
+      "Car": "8",
+      "Destination": "Glenmont",
+      "DestinationCode": "B11",
+      "DestinationName": "Glenmont",
+      "Group": "1",
+      "Line": "RD",
+      "LocationCode": "A01",
+      "LocationName": "Metro Center",
+      "Min": "---"
+    },
+    {
+      "_source": "synthetic",
+      "_note": "An unrecognized Line code was never seen live in this capture (only RD/BL/OR/SV/GR/No appeared) — kept as a belt-and-braces case per the adapter's never-fabricate posture.",
+      "Car": "8",
+      "Destination": "Unknown",
+      "DestinationCode": null,
+      "DestinationName": "Unknown",
+      "Group": "1",
+      "Line": "ZZ",
+      "LocationCode": "A01",
+      "LocationName": "Metro Center",
+      "Min": "5"
+    },
+    {
+      "_source": "synthetic",
+      "_note": "The Yellow line carried ZERO trains in the entire GetPrediction/All capture at 20 Sep 2026 ~evening ET (0 of 561 rows had Line=YL) — an off-peak/short-headway gap in this single snapshot, not evidence Yellow was suspended. Kept synthetic since no real YL row was available to capture; docs/washington-d1/jim-handoff.md 'Live verification' records this gap as an open item to re-check on a future capture.",
+      "Car": "8",
+      "Destination": "Huntington",
+      "DestinationCode": null,
+      "DestinationName": "Huntington",
+      "Group": "1",
+      "Line": "YL",
+      "LocationCode": "F01",
+      "LocationName": "Gallery Pl-Chinatown",
+      "Min": "6"
+    }
+  ]
+}

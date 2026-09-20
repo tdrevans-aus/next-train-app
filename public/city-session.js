@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -30,6 +30,16 @@
         { id: "newcastle", name: "Newcastle", timeZone: "Australia/Sydney" },
         { id: "perth", name: "Perth", timeZone: "Australia/Perth" },
         { id: "sydney", name: "Sydney", timeZone: "Australia/Sydney" },
+      ],
+    },
+    {
+      // Belgium: first Belgian region, flipped live 20 Sep 2026 (Mark's QA on PR #419,
+      // docs/brussels-d1/mark-qa-note.md). See docs/brussels-d1/jim-handoff.md
+      // "Flip commit — exact edits" for the full list-membership recipe.
+      id: "be",
+      name: "Belgium",
+      regions: [
+        { id: "brussels", name: "Brussels", timeZone: "Europe/Brussels" },
       ],
     },
     {
@@ -95,6 +105,24 @@
       ],
     },
     {
+      id: "us",
+      name: "United States",
+      regions: [
+        // docs/jim-brief-us-flip-readiness.md — Coming Soon only; none of these
+        // are live yet, per the pipeline's "no picker entry for a new planned
+        // city" rule (Tim, 30 Aug 2026) not applying here because Mark's Boston
+        // QA is green and this is the flip-readiness scaffolding, not a bare
+        // planned-city add. Kept comingSoon: true and out of MULTI_CITY_IDS —
+        // status stays "planned" in the registry until a separate flip PR.
+        { id: "bart", name: "BART (San Francisco Bay Area)", timeZone: "America/Los_Angeles", comingSoon: true },
+        { id: "boston", name: "Boston", timeZone: "America/New_York" },
+        { id: "chicago", name: "Chicago", timeZone: "America/Chicago", comingSoon: true },
+        // docs/washington-d1/ — same Coming Soon shape (PR #418/#420 US wave 2
+        // pattern). status stays "planned" in the registry until a flip PR.
+        { id: "washington", name: "Washington, D.C.", timeZone: "America/New_York", comingSoon: true },
+      ],
+    },
+    {
       id: "gb-wls",
       name: "Wales",
       regions: [
@@ -127,6 +155,11 @@
     uppsala: { minLat: 59.30, maxLat: 60.75, minLng: 16.80, maxLng: 18.60 },
     helsinki: { minLat: 60.13, maxLat: 60.25, minLng: 24.62, maxLng: 25.16 },
     oslo: { minLat: 59.60, maxLat: 60.25, minLng: 10.40, maxLng: 11.20 },
+    // Brussels (docs/jim-brief-brussels-flip-readiness.md, 20 Sep 2026) — comingSoon in the
+    // picker, box derived from lib/cities/brussels/stations.json's 60 catalogued stations
+    // (lat 50.812-50.897, lng 4.267-4.465) with a small margin. Doesn't overlap any other
+    // region's box, so its position here doesn't affect containment order.
+    brussels: { minLat: 50.79, maxLat: 50.92, minLng: 4.24, maxLng: 4.49 },
     "uk-west-midlands": { minLat: 52.25, maxLat: 52.70, minLng: -2.35, maxLng: -1.45 },
     // south-wales is listed BEFORE west-of-england so hintCityFromCoords's
     // first-match lookup resolves the Severn-estuary stations correctly:
@@ -299,6 +332,20 @@
     // Glasgow/Edinburgh. Bounds are the min/max lat/lng actually present in the
     // catalog (docs/jim-brief-uk-station-fill-phase2b.md), not a hand-drawn estimate.
     "rest-of-england": { minLat: 50.6, maxLat: 54.85, minLng: -3.6, maxLng: 1.45 },
+    // United States (docs/jim-brief-us-flip-readiness.md) — Coming Soon regions,
+    // no overlap risk with any existing box (different continent). Derived from
+    // each catalog's actual station coordinates with a small margin.
+    // BART's southern edge (Berryessa/North San José, 37.368) is BART's own
+    // real southernmost station — the small margin below (37.34) stops well
+    // short of Diridon (37.3297), Caltrain/VTA's own hub, so this box does not
+    // reach into Caltrain/VTA-only territory.
+    bart: { minLat: 37.34, maxLat: 38.05, minLng: -122.5, maxLng: -121.75 },
+    boston: { minLat: 42.15, maxLat: 42.48, minLng: -71.3, maxLng: -70.95 },
+    chicago: { minLat: 41.68, maxLat: 42.12, minLng: -87.95, maxLng: -87.55 },
+    // docs/washington-d1/ — derived from lib/cities/washington/stations.json's actual
+    // coordinates (min 38.7665/-77.4915, max 39.1199/-76.8446) with a small margin. No
+    // overlap with any existing box (different region entirely).
+    washington: { minLat: 38.72, maxLat: 39.17, minLng: -77.55, maxLng: -76.8 },
   };
 
   function dogfood() {

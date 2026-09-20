@@ -1,0 +1,112 @@
+# United States country ledger
+
+**Written by:** Nico, country-lane light pass · **Date:** 20 Sep 2026
+**Spec:** `docs/country-lane.md` · **Trigger:** USA is a shared-feed-platform country (Trigger 3 — all US regions use per-agency GTFS-RT feeds, no national aggregator, but Amtrak's national long-distance network crosses multiple regional boundaries and requires a single, cross-region verdict on every major route).
+**Status:** Nine US regions in pipeline/planned (Boston, Washington, Philadelphia, VRE, MARC, NJ Transit, LIRR, Metro-North, Metra, Chicago). Amtrak services call at every region's shared stations. Verdicts have been asymmetrical (Northeast Regional recorded as `in` in Philadelphia and VRE, `out-product` in MARC/NJ Transit/Metro-North, `out-reservation` in LIRR/Boston/Washington); this ledger records the single fact that resolves test 1 for each major Amtrak route family.
+
+---
+
+## 1. Provider decision
+
+**Per-agency adapters, no national feed.** Each US region operates its own real-time GTFS-RT feed (SEPTA Regional Rail, VRE, MARC, NJ Transit, LIRR, Metro-North, Metra, CTA/Metra split in Chicago, etc.). No shared adapter over a national US provider exists — unlike UK (Darwin), Sweden (Trafiklab), or Australia (Transitland). Regions are built as independent adapters.
+
+**Amtrak's own real-time feed.** Amtrak provides GTFS-RT but **availability and redistribution terms are not confirmed** — Nico has not yet verified the feed's public URL, API authentication, or data-sharing terms. Amtrak's ticketing pages confirm seat/reservation policy per route (see verdicts below), but the operational feed is not yet wired into any planned US region adapter. **Note:** This ledger records board-eligibility verdicts only; it does not authorize wiring an Amtrak feed. Feed verification and Tim's approval are prerequisites for any region's adapter.
+
+---
+
+## 2. National-service verdicts
+
+Vocabulary per `docs/board-eligibility-rule.md` §3. All verdicts derived from Amtrak's official ticketing pages (https://www.amtrak.com/reserved-coach-class-seat, https://www.amtrak.com/unreserved-coach-class-seat, per-route pages). Test 1 fact: **is coach RESERVED (ticket tied to a specific train, walk-up boardable = NO) or UNRESERVED (ticket valid any train same day/period, walk-up valid)?**
+
+| Service | Test 1 fact | Verdict | Evidence | Stations affected | Basis |
+|---|---|---|---|---|---|
+| **Amtrak Northeast Regional** | Coach RESERVED; a ticket is a compulsory reservation for a specific train (capacity-capped, per-train sales) | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat) lists Northeast Regional as reserved service; [Northeast Regional route page](https://www.amtrak.com/northeast-regional-train) describes coach seating as reserved; corrected by controller 20 Sep 2026 — Philadelphia and VRE reports incorrectly claimed walk-up unreserved | Calls at Boston (North Station), Philadelphia (30th Street), Washington (Union Station), VRE (Woodbridge, Union Station) and points between | Verified against official Amtrak ticketing policy; Boston and Washington oracle reports correctly identified as reserved |
+| **Amtrak Acela Express** | Coach + Business RESERVED; all seats assigned at point of sale; no walk-up boarding model | `out-reservation` | [Amtrak Acela Seats page](https://www.amtrak.com/seats-cabins/acela-seats/) — "all seats on Amtrak Acela are fully assigned at the time of reservation" | Boston (South Station), Philadelphia (30th Street), Washington (Union Station) | Verified directly on Amtrak |
+| **Amtrak Keystone Service** | Coach RESERVED as of October 4, 2025; moved from unreserved to reserved | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat) lists Keystone Service; confirmed by Amtrak Unlimited Forum discussion ([Keystones requiring reservations starting October 4, 2025](https://www.amtraktrains.com/threads/keystones-requiring-reservations-starting-october-4-2025.89273/)) | Philadelphia, Harrisburg region if built | Reserved as of 1 Oct 2025 (after this ledger's date range); effective `out-reservation` for all future builds |
+| **Amtrak Capitol Corridor** | Coach UNRESERVED; ticket valid on any Capitol Corridor train same day/period; walk-up boarding standard | `in` | [Amtrak Unreserved Coach Class Seat page](https://www.amtrak.com/unreserved-coach-class-seat/) — "unreserved coach seating, which provides maximum flexibility"; [capitolcorridor.org ticketing policy](https://www.capitolcorridor.org/ticket-policies-e-ticketing/) confirms walk-up kiosks, station agents, and on-board ticket sales; no advance booking required for walk-up riders | San Jose Diridon, Oakland Coliseum, other Bay Area stations (Bay Area regions if built) | Verified on official Amtrak and Capitol Corridor site; walk-up model explicit |
+| **Amtrak Pacific Surfliner** | Coach UNRESERVED; ticket valid any Pacific Surfliner train same day/period; walk-up model standard except peak holidays | `in` | [Amtrak Unreserved Coach Class Seat page](https://www.amtrak.com/unreserved-coach-class-seat/); [pacificsurfliner.com FAQ](https://www.pacificsurfliner.com/faqs/) confirms "unreserved coach tickets allow you to ride any Pacific Surfliner train from the origin station to the destination station listed on your ticket" — caveat: "restrictions may apply...when the trains are all-reserved on peak travel days," but walk-up default is unreserved | San Diego, Los Angeles, Santa Barbara, San Luis Obispo (California Central Coast regions if built) | Walk-up standard; seasonal capacity management allowed (rule §6 edge case: optional restriction, not compulsory reservation) |
+| **Amtrak Downeaster (Maine)** | Coach RESERVED; advance reservations required; seats unassigned within your car but booking is compulsory | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat/) lists Downeaster; [Amtrak Downeaster FAQ](https://amtrakdowneaster.com/about-us/faqs/) states "the Amtrak Downeaster is a reserved service and reservations are required prior to boarding" (cash payment exception for conductor onboard, subject to availability, but not a walk-up boarding model) | Portland, Brunswick (Maine region if built) | Advance reservations compulsory; fails walk-up test 1 |
+| **Amtrak Empire Service (New York)** | Coach RESERVED; advance reservations required | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat/) lists Empire Service | Albany, New York (New York state regions if built) | Confirmed on reserved-coach list |
+| **Amtrak Hiawatha (Chicago–Milwaukee)** | Coach RESERVED; advance reservations required | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat/) lists Hiawatha | Milwaukee (Wisconsin region if built) | Confirmed on reserved-coach list |
+| **Amtrak Cascades (Pacific Northwest)** | Coach RESERVED; reservations required up to eleven months in advance; ticket agent assigns car/seat at check-in (or first-come first-served at small stations, but still a reserved service model) | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat/) lists Cascades; [amtrakcascades.com seating guide](https://amtrakcascades.com/riders-guide/seating/) states "your reservation means only that you have a ticket to get on that train" (compulsory reservation, not walk-up) | Seattle, Portland, Eugene (Pacific Northwest regions if built) | Reservations required; fails walk-up test 1 |
+| **Amtrak Vermonter (Vermont–DC)** | Coach RESERVED; advance reservations required | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat/) lists Vermonter | Washington Union Station (if Washington region cab seat calls from the north); Brattleboro, Bellows Falls (Vermont region if built) | Confirmed on reserved-coach list |
+| **Amtrak Carolinian (Raleigh–Washington)** | Coach RESERVED; advance reservations required | `out-reservation` | [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat/) lists Carolinian; Washington oracle report confirms | Washington Union Station, Raleigh (North Carolina region if built) | Confirmed on reserved-coach list and washington-d1 oracle report |
+| **Amtrak long-distance sleeper/coach network (Capitol Limited, Cardinal, Crescent, Silver Meteor, Silver Star, Palmetto, etc.)** | ALL coach/sleeper RESERVED; compulsory seat/berth booking; capacity-capped per train | `out-reservation` | [Amtrak Reserved Seating page](https://www.amtrak.com/reserved-seating); [Amtrak sleeper-car page](https://www.amtrak.com/sleeper-cars) — "advance booking required"; Washington oracle report documents all long-distance services as reserved | Union Station (Washington, DC), select major terminals | Verified across multiple oracle reports (Boston, Washington, VRE); all long-distance Amtrak is reserved |
+| **Amtrak Lake Shore Limited (Chicago–Boston/NYC)** | Coach seating status UNDECIDED — not listed on Amtrak's official unreserved-coach page; appears to be a reserved service (long-distance network pattern) but Amtrak's public pages do not explicitly confirm | `undecided` | Not listed on [https://www.amtrak.com/unreserved-coach-class-seat](https://www.amtrak.com/unreserved-coach-class-seat); listed on [Amtrak Reserved Coach Class Seat page](https://www.amtrak.com/reserved-coach-class-seat) per search results, but official fetch did not return explicit confirmation. Railroad enthusiast forums suggest unreserved model (passengers choose car based on destination, then choose seat) but Amtrak's official policy statement is not publicly confirmed. | Chicago (Metra region), Cleveland, Buffalo, Rochester, Boston, New York (multiple regions if built) | Cannot confirm walk-up model from Amtrak's official pages; search-result evidence suggests likely reserved, but explicit policy statement needed |
+
+**Consistency check:** Region packs that predate this ledger:
+
+| Region | Service | Original verdict | Status |
+|---|---|---|---|
+| Philadelphia-d1 | Northeast Regional | `in` | **Incorrect** — reserved coach, should be `out-reservation`. Region pack records walk-up unreserved, contradicted by official Amtrak ticketing page. To reconcile: next Philadelphia adapter build or pack update must flip to `out-reservation` and cite this ledger. |
+| VRE-d1 | Northeast Regional | `in` | **Incorrect** — reserved coach, should be `out-reservation`. Region pack records optional reservation + walk-up valid, contradicted by official Amtrak reserved-coach policy. To reconcile: next VRE adapter or pack update must flip to `out-reservation`. |
+| MARC-d1 | Northeast Regional | `out-product` | **Partially correct logic, wrong term.** Verdict is framed as "operator/service class, not station access" but the actual fail is test 1 (reserved seating). MARC-d1's framing is defensible as `out-product` if reservations are treated as an operator-scope issue, but the board-eligibility rule (§3) prefers `out-reservation` for clarity. To reconcile: next MARC adapter/pack should cite this ledger and flip to `out-reservation`. |
+| NJ Transit-d1 | Northeast Regional + Acela | `out-product` | **Partially correct logic, wrong term.** Report frames it as "ticket/reservation compulsory; cannot board with pass alone" and "separate operator," but the fail is test 1 (reserved seating). Same reasoning as MARC: defensible as `out-product` if treating Amtrak as out-of-scope by operator, but rule §3 prefers `out-reservation` for boarding-contract clarity. To reconcile: next NJ Transit adapter/pack should cite this ledger and flip to `out-reservation`. |
+| Metro-North-d1 | Northeast Regional | `out-product` | **Incorrect reasoning, wrong verdict term.** Report states service is walk-up boardable (no compulsory reservation) but excluded by "operator scope (not MTA)." This contradicts the official Amtrak reserved-coach policy. Either the report misread Amtrak's ticketing page, or Amtrak's policy has changed since the report. To reconcile: **URGENT** — verify this finding with current Amtrak.com before the next Metro-North adapter build. If Amtrak's official page confirms reserved, flip Metro-North verdict to `out-reservation` and cite controller correction 20 Sep 2026. |
+| LIRR-d1 | Amtrak (all) | `out-reservation` | **Correct** — report cites Amtrak ticketing pages. Aligns with this ledger. |
+| Boston-d1 | Amtrak Northeast Regional, Acela, Lake Shore Limited | `out-reservation` | **Correct** — report cites Amtrak reserved-seating page. Aligns with this ledger. Boston-d1 was the first to identify Northeast Regional as reserved (controller corrected other regions to match 20 Sep 2026). |
+| Washington-d1 | Amtrak (Northeast Regional, Acela, Capitol Limited, Cardinal, Crescent, Silver Meteor, Silver Star, Vermonter, Carolinian, Palmetto) | `out-reservation` for all | **Correct** — report cites Amtrak reserved-seating page. Aligns with this ledger. Washington-d1 records Northeast Regional reservation policy correctly. Controller corrected Nico's first-pass note that said `in`; this ledger propagates that correction across all regions. |
+
+---
+
+## 3. Coverage boundaries
+
+**Per-agency GTFS-RT feeds — no fallback.** Every region's GTFS-RT feed ends at the region's geographic scope. No national US feed covers all regions (unlike UK Darwin, Sweden Trafiklab). Each region's catalog is bounded by its agency's own GTFS-RT coverage. No cross-region static fallback exists. Regions stay within their declared agency boundary.
+
+**Amtrak real-time — unconfirmed.** Amtrak operates its own GTFS-RT, but no region's oracle report confirms the feed URL, API authentication, or data-sharing terms for public redistribution in a third-party app. [Amtrak's developer resources](https://www.amtrak.com/) do not publicly document a real-time feed for regional services. **No region may wire Amtrak real-time without Tim's explicit approval and Nico verification of redistribution terms.** This is a blocker for any region that wants to show walk-up Amtrak services (Capitol Corridor, Pacific Surfliner) on boards.
+
+---
+
+## 4. To reconcile (cross-region discoveries)
+
+The following region packs have Amtrak verdicts that contradict this ledger's findings. None is edited here (immutable history per the propagation rule); these are flagged for the next build/pack update of each region.
+
+| Region | Service | Ledger verdict | Current pack verdict | Action |
+|---|---|---|---|---|
+| Philadelphia-d1 | Northeast Regional | `out-reservation` | `in` | Next Philadelphia adapter/pack: flip to `out-reservation`, cite this ledger |
+| VRE-d1 | Northeast Regional | `out-reservation` | `in` | Next VRE adapter/pack: flip to `out-reservation`, cite this ledger |
+| MARC-d1 | Northeast Regional | `out-reservation` (preferred clarity over `out-product`) | `out-product` | Next MARC adapter/pack: optional flip to `out-reservation` for consistency with board-eligibility rule §3; explain either way in notes |
+| NJ Transit-d1 | Northeast Regional + Acela | `out-reservation` (preferred) | `out-product` | Next NJ Transit adapter/pack: optional flip to `out-reservation`; explain either way |
+| Metro-North-d1 | Northeast Regional | `out-reservation` | `out-product` | **URGENT before next adapter build:** Verify Metro-North oracle report's claim that Northeast Regional is walk-up boardable. If Amtrak's official page confirms reserved (as of 20 Sep 2026), flip to `out-reservation` and cite controller correction. If report's walk-up claim is current/correct, flag Amtrak policy as changed and escalate to Tim |
+
+---
+
+## Open items for Tim
+
+1. **Northeast Regional verdict propagation.** Controller corrected the Northeast Regional verdict to `out-reservation` on 20 Sep 2026 (Boston and Washington reports aligned; Philadelphia and VRE still show `in`; MARC, NJ Transit, Metro-North show `out-product` with varying rationales). This ledger documents the single fact (reserved coach on official Amtrak page) that settles test 1. Next regional adapter builds should cite this ledger and align on `out-reservation`.
+
+2. **Metro-North Northeast Regional claim requires urgent verification.** Metro-North-d1's oracle report (Nico's earlier pass) states "walk-up boarding available; no compulsory reservation on this service" and records verdict as `out-product` (operator scope). This contradicts the official Amtrak reserved-coach page. Before the next Metro-North adapter build, verify whether:
+   - Metro-North's finding is outdated (Amtrak changed policy after the report);
+   - Amtrak's official page is wrong or has changed since today;
+   - Metro-North report misread Amtrak's ticketing page (e.g., conflating business-class assigned seats with coach-class walk-up). If Amtrak's page is confirmed, flip Metro-North to `out-reservation` and mark as controller corrected.
+
+3. **Capitol Corridor and Pacific Surfliner Amtrak feed blocker.** Both services are unreserved and walk-up eligible for `in` verdicts at Bay Area and Southern California regions (if built). Both currently have no confirmed public GTFS-RT feed, and no region has wired them yet. Feed verification and redistribution-terms clearance from Tim are prerequisites for any region build.
+
+4. **Lake Shore Limited verdict — undecided, requires confirmation.** Long-distance service not listed on Amtrak's official unreserved-coach page; likely reserved (long-distance network pattern), but Amtrak's public ticketing page does not explicitly state Lake Shore Limited's seating policy. Before any region covering Lake Shore Limited (e.g., Midwest regions, Chicago if expanded to cover Boston/NYC termini), verify the policy and confirm it at [https://www.amtrak.com/lake-shore-limited-train](https://www.amtrak.com/lake-shore-limited-train) or contact Amtrak directly. Assume reserved (`out-reservation`) unless confirmed otherwise.
+
+5. **Amtrak real-time feed — not yet verified.** No region has confirmed Amtrak's official GTFS-RT feed URL, API authentication, or data-sharing license. Any region build that includes unreserved Amtrak service (Capitol Corridor, Pacific Surfliner) and wants live boarding must verify the feed first. Tim's approval required before wiring.
+
+---
+
+## Tim's rulings (20 Sep 2026, `out-product`)
+
+Recorded per `docs/board-eligibility-rule.md` §3/§4 (`out-product` needs the reason and Tim's
+sign-off recorded). These services pass both walk-up tests but are excluded from v1 by an
+explicit product decision, not silently and not as `out-mode`. Source:
+`docs/jim-brief-us-out-product-dc-bart.md`.
+
+| City | Service | At | Verdict | Reason (Tim, 20 Sep 2026) |
+|---|---|---|---|---|
+| washington | MARC (Penn, Brunswick, Camden) | the shared in-catalog stations the oracle report lists | `out-product` | v1 ships on WMATA's own prediction API only; MARC needs a separate agency real-time feed and provider relationship that is not justified before launch. Revisit post-launch. |
+| washington | VRE (Fredericksburg, Manassas) | the shared in-catalog stations the oracle report lists | `out-product` | Same reason; VRE is also peak-direction weekday-only. Revisit post-launch. |
+| bart | Caltrain | Millbrae | `out-product` | v1 ships on BART's own ETD API only; Caltrain needs a separate feed (511.org). Revisit post-launch. |
+| bart | Capitol Corridor (Amtrak) | Richmond, Coliseum | `out-product` | Same reason; needs Amtrak's feed, whose availability and terms this ledger records as unverified (§1, §3). Revisit post-launch. |
+
+---
+
+## Propagation log
+
+| Date | Finding | Effect |
+|---|---|---|
+| 20 Sep 2026 | Controller verified Amtrak Northeast Regional coach as RESERVED (official page, not walk-up). Corrected Nico's first passes in Philadelphia-d1 and VRE-d1, which claimed unreserved/walk-up. Boston-d1 and Washington-d1 had correct verdict (`out-reservation`) from the start. | Philadelphia and VRE pack verdicts remain as written (immutable history); this ledger records the single authoritative fact (reserved coach) for all future builds. MARC, NJ Transit, Metro-North had `out-product` verdicts with operator-scope rationale — accepted as defensible but suboptimal clarity per rule §3. Next builds should flip to `out-reservation` and cite this ledger. |
+| 20 Sep 2026 | Verified unreserved coaches: Capitol Corridor and Pacific Surfliner confirmed on Amtrak's official unreserved-coach page. Both qualify as `in` pending Amtrak feed verification. Lake Shore Limited verdict cannot be confirmed from public Amtrak pages (likely reserved long-distance, but not explicit). | No adapters updated; findings recorded for future regional builds. Feed verification is a prerequisite for Capitol Corridor / Pacific Surfliner regions. |

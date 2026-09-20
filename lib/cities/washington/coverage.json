@@ -1,0 +1,31 @@
+{
+  "region": "washington",
+  "updated": "2026-09-20",
+  "covered": [
+    {
+      "label": "Metrorail (Red, Orange, Blue, Silver, Green, Yellow)",
+      "detail": "All 98 Metrorail stations, full network, live WMATA predictions."
+    }
+  ],
+  "partial": [],
+  "notCovered": [
+    {
+      "label": "MARC (Penn, Brunswick, Camden Lines)",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "VRE (Fredericksburg, Manassas Lines)",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "Amtrak (Northeast Regional, Acela and other long-distance trains)",
+      "detail": "Excluded - booking a seat is compulsory."
+    },
+    {
+      "label": "Metrobus, DC Streetcar",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "98 Metrorail stations.",
+  "notes": "Metro Center is the Red x Orange/Blue/Silver hub; Farragut North and Farragut West are two separate stations, not the same stop."
+}

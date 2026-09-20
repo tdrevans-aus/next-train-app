@@ -467,7 +467,7 @@ window.NextTrainAds = {
   ensureNativeAdsBridge,
 };
 
-window.addEventListener("load", () => {
+function bootAds() {
   installOverlayAdGuard();
   const { waitForCapacitor } = window.NextTrainScripts ?? {};
   if (waitForCapacitor) {
@@ -476,7 +476,18 @@ window.addEventListener("load", () => {
   }
 
   initAds();
-});
+}
+
+// ads.js is loaded deferred, after first train paint (public/index.html's
+// NextTrainDeferred.load()) — by then document.readyState is already
+// "complete" and a bare "load" listener never fires. Run immediately in
+// that case; otherwise fall back to the listener for the (non-deferred/test)
+// case where ads.js loads before the window has finished loading.
+if (document.readyState === "complete") {
+  bootAds();
+} else {
+  window.addEventListener("load", bootAds, { once: true });
+}
 
 document.addEventListener("nexttrain:adfree-changed", (event) => {
   if (event.detail?.entitled) {

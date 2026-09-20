@@ -28,7 +28,9 @@ Your output is the adapter file, its tests, and the registry entry. Mark reads t
   stop and report that back. If free, run
   `node qa/lane-lock.mjs acquire <country> <region> jim <your-branch>` before editing `registry.js`
   or any other shared file — always pass the branch, because the lock releases itself once that
-  branch's PR merges (the lock file is local and gitignored; nobody runs `release` by hand any more).
+  branch's PR merges (the lock file lives at `<git-common-dir>/lane-locks.json`, i.e. inside the
+  main repo's `.git/`, shared by every worktree of it including yours; nobody runs `release` by
+  hand any more).
   Luke doesn't lock (his files are all under `docs/<city>-d1/`), so only another Jim run in the same
   country can block you.
 - When verifying your wiring, run your city's own gates (`node qa/<city>-*-gate.mjs`) or at most

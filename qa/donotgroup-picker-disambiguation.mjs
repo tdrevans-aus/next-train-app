@@ -11,6 +11,7 @@ import { readdirSync, readFileSync, existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { ensureDevServer, stopDevServer } from "./helpers/dev-server.mjs";
+import { MULTI_CITY_IDS } from "../lib/cities/live-city-api.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -33,6 +34,16 @@ function findSameNameDoNotGroupPairs() {
   const citiesDir = path.join(ROOT, "lib", "cities");
   const found = [];
   for (const region of readdirSync(citiesDir)) {
+    // This scan is a picker-rendering concern (disambiguationSuffixesFor renders live station
+    // combobox rows) — a catalog for a city with no picker entry yet (not in MULTI_CITY_IDS;
+    // guardrail: never add a Coming Soon picker entry for a still-planned city, Tim 30 Aug
+    // 2026) can't have a real ambiguous-picker-row problem, so it's out of scope here. Chicago
+    // (planned, single-mode 'L' catalog) has same-name-different-physical-place families
+    // (Western, Belmont, ...) that are a lib/providers/chicago.js AmbiguousChicagoStationError
+    // concern, not a cross-modal picker-label concern this script checks for.
+    if (!MULTI_CITY_IDS.includes(region)) {
+      continue;
+    }
     const file = path.join(citiesDir, region, "stations.json");
     if (!existsSync(file)) {
       continue;

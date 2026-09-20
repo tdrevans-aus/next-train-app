@@ -535,6 +535,8 @@ const PERSISTED_CITY_IDS = new Set([
   "edinburgh",
   "cumbria",
   "rest-of-england",
+  "boston",
+  "brussels",
 ]);
 // "gb" kept alongside the split gb-eng/gb-sct/gb-wls ids so an older stored savedCountry
 // survives the sanitizer until city-session.js's readSavedCountry() migration rewrites it
@@ -542,7 +544,7 @@ const PERSISTED_CITY_IDS = new Set([
 // "nl", "ca", "nz" dropped 7 Sep 2026 (release 1 scope cut) — Netherlands, Canada, and
 // New Zealand no longer have any live city, so an old savedCountry for them degrades the
 // same way an unknown country does today.
-const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "gb-eng", "gb-sct", "gb-wls", "se", "fi", "no"]);
+const PERSISTED_COUNTRY_IDS = new Set(["au", "gb", "gb-eng", "gb-sct", "gb-wls", "se", "fi", "no", "us", "be"]);
 
 function pickSavedCityFields(raw = {}) {
   const city = String(raw.savedCity ?? "").trim().toLowerCase();
