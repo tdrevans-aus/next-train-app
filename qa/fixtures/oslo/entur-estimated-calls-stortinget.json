@@ -1,0 +1,1354 @@
+{
+  "_meta": {
+    "source": "Live Entur journey-planner v3 estimatedCalls response for NSR:StopPlace:4029 (Stortinget), captured 2026-09-20 ~14:35 CEST with numberOfDepartures=200, numberOfDeparturesPerLineAndDestinationDisplay=8, timeRange=5400 (docs/jim-brief-oslo-board-horizon.md fix). Trimmed to the first 5 calls per line+destination (60 of the original 72 rows) to keep the fixture small; every row below is otherwise verbatim from that response. One additional row is wholly synthetic (see its own _synthetic/_syntheticNote fields) representing a low-frequency Vy direction not actually present at Stortinget, added only to test that low-frequency directions are not starved.",
+    "capturedAt": "2026-09-20T14:35:00+02:00",
+    "stopPlaceId": "NSR:StopPlace:4029",
+    "stopPlaceName": "Stortinget"
+  },
+  "estimatedCalls": [
+    {
+      "expectedDepartureTime": "2026-09-20T14:35:21+02:00",
+      "aimedDepartureTime": "2026-09-20T14:35:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Tøyen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:50:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:50:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Tøyen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:05:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:05:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Tøyen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:20:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:20:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Tøyen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:35:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:35:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Tøyen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:36:03+02:00",
+      "aimedDepartureTime": "2026-09-20T14:36:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Sognsvann"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:51:30+02:00",
+      "aimedDepartureTime": "2026-09-20T14:51:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Sognsvann"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:07:24+02:00",
+      "aimedDepartureTime": "2026-09-20T15:06:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Sognsvann"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:22:24+02:00",
+      "aimedDepartureTime": "2026-09-20T15:21:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Sognsvann"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:36:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:36:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Sognsvann"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:37:19+02:00",
+      "aimedDepartureTime": "2026-09-20T14:36:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ellingsrudåsen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:51:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:51:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ellingsrudåsen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:06:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:06:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ellingsrudåsen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:21:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:21:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ellingsrudåsen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:36:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:36:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Ellingsrudåsen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:38:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:38:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Frognerseteren"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:53:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:53:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Frognerseteren"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:08:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:08:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Frognerseteren"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:23:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:23:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Frognerseteren"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:38:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:38:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Frognerseteren"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:41:18+02:00",
+      "aimedDepartureTime": "2026-09-20T14:40:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:55:36+02:00",
+      "aimedDepartureTime": "2026-09-20T14:55:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:10:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:10:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:25:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:25:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:40:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:40:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:41:24+02:00",
+      "aimedDepartureTime": "2026-09-20T14:40:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:56:24+02:00",
+      "aimedDepartureTime": "2026-09-20T14:55:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:10:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:10:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:25:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:25:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:40:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:40:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Ringen via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:44:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:44:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Kolsås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:59:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:59:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Kolsås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:14:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:14:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Kolsås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:29:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:29:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Kolsås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:44:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:44:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Kolsås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:45:10+02:00",
+      "aimedDepartureTime": "2026-09-20T14:44:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Mortensrud"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:59:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:59:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Mortensrud"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:14:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:14:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Mortensrud"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:29:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:29:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Mortensrud"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:44:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:44:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Mortensrud"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "3",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:46:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:46:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:01:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:01:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:16:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:16:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:31:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:31:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:46:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:46:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli via Majorstuen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "4",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:47:27+02:00",
+      "aimedDepartureTime": "2026-09-20T14:46:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:02:04+02:00",
+      "aimedDepartureTime": "2026-09-20T15:01:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:16:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:16:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:31:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:31:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:46:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:46:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Vestli"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "5",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:49:00+02:00",
+      "aimedDepartureTime": "2026-09-20T14:49:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Østerås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:04:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:04:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Østerås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:19:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:19:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Østerås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:34:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:34:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Østerås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:49:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:49:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "2"
+      },
+      "destinationDisplay": {
+        "frontText": "Østerås"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "2",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T14:49:25+02:00",
+      "aimedDepartureTime": "2026-09-20T14:48:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:04:34+02:00",
+      "aimedDepartureTime": "2026-09-20T15:03:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:18:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:18:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:33:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:33:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "expectedDepartureTime": "2026-09-20T15:48:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:48:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "1"
+      },
+      "destinationDisplay": {
+        "frontText": "Bergkrystallen"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "1",
+          "transportMode": "metro",
+          "authority": {
+            "id": "RUT:Authority:RUT",
+            "name": "Ruter"
+          }
+        }
+      }
+    },
+    {
+      "_synthetic": true,
+      "_syntheticNote": "Not from the live capture. Added to prove a genuinely low-frequency direction (one call, well below the 5-per-direction the high-frequency T-bane lines get) is carried through estimatedCallsToTrips untouched rather than crowded out — the scenario numberOfDeparturesPerLineAndDestinationDisplay is meant to prevent at hubs like Jernbanetorget where Vy runs far less often than T-bane.",
+      "expectedDepartureTime": "2026-09-20T15:05:00+02:00",
+      "aimedDepartureTime": "2026-09-20T15:05:00+02:00",
+      "realtime": true,
+      "cancellation": false,
+      "quay": {
+        "publicCode": "A"
+      },
+      "destinationDisplay": {
+        "frontText": "Lillehammer"
+      },
+      "serviceJourney": {
+        "line": {
+          "publicCode": "RE10",
+          "transportMode": "rail",
+          "authority": {
+            "id": "VYG:Authority:VY",
+            "name": "Vy"
+          }
+        }
+      }
+    }
+  ]
+}

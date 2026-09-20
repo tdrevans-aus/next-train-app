@@ -13,7 +13,13 @@ import { assertCityLive, getCity, CITIES } from "../lib/providers/registry.js";
 import { isMultiCity, getMultiCityDirections } from "../lib/cities/live-city-api.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
 import vercelBoard from "../api/dev/board.js";
-import { OSLO_HUB, resolveCatalogEntry, listCatalogStations, classifyMapGroup } from "../lib/providers/oslo.js";
+import {
+  OSLO_HUB,
+  resolveCatalogEntry,
+  listCatalogStations,
+  classifyMapGroup,
+  estimatedCallsToTrips,
+} from "../lib/providers/oslo.js";
 import {
   marketingLabelsForStation,
   mapOsloDestination,
@@ -125,6 +131,63 @@ assert(
   "classifyMapGroup must reject out-of-scope Vy line R22"
 );
 
+// Board horizon (docs/jim-brief-oslo-board-horizon.md, 20 Sep 2026): a fixture shaped from a
+// real Entur estimatedCalls response for Stortinget (queried with
+// numberOfDeparturesPerLineAndDestinationDisplay instead of a single shared
+// numberOfDepartures pool) run through the adapter's real transform pipeline
+// (estimatedCallsToTrips = classify -> map -> drop cancelled/past -> sort).
+const stortingetFixture = JSON.parse(
+  readFileSync(join(ROOT, "qa/fixtures/oslo/entur-estimated-calls-stortinget.json"), "utf8")
+);
+assert(
+  stortingetFixture.estimatedCalls.length > 0,
+  "oslo Stortinget estimatedCalls fixture must be non-empty"
+);
+const syntheticRows = stortingetFixture.estimatedCalls.filter((call) => call._synthetic === true);
+assert(syntheticRows.length === 1, "fixture must mark exactly one synthetic low-frequency row");
+const fixtureNow = new Date("2026-09-20T14:34:00+02:00");
+const fixtureTrips = estimatedCallsToTrips(stortingetFixture.estimatedCalls, fixtureNow);
+
+const fixtureByDirection = new Map();
+for (const trip of fixtureTrips) {
+  const key = trip.destination;
+  if (!fixtureByDirection.has(key)) {
+    fixtureByDirection.set(key, []);
+  }
+  fixtureByDirection.get(key).push(trip);
+}
+assert(fixtureByDirection.size >= 12, `fixture must yield at least 12 directions, got ${fixtureByDirection.size}`);
+
+// Every high-frequency T-bane direction present in the fixture (5 real captured calls each)
+// must yield >=3 upcoming trips — the pipeline must not drop rows the query already returned.
+for (const [direction, trips] of fixtureByDirection) {
+  if (direction.startsWith("RE10")) {
+    continue; // the deliberately low-frequency synthetic direction, checked separately below.
+  }
+  assert(trips.length >= 3, `direction "${direction}" must yield >=3 trips from the fixture, got ${trips.length}`);
+}
+
+// The synthetic low-frequency Vy direction (one call) must still surface — proof that a
+// low-frequency direction is not dropped/crowded out when high-frequency T-bane lines fill
+// the rest of the response.
+const lowFrequencyTrips = fixtureByDirection.get("RE10 + Lillehammer") ?? [];
+assert(
+  lowFrequencyTrips.length === 1,
+  `low-frequency synthetic direction "RE10 + Lillehammer" must survive the pipeline untouched, got ${lowFrequencyTrips.length}`
+);
+
+// Non-realtime calls are not filtered out today, and this fix must not start filtering them
+// (docs/jim-brief-oslo-board-horizon.md: "keep whatever the adapter already does").
+const scheduledOnlyCall = {
+  ...stortingetFixture.estimatedCalls[0],
+  realtime: false,
+  expectedDepartureTime: "2026-09-20T16:00:00+02:00",
+  aimedDepartureTime: "2026-09-20T16:00:00+02:00",
+};
+const scheduledOnlyTrips = estimatedCallsToTrips([scheduledOnlyCall], fixtureNow);
+assert(scheduledOnlyTrips.length === 1, "a scheduled-only (realtime:false) call must still appear on the board");
+assert(scheduledOnlyTrips[0].realtime === false, "a scheduled-only call must be tagged realtime:false on the trip, not dropped or upgraded");
+
 // Dogfood station list + directions come from the catalog, not GTFS parses.
 const dogfoodStations = listOsloDogfoodStations();
 assert(dogfoodStations.length === 101, `dogfood stations must be the 101 D1 names, got ${dogfoodStations.length}`);
@@ -187,5 +250,5 @@ if (previous === undefined) {
 }
 
 console.log(
-  "oslo-dogfood-gate: ok (dispatch switch-case wired and tested, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, 101 T-bane stations, Vy/Flytoget scoped, R21+Moss-only, three-way doNotGroup)"
+  "oslo-dogfood-gate: ok (dispatch switch-case wired and tested, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, 101 T-bane stations, Vy/Flytoget scoped, R21+Moss-only, three-way doNotGroup, board-horizon fixture: >=3 trips/direction, low-frequency direction not starved, scheduled-only calls unchanged)"
 );
