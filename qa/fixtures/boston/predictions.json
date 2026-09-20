@@ -1,0 +1,1473 @@
+{
+  "_comment": "MBTA V3 predictions (https://api-v3.mbta.com/predictions) fixtures for qa/boston-dogfood-gate.mjs's live-predictions pass (docs/jim-brief-boston-subway-live-predictions.md, 20 Sep 2026). Each of `harvard`/`kenmoreGreenTrunk`/`southStation` is one {data, included} payload shaped exactly like a real filter[stop]=<...>&filter[route_type]=0,1,2&include=trip,route response, injected into the REAL fetchStationBoard() via its `rawPredictions` option, so the production drop/map/sort pipeline (mapPredictionToTrip in lib/providers/boston.js) is what runs here, not a copy of it. Rows marked \"_source\": \"live-capture-20260920\" are REAL, unedited MBTA V3 responses (one call each to Harvard place-harsq, Kenmore place-kencl, and South Station place-sstat plus its Commuter Rail platform ids, sequential, well under the ~20/min unauthenticated rate limit) trimmed to a representative subset: `harvard` is subway-only (Red Line) and includes one real CANCELLED row (departure_time null) and one real row carrying a live `status` string (\"Stopped 3 stops away\"); `kenmoreGreenTrunk` is a Green Line C/D trunk station and includes one real arrival-only row (schedule_relationship ADDED, departure_time null, arrival_time set — a mid-trip train reported as terminating here) alongside real Cleveland Circle (Green-C) and Riverside (Green-D) departures; `southStation` is the subway+Commuter-Rail dual-mode station and includes real Red Line rows plus real CR-Providence/CR-Franklin/CR-Fairmount rows (including one real arrival-only CR-Worcester row and real \"All aboard\"/\"Now boarding\"/\"Stopped N stops away\" status strings) — note CR-Providence and CR-Franklin share one real trip id here (SavinHillWestRoxbury-860989-5821), a genuine MBTA quirk for a combined train that later splits, not a fixture error. Rows marked \"_source\": \"synthetic\" (harvard's SKIPPED and NON_REVENUE rows) are hand-authored — neither happened to be running at capture time — so both drop paths named in the brief are covered without waiting for one to occur live.",
+  "harvard": {
+    "data": [
+      {
+        "attributes": {
+          "arrival_time": null,
+          "arrival_uncertainty": null,
+          "departure_time": null,
+          "departure_uncertainty": null,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": "CANCELLED",
+          "status": null,
+          "stop_sequence": 190,
+          "trip_headsign": null,
+          "update_type": null
+        },
+        "id": "prediction-7927916925-6-70068-190-Red",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70068",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "7927916925-6",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": null
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T07:58:48-04:00",
+          "arrival_uncertainty": 120,
+          "departure_time": "2026-09-20T07:59:41-04:00",
+          "departure_uncertainty": 120,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": "Stopped 3 stops away",
+          "stop_sequence": 30,
+          "trip_headsign": null,
+          "update_type": "AT_TERMINAL"
+        },
+        "id": "prediction-7927932125-6-70067-30-Red",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70067",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "7927932125-6",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "R-548BD27E",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T07:55:44-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T07:56:37-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 30,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-7927932025-6-70067-30-Red",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70067",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "7927932025-6",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "R-548BD96B",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T07:57:22-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T07:58:14-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 190,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-7927916725-6-70068-190-Red",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70068",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "7927916725-6",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "R-548BD870",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "_source": "synthetic",
+        "id": "synthetic-skipped-red-1",
+        "type": "prediction",
+        "attributes": {
+          "arrival_time": "2026-09-20T12:04:30-04:00",
+          "departure_time": "2026-09-20T12:05:00-04:00",
+          "direction_id": 0,
+          "revenue": "REVENUE",
+          "schedule_relationship": "SKIPPED",
+          "status": null
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "synthetic-trip-skipped",
+              "type": "trip"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70061",
+              "type": "stop"
+            }
+          }
+        }
+      },
+      {
+        "_source": "synthetic",
+        "id": "synthetic-nonrevenue-red-1",
+        "type": "prediction",
+        "attributes": {
+          "arrival_time": "2026-09-20T12:09:30-04:00",
+          "departure_time": "2026-09-20T12:10:00-04:00",
+          "direction_id": 0,
+          "revenue": "NON_REVENUE",
+          "schedule_relationship": null,
+          "status": null
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "synthetic-trip-nonrevenue",
+              "type": "trip"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70061",
+              "type": "stop"
+            }
+          }
+        }
+      }
+    ],
+    "included": [
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": "S933_-12",
+          "direction_id": 1,
+          "headsign": "Alewife",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "7927916725-6",
+        "links": {
+          "self": "/trips/7927916725-6"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Red-3-1",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "DIV20264-hms46sh7-Sunday-01-25-6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "933_0019",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": "S933_-14",
+          "direction_id": 1,
+          "headsign": "Alewife",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "7927916925-6",
+        "links": {
+          "self": "/trips/7927916925-6"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Red-3-1",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "DIV20264-hms46sh7-Sunday-01-25-6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "933_0019",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": "S933_-9",
+          "direction_id": 0,
+          "headsign": "Braintree",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "7927932025-6",
+        "links": {
+          "self": "/trips/7927932025-6"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Red-3-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "DIV20264-hms46sh7-Sunday-01-25-6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "933_0020",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": "S933_-10",
+          "direction_id": 0,
+          "headsign": "Braintree",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "7927932125-6",
+        "links": {
+          "self": "/trips/7927932125-6"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Red-3-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "DIV20264-hms46sh7-Sunday-01-25-6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "933_0020",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "id": "synthetic-trip-skipped",
+        "type": "trip",
+        "attributes": {
+          "headsign": "Alewife"
+        }
+      },
+      {
+        "id": "synthetic-trip-nonrevenue",
+        "type": "trip",
+        "attributes": {
+          "headsign": "Alewife"
+        }
+      }
+    ]
+  },
+  "kenmoreGreenTrunk": {
+    "data": [
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T08:02:25-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": null,
+          "departure_uncertainty": null,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": "ADDED",
+          "status": null,
+          "stop_sequence": 550,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-ADDED-1584946201-70150-550-Green-D",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Green-D",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70150",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "ADDED-1584946201",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "G-10038",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": null,
+          "arrival_uncertainty": null,
+          "departure_time": "2026-09-20T08:08:17-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": "ADDED",
+          "status": null,
+          "stop_sequence": 1,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-ADDED-1584946220-70151-1-Green-C",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Green-C",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70151",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "ADDED-1584946220",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "G-10040",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": null,
+          "arrival_uncertainty": null,
+          "departure_time": "2026-09-20T08:03:43-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": "ADDED",
+          "status": null,
+          "stop_sequence": 1,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-ADDED-1584946225-70151-1-Green-D",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Green-D",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70151",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "ADDED-1584946225",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "G-10038",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      }
+    ],
+    "included": [
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": null,
+          "direction_id": 1,
+          "headsign": "Kenmore",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "ADDED-1584946201",
+        "links": {
+          "self": "/trips/ADDED-1584946201"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Green-D",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Green-D-854-1",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": null
+          },
+          "shape": {
+            "data": {
+              "id": "8000092",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": null,
+          "direction_id": 0,
+          "headsign": "Cleveland Circle",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "ADDED-1584946220",
+        "links": {
+          "self": "/trips/ADDED-1584946220"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Green-C",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Green-C-0-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": null
+          },
+          "shape": {
+            "data": {
+              "id": "8000128",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": null,
+          "direction_id": 0,
+          "headsign": "Riverside",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "ADDED-1584946225",
+        "links": {
+          "self": "/trips/ADDED-1584946225"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Green-D",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Green-D-854-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": null
+          },
+          "shape": {
+            "data": {
+              "id": "8000090",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      }
+    ]
+  },
+  "miltonDuplicatedByOldIdSet": {
+    "_comment": "REAL capture, 20 Sep 2026 (PR #431 review, Mark's finding), _source: live-capture-20260920-old-id-set: this is the exact duplicated shape the OLD resolveStopIds() produced by querying filter[stop]=place-miltt,70267,70268 (a station's GTFS parent place-* id together with its own platform child ids) in one request. MBTA's V3 API expands the parent id to its children's predictions, so each of the 3 real Mattapan Line trips running at capture time comes back as two prediction resources with the IDENTICAL prediction `id` (e.g. prediction-77714330-70267-4-Mattapan appears twice, byte-for-byte). Querying place-miltt alone (the fix; see lib/cities/boston/stations.json's mbtaStopIds and scripts/generate-boston-mbta-stop-ids.mjs) returns each of these 3 predictions exactly once, confirmed live the same day. Used by qa/boston-dogfood-gate.mjs to prove mapPredictionsToTrips()'s prediction-id dedupe collapses this real duplicated payload back down to 3 unique trips, and that no two rows share the same trip+stop+time either.",
+    "data": [
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T08:55:37-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T08:55:54-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 4,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-77714330-70267-4-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70267", "type": "stop" } },
+          "trip": { "data": { "id": "77714330", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T08:55:37-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T08:55:54-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 4,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-77714330-70267-4-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70267", "type": "stop" } },
+          "trip": { "data": { "id": "77714330", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:01:11-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:01:28-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714323-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714323", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10033", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:01:11-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:01:28-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714323-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714323", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10033", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:11:35-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:11:52-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714336-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714336", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T09:11:35-04:00",
+          "arrival_uncertainty": 360,
+          "departure_time": "2026-09-20T09:11:52-04:00",
+          "departure_uncertainty": 360,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 5,
+          "trip_headsign": null,
+          "update_type": "REVERSE_TRIP"
+        },
+        "id": "prediction-77714336-70268-5-Mattapan",
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "stop": { "data": { "id": "70268", "type": "stop" } },
+          "trip": { "data": { "id": "77714336", "type": "trip" } },
+          "vehicle": { "data": { "id": "G-10045", "type": "vehicle" } }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920-old-id-set"
+      }
+    ],
+    "included": [
+      {
+        "attributes": {
+          "bikes_allowed": 2,
+          "block_id": "M899_-1",
+          "direction_id": 1,
+          "headsign": "Ashmont",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "77714323",
+        "links": { "self": "/trips/77714323" },
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "route_pattern": { "data": { "id": "Mattapan-_-1", "type": "route_pattern" } },
+          "service": { "data": { "id": "FallSunday", "type": "service" } },
+          "shape": { "data": { "id": "899_0008", "type": "shape" } }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 2,
+          "block_id": "M899_-2",
+          "direction_id": 0,
+          "headsign": "Mattapan",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "77714330",
+        "links": { "self": "/trips/77714330" },
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "route_pattern": { "data": { "id": "Mattapan-_-0", "type": "route_pattern" } },
+          "service": { "data": { "id": "FallSunday", "type": "service" } },
+          "shape": { "data": { "id": "899_0005", "type": "shape" } }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 2,
+          "block_id": "M899_-2",
+          "direction_id": 1,
+          "headsign": "Ashmont",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "77714336",
+        "links": { "self": "/trips/77714336" },
+        "relationships": {
+          "route": { "data": { "id": "Mattapan", "type": "route" } },
+          "route_pattern": { "data": { "id": "Mattapan-_-1", "type": "route_pattern" } },
+          "service": { "data": { "id": "FallSunday", "type": "service" } },
+          "shape": { "data": { "id": "899_0008", "type": "shape" } }
+        },
+        "type": "trip"
+      }
+    ]
+  },
+  "southStation": {
+    "data": [
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T07:54:56-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T07:55:42-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 120,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-7927916825-6-70082-120-Red",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70082",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "7927916825-6",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "R-548BCBAD",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T07:57:03-04:00",
+          "arrival_uncertainty": 60,
+          "departure_time": "2026-09-20T07:58:05-04:00",
+          "departure_uncertainty": 60,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 90,
+          "trip_headsign": null,
+          "update_type": "MID_TRIP"
+        },
+        "id": "prediction-7927931725-6-70079-90-Red",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70079",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "7927931725-6",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "R-548BD8EF",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T08:40:05-04:00",
+          "arrival_uncertainty": null,
+          "departure_time": null,
+          "departure_uncertainty": null,
+          "direction_id": 1,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": null,
+          "stop_sequence": 170,
+          "trip_headsign": null,
+          "update_type": null
+        },
+        "id": "prediction-SavinHillWestRoxbury-861114-5520-NEC-2287-170-CR-Worcester",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "CR-Worcester",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "NEC-2287",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "SavinHillWestRoxbury-861114-5520",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "1844",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": null,
+          "arrival_uncertainty": null,
+          "departure_time": "2026-09-20T07:55:00-04:00",
+          "departure_uncertainty": null,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": "All aboard",
+          "stop_sequence": 0,
+          "trip_headsign": null,
+          "update_type": null
+        },
+        "id": "prediction-SavinHillWestRoxbury-860989-5821-NEC-2287-08-0-CR-Providence",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "CR-Providence",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "NEC-2287-08",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "SavinHillWestRoxbury-860989-5821",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": null
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": null,
+          "arrival_uncertainty": null,
+          "departure_time": "2026-09-20T07:55:00-04:00",
+          "departure_uncertainty": null,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": "All aboard",
+          "stop_sequence": 0,
+          "trip_headsign": null,
+          "update_type": null
+        },
+        "id": "prediction-SavinHillWestRoxbury-860989-5821-NEC-2287-08-0-CR-Franklin",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "CR-Franklin",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "NEC-2287-08",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "SavinHillWestRoxbury-860989-5821",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": null
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": null,
+          "arrival_uncertainty": null,
+          "departure_time": "2026-09-20T08:02:00-04:00",
+          "departure_uncertainty": null,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": "Now boarding",
+          "stop_sequence": 0,
+          "trip_headsign": null,
+          "update_type": null
+        },
+        "id": "prediction-SavinHillWestRoxbury-861190-5721-NEC-2287-10-0-CR-Fairmount",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "CR-Fairmount",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "NEC-2287-10",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "SavinHillWestRoxbury-861190-5721",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": null
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      },
+      {
+        "attributes": {
+          "arrival_time": "2026-09-20T08:10:55-04:00",
+          "arrival_uncertainty": 120,
+          "departure_time": "2026-09-20T08:11:57-04:00",
+          "departure_uncertainty": 120,
+          "direction_id": 0,
+          "last_trip": false,
+          "revenue": "REVENUE",
+          "schedule_relationship": null,
+          "status": "Stopped 9 stops away",
+          "stop_sequence": 90,
+          "trip_headsign": null,
+          "update_type": "AT_TERMINAL"
+        },
+        "id": "prediction-7927932125-6-70079-90-Red",
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "stop": {
+            "data": {
+              "id": "70079",
+              "type": "stop"
+            }
+          },
+          "trip": {
+            "data": {
+              "id": "7927932125-6",
+              "type": "trip"
+            }
+          },
+          "vehicle": {
+            "data": {
+              "id": "R-548BD27E",
+              "type": "vehicle"
+            }
+          }
+        },
+        "type": "prediction",
+        "_source": "live-capture-20260920"
+      }
+    ],
+    "included": [
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": "S933_-13",
+          "direction_id": 1,
+          "headsign": "Alewife",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "7927916825-6",
+        "links": {
+          "self": "/trips/7927916825-6"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Red-3-1",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "DIV20264-hms46sh7-Sunday-01-25-6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "933_0019",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": "S933_-7",
+          "direction_id": 0,
+          "headsign": "Braintree",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "7927931725-6",
+        "links": {
+          "self": "/trips/7927931725-6"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Red-3-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "DIV20264-hms46sh7-Sunday-01-25-6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "933_0020",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 0,
+          "block_id": "S933_-10",
+          "direction_id": 0,
+          "headsign": "Braintree",
+          "name": "",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "7927932125-6",
+        "links": {
+          "self": "/trips/7927932125-6"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "Red",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "Red-3-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "DIV20264-hms46sh7-Sunday-01-25-6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "933_0020",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 1,
+          "block_id": "",
+          "direction_id": 0,
+          "headsign": "Providence",
+          "name": "5821",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "SavinHillWestRoxbury-860989-5821",
+        "links": {
+          "self": "/trips/SavinHillWestRoxbury-860989-5821"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "CR-Providence",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "CR-Providence-744cd707-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "SPRING2026-SOUTHSS-Weekend-29-Scb37d3c2",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "9890009",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 1,
+          "block_id": "",
+          "direction_id": 1,
+          "headsign": "South Station",
+          "name": "5520",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "SavinHillWestRoxbury-861114-5520",
+        "links": {
+          "self": "/trips/SavinHillWestRoxbury-861114-5520"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "CR-Worcester",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "CR-Worcester-647db84d-1",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "SPRING2026-SOUTHSS-Weekend-29-Sb0e4ed14",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "9850001",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      },
+      {
+        "attributes": {
+          "bikes_allowed": 1,
+          "block_id": "",
+          "direction_id": 0,
+          "headsign": "Forge Park/495",
+          "name": "5721",
+          "revenue": "REVENUE",
+          "wheelchair_accessible": 1
+        },
+        "id": "SavinHillWestRoxbury-861190-5721",
+        "links": {
+          "self": "/trips/SavinHillWestRoxbury-861190-5721"
+        },
+        "relationships": {
+          "route": {
+            "data": {
+              "id": "CR-Franklin",
+              "type": "route"
+            }
+          },
+          "route_pattern": {
+            "data": {
+              "id": "CR-Franklin-807421e2-0",
+              "type": "route_pattern"
+            }
+          },
+          "service": {
+            "data": {
+              "id": "SPRING2026-SOUTHSS-Weekend-29-S85407dc6",
+              "type": "service"
+            }
+          },
+          "shape": {
+            "data": {
+              "id": "9880003",
+              "type": "shape"
+            }
+          }
+        },
+        "type": "trip"
+      }
+    ]
+  }
+}
