@@ -72,6 +72,8 @@ import {
   isForbiddenCollapseName,
   isForbiddenHubProxy,
   bilingualHalves,
+  sncbDirectionLabel,
+  tripMatchesSncbDirectionChip,
 } from "../lib/cities/brussels/marketing-directions.js";
 import {
   listBrusselsDogfoodStations,
@@ -229,9 +231,10 @@ assert(singleHalves.fr === "Simonis" && singleHalves.nl === "Simonis", "same-in-
 const dogfoodStations = listBrusselsDogfoodStations();
 assert(dogfoodStations.length === 60, `dogfood stations must be the 60 catalog entries, got ${dogfoodStations.length}`);
 
-// Dogfood directions are the static marketing labels — no network involved,
-// same as production's directionsFor()/getMultiCityDirections() dispatch.
-const hubDogfoodDirections = getBrusselsDogfoodDirections(BRUSSELS_HUB);
+// Dogfood directions at a metro-only station are the static marketing labels — no network
+// involved (no SNCB source at this station, so the iRail branch is never taken), same as
+// production's directionsFor()/getMultiCityDirections() dispatch.
+const hubDogfoodDirections = await getBrusselsDogfoodDirections(BRUSSELS_HUB);
 assert(hubDogfoodDirections.source === "brussels-marketing-ends", "directions source must be brussels-marketing-ends");
 assert(
   JSON.stringify(hubDogfoodDirections.directions) === JSON.stringify(hubLabels),
@@ -486,6 +489,80 @@ assert(
   "Gare Centrale's captured-live iRail fixture must produce zero unmapped vehicle types"
 );
 
+// --- SNCB directions in /api/directions (Part C, docs/jim-brief-brussels-horizon-and-sncb-directions.md) ---
+
+assert(sncbDirectionLabel({ routeShortName: "IC", destination: "Oostende" }) === "IC + Oostende", "sncbDirectionLabel must build 'type + destination' chips");
+assert(sncbDirectionLabel({ routeShortName: "", destination: "Oostende" }) === null, "sncbDirectionLabel must not fabricate a chip with no type");
+assert(sncbDirectionLabel({ routeShortName: "IC", destination: "" }) === null, "sncbDirectionLabel must not fabricate a chip with no destination");
+assert(
+  tripMatchesSncbDirectionChip({ routeShortName: "ic", destination: "oostende" }, "IC + Oostende"),
+  "tripMatchesSncbDirectionChip must fold case"
+);
+
+const gareCentraleDirections = await getBrusselsDogfoodDirections(GARE_CENTRALE, {
+  irailRawDepartures: irailFixture.gareCentrale,
+});
+assert(
+  gareCentraleDirections.source === "brussels-marketing-ends+sncb-irail",
+  "Gare Centrale directions source must record both the metro and SNCB sources when iRail succeeds"
+);
+assert(
+  gareCentraleDirections.directions.includes("5 + Herrmann-Debroux"),
+  "Gare Centrale directions must still include its metro chips"
+);
+assert(
+  gareCentraleDirections.directions.includes("IC + Brussels Airport - Zaventem"),
+  "Gare Centrale directions must include the genuine (non-canceled, non-departed) IC chip"
+);
+assert(
+  gareCentraleDirections.directions.includes("S10 + Aalst"),
+  "Gare Centrale directions must include an S-train chip built from the live fixture"
+);
+assert(
+  !gareCentraleDirections.directions.includes("IC + Oostende"),
+  "Gare Centrale directions must never include a chip built from a canceled or already-departed row"
+);
+assert(
+  !gareCentraleDirections.directions.some((chip) => /^(THA|TGV|OUI|OUIGO|NJ|NIGHTJET|EN|ES|EUR|BUS) \+/.test(chip)),
+  "Gare Centrale directions must never include an out-reservation/out-checkin/out-mode chip"
+);
+
+// A metro-only station (no SNCB source at all) must never gain an SNCB chip, and iRail is never
+// even called for it (no irailStationName match — see getBrusselsDogfoodDirections).
+assert(
+  !hubDogfoodDirections.directions.some((chip) => / \+ /.test(chip) && !chip.match(/^[1256] \+/)),
+  "Arts-Loi / Kunst-Wet directions must only ever carry metro (1/2/5/6) chips"
+);
+
+// iRail down for directions: no `irailRawDepartures` supplied at a shared station, so the real
+// (stubbed) network path throws — directions must still return the metro chips only, silently
+// (no error surfaced to the caller), matching the board's own partial-source degrade posture.
+const gareCentraleDirectionsIrailDown = await getBrusselsDogfoodDirections(GARE_CENTRALE);
+assert(
+  gareCentraleDirectionsIrailDown.source === "brussels-marketing-ends",
+  "Gare Centrale directions must fall back to metro-only source when iRail is unavailable"
+);
+assert(
+  gareCentraleDirectionsIrailDown.directions.every((chip) => /^[1256] \+/.test(chip)),
+  "Gare Centrale directions must contain only metro chips when iRail is down"
+);
+
+// End-to-end next-train for an SNCB direction chip, through the same fixture escape hatches —
+// proves getBrusselsDogfoodNextTrain() resolves a real upcoming SNCB departure, not just a
+// metro one.
+const sncbChip = "IC + Brussels Airport - Zaventem";
+const sncbNextTrain = await getBrusselsDogfoodNextTrain({
+  station: GARE_CENTRALE,
+  destination: sncbChip,
+  leaveBeforeMinutes: 5,
+  refreshSeconds: 60,
+  now,
+  rawResults: waitingTimesFixture.gareCentrale,
+  irailRawDepartures: irailFixture.gareCentrale,
+});
+assert(sncbNextTrain.config?.destination === sncbChip, "SNCB next-train destination must equal the chosen chip");
+assert(sncbNextTrain.next?.displayTime, "SNCB next-train must resolve a real upcoming departure from the iRail fixture");
+
 // Gare du Midi: ICE is `in`, EUR is out-checkin, THA/TGV/OUI/NJ/ES are out-reservation, BUS is
 // out-mode, L/S8/S10/ECD are all in (S8/S10/ECD are real live-captured rows).
 const gareDuMidiBoard = await fetchFixtureBoardWithSncb(
@@ -559,5 +636,5 @@ assert(
 assertLiveBoardTripsHaveDisplayTimes(gareCentraleIrailDownBoard, "Gare Centrale board (iRail down)");
 
 console.log(
-  "brussels-dogfood-gate: ok (live/200 post-flip, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, live board via BMC Waiting Times (captured-live fixture, no network), self-referential-arrival + theoretical-time + do-not-embark filtering, missing-key refusal path proven, SNCB second source at the 3 shared stations (iRail fixture, no network) — doNotGroup-by-mode, forbidden-internationals filtered, ICE in, iRail-down degrades to partial rather than refusing, metro-only stations never partial/never show SNCB, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
+  "brussels-dogfood-gate: ok (live/200 post-flip, in MULTI_CITY_IDS, dispatch switch-cases wired, D1 pack + fixture, 60 stations, Simonis/Elisabeth distinct, hub never a chip, live board via BMC Waiting Times (captured-live fixture, no network), self-referential-arrival + theoretical-time + do-not-embark filtering, missing-key refusal path proven, SNCB second source at the 3 shared stations (iRail fixture, no network) — doNotGroup-by-mode, forbidden-internationals filtered, ICE in, iRail-down degrades to partial rather than refusing, metro-only stations never partial/never show SNCB, SNCB directions surfaced in /api/directions at the 3 shared stations ('type + destination' chips, canceled/departed/out-of-scope rows never fabricate a chip, iRail-down falls back to metro-only chips silently) with a matching end-to-end next-train resolution, Perth/Stockholm/Göteborg/Malmö/Uppsala green)"
 );
