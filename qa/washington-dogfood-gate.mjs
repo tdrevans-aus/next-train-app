@@ -115,16 +115,20 @@ assert(network.printedInnerCityNames?.lock === WASHINGTON_HUB, `D1 lock must be 
 assert(network.lines.length === 6, "D1 must carry exactly 6 passenger lines");
 
 // Board eligibility rule (docs/board-eligibility-rule.md) — the section must exist with a
-// recorded verdict (MARC/VRE ruled `in` but not wired; Amtrak reserved services `out-reservation`).
+// recorded verdict (MARC/VRE ruled `out-product` with Tim's sign-off; Amtrak reserved services
+// `out-reservation`). No `undecided` row may remain.
 const oracleReport = readFileSync(join(d1Dir, "oracle-clash-report.md"), "utf8");
 assert(/## Board eligibility/.test(oracleReport), "oracle report must carry a Board eligibility section");
 for (const service of ["MARC", "VRE", "Amtrak"]) {
   assert(oracleReport.includes(service), `Board eligibility section must record a verdict for ${service}`);
 }
 assert(/come from feeds other than WMATA/i.test(oracleReport), "Board eligibility section must record that MARC/VRE come from feeds other than WMATA's API");
+assert(/out-product/.test(oracleReport) && /Tim,? 20 Sep 2026/.test(oracleReport), "Board eligibility section must record MARC/VRE as out-product with Tim's 20 Sep 2026 sign-off");
+assert(!/undecided/i.test(oracleReport), "oracle report must not carry any undecided board-eligibility row");
 
 const jimHandoff = readFileSync(join(d1Dir, "jim-handoff.md"), "utf8");
-assert(/MARC/.test(jimHandoff) && /VRE/.test(jimHandoff) && /not (yet )?(wired|implemented)/i.test(jimHandoff), "jim-handoff.md must record that MARC/VRE are not yet wired, holding the flip");
+assert(/MARC/.test(jimHandoff) && /VRE/.test(jimHandoff) && /out-product/.test(jimHandoff), "jim-handoff.md must record MARC/VRE as out-product");
+assert(!/holds the flip pending/i.test(jimHandoff), "jim-handoff.md must not still say MARC/VRE holds the flip pending Tim's decision");
 
 const stations = listCatalogStations();
 assert(stations.length === 98, `catalog must have 98 stations, got ${stations.length}`);
@@ -472,5 +476,5 @@ assert(dogfoodThrew, "dogfood next-train must surface MissingWmataApiKeyError, n
 // four in the same commit as the status flip.
 
 console.log(
-  "washington-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded MARC/VRE in-but-not-wired, 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, Line + terminus direction model, Metro Center and Downtown never a direction token, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, missing-key throws before any fetch, Perth Australia green)"
+  "washington-dogfood-gate: ok (planned/501, dispatch switch-cases wired ahead of flip, MULTI_CITY_IDS/mount/persistence lists deliberately deferred to the status-flip commit, D1 pack, Board eligibility section recorded MARC/VRE out-product (Tim, 20 Sep 2026), 98 stations, hub Metro Center merged as one multi-line entry via StationTogether1/2, Farragut North/West stay distinct, Line + terminus direction model, Metro Center and Downtown never a direction token, WMATA payload shaping, ARR/BRD kept as imminent and ---/empty dropped, Line=No/-- dropped, jStations code join disambiguates hub codes with no network, missing-key throws before any fetch, Perth Australia green)"
 );

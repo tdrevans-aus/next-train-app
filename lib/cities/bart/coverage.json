@@ -1,0 +1,32 @@
+{
+  "region": "bart",
+  "updated": "2026-09-20",
+  "covered": [
+    {
+      "label": "BART (Yellow, Blue, Green, Red, Orange, plus OAK Airport)",
+      "detail": "All 50 BART stations, full network, live BART predictions."
+    }
+  ],
+  "partial": [
+    {
+      "label": "Oakland International Airport (OAK)",
+      "detail": "In the catalog, but BART doesn't publish live predictions for this connector, so it can't be shown even though it's in scope."
+    }
+  ],
+  "notCovered": [
+    {
+      "label": "Caltrain",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "Capitol Corridor (Amtrak)",
+      "detail": "Not shown yet."
+    },
+    {
+      "label": "Muni Metro, VTA Light Rail, buses, ferries",
+      "detail": "Not covered."
+    }
+  ],
+  "stations": "50 BART stations.",
+  "notes": "Embarcadero is the downtown San Francisco hub where most lines cross; it never appears as a direction."
+}

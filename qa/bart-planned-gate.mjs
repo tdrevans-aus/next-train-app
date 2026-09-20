@@ -87,6 +87,17 @@ assert(network.status === "planned", "D1 pack stays planned");
 assert(network.printedInnerCityNames?.lock === BART_HUB, `D1 lock must be ${BART_HUB}`);
 assert(network.lines.length === 6, "D1 must carry exactly 6 lines (5 color + OAK)");
 
+// Board eligibility rule (docs/board-eligibility-rule.md) — Caltrain (Millbrae) and Capitol
+// Corridor (Richmond, Oakland Coliseum) must be recorded as `out-product` with Tim's sign-off,
+// not left `undecided`.
+const oracleReport = readFileSync(join(d1Dir, "oracle-clash-report.md"), "utf8");
+assert(/## Board eligibility/.test(oracleReport), "oracle report must carry a Board eligibility section");
+for (const service of ["Caltrain", "Capitol Corridor"]) {
+  assert(oracleReport.includes(service), `Board eligibility section must record a verdict for ${service}`);
+}
+assert(/out-product/.test(oracleReport) && /Tim,? 20 Sep 2026/.test(oracleReport), "Board eligibility section must record Caltrain/Capitol Corridor as out-product with Tim's 20 Sep 2026 sign-off");
+assert(!/undecided/i.test(oracleReport), "oracle report must not carry any undecided board-eligibility row");
+
 const stations = listCatalogStations();
 assert(stations.length === 50, `catalog must have 50 stations, got ${stations.length}`);
 const byName = new Map(stations.map((s) => [s.name, s]));
@@ -241,5 +252,5 @@ try {
 assert(oakThrew instanceof FeedUnconfirmedError, "fetchStationBoard(OAK) must throw FeedUnconfirmedError — no real-time ETD exists for the OAK connector");
 
 console.log(
-  "bart-planned-gate: ok (planned/501, adapterReady, D1 pack, 50 stations, hub Embarcadero, doNotCollapse pairs enforced, line+terminus direction model, Embarcadero/SF never a direction token, ETD payload shaping, missing-key and OAK-no-ETD both throw without network, Perth Australia green)"
+  "bart-planned-gate: ok (planned/501, adapterReady, D1 pack, Board eligibility section recorded Caltrain/Capitol Corridor out-product (Tim, 20 Sep 2026), 50 stations, hub Embarcadero, doNotCollapse pairs enforced, line+terminus direction model, Embarcadero/SF never a direction token, ETD payload shaping, missing-key and OAK-no-ETD both throw without network, Perth Australia green)"
 );
