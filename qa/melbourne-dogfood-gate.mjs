@@ -373,6 +373,39 @@ async function runLiveEndToEndChecks() {
     });
     assert(directDogfoodNextTrain.config?.destination === destination, "dogfood next-train destination must equal the chosen chip");
   }
+
+  // jim-brief-direction-label-aliases-server-side.md Part 1: every installed app still sending
+  // the retired "<Line> Line + <terminus>" form must keep getting a train, and the response must
+  // echo the canonical terminus-only label so the client self-heals its saved value.
+  const legacyLabelNextTrain = await getMultiCityNextTrain("melbourne", {
+    station: "Flinders Street",
+    destination: "Hurstbridge Line + Hurstbridge",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+  assert(
+    legacyLabelNextTrain.config?.destination === "Hurstbridge",
+    `legacy label "Hurstbridge Line + Hurstbridge" must resolve to canonical "Hurstbridge", got ${legacyLabelNextTrain.config?.destination}`
+  );
+  assert(
+    legacyLabelNextTrain.config?.destinationLabel === "Hurstbridge",
+    "legacy label request must echo the canonical destinationLabel"
+  );
+
+  const legacyHubLabelNextTrain = await getMultiCityNextTrain("melbourne", {
+    station: "Eaglemont",
+    destination: "Hurstbridge Line + Flinders Street",
+    leaveBeforeMinutes: 5,
+    refreshSeconds: 60,
+  });
+  assert(
+    legacyHubLabelNextTrain.config?.destination === "Flinders Street (Hurstbridge Line)",
+    `legacy hub-bound label must resolve to canonical "Flinders Street (Hurstbridge Line)", got ${legacyHubLabelNextTrain.config?.destination}`
+  );
+  assert(
+    legacyHubLabelNextTrain.next !== null,
+    "legacy hub-bound label request (Eaglemont towards Flinders Street) must return a non-null next train — this is the production regression from #439"
+  );
 }
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
