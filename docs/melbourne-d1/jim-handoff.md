@@ -200,6 +200,39 @@ are now DECIDED — see step 7 above and direction-model-memo.md's "Decided (20 
 Board eligibility `undecided` rows (previously open item 3) are also resolved — no `undecided`
 rows remain.
 
+## Flip commit — exact edits (for whoever opens Melbourne's flip PR)
+
+Everything below this line is code, already landed ahead of the flip (safe — production routes
+gate on `assertCityLive()`, not list membership): `lib/providers/melbourne.js`,
+`lib/cities/melbourne/{direction-labels.js,dogfood-next-train.js,stations.json,coverage.json}`,
+the `melbourne` dispatch switch-cases in `directionsFor`/`getMultiCityNextTrain`
+(`lib/cities/live-city-api.js`), and `qa/melbourne-dogfood-gate.mjs` (registered in
+`qa/run-all.mjs`'s smoke tier). `CITY_BOUNDS.melbourne` (`public/city-session.js`) and the picker
+`comingSoon: true` entry, and `country-regions.js`'s `melbourne: "au"` entry, are also already
+in place (Melbourne piggybacks on the existing Australia country-picker plumbing from Sydney/
+Brisbane/Adelaide).
+
+**Do NOT do any of this until Mark is green and the flip is actually happening** —
+`qa/live-city-lists-sync.mjs` enforces that these lists exactly equal the registry's
+`status === "live"` set, so adding them early breaks that gate for everyone:
+
+1. `lib/providers/registry.js` — flip melbourne's `status` from `"planned"` to `"live"`.
+2. `lib/cities/live-city-api.js` — add `"melbourne"` to the `MULTI_CITY_IDS` array and the
+   `MultiCityId` typedef.
+3. `public/app.js` — add `"melbourne"` to `NEARBY_MULTI_CITY_IDS` and `LIVE_CITY_IDS`.
+4. `public/city-session.js` — add `"melbourne"` to its own `MULTI_CITY_IDS` list, and change the
+   picker entry's `comingSoon: true` to remove that flag (leave `CITY_BOUNDS.melbourne` as-is —
+   already correct).
+5. `lib/cities/brisbane-dogfood.js` — add `"melbourne"` to `MULTI_CITY_IDS` and its `available`
+   mount map.
+6. `lib/cities/journey-model.js` — add `"melbourne"` to `PERSISTED_CITY_IDS` and `"australia"` to
+   `PERSISTED_COUNTRY_IDS` (if not already present from Sydney/Brisbane/Adelaide).
+
+After these six edits, `node qa/live-city-lists-sync.mjs` and `node qa/melbourne-dogfood-gate.mjs`
+(its live end-to-end section will now run unconditionally once melbourne is in `MULTI_CITY_IDS` —
+no gate change needed, it already runs those checks whenever `VIC_OPENDATA_API_KEY` is set) should
+both stay green.
+
 ## What I did not do
 
 No provider code written or edited (`lib/providers/melbourne.js` and `lib/providers/ptv/` are
