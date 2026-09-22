@@ -78,7 +78,9 @@ const perth = assertCityLive("perth");
 assert(perth?.ok === true, "Perth must stay live");
 assert(assertCityLive("sydney")?.ok === true, "Sydney live-gate must stay green");
 assert(assertCityLive("stockholm")?.ok === true, "Stockholm tester-live must stay green");
-assert(assertCityLive("melbourne")?.ok === false, "Melbourne stays planned");
+// Anchor moved off melbourne (flipped live 22 Sep 2026) to bart — see
+// docs/jim-brief-melbourne-flip-unblock.md.
+assert(assertCityLive("bart")?.ok === false, "BART stays planned");
 
 const live = assertCityLive("hong-kong");
 assert(live?.ok === false, "assertCityLive(hong-kong) must fail");
@@ -201,11 +203,13 @@ assert(
   !/id:\s*"hk"/.test(session) && !/id:\s*"hong-kong"/.test(session),
   "picker must not list Hong Kong at all (removed from the launch picker 4 Sep 2026; city stays planned in registry)"
 );
+// Anchor moved off melbourne's picker entry (flipped live 22 Sep 2026, comingSoon removed) to
+// bart's — see docs/jim-brief-melbourne-flip-unblock.md.
 assert(
-  /id:\s*"melbourne",\s*name:\s*"Melbourne",\s*timeZone:\s*"Australia\/Melbourne",\s*comingSoon:\s*true/.test(
+  /id:\s*"bart",\s*name:\s*"BART \(San Francisco Bay Area\)",\s*timeZone:\s*"America\/Los_Angeles",\s*comingSoon:\s*true/.test(
     session
   ),
-  "Melbourne stays Coming Soon"
+  "BART stays Coming Soon"
 );
 assert(/id:\s*"stockholm"/.test(session), "Stockholm must remain in the Sweden picker");
 assert(!/id:\s*"china"|id:\s*"mtr"|id:\s*"kowloon"/.test(session), "do not start China / mtr / kowloon");

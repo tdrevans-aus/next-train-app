@@ -1,5 +1,7 @@
 /**
- * Canberra is live for testers; hub Alinga Street; light rail only; Perth green; Melbourne planned.
+ * Canberra is live for testers; hub Alinga Street; light rail only; Perth green; BART planned
+ * (anchor moved off melbourne, flipped live 22 Sep 2026 — see
+ * docs/jim-brief-melbourne-flip-unblock.md).
  */
 import { existsSync } from "fs";
 import { dirname, join } from "path";
@@ -26,7 +28,7 @@ assert(live && live.ok === true, "assertCityLive(canberra) must pass");
 assert(getCity("canberra")?.status === "live", "canberra registry must be live");
 assert(isMultiCity("canberra") === true, "canberra must be in MULTI_CITY_IDS");
 assert(assertCityLive("perth")?.ok === true, "Perth live-gate must stay green");
-assert(assertCityLive("melbourne")?.ok === false, "Melbourne stays planned");
+assert(assertCityLive("bart")?.ok === false, "BART stays planned");
 assert(
   existsSync(join(ROOT, "qa/fixtures/canberra/published-network.json")),
   "D2: copy docs/canberra-d1/published-network.json into qa/fixtures/canberra/"
@@ -74,4 +76,4 @@ await assertSnapshotNotStaleTodayOrSkip("canberra", () =>
   loadLocalGtfsSnapshotForStaleCheck("canberra", CANBERRA_TIME_ZONE)
 );
 
-console.log("canberra-dogfood-gate: ok (live, picker city, light rail only, D1 oracle copied, no MyWay+ key, Melbourne planned, snapshot not stale today)");
+console.log("canberra-dogfood-gate: ok (live, picker city, light rail only, D1 oracle copied, no MyWay+ key, BART planned, snapshot not stale today)");

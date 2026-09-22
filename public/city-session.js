@@ -4,7 +4,7 @@
  */
 (function () {
   const LIVE_CITY = "perth";
-  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels"];
+  const MULTI_CITY_IDS = ["sydney", "brisbane", "adelaide", "uk-london-tfl", "canberra", "gold-coast", "newcastle", "stockholm", "goteborg", "malmo", "uppsala", "helsinki", "oslo", "uk-west-midlands", "west-of-england", "east-midlands", "liverpool-city-region", "solent", "south-wales", "west-yorkshire", "thames-valley", "greater-anglia", "rest-of-wales", "rest-of-scotland", "london-se-national-rail", "southwest", "greater-manchester", "south-yorkshire", "north-east", "glasgow", "edinburgh", "cumbria", "rest-of-england", "boston", "brussels", "melbourne"];
   const VERCEL_ORIGIN = "https://next-train-app.vercel.app";
   const SETTINGS_KEY = "nextTrainSettings";
   // docs/jim-brief-region-explicit-false-dropped.md: a marker persistRegion()
@@ -26,7 +26,7 @@
         { id: "brisbane", name: "Brisbane", timeZone: "Australia/Brisbane" },
         { id: "canberra", name: "Canberra", timeZone: "Australia/Sydney" },
         { id: "gold-coast", name: "Gold Coast", timeZone: "Australia/Brisbane" },
-        { id: "melbourne", name: "Melbourne", timeZone: "Australia/Melbourne", comingSoon: true },
+        { id: "melbourne", name: "Melbourne", timeZone: "Australia/Melbourne" },
         { id: "newcastle", name: "Newcastle", timeZone: "Australia/Sydney" },
         { id: "perth", name: "Perth", timeZone: "Australia/Perth" },
         { id: "sydney", name: "Sydney", timeZone: "Australia/Sydney" },

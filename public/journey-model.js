@@ -537,6 +537,7 @@ const PERSISTED_CITY_IDS = new Set([
   "rest-of-england",
   "boston",
   "brussels",
+  "melbourne",
 ]);
 // "gb" kept alongside the split gb-eng/gb-sct/gb-wls ids so an older stored savedCountry
 // survives the sanitizer until city-session.js's readSavedCountry() migration rewrites it

@@ -1,5 +1,6 @@
 /**
- * Sydney is live on Vercel; Melbourne stays planned; /api/dev/board stays 404.
+ * Sydney is live on Vercel; BART stays planned (anchor moved off melbourne, flipped live
+ * 22 Sep 2026 — see docs/jim-brief-melbourne-flip-unblock.md); /api/dev/board stays 404.
  */
 import { assertCityLive } from "../lib/providers/registry.js";
 import { isCityProbeAllowed } from "../lib/dev-city-board.js";
@@ -26,8 +27,8 @@ function assert(condition, message) {
 const live = assertCityLive("sydney");
 assert(live && live.ok === true, "assertCityLive(sydney) must pass");
 
-const melbourne = assertCityLive("melbourne");
-assert(melbourne && melbourne.ok === false, "Melbourne must stay planned");
+const bart = assertCityLive("bart");
+assert(bart && bart.ok === false, "BART must stay planned");
 
 const perth = assertCityLive("perth");
 assert(perth && perth.ok === true, "Perth live-gate must stay green");

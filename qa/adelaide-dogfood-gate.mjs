@@ -24,8 +24,10 @@ const sydney = assertCityLive("sydney");
 assert(sydney && sydney.ok === true, "Sydney live-gate must pass");
 const brisbane = assertCityLive("brisbane");
 assert(brisbane && brisbane.ok === true, "Brisbane live-gate must pass");
-const melbourne = assertCityLive("melbourne");
-assert(melbourne && melbourne.ok === false, "Melbourne must stay planned");
+// Anchor moved off melbourne (flipped live 22 Sep 2026) to bart, which stays planned pending
+// a Tim-held key — see docs/jim-brief-melbourne-flip-unblock.md.
+const bart = assertCityLive("bart");
+assert(bart && bart.ok === false, "BART must stay planned");
 
 const previous = process.env.ALLOW_CITY_PROBES;
 delete process.env.ALLOW_CITY_PROBES;
@@ -74,5 +76,5 @@ if (previous === undefined) {
 await assertSnapshotNotStaleTodayOrSkip("adelaide", loadAdelaideStatic);
 
 console.log(
-  "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips, Melbourne stays planned, snapshot not stale today)"
+  "adelaide-dogfood-gate: ok (live, Vercel board 404, seven hub chips, BART stays planned, snapshot not stale today)"
 );
