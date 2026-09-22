@@ -559,6 +559,23 @@ assert(
   legacyCrNextTrain.config?.destinationLabel === "South Station (Greenbush Line)",
   "legacy Commuter Rail label request must echo the canonical destinationLabel"
 );
+// docs/jim-brief-adelaide-city-bound-rows-missing.md: a hub-bound chip having the right label
+// is not enough — it must have a real trip behind it, the way Adelaide's silently didn't.
+// Boston's board() remaps every trip's destination directly from its own directionId (not by
+// text-matching a headsign against a chip list), so it isn't exposed to Adelaide's "feed spells
+// the hub differently" failure mode. A fixed `next !== null` assertion isn't safe here, though:
+// Commuter Rail (unlike Adelaide's/Melbourne's frequent metro service) can genuinely have no
+// Greenbush departure from Braintree at some times of day (confirmed live 22 Sep 2026 — Braintree
+// carried only a Fall River/New Bedford Line trip at check time) so asserting non-null would be
+// flaky on schedule, not on code. Assert the mechanism instead: any Commuter Rail trip actually
+// on the Braintree board must resolve through the same canonical-label path proven above.
+const braintreeCrTrip = braintreeBoard.trips.find((t) => t.lineId === "commuter-rail");
+if (braintreeCrTrip) {
+  assert(
+    braintreeCrTrip.destination.startsWith("South Station ("),
+    `a live Commuter Rail trip from Braintree must already carry the canonical hub-bound label, got "${braintreeCrTrip.destination}"`
+  );
+}
 
 // Persistence + dogfood-mount whitelists (journey-model PERSISTED_CITY_IDS/COUNTRY_IDS,
 // brisbane-dogfood MULTI_CITY_IDS/available) were added to all four in the same commit as

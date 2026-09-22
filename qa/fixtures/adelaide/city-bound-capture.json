@@ -1,0 +1,169 @@
+{
+  "capturedAt": "2026-09-22T08:31:45.958Z",
+  "note": "Real GTFS-RT capture from Adelaide Metro (Alberton/Goodwood boards), trimmed to the first 10 trips per station in departure order; every row is a genuine feed trip, none synthetic. docs/jim-brief-adelaide-city-bound-rows-missing.md.",
+  "alberton": [
+    {
+      "destination": "City",
+      "routeShortName": "PTDOCK",
+      "liveDeparture": "2026-09-22T08:34:00.000Z",
+      "displayTime": "18:04",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Osborne",
+      "routeShortName": "OSBORN",
+      "liveDeparture": "2026-09-22T08:38:00.000Z",
+      "displayTime": "18:08",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "OUTHA",
+      "liveDeparture": "2026-09-22T08:40:00.000Z",
+      "displayTime": "18:10",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Port Dock",
+      "routeShortName": "PTDOCK",
+      "liveDeparture": "2026-09-22T08:47:00.000Z",
+      "displayTime": "18:17",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Outer Harbor",
+      "routeShortName": "OUTHA",
+      "liveDeparture": "2026-09-22T08:50:00.000Z",
+      "displayTime": "18:20",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "OSBORN",
+      "liveDeparture": "2026-09-22T08:53:00.000Z",
+      "displayTime": "18:23",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "PTDOCK",
+      "liveDeparture": "2026-09-22T09:04:00.000Z",
+      "displayTime": "18:34",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Osborne",
+      "routeShortName": "OSBORN",
+      "liveDeparture": "2026-09-22T09:06:00.000Z",
+      "displayTime": "18:36",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "OUTHA",
+      "liveDeparture": "2026-09-22T09:10:00.000Z",
+      "displayTime": "18:40",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Port Dock",
+      "routeShortName": "PTDOCK",
+      "liveDeparture": "2026-09-22T09:17:00.000Z",
+      "displayTime": "18:47",
+      "status": "On Time",
+      "cancelled": false
+    }
+  ],
+  "goodwood": [
+    {
+      "destination": "Seaford",
+      "routeShortName": "SEAFRD",
+      "liveDeparture": "2026-09-22T08:33:00.000Z",
+      "displayTime": "18:03",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "SEAFRD",
+      "liveDeparture": "2026-09-22T08:35:00.000Z",
+      "displayTime": "18:05",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Belair",
+      "routeShortName": "BEL",
+      "liveDeparture": "2026-09-22T08:36:00.000Z",
+      "displayTime": "18:06",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Flinders",
+      "routeShortName": "FLNDRS",
+      "liveDeparture": "2026-09-22T08:38:00.000Z",
+      "displayTime": "18:08",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "BEL",
+      "liveDeparture": "2026-09-22T08:49:00.000Z",
+      "displayTime": "18:19",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "FLNDRS",
+      "liveDeparture": "2026-09-22T08:53:00.000Z",
+      "displayTime": "18:23",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Belair",
+      "routeShortName": "BEL",
+      "liveDeparture": "2026-09-22T09:00:00.000Z",
+      "displayTime": "18:30",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Seaford",
+      "routeShortName": "SEAFRD",
+      "liveDeparture": "2026-09-22T09:03:00.000Z",
+      "displayTime": "18:33",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "City",
+      "routeShortName": "SEAFRD",
+      "liveDeparture": "2026-09-22T09:05:00.000Z",
+      "displayTime": "18:35",
+      "status": "On Time",
+      "cancelled": false
+    },
+    {
+      "destination": "Flinders",
+      "routeShortName": "FLNDRS",
+      "liveDeparture": "2026-09-22T09:08:00.000Z",
+      "displayTime": "18:38",
+      "status": "On Time",
+      "cancelled": false
+    }
+  ],
+  "hubTripCount": 54
+}
